@@ -121,7 +121,7 @@ public:
 
   builtin_type_t builtin_type (void) const { return btyp_cell; }
 
-  bool is_cellstr (void) const;
+  bool iscellstr (void) const;
 
   bool is_true (void) const;
 

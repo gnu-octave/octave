@@ -1969,7 +1969,7 @@ A(1)
   if (! args(0).is_cell ())
     error ("cell2struct: argument CELL must be of type cell");
 
-  if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
+  if (! (args(1).iscellstr () || args(1).is_char_matrix ()))
     error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
 
   int dim = 0;

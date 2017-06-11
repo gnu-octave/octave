@@ -1503,7 +1503,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
       jobj = jni_env->NewStringUTF (s.c_str ());
       jcls = jni_env->GetObjectClass (jobj);
     }
-  else if (val.is_cellstr ())
+  else if (val.iscellstr ())
     {
       const Array<std::string> str_arr = val.cellstr_value ();
       const octave_idx_type n = str_arr.numel ();

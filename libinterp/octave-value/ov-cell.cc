@@ -403,14 +403,14 @@ octave_cell::subsasgn (const std::string& type,
 }
 
 bool
-octave_cell::is_cellstr (void) const
+octave_cell::iscellstr (void) const
 {
   bool retval;
   if (cellstr_cache.get ())
     retval = true;
   else
     {
-      retval = matrix.is_cellstr ();
+      retval = matrix.iscellstr ();
       // Allocate empty cache to mark that this is indeed a cellstr.
       if (retval)
         cellstr_cache.reset (new Array<std::string> ());
@@ -456,7 +456,7 @@ octave_cell::sort (octave_idx_type dim, sortmode mode) const
 {
   octave_value retval;
 
-  if (! is_cellstr ())
+  if (! iscellstr ())
     error ("sort: only cell arrays of character strings may be sorted");
 
   Array<std::string> tmp = cellstr_value ();
@@ -475,7 +475,7 @@ octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 {
   octave_value retval;
 
-  if (! is_cellstr ())
+  if (! iscellstr ())
     error ("sort: only cell arrays of character strings may be sorted");
 
   Array<std::string> tmp = cellstr_value ();
@@ -493,7 +493,7 @@ octave_cell::is_sorted (sortmode mode) const
 {
   sortmode retval = UNSORTED;
 
-  if (! is_cellstr ())
+  if (! iscellstr ())
     error ("issorted: A is not a cell array of strings");
 
   Array<std::string> tmp = cellstr_value ();
@@ -508,7 +508,7 @@ octave_cell::sort_rows_idx (sortmode mode) const
 {
   Array<octave_idx_type> retval;
 
-  if (! is_cellstr ())
+  if (! iscellstr ())
     error ("sortrows: only cell arrays of character strings may be sorted");
 
   Array<std::string> tmp = cellstr_value ();
@@ -523,7 +523,7 @@ octave_cell::is_sorted_rows (sortmode mode) const
 {
   sortmode retval = UNSORTED;
 
-  if (! is_cellstr ())
+  if (! iscellstr ())
     error ("issorted: A is not a cell array of strings");
 
   Array<std::string> tmp = cellstr_value ();
@@ -612,7 +612,7 @@ octave_cell::cellstr_value (void) const
 {
   Array<std::string> retval;
 
-  if (! is_cellstr ())
+  if (! iscellstr ())
     error ("invalid conversion from cell array to array of strings");
 
   if (cellstr_cache->is_empty ())
@@ -1275,7 +1275,7 @@ string.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_cellstr ());
+  return ovl (args(0).iscellstr ());
 }
 
 DEFUN (cellstr, args, ,

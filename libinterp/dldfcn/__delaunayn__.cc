@@ -127,7 +127,7 @@ Undocumented internal function.
         options = args(1).string_value ();
       else if (args(1).is_empty ())
         ;  // Use default options
-      else if (args(1).is_cellstr ())
+      else if (args(1).iscellstr ())
         {
           options = "";
           Array<std::string> tmp = args(1).cellstr_value ();

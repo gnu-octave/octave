@@ -496,7 +496,7 @@ public:
                          const desired_enum& typ = string_t)
     : base_property (s, h), desired_type (typ), separator (sep), str ()
   {
-    if (! c.is_cellstr ())
+    if (! c.iscellstr ())
       error ("set: invalid order property value for \"%s\"",
              get_name ().c_str ());
 
@@ -617,7 +617,7 @@ protected:
             return true;
           }
       }
-    else if (val.is_cellstr ())
+    else if (val.iscellstr ())
       {
         bool replace = false;
         Cell new_cell = val.cell_value ();

@@ -914,7 +914,7 @@ tilde_expand ("~/bin")
 
   sv = octave::sys::file_ops::tilde_expand (sv);
 
-  if (arg.is_cellstr ())
+  if (arg.iscellstr ())
     return ovl (Cell (arg.dims (), sv));
   else
     return ovl (sv);

@@ -357,7 +357,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
           std::string s = (r == 0 ? "" : str[0]);
 
-          if (cell_val.is_cellstr ())
+          if (cell_val.iscellstr ())
             {
               const Array<std::string> cellstr = cell_val.cellstr_value ();
               for (octave_idx_type i = 0; i < cellstr.numel (); i++)
@@ -402,7 +402,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
               if (cell.numel () == r)
                 {
-                  if (cell_val.is_cellstr ())
+                  if (cell_val.iscellstr ())
                     {
                       const Array<std::string> cellstr
                         = cell_val.cellstr_value ();
@@ -463,7 +463,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
             {
               const std::string str2 = cell2(0).string_value ();
 
-              if (cell1_val.is_cellstr ())
+              if (cell1_val.iscellstr ())
                 {
                   const Array<std::string> cellstr = cell1_val.cellstr_value ();
                   for (octave_idx_type i = 0; i < cellstr.numel (); i++)
@@ -488,7 +488,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
           if (size1 != size2)
             error ("%s: nonconformant cell arrays", fcn_name);
 
-          if (cell1.is_cellstr () && cell2.is_cellstr ())
+          if (cell1.iscellstr () && cell2.iscellstr ())
             {
               const Array<std::string> cellstr1 = cell1_val.cellstr_value ();
               const Array<std::string> cellstr2 = cell2_val.cellstr_value ();

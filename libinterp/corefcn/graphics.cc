@@ -6605,7 +6605,7 @@ convert_ticklabel_string (const octave_value& val)
 {
   octave_value retval = val;
 
-  if (val.is_cellstr ())
+  if (val.iscellstr ())
     {
       // Always return a column vector for Matlab compatibility
       if (val.columns () > 1)
@@ -6703,7 +6703,7 @@ convert_linestyleorder_string (const octave_value& val)
 {
   octave_value retval = val;
 
-  if (val.is_cellstr ())
+  if (val.iscellstr ())
     {
       // Always return a column vector for Matlab Compatibility
       if (val.columns () > 1)
@@ -10434,7 +10434,7 @@ being @qcode{"portrait"}.
       if (! go)
         error ("set: invalid handle (= %g)", hcv(n));
 
-      if (nargin == 3 && args(1).is_cellstr () && args(2).is_cell ())
+      if (nargin == 3 && args(1).iscellstr () && args(2).is_cell ())
         {
           if (args(2).cell_value ().rows () == 1)
             go.set (args(1).cellstr_value (), args(2).cell_value (), 0);
@@ -10558,7 +10558,7 @@ lists respectively.
   Cell vals;
   bool use_cell_format = false;
 
-  if (nargin > 1 && args(1).is_cellstr ())
+  if (nargin > 1 && args(1).iscellstr ())
     {
       Array<std::string> plist = args(1).cellstr_value ();
 

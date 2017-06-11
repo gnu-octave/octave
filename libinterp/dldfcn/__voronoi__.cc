@@ -126,7 +126,7 @@ Undocumented internal function.
         options = " " + opt_arg.string_value ();
       else if (opt_arg.is_empty ())
         ; // Use default options.
-      else if (opt_arg.is_cellstr ())
+      else if (opt_arg.iscellstr ())
         {
           options = "";
 

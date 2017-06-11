@@ -72,7 +72,7 @@ public:
   Cell (const Cell& c)
     : Array<octave_value> (c) { }
 
-  bool is_cellstr (void) const;
+  bool iscellstr (void) const;
 
   Array<std::string> cellstr_value (void) const;
 

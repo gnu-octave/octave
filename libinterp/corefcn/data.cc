@@ -6915,7 +6915,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 #undef MAKE_INT_BRANCH
 
         default:
-          if (argx.is_cellstr ())
+          if (argx.iscellstr ())
             retval = argx.cellstr_value ().nth_element (n, dim);
           else
             err_wrong_type_arg ("nth_element", argx);

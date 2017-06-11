@@ -531,8 +531,12 @@ public:
   bool is_cell (void) const
   { return rep->is_cell (); }
 
+  bool iscellstr (void) const
+  { return rep->iscellstr (); }
+
+  OCTAVE_DEPRECATED ("use 'iscellstr' instead")
   bool is_cellstr (void) const
-  { return rep->is_cellstr (); }
+  { return iscellstr (); }
 
   bool is_real_scalar (void) const
   { return rep->is_real_scalar (); }

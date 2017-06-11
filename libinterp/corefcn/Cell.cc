@@ -120,7 +120,7 @@ Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
 }
 
 bool
-Cell::is_cellstr (void) const
+Cell::iscellstr (void) const
 {
   bool retval = true;
 

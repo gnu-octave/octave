@@ -252,7 +252,7 @@ at most n-1).
 
   bool num_case = ((table.is_numeric_type () && y.is_numeric_type ())
                    || (table.is_char_matrix () && y.is_char_matrix ()));
-  bool str_case = table.is_cellstr () && (y.is_string () || y.is_cellstr ());
+  bool str_case = table.iscellstr () && (y.is_string () || y.iscellstr ());
   bool left_inf = false;
   bool right_inf = false;
   bool match_idx = false;
@@ -319,7 +319,7 @@ at most n-1).
       Array<std::string> str_table = table.cellstr_value ();
       Array<std::string> str_y (dim_vector (1, 1));
 
-      if (y.is_cellstr ())
+      if (y.iscellstr ())
         str_y = y.cellstr_value ();
       else
         str_y(0) = y.string_value ();

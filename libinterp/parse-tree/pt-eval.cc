@@ -88,32 +88,43 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle& expr)
+  tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle& anon_fh)
   {
     // FIXME: should CMD_LIST be limited to a single expression?
     // I think that is what Matlab does.
 
-    tree_parameter_list *param_list = expr.parameter_list ();
-    tree_parameter_list *ret_list = expr.return_list ();
-    tree_statement_list *stmt_list = expr.body ();
+    tree_parameter_list *param_list = anon_fh.parameter_list ();
+    tree_expression *expr = anon_fh.expression ();
 
-    symbol_table::scope_id af_sid = expr.scope ();
+    symbol_table::scope_id af_sid = anon_fh.scope ();
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
     symbol_table::scope_id af_parent_sid
-      = expr.has_parent_scope () ? symtab.current_scope () : -1;
+      = anon_fh.has_parent_scope () ? symtab.current_scope () : -1;
 
     symbol_table::scope_id new_scope = symtab.dup_scope (af_sid);
 
     if (new_scope > 0 && af_parent_sid > 0)
       symtab.inherit (new_scope, af_parent_sid);
 
+    tree_parameter_list *param_list_dup
+      = param_list ? param_list->dup (new_scope, 0) : 0;
+
+    tree_parameter_list *ret_list = 0;
+
+    tree_statement_list *stmt_list = 0;
+
+    if (expr)
+      {
+        tree_expression *expr_dup = expr->dup (new_scope, 0);
+        tree_statement *stmt = new tree_statement (expr_dup, 0);
+        stmt_list = new tree_statement_list (stmt);
+      }
+
     octave_user_function *af
-      = new octave_user_function (new_scope,
-                                  param_list ? param_list->dup (new_scope, 0) : 0,
-                                  ret_list ? ret_list->dup (new_scope, 0) : 0,
-                                  stmt_list ? stmt_list->dup (new_scope, 0) : 0);
+      = new octave_user_function (new_scope, param_list_dup, ret_list,
+                                  stmt_list);
 
     if (af_parent_sid > 0)
       symtab.set_parent (new_scope, af_parent_sid);
@@ -133,8 +144,10 @@ namespace octave
       }
 
     af->mark_as_anonymous_function ();
-    af->stash_fcn_file_name (expr.file_name ());
-    af->stash_fcn_location (expr.line (), expr.column ());
+
+    // FIXME: these should probably come from ANON_FH.
+    //    af->stash_fcn_file_name (expr.file_name ());
+    //    af->stash_fcn_location (expr.line (), expr.column ());
 
     octave_value ov_fcn (af);
 

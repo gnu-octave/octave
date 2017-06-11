@@ -111,10 +111,10 @@ static void yyerror (octave::base_parser& parser, const char *s);
 
 // Bison declarations.
 
-// The grammar currently has 14 shift/reduce conflicts.  Ensure that
+// The grammar currently has 8 shift/reduce conflicts.  Ensure that
 // we notice if that number changes.
 
-%expect 14
+%expect 8
 
 %API_PREFIX_DECL%
 
@@ -244,7 +244,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_matrix_type> matrix_rows
 %type <tree_cell_type> cell_rows
 %type <tree_expression_type> matrix cell
-%type <tree_expression_type> primary_expr oper_expr power_expr
+%type <tree_expression_type> primary_expr oper_expr power_expr expr_no_assign
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_funcall_type> superclass_identifier meta_identifier
@@ -605,7 +605,7 @@ fcn_handle      : '@' FCN_HANDLE
                   }
                 ;
 
-anon_fcn_handle : '@' param_list stmt_begin statement
+anon_fcn_handle : '@' param_list stmt_begin expr_no_assign
                   {
                     $$ = parser.make_anon_fcn_handle ($2, $4);
                     lexer.nesting_level.remove ();
@@ -909,7 +909,7 @@ assign_expr     : assign_lhs '=' expression
                   { $$ = parser.make_assign_op (OR_EQ, $1, $2, $3); }
                 ;
 
-expression      : simple_expr
+expr_no_assign  : simple_expr
                   {
                     if ($1 && ($1->is_matrix () || $1->iscell ()))
                       {
@@ -924,6 +924,12 @@ expression      : simple_expr
                     else
                       $$ = $1;
                   }
+                | anon_fcn_handle
+                  { $$ = $1; }
+                ;
+
+expression      : expr_no_assign
+                  { $$ = $1; }
                 | assign_expr
                   {
                     if (! $1)
@@ -931,9 +937,6 @@ expression      : simple_expr
 
                     $$ = $1;
                   }
-                | anon_fcn_handle
-                  { $$ = $1; }
-                ;
 
 // ================================================
 // Commands, declarations, and function definitions
@@ -2480,29 +2483,24 @@ namespace octave
 
   tree_anon_fcn_handle *
   base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
-                                     tree_statement *stmt)
+                                     tree_expression *expr)
   {
     // FIXME: need to get these from the location of the @ symbol.
     int l = lexer.input_line_number;
     int c = lexer.current_input_column;
-
-    tree_parameter_list *ret_list = 0;
 
     symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
     symbol_table::scope_id parent_scope = lexer.symtab_context.parent_scope ();
 
     lexer.symtab_context.pop ();
 
-    stmt->set_print_flag (false);
-
-    tree_statement_list *body = new tree_statement_list (stmt);
-
-    body->mark_as_anon_function_body ();
+    expr->set_print_flag (false);
 
     tree_anon_fcn_handle *retval
-      = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope,
+      = new tree_anon_fcn_handle (param_list, expr, fcn_scope,
                                   parent_scope, l, c);
-    // FIXME: Stash the filename.  This does not work and produces
+
+// FIXME: Stash the filename.  This does not work and produces
     // errors when executed.
     //retval->stash_file_name (lexer.fcn_file_name);
 

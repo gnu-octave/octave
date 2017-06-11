@@ -67,8 +67,7 @@ namespace octave
   tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
   {
     delete m_parameter_list;
-    delete m_return_list;
-    delete m_statement_list;
+    delete m_expression;
   }
 
   tree_expression *
@@ -76,8 +75,7 @@ namespace octave
                              symbol_table::context_id) const
   {
     tree_parameter_list *param_list = parameter_list ();
-    tree_parameter_list *ret_list = return_list ();
-    tree_statement_list *stmt_list = body ();
+    tree_expression *expr = expression ();
 
     symbol_table::scope_id af_sid = scope ();
     symbol_table::scope_id af_parent_sid = parent_scope ();
@@ -92,8 +90,7 @@ namespace octave
 
     tree_anon_fcn_handle *new_afh = new
       tree_anon_fcn_handle (param_list ? param_list->dup (new_scope, 0) : 0,
-                            ret_list ? ret_list->dup (new_scope, 0) : 0,
-                            stmt_list ? stmt_list->dup (new_scope, 0) : 0,
+                            expr ? expr->dup (new_scope, 0) : 0,
                             new_scope, af_parent_sid, line (), column ());
 
     new_afh->copy_base (*this);

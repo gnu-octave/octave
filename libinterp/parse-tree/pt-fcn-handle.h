@@ -92,17 +92,16 @@ namespace octave
   public:
 
     tree_anon_fcn_handle (int l = -1, int c = -1)
-      : tree_expression (l, c), m_parameter_list (0), m_return_list (0),
-        m_statement_list (0), m_sid (-1), m_parent_sid (-1), m_file_name ()
+      : tree_expression (l, c), m_parameter_list (0), m_expression (0),
+        m_sid (-1), m_parent_sid (-1), m_file_name ()
     { }
 
-    tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
-                          tree_statement_list *cl, symbol_table::scope_id sid,
+    tree_anon_fcn_handle (tree_parameter_list *pl, tree_expression *ex,
+                          symbol_table::scope_id sid,
                           symbol_table::scope_id parent_sid,
                           int l = -1, int c = -1)
-      : tree_expression (l, c), m_parameter_list (pl), m_return_list (rl),
-        m_statement_list (cl), m_sid (sid), m_parent_sid (parent_sid),
-        m_file_name ()
+      : tree_expression (l, c), m_parameter_list (pl), m_expression (ex),
+        m_sid (sid), m_parent_sid (parent_sid), m_file_name ()
     { }
 
     // No copying!
@@ -122,9 +121,7 @@ namespace octave
       return m_parameter_list;
     }
 
-    tree_parameter_list * return_list (void) const { return m_return_list; }
-
-    tree_statement_list * body (void) const { return m_statement_list; }
+    tree_expression * expression (void) const { return m_expression; }
 
     symbol_table::scope_id scope (void) const { return m_sid; }
 
@@ -146,11 +143,8 @@ namespace octave
     // Inputs parameters.
     tree_parameter_list *m_parameter_list;
 
-    // Output parameters.
-    tree_parameter_list *m_return_list;
-
-    // Function body.
-    tree_statement_list *m_statement_list;
+    // Function body, limited to a single expression.
+    tree_expression *m_expression;
 
     // Function scope.
     symbol_table::scope_id m_sid;

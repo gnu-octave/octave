@@ -179,7 +179,8 @@ namespace octave
 
     // Build an anonymous function handle.
     tree_anon_fcn_handle *
-    make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt);
+    make_anon_fcn_handle (tree_parameter_list *param_list,
+                          tree_expression * expr);
 
     // Build a binary expression.
     tree_expression *

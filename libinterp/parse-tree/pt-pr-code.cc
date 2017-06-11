@@ -52,7 +52,7 @@ namespace octave
 
     os << ") ";
 
-    print_fcn_handle_body (afh.body ());
+    print_fcn_handle_body (afh.expression ());
 
     print_parens (afh, ")");
   }
@@ -1152,36 +1152,13 @@ namespace octave
   }
 
   void
-  tree_print_code::print_fcn_handle_body (tree_statement_list *b)
+  tree_print_code::print_fcn_handle_body (tree_expression *e)
   {
-    if (b)
+    if (e)
       {
-        assert (b->length () == 1);
-
-        tree_statement *s = b->front ();
-
-        if (s)
-          {
-            if (s->is_expression ())
-              {
-                tree_expression *e = s->expression ();
-
-                if (e)
-                  {
-                    suppress_newlines++;
-                    e->accept (*this);
-                    suppress_newlines--;
-                  }
-              }
-            else
-              {
-                tree_command *c = s->command ();
-
-                suppress_newlines++;
-                c->accept (*this);
-                suppress_newlines--;
-              }
-          }
+        suppress_newlines++;
+        e->accept (*this);
+        suppress_newlines--;
       }
   }
 

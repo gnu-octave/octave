@@ -148,7 +148,7 @@ namespace octave
 
     void visit_do_until_command (tree_do_until_command&);
 
-    void print_fcn_handle_body (tree_statement_list *);
+    void print_fcn_handle_body (tree_expression *);
 
   private:
 

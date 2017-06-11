@@ -167,21 +167,6 @@ namespace octave
     return retval;
   }
 
-  tree_statement *
-  tree_statement::dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const
-  {
-    tree_statement *new_stmt = new tree_statement ();
-
-    new_stmt->cmd = (cmd ? cmd->dup (scope, context) : 0);
-
-    new_stmt->expr = (expr ? expr->dup (scope, context) : 0);
-
-    new_stmt->comm = (comm ? comm->dup () : 0);
-
-    return new_stmt;
-  }
-
   // Create a "breakpoint" tree-walker, and get it to "walk" this statement list
   // (FIXME: What does that do???)
   int
@@ -295,19 +280,5 @@ namespace octave
       }
 
     return retval;
-  }
-
-  tree_statement_list *
-  tree_statement_list::dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const
-  {
-    tree_statement_list *new_list = new tree_statement_list ();
-
-    new_list->function_body = function_body;
-
-    for (const tree_statement *elt : *this)
-      new_list->append (elt ? elt->dup (scope, context) : 0);
-
-    return new_list;
   }
 }

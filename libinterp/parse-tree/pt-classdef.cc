@@ -154,12 +154,4 @@ namespace octave
 
     return 0;
   }
-
-  tree_classdef *
-  tree_classdef::dup (symbol_table::scope_id,
-                      symbol_table::context_id) const
-  {
-    // FIXME
-    return 0;
-  }
 }

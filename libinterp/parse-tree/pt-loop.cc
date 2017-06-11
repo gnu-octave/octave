@@ -57,30 +57,6 @@ namespace octave
 #endif
   }
 
-  tree_command *
-  tree_while_command::dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const
-  {
-    return new tree_while_command (expr ? expr->dup (scope, context) : 0,
-                                   list ? list->dup (scope, context) : 0,
-                                   lead_comm ? lead_comm->dup () : 0,
-                                   trail_comm ? trail_comm->dup (): 0,
-                                   line (), column ());
-  }
-
-  // Do-Until
-
-  tree_command *
-  tree_do_until_command::dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const
-  {
-    return new tree_do_until_command (expr ? expr->dup (scope, context) : 0,
-                                      list ? list->dup (scope, context) : 0,
-                                      lead_comm ? lead_comm->dup () : 0,
-                                      trail_comm ? trail_comm->dup (): 0,
-                                      line (), column ());
-  }
-
   // For.
 
   tree_simple_for_command::~tree_simple_for_command (void)
@@ -96,19 +72,6 @@ namespace octave
 #endif
   }
 
-  tree_command *
-  tree_simple_for_command::dup (symbol_table::scope_id scope,
-                                symbol_table::context_id context) const
-  {
-    return new tree_simple_for_command
-      (parallel, lhs ? lhs->dup (scope, context) : 0,
-       expr ? expr->dup (scope, context) : 0,
-       maxproc ? maxproc->dup (scope, context) : 0,
-       list ? list->dup (scope, context) : 0,
-       lead_comm ? lead_comm->dup () : 0,
-       trail_comm ? trail_comm->dup () : 0, line (), column ());
-  }
-
   tree_complex_for_command::~tree_complex_for_command (void)
   {
     delete lhs;
@@ -116,17 +79,5 @@ namespace octave
     delete list;
     delete lead_comm;
     delete trail_comm;
-  }
-
-  tree_command *
-  tree_complex_for_command::dup (symbol_table::scope_id scope,
-                                 symbol_table::context_id context) const
-  {
-    return new tree_complex_for_command (lhs ? lhs->dup (scope, context) : 0,
-                                         expr ? expr->dup (scope, context) : 0,
-                                         list ? list->dup (scope, context) : 0,
-                                         lead_comm ? lead_comm->dup () : 0,
-                                         trail_comm ? trail_comm->dup () : 0,
-                                         line (), column ());
   }
 }

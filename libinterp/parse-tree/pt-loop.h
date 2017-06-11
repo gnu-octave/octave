@@ -92,9 +92,6 @@ namespace octave
 
     octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_while_command (*this);
@@ -164,9 +161,6 @@ namespace octave
 
     ~tree_do_until_command (void) = default;
 
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_do_until_command (*this);
@@ -223,9 +217,6 @@ namespace octave
     octave_comment_list * leading_comment (void) { return lead_comm; }
 
     octave_comment_list * trailing_comment (void) { return trail_comm; }
-
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -308,9 +299,6 @@ namespace octave
     octave_comment_list * leading_comment (void) { return lead_comm; }
 
     octave_comment_list * trailing_comment (void) { return trail_comm; }
-
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

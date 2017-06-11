@@ -39,34 +39,13 @@ namespace octave
   // Nonzero means we're breaking out of a loop or function body.
   int tree_break_command::breaking = 0;
 
-  tree_command *
-  tree_break_command::dup (symbol_table::scope_id,
-                           symbol_table::context_id) const
-  {
-    return new tree_break_command (line (), column ());
-  }
-
   // Continue.
 
   // Nonzero means we're jumping to the end of a loop.
   int tree_continue_command::continuing = 0;
 
-  tree_command *
-  tree_continue_command::dup (symbol_table::scope_id,
-                              symbol_table::context_id) const
-  {
-    return new tree_continue_command (line (), column ());
-  }
-
   // Return.
 
   // Nonzero means we're returning from a function.
   int tree_return_command::returning = 0;
-
-  tree_command *
-  tree_return_command::dup (symbol_table::scope_id,
-                            symbol_table::context_id) const
-  {
-    return new tree_return_command (line (), column ());
-  }
 }

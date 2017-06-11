@@ -166,16 +166,4 @@ namespace octave
         erase (p);
       }
   }
-
-  tree_return_list *
-  tree_return_list::dup (symbol_table::scope_id scope,
-                         symbol_table::context_id context) const
-  {
-    tree_return_list *new_list = new tree_return_list ();
-
-    for (const tree_index_expression *elt : *this)
-      new_list->append (elt->dup (scope, context));
-
-    return new_list;
-  }
 }

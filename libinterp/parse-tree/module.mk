@@ -62,7 +62,6 @@ PARSE_TREE_SRC = \
   %reldir%/pt-cell.cc \
   %reldir%/pt-check.cc \
   %reldir%/pt-classdef.cc \
-  %reldir%/pt-cmd.cc \
   %reldir%/pt-colon.cc \
   %reldir%/pt-const.cc \
   %reldir%/pt-decl.cc \

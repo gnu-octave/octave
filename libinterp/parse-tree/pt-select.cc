@@ -46,29 +46,6 @@ namespace octave
     delete lead_comm;
   }
 
-  tree_if_clause *
-  tree_if_clause::dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const
-  {
-    return new tree_if_clause (expr ? expr->dup (scope, context) : 0,
-                               list ? list->dup (scope, context) : 0,
-                               lead_comm ? lead_comm->dup () : 0);
-  }
-
-  // List of if commands.
-
-  tree_if_command_list *
-  tree_if_command_list::dup (symbol_table::scope_id scope,
-                             symbol_table::context_id context) const
-  {
-    tree_if_command_list *new_icl = new tree_if_command_list ();
-
-    for (const tree_if_clause *elt : *this)
-      new_icl->append (elt ? elt->dup (scope, context) : 0);
-
-    return new_icl;
-  }
-
   // If.
 
   tree_if_command::~tree_if_command (void)
@@ -76,16 +53,6 @@ namespace octave
     delete list;
     delete lead_comm;
     delete trail_comm;
-  }
-
-  tree_command *
-  tree_if_command::dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const
-  {
-    return new tree_if_command (list ? list->dup (scope, context) : 0,
-                                lead_comm ? lead_comm->dup () : 0,
-                                trail_comm ? trail_comm->dup () : 0,
-                                line (), column ());
   }
 
   // Switch cases.
@@ -97,29 +64,6 @@ namespace octave
     delete lead_comm;
   }
 
-  tree_switch_case *
-  tree_switch_case::dup (symbol_table::scope_id scope,
-                         symbol_table::context_id context) const
-  {
-    return new tree_switch_case (label ? label->dup (scope, context) : 0,
-                                 list ? list->dup (scope, context) : 0,
-                                 lead_comm ? lead_comm->dup () : 0);
-  }
-
-  // List of switch cases.
-
-  tree_switch_case_list *
-  tree_switch_case_list::dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const
-  {
-    tree_switch_case_list *new_scl = new tree_switch_case_list ();
-
-    for (const tree_switch_case *elt : *this)
-      new_scl->append (elt ? elt->dup (scope, context) : 0);
-
-    return new_scl;
-  }
-
   // Switch.
 
   tree_switch_command::~tree_switch_command (void)
@@ -128,16 +72,5 @@ namespace octave
     delete list;
     delete lead_comm;
     delete trail_comm;
-  }
-
-  tree_command *
-  tree_switch_command::dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const
-  {
-    return new tree_switch_command (expr ? expr->dup (scope, context) : 0,
-                                    list ? list->dup (scope, context) : 0,
-                                    lead_comm ? lead_comm->dup () : 0,
-                                    trail_comm ? trail_comm->dup () : 0,
-                                    line (), column ());
   }
 }

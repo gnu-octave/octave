@@ -57,18 +57,6 @@ namespace octave
 
   // Initializer lists for declaration statements.
 
-  tree_decl_init_list *
-  tree_decl_init_list::dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const
-  {
-    tree_decl_init_list *new_dil = new tree_decl_init_list ();
-
-    for (const tree_decl_elt *elt : *this)
-      new_dil->append (elt ? elt->dup (scope, context) : 0);
-
-    return new_dil;
-  }
-
   // Declaration commands (global, static).
 
   tree_decl_command::tree_decl_command (const std::string& n,
@@ -90,15 +78,5 @@ namespace octave
   tree_decl_command::~tree_decl_command (void)
   {
     delete init_list;
-  }
-
-  tree_command *
-  tree_decl_command::dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const
-  {
-    tree_decl_init_list *new_init_list
-      = init_list ? init_list->dup (scope, context) : 0;
-
-    return new tree_decl_command (name (), new_init_list, line (), column ());
   }
 }

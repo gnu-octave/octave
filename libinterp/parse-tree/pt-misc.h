@@ -114,9 +114,6 @@ namespace octave
 
     ~tree_return_list (void);
 
-    tree_return_list * dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_return_list (*this);

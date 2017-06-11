@@ -54,20 +54,6 @@ namespace octave
     delete trail_comm;
   }
 
-  tree_command *
-  tree_try_catch_command::dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const
-  {
-    return new
-      tree_try_catch_command (try_code ? try_code->dup (scope, context) : 0,
-                              catch_code ? catch_code->dup (scope, context) : 0,
-                              expr_id ? expr_id->dup (scope, context) : 0,
-                              lead_comm ? lead_comm->dup () : 0,
-                              mid_comm ? mid_comm->dup () : 0,
-                              trail_comm ? trail_comm->dup () : 0,
-                              line (), column ());
-  }
-
   // Simple exception handling.
 
   tree_unwind_protect_command::~tree_unwind_protect_command (void)
@@ -77,18 +63,5 @@ namespace octave
     delete lead_comm;
     delete mid_comm;
     delete trail_comm;
-  }
-
-  tree_command *
-  tree_unwind_protect_command::dup (symbol_table::scope_id scope,
-                                    symbol_table::context_id context) const
-  {
-    return new tree_unwind_protect_command
-      (unwind_protect_code ? unwind_protect_code->dup (scope, context) : 0,
-       cleanup_code ? cleanup_code->dup (scope, context) : 0,
-       lead_comm ? lead_comm->dup () : 0,
-       mid_comm ? mid_comm->dup () : 0,
-       trail_comm ? trail_comm->dup () : 0,
-       line (), column ());
   }
 }

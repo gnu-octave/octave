@@ -48,9 +48,6 @@ namespace octave
 
     ~tree_break_command (void) = default;
 
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_break_command (*this);
@@ -76,9 +73,6 @@ namespace octave
 
     ~tree_continue_command (void) = default;
 
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_continue_command (*this);
@@ -103,9 +97,6 @@ namespace octave
     tree_return_command& operator = (const tree_return_command&) = delete;
 
     ~tree_return_command (void) = default;
-
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

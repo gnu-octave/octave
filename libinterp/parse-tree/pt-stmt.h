@@ -107,9 +107,6 @@ namespace octave
 
     void set_expression (tree_expression *e) { expr = e; }
 
-    tree_statement * dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_statement (*this);
@@ -184,9 +181,6 @@ namespace octave
                                      const std::string& condition);
 
     bp_table::intmap remove_all_breakpoints (const std::string& file);
-
-    tree_statement_list * dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

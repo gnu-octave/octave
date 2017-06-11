@@ -74,9 +74,6 @@ namespace octave
 
     octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_try_catch_command (*this);
@@ -140,9 +137,6 @@ namespace octave
     octave_comment_list * middle_comment (void) { return mid_comm; }
 
     octave_comment_list * trailing_comment (void) { return trail_comm; }
-
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

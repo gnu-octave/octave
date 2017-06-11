@@ -148,9 +148,6 @@ namespace octave
         elt->mark_persistent ();
     }
 
-    tree_decl_init_list * dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const;
-
     void accept (tree_walker& tw)
     {
       tw.visit_decl_init_list (*this);
@@ -192,9 +189,6 @@ namespace octave
     tree_decl_init_list * initializer_list (void) { return init_list; }
 
     std::string name (void) const { return cmd_name; }
-
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

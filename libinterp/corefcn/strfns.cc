@@ -324,9 +324,9 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
   octave_value retval;
 
   bool s1_string = arg0.is_string ();
-  bool s1_cell = arg0.is_cell ();
+  bool s1_cell = arg0.iscell ();
   bool s2_string = arg1.is_string ();
-  bool s2_cell = arg1.is_cell ();
+  bool s2_cell = arg1.iscell ();
 
   if (s1_string && s2_string)
     retval = array_op (arg0.char_array_value (), arg1.char_array_value (), n);

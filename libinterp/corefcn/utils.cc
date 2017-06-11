@@ -1443,7 +1443,7 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
   for (int i = 0; i < nargin; i++)
     {
       octave_value arg = new_args(i);
-      iscell[i] = arg.is_cell ();
+      iscell[i] = arg.iscell ();
       if (iscell[i])
         {
           cells[i] = arg.cell_value ();

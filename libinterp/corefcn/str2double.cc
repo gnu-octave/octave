@@ -359,7 +359,7 @@ risk of using @code{eval} on unknown data.
           retval = sv.map<Complex> (str2double1);
         }
     }
-  else if (args(0).is_cell ())
+  else if (args(0).iscell ())
     {
       const Cell cell = args(0).cell_value ();
 

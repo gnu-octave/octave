@@ -521,12 +521,12 @@ octcellregexp (const octave_value_list& args, int nargout,
 {
   octave_value_list retval;
 
-  if (args(0).is_cell ())
+  if (args(0).iscell ())
     {
       OCTAVE_LOCAL_BUFFER (Cell, newretval, nargout);
       octave_value_list new_args = args;
       Cell cellstr = args(0).cell_value ();
-      if (args(1).is_cell ())
+      if (args(1).iscell ())
         {
           Cell cellpat = args(1).cell_value ();
 
@@ -606,7 +606,7 @@ octcellregexp (const octave_value_list& args, int nargout,
       for (int j = 0; j < nargout; j++)
         retval(j) = octave_value (newretval[j]);
     }
-  else if (args(1).is_cell ())
+  else if (args(1).iscell ())
     {
       OCTAVE_LOCAL_BUFFER (Cell, newretval, nargout);
       octave_value_list new_args = args;
@@ -847,7 +847,7 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.
 
   octave_value_list retval;
 
-  if (args(0).is_cell () || args(1).is_cell ())
+  if (args(0).iscell () || args(1).iscell ())
     retval = (octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp"));
   else
     retval = octregexp (args, nargout, "regexp");
@@ -1140,7 +1140,7 @@ for details on the syntax of the search pattern.
   if (args.length () < 2)
     print_usage ();
 
-  if (args(0).is_cell () || args(1).is_cell ())
+  if (args(0).iscell () || args(1).iscell ())
     return octcellregexp (args, (nargout > 0 ? nargout : 1), "regexpi", true);
   else
     return octregexp (args, nargout, "regexpi", true);
@@ -1368,23 +1368,23 @@ function.
 
   octave_value_list retval;
 
-  if (args(0).is_cell () || args(1).is_cell () || args(2).is_cell ())
+  if (args(0).iscell () || args(1).iscell () || args(2).iscell ())
     {
       Cell str, pat, rep;
       dim_vector dv0;
       dim_vector dv1 (1, 1);
 
-      if (args(0).is_cell ())
+      if (args(0).iscell ())
         str = args(0).cell_value ();
       else
         str = Cell (args(0));
 
-      if (args(1).is_cell ())
+      if (args(1).iscell ())
         pat = args(1).cell_value ();
       else
         pat = Cell (args(1));
 
-      if (args(2).is_cell ())
+      if (args(2).iscell ())
         rep = args(2).cell_value ();
       else
         rep = Cell (args(2));
@@ -1422,7 +1422,7 @@ function.
           ret(i) = new_args(0);
         }
 
-      retval = (args(0).is_cell () ? ovl (ret) : ovl (ret(0)));
+      retval = (args(0).iscell () ? ovl (ret) : ovl (ret(0)));
     }
   else
     retval = octregexprep (args, "regexprep");

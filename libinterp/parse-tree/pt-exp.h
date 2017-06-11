@@ -65,7 +65,7 @@ namespace octave
 
     virtual bool is_matrix (void) const { return false; }
 
-    virtual bool is_cell (void) const { return false; }
+    virtual bool iscell (void) const { return false; }
 
     virtual bool is_identifier (void) const { return false; }
 

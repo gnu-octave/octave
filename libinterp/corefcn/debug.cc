@@ -209,7 +209,7 @@ all breakpoints within the file are cleared.
             mv = octave_map ();
           else
             {
-              if (bkpt.is_cell () && bkpt.cell_value ().numel () > 0
+              if (bkpt.iscell () && bkpt.cell_value ().numel () > 0
                   && bkpt.cell_value () (0).is_map ())
                 mv = bkpt.cell_value () (0).map_value ();
               else

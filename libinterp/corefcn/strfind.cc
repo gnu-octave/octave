@@ -228,7 +228,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
                                             argstr.char_array_value (),
                                             table, overlaps),
                                  true, true);
-      else if (argstr.is_cell ())
+      else if (argstr.iscell ())
         {
           const Cell argsc = argstr.cell_value ();
           Cell retc (argsc.dims ());
@@ -254,7 +254,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
       else
         error ("strfind: first argument must be a string or cell array of strings");
     }
-  else if (argpat.is_cell ())
+  else if (argpat.iscell ())
     retval = do_simple_cellfun (Fstrfind, "strfind", args);
   else
     error ("strfind: PATTERN must be a string or cell array of strings");
@@ -411,7 +411,7 @@ strrep ("This is a test string", "is", "&%$")
       if (argstr.is_string ())
         retval = qs_replace (argstr.char_array_value (), pat, rep,
                              table, overlaps);
-      else if (argstr.is_cell ())
+      else if (argstr.iscell ())
         {
           const Cell argsc = argstr.cell_value ();
           Cell retc (argsc.dims ());
@@ -432,7 +432,7 @@ strrep ("This is a test string", "is", "&%$")
       else
         error ("strrep: S must be a string or cell array of strings");
     }
-  else if (argpat.is_cell () || argrep.is_cell ())
+  else if (argpat.iscell () || argrep.iscell ())
     retval = do_simple_cellfun (Fstrrep, "strrep", args);
   else
     error ("strrep: PTN and REP arguments must be strings or cell arrays of strings");

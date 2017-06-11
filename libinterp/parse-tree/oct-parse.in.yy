@@ -911,7 +911,7 @@ assign_expr     : assign_lhs '=' expression
 
 expression      : simple_expr
                   {
-                    if ($1 && ($1->is_matrix () || $1->is_cell ()))
+                    if ($1 && ($1->is_matrix () || $1->iscell ()))
                       {
                         if (parser.validate_array_list ($1))
                           $$ = $1;

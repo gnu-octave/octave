@@ -622,7 +622,7 @@ namespace octave
 
     if (label_value.is_defined ())
       {
-        if (label_value.is_cell ())
+        if (label_value.iscell ())
           {
             Cell cell (label_value.cell_value ());
 
@@ -781,7 +781,7 @@ namespace octave
         // Maybe decrement break and continue states.
         quit_loop_now ();
       }
-    else if (rhs.is_matrix_type () || rhs.is_cell () || rhs.is_string ()
+    else if (rhs.is_matrix_type () || rhs.iscell () || rhs.is_string ()
              || rhs.is_map ())
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by

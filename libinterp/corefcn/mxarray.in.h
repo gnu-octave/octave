@@ -143,7 +143,7 @@ public:
 
   virtual bool is_octave_value (void) const { return false; }
 
-  virtual int is_cell (void) const = 0;
+  virtual int iscell (void) const = 0;
 
   virtual int is_char (void) const = 0;
 
@@ -368,7 +368,7 @@ public:
 
   bool is_octave_value (void) const { return rep->is_octave_value (); }
 
-  int is_cell (void) const { return rep->is_cell (); }
+  int iscell (void) const { return rep->iscell (); }
 
   int is_char (void) const { return rep->is_char (); }
 

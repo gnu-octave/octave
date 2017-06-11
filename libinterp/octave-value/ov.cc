@@ -2983,7 +2983,7 @@ decode_subscripts (const char *name, const octave_value& arg,
 
       if (subs(k).is_string ())
         idx_item(0) = subs(k);
-      else if (subs(k).is_cell ())
+      else if (subs(k).iscell ())
         {
           Cell subs_cell = subs(k).cell_value ();
 

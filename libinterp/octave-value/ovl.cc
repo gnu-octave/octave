@@ -190,7 +190,7 @@ octave_value_list::any_cell (void) const
   octave_idx_type n = length ();
 
   for (octave_idx_type i = 0; i < n; i++)
-    if (elem (i).is_cell ())
+    if (elem (i).iscell ())
       return true;
 
   return false;

@@ -528,8 +528,12 @@ public:
   bool is_empty (void) const
   { return rep->is_empty (); }
 
+  bool iscell (void) const
+  { return rep->iscell (); }
+
+  OCTAVE_DEPRECATED ("use 'iscell' instead")
   bool is_cell (void) const
-  { return rep->is_cell (); }
+  { return rep->iscell (); }
 
   bool iscellstr (void) const
   { return rep->iscellstr (); }

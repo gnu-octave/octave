@@ -362,7 +362,7 @@ parameters for @code{dasrt}.
 
   octave_value f_arg = args(0);
 
-  if (f_arg.is_cell ())
+  if (f_arg.iscell ())
     {
       Cell c = f_arg.cell_value ();
       if (c.numel () == 1)
@@ -407,7 +407,7 @@ parameters for @code{dasrt}.
         error ("dasrt: incorrect number of elements in cell array");
     }
 
-  if (! dasrt_f && ! f_arg.is_cell ())
+  if (! dasrt_f && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         dasrt_f = f_arg.function_value ();

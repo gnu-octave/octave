@@ -3573,7 +3573,7 @@ namespace octave
                 if (args(i+1).is_sq_string ())
                   delims = do_string_escapes (delims);
               }
-            else if (args(i+1).is_cell ())
+            else if (args(i+1).iscell ())
               {
                 invalid = false;
                 delim_list = args(i+1).cell_value ();
@@ -3606,7 +3606,7 @@ namespace octave
                 // check here for names like "C++", "C", "shell", ...?
                 comment_style = Cell (args(i+1));
               }
-            else if (args(i+1).is_cell ())
+            else if (args(i+1).iscell ())
               {
                 comment_style = args(i+1).cell_value ();
                 int len = comment_style.numel ();
@@ -3636,7 +3636,7 @@ namespace octave
                 treat_as_empty = Cell (args(i+1));
                 treat_as_empty_len = args(i+1).string_value ().size ();
               }
-            else if (args(i+1).is_cell ())
+            else if (args(i+1).iscell ())
               {
                 treat_as_empty = args(i+1).cell_value ();
                 for (int j = 0; j < treat_as_empty.numel (); j++)
@@ -5300,7 +5300,7 @@ namespace octave
         {
           octave_value val = values(i);
 
-          if (val.is_map () || val.is_cell () || val.is_object ())
+          if (val.is_map () || val.iscell () || val.is_object ())
             err_wrong_type_arg (who, val);
         }
     }

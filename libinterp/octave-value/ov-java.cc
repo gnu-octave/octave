@@ -1858,7 +1858,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           octave_function *fcn = val.function_value ();
           octave::feval (fcn, oct_args);
         }
-      else if (val.is_cell () && val.length () > 0
+      else if (val.iscell () && val.length () > 0
                && (val.rows () == 1 || val.columns () == 1)
                && val.cell_value()(0).is_function_handle ())
         {

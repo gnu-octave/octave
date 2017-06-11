@@ -364,7 +364,7 @@ check_access (const cdef_class& cls, const octave_value& acc,
             panic_impossible ();
         }
     }
-  else if (acc.is_cell ())
+  else if (acc.iscell ())
     {
       Cell acc_c = acc.cell_value ();
 

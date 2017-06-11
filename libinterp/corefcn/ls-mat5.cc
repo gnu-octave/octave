@@ -2142,7 +2142,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
                                          save_as_floats);
         }
     }
-  else if (tc.is_cell ())
+  else if (tc.iscell ())
     {
       Cell cell = tc.cell_value ();
       octave_idx_type nel = cell.numel ();
@@ -2376,7 +2376,7 @@ save_mat5_binary_element (std::ostream& os,
     }
   else if (tc.is_map ())
     flags |= MAT_FILE_STRUCT_CLASS;
-  else if (tc.is_cell ())
+  else if (tc.iscell ())
     flags |= MAT_FILE_CELL_CLASS;
   else if (tc.is_inline_function () || tc.is_object ())
     flags |= MAT_FILE_OBJECT_CLASS;
@@ -2559,7 +2559,7 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_array (os, m, save_as_floats);
         }
     }
-  else if (tc.is_cell ())
+  else if (tc.iscell ())
     {
       Cell cell = tc.cell_value ();
 

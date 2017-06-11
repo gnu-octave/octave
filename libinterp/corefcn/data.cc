@@ -1805,7 +1805,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             all_cmplx_p = false;
           if (! any_sparse_p && args(i).is_sparse_type ())
             any_sparse_p = true;
-          if (! any_cell_p && args(i).is_cell ())
+          if (! any_cell_p && args(i).iscell ())
             any_cell_p = true;
           if (! any_class_p && args(i).is_object ())
             any_class_p = true;
@@ -1816,7 +1816,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           int j = 0;
           for (int i = 0; i < n_args; i++)
             {
-              if (args(i).is_cell ())
+              if (args(i).iscell ())
                 args(j++) = args(i);
               else
                 {
@@ -7377,7 +7377,7 @@ converted to logical.
                                            fval.char_array_value ()),
                                  sq_string ? '\'' : '"');
         }
-      else if (tval.is_cell () && fval.is_cell ())
+      else if (tval.iscell () && fval.iscell ())
         {
           retval = do_merge (mask,
                              tval.cell_value (),

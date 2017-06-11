@@ -117,7 +117,7 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_cell (void) const { return true; }
+  bool iscell (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return btyp_cell; }
 

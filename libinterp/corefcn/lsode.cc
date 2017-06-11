@@ -280,7 +280,7 @@ parameters for @code{lsode}.
 
   octave_value f_arg = args(0);
 
-  if (f_arg.is_cell ())
+  if (f_arg.iscell ())
     {
       Cell c = f_arg.cell_value ();
       if (c.numel () == 1)
@@ -325,7 +325,7 @@ parameters for @code{lsode}.
         error ("lsode: incorrect number of elements in cell array");
     }
 
-  if (! lsode_fcn && ! f_arg.is_cell ())
+  if (! lsode_fcn && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         lsode_fcn = f_arg.function_value ();

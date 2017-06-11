@@ -56,7 +56,7 @@ namespace octave
 
     ~tree_cell (void) = default;
 
-    bool is_cell (void) const { return true; }
+    bool iscell (void) const { return true; }
 
     bool rvalue_ok (void) const { return true; }
 

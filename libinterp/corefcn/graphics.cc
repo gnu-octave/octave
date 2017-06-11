@@ -1749,7 +1749,7 @@ callback_property::validate (const octave_value& v) const
   else if (v.is_string ())
     // complete validation will be done at execution-time
     return true;
-  else if (v.is_cell () && (v.rows () == 1 || v.columns () == 1)
+  else if (v.iscell () && (v.rows () == 1 || v.columns () == 1)
            && v.cell_value ()(0).is_function_handle ())
     return true;
 
@@ -9897,7 +9897,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
               octave::interpreter::recover_from_exception ();
             }
         }
-      else if (cb.is_cell () && cb.length () > 0
+      else if (cb.iscell () && cb.length () > 0
                && (cb.rows () == 1 || cb.columns () == 1)
                && (cb.cell_value ()(0).is_function ()
                    || cb.cell_value ()(0).is_function_handle ()))
@@ -10434,7 +10434,7 @@ being @qcode{"portrait"}.
       if (! go)
         error ("set: invalid handle (= %g)", hcv(n));
 
-      if (nargin == 3 && args(1).iscellstr () && args(2).is_cell ())
+      if (nargin == 3 && args(1).iscellstr () && args(2).iscell ())
         {
           if (args(2).cell_value ().rows () == 1)
             go.set (args(1).cellstr_value (), args(2).cell_value (), 0);

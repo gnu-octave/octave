@@ -761,7 +761,7 @@ protected:
 
         stored_type = char_t;
       }
-    else if (val.is_cell ())
+    else if (val.iscell ())
       {
         Cell c = val.cell_value ();
 

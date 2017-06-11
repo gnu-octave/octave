@@ -339,7 +339,7 @@ public:
 
   bool is_empty (void) const { return (dims ().any_zero ()); }
 
-  virtual bool is_cell (void) const { return false; }
+  virtual bool iscell (void) const { return false; }
 
   virtual bool iscellstr (void) const { return false; }
 

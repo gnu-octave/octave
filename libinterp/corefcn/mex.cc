@@ -214,7 +214,7 @@ public:
 
   bool is_octave_value (void) const { return true; }
 
-  int is_cell (void) const { return val.is_cell (); }
+  int iscell (void) const { return val.iscell (); }
 
   int is_char (void) const { return val.is_string (); }
 
@@ -714,7 +714,7 @@ public:
     mxFree (dims);
   }
 
-  int is_cell (void) const { return id == mxCELL_CLASS; }
+  int iscell (void) const { return id == mxCELL_CLASS; }
 
   int is_char (void) const { return id == mxCHAR_CLASS; }
 
@@ -2660,7 +2660,7 @@ mxDestroyArray (mxArray *ptr)
 bool
 mxIsCell (const mxArray *ptr)
 {
-  return ptr->is_cell ();
+  return ptr->iscell ();
 }
 
 bool

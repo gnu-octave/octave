@@ -741,7 +741,7 @@ octave_struct::load_ascii (std::istream& is)
           if (! is)
             break;
 
-          Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
           m.setfield (nm, tcell);
         }
@@ -854,7 +854,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
           m.setfield (nm, tcell);
         }
@@ -955,7 +955,7 @@ octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
+      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
       m.setfield (dsub.name, tcell);
 
@@ -1736,7 +1736,7 @@ produces a struct @strong{array}.
 
   for (int i = 1; i < nargin; i += 2)
     {
-      if (args(i).is_cell ())
+      if (args(i).iscell ())
         {
           dim_vector argdims (args(i).dims ());
 
@@ -1775,7 +1775,7 @@ produces a struct @strong{array}.
       // the cell array has already been determined to be of the
       // correct dimensions.
 
-      if (args(i+1).is_cell ())
+      if (args(i+1).iscell ())
         {
           const Cell c (args(i+1).cell_value ());
 
@@ -1880,7 +1880,7 @@ dimension is returned.
 
           retval = m.isfield (key);
         }
-      else if (args(1).is_cell ())
+      else if (args(1).iscell ())
         {
           Cell c = args(1).cell_value ();
           boolNDArray bm (c.dims ());
@@ -1966,7 +1966,7 @@ A(1)
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  if (! args(0).is_cell ())
+  if (! args(0).iscell ())
     error ("cell2struct: argument CELL must be of type cell");
 
   if (! (args(1).iscellstr () || args(1).is_char_matrix ()))

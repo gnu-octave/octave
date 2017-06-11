@@ -325,7 +325,7 @@ namespace octave
 
               bool autoconv = (tmp.is_zero_by_zero ()
                                && (tmp.is_matrix_type () || tmp.is_string ()
-                                   || tmp.is_cell ()));
+                                   || tmp.iscell ()));
 
               if (i > 0 && type[i-1] == '(')
                 {

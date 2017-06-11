@@ -402,7 +402,7 @@ v = cellfun (@@det, a); # faster
   if (nargin < 2)
     print_usage ();
 
-  if (! args(1).is_cell ())
+  if (! args(1).iscell ())
     error ("cellfun: C must be a cell array");
 
   octave_value_list retval;
@@ -516,7 +516,7 @@ v = cellfun (@@det, a); # faster
 
   for (int j = 0; j < nargin; j++)
     {
-      if (! args(j+1).is_cell ())
+      if (! args(j+1).iscell ())
         error ("cellfun: arguments must be cells");
 
       inputs[j] = args(j+1).cell_value ();
@@ -1826,7 +1826,7 @@ num2cell ([1,2;3,4],1)
     retval = do_object2cell (array, dimv);
   else if (array.is_map ())
     retval = do_num2cell (array.map_value (), dimv);
-  else if (array.is_cell ())
+  else if (array.iscell ())
     retval = do_num2cell (array.cell_value (), dimv);
   else
     err_wrong_type_arg ("num2cell", array);

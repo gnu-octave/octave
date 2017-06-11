@@ -83,7 +83,7 @@ octave_base_matrix<Cell>::assign (const octave_value_list& idx,
                                   octave_value rhs)
 {
   // FIXME: Really?
-  if (rhs.is_cell ())
+  if (rhs.iscell ())
     matrix.assign (idx, rhs.cell_value ());
   else
     matrix.assign (idx, Cell (rhs));
@@ -332,7 +332,7 @@ octave_cell::subsasgn (const std::string& type,
       {
         octave_value_list i = idx.front ();
 
-        if (t_rhs.is_cell ())
+        if (t_rhs.iscell ())
           octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
         else if (t_rhs.is_null_value ())
           octave_base_matrix<Cell>::delete_elements (i);
@@ -1208,7 +1208,7 @@ Return true if @var{x} is a cell array object.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_cell ());
+  return ovl (args(0).iscell ());
 }
 
 DEFUN (cell, args, ,

@@ -82,7 +82,7 @@ namespace octave
             first_elem = false;
           }
       }
-    else if (val.is_cell ())
+    else if (val.iscell ())
       first_elem = false;
 
     append (val);
@@ -105,7 +105,7 @@ namespace octave
     if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
       all_cmplx = false;
 
-    if (! any_cell && val.is_cell ())
+    if (! any_cell && val.iscell ())
       any_cell = true;
 
     if (! any_sparse && val.is_sparse_type ())
@@ -199,7 +199,7 @@ namespace octave
       {
         octave_quit ();
 
-        if (! elt.is_cell ())
+        if (! elt.iscell ())
           {
             elt_changed = true;
 

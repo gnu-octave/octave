@@ -122,7 +122,7 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
           // This case can be handled using any/all.
           boolNDArray array = arg.bool_array_value ();
 
-          if (array.is_empty ())
+          if (array.isempty ())
             retval(0) = array;
           else if (ismin)
             retval(0) = array.all (dim);
@@ -256,7 +256,7 @@ do_minmax_body (const octave_value_list& args,
           if (dim < 0)
             error ("%s: DIM must be a valid dimension", func);
 
-          if (! args(1).is_empty ())
+          if (! args(1).isempty ())
             warning ("%s: second argument is ignored", func);
         }
 

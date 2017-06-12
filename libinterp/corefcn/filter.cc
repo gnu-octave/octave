@@ -370,7 +370,7 @@ H(z) = ---------------------
 
           FloatComplexNDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();
@@ -405,7 +405,7 @@ H(z) = ---------------------
 
           ComplexNDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();
@@ -443,7 +443,7 @@ H(z) = ---------------------
 
           FloatNDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();
@@ -478,7 +478,7 @@ H(z) = ---------------------
 
           NDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();

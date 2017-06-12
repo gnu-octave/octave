@@ -278,7 +278,7 @@ namespace octave
 
             // Skip empty arrays to allow looser rules.
 
-            if (! ra.is_empty ())
+            if (! ra.isempty ())
               {
                 result.insert (ra, r, c);
 

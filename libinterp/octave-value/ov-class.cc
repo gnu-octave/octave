@@ -740,7 +740,7 @@ octave_class::subsasgn_common (const octave_value& obj,
               }
             else
               {
-                if (! t_rhs.is_empty ())
+                if (! t_rhs.isempty ())
                   error ("invalid class assignment");
 
                 map.delete_elements (idx.front ());

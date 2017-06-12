@@ -868,7 +868,7 @@ Undocumented internal function
 
   std::string target;
 
-  if (nargin == 3 && ! args(2).is_empty ())
+  if (nargin == 3 && ! args(2).isempty ())
     target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string") + octave::sys::file_ops::dir_sep_str ();
 
   octave::url_transfer curl = ch_manager::get_object (args(0));

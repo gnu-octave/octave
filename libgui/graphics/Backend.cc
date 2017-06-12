@@ -229,7 +229,7 @@ namespace QtHandles
       {
         octave_value ov = go.get (toolkitObjectProperty (go));
 
-        if (ov.is_defined () && ! ov.is_empty ())
+        if (ov.is_defined () && ! ov.isempty ())
           {
             OCTAVE_INTPTR_TYPE ptr = ov.OCTAVE_PTR_SCALAR ().value ();
 

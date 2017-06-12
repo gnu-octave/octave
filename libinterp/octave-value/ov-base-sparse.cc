@@ -157,7 +157,7 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-        if (! is_empty ())
+        if (! isempty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);

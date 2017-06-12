@@ -65,7 +65,7 @@ IEEE Transactions on Automatic Control, 1979).
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return octave_value_list (2, Matrix ());
 
   if (arg.rows () != arg.columns ())

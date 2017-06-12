@@ -2603,7 +2603,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
 
   Sparse<T> retval (dv, total_nz);
 
-  if (retval.is_empty ())
+  if (retval.isempty ())
     return retval;
 
   switch (dim)
@@ -2622,7 +2622,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
               {
                 const Sparse<T>& spi = sparse_list[i];
                 // Skipping empty matrices.  See the comment in Array.cc.
-                if (spi.is_empty ())
+                if (spi.isempty ())
                   continue;
 
                 octave_idx_type kl = spi.cidx (j);
@@ -2649,7 +2649,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
             octave_quit ();
 
             // Skipping empty matrices.  See the comment in Array.cc.
-            if (sparse_list[i].is_empty ())
+            if (sparse_list[i].isempty ())
               continue;
 
             octave_idx_type u = l + sparse_list[i].columns ();

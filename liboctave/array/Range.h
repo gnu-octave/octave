@@ -84,7 +84,11 @@ public:
 
   octave_idx_type numel (void) const { return rng_numel; }
 
-  bool is_empty (void) const { return numel () == 0; }
+  bool isempty (void) const { return numel () == 0; }
+
+  OCTAVE_DEPRECATED ("use 'isempty' instead")
+  bool is_empty (void) const
+  { return isempty (); }
 
   bool all_elements_are_ints (void) const;
 

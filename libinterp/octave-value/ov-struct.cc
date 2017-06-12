@@ -84,7 +84,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   if (p != map.end ())
     retval = map.contents (p);
   else if (auto_add)
-    retval = (is_empty ()) ? Cell (dim_vector (1, 1)) : Cell (dims ());
+    retval = (isempty ()) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
     error_with_id ("Octave:invalid-indexing",
                    "structure has no member '%s'", nm.c_str ());
@@ -1708,7 +1708,7 @@ produces a struct @strong{array}.
     return ovl (args(0).map_value ());
 
   if ((nargin == 1 || nargin == 2)
-      && args(0).is_empty () && args(0).is_real_matrix ())
+      && args(0).isempty () && args(0).is_real_matrix ())
     {
       if (nargin == 2)
         {
@@ -1843,7 +1843,7 @@ Implements @code{fieldnames()} for structures and Octave objects.
 
   string_vector keys = m.fieldnames ();
 
-  if (keys.is_empty ())
+  if (keys.isempty ())
     retval = Cell (0, 1);
   else
     retval = Cell (keys);

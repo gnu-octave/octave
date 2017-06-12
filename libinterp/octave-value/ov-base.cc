@@ -96,7 +96,7 @@ get_builtin_classes (void)
 {
   static string_vector retval;
 
-  if (retval.is_empty ())
+  if (retval.isempty ())
     {
       int n = btyp_num_types - 2;
       retval = string_vector (n);
@@ -274,7 +274,7 @@ octave_base_value::subsasgn (const std::string& type,
           {
             if (type.length () == 1)
               retval = numeric_assign (type, idx, rhs);
-            else if (is_empty ())
+            else if (isempty ())
               {
                 // Allow conversion of empty matrix to some other
                 // type in cases like

@@ -1183,7 +1183,7 @@ namespace octave
 #if defined (HAVE_OPENGL)
 
     Matrix axe_color = props.get_color_rgb ();
-    if (axe_color.is_empty () || ! props.is_visible ())
+    if (axe_color.isempty () || ! props.is_visible ())
       return;
 
     double xPlane = props.get_xPlane ();
@@ -2830,19 +2830,19 @@ namespace octave
         Matrix mfcolor = props.get_markerfacecolor_rgb ();
         Matrix cc (1, 3, 0.0);
 
-        if (mecolor.is_empty () && props.markeredgecolor_is ("auto"))
+        if (mecolor.isempty () && props.markeredgecolor_is ("auto"))
           {
             mecolor = props.get_edgecolor_rgb ();
             do_edge = ! props.edgecolor_is ("none");
           }
 
-        if (mfcolor.is_empty () && props.markerfacecolor_is ("auto"))
+        if (mfcolor.isempty () && props.markerfacecolor_is ("auto"))
           {
             mfcolor = props.get_facecolor_rgb ();
             do_face = ! props.facecolor_is ("none");
           }
 
-        if ((mecolor.is_empty () || mfcolor.is_empty ()) && c.is_empty ())
+        if ((mecolor.isempty () || mfcolor.isempty ()) && c.isempty ())
           c = props.get_color_data ().array_value ();
 
         init_marker (props.get_marker (), props.get_markersize (),
@@ -2861,8 +2861,8 @@ namespace octave
                 if (x_mat)
                   j1 = j;
 
-                if ((do_edge && mecolor.is_empty ())
-                    || (do_face && mfcolor.is_empty ()))
+                if ((do_edge && mecolor.isempty ())
+                    || (do_face && mfcolor.isempty ()))
                   {
                     if (! octave::math::isfinite (c(j,i)))
                       continue;  // Skip NaNs in color data
@@ -2871,9 +2871,9 @@ namespace octave
                       cc(k) = c(j,i,k);
                   }
 
-                Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
+                Matrix lc = (do_edge ? (mecolor.isempty () ? cc : mecolor)
                                      : Matrix ());
-                Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
+                Matrix fc = (do_face ? (mfcolor.isempty () ? cc : mfcolor)
                                      : Matrix ());
 
                 draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
@@ -3300,23 +3300,23 @@ namespace octave
 
         bool has_markerfacecolor = false;
 
-        if ((mecolor.is_empty () && ! props.markeredgecolor_is ("none"))
-            || (mfcolor.is_empty () && ! props.markerfacecolor_is ("none")))
+        if ((mecolor.isempty () && ! props.markeredgecolor_is ("none"))
+            || (mfcolor.isempty () && ! props.markerfacecolor_is ("none")))
           {
             Matrix mc = props.get_color_data ().matrix_value ();
 
             if (mc.rows () == 1)
               {
                 // Single color specifications, we can simplify a little bit
-                if (mfcolor.is_empty () && ! props.markerfacecolor_is ("none"))
+                if (mfcolor.isempty () && ! props.markerfacecolor_is ("none"))
                   mfcolor = mc;
 
-                if (mecolor.is_empty () && ! props.markeredgecolor_is ("none"))
+                if (mecolor.isempty () && ! props.markeredgecolor_is ("none"))
                   mecolor = mc;
               }
             else
               {
-                if (c.is_empty ())
+                if (c.isempty ())
                   c = props.get_color_data ().matrix_value ();
                 has_markerfacecolor = ((c.numel () > 0)
                                        && (c.rows () == f.rows ()));
@@ -3344,9 +3344,9 @@ namespace octave
                     cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
                 }
 
-              Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
+              Matrix lc = (do_edge ? (mecolor.isempty () ? cc : mecolor)
                                    : Matrix ());
-              Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
+              Matrix fc = (do_face ? (mfcolor.isempty () ? cc : mfcolor)
                                    : Matrix ());
 
               draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);
@@ -3415,7 +3415,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    if (props.get_string ().is_empty ())
+    if (props.get_string ().isempty ())
       return;
 
     set_font (props);
@@ -3462,7 +3462,7 @@ namespace octave
     Matrix y = props.get_ydata ().matrix_value ();
 
     // Someone wants us to draw an empty image?  No way.
-    if (x.is_empty () || y.is_empty ())
+    if (x.isempty () || y.isempty ())
       return;
 
     if (w > 1 && x(1) == x(0))

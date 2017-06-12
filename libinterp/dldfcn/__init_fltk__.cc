@@ -481,7 +481,7 @@ public:
           = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
-            if (! uimenup.get_callback ().is_empty ())
+            if (! uimenup.get_callback ().isempty ())
               item->callback (static_cast<Fl_Callback *> (script_cb),
                               static_cast<void *> (&uimenup));
             else
@@ -1519,7 +1519,7 @@ private:
 
               m_fp.set_currentcharacter (std::string (e_text));
 
-              if (! m_fp.get_keypressfcn ().is_empty ()
+              if (! m_fp.get_keypressfcn ().isempty ()
                   && (evt.contents ("Key").length () > 0))
                 {
                   // Update CurrentPoint before callback
@@ -1593,7 +1593,7 @@ private:
                   evt = format_key_event (e_key, e_text, e_state);
                 }
 
-              if (! m_fp.get_keyreleasefcn ().is_empty ()
+              if (! m_fp.get_keyreleasefcn ().isempty ()
                   && (evt.contents ("Key").length () > 0))
                 m_fp.execute_keyreleasefcn (evt);
               return 1;
@@ -1640,7 +1640,7 @@ private:
 
               // Ensure windowbuttondownfcn is called after currentpoint
               // is updated but before calling buttondownfcn.
-              if (! m_fp.get_windowbuttondownfcn ().is_empty ())
+              if (! m_fp.get_windowbuttondownfcn ().isempty ())
                 m_fp.execute_windowbuttondownfcn (Fl::event_button ());
 
               if (gh.ok ())
@@ -1655,18 +1655,18 @@ private:
                   m_fp.set_currentobject (m_ax_obj.get_handle ().value ());
 
                   base_properties& props = m_ax_obj.get_properties ();
-                  if (! props.get_buttondownfcn ().is_empty ())
+                  if (! props.get_buttondownfcn ().isempty ())
                     props.execute_buttondownfcn (Fl::event_button ());
 
                   return 1;
                 }
-              else if (! m_fp.get_buttondownfcn ().is_empty ())
+              else if (! m_fp.get_buttondownfcn ().isempty ())
                 m_fp.execute_buttondownfcn (Fl::event_button ());
 
               break;
 
             case FL_DRAG:
-              if (! m_fp.get_windowbuttonmotionfcn ().is_empty ())
+              if (! m_fp.get_windowbuttonmotionfcn ().isempty ())
                 {
                   set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                   m_fp.execute_windowbuttonmotionfcn ();
@@ -1779,7 +1779,7 @@ private:
               }
 
             case FL_RELEASE:
-              if (! m_fp.get_windowbuttonupfcn ().is_empty ())
+              if (! m_fp.get_windowbuttonupfcn ().isempty ())
                 {
                   set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                   m_fp.execute_windowbuttonupfcn ();
@@ -2279,7 +2279,7 @@ public:
       {
         octave_value ov = go.get (caseless_str ("__plot_stream__"));
 
-        if (! ov.is_empty ())
+        if (! ov.isempty ())
           figure_manager::delete_window (ov.string_value ());
       }
   }
@@ -2312,7 +2312,7 @@ public:
       {
         octave_value ov = go.get (caseless_str ("__plot_stream__"));
 
-        if (! ov.is_empty ())
+        if (! ov.isempty ())
           {
             const figure::properties& fp =
               dynamic_cast<const figure::properties&> (go.get_properties ());

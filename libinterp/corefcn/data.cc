@@ -1733,7 +1733,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
           if (t1_type == dtype)
             tmp(j++) = elt;
-          else if (elt.is_object () || ! elt.is_empty ())
+          else if (elt.is_object () || ! elt.isempty ())
             tmp(j++) = attempt_type_conversion (elt, dtype);
         }
 
@@ -1820,7 +1820,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
                 args(j++) = args(i);
               else
                 {
-                  if (args(i).is_empty ())
+                  if (args(i).isempty ())
                     continue;  // Delete empty non-cell arg
                   else
                     args(j++) = Cell (args(i));
@@ -3550,7 +3550,7 @@ zero).
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_empty ());
+  return ovl (args(0).isempty ());
 }
 
 /*
@@ -3860,7 +3860,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -3970,7 +3970,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4034,7 +4034,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4099,7 +4099,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4154,7 +4154,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -5109,7 +5109,7 @@ if fewer than two values are requested.
       // numeric value, the number of points defaults to 1.
       octave_value arg_3 = args(2);
 
-      if (arg_3.is_numeric_type () && arg_3.is_empty ())
+      if (arg_3.is_numeric_type () && arg_3.isempty ())
         npoints = 1;
       else if (! arg_3.is_scalar_type ())
         error ("linspace: N must be a scalar");
@@ -5362,7 +5362,7 @@ the unspecified dimension.
 
       for (int i = 1; i < nargin; i++)
         {
-          if (args(i).is_empty ())
+          if (args(i).isempty ())
             {
               if (empty_dim > 0)
                 error ("reshape: only a single dimension can be unknown");
@@ -5618,7 +5618,7 @@ compute the norms of each column and return a row vector.
 
   octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);
 
-  if (p_arg.is_empty ())
+  if (p_arg.isempty ())
     p_arg = octave_value (2);
   else if (p_arg.is_string ())
     {

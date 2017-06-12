@@ -69,7 +69,7 @@ For that, use any of the condition number functions: @code{cond},
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (1.0);
 
   if (arg.rows () != arg.columns ())

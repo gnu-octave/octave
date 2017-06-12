@@ -292,7 +292,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
 
       boolNDArray btmp (dv);
 
-      if (btmp.is_empty ())
+      if (btmp.isempty ())
         matrix = btmp;
       else
         {

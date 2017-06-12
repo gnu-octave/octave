@@ -270,7 +270,7 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
                 SparseMatrix& L, SparseMatrix& U, octave_idx_type *P,
                 octave_idx_type *Q)
 {
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   octave_idx_type n = m.rows ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
@@ -362,7 +362,7 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
                 Matrix& L, Matrix& U, octave_idx_type *P,
                 octave_idx_type *Q)
 {
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   octave_idx_type n = m.cols ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
@@ -434,7 +434,7 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
                 SparseComplexMatrix& L, SparseComplexMatrix& U,
                 octave_idx_type *P, octave_idx_type *Q)
 {
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   octave_idx_type n = m.rows ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
@@ -526,7 +526,7 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
                 ComplexMatrix& L, ComplexMatrix& U, octave_idx_type *P,
                 octave_idx_type *Q)
 {
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   octave_idx_type n = m.cols ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
@@ -607,7 +607,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   M b(_b);
   F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 1;
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   bool note3 = false;
   char bmat = 'I';
   double sigma = 0.;
@@ -619,7 +619,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
     (*current_liboctave_error_handler)
       ("eigs: B must be square and the same size as A");
 
-  if (resid.is_empty ())
+  if (resid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -651,7 +651,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than n");
 
-  if (have_b && cholB && ! permB.is_empty ())
+  if (have_b && cholB && ! permB.isempty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -685,7 +685,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.transpose ();
-          if (permB.is_empty ())
+          if (permB.isempty ())
             {
               permB = ColumnVector (n);
               for (F77_INT i = 0; i < n; i++)
@@ -885,7 +885,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   M b(_b);
   F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 3;
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   std::string typ = "LM";
 
   if (m.rows () != m.cols ())
@@ -900,7 +900,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   //                                _b, permB, resid, os, tol, rvec, cholB,
   //                                disp, maxit);
 
-  if (resid.is_empty ())
+  if (resid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -932,7 +932,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than n");
 
-  if (have_b && cholB && ! permB.is_empty ())
+  if (have_b && cholB && ! permB.isempty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -1184,7 +1184,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
   F77_INT mode = 1;
   int err = 0;
 
-  if (resid.is_empty ())
+  if (resid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -1424,7 +1424,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   M b(_b);
   F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 1;
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   bool note3 = false;
   char bmat = 'I';
   double sigmar = 0.;
@@ -1437,7 +1437,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     (*current_liboctave_error_handler)
       ("eigs: B must be square and the same size as A");
 
-  if (resid.is_empty ())
+  if (resid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -1469,7 +1469,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than n");
 
-  if (have_b && cholB && ! permB.is_empty ())
+  if (have_b && cholB && ! permB.isempty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -1503,7 +1503,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.transpose ();
-          if (permB.is_empty ())
+          if (permB.isempty ())
             {
               permB = ColumnVector (n);
               for (F77_INT i = 0; i < n; i++)
@@ -1751,7 +1751,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   M b(_b);
   F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 3;
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   std::string typ = "LM";
   double sigmai = 0.;
 
@@ -1767,7 +1767,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   //                                   _b, permB, resid, os, tol, rvec, cholB,
   //                                   disp, maxit);
 
-  if (resid.is_empty ())
+  if (resid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -1799,7 +1799,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than n");
 
-  if (have_b && cholB && ! permB.is_empty ())
+  if (have_b && cholB && ! permB.isempty ())
     {
       // Check that we really have a permutation vector
       if (permB.numel () != n)
@@ -2105,7 +2105,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
   F77_INT mode = 1;
   int err = 0;
 
-  if (resid.is_empty ())
+  if (resid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -2393,7 +2393,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   M b(_b);
   F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 1;
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   bool note3 = false;
   char bmat = 'I';
   Complex sigma = 0.;
@@ -2405,7 +2405,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
     (*current_liboctave_error_handler)
       ("eigs: B must be square and the same size as A");
 
-  if (cresid.is_empty ())
+  if (cresid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -2441,7 +2441,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than n");
 
-  if (have_b && cholB && ! permB.is_empty ())
+  if (have_b && cholB && ! permB.isempty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -2475,7 +2475,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.hermitian ();
-          if (permB.is_empty ())
+          if (permB.isempty ())
             {
               permB = ColumnVector (n);
               for (F77_INT i = 0; i < n; i++)
@@ -2679,7 +2679,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   M b(_b);
   F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 3;
-  bool have_b = ! b.is_empty ();
+  bool have_b = ! b.isempty ();
   std::string typ = "LM";
 
   if (m.rows () != m.cols ())
@@ -2694,7 +2694,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   //                                      eig_val, _b, permB, cresid, os, tol,
   //                                      rvec, cholB, disp, maxit);
 
-  if (cresid.is_empty ())
+  if (cresid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");
@@ -2730,7 +2730,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than n");
 
-  if (have_b && cholB && ! permB.is_empty ())
+  if (have_b && cholB && ! permB.isempty ())
     {
       // Check that we really have a permutation vector
       if (permB.numel () != n)
@@ -2994,7 +2994,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
   F77_INT mode = 1;
   int err = 0;
 
-  if (cresid.is_empty ())
+  if (cresid.isempty ())
     {
       std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution ("uniform");

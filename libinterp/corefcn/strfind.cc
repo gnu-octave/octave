@@ -220,7 +220,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
       qs_preprocess (needle, table);
 
       if (argstr.is_string ())
-        if (argpat.is_empty ())
+        if (argpat.isempty ())
           // Return a null matrix for null pattern for MW compatibility
           retval = Matrix ();
         else
@@ -240,7 +240,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
               if (! argse.is_string ())
                 error ("strfind: each element of CELLSTR must be a string");
 
-              if (argpat.is_empty ())
+              if (argpat.isempty ())
                 retc(i) = Matrix ();
               else
                 retc(i) = octave_value (qs_search (needle,

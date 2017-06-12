@@ -469,7 +469,11 @@ public:
 
   bool is_square (void) const { return (dim1 () == dim2 ()); }
 
-  bool is_empty (void) const { return (rows () < 1 && cols () < 1); }
+  bool isempty (void) const { return (rows () < 1 && cols () < 1); }
+
+  OCTAVE_DEPRECATED ("use 'isempty' instead")
+  bool is_empty (void) const
+  { return isempty (); }
 
   Sparse<T> transpose (void) const;
 

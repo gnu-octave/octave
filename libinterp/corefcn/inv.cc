@@ -62,7 +62,7 @@ sparse matrix if possible.
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (Matrix ());
 
   if (arg.rows () != arg.columns ())

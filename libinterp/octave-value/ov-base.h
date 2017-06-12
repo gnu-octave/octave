@@ -337,7 +337,7 @@ public:
 
   virtual bool is_defined (void) const { return false; }
 
-  bool is_empty (void) const { return (dims ().any_zero ()); }
+  bool isempty (void) const { return (dims ().any_zero ()); }
 
   virtual bool iscell (void) const { return false; }
 

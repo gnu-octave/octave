@@ -80,7 +80,7 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
 
   ires = octave::to_f77_int (tmp_ires);
 
-  if (tmp_fval.is_empty ())
+  if (tmp_fval.isempty ())
     ires = -2;
   else
     {

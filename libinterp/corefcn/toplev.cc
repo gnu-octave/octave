@@ -287,7 +287,7 @@ find_config_info (const octave_scalar_map& m, const std::string& key)
     {
       Cell c = m.contents (key);
 
-      if (! c.is_empty ())
+      if (! c.isempty ())
         return c(0);
     }
 

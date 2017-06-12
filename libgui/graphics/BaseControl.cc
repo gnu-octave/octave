@@ -110,7 +110,7 @@ namespace QtHandles
     w->setEnabled (up.enable_is ("on"));
     w->setToolTip (Utils::fromStdString (up.get_tooltipstring ()));
     w->setVisible (up.is_visible ());
-    m_keyPressHandlerDefined = ! up.get_keypressfcn ().is_empty ();
+    m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
 
     w->installEventFilter (this);
 
@@ -168,7 +168,7 @@ namespace QtHandles
         break;
 
       case uicontrol::properties::ID_KEYPRESSFCN:
-        m_keyPressHandlerDefined = ! up.get_keypressfcn ().is_empty ();
+        m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
         break;
 
       default:

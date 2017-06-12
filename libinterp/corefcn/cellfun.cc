@@ -134,7 +134,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
-        result(count) = f_args.elem (count).is_empty ();
+        result(count) = f_args.elem (count).isempty ();
       retval(0) = result;
     }
   else if (name == "islogical")
@@ -1651,7 +1651,7 @@ template <typename NDA>
 static Cell
 do_num2cell (const NDA& array, const Array<int>& dimv)
 {
-  if (dimv.is_empty ())
+  if (dimv.isempty ())
     {
       Cell retval (array.dims ());
       octave_idx_type nel = array.numel ();
@@ -1712,7 +1712,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
   // method is not const.
   octave_value array = obj;
 
-  if (! dimv.is_empty ())
+  if (! dimv.isempty ())
     error ("num2cell (A, dim) not implemented for class objects");
 
   dim_vector dv = get_object_dims (array);

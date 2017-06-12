@@ -77,7 +77,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
       ldr *= dvr(start);
     }
 
-  if (retval.is_empty ())
+  if (retval.isempty ())
     ; // do nothing
   else if (start == nd)
     op_vv (retval.numel (), rvec, xvec, yvec);
@@ -158,7 +158,7 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
       ldr *= dvr(start);
     }
 
-  if (r.is_empty ())
+  if (r.isempty ())
     ; // do nothing
   else if (start == nd)
     op_vv (r.numel (), rvec, xvec);

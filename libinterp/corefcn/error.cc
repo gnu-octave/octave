@@ -903,7 +903,7 @@ rethrow_error (const std::string& id, const std::string& msg,
 {
   octave::execution_exception e = make_execution_exception ("error");
 
-  if (! stack.is_empty ()
+  if (! stack.isempty ()
       && ! (stack.contains ("file") && stack.contains ("name")
             && stack.contains ("line")))
     error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
@@ -924,7 +924,7 @@ rethrow_error (const std::string& id, const std::string& msg,
   else
     rethrow_error_1 (id.c_str (), "%s", tmp_msg.c_str ());
 
-  if (! stack.is_empty ())
+  if (! stack.isempty ())
     {
       std::ostringstream buf;
 
@@ -997,7 +997,7 @@ handle_message (error_fun f, const char *id, const char *msg,
               if (! msg)
                 return retval;
             }
-          else if (arg.is_empty ())
+          else if (arg.isempty ())
             return retval;
         }
     }
@@ -1214,7 +1214,7 @@ disable escape sequence expansion use a second backslash before the sequence
   if (nargin == 1 && args(0).is_map ())
     {
       // empty struct is not an error.  return and resume calling function.
-      if (args(0).is_empty ())
+      if (args(0).isempty ())
         return retval;
 
       octave_scalar_map m = args(0).scalar_map_value ();
@@ -1906,7 +1906,7 @@ fields are set to their default values.
 
           if (new_err.contains ("stack"))
             {
-              if (new_err.getfield ("stack").is_empty ())
+              if (new_err.getfield ("stack").isempty ())
                 initialize_stack = true;
               else
                 {

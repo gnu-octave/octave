@@ -313,7 +313,7 @@ public:
 
   mwSize get_number_of_elements (void) const { return val.numel (); }
 
-  int is_empty (void) const { return val.is_empty (); }
+  int isempty (void) const { return val.isempty (); }
 
   bool is_scalar (void) const
   {
@@ -819,7 +819,7 @@ public:
     return retval;
   }
 
-  int is_empty (void) const { return get_number_of_elements () == 0; }
+  int isempty (void) const { return get_number_of_elements () == 0; }
 
   bool is_scalar (void) const
   {
@@ -2789,7 +2789,7 @@ mxIsLogicalScalarTrue (const mxArray *ptr)
 bool
 mxIsEmpty (const mxArray *ptr)
 {
-  return ptr->is_empty ();
+  return ptr->isempty ();
 }
 
 bool

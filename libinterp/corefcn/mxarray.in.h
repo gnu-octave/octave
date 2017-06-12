@@ -214,7 +214,7 @@ public:
 
   virtual mwSize get_number_of_elements (void) const = 0;
 
-  virtual int is_empty (void) const = 0;
+  virtual int isempty (void) const = 0;
 
   virtual bool is_scalar (void) const = 0;
 
@@ -430,7 +430,7 @@ public:
   mwSize get_number_of_elements (void) const
   { return rep->get_number_of_elements (); }
 
-  int is_empty (void) const { return get_number_of_elements () == 0; }
+  int isempty (void) const { return get_number_of_elements () == 0; }
 
   bool is_scalar (void) const { return rep->is_scalar (); }
 

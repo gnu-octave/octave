@@ -269,7 +269,7 @@ octave_range::is_true (void) const
 {
   bool retval = false;
 
-  if (! range.is_empty ())
+  if (! range.isempty ())
     {
       if (dims ().numel () > 1)
         warn_array_as_logical (dims ());
@@ -293,7 +293,7 @@ octave_range::is_true (void) const
           // FIXME: this is a waste of memory.
           Matrix m ((range.matrix_value ().all ()).all ());
 
-          retval = ! m.is_empty () && m(0, 0) != 0.0;
+          retval = ! m.isempty () && m(0, 0) != 0.0;
         }
     }
 

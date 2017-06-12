@@ -63,7 +63,7 @@ intfield (const octave_scalar_map& m, const std::string& k, const char *who)
 
   octave_value v = m.getfield (k);
 
-  if (! v.is_empty ())
+  if (! v.isempty ())
     retval = v.xint_value ("%s: invalid TM_STRUCT argument", who);
 
   return retval;
@@ -76,7 +76,7 @@ stringfield (const octave_scalar_map& m, const std::string& k, const char *who)
 
   octave_value v = m.getfield (k);
 
-  if (! v.is_empty ())
+  if (! v.isempty ())
     retval = v.xstring_value ("%s: invalid TM_STRUCT argument", who);
 
   return retval;

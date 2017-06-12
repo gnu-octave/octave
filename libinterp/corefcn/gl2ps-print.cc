@@ -773,7 +773,7 @@ namespace octave
   void
   gl2ps_renderer::draw_text (const text::properties& props)
   {
-    if (props.get_string ().is_empty ())
+    if (props.get_string ().isempty ())
       return;
 
     // First set font properties: freetype will use them to compute

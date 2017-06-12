@@ -741,9 +741,9 @@ make_property (const cdef_class& cls, const std::string& name,
 
   std::string class_name = cls.get_name ();
 
-  if (! get_method.is_empty ())
+  if (! get_method.isempty ())
     make_function_of_class (class_name, get_method);
-  if (! set_method.is_empty ())
+  if (! set_method.isempty ())
     make_function_of_class (class_name, set_method);
 
   return prop;
@@ -2828,7 +2828,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
   // FIXME: should check whether we're already in get accessor method
 
-  if (get_fcn.is_empty () || is_method_executing (get_fcn, obj))
+  if (get_fcn.isempty () || is_method_executing (get_fcn, obj))
     retval = obj.get (get ("Name").string_value ());
   else
     {
@@ -2881,7 +2881,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 
   octave_value set_fcn = get ("SetMethod");
 
-  if (set_fcn.is_empty () || is_method_executing (set_fcn, obj))
+  if (set_fcn.isempty () || is_method_executing (set_fcn, obj))
     obj.put (get ("Name").string_value (), val);
   else
     {

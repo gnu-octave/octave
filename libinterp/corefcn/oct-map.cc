@@ -624,7 +624,7 @@ void permute_to_correct_order1 (const octave_scalar_map& ref,
 void permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
                                 octave_map& dest, Array<octave_idx_type>& perm)
 {
-  if (src.nfields () == 0 && src.is_empty ())
+  if (src.nfields () == 0 && src.isempty ())
     dest = octave_map (src.dims (), ref.keys ());
   else
     dest = src.orderfields (ref, perm);

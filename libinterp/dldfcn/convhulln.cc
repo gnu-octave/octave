@@ -141,7 +141,7 @@ convex hull is calculated.
     {
       if (args(1).is_string ())
         options = " " + args(1).string_value ();
-      else if (args(1).is_empty ())
+      else if (args(1).isempty ())
         ; // Use default options.
       else if (args(1).iscellstr ())
         {

@@ -100,7 +100,7 @@ octave_sparse_bool_matrix::try_narrowing_conversion (void)
 double
 octave_sparse_bool_matrix::double_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("bool sparse matrix", "real scalar");
 
   if (numel () > 1)

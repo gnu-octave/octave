@@ -721,7 +721,7 @@ public:
   bool empty (void) const
   {
     octave_value tmp = get ();
-    return tmp.is_empty ();
+    return tmp.isempty ();
   }
 
   octave_value get (void) const
@@ -1902,7 +1902,7 @@ public:
 
   bool is_defined (void) const
   {
-    return (callback.is_defined () && ! callback.is_empty ());
+    return (callback.is_defined () && ! callback.isempty ());
   }
 
   callback_property& operator = (const octave_value& val)
@@ -4429,7 +4429,7 @@ public:
 
     void fix_limits (array_property& lims)
     {
-      if (lims.get ().is_empty ())
+      if (lims.get ().isempty ())
         return;
 
       Matrix l = lims.get ().matrix_value ();
@@ -4979,7 +4979,7 @@ public:
 
     void update_xdata (void)
     {
-      if (xdata.get ().is_empty ())
+      if (xdata.get ().isempty ())
         set_xdatamode ("auto");
 
       if (xdatamode.is ("auto"))
@@ -4998,7 +4998,7 @@ public:
 
     void update_ydata (void)
     {
-      if (ydata.get ().is_empty ())
+      if (ydata.get ().isempty ())
         set_ydatamode ("auto");
 
       if (ydatamode.is ("auto"))
@@ -5273,7 +5273,7 @@ public:
 
     void update_xdata (void)
     {
-      if (get_xdata ().is_empty ())
+      if (get_xdata ().isempty ())
         {
           // For compatibility with matlab behavior,
           // if x/ydata are set empty, silently empty other *data and
@@ -5291,7 +5291,7 @@ public:
 
     void update_ydata (void)
     {
-      if (get_ydata ().is_empty ())
+      if (get_ydata ().isempty ())
         {
           set_xdata (Matrix ());
           set_zdata (Matrix ());

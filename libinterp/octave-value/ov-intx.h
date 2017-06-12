@@ -109,7 +109,7 @@ public:
   {
     double retval = lo_ieee_nan_value ();
 
-    if (is_empty ())
+    if (isempty ())
       err_invalid_conversion (type_name (), "real scalar");
 
     warn_implicit_conversion ("Octave:array-to-scalar",
@@ -125,7 +125,7 @@ public:
   {
     float retval = lo_ieee_float_nan_value ();
 
-    if (is_empty ())
+    if (isempty ())
       err_invalid_conversion (type_name (), "real scalar");
 
     warn_implicit_conversion ("Octave:array-to-scalar",

@@ -573,7 +573,7 @@ namespace octave
   int
   ft_text_renderer::compute_line_xoffset (const Matrix& lb) const
   {
-    if (! bbox.is_empty ())
+    if (! bbox.isempty ())
       {
         switch (halign)
           {
@@ -609,7 +609,7 @@ namespace octave
       default:
         for (const auto& lbox : line_bbox)
           {
-            if (bbox.is_empty ())
+            if (bbox.isempty ())
               bbox = lbox.extract (0, 0, 0, 3);
             else
               {
@@ -1256,7 +1256,7 @@ namespace octave
     pxls = render (elt, box, rot_mode);
     delete elt;
 
-    if (pxls.is_empty ())
+    if (pxls.isempty ())
       return;  // nothing to render
 
     switch (halign)

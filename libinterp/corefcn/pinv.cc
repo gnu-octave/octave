@@ -60,7 +60,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (Matrix ());
 
   octave_value retval;

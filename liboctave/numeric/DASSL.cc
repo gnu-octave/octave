@@ -82,7 +82,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
 
   if (ires >= 0)
     {
-      if (tmp_delta.is_empty ())
+      if (tmp_delta.isempty ())
         ires = -2;
       else
         {

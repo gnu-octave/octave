@@ -3161,7 +3161,7 @@ namespace octave
   textscan::scan_string (delimited_stream& is, const textscan_format_elt& fmt,
                          std::string& val) const
   {
-    if (delim_list.is_empty ())
+    if (delim_list.isempty ())
       {
         unsigned int i = 0;
         unsigned int width = fmt.width;
@@ -5813,7 +5813,7 @@ namespace octave
 
                 if (val_cache)
                   {
-                    if (! val.is_empty ())
+                    if (! val.isempty ())
                       retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
                                                         sa_2, val, who);
                   }

@@ -151,7 +151,7 @@ private:
 
   void send_quit (const octave_value& pstream) const
   {
-    if (! pstream.is_empty ())
+    if (! pstream.isempty ())
       {
         octave_value_list args;
         Matrix fids = pstream.matrix_value ();

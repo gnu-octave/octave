@@ -1452,7 +1452,7 @@ array_property::validate (const octave_value& v)
                       if (itdims(i) != vdims(i))
                         xok = false;
                     }
-                  else if (v.is_empty ())
+                  else if (v.isempty ())
                     break;
                 }
             }
@@ -1575,7 +1575,7 @@ array_property::get_data_limits (void)
   xmin = xminp = octave::numeric_limits<double>::Inf ();
   xmax = xmaxp = -octave::numeric_limits<double>::Inf ();
 
-  if (! data.is_empty ())
+  if (! data.isempty ())
     {
       if (data.is_integer_type ())
         {
@@ -1613,9 +1613,9 @@ bool
 handle_property::do_set (const octave_value& v)
 {
   // Users may want to use empty matrix to reset a handle property
-  if (v.is_empty ())
+  if (v.isempty ())
     {
-      if (! get ().is_empty ())
+      if (! get ().isempty ())
         {
           current_val = graphics_handle ();
           return true;
@@ -1742,7 +1742,7 @@ callback_property::validate (const octave_value& v) const
   // case 4: string that can be eval()'ed
   // case 5: cell array with first element being a function handle
 
-  if (v.is_empty ())
+  if (v.isempty ())
     return true;
   else if (v.is_function_handle ())
     return true;
@@ -1779,7 +1779,7 @@ callback_property::execute (const octave_value& data) const
       executing = true;
       executing_callback = true;
 
-      if (callback.is_defined () && ! callback.is_empty ())
+      if (callback.is_defined () && ! callback.isempty ())
         gh_manager::execute_callback (get_parent (), callback, data);
     }
 }
@@ -1862,7 +1862,7 @@ property::create (const std::string& name, const graphics_handle& h,
 
       retval = property (new color_property (name, h, cv, rv));
 
-      if (args.length () > 0 && ! args(0).is_empty ())
+      if (args.length () > 0 && ! args(0).isempty ())
         retval.set (args(0));
       else
         retval.set (rv.default_value ());
@@ -2717,7 +2717,7 @@ gcf (void)
 {
   octave_value val = xget (0, "currentfigure");
 
-  return val.is_empty () ? octave::numeric_limits<double>::NaN ()
+  return val.isempty () ? octave::numeric_limits<double>::NaN ()
                          : val.double_value ();
 }
 
@@ -2727,7 +2727,7 @@ gca (void)
 {
   octave_value val = xget (gcf (), "currentaxes");
 
-  return val.is_empty () ? octave::numeric_limits<double>::NaN ()
+  return val.isempty () ? octave::numeric_limits<double>::NaN ()
                          : val.double_value ();
 }
 
@@ -3207,7 +3207,7 @@ base_properties::update_axis_limits (const std::string& axis_type,
 void
 base_properties::update_uicontextmenu (void) const
 {
-  if (uicontextmenu.get ().is_empty ())
+  if (uicontextmenu.get ().isempty ())
     return;
 
   graphics_object go = gh_manager::get_object (uicontextmenu.get ());
@@ -5193,7 +5193,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
 octave_value
 axes::properties::get_colormap (void) const
 {
-  if (__colormap__.get ().is_empty ())
+  if (__colormap__.get ().isempty ())
     {
       graphics_object go (gh_manager::get_object (get___myhandle__ ()));
       graphics_object go_f (go.get_ancestor ("figure"));
@@ -5911,13 +5911,13 @@ axes::properties::update_xlabel_position (void)
   text::properties& xlabel_props
     = reinterpret_cast<text::properties&> (go.get_properties ());
 
-  bool is_empty = xlabel_props.get_string ().is_empty ();
+  bool isempty = xlabel_props.get_string ().isempty ();
 
   octave::unwind_protect frame;
   frame.protect_var (updating_xlabel_position);
   updating_xlabel_position = true;
 
-  if (! is_empty)
+  if (! isempty)
     {
       if (xlabel_props.horizontalalignmentmode_is ("auto"))
         {
@@ -5988,7 +5988,7 @@ axes::properties::update_xlabel_position (void)
           xlabel_props.set_positionmode ("auto");
         }
 
-      if (! is_empty && xlabel_props.rotationmode_is ("auto"))
+      if (! isempty && xlabel_props.rotationmode_is ("auto"))
         {
           xlabel_props.set_rotation (angle);
           xlabel_props.set_rotationmode ("auto");
@@ -6012,13 +6012,13 @@ axes::properties::update_ylabel_position (void)
   text::properties& ylabel_props
     = reinterpret_cast<text::properties&> (go.get_properties ());
 
-  bool is_empty = ylabel_props.get_string ().is_empty ();
+  bool isempty = ylabel_props.get_string ().isempty ();
 
   octave::unwind_protect frame;
   frame.protect_var (updating_ylabel_position);
   updating_ylabel_position = true;
 
-  if (! is_empty)
+  if (! isempty)
     {
       if (ylabel_props.horizontalalignmentmode_is ("auto"))
         {
@@ -6098,7 +6098,7 @@ axes::properties::update_ylabel_position (void)
           ylabel_props.set_positionmode ("auto");
         }
 
-      if (! is_empty && ylabel_props.rotationmode_is ("auto"))
+      if (! isempty && ylabel_props.rotationmode_is ("auto"))
         {
           ylabel_props.set_rotation (angle);
           ylabel_props.set_rotationmode ("auto");
@@ -6123,13 +6123,13 @@ axes::properties::update_zlabel_position (void)
     = reinterpret_cast<text::properties&> (go.get_properties ());
 
   bool camAuto = cameraupvectormode_is ("auto");
-  bool is_empty = zlabel_props.get_string ().is_empty ();
+  bool isempty = zlabel_props.get_string ().isempty ();
 
   octave::unwind_protect frame;
   frame.protect_var (updating_zlabel_position);
   updating_zlabel_position = true;
 
-  if (! is_empty)
+  if (! isempty)
     {
       if (zlabel_props.horizontalalignmentmode_is ("auto"))
         {
@@ -6222,7 +6222,7 @@ axes::properties::update_zlabel_position (void)
           zlabel_props.set_positionmode ("auto");
         }
 
-      if (! is_empty && zlabel_props.rotationmode_is ("auto"))
+      if (! isempty && zlabel_props.rotationmode_is ("auto"))
         {
           zlabel_props.set_rotation (angle);
           zlabel_props.set_rotationmode ("auto");
@@ -6494,7 +6494,7 @@ axes::properties::get_boundingbox (bool internal,
                          : get_outerposition ().matrix_value ());
   Matrix parent_size (parent_pix_size);
 
-  if (parent_size.is_empty ())
+  if (parent_size.isempty ())
     {
       graphics_object go = gh_manager::get_object (get_parent ());
 
@@ -6555,7 +6555,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
 
           Matrix text_pos = text_props.get_data_position ();
           text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
-          if (text_props.get_string ().is_empty ())
+          if (text_props.get_string ().isempty ())
             {
               ext(0) = std::min (ext(0), text_pos(0));
               ext(1) = std::min (ext(1), text_pos(1));
@@ -7091,7 +7091,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 {
   // FIXME: add log ticks and lims
 
-  if (lims.get ().is_empty ())
+  if (lims.get ().isempty ())
     return;
 
   double lo = (lims.get ().matrix_value ())(0);
@@ -8469,7 +8469,7 @@ octave_value
 patch::properties::get_color_data (void) const
 {
   octave_value fvc = get_facevertexcdata ();
-  if (fvc.is_undefined () || fvc.is_empty ())
+  if (fvc.is_undefined () || fvc.isempty ())
     return Matrix ();
   else
     return convert_cdata (*this, fvc, cdatamapping_is ("scaled"), 2);
@@ -8490,7 +8490,7 @@ patch::properties::update_fvc (void)
 
   bad_data_msg = "";
   if (xd.dims () != yd.dims ()
-      || (xd.dims () != zd.dims () && ! zd.is_empty ()))
+      || (xd.dims () != zd.dims () && ! zd.isempty ()))
     {
       bad_data_msg = "x/y/zdata must have the same dimensions";
       return;
@@ -8511,7 +8511,7 @@ patch::properties::update_fvc (void)
     }
 
   dv(0) = nr * nc;
-  if (zd.is_empty ())
+  if (zd.isempty ())
     dv(1) = 2;
   else
     {
@@ -8615,7 +8615,7 @@ patch::properties::update_data (void)
     }
   else
     {
-      if (! fvc.is_empty ())
+      if (! fvc.isempty ())
         {
           dv(0) = idx.rows ();
           dv(1) = nfaces;
@@ -9114,7 +9114,7 @@ uicontrol::properties::update_units (void)
 void
 uicontrol::properties::set_style (const octave_value& st)
 {
-  if (! get___object__ ().is_empty ())
+  if (! get___object__ ().isempty ())
     error ("set: cannot change the style of a uicontrol object after creation.");
 
   style = st;
@@ -9135,7 +9135,7 @@ uicontrol::properties::get_boundingbox (bool,
   Matrix pos = get_position ().matrix_value ();
   Matrix parent_size (parent_pix_size);
 
-  if (parent_size.is_empty ())
+  if (parent_size.isempty ())
     {
       graphics_object go = gh_manager::get_object (get_parent ());
 
@@ -9200,7 +9200,7 @@ uibuttongroup::properties::get_boundingbox (bool internal,
   Matrix pos = get_position ().matrix_value ();
   Matrix parent_size (parent_pix_size);
 
-  if (parent_size.is_empty ())
+  if (parent_size.isempty ())
     {
       graphics_object go = gh_manager::get_object (get_parent ());
 
@@ -9328,7 +9328,7 @@ uibuttongroup::properties::set_selectedobject (const octave_value& v)
 {
   graphics_handle current_selectedobject = get_selectedobject();
   selectedobject = current_selectedobject;
-  if (v.is_empty ())
+  if (v.isempty ())
     {
       if (current_selectedobject.ok ())
         {
@@ -9371,7 +9371,7 @@ uipanel::properties::get_boundingbox (bool internal,
   Matrix pos = get_position ().matrix_value ();
   Matrix parent_size (parent_pix_size);
 
-  if (parent_size.is_empty ())
+  if (parent_size.isempty ())
     {
       graphics_object go = gh_manager::get_object (get_parent ());
 
@@ -9852,7 +9852,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
                                  const octave_value& cb_arg,
                                  const octave_value& data)
 {
-  if (cb_arg.is_defined () && ! cb_arg.is_empty ())
+  if (cb_arg.is_defined () && ! cb_arg.isempty ())
     {
       octave_value_list args;
       octave_function *fcn = nullptr;
@@ -10534,7 +10534,7 @@ lists respectively.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  if (args(0).is_empty ())
+  if (args(0).isempty ())
     return ovl (Matrix ());
 
   ColumnVector hcv = args(0).xvector_value ("get: H must be a graphics handle");
@@ -10849,7 +10849,7 @@ calc_dimensions (const graphics_object& go)
   if (go.isa ("surface"))
     nd = 3;
   else if ((go.isa ("line") || go.isa ("patch"))
-           && ! go.get ("zdata").is_empty ())
+           && ! go.get ("zdata").isempty ())
     nd = 3;
   else
     {
@@ -11848,7 +11848,7 @@ In all cases, typing CTRL-C stops program execution immediately.
     print_usage ();
 
   // return immediately if the graphics handle is invalid
-  if (args(0).is_empty ())
+  if (args(0).isempty ())
     return ovl ();
 
   double h = args(0).xdouble_value ("waitfor: invalid handle value");

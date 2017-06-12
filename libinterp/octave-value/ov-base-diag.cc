@@ -236,7 +236,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-        if (! is_empty ())
+        if (! isempty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
@@ -306,7 +306,7 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex matrix", "real scalar");
 
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",

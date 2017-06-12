@@ -250,7 +250,7 @@ octave_cell::subsasgn (const std::string& type,
         {
         case '(':
           {
-            if (is_empty () && type[1] == '.')
+            if (isempty () && type[1] == '.')
               {
                 // Allow conversion of empty cell array to some other
                 // type in cases like
@@ -311,7 +311,7 @@ octave_cell::subsasgn (const std::string& type,
 
         case '.':
           {
-            if (! is_empty ())
+            if (! isempty ())
               {
                 std::string nm = type_name ();
                 error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
@@ -378,7 +378,7 @@ octave_cell::subsasgn (const std::string& type,
 
     case '.':
       {
-        if (! is_empty ())
+        if (! isempty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
@@ -615,7 +615,7 @@ octave_cell::cellstr_value (void) const
   if (! iscellstr ())
     error ("invalid conversion from cell array to array of strings");
 
-  if (cellstr_cache->is_empty ())
+  if (cellstr_cache->isempty ())
     *cellstr_cache = matrix.cellstr_value ();
 
   return *cellstr_cache;
@@ -699,7 +699,7 @@ octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
 
   indent (os);
 
-  if (is_empty () || ndims () > 2)
+  if (isempty () || ndims () > 2)
     os << name << " = ";
   else
     {
@@ -714,7 +714,7 @@ octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
 void
 octave_cell::short_disp (std::ostream& os) const
 {
-  os << (matrix.is_empty () ? "{}" : "...");
+  os << (matrix.isempty () ? "{}" : "...");
 }
 
 #define CELL_ELT_TAG "<cell-element>"
@@ -1245,7 +1245,7 @@ dimensions.
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("cell: dimension must be a scalar integer"));
       }
       break;
@@ -1302,7 +1302,7 @@ To convert back from a cellstr to a character array use @code{char}.
     {
       string_vector s = args(0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
 
-      return ovl (s.is_empty () ? Cell (octave_value (""))
+      return ovl (s.isempty () ? Cell (octave_value (""))
                                 : Cell (s, true));
     }
 }

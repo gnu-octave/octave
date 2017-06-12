@@ -313,7 +313,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
   std::cout << "Matrix A dimensions: (" << nn << "," << nc << ")" << std::endl;
 #endif
 
-  if (args(0).is_empty ())
+  if (args(0).isempty ())
     {
       warn_empty_arg ("qz: A");
       return octave_value_list (2, Matrix ());

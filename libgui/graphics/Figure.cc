@@ -486,14 +486,14 @@ namespace QtHandles
         break;
 
       case figure::properties::ID_KEYPRESSFCN:
-        if (fp.get_keypressfcn ().is_empty ())
+        if (fp.get_keypressfcn ().isempty ())
           m_container->canvas (m_handle)->clearEventMask (Canvas::KeyPress);
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
         break;
 
       case figure::properties::ID_KEYRELEASEFCN:
-        if (fp.get_keyreleasefcn ().is_empty ())
+        if (fp.get_keyreleasefcn ().isempty ())
           m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);

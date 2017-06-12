@@ -1199,9 +1199,9 @@ void
 get_dimensions (const octave_value& a, const octave_value& b,
                 const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
 {
-  nr = a.is_empty ()
+  nr = a.isempty ()
        ? 0 : a.idx_type_value ("%s: row dimension must be a scalar", warn_for);
-  nc = b.is_empty ()
+  nc = b.isempty ()
        ? 0 : b.idx_type_value ("%s: column dimension must be a scalar", warn_for);
 
   check_dimensions (nr, nc, warn_for);

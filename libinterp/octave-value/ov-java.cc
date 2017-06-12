@@ -1437,7 +1437,7 @@ box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                                             (jni_env->GetObjectArrayElement
                                              (jarr, r)));
 
-                      if (m.is_empty ())
+                      if (m.isempty ())
                         {
                           cols = jni_env->GetArrayLength (row);
                           m.resize (cols, rows);
@@ -1608,7 +1608,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
 
 #undef UNBOX_PRIMITIVE_SCALAR
     }
-  else if (val.is_empty ())
+  else if (val.isempty ())
     {
       jobj = 0;
       jcls = 0;

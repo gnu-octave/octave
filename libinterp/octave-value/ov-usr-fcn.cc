@@ -945,7 +945,7 @@ The original variable value is restored when exiting the function.
 
 static bool val_in_table (const Matrix& table, double val)
 {
-  if (table.is_empty ())
+  if (table.isempty ())
     return false;
 
   octave_idx_type i = table.lookup (val, ASCENDING);

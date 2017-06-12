@@ -73,7 +73,7 @@ namespace octave
     {
       type retval;
 
-      if (! q.is_empty () && q.is_square ())
+      if (! q.isempty () && q.is_square ())
         retval = qr<T>::std;
       else if (q.rows () > q.cols () && r.is_square ())
         retval = qr<T>::economy;

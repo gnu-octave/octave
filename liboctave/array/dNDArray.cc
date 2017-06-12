@@ -768,7 +768,7 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
       retval.elem (i) = static_cast<char>(ival);
     }
 
-  if (rb.is_empty ())
+  if (rb.isempty ())
     return retval;
 
   retval.insert (rb, ra_idx);

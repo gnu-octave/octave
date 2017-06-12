@@ -3931,7 +3931,7 @@ namespace octave
 
         delete e;
 
-        if (ov.is_empty ())
+        if (ov.isempty ())
           bison_error ("invalid empty left hand side of assignment");
         else
           bison_error ("invalid constant left hand side of assignment");

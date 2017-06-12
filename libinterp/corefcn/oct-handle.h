@@ -40,7 +40,7 @@ public:
   octave_handle (const octave_value& a)
     : val (octave::numeric_limits<double>::NaN ())
   {
-    if (a.is_empty ())
+    if (a.isempty ())
       ; // do nothing
     else
       {

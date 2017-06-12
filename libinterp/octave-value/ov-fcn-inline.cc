@@ -788,7 +788,7 @@ functions from strings is through the use of anonymous functions
       // Sort the arguments into ascii order.
       fargs.sort ();
 
-      if (fargs.is_empty ())
+      if (fargs.isempty ())
         fargs.append (std::string ("x"));
 
     }

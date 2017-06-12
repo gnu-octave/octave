@@ -205,7 +205,7 @@ all breakpoints within the file are cleared.
 
           // Replace mv by "bkpt", to use the processing below.
           octave_value bkpt = mv.getfield ("bkpt");
-          if (bkpt.is_empty ())
+          if (bkpt.isempty ())
             mv = octave_map ();
           else
             {
@@ -219,7 +219,7 @@ all breakpoints within the file are cleared.
                 }
             }
         }
-      if (mv.is_empty ())
+      if (mv.isempty ())
         {
           // no changes requested.  Occurs if "errs" non-empty but "bkpt" empty
         }
@@ -487,7 +487,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
       retmap.assign ("cond", cond);
 
       octave_map ew = bp_table::stop_on_err_warn_status (false);
-      if (ew.is_empty ())
+      if (ew.isempty ())
         {
           retval = octave_value (retmap);
         }

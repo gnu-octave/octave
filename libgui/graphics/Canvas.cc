@@ -539,7 +539,7 @@ namespace QtHandles
             graphics_object figObj (obj.get_ancestor ("figure"));
 
             if (figObj.valid_object () &&
-                ! figObj.get ("windowbuttonmotionfcn").is_empty ())
+                ! figObj.get ("windowbuttonmotionfcn").isempty ())
               {
                 updateCurrentPoint (figObj, obj, event);
                 gh_manager::post_callback (figObj.get_handle (),
@@ -668,7 +668,7 @@ namespace QtHandles
                                        "windowbuttondownfcn",
                                        button_number (event));
 
-            if (currentObj.get ("buttondownfcn").is_empty ())
+            if (currentObj.get ("buttondownfcn").isempty ())
               {
                 graphics_object parentObj =
                   gh_manager::get_object (currentObj.get_parent ());

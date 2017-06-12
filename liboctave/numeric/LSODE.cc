@@ -66,7 +66,7 @@ lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
 
   tmp_deriv = (*user_fun) (*tmp_x, time);
 
-  if (tmp_deriv.is_empty ())
+  if (tmp_deriv.isempty ())
     ierr = -1;
   else
     {

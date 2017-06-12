@@ -56,7 +56,7 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
 
   if (nargin > 1)
     {
-      if (! args(1).is_empty ())
+      if (! args(1).isempty ())
         {
           double dval = args(1).double_value ();
           if (octave::math::isnan (dval))

@@ -525,8 +525,12 @@ public:
   bool is_undefined (void) const
   { return ! is_defined (); }
 
+  bool isempty (void) const
+  { return rep->isempty (); }
+
+  OCTAVE_DEPRECATED ("use 'isempty' instead")
   bool is_empty (void) const
-  { return rep->is_empty (); }
+  { return rep->isempty (); }
 
   bool iscell (void) const
   { return rep->iscell (); }

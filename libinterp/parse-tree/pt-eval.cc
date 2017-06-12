@@ -1523,7 +1523,7 @@ namespace octave
                   {
                     octave_quit ();
 
-                    if (elt.is_empty ())
+                    if (elt.isempty ())
                       continue;
 
                     ctmp = do_cat_op (ctmp, elt, ra_idx);

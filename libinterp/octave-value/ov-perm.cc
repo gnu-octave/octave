@@ -148,7 +148,7 @@ octave_perm_matrix::is_true (void) const
 double
 octave_perm_matrix::double_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -160,7 +160,7 @@ octave_perm_matrix::double_value (bool) const
 float
 octave_perm_matrix::float_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",

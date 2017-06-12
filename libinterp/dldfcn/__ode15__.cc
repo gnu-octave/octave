@@ -1048,7 +1048,7 @@ namespace octave
     dae.set_maxstep (maxstep);
 
     //Set initial step
-    if (! options.getfield("InitialStep").is_empty ())
+    if (! options.getfield("InitialStep").isempty ())
       {
         realtype initialstep = options.getfield("InitialStep").double_value ();
 

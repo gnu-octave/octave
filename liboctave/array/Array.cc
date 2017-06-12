@@ -2295,7 +2295,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
   // find (zeros (0,1,0)) -> zeros (0,0)
   // find (zeros (0,1,0,1)) -> zeros (0,0) etc
 
-  if ((numel () == 1 && retval.is_empty ())
+  if ((numel () == 1 && retval.isempty ())
       || (rows () == 0 && dims ().numel (1) == 0))
     retval.dimensions = dim_vector ();
   else if (rows () == 1 && ndims () == 2)
@@ -2325,7 +2325,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
 
   Array<T> m (dv);
 
-  if (m.is_empty ())
+  if (m.isempty ())
     return m;
 
   sortmode mode = UNSORTED;
@@ -2675,7 +2675,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
 
   Array<T> retval (dv);
 
-  if (retval.is_empty ())
+  if (retval.isempty ())
     return retval;
 
   int nidx = std::max (dv.ndims (), static_cast<octave_idx_type> (dim + 1));
@@ -2690,7 +2690,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
       // an empty array may contribute a nonzero piece along the dimension
       // at this point, unless an empty array can be promoted to a non-empty
       // one (which makes no sense).  I repeat, *no way*, think about it.
-      if (array_list[i].is_empty ())
+      if (array_list[i].isempty ())
         continue;
 
       octave_quit ();

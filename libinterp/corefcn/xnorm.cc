@@ -44,7 +44,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
   if (! isfloat && ! x.is_double_type ())
     err_wrong_type_arg ("xnorm", x);
 
-  if (x.is_empty ())
+  if (x.isempty ())
     retval = octave_value (0);
   else if (isvector)
     {

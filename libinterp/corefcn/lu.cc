@@ -187,7 +187,7 @@ permutation information.
 
   if (issparse)
     {
-      if (arg.is_empty ())
+      if (arg.isempty ())
         return octave_value_list (5, SparseMatrix ());
 
       if (arg.is_real_type ())
@@ -327,7 +327,7 @@ permutation information.
     }
   else
     {
-      if (arg.is_empty ())
+      if (arg.isempty ())
         return octave_value_list (3, Matrix ());
 
       if (arg.is_real_type ())

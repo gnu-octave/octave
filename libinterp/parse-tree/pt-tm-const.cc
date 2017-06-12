@@ -203,7 +203,7 @@ namespace octave
           {
             elt_changed = true;
 
-            if (elt.is_empty ())
+            if (elt.isempty ())
               elt = Cell ();
             else
               elt = Cell (elt);

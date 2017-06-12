@@ -99,7 +99,7 @@ octave_float_matrix::try_narrowing_conversion (void)
 double
 octave_float_matrix::double_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -111,7 +111,7 @@ octave_float_matrix::double_value (bool) const
 float
 octave_float_matrix::float_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",

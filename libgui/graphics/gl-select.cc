@@ -176,7 +176,7 @@ namespace octave
   void
   opengl_selector::draw_text (const text::properties& props)
   {
-    if (props.get_string ().is_empty ())
+    if (props.get_string ().isempty ())
       return;
 
     Matrix pos = props.get_data_position ();

@@ -1125,7 +1125,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   const octave_idx_type bitdepth = bitdepth_from_class<T> ();
 
   Magick::ImageType type;
-  const bool has_alpha = ! alpha.is_empty ();
+  const bool has_alpha = ! alpha.isempty ();
   switch (channels)
     {
     case 1:
@@ -1489,7 +1489,7 @@ Use @code{imwrite} instead.
 
   std::vector<Magick::Image> imvec;
 
-  if (cmap.is_empty ())
+  if (cmap.isempty ())
     {
       const octave_value alpha = options.getfield ("alpha");
       if (img.is_bool_type ())

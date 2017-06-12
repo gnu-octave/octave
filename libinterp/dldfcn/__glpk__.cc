@@ -309,7 +309,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                                                                         \
       if (tmp.is_defined ())                                            \
         {                                                               \
-          if (! tmp.is_empty ())                                        \
+          if (! tmp.isempty ())                                        \
             VAL = tmp.xscalar_value ("glpk: invalid value in PARAM" NAME); \
           else                                                          \
             error ("glpk: invalid value in PARAM" NAME);                \
@@ -324,7 +324,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                                                                         \
       if (tmp.is_defined ())                                            \
         {                                                               \
-          if (! tmp.is_empty ())                                        \
+          if (! tmp.isempty ())                                        \
             VAL = tmp.xint_value ("glpk: invalid value in PARAM" NAME); \
           else                                                          \
             error ("glpk: invalid value in PARAM" NAME);                \

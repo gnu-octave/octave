@@ -61,7 +61,7 @@ octave_lvalue::index_is_empty (void) const
     {
       octave_value_list tmp = idx.front ();
 
-      retval = (tmp.length () == 1 && tmp(0).is_empty ());
+      retval = (tmp.length () == 1 && tmp(0).isempty ());
     }
 
   return retval;

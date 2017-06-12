@@ -81,7 +81,7 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
                  || arg_b.is_single_type ()
                  || arg_c.is_single_type ();
 
-  if (arg_a.is_empty () || arg_b.is_empty () || arg_c.is_empty ())
+  if (arg_a.isempty () || arg_b.isempty () || arg_c.isempty ())
     {
       if (isfloat)
         return ovl (FloatMatrix ());

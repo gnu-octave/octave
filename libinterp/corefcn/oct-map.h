@@ -370,7 +370,7 @@ public:
   // The Array-like methods.
   octave_idx_type numel (void) const { return dimensions.numel (); }
   octave_idx_type length (void) const { return numel (); }
-  bool is_empty (void) const { return dimensions.any_zero (); }
+  bool isempty (void) const { return dimensions.any_zero (); }
 
   octave_idx_type rows (void) const { return dimensions(0); }
   octave_idx_type cols (void) const { return dimensions(1); }

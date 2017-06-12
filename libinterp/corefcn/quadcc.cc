@@ -1602,7 +1602,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
   else
     b = args(2).double_value ();
 
-  if (nargin < 4 || args(3).is_empty ())
+  if (nargin < 4 || args(3).isempty ())
     tol = 1.0e-6;
   else if (! args(3).is_real_scalar () || args(3).double_value () <= 0)
     error ("quadcc: tolerance (TOL) must be a single real scalar > 0");

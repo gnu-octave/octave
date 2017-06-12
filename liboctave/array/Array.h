@@ -558,7 +558,11 @@ public:
 
   bool is_square (void) const { return (dim1 () == dim2 ()); }
 
-  bool is_empty (void) const { return numel () == 0; }
+  bool isempty (void) const { return numel () == 0; }
+
+  OCTAVE_DEPRECATED ("use 'isempty' instead")
+  bool is_empty (void) const
+  { return isempty (); }
 
   bool is_vector (void) const { return dimensions.is_vector (); }
 

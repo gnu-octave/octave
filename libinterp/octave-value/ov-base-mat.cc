@@ -80,7 +80,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
       {
         if (type.length () == 1)
           retval = numeric_assign (type, idx, rhs);
-        else if (is_empty ())
+        else if (isempty ())
           {
             // Allow conversion of empty matrix to some other type in
             // cases like
@@ -106,7 +106,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-        if (! is_empty ())
+        if (! isempty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
@@ -458,7 +458,7 @@ template <typename MT>
 void
 octave_base_matrix<MT>::short_disp (std::ostream& os) const
 {
-  if (matrix.is_empty ())
+  if (matrix.isempty ())
     os << "[]";
   else if (matrix.ndims () == 2)
     {

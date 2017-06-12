@@ -2005,7 +2005,7 @@ void print_nd_array (std::ostream& os, const NDA_T& nda,
                      bool pr_as_read_syntax)
 {
 
-  if (nda.is_empty ())
+  if (nda.isempty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
   else
     {
@@ -2865,7 +2865,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
   // FIXME: this mostly duplicates the code in the print_nd_array<>
   // function.  Can fix this with std::is_same from C++11.
 
-  if (nda.is_empty ())
+  if (nda.isempty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
   else if (nda.numel () == 1)
     {
@@ -3134,7 +3134,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
   // FIXME: this mostly duplicates the code in the print_nd_array<>
   // function.  Can fix this with std::is_same from C++11.
 
-  if (nda.is_empty ())
+  if (nda.isempty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
   else if (nda.numel () == 1)
     octave_print_internal_template (os, nda(0), pr_as_read_syntax);

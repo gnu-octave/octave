@@ -871,7 +871,7 @@ whos ans
 
   int width = -1;
 
-  if (nargin > 1 && ! args(1).is_empty ())
+  if (nargin > 1 && ! args(1).isempty ())
     width = args(1).xint_value ("list_in_columns: WIDTH must be an integer");
 
   std::string prefix;

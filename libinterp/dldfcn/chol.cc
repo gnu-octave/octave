@@ -176,7 +176,7 @@ sparse matrices.
   octave_value_list retval;
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (Matrix ());
 
   if (arg.is_sparse_type ())

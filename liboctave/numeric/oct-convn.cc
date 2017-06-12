@@ -132,7 +132,7 @@ static MArray<T>
 convolve (const MArray<T>& a, const MArray<R>& b,
           convn_type ct)
 {
-  if (a.is_empty () || b.is_empty ())
+  if (a.isempty () || b.isempty ())
     return MArray<T> ();
 
   int nd = std::max (a.ndims (), b.ndims ());

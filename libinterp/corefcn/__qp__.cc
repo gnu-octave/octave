@@ -47,7 +47,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
   rank = 0;
 
-  if (! A.is_empty ())
+  if (! A.isempty ())
     {
       octave::math::svd<Matrix> A_svd (A);
 

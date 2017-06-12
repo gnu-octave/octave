@@ -100,7 +100,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen > 1)
         ires = tmp(1).idx_type_value ();
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("daspk");
     }
 
@@ -147,7 +147,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
       retval = tmp(0).matrix_value ();
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("daspk");
     }
 

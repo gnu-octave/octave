@@ -1615,7 +1615,7 @@ octave_value::is_equal (const octave_value& test) const
       // Empty array also means a match.
       if (tmp.is_defined ())
         {
-          if (tmp.is_empty ())
+          if (tmp.isempty ())
             retval = true;
           else
             {
@@ -2555,9 +2555,9 @@ do_colon_op (const octave_value& base, const octave_value& increment,
           error (e, "invalid increment value in colon expression");
         }
 
-      bool base_empty = m_base.is_empty ();
-      bool limit_empty = m_limit.is_empty ();
-      bool increment_empty = m_increment.is_empty ();
+      bool base_empty = m_base.isempty ();
+      bool limit_empty = m_limit.isempty ();
+      bool increment_empty = m_increment.isempty ();
 
       if (base_empty || limit_empty || increment_empty)
         retval = Range ();

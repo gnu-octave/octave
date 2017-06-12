@@ -347,7 +347,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
       charNDArray tmp(dv);
 
-      if (tmp.is_empty ())
+      if (tmp.isempty ())
         matrix = tmp;
       else
         {

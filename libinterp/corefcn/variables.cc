@@ -283,7 +283,7 @@ generate_struct_completions (const std::string& text,
               frame.run ();
 
               if (tmp.is_defined ()
-                  && (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
+                  && (tmp.is_map () || tmp.isjava () || tmp.is_classdef_object ()))
                 names = tmp.map_keys ();
             }
           catch (const octave::execution_exception&)

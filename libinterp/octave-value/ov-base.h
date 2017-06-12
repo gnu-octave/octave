@@ -373,7 +373,7 @@ public:
 
   virtual bool is_classdef_object (void) const { return false; }
 
-  virtual bool is_java (void) const { return false; }
+  virtual bool isjava (void) const { return false; }
 
   virtual bool is_cs_list (void) const { return false; }
 

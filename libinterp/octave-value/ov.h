@@ -594,8 +594,12 @@ public:
   bool is_classdef_object (void) const
   { return rep->is_classdef_object (); }
 
+  bool isjava (void) const
+  { return rep->isjava (); }
+
+  OCTAVE_DEPRECATED ("use 'isjava' instead")
   bool is_java (void) const
-  { return rep->is_java (); }
+  { return isjava (); }
 
   bool is_cs_list (void) const
   { return rep->is_cs_list (); }

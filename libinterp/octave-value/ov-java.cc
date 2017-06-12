@@ -1390,7 +1390,7 @@ box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
 
   octave_value retval = box (jni_env, jobj, jcls);
 
-  if (retval.is_java ())
+  if (retval.isjava ())
     {
       retval = octave_value ();
 
@@ -1489,7 +1489,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
 {
   bool found = true;
 
-  if (val.is_java ())
+  if (val.isjava ())
     {
       octave_java *ovj = TO_JAVA (val);
       jobj = TO_JOBJECT (ovj->to_java ());
@@ -2914,7 +2914,7 @@ equivalent
   for (int i=2; i<args.length (); i++)
     tmp(i-2) = args(i);
 
-  if (args(1).is_java ())
+  if (args(1).isjava ())
     {
       octave_java *jobj = TO_JAVA (args(1));
       retval = jobj->do_javaMethod (current_env, methodname, tmp);
@@ -2980,7 +2980,7 @@ equivalent
 
   octave_value retval;
 
-  if (args(0).is_java ())
+  if (args(0).isjava ())
     {
       octave_java *jobj = TO_JAVA (args(0));
       retval = jobj->do_java_get (current_env, name);
@@ -3040,7 +3040,7 @@ equivalent
 
   octave_value retval;
 
-  if (args(0).is_java ())
+  if (args(0).isjava ())
     {
       octave_java *jobj = TO_JAVA (args(0));
       retval = jobj->do_java_set (current_env, name, args(2));
@@ -3081,7 +3081,7 @@ Undocumented internal function.
 
   octave_value_list retval;
 
-  if (args(0).is_java ())
+  if (args(0).isjava ())
     {
       octave_java *jobj = TO_JAVA (args(0));
       retval = ovl (box_more (current_env, jobj->to_java (), 0));
@@ -3204,7 +3204,7 @@ Return true if @var{x} is a Java object.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_java ());
+  return ovl (args(0).isjava ());
 }
 
 /*

@@ -136,7 +136,11 @@ public:
   void sort (T *data, octave_idx_type *idx, octave_idx_type nel);
 
   // Check whether an array is sorted.
-  bool is_sorted (const T *data, octave_idx_type nel);
+  bool issorted (const T *data, octave_idx_type nel);
+
+  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  bool is_sorted (const T *data, octave_idx_type nel)
+  { return issorted (data, nel); }
 
   // Sort a matrix by rows, return a permutation
   // vector.
@@ -305,7 +309,12 @@ private:
   void sort (T *data, octave_idx_type *idx, octave_idx_type nel, Comp comp);
 
   template <typename Comp>
-  bool is_sorted (const T *data, octave_idx_type nel, Comp comp);
+  bool issorted (const T *data, octave_idx_type nel, Comp comp);
+
+  template <typename Comp>
+  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  bool is_sorted (const T *data, octave_idx_type nel, Comp comp)
+  { return issorted (data, nel, comp); }
 
   template <typename Comp>
   void sort_rows (const T *data, octave_idx_type *idx,

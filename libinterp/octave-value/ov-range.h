@@ -146,8 +146,8 @@ public:
                      sortmode mode = ASCENDING) const
   { return range.sort (sidx, dim, mode); }
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return range.is_sorted (mode); }
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return range.issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const
   { return Array<octave_idx_type> (dim_vector (1, 0)); }

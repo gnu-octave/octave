@@ -112,8 +112,8 @@ public:
                      sortmode mode = ASCENDING) const
   { return to_dense ().sort (sidx, dim, mode); }
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return to_dense ().is_sorted (mode); }
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return to_dense ().issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
   { return to_dense ().sort_rows_idx (mode); }

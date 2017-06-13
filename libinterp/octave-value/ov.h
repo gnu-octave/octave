@@ -1358,8 +1358,12 @@ public:
                      sortmode mode = ASCENDING) const
   { return rep->sort (sidx, dim, mode); }
 
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return rep->issorted (mode); }
+
+  OCTAVE_DEPRECATED ("use 'issorted' instead")
   sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return rep->is_sorted (mode); }
+  { return rep->issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
   { return rep->sort_rows_idx (mode); }

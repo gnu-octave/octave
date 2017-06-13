@@ -675,7 +675,7 @@ public:
                              octave_idx_type dim = 0,
                              sortmode mode = ASCENDING) const;
 
-  virtual sortmode is_sorted (sortmode mode = UNSORTED) const;
+  virtual sortmode issorted (sortmode mode = UNSORTED) const;
 
   virtual Array<octave_idx_type>
   sort_rows_idx (sortmode mode = ASCENDING) const;

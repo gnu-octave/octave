@@ -489,7 +489,7 @@ octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 }
 
 sortmode
-octave_cell::is_sorted (sortmode mode) const
+octave_cell::issorted (sortmode mode) const
 {
   sortmode retval = UNSORTED;
 
@@ -498,7 +498,7 @@ octave_cell::is_sorted (sortmode mode) const
 
   Array<std::string> tmp = cellstr_value ();
 
-  retval = tmp.is_sorted (mode);
+  retval = tmp.issorted (mode);
 
   return retval;
 }

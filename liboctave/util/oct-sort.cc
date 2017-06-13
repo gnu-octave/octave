@@ -1540,7 +1540,7 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 template <typename T>
 template <typename Comp>
 bool
-octave_sort<T>::is_sorted (const T *data, octave_idx_type nel, Comp comp)
+octave_sort<T>::issorted (const T *data, octave_idx_type nel, Comp comp)
 {
   const T *end = data + nel;
   if (data != end)
@@ -1560,21 +1560,21 @@ octave_sort<T>::is_sorted (const T *data, octave_idx_type nel, Comp comp)
 
 template <typename T>
 bool
-octave_sort<T>::is_sorted (const T *data, octave_idx_type nel)
+octave_sort<T>::issorted (const T *data, octave_idx_type nel)
 {
   bool retval = false;
 #if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
-    retval = is_sorted (data, nel, std::less<T> ());
+    retval = issorted (data, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
-      retval = is_sorted (data, nel, std::greater<T> ());
+      retval = issorted (data, nel, std::greater<T> ());
     else
 #endif
       if (compare)
-        retval = is_sorted (data, nel, compare);
+        retval = issorted (data, nel, compare);
 
   return retval;
 }
@@ -1716,7 +1716,7 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
         }
       else
         // The final column - use fast code.
-        sorted = is_sorted (lo, n, comp);
+        sorted = issorted (lo, n, comp);
     }
 
   return sorted;

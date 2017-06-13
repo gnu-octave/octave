@@ -2031,7 +2031,7 @@ safe_comparator (sortmode mode, const Array<T>& /* a */,
 
 template <typename T>
 sortmode
-Array<T>::is_sorted (sortmode mode) const
+Array<T>::issorted (sortmode mode) const
 {
   octave_sort<T> lsort;
 
@@ -2056,7 +2056,7 @@ Array<T>::is_sorted (sortmode mode) const
     {
       lsort.set_compare (safe_comparator (mode, *this, false));
 
-      if (! lsort.is_sorted (data (), n))
+      if (! lsort.issorted (data (), n))
         mode = UNSORTED;
     }
 
@@ -2192,7 +2192,7 @@ Array<T>::lookup (const Array<T>& values, sortmode mode) const
   // Attempt the O(M+N) algorithm if M is large enough.
   if (nval > ratio * n / octave::math::log2 (n + 1.0))
     {
-      vmode = values.is_sorted ();
+      vmode = values.issorted ();
       // The table must not contain a NaN.
       if ((vmode == ASCENDING && sort_isnan<T> (values(nval-1)))
           || (vmode == DESCENDING && sort_isnan<T> (values(0))))
@@ -2462,7 +2462,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
     return *this;                                                       \
   }                                                                     \
   template <> sortmode                                                  \
-  Array<T>::is_sorted (sortmode) const                                  \
+  Array<T>::issorted (sortmode) const                                  \
   {                                                                     \
     return UNSORTED;                                                    \
   }                                                                     \

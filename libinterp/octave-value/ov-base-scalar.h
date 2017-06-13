@@ -108,7 +108,7 @@ public:
     return octave_value (scalar);
   }
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const
+  sortmode issorted (sortmode mode = UNSORTED) const
   { return mode ? mode : ASCENDING; }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const

@@ -385,16 +385,16 @@ octave_matrix::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 }
 
 sortmode
-octave_matrix::is_sorted (sortmode mode) const
+octave_matrix::issorted (sortmode mode) const
 {
   if (idx_cache)
     {
       // This is a valid index matrix, so check via integers because it's
       // generally more efficient.
-      return idx_cache->as_array ().is_sorted (mode);
+      return idx_cache->as_array ().issorted (mode);
     }
   else
-    return octave_base_matrix<NDArray>::is_sorted (mode);
+    return octave_base_matrix<NDArray>::issorted (mode);
 }
 Array<octave_idx_type>
 octave_matrix::sort_rows_idx (sortmode mode) const

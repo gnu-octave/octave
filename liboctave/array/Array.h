@@ -702,7 +702,11 @@ public:
                  sortmode mode = ASCENDING) const;
 
   //! Ordering is auto-detected or can be specified.
-  sortmode is_sorted (sortmode mode = UNSORTED) const;
+  sortmode issorted (sortmode mode = UNSORTED) const;
+
+  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  sortmode is_sorted (sortmode mode = UNSORTED) const
+  { return issorted (mode); }
 
   //! Sort by rows returns only indices.
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;

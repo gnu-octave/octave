@@ -136,8 +136,8 @@ public:
                      sortmode mode = ASCENDING) const
   { return octave_value (matrix.sort (sidx, dim, mode)); }
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return matrix.is_sorted (mode); }
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return matrix.issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
   { return matrix.sort_rows_idx (mode); }

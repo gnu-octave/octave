@@ -128,7 +128,7 @@ octave_lazy_index::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 }
 
 sortmode
-octave_lazy_index::is_sorted (sortmode mode) const
+octave_lazy_index::issorted (sortmode mode) const
 {
   if (index.is_range ())
     {
@@ -142,7 +142,7 @@ octave_lazy_index::is_sorted (sortmode mode) const
         return (mode == ASCENDING ? UNSORTED : DESCENDING);
     }
   else
-    return index.as_array ().is_sorted (mode);
+    return index.as_array ().issorted (mode);
 }
 
 Array<octave_idx_type>

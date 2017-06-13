@@ -200,7 +200,7 @@ public:
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const;
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const;
+  sortmode issorted (sortmode mode = UNSORTED) const;
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
 

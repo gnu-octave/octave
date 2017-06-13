@@ -107,7 +107,11 @@ public:
   Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
               sortmode mode = ASCENDING) const;
 
-  sortmode is_sorted (sortmode mode = ASCENDING) const;
+  sortmode issorted (sortmode mode = ASCENDING) const;
+
+  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  sortmode is_sorted (sortmode mode = ASCENDING) const
+  { return issorted (mode); }
 
   // Support for single-index subscripting, without generating matrix cache.
 

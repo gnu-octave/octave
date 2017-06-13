@@ -95,7 +95,7 @@ safe_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
 template <>
 OCTAVE_API
 sortmode
-Array<double>::is_sorted (sortmode mode) const
+Array<double>::issorted (sortmode mode) const
 {
   octave_idx_type n = numel ();
 

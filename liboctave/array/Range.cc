@@ -287,7 +287,7 @@ Range::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
 }
 
 sortmode
-Range::is_sorted (sortmode mode) const
+Range::issorted (sortmode mode) const
 {
   if (rng_numel > 1 && rng_inc > 0)
     mode = (mode == DESCENDING) ? UNSORTED : ASCENDING;

@@ -1032,9 +1032,9 @@ octave_base_value::sort (Array<octave_idx_type> &,
 }
 
 sortmode
-octave_base_value::is_sorted (sortmode) const
+octave_base_value::issorted (sortmode) const
 {
-  err_wrong_type_arg ("octave_base_value::is_sorted ()", type_name ());
+  err_wrong_type_arg ("octave_base_value::issorted ()", type_name ());
 }
 
 Array<octave_idx_type>

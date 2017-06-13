@@ -63,7 +63,7 @@ public:
 
   bool is_real_matrix (void) const { return true; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_single_type (void) const { return true; }
 

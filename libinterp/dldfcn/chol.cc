@@ -185,7 +185,7 @@ sparse matrices.
       bool natural = (nargout != 3);
       bool force = nargout > 1;
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -242,7 +242,7 @@ sparse matrices.
     {
       if (vecout)
         error ("chol: A must be sparse for the \"vector\" option");
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix m = arg.float_matrix_value ();
 
@@ -275,7 +275,7 @@ sparse matrices.
     {
       if (vecout)
         error ("chol: A must be sparse for the \"vector\" option");
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           Matrix m = arg.matrix_value ();
 
@@ -378,7 +378,7 @@ the Cholesky@tie{}factorization.
         {
           octave_idx_type info;
 
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -405,7 +405,7 @@ the Cholesky@tie{}factorization.
         }
       else if (arg.is_single_type ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               FloatMatrix m = arg.float_matrix_value ();
 
@@ -432,7 +432,7 @@ the Cholesky@tie{}factorization.
         }
       else
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               Matrix m = arg.matrix_value ();
 
@@ -505,7 +505,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
     {
       if (arg.is_sparse_type ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               SparseMatrix r = arg.sparse_matrix_value ();
 
@@ -522,7 +522,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
         }
       else if (arg.is_single_type ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               FloatMatrix r = arg.float_matrix_value ();
 
@@ -540,7 +540,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
         }
       else
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               Matrix r = arg.matrix_value ();
 
@@ -650,7 +650,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   int err = 0;
   if (argr.is_single_type () || argu.is_single_type ())
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -686,7 +686,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
     }
   else
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();
@@ -841,7 +841,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   int err = 0;
   if (argr.is_single_type () || argu.is_single_type ())
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -869,7 +869,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
     }
   else
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();
@@ -1077,7 +1077,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 
   if (argr.is_single_type ())
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -1102,7 +1102,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
     }
   else
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();
@@ -1207,7 +1207,7 @@ triangular, return the Cholesky@tie{}factorization of
   if (argr.is_single_type () && argi.is_single_type ()
       && argj.is_single_type ())
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -1232,7 +1232,7 @@ triangular, return the Cholesky@tie{}factorization of
     }
   else
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();

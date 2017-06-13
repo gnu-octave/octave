@@ -67,7 +67,7 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
   csm.x = 0;
   csm.nz = -1;
 
-  if (arg.is_real_type ())
+  if (arg.isreal ())
     {
       m = arg.sparse_matrix_value ();
       csm.nzmax = m.nnz ();

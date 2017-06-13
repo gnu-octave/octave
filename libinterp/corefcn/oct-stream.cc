@@ -3285,11 +3285,11 @@ namespace octave
               {
                 if (fmt.bitwidth == 64)
                   {
-                    if (ov.is_real_type () && v.imag () == 0)
+                    if (ov.isreal () && v.imag () == 0)
                       ov.internal_rep ()->fast_elem_insert (row(0), v.real ());
                     else
                       {
-                        if (ov.is_real_type ())  // cat does type conversion
+                        if (ov.isreal ())  // cat does type conversion
                           ov = do_cat_op (ov, octave_value (v), row);
                         else
                           ov.internal_rep ()->fast_elem_insert (row(0), v);
@@ -3297,12 +3297,12 @@ namespace octave
                   }
                 else
                   {
-                    if (ov.is_real_type () && v.imag () == 0)
+                    if (ov.isreal () && v.imag () == 0)
                       ov.internal_rep ()->fast_elem_insert (row(0),
                                                             float (v.real ()));
                     else
                       {
-                        if (ov.is_real_type ())  // cat does type conversion
+                        if (ov.isreal ())  // cat does type conversion
                           ov = do_cat_op (ov, octave_value (v), row);
                         else
                           ov.internal_rep ()->fast_elem_insert (row(0),

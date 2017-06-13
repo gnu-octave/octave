@@ -130,7 +130,7 @@ See documentation for @code{luinc}.
 
   octave_value_list retval;
 
-  if (args(0).is_real_type ())
+  if (args(0).isreal ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       octave_idx_type sm_nr = sm.rows ();

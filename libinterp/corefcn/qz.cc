@@ -394,10 +394,10 @@ Note: @code{qz} performs permutation balancing, but not scaling
         std::cout << "qz: performing balancing; CQ=" << std::endl
                   << CQ << std::endl;
 #endif
-      if (args(0).is_real_type ())
+      if (args(0).isreal ())
         caa = ComplexMatrix (aa);
 
-      if (args(1).is_real_type ())
+      if (args(1).isreal ())
         cbb = ComplexMatrix (bb);
 
       if (comp_q == 'V')

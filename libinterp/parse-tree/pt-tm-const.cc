@@ -99,10 +99,10 @@ namespace octave
     if (! some_str && val.is_string ())
       some_str = true;
 
-    if (all_real && ! val.is_real_type ())
+    if (all_real && ! val.isreal ())
       all_real = false;
 
-    if (all_cmplx && ! (val.iscomplex () || val.is_real_type ()))
+    if (all_cmplx && ! (val.iscomplex () || val.isreal ()))
       all_cmplx = false;
 
     if (! any_cell && val.iscell ())

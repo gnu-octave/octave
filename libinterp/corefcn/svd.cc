@@ -180,7 +180,7 @@ and may be less accurate for some matrices.  See the documentation for
 
   if (isfloat)
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
@@ -225,7 +225,7 @@ and may be less accurate for some matrices.  See the documentation for
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           Matrix tmp = arg.matrix_value ();
 

@@ -311,7 +311,7 @@ permutation vector instead of a permutation matrix.
     {
       if (arg.is_single_type ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               octave::math::qr<FloatMatrix>::type type
                 = qr_type<FloatMatrix> (nargin, nargout);
@@ -397,7 +397,7 @@ permutation vector instead of a permutation matrix.
         }
       else
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               octave::math::qr<Matrix>::type type = qr_type<Matrix> (nargin, nargout);
 
@@ -876,7 +876,7 @@ bool check_qr_dims (const octave_value& q, const octave_value& r,
 static
 bool check_index (const octave_value& i, bool vector_allowed = false)
 {
-  return ((i.is_real_type () || i.isinteger ())
+  return ((i.isreal () || i.isinteger ())
           && (i.is_scalar_type () || vector_allowed));
 }
 
@@ -915,8 +915,8 @@ economized (R is square).
   if (! check_qr_dims (argq, argr, true))
     error ("qrupdate: Q and R dimensions don't match");
 
-  if (argq.is_real_type () && argr.is_real_type () && argu.is_real_type ()
-      && argv.is_real_type ())
+  if (argq.isreal () && argr.isreal () && argu.isreal ()
+      && argv.isreal ())
     {
       // all real case
       if (argq.is_single_type () || argr.is_single_type ()
@@ -1101,7 +1101,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 
   octave_idx_type one = 1;
 
-  if (argq.is_real_type () && argr.is_real_type () && argx.is_real_type ())
+  if (argq.isreal () && argr.isreal () && argx.isreal ())
     {
       // real case
       if (argq.is_single_type () || argr.is_single_type ()
@@ -1294,7 +1294,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 
   octave_idx_type one = 1;
 
-  if (argq.is_real_type () && argr.is_real_type ())
+  if (argq.isreal () && argr.isreal ())
     {
       // real case
       if (argq.is_single_type () || argr.is_single_type ())
@@ -1519,7 +1519,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 
   octave_value_list retval;
 
-  if (argq.is_real_type () && argr.is_real_type ())
+  if (argq.isreal () && argr.isreal ())
     {
       // all real case
       if (argq.is_single_type ()

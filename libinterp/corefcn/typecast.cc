@@ -194,7 +194,7 @@ typecast (@var{x}, "uint8")
         get_data_and_bytesize (array.complex_array_value (), data,
                                byte_size, old_dims, frame);
     }
-  else if (array.is_real_type ())
+  else if (array.isreal ())
     {
       if (array.is_single_type ())
         get_data_and_bytesize (array.float_array_value (), data, byte_size,
@@ -525,7 +525,7 @@ column vector.
       else
         retval = do_bitunpack (array.complex_array_value ());
     }
-  else if (array.is_real_type ())
+  else if (array.isreal ())
     {
       if (array.is_single_type ())
         retval = do_bitunpack (array.float_array_value ());

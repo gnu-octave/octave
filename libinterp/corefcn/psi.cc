@@ -115,7 +115,7 @@ can have any value real or complex value.  However, for polygamma functions
     }
   else
     {
-      if (! oct_z.is_real_type ())
+      if (! oct_z.isreal ())
         error ("psi: Z must be real value for polygamma (K > 0)");
 
 #define FLOAT_BRANCH(T, A, M, E)                                        \

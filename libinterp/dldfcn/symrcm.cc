@@ -455,7 +455,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   SparseMatrix Ar;
   SparseComplexMatrix Ac;
 
-  if (arg.is_real_type ())
+  if (arg.isreal ())
     {
       Ar = arg.sparse_matrix_value ();
       // Note cidx/ridx are const, so use xridx and xcidx...

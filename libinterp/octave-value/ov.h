@@ -674,8 +674,12 @@ public:
   bool is_integer_type (void) const
   { return rep->isinteger (); }
 
+  bool isreal (void) const
+  { return rep->isreal (); }
+
+  OCTAVE_DEPRECATED ("use 'isreal' instead")
   bool is_real_type (void) const
-  { return rep->is_real_type (); }
+  { return rep->isreal (); }
 
   bool iscomplex (void) const
   { return rep->iscomplex (); }

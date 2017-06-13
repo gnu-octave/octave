@@ -81,7 +81,7 @@ public:
 
   bool islogical (void) const { return true; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_numeric_type (void) const { return false; }
 

@@ -499,7 +499,7 @@ $x = 0$, $f = e = 0$.
     retval = ovl (args(0).log2 ());
   else if (args(0).is_single_type ())
     {
-      if (args(0).is_real_type ())
+      if (args(0).isreal ())
         {
           FloatNDArray f;
           FloatNDArray x = args(0).float_array_value ();
@@ -518,7 +518,7 @@ $x = 0$, $f = e = 0$.
           retval = ovl (f, e);
         }
     }
-  else if (args(0).is_real_type ())
+  else if (args(0).isreal ())
     {
       NDArray f;
       NDArray x = args(0).array_value ();
@@ -926,7 +926,7 @@ negative numbers or when the values are periodic.
   if (dim < -1)                                                         \
     error (#FCN ": invalid dimension argument = %d", dim + 1);          \
                                                                         \
-  if (arg.is_real_type ())                                              \
+  if (arg.isreal ())                                              \
     {                                                                   \
       if (arg.is_sparse_type ())                                        \
         {                                                               \
@@ -1798,10 +1798,10 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             all_sq_strings_p = false;
           if (all_dq_strings_p && ! args(i).is_dq_string ())
             all_dq_strings_p = false;
-          if (all_real_p && ! args(i).is_real_type ())
+          if (all_real_p && ! args(i).isreal ())
             all_real_p = false;
           if (all_cmplx_p && ! (args(i).iscomplex ()
-                                || args(i).is_real_type ()))
+                                || args(i).isreal ()))
             all_cmplx_p = false;
           if (! any_sparse_p && args(i).is_sparse_type ())
             any_sparse_p = true;
@@ -3536,7 +3536,7 @@ matrices.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_real_type ());
+  return ovl (args(0).isreal ());
 }
 
 DEFUN (isempty, args, ,

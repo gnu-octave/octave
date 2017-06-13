@@ -155,7 +155,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).is_real_type ();
+        result(count) = f_args.elem (count).isreal ();
       retval(0) = result;
     }
   else if (name == "length")

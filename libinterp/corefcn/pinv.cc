@@ -78,7 +78,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
           if (tol < 0.0)
             error ("pinv: TOL must be greater than zero");
 
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             retval = arg.float_diag_matrix_value ().pseudo_inverse (tol);
           else
             retval = arg.float_complex_diag_matrix_value ().pseudo_inverse (tol);
@@ -92,7 +92,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
           if (tol < 0.0)
             error ("pinv: TOL must be greater than zero");
 
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             retval = arg.diag_matrix_value ().pseudo_inverse (tol);
           else
             retval = arg.complex_diag_matrix_value ().pseudo_inverse (tol);
@@ -111,7 +111,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
       if (tol < 0.0)
         error ("pinv: TOL must be greater than zero");
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix m = arg.float_matrix_value ();
 
@@ -135,7 +135,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
       if (tol < 0.0)
         error ("pinv: TOL must be greater than zero");
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           Matrix m = arg.matrix_value ();
 

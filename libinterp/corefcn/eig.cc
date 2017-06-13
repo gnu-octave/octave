@@ -200,7 +200,7 @@ The eigenvalues returned by @code{eig} are not ordered.
       FloatEIG result;
       if (AEPcase)
         {
-          if (arg_a.is_real_type ())
+          if (arg_a.isreal ())
             {
               ftmp_a = arg_a.float_matrix_value ();
 
@@ -215,7 +215,7 @@ The eigenvalues returned by @code{eig} are not ordered.
         }
       else
         {
-          if (arg_a.is_real_type () && arg_b.is_real_type ())
+          if (arg_a.isreal () && arg_b.isreal ())
             {
               ftmp_a = arg_a.float_matrix_value ();
               ftmp_b = arg_b.float_matrix_value ();
@@ -266,7 +266,7 @@ The eigenvalues returned by @code{eig} are not ordered.
 
       if (AEPcase)
         {
-          if (arg_a.is_real_type ())
+          if (arg_a.isreal ())
             {
               tmp_a = arg_a.matrix_value ();
 
@@ -281,7 +281,7 @@ The eigenvalues returned by @code{eig} are not ordered.
         }
       else
         {
-          if (arg_a.is_real_type () && arg_b.is_real_type ())
+          if (arg_a.isreal () && arg_b.isreal ())
             {
               tmp_a = arg_a.matrix_value ();
               tmp_b = arg_b.matrix_value ();

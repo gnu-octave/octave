@@ -84,7 +84,7 @@ public:
 
   bool is_real_scalar (void) const { return true; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_double_type (void) const { return true; }
 

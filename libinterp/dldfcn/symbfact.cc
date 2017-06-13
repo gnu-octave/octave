@@ -131,7 +131,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   A->stype = 1;
   A->x = &dummy;
 
-  if (args(0).is_real_type ())
+  if (args(0).isreal ())
     {
       const SparseMatrix a = args(0).sparse_matrix_value ();
       A->nrow = a.rows ();

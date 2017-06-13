@@ -117,7 +117,7 @@ sparse matrix if possible.
     }
   else if (isfloat)
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix m = arg.float_matrix_value ();
 
@@ -136,7 +136,7 @@ sparse matrix if possible.
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           if (arg.is_sparse_type ())
             {

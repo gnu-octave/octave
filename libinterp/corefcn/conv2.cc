@@ -114,7 +114,7 @@ When the third argument is a matrix, return the convolution of the matrix
               || args(2).iscomplex ())
             {
               FloatComplexMatrix a (args(2).float_complex_matrix_value ());
-              if (args(1).is_real_type () && args(2).is_real_type ())
+              if (args(1).isreal () && args(2).isreal ())
                 {
                   FloatColumnVector v1 (args(0).float_vector_value ());
                   FloatRowVector v2 (args(1).float_vector_value ());
@@ -141,7 +141,7 @@ When the third argument is a matrix, return the convolution of the matrix
               || args(2).iscomplex ())
             {
               ComplexMatrix a (args(2).complex_matrix_value ());
-              if (args(1).is_real_type () && args(2).is_real_type ())
+              if (args(1).isreal () && args(2).isreal ())
                 {
                   ColumnVector v1 (args(0).vector_value ());
                   RowVector v2 (args(1).vector_value ());
@@ -170,7 +170,7 @@ When the third argument is a matrix, return the convolution of the matrix
           if (args(0).iscomplex () || args(1).iscomplex ())
             {
               FloatComplexMatrix a (args(0).float_complex_matrix_value ());
-              if (args(1).is_real_type ())
+              if (args(1).isreal ())
                 {
                   FloatMatrix b (args(1).float_matrix_value ());
                   retval = convn (a, b, ct);
@@ -193,7 +193,7 @@ When the third argument is a matrix, return the convolution of the matrix
           if (args(0).iscomplex () || args(1).iscomplex ())
             {
               ComplexMatrix a (args(0).complex_matrix_value ());
-              if (args(1).is_real_type ())
+              if (args(1).isreal ())
                 {
                   Matrix b (args(1).matrix_value ());
                   retval = convn (a, b, ct);
@@ -335,7 +335,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
       if (args(0).iscomplex () || args(1).iscomplex ())
         {
           FloatComplexNDArray a (args(0).float_complex_array_value ());
-          if (args(1).is_real_type ())
+          if (args(1).isreal ())
             {
               FloatNDArray b (args(1).float_array_value ());
               retval = convn (a, b, ct);
@@ -358,7 +358,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
       if (args(0).iscomplex () || args(1).iscomplex ())
         {
           ComplexNDArray a (args(0).complex_array_value ());
-          if (args(1).is_real_type ())
+          if (args(1).isreal ())
             {
               NDArray b (args(1).array_value ());
               retval = convn (a, b, ct);

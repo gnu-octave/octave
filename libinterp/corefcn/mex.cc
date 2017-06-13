@@ -252,7 +252,7 @@ public:
 
   int is_range (void) const { return val.is_range (); }
 
-  int is_real_type (void) const { return val.is_real_type (); }
+  int isreal (void) const { return val.isreal (); }
 
   int is_logical_scalar_true (void) const
   {
@@ -397,7 +397,7 @@ public:
 
         if (val.islogical ())
           return *static_cast<bool *> (data);
-        else if (val.is_real_type ())
+        else if (val.isreal ())
           return *static_cast<double *> (data);
         else  // Complex type, only return real part
           return *static_cast<double *> (data);
@@ -422,7 +422,7 @@ public:
   {
     void *retval = nullptr;
 
-    if (is_numeric () && is_real_type ())
+    if (is_numeric () && isreal ())
       retval = 0;
     else
       request_mutation ();

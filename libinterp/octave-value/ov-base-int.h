@@ -61,7 +61,7 @@ public:
 
   octave_base_value * try_narrowing_conversion (void);
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   //  void increment (void) { matrix += 1; }
 
@@ -119,7 +119,7 @@ public:
 
   octave_base_value * try_narrowing_conversion (void) { return 0; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_real_scalar (void) const { return true; }
 

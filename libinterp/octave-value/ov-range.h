@@ -157,7 +157,7 @@ public:
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_double_type (void) const { return true; }
 

@@ -471,7 +471,7 @@ dimensionality as the other array.
                       std::string result_type = tmp(0).class_name ();
                       if (result_type == "double")
                         {
-                          if (tmp(0).is_real_type ())
+                          if (tmp(0).isreal ())
                             {
                               have_NDArray = true;
                               result_NDArray = tmp(0).array_value ();
@@ -487,7 +487,7 @@ dimensionality as the other array.
                         }
                       else if (result_type == "single")
                         {
-                          if (tmp(0).is_real_type ())
+                          if (tmp(0).isreal ())
                             {
                               have_FloatNDArray = true;
                               result_FloatNDArray
@@ -566,7 +566,7 @@ dimensionality as the other array.
                               have_NDArray = true;
                             }
                         }
-                      else if (tmp(0).is_real_type ())
+                      else if (tmp(0).isreal ())
                         result_FloatNDArray.insert
                           (tmp(0).float_array_value (), ra_idx);
                       else
@@ -588,7 +588,7 @@ dimensionality as the other array.
                           C = result_NDArray;
                           C = do_cat_op (C, tmp(0), ra_idx);
                         }
-                      else if (tmp(0).is_real_type ())
+                      else if (tmp(0).isreal ())
                         result_NDArray.insert (tmp(0).array_value (),
                                                ra_idx);
                       else

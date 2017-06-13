@@ -87,7 +87,7 @@ do_fftn (const octave_value_list& args, const char *fcn, int type)
 
   if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatNDArray nda = arg.float_array_value ();
 
@@ -104,7 +104,7 @@ do_fftn (const octave_value_list& args, const char *fcn, int type)
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           NDArray nda = arg.array_value ();
 

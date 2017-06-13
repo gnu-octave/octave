@@ -190,7 +190,7 @@ permutation information.
       if (arg.isempty ())
         return octave_value_list (5, SparseMatrix ());
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -330,7 +330,7 @@ permutation information.
       if (arg.isempty ())
         return octave_value_list (3, Matrix ());
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           if (arg.is_single_type ())
             {
@@ -630,8 +630,8 @@ factorization from scratch.
                   ? argp.perm_matrix_value ()
                   : PermMatrix::eye (argl.rows ()));
 
-  if (argl.is_real_type () && argu.is_real_type ()
-      && argx.is_real_type () && argy.is_real_type ())
+  if (argl.isreal () && argu.isreal ()
+      && argx.isreal () && argy.isreal ())
     {
       // all real case
       if (argl.is_single_type () || argu.is_single_type ()

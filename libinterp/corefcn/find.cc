@@ -474,7 +474,7 @@ b = sparse (i, j, v, sz(1), sz(2));
     }
   else if (arg.is_sparse_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           SparseMatrix v = arg.sparse_matrix_value ();
 
@@ -503,7 +503,7 @@ b = sparse (i, j, v, sz(1), sz(2));
     }
   else if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatNDArray nda = arg.float_array_value ();
 
@@ -516,7 +516,7 @@ b = sparse (i, j, v, sz(1), sz(2));
           retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
         }
     }
-  else if (arg.is_real_type ())
+  else if (arg.isreal ())
     {
       NDArray nda = arg.array_value ();
 

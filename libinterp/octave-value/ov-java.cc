@@ -1627,7 +1627,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
     }
   else if (Vjava_matrix_autoconversion
            && (val.is_matrix_type () || val.is_range ())
-           && val.is_real_type ())
+           && val.isreal ())
     {
       jclass_ref mcls (jni_env, find_octave_class (jni_env,
                                                    "org/octave/Matrix"));

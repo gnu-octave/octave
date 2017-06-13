@@ -210,7 +210,7 @@ and zggsvd routines.
 
       if (argA.is_single_type () || argB.is_single_type ())
         {
-          if (argA.is_real_type () && argB.is_real_type ())
+          if (argA.isreal () && argB.isreal ())
             {
               FloatMatrix tmpA = argA.xfloat_matrix_value ("gsvd: A must be a real or complex matrix");
               FloatMatrix tmpB = argB.xfloat_matrix_value ("gsvd: B must be a real or complex matrix");
@@ -239,7 +239,7 @@ and zggsvd routines.
         }
       else
         {
-          if (argA.is_real_type () && argB.is_real_type ())
+          if (argA.isreal () && argB.isreal ())
             {
               Matrix tmpA = argA.xmatrix_value ("gsvd: A must be a real or complex matrix");
               Matrix tmpB = argB.xmatrix_value ("gsvd: B must be a real or complex matrix");

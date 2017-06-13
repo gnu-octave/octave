@@ -328,7 +328,7 @@ namespace QtHandles
                                          a));
                   }
             }
-          else if (v.is_real_type ())
+          else if (v.isreal ())
             {
               NDArray d = v.array_value ();
 

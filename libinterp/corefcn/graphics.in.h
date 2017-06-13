@@ -1210,7 +1210,7 @@ public:
 protected:
   bool do_set (const octave_value& v)
   {
-    if (! v.is_scalar_type () || ! v.is_real_type ())
+    if (! v.is_scalar_type () || ! v.isreal ())
       error ("set: invalid value for double property \"%s\"",
              get_name ().c_str ());
 

@@ -1386,7 +1386,7 @@ double_radio_property::do_set (const octave_value& val)
           return true;
         }
     }
-  else if (val.is_scalar_type () && val.is_real_type ())
+  else if (val.is_scalar_type () && val.isreal ())
     {
       double new_dval = val.double_value ();
 
@@ -2873,7 +2873,7 @@ is_handle (const octave_value& val)
 
   if (val.is_real_scalar () && is_handle (val.double_value ()))
     retval = true;
-  else if (val.is_numeric_type () && val.is_real_type ())
+  else if (val.is_numeric_type () && val.isreal ())
     {
       const NDArray handles = val.array_value ();
 
@@ -10169,7 +10169,7 @@ is_handle_visible (const octave_value& val)
 
   if (val.is_real_scalar () && is_handle_visible (val.double_value ()))
     retval = true;
-  else if (val.is_numeric_type () && val.is_real_type ())
+  else if (val.is_numeric_type () && val.isreal ())
     {
       const NDArray handles = val.array_value ();
 

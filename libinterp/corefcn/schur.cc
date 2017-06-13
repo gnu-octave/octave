@@ -173,7 +173,7 @@ in control (see @code{are} and @code{dare}).
 
   if (arg.is_single_type ())
     {
-      if (! force_complex && arg.is_real_type ())
+      if (! force_complex && arg.isreal ())
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
@@ -208,7 +208,7 @@ in control (see @code{are} and @code{dare}).
     }
   else
     {
-      if (! force_complex && arg.is_real_type ())
+      if (! force_complex && arg.isreal ())
         {
           Matrix tmp = arg.matrix_value ();
 

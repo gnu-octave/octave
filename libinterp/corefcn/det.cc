@@ -129,7 +129,7 @@ For that, use any of the condition number functions: @code{cond},
     }
   else if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           octave_idx_type info;
           float rcond = 0.0;
@@ -162,7 +162,7 @@ For that, use any of the condition number functions: @code{cond},
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           octave_idx_type info;
           double rcond = 0.0;

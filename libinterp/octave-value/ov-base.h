@@ -413,7 +413,7 @@ public:
 
   virtual bool isinteger (void) const { return false; }
 
-  virtual bool is_real_type (void) const { return false; }
+  virtual bool isreal (void) const { return false; }
 
   virtual bool iscomplex (void) const { return false; }
 

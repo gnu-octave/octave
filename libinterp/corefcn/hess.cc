@@ -75,7 +75,7 @@ IEEE Transactions on Automatic Control, 1979).
 
   if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
@@ -102,7 +102,7 @@ IEEE Transactions on Automatic Control, 1979).
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           Matrix tmp = arg.matrix_value ();
 

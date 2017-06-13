@@ -82,7 +82,7 @@ and 16.15), Dover, 1965.
 
       if (u_arg.is_scalar_type ())
         {
-          if (u_arg.is_real_type ())
+          if (u_arg.isreal ())
             {
               // u real, m scalar
               double u = args(0).xdouble_value ("ellipj: U must be a scalar or matrix");
@@ -139,7 +139,7 @@ and 16.15), Dover, 1965.
       if (u_arg.is_scalar_type ())
         {
           // u is scalar, m is array
-          if (u_arg.is_real_type ())
+          if (u_arg.isreal ())
             {
               // u is real scalar, m is array
               double u = u_arg.xdouble_value ("ellipj: U must be a scalar or matrix");
@@ -183,7 +183,7 @@ and 16.15), Dover, 1965.
       else
         {
           // u is array, m is array
-          if (u_arg.is_real_type ())
+          if (u_arg.isreal ())
             {
               // u is real array, m is array
               NDArray u = u_arg.xarray_value ("ellipj: U must be a scalar or matrix");

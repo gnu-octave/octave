@@ -152,7 +152,7 @@ sparse matrices.
 
   if (nargin < 1 || nargin > 3 || nargout > 3)
     print_usage ();
-  if (nargout > 2 && ! args(0).is_sparse_type ())
+  if (nargout > 2 && ! args(0).issparse ())
     error ("chol: using three output arguments, matrix A must be sparse");
 
   bool LLt = false;
@@ -179,7 +179,7 @@ sparse matrices.
   if (arg.isempty ())
     return ovl (Matrix ());
 
-  if (arg.is_sparse_type ())
+  if (arg.issparse ())
     {
       octave_idx_type info;
       bool natural = (nargout != 3);
@@ -374,7 +374,7 @@ the Cholesky@tie{}factorization.
     retval = Matrix ();
   else
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           octave_idx_type info;
 
@@ -503,7 +503,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
     retval = Matrix ();
   else
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (arg.isreal ())
             {

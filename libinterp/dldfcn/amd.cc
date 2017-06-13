@@ -88,7 +88,7 @@ The author of the code itself is Timothy A. Davis
   SparseMatrix sm;
   SparseComplexMatrix scm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
       if (args(0).iscomplex ())
         {

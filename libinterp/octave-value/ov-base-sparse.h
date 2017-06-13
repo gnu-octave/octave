@@ -142,7 +142,7 @@ public:
 
   bool is_numeric_type (void) const { return true; }
 
-  bool is_sparse_type (void) const { return true; }
+  bool issparse (void) const { return true; }
 
   bool is_defined (void) const { return true; }
 

@@ -211,7 +211,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   SparseComplexMatrix scm;
   SparseMatrix sm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
       if (args(0).iscomplex ())
         {
@@ -455,7 +455,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   SparseMatrix sm;
   SparseComplexMatrix scm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
       if (args(0).iscomplex ())
         {

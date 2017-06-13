@@ -108,14 +108,14 @@ namespace octave
     if (! any_cell && val.iscell ())
       any_cell = true;
 
-    if (! any_sparse && val.is_sparse_type ())
+    if (! any_sparse && val.issparse ())
       any_sparse = true;
 
     if (! any_class && val.is_object ())
       any_class = true;
 
     // Special treatment of sparse matrices to avoid out-of-memory error
-    all_1x1 = all_1x1 && ! val.is_sparse_type () && val.numel () == 1;
+    all_1x1 = all_1x1 && ! val.issparse () && val.numel () == 1;
   }
 
   void

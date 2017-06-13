@@ -697,8 +697,12 @@ public:
   bool is_numeric_type (void) const
   { return rep->is_numeric_type (); }
 
+  bool issparse (void) const
+  { return rep->issparse (); }
+
+  OCTAVE_DEPRECATED ("use 'issparse' instead")
   bool is_sparse_type (void) const
-  { return rep->is_sparse_type (); }
+  { return rep->issparse (); }
 
   // Does this constant correspond to a truth value?
 

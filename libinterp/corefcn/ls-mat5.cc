@@ -2073,7 +2073,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (chm.numel () > 2)
         ret += PAD (2 * chm.numel ());
     }
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     {
       if (tc.iscomplex ())
         {
@@ -2256,7 +2256,7 @@ save_mat5_binary_element (std::ostream& os,
         }
     }
 
-  if (tc.is_sparse_type ())
+  if (tc.issparse ())
     {
       octave_idx_type nnz;
       octave_idx_type nc;
@@ -2364,7 +2364,7 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_UINT32_CLASS;
   else if (cname == "uint64")
     flags |= MAT_FILE_UINT64_CLASS;
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     flags |= MAT_FILE_SPARSE_CLASS;
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ()
            || tc.is_complex_scalar () || tc.is_complex_matrix ())
@@ -2448,7 +2448,7 @@ save_mat5_binary_element (std::ostream& os,
           os.write (padbuf, paddedlength - len);
         }
     }
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     {
       if (tc.iscomplex ())
         {

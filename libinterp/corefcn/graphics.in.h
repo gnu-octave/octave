@@ -1368,7 +1368,7 @@ public:
 
   array_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m)
-    : base_property (nm, h), data (m.is_sparse_type () ? m.full_value () : m),
+    : base_property (nm, h), data (m.issparse () ? m.full_value () : m),
       xmin (), xmax (), xminp (), xmaxp (),
       type_constraints (), size_constraints (), finite_constraint (NO_CHECK),
       minval (std::pair<double, bool> (octave_NaN, true)),
@@ -1446,7 +1446,7 @@ public:
 protected:
   bool do_set (const octave_value& v)
   {
-    octave_value tmp = (v.is_sparse_type () ? v.full_value () : v);
+    octave_value tmp = (v.issparse () ? v.full_value () : v);
 
     if (! validate (tmp))
       error ("invalid value for array property \"%s\"",

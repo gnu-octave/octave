@@ -427,7 +427,7 @@ b = sparse (i, j, v, sz(1), sz(2));
 
   if (arg.islogical ())
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           SparseBoolMatrix v = arg.sparse_bool_matrix_value ();
 
@@ -472,7 +472,7 @@ b = sparse (i, j, v, sz(1), sz(2));
       else
         panic_impossible ();
     }
-  else if (arg.is_sparse_type ())
+  else if (arg.issparse ())
     {
       if (arg.isreal ())
         {

@@ -53,7 +53,7 @@ See documentation for @code{luinc}.
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  if (! args(0).is_sparse_type ())
+  if (! args(0).issparse ())
     error ("luinc: matrix A must be sparse");
 
   bool zero_level = false;

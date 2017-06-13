@@ -232,7 +232,7 @@ Undocumented internal function.
     {
       if (args(0).iscomplex ())
         {
-          if (args(0).is_sparse_type ())
+          if (args(0).issparse ())
             {
               ascm = (args(0).sparse_complex_matrix_value ());
               a_is_sparse = true;
@@ -245,7 +245,7 @@ Undocumented internal function.
         }
       else
         {
-          if (args(0).is_sparse_type ())
+          if (args(0).issparse ())
             {
               asmm = (args(0).sparse_matrix_value ());
               a_is_sparse = true;

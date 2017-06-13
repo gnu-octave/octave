@@ -50,7 +50,7 @@ instead.
 
   octave_value retval;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     error ("rcond: for sparse matrices use 'rcond (full (a))' or 'condest (a)' instead");
 
   if (args(0).is_single_type ())

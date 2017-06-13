@@ -238,7 +238,7 @@ public:
 
   int is_single (void) const { return val.is_single_type (); }
 
-  int is_sparse (void) const { return val.is_sparse_type (); }
+  int is_sparse (void) const { return val.issparse (); }
 
   int is_struct (void) const { return val.is_map (); }
 
@@ -388,7 +388,7 @@ public:
 
   double get_scalar (void) const
   {
-    if (val.is_sparse_type ())
+    if (val.issparse ())
       {
         // For sparse arrays, return the first non-zero value.
         void *data = val.mex_get_data ();

@@ -215,14 +215,14 @@ do_trilu (const std::string& name,
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = do_trilu (arg.sparse_matrix_value (), k, lower, pack);
       else
         retval = do_trilu (arg.array_value (), k, lower, pack);
       break;
 
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
                            pack);
       else
@@ -230,7 +230,7 @@ do_trilu (const std::string& name,
       break;
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
                            pack);
       else

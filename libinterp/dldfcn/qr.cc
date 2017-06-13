@@ -268,7 +268,7 @@ permutation vector instead of a permutation matrix.
         is_cmplx = true;
     }
 
-  if (arg.is_sparse_type ())
+  if (arg.issparse ())
     {
       if (nargout > 2)
         error ("qr: Permutation output is not supported for sparse input");

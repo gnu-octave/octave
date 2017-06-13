@@ -167,7 +167,7 @@ For that, use any of the condition number functions: @code{cond},
           octave_idx_type info;
           double rcond = 0.0;
           // Always compute rcond, so we can detect singular matrices.
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -194,7 +194,7 @@ For that, use any of the condition number functions: @code{cond},
           octave_idx_type info;
           double rcond = 0.0;
           // Always compute rcond, so we can detect singular matrices.
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 

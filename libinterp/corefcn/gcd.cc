@@ -267,7 +267,7 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
   switch (btyp)
     {
     case btyp_double:
-      if (a.is_sparse_type () && b.is_sparse_type ())
+      if (a.issparse () && b.issparse ())
         {
           retval = do_simple_gcd<SparseMatrix> (a, b);
           break;
@@ -420,7 +420,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
     }
 
   // For consistency.
-  if (a.is_sparse_type () && b.is_sparse_type ())
+  if (a.issparse () && b.issparse ())
     {
       retval = retval.sparse_matrix_value ();
       x = x.sparse_matrix_value ();

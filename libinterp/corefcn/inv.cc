@@ -138,7 +138,7 @@ sparse matrix if possible.
     {
       if (arg.isreal ())
         {
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -157,7 +157,7 @@ sparse matrix if possible.
         }
       else if (arg.iscomplex ())
         {
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 

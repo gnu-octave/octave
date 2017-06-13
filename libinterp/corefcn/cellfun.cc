@@ -2113,7 +2113,7 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])
     d[i-1] = args(i).octave_idx_type_vector_value (true);
 
   octave_value a = args(0);
-  bool sparse = a.is_sparse_type ();
+  bool sparse = a.issparse ();
   if (sparse && nargin > 3)
     error ("mat2cell: sparse arguments only support 2-D indexing");
 
@@ -2268,7 +2268,7 @@ slicing is done along the first non-singleton dimension.
     error ("cellslices: the lengths of LB and UB must match");
 
   Cell retcell;
-  if (! x.is_sparse_type () && x.is_matrix_type ())
+  if (! x.issparse () && x.is_matrix_type ())
     {
       // specialize for some dense arrays.
       if (x.islogical ())

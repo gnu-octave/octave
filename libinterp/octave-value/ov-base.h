@@ -425,7 +425,7 @@ public:
 
   virtual bool is_numeric_type (void) const { return false; }
 
-  virtual bool is_sparse_type (void) const { return false; }
+  virtual bool issparse (void) const { return false; }
 
   virtual bool is_true (void) const { return false; }
 

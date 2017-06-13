@@ -166,7 +166,7 @@ dispatch_kron (const octave_value& a, const octave_value& b)
   octave_value retval;
   if (a.is_perm_matrix () && b.is_perm_matrix ())
     retval = do_kron<PermMatrix, PermMatrix> (a, b);
-  else if (a.is_sparse_type () || b.is_sparse_type ())
+  else if (a.issparse () || b.issparse ())
     {
       if (a.iscomplex () || b.iscomplex ())
         retval = do_kron<SparseComplexMatrix, SparseComplexMatrix> (a, b);

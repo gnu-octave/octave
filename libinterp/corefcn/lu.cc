@@ -138,7 +138,7 @@ permutation information.
 @end deftypefn */)
 {
   int nargin = args.length ();
-  bool issparse = (nargin > 0 && args(0).is_sparse_type ());
+  bool issparse = (nargin > 0 && args(0).issparse ());
 
   if (nargin < 1 || (issparse && nargin > 3) || (! issparse && nargin > 2))
     print_usage ();

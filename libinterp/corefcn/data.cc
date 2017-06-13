@@ -244,7 +244,7 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         retval = atan2 (args(0).scalar_value (), args(1).scalar_value ());
-      else if (args(0).is_sparse_type ())
+      else if (args(0).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
@@ -354,7 +354,7 @@ do_hypot (const octave_value& x, const octave_value& y)
     {
       if (arg0.is_scalar_type () && arg1.is_scalar_type ())
         retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
-      else if (arg0.is_sparse_type () || arg1.is_sparse_type ())
+      else if (arg0.issparse () || arg1.issparse ())
         {
           SparseMatrix m0 = arg0.sparse_matrix_value ();
           SparseMatrix m1 = arg1.sparse_matrix_value ();
@@ -666,7 +666,7 @@ periodic, @code{mod} is a better choice.
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         retval = octave::math::rem (args(0).scalar_value (), args(1).scalar_value ());
-      else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
+      else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
@@ -845,7 +845,7 @@ negative numbers or when the values are periodic.
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         retval = octave::math::mod (args(0).scalar_value (), args(1).scalar_value ());
-      else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
+      else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
@@ -928,7 +928,7 @@ negative numbers or when the values are periodic.
                                                                         \
   if (arg.isreal ())                                              \
     {                                                                   \
-      if (arg.is_sparse_type ())                                        \
+      if (arg.issparse ())                                        \
         {                                                               \
           SparseMatrix tmp = arg.sparse_matrix_value ();                \
                                                                         \
@@ -949,7 +949,7 @@ negative numbers or when the values are periodic.
     }                                                                   \
   else if (arg.iscomplex ())                                      \
     {                                                                   \
-      if (arg.is_sparse_type ())                                        \
+      if (arg.issparse ())                                        \
         {                                                               \
           SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
                                                                         \
@@ -1079,13 +1079,13 @@ See @code{sum} for an explanation of the optional parameters
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_matrix_value ().cumsum (dim);
       else
         retval = arg.array_value ().cumsum (dim);
       break;
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_complex_matrix_value ().cumsum (dim);
       else
         retval = arg.complex_array_value ().cumsum (dim);
@@ -1123,7 +1123,7 @@ See @code{sum} for an explanation of the optional parameters
 #undef MAKE_INT_BRANCH
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           SparseMatrix cs = arg.sparse_matrix_value ().cumsum (dim);
           if (isnative)
@@ -1365,13 +1365,13 @@ in double precision even for single precision inputs.
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_matrix_value ().prod (dim);
       else
         retval = arg.array_value ().prod (dim);
       break;
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_complex_matrix_value ().prod (dim);
       else
         retval = arg.complex_array_value ().prod (dim);
@@ -1414,7 +1414,7 @@ in double precision even for single precision inputs.
       break;
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isnative)
             retval = arg.sparse_bool_matrix_value ().all (dim);
@@ -1803,7 +1803,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           if (all_cmplx_p && ! (args(i).iscomplex ()
                                 || args(i).isreal ()))
             all_cmplx_p = false;
-          if (! any_sparse_p && args(i).is_sparse_type ())
+          if (! any_sparse_p && args(i).issparse ())
             any_sparse_p = true;
           if (! any_cell_p && args(i).iscell ())
             any_cell_p = true;
@@ -2905,7 +2905,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isextra)
             warning ("sum: 'extra' not yet implemented for sparse matrices");
@@ -2918,7 +2918,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
       break;
 
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isextra)
             warning ("sum: 'extra' not yet implemented for sparse matrices");
@@ -2972,7 +2972,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
       break;
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isnative)
             retval = arg.sparse_bool_matrix_value ().any (dim);
@@ -3255,7 +3255,7 @@ complex ([1, 2], [3, 4])
         retval = arg;
       else
         {
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseComplexMatrix val = arg.xsparse_complex_matrix_value ("complex: invalid conversion");
 
@@ -3298,7 +3298,7 @@ complex ([1, 2], [3, 4])
       octave_value re = args(0);
       octave_value im = args(1);
 
-      if (re.is_sparse_type () && im.is_sparse_type ())
+      if (re.issparse () && im.issparse ())
         {
           const SparseMatrix re_val = re.sparse_matrix_value ();
           const SparseMatrix im_val = im.sparse_matrix_value ();
@@ -6689,7 +6689,7 @@ Undocumented internal function.
 
   octave_value arg = args(0);
 
-  if (arg.is_sparse_type ())
+  if (arg.issparse ())
     error ("__sort_rows_idx__: sparse matrices not yet supported");
 
   if (arg.ndims () != 2)
@@ -6770,7 +6770,7 @@ This function does not support sparse matrices.
 
   if (by_rows)
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         error ("issorted: sparse matrices not yet supported");
 
       if (arg.ndims () != 2)
@@ -7504,7 +7504,7 @@ do_diff (const octave_value& array, octave_idx_type order,
       else
         panic_impossible ();
     }
-  else if (array.is_sparse_type ())
+  else if (array.issparse ())
     {
       if (array.iscomplex ())
         retval = do_sparse_diff (array.sparse_complex_matrix_value (),
@@ -7738,7 +7738,7 @@ Encode a double matrix or array @var{x} into the base64 format string
   if (! args(0).is_numeric_type ())
     error ("base64_encode: encoding is supported only for numeric arrays");
 
-  if (args(0).iscomplex () || args(0).is_sparse_type ())
+  if (args(0).iscomplex () || args(0).issparse ())
     error ("base64_encode: encoding complex or sparse data is not supported");
 
   octave_value_list retval;

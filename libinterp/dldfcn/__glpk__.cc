@@ -358,7 +358,7 @@ Undocumented internal function.
 
   // 2nd Input.  A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
-  if (args(1).is_sparse_type ())
+  if (args(1).issparse ())
     {
       SparseMatrix A = args(1).xsparse_matrix_value ("__glpk__: invalid value of A");
 

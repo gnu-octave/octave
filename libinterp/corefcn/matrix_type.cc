@@ -141,7 +141,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
       else
         retval = args(0);
     }
-  else if (args(0).is_sparse_type ())
+  else if (args(0).issparse ())
     {
       if (nargin == 1)
         {

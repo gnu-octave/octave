@@ -115,7 +115,7 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
 {
   octave_value_list retval;
 
-  if (! arg.is_sparse_type ())
+  if (! arg.issparse ())
     {
       if (nargout <= 1)
         {
@@ -288,7 +288,7 @@ do_minmax_body (const octave_value_list& args,
                                   (range.inc () >= 0 ? range.numel () : 1);
                   }
               }
-            else if (arg.is_sparse_type ())
+            else if (arg.issparse ())
               retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim,
                                                        ismin);
             else
@@ -299,7 +299,7 @@ do_minmax_body (const octave_value_list& args,
 
         case btyp_complex:
           {
-            if (arg.is_sparse_type ())
+            if (arg.issparse ())
               retval = do_minmax_red_op<SparseComplexMatrix> (arg, nargout, dim,
                                                               ismin);
             else
@@ -364,9 +364,9 @@ do_minmax_body (const octave_value_list& args,
         {
         case btyp_double:
           {
-            if ((argx.is_sparse_type ()
-                 && (argy.is_sparse_type () || argy.is_scalar_type ()))
-                || (argy.is_sparse_type () && argx.is_scalar_type ()))
+            if ((argx.issparse ()
+                 && (argy.issparse () || argy.is_scalar_type ()))
+                || (argy.issparse () && argx.is_scalar_type ()))
               retval = do_minmax_bin_op<SparseMatrix> (argx, argy, ismin);
             else
               retval = do_minmax_bin_op<NDArray> (argx, argy, ismin);
@@ -375,9 +375,9 @@ do_minmax_body (const octave_value_list& args,
 
         case btyp_complex:
           {
-            if ((argx.is_sparse_type ()
-                 && (argy.is_sparse_type () || argy.is_scalar_type ()))
-                || (argy.is_sparse_type () && argx.is_scalar_type ()))
+            if ((argx.issparse ()
+                 && (argy.issparse () || argy.is_scalar_type ()))
+                || (argy.issparse () && argx.is_scalar_type ()))
               retval = do_minmax_bin_op<SparseComplexMatrix> (argx, argy,
                                                               ismin);
             else

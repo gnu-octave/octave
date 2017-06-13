@@ -38,7 +38,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
 
   bool isvector = (x.columns () == 1 || x.rows () == 1);
   bool iscomplex = x.iscomplex ();
-  bool issparse = x.is_sparse_type ();
+  bool issparse = x.issparse ();
   bool isfloat = x.is_single_type ();
 
   if (! isfloat && ! x.is_double_type ())
@@ -94,7 +94,7 @@ octave_value xcolnorms (const octave_value& x, const octave_value& p)
   octave_value retval;
 
   bool iscomplex = x.iscomplex ();
-  bool issparse = x.is_sparse_type ();
+  bool issparse = x.issparse ();
   bool isfloat = x.is_single_type ();
 
   if (! isfloat && ! x.is_double_type ())
@@ -133,7 +133,7 @@ octave_value xrownorms (const octave_value& x, const octave_value& p)
   octave_value retval;
 
   bool iscomplex = x.iscomplex ();
-  bool issparse = x.is_sparse_type ();
+  bool issparse = x.issparse ();
   bool isfloat = x.is_single_type ();
 
   if (! isfloat && ! x.is_double_type ())
@@ -172,7 +172,7 @@ octave_value xfrobnorm (const octave_value& x)
   octave_value retval;
 
   bool iscomplex = x.iscomplex ();
-  bool issparse = x.is_sparse_type ();
+  bool issparse = x.issparse ();
   bool isfloat = x.is_single_type ();
 
   if (! isfloat && ! x.is_double_type ())

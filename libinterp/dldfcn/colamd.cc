@@ -333,7 +333,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   SparseComplexMatrix scm;
   SparseMatrix sm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
       if (args(0).iscomplex ())
         {
@@ -543,7 +543,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   SparseMatrix sm;
   SparseComplexMatrix scm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
       if (args(0).iscomplex ())
         {
@@ -667,7 +667,7 @@ permutations on the tree.
   octave_idx_type *ridx = nullptr;
   octave_idx_type *cidx = nullptr;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     error ("etree: S must be a sparse matrix");
 
   if (args(0).iscomplex ())

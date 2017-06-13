@@ -1364,7 +1364,7 @@ public:
         size_info(j) = val.size ();
         bytes_info(j) = val.byte_size ();
         class_info(j) = val.class_name ();
-        sparse_info(j) = val.is_sparse_type ();
+        sparse_info(j) = val.issparse ();
         complex_info(j) = val.iscomplex ();
         nesting_info(j) = ni;
       }

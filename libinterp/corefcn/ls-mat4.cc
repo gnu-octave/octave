@@ -394,7 +394,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 {
   int32_t mopt = 0;
 
-  mopt += tc.is_sparse_type () ? 2 : tc.is_string () ? 1 : 0;
+  mopt += tc.issparse () ? 2 : tc.is_string () ? 1 : 0;
 
   octave::mach_info::float_format flt_fmt =
     octave::mach_info::native_float_format ();;
@@ -408,7 +408,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   int32_t nc = tc.columns ();
 
-  if (tc.is_sparse_type ())
+  if (tc.issparse ())
     {
       len = tc.nnz ();
       uint32_t nnz = len + 1;
@@ -480,7 +480,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       double tmp = tc.double_value ();
       os.write (reinterpret_cast<char *> (&tmp), 8);
     }
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     {
       double ds;
       OCTAVE_LOCAL_BUFFER (double, dtmp, len);

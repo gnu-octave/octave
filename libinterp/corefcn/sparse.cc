@@ -51,7 +51,7 @@ Return true if @var{x} is a sparse matrix.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_sparse_type ());
+  return ovl (args(0).issparse ());
 }
 
 DEFUN (sparse, args, ,

@@ -466,7 +466,7 @@ dimensionality as the other array.
 
               if (i == 0)
                 {
-                  if (! tmp(0).is_sparse_type ())
+                  if (! tmp(0).issparse ())
                     {
                       std::string result_type = tmp(0).class_name ();
                       if (result_type == "double")

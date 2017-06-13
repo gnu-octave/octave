@@ -482,6 +482,10 @@ public:
 
   bool all_zero_dims (void) const { return dims ().all_zero (); }
 
+  // Are the dimensions of this constant zero by zero?
+  bool is_zero_by_zero (void) const
+  { return (ndims () == 2 && rows () == 0 && columns () == 0); }
+
   octave_idx_type numel (void) const
   { return rep->numel (); }
 
@@ -544,7 +548,7 @@ public:
 
   OCTAVE_DEPRECATED ("use 'iscellstr' instead")
   bool is_cellstr (void) const
-  { return iscellstr (); }
+  { return rep->iscellstr (); }
 
   bool is_real_scalar (void) const
   { return rep->is_real_scalar (); }
@@ -590,7 +594,7 @@ public:
 
   OCTAVE_DEPRECATED ("use 'isstruct' instead")
   bool is_map (void) const
-  { return isstruct (); }
+  { return rep->isstruct (); }
 
   bool is_classdef_object (void) const
   { return rep->is_classdef_object (); }
@@ -600,14 +604,14 @@ public:
 
   OCTAVE_DEPRECATED ("use 'isobject' instead")
   bool is_object (void) const
-  { return isobject (); }
+  { return rep->isobject (); }
 
   bool isjava (void) const
   { return rep->isjava (); }
 
   OCTAVE_DEPRECATED ("use 'isjava' instead")
   bool is_java (void) const
-  { return isjava (); }
+  { return rep->isjava (); }
 
   bool is_cs_list (void) const
   { return rep->is_cs_list (); }
@@ -732,11 +736,6 @@ public:
   // Do two constants match (in a switch statement)?
 
   bool is_equal (const octave_value&) const;
-
-  // Are the dimensions of this constant zero by zero?
-
-  bool is_zero_by_zero (void) const
-  { return (ndims () == 2 && rows () == 0 && columns () == 0); }
 
   bool is_constant (void) const
   { return rep->is_constant (); }

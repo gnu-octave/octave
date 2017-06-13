@@ -2126,7 +2126,7 @@ octave_value
 octave_value::storable_value (void) const
 {
   octave_value retval = *this;
-  if (is_null_value ())
+  if (isnull ())
     retval = octave_value (rep->empty_clone ());
   else
     retval.maybe_economize ();
@@ -2137,7 +2137,7 @@ octave_value::storable_value (void) const
 void
 octave_value::make_storable_value (void)
 {
-  if (is_null_value ())
+  if (isnull ())
     {
       octave_base_value *rc = rep->empty_clone ();
       if (--rep->count == 0)

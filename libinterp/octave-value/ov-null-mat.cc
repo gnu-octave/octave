@@ -117,7 +117,7 @@ This should give an error if @code{I} is nonempty.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_null_value ());
+  return ovl (args(0).isnull ());
 }
 
 /*

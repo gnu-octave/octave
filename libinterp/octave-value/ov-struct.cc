@@ -474,7 +474,7 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                if (! t_rhs.is_null_value ())
+                if (! t_rhs.isnull ())
                   error ("invalid structure assignment");
 
                 map.delete_elements (idx.front ());

@@ -334,7 +334,7 @@ octave_cell::subsasgn (const std::string& type,
 
         if (t_rhs.iscell ())
           octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
-        else if (t_rhs.is_null_value ())
+        else if (t_rhs.isnull ())
           octave_base_matrix<Cell>::delete_elements (i);
         else
           octave_base_matrix<Cell>::assign (i, Cell (t_rhs));

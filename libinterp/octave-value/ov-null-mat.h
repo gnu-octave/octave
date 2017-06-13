@@ -48,7 +48,7 @@ public:
 
   static const octave_value instance;
 
-  bool is_null_value (void) const { return true; }
+  bool isnull (void) const { return true; }
 
   type_conv_info numeric_conversion_function (void) const;
 
@@ -69,7 +69,7 @@ public:
 
   static const octave_value instance;
 
-  bool is_null_value (void) const { return true; }
+  bool isnull (void) const { return true; }
 
   type_conv_info numeric_conversion_function (void) const;
 
@@ -90,7 +90,7 @@ public:
 
   static const octave_value instance;
 
-  bool is_null_value (void) const { return true; }
+  bool isnull (void) const { return true; }
 
   type_conv_info numeric_conversion_function (void) const;
 

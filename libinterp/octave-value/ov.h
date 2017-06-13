@@ -615,8 +615,12 @@ public:
   bool is_magic_colon (void) const
   { return rep->is_magic_colon (); }
 
+  bool isnull (void) const
+  { return rep->isnull (); }
+
+  OCTAVE_DEPRECATED ("use 'isnull' instead")
   bool is_null_value (void) const
-  { return rep->is_null_value (); }
+  { return rep->isnull (); }
 
   // Are any or all of the elements in this constant nonzero?
 

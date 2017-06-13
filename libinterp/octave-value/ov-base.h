@@ -429,7 +429,7 @@ public:
 
   virtual bool is_true (void) const { return false; }
 
-  virtual bool is_null_value (void) const { return false; }
+  virtual bool isnull (void) const { return false; }
 
   virtual bool is_constant (void) const { return false; }
 

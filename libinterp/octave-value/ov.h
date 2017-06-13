@@ -666,6 +666,13 @@ public:
   bool is_uint64_type (void) const
   { return rep->is_uint64_type (); }
 
+  bool isinteger (void) const
+  { return rep->isinteger (); }
+
+  OCTAVE_DEPRECATED ("use 'isinteger' instead")
+  bool is_integer_type (void) const
+  { return rep->isinteger (); }
+
   // Other type stuff.
 
   bool islogical (void) const
@@ -674,13 +681,6 @@ public:
   OCTAVE_DEPRECATED ("use 'islogical' instead")
   bool is_bool_type (void) const
   { return rep->islogical (); }
-
-  bool isinteger (void) const
-  { return rep->isinteger (); }
-
-  OCTAVE_DEPRECATED ("use 'isinteger' instead")
-  bool is_integer_type (void) const
-  { return rep->isinteger (); }
 
   bool isreal (void) const
   { return rep->isreal (); }
@@ -702,8 +702,12 @@ public:
   bool is_matrix_type (void) const
   { return rep->is_matrix_type (); }
 
+  bool isnumeric (void) const
+  { return rep->isnumeric (); }
+
+  OCTAVE_DEPRECATED ("use 'isnumeric' instead")
   bool is_numeric_type (void) const
-  { return rep->is_numeric_type (); }
+  { return rep->isnumeric (); }
 
   bool issparse (void) const
   { return rep->issparse (); }

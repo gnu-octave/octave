@@ -792,7 +792,7 @@ functions from strings is through the use of anonymous functions
         fargs.append (std::string ("x"));
 
     }
-  else if (nargin == 2 && args(1).is_numeric_type ())
+  else if (nargin == 2 && args(1).isnumeric ())
     {
       if (! args(1).is_scalar_type ())
         error ("inline: N must be an integer");

@@ -141,7 +141,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
         retval = arg.sparse_bool_matrix_value ();
       else if (arg.iscomplex ())
         retval = arg.sparse_complex_matrix_value ();
-      else if (arg.is_numeric_type ())
+      else if (arg.isnumeric ())
         retval = arg.sparse_matrix_value ();
       else
         err_wrong_type_arg ("sparse", arg);
@@ -203,7 +203,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
           else if (args(2).iscomplex ())
             retval = SparseComplexMatrix (args(2).complex_array_value(),
                                           i, j, m, n, summation, nzmax);
-          else if (args(2).is_numeric_type ())
+          else if (args(2).isnumeric ())
             retval = SparseMatrix (args(2).array_value (), i, j,
                                    m, n, summation, nzmax);
           else

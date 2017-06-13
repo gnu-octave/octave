@@ -234,7 +234,7 @@ public:
 
   int is_logical (void) const { return val.islogical (); }
 
-  int is_numeric (void) const { return val.is_numeric_type (); }
+  int is_numeric (void) const { return val.isnumeric (); }
 
   int is_single (void) const { return val.is_single_type (); }
 

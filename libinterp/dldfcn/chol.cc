@@ -629,7 +629,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   octave_value argr = args(0);
   octave_value argu = args(1);
 
-  if (! argr.is_numeric_type () || ! argu.is_numeric_type ()
+  if (! argr.isnumeric () || ! argu.isnumeric ()
       || (nargin > 2 && ! args(2).is_string ()))
     print_usage ();
 
@@ -823,7 +823,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   octave_value argj = args(1);
   octave_value argu = args(2);
 
-  if (! argr.is_numeric_type () || ! argu.is_numeric_type ()
+  if (! argr.isnumeric () || ! argu.isnumeric ()
       || ! argj.is_real_scalar ())
     print_usage ();
 
@@ -1061,7 +1061,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
   octave_value argr = args(0);
   octave_value argj = args(1);
 
-  if (! argr.is_numeric_type () || ! argj.is_real_scalar ())
+  if (! argr.isnumeric () || ! argj.is_real_scalar ())
     print_usage ();
 
   octave_idx_type n = argr.rows ();
@@ -1188,7 +1188,7 @@ triangular, return the Cholesky@tie{}factorization of
   octave_value argi = args(1);
   octave_value argj = args(2);
 
-  if (! argr.is_numeric_type () || ! argi.is_real_scalar ()
+  if (! argr.isnumeric () || ! argi.is_real_scalar ()
       || ! argj.is_real_scalar ())
     print_usage ();
 

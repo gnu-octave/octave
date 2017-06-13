@@ -250,7 +250,7 @@ at most n-1).
 
   octave_value retval;
 
-  bool num_case = ((table.is_numeric_type () && y.is_numeric_type ())
+  bool num_case = ((table.isnumeric () && y.isnumeric ())
                    || (table.is_char_matrix () && y.is_char_matrix ()));
   bool str_case = table.iscellstr () && (y.is_string () || y.iscellstr ());
   bool left_inf = false;

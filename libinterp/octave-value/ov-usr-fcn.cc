@@ -997,7 +997,7 @@ element-by-element and a logical array is returned.  At the top level,
 
       return ovl (isargout1 (nargout1, ignored, k));
     }
-  else if (args(0).is_numeric_type ())
+  else if (args(0).isnumeric ())
     {
       const NDArray ka = args(0).array_value ();
 

@@ -92,7 +92,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and
   octave_value argx = args(0);
   octave_value argy = args(1);
 
-  if (! argx.is_numeric_type () || ! argy.is_numeric_type ())
+  if (! argx.isnumeric () || ! argy.isnumeric ())
     error ("dot: X and Y must be numeric");
 
   dim_vector dimx = argx.dims ();
@@ -254,7 +254,7 @@ endfor
   octave_value argx = args(0);
   octave_value argy = args(1);
 
-  if (! argx.is_numeric_type () || ! argy.is_numeric_type ())
+  if (! argx.isnumeric () || ! argy.isnumeric ())
     error ("blkmm: A and B must be numeric");
 
   const dim_vector dimx = argx.dims ();

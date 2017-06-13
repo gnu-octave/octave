@@ -618,8 +618,8 @@ factorization from scratch.
   octave_value argx = args(2 + pivoted);
   octave_value argy = args(3 + pivoted);
 
-  if (! (argl.is_numeric_type () && argu.is_numeric_type ()
-         && argx.is_numeric_type () && argy.is_numeric_type ()
+  if (! (argl.isnumeric () && argu.isnumeric ()
+         && argx.isnumeric () && argy.isnumeric ()
          && (! pivoted || argp.is_perm_matrix ())))
     error ("luupdate: L, U, X, and Y must be numeric");
 

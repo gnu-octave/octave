@@ -78,7 +78,7 @@ On exit, @var{y} is a unit vector such that:
     error ("mgorth: V should be a matrix, and X a column vector with"
            " the same number of rows as V.");
 
-  if (! arg_x.is_numeric_type () && ! arg_v.is_numeric_type ())
+  if (! arg_x.isnumeric () && ! arg_v.isnumeric ())
     error ("mgorth: X and V must be numeric");
 
   octave_value_list retval;

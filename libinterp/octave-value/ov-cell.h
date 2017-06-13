@@ -111,7 +111,7 @@ public:
 
   bool is_matrix_type (void) const { return false; }
 
-  bool is_numeric_type (void) const { return false; }
+  bool isnumeric (void) const { return false; }
 
   bool is_defined (void) const { return true; }
 

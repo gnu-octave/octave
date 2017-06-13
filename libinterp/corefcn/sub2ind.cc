@@ -116,7 +116,7 @@ ind = sub2ind ([3, 3], s1, s2)
 
   for (int j = 0; j < nargin - 1; j++)
     {
-      if (! args(j+1).is_numeric_type ())
+      if (! args(j+1).isnumeric ())
         error ("sub2ind: subscripts must be numeric");
 
       try

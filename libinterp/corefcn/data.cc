@@ -220,10 +220,10 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
 
   octave_value retval;
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("atan2", args(0));
 
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("atan2", args(1));
 
   if (args(0).iscomplex () || args(1).iscomplex ())
@@ -329,9 +329,9 @@ do_hypot (const octave_value& x, const octave_value& y)
 
   octave_value arg0 = x;
   octave_value arg1 = y;
-  if (! arg0.is_numeric_type ())
+  if (! arg0.isnumeric ())
     err_wrong_type_arg ("hypot", arg0);
-  if (! arg1.is_numeric_type ())
+  if (! arg1.isnumeric ())
     err_wrong_type_arg ("hypot", arg1);
 
   if (arg0.iscomplex ())
@@ -602,10 +602,10 @@ periodic, @code{mod} is a better choice.
 
   octave_value retval;
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("rem", args(0));
 
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("rem", args(1));
 
   if (args(0).iscomplex () || args(1).iscomplex ())
@@ -781,10 +781,10 @@ negative numbers or when the values are periodic.
 
   octave_value retval;
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("mod", args(0));
 
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("mod", args(1));
 
   if (args(0).iscomplex () || args(1).iscomplex ())
@@ -3571,7 +3571,7 @@ Logical and character arrays are not considered to be numeric.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_numeric_type ());
+  return ovl (args(0).isnumeric ());
 }
 
 /*
@@ -5109,7 +5109,7 @@ if fewer than two values are requested.
       // numeric value, the number of points defaults to 1.
       octave_value arg_3 = args(2);
 
-      if (arg_3.is_numeric_type () && arg_3.isempty ())
+      if (arg_3.isnumeric () && arg_3.isempty ())
         npoints = 1;
       else if (! arg_3.is_scalar_type ())
         error ("linspace: N must be a scalar");
@@ -6964,7 +6964,7 @@ Undocumented internal function.
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("__accumarray_sum__: first argument must be numeric");
 
   octave_value retval;
@@ -6994,7 +6994,7 @@ Undocumented internal function.
           else
             retval = do_accumarray_sum (idx, vals.float_array_value (), n);
         }
-      else if (vals.is_numeric_type () || vals.islogical ())
+      else if (vals.isnumeric () || vals.islogical ())
         {
           if (vals.iscomplex ())
             retval = do_accumarray_sum (idx,
@@ -7053,7 +7053,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
   if (nargin < 3 || nargin > 4)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("accumarray: first argument must be numeric");
 
   octave_value retval;
@@ -7187,7 +7187,7 @@ Undocumented internal function.
   if (nargin < 2 || nargin > 4)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("__accumdim_sum__: first argument must be numeric");
 
   octave_value retval;
@@ -7215,7 +7215,7 @@ Undocumented internal function.
             retval = do_accumdim_sum (idx, vals.float_array_value (),
                                       dim, n);
         }
-      else if (vals.is_numeric_type () || vals.islogical ())
+      else if (vals.isnumeric () || vals.islogical ())
         {
           if (vals.iscomplex ())
             retval = do_accumdim_sum (idx, vals.complex_array_value (),
@@ -7331,7 +7331,7 @@ converted to logical.
   if (args.length () != 3)
     print_usage ();
 
-  if (! (args(0).islogical () || args(0).is_numeric_type ()))
+  if (! (args(0).islogical () || args(0).isnumeric ()))
     error ("merge: first argument must be logical or numeric");
 
   octave_value retval;
@@ -7567,7 +7567,7 @@ an empty matrix is returned.
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  if (! (args(0).is_numeric_type () || args(0).islogical ()))
+  if (! (args(0).isnumeric () || args(0).islogical ()))
     error ("diff: X must be numeric or logical");
 
   int dim = -1;
@@ -7735,7 +7735,7 @@ Encode a double matrix or array @var{x} into the base64 format string
   if (args.length () != 1)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("base64_encode: encoding is supported only for numeric arrays");
 
   if (args(0).iscomplex () || args(0).issparse ())

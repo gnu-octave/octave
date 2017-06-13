@@ -602,7 +602,7 @@ Compatibility Note: Octave accepts complex values as input, whereas
 
   if (arg.islogical ())
     retval = arg;
-  else if (arg.is_numeric_type ())
+  else if (arg.isnumeric ())
     {
       if (arg.issparse ())
         retval = arg.sparse_bool_matrix_value ();

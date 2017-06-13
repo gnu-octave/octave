@@ -96,7 +96,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
       if (! opt_arg.is_scalar_type ())
         rpt_error = true;
-      else if (opt_arg.is_numeric_type ())
+      else if (opt_arg.isnumeric ())
         {
           double opt_val = opt_arg.double_value ();
           if (opt_val != 0.0 && opt_val != 1.0)

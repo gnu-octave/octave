@@ -1338,7 +1338,7 @@ color_property::do_set (const octave_value& val)
             }
         }
     }
-  else if (val.is_numeric_type ())
+  else if (val.isnumeric ())
     {
       Matrix m = val.matrix_value ();
 
@@ -1422,7 +1422,7 @@ array_property::validate (const octave_value& v)
         xok = false;
     }
   else
-    xok = v.is_numeric_type () || v.is_bool_scalar ();
+    xok = v.isnumeric () || v.is_bool_scalar ();
 
   if (xok)
     {
@@ -2873,7 +2873,7 @@ is_handle (const octave_value& val)
 
   if (val.is_real_scalar () && is_handle (val.double_value ()))
     retval = true;
-  else if (val.is_numeric_type () && val.isreal ())
+  else if (val.isnumeric () && val.isreal ())
     {
       const NDArray handles = val.array_value ();
 
@@ -6614,7 +6614,7 @@ convert_ticklabel_string (const octave_value& val)
   else
     {
       string_vector sv;
-      if (val.is_numeric_type ())
+      if (val.isnumeric ())
         {
           NDArray data = val.array_value ();
           std::ostringstream oss;
@@ -10169,7 +10169,7 @@ is_handle_visible (const octave_value& val)
 
   if (val.is_real_scalar () && is_handle_visible (val.double_value ()))
     retval = true;
-  else if (val.is_numeric_type () && val.isreal ())
+  else if (val.isnumeric () && val.isreal ())
     {
       const NDArray handles = val.array_value ();
 

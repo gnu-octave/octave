@@ -83,7 +83,7 @@ public:
 
   bool isreal (void) const { return true; }
 
-  bool is_numeric_type (void) const { return false; }
+  bool isnumeric (void) const { return false; }
 
   bool is_true (void) const { return scalar; }
 

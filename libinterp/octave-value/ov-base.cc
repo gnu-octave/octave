@@ -262,7 +262,7 @@ octave_base_value::subsasgn (const std::string& type,
 
   if (is_defined ())
     {
-      if (! is_numeric_type ())
+      if (! isnumeric ())
         {
           std::string nm = type_name ();
           error ("can't perform indexed assignment for %s type", nm.c_str ());
@@ -395,7 +395,7 @@ octave_base_value::convert_to_str (bool pad, bool force, char type) const
 {
   octave_value retval = convert_to_str_internal (pad, force, type);
 
-  if (! force && is_numeric_type ())
+  if (! force && isnumeric ())
     warn_implicit_conversion ("Octave:num-to-str",
                               type_name (), retval.type_name ());
 

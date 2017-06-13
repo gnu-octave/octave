@@ -423,7 +423,7 @@ public:
 
   virtual bool is_matrix_type (void) const { return false; }
 
-  virtual bool is_numeric_type (void) const { return false; }
+  virtual bool isnumeric (void) const { return false; }
 
   virtual bool issparse (void) const { return false; }
 

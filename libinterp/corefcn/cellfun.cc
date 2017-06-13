@@ -148,7 +148,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).is_numeric_type ();
+        result(count) = f_args.elem (count).isnumeric ();
       retval(0) = result;
     }
   else if (name == "isreal")
@@ -1786,7 +1786,7 @@ num2cell ([1,2;3,4],1)
     retval = do_num2cell (array.bool_array_value (), dimv);
   else if (array.is_char_matrix ())
     retval = do_num2cell (array.char_array_value (), dimv);
-  else if (array.is_numeric_type ())
+  else if (array.isnumeric ())
     {
       if (array.isinteger ())
         {

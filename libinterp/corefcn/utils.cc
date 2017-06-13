@@ -1225,7 +1225,7 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx_arg)
           octave_value idxi = idx_arg(i);
           if (idxi.is_magic_colon ())
             retval *= dv(i);
-          else if (idxi.is_numeric_type ())
+          else if (idxi.isnumeric ())
             retval *= idxi.numel ();
           else
             {

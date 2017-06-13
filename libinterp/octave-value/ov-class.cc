@@ -1811,7 +1811,7 @@ belongs to.
       if (obj_cls == cls
           || (cls == "float"   && obj.isfloat   ())
           || (cls == "integer" && obj.isinteger ())
-          || (cls == "numeric" && obj.is_numeric_type ())
+          || (cls == "numeric" && obj.isnumeric ())
           || obj.is_instance_of (cls))
         matches(idx) = true;
     }

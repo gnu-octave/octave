@@ -488,7 +488,7 @@ column vector.
   if (args.length () != 1)
     print_usage ();
 
-  if (! (args(0).is_numeric_type () || args(0).is_string ()))
+  if (! (args(0).isnumeric () || args(0).is_string ()))
     error ("bitunpack: argument must be a number or a string");
 
   octave_value retval;

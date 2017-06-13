@@ -151,7 +151,7 @@ do_history (const octave_value_list& args, int nargout)
 
       if (arg.is_string ())
         option = arg.string_value ();
-      else if (arg.is_numeric_type ())
+      else if (arg.isnumeric ())
         {
           limit = arg.int_value ();
           if (limit < 0)
@@ -334,7 +334,7 @@ get_int_arg (const octave_value& arg, int& val)
 
       ok = sscanf (tmp.c_str (), "%d", &val) == 1;
     }
-  else if (arg.is_numeric_type ())
+  else if (arg.isnumeric ())
     val = arg.int_value ();
   else
     ok = false;

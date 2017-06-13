@@ -2380,7 +2380,7 @@ For each directory that is added, and that was not already in the path,
       else if (option == "-begin")
         nargin--;
     }
-  else if (option_arg.is_numeric_type ())
+  else if (option_arg.isnumeric ())
     {
       int val = option_arg.xint_value ("addpath: OPTION must be '-begin'/0 or '-end'/1");
 

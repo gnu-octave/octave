@@ -166,7 +166,7 @@ in control (see @code{are} and @code{dare}).
   if (nr != nc)
     err_square_matrix_required ("schur", "A");
 
-  if (! arg.is_numeric_type ())
+  if (! arg.isnumeric ())
     err_wrong_type_arg ("schur", arg);
 
   octave_value_list retval;
@@ -289,9 +289,9 @@ Note also that @var{U} and @var{T} are not unique.
   if (args.length () != 2 || nargout > 2)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("rsf2csf", args(0));
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("rsf2csf", args(1));
   if (args(0).iscomplex () || args(1).iscomplex ())
     error ("rsf2csf: UR and TR must be real matrices");

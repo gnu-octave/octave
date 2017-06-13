@@ -140,7 +140,7 @@ public:
 
   bool is_matrix_type (void) const { return true; }
 
-  bool is_numeric_type (void) const { return true; }
+  bool isnumeric (void) const { return true; }
 
   bool issparse (void) const { return true; }
 

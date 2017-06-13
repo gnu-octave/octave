@@ -517,7 +517,7 @@ bp_table::parse_dbfunction_params (const char *who,
                   else
                     break;        // may be "if"
                 }
-              else if (args(pos).is_numeric_type ())
+              else if (args(pos).isnumeric ())
                 {
                   const NDArray arg = args(pos).array_value ();
 

@@ -69,7 +69,7 @@ public:
 
   bool is_real_type (void) const { return true; }
   bool is_scalar_type (void) const { return true; }
-  bool is_numeric_type (void) const { return true; }
+  bool isnumeric (void) const { return true; }
 
   bool valid_as_scalar_index (void) const
   { return scalar == 1; }

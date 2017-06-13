@@ -1217,7 +1217,7 @@ textscan_internal (const std::string& who, const octave_value_list& args)
 
   if (args.length () > 2)
     {
-      if (args(2).is_numeric_type ())
+      if (args(2).isnumeric ())
         {
           ntimes = args(2).idx_type_value ();
 

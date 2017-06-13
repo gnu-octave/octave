@@ -163,7 +163,7 @@ public:
 
   bool isfloat (void) const { return true; }
 
-  bool is_numeric_type (void) const { return true; }
+  bool isnumeric (void) const { return true; }
 
   bool is_true (void) const;
 

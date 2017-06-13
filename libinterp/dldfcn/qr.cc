@@ -908,8 +908,8 @@ economized (R is square).
   octave_value argu = args(2);
   octave_value argv = args(3);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
-      || ! argu.is_numeric_type () || ! argv.is_numeric_type ())
+  if (! argq.isnumeric () || ! argr.isnumeric ()
+      || ! argu.isnumeric () || ! argv.isnumeric ())
     print_usage ();
 
   if (! check_qr_dims (argq, argr, true))
@@ -1078,8 +1078,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   octave_value argj = args(2);
   octave_value argx = args(3);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
-      || ! argx.is_numeric_type ()
+  if (! argq.isnumeric () || ! argr.isnumeric ()
+      || ! argx.isnumeric ()
       || (nargin > 4 && ! args(4).is_string ()))
     print_usage ();
 
@@ -1273,7 +1273,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   octave_value argr = args(1);
   octave_value argj = args(2);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
+  if (! argq.isnumeric () || ! argr.isnumeric ()
       || (nargin > 3 && ! args(3).is_string ()))
     print_usage ();
 
@@ -1505,7 +1505,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
   octave_value argi = args(2);
   octave_value argj = args(3);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ())
+  if (! argq.isnumeric () || ! argr.isnumeric ())
     print_usage ();
 
   if (! check_qr_dims (argq, argr, true))

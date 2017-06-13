@@ -1824,7 +1824,7 @@ num2cell ([1,2;3,4],1)
     }
   else if (array.is_object ())
     retval = do_object2cell (array, dimv);
-  else if (array.is_map ())
+  else if (array.isstruct ())
     retval = do_num2cell (array.map_value (), dimv);
   else if (array.iscell ())
     retval = do_num2cell (array.cell_value (), dimv);

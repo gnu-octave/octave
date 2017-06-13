@@ -74,9 +74,9 @@ public:
     return is_black_hole () || sym->is_undefined ();
   }
 
-  bool is_map (void) const
+  bool isstruct (void) const
   {
-    return value().is_map ();
+    return value().isstruct ();
   }
 
   void define (const octave_value& v) { sym->assign (v); }

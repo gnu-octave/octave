@@ -2166,7 +2166,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
                                          save_as_floats);
         }
     }
-  else if (tc.is_map () || tc.is_inline_function () || tc.is_object ())
+  else if (tc.isstruct () || tc.is_inline_function () || tc.is_object ())
     {
       int fieldcnt = 0;
       const octave_map m = tc.map_value ();
@@ -2374,7 +2374,7 @@ save_mat5_binary_element (std::ostream& os,
       else
         flags |= MAT_FILE_DOUBLE_CLASS;
     }
-  else if (tc.is_map ())
+  else if (tc.isstruct ())
     flags |= MAT_FILE_STRUCT_CLASS;
   else if (tc.iscell ())
     flags |= MAT_FILE_CELL_CLASS;
@@ -2583,7 +2583,7 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
         }
     }
-  else if (tc.is_map () || tc.is_inline_function () || tc.is_object ())
+  else if (tc.isstruct () || tc.is_inline_function () || tc.is_object ())
     {
       if (tc.is_inline_function () || tc.is_object ())
         {

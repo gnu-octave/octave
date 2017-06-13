@@ -240,7 +240,7 @@ public:
 
   int is_sparse (void) const { return val.issparse (); }
 
-  int is_struct (void) const { return val.is_map (); }
+  int is_struct (void) const { return val.isstruct (); }
 
   int is_uint16 (void) const { return val.is_uint16_type (); }
 

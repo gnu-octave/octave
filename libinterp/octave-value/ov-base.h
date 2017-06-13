@@ -367,7 +367,7 @@ public:
 
   virtual bool is_range (void) const { return false; }
 
-  virtual bool is_map (void) const { return false; }
+  virtual bool isstruct (void) const { return false; }
 
   virtual bool is_object (void) const { return false; }
 

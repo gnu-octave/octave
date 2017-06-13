@@ -585,8 +585,12 @@ public:
   bool is_range (void) const
   { return rep->is_range (); }
 
+  bool isstruct (void) const
+  { return rep->isstruct (); }
+
+  OCTAVE_DEPRECATED ("use 'isstruct' instead")
   bool is_map (void) const
-  { return rep->is_map (); }
+  { return isstruct (); }
 
   bool is_object (void) const
   { return rep->is_object (); }

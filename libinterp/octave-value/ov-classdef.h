@@ -1415,7 +1415,7 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  bool is_map (void) const { return false; }
+  bool isstruct (void) const { return false; }
 
   bool is_object (void) const { return true; }
 

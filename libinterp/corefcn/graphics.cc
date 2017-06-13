@@ -2281,7 +2281,7 @@ graphics_object::set (const octave_value_list& args)
 
   for (int i = 0; i < nargin; )
     {
-      if (args(i).is_map () )
+      if (args(i).isstruct () )
         {
           set (args(i).map_value ());
           i++;
@@ -10444,7 +10444,7 @@ being @qcode{"portrait"}.
             error ("set: number of graphics handles must match number of value rows (%d != %d)",
                    hcv.numel (), args(2).cell_value ().rows ());
         }
-      else if (nargin == 2 && args(1).is_map ())
+      else if (nargin == 2 && args(1).isstruct ())
         go.set (args(1).map_value ());
       else if (nargin == 2 && args(1).is_string ())
         {

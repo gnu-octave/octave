@@ -487,7 +487,7 @@ octave_class::numeric_conv (const Cell& val, const std::string& type)
 
   retval = val(0);
 
-  if (type.length () > 0 && type[0] == '.' && ! retval.is_map ())
+  if (type.length () > 0 && type[0] == '.' && ! retval.isstruct ())
     retval = octave_map ();
 
   return retval;
@@ -729,7 +729,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           }
         else
           {
-            if (t_rhs.is_object () || t_rhs.is_map ())
+            if (t_rhs.is_object () || t_rhs.isstruct ())
               {
                 octave_map rhs_map = t_rhs.xmap_value ("invalid class assignment");
 

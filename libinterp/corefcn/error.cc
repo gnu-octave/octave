@@ -1211,7 +1211,7 @@ disable escape sequence expansion use a second backslash before the sequence
 
   bool have_fmt = false;
 
-  if (nargin == 1 && args(0).is_map ())
+  if (nargin == 1 && args(0).isstruct ())
     {
       // empty struct is not an error.  return and resume calling function.
       if (args(0).isempty ())
@@ -1700,7 +1700,7 @@ disable escape sequence expansion use a second backslash before the sequence
 
       octave_map old_warning_options = warning_options;
 
-      if (arg.is_map ())
+      if (arg.isstruct ())
         {
           octave_map m = arg.map_value ();
 
@@ -1878,7 +1878,7 @@ fields are set to their default values.
 
           Vlast_error_stack = initialize_last_error_stack ();
         }
-      else if (args(0).is_map ())
+      else if (args(0).isstruct ())
         {
           octave_scalar_map new_err = args(0).scalar_map_value ();
           octave_scalar_map new_err_stack;

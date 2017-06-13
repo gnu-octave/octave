@@ -1272,7 +1272,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       octave_value struct_var = symbol_table::varval (struct_name);
 
-      if (! struct_var.is_map () || struct_var.numel () != 1)
+      if (! struct_var.isstruct () || struct_var.numel () != 1)
         error ("save: '%s' is not a scalar structure", struct_name.c_str ());
 
       octave_scalar_map struct_var_map = struct_var.scalar_map_value ();

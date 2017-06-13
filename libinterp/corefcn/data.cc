@@ -1787,7 +1787,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             {
               result_type = args(i).class_name ();
 
-              first_elem_is_struct = args(i).is_map ();
+              first_elem_is_struct = args(i).isstruct ();
             }
           else
             result_type = octave::get_concat_class (result_type, args(i).class_name ());

@@ -60,7 +60,7 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_map (void) const { return false; }
+  bool isstruct (void) const { return false; }
 
   bool isjava (void) const { return true; }
 

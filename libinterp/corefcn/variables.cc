@@ -283,7 +283,7 @@ generate_struct_completions (const std::string& text,
               frame.run ();
 
               if (tmp.is_defined ()
-                  && (tmp.is_map () || tmp.isjava () || tmp.is_classdef_object ()))
+                  && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
                 names = tmp.map_keys ();
             }
           catch (const octave::execution_exception&)
@@ -328,7 +328,7 @@ looks_like_struct (const std::string& text, char prev_char)
 
       frame.run ();
 
-      retval = (tmp.is_defined () && tmp.is_map ());
+      retval = (tmp.is_defined () && tmp.isstruct ());
     }
 #endif
 

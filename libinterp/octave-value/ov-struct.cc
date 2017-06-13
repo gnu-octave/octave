@@ -261,7 +261,7 @@ octave_struct::numeric_conv (const octave_value& val,
 {
   octave_value retval;
 
-  if (type.length () > 0 && type[0] == '.' && ! val.is_map ())
+  if (type.length () > 0 && type[0] == '.' && ! val.isstruct ())
     retval = octave_map ();
   else
     retval = val;
@@ -463,7 +463,7 @@ octave_struct::subsasgn (const std::string& type,
           }
         else
           {
-            if (t_rhs.is_map () || t_rhs.is_object ())
+            if (t_rhs.isstruct () || t_rhs.is_object ())
               {
                 octave_map rhs_map = t_rhs.xmap_value ("invalid structure assignment");
 
@@ -1141,7 +1141,7 @@ octave_scalar_struct::numeric_conv (const octave_value& val,
 {
   octave_value retval;
 
-  if (type.length () > 0 && type[0] == '.' && ! val.is_map ())
+  if (type.length () > 0 && type[0] == '.' && ! val.isstruct ())
     retval = octave_map ();
   else
     retval = val;
@@ -1701,7 +1701,7 @@ produces a struct @strong{array}.
   // Note that struct () creates a 1x1 struct with no fields for
   // compatibility with Matlab.
 
-  if (nargin == 1 && args(0).is_map ())
+  if (nargin == 1 && args(0).isstruct ())
     return ovl (args(0));
 
   if (nargin == 1 && args(0).is_object ())
@@ -1821,7 +1821,7 @@ Return true if @var{x} is a structure or a structure array.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_map ());
+  return ovl (args(0).isstruct ());
 }
 
 DEFUN (__fieldnames__, args, ,
@@ -1868,7 +1868,7 @@ dimension is returned.
 
   octave_value retval = false;
 
-  if (args(0).is_map ())
+  if (args(0).isstruct ())
     {
       octave_map m = args(0).map_value ();
 
@@ -1915,7 +1915,7 @@ Return the number of fields of the structure @var{s}.
   if (args.length () != 1)
     print_usage ();
 
-  if (! args(0).is_map ())
+  if (! args(0).isstruct ())
     error ("numfields: argument must be a struct");
 
   return ovl (static_cast<double> (args(0).nfields ()));

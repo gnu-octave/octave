@@ -176,7 +176,7 @@ all breakpoints within the file are cleared.
   std::string condition = "";
   octave_value retval;
 
-  if (args.length() >= 1 && ! args(0).is_map ())
+  if (args.length() >= 1 && ! args(0).isstruct ())
     {
       // explicit function / line / condition
       bp_table::parse_dbfunction_params ("dbstop", args, symbol_name,
@@ -210,7 +210,7 @@ all breakpoints within the file are cleared.
           else
             {
               if (bkpt.iscell () && bkpt.cell_value ().numel () > 0
-                  && bkpt.cell_value () (0).is_map ())
+                  && bkpt.cell_value () (0).isstruct ())
                 mv = bkpt.cell_value () (0).map_value ();
               else
                 {

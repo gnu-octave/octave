@@ -117,7 +117,7 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_map (void) const { return true; }
+  bool isstruct (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return btyp_struct; }
 
@@ -233,7 +233,7 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_map (void) const { return true; }
+  bool isstruct (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return btyp_struct; }
 

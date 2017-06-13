@@ -304,7 +304,7 @@ Undocumented internal function.
 
   if (nargin > (3+arg_offset))
     {
-      if (! args(3+arg_offset).is_map ())
+      if (! args(3+arg_offset).isstruct ())
         error ("eigs: OPTS argument must be a structure");
 
       octave_scalar_map map = args(3+arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");

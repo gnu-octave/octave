@@ -76,7 +76,7 @@ namespace octave
 
         if (first_elem)
           {
-            if (val.is_map ())
+            if (val.isstruct ())
               first_elem_is_struct = true;
 
             first_elem = false;

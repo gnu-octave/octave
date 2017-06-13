@@ -782,7 +782,7 @@ namespace octave
         quit_loop_now ();
       }
     else if (rhs.is_matrix_type () || rhs.iscell () || rhs.is_string ()
-             || rhs.is_map ())
+             || rhs.isstruct ())
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by
         // columns.
@@ -859,7 +859,7 @@ namespace octave
     if (rhs.is_undefined ())
       return;
 
-    if (! rhs.is_map ())
+    if (! rhs.isstruct ())
       error ("in statement 'for [X, Y] = VAL', VAL must be a structure");
 
     // Cycle through structure elements.  First element of id_list

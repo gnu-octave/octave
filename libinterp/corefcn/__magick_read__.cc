@@ -2335,7 +2335,7 @@ Fill formats info with GraphicsMagick CoderInfo.
 @seealso{imfinfo, imformats, imread, imwrite}
 @end deftypefn */)
 {
-  if (args.length () != 1 || ! args(0).is_map ())
+  if (args.length () != 1 || ! args(0).isstruct ())
     print_usage ();
 
   octave_map formats = args(0).map_value ();

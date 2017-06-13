@@ -1163,7 +1163,7 @@ Undocumented internal function.
     error ("__ode15__: initial state yp0 must be a vector or a scalar");
 
 
-  if (! args(4).is_map ())
+  if (! args(4).isstruct ())
     error ("__ode15__: OPTS argument must be a structure");
 
   octave_scalar_map options

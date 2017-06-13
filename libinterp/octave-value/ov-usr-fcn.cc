@@ -699,7 +699,7 @@ octave_user_function::restore_warning_states (void)
       // Fail spectacularly if .saved_warning_states. is not an
       // octave_map (or octave_scalar_map) object.
 
-      if (! val.is_map ())
+      if (! val.isstruct ())
         panic_impossible ();
 
       octave_map m = val.map_value ();

@@ -771,7 +771,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  assert (exist (z_z_file), 2) # bug #48597
 %!  assert (hash ("md5", fileread (z_file)), md5_z)
 %!endfunction
-%!xtest run_test_function (@test_z_z) <48597>
+%!xtest <48597> run_test_function (@test_z_z)
 
 %!function test_xzip_dir (test_dir, z) # bug #43431
 %!  fpaths = fullfile (test_dir, {"test1", "test2", "test3"});

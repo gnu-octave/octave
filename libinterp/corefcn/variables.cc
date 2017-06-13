@@ -400,7 +400,7 @@ symbol_exist (const std::string& name, const std::string& type = "any")
     {
       octave_value val = symbol_table::varval (name);
 
-      if (val.is_constant () || val.is_object ()
+      if (val.is_constant () || val.isobject ()
           || val.is_function_handle ()
           || val.is_anonymous_function ()
           || val.is_inline_function ())

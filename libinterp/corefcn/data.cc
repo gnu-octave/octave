@@ -1733,7 +1733,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
           if (t1_type == dtype)
             tmp(j++) = elt;
-          else if (elt.is_object () || ! elt.isempty ())
+          else if (elt.isobject () || ! elt.isempty ())
             tmp(j++) = attempt_type_conversion (elt, dtype);
         }
 
@@ -1807,7 +1807,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             any_sparse_p = true;
           if (! any_cell_p && args(i).iscell ())
             any_cell_p = true;
-          if (! any_class_p && args(i).is_object ())
+          if (! any_class_p && args(i).isobject ())
             any_class_p = true;
         }
 

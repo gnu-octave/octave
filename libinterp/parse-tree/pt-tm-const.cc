@@ -64,7 +64,7 @@ namespace octave
                                                    bool& first_elem)
   {
     std::string this_elt_class_nm
-      = val.is_object () ? std::string ("class") : val.class_name ();
+      = val.isobject () ? std::string ("class") : val.class_name ();
 
     class_nm = get_concat_class (class_nm, this_elt_class_nm);
 
@@ -111,7 +111,7 @@ namespace octave
     if (! any_sparse && val.issparse ())
       any_sparse = true;
 
-    if (! any_class && val.is_object ())
+    if (! any_class && val.isobject ())
       any_class = true;
 
     // Special treatment of sparse matrices to avoid out-of-memory error

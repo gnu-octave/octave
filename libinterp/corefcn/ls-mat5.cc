@@ -2166,7 +2166,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
                                          save_as_floats);
         }
     }
-  else if (tc.isstruct () || tc.is_inline_function () || tc.is_object ())
+  else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
     {
       int fieldcnt = 0;
       const octave_map m = tc.map_value ();
@@ -2175,7 +2175,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (tc.is_inline_function ())
         // length of "inline" is 6
         ret += 8 + PAD (6 > max_namelen ? max_namelen : 6);
-      else if (tc.is_object ())
+      else if (tc.isobject ())
         {
           size_t classlen = tc.class_name ().length ();
 
@@ -2378,7 +2378,7 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_STRUCT_CLASS;
   else if (tc.iscell ())
     flags |= MAT_FILE_CELL_CLASS;
-  else if (tc.is_inline_function () || tc.is_object ())
+  else if (tc.is_inline_function () || tc.isobject ())
     flags |= MAT_FILE_OBJECT_CLASS;
   else
     {
@@ -2583,11 +2583,11 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
         }
     }
-  else if (tc.isstruct () || tc.is_inline_function () || tc.is_object ())
+  else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
     {
-      if (tc.is_inline_function () || tc.is_object ())
+      if (tc.is_inline_function () || tc.isobject ())
         {
-          std::string classname = (tc.is_object () ? tc.class_name () : "inline");
+          std::string classname = (tc.isobject () ? tc.class_name () : "inline");
           size_t namelen = classname.length ();
 
           if (namelen > max_namelen)
@@ -2606,7 +2606,7 @@ save_mat5_binary_element (std::ostream& os,
 
       octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
 
-      if (tc.is_object ()
+      if (tc.isobject ()
           && lp.find_method (tc.class_name (), "saveobj") != "")
         {
           try

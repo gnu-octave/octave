@@ -463,7 +463,7 @@ octave_struct::subsasgn (const std::string& type,
           }
         else
           {
-            if (t_rhs.isstruct () || t_rhs.is_object ())
+            if (t_rhs.isstruct () || t_rhs.isobject ())
               {
                 octave_map rhs_map = t_rhs.xmap_value ("invalid structure assignment");
 
@@ -1704,7 +1704,7 @@ produces a struct @strong{array}.
   if (nargin == 1 && args(0).isstruct ())
     return ovl (args(0));
 
-  if (nargin == 1 && args(0).is_object ())
+  if (nargin == 1 && args(0).isobject ())
     return ovl (args(0).map_value ());
 
   if ((nargin == 1 || nargin == 2)

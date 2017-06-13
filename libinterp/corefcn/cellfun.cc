@@ -1822,7 +1822,7 @@ num2cell ([1,2;3,4],1)
             retval = do_num2cell (array.array_value (), dimv);
         }
     }
-  else if (array.is_object ())
+  else if (array.isobject ())
     retval = do_object2cell (array, dimv);
   else if (array.isstruct ())
     retval = do_num2cell (array.map_value (), dimv);

@@ -342,7 +342,7 @@ namespace octave
 
     tree_expression *op_increment = expr.increment ();
 
-    if (ov_base.is_object () || ov_limit.is_object ())
+    if (ov_base.isobject () || ov_limit.isobject ())
       {
         octave_value_list tmp1;
 
@@ -1254,7 +1254,7 @@ namespace octave
     if (base_expr_val.is_undefined ())
       base_expr_val = evaluate (expr);
 
-    bool indexing_object = base_expr_val.is_object ();
+    bool indexing_object = base_expr_val.isobject ();
 
     std::list<octave_value_list> idx;
 
@@ -1292,7 +1292,7 @@ namespace octave
                         beg = i;
                         idx.clear ();
 
-                        if (partial_expr_val.is_object ())
+                        if (partial_expr_val.isobject ())
                           {
                             // Found an object, so now we'll build up
                             // complete index list for one big subsref

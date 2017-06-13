@@ -369,7 +369,7 @@ public:
 
   virtual bool isstruct (void) const { return false; }
 
-  virtual bool is_object (void) const { return false; }
+  virtual bool isobject (void) const { return false; }
 
   virtual bool is_classdef_object (void) const { return false; }
 

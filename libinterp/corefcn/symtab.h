@@ -2644,7 +2644,7 @@ private:
       {
         symbol_record& sr = nm_sr.second;
         octave_value val = sr.varval ();
-        if (val.is_object ())
+        if (val.isobject ())
           nm_sr.second.clear (my_scope);
       }
   }

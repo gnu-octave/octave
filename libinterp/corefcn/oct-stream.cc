@@ -5300,7 +5300,7 @@ namespace octave
         {
           octave_value val = values(i);
 
-          if (val.isstruct () || val.iscell () || val.is_object ())
+          if (val.isstruct () || val.iscell () || val.isobject ())
             err_wrong_type_arg (who, val);
         }
     }

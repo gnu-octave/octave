@@ -2486,13 +2486,13 @@ do_colon_op (const octave_value& base, const octave_value& increment,
 {
   octave_value retval;
 
-  if (base.is_object () || increment.is_object () || limit.is_object ())
+  if (base.isobject () || increment.isobject () || limit.isobject ())
     {
       std::string dispatch_type;
 
-      if (base.is_object ())
+      if (base.isobject ())
         dispatch_type = base.class_name ();
-      else if (increment.is_defined () && increment.is_object ())
+      else if (increment.is_defined () && increment.isobject ())
         dispatch_type = increment.class_name ();
       else
         dispatch_type = limit.class_name ();

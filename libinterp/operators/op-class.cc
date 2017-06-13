@@ -79,7 +79,7 @@ DEF_CLASS_UNOP (ctranspose)
     octave_value retval;                                                \
                                                                         \
     std::string dispatch_type                                           \
-      = (a1.is_object () ? a1.class_name () : a2.class_name ());        \
+      = (a1.isobject () ? a1.class_name () : a2.class_name ());        \
                                                                         \
     octave_value meth = symbol_table::find_method (#name, dispatch_type); \
                                                                         \

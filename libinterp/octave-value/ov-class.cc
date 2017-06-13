@@ -80,7 +80,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
     {
       octave_value parent = parents(idx);
 
-      if (! parent.is_object ())
+      if (! parent.isobject ())
         error ("parents must be objects");
 
       std::string pcnm = parent.class_name ();
@@ -729,7 +729,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           }
         else
           {
-            if (t_rhs.is_object () || t_rhs.isstruct ())
+            if (t_rhs.isobject () || t_rhs.isstruct ())
               {
                 octave_map rhs_map = t_rhs.xmap_value ("invalid class assignment");
 
@@ -810,7 +810,7 @@ octave_class::index_vector (bool require_integers) const
 
   octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
-  if (tmp(0).is_object ())
+  if (tmp(0).isobject ())
     error ("subsindex function must return a valid index vector");
 
   // Index vector returned by subsindex is zero based
@@ -1101,7 +1101,7 @@ octave_class::reconstruct_parents (void)
     {
       std::string key = map.key (it);
       Cell        val = map.contents (it);
-      if (val(0).is_object ())
+      if (val(0).isobject ())
         {
           dbgstr = "blork";
           if (key == val(0).class_name ())
@@ -1643,7 +1643,7 @@ octave_class::in_class_method (void)
 octave_class::exemplar_info::exemplar_info (const octave_value& obj)
   : field_names (), parent_class_names ()
 {
-  if (! obj.is_object ())
+  if (! obj.isobject ())
     error ("invalid call to exemplar_info constructor");
 
   octave_map m = obj.map_value ();
@@ -1659,7 +1659,7 @@ bool
 octave_class::exemplar_info::compare (const octave_value& obj) const
 {
 
-  if (! obj.is_object ())
+  if (! obj.isobject ())
     error ("invalid comparison of class exemplar to non-class object");
 
   if (nfields () != obj.nfields ())
@@ -1890,7 +1890,7 @@ Undocumented internal function.
 
   octave_value arg = args(0);
 
-  if (arg.is_object ())
+  if (arg.isobject ())
     return ovl (Cell (arg.parent_class_names ()));
   else
     return ovl (Cell ());
@@ -1906,7 +1906,7 @@ Return true if @var{x} is a class object.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_object ());
+  return ovl (args(0).isobject ());
 }
 
 DEFMETHOD (ismethod, interp, args, ,
@@ -1925,7 +1925,7 @@ Return true if the string @var{method} is a valid method of the object
 
   std::string class_name;
 
-  if (arg.is_object ())
+  if (arg.isobject ())
     class_name = arg.class_name ();
   else if (arg.is_string ())
     class_name = arg.string_value ();
@@ -1957,7 +1957,7 @@ Implements @code{methods} for Octave class objects and classnames.
 
   std::string class_name;
 
-  if (arg.is_object ())
+  if (arg.isobject ())
     class_name = arg.class_name ();
   else if (arg.is_string ())
     class_name = arg.string_value ();

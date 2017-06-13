@@ -56,7 +56,7 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  bool is_object (void) const { return true; } // do we want this?
+  bool isobject (void) const { return true; } // do we want this?
 
   octave_map map_value (void) const { return scalar_map_value (); }
 

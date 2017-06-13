@@ -144,7 +144,7 @@ public:
 
   bool isstruct (void) const { return false; }
 
-  bool is_object (void) const { return true; }
+  bool isobject (void) const { return true; }
 
   bool is_true (void) const;
 

@@ -355,7 +355,7 @@ dimensionality as the other array.
   const octave_value B = args(2);
 
   if (func.is_builtin_function ()
-      || (func.is_function_handle () && ! A.is_object () && ! B.is_object ()))
+      || (func.is_function_handle () && ! A.isobject () && ! B.isobject ()))
     {
       // This may break if the default behavior is overridden.  But if you
       // override arithmetic operators for builtin classes, you should expect

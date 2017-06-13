@@ -155,7 +155,7 @@ Example:
   if (! indexed_object)
     error ("invalid use of end");
 
-  if (indexed_object->is_object ())
+  if (indexed_object->isobject ())
     {
       octave_value_list args;
 

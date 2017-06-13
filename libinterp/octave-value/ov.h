@@ -592,11 +592,15 @@ public:
   bool is_map (void) const
   { return isstruct (); }
 
-  bool is_object (void) const
-  { return rep->is_object (); }
-
   bool is_classdef_object (void) const
   { return rep->is_classdef_object (); }
+
+  bool isobject (void) const
+  { return rep->isobject (); }
+
+  OCTAVE_DEPRECATED ("use 'isobject' instead")
+  bool is_object (void) const
+  { return isobject (); }
 
   bool isjava (void) const
   { return rep->isjava (); }

@@ -449,7 +449,7 @@ b = sparse (i, j, v, sz(1), sz(2));
           retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
     }
-  else if (arg.is_integer_type ())
+  else if (arg.isinteger ())
     {
 #define DO_INT_BRANCH(INTT)                                             \
       else if (arg.is_ ## INTT ## _type ())                             \

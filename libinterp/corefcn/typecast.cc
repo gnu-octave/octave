@@ -156,7 +156,7 @@ typecast (@var{x}, "uint8")
   else if (array.is_string ())
     get_data_and_bytesize (array.char_array_value (), data, byte_size,
                            old_dims, frame);
-  else if (array.is_integer_type ())
+  else if (array.isinteger ())
     {
       if (array.is_int8_type ())
         get_data_and_bytesize (array.int8_array_value (), data, byte_size,
@@ -497,7 +497,7 @@ column vector.
 
   if (array.is_string ())
     retval = do_bitunpack (array.char_array_value ());
-  else if (array.is_integer_type ())
+  else if (array.isinteger ())
     {
       if (array.is_int8_type ())
         retval = do_bitunpack (array.int8_array_value ());

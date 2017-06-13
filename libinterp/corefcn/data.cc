@@ -611,7 +611,7 @@ periodic, @code{mod} is a better choice.
   if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("rem: not defined for complex numbers");
 
-  if (args(0).is_integer_type () || args(1).is_integer_type ())
+  if (args(0).isinteger () || args(1).isinteger ())
     {
       builtin_type_t btyp0 = args(0).builtin_type ();
       builtin_type_t btyp1 = args(1).builtin_type ();
@@ -790,7 +790,7 @@ negative numbers or when the values are periodic.
   if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("mod: not defined for complex numbers");
 
-  if (args(0).is_integer_type () || args(1).is_integer_type ())
+  if (args(0).isinteger () || args(1).isinteger ())
     {
       builtin_type_t btyp0 = args(0).builtin_type ();
       builtin_type_t btyp1 = args(1).builtin_type ();
@@ -3140,7 +3140,7 @@ Octave are double precision floating point values.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_integer_type ());
+  return ovl (args(0).isinteger ());
 }
 
 /*
@@ -7483,7 +7483,7 @@ do_diff (const octave_value& array, octave_idx_type order,
         }
     }
 
-  if (array.is_integer_type ())
+  if (array.isinteger ())
     {
       if (array.is_int8_type ())
         retval = array.int8_array_value ().diff (order, dim);
@@ -7743,7 +7743,7 @@ Encode a double matrix or array @var{x} into the base64 format string
 
   octave_value_list retval;
 
-  if (args(0).is_integer_type ())
+  if (args(0).isinteger ())
     {
 #define MAKE_INT_BRANCH(X)                                               \
       if (args(0).is_ ## X ## _type ())                                  \

@@ -1577,7 +1577,7 @@ array_property::get_data_limits (void)
 
   if (! data.isempty ())
     {
-      if (data.is_integer_type ())
+      if (data.isinteger ())
         {
           if (data.is_int8_type ())
             get_array_limits (data.int8_array_value (),

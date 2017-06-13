@@ -74,7 +74,7 @@ public:
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
 
-  bool is_integer_type (void) const { return true; }
+  bool isinteger (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
 
@@ -417,7 +417,7 @@ public:
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
 
-  bool is_integer_type (void) const { return true; }
+  bool isinteger (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
 

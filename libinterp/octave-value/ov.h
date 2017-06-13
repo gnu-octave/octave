@@ -667,8 +667,12 @@ public:
   bool is_bool_type (void) const
   { return rep->islogical (); }
 
+  bool isinteger (void) const
+  { return rep->isinteger (); }
+
+  OCTAVE_DEPRECATED ("use 'isinteger' instead")
   bool is_integer_type (void) const
-  { return rep->is_integer_type (); }
+  { return rep->isinteger (); }
 
   bool is_real_type (void) const
   { return rep->is_real_type (); }

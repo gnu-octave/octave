@@ -411,7 +411,7 @@ public:
 
   virtual bool islogical (void) const { return false; }
 
-  virtual bool is_integer_type (void) const { return false; }
+  virtual bool isinteger (void) const { return false; }
 
   virtual bool is_real_type (void) const { return false; }
 

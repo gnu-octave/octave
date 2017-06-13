@@ -5542,7 +5542,7 @@ ok_for_signed_int_conv (const octave_value& val)
 
   if (val.is_string ())
     return true;
-  else if (val.is_integer_type ())
+  else if (val.isinteger ())
     {
       if (val.is_uint64_type ())
         {
@@ -5570,7 +5570,7 @@ ok_for_unsigned_int_conv (const octave_value& val)
 {
   if (val.is_string ())
     return true;
-  else if (val.is_integer_type ())
+  else if (val.isinteger ())
     {
       // Easier than dispatching here...
 

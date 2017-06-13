@@ -876,7 +876,7 @@ bool check_qr_dims (const octave_value& q, const octave_value& r,
 static
 bool check_index (const octave_value& i, bool vector_allowed = false)
 {
-  return ((i.is_real_type () || i.is_integer_type ())
+  return ((i.is_real_type () || i.isinteger ())
           && (i.is_scalar_type () || vector_allowed));
 }
 

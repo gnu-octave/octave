@@ -1784,7 +1784,7 @@ octave_value::int_vector_value (bool require_int, bool force_string_conv,
 {
   Array<int> retval;
 
-  if (is_integer_type ())
+  if (isinteger ())
     {
       if (is_int32_type ())
         retval = convert_to_int_array (int32_array_value ());
@@ -1854,7 +1854,7 @@ octave_value::octave_idx_type_vector_value (bool require_int,
 {
   Array<octave_idx_type> retval;
 
-  if (is_integer_type ())
+  if (isinteger ())
     {
       if (is_int32_type ())
         retval = convert_to_octave_idx_type_array (int32_array_value ());

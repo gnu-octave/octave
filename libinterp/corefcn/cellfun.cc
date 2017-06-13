@@ -1788,7 +1788,7 @@ num2cell ([1,2;3,4],1)
     retval = do_num2cell (array.char_array_value (), dimv);
   else if (array.is_numeric_type ())
     {
-      if (array.is_integer_type ())
+      if (array.isinteger ())
         {
           if (array.is_int8_type ())
             retval = do_num2cell (array.int8_array_value (), dimv);
@@ -2277,7 +2277,7 @@ slicing is done along the first non-singleton dimension.
       else if (x.is_char_matrix ())
         retcell = do_cellslices_nda (x.char_array_value (),
                                      lb, ub, dim);
-      else if (x.is_integer_type ())
+      else if (x.isinteger ())
         {
           if (x.is_int8_type ())
             retcell = do_cellslices_nda (x.int8_array_value (),

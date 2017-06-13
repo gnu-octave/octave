@@ -530,7 +530,7 @@ dimensionality as the other array.
                   if (have_FloatNDArray
                       || have_FloatComplexNDArray)
                     {
-                      if (! tmp(0).is_float_type ())
+                      if (! tmp(0).isfloat ())
                         {
                           if (have_FloatNDArray)
                             {
@@ -582,7 +582,7 @@ dimensionality as the other array.
                     }
                   else if (have_NDArray)
                     {
-                      if (! tmp(0).is_float_type ())
+                      if (! tmp(0).isfloat ())
                         {
                           have_NDArray = false;
                           C = result_NDArray;

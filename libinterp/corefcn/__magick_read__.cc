@@ -1503,7 +1503,7 @@ Use @code{imwrite} instead.
       else if (img.is_uint32_type ())
         encode_uint_image<uint32NDArray> (imvec, img.uint32_array_value (),
                                           alpha.uint32_array_value ());
-      else if (img.is_float_type ())
+      else if (img.isfloat ())
         {
           // For image formats that support floating point values, we write
           // the actual values.  For those who don't, we only use the values

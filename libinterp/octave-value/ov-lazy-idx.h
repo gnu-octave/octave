@@ -73,7 +73,7 @@ public:
 
   bool is_double_type (void) const { return true; }
 
-  bool is_float_type (void) const { return true; }
+  bool isfloat (void) const { return true; }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)

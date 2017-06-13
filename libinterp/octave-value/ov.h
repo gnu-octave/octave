@@ -633,8 +633,12 @@ public:
   bool is_single_type (void) const
   { return rep->is_single_type (); }
 
+  bool isfloat (void) const
+  { return rep->isfloat (); }
+
+  OCTAVE_DEPRECATED ("use 'isfloat' instead")
   bool is_float_type (void) const
-  { return rep->is_float_type (); }
+  { return rep->isfloat (); }
 
   // Integer types.
 

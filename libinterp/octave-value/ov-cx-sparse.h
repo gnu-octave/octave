@@ -101,7 +101,7 @@ public:
 
   bool is_double_type (void) const { return true; }
 
-  bool is_float_type (void) const { return true; }
+  bool isfloat (void) const { return true; }
 
   double double_value (bool = false) const;
 

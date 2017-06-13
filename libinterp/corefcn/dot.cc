@@ -149,7 +149,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and
           retval = z;
         }
     }
-  else if (argx.is_float_type () && argy.is_float_type ())
+  else if (argx.isfloat () && argy.isfloat ())
     {
       if (argx.is_single_type () || argy.is_single_type ())
         {

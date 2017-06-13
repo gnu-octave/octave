@@ -111,7 +111,7 @@ The eigenvalues returned by @code{eig} are not ordered.
   if (arg_a.isempty ())
     return octave_value_list (2, Matrix ());
 
-  if (! arg_a.is_float_type ())
+  if (! arg_a.isfloat ())
     err_wrong_type_arg ("eig", arg_a);
 
   if (arg_a.rows () != arg_a.columns ())
@@ -127,7 +127,7 @@ The eigenvalues returned by @code{eig} are not ordered.
       if (arg_b.isempty ())
         return octave_value_list (2, Matrix ());
 
-      if (! arg_b.is_float_type ())
+      if (! arg_b.isfloat ())
         err_wrong_type_arg ("eig", arg_b);
 
       if (arg_b.rows () != arg_b.columns ())

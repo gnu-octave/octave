@@ -3210,7 +3210,7 @@ Objects of class double or single are floating-point objects.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_float_type ());
+  return ovl (args(0).isfloat ());
 }
 
 // FIXME: perhaps this should be implemented with an

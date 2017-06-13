@@ -391,7 +391,7 @@ public:
 
   virtual bool is_single_type (void) const { return false; }
 
-  virtual bool is_float_type (void) const { return false; }
+  virtual bool isfloat (void) const { return false; }
 
   virtual bool is_int8_type (void) const { return false; }
 

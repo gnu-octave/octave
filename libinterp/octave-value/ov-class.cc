@@ -1809,7 +1809,7 @@ belongs to.
     {
       std::string cls = clsnames(idx);
       if (obj_cls == cls
-          || (cls == "float"   && obj.is_float_type   ())
+          || (cls == "float"   && obj.isfloat   ())
           || (cls == "integer" && obj.isinteger ())
           || (cls == "numeric" && obj.is_numeric_type ())
           || obj.is_instance_of (cls))

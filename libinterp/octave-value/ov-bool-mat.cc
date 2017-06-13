@@ -600,7 +600,7 @@ Compatibility Note: Octave accepts complex values as input, whereas
 
   octave_value arg = args(0);
 
-  if (arg.is_bool_type ())
+  if (arg.islogical ())
     retval = arg;
   else if (arg.is_numeric_type ())
     {

@@ -409,7 +409,7 @@ public:
 
   virtual bool is_uint64_type (void) const { return false; }
 
-  virtual bool is_bool_type (void) const { return false; }
+  virtual bool islogical (void) const { return false; }
 
   virtual bool is_integer_type (void) const { return false; }
 

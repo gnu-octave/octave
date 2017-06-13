@@ -232,7 +232,7 @@ public:
 
   int is_int8 (void) const { return val.is_int8_type (); }
 
-  int is_logical (void) const { return val.is_bool_type (); }
+  int is_logical (void) const { return val.islogical (); }
 
   int is_numeric (void) const { return val.is_numeric_type (); }
 
@@ -395,7 +395,7 @@ public:
         if (data == nullptr)
           return 0.0;
 
-        if (val.is_bool_type ())
+        if (val.islogical ())
           return *static_cast<bool *> (data);
         else if (val.is_real_type ())
           return *static_cast<double *> (data);

@@ -660,8 +660,12 @@ public:
 
   // Other type stuff.
 
+  bool islogical (void) const
+  { return rep->islogical (); }
+
+  OCTAVE_DEPRECATED ("use 'islogical' instead")
   bool is_bool_type (void) const
-  { return rep->is_bool_type (); }
+  { return rep->islogical (); }
 
   bool is_integer_type (void) const
   { return rep->is_integer_type (); }

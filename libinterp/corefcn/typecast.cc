@@ -150,7 +150,7 @@ typecast (@var{x}, "uint8")
 
   octave_value array = args(0);
 
-  if (array.is_bool_type ())
+  if (array.islogical ())
     get_data_and_bytesize (array.bool_array_value (), data, byte_size,
                            old_dims, frame);
   else if (array.is_string ())
@@ -355,7 +355,7 @@ column vector.
   if (args.length () != 2)
     print_usage ();
 
-  if (! args(0).is_bool_type ())
+  if (! args(0).islogical ())
     error ("bitpack: X must be a logical array");
 
   octave_value retval;

@@ -103,7 +103,7 @@ do_bessel (enum bessel_type type, const char *fn,
             rpt_error = true;
           scaled = (opt_val == 1.0);
         }
-      else if (opt_arg.is_bool_type ())
+      else if (opt_arg.islogical ())
         scaled = opt_arg.bool_value ();
 
       if (rpt_error)

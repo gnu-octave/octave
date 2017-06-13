@@ -141,7 +141,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).is_bool_type ();
+        result(count) = f_args.elem (count).islogical ();
       retval(0) = result;
     }
   else if (name == "isnumeric")
@@ -1782,7 +1782,7 @@ num2cell ([1,2;3,4],1)
   if (nargin > 1)
     dimv = args(1).int_vector_value (true);
 
-  if (array.is_bool_type ())
+  if (array.islogical ())
     retval = do_num2cell (array.bool_array_value (), dimv);
   else if (array.is_char_matrix ())
     retval = do_num2cell (array.char_array_value (), dimv);
@@ -2271,7 +2271,7 @@ slicing is done along the first non-singleton dimension.
   if (! x.is_sparse_type () && x.is_matrix_type ())
     {
       // specialize for some dense arrays.
-      if (x.is_bool_type ())
+      if (x.islogical ())
         retcell = do_cellslices_nda (x.bool_array_value (),
                                      lb, ub, dim);
       else if (x.is_char_matrix ())

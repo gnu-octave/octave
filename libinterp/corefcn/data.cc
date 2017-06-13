@@ -3108,7 +3108,7 @@ Return true if @var{x} is a logical object.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_bool_type ());
+  return ovl (args(0).islogical ());
 }
 
 DEFALIAS (isbool, islogical);
@@ -6994,7 +6994,7 @@ Undocumented internal function.
           else
             retval = do_accumarray_sum (idx, vals.float_array_value (), n);
         }
-      else if (vals.is_numeric_type () || vals.is_bool_type ())
+      else if (vals.is_numeric_type () || vals.islogical ())
         {
           if (vals.is_complex_type ())
             retval = do_accumarray_sum (idx,
@@ -7215,7 +7215,7 @@ Undocumented internal function.
             retval = do_accumdim_sum (idx, vals.float_array_value (),
                                       dim, n);
         }
-      else if (vals.is_numeric_type () || vals.is_bool_type ())
+      else if (vals.is_numeric_type () || vals.islogical ())
         {
           if (vals.is_complex_type ())
             retval = do_accumdim_sum (idx, vals.complex_array_value (),
@@ -7331,7 +7331,7 @@ converted to logical.
   if (args.length () != 3)
     print_usage ();
 
-  if (! (args(0).is_bool_type () || args(0).is_numeric_type ()))
+  if (! (args(0).islogical () || args(0).is_numeric_type ()))
     error ("merge: first argument must be logical or numeric");
 
   octave_value retval;
@@ -7567,7 +7567,7 @@ an empty matrix is returned.
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  if (! (args(0).is_numeric_type () || args(0).is_bool_type ()))
+  if (! (args(0).is_numeric_type () || args(0).islogical ()))
     error ("diff: X must be numeric or logical");
 
   int dim = -1;

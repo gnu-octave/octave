@@ -425,7 +425,7 @@ b = sparse (i, j, v, sz(1), sz(2));
 
   octave_value arg = args(0);
 
-  if (arg.is_bool_type ())
+  if (arg.islogical ())
     {
       if (arg.is_sparse_type ())
         {

@@ -2125,7 +2125,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     INT_LEN (tc.uint32_array_value ().numel (), 4)
   else if (cname == "uint64")
     INT_LEN (tc.uint64_array_value ().numel (), 8)
-  else if (tc.is_bool_type ())
+  else if (tc.islogical ())
     INT_LEN (tc.bool_array_value ().numel (), 1)
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {
@@ -2337,7 +2337,7 @@ save_mat5_binary_element (std::ostream& os,
   // array flags subelement
   write_mat5_tag (os, miUINT32, 8);
 
-  if (tc.is_bool_type ())
+  if (tc.islogical ())
     flags |= 0x0200;
 
   if (mark_global)
@@ -2356,7 +2356,7 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_INT32_CLASS;
   else if (cname == "int64")
     flags |= MAT_FILE_INT64_CLASS;
-  else if (cname == "uint8" || tc.is_bool_type ())
+  else if (cname == "uint8" || tc.islogical ())
     flags |= MAT_FILE_UINT8_CLASS;
   else if (cname == "uint16")
     flags |= MAT_FILE_UINT16_CLASS;
@@ -2538,7 +2538,7 @@ save_mat5_binary_element (std::ostream& os,
 
       write_mat5_integer_data (os, m.fortran_vec (), 8, m.numel ());
     }
-  else if (tc.is_bool_type ())
+  else if (tc.islogical ())
     {
       uint8NDArray m (tc.bool_array_value ());
 

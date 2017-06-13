@@ -137,7 +137,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
   if (nargin == 1)
     {
       octave_value arg = args(0);
-      if (arg.is_bool_type ())
+      if (arg.islogical ())
         retval = arg.sparse_bool_matrix_value ();
       else if (arg.is_complex_type ())
         retval = arg.sparse_complex_matrix_value ();
@@ -197,7 +197,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
           k = 1;
           idx_vector j = args(1).index_vector ();
 
-          if (args(2).is_bool_type ())
+          if (args(2).islogical ())
             retval = SparseBoolMatrix (args(2).bool_array_value (), i,j,
                                        m, n, summation, nzmax);
           else if (args(2).is_complex_type ())

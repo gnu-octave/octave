@@ -1543,7 +1543,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
 
       if (val.is_double_type ())
         UNBOX_PRIMITIVE_ARRAY ( , , jdouble,  Double);
-      else if (val.is_bool_type ())
+      else if (val.islogical ())
         UNBOX_PRIMITIVE_ARRAY (bool_, bool, jboolean, Boolean);
       else if (val.is_float_type ())
         UNBOX_PRIMITIVE_ARRAY (float_, Float, jfloat, Float);
@@ -1585,7 +1585,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
 
       if (val.is_double_type ())
         UNBOX_PRIMITIVE_SCALAR (double, double, "java/lang/Double", "(D)V");
-      else if (val.is_bool_type ())
+      else if (val.islogical ())
         UNBOX_PRIMITIVE_SCALAR (bool, bool, "java/lang/Boolean", "(Z)V");
       else if (val.is_float_type ())
         UNBOX_PRIMITIVE_SCALAR (float, float, "java/lang/Float", "(F)V");

@@ -1492,7 +1492,7 @@ Use @code{imwrite} instead.
   if (cmap.isempty ())
     {
       const octave_value alpha = options.getfield ("alpha");
-      if (img.is_bool_type ())
+      if (img.islogical ())
         encode_bool_image (imvec, img.bool_array_value ());
       else if (img.is_uint8_type ())
         encode_uint_image<uint8NDArray>  (imvec, img.uint8_array_value (),

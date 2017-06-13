@@ -79,7 +79,7 @@ public:
 
   bool is_bool_scalar (void) const { return true; }
 
-  bool is_bool_type (void) const { return true; }
+  bool islogical (void) const { return true; }
 
   bool is_real_type (void) const { return true; }
 

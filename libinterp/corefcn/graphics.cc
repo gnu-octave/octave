@@ -971,7 +971,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
     CONVERT_CDATA_1 (NDArray, , true);
   else if (cdata.is_single_type ())
     CONVERT_CDATA_1 (FloatNDArray, float_, true);
-  else if (cdata.is_bool_type ())
+  else if (cdata.islogical ())
     CONVERT_CDATA_1 (boolNDArray, bool_, false);
   else
     {
@@ -1543,7 +1543,7 @@ array_property::is_equal (const octave_value& v) const
               }                                                         \
           }
 
-          if (data.is_double_type () || data.is_bool_type ())
+          if (data.is_double_type () || data.islogical ())
             CHECK_ARRAY_EQUAL (double, , NDArray)
           else if (data.is_single_type ())
             CHECK_ARRAY_EQUAL (float, float_, FloatNDArray)

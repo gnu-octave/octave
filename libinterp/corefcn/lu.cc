@@ -255,7 +255,7 @@ permutation information.
                 retval(4) = fact.R ();
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
@@ -401,7 +401,7 @@ permutation information.
                 }
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           if (arg.is_single_type ())
             {

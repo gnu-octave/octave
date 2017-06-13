@@ -147,7 +147,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
         {
           MatrixType mattyp;
 
-          if (args(0).is_complex_type ())
+          if (args(0).iscomplex ())
             {
               mattyp = args(0).matrix_type ();
 
@@ -287,7 +287,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
             error ("matrix_type: Invalid number of arguments");
 
           // Set the matrix type
-          if (args(0).is_complex_type ())
+          if (args(0).iscomplex ())
             retval = octave_value (args(0).sparse_complex_matrix_value (),
                                    mattyp);
           else
@@ -301,7 +301,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
         {
           MatrixType mattyp;
 
-          if (args(0).is_complex_type ())
+          if (args(0).iscomplex ())
             {
               mattyp = args(0).matrix_type ();
 
@@ -424,7 +424,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
           // Set the matrix type
           if (args(0).is_single_type ())
             {
-              if (args(0).is_complex_type ())
+              if (args(0).iscomplex ())
                 retval = octave_value (args(0).float_complex_matrix_value (),
                                        mattyp);
               else
@@ -433,7 +433,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
             }
           else
             {
-              if (args(0).is_complex_type ())
+              if (args(0).iscomplex ())
                 retval = octave_value (args(0).complex_matrix_value (),
                                        mattyp);
               else

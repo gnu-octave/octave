@@ -94,7 +94,7 @@ do_sqrtm (const octave_value& arg)
 
   MatrixType mt = arg.matrix_type ();
 
-  bool iscomplex = arg.is_complex_type ();
+  bool iscomplex = arg.iscomplex ();
 
   typedef typename Matrix::element_type real_type;
 

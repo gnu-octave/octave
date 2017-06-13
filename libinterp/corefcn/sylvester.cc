@@ -100,9 +100,9 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 
   if (isfloat)
     {
-      if (arg_a.is_complex_type ()
-          || arg_b.is_complex_type ()
-          || arg_c.is_complex_type ())
+      if (arg_a.iscomplex ()
+          || arg_b.iscomplex ()
+          || arg_c.iscomplex ())
         {
           // Do everything in complex arithmetic;
 
@@ -125,9 +125,9 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
     }
   else
     {
-      if (arg_a.is_complex_type ()
-          || arg_b.is_complex_type ()
-          || arg_c.is_complex_type ())
+      if (arg_a.iscomplex ()
+          || arg_b.iscomplex ()
+          || arg_c.iscomplex ())
         {
           // Do everything in complex arithmetic;
 

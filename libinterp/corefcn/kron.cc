@@ -168,7 +168,7 @@ dispatch_kron (const octave_value& a, const octave_value& b)
     retval = do_kron<PermMatrix, PermMatrix> (a, b);
   else if (a.is_sparse_type () || b.is_sparse_type ())
     {
-      if (a.is_complex_type () || b.is_complex_type ())
+      if (a.iscomplex () || b.iscomplex ())
         retval = do_kron<SparseComplexMatrix, SparseComplexMatrix> (a, b);
       else
         retval = do_kron<SparseMatrix, SparseMatrix> (a, b);
@@ -193,18 +193,18 @@ dispatch_kron (const octave_value& a, const octave_value& b)
         }
       else if (a.is_single_type () || b.is_single_type ())
         {
-          if (a.is_complex_type ())
+          if (a.iscomplex ())
             retval = do_kron<FloatComplexDiagMatrix, FloatComplexMatrix> (a, b);
-          else if (b.is_complex_type ())
+          else if (b.iscomplex ())
             retval = do_kron<FloatDiagMatrix, FloatComplexMatrix> (a, b);
           else
             retval = do_kron<FloatDiagMatrix, FloatMatrix> (a, b);
         }
       else
         {
-          if (a.is_complex_type ())
+          if (a.iscomplex ())
             retval = do_kron<ComplexDiagMatrix, ComplexMatrix> (a, b);
-          else if (b.is_complex_type ())
+          else if (b.iscomplex ())
             retval = do_kron<DiagMatrix, ComplexMatrix> (a, b);
           else
             retval = do_kron<DiagMatrix, Matrix> (a, b);
@@ -212,18 +212,18 @@ dispatch_kron (const octave_value& a, const octave_value& b)
     }
   else if (a.is_single_type () || b.is_single_type ())
     {
-      if (a.is_complex_type ())
+      if (a.iscomplex ())
         retval = do_kron<FloatComplexMatrix, FloatComplexMatrix> (a, b);
-      else if (b.is_complex_type ())
+      else if (b.iscomplex ())
         retval = do_kron<FloatMatrix, FloatComplexMatrix> (a, b);
       else
         retval = do_kron<FloatMatrix, FloatMatrix> (a, b);
     }
   else
     {
-      if (a.is_complex_type ())
+      if (a.iscomplex ())
         retval = do_kron<ComplexMatrix, ComplexMatrix> (a, b);
-      else if (b.is_complex_type ())
+      else if (b.iscomplex ())
         retval = do_kron<Matrix, ComplexMatrix> (a, b);
       else
         retval = do_kron<Matrix, Matrix> (a, b);

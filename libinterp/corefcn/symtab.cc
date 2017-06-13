@@ -1615,7 +1615,7 @@ symbol_table::do_workspace_info (void) const
 
               workspace_element elt (storage, nm, val.class_name (),
                                      short_disp_str, dv.str (),
-                                     val.is_complex_type ());
+                                     val.iscomplex ());
 
               retval.push_back (elt);
             }

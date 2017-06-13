@@ -293,7 +293,7 @@ Note also that @var{U} and @var{T} are not unique.
     err_wrong_type_arg ("rsf2csf", args(0));
   if (! args(1).is_numeric_type ())
     err_wrong_type_arg ("rsf2csf", args(1));
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("rsf2csf: UR and TR must be real matrices");
 
   if (args(0).is_single_type () || args(1).is_single_type ())

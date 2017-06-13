@@ -81,7 +81,7 @@ givens (1, 1)
 
   if (args(0).is_single_type () || args(1).is_single_type ())
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           FloatComplex cx = args(0).float_complex_value ();
           FloatComplex cy = args(1).float_complex_value ();
@@ -122,7 +122,7 @@ givens (1, 1)
     }
   else
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           Complex cx = args(0).complex_value ();
           Complex cy = args(1).complex_value ();

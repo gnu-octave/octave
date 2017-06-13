@@ -1418,7 +1418,7 @@ array_property::validate (const octave_value& v)
       // check if complex is allowed (it's also of class "double", so
       // checking that alone is not enough to ensure real type)
       if (type_constraints.find ("real") != type_constraints.end ()
-          && v.is_complex_type ())
+          && v.iscomplex ())
         xok = false;
     }
   else

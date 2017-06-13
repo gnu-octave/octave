@@ -317,7 +317,7 @@ strings instead of a character array.
 
   octave_value val = args(0);
 
-  if (val.is_complex_type ())
+  if (val.iscomplex ())
     error ("num2hex: N must be real");
 
   Cell result;

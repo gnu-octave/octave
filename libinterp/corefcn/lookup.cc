@@ -281,10 +281,10 @@ at most n-1).
     {
       // In the case of a complex array, absolute values will be used for
       // compatibility (though it's not too meaningful).
-      if (table.is_complex_type ())
+      if (table.iscomplex ())
         table = table.abs ();
 
-      if (y.is_complex_type ())
+      if (y.iscomplex ())
         y = y.abs ();
 
       Array<octave_idx_type> idx;

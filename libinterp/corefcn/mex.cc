@@ -218,7 +218,7 @@ public:
 
   int is_char (void) const { return val.is_string (); }
 
-  int is_complex (void) const { return val.is_complex_type (); }
+  int is_complex (void) const { return val.iscomplex (); }
 
   int is_double (void) const { return val.is_double_type (); }
 

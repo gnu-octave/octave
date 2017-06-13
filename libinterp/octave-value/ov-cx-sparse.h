@@ -97,7 +97,7 @@ public:
 
   bool is_complex_matrix (void) const { return true; }
 
-  bool is_complex_type (void) const { return true; }
+  bool iscomplex (void) const { return true; }
 
   bool is_double_type (void) const { return true; }
 

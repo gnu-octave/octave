@@ -414,7 +414,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       uint32_t nnz = len + 1;
       os.write (reinterpret_cast<char *> (&nnz), 4);
 
-      uint32_t iscmplx = (tc.is_complex_type () ? 4 : 3);
+      uint32_t iscmplx = (tc.iscomplex () ? 4 : 3);
       os.write (reinterpret_cast<char *> (&iscmplx), 4);
 
       uint32_t tmp = 0;
@@ -425,7 +425,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       os.write (reinterpret_cast<char *> (&nr), 4);
       os.write (reinterpret_cast<char *> (&nc), 4);
 
-      int32_t imag = (tc.is_complex_type () ? 1 : 0);
+      int32_t imag = (tc.iscomplex () ? 1 : 0);
       os.write (reinterpret_cast<char *> (&imag), 4);
 
       len = nr * nc;

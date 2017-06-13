@@ -90,7 +90,7 @@ The author of the code itself is Timothy A. Davis
 
   if (args(0).is_sparse_type ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
@@ -109,7 +109,7 @@ The author of the code itself is Timothy A. Davis
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
         sm = SparseMatrix (args(0).matrix_value ());

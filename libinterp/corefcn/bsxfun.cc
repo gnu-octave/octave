@@ -546,7 +546,7 @@ dimensionality as the other array.
                         }
                       else if (tmp(0).is_double_type ())
                         {
-                          if (tmp(0).is_complex_type ()
+                          if (tmp(0).iscomplex ()
                               && have_FloatNDArray)
                             {
                               result_ComplexNDArray =

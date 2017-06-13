@@ -55,7 +55,7 @@ instead.
 
   if (args(0).is_single_type ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           FloatComplexMatrix m = args(0).float_complex_matrix_value ();
           MatrixType mattyp;
@@ -70,7 +70,7 @@ instead.
           args(0).matrix_type (mattyp);
         }
     }
-  else if (args(0).is_complex_type ())
+  else if (args(0).iscomplex ())
     {
       ComplexMatrix m = args(0).complex_matrix_value ();
       MatrixType mattyp;

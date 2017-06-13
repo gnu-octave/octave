@@ -144,7 +144,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       if (a.rows () > 0 && a.cols () > 0)
         A->x = a.data ();
     }
-  else if (args(0).is_complex_type ())
+  else if (args(0).iscomplex ())
     {
       const SparseComplexMatrix a = args(0).sparse_complex_matrix_value ();
       A->nrow = a.rows ();

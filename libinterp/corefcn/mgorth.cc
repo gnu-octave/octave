@@ -83,7 +83,7 @@ On exit, @var{y} is a unit vector such that:
 
   octave_value_list retval;
 
-  bool iscomplex = (arg_x.is_complex_type () || arg_v.is_complex_type ());
+  bool iscomplex = (arg_x.iscomplex () || arg_v.iscomplex ());
   if (arg_x.is_single_type () || arg_v.is_single_type ())
     {
       if (iscomplex)

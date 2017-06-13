@@ -231,7 +231,7 @@ scalar_xpow (const S& a, const SM& b)
 {
   octave_value val = elem_xpow (a, b);
 
-  if (val.is_complex_type ())
+  if (val.iscomplex ())
     return SparseComplexMatrix (val.complex_matrix_value ());
   else
     return SparseMatrix (val.matrix_value ());

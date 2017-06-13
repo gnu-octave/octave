@@ -153,7 +153,7 @@ Undocumented internal function.
   // its structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
   octave_value_list arg_list;
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       SparseMatrix speye (DiagMatrix (sm.cols (), sm.cols (), 1.0));
@@ -472,7 +472,7 @@ Undocumented internal function.
   double droptol = args(1).double_value ();
   std::string milu = args(2).string_value ();
 
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       SparseMatrix sm_u = Ftriu (ovl (sm))(0).sparse_matrix_value ();
@@ -913,7 +913,7 @@ Undocumented internal function.
 
   octave_value_list arg_list;
   octave_idx_type nnz_u, nnz_l;
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       SparseMatrix U, L;

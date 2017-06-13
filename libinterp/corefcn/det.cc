@@ -84,7 +84,7 @@ For that, use any of the condition number functions: @code{cond},
       if (nargout <= 1)
         retval.resize (1);
 
-      if (arg.is_complex_type ())
+      if (arg.iscomplex ())
         {
           if (isfloat)
             {
@@ -144,7 +144,7 @@ For that, use any of the condition number functions: @code{cond},
           if (rep)
             rep->matrix_type (mtype);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           octave_idx_type info;
           float rcond = 0.0;
@@ -189,7 +189,7 @@ For that, use any of the condition number functions: @code{cond},
                 rep->matrix_type (mtype);
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           octave_idx_type info;
           double rcond = 0.0;

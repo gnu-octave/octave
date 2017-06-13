@@ -94,8 +94,8 @@ is in the upper left corner, by doing:
 
   const bool double_type  = args(0).is_double_type ()
                             || args(1).is_double_type ();
-  const bool complex_type = args(0).is_complex_type ()
-                            || args(1).is_complex_type ();
+  const bool complex_type = args(0).iscomplex ()
+                            || args(1).iscomplex ();
 
 #define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND)                           \
   TYPE ## Matrix U = args(0).x ## TYPE_M ## _value                      \

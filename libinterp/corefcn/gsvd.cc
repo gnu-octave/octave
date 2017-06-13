@@ -222,7 +222,7 @@ and zggsvd routines.
 
               retval = do_gsvd (tmpA, tmpB, nargout, true);
             }
-          else if (argA.is_complex_type () || argB.is_complex_type ())
+          else if (argA.iscomplex () || argB.iscomplex ())
             {
               FloatComplexMatrix ctmpA = argA.xfloat_complex_matrix_value ("gsvd: A must be a real or complex matrix");
               FloatComplexMatrix ctmpB = argB.xfloat_complex_matrix_value ("gsvd: B must be a real or complex matrix");
@@ -251,7 +251,7 @@ and zggsvd routines.
 
               retval = do_gsvd (tmpA, tmpB, nargout);
             }
-          else if (argA.is_complex_type () || argB.is_complex_type ())
+          else if (argA.iscomplex () || argB.iscomplex ())
             {
               ComplexMatrix ctmpA = argA.xcomplex_matrix_value ("gsvd: A must be a real or complex matrix");
               ComplexMatrix ctmpB = argB.xcomplex_matrix_value ("gsvd: B must be a real or complex matrix");

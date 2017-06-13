@@ -82,7 +82,7 @@ quad_user_function (double x)
       if (! tmp.length () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("quad");
 
-      if (! warned_imaginary && tmp(0).is_complex_type ())
+      if (! warned_imaginary && tmp(0).iscomplex ())
         {
           warning ("quad: ignoring imaginary part returned from user-supplied function");
           warned_imaginary = true;
@@ -118,7 +118,7 @@ quad_float_user_function (float x)
       if (! tmp.length () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("quad");
 
-      if (! warned_imaginary && tmp(0).is_complex_type ())
+      if (! warned_imaginary && tmp(0).iscomplex ())
         {
           warning ("quad: ignoring imaginary part returned from user-supplied function");
           warned_imaginary = true;

@@ -357,10 +357,10 @@ H(z) = ---------------------
                   || args(2).is_single_type ()
                   || (nargin >= 4 && args(3).is_single_type ()));
 
-  if (args(0).is_complex_type ()
-      || args(1).is_complex_type ()
-      || args(2).is_complex_type ()
-      || (nargin >= 4 && args(3).is_complex_type ()))
+  if (args(0).iscomplex ()
+      || args(1).iscomplex ()
+      || args(2).iscomplex ()
+      || (nargin >= 4 && args(3).iscomplex ()))
     {
       if (isfloat)
         {

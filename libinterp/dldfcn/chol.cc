@@ -210,7 +210,7 @@ sparse matrices.
           else
             error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
@@ -255,7 +255,7 @@ sparse matrices.
           else
             error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -288,7 +288,7 @@ sparse matrices.
           else
             error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexMatrix m = arg.complex_matrix_value ();
 
@@ -389,7 +389,7 @@ the Cholesky@tie{}factorization.
               else
                 error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
@@ -416,7 +416,7 @@ the Cholesky@tie{}factorization.
               else
                 error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -443,7 +443,7 @@ the Cholesky@tie{}factorization.
               else
                 error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               ComplexMatrix m = arg.complex_matrix_value ();
 
@@ -511,7 +511,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
 
               retval = octave::math::chol2inv (r);
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               SparseComplexMatrix r = arg.sparse_complex_matrix_value ();
 
@@ -528,7 +528,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
 
               retval = octave::math::chol2inv (r);
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               FloatComplexMatrix r = arg.float_complex_matrix_value ();
 
@@ -546,7 +546,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
 
               retval = octave::math::chol2inv (r);
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               ComplexMatrix r = arg.complex_matrix_value ();
 

@@ -185,7 +185,7 @@ typecast (@var{x}, "uint8")
       else
         assert (0);
     }
-  else if (array.is_complex_type ())
+  else if (array.iscomplex ())
     {
       if (array.is_single_type ())
         get_data_and_bytesize (array.float_complex_array_value (), data,
@@ -518,7 +518,7 @@ column vector.
       else
         assert (0);
     }
-  else if (array.is_complex_type ())
+  else if (array.iscomplex ())
     {
       if (array.is_single_type ())
         retval = do_bitunpack (array.float_complex_array_value ());

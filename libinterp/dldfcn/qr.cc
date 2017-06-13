@@ -234,7 +234,7 @@ permutation vector instead of a permutation matrix.
   bool have_b = 0;
   bool vector_p = 0;
 
-  if (arg.is_complex_type ())
+  if (arg.iscomplex ())
     is_cmplx = true;
   if (nargin > 1)
     {
@@ -264,7 +264,7 @@ permutation vector instead of a permutation matrix.
       else if (nargin == 3)   // should be caught by is_scalar_type or is_string
         print_usage ();
 
-      if (have_b && args(1).is_complex_type ())
+      if (have_b && args(1).iscomplex ())
         is_cmplx = true;
     }
 
@@ -356,7 +356,7 @@ permutation vector instead of a permutation matrix.
                   break;
                 }
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               octave::math::qr<FloatComplexMatrix>::type type
                 = qr_type<FloatComplexMatrix> (nargin, nargout);
@@ -440,7 +440,7 @@ permutation vector instead of a permutation matrix.
                   break;
                 }
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               octave::math::qr<ComplexMatrix>::type type
                 = qr_type<ComplexMatrix> (nargin, nargout);

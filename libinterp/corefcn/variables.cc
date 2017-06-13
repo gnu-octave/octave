@@ -1159,7 +1159,7 @@ private:
       : name (expr_str.empty () ? sr.name () : expr_str),
         varval (expr_val.is_undefined () ? sr.varval () : expr_val),
         is_automatic (sr.is_automatic ()),
-        is_complex (varval.is_complex_type ()),
+        is_complex (varval.iscomplex ()),
         is_formal (sr.is_formal ()),
         is_global (sr.is_global ()),
         is_persistent (sr.is_persistent ())
@@ -1365,7 +1365,7 @@ public:
         bytes_info(j) = val.byte_size ();
         class_info(j) = val.class_name ();
         sparse_info(j) = val.is_sparse_type ();
-        complex_info(j) = val.is_complex_type ();
+        complex_info(j) = val.iscomplex ();
         nesting_info(j) = ni;
       }
 

@@ -122,7 +122,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and
 
   F77_INT m, n, k;
   dim_vector dimz;
-  if (argx.is_complex_type () || argy.is_complex_type ())
+  if (argx.iscomplex () || argy.iscomplex ())
     {
       if (argx.is_single_type () || argy.is_single_type ())
         {
@@ -280,7 +280,7 @@ endfor
     error ("blkmm: A and B dimensions don't match: (%s) and (%s)",
            dimx.str ().c_str (), dimy.str ().c_str ());
 
-  if (argx.is_complex_type () || argy.is_complex_type ())
+  if (argx.iscomplex () || argy.iscomplex ())
     {
       if (argx.is_single_type () || argy.is_single_type ())
         {

@@ -87,7 +87,7 @@ IEEE Transactions on Automatic Control, 1979).
             retval = ovl (result.unitary_hess_matrix (),
                           result.hess_matrix ());
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
@@ -114,7 +114,7 @@ IEEE Transactions on Automatic Control, 1979).
             retval = ovl (result.unitary_hess_matrix (),
                           result.hess_matrix ());
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 

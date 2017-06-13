@@ -2075,7 +2075,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     }
   else if (tc.is_sparse_type ())
     {
-      if (tc.is_complex_type ())
+      if (tc.iscomplex ())
         {
           const SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
           octave_idx_type nc = m.cols ();
@@ -2261,7 +2261,7 @@ save_mat5_binary_element (std::ostream& os,
       octave_idx_type nnz;
       octave_idx_type nc;
 
-      if (tc.is_complex_type ())
+      if (tc.iscomplex ())
         {
           SparseComplexMatrix scm = tc.sparse_complex_matrix_value ();
           nnz = scm.nzmax ();
@@ -2450,7 +2450,7 @@ save_mat5_binary_element (std::ostream& os,
     }
   else if (tc.is_sparse_type ())
     {
-      if (tc.is_complex_type ())
+      if (tc.iscomplex ())
         {
           const SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
           octave_idx_type nnz = m.nnz ();

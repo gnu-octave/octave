@@ -1807,7 +1807,7 @@ num2cell ([1,2;3,4],1)
           else if (array.is_uint64_type ())
             retval = do_num2cell (array.uint64_array_value (), dimv);
         }
-      else if (array.is_complex_type ())
+      else if (array.iscomplex ())
         {
           if (array.is_single_type ())
             retval = do_num2cell (array.float_complex_array_value (), dimv);
@@ -2304,7 +2304,7 @@ slicing is done along the first non-singleton dimension.
             retcell = do_cellslices_nda (x.uint64_array_value (),
                                          lb, ub, dim);
         }
-      else if (x.is_complex_type ())
+      else if (x.iscomplex ())
         {
           if (x.is_single_type ())
             retcell = do_cellslices_nda (x.float_complex_array_value (),

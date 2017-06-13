@@ -325,7 +325,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
   Matrix aa;
   ComplexMatrix caa;
 
-  if (args(0).is_complex_type ())
+  if (args(0).iscomplex ())
     caa = args(0).complex_matrix_value ();
   else
     aa = args(0).matrix_value ();
@@ -344,7 +344,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
   Matrix bb;
   ComplexMatrix cbb;
 
-  if (args(1).is_complex_type ())
+  if (args(1).iscomplex ())
     cbb = args(1).complex_matrix_value ();
   else
     bb = args(1).matrix_value ();
@@ -353,7 +353,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
   // declared volatile to avoid compiler warnings about long jumps vforks.
   volatile bool complex_case
-    = (args(0).is_complex_type () || args(1).is_complex_type ());
+    = (args(0).iscomplex () || args(1).iscomplex ());
 
   if (nargin == 3 && complex_case)
     error ("qz: cannot re-order complex qz decomposition");

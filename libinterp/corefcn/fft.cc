@@ -146,7 +146,7 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
           nda.resize (dims, 0.0);
           retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexNDArray cnda = arg.complex_array_value ();
 

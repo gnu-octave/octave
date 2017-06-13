@@ -96,7 +96,7 @@ can have any value real or complex value.  However, for polygamma functions
           retval = psi_z;                                       \
         }
 
-      if (oct_z.is_complex_type ())
+      if (oct_z.iscomplex ())
         {
           FLOAT_BRANCH(double, Complex, complex_, Complex)
           else FLOAT_BRANCH(single, FloatComplex, float_complex_, FloatComplex)

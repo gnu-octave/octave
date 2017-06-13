@@ -117,7 +117,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
 
           retval = m.pseudo_inverse (tol);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -141,7 +141,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
 
           retval = m.pseudo_inverse (tol);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexMatrix m = arg.complex_matrix_value ();
 

@@ -102,7 +102,7 @@ namespace octave
     if (all_real && ! val.is_real_type ())
       all_real = false;
 
-    if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
+    if (all_cmplx && ! (val.iscomplex () || val.is_real_type ()))
       all_cmplx = false;
 
     if (! any_cell && val.iscell ())

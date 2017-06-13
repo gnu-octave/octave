@@ -201,7 +201,7 @@ and may be less accurate for some matrices.  See the documentation for
                           sigma,
                           result.right_singular_matrix ());
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
@@ -246,7 +246,7 @@ and may be less accurate for some matrices.  See the documentation for
                           sigma,
                           result.right_singular_matrix ());
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 

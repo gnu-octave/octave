@@ -226,7 +226,7 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
   if (! args(1).is_numeric_type ())
     err_wrong_type_arg ("atan2", args(1));
 
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("atan2: not defined for complex numbers");
 
   if (args(0).is_single_type () || args(1).is_single_type ())
@@ -334,9 +334,9 @@ do_hypot (const octave_value& x, const octave_value& y)
   if (! arg1.is_numeric_type ())
     err_wrong_type_arg ("hypot", arg1);
 
-  if (arg0.is_complex_type ())
+  if (arg0.iscomplex ())
     arg0 = arg0.abs ();
-  if (arg1.is_complex_type ())
+  if (arg1.iscomplex ())
     arg1 = arg1.abs ();
 
   if (arg0.is_single_type () || arg1.is_single_type ())
@@ -508,7 +508,7 @@ $x = 0$, $f = e = 0$.
           map_2_xlog2 (x, f, e);
           retval = ovl (f, e);
         }
-      else if (args(0).is_complex_type ())
+      else if (args(0).iscomplex ())
         {
           FloatComplexNDArray f;
           FloatComplexNDArray x = args(0).float_complex_array_value ();
@@ -527,7 +527,7 @@ $x = 0$, $f = e = 0$.
       map_2_xlog2 (x, f, e);
       retval = ovl (f, e);
     }
-  else if (args(0).is_complex_type ())
+  else if (args(0).iscomplex ())
     {
       ComplexNDArray f;
       ComplexNDArray x = args(0).complex_array_value ();
@@ -608,7 +608,7 @@ periodic, @code{mod} is a better choice.
   if (! args(1).is_numeric_type ())
     err_wrong_type_arg ("rem", args(1));
 
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("rem: not defined for complex numbers");
 
   if (args(0).isinteger () || args(1).isinteger ())
@@ -787,7 +787,7 @@ negative numbers or when the values are periodic.
   if (! args(1).is_numeric_type ())
     err_wrong_type_arg ("mod", args(1));
 
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("mod: not defined for complex numbers");
 
   if (args(0).isinteger () || args(1).isinteger ())
@@ -947,7 +947,7 @@ negative numbers or when the values are periodic.
           retval = tmp.FCN (dim);                                       \
         }                                                               \
     }                                                                   \
-  else if (arg.is_complex_type ())                                      \
+  else if (arg.iscomplex ())                                      \
     {                                                                   \
       if (arg.is_sparse_type ())                                        \
         {                                                               \
@@ -1800,7 +1800,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             all_dq_strings_p = false;
           if (all_real_p && ! args(i).is_real_type ())
             all_real_p = false;
-          if (all_cmplx_p && ! (args(i).is_complex_type ()
+          if (all_cmplx_p && ! (args(i).iscomplex ()
                                 || args(i).is_real_type ()))
             all_cmplx_p = false;
           if (! any_sparse_p && args(i).is_sparse_type ())
@@ -3195,7 +3195,7 @@ Return true if @var{x} is a complex-valued numeric object.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_complex_type ());
+  return ovl (args(0).iscomplex ());
 }
 
 DEFUN (isfloat, args, ,
@@ -3251,7 +3251,7 @@ complex ([1, 2], [3, 4])
     {
       octave_value arg = args(0);
 
-      if (arg.is_complex_type ())
+      if (arg.iscomplex ())
         retval = arg;
       else
         {
@@ -5133,14 +5133,14 @@ if fewer than two values are requested.
 
   if (arg_1.is_single_type () || arg_2.is_single_type ())
     {
-      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+      if (arg_1.iscomplex () || arg_2.iscomplex ())
         retval = do_linspace<FloatComplexMatrix> (arg_1, arg_2, npoints);
       else
         retval = do_linspace<FloatMatrix> (arg_1, arg_2, npoints);
     }
   else
     {
-      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+      if (arg_1.iscomplex () || arg_2.iscomplex ())
         retval = do_linspace<ComplexMatrix> (arg_1, arg_2, npoints);
       else
         retval = do_linspace<Matrix> (arg_1, arg_2, npoints);
@@ -6987,7 +6987,7 @@ Undocumented internal function.
 
       if (vals.is_single_type ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumarray_sum (idx,
                                         vals.float_complex_array_value (),
                                         n);
@@ -6996,7 +6996,7 @@ Undocumented internal function.
         }
       else if (vals.is_numeric_type () || vals.islogical ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumarray_sum (idx,
                                         vals.complex_array_value (),
                                         n);
@@ -7207,7 +7207,7 @@ Undocumented internal function.
 
       if (vals.is_single_type ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumdim_sum (idx,
                                       vals.float_complex_array_value (),
                                       dim, n);
@@ -7217,7 +7217,7 @@ Undocumented internal function.
         }
       else if (vals.is_numeric_type () || vals.islogical ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumdim_sum (idx, vals.complex_array_value (),
                                       dim, n);
           else
@@ -7349,7 +7349,7 @@ converted to logical.
 
       if (tval.is_double_type () && fval.is_double_type ())
         {
-          if (tval.is_complex_type () || fval.is_complex_type ())
+          if (tval.iscomplex () || fval.iscomplex ())
             retval = do_merge (mask,
                                tval.complex_array_value (),
                                fval.complex_array_value ());
@@ -7360,7 +7360,7 @@ converted to logical.
         }
       else if (tval.is_single_type () && fval.is_single_type ())
         {
-          if (tval.is_complex_type () || fval.is_complex_type ())
+          if (tval.iscomplex () || fval.iscomplex ())
             retval = do_merge (mask,
                                tval.float_complex_array_value (),
                                fval.float_complex_array_value ());
@@ -7506,7 +7506,7 @@ do_diff (const octave_value& array, octave_idx_type order,
     }
   else if (array.is_sparse_type ())
     {
-      if (array.is_complex_type ())
+      if (array.iscomplex ())
         retval = do_sparse_diff (array.sparse_complex_matrix_value (),
                                  order, dim);
       else
@@ -7514,14 +7514,14 @@ do_diff (const octave_value& array, octave_idx_type order,
     }
   else if (array.is_single_type ())
     {
-      if (array.is_complex_type ())
+      if (array.iscomplex ())
         retval = array.float_complex_array_value ().diff (order, dim);
       else
         retval = array.float_array_value ().diff (order, dim);
     }
   else
     {
-      if (array.is_complex_type ())
+      if (array.iscomplex ())
         retval = array.complex_array_value ().diff (order, dim);
       else
         retval = array.array_value ().diff (order, dim);
@@ -7738,7 +7738,7 @@ Encode a double matrix or array @var{x} into the base64 format string
   if (! args(0).is_numeric_type ())
     error ("base64_encode: encoding is supported only for numeric arrays");
 
-  if (args(0).is_complex_type () || args(0).is_sparse_type ())
+  if (args(0).iscomplex () || args(0).is_sparse_type ())
     error ("base64_encode: encoding complex or sparse data is not supported");
 
   octave_value_list retval;

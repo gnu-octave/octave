@@ -480,7 +480,7 @@ b = sparse (i, j, v, sz(1), sz(2));
 
           retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           SparseComplexMatrix v = arg.sparse_complex_matrix_value ();
 
@@ -509,7 +509,7 @@ b = sparse (i, j, v, sz(1), sz(2));
 
           retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
@@ -522,7 +522,7 @@ b = sparse (i, j, v, sz(1), sz(2));
 
       retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
     }
-  else if (arg.is_complex_type ())
+  else if (arg.iscomplex ())
     {
       ComplexNDArray cnda = arg.complex_array_value ();
 

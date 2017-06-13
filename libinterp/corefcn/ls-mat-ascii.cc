@@ -343,7 +343,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
 {
   bool success = true;
 
-  if (val.is_complex_type ())
+  if (val.iscomplex ())
     warning ("save: omitting imaginary part for ASCII file");
 
   Matrix m;

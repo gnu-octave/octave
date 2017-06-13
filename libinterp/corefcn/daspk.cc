@@ -89,7 +89,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen == 0 || ! tmp(0).is_defined ())
         err_user_supplied_eval ("daspk");
 
-      if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+      if (! warned_fcn_imaginary && tmp(0).iscomplex ())
         {
           warning ("daspk: ignoring imaginary part returned from user-supplied function");
           warned_fcn_imaginary = true;
@@ -139,7 +139,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen == 0 || ! tmp(0).is_defined ())
         err_user_supplied_eval ("daspk");
 
-      if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+      if (! warned_jac_imaginary && tmp(0).iscomplex ())
         {
           warning ("daspk: ignoring imaginary part returned from user-supplied jacobian function");
           warned_jac_imaginary = true;

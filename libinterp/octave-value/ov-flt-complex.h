@@ -88,7 +88,7 @@ public:
 
   bool is_complex_scalar (void) const { return true; }
 
-  bool is_complex_type (void) const { return true; }
+  bool iscomplex (void) const { return true; }
 
   bool is_single_type (void) const { return true; }
 

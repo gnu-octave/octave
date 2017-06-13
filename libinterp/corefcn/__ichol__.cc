@@ -195,7 +195,7 @@ Undocumented internal function.
   // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved
   // so its structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
       SparseMatrix sm = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
@@ -422,7 +422,7 @@ Undocumented internal function.
   double droptol = args(1).double_value ();
   std::string michol = args(2).string_value ();
 
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
       SparseMatrix L;
       SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();

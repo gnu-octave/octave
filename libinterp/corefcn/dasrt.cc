@@ -87,7 +87,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
       if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
-      if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+      if (! warned_fcn_imaginary && tmp(0).iscomplex ())
         {
           warning ("dasrt: ignoring imaginary part returned from user-supplied function");
           warned_fcn_imaginary = true;
@@ -128,7 +128,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
       if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
-      if (! warned_cf_imaginary && tmp(0).is_complex_type ())
+      if (! warned_cf_imaginary && tmp(0).iscomplex ())
         {
           warning ("dasrt: ignoring imaginary part returned from user-supplied constraint function");
           warned_cf_imaginary = true;
@@ -175,7 +175,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen == 0 || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
-      if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+      if (! warned_jac_imaginary && tmp(0).iscomplex ())
         {
           warning ("dasrt: ignoring imaginary part returned from user-supplied jacobian function");
           warned_jac_imaginary = true;

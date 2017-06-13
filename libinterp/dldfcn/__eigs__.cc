@@ -74,7 +74,7 @@ eigs_func (const ColumnVector& x, int& eigs_error)
 
       if (tmp.length () && tmp(0).is_defined ())
         {
-          if (! warned_imaginary && tmp(0).is_complex_type ())
+          if (! warned_imaginary && tmp(0).iscomplex ())
             {
               warning ("eigs: ignoring imaginary part returned from user-supplied function");
               warned_imaginary = true;
@@ -230,7 +230,7 @@ Undocumented internal function.
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           if (args(0).is_sparse_type ())
             {
@@ -262,7 +262,7 @@ Undocumented internal function.
   if (nargin > 1 + arg_offset
       && ! (args(1 + arg_offset).is_real_scalar ()))
     {
-      if (args(1+arg_offset).is_complex_type ())
+      if (args(1+arg_offset).iscomplex ())
         {
           b_arg = 1+arg_offset;
           have_b = true;

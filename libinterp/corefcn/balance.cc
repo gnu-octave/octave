@@ -108,8 +108,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
   bool isfloat = args(0).is_single_type ()
                  || (! AEPcase && args(1).is_single_type ());
 
-  bool complex_case = args(0).is_complex_type ()
-                      || (! AEPcase && args(1).is_complex_type ());
+  bool complex_case = args(0).iscomplex ()
+                      || (! AEPcase && args(1).iscomplex ());
 
   // Extract argument 1 parameter for both AEP and GEP.
   Matrix aa;

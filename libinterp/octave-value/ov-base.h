@@ -415,7 +415,7 @@ public:
 
   virtual bool is_real_type (void) const { return false; }
 
-  virtual bool is_complex_type (void) const { return false; }
+  virtual bool iscomplex (void) const { return false; }
 
   // Would be nice to get rid of the next four functions:
 

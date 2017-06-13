@@ -677,8 +677,12 @@ public:
   bool is_real_type (void) const
   { return rep->is_real_type (); }
 
+  bool iscomplex (void) const
+  { return rep->iscomplex (); }
+
+  OCTAVE_DEPRECATED ("use 'iscomplex' instead")
   bool is_complex_type (void) const
-  { return rep->is_complex_type (); }
+  { return rep->iscomplex (); }
 
   bool is_scalar_type (void) const
   { return rep->is_scalar_type (); }

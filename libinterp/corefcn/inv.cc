@@ -78,7 +78,7 @@ sparse matrix if possible.
     {
       rcond = 1.0;
       frcond = 1.0f;
-      if (arg.is_complex_type ())
+      if (arg.iscomplex ())
         {
           if (isfloat)
             {
@@ -125,7 +125,7 @@ sparse matrix if possible.
           result = m.inverse (mattyp, info, frcond, 1);
           args(0).matrix_type (mattyp);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -155,7 +155,7 @@ sparse matrix if possible.
               args(0).matrix_type (mattyp);
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           if (arg.is_sparse_type ())
             {

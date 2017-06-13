@@ -110,8 +110,8 @@ When the third argument is a matrix, return the convolution of the matrix
       if (args(0).is_single_type () || args(1).is_single_type ()
           || args(2).is_single_type ())
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ()
-              || args(2).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ()
+              || args(2).iscomplex ())
             {
               FloatComplexMatrix a (args(2).float_complex_matrix_value ());
               if (args(1).is_real_type () && args(2).is_real_type ())
@@ -137,8 +137,8 @@ When the third argument is a matrix, return the convolution of the matrix
         }
       else
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ()
-              || args(2).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ()
+              || args(2).iscomplex ())
             {
               ComplexMatrix a (args(2).complex_matrix_value ());
               if (args(1).is_real_type () && args(2).is_real_type ())
@@ -167,7 +167,7 @@ When the third argument is a matrix, return the convolution of the matrix
     {
       if (args(0).is_single_type () || args(1).is_single_type ())
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ())
             {
               FloatComplexMatrix a (args(0).float_complex_matrix_value ());
               if (args(1).is_real_type ())
@@ -190,7 +190,7 @@ When the third argument is a matrix, return the convolution of the matrix
         }
       else
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ())
             {
               ComplexMatrix a (args(0).complex_matrix_value ());
               if (args(1).is_real_type ())
@@ -332,7 +332,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 
   if (args(0).is_single_type () || args(1).is_single_type ())
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           FloatComplexNDArray a (args(0).float_complex_array_value ());
           if (args(1).is_real_type ())
@@ -355,7 +355,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
     }
   else
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           ComplexNDArray a (args(0).complex_array_value ());
           if (args(1).is_real_type ())

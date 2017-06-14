@@ -628,7 +628,7 @@ FloatMatrix::inverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
-      if (mattype.is_hermitian ())
+      if (mattype.ishermitian ())
         {
           octave::math::chol<FloatMatrix> chol (*this, info, true, calc_cond);
           if (info == 0)
@@ -643,10 +643,10 @@ FloatMatrix::inverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
             mattype.mark_as_unsymmetric ();
         }
 
-      if (! mattype.is_hermitian ())
+      if (! mattype.ishermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((calc_cond || mattype.is_hermitian ()) && rcon == 0.
+      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.
           && ! (numel () == 1))
         ret = FloatMatrix (rows (), columns (),
                            octave::numeric_limits<float>::Inf ());

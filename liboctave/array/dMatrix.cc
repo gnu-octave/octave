@@ -621,7 +621,7 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
-      if (mattype.is_hermitian ())
+      if (mattype.ishermitian ())
         {
           octave::math::chol<Matrix> chol (*this, info, true, calc_cond);
           if (info == 0)
@@ -636,10 +636,10 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
             mattype.mark_as_unsymmetric ();
         }
 
-      if (! mattype.is_hermitian ())
+      if (! mattype.ishermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((calc_cond || mattype.is_hermitian ()) && rcon == 0.
+      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.
           && ! (numel () == 1))
         ret = Matrix (rows (), columns (),
                       octave::numeric_limits<double>::Inf ());

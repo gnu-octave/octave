@@ -1079,7 +1079,7 @@ SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
     }
   else
     {
-      if (mattype.is_hermitian ())
+      if (mattype.ishermitian ())
         {
           MatrixType tmp_typ (MatrixType::Upper);
           octave::math::sparse_chol<SparseMatrix> fact (*this, info, false);
@@ -1099,7 +1099,7 @@ SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
             }
         }
 
-      if (! mattype.is_hermitian ())
+      if (! mattype.ishermitian ())
         {
           octave_idx_type n = rows ();
           ColumnVector Qinit(n);

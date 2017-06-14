@@ -170,7 +170,7 @@ ComplexMatrix::operator != (const ComplexMatrix& a) const
 }
 
 bool
-ComplexMatrix::is_hermitian (void) const
+ComplexMatrix::ishermitian (void) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -917,7 +917,7 @@ ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
-      if (mattype.is_hermitian ())
+      if (mattype.ishermitian ())
         {
           octave::math::chol<ComplexMatrix> chol (*this, info, true, calc_cond);
           if (info == 0)
@@ -932,10 +932,10 @@ ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
             mattype.mark_as_unsymmetric ();
         }
 
-      if (! mattype.is_hermitian ())
+      if (! mattype.ishermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((calc_cond || mattype.is_hermitian ()) && rcon == 0.)
+      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.)
         {
           if (numel () == 1)
             ret = ComplexMatrix (1, 1, 0.);

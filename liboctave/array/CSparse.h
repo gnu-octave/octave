@@ -111,7 +111,11 @@ public:
   bool operator == (const SparseComplexMatrix& a) const;
   bool operator != (const SparseComplexMatrix& a) const;
 
-  bool is_hermitian (void) const;
+  bool ishermitian (void) const;
+
+  OCTAVE_DEPRECATED ("use 'is_hermitian' instead")
+  bool is_hermitian (void) const
+  { return ishermitian (); }
 
   SparseComplexMatrix max (int dim = -1) const;
   SparseComplexMatrix max (Array<octave_idx_type>& index, int dim = -1) const;

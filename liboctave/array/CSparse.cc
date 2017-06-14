@@ -138,7 +138,7 @@ SparseComplexMatrix::operator != (const SparseComplexMatrix& a) const
 }
 
 bool
-SparseComplexMatrix::is_hermitian (void) const
+SparseComplexMatrix::ishermitian (void) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -1001,7 +1001,7 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
     }
   else
     {
-      if (mattype.is_hermitian ())
+      if (mattype.ishermitian ())
         {
           MatrixType tmp_typ (MatrixType::Upper);
           octave::math::sparse_chol<SparseComplexMatrix> fact (*this, info, false);
@@ -1022,7 +1022,7 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
             }
         }
 
-      if (! mattype.is_hermitian ())
+      if (! mattype.ishermitian ())
         {
           octave_idx_type n = rows ();
           ColumnVector Qinit(n);

@@ -114,7 +114,11 @@ public:
   bool operator == (const FloatComplexMatrix& a) const;
   bool operator != (const FloatComplexMatrix& a) const;
 
-  bool is_hermitian (void) const;
+  bool ishermitian (void) const;
+
+  OCTAVE_DEPRECATED ("use 'is_hermitian' instead")
+  bool is_hermitian (void) const
+  { return ishermitian (); }
 
   // destructive insert/delete/reorder operations
 

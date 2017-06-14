@@ -122,11 +122,15 @@ public:
   bool is_tridiagonal (void) const
   { return (typ == Tridiagonal || typ == Tridiagonal_Hermitian); }
 
-  bool is_hermitian (void) const
+  bool ishermitian (void) const
   {
     return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian
             || typ == Hermitian);
   }
+
+  OCTAVE_DEPRECATED ("use 'is_hermitian' instead")
+  bool is_hermitian (void) const
+  { return ishermitian (); }
 
   bool is_rectangular (void) const { return (typ == Rectangular); }
 

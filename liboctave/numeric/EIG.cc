@@ -231,7 +231,7 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
     (*current_liboctave_error_handler)
       ("EIG: matrix contains Inf or NaN values");
 
-  if (a.is_hermitian ())
+  if (a.ishermitian ())
     return hermitian_init (a, calc_rev, calc_lev);
 
   F77_INT n = octave::to_f77_int (a.rows ());
@@ -624,7 +624,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
                                  info
                                  F77_CHAR_ARG_LEN (1)));
 
-      if (a.is_hermitian () && b.is_hermitian () && info == 0)
+      if (a.ishermitian () && b.ishermitian () && info == 0)
         return hermitian_init (a, b, calc_rev, calc_lev);
     }
 

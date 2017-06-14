@@ -175,7 +175,7 @@ FloatComplexMatrix::is_hermitian (void) const
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (is_square () && nr > 0)
+  if (issquare () && nr > 0)
     {
       for (octave_idx_type i = 0; i < nr; i++)
         for (octave_idx_type j = i; j < nc; j++)

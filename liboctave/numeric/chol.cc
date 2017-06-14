@@ -256,7 +256,7 @@ namespace octave
     void
     chol<T>::set (const T& R)
     {
-      if (! R.is_square ())
+      if (! R.issquare ())
         (*current_liboctave_error_handler) ("chol: requires square matrix");
 
       chol_mat = R;

@@ -556,7 +556,11 @@ public:
   Array<T> ipermute (const Array<octave_idx_type>& vec) const
   { return permute (vec, true); }
 
-  bool is_square (void) const { return (dim1 () == dim2 ()); }
+  bool issquare (void) const { return (dim1 () == dim2 ()); }
+
+  OCTAVE_DEPRECATED ("use 'issquare' instead")
+  bool is_square (void) const
+  { return issquare (); }
 
   bool isempty (void) const { return numel () == 0; }
 

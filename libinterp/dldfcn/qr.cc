@@ -45,7 +45,7 @@ static octave_value
 get_qr_r (const octave::math::qr<MT>& fact)
 {
   MT R = fact.R ();
-  if (R.is_square () && fact.regular ())
+  if (R.issquare () && fact.regular ())
     return octave_value (R, MatrixType (MatrixType::Upper));
   else
     return R;

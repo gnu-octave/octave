@@ -136,7 +136,7 @@ FloatMatrix::operator != (const FloatMatrix& a) const
 bool
 FloatMatrix::is_symmetric (void) const
 {
-  if (is_square () && rows () > 0)
+  if (issquare () && rows () > 0)
     {
       for (octave_idx_type i = 0; i < rows (); i++)
         for (octave_idx_type j = i+1; j < cols (); j++)

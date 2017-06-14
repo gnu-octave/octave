@@ -73,9 +73,9 @@ namespace octave
     {
       type retval;
 
-      if (! q.isempty () && q.is_square ())
+      if (! q.isempty () && q.issquare ())
         retval = qr<T>::std;
-      else if (q.rows () > q.cols () && r.is_square ())
+      else if (q.rows () > q.cols () && r.issquare ())
         retval = qr<T>::economy;
       else
         retval = qr<T>::raw;
@@ -332,7 +332,7 @@ namespace octave
       octave_idx_type m = r.rows ();
       octave_idx_type n = r.cols ();
 
-      if (! q.is_square () || u.numel () != n)
+      if (! q.issquare () || u.numel () != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
@@ -349,7 +349,7 @@ namespace octave
 
       octave_idx_type m = r.rows ();
 
-      if (! q.is_square ())
+      if (! q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
@@ -718,7 +718,7 @@ namespace octave
 
       F77_INT u_nel = octave::to_f77_int (u.numel ());
 
-      if (! q.is_square () || u_nel != n)
+      if (! q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
@@ -747,7 +747,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (r.rows ());
       F77_INT n = octave::to_f77_int (r.cols ());
 
-      if (! q.is_square ())
+      if (! q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
@@ -1135,7 +1135,7 @@ namespace octave
 
       F77_INT u_nel = octave::to_f77_int (u.numel ());
 
-      if (! q.is_square () || u_nel != n)
+      if (! q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
@@ -1164,7 +1164,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (r.rows ());
       F77_INT n = octave::to_f77_int (r.cols ());
 
-      if (! q.is_square ())
+      if (! q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
@@ -1577,7 +1577,7 @@ namespace octave
 
       F77_INT u_nel = octave::to_f77_int (u.numel ());
 
-      if (! q.is_square () || u_nel != n)
+      if (! q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
@@ -1607,7 +1607,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (r.rows ());
       F77_INT n = octave::to_f77_int (r.cols ());
 
-      if (! q.is_square ())
+      if (! q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
@@ -2015,7 +2015,7 @@ namespace octave
 
       F77_INT u_nel = octave::to_f77_int (u.numel ());
 
-      if (! q.is_square () || u_nel != n)
+      if (! q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
@@ -2045,7 +2045,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (r.rows ());
       F77_INT n = octave::to_f77_int (r.cols ());
 
-      if (! q.is_square ())
+      if (! q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)

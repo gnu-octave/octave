@@ -39,7 +39,7 @@ static octave_value
 get_lu_l (const octave::math::lu<MT>& fact)
 {
   MT L = fact.L ();
-  if (L.is_square ())
+  if (L.issquare ())
     return octave_value (L, MatrixType (MatrixType::Lower));
   else
     return L;
@@ -50,7 +50,7 @@ static octave_value
 get_lu_u (const octave::math::lu<MT>& fact)
 {
   MT U = fact.U ();
-  if (U.is_square () && fact.regular ())
+  if (U.issquare () && fact.regular ())
     return octave_value (U, MatrixType (MatrixType::Upper));
   else
     return U;

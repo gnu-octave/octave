@@ -467,7 +467,11 @@ public:
   Sparse<T>& insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c);
   Sparse<T>& insert (const Sparse<T>& a, const Array<octave_idx_type>& idx);
 
-  bool is_square (void) const { return (dim1 () == dim2 ()); }
+  bool issquare (void) const { return (dim1 () == dim2 ()); }
+
+  OCTAVE_DEPRECATED ("use 'issquare' instead")
+  bool is_square (void) const
+  { return issquare (); }
 
   bool isempty (void) const { return (rows () < 1 && cols () < 1); }
 

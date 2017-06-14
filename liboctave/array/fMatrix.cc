@@ -134,7 +134,7 @@ FloatMatrix::operator != (const FloatMatrix& a) const
 }
 
 bool
-FloatMatrix::is_symmetric (void) const
+FloatMatrix::issymmetric (void) const
 {
   if (issquare () && rows () > 0)
     {

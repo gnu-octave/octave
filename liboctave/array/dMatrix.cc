@@ -132,7 +132,7 @@ Matrix::operator != (const Matrix& a) const
 }
 
 bool
-Matrix::is_symmetric (void) const
+Matrix::issymmetric (void) const
 {
   if (issquare () && rows () > 0)
     {

@@ -365,9 +365,9 @@ Undocumented internal function.
   if (! sym_tested && ! have_a_fun)
     {
       if (a_is_sparse)
-        symmetric = asmm.is_symmetric ();
+        symmetric = asmm.issymmetric ();
       else
-        symmetric = amm.is_symmetric ();
+        symmetric = amm.issymmetric ();
     }
 
   if (have_b)

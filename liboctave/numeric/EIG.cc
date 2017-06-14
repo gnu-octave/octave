@@ -39,7 +39,7 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
     (*current_liboctave_error_handler)
       ("EIG: matrix contains Inf or NaN values");
 
-  if (a.is_symmetric ())
+  if (a.issymmetric ())
     return symmetric_init (a, calc_rev, calc_lev);
 
   F77_INT n = octave::to_f77_int (a.rows ());
@@ -417,7 +417,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
                                  info
                                  F77_CHAR_ARG_LEN (1)));
 
-      if (a.is_symmetric () && b.is_symmetric () && info == 0)
+      if (a.issymmetric () && b.issymmetric () && info == 0)
         return symmetric_init (a, b, calc_rev, calc_lev);
     }
 

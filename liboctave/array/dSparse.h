@@ -100,7 +100,11 @@ public:
   bool operator == (const SparseMatrix& a) const;
   bool operator != (const SparseMatrix& a) const;
 
-  bool is_symmetric (void) const;
+  bool issymmetric (void) const;
+
+  OCTAVE_DEPRECATED ("use 'issymmetric' instead")
+  bool is_symmetric (void) const
+  { return issymmetric (); }
 
   SparseMatrix max (int dim = -1) const;
   SparseMatrix max (Array<octave_idx_type>& index, int dim = -1) const;

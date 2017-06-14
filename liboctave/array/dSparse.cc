@@ -127,7 +127,7 @@ SparseMatrix::operator != (const SparseMatrix& a) const
 }
 
 bool
-SparseMatrix::is_symmetric (void) const
+SparseMatrix::issymmetric (void) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();

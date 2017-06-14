@@ -96,7 +96,11 @@ public:
   bool operator == (const FloatMatrix& a) const;
   bool operator != (const FloatMatrix& a) const;
 
-  bool is_symmetric (void) const;
+  bool issymmetric (void) const;
+
+  OCTAVE_DEPRECATED ("use 'issymmetric' instead")
+  bool is_symmetric (void) const
+  { return issymmetric (); }
 
   // destructive insert/delete/reorder operations
 

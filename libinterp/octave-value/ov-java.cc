@@ -1521,7 +1521,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
       jobj = array;
       jcls = jni_env->GetObjectClass (jobj);
     }
-  else if (val.numel () > 1 && val.dims ().is_vector ())
+  else if (val.numel () > 1 && val.dims ().isvector ())
     {
       // FIXME: Is there any way to avoid code duplication here without
       // using a macro?

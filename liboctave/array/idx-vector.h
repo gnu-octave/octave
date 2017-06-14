@@ -1021,7 +1021,11 @@ public:
   // necessary to mutate the index.
   const octave_idx_type * raw (void);
 
-  bool is_vector (void) const;
+  bool isvector (void) const;
+
+  OCTAVE_DEPRECATED ("use 'isvector' instead")
+  bool is_vector (void) const
+  { return isvector (); }
 
   // FIXME: these are here for compatibility.  They should be removed
   // when no longer in use.

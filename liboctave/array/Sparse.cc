@@ -1456,7 +1456,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           mx_inline_sub (nz_new, retval.xridx (), ridx () + li, lb);
           retval.xcidx (1) = nz_new;
         }
-      else if (idx.is_permutation (nel) && idx.is_vector ())
+      else if (idx.is_permutation (nel) && idx.isvector ())
         {
           if (idx.is_range () && idx.increment () == -1)
             {
@@ -1654,7 +1654,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
             }
         }
     }
-  else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
+  else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.isvector ())
     {
       // It's actually vector indexing.  The 1D index is specialized for that.
       retval = index (idx_i);
@@ -2157,7 +2157,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
 
             }
         }
-      else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
+      else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.isvector ())
         {
           // It's just vector indexing.  The 1D assign is specialized for that.
           assign (idx_i, rhs);

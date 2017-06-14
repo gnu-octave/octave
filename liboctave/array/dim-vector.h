@@ -423,10 +423,14 @@ public:
       return dim_vector (1, numel ());
   }
 
-  bool is_vector (void) const
+  bool isvector (void) const
   {
     return (ndims () == 2 && (xelem (0) == 1 || xelem (1) == 1));
   }
+
+  OCTAVE_DEPRECATED ("use 'isvector' instead")
+  bool is_vector (void) const
+  { return isvector (); }
 
   bool is_nd_vector (void) const
   {

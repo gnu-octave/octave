@@ -139,7 +139,7 @@ Range::index (const idx_vector& i) const
       octave_idx_type il = i.length (n);
 
       // taken from Array.cc.
-      if (n != 1 && rd.is_vector ())
+      if (n != 1 && rd.isvector ())
         rd = dim_vector (1, il);
 
       retval.clear (rd);

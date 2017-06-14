@@ -135,7 +135,7 @@ is_scalar (const dim_vector& dim)
 }
 
 bool
-is_vector (const dim_vector& dim)
+isvector (const dim_vector& dim)
 {
   int m = 0;
   int n = dim.ndims ();

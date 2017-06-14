@@ -98,7 +98,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and
   dim_vector dimx = argx.dims ();
   dim_vector dimy = argy.dims ();
   bool match = dimx == dimy;
-  if (! match && nargin == 2 && dimx.is_vector () && dimy.is_vector ())
+  if (! match && nargin == 2 && dimx.isvector () && dimy.isvector ())
     {
       // Change to column vectors.
       dimx = dimx.redim (1);

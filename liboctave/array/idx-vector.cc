@@ -1273,9 +1273,9 @@ idx_vector::as_array (void) const
 }
 
 bool
-idx_vector::is_vector (void) const
+idx_vector::isvector (void) const
 {
-  return idx_class () != class_vector || orig_dimensions ().is_vector ();
+  return idx_class () != class_vector || orig_dimensions ().isvector ();
 }
 
 octave_idx_type

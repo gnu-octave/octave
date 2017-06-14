@@ -1400,7 +1400,7 @@ Array<T>::delete_elements (const idx_vector& i)
 
       octave_idx_type l, u;
       bool col_vec = ndims () == 2 && columns () == 1 && rows () != 1;
-      if (i.is_scalar () && i(0) == n-1 && dimensions.is_vector ())
+      if (i.is_scalar () && i(0) == n-1 && dimensions.isvector ())
         {
           // Stack "pop" operation.
           resize1 (n-1);

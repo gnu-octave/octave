@@ -2197,7 +2197,7 @@ do_cellslices_nda (const NDA& array,
 {
   octave_idx_type n = lb.numel ();
   Cell retval (1, n);
-  if (array.is_vector () && (dim == -1
+  if (array.isvector () && (dim == -1
                              || (dim == 0 && array.columns () == 1)
                              || (dim == 1 && array.rows () == 1)))
     {

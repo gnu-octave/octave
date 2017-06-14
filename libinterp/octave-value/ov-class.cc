@@ -304,7 +304,7 @@ octave_class::size (void)
 
       octave_value_list lv = octave::feval (meth.function_value (), args, 1);
       if (lv.length () <= 0
-          || ! lv(0).is_matrix_type () || ! lv(0).dims ().is_vector ())
+          || ! lv(0).is_matrix_type () || ! lv(0).dims ().isvector ())
         error ("@%s/size: invalid return value", class_name ().c_str ());
 
       retval = lv(0).matrix_value ();

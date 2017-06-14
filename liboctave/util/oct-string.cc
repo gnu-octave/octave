@@ -102,7 +102,7 @@ template <>
 bool
 sizes_cmp (const Array<char>& str_a, const char *str_b)
 {
-  return (str_a.is_vector () && str_a.rows () == 1
+  return (str_a.isvector () && str_a.rows () == 1
           && str_a.numel () == strlen<Array<char>> (str_b));
 }
 

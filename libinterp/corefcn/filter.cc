@@ -388,7 +388,7 @@ H(z) = ---------------------
             {
               si = args(3).xfloat_complex_array_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 
@@ -423,7 +423,7 @@ H(z) = ---------------------
             {
               si = args(3).xcomplex_array_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 
@@ -461,7 +461,7 @@ H(z) = ---------------------
             {
               si = args(3).xfloat_array_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 
@@ -496,7 +496,7 @@ H(z) = ---------------------
             {
               si = args(3).xarray_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 

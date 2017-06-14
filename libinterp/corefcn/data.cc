@@ -6780,7 +6780,7 @@ This function does not support sparse matrices.
     }
   else
     {
-      if (! arg.dims ().is_vector ())
+      if (! arg.dims ().isvector ())
         error ("issorted: needs a vector");
 
       retval = args(0).issorted (smode) != UNSORTED;

@@ -564,7 +564,11 @@ public:
   bool is_empty (void) const
   { return isempty (); }
 
-  bool is_vector (void) const { return dimensions.is_vector (); }
+  bool isvector (void) const { return dimensions.isvector (); }
+
+  OCTAVE_DEPRECATED ("use 'isvector' instead")
+  bool is_vector (void) const
+  { return isvector (); }
 
   bool is_nd_vector (void) const { return dimensions.is_nd_vector (); }
 

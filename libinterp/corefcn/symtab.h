@@ -1859,7 +1859,7 @@ public:
     return retval;
   }
 
- OCTAVE_DEPRECATED ("use 'get_scope' with 'get_curr_fcn (name)' instead")
+  OCTAVE_DEPRECATED ("use 'get_scope' with 'function ()' instead")
   octave_user_function * get_curr_fcn (scope *sid)
   {
     return sid ? sid->function () : 0;

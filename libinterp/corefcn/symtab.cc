@@ -111,9 +111,6 @@ symbol_table::symbol_record::symbol_record_rep::erase_persistent (void)
 symbol_table::symbol_record::symbol_record_rep *
 symbol_table::symbol_record::symbol_record_rep::dup (scope *new_scope) const
 {
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::dup");
-
   return new symbol_record_rep (new_scope, name, varval (), storage_class);
 }
 
@@ -121,9 +118,6 @@ void
 symbol_table::symbol_record::symbol_record_rep::dump
   (std::ostream& os, const std::string& prefix) const
 {
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::dump");
-
   octave_value val = varval ();
 
   os << prefix << name;

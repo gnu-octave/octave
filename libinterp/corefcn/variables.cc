@@ -1190,11 +1190,9 @@ private:
         is_global (sr.is_global ()),
         is_persistent (sr.is_persistent ())
     {
-      symbol_table& symtab = octave::__get_symbol_table__ ("symbol_info");
-
       varval = (expr_val.is_undefined () ? sr.varval () : expr_val);
 
-      is_complex = varval.is_complex_type ();
+      is_complex = varval.iscomplex ();
     }
 
     void display_line (std::ostream& os,

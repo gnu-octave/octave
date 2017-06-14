@@ -1504,8 +1504,6 @@ disable escape sequence expansion use a second backslash before the sequence
       if (nargin >= 2)
         arg2 = argv[2];
 
-      octave::call_stack& cs = interp.get_call_stack ();
-
       if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
           octave_map old_warning_options = warning_options;

@@ -160,11 +160,12 @@ local_functions (void)
   if (! curr_fcn)
     return retval;
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("local_functions");
-
   // All subfunctions are listed in the top-level function of this file.
   while (curr_fcn->is_subfunction ())
-    curr_fcn = symtab.get_curr_fcn (curr_fcn->parent_fcn_scope ());
+    {
+      symbol_table::scope *pscope = curr_fcn->parent_fcn_scope ();
+      curr_fcn = pscope->function ();
+    }
 
   // Get subfunctions.
   const std::list<std::string> names = curr_fcn->subfunction_names ();

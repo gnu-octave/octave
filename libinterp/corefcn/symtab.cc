@@ -52,14 +52,12 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_value symbol_table::dummy_octave_value;
 
-symbol_table::context_id symbol_table::xcurrent_context = 0;
-
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
 
 void
-symbol_table::symbol_record::symbol_record_rep::clear (scope_id sid)
+symbol_table::symbol_record::symbol_record_rep::clear (const scope *sid)
 {
   if (! (is_hidden () || is_inherited ())
       && sid == decl_scope ())
@@ -67,31 +65,31 @@ symbol_table::symbol_record::symbol_record_rep::clear (scope_id sid)
       if (is_global ())
         unmark_global ();
 
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::clear");
+
       if (is_persistent ())
         {
-          symbol_table& symtab
-            = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::clear");
-
-          symtab.persistent_assign (name, varval ());
+          symtab.persistent_assign (name, varval (symtab.current_context ()));
 
           unmark_persistent ();
         }
 
-      assign (octave_value ());
+      assign (octave_value (), symtab.current_context ());
     }
 }
 
 void
 symbol_table::symbol_record::symbol_record_rep::init_persistent (void)
 {
-  if (! is_defined ())
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::init_persistent");
+
+  if (! is_defined (symtab.current_context ()))
     {
       mark_persistent ();
 
-      symbol_table& symtab
-        = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::init_persistent");
-
-      assign (symtab.persistent_varval (name));
+      assign (symtab.persistent_varval (name), symtab.current_context ());
     }
   // FIXME: this causes trouble with recursive calls.
   // else
@@ -110,25 +108,25 @@ symbol_table::symbol_record::symbol_record_rep::erase_persistent (void)
   symtab.erase_persistent (name);
 }
 
-symbol_table::context_id
-symbol_table::symbol_record::symbol_record_rep::active_context (void) const
+symbol_table::symbol_record::symbol_record_rep *
+symbol_table::symbol_record::symbol_record_rep::dup (scope *new_scope) const
 {
-  octave_user_function *fcn = curr_fcn;
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::dup");
 
-  // FIXME: If active_context () == -1, then it does not make much
-  // sense to use this symbol_record.  This means an attempt at accessing
-  // a variable from a function that has not been called yet is
-  // happening.  This should be cleared up when an implementing closures.
-
-  return (fcn && fcn->active_context () != static_cast<context_id> (-1)
-          ? fcn->active_context () : xcurrent_context);
+  return new symbol_record_rep (new_scope, name,
+                                varval (symtab.current_context ()),
+                                storage_class);
 }
 
 void
 symbol_table::symbol_record::symbol_record_rep::dump
   (std::ostream& os, const std::string& prefix) const
 {
-  octave_value val = varval ();
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::dump");
+
+  octave_value val = varval (symtab.current_context ());
 
   os << prefix << name;
 
@@ -168,7 +166,7 @@ symbol_table::symbol_record::symbol_record_rep::xpersistent_varref (void)
   symbol_table& symtab
     = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varref");
 
-  scope *s = symtab.get_scope (symtab.current_scope ());
+  scope *s = symtab.current_scope ();
 
   return s ? s->persistent_varref (name) : dummy_octave_value;
 }
@@ -194,6 +192,7 @@ symbol_table::symbol_record::symbol_record_rep::xpersistent_varval (void) const
 symbol_table::symbol_record::symbol_record (void)
   : rep (new symbol_record_rep (octave::__get_current_scope__ ("symbol_record"),
                                 "", octave_value (), local))
+
 { }
 
 octave_value
@@ -208,7 +207,7 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
     retval = symtab.global_varval (name ());
   else
     {
-      retval = varval ();
+      retval = varval (symtab.current_context ());
 
       if (retval.is_undefined ())
         {
@@ -235,10 +234,11 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
   return retval;
 }
 
-symbol_table::symbol_record symbol_table::dummy_symbol_record = symbol_table::symbol_record (symbol_table::xtop_scope);
+symbol_table::symbol_record
+symbol_table::dummy_symbol_record (static_cast<symbol_table::scope*> (nullptr));
 
 symbol_table::symbol_reference::symbol_reference (const symbol_record& record)
-  : m_scope (-1), m_sym (record)
+  : m_scope (0), m_context (0),m_sym (record)
 {
   symbol_table& symtab = octave::__get_symbol_table__ ("symbol_reference");
 
@@ -248,15 +248,16 @@ symbol_table::symbol_reference::symbol_reference (const symbol_record& record)
 void
 symbol_table::symbol_reference::update (void) const
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("symbol_reference::update");
+  symbol_table::scope *curr_scope
+    = octave::__get_current_scope__ ("symbol_reference::update");
 
-  scope_id curr_scope = symtab.current_scope ();
-
-  if (m_scope != curr_scope || ! m_sym.is_valid ())
+  if (curr_scope && (m_scope != curr_scope || ! m_sym.is_valid ()))
     {
       m_scope = curr_scope;
-      m_sym = symtab.insert (m_sym.name ());
+      m_sym = m_scope->insert (m_sym.name ());  // ???
     }
+
+  m_context = m_scope ? m_scope->current_context () : 0;
 }
 
 static void
@@ -1082,14 +1083,12 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
   // subfunctions if we are currently executing a function defined
   // from a .m file.
 
-  symbol_table::scope_id current_scope
+  symbol_table::scope *curr_scope
     = octave::__get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
 
-  scope *s = symtab.get_scope (current_scope);
-
-  if (s)
+  if (curr_scope)
     {
-      octave_value val = s->find_subfunction (name);
+      octave_value val = curr_scope->find_subfunction (name);
 
       if (val.is_defined ())
         return val;
@@ -1342,19 +1341,16 @@ octave_value
 symbol_table::find (const std::string& name, const octave_value_list& args,
                     bool skip_variables, bool local_funcs)
 {
-  scope *s = get_scope (m_current_scope);
-
-  return (s
-          ? s->find (name, args, skip_variables, local_funcs)
+  return (m_current_scope
+          ? m_current_scope->find (name, args, skip_variables, local_funcs)
           : octave_value ());
 }
 
 octave_value
 symbol_table::builtin_find (const std::string& name)
 {
-  scope *s = get_scope (m_current_scope);
-
-  return s ? s->builtin_find (name) : octave_value ();
+  return (m_current_scope
+          ? m_current_scope->builtin_find (name) : octave_value ());
 }
 
 octave_value
@@ -1385,8 +1381,8 @@ symbol_table::find_function (const std::string& name,
       else
         {
           std::string fcn_scope = name.substr (0, pos);
-          scope_id stored_scope = m_current_scope;
-          m_current_scope = xtop_scope;
+          scope *stored_scope = m_current_scope;
+          m_current_scope = m_top_scope;
           octave_value parent = find_function (name.substr (0, pos),
                                                octave_value_list (), false);
 
@@ -1398,7 +1394,7 @@ symbol_table::find_function (const std::string& name,
                 {
                   m_current_scope = parent_fcn->scope ();
 
-                  if (m_current_scope > 1)
+                  if (m_current_scope && m_current_scope != m_top_scope)
                     retval = find_function (name.substr (pos + 1), args);
                 }
             }
@@ -1424,8 +1420,8 @@ symbol_table::find_submethod (const std::string& name,
   if (pos != std::string::npos)
     {
       std::string fcn_scope = full_name.substr (0, pos);
-      scope_id stored_scope = m_current_scope;
-      m_current_scope = xtop_scope;
+      scope *stored_scope = m_current_scope;
+      m_current_scope = m_top_scope;
       octave_value parent = find_function (full_name.substr (0, pos),
                                            octave_value_list (), false);
       if (parent.is_defined ())
@@ -1436,7 +1432,7 @@ symbol_table::find_submethod (const std::string& name,
             {
               m_current_scope = parent_fcn->scope ();
 
-              if (m_current_scope > 1)
+              if (m_current_scope && m_current_scope != m_top_scope)
                 fcn = find_function (full_name.substr (pos + 1),
                                      octave_value_list ());
             }
@@ -1449,20 +1445,18 @@ symbol_table::find_submethod (const std::string& name,
 }
 
 void
-symbol_table::dump (std::ostream& os, scope_id sid)
+symbol_table::dump (std::ostream& os, scope *sid)
 {
-  if (sid == xglobal_scope)
+  if (sid == m_global_scope)
     dump_global (os);
   else
     {
-      scope *s = get_scope (sid, false);
-
-      if (s)
+      if (sid)
         {
-          os << "*** dumping symbol table scope " << sid
-             << " (" << s->name () << ")\n\n";
+          os << "*** dumping symbol table scope ("
+             << sid->name () << ")\n\n";
 
-          s->dump (os);
+          sid->dump (os);
         }
     }
 }
@@ -1510,7 +1504,6 @@ symbol_table::cleanup (void)
   m_fcn_table.clear ();
   m_class_precedence_table.clear ();
   m_parent_map.clear ();
-  m_all_scopes.clear ();
 }
 
 octave_value
@@ -1537,7 +1530,7 @@ symbol_table::scope::find (const std::string& name,
             return symtab.global_varval (name);
           else
             {
-              octave_value val = sr.varval ();
+              octave_value val = sr.varval (m_context);
 
               if (val.is_defined ())
                 return val;
@@ -1665,7 +1658,7 @@ symbol_table::scope::workspace_info (void) const
 
       if (! sr.is_hidden ())
         {
-          octave_value val = sr.varval ();
+          octave_value val = sr.varval (m_context);
 
           if (val.is_defined ())
             {
@@ -1760,10 +1753,7 @@ symbol_table::scope::install_subfunction (const std::string& name,
   // object...
   octave_user_function *fcn = fval.user_function_value ();
 
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::scope::install_subfunction");
-
-  scope *fcn_scope = symtab.get_scope (fcn->scope ());
+  scope *fcn_scope = fcn->scope ();
 
   fcn_scope->set_parent (this);
 
@@ -1969,10 +1959,13 @@ Undocumented internal function.
 
       symtab.dump_global (octave_stdout);
 
-      std::list<symbol_table::scope_id> lst = symtab.scopes ();
+      // This won't work now...
+#if 0
+      std::list<symbol_table::scope*> lst = symtab.scopes ();
 
-      for (const auto& scope_id : lst)
-        symtab.dump (octave_stdout, scope_id);
+      for (auto *scp : lst)
+        symtab.dump (octave_stdout, scp);
+#endif
     }
   else
     {
@@ -1984,16 +1977,19 @@ Undocumented internal function.
 
           if (s_arg == "scopes")
             {
-              std::list<symbol_table::scope_id> lst = symtab.scopes ();
+              // This won't work now...
+#if 0
+              std::list<symbol_table::scope*> lst = symtab.scopes ();
 
               RowVector v (lst.size ());
 
               octave_idx_type k = 0;
 
-              for (const auto& sid : lst)
+              for (auto *sid : lst)
                 v.xelem (k++) = sid;
 
               retval = v;
+#endif
             }
           else if (s_arg == "functions")
             {
@@ -2004,9 +2000,12 @@ Undocumented internal function.
         }
       else
         {
+          // This won't work now...
+#if 0
           int sid = arg.xint_value ("__dump_symtab_info__: first argument must be string or scope id");
 
           symtab.dump (octave_stdout, sid);
+#endif
         }
     }
 

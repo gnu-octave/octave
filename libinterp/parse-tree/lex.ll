@@ -2081,46 +2081,29 @@ debug information as it processes an expression.
 
 namespace octave
 {
-  lexical_feedback::symbol_table_context::~symbol_table_context (void)
-  {
-    clear ();
-  }
-
   void
   lexical_feedback::symbol_table_context::clear (void)
   {
-    symbol_table& symtab
-      = octave::__get_symbol_table__ ("lexical_feedback::symbol_table_context::push");
-
     while (! frame_stack.empty ())
       {
-        symbol_table::scope_id sid = curr_scope ();
+        symbol_table::scope *scope = curr_scope ();
 
-        if (sid > 0)
-          {
-            // FIXME: for now we need to ensure that the scope_id has a
-            // scope object associated with it.  Calling clear_variables
-            // should do that for us.  In the future, this should not be
-            // necessary.
-            symtab.clear_variables (sid);
-
-            symtab.erase_scope (sid);
-          }
+        delete scope;
 
         frame_stack.pop_front ();
       }
   }
 
   void
-  lexical_feedback::symbol_table_context::push (void)
+  lexical_feedback::symbol_table_context::pop (void)
   {
-    symbol_table& symtab
-      = octave::__get_symbol_table__ ("lexical_feedback::symbol_table_context::push");
+    if (empty ())
+      panic_impossible ();
 
-    push (symtab.current_scope ());
+    frame_stack.pop_front ();
   }
 
-  symbol_table::scope_id
+  symbol_table::scope *
   lexical_feedback::symbol_table_context::curr_scope (void) const
   {
     if (empty ())
@@ -2134,12 +2117,12 @@ namespace octave
       return frame_stack.front ();
   }
 
-  symbol_table::scope_id
+  symbol_table::scope *
   lexical_feedback::symbol_table_context::parent_scope (void) const
   {
     size_t sz = size ();
 
-    return sz > 1 ? frame_stack[1] : (sz == 1 ? frame_stack[0] : -1);
+    return sz > 1 ? frame_stack[1] : (sz == 1 ? frame_stack[0] : 0);
   }
 
   lexical_feedback::~lexical_feedback (void)
@@ -2541,11 +2524,9 @@ namespace octave
 
   bool
   base_lexer::is_variable (const std::string& name,
-                           symbol_table::scope_id scope)
+                           symbol_table::scope *scope)
   {
-    symbol_table& symtab = octave::__get_symbol_table__ ("base_lexer::is_variable");
-
-    return (symtab.is_variable (name, scope)
+    return ((scope && scope->is_variable (name))
             || (pending_local_variables.find (name)
                 != pending_local_variables.end ()));
   }
@@ -3171,13 +3152,14 @@ namespace octave
 
     // Find the token in the symbol table.
 
-    symbol_table::scope_id sid = symtab_context.curr_scope ();
+    symbol_table::scope *scope = symtab_context.curr_scope ();
 
-    symbol_table& symtab
-      = octave::__get_symbol_table__ ("base_lexer::handle_identifier");
+    symbol_table::symbol_record sr
+      = (scope
+         ? scope->insert (ident)
+         : symbol_table::symbol_record (scope, ident));
 
-    token *tok = new token (NAME, &(symtab.insert (ident, sid)),
-                            input_line_number, current_input_column);
+    token *tok = new token (NAME, sr, input_line_number, current_input_column);
 
     // The following symbols are handled specially so that things like
     //
@@ -3187,7 +3169,7 @@ namespace octave
     // function call with the argument "+1".
 
     if (at_beginning_of_statement
-        && (! (is_variable (ident, sid)
+        && (! (is_variable (ident, scope)
                || ident == "e" || ident == "pi"
                || ident == "I" || ident == "i"
                || ident == "J" || ident == "j"
@@ -3358,11 +3340,8 @@ namespace octave
       case NAME:
         {
           token *tok_val = current_token ();
-          symbol_table::symbol_record *sr = tok_val->sym_rec ();
-          std::cerr << "NAME";
-          if (sr)
-            std::cerr << " [" << sr->name () << "]";
-          std::cerr << "\n";
+          symbol_table::symbol_record sr = tok_val->sym_rec ();
+          std::cerr << "NAME [" << sr.name () << "]\n";
         }
         break;
 

@@ -503,8 +503,8 @@ word_list       : string
 
 identifier      : NAME
                   {
-                    symbol_table::symbol_record *sr = $1->sym_rec ();
-                    $$ = new octave::tree_identifier (*sr, $1->line (), $1->column ());
+                    symbol_table::symbol_record sr = $1->sym_rec ();
+                    $$ = new octave::tree_identifier (sr, $1->line (), $1->column ());
                   }
                 ;
 
@@ -1267,8 +1267,7 @@ push_fcn_symtab : // empty
                     if (parser.max_fcn_depth < parser.curr_fcn_depth)
                       parser.max_fcn_depth = parser.curr_fcn_depth;
 
-                    symbol_table& symtab = octave::__get_symbol_table__ ("push_fcn_symtab");
-                    lexer.symtab_context.push (symtab.alloc_scope ());
+                    lexer.symtab_context.push (new symbol_table::scope ());
 
                     parser.function_scopes.push (lexer.symtab_context.curr_scope ());
 
@@ -1298,8 +1297,7 @@ param_list_beg  : '('
 
                     if (lexer.looking_at_function_handle)
                       {
-                        symbol_table& symtab = octave::__get_symbol_table__ ("push_fcn_symtab");
-                        lexer.symtab_context.push (symtab.alloc_scope ());
+                        lexer.symtab_context.push (new symbol_table::scope ());
                         lexer.looking_at_function_handle--;
                         lexer.looking_at_anon_fcn_args = true;
                       }
@@ -1626,7 +1624,7 @@ classdef_beg    : CLASSDEF
                       }
 
                     // Create invalid parent scope.
-                    lexer.symtab_context.push (-1);
+                    lexer.symtab_context.push (0);
                     lexer.parsing_classdef = true;
                     $$ = $1;
                   }
@@ -2078,9 +2076,9 @@ namespace octave
   }
 
   void
-  base_parser::parent_scope_info::push (symbol_table::scope_id id)
+  base_parser::parent_scope_info::push (symbol_table::scope *scope)
   {
-    push (value_type (id, ""));
+    push (value_type (scope, ""));
   }
 
   void
@@ -2131,7 +2129,7 @@ namespace octave
     return true;
   }
 
-  symbol_table::scope_id
+  symbol_table::scope *
   base_parser::parent_scope_info::parent_scope (void) const
   {
     return size () > 1 ? info[size()-2].first : 0;
@@ -2153,7 +2151,7 @@ namespace octave
     : endfunction_found (false), autoloading (false),
       fcn_file_from_relative_lookup (false),
       parsing_subfunctions (false), parsing_local_functions (false),
-      max_fcn_depth (0), curr_fcn_depth (0), primary_fcn_scope (-1),
+      max_fcn_depth (0), curr_fcn_depth (0), primary_fcn_scope (0),
       curr_class_name (), curr_package_name (), function_scopes (),
       primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
       stmt_list (0), lexer (lxr), parser_state (yypstate_new ())
@@ -2186,7 +2184,7 @@ namespace octave
     parsing_local_functions = false;
     max_fcn_depth = 0;
     curr_fcn_depth = 0;
-    primary_fcn_scope = -1;
+    primary_fcn_scope = 0;
     curr_class_name = "";
     curr_package_name = "";
     function_scopes.clear ();
@@ -2489,8 +2487,8 @@ namespace octave
     int l = lexer.input_line_number;
     int c = lexer.current_input_column;
 
-    symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
-    symbol_table::scope_id parent_scope = lexer.symtab_context.parent_scope ();
+    symbol_table::scope *fcn_scope = lexer.symtab_context.curr_scope ();
+    symbol_table::scope *parent_scope = lexer.symtab_context.parent_scope ();
 
     lexer.symtab_context.pop ();
 
@@ -3407,7 +3405,7 @@ namespace octave
 
             if (endfunction_found && function_scopes.size () > 1)
               {
-                symbol_table::scope_id pscope = function_scopes.parent_scope ();
+                symbol_table::scope *pscope = function_scopes.parent_scope ();
 
                 symtab.install_nestfunction (nm, octave_value (fcn), pscope);
               }
@@ -3720,7 +3718,7 @@ namespace octave
             // Create a dummy function that is used until the real method
             // is loaded.
 
-            retval = new octave_user_function (-1, pl);
+            retval = new octave_user_function (0, pl);
 
             retval->stash_function_name (mname);
 
@@ -4570,7 +4568,7 @@ namespace octave
 
         if (retval->is_user_function ())
           {
-            symbol_table::scope_id id = retval->scope ();
+            symbol_table::scope *id = retval->scope ();
 
             symbol_table& symtab = octave::__get_symbol_table__ ("load_fcn_from_file");
 

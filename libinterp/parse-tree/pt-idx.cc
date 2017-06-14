@@ -389,18 +389,17 @@ namespace octave
   }
 
   tree_index_expression *
-  tree_index_expression::dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const
+  tree_index_expression::dup (symbol_table::scope& scope) const
   {
     tree_index_expression *new_idx_expr
       = new tree_index_expression (line (), column ());
 
-    new_idx_expr->expr = (expr ? expr->dup (scope, context) : 0);
+    new_idx_expr->expr = (expr ? expr->dup (scope) : 0);
 
     std::list<tree_argument_list *> new_args;
 
     for (const tree_argument_list *elt : args)
-      new_args.push_back (elt ? elt->dup (scope, context) : 0);
+      new_args.push_back (elt ? elt->dup (scope) : 0);
 
     new_idx_expr->args = new_args;
 
@@ -411,7 +410,7 @@ namespace octave
     std::list<tree_expression *> new_dyn_field;
 
     for (const tree_expression *elt : dyn_field)
-      new_dyn_field.push_back (elt ? elt->dup (scope, context) : 0);
+      new_dyn_field.push_back (elt ? elt->dup (scope) : 0);
 
     new_idx_expr->dyn_field = new_dyn_field;
 

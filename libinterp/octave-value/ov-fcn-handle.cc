@@ -434,15 +434,14 @@ octave_fcn_handle::load_ascii (std::istream& is)
       symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_ascii");
 
-      symbol_table::scope_id local_scope = symtab.alloc_scope ();
-      frame.add_method (symtab, &symbol_table::erase_scope, local_scope);
+      symbol_table::scope local_scope;
 
-      symtab.set_scope (local_scope);
+      symtab.set_scope (&local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_ascii");
 
-      cs.push (local_scope, 0);
+      cs.push (&local_scope, 0);
       frame.add_method (cs, &octave::call_stack::pop);
 
       octave_idx_type len = 0;
@@ -462,7 +461,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   if (! is)
                     error ("load: failed to load anonymous function handle");
 
-                  symtab.assign (name, t2, local_scope, 0);
+                  local_scope.assign (name, t2, 0);
                 }
             }
         }
@@ -626,15 +625,14 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_binary");
 
-      symbol_table::scope_id local_scope = symtab.alloc_scope ();
-      frame.add_method (symtab, &symbol_table::erase_scope, local_scope);
+      symbol_table::scope local_scope;
 
-      symtab.set_scope (local_scope);
+      symtab.set_scope (&local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_binary");
 
-      cs.push (local_scope, 0);
+      cs.push (&local_scope, 0);
       frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0)
@@ -652,7 +650,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               if (! is)
                 error ("load: failed to load anonymous function handle");
 
-              symtab.assign (name, t2, local_scope);
+              local_scope.force_assign (name, t2);
             }
         }
 
@@ -1151,15 +1149,14 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
 
-      symbol_table::scope_id local_scope = symtab.alloc_scope ();
-      frame.add_method (symtab, &symbol_table::erase_scope, local_scope);
+      symbol_table::scope local_scope;
 
-      symtab.set_scope (local_scope);
+      symtab.set_scope (&local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_hdf5");
 
-      cs.push (local_scope, 0);
+      cs.push (&local_scope, 0);
       frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0 && success)
@@ -1184,7 +1181,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                                     &dsub) <= 0)
                 error ("load: failed to load anonymous function handle");
 
-              symtab.assign (dsub.name, dsub.tc, local_scope);
+              local_scope.force_assign (dsub.name, dsub.tc);
             }
         }
 

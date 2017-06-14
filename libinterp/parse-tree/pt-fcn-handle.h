@@ -73,8 +73,7 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression * dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {
@@ -93,15 +92,15 @@ namespace octave
 
     tree_anon_fcn_handle (int l = -1, int c = -1)
       : tree_expression (l, c), m_parameter_list (0), m_expression (0),
-        m_sid (-1), m_parent_sid (-1), m_file_name ()
+        m_scope (0), m_parent_scope (0), m_file_name ()
     { }
 
     tree_anon_fcn_handle (tree_parameter_list *pl, tree_expression *ex,
-                          symbol_table::scope_id sid,
-                          symbol_table::scope_id parent_sid,
+                          symbol_table::scope *scope,
+                          symbol_table::scope *parent_scope,
                           int l = -1, int c = -1)
       : tree_expression (l, c), m_parameter_list (pl), m_expression (ex),
-        m_sid (sid), m_parent_sid (parent_sid), m_file_name ()
+        m_scope (scope), m_parent_scope (parent_scope), m_file_name ()
     { }
 
     // No copying!
@@ -123,14 +122,13 @@ namespace octave
 
     tree_expression * expression (void) const { return m_expression; }
 
-    symbol_table::scope_id scope (void) const { return m_sid; }
+    symbol_table::scope *scope (void) const { return m_scope; }
 
-    symbol_table::scope_id parent_scope (void) const { return m_parent_sid; }
+    symbol_table::scope *parent_scope (void) const { return m_parent_scope; }
 
-    bool has_parent_scope (void) const { return m_parent_sid > 0; }
+    bool has_parent_scope (void) const { return m_parent_scope; }
 
-    tree_expression * dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw) { tw.visit_anon_fcn_handle (*this); }
 
@@ -147,10 +145,10 @@ namespace octave
     tree_expression *m_expression;
 
     // Function scope.
-    symbol_table::scope_id m_sid;
+    symbol_table::scope *m_scope;
 
-    // Parent scope, or -1 if none.
-    symbol_table::scope_id m_parent_sid;
+    // Parent scope, or 0 if none.
+    symbol_table::scope *m_parent_scope;
 
     // Filename where the handle was defined.
     std::string m_file_name;

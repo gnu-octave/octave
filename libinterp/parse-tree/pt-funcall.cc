@@ -68,7 +68,7 @@ namespace octave
   }
 
   tree_funcall *
-  tree_funcall::dup (symbol_table::scope_id, symbol_table::context_id) const
+  tree_funcall::dup (symbol_table::scope&) const
   {
     tree_funcall *new_fc = new tree_funcall (fcn, args, line (), column ());
 

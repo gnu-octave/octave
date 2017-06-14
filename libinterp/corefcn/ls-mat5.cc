@@ -983,14 +983,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             symbol_table& symtab
               = octave::__get_symbol_table__ ("read_mat5_binary_element");
 
-            symbol_table::scope_id local_scope = symtab.alloc_scope ();
-            frame.add_method (symtab, &symbol_table::erase_scope, local_scope);
+            symbol_table::scope local_scope;
 
-            symtab.set_scope (local_scope);
+            symtab.set_scope (&local_scope);
 
             octave::call_stack& cs
               = octave::__get_call_stack__ ("read_mat5_binary_element");
-            cs.push (local_scope, 0);
+            cs.push (&local_scope, 0);
             frame.add_method (cs, &octave::call_stack::pop);
 
             if (m2.nfields () > 0)
@@ -1003,7 +1002,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0);
 
-                    symtab.assign (key, val, local_scope, 0);
+                    local_scope.assign (key, val, 0);
                   }
               }
 

@@ -37,12 +37,11 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   tree_expression *
-  tree_cell::dup (symbol_table::scope_id scope,
-                  symbol_table::context_id context) const
+  tree_cell::dup (symbol_table::scope& scope) const
   {
     tree_cell *new_cell = new tree_cell (0, line (), column ());
 
-    new_cell->copy_base (*this, scope, context);
+    new_cell->copy_base (*this, scope);
 
     return new_cell;
   }

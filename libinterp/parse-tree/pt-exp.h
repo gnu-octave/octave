@@ -58,8 +58,7 @@ namespace octave
 
     virtual bool has_magic_end (void) const = 0;
 
-    virtual tree_expression * dup (symbol_table::scope_id,
-                                   symbol_table::context_id context) const = 0;
+    virtual tree_expression * dup (symbol_table::scope& scope) const = 0;
 
     virtual bool is_constant (void) const { return false; }
 

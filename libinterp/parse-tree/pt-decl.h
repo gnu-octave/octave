@@ -93,8 +93,7 @@ namespace octave
 
     tree_expression * expression (void) { return expr; }
 
-    tree_decl_elt * dup (symbol_table::scope_id scope,
-                         symbol_table::context_id context) const;
+    tree_decl_elt * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {

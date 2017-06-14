@@ -48,11 +48,10 @@ namespace octave
   }
 
   tree_decl_elt *
-  tree_decl_elt::dup (symbol_table::scope_id scope,
-                      symbol_table::context_id context) const
+  tree_decl_elt::dup (symbol_table::scope& scope) const
   {
-    return new tree_decl_elt (id ? id->dup (scope, context) : 0,
-                              expr ? expr->dup (scope, context) : 0);
+    return new tree_decl_elt (id ? id->dup (scope) : 0,
+                              expr ? expr->dup (scope) : 0);
   }
 
   // Initializer lists for declaration statements.

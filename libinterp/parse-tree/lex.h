@@ -60,7 +60,7 @@ namespace octave
       symbol_table_context (void)
         : frame_stack () { }
 
-      ~symbol_table_context (void);
+      ~symbol_table_context (void) { clear (); }
 
       void clear (void);
 
@@ -68,27 +68,19 @@ namespace octave
 
       size_t size (void) const { return frame_stack.size (); }
 
-      void pop (void)
-      {
-        if (empty ())
-          panic_impossible ();
+      void pop (void);
 
-        frame_stack.pop_front ();
-      }
-
-      void push (void);
-
-      void push (symbol_table::scope_id scope)
+      void push (symbol_table::scope *scope)
       {
         frame_stack.push_front (scope);
       }
 
-      symbol_table::scope_id curr_scope (void) const;
-      symbol_table::scope_id parent_scope (void) const;
+      symbol_table::scope *curr_scope (void) const;
+      symbol_table::scope *parent_scope (void) const;
 
     private:
 
-      std::deque<symbol_table::scope_id> frame_stack;
+      std::deque<symbol_table::scope*> frame_stack;
     };
 
     // Track nesting of square brackets, curly braces, and parentheses.
@@ -596,7 +588,7 @@ namespace octave
 
     bool inside_any_object_index (void);
 
-    bool is_variable (const std::string& name, symbol_table::scope_id scope);
+    bool is_variable (const std::string& name, symbol_table::scope *scope);
 
     int is_keyword_token (const std::string& s);
 

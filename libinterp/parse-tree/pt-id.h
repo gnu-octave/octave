@@ -73,9 +73,17 @@ namespace octave
     // accessing it through sym so that this function may remain const.
     std::string name (void) const { return sym.name (); }
 
-    bool is_defined (void) { return sym->is_defined (); }
+    bool is_defined (void)
+    {
+      symbol_table::context_id context = sym.context ();
+      return sym->is_defined (context);
+    }
 
-    virtual bool is_variable (void) const { return sym->is_variable (); }
+    virtual bool is_variable (void) const
+    {
+      symbol_table::context_id context = sym.context ();
+      return sym->is_variable (context);
+    }
 
     virtual bool is_black_hole (void) { return false; }
 
@@ -121,8 +129,7 @@ namespace octave
              name ().c_str ());
     }
 
-    tree_identifier * dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_identifier * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {
@@ -152,8 +159,7 @@ namespace octave
 
     bool is_black_hole (void) { return true; }
 
-    tree_black_hole * dup (symbol_table::scope_id,
-                           symbol_table::context_id) const
+    tree_black_hole * dup (symbol_table::scope&) const
     {
       return new tree_black_hole;
     }

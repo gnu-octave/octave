@@ -78,8 +78,7 @@ namespace octave
 
     std::list<std::string> variable_names (void) const;
 
-    tree_parameter_list * dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const;
+    tree_parameter_list * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {

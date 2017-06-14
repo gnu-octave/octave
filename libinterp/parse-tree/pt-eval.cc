@@ -96,20 +96,20 @@ namespace octave
     tree_parameter_list *param_list = anon_fh.parameter_list ();
     tree_expression *expr = anon_fh.expression ();
 
-    symbol_table::scope_id af_sid = anon_fh.scope ();
+    symbol_table::scope *af_scope = anon_fh.scope ();
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    symbol_table::scope_id af_parent_sid
-      = anon_fh.has_parent_scope () ? symtab.current_scope () : -1;
+    symbol_table::scope *af_parent_scope
+      = anon_fh.has_parent_scope () ? symtab.current_scope () : 0;
 
-    symbol_table::scope_id new_scope = symtab.dup_scope (af_sid);
+    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : 0;
 
-    if (new_scope > 0 && af_parent_sid > 0)
-      symtab.inherit (new_scope, af_parent_sid);
+    if (new_scope && af_parent_scope)
+      symtab.inherit (new_scope, af_parent_scope);
 
     tree_parameter_list *param_list_dup
-      = param_list ? param_list->dup (new_scope, 0) : 0;
+      = param_list ? param_list->dup (*new_scope) : 0;
 
     tree_parameter_list *ret_list = 0;
 
@@ -117,7 +117,7 @@ namespace octave
 
     if (expr)
       {
-        tree_expression *expr_dup = expr->dup (new_scope, 0);
+        tree_expression *expr_dup = expr->dup (*new_scope);
         tree_statement *stmt = new tree_statement (expr_dup, 0);
         stmt_list = new tree_statement_list (stmt);
       }
@@ -126,8 +126,8 @@ namespace octave
       = new octave_user_function (new_scope, param_list_dup, ret_list,
                                   stmt_list);
 
-    if (af_parent_sid > 0)
-      symtab.set_parent (new_scope, af_parent_sid);
+    if (af_parent_scope)
+      symtab.set_parent (new_scope, af_parent_scope);
 
     octave_function *curr_fcn = m_call_stack.current ();
 
@@ -586,7 +586,10 @@ namespace octave
         for (tree_decl_elt *elt : *param_list)
           {
             if (elt->is_defined ())
-              retval(i++) = evaluate (elt);
+              {
+                octave_value tmp = evaluate (elt);
+                retval(i++) = tmp;
+              }
             else
               break;
           }

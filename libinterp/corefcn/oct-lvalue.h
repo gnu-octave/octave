@@ -66,12 +66,14 @@ public:
 
   bool is_defined (void) const
   {
-    return ! is_black_hole () && sym->is_defined ();
+    symbol_table::context_id context = sym.context ();
+    return ! is_black_hole () && sym->is_defined (context);
   }
 
   bool is_undefined (void) const
   {
-    return is_black_hole () || sym->is_undefined ();
+    symbol_table::context_id context = sym.context ();
+    return is_black_hole () || sym->is_undefined (context);
   }
 
   bool isstruct (void) const
@@ -79,7 +81,13 @@ public:
     return value().isstruct ();
   }
 
-  void define (const octave_value& v) { sym->assign (v); }
+  void define (const octave_value& v)
+  {
+    symbol_table::scope *scope = sym.scope ();
+    symbol_table::context_id context = sym.context ();
+
+    sym->assign (v, context);
+  }
 
   void assign (octave_value::assign_op, const octave_value&);
 

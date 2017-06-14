@@ -68,17 +68,10 @@ namespace octave
   }
 
   tree_expression *
-  tree_simple_assignment::dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const
+  tree_simple_assignment::dup (symbol_table::scope&) const
   {
-    tree_simple_assignment *new_sa
-      = new tree_simple_assignment (lhs ? lhs->dup (scope, context) : 0,
-                                    rhs ? rhs->dup (scope, context) : 0,
-                                    preserve, etype);
-
-    new_sa->copy_base (*this);
-
-    return new_sa;
+    panic_impossible ();
+    return 0;
   }
 
   // Multi-valued assignment expressions.
@@ -104,17 +97,10 @@ namespace octave
   }
 
   tree_expression *
-  tree_multi_assignment::dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const
+  tree_multi_assignment::dup (symbol_table::scope&) const
   {
-    tree_multi_assignment *new_ma
-      = new tree_multi_assignment (lhs ? lhs->dup (scope, context) : 0,
-                                   rhs ? rhs->dup (scope, context) : 0,
-                                   preserve);
-
-    new_ma->copy_base (*this);
-
-    return new_ma;
+    panic_impossible ();
+    return 0;
   }
 }
 

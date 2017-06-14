@@ -1183,13 +1183,20 @@ private:
                  const std::string& expr_str = "",
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
-        varval (expr_val.is_undefined () ? sr.varval () : expr_val),
+        varval (),
         is_automatic (sr.is_automatic ()),
         is_complex (varval.iscomplex ()),
         is_formal (sr.is_formal ()),
         is_global (sr.is_global ()),
         is_persistent (sr.is_persistent ())
-    { }
+    {
+      symbol_table& symtab = octave::__get_symbol_table__ ("symbol_info");
+
+      varval = (expr_val.is_undefined ()
+                ? sr.varval (symtab.current_context ()) : expr_val);
+
+      is_complex = varval.is_complex_type ();
+    }
 
     void display_line (std::ostream& os,
                        const std::list<whos_parameter>& params) const
@@ -1695,12 +1702,11 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
           // Set up temporary scope.
 
-          symbol_table::scope_id tmp_scope = symtab.alloc_scope ();
-          frame.add_method (symtab, &symbol_table::erase_scope, tmp_scope);
+          symbol_table::scope tmp_scope;
 
-          symtab.set_scope (tmp_scope);
+          symtab.set_scope (&tmp_scope);
 
-          cs.push (tmp_scope, 0);
+          cs.push (&tmp_scope, 0);
           frame.add_method (cs, &octave::call_stack::pop);
 
           frame.add_method (symtab, &symbol_table::clear_variables);
@@ -1754,7 +1760,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
           for (const auto& symrec : tmp)
             {
-              if (symrec.is_variable ())
+              if (symrec.is_variable (symtab.current_context ()))
                 {
                   if (verbose)
                     symbol_stats.append (symrec);
@@ -1805,7 +1811,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
               for (const auto& symrec : tmp)
                 {
-                  if (symrec.is_variable ())
+                  if (symrec.is_variable (symtab.current_context ()))
                     {
                       if (verbose)
                         symbol_stats.append (symrec);

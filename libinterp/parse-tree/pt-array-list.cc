@@ -77,18 +77,16 @@ namespace octave
 
   void
   tree_array_list::copy_base (const tree_array_list& array_list,
-                              symbol_table::scope_id scope,
-                              symbol_table::context_id context)
+                              symbol_table::scope& scope)
   {
     for (const tree_argument_list *elt : array_list)
-      append (elt ? elt->dup (scope, context) : 0);
+      append (elt ? elt->dup (scope) : 0);
 
     copy_base (*this);
   }
 
   tree_expression *
-  tree_array_list::dup (symbol_table::scope_id,
-                        symbol_table::context_id) const
+  tree_array_list::dup (symbol_table::scope&) const
   {
     panic_impossible ();
     return 0;

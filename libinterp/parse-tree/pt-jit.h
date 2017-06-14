@@ -169,7 +169,7 @@ private:
   bool converting_function;
 
   // the scope of the function we are converting, or the current scope
-  symbol_table::scope_id scope;
+  symbol_table::scope *scope;
 
   jit_factory factory;
 
@@ -194,7 +194,7 @@ private:
 
   variable_map vmap;
 
-  void initialize (symbol_table::scope_id s);
+  void initialize (symbol_table::scope *s);
 
   jit_call * create_checked_impl (jit_call *ret);
 

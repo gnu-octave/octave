@@ -55,12 +55,11 @@ namespace octave
   }
 
   tree_expression *
-  tree_binary_expression::dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const
+  tree_binary_expression::dup (symbol_table::scope& scope) const
   {
     tree_binary_expression *new_be
-      = new tree_binary_expression (op_lhs ? op_lhs->dup (scope, context) : 0,
-                                    op_rhs ? op_rhs->dup (scope, context) : 0,
+      = new tree_binary_expression (op_lhs ? op_lhs->dup (scope) : 0,
+                                    op_rhs ? op_rhs->dup (scope) : 0,
                                     line (), column (), etype);
 
     new_be->copy_base (*this);
@@ -93,12 +92,11 @@ namespace octave
   }
 
   tree_expression *
-  tree_boolean_expression::dup (symbol_table::scope_id scope,
-                                symbol_table::context_id context) const
+  tree_boolean_expression::dup (symbol_table::scope& scope) const
   {
     tree_boolean_expression *new_be
-      = new tree_boolean_expression (op_lhs ? op_lhs->dup (scope, context) : 0,
-                                     op_rhs ? op_rhs->dup (scope, context) : 0,
+      = new tree_boolean_expression (op_lhs ? op_lhs->dup (scope) : 0,
+                                     op_rhs ? op_rhs->dup (scope) : 0,
                                      line (), column (), etype);
 
     new_be->copy_base (*this);

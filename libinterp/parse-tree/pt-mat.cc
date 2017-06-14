@@ -137,12 +137,11 @@ namespace octave
   }
 
   tree_expression *
-  tree_matrix::dup (symbol_table::scope_id scope,
-                    symbol_table::context_id context) const
+  tree_matrix::dup (symbol_table::scope& scope) const
   {
     tree_matrix *new_matrix = new tree_matrix (0, line (), column ());
 
-    new_matrix->copy_base (*this, scope, context);
+    new_matrix->copy_base (*this, scope);
 
     return new_matrix;
   }

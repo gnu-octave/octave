@@ -54,8 +54,7 @@ namespace octave
   }
 
   tree_expression *
-  tree_fcn_handle::dup (symbol_table::scope_id,
-                        symbol_table::context_id) const
+  tree_fcn_handle::dup (symbol_table::scope&) const
   {
     tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
 
@@ -71,27 +70,26 @@ namespace octave
   }
 
   tree_expression *
-  tree_anon_fcn_handle::dup (symbol_table::scope_id,
-                             symbol_table::context_id) const
+  tree_anon_fcn_handle::dup (symbol_table::scope&) const
   {
     tree_parameter_list *param_list = parameter_list ();
     tree_expression *expr = expression ();
 
-    symbol_table::scope_id af_sid = scope ();
-    symbol_table::scope_id af_parent_sid = parent_scope ();
+    symbol_table::scope *af_scope = m_scope;
+    symbol_table::scope *af_parent_scope = m_parent_scope;
 
     symbol_table& symtab
       = octave::__get_symbol_table__ ("tree_anon_fcn_handle::dup");
 
-    symbol_table::scope_id new_scope = symtab.dup_scope (af_sid);
+    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : 0;
 
-    if (new_scope > 0)
+    if (new_scope)
       symtab.inherit (new_scope);
 
     tree_anon_fcn_handle *new_afh = new
-      tree_anon_fcn_handle (param_list ? param_list->dup (new_scope, 0) : 0,
-                            expr ? expr->dup (new_scope, 0) : 0,
-                            new_scope, af_parent_sid, line (), column ());
+      tree_anon_fcn_handle (param_list ? param_list->dup (*new_scope) : 0,
+                            expr ? expr->dup (*new_scope) : 0,
+                            new_scope, af_parent_scope, line (), column ());
 
     new_afh->copy_base (*this);
 

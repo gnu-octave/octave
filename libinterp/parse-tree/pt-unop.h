@@ -105,8 +105,7 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression * dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {
@@ -140,8 +139,7 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression * dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {

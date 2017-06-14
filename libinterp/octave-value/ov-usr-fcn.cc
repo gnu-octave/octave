@@ -176,9 +176,9 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 // extrinsic/intrinsic state?).
 
 octave_user_function::octave_user_function
-  (symbol_table::scope_id sid, octave::tree_parameter_list *pl,
+  (symbol_table::scope *scope, octave::tree_parameter_list *pl,
    octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
-  : octave_user_code ("", ""), m_scope (0),
+  : octave_user_code ("", ""), m_scope (scope),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
     location_line (0), location_column (0),
@@ -189,8 +189,7 @@ octave_user_function::octave_user_function
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
     class_constructor (none), class_method (false),
-    parent_scope (-1), local_scope (sid),
-    curr_unwind_protect_frame (0)
+    parent_scope (0), curr_unwind_protect_frame (0)
 #if defined (HAVE_LLVM)
     , jit_info (0)
 #endif
@@ -198,14 +197,8 @@ octave_user_function::octave_user_function
   if (cmd_list)
     cmd_list->mark_as_function_body ();
 
-  if (local_scope >= 0)
-    {
-      symbol_table& symtab = octave::__get_symbol_table__ ("octave_user_function");
-
-      symtab.set_curr_fcn (this, local_scope);
-
-      m_scope = symtab.get_scope (local_scope);
-    }
+  if (m_scope)
+    m_scope->set_function (this);
 }
 
 octave_user_function::~octave_user_function (void)
@@ -215,12 +208,6 @@ octave_user_function::~octave_user_function (void)
     cmd_list->remove_all_breakpoints (file_name);
 
   delete m_scope;
-
-  // FIXME: there needs to be a better way...
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("~octave_user_function");
-
-  symtab.erase_scope (local_scope);
 
   delete param_list;
   delete ret_list;
@@ -311,7 +298,7 @@ octave_user_function::maybe_relocate_end (void)
 }
 
 void
-octave_user_function::stash_parent_fcn_scope (symbol_table::scope_id ps)
+octave_user_function::stash_parent_fcn_scope (symbol_table::scope *ps)
 {
   parent_scope = ps;
 }
@@ -475,12 +462,11 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  int context = active_context ();
-
   octave::call_stack& cs
     = octave::__get_call_stack__ ("octave_user_function::call");
 
-  cs.push (this, local_scope, context);
+  symbol_table::context_id context = anonymous_function ? 0 : call_depth;
+  cs.push (this, m_scope, context);
 
   frame.protect_var (Vtrack_line_num);
   Vtrack_line_num = true;    // update source line numbers, even if debugging
@@ -490,13 +476,25 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
     {
       m_scope->push_context ();
 
+#if 0
+      std::cerr << name () << " scope: " << m_scope
+                << " call depth: " << call_depth
+                << " context: " << m_scope->current_context () << std::endl;
+#endif
+
       frame.add_method (m_scope, &symbol_table::scope::pop_context);
     }
 
   string_vector arg_names = args.name_tags ();
 
   if (param_list && ! param_list->varargs_only ())
-    tw.define_parameter_list_from_arg_vector (param_list, args);
+    {
+#if 0
+      std::cerr << "defining param list, scope: " << m_scope
+                << ", context: " << m_scope->current_context () << std::endl;
+#endif
+      tw.define_parameter_list_from_arg_vector (param_list, args);
+    }
 
   // For classdef constructor, pre-populate the output arguments
   // with the pre-initialized object instance, extracted above.
@@ -657,7 +655,7 @@ octave_user_function::print_symtab_info (std::ostream& os) const
   symbol_table& symtab
     = octave::__get_symbol_table__ ("octave_user_function::print_symtab_info");
 
-  symtab.print_info (os, local_scope);
+  symtab.print_info (os, m_scope);
 }
 #endif
 

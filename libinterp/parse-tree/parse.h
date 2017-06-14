@@ -101,7 +101,7 @@ namespace octave
     {
     public:
 
-      typedef std::pair<symbol_table::scope_id, std::string> value_type;
+      typedef std::pair<symbol_table::scope*, std::string> value_type;
 
       typedef std::deque<value_type>::iterator iterator;
       typedef std::deque<value_type>::const_iterator const_iterator;
@@ -121,7 +121,7 @@ namespace octave
 
       void push (const value_type& elt);
 
-      void push (symbol_table::scope_id id);
+      void push (symbol_table::scope *id);
 
       void pop (void);
 
@@ -129,7 +129,7 @@ namespace octave
 
       bool name_current_scope (const std::string& name);
 
-      symbol_table::scope_id parent_scope (void) const;
+      symbol_table::scope *parent_scope (void) const;
 
       std::string parent_name (void) const;
 
@@ -432,7 +432,7 @@ namespace octave
 
     // Scope where we install all subfunctions and nested functions.  Only
     // used while reading function files.
-    symbol_table::scope_id primary_fcn_scope;
+    symbol_table::scope *primary_fcn_scope;
 
     // Name of the current class when we are parsing class methods or
     // constructors.

@@ -66,8 +66,7 @@ namespace octave
     void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
                     bool pr_orig_txt = true);
 
-    tree_funcall * dup (symbol_table::scope_id,
-                        symbol_table::context_id context) const;
+    tree_funcall * dup (symbol_table::scope& scope) const;
 
     octave_value function (void) const { return fcn; }
 

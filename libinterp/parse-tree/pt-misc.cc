@@ -141,8 +141,7 @@ namespace octave
   }
 
   tree_parameter_list *
-  tree_parameter_list::dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const
+  tree_parameter_list::dup (symbol_table::scope& scope) const
   {
     tree_parameter_list *new_list = new tree_parameter_list ();
 
@@ -150,7 +149,7 @@ namespace octave
       new_list->mark_varargs ();
 
     for (const tree_decl_elt *elt : *this)
-      new_list->append (elt->dup (scope, context));
+      new_list->append (elt->dup (scope));
 
     return new_list;
   }

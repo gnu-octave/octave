@@ -87,7 +87,9 @@ namespace octave
   call_stack::call_stack (interpreter& interp)
     : cs (), curr_frame (0), m_interpreter (interp)
   {
-    push (0, symbol_table::top_scope (), 0);
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    push (0, symtab.top_scope (), 0);
   }
 
   int

@@ -70,16 +70,12 @@ namespace octave
   }
 
   tree_identifier *
-  tree_identifier::dup (symbol_table::scope_id sc,
-                        symbol_table::context_id) const
+  tree_identifier::dup (symbol_table::scope& scope) const
   {
     // The new tree_identifier object contains a symbol_record
     // entry from the duplicated scope.
 
-    symbol_table& symtab = octave::__get_symbol_table__ ("tree_identifier::dup");
-
-    // FIXME: is this the best way?
-    symbol_table::symbol_record new_sym = symtab.find_symbol (name (), sc);
+    symbol_table::symbol_record new_sym = scope.find_symbol (name ());
 
     tree_identifier *new_id
       = new tree_identifier (new_sym, line (), column ());

@@ -62,7 +62,7 @@ namespace octave
     return interp.get_symbol_table ();
   }
 
-  symbol_table::scope_id __get_current_scope__ (const std::string& who)
+  symbol_table::scope *__get_current_scope__ (const std::string& who)
   {
     symbol_table& symtab = __get_symbol_table__ (who);
 

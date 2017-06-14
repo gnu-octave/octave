@@ -303,8 +303,7 @@ namespace octave
   }
 
   tree_argument_list *
-  tree_argument_list::dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const
+  tree_argument_list::dup (symbol_table::scope& scope) const
   {
     tree_argument_list *new_list = new tree_argument_list ();
 
@@ -312,7 +311,7 @@ namespace octave
     new_list->simple_assign_lhs = simple_assign_lhs;
 
     for (const tree_expression *elt : *this)
-      new_list->append (elt ? elt->dup (scope, context) : 0);
+      new_list->append (elt ? elt->dup (scope) : 0);
 
     return new_list;
   }

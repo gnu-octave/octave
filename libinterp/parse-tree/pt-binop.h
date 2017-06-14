@@ -103,8 +103,7 @@ namespace octave
       return eligible_for_braindead_shortcircuit;
     }
 
-    tree_expression * dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {
@@ -171,8 +170,7 @@ namespace octave
 
     type op_type (void) const { return etype; }
 
-    tree_expression * dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope& scope) const;
 
     void accept (tree_walker& tw)
     {

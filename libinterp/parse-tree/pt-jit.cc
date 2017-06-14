@@ -1082,7 +1082,7 @@ jit_convert::visit_do_until_command (tree_do_until_command& duc)
 }
 
 void
-jit_convert::initialize (symbol_table::scope_id s)
+jit_convert::initialize (symbol_table::scope *s)
 {
   scope = s;
   iterator_count = 0;

@@ -107,17 +107,33 @@ public:
 
   bool is_dense (void) const { return dense; }
 
-  bool is_diagonal (void) const
+  bool isdiag (void) const
   { return (typ == Diagonal || typ == Permuted_Diagonal); }
 
-  bool is_upper_triangular (void) const
+  OCTAVE_DEPRECATED ("use 'isdiag' instead")
+  bool is_diagonal (void) const
+  { return isdiag (); }
+
+  bool istriu (void) const
   { return (typ == Upper || typ == Permuted_Upper); }
 
-  bool is_lower_triangular (void) const
+  OCTAVE_DEPRECATED ("use 'istriu' instead")
+  bool is_upper_triangular (void) const
+  { return istriu (); }
+
+  bool istril (void) const
   { return (typ == Lower || typ == Permuted_Lower); }
 
-  bool is_banded (void)
+  OCTAVE_DEPRECATED ("use 'istril' instead")
+  bool is_lower_triangular (void) const
+  { return istril (); }
+
+  bool isbanded (void) const
   { return (typ == Banded || typ == Banded_Hermitian); }
+
+  OCTAVE_DEPRECATED ("use 'isbanded' instead")
+  bool is_banded (void) const
+  { return isbanded (); }
 
   bool is_tridiagonal (void) const
   { return (typ == Tridiagonal || typ == Tridiagonal_Hermitian); }

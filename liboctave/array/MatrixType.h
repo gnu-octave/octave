@@ -128,7 +128,7 @@ public:
             || typ == Hermitian);
   }
 
-  OCTAVE_DEPRECATED ("use 'is_hermitian' instead")
+  OCTAVE_DEPRECATED ("use 'ishermitian' instead")
   bool is_hermitian (void) const
   { return ishermitian (); }
 

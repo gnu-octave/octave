@@ -357,7 +357,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
         = octave::__get_symbol_table__ ("octave_fcn_handle::save_ascii");
 
       std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (f->scope (), 0);
+        = symtab.all_variables (f->scope ());
 
       size_t varlen = vars.size ();
 
@@ -367,7 +367,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 
           for (const auto& symrec : vars)
             {
-              if (! save_text_data (os, symrec.varval (0), symrec.name (),
+              if (! save_text_data (os, symrec.varval (), symrec.name (),
                                     false, 0))
                 return ! os.fail ();
             }
@@ -522,7 +522,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
         = octave::__get_symbol_table__ ("octave_fcn_handle::save_binary");
 
       std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (f->scope (), 0);
+        = symtab.all_variables (f->scope ());
 
       size_t varlen = vars.size ();
 
@@ -547,7 +547,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
         {
           for (const auto& symrec : vars)
             {
-              if (! save_binary_data (os, symrec.varval (0), symrec.name (),
+              if (! save_binary_data (os, symrec.varval (), symrec.name (),
                                       "", 0, save_as_floats))
                 return ! os.fail ();
             }
@@ -800,7 +800,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
 
       std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (f->scope (), 0);
+        = symtab.all_variables (f->scope ());
 
       size_t varlen = vars.size ();
 
@@ -849,7 +849,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
           for (const auto& symrec : vars)
             {
-              if (! add_hdf5_data (data_hid, symrec.varval (0), symrec.name (),
+              if (! add_hdf5_data (data_hid, symrec.varval (), symrec.name (),
                                    "", false, save_as_floats))
                 break;
             }
@@ -1796,7 +1796,7 @@ particular output format.
       symbol_table& symtab = interp.get_symbol_table ();
 
       std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (fu->scope (), 0);
+        = symtab.all_variables (fu->scope ());
 
       size_t varlen = vars.size ();
 
@@ -1804,7 +1804,7 @@ particular output format.
         {
           octave_scalar_map ws;
           for (const auto& symrec : vars)
-            ws.assign (symrec.name (), symrec.varval (0));
+            ws.assign (symrec.name (), symrec.varval ());
 
           m.setfield ("workspace", ws);
         }

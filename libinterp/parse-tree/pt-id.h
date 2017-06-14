@@ -73,17 +73,9 @@ namespace octave
     // accessing it through sym so that this function may remain const.
     std::string name (void) const { return sym.name (); }
 
-    bool is_defined (void)
-    {
-      symbol_table::context_id context = sym.context ();
-      return sym->is_defined (context);
-    }
+    bool is_defined (void) { return sym->is_defined (); }
 
-    virtual bool is_variable (void) const
-    {
-      symbol_table::context_id context = sym.context ();
-      return sym->is_variable (context);
-    }
+    virtual bool is_variable (void) const { return sym->is_variable (); }
 
     virtual bool is_black_hole (void) { return false; }
 

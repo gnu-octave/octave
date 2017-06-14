@@ -984,6 +984,9 @@ namespace octave
 
     symbol_table::symbol_reference sym = expr.symbol ();
 
+    symbol_table::scope *scope = __get_current_scope__ ("visitor");
+    symbol_table::context_id context = scope ? scope->current_context () : 0;
+
     octave_value val = sym->find ();
 
     if (val.is_defined ())

@@ -956,7 +956,7 @@ void
 do_save (std::ostream& os, const symbol_table::symbol_record& sr,
          load_save_format fmt, bool save_as_floats)
 {
-  octave_value val = sr.varval (0);
+  octave_value val = sr.varval ();
 
   if (val.is_defined ())
     {
@@ -1322,13 +1322,13 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
   symbol_table& symtab = octave::__get_symbol_table__ ("dump_octave_core");
 
   std::list<symbol_table::symbol_record> vars
-    = symtab.all_variables (symtab.top_scope (), 0);
+    = symtab.all_variables (symtab.top_scope ());
 
   double save_mem_size = 0;
 
   for (const auto& var : vars)
     {
-      octave_value val = var.varval (0);
+      octave_value val = var.varval ();
 
       if (val.is_defined ())
         {

@@ -34,12 +34,10 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 {
   if (! is_black_hole ())
     {
-      symbol_table::context_id context = sym.context ();
-
       if (idx.empty ())
-        sym->assign (op, rhs, context);
+        sym->assign (op, rhs);
       else
-        sym->assign (op, type, idx, rhs, context);
+        sym->assign (op, type, idx, rhs);
     }
 }
 
@@ -74,12 +72,10 @@ octave_lvalue::do_unary_op (octave_value::unary_op op)
 {
   if (! is_black_hole ())
     {
-      symbol_table::context_id context = sym.context ();
-
       if (idx.empty ())
-        sym->do_non_const_unary_op (op, context);
+        sym->do_non_const_unary_op (op);
       else
-        sym->do_non_const_unary_op (op, type, idx, context);
+        sym->do_non_const_unary_op (op, type, idx);
     }
 }
 
@@ -90,9 +86,7 @@ octave_lvalue::value (void) const
 
   if (! is_black_hole ())
     {
-      symbol_table::context_id context = sym.context ();
-
-      octave_value val = sym->varval (context);
+      octave_value val = sym->varval ();
 
       if (idx.empty ())
         retval = val;

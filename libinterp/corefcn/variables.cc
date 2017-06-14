@@ -1192,8 +1192,7 @@ private:
     {
       symbol_table& symtab = octave::__get_symbol_table__ ("symbol_info");
 
-      varval = (expr_val.is_undefined ()
-                ? sr.varval (symtab.current_context ()) : expr_val);
+      varval = (expr_val.is_undefined () ? sr.varval () : expr_val);
 
       is_complex = varval.is_complex_type ();
     }
@@ -1760,7 +1759,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
           for (const auto& symrec : tmp)
             {
-              if (symrec.is_variable (symtab.current_context ()))
+              if (symrec.is_variable ())
                 {
                   if (verbose)
                     symbol_stats.append (symrec);
@@ -1811,7 +1810,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
               for (const auto& symrec : tmp)
                 {
-                  if (symrec.is_variable (symtab.current_context ()))
+                  if (symrec.is_variable ())
                     {
                       if (verbose)
                         symbol_stats.append (symrec);

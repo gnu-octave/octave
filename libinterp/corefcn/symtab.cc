@@ -70,12 +70,12 @@ symbol_table::symbol_record::symbol_record_rep::clear (const scope *sid)
 
       if (is_persistent ())
         {
-          symtab.persistent_assign (name, varval (symtab.current_context ()));
+          symtab.persistent_assign (name, varval ());
 
           unmark_persistent ();
         }
 
-      assign (octave_value (), symtab.current_context ());
+      assign (octave_value ());
     }
 }
 
@@ -85,11 +85,11 @@ symbol_table::symbol_record::symbol_record_rep::init_persistent (void)
   symbol_table& symtab
     = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::init_persistent");
 
-  if (! is_defined (symtab.current_context ()))
+  if (! is_defined ())
     {
       mark_persistent ();
 
-      assign (symtab.persistent_varval (name), symtab.current_context ());
+      assign (symtab.persistent_varval (name));
     }
   // FIXME: this causes trouble with recursive calls.
   // else
@@ -114,9 +114,7 @@ symbol_table::symbol_record::symbol_record_rep::dup (scope *new_scope) const
   symbol_table& symtab
     = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::dup");
 
-  return new symbol_record_rep (new_scope, name,
-                                varval (symtab.current_context ()),
-                                storage_class);
+  return new symbol_record_rep (new_scope, name, varval (), storage_class);
 }
 
 void
@@ -126,7 +124,7 @@ symbol_table::symbol_record::symbol_record_rep::dump
   symbol_table& symtab
     = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::dump");
 
-  octave_value val = varval (symtab.current_context ());
+  octave_value val = varval ();
 
   os << prefix << name;
 
@@ -207,7 +205,7 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
     retval = symtab.global_varval (name ());
   else
     {
-      retval = varval (symtab.current_context ());
+      retval = varval ();
 
       if (retval.is_undefined ())
         {
@@ -1530,7 +1528,7 @@ symbol_table::scope::find (const std::string& name,
             return symtab.global_varval (name);
           else
             {
-              octave_value val = sr.varval (m_context);
+              octave_value val = sr.varval ();
 
               if (val.is_defined ())
                 return val;
@@ -1596,6 +1594,29 @@ symbol_table::scope::builtin_find (const std::string& name)
   return retval;
 }
 
+symbol_table::symbol_record&
+symbol_table::scope::insert (const std::string& name, bool force_add)
+{
+  table_iterator p = m_symbols.find (name);
+
+  if (p == m_symbols.end ())
+    {
+      symbol_table::symbol_record ret (this, name);
+
+      if (m_is_nested && m_parent && m_parent->look_nonlocal (name, ret))
+        return m_symbols[name] = ret;
+      else
+        {
+          if (m_is_static && ! force_add)
+            ret.mark_added_static ();
+
+          return m_symbols[name] = ret;
+        }
+    }
+  else
+    return p->second;
+}
+
 void
 symbol_table::scope::clear_global (const std::string& name)
 {
@@ -1658,7 +1679,7 @@ symbol_table::scope::workspace_info (void) const
 
       if (! sr.is_hidden ())
         {
-          octave_value val = sr.varval (m_context);
+          octave_value val = sr.varval ();
 
           if (val.is_defined ())
             {
@@ -1816,6 +1837,7 @@ symbol_table::scope::update_nest (void)
         {
           symbol_record& ours = nm_sr.second;
           symbol_record parents;
+
           if (! ours.is_formal ()
               && m_is_nested && m_parent->look_nonlocal (nm_sr.first, parents))
             {
@@ -1841,6 +1863,25 @@ symbol_table::scope::update_nest (void)
 
   for (auto& symtab_p : m_children)
     symtab_p->update_nest ();
+}
+
+bool
+symbol_table::scope::look_nonlocal (const std::string& name,
+                                    symbol_table::symbol_record& result)
+{
+  table_iterator p = m_symbols.find (name);
+  if (p == m_symbols.end ())
+    {
+      if (m_is_nested && m_parent)
+        return m_parent->look_nonlocal (name, result);
+    }
+  else if (! p->second.is_automatic ())
+    {
+      result = p->second;
+      return true;
+    }
+
+  return false;
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,

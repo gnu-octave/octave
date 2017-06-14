@@ -1505,6 +1505,10 @@ fcn_name        : identifier
                         YYABORT;
                       }
 
+                    symbol_table::scope *curr_scope
+                      = lexer.symtab_context.curr_scope ();
+                    curr_scope->cache_name (id);
+
                     lexer.parsed_function_name.top () = true;
                     lexer.maybe_classdef_get_set_method = false;
 

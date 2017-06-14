@@ -110,42 +110,41 @@ public:
 
       ~symbol_record_rep (void) = default;
 
-      void assign (const octave_value& value, context_id context)
+      void assign (const octave_value& value)
       {
-        varref (context) = value;
+        varref () = value;
       }
 
       void assign (octave_value::assign_op op,
                    const std::string& type,
                    const std::list<octave_value_list>& idx,
-                   const octave_value& value,
-                   context_id context)
+                   const octave_value& value)
       {
-        varref(context).assign (op, type, idx, value);
+        varref().assign (op, type, idx, value);
       }
 
-      void assign (octave_value::assign_op op, const octave_value& value,
-                   context_id context)
+      void assign (octave_value::assign_op op, const octave_value& value)
       {
-        varref(context).assign (op, value);
+        varref().assign (op, value);
       }
 
-      void do_non_const_unary_op (octave_value::unary_op op,
-                                  context_id context)
+      void do_non_const_unary_op (octave_value::unary_op op)
       {
-        varref(context).do_non_const_unary_op (op);
+        varref().do_non_const_unary_op (op);
       }
 
       void do_non_const_unary_op (octave_value::unary_op op,
                                   const std::string& type,
-                                  const std::list<octave_value_list>& idx,
-                                  context_id context)
+                                  const std::list<octave_value_list>& idx)
       {
-        varref(context).do_non_const_unary_op (op, type, idx);
+        varref().do_non_const_unary_op (op, type, idx);
       }
 
-      octave_value& varref (context_id context)
+      octave_value& varref (void)
       {
+        context_id context
+          = m_decl_scope ? m_decl_scope->current_context () : 0;
+
         if (is_global ())
           return xglobal_varref ();
         else if (is_persistent ())
@@ -160,8 +159,11 @@ public:
           }
       }
 
-      octave_value varval (context_id context) const
+      octave_value varval (void) const
       {
+        context_id context
+          = m_decl_scope ? m_decl_scope->current_context () : 0;
+
         if (is_global ())
           return xglobal_varval ();
         else if (is_persistent ())
@@ -214,9 +216,9 @@ public:
 
       void clear (const scope *sid);
 
-      bool is_defined (context_id context) const
+      bool is_defined (void) const
       {
-        return varval (context).is_defined ();
+        return varval ().is_defined ();
       }
 
       bool is_valid (void) const
@@ -224,9 +226,9 @@ public:
         return valid;
       }
 
-      bool is_variable (context_id context) const
+      bool is_variable (void) const
       {
-        return (! is_local () || is_defined (context));
+        return (! is_local () || is_defined ());
       }
 
       bool is_local (void) const { return storage_class & local; }
@@ -362,49 +364,45 @@ public:
     octave_value
     find (const octave_value_list& args = octave_value_list ()) const;
 
-    void assign (const octave_value& value, context_id context)
+    void assign (const octave_value& value)
     {
-      rep->assign (value, context);
+      rep->assign (value);
     }
 
     void assign (octave_value::assign_op op,
                  const std::string& type,
                  const std::list<octave_value_list>& idx,
-                 const octave_value& value,
-                 context_id context)
+                 const octave_value& value)
     {
-      rep->assign (op, type, idx, value, context);
+      rep->assign (op, type, idx, value);
     }
 
-    void assign (octave_value::assign_op op, const octave_value& value,
-                 context_id context)
+    void assign (octave_value::assign_op op, const octave_value& value)
     {
-      rep->assign (op, value, context);
+      rep->assign (op, value);
     }
 
-    void do_non_const_unary_op (octave_value::unary_op op,
-                                context_id context)
+    void do_non_const_unary_op (octave_value::unary_op op)
     {
-      rep->do_non_const_unary_op (op, context);
+      rep->do_non_const_unary_op (op);
     }
 
     void do_non_const_unary_op (octave_value::unary_op op,
                                 const std::string& type,
-                                const std::list<octave_value_list>& idx,
-                                context_id context)
+                                const std::list<octave_value_list>& idx)
     {
-      rep->do_non_const_unary_op (op, type, idx, context);
+      rep->do_non_const_unary_op (op, type, idx);
     }
 
     // Delete when deprecated varref functions are removed.
-    octave_value& varref (context_id context)
+    octave_value& varref (void)
     {
-      return rep->varref (context);
+      return rep->varref ();
     }
 
-    octave_value varval (context_id context) const
+    octave_value varval (void) const
     {
-      return rep->varval (context);
+      return rep->varval ();
     }
 
     void push_context (scope *sid) { rep->push_context (sid); }
@@ -415,14 +413,14 @@ public:
 
     void clear (const scope *sid) { rep->clear (sid); }
 
-    bool is_defined (context_id context) const
+    bool is_defined (void) const
     {
-      return rep->is_defined (context);
+      return rep->is_defined ();
     }
 
-    bool is_undefined (context_id context) const
+    bool is_undefined (void) const
     {
-      return ! rep->is_defined (context);
+      return ! rep->is_defined ();
     }
 
     bool is_valid (void) const
@@ -430,9 +428,9 @@ public:
       return rep->is_valid ();
     }
 
-    bool is_variable (context_id context) const
+    bool is_variable (void) const
     {
-      return rep->is_variable (context);
+      return rep->is_variable ();
     }
 
     bool is_local (void) const { return rep->is_local (); }
@@ -480,6 +478,8 @@ public:
       rep->dump (os, prefix);
     }
 
+    const symbol_record_rep *xrep (void) const { return rep; }
+
   private:
 
     symbol_record_rep *rep;
@@ -501,7 +501,7 @@ public:
     symbol_reference (const symbol_record& record);
 
     symbol_reference (const symbol_record& record, scope *curr_scope,
-                      context_id context = 0)
+                      context_id context)
       : m_scope (curr_scope), m_context (context), m_sym (record)
     { }
 
@@ -939,15 +939,14 @@ public:
   }
 
   void
-    mark_subfunctions_in_scope_as_private (scope *sid,
-                                           const std::string& class_name)
+  mark_subfunctions_in_scope_as_private (scope *sid,
+                                         const std::string& class_name)
   {
     if (sid)
       sid->mark_subfunctions_in_scope_as_private (class_name);
   }
 
-  symbol_record
-    find_symbol (const std::string& name, scope *sid)
+  symbol_record find_symbol (const std::string& name, scope *sid)
   {
     return sid ? sid->find_symbol (name) : symbol_record ();
   }
@@ -957,15 +956,13 @@ public:
     return find_symbol (name, m_current_scope);
   }
 
-  void
-    inherit (scope *recipient_scope, scope *donor_scope,
-             context_id donor_context)
+  void inherit (scope *recipient_scope, scope *donor_scope)
   {
     if (recipient_scope)
       {
         while (donor_scope)
           {
-            recipient_scope->inherit (*donor_scope, donor_context);
+            recipient_scope->inherit (*donor_scope);
 
             if (donor_scope->is_nested ())
               donor_scope = donor_scope->parent_scope ();
@@ -973,14 +970,6 @@ public:
               break;
           }
       }
-  }
-
-  void
-  inherit (scope *sid, scope *donor_sid)
-  {
-    context_id donor_context = donor_sid ? donor_sid->current_context () : 0;
-
-    inherit (sid, donor_sid, donor_context);
   }
 
   void inherit (scope *sid)
@@ -1020,22 +1009,15 @@ public:
   }
 
   void assign (const std::string& name, const octave_value& value,
-               scope *sid, context_id context, bool force_add)
+               scope *sid, bool force_add)
   {
     if (sid)
-      sid->assign (name, value, context, force_add);
+      sid->assign (name, value, force_add);
   }
 
-  void assign (const std::string& name, const octave_value& value,
-               scope *sid, context_id context)
+  void assign (const std::string& name, const octave_value& value, scope *sid)
   {
-    assign (name, value, sid, context, false);
-  }
-
-  void assign (const std::string& name, const octave_value& value,
-               scope *sid)
-  {
-    assign (name, value, sid, m_current_scope->current_context ());
+    assign (name, value, sid, false);
   }
 
   void assign (const std::string& name,
@@ -1053,15 +1035,9 @@ public:
   // octave_user_function::bind_automatic_vars
 
   void force_assign (const std::string& name, const octave_value& value,
-                     scope *sid, context_id context)
-  {
-    assign (name, value, sid, context, true);
-  }
-
-  void force_assign (const std::string& name, const octave_value& value,
                      scope *sid)
   {
-    assign (name, value, sid, m_current_scope->current_context ());
+    assign (name, value, sid, true);
   }
 
   void force_assign (const std::string& name,
@@ -1075,15 +1051,9 @@ public:
   // force_varref (const std::string& name, scope_id sid = xcurrent_scope,
   //               context_id context = xdefault_context);
 
-  octave_value varval (const std::string& name, scope *sid,
-                       context_id context)
-  {
-    return sid ? sid->varval (name, context) : octave_value ();
-  }
-
   octave_value varval (const std::string& name, scope *sid)
   {
-    return varval (name, sid, m_current_scope->current_context ());
+    return sid ? sid->varval (name) : octave_value ();
   }
 
   octave_value varval (const std::string& name)
@@ -1120,7 +1090,7 @@ public:
   top_level_assign (const std::string& name,
                     const octave_value& value = octave_value ())
   {
-    assign (name, value, top_scope (), 0);
+    assign (name, value, top_scope ());
   }
 
   // use 'top_level_assign' instead
@@ -1130,7 +1100,7 @@ public:
   octave_value
   top_level_varval (const std::string& name)
   {
-    return varval (name, top_scope (), 0);
+    return varval (name, top_scope ());
   }
 
   void
@@ -1595,30 +1565,23 @@ public:
 
   // exclude: Storage classes to exclude, you can OR them together
   std::list<symbol_record>
-  all_variables (scope *sid, context_id context, bool defined_only,
-                 unsigned int exclude)
+  all_variables (scope *sid, bool defined_only, unsigned int exclude)
   {
     return (sid
-            ? sid->all_variables (context, defined_only, exclude)
+            ? sid->all_variables (defined_only, exclude)
             : std::list<symbol_record> ());
   }
 
   std::list<symbol_record>
-  all_variables (scope *sid, context_id context, bool defined_only)
+  all_variables (scope *sid, bool defined_only)
   {
-    return all_variables (sid, context, defined_only, symbol_record::hidden);
-  }
-
-  std::list<symbol_record>
-  all_variables (scope *sid, context_id context)
-  {
-    return all_variables (sid, context, true);
+    return all_variables (sid, defined_only, symbol_record::hidden);
   }
 
   std::list<symbol_record>
   all_variables (scope *sid)
   {
-    return all_variables (sid, m_current_scope->current_context ());
+    return all_variables (sid, true);
   }
 
   std::list<symbol_record>
@@ -1993,7 +1956,7 @@ public:
         return p->second;
     }
 
-    void inherit (scope& donor_table, context_id donor_context)
+    void inherit (scope& donor_scope)
     {
       for (auto& nm_sr : m_symbols)
         {
@@ -2005,11 +1968,11 @@ public:
 
               if (nm != "__retval__")
                 {
-                  octave_value val = donor_table.varval (nm, donor_context);
+                  octave_value val = donor_scope.varval (nm);
 
                   if (val.is_defined ())
                     {
-                      sr.assign (val, 0);
+                      sr.assign (val);
 
                       sr.mark_inherited ();
                     }
@@ -2025,27 +1988,7 @@ public:
     octave_value builtin_find (const std::string& name);
 
     symbol_table::symbol_record&
-    insert (const std::string& name, bool force_add = false)
-    {
-      table_iterator p = m_symbols.find (name);
-
-      if (p == m_symbols.end ())
-        {
-          symbol_table::symbol_record ret (this, name);
-
-          if (m_is_nested && m_parent && m_parent->look_nonlocal (name, ret))
-            return m_symbols[name] = ret;
-          else
-            {
-              if (m_is_static && ! force_add)
-                ret.mark_added_static ();
-
-              return m_symbols[name] = ret;
-            }
-        }
-      else
-        return p->second;
-    }
+    insert (const std::string& name, bool force_add = false);
 
     void rename (const std::string& old_name, const std::string& new_name)
     {
@@ -2064,7 +2007,7 @@ public:
     }
 
     void assign (const std::string& name, const octave_value& value,
-                 context_id context, bool force_add)
+                 bool force_add)
     {
       table_iterator p = m_symbols.find (name);
 
@@ -2072,40 +2015,16 @@ public:
         {
           symbol_table::symbol_record& sr = insert (name, force_add);
 
-          sr.assign (value, context);
+          sr.assign (value);
         }
       else
-        p->second.assign (value, context);
-    }
-
-    void assign (const std::string& name, const octave_value& value,
-                 context_id context)
-    {
-      table_iterator p = m_symbols.find (name);
-
-      if (p == m_symbols.end ())
-        {
-          symbol_table::symbol_record& sr = insert (name, false);
-
-          sr.assign (value, context);
-        }
-      else
-        p->second.assign (value, context);
+        p->second.assign (value);
     }
 
     void assign (const std::string& name,
                  const octave_value& value = octave_value ())
     {
-      table_iterator p = m_symbols.find (name);
-
-      if (p == m_symbols.end ())
-        {
-          symbol_table::symbol_record& sr = insert (name, false);
-
-          sr.assign (value, m_context);
-        }
-      else
-        p->second.assign (value, m_context);
+      assign (name, value, false);
     }
 
     void force_assign (const std::string& name, const octave_value& value)
@@ -2116,16 +2035,15 @@ public:
         {
           symbol_table::symbol_record& sr = insert (name, true);
 
-          sr.assign (value, m_context);
+          sr.assign (value);
         }
       else
-        p->second.assign (value, m_context);
+        p->second.assign (value);
     }
 
-    // Use assign (name, value, context, force_add) instead.
+    // Use assign (name, value, force_add) instead.
     // Delete when deprecated varref functions are removed.
-    octave_value&
-    varref (const std::string& name, context_id context, bool force_add)
+    octave_value& varref (const std::string& name, bool force_add)
     {
       table_iterator p = m_symbols.find (name);
 
@@ -2133,18 +2051,10 @@ public:
         {
           symbol_table::symbol_record& sr = insert (name, force_add);
 
-          return sr.varref (context);
+          return sr.varref ();
         }
       else
-        return p->second.varref (context);
-    }
-
-    octave_value varval (const std::string& name, context_id context) const
-    {
-      table_const_iterator p = m_symbols.find (name);
-
-      return (p != m_symbols.end ()
-              ? p->second.varval (context) : octave_value ());
+        return p->second.varref ();
     }
 
     octave_value varval (const std::string& name) const
@@ -2152,7 +2062,7 @@ public:
       table_const_iterator p = m_symbols.find (name);
 
       return (p != m_symbols.end ()
-              ? p->second.varval (m_context) : octave_value ());
+              ? p->second.varval () : octave_value ());
     }
 
     void persistent_assign (const std::string& name, const octave_value& value)
@@ -2200,7 +2110,7 @@ public:
         {
           const symbol_table::symbol_record& sr = p->second;
 
-          retval = sr.is_variable (m_context);
+          retval = sr.is_variable ();
         }
 
       return retval;
@@ -2228,7 +2138,7 @@ public:
     void clear_variables (void)
     {
       for (auto& nm_sr : m_symbols)
-        nm_sr.second.clear ();
+        nm_sr.second.clear (this);
     }
 
     void clear_objects (void)
@@ -2236,9 +2146,9 @@ public:
       for (auto& nm_sr : m_symbols)
         {
           symbol_table::symbol_record& sr = nm_sr.second;
-          octave_value val = sr.varval (m_context);
-          if (val.is_object ())
-            nm_sr.second.clear ();
+          octave_value val = sr.varval ();
+          if (val.isobject ())
+            nm_sr.second.clear (this);
         }
     }
 
@@ -2249,7 +2159,7 @@ public:
       table_iterator p = m_symbols.find (name);
 
       if (p != m_symbols.end ())
-        p->second.clear ();
+        p->second.clear (this);
     }
 
     void clear_global_pattern (const std::string& pat);
@@ -2262,7 +2172,7 @@ public:
         {
           symbol_table::symbol_record& sr = nm_sr.second;
 
-          if (sr.is_defined (m_context) || sr.is_global ())
+          if (sr.is_defined () || sr.is_global ())
             {
               if (pattern.match (sr.name ()))
                 sr.clear (this);
@@ -2278,7 +2188,7 @@ public:
         {
           symbol_table::symbol_record& sr = nm_sr.second;
 
-          if (sr.is_defined (m_context) || sr.is_global ())
+          if (sr.is_defined () || sr.is_global ())
             {
               if (pattern.is_match (sr.name ()))
                 sr.clear (this);
@@ -2302,8 +2212,7 @@ public:
     }
 
     std::list<symbol_table::symbol_record>
-    all_variables (context_id context, bool defined_only,
-                   unsigned int exclude) const
+    all_variables (bool defined_only, unsigned int exclude) const
     {
       std::list<symbol_table::symbol_record> retval;
 
@@ -2311,7 +2220,7 @@ public:
         {
           const symbol_table::symbol_record& sr = nm_sr.second;
 
-          if ((defined_only && ! sr.is_defined (context))
+          if ((defined_only && ! sr.is_defined ())
               || (sr.xstorage_class () & exclude))
             continue;
 
@@ -2334,7 +2243,7 @@ public:
             {
               const symbol_table::symbol_record& sr = nm_sr.second;
 
-              if (vars_only && ! sr.is_variable (m_context))
+              if (vars_only && ! sr.is_variable ())
                 continue;
 
               retval.push_back (sr);
@@ -2357,7 +2266,7 @@ public:
             {
               const symbol_table::symbol_record& sr = nm_sr.second;
 
-              if (vars_only && ! sr.is_variable (m_context))
+              if (vars_only && ! sr.is_variable ())
                 continue;
 
               retval.push_back (sr);
@@ -2373,7 +2282,7 @@ public:
 
       for (const auto& nm_sr : m_symbols)
         {
-          if (nm_sr.second.is_variable (m_context))
+          if (nm_sr.second.is_variable ())
             retval.push_back (nm_sr.first);
         }
 
@@ -2388,7 +2297,7 @@ public:
 
       return (p != m_symbols.end ()
               && ! p->second.is_global ()
-              && p->second.is_defined (m_context));
+              && p->second.is_defined ());
     }
 
     bool is_global (const std::string& name) const
@@ -2447,22 +2356,7 @@ public:
     void update_nest (void);
 
     bool look_nonlocal (const std::string& name,
-                        symbol_table::symbol_record& result)
-    {
-      table_iterator p = m_symbols.find (name);
-      if (p == m_symbols.end ())
-        {
-          if (m_is_nested && m_parent)
-            return m_parent->look_nonlocal (name, result);
-        }
-      else if (! p->second.is_automatic ())
-        {
-          result = p->second;
-          return true;
-        }
-
-      return false;
-    }
+                        symbol_table::symbol_record& result);
 
   private:
 

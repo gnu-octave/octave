@@ -22,9 +22,9 @@
 ## @deftypefnx {} {} play (@var{player}, @var{limits})
 ## Play audio stored in the audioplayer object @var{player} without blocking.
 ##
-## Given optional argument start, begin playing at @var{start} seconds in the
+## Given optional argument start, begin playing at @var{start} samples in the
 ## recording.  Given a two-element vector @var{limits}, begin and end playing
-## at the number of seconds specified by the elements of the vector.
+## at the number of samples specified by the elements of the vector.
 ## @end deftypefn
 
 function play (varargin)

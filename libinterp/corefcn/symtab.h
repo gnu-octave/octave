@@ -926,26 +926,6 @@ public:
       m_current_scope->set_context (context);
   }
 
-  void erase_subfunctions_in_scope (scope *sid)
-  {
-    if (sid)
-      sid->erase_subfunctions ();
-  }
-
-  void mark_nested (scope *sid)
-  {
-    if (sid)
-      sid->mark_nested ();
-  }
-
-  void
-  mark_subfunctions_in_scope_as_private (scope *sid,
-                                         const std::string& class_name)
-  {
-    if (sid)
-      sid->mark_subfunctions_in_scope_as_private (class_name);
-  }
-
   symbol_record find_symbol (const std::string& name, scope *sid)
   {
     return sid ? sid->find_symbol (name) : symbol_record ();
@@ -988,48 +968,17 @@ public:
 
   octave_value builtin_find (const std::string& name);
 
-  // Insert a new name in the table.
-  OCTAVE_DEPRECATED ("use 'get_scope' with 'insert (name)' instead")
-    symbol_record& insert (const std::string& name, scope *sid)
-    {
-      return sid ? sid->insert (name) : symbol_table::dummy_symbol_record;
-    }
-
-  symbol_record& insert (const std::string& name)
-  {
-    return (m_current_scope
-            ? m_current_scope->insert (name)
-            : symbol_table::dummy_symbol_record);
-  }
-
   void rename (const std::string& old_name, const std::string& new_name)
   {
     if (m_current_scope)
       m_current_scope->rename (old_name, new_name);
   }
 
-  void assign (const std::string& name, const octave_value& value,
-               scope *sid, bool force_add)
-  {
-    if (sid)
-      sid->assign (name, value, force_add);
-  }
-
-  void assign (const std::string& name, const octave_value& value, scope *sid)
-  {
-    assign (name, value, sid, false);
-  }
-
   void assign (const std::string& name,
                const octave_value& value = octave_value ())
   {
-    assign (name, value, m_current_scope);
+    m_current_scope->assign (name, value);
   }
-
-  // use 'assign' instead
-  // octave_value&
-  // varref (const std::string& name, scope_id sid = xcurrent_scope,
-  //         context_id context = xdefault_context, bool force_add = false);
 
   // Convenience function to simplify
   // octave_user_function::bind_automatic_vars
@@ -1037,28 +986,19 @@ public:
   void force_assign (const std::string& name, const octave_value& value,
                      scope *sid)
   {
-    assign (name, value, sid, true);
+    if (sid)
+      sid->assign (name, value, true);
   }
 
   void force_assign (const std::string& name,
                      const octave_value& value = octave_value ())
   {
-    assign (name, value, m_current_scope);
-  }
-
-  // use 'force_assign' instead
-  // octave_value&
-  // force_varref (const std::string& name, scope_id sid = xcurrent_scope,
-  //               context_id context = xdefault_context);
-
-  octave_value varval (const std::string& name, scope *sid)
-  {
-    return sid ? sid->varval (name) : octave_value ();
+    m_current_scope->assign (name, value);
   }
 
   octave_value varval (const std::string& name)
   {
-    return varval (name, m_current_scope);
+    return m_current_scope->varval (name);
   }
 
   void
@@ -1074,10 +1014,6 @@ public:
       p->second = value;
   }
 
-  // use 'global_assign' instead
-  // octave_value&
-  // global_varref (const std::string& name);
-
   octave_value
   global_varval (const std::string& name)
   {
@@ -1090,37 +1026,22 @@ public:
   top_level_assign (const std::string& name,
                     const octave_value& value = octave_value ())
   {
-    assign (name, value, top_scope ());
+    m_top_scope->assign (name, value);
   }
-
-  // use 'top_level_assign' instead
-  // octave_value&
-  // top_level_varref (const std::string& name);
 
   octave_value
   top_level_varval (const std::string& name)
   {
-    return varval (name, top_scope ());
-  }
-
-  void
-  persistent_assign (const std::string& name, scope *sid,
-                     const octave_value& value = octave_value ())
-  {
-    if (sid)
-      sid->persistent_assign (name, value);
+    return m_top_scope->varval (name);
   }
 
   void
     persistent_assign (const std::string& name,
                        const octave_value& value = octave_value ())
   {
-    persistent_assign (name, m_current_scope, value);
+    if (m_current_scope)
+      m_current_scope->persistent_assign (name, value);
   }
-
-  // use 'persistent_assign' instead
-  // octave_value&
-  // persistent_varref (const std::string& name);
 
   octave_value persistent_varval (const std::string& name)
   {
@@ -1133,12 +1054,6 @@ public:
     if (m_current_scope)
       m_current_scope->erase_persistent (name);
   }
-
-  OCTAVE_DEPRECATED ("use 'get_scope' with 'is_variable (name)' instead")
-    bool is_variable (const std::string& name, scope *sid)
-    {
-      return sid ? sid->is_variable (name) : false;
-    }
 
   bool is_variable (const std::string& name)
   {
@@ -1545,12 +1460,6 @@ public:
 
   void pop_context (void *) { pop_context (); }
 
-  void mark_automatic (const std::string& name)
-  {
-    if (m_current_scope)
-      m_current_scope->mark_automatic (name);
-  }
-
   void mark_hidden (const std::string& name)
   {
     if (m_current_scope)
@@ -1594,26 +1503,6 @@ public:
   {
     return (m_current_scope
             ? m_current_scope->glob (pattern) : std::list<symbol_record> ());
-  }
-
-  std::list<symbol_record> regexp (const std::string& pattern)
-  {
-    return (m_current_scope
-            ? m_current_scope->regexp (pattern) : std::list<symbol_record> ());
-  }
-
-  std::list<symbol_record> glob_variables (const std::string& pattern)
-  {
-    return (m_current_scope
-            ? m_current_scope->glob (pattern, true)
-            : std::list<symbol_record> ());
-  }
-
-  std::list<symbol_record> regexp_variables (const std::string& pattern)
-  {
-    return (m_current_scope
-            ? m_current_scope->regexp (pattern, true)
-            : std::list<symbol_record> ());
   }
 
   std::list<symbol_record>
@@ -1794,27 +1683,6 @@ public:
     if (sid)
       sid->cache_name (name);
   }
-
-  void lock_subfunctions (scope *sid)
-  {
-    if (sid)
-      sid->lock_subfunctions ();
-  }
-
-  void unlock_subfunctions (scope *sid)
-  {
-    if (sid)
-      sid->unlock_subfunctions ();
-  }
-
-  std::map<std::string, octave_value>
-  subfunctions_defined_in_scope (scope *sid)
-  {
-    return (sid
-            ? sid->subfunctions ()
-            : std::map<std::string, octave_value> ());
-  }
-
   void stash_dir_name_for_subfunctions (scope *sid,
                                         const std::string& dir_name)
   {
@@ -1859,30 +1727,9 @@ public:
     return retval;
   }
 
-  OCTAVE_DEPRECATED ("use 'get_scope' with 'function ()' instead")
-  octave_user_function * get_curr_fcn (scope *sid)
-  {
-    return sid ? sid->function () : 0;
-  }
-
   octave_user_function * get_curr_fcn (void)
   {
     return m_current_scope ? m_current_scope->function () : 0;
-  }
-
-  OCTAVE_DEPRECATED ("set_curr_fcn")
-  void set_curr_fcn (octave_user_function *curr_fcn, scope *sid)
-  {
-    assert (sid != m_top_scope && sid != m_global_scope);
-
-    // FIXME: normally, functions should not usurp each other's scope.
-    // If for any incredible reason this is needed, call
-    // set_user_function (0, scope) first.  This may cause problems with
-    // nested functions, as the curr_fcn of symbol_records must be updated.
-
-    assert (sid && (sid->function () == 0 || curr_fcn == 0));
-
-    sid->set_function (curr_fcn);
   }
 
   void cleanup (void);

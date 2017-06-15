@@ -64,9 +64,19 @@ namespace octave
 
   symbol_table::scope *__get_current_scope__ (const std::string& who)
   {
-    symbol_table& symtab = __get_symbol_table__ (who);
+    interpreter& interp = __get_interpreter__ (who);
 
-    return symtab.current_scope ();
+    return interp.get_current_scope ();
+  }
+
+  symbol_table::scope *__require_current_scope__ (const std::string& who)
+  {
+    symbol_table::scope *scope = __get_current_scope__ (who);
+
+    if (! scope)
+      error ("%s: symbol table scope missing", who.c_str ());
+
+    return scope;
   }
 
   tree_evaluator& __get_evaluator__ (const std::string& who)

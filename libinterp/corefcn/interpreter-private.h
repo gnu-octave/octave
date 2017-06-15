@@ -44,6 +44,9 @@ namespace octave
 
   extern symbol_table::scope *__get_current_scope__ (const std::string& who);
 
+  extern symbol_table::scope *
+  __require_current_scope__ (const std::string& who);
+
   extern tree_evaluator& __get_evaluator__ (const std::string& who);
 
   extern call_stack& __get_call_stack__ (const std::string& who);

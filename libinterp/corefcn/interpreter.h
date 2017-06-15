@@ -144,6 +144,9 @@ namespace octave
       return m_symbol_table;
     }
 
+    symbol_table::scope * get_current_scope (void);
+    symbol_table::scope * require_current_scope (const std::string& who);
+
     call_stack& get_call_stack (void);
 
     tree_evaluator& get_evaluator (void);

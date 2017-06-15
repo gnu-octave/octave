@@ -1153,6 +1153,23 @@ namespace octave
     return *m_evaluator;
   }
 
+  symbol_table::scope *
+  interpreter::get_current_scope (void)
+  {
+    return m_symbol_table.current_scope ();
+  }
+
+  symbol_table::scope *
+  interpreter::require_current_scope (const std::string& who)
+  {
+    symbol_table::scope *scope = get_current_scope ();
+
+    if (! scope)
+      error ("%s: symbol table scope missing", who.c_str ());
+
+    return scope;
+  }
+
   call_stack& interpreter::get_call_stack (void)
   {
     return m_evaluator->get_call_stack ();

@@ -91,7 +91,8 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 {
   octave_value fcn (new octave_builtin (f, name, file, doc));
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("install_builtin_function");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_builtin_function");
 
   symtab.install_built_in_function (name, fcn);
 }
@@ -103,7 +104,8 @@ install_builtin_function (octave_builtin::meth m, const std::string& name,
 {
   octave_value fcn (new octave_builtin (m, name, file, doc));
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("install_builtin_function");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_builtin_function");
 
   symtab.install_built_in_function (name, fcn);
 }
@@ -120,7 +122,8 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("install_dld_function");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_dld_function");
 
   symtab.install_built_in_function (name, fval);
 }
@@ -137,7 +140,8 @@ install_dld_function (octave_dld_function::meth m, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("install_dld_function");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_dld_function");
 
   symtab.install_built_in_function (name, fval);
 }
@@ -153,7 +157,8 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("install_mex_function");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_mex_function");
 
   symtab.install_built_in_function (name, fval);
 }
@@ -169,7 +174,8 @@ alias_builtin (const std::string& alias, const std::string& name)
 void
 install_builtin_dispatch (const std::string& name, const std::string& klass)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("install_builtin_dispatch");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_builtin_dispatch");
 
   symtab.install_built_in_dispatch (name, klass);
 }

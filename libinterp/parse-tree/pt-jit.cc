@@ -118,9 +118,9 @@ class jit_break_exception : public std::exception
 jit_convert::jit_convert (tree& tee, jit_type *for_bounds)
   : converting_function (false)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("jit_convert::jit_convert");
+  symbol_table::scope *scope = octave::__get_current_scope__ ("jit_convert::jit_convert");
 
-  initialize (symtab.current_scope ());
+  initialize (scope);
 
   if (for_bounds)
     create_variable (next_for_bounds (false), for_bounds);
@@ -2510,9 +2510,9 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
   if (iter == extra_vars.end ())
     {
-      symbol_table& symtab = octave::__get_symbol_table__ ("jit_convert::find");
+      symbol_table::scope *scope = octave::__require_current_scope__ ("jit_convert::find");
 
-      return symtab.varval (vname);
+      return scope->varval (vname);
     }
   else
     return *iter->second;

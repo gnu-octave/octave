@@ -145,16 +145,20 @@ install_loaded_variable (const std::string& name,
                          const octave_value& val,
                          bool global, const std::string& /*doc*/)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("install_loaded_variable");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_loaded_varaible");
+
+  symbol_table::scope *scope
+    = symtab.require_current_scope ("install_loaded_variable");
 
   if (global)
     {
-      symtab.clear (name);
-      symtab.mark_global (name);
+      scope->clear_variable (name);
+      scope->mark_global (name);
       symtab.global_assign (name, val);
     }
   else
-    symtab.assign (name, val);
+    scope->assign (name, val);
 }
 
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
@@ -1272,12 +1276,17 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       std::string struct_name = argv[argv_idx];
 
-      symbol_table& symtab = octave::__get_symbol_table__ ("save_vars");
+      symbol_table::scope *scope = octave::__get_current_scope__ ("save_vars");
 
-      if (! symtab.is_variable (struct_name))
-        error ("save: no such variable: '%s'", struct_name.c_str ());
+      octave_value struct_var;
 
-      octave_value struct_var = symtab.varval (struct_name);
+      if (scope)
+        {
+          if (! scope->is_variable (struct_name))
+            error ("save: no such variable: '%s'", struct_name.c_str ());
+
+          struct_var = scope->varval (struct_name);
+        }
 
       if (! struct_var.isstruct () || struct_var.numel () != 1)
         error ("save: '%s' is not a scalar structure", struct_name.c_str ());
@@ -1321,8 +1330,9 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
   symbol_table& symtab = octave::__get_symbol_table__ ("dump_octave_core");
 
-  std::list<symbol_table::symbol_record> vars
-    = symtab.all_variables (symtab.top_scope ());
+  symbol_table::scope *top_scope = symtab.top_scope ();
+
+  std::list<symbol_table::symbol_record> vars = top_scope->all_variables ();
 
   double save_mem_size = 0;
 

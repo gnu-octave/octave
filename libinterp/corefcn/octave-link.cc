@@ -69,10 +69,13 @@ octave_link::set_workspace (void)
       symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_link::set_workspace");
 
+      std::list<workspace_element> workspace_info;
+      symbol_table::scope *scope = symtab.current_scope ();
+      if (scope)
+        workspace_info = scope->workspace_info ();
 
       instance->do_set_workspace (symtab.at_top_level (),
-                                  instance->debugging,
-                                  symtab.workspace_info ());
+                                  instance->debugging, workspace_info);
     }
 }
 

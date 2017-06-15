@@ -2420,10 +2420,11 @@ main_window::load_workspace_callback (const std::string& file)
 {
   Fload (ovl (file));
 
- symbol_table& symtab
-   = octave::__get_symbol_table__ ("main_window::load_workspace_callback");
+  symbol_table::scope *scope
+   = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 
-  octave_link::set_workspace (true, symtab.workspace_info ());
+  if (scope)
+    octave_link::set_workspace (true, scope->workspace_info ());
 }
 
 void
@@ -2438,16 +2439,18 @@ main_window::clear_workspace_callback (void)
 void
 main_window::rename_variable_callback (const main_window::name_pair& names)
 {
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("main_window::rename_variable_callback");
+  symbol_table::scope *scope
+    = octave::__get_current_scope__ ("main_window::rename_variable_callback");
 
-  /* bool status = */ symtab.rename (names.first, names.second);
+  if (scope)
+    {
+      scope->rename (names.first, names.second);
 
-  // if (status)
-  octave_link::set_workspace (true, symtab.workspace_info ());
+      octave_link::set_workspace (true, scope->workspace_info ());
+    }
 
-  //  else
-  //    ; // we need an octave_link action that runs a GUI error option.
+  // FIXME: if this action fails, do we need a way to display that info
+  // in the GUI?
 }
 
 void

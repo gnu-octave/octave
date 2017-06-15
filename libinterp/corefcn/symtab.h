@@ -214,7 +214,7 @@ public:
 
       void clear (void) { clear (decl_scope ()); }
 
-      void clear (const scope *sid);
+      void clear (scope *sid);
 
       bool is_defined (void) const
       {
@@ -279,7 +279,7 @@ public:
 
       void erase_persistent (void);
 
-      const scope *decl_scope (void) const { return m_decl_scope; }
+      scope *decl_scope (void) { return m_decl_scope; }
 
       void set_curr_fcn (octave_user_function *fcn)
       {
@@ -411,7 +411,7 @@ public:
 
     void clear (void) { rep->clear (); }
 
-    void clear (const scope *sid) { rep->clear (sid); }
+    void clear (scope *sid) { rep->clear (sid); }
 
     bool is_defined (void) const
     {
@@ -466,7 +466,7 @@ public:
 
     void invalidate (void) { rep->invalidate (); }
 
-    const scope *decl_scope (void) const { return rep->decl_scope (); }
+    scope *decl_scope (void) { return rep->decl_scope (); }
 
     unsigned int xstorage_class (void) const { return rep->storage_class; }
 
@@ -905,6 +905,14 @@ public:
 
   scope *current_scope (void) { return m_current_scope; }
 
+  scope *require_current_scope (const std::string& who)
+  {
+    if (! m_current_scope)
+      error ("%s: missing scope", who.c_str ());
+
+    return m_current_scope;
+  }
+
   context_id current_context (void) const
   {
     return m_current_scope ? m_current_scope->current_context () : 0;
@@ -939,22 +947,12 @@ public:
   void inherit (scope *recipient_scope, scope *donor_scope)
   {
     if (recipient_scope)
-      {
-        while (donor_scope)
-          {
-            recipient_scope->inherit (*donor_scope);
-
-            if (donor_scope->is_nested ())
-              donor_scope = donor_scope->parent_scope ();
-            else
-              break;
-          }
-      }
+      recipient_scope->inherit (donor_scope);
   }
 
-  void inherit (scope *sid)
+  void inherit (scope *recipient_scope)
   {
-    inherit (sid, m_current_scope);
+    inherit (recipient_scope, m_current_scope);
   }
 
   bool at_top_level (void) { return m_current_scope == m_top_scope; }
@@ -967,39 +965,6 @@ public:
           bool local_funcs = true);
 
   octave_value builtin_find (const std::string& name);
-
-  void rename (const std::string& old_name, const std::string& new_name)
-  {
-    if (m_current_scope)
-      m_current_scope->rename (old_name, new_name);
-  }
-
-  void assign (const std::string& name,
-               const octave_value& value = octave_value ())
-  {
-    m_current_scope->assign (name, value);
-  }
-
-  // Convenience function to simplify
-  // octave_user_function::bind_automatic_vars
-
-  void force_assign (const std::string& name, const octave_value& value,
-                     scope *sid)
-  {
-    if (sid)
-      sid->assign (name, value, true);
-  }
-
-  void force_assign (const std::string& name,
-                     const octave_value& value = octave_value ())
-  {
-    m_current_scope->assign (name, value);
-  }
-
-  octave_value varval (const std::string& name)
-  {
-    return m_current_scope->varval (name);
-  }
 
   void
   global_assign (const std::string& name,
@@ -1033,31 +998,6 @@ public:
   top_level_varval (const std::string& name)
   {
     return m_top_scope->varval (name);
-  }
-
-  void
-    persistent_assign (const std::string& name,
-                       const octave_value& value = octave_value ())
-  {
-    if (m_current_scope)
-      m_current_scope->persistent_assign (name, value);
-  }
-
-  octave_value persistent_varval (const std::string& name)
-  {
-    return (m_current_scope
-            ? m_current_scope->persistent_varval (name) : octave_value ());
-  }
-
-  void erase_persistent (const std::string& name)
-  {
-    if (m_current_scope)
-      m_current_scope->erase_persistent (name);
-  }
-
-  bool is_variable (const std::string& name)
-  {
-    return m_current_scope ? m_current_scope->is_variable (name) : false;
   }
 
   bool
@@ -1161,29 +1101,6 @@ public:
       }
   }
 
-  // Install subfunction FCN named NAME.  SCOPE is the scope of the
-  // primary function corresponding to this subfunction.
-
-  void install_subfunction (const std::string& name, const octave_value& fcn,
-                            scope *parent_scope)
-  {
-    if (parent_scope)
-      parent_scope->install_subfunction (name, fcn);
-  }
-
-  void install_nestfunction (const std::string& name, const octave_value& fcn,
-                             scope *parent_scope)
-  {
-    if (parent_scope)
-      parent_scope->install_subfunction (name, fcn, true);
-  }
-
-  void update_nest (scope *sid)
-  {
-    if (sid)
-      sid->update_nest ();
-  }
-
   // Install local function FCN named NAME.  FILE_NAME is the name of
   // the file containing the local function.
 
@@ -1251,16 +1168,13 @@ public:
       }
   }
 
-  void clear (const std::string& name)
-  {
-    clear_variable (name);
-  }
-
   void clear_all (bool force = false)
   {
-    clear_variables ();
-
-    clear_global_pattern ("*");
+    if (m_current_scope)
+      {
+        m_current_scope->clear_variables ();
+        m_current_scope->clear_global_pattern ("*");
+      }
 
     clear_functions (force);
   }
@@ -1268,23 +1182,6 @@ public:
   // This is written as two separate functions instead of a single
   // function with default values so that it will work properly with
   // unwind_protect.
-
-  void clear_variables (scope *sid)
-  {
-    if (sid)
-      sid->clear_variables ();
-  }
-
-  void clear_variables (void)
-  {
-    clear_variables (m_current_scope);
-  }
-
-  void clear_objects (void)
-  {
-    if (m_current_scope)
-      m_current_scope->clear_objects ();
-  }
 
   void clear_functions (bool force = false)
   {
@@ -1299,23 +1196,13 @@ public:
     clear_user_function (name);
   }
 
-  void clear_global (const std::string& name)
-  {
-    if (m_current_scope)
-      m_current_scope->clear_global (name);
-  }
-
-  void clear_variable (const std::string& name)
-  {
-    if (m_current_scope)
-      m_current_scope->clear_variable (name);
-  }
-
   void clear_symbol (const std::string& name)
   {
     // FIXME: are we supposed to do both here?
 
-    clear_variable (name);
+    if (m_current_scope)
+      m_current_scope->clear_variable (name);
+
     clear_function (name);
   }
 
@@ -1334,29 +1221,13 @@ public:
       }
   }
 
-  void clear_global_pattern (const std::string& pat)
-  {
-    if (m_current_scope)
-      m_current_scope->clear_global_pattern (pat);
-  }
-
-  void clear_variable_pattern (const std::string& pat)
-  {
-    if (m_current_scope)
-      m_current_scope->clear_variable_pattern (pat);
-  }
-
-  void clear_variable_regexp (const std::string& pat)
-  {
-    if (m_current_scope)
-      m_current_scope->clear_variable_regexp (pat);
-  }
-
   void clear_symbol_pattern (const std::string& pat)
   {
     // FIXME: are we supposed to do both here?
 
-    clear_variable_pattern (pat);
+    if (m_current_scope)
+      m_current_scope->clear_variable_pattern (pat);
+
     clear_function_pattern (pat);
   }
 
@@ -1459,45 +1330,6 @@ public:
   // For unwind_protect where a pointer argument is needed.
 
   void pop_context (void *) { pop_context (); }
-
-  void mark_hidden (const std::string& name)
-  {
-    if (m_current_scope)
-      m_current_scope->mark_hidden (name);
-  }
-
-  void mark_global (const std::string& name)
-  {
-    if (m_current_scope)
-      m_current_scope->mark_global (name);
-  }
-
-  // exclude: Storage classes to exclude, you can OR them together
-  std::list<symbol_record>
-  all_variables (scope *sid, bool defined_only, unsigned int exclude)
-  {
-    return (sid
-            ? sid->all_variables (defined_only, exclude)
-            : std::list<symbol_record> ());
-  }
-
-  std::list<symbol_record>
-  all_variables (scope *sid, bool defined_only)
-  {
-    return all_variables (sid, defined_only, symbol_record::hidden);
-  }
-
-  std::list<symbol_record>
-  all_variables (scope *sid)
-  {
-    return all_variables (sid, true);
-  }
-
-  std::list<symbol_record>
-  all_variables (void)
-  {
-    return all_variables (m_current_scope);
-  }
 
   std::list<symbol_record> glob (const std::string& pattern)
   {
@@ -1655,46 +1487,11 @@ public:
     return retval;
   }
 
-  bool is_local_variable (const std::string& name)
-  {
-    return m_current_scope ? m_current_scope->is_local_variable (name) : false;
-  }
-
-  bool is_global (const std::string& name)
-  {
-    return m_current_scope ? m_current_scope->is_global (name) : false;
-  }
-
-  std::list<workspace_element> workspace_info (void)
-  {
-    return (m_current_scope
-            ? m_current_scope->workspace_info ()
-            : std::list<workspace_element> ());
-  }
-
   void dump (std::ostream& os, scope *sid);
 
   void dump_global (std::ostream& os);
 
   void dump_functions (std::ostream& os);
-
-  void cache_name (scope *sid, const std::string& name)
-  {
-    if (sid)
-      sid->cache_name (name);
-  }
-  void stash_dir_name_for_subfunctions (scope *sid,
-                                        const std::string& dir_name)
-  {
-    if (sid)
-      sid->stash_dir_name_for_subfunctions (dir_name);
-  }
-
-  void set_parent (scope *child_scope, scope *parent_scope)
-  {
-    if (child_scope)
-      child_scope->set_parent (parent_scope);
-  }
 
   void add_to_parent_map (const std::string& classname,
                           const std::list<std::string>& parent_list)
@@ -1803,7 +1600,7 @@ public:
         return p->second;
     }
 
-    void inherit (scope& donor_scope)
+    void inherit_internal (scope& donor_scope)
     {
       for (auto& nm_sr : m_symbols)
         {
@@ -1827,6 +1624,20 @@ public:
             }
         }
     }
+
+    void inherit (scope *donor_scope)
+    {
+      while (donor_scope)
+        {
+          inherit_internal (*donor_scope);
+
+          if (donor_scope->is_nested ())
+            donor_scope = donor_scope->parent_scope ();
+          else
+            break;
+        }
+    }
+
 
     octave_value
     find (const std::string& name, const octave_value_list& args,
@@ -2059,7 +1870,8 @@ public:
     }
 
     std::list<symbol_table::symbol_record>
-    all_variables (bool defined_only, unsigned int exclude) const
+    all_variables (bool defined_only = true,
+                   unsigned int exclude = symbol_table::symbol_record::hidden) const
     {
       std::list<symbol_table::symbol_record> retval;
 
@@ -2157,6 +1969,12 @@ public:
     void install_subfunction (const std::string& name,
                               const octave_value& fval,
                               bool is_nested = false);
+
+    void install_nestfunction (const std::string& name,
+                               const octave_value& fval)
+    {
+      install_subfunction (name, fval, true);
+    }
 
     octave_value find_subfunction (const std::string& name) const;
 

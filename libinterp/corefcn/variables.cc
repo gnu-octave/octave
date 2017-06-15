@@ -89,9 +89,11 @@ clear_function (const std::string& nm)
 void
 clear_variable (const std::string& nm)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("clear_variable");
+  symbol_table::scope *scope
+    = octave::__get_current_scope__ ("clear_variable");
 
-  symtab.clear_variable (nm);
+  if (scope)
+    scope->clear_variable (nm);
 }
 
 void
@@ -235,9 +237,10 @@ is_variable (const std::string& name)
 
   if (! name.empty ())
     {
-      symbol_table& symtab = octave::__get_symbol_table__ ("is_variable");
+      symbol_table::scope *scope
+        = octave::__get_current_scope__ ("is_variable");
 
-      octave_value val = symtab.varval (name);
+      octave_value val = scope ? scope->varval (name) : octave_value ();
 
       retval = val.is_defined ();
     }
@@ -356,11 +359,11 @@ do_isglobal (const octave_value_list& args)
   if (! args(0).is_string ())
     error ("isglobal: NAME must be a string");
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("do_isglobal");
+  symbol_table::scope *scope = octave::__get_current_scope__ ("do_isglobal");
 
   std::string name = args(0).string_value ();
 
-  return symtab.is_global (name);
+  return scope && scope->is_global (name);
 }
 
 DEFUN (isglobal, args, ,
@@ -414,7 +417,9 @@ symbol_exist (const std::string& name, const std::string& type = "any")
 
   if (search_any || search_var)
     {
-      octave_value val = symtab.varval (name);
+      symbol_table::scope *scope = symtab.current_scope ();
+
+      octave_value val = scope ? scope->varval (name) : octave_value ();
 
       if (val.is_constant () || val.isobject ()
           || val.is_function_handle ()
@@ -695,9 +700,10 @@ them.
 octave_value
 lookup_function_handle (const std::string& nm)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("lookup_function_handle");
+  symbol_table::scope *scope
+    = octave::__get_current_scope__ ("lookup_function_handle");
 
-  octave_value val = symtab.varval (nm);
+  octave_value val = scope ? scope->varval (nm) : octave_value ();
 
   return val.is_function_handle () ? val : octave_value ();
 }
@@ -1706,7 +1712,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
           cs.push (&tmp_scope, 0);
           frame.add_method (cs, &octave::call_stack::pop);
 
-          frame.add_method (symtab, &symbol_table::clear_variables);
+          frame.add_method (tmp_scope, &symbol_table::scope::clear_variables);
 
           octave::feval ("load", octave_value (nm), 0);
 
@@ -1745,15 +1751,18 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
   symbol_info_list symbol_stats;
   std::list<std::string> symbol_names;
 
+  symbol_table::scope *scope = symtab.current_scope ();
+
   for (int j = 0; j < npats; j++)
     {
       std::string pat = pats[j];
 
       if (have_regexp)
         {
-          std::list<symbol_table::symbol_record> tmp = global_only
-            ? symtab.regexp_global_variables (pat)
-            : symtab.regexp_variables (pat);
+          std::list<symbol_table::symbol_record> tmp
+            = (global_only
+               ? symtab.regexp_global_variables (pat)
+               : symtab.regexp_variables (pat));
 
           for (const auto& symrec : tmp)
             {
@@ -1783,7 +1792,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
                   std::string base_name = pat.substr (0, pos);
 
-                  if (symtab.is_variable (base_name))
+                  if (scope && scope->is_variable (base_name))
                     {
                       symbol_table::symbol_record sr
                         = symtab.find_symbol (base_name);
@@ -1802,9 +1811,10 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
             }
           else
             {
-              std::list<symbol_table::symbol_record> tmp = global_only
-                ? symtab.glob_global_variables (pat)
-                : symtab.glob_variables (pat);
+              std::list<symbol_table::symbol_record> tmp
+                = (global_only
+                   ? symtab.glob_global_variables (pat)
+                   : symtab.glob_variables (pat));
 
               for (const auto& symrec : tmp)
                 {
@@ -1990,9 +2000,11 @@ bind_ans (const octave_value& val, bool print)
         }
       else
         {
-          symbol_table& symtab = octave::__get_symbol_table__ ("bind_ans");
+          symbol_table::scope *scope
+            = octave::__get_current_scope__ ("bind_ans");
 
-          symtab.force_assign (ans, val);
+          if (scope)
+            scope->force_assign (ans, val);
 
           if (print)
             {
@@ -2241,6 +2253,11 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
 {
   symbol_table& symtab = octave::__get_symbol_table__ ("do_clear_globals");
 
+  symbol_table::scope *scope = symtab.current_scope ();
+
+  if (! scope)
+    return;
+
   if (idx == argc)
     {
       string_vector gvars = symtab.global_variable_names ();
@@ -2248,7 +2265,7 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
       int gcount = gvars.numel ();
 
       for (int i = 0; i < gcount; i++)
-        symtab.clear_global (gvars[i]);
+        scope->clear_global (gvars[i]);
     }
   else
     {
@@ -2263,13 +2280,13 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
               std::string nm = gvars[i];
 
               if (! name_matches_any_pattern (nm, argv, argc, idx))
-                symtab.clear_global (nm);
+                scope->clear_global (nm);
             }
         }
       else
         {
           while (idx < argc)
-            symtab.clear_global_pattern (argv[idx++]);
+            scope->clear_global_pattern (argv[idx++]);
         }
     }
 }
@@ -2278,15 +2295,19 @@ static void
 do_clear_variables (const string_vector& argv, int argc, int idx,
                     bool exclusive = false, bool have_regexp = false)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("do_clear_variables");
+  symbol_table::scope *scope
+    = octave::__get_current_scope__ ("do_clear_variables");
+
+  if (! scope)
+    return;
 
   if (idx == argc)
-    symtab.clear_variables ();
+    scope->clear_variables ();
   else
     {
       if (exclusive)
         {
-          string_vector lvars = symtab.variable_names ();
+          string_vector lvars = scope->variable_names ();
 
           int lcount = lvars.numel ();
 
@@ -2295,17 +2316,17 @@ do_clear_variables (const string_vector& argv, int argc, int idx,
               std::string nm = lvars[i];
 
               if (! name_matches_any_pattern (nm, argv, argc, idx, have_regexp))
-                symtab.clear_variable (nm);
+                scope->clear_variable (nm);
             }
         }
       else
         {
           if (have_regexp)
             while (idx < argc)
-              symtab.clear_variable_regexp (argv[idx++]);
+              scope->clear_variable_regexp (argv[idx++]);
           else
             while (idx < argc)
-              symtab.clear_variable_pattern (argv[idx++]);
+              scope->clear_variable_pattern (argv[idx++]);
         }
     }
 }
@@ -2317,7 +2338,12 @@ do_clear_symbols (const string_vector& argv, int argc, int idx,
   symbol_table& symtab = octave::__get_symbol_table__ ("do_clear_symbols");
 
   if (idx == argc)
-    symtab.clear_variables ();
+    {
+      symbol_table::scope *scope = symtab.current_scope ();
+
+      if (scope)
+        scope->clear_variables ();
+    }
   else
     {
       if (exclusive)
@@ -2343,34 +2369,40 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
 {
   // This is supposed to be mostly Matlab compatible.
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("do_matlab_compatible_clear");
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("do_matlab_compatible_clear");
+
+  symbol_table::scope *scope = symtab.current_scope ();
+
+  if (! scope)
+    return;
 
   for (; idx < argc; idx++)
     {
       if (argv[idx] == "all"
-          && ! symtab.is_local_variable ("all"))
+          && ! scope->is_local_variable ("all"))
         {
           symtab.clear_all ();
         }
       else if (argv[idx] == "functions"
-               && ! symtab.is_local_variable ("functions"))
+               && ! scope->is_local_variable ("functions"))
         {
           do_clear_functions (argv, argc, ++idx);
         }
       else if (argv[idx] == "global"
-               && ! symtab.is_local_variable ("global"))
+               && ! scope->is_local_variable ("global"))
         {
           do_clear_globals (argv, argc, ++idx);
         }
       else if (argv[idx] == "variables"
-               && ! symtab.is_local_variable ("variables"))
+               && ! scope->is_local_variable ("variables"))
         {
-          symtab.clear_variables ();
+          scope->clear_variables ();
         }
       else if (argv[idx] == "classes"
-               && ! symtab.is_local_variable ("classes"))
+               && ! scope->is_local_variable ("classes"))
         {
-          symtab.clear_objects ();
+          scope->clear_objects ();
           octave_class::clear_exemplar_map ();
           symtab.clear_all ();
         }
@@ -2488,6 +2520,7 @@ without the dash as well.
       bool have_dash_option = false;
 
       symbol_table& symtab = interp.get_symbol_table ();
+      symbol_table::scope *scope = symtab.current_scope ();
 
       while (++idx < argc)
         {
@@ -2575,7 +2608,8 @@ without the dash as well.
                 }
               else if (clear_objects)
                 {
-                  symtab.clear_objects ();
+                  if (scope)
+                    scope->clear_objects ();
                   octave_class::clear_exemplar_map ();
                   symtab.clear_all ();
                 }
@@ -2726,9 +2760,9 @@ Return the value of the variable @var{name} directly from the symbol table.
 
   std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
 
-  symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table::scope *scope = interp.get_current_scope ();
 
-  return symtab.varval (args(0).string_value ());
+  return scope ? scope->varval (args(0).string_value ()) : octave_value ();
 }
 
 static std::string Vmissing_component_hook;

@@ -2108,10 +2108,10 @@ namespace octave
   {
     if (empty ())
       {
-        symbol_table& symtab
-          = octave::__get_symbol_table__ ("lexical_feedback::symbol_table_context::curr_scope");
+        symbol_table::scope *scope
+          = octave::__get_current_scope__ ("lexical_feedback::symbol_table_context::curr_scope");
 
-        return symtab.current_scope ();
+        return scope;
       }
     else
       return frame_stack.front ();

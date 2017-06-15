@@ -121,9 +121,9 @@ find_private_file (const std::string& fname)
   // Look in private directory corresponding to current function (if
   // any).
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("find_private_file");
+  symbol_table::scope *scope = octave::__get_current_scope__ ("find_private_file");
 
-  octave_user_function *curr_fcn = symtab.get_curr_fcn ();
+  octave_user_function *curr_fcn = scope ? scope->function () : 0;
 
   if (curr_fcn)
     {

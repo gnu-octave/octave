@@ -519,8 +519,14 @@ namespace octave
 
   void interpreter::intern_nargin (octave_idx_type nargs)
   {
-    m_symbol_table.assign (".nargin.", nargs);
-    m_symbol_table.mark_hidden (".nargin.");
+    // FIXME: should this explicitly be top_scope?
+    symbol_table::scope *scope = m_symbol_table.current_scope ();
+
+    if (scope)
+      {
+        scope->assign (".nargin.", nargs);
+        scope->mark_hidden (".nargin.");
+      }
   }
 
   // Read the history file unless a command-line option inhibits that.

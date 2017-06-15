@@ -83,6 +83,10 @@ namespace octave
 
     symbol_table::scope *new_scope = af_scope ? af_scope->dup () : 0;
 
+    // FIXME: why should we inherit from the current scope here?  That
+    // doesn't seem right, but with the way things work now it appears
+    // to be required for bug-31371.tst to pass.
+
     if (new_scope)
       symtab.inherit (new_scope);
 

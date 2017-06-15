@@ -86,9 +86,10 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 
   if (uf && nm != anonymous)
     {
-      symbol_table& symtab = octave::__get_symbol_table__ ("octave_fcn_handle");
+      symbol_table::scope *uf_scope = uf->scope ();
 
-      symtab.cache_name (uf->scope (), nm);
+      if (uf_scope)
+        uf_scope->cache_name (nm);
     }
 
   if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
@@ -351,13 +352,12 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       if (fcn.is_undefined ())
         return false;
 
+      std::list<symbol_table::symbol_record> vars;
+
       octave_user_function *f = fcn.user_function_value ();
-
-      symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_fcn_handle::save_ascii");
-
-      std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (f->scope ());
+      symbol_table::scope *f_scope = f->scope ();
+      if (f_scope)
+        vars = f_scope->all_variables ();
 
       size_t varlen = vars.size ();
 
@@ -489,7 +489,12 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   octave_user_function *uf = fcn.user_function_value (true);
 
                   if (uf)
-                    symtab.cache_name (uf->scope (), nm);
+                    {
+                      symbol_table::scope *uf_scope = uf->scope ();
+
+                      if (uf_scope)
+                        uf_scope->cache_name (nm);
+                    }
                 }
               else
                 success = false;
@@ -516,13 +521,12 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       if (fcn.is_undefined ())
         return false;
 
+      std::list<symbol_table::symbol_record> vars;
+
       octave_user_function *f = fcn.user_function_value ();
-
-      symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_fcn_handle::save_binary");
-
-      std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (f->scope ());
+      symbol_table::scope *f_scope = f->scope ();
+      if (f_scope)
+        vars = f_scope->all_variables ();
 
       size_t varlen = vars.size ();
 
@@ -671,7 +675,12 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
                   octave_user_function *uf = fcn.user_function_value (true);
 
                   if (uf)
-                    symtab.cache_name (uf->scope (), nm);
+                    {
+                      symbol_table::scope *uf_scope = uf->scope ();
+
+                      if (uf_scope)
+                        uf_scope->cache_name (nm);
+                    }
                 }
               else
                 success = false;
@@ -794,13 +803,12 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       H5Dclose (data_hid);
 
+      std::list<symbol_table::symbol_record> vars;
+
       octave_user_function *f = fcn.user_function_value ();
-
-      symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
-
-      std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (f->scope ());
+      symbol_table::scope *f_scope = f->scope ();
+      if (f_scope)
+        vars = f_scope->all_variables ();
 
       size_t varlen = vars.size ();
 
@@ -1202,7 +1210,12 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                   octave_user_function *uf = fcn.user_function_value (true);
 
                   if (uf)
-                    symtab.cache_name (uf->scope (), nm);
+                    {
+                      symbol_table::scope *uf_scope = uf->scope ();
+
+                      if (uf_scope)
+                        uf_scope->cache_name (nm);
+                    }
                 }
               else
                 success = false;
@@ -1695,8 +1708,8 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 %! endfor
 */
 
-DEFMETHOD (functions, interp, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (functions, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {@var{s} =} functions (@var{fcn_handle})
 Return a structure containing information about the function handle
 @var{fcn_handle}.
@@ -1791,12 +1804,12 @@ particular output format.
     {
       m.setfield ("file", nm);
 
+      std::list<symbol_table::symbol_record> vars;
+
       octave_user_function *fu = fh->user_function_value ();
-
-      symbol_table& symtab = interp.get_symbol_table ();
-
-      std::list<symbol_table::symbol_record> vars
-        = symtab.all_variables (fu->scope ());
+      symbol_table::scope *fu_scope = fu->scope ();
+      if (fu_scope)
+        vars = fu_scope->all_variables ();
 
       size_t varlen = vars.size ();
 

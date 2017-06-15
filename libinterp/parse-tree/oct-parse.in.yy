@@ -3396,7 +3396,9 @@ namespace octave
         symbol_table& symtab
           = octave::__get_symbol_table__ ("base_parser::finish_function");
 
-        symtab.cache_name (fcn->scope (), tmp);
+
+        symbol_table::scope *fcn_scope = fcn->scope ();
+        fcn_scope->cache_name (tmp);
 
         if (lc)
           fcn->stash_leading_comment (lc);
@@ -3407,29 +3409,27 @@ namespace octave
           {
             fcn->stash_fcn_location (l, c);
 
+            octave_value ov_fcn (fcn);
+
             if (endfunction_found && function_scopes.size () > 1)
               {
                 symbol_table::scope *pscope = function_scopes.parent_scope ();
 
-                symtab.install_nestfunction (nm, octave_value (fcn), pscope);
+                pscope->install_nestfunction (nm, ov_fcn);
               }
             else
               {
                 fcn->mark_as_subfunction ();
                 subfunction_names.push_back (nm);
 
-                symtab.install_subfunction (nm, octave_value (fcn),
-                                            primary_fcn_scope);
+                primary_fcn_scope->install_subfunction (nm, ov_fcn);
                }
           }
 
-        if (fcn)
-          {
-            if (parsing_local_functions )
-              symtab.install_local_function (nm, octave_value (fcn), file);
-            else if (curr_fcn_depth == 1)
-              symtab.update_nest (fcn->scope ());
-          }
+        if (parsing_local_functions )
+          symtab.install_local_function (nm, octave_value (fcn), file);
+        else if (curr_fcn_depth == 1)
+          fcn_scope->update_nest ();
 
         if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
           {
@@ -4572,11 +4572,9 @@ namespace octave
 
         if (retval->is_user_function ())
           {
-            symbol_table::scope *id = retval->scope ();
+            symbol_table::scope *scope = retval->scope ();
 
-            symbol_table& symtab = octave::__get_symbol_table__ ("load_fcn_from_file");
-
-            symtab.stash_dir_name_for_subfunctions (id, dir_name);
+            scope->stash_dir_name_for_subfunctions (dir_name);
           }
       }
 
@@ -5443,9 +5441,10 @@ may be either @qcode{"base"} or @qcode{"caller"}.
       if (octave::is_keyword (nm))
         error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
 
-      symbol_table& symtab = interp.get_symbol_table ();
+      symbol_table::scope *scope = interp.get_current_scope ();
 
-      symtab.assign (nm, args(2));
+      if (scope)
+        scope->assign (nm, args(2));
     }
   else
     error ("assignin: invalid variable name in argument VARNAME");

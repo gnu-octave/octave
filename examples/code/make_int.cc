@@ -22,7 +22,6 @@
 #include <octave/ov-scalar.h>
 #include <octave/pager.h>
 #include <octave/pr-output.h>
-#include <octave/symtab.h>
 #include <octave/variables.h>
 
 class octave_value_list;

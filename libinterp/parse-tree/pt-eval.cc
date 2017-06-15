@@ -106,7 +106,7 @@ namespace octave
     symbol_table::scope *new_scope = af_scope ? af_scope->dup () : 0;
 
     if (new_scope && af_parent_scope)
-      symtab.inherit (new_scope, af_parent_scope);
+      new_scope->inherit (af_parent_scope);
 
     tree_parameter_list *param_list_dup
       = param_list ? param_list->dup (*new_scope) : 0;
@@ -126,8 +126,7 @@ namespace octave
       = new octave_user_function (new_scope, param_list_dup, ret_list,
                                   stmt_list);
 
-    if (af_parent_scope)
-      symtab.set_parent (new_scope, af_parent_scope);
+    new_scope->set_parent (af_parent_scope);
 
     octave_function *curr_fcn = m_call_stack.current ();
 
@@ -481,9 +480,10 @@ namespace octave
 
     int count = 0;
 
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
+    symbol_table::scope *scope
+      = m_interpreter.require_current_scope ("tree_evaluator::initialize_undefined_parameter_list_elements");
 
-    octave_value tmp = symtab.varval (".ignored.");
+    octave_value tmp = scope->varval (".ignored.");
     const Matrix ignored = (tmp.is_defined () ? tmp.matrix_value () : Matrix ());
 
     octave_idx_type k = 0;
@@ -973,7 +973,10 @@ namespace octave
         // Make sure that any variable with the same name as the new
         // function is cleared.
 
-        symtab.assign (nm);
+        symbol_table::scope *scope = symtab.current_scope ();
+
+        if (scope)
+          scope->assign (nm);
       }
   }
 

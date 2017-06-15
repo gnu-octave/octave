@@ -1095,10 +1095,10 @@ public:
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        symbol_table& symtab
-          = octave::__get_symbol_table__ ("octave_classdef_superclass_ref::call");
+        symbol_table::scope *scope
+          = octave::__require_current_scope__ ("octave_classdef_superclass_ref::call");
 
-        octave_value sym = symtab.varval (mname);
+        octave_value sym = scope->varval (mname);
 
         cls.run_constructor (to_cdef_ref (sym), idx);
 

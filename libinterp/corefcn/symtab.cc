@@ -57,7 +57,7 @@ octave_value symbol_table::dummy_octave_value;
 static int Vignore_function_time_stamp = 1;
 
 void
-symbol_table::symbol_record::symbol_record_rep::clear (const scope *sid)
+symbol_table::symbol_record::symbol_record_rep::clear (scope *sid)
 {
   if (! (is_hidden () || is_inherited ())
       && sid == decl_scope ())
@@ -65,12 +65,9 @@ symbol_table::symbol_record::symbol_record_rep::clear (const scope *sid)
       if (is_global ())
         unmark_global ();
 
-      symbol_table& symtab
-        = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::clear");
-
       if (is_persistent ())
         {
-          symtab.persistent_assign (name, varval ());
+          sid->persistent_assign (name, varval ());
 
           unmark_persistent ();
         }
@@ -82,14 +79,14 @@ symbol_table::symbol_record::symbol_record_rep::clear (const scope *sid)
 void
 symbol_table::symbol_record::symbol_record_rep::init_persistent (void)
 {
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::init_persistent");
+  symbol_table::scope *scope
+    = octave::__require_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::init_persistent");
 
   if (! is_defined ())
     {
       mark_persistent ();
 
-      assign (symtab.persistent_varval (name));
+      assign (scope->persistent_varval (name));
     }
   // FIXME: this causes trouble with recursive calls.
   // else
@@ -101,11 +98,10 @@ symbol_table::symbol_record::symbol_record_rep::erase_persistent (void)
 {
   unmark_persistent ();
 
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::erase_persistent");
+  symbol_table::scope *scope
+    = octave::__require_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::erase_persistent");
 
-
-  symtab.erase_persistent (name);
+  scope->erase_persistent (name);
 }
 
 symbol_table::symbol_record::symbol_record_rep *
@@ -155,12 +151,10 @@ symbol_table::symbol_record::symbol_record_rep::xglobal_varref (void)
 octave_value&
 symbol_table::symbol_record::symbol_record_rep::xpersistent_varref (void)
 {
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varref");
+  symbol_table::scope *scope
+    = octave::__get_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varref");
 
-  scope *s = symtab.current_scope ();
-
-  return s ? s->persistent_varref (name) : dummy_octave_value;
+  return scope ? scope->persistent_varref (name) : dummy_octave_value;
 }
 
 octave_value
@@ -175,10 +169,10 @@ symbol_table::symbol_record::symbol_record_rep::xglobal_varval (void) const
 octave_value
 symbol_table::symbol_record::symbol_record_rep::xpersistent_varval (void) const
 {
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varval");
+  symbol_table::scope *scope
+    = octave::__get_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varval");
 
-  return symtab.persistent_varval (name);
+  return scope ? scope->persistent_varval (name) : octave_value ();
 }
 
 symbol_table::symbol_record::symbol_record (void)
@@ -232,9 +226,7 @@ symbol_table::dummy_symbol_record (static_cast<symbol_table::scope*> (nullptr));
 symbol_table::symbol_reference::symbol_reference (const symbol_record& record)
   : m_scope (0), m_context (0),m_sym (record)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("symbol_reference");
-
-  m_scope = symtab.current_scope ();
+  m_scope = octave::__get_current_scope__ ("symbol_reference");
 }
 
 void
@@ -806,10 +798,10 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
 {
   if (local_funcs)
     {
-      symbol_table& symtab
-        = octave::__get_symbol_table__ ("symbol_table::fcn_info::fcn_info_rep::xfind");
+      symbol_table::scope *scope
+        = octave::__get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::xfind");
 
-      octave_user_function *current_fcn = symtab.get_curr_fcn ();
+      octave_user_function *current_fcn = scope ? scope->function () : 0;
 
       // Local function.
 
@@ -1010,10 +1002,10 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
 
   // Private function.
 
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
+  symbol_table::scope *scope
+    = octave::__get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
 
-  octave_user_function *current_fcn = symtab.get_curr_fcn ();
+  octave_user_function *current_fcn = scope ? scope->function () : 0;
 
   if (current_fcn)
     {

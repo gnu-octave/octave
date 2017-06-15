@@ -825,7 +825,8 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      retval = symtab.varval (".nargin.");
+      symbol_table::scope *scope = symtab.require_current_scope ("nargin");
+      retval = scope->varval (".nargin.");
 
       if (retval.is_undefined ())
         retval = 0;
@@ -950,7 +951,8 @@ returns -1 for all anonymous functions.
       if (symtab.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      retval = symtab.varval (".nargout.");
+      symbol_table::scope *scope = symtab.require_current_scope ("nargout");
+      retval = scope->varval (".nargout.");
 
       if (retval.is_undefined ())
         retval = 0;
@@ -1022,10 +1024,12 @@ element-by-element and a logical array is returned.  At the top level,
   if (symtab.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  int nargout1 = symtab.varval (".nargout.").int_value ();
+  symbol_table::scope *scope = symtab.require_current_scope ("isargout");
+
+  int nargout1 = scope->varval (".nargout.").int_value ();
 
   Matrix ignored;
-  octave_value tmp = symtab.varval (".ignored.");
+  octave_value tmp = scope->varval (".ignored.");
   if (tmp.is_defined ())
     ignored = tmp.matrix_value ();
 

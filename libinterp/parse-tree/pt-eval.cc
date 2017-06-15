@@ -2403,6 +2403,13 @@ namespace octave
             // exception will be thrown instead of the original.
             throw;
           }
+        catch (const octave::interrupt_exception&)
+          {
+            // The comments above apply here as well.
+            recover_from_exception ();
+            do_unwind_protect_cleanup_code (cleanup_code);
+            throw;
+          }
 
         // Also execute the unwind_protect_cleanump code if the
         // unwind_protect block runs without error.

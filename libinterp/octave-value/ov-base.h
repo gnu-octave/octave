@@ -170,8 +170,7 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
   const std::string t::c_name (c);                                      \
   void t::register_type (void)                                          \
   {                                                                     \
-    static t exemplar;                                                  \
-    octave_value v (&exemplar, true);                                   \
+    octave_value v (new t ());                                          \
     t_id = octave_value_typeinfo::register_type (t::t_name, t::c_name, v); \
   }
 

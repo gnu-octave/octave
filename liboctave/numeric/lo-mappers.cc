@@ -334,65 +334,14 @@ namespace octave
       return octave_frexpf_wrapper (x, expptr);
     }
 
-    bool
-    isnan (double x)
-    {
-#if defined (HAVE_CMATH_ISNAN)
-      return std::isnan (x);
-#else
-      return lo_ieee_isnan (x);
-#endif
-    }
+    bool isnan (double x) { return std::isnan (x); }
+    bool isnan (float x) { return std::isnan (x); }
 
-    bool
-    isnan (float x)
-    {
-#if defined (HAVE_CMATH_ISNANF)
-      return std::isnan (x);
-#else
-      return lo_ieee_isnan (x);
-#endif
-    }
+    bool isfinite (double x) { return std::isfinite (x); }
+    bool isfinite (float x) { return std::isfinite (x); }
 
-    bool
-    isfinite (double x)
-    {
-#if defined (HAVE_CMATH_ISFINITE)
-      return std::isfinite (x);
-#else
-      return lo_ieee_finite (x);
-#endif
-    }
-
-    bool
-    isfinite (float x)
-    {
-#if defined (HAVE_CMATH_ISFINITEF)
-      return std::isfinite (x);
-#else
-      return lo_ieee_finite (x);
-#endif
-    }
-
-    bool
-    isinf (double x)
-    {
-#if defined (HAVE_CMATH_ISINF)
-      return std::isinf (x);
-#else
-      return lo_ieee_isinf (x);
-#endif
-    }
-
-    bool
-    isinf (float x)
-    {
-#if defined (HAVE_CMATH_ISINFF)
-      return std::isinf (x);
-#else
-      return lo_ieee_isinf (x);
-#endif
-    }
+    bool isinf (double x) { return std::isinf (x); }
+    bool isinf (float x) { return std::isinf (x); }
 
     // Sometimes you need a large integer, but not always.
 

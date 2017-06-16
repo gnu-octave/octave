@@ -269,56 +269,6 @@ AC_DEFUN([OCTAVE_CHECK_FFTW_THREADS], [
   LIBS="$ac_octave_save_LIBS"
 ])
 dnl
-dnl Check whether a math mapper function is available in <cmath>.
-dnl Will define HAVE_CMATH_FUNC if there is a double variant and
-dnl HAVE_CMATH_FUNCF if there is a float variant.
-dnl Currently capable of checking for functions with single
-dnl argument and returning bool/int/real.
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
-  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
-
-  AC_CACHE_CHECK([for std::$1 in <cmath>],
-    [octave_cv_func_cmath_$ac_safe],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <cmath>
-        void take_func (bool (*func) (double x));
-        void take_func (int (*func) (double x));
-        void take_func (double (*func) (double x));
-        ]], [[
-        take_func(std::$1);
-        ]])],
-      [eval "octave_cv_func_cmath_$ac_safe=yes"],
-      [eval "octave_cv_func_cmath_$ac_safe=no"])
-    AC_LANG_POP(C++)
-  ])
-  if eval "test \"`echo '$octave_cv_func_cmath_'$ac_safe`\" = yes"; then
-    AC_DEFINE(AS_TR_CPP([[HAVE_CMATH_][$1]]), 1,
-      [Define to 1 if <cmath> provides $1.])
-  fi
-
-  AC_CACHE_CHECK([for std::$1 (float variant) in <cmath>],
-    [octave_cv_func_cmath_f$ac_safe],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <cmath>
-        void take_func (bool (*func) (float x));
-        void take_func (int (*func) (float x));
-        void take_func (float (*func) (float x));
-        ]], [[
-        take_func(std::$1);
-        ]])],
-      [eval "octave_cv_func_cmath_f$ac_safe=yes"],
-      [eval "octave_cv_func_cmath_f$ac_safe=no"])
-    AC_LANG_POP(C++)
-  ])
-  if eval "test \"`echo '$octave_cv_func_cmath_f'$ac_safe`\" = yes"; then
-    AC_DEFINE(AS_TR_CPP([[HAVE_CMATH_][$1][F]]), 1,
-      [Define to 1 if <cmath> provides float variant of $1.])
-  fi
-])
-dnl
 dnl Check whether a complex-valued function is available in <complex>.
 dnl Will define HAVE_COMPLEX_STD_FUNC if the function is available in the
 dnl std namespace and is callable on both std::complex<double> and

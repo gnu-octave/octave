@@ -46,39 +46,6 @@ static int lo_ieee_lw;
 #include "mach-info.h"
 
 int
-__lo_ieee_isnan (double x)
-{
-#if defined (HAVE_CMATH_ISNAN)
-  return std::isnan (x);
-#else
-  // Gnulib provides.
-  return isnan (x);
-#endif
-}
-
-int
-__lo_ieee_finite (double x)
-{
-#if defined (HAVE_CMATH_ISFINITE)
-  return std::isfinite (x);
-#else
-  // Gnulib provides.
-  return finite (x);
-#endif
-}
-
-int
-__lo_ieee_isinf (double x)
-{
-#if defined (HAVE_CMATH_ISINF)
-  return std::isinf (x);
-#else
-  // Gnulib provides.
-  return isinf (x);
-#endif
-}
-
-int
 __lo_ieee_is_NA (double x)
 {
   lo_ieee_double t;
@@ -130,50 +97,6 @@ lo_ieee_nan_value (void)
 }
 
 int
-__lo_ieee_signbit (double x)
-{
-#if defined (HAVE_CMATH_SIGNBIT)
-  return std::signbit (x);
-#else
-  // Gnulib provides.
-  return signbit (x);
-#endif
-}
-
-int
-__lo_ieee_float_isnan (float x)
-{
-#if defined (HAVE_CMATH_ISNAN)
-  return std::isnan (x);
-#else
-  // Gnulib provides.
-  return isnan (x);
-#endif
-}
-
-int
-__lo_ieee_float_finite (float x)
-{
-#if defined (HAVE_CMATH_ISFINITE)
-  return std::isfinite (x) != 0 && ! __lo_ieee_float_isnan (x);
-#else
-  // Gnulib provides.
-  return finite (x);
-#endif
-}
-
-int
-__lo_ieee_float_isinf (float x)
-{
-#if defined (HAVE_CMATH_ISINF)
-  return std::isinf (x);
-#else
-  // Gnulib provides.
-  return isinf (x);
-#endif
-}
-
-int
 __lo_ieee_float_is_NA (float x)
 {
   lo_ieee_float t;
@@ -203,17 +126,6 @@ lo_ieee_float_nan_value (void)
   octave_ieee_init ();
 
   return lo_float_nan;
-}
-
-int
-__lo_ieee_float_signbit (float x)
-{
-#if defined (HAVE_CMATH_SIGNBIT)
-  return std::signbit (x);
-#else
-  // Gnulib provides.
-  return signbit (x);
-#endif
 }
 
 void

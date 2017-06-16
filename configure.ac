@@ -2443,26 +2443,6 @@ double tgamma (double);
 ])
 AC_LANG_POP(C++)
 
-## Look in <cmath> for the IEEE functions isnan, isinf, isfinite that we need.
-
-OCTAVE_CHECK_FUNC_CMATH(isnan)
-OCTAVE_CHECK_FUNC_CMATH(isinf)
-OCTAVE_CHECK_FUNC_CMATH(isfinite)
-OCTAVE_CHECK_FUNC_CMATH(signbit)
-
-## Check for Inf and NaN functions
-
-case $canonical_host_type in
-  m68k-hp-hpux*)
-    ## I am told that Inf and NaN don't work on m68k HP sytems.
-  ;;
-  *)
-    AC_CHECK_FUNCS([finite isnan isinf signbit])
-    AC_CHECK_FUNCS([_finite _isnan])
-    AC_CHECK_DECLS([signbit], , , [#include <math.h>])
-  ;;
-esac
-
 ## Look in <complex> for C++ variants of math functions that we need.
 
 OCTAVE_CHECK_FUNC_COMPLEX(acos)

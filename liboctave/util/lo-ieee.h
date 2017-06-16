@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_ieee_h)
 #define octave_lo_ieee_h 1
 
+#include <cmath>
+
 #include "octave-config.h"
 
 #if defined (__cplusplus)
@@ -70,9 +72,9 @@ typedef union
 
 extern OCTAVE_API void octave_ieee_init (void);
 
-extern OCTAVE_API int __lo_ieee_isnan (double x);
-extern OCTAVE_API int __lo_ieee_finite (double x);
-extern OCTAVE_API int __lo_ieee_isinf (double x);
+inline int __lo_ieee_isnan (double x) { return std::isnan (x); }
+inline int __lo_ieee_finite (double x) { return std::isfinite (x); }
+inline int __lo_ieee_isinf (double x) { return std::isinf (x); }
 
 extern OCTAVE_API int __lo_ieee_is_NA (double);
 extern OCTAVE_API int __lo_ieee_is_old_NA (double);
@@ -82,11 +84,11 @@ extern OCTAVE_API double lo_ieee_inf_value (void);
 extern OCTAVE_API double lo_ieee_na_value (void);
 extern OCTAVE_API double lo_ieee_nan_value (void);
 
-extern OCTAVE_API int __lo_ieee_signbit (double);
+inline int __lo_ieee_signbit (double x) { return std::signbit (x); }
 
-extern OCTAVE_API int __lo_ieee_float_isnan (float x);
-extern OCTAVE_API int __lo_ieee_float_finite (float x);
-extern OCTAVE_API int __lo_ieee_float_isinf (float x);
+inline int __lo_ieee_float_isnan (float x) { return std::isnan (x); }
+inline int __lo_ieee_float_finite (float x) { return std::isfinite (x); }
+inline int __lo_ieee_float_isinf (float x) { return std::isinf (x); }
 
 extern OCTAVE_API int __lo_ieee_float_is_NA (float);
 
@@ -94,7 +96,7 @@ extern OCTAVE_API float lo_ieee_float_inf_value (void);
 extern OCTAVE_API float lo_ieee_float_na_value (void);
 extern OCTAVE_API float lo_ieee_float_nan_value (void);
 
-extern OCTAVE_API int __lo_ieee_float_signbit (float);
+inline int __lo_ieee_float_signbit (float x) { return std::signbit (x); }
 
 #if defined (__cplusplus)
 }

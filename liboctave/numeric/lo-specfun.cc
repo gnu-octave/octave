@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include <algorithm>
 #include <limits>
 #include <string>
@@ -59,29 +61,9 @@ namespace octave
 {
   namespace math
   {
-    double
-    acosh (double x)
-    {
-#if defined (HAVE_ACOSH)
-      return ::acosh (x);
-#else
-      double retval;
-      F77_XFCN (xdacosh, XDACOSH, (x, retval));
-      return retval;
-#endif
-    }
+    double acosh (double x) { return std::acosh (x); }
 
-    float
-    acosh (float x)
-    {
-#if defined (HAVE_ACOSHF)
-      return acoshf (x);
-#else
-      float retval;
-      F77_XFCN (xacosh, XACOSH, (x, retval));
-      return retval;
-#endif
-    }
+    float acosh (float x) { return std::acoshf (x); }
 
     Complex
     acosh (const Complex& x)
@@ -103,29 +85,9 @@ namespace octave
 #endif
     }
 
-    double
-    asinh (double x)
-    {
-#if defined (HAVE_ASINH)
-      return ::asinh (x);
-#else
-      double retval;
-      F77_XFCN (xdasinh, XDASINH, (x, retval));
-      return retval;
-#endif
-    }
+    double asinh (double x) { return std::asinh (x); }
 
-    float
-    asinh (float x)
-    {
-#if defined (HAVE_ASINHF)
-      return asinhf (x);
-#else
-      float retval;
-      F77_XFCN (xasinh, XASINH, (x, retval));
-      return retval;
-#endif
-    }
+    float asinh (float x) { return std::asinhf (x); }
 
     Complex
     asinh (const Complex& x)
@@ -147,29 +109,9 @@ namespace octave
 #endif
     }
 
-    double
-    atanh (double x)
-    {
-#if defined (HAVE_ATANH)
-      return ::atanh (x);
-#else
-      double retval;
-      F77_XFCN (xdatanh, XDATANH, (x, retval));
-      return retval;
-#endif
-    }
+    double atanh (double x) { return std::atanh (x); }
 
-    float
-    atanh (float x)
-    {
-#if defined (HAVE_ATANHF)
-      return atanhf (x);
-#else
-      float retval;
-      F77_XFCN (xatanh, XATANH, (x, retval));
-      return retval;
-#endif
-    }
+    float atanh (float x) { return std::atanhf (x); }
 
     Complex
     atanh (const Complex& x)

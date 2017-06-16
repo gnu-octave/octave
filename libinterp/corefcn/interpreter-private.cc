@@ -48,6 +48,13 @@ namespace octave
     return *interp;
   }
 
+  dynamic_loader& __get_dynamic_loader__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_dynamic_loader ();
+  }
+
   load_path& __get_load_path__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);

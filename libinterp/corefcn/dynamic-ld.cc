@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "ov-fcn.h"
 #include "ov-dld-fcn.h"
 #include "ov-mex-fcn.h"
@@ -52,7 +53,7 @@ namespace octave
   void
   dynamic_loader::shlibs_list::append (const dynamic_library& shl)
   {
-    lib_list.push_back (shl);
+    m_lib_list.push_back (shl);
   }
 
   std::list<std::string>
@@ -60,11 +61,11 @@ namespace octave
   {
     std::list<std::string> removed_fcns;
 
-    for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
+    for (iterator p = m_lib_list.begin (); p != m_lib_list.end (); p++)
       {
         if (*p == shl)
           {
-            lib_list.erase (p);
+            m_lib_list.erase (p);
 
             removed_fcns = shl.close ();
 
@@ -80,7 +81,7 @@ namespace octave
   {
     dynamic_library retval;
 
-    for (const auto& lib : lib_list)
+    for (const auto& lib : m_lib_list)
       {
         if (lib.file_name () == file_name)
           {
@@ -96,46 +97,26 @@ namespace octave
   dynamic_loader::shlibs_list::display (void) const
   {
     std::cerr << "current shared libraries:" << std::endl;
-    for (const auto& lib : lib_list)
+    for (const auto& lib : m_lib_list)
       std::cerr << "  " << lib.file_name () << std::endl;
   }
 
-  dynamic_loader *dynamic_loader::instance = nullptr;
-
-  bool dynamic_loader::doing_load = false;
-
-  bool
-  dynamic_loader::instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      {
-        instance = new dynamic_loader ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
-
-    if (! instance)
-      error ("unable to create dynamic loader object!");
-
-    return retval;
-  }
-
   void
-  dynamic_loader::do_clear_function (const std::string& fcn_name)
+  dynamic_loader::clear_function (const std::string& fcn_name)
   {
     warning_with_id ("Octave:reload-forces-clear", "  %s", fcn_name.c_str ());
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("dynamic_loader::do_clear_function");
+    // FIXME: is there a way to avoid this?  Can we manage the list of
+    // functions that are loaded in the symbol table completely outside
+    // of the dynamic_loader class?
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
 
     symtab.clear_dld_function (fcn_name);
   }
 
   void
-  dynamic_loader::do_clear (dynamic_library& oct_file)
+  dynamic_loader::clear (dynamic_library& oct_file)
   {
     if (oct_file.number_of_functions_loaded () > 1)
       {
@@ -143,17 +124,20 @@ namespace octave
                          "reloading %s clears the following functions:",
                          oct_file.file_name ().c_str ());
 
-        std::list<std::string> removed_fcns = loaded_shlibs.remove (oct_file);
+        std::list<std::string> removed_fcns = m_loaded_shlibs.remove (oct_file);
 
         for (const auto& fcn_name : removed_fcns)
-          do_clear_function (fcn_name);
+          clear_function (fcn_name);
       }
     else
       {
-        std::list<std::string> removed_fcns = loaded_shlibs.remove (oct_file);
+        std::list<std::string> removed_fcns = m_loaded_shlibs.remove (oct_file);
 
-        symbol_table& symtab
-          = __get_symbol_table__ ("dynamic_loader::do_clear");
+        // FIXME: is there a way to avoid this?  Can we manage the list
+        // of functions that are loaded in the symbol table completely
+        // outside of the dynamic_loader class?
+
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
 
         for (const auto& fcn_name : removed_fcns)
           symtab.clear_dld_function (fcn_name);
@@ -161,29 +145,29 @@ namespace octave
   }
 
   octave_function *
-  dynamic_loader::do_load_oct (const std::string& fcn_name,
-                               const std::string& file_name,
-                               bool relative)
+  dynamic_loader::load_oct (const std::string& fcn_name,
+                            const std::string& file_name,
+                            bool relative)
   {
     octave_function *retval = nullptr;
 
     unwind_protect frame;
 
-    frame.protect_var (dynamic_loader::doing_load);
+    frame.protect_var (m_doing_load);
 
-    doing_load = true;
+    m_doing_load = true;
 
-    dynamic_library oct_file = loaded_shlibs.find_file (file_name);
+    dynamic_library oct_file = m_loaded_shlibs.find_file (file_name);
 
     if (oct_file && oct_file.is_out_of_date ())
-      do_clear (oct_file);
+      clear (oct_file);
 
     if (! oct_file)
       {
         oct_file.open (file_name);
 
         if (oct_file)
-          loaded_shlibs.append (oct_file);
+          m_loaded_shlibs.append (oct_file);
       }
 
     if (! oct_file)
@@ -215,29 +199,29 @@ namespace octave
   }
 
   octave_function *
-  dynamic_loader::do_load_mex (const std::string& fcn_name,
-                               const std::string& file_name,
-                               bool /*relative*/)
+  dynamic_loader::load_mex (const std::string& fcn_name,
+                            const std::string& file_name,
+                            bool /*relative*/)
   {
     octave_function *retval = nullptr;
 
     unwind_protect frame;
 
-    frame.protect_var (dynamic_loader::doing_load);
+    frame.protect_var (m_doing_load);
 
-    doing_load = true;
+    m_doing_load = true;
 
-    dynamic_library mex_file = loaded_shlibs.find_file (file_name);
+    dynamic_library mex_file = m_loaded_shlibs.find_file (file_name);
 
     if (mex_file && mex_file.is_out_of_date ())
-      do_clear (mex_file);
+      clear (mex_file);
 
     if (! mex_file)
       {
         mex_file.open (file_name);
 
         if (mex_file)
-          loaded_shlibs.append (mex_file);
+          m_loaded_shlibs.append (mex_file);
       }
 
     if (! mex_file)
@@ -274,75 +258,43 @@ namespace octave
   }
 
   bool
-  dynamic_loader::do_remove_oct (const std::string& fcn_name,
-                                 dynamic_library& shl)
-  {
-    bool retval = false;
-
-    // We don't need to do anything if this is called because we are in
-    // the process of reloading a .oct file that has changed.
-
-    if (! doing_load)
-      {
-        retval = shl.remove (fcn_name);
-
-        if (shl.number_of_functions_loaded () == 0)
-          loaded_shlibs.remove (shl);
-      }
-
-    return retval;
-  }
-
-  bool
-  dynamic_loader::do_remove_mex (const std::string& fcn_name,
-                                 dynamic_library& shl)
-  {
-    bool retval = false;
-
-    // We don't need to do anything if this is called because we are in
-    // the process of reloading a .oct file that has changed.
-
-    if (! doing_load)
-      {
-        retval = shl.remove (fcn_name);
-
-        if (shl.number_of_functions_loaded () == 0)
-          loaded_shlibs.remove (shl);
-      }
-
-    return retval;
-  }
-
-  octave_function *
-  dynamic_loader::load_oct (const std::string& fcn_name,
-                            const std::string& file_name,
-                            bool relative)
-  {
-    return (instance_ok ())
-      ? instance->do_load_oct (fcn_name, file_name, relative) : 0;
-  }
-
-  octave_function *
-  dynamic_loader::load_mex (const std::string& fcn_name,
-                            const std::string& file_name,
-                            bool relative)
-  {
-    return (instance_ok ())
-      ? instance->do_load_mex (fcn_name, file_name, relative) : 0;
-  }
-
-  bool
   dynamic_loader::remove_oct (const std::string& fcn_name,
                               dynamic_library& shl)
   {
-    return (instance_ok ()) ? instance->do_remove_oct (fcn_name, shl) : false;
+    bool retval = false;
+
+    // We don't need to do anything if this is called because we are in
+    // the process of reloading a .oct file that has changed.
+
+    if (! m_doing_load)
+      {
+        retval = shl.remove (fcn_name);
+
+        if (shl.number_of_functions_loaded () == 0)
+          m_loaded_shlibs.remove (shl);
+      }
+
+    return retval;
   }
 
   bool
   dynamic_loader::remove_mex (const std::string& fcn_name,
                               dynamic_library& shl)
   {
-    return (instance_ok ()) ? instance->do_remove_mex (fcn_name, shl) : false;
+    bool retval = false;
+
+    // We don't need to do anything if this is called because we are in
+    // the process of reloading a .oct file that has changed.
+
+    if (! m_doing_load)
+      {
+        retval = shl.remove (fcn_name);
+
+        if (shl.number_of_functions_loaded () == 0)
+          m_loaded_shlibs.remove (shl);
+      }
+
+    return retval;
   }
 
   std::string

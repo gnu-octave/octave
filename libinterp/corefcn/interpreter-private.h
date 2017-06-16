@@ -33,10 +33,13 @@ namespace octave
 {
   class call_stack;
   class interpreter;
+  class dynamic_loader;
   class load_path;
   class tree_evaluator;
 
   extern interpreter& __get_interpreter__ (const std::string& who);
+
+  extern dynamic_loader& __get_dynamic_loader__ (const std::string& who);
 
   extern load_path& __get_load_path__ (const std::string& who);
 

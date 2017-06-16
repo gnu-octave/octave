@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "dynamic-ld.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "ov-dld-fcn.h"
 #include "ov.h"
@@ -68,7 +69,10 @@ octave_dld_function::octave_dld_function
 
 octave_dld_function::~octave_dld_function (void)
 {
-  octave::dynamic_loader::remove_oct (my_name, sh_lib);
+  octave::dynamic_loader& dyn_loader
+    = octave::__get_dynamic_loader__ ("~octave_dld_function");
+
+  dyn_loader.remove_oct (my_name, sh_lib);
 }
 
 std::string

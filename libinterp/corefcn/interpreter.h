@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "dynamic-ld.h"
 #include "load-path.h"
 #include "symtab.h"
 
@@ -134,6 +135,11 @@ namespace octave
       return m_initialized;
     }
 
+    dynamic_loader& get_dynamic_loader (void)
+    {
+      return m_dynamic_loader;
+    }
+
     load_path& get_load_path (void)
     {
       return m_load_path;
@@ -180,6 +186,8 @@ namespace octave
     void cleanup (void);
 
     application *m_app_context;
+
+    dynamic_loader m_dynamic_loader;
 
     load_path m_load_path;
 

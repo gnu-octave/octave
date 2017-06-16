@@ -4535,12 +4535,15 @@ namespace octave
 
     int len = file.length ();
 
+      octave::dynamic_loader& dyn_loader
+        = __get_dynamic_loader__ ("~octave_mex_function");
+
     if (len > 4 && file.substr (len-4, len-1) == ".oct")
       {
         if (autoload && ! fcn_name.empty ())
           nm = fcn_name;
 
-        retval = octave::dynamic_loader::load_oct (nm, file, relative_lookup);
+        retval = dyn_loader.load_oct (nm, file, relative_lookup);
       }
     else if (len > 4 && file.substr (len-4, len-1) == ".mex")
       {
@@ -4553,7 +4556,7 @@ namespace octave
                                                   autoload, autoload,
                                                   relative_lookup, "");
 
-        retval = octave::dynamic_loader::load_mex (nm, file, relative_lookup);
+        retval = dyn_loader.load_mex (nm, file, relative_lookup);
 
         if (tmpfcn)
           retval->document (tmpfcn->doc_string ());

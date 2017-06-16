@@ -372,11 +372,18 @@ namespace octave
   // path.
 
   interpreter::interpreter (application *app_context)
-    : m_app_context (app_context), m_load_path (), m_symbol_table (),
-      m_evaluator (new tree_evaluator (*this)), m_interactive (false),
-      m_read_site_files (true), m_read_init_files (m_app_context != 0),
-      m_verbose (false), m_inhibit_startup_message (false),
-      m_load_path_initialized (false), m_history_initialized (false),
+    : m_app_context (app_context),
+      m_dynamic_loader (*this),
+      m_load_path (),
+      m_symbol_table (),
+      m_evaluator (new tree_evaluator (*this)),
+      m_interactive (false),
+      m_read_site_files (true),
+      m_read_init_files (m_app_context != 0),
+      m_verbose (false),
+      m_inhibit_startup_message (false),
+      m_load_path_initialized (false),
+      m_history_initialized (false),
       m_initialized (false)
   {
     if (instance)

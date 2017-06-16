@@ -195,17 +195,14 @@ function [nest, v, w, iter] = normest1 (A, t = [], x0 = [], varargin)
         if (t > 1)
           ## at least two columns of S are not parallel
           i = 1;
-          imax = min (t, 2 ^ (n - 1));
+          ## The maximum number of unparallel columns of length n with
+          ## entries {-1,1} is 2^(n-1).  n of them are already in Sold.
+          imax = min (t, 2 ^ (n - 1) - n);
           while (i <= imax)
-            ## The maximum number of parallel columns of length n with entries
-            ## {-1,1} is 2^(n-1). Therefore, if the number of columns of S is
-            ## greater than 2^(n-1), for sure some of them are parallel to some
-            ## columns of Sold. Don't even try to change them (i <= 2^(n-1)).
-            ## Now, check if S(:,i) is parallel to any previous column of S
-            p = (any (abs (S(:,i)' * S(:,1:i-1)) == n));
-            if (p || (any (abs (S(:,i)' * Sold) == n)))
-              ## i-th column of S parallel to a previous or to a
-              ## column of Sold: change it.
+            if (any (abs (S(:,i)' * S(:,1:i-1)) == n)
+                || any (abs (S(:,i)' * Sold) == n))
+              ## i-th column of S is parallel to a previous column
+              ## or to a column of Sold.  Change it.
               S(:,i) = sign (2*rand (n, 1)-1);
             else
               i++;

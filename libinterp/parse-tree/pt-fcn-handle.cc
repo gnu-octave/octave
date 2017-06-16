@@ -67,6 +67,7 @@ namespace octave
   {
     delete m_parameter_list;
     delete m_expression;
+    delete m_scope;
   }
 
   tree_expression *

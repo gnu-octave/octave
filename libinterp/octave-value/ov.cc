@@ -814,30 +814,6 @@ octave_value::octave_value (const Array<char>& chm, char type)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const charMatrix& chm, bool, char type)
-  : rep (type == '"'
-         ? new octave_char_matrix_dq_str (chm)
-         : new octave_char_matrix_sq_str (chm))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const charNDArray& chm, bool, char type)
-  : rep (type == '"'
-         ? new octave_char_matrix_dq_str (chm)
-         : new octave_char_matrix_sq_str (chm))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const Array<char>& chm, bool, char type)
-  : rep (type == '"'
-         ? new octave_char_matrix_dq_str (chm)
-         : new octave_char_matrix_sq_str (chm))
-{
-  maybe_mutate ();
-}
-
 octave_value::octave_value (const SparseMatrix& m, const MatrixType& t)
   : rep (new octave_sparse_matrix (m, t))
 {
@@ -1142,12 +1118,6 @@ octave_value::octave_value (octave_base_value *new_rep, bool borrow)
 {
   if (borrow)
     rep->count++;
-}
-
-octave_value::octave_value (octave_base_value *new_rep, int xcount)
-  : rep (new_rep)
-{
-  rep->count = xcount;
 }
 
 octave_base_value *

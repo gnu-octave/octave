@@ -2017,16 +2017,6 @@ bind_ans (const octave_value& val, bool print)
 }
 
 void
-bind_internal_variable (const std::string& fname, const octave_value& val)
-{
-  octave_value_list args;
-
-  args(0) = val;
-
-  octave::feval (fname, args, 0);
-}
-
-void
 mlock (void)
 {
   octave::call_stack& cs = octave::__get_call_stack__ ("mlock");

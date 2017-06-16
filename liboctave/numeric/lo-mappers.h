@@ -524,17 +524,6 @@ inline bool octave_is_NA (const FloatComplex& x)
   return octave::math::is_NA (x);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::math::is_NaN_or_NA' instead")
-inline bool octave_is_NaN_or_NA (const Complex& x)
-{
-  return octave::math::is_NaN_or_NA (x);
-}
-OCTAVE_DEPRECATED ("use 'octave::math::is_NaN_or_NA' instead")
-inline bool octave_is_NaN_or_NA (const FloatComplex& x)
-{
-  return octave::math::is_NaN_or_NA (x);
-}
-
 OCTAVE_DEPRECATED ("use 'octave::math::acos' instead")
 inline Complex acos (const Complex& x) { return octave::math::acos (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::acos' instead")

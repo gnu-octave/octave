@@ -239,15 +239,6 @@ public:
   octave_value (const charNDArray& chnda, char type = '\'');
   octave_value (const Array<char>& chnda, char type = '\'');
 
-  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
-  octave_value (const charMatrix& chm, bool is_string, char type = '\'');
-
-  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
-  octave_value (const charNDArray& chnda, bool is_string, char type = '\'');
-
-  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
-  octave_value (const Array<char>& chnda, bool is_string, char type = '\'');
-
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m,
@@ -301,9 +292,6 @@ public:
   octave_value (octave_value::magic_colon);
 
   octave_value (octave_base_value *new_rep, bool borrow = false);
-
-  OCTAVE_DEPRECATED ("note: in the future there will be no way to directly set reference count")
-  octave_value (octave_base_value *new_rep, int xcount);
 
   // Copy constructor.
 

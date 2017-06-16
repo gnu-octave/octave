@@ -142,10 +142,6 @@ extern OCTINTERP_API octave_value builtin_any_variable (const std::string&);
 
 extern OCTINTERP_API void bind_ans (const octave_value& val, bool print);
 
-OCTAVE_DEPRECATED ("note: internal variables have been replaced by functions; use 'feval' instead")
-OCTINTERP_API extern void
-bind_internal_variable (const std::string& fname, const octave_value& val);
-
 extern OCTINTERP_API void mlock (void);
 extern OCTINTERP_API void munlock (const std::string&);
 extern OCTINTERP_API bool mislocked (const std::string&);

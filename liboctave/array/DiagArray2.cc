@@ -47,13 +47,6 @@ DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r,
 
 template <typename T>
 Array<T>
-DiagArray2<T>::diag (octave_idx_type k) const
-{
-  return extract_diag (k);
-}
-
-template <typename T>
-Array<T>
 DiagArray2<T>::extract_diag (octave_idx_type k) const
 {
   Array<T> d;

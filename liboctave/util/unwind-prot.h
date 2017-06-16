@@ -60,16 +60,7 @@ namespace octave
       lifo.push (new_elem);
     }
 
-    OCTAVE_DEPRECATED ("use 'add (new fcn_arg_elem<void *> (fcn, ptr))' instead")
-    void add (void (*fcn) (void *), void *ptr = nullptr)
-    {
-      add (new fcn_arg_elem<void *> (fcn, ptr));
-    }
-
     operator bool (void) const { return ! empty (); }
-
-    OCTAVE_DEPRECATED ("use 'run_first' instead")
-    void run_top (void) { run_first (); }
 
     void run_first (void)
     {
@@ -82,12 +73,6 @@ namespace octave
         }
     }
 
-    OCTAVE_DEPRECATED ("use 'run' instead")
-    void run_top (int num) { run (num); }
-
-    OCTAVE_DEPRECATED ("use 'discard_first' instead")
-    void discard_top (void) { discard_first (); }
-
     void discard_first (void)
     {
       if (! empty ())
@@ -97,9 +82,6 @@ namespace octave
           delete ptr;
         }
     }
-
-    OCTAVE_DEPRECATED ("use 'discard' instead")
-    void discard_top (int num) { discard (num); }
 
     size_t size (void) const { return lifo.size (); }
 

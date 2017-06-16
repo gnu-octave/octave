@@ -39,15 +39,9 @@ public:
 
   PermMatrix (octave_idx_type n);
 
-  OCTAVE_DEPRECATED ("use 'PermMatrix (p, false, true)' instead")
-  PermMatrix (const Array<octave_idx_type>& p);
-
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
 
   PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
-
-  OCTAVE_DEPRECATED ("use 'PermVector (idx, false, 0)' instead")
-  PermMatrix (const idx_vector& idx);
 
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 

@@ -428,7 +428,7 @@ public:
     return (ndims () == 2 && (xelem (0) == 1 || xelem (1) == 1));
   }
 
-  OCTAVE_DEPRECATED ("use 'isvector' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
   bool is_vector (void) const
   { return isvector (); }
 

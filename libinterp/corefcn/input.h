@@ -297,19 +297,19 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::base_reader' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::base_reader' instead")
 typedef octave::base_reader octave_base_reader;
 
-OCTAVE_DEPRECATED ("use 'octave::terminal_reader' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::terminal_reader' instead")
 typedef octave::terminal_reader octave_terminal_reader;
 
-OCTAVE_DEPRECATED ("use 'octave::file_reader' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::file_reader' instead")
 typedef octave::file_reader octave_file_reader;
 
-OCTAVE_DEPRECATED ("use 'octave::eval_string_reader' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::eval_string_reader' instead")
 typedef octave::eval_string_reader octave_eval_string_reader;
 
-OCTAVE_DEPRECATED ("use 'octave::input_reader' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::input_reader' instead")
 typedef octave::input_reader octave_input_reader;
 
 #endif

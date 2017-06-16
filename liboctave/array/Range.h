@@ -79,14 +79,14 @@ public:
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type nelem (void) const { return numel (); }
 
   octave_idx_type numel (void) const { return rng_numel; }
 
   bool isempty (void) const { return numel () == 0; }
 
-  OCTAVE_DEPRECATED ("use 'isempty' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
   bool is_empty (void) const
   { return isempty (); }
 
@@ -109,7 +109,7 @@ public:
 
   sortmode issorted (sortmode mode = ASCENDING) const;
 
-  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
   sortmode is_sorted (sortmode mode = ASCENDING) const
   { return issorted (mode); }
 

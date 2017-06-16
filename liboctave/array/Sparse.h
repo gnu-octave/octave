@@ -233,7 +233,7 @@ public:
 
   //! Amount of storage for nonzero elements.
   //! Synonymous with nzmax().
-  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
   octave_idx_type capacity (void) const { return nzmax (); }
 
   //! Actual number of nonzero terms.
@@ -246,10 +246,10 @@ public:
     return dimensions.safe_numel ();
   }
 
-  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
   octave_idx_type nelem (void) const { return nzmax (); }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
@@ -469,13 +469,13 @@ public:
 
   bool issquare (void) const { return (dim1 () == dim2 ()); }
 
-  OCTAVE_DEPRECATED ("use 'issquare' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issquare' instead")
   bool is_square (void) const
   { return issquare (); }
 
   bool isempty (void) const { return (rows () < 1 && cols () < 1); }
 
-  OCTAVE_DEPRECATED ("use 'isempty' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
   bool is_empty (void) const
   { return isempty (); }
 

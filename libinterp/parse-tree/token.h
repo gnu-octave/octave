@@ -197,7 +197,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::token' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::token' instead")
 typedef octave::token token;
 
 #endif

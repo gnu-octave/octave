@@ -235,7 +235,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::command_history' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::command_history' instead")
 typedef octave::command_history command_history;
 
 #endif

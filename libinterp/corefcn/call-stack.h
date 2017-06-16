@@ -298,7 +298,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::call_stack' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::call_stack' instead")
 typedef octave::call_stack octave_call_stack;
 
 #endif

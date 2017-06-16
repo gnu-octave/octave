@@ -102,9 +102,9 @@ since all of Octave's header files already include it.
 
 #  if defined (__GNUC__)
 #    if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
-#      define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))
 #    else
-#      define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__))
+#      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
 #    endif
 #    define OCTAVE_NORETURN __attribute__ ((__noreturn__))
 #    define OCTAVE_UNUSED __attribute__ ((__unused__))
@@ -113,7 +113,7 @@ since all of Octave's header files already include it.
 #    define HAVE_OCTAVE_NORETURN_ATTR 1
 #    define HAVE_OCTAVE_UNUSED_ATTR 1
 #  else
-#    define OCTAVE_DEPRECATED(msg)
+#    define OCTAVE_DEPRECATED(ver, msg)
 #    define OCTAVE_NORETURN
 #    define OCTAVE_UNUSED
 

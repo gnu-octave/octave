@@ -479,13 +479,13 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::base_stream' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::base_stream' instead")
 typedef octave::base_stream octave_base_stream;
 
-OCTAVE_DEPRECATED ("use 'octave::stream' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::stream' instead")
 typedef octave::stream octave_stream;
 
-OCTAVE_DEPRECATED ("use 'octave::stream_list' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::stream_list' instead")
 typedef octave::stream_list octave_stream_list;
 
 #endif

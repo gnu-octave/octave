@@ -60,7 +60,7 @@ public:
   octave_idx_type length (void) const
   { return perm_length (); }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type nelem (void) const { return numel (); }
 
   octave_idx_type numel (void) const { return dim1 () * dim2 (); }

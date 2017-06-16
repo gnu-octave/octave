@@ -150,7 +150,7 @@ public:
 
   bool is_true (void) const;
 
-  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
   octave_idx_type capacity (void) const { return nzmax (); }
 
   bool print_as_scalar (void) const;

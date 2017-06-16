@@ -206,12 +206,12 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_decl_elt' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_decl_elt' instead")
 typedef octave::tree_decl_elt tree_decl_elt;
 
 // tree_decl_init_list is derived from a template.
 
-OCTAVE_DEPRECATED ("use 'octave::tree_decl_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_decl_command' instead")
 typedef octave::tree_decl_command tree_decl_command;
 
 #endif

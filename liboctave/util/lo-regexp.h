@@ -289,10 +289,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::regexp' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp' instead")
 typedef octave::regexp regexp;
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::match' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::match' instead")
 inline regexp::match_data
 regexp_match (const std::string& pat,
               const std::string& buffer,
@@ -302,7 +302,7 @@ regexp_match (const std::string& pat,
   return octave::regexp::match (pat, buffer, opt, who);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::is_match' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::is_match' instead")
 inline bool
 is_regexp_match (const std::string& pat,
                  const std::string& buffer,
@@ -312,7 +312,7 @@ is_regexp_match (const std::string& pat,
   return octave::regexp::is_match (pat, buffer, opt, who);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::is_match' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::is_match' instead")
 inline Array<bool>
 is_regexp_match (const std::string& pat,
                  const string_vector& buffer,
@@ -322,7 +322,7 @@ is_regexp_match (const std::string& pat,
   return octave::regexp::is_match (pat, buffer, opt, who);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::replace' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::replace' instead")
 inline std::string
 regexp_replace (const std::string& pat,
                 const std::string& buffer,

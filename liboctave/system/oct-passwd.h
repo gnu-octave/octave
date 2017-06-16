@@ -137,7 +137,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::password' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::password' instead")
 typedef octave::sys::password octave_passwd;
 
 #endif

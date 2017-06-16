@@ -125,10 +125,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::child' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::child' instead")
 typedef octave::child octave_child;
 
-OCTAVE_DEPRECATED ("use 'octave::child_list' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::child_list' instead")
 typedef octave::child_list octave_child_list;
 
 #endif

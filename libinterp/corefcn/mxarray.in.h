@@ -289,7 +289,7 @@ protected:
   mxArray_base (const mxArray_base&) { }
 
   // FIXME: Deprecated in 4.2, remove in 4.6
-  OCTAVE_DEPRECATED ("use 'err_invalid_type' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'err_invalid_type' instead")
   void invalid_type_error (void) const
   {
     error ("invalid type for operation");

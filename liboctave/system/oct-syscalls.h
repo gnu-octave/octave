@@ -105,7 +105,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::popen2' instead")
 inline pid_t
 octave_popen2 (const std::string& cmd, const string_vector& args,
                bool sync_mode, int *filedes)
@@ -113,7 +113,7 @@ octave_popen2 (const std::string& cmd, const string_vector& args,
   return octave::sys::popen2 (cmd, args, sync_mode, filedes);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::popen2' instead")
 inline pid_t
 popen2 (const std::string& cmd, const string_vector& args,
         bool sync_mode, int *filedes, std::string& msg)
@@ -121,7 +121,7 @@ popen2 (const std::string& cmd, const string_vector& args,
   return octave::sys::popen2 (cmd, args, sync_mode, filedes, msg);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::popen2' instead")
 inline pid_t
 popen2 (const std::string& cmd, const string_vector& args,
         bool sync_mode, int *filedes, std::string& msg,

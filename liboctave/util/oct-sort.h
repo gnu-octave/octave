@@ -138,7 +138,7 @@ public:
   // Check whether an array is sorted.
   bool issorted (const T *data, octave_idx_type nel);
 
-  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
   bool is_sorted (const T *data, octave_idx_type nel)
   { return issorted (data, nel); }
 
@@ -312,7 +312,7 @@ private:
   bool issorted (const T *data, octave_idx_type nel, Comp comp);
 
   template <typename Comp>
-  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
   bool is_sorted (const T *data, octave_idx_type nel, Comp comp)
   { return issorted (data, nel, comp); }
 

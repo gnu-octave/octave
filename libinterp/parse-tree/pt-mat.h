@@ -83,17 +83,17 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_matrix' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_matrix' instead")
 typedef octave::tree_matrix tree_matrix;
 
-OCTAVE_DEPRECATED ("use 'octave::get_concat_class' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::get_concat_class' instead")
 static inline std::string
 get_concat_class (const std::string& c1, const std::string& c2)
 {
   return octave::get_concat_class (c1, c2);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::maybe_warn_string_concat' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::maybe_warn_string_concat' instead")
 static inline void
 maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 {

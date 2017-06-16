@@ -145,13 +145,13 @@ namespace octave
   };
 }
 
-OCTAVE_DEPRECATED ("use 'octave::execution_exception' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::execution_exception' instead")
 typedef octave::execution_exception octave_execution_exception;
 
-OCTAVE_DEPRECATED ("use 'octave::exit_exception' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::exit_exception' instead")
 typedef octave::exit_exception octave_exit_exception;
 
-OCTAVE_DEPRECATED ("use 'octave::interrupt_exception' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::interrupt_exception' instead")
 typedef octave::interrupt_exception octave_interrupt_exception;
 
 #endif
@@ -189,7 +189,7 @@ OCTAVE_NORETURN OCTAVE_API extern void octave_throw_execution_exception (void);
 
 OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
 
-OCTAVE_DEPRECATED ("see the Octave documentation for other options")
+OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
 OCTAVE_NORETURN OCTAVE_API extern void
 octave_throw_exit_exception (int exit_status, int safe_to_return);
 
@@ -197,7 +197,7 @@ OCTAVE_API extern void octave_rethrow_exception (void);
 
 #if defined (__cplusplus)
 
-OCTAVE_DEPRECATED ("see the Octave documentation for other options")
+OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
 extern OCTAVE_API void
 clean_up_and_exit (int exit_status, bool safe_to_return = false);
 

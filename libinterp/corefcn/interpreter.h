@@ -208,21 +208,21 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::interpreter::recover_from_exception' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::recover_from_exception' instead")
 static inline void
 recover_from_exception (void)
 {
   octave::interpreter::recover_from_exception ();
 }
 
-OCTAVE_DEPRECATED ("use 'octave::interpreter::add_atexit_function' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::add_atexit_function' instead")
 static inline void
 add_atexit_function (const std::string& fname)
 {
   octave::interpreter::add_atexit_function (fname);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::interpreter::remove_atexit_function' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::remove_atexit_function' instead")
 static inline bool
 remove_atexit_function (const std::string& fname)
 {

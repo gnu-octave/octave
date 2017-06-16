@@ -54,7 +54,7 @@ keyword_almost_match (const char * const *std, int *min_len,
                       const std::string& s, int min_toks_to_match,
                       int max_toks);
 
-OCTAVE_DEPRECATED ("use 'octave_value::isempty' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave_value::isempty' instead")
 extern OCTINTERP_API int empty_arg (const char *name, octave_idx_type nr,
                                     octave_idx_type nc);
 
@@ -76,10 +76,10 @@ extern OCTINTERP_API std::string contents_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string fcn_file_in_path (const std::string&);
 
-OCTAVE_DEPRECATED ("use 'load_path::find_oct_file' instead")
+OCTAVE_DEPRECATED (4.2, "use 'load_path::find_oct_file' instead")
 extern OCTINTERP_API std::string oct_file_in_path (const std::string&);
 
-OCTAVE_DEPRECATED ("use 'load_path::find_mex_file' instead")
+OCTAVE_DEPRECATED (4.2, "use 'load_path::find_mex_file' instead")
 extern OCTINTERP_API std::string mex_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string do_string_escapes (const std::string& s);

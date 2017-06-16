@@ -89,7 +89,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_compound_binary_expression' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_compound_binary_expression' instead")
 typedef octave::tree_compound_binary_expression tree_compound_binary_expression;
 
 #endif

@@ -68,10 +68,10 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
-  OCTAVE_DEPRECATED ("convert to and operate on numeric type instead")
+  OCTAVE_DEPRECATED (4.4, "convert to and operate on numeric type instead")
   NDArray sum (int dim = -1) const;
 
-  OCTAVE_DEPRECATED ("convert to and operate on numeric type instead")
+  OCTAVE_DEPRECATED (4.4, "convert to and operate on numeric type instead")
   NDArray cumsum (int dim = -1) const;
 
   boolNDArray concat (const boolNDArray& rb,

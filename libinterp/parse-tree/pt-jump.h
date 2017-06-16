@@ -109,13 +109,13 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_break_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_break_command' instead")
 typedef octave::tree_break_command tree_break_command;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_continue_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_continue_command' instead")
 typedef octave::tree_continue_command tree_continue_command;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_return_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_return_command' instead")
 typedef octave::tree_return_command tree_return_command;
 
 #endif

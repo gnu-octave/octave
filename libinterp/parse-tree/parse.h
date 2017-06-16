@@ -578,7 +578,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::get_help_from_file' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::get_help_from_file' instead")
 static inline std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
                     std::string& file)
@@ -586,35 +586,35 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
   return octave::get_help_from_file (nm, symbol_found, file);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::get_help_from_file' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::get_help_from_file' instead")
 static inline std::string
 get_help_from_file (const std::string& nm, bool& symbol_found)
 {
   return octave::get_help_from_file (nm, symbol_found);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::lookup_autoload' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::lookup_autoload' instead")
 static inline std::string
 lookup_autoload (const std::string& nm)
 {
   return octave::lookup_autoload (nm);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::autoloaded_functions' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::autoloaded_functions' instead")
 static inline string_vector
 autoloaded_functions (void)
 {
   return octave::autoloaded_functions ();
 }
 
-OCTAVE_DEPRECATED ("use 'octave::reverse_lookup_autoload' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::reverse_lookup_autoload' instead")
 static inline string_vector
 reverse_lookup_autoload (const std::string& nm)
 {
   return octave::reverse_lookup_autoload (nm);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::load_fcn_from_file' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::load_fcn_from_file' instead")
 static inline octave_function *
 load_fcn_from_file (const std::string& file_name,
                     const std::string& dir_name = "",
@@ -627,7 +627,7 @@ load_fcn_from_file (const std::string& file_name,
                                      package_name, fcn_name, autoload);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::source_file' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::source_file' instead")
 static inline void
 source_file (const std::string& file_name,
              const std::string& context = "",
@@ -637,7 +637,7 @@ source_file (const std::string& file_name,
   octave::source_file (file_name, context, verbose, require_file, warn_for);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::feval' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::feval' instead")
 static inline octave_value_list
 feval (const std::string& name,
        const octave_value_list& args = octave_value_list (),
@@ -646,7 +646,7 @@ feval (const std::string& name,
   return octave::feval (name, args, nargout);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::feval' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::feval' instead")
 static inline octave_value_list
 feval (octave_function *fcn,
        const octave_value_list& args = octave_value_list (),
@@ -655,28 +655,28 @@ feval (octave_function *fcn,
   return octave::feval (fcn, args, nargout);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::feval' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::feval' instead")
 static inline octave_value_list
 feval (const octave_value_list& args, int nargout = 0)
 {
   return octave::feval (args, nargout);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::eval_string' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::eval_string' instead")
 static inline octave_value_list
 eval_string (const std::string& str, bool silent, int& parse_status, int nargout)
 {
   return octave::eval_string (str, silent, parse_status, nargout);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::eval_string' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::eval_string' instead")
 static inline octave_value
 eval_string (const std::string& str, bool silent, int& parse_status)
 {
   return octave::eval_string (str, silent, parse_status);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::cleanup_statement_list' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::cleanup_statement_list' instead")
 static inline void
 cleanup_statement_list (octave::tree_statement_list **lst)
 {

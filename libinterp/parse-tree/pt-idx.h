@@ -132,7 +132,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_index_expression' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_index_expression' instead")
 typedef octave::tree_index_expression tree_index_expression;
 
 #endif

@@ -165,10 +165,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_try_catch_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_try_catch_command' instead")
 typedef octave::tree_try_catch_command tree_try_catch_command;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_unwind_protect_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_unwind_protect_command' instead")
 typedef octave::tree_unwind_protect_command tree_unwind_protect_command;
 
 #endif

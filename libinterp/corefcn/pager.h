@@ -150,19 +150,19 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::diary_buf' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::diary_buf' instead")
 typedef octave::diary_buf octave_diary_buf;
 
-OCTAVE_DEPRECATED ("use 'octave::diary_stream' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::diary_stream' instead")
 typedef octave::diary_stream octave_diary_stream;
 
-OCTAVE_DEPRECATED ("use 'octave::pager_buf' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::pager_buf' instead")
 typedef octave::pager_buf octave_pager_buf;
 
-OCTAVE_DEPRECATED ("use 'octave::pager_stream' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::pager_stream' instead")
 typedef octave::pager_stream octave_pager_stream;
 
-OCTAVE_DEPRECATED ("use 'octave::flush_stdout' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::flush_stdout' instead")
 static inline void
 flush_octave_stdout (void)
 {

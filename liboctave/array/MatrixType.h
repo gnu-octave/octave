@@ -110,28 +110,28 @@ public:
   bool isdiag (void) const
   { return (typ == Diagonal || typ == Permuted_Diagonal); }
 
-  OCTAVE_DEPRECATED ("use 'isdiag' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isdiag' instead")
   bool is_diagonal (void) const
   { return isdiag (); }
 
   bool istriu (void) const
   { return (typ == Upper || typ == Permuted_Upper); }
 
-  OCTAVE_DEPRECATED ("use 'istriu' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'istriu' instead")
   bool is_upper_triangular (void) const
   { return istriu (); }
 
   bool istril (void) const
   { return (typ == Lower || typ == Permuted_Lower); }
 
-  OCTAVE_DEPRECATED ("use 'istril' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'istril' instead")
   bool is_lower_triangular (void) const
   { return istril (); }
 
   bool isbanded (void) const
   { return (typ == Banded || typ == Banded_Hermitian); }
 
-  OCTAVE_DEPRECATED ("use 'isbanded' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isbanded' instead")
   bool is_banded (void) const
   { return isbanded (); }
 
@@ -144,7 +144,7 @@ public:
             || typ == Hermitian);
   }
 
-  OCTAVE_DEPRECATED ("use 'ishermitian' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
   bool is_hermitian (void) const
   { return ishermitian (); }
 

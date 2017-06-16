@@ -378,27 +378,27 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::fftw_version' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::fftw_version' instead")
 static inline std::string
 octave_fftw_version (void)
 {
   return octave::fftw_version ();
 }
 
-OCTAVE_DEPRECATED ("use 'octave::fftwf_version' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::fftwf_version' instead")
 static inline std::string
 octave_fftwf_version (void)
 {
   return octave::fftwf_version ();
 }
 
-OCTAVE_DEPRECATED ("use 'octave::fftw_planner' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::fftw_planner' instead")
 typedef octave::fftw_planner octave_fftw_planner;
 
-OCTAVE_DEPRECATED ("use 'octave::float_fftw_planner' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::float_fftw_planner' instead")
 typedef octave::float_fftw_planner octave_float_fftw_planner;
 
-OCTAVE_DEPRECATED ("use 'octave::fftw' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::fftw' instead")
 typedef octave::fftw octave_fftw;
 
 #endif

@@ -293,20 +293,20 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_if_clause' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_if_clause' instead")
 typedef octave::tree_if_clause tree_if_clause;
 
 // tree_if_command_list is derived from a template.
 
-OCTAVE_DEPRECATED ("use 'octave::tree_if_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_if_command' instead")
 typedef octave::tree_if_command tree_if_command;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_switch_case' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_switch_case' instead")
 typedef octave::tree_switch_case tree_switch_case;
 
 // tree_switch_case_list is derived from a template.
 
-OCTAVE_DEPRECATED ("use 'octave::tree_switch_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_switch_command' instead")
 typedef octave::tree_switch_command tree_switch_command;
 
 #endif

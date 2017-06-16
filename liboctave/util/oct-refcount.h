@@ -118,6 +118,6 @@ namespace octave
 }
 
 template <typename T>
-using octave_refcount OCTAVE_DEPRECATED (("use 'octave::refcount' instead")) = octave::refcount<T>;
+using octave_refcount OCTAVE_DEPRECATED (4.4, "use 'octave::refcount' instead") = octave::refcount<T>;
 
 #endif

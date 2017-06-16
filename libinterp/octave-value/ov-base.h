@@ -313,7 +313,7 @@ public:
 
   virtual octave_idx_type numel (void) const { return dims ().numel (); }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   virtual octave_idx_type capacity (void) const
   { return numel (); }
 

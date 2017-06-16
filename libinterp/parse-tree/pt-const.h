@@ -104,7 +104,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_constant' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_constant' instead")
 typedef octave::tree_constant tree_constant;
 
 #endif

@@ -33,9 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (__GNUC__)
    /* The following attributes are used with gcc and clang compilers.  */
 #  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
-#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))
 #  else
-#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__))
+#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
 #  endif
 #  define HAVE_OCTAVE_DEPRECATED_ATTR 1
 
@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_UNUSED __attribute__ ((__unused__))
 #  define HAVE_OCTAVE_UNUSED_ATTR 1
 #else
-#  define OCTAVE_DEPRECATED(msg)
+#  define OCTAVE_DEPRECATED(ver, msg)
 #  define OCTAVE_NORETURN
 #  define OCTAVE_UNUSED
 #endif

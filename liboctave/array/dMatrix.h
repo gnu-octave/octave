@@ -98,7 +98,7 @@ public:
 
   bool issymmetric (void) const;
 
-  OCTAVE_DEPRECATED ("use 'issymmetric' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issymmetric' instead")
   bool is_symmetric (void) const
   { return issymmetric (); }
 

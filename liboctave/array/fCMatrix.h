@@ -116,7 +116,7 @@ public:
 
   bool ishermitian (void) const;
 
-  OCTAVE_DEPRECATED ("use 'ishermitian' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
   bool is_hermitian (void) const
   { return ishermitian (); }
 

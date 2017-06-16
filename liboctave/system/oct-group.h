@@ -117,7 +117,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::group' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::group' instead")
 typedef octave::sys::group octave_group;
 
 #endif

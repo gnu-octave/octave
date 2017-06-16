@@ -80,7 +80,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::mach_info' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::mach_info' instead")
 typedef octave::mach_info oct_mach_info;
 
 #endif

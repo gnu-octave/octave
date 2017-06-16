@@ -326,16 +326,16 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_while_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_while_command' instead")
 typedef octave::tree_while_command tree_while_command;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_do_until_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_do_until_command' instead")
 typedef octave::tree_do_until_command tree_do_until_command;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_simple_for_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_simple_for_command' instead")
 typedef octave::tree_simple_for_command tree_simple_for_command;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_complex_for_command' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_complex_for_command' instead")
 typedef octave::tree_complex_for_command tree_complex_for_command;
 
 #endif

@@ -165,10 +165,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_identifier' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_identifier' instead")
 typedef octave::tree_identifier tree_identifier;
 
-OCTAVE_DEPRECATED ("use 'octave::tree_black_hole' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_black_hole' instead")
 typedef octave::tree_black_hole tree_black_hole;
 
 #endif

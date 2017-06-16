@@ -292,10 +292,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::base_url_transfer' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::base_url_transfer' instead")
 typedef octave::base_url_transfer base_url_transfer;
 
-OCTAVE_DEPRECATED ("use 'octave::url_transfer' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::url_transfer' instead")
 typedef octave::url_transfer url_transfer;
 
 #endif

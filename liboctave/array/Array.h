@@ -340,7 +340,7 @@ public:
   //! Number of elements in the array.
   //! Synonymous with numel().
   //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type capacity (void) const { return numel (); }
 
   //! Number of elements in the array.
@@ -353,13 +353,13 @@ public:
       length of the greatest dimension.  This method returns the total
       number of elements.
    */
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type length (void) const { return numel (); }
 
   //! Number of elements in the array.
   //! Synonymous with numel().
   //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type nelem (void) const { return numel (); }
 
   //! Number of elements in the array.
@@ -558,19 +558,19 @@ public:
 
   bool issquare (void) const { return (dim1 () == dim2 ()); }
 
-  OCTAVE_DEPRECATED ("use 'issquare' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issquare' instead")
   bool is_square (void) const
   { return issquare (); }
 
   bool isempty (void) const { return numel () == 0; }
 
-  OCTAVE_DEPRECATED ("use 'isempty' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
   bool is_empty (void) const
   { return isempty (); }
 
   bool isvector (void) const { return dimensions.isvector (); }
 
-  OCTAVE_DEPRECATED ("use 'isvector' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
   bool is_vector (void) const
   { return isvector (); }
 
@@ -712,7 +712,7 @@ public:
   //! Ordering is auto-detected or can be specified.
   sortmode issorted (sortmode mode = UNSORTED) const;
 
-  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
   sortmode is_sorted (sortmode mode = UNSORTED) const
   { return issorted (mode); }
 

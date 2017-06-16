@@ -329,7 +329,7 @@ namespace octave
 extern "C" {
 #endif
 
-OCTAVE_DEPRECATED ("see the Octave documentation for other options")
+OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
 extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
 
 #if defined  (__cplusplus)

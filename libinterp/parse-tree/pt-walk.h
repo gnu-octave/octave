@@ -297,7 +297,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::tree_walker' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_walker' instead")
 typedef octave::tree_walker tree_walker;
 
 #endif

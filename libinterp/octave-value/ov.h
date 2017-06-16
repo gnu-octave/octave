@@ -284,7 +284,7 @@ public:
   octave_value (const octave_scalar_map& m, const std::string& id,
                 const std::list<std::string>& plist);
 
-  OCTAVE_DEPRECATED ("note: second argument is always ignored; use octave_value (const octave_value_list&) instead")
+  OCTAVE_DEPRECATED (4.4, "note: second argument is always ignored; use octave_value (const octave_value_list&) instead")
   octave_value (const octave_value_list& m, bool);
 
   octave_value (const octave_value_list& m);
@@ -477,7 +477,7 @@ public:
   octave_idx_type numel (void) const
   { return rep->numel (); }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type capacity (void) const
   { return rep->numel (); }
 
@@ -520,21 +520,21 @@ public:
   bool isempty (void) const
   { return rep->isempty (); }
 
-  OCTAVE_DEPRECATED ("use 'isempty' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
   bool is_empty (void) const
   { return rep->isempty (); }
 
   bool iscell (void) const
   { return rep->iscell (); }
 
-  OCTAVE_DEPRECATED ("use 'iscell' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'iscell' instead")
   bool is_cell (void) const
   { return rep->iscell (); }
 
   bool iscellstr (void) const
   { return rep->iscellstr (); }
 
-  OCTAVE_DEPRECATED ("use 'iscellstr' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'iscellstr' instead")
   bool is_cellstr (void) const
   { return rep->iscellstr (); }
 
@@ -580,7 +580,7 @@ public:
   bool isstruct (void) const
   { return rep->isstruct (); }
 
-  OCTAVE_DEPRECATED ("use 'isstruct' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isstruct' instead")
   bool is_map (void) const
   { return rep->isstruct (); }
 
@@ -590,14 +590,14 @@ public:
   bool isobject (void) const
   { return rep->isobject (); }
 
-  OCTAVE_DEPRECATED ("use 'isobject' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isobject' instead")
   bool is_object (void) const
   { return rep->isobject (); }
 
   bool isjava (void) const
   { return rep->isjava (); }
 
-  OCTAVE_DEPRECATED ("use 'isjava' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isjava' instead")
   bool is_java (void) const
   { return rep->isjava (); }
 
@@ -610,7 +610,7 @@ public:
   bool isnull (void) const
   { return rep->isnull (); }
 
-  OCTAVE_DEPRECATED ("use 'isnull' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isnull' instead")
   bool is_null_value (void) const
   { return rep->isnull (); }
 
@@ -636,7 +636,7 @@ public:
   bool isfloat (void) const
   { return rep->isfloat (); }
 
-  OCTAVE_DEPRECATED ("use 'isfloat' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isfloat' instead")
   bool is_float_type (void) const
   { return rep->isfloat (); }
 
@@ -669,7 +669,7 @@ public:
   bool isinteger (void) const
   { return rep->isinteger (); }
 
-  OCTAVE_DEPRECATED ("use 'isinteger' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isinteger' instead")
   bool is_integer_type (void) const
   { return rep->isinteger (); }
 
@@ -678,21 +678,21 @@ public:
   bool islogical (void) const
   { return rep->islogical (); }
 
-  OCTAVE_DEPRECATED ("use 'islogical' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'islogical' instead")
   bool is_bool_type (void) const
   { return rep->islogical (); }
 
   bool isreal (void) const
   { return rep->isreal (); }
 
-  OCTAVE_DEPRECATED ("use 'isreal' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isreal' instead")
   bool is_real_type (void) const
   { return rep->isreal (); }
 
   bool iscomplex (void) const
   { return rep->iscomplex (); }
 
-  OCTAVE_DEPRECATED ("use 'iscomplex' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'iscomplex' instead")
   bool is_complex_type (void) const
   { return rep->iscomplex (); }
 
@@ -705,14 +705,14 @@ public:
   bool isnumeric (void) const
   { return rep->isnumeric (); }
 
-  OCTAVE_DEPRECATED ("use 'isnumeric' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'isnumeric' instead")
   bool is_numeric_type (void) const
   { return rep->isnumeric (); }
 
   bool issparse (void) const
   { return rep->issparse (); }
 
-  OCTAVE_DEPRECATED ("use 'issparse' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issparse' instead")
   bool is_sparse_type (void) const
   { return rep->issparse (); }
 
@@ -940,7 +940,7 @@ public:
   string_vector string_vector_value (bool pad = false) const
   { return rep->string_vector_value (pad); }
 
-  OCTAVE_DEPRECATED ("use 'string_vector_value' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'string_vector_value' instead")
   string_vector all_strings (bool pad = false) const
   { return string_vector_value (pad); }
 
@@ -1352,7 +1352,7 @@ public:
   sortmode issorted (sortmode mode = UNSORTED) const
   { return rep->issorted (mode); }
 
-  OCTAVE_DEPRECATED ("use 'issorted' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
   sortmode is_sorted (sortmode mode = UNSORTED) const
   { return rep->issorted (mode); }
 

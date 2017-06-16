@@ -45,10 +45,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::getcwd' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::getcwd' instead")
 const auto octave_getcwd = octave::sys::getcwd;
 
-OCTAVE_DEPRECATED ("use 'octave::sys::chdir' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::chdir' instead")
 const auto octave_chdir = octave::sys::chdir;
 
 #endif

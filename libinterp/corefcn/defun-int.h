@@ -100,7 +100,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::auto_shlib' instead")
+OCTAVE_DEPRECATED (4.4, "use 'octave::auto_shlib' instead")
 typedef octave::auto_shlib octave_auto_shlib;
 
 #endif

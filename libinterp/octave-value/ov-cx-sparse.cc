@@ -950,7 +950,7 @@ octave_sparse_complex_matrix::map (unary_mapper_t umap) const
     ARRAY_MAPPER (tan, Complex, std::tan);
     ARRAY_MAPPER (tanh, Complex, std::tanh);
     ARRAY_MAPPER (isnan, bool, octave::math::isnan);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
     ARRAY_MAPPER (isinf, bool, octave::math::isinf);
     ARRAY_MAPPER (isfinite, bool, octave::math::isfinite);
 

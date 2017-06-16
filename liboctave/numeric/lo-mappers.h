@@ -37,11 +37,21 @@ namespace octave
 {
   namespace math
   {
-    extern OCTAVE_API bool is_NA (double x);
-    extern OCTAVE_API bool is_NA (float x);
+    extern OCTAVE_API bool isna (double x);
+    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
+    inline bool is_NA (double x) { return octave::math::isna (x); }
 
-    extern OCTAVE_API bool is_NA (const Complex& x);
-    extern OCTAVE_API bool is_NA (const FloatComplex& x);
+    extern OCTAVE_API bool isna (float x);
+    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
+    inline bool is_NA (float x) { return octave::math::isna (x); }
+
+    extern OCTAVE_API bool isna (const Complex& x);
+    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
+    inline bool is_NA (const Complex& x) { return octave::math::isna (x); }
+
+    extern OCTAVE_API bool isna (const FloatComplex& x);
+    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
+    inline bool is_NA (const FloatComplex& x) { return octave::math::isna (x); }
 
     extern OCTAVE_API bool is_NaN_or_NA (const Complex& x);
     extern OCTAVE_API bool is_NaN_or_NA (const FloatComplex& x);
@@ -512,16 +522,16 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::is_NA' instead")
-inline bool octave_is_NA (double x) { return octave::math::is_NA (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::is_NA' instead")
-inline bool octave_is_NA (float x) { return octave::math::is_NA (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::is_NA' instead")
-inline bool octave_is_NA (const Complex& x) { return octave::math::is_NA (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::is_NA' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::math::isna' instead")
+inline bool octave_is_NA (double x) { return octave::math::isna (x); }
+OCTAVE_DEPRECATED (4.2, "use 'octave::math::isna' instead")
+inline bool octave_is_NA (float x) { return octave::math::isna (x); }
+OCTAVE_DEPRECATED (4.2, "use 'octave::math::isna' instead")
+inline bool octave_is_NA (const Complex& x) { return octave::math::isna (x); }
+OCTAVE_DEPRECATED (4.2, "use 'octave::math::isna' instead")
 inline bool octave_is_NA (const FloatComplex& x)
 {
-  return octave::math::is_NA (x);
+  return octave::math::isna (x);
 }
 
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::acos' instead")

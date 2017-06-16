@@ -42,27 +42,27 @@ namespace octave
   namespace math
   {
     bool
-    is_NA (double x)
+    isna (double x)
     {
       return lo_ieee_is_NA (x);
     }
 
     bool
-    is_NA (const Complex& x)
+    isna (const Complex& x)
     {
-      return (is_NA (std::real (x)) || is_NA (std::imag (x)));
+      return (isna (std::real (x)) || isna (std::imag (x)));
     }
 
     bool
-    is_NA (float x)
+    isna (float x)
     {
       return lo_ieee_is_NA (x);
     }
 
     bool
-    is_NA (const FloatComplex& x)
+    isna (const FloatComplex& x)
     {
-      return (is_NA (std::real (x)) || is_NA (std::imag (x)));
+      return (isna (std::real (x)) || isna (std::imag (x)));
     }
 
     bool

@@ -836,7 +836,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
     RC_ARRAY_MAPPER (sqrt, FloatComplex, octave::math::rc_sqrt);
     ARRAY_MAPPER (tan, float, ::tanf);
     ARRAY_MAPPER (tanh, float, ::tanhf);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
     ARRAY_MAPPER (xsignbit, float, octave::math::signbit);
 
     // Special cases for Matlab compatibility.

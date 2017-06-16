@@ -1499,7 +1499,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
                 }
             }
         }
-      else if (octave::math::is_NA (d))
+      else if (octave::math::isna (d))
         {
           octave_preserve_stream_state stream_state (os);
 

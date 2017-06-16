@@ -751,7 +751,7 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
     ARRAY_MAPPER (sqrt, FloatComplex, std::sqrt);
     ARRAY_MAPPER (tan, FloatComplex, std::tan);
     ARRAY_MAPPER (tanh, FloatComplex, std::tanh);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
 
     default:
       return octave_base_value::map (umap);

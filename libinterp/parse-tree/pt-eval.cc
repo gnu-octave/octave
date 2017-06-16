@@ -2406,7 +2406,7 @@ namespace octave
         catch (const octave::interrupt_exception&)
           {
             // The comments above apply here as well.
-            recover_from_exception ();
+            octave::interpreter::recover_from_exception ();
             do_unwind_protect_cleanup_code (cleanup_code);
             throw;
           }

@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dynamic-ld.h"
 #include "load-path.h"
+#include "pt-eval.h"
 #include "symtab.h"
 
 extern OCTINTERP_API bool quit_allowed;
@@ -193,7 +194,7 @@ namespace octave
 
     symbol_table m_symbol_table;
 
-    tree_evaluator *m_evaluator;
+    tree_evaluator m_evaluator;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

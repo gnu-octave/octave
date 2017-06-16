@@ -25,12 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "call-stack.h"
+#include "input.h"
 #include "interpreter.h"
 #include "oct-map.h"
 #include "ov.h"
 #include "ov-fcn.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
+#include "pager.h"
 
 // Use static fields for the best efficiency.
 // NOTE: C++0x will allow these two to be merged into one.
@@ -350,6 +352,27 @@ namespace octave
     return retval;
   }
 
+  void
+  call_stack::push (octave_function *fcn)
+  {
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    push (fcn, symtab.current_scope (), symtab.current_context ());
+  }
+
+  void
+  call_stack::push (octave_function *fcn, symbol_table::scope *scope,
+                    symbol_table::context_id context)
+  {
+    size_t prev_frame = curr_frame;
+    curr_frame = cs.size ();
+    cs.push_back (stack_frame (fcn, scope, context, prev_frame));
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    symtab.set_scope_and_context (scope, context);
+  }
+
   bool
   call_stack::goto_frame (size_t n, bool verbose)
   {
@@ -577,8 +600,32 @@ namespace octave
   }
 
   octave_map
+  call_stack::backtrace (size_t nskip)
+  {
+    octave_idx_type curr_user_frame = -1;
+
+    return backtrace (nskip, curr_user_frame, true);
+  }
+
+  octave_map
   call_stack::empty_backtrace (void) const
   {
     return octave_map (dim_vector (0, 1), bt_fields);
+  }
+
+  void
+  call_stack::pop (void)
+  {
+    if (cs.size () > 1)
+      {
+        const stack_frame& elt = cs.back ();
+        curr_frame = elt.m_prev;
+        cs.pop_back ();
+        const stack_frame& new_elt = cs[curr_frame];
+
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        symtab.set_scope_and_context (new_elt.m_scope, new_elt.m_context);
+      }
   }
 }

@@ -376,7 +376,7 @@ namespace octave
       m_dynamic_loader (*this),
       m_load_path (),
       m_symbol_table (),
-      m_evaluator (new tree_evaluator (*this)),
+      m_evaluator (*this),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != 0),
@@ -966,7 +966,7 @@ namespace octave
               {
                 if (parser.stmt_list)
                   {
-                    parser.stmt_list->accept (*m_evaluator);
+                    parser.stmt_list->accept (m_evaluator);
 
                     octave_quit ();
 
@@ -1163,7 +1163,7 @@ namespace octave
 
   tree_evaluator& interpreter::get_evaluator (void)
   {
-    return *m_evaluator;
+    return m_evaluator;
   }
 
   symbol_table::scope *
@@ -1185,7 +1185,7 @@ namespace octave
 
   call_stack& interpreter::get_call_stack (void)
   {
-    return m_evaluator->get_call_stack ();
+    return m_evaluator.get_call_stack ();
   }
 
   void interpreter::recover_from_exception (void)

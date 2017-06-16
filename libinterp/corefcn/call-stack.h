@@ -29,16 +29,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 class octave_function;
+class octave_map;
 class octave_user_code;
 class octave_user_script;
 
-#include "input.h"
-#include "interpreter.h"
-#include "oct-map.h"
 #include "symtab.h"
 
 namespace octave
 {
+  class interpreter;
+
   class
   OCTINTERP_API
   call_stack
@@ -172,24 +172,9 @@ namespace octave
     // Return TRUE if all elements on the call stack are scripts.
     bool all_scripts (void) const;
 
-    void push (octave_function *fcn)
-    {
-      symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-      push (fcn, symtab.current_scope (), symtab.current_context ());
-    }
-
+    void push (octave_function *fcn);
     void push (octave_function *fcn, symbol_table::scope *scope,
-               symbol_table::context_id context)
-    {
-      size_t prev_frame = curr_frame;
-      curr_frame = cs.size ();
-      cs.push_back (stack_frame (fcn, scope, context, prev_frame));
-
-      symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-      symtab.set_scope_and_context (scope, context);
-    }
+               symbol_table::context_id context);
 
     void push (void)
     {
@@ -259,29 +244,11 @@ namespace octave
     octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame,
                           bool print_subfn = true) const;
 
-    octave_map backtrace (size_t nskip = 0)
-    {
-      octave_idx_type curr_user_frame = -1;
-
-      return backtrace (nskip, curr_user_frame, true);
-    }
+    octave_map backtrace (size_t nskip = 0);
 
     octave_map empty_backtrace (void) const;
 
-    void pop (void)
-    {
-      if (cs.size () > 1)
-        {
-          const stack_frame& elt = cs.back ();
-          curr_frame = elt.m_prev;
-          cs.pop_back ();
-          const stack_frame& new_elt = cs[curr_frame];
-
-          symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-          symtab.set_scope_and_context (new_elt.m_scope, new_elt.m_context);
-        }
-    }
+    void pop (void);
 
     void clear (void) { cs.clear (); }
 

@@ -578,31 +578,7 @@ namespace octave
       return retval;
     }
 
-    template <typename T>
-    T
-    xcbrt (T x)
-    {
-      static const T one_third = 0.3333333333333333333f;
-      if (octave::math::isfinite (x))
-        {
-          // Use pow.
-          T y = std::pow (std::abs (x), one_third) * signum (x);
-          // Correct for better accuracy.
-          return (x / (y*y) + y + y) / 3;
-        }
-      else
-        return x;
-    }
-
-    double
-    cbrt (double x)
-    {
-#if defined (HAVE_CBRT)
-      return ::cbrt (x);
-#else
-      return xxcbrt (x);
-#endif
-    }
+    double cbrt (double x) { return std::cbrt (x); }
 
     float
     log1p (float x)
@@ -649,15 +625,7 @@ namespace octave
       return retval;
     }
 
-    float
-    cbrt (float x)
-    {
-#if defined (HAVE_CBRTF)
-      return cbrtf (x);
-#else
-      return xxcbrt (x);
-#endif
-    }
+    float cbrt (float x) { return std::cbrtf (x); }
 
     static inline Complex
     zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);

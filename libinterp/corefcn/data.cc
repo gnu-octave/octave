@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
@@ -65,11 +66,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "xnorm.h"
-
-#if ! defined (HAVE_HYPOTF) && defined (HAVE__HYPOTF)
-#  define hypotf _hypotf
-#  define HAVE_HYPOTF 1
-#endif
 
 static void
 index_error (const char *fmt, const std::string& idx, const std::string& msg)
@@ -348,7 +344,7 @@ do_hypot (const octave_value& x, const octave_value& y)
         {
           FloatNDArray a0 = arg0.float_array_value ();
           FloatNDArray a1 = arg1.float_array_value ();
-          retval = binmap<float> (a0, a1, ::hypotf, "hypot");
+          retval = binmap<float> (a0, a1, std::hypotf, "hypot");
         }
     }
   else
@@ -359,13 +355,13 @@ do_hypot (const octave_value& x, const octave_value& y)
         {
           SparseMatrix m0 = arg0.sparse_matrix_value ();
           SparseMatrix m1 = arg1.sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, ::hypot, "hypot");
+          retval = binmap<double> (m0, m1, std::hypot, "hypot");
         }
       else
         {
           NDArray a0 = arg0.array_value ();
           NDArray a1 = arg1.array_value ();
-          retval = binmap<double> (a0, a1, ::hypot, "hypot");
+          retval = binmap<double> (a0, a1, std::hypot, "hypot");
         }
     }
 

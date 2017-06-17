@@ -2455,7 +2455,7 @@ OCTAVE_CHECK_FUNC_COMPLEX(atanh)
 ## Check for nonstandard, but common math functions, that we need.
 
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_FUNCS([erf erff erfc erfcf exp2f log2 log2f])
+AC_CHECK_FUNCS([erf erff erfc erfcf exp2f])
 
 ## Check for math defines such as M_LN2 in math.h
 AC_CACHE_CHECK([for MATH DEFINES in math.h],

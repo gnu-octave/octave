@@ -222,7 +222,7 @@ namespace octave
     }
 
     double log2 (double x) { return std::log2 (x); }
-    float log2 (float x) { return std::log2 (x); }
+    float log2 (float x) { return std::log2f (x); }
 
     Complex
     log2 (const Complex& x)

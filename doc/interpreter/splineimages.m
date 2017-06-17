@@ -33,6 +33,8 @@ function splineimages (d, nm, typ)
   if (strcmp (typ, "txt"))
     image_as_txt (d, nm);
   elseif (strcmp (nm, "splinefit1")) ## Breaks and Pieces
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * rand (1, 200);
     y = sin (x) + sin (2 * x) + 0.2 * randn (size (x));
     ## Uniform breaks
@@ -51,6 +53,8 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit2")) ## Spline orders
     ## Data (200 points)
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * rand (1, 200);
     y = sin (x) + sin (2 * x) + 0.1 * randn (size (x));
     ## Splines
@@ -73,6 +77,8 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit3"))
     ## Data (100 points)
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * [0, (rand (1, 98)), 1];
     y = sin (x) - cos (2 * x) + 0.2 * randn (size (x));
     ## No constraints
@@ -90,6 +96,8 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit4"))
     ## Data (200 points)
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * rand (1, 200);
     y = sin (2 * x) + 0.1 * randn (size (x));
     ## Breaks
@@ -134,6 +142,7 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit6"))
     ## Data
+    randn ("state", 1);
     x = linspace (0, 2*pi, 200);
     y = sin (x) + sin (2 * x) + 0.05 * randn (size (x));
     ## Add outliers

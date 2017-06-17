@@ -133,29 +133,9 @@ namespace octave
 #endif
     }
 
-    double
-    erf (double x)
-    {
-#if defined (HAVE_ERF)
-      return ::erf (x);
-#else
-      double retval;
-      F77_XFCN (xderf, XDERF, (x, retval));
-      return retval;
-#endif
-    }
+    double erf (double x) { return std::erf (x); }
 
-    float
-    erf (float x)
-    {
-#if defined (HAVE_ERFF)
-      return erff (x);
-#else
-      float retval;
-      F77_XFCN (xerf, XERF, (x, retval));
-      return retval;
-#endif
-    }
+    float erf (float x) { return std::erff (x); }
 
     // Complex error function from the Faddeeva package
     Complex
@@ -172,29 +152,9 @@ namespace octave
       return FloatComplex (ret.real (), ret.imag ());
     }
 
-    double
-    erfc (double x)
-    {
-#if defined (HAVE_ERFC)
-      return ::erfc (x);
-#else
-      double retval;
-      F77_XFCN (xderfc, XDERFC, (x, retval));
-      return retval;
-#endif
-    }
+    double erfc (double x) { return std::erfc (x); }
 
-    float
-    erfc (float x)
-    {
-#if defined (HAVE_ERFCF)
-      return erfcf (x);
-#else
-      float retval;
-      F77_XFCN (xerfc, XERFC, (x, retval));
-      return retval;
-#endif
-    }
+    float erfc (float x) { return std::erfcf (x); }
 
     // Complex complementary error function from the Faddeeva package
     Complex
@@ -211,7 +171,7 @@ namespace octave
       return FloatComplex (ret.real (), ret.imag ());
     }
 
-    // Real and complex scaled complementary error function from Faddeeva package
+    // Real and complex scaled complementary error function from Faddeeva pkg.
     float erfcx (float x) { return Faddeeva::erfcx(x); }
     double erfcx (double x) { return Faddeeva::erfcx(x); }
 
@@ -225,7 +185,8 @@ namespace octave
     erfcx (const FloatComplex& x)
     {
       Complex xd (x.real (), x.imag ());
-      Complex ret = Faddeeva::erfcx (xd, std::numeric_limits<float>::epsilon ());
+      Complex ret;
+      ret = Faddeeva::erfcx (xd, std::numeric_limits<float>::epsilon ());
       return FloatComplex (ret.real (), ret.imag ());
     }
 
@@ -261,7 +222,8 @@ namespace octave
     dawson (const FloatComplex& x)
     {
       Complex xd (x.real (), x.imag ());
-      Complex ret = Faddeeva::Dawson (xd, std::numeric_limits<float>::epsilon ());
+      Complex ret;
+      ret = Faddeeva::Dawson (xd, std::numeric_limits<float>::epsilon ());
       return FloatComplex (ret.real (), ret.imag ());
     }
 

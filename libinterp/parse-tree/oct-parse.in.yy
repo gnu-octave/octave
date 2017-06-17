@@ -4756,7 +4756,8 @@ namespace octave
 
     static std::map<std::string, int> source_call_depth;
 
-    std::string file_full_name = octave::sys::file_ops::tilde_expand (file_name);
+    std::string file_full_name
+      = octave::sys::file_ops::tilde_expand (file_name);
 
     file_full_name = octave::sys::env::make_absolute (file_full_name);
 
@@ -4787,11 +4788,10 @@ namespace octave
       }
 
     octave_function *fcn = 0;
-    // Don't delete a function already in symbol_table
-    bool delete_fcn = false;
 
     // Find symbol name that would be in symbol_table, if it were loaded.
-    size_t dir_end = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+    size_t dir_end
+      = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
     dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
 
     size_t extension = file_name.find_last_of ('.');
@@ -4803,28 +4803,37 @@ namespace octave
 
     // Check if this file is already loaded (or in the path)
     symbol_table& symtab = octave::__get_symbol_table__ ("source_file");
-    octave_value loaded_sym = symtab.find (symbol);
-    if (loaded_sym.is_function ())
+    octave_value ov_code = symtab.find (symbol);
+    if (ov_code.is_function ())
       {
-        fcn = loaded_sym.function_value ();
+        fcn = ov_code.function_value ();
+
         if (fcn)
           {
             if (octave::sys::canonicalize_file_name (fcn->fcn_file_name ())
                 != full_name)
               {
-                fcn = 0;             // wrong file, so load it below
-                delete_fcn = true;   // and delete it when done.
+                // wrong file, so load it below.
+                fcn = 0;
               }
           }
       }
 
-    // If no symbol of this name, or the symbol is for a different file, load
+    // If no symbol of this name, or the symbol is for a different
+    // file, load.
+
     if (! fcn)
       {
         try
           {
             fcn = parse_fcn_file (file_full_name, file_name, "", "",
                                   require_file, true, false, false, warn_for);
+
+            if (fcn)
+              {
+                // Ensure that FCN will be deleted.
+                ov_code = octave_value (fcn);
+              }
           }
         catch (octave::execution_exception& e)
           {
@@ -4838,11 +4847,7 @@ namespace octave
       return;
 
     if (! fcn->is_user_code ())
-      {
-        if (delete_fcn)
-          delete fcn;
-        error ("source: %s is not a script", full_name.c_str ());
-      }
+      error ("source: %s is not a script", full_name.c_str ());
 
     if (verbose)
       {
@@ -4856,10 +4861,6 @@ namespace octave
 
     if (verbose)
       std::cout << "done." << std::endl;
-
-    // Delete scripts not on the path, so they don't shadow ones that are.
-    if (delete_fcn)
-      delete fcn;
   }
 }
 

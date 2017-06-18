@@ -436,7 +436,7 @@ list1           : statement
                 ;
 
 opt_fcn_list    : // empty
-                  { $$ = 0; }
+                  { $$ = new octave::tree_statement_list (); }
                 | fcn_list
                   { $$ = $1; }
                 ;

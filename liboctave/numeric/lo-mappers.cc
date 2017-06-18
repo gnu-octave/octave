@@ -274,37 +274,8 @@ namespace octave
       return (ax != lax) ? (x / ax) * lax : x;
     }
 
-    double
-    exp2 (double x)
-    {
-#if defined (HAVE_EXP2)
-      return ::exp2 (x);
-#else
-#  if defined (M_LN2)
-      static double ln2 = M_LN2;
-#  else
-      static double ln2 = std::log (2.0);
-#  endif
-      return exp (x * ln2);
-#endif
-    }
-
-    float
-    exp2 (float x)
-    {
-#if defined (HAVE_EXP2F)
-      return exp2f (x);
-#elif defined (HAVE_EXP2)
-      return ::exp2 (x);
-#else
-#  if defined (M_LN2)
-      static float ln2 = M_LN2;
-#  else
-      static float ln2 = log2 (2.0f);
-#  endif
-      return exp (x * ln2);
-#endif
-    }
+    double exp2 (double x) { return std::exp2 (x); }
+    float exp2 (float x) { return std::exp2f (x); }
 
     double copysign (double x, double y) { return std::copysign (x, y); }
     float copysign (float x, float y) { return std::copysign (x, y); }

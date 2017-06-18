@@ -2422,14 +2422,11 @@ AC_CHECK_FUNCS([modf pow sqrt sqrtf], [],
 
 ## exp2, round, tgamma function checks
 AC_LANG_PUSH(C++)
-AC_CHECK_DECLS([exp2, round, tgamma], [], [], [[#include <cmath>]])
-AC_CHECK_FUNCS([exp2 round tgamma])
+AC_CHECK_DECLS([round, tgamma], [], [], [[#include <cmath>]])
+AC_CHECK_FUNCS([round tgamma])
 AH_VERBATIM([Z_FUNCS_AND_DECLS], [
 #if defined (__cplusplus)
 extern "C" {
-#endif
-#if HAVE_EXP2 && ! HAVE_DECL_EXP2
-double exp2 (double);
 #endif
 #if HAVE_ROUND && ! HAVE_DECL_ROUND
 double round (double);
@@ -2451,11 +2448,6 @@ OCTAVE_CHECK_FUNC_COMPLEX(asin)
 OCTAVE_CHECK_FUNC_COMPLEX(asinh)
 OCTAVE_CHECK_FUNC_COMPLEX(atan)
 OCTAVE_CHECK_FUNC_COMPLEX(atanh)
-
-## Check for nonstandard, but common math functions, that we need.
-
-dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_FUNCS([exp2f])
 
 ## Check for math defines such as M_LN2 in math.h
 AC_CACHE_CHECK([for MATH DEFINES in math.h],

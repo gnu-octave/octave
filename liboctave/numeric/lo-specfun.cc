@@ -381,43 +381,7 @@ namespace octave
         return result;
     }
 
-    double
-    expm1 (double x)
-    {
-#if defined (HAVE_EXPM1)
-      return ::expm1 (x);
-#else
-      double retval;
-
-      double ax = fabs (x);
-
-      if (ax < 0.1)
-        {
-          ax /= 16;
-
-          // use Taylor series to calculate exp(x)-1.
-          double t = ax;
-          double s = 0;
-          for (int i = 2; i < 7; i++)
-            s += (t *= ax/i);
-          s += ax;
-
-          // use the identity (a+1)^2-1 = a*(a+2)
-          double e = s;
-          for (int i = 0; i < 4; i++)
-            {
-              s *= e + 2;
-              e *= e + 2;
-            }
-
-          retval = (x > 0) ? s : -s / (1+s);
-        }
-      else
-        retval = exp (x) - 1;
-
-      return retval;
-#endif
-    }
+    double expm1 (double x) { return std::expm1 (x); }
 
     Complex
     expm1 (const Complex& x)
@@ -438,43 +402,7 @@ namespace octave
       return retval;
     }
 
-    float
-    expm1 (float x)
-    {
-#if defined (HAVE_EXPM1F)
-      return expm1f (x);
-#else
-      float retval;
-
-      float ax = fabs (x);
-
-      if (ax < 0.1)
-        {
-          ax /= 16;
-
-          // use Taylor series to calculate exp(x)-1.
-          float t = ax;
-          float s = 0;
-          for (int i = 2; i < 7; i++)
-            s += (t *= ax/i);
-          s += ax;
-
-          // use the identity (a+1)^2-1 = a*(a+2)
-          float e = s;
-          for (int i = 0; i < 4; i++)
-            {
-              s *= e + 2;
-              e *= e + 2;
-            }
-
-          retval = (x > 0) ? s : -s / (1+s);
-        }
-      else
-        retval = exp (x) - 1;
-
-      return retval;
-#endif
-    }
+    float expm1 (float x) { return std::expm1f (x); }
 
     FloatComplex
     expm1 (const FloatComplex& x)

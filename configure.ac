@@ -2404,7 +2404,7 @@ dnl These checks define/undefine HAVE_FUNCNAME in config.h.
 dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
 AC_CHECK_FUNCS([ctermid dup2])
-AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
+AC_CHECK_FUNCS([endgrent endpwent execvp fork])
 AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
 AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
 AC_CHECK_FUNCS([isascii kill])

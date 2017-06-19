@@ -377,6 +377,7 @@ namespace octave
       m_load_path (),
       m_symbol_table (),
       m_evaluator (*this),
+      m_cdef_manager (*this),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != 0),
@@ -439,7 +440,7 @@ namespace octave
 
     install_builtins ();
 
-    install_classdef (*this);
+    m_cdef_manager.initialize ();
 
     bool line_editing = false;
     bool traditional = false;

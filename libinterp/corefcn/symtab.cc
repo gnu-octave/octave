@@ -583,8 +583,10 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
     retval = load_class_constructor ();
   else
     {
-      octave_function *cm = cdef_manager::find_method_symbol (name,
-                                                              dispatch_type);
+      cdef_manager& cdm
+        = octave::__get_cdef_manager__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
+
+      octave_function *cm = cdm.find_method_symbol (name, dispatch_type);
 
       if (cm)
         retval = octave_value (cm);
@@ -1187,8 +1189,10 @@ symbol_table::fcn_info::fcn_info_rep::find_package (void)
 
   if (package.is_undefined ())
     {
-      octave_function *fcn =
-        cdef_manager::find_package_symbol (full_name ());
+      cdef_manager& cdm
+        = octave::__get_cdef_manager__ ("symbol_table::fcn_info::fcn_info_rep::find_package");
+
+      octave_function *fcn = cdm.find_package_symbol (full_name ());
 
       if (fcn)
         package = octave_value (fcn);

@@ -10,7 +10,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 
 Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
+qWITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-refcount.h"
 #include "ov-base.h"
-#include "symtab.h"
 
 class cdef_object;
 class cdef_class;
@@ -56,7 +55,11 @@ public:
   friend class cdef_object;
 
 public:
-  cdef_object_rep (void) : refcount (1) { }
+
+  cdef_object_rep (void) : refcount (1)
+  { }
+
+  cdef_object_rep& operator = (const cdef_object_rep&) = delete;
 
   virtual ~cdef_object_rep (void) = default;
 
@@ -169,17 +172,19 @@ public:
   virtual dim_vector dims (void) const { return dim_vector (); }
 
 protected:
+
   // Reference count
   octave::refcount<octave_idx_type> refcount;
 
 protected:
-  // Restricted copying
+
+  // Restricted copying.
+
   cdef_object_rep (const cdef_object_rep&)
-    : refcount (1) { }
+    : refcount (1)
+  { }
 
 private:
-  // No assignment
-  cdef_object_rep& operator = (const cdef_object_rep& );
 
   OCTAVE_NORETURN void err_invalid_object (const char *who) const
   { error ("%s: invalid object", who); }
@@ -194,10 +199,7 @@ public:
     : rep (new cdef_object_rep ()) { }
 
   cdef_object (const cdef_object& obj)
-    : rep (obj.rep)
-  {
-    rep->refcount++;
-  }
+    : rep (obj.rep) { rep->refcount++; }
 
   cdef_object (cdef_object_rep *r)
     : rep (r) { }
@@ -566,13 +568,13 @@ public:
   cdef_meta_object (void)
     : cdef_object () { }
 
+  // Object consistency is checked in sub-classes.
   cdef_meta_object (const cdef_meta_object& obj)
     : cdef_object (obj) { }
 
   cdef_meta_object (cdef_meta_object_rep *r)
     : cdef_object (r) { }
 
-  // Object consistency is checked in sub-classes.
   cdef_meta_object (const cdef_object& obj)
     : cdef_object (obj) { }
 
@@ -860,11 +862,6 @@ public:
 
   bool is_meta_class (void) const { return get_rep ()->is_meta_class (); }
 
-  static const cdef_class& meta_class (void) { return _meta_class; }
-  static const cdef_class& meta_property (void) { return _meta_property; }
-  static const cdef_class& meta_method (void) { return _meta_method; }
-  static const cdef_class& meta_package (void) { return _meta_package; }
-
   void register_object (void) { get_rep ()->register_object (); }
 
   void unregister_object (void) { get_rep ()->unregister_object (); }
@@ -887,11 +884,6 @@ private:
   friend bool operator == (const cdef_class&, const cdef_class&);
   friend bool operator != (const cdef_class&, const cdef_class&);
   friend bool operator < (const cdef_class&, const cdef_class&);
-
-  static cdef_class _meta_class;
-  static cdef_class _meta_property;
-  static cdef_class _meta_method;
-  static cdef_class _meta_package;
 
   friend void install_classdef (octave::interpreter& interp);
 };
@@ -1376,16 +1368,12 @@ public:
 
   octave_value find (const std::string& nm) { return get_rep ()->find (nm); }
 
-  static const cdef_package& meta (void) { return _meta; }
-
 private:
   cdef_package_rep * get_rep (void)
   { return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ()); }
 
   const cdef_package_rep * get_rep (void) const
   { return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ()); }
-
-  static cdef_package _meta;
 
   friend void install_classdef (octave::interpreter& interp);
 };
@@ -1523,135 +1511,77 @@ cdef_manager
 {
 public:
 
-  static cdef_class find_class (const std::string& name,
-                                bool error_if_not_found = true,
-                                bool load_if_not_found = true)
-  {
-    if (instance_ok ())
-      return instance->do_find_class (name, error_if_not_found,
-                                      load_if_not_found);
+  cdef_manager (octave::interpreter& interp)
+    : m_interpreter (interp), m_all_classes (), m_all_packages (),
+      m_meta_class (), m_meta_property (), m_meta_method (),
+      m_meta_package (), m_meta ()
+  { }
 
-    return cdef_class ();
-  }
+  // No copying!
 
-  static octave_function * find_method_symbol (const std::string& method_name,
-      const std::string& class_name)
-  {
-    if (instance_ok ())
-      return instance->do_find_method_symbol (method_name, class_name);
+  cdef_manager (const cdef_manager&) = delete;
 
-    return 0;
-  }
-
-  static cdef_package find_package (const std::string& name,
-                                    bool error_if_not_found = true,
-                                    bool load_if_not_found = true)
-  {
-    if (instance_ok ())
-      return instance->do_find_package (name, error_if_not_found,
-                                        load_if_not_found);
-
-    return cdef_package ();
-  }
-
-  static octave_function * find_package_symbol (const std::string& pack_name)
-  {
-    if (instance_ok ())
-      return instance->do_find_package_symbol (pack_name);
-
-    return 0;
-  }
-
-  static void register_class (const cdef_class& cls)
-  {
-    if (instance_ok ())
-      instance->do_register_class (cls);
-  }
-
-  static void unregister_class (const cdef_class& cls)
-  {
-    if (instance_ok ())
-      instance->do_unregister_class (cls);
-  }
-
-  static void register_package (const cdef_package& pkg)
-  {
-    if (instance_ok ())
-      instance->do_register_package (pkg);
-  }
-
-  static void unregister_package (const cdef_package& pkg)
-  {
-    if (instance_ok ())
-      instance->do_unregister_package (pkg);
-  }
-
-private:
-
-  cdef_manager (void) { }
-
-  cdef_manager (const cdef_manager&);
-
-  cdef_manager& operator = (const cdef_manager&);
+  cdef_manager& operator = (const cdef_manager&) = delete;
 
   ~cdef_manager (void) = default;
 
-  static void create_instance (void);
+  void initialize (void);
 
-  static bool instance_ok (void)
+  cdef_class find_class (const std::string& name, bool error_if_not_found = true,
+                         bool load_if_not_found = true);
+
+  octave_function * find_method_symbol (const std::string& method_name,
+                                        const std::string& class_name);
+
+  cdef_package find_package (const std::string& name,
+                             bool error_if_not_found = true,
+                             bool load_if_not_found = true);
+
+  octave_function * find_package_symbol (const std::string& pack_name);
+
+  void register_class (const cdef_class& cls)
   {
-    bool retval = true;
-
-    if (! instance)
-      create_instance ();
-
-    if (! instance)
-      error ("unable to create cdef_manager!");
-
-    return retval;
+    m_all_classes[cls.get_name ()] = cls;
   }
 
-  static void cleanup_instance (void)
+  void unregister_class (const cdef_class& cls)
   {
-    delete instance;
-
-    instance = 0;
+    m_all_classes.erase(cls.get_name ());
   }
 
-  cdef_class do_find_class (const std::string& name, bool error_if_not_found,
-                            bool load_if_not_found);
+  void register_package (const cdef_package& pkg)
+  {
+    m_all_packages[pkg.get_name ()] = pkg;
+  }
 
-  octave_function * do_find_method_symbol (const std::string& method_name,
-                                           const std::string& class_name);
+  void unregister_package (const cdef_package& pkg)
+  {
+    m_all_packages.erase (pkg.get_name ());
+  }
 
-  cdef_package do_find_package (const std::string& name,
-                                bool error_if_not_found,
-                                bool load_if_not_found);
+  const cdef_class& meta_class (void) const { return m_meta_class; }
+  const cdef_class& meta_property (void) const { return m_meta_property; }
+  const cdef_class& meta_method (void) const { return m_meta_method; }
+  const cdef_class& meta_package (void) const { return m_meta_package; }
 
-  octave_function * do_find_package_symbol (const std::string& pack_name);
-
-  void do_register_class (const cdef_class& cls)
-  { all_classes[cls.get_name ()] = cls; }
-
-  void do_unregister_class (const cdef_class& cls)
-  { all_classes.erase(cls.get_name ()); }
-
-  void do_register_package (const cdef_package& pkg)
-  { all_packages[pkg.get_name ()] = pkg; }
-
-  void do_unregister_package (const cdef_package& pkg)
-  { all_packages.erase(pkg.get_name ()); }
+  const cdef_package& meta (void) const { return m_meta; }
 
 private:
 
-  // The single cdef_manager instance
-  static cdef_manager *instance;
+  octave::interpreter& m_interpreter;
 
   // All registered/loaded classes
-  std::map<std::string, cdef_class> all_classes;
+  std::map<std::string, cdef_class> m_all_classes;
 
   // All registered/loaded packages
-  std::map<std::string, cdef_package> all_packages;
+  std::map<std::string, cdef_package> m_all_packages;
+
+  cdef_class m_meta_class;
+  cdef_class m_meta_property;
+  cdef_class m_meta_method;
+  cdef_class m_meta_package;
+
+  cdef_package m_meta;
 };
 
 #endif

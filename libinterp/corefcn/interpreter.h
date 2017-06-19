@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dynamic-ld.h"
 #include "load-path.h"
+#include "ov-classdef.h"
 #include "pt-eval.h"
 #include "symtab.h"
 
@@ -158,6 +159,11 @@ namespace octave
 
     tree_evaluator& get_evaluator (void);
 
+    cdef_manager& get_cdef_manager (void)
+    {
+      return m_cdef_manager;
+    }
+
     static void recover_from_exception (void);
 
     static void add_atexit_function (const std::string& fname);
@@ -195,6 +201,8 @@ namespace octave
     symbol_table m_symbol_table;
 
     tree_evaluator m_evaluator;
+
+    cdef_manager m_cdef_manager;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

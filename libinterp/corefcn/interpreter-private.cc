@@ -28,9 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "error.h"
-#include "load-path.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "load-path.h"
+#include "ov-classdef.h"
 #include "symtab.h"
 
 namespace octave
@@ -98,5 +99,12 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_call_stack ();
+  }
+
+  cdef_manager& __get_cdef_manager__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_cdef_manager ();
   }
 }

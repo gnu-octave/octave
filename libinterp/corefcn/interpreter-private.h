@@ -29,13 +29,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "symtab.h"
 
+class cdef_manager;
+
 namespace octave
 {
-  class call_stack;
   class interpreter;
   class dynamic_loader;
   class load_path;
   class tree_evaluator;
+  class call_stack;
 
   extern interpreter& __get_interpreter__ (const std::string& who);
 
@@ -53,6 +55,8 @@ namespace octave
   extern tree_evaluator& __get_evaluator__ (const std::string& who);
 
   extern call_stack& __get_call_stack__ (const std::string& who);
+
+  extern cdef_manager& __get_cdef_manager__ (const std::string& who);
 }
 
 #endif

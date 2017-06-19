@@ -92,8 +92,6 @@ octdata_DATA =
 octetc_DATA =
 octlocale_DATA =
 
-ACLOCAL_AMFLAGS = -I m4
-
 DOC_TARGETS =
 
 BUILT_DISTFILES =

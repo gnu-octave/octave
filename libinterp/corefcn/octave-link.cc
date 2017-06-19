@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "octave-link.h"
 #include "pager.h"
-#include "singleton-cleanup.h"
 
 static int
 octave_readline_hook (void)

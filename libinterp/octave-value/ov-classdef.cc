@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-misc.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
-#include "singleton-cleanup.h"
 #include "symtab.h"
 
 // Define to 1 to enable debugging statements.

@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "oct-env.h"
 #include "oct-time.h"
-#include "singleton-cleanup.h"
 
 #include "bp-table.h"
 #include "defun.h"

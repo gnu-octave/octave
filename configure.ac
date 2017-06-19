@@ -2411,30 +2411,13 @@ AC_CHECK_FUNCS([isascii kill])
 AC_CHECK_FUNCS([lgamma lgammaf lgamma_r lgammaf_r])
 AC_CHECK_FUNCS([realpath resolvepath])
 AC_CHECK_FUNCS([select setgrent setpwent setsid siglongjmp strsignal])
-AC_CHECK_FUNCS([tcgetattr tcsetattr tgammaf toascii])
+AC_CHECK_FUNCS([tcgetattr tcsetattr toascii])
 AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_getch _kbhit])
 
 dnl There are no workarounds in the code for missing these functions.
 AC_CHECK_FUNCS([sqrt sqrtf], [],
                [AC_MSG_ERROR([Missing function required to build Octave])])
-
-## exp2, round, tgamma function checks
-AC_LANG_PUSH(C++)
-AC_CHECK_DECLS([tgamma], [], [], [[#include <cmath>]])
-AC_CHECK_FUNCS([tgamma])
-AH_VERBATIM([Z_FUNCS_AND_DECLS], [
-#if defined (__cplusplus)
-extern "C" {
-#endif
-#if HAVE_TGAMMA && ! HAVE_DECL_TGAMMA
-double tgamma (double);
-#endif
-#if defined (__cplusplus)
-}
-#endif
-])
-AC_LANG_POP(C++)
 
 ## Look in <complex> for C++ variants of math functions that we need.
 

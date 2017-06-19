@@ -232,25 +232,20 @@ namespace octave
     {
       double result;
 
-      // Special cases for (near) compatibility with Matlab instead of
-      // tgamma.  Matlab does not have -0.
+      // Special cases for (near) compatibility with Matlab instead of tgamma.
+      // Matlab does not have -0.
 
       if (x == 0)
         result = (octave::math::negative_sign (x)
                   ? -octave::numeric_limits<double>::Inf ()
                   : octave::numeric_limits<double>::Inf ());
-      else if ((x < 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
+      else if ((x < 0 && octave::math::x_nint (x) == x)
+               || octave::math::isinf (x))
         result = octave::numeric_limits<double>::Inf ();
       else if (octave::math::isnan (x))
         result = octave::numeric_limits<double>::NaN ();
       else
-        {
-#if defined (HAVE_TGAMMA)
-          result = tgamma (x);
-#else
-          F77_XFCN (xdgamma, XDGAMMA, (x, result));
-#endif
-        }
+        result = std::tgamma (x);
 
       return result;
     }
@@ -309,25 +304,20 @@ namespace octave
     {
       float result;
 
-      // Special cases for (near) compatibility with Matlab instead of
-      // tgamma.  Matlab does not have -0.
+      // Special cases for (near) compatibility with Matlab instead of tgamma.
+      // Matlab does not have -0.
 
       if (x == 0)
         result = (octave::math::negative_sign (x)
                   ? -octave::numeric_limits<float>::Inf ()
                   : octave::numeric_limits<float>::Inf ());
-      else if ((x < 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
+      else if ((x < 0 && octave::math::x_nint (x) == x)
+               || octave::math::isinf (x))
         result = octave::numeric_limits<float>::Inf ();
       else if (octave::math::isnan (x))
         result = octave::numeric_limits<float>::NaN ();
       else
-        {
-#if defined (HAVE_TGAMMA)
-          result = tgammaf (x);
-#else
-          F77_XFCN (xgamma, XGAMMA, (x, result));
-#endif
-        }
+        result = std::tgammaf (x);
 
       return result;
     }

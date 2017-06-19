@@ -4529,7 +4529,7 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
               if (octave::math::isnan (val) || octave::math::isinf (val))
                 epsval(i) = lo_ieee_nan_value ();
               else if (val < std::numeric_limits<double>::min ())
-                epsval(i) = pow (2.0, -1074e0);
+                epsval(i) = std::pow (2.0, -1074e0);
               else
                 {
                   int exponent;
@@ -6246,7 +6246,7 @@ doing nothing at all.
   if (nargout > 0)
     {
       double ip = 0.0;
-      double frac = modf (tmp, &ip);
+      double frac = std::modf (tmp, &ip);
       uint64_t microsecs = static_cast<uint64_t> (CLOCKS_PER_SEC * frac);
       microsecs += CLOCKS_PER_SEC * static_cast<uint64_t> (ip);
       retval = octave_uint64 (microsecs);

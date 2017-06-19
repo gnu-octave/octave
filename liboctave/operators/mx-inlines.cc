@@ -404,6 +404,7 @@ DEFMINMAXSPEC (double, mx_inline_xmax, >=)
 DEFMINMAXSPEC (float, mx_inline_xmin, <=)
 DEFMINMAXSPEC (float, mx_inline_xmax, >=)
 
+// FIXME: Is this comment correct anymore?  It seems like std::pow is chosen.
 // Let the compiler decide which pow to use, whichever best matches the
 // arguments provided.
 

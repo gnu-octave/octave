@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <cctype>
+#include <cmath>
 
 #include <algorithm>
 #include <list>
@@ -134,7 +135,7 @@ public:
   { return log10 (d); }
 
   double unscale (double d) const
-  { return pow (10.0, d); }
+  { return std::pow (10.0, d); }
 
   base_scaler * clone (void) const
   { return new log_scaler (); }
@@ -174,7 +175,7 @@ public:
   { return -log10 (-d); }
 
   double unscale (double d) const
-  { return -pow (10.0, -d); }
+  { return -std::pow (10.0, -d); }
 
   base_scaler * clone (void) const
   { return new neg_log_scaler (); }

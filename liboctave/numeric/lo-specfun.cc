@@ -3050,7 +3050,7 @@ namespace octave
 
       double beta = lgamma (p) + lgamma (q) - lgamma (p + q);
       bool err = false;
-      fpu = pow (10.0, sae);
+      fpu = std::pow (10.0, sae);
       value = y;
 
       //  Test for admissibility of parameters.
@@ -3099,7 +3099,7 @@ namespace octave
         {
           r = qq + qq;
           t = 1.0 / (9.0 * qq);
-          t = r * pow (1.0 - t + ycur * sqrt (t), 3);
+          t = r * std::pow (1.0 - t + ycur * sqrt (t), 3);
 
           if (t <= 0.0)
             {
@@ -3139,9 +3139,9 @@ namespace octave
           value = 0.9999;
         }
 
-      iex = std::max (- 5.0 / pp / pp - 1.0 / pow (a, 0.2) - 13.0, sae);
+      iex = std::max (- 5.0 / pp / pp - 1.0 / std::pow (a, 0.2) - 13.0, sae);
 
-      acu = pow (10.0, iex);
+      acu = std::pow (10.0, iex);
 
       for ( ; ; )
         {
@@ -3657,7 +3657,7 @@ namespace octave
           if (n > 1)
             // FIXME: xgamma here is a killer for our precision since it grows
             //        way too fast.
-            ans = ans / (pow (-1.0, n + 1) / gamma (double (n+1)));
+            ans = ans / (std::pow (-1.0, n + 1) / gamma (double (n+1)));
           else if (n == 0)
             ans = -ans;
         }

@@ -2417,7 +2417,7 @@ AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_getch _kbhit])
 
 dnl There are no workarounds in the code for missing these functions.
-AC_CHECK_FUNCS([modf pow sqrt sqrtf], [],
+AC_CHECK_FUNCS([sqrt sqrtf], [],
                [AC_MSG_ERROR([Missing function required to build Octave])])
 
 ## exp2, round, tgamma function checks

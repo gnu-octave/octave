@@ -7010,8 +7010,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               //        This is the *only* place where max_neg is needed.
               //        Is there another way?
               retval = default_lim ();
-              retval(0) = pow (10., retval(0));
-              retval(1) = pow (10., retval(1));
+              retval(0) = std::pow (10., retval(0));
+              retval(1) = std::pow (10., retval(1));
               return retval;
             }
           if (min_val <= 0 && max_val > 0)
@@ -7039,14 +7039,14 @@ axes::properties::get_axis_limits (double xmin, double xmax,
           if (min_val > 0)
             {
               // Log plots with all positive data
-              min_val = pow (10, std::floor (log10 (min_val)));
-              max_val = pow (10, std::ceil (log10 (max_val)));
+              min_val = std::pow (10, std::floor (log10 (min_val)));
+              max_val = std::pow (10, std::ceil (log10 (max_val)));
             }
           else
             {
               // Log plots with all negative data
-              min_val = -pow (10, std::ceil (log10 (-min_val)));
-              max_val = -pow (10, std::floor (log10 (-max_val)));
+              min_val = -std::pow (10, std::ceil (log10 (-min_val)));
+              max_val = -std::pow (10, std::floor (log10 (-max_val)));
             }
         }
       else

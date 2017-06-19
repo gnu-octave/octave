@@ -743,7 +743,7 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
 template <typename T>
 octave_int<T>
 pow (const double& a, const octave_int<T>& b)
-{ return octave_int<T> (pow (a, b.double_value ())); }
+{ return octave_int<T> (std::pow (a, b.double_value ())); }
 
 template <typename T>
 octave_int<T>
@@ -752,13 +752,13 @@ pow (const octave_int<T>& a, const double& b)
   return ((b >= 0 && b < std::numeric_limits<T>::digits
            && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
-          : octave_int<T> (pow (a.double_value (), b)));
+          : octave_int<T> (std::pow (a.double_value (), b)));
 }
 
 template <typename T>
 octave_int<T>
 pow (const float& a, const octave_int<T>& b)
-{ return octave_int<T> (pow (a, b.float_value ())); }
+{ return octave_int<T> (std::pow (a, b.float_value ())); }
 
 template <typename T>
 octave_int<T>
@@ -767,12 +767,12 @@ pow (const octave_int<T>& a, const float& b)
   return ((b >= 0 && b < std::numeric_limits<T>::digits
            && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
-          : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
+          : octave_int<T> (std::pow (a.double_value (),
+                                     static_cast<double> (b))));
 }
 
-// FIXME: Do we really need a differently named single-precision
-//        function integer power function here instead of an overloaded
-//        one?
+// FIXME: Do we really need a differently named single-precision function
+//        integer power function here instead of an overloaded one?
 template <typename T>
 octave_int<T>
 powf (const float& a, const octave_int<T>& b)
@@ -785,7 +785,8 @@ powf (const octave_int<T>& a, const float& b)
   return ((b >= 0 && b < std::numeric_limits<T>::digits
            && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
-          : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
+          : octave_int<T> (std::pow (a.double_value (),
+                                     static_cast<double> (b))));
 }
 
 #define INSTANTIATE_INTTYPE(T)                                          \

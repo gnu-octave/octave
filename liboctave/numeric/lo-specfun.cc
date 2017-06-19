@@ -423,31 +423,7 @@ namespace octave
       return retval;
     }
 
-    double
-    log1p (double x)
-    {
-#if defined (HAVE_LOG1P)
-      return ::log1p (x);
-#else
-      double retval;
-
-      double ax = fabs (x);
-
-      if (ax < 0.2)
-        {
-          // approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
-          double u = x / (2 + x), t = 1, s = 0;
-          for (int i = 2; i < 12; i += 2)
-            s += (t *= u*u) / (i+1);
-
-          retval = 2 * (s + 1) * u;
-        }
-      else
-        retval = std::log (1 + x);
-
-      return retval;
-#endif
-    }
+    double log1p (double x) { return std::log1p (x); }
 
     Complex
     log1p (const Complex& x)
@@ -470,31 +446,7 @@ namespace octave
 
     double cbrt (double x) { return std::cbrt (x); }
 
-    float
-    log1p (float x)
-    {
-#if defined (HAVE_LOG1PF)
-      return log1pf (x);
-#else
-      float retval;
-
-      float ax = fabs (x);
-
-      if (ax < 0.2)
-        {
-          // approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
-          float u = x / (2 + x), t = 1.0f, s = 0;
-          for (int i = 2; i < 12; i += 2)
-            s += (t *= u*u) / (i+1);
-
-          retval = 2 * (s + 1.0f) * u;
-        }
-      else
-        retval = std::log (1.0f + x);
-
-      return retval;
-#endif
-    }
+    float log1p (float x) { return std::log1pf (x); }
 
     FloatComplex
     log1p (const FloatComplex& x)

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
 #include <cstddef>
 
 #include "f77-fcn.h"
@@ -53,20 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 static double
 xlgamma (double x)
 {
-  double result;
-#if defined (HAVE_LGAMMA)
-  result = lgamma (x);
-#else
-  double sgngam;
-
-  if (lo_ieee_isnan (x))
-    result = x;
-  else if (x <= 0 || lo_ieee_isinf (x))
-    result = octave_Inf;
-  else
-    F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
-#endif
-  return result;
+  return std::lgamma (x);
 }
 
 /* ---- pprsc.c from Stadloeber's winrand --- */

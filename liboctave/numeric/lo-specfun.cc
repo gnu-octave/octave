@@ -250,25 +250,7 @@ namespace octave
       return result;
     }
 
-    double
-    lgamma (double x)
-    {
-#if defined (HAVE_LGAMMA)
-      return ::lgamma (x);
-#else
-      double result;
-      double sgngam;
-
-      if (octave::math::isnan (x))
-        result = x;
-      else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
-        result = octave::numeric_limits<double>::Inf ();
-      else
-        F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
-
-      return result;
-#endif
-    }
+    double lgamma (double x) { return std::lgamma (x); }
 
     Complex
     rc_lgamma (double x)
@@ -278,19 +260,9 @@ namespace octave
 #if defined (HAVE_LGAMMA_R)
       int sgngam;
       result = lgamma_r (x, &sgngam);
-#elif defined (HAVE_LGAMMA)
-      result = lgamma (x);
-      int sgngam = signgam;
 #else
-      double sgngam = 0.0;
-
-      if (octave::math::isnan (x))
-        result = x;
-      else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
-        result = octave::numeric_limits<double>::Inf ();
-      else
-        F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
-
+      result = std::lgamma (x);
+      int sgngam = signgam;
 #endif
 
       if (sgngam < 0)
@@ -322,25 +294,7 @@ namespace octave
       return result;
     }
 
-    float
-    lgamma (float x)
-    {
-#if defined (HAVE_LGAMMAF)
-      return lgammaf (x);
-#else
-      float result;
-      float sgngam;
-
-      if (octave::math::isnan (x))
-        result = x;
-      else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
-        result = octave::numeric_limits<float>::Inf ();
-      else
-        F77_XFCN (algams, ALGAMS, (x, result, sgngam));
-
-      return result;
-#endif
-    }
+    float lgamma (float x) { return std::lgammaf (x); }
 
     FloatComplex
     rc_lgamma (float x)
@@ -350,19 +304,9 @@ namespace octave
 #if defined (HAVE_LGAMMAF_R)
       int sgngam;
       result = lgammaf_r (x, &sgngam);
-#elif defined (HAVE_LGAMMAF)
-      result = lgammaf (x);
-      int sgngam = signgam;
 #else
-      float sgngam = 0.0f;
-
-      if (octave::math::isnan (x))
-        result = x;
-      else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
-        result = octave::numeric_limits<float>::Inf ();
-      else
-        F77_XFCN (algams, ALGAMS, (x, result, sgngam));
-
+      result = std::lgammaf (x);
+      int sgngam = signgam;
 #endif
 
       if (sgngam < 0)

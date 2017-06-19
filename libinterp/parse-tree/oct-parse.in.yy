@@ -3431,7 +3431,7 @@ namespace octave
         else if (curr_fcn_depth == 1)
           fcn_scope->update_nest ();
 
-        if (! (lexer.reading_classdef_file || lexer.reading_fcn_file))
+        if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
           {
             // We are either reading a script file or defining a function
             // at the command line, so this definition creates a

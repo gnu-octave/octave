@@ -1453,14 +1453,7 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
                     YYUSE ($2);
                     YYUSE ($5);
-
-                    // Delete the dummy statement_list we created
-                    // after parsing the function.  Any local function
-                    // definitions found in the file have already been
-                    // stored in the symbol table or in
-                    // base_parser::primary_fcn_ptr.
-
-                    delete $6;
+                    YYUSE ($6);
 
                     if (lexer.reading_classdef_file)
                       parser.classdef_object = $3;

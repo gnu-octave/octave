@@ -1383,11 +1383,14 @@ public:
   {
     std::list<symbol_record> retval;
 
+    if (! m_current_scope)
+      return retval;
+
     size_t len = patterns.numel ();
 
     for (size_t i = 0; i < len; i++)
       {
-        std::list<symbol_record> tmp = glob_variables (patterns[i]);
+        std::list<symbol_record> tmp = m_current_scope->glob (patterns[i]);
 
         retval.insert (retval.begin (), tmp.begin (), tmp.end ());
       }
@@ -1399,11 +1402,14 @@ public:
   {
     std::list<symbol_record> retval;
 
+    if (! m_current_scope)
+      return retval;
+
     size_t len = patterns.numel ();
 
     for (size_t i = 0; i < len; i++)
       {
-        std::list<symbol_record> tmp = regexp_variables (patterns[i]);
+        std::list<symbol_record> tmp = m_current_scope->regexp (patterns[i]);
 
         retval.insert (retval.begin (), tmp.begin (), tmp.end ());
       }

@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <cmath>
 #include <cstdlib>
 
 #include <iosfwd>
@@ -53,7 +54,7 @@ namespace octave
 {
   namespace math
   {
-    inline long double round (long double x) { return roundl (x); }
+    inline long double round (long double x) { return std::roundl (x); }
 
     inline long double isnan (long double x) { return isnan (static_cast<double> (x)); }
   }

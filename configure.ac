@@ -2421,14 +2421,11 @@ AC_CHECK_FUNCS([sqrt sqrtf], [],
 
 ## exp2, round, tgamma function checks
 AC_LANG_PUSH(C++)
-AC_CHECK_DECLS([round, tgamma], [], [], [[#include <cmath>]])
-AC_CHECK_FUNCS([round tgamma])
+AC_CHECK_DECLS([tgamma], [], [], [[#include <cmath>]])
+AC_CHECK_FUNCS([tgamma])
 AH_VERBATIM([Z_FUNCS_AND_DECLS], [
 #if defined (__cplusplus)
 extern "C" {
-#endif
-#if HAVE_ROUND && ! HAVE_DECL_ROUND
-double round (double);
 #endif
 #if HAVE_TGAMMA && ! HAVE_DECL_TGAMMA
 double tgamma (double);

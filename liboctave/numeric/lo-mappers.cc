@@ -293,7 +293,7 @@ namespace octave
     float floor (float x) { return std::floor (x); }
 
     double round (double x) { return std::round (x); }
-    float round (float x) { return std::round (x); }
+    float round (float x) { return std::roundf (x); }
 
     double frexp (double x, int *expptr)
     {

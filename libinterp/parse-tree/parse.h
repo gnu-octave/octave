@@ -534,7 +534,7 @@ namespace octave
   extern OCTINTERP_API string_vector
   reverse_lookup_autoload (const std::string& nm);
 
-  extern OCTINTERP_API octave_function *
+  extern OCTINTERP_API octave_value
   load_fcn_from_file (const std::string& file_name,
                       const std::string& dir_name = "",
                       const std::string& dispatch_type = "",
@@ -612,19 +612,6 @@ static inline string_vector
 reverse_lookup_autoload (const std::string& nm)
 {
   return octave::reverse_lookup_autoload (nm);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::load_fcn_from_file' instead")
-static inline octave_function *
-load_fcn_from_file (const std::string& file_name,
-                    const std::string& dir_name = "",
-                    const std::string& dispatch_type = "",
-                    const std::string& package_name = "",
-                    const std::string& fcn_name = "",
-                    bool autoload = false)
-{
-  return octave::load_fcn_from_file (file_name, dir_name, dispatch_type,
-                                     package_name, fcn_name, autoload);
 }
 
 OCTAVE_DEPRECATED (4.4, "use 'octave::source_file' instead")

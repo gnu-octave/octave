@@ -2981,13 +2981,13 @@ cdef_method::cdef_method_rep::check_method (void)
 
           if (! file_name.empty ())
             {
-              octave_function *fcn = octave::load_fcn_from_file (file_name, dir_name,
-                                                                 dispatch_type,
-                                                                 pack_name);
+              octave_value ov_fcn
+                = octave::load_fcn_from_file (file_name, dir_name,
+                                              dispatch_type, pack_name);
 
-              if (fcn)
+              if (ov_fcn.is_defined ())
                 {
-                  function = octave_value (fcn);
+                  function = ov_fcn;
 
                   make_function_of_class (dispatch_type, function);
                 }

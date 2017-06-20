@@ -269,15 +269,13 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
 
           std::string dir_name = str.substr (0, xpos);
 
-          octave_function *xfcn
+          octave_value ov_fcn
             = octave::load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (! xfcn)
+          if (ov_fcn.is_undefined ())
             error ("function handle points to non-existent function");
 
-          octave_value tmp (xfcn);
-
-          fcn = octave_value (new octave_fcn_handle (tmp, nm));
+          fcn = octave_value (new octave_fcn_handle (ov_fcn, nm));
         }
       else
         {
@@ -297,14 +295,13 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
 
           std::string dir_name = str.substr (0, xpos);
 
-          octave_function *xfcn = octave::load_fcn_from_file (str, dir_name, "", "", nm);
+          octave_value ov_fcn
+            = octave::load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (! xfcn)
+          if (ov_fcn.is_undefined ())
             error ("function handle points to non-existent function");
 
-          octave_value tmp (xfcn);
-
-          fcn = octave_value (new octave_fcn_handle (tmp, nm));
+          fcn = octave_value (new octave_fcn_handle (ov_fcn, nm));
         }
     }
   else
@@ -315,14 +312,13 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
 
           std::string dir_name = fpath.substr (0, xpos);
 
-          octave_function *xfcn = octave::load_fcn_from_file (fpath, dir_name, "", "", nm);
+          octave_value ov_fcn
+            = octave::load_fcn_from_file (fpath, dir_name, "", "", nm);
 
-          if (! xfcn)
+          if (ov_fcn.is_undefined ())
             error ("function handle points to non-existent function");
 
-          octave_value tmp (xfcn);
-
-          fcn = octave_value (new octave_fcn_handle (tmp, nm));
+          fcn = octave_value (new octave_fcn_handle (ov_fcn, nm));
         }
       else
         {

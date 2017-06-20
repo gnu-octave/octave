@@ -4304,13 +4304,15 @@ safe_fclose (FILE *f)
     fclose (static_cast<FILE *> (f));
 }
 
-static octave_function *
+static octave_value
 parse_fcn_file (const std::string& full_file, const std::string& file,
                 const std::string& dispatch_type,
                 const std::string& package_name,
                 bool require_file, bool force_script, bool autoload,
                 bool relative_lookup, const std::string& warn_for)
 {
+  octave_value retval;
+
   octave::unwind_protect frame;
 
   octave_function *fcn_ptr = 0;
@@ -4372,6 +4374,8 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
               fcn_ptr
                 = parser.classdef_object->make_meta_class (interp, is_at_folder);
+              if (fcn_ptr)
+                retval = octave_value (fcn_ptr);
 
               delete (parser.classdef_object);
 
@@ -4379,6 +4383,8 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
             }
           else if (fcn_ptr)
             {
+              retval = octave_value (fcn_ptr);
+
               fcn_ptr->maybe_relocate_end ();
 
               if (parser.parsing_subfunctions)
@@ -4399,7 +4405,7 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
     error ("%s: unable to open file '%s'", warn_for.c_str (),
            full_file.c_str ());
 
-  return fcn_ptr;
+  return retval;
 }
 
 namespace octave
@@ -4432,15 +4438,16 @@ namespace octave
       {
         symbol_found = true;
 
-        octave_function *fcn
+        octave_value ov_fcn
           = parse_fcn_file (full_file, file, "", "", true, false, false, false,
                             "");
 
-        if (fcn)
+        if (ov_fcn.is_defined ())
           {
-            retval = fcn->doc_string ();
+            octave_function *fcn = ov_fcn.function_value ();
 
-            delete fcn;
+            if (fcn)
+              retval = fcn->doc_string ();
           }
       }
 
@@ -4497,13 +4504,13 @@ namespace octave
     return names;
   }
 
-  octave_function *
+  octave_value
   load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
                       const std::string& dispatch_type,
                       const std::string& package_name,
                       const std::string& fcn_name, bool autoload)
   {
-    octave_function *retval = 0;
+    octave_value retval;
 
     octave::unwind_protect frame;
 
@@ -4543,24 +4550,40 @@ namespace octave
         if (autoload && ! fcn_name.empty ())
           nm = fcn_name;
 
-        retval = dyn_loader.load_oct (nm, file, relative_lookup);
+        octave_function *tmpfcn
+          = dyn_loader.load_oct (nm, file, relative_lookup);
+
+        retval = octave_value (tmpfcn);
       }
     else if (len > 4 && file.substr (len-4, len-1) == ".mex")
       {
         // Temporarily load m-file version of mex-file, if it exists,
         // to get the help-string to use.
 
-        octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
-                                                  nm, dispatch_type,
-                                                  package_name, false,
-                                                  autoload, autoload,
-                                                  relative_lookup, "");
+        std::string doc_string;
 
-        retval = dyn_loader.load_mex (nm, file, relative_lookup);
+        octave_value ov_fcn
+          = parse_fcn_file (file.substr (0, len - 2), nm, dispatch_type,
+                            package_name, false, autoload, autoload,
+                            relative_lookup, "");
+
+        if (ov_fcn.is_defined ())
+          {
+            octave_function *tmpfcn = ov_fcn.function_value ();
+
+            if (tmpfcn)
+              doc_string = tmpfcn->doc_string ();
+          }
+
+        octave_function *tmpfcn
+          = dyn_loader.load_mex (nm, file, relative_lookup);
 
         if (tmpfcn)
-          retval->document (tmpfcn->doc_string ());
-        delete tmpfcn;
+          {
+            tmpfcn->document (doc_string);
+
+            retval = octave_value (tmpfcn);
+          }
       }
     else if (len > 2)
       {
@@ -4568,16 +4591,22 @@ namespace octave
                                  autoload, autoload, relative_lookup, "");
       }
 
-    if (retval)
+    if (retval.is_defined ())
       {
-        retval->stash_dir_name (dir_name);
-        retval->stash_package_name (package_name);
+        octave_function *tmpfcn = retval.function_value ();
 
-        if (retval->is_user_function ())
+        if (tmpfcn)
           {
-            symbol_table::scope *scope = retval->scope ();
+            tmpfcn->stash_dir_name (dir_name);
+            tmpfcn->stash_package_name (package_name);
 
-            scope->stash_dir_name_for_subfunctions (dir_name);
+            if (tmpfcn->is_user_function ())
+              {
+                symbol_table::scope *scope = tmpfcn->scope ();
+
+                if (scope)
+                  scope->stash_dir_name_for_subfunctions (dir_name);
+              }
           }
       }
 
@@ -4780,8 +4809,6 @@ namespace octave
         frame.add_method (cs, &octave::call_stack::pop);
       }
 
-    octave_function *fcn = 0;
-
     // Find symbol name that would be in symbol_table, if it were loaded.
     size_t dir_end
       = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
@@ -4797,36 +4824,35 @@ namespace octave
     // Check if this file is already loaded (or in the path)
     symbol_table& symtab = octave::__get_symbol_table__ ("source_file");
     octave_value ov_code = symtab.find (symbol);
-    if (ov_code.is_function ())
-      {
-        fcn = ov_code.function_value ();
 
-        if (fcn)
+    if (ov_code.is_user_script ())
+      {
+        octave_user_script *script = ov_code.user_script_value ();
+
+        if (! script
+            || (octave::sys::canonicalize_file_name (script->fcn_file_name ())
+                != full_name))
           {
-            if (octave::sys::canonicalize_file_name (fcn->fcn_file_name ())
-                != full_name)
-              {
-                // wrong file, so load it below.
-                fcn = 0;
-              }
+            // Wrong file, so load it below.
+            ov_code = octave_value ();
           }
+      }
+    else
+      {
+        // Not a script, so load it below.
+        ov_code = octave_value ();
       }
 
     // If no symbol of this name, or the symbol is for a different
     // file, load.
 
-    if (! fcn)
+    if (ov_code.is_undefined ())
       {
         try
           {
-            fcn = parse_fcn_file (file_full_name, file_name, "", "",
-                                  require_file, true, false, false, warn_for);
-
-            if (fcn)
-              {
-                // Ensure that FCN will be deleted.
-                ov_code = octave_value (fcn);
-              }
+            ov_code = parse_fcn_file (file_full_name, file_name, "", "",
+                                      require_file, true, false, false,
+                                      warn_for);
           }
         catch (octave::execution_exception& e)
           {
@@ -4836,10 +4862,10 @@ namespace octave
       }
 
     // Return or error if we don't have a valid script
-    if (! fcn)
+    if (ov_code.is_undefined ())
       return;
 
-    if (! fcn->is_user_code ())
+    if (! ov_code.is_user_script ())
       error ("source: %s is not a script", full_name.c_str ());
 
     if (verbose)
@@ -4850,7 +4876,9 @@ namespace octave
 
     tree_evaluator& tw = __get_evaluator__ ("source");
 
-    fcn->call (tw, 0);
+    octave_user_script *script = ov_code.user_script_value ();
+
+    script->call (tw, 0);
 
     if (verbose)
       std::cout << "done." << std::endl;
@@ -5745,12 +5773,9 @@ Undocumented internal function.
   if (nargin == 2)
     octave_stdout << "parsing " << full_file << std::endl;
 
-  octave_function *fcn = parse_fcn_file (full_file, file, "", "",
-                                         true, false, false,
-                                         false, "__parse_file__");
-
-  if (fcn)
-    delete fcn;
+  octave_value ov_fcn
+    = parse_fcn_file (full_file, file, "", "", true, false, false,
+                      false, "__parse_file__");
 
   return retval;
 }

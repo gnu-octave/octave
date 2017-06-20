@@ -85,8 +85,9 @@ public:
 
   bool is_mex_function (void) const { return true; }
 
-  octave_value_list call (octave::tree_evaluator& tw, int nargout,
-                          const octave_value_list& args);
+  octave_value_list
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
 
   void atexit (void (*fcn) (void)) { m_exit_fcn_ptr = fcn; }
 

@@ -87,8 +87,9 @@ public:
 
   bool is_builtin_function (void) const { return true; }
 
-  octave_value_list call (octave::tree_evaluator& tw, int nargout,
-                          const octave_value_list& args);
+  octave_value_list
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
 
   jit_type * to_jit (void) const;
 

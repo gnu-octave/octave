@@ -884,16 +884,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         std::string dir_name = str.substr (0, xpos);
 
-                        octave_function *fcn
-                          = octave::load_fcn_from_file (str, dir_name, "", "", fname);
+                        octave_value ov_fcn
+                          = octave::load_fcn_from_file (str, dir_name,
+                                                        "", "", fname);
 
-                        if (fcn)
-                          {
-                            octave_value tmp (fcn);
-
-                            tc = octave_value (new octave_fcn_handle (tmp,
-                                                                      fname));
-                          }
+                        if (ov_fcn.is_defined ())
+                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                       }
                     else
                       {
@@ -915,16 +911,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         std::string dir_name = str.substr (0, xpos);
 
-                        octave_function *fcn
-                          = octave::load_fcn_from_file (str, dir_name, "", "", fname);
+                        octave_value ov_fcn
+                          = octave::load_fcn_from_file (str, dir_name,
+                                                        "", "", fname);
 
-                        if (fcn)
-                          {
-                            octave_value tmp (fcn);
-
-                            tc = octave_value (new octave_fcn_handle (tmp,
-                                                                      fname));
-                          }
+                        if (ov_fcn.is_defined ())
+                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                         else
                           {
                             warning ("load: can't find the file %s",
@@ -940,15 +932,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     std::string dir_name = fpath.substr (0, xpos);
 
-                    octave_function *fcn
-                      = octave::load_fcn_from_file (fpath, dir_name, "", "", fname);
+                    octave_value ov_fcn
+                      = octave::load_fcn_from_file (fpath, dir_name,
+                                                    "", "", fname);
 
-                    if (fcn)
-                      {
-                        octave_value tmp (fcn);
-
-                        tc = octave_value (new octave_fcn_handle (tmp, fname));
-                      }
+                    if (ov_fcn.is_defined ())
+                      tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                     else
                       {
                         warning ("load: can't find the file %s",

@@ -134,8 +134,9 @@ public:
 
   octave::sys::time time_checked (void) const { return t_checked; }
 
-  octave_value_list call (octave::tree_evaluator& tw, int nargout,
-                          const octave_value_list& args);
+  octave_value_list
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
 
   octave::tree_statement_list * body (void) { return cmd_list; }
 
@@ -341,8 +342,9 @@ public:
            ? (cname.empty () ? true : cname == dispatch_class ()) : false;
   }
 
-  octave_value_list call (octave::tree_evaluator& tw, int nargout,
-                          const octave_value_list& args);
+  octave_value_list
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 

@@ -282,15 +282,15 @@ load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
 {
   bool retval = false;
 
-  octave_function *fcn
+  octave_value ov_fcn
     = octave::load_fcn_from_file (ff, dir_name, dispatch_type,
                                   package_name);
 
-  if (fcn)
+  if (ov_fcn.is_defined ())
     {
       retval = true;
 
-      function = octave_value (fcn);
+      function = ov_fcn;
     }
   else
     function = octave_value ();
@@ -484,37 +484,41 @@ symbol_table::fcn_info::fcn_info_rep::load_private_function
 {
   octave_value retval;
 
-  octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_private_function");
+  octave::load_path& lp
+    = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_private_function");
 
   std::string file_name = lp.find_private_fcn (dir_name, name);
 
-  if (! file_name.empty ())
+  if (file_name.empty ())
+    return retval;
+
+  octave_value ov_fcn = octave::load_fcn_from_file (file_name, dir_name);
+
+  if (ov_fcn.is_undefined ())
+    return retval;
+
+  octave_function *tmpfcn = ov_fcn.function_value ();
+
+  if (! tmpfcn)
+    return retval;
+
+  std::string class_name;
+
+  size_t pos = dir_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+
+  if (pos != std::string::npos)
     {
-      octave_function *fcn = octave::load_fcn_from_file (file_name, dir_name);
+      std::string tmp = dir_name.substr (pos+1);
 
-      if (fcn)
-        {
-          std::string class_name;
-
-          size_t pos = dir_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
-
-          if (pos != std::string::npos)
-            {
-              std::string tmp = dir_name.substr (pos+1);
-
-              if (tmp[0] == '@')
-                class_name = tmp.substr (1);
-            }
-
-          fcn->mark_as_private_function (class_name);
-
-          retval = octave_value (fcn);
-
-          private_functions[dir_name] = retval;
-        }
+      if (tmp[0] == '@')
+        class_name = tmp.substr (1);
     }
 
-  return retval;
+  tmpfcn->mark_as_private_function (class_name);
+
+  private_functions[dir_name] = ov_fcn;
+
+  return ov_fcn;
 }
 
 octave_value
@@ -524,22 +528,28 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
 
   std::string dir_name;
 
-  octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_constructor");
+  octave::load_path& lp
+    = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_constructor");
 
   std::string file_name = lp.find_method (name, name, dir_name, package_name);
 
   if (! file_name.empty ())
     {
-      octave_function *fcn
+      octave_value ov_fcn
         = octave::load_fcn_from_file (file_name, dir_name, name,
                                       package_name);
 
-      if (fcn)
+      if (ov_fcn.is_defined ())
         {
-          retval = octave_value (fcn);
+          octave_function *tmpfcn = ov_fcn.function_value ();
 
-          class_constructors[name] = retval;
-          class_methods[name] = retval;
+          if (tmpfcn && tmpfcn->is_class_constructor (name))
+            {
+              retval = ov_fcn;
+
+              class_constructors[name] = retval;
+              class_methods[name] = retval;
+            }
         }
     }
   else
@@ -601,15 +611,20 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 
           if (! file_name.empty ())
             {
-              octave_function *fcn
+              octave_value ov_fcn
                 = octave::load_fcn_from_file (file_name, dir_name,
                                               dispatch_type);
 
-              if (fcn)
+              if (ov_fcn.is_defined ())
                 {
-                  retval = octave_value (fcn);
+                  octave_function *tmpfcn = ov_fcn.function_value ();
 
-                  class_methods[dispatch_type] = retval;
+                  if (tmpfcn && tmpfcn->is_class_method (dispatch_type))
+                    {
+                      retval = ov_fcn;
+
+                      class_methods[dispatch_type] = retval;
+                    }
                 }
             }
 
@@ -1136,12 +1151,12 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 
           std::string dir_name = file_name.substr (0, pos);
 
-          octave_function *fcn
+          octave_value ov_fcn
             = octave::load_fcn_from_file (file_name, dir_name, "", "",
                                           name, true);
 
-          if (fcn)
-            autoload_function = octave_value (fcn);
+          if (ov_fcn.is_defined ())
+            autoload_function = octave_value (ov_fcn);
         }
     }
 
@@ -1167,12 +1182,12 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
 
       if (! file_name.empty ())
         {
-          octave_function *fcn
+          octave_value ov_fcn
             = octave::load_fcn_from_file (file_name, dir_name, "",
                                           package_name);
 
-          if (fcn)
-            function_on_path = octave_value (fcn);
+          if (ov_fcn.is_defined ())
+            function_on_path = ov_fcn;
         }
     }
 

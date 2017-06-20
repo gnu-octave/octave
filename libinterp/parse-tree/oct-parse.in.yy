@@ -1332,7 +1332,8 @@ param_list1     : // empty
                 | param_list2
                   {
                     $1->mark_as_formal_parameters ();
-                    if ($1->validate (octave::tree_parameter_list::in))
+
+                    if (parser.validate_param_list ($1, octave::tree_parameter_list::in))
                       {
                         lexer.mark_as_variables ($1->variable_names ());
                         $$ = $1;
@@ -1380,7 +1381,7 @@ return_list     : '[' ']'
                     // a single identifier, we still need to validate it
                     // to check for varargin or varargout.
 
-                    if (tmp->validate (octave::tree_parameter_list::out))
+                    if (parser.validate_param_list (tmp, octave::tree_parameter_list::out))
                       $$ = tmp;
                     else
                       {
@@ -1395,7 +1396,7 @@ return_list     : '[' ']'
                     // Check for duplicate parameter names, varargin,
                     // or varargout.
 
-                    if ($2->validate (octave::tree_parameter_list::out))
+                    if (parser.validate_param_list ($2, octave::tree_parameter_list::out))
                       $$ = $2;
                     else
                       {
@@ -3904,6 +3905,67 @@ namespace octave
       }
 
     return retval;
+  }
+
+  bool
+  base_parser::validate_param_list (tree_parameter_list *lst,
+                                    tree_parameter_list::in_or_out type)
+  {
+    std::set<std::string> dict;
+
+    for (tree_decl_elt *elt : *lst)
+      {
+        tree_identifier *id = elt->ident ();
+
+        if (id)
+          {
+            std::string name = id->name ();
+
+            if (id->is_black_hole ())
+              {
+                if (type != tree_parameter_list::in)
+                  {
+                    bison_error ("invalid use of ~ in output list");
+                    return false;
+                  }
+              }
+            else if (dict.find (name) != dict.end ())
+              {
+                bison_error ("'" + name
+                             + "' appears more than once in parameter list");
+                return false;
+              }
+            else
+              dict.insert (name);
+          }
+      }
+
+    std::string va_type = (type == tree_parameter_list::in
+                           ? "varargin" : "varargout");
+
+    size_t len = lst->length ();
+
+    if (len > 0)
+      {
+        tree_decl_elt *elt = lst->back ();
+
+        tree_identifier *id = elt->ident ();
+
+        if (id && id->name () == va_type)
+          {
+            if (len == 1)
+              lst->mark_varargs_only ();
+            else
+              lst->mark_varargs ();
+
+            tree_parameter_list::iterator p = lst->end ();
+            --p;
+            delete *p;
+            lst->erase (p);
+          }
+      }
+
+    return true;
   }
 
   bool

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lex.h"
 #include "symtab.h"
+#include "pt-misc.h"
 #include "token.h"
 
 class octave_comment_list;
@@ -358,6 +359,9 @@ namespace octave
     tree_decl_command *
     make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
 
+    // Validate an function parameter list.
+    bool validate_param_list (tree_parameter_list *lst,
+                              tree_parameter_list::in_or_out type);
     // Validate matrix or cell
     bool validate_array_list (tree_expression *e);
 

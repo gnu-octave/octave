@@ -68,7 +68,9 @@ namespace octave
 
     void mark_as_formal_parameters (void);
 
-    bool validate (in_or_out type);
+    void mark_varargs (void) { marked_for_varargs = 1; }
+
+    void mark_varargs_only (void) { marked_for_varargs = -1; }
 
     bool takes_varargs (void) const { return marked_for_varargs != 0; }
 
@@ -88,10 +90,6 @@ namespace octave
   private:
 
     int marked_for_varargs;
-
-    void mark_varargs (void) { marked_for_varargs = 1; }
-
-    void mark_varargs_only (void) { marked_for_varargs = -1; }
   };
 
   // Return lists.  Used to hold the right hand sides of multiple

@@ -57,61 +57,6 @@ namespace octave
       elt->mark_as_formal_parameter ();
   }
 
-  bool
-  tree_parameter_list::validate (in_or_out type)
-  {
-    bool retval = true;
-
-    std::set<std::string> dict;
-
-    for (tree_decl_elt *elt : *this)
-      {
-        tree_identifier *id = elt->ident ();
-
-        if (id)
-          {
-            std::string name = id->name ();
-
-            if (id->is_black_hole ())
-              {
-                if (type != in)
-                  error ("invalid use of ~ in output list");
-              }
-            else if (dict.find (name) != dict.end ())
-              error ("'%s' appears more than once in parameter list",
-                     name.c_str ());
-            else
-              dict.insert (name);
-          }
-      }
-
-    std::string va_type = (type == in ? "varargin" : "varargout");
-
-    size_t len = length ();
-
-    if (len > 0)
-      {
-        tree_decl_elt *elt = back ();
-
-        tree_identifier *id = elt->ident ();
-
-        if (id && id->name () == va_type)
-          {
-            if (len == 1)
-              mark_varargs_only ();
-            else
-              mark_varargs ();
-
-            iterator p = end ();
-            --p;
-            delete *p;
-            erase (p);
-          }
-      }
-
-    return retval;
-  }
-
   std::list<std::string>
   tree_parameter_list::variable_names (void) const
   {

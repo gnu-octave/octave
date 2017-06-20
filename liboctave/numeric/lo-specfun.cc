@@ -52,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "lo-math.h"
 #include "lo-slatec-proto.h"
 #include "lo-specfun.h"
 #include "mx-inlines.cc"

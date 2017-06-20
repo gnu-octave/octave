@@ -29,6 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <limits>
 
+#include "lo-error.h"
+#include "lo-ieee.h"
+#include "mach-info.h"
+
 static double lo_inf;
 static double lo_nan;
 static double lo_na;
@@ -39,11 +43,6 @@ static float lo_float_na;
 
 static int lo_ieee_hw;
 static int lo_ieee_lw;
-
-#include "lo-error.h"
-#include "lo-ieee.h"
-#include "lo-math.h"
-#include "mach-info.h"
 
 int
 __lo_ieee_is_NA (double x)

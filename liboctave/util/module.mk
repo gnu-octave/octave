@@ -13,7 +13,6 @@ UTIL_INC = \
   %reldir%/lo-cutils.h \
   %reldir%/lo-hash.h \
   %reldir%/lo-ieee.h \
-  %reldir%/lo-math.h \
   %reldir%/lo-regexp.h \
   %reldir%/lo-traits.h \
   %reldir%/lo-utils.h \

@@ -24,12 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <limits>
-
+#include <cmath>
 #include <ctime>
 
+#include <limits>
+
 #include "lo-error.h"
-#include "lo-math.h"
 #include "lo-utils.h"
 #include "oct-locbuf.h"
 #include "oct-time.h"

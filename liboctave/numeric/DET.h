@@ -25,8 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <cmath>
+
 #include "lo-mappers.h"
-#include "lo-math.h"
 #include "oct-cmplx.h"
 
 template <typename T>

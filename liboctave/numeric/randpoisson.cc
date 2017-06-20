@@ -35,12 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
 #include <cstddef>
 
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-math.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
 

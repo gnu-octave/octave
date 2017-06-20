@@ -156,9 +156,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
 #include <cstdio>
 
-#include "lo-math.h"
 #include "oct-time.h"
 #include "randmtzig.h"
 

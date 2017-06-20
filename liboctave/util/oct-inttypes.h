@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <limits>
 
-#include "lo-math.h"
 #include "lo-mappers.h"
 #include "lo-traits.h"
 

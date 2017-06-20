@@ -81,8 +81,9 @@ Dirichlet(a1,...,ak) for ai > 0
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include "lo-ieee.h"
-#include "lo-math.h"
 #include "randgamma.h"
 #include "randmtzig.h"
 

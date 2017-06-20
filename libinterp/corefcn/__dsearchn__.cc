@@ -24,11 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include <iostream>
 #include <fstream>
 #include <string>
-
-#include "lo-math.h"
 
 #include "defun.h"
 #include "error.h"

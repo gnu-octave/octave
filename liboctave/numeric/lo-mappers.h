@@ -26,10 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <cmath>
+
 #include <limits>
 
 #include "lo-ieee.h"
-#include "lo-math.h"
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"
 

@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "f77-fcn.h"
 #include "lo-lapack-proto.h"
-#include "lo-math.h"
 #include "qr.h"
 #include "quit.h"
 

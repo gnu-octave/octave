@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Range.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
-#include "lo-math.h"
 #include "lo-utils.h"
 
 bool

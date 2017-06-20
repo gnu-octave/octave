@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "lo-ieee.h"
-#include "lo-math.h"
 #include "mx-base.h"
 #include "oct-base64.h"
 #include "oct-binmap.h"

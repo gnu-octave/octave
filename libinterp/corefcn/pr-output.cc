@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -37,7 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "dMatrix.h"
 #include "lo-mappers.h"
-#include "lo-math.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
 #include "quit.h"

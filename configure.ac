@@ -2284,14 +2284,6 @@ AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
 AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h])
 AC_CHECK_HEADERS([sys/select.h sys/stropts.h termcap.h])
 
-## C++ headers
-
-AC_LANG_PUSH(C++)
-
-AC_CHECK_HEADERS([sstream])
-
-AC_LANG_POP(C++)
-
 ## Find a termio header to include.
 
 AC_CHECK_HEADERS([termios.h], have_termios_h=yes, have_termios_h=no)

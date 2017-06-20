@@ -27,10 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (__cplusplus)
 #  include <cmath>
-// if #undef log2 is missing in cmath, undef it here
-#  if defined (log2)
-#    undef log2
-#  endif
 #else
 #  include <math.h>
 #endif

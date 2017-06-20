@@ -504,7 +504,7 @@ create_ziggurat_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + fi[i+1]));
+      x = std::sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + fi[i+1]));
       ki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       wi[i] = x / NMANTISSA;
       fi[i] = exp (-0.5 * x * x);
@@ -694,7 +694,7 @@ create_ziggurat_float_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + ffi[i+1]));
+      x = std::sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + ffi[i+1]));
       fki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       fwi[i] = x / NMANTISSA;
       ffi[i] = exp (-0.5 * x * x);

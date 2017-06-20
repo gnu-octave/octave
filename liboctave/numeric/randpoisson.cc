@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cmath>
 #include <cstddef>
 
 #include "f77-fcn.h"
@@ -147,7 +146,7 @@ pprsc (double my)
     {                               /* set-up           */
       my_last = my;
       /* approximate deviation of reflection points k2, k4 from my - 1/2 */
-      Ds = sqrt (my + 0.25);
+      Ds = std::sqrt (my + 0.25);
 
       /* mode m, reflection points k2 and k4, and points k1 and k5,      */
       /* which delimit the centre region of h(x)                         */
@@ -404,7 +403,7 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
 static void
 poisson_rejection (double lambda, double *p, size_t n)
 {
-  double sq = sqrt (2.0*lambda);
+  double sq = std::sqrt (2.0*lambda);
   double alxm = std::log (lambda);
   double g = lambda*alxm - LGAMMA(lambda+1.0);
   size_t i;
@@ -430,7 +429,7 @@ poisson_rejection (double lambda, double *p, size_t n)
 static void
 poisson_rejection_float (double lambda, float *p, size_t n)
 {
-  double sq = sqrt (2.0*lambda);
+  double sq = std::sqrt (2.0*lambda);
   double alxm = std::log (lambda);
   double g = lambda*alxm - LGAMMA(lambda+1.0);
   size_t i;
@@ -483,7 +482,7 @@ oct_fill_randp (double L, octave_idx_type n, double *p)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      const double sqrtL = sqrt (L);
+      const double sqrtL = std::sqrt (L);
       for (i = 0; i < n; i++)
         {
           p[i] = std::floor (RNOR*sqrtL + L + 0.5);
@@ -526,7 +525,7 @@ oct_randp (double L)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      ret = std::floor (RNOR*sqrt (L) + L + 0.5);
+      ret = std::floor (RNOR*std::sqrt (L) + L + 0.5);
       if (ret < 0.0) ret = 0.0; /* will probably never happen */
     }
   return ret;
@@ -555,7 +554,7 @@ oct_fill_float_randp (float FL, octave_idx_type n, float *p)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      const double sqrtL = sqrt (L);
+      const double sqrtL = std::sqrt (L);
       for (i = 0; i < n; i++)
         {
           p[i] = std::floor (RNOR*sqrtL + L + 0.5);
@@ -599,7 +598,7 @@ oct_float_randp (float FL)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      ret = std::floor (RNOR*sqrt (L) + L + 0.5);
+      ret = std::floor (RNOR*std::sqrt (L) + L + 0.5);
       if (ret < 0.0) ret = 0.0; /* will probably never happen */
     }
   return ret;

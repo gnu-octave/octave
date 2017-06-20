@@ -369,7 +369,7 @@ namespace octave
       if (fabs (r) < 0.5 && fabs (i) < 0.5)
         {
           double u = 2*r + r*r + i*i;
-          retval = Complex (log1p (u / (1+sqrt (u+1))),
+          retval = Complex (log1p (u / (1+std::sqrt (u+1))),
                             atan2 (1 + r, i));
         }
       else
@@ -392,7 +392,7 @@ namespace octave
       if (fabs (r) < 0.5 && fabs (i) < 0.5)
         {
           float u = 2*r + r*r + i*i;
-          retval = FloatComplex (log1p (u / (1+sqrt (u+1))),
+          retval = FloatComplex (log1p (u / (1+std::sqrt (u+1))),
                                  atan2 (1 + r, i));
         }
       else
@@ -2674,7 +2674,7 @@ namespace octave
       else if (ax < 1.0)
         {
           // Tail region.
-          const double q = sqrt (-2*std::log (0.5*(1-ax)));
+          const double q = std::sqrt (-2*std::log (0.5*(1-ax)));
           const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
           const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
           y = yn / yd * octave::math::signum (-x);
@@ -2754,8 +2754,8 @@ namespace octave
         {
           // Tail region.
           const double q = (x < 1
-                            ? sqrt (-2*std::log (0.5*x))
-                            : sqrt (-2*std::log (0.5*(2-x))));
+                            ? std::sqrt (-2*std::log (0.5*x))
+                            : std::sqrt (-2*std::log (0.5*(2-x))));
 
           const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
 
@@ -2968,7 +2968,7 @@ namespace octave
 
       //  Calculate the initial approximation.
 
-      r = sqrt (- std::log (a * a));
+      r = std::sqrt (- std::log (a * a));
 
       ycur = r - (2.30753 + 0.27061 * r) / (1.0 + (0.99229 + 0.04481 * r) * r);
 
@@ -2978,14 +2978,14 @@ namespace octave
           s = 1.0 / (pp + pp - 1.0);
           t = 1.0 / (qq + qq - 1.0);
           h = 2.0 / (s + t);
-          w = ycur * sqrt (h + r) / h - (t - s) * (r + 5.0 / 6.0 - 2.0 / (3.0 * h));
+          w = ycur * std::sqrt (h + r) / h - (t - s) * (r + 5.0 / 6.0 - 2.0 / (3.0 * h));
           value = pp / (pp + qq * exp (w + w));
         }
       else
         {
           r = qq + qq;
           t = 1.0 / (9.0 * qq);
-          t = r * std::pow (1.0 - t + ycur * sqrt (t), 3);
+          t = r * std::pow (1.0 - t + ycur * std::sqrt (t), 3);
 
           if (t <= 0.0)
             {
@@ -3262,7 +3262,7 @@ namespace octave
           return;
         }
 
-      double sqrt_eps = sqrt (std::numeric_limits<double>::epsilon ());
+      double sqrt_eps = std::sqrt (std::numeric_limits<double>::epsilon ());
       if (m < sqrt_eps)
         {
           // For small m, (Abramowitz and Stegun, Section 16.13)
@@ -3290,13 +3290,13 @@ namespace octave
           // Arithmetic-Geometric Mean (AGM) algorithm
           //   (Abramowitz and Stegun, Section 16.4)
           a[0] = 1;
-          b    = sqrt (1 - m);
-          c[0] = sqrt (m);
+          b    = std::sqrt (1 - m);
+          c[0] = std::sqrt (m);
           for (n = 1; n < Nmax; ++n)
             {
               a[n] = (a[n - 1] + b)/2;
               c[n] = (a[n - 1] - b)/2;
-              b = sqrt (a[n - 1]*b);
+              b = std::sqrt (a[n - 1]*b);
               if (c[n]/a[n] < std::numeric_limits<double>::epsilon ()) break;
             }
           if (n >= Nmax - 1)
@@ -3313,7 +3313,7 @@ namespace octave
             }
           sn = sin (phi);
           cn = cos (phi);
-          dn = sqrt (1 - m*sn*sn);
+          dn = std::sqrt (1 - m*sn*sn);
         }
     }
 

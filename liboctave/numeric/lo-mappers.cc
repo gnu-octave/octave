@@ -103,7 +103,7 @@ namespace octave
       else
         tmp = 1.0 - x*x;
 
-      return -i * log (x + i * sqrt (tmp));
+      return -i * log (x + i * std::sqrt (tmp));
 #endif
     }
 
@@ -133,7 +133,7 @@ namespace octave
       else
         tmp = 1.0f - x*x;
 
-      return -i * log (x + i * sqrt (tmp));
+      return -i * log (x + i * std::sqrt (tmp));
 #endif
     }
 
@@ -163,7 +163,7 @@ namespace octave
       else
         tmp = 1.0 - x*x;
 
-      return -i * log (i*x + sqrt (tmp));
+      return -i * log (i*x + std::sqrt (tmp));
 #endif
     }
 
@@ -193,7 +193,7 @@ namespace octave
       else
         tmp = 1.0f - x*x;
 
-      return -i * log (i*x + sqrt (tmp));
+      return -i * log (i*x + std::sqrt (tmp));
 #endif
     }
 
@@ -461,14 +461,14 @@ namespace octave
     Complex
     rc_sqrt (double x)
     {
-      return x < 0.0 ? Complex (0.0, sqrt (-x)) : Complex (sqrt (x));
+      return x < 0.0 ? Complex (0.0, std::sqrt (-x)) : Complex (std::sqrt (x));
     }
 
     FloatComplex
     rc_sqrt (float x)
     {
-      return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x))
-                      : FloatComplex (sqrtf (x));
+      return x < 0.0f ? FloatComplex (0.0f, std::sqrt (-x))
+                      : FloatComplex (std::sqrt (x));
     }
   }
 }

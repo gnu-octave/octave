@@ -2415,10 +2415,6 @@ AC_CHECK_FUNCS([tcgetattr tcsetattr toascii])
 AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_getch _kbhit])
 
-dnl There are no workarounds in the code for missing these functions.
-AC_CHECK_FUNCS([sqrt sqrtf], [],
-               [AC_MSG_ERROR([Missing function required to build Octave])])
-
 ## Look in <complex> for C++ variants of math functions that we need.
 
 OCTAVE_CHECK_FUNC_COMPLEX(acos)

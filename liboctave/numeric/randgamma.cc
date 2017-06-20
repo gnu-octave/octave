@@ -97,7 +97,7 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
   octave_idx_type i;
   /* If a < 1, start by generating gamma (1+a) */
   const double d = (a < 1. ? 1.+a : a) - 1./3.;
-  const double c = 1./sqrt (9.*d);
+  const double c = 1./std::sqrt (9.*d);
 
   /* Handle invalid cases */
   if (a <= 0 || INFINITE(a))
@@ -152,7 +152,7 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
   octave_idx_type i;
   /* If a < 1, start by generating gamma(1+a) */
   const float d = (a < 1. ? 1.+a : a) - 1./3.;
-  const float c = 1./sqrt (9.*d);
+  const float c = 1./std::sqrt (9.*d);
 
   /* Handle invalid cases */
   if (a <= 0 || INFINITE(a))

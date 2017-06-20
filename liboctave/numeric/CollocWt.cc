@@ -238,7 +238,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
         }
 
       root[i] = x;
-      x += sqrt (std::numeric_limits<double>::epsilon ());
+      x += std::sqrt (std::numeric_limits<double>::epsilon ());
     }
 
   // Add interpolation points at x = 0 and/or x = 1.

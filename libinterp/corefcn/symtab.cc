@@ -541,15 +541,13 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
 
       if (ov_fcn.is_defined ())
         {
-          octave_function *tmpfcn = ov_fcn.function_value ();
+          // Note: ov_fcn may be an octave_classdef_meta object instead
+          // of the actual constructor function.
 
-          if (tmpfcn && tmpfcn->is_class_constructor (name))
-            {
-              retval = ov_fcn;
+          retval = ov_fcn;
 
-              class_constructors[name] = retval;
-              class_methods[name] = retval;
-            }
+          class_constructors[name] = retval;
+          class_methods[name] = retval;
         }
     }
   else

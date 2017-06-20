@@ -250,7 +250,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_funcall_type> superclass_identifier meta_identifier
 %type <octave_user_function_type> function1 function2
 %type <tree_index_expression_type> word_list_cmd
-%type <tree_colon_expression_type> colon_expr1
 %type <tree_argument_list_type> arg_list word_list assign_lhs
 %type <tree_argument_list_type> cell_or_matrix_row
 %type <tree_parameter_list_type> param_list param_list1 param_list2
@@ -330,7 +329,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_anon_fcn_handle_type>
 %destructor { delete $$; } <tree_identifier_type>
 %destructor { delete $$; } <tree_index_expression_type>
-%destructor { delete $$; } <tree_colon_expression_type>
 %destructor { delete $$; } <tree_argument_list_type>
 %destructor { delete $$; } <tree_parameter_list_type>
 %destructor { delete $$; } <tree_command_type>
@@ -824,26 +822,36 @@ power_expr      : primary_expr
                   { $$ = parser.make_prefix_op ('-', $2, $1); }
                 ;
 
-colon_expr      : colon_expr1
-                  { $$ = parser.finish_colon_expression ($1); }
-                ;
-
-colon_expr1     : oper_expr
-                  { $$ = new octave::tree_colon_expression ($1); }
-                | colon_expr1 ':' oper_expr
+colon_expr      : oper_expr ':' oper_expr
                   {
                     YYUSE ($2);
 
-                    if (! ($$ = $1->append ($3)))
+                    $$ = parser.make_colon_expression ($1, $3);
+
+                    if (! $$)
                       {
-                        delete $1;
-                        delete $3;
+                        // finish_colon_expression deleted $1 and $3.
+                        YYABORT;
+                      }
+                  }
+                | oper_expr ':' oper_expr ':' oper_expr
+                  {
+                    YYUSE ($2);
+                    YYUSE ($4);
+
+                    $$ = parser.make_colon_expression ($1, $5, $3);
+
+                    if (! $$)
+                      {
+                        // finish_colon_expression deleted $1, $3, and $5.
                         YYABORT;
                       }
                   }
                 ;
 
-simple_expr     : colon_expr
+simple_expr     : oper_expr
+                  { $$ = $1; }
+                | colon_expr
                   { $$ = $1; }
                 | simple_expr EXPR_LT simple_expr
                   { $$ = parser.make_binary_op (EXPR_LT, $1, $2, $3); }
@@ -2340,72 +2348,6 @@ namespace octave
       }
   }
 
-  // Finish building a range.
-
-  tree_expression *
-  base_parser::finish_colon_expression (tree_colon_expression *e)
-  {
-    tree_expression *retval = e;
-
-    octave::unwind_protect frame;
-
-    frame.protect_var (discard_error_messages);
-    frame.protect_var (discard_warning_messages);
-
-    discard_error_messages = true;
-    discard_warning_messages = true;
-
-    tree_expression *base = e->base ();
-    tree_expression *limit = e->limit ();
-    tree_expression *incr = e->increment ();
-
-    if (base)
-      {
-        if (limit)
-          {
-            if (base->is_constant () && limit->is_constant ()
-                && (! incr || (incr && incr->is_constant ())))
-              {
-                try
-                  {
-                    octave::tree_evaluator& tw
-                      = __get_evaluator__ ("finish_colon_expression");
-
-                    octave_value tmp = tw.evaluate (e);
-
-                    tree_constant *tc_retval
-                      = new tree_constant (tmp, base->line (), base->column ());
-
-                    std::ostringstream buf;
-
-                    tree_print_code tpc (buf);
-
-                    e->accept (tpc);
-
-                    tc_retval->stash_original_text (buf.str ());
-
-                    delete e;
-
-                    retval = tc_retval;
-                  }
-                catch (const octave::execution_exception&)
-                  {
-                    octave::interpreter::recover_from_exception ();
-                  }
-              }
-          }
-        else
-          {
-            e->preserve_base ();
-            delete e;
-
-            retval = base;
-          }
-      }
-
-    return retval;
-  }
-
   // Make a constant.
 
   tree_constant *
@@ -2506,6 +2448,74 @@ namespace octave
 // FIXME: Stash the filename.  This does not work and produces
     // errors when executed.
     //retval->stash_file_name (lexer.fcn_file_name);
+
+    return retval;
+  }
+
+  // Build a colon expression.
+
+  tree_expression *
+  base_parser::make_colon_expression (tree_expression *base,
+                                      tree_expression *limit,
+                                      tree_expression *incr)
+  {
+    tree_expression *retval = nullptr;
+
+    octave::unwind_protect frame;
+
+    frame.protect_var (discard_error_messages);
+    frame.protect_var (discard_warning_messages);
+
+    discard_error_messages = true;
+    discard_warning_messages = true;
+
+    if (! base || ! limit)
+      {
+        delete base;
+        delete limit;
+        delete incr;
+
+        return retval;
+      }
+
+    int l = base->line ();
+    int c = base->column ();
+
+    tree_colon_expression *e
+      = new tree_colon_expression (base, limit, incr, l, c);
+
+    if (base->is_constant () && limit->is_constant ()
+        && (! incr || (incr && incr->is_constant ())))
+      {
+        try
+          {
+            octave::tree_evaluator& tw
+              = __get_evaluator__ ("finish_colon_expression");
+
+            octave_value tmp = tw.evaluate (e);
+
+            tree_constant *tc_retval
+              = new tree_constant (tmp, e->line (), e->column ());
+
+            std::ostringstream buf;
+
+            tree_print_code tpc (buf);
+
+            e->accept (tpc);
+
+            tc_retval->stash_original_text (buf.str ());
+
+            delete e;
+
+            retval = tc_retval;
+          }
+        catch (const octave::execution_exception&)
+          {
+            octave::interpreter::recover_from_exception ();
+          }
+      }
+    else
+      retval = e;
 
     return retval;
   }

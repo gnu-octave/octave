@@ -46,8 +46,9 @@ namespace octave
       : tree_expression (l, c), op_base (0), op_limit (0),
         op_increment (0), save_base (false) { }
 
-    tree_colon_expression (tree_expression *e, int l = -1, int c = -1)
-      : tree_expression (l, c), op_base (e), op_limit (0),
+    tree_colon_expression (tree_expression *bas, tree_expression *lim,
+                           int l = -1, int c = -1)
+      : tree_expression (l, c), op_base (bas), op_limit (lim),
         op_increment (0), save_base (false) { }
 
     tree_colon_expression (tree_expression *bas, tree_expression *lim,
@@ -79,8 +80,6 @@ namespace octave
 
     void preserve_base (void) { save_base = true; }
 
-    tree_colon_expression * append (tree_expression *t);
-
     bool rvalue_ok (void) const { return true; }
 
     void eval_error (const std::string& s) const;
@@ -90,9 +89,6 @@ namespace octave
     tree_expression * limit (void) { return op_limit; }
 
     tree_expression * increment (void) { return op_increment; }
-
-    int line (void) const;
-    int column (void) const;
 
     tree_expression * dup (symbol_table::scope& scope) const;
 

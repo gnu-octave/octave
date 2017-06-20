@@ -169,9 +169,6 @@ namespace octave
     // Maybe print a warning about switch labels that aren't constants.
     void maybe_warn_variable_switch_label (tree_expression *expr);
 
-    // Finish building a range.
-    tree_expression * finish_colon_expression (tree_colon_expression *e);
-
     // Build a constant.
     tree_constant * make_constant (int op, token *tok_val);
 
@@ -182,6 +179,11 @@ namespace octave
     tree_anon_fcn_handle *
     make_anon_fcn_handle (tree_parameter_list *param_list,
                           tree_expression * expr);
+
+    // Build a colon expression.
+    tree_expression *
+    make_colon_expression (tree_expression *base, tree_expression *limit,
+                           tree_expression *incr = nullptr);
 
     // Build a binary expression.
     tree_expression *

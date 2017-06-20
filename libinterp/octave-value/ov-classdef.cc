@@ -1019,6 +1019,8 @@ public:
 
   octave_function * function_value (bool = false) { return this; }
 
+  void stash_dir_name (const std::string& dir) { object.stash_dir_name (dir); }
+
   octave_value_list
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,
@@ -2214,6 +2216,19 @@ cdef_class::cdef_class_rep::get_names (void)
 }
 
 void
+cdef_class::cdef_class_rep::stash_dir_name (const std::string& dir)
+{
+  directory = dir;
+
+  for (auto& it : method_map)
+    {
+      cdef_method& meth = it.second;
+
+      meth.stash_dir_name (dir);
+    }
+}
+
+void
 cdef_class::cdef_class_rep::delete_object (cdef_object obj)
 {
   method_iterator it = method_map.find ("delete");
@@ -3066,6 +3081,15 @@ cdef_method::cdef_method_rep::is_constructor (void) const
     return function.function_value ()->is_classdef_constructor ();
 
   return false;
+}
+
+void
+cdef_method::cdef_method_rep::stash_dir_name (const std::string& dir)
+{
+  octave_function *fptr = function.function_value ();
+
+  if (fptr)
+    fptr->stash_dir_name (dir);
 }
 
 bool

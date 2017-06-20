@@ -142,7 +142,7 @@ public:
 
   std::string dir_name (void) const { return my_dir_name; }
 
-  void stash_dir_name (const std::string& dir) { my_dir_name = dir; }
+  virtual void stash_dir_name (const std::string& dir) { my_dir_name = dir; }
 
   void lock (void)
   {

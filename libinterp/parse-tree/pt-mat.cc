@@ -24,24 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
-
-#include "oct-locbuf.h"
-#include "quit.h"
-
-#include "data.h"
 #include "defun.h"
-#include "error.h"
-#include "errwarn.h"
-#include "oct-map.h"
 #include "ovl.h"
 #include "pt-arg-list.h"
-#include "pt-bp.h"
 #include "pt-exp.h"
 #include "pt-mat.h"
 #include "pt-tm-const.h"
-#include "pt-walk.h"
-#include "utils.h"
 #include "ov.h"
 #include "variables.h"
 

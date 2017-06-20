@@ -26,15 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "interpreter-private.h"
-#include "ovl.h"
 #include "oct-lvalue.h"
-#include "pager.h"
 #include "parse.h"
-#include "pt-bp.h"
 #include "pt-const.h"
-#include "pt-eval.h"
 #include "pt-id.h"
-#include "pt-walk.h"
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"
@@ -42,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   // Symbols from the symbol table.
+
+  class tree_evaluator;
 
   void
   tree_identifier::eval_undefined_error (void)

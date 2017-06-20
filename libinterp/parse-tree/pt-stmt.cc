@@ -29,9 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "bp-table.h"
-#include "defun.h"
-#include "error.h"
-#include "errwarn.h"
 #include "input.h"
 #include "oct-lvalue.h"
 #include "octave-link.h"
@@ -45,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 

@@ -25,23 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iostream>
-#include <set>
+#include <string>
 
-#include "defun.h"
 #include "error.h"
-#include "errwarn.h"
-#include "input.h"
-#include "ovl.h"
-#include "oct-lvalue.h"
 #include "ov.h"
-#include "pager.h"
-#include "parse.h"
 #include "pt-arg-list.h"
-#include "pt-bp.h"
 #include "pt-assign.h"
-#include "pt-walk.h"
-#include "utils.h"
-#include "variables.h"
 
 namespace octave
 {

@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "quit.h"
+
 #include "error.h"
 #include "pt-array-list.h"
 

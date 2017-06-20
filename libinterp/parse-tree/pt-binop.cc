@@ -25,13 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
-#include "defun.h"
-#include "ovl.h"
 #include "ov.h"
-#include "profiler.h"
 #include "pt-binop.h"
-#include "pt-bp.h"
-#include "pt-walk.h"
 #include "variables.h"
 
 namespace octave

@@ -24,17 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "Cell.h"
-
-#include "defun.h"
-#include "error.h"
-#include "ov.h"
-#include "oct-lvalue.h"
-#include "pt-id.h"
 #include "pt-idx.h"
 #include "pt-misc.h"
-#include "pt-walk.h"
-#include "utils.h"
 
 namespace octave
 {

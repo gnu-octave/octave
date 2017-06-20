@@ -24,11 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "error.h"
-#include "ovl.h"
-#include "pt-bp.h"
 #include "pt-jump.h"
-#include "pt-walk.h"
 
 class octave_value_list;
 

@@ -24,23 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "quit.h"
-
-#include "error.h"
-#include "errwarn.h"
-#include "oct-map.h"
-#include "oct-lvalue.h"
-#include "ov.h"
 #include "pt-arg-list.h"
-#include "pt-bp.h"
-#include "pt-cmd.h"
-#include "pt-exp.h"
-#include "pt-jit.h"
-#include "pt-jump.h"
 #include "pt-loop.h"
 #include "pt-stmt.h"
-#include "pt-walk.h"
-#include "unwind-prot.h"
 
 namespace octave
 {

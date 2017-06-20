@@ -24,13 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "error.h"
-#include "ovl.h"
 #include "ov.h"
 #include "pt-cbinop.h"
-#include "pt-bp.h"
 #include "pt-unop.h"
-#include "pt-walk.h"
 
 namespace octave
 {

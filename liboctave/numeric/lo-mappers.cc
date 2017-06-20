@@ -80,146 +80,50 @@ namespace octave
     Complex
     acos (const Complex& x)
     {
-#if defined (HAVE_COMPLEX_STD_ACOS)
       Complex y = std::acos (x);
 
       if (std::imag (x) == 0.0 && std::real (x) > 1.0)
         return std::conj (y);
       else
         return y;
-#else
-      static Complex i (0, 1);
-
-      Complex tmp;
-
-      if (std::imag (x) == 0.0)
-        {
-          // If the imaginary part of X is 0, then avoid generating an
-          // imaginary part of -0 for the expression 1-x*x.
-          // This chooses the same phase of the branch cut as Matlab.
-          double xr = std::real (x);
-          tmp = Complex (1.0 - xr*xr);
-        }
-      else
-        tmp = 1.0 - x*x;
-
-      return -i * log (x + i * std::sqrt (tmp));
-#endif
     }
 
     FloatComplex
     acos (const FloatComplex& x)
     {
-#if defined (HAVE_COMPLEX_STD_ACOS)
       FloatComplex y = std::acos (x);
 
       if (std::imag (x) == 0.0f && std::real (x) > 1.0f)
         return std::conj (y);
       else
         return y;
-#else
-      static FloatComplex i (0, 1);
-
-      FloatComplex tmp;
-
-      if (std::imag (x) == 0.0f)
-        {
-          // If the imaginary part of X is 0, then avoid generating an
-          // imaginary part of -0 for the expression 1-x*x.
-          // This chooses the same phase of the branch cut as Matlab.
-          float xr = std::real (x);
-          tmp = FloatComplex (1.0f - xr*xr);
-        }
-      else
-        tmp = 1.0f - x*x;
-
-      return -i * log (x + i * std::sqrt (tmp));
-#endif
     }
 
     Complex
     asin (const Complex& x)
     {
-#if defined (HAVE_COMPLEX_STD_ASIN)
       Complex y = std::asin (x);
 
       if (std::imag (x) == 0.0 && std::real (x) > 1.0)
         return std::conj (y);
       else
         return y;
-#else
-      static Complex i (0, 1);
-
-      Complex tmp;
-
-      if (std::imag (x) == 0.0)
-        {
-          // If the imaginary part of X is 0, then avoid generating an
-          // imaginary part of -0 for the expression 1-x*x.
-          // This chooses the same phase of the branch cut as Matlab.
-          double xr = std::real (x);
-          tmp = Complex (1.0 - xr*xr);
-        }
-      else
-        tmp = 1.0 - x*x;
-
-      return -i * log (i*x + std::sqrt (tmp));
-#endif
     }
 
     FloatComplex
     asin (const FloatComplex& x)
     {
-#if defined (HAVE_COMPLEX_STD_ASIN)
       FloatComplex y = std::asin (x);
 
       if (std::imag (x) == 0.0f && std::real (x) > 1.0f)
         return std::conj (y);
       else
         return y;
-#else
-      static FloatComplex i (0, 1);
-
-      FloatComplex tmp;
-
-      if (std::imag (x) == 0.0f)
-        {
-          // If the imaginary part of X is 0, then avoid generating an
-          // imaginary part of -0 for the expression 1-x*x.
-          // This chooses the same phase of the branch cut as Matlab.
-          float xr = std::real (x);
-          tmp = FloatComplex (1.0f - xr*xr);
-        }
-      else
-        tmp = 1.0f - x*x;
-
-      return -i * log (i*x + std::sqrt (tmp));
-#endif
     }
 
-    Complex
-    atan (const Complex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ATAN)
-      return std::atan (x);
-#else
-      static Complex i (0, 1);
+    Complex atan (const Complex& x) { return std::atan (x); }
 
-      return i * log ((i + x) / (i - x)) / 2.0;
-#endif
-    }
-
-    FloatComplex
-    atan (const FloatComplex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ATAN)
-      return std::atan (x);
-#else
-      static FloatComplex i (0, 1);
-
-      return i * log ((i + x) / (i - x)) / 2.0f;
-#endif
-    }
+    FloatComplex atan (const FloatComplex& x) { return std::atan (x); }
 
     double log2 (double x) { return std::log2 (x); }
     float log2 (float x) { return std::log2f (x); }

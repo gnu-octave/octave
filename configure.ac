@@ -2415,15 +2415,6 @@ AC_CHECK_FUNCS([tcgetattr tcsetattr toascii])
 AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_getch _kbhit])
 
-## Look in <complex> for C++ variants of math functions that we need.
-
-OCTAVE_CHECK_FUNC_COMPLEX(acos)
-OCTAVE_CHECK_FUNC_COMPLEX(acosh)
-OCTAVE_CHECK_FUNC_COMPLEX(asin)
-OCTAVE_CHECK_FUNC_COMPLEX(asinh)
-OCTAVE_CHECK_FUNC_COMPLEX(atan)
-OCTAVE_CHECK_FUNC_COMPLEX(atanh)
-
 ## Check for math defines such as M_LN2 in math.h
 AC_CACHE_CHECK([for MATH DEFINES in math.h],
   [octave_cv_header_math_defines],

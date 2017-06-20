@@ -65,73 +65,25 @@ namespace octave
 
     float acosh (float x) { return std::acoshf (x); }
 
-    Complex
-    acosh (const Complex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ACOSH)
-      return std::acosh (x);
-#else
-      return log (x + sqrt (x + 1.0) * sqrt (x - 1.0));
-#endif
-    }
+    Complex acosh (const Complex& x) { return std::acosh (x); }
 
-    FloatComplex
-    acosh (const FloatComplex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ACOSH)
-      return std::acosh (x);
-#else
-      return log (x + sqrt (x + 1.0f) * sqrt (x - 1.0f));
-#endif
-    }
+    FloatComplex acosh (const FloatComplex& x) { return std::acosh (x); }
 
     double asinh (double x) { return std::asinh (x); }
 
     float asinh (float x) { return std::asinhf (x); }
 
-    Complex
-    asinh (const Complex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ASINH)
-      return std::asinh (x);
-#else
-      return log (x + sqrt (x*x + 1.0));
-#endif
-    }
+    Complex asinh (const Complex& x) { return std::asinh (x); }
 
-    FloatComplex
-    asinh (const FloatComplex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ASINH)
-      return std::asinh (x);
-#else
-      return log (x + sqrt (x*x + 1.0f));
-#endif
-    }
+    FloatComplex asinh (const FloatComplex& x) { return std::asinh (x); }
 
     double atanh (double x) { return std::atanh (x); }
 
     float atanh (float x) { return std::atanhf (x); }
 
-    Complex
-    atanh (const Complex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ATANH)
-      return std::atanh (x);
-#else
-      return log ((1.0 + x) / (1.0 - x)) / 2.0;
-#endif
-    }
+    Complex atanh (const Complex& x) { return std::atanh (x); }
 
-    FloatComplex
-    atanh (const FloatComplex& x)
-    {
-#if defined (HAVE_COMPLEX_STD_ATANH)
-      return std::atanh (x);
-#else
-      return log ((1.0f + x) / (1.0f - x)) / 2.0f;
-#endif
-    }
+    FloatComplex atanh (const FloatComplex& x) { return std::atanh (x); }
 
     double erf (double x) { return std::erf (x); }
 

@@ -398,6 +398,14 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 
+## Ensure that the C++ compiler fully supports C++11.
+dnl Test must occur after calling AC_PROG_CXX, which tests for language features
+dnl and sets the shell variable ac_cv_prog_cxx_cxx11 appropriately.
+
+if test x"$ac_cv_prog_cxx_cxx11" = xno; then
+  AC_MSG_ERROR([a compiler that fully supports C++11 is required to build Octave])
+fi
+
 ## Save and restore CFLAGS and CXXFLAGS globally.  These variables
 ## are for users, so we shouldn't be touching them.  Instead, we should
 ## set the corresponding AM_ flags (currently by way of the XTRA_ variables).

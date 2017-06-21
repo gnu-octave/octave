@@ -2179,6 +2179,8 @@ namespace octave
     string_column = 0;
     fcn_file_name = "";
     fcn_file_full_name = "";
+    dir_name = "";
+    package_name = "";
     looking_at_object_index.clear ();
     looking_at_object_index.push_front (false);
 

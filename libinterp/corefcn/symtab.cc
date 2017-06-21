@@ -1806,18 +1806,6 @@ symbol_table::scope::find_subfunction (const std::string& name) const
 }
 
 void
-symbol_table::scope::stash_dir_name_for_subfunctions (const std::string& dir_name)
-{
-  for (const auto& nm_sf : m_subfunctions)
-    {
-      octave_user_function *fcn = nm_sf.second.user_function_value ();
-
-      if (fcn)
-        fcn->stash_dir_name (dir_name);
-    }
-}
-
-void
 symbol_table::scope::mark_subfunctions_in_scope_as_private (const std::string& class_name)
 {
   for (auto& nm_sf : m_subfunctions)

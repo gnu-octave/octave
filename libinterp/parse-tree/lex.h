@@ -280,9 +280,10 @@ namespace octave
         block_comment_nesting_level (0), command_arg_paren_count (0),
         token_count (0), current_input_line (), comment_text (),
         help_text (), string_text (), string_line (0), string_column (0),
-        fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
-        parsed_function_name (), pending_local_variables (),
-        symtab_context (), nesting_level (), tokens ()
+        fcn_file_name (), fcn_file_full_name (), dir_name (),
+        package_name (), looking_at_object_index (), parsed_function_name (),
+        pending_local_variables (), symtab_context (), nesting_level (),
+        tokens ()
     {
       init ();
     }
@@ -438,6 +439,12 @@ namespace octave
 
     // Full name of file we are reading.
     std::string fcn_file_full_name;
+
+    // Directory name where this file was found.  May be relative.
+    std::string dir_name;
+
+    // Name of +package containing this file, if any.
+    std::string package_name;
 
     // if the front of the list is true, the closest paren, brace, or
     // bracket nesting is an index for an object.

@@ -3325,6 +3325,8 @@ namespace octave
 
         fcn->stash_fcn_file_name (lexer.fcn_file_full_name);
         fcn->stash_fcn_file_time (now);
+        fcn->stash_dir_name (lexer.dir_name);
+        fcn->stash_package_name (lexer.package_name);
         fcn->mark_as_system_fcn_file ();
 
         if (fcn_file_from_relative_lookup)
@@ -4378,10 +4380,10 @@ safe_fclose (FILE *f)
 
 static octave_value
 parse_fcn_file (const std::string& full_file, const std::string& file,
-                const std::string& dispatch_type,
-                const std::string& package_name,
-                bool require_file, bool force_script, bool autoload,
-                bool relative_lookup, const std::string& warn_for)
+                const std::string& dir_name, const std::string& dispatch_type,
+                const std::string& package_name, bool require_file,
+                bool force_script, bool autoload, bool relative_lookup,
+                const std::string& warn_for)
 {
   octave_value retval;
 
@@ -4422,6 +4424,8 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
       parser.lexer.fcn_file_name = file;
       parser.lexer.fcn_file_full_name = full_file;
+      parser.lexer.dir_name = dir_name;
+      parser.lexer.package_name = package_name;
 
       int status = parser.run ();
 
@@ -4511,8 +4515,8 @@ namespace octave
         symbol_found = true;
 
         octave_value ov_fcn
-          = parse_fcn_file (full_file, file, "", "", true, false, false, false,
-                            "");
+          = parse_fcn_file (full_file, file, "", "", "", true,
+                            false, false, false, "");
 
         if (ov_fcn.is_defined ())
           {
@@ -4577,7 +4581,8 @@ namespace octave
   }
 
   octave_value
-  load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
+  load_fcn_from_file (const std::string& file_name,
+                      const std::string& dir_name,
                       const std::string& dispatch_type,
                       const std::string& package_name,
                       const std::string& fcn_name, bool autoload)
@@ -4635,9 +4640,9 @@ namespace octave
         std::string doc_string;
 
         octave_value ov_fcn
-          = parse_fcn_file (file.substr (0, len - 2), nm, dispatch_type,
-                            package_name, false, autoload, autoload,
-                            relative_lookup, "");
+          = parse_fcn_file (file.substr (0, len - 2), nm, dir_name,
+                            dispatch_type, package_name, false,
+                            autoload, autoload, relative_lookup, "");
 
         if (ov_fcn.is_defined ())
           {
@@ -4659,27 +4664,9 @@ namespace octave
       }
     else if (len > 2)
       {
-        retval = parse_fcn_file (file, nm, dispatch_type, package_name, true,
-                                 autoload, autoload, relative_lookup, "");
-      }
-
-    if (retval.is_defined ())
-      {
-        octave_function *tmpfcn = retval.function_value ();
-
-        if (tmpfcn)
-          {
-            tmpfcn->stash_dir_name (dir_name);
-            tmpfcn->stash_package_name (package_name);
-
-            if (tmpfcn->is_user_function ())
-              {
-                symbol_table::scope *scope = tmpfcn->scope ();
-
-                if (scope)
-                  scope->stash_dir_name_for_subfunctions (dir_name);
-              }
-          }
+        retval = parse_fcn_file (file, nm, dir_name, dispatch_type,
+                                 package_name, true, autoload, autoload,
+                                 relative_lookup, "");
       }
 
     return retval;
@@ -4853,6 +4840,11 @@ namespace octave
     std::string file_full_name
       = octave::sys::file_ops::tilde_expand (file_name);
 
+    size_t pos
+      = file_full_name.find_last_of (octave::sys::file_ops::dir_sep_str ());
+
+    std::string dir_name = file_full_name.substr (0, pos);
+
     file_full_name = octave::sys::env::make_absolute (file_full_name);
 
     octave::unwind_protect frame;
@@ -4922,9 +4914,9 @@ namespace octave
       {
         try
           {
-            ov_code = parse_fcn_file (file_full_name, file_name, "", "",
-                                      require_file, true, false, false,
-                                      warn_for);
+            ov_code = parse_fcn_file (file_full_name, file_name, dir_name,
+                                      "", "", require_file, true, false,
+                                      false, warn_for);
           }
         catch (octave::execution_exception& e)
           {
@@ -5826,7 +5818,12 @@ Undocumented internal function.
 
   std::string file = args(0).xstring_value ("__parse_file__: expecting filename as argument");
 
-  std::string full_file = octave::sys::env::make_absolute (file);
+  std::string full_file
+      = octave::sys::file_ops::tilde_expand (file);
+
+  full_file = octave::sys::env::make_absolute (full_file);
+
+  std::string dir_name;
 
   size_t file_len = file.length ();
 
@@ -5839,15 +5836,18 @@ Undocumented internal function.
 
       size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
       if (pos != std::string::npos)
-        file = file.substr (pos+1);
+        {
+          dir_name = file.substr (0, pos);
+          file = file.substr (pos+1);
+        }
     }
 
   if (nargin == 2)
     octave_stdout << "parsing " << full_file << std::endl;
 
   octave_value ov_fcn
-    = parse_fcn_file (full_file, file, "", "", true, false, false,
-                      false, "__parse_file__");
+    = parse_fcn_file (full_file, file, dir_name, "", "", true, false,
+                      false, false, "__parse_file__");
 
   return retval;
 }

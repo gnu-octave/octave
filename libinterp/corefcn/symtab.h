@@ -2006,8 +2006,6 @@ public:
       m_subfunctions.clear ();
     }
 
-    void stash_dir_name_for_subfunctions (const std::string& dir_name);
-
     void mark_subfunctions_in_scope_as_private (const std::string& class_name);
 
     std::list<workspace_element> workspace_info (void) const;

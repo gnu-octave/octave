@@ -29,30 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 extern "C"
 {
-  // ACOSH
-
-  F77_RET_T
-  F77_FUNC (xacosh, XACOSH) (const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (xdacosh, XDACOSH) (const F77_DBLE&, F77_DBLE&);
-
-  // ASINH
-
-  F77_RET_T
-  F77_FUNC (xasinh, XASINH) (const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (xdasinh, XDASINH) (const F77_DBLE&, F77_DBLE&);
-
-  // ATANH
-
-  F77_RET_T
-  F77_FUNC (xatanh, XATANH) (const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (xdatanh, XDATANH) (const F77_DBLE&, F77_DBLE&);
-
   // BETAI
 
   F77_RET_T
@@ -63,30 +39,6 @@ extern "C"
   F77_FUNC (xdbetai, XDBETAI) (const F77_DBLE&, const F77_DBLE&,
                                const F77_DBLE&, F77_DBLE&);
 
-  // ERF
-
-  F77_RET_T
-  F77_FUNC (xerf, XERF) (const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (xderf, XDERF) (const F77_DBLE&, F77_DBLE&);
-
-  // ERFC
-
-  F77_RET_T
-  F77_FUNC (xderfc, XDERFC) (const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (xerfc, XERFC) (const F77_REAL&, F77_REAL&);
-
-  // GAMMA
-
-  F77_RET_T
-  F77_FUNC (xgamma, XGAMMA) (const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (xdgamma, XDGAMMA) (const F77_DBLE&, F77_DBLE&);
-
   // GAMMAINC
 
   F77_RET_T
@@ -96,14 +48,6 @@ extern "C"
   F77_RET_T
   F77_FUNC (xsgammainc, XSGAMMAINC) (const F77_REAL&, const F77_REAL&,
                                      F77_REAL&);
-
-  // LGAMS
-
-  F77_RET_T
-  F77_FUNC (algams, ALGAMS) (const F77_REAL&, F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (dlgams, DLGAMS) (const F77_DBLE&, F77_DBLE&, F77_DBLE&);
 
   // PCHIM
 

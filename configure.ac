@@ -3163,7 +3163,6 @@ OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
   build-aux/subst-default-vals.sh
-  build-aux/subst-f77-isnan-macro.sh
   build-aux/subst-script-vals.sh])
 
 AC_OUTPUT

@@ -46,53 +46,33 @@ namespace octave
 {
   namespace math
   {
-    extern OCTAVE_API double acosh (double x);
-    extern OCTAVE_API float acosh (float x);
-    extern OCTAVE_API Complex acosh (const Complex& x);
-    extern OCTAVE_API FloatComplex acosh (const FloatComplex& x);
+    inline double acosh (double x) { return std::acosh (x); }
+    inline float acosh (float x) { return std::acoshf (x); }
+    inline Complex acosh (const Complex& x) { return std::acosh (x); }
+    inline FloatComplex acosh (const FloatComplex& x) { return std::acosh (x); }
 
-    extern OCTAVE_API double asinh (double x);
-    extern OCTAVE_API float asinh (float x);
-    extern OCTAVE_API Complex asinh (const Complex& x);
-    extern OCTAVE_API FloatComplex asinh (const FloatComplex& x);
+    extern OCTAVE_API Complex airy (const Complex& z, bool deriv, bool scaled,
+                                    octave_idx_type& ierr);
+    extern OCTAVE_API ComplexMatrix airy (const ComplexMatrix& z, bool deriv,
+                                          bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray airy (const ComplexNDArray& z, bool deriv,
+                                           bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplex airy (const FloatComplex& z, bool deriv,
+                                         bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplexMatrix airy (const FloatComplexMatrix& z,
+                                               bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray airy (const FloatComplexNDArray& z,
+                                                bool deriv, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API double atanh (double x);
-    extern OCTAVE_API float atanh (float x);
-    extern OCTAVE_API Complex atanh (const Complex& x);
-    extern OCTAVE_API FloatComplex atanh (const FloatComplex& x);
+    inline double asinh (double x) { return std::asinh (x); }
+    inline float asinh (float x) { return std::asinhf (x); }
+    inline Complex asinh (const Complex& x) { return std::asinh (x); }
+    inline FloatComplex asinh (const FloatComplex& x) { return std::asinh (x); }
 
-    extern OCTAVE_API double erf (double x);
-    extern OCTAVE_API float erf (float x);
-    extern OCTAVE_API Complex erf (const Complex& x);
-    extern OCTAVE_API FloatComplex erf (const FloatComplex& x);
-
-    extern OCTAVE_API double erfc (double x);
-    extern OCTAVE_API float erfc (float x);
-    extern OCTAVE_API Complex erfc (const Complex& x);
-    extern OCTAVE_API FloatComplex erfc (const FloatComplex& x);
-
-    extern OCTAVE_API double expm1 (double x);
-    extern OCTAVE_API Complex expm1 (const Complex& x);
-
-    extern OCTAVE_API float expm1 (float x);
-    extern OCTAVE_API FloatComplex expm1 (const FloatComplex& x);
-
-    extern OCTAVE_API double log1p (double x);
-    extern OCTAVE_API Complex log1p (const Complex& x);
-
-    extern OCTAVE_API float log1p (float x);
-    extern OCTAVE_API FloatComplex log1p (const FloatComplex& x);
-
-    extern OCTAVE_API double cbrt (double x);
-    extern OCTAVE_API float cbrt (float x);
-
-    extern OCTAVE_API double gamma (double x);
-    extern OCTAVE_API double lgamma (double x);
-    extern OCTAVE_API Complex rc_lgamma (double x);
-
-    extern OCTAVE_API float gamma (float x);
-    extern OCTAVE_API float lgamma (float x);
-    extern OCTAVE_API FloatComplex rc_lgamma (float x);
+    inline double atanh (double x) { return std::atanh (x); }
+    inline float atanh (float x) { return std::atanhf (x); }
+    inline Complex atanh (const Complex& x) { return std::atanh (x); }
+    inline FloatComplex atanh (const FloatComplex& x) { return std::atanh (x); }
 
     extern OCTAVE_API Complex besselj (double alpha, const Complex& x, bool scaled,
                                        octave_idx_type& ierr);
@@ -302,36 +282,6 @@ namespace octave
     extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatRowVector& alpha,
                                                    const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API Complex airy (const Complex& z, bool deriv, bool scaled,
-                                    octave_idx_type& ierr);
-    extern OCTAVE_API Complex biry (const Complex& z, bool deriv, bool scaled,
-                                    octave_idx_type& ierr);
-
-    extern OCTAVE_API ComplexMatrix airy (const ComplexMatrix& z, bool deriv,
-                                          bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix biry (const ComplexMatrix& z, bool deriv,
-                                          bool scaled, Array<octave_idx_type>& ierr);
-
-    extern OCTAVE_API ComplexNDArray airy (const ComplexNDArray& z, bool deriv,
-                                           bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray biry (const ComplexNDArray& z, bool deriv,
-                                           bool scaled, Array<octave_idx_type>& ierr);
-
-    extern OCTAVE_API FloatComplex airy (const FloatComplex& z, bool deriv,
-                                         bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API FloatComplex biry (const FloatComplex& z, bool deriv,
-                                         bool scaled, octave_idx_type& ierr);
-
-    extern OCTAVE_API FloatComplexMatrix airy (const FloatComplexMatrix& z,
-                                               bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix biry (const FloatComplexMatrix& z,
-                                               bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-
-    extern OCTAVE_API FloatComplexNDArray airy (const FloatComplexNDArray& z,
-                                                bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray biry (const FloatComplexNDArray& z,
-                                                bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-
     extern OCTAVE_API double betainc (double x, double a, double b);
     extern OCTAVE_API Array<double> betainc (double x, double a,
                                              const Array<double>& b);
@@ -339,7 +289,6 @@ namespace octave
                                              double b);
     extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a,
                                              const Array<double>& b);
-
     extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a,
                                              double b);
     extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a,
@@ -356,7 +305,6 @@ namespace octave
                                             float b);
     extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a,
                                             const Array<float>& b);
-
     extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a,
                                             float b);
     extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a,
@@ -365,6 +313,83 @@ namespace octave
                                             const Array<float>& a, float b);
     extern OCTAVE_API Array<float> betainc (const Array<float>& x,
                                             const Array<float>& a, const Array<float>& b);
+
+    extern OCTAVE_API double betaincinv (double x, double a, double b);
+    extern OCTAVE_API Array<double> betaincinv (double x, double a,
+                                                const Array<double>& b);
+    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
+                                                double b);
+    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
+                                                const Array<double>& b);
+
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
+                                                double b);
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
+                                                const Array<double>& b);
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
+                                                const Array<double>& a, double b);
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
+                                                const Array<double>& a, const Array<double>& b);
+
+    extern OCTAVE_API Complex biry (const Complex& z, bool deriv, bool scaled,
+                                    octave_idx_type& ierr);
+    extern OCTAVE_API ComplexMatrix biry (const ComplexMatrix& z, bool deriv,
+                                          bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray biry (const ComplexNDArray& z, bool deriv,
+                                           bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplex biry (const FloatComplex& z, bool deriv,
+                                         bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplexMatrix biry (const FloatComplexMatrix& z,
+                                               bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray biry (const FloatComplexNDArray& z,
+                                                bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+
+    inline double cbrt (double x) { return std::cbrt (x); }
+    inline float cbrt (float x) { return std::cbrtf (x); }
+
+    extern OCTAVE_API double dawson (double x);
+    extern OCTAVE_API float dawson (float x);
+    extern OCTAVE_API Complex dawson (const Complex& x);
+    extern OCTAVE_API FloatComplex dawson (const FloatComplex& x);
+
+    extern OCTAVE_API void ellipj (double u, double m, double& sn, double& cn,
+                                   double& dn, double& err);
+    extern OCTAVE_API void ellipj (const Complex& u, double m, Complex& sn,
+                                   Complex& cn, Complex& dn, double& err);
+
+    inline double erf (double x) { return std::erf (x); }
+    inline float erf (float x) { return std::erff (x); }
+    extern OCTAVE_API Complex erf (const Complex& x);
+    extern OCTAVE_API FloatComplex erf (const FloatComplex& x);
+
+    inline double erfc (double x) { return std::erfc (x); }
+    inline float erfc (float x) { return std::erfcf (x); }
+    extern OCTAVE_API Complex erfc (const Complex& x);
+    extern OCTAVE_API FloatComplex erfc (const FloatComplex& x);
+
+    extern OCTAVE_API double erfcinv (double x);
+    extern OCTAVE_API float erfcinv (float x);
+
+    extern OCTAVE_API double erfcx (double x);
+    extern OCTAVE_API float erfcx (float x);
+    extern OCTAVE_API Complex erfcx (const Complex& x);
+    extern OCTAVE_API FloatComplex erfcx (const FloatComplex& x);
+
+    extern OCTAVE_API double erfi (double x);
+    extern OCTAVE_API float erfi (float x);
+    extern OCTAVE_API Complex erfi (const Complex& x);
+    extern OCTAVE_API FloatComplex erfi (const FloatComplex& x);
+
+    extern OCTAVE_API double erfinv (double x);
+    extern OCTAVE_API float erfinv (float x);
+
+    inline double expm1 (double x) { return std::expm1 (x); }
+    inline float expm1 (float x) { return std::expm1f (x); }
+    extern OCTAVE_API Complex expm1 (const Complex& x);
+    extern OCTAVE_API FloatComplex expm1 (const FloatComplex& x);
+
+    extern OCTAVE_API double gamma (double x);
+    extern OCTAVE_API float gamma (float x);
 
     extern OCTAVE_API double gammainc (double x, double a, bool& err);
     inline double gammainc (double x, double a)
@@ -398,60 +423,26 @@ namespace octave
     extern OCTAVE_API FloatNDArray gammainc (const FloatNDArray& x,
                                              const FloatNDArray& a);
 
-    extern OCTAVE_API Complex rc_log1p (double x);
-    extern OCTAVE_API FloatComplex rc_log1p (float x);
+    inline double lgamma (double x) { return std::lgamma (x); }
+    inline float lgamma (float x) { return std::lgammaf (x); }
 
-    extern OCTAVE_API double erfinv (double x);
-    extern OCTAVE_API float erfinv (float x);
-
-    extern OCTAVE_API double erfcinv (double x);
-    extern OCTAVE_API float erfcinv (float x);
-
-    extern OCTAVE_API float erfcx (float x);
-    extern OCTAVE_API double erfcx (double x);
-    extern OCTAVE_API Complex erfcx (const Complex& x);
-    extern OCTAVE_API FloatComplex erfcx (const FloatComplex& x);
-
-    extern OCTAVE_API float erfi (float x);
-    extern OCTAVE_API double erfi (double x);
-    extern OCTAVE_API Complex erfi (const Complex& x);
-    extern OCTAVE_API FloatComplex erfi (const FloatComplex& x);
-
-    extern OCTAVE_API float dawson (float x);
-    extern OCTAVE_API double dawson (double x);
-    extern OCTAVE_API Complex dawson (const Complex& x);
-    extern OCTAVE_API FloatComplex dawson (const FloatComplex& x);
-
-    extern OCTAVE_API double betaincinv (double x, double a, double b);
-    extern OCTAVE_API Array<double> betaincinv (double x, double a,
-                                                const Array<double>& b);
-    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
-                                                double b);
-    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
-                                                const Array<double>& b);
-
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
-                                                double b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
-                                                const Array<double>& b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
-                                                const Array<double>& a, double b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
-                                                const Array<double>& a, const Array<double>& b);
-
-    extern OCTAVE_API void ellipj (double u, double m, double& sn, double& cn,
-                                   double& dn, double& err);
-    extern OCTAVE_API void ellipj (const Complex& u, double m, Complex& sn,
-                                   Complex& cn, Complex& dn, double& err);
+    inline double log1p (double x) { return std::log1p (x); }
+    inline float log1p (float x) { return std::log1pf (x); }
+    extern OCTAVE_API Complex log1p (const Complex& x);
+    extern OCTAVE_API FloatComplex log1p (const FloatComplex& x);
 
     extern OCTAVE_API double psi (double x);
     extern OCTAVE_API float psi (float x);
-
     extern OCTAVE_API Complex psi (const Complex& x);
     extern OCTAVE_API FloatComplex psi (const FloatComplex& x);
-
     extern OCTAVE_API double psi (octave_idx_type n, double z);
     extern OCTAVE_API float psi (octave_idx_type n, float z);
+
+    extern OCTAVE_API Complex rc_lgamma (double x);
+    extern OCTAVE_API FloatComplex rc_lgamma (float x);
+
+    extern OCTAVE_API Complex rc_log1p (double x);
+    extern OCTAVE_API FloatComplex rc_log1p (float x);
   }
 }
 

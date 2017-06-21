@@ -60,318 +60,6 @@ namespace octave
 {
   namespace math
   {
-    double acosh (double x) { return std::acosh (x); }
-
-    float acosh (float x) { return std::acoshf (x); }
-
-    Complex acosh (const Complex& x) { return std::acosh (x); }
-
-    FloatComplex acosh (const FloatComplex& x) { return std::acosh (x); }
-
-    double asinh (double x) { return std::asinh (x); }
-
-    float asinh (float x) { return std::asinhf (x); }
-
-    Complex asinh (const Complex& x) { return std::asinh (x); }
-
-    FloatComplex asinh (const FloatComplex& x) { return std::asinh (x); }
-
-    double atanh (double x) { return std::atanh (x); }
-
-    float atanh (float x) { return std::atanhf (x); }
-
-    Complex atanh (const Complex& x) { return std::atanh (x); }
-
-    FloatComplex atanh (const FloatComplex& x) { return std::atanh (x); }
-
-    double erf (double x) { return std::erf (x); }
-
-    float erf (float x) { return std::erff (x); }
-
-    // Complex error function from the Faddeeva package
-    Complex
-    erf (const Complex& x)
-    {
-      return Faddeeva::erf (x);
-    }
-
-    FloatComplex
-    erf (const FloatComplex& x)
-    {
-      Complex xd (x.real (), x.imag ());
-      Complex ret = Faddeeva::erf (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (ret.real (), ret.imag ());
-    }
-
-    double erfc (double x) { return std::erfc (x); }
-
-    float erfc (float x) { return std::erfcf (x); }
-
-    // Complex complementary error function from the Faddeeva package
-    Complex
-    erfc (const Complex& x)
-    {
-      return Faddeeva::erfc (x);
-    }
-
-    FloatComplex
-    erfc (const FloatComplex& x)
-    {
-      Complex xd (x.real (), x.imag ());
-      Complex ret = Faddeeva::erfc (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (ret.real (), ret.imag ());
-    }
-
-    // Real and complex scaled complementary error function from Faddeeva pkg.
-    float erfcx (float x) { return Faddeeva::erfcx(x); }
-    double erfcx (double x) { return Faddeeva::erfcx(x); }
-
-    Complex
-    erfcx (const Complex& x)
-    {
-      return Faddeeva::erfcx (x);
-    }
-
-    FloatComplex
-    erfcx (const FloatComplex& x)
-    {
-      Complex xd (x.real (), x.imag ());
-      Complex ret;
-      ret = Faddeeva::erfcx (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (ret.real (), ret.imag ());
-    }
-
-    // Real and complex imaginary error function from Faddeeva package
-    float erfi (float x) { return Faddeeva::erfi(x); }
-    double erfi (double x) { return Faddeeva::erfi(x); }
-
-    Complex
-    erfi (const Complex& x)
-    {
-      return Faddeeva::erfi (x);
-    }
-
-    FloatComplex
-    erfi (const FloatComplex& x)
-    {
-      Complex xd (x.real (), x.imag ());
-      Complex ret = Faddeeva::erfi (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (ret.real (), ret.imag ());
-    }
-
-    // Real and complex Dawson function (= scaled erfi) from Faddeeva package
-    float dawson (float x) { return Faddeeva::Dawson(x); }
-    double dawson (double x) { return Faddeeva::Dawson(x); }
-
-    Complex
-    dawson (const Complex& x)
-    {
-      return Faddeeva::Dawson (x);
-    }
-
-    FloatComplex
-    dawson (const FloatComplex& x)
-    {
-      Complex xd (x.real (), x.imag ());
-      Complex ret;
-      ret = Faddeeva::Dawson (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (ret.real (), ret.imag ());
-    }
-
-    double
-    gamma (double x)
-    {
-      double result;
-
-      // Special cases for (near) compatibility with Matlab instead of tgamma.
-      // Matlab does not have -0.
-
-      if (x == 0)
-        result = (octave::math::negative_sign (x)
-                  ? -octave::numeric_limits<double>::Inf ()
-                  : octave::numeric_limits<double>::Inf ());
-      else if ((x < 0 && octave::math::x_nint (x) == x)
-               || octave::math::isinf (x))
-        result = octave::numeric_limits<double>::Inf ();
-      else if (octave::math::isnan (x))
-        result = octave::numeric_limits<double>::NaN ();
-      else
-        result = std::tgamma (x);
-
-      return result;
-    }
-
-    double lgamma (double x) { return std::lgamma (x); }
-
-    Complex
-    rc_lgamma (double x)
-    {
-      double result;
-
-#if defined (HAVE_LGAMMA_R)
-      int sgngam;
-      result = lgamma_r (x, &sgngam);
-#else
-      result = std::lgamma (x);
-      int sgngam = signgam;
-#endif
-
-      if (sgngam < 0)
-        return result + Complex (0., M_PI);
-      else
-        return result;
-    }
-
-    float
-    gamma (float x)
-    {
-      float result;
-
-      // Special cases for (near) compatibility with Matlab instead of tgamma.
-      // Matlab does not have -0.
-
-      if (x == 0)
-        result = (octave::math::negative_sign (x)
-                  ? -octave::numeric_limits<float>::Inf ()
-                  : octave::numeric_limits<float>::Inf ());
-      else if ((x < 0 && octave::math::x_nint (x) == x)
-               || octave::math::isinf (x))
-        result = octave::numeric_limits<float>::Inf ();
-      else if (octave::math::isnan (x))
-        result = octave::numeric_limits<float>::NaN ();
-      else
-        result = std::tgammaf (x);
-
-      return result;
-    }
-
-    float lgamma (float x) { return std::lgammaf (x); }
-
-    FloatComplex
-    rc_lgamma (float x)
-    {
-      float result;
-
-#if defined (HAVE_LGAMMAF_R)
-      int sgngam;
-      result = lgammaf_r (x, &sgngam);
-#else
-      result = std::lgammaf (x);
-      int sgngam = signgam;
-#endif
-
-      if (sgngam < 0)
-        return result + FloatComplex (0., M_PI);
-      else
-        return result;
-    }
-
-    double expm1 (double x) { return std::expm1 (x); }
-
-    Complex
-    expm1 (const Complex& x)
-    {
-      Complex retval;
-
-      if (std:: abs (x) < 1)
-        {
-          double im = x.imag ();
-          double u = expm1 (x.real ());
-          double v = sin (im/2);
-          v = -2*v*v;
-          retval = Complex (u*v + u + v, (u+1) * sin (im));
-        }
-      else
-        retval = std::exp (x) - Complex (1);
-
-      return retval;
-    }
-
-    float expm1 (float x) { return std::expm1f (x); }
-
-    FloatComplex
-    expm1 (const FloatComplex& x)
-    {
-      FloatComplex retval;
-
-      if (std:: abs (x) < 1)
-        {
-          float im = x.imag ();
-          float u = expm1 (x.real ());
-          float v = sin (im/2);
-          v = -2*v*v;
-          retval = FloatComplex (u*v + u + v, (u+1) * sin (im));
-        }
-      else
-        retval = std::exp (x) - FloatComplex (1);
-
-      return retval;
-    }
-
-    double log1p (double x) { return std::log1p (x); }
-
-    Complex
-    log1p (const Complex& x)
-    {
-      Complex retval;
-
-      double r = x.real (), i = x.imag ();
-
-      if (fabs (r) < 0.5 && fabs (i) < 0.5)
-        {
-          double u = 2*r + r*r + i*i;
-          retval = Complex (log1p (u / (1+std::sqrt (u+1))),
-                            atan2 (1 + r, i));
-        }
-      else
-        retval = std::log (Complex (1) + x);
-
-      return retval;
-    }
-
-    double cbrt (double x) { return std::cbrt (x); }
-
-    float log1p (float x) { return std::log1pf (x); }
-
-    FloatComplex
-    log1p (const FloatComplex& x)
-    {
-      FloatComplex retval;
-
-      float r = x.real (), i = x.imag ();
-
-      if (fabs (r) < 0.5 && fabs (i) < 0.5)
-        {
-          float u = 2*r + r*r + i*i;
-          retval = FloatComplex (log1p (u / (1+std::sqrt (u+1))),
-                                 atan2 (1 + r, i));
-        }
-      else
-        retval = std::log (FloatComplex (1) + x);
-
-      return retval;
-    }
-
-    float cbrt (float x) { return std::cbrtf (x); }
-
-    static inline Complex
-    zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
-
-    static inline Complex
-    zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
-
-    static inline Complex
-    zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
-
-    static inline Complex
-    zbesk (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
-
-    static inline Complex
-    zbesh1 (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
-
-    static inline Complex
-    zbesh2 (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
-
     static inline Complex
     bessel_return_value (const Complex& val, octave_idx_type ierr)
     {
@@ -404,11 +92,202 @@ namespace octave
       return retval;
     }
 
+    static inline FloatComplex
+    bessel_return_value (const FloatComplex& val, octave_idx_type ierr)
+    {
+      static const FloatComplex inf_val
+        = FloatComplex (octave::numeric_limits<float>::Inf (),
+                        octave::numeric_limits<float>::Inf ());
+
+      static const FloatComplex nan_val
+        = FloatComplex (octave::numeric_limits<float>::NaN (),
+                        octave::numeric_limits<float>::NaN ());
+
+      FloatComplex retval;
+
+      switch (ierr)
+        {
+        case 0:
+        case 3:
+          retval = val;
+          break;
+
+        case 2:
+          retval = inf_val;
+          break;
+
+        default:
+          retval = nan_val;
+          break;
+        }
+
+      return retval;
+    }
+
+
+
+    Complex
+    airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
+    {
+      double ar = 0.0;
+      double ai = 0.0;
+
+      double zr = z.real ();
+      double zi = z.imag ();
+
+      F77_INT id = (deriv ? 1 : 0);
+      F77_INT nz, t_ierr;
+
+      F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, t_ierr);
+
+      ierr = t_ierr;
+
+      if (! scaled)
+        {
+          Complex expz = exp (- 2.0 / 3.0 * z * sqrt (z));
+
+          double rexpz = expz.real ();
+          double iexpz = expz.imag ();
+
+          double tmp = ar*rexpz - ai*iexpz;
+
+          ai = ar*iexpz + ai*rexpz;
+          ar = tmp;
+        }
+
+      if (zi == 0.0 && (! scaled || zr >= 0.0))
+        ai = 0.0;
+
+      return bessel_return_value (Complex (ar, ai), ierr);
+    }
+
+    ComplexMatrix
+    airy (const ComplexMatrix& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      octave_idx_type nr = z.rows ();
+      octave_idx_type nc = z.cols ();
+
+      ComplexMatrix retval (nr, nc);
+
+      ierr.resize (dim_vector (nr, nc));
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
+
+      return retval;
+    }
+
+    ComplexNDArray
+    airy (const ComplexNDArray& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      dim_vector dv = z.dims ();
+      octave_idx_type nel = dv.numel ();
+      ComplexNDArray retval (dv);
+
+      ierr.resize (dv);
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        retval(i) = airy (z(i), deriv, scaled, ierr(i));
+
+      return retval;
+    }
+
+    FloatComplex
+    airy (const FloatComplex& z, bool deriv, bool scaled,
+          octave_idx_type& ierr)
+    {
+      FloatComplex a;
+
+      F77_INT id = (deriv ? 1 : 0);
+      F77_INT nz, t_ierr;
+
+      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
+                               F77_CMPLX_ARG (&a), nz, t_ierr);
+
+      ierr = t_ierr;
+
+      float ar = a.real ();
+      float ai = a.imag ();
+
+      if (! scaled)
+        {
+          FloatComplex expz = exp (- 2.0f / 3.0f * z * sqrt (z));
+
+          float rexpz = expz.real ();
+          float iexpz = expz.imag ();
+
+          float tmp = ar*rexpz - ai*iexpz;
+
+          ai = ar*iexpz + ai*rexpz;
+          ar = tmp;
+        }
+
+      if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
+        ai = 0.0;
+
+      return bessel_return_value (FloatComplex (ar, ai), ierr);
+    }
+
+    FloatComplexMatrix
+    airy (const FloatComplexMatrix& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      octave_idx_type nr = z.rows ();
+      octave_idx_type nc = z.cols ();
+
+      FloatComplexMatrix retval (nr, nc);
+
+      ierr.resize (dim_vector (nr, nc));
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
+
+      return retval;
+    }
+
+    FloatComplexNDArray
+    airy (const FloatComplexNDArray& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      dim_vector dv = z.dims ();
+      octave_idx_type nel = dv.numel ();
+      FloatComplexNDArray retval (dv);
+
+      ierr.resize (dv);
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        retval(i) = airy (z(i), deriv, scaled, ierr(i));
+
+      return retval;
+    }
+
     static inline bool
     is_integer_value (double x)
     {
       return x == static_cast<double> (static_cast<long> (x));
     }
+
+    static inline Complex
+    zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
+
+    static inline Complex
+    zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
+
+    static inline Complex
+    zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
+
+    static inline Complex
+    zbesk (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
+
+    static inline Complex
+    zbesh1 (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
+
+    static inline Complex
+    zbesh2 (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
     static inline Complex
     zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
@@ -1026,38 +905,6 @@ namespace octave
     static inline FloatComplex
     cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr);
 
-    static inline FloatComplex
-    bessel_return_value (const FloatComplex& val, octave_idx_type ierr)
-    {
-      static const FloatComplex inf_val
-        = FloatComplex (octave::numeric_limits<float>::Inf (),
-                        octave::numeric_limits<float>::Inf ());
-
-      static const FloatComplex nan_val
-        = FloatComplex (octave::numeric_limits<float>::NaN (),
-                        octave::numeric_limits<float>::NaN ());
-
-      FloatComplex retval;
-
-      switch (ierr)
-        {
-        case 0:
-        case 3:
-          retval = val;
-          break;
-
-        case 2:
-          retval = inf_val;
-          break;
-
-        default:
-          retval = nan_val;
-          break;
-        }
-
-      return retval;
-    }
-
     static inline bool
     is_integer_value (float x)
     {
@@ -1355,7 +1202,7 @@ namespace octave
 
       if (alpha >= 0.0)
         {
-          FloatComplex y = 0.0;
+          FloatComplex y = 0.0;;
 
           F77_INT nz, t_ierr;
 
@@ -1641,285 +1488,6 @@ namespace octave
 #undef NS_BESSEL
 #undef NN_BESSEL
 #undef RC_BESSEL
-
-    Complex
-    airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
-    {
-      double ar = 0.0;
-      double ai = 0.0;
-
-      double zr = z.real ();
-      double zi = z.imag ();
-
-      F77_INT id = (deriv ? 1 : 0);
-      F77_INT nz, t_ierr;
-
-      F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, t_ierr);
-
-      ierr = t_ierr;
-
-      if (! scaled)
-        {
-          Complex expz = exp (- 2.0 / 3.0 * z * sqrt (z));
-
-          double rexpz = expz.real ();
-          double iexpz = expz.imag ();
-
-          double tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
-
-      if (zi == 0.0 && (! scaled || zr >= 0.0))
-        ai = 0.0;
-
-      return bessel_return_value (Complex (ar, ai), ierr);
-    }
-
-    Complex
-    biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
-    {
-      double ar = 0.0;
-      double ai = 0.0;
-
-      double zr = z.real ();
-      double zi = z.imag ();
-
-      F77_INT id = (deriv ? 1 : 0);
-      F77_INT t_ierr;
-
-      F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, t_ierr);
-
-      ierr = t_ierr;
-
-      if (! scaled)
-        {
-          Complex expz = exp (std::abs (std::real (2.0 / 3.0 * z * sqrt (z))));
-
-          double rexpz = expz.real ();
-          double iexpz = expz.imag ();
-
-          double tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
-
-      if (zi == 0.0 && (! scaled || zr >= 0.0))
-        ai = 0.0;
-
-      return bessel_return_value (Complex (ar, ai), ierr);
-    }
-
-    ComplexMatrix
-    airy (const ComplexMatrix& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      octave_idx_type nr = z.rows ();
-      octave_idx_type nc = z.cols ();
-
-      ComplexMatrix retval (nr, nc);
-
-      ierr.resize (dim_vector (nr, nc));
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
-
-      return retval;
-    }
-
-    ComplexMatrix
-    biry (const ComplexMatrix& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      octave_idx_type nr = z.rows ();
-      octave_idx_type nc = z.cols ();
-
-      ComplexMatrix retval (nr, nc);
-
-      ierr.resize (dim_vector (nr, nc));
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
-
-      return retval;
-    }
-
-    ComplexNDArray
-    airy (const ComplexNDArray& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      dim_vector dv = z.dims ();
-      octave_idx_type nel = dv.numel ();
-      ComplexNDArray retval (dv);
-
-      ierr.resize (dv);
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        retval(i) = airy (z(i), deriv, scaled, ierr(i));
-
-      return retval;
-    }
-
-    ComplexNDArray
-    biry (const ComplexNDArray& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      dim_vector dv = z.dims ();
-      octave_idx_type nel = dv.numel ();
-      ComplexNDArray retval (dv);
-
-      ierr.resize (dv);
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        retval(i) = biry (z(i), deriv, scaled, ierr(i));
-
-      return retval;
-    }
-
-    FloatComplex
-    airy (const FloatComplex& z, bool deriv, bool scaled,
-          octave_idx_type& ierr)
-    {
-      FloatComplex a;
-
-      F77_INT id = (deriv ? 1 : 0);
-      F77_INT nz, t_ierr;
-
-      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
-                               F77_CMPLX_ARG (&a), nz, t_ierr);
-
-      ierr = t_ierr;
-
-      float ar = a.real ();
-      float ai = a.imag ();
-
-      if (! scaled)
-        {
-          FloatComplex expz = exp (- 2.0f / 3.0f * z * sqrt (z));
-
-          float rexpz = expz.real ();
-          float iexpz = expz.imag ();
-
-          float tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
-
-      if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
-        ai = 0.0;
-
-      return bessel_return_value (FloatComplex (ar, ai), ierr);
-    }
-
-    FloatComplex
-    biry (const FloatComplex& z, bool deriv, bool scaled,
-          octave_idx_type& ierr)
-    {
-      FloatComplex a;
-
-      F77_INT id = (deriv ? 1 : 0);
-      F77_INT t_ierr;
-
-      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
-                               F77_CMPLX_ARG (&a), t_ierr);
-
-      ierr = t_ierr;
-
-      float ar = a.real ();
-      float ai = a.imag ();
-
-      if (! scaled)
-        {
-          FloatComplex expz
-            = exp (std::abs (std::real (2.0f / 3.0f * z * sqrt (z))));
-
-          float rexpz = expz.real ();
-          float iexpz = expz.imag ();
-
-          float tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
-
-      if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
-        ai = 0.0;
-
-      return bessel_return_value (FloatComplex (ar, ai), ierr);
-    }
-
-    FloatComplexMatrix
-    airy (const FloatComplexMatrix& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      octave_idx_type nr = z.rows ();
-      octave_idx_type nc = z.cols ();
-
-      FloatComplexMatrix retval (nr, nc);
-
-      ierr.resize (dim_vector (nr, nc));
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
-
-      return retval;
-    }
-
-    FloatComplexMatrix
-    biry (const FloatComplexMatrix& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      octave_idx_type nr = z.rows ();
-      octave_idx_type nc = z.cols ();
-
-      FloatComplexMatrix retval (nr, nc);
-
-      ierr.resize (dim_vector (nr, nc));
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
-
-      return retval;
-    }
-
-    FloatComplexNDArray
-    airy (const FloatComplexNDArray& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      dim_vector dv = z.dims ();
-      octave_idx_type nel = dv.numel ();
-      FloatComplexNDArray retval (dv);
-
-      ierr.resize (dv);
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        retval(i) = airy (z(i), deriv, scaled, ierr(i));
-
-      return retval;
-    }
-
-    FloatComplexNDArray
-    biry (const FloatComplexNDArray& z, bool deriv, bool scaled,
-          Array<octave_idx_type>& ierr)
-    {
-      dim_vector dv = z.dims ();
-      octave_idx_type nel = dv.numel ();
-      FloatComplexNDArray retval (dv);
-
-      ierr.resize (dv);
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        retval(i) = biry (z(i), deriv, scaled, ierr(i));
-
-      return retval;
-    }
 
     OCTAVE_NORETURN static void
     err_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
@@ -2227,521 +1795,6 @@ namespace octave
         *pretval++ = betainc (x(i), a(i), b(i));
 
       return retval;
-    }
-
-    // FIXME: there is still room for improvement here...
-
-    double
-    gammainc (double x, double a, bool& err)
-    {
-      if (a < 0.0 || x < 0.0)
-        (*current_liboctave_error_handler)
-          ("gammainc: A and X must be non-negative");
-
-      err = false;
-
-      double retval;
-
-      F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
-
-      return retval;
-    }
-
-    Matrix
-    gammainc (double x, const Matrix& a)
-    {
-      octave_idx_type nr = a.rows ();
-      octave_idx_type nc = a.cols ();
-
-      Matrix retval (nr, nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            retval(i,j) = gammainc (x, a(i,j), err);
-
-            if (err)
-              return Matrix ();
-          }
-
-      return retval;
-    }
-
-    Matrix
-    gammainc (const Matrix& x, double a)
-    {
-      octave_idx_type nr = x.rows ();
-      octave_idx_type nc = x.cols ();
-
-      Matrix retval (nr, nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            retval(i,j) = gammainc (x(i,j), a, err);
-
-            if (err)
-              return Matrix ();
-          }
-
-      return retval;
-    }
-
-    Matrix
-    gammainc (const Matrix& x, const Matrix& a)
-    {
-      octave_idx_type nr = x.rows ();
-      octave_idx_type nc = x.cols ();
-
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
-
-      if (nr != a_nr || nc != a_nc)
-        (*current_liboctave_error_handler)
-          ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
-           nr, nc, a_nr, a_nc);
-
-      Matrix retval (nr, nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            retval(i,j) = gammainc (x(i,j), a(i,j), err);
-
-            if (err)
-              return Matrix ();
-          }
-
-      return retval;
-    }
-
-    NDArray
-    gammainc (double x, const NDArray& a)
-    {
-      dim_vector dv = a.dims ();
-      octave_idx_type nel = dv.numel ();
-
-      NDArray retval (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          retval(i) = gammainc (x, a(i), err);
-
-          if (err)
-            return NDArray ();
-        }
-
-      return retval;
-    }
-
-    NDArray
-    gammainc (const NDArray& x, double a)
-    {
-      dim_vector dv = x.dims ();
-      octave_idx_type nel = dv.numel ();
-
-      NDArray retval (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          retval(i) = gammainc (x(i), a, err);
-
-          if (err)
-            return NDArray ();
-        }
-
-      return retval;
-    }
-
-    NDArray
-    gammainc (const NDArray& x, const NDArray& a)
-    {
-      dim_vector dv = x.dims ();
-      octave_idx_type nel = dv.numel ();
-
-      if (dv != a.dims ())
-        {
-          std::string x_str = dv.str ();
-          std::string a_str = a.dims ().str ();
-
-          (*current_liboctave_error_handler)
-            ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
-             x_str.c_str (), a_str.c_str ());
-        }
-
-      NDArray retval (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          retval(i) = gammainc (x(i), a(i), err);
-
-          if (err)
-            return NDArray ();
-        }
-
-      return retval;
-    }
-
-    float
-    gammainc (float x, float a, bool& err)
-    {
-      if (a < 0.0 || x < 0.0)
-        (*current_liboctave_error_handler)
-          ("gammainc: A and X must be non-negative");
-
-      err = false;
-
-      float retval;
-
-      F77_XFCN (xsgammainc, XSGAMMAINC, (a, x, retval));
-
-      return retval;
-    }
-
-    FloatMatrix
-    gammainc (float x, const FloatMatrix& a)
-    {
-      octave_idx_type nr = a.rows ();
-      octave_idx_type nc = a.cols ();
-
-      FloatMatrix retval (nr,  nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            retval(i,j) = gammainc (x, a(i,j), err);
-
-            if (err)
-              return FloatMatrix ();
-          }
-
-      return retval;
-    }
-
-    FloatMatrix
-    gammainc (const FloatMatrix& x, float a)
-    {
-      octave_idx_type nr = x.rows ();
-      octave_idx_type nc = x.cols ();
-
-      FloatMatrix retval (nr, nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            retval(i,j) = gammainc (x(i,j), a, err);
-
-            if (err)
-              return FloatMatrix ();
-          }
-
-      return retval;
-    }
-
-    FloatMatrix
-    gammainc (const FloatMatrix& x, const FloatMatrix& a)
-    {
-      octave_idx_type nr = x.rows ();
-      octave_idx_type nc = x.cols ();
-
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
-
-      if (nr != a_nr || nc != a_nc)
-        (*current_liboctave_error_handler)
-          ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
-           nr, nc, a_nr, a_nc);
-
-      FloatMatrix retval (nr, nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            retval(i,j) = gammainc (x(i,j), a(i,j), err);
-
-            if (err)
-              return FloatMatrix ();
-          }
-
-      return retval;
-    }
-
-    FloatNDArray
-    gammainc (float x, const FloatNDArray& a)
-    {
-      dim_vector dv = a.dims ();
-      octave_idx_type nel = dv.numel ();
-
-      FloatNDArray retval (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          retval(i) = gammainc (x, a(i), err);
-
-          if (err)
-            return FloatNDArray ();
-        }
-
-      return retval;
-    }
-
-    FloatNDArray
-    gammainc (const FloatNDArray& x, float a)
-    {
-      dim_vector dv = x.dims ();
-      octave_idx_type nel = dv.numel ();
-
-      FloatNDArray retval (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          retval(i) = gammainc (x(i), a, err);
-
-          if (err)
-            return FloatNDArray ();
-        }
-
-      return retval;
-    }
-
-    FloatNDArray
-    gammainc (const FloatNDArray& x, const FloatNDArray& a)
-    {
-      dim_vector dv = x.dims ();
-      octave_idx_type nel = dv.numel ();
-
-      if (dv != a.dims ())
-        {
-          std::string x_str = dv.str ();
-          std::string a_str = a.dims ().str ();
-
-          (*current_liboctave_error_handler)
-            ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
-             x_str.c_str (), a_str.c_str ());
-        }
-
-      FloatNDArray retval (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          retval(i) = gammainc (x(i), a(i), err);
-
-          if (err)
-            return FloatNDArray ();
-        }
-
-      return retval;
-    }
-
-    Complex rc_log1p (double x)
-    {
-      const double pi = 3.14159265358979323846;
-      return (x < -1.0
-              ? Complex (std::log (-(1.0 + x)), pi)
-              : Complex (log1p (x)));
-    }
-
-    FloatComplex rc_log1p (float x)
-    {
-      const float pi = 3.14159265358979323846f;
-      return (x < -1.0f
-              ? FloatComplex (std::log (-(1.0f + x)), pi)
-              : FloatComplex (log1p (x)));
-    }
-
-    // This algorithm is due to P. J. Acklam.
-    //
-    // See http://home.online.no/~pjacklam/notes/invnorm/
-    //
-    // The rational approximation has relative accuracy 1.15e-9 in the whole
-    // region.  For doubles, it is refined by a single step of Halley's 3rd
-    // order method.  For single precision, the accuracy is already OK, so
-    // we skip it to get faster evaluation.
-
-    static double do_erfinv (double x, bool refine)
-    {
-      // Coefficients of rational approximation.
-      static const double a[] =
-        {
-          -2.806989788730439e+01,  1.562324844726888e+02,
-          -1.951109208597547e+02,  9.783370457507161e+01,
-          -2.168328665628878e+01,  1.772453852905383e+00
-        };
-      static const double b[] =
-        {
-          -5.447609879822406e+01,  1.615858368580409e+02,
-          -1.556989798598866e+02,  6.680131188771972e+01,
-          -1.328068155288572e+01
-        };
-      static const double c[] =
-        {
-          -5.504751339936943e-03, -2.279687217114118e-01,
-          -1.697592457770869e+00, -1.802933168781950e+00,
-          3.093354679843505e+00,  2.077595676404383e+00
-        };
-      static const double d[] =
-        {
-          7.784695709041462e-03,  3.224671290700398e-01,
-          2.445134137142996e+00,  3.754408661907416e+00
-        };
-
-      static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
-      static const double pbreak = 0.95150;
-      double ax = fabs (x), y;
-
-      // Select case.
-      if (ax <= pbreak)
-        {
-          // Middle region.
-          const double q = 0.5 * x, r = q*q;
-          const double yn = (((((a[0]*r + a[1])*r + a[2])*r + a[3])*r + a[4])*r + a[5])*q;
-          const double yd = ((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1.0;
-          y = yn / yd;
-        }
-      else if (ax < 1.0)
-        {
-          // Tail region.
-          const double q = std::sqrt (-2*std::log (0.5*(1-ax)));
-          const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
-          const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
-          y = yn / yd * octave::math::signum (-x);
-        }
-      else if (ax == 1.0)
-        return octave::numeric_limits<double>::Inf () * octave::math::signum (x);
-      else
-        return octave::numeric_limits<double>::NaN ();
-
-      if (refine)
-        {
-          // One iteration of Halley's method gives full precision.
-          double u = (erf (y) - x) * spi2 * exp (y*y);
-          y -= u / (1 + y*u);
-        }
-
-      return y;
-    }
-
-    double erfinv (double x)
-    {
-      return do_erfinv (x, true);
-    }
-
-    float erfinv (float x)
-    {
-      return do_erfinv (x, false);
-    }
-
-    // The algorthim for erfcinv is an adaptation of the erfinv algorithm
-    // above from P. J. Acklam.  It has been modified to run over the
-    // different input domain of erfcinv.  See the notes for erfinv for an
-    // explanation.
-
-    static double do_erfcinv (double x, bool refine)
-    {
-      // Coefficients of rational approximation.
-      static const double a[] =
-        {
-          -2.806989788730439e+01,  1.562324844726888e+02,
-          -1.951109208597547e+02,  9.783370457507161e+01,
-          -2.168328665628878e+01,  1.772453852905383e+00
-        };
-      static const double b[] =
-        {
-          -5.447609879822406e+01,  1.615858368580409e+02,
-          -1.556989798598866e+02,  6.680131188771972e+01,
-          -1.328068155288572e+01
-        };
-      static const double c[] =
-        {
-          -5.504751339936943e-03, -2.279687217114118e-01,
-          -1.697592457770869e+00, -1.802933168781950e+00,
-          3.093354679843505e+00,  2.077595676404383e+00
-        };
-      static const double d[] =
-        {
-          7.784695709041462e-03,  3.224671290700398e-01,
-          2.445134137142996e+00,  3.754408661907416e+00
-        };
-
-      static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
-      static const double pbreak_lo = 0.04850;  // 1-pbreak
-      static const double pbreak_hi = 1.95150;  // 1+pbreak
-      double y;
-
-      // Select case.
-      if (x >= pbreak_lo && x <= pbreak_hi)
-        {
-          // Middle region.
-          const double q = 0.5*(1-x), r = q*q;
-          const double yn = (((((a[0]*r + a[1])*r + a[2])*r + a[3])*r + a[4])*r + a[5])*q;
-          const double yd = ((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1.0;
-          y = yn / yd;
-        }
-      else if (x > 0.0 && x < 2.0)
-        {
-          // Tail region.
-          const double q = (x < 1
-                            ? std::sqrt (-2*std::log (0.5*x))
-                            : std::sqrt (-2*std::log (0.5*(2-x))));
-
-          const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
-
-          const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
-
-          y = yn / yd;
-
-          if (x < pbreak_lo)
-            y = -y;
-        }
-      else if (x == 0.0)
-        return octave::numeric_limits<double>::Inf ();
-      else if (x == 2.0)
-        return -octave::numeric_limits<double>::Inf ();
-      else
-        return octave::numeric_limits<double>::NaN ();
-
-      if (refine)
-        {
-          // One iteration of Halley's method gives full precision.
-          double u = (erf (y) - (1-x)) * spi2 * exp (y*y);
-          y -= u / (1 + y*u);
-        }
-
-      return y;
-    }
-
-    double erfcinv (double x)
-    {
-      return do_erfcinv (x, true);
-    }
-
-    float erfcinv (float x)
-    {
-      return do_erfcinv (x, false);
     }
 
     //
@@ -3195,6 +2248,165 @@ namespace octave
       return retval;
     }
 
+    Complex
+    biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
+    {
+      double ar = 0.0;
+      double ai = 0.0;
+
+      double zr = z.real ();
+      double zi = z.imag ();
+
+      F77_INT id = (deriv ? 1 : 0);
+      F77_INT t_ierr;
+
+      F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, t_ierr);
+
+      ierr = t_ierr;
+
+      if (! scaled)
+        {
+          Complex expz = exp (std::abs (std::real (2.0 / 3.0 * z * sqrt (z))));
+
+          double rexpz = expz.real ();
+          double iexpz = expz.imag ();
+
+          double tmp = ar*rexpz - ai*iexpz;
+
+          ai = ar*iexpz + ai*rexpz;
+          ar = tmp;
+        }
+
+      if (zi == 0.0 && (! scaled || zr >= 0.0))
+        ai = 0.0;
+
+      return bessel_return_value (Complex (ar, ai), ierr);
+    }
+
+    ComplexMatrix
+    biry (const ComplexMatrix& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      octave_idx_type nr = z.rows ();
+      octave_idx_type nc = z.cols ();
+
+      ComplexMatrix retval (nr, nc);
+
+      ierr.resize (dim_vector (nr, nc));
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
+
+      return retval;
+    }
+
+    ComplexNDArray
+    biry (const ComplexNDArray& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      dim_vector dv = z.dims ();
+      octave_idx_type nel = dv.numel ();
+      ComplexNDArray retval (dv);
+
+      ierr.resize (dv);
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        retval(i) = biry (z(i), deriv, scaled, ierr(i));
+
+      return retval;
+    }
+
+    FloatComplex
+    biry (const FloatComplex& z, bool deriv, bool scaled,
+          octave_idx_type& ierr)
+    {
+      FloatComplex a;
+
+      F77_INT id = (deriv ? 1 : 0);
+      F77_INT t_ierr;
+
+      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
+                               F77_CMPLX_ARG (&a), t_ierr);
+
+      ierr = t_ierr;
+
+      float ar = a.real ();
+      float ai = a.imag ();
+
+      if (! scaled)
+        {
+          FloatComplex expz
+            = exp (std::abs (std::real (2.0f / 3.0f * z * sqrt (z))));
+
+          float rexpz = expz.real ();
+          float iexpz = expz.imag ();
+
+          float tmp = ar*rexpz - ai*iexpz;
+
+          ai = ar*iexpz + ai*rexpz;
+          ar = tmp;
+        }
+
+      if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
+        ai = 0.0;
+
+      return bessel_return_value (FloatComplex (ar, ai), ierr);
+    }
+
+    FloatComplexMatrix
+    biry (const FloatComplexMatrix& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      octave_idx_type nr = z.rows ();
+      octave_idx_type nc = z.cols ();
+
+      FloatComplexMatrix retval (nr, nc);
+
+      ierr.resize (dim_vector (nr, nc));
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
+
+      return retval;
+    }
+
+    FloatComplexNDArray
+    biry (const FloatComplexNDArray& z, bool deriv, bool scaled,
+          Array<octave_idx_type>& ierr)
+    {
+      dim_vector dv = z.dims ();
+      octave_idx_type nel = dv.numel ();
+      FloatComplexNDArray retval (dv);
+
+      ierr.resize (dv);
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        retval(i) = biry (z(i), deriv, scaled, ierr(i));
+
+      return retval;
+    }
+
+    // Real and complex Dawson function (= scaled erfi) from Faddeeva package
+    double dawson (double x) { return Faddeeva::Dawson (x); }
+    float dawson (float x) { return Faddeeva::Dawson (x); }
+
+    Complex
+    dawson (const Complex& x)
+    {
+      return Faddeeva::Dawson (x);
+    }
+
+    FloatComplex
+    dawson (const FloatComplex& x)
+    {
+      Complex xd (x.real (), x.imag ());
+      Complex ret;
+      ret = Faddeeva::Dawson (xd, std::numeric_limits<float>::epsilon ());
+      return FloatComplex (ret.real (), ret.imag ());
+    }
+
     void
     ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
     {
@@ -3293,6 +2505,694 @@ namespace octave
           cn = Complex (cc*cc1/ddd, -ss*dd*ss1*dd1/ddd);
           dn = Complex (dd*cc1*dd1/ddd, -m*ss*cc*ss1/ddd);
         }
+    }
+
+    // Complex error function from the Faddeeva package
+    Complex
+    erf (const Complex& x)
+    {
+      return Faddeeva::erf (x);
+    }
+
+    FloatComplex
+    erf (const FloatComplex& x)
+    {
+      Complex xd (x.real (), x.imag ());
+      Complex ret = Faddeeva::erf (xd, std::numeric_limits<float>::epsilon ());
+      return FloatComplex (ret.real (), ret.imag ());
+    }
+
+    // Complex complementary error function from the Faddeeva package
+    Complex
+    erfc (const Complex& x)
+    {
+      return Faddeeva::erfc (x);
+    }
+
+    FloatComplex
+    erfc (const FloatComplex& x)
+    {
+      Complex xd (x.real (), x.imag ());
+      Complex ret = Faddeeva::erfc (xd, std::numeric_limits<float>::epsilon ());
+      return FloatComplex (ret.real (), ret.imag ());
+    }
+
+    // The algorthim for erfcinv is an adaptation of the erfinv algorithm
+    // above from P. J. Acklam.  It has been modified to run over the
+    // different input domain of erfcinv.  See the notes for erfinv for an
+    // explanation.
+
+    static double do_erfcinv (double x, bool refine)
+    {
+      // Coefficients of rational approximation.
+      static const double a[] =
+        {
+          -2.806989788730439e+01,  1.562324844726888e+02,
+          -1.951109208597547e+02,  9.783370457507161e+01,
+          -2.168328665628878e+01,  1.772453852905383e+00
+        };
+      static const double b[] =
+        {
+          -5.447609879822406e+01,  1.615858368580409e+02,
+          -1.556989798598866e+02,  6.680131188771972e+01,
+          -1.328068155288572e+01
+        };
+      static const double c[] =
+        {
+          -5.504751339936943e-03, -2.279687217114118e-01,
+          -1.697592457770869e+00, -1.802933168781950e+00,
+          3.093354679843505e+00,  2.077595676404383e+00
+        };
+      static const double d[] =
+        {
+          7.784695709041462e-03,  3.224671290700398e-01,
+          2.445134137142996e+00,  3.754408661907416e+00
+        };
+
+      static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
+      static const double pbreak_lo = 0.04850;  // 1-pbreak
+      static const double pbreak_hi = 1.95150;  // 1+pbreak
+      double y;
+
+      // Select case.
+      if (x >= pbreak_lo && x <= pbreak_hi)
+        {
+          // Middle region.
+          const double q = 0.5*(1-x), r = q*q;
+          const double yn = (((((a[0]*r + a[1])*r + a[2])*r + a[3])*r + a[4])*r + a[5])*q;
+          const double yd = ((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1.0;
+          y = yn / yd;
+        }
+      else if (x > 0.0 && x < 2.0)
+        {
+          // Tail region.
+          const double q = (x < 1
+                            ? std::sqrt (-2*std::log (0.5*x))
+                            : std::sqrt (-2*std::log (0.5*(2-x))));
+
+          const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
+
+          const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
+
+          y = yn / yd;
+
+          if (x < pbreak_lo)
+            y = -y;
+        }
+      else if (x == 0.0)
+        return octave::numeric_limits<double>::Inf ();
+      else if (x == 2.0)
+        return -octave::numeric_limits<double>::Inf ();
+      else
+        return octave::numeric_limits<double>::NaN ();
+
+      if (refine)
+        {
+          // One iteration of Halley's method gives full precision.
+          double u = (erf (y) - (1-x)) * spi2 * exp (y*y);
+          y -= u / (1 + y*u);
+        }
+
+      return y;
+    }
+
+    double erfcinv (double x)
+    {
+      return do_erfcinv (x, true);
+    }
+
+    float erfcinv (float x)
+    {
+      return do_erfcinv (x, false);
+    }
+
+    // Real and complex scaled complementary error function from Faddeeva pkg.
+    double erfcx (double x) { return Faddeeva::erfcx (x); }
+    float erfcx (float x) { return Faddeeva::erfcx (x); }
+
+    Complex
+    erfcx (const Complex& x)
+    {
+      return Faddeeva::erfcx (x);
+    }
+
+    FloatComplex
+    erfcx (const FloatComplex& x)
+    {
+      Complex xd (x.real (), x.imag ());
+      Complex ret;
+      ret = Faddeeva::erfcx (xd, std::numeric_limits<float>::epsilon ());
+      return FloatComplex (ret.real (), ret.imag ());
+    }
+
+    // Real and complex imaginary error function from Faddeeva package
+    double erfi (double x) { return Faddeeva::erfi (x); }
+    float erfi (float x) { return Faddeeva::erfi (x); }
+
+    Complex
+    erfi (const Complex& x)
+    {
+      return Faddeeva::erfi (x);
+    }
+
+    FloatComplex
+    erfi (const FloatComplex& x)
+    {
+      Complex xd (x.real (), x.imag ());
+      Complex ret = Faddeeva::erfi (xd, std::numeric_limits<float>::epsilon ());
+      return FloatComplex (ret.real (), ret.imag ());
+    }
+
+    // This algorithm is due to P. J. Acklam.
+    //
+    // See http://home.online.no/~pjacklam/notes/invnorm/
+    //
+    // The rational approximation has relative accuracy 1.15e-9 in the whole
+    // region.  For doubles, it is refined by a single step of Halley's 3rd
+    // order method.  For single precision, the accuracy is already OK, so
+    // we skip it to get faster evaluation.
+
+    static double do_erfinv (double x, bool refine)
+    {
+      // Coefficients of rational approximation.
+      static const double a[] =
+        {
+          -2.806989788730439e+01,  1.562324844726888e+02,
+          -1.951109208597547e+02,  9.783370457507161e+01,
+          -2.168328665628878e+01,  1.772453852905383e+00
+        };
+      static const double b[] =
+        {
+          -5.447609879822406e+01,  1.615858368580409e+02,
+          -1.556989798598866e+02,  6.680131188771972e+01,
+          -1.328068155288572e+01
+        };
+      static const double c[] =
+        {
+          -5.504751339936943e-03, -2.279687217114118e-01,
+          -1.697592457770869e+00, -1.802933168781950e+00,
+          3.093354679843505e+00,  2.077595676404383e+00
+        };
+      static const double d[] =
+        {
+          7.784695709041462e-03,  3.224671290700398e-01,
+          2.445134137142996e+00,  3.754408661907416e+00
+        };
+
+      static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
+      static const double pbreak = 0.95150;
+      double ax = fabs (x), y;
+
+      // Select case.
+      if (ax <= pbreak)
+        {
+          // Middle region.
+          const double q = 0.5 * x, r = q*q;
+          const double yn = (((((a[0]*r + a[1])*r + a[2])*r + a[3])*r + a[4])*r + a[5])*q;
+          const double yd = ((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1.0;
+          y = yn / yd;
+        }
+      else if (ax < 1.0)
+        {
+          // Tail region.
+          const double q = std::sqrt (-2*std::log (0.5*(1-ax)));
+          const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
+          const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
+          y = yn / yd * octave::math::signum (-x);
+        }
+      else if (ax == 1.0)
+        return octave::numeric_limits<double>::Inf () * octave::math::signum (x);
+      else
+        return octave::numeric_limits<double>::NaN ();
+
+      if (refine)
+        {
+          // One iteration of Halley's method gives full precision.
+          double u = (erf (y) - x) * spi2 * exp (y*y);
+          y -= u / (1 + y*u);
+        }
+
+      return y;
+    }
+
+    double erfinv (double x)
+    {
+      return do_erfinv (x, true);
+    }
+
+    float erfinv (float x)
+    {
+      return do_erfinv (x, false);
+    }
+
+    Complex
+    expm1 (const Complex& x)
+    {
+      Complex retval;
+
+      if (std:: abs (x) < 1)
+        {
+          double im = x.imag ();
+          double u = expm1 (x.real ());
+          double v = sin (im/2);
+          v = -2*v*v;
+          retval = Complex (u*v + u + v, (u+1) * sin (im));
+        }
+      else
+        retval = std::exp (x) - Complex (1);
+
+      return retval;
+    }
+
+    FloatComplex
+    expm1 (const FloatComplex& x)
+    {
+      FloatComplex retval;
+
+      if (std:: abs (x) < 1)
+        {
+          float im = x.imag ();
+          float u = expm1 (x.real ());
+          float v = sin (im/2);
+          v = -2*v*v;
+          retval = FloatComplex (u*v + u + v, (u+1) * sin (im));
+        }
+      else
+        retval = std::exp (x) - FloatComplex (1);
+
+      return retval;
+    }
+
+    double
+    gamma (double x)
+    {
+      double result;
+
+      // Special cases for (near) compatibility with Matlab instead of tgamma.
+      // Matlab does not have -0.
+
+      if (x == 0)
+        result = (octave::math::negative_sign (x)
+                  ? -octave::numeric_limits<double>::Inf ()
+                  : octave::numeric_limits<double>::Inf ());
+      else if ((x < 0 && octave::math::x_nint (x) == x)
+               || octave::math::isinf (x))
+        result = octave::numeric_limits<double>::Inf ();
+      else if (octave::math::isnan (x))
+        result = octave::numeric_limits<double>::NaN ();
+      else
+        result = std::tgamma (x);
+
+      return result;
+    }
+
+    float
+    gamma (float x)
+    {
+      float result;
+
+      // Special cases for (near) compatibility with Matlab instead of tgamma.
+      // Matlab does not have -0.
+
+      if (x == 0)
+        result = (octave::math::negative_sign (x)
+                  ? -octave::numeric_limits<float>::Inf ()
+                  : octave::numeric_limits<float>::Inf ());
+      else if ((x < 0 && octave::math::x_nint (x) == x)
+               || octave::math::isinf (x))
+        result = octave::numeric_limits<float>::Inf ();
+      else if (octave::math::isnan (x))
+        result = octave::numeric_limits<float>::NaN ();
+      else
+        result = std::tgammaf (x);
+
+      return result;
+    }
+
+    // FIXME: there is still room for improvement here...
+
+    double
+    gammainc (double x, double a, bool& err)
+    {
+      if (a < 0.0 || x < 0.0)
+        (*current_liboctave_error_handler)
+          ("gammainc: A and X must be non-negative");
+
+      err = false;
+
+      double retval;
+
+      F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
+
+      return retval;
+    }
+
+    Matrix
+    gammainc (double x, const Matrix& a)
+    {
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
+
+      Matrix retval (nr, nc);
+
+      bool err;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            retval(i,j) = gammainc (x, a(i,j), err);
+
+            if (err)
+              return Matrix ();
+          }
+
+      return retval;
+    }
+
+    Matrix
+    gammainc (const Matrix& x, double a)
+    {
+      octave_idx_type nr = x.rows ();
+      octave_idx_type nc = x.cols ();
+
+      Matrix retval (nr, nc);
+
+      bool err;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            retval(i,j) = gammainc (x(i,j), a, err);
+
+            if (err)
+              return Matrix ();
+          }
+
+      return retval;
+    }
+
+    Matrix
+    gammainc (const Matrix& x, const Matrix& a)
+    {
+      octave_idx_type nr = x.rows ();
+      octave_idx_type nc = x.cols ();
+
+      octave_idx_type a_nr = a.rows ();
+      octave_idx_type a_nc = a.cols ();
+
+      if (nr != a_nr || nc != a_nc)
+        (*current_liboctave_error_handler)
+          ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
+           nr, nc, a_nr, a_nc);
+
+      Matrix retval (nr, nc);
+
+      bool err;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            retval(i,j) = gammainc (x(i,j), a(i,j), err);
+
+            if (err)
+              return Matrix ();
+          }
+
+      return retval;
+    }
+
+    NDArray
+    gammainc (double x, const NDArray& a)
+    {
+      dim_vector dv = a.dims ();
+      octave_idx_type nel = dv.numel ();
+
+      NDArray retval (dv);
+
+      bool err;
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          retval(i) = gammainc (x, a(i), err);
+
+          if (err)
+            return NDArray ();
+        }
+
+      return retval;
+    }
+
+    NDArray
+    gammainc (const NDArray& x, double a)
+    {
+      dim_vector dv = x.dims ();
+      octave_idx_type nel = dv.numel ();
+
+      NDArray retval (dv);
+
+      bool err;
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          retval(i) = gammainc (x(i), a, err);
+
+          if (err)
+            return NDArray ();
+        }
+
+      return retval;
+    }
+
+    NDArray
+    gammainc (const NDArray& x, const NDArray& a)
+    {
+      dim_vector dv = x.dims ();
+      octave_idx_type nel = dv.numel ();
+
+      if (dv != a.dims ())
+        {
+          std::string x_str = dv.str ();
+          std::string a_str = a.dims ().str ();
+
+          (*current_liboctave_error_handler)
+            ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
+             x_str.c_str (), a_str.c_str ());
+        }
+
+      NDArray retval (dv);
+
+      bool err;
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          retval(i) = gammainc (x(i), a(i), err);
+
+          if (err)
+            return NDArray ();
+        }
+
+      return retval;
+    }
+
+    float
+    gammainc (float x, float a, bool& err)
+    {
+      if (a < 0.0 || x < 0.0)
+        (*current_liboctave_error_handler)
+          ("gammainc: A and X must be non-negative");
+
+      err = false;
+
+      float retval;
+
+      F77_XFCN (xsgammainc, XSGAMMAINC, (a, x, retval));
+
+      return retval;
+    }
+
+    FloatMatrix
+    gammainc (float x, const FloatMatrix& a)
+    {
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
+
+      FloatMatrix retval (nr,  nc);
+
+      bool err;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            retval(i,j) = gammainc (x, a(i,j), err);
+
+            if (err)
+              return FloatMatrix ();
+          }
+
+      return retval;
+    }
+
+    FloatMatrix
+    gammainc (const FloatMatrix& x, float a)
+    {
+      octave_idx_type nr = x.rows ();
+      octave_idx_type nc = x.cols ();
+
+      FloatMatrix retval (nr, nc);
+
+      bool err;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            retval(i,j) = gammainc (x(i,j), a, err);
+
+            if (err)
+              return FloatMatrix ();
+          }
+
+      return retval;
+    }
+
+    FloatMatrix
+    gammainc (const FloatMatrix& x, const FloatMatrix& a)
+    {
+      octave_idx_type nr = x.rows ();
+      octave_idx_type nc = x.cols ();
+
+      octave_idx_type a_nr = a.rows ();
+      octave_idx_type a_nc = a.cols ();
+
+      if (nr != a_nr || nc != a_nc)
+        (*current_liboctave_error_handler)
+          ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
+           nr, nc, a_nr, a_nc);
+
+      FloatMatrix retval (nr, nc);
+
+      bool err;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            retval(i,j) = gammainc (x(i,j), a(i,j), err);
+
+            if (err)
+              return FloatMatrix ();
+          }
+
+      return retval;
+    }
+
+    FloatNDArray
+    gammainc (float x, const FloatNDArray& a)
+    {
+      dim_vector dv = a.dims ();
+      octave_idx_type nel = dv.numel ();
+
+      FloatNDArray retval (dv);
+
+      bool err;
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          retval(i) = gammainc (x, a(i), err);
+
+          if (err)
+            return FloatNDArray ();
+        }
+
+      return retval;
+    }
+
+    FloatNDArray
+    gammainc (const FloatNDArray& x, float a)
+    {
+      dim_vector dv = x.dims ();
+      octave_idx_type nel = dv.numel ();
+
+      FloatNDArray retval (dv);
+
+      bool err;
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          retval(i) = gammainc (x(i), a, err);
+
+          if (err)
+            return FloatNDArray ();
+        }
+
+      return retval;
+    }
+
+    FloatNDArray
+    gammainc (const FloatNDArray& x, const FloatNDArray& a)
+    {
+      dim_vector dv = x.dims ();
+      octave_idx_type nel = dv.numel ();
+
+      if (dv != a.dims ())
+        {
+          std::string x_str = dv.str ();
+          std::string a_str = a.dims ().str ();
+
+          (*current_liboctave_error_handler)
+            ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
+             x_str.c_str (), a_str.c_str ());
+        }
+
+      FloatNDArray retval (dv);
+
+      bool err;
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          retval(i) = gammainc (x(i), a(i), err);
+
+          if (err)
+            return FloatNDArray ();
+        }
+
+      return retval;
+    }
+
+    Complex
+    log1p (const Complex& x)
+    {
+      Complex retval;
+
+      double r = x.real (), i = x.imag ();
+
+      if (fabs (r) < 0.5 && fabs (i) < 0.5)
+        {
+          double u = 2*r + r*r + i*i;
+          retval = Complex (log1p (u / (1+std::sqrt (u+1))),
+                            atan2 (1 + r, i));
+        }
+      else
+        retval = std::log (Complex (1) + x);
+
+      return retval;
+    }
+
+    FloatComplex
+    log1p (const FloatComplex& x)
+    {
+      FloatComplex retval;
+
+      float r = x.real (), i = x.imag ();
+
+      if (fabs (r) < 0.5 && fabs (i) < 0.5)
+        {
+          float u = 2*r + r*r + i*i;
+          retval = FloatComplex (log1p (u / (1+std::sqrt (u+1))),
+                                 atan2 (1 + r, i));
+        }
+      else
+        retval = std::log (FloatComplex (1) + x);
+
+      return retval;
     }
 
     static const double pi = 3.14159265358979323846;
@@ -3508,6 +3408,60 @@ namespace octave
 
     double psi (octave_idx_type n, double z) { return xpsi (n, z); }
     float psi (octave_idx_type n, float z) { return xpsi (n, z); }
+
+    Complex
+    rc_lgamma (double x)
+    {
+      double result;
+
+#if defined (HAVE_LGAMMA_R)
+      int sgngam;
+      result = lgamma_r (x, &sgngam);
+#else
+      result = std::lgamma (x);
+      int sgngam = signgam;
+#endif
+
+      if (sgngam < 0)
+        return result + Complex (0., M_PI);
+      else
+        return result;
+    }
+
+    FloatComplex
+    rc_lgamma (float x)
+    {
+      float result;
+
+#if defined (HAVE_LGAMMAF_R)
+      int sgngam;
+      result = lgammaf_r (x, &sgngam);
+#else
+      result = std::lgammaf (x);
+      int sgngam = signgam;
+#endif
+
+      if (sgngam < 0)
+        return result + FloatComplex (0., M_PI);
+      else
+        return result;
+    }
+
+    Complex rc_log1p (double x)
+    {
+      const double pi = 3.14159265358979323846;
+      return (x < -1.0
+              ? Complex (std::log (-(1.0 + x)), pi)
+              : Complex (log1p (x)));
+    }
+
+    FloatComplex rc_log1p (float x)
+    {
+      const float pi = 3.14159265358979323846f;
+      return (x < -1.0f
+              ? FloatComplex (std::log (-(1.0f + x)), pi)
+              : FloatComplex (log1p (x)));
+    }
   }
 }
 

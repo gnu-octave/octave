@@ -10,7 +10,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 
 Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
+qWITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
@@ -538,8 +538,6 @@ public:
 
   virtual bool is_package (void) const { return false; }
 
-  virtual void stash_dir_name (const std::string&) { }
-
   virtual octave_value_list
   meta_subsref (const std::string& /* type */,
                 const std::list<octave_value_list>& /* idx */,
@@ -600,9 +598,6 @@ public:
   bool meta_accepts_postfix_index (char type) const
   { return get_rep ()->meta_accepts_postfix_index (type); }
 
-  void stash_dir_name (const std::string& dir)
-  { get_rep ()->stash_dir_name (dir); }
-
 private:
   cdef_meta_object_rep * get_rep (void)
   { return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ()); }
@@ -656,9 +651,9 @@ private:
 
     string_vector get_names (void);
 
-    void stash_dir_name (const std::string& dir);
+    void set_directory (const std::string& dir) { directory = dir; }
 
-    std::string dir_name (void) const { return directory; }
+    std::string get_directory (void) const { return directory; }
 
     void delete_object (cdef_object obj);
 
@@ -821,17 +816,17 @@ public:
 
   bool is_sealed (void) const { return get_rep ()->is_sealed (); }
 
-  void stash_dir_name (const std::string& dir)
-  { get_rep ()->stash_dir_name (dir); }
+  void set_directory (const std::string& dir)
+  { get_rep ()->set_directory (dir); }
 
-  std::string dir_name (void) const
-  { return get_rep ()->dir_name (); }
+  std::string get_directory (void) const
+  { return get_rep ()->get_directory (); }
 
   std::string get_name (void) const
   { return get_rep ()->get_name (); }
 
   bool is_builtin (void) const
-  { return dir_name ().empty (); }
+  { return get_directory ().empty (); }
 
   void delete_object (cdef_object obj)
   { get_rep ()->delete_object (obj); }
@@ -1044,8 +1039,6 @@ private:
     octave_value get_function (void) const { return function; }
 
     void set_function (const octave_value& fcn) { function = fcn; }
-
-    void stash_dir_name (const std::string& dir);
 
     bool check_access (void) const;
 

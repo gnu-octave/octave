@@ -276,17 +276,24 @@ namespace octave
     // Define a script.
     void make_script (tree_statement_list *cmds, tree_statement *end_script);
 
+    // Define a function.
+    tree_function_def *
+    make_function (token *fcn_tok, tree_parameter_list *ret_list,
+                   tree_identifier *id, tree_parameter_list *param_list,
+                   tree_statement_list *body, tree_statement *end_fcn_stmt,
+                   octave_comment_list *lc);
+
     // Begin defining a function.
     octave_user_function *
-    start_function (tree_parameter_list *param_list, tree_statement_list *body,
-                    tree_statement *end_function);
+    start_function (tree_identifier *id, tree_parameter_list *param_list,
+                    tree_statement_list *body, tree_statement *end_function);
 
     // Create a no-op statement for end_function.
     tree_statement * make_end (const std::string& type, bool eof, int l, int c);
 
     // Do most of the work for defining a function.
     octave_user_function *
-    frob_function (const std::string& fname, octave_user_function *fcn);
+    frob_function (tree_identifier *id, octave_user_function *fcn);
 
     // Finish defining a function.
     tree_function_def *

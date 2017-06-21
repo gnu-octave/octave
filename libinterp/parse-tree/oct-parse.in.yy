@@ -111,10 +111,10 @@ static void yyerror (octave::base_parser& parser, const char *s);
 
 // Bison declarations.
 
-// The grammar currently has 8 shift/reduce conflicts.  Ensure that
+// The grammar currently has 9 shift/reduce conflicts.  Ensure that
 // we notice if that number changes.
 
-%expect 8
+%expect 9
 
 %API_PREFIX_DECL%
 
@@ -248,11 +248,11 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_funcall_type> superclass_identifier meta_identifier
-%type <octave_user_function_type> function1 function2
 %type <tree_index_expression_type> word_list_cmd
 %type <tree_argument_list_type> arg_list word_list assign_lhs
 %type <tree_argument_list_type> cell_or_matrix_row
-%type <tree_parameter_list_type> param_list param_list1 param_list2
+%type <tree_parameter_list_type> opt_param_list param_list
+%type <tree_parameter_list_type> param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
 %type <tree_command_type> jump_command except_command
@@ -1320,6 +1320,12 @@ param_list_end  : ')'
                   }
                 ;
 
+opt_param_list  : // empty
+                  { $$ = 0; }
+                | param_list
+                  { $$ = $1; }
+                ;
+
 param_list      : param_list_beg param_list1 param_list_end
                   {
                     if ($2)
@@ -1484,22 +1490,6 @@ function_beg    : push_fcn_symtab FCN
                   }
                 ;
 
-function        : function_beg stash_comment function1
-                  {
-                    $$ = parser.finish_function (0, $3, $2, $1->line (),
-                                                 $1->column ());
-                    parser.recover_from_parsing_function ();
-                  }
-                | function_beg stash_comment return_list '=' function1
-                  {
-                    YYUSE ($4);
-
-                    $$ = parser.finish_function ($3, $5, $2, $1->line (),
-                                                 $1->column ());
-                    parser.recover_from_parsing_function ();
-                  }
-                ;
-
 fcn_name        : identifier
                   {
                     std::string id = $1->name ();
@@ -1540,38 +1530,6 @@ fcn_name        : identifier
                     lexer.maybe_classdef_get_set_method = false;
                     lexer.parsing_classdef_set_method = true;
                     $$ = $3;
-                  }
-                ;
-
-function1       : fcn_name function2
-                  {
-                    std::string fname = $1->name ();
-
-                    delete $1;
-
-                    if (lexer.parsing_classdef_get_method)
-                      fname.insert (0, "get.");
-                    else if (lexer.parsing_classdef_set_method)
-                      fname.insert (0, "set.");
-
-                    lexer.parsing_classdef_get_method = false;
-                    lexer.parsing_classdef_set_method = false;
-
-                    $$ = parser.frob_function (fname, $2);
-                  }
-                ;
-
-function2       : param_list opt_sep opt_list function_end
-                  {
-                    YYUSE ($2);
-
-                    $$ = parser.start_function ($1, $3, $4);
-                  }
-                | opt_sep opt_list function_end
-                  {
-                    YYUSE ($1);
-
-                    $$ = parser.start_function (0, $2, $3);
                   }
                 ;
 
@@ -1621,6 +1579,23 @@ function_end    : END
                     $$ = parser.make_end ("endfunction", true,
                                           lexer.input_line_number,
                                           lexer.current_input_column);
+                  }
+                ;
+
+function        : function_beg stash_comment fcn_name
+                  opt_param_list opt_sep opt_list function_end
+                  {
+                    YYUSE ($5);
+
+                    $$ = parser.make_function ($1, 0, $3, $4, $6, $7, $2);
+                  }
+                | function_beg stash_comment return_list '=' fcn_name
+                  opt_param_list opt_sep opt_list function_end
+                  {
+                    YYUSE ($4);
+                    YYUSE ($7);
+
+                    $$ = parser.make_function ($1, $3, $5, $6, $8, $9, $2);
                   }
                 ;
 
@@ -3246,14 +3221,57 @@ namespace octave
     primary_fcn_ptr = script;
   }
 
+  // Define a function.
+
+  // FIXME: combining start_function, finish_function, and
+  // recover_from_parsing_function should be possible, but it makes
+  // for a large mess.  Maybe this could be a bit better organized?
+
+  tree_function_def *
+  base_parser::make_function (token *fcn_tok,
+                              tree_parameter_list *ret_list,
+                              tree_identifier *id,
+                              tree_parameter_list *param_list,
+                              tree_statement_list *body,
+                              tree_statement *end_fcn_stmt,
+                              octave_comment_list *lc)
+  {
+    tree_function_def *retval = 0;
+
+    int l = fcn_tok->line ();
+    int c = fcn_tok->column ();
+
+    octave_user_function *tmp_fcn
+      = start_function (id, param_list, body, end_fcn_stmt);
+
+    retval = finish_function (ret_list, tmp_fcn, lc, l, c);
+
+    recover_from_parsing_function ();
+
+    return retval;
+  }
+
   // Begin defining a function.
 
   octave_user_function *
-  base_parser::start_function (tree_parameter_list *param_list,
+  base_parser::start_function (tree_identifier *id,
+                               tree_parameter_list *param_list,
                                tree_statement_list *body,
                                tree_statement *end_fcn_stmt)
   {
     // We'll fill in the return list later.
+
+    std::string id_name = id->name ();
+
+    delete id;
+
+    if (lexer.parsing_classdef_get_method)
+      id_name.insert (0, "get.");
+    else if (lexer.parsing_classdef_set_method)
+      id_name.insert (0, "set.");
+
+    lexer.parsing_classdef_get_method = false;
+    lexer.parsing_classdef_set_method = false;
 
     if (! body)
       body = new tree_statement_list ();
@@ -3272,23 +3290,6 @@ namespace octave
         fcn->stash_fcn_end_location (end_fcn_stmt->line (),
                                      end_fcn_stmt->column ());
       }
-
-    return fcn;
-  }
-
-  tree_statement *
-  base_parser::make_end (const std::string& type, bool eof, int l, int c)
-  {
-    return make_statement (new tree_no_op_command (type, eof, l, c));
-  }
-
-  // Do most of the work for defining a function.
-
-  octave_user_function *
-  base_parser::frob_function (const std::string& fname,
-                              octave_user_function *fcn)
-  {
-    std::string id_name = fname;
 
     // If input is coming from a file, issue a warning if the name of
     // the file does not match the name of the function stated in the
@@ -3384,6 +3385,12 @@ namespace octave
       primary_fcn_ptr = fcn;
 
     return fcn;
+  }
+
+  tree_statement *
+  base_parser::make_end (const std::string& type, bool eof, int l, int c)
+  {
+    return make_statement (new tree_no_op_command (type, eof, l, c));
   }
 
   tree_function_def *

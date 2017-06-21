@@ -1283,7 +1283,7 @@ namespace octave
     if (base_expr_val.is_undefined ())
       base_expr_val = evaluate (expr);
 
-    bool indexing_object = base_expr_val.isobject ();
+    bool indexing_object = base_expr_val.isobject () || base_expr_val.isjava ();
 
     std::list<octave_value_list> idx;
 
@@ -1321,7 +1321,7 @@ namespace octave
                         beg = i;
                         idx.clear ();
 
-                        if (partial_expr_val.isobject ())
+                        if (partial_expr_val.isobject () || partial_expr_val.isjava ())
                           {
                             // Found an object, so now we'll build up
                             // complete index list for one big subsref

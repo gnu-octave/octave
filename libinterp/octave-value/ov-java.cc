@@ -3249,4 +3249,21 @@ Return true if @var{x} is a Java object.
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "aaa"), 0);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "zzz"), 3);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "hhh") < 0);
+
+## Test that Octave index syntax allows Java object method calls with args
+%!testif HAVE_JAVA; usejava ("jvm") <*51152>
+%! s = javaObject ("java.lang.String", "Octave");
+%! assert (s.length (), 6)
+%! assert (s.charAt (0), "O")
+%! assert (s.charAt (5), "e")
+%! assert (s.matches ("^Octave$"))
+%! assert (s.startsWith ("Oct"))
+%! ## same tests with Java object as part of another indexing expression
+%! a(1).s = s;
+%! assert (! a(1).s.isEmpty ())
+%! assert (a(1).s.length (), 6)
+%! assert (a(1).s.charAt (0), "O")
+%! assert (a(1).s.charAt (5), "e")
+%! assert (a(1).s.matches ("^Octave$"))
+%! assert (a(1).s.startsWith ("Oct"))
 */

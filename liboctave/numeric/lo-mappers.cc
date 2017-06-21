@@ -121,13 +121,6 @@ namespace octave
         return y;
     }
 
-    Complex atan (const Complex& x) { return std::atan (x); }
-
-    FloatComplex atan (const FloatComplex& x) { return std::atan (x); }
-
-    double log2 (double x) { return std::log2 (x); }
-    float log2 (float x) { return std::log2f (x); }
-
     Complex
     log2 (const Complex& x)
     {
@@ -178,26 +171,8 @@ namespace octave
       return (ax != lax) ? (x / ax) * lax : x;
     }
 
-    double exp2 (double x) { return std::exp2 (x); }
-    float exp2 (float x) { return std::exp2f (x); }
-
-    double copysign (double x, double y) { return std::copysign (x, y); }
-    float copysign (float x, float y) { return std::copysign (x, y); }
-
-    double signbit (double x) { return std::signbit (x); }
-    float signbit (float x) { return std::signbit (x); }
-
     bool negative_sign (double x) { return __lo_ieee_signbit (x); }
     bool negative_sign (float x) { return __lo_ieee_float_signbit (x); }
-
-    double trunc (double x) { return std::trunc (x); }
-    float trunc (float x) { return std::trunc (x); }
-
-    double floor (double x) { return std::floor (x); }
-    float floor (float x) { return std::floor (x); }
-
-    double round (double x) { return std::round (x); }
-    float round (float x) { return std::roundf (x); }
 
     double frexp (double x, int *expptr)
     {
@@ -208,15 +183,6 @@ namespace octave
     {
       return octave_frexpf_wrapper (x, expptr);
     }
-
-    bool isnan (double x) { return std::isnan (x); }
-    bool isnan (float x) { return std::isnan (x); }
-
-    bool isfinite (double x) { return std::isfinite (x); }
-    bool isfinite (float x) { return std::isfinite (x); }
-
-    bool isinf (double x) { return std::isinf (x); }
-    bool isinf (float x) { return std::isinf (x); }
 
     // Sometimes you need a large integer, but not always.
 

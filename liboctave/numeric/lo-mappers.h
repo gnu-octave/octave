@@ -57,11 +57,11 @@ namespace octave
     extern OCTAVE_API bool is_NaN_or_NA (const Complex& x);
     extern OCTAVE_API bool is_NaN_or_NA (const FloatComplex& x);
 
-    extern OCTAVE_API double copysign (double x, double y);
-    extern OCTAVE_API float copysign (float x, float y);
+    inline double copysign (double x, double y) { return std::copysign (x, y); }
+    inline float copysign (float x, float y) { return std::copysignf (x, y); }
 
-    extern OCTAVE_API double signbit (double x);
-    extern OCTAVE_API float signbit (float x);
+    inline double signbit (double x) { return std::signbit (x); }
+    inline float signbit (float x) { return std::signbit (x); }
 
     // Test for negative sign.
     extern OCTAVE_API bool negative_sign (double x);
@@ -81,8 +81,8 @@ namespace octave
 
     using std::asin;
 
-    extern OCTAVE_API Complex atan (const Complex& x);
-    extern OCTAVE_API FloatComplex atan (const FloatComplex& x);
+    inline Complex atan (const Complex& x) { return std::atan (x); }
+    inline FloatComplex atan (const FloatComplex& x) { return std::atan (x); }
 
     using std::atan;
 
@@ -134,8 +134,8 @@ namespace octave
       return std::real (x);
     }
 
-    extern OCTAVE_API double log2 (double x);
-    extern OCTAVE_API float log2 (float x);
+    inline double log2 (double x) { return std::log2 (x); }
+    inline float log2 (float x) { return std::log2f (x); }
 
     extern OCTAVE_API Complex log2 (const Complex& x);
     extern OCTAVE_API FloatComplex log2 (const FloatComplex& x);
@@ -146,8 +146,8 @@ namespace octave
     extern OCTAVE_API Complex log2 (const Complex& x, int& exp);
     extern OCTAVE_API FloatComplex log2 (const FloatComplex& x, int& exp);
 
-    extern OCTAVE_API double exp2 (double x);
-    extern OCTAVE_API float exp2 (float x);
+    inline double exp2 (double x) { return std::exp2 (x); }
+    inline float exp2 (float x) { return std::exp2f (x); }
 
     inline double ceil (double x) { return ::ceil (x); }
     inline float ceil (float x) { return ::ceilf (x); }
@@ -159,8 +159,8 @@ namespace octave
       return std::complex<T> (ceil (std::real (x)), ceil (std::imag (x)));
     }
 
-    extern OCTAVE_API double trunc (double x);
-    extern OCTAVE_API float trunc (float x);
+    inline double trunc (double x) { return std::trunc (x); }
+    inline float trunc (float x) { return std::truncf (x); }
 
     template <typename T>
     std::complex<T>
@@ -169,6 +169,7 @@ namespace octave
       return std::complex<T> (trunc (std::real (x)), trunc (std::imag (x)));
     }
 
+    // FIXME: Do we need this alias for trunc?
     inline double fix (double x) { return trunc (x); }
     inline float fix (float x) { return trunc (x); }
 
@@ -179,8 +180,8 @@ namespace octave
       return trunc (x);
     }
 
-    extern OCTAVE_API double floor (double x);
-    extern OCTAVE_API float floor (float x);
+    inline double floor (double x) { return std::floor (x); }
+    inline float floor (float x) { return std::floor (x); }
 
     template <typename T>
     std::complex<T>
@@ -189,8 +190,8 @@ namespace octave
       return std::complex<T> (floor (std::real (x)), floor (std::imag (x)));
     }
 
-    extern OCTAVE_API double round (double x);
-    extern OCTAVE_API float round (float x);
+    inline double round (double x) { return std::round (x); }
+    inline float round (float x) { return std::roundf (x); }
 
     template <typename T>
     std::complex<T>
@@ -233,8 +234,9 @@ namespace octave
 
     inline bool isnan (bool) { return false; }
     inline bool isnan (char) { return false; }
-    extern OCTAVE_API bool isnan (double x);
-    extern OCTAVE_API bool isnan (float x);
+
+    inline bool isnan (double x) { return std::isnan (x); }
+    inline bool isnan (float x) { return std::isnan (x); }
 
     template <typename T>
     bool
@@ -243,8 +245,8 @@ namespace octave
       return (isnan (std::real (x)) || isnan (std::imag (x)));
     }
 
-    extern OCTAVE_API bool isfinite (double x);
-    extern OCTAVE_API bool isfinite (float x);
+    inline bool isfinite (double x) { return std::isfinite (x); }
+    inline bool isfinite (float x) { return std::isfinite (x); }
 
     template <typename T>
     bool
@@ -266,8 +268,8 @@ namespace octave
       return octave::math::isfinite (x);
     }
 
-    extern OCTAVE_API bool isinf (double x);
-    extern OCTAVE_API bool isinf (float x);
+    inline bool isinf (double x) { return std::isinf (x); }
+    inline bool isinf (float x) { return std::isinf (x); }
 
     template <typename T>
     bool

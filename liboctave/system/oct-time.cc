@@ -27,12 +27,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <cmath>
 #include <ctime>
 
+#include <iomanip>
+#include <iostream>
 #include <limits>
 
 #include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-locbuf.h"
 #include "oct-time.h"
+#include "octave-preserve-stream-state.h"
 #include "strftime-wrapper.h"
 #include "strptime-wrapper.h"
 #include "time-wrappers.h"
@@ -86,6 +89,17 @@ namespace octave
     time::ctime (void) const
     {
       return localtime (*this).asctime ();
+    }
+
+    std::ostream&
+    operator << (std::ostream& os, const time& ot)
+    {
+      preserve_stream_state stream_state (os);
+
+      os << ot.ot_unix_time << "."
+         << std::setw (6) << std::setfill ('0') << ot.ot_usec;
+
+      return os;
     }
 
     void

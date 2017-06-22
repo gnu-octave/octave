@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <ctime>
+
+#include <iosfwd>
 #include <string>
 
 static inline double
@@ -110,6 +112,8 @@ namespace octave
       long usec (void) const { return ot_usec; }
 
       std::string ctime (void) const;
+
+      friend std::ostream& operator << (std::ostream& os, const time& ot);
 
     private:
 

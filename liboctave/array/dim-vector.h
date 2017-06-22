@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-refcount.h"
 
+template <typename T> class Array;
+
 //! Vector representing the dimensions (size) of an Array.
 /*!
   A dim_vector is used to represent dimensions of an Array.  It is used
@@ -548,6 +550,8 @@ public:
   }
 
   friend bool operator == (const dim_vector& a, const dim_vector& b);
+
+  Array<octave_idx_type> as_array (void) const;
 };
 
 inline bool

@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <new>
 #include <sstream>
 
+#include "Array.h"
 #include "dim-vector.h"
 
 octave_idx_type *
@@ -308,4 +309,17 @@ dim_vector::redim (int n) const
 
       return retval;
     }
+}
+
+Array<octave_idx_type>
+dim_vector::as_array (void) const
+{
+  octave_idx_type nd = ndims ();
+
+  Array<octave_idx_type> retval (dim_vector (1, nd));
+
+  for (octave_idx_type i = 0; i < nd; i++)
+    retval(i) = elem (i);
+
+  return retval;
 }

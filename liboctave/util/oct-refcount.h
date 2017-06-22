@@ -101,9 +101,14 @@ namespace octave
       return OCTAVE_ATOMIC_POST_DECREMENT (&count);
     }
 
-    operator count_type (void) const
+    count_type value (void) const
     {
       return static_cast<count_type const volatile&> (count);
+    }
+
+    operator count_type (void) const
+    {
+      return value ();
     }
 
     count_type * get (void)

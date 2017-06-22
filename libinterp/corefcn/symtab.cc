@@ -109,29 +109,25 @@ symbol_table::symbol_record::symbol_record_rep::dup (scope *new_scope) const
   return new symbol_record_rep (new_scope, name, varval (), storage_class);
 }
 
-void
-symbol_table::symbol_record::symbol_record_rep::dump
-  (std::ostream& os, const std::string& prefix) const
+octave_value
+symbol_table::symbol_record::symbol_record_rep::dump (void) const
 {
+  std::map<std::string, octave_value> m
+    = {{"name", name},
+       {"local", octave_value (is_local ())},
+       {"automatic", octave_value (is_automatic ())},
+       {"formal", octave_value (is_formal ())},
+       {"hidden", octave_value (is_hidden ())},
+       {"inherited", octave_value (is_inherited ())},
+       {"global", octave_value (is_global ())},
+       {"persistent", octave_value (is_persistent ())}};
+
   octave_value val = varval ();
 
-  os << prefix << name;
-
   if (val.is_defined ())
-    {
-      os << " ["
-         << (is_local () ? "l" : "")
-         << (is_automatic () ? "a" : "")
-         << (is_formal () ? "f" : "")
-         << (is_hidden () ? "h" : "")
-         << (is_inherited () ? "i" : "")
-         << (is_global () ? "g" : "")
-         << (is_persistent () ? "p" : "")
-         << "] ";
-      val.dump (os);
-    }
+    m["value"] = val;
 
-  os << "\n";
+  return octave_value (m);
 }
 
 octave_value&
@@ -1258,14 +1254,6 @@ symbol_table::is_superiorto (const std::string& a, const std::string& b)
   return (q != inferior_classes.end ());
 }
 
-static std::string
-fcn_file_name (const octave_value& fcn)
-{
-  const octave_function *f = fcn.function_value ();
-
-  return f ? f->fcn_file_name () : "";
-}
-
 void
 symbol_table::fcn_info::fcn_info_rep::install_built_in_dispatch (const std::string& klass)
 {
@@ -1287,54 +1275,41 @@ symbol_table::fcn_info::fcn_info_rep::install_built_in_dispatch (const std::stri
            name.c_str ());
 }
 
-void
-symbol_table::fcn_info::fcn_info_rep::dump (std::ostream& os,
-                                            const std::string& prefix) const
+static octave_value
+dump_function_map (const std::map<std::string, octave_value>& fcn_map)
 {
-  os << prefix << full_name ()
-     << " ["
-     << (cmdline_function.is_defined () ? "c" : "")
-     << (built_in_function.is_defined () ? "b" : "")
-     << (package.is_defined () ? "p" : "")
-     << "]\n";
+  if (fcn_map.empty ())
+    return octave_value (Matrix ());
 
-  std::string tprefix = prefix + "  ";
+  std::map<std::string, octave_value> info_map;
 
-  if (autoload_function.is_defined ())
-    os << tprefix << "autoload: "
-       << fcn_file_name (autoload_function) << "\n";
-
-  if (function_on_path.is_defined ())
-    os << tprefix << "function from path: "
-       << fcn_file_name (function_on_path) << "\n";
-
-  if (! local_functions.empty ())
+  for (const auto& nm_fcn : fcn_map)
     {
-      for (const auto& str_val : local_functions)
-        os << tprefix << "local: " << fcn_file_name (str_val.second)
-           << " [" << str_val.first << "]\n";
+      std::string nm = nm_fcn.first;
+      const octave_value& fcn = nm_fcn.second;
+      info_map[nm] = fcn.dump ();
     }
 
-  if (! private_functions.empty ())
-    {
-      for (const auto& str_val : private_functions)
-        os << tprefix << "private: " << fcn_file_name (str_val.second)
-           << " [" << str_val.first << "]\n";
-    }
+  return octave_value (info_map);
+}
 
-  if (! class_constructors.empty ())
-    {
-      for (const auto& str_val : class_constructors)
-        os << tprefix << "constructor: " << fcn_file_name (str_val.second)
-           << " [" << str_val.first << "]\n";
-    }
+octave_value
+symbol_table::fcn_info::fcn_info_rep::dump (void) const
+{
+  std::map<std::string, octave_value> m
+    = {{"name", octave_value (full_name ())},
+       {"refcount", octave_value (count.value ())},
+       {"package", package.dump ()},
+       {"local_functions", dump_function_map (local_functions)},
+       {"private_functions", dump_function_map (private_functions)},
+       {"class_methods", dump_function_map (class_methods)},
+       {"class_constructors", dump_function_map (class_constructors)},
+       {"cmdline_function", cmdline_function.dump ()},
+       {"autoload_function", autoload_function.dump ()},
+       {"function_on_path", function_on_path.dump ()},
+       {"built_in_function", built_in_function.dump ()}};
 
-  if (! class_methods.empty ())
-    {
-      for (const auto& str_val : class_methods)
-        os << tprefix << "method: " << fcn_file_name (str_val.second)
-           << " [" << str_val.first << "]\n";
-    }
+  return octave_value (m);
 }
 
 octave_value
@@ -1444,55 +1419,34 @@ symbol_table::find_submethod (const std::string& name,
   return fcn;
 }
 
-void
-symbol_table::dump (std::ostream& os, scope *sid)
+template <typename V, template <typename...> class C>
+static octave_value
+dump_container_map (const std::map<std::string, C<V>>& container_map)
 {
-  if (sid == m_global_scope)
-    dump_global (os);
-  else
-    {
-      if (sid)
-        {
-          os << "*** dumping symbol table scope ("
-             << sid->name () << ")\n\n";
+  if (container_map.empty ())
+    return octave_value (Matrix ());
 
-          sid->dump (os);
-        }
+  std::map<std::string, octave_value> info_map;
+
+  for (const auto& nm_container : container_map)
+    {
+      std::string nm = nm_container.first;
+      const C<V>& container = nm_container.second;
+      info_map[nm] = Cell (container);
     }
+
+  return octave_value (info_map);
 }
 
-void
-symbol_table::dump_global (std::ostream& os)
+octave_value
+symbol_table::dump (void) const
 {
-  if (! m_global_symbols.empty ())
-    {
-      os << "*** dumping global symbol table\n\n";
+  std::map<std::string, octave_value> m
+    = {{"function_info", dump_fcn_table_map ()},
+       {"precedence_table", dump_container_map (m_class_precedence_table)},
+       {"parent_classes", dump_container_map (m_parent_map)}};
 
-      for (const auto& str_val : m_global_symbols)
-        {
-          std::string nm = str_val.first;
-          octave_value val = str_val.second;
-
-          os << "  " << nm << " ";
-          val.dump (os);
-          os << "\n";
-        }
-    }
-}
-
-void
-symbol_table::dump_functions (std::ostream& os)
-{
-  if (! m_fcn_table.empty ())
-    {
-      os << "*** dumping globally visible functions from symbol table\n"
-         << "    (c=commandline, b=built-in)\n\n";
-
-      for (const auto& nm_fi : m_fcn_table)
-        nm_fi.second.dump (os, "  ");
-
-      os << "\n";
-    }
+  return octave_value (m);
 }
 
 void
@@ -1504,6 +1458,24 @@ symbol_table::cleanup (void)
   m_fcn_table.clear ();
   m_class_precedence_table.clear ();
   m_parent_map.clear ();
+}
+
+octave_value
+symbol_table::dump_fcn_table_map (void) const
+{
+  if (m_fcn_table.empty ())
+    return octave_value (Matrix ());
+
+  std::map<std::string, octave_value> info_map;
+
+  for (const auto& nm_finfo : m_fcn_table)
+    {
+      std::string nm = nm_finfo.first;
+      const fcn_info& finfo = nm_finfo.second;
+      info_map[nm] = finfo.dump ();
+    }
+
+  return octave_value (info_map);
 }
 
 octave_value
@@ -1723,46 +1695,31 @@ symbol_table::scope::workspace_info (void) const
   return retval;
 }
 
-void
-symbol_table::scope::dump (std::ostream& os)
+octave_value
+symbol_table::scope::dump (void) const
 {
-  if (! m_subfunctions.empty ())
+  std::map<std::string, octave_value> m
+    = {{"name", octave_value (m_name)},
+       {"symbols", dump_symbols_map ()},
+       {"persistent_variables", octave_value (m_persistent_symbols)},
+       {"subfunctions", dump_function_map (m_subfunctions)}};
+
+  return octave_value (m);
+}
+
+octave_value
+symbol_table::scope::dump_symbols_map (void) const
+{
+  std::map<std::string, octave_value> info_map;
+
+  for (const auto& nm_sr : m_symbols)
     {
-      os << "  subfunctions defined in this scope:\n";
-
-      for (const auto& nm_sf : m_subfunctions)
-        os << "    " << nm_sf.first << "\n";
-
-      os << "\n";
+      std::string nm = nm_sr.first;
+      const symbol_table::symbol_record& sr = nm_sr.second;
+      info_map[nm] = sr.dump ();
     }
 
-  if (! m_persistent_symbols.empty ())
-    {
-      os << "  persistent variables in this scope:\n\n";
-
-      for (const auto& nm_val : m_persistent_symbols)
-        {
-          std::string nm = nm_val.first;
-          octave_value val = nm_val.second;
-
-          os << "    " << nm << " ";
-          val.dump (os);
-          os << "\n";
-        }
-
-      os << "\n";
-    }
-
-  if (! m_symbols.empty ())
-    {
-      os << "  other symbols in this scope (l=local; a=auto; f=formal\n"
-         << "    h=hidden; i=inherited; g=global; p=persistent)\n\n";
-
-      for (const auto& nm_sr : m_symbols)
-        nm_sr.second.dump (os, "    ");
-
-      os << "\n";
-    }
+  return octave_value (info_map);
 }
 
 void
@@ -1968,9 +1925,7 @@ Return the current scope and context as integers.
 DEFMETHOD (__dump_symtab_info__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} __dump_symtab_info__ ()
-@deftypefnx {} {} __dump_symtab_info__ (@var{scope})
-@deftypefnx {} {} __dump_symtab_info__ ("scopes")
-@deftypefnx {} {} __dump_symtab_info__ ("functions")
+@deftypefnx {} {} __dump_symtab_info__ (@var{function})
 Undocumented internal function.
 @seealso{__current_scope__}
 @end deftypefn */)
@@ -1980,67 +1935,21 @@ Undocumented internal function.
   if (nargin > 1)
     print_usage ();
 
-  octave_value retval;
-
   symbol_table& symtab = interp.get_symbol_table ();
 
   if (nargin == 0)
-    {
-      symtab.dump_functions (octave_stdout);
-
-      symtab.dump_global (octave_stdout);
-
-      // This won't work now...
-#if 0
-      std::list<symbol_table::scope*> lst = symtab.scopes ();
-
-      for (auto *scp : lst)
-        symtab.dump (octave_stdout, scp);
-#endif
-    }
+    return symtab.dump ();
   else
     {
-      octave_value arg = args(0);
+      std::string fname = args(0).xstring_value ("__dump_symtab_info__: argument must be a function name");
 
-      if (arg.is_string ())
-        {
-          std::string s_arg = arg.string_value ();
+      symbol_table::fcn_info *finfo = symtab.get_fcn_info (fname);
 
-          if (s_arg == "scopes")
-            {
-              // This won't work now...
-#if 0
-              std::list<symbol_table::scope*> lst = symtab.scopes ();
-
-              RowVector v (lst.size ());
-
-              octave_idx_type k = 0;
-
-              for (auto *sid : lst)
-                v.xelem (k++) = sid;
-
-              retval = v;
-#endif
-            }
-          else if (s_arg == "functions")
-            {
-              symtab.dump_functions (octave_stdout);
-            }
-          else
-            error ("__dump_symtab_info__: string argument must be \"functions\" or \"scopes\"");
-        }
-      else
-        {
-          // This won't work now...
-#if 0
-          int sid = arg.xint_value ("__dump_symtab_info__: first argument must be string or scope id");
-
-          symtab.dump (octave_stdout, sid);
-#endif
-        }
+      if (finfo)
+        return finfo->dump ();
     }
 
-  return retval;
+  return ovl ();
 }
 
 DEFMETHOD (__get_cmdline_fcn_txt__, interp, args, ,

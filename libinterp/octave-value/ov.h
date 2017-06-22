@@ -1370,7 +1370,7 @@ public:
 
   bool islocked (void) const { return rep->islocked (); }
 
-  void dump (std::ostream& os) const { rep->dump (os); }
+  octave_value dump (void) const { return rep->dump (); }
 
 #define MAPPER_FORWARD(F) \
   octave_value F (void) const                           \

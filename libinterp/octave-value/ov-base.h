@@ -687,7 +687,7 @@ public:
 
   virtual bool islocked (void) const { return false; }
 
-  virtual void dump (std::ostream& os) const;
+  virtual octave_value dump (void) const;
 
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t

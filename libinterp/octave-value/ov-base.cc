@@ -1165,14 +1165,15 @@ octave_base_value::unlock (void)
   err_wrong_type_arg ("octave_base_value::unlock ()", type_name ());
 }
 
-void
-octave_base_value::dump (std::ostream& os) const
+octave_value
+octave_base_value::dump (void) const
 {
-  dim_vector dv = this->dims ();
+  std::map<std::string, octave_value> m
+    = {{"class", octave_value (this->class_name ())},
+       {"type", octave_value (this->type_name ())},
+       {"dims", octave_value (this->dims().as_array ())}};
 
-  os << "class: " << this->class_name ()
-     << " type: " << this->type_name ()
-     << " dims: " << dv.str ();
+  return octave_value (m);
 }
 
 OCTAVE_NORETURN static

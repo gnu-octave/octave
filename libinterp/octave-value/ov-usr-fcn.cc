@@ -648,16 +648,60 @@ octave_user_function::subsasgn_optimization_ok (void)
   return retval;
 }
 
-#if 0
-void
-octave_user_function::print_symtab_info (std::ostream& os) const
+std::string
+octave_user_function::ctor_type_str (void) const
 {
-  symbol_table& symtab
-    = octave::__get_symbol_table__ ("octave_user_function::print_symtab_info");
+  std::string retval;
 
-  symtab.print_info (os, m_scope);
+  switch (class_constructor)
+    {
+    case none:
+      retval = "none";
+      break;
+
+    case legacy:
+      retval = "legacy";
+      break;
+
+    case classdef:
+      retval = "classdef";
+      break;
+
+    default:
+      retval = "unrecognized enum value";
+      break;
+    }
+
+  return retval;
 }
-#endif
+
+octave_value
+octave_user_function::dump (void) const
+{
+  std::map<std::string, octave_value> m
+    = {{"file_name", octave_value (file_name)},
+       {"line", octave_value (location_line)},
+       {"col", octave_value (location_column)},
+       {"end_line", octave_value (end_location_line)},
+       {"end_col", octave_value (end_location_column)},
+       {"time_parsed", octave_value (t_parsed)},
+       {"time_checked", octave_value (t_checked)},
+       {"parent_name", octave_value (parent_name)},
+       {"system_fcn_file", octave_value (system_fcn_file)},
+       {"call_depth", octave_value (call_depth)},
+       {"num_named_args", octave_value (num_named_args)},
+       {"subfunction", octave_value (subfunction)},
+       {"inline_function", octave_value (inline_function)},
+       {"anonymous_function", octave_value (anonymous_function)},
+       {"nested_function", octave_value (nested_function)},
+       {"ctor_type", octave_value (ctor_type_str ())},
+       {"class_method", octave_value (class_method)},
+       {"parent_scope", octave_value (parent_scope
+                                      ? parent_scope->name () : "0x0")},
+       {"scope_info", m_scope ? m_scope->dump () : octave_value ("0x0")}};
+
+  return octave_value (m);
+}
 
 void
 octave_user_function::print_code_function_header (void)

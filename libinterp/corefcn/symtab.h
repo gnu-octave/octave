@@ -35,11 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "glob-match.h"
 #include "lo-regexp.h"
+#include "oct-refcount.h"
 
 class tree_argument_list;
 class octave_user_function;
 
-#include "oct-refcount.h"
 #include "ov.h"
 #include "ovl.h"
 #include "workspace-element.h"
@@ -288,7 +288,7 @@ public:
 
       symbol_record_rep * dup (scope *new_scope) const;
 
-      void dump (std::ostream& os, const std::string& prefix) const;
+      octave_value dump (void) const;
 
       scope *m_decl_scope;
 
@@ -472,11 +472,7 @@ public:
 
     void set_curr_fcn (octave_user_function *fcn) { rep->set_curr_fcn (fcn); }
 
-    void
-    dump (std::ostream& os, const std::string& prefix = "") const
-    {
-      rep->dump (os, prefix);
-    }
+    octave_value dump (void) const { return rep->dump (); }
 
     const symbol_record_rep *xrep (void) const { return rep; }
 
@@ -707,7 +703,7 @@ public:
         clear_package ();
       }
 
-      void dump (std::ostream& os, const std::string& prefix) const;
+      octave_value dump (void) const;
 
       std::string full_name (void) const
       {
@@ -870,11 +866,7 @@ public:
 
     void clear_mex_function (void) { rep->clear_mex_function (); }
 
-    void
-    dump (std::ostream& os, const std::string& prefix = "") const
-    {
-      rep->dump (os, prefix);
-    }
+    octave_value dump (void) const { return rep->dump (); }
 
   private:
 
@@ -1493,11 +1485,7 @@ public:
     return retval;
   }
 
-  void dump (std::ostream& os, scope *sid);
-
-  void dump_global (std::ostream& os);
-
-  void dump_functions (std::ostream& os);
+  octave_value dump (void) const;
 
   void add_to_parent_map (const std::string& classname,
                           const std::list<std::string>& parent_list)
@@ -1537,6 +1525,12 @@ public:
 
   void cleanup (void);
 
+  fcn_info * get_fcn_info (const std::string& name)
+  {
+    fcn_table_iterator p = m_fcn_table.find (name);
+    return p != m_fcn_table.end () ? &p->second : 0;
+  }
+
   class scope
   {
   public:
@@ -1556,9 +1550,9 @@ public:
     typedef std::map<std::string, octave_value>::iterator subfunctions_iterator;
 
     scope (const std::string& name = "")
-      : m_name (name), m_symbols (), m_children (), m_subfunctions (),
-        m_parent (0), m_fcn (0), m_is_nested (false), m_is_static (false),
-        m_persistent_symbols (), m_context (0)
+      : m_name (name), m_symbols (), m_persistent_symbols (), m_subfunctions (),
+        m_fcn (0), m_parent (0), m_children (), m_is_nested (false),
+        m_is_static (false), m_context (0)
     { }
 
     // No copying!
@@ -2010,7 +2004,7 @@ public:
 
     std::list<workspace_element> workspace_info (void) const;
 
-    void dump (std::ostream& os);
+    octave_value dump (void) const;
 
     std::string name (void) const { return m_name; }
 
@@ -2036,17 +2030,20 @@ public:
     // Map from symbol names to symbol info.
     std::map<std::string, symbol_table::symbol_record> m_symbols;
 
-    // Child nested functions.
-    std::vector<scope*> m_children;
+    // Map from names of persistent variables to values.
+    std::map<std::string, octave_value> m_persistent_symbols;
 
     // Map from symbol names to subfunctions.
     std::map<std::string, octave_value> m_subfunctions;
 
+    // The associated user code (may be null).
+    octave_user_function *m_fcn;
+
     // Parent of nested function (may be null).
     scope *m_parent;
 
-    // The associated user code (may be null).
-    octave_user_function *m_fcn;
+    // Child nested functions.
+    std::vector<scope*> m_children;
 
     // If true, then this scope belongs to a nested function.
     bool m_is_nested;
@@ -2054,10 +2051,9 @@ public:
     // If true then no variables can be added.
     bool m_is_static;
 
-    // Map from names of persistent variables to values.
-    std::map<std::string, octave_value> m_persistent_symbols;
-
     context_id m_context;
+
+    octave_value dump_symbols_map (void) const;
   };
 
 private:
@@ -2103,11 +2099,7 @@ private:
 
   scope *m_current_scope;
 
-  fcn_info * get_fcn_info (const std::string& name)
-  {
-    fcn_table_iterator p = m_fcn_table.find (name);
-    return p != m_fcn_table.end () ? &p->second : 0;
-  }
+  octave_value dump_fcn_table_map (void) const;
 };
 
 extern bool out_of_date_check (octave_value& function,

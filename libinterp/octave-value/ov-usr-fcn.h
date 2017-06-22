@@ -382,9 +382,7 @@ public:
   void stash_info (jit_function_info *info) { jit_info = info; }
 #endif
 
-#if 0
-  void print_symtab_info (std::ostream& os) const;
-#endif
+  octave_value dump (void) const;
 
 private:
 
@@ -394,6 +392,8 @@ private:
     legacy,
     classdef
   };
+
+  std::string ctor_type_str (void) const;
 
   // Our symbol table scope.
   symbol_table::scope *m_scope;

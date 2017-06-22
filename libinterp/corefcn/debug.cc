@@ -873,7 +873,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
       if (nframes_to_display > 0)
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           os << "stopped in:\n\n";
 

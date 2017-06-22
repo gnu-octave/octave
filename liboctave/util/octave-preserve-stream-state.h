@@ -27,31 +27,34 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <ios>
 
-class
-octave_preserve_stream_state
+namespace octave
 {
-public:
-
-  octave_preserve_stream_state (std::ios& s)
-    : stream (s), oflags (s.flags ()), oprecision (s.precision ()),
-      owidth (s.width ()), ofill (s.fill ())
-  { }
-
-  ~octave_preserve_stream_state (void)
+  class
+  preserve_stream_state
   {
-    stream.flags (oflags);
-    stream.precision (oprecision);
-    stream.width (owidth);
-    stream.fill (ofill);
-  }
+  public:
 
-private:
+    preserve_stream_state (std::ios& s)
+      : stream (s), oflags (s.flags ()), oprecision (s.precision ()),
+        owidth (s.width ()), ofill (s.fill ())
+    { }
 
-  std::ios& stream;
-  std::ios::fmtflags oflags;
-  std::streamsize oprecision;
-  int owidth;
-  char ofill;
-};
+    ~preserve_stream_state (void)
+    {
+      stream.flags (oflags);
+      stream.precision (oprecision);
+      stream.width (owidth);
+      stream.fill (ofill);
+    }
+
+  private:
+
+    std::ios& stream;
+    std::ios::fmtflags oflags;
+    std::streamsize oprecision;
+    int owidth;
+    char ofill;
+  };
+}
 
 #endif

@@ -286,7 +286,7 @@ public:
 std::ostream&
 operator << (std::ostream& os, const pr_engineering_float& pef)
 {
-  octave_preserve_stream_state stream_state (os);
+  octave::preserve_stream_state stream_state (os);
 
   if (pef.f.fw >= 0)
     os << std::setw (pef.f.fw - pef.f.ex);
@@ -329,7 +329,7 @@ public:
 std::ostream&
 operator << (std::ostream& os, const pr_formatted_float& pff)
 {
-  octave_preserve_stream_state stream_state (os);
+  octave::preserve_stream_state stream_state (os);
 
   if (pff.f.fw >= 0)
     os << std::setw (pff.f.fw);
@@ -469,7 +469,7 @@ public:
 std::ostream&
 operator << (std::ostream& os, const pr_rational_float& prf)
 {
-  octave_preserve_stream_state stream_state (os);
+  octave::preserve_stream_state stream_state (os);
 
   int fw = (rat_string_len > 0 ? rat_string_len : prf.f.fw);
   std::string s = rational_approx (prf.val, fw);
@@ -1444,7 +1444,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 
       if (hex_format)
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           equiv tmp;
           tmp.d = d;
@@ -1502,7 +1502,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         }
       else if (octave::math::isna (d))
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           if (fw > 0)
             os << std::setw (fw) << "NA";
@@ -1513,7 +1513,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         os << pr_rational_float (*fmt, d);
       else if (octave::math::isinf (d))
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           const char *s;
           if (d < 0.0)
@@ -1528,7 +1528,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         }
       else if (octave::math::isnan (d))
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           if (fw > 0)
             os << std::setw (fw) << "NaN";
@@ -1636,7 +1636,7 @@ pr_scale_header (std::ostream& os, double scale)
 {
   if (Vfixed_point_format && ! print_g && scale != 1.0)
     {
-      octave_preserve_stream_state stream_state (os);
+      octave::preserve_stream_state stream_state (os);
 
       os << "  "
          << std::setw (8) << std::setprecision (1)
@@ -1655,7 +1655,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
 {
   if (total_width > max_width && Vsplit_long_rows)
     {
-      octave_preserve_stream_state stream_state (os);
+      octave::preserve_stream_state stream_state (os);
 
       if (col != 0)
         {
@@ -1821,7 +1821,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
         }
       else
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           pr_scale_header (os, scale);
 
@@ -1952,7 +1952,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
         }
       else
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           os << "Diagonal Matrix\n";
           if (! Vcompact_format)
@@ -2239,7 +2239,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
         }
       else
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           pr_scale_header (os, scale);
 
@@ -2372,7 +2372,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
         }
       else
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           os << "Diagonal Matrix\n";
           if (! Vcompact_format)
@@ -2520,7 +2520,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
         }
       else
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           os << "Permutation Matrix\n";
           if (! Vcompact_format)
@@ -2688,7 +2688,7 @@ octave_print_internal (std::ostream& os, const Range& r,
         }
       else
         {
-          octave_preserve_stream_state stream_state (os);
+          octave::preserve_stream_state stream_state (os);
 
           int column_width = fw + 2;
           octave_idx_type total_width = num_elem * column_width;
@@ -2985,7 +2985,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 
   if (hex_format)
     {
-      octave_preserve_stream_state stream_state (os);
+      octave::preserve_stream_state stream_state (os);
 
       os.flags (std::ios::right | std::ios::hex);
 
@@ -3023,7 +3023,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     }
   else
     {
-      octave_preserve_stream_state stream_state (os);
+      octave::preserve_stream_state stream_state (os);
 
       os << std::setw (fw)
          << typename octave_print_conv<T>::print_conv_type (d);
@@ -3319,7 +3319,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
             }
           else
             {
-              octave_preserve_stream_state stream_state (os);
+              octave::preserve_stream_state stream_state (os);
 
               octave_idx_type n_rows = page.rows ();
               octave_idx_type n_cols = page.cols ();

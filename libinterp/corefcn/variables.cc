@@ -1070,7 +1070,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   std::list<whos_parameter>::iterator i = params.begin ();
   std::ostringstream param_buf;
 
-  octave_preserve_stream_state stream_state (os);
+  octave::preserve_stream_state stream_state (os);
 
   while (i != params.end ())
     {
@@ -1208,7 +1208,7 @@ private:
 
       std::list<whos_parameter>::const_iterator i = params.begin ();
 
-      octave_preserve_stream_state stream_state (os);
+      octave::preserve_stream_state stream_state (os);
 
       while (i != params.end ())
         {

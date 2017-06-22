@@ -18,6 +18,7 @@ UTIL_INC = \
   %reldir%/lo-utils.h \
   %reldir%/f77-fcn.h \
   %reldir%/lo-error.h \
+  %reldir%/octave-preserve-stream-state.h \
   %reldir%/quit.h \
   %reldir%/oct-base64.h \
   %reldir%/oct-binmap.h \

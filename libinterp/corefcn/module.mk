@@ -71,7 +71,6 @@ COREFCN_INC = \
   %reldir%/oct.h \
   %reldir%/octave-default-image.h \
   %reldir%/octave-link.h \
-  %reldir%/octave-preserve-stream-state.h \
   %reldir%/pager.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \

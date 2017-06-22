@@ -40,10 +40,8 @@ EXTERNAL_SOURCES += \
   %reldir%/xdbetai.f \
   %reldir%/xdgami.f \
   %reldir%/xdgamit.f \
-  %reldir%/xdgamma.f \
   %reldir%/xgmainc.f \
   %reldir%/xsgmainc.f \
-  %reldir%/xgamma.f \
   %reldir%/xbetai.f
 
 liboctave_EXTRA_DIST += \

@@ -173,6 +173,9 @@ public:
   octave_scalar_struct (const octave_scalar_map& m)
     : octave_base_value (), map (m) { }
 
+  octave_scalar_struct (const std::map<std::string, octave_value>& m)
+    : octave_base_value (), map (m) { }
+
   octave_scalar_struct (const octave_scalar_struct& s)
     : octave_base_value (), map (s.map) { }
 

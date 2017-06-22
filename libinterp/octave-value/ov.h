@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 #include <list>
+#include <map>
 
 #include "Range.h"
 #include "data-conv.h"
@@ -279,6 +280,7 @@ public:
   octave_value (const Range& r, bool force_range = false);
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
+  octave_value (const std::map<std::string, octave_value>&);
   octave_value (const octave_map& m, const std::string& id,
                 const std::list<std::string>& plist);
   octave_value (const octave_scalar_map& m, const std::string& id,

@@ -1089,6 +1089,10 @@ octave_value::octave_value (const octave_scalar_map& m)
   : rep (new octave_scalar_struct (m))
 { }
 
+octave_value::octave_value (const std::map<std::string, octave_value>& m)
+  : rep (new octave_scalar_struct (m))
+{ }
+
 octave_value::octave_value (const octave_map& m, const std::string& id,
                             const std::list<std::string>& plist)
   : rep (new octave_class (m, id, plist))

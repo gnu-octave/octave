@@ -161,7 +161,9 @@ public:
     : xkeys (k), xvals (k.numel ()) { }
 
   octave_scalar_map (const octave_scalar_map& m)
-    : xkeys (m.xkeys), xvals(m.xvals) { }
+    : xkeys (m.xkeys), xvals (m.xvals) { }
+
+  octave_scalar_map (const std::map<std::string, octave_value>& m);
 
   octave_scalar_map& operator = (const octave_scalar_map& m)
   {

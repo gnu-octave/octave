@@ -63,7 +63,25 @@ public:
 
   Cell (const string_vector& sv, bool trim = false);
 
-  Cell (const std::list<std::string>& lst);
+  // Constructor for standard containers.  V must be convertible to an
+  // octave_value object.
+  template <typename V, template <typename...> class C>
+  explicit
+  Cell (const C<V>& container)
+    : Array<octave_value> ()
+  {
+    size_t n = container.size ();
+
+    if (n > 0)
+      {
+        resize (dim_vector (n, 1));
+
+        octave_idx_type i = 0;
+
+        for (const auto& val : container)
+          elem(i++,0) = val;
+      }
+  }
 
   Cell (const Array<std::string>& sa);
 

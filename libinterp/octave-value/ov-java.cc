@@ -3233,6 +3233,54 @@ Return true if @var{x} is a Java object.
 %! assert (class (javaObject ("java.lang.Long",    uint64 (1))), "java.lang.Long");
 %! assert (class (javaObject ("java.lang.Long",     int64 (1))), "java.lang.Long");
 
+## More checks of java numeric and boolean class instances
+%!testif HAVE_JAVA; usejava ("jvm")
+%! n = javaObject ("java.lang.Double", 1.35);
+%! assert (n.compareTo (1.0), 1);
+%! assert (n.compareTo (1.35), 0);
+%! assert (n.compareTo (10), -1);
+%! assert (n.isInfinite (), false);
+
+%!testif HAVE_JAVA; usejava ("jvm")
+%! n = javaObject ("java.lang.Float", 1.35);
+%! assert (n.compareTo (1.0), 1);
+%! assert (n.compareTo (1.35), 0);
+%! assert (n.compareTo (10), -1);
+%! assert (n.doubleValue (), 1.35, 1e7);
+
+%!testif HAVE_JAVA; usejava ("jvm")
+%! n = javaObject ("java.lang.Long", (int64 (1)));
+%! assert (n.compareTo (int64 (0)), 1);
+%! assert (n.compareTo (int64 (1)), 0);
+%! assert (n.compareTo (int64 (2)), -1);
+%! assert (n.toString (), "1");
+
+%!testif HAVE_JAVA; usejava ("jvm")
+%! n = javaObject ("java.lang.Integer", 1.35);
+%! assert (n.compareTo (0), 1);
+%! assert (n.compareTo (1), 0);
+%! assert (n.compareTo (2), -1);
+
+%!testif HAVE_JAVA; usejava ("jvm")
+%! n = javaObject ("java.lang.Short", 1.35);
+%! assert (n.compareTo (0), 1);
+%! assert (n.compareTo (1), 0);
+%! assert (n.compareTo (2), -1);
+
+%!testif HAVE_JAVA; usejava ("jvm")
+%! n = javaObject ("java.lang.Byte", int8 (17));
+%! assert (n.compareTo (int8 (20)), -3);
+%! assert (n.compareTo (int8 (10)), 7);
+%! assert (n.compareTo (int8 (17)), 0);
+
+%!testif HAVE_JAVA; usejava ("jvm")
+%! b = javaObject ("java.lang.Boolean", true);
+%! assert (b.compareTo (true), 0);
+%! assert (b.compareTo (false), 1);
+%! b = javaObject ("java.lang.Boolean", false);
+%! assert (b.compareTo (true), -1);
+%! assert (b.compareTo (false), 0);
+
 ## Test for automatic conversion of specific numeric classes
 %!testif HAVE_JAVA; usejava ("jvm") <*48013>
 %! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1)
@@ -3266,4 +3314,10 @@ Return true if @var{x} is a Java object.
 %! assert (a(1).s.charAt (5), "e")
 %! assert (a(1).s.matches ("^Octave$"))
 %! assert (a(1).s.startsWith ("Oct"))
+
+## Check for basic usability of the java awt library
+%!testif HAVE_JAVA; usejava ("jvm") && usejava ("awt") && have_window_system ()
+%! frame = javaObject ("java.awt.Frame");
+%! frame.setResizable (true);
+%! assert (frame.isResizable ());
 */

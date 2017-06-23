@@ -1017,6 +1017,8 @@ public:
   ~octave_classdef_meta (void)
   { object.meta_release (); }
 
+  bool is_classdef_meta (void) const { return true; }
+
   octave_function * function_value (bool = false) { return this; }
 
   octave_value_list

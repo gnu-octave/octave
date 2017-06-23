@@ -586,6 +586,9 @@ public:
   bool is_map (void) const
   { return rep->isstruct (); }
 
+  bool is_classdef_meta (void) const
+  { return rep->is_classdef_meta (); }
+
   bool is_classdef_object (void) const
   { return rep->is_classdef_object (); }
 

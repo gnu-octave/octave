@@ -1362,7 +1362,8 @@ namespace octave
         p_dyn_field++;
       }
 
-    if (! idx.empty ())
+    if (! idx.empty () && (! base_expr_val.is_function ()
+                           || base_expr_val.is_classdef_meta ()))
       {
         try
           {
@@ -1372,6 +1373,18 @@ namespace octave
           {
             final_index_error (e, expr);
           }
+      }
+
+    // This happens if... ??
+
+    octave_value val = (retval.length () ? retval(0) : octave_value ());
+
+    if (val.is_function ())
+      {
+        octave_function *fcn = val.function_value (true);
+
+        if (fcn)
+          retval = fcn->call (*this, nargout);
       }
 
     m_value_stack.push (retval);

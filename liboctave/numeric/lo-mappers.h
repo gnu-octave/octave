@@ -74,17 +74,11 @@ namespace octave
     extern OCTAVE_API Complex acos (const Complex& x);
     extern OCTAVE_API FloatComplex acos (const FloatComplex& x);
 
-    using std::acos;
-
     extern OCTAVE_API Complex asin (const Complex& x);
     extern OCTAVE_API FloatComplex asin (const FloatComplex& x);
 
-    using std::asin;
-
     inline Complex atan (const Complex& x) { return std::atan (x); }
     inline FloatComplex atan (const FloatComplex& x) { return std::atan (x); }
-
-    using std::atan;
 
     // C++ now provides versions of the following functions for arguments of
     // type std::complex<T> and T.  But some compilers (I'm looking at you,
@@ -149,7 +143,7 @@ namespace octave
     inline double exp2 (double x) { return std::exp2 (x); }
     inline float exp2 (float x) { return std::exp2f (x); }
 
-    inline double ceil (double x) { return ::ceil (x); }
+    inline double ceil (double x) { return std::ceil (x); }
     inline float ceil (float x) { return ::ceilf (x); }
 
     template <typename T>

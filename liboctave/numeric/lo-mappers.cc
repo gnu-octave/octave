@@ -77,6 +77,8 @@ namespace octave
       return (isnan (std::real (x)) || isnan (std::imag (x)));
     }
 
+    // Matlab returns a different phase for acos, asin then std library
+    // which requires a small function to remap the phase.
     Complex
     acos (const Complex& x)
     {
@@ -121,26 +123,26 @@ namespace octave
         return y;
     }
 
+    double frexp (double x, int *expptr)
+    {
+      return octave_frexp_wrapper (x, expptr);
+    }
+
+    float frexp (float x, int *expptr)
+    {
+      return octave_frexpf_wrapper (x, expptr);
+    }
+
     Complex
     log2 (const Complex& x)
     {
-#if defined (M_LN2)
-      static double ln2 = M_LN2;
-#else
-      static double ln2 = std::log (2.0);
-#endif
-      return std::log (x) / ln2;
+      return std::log (x) / M_LN2;
     }
 
     FloatComplex
     log2 (const FloatComplex& x)
     {
-#if defined (M_LN2)
-      static float ln2 = M_LN2;
-#else
-      static float ln2 = log (2.0f);
-#endif
-      return std::log (x) / ln2;
+      return std::log (x) / static_cast<float> (M_LN2);
     }
 
     double
@@ -173,16 +175,6 @@ namespace octave
 
     bool negative_sign (double x) { return __lo_ieee_signbit (x); }
     bool negative_sign (float x) { return __lo_ieee_float_signbit (x); }
-
-    double frexp (double x, int *expptr)
-    {
-      return octave_frexp_wrapper (x, expptr);
-    }
-
-    float frexp (float x, int *expptr)
-    {
-      return octave_frexpf_wrapper (x, expptr);
-    }
 
     // Sometimes you need a large integer, but not always.
 
@@ -235,14 +227,14 @@ namespace octave
     Complex
     rc_acos (double x)
     {
-      return fabs (x) > 1.0 ? acos (Complex (x)) : Complex (::acos (x));
+      return fabs (x) > 1.0 ? acos (Complex (x)) : Complex (std::acos (x));
     }
 
     FloatComplex
     rc_acos (float x)
     {
       return fabsf (x) > 1.0f ? acos (FloatComplex (x))
-                              : FloatComplex (::acosf (x));
+                              : FloatComplex (std::acos (x));
     }
 
     Complex
@@ -260,7 +252,7 @@ namespace octave
     Complex
     rc_asin (double x)
     {
-      return fabs (x) > 1.0 ? asin (Complex (x)) : Complex (::asin (x));
+      return fabs (x) > 1.0 ? asin (Complex (x)) : Complex (std::asin (x));
     }
 
     FloatComplex
@@ -286,45 +278,43 @@ namespace octave
     Complex
     rc_log (double x)
     {
-      const double pi = 3.14159265358979323846;
-      return x < 0.0 ? Complex (std::log (-x), pi) : Complex (std::log (x));
+      return x < 0.0 ? Complex (std::log (-x), M_PI) : Complex (std::log (x));
     }
 
     FloatComplex
     rc_log (float x)
     {
-      const float pi = 3.14159265358979323846f;
-      return x < 0.0f ? FloatComplex (std::log (-x), pi)
+      return x < 0.0f ? FloatComplex (std::log (-x), static_cast<float> (M_PI))
                       : FloatComplex (std::log (x));
     }
 
     Complex
     rc_log2 (double x)
     {
-      const double pil2 = 4.53236014182719380962; // = pi / log(2)
-      return x < 0.0 ? Complex (log2 (-x), pil2) : Complex (log2 (x));
+      const double PI_LN2 = 4.53236014182719380962;  // = pi / log(2)
+      return x < 0.0 ? Complex (log2 (-x), PI_LN2) : Complex (log2 (x));
     }
 
     FloatComplex
     rc_log2 (float x)
     {
-      const float pil2 = 4.53236014182719380962f; // = pi / log(2)
-      return x < 0.0f ? FloatComplex (log2 (-x), pil2)
+      const float PI_LN2 = 4.53236014182719380962f;  // = pi / log(2)
+      return x < 0.0f ? FloatComplex (log2 (-x), PI_LN2)
                       : FloatComplex (log2 (x));
     }
 
     Complex
     rc_log10 (double x)
     {
-      const double pil10 = 1.36437635384184134748; // = pi / log(10)
-      return x < 0.0 ? Complex (log10 (-x), pil10) : Complex (log10 (x));
+      const double PI_LN10 = 1.36437635384184134748;  // = pi / log(10)
+      return x < 0.0 ? Complex (log10 (-x), PI_LN10) : Complex (log10 (x));
     }
 
     FloatComplex
     rc_log10 (float x)
     {
-      const float pil10 = 1.36437635384184134748f; // = pi / log(10)
-      return x < 0.0f ? FloatComplex (log10 (-x), pil10)
+      const float PI_LN10 = 1.36437635384184134748f;  // = pi / log(10)
+      return x < 0.0f ? FloatComplex (log10 (-x), PI_LN10)
                       : FloatComplex (log10f (x));
     }
 

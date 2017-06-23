@@ -2472,7 +2472,7 @@ namespace octave
           phi = ii*a[Nn]*u;
           for (n = Nn; n > 0; --n)
             {
-              phi = (asin ((c[n]/a[n])* sin (phi)) + phi)/2;
+              phi = (std::asin ((c[n]/a[n])* sin (phi)) + phi)/2;
             }
           sn = sin (phi);
           cn = cos (phi);

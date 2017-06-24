@@ -540,7 +540,7 @@ the first index of the minimum value(s).  Thus,
 %!assert (min (sparse ([1, 4, 2, 3])), sparse (1))
 %!assert (min (sparse ([1; -10; 5; -2])), sparse(-10))
 ## FIXME: sparse doesn't order complex values by phase angle
-%!xtest
+%!test <51307>
 %! assert (min (sparse ([4, 2i 4.999; -2, 2, 3+4i])), sparse ([-2, 2, 4.999]));
 
 ## Test dimension argument
@@ -588,7 +588,7 @@ the first index of the minimum value(s).  Thus,
 ## FIXME: Ordering of complex results with equal magnitude is not by phase
 ##        angle in the 2-input form.  Instead, it is in the order in which it
 ##        appears in the argument list.
-%!xtest
+%!test <51307>
 %! x = [1, 2, 3, 4];  y = fliplr (x);
 %! assert (min (x, 2i), [2i 2i 3 4]);
 ## Special routines for char arrays
@@ -807,7 +807,7 @@ the first index of the maximum value(s).  Thus,
 ## FIXME: Ordering of complex results with equal magnitude is not by phase
 ##        angle in the 2-input form.  Instead, it is in the order in which it
 ##        appears in the argument list.
-%!xtest
+%!test <51307>
 %! x = [1, 2, 3, 4];  y = fliplr (x);
 %! assert (max (x, 2i), [2i 2i 3 4]);
 ## Special routines for char arrays

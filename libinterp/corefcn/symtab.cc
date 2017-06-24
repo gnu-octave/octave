@@ -1419,9 +1419,11 @@ symbol_table::find_submethod (const std::string& name,
   return fcn;
 }
 
+#if 0
+// This fails with GCC 7.
 template <typename V, template <typename...> class C>
 static octave_value
-dump_container_map (const std::map<std::string, C<V>>& container_map)
+dump_container_map_template (const std::map<std::string, C<V>>& container_map)
 {
   if (container_map.empty ())
     return octave_value (Matrix ());
@@ -1437,6 +1439,43 @@ dump_container_map (const std::map<std::string, C<V>>& container_map)
 
   return octave_value (info_map);
 }
+#else
+static octave_value
+dump_container_map (const std::map<std::string, std::list<std::string>>& container_map)
+{
+  if (container_map.empty ())
+    return octave_value (Matrix ());
+
+  std::map<std::string, octave_value> info_map;
+
+  for (const auto& nm_container : container_map)
+    {
+      std::string nm = nm_container.first;
+      const std::list<std::string>& container = nm_container.second;
+      info_map[nm] = Cell (container);
+    }
+
+  return octave_value (info_map);
+}
+
+static octave_value
+dump_container_map (const std::map<std::string, std::set<std::string>>& container_map)
+{
+  if (container_map.empty ())
+    return octave_value (Matrix ());
+
+  std::map<std::string, octave_value> info_map;
+
+  for (const auto& nm_container : container_map)
+    {
+      std::string nm = nm_container.first;
+      const std::set<std::string>& container = nm_container.second;
+      info_map[nm] = Cell (container);
+    }
+
+  return octave_value (info_map);
+}
+#endif
 
 octave_value
 symbol_table::dump (void) const

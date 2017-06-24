@@ -44,8 +44,4 @@ EXTERNAL_SOURCES += \
   %reldir%/xsgmainc.f \
   %reldir%/xbetai.f
 
-liboctave_EXTRA_DIST += \
-  %reldir%/derfc.in.f \
-  %reldir%/erfc.in.f
-
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

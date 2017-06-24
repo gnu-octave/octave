@@ -1368,6 +1368,9 @@ namespace octave
         try
           {
             retval = base_expr_val.subsref (type.substr (beg, n-beg), idx, nargout);
+
+            beg = n;
+            idx.clear ();
           }
         catch (octave::index_exception& e)  // range problems, bad index type, etc.
           {
@@ -1384,7 +1387,23 @@ namespace octave
         octave_function *fcn = val.function_value (true);
 
         if (fcn)
-          retval = fcn->call (*this, nargout);
+          {
+            octave_value_list final_args;
+
+            if (! idx.empty ())
+              {
+                if (n - beg != 1)
+                  error ("unexpected extra index at end of expression");
+
+                if (type[beg] != '(')
+                  error ("invalid index type '%c' for function call",
+                         type[beg]);
+
+                final_args = idx.front ();
+              }
+
+            retval = fcn->call (*this, nargout, final_args);
+          }
       }
 
     m_value_stack.push (retval);

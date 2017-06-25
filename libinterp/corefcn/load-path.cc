@@ -2483,7 +2483,12 @@ For each directory that is added, and that was not already in the path,
           std::string dir = p;
 
           // Remove duplicate directory separators
-          dir.erase (std::unique (dir.begin (), dir.end (),
+          std::string::iterator it_start = dir.begin ();
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+          // In Windows, start check at second character (for UNC paths).
+          it_start++;
+#endif
+          dir.erase (std::unique (it_start, dir.end (),
                                   [](char l, char r)
                                   {
                                     return l == r &&

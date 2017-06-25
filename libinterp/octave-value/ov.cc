@@ -2472,7 +2472,7 @@ do_colon_op (const octave_value& base, const octave_value& increment,
       else
         dispatch_type = limit.class_name ();
 
-      symbol_table& symtab = octave::__get_symbol_table__ ("do_colon_op");
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ("do_colon_op");
 
       octave_value meth = symtab.find_method ("colon", dispatch_type);
 

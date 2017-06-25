@@ -501,7 +501,7 @@ word_list       : string
 
 identifier      : NAME
                   {
-                    symbol_table::symbol_record sr = $1->sym_rec ();
+                    octave::symbol_table::symbol_record sr = $1->sym_rec ();
                     $$ = new octave::tree_identifier (sr, $1->line (), $1->column ());
                   }
                 ;
@@ -1275,7 +1275,7 @@ push_fcn_symtab : // empty
                     if (parser.max_fcn_depth < parser.curr_fcn_depth)
                       parser.max_fcn_depth = parser.curr_fcn_depth;
 
-                    lexer.symtab_context.push (new symbol_table::scope ());
+                    lexer.symtab_context.push (new octave::symbol_table::scope ());
 
                     parser.function_scopes.push (lexer.symtab_context.curr_scope ());
 
@@ -1305,7 +1305,7 @@ param_list_beg  : '('
 
                     if (lexer.looking_at_function_handle)
                       {
-                        lexer.symtab_context.push (new symbol_table::scope ());
+                        lexer.symtab_context.push (new octave::symbol_table::scope ());
                         lexer.looking_at_function_handle--;
                         lexer.looking_at_anon_fcn_args = true;
                       }
@@ -1504,7 +1504,7 @@ fcn_name        : identifier
                         YYABORT;
                       }
 
-                    symbol_table::scope *curr_scope
+                    octave::symbol_table::scope *curr_scope
                       = lexer.symtab_context.curr_scope ();
                     curr_scope->cache_name (id);
 
@@ -4794,7 +4794,7 @@ not loaded anymore during the current Octave session.
                            "autoload: third argument can only be 'remove'");
 
           // Remove function from symbol table and autoload map.
-          symbol_table& symtab = interp.get_symbol_table ();
+          octave::symbol_table& symtab = interp.get_symbol_table ();
           symtab.clear_dld_function (argv[1]);
           autoload_map.erase (argv[1]);
         }
@@ -5250,7 +5250,7 @@ builtin ("sin", 0)
 
   const std::string name (args(0).xstring_value ("builtin: function name (F) must be a string"));
 
-  symbol_table& symtab = interp.get_symbol_table ();
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value fcn = symtab.builtin_find (name);
 
@@ -5544,7 +5544,7 @@ may be either @qcode{"base"} or @qcode{"caller"}.
       if (octave::is_keyword (nm))
         error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
 
-      symbol_table::scope *scope = interp.get_current_scope ();
+      octave::symbol_table::scope *scope = interp.get_current_scope ();
 
       if (scope)
         scope->assign (nm, args(2));

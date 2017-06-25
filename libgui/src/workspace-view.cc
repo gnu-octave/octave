@@ -373,7 +373,7 @@ workspace_view::handle_contextmenu_copy_value (void)
     {
       QString var_name = get_var_name (index);
 
-      symbol_table::scope *scope
+      octave::symbol_table::scope *scope
         = octave::__get_current_scope__ ("workspace_view::handle_contextmenu_copy_value");
 
       octave_value val = scope ? scope->varval (var_name.toStdString ()) : 0;

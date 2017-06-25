@@ -1782,7 +1782,7 @@ bool
 file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
                                        const QString& base_name_q)
 {
-  symbol_table& symtab
+  octave::symbol_table& symtab
     = octave::__get_symbol_table__ ("file_editor_tab::exit_debug_and_clear");
 
   std::string base_name = base_name_q.toStdString ();

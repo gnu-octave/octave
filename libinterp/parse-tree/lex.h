@@ -35,11 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "token.h"
 
-class symbol_table;
-
 namespace octave
 {
   class interpreter;
+  class symbol_table;
 
   // Is the given string a keyword?
   extern bool is_keyword (const std::string& s);

@@ -1508,12 +1508,12 @@ disable escape sequence expansion use a second backslash before the sequence
         {
           octave_map old_warning_options = warning_options;
 
-          symbol_table& symtab = interp.get_symbol_table ();
+          octave::symbol_table& symtab = interp.get_symbol_table ();
 
           if (nargin == 3 && argv[3] == "local"
               && ! symtab.at_top_level ())
             {
-              symbol_table::scope *scope
+              octave::symbol_table::scope *scope
                 = symtab.require_current_scope ("warning");
 
               octave_scalar_map val = warning_query (arg2);

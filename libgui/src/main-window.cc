@@ -2420,7 +2420,7 @@ main_window::load_workspace_callback (const std::string& file)
 {
   Fload (ovl (file));
 
-  symbol_table::scope *scope
+  octave::symbol_table::scope *scope
    = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 
   if (scope)
@@ -2439,7 +2439,7 @@ main_window::clear_workspace_callback (void)
 void
 main_window::rename_variable_callback (const main_window::name_pair& names)
 {
-  symbol_table::scope *scope
+  octave::symbol_table::scope *scope
     = octave::__get_current_scope__ ("main_window::rename_variable_callback");
 
   if (scope)

@@ -1093,7 +1093,7 @@ final_index_error (octave::index_exception& e,
 
       e.set_var (var);
 
-      symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
 
       octave_value fcn = symtab.find_function (var);
 

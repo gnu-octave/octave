@@ -197,7 +197,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
         }
     }
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("octave_class");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class");
 
   symtab.add_to_parent_map (id, parent_list);
 }
@@ -298,7 +298,7 @@ octave_class::size (void)
 
   Matrix retval (1, 2, 1.0);
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::size");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::size");
 
   octave_value meth = symtab.find_method ("size", class_name ());
 
@@ -338,7 +338,7 @@ octave_class::numel (const octave_value_list& idx)
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::numel");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::numel");
 
   octave_value meth = symtab.find_method ("numel", cn);
 
@@ -433,7 +433,7 @@ octave_class::subsref (const std::string& type,
     }
   else
     {
-      symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::subsref");
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::subsref");
 
       octave_value meth = symtab.find_method ("subsref", class_name ());
 
@@ -533,7 +533,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
   if (! (in_class_method () || called_from_builtin ()))
     {
-      symbol_table& symtab
+      octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_class::subsasgn_common");
 
       octave_value meth = symtab.find_method ("subsasgn", class_name ());
@@ -811,7 +811,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 idx_vector
 octave_class::index_vector (bool require_integers) const
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::index_vector");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::index_vector");
 
   octave_value meth = symtab.find_method ("subsindex", class_name ());
 
@@ -859,7 +859,7 @@ octave_class::is_true (void) const
 {
   bool retval = false;
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::is_true");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::is_true");
 
   octave_value meth = symtab.find_method ("logical", class_name ());
 
@@ -977,7 +977,7 @@ octave_class::string_vector_value (bool pad) const
 {
   string_vector retval;
 
-  symbol_table& symtab
+  octave::symbol_table& symtab
     = octave::__get_symbol_table__ ("octave_class::string_vector_value");
 
   octave_value meth = symtab.find_method ("char", class_name ());
@@ -1045,7 +1045,7 @@ octave_class::reconstruct_exemplar (void)
     retval = true;
   else
     {
-      symbol_table& symtab
+      octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_class::reconstruct_exemplar");
 
       octave_value ctor = symtab.find_method (c_name, c_name);
@@ -2045,7 +2045,7 @@ may @emph{only} be called from a class constructor.
       if (is_built_in_class (inf_class))
         break;
 
-      symbol_table& symtab = interp.get_symbol_table ();
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       std::string sup_class = fcn->name ();
       if (! symtab.set_class_relationship (sup_class, inf_class))
@@ -2082,7 +2082,7 @@ may @emph{only} be called from a class constructor.
         error ("inferiorto: cannot give user-defined class lower "
                "precedence than built-in class");
 
-      symbol_table& symtab = interp.get_symbol_table ();
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       std::string inf_class = fcn->name ();
       if (! symtab.set_class_relationship (sup_class, inf_class))

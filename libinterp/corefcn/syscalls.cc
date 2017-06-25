@@ -478,7 +478,7 @@ action.  A system dependent error message will be waiting in @var{msg}.
   if (args.length () != 0)
     print_usage ();
 
-  symbol_table& symtab = interp.get_symbol_table ();
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   if (symtab.at_top_level ())
     error ("fork: cannot be called from command line");

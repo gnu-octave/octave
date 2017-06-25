@@ -163,7 +163,7 @@ local_functions (void)
   // All subfunctions are listed in the top-level function of this file.
   while (curr_fcn->is_subfunction ())
     {
-      symbol_table::scope *pscope = curr_fcn->parent_fcn_scope ();
+      octave::symbol_table::scope *pscope = curr_fcn->parent_fcn_scope ();
       curr_fcn = pscope->function ();
     }
 
@@ -189,7 +189,7 @@ make_name_list (void)
   const static string_vector keywords = Fiskeyword ()(0).string_vector_value ();
   const static int key_len = keywords.numel ();
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("make_name_list");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("make_name_list");
 
   const string_vector bif = symtab.built_in_function_names ();
   const int bif_len = bif.numel ();
@@ -277,7 +277,7 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
 {
   bool retval = false;
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("raw_help_from_symbol_table");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("raw_help_from_symbol_table");
 
   octave_value val = symtab.find_function (nm);
 
@@ -632,7 +632,7 @@ DEFMETHOD (__builtins__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  symbol_table& symtab = interp.get_symbol_table ();
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   const string_vector bif = symtab.built_in_function_names ();
 
@@ -715,7 +715,7 @@ do_which (const std::string& name, std::string& type)
 
   type = "";
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("do_which");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("do_which");
 
   octave_value val = symtab.find_function (name);
 

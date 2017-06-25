@@ -1626,7 +1626,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("attempt_type_conversion");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("attempt_type_conversion");
 
   octave_value fcn = symtab.find_method (dtype, cname);
 
@@ -1689,9 +1689,9 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
   // Get dominant type for list
 
-  std::string dtype = get_dispatch_type (ovl);
+  std::string dtype = octave::get_dispatch_type (ovl);
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("do_class_concat");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("do_class_concat");
 
   octave_value fcn = symtab.find_method (cattype, dtype);
 

@@ -170,7 +170,7 @@ octave_user_function : public octave_user_code
 {
 public:
 
-  octave_user_function (symbol_table::scope *scope = nullptr,
+  octave_user_function (octave::symbol_table::scope *scope = nullptr,
                         octave::tree_parameter_list *pl = nullptr,
                         octave::tree_parameter_list *rl = nullptr,
                         octave::tree_statement_list *cl = nullptr);
@@ -183,10 +183,10 @@ public:
 
   ~octave_user_function (void);
 
-  symbol_table::context_id active_context () const
+  octave::symbol_table::context_id active_context () const
   {
     return is_anonymous_function ()
-           ? 0 : static_cast<symbol_table::context_id>(call_depth);
+      ? 0 : static_cast<octave::symbol_table::context_id>(call_depth);
   }
 
   octave_function * function_value (bool = false) { return this; }
@@ -223,7 +223,7 @@ public:
 
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
-  void stash_parent_fcn_scope (symbol_table::scope *ps);
+  void stash_parent_fcn_scope (octave::symbol_table::scope *ps);
 
   void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
 
@@ -243,9 +243,10 @@ public:
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
-  symbol_table::scope *parent_fcn_scope (void) const { return parent_scope; }
+  octave::symbol_table::scope *
+  parent_fcn_scope (void) const { return parent_scope; }
 
-  symbol_table::scope *scope (void) { return m_scope; }
+  octave::symbol_table::scope *scope (void) { return m_scope; }
 
   octave::sys::time time_parsed (void) const { return t_parsed; }
 
@@ -396,7 +397,7 @@ private:
   std::string ctor_type_str (void) const;
 
   // Our symbol table scope.
-  symbol_table::scope *m_scope;
+  octave::symbol_table::scope *m_scope;
 
   // List of arguments for this function.  These are local variables.
   octave::tree_parameter_list *param_list;
@@ -467,7 +468,7 @@ private:
   bool class_method;
 
   // The scope of the parent function, if any.
-  symbol_table::scope *parent_scope;
+  octave::symbol_table::scope *parent_scope;
 
   // pointer to the current unwind_protect frame of this function.
   octave::unwind_protect *curr_unwind_protect_frame;

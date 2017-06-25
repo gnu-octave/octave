@@ -86,7 +86,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
 extern OCTINTERP_API bool is_octave_data_file (const std::string& file);
 
 extern void
-do_save (std::ostream& os, const symbol_table::symbol_record& sr,
+do_save (std::ostream& os, const octave::symbol_table::symbol_record& sr,
          load_save_format fmt, bool save_as_floats);
 
 extern void

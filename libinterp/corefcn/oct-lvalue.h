@@ -38,8 +38,8 @@ octave_lvalue
 {
 public:
 
-  octave_lvalue (const symbol_table::symbol_reference& s
-                   = symbol_table::symbol_reference ())
+  octave_lvalue (const octave::symbol_table::symbol_reference& s
+                   = octave::symbol_table::symbol_reference ())
     : sym (s), type (), idx (), nel (1)
   { }
 
@@ -98,7 +98,7 @@ public:
 
 private:
 
-  symbol_table::symbol_reference sym;
+  octave::symbol_table::symbol_reference sym;
 
   std::string type;
 

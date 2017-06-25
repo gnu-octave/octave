@@ -165,7 +165,7 @@ Example:
 
       std::string class_name = indexed_object->class_name ();
 
-      symbol_table& symtab = interp.get_symbol_table ();
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       octave_value meth = symtab.find_method ("end", class_name);
 

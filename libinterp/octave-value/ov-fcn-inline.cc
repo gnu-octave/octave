@@ -104,7 +104,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
               if (curr_fcn)
                 {
-                  symbol_table::scope *parent_scope
+                  octave::symbol_table::scope *parent_scope
                     = curr_fcn->parent_fcn_scope ();
 
                   if (! parent_scope)

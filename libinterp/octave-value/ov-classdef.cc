@@ -1109,7 +1109,7 @@ public:
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        symbol_table::scope *scope
+        octave::symbol_table::scope *scope
           = octave::__require_current_scope__ ("octave_classdef_superclass_ref::call");
 
         octave_value sym = scope->varval (mname);
@@ -3258,7 +3258,7 @@ cdef_package::cdef_package_rep::find (const std::string& nm)
 {
   std::string symbol_name = get_name () + "." + nm;
 
-  symbol_table& symtab
+  octave::symbol_table& symtab
     = octave::__get_symbol_table__ ("cdef_package::cdef_package_rep::find");
 
   return symtab.find (symbol_name, octave_value_list (), true, false);
@@ -3625,7 +3625,7 @@ cdef_manager::initialize (void)
   package_meta.install_class (tmp_meta_event, "event");
   package_meta.install_class (tmp_meta_dynproperty, "dynproperty");
 
-  symbol_table& symtab = m_interpreter.get_symbol_table ();
+  octave::symbol_table& symtab = m_interpreter.get_symbol_table ();
 
   // install built-in classes into the symbol table
   symtab.install_built_in_function
@@ -3669,7 +3669,7 @@ cdef_manager::find_class (const std::string& name, bool error_if_not_found,
 
           if (pos == std::string::npos)
             {
-              symbol_table& symtab
+              octave::symbol_table& symtab
                 = octave::__get_symbol_table__ ("cdef_manager::find_class");
 
               ov_cls = symtab.find (name);

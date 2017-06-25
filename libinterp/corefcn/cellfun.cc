@@ -219,7 +219,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 }
 
 static void
-get_mapper_fun_options (symbol_table& symtab, const octave_value_list& args,
+get_mapper_fun_options (octave::symbol_table& symtab, const octave_value_list& args,
                         int& nargin, bool& uniform_output,
                         octave_value& error_handler)
 {
@@ -411,7 +411,7 @@ v = cellfun (@@det, a); # faster
 
   octave_value func = args(0);
 
-  symbol_table& symtab = interp.get_symbol_table ();
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   if (func.is_string ())
     {
@@ -1124,7 +1124,7 @@ arrayfun (@@str2num, [1234],
   bool symbol_table_lookup = false;
   octave_value func = args(0);
 
-  symbol_table& symtab = interp.get_symbol_table ();
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   if (func.is_string ())
     {

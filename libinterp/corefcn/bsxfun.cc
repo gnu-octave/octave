@@ -344,7 +344,7 @@ dimensionality as the other array.
     {
       std::string name = func.string_value ();
 
-      symbol_table& symtab = interp.get_symbol_table ();
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       func = symtab.find_function (name);
 

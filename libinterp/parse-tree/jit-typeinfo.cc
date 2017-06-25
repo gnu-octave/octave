@@ -2049,7 +2049,8 @@ jit_typeinfo::register_intrinsic (const std::string& name, size_t iid,
 octave_builtin *
 jit_typeinfo::find_builtin (const std::string& name)
 {
-  symbol_table& symtab = octave::__get_symbol_table__ ("jit_typeinfo::find_builtin");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("jit_typeinfo::find_builtin");
 
   // FIXME: Finalize what we want to store in octave_builtin, then add functions
   // to access these values in octave_value

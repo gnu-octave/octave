@@ -3425,7 +3425,7 @@ mexGetVariable (const char *space, const char *name)
               frame.add_method (cs, &octave::call_stack::pop);
             }
 
-          symbol_table::scope *scope
+          octave::symbol_table::scope *scope
             = octave::__require_current_scope__ ("mexGetVariable");
 
           val = scope->varval (name);
@@ -3491,7 +3491,7 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
               frame.add_method (cs, &octave::call_stack::pop);
             }
 
-          symbol_table::scope *scope
+          octave::symbol_table::scope *scope
             = octave::__require_current_scope__ ("mexPutVariable");
 
           scope->assign (name, mxArray::as_octave_value (ptr));

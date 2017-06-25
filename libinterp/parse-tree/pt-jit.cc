@@ -118,7 +118,7 @@ class jit_break_exception : public std::exception
 jit_convert::jit_convert (tree& tee, jit_type *for_bounds)
   : converting_function (false)
 {
-  symbol_table::scope *scope = octave::__get_current_scope__ ("jit_convert::jit_convert");
+  octave::symbol_table::scope *scope = octave::__get_current_scope__ ("jit_convert::jit_convert");
 
   initialize (scope);
 
@@ -1082,7 +1082,7 @@ jit_convert::visit_do_until_command (tree_do_until_command& duc)
 }
 
 void
-jit_convert::initialize (symbol_table::scope *s)
+jit_convert::initialize (octave::symbol_table::scope *s)
 {
   scope = s;
   iterator_count = 0;
@@ -1128,9 +1128,9 @@ jit_convert::get_variable (const std::string& vname)
   if (ret)
     return ret;
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("jit_convert::find_variable");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("jit_convert::find_variable");
 
-  symbol_table::symbol_record record = symtab.find_symbol (vname, scope);
+  octave::symbol_table::symbol_record record = symtab.find_symbol (vname, scope);
   if (record.is_persistent () || record.is_global ())
     throw jit_fail_exception ("Persistent and global not yet supported");
 
@@ -2404,7 +2404,7 @@ jit_info::execute (const vmap& extra_vars) const
 
   function (&real_arguments[0]);
 
-  symbol_table& symtab = octave::__get_symbol_table__ ("jit_info::execute");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("jit_info::execute");
 
   for (size_t i = 0; i < arguments.size (); ++i)
     {
@@ -2510,7 +2510,7 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
   if (iter == extra_vars.end ())
     {
-      symbol_table::scope *scope = octave::__require_current_scope__ ("jit_convert::find");
+      octave::symbol_table::scope *scope = octave::__require_current_scope__ ("jit_convert::find");
 
       return scope->varval (vname);
     }

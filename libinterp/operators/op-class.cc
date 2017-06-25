@@ -47,7 +47,8 @@ along with Octave; see the file COPYING.  If not, see
                                                                         \
     std::string class_name = a.class_name ();                           \
                                                                         \
-    symbol_table& symtab = octave::__get_symbol_table__ ("oct_unop_" #name);    \
+    octave::symbol_table& symtab                                        \
+      = octave::__get_symbol_table__ ("oct_unop_" #name);               \
                                                                         \
     octave_value meth = symtab.find_method (#name, class_name);         \
                                                                         \
@@ -82,9 +83,10 @@ DEF_CLASS_UNOP (ctranspose)
     octave_value retval;                                                \
                                                                         \
     std::string dispatch_type                                           \
-      = (a1.isobject () ? a1.class_name () : a2.class_name ());        \
+      = (a1.isobject () ? a1.class_name () : a2.class_name ());         \
                                                                         \
-    symbol_table& symtab = octave::__get_symbol_table__ ("oct_unop_" #name);    \
+    octave::symbol_table& symtab                                        \
+      = octave::__get_symbol_table__ ("oct_unop_" #name);               \
                                                                         \
     octave_value meth = symtab.find_method (#name, dispatch_type);      \
                                                                         \

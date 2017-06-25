@@ -53,7 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
-  : QsciScintilla (p)
+  : QsciScintilla (p), _auto_endif (1)
 {
   connect (this, SIGNAL (textChanged ()), this, SLOT (text_changed ()));
 
@@ -420,6 +420,181 @@ octave_qscintilla::get_style (int pos)
     position = pos;
 
   return SendScintilla (QsciScintillaBase::SCI_GETSTYLEAT, position);
+}
+
+// Return true if CANDIDATE is a "closing" that matches OPENING,
+// such as "end" or "endif" for "if", or "catch" for "try".
+// Used for testing the last word of an "if" etc. line,
+// or the first word of the following line.
+static bool
+is_end (QString candidate, QString& opening)
+{
+  bool retval = false;
+
+  if (opening == "do")          // The only one that can't be ended by "end"
+    {
+      if (candidate == "until")
+        retval = true;
+    }
+  else
+    {
+      if (candidate == "end")
+        retval =  true;
+      else
+        {
+          if (opening == "try")
+            {
+              if (candidate == "catch" || candidate == "end_try_catch")
+                retval = true;
+            }
+          else if (opening == "unwind_protect")
+            {
+              if (candidate == "unwind_protect_cleanup"
+                  || candidate == "end_unwind_protect")
+                retval = true;
+            }
+          else if (candidate == "end" + opening)
+            retval = true;
+          else if (opening == "if" && candidate == "else")
+            retval = true;
+        }
+    }
+
+  return retval;
+}
+
+void
+octave_qscintilla::keyPressEvent (QKeyEvent *e)
+{
+  // On receiving Enter, insert and "end" for an "if" etc., if needed.
+  // (Use of "while" allows "break" to skip the rest.
+  // It may be clearer to use "if" and "goto",
+  // but that violates the coding standards.)
+  while (_auto_endif
+         && e->type () == QEvent::KeyPress
+         && (e->key () == Qt::Key_Return || e->key () == Qt::Key_Enter)
+         && !(e->modifiers () & (Qt::ControlModifier | Qt::MetaModifier
+                                 | Qt::AltModifier)))
+    {
+      bool autofill_simple_end = (_auto_endif == 2) ;
+
+      // Get line.
+      QPoint global_pos, local_pos;
+      get_global_textcursor_pos (&global_pos, &local_pos);
+      int linenr = lineAt (local_pos);
+      QString line = text (linenr);   // should always exist;
+
+      // Don't autocomplete an empty line.
+      size_t start = line.toStdString ().find_first_not_of (" \t");
+      if (start == std::string::npos)
+        break;
+
+      // Get the first word of the line
+          // Keep a compiled regular expression to extract the first word.
+      QRegExp rx_start, rx_end;
+      static bool first = true;
+      if (first)
+        {
+          rx_start = QRegExp ("(\\w+)");
+          // last word except for comments, assuming no ' or " in comment.
+          // rx_end = QRegExp ("(\\w+)[ \t;\r\n]*([%#][^\"']*)?$");
+
+          // last word except for comments,
+          // allowing % and # in single or double quoted strings
+          // FIXME This will get confused by transpose.
+          rx_end = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
+                            "(\\w+)[ \t;\r\n]*([%#].*)?$");
+        }
+
+      int tmp = rx_start.indexIn (line, start);
+      if (tmp == -1)
+        break;
+
+      QString first_word = rx_start.cap(1);
+
+      // Check if the first word of the line was an opening needing a close
+      if (! (first_word == "classdef" || first_word == "for"
+             || first_word == "while" || first_word == "if"
+             || first_word == "switch" || first_word == "properties"
+             || first_word == "events" || first_word == "function"
+             || first_word == "parfor" || first_word == "methods"
+             || first_word == "try" || first_word == "do"
+             || first_word == "unwind_protect"))
+        break;
+      if (rx_end.indexIn (line, start) != -1
+          && is_end (rx_end.cap(1), first_word))
+        break;
+
+      // Check if following line has the same or less indentation
+      // Check if the following line does not start with
+      //       end* (until) (catch)
+      if (linenr < lines () - 1)
+        {
+          int offset = 1;
+          size_t next_start;
+          QString next_line;
+          do                            // find next non-blank line
+            {
+              next_line = text (linenr + offset++);
+              next_start = next_line.toStdString ().find_first_not_of (" \t\n");
+            }
+          while (linenr + offset < lines ()
+                 && next_start == std::string::npos);
+
+          if (next_start == std::string::npos)
+            next_start = 0;
+
+          if (next_start > start)       // more indented => don't add "end"
+            break;
+          if (next_start == start)      // same => check if already is "end"
+            {
+              tmp = rx_start.indexIn (next_line, start);
+              if (tmp != -1 && is_end (rx_start.cap(1), first_word))
+                 break;
+            }
+        }
+
+      // If all of the above, insert a new line, with matching indent
+      // and either 'end' or 'end...', depending on a flag.
+
+      // If we insert directly after the last line, the "end" is autoindented,
+      // so add a dummy line.
+      if (linenr + 1 == lines ())
+        insertAt (QString ("\n"), linenr + 1, 0);
+
+      // For try/catch/end, fill "end" first, so "catch" is top of undo stack
+      if (first_word == "try")
+        insertAt (QString (start, ' ')
+                  + (autofill_simple_end ? "end\n" : "end_try_catch\n"),
+                  linenr + 1, 0);
+      else if (first_word == "unwind_protect")
+        insertAt (QString (start, ' ')
+                  + (autofill_simple_end ? "end\n" : "end_unwind_protect\n"),
+                  linenr + 1, 0);
+
+      QString next_line;
+      if (first_word == "do")
+        next_line = "until\n";
+      else if (first_word == "try")
+        next_line = "catch\n";
+      else if (first_word == "unwind_protect")
+        next_line = "unwind_protect_cleanup\n";
+      else if (autofill_simple_end)
+        next_line = "end\n";
+      else
+        {
+          if (first_word == "unwind_protect")
+            first_word = "_" + first_word;
+          next_line = "end" + first_word + "\n";
+        }
+
+      insertAt (QString (start, ' ') + next_line, linenr + 1, 0);
+
+      break;
+    }
+
+  // Call default processing, even if we did the above.
+  QsciScintilla::keyPressEvent (e);
 }
 
 // Is a specific cursor position in a line or block comment?

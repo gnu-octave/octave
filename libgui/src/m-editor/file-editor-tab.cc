@@ -2348,9 +2348,8 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
       disconnect (_edit_area, SIGNAL (linesChanged ()), 0, 0);
     }
 
-  _edit_area->setAutoIndent
-        (settings->value ("editor/auto_indent",true).toBool ());
   _smart_indent = settings->value ("editor/auto_indent",true).toBool ();
+  _edit_area->setAutoIndent (_smart_indent);
   _edit_area->setTabIndents
         (settings->value ("editor/tab_indents_line",false).toBool ());
   _edit_area->setBackspaceUnindents
@@ -2364,6 +2363,9 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
 
   _edit_area->setTabWidth
         (settings->value ("editor/tab_width",2).toInt ());
+
+  _edit_area->set_auto_endif
+        (settings->value ("editor/auto_endif",1).toInt ());
 
   _edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
         settings->value ("editor/show_hscroll_bar",true).toBool ());

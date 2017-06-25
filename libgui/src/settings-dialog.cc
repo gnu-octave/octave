@@ -424,6 +424,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->editor_highlight_all_occurrences->setChecked (
     settings->value ("editor/highlight_all_occurrences",true).toBool ());
 
+  ui->editor_auto_endif->setCurrentIndex (
+    settings->value ("editor/auto_endif", 1).toInt () );
   ui->editor_codeCompletion->setChecked (
     settings->value ("editor/codeCompletion", true).toBool ());
   ui->editor_spinbox_ac_threshold->setValue (
@@ -838,6 +840,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->editor_checkbox_ac_case->isChecked ());
   settings->setValue ("editor/codeCompletion_replace",
                       ui->editor_checkbox_ac_replace->isChecked ());
+  settings->setValue ("editor/auto_endif",
+                      ui->editor_auto_endif->currentIndex ());
   settings->setValue ("editor/show_white_space",
                       ui->editor_ws_checkbox->isChecked ());
   settings->setValue ("editor/show_white_space_indent",

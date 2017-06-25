@@ -57,6 +57,7 @@ public:
   QString comment_string ();
   int get_style (int pos = -1);
   int is_style_comment (int pos = -1);
+  void set_auto_endif (int ai) { _auto_endif = ai; }
 
 signals:
 
@@ -87,6 +88,10 @@ protected:
   void focusInEvent (QFocusEvent *focusEvent);
 
 private:
+
+  void keyPressEvent (QKeyEvent *e);
+
+  int _auto_endif;
 
   QString _word_at_cursor;
 

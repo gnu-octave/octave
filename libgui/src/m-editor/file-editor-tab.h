@@ -259,8 +259,6 @@ private:
   void add_octave_apis (octave_value_list key_ovl);
   QString get_function_name ();
 
-  void do_smart_indent (void);
-
   QsciScintilla::EolMode detect_eol_mode ();
   void update_eol_indicator ();
 

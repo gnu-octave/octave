@@ -597,6 +597,56 @@ octave_qscintilla::keyPressEvent (QKeyEvent *e)
   QsciScintilla::keyPressEvent (e);
 }
 
+// Do smart indendation after if, for, ...
+void
+octave_qscintilla::smart_indent (int line, int col)
+{
+  QString prevline = text (line);
+
+  QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|do|function"
+                          "|unwind_protect|unwind_protect_cleanup|try)"
+                          "[\n\t #%]");
+  if (prevline.contains (bkey))
+    {
+      indent (line+1);
+      setCursorPosition (line+1,
+                                     indentation (line) +
+                                     indentationWidth ());
+      return;
+    }
+
+  QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\t #%\n]");
+  if (prevline.contains (mkey))
+    {
+      int prev_ind = indentation (line-1);
+      int act_ind = indentation (line);
+
+      if (prev_ind == act_ind)
+        unindent (line);
+      else if (prev_ind > act_ind)
+        {
+          setIndentation (line+1, prev_ind);
+          setCursorPosition (line+1, prev_ind);
+        }
+      return;
+    }
+
+  QRegExp ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
+                          "|end_try_catch|end_unwind_protext)[\t #%\n(;]");
+  if (prevline.contains (ekey))
+    {
+      if (indentation (line-1) <= indentation (line))
+        {
+          unindent (line+1);
+          unindent (line);
+          setCursorPosition (line+1,
+                                         indentation (line));
+        }
+      return;
+    }
+
+}
+
 // Is a specific cursor position in a line or block comment?
 int
 octave_qscintilla::is_style_comment (int pos)

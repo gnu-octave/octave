@@ -2682,7 +2682,7 @@ file_editor_tab::handle_cursor_moved (int line, int col)
     {
       _lines_changed = false;
       if (_is_octave_file && _smart_indent && line == _line+1 && col < _col)
-        do_smart_indent ();
+        _edit_area->smart_indent (_line,_col);
     }
 
   _line = line;
@@ -2831,54 +2831,6 @@ file_editor_tab::handle_double_click (int, int, int modifier)
     }
 }
 
-void
-file_editor_tab::do_smart_indent ()
-{
-  QString prev_line = _edit_area->text (_line);
-
-  QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|do|function"
-                          "|unwind_protect|unwind_protect_cleanup|try)"
-                          "[\n\t #%]");
-  if (prev_line.contains (bkey))
-    {
-      _edit_area->indent (_line+1);
-      _edit_area->setCursorPosition (_line+1,
-                                     _edit_area->indentation (_line) +
-                                     _edit_area->indentationWidth ());
-      return;
-    }
-
-  QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\t #%\n]");
-  if (prev_line.contains (mkey))
-    {
-      int prev_ind = _edit_area->indentation (_line-1);
-      int act_ind = _edit_area->indentation (_line);
-
-      if (prev_ind == act_ind)
-        _edit_area->unindent (_line);
-      else if (prev_ind > act_ind)
-        {
-          _edit_area->setIndentation (_line+1, prev_ind);
-          _edit_area->setCursorPosition (_line+1, prev_ind);
-        }
-      return;
-    }
-
-  QRegExp ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
-                          "|end_try_catch|end_unwind_protext)[\t #%\n(;]");
-  if (prev_line.contains (ekey))
-    {
-      if (_edit_area->indentation (_line-1) <= _edit_area->indentation (_line))
-        {
-          _edit_area->unindent (_line+1);
-          _edit_area->unindent (_line);
-          _edit_area->setCursorPosition (_line+1,
-                                         _edit_area->indentation (_line));
-        }
-      return;
-    }
-
-}
 
 QString
 file_editor_tab::get_function_name ()

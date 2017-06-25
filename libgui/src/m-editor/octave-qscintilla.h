@@ -58,6 +58,7 @@ public:
   int get_style (int pos = -1);
   int is_style_comment (int pos = -1);
   void set_auto_endif (int ai) { _auto_endif = ai; }
+  void smart_indent (int line, int col);
 
 signals:
 

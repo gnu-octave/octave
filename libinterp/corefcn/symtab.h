@@ -956,10 +956,28 @@ namespace octave
 
     octave_value builtin_find (const std::string& name);
 
+    void assign (const std::string& name, const octave_value& value, bool force_add)
+    {
+      if (m_current_scope)
+        m_current_scope->assign (name, value, force_add);
+    }
+
+    void assign (const std::string& name,
+                 const octave_value& value = octave_value ())
+    {
+      if (m_current_scope)
+        m_current_scope->assign (name, value);
+    }
+
+    octave_value varval (const std::string& name)
+    {
+      return (m_current_scope
+              ? m_current_scope->varval (name) : octave_value ());
+    }
+
     void
       global_assign (const std::string& name,
                      const octave_value& value = octave_value ())
-
     {
       global_symbols_iterator p = m_global_symbols.find (name);
 

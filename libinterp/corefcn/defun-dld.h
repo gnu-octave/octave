@@ -52,4 +52,15 @@ along with Octave; see the file COPYING.  If not, see
   DEFINE_FUNX_INSTALLER_FUN (name, fname, gname, doc)                   \
   DECLARE_FUNX (fname, args_name, nargout_name)
 
+#define DEFMETHOD_DLD(name, interp_name, args_name, nargout_name, doc)  \
+  FORWARD_DECLARE_METHOD (name);                                        \
+  DEFINE_FUN_INSTALLER_FUN (name, doc)                                  \
+  DECLARE_METHOD (name, interp_name, args_name, nargout_name)
+
+#define DEFMETHODX_DLD(name, fname, gname, interp_name, args_name,      \
+                       nargout_name, doc)                               \
+  FORWARD_DECLARE_METHODX (fname);                                      \
+  DEFINE_FUNX_INSTALLER_FUN (name, fname, gname, doc)                   \
+  DECLARE_METHODX (fname, interp_name, args_name, nargout_name)
+
 #endif

@@ -154,8 +154,8 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
-DEFUN (daspk, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (daspk, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 Solve the set of differential-algebraic equations
 @tex
@@ -270,6 +270,8 @@ parameters for @code{daspk}.
   frame.protect_var (call_depth);
   call_depth++;
 
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   if (call_depth > 1)
     error ("daspk: invalid recursive call");
 
@@ -314,7 +316,7 @@ parameters for @code{daspk}.
                   if (! daspk_jac)
                     {
                       if (fcn_name.length ())
-                        clear_function (fcn_name);
+                        symtab.clear_function (fcn_name);
                       daspk_fcn = 0;
                     }
                 }
@@ -368,7 +370,7 @@ parameters for @code{daspk}.
                     if (! daspk_jac)
                       {
                         if (fcn_name.length ())
-                          clear_function (fcn_name);
+                          symtab.clear_function (fcn_name);
                         daspk_fcn = 0;
                       }
                   }
@@ -416,9 +418,9 @@ parameters for @code{daspk}.
     output = dae.integrate (out_times, deriv_output);
 
   if (fcn_name.length ())
-    clear_function (fcn_name);
+    symtab.clear_function (fcn_name);
   if (jac_name.length ())
-    clear_function (jac_name);
+    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

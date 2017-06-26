@@ -154,8 +154,8 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
-DEFUN (dassl, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dassl, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 Solve the set of differential-algebraic equations
 @tex
@@ -274,6 +274,8 @@ parameters for @code{dassl}.
   if (call_depth > 1)
     error ("dassl: invalid recursive call");
 
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   std::string fcn_name, fname, jac_name, jname;
   dassl_fcn = 0;
   dassl_jac = 0;
@@ -315,7 +317,7 @@ parameters for @code{dassl}.
                   if (! dassl_jac)
                     {
                       if (fcn_name.length ())
-                        clear_function (fcn_name);
+                        symtab.clear_function (fcn_name);
                       dassl_fcn = 0;
                     }
                 }
@@ -370,7 +372,7 @@ parameters for @code{dassl}.
                     if (! dassl_jac)
                       {
                         if (fcn_name.length ())
-                          clear_function (fcn_name);
+                          symtab.clear_function (fcn_name);
                         dassl_fcn = 0;
                       }
                   }
@@ -419,9 +421,9 @@ parameters for @code{dassl}.
     output = dae.integrate (out_times, deriv_output);
 
   if (fcn_name.length ())
-    clear_function (fcn_name);
+    symtab.clear_function (fcn_name);
   if (jac_name.length ())
-    clear_function (jac_name);
+    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

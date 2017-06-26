@@ -190,8 +190,8 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
-DEFUN (dasrt, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dasrt, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn}, [], @var{x_0}, @var{xdot_0}, @var{t})
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t})
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, [], @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
@@ -356,6 +356,8 @@ parameters for @code{dasrt}.
   dasrt_j = 0;
   dasrt_cf = 0;
 
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   // Check all the arguments.  Are they the right animals?
 
   // Here's where I take care of f and j in one shot:
@@ -397,7 +399,7 @@ parameters for @code{dasrt}.
                   if (! dasrt_j)
                     {
                       if (fcn_name.length ())
-                        clear_function (fcn_name);
+                        symtab.clear_function (fcn_name);
                       dasrt_f = 0;
                     }
                 }
@@ -522,9 +524,9 @@ parameters for @code{dasrt}.
     output = dae.integrate (out_times);
 
   if (fcn_name.length ())
-    clear_function (fcn_name);
+    symtab.clear_function (fcn_name);
   if (jac_name.length ())
-    clear_function (jac_name);
+    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

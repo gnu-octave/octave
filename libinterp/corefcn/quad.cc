@@ -130,8 +130,8 @@ quad_float_user_function (float x)
   return retval;
 }
 
-DEFUN (quad, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (quad, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
@@ -203,7 +203,8 @@ variable by routines @code{dblquad} and @code{triplequad}.
       fname.append ("(x) y = ");
       quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
                                    "; endfunction");
-      frame.add_fcn (clear_function, fcn_name);
+      octave::symbol_table& symtab = interp.get_symbol_table ();
+      frame.add_method (symtab, &octave::symbol_table::clear_function, fcn_name);
     }
 
   if (! quad_fcn)
@@ -396,9 +397,6 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
       retval = ovl (val, ier, nfun, abserr);
     }
-
-  if (fcn_name.length ())
-    clear_function (fcn_name);
 
   return retval;
 }

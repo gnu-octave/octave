@@ -70,40 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 static std::string Vwhos_line_format
   = "  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n";
 
-void
-clear_mex_functions (void)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_mex_functions");
-
-  symtab.clear_mex_functions ();
-}
-
-void
-clear_function (const std::string& nm)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_function");
-
-  symtab.clear_function (nm);
-}
-
-void
-clear_variable (const std::string& nm)
-{
-  octave::symbol_table::scope *scope
-    = octave::__get_current_scope__ ("clear_variable");
-
-  if (scope)
-    scope->clear_variable (nm);
-}
-
-void
-clear_symbol (const std::string& nm)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_symbol");
-
-  symtab.clear_symbol (nm);
-}
-
 // Attributes of variables and functions.
 
 // Is this octave_value a valid function?
@@ -696,59 +662,6 @@ them.
 %!error <unrecognized type argument "foobar"> exist ("a", "foobar")
 
 */
-
-octave_value
-lookup_function_handle (const std::string& nm)
-{
-  octave::symbol_table::scope *scope
-    = octave::__get_current_scope__ ("lookup_function_handle");
-
-  octave_value val = scope ? scope->varval (nm) : octave_value ();
-
-  return val.is_function_handle () ? val : octave_value ();
-}
-
-octave_value
-get_global_value (const std::string& nm, bool silent)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_global_value");
-
-  octave_value val = symtab.global_varval (nm);
-
-  if (val.is_undefined () && ! silent)
-    error ("get_global_value: undefined symbol '%s'", nm.c_str ());
-
-  return val;
-}
-
-void
-set_global_value (const std::string& nm, const octave_value& val)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_global_value");
-
-  symtab.global_assign (nm, val);
-}
-
-octave_value
-get_top_level_value (const std::string& nm, bool silent)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_top_level_value");
-
-  octave_value val = symtab.top_level_varval (nm);
-
-  if (val.is_undefined () && ! silent)
-    error ("get_top_level_value: undefined symbol '%s'", nm.c_str ());
-
-  return val;
-}
-
-void
-set_top_level_value (const std::string& nm, const octave_value& val)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_top_level_value");
-
-  symtab.top_level_assign (nm, val);
-}
 
 // Variable values.
 
@@ -2786,4 +2699,93 @@ should return an error message to be displayed.
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);
+}
+
+// The following functions are deprecated.
+
+void
+clear_mex_functions (void)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_mex_functions");
+
+  symtab.clear_mex_functions ();
+}
+
+void
+clear_function (const std::string& nm)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_function");
+
+  symtab.clear_function (nm);
+}
+
+void
+clear_variable (const std::string& nm)
+{
+  octave::symbol_table::scope *scope
+    = octave::__get_current_scope__ ("clear_variable");
+
+  if (scope)
+    scope->clear_variable (nm);
+}
+
+void
+clear_symbol (const std::string& nm)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_symbol");
+
+  symtab.clear_symbol (nm);
+}
+
+octave_value
+lookup_function_handle (const std::string& nm)
+{
+  octave::symbol_table::scope *scope
+    = octave::__get_current_scope__ ("lookup_function_handle");
+
+  octave_value val = scope ? scope->varval (nm) : octave_value ();
+
+  return val.is_function_handle () ? val : octave_value ();
+}
+
+octave_value
+get_global_value (const std::string& nm, bool silent)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_global_value");
+
+  octave_value val = symtab.global_varval (nm);
+
+  if (val.is_undefined () && ! silent)
+    error ("get_global_value: undefined symbol '%s'", nm.c_str ());
+
+  return val;
+}
+
+void
+set_global_value (const std::string& nm, const octave_value& val)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_global_value");
+
+  symtab.global_assign (nm, val);
+}
+
+octave_value
+get_top_level_value (const std::string& nm, bool silent)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_top_level_value");
+
+  octave_value val = symtab.top_level_varval (nm);
+
+  if (val.is_undefined () && ! silent)
+    error ("get_top_level_value: undefined symbol '%s'", nm.c_str ());
+
+  return val;
+}
+
+void
+set_top_level_value (const std::string& nm, const octave_value& val)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_top_level_value");
+
+  symtab.top_level_assign (nm, val);
 }

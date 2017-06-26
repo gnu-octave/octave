@@ -1119,7 +1119,7 @@ namespace octave
     // Do this explicitly so that destructors for mex file objects
     // are called, so that functions registered with mexAtExit are
     // called.
-    OCTAVE_SAFE_CALL (clear_mex_functions, ());
+    OCTAVE_SAFE_CALL (m_symbol_table.clear_mex_functions, ());
 
     OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 

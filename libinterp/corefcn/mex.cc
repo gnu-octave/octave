@@ -3400,7 +3400,12 @@ mexGetVariable (const char *space, const char *name)
   octave_value val;
 
   if (! strcmp (space, "global"))
-    val = get_global_value (name);
+    {
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("mexGetVariable");
+
+      val = symtab.global_varval (name);
+    }
   else
     {
       // FIXME: should this be in variables.cc?
@@ -3466,7 +3471,12 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
     return 1;
 
   if (! strcmp (space, "global"))
-    set_global_value (name, mxArray::as_octave_value (ptr));
+    {
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("mexPutVariable");
+
+      symtab.global_assign (name, mxArray::as_octave_value (ptr));
+    }
   else
     {
       // FIXME: should this be in variables.cc?

@@ -140,8 +140,8 @@ lsode_user_jacobian (const ColumnVector& x, double t)
   return retval;
 }
 
-DEFUN (lsode, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (lsode, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})
 @deftypefnx {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})
 Ordinary Differential Equation (ODE) solver.
@@ -274,6 +274,8 @@ parameters for @code{lsode}.
   if (call_depth > 1)
     error ("lsode: invalid recursive call");
 
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   std::string fcn_name, fname, jac_name, jname;
   lsode_fcn = 0;
   lsode_jac = 0;
@@ -315,7 +317,7 @@ parameters for @code{lsode}.
                   if (! lsode_jac)
                     {
                       if (fcn_name.length ())
-                        clear_function (fcn_name);
+                        symtab.clear_function (fcn_name);
                       lsode_fcn = 0;
                     }
                 }
@@ -370,7 +372,7 @@ parameters for @code{lsode}.
                     if (! lsode_jac)
                       {
                         if (fcn_name.length ())
-                          clear_function (fcn_name);
+                          symtab.clear_function (fcn_name);
                         lsode_fcn = 0;
                       }
                   }
@@ -416,9 +418,9 @@ parameters for @code{lsode}.
     output = ode.integrate (out_times);
 
   if (fcn_name.length ())
-    clear_function (fcn_name);
+    symtab.clear_function (fcn_name);
   if (jac_name.length ())
-    clear_function (jac_name);
+    symtab.clear_function (jac_name);
 
   std::string msg = ode.error_message ();
 

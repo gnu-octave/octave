@@ -128,8 +128,8 @@ eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
 
 #endif
 
-DEFUN_DLD (__eigs__, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__eigs__, interp, args, nargout,
+               doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{d} =} __eigs__ (@var{A})
 @deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k})
 @deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})
@@ -561,7 +561,11 @@ Undocumented internal function.
              nconv, k);
 
   if (! fcn_name.empty ())
-    clear_function (fcn_name);
+    {
+      octave::symbol_table& symtab = interp.get_symbol_table ();
+
+      symtab.clear_function (fcn_name);
+    }
 
   return retval;
 

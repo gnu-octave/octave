@@ -691,18 +691,32 @@ wants_local_change (const octave_value_list& args, int& nargin)
   return retval;
 }
 
-template <typename T>
-bool try_local_protect (T& var)
+static octave::unwind_protect *
+curr_fcn_unwind_protect_frame (void)
 {
-  octave::call_stack& cs = octave::__get_call_stack__ ("try_local_protect");
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("curr_fcn_unwind_protect_frame");
 
   octave_user_code *curr_usr_code = cs.caller_user_code ();
-  octave_user_function *curr_usr_fcn = nullptr;
-  if (curr_usr_code && curr_usr_code->is_user_function ())
-    curr_usr_fcn = dynamic_cast<octave_user_function *> (curr_usr_code);
 
-  if (curr_usr_fcn && curr_usr_fcn->local_protect (var))
-    return true;
+  octave_user_function *curr_usr_fcn
+    = (curr_usr_code && curr_usr_code->is_user_function ()
+       ? dynamic_cast<octave_user_function *> (curr_usr_code) : nullptr);
+
+  return curr_usr_fcn ? curr_usr_fcn->unwind_protect_frame () : nullptr;
+}
+
+template <typename T>
+static bool
+try_local_protect (T& var)
+{
+  octave::unwind_protect *frame = curr_fcn_unwind_protect_frame ();
+
+  if (frame)
+    {
+      frame->protect_var (var);
+      return true;
+    }
   else
     return false;
 }

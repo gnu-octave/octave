@@ -468,6 +468,12 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
   octave::symbol_table::context_id context = anonymous_function ? 0 : call_depth;
   cs.push (this, m_scope, context);
 
+  // Set pointer to the current unwind_protect frame to allow
+  // certain builtins register simple cleanup in a very optimized manner.
+  // This is *not* intended as a general-purpose on-cleanup mechanism,
+  frame.protect_var (curr_unwind_protect_frame);
+  curr_unwind_protect_frame = &frame;
+
   frame.protect_var (Vtrack_line_num);
   Vtrack_line_num = true;    // update source line numbers, even if debugging
   frame.add_method (cs, &octave::call_stack::pop);
@@ -548,12 +554,6 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
   if (echo_commands)
     print_code_function_header ();
-
-  // Set pointer to the current unwind_protect frame to allow
-  // certain builtins register simple cleanup in a very optimized manner.
-  // This is *not* intended as a general-purpose on-cleanup mechanism,
-  frame.protect_var (curr_unwind_protect_frame);
-  curr_unwind_protect_frame = &frame;
 
   // Evaluate the commands that make up the function.
 

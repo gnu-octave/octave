@@ -365,16 +365,10 @@ public:
 
   void accept (octave::tree_walker& tw);
 
-  template <typename T>
-  bool local_protect (T& variable)
+  octave::unwind_protect *
+  unwind_protect_frame (void)
   {
-    if (curr_unwind_protect_frame)
-      {
-        curr_unwind_protect_frame->protect_var (variable);
-        return true;
-      }
-    else
-      return false;
+    return curr_unwind_protect_frame;
   }
 
 #if defined (HAVE_LLVM)

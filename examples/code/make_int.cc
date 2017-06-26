@@ -237,8 +237,8 @@ DEFBINOP (el_ldiv, integer, integer)
 DEFBINOP_OP (el_and, integer, integer, &&)
 DEFBINOP_OP (el_or, integer, integer, ||)
 
-DEFUN_DLD (make_int, args, ,
-           "int_val = make_int (val)\n\
+DEFMETHOD_DLD (make_int, interp, args, ,
+               "int_val = make_int (val)\n\
 \n\
 Creates an integer variable from VAL.")
 {
@@ -247,7 +247,7 @@ Creates an integer variable from VAL.")
   if (! type_loaded)
     {
       octave_integer::register_type ();
-      mlock ();
+      interp.mlock ();
 
       octave_stdout << "installing integer type at type-id = "
                     << octave_integer::static_type_id () << "\n";

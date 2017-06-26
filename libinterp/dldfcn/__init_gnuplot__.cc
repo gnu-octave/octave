@@ -57,8 +57,8 @@ static bool toolkit_loaded = false;
 class gnuplot_graphics_toolkit : public base_graphics_toolkit
 {
 public:
-  gnuplot_graphics_toolkit (void)
-    : base_graphics_toolkit ("gnuplot") { }
+  gnuplot_graphics_toolkit (octave::interpreter& interp)
+    : base_graphics_toolkit ("gnuplot"), m_interpreter (interp) { }
 
   ~gnuplot_graphics_toolkit (void) = default;
 
@@ -139,7 +139,7 @@ public:
   {
     if (toolkit_loaded)
       {
-        munlock ("__init_gnuplot__");
+        m_interpreter.munlock ("__init_gnuplot__");
 
         gtk_manager::unload_toolkit ("gnuplot");
 
@@ -170,6 +170,8 @@ private:
           }
       }
   }
+
+  octave::interpreter& m_interpreter;
 };
 
 static bool
@@ -213,8 +215,8 @@ have_gnuplot_binary (void)
 
 // Initialize the gnuplot graphics toolkit.
 
-DEFUN_DLD (__init_gnuplot__, , ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__init_gnuplot__, interp, , ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __init_gnuplot__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -223,9 +225,9 @@ Undocumented internal function.
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
   else if (! toolkit_loaded)
     {
-      mlock ();
+      interp.mlock ();
 
-      graphics_toolkit tk (new gnuplot_graphics_toolkit ());
+      graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
       gtk_manager::load_toolkit (tk);
 
       toolkit_loaded = true;

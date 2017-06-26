@@ -1189,6 +1189,48 @@ namespace octave
     return m_evaluator.get_call_stack ();
   }
 
+  void interpreter::mlock (void)
+  {
+    call_stack& cs = get_call_stack ();
+
+    octave_function *fcn = cs.current ();
+
+    if (! fcn)
+      error ("mlock: invalid use outside a function");
+
+    fcn->lock ();
+  }
+
+  void interpreter::munlock (const std::string& nm)
+  {
+    octave_value val = m_symbol_table.find_function (nm);
+
+    if (val.is_defined ())
+      {
+        octave_function *fcn = val.function_value ();
+
+        if (fcn)
+          fcn->unlock ();
+      }
+  }
+
+  bool interpreter::mislocked (const std::string& nm)
+  {
+    bool retval = false;
+
+    octave_value val = m_symbol_table.find_function (nm);
+
+    if (val.is_defined ())
+      {
+        octave_function *fcn = val.function_value ();
+
+        if (fcn)
+          retval = fcn->islocked ();
+      }
+
+    return retval;
+  }
+
   void interpreter::recover_from_exception (void)
   {
     can_interrupt = true;

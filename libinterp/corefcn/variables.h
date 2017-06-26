@@ -118,11 +118,16 @@ set_internal_variable (int& var, const octave_value_list& args,
 #define SET_INTERNAL_VARIABLE_CHOICES(NM, CHOICES)              \
   set_internal_variable (V ## NM, args, nargout, #NM, CHOICES)
 
-extern OCTINTERP_API void mlock (void);
-extern OCTINTERP_API void munlock (const std::string&);
-extern OCTINTERP_API bool mislocked (const std::string&);
-
 extern OCTINTERP_API void maybe_missing_function_hook (const std::string& name);
+
+OCTAVE_DEPRECATED (4.4, "use 'interpreter::mlock' instead")
+extern OCTINTERP_API void mlock (void);
+
+OCTAVE_DEPRECATED (4.4, "use 'interpreter::munlock' instead")
+extern OCTINTERP_API void munlock (const std::string&);
+
+OCTAVE_DEPRECATED (4.4, "use 'interpreter::mislocked' instead")
+extern OCTINTERP_API bool mislocked (const std::string&);
 
 OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::bind_ans' instead")
 extern OCTINTERP_API void bind_ans (const octave_value& val, bool print);

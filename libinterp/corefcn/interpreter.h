@@ -164,6 +164,12 @@ namespace octave
       return m_cdef_manager;
     }
 
+    void mlock (void);
+
+    void munlock (const std::string& nm);
+
+    bool mislocked (const std::string& nm);
+
     static void recover_from_exception (void);
 
     static void add_atexit_function (const std::string& fname);

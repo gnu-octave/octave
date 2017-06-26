@@ -2248,9 +2248,9 @@ class fltk_graphics_toolkit : public base_graphics_toolkit
 {
 public:
 
-  fltk_graphics_toolkit (void)
+  fltk_graphics_toolkit (octave::interpreter& interp)
     : base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
-      input_event_hook_fcn_id ()
+      m_interpreter (interp), input_event_hook_fcn_id ()
   {
     Fl::visual (FL_RGB);
   }
@@ -2436,7 +2436,7 @@ public:
   {
     if (toolkit_loaded)
       {
-        munlock ("__init_fltk__");
+        m_interpreter.munlock ("__init_fltk__");
 
         octave_value_list args = input_event_hook_fcn_id;
         args.append (false);
@@ -2453,6 +2453,9 @@ public:
   }
 
 private:
+
+  octave::interpreter& m_interpreter;
+
   octave_value_list input_event_hook_fcn_id;
 };
 
@@ -2478,8 +2481,8 @@ Undocumented internal function.  Calls Fl::check ()
 
 // Initialize the fltk graphics toolkit.
 
-DEFUN_DLD (__init_fltk__, , ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__init_fltk__, interp, , ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __init_fltk__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -2489,9 +2492,9 @@ Undocumented internal function.
     error ("__init_fltk__: no graphics DISPLAY available");
   else if (! toolkit_loaded)
     {
-      mlock ();
+      interp.mlock ();
 
-      fltk_graphics_toolkit *fltk = new fltk_graphics_toolkit ();
+      fltk_graphics_toolkit *fltk = new fltk_graphics_toolkit (interp);
       graphics_toolkit tk (fltk);
       gtk_manager::load_toolkit (tk);
       toolkit_loaded = true;

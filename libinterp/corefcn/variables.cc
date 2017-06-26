@@ -1903,55 +1903,6 @@ complex, nesting, persistent.
   return do_who (interp, argc, argv, nargout == 1, true);
 }
 
-oid
-mlock (void)
-{
-  octave::call_stack& cs = octave::__get_call_stack__ ("mlock");
-
-  octave_function *fcn = cs.current ();
-
-  if (! fcn)
-    error ("mlock: invalid use outside a function");
-
-  fcn->lock ();
-}
-
-void
-munlock (const std::string& nm)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("munlock");
-
-  octave_value val = symtab.find_function (nm);
-
-  if (val.is_defined ())
-    {
-      octave_function *fcn = val.function_value ();
-
-      if (fcn)
-        fcn->unlock ();
-    }
-}
-
-bool
-mislocked (const std::string& nm)
-{
-  bool retval = false;
-
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("mislocked");
-
-  octave_value val = symtab.find_function (nm);
-
-  if (val.is_defined ())
-    {
-      octave_function *fcn = val.function_value ();
-
-      if (fcn)
-        retval = fcn->islocked ();
-    }
-
-  return retval;
-}
-
 DEFMETHOD (mlock, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} mlock ()
@@ -1993,7 +1944,7 @@ If no function is named then unlock the current function.
     {
       std::string name = args(0).xstring_value ("munlock: FCN must be a string");
 
-      munlock (name);
+      interp.munlock (name);
     }
   else
     {
@@ -2031,7 +1982,7 @@ If no function is named then return true if the current function is locked.
     {
       std::string name = args(0).xstring_value ("mislocked: FCN must be a string");
 
-      retval = mislocked (name);
+      retval = interp.mislocked (name);
     }
   else
     {
@@ -2672,6 +2623,30 @@ should return an error message to be displayed.
 }
 
 // The following functions are deprecated.
+
+void
+mlock (void)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("mlock");
+
+  interp.mlock ();
+}
+
+void
+munlock (const std::string& nm)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("mlock");
+
+  return interp.munlock (nm);
+}
+
+bool
+mislocked (const std::string& nm)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("mlock");
+
+  return interp.mislocked (nm);
+}
 
 void
 bind_ans (const octave_value& val, bool print)

@@ -3568,7 +3568,9 @@ mexIsLocked (void)
     {
       const char *fname = mexFunctionName ();
 
-      retval = mislocked (fname);
+      octave::interpreter& interp = octave::__get_interpreter__ ("mexIsLocked");
+
+      retval = interp.mislocked (fname);
     }
 
   return retval;
@@ -3588,7 +3590,9 @@ mexLock (void)
       else
         mex_lock_count[fname]++;
 
-      mlock ();
+      octave::interpreter& interp = octave::__get_interpreter__ ("mexLock");
+
+      interp.mlock ();
     }
 }
 
@@ -3616,7 +3620,10 @@ mexUnlock (void)
 
           if (count == 0)
             {
-              munlock (fname);
+              octave::interpreter& interp
+                = octave::__get_interpreter__ ("mexUnLock");
+
+              interp.munlock (fname);
 
               mex_lock_count.erase (p);
             }

@@ -74,7 +74,7 @@ namespace octave
 
       static dynlib_rep * get_instance (const std::string& f, bool fake);
 
-      octave::sys::time time_loaded (void) const
+      sys::time time_loaded (void) const
       { return tm_loaded; }
 
       std::string file_name (void) const
@@ -92,14 +92,14 @@ namespace octave
 
     public:
 
-      octave::refcount<int> count;
+      refcount<int> count;
 
     protected:
 
       void fake_reload (void);
 
       std::string file;
-      octave::sys::time tm_loaded;
+      sys::time tm_loaded;
 
       // Set of hooked function names.
       typedef std::map<std::string, size_t>::iterator fcn_names_iterator;
@@ -190,7 +190,7 @@ namespace octave
     std::string file_name (void) const
     { return rep->file_name (); }
 
-    octave::sys::time time_loaded (void) const
+    sys::time time_loaded (void) const
     { return rep->time_loaded (); }
 
   private:

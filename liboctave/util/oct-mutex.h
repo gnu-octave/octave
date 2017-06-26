@@ -48,7 +48,7 @@ namespace octave
     virtual bool try_lock (void);
 
   private:
-    octave::refcount<int> count;
+    refcount<int> count;
   };
 
   class
@@ -153,7 +153,7 @@ namespace octave
 
     static bool is_thread (void);
 
-    OCTAVE_DEPRECATED (4.4, "use 'octave::is_thread' instead")
+    OCTAVE_DEPRECATED (4.4, "use 'is_thread' instead")
     static bool is_octave_thread (void) { return is_thread (); }
   };
 }

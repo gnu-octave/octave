@@ -279,7 +279,7 @@ namespace octave
             = octave_set_program_name_wrapper (strsave (s.c_str ()));
 
           size_t pos
-            = prog_invocation_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+            = prog_invocation_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
           // Also keep a shortened version of the program name.
           prog_name = (pos == std::string::npos
@@ -303,7 +303,7 @@ namespace octave
       size_t len = home_dir.length ();
 
       if (len > 1 && home_dir == name.substr (0, len)
-          && (name.length () == len || octave::sys::file_ops::is_dir_sep (name[len])))
+          && (name.length () == len || sys::file_ops::is_dir_sep (name[len])))
         {
           retval = "~";
           retval.append (name.substr (len));
@@ -322,13 +322,13 @@ namespace octave
       if (len == 0)
         return false;
 
-      if (octave::sys::file_ops::is_dir_sep (s[0]))
+      if (sys::file_ops::is_dir_sep (s[0]))
         return true;
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
       if ((len == 2 && isalpha (s[0]) && s[1] == ':')
           || (len > 2 && isalpha (s[0]) && s[1] == ':'
-              && octave::sys::file_ops::is_dir_sep (s[2])))
+              && sys::file_ops::is_dir_sep (s[2])))
         return true;
 #endif
 
@@ -346,14 +346,14 @@ namespace octave
       if (len == 1 && s[0] == '.')
         return true;
 
-      if (len > 1 && s[0] == '.' && octave::sys::file_ops::is_dir_sep (s[1]))
+      if (len > 1 && s[0] == '.' && sys::file_ops::is_dir_sep (s[1]))
         return true;
 
       if (len == 2 && s[0] == '.' && s[1] == '.')
         return true;
 
       if (len > 2 && s[0] == '.' && s[1] == '.'
-          && octave::sys::file_ops::is_dir_sep (s[2]))
+          && sys::file_ops::is_dir_sep (s[2]))
         return true;
 
       return false;
@@ -369,7 +369,7 @@ namespace octave
       if (! (do_absolute_pathname (s) || do_rooted_relative_pathname (s)))
         return s;
 
-      size_t pos = s.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+      size_t pos = s.find_last_of (sys::file_ops::dir_sep_chars ());
 
       if (pos == std::string::npos)
         return s;
@@ -394,8 +394,8 @@ namespace octave
 
       std::string current_dir = dot_path;
 
-      if (! octave::sys::file_ops::is_dir_sep (current_dir.back ()))
-        current_dir.append (octave::sys::file_ops::dir_sep_str ());
+      if (! sys::file_ops::is_dir_sep (current_dir.back ()))
+        current_dir.append (sys::file_ops::dir_sep_str ());
 
       size_t i = 0;
       size_t slen = s.length ();
@@ -407,7 +407,7 @@ namespace octave
               if (i + 1 == slen)
                 break;
 
-              if (octave::sys::file_ops::is_dir_sep (s[i+1]))
+              if (sys::file_ops::is_dir_sep (s[i+1]))
                 {
                   i += 2;
                   continue;
@@ -415,7 +415,7 @@ namespace octave
 
               if (s[i+1] == '.'
                   && (i + 2 == slen
-                      || octave::sys::file_ops::is_dir_sep (s[i+2])))
+                      || sys::file_ops::is_dir_sep (s[i+2])))
                 {
                   i += 2;
                   if (i != slen)
@@ -428,7 +428,7 @@ namespace octave
             }
 
           size_t sep_pos;
-          sep_pos = s.find_first_of (octave::sys::file_ops::dir_sep_chars (), i);
+          sep_pos = s.find_first_of (sys::file_ops::dir_sep_chars (), i);
 
           if (sep_pos == std::string::npos)
             {
@@ -448,7 +448,7 @@ namespace octave
         }
 
       // Strip any trailing directory separator
-      if (octave::sys::file_ops::is_dir_sep (current_dir.back ()))
+      if (sys::file_ops::is_dir_sep (current_dir.back ()))
         current_dir.pop_back ();
 
       return current_dir;
@@ -463,7 +463,7 @@ namespace octave
         current_directory = "";
 
       if (verbatim_pwd || current_directory.empty ())
-        current_directory = octave::sys::getcwd ();
+        current_directory = sys::getcwd ();
 
       return current_directory;
     }
@@ -490,10 +490,10 @@ namespace octave
 
       if (hd.empty ())
         {
-          octave::sys::password pw = octave::sys::password::getpwuid (
-                                       octave::sys::getuid ());
+          sys::password pw = sys::password::getpwuid (
+                                       sys::getuid ());
 
-          hd = (pw ? pw.dir () : std::string (octave::sys::file_ops::dir_sep_str ()));
+          hd = (pw ? pw.dir () : std::string (sys::file_ops::dir_sep_str ()));
         }
 
       return hd;
@@ -504,8 +504,8 @@ namespace octave
     {
       if (user_name.empty ())
         {
-          octave::sys::password pw = octave::sys::password::getpwuid (
-                                       octave::sys::getuid ());
+          sys::password pw = sys::password::getpwuid (
+                                       sys::getuid ());
 
           user_name = (pw ? pw.name () : std::string ("unknown"));
         }
@@ -562,18 +562,18 @@ namespace octave
 
           if (len > 1)
             {
-              if (octave::sys::file_ops::is_dir_sep (tmp[--len]))
+              if (sys::file_ops::is_dir_sep (tmp[--len]))
                 tmp.resize (len);
             }
 
-          if (! octave::sys::chdir (tmp))
+          if (! sys::chdir (tmp))
             {
               current_directory = tmp;
               retval = true;
             }
         }
       else
-        retval = (! octave::sys::chdir (newdir));
+        retval = (! sys::chdir (newdir));
 
       return retval;
     }
@@ -590,10 +590,10 @@ namespace octave
 
       while (n--)
         {
-          while (octave::sys::file_ops::is_dir_sep (path[i]) && i > 0)
+          while (sys::file_ops::is_dir_sep (path[i]) && i > 0)
             i--;
 
-          while (! octave::sys::file_ops::is_dir_sep (path[i]) && i > 0)
+          while (! sys::file_ops::is_dir_sep (path[i]) && i > 0)
             i--;
 
           i++;

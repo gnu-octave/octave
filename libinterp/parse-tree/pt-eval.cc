@@ -381,7 +381,7 @@ namespace octave
         if (! fcn.is_defined ())
           error ("can not find overloaded colon function");
 
-        octave_value_list tmp2 = octave::feval (fcn, tmp1, 1);
+        octave_value_list tmp2 = feval (fcn, tmp1, 1);
 
         val = tmp2 (0);
       }
@@ -688,7 +688,7 @@ namespace octave
   void
   tree_evaluator::visit_decl_elt (tree_decl_elt& elt)
   {
-    octave::tree_identifier *id = elt.ident ();
+    tree_identifier *id = elt.ident ();
 
     if (id)
       {
@@ -703,7 +703,7 @@ namespace octave
 
         if (ult.is_undefined ())
           {
-            octave::tree_expression *expr = elt.expression ();
+            tree_expression *expr = elt.expression ();
 
             octave_value init_val;
 
@@ -750,7 +750,7 @@ namespace octave
     // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
     // and cmd.maxproc_expr ();
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (in_loop_command);
 
@@ -868,7 +868,7 @@ namespace octave
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (in_loop_command);
 
@@ -1017,11 +1017,11 @@ namespace octave
         else
           {
             if (expr.print_result () && nargout == 0
-                && octave::tree_evaluator::statement_printing_enabled ())
+                && tree_evaluator::statement_printing_enabled ())
               {
                 octave_value_list args = ovl (val);
                 args.stash_name_tags (string_vector (expr.name ()));
-                octave::feval ("display", args);
+                feval ("display", args);
               }
 
             retval = val;
@@ -1249,7 +1249,7 @@ namespace octave
                   {
                     retval = fcn->call (*this, nargout, first_args);
                   }
-                catch (octave::index_exception& e)
+                catch (index_exception& e)
                   {
                     final_index_error (e, expr);
                   }
@@ -1331,7 +1331,7 @@ namespace octave
                           }
                       }
                   }
-                catch (octave::index_exception& e)
+                catch (index_exception& e)
                   {
                     final_index_error (e, expr);
                   }
@@ -1372,7 +1372,7 @@ namespace octave
             beg = n;
             idx.clear ();
           }
-        catch (octave::index_exception& e)  // range problems, bad index type, etc.
+        catch (index_exception& e)  // range problems, bad index type, etc.
           {
             final_index_error (e, expr);
           }
@@ -1804,7 +1804,7 @@ namespace octave
               }
 
             if (expr.print_result ()
-                && octave::tree_evaluator::statement_printing_enabled ())
+                && tree_evaluator::statement_printing_enabled ())
               {
                 // We clear any index here so that we can get
                 // the new value of the referenced object below,
@@ -1817,7 +1817,7 @@ namespace octave
 
                 octave_value_list args = ovl (lhs_val);
                 args.stash_name_tags (string_vector (lhs_elt->name ()));
-                octave::feval ("display", args);
+                feval ("display", args);
               }
           }
 
@@ -1867,7 +1867,7 @@ namespace octave
 
     int nargout = m_nargout_stack.top ();
 
-    retval = octave::feval (fcn.function_value (), args, nargout);
+    retval = feval (fcn.function_value (), args, nargout);
 
     if (retval.length () == 1 && retval(0).is_function ())
       {
@@ -2030,7 +2030,7 @@ namespace octave
 
         try
           {
-            octave::unwind_protect frame;
+            unwind_protect frame;
 
             octave_lvalue ult = lhs->lvalue (this);
 
@@ -2055,7 +2055,7 @@ namespace octave
               val = ult.value ();
 
             if (expr.print_result ()
-                && octave::tree_evaluator::statement_printing_enabled ())
+                && tree_evaluator::statement_printing_enabled ())
               {
                 // We clear any index here so that we can
                 // get the new value of the referenced
@@ -2069,10 +2069,10 @@ namespace octave
 
                 octave_value_list args = ovl (lhs_val);
                 args.stash_name_tags (string_vector (lhs->name ()));
-                octave::feval ("display", args);
+                feval ("display", args);
               }
           }
-        catch (octave::index_exception& e)
+        catch (index_exception& e)
           {
             e.set_var (lhs->name ());
             std::string msg = e.message ();
@@ -2263,7 +2263,7 @@ namespace octave
 
     {
       // unwind frame before catch block
-      octave::unwind_protect frame;
+      unwind_protect frame;
 
       frame.protect_var (buffer_error_messages);
       frame.protect_var (Vdebug_on_error);
@@ -2286,9 +2286,9 @@ namespace octave
               try_code->accept (*this);
               in_try_catch--;
             }
-          catch (const octave::execution_exception&)
+          catch (const execution_exception&)
             {
-              octave::interpreter::recover_from_exception ();
+              interpreter::recover_from_exception ();
 
               in_try_catch--;          // must be restored before "catch" block
               execution_error = true;
@@ -2330,7 +2330,7 @@ namespace octave
   void
   tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   {
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (octave_interrupt_state);
     octave_interrupt_state = 0;
@@ -2338,9 +2338,9 @@ namespace octave
     // We want to preserve the last location info for possible
     // backtracking.
 
-    frame.add_method (m_call_stack, &octave::call_stack::set_line,
+    frame.add_method (m_call_stack, &call_stack::set_line,
                       m_call_stack.current_line ());
-    frame.add_method (m_call_stack, &octave::call_stack::set_column,
+    frame.add_method (m_call_stack, &call_stack::set_column,
                       m_call_stack.current_column ());
 
     // Similarly, if we have seen a return or break statement, allow all
@@ -2359,9 +2359,9 @@ namespace octave
         if (list)
           list->accept (*this);
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        interpreter::recover_from_exception ();
 
         if (tree_break_command::breaking || tree_return_command::returning)
           frame.discard (2);
@@ -2419,13 +2419,13 @@ namespace octave
           {
             unwind_protect_code->accept (*this);
           }
-        catch (const octave::execution_exception&)
+        catch (const execution_exception&)
           {
             // FIXME: Maybe we should be able to temporarily set the
             // interpreter's exception handling state to something "safe"
             // while the cleanup block runs instead of just resetting it
             // here?
-            octave::interpreter::recover_from_exception ();
+            interpreter::recover_from_exception ();
 
             // Run the cleanup code on exceptions, so that it is run even
             // in case of interrupt or out-of-memory.
@@ -2435,10 +2435,10 @@ namespace octave
             // exception will be thrown instead of the original.
             throw;
           }
-        catch (const octave::interrupt_exception&)
+        catch (const interrupt_exception&)
           {
             // The comments above apply here as well.
-            octave::interpreter::recover_from_exception ();
+            interpreter::recover_from_exception ();
             do_unwind_protect_cleanup_code (cleanup_code);
             throw;
           }
@@ -2457,7 +2457,7 @@ namespace octave
       return;
 #endif
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (in_loop_command);
 
@@ -2496,7 +2496,7 @@ namespace octave
       return;
 #endif
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (in_loop_command);
 
@@ -2648,7 +2648,7 @@ namespace octave
   }
 
   octave_value_list
-  tree_evaluator::make_value_list (octave::tree_argument_list *args,
+  tree_evaluator::make_value_list (tree_argument_list *args,
                                    const string_vector& arg_nm,
                                    const octave_value *object, bool rvalue)
   {

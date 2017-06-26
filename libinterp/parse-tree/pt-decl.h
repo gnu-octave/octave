@@ -111,7 +111,7 @@ namespace octave
     tree_expression *expr;
   };
 
-  class tree_decl_init_list : public octave::base_list<tree_decl_elt *>
+  class tree_decl_init_list : public base_list<tree_decl_elt *>
   {
   public:
 

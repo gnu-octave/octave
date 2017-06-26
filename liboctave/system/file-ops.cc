@@ -55,10 +55,10 @@ namespace octave
 {
   namespace sys
   {
-    file_ops *octave::sys::file_ops::instance = nullptr;
+    file_ops *sys::file_ops::instance = nullptr;
 
     bool
-    octave::sys::file_ops::instance_ok (void)
+    sys::file_ops::instance_ok (void)
     {
       bool retval = true;
 
@@ -111,27 +111,27 @@ namespace octave
     // expansions.  The function is called with the text sans tilde, and
     // returns a malloc()'ed string which is the expansion, or a NULL
     // pointer if the expansion fails.
-    octave::sys::file_ops::tilde_expansion_hook
-      octave::sys::file_ops::tilde_expansion_preexpansion_hook = 0;
+    sys::file_ops::tilde_expansion_hook
+      sys::file_ops::tilde_expansion_preexpansion_hook = 0;
 
     // If non-null, this contains the address of a function to call if the
     // standard meaning for expanding a tilde fails.  The function is
     // called with the text (sans tilde, as in "foo"), and returns a
     // malloc()'ed string which is the expansion, or a NULL pointer if
     // there is no expansion.
-    octave::sys::file_ops::tilde_expansion_hook
-      octave::sys::file_ops::tilde_expansion_failure_hook = 0;
+    sys::file_ops::tilde_expansion_hook
+      sys::file_ops::tilde_expansion_failure_hook = 0;
 
     // When non-null, this is a NULL terminated array of strings which are
     // duplicates for a tilde prefix.  Bash uses this to expand '=~' and
     // ':~'.
-    string_vector octave::sys::file_ops::tilde_additional_prefixes =
+    string_vector sys::file_ops::tilde_additional_prefixes =
       default_prefixes;
 
     // When non-null, this is a NULL terminated array of strings which
     // match the end of a username, instead of just "/".  Bash sets this
     // to ':' and '=~'.
-    string_vector octave::sys::file_ops::tilde_additional_suffixes =
+    string_vector sys::file_ops::tilde_additional_suffixes =
       default_suffixes;
 
     // Find the start of a tilde expansion in S, and return the index
@@ -149,7 +149,7 @@ namespace octave
       if (s_len == 0 || s[0] == '~')
         return 0;
 
-      string_vector prefixes = octave::sys::file_ops::tilde_additional_prefixes;
+      string_vector prefixes = sys::file_ops::tilde_additional_prefixes;
 
       if (! prefixes.empty ())
         {
@@ -179,13 +179,13 @@ namespace octave
     {
       size_t s_len = s.length ();
 
-      string_vector suffixes = octave::sys::file_ops::tilde_additional_suffixes;
+      string_vector suffixes = sys::file_ops::tilde_additional_suffixes;
 
       size_t i = 0;
 
       for ( ; i < s_len; i++)
         {
-          if (octave::sys::file_ops::is_dir_sep (s[i]))
+          if (sys::file_ops::is_dir_sep (s[i]))
             break;
 
           if (! suffixes.empty ())
@@ -212,7 +212,7 @@ namespace octave
 
       size_t len = 1;
 
-      while (len < f_len && ! octave::sys::file_ops::is_dir_sep (fname[len]))
+      while (len < f_len && ! sys::file_ops::is_dir_sep (fname[len]))
         len++;
 
       return fname.substr (1, len);
@@ -233,8 +233,8 @@ namespace octave
       // of $HOME or the home directory of the current user, regardless of
       // any preexpansion hook.
 
-      if (f_len == 1 || octave::sys::file_ops::is_dir_sep (filename[1]))
-        return octave::sys::env::get_home_directory () + filename.substr (1);
+      if (f_len == 1 || sys::file_ops::is_dir_sep (filename[1]))
+        return sys::env::get_home_directory () + filename.substr (1);
 
       std::string username = isolate_tilde_prefix (filename);
 
@@ -242,10 +242,10 @@ namespace octave
 
       std::string dirname;
 
-      if (octave::sys::file_ops::tilde_expansion_preexpansion_hook)
+      if (sys::file_ops::tilde_expansion_preexpansion_hook)
         {
           std::string expansion
-            = octave::sys::file_ops::tilde_expansion_preexpansion_hook (username);
+            = sys::file_ops::tilde_expansion_preexpansion_hook (username);
 
           if (! expansion.empty ())
             return expansion + filename.substr (user_len+1);
@@ -254,17 +254,17 @@ namespace octave
       // No preexpansion hook, or the preexpansion hook failed.  Look in the
       // password database.
 
-      octave::sys::password pw = octave::sys::password::getpwnam (username);
+      sys::password pw = sys::password::getpwnam (username);
 
       if (! pw)
         {
           // If the calling program has a special syntax for expanding tildes,
           // and we couldn't find a standard expansion, then let them try.
 
-          if (octave::sys::file_ops::tilde_expansion_failure_hook)
+          if (sys::file_ops::tilde_expansion_failure_hook)
             {
               std::string expansion
-                = octave::sys::file_ops::tilde_expansion_failure_hook (username);
+                = sys::file_ops::tilde_expansion_failure_hook (username);
 
               if (! expansion.empty ())
                 dirname = expansion + filename.substr (user_len+1);
@@ -283,7 +283,7 @@ namespace octave
     }
 
     bool
-    octave::sys::file_ops::is_dev_sep (char c)
+    sys::file_ops::is_dev_sep (char c)
     {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
       return c == dev_sep_char ();
@@ -298,7 +298,7 @@ namespace octave
     // user's home directory.  If no ~, or no <pwd.h>, just return NAME.
 
     std::string
-    octave::sys::file_ops::tilde_expand (const std::string& name)
+    sys::file_ops::tilde_expand (const std::string& name)
     {
       if (name.find ('~') == std::string::npos)
         return std::string (name);
@@ -357,7 +357,7 @@ namespace octave
     // A vector version of the above.
 
     string_vector
-    octave::sys::file_ops::tilde_expand (const string_vector& names)
+    sys::file_ops::tilde_expand (const string_vector& names)
     {
       string_vector retval;
 
@@ -372,7 +372,7 @@ namespace octave
     }
 
     std::string
-    octave::sys::file_ops::concat (const std::string& dir, const std::string& file)
+    sys::file_ops::concat (const std::string& dir, const std::string& file)
     {
       return dir.empty ()
              ? file
@@ -382,7 +382,7 @@ namespace octave
     }
 
     std::string
-    octave::sys::file_ops::native_separator_path (const std::string& path)
+    sys::file_ops::native_separator_path (const std::string& path)
     {
       std::string retval;
 
@@ -407,7 +407,7 @@ namespace octave
     mkdir (const std::string& nm, mode_t md)
     {
       std::string msg;
-      return octave::sys::mkdir (nm, md, msg);
+      return sys::mkdir (nm, md, msg);
     }
 
     int
@@ -577,7 +577,7 @@ namespace octave
 
       int status = 0;
 
-      octave::sys::dir_entry dir (name);
+      sys::dir_entry dir (name);
 
       if (dir)
         {
@@ -593,10 +593,10 @@ namespace octave
               if (nm == "." || nm == "..")
                 continue;
 
-              std::string fullnm = name + octave::sys::file_ops::dir_sep_str () + nm;
+              std::string fullnm = name + sys::file_ops::dir_sep_str () + nm;
 
               // Get info about the file.  Don't follow links.
-              octave::sys::file_stat fs (fullnm, false);
+              sys::file_stat fs (fullnm, false);
 
               if (fs)
                 {
@@ -684,15 +684,15 @@ namespace octave
       // get dir path to use for template
       std::string templatename;
       if (dir.empty ())
-        templatename = octave::sys::env::get_temp_directory ();
-      else if (! octave::sys::file_stat (dir, false).is_dir ())
-        templatename = octave::sys::env::get_temp_directory ();
+        templatename = sys::env::get_temp_directory ();
+      else if (! sys::file_stat (dir, false).is_dir ())
+        templatename = sys::env::get_temp_directory ();
       else
         templatename = dir;
 
       // add dir sep char if it is not there
-      if (*templatename.rbegin () != octave::sys::file_ops::dir_sep_char ())
-        templatename += octave::sys::file_ops::dir_sep_char ();
+      if (*templatename.rbegin () != sys::file_ops::dir_sep_char ())
+        templatename += sys::file_ops::dir_sep_char ();
 
       if (pfx.empty ())
         templatename += "file";

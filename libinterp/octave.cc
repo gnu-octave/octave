@@ -317,7 +317,7 @@ namespace octave
   {
     m_program_invocation_name = pname;
 
-    size_t pos = pname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+    size_t pos = pname.find_last_of (sys::file_ops::dir_sep_chars ());
 
     m_program_name = (pos != std::string::npos) ? pname.substr (pos+1) : pname;
   }

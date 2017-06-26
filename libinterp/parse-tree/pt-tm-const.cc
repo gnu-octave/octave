@@ -357,7 +357,7 @@ namespace octave
   template <>
   octave_value
   do_single_type_concat<octave_map> (const dim_vector& dv,
-                                     octave::tm_const& tmp)
+                                     tm_const& tmp)
   {
     octave_map result;
 
@@ -369,14 +369,14 @@ namespace octave
     return result;
   }
 
-  octave_value do_class_concat (octave::tm_const& tmc)
+  octave_value do_class_concat (tm_const& tmc)
   {
     octave_value retval;
 
     octave_value_list rows (tmc.length (), octave_value ());
 
     octave_idx_type j = 0;
-    for (octave::tm_row_const& tmrc : tmc)
+    for (tm_row_const& tmrc : tmc)
       {
         octave_quit ();
 

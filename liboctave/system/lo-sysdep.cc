@@ -58,7 +58,7 @@ namespace octave
     int
     chdir (const std::string& path_arg)
     {
-      std::string path = octave::sys::file_ops::tilde_expand (path_arg);
+      std::string path = sys::file_ops::tilde_expand (path_arg);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
       if (path.length () == 2 && path[1] == ':')

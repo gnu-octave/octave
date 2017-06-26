@@ -145,7 +145,7 @@ namespace octave
           {
             int status;
 
-            if (octave::sys::waitpid (pid, &status, octave::sys::wnohang ()) > 0)
+            if (sys::waitpid (pid, &status, sys::wnohang ()) > 0)
               {
                 oc.have_status = 1;
 

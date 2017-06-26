@@ -41,8 +41,8 @@ namespace octave
     octave_idx_type
     hess<Matrix>::init (const Matrix& a)
    {
-      F77_INT a_nr = octave::to_f77_int (a.rows ());
-      F77_INT a_nc = octave::to_f77_int (a.cols ());
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("hess: requires square matrix");
@@ -104,8 +104,8 @@ namespace octave
     octave_idx_type
     hess<FloatMatrix>::init (const FloatMatrix& a)
     {
-      F77_INT a_nr = octave::to_f77_int (a.rows ());
-      F77_INT a_nc = octave::to_f77_int (a.cols ());
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("hess: requires square matrix");
@@ -167,8 +167,8 @@ namespace octave
     octave_idx_type
     hess<ComplexMatrix>::init (const ComplexMatrix& a)
     {
-      F77_INT a_nr = octave::to_f77_int (a.rows ());
-      F77_INT a_nc = octave::to_f77_int (a.cols ());
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("hess: requires square matrix");
@@ -230,8 +230,8 @@ namespace octave
     octave_idx_type
     hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
     {
-      F77_INT a_nr = octave::to_f77_int (a.rows ());
-      F77_INT a_nc = octave::to_f77_int (a.cols ());
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         {

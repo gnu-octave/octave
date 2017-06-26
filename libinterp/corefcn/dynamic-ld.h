@@ -46,8 +46,8 @@ namespace octave
     {
     public:
 
-      typedef std::list<octave::dynamic_library>::iterator iterator;
-      typedef std::list<octave::dynamic_library>::const_iterator const_iterator;
+      typedef std::list<dynamic_library>::iterator iterator;
+      typedef std::list<dynamic_library>::const_iterator const_iterator;
 
       shlibs_list (void) : m_lib_list () { }
 
@@ -59,18 +59,18 @@ namespace octave
 
       ~shlibs_list (void) = default;
 
-      void append (const octave::dynamic_library& shl);
+      void append (const dynamic_library& shl);
 
-      std::list<std::string> remove (octave::dynamic_library& shl);
+      std::list<std::string> remove (dynamic_library& shl);
 
-      octave::dynamic_library find_file (const std::string& file_name) const;
+      dynamic_library find_file (const std::string& file_name) const;
 
       void display (void) const;
 
     private:
 
       // List of libraries we have loaded.
-      std::list<octave::dynamic_library> m_lib_list;
+      std::list<dynamic_library> m_lib_list;
     };
 
 
@@ -99,16 +99,16 @@ namespace octave
               bool relative = false);
 
     bool remove_oct (const std::string& fcn_name,
-                            octave::dynamic_library& shl);
+                            dynamic_library& shl);
 
     bool remove_mex (const std::string& fcn_name,
-                            octave::dynamic_library& shl);
+                            dynamic_library& shl);
 
   private:
 
     void clear_function (const std::string& fcn_name);
 
-    void clear (octave::dynamic_library& oct_file);
+    void clear (dynamic_library& oct_file);
 
     interpreter& m_interpreter;
 

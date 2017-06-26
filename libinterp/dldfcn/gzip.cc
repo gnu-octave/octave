@@ -284,9 +284,9 @@ namespace octave
       gzip_header (void) = delete;
 
       gzip_header (const std::string& source_path)
-        : m_basename (octave::sys::env::base_pathname (source_path))
+        : m_basename (sys::env::base_pathname (source_path))
       {
-        const octave::sys::file_stat source_stat (source_path);
+        const sys::file_stat source_stat (source_path);
         if (! source_stat)
           throw std::runtime_error ("unable to stat source file");
 
@@ -480,11 +480,11 @@ namespace octave
     std::function<void(const std::string&)> walk;
     walk = [&walk, &mk_dest_path, &dest_paths] (const std::string& path) -> void
     {
-      const octave::sys::file_stat fs (path);
+      const sys::file_stat fs (path);
       // is_dir and is_reg will return false if failed to stat.
       if (fs.is_dir ())
         {
-          octave::sys::dir_entry dir (path);
+          sys::dir_entry dir (path);
           if (dir)
             {
               // Collect the whole list of filenames first, before recursion
@@ -493,7 +493,7 @@ namespace octave
               string_vector dirlist = dir.read ();
               for (octave_idx_type i = 0; i < dirlist.numel (); i++)
                 if (dirlist(i) != "." && dirlist(i) != "..")
-                  walk (octave::sys::file_ops::concat (path, dirlist(i)));
+                  walk (sys::file_ops::concat (path, dirlist(i)));
             }
           // Note that we skip any problem with directories.
         }
@@ -511,7 +511,7 @@ namespace octave
               // in the first place.  Note that it is possible for the file
               // to exist in the first place and for X::zip to not have
               // clobber it yet but we remove it anyway by design.
-              octave::sys::unlink (dest_path);
+              sys::unlink (dest_path);
               return;
             }
           dest_paths.push_front (dest_path);
@@ -522,7 +522,7 @@ namespace octave
 
     for (octave_idx_type i = 0; i < source_patterns.numel (); i++)
       {
-        const glob_match pattern (octave::sys::file_ops::tilde_expand (source_patterns(i)));
+        const glob_match pattern (sys::file_ops::tilde_expand (source_patterns(i)));
         const string_vector filepaths = pattern.glob ();
         for (octave_idx_type j = 0; j < filepaths.numel (); j++)
           walk (filepaths(j));
@@ -552,15 +552,15 @@ namespace octave
     const std::function<std::string(const std::string&)> mk_dest_path
       = [&out_dir, &ext] (const std::string& source_path) -> std::string
       {
-        const std::string basename = octave::sys::env::base_pathname (source_path);
-        return octave::sys::file_ops::concat (out_dir, basename + ext);
+        const std::string basename = sys::env::base_pathname (source_path);
+        return sys::file_ops::concat (out_dir, basename + ext);
       };
 
     // We don't care if mkdir fails.  Maybe it failed because it already
     // exists, or maybe it can't bre created.  If the first, then there's
     // nothing to do, if the later, then it will be handled later.  Any
     // is to be handled by not listing files in the output.
-    octave::sys::mkdir (out_dir, 0777);
+    sys::mkdir (out_dir, 0777);
     return xzip<X> (source_patterns, mk_dest_path);
   }
 

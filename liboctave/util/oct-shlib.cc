@@ -77,7 +77,7 @@ namespace octave
   bool
   dynamic_library::dynlib_rep::is_out_of_date (void) const
   {
-    octave::sys::file_stat fs (file);
+    sys::file_stat fs (file);
     return (fs && fs.is_newer (tm_loaded));
   }
 
@@ -85,7 +85,7 @@ namespace octave
   dynamic_library::dynlib_rep::fake_reload (void)
   {
     // We can't actually reload the library, but we'll pretend we did.
-    octave::sys::file_stat fs (file);
+    sys::file_stat fs (file);
     if (fs && fs.is_newer (tm_loaded))
       {
         tm_loaded = fs.mtime ();
@@ -352,7 +352,7 @@ namespace octave
   octave_w32_shlib::octave_w32_shlib (const std::string& f)
     : dynamic_library::dynlib_rep (f), handle (0)
   {
-    std::string dir = octave::sys::file_ops::dirname (f);
+    std::string dir = sys::file_ops::dirname (f);
 
     set_dll_directory (dir);
 

@@ -396,13 +396,13 @@ namespace octave
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_NUMERIC, "C");
     setlocale (LC_TIME, "C");
-    octave::sys::env::putenv ("LC_NUMERIC", "C");
-    octave::sys::env::putenv ("LC_TIME", "C");
+    sys::env::putenv ("LC_NUMERIC", "C");
+    sys::env::putenv ("LC_TIME", "C");
 
     // Initialize the default floating point unit control state.
     octave_set_default_fpucw ();
 
-    octave::thread::init ();
+    thread::init ();
 
     set_default_prompts ();
 
@@ -417,18 +417,18 @@ namespace octave
 
     // The idea here is to force xerbla to be referenced so that we will link to
     // our own version instead of the one provided by the BLAS library.  But
-    // octave::numeric_limits<double>::NaN () should never be -1, so we
+    // numeric_limits<double>::NaN () should never be -1, so we
     // should never actually call xerbla.  FIXME (again!):  If this
     // becomes a constant expression the test might be optimized away and
     // then the reference to the function might also disappear.
 
-    if (octave::numeric_limits<double>::NaN () == -1)
+    if (numeric_limits<double>::NaN () == -1)
       F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
 
     initialize_error_handlers ();
 
     if (m_app_context)
-      octave::install_signal_handlers ();
+      install_signal_handlers ();
     else
       quit_allowed = false;
 
@@ -502,7 +502,7 @@ namespace octave
     if (line_editing)
       initialize_command_input ();
     else
-      octave::command_editor::force_default_editor ();
+      command_editor::force_default_editor ();
 
     // These can come after command line args since none of them set any
     // defaults that might be changed by command line options.
@@ -555,7 +555,7 @@ namespace octave
         ::initialize_history (read_history_file);
 
         if (! m_app_context)
-          octave::command_history::ignore_entries ();
+          command_history::ignore_entries ();
 
         m_history_initialized = true;
       }
@@ -586,7 +586,7 @@ namespace octave
         // be evaluated from the normal intepreter loop where exceptions
         // are already handled.
 
-        octave::unwind_protect frame;
+        unwind_protect frame;
 
         frame.add_method (m_load_path, &load_path::set_add_hook,
                           m_load_path.get_add_hook ());
@@ -663,7 +663,7 @@ namespace octave
 
         if (options.forced_interactive ())
           {
-            octave::command_editor::blink_matching_paren (false);
+            command_editor::blink_matching_paren (false);
 
             // FIXME: is this the right thing to do?
             Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
@@ -672,7 +672,7 @@ namespace octave
 
     // Avoid counting commands executed from startup or script files.
 
-    octave::command_editor::reset_current_command_number (1);
+    command_editor::reset_current_command_number (1);
 
     m_initialized = true;
 
@@ -690,7 +690,7 @@ namespace octave
 
         return main_loop ();
       }
-    catch (const octave::exit_exception& ex)
+    catch (const exit_exception& ex)
       {
         return ex.exit_status ();
       }
@@ -768,14 +768,14 @@ namespace octave
 
         bool home_rc_already_executed = false;
 
-        std::string initfile = octave::sys::env::getenv ("OCTAVE_INITFILE");
+        std::string initfile = sys::env::getenv ("OCTAVE_INITFILE");
 
         if (initfile.empty ())
           initfile = ".octaverc";
 
-        std::string home_dir = octave::sys::env::get_home_directory ();
+        std::string home_dir = sys::env::get_home_directory ();
 
-        std::string home_rc = octave::sys::env::make_absolute (initfile, home_dir);
+        std::string home_rc = sys::env::make_absolute (initfile, home_dir);
 
         std::string local_rc;
 
@@ -789,14 +789,14 @@ namespace octave
 
             // Names alone are not enough.
 
-            octave::sys::file_stat fs_home_rc (home_rc);
+            sys::file_stat fs_home_rc (home_rc);
 
             if (fs_home_rc)
               {
                 // We want to check for curr_dir after executing home_rc
                 // because doing that may change the working directory.
 
-                local_rc = octave::sys::env::make_absolute (initfile);
+                local_rc = sys::env::make_absolute (initfile);
 
                 home_rc_already_executed = same_file (home_rc, local_rc);
               }
@@ -805,7 +805,7 @@ namespace octave
         if (! home_rc_already_executed)
           {
             if (local_rc.empty ())
-              local_rc = octave::sys::env::make_absolute (initfile);
+              local_rc = sys::env::make_absolute (initfile);
 
             int status = safe_source_file (local_rc, context, verbose,
                                            require_file);
@@ -829,17 +829,17 @@ namespace octave
 
     std::string code_to_eval = options.code_to_eval ();
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     octave_save_signal_mask ();
 
-    octave::can_interrupt = true;
+    can_interrupt = true;
 
-    octave_signal_hook = octave::signal_handler;
+    octave_signal_hook = signal_handler;
     octave_interrupt_hook = 0;
     octave_bad_alloc_hook = 0;
 
-    octave::catch_interrupts ();
+    catch_interrupts ();
 
     octave_initialized = true;
 
@@ -853,13 +853,13 @@ namespace octave
       {
         eval_string (code_to_eval, false, parse_status, 0);
       }
-    catch (const octave::interrupt_exception&)
+    catch (const interrupt_exception&)
       {
         recover_from_exception ();
 
         return 1;
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
         recover_from_exception ();
 
@@ -873,17 +873,17 @@ namespace octave
   {
     const cmdline_options& options = m_app_context->options ();
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     octave_save_signal_mask ();
 
-    octave::can_interrupt = true;
+    can_interrupt = true;
 
-    octave_signal_hook = octave::signal_handler;
+    octave_signal_hook = signal_handler;
     octave_interrupt_hook = 0;
     octave_bad_alloc_hook = 0;
 
-    octave::catch_interrupts ();
+    catch_interrupts ();
 
     octave_initialized = true;
 
@@ -931,23 +931,23 @@ namespace octave
 
     octave_save_signal_mask ();
 
-    octave::can_interrupt = true;
+    can_interrupt = true;
 
-    octave_signal_hook = octave::signal_handler;
+    octave_signal_hook = signal_handler;
     octave_interrupt_hook = 0;
     octave_bad_alloc_hook = 0;
 
-    octave::catch_interrupts ();
+    catch_interrupts ();
 
     octave_initialized = true;
 
     // The big loop.
 
-    octave::lexer *lxr = (octave::application::interactive ()
-                          ? new octave::lexer ()
-                          : new octave::lexer (stdin));
+    lexer *lxr = (application::interactive ()
+                          ? new lexer ()
+                          : new lexer (stdin));
 
-    octave::parser parser (*lxr);
+    parser parser (*lxr);
 
     int retval = 0;
     do
@@ -959,7 +959,7 @@ namespace octave
             parser.reset ();
 
             if (m_symbol_table.at_top_level ())
-              octave::tree_evaluator::reset_debug_state ();
+              tree_evaluator::reset_debug_state ();
 
             retval = parser.run ();
 
@@ -971,7 +971,7 @@ namespace octave
 
                     octave_quit ();
 
-                    if (! octave::application::interactive ())
+                    if (! application::interactive ())
                       {
                         bool quit = (tree_return_command::returning
                                      || tree_break_command::breaking);
@@ -989,7 +989,7 @@ namespace octave
                     if (octave_completion_matches_called)
                       octave_completion_matches_called = false;
                     else
-                      octave::command_editor::increment_current_command_number ();
+                      command_editor::increment_current_command_number ();
                   }
                 else if (parser.m_lexer.end_of_input)
                   {
@@ -998,15 +998,15 @@ namespace octave
                   }
               }
           }
-        catch (const octave::interrupt_exception&)
+        catch (const interrupt_exception&)
           {
             recover_from_exception ();
 
             // Required newline when the user does Ctrl+C at the prompt.
-            if (octave::application::interactive ())
+            if (application::interactive ())
               octave_stdout << "\n";
           }
-        catch (const octave::index_exception& e)
+        catch (const index_exception& e)
           {
             recover_from_exception ();
 
@@ -1014,14 +1014,14 @@ namespace octave
                       << e.message () << " -- trying to return to prompt"
                       << std::endl;
           }
-        catch (const octave::execution_exception& e)
+        catch (const execution_exception& e)
           {
             std::string stack_trace = e.info ();
 
             if (! stack_trace.empty ())
               std::cerr << stack_trace;
 
-            if (octave::application::interactive ())
+            if (application::interactive ())
               recover_from_exception ();
             else
               {
@@ -1050,7 +1050,7 @@ namespace octave
 
     if (retval == EOF)
       {
-        if (octave::application::interactive ())
+        if (application::interactive ())
           octave_stdout << "\n";
 
         retval = 0;
@@ -1076,7 +1076,7 @@ namespace octave
     {                                                                   \
       try                                                               \
         {                                                               \
-          octave::unwind_protect frame;                                 \
+          unwind_protect frame;                                 \
                                                                         \
           frame.protect_var (Vdebug_on_error);                          \
           frame.protect_var (Vdebug_on_warning);                        \
@@ -1086,9 +1086,9 @@ namespace octave
                                                                         \
           F ARGS;                                                       \
         }                                                               \
-      OCTAVE_IGNORE_EXCEPTION (const octave::exit_exception&)           \
-      OCTAVE_IGNORE_EXCEPTION (const octave::interrupt_exception&)      \
-      OCTAVE_IGNORE_EXCEPTION (const octave::execution_exception&)      \
+      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)           \
+      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)      \
+      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)      \
       OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                   \
     }                                                                   \
   while (0)
@@ -1111,9 +1111,9 @@ namespace octave
 
         OCTAVE_SAFE_CALL (reset_error_handler, ());
 
-        OCTAVE_SAFE_CALL (octave::feval, (fcn, octave_value_list (), 0));
+        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
-        OCTAVE_SAFE_CALL (octave::flush_stdout, ());
+        OCTAVE_SAFE_CALL (flush_stdout, ());
       }
 
     // Do this explicitly so that destructors for mex file objects
@@ -1121,12 +1121,12 @@ namespace octave
     // called.
     OCTAVE_SAFE_CALL (clear_mex_functions, ());
 
-    OCTAVE_SAFE_CALL (octave::command_editor::restore_terminal_state, ());
+    OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 
     OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
 
-    if (! octave::command_history::ignoring_entries ())
-      OCTAVE_SAFE_CALL (octave::command_history::clean_up_and_save, ());
+    if (! command_history::ignoring_entries ())
+      OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
     OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
 
@@ -1145,7 +1145,7 @@ namespace octave
 
     OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
 
-    OCTAVE_SAFE_CALL (octave::flush_stdout, ());
+    OCTAVE_SAFE_CALL (flush_stdout, ());
 
     // Don't call singleton_cleanup_list::cleanup until we have the
     // problems with registering/unregistering types worked out.  For
@@ -1159,7 +1159,7 @@ namespace octave
     //
     // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 
-    OCTAVE_SAFE_CALL (octave::chunk_buffer::clear, ());
+    OCTAVE_SAFE_CALL (chunk_buffer::clear, ());
   }
 
   tree_evaluator& interpreter::get_evaluator (void)
@@ -1191,13 +1191,13 @@ namespace octave
 
   void interpreter::recover_from_exception (void)
   {
-    octave::can_interrupt = true;
+    can_interrupt = true;
     octave_interrupt_immediately = 0;
     octave_interrupt_state = 0;
     octave_signal_caught = 0;
     octave_exception_state = octave_no_exception;
     octave_restore_signal_mask ();
-    octave::catch_interrupts ();
+    catch_interrupts ();
   }
 
   // Functions to call when the interpreter exits.

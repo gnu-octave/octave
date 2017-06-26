@@ -226,7 +226,7 @@ namespace octave
     std::string tpath = load_path::m_command_line_path;
 
     if (tpath.empty ())
-      tpath = octave::sys::env::getenv ("OCTAVE_PATH");
+      tpath = sys::env::getenv ("OCTAVE_PATH");
 
     std::string xpath;
 
@@ -235,7 +235,7 @@ namespace octave
         xpath = tpath;
 
         if (! sys_path.empty ())
-          xpath += octave::directory_path::path_sep_str () + sys_path;
+          xpath += directory_path::path_sep_str () + sys_path;
       }
     else
       xpath = sys_path;
@@ -279,7 +279,7 @@ namespace octave
 
     // Temporarily disable add hook.
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
     frame.protect_var (add_hook);
 
     add_hook = 0;
@@ -334,7 +334,7 @@ namespace octave
           }
         else
           {
-            std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
+            std::string dir = sys::file_ops::tilde_expand (dir_arg);
 
             dir = strip_trailing_separators (dir);
 
@@ -429,10 +429,10 @@ namespace octave
   {
     std::string retval;
 
-    if (octave::sys::env::absolute_pathname (file)
-        || octave::sys::env::rooted_relative_pathname (file))
+    if (sys::env::absolute_pathname (file)
+        || sys::env::rooted_relative_pathname (file))
       {
-        octave::sys::file_stat fs (file);
+        sys::file_stat fs (file);
 
         return fs.exists () ? file : retval;
       }
@@ -444,16 +444,16 @@ namespace octave
           return tfile;
       }
 
-    if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+    if (file.find_first_of (sys::file_ops::dir_sep_chars ())
         != std::string::npos)
       {
         // Given name has a directory separator, so append it to each
         // element of the load path in turn.
         for (const auto& di : dir_info_list)
           {
-            std::string tfile = octave::sys::file_ops::concat (di.dir_name, file);
+            std::string tfile = sys::file_ops::concat (di.dir_name, file);
 
-            octave::sys::file_stat fs (tfile);
+            sys::file_stat fs (tfile);
 
             if (fs.exists ())
               return tfile;
@@ -471,7 +471,7 @@ namespace octave
             for (octave_idx_type i = 0; i < len; i++)
               {
                 if (all_files[i] == file)
-                  return octave::sys::file_ops::concat (di.dir_name, file);
+                  return sys::file_ops::concat (di.dir_name, file);
               }
           }
       }
@@ -484,11 +484,11 @@ namespace octave
   {
     std::string retval;
 
-    if (dir.find_first_of (octave::sys::file_ops::dir_sep_chars ()) != std::string::npos
-        && (octave::sys::env::absolute_pathname (dir)
-            || octave::sys::env::rooted_relative_pathname (dir)))
+    if (dir.find_first_of (sys::file_ops::dir_sep_chars ()) != std::string::npos
+        && (sys::env::absolute_pathname (dir)
+            || sys::env::rooted_relative_pathname (dir)))
       {
-        octave::sys::file_stat fs (dir);
+        sys::file_stat fs (dir);
 
         if (fs.exists () && fs.is_dir ())
           return dir;
@@ -497,12 +497,12 @@ namespace octave
       {
         for (const auto& di : dir_info_list)
           {
-            std::string dname = octave::sys::env::make_absolute (di.dir_name);
+            std::string dname = sys::env::make_absolute (di.dir_name);
 
             size_t dname_len = dname.length ();
 
             if (dname.substr (dname_len - 1)
-                == octave::sys::file_ops::dir_sep_str ())
+                == sys::file_ops::dir_sep_str ())
               {
                 dname = dname.substr (0, dname_len - 1);
                 dname_len--;
@@ -511,10 +511,10 @@ namespace octave
             size_t dir_len = dir.length ();
 
             if (dname_len > dir_len
-                && octave::sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
+                && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
                 && dir == dname.substr (dname_len - dir_len))
               {
-                octave::sys::file_stat fs (di.dir_name);
+                sys::file_stat fs (di.dir_name);
 
                 if (fs.exists () && fs.is_dir ())
                   return di.dir_name;
@@ -530,11 +530,11 @@ namespace octave
   {
     std::list<std::string> retlist;
 
-    if (dir.find_first_of (octave::sys::file_ops::dir_sep_chars ()) != std::string::npos
-        && (octave::sys::env::absolute_pathname (dir)
-            || octave::sys::env::rooted_relative_pathname (dir)))
+    if (dir.find_first_of (sys::file_ops::dir_sep_chars ()) != std::string::npos
+        && (sys::env::absolute_pathname (dir)
+            || sys::env::rooted_relative_pathname (dir)))
       {
-        octave::sys::file_stat fs (dir);
+        sys::file_stat fs (dir);
 
         if (fs.exists () && fs.is_dir ())
           retlist.push_back (dir);
@@ -543,12 +543,12 @@ namespace octave
       {
         for (const auto& di : dir_info_list)
           {
-            std::string dname = octave::sys::env::make_absolute (di.dir_name);
+            std::string dname = sys::env::make_absolute (di.dir_name);
 
             size_t dname_len = dname.length ();
 
             if (dname.substr (dname_len - 1)
-                == octave::sys::file_ops::dir_sep_str ())
+                == sys::file_ops::dir_sep_str ())
               {
                 dname = dname.substr (0, dname_len - 1);
                 dname_len--;
@@ -557,10 +557,10 @@ namespace octave
             size_t dir_len = dir.length ();
 
             if (dname_len > dir_len
-                && octave::sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
+                && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
                 && dir == dname.substr (dname_len - dir_len))
               {
-                octave::sys::file_stat fs (di.dir_name);
+                sys::file_stat fs (di.dir_name);
 
                 if (fs.exists () && fs.is_dir ())
                   retlist.push_back (di.dir_name);
@@ -588,13 +588,13 @@ namespace octave
       {
         std::string file = flist[i];
 
-        if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+        if (file.find_first_of (sys::file_ops::dir_sep_chars ())
             != std::string::npos)
           {
-            if (octave::sys::env::absolute_pathname (file)
-                || octave::sys::env::rooted_relative_pathname (file))
+            if (sys::env::absolute_pathname (file)
+                || sys::env::rooted_relative_pathname (file))
               {
-                octave::sys::file_stat fs (file);
+                sys::file_stat fs (file);
 
                 if (fs.exists ())
                   return file;
@@ -604,9 +604,9 @@ namespace octave
                 for (const auto& di : dir_info_list)
                   {
                     std::string tfile;
-                    tfile = octave::sys::file_ops::concat (di.dir_name, file);
+                    tfile = sys::file_ops::concat (di.dir_name, file);
 
-                    octave::sys::file_stat fs (tfile);
+                    sys::file_stat fs (tfile);
 
                     if (fs.exists ())
                       return tfile;
@@ -643,7 +643,7 @@ namespace octave
   done:
 
     if (! dir_name.empty ())
-      retval = octave::sys::file_ops::concat (dir_name, file_name);
+      retval = sys::file_ops::concat (dir_name, file_name);
 
     return retval;
   }
@@ -665,13 +665,13 @@ namespace octave
       {
         std::string file = flist[i];
 
-        if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+        if (file.find_first_of (sys::file_ops::dir_sep_chars ())
             != std::string::npos)
           {
-            if (octave::sys::env::absolute_pathname (file)
-                || octave::sys::env::rooted_relative_pathname (file))
+            if (sys::env::absolute_pathname (file)
+                || sys::env::rooted_relative_pathname (file))
               {
-                octave::sys::file_stat fs (file);
+                sys::file_stat fs (file);
 
                 if (fs.exists ())
                   retlist.push_back (file);
@@ -681,9 +681,9 @@ namespace octave
                 for (const auto& di : dir_info_list)
                   {
                     std::string tfile;
-                    tfile = octave::sys::file_ops::concat (di.dir_name, file);
+                    tfile = sys::file_ops::concat (di.dir_name, file);
 
-                    octave::sys::file_stat fs (tfile);
+                    sys::file_stat fs (tfile);
 
                     if (fs.exists ())
                       retlist.push_back (tfile);
@@ -707,7 +707,7 @@ namespace octave
             for (octave_idx_type j = 0; j < rel_flen; j++)
               {
                 if (all_files[i] == rel_flist[j])
-                  retlist.push_back (octave::sys::file_ops::concat (di.dir_name,
+                  retlist.push_back (sys::file_ops::concat (di.dir_name,
                                                                     rel_flist[j]));
               }
           }
@@ -789,7 +789,7 @@ namespace octave
       xpath = xdirs[0];
 
     for (octave_idx_type i = 1; i < len; i++)
-      xpath += octave::directory_path::path_sep_str () + xdirs[i];
+      xpath += directory_path::path_sep_str () + xdirs[i];
 
     return xpath;
   }
@@ -850,7 +850,7 @@ namespace octave
   load_path::const_dir_info_list_iterator
   load_path::find_dir_info (const std::string& dir_arg) const
   {
-    std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
+    std::string dir = sys::file_ops::tilde_expand (dir_arg);
 
     const_dir_info_list_iterator retval = dir_info_list.begin ();
 
@@ -868,7 +868,7 @@ namespace octave
   load_path::dir_info_list_iterator
   load_path::find_dir_info (const std::string& dir_arg)
   {
-    std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
+    std::string dir = sys::file_ops::tilde_expand (dir_arg);
 
     dir_info_list_iterator retval = dir_info_list.begin ();
 
@@ -936,7 +936,7 @@ namespace octave
       warning_with_id ("Octave:recursive-path-search",
                        "trailing '//' is no longer special in search path elements");
 
-    std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
+    std::string dir = sys::file_ops::tilde_expand (dir_arg);
 
     dir = strip_trailing_separators (dir);
 
@@ -946,7 +946,7 @@ namespace octave
       move (i, at_end);
     else
       {
-        octave::sys::file_stat fs (dir);
+        sys::file_stat fs (dir);
 
         if (fs)
           {
@@ -1068,7 +1068,7 @@ namespace octave
   {
     load_path::dir_info::fcn_file_map_type retval;
 
-    octave::sys::dir_entry dir (d);
+    sys::dir_entry dir (d);
 
     if (dir)
       {
@@ -1116,7 +1116,7 @@ namespace octave
   void
   load_path::dir_info::update (void)
   {
-    octave::sys::file_stat fs (dir_name);
+    sys::file_stat fs (dir_name);
 
     if (! fs)
       {
@@ -1129,7 +1129,7 @@ namespace octave
           {
             try
               {
-                std::string abs_name = octave::sys::env::make_absolute (dir_name);
+                std::string abs_name = sys::env::make_absolute (dir_name);
 
                 const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
@@ -1165,11 +1165,11 @@ namespace octave
                     initialize ();
                   }
               }
-            catch (const octave::execution_exception&)
+            catch (const execution_exception&)
               {
                 // Skip updating if we don't know where we are,
                 // but don't treat it as an error.
-                octave::interpreter::recover_from_exception ();
+                interpreter::recover_from_exception ();
               }
           }
         // Absolute path, check timestamp to see whether it requires re-caching
@@ -1202,11 +1202,11 @@ namespace octave
   void
   load_path::dir_info::initialize (void)
   {
-    is_relative = ! octave::sys::env::absolute_pathname (dir_name);
+    is_relative = ! sys::env::absolute_pathname (dir_name);
 
-    dir_time_last_checked = octave::sys::time (static_cast<time_t> (0));
+    dir_time_last_checked = sys::time (static_cast<time_t> (0));
 
-    octave::sys::file_stat fs (dir_name);
+    sys::file_stat fs (dir_name);
 
     if (fs)
       {
@@ -1214,13 +1214,13 @@ namespace octave
         package_dir_map.clear ();
 
         dir_mtime = fs.mtime ();
-        dir_time_last_checked = octave::sys::time ();
+        dir_time_last_checked = sys::time ();
 
         get_file_list (dir_name);
 
         try
           {
-            std::string abs_name = octave::sys::env::make_absolute (dir_name);
+            std::string abs_name = sys::env::make_absolute (dir_name);
 
             // FIXME: nothing is ever removed from this cache of
             // directory information, so there could be some resource
@@ -1228,12 +1228,12 @@ namespace octave
 
             abs_dir_cache[abs_name] = *this;
           }
-        catch (const octave::execution_exception&)
+        catch (const execution_exception&)
           {
             // Skip updating if we don't know where we are but don't treat
             // it as an error.
 
-            octave::interpreter::recover_from_exception ();
+            interpreter::recover_from_exception ();
           }
       }
     else
@@ -1246,7 +1246,7 @@ namespace octave
   void
   load_path::dir_info::get_file_list (const std::string& d)
   {
-    octave::sys::dir_entry dir (d);
+    sys::dir_entry dir (d);
 
     if (dir)
       {
@@ -1264,9 +1264,9 @@ namespace octave
           {
             std::string fname = flist[i];
 
-            std::string full_name = octave::sys::file_ops::concat (d, fname);
+            std::string full_name = sys::file_ops::concat (d, fname);
 
-            octave::sys::file_stat fs (full_name);
+            sys::file_stat fs (full_name);
 
             if (fs)
               {
@@ -1323,9 +1323,9 @@ namespace octave
   {
     method_file_map[class_name].method_file_map = get_fcn_files (d);
 
-    std::string pd = octave::sys::file_ops::concat (d, "private");
+    std::string pd = sys::file_ops::concat (d, "private");
 
-    octave::sys::file_stat fs (pd);
+    sys::file_stat fs (pd);
 
     if (fs && fs.is_dir ())
       method_file_map[class_name].private_file_map = get_fcn_files (pd);
@@ -1393,7 +1393,7 @@ namespace octave
     for (const auto& dir_fnlst : private_fcn_map)
       {
         os << "\n*** private functions in "
-           << octave::sys::file_ops::concat (dir_fnlst.first, "private")
+           << sys::file_ops::concat (dir_fnlst.first, "private")
            << ":\n\n";
 
         print_fcn_list (os, dir_fnlst.second);
@@ -1480,7 +1480,7 @@ namespace octave
 
             for (const auto& fi : file_info_list)
               {
-                retval = octave::sys::file_ops::concat (fi.dir_name, fcn);
+                retval = sys::file_ops::concat (fi.dir_name, fcn);
 
                 if (check_file_type (retval, type, fi.types,
                                      fcn, "load_path::find_fcn"))
@@ -1517,7 +1517,7 @@ namespace octave
         if (p != m.end ())
           {
             std::string fname
-              = octave::sys::file_ops::concat (octave::sys::file_ops::concat (dir, "private"), fcn);
+              = sys::file_ops::concat (sys::file_ops::concat (dir, "private"), fcn);
 
             if (check_file_type (fname, type, p->second, fcn,
                                  "load_path::find_private_fcn"))
@@ -1554,7 +1554,7 @@ namespace octave
 
             for (const auto& fi : file_info_list)
               {
-                retval = octave::sys::file_ops::concat (fi.dir_name, meth);
+                retval = sys::file_ops::concat (fi.dir_name, meth);
 
                 bool found = check_file_type (retval, type, fi.types,
                                               meth, "load_path::find_method");
@@ -1683,12 +1683,12 @@ namespace octave
               {
                 if (file_info_list.empty ())
                   {
-                    octave::symbol_table& symtab
-                      = octave::__get_symbol_table__ ("load_path::package_info::add_to_fcn_map");
+                    symbol_table& symtab
+                      = __get_symbol_table__ ("load_path::package_info::add_to_fcn_map");
 
                     if (symtab.is_built_in_function_name (base))
                       {
-                        std::string fcn_path = octave::sys::file_ops::concat (dir_name, fname);
+                        std::string fcn_path = sys::file_ops::concat (dir_name, fname);
 
                         warning_with_id ("Octave:shadowed-function",
                                          "function %s shadows a built-in function",
@@ -1710,7 +1710,7 @@ namespace octave
                         && sys_path.find (old.dir_name) != std::string::npos
                         && in_path_list (sys_path, old.dir_name))
                       {
-                        std::string fcn_path = octave::sys::file_ops::concat (dir_name, fname);
+                        std::string fcn_path = sys::file_ops::concat (dir_name, fname);
 
                         warning_with_id ("Octave:shadowed-function",
                                          "function %s shadows a core library function",
@@ -1759,7 +1759,7 @@ namespace octave
         fcn_map_type& fm = method_map[class_name];
 
         std::string full_dir_name
-          = octave::sys::file_ops::concat (dir_name, "@" + class_name);
+          = sys::file_ops::concat (dir_name, "@" + class_name);
 
         const dir_info::class_info& ci = cls_ci.second;
 
@@ -1867,7 +1867,7 @@ namespace octave
         fcn_map_type& fn_map = cls_fnmap.second;
 
         std::string full_dir_name
-          = octave::sys::file_ops::concat (dir_name, "@" + class_name);
+          = sys::file_ops::concat (dir_name, "@" + class_name);
 
         for (auto& nm_filst : fn_map)
           {
@@ -1958,7 +1958,7 @@ namespace octave
         fcn_map_type& fn_map = cls_fnmap.second;
 
         std::string full_dir_name
-          = octave::sys::file_ops::concat (dir, "@" + class_name);
+          = sys::file_ops::concat (dir, "@" + class_name);
 
         for (auto& nm_filst : fn_map)
           {
@@ -2129,7 +2129,7 @@ namespace octave
   {
     std::string retval;
 
-    octave::sys::dir_entry dir (dirname);
+    sys::dir_entry dir (dirname);
 
     if (dir)
       {
@@ -2157,12 +2157,12 @@ namespace octave
 
                 if (! skip_p)
                   {
-                    std::string nm = octave::sys::file_ops::concat (dirname, elt);
+                    std::string nm = sys::file_ops::concat (dirname, elt);
 
-                    octave::sys::file_stat fs (nm);
+                    sys::file_stat fs (nm);
 
                     if (fs && fs.is_dir ())
-                      retval += octave::directory_path::path_sep_str () + genpath (nm, skip);
+                      retval += directory_path::path_sep_str () + genpath (nm, skip);
                   }
               }
           }

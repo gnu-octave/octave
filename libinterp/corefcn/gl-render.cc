@@ -127,7 +127,7 @@ namespace octave
       int tw, th;
       double tx, ty;
       bool valid;
-      octave::refcount<int> count;
+      refcount<int> count;
     };
 
     texture_rep *rep;
@@ -378,7 +378,7 @@ namespace octave
       float specular_color_refl;
 
       // reference counter
-      octave::refcount<int> count;
+      refcount<int> count;
 
       vertex_data_rep (void)
         : coords (), color (), normal (), alpha (),
@@ -1434,7 +1434,7 @@ namespace octave
         string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;
-        bool tick_along_z = nearhoriz || octave::math::isinf (fy);
+        bool tick_along_z = nearhoriz || math::isinf (fy);
         bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
         if (props.xcolormode_is ("manual"))
@@ -1477,7 +1477,7 @@ namespace octave
         double y_axis_pos = 0.;
         if (is_origin)
           {
-            y_axis_pos = octave::math::max (octave::math::min (0., y_max),
+            y_axis_pos = math::max (math::min (0., y_max),
                                             y_min);
             glBegin (GL_LINES);
             set_color (props.get_ycolor_rgb ());
@@ -1494,14 +1494,14 @@ namespace octave
                                 is_origin ? y_axis_pos : ypTick, ypTick,
                                 zpTick, zpTickN, 0., 0.,
                                 (is_origin_low ? -1. : 1.) *
-                                octave::math::signum (zpTick-zpTickN)*fz*xticklen/2,
+                                math::signum (zpTick-zpTickN)*fz*xticklen/2,
                                 0, ! is_origin && mirror);
             else
               render_tickmarks (xmticks, x_min, x_max,
                                 is_origin ? y_axis_pos : ypTick, ypTickN,
                                 zpTick, zpTick, 0.,
                                 (is_origin_low ? -1. : 1.) *
-                                octave::math::signum (ypTick-ypTickN)*fy*xticklen/2,
+                                math::signum (ypTick-ypTickN)*fy*xticklen/2,
                                 0., 0, ! is_origin && mirror);
           }
 
@@ -1511,14 +1511,14 @@ namespace octave
                             is_origin ? y_axis_pos : ypTick, ypTick,
                             zpTick, zpTickN, 0., 0.,
                             (is_origin_low ? -1. : 1.) *
-                            octave::math::signum (zpTick-zpTickN)*fz*xticklen,
+                            math::signum (zpTick-zpTickN)*fz*xticklen,
                             0, ! is_origin && mirror);
         else
           render_tickmarks (xticks, x_min, x_max,
                             is_origin ? y_axis_pos : ypTick, ypTickN,
                             zpTick, zpTick, 0.,
                             (is_origin_low ? -1. : 1.) *
-                            octave::math::signum (ypTick-ypTickN)*fy*xticklen,
+                            math::signum (ypTick-ypTickN)*fy*xticklen,
                             0., 0, ! is_origin && mirror);
 
         // tick texts
@@ -1536,13 +1536,13 @@ namespace octave
                                 is_origin ? y_axis_pos : ypTick,
                                 zpTick +
                                 (is_origin_low ? -1. : 1.) *
-                                octave::math::signum (zpTick-zpTickN)*fz*xtickoffset,
+                                math::signum (zpTick-zpTickN)*fz*xtickoffset,
                                 0, halign, valign, wmax, hmax);
             else
               render_ticktexts (xticks, xticklabels, x_min, x_max,
                                 (is_origin ? y_axis_pos : ypTick) +
                                 (is_origin_low ?  -1. : 1.) *
-                                octave::math::signum (ypTick-ypTickN)*fy*xtickoffset,
+                                math::signum (ypTick-ypTickN)*fy*xtickoffset,
                                 zpTick, 0, halign, valign, wmax, hmax);
           }
 
@@ -1615,7 +1615,7 @@ namespace octave
         string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;
-        bool tick_along_z = nearhoriz || octave::math::isinf (fx);
+        bool tick_along_z = nearhoriz || math::isinf (fx);
         bool mirror = props.is_box () && ystate != AXE_ANY_DIR
                       && (! props.has_property ("__plotyy_axes__"));
 
@@ -1659,7 +1659,7 @@ namespace octave
         double x_axis_pos = 0.;
         if (is_origin)
           {
-            x_axis_pos = octave::math::max (octave::math::min (0., x_max),
+            x_axis_pos = math::max (math::min (0., x_max),
                                             x_min);
             glBegin (GL_LINES);
             set_color (props.get_ycolor_rgb ());
@@ -1676,14 +1676,14 @@ namespace octave
                                 is_origin ? x_axis_pos : xpTick, xpTick,
                                 zpTick, zpTickN, 0., 0.,
                                 (is_origin_low ? -1. : 1.) *
-                                octave::math::signum (zpTick-zpTickN)*fz*yticklen/2,
+                                math::signum (zpTick-zpTickN)*fz*yticklen/2,
                                 1, ! is_origin && mirror);
             else
               render_tickmarks (ymticks, y_min, y_max,
                                 is_origin ? x_axis_pos : xpTick, xpTickN,
                                 zpTick, zpTick,
                                 (is_origin_low ? -1. : 1.) *
-                                octave::math::signum (xpTick-xpTickN)*fx*yticklen/2,
+                                math::signum (xpTick-xpTickN)*fx*yticklen/2,
                                 0., 0., 1, ! is_origin && mirror);
           }
 
@@ -1693,14 +1693,14 @@ namespace octave
                             is_origin ? x_axis_pos : xpTick, xpTick,
                             zpTick, zpTickN, 0., 0.,
                             (is_origin_low ? -1. : 1.) *
-                            octave::math::signum (zpTick-zpTickN)*fz*yticklen,
+                            math::signum (zpTick-zpTickN)*fz*yticklen,
                             1, ! is_origin && mirror);
         else
           render_tickmarks (yticks, y_min, y_max,
                             is_origin ? x_axis_pos : xpTick, xpTickN,
                             zpTick, zpTick,
                             (is_origin_low ? -1. : 1.) *
-                            octave::math::signum (xPlaneN-xPlane)*fx*yticklen,
+                            math::signum (xPlaneN-xPlane)*fx*yticklen,
                             0., 0., 1, ! is_origin && mirror);
 
         // tick texts
@@ -1718,13 +1718,13 @@ namespace octave
                                 is_origin ? x_axis_pos : xpTick,
                                 zpTick +
                                 (is_origin_low ? -1. : 1.) *
-                                octave::math::signum (zpTick-zpTickN)*fz*ytickoffset,
+                                math::signum (zpTick-zpTickN)*fz*ytickoffset,
                                 1, halign, valign, wmax, hmax);
             else
               render_ticktexts (yticks, yticklabels, y_min, y_max,
                                 (is_origin ? x_axis_pos : xpTick) +
                                 (is_origin_low ?  -1. : 1.) *
-                                octave::math::signum (xpTick-xpTickN)*fx*ytickoffset,
+                                math::signum (xpTick-xpTickN)*fx*ytickoffset,
                                 zpTick, 1, halign, valign, wmax, hmax);
           }
 
@@ -1824,28 +1824,28 @@ namespace octave
           {
             if (xySym)
               {
-                if (octave::math::isinf (fy))
+                if (math::isinf (fy))
                   render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
                                     yPlane, yPlane,
-                                    octave::math::signum (xPlaneN-xPlane)*fx*zticklen/2,
+                                    math::signum (xPlaneN-xPlane)*fx*zticklen/2,
                                     0., 0., 2, mirror);
                 else
                   render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
                                     yPlane, yPlane, 0.,
-                                    octave::math::signum (yPlane-yPlaneN)*fy*zticklen/2,
+                                    math::signum (yPlane-yPlaneN)*fy*zticklen/2,
                                     0., 2, false);
               }
             else
               {
-                if (octave::math::isinf (fx))
+                if (math::isinf (fx))
                   render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                     yPlaneN, yPlane, 0.,
-                                    octave::math::signum (yPlaneN-yPlane)*fy*zticklen/2,
+                                    math::signum (yPlaneN-yPlane)*fy*zticklen/2,
                                     0., 2, mirror);
                 else
                   render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                     yPlaneN, yPlaneN,
-                                    octave::math::signum (xPlane-xPlaneN)*fx*zticklen/2,
+                                    math::signum (xPlane-xPlaneN)*fx*zticklen/2,
                                     0., 0., 2, false);
               }
           }
@@ -1853,28 +1853,28 @@ namespace octave
         // tick marks
         if (xySym)
           {
-            if (octave::math::isinf (fy))
+            if (math::isinf (fy))
               render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                                 yPlane, yPlane,
-                                octave::math::signum (xPlaneN-xPlane)*fx*zticklen,
+                                math::signum (xPlaneN-xPlane)*fx*zticklen,
                                 0., 0., 2, mirror);
             else
               render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
                                 yPlane, yPlane, 0.,
-                                octave::math::signum (yPlane-yPlaneN)*fy*zticklen,
+                                math::signum (yPlane-yPlaneN)*fy*zticklen,
                                 0., 2, false);
           }
         else
           {
-            if (octave::math::isinf (fx))
+            if (math::isinf (fx))
               render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                                 yPlaneN, yPlane, 0.,
-                                octave::math::signum (yPlaneN-yPlane)*fy*zticklen,
+                                math::signum (yPlaneN-yPlane)*fy*zticklen,
                                 0., 2, mirror);
             else
               render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
                                 yPlaneN, yPlane,
-                                octave::math::signum (xPlane-xPlaneN)*fx*zticklen,
+                                math::signum (xPlane-xPlaneN)*fx*zticklen,
                                 0., 0., 2, false);
           }
 
@@ -1886,24 +1886,24 @@ namespace octave
 
             if (xySym)
               {
-                if (octave::math::isinf (fy))
+                if (math::isinf (fy))
                   render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlaneN + octave::math::signum (xPlaneN-xPlane)*fx*ztickoffset,
+                                    xPlaneN + math::signum (xPlaneN-xPlane)*fx*ztickoffset,
                                     yPlane, 2, halign, valign, wmax, hmax);
                 else
                   render_ticktexts (zticks, zticklabels, z_min, z_max, xPlaneN,
-                                    yPlane + octave::math::signum (yPlane-yPlaneN)*fy*ztickoffset,
+                                    yPlane + math::signum (yPlane-yPlaneN)*fy*ztickoffset,
                                     2, halign, valign, wmax, hmax);
               }
             else
               {
-                if (octave::math::isinf (fx))
+                if (math::isinf (fx))
                   render_ticktexts (zticks, zticklabels, z_min, z_max, xPlane,
-                                    yPlaneN + octave::math::signum (yPlaneN-yPlane)*fy*ztickoffset,
+                                    yPlaneN + math::signum (yPlaneN-yPlane)*fy*ztickoffset,
                                     2, halign, valign, wmax, hmax);
                 else
                   render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlane + octave::math::signum (xPlane-xPlaneN)*fx*ztickoffset,
+                                    xPlane + math::signum (xPlane-xPlaneN)*fx*ztickoffset,
                                     yPlaneN, 2, halign, valign, wmax, hmax);
               }
           }
@@ -2420,14 +2420,14 @@ namespace octave
                     if (fc_mode == FLAT)
                       {
                         // "flat" only needs color at lower-left vertex
-                        if (! octave::math::isfinite (c(j-1,i-1)))
+                        if (! math::isfinite (c(j-1,i-1)))
                           continue;
                       }
                     else if (fc_mode == INTERP)
                       {
                         // "interp" needs valid color at all 4 vertices
-                        if (! (octave::math::isfinite (c(j-1, i-1)) && octave::math::isfinite (c(j, i-1))
-                               && octave::math::isfinite (c(j-1, i)) && octave::math::isfinite (c(j, i))))
+                        if (! (math::isfinite (c(j-1, i-1)) && math::isfinite (c(j, i-1))
+                               && math::isfinite (c(j-1, i)) && math::isfinite (c(j, i))))
                           continue;
                       }
 
@@ -2629,13 +2629,13 @@ namespace octave
                         if (ec_mode == FLAT)
                           {
                             // "flat" only needs color at lower-left vertex
-                            if (! octave::math::isfinite (c(j-1,i)))
+                            if (! math::isfinite (c(j-1,i)))
                               continue;
                           }
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (octave::math::isfinite (c(j-1, i)) && octave::math::isfinite (c(j, i))))
+                            if (! (math::isfinite (c(j-1, i)) && math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -2726,13 +2726,13 @@ namespace octave
                         if (ec_mode == FLAT)
                           {
                             // "flat" only needs color at lower-left vertex
-                            if (! octave::math::isfinite (c(j,i-1)))
+                            if (! math::isfinite (c(j,i-1)))
                               continue;
                           }
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (octave::math::isfinite (c(j, i-1)) && octave::math::isfinite (c(j, i))))
+                            if (! (math::isfinite (c(j, i-1)) && math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -2864,7 +2864,7 @@ namespace octave
                 if ((do_edge && mecolor.isempty ())
                     || (do_face && mfcolor.isempty ()))
                   {
-                    if (! octave::math::isfinite (c(j,i)))
+                    if (! math::isfinite (c(j,i)))
                       continue;  // Skip NaNs in color data
 
                     for (int k = 0; k < 3; k++)
@@ -2969,7 +2969,7 @@ namespace octave
         bool fclip = false;
         int count = 0;
 
-        for (int j = 0; j < fcmax && ! octave::math::isnan (f(i,j)); j++, count++)
+        for (int j = 0; j < fcmax && ! math::isnan (f(i,j)); j++, count++)
           fclip = (fclip || clip(int (f(i,j) - 1)));
 
         clip_f(i) = fclip;
@@ -3474,8 +3474,8 @@ namespace octave
     const ColumnVector p0 = xform.transform (x(0), y(0), 0);
     const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
-    if (octave::math::isnan (p0(0)) || octave::math::isnan (p0(1))
-        || octave::math::isnan (p1(0)) || octave::math::isnan (p1(1)))
+    if (math::isnan (p0(0)) || math::isnan (p0(1))
+        || math::isnan (p1(0)) || math::isnan (p1(1)))
       {
         warning ("opengl_renderer: image X,Y data too large to draw");
         return;

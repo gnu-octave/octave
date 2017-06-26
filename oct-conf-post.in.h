@@ -50,7 +50,15 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_UNUSED
 #endif
 
-#define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
+/* This macro could have a better name...  It is intended to be used
+   only to enable inline functions or typedefs that provide access to
+   symbols that have been moved to the octave namespace.  It may be
+   temporarily useful to define this macro when moving a symbol to the
+   octave namespace but it should not be defined when building
+   released versions of Octave, as building those should not require
+   deprecated symbols.  It is defined in octave-config.h, so users of
+   Octave may continue to access symbols using the deprecated names.  */
+/* #undef OCTAVE_USE_DEPRECATED_FUNCTIONS */
 
 #if defined (__cplusplus)
 template <typename T>

@@ -483,18 +483,18 @@ namespace octave
   public:
 
     parser (void)
-      : base_parser (*(new octave::lexer ()))
+      : base_parser (*(new lexer ()))
     { }
 
     parser (FILE *file)
-      : base_parser (*(new octave::lexer (file)))
+      : base_parser (*(new lexer (file)))
     { }
 
     parser (const std::string& eval_string)
-      : base_parser (*(new octave::lexer (eval_string)))
+      : base_parser (*(new lexer (eval_string)))
     { }
 
-    parser (octave::lexer& lxr)
+    parser (lexer& lxr)
       : base_parser (lxr)
     { }
 
@@ -514,7 +514,7 @@ namespace octave
   public:
 
     push_parser (void)
-      : base_parser (*(new octave::push_lexer ()))
+      : base_parser (*(new push_lexer ()))
     { }
 
     // No copying!
@@ -583,7 +583,7 @@ namespace octave
   eval_string (const std::string&, bool silent, int& parse_status);
 
   extern OCTINTERP_API void
-  cleanup_statement_list (octave::tree_statement_list **lst);
+  cleanup_statement_list (tree_statement_list **lst);
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)

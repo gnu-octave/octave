@@ -615,7 +615,7 @@ namespace octave
               {
                 bbox(1) -= lbox(3);
                 bbox(3) += lbox(3);
-                bbox(2) = octave::math::max (bbox(2), lbox(2));
+                bbox(2) = math::max (bbox(2), lbox(2));
               }
           }
         break;
@@ -817,7 +817,7 @@ namespace octave
                     // glyph.  Then extend the line bounding box if necessary.
 
                     xoffset += (face->glyph->advance.x >> 6);
-                    bb(2) = octave::math::max (bb(2), xoffset);
+                    bb(2) = math::max (bb(2), xoffset);
                   }
                 break;
               }
@@ -1084,7 +1084,7 @@ namespace octave
       {
         xoffset = saved_xoffset;
         txt_elt->accept (*this);
-        max_xoffset = octave::math::max (xoffset, max_xoffset);
+        max_xoffset = math::max (xoffset, max_xoffset);
       }
 
     xoffset = max_xoffset;

@@ -123,7 +123,7 @@ namespace octave
 
     if (! octave_kpse_initialized)
       {
-        std::string val = octave::sys::env::getenv ("KPATHSEA_DEBUG");
+        std::string val = sys::env::getenv ("KPATHSEA_DEBUG");
 
         if (! val.empty ())
           kpse_debug |= atoi (val.c_str ());

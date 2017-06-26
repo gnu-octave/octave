@@ -394,7 +394,7 @@ namespace octave
 
                 if (! f.empty ())
                   {
-                    octave::sys::file_stat fs (f);
+                    sys::file_stat fs (f);
 
                     if (! fs)
                       {
@@ -548,7 +548,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        std::string f = octave::sys::file_ops::tilde_expand (f_arg);
+        std::string f = sys::file_ops::tilde_expand (f_arg);
 
         instance->do_set_file (f);
       }

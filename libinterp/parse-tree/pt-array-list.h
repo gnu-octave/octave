@@ -37,17 +37,17 @@ namespace octave
   // Base class for cell arrays and matrices.
 
   class tree_array_list : public tree_expression,
-                          public octave::base_list<tree_argument_list *>
+                          public base_list<tree_argument_list *>
   {
   public:
 
-    typedef octave::base_list<tree_argument_list *>::iterator iterator;
-    typedef octave::base_list<tree_argument_list *>::const_iterator const_iterator;
+    typedef base_list<tree_argument_list *>::iterator iterator;
+    typedef base_list<tree_argument_list *>::const_iterator const_iterator;
 
   protected:
 
     tree_array_list (tree_argument_list *row = nullptr, int l = -1, int c = -1)
-      : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
+      : tree_expression (l, c), base_list<tree_argument_list *> ()
     {
       if (row)
         append (row);

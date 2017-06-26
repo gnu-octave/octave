@@ -81,7 +81,7 @@ namespace octave
   symbol_table::symbol_record::symbol_record_rep::init_persistent (void)
   {
     symbol_table::scope *scope
-      = octave::__require_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::init_persistent");
+      = __require_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::init_persistent");
 
     if (! is_defined ())
       {
@@ -100,7 +100,7 @@ namespace octave
     unmark_persistent ();
 
     symbol_table::scope *scope
-      = octave::__require_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::erase_persistent");
+      = __require_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::erase_persistent");
 
     scope->erase_persistent (name);
   }
@@ -136,7 +136,7 @@ namespace octave
   symbol_table::symbol_record::symbol_record_rep::xglobal_varref (void)
   {
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::xglobal_varref");
+      = __get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::xglobal_varref");
 
     symbol_table::global_symbols_iterator p
       = symtab.m_global_symbols.find (name);
@@ -149,7 +149,7 @@ namespace octave
   symbol_table::symbol_record::symbol_record_rep::xpersistent_varref (void)
   {
     symbol_table::scope *scope
-      = octave::__get_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varref");
+      = __get_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varref");
 
     return scope ? scope->persistent_varref (name) : dummy_octave_value;
   }
@@ -158,7 +158,7 @@ namespace octave
   symbol_table::symbol_record::symbol_record_rep::xglobal_varval (void) const
   {
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::xglobal_varval");
+      = __get_symbol_table__ ("symbol_table::symbol_record::symbol_record_rep::xglobal_varval");
 
     return symtab.global_varval (name);
   }
@@ -167,13 +167,13 @@ namespace octave
   symbol_table::symbol_record::symbol_record_rep::xpersistent_varval (void) const
   {
     symbol_table::scope *scope
-      = octave::__get_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varval");
+      = __get_current_scope__ ("symbol_table::symbol_record::symbol_record_rep::xpersistent_varval");
 
     return scope ? scope->persistent_varval (name) : octave_value ();
   }
 
   symbol_table::symbol_record::symbol_record (void)
-    : rep (new symbol_record_rep (octave::__get_current_scope__ ("symbol_record"),
+    : rep (new symbol_record_rep (__get_current_scope__ ("symbol_record"),
                                   "", octave_value (), local))
 
   { }
@@ -184,7 +184,7 @@ namespace octave
     octave_value retval;
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("symbol_table::symbol_record::find");
+      = __get_symbol_table__ ("symbol_table::symbol_record::find");
 
     if (is_global ())
       retval = symtab.global_varval (name ());
@@ -223,14 +223,14 @@ namespace octave
   symbol_table::symbol_reference::symbol_reference (const symbol_record& record)
     : m_scope (0), m_context (0),m_sym (record)
   {
-    m_scope = octave::__get_current_scope__ ("symbol_reference");
+    m_scope = __get_current_scope__ ("symbol_reference");
   }
 
   void
   symbol_table::symbol_reference::update (void) const
   {
     symbol_table::scope *curr_scope
-      = octave::__get_current_scope__ ("symbol_reference::update");
+      = __get_current_scope__ ("symbol_reference::update");
 
     if (curr_scope && (m_scope != curr_scope || ! m_sym.is_valid ()))
       {
@@ -318,7 +318,7 @@ namespace octave
 
             if (! ff.empty ())
               {
-                octave::sys::time tc = fcn->time_checked ();
+                sys::time tc = fcn->time_checked ();
 
                 bool relative = check_relative && fcn->is_relative ();
 
@@ -339,7 +339,7 @@ namespace octave
                       {
                         int nm_len = nm.length ();
 
-                        if (octave::sys::env::absolute_pathname (nm)
+                        if (sys::env::absolute_pathname (nm)
                             && ((nm_len > 4
                                  && (nm.substr (nm_len-4) == ".oct"
                                      || nm.substr (nm_len-4) == ".mex"))
@@ -354,7 +354,7 @@ namespace octave
 
                             if (! dispatch_type.empty ())
                               {
-                                octave::load_path& lp = octave::__get_load_path__ ("out_of_date_check");
+                                load_path& lp = __get_load_path__ ("out_of_date_check");
 
                                 file = lp.find_method (dispatch_type, nm,
                                                        dir_name, pack);
@@ -365,7 +365,7 @@ namespace octave
                                     std::string s_pack;
 
                                     symbol_table& symtab
-                                      = octave::__get_symbol_table__ ("out_of_date_check");
+                                      = __get_symbol_table__ ("out_of_date_check");
 
                                     const std::list<std::string>& plist
                                       = symtab.parent_classes (dispatch_type);
@@ -393,11 +393,11 @@ namespace octave
 
                             // Maybe it's an autoload?
                             if (file.empty ())
-                              file = octave::lookup_autoload (nm);
+                              file = lookup_autoload (nm);
 
                             if (file.empty ())
                               {
-                                octave::load_path& lp = octave::__get_load_path__ ("out_of_date_check");
+                                load_path& lp = __get_load_path__ ("out_of_date_check");
                                 file = lp.find_fcn (nm, dir_name, pack);
                               }
                           }
@@ -424,16 +424,16 @@ namespace octave
                       {
                         // Same file.  If it is out of date, then reload it.
 
-                        octave::sys::time ottp = fcn->time_parsed ();
+                        sys::time ottp = fcn->time_parsed ();
                         time_t tp = ottp.unix_time ();
 
-                        fcn->mark_fcn_file_up_to_date (octave::sys::time ());
+                        fcn->mark_fcn_file_up_to_date (sys::time ());
 
                         if (! (Vignore_function_time_stamp == 2
                                || (Vignore_function_time_stamp
                                    && fcn->is_system_fcn_file ())))
                           {
-                            octave::sys::file_stat fs (ff);
+                            sys::file_stat fs (ff);
 
                             if (fs)
                               {
@@ -485,15 +485,15 @@ namespace octave
   {
     octave_value retval;
 
-    octave::load_path& lp
-      = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_private_function");
+    load_path& lp
+      = __get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_private_function");
 
     std::string file_name = lp.find_private_fcn (dir_name, name);
 
     if (file_name.empty ())
       return retval;
 
-    octave_value ov_fcn = octave::load_fcn_from_file (file_name, dir_name);
+    octave_value ov_fcn = load_fcn_from_file (file_name, dir_name);
 
     if (ov_fcn.is_undefined ())
       return retval;
@@ -505,7 +505,7 @@ namespace octave
 
     std::string class_name;
 
-    size_t pos = dir_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+    size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
       {
@@ -529,15 +529,15 @@ namespace octave
 
     std::string dir_name;
 
-    octave::load_path& lp
-      = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_constructor");
+    load_path& lp
+      = __get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_constructor");
 
     std::string file_name = lp.find_method (name, name, dir_name, package_name);
 
     if (! file_name.empty ())
       {
         octave_value ov_fcn
-          = octave::load_fcn_from_file (file_name, dir_name, name,
+          = load_fcn_from_file (file_name, dir_name, name,
                                         package_name);
 
         if (ov_fcn.is_defined ())
@@ -592,7 +592,7 @@ namespace octave
     else
       {
         cdef_manager& cdm
-          = octave::__get_cdef_manager__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
+          = __get_cdef_manager__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
 
         octave_function *cm = cdm.find_method_symbol (name, dispatch_type);
 
@@ -603,7 +603,7 @@ namespace octave
           {
             std::string dir_name;
 
-            octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
+            load_path& lp = __get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
 
             std::string file_name = lp.find_method (dispatch_type, name,
                                                     dir_name);
@@ -611,7 +611,7 @@ namespace octave
             if (! file_name.empty ())
               {
                 octave_value ov_fcn
-                  = octave::load_fcn_from_file (file_name, dir_name,
+                  = load_fcn_from_file (file_name, dir_name,
                                                 dispatch_type);
 
                 if (ov_fcn.is_defined ())
@@ -632,7 +632,7 @@ namespace octave
                 // Search parent classes
 
                 symbol_table& symtab
-                  = octave::__get_symbol_table__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
+                  = __get_symbol_table__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
 
                 const std::list<std::string>& plist =
                   symtab.parent_classes (dispatch_type);
@@ -741,7 +741,7 @@ namespace octave
             // There's a non-builtin class in the argument list.
             dispatch_type = args(i).class_name ();
 
-            symbol_table& symtab = octave::__get_symbol_table__ ("get_dispatch_type");
+            symbol_table& symtab = __get_symbol_table__ ("get_dispatch_type");
 
             for (int j = i+1; j < n; j++)
               {
@@ -800,7 +800,7 @@ namespace octave
         // the last prompt or chdir, so try updating the load path and
         // searching again.
 
-        octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find");
+        load_path& lp = __get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find");
 
         lp.update ();
 
@@ -817,7 +817,7 @@ namespace octave
     if (local_funcs)
       {
         symbol_table::scope *scope
-          = octave::__get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::xfind");
+          = __get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::xfind");
 
         octave_user_function *current_fcn = scope ? scope->function () : 0;
 
@@ -982,7 +982,7 @@ namespace octave
         // the last prompt or chdir, so try updating the load path and
         // searching again.
 
-        octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::builtin_find");
+        load_path& lp = __get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::builtin_find");
 
         lp.update ();
 
@@ -1021,7 +1021,7 @@ namespace octave
     // Private function.
 
     symbol_table::scope *scope
-      = octave::__get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
+      = __get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
 
     octave_user_function *current_fcn = scope ? scope->function () : 0;
 
@@ -1086,7 +1086,7 @@ namespace octave
     // from a .m file.
 
     symbol_table::scope *curr_scope
-      = octave::__get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
+      = __get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
 
     if (curr_scope)
       {
@@ -1145,16 +1145,16 @@ namespace octave
 
     if (! autoload_function.is_defined ())
       {
-        std::string file_name = octave::lookup_autoload (name);
+        std::string file_name = lookup_autoload (name);
 
         if (! file_name.empty ())
           {
-            size_t pos = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+            size_t pos = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
             std::string dir_name = file_name.substr (0, pos);
 
             octave_value ov_fcn
-              = octave::load_fcn_from_file (file_name, dir_name, "", "",
+              = load_fcn_from_file (file_name, dir_name, "", "",
                                             name, true);
 
             if (ov_fcn.is_defined ())
@@ -1177,7 +1177,7 @@ namespace octave
       {
         std::string dir_name;
 
-        octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find_user_function");
+        load_path& lp = __get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find_user_function");
 
 
         std::string file_name = lp.find_fcn (name, dir_name, package_name);
@@ -1185,7 +1185,7 @@ namespace octave
         if (! file_name.empty ())
           {
             octave_value ov_fcn
-              = octave::load_fcn_from_file (file_name, dir_name, "",
+              = load_fcn_from_file (file_name, dir_name, "",
                                             package_name);
 
             if (ov_fcn.is_defined ())
@@ -1206,7 +1206,7 @@ namespace octave
     if (package.is_undefined ())
       {
         cdef_manager& cdm
-          = octave::__get_cdef_manager__ ("symbol_table::fcn_info::fcn_info_rep::find_package");
+          = __get_cdef_manager__ ("symbol_table::fcn_info::fcn_info_rep::find_package");
 
         octave_function *fcn = cdm.find_package_symbol (full_name ());
 
@@ -1349,10 +1349,10 @@ namespace octave
       {
         // Look for a class specific function.
         std::string dispatch_type =
-          name.substr (1, name.find_first_of (octave::sys::file_ops::dir_sep_str ()) - 1);
+          name.substr (1, name.find_first_of (sys::file_ops::dir_sep_str ()) - 1);
 
         std::string method;
-        size_t pos = name.find_last_of (octave::sys::file_ops::dir_sep_str ());
+        size_t pos = name.find_last_of (sys::file_ops::dir_sep_str ());
         if (pos != std::string::npos)
           method = name.substr (pos + 1);
 
@@ -1400,7 +1400,7 @@ namespace octave
     octave_value fcn;
 
     std::string full_name = "@" + dispatch_type +
-      octave::sys::file_ops::dir_sep_str () + name;
+      sys::file_ops::dir_sep_str () + name;
     size_t pos = full_name.find_first_of (Vfilemarker);
 
     if (pos != std::string::npos)
@@ -1503,7 +1503,7 @@ namespace octave
     // Variable.
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("symbol_table::scope::find");
+      = __get_symbol_table__ ("symbol_table::scope::find");
 
     if (! skip_variables)
       {
@@ -1562,7 +1562,7 @@ namespace octave
     octave_value retval;
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("symbol_table::scope::find");
+      = __get_symbol_table__ ("symbol_table::scope::find");
 
     fcn_table_iterator p = symtab.m_fcn_table.find (name);
 
@@ -1620,7 +1620,7 @@ namespace octave
       }
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("symbol_table::scope::clear_global");
+      = __get_symbol_table__ ("symbol_table::scope::clear_global");
 
     global_symbols_iterator q = symtab.m_global_symbols.find (name);
 
@@ -1643,7 +1643,7 @@ namespace octave
       }
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("symbol_table::scope::clear_global_pattern");
+      = __get_symbol_table__ ("symbol_table::scope::clear_global_pattern");
 
     global_symbols_iterator q = symtab.m_global_symbols.begin ();
 

@@ -44,14 +44,14 @@ namespace octave
     gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
                               const std::string& balance_job)
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
           ("GEPBALANCE requires square matrix");
 
       if (a.dims () != b.dims ())
-        octave::err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
+        err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
 
       F77_INT info;
       F77_INT ilo;
@@ -109,14 +109,14 @@ namespace octave
     gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
                                    const std::string& balance_job)
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
           ("FloatGEPBALANCE requires square matrix");
 
       if (a.dims () != b.dims ())
-        octave::err_nonconformant ("FloatGEPBALANCE",
+        err_nonconformant ("FloatGEPBALANCE",
                                    n, n, b.rows(), b.cols());
 
       F77_INT info;
@@ -176,14 +176,14 @@ namespace octave
                                      const ComplexMatrix& b,
                                      const std::string& balance_job)
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
           ("ComplexGEPBALANCE requires square matrix");
 
       if (a.dims () != b.dims ())
-        octave::err_nonconformant ("ComplexGEPBALANCE",
+        err_nonconformant ("ComplexGEPBALANCE",
                                    n, n, b.rows(), b.cols());
 
       F77_INT info;
@@ -244,7 +244,7 @@ namespace octave
                                           const FloatComplexMatrix& b,
                                           const std::string& balance_job)
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         {
@@ -254,7 +254,7 @@ namespace octave
         }
 
       if (a.dims () != b.dims ())
-        octave::err_nonconformant ("FloatComplexGEPBALANCE",
+        err_nonconformant ("FloatComplexGEPBALANCE",
                                    n, n, b.rows(), b.cols());
 
       F77_INT info;

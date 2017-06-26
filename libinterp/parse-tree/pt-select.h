@@ -87,7 +87,7 @@ namespace octave
     octave_comment_list *lead_comm;
   };
 
-  class tree_if_command_list : public octave::base_list<tree_if_clause *>
+  class tree_if_command_list : public base_list<tree_if_clause *>
   {
   public:
 
@@ -210,7 +210,7 @@ namespace octave
     octave_comment_list *lead_comm;
   };
 
-  class tree_switch_case_list : public octave::base_list<tree_switch_case *>
+  class tree_switch_case_list : public base_list<tree_switch_case *>
   {
   public:
 

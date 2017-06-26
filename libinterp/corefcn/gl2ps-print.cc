@@ -57,7 +57,7 @@ namespace octave
   public:
 
     gl2ps_renderer (FILE *_fp, const std::string& _term)
-      : octave::opengl_renderer () , fp (_fp), term (_term), fontsize (),
+      : opengl_renderer () , fp (_fp), term (_term), fontsize (),
         fontname (), buffer_overflow (false)
     { }
 
@@ -68,7 +68,7 @@ namespace octave
     // have to do this?  Without the using declaration or a name change,
     // the base class functions will be hidden.  That may be OK, but it
     // can also cause some confusion.
-    using octave::opengl_renderer::draw;
+    using opengl_renderer::draw;
 
     void draw (const graphics_object& go, const std::string& print_cmd);
 
@@ -88,7 +88,7 @@ namespace octave
       gl2psBeginViewport (vp);
 
       // Draw and finish () or there may primitives missing in the gl2ps output.
-      octave::opengl_renderer::draw_axes (props);
+      opengl_renderer::draw_axes (props);
       finish ();
 
       // Finalize viewport
@@ -116,7 +116,7 @@ namespace octave
     void set_linestyle (const std::string& s, bool use_stipple = false,
                         double linewidth = 0.5)
     {
-      octave::opengl_renderer::set_linestyle (s, use_stipple, linewidth);
+      opengl_renderer::set_linestyle (s, use_stipple, linewidth);
 
       if (s == "-" && ! use_stipple)
         gl2psDisable (GL2PS_LINE_STIPPLE);
@@ -126,7 +126,7 @@ namespace octave
 
     void set_linecap (const std::string& s)
       {
-        octave::opengl_renderer::set_linejoin (s);
+        opengl_renderer::set_linejoin (s);
 
 #if defined (HAVE_GL2PSLINEJOIN)
         if (s == "butt")
@@ -140,7 +140,7 @@ namespace octave
 
     void set_linejoin (const std::string& s)
     {
-      octave::opengl_renderer::set_linejoin (s);
+      opengl_renderer::set_linejoin (s);
 
 #if defined (HAVE_GL2PSLINEJOIN)
       if (s == "round")
@@ -156,13 +156,13 @@ namespace octave
     {
       if (on)
         {
-          octave::opengl_renderer::set_polygon_offset (on, offset);
+          opengl_renderer::set_polygon_offset (on, offset);
           gl2psEnable (GL2PS_POLYGON_OFFSET_FILL);
         }
       else
         {
           gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
-          octave::opengl_renderer::set_polygon_offset (on, offset);
+          opengl_renderer::set_polygon_offset (on, offset);
         }
     }
 
@@ -177,7 +177,7 @@ namespace octave
     // that have been parsed by freetype
     void fix_strlist_position (double x, double y, double z,
                                Matrix box, double rotation,
-                               std::list<octave::text_renderer::string>& lst);
+                               std::list<text_renderer::string>& lst);
 
     int alignment_to_mode (int ha, int va) const;
     FILE *fp;
@@ -196,7 +196,7 @@ namespace octave
 
     if (! in_draw)
       {
-        octave::unwind_protect frame;
+        unwind_protect frame;
 
         frame.protect_var (in_draw);
 
@@ -298,7 +298,7 @@ namespace octave
                 error ("gl2ps_renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
               }
 
-            octave::opengl_renderer::draw (go);
+            opengl_renderer::draw (go);
 
             if (buffer_overflow)
               warning ("gl2ps_renderer::draw: retrying with buffer size: %.1E B\n", double (2*buffsize));
@@ -325,14 +325,14 @@ namespace octave
                 nwrite = std::fwrite (str, 1, nread, fp);
                 if (nwrite != nread)
                   {
-                    octave::signal_handler ();   // Clear SIGPIPE signal
+                    signal_handler ();   // Clear SIGPIPE signal
                     error ("gl2ps_renderer::draw: internal pipe error");
                   }
               }
           }
       }
     else
-      octave::opengl_renderer::draw (go);
+      opengl_renderer::draw (go);
   }
 
   int
@@ -374,7 +374,7 @@ namespace octave
   void
   gl2ps_renderer::fix_strlist_position (double x, double y, double z,
                                         Matrix box, double rotation,
-                                        std::list<octave::text_renderer::string>& lst)
+                                        std::list<text_renderer::string>& lst)
   {
     for (auto& txtobj : lst)
       {
@@ -626,7 +626,7 @@ namespace octave
     // string using freetype
     Matrix bbox;
     std::string str = txt;
-    std::list<octave::text_renderer::string> lst;
+    std::list<text_renderer::string> lst;
 
     text_to_strlist (str, lst, bbox, ha, va, rotation);
 
@@ -639,7 +639,7 @@ namespace octave
         int sz = fontsize;
         if (! lst.empty () && term.find ("tex") == std::string::npos)
           {
-            octave::text_renderer::string s = lst.front ();
+            text_renderer::string s = lst.front ();
             name = select_font (s.get_name (), s.get_weight () == "bold",
                                 s.get_angle () == "italic");
             set_color (s.get_color ());
@@ -711,7 +711,7 @@ namespace octave
   void
   gl2ps_renderer::set_font (const base_properties& props)
   {
-    octave::opengl_renderer::set_font (props);
+    opengl_renderer::set_font (props);
 
     // Set the interpreter so that text_to_pixels can parse strings properly
     if (props.has_property ("interpreter"))
@@ -847,7 +847,7 @@ namespace octave
 
     FILE *fp = nullptr;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     if (have_cmd)
       {

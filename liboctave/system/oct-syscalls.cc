@@ -50,7 +50,7 @@ namespace octave
     dup2 (int old_fd, int new_fd)
     {
       std::string msg;
-      return octave::sys::dup2 (old_fd, new_fd, msg);
+      return sys::dup2 (old_fd, new_fd, msg);
     }
 
     int
@@ -72,7 +72,7 @@ namespace octave
     execvp (const std::string& file, const string_vector& argv)
     {
       std::string msg;
-      return octave::sys::execvp (file, argv, msg);
+      return sys::execvp (file, argv, msg);
     }
 
     int
@@ -183,7 +183,7 @@ namespace octave
     pipe (int *fildes)
     {
       std::string msg;
-      return octave::sys::pipe (fildes, msg);
+      return sys::pipe (fildes, msg);
     }
 
     int
@@ -205,7 +205,7 @@ namespace octave
     waitpid (pid_t pid, int *status, int options)
     {
       std::string msg;
-      return octave::sys::waitpid (pid, status, options, msg);
+      return sys::waitpid (pid, status, options, msg);
     }
 
     pid_t
@@ -293,7 +293,7 @@ namespace octave
     kill (pid_t pid, int sig)
     {
       std::string msg;
-      return octave::sys::kill (pid, sig, msg);
+      return sys::kill (pid, sig, msg);
     }
 
     int
@@ -321,7 +321,7 @@ namespace octave
             bool sync_mode, int *fildes)
     {
       std::string msg;
-      return octave::sys::popen2 (cmd, args, sync_mode, fildes, msg);
+      return sys::popen2 (cmd, args, sync_mode, fildes, msg);
     }
 
     pid_t
@@ -346,7 +346,7 @@ namespace octave
     fcntl (int fd, int cmd, long arg)
     {
       std::string msg;
-      return octave::sys::fcntl (fd, cmd, arg, msg);
+      return sys::fcntl (fd, cmd, arg, msg);
     }
 
     int

@@ -64,12 +64,12 @@ namespace octave
     bessel_return_value (const Complex& val, octave_idx_type ierr)
     {
       static const Complex inf_val
-        = Complex (octave::numeric_limits<double>::Inf (),
-                   octave::numeric_limits<double>::Inf ());
+        = Complex (numeric_limits<double>::Inf (),
+                   numeric_limits<double>::Inf ());
 
       static const Complex nan_val
-        = Complex (octave::numeric_limits<double>::NaN (),
-                   octave::numeric_limits<double>::NaN ());
+        = Complex (numeric_limits<double>::NaN (),
+                   numeric_limits<double>::NaN ());
 
       Complex retval;
 
@@ -96,12 +96,12 @@ namespace octave
     bessel_return_value (const FloatComplex& val, octave_idx_type ierr)
     {
       static const FloatComplex inf_val
-        = FloatComplex (octave::numeric_limits<float>::Inf (),
-                        octave::numeric_limits<float>::Inf ());
+        = FloatComplex (numeric_limits<float>::Inf (),
+                        numeric_limits<float>::Inf ());
 
       static const FloatComplex nan_val
-        = FloatComplex (octave::numeric_limits<float>::NaN (),
-                        octave::numeric_limits<float>::NaN ());
+        = FloatComplex (numeric_limits<float>::NaN (),
+                        numeric_limits<float>::NaN ());
 
       FloatComplex retval;
 
@@ -342,8 +342,8 @@ namespace octave
               retval = bessel_return_value (tmp, ierr);
             }
           else
-            retval = Complex (octave::numeric_limits<double>::NaN (),
-                              octave::numeric_limits<double>::NaN ());
+            retval = Complex (numeric_limits<double>::NaN (),
+                              numeric_limits<double>::NaN ());
         }
 
       return retval;
@@ -370,7 +370,7 @@ namespace octave
 
           if (zr == 0.0 && zi == 0.0)
             {
-              yr = -octave::numeric_limits<double>::Inf ();
+              yr = -numeric_limits<double>::Inf ();
               yi = 0.0;
             }
           else
@@ -415,8 +415,8 @@ namespace octave
               retval = bessel_return_value (tmp, ierr);
             }
           else
-            retval = Complex (octave::numeric_limits<double>::NaN (),
-                              octave::numeric_limits<double>::NaN ());
+            retval = Complex (numeric_limits<double>::NaN (),
+                              numeric_limits<double>::NaN ());
         }
 
       return retval;
@@ -482,8 +482,8 @@ namespace octave
               retval = bessel_return_value (tmp, ierr);
             }
           else
-            retval = Complex (octave::numeric_limits<double>::NaN (),
-                              octave::numeric_limits<double>::NaN ());
+            retval = Complex (numeric_limits<double>::NaN (),
+                              numeric_limits<double>::NaN ());
         }
 
       return retval;
@@ -508,7 +508,7 @@ namespace octave
 
           if (zr == 0.0 && zi == 0.0)
             {
-              yr = octave::numeric_limits<double>::Inf ();
+              yr = numeric_limits<double>::Inf ();
               yi = 0.0;
             }
           else
@@ -962,8 +962,8 @@ namespace octave
               retval = bessel_return_value (tmp, ierr);
             }
           else
-            retval = FloatComplex (octave::numeric_limits<float>::NaN (),
-                                   octave::numeric_limits<float>::NaN ());
+            retval = FloatComplex (numeric_limits<float>::NaN (),
+                                   numeric_limits<float>::NaN ());
         }
 
       return retval;
@@ -986,7 +986,7 @@ namespace octave
 
           if (z.real () == 0.0 && z.imag () == 0.0)
             {
-              y = FloatComplex (-octave::numeric_limits<float>::Inf (), 0.0);
+              y = FloatComplex (-numeric_limits<float>::Inf (), 0.0);
             }
           else
             {
@@ -1032,8 +1032,8 @@ namespace octave
               retval = bessel_return_value (tmp, ierr);
             }
           else
-            retval = FloatComplex (octave::numeric_limits<float>::NaN (),
-                                   octave::numeric_limits<float>::NaN ());
+            retval = FloatComplex (numeric_limits<float>::NaN (),
+                                   numeric_limits<float>::NaN ());
         }
 
       return retval;
@@ -1089,8 +1089,8 @@ namespace octave
               retval = bessel_return_value (tmp, ierr);
             }
           else
-            retval = FloatComplex (octave::numeric_limits<float>::NaN (),
-                                   octave::numeric_limits<float>::NaN ());
+            retval = FloatComplex (numeric_limits<float>::NaN (),
+                                   numeric_limits<float>::NaN ());
         }
 
       return retval;
@@ -1111,7 +1111,7 @@ namespace octave
 
           if (z.real () == 0.0 && z.imag () == 0.0)
             {
-              y = FloatComplex (octave::numeric_limits<float>::Inf (), 0.0);
+              y = FloatComplex (numeric_limits<float>::Inf (), 0.0);
             }
           else
             {
@@ -2600,11 +2600,11 @@ namespace octave
             y = -y;
         }
       else if (x == 0.0)
-        return octave::numeric_limits<double>::Inf ();
+        return numeric_limits<double>::Inf ();
       else if (x == 2.0)
-        return -octave::numeric_limits<double>::Inf ();
+        return -numeric_limits<double>::Inf ();
       else
-        return octave::numeric_limits<double>::NaN ();
+        return numeric_limits<double>::NaN ();
 
       if (refine)
         {
@@ -2718,12 +2718,12 @@ namespace octave
           const double q = std::sqrt (-2*std::log (0.5*(1-ax)));
           const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
           const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
-          y = yn / yd * octave::math::signum (-x);
+          y = yn / yd * math::signum (-x);
         }
       else if (ax == 1.0)
-        return octave::numeric_limits<double>::Inf () * octave::math::signum (x);
+        return numeric_limits<double>::Inf () * math::signum (x);
       else
-        return octave::numeric_limits<double>::NaN ();
+        return numeric_limits<double>::NaN ();
 
       if (refine)
         {
@@ -2792,14 +2792,14 @@ namespace octave
       // Matlab does not have -0.
 
       if (x == 0)
-        result = (octave::math::negative_sign (x)
-                  ? -octave::numeric_limits<double>::Inf ()
-                  : octave::numeric_limits<double>::Inf ());
-      else if ((x < 0 && octave::math::x_nint (x) == x)
-               || octave::math::isinf (x))
-        result = octave::numeric_limits<double>::Inf ();
-      else if (octave::math::isnan (x))
-        result = octave::numeric_limits<double>::NaN ();
+        result = (math::negative_sign (x)
+                  ? -numeric_limits<double>::Inf ()
+                  : numeric_limits<double>::Inf ());
+      else if ((x < 0 && math::x_nint (x) == x)
+               || math::isinf (x))
+        result = numeric_limits<double>::Inf ();
+      else if (math::isnan (x))
+        result = numeric_limits<double>::NaN ();
       else
         result = std::tgamma (x);
 
@@ -2815,14 +2815,14 @@ namespace octave
       // Matlab does not have -0.
 
       if (x == 0)
-        result = (octave::math::negative_sign (x)
-                  ? -octave::numeric_limits<float>::Inf ()
-                  : octave::numeric_limits<float>::Inf ());
-      else if ((x < 0 && octave::math::x_nint (x) == x)
-               || octave::math::isinf (x))
-        result = octave::numeric_limits<float>::Inf ();
-      else if (octave::math::isnan (x))
-        result = octave::numeric_limits<float>::NaN ();
+        result = (math::negative_sign (x)
+                  ? -numeric_limits<float>::Inf ()
+                  : numeric_limits<float>::Inf ());
+      else if ((x < 0 && math::x_nint (x) == x)
+               || math::isinf (x))
+        result = numeric_limits<float>::Inf ();
+      else if (math::isnan (x))
+        result = numeric_limits<float>::NaN ();
       else
         result = std::tgammaf (x);
 
@@ -3252,14 +3252,14 @@ namespace octave
       static const double euler_mascheroni =
         0.577215664901532860606512090082402431042;
 
-      const bool is_int = (octave::math::floor (z) == z);
+      const bool is_int = (math::floor (z) == z);
 
       T p = 0;
       if (z <= 0)
         {
           // limits - zeros of the gamma function
           if (is_int)
-            p = -octave::numeric_limits<T>::Inf (); // Matlab returns -Inf for psi (0)
+            p = -numeric_limits<T>::Inf (); // Matlab returns -Inf for psi (0)
           else
             // Abramowitz and Stegun, page 259, eq 6.3.7
             p = psi (1 - z) - (pi / tan (pi * z));
@@ -3271,7 +3271,7 @@ namespace octave
           for (octave_idx_type k = z - 1; k > 0; k--)
             p += 1.0 / k;
         }
-      else if (octave::math::floor (z + 0.5) == z + 0.5)
+      else if (math::floor (z + 0.5) == z + 0.5)
         {
           // Abramowitz and Stegun, page 258, eq 6.3.3 and 6.3.4
           for (octave_idx_type k = z; k > 0; k--)
@@ -3360,7 +3360,7 @@ namespace octave
     fortran_psifn<double> (double z, octave_idx_type n_arg,
                            double& ans, octave_idx_type& ierr)
     {
-      F77_INT n = octave::to_f77_int (n_arg);
+      F77_INT n = to_f77_int (n_arg);
       F77_INT flag = 0;
       F77_INT t_ierr;
       F77_XFCN (dpsifn, DPSIFN, (z, n, 1, 1, ans, flag, t_ierr));
@@ -3372,7 +3372,7 @@ namespace octave
     fortran_psifn<float> (float z, octave_idx_type n_arg,
                           float& ans, octave_idx_type& ierr)
     {
-      F77_INT n = octave::to_f77_int (n_arg);
+      F77_INT n = to_f77_int (n_arg);
       F77_INT flag = 0;
       F77_INT t_ierr;
       F77_XFCN (psifn, PSIFN, (z, n, 1, 1, ans, flag, t_ierr));
@@ -3399,9 +3399,9 @@ namespace octave
             ans = -ans;
         }
       else if (ierr == 2)
-        ans = - octave::numeric_limits<T>::Inf ();
+        ans = - numeric_limits<T>::Inf ();
       else // we probably never get here
-        ans = octave::numeric_limits<T>::NaN ();
+        ans = numeric_limits<T>::NaN ();
 
       return ans;
     }

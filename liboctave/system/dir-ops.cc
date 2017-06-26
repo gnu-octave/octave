@@ -53,7 +53,7 @@ namespace octave
         {
           close ();
 
-          std::string fullname = octave::sys::file_ops::tilde_expand (name);
+          std::string fullname = sys::file_ops::tilde_expand (name);
 
           dir = octave_opendir_wrapper (fullname.c_str ());
 

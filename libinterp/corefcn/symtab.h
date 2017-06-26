@@ -304,7 +304,7 @@ namespace octave
 
         bool valid;
 
-        octave::refcount<size_t> count;
+        refcount<size_t> count;
 
       private:
 
@@ -737,7 +737,7 @@ namespace octave
 
         octave_value built_in_function;
 
-        octave::refcount<size_t> count;
+        refcount<size_t> count;
 
       private:
 

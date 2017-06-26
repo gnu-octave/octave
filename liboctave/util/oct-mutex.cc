@@ -162,15 +162,15 @@ namespace octave
 
 #endif
 
-  static octave::base_mutex *
+  static base_mutex *
   init_rep (void)
   {
 #if defined (OCTAVE_USE_WINDOWS_API)
-    return new octave::w32_mutex ();
+    return new w32_mutex ();
 #elif defined (HAVE_PTHREAD_H)
-    return new octave::pthread_mutex ();
+    return new pthread_mutex ();
 #else
-    return new octave::base_mutex ();
+    return new base_mutex ();
 #endif
   }
 

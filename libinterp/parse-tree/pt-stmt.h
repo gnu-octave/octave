@@ -128,7 +128,7 @@ namespace octave
 
   // A list of statements to evaluate.
 
-  class tree_statement_list : public octave::base_list<tree_statement *>
+  class tree_statement_list : public base_list<tree_statement *>
   {
   public:
 

@@ -151,7 +151,7 @@ namespace octave
   void
   base_reader::do_input_echo (const std::string& input_string) const
   {
-    bool forced_interactive = octave::application::forced_interactive ();
+    bool forced_interactive = application::forced_interactive ();
 
     int do_echo = reading_script_file ()
       ? (Vecho_executing_commands & ECHO_SCRIPTS)
@@ -162,12 +162,12 @@ namespace octave
         if (forced_interactive)
           {
             if (pflag > 0)
-              octave_stdout << octave::command_editor::decode_prompt_string (VPS1);
+              octave_stdout << command_editor::decode_prompt_string (VPS1);
             else
-              octave_stdout << octave::command_editor::decode_prompt_string (VPS2);
+              octave_stdout << command_editor::decode_prompt_string (VPS2);
           }
         else
-          octave_stdout << octave::command_editor::decode_prompt_string (VPS4);
+          octave_stdout << command_editor::decode_prompt_string (VPS4);
 
         if (! input_string.empty ())
           {
@@ -249,7 +249,7 @@ namespace octave
     // Process pre input event hook function prior to flushing output and
     // printing the prompt.
 
-    if (octave::application::interactive ())
+    if (application::interactive ())
       {
         if (! Vdebugging)
           octave_link::exit_debugger_event ();
@@ -263,14 +263,14 @@ namespace octave
 
     std::string ps = (pflag > 0) ? VPS1 : VPS2;
 
-    std::string prompt = octave::command_editor::decode_prompt_string (ps);
+    std::string prompt = command_editor::decode_prompt_string (ps);
 
-    octave::pipe_handler_error_count = 0;
+    pipe_handler_error_count = 0;
 
-    octave::flush_stdout ();
+    flush_stdout ();
 
-    octave::pager_stream::reset ();
-    octave::diary_stream::reset ();
+    pager_stream::reset ();
+    diary_stream::reset ();
 
     octave_diary << prompt;
 
@@ -281,7 +281,7 @@ namespace octave
     if (retval != "\n"
         && retval.find_first_not_of (" \t\n\r") != std::string::npos)
       {
-        load_path& lp = octave::__get_load_path__ ("base_reader::octave_gets");
+        load_path& lp = __get_load_path__ ("base_reader::octave_gets");
 
         lp.update ();
 
@@ -300,7 +300,7 @@ namespace octave
       {
         if (! history_skip_auto_repeated_debugging_command)
           {
-            if (octave::command_history::add (retval))
+            if (command_history::add (retval))
               octave_link::append_history (retval);
           }
 
@@ -317,7 +317,7 @@ namespace octave
     // Process post input event hook function after the internal history
     // list has been updated.
 
-    if (octave::application::interactive ())
+    if (application::interactive ())
       octave_link::post_input_event ();
 
     return retval;

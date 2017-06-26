@@ -158,7 +158,7 @@ namespace octave
 
     int
     base_file_stat::is_newer (const std::string& file,
-                              const octave::sys::time& time)
+                              const sys::time& time)
     {
       file_stat fs (file);
 
@@ -184,11 +184,11 @@ namespace octave
           initialized = false;
           fail = false;
 
-          std::string full_file_name = octave::sys::file_ops::tilde_expand (file_name);
+          std::string full_file_name = sys::file_ops::tilde_expand (file_name);
 
 #if defined (__WIN32__)
           // Remove trailing slash.
-          if (octave::sys::file_ops::is_dir_sep (full_file_name[full_file_name.length () - 1])
+          if (sys::file_ops::is_dir_sep (full_file_name[full_file_name.length () - 1])
               && full_file_name.length () != 1
               && ! (full_file_name.length () == 3 && full_file_name[1] == ':'))
             full_file_name.resize (full_file_name.length () - 1);
@@ -216,9 +216,9 @@ namespace octave
             }
           else
             {
-              m_atime = octave::sys::time (sys_atime);
-              m_mtime = octave::sys::time (sys_mtime);
-              m_ctime = octave::sys::time (sys_ctime);
+              m_atime = sys::time (sys_atime);
+              m_mtime = sys::time (sys_mtime);
+              m_ctime = sys::time (sys_ctime);
             }
 
           initialized = true;
@@ -248,9 +248,9 @@ namespace octave
             }
           else
             {
-              m_atime = octave::sys::time (sys_atime);
-              m_mtime = octave::sys::time (sys_mtime);
-              m_ctime = octave::sys::time (sys_ctime);
+              m_atime = sys::time (sys_atime);
+              m_mtime = sys::time (sys_mtime);
+              m_ctime = sys::time (sys_ctime);
             }
 
           initialized = true;

@@ -2109,7 +2109,7 @@ namespace octave
     if (empty ())
       {
         symbol_table::scope *scope
-          = octave::__get_current_scope__ ("lexical_feedback::symbol_table_context::curr_scope");
+          = __get_current_scope__ ("lexical_feedback::symbol_table_context::curr_scope");
 
         return scope;
       }
@@ -2381,7 +2381,7 @@ namespace octave
     // Only ask for input from stdin if we are expecting interactive
     // input.
 
-    if (octave::application::interactive ()
+    if (application::interactive ()
         && ! (reading_fcn_file
               || reading_classdef_file
               || reading_script_file

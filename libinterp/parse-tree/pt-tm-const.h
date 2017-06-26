@@ -55,7 +55,7 @@ namespace octave
   private:
 
     class
-    tm_row_const_rep : public octave::base_list<octave_value>
+    tm_row_const_rep : public base_list<octave_value>
     {
     public:
 
@@ -78,7 +78,7 @@ namespace octave
 
       ~tm_row_const_rep (void) = default;
 
-      octave::refcount<int> count;
+      refcount<int> count;
 
       dim_vector dv;
 
@@ -193,7 +193,7 @@ namespace octave
   };
 
   class
-  tm_const : public octave::base_list<tm_row_const>
+  tm_const : public base_list<tm_row_const>
   {
   public:
 
@@ -259,12 +259,12 @@ namespace octave
 
   template <typename TYPE, typename T>
   void
-  single_type_concat (Array<T>& result, octave::tm_const& tmp)
+  single_type_concat (Array<T>& result, tm_const& tmp)
   {
     octave_idx_type r = 0;
     octave_idx_type c = 0;
 
-    for (octave::tm_row_const& row : tmp)
+    for (tm_row_const& row : tmp)
       {
         // Skip empty arrays to allow looser rules.
         if (row.dims ().any_zero ())
@@ -294,7 +294,7 @@ namespace octave
   template <typename TYPE, typename T>
   void
   single_type_concat (Array<T>& result, const dim_vector& dv,
-                      octave::tm_const& tmp)
+                      tm_const& tmp)
   {
     if (dv.any_zero ())
       {
@@ -306,7 +306,7 @@ namespace octave
       {
         // If possible, forward the operation to liboctave.
         // Single row.
-        octave::tm_row_const& row = tmp.front ();
+        tm_row_const& row = tmp.front ();
         if (! (equal_types<T, char>::value || equal_types<T, octave_value>::value)
             && row.all_1x1_p ())
           {
@@ -343,7 +343,7 @@ namespace octave
   template <typename TYPE, typename T>
   void
   single_type_concat (Sparse<T>& result, const dim_vector& dv,
-                      octave::tm_const& tmp)
+                      tm_const& tmp)
   {
     if (dv.any_zero ())
       {
@@ -357,7 +357,7 @@ namespace octave
     octave_idx_type nrows = tmp.length ();
     octave_idx_type j = 0;
     OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_row_list, nrows);
-    for (octave::tm_row_const& row : tmp)
+    for (tm_row_const& row : tmp)
       {
         octave_idx_type ncols = row.length ();
         octave_idx_type i = 0;
@@ -382,7 +382,7 @@ namespace octave
   template <typename MAP>
   void
   single_type_concat (octave_map& result, const dim_vector& dv,
-                      octave::tm_const& tmp)
+                      tm_const& tmp)
   {
     if (dv.any_zero ())
       {
@@ -393,7 +393,7 @@ namespace octave
     octave_idx_type nrows = tmp.length ();
     octave_idx_type j = 0;
     OCTAVE_LOCAL_BUFFER (octave_map, map_row_list, nrows);
-    for (octave::tm_row_const& row : tmp)
+    for (tm_row_const& row : tmp)
       {
         octave_idx_type ncols = row.length ();
         octave_idx_type i = 0;
@@ -417,7 +417,7 @@ namespace octave
 
   template <typename TYPE>
   octave_value
-  do_single_type_concat (const dim_vector& dv, octave::tm_const& tmp)
+  do_single_type_concat (const dim_vector& dv, tm_const& tmp)
   {
     TYPE result;
 
@@ -429,9 +429,9 @@ namespace octave
   template <>
   octave_value
   do_single_type_concat<octave_map> (const dim_vector& dv,
-                                     octave::tm_const& tmp);
+                                     tm_const& tmp);
 
-  extern octave_value do_class_concat (octave::tm_const& tmc);
+  extern octave_value do_class_concat (tm_const& tmc);
 }
 
 #endif

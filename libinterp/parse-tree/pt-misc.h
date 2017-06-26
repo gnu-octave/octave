@@ -39,7 +39,7 @@ namespace octave
   // parameters in a function definition.  Elements are identifiers
   // only.
 
-  class tree_parameter_list : public octave::base_list<tree_decl_elt *>
+  class tree_parameter_list : public base_list<tree_decl_elt *>
   {
   public:
 
@@ -95,7 +95,7 @@ namespace octave
   // Return lists.  Used to hold the right hand sides of multiple
   // assignment expressions.
 
-  class tree_return_list : public octave::base_list<tree_index_expression *>
+  class tree_return_list : public base_list<tree_index_expression *>
   {
   public:
 

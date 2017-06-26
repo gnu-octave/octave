@@ -265,7 +265,7 @@ namespace octave
               {
                 tmp = tmp.subsref (type.substr (tmpi, i-tmpi), tmpidx, true);
               }
-            catch (octave::index_exception& e)  // problems with range, invalid type etc.
+            catch (index_exception& e)  // problems with range, invalid type etc.
               {
                 final_index_error (e, expr);
               }

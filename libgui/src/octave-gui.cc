@@ -138,7 +138,7 @@ namespace octave
     set_application_id ();
 
     std::string show_gui_msgs =
-      octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+      sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
     // Installing our handler suppresses the messages.
 
@@ -215,9 +215,9 @@ namespace octave
         // TERM is always set appropriately.
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-        octave::sys::env::putenv ("TERM", "cygwin");
+        sys::env::putenv ("TERM", "cygwin");
 #else
-        octave::sys::env::putenv ("TERM", "xterm");
+        sys::env::putenv ("TERM", "xterm");
 #endif
 
         shortcut_manager::init_data ();

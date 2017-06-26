@@ -148,10 +148,10 @@ namespace octave
 
     bool is_nan_or_inf (double x, double y, double z) const
     {
-      return (octave::math::isnan (x) || octave::math::isnan (y)
-              || octave::math::isnan (z)
-              || octave::math::isinf (x) || octave::math::isinf (y)
-              || octave::math::isinf (z));
+      return (math::isnan (x) || math::isnan (y)
+              || math::isnan (z)
+              || math::isinf (x) || math::isinf (y)
+              || math::isinf (z));
     }
 
     octave_uint8 clip_code (double x, double y, double z) const

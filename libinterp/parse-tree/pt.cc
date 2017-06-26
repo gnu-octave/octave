@@ -67,7 +67,7 @@ namespace octave
       {
         int parse_status = 0;
 
-        octave::unwind_protect frame;
+        unwind_protect frame;
         frame.protect_var (buffer_error_messages);
         frame.protect_var (Vdebug_on_error);
         frame.protect_var (Vdebug_on_warning);
@@ -91,7 +91,7 @@ namespace octave
             else
               warning ("Error parsing breakpoint condition");
           }
-        catch (const octave::execution_exception& e)
+        catch (const execution_exception& e)
           {
             warning ("Error evaluating breakpoint condition:\n    %s",
                      last_error_message ().c_str ());

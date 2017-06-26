@@ -50,7 +50,7 @@ namespace octave
       : balanced_mat (a), scale (), ilo (), ihi (),
         job (get_job (noperm, noscal))
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -73,15 +73,15 @@ namespace octave
     Matrix
     aepbalance<Matrix>::balancing_matrix (void) const
     {
-      F77_INT n = octave::to_f77_int (balanced_mat.rows ());
+      F77_INT n = to_f77_int (balanced_mat.rows ());
 
       Matrix balancing_mat (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         balancing_mat.elem (i ,i) = 1.0;
 
       F77_INT info;
-      F77_INT t_ilo = octave::to_f77_int (ilo);
-      F77_INT t_ihi = octave::to_f77_int (ihi);
+      F77_INT t_ilo = to_f77_int (ilo);
+      F77_INT t_ihi = to_f77_int (ihi);
 
       char side = 'R';
 
@@ -101,7 +101,7 @@ namespace octave
       : balanced_mat (a), scale (), ilo (), ihi (),
         job (get_job (noperm, noscal))
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -124,15 +124,15 @@ namespace octave
     FloatMatrix
     aepbalance<FloatMatrix>::balancing_matrix (void) const
     {
-      F77_INT n = octave::to_f77_int (balanced_mat.rows ());
+      F77_INT n = to_f77_int (balanced_mat.rows ());
 
       FloatMatrix balancing_mat (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         balancing_mat.elem (i ,i) = 1.0;
 
       F77_INT info;
-      F77_INT t_ilo = octave::to_f77_int (ilo);
-      F77_INT t_ihi = octave::to_f77_int (ihi);
+      F77_INT t_ilo = to_f77_int (ilo);
+      F77_INT t_ihi = to_f77_int (ihi);
 
       char side = 'R';
 
@@ -152,7 +152,7 @@ namespace octave
       : balanced_mat (a), scale (), ilo (), ihi (),
         job (get_job (noperm, noscal))
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -175,15 +175,15 @@ namespace octave
     ComplexMatrix
     aepbalance<ComplexMatrix>::balancing_matrix (void) const
     {
-      F77_INT n = octave::to_f77_int (balanced_mat.rows ());
+      F77_INT n = to_f77_int (balanced_mat.rows ());
 
       ComplexMatrix balancing_mat (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         balancing_mat.elem (i, i) = 1.0;
 
       F77_INT info;
-      F77_INT t_ilo = octave::to_f77_int (ilo);
-      F77_INT t_ihi = octave::to_f77_int (ihi);
+      F77_INT t_ilo = to_f77_int (ilo);
+      F77_INT t_ihi = to_f77_int (ihi);
 
       char side = 'R';
 
@@ -204,7 +204,7 @@ namespace octave
       : balanced_mat (a), scale (), ilo (), ihi (),
         job (get_job (noperm, noscal))
     {
-      F77_INT n = octave::to_f77_int (a.cols ());
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -227,15 +227,15 @@ namespace octave
     FloatComplexMatrix
     aepbalance<FloatComplexMatrix>::balancing_matrix (void) const
     {
-      F77_INT n = octave::to_f77_int (balanced_mat.rows ());
+      F77_INT n = to_f77_int (balanced_mat.rows ());
 
       FloatComplexMatrix balancing_mat (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         balancing_mat.elem (i, i) = 1.0;
 
       F77_INT info;
-      F77_INT t_ilo = octave::to_f77_int (ilo);
-      F77_INT t_ihi = octave::to_f77_int (ihi);
+      F77_INT t_ilo = to_f77_int (ilo);
+      F77_INT t_ihi = to_f77_int (ihi);
 
       char side = 'R';
 

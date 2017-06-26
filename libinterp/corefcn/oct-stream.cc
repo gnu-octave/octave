@@ -2545,7 +2545,7 @@ namespace octave
     : who (who_arg), buf (), whitespace_table (), delim_table (),
       delims (), comment_style (), comment_len (0), comment_char (-2),
       buffer_size (0), date_locale (), inf_nan (init_inf_nan ()),
-      empty_value (octave::numeric_limits<double>::NaN ()), exp_chars ("edED"),
+      empty_value (numeric_limits<double>::NaN ()), exp_chars ("edED"),
       header_lines (0), treat_as_empty (), treat_as_empty_len (0),
       whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
       return_on_error (1), collect_output (false),
@@ -2909,12 +2909,12 @@ namespace octave
         int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
         if (i == 0)
           {
-            retval = octave::numeric_limits<double>::Inf ();
+            retval = numeric_limits<double>::Inf ();
             valid = true;
           }
         else if (i == 1)
           {
-            retval = octave::numeric_limits<double>::NaN ();
+            retval = numeric_limits<double>::NaN ();
             valid = true;
           }
       }
@@ -2925,12 +2925,12 @@ namespace octave
         int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
         if (i == 0)
           {
-            retval = octave::numeric_limits<double>::Inf ();
+            retval = numeric_limits<double>::Inf ();
             valid = true;
           }
         else if (i == 1)
           {
-            retval = octave::numeric_limits<double>::NaN ();
+            retval = numeric_limits<double>::NaN ();
             valid = true;
           }
       }
@@ -2976,8 +2976,8 @@ namespace octave
                 if (ch2 == 'f')
                   {
                     inf = true;
-                    re = (ch == '+' ? octave::numeric_limits<double>::Inf ()
-                                    : -octave::numeric_limits<double>::Inf ());
+                    re = (ch == '+' ? numeric_limits<double>::Inf ()
+                                    : -numeric_limits<double>::Inf ());
                     value = 0;
                   }
                 else
@@ -3002,8 +3002,8 @@ namespace octave
 
         // check for "treat as empty" string
         if (treat_as_empty.numel ()
-            && (is.fail () || octave::math::is_NaN_or_NA (Complex (re))
-                || re == octave::numeric_limits<double>::Inf ()))
+            && (is.fail () || math::is_NaN_or_NA (Complex (re))
+                || re == numeric_limits<double>::Inf ()))
           {
 
             for (int i = 0; i < treat_as_empty.numel (); i++)
@@ -4005,7 +4005,7 @@ namespace octave
   base_stream::do_gets (octave_idx_type max_len, bool& err,
                         bool strip_newline, const std::string& who)
   {
-    if (octave::application::interactive () && file_number () == 0)
+    if (application::interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4116,7 +4116,7 @@ namespace octave
   off_t
   base_stream::skipl (off_t num, bool& err, const std::string& who)
   {
-    if (octave::application::interactive () && file_number () == 0)
+    if (application::interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -5714,7 +5714,7 @@ namespace octave
             break;
 
           default:
-            // Note: error is member fcn from octave::base_stream, not ::error.
+            // Note: error is member fcn from base_stream, not ::error.
             // This error does not halt execution so "return ..." must exist.
             error ("%s: invalid format specifier", who.c_str ());
             return -1;
@@ -6051,7 +6051,7 @@ namespace octave
     if (tc_count.is_defined ())
       {
         if (tc_count.is_scalar_type ()
-            && octave::math::isinf (tc_count.scalar_value ()))
+            && math::isinf (tc_count.scalar_value ()))
           count = -1;
         else
           {
@@ -6379,7 +6379,7 @@ namespace octave
                          octave_idx_type nr, octave_idx_type nc,
                          oct_data_conv::data_type input_type,
                          oct_data_conv::data_type output_type,
-                         octave::mach_info::float_format ffmt)
+                         mach_info::float_format ffmt)
   {
     octave_value retval;
 
@@ -6415,13 +6415,13 @@ namespace octave
 
     bool swap = false;
 
-    if (ffmt == octave::mach_info::flt_fmt_unknown)
+    if (ffmt == mach_info::flt_fmt_unknown)
       ffmt = float_format ();
 
-    if (octave::mach_info::words_big_endian ())
-      swap = (ffmt == octave::mach_info::flt_fmt_ieee_little_endian);
+    if (mach_info::words_big_endian ())
+      swap = (ffmt == mach_info::flt_fmt_ieee_little_endian);
     else
-      swap = (ffmt == octave::mach_info::flt_fmt_ieee_big_endian);
+      swap = (ffmt == mach_info::flt_fmt_ieee_big_endian);
 
     bool do_float_fmt_conv = ((input_type == oct_data_conv::dt_double
                                || input_type == oct_data_conv::dt_single)
@@ -6464,7 +6464,7 @@ namespace octave
   stream::read (const Array<double>& size, octave_idx_type block_size,
                 oct_data_conv::data_type input_type,
                 oct_data_conv::data_type output_type,
-                octave_idx_type skip, octave::mach_info::float_format ffmt,
+                octave_idx_type skip, mach_info::float_format ffmt,
                 octave_idx_type& count)
   {
     octave_value retval;
@@ -6492,7 +6492,7 @@ namespace octave
       {
         get_size (size, nr, nc, one_elt_size_spec, "fread");
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
         invalid_operation ("fread", "reading");
 
@@ -6660,7 +6660,7 @@ namespace octave
   octave_idx_type
   stream::write (const octave_value& data, octave_idx_type block_size,
                  oct_data_conv::data_type output_type,
-                 octave_idx_type skip, octave::mach_info::float_format flt_fmt)
+                 octave_idx_type skip, mach_info::float_format flt_fmt)
   {
     octave_idx_type retval = -1;
 
@@ -6668,7 +6668,7 @@ namespace octave
       invalid_operation ("fwrite", "writing");
     else
       {
-        if (flt_fmt == octave::mach_info::flt_fmt_unknown)
+        if (flt_fmt == mach_info::flt_fmt_unknown)
           flt_fmt = float_format ();
 
         octave_idx_type status = data.write (*this, block_size, output_type,
@@ -6904,17 +6904,17 @@ namespace octave
   stream::write (const Array<T>& data, octave_idx_type block_size,
                  oct_data_conv::data_type output_type,
                  octave_idx_type skip,
-                 octave::mach_info::float_format flt_fmt)
+                 mach_info::float_format flt_fmt)
   {
     bool swap = false;
 
-    if (octave::mach_info::words_big_endian ())
-      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian);
+    if (mach_info::words_big_endian ())
+      swap = (flt_fmt == mach_info::flt_fmt_ieee_little_endian);
     else
-      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
+      swap = (flt_fmt == mach_info::flt_fmt_ieee_big_endian);
 
     bool do_data_conversion = (swap || ! is_equivalent_type<T> (output_type)
-                               || flt_fmt != octave::mach_info::float_format ());
+                               || flt_fmt != mach_info::float_format ());
 
     octave_idx_type nel = data.numel ();
 
@@ -6977,7 +6977,7 @@ namespace octave
   stream::write (const Array<T>& data, octave_idx_type block_size,      \
                  oct_data_conv::data_type output_type,                  \
                  octave_idx_type skip,                                  \
-                 octave::mach_info::float_format flt_fmt)
+                 mach_info::float_format flt_fmt)
 
     INSTANTIATE_WRITE (octave_int8);
   INSTANTIATE_WRITE (octave_uint8);
@@ -7194,10 +7194,10 @@ namespace octave
     return retval;
   }
 
-  octave::mach_info::float_format
+  mach_info::float_format
   stream::float_format (void) const
   {
-    octave::mach_info::float_format retval = octave::mach_info::flt_fmt_unknown;
+    mach_info::float_format retval = mach_info::flt_fmt_unknown;
 
     if (stream_ok ())
       retval = rep->float_format ();
@@ -7524,7 +7524,7 @@ namespace octave
 
     retval(0) = os.name ();
     retval(1) = stream::mode_as_string (os.mode ());
-    retval(2) = octave::mach_info::float_format_as_string (os.float_format ());
+    retval(2) = mach_info::float_format_as_string (os.float_format ());
 
     return retval;
   }
@@ -7565,7 +7565,7 @@ namespace octave
             << stream::mode_as_string (os.mode ())
             << "  "
             << std::setw (9)
-            << octave::mach_info::float_format_as_string (os.float_format ())
+            << mach_info::float_format_as_string (os.float_format ())
             << "  "
             << os.name () << "\n";
       }

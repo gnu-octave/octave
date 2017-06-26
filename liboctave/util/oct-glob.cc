@@ -75,7 +75,7 @@ namespace octave
 
       int k = 0;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
 
       void *glob_info = octave_create_glob_info_struct ();
 
@@ -151,7 +151,7 @@ namespace octave
 
       int k = 0;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
 
       void *glob_info = octave_create_glob_info_struct ();
 

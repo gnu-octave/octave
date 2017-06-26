@@ -2437,7 +2437,7 @@ namespace octave
   {
     tree_expression *retval = nullptr;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (discard_error_messages);
     frame.protect_var (discard_warning_messages);
@@ -2465,7 +2465,7 @@ namespace octave
       {
         try
           {
-            octave::tree_evaluator& tw
+            tree_evaluator& tw
               = __get_evaluator__ ("finish_colon_expression");
 
             octave_value tmp = tw.evaluate (e);
@@ -2485,9 +2485,9 @@ namespace octave
 
             retval = tc_retval;
           }
-        catch (const octave::execution_exception&)
+        catch (const execution_exception&)
           {
-            octave::interpreter::recover_from_exception ();
+            interpreter::recover_from_exception ();
           }
       }
     else
@@ -3215,7 +3215,7 @@ namespace octave
 
     m_lexer.help_text = "";
 
-    octave::sys::time now;
+    sys::time now;
 
     script->stash_fcn_file_time (now);
 
@@ -3305,7 +3305,7 @@ namespace octave
 
         std::string nm = m_lexer.fcn_file_name;
 
-        size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+        size_t pos = nm.find_last_of (sys::file_ops::dir_sep_chars ());
 
         if (pos != std::string::npos)
           nm = m_lexer.fcn_file_name.substr (pos+1);
@@ -3323,7 +3323,7 @@ namespace octave
 
     if (m_lexer.reading_fcn_file || m_lexer.reading_classdef_file || m_autoloading)
       {
-        octave::sys::time now;
+        sys::time now;
 
         fcn->stash_fcn_file_name (m_lexer.fcn_file_full_name);
         fcn->stash_fcn_file_time (now);
@@ -3356,7 +3356,7 @@ namespace octave
 
         std::string nm = fcn->fcn_file_name ();
 
-        octave::sys::file_stat fs (nm);
+        sys::file_stat fs (nm);
 
         if (fs && fs.is_newer (now))
           warning_with_id ("Octave:future-time-stamp",
@@ -3415,7 +3415,7 @@ namespace octave
           tmp += ": " + file;
 
         symbol_table& symtab
-          = octave::__get_symbol_table__ ("base_parser::finish_function");
+          = __get_symbol_table__ ("base_parser::finish_function");
 
 
         symbol_table::scope *fcn_scope = fcn->scope ();
@@ -3499,7 +3499,7 @@ namespace octave
     args(0) = method_nm;
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("base_parser::make_superclass_ref");
+      = __get_symbol_table__ ("base_parser::make_superclass_ref");
 
     octave_value fcn
       = symtab.find_built_in_function ("__superclass_reference__");
@@ -3515,7 +3515,7 @@ namespace octave
     args(0) = class_nm;
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("base_parser::make_meta_class_query");
+      = __get_symbol_table__ ("base_parser::make_meta_class_query");
 
     octave_value fcn
       = symtab.find_built_in_function ("__meta_class_query__");
@@ -3545,7 +3545,7 @@ namespace octave
 
     std::string nm = m_lexer.fcn_file_name;
 
-    size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+    size_t pos = nm.find_last_of (sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
       nm = m_lexer.fcn_file_name.substr (pos+1);
@@ -4020,7 +4020,7 @@ namespace octave
 
     if (e->is_constant ())
       {
-        octave::tree_evaluator& tw
+        tree_evaluator& tw
           = __get_evaluator__ ("validate_matrix_for_assignment");
 
         octave_value ov = tw.evaluate (e);
@@ -4079,7 +4079,7 @@ namespace octave
   {
     tree_expression *retval = array_list;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (discard_error_messages);
     frame.protect_var (discard_warning_messages);
@@ -4091,7 +4091,7 @@ namespace octave
       {
         try
           {
-            octave::tree_evaluator& tw
+            tree_evaluator& tw
               = __get_evaluator__ ("finish_array_list");
 
             octave_value tmp = tw.evaluate (array_list);
@@ -4112,9 +4112,9 @@ namespace octave
 
             retval = tc_retval;
           }
-        catch (const octave::execution_exception&)
+        catch (const execution_exception&)
           {
-            octave::interpreter::recover_from_exception ();
+            interpreter::recover_from_exception ();
           }
       }
 
@@ -4279,7 +4279,7 @@ namespace octave
       {
         status = octave_pull_parse (pstate, *this);
       }
-    catch (octave::execution_exception& e)
+    catch (execution_exception& e)
       {
         std::string file = m_lexer.fcn_file_full_name;
 
@@ -4288,11 +4288,11 @@ namespace octave
         else
           error (e, "parse error in %s", file.c_str ());
       }
-    catch (const octave::exit_exception&)
+    catch (const exit_exception&)
       {
         throw;
       }
-    catch (octave::interrupt_exception &)
+    catch (interrupt_exception &)
       {
         throw;
       }
@@ -4343,7 +4343,7 @@ namespace octave
           {
             status = octave_push_parse (pstate, token, &lval, *this);
           }
-        catch (octave::execution_exception& e)
+        catch (execution_exception& e)
           {
             std::string file = m_lexer.fcn_file_full_name;
 
@@ -4352,11 +4352,11 @@ namespace octave
             else
               error (e, "parse error in %s", file.c_str ());
           }
-        catch (const octave::exit_exception&)
+        catch (const exit_exception&)
           {
             throw;
           }
-        catch (octave::interrupt_exception &)
+        catch (interrupt_exception &)
           {
             throw;
           }
@@ -4510,10 +4510,10 @@ namespace octave
         || (file_len > 4 && file.substr (file_len-4) == ".mex")
         || (file_len > 2 && file.substr (file_len-2) == ".m"))
       {
-        file = octave::sys::env::base_pathname (file);
+        file = sys::env::base_pathname (file);
         file = file.substr (0, file.find_last_of ('.'));
 
-        size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
+        size_t pos = file.find_last_of (sys::file_ops::dir_sep_str ());
         if (pos != std::string::npos)
           file = file.substr (pos+1);
       }
@@ -4556,7 +4556,7 @@ namespace octave
 
     if (p != autoload_map.end ())
       {
-        load_path& lp = octave::__get_load_path__ ("lookup_autoload");
+        load_path& lp = __get_load_path__ ("lookup_autoload");
 
         retval = lp.find_file (p->second);
       }
@@ -4597,7 +4597,7 @@ namespace octave
   {
     octave_value retval;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     std::string nm = file_name;
 
@@ -4613,21 +4613,21 @@ namespace octave
         || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
         || (nm_len > 2 && nm.substr (nm_len-2) == ".m"))
       {
-        nm = octave::sys::env::base_pathname (file);
+        nm = sys::env::base_pathname (file);
         nm = nm.substr (0, nm.find_last_of ('.'));
 
-        size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_str ());
+        size_t pos = nm.find_last_of (sys::file_ops::dir_sep_str ());
         if (pos != std::string::npos)
           nm = nm.substr (pos+1);
       }
 
-    relative_lookup = ! octave::sys::env::absolute_pathname (file);
+    relative_lookup = ! sys::env::absolute_pathname (file);
 
-    file = octave::sys::env::make_absolute (file);
+    file = sys::env::make_absolute (file);
 
     int len = file.length ();
 
-      octave::dynamic_loader& dyn_loader
+      dynamic_loader& dyn_loader
         = __get_dynamic_loader__ ("~octave_mex_function");
 
     if (len > 4 && file.substr (len-4, len-1) == ".oct")
@@ -4846,16 +4846,16 @@ namespace octave
     static std::map<std::string, int> source_call_depth;
 
     std::string file_full_name
-      = octave::sys::file_ops::tilde_expand (file_name);
+      = sys::file_ops::tilde_expand (file_name);
 
     size_t pos
-      = file_full_name.find_last_of (octave::sys::file_ops::dir_sep_str ());
+      = file_full_name.find_last_of (sys::file_ops::dir_sep_str ());
 
     std::string dir_name = file_full_name.substr (0, pos);
 
-    file_full_name = octave::sys::env::make_absolute (file_full_name);
+    file_full_name = sys::env::make_absolute (file_full_name);
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     if (source_call_depth.find (file_full_name) == source_call_depth.end ())
       source_call_depth[file_full_name] = -1;
@@ -4869,7 +4869,7 @@ namespace octave
 
     if (! context.empty ())
       {
-        octave::call_stack& cs = octave::__get_call_stack__ ("source_file");
+        call_stack& cs = __get_call_stack__ ("source_file");
 
         if (context == "caller")
           cs.goto_caller_frame ();
@@ -4878,12 +4878,12 @@ namespace octave
         else
           error ("source: context must be \"caller\" or \"base\"");
 
-        frame.add_method (cs, &octave::call_stack::pop);
+        frame.add_method (cs, &call_stack::pop);
       }
 
     // Find symbol name that would be in symbol_table, if it were loaded.
     size_t dir_end
-      = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+      = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
     dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
 
     size_t extension = file_name.find_last_of ('.');
@@ -4891,10 +4891,10 @@ namespace octave
       extension = file_name.length ();
 
     std::string symbol = file_name.substr (dir_end, extension - dir_end);
-    std::string full_name = octave::sys::canonicalize_file_name (file_name);
+    std::string full_name = sys::canonicalize_file_name (file_name);
 
     // Check if this file is already loaded (or in the path)
-    symbol_table& symtab = octave::__get_symbol_table__ ("source_file");
+    symbol_table& symtab = __get_symbol_table__ ("source_file");
     octave_value ov_code = symtab.find (symbol);
 
     if (ov_code.is_user_script ())
@@ -4902,7 +4902,7 @@ namespace octave
         octave_user_script *script = ov_code.user_script_value ();
 
         if (! script
-            || (octave::sys::canonicalize_file_name (script->fcn_file_name ())
+            || (sys::canonicalize_file_name (script->fcn_file_name ())
                 != full_name))
           {
             // Wrong file, so load it below.
@@ -4926,7 +4926,7 @@ namespace octave
                                       "", "", require_file, true, false,
                                       false, warn_for);
           }
-        catch (octave::execution_exception& e)
+        catch (execution_exception& e)
           {
             error (e, "source: error sourcing file '%s'",
                    file_full_name.c_str ());
@@ -5073,7 +5073,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    symbol_table& symtab = octave::__get_symbol_table__ ("feval");
+    symbol_table& symtab = __get_symbol_table__ ("feval");
 
     octave_value fcn = symtab.find_function (name, args);
 
@@ -5111,7 +5111,7 @@ namespace octave
   {
     if (val.is_function ())
       {
-        return octave::feval (val.function_value (), args, nargout);
+        return feval (val.function_value (), args, nargout);
       }
     else if (val.is_function_handle ())
       {
@@ -5125,7 +5125,7 @@ namespace octave
       }
     else if (val.is_string ())
       {
-        return octave::feval (val.string_value (), args, nargout);
+        return feval (val.string_value (), args, nargout);
       }
     else
       error ("feval: first argument must be a string, inline function, or a function handle");
@@ -5163,7 +5163,7 @@ namespace octave
 
         octave_value_list tmp_args = get_feval_args (args);
 
-        return octave::feval (f_arg, tmp_args, nargout);
+        return feval (f_arg, tmp_args, nargout);
       }
     else
       error ("feval: first argument must be a string, inline function, or a function handle");
@@ -5271,7 +5271,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    octave::parser parser (eval_str);
+    parser parser (eval_str);
 
     do
       {
@@ -5285,7 +5285,7 @@ namespace octave
               {
                 tree_statement *stmt = 0;
 
-                octave::tree_evaluator& tw = __get_evaluator__ ("eval_string");
+                tree_evaluator& tw = __get_evaluator__ ("eval_string");
 
                 if (parser.m_stmt_list->length () == 1
                     && (stmt = parser.m_stmt_list->front ())

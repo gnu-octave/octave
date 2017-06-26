@@ -72,7 +72,7 @@ namespace octave
     symbol_table::scope *af_parent_scope = m_parent_scope;
 
     symbol_table& symtab
-      = octave::__get_symbol_table__ ("tree_anon_fcn_handle::dup");
+      = __get_symbol_table__ ("tree_anon_fcn_handle::dup");
 
     symbol_table::scope *new_scope = af_scope ? af_scope->dup () : 0;
 

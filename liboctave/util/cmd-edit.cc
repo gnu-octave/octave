@@ -61,7 +61,7 @@ namespace octave
 
   std::set<command_editor::event_hook_fcn> command_editor::event_hook_set;
 
-  static octave::mutex event_hook_lock;
+  static mutex event_hook_lock;
 
 #if defined (USE_READLINE)
 
@@ -247,7 +247,7 @@ namespace octave
     // FIXME: need interface to rl_add_defun, rl_initialize, and
     // a function to set rl_terminal_name
 
-    std::string term = octave::sys::env::getenv ("TERM");
+    std::string term = sys::env::getenv ("TERM");
 
     octave_rl_set_terminal_name (term.c_str ());
 
@@ -539,7 +539,7 @@ namespace octave
     if (s)
       {
         // Remove incomplete component.
-        const char *f = strrchr (line, octave::sys::file_ops::dir_sep_char ());
+        const char *f = strrchr (line, sys::file_ops::dir_sep_char ());
 
         if (s[1] == '~' || (f && f != s))
           {
@@ -553,9 +553,9 @@ namespace octave
 
             if (candidate_filename[0] == '~')
               candidate_filename
-                = octave::sys::file_ops::tilde_expand (candidate_filename);
+                = sys::file_ops::tilde_expand (candidate_filename);
 
-            octave::sys::file_stat fs (candidate_filename);
+            sys::file_stat fs (candidate_filename);
 
             retval = fs.is_dir ();
           }
@@ -1576,7 +1576,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        std::string file = octave::sys::file_ops::tilde_expand (file_arg);
+        std::string file = sys::file_ops::tilde_expand (file_arg);
 
         instance->do_read_init_file (file);
       }
@@ -1714,7 +1714,7 @@ namespace octave
               case 'A':
                 // Make the current time/date into a string.
                 {
-                  octave::sys::localtime now;
+                  sys::localtime now;
 
                   if (c == 'd')
                     tmpstr = now.strftime ("%a %b %d");
@@ -1739,7 +1739,7 @@ namespace octave
 
               case 'h':
                 {
-                  tmpstr = octave::sys::env::get_host_name ();
+                  tmpstr = sys::env::get_host_name ();
 
                   size_t pos = tmpstr.find ('.');
 
@@ -1751,7 +1751,7 @@ namespace octave
 
               case 'H':
                 {
-                  tmpstr = octave::sys::env::get_host_name ();
+                  tmpstr = sys::env::get_host_name ();
 
                   break;
                 }
@@ -1772,15 +1772,15 @@ namespace octave
 
               case 's':
                 {
-                  tmpstr = octave::sys::env::get_program_name ();
-                  tmpstr = octave::sys::env::base_pathname (tmpstr);
+                  tmpstr = sys::env::get_program_name ();
+                  tmpstr = sys::env::base_pathname (tmpstr);
 
                   break;
                 }
 
               case 'u':
                 {
-                  tmpstr = octave::sys::env::get_user_name ();
+                  tmpstr = sys::env::get_user_name ();
 
                   break;
                 }
@@ -1790,14 +1790,14 @@ namespace octave
                 {
                   try
                     {
-                      tmpstr = octave::sys::env::get_current_directory ();
+                      tmpstr = sys::env::get_current_directory ();
                     }
-                  catch (const octave::execution_exception&)
+                  catch (const execution_exception&)
                     {
                       tmpstr = "";
                     }
 
-                  std::string home_dir = octave::sys::env::get_home_directory ();
+                  std::string home_dir = sys::env::get_home_directory ();
 
                   if (c == 'W' && (home_dir.empty () || tmpstr != home_dir))
                     {
@@ -1810,7 +1810,7 @@ namespace octave
                         }
                     }
                   else
-                    tmpstr = octave::sys::env::polite_directory_format (tmpstr);
+                    tmpstr = sys::env::polite_directory_format (tmpstr);
 
                   break;
                 }

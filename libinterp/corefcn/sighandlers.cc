@@ -77,7 +77,7 @@ namespace octave
   // Similar to Vsighup_dumps_octave_core, but for SIGTERM signal.
   static bool Vsigterm_dumps_octave_core = true;
 
-  // List of signals we have caught since last call to octave::signal_handler.
+  // List of signals we have caught since last call to signal_handler.
   static bool *signals_caught = nullptr;
 
   // Forward declarations.
@@ -173,11 +173,11 @@ namespace octave
       bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
 
       if (is_interrupt_thread)
-        octave::user_terminate (sig_number);
+        user_terminate (sig_number);
       else
         {
           SuspendThread (thread);
-          octave::user_terminate (sig_number);
+          user_terminate (sig_number);
           ResumeThread (thread);
         }
     }
@@ -187,11 +187,11 @@ namespace octave
       bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
 
       if (is_interrupt_thread)
-        octave::user_abort (sig_number);
+        user_abort (sig_number);
       else
         {
           SuspendThread (thread);
-          octave::user_abort (sig_number);
+          user_abort (sig_number);
           ResumeThread (thread);
         }
     }
@@ -246,12 +246,12 @@ namespace octave
 
     void do_user_terminate (int sig_number)
     {
-      octave::user_terminate (sig_number);
+      user_terminate (sig_number);
     }
 
     void do_user_abort (int sig_number)
     {
-      octave::user_abort (sig_number);
+      user_abort (sig_number);
     }
 
     void do_raise_sigint (void)
@@ -349,7 +349,7 @@ namespace octave
 
     sysdep_cleanup ();
 
-    throw octave::exit_exception (1);
+    throw exit_exception (1);
   }
 
   // Called from octave_quit () to actually do something about the signals
@@ -482,7 +482,7 @@ namespace octave
           {
             if (! octave_debug_on_interrupt_state)
               {
-                octave::tree_evaluator::debug_mode = true;
+                tree_evaluator::debug_mode = true;
                 octave_debug_on_interrupt_state = true;
 
                 return;
@@ -491,7 +491,7 @@ namespace octave
               {
                 // Clear the flag and do normal interrupt stuff.
 
-                octave::tree_evaluator::debug_mode
+                tree_evaluator::debug_mode
                   = bp_table::have_breakpoints () || Vdebugging;
                 octave_debug_on_interrupt_state = false;
               }
@@ -519,8 +519,8 @@ namespace octave
             octave_signal_caught = 1;
             octave_interrupt_state++;
 
-            if (octave::application::interactive ()
-                && ! octave::application::forced_interactive ()
+            if (application::interactive ()
+                && ! application::forced_interactive ()
                 && octave_interrupt_state == 2)
               std::cerr << "Press Control-C again to abort." << std::endl;
 

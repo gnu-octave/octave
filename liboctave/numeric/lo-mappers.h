@@ -39,20 +39,20 @@ namespace octave
   namespace math
   {
     extern OCTAVE_API bool isna (double x);
-    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
-    inline bool is_NA (double x) { return octave::math::isna (x); }
+    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
+    inline bool is_NA (double x) { return math::isna (x); }
 
     extern OCTAVE_API bool isna (float x);
-    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
-    inline bool is_NA (float x) { return octave::math::isna (x); }
+    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
+    inline bool is_NA (float x) { return math::isna (x); }
 
     extern OCTAVE_API bool isna (const Complex& x);
-    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
-    inline bool is_NA (const Complex& x) { return octave::math::isna (x); }
+    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
+    inline bool is_NA (const Complex& x) { return math::isna (x); }
 
     extern OCTAVE_API bool isna (const FloatComplex& x);
-    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isna' instead")
-    inline bool is_NA (const FloatComplex& x) { return octave::math::isna (x); }
+    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
+    inline bool is_NA (const FloatComplex& x) { return math::isna (x); }
 
     extern OCTAVE_API bool is_NaN_or_NA (const Complex& x);
     extern OCTAVE_API bool is_NaN_or_NA (const FloatComplex& x);
@@ -249,17 +249,17 @@ namespace octave
       return (isfinite (std::real (x)) && isfinite (std::imag (x)));
     }
 
-    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-    inline bool finite (double x) { return octave::math::isfinite (x); }
-    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-    inline bool finite (float x) { return octave::math::isfinite (x); }
+    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
+    inline bool finite (double x) { return math::isfinite (x); }
+    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
+    inline bool finite (float x) { return math::isfinite (x); }
 
     template <typename T>
-    OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
+    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
     bool
     finite (const std::complex<T>& x)
     {
-      return octave::math::isfinite (x);
+      return math::isfinite (x);
     }
 
     inline bool isinf (double x) { return std::isinf (x); }
@@ -288,7 +288,7 @@ namespace octave
       else if (x > 0.0)
         tmp = 1.0;
 
-      return isnan (x) ? octave::numeric_limits<double>::NaN () : tmp;
+      return isnan (x) ? numeric_limits<double>::NaN () : tmp;
     }
 
     inline float
@@ -301,7 +301,7 @@ namespace octave
       else if (x > 0.0f)
         tmp = 1.0f;
 
-      return isnan (x) ? octave::numeric_limits<float>::NaN () : tmp;
+      return isnan (x) ? numeric_limits<float>::NaN () : tmp;
     }
 
     template <typename T>
@@ -382,7 +382,7 @@ namespace octave
       T retval;
 
       if (y == 0)
-        retval = octave::numeric_limits<T>::NaN ();
+        retval = numeric_limits<T>::NaN ();
       else
         {
           T q = x / y;

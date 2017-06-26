@@ -50,20 +50,20 @@ namespace octave
   void
   base_url_transfer::delete_file (const std::string& file)
   {
-    octave::sys::unlink (file);
+    sys::unlink (file);
   }
 
   void
   base_url_transfer::mget_directory (const std::string& directory,
                                      const std::string& target)
   {
-    std::string sep = octave::sys::file_ops::dir_sep_str ();
-    octave::sys::file_stat fs (directory);
+    std::string sep = sys::file_ops::dir_sep_str ();
+    sys::file_stat fs (directory);
 
     if (! fs || ! fs.is_dir ())
       {
         std::string msg;
-        int status = octave::sys::mkdir (directory, 0777, msg);
+        int status = sys::mkdir (directory, 0777, msg);
 
         if (status < 0)
           {
@@ -78,7 +78,7 @@ namespace octave
 
     if (good ())
       {
-        octave::unwind_protect_safe frame;
+        unwind_protect_safe frame;
 
         frame.add_fcn (reset_path, this);
 
@@ -108,7 +108,7 @@ namespace octave
                     break;
                   }
 
-                octave::unwind_protect_safe frame2;
+                unwind_protect_safe frame2;
 
                 frame2.add_fcn (delete_file, realfile);
 
@@ -134,7 +134,7 @@ namespace octave
 
     std::string realdir
       = (base.empty ()
-         ? directory : base + octave::sys::file_ops::dir_sep_str () + directory);
+         ? directory : base + sys::file_ops::dir_sep_str () + directory);
 
     mkdir (directory);
 
@@ -145,11 +145,11 @@ namespace octave
 
     if (good ())
       {
-        octave::unwind_protect_safe frame;
+        unwind_protect_safe frame;
 
         frame.add_fcn (reset_path, this);
 
-        octave::sys::dir_entry dirlist (realdir);
+        sys::dir_entry dirlist (realdir);
 
         if (dirlist)
           {
@@ -162,8 +162,8 @@ namespace octave
                 if (file == "." || file == "..")
                   continue;
 
-                std::string realfile = realdir + octave::sys::file_ops::dir_sep_str () + file;
-                octave::sys::file_stat fs (realfile);
+                std::string realfile = realdir + sys::file_ops::dir_sep_str () + file;
+                sys::file_stat fs (realfile);
 
                 if (! fs.exists ())
                   {
@@ -416,7 +416,7 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
       frame.add_fcn (curl_slist_free_all, slist);
 
       std::string cmd = "rnfr " + oldname;
@@ -584,7 +584,7 @@ namespace octave
 
       struct curl_slist *slist = nullptr;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
       frame.add_fcn (curl_slist_free_all, slist);
 
       slist = curl_slist_append (slist, "pwd");
@@ -748,7 +748,7 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
 
       frame.add_fcn (curl_slist_free_all, slist);
 

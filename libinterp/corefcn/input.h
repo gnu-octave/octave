@@ -95,7 +95,7 @@ namespace octave
 
     friend class input_reader;
 
-    base_reader (octave::base_lexer *lxr)
+    base_reader (base_lexer *lxr)
       : count (1), pflag (0), lexer (lxr)
     { }
 
@@ -140,11 +140,11 @@ namespace octave
 
   private:
 
-    octave::refcount<int> count;
+    refcount<int> count;
 
     int pflag;
 
-    octave::base_lexer *lexer;
+    base_lexer *lexer;
 
     void do_input_echo (const std::string&) const;
 
@@ -156,7 +156,7 @@ namespace octave
   {
   public:
 
-    terminal_reader (octave::base_lexer *lxr = nullptr)
+    terminal_reader (base_lexer *lxr = nullptr)
       : base_reader (lxr)
     { }
 
@@ -176,7 +176,7 @@ namespace octave
   {
   public:
 
-    file_reader (FILE *f_arg, octave::base_lexer *lxr = nullptr)
+    file_reader (FILE *f_arg, base_lexer *lxr = nullptr)
       : base_reader (lxr), file (f_arg) { }
 
     std::string get_input (bool& eof);
@@ -198,7 +198,7 @@ namespace octave
   public:
 
     eval_string_reader (const std::string& str,
-                               octave::base_lexer *lxr = nullptr)
+                               base_lexer *lxr = nullptr)
       : base_reader (lxr), eval_string (str)
     { }
 
@@ -219,15 +219,15 @@ namespace octave
   input_reader
   {
   public:
-    input_reader (octave::base_lexer *lxr = nullptr)
+    input_reader (base_lexer *lxr = nullptr)
       : rep (new terminal_reader (lxr))
     { }
 
-    input_reader (FILE *file, octave::base_lexer *lxr = nullptr)
+    input_reader (FILE *file, base_lexer *lxr = nullptr)
       : rep (new file_reader (file, lxr))
     { }
 
-    input_reader (const std::string& str, octave::base_lexer *lxr = nullptr)
+    input_reader (const std::string& str, base_lexer *lxr = nullptr)
       : rep (new eval_string_reader (str, lxr))
     { }
 

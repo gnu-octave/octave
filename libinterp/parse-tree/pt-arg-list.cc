@@ -74,7 +74,7 @@ namespace octave
   void
   tree_argument_list::append (const element_type& s)
   {
-    octave::base_list<tree_expression *>::append (s);
+    base_list<tree_expression *>::append (s);
 
     if (! list_includes_magic_end && s && s->has_magic_end ())
       list_includes_magic_end = true;
@@ -216,7 +216,7 @@ namespace octave
                          && ! (object->is_function ()
                                || object->is_function_handle ()));
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     if (stash_object)
       {

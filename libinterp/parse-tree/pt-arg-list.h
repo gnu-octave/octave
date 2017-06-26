@@ -43,7 +43,7 @@ namespace octave
   // Argument lists.  Used to hold the list of expressions that are the
   // arguments in a function call or index expression.
 
-  class tree_argument_list : public octave::base_list<tree_expression *>
+  class tree_argument_list : public base_list<tree_expression *>
   {
   public:
 

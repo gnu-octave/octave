@@ -599,7 +599,7 @@ octave_qscintilla::keyPressEvent (QKeyEvent *e)
 
 // Do smart indendation after if, for, ...
 void
-octave_qscintilla::smart_indent (int line, int col)
+octave_qscintilla::smart_indent (int line, int /*col*/)
 {
   QString prevline = text (line);
 

@@ -714,9 +714,9 @@ get_debug_input (const std::string& prompt)
             break;
           else
             {
-              if (retval == 0 && curr_parser.stmt_list)
+              if (retval == 0 && curr_parser.m_stmt_list)
                 {
-                  curr_parser.stmt_list->accept (tw);
+                  curr_parser.m_stmt_list->accept (tw);
 
                   if (octave_completion_matches_called)
                     octave_completion_matches_called = false;

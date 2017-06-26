@@ -965,9 +965,9 @@ namespace octave
 
             if (retval == 0)
               {
-                if (parser.stmt_list)
+                if (parser.m_stmt_list)
                   {
-                    parser.stmt_list->accept (m_evaluator);
+                    parser.m_stmt_list->accept (m_evaluator);
 
                     octave_quit ();
 
@@ -991,7 +991,7 @@ namespace octave
                     else
                       octave::command_editor::increment_current_command_number ();
                   }
-                else if (parser.lexer.end_of_input)
+                else if (parser.m_lexer.end_of_input)
                   {
                     retval = EOF;
                     break;

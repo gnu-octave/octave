@@ -93,8 +93,7 @@ extern int octave_debug;
 
 namespace octave
 {
-  class
-  base_parser
+  class base_parser
   {
   private:
 
@@ -138,8 +137,8 @@ namespace octave
 
     private:
 
-      std::deque<value_type> info;
-      std::set<std::string> all_names;
+      std::deque<value_type> m_info;
+      std::set<std::string> m_all_names;
     };
 
   public:
@@ -411,76 +410,75 @@ namespace octave
 
     // Contains error message if Bison-generated parser returns non-zero
     // status.
-    std::string parse_error_msg;
+    std::string m_parse_error_msg;
 
     // Have we found an explicit end to a function?
-    bool endfunction_found;
+    bool m_endfunction_found;
 
     // TRUE means we are in the process of autoloading a function.
-    bool autoloading;
+    bool m_autoloading;
 
     // TRUE means the current function file was found in a relative path
     // element.
-    bool fcn_file_from_relative_lookup;
+    bool m_fcn_file_from_relative_lookup;
 
     // FALSE if we are still at the primary function.  Subfunctions can
     // only be declared inside function files.
-    bool parsing_subfunctions;
+    bool m_parsing_subfunctions;
 
     // TRUE if we are parsing local functions defined at after a
     // classdef block.  Local functions can only be declared inside
     // classdef files.
-    bool parsing_local_functions;
+    bool m_parsing_local_functions;
 
     // Maximum function depth detected.  Used to determine whether
     // we have nested functions or just implicitly ended subfunctions.
-    int max_fcn_depth;
+    int m_max_fcn_depth;
 
     // = 0 currently outside any function.
     // = 1 inside the primary function or a subfunction.
     // > 1 means we are looking at a function definition that seems to be
     //     inside a function.  Note that the function still might not be a
     //     nested function.
-    int curr_fcn_depth;
+    int m_curr_fcn_depth;
 
     // Scope where we install all subfunctions and nested functions.  Only
     // used while reading function files.
-    symbol_table::scope *primary_fcn_scope;
+    symbol_table::scope *m_primary_fcn_scope;
 
     // Name of the current class when we are parsing class methods or
     // constructors.
-    std::string curr_class_name;
+    std::string m_curr_class_name;
 
     // Name of the current package when we are parsing an element contained
     // in a package directory (+-directory).
-    std::string curr_package_name;
+    std::string m_curr_package_name;
 
     // Nested function scopes and names currently being parsed.
-    parent_scope_info function_scopes;
+    parent_scope_info m_function_scopes;
 
     // Pointer to the primary user function or user script function.
-    octave_function *primary_fcn_ptr;
+    octave_function *m_primary_fcn_ptr;
 
     // List of subfunction names, initially in the order they are
     // installed in the symbol table, then ordered as they appear in the
     // file.  Eventually stashed in the primary function object.
-    std::list<std::string> subfunction_names;
+    std::list<std::string> m_subfunction_names;
 
     // Pointer to the classdef object we just parsed, if any.
-    tree_classdef *classdef_object;
+    tree_classdef *m_classdef_object;
 
     // Result of parsing input.
-    tree_statement_list *stmt_list;
+    tree_statement_list *m_stmt_list;
 
     // State of the lexer.
-    base_lexer& lexer;
+    base_lexer& m_lexer;
 
     // Internal state of the Bison parser.
-    void *parser_state;
+    void *m_parser_state;
   };
 
-  class
-  parser : public base_parser
+  class parser : public base_parser
   {
   public:
 
@@ -511,8 +509,7 @@ namespace octave
     int run (void);
   };
 
-  class
-  push_parser : public base_parser
+  class push_parser : public base_parser
   {
   public:
 

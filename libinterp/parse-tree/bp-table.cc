@@ -387,13 +387,13 @@ bp_table::condition_valid (const std::string& cond)
       else
         {
           octave::tree_statement *stmt = nullptr;
-          if (! parser.stmt_list)
+          if (! parser.m_stmt_list)
             error ("dbstop: "
                    "condition is not empty, but has nothing to evaluate");
           else
             {
-              if (parser.stmt_list->length () == 1
-                  && (stmt = parser.stmt_list->front ())
+              if (parser.m_stmt_list->length () == 1
+                  && (stmt = parser.m_stmt_list->front ())
                   && stmt->is_expression ())
                 {
                   octave::tree_expression *expr = stmt->expression ();

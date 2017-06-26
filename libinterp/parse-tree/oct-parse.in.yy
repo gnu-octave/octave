@@ -96,7 +96,7 @@ static std::map<std::string, std::string> autoload_map;
 
 static void yyerror (octave::base_parser& parser, const char *s);
 
-#define lexer parser.lexer
+#define lexer parser.m_lexer
 #define scanner lexer.scanner
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
@@ -121,7 +121,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // We are using the pure parser interface and the reentrant lexer
 // interface but the Octave parser and lexer are NOT properly
 // reentrant because both still use many global variables.  It should be
-// safe to create a parser object and call it while anotehr parser
+// safe to create a parser object and call it while another parser
 // object is active (to parse a callback function while the main
 // interactive parser is waiting for input, for example) if you take
 // care to properly save and restore (typically with an unwind_protect
@@ -130,7 +130,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %define api.pure
 %PUSH_PULL_DECL%
 %parse-param { octave::base_parser& parser }
-%lex-param { void *scanner }
+%lex-param { void *lexer.scanner }
 
 %union
 {
@@ -384,14 +384,14 @@ static void yyerror (octave::base_parser& parser, const char *s);
 input           : simple_list '\n'
                   {
                     $$ = 0;
-                    parser.stmt_list = $1;
+                    parser.m_stmt_list = $1;
                     YYACCEPT;
                   }
                 | simple_list END_OF_INPUT
                   {
                     $$ = 0;
                     lexer.end_of_input = true;
-                    parser.stmt_list = $1;
+                    parser.m_stmt_list = $1;
                     YYACCEPT;
                   }
                 | parse_error
@@ -1270,23 +1270,23 @@ push_fcn_symtab : // empty
                   {
                     $$ = 0;
 
-                    parser.curr_fcn_depth++;
+                    parser.m_curr_fcn_depth++;
 
-                    if (parser.max_fcn_depth < parser.curr_fcn_depth)
-                      parser.max_fcn_depth = parser.curr_fcn_depth;
+                    if (parser.m_max_fcn_depth < parser.m_curr_fcn_depth)
+                      parser.m_max_fcn_depth = parser.m_curr_fcn_depth;
 
                     lexer.symtab_context.push (new octave::symbol_table::scope ());
 
-                    parser.function_scopes.push (lexer.symtab_context.curr_scope ());
+                    parser.m_function_scopes.push (lexer.symtab_context.curr_scope ());
 
                     if (! lexer.reading_script_file
-                        && parser.curr_fcn_depth == 1
-                        && ! parser.parsing_subfunctions)
-                      parser.primary_fcn_scope
+                        && parser.m_curr_fcn_depth == 1
+                        && ! parser.m_parsing_subfunctions)
+                      parser.m_primary_fcn_scope
                         = lexer.symtab_context.curr_scope ();
 
                     if (lexer.reading_script_file
-                        && parser.curr_fcn_depth > 1)
+                        && parser.m_curr_fcn_depth > 1)
                       {
                         parser.bison_error ("nested functions not implemented in this context");
                         YYABORT;
@@ -1435,7 +1435,7 @@ return_list1    : identifier
 
 parsing_local_fcns
                 : // empty
-                  { parser.parsing_local_functions = true; }
+                  { parser.m_parsing_local_functions = true; }
                 ;
 
 file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
@@ -1448,7 +1448,7 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                         // after parsing the function.  Any function
                         // definitions found in the file have already
                         // been stored in the symbol table or in
-                        // base_parser::primary_fcn_ptr.
+                        // base_parser::m_primary_fcn_ptr.
 
                         delete $3;
                       }
@@ -1471,7 +1471,7 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                     YYUSE ($6);
 
                     if (lexer.reading_classdef_file)
-                      parser.classdef_object = $3;
+                      parser.m_classdef_object = $3;
 
                     $$ = 0;
                   }
@@ -1494,7 +1494,7 @@ fcn_name        : identifier
                   {
                     std::string id = $1->name ();
 
-                    if (! parser.function_scopes.name_current_scope (id))
+                    if (! parser.m_function_scopes.name_current_scope (id))
                       {
                         parser.bison_error ("duplicate subfunction or nested function name",
                                             $1->line (), $1->column ());
@@ -1535,7 +1535,7 @@ fcn_name        : identifier
 
 function_end    : END
                   {
-                    parser.endfunction_found = true;
+                    parser.m_endfunction_found = true;
 
                     if (parser.end_token_ok ($1, octave::token::function_end))
                       $$ = parser.make_end ("endfunction", false,
@@ -1555,7 +1555,7 @@ function_end    : END
 //                      YYABORT;
 //                    }
 
-                    if (parser.endfunction_found)
+                    if (parser.m_endfunction_found)
                       {
                         parser.bison_error ("inconsistent function endings -- "
                                  "if one function is explicitly ended, "
@@ -2042,6 +2042,7 @@ opt_sep         : // empty
 // Generic error messages.
 
 #undef lexer
+#undef scanner
 
 static void
 yyerror (octave::base_parser& parser, const char *s)
@@ -2054,13 +2055,13 @@ namespace octave
   size_t
   base_parser::parent_scope_info::size (void) const
   {
-    return info.size ();
+    return m_info.size ();
   }
 
   void
   base_parser::parent_scope_info::push (const value_type& elt)
   {
-    info.push_back (elt);
+    m_info.push_back (elt);
   }
 
   void
@@ -2072,7 +2073,7 @@ namespace octave
   void
   base_parser::parent_scope_info::pop (void)
   {
-    info.pop_back ();
+    m_info.pop_back ();
   }
 
   bool
@@ -2087,7 +2088,7 @@ namespace octave
 
     for (size_t i = 0; i < size()-1; i++)
       {
-        const value_type& elt = info[i];
+        const value_type& elt = m_info[i];
 
         if (name == elt.second)
           return false;
@@ -2097,10 +2098,10 @@ namespace octave
 
     full_name += name;
 
-    if (all_names.find (full_name) != all_names.end ())
+    if (m_all_names.find (full_name) != m_all_names.end ())
       return false;
 
-    all_names.insert (full_name);
+    m_all_names.insert (full_name);
 
     return true;
   }
@@ -2112,7 +2113,7 @@ namespace octave
       return false;
 
     if (size () > 0)
-      info.back().second = name;
+      m_info.back().second = name;
 
     return true;
   }
@@ -2120,36 +2121,36 @@ namespace octave
   symbol_table::scope *
   base_parser::parent_scope_info::parent_scope (void) const
   {
-    return size () > 1 ? info[size()-2].first : 0;
+    return size () > 1 ? m_info[size()-2].first : 0;
   }
 
   std::string
   base_parser::parent_scope_info::parent_name (void) const
   {
-    return info[size()-2].second;
+    return m_info[size()-2].second;
   }
 
   void base_parser::parent_scope_info::clear (void)
   {
-    info.clear ();
-    all_names.clear ();
+    m_info.clear ();
+    m_all_names.clear ();
   }
 
   base_parser::base_parser (base_lexer& lxr)
-    : endfunction_found (false), autoloading (false),
-      fcn_file_from_relative_lookup (false),
-      parsing_subfunctions (false), parsing_local_functions (false),
-      max_fcn_depth (0), curr_fcn_depth (0), primary_fcn_scope (0),
-      curr_class_name (), curr_package_name (), function_scopes (),
-      primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
-      stmt_list (0), lexer (lxr), parser_state (yypstate_new ())
+    : m_endfunction_found (false), m_autoloading (false),
+      m_fcn_file_from_relative_lookup (false),
+      m_parsing_subfunctions (false), m_parsing_local_functions (false),
+      m_max_fcn_depth (0), m_curr_fcn_depth (0), m_primary_fcn_scope (0),
+      m_curr_class_name (), m_curr_package_name (), m_function_scopes (),
+      m_primary_fcn_ptr (0), m_subfunction_names (), m_classdef_object (0),
+      m_stmt_list (0), m_lexer (lxr), m_parser_state (yypstate_new ())
   { }
 
   base_parser::~base_parser (void)
   {
-    delete stmt_list;
+    delete m_stmt_list;
 
-    delete &lexer;
+    delete &m_lexer;
 
     // FIXME: Deleting the internal Bison parser state structure does
     // not clean up any partial parse trees in the event of an interrupt or
@@ -2159,33 +2160,33 @@ namespace octave
     // is thrown while parsing input, but there is currently no C++
     // interface for a push parser.
 
-    yypstate_delete (static_cast<yypstate *> (parser_state));
+    yypstate_delete (static_cast<yypstate *> (m_parser_state));
   }
 
   void
   base_parser::reset (void)
   {
-    endfunction_found = false;
-    autoloading = false;
-    fcn_file_from_relative_lookup = false;
-    parsing_subfunctions = false;
-    parsing_local_functions = false;
-    max_fcn_depth = 0;
-    curr_fcn_depth = 0;
-    primary_fcn_scope = 0;
-    curr_class_name = "";
-    curr_package_name = "";
-    function_scopes.clear ();
-    primary_fcn_ptr  = 0;
-    subfunction_names.clear ();
+    m_endfunction_found = false;
+    m_autoloading = false;
+    m_fcn_file_from_relative_lookup = false;
+    m_parsing_subfunctions = false;
+    m_parsing_local_functions = false;
+    m_max_fcn_depth = 0;
+    m_curr_fcn_depth = 0;
+    m_primary_fcn_scope = 0;
+    m_curr_class_name = "";
+    m_curr_package_name = "";
+    m_function_scopes.clear ();
+    m_primary_fcn_ptr  = 0;
+    m_subfunction_names.clear ();
 
-    delete stmt_list;
-    stmt_list = 0;
+    delete m_stmt_list;
+    m_stmt_list = 0;
 
-    lexer.reset ();
+    m_lexer.reset ();
 
-    yypstate_delete (static_cast<yypstate *> (parser_state));
-    parser_state = yypstate_new ();
+    yypstate_delete (static_cast<yypstate *> (m_parser_state));
+    m_parser_state = yypstate_new ();
   }
 }
 
@@ -2293,7 +2294,7 @@ namespace octave
     if (expr->is_assignment_expression ()
         && expr->paren_count () < 2)
       {
-        if (lexer.fcn_file_full_name.empty ())
+        if (m_lexer.fcn_file_full_name.empty ())
           warning_with_id
             ("Octave:assign-as-truth-value",
              "suggest parenthesis around assignment used as truth value");
@@ -2301,7 +2302,7 @@ namespace octave
           warning_with_id
             ("Octave:assign-as-truth-value",
              "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
-             expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
+             expr->line (), expr->column (), m_lexer.fcn_file_full_name.c_str ());
       }
   }
 
@@ -2312,14 +2313,14 @@ namespace octave
   {
     if (! expr->is_constant ())
       {
-        if (lexer.fcn_file_full_name.empty ())
+        if (m_lexer.fcn_file_full_name.empty ())
           warning_with_id ("Octave:variable-switch-label",
                            "variable switch label");
         else
           warning_with_id
             ("Octave:variable-switch-label",
              "variable switch label near line %d, column %d in file '%s'",
-             expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
+             expr->line (), expr->column (), m_lexer.fcn_file_full_name.c_str ());
       }
   }
 
@@ -2406,13 +2407,13 @@ namespace octave
                                      tree_expression *expr)
   {
     // FIXME: need to get these from the location of the @ symbol.
-    int l = lexer.input_line_number;
-    int c = lexer.current_input_column;
+    int l = m_lexer.input_line_number;
+    int c = m_lexer.current_input_column;
 
-    symbol_table::scope *fcn_scope = lexer.symtab_context.curr_scope ();
-    symbol_table::scope *parent_scope = lexer.symtab_context.parent_scope ();
+    symbol_table::scope *fcn_scope = m_lexer.symtab_context.curr_scope ();
+    symbol_table::scope *parent_scope = m_lexer.symtab_context.parent_scope ();
 
-    lexer.symtab_context.pop ();
+    m_lexer.symtab_context.pop ();
 
     expr->set_print_flag (false);
 
@@ -2422,7 +2423,7 @@ namespace octave
 
 // FIXME: Stash the filename.  This does not work and produces
     // errors when executed.
-    //retval->stash_file_name (lexer.fcn_file_name);
+    //retval->stash_file_name (m_lexer.fcn_file_name);
 
     return retval;
   }
@@ -2707,7 +2708,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::unwind_protect_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = unwind_tok->line ();
         int c = unwind_tok->column ();
@@ -2741,7 +2742,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::try_catch_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = try_tok->line ();
         int c = try_tok->column ();
@@ -2797,9 +2798,9 @@ namespace octave
 
     if (end_token_ok (end_tok, token::while_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
-        lexer.looping--;
+        m_lexer.looping--;
 
         int l = while_tok->line ();
         int c = while_tok->column ();
@@ -2827,9 +2828,9 @@ namespace octave
   {
     maybe_warn_assign_as_truth_value (expr);
 
-    octave_comment_list *tc = lexer.comment_buf.get_comment ();
+    octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
-    lexer.looping--;
+    m_lexer.looping--;
 
     int l = until_tok->line ();
     int c = until_tok->column ();
@@ -2856,9 +2857,9 @@ namespace octave
       {
         expr->mark_as_for_cmd_expr ();
 
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
-        lexer.looping--;
+        m_lexer.looping--;
 
         int l = for_tok->line ();
         int c = for_tok->column ();
@@ -2909,7 +2910,7 @@ namespace octave
     int l = break_tok->line ();
     int c = break_tok->column ();
 
-    if (! lexer.looping)
+    if (! m_lexer.looping)
       {
         bison_error ("break must appear in a loop in the same file as loop command");
         return 0;
@@ -2965,7 +2966,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::if_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = if_tok->line ();
         int c = if_tok->column ();
@@ -3022,7 +3023,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::switch_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = switch_tok->line ();
         int c = switch_tok->column ();
@@ -3208,17 +3209,17 @@ namespace octave
     cmds->append (end_script);
 
     octave_user_script *script
-      = new octave_user_script (lexer.fcn_file_full_name,
-                                lexer.fcn_file_name,
-                                cmds, lexer.help_text);
+      = new octave_user_script (m_lexer.fcn_file_full_name,
+                                m_lexer.fcn_file_name,
+                                cmds, m_lexer.help_text);
 
-    lexer.help_text = "";
+    m_lexer.help_text = "";
 
     octave::sys::time now;
 
     script->stash_fcn_file_time (now);
 
-    primary_fcn_ptr = script;
+    m_primary_fcn_ptr = script;
   }
 
   // Define a function.
@@ -3265,13 +3266,13 @@ namespace octave
 
     delete id;
 
-    if (lexer.parsing_classdef_get_method)
+    if (m_lexer.parsing_classdef_get_method)
       id_name.insert (0, "get.");
-    else if (lexer.parsing_classdef_set_method)
+    else if (m_lexer.parsing_classdef_set_method)
       id_name.insert (0, "set.");
 
-    lexer.parsing_classdef_get_method = false;
-    lexer.parsing_classdef_set_method = false;
+    m_lexer.parsing_classdef_get_method = false;
+    m_lexer.parsing_classdef_set_method = false;
 
     if (! body)
       body = new tree_statement_list ();
@@ -3279,12 +3280,12 @@ namespace octave
     body->append (end_fcn_stmt);
 
     octave_user_function *fcn
-      = new octave_user_function (lexer.symtab_context.curr_scope (),
+      = new octave_user_function (m_lexer.symtab_context.curr_scope (),
                                   param_list, 0, body);
 
     if (fcn)
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         fcn->stash_trailing_comment (tc);
         fcn->stash_fcn_end_location (end_fcn_stmt->line (),
@@ -3295,62 +3296,62 @@ namespace octave
     // the file does not match the name of the function stated in the
     // file.  Matlab doesn't provide a diagnostic (it ignores the stated
     // name).
-    if (! autoloading && lexer.reading_fcn_file
-        && curr_fcn_depth == 1 && ! parsing_subfunctions)
+    if (! m_autoloading && m_lexer.reading_fcn_file
+        && m_curr_fcn_depth == 1 && ! m_parsing_subfunctions)
       {
-        // FIXME: should lexer.fcn_file_name already be
+        // FIXME: should m_lexer.fcn_file_name already be
         // preprocessed when we get here?  It seems to only be a
         // problem with relative filenames.
 
-        std::string nm = lexer.fcn_file_name;
+        std::string nm = m_lexer.fcn_file_name;
 
         size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
         if (pos != std::string::npos)
-          nm = lexer.fcn_file_name.substr (pos+1);
+          nm = m_lexer.fcn_file_name.substr (pos+1);
 
         if (nm != id_name)
           {
             warning_with_id
               ("Octave:function-name-clash",
                "function name '%s' does not agree with function filename '%s'",
-               id_name.c_str (), lexer.fcn_file_full_name.c_str ());
+               id_name.c_str (), m_lexer.fcn_file_full_name.c_str ());
 
             id_name = nm;
           }
       }
 
-    if (lexer.reading_fcn_file || lexer.reading_classdef_file || autoloading)
+    if (m_lexer.reading_fcn_file || m_lexer.reading_classdef_file || m_autoloading)
       {
         octave::sys::time now;
 
-        fcn->stash_fcn_file_name (lexer.fcn_file_full_name);
+        fcn->stash_fcn_file_name (m_lexer.fcn_file_full_name);
         fcn->stash_fcn_file_time (now);
-        fcn->stash_dir_name (lexer.dir_name);
-        fcn->stash_package_name (lexer.package_name);
+        fcn->stash_dir_name (m_lexer.dir_name);
+        fcn->stash_package_name (m_lexer.package_name);
         fcn->mark_as_system_fcn_file ();
 
-        if (fcn_file_from_relative_lookup)
+        if (m_fcn_file_from_relative_lookup)
           fcn->mark_relative ();
 
-        if (curr_fcn_depth > 1 || parsing_subfunctions)
+        if (m_curr_fcn_depth > 1 || m_parsing_subfunctions)
           {
-            fcn->stash_parent_fcn_name (lexer.fcn_file_name);
+            fcn->stash_parent_fcn_name (m_lexer.fcn_file_name);
 
-            if (curr_fcn_depth > 1)
-              fcn->stash_parent_fcn_scope (function_scopes.parent_scope ());
+            if (m_curr_fcn_depth > 1)
+              fcn->stash_parent_fcn_scope (m_function_scopes.parent_scope ());
             else
-              fcn->stash_parent_fcn_scope (primary_fcn_scope);
+              fcn->stash_parent_fcn_scope (m_primary_fcn_scope);
           }
 
-        if (lexer.parsing_class_method)
+        if (m_lexer.parsing_class_method)
           {
-            if (curr_class_name == id_name)
+            if (m_curr_class_name == id_name)
               fcn->mark_as_class_constructor ();
             else
               fcn->mark_as_class_method ();
 
-            fcn->stash_dispatch_class (curr_class_name);
+            fcn->stash_dispatch_class (m_curr_class_name);
           }
 
         std::string nm = fcn->fcn_file_name ();
@@ -3362,27 +3363,27 @@ namespace octave
                            "time stamp for '%s' is in the future", nm.c_str ());
       }
     else if (! input_from_tmp_history_file
-             && ! lexer.force_script
-             && lexer.reading_script_file
-             && lexer.fcn_file_name == id_name)
+             && ! m_lexer.force_script
+             && m_lexer.reading_script_file
+             && m_lexer.fcn_file_name == id_name)
       {
         warning ("function '%s' defined within script file '%s'",
-                 id_name.c_str (), lexer.fcn_file_full_name.c_str ());
+                 id_name.c_str (), m_lexer.fcn_file_full_name.c_str ());
       }
 
     fcn->stash_function_name (id_name);
 
-    if (! lexer.help_text.empty () && curr_fcn_depth == 1
-        && ! parsing_subfunctions)
+    if (! m_lexer.help_text.empty () && m_curr_fcn_depth == 1
+        && ! m_parsing_subfunctions)
       {
-        fcn->document (lexer.help_text);
+        fcn->document (m_lexer.help_text);
 
-        lexer.help_text = "";
+        m_lexer.help_text = "";
       }
 
-    if (lexer.reading_fcn_file && curr_fcn_depth == 1
-        && ! parsing_subfunctions)
-      primary_fcn_ptr = fcn;
+    if (m_lexer.reading_fcn_file && m_curr_fcn_depth == 1
+        && ! m_parsing_subfunctions)
+      m_primary_fcn_ptr = fcn;
 
     return fcn;
   }
@@ -3425,33 +3426,33 @@ namespace octave
 
         fcn->define_ret_list (ret_list);
 
-        if (curr_fcn_depth > 1 || parsing_subfunctions)
+        if (m_curr_fcn_depth > 1 || m_parsing_subfunctions)
           {
             fcn->stash_fcn_location (l, c);
 
             octave_value ov_fcn (fcn);
 
-            if (endfunction_found && function_scopes.size () > 1)
+            if (m_endfunction_found && m_function_scopes.size () > 1)
               {
-                symbol_table::scope *pscope = function_scopes.parent_scope ();
+                symbol_table::scope *pscope = m_function_scopes.parent_scope ();
 
                 pscope->install_nestfunction (nm, ov_fcn);
               }
             else
               {
                 fcn->mark_as_subfunction ();
-                subfunction_names.push_back (nm);
+                m_subfunction_names.push_back (nm);
 
-                primary_fcn_scope->install_subfunction (nm, ov_fcn);
+                m_primary_fcn_scope->install_subfunction (nm, ov_fcn);
                }
           }
 
-        if (parsing_local_functions )
+        if (m_parsing_local_functions )
           symtab.install_local_function (nm, octave_value (fcn), file);
-        else if (curr_fcn_depth == 1)
+        else if (m_curr_fcn_depth == 1)
           fcn_scope->update_nest ();
 
-        if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
+        if (! m_lexer.reading_fcn_file && m_curr_fcn_depth == 1)
           {
             // We are either reading a script file or defining a function
             // at the command line, so this definition creates a
@@ -3459,7 +3460,7 @@ namespace octave
             // Otherwise, it is just inserted in the symbol table,
             // either as a subfunction or nested function (see above),
             // or as the primary function for the file, via
-            // primary_fcn_ptr (see also load_fcn_from_file,,
+            // m_primary_fcn_ptr (see also load_fcn_from_file,,
             // parse_fcn_file, and
             // symbol_table::fcn_info::fcn_info_rep::find_user_function).
 
@@ -3473,19 +3474,19 @@ namespace octave
   void
   base_parser::recover_from_parsing_function (void)
   {
-    lexer.symtab_context.pop ();
+    m_lexer.symtab_context.pop ();
 
-    if (lexer.reading_fcn_file && curr_fcn_depth == 1
-        && ! parsing_subfunctions)
-      parsing_subfunctions = true;
+    if (m_lexer.reading_fcn_file && m_curr_fcn_depth == 1
+        && ! m_parsing_subfunctions)
+      m_parsing_subfunctions = true;
 
-    curr_fcn_depth--;
-    function_scopes.pop ();
+    m_curr_fcn_depth--;
+    m_function_scopes.pop ();
 
-    lexer.defining_func--;
-    lexer.parsed_function_name.pop ();
-    lexer.looking_at_return_list = false;
-    lexer.looking_at_parameter_list = false;
+    m_lexer.defining_func--;
+    m_lexer.parsed_function_name.pop ();
+    m_lexer.looking_at_return_list = false;
+    m_lexer.looking_at_parameter_list = false;
   }
 
   tree_funcall *
@@ -3538,16 +3539,16 @@ namespace octave
   {
     tree_classdef *retval = 0;
 
-    lexer.symtab_context.pop ();
+    m_lexer.symtab_context.pop ();
 
     std::string cls_name = id->name ();
 
-    std::string nm = lexer.fcn_file_name;
+    std::string nm = m_lexer.fcn_file_name;
 
     size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
-      nm = lexer.fcn_file_name.substr (pos+1);
+      nm = m_lexer.fcn_file_name.substr (pos+1);
 
     if (nm != cls_name)
       {
@@ -3563,7 +3564,7 @@ namespace octave
       {
         if (end_token_ok (end_tok, token::classdef_end))
           {
-            octave_comment_list *tc = lexer.comment_buf.get_comment ();
+            octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
             int l = tok_val->line ();
             int c = tok_val->column ();
@@ -3572,7 +3573,7 @@ namespace octave
               body = new tree_classdef_body ();
 
             retval = new tree_classdef (a, id, sc, body, lc, tc,
-                                        curr_package_name, l, c);
+                                        m_curr_package_name, l, c);
           }
         else
           {
@@ -3599,7 +3600,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::properties_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3631,7 +3632,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::methods_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3663,7 +3664,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::events_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3695,7 +3696,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::enumeration_end))
       {
-        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3723,9 +3724,9 @@ namespace octave
     octave_user_function* retval = 0;
 
     // External methods are only allowed within @-folders. In this case,
-    // curr_class_name will be non-empty.
+    // m_curr_class_name will be non-empty.
 
-    if (! curr_class_name.empty ())
+    if (! m_curr_class_name.empty ())
       {
 
         std::string mname = id->name ();
@@ -3737,7 +3738,7 @@ namespace octave
 
         if (mname.find_first_of (".") == std::string::npos
             && mname != "delete"
-            && mname != curr_class_name)
+            && mname != m_curr_class_name)
           {
             // Create a dummy function that is used until the real method
             // is loaded.
@@ -3847,7 +3848,7 @@ namespace octave
     else
       retval = new tree_index_expression (expr, elt, l, c);
 
-    lexer.looking_at_indirect_ref = false;
+    m_lexer.looking_at_indirect_ref = false;
 
     return retval;
   }
@@ -3877,7 +3878,7 @@ namespace octave
     else
       retval = new tree_index_expression (expr, elt, l, c);
 
-    lexer.looking_at_indirect_ref = false;
+    m_lexer.looking_at_indirect_ref = false;
 
     return retval;
   }
@@ -3903,16 +3904,16 @@ namespace octave
         break;
 
       case PERSISTENT:
-        if (curr_fcn_depth > 0)
+        if (m_curr_fcn_depth > 0)
           {
             retval = new tree_decl_command ("persistent", lst, l, c);
             retval->mark_persistent ();
           }
         else
           {
-            if (lexer.reading_script_file)
+            if (m_lexer.reading_script_file)
               warning ("ignoring persistent declaration near line %d of file '%s'",
-                       l, lexer.fcn_file_full_name.c_str ());
+                       l, m_lexer.fcn_file_full_name.c_str ());
             else
               warning ("ignoring persistent declaration near line %d", l);
           }
@@ -4054,7 +4055,7 @@ namespace octave
 
         if (tmp && tmp->is_valid_lvalue_list ())
           {
-            lexer.mark_as_variables (tmp->variable_names ());
+            m_lexer.mark_as_variables (tmp->variable_names ());
             retval = tmp;
           }
         else
@@ -4143,7 +4144,7 @@ namespace octave
   void
   base_parser::maybe_warn_missing_semi (tree_statement_list *t)
   {
-    if (curr_fcn_depth > 0)
+    if (m_curr_fcn_depth > 0)
       {
         tree_statement *tmp = t->back ();
 
@@ -4151,7 +4152,7 @@ namespace octave
           warning_with_id
             ("Octave:missing-semicolon",
              "missing semicolon near line %d, column %d in file '%s'",
-             tmp->line (), tmp->column (), lexer.fcn_file_full_name.c_str ());
+             tmp->line (), tmp->column (), m_lexer.fcn_file_full_name.c_str ());
       }
   }
 
@@ -4197,7 +4198,7 @@ namespace octave
   tree_statement *
   base_parser::make_statement (T *arg)
   {
-    octave_comment_list *comment = lexer.get_comment ();
+    octave_comment_list *comment = m_lexer.get_comment ();
 
     return new tree_statement (arg, comment);
   }
@@ -4223,15 +4224,15 @@ namespace octave
   void
   base_parser::bison_error (const std::string& str, int l, int c)
   {
-    int err_line = l < 0 ? lexer.input_line_number : l;
-    int err_col = c < 0 ? lexer.current_input_column - 1 : c;
+    int err_line = l < 0 ? m_lexer.input_line_number : l;
+    int err_col = c < 0 ? m_lexer.current_input_column - 1 : c;
 
     std::ostringstream output_buf;
 
-    if (lexer.reading_fcn_file || lexer.reading_script_file
-        || lexer.reading_classdef_file)
+    if (m_lexer.reading_fcn_file || m_lexer.reading_script_file
+        || m_lexer.reading_classdef_file)
       output_buf << "parse error near line " << err_line
-                 << " of file " << lexer.fcn_file_full_name;
+                 << " of file " << m_lexer.fcn_file_full_name;
     else
       output_buf << "parse error:";
 
@@ -4240,7 +4241,7 @@ namespace octave
 
     output_buf << "\n\n";
 
-    std::string curr_line = lexer.current_input_line;
+    std::string curr_line = m_lexer.current_input_line;
 
     if (! curr_line.empty ())
       {
@@ -4264,7 +4265,7 @@ namespace octave
 
     output_buf << "\n";
 
-    parse_error_msg = output_buf.str ();
+    m_parse_error_msg = output_buf.str ();
   }
 
   int
@@ -4272,7 +4273,7 @@ namespace octave
   {
     int status = -1;
 
-    yypstate *pstate = static_cast<yypstate *> (parser_state);
+    yypstate *pstate = static_cast<yypstate *> (m_parser_state);
 
     try
       {
@@ -4280,7 +4281,7 @@ namespace octave
       }
     catch (octave::execution_exception& e)
       {
-        std::string file = lexer.fcn_file_full_name;
+        std::string file = m_lexer.fcn_file_full_name;
 
         if (file.empty ())
           error (e, "parse error");
@@ -4297,7 +4298,7 @@ namespace octave
       }
     catch (...)
       {
-        std::string file = lexer.fcn_file_full_name;
+        std::string file = m_lexer.fcn_file_full_name;
 
         if (file.empty ())
           error ("unexpected exception while parsing input");
@@ -4306,7 +4307,7 @@ namespace octave
       }
 
     if (status != 0)
-      parse_error ("%s", parse_error_msg.c_str ());
+      parse_error ("%s", m_parse_error_msg.c_str ());
 
     return status;
   }
@@ -4319,24 +4320,24 @@ namespace octave
   {
     int status = -1;
 
-    dynamic_cast<push_lexer&> (lexer).append_input (input, eof);
+    dynamic_cast<push_lexer&> (m_lexer).append_input (input, eof);
 
     do
       {
         YYSTYPE lval;
 
-        int token = octave_lex (&lval, scanner);
+        int token = octave_lex (&lval, m_lexer.scanner);
 
         if (token < 0)
           {
-            if (! eof && lexer.at_end_of_buffer ())
+            if (! eof && m_lexer.at_end_of_buffer ())
               {
                 status = -1;
                 break;
               }
           }
 
-        yypstate *pstate = static_cast<yypstate *> (parser_state);
+        yypstate *pstate = static_cast<yypstate *> (m_parser_state);
 
         try
           {
@@ -4344,7 +4345,7 @@ namespace octave
           }
         catch (octave::execution_exception& e)
           {
-            std::string file = lexer.fcn_file_full_name;
+            std::string file = m_lexer.fcn_file_full_name;
 
             if (file.empty ())
               error (e, "parse error");
@@ -4361,7 +4362,7 @@ namespace octave
           }
         catch (...)
           {
-            std::string file = lexer.fcn_file_full_name;
+            std::string file = m_lexer.fcn_file_full_name;
 
             if (file.empty ())
               error ("unexpected exception while parsing input");
@@ -4372,7 +4373,7 @@ namespace octave
     while (status == YYPUSH_MORE);
 
     if (status != 0)
-      parse_error ("%s", parse_error_msg.c_str ());
+      parse_error ("%s", m_parse_error_msg.c_str ());
 
     return status;
   }
@@ -4420,28 +4421,28 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
       octave::parser parser (ffile);
 
-      parser.curr_class_name = dispatch_type;
-      parser.curr_package_name = package_name;
-      parser.autoloading = autoload;
-      parser.fcn_file_from_relative_lookup = relative_lookup;
+      parser.m_curr_class_name = dispatch_type;
+      parser.m_curr_package_name = package_name;
+      parser.m_autoloading = autoload;
+      parser.m_fcn_file_from_relative_lookup = relative_lookup;
 
-      parser.lexer.force_script = force_script;
-      parser.lexer.prep_for_file ();
-      parser.lexer.parsing_class_method = ! dispatch_type.empty ();
+      parser.m_lexer.force_script = force_script;
+      parser.m_lexer.prep_for_file ();
+      parser.m_lexer.parsing_class_method = ! dispatch_type.empty ();
 
-      parser.lexer.fcn_file_name = file;
-      parser.lexer.fcn_file_full_name = full_file;
-      parser.lexer.dir_name = dir_name;
-      parser.lexer.package_name = package_name;
+      parser.m_lexer.fcn_file_name = file;
+      parser.m_lexer.fcn_file_full_name = full_file;
+      parser.m_lexer.dir_name = dir_name;
+      parser.m_lexer.package_name = package_name;
 
       int status = parser.run ();
 
-      fcn_ptr = parser.primary_fcn_ptr;
+      fcn_ptr = parser.m_primary_fcn_ptr;
 
       if (status == 0)
         {
-          if (parser.lexer.reading_classdef_file
-              && parser.classdef_object)
+          if (parser.m_lexer.reading_classdef_file
+              && parser.m_classdef_object)
             {
               // Convert parse tree for classdef object to
               // meta.class info (and stash it in the symbol
@@ -4456,13 +4457,13 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
                 = octave::__get_interpreter__ ("parse_fcn_file");
 
               fcn_ptr
-                = parser.classdef_object->make_meta_class (interp, is_at_folder);
+                = parser.m_classdef_object->make_meta_class (interp, is_at_folder);
               if (fcn_ptr)
                 retval = octave_value (fcn_ptr);
 
-              delete (parser.classdef_object);
+              delete (parser.m_classdef_object);
 
-              parser.classdef_object = 0;
+              parser.m_classdef_object = 0;
             }
           else if (fcn_ptr)
             {
@@ -4470,12 +4471,12 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
               fcn_ptr->maybe_relocate_end ();
 
-              if (parser.parsing_subfunctions)
+              if (parser.m_parsing_subfunctions)
                 {
-                  if (! parser.endfunction_found)
-                    parser.subfunction_names.reverse ();
+                  if (! parser.m_endfunction_found)
+                    parser.m_subfunction_names.reverse ();
 
-                  fcn_ptr->stash_subfunction_names (parser.subfunction_names);
+                  fcn_ptr->stash_subfunction_names (parser.m_subfunction_names);
                 }
             }
         }
@@ -5280,14 +5281,14 @@ namespace octave
 
         if (parse_status == 0)
           {
-            if (parser.stmt_list)
+            if (parser.m_stmt_list)
               {
                 tree_statement *stmt = 0;
 
                 octave::tree_evaluator& tw = __get_evaluator__ ("eval_string");
 
-                if (parser.stmt_list->length () == 1
-                    && (stmt = parser.stmt_list->front ())
+                if (parser.m_stmt_list->length () == 1
+                    && (stmt = parser.m_stmt_list->front ())
                     && stmt->is_expression ())
                   {
                     tree_expression *expr = stmt->expression ();
@@ -5316,7 +5317,7 @@ namespace octave
                       retval = octave_value_list ();
                   }
                 else if (nargout == 0)
-                  parser.stmt_list->accept (tw);
+                  parser.m_stmt_list->accept (tw);
                 else
                   error ("eval: invalid use of statement list");
 
@@ -5325,7 +5326,7 @@ namespace octave
                     || tree_continue_command::continuing)
                   break;
               }
-            else if (parser.lexer.end_of_input)
+            else if (parser.m_lexer.end_of_input)
               break;
           }
       }

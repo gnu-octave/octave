@@ -1903,41 +1903,7 @@ complex, nesting, persistent.
   return do_who (interp, argc, argv, nargout == 1, true);
 }
 
-// Defining variables.
-
-void
-bind_ans (const octave_value& val, bool print)
-{
-  static std::string ans = "ans";
-
-  if (val.is_defined ())
-    {
-      if (val.is_cs_list ())
-        {
-          octave_value_list lst = val.list_value ();
-
-          for (octave_idx_type i = 0; i < lst.length (); i++)
-            bind_ans (lst(i), print);
-        }
-      else
-        {
-          octave::symbol_table::scope *scope
-            = octave::__get_current_scope__ ("bind_ans");
-
-          if (scope)
-            scope->force_assign (ans, val);
-
-          if (print)
-            {
-              octave_value_list args = ovl (val);
-              args.stash_name_tags (string_vector (ans));
-              octave::feval ("display", args);
-            }
-        }
-    }
-}
-
-void
+oid
 mlock (void)
 {
   octave::call_stack& cs = octave::__get_call_stack__ ("mlock");
@@ -2706,6 +2672,14 @@ should return an error message to be displayed.
 }
 
 // The following functions are deprecated.
+
+void
+bind_ans (const octave_value& val, bool print)
+{
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("bind_ans");
+
+  tw.bind_ans (val, print);
+}
 
 void
 clear_mex_functions (void)

@@ -2529,6 +2529,36 @@ namespace octave
       }
   }
 
+  void tree_evaluator::bind_ans (const octave_value& val, bool print)
+  {
+    static std::string ans = "ans";
+
+    if (val.is_defined ())
+      {
+        if (val.is_cs_list ())
+          {
+            octave_value_list lst = val.list_value ();
+
+            for (octave_idx_type i = 0; i < lst.length (); i++)
+              bind_ans (lst(i), print);
+          }
+        else
+          {
+            symbol_table::scope *scope
+              = m_interpreter.require_current_scope ("tree_evaluator::bind_ans");
+
+            scope->force_assign (ans, val);
+
+            if (print)
+              {
+                octave_value_list args = ovl (val);
+                args.stash_name_tags (string_vector (ans));
+                feval ("display", args);
+              }
+          }
+      }
+  }
+
   void
   tree_evaluator::do_breakpoint (tree_statement& stmt) const
   {

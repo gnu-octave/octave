@@ -209,6 +209,8 @@ namespace octave
     void visit_while_command (tree_while_command&);
     void visit_do_until_command (tree_do_until_command&);
 
+    void bind_ans (const octave_value& val, bool print);
+
     static void reset_debug_state (void);
 
     static bool statement_printing_enabled (void);

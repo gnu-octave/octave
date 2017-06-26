@@ -5311,7 +5311,7 @@ namespace octave
                     retval = tw.evaluate_n (expr, nargout);
 
                     if (do_bind_ans && ! retval.empty ())
-                      bind_ans (retval(0), expr->print_result ());
+                      tw.bind_ans (retval(0), expr->print_result ());
 
                     if (nargout == 0)
                       retval = octave_value_list ();

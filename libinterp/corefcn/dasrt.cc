@@ -466,26 +466,22 @@ parameters for @code{dasrt}.
   argp++;
 
   if (args(1).is_function_handle () || args(1).is_inline_function ())
+    dasrt_cf = args(1).function_value ();
+  else
     {
-      dasrt_cf = args(1).function_value ();
-
-      if (! dasrt_cf)
-        error ("dasrt: invalid constraint function G");
-
-      argp++;
-
-      func.set_constraint_function (dasrt_user_cf);
+      fcn_name = unique_symbol_name ("__dasrt_constraint_fcn__");
+      fname = "function g_out = ";
+      fname.append (fcn_name);
+      fname.append (" (x, t) g_out = ");
+      dasrt_cf = extract_function (f_arg, "dasrt", fcn_name, fname,
+                                   "; endfunction");
     }
-  else if (args(1).is_string ())
-    {
-      dasrt_cf = is_valid_function (args(1), "dasrt", true);
-      if (! dasrt_cf)
-        error ("dasrt: invalid constraint function G");
 
-      argp++;
+  if (! dasrt_cf)
+    error ("dasrt: invalid constraint function G");
 
-      func.set_constraint_function (dasrt_user_cf);
-    }
+  argp++;
+  func.set_constraint_function (dasrt_user_cf);
 
   ColumnVector state = args(argp).xvector_value ("dasrt: initial state X_0 must be a vector");
 

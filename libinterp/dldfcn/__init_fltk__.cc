@@ -149,7 +149,7 @@ public:
   {
     //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << "x" << h () << std::endl;
 
-    gl2ps_print (gh_manager::get_object (m_number), cmd, term);
+    octave::gl2ps_print (gh_manager::get_object (m_number), cmd, term);
   }
 
   uint8NDArray get_pixels (void)

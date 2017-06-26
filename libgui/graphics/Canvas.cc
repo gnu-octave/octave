@@ -111,7 +111,7 @@ namespace QtHandles
       {
         graphics_object figObj (obj.get_ancestor ("figure"));
 
-        gl2ps_print (figObj, file_cmd.toStdString (), term.toStdString ());
+        octave::gl2ps_print (figObj, file_cmd.toStdString (), term.toStdString ());
       }
   }
 

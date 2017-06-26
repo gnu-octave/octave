@@ -162,7 +162,7 @@ instead.
       std::string file = args(1).string_value ();
       std::string term = args(2).string_value ();
 
-      gl2ps_print (fobj, file, term);
+      octave::gl2ps_print (fobj, file, term);
     }
   else
     {

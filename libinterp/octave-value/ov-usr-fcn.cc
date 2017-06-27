@@ -128,7 +128,7 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       frame.protect_var (call_depth);
       call_depth++;
 
-      if (call_depth >= Vmax_recursion_depth)
+      if (call_depth >= tw.max_recursion_depth ())
         error ("max_recursion_depth exceeded");
 
       octave::call_stack& cs
@@ -456,7 +456,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
   frame.protect_var (call_depth);
   call_depth++;
 
-  if (call_depth >= Vmax_recursion_depth)
+  if (call_depth >= tw.max_recursion_depth ())
     error ("max_recursion_depth exceeded");
 
   // Save old and set current symbol table context, for

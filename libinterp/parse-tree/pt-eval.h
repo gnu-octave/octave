@@ -104,8 +104,9 @@ namespace octave
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
     tree_evaluator (interpreter& interp)
-      : m_value_stack (), m_lvalue_list_stack (), m_nargout_stack (),
-        m_call_stack (interp), m_interpreter (interp)
+      : m_interpreter (interp), m_value_stack (), m_lvalue_list_stack (),
+        m_nargout_stack (), m_call_stack (interp),
+        m_max_recursion_depth (256), m_silent_functions (false)
     { }
 
     // No copying!
@@ -211,9 +212,9 @@ namespace octave
 
     void bind_ans (const octave_value& val, bool print);
 
-    static void reset_debug_state (void);
+    bool statement_printing_enabled (void);
 
-    static bool statement_printing_enabled (void);
+    static void reset_debug_state (void);
 
     // If > 0, stop executing at the (N-1)th stopping point, counting
     //         from the the current execution point in the current frame.
@@ -296,6 +297,30 @@ namespace octave
 
     call_stack& get_call_stack (void) { return m_call_stack; }
 
+    int max_recursion_depth (void) const { return m_max_recursion_depth; }
+
+    int max_recursion_depth (int n)
+    {
+      int val = m_max_recursion_depth;
+      m_max_recursion_depth = n;
+      return val;
+    }
+
+    octave_value
+    max_recursion_depth (const octave_value_list& args, int nargout);
+
+    bool silent_functions (void) const { return m_silent_functions; }
+
+    bool silent_functions (bool b)
+    {
+      int val = m_silent_functions;
+      m_silent_functions = b;
+      return val;
+    }
+
+    octave_value
+    silent_functions (const octave_value_list& args, int nargout);
+
   private:
 
     void do_breakpoint (tree_statement& stmt) const;
@@ -315,6 +340,8 @@ namespace octave
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
+    interpreter& m_interpreter;
+
     value_stack<octave_value_list> m_value_stack;
 
     value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
@@ -323,13 +350,15 @@ namespace octave
 
     call_stack m_call_stack;
 
-    interpreter& m_interpreter;
+    // Maximum nesting level for functions, scripts, or sourced files
+    // called recursively.
+    int m_max_recursion_depth;
+
+    // If TRUE, turn off printing of results in functions (as if a
+    // semicolon has been appended to each statement).
+    bool m_silent_functions;
   };
 }
-
-// Maximum nesting level for functions, scripts, or sourced files called
-// recursively.
-extern int Vmax_recursion_depth;
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 

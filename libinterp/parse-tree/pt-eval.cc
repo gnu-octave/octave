@@ -54,14 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 //FIXME: This should be part of tree_evaluator
 #include "pt-jit.h"
 
-// Maximum nesting level for functions, scripts, or sourced files called
-// recursively.
-int Vmax_recursion_depth = 256;
-
-// If TRUE, turn off printing of results in functions (as if a
-// semicolon has been appended to each statement).
-static bool Vsilent_functions = false;
-
 namespace octave
 {
   int tree_evaluator::dbstep_flag = 0;
@@ -409,19 +401,19 @@ namespace octave
       tree_continue_command::continuing = 1;
   }
 
+  bool
+  tree_evaluator::statement_printing_enabled (void)
+  {
+    return ! (m_silent_functions && (statement_context == function
+                                     || statement_context == script));
+  }
+
   void
   tree_evaluator::reset_debug_state (void)
   {
     debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
     dbstep_flag = 0;
-  }
-
-  bool
-  tree_evaluator::statement_printing_enabled (void)
-  {
-    return ! (Vsilent_functions && (statement_context == function
-                                    || statement_context == script));
   }
 
   Matrix
@@ -1017,7 +1009,7 @@ namespace octave
         else
           {
             if (expr.print_result () && nargout == 0
-                && tree_evaluator::statement_printing_enabled ())
+                && statement_printing_enabled ())
               {
                 octave_value_list args = ovl (val);
                 args.stash_name_tags (string_vector (expr.name ()));
@@ -1803,8 +1795,7 @@ namespace octave
                   }
               }
 
-            if (expr.print_result ()
-                && tree_evaluator::statement_printing_enabled ())
+            if (expr.print_result () && statement_printing_enabled ())
               {
                 // We clear any index here so that we can get
                 // the new value of the referenced object below,
@@ -2054,8 +2045,7 @@ namespace octave
             else
               val = ult.value ();
 
-            if (expr.print_result ()
-                && tree_evaluator::statement_printing_enabled ())
+            if (expr.print_result () && statement_printing_enabled ())
               {
                 // We clear any index here so that we can
                 // get the new value of the referenced
@@ -2721,10 +2711,25 @@ namespace octave
 
     return retval;
   }
+
+  octave_value
+  tree_evaluator::max_recursion_depth (const octave_value_list& args,
+                                       int nargout)
+  {
+    return set_internal_variable (m_max_recursion_depth, args, nargout,
+                                  "max_recursion_depth", 0);
+  }
+
+  octave_value
+  tree_evaluator::silent_functions (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_silent_functions, args, nargout,
+                                  "silent_functions");
+  }
 }
 
-DEFUN (max_recursion_depth, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (max_recursion_depth, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} max_recursion_depth ()
 @deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val})
 @deftypefnx {} {} max_recursion_depth (@var{new_val}, "local")
@@ -2739,7 +2744,9 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (max_recursion_depth);
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.max_recursion_depth (args, nargout);
 }
 
 /*
@@ -2754,8 +2761,8 @@ The original variable value is restored when exiting the function.
 %!error (max_recursion_depth (1, 2))
 */
 
-DEFUN (silent_functions, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (silent_functions, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} silent_functions ()
 @deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val})
 @deftypefnx {} {} silent_functions (@var{new_val}, "local")
@@ -2771,7 +2778,9 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (silent_functions);
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.silent_functions (args, nargout);
 }
 
 /*

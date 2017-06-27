@@ -4864,7 +4864,9 @@ namespace octave
 
     source_call_depth[file_full_name]++;
 
-    if (source_call_depth[file_full_name] >= Vmax_recursion_depth)
+    tree_evaluator& tw = __get_evaluator__ ("source_file");
+
+    if (source_call_depth[file_full_name] >= tw.max_recursion_depth ())
       error ("max_recursion_depth exceeded");
 
     if (! context.empty ())
@@ -4945,8 +4947,6 @@ namespace octave
         std::cout << "executing commands from " << full_name << " ... ";
         std::cout.flush ();
       }
-
-    tree_evaluator& tw = __get_evaluator__ ("source");
 
     octave_user_script *script = ov_code.user_script_value ();
 

@@ -38,9 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-// The character to fill with when creating string arrays.
-char Vstring_fill_char = ' ';
-
 namespace octave
 {
   std::string
@@ -360,51 +357,4 @@ namespace octave
 %!assert (isnull ([;;]))
 %!assert (isnull ([;,;]))
 %!assert (isnull ([,;,;,]))
-*/
-
-DEFUN (string_fill_char, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} string_fill_char ()
-@deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})
-@deftypefnx {} {} string_fill_char (@var{new_val}, "local")
-Query or set the internal variable used to pad all rows of a character
-matrix to the same length.
-
-The value must be a single character and the default is @qcode{" "} (a
-single space).  For example:
-
-@example
-@group
-string_fill_char ("X");
-[ "these"; "are"; "strings" ]
-      @result{}  "theseXX"
-          "areXXXX"
-          "strings"
-@end group
-@end example
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (string_fill_char);
-}
-
-/*
-## string_fill_char() function call must be outside of %!test block
-## due to the way a %!test block is wrapped inside a function
-%!shared orig_val, old_val
-%! orig_val = string_fill_char ();
-%! old_val  = string_fill_char ("X");
-%!test
-%! assert (orig_val, old_val);
-%! assert (string_fill_char (), "X");
-%! assert (["these"; "are"; "strings"], ["theseXX"; "areXXXX"; "strings"]);
-%! string_fill_char (orig_val);
-%! assert (string_fill_char (), orig_val);
-
-%!assert ( [ [], {1} ], {1} )
-
-%!error (string_fill_char (1, 2))
 */

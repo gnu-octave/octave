@@ -36,9 +36,6 @@ class octave_value_list;
 #include "pt-walk.h"
 #include "symtab.h"
 
-// The character to fill with when creating string arrays.
-extern char Vstring_fill_char;
-
 namespace octave
 {
   class tree_argument_list;

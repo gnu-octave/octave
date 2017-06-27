@@ -60,9 +60,6 @@ along with Octave; see the file COPYING.  If not, see
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
 
-// The character to fill with when creating string arrays.
-extern char Vstring_fill_char;   // see pt-mat.cc
-
 std::map<std::string, octave_value>
 octave_user_code::subfunctions (void) const
 {
@@ -731,7 +728,8 @@ octave_user_function::bind_automatic_vars
       // which might be redefined in a function.  Keep the old argn name
       // for backward compatibility of functions that use it directly.
 
-      m_scope->force_assign ("argn", charMatrix (arg_names, Vstring_fill_char));
+      charMatrix chm (arg_names, tw.string_fill_char ());
+      m_scope->force_assign ("argn", chm);
       m_scope->force_assign (".argn.", Cell (arg_names));
 
       m_scope->mark_hidden (".argn.");

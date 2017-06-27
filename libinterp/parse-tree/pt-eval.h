@@ -106,7 +106,8 @@ namespace octave
     tree_evaluator (interpreter& interp)
       : m_interpreter (interp), m_value_stack (), m_lvalue_list_stack (),
         m_nargout_stack (), m_call_stack (interp),
-        m_max_recursion_depth (256), m_silent_functions (false)
+        m_max_recursion_depth (256), m_silent_functions (false),
+        m_string_fill_char (' ')
     { }
 
     // No copying!
@@ -321,6 +322,18 @@ namespace octave
     octave_value
     silent_functions (const octave_value_list& args, int nargout);
 
+    char string_fill_char (void) const { return m_string_fill_char; }
+
+    char string_fill_char (char c)
+    {
+      int val = m_string_fill_char;
+      m_string_fill_char = c;
+      return val;
+    }
+
+    octave_value
+    string_fill_char (const octave_value_list& args, int nargout);
+
   private:
 
     void do_breakpoint (tree_statement& stmt) const;
@@ -357,6 +370,9 @@ namespace octave
     // If TRUE, turn off printing of results in functions (as if a
     // semicolon has been appended to each statement).
     bool m_silent_functions;
+
+    // The character to fill with when creating string arrays.
+    char m_string_fill_char;
   };
 }
 

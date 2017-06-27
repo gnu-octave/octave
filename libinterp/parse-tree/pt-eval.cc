@@ -1471,7 +1471,7 @@ namespace octave
             else
               maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
-            charNDArray result (dv, Vstring_fill_char);
+            charNDArray result (dv, m_string_fill_char);
 
             single_type_concat<charNDArray> (result, tmp);
 
@@ -2726,6 +2726,13 @@ namespace octave
     return set_internal_variable (m_silent_functions, args, nargout,
                                   "silent_functions");
   }
+
+  octave_value
+  tree_evaluator::string_fill_char (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_string_fill_char, args, nargout,
+                                  "string_fill_char");
+  }
 }
 
 DEFMETHOD (max_recursion_depth, interp, args, nargout,
@@ -2793,4 +2800,53 @@ The original variable value is restored when exiting the function.
 %! assert (silent_functions (), orig_val);
 
 %!error (silent_functions (1, 2))
+*/
+
+DEFMETHOD (string_fill_char, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} string_fill_char ()
+@deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})
+@deftypefnx {} {} string_fill_char (@var{new_val}, "local")
+Query or set the internal variable used to pad all rows of a character
+matrix to the same length.
+
+The value must be a single character and the default is @qcode{" "} (a
+single space).  For example:
+
+@example
+@group
+string_fill_char ("X");
+[ "these"; "are"; "strings" ]
+      @result{}  "theseXX"
+          "areXXXX"
+          "strings"
+@end group
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
+{
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.string_fill_char (args, nargout);
+}
+
+/*
+## string_fill_char() function call must be outside of %!test block
+## due to the way a %!test block is wrapped inside a function
+%!shared orig_val, old_val
+%! orig_val = string_fill_char ();
+%! old_val  = string_fill_char ("X");
+%!test
+%! assert (orig_val, old_val);
+%! assert (string_fill_char (), "X");
+%! assert (["these"; "are"; "strings"], ["theseXX"; "areXXXX"; "strings"]);
+%! string_fill_char (orig_val);
+%! assert (string_fill_char (), orig_val);
+
+%!assert ( [ [], {1} ], {1} )
+
+%!error (string_fill_char (1, 2))
 */

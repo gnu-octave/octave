@@ -21,7 +21,7 @@
 SED=${SED:-sed}
 
 cat << \EOF
-// DO NOT EDIT!  Generated automatically by mkops.
+// DO NOT EDIT!  Generated automatically by mk-ops.sh.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"

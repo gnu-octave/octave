@@ -83,15 +83,17 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/build-env.in.cc \
   %reldir%/build-env-features.sh \
   %reldir%/deprecated-config.h \
-  %reldir%/gendoc.pl \
-  %reldir%/genprops.awk \
   %reldir%/liboctinterp-build-info.in.cc \
-  %reldir%/mk-errno-list \
-  %reldir%/mk-pkg-add \
-  %reldir%/mkops \
+  %reldir%/mk-builtins.pl \
+  %reldir%/mk-doc.pl \
+  %reldir%/mk-pkg-add.sh \
+  %reldir%/mk-version-h.in.sh \
   %reldir%/op-kw-docs \
   %reldir%/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
+
+GEN_CONFIG_SHELL += \
+  %reldir%/mk-version-h.sh
 
 octinclude_HEADERS += \
   %reldir%/builtins.h \
@@ -129,9 +131,6 @@ include %reldir%/operators/module.mk
 include %reldir%/template-inst/module.mk
 include %reldir%/corefcn/module.mk
 include %reldir%/dldfcn/module.mk
-
-$(srcdir)/%reldir%/dldfcn/module.mk: $(srcdir)/%reldir%/dldfcn/config-module.sh $(srcdir)/%reldir%/dldfcn/config-module.awk $(srcdir)/%reldir%/dldfcn/module-files
-	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/dldfcn/config-module.sh $(srcdir)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
@@ -241,8 +240,8 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 	$(SHELL) $(srcdir)/%reldir%/build-env-features.sh $< > $@-t && \
 	mv $@-t $@
 
-%reldir%/version.h: %reldir%/version.in.h build-aux/mk-version-h.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
+%reldir%/version.h: %reldir%/version.in.h %reldir%/mk-version-h.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-version-h.sh)
 
 %reldir%/liboctinterp-build-info.cc: %reldir%/liboctinterp-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)
@@ -253,22 +252,22 @@ else
   mkbuiltins_dld_opt = --disable-dl
 endif
 
-%reldir%/builtins.cc: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.pl | %reldir%/$(octave_dirstamp)
+%reldir%/builtins.cc: $(LIBINTERP_DEFUN_FILES) %reldir%/mk-builtins.pl | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(PERL) $(srcdir)/build-aux/mk-builtins.pl --source $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
+	$(PERL) $(srcdir)/%reldir%/mk-builtins.pl --source $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
 
-%reldir%/builtin-defun-decls.h: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.pl | %reldir%/$(octave_dirstamp)
+%reldir%/builtin-defun-decls.h: $(LIBINTERP_DEFUN_FILES) %reldir%/mk-builtins.pl | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(PERL) $(srcdir)/build-aux/mk-builtins.pl --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
+	$(PERL) $(srcdir)/%reldir%/mk-builtins.pl --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = %reldir%/dldfcn/PKG_ADD
 
-%reldir%/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) %reldir%/mk-pkg-add | %reldir%/$(octave_dirstamp)
+%reldir%/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) %reldir%/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/%reldir%/mk-pkg-add "$(srcdir)" $(DLDFCN_DEFUN_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/%reldir%/mk-pkg-add.sh "$(srcdir)" $(DLDFCN_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
 endif
 
@@ -276,7 +275,7 @@ DOCSTRING_FILES += %reldir%/DOCSTRINGS
 
 %reldir%/DOCSTRINGS: $(LIBINTERP_DEFUN_FILES) %reldir%/op-kw-docs | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f %reldir%/DOCSTRINGS-t && \
-	( $(PERL) $(srcdir)/%reldir%/gendoc.pl "$(srcdir)" $(LIBINTERP_DEFUN_FILES); $(SED) -ne '/^\x1d/,$$p' $(srcdir)/%reldir%/op-kw-docs ) > %reldir%/DOCSTRINGS-t && \
+	( $(PERL) $(srcdir)/%reldir%/mk-doc.pl "$(srcdir)" $(LIBINTERP_DEFUN_FILES); $(SED) -ne '/^\x1d/,$$p' $(srcdir)/%reldir%/op-kw-docs ) > %reldir%/DOCSTRINGS-t && \
 	$(call move_if_change_rule,%reldir%/DOCSTRINGS-t,$@)
 
 OCTAVE_INTERPRETER_TARGETS += \

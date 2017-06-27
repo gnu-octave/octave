@@ -134,8 +134,11 @@ NOINSTALL_LIBINTERP_OPERATORS_INC = \
   %reldir%/op-int.h \
   %reldir%/op-pm-template.cc
 
+libinterp_EXTRA_DIST += \
+  %reldir%/mk-ops.sh
+
 ## Special rules for sources which must be built before rest of compilation.
-%reldir%/ops.cc: $(LIBINTERP_OPERATORS_SRC) libinterp/mkops
+%reldir%/ops.cc: $(LIBINTERP_OPERATORS_SRC) %reldir%/mk-ops.sh
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/libinterp/mkops $(LIBINTERP_OPERATORS_SRC) > $@-t && \
+	$(SHELL) $(srcdir)/%reldir%/mk-ops.sh $(LIBINTERP_OPERATORS_SRC) > $@-t && \
 	mv $@-t $@

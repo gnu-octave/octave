@@ -69,7 +69,7 @@ FILE: foreach $fname (@ARGV)
       }
       else
       {
-        print STDERR "gendoc.pl: undocumented function $func from $fname\n";
+        print STDERR "mk-doc.pl: undocumented function $func from $fname\n";
         push (@docstr, "Undocumented.");
       }
     }

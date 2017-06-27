@@ -43,9 +43,9 @@ noinst_LTLIBRARIES += %reldir%/libranlib.la
 
 ## Special rules for files which must be built before compilation
 ## ranlib directory may not exist in VPATH build; create it if necessary.
-%reldir%/ranlib.def: $(RANLIB_SRC) build-aux/mk-f77-def.sh | %reldir%/$(octave_dirstamp)
+%reldir%/ranlib.def: $(RANLIB_SRC) %reldir%/../mk-f77-def.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) build-aux/mk-f77-def.sh $(srcdir) $(RANLIB_SRC) > $@-t && \
+	$(SHELL) %reldir%/../mk-f77-def.sh $(srcdir) $(RANLIB_SRC) > $@-t && \
 	mv $@-t $@
 
 liboctave_liboctave_la_LIBADD += %reldir%/libranlib.la

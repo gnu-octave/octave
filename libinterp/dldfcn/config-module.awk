@@ -85,4 +85,8 @@ BEGIN {
     printf ("%%canon_reldir%%_%s_la_LIBADD = $(DLD_LIBOCTINTERP_LIBADD) liboctave/liboctave.la %s $(OCT_LINK_DEPS)\n",
             basename, libraries[i]);
   }
+
+  print "";
+  print "$(srcdir)/%reldir%/module.mk: $(srcdir)/%reldir%/config-module.sh $(srcdir)/%reldir%/config-module.awk $(srcdir)/%reldir%/module-files";
+  print "	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-module.sh $(srcdir)";
 }

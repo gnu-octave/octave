@@ -5,14 +5,9 @@ EXTRA_DIST += \
   %reldir%/check-subst-vars.in.sh \
   %reldir%/find-defun-files.sh \
   %reldir%/find-files-with-tests.sh \
-  %reldir%/mk-builtins.pl \
-  %reldir%/mk-default-qt-settings.in.sh \
-  %reldir%/mk-f77-def.in.sh \
   %reldir%/mk-hg-id.sh \
-  %reldir%/mk-mxarray-h.in.sh \
   %reldir%/mk-octave-config-h.sh \
   %reldir%/mk-opts.pl \
-  %reldir%/mk-version-h.in.sh \
   %reldir%/move-if-change \
   %reldir%/stl_algo.h-fixed \
   %reldir%/subst-config-vals.in.sh \
@@ -21,11 +16,7 @@ EXTRA_DIST += \
   %reldir%/subst-script-vals.in.sh \
   %reldir%/update-bug-status.sh
 
-GEN_CONFIG_SHELL = \
-  %reldir%/mk-default-qt-settings.sh \
-  %reldir%/mk-f77-def.sh \
-  %reldir%/mk-mxarray-h.sh \
-  %reldir%/mk-version-h.sh \
+GEN_CONFIG_SHELL += \
   %reldir%/subst-config-vals.sh \
   %reldir%/subst-cross-config-vals.sh \
   %reldir%/subst-default-vals.sh \

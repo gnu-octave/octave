@@ -252,29 +252,29 @@ COREFCN_SRC = \
 %reldir%/defaults.h: %reldir%/defaults.in.h build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
-%reldir%/graphics.h: %reldir%/graphics.in.h libinterp/genprops.awk | %reldir%/$(octave_dirstamp)
+%reldir%/graphics.h: %reldir%/graphics.in.h %reldir%/genprops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(AWK) -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
+	$(AWK) -f $(srcdir)/%reldir%/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
-%reldir%/graphics-props.cc: %reldir%/graphics.in.h libinterp/genprops.awk | %reldir%/$(octave_dirstamp)
+%reldir%/graphics-props.cc: %reldir%/graphics.in.h %reldir%/genprops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
+	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/%reldir%/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
-%reldir%/oct-errno.cc: %reldir%/oct-errno.in.cc | %reldir%/$(octave_dirstamp)
+%reldir%/oct-errno.cc: %reldir%/oct-errno.in.cc %reldir%/mk-errno-list.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	if test -n "$(PERL)"; then \
-	  $(SHELL) $(srcdir)/libinterp/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
+	  $(SHELL) $(srcdir)/%reldir%/mk-errno-list.sh --perl "$(PERL)" < $< > $@-t; \
 	elif test -n "$(PYTHON)"; then \
-	  $(SHELL) $(srcdir)/libinterp/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
+	  $(SHELL) $(srcdir)/%reldir%/mk-errno-list.sh --python "$(PYTHON)" < $< > $@-t; \
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
 	fi && \
 	mv $@-t $@
 
-%reldir%/mxarray.h: %reldir%/mxarray.in.h build-aux/mk-mxarray-h.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-mxarray-h.sh)
+%reldir%/mxarray.h: %reldir%/mxarray.in.h %reldir%/mk-mxarray-h.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-mxarray-h.sh)
 
 %reldir%/oct-tex-lexer.ll: %reldir%/oct-tex-lexer.in.ll %reldir%/oct-tex-symbols.in | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
@@ -311,9 +311,15 @@ noinst_LTLIBRARIES += \
 
 libinterp_EXTRA_DIST += \
   %reldir%/defaults.in.h \
+  %reldir%/genprops.awk \
   %reldir%/graphics.in.h \
+  %reldir%/mk-errno-list.sh \
+  %reldir%/mk-mxarray-h.in.sh \
   %reldir%/mxarray.in.h \
   %reldir%/oct-errno.in.cc \
   %reldir%/oct-tex-lexer.in.ll \
   %reldir%/oct-tex-parser.in.yy \
   %reldir%/oct-tex-symbols.in
+
+GEN_CONFIG_SHELL += \
+  %reldir%/mk-mxarray-h.sh

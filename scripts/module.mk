@@ -91,9 +91,9 @@ OCTAVE_INTERPRETER_TARGETS += \
 FCN_FILES_WITH_TESTS = $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN))
 
 define PKG_ADD_FILE_TEMPLATE
-$(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) %reldir%/mk-pkg-add
+$(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) %reldir%/mk-pkg-add.sh
 	$$(AM_V_GEN)rm -f $$@-t $$@ && \
-	$$(SHELL) $$(srcdir)/%reldir%/mk-pkg-add $(srcdir) $$($(2)_FCN_FILES) -- $$($(2)_GEN_FCN_FILES) > $$@-t && \
+	$$(SHELL) $$(srcdir)/%reldir%/mk-pkg-add.sh $(srcdir) $$($(2)_FCN_FILES) -- $$($(2)_GEN_FCN_FILES) > $$@-t && \
 	mv $$@-t $$@
 endef
 
@@ -110,7 +110,7 @@ DOCSTRING_FILES += %reldir%/DOCSTRINGS
 
 %reldir%/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f %reldir%/DOCSTRINGS-t && \
-	$(PERL) $(srcdir)/%reldir%/mkdoc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > %reldir%/DOCSTRINGS-t && \
+	$(PERL) $(srcdir)/%reldir%/mk-doc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > %reldir%/DOCSTRINGS-t && \
 	$(call move_if_change_rule,%reldir%/DOCSTRINGS-t,$@)
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
@@ -186,8 +186,8 @@ endif
   $(FCN_FILES) \
   $(GEN_FCN_FILES_IN) \
   %reldir%/DOCSTRINGS \
-  %reldir%/mkdoc.pl \
-  %reldir%/mk-pkg-add
+  %reldir%/mk-doc.pl \
+  %reldir%/mk-pkg-add.sh
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 

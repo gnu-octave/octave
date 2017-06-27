@@ -231,9 +231,9 @@ endfunction
 %! assert (result, logical ([1 0 0 0 1 0]'));
 %! assert (s_idx, [1 0 0 0 1 0]');
 
-%!test <51187>
+%!test <*51187>
 %! assert (ismember ('b ', {'a ', 'b '}), true);
 
-%!test <51187>
+%!test <*51187>
 %! abc = ['a '; 'b '; 'c '];
 %! assert (ismember (abc, {abc}), [false; false; false]);

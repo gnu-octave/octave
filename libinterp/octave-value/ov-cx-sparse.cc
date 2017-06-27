@@ -118,7 +118,7 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:array-to-scalar",
                               "complex sparse matrix", "real scalar");
 
-  return octave::math::real (matrix(0, 0));
+  return std::real (matrix(0, 0));
 }
 
 Matrix
@@ -178,7 +178,7 @@ octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
           retval(matrix.ridx (i) + nr * j) =
-            static_cast<char>(octave::math::real (matrix.data (i)));
+            static_cast<char>(std::real (matrix.data (i)));
     }
 
   return retval;

@@ -80,24 +80,8 @@ namespace octave
     inline Complex atan (const Complex& x) { return std::atan (x); }
     inline FloatComplex atan (const FloatComplex& x) { return std::atan (x); }
 
-    // C++ now provides versions of the following functions for arguments of
-    // type std::complex<T> and T.  But some compilers (I'm looking at you,
-    // clang) apparently don't get this right yet...  So we provide our own
-    // wrappers for real-valued arguments.
-
-    inline double arg (double x) { return signbit (x) ? M_PI : 0; }
-    inline float arg (float x)
-    {
-      return signbit (x) ? static_cast<float> (M_PI) : 0;
-    }
-
-    template <typename T>
-    T
-    arg (const std::complex<T>& x)
-    {
-      return std::arg (x);
-    }
-
+    // The C++ standard would normally return a std::complex value for conj
+    // even when the input is fully real.  Octave overrides this. 
     inline double conj (double x) { return x; }
     inline float conj (float x) { return x; }
 
@@ -106,26 +90,6 @@ namespace octave
     conj (const std::complex<T>& x)
     {
       return std::conj (x);
-    }
-
-    inline double imag (double) { return 0; }
-    inline float imag (float) { return 0; }
-
-    template <typename T>
-    T
-    imag (const std::complex<T>& x)
-    {
-      return std::imag (x);
-    }
-
-    inline double real (double x) { return x; }
-    inline float real (float x) { return x; }
-
-    template <typename T>
-    T
-    real (const std::complex<T>& x)
-    {
-      return std::real (x);
     }
 
     inline double log2 (double x) { return std::log2 (x); }
@@ -143,6 +107,7 @@ namespace octave
     inline double exp2 (double x) { return std::exp2 (x); }
     inline float exp2 (float x) { return std::exp2f (x); }
 
+    // FIXME: Is ceil actually acceptably defined for complex values?
     inline double ceil (double x) { return std::ceil (x); }
     inline float ceil (float x) { return ::ceilf (x); }
 
@@ -153,6 +118,7 @@ namespace octave
       return std::complex<T> (ceil (std::real (x)), ceil (std::imag (x)));
     }
 
+    // FIXME: Is trunc actually acceptably defined for complex values?
     inline double trunc (double x) { return std::trunc (x); }
     inline float trunc (float x) { return std::truncf (x); }
 
@@ -174,6 +140,7 @@ namespace octave
       return trunc (x);
     }
 
+    // FIXME: Do we need this alias for floor?
     inline double floor (double x) { return std::floor (x); }
     inline float floor (float x) { return std::floor (x); }
 
@@ -184,6 +151,7 @@ namespace octave
       return std::complex<T> (floor (std::real (x)), floor (std::imag (x)));
     }
 
+    // FIXME: Do we need this alias for round?
     inline double round (double x) { return std::round (x); }
     inline float round (float x) { return std::roundf (x); }
 
@@ -232,6 +200,7 @@ namespace octave
     inline bool isnan (double x) { return std::isnan (x); }
     inline bool isnan (float x) { return std::isnan (x); }
 
+    // FIXME: Do we need the isnan overload for complex?
     template <typename T>
     bool
     isnan (const std::complex<T>& x)
@@ -242,6 +211,7 @@ namespace octave
     inline bool isfinite (double x) { return std::isfinite (x); }
     inline bool isfinite (float x) { return std::isfinite (x); }
 
+    // FIXME: Do we need isfinite overload for complex?
     template <typename T>
     bool
     isfinite (const std::complex<T>& x)
@@ -265,6 +235,7 @@ namespace octave
     inline bool isinf (double x) { return std::isinf (x); }
     inline bool isinf (float x) { return std::isinf (x); }
 
+    // FIXME: Do we need isinf overload for complex?
     template <typename T>
     bool
     isinf (const std::complex<T>& x)
@@ -275,6 +246,7 @@ namespace octave
     // Some useful tests, that are commonly repeated.
     // Test for a finite integer.
 
+    // FIXME: Benchmark whether trunc might be faster than round here.
     inline bool isinteger (double x) { return isfinite (x) && x == round (x); }
     inline bool isinteger (float x) { return isfinite (x) && x == round (x); }
 
@@ -555,25 +527,25 @@ inline FloatComplex atan (const FloatComplex& x)
   return octave::math::atan (x);
 }
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::arg' instead")
-inline double arg (double x) { return octave::math::arg (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::arg' instead")
-inline float arg (float x) { return octave::math::arg (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::arg' instead")
+inline double arg (double x) { return std::arg (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::arg' instead")
+inline float arg (float x) { return std::arg (x); }
 
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::conj' instead")
 inline double conj (double x) { return x; }
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::conj' instead")
 inline float conj (float x) { return x; }
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::imag' instead")
-inline double imag (double x) { return octave::math::imag (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::imag' instead")
-inline float imag (float x) { return octave::math::imag (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::imag' instead")
+inline double imag (double x) { return std::imag (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::imag' instead")
+inline float imag (float x) { return std::imag (x); }
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::real' instead")
-inline double real (double x) { return octave::math::real (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::real' instead")
-inline float real (float x) { return octave::math::real (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::real' instead")
+inline double real (double x) { return std::real (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::real' instead")
+inline float real (float x) { return std::real (x); }
 
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::log2' instead")
 inline double xlog2 (double x) { return octave::math::log2 (x); }

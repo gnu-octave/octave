@@ -842,7 +842,7 @@ FloatComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
 
   info = tmp_info;
 
-  lwork = static_cast<F77_INT> (octave::math::real (z(0)));
+  lwork = static_cast<F77_INT> (std::real (z(0)));
   lwork = (lwork <  2 *nc ? 2*nc : lwork);
   z.resize (dim_vector (lwork, 1));
   FloatComplex *pz = z.fortran_vec ();
@@ -2558,18 +2558,18 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
 
           const F77_INT lworkaround = 4*m + m*m + addend;
 
-          if (octave::math::real (work(0)) < lworkaround)
+          if (std::real (work(0)) < lworkaround)
             work(0) = lworkaround;
         }
       else if (m >= n)
         {
           F77_INT lworkaround = 2*m + m*nrhs;
 
-          if (octave::math::real (work(0)) < lworkaround)
+          if (std::real (work(0)) < lworkaround)
             work(0) = lworkaround;
         }
 
-      lwork = static_cast<F77_INT> (octave::math::real (work(0)));
+      lwork = static_cast<F77_INT> (std::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
       anorm = xnorm (*this, 1);
@@ -2754,7 +2754,7 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
       info = tmp_info;
       rank = tmp_rank;
 
-      lwork = static_cast<F77_INT> (octave::math::real (work(0)));
+      lwork = static_cast<F77_INT> (std::real (work(0)));
       work.resize (dim_vector (lwork, 1));
       rwork.resize (dim_vector (static_cast<F77_INT> (rwork(0)), 1));
       iwork.resize (dim_vector (iwork(0), 1));
@@ -3021,7 +3021,7 @@ FloatComplexMatrix::row_is_real_only (octave_idx_type i) const
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      if (octave::math::imag (elem (i, j)) != 0.0)
+      if (std::imag (elem (i, j)) != 0.0)
         {
           retval = false;
           break;
@@ -3040,7 +3040,7 @@ FloatComplexMatrix::column_is_real_only (octave_idx_type j) const
 
   for (octave_idx_type i = 0; i < nr; i++)
     {
-      if (octave::math::imag (elem (i, j)) != 0.0)
+      if (std::imag (elem (i, j)) != 0.0)
         {
           retval = false;
           break;
@@ -3690,7 +3690,7 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (octave::math::imag (a(i, j)) != 0.0 || octave::math::imag (b(i, j)) != 0.0)
+          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = false;
               break;
@@ -3700,8 +3700,8 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
-            result(i, j) = octave::math::min (octave::math::real (a(i, j)),
-                                              octave::math::real (b(i, j)));
+            result(i, j) = octave::math::min (std::real (a(i, j)),
+                                              std::real (b(i, j)));
         }
       else
         {
@@ -3762,7 +3762,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (octave::math::imag (a(i, j)) != 0.0 || octave::math::imag (b(i, j)) != 0.0)
+          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = false;
               break;
@@ -3774,8 +3774,8 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = octave::math::max (octave::math::real (a(i, j)),
-                                                octave::math::real (b(i, j)));
+              result(i, j) = octave::math::max (std::real (a(i, j)),
+                                                std::real (b(i, j)));
             }
         }
       else

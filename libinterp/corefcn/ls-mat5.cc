@@ -2010,12 +2010,12 @@ save_mat5_array_length (const Complex *val, octave_idx_type nel,
   OCTAVE_LOCAL_BUFFER (double, tmp, nel);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::real (val[i]);
+    tmp[i] = std::real (val[i]);
 
   ret = save_mat5_array_length (tmp, nel, save_as_floats);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::imag (val[i]);
+    tmp[i] = std::imag (val[i]);
 
   ret += save_mat5_array_length (tmp, nel, save_as_floats);
 
@@ -2031,12 +2031,12 @@ save_mat5_array_length (const FloatComplex *val, octave_idx_type nel,
   OCTAVE_LOCAL_BUFFER (float, tmp, nel);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::real (val[i]);
+    tmp[i] = std::real (val[i]);
 
   ret = save_mat5_array_length (tmp, nel, save_as_floats);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::imag (val[i]);
+    tmp[i] = std::imag (val[i]);
 
   ret += save_mat5_array_length (tmp, nel, save_as_floats);
 
@@ -2453,12 +2453,12 @@ save_mat5_binary_element (std::ostream& os,
           NDArray buf (dim_vector (nnz, 1));
 
           for (octave_idx_type i = 0; i < nnz; i++)
-            buf (i) = octave::math::real (m.data (i));
+            buf (i) = std::real (m.data (i));
 
           write_mat5_array (os, buf, save_as_floats);
 
           for (octave_idx_type i = 0; i < nnz; i++)
-            buf (i) = octave::math::imag (m.data (i));
+            buf (i) = std::imag (m.data (i));
 
           write_mat5_array (os, buf, save_as_floats);
         }

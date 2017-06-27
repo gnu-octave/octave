@@ -507,9 +507,9 @@ MatrixType::MatrixType (const MSparse<T>& a)
                   if (a.ridx (i) == j)
                     {
                       T d = a.data (i);
-                      is_herm = (octave::math::real (d) > 0.0
-                                 && octave::math::imag (d) == 0.0);
-                      diag(j) = octave::math::real (d);
+                      is_herm = (std::real (d) > 0.0
+                                 && std::imag (d) == 0.0);
+                      diag(j) = std::real (d);
                       break;
                     }
                 }

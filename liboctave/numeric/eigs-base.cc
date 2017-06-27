@@ -1704,7 +1704,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
-              if (octave::math::imag (eig_val(i)) == 0)
+              if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
                     eig_vec(j,i) =
@@ -2058,7 +2058,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
-              if (octave::math::imag (eig_val(i)) == 0)
+              if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
                     eig_vec(j,i) =
@@ -2349,7 +2349,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
-              if (octave::math::imag (eig_val(i)) == 0)
+              if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
                     eig_vec(j,i) =

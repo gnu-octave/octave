@@ -927,8 +927,8 @@ octave_matrix::map (unary_mapper_t umap) const
 
     RC_ARRAY_MAPPER (acos, Complex, octave::math::rc_acos);
     RC_ARRAY_MAPPER (acosh, Complex, octave::math::rc_acosh);
-    ARRAY_MAPPER (angle, double, octave::math::arg);
-    ARRAY_MAPPER (arg, double,octave::math ::arg);
+    ARRAY_MAPPER (angle, double, std::arg);
+    ARRAY_MAPPER (arg, double,std::arg);
     RC_ARRAY_MAPPER (asin, Complex, octave::math::rc_asin);
     ARRAY_MAPPER (asinh, double, octave::math::asinh);
     ARRAY_MAPPER (atan, double, ::atan);

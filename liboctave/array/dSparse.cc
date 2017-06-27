@@ -562,7 +562,7 @@ real (const SparseComplexMatrix& a)
 
   for (octave_idx_type i = 0; i < nz; i++)
     {
-      r.data (i) = octave::math::real (a.data (i));
+      r.data (i) = std::real (a.data (i));
       r.ridx (i) = a.ridx (i);
     }
 
@@ -583,7 +583,7 @@ imag (const SparseComplexMatrix& a)
 
   for (octave_idx_type i = 0; i < nz; i++)
     {
-      r.data (i) = octave::math::imag (a.data (i));
+      r.data (i) = std::imag (a.data (i));
       r.ridx (i) = a.ridx (i);
     }
 

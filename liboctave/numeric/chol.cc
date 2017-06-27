@@ -333,7 +333,7 @@ namespace octave
 
       if (singular (chol_mat))
         info = 2;
-      else if (math::imag (u(j)) != zero)
+      else if (std::imag (u(j)) != zero)
         info = 3;
       else
         {

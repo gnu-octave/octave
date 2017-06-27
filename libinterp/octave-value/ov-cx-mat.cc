@@ -115,7 +115,7 @@ octave_complex_matrix::double_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "complex matrix", "real scalar");
 
-  return octave::math::real (matrix(0, 0));
+  return std::real (matrix(0, 0));
 }
 
 float
@@ -131,7 +131,7 @@ octave_complex_matrix::float_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "complex matrix", "real scalar");
 
-  return octave::math::real (matrix(0, 0));
+  return std::real (matrix(0, 0));
 }
 
 NDArray
@@ -244,7 +244,7 @@ octave_complex_matrix::char_array_value (bool frc_str_conv) const
       octave_idx_type nel = numel ();
 
       for (octave_idx_type i = 0; i < nel; i++)
-        retval.elem (i) = static_cast<char>(octave::math::real (matrix.elem (i)));
+        retval.elem (i) = static_cast<char>(std::real (matrix.elem (i)));
     }
 
   return retval;
@@ -734,8 +734,8 @@ octave_complex_matrix::as_mxArray (void) const
 
   for (mwIndex i = 0; i < nel; i++)
     {
-      pr[i] = octave::math::real (p[i]);
-      pi[i] = octave::math::imag (p[i]);
+      pr[i] = std::real (p[i]);
+      pi[i] = std::imag (p[i]);
     }
 
   return retval;

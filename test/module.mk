@@ -115,27 +115,27 @@ coverage: all
 	@echo ""
 .PHONY: coverage
 
-%reldir%/sparse.tst: %reldir%/build-sparse-tests.sh | %reldir%/$(octave_dirstamp)
+%reldir%/sparse.tst: %reldir%/mk-sparse-tst.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/%reldir%/build-sparse-tests.sh > $@-t && \
+	$(SHELL) $(srcdir)/%reldir%/mk-sparse-tst.sh > $@-t && \
 	mv $@-t $@
 
-%reldir%/conv.tst: %reldir%/build-conv-tests.sh | %reldir%/$(octave_dirstamp)
+%reldir%/conv.tst: %reldir%/mk-conv-tst.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/%reldir%/build-conv-tests.sh > $@-t && \
+	$(SHELL) $(srcdir)/%reldir%/mk-conv-tst.sh > $@-t && \
 	mv $@-t $@
 
 GENERATED_BC_OVERLOADS_DIRS := \
-  $(shell $(SHELL) $(srcdir)/%reldir%/build-bc-overload-tests.sh test --list-dirs)
+  $(shell $(SHELL) $(srcdir)/%reldir%/mk-bc-overloads-tst.sh test --list-dirs)
 
 GENERATED_BC_OVERLOADS_FILES := \
-  $(shell $(SHELL) $(srcdir)/%reldir%/build-bc-overload-tests.sh test --list-files)
+  $(shell $(SHELL) $(srcdir)/%reldir%/mk-bc-overloads-tst.sh test --list-files)
 
-$(GENERATED_BC_OVERLOADS_FILES): %reldir%/.bc-overload-tests-stamp
+$(GENERATED_BC_OVERLOADS_FILES): %reldir%/mk-bc-overloads-tst-stamp
 
-%reldir%/.bc-overload-tests-stamp: %reldir%/build-bc-overload-tests.sh %reldir%/bc-overloads-expected | %reldir%/$(octave_dirstamp)
+%reldir%/.bc-overload-tests-stamp: %reldir%/mk-bc-overloads-tst.sh %reldir%/bc-overloads-expected | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
-	$(SHELL) $(srcdir)/%reldir%/build-bc-overload-tests.sh test $(srcdir)/%reldir%/bc-overloads-expected && \
+	$(SHELL) $(srcdir)/%reldir%/mk-bc-overloads-tst.sh test $(srcdir)/%reldir%/bc-overloads-expected && \
 	touch $@
 
 GENERATED_TEST_FILES = \
@@ -174,11 +174,11 @@ uninstall-test-files:
 BUILT_SOURCES += $(GENERATED_TEST_FILES)
 
 %canon_reldir%_EXTRA_DIST += \
-  %reldir%/build-conv-tests.sh \
-  %reldir%/build-sparse-tests.sh \
-  %reldir%/build-bc-overload-tests.sh \
   %reldir%/bc-overloads-expected \
-  %reldir%/build_bc_overloads_expected.m \
+  %reldir%/mk-bc-overloads-tst.sh \
+  %reldir%/mk-conv-tst.sh \
+  %reldir%/mk-sparse-tst.sh \
+  %reldir%/mk_bc_overloads_expected.m \
   %reldir%/show-failures.awk \
   $(TEST_FILES)
 

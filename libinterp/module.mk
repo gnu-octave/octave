@@ -81,9 +81,9 @@ LIBINTERP_BUILT_NODISTFILES = \
 %canon_reldir%_EXTRA_DIST += \
   %reldir%/DOCSTRINGS \
   %reldir%/build-env.in.cc \
-  %reldir%/build-env-features.sh \
   %reldir%/deprecated-config.h \
   %reldir%/liboctinterp-build-info.in.cc \
+  %reldir%/mk-build-env-features.sh \
   %reldir%/mk-builtins.pl \
   %reldir%/mk-doc.pl \
   %reldir%/mk-pkg-add.sh \
@@ -235,9 +235,9 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 %reldir%/build-env.cc: %reldir%/build-env.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
-%reldir%/build-env-features.cc: config.h %reldir%/build-env-features.sh | %reldir%/$(octave_dirstamp)
+%reldir%/build-env-features.cc: config.h %reldir%/mk-build-env-features.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/%reldir%/build-env-features.sh $< > $@-t && \
+	$(SHELL) $(srcdir)/%reldir%/mk-build-env-features.sh $< > $@-t && \
 	mv $@-t $@
 
 %reldir%/version.h: %reldir%/version.in.h %reldir%/mk-version-h.sh | %reldir%/$(octave_dirstamp)

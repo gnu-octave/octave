@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "str-vec.h"
 
-#include "builtin-defun-decls.h"
 #include "Cell.h"
 #include "defaults.h"
 #include "defun.h"
@@ -83,7 +82,6 @@ namespace octave
             break;
 
           case 'H':
-            Fhistory_save (octave_value (false));
             m_read_history_file = false;
             break;
 
@@ -123,10 +121,7 @@ namespace octave
             break;
 
           case 'x':
-            {
-              int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
-              Fecho_executing_commands (octave_value (val));
-            }
+            m_echo_commands = true;
             break;
 
           case 'v':
@@ -135,12 +130,12 @@ namespace octave
 
           case BUILT_IN_DOCSTRINGS_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Fbuilt_in_docstrings_file (octave_value (octave_optarg_wrapper ()));
+              m_docstrings_file = octave_optarg_wrapper ();;
             break;
 
           case DOC_CACHE_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Fdoc_cache_file (octave_value (octave_optarg_wrapper ()));
+              m_doc_cache_file = octave_optarg_wrapper ();
             break;
 
           case EVAL_OPTION:
@@ -169,20 +164,20 @@ namespace octave
 
           case INFO_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Finfo_file (octave_value (octave_optarg_wrapper ()));
+              m_info_file = octave_optarg_wrapper ();
             break;
 
           case INFO_PROG_OPTION:
             if (octave_optarg_wrapper ())
-              Finfo_program (octave_value (octave_optarg_wrapper ()));
+              m_info_program = octave_optarg_wrapper ();
             break;
 
           case DEBUG_JIT_OPTION:
-            Fdebug_jit (octave_value (true));
+            m_debug_jit = true;
             break;
 
           case JIT_COMPILER_OPTION:
-            Fjit_enable (octave_value (true));
+            m_jit_compiler = true;
             break;
 
           case LINE_EDITING_OPTION:
@@ -215,7 +210,7 @@ namespace octave
 
           case TEXI_MACROS_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Ftexi_macros_file (octave_value (octave_optarg_wrapper ()));
+              m_texi_macros_file = octave_optarg_wrapper ();
             break;
 
           case TRADITIONAL_OPTION:
@@ -243,59 +238,6 @@ namespace octave
 
     m_remaining_args = string_vector (argv+octave_optind_wrapper (),
                                       argc-octave_optind_wrapper ());
-  }
-
-  cmdline_options::cmdline_options (const cmdline_options& opts)
-    : m_force_gui (opts.m_force_gui),
-      m_forced_interactive (opts.m_forced_interactive),
-      m_forced_line_editing (opts.m_forced_line_editing),
-      m_inhibit_startup_message (opts.m_inhibit_startup_message),
-      m_line_editing (opts.m_line_editing),
-      m_no_gui (opts.m_no_gui),
-      m_no_window_system (opts.m_no_window_system),
-      m_persist (opts.m_persist),
-      m_read_history_file (opts.m_read_history_file),
-      m_read_init_files (opts.m_read_init_files),
-      m_read_site_files (opts.m_read_site_files),
-      m_set_initial_path (opts.m_set_initial_path),
-      m_traditional (opts.m_traditional),
-      m_verbose_flag (opts.m_verbose_flag),
-      m_code_to_eval (opts.m_code_to_eval),
-      m_command_line_path (opts.m_command_line_path),
-      m_exec_path (opts.m_exec_path),
-      m_image_path (opts.m_image_path),
-      m_all_args (opts.m_all_args),
-      m_remaining_args (opts.m_remaining_args)
-  { }
-
-  cmdline_options&
-  cmdline_options::operator = (const cmdline_options& opts)
-  {
-    if (this != &opts)
-      {
-        m_force_gui = opts.m_force_gui;
-        m_forced_interactive = opts.m_forced_interactive;
-        m_forced_line_editing = opts.m_forced_line_editing;
-        m_inhibit_startup_message = opts.m_inhibit_startup_message;
-        m_line_editing = opts.m_line_editing;
-        m_no_gui = opts.m_no_gui;
-        m_no_window_system = opts.m_no_window_system;
-        m_persist = opts.m_persist;
-        m_read_history_file = opts.m_read_history_file;
-        m_read_init_files = opts.m_read_init_files;
-        m_read_site_files = opts.m_read_site_files;
-        m_set_initial_path = opts.m_set_initial_path;
-        m_traditional = opts.m_traditional;
-        m_verbose_flag = opts.m_verbose_flag;
-        m_code_to_eval = opts.m_code_to_eval;
-        m_command_line_path = opts.m_command_line_path;
-        m_exec_path = opts.m_exec_path;
-        m_image_path = opts.m_image_path;
-        m_all_args = opts.m_all_args;
-        m_remaining_args = opts.m_remaining_args;
-      }
-
-    return *this;
   }
 
   application *application::instance = nullptr;

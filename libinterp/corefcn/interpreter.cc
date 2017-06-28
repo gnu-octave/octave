@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "signal-wrappers.h"
 #include "unistd-wrappers.h"
 
+#include "builtin-defun-decls.h"
 #include "builtins.h"
 #include "defaults.h"
 #include "Cell.h"
@@ -496,6 +497,41 @@ namespace octave
           line_editing = false;
 
         traditional = options.traditional ();
+
+        // FIXME: if possible, perform the following actions directly
+        // instead of using the interpreter-level functions.
+
+        if (options.echo_commands ())
+          {
+            int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
+            Fecho_executing_commands (octave_value (val));
+          }
+
+        std::string docstrings_file = options.docstrings_file ();
+        if (! docstrings_file.empty ())
+          Fbuilt_in_docstrings_file (octave_value (docstrings_file));
+
+        std::string doc_cache_file = options.doc_cache_file ();
+        if (! doc_cache_file.empty ())
+          Fdoc_cache_file (octave_value (doc_cache_file));
+
+        std::string info_file = options.info_file ();
+        if (! info_file.empty ())
+          Finfo_file (octave_value (info_file));
+
+        std::string info_program = options.info_program ();
+        if (! info_program.empty ())
+          Finfo_program (octave_value (info_program));
+
+        if (options.debug_jit ())
+          Fdebug_jit (octave_value (true));
+
+        if (options.jit_compiler ())
+          Fjit_enable (octave_value (true));
+
+        std::string texi_macros_file = options.texi_macros_file ();
+        if (! texi_macros_file.empty ())
+          Ftexi_macros_file (octave_value (texi_macros_file));
       }
 
     // Force default line editor if we don't want readline editing.
@@ -550,6 +586,9 @@ namespace octave
             const cmdline_options& options = m_app_context->options ();
 
             read_history_file = options.read_history_file ();
+
+            if (! read_history_file)
+              command_history::ignore_entries ();
           }
 
         ::initialize_history (read_history_file);

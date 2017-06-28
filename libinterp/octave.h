@@ -44,14 +44,17 @@ namespace octave
 
     cmdline_options (int argc, char **argv);
 
-    cmdline_options (const cmdline_options& opts);
+    cmdline_options (const cmdline_options& opts) = default;
 
-    cmdline_options& operator = (const cmdline_options& opts);
+    cmdline_options& operator = (const cmdline_options& opts) = default;
 
+    bool debug_jit (void) const { return m_debug_jit; }
+    bool echo_commands (void) const { return m_echo_commands; }
     bool force_gui (void) const { return m_force_gui; }
     bool forced_interactive (void) const { return m_forced_interactive; }
     bool forced_line_editing (void) const { return m_forced_line_editing; }
     bool inhibit_startup_message (void) const { return m_inhibit_startup_message; }
+    bool jit_compiler (void) const { return m_jit_compiler; }
     bool line_editing (void) const { return m_line_editing; }
     bool no_gui (void) const { return m_no_gui; }
     bool no_window_system (void) const { return m_no_window_system; }
@@ -64,15 +67,23 @@ namespace octave
     bool verbose_flag (void) const { return m_verbose_flag; }
     std::string code_to_eval (void) const { return m_code_to_eval; }
     std::list<std::string> command_line_path (void) const { return m_command_line_path; }
+    std::string docstrings_file (void) const { return m_docstrings_file; }
+    std::string doc_cache_file (void) const { return m_doc_cache_file; }
     std::string exec_path (void) const { return m_exec_path; }
     std::string image_path (void) const { return m_image_path; }
+    std::string info_file (void) const { return m_info_file; }
+    std::string info_program (void) const { return m_info_program; }
+    std::string texi_macros_file (void) const {return m_texi_macros_file; }
     string_vector all_args (void) const { return m_all_args; }
     string_vector remaining_args (void) const { return m_remaining_args; }
 
+    void debug_jit (bool arg) { m_debug_jit = arg; }
+    void echo_commands (bool arg) { m_echo_commands = arg; }
     void force_gui (bool arg) { m_force_gui = arg; }
     void forced_line_editing (bool arg) { m_forced_line_editing = arg; }
     void forced_interactive (bool arg) { m_forced_interactive = arg; }
     void inhibit_startup_message (bool arg) { m_inhibit_startup_message = arg; }
+    void jit_compiler (bool arg) { m_jit_compiler = arg; }
     void line_editing (bool arg) { m_line_editing = arg; }
     void no_gui (bool arg) { m_no_gui = arg; }
     void no_window_system (bool arg) { m_no_window_system = arg; }
@@ -85,12 +96,25 @@ namespace octave
     void verbose_flag (bool arg) { m_verbose_flag = arg; }
     void code_to_eval (const std::string& arg) { m_code_to_eval = arg; }
     void command_line_path (const std::list<std::string>& arg) { m_command_line_path = arg; }
+    void docstrings_file (const std::string& arg) { m_docstrings_file = arg; }
+    void doc_cache_file (const std::string& arg) { m_doc_cache_file = arg; }
     void exec_path (const std::string& arg) { m_exec_path = arg; }
     void image_path (const std::string& arg) { m_image_path = arg; }
+    void info_file (const std::string& arg) { m_info_file = arg; }
+    void info_program (const std::string& arg) { m_info_program = arg; }
+    void texi_macros_file (const std::string& arg) { m_texi_macros_file = arg; }
     void all_args (const string_vector& arg) { m_all_args = arg; }
     void remaining_args (const string_vector& arg) { m_remaining_args = arg; }
 
   private:
+
+    // TRUE means enable debug tracing for the JIT compiler.
+    // (--debug-jit)
+    bool m_debug_jit = false;
+
+    // If TRUE, echo commands as they are read and executed.
+    // (--echo-commands, -x)
+    bool m_echo_commands = false;
 
     // If TRUE, force the GUI to start.
     // (--force-gui)
@@ -107,6 +131,10 @@ namespace octave
     // TRUE means we don't print the usual startup message.
     // (--quiet; --silent; -q)
     bool m_inhibit_startup_message = false;
+
+    // TRUE means enable the JIT compiler.
+    // (--jit-compiler)
+    bool m_jit_compiler = false;
 
     // TRUE means we are using readline.
     // (--no-line-editing)
@@ -156,6 +184,15 @@ namespace octave
     // (--path; -p)
     std::list<std::string> m_command_line_path;
 
+    // The value for "built_in_docstrings_file" specified on the
+    // command line.
+    // (--built-in-docstrings-file)
+    std::string m_docstrings_file;
+
+    // The value for "doc_cache_file" specified on the command line.
+    // (--doc-cache-file)
+    std::string m_doc_cache_file;
+
     // The value for "EXEC_PATH" specified on the command line.
     // (--exec-path)
     std::string m_exec_path;
@@ -163,6 +200,18 @@ namespace octave
     // The value for "IMAGE_PATH" specified on the command line.
     // (--image-path)
     std::string m_image_path;
+
+    // The value for "info_file" specified on the command line.
+    // (--info-file)
+    std::string m_info_file;
+
+    // The value for "info_program" specified on the command line.
+    // (--info-program)
+    std::string m_info_program;
+
+    // The value for "texi_macos_file" specified on the command line.
+    // (--texi-macros-file)
+    std::string m_texi_macros_file;
 
     // All arguments passed to the argc, argv constructor.
     string_vector m_all_args;

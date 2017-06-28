@@ -20,8 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// These functions are also defined in liboctave or libinterp.  They
+// are repeated here to avoid having to link the main Octave program
+// with the Octave libraries.
+
 #if ! defined (octave_shared_fcns_h)
 #define octave_shared_fcns_h 1
+
+#include <cctype>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
@@ -75,6 +81,12 @@ static const char dir_sep_char = '\\';
 static const char dir_sep_char = '/';
 #endif
 
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+static std::string dir_sep_chars = "/\\";
+#else
+static std::string dir_sep_chars = "/";
+#endif
+
 static std::string
 octave_getenv (const std::string& name)
 {
@@ -83,42 +95,91 @@ octave_getenv (const std::string& name)
   return value ? value : "";
 }
 
-static std::string
-get_octave_home (void)
+static std::string Voctave_home;
+static std::string Voctave_exec_home;
+
+static void
+set_octave_home (void)
 {
+  std::string op = OCTAVE_PREFIX;
+  std::string oep = OCTAVE_EXEC_PREFIX;
+
   std::string oh = octave_getenv ("OCTAVE_HOME");
+  std::string oeh = octave_getenv ("OCTAVE_EXEC_HOME");
 
 #if defined (OCTAVE_USE_WINDOWS_API)
   if (oh.empty ())
     oh = w32_get_octave_home ();
 #endif
 
-  return oh.empty () ? std::string (OCTAVE_PREFIX) : oh;
+  // If OCTAVE_HOME is set in the enviornment, use that.  Otherwise,
+  // default to ${prefix} from configure.
+
+  Voctave_home = (oh.empty () ? op : oh);
+
+  // If OCTAVE_EXEC_HOME is set in the environment, use that.
+  // Otherwise, if ${prefix} and ${exec_prefix} from configure are set
+  // to the same value, use OCTAVE_HOME from the environment if it is set.
+  // Othewise, default to ${exec_prefix} from configure.
+
+  if (! oeh.empty ())
+    Voctave_exec_home = oeh;
+  else if (op == oep && ! oh.empty ())
+    Voctave_exec_home = oh;
+  else
+    Voctave_exec_home = oep;
+}
+
+static bool is_dir_sep (char c)
+{
+  return dir_sep_chars.find (c) != std::string::npos;
+}
+
+static bool
+absolute_pathname (const std::string& s)
+{
+  size_t len = s.length ();
+
+  if (len == 0)
+    return false;
+
+  if (is_dir_sep (s[0]))
+    return true;
+
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+  if ((len == 2 && isalpha (s[0]) && s[1] == ':')
+      || (len > 2 && isalpha (s[0]) && s[1] == ':'
+          && is_dir_sep (s[2])))
+    return true;
+#endif
+
+  return false;
 }
 
 static std::string
-subst_octave_home (const std::string& s)
+prepend_home_dir (const std::string& hd, const std::string& s)
 {
-  std::string retval;
+  std::string retval = s;
 
-  std::string octave_home = get_octave_home ();
-
-  std::string prefix = OCTAVE_PREFIX;
-
-  retval = s;
-
-  if (octave_home != prefix)
-    {
-      size_t len = prefix.length ();
-
-      if (s.substr (0, len) == prefix)
-        retval.replace (0, len, octave_home);
-    }
+  if (! absolute_pathname (retval))
+    retval = hd + dir_sep_char + s;
 
   if (dir_sep_char != '/')
     std::replace (retval.begin (), retval.end (), '/', dir_sep_char);
 
   return retval;
+}
+
+static std::string
+prepend_octave_home (const std::string& s)
+{
+  return prepend_home_dir (Voctave_home, s);
+}
+
+static std::string
+prepend_octave_exec_home (const std::string& s)
+{
+  return prepend_home_dir (Voctave_exec_home, s);
 }
 
 #endif

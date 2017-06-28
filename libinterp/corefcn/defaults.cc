@@ -94,26 +94,25 @@ std::string Vsite_defaults_file;
 
 std::string Vbuilt_in_docstrings_file;
 
+// Variables that name directories or files are substituted into source
+// files with "${prefix}/" stripped from the beginning of the string.
+
+// All configure variables of this form should be specified as absolute
+// directory names.  The only ones that should not be absolute here are
+// ones that have had "${prefix}/" stripped.
+
 std::string
-subst_octave_home (const std::string& s)
+prepend_octave_home (const std::string& s)
 {
-  std::string retval;
+  std::string retval = s;
 
-  std::string prefix = OCTAVE_PREFIX;
+  char dir_sep_char = octave::sys::file_ops::dir_sep_char ();
 
-  retval = s;
+  if (! octave::sys::env::absolute_pathname (retval))
+    retval = Voctave_home + dir_sep_char + s;
 
-  if (Voctave_home != prefix)
-    {
-      size_t len = prefix.length ();
-
-      if (s.substr (0, len) == prefix)
-        retval.replace (0, len, Voctave_home);
-    }
-
-  if (octave::sys::file_ops::dir_sep_char () != '/')
-    std::replace (retval.begin (), retval.end (), '/',
-                  octave::sys::file_ops::dir_sep_char ());
+  if (dir_sep_char != '/')
+    std::replace (retval.begin (), retval.end (), '/', dir_sep_char);
 
   return retval;
 }
@@ -129,121 +128,121 @@ set_octave_home (void)
 static void
 set_default_info_dir (void)
 {
-  Vinfo_dir = subst_octave_home (OCTAVE_INFODIR);
+  Vinfo_dir = prepend_octave_home (OCTAVE_INFODIR);
 }
 
 static void
 set_default_data_dir (void)
 {
-  Vdata_dir = subst_octave_home (OCTAVE_DATADIR);
+  Vdata_dir = prepend_octave_home (OCTAVE_DATADIR);
 }
 
 static void
 set_default_libexec_dir (void)
 {
-  Vlibexec_dir = subst_octave_home (OCTAVE_LIBEXECDIR);
+  Vlibexec_dir = prepend_octave_home (OCTAVE_LIBEXECDIR);
 }
 
 static void
 set_default_arch_lib_dir (void)
 {
-  Varch_lib_dir = subst_octave_home (OCTAVE_ARCHLIBDIR);
+  Varch_lib_dir = prepend_octave_home (OCTAVE_ARCHLIBDIR);
 }
 
 static void
 set_default_local_arch_lib_dir (void)
 {
-  Vlocal_arch_lib_dir = subst_octave_home (OCTAVE_LOCALARCHLIBDIR);
+  Vlocal_arch_lib_dir = prepend_octave_home (OCTAVE_LOCALARCHLIBDIR);
 }
 
 static void
 set_default_local_api_arch_lib_dir (void)
 {
-  Vlocal_api_arch_lib_dir = subst_octave_home (OCTAVE_LOCALAPIARCHLIBDIR);
+  Vlocal_api_arch_lib_dir = prepend_octave_home (OCTAVE_LOCALAPIARCHLIBDIR);
 }
 
 static void
 set_default_local_ver_arch_lib_dir (void)
 {
-  Vlocal_ver_arch_lib_dir = subst_octave_home (OCTAVE_LOCALVERARCHLIBDIR);
+  Vlocal_ver_arch_lib_dir = prepend_octave_home (OCTAVE_LOCALVERARCHLIBDIR);
 }
 
 static void
 set_default_local_ver_oct_file_dir (void)
 {
-  Vlocal_ver_oct_file_dir = subst_octave_home (OCTAVE_LOCALVEROCTFILEDIR);
+  Vlocal_ver_oct_file_dir = prepend_octave_home (OCTAVE_LOCALVEROCTFILEDIR);
 }
 
 static void
 set_default_local_api_oct_file_dir (void)
 {
-  Vlocal_api_oct_file_dir = subst_octave_home (OCTAVE_LOCALAPIOCTFILEDIR);
+  Vlocal_api_oct_file_dir = prepend_octave_home (OCTAVE_LOCALAPIOCTFILEDIR);
 }
 
 static void
 set_default_local_oct_file_dir (void)
 {
-  Vlocal_oct_file_dir = subst_octave_home (OCTAVE_LOCALOCTFILEDIR);
+  Vlocal_oct_file_dir = prepend_octave_home (OCTAVE_LOCALOCTFILEDIR);
 }
 
 static void
 set_default_local_ver_fcn_file_dir (void)
 {
-  Vlocal_ver_fcn_file_dir = subst_octave_home (OCTAVE_LOCALVERFCNFILEDIR);
+  Vlocal_ver_fcn_file_dir = prepend_octave_home (OCTAVE_LOCALVERFCNFILEDIR);
 }
 
 static void
 set_default_local_api_fcn_file_dir (void)
 {
-  Vlocal_api_fcn_file_dir = subst_octave_home (OCTAVE_LOCALAPIFCNFILEDIR);
+  Vlocal_api_fcn_file_dir = prepend_octave_home (OCTAVE_LOCALAPIFCNFILEDIR);
 }
 
 static void
 set_default_local_fcn_file_dir (void)
 {
-  Vlocal_fcn_file_dir = subst_octave_home (OCTAVE_LOCALFCNFILEDIR);
+  Vlocal_fcn_file_dir = prepend_octave_home (OCTAVE_LOCALFCNFILEDIR);
 }
 
 static void
 set_default_fcn_file_dir (void)
 {
-  Vfcn_file_dir = subst_octave_home (OCTAVE_FCNFILEDIR);
+  Vfcn_file_dir = prepend_octave_home (OCTAVE_FCNFILEDIR);
 }
 
 static void
 set_default_image_dir (void)
 {
-  Vimage_dir = subst_octave_home (OCTAVE_IMAGEDIR);
+  Vimage_dir = prepend_octave_home (OCTAVE_IMAGEDIR);
 }
 
 static void
 set_default_oct_data_dir (void)
 {
-  Voct_data_dir = subst_octave_home (OCTAVE_OCTDATADIR);
+  Voct_data_dir = prepend_octave_home (OCTAVE_OCTDATADIR);
 }
 
 static void
 set_default_oct_etc_dir (void)
 {
-  Voct_etc_dir = subst_octave_home (OCTAVE_OCTETCDIR);
+  Voct_etc_dir = prepend_octave_home (OCTAVE_OCTETCDIR);
 }
 
 static void
 set_default_oct_locale_dir (void)
 {
-  Voct_locale_dir = subst_octave_home (OCTAVE_OCTLOCALEDIR);
+  Voct_locale_dir = prepend_octave_home (OCTAVE_OCTLOCALEDIR);
 }
 
 static void
 set_default_oct_file_dir (void)
 {
-  Voct_file_dir = subst_octave_home (OCTAVE_OCTFILEDIR);
+  Voct_file_dir = prepend_octave_home (OCTAVE_OCTFILEDIR);
 }
 
 static void
 set_default_bin_dir (void)
 {
-  Vbin_dir = subst_octave_home (OCTAVE_BINDIR);
+  Vbin_dir = prepend_octave_home (OCTAVE_BINDIR);
 }
 
 void
@@ -309,7 +308,7 @@ set_default_doc_cache_file (void)
 {
   if (Vdoc_cache_file.empty ())
     {
-      std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
+      std::string def_file = prepend_octave_home (OCTAVE_DOC_CACHE_FILE);
 
       std::string env_file = octave::sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
@@ -322,7 +321,7 @@ set_default_texi_macros_file (void)
 {
   if (Vtexi_macros_file.empty ())
     {
-      std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
+      std::string def_file = prepend_octave_home (OCTAVE_TEXI_MACROS_FILE);
 
       std::string env_file = octave::sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 
@@ -335,7 +334,7 @@ set_default_info_file (void)
 {
   if (Vinfo_file.empty ())
     {
-      std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
+      std::string std_info_file = prepend_octave_home (OCTAVE_INFOFILE);
 
       std::string oct_info_file = octave::sys::env::getenv ("OCTAVE_INFO_FILE");
 
@@ -376,7 +375,7 @@ set_local_site_defaults_file (void)
   if (lsf.empty ())
     {
       Vlocal_site_defaults_file
-        = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
+        = prepend_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
       Vlocal_site_defaults_file.append ("/octaverc");
     }
   else
@@ -390,7 +389,7 @@ set_site_defaults_file (void)
 
   if (sf.empty ())
     {
-      Vsite_defaults_file = subst_octave_home (OCTAVE_STARTUPFILEDIR);
+      Vsite_defaults_file = prepend_octave_home (OCTAVE_STARTUPFILEDIR);
       Vsite_defaults_file.append ("/octaverc");
     }
   else

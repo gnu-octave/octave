@@ -249,7 +249,7 @@ COREFCN_SRC = \
 
 ## Special rules for sources which must be built before rest of compilation.
 
-%reldir%/defaults.h: %reldir%/defaults.in.h build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
+%reldir%/defaults.cc: %reldir%/defaults.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
 %reldir%/graphics.h: %reldir%/graphics.in.h %reldir%/genprops.awk | %reldir%/$(octave_dirstamp)

@@ -518,6 +518,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(OCTAVE_HOME)
 
+@DOCSTRING(OCTAVE_EXEC_HOME)
+
 @DOCSTRING(matlabroot)
 
 @DOCSTRING(OCTAVE_VERSION)

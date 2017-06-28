@@ -21,7 +21,6 @@
 : ${SED=@SED@}
 
 NO_OCT_FILE_STRIP="@NO_OCT_FILE_STRIP@"
-bindir="@bindir@"
 AMD_CPPFLAGS="@AMD_CPPFLAGS@"
 AMD_LDFLAGS="@AMD_LDFLAGS@"
 AMD_LIBS="@AMD_LIBS@"
@@ -94,7 +93,6 @@ GNUPLOT="@GNUPLOT@"
 HDF5_CPPFLAGS="@HDF5_CPPFLAGS@"
 HDF5_LDFLAGS="@HDF5_LDFLAGS@"
 HDF5_LIBS="@HDF5_LIBS@"
-includedir="@includedir@"
 KLU_CPPFLAGS="@KLU_CPPFLAGS@"
 KLU_LDFLAGS="@KLU_LDFLAGS@"
 KLU_LIBS="@KLU_LIBS@"
@@ -105,7 +103,6 @@ LD_STATIC_FLAG="@LD_STATIC_FLAG@"
 LEX="@LEX@"
 LEXLIB="@LEXLIB@"
 LFLAGS="@LFLAGS@"
-libdir="@libdir@"
 LIBOCTAVE="@LIBOCTAVE@"
 LIBOCTINTERP="@LIBOCTINTERP@"
 LIBS="@LIBS@"
@@ -126,8 +123,6 @@ MKOCTFILE_LD_CXX="@MKOCTFILE_LD_CXX@"
 MKOCTFILE_RANLIB="@MKOCTFILE_RANLIB@"
 OCTAVE_LINK_DEPS="@OCTAVE_LINK_DEPS@"
 OCTAVE_LINK_OPTS="@OCTAVE_LINK_OPTS@"
-octincludedir="@octincludedir@"
-octlibdir="@octlibdir@"
 OCT_LINK_DEPS="@OCT_LINK_DEPS@"
 OCT_LINK_OPTS="@OCT_LINK_OPTS@"
 OPENGL_LIBS="@OPENGL_LIBS@"
@@ -137,7 +132,6 @@ OSMESA_LIBS="@OSMESA_LIBS@"
 PCRE_CPPFLAGS="@PCRE_CPPFLAGS@"
 PCRE_LDFLAGS="@PCRE_LDFLAGS@"
 PCRE_LIBS="@PCRE_LIBS@"
-prefix="@prefix@"
 PTHREAD_CFLAGS="@PTHREAD_CFLAGS@"
 PTHREAD_LIBS="@PTHREAD_LIBS@"
 QHULL_CPPFLAGS="@QHULL_CPPFLAGS@"
@@ -181,6 +175,16 @@ Z_CPPFLAGS="@Z_CPPFLAGS@"
 Z_LDFLAGS="@Z_LDFLAGS@"
 Z_LIBS="@Z_LIBS@"
 config_opts="@config_opts@"
+
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+
+bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
+libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
+octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
+
+includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
+octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by subst-config-vals.|" \
@@ -229,6 +233,7 @@ $SED \
   -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DL_LIBS%|\"${DL_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_EXEC_PREFIX%|\"${exec_prefix}\"|" \
   -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
   -e "s|%OCTAVE_CONF_GCC_VERSION%|\"${GCC_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_GXX_VERSION%|\"${GXX_VERSION}\"|" \

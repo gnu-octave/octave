@@ -134,7 +134,7 @@ initialize_version_info (void)
   octave_value_list args;
 
   args(3) = OCTAVE_RELEASE_DATE;
-  args(2) = OCTAVE_RELEASE;
+  args(2) = Voctave_release;
   args(1) = OCTAVE_VERSION;
   args(0) = "GNU Octave";
 

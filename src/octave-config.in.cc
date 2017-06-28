@@ -35,6 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 
+#if ! defined (OCTAVE_EXEC_PREFIX)
+#  define OCTAVE_EXEC_PREFIX %OCTAVE_EXEC_PREFIX%
+#endif
+
 #include "shared-fcns.h"
 
 static std::map<std::string,std::string> vars;
@@ -66,14 +70,14 @@ static std::string help_msg =
 "                          EXEC_PREFIX            MAN1DIR\n"
 "                          EXEEXT                 MAN1EXT\n"
 "                          FCNFILEDIR             MANDIR\n"
-"                          IMAGEDIR               OCTDATADIR\n"
-"                          INCLUDEDIR             OCTFILEDIR\n"
-"                          INFODIR                OCTINCLUDEDIR\n"
-"                          INFOFILE               OCTLIBDIR\n"
-"                          LIBDIR                 PREFIX\n"
-"                          LIBEXECDIR             STARTUPFILEDIR\n"
-"                          LOCALAPIARCHLIBDIR     VERSION\n"
-"                          LOCALAPIFCNFILEDIR\n"
+"                          IMAGEDIR               OCTAVE_EXEC_HOME\n"
+"                          INCLUDEDIR             OCTAVE_HOME\n"
+"                          INFODIR                OCTDATADIR\n"
+"                          INFOFILE               OCTFILEDIR\n"
+"                          LIBDIR                 OCTINCLUDEDIR\n"
+"                          LIBEXECDIR             OCTLIBDIR\n"
+"                          LOCALAPIARCHLIBDIR     STARTUPFILEDIR\n"
+"                          LOCALAPIFCNFILEDIR     VERSION\n"
 "                          LOCALAPIOCTFILEDIR\n"
 "\n"
 "  -v, --version         Print the Octave version number.\n"
@@ -82,45 +86,46 @@ static std::string help_msg =
 static void
 initialize (void)
 {
-  vars["OCTAVE_HOME"] = get_octave_home ();
-  vars["PREFIX"] = OCTAVE_PREFIX;
+  set_octave_home ();
+
+  vars["OCTAVE_HOME"] = Voctave_home;
+  vars["OCTAVE_EXEC_HOME"] = Voctave_exec_home;
 
   vars["API_VERSION"] = %OCTAVE_API_VERSION%;
   vars["CANONICAL_HOST_TYPE"] = %OCTAVE_CANONICAL_HOST_TYPE%;
   vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
+  vars["EXEEXT"] = %OCTAVE_EXEEXT%;
   vars["MAN1EXT"] = %OCTAVE_MAN1EXT%;
   vars["VERSION"] = %OCTAVE_VERSION%;
 
-  vars["ARCHLIBDIR"] = subst_octave_home (%OCTAVE_ARCHLIBDIR%);
-  vars["BINDIR"] = subst_octave_home (%OCTAVE_BINDIR%);
-  vars["DATADIR"] = subst_octave_home (%OCTAVE_DATADIR%);
-  vars["DATAROOTDIR"] = subst_octave_home (%OCTAVE_DATAROOTDIR%);
-  vars["EXEC_PREFIX"] = subst_octave_home (%OCTAVE_EXEC_PREFIX%);
-  vars["EXEEXT"] = subst_octave_home (%OCTAVE_EXEEXT%);
-  vars["FCNFILEDIR"] = subst_octave_home (%OCTAVE_FCNFILEDIR%);
-  vars["IMAGEDIR"] = subst_octave_home (%OCTAVE_IMAGEDIR%);
-  vars["INCLUDEDIR"] = subst_octave_home (%OCTAVE_INCLUDEDIR%);
-  vars["INFODIR"] = subst_octave_home (%OCTAVE_INFODIR%);
-  vars["INFOFILE"] = subst_octave_home (%OCTAVE_INFOFILE%);
-  vars["LIBDIR"] = subst_octave_home (%OCTAVE_LIBDIR%);
-  vars["LIBEXECDIR"] = subst_octave_home (%OCTAVE_LIBEXECDIR%);
-  vars["LOCALAPIARCHLIBDIR"] = subst_octave_home (%OCTAVE_LOCALAPIARCHLIBDIR%);
-  vars["LOCALAPIFCNFILEDIR"] = subst_octave_home (%OCTAVE_LOCALAPIFCNFILEDIR%);
-  vars["LOCALAPIOCTFILEDIR"] = subst_octave_home (%OCTAVE_LOCALAPIOCTFILEDIR%);
-  vars["LOCALARCHLIBDIR"] = subst_octave_home (%OCTAVE_LOCALARCHLIBDIR%);
-  vars["LOCALFCNFILEDIR"] = subst_octave_home (%OCTAVE_LOCALFCNFILEDIR%);
-  vars["LOCALOCTFILEDIR"] = subst_octave_home (%OCTAVE_LOCALOCTFILEDIR%);
-  vars["LOCALSTARTUPFILEDIR"] = subst_octave_home (%OCTAVE_LOCALSTARTUPFILEDIR%);
-  vars["LOCALVERARCHLIBDIR"] = subst_octave_home (%OCTAVE_LOCALVERARCHLIBDIR%);
-  vars["LOCALVERFCNFILEDIR"] = subst_octave_home (%OCTAVE_LOCALVERFCNFILEDIR%);
-  vars["LOCALVEROCTFILEDIR"] = subst_octave_home (%OCTAVE_LOCALVEROCTFILEDIR%);
-  vars["MAN1DIR"] = subst_octave_home (%OCTAVE_MAN1DIR%);
-  vars["MANDIR"] = subst_octave_home (%OCTAVE_MANDIR%);
-  vars["OCTDATADIR"] = subst_octave_home (%OCTAVE_OCTDATADIR%);
-  vars["OCTFILEDIR"] = subst_octave_home (%OCTAVE_OCTFILEDIR%);
-  vars["OCTINCLUDEDIR"] = subst_octave_home (%OCTAVE_OCTINCLUDEDIR%);
-  vars["OCTLIBDIR"] = subst_octave_home (%OCTAVE_OCTLIBDIR%);
-  vars["STARTUPFILEDIR"] = subst_octave_home (%OCTAVE_STARTUPFILEDIR%);
+  vars["ARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_ARCHLIBDIR%);
+  vars["BINDIR"] = prepend_octave_exec_home (%OCTAVE_BINDIR%);
+  vars["DATADIR"] = prepend_octave_home (%OCTAVE_DATADIR%);
+  vars["DATAROOTDIR"] = prepend_octave_home (%OCTAVE_DATAROOTDIR%);
+  vars["FCNFILEDIR"] = prepend_octave_home (%OCTAVE_FCNFILEDIR%);
+  vars["IMAGEDIR"] = prepend_octave_home (%OCTAVE_IMAGEDIR%);
+  vars["INCLUDEDIR"] = prepend_octave_home (%OCTAVE_INCLUDEDIR%);
+  vars["INFODIR"] = prepend_octave_home (%OCTAVE_INFODIR%);
+  vars["INFOFILE"] = prepend_octave_home (%OCTAVE_INFOFILE%);
+  vars["LIBDIR"] = prepend_octave_exec_home (%OCTAVE_LIBDIR%);
+  vars["LIBEXECDIR"] = prepend_octave_exec_home (%OCTAVE_LIBEXECDIR%);
+  vars["LOCALAPIARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIARCHLIBDIR%);
+  vars["LOCALAPIFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALAPIFCNFILEDIR%);
+  vars["LOCALAPIOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIOCTFILEDIR%);
+  vars["LOCALARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALARCHLIBDIR%);
+  vars["LOCALFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALFCNFILEDIR%);
+  vars["LOCALOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALOCTFILEDIR%);
+  vars["LOCALSTARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALSTARTUPFILEDIR%);
+  vars["LOCALVERARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALVERARCHLIBDIR%);
+  vars["LOCALVERFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALVERFCNFILEDIR%);
+  vars["LOCALVEROCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALVEROCTFILEDIR%);
+  vars["MAN1DIR"] = prepend_octave_home (%OCTAVE_MAN1DIR%);
+  vars["MANDIR"] = prepend_octave_home (%OCTAVE_MANDIR%);
+  vars["OCTDATADIR"] = prepend_octave_home (%OCTAVE_OCTDATADIR%);
+  vars["OCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_OCTFILEDIR%);
+  vars["OCTINCLUDEDIR"] = prepend_octave_home (%OCTAVE_OCTINCLUDEDIR%);
+  vars["OCTLIBDIR"] = prepend_octave_exec_home (%OCTAVE_OCTLIBDIR%);
+  vars["STARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_STARTUPFILEDIR%);
 }
 
 int

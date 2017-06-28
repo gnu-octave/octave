@@ -191,6 +191,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 extern OCTINTERP_API std::string Voctave_home;
+extern OCTINTERP_API std::string Voctave_exec_home;
 
 extern OCTINTERP_API std::string Vbin_dir;
 extern OCTINTERP_API std::string Vinfo_dir;
@@ -228,7 +229,7 @@ extern OCTINTERP_API std::string Vbuilt_in_docstrings_file;
 // Name of the FFTW wisdom program.
 extern OCTINTERP_API std::string Vfftw_wisdom_program;
 
-extern OCTINTERP_API std::string subst_octave_home (const std::string&);
+extern OCTINTERP_API std::string prepend_octave_home (const std::string&);
 
 extern OCTINTERP_API void install_defaults (void);
 

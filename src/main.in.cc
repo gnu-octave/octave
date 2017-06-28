@@ -60,6 +60,10 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 
+#if ! defined (OCTAVE_EXEC_PREFIX)
+#  define OCTAVE_EXEC_PREFIX %OCTAVE_EXEC_PREFIX%
+#endif
+
 #include "display-available.h"
 #include "shared-fcns.h"
 
@@ -151,7 +155,7 @@ get_octave_bindir (void)
 
   std::string obd = octave_getenv ("OCTAVE_BINDIR");
 
-  return obd.empty () ? subst_octave_home (std::string (OCTAVE_BINDIR)) : obd;
+  return obd.empty () ? prepend_octave_exec_home (std::string (OCTAVE_BINDIR)) : obd;
 }
 
 static std::string
@@ -164,7 +168,7 @@ get_octave_archlibdir (void)
 
   std::string dir = octave_getenv ("OCTAVE_ARCHLIBDIR");
 
-  return dir.empty () ? subst_octave_home (std::string (OCTAVE_ARCHLIBDIR))
+  return dir.empty () ? prepend_octave_exec_home (std::string (OCTAVE_ARCHLIBDIR))
                       : dir;
 }
 
@@ -197,6 +201,8 @@ main (int argc, char **argv)
 
   bool start_gui = true;
   bool gui_libs = true;
+
+  set_octave_home ();
 
   std::string octave_bindir = get_octave_bindir ();
   std::string octave_archlibdir = get_octave_archlibdir ();

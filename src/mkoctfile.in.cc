@@ -55,6 +55,10 @@ static std::map<std::string, std::string> vars;
 #  define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
 #endif
 
+#if ! defined (OCTAVE_EXEC_PREFIX)
+#  define OCTAVE_EXEC_PREFIX %OCTAVE_CONF_EXEC_PREFIX%
+#endif
+
 #include "shared-fcns.h"
 
 #if defined (CROSS)
@@ -120,25 +124,26 @@ quote_path (const std::string& s)
 static void
 initialize (void)
 {
-  vars["OCTAVE_HOME"] = get_octave_home ();
+  set_octave_home ();
 
-  vars["OCTAVE_PREFIX"] = OCTAVE_PREFIX;
+  vars["OCTAVE_HOME"] = Voctave_home;
+  vars["OCTAVE_EXEC_HOME"] = Voctave_exec_home;
 
   vars["SED"] = get_variable ("SED", %OCTAVE_CONF_SED%);
 
   vars["OCTINCLUDEDIR"]
     = get_variable ("OCTINCLUDEDIR",
-                    subst_octave_home (%OCTAVE_CONF_OCTINCLUDEDIR%));
+                    prepend_octave_home (%OCTAVE_CONF_OCTINCLUDEDIR%));
 
   vars["INCLUDEDIR"]
     = get_variable ("INCLUDEDIR",
-                    subst_octave_home (%OCTAVE_CONF_INCLUDEDIR%));
+                    prepend_octave_home (%OCTAVE_CONF_INCLUDEDIR%));
 
   vars["LIBDIR"]
-    = get_variable ("LIBDIR", subst_octave_home (%OCTAVE_CONF_LIBDIR%));
+    = get_variable ("LIBDIR", prepend_octave_exec_home (%OCTAVE_CONF_LIBDIR%));
 
   vars["OCTLIBDIR"]
-    = get_variable ("OCTLIBDIR", subst_octave_home (%OCTAVE_CONF_OCTLIBDIR%));
+    = get_variable ("OCTLIBDIR", prepend_octave_exec_home (%OCTAVE_CONF_OCTLIBDIR%));
 
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string DEFAULT_INCFLAGS
@@ -327,11 +332,11 @@ static std::string help_msg =
 "                            CPICFLAG                    LIBOCTAVE\n"
 "                            CPPFLAGS                    LIBOCTINTERP\n"
 "                            CXX                         LIBS\n"
-"                            CXXFLAGS                    OCTAVE_HOME\n"
-"                            CXXPICFLAG                  OCTAVE_LIBS\n"
-"                            DEPEND_EXTRA_SED_PATTERN    OCTAVE_LINK_DEPS\n"
-"                            DEPEND_FLAGS                OCTAVE_LINK_OPTS\n"
-"                            DL_LD                       OCTAVE_PREFIX\n"
+"                            CXXFLAGS                    OCTAVE_EXEC_HOME\n"
+"                            CXXPICFLAG                  OCTAVE_HOME\n"
+"                            DEPEND_EXTRA_SED_PATTERN    OCTAVE_LIBS\n"
+"                            DEPEND_FLAGS                OCTAVE_LINK_DEPS\n"
+"                            DL_LD                       OCTAVE_LINK_OPTS\n"
 "                            DL_LDFLAGS                  OCTINCLUDEDIR\n"
 "                            F77                         OCTLIBDIR\n"
 "                            F77_INTEGER8_FLAG           OCT_LINK_DEPS\n"

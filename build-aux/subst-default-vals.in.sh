@@ -20,48 +20,53 @@
 
 : ${SED=@SED@}
 
-archlibdir="@archlibdir@"
-bindir="@bindir@"
 canonical_host_type="@canonical_host_type@"
-datadir="@datadir@"
-datarootdir="@datarootdir@"
 DEFAULT_PAGER="@DEFAULT_PAGER@"
-doc_cache_file="@doc_cache_file@"
-exec_prefix="@exec_prefix@"
 EXEEXT="@EXEEXT@"
-fcnfiledir="@fcnfiledir@"
-imagedir="@imagedir@"
-includedir="@includedir@"
-infodir="@infodir@"
-infofile="@infofile@"
-libdir="@libdir@"
-libexecdir="@libexecdir@"
-localapifcnfiledir="@localapifcnfiledir@"
-localapioctfiledir="@localapioctfiledir@"
-localarchlibdir="@localarchlibdir@"
-localfcnfiledir="@localfcnfiledir@"
-localoctfiledir="@localoctfiledir@"
-localstartupfiledir="@localstartupfiledir@"
-localapiarchlibdir="@localapiarchlibdir@"
-localverarchlibdir="@localverarchlibdir@"
-localverfcnfiledir="@localverfcnfiledir@"
-localveroctfiledir="@localveroctfiledir@"
-man1dir="@man1dir@"
 man1ext="@man1ext@"
-mandir="@mandir@"
-octdatadir="@octdatadir@"
-octfiledir="@octfiledir@"
-octetcdir="@octetcdir@"
-octincludedir="@octincludedir@"
-octlibdir="@octlibdir@"
-octlocaledir="@octlocaledir@"
-octtestsdir="@octtestsdir@"
-prefix="@prefix@"
-startupfiledir="@startupfiledir@"
 api_version="@OCTAVE_API_VERSION@"
 OCTAVE_RELEASE=""
-texi_macros_file="@texi_macros_file@"
 version="@PACKAGE_VERSION@"
+
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+
+archlibdir=`echo "@archlibdir@" | sed "s|^${exec_prefix}/||"`
+bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
+libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
+libexecdir=`echo "@libexecdir@" | sed "s|^${exec_prefix}/||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localapioctfiledir=`echo "@localapioctfiledir@" | sed "s|^${exec_prefix}/||"`
+localarchlibdir=`echo "@localarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localoctfiledir=`echo "@localoctfiledir@" | sed "s|^${exec_prefix}/||"`
+localverarchlibdir=`echo "@localverarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localveroctfiledir=`echo "@localveroctfiledir@" | sed "s|^${exec_prefix}/||"`
+octfiledir=`echo "@octfiledir@" | sed "s|^${exec_prefix}/||"`
+octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
+
+datadir=`echo "@datadir@" | sed "s|^${prefix}/||"`
+datarootdir=`echo "@datarootdir@" | sed "s|^${prefix}/||"`
+doc_cache_file=`echo "@doc_cache_file@" | sed "s|^${prefix}/||"`
+exec_prefix=`echo "@exec_prefix@" | sed "s|^${prefix}/||"`
+fcnfiledir=`echo "@fcnfiledir@" | sed "s|^${prefix}/||"`
+imagedir=`echo "@imagedir@" | sed "s|^${prefix}/||"`
+includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
+infodir=`echo "@infodir@" | sed "s|^${prefix}/||"`
+infofile=`echo "@infofile@" | sed "s|^${prefix}/||"`
+localapifcnfiledir=`echo "@localapifcnfiledir@" | sed "s|^${prefix}/||"`
+localfcnfiledir=`echo "@localfcnfiledir@" | sed "s|^${prefix}/||"`
+localstartupfiledir=`echo "@localstartupfiledir@" | sed "s|^${prefix}/||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${prefix}/||"`
+localverfcnfiledir=`echo "@localverfcnfiledir@" | sed "s|^${prefix}/||"`
+man1dir=`echo "@man1dir@" | sed "s|^${prefix}/||"`
+mandir=`echo "@mandir@" | sed "s|^${prefix}/||"`
+octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/||"`
+octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/||"`
+octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
+octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/||"`
+octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/||"`
+startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/||"`
+texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/||"`
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by subst-default-vals.|" \

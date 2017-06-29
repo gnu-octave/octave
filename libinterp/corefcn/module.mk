@@ -24,6 +24,7 @@ COREFCN_INC = \
   %reldir%/cdisplay.h \
   %reldir%/comment-list.h \
   %reldir%/data.h \
+  %reldir%/defaults.h \
   %reldir%/defun-dld.h \
   %reldir%/defun-int.h \
   %reldir%/defun.h \
@@ -128,7 +129,6 @@ COREFCN_SRC = \
   %reldir%/dassl.cc \
   %reldir%/data.cc \
   %reldir%/debug.cc \
-  %reldir%/defaults.cc \
   %reldir%/defun.cc \
   %reldir%/det.cc \
   %reldir%/dirfns.cc \
@@ -310,7 +310,7 @@ noinst_LTLIBRARIES += \
 %canon_reldir%_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 libinterp_EXTRA_DIST += \
-  %reldir%/defaults.in.h \
+  %reldir%/defaults.in.cc \
   %reldir%/genprops.awk \
   %reldir%/graphics.in.h \
   %reldir%/mk-errno-list.sh \

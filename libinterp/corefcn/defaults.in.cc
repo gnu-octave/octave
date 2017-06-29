@@ -52,11 +52,175 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "version.h"
 
+#if ! defined (OCTAVE_CANONICAL_HOST_TYPE)
+#  define OCTAVE_CANONICAL_HOST_TYPE %OCTAVE_CANONICAL_HOST_TYPE%
+#endif
+
+#if ! defined (OCTAVE_DEFAULT_PAGER)
+#  define OCTAVE_DEFAULT_PAGER %OCTAVE_DEFAULT_PAGER%
+#endif
+
+#if ! defined (OCTAVE_ARCHLIBDIR)
+#  define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
+#endif
+
+#if ! defined (OCTAVE_BINDIR)
+#  define OCTAVE_BINDIR %OCTAVE_BINDIR%
+#endif
+
+#if ! defined (OCTAVE_DATADIR)
+#  define OCTAVE_DATADIR %OCTAVE_DATADIR%
+#endif
+
+#if ! defined (OCTAVE_DATAROOTDIR)
+#  define OCTAVE_DATAROOTDIR %OCTAVE_DATAROOTDIR%
+#endif
+
+#if ! defined (OCTAVE_DOC_CACHE_FILE)
+#  define OCTAVE_DOC_CACHE_FILE %OCTAVE_DOC_CACHE_FILE%
+#endif
+
+#if ! defined (OCTAVE_TEXI_MACROS_FILE)
+#  define OCTAVE_TEXI_MACROS_FILE %OCTAVE_TEXI_MACROS_FILE%
+#endif
+
+#if ! defined (OCTAVE_EXEC_PREFIX)
+#  define OCTAVE_EXEC_PREFIX %OCTAVE_EXEC_PREFIX%
+#endif
+
+#if ! defined (OCTAVE_FCNFILEDIR)
+#  define OCTAVE_FCNFILEDIR %OCTAVE_FCNFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_IMAGEDIR)
+#  define OCTAVE_IMAGEDIR %OCTAVE_IMAGEDIR%
+#endif
+
+#if ! defined (OCTAVE_INCLUDEDIR)
+#  define OCTAVE_INCLUDEDIR %OCTAVE_INCLUDEDIR%
+#endif
+
+#if ! defined (OCTAVE_INFODIR)
+#  define OCTAVE_INFODIR %OCTAVE_INFODIR%
+#endif
+
+#if ! defined (OCTAVE_INFOFILE)
+#  define OCTAVE_INFOFILE %OCTAVE_INFOFILE%
+#endif
+
+#if ! defined (OCTAVE_LIBDIR)
+#  define OCTAVE_LIBDIR %OCTAVE_LIBDIR%
+#endif
+
+#if ! defined (OCTAVE_LIBEXECDIR)
+#  define OCTAVE_LIBEXECDIR %OCTAVE_LIBEXECDIR%
+#endif
+
+#if ! defined (OCTAVE_LIBEXECDIR)
+#  define OCTAVE_LIBEXECDIR %OCTAVE_LIBEXECDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALAPIFCNFILEDIR)
+#  define OCTAVE_LOCALAPIFCNFILEDIR %OCTAVE_LOCALAPIFCNFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALAPIOCTFILEDIR)
+#  define OCTAVE_LOCALAPIOCTFILEDIR %OCTAVE_LOCALAPIOCTFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALARCHLIBDIR)
+#  define OCTAVE_LOCALARCHLIBDIR %OCTAVE_LOCALARCHLIBDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALFCNFILEDIR)
+#  define OCTAVE_LOCALFCNFILEDIR %OCTAVE_LOCALFCNFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALOCTFILEDIR)
+#  define OCTAVE_LOCALOCTFILEDIR %OCTAVE_LOCALOCTFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALSTARTUPFILEDIR)
+#  define OCTAVE_LOCALSTARTUPFILEDIR %OCTAVE_LOCALSTARTUPFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALAPIARCHLIBDIR)
+#  define OCTAVE_LOCALAPIARCHLIBDIR %OCTAVE_LOCALAPIARCHLIBDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALVERARCHLIBDIR)
+#  define OCTAVE_LOCALVERARCHLIBDIR %OCTAVE_LOCALVERARCHLIBDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALVERFCNFILEDIR)
+#  define OCTAVE_LOCALVERFCNFILEDIR %OCTAVE_LOCALVERFCNFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_LOCALVEROCTFILEDIR)
+#  define OCTAVE_LOCALVEROCTFILEDIR %OCTAVE_LOCALVEROCTFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_MAN1DIR)
+#  define OCTAVE_MAN1DIR %OCTAVE_MAN1DIR%
+#endif
+
+#if ! defined (OCTAVE_MAN1EXT)
+#  define OCTAVE_MAN1EXT %OCTAVE_MAN1EXT%
+#endif
+
+#if ! defined (OCTAVE_MANDIR)
+#  define OCTAVE_MANDIR %OCTAVE_MANDIR%
+#endif
+
+#if ! defined (OCTAVE_OCTDATADIR)
+#  define OCTAVE_OCTDATADIR %OCTAVE_OCTDATADIR%
+#endif
+
+#if ! defined (OCTAVE_OCTFILEDIR)
+#  define OCTAVE_OCTFILEDIR %OCTAVE_OCTFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_OCTETCDIR)
+#  define OCTAVE_OCTETCDIR %OCTAVE_OCTETCDIR%
+#endif
+
+#if ! defined (OCTAVE_OCTLOCALEDIR)
+#  define OCTAVE_OCTLOCALEDIR %OCTAVE_OCTLOCALEDIR%
+#endif
+
+#if ! defined (OCTAVE_OCTINCLUDEDIR)
+#  define OCTAVE_OCTINCLUDEDIR %OCTAVE_OCTINCLUDEDIR%
+#endif
+
+#if ! defined (OCTAVE_OCTLIBDIR)
+#  define OCTAVE_OCTLIBDIR %OCTAVE_OCTLIBDIR%
+#endif
+
+#if ! defined (OCTAVE_OCTTESTSDIR)
+#  define OCTAVE_OCTTESTSDIR %OCTAVE_OCTTESTSDIR%
+#endif
+
+#if ! defined (OCTAVE_PREFIX)
+#  define OCTAVE_PREFIX %OCTAVE_PREFIX%
+#endif
+
+#if ! defined (OCTAVE_STARTUPFILEDIR)
+#  define OCTAVE_STARTUPFILEDIR %OCTAVE_STARTUPFILEDIR%
+#endif
+
+#if ! defined (OCTAVE_RELEASE)
+#  define OCTAVE_RELEASE %OCTAVE_RELEASE%
+#endif
+
 std::string Voctave_home;
+std::string Voctave_exec_home;
 
 std::string Vbin_dir;
 std::string Vinfo_dir;
 std::string Vdata_dir;
+std::string Vdataroot_dir;
+std::string Vinclude_dir;
+std::string Vlib_dir;
 std::string Vlibexec_dir;
 std::string Varch_lib_dir;
 std::string Vlocal_arch_lib_dir;
@@ -72,8 +236,18 @@ std::string Vlocal_api_fcn_file_dir;
 std::string Vlocal_fcn_file_dir;
 
 std::string Voct_data_dir;
+std::string Voct_lib_dir;
+std::string Voct_include_dir;
 std::string Voct_etc_dir;
 std::string Voct_locale_dir;
+
+std::string Vman1_dir = OCTAVE_MAN1DIR;
+std::string Vman1_ext = OCTAVE_MAN1EXT;
+std::string Vman_dir = OCTAVE_MANDIR;
+
+std::string Vlocal_startup_file_dir;
+std::string Voct_tests_dir;
+std::string Vstartupfile_dir;
 
 std::string Voct_file_dir;
 std::string Vfcn_file_dir;
@@ -87,6 +261,10 @@ static std::string VEXEC_PATH;
 // Name of the editor to be invoked by the edit_history command.
 std::string VEDITOR;
 
+std::string Vdefault_pager = OCTAVE_DEFAULT_PAGER;
+std::string Vcanonical_host_type = OCTAVE_CANONICAL_HOST_TYPE;
+std::string Voctave_release = OCTAVE_RELEASE;
+
 static std::string VIMAGE_PATH;
 
 std::string Vlocal_site_defaults_file;
@@ -99,17 +277,17 @@ std::string Vbuilt_in_docstrings_file;
 
 // All configure variables of this form should be specified as absolute
 // directory names.  The only ones that should not be absolute here are
-// ones that have had "${prefix}/" stripped.
+// ones that have had "${prefix}/" or "${exec_prefix} stripped.
 
-std::string
-prepend_octave_home (const std::string& s)
+static std::string
+prepend_home_dir (const std::string& hd, const std::string& s)
 {
   std::string retval = s;
 
   char dir_sep_char = octave::sys::file_ops::dir_sep_char ();
 
   if (! octave::sys::env::absolute_pathname (retval))
-    retval = Voctave_home + dir_sep_char + s;
+    retval = hd + dir_sep_char + s;
 
   if (dir_sep_char != '/')
     std::replace (retval.begin (), retval.end (), '/', dir_sep_char);
@@ -117,12 +295,46 @@ prepend_octave_home (const std::string& s)
   return retval;
 }
 
+static std::string
+prepend_octave_home (const std::string& s)
+{
+  return prepend_home_dir (Voctave_home, s);
+}
+
+static std::string
+prepend_octave_exec_home (const std::string& s)
+{
+  return prepend_home_dir (Voctave_exec_home, s);
+}
+
 static void
 set_octave_home (void)
 {
-  std::string oh = octave::sys::env::getenv ("OCTAVE_HOME");
+  std::string op = OCTAVE_PREFIX;
+  std::string oep = OCTAVE_EXEC_PREFIX;
 
-  Voctave_home = (oh.empty () ? std::string (OCTAVE_PREFIX) : oh);
+  std::string oh = octave::sys::env::getenv ("OCTAVE_HOME");
+  std::string oeh = octave::sys::env::getenv ("OCTAVE_EXEC_HOME");
+
+  // If OCTAVE_HOME is set in the enviornment, use that.  Otherwise,
+  // default to ${prefix} from configure.
+
+  Voctave_home = (oh.empty () ? op : oh);
+
+  // If OCTAVE_EXEC_HOME is set in the environment, use that.
+  // Otherwise, if ${prefix} and ${exec_prefix} from configure are set
+  // to the same value, use OCTAVE_HOME from the environment if it is set.
+  // Othewise, default to ${exec_prefix} from configure.
+
+  if (! oeh.empty ())
+    Voctave_exec_home = oeh;
+  else
+    {
+      if (op == oep && ! oh.empty ())
+        Voctave_exec_home = oh;
+      else
+        Voctave_exec_home = oep;
+    }
 }
 
 static void
@@ -132,57 +344,73 @@ set_default_info_dir (void)
 }
 
 static void
-set_default_data_dir (void)
+set_default_man_vars (void)
+{
+  Vman_dir = prepend_octave_home (OCTAVE_MANDIR);
+  Vman1_dir = prepend_octave_home (OCTAVE_MAN1DIR);
+  Vman1_ext = prepend_octave_home (OCTAVE_MAN1EXT);
+}
+
+static void
+set_default_data_dirs (void)
 {
   Vdata_dir = prepend_octave_home (OCTAVE_DATADIR);
+
+  Vdataroot_dir = prepend_octave_home (OCTAVE_DATAROOTDIR);
+}
+
+static void
+set_default_lib_dir (void)
+{
+  Vlib_dir = prepend_octave_exec_home (OCTAVE_LIBDIR);
 }
 
 static void
 set_default_libexec_dir (void)
 {
-  Vlibexec_dir = prepend_octave_home (OCTAVE_LIBEXECDIR);
+  Vlibexec_dir = prepend_octave_exec_home (OCTAVE_LIBEXECDIR);
 }
 
 static void
 set_default_arch_lib_dir (void)
 {
-  Varch_lib_dir = prepend_octave_home (OCTAVE_ARCHLIBDIR);
+  Varch_lib_dir = prepend_octave_exec_home (OCTAVE_ARCHLIBDIR);
 }
 
 static void
 set_default_local_arch_lib_dir (void)
 {
-  Vlocal_arch_lib_dir = prepend_octave_home (OCTAVE_LOCALARCHLIBDIR);
+  Vlocal_arch_lib_dir = prepend_octave_exec_home (OCTAVE_LOCALARCHLIBDIR);
 }
 
 static void
 set_default_local_api_arch_lib_dir (void)
 {
-  Vlocal_api_arch_lib_dir = prepend_octave_home (OCTAVE_LOCALAPIARCHLIBDIR);
+  Vlocal_api_arch_lib_dir = prepend_octave_exec_home (OCTAVE_LOCALAPIARCHLIBDIR);
 }
 
 static void
 set_default_local_ver_arch_lib_dir (void)
 {
-  Vlocal_ver_arch_lib_dir = prepend_octave_home (OCTAVE_LOCALVERARCHLIBDIR);
+  Vlocal_ver_arch_lib_dir = prepend_octave_exec_home (OCTAVE_LOCALVERARCHLIBDIR);
 }
 
 static void
 set_default_local_ver_oct_file_dir (void)
 {
-  Vlocal_ver_oct_file_dir = prepend_octave_home (OCTAVE_LOCALVEROCTFILEDIR);
+  Vlocal_ver_oct_file_dir = prepend_octave_exec_home (OCTAVE_LOCALVEROCTFILEDIR);
 }
 
 static void
 set_default_local_api_oct_file_dir (void)
 {
-  Vlocal_api_oct_file_dir = prepend_octave_home (OCTAVE_LOCALAPIOCTFILEDIR);
+  Vlocal_api_oct_file_dir = prepend_octave_exec_home (OCTAVE_LOCALAPIOCTFILEDIR);
 }
 
 static void
 set_default_local_oct_file_dir (void)
 {
-  Vlocal_oct_file_dir = prepend_octave_home (OCTAVE_LOCALOCTFILEDIR);
+  Vlocal_oct_file_dir = prepend_octave_exec_home (OCTAVE_LOCALOCTFILEDIR);
 }
 
 static void
@@ -222,6 +450,24 @@ set_default_oct_data_dir (void)
 }
 
 static void
+set_default_include_dir (void)
+{
+  Vinclude_dir = prepend_octave_home (OCTAVE_INCLUDEDIR);
+}
+
+static void
+set_default_oct_lib_dir (void)
+{
+  Voct_etc_dir = prepend_octave_exec_home (OCTAVE_OCTLIBDIR);
+}
+
+static void
+set_default_oct_include_dir (void)
+{
+  Voct_include_dir = prepend_octave_home (OCTAVE_OCTINCLUDEDIR);
+}
+
+static void
 set_default_oct_etc_dir (void)
 {
   Voct_etc_dir = prepend_octave_home (OCTAVE_OCTETCDIR);
@@ -236,13 +482,13 @@ set_default_oct_locale_dir (void)
 static void
 set_default_oct_file_dir (void)
 {
-  Voct_file_dir = prepend_octave_home (OCTAVE_OCTFILEDIR);
+  Voct_file_dir = prepend_octave_exec_home (OCTAVE_OCTFILEDIR);
 }
 
 static void
 set_default_bin_dir (void)
 {
-  Vbin_dir = prepend_octave_home (OCTAVE_BINDIR);
+  Vbin_dir = prepend_octave_exec_home (OCTAVE_BINDIR);
 }
 
 void
@@ -420,11 +666,14 @@ install_defaults (void)
 
   set_default_info_dir ();
 
-  set_default_data_dir ();
+  set_default_man_vars ();
 
+  set_default_data_dirs ();
+  set_default_lib_dir ();
   set_default_libexec_dir ();
-
   set_default_arch_lib_dir ();
+
+  set_default_include_dir ();
 
   set_default_local_ver_arch_lib_dir ();
   set_default_local_api_arch_lib_dir ();
@@ -439,6 +688,8 @@ install_defaults (void)
   set_default_local_fcn_file_dir ();
 
   set_default_oct_data_dir ();
+  set_default_oct_lib_dir ();
+  set_default_oct_include_dir ();
   set_default_oct_etc_dir ();
   set_default_oct_locale_dir ();
 
@@ -520,7 +771,7 @@ When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 
-@seealso{IMAGE_PATH, OCTAVE_HOME}
+@seealso{IMAGE_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
 @end deftypefn */)
 {
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
@@ -555,7 +806,7 @@ When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 
-@seealso{EXEC_PATH, OCTAVE_HOME}
+@seealso{EXEC_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
 @end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
@@ -577,7 +828,8 @@ DEFUN (OCTAVE_HOME, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} OCTAVE_HOME ()
 Return the name of the top-level Octave installation directory.
-@seealso{EXEC_PATH, IMAGE_PATH}
+OCTAVE_HOME corresponds to the configuration variable @var{prefix}.
+@seealso{EXEC_PATH, IMAGE_PATH, OCTAVE_EXEC_HOME}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -589,6 +841,27 @@ Return the name of the top-level Octave installation directory.
 /*
 %!assert (ischar (OCTAVE_HOME ()))
 %!error OCTAVE_HOME (1)
+*/
+
+DEFUN (OCTAVE_EXEC_HOME, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} OCTAVE_HOME ()
+Return the name of the top-level Octave installation directory for
+architecture-dependendent files.  If not specified separately, the value
+is the same as OCTAVE_HOME.  OCTAVE_EXEC_HOME corresponds to the
+configuration variable @var{exec_prefix}.
+@seealso{EXEC_PATH, IMAGE_PATH, OCTAVE_HOME}
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  return ovl (Voctave_exec_home);
+}
+
+/*
+%!assert (ischar (OCTAVE_EXEC_HOME ()))
+%!error OCTAVE_EXEC_HOME (1)
 */
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,

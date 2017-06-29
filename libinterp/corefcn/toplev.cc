@@ -314,237 +314,241 @@ specified option.
   bool octave_supports_dynamic_linking = false;
 #endif
 
+  static octave_scalar_map config;
+  static octave_scalar_map build_env;
+  static octave_scalar_map build_features;
+
   static bool initialized = false;
-
-  std::map<std::string, octave_value> conf_info_map
-    = {{ "DEFAULT_PAGER", Vdefault_pager },
-
-#if defined (OCTAVE_ENABLE_64)
-       { "ENABLE_64", true },
-#else
-       { "ENABLE_64", false },
-#endif
-
-#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
-       { "ENABLE_ATOMIC_REFCOUNT", true },
-#else
-       { "ENABLE_ATOMIC_REFCOUNT", false },
-#endif
-
-#if defined (ENABLE_DOCS)
-       { "ENABLE_DOCS", true },
-#else
-       { "ENABLE_DOCS", false },
-#endif
-
-#if defined (ENABLE_DYNAMIC_LINKING)
-       { "ENABLE_DYNAMIC_LINKING", true },
-#else
-       { "ENABLE_DYNAMIC_LINKING", false },
-#endif
-
-#if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
-       { "ENABLE_FLOAT_TRUNCATE", true },
-#else
-       { "ENABLE_FLOAT_TRUNCATE", false },
-#endif
-
-#if defined (ENABLE_JIT)
-       { "ENABLE_JIT", true },
-#else
-       { "ENABLE_JIT", false },
-#endif
-
-#if defined (OCTAVE_ENABLE_OPENMP)
-       { "ENABLE_OPENMP", true },
-#else
-       { "ENABLE_OPENMP", false },
-#endif
-
-       { "api_version", OCTAVE_API_VERSION },
-       { "archlibdir", Varch_lib_dir },
-       { "bindir", Vbin_dir },
-       { "canonical_host_type", Vcanonical_host_type },
-       { "datadir", Vdata_dir },
-       { "datarootdir", Vdataroot_dir },
-       { "fcnfiledir", Vfcn_file_dir },
-       { "fftw_version", octave::fftw_version () },
-       { "fftwf_version", octave::fftwf_version () },
-       { "imagedir", Vimage_dir },
-       { "includedir", Vinclude_dir },
-       { "infodir", Vinfo_dir },
-       { "infofile", Vinfo_file },
-       { "libdir", Vlib_dir },
-       { "libexecdir", Vlibexec_dir },
-       // Each library and executable has its own definition of the hg
-       // id.  We check for consistency when Octave starts so we just
-       // store and report one of them here.
-       { "hg_id", liboctinterp_hg_id () },
-       { "localapiarchlibdir", Vlocal_api_arch_lib_dir },
-       { "localapifcnfiledir", Vlocal_api_fcn_file_dir },
-       { "localapioctfiledir", Vlocal_api_oct_file_dir },
-       { "localarchlibdir", Vlocal_arch_lib_dir },
-       { "localfcnfiledir", Vlocal_fcn_file_dir },
-       { "localoctfiledir", Vlocal_oct_file_dir },
-       { "localstartupfiledir", Vlocal_startup_file_dir },
-       { "localverarchlibdir", Vlocal_ver_arch_lib_dir },
-       { "localverfcnfiledir", Vlocal_ver_fcn_file_dir },
-       { "localveroctfiledir", Vlocal_ver_oct_file_dir },
-       { "man1dir", Vman1_dir },
-       { "man1ext", Vman1_ext },
-       { "mandir", Vman_dir },
-       { "octdatadir", Voct_data_dir },
-       { "octfiledir", Voct_file_dir },
-       { "octetcdir", Voct_etc_dir },
-       { "octincludedir", Voct_include_dir },
-       { "octlibdir", Voct_lib_dir },
-       { "octtestsdir", Voct_tests_dir },
-       { "release_date", OCTAVE_RELEASE_DATE },
-       { "startupfiledir", Vstartupfile_dir },
-       { "version", OCTAVE_VERSION }};
-
-  static std::map<std::string, octave_value> build_env_map
-    = {{ "AMD_CPPFLAGS", octave::build_env::AMD_CPPFLAGS },
-       { "AMD_LDFLAGS", octave::build_env::AMD_LDFLAGS },
-       { "AMD_LIBS", octave::build_env::AMD_LIBS },
-       { "AR", octave::build_env::AR },
-       { "ARFLAGS", octave::build_env::ARFLAGS },
-       { "ARPACK_CPPFLAGS", octave::build_env::ARPACK_CPPFLAGS },
-       { "ARPACK_LDFLAGS", octave::build_env::ARPACK_LDFLAGS },
-       { "ARPACK_LIBS", octave::build_env::ARPACK_LIBS },
-       { "BLAS_LIBS", octave::build_env::BLAS_LIBS },
-       { "CAMD_CPPFLAGS", octave::build_env::CAMD_CPPFLAGS },
-       { "CAMD_LDFLAGS", octave::build_env::CAMD_LDFLAGS },
-       { "CAMD_LIBS", octave::build_env::CAMD_LIBS },
-       { "CARBON_LIBS", octave::build_env::CARBON_LIBS },
-       { "CC", octave::build_env::CC },
-       { "CCOLAMD_CPPFLAGS", octave::build_env::CCOLAMD_CPPFLAGS },
-       { "CCOLAMD_LDFLAGS", octave::build_env::CCOLAMD_LDFLAGS },
-       { "CCOLAMD_LIBS", octave::build_env::CCOLAMD_LIBS },
-       { "CFLAGS", octave::build_env::CFLAGS },
-       { "CHOLMOD_CPPFLAGS", octave::build_env::CHOLMOD_CPPFLAGS },
-       { "CHOLMOD_LDFLAGS", octave::build_env::CHOLMOD_LDFLAGS },
-       { "CHOLMOD_LIBS", octave::build_env::CHOLMOD_LIBS },
-       { "COLAMD_CPPFLAGS", octave::build_env::COLAMD_CPPFLAGS },
-       { "COLAMD_LDFLAGS", octave::build_env::COLAMD_LDFLAGS },
-       { "COLAMD_LIBS", octave::build_env::COLAMD_LIBS },
-       { "CPICFLAG", octave::build_env::CPICFLAG },
-       { "CPPFLAGS", octave::build_env::CPPFLAGS },
-       { "CURL_CPPFLAGS", octave::build_env::CURL_CPPFLAGS },
-       { "CURL_LDFLAGS", octave::build_env::CURL_LDFLAGS },
-       { "CURL_LIBS", octave::build_env::CURL_LIBS },
-       { "CXSPARSE_CPPFLAGS", octave::build_env::CXSPARSE_CPPFLAGS },
-       { "CXSPARSE_LDFLAGS", octave::build_env::CXSPARSE_LDFLAGS },
-       { "CXSPARSE_LIBS", octave::build_env::CXSPARSE_LIBS },
-       { "CXX", octave::build_env::CXX },
-       { "CXXCPP", octave::build_env::CXXCPP },
-       { "CXXFLAGS", octave::build_env::CXXFLAGS },
-       { "CXXPICFLAG", octave::build_env::CXXPICFLAG },
-       { "DEFS", octave::build_env::DEFS },
-       { "DL_LD", octave::build_env::DL_LD },
-       { "DL_LDFLAGS", octave::build_env::DL_LDFLAGS },
-       { "DL_LIBS", octave::build_env::DL_LIBS },
-       { "GCC_VERSION", octave::build_env::GCC_VERSION },
-       { "GXX_VERSION", octave::build_env::GXX_VERSION },
-       { "EXEEXT", octave::build_env::EXEEXT },
-       { "F77", octave::build_env::F77 },
-       { "F77_FLOAT_STORE_FLAG", octave::build_env::F77_FLOAT_STORE_FLAG },
-       { "F77_INTEGER_8_FLAG", octave::build_env::F77_INTEGER_8_FLAG },
-       { "FFLAGS", octave::build_env::FFLAGS },
-       { "FFTW3_CPPFLAGS", octave::build_env::FFTW3_CPPFLAGS },
-       { "FFTW3_LDFLAGS", octave::build_env::FFTW3_LDFLAGS },
-       { "FFTW3_LIBS", octave::build_env::FFTW3_LIBS },
-       { "FFTW3F_CPPFLAGS", octave::build_env::FFTW3F_CPPFLAGS },
-       { "FFTW3F_LDFLAGS", octave::build_env::FFTW3F_LDFLAGS },
-       { "FFTW3F_LIBS", octave::build_env::FFTW3F_LIBS },
-       { "FLIBS", octave::build_env::FLIBS },
-       { "FLTK_CPPFLAGS", octave::build_env::FLTK_CPPFLAGS },
-       { "FLTK_LDFLAGS", octave::build_env::FLTK_LDFLAGS },
-       { "FLTK_LIBS", octave::build_env::FLTK_LIBS },
-       { "FONTCONFIG_CPPFLAGS", octave::build_env::FONTCONFIG_CPPFLAGS },
-       { "FONTCONFIG_LIBS", octave::build_env::FONTCONFIG_LIBS },
-       { "FPICFLAG", octave::build_env::FPICFLAG },
-       { "FT2_CPPFLAGS", octave::build_env::FT2_CPPFLAGS },
-       { "FT2_LIBS", octave::build_env::FT2_LIBS },
-       { "GLPK_CPPFLAGS", octave::build_env::GLPK_CPPFLAGS },
-       { "GLPK_LDFLAGS", octave::build_env::GLPK_LDFLAGS },
-       { "GLPK_LIBS", octave::build_env::GLPK_LIBS },
-       { "GNUPLOT", octave::build_env::GNUPLOT },
-       { "HDF5_CPPFLAGS", octave::build_env::HDF5_CPPFLAGS },
-       { "HDF5_LDFLAGS", octave::build_env::HDF5_LDFLAGS },
-       { "HDF5_LIBS", octave::build_env::HDF5_LIBS },
-       { "LAPACK_LIBS", octave::build_env::LAPACK_LIBS },
-       { "LDFLAGS", octave::build_env::LDFLAGS },
-       { "LD_CXX", octave::build_env::LD_CXX },
-       { "LD_STATIC_FLAG", octave::build_env::LD_STATIC_FLAG },
-       { "LEX", octave::build_env::LEX },
-       { "LEXLIB", octave::build_env::LEXLIB },
-       { "LFLAGS", octave::build_env::LFLAGS },
-       { "LIBOCTAVE", octave::build_env::LIBOCTAVE },
-       { "LIBOCTINTERP", octave::build_env::LIBOCTINTERP },
-       { "LIBS", octave::build_env::LIBS },
-       { "LLVM_CPPFLAGS", octave::build_env::LLVM_CPPFLAGS },
-       { "LLVM_LDFLAGS", octave::build_env::LLVM_LDFLAGS },
-       { "LLVM_LIBS", octave::build_env::LLVM_LIBS },
-       { "LN_S", octave::build_env::LN_S },
-       { "MAGICK_CPPFLAGS", octave::build_env::MAGICK_CPPFLAGS },
-       { "MAGICK_LDFLAGS", octave::build_env::MAGICK_LDFLAGS },
-       { "MAGICK_LIBS", octave::build_env::MAGICK_LIBS },
-       { "MKOCTFILE_DL_LDFLAGS", octave::build_env::MKOCTFILE_DL_LDFLAGS },
-       { "OCTAVE_LINK_DEPS", octave::build_env::OCTAVE_LINK_DEPS },
-       { "OCTAVE_LINK_OPTS", octave::build_env::OCTAVE_LINK_OPTS },
-       { "OCT_LINK_DEPS", octave::build_env::OCT_LINK_DEPS },
-       { "OCT_LINK_OPTS", octave::build_env::OCT_LINK_OPTS },
-       { "OPENGL_LIBS", octave::build_env::OPENGL_LIBS },
-       { "OSMESA_CPPFLAGS", octave::build_env::OSMESA_CPPFLAGS },
-       { "OSMESA_LDFLAGS", octave::build_env::OSMESA_LDFLAGS },
-       { "OSMESA_LIBS", octave::build_env::OSMESA_LIBS },
-       { "PCRE_CPPFLAGS", octave::build_env::PCRE_CPPFLAGS },
-       { "PCRE_LDFLAGS", octave::build_env::PCRE_LDFLAGS },
-       { "PCRE_LIBS", octave::build_env::PCRE_LIBS },
-       { "PTHREAD_CFLAGS", octave::build_env::PTHREAD_CFLAGS },
-       { "PTHREAD_LIBS", octave::build_env::PTHREAD_LIBS },
-       { "QHULL_CPPFLAGS", octave::build_env::QHULL_CPPFLAGS },
-       { "QHULL_LDFLAGS", octave::build_env::QHULL_LDFLAGS },
-       { "QHULL_LIBS", octave::build_env::QHULL_LIBS },
-       { "QRUPDATE_CPPFLAGS", octave::build_env::QRUPDATE_CPPFLAGS },
-       { "QRUPDATE_LDFLAGS", octave::build_env::QRUPDATE_LDFLAGS },
-       { "QRUPDATE_LIBS", octave::build_env::QRUPDATE_LIBS },
-       { "QT_CPPFLAGS", octave::build_env::QT_CPPFLAGS },
-       { "QT_LDFLAGS", octave::build_env::QT_LDFLAGS },
-       { "QT_LIBS", octave::build_env::QT_LIBS },
-       { "RANLIB", octave::build_env::RANLIB },
-       { "RDYNAMIC_FLAG", octave::build_env::RDYNAMIC_FLAG },
-       { "READLINE_LIBS", octave::build_env::READLINE_LIBS },
-       { "SED", octave::build_env::SED },
-       { "SHARED_LIBS", octave::build_env::SHARED_LIBS },
-       { "SH_LD", octave::build_env::SH_LD },
-       { "SH_LDFLAGS", octave::build_env::SH_LDFLAGS },
-       { "STATIC_LIBS", octave::build_env::STATIC_LIBS },
-       { "SUITESPARSE_CONFIG_LIBS", octave::build_env::SUITESPARSE_CONFIG_LIBS },
-       { "TERM_LIBS", octave::build_env::TERM_LIBS },
-       { "UMFPACK_CPPFLAGS", octave::build_env::UMFPACK_CPPFLAGS },
-       { "UMFPACK_LDFLAGS", octave::build_env::UMFPACK_LDFLAGS },
-       { "UMFPACK_LIBS", octave::build_env::UMFPACK_LIBS },
-       { "WARN_CFLAGS", octave::build_env::WARN_CFLAGS },
-       { "WARN_CXXFLAGS", octave::build_env::WARN_CXXFLAGS },
-       { "X11_INCFLAGS", octave::build_env::X11_INCFLAGS },
-       { "X11_LIBS", octave::build_env::X11_LIBS },
-       { "XTRA_CFLAGS", octave::build_env::XTRA_CFLAGS },
-       { "XTRA_CXXFLAGS", octave::build_env::XTRA_CXXFLAGS },
-       { "YACC", octave::build_env::YACC },
-       { "YFLAGS", octave::build_env::YFLAGS },
-       { "Z_CPPFLAGS", octave::build_env::Z_CPPFLAGS },
-       { "Z_LDFLAGS", octave::build_env::Z_LDFLAGS },
-       { "Z_LIBS", octave::build_env::Z_LIBS },
-       { "config_opts", octave::build_env::config_opts }};
-
-  static octave_scalar_map config (conf_info_map);
-  static octave_scalar_map build_env (build_env_map);
-  static octave_scalar_map build_features = octave::build_env::features ();
 
   if (! initialized)
     {
+      std::map<std::string, octave_value> conf_info_map
+        = {{ "DEFAULT_PAGER", Vdefault_pager },
+
+#if defined (OCTAVE_ENABLE_64)
+           { "ENABLE_64", true },
+#else
+           { "ENABLE_64", false },
+#endif
+
+#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
+           { "ENABLE_ATOMIC_REFCOUNT", true },
+#else
+           { "ENABLE_ATOMIC_REFCOUNT", false },
+#endif
+
+#if defined (ENABLE_DOCS)
+           { "ENABLE_DOCS", true },
+#else
+           { "ENABLE_DOCS", false },
+#endif
+
+#if defined (ENABLE_DYNAMIC_LINKING)
+           { "ENABLE_DYNAMIC_LINKING", true },
+#else
+           { "ENABLE_DYNAMIC_LINKING", false },
+#endif
+
+#if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
+           { "ENABLE_FLOAT_TRUNCATE", true },
+#else
+           { "ENABLE_FLOAT_TRUNCATE", false },
+#endif
+
+#if defined (ENABLE_JIT)
+           { "ENABLE_JIT", true },
+#else
+           { "ENABLE_JIT", false },
+#endif
+
+#if defined (OCTAVE_ENABLE_OPENMP)
+           { "ENABLE_OPENMP", true },
+#else
+           { "ENABLE_OPENMP", false },
+#endif
+
+           { "api_version", OCTAVE_API_VERSION },
+           { "archlibdir", Varch_lib_dir },
+           { "bindir", Vbin_dir },
+           { "canonical_host_type", Vcanonical_host_type },
+           { "datadir", Vdata_dir },
+           { "datarootdir", Vdataroot_dir },
+           { "fcnfiledir", Vfcn_file_dir },
+           { "fftw_version", octave::fftw_version () },
+           { "fftwf_version", octave::fftwf_version () },
+           { "imagedir", Vimage_dir },
+           { "includedir", Vinclude_dir },
+           { "infodir", Vinfo_dir },
+           { "infofile", Vinfo_file },
+           { "libdir", Vlib_dir },
+           { "libexecdir", Vlibexec_dir },
+           // Each library and executable has its own definition of the hg
+           // id.  We check for consistency when Octave starts so we just
+           // store and report one of them here.
+           { "hg_id", liboctinterp_hg_id () },
+           { "localapiarchlibdir", Vlocal_api_arch_lib_dir },
+           { "localapifcnfiledir", Vlocal_api_fcn_file_dir },
+           { "localapioctfiledir", Vlocal_api_oct_file_dir },
+           { "localarchlibdir", Vlocal_arch_lib_dir },
+           { "localfcnfiledir", Vlocal_fcn_file_dir },
+           { "localoctfiledir", Vlocal_oct_file_dir },
+           { "localstartupfiledir", Vlocal_startup_file_dir },
+           { "localverarchlibdir", Vlocal_ver_arch_lib_dir },
+           { "localverfcnfiledir", Vlocal_ver_fcn_file_dir },
+           { "localveroctfiledir", Vlocal_ver_oct_file_dir },
+           { "man1dir", Vman1_dir },
+           { "man1ext", Vman1_ext },
+           { "mandir", Vman_dir },
+           { "octdatadir", Voct_data_dir },
+           { "octfiledir", Voct_file_dir },
+           { "octetcdir", Voct_etc_dir },
+           { "octincludedir", Voct_include_dir },
+           { "octlibdir", Voct_lib_dir },
+           { "octtestsdir", Voct_tests_dir },
+           { "release_date", OCTAVE_RELEASE_DATE },
+           { "startupfiledir", Vstartupfile_dir },
+           { "version", OCTAVE_VERSION }};
+
+      std::map<std::string, octave_value> build_env_map
+        = {{ "AMD_CPPFLAGS", octave::build_env::AMD_CPPFLAGS },
+           { "AMD_LDFLAGS", octave::build_env::AMD_LDFLAGS },
+           { "AMD_LIBS", octave::build_env::AMD_LIBS },
+           { "AR", octave::build_env::AR },
+           { "ARFLAGS", octave::build_env::ARFLAGS },
+           { "ARPACK_CPPFLAGS", octave::build_env::ARPACK_CPPFLAGS },
+           { "ARPACK_LDFLAGS", octave::build_env::ARPACK_LDFLAGS },
+           { "ARPACK_LIBS", octave::build_env::ARPACK_LIBS },
+           { "BLAS_LIBS", octave::build_env::BLAS_LIBS },
+           { "CAMD_CPPFLAGS", octave::build_env::CAMD_CPPFLAGS },
+           { "CAMD_LDFLAGS", octave::build_env::CAMD_LDFLAGS },
+           { "CAMD_LIBS", octave::build_env::CAMD_LIBS },
+           { "CARBON_LIBS", octave::build_env::CARBON_LIBS },
+           { "CC", octave::build_env::CC },
+           { "CCOLAMD_CPPFLAGS", octave::build_env::CCOLAMD_CPPFLAGS },
+           { "CCOLAMD_LDFLAGS", octave::build_env::CCOLAMD_LDFLAGS },
+           { "CCOLAMD_LIBS", octave::build_env::CCOLAMD_LIBS },
+           { "CFLAGS", octave::build_env::CFLAGS },
+           { "CHOLMOD_CPPFLAGS", octave::build_env::CHOLMOD_CPPFLAGS },
+           { "CHOLMOD_LDFLAGS", octave::build_env::CHOLMOD_LDFLAGS },
+           { "CHOLMOD_LIBS", octave::build_env::CHOLMOD_LIBS },
+           { "COLAMD_CPPFLAGS", octave::build_env::COLAMD_CPPFLAGS },
+           { "COLAMD_LDFLAGS", octave::build_env::COLAMD_LDFLAGS },
+           { "COLAMD_LIBS", octave::build_env::COLAMD_LIBS },
+           { "CPICFLAG", octave::build_env::CPICFLAG },
+           { "CPPFLAGS", octave::build_env::CPPFLAGS },
+           { "CURL_CPPFLAGS", octave::build_env::CURL_CPPFLAGS },
+           { "CURL_LDFLAGS", octave::build_env::CURL_LDFLAGS },
+           { "CURL_LIBS", octave::build_env::CURL_LIBS },
+           { "CXSPARSE_CPPFLAGS", octave::build_env::CXSPARSE_CPPFLAGS },
+           { "CXSPARSE_LDFLAGS", octave::build_env::CXSPARSE_LDFLAGS },
+           { "CXSPARSE_LIBS", octave::build_env::CXSPARSE_LIBS },
+           { "CXX", octave::build_env::CXX },
+           { "CXXCPP", octave::build_env::CXXCPP },
+           { "CXXFLAGS", octave::build_env::CXXFLAGS },
+           { "CXXPICFLAG", octave::build_env::CXXPICFLAG },
+           { "DEFS", octave::build_env::DEFS },
+           { "DL_LD", octave::build_env::DL_LD },
+           { "DL_LDFLAGS", octave::build_env::DL_LDFLAGS },
+           { "DL_LIBS", octave::build_env::DL_LIBS },
+           { "GCC_VERSION", octave::build_env::GCC_VERSION },
+           { "GXX_VERSION", octave::build_env::GXX_VERSION },
+           { "EXEEXT", octave::build_env::EXEEXT },
+           { "F77", octave::build_env::F77 },
+           { "F77_FLOAT_STORE_FLAG", octave::build_env::F77_FLOAT_STORE_FLAG },
+           { "F77_INTEGER_8_FLAG", octave::build_env::F77_INTEGER_8_FLAG },
+           { "FFLAGS", octave::build_env::FFLAGS },
+           { "FFTW3_CPPFLAGS", octave::build_env::FFTW3_CPPFLAGS },
+           { "FFTW3_LDFLAGS", octave::build_env::FFTW3_LDFLAGS },
+           { "FFTW3_LIBS", octave::build_env::FFTW3_LIBS },
+           { "FFTW3F_CPPFLAGS", octave::build_env::FFTW3F_CPPFLAGS },
+           { "FFTW3F_LDFLAGS", octave::build_env::FFTW3F_LDFLAGS },
+           { "FFTW3F_LIBS", octave::build_env::FFTW3F_LIBS },
+           { "FLIBS", octave::build_env::FLIBS },
+           { "FLTK_CPPFLAGS", octave::build_env::FLTK_CPPFLAGS },
+           { "FLTK_LDFLAGS", octave::build_env::FLTK_LDFLAGS },
+           { "FLTK_LIBS", octave::build_env::FLTK_LIBS },
+           { "FONTCONFIG_CPPFLAGS", octave::build_env::FONTCONFIG_CPPFLAGS },
+           { "FONTCONFIG_LIBS", octave::build_env::FONTCONFIG_LIBS },
+           { "FPICFLAG", octave::build_env::FPICFLAG },
+           { "FT2_CPPFLAGS", octave::build_env::FT2_CPPFLAGS },
+           { "FT2_LIBS", octave::build_env::FT2_LIBS },
+           { "GLPK_CPPFLAGS", octave::build_env::GLPK_CPPFLAGS },
+           { "GLPK_LDFLAGS", octave::build_env::GLPK_LDFLAGS },
+           { "GLPK_LIBS", octave::build_env::GLPK_LIBS },
+           { "GNUPLOT", octave::build_env::GNUPLOT },
+           { "HDF5_CPPFLAGS", octave::build_env::HDF5_CPPFLAGS },
+           { "HDF5_LDFLAGS", octave::build_env::HDF5_LDFLAGS },
+           { "HDF5_LIBS", octave::build_env::HDF5_LIBS },
+           { "LAPACK_LIBS", octave::build_env::LAPACK_LIBS },
+           { "LDFLAGS", octave::build_env::LDFLAGS },
+           { "LD_CXX", octave::build_env::LD_CXX },
+           { "LD_STATIC_FLAG", octave::build_env::LD_STATIC_FLAG },
+           { "LEX", octave::build_env::LEX },
+           { "LEXLIB", octave::build_env::LEXLIB },
+           { "LFLAGS", octave::build_env::LFLAGS },
+           { "LIBOCTAVE", octave::build_env::LIBOCTAVE },
+           { "LIBOCTINTERP", octave::build_env::LIBOCTINTERP },
+           { "LIBS", octave::build_env::LIBS },
+           { "LLVM_CPPFLAGS", octave::build_env::LLVM_CPPFLAGS },
+           { "LLVM_LDFLAGS", octave::build_env::LLVM_LDFLAGS },
+           { "LLVM_LIBS", octave::build_env::LLVM_LIBS },
+           { "LN_S", octave::build_env::LN_S },
+           { "MAGICK_CPPFLAGS", octave::build_env::MAGICK_CPPFLAGS },
+           { "MAGICK_LDFLAGS", octave::build_env::MAGICK_LDFLAGS },
+           { "MAGICK_LIBS", octave::build_env::MAGICK_LIBS },
+           { "MKOCTFILE_DL_LDFLAGS", octave::build_env::MKOCTFILE_DL_LDFLAGS },
+           { "OCTAVE_LINK_DEPS", octave::build_env::OCTAVE_LINK_DEPS },
+           { "OCTAVE_LINK_OPTS", octave::build_env::OCTAVE_LINK_OPTS },
+           { "OCT_LINK_DEPS", octave::build_env::OCT_LINK_DEPS },
+           { "OCT_LINK_OPTS", octave::build_env::OCT_LINK_OPTS },
+           { "OPENGL_LIBS", octave::build_env::OPENGL_LIBS },
+           { "OSMESA_CPPFLAGS", octave::build_env::OSMESA_CPPFLAGS },
+           { "OSMESA_LDFLAGS", octave::build_env::OSMESA_LDFLAGS },
+           { "OSMESA_LIBS", octave::build_env::OSMESA_LIBS },
+           { "PCRE_CPPFLAGS", octave::build_env::PCRE_CPPFLAGS },
+           { "PCRE_LDFLAGS", octave::build_env::PCRE_LDFLAGS },
+           { "PCRE_LIBS", octave::build_env::PCRE_LIBS },
+           { "PTHREAD_CFLAGS", octave::build_env::PTHREAD_CFLAGS },
+           { "PTHREAD_LIBS", octave::build_env::PTHREAD_LIBS },
+           { "QHULL_CPPFLAGS", octave::build_env::QHULL_CPPFLAGS },
+           { "QHULL_LDFLAGS", octave::build_env::QHULL_LDFLAGS },
+           { "QHULL_LIBS", octave::build_env::QHULL_LIBS },
+           { "QRUPDATE_CPPFLAGS", octave::build_env::QRUPDATE_CPPFLAGS },
+           { "QRUPDATE_LDFLAGS", octave::build_env::QRUPDATE_LDFLAGS },
+           { "QRUPDATE_LIBS", octave::build_env::QRUPDATE_LIBS },
+           { "QT_CPPFLAGS", octave::build_env::QT_CPPFLAGS },
+           { "QT_LDFLAGS", octave::build_env::QT_LDFLAGS },
+           { "QT_LIBS", octave::build_env::QT_LIBS },
+           { "RANLIB", octave::build_env::RANLIB },
+           { "RDYNAMIC_FLAG", octave::build_env::RDYNAMIC_FLAG },
+           { "READLINE_LIBS", octave::build_env::READLINE_LIBS },
+           { "SED", octave::build_env::SED },
+           { "SHARED_LIBS", octave::build_env::SHARED_LIBS },
+           { "SH_LD", octave::build_env::SH_LD },
+           { "SH_LDFLAGS", octave::build_env::SH_LDFLAGS },
+           { "STATIC_LIBS", octave::build_env::STATIC_LIBS },
+           { "SUITESPARSE_CONFIG_LIBS", octave::build_env::SUITESPARSE_CONFIG_LIBS },
+           { "TERM_LIBS", octave::build_env::TERM_LIBS },
+           { "UMFPACK_CPPFLAGS", octave::build_env::UMFPACK_CPPFLAGS },
+           { "UMFPACK_LDFLAGS", octave::build_env::UMFPACK_LDFLAGS },
+           { "UMFPACK_LIBS", octave::build_env::UMFPACK_LIBS },
+           { "WARN_CFLAGS", octave::build_env::WARN_CFLAGS },
+           { "WARN_CXXFLAGS", octave::build_env::WARN_CXXFLAGS },
+           { "X11_INCFLAGS", octave::build_env::X11_INCFLAGS },
+           { "X11_LIBS", octave::build_env::X11_LIBS },
+           { "XTRA_CFLAGS", octave::build_env::XTRA_CFLAGS },
+           { "XTRA_CXXFLAGS", octave::build_env::XTRA_CXXFLAGS },
+           { "YACC", octave::build_env::YACC },
+           { "YFLAGS", octave::build_env::YFLAGS },
+           { "Z_CPPFLAGS", octave::build_env::Z_CPPFLAGS },
+           { "Z_LDFLAGS", octave::build_env::Z_LDFLAGS },
+           { "Z_LIBS", octave::build_env::Z_LIBS },
+           { "config_opts", octave::build_env::config_opts }};
+
+      config = octave_scalar_map (conf_info_map);
+      build_env = octave_scalar_map (build_env_map);
+      build_features = octave::build_env::features ();
+
       bool unix_system = true;
       bool mac_system = false;
       bool windows_system = false;

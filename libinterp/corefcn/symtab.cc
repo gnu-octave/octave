@@ -116,13 +116,13 @@ namespace octave
   {
     std::map<std::string, octave_value> m
       = {{"name", name},
-         {"local", octave_value (is_local ())},
-         {"automatic", octave_value (is_automatic ())},
-         {"formal", octave_value (is_formal ())},
-         {"hidden", octave_value (is_hidden ())},
-         {"inherited", octave_value (is_inherited ())},
-         {"global", octave_value (is_global ())},
-         {"persistent", octave_value (is_persistent ())}};
+         {"local", is_local ()},
+         {"automatic", is_automatic ()},
+         {"formal", is_formal ()},
+         {"hidden", is_hidden ()},
+         {"inherited", is_inherited ()},
+         {"global", is_global ()},
+         {"persistent", is_persistent ()}};
 
     octave_value val = varval ();
 
@@ -1308,8 +1308,8 @@ namespace octave
   symbol_table::fcn_info::fcn_info_rep::dump (void) const
   {
     std::map<std::string, octave_value> m
-      = {{"name", octave_value (full_name ())},
-         {"refcount", octave_value (count.value ())},
+      = {{"name", full_name ()},
+         {"refcount", count.value ()},
          {"package", package.dump ()},
          {"local_functions", dump_function_map (local_functions)},
          {"private_functions", dump_function_map (private_functions)},
@@ -1714,9 +1714,9 @@ namespace octave
   symbol_table::scope::dump (void) const
   {
     std::map<std::string, octave_value> m
-      = {{"name", octave_value (m_name)},
+      = {{"name", m_name},
          {"symbols", dump_symbols_map ()},
-         {"persistent_variables", octave_value (m_persistent_symbols)},
+         {"persistent_variables", m_persistent_symbols},
          {"subfunctions", dump_function_map (m_subfunctions)}};
 
     return octave_value (m);

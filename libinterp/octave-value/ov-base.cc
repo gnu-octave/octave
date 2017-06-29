@@ -1169,9 +1169,9 @@ octave_value
 octave_base_value::dump (void) const
 {
   std::map<std::string, octave_value> m
-    = {{"class", octave_value (this->class_name ())},
-       {"type", octave_value (this->type_name ())},
-       {"dims", octave_value (this->dims().as_array ())}};
+    = {{"class", this->class_name ()},
+       {"type", this->type_name ()},
+       {"dims", this->dims().as_array ()}};
 
   return octave_value (m);
 }

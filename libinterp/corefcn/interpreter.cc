@@ -134,7 +134,7 @@ initialize_version_info (void)
   octave_value_list args;
 
   args(3) = OCTAVE_RELEASE_DATE;
-  args(2) = Voctave_release;
+  args(2) = octave::config::release ();
   args(1) = OCTAVE_VERSION;
   args(0) = "GNU Octave";
 
@@ -786,14 +786,14 @@ namespace octave
         // (if it exists), then from the file
         // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
 
-        int status = safe_source_file (Vlocal_site_defaults_file, context,
-                                       verbose, require_file);
+        int status = safe_source_file (config::local_site_defaults_file (),
+                                       context, verbose, require_file);
 
         if (status)
           exit_status = status;
 
-        status = safe_source_file (Vsite_defaults_file, context, verbose,
-                                   require_file);
+        status = safe_source_file (config::site_defaults_file (),
+                                   context, verbose, require_file);
 
         if (status)
           exit_status = status;

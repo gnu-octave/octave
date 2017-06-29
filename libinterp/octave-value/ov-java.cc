@@ -345,7 +345,8 @@ initial_java_dir (void)
       java_dir = octave::sys::env::getenv ("OCTAVE_JAVA_DIR");
 
       if (java_dir.empty ())
-        java_dir = Vfcn_file_dir + octave::sys::file_ops::dir_sep_str () + "java";
+        java_dir = (octave::config::fcn_file_dir ()
+                    + octave::sys::file_ops::dir_sep_str () + "java");
     }
 
   return java_dir;

@@ -256,11 +256,12 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
   if (octaveroot.length () != 0
       && fpath.length () >= octaveroot.length ()
       && fpath.substr (0, octaveroot.length ()) == octaveroot
-      && Voctave_exec_home != octaveroot)
+      && octave::config::octave_exec_home () != octaveroot)
     {
       // First check if just replacing matlabroot is enough
       std::string str
-        = Voctave_exec_home + fpath.substr (octaveroot.length ());
+        = (octave::config::octave_exec_home ()
+           + fpath.substr (octaveroot.length ()));
       octave::sys::file_stat fs (str);
 
       if (fs.exists ())
@@ -374,7 +375,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       octave_function *f = function_value ();
       std::string fnm = (f ? f->fcn_file_name () : "");
 
-      os << "# octaveroot: " << Voctave_exec_home << "\n";
+      os << "# octaveroot: " << octave::config::octave_exec_home () << "\n";
       if (! fnm.empty ())
         os << "# path: " << fnm << "\n";
       os << nm << "\n";
@@ -560,7 +561,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       octave_function *f = function_value ();
       std::string fnm = (f ? f->fcn_file_name () : "");
 
-      nmbuf << nm << "\n" << Voctave_exec_home << "\n" << fnm;
+      nmbuf << nm << "\n" << octave::config::octave_exec_home () << "\n" << fnm;
 
       std::string buf_str = nmbuf.str ();
       int32_t tmp = buf_str.length ();
@@ -862,7 +863,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
   else
     {
-      std::string octaveroot = Voctave_exec_home;
+      std::string octaveroot = octave::config::octave_exec_home ();
 
       octave_function *f = function_value ();
       std::string fpath = (f ? f->fcn_file_name () : "");

@@ -53,9 +53,10 @@ octave_mex_function::octave_mex_function
 
   std::string file_name = fcn_file_name ();
 
+  std::string oct_file_dir = octave::config::oct_file_dir ();
   m_is_system_fcn_file
     = (! file_name.empty ()
-       && Voct_file_dir == file_name.substr (0, Voct_file_dir.length ()));
+       && oct_file_dir == file_name.substr (0, oct_file_dir.length ()));
 }
 
 octave_mex_function::~octave_mex_function (void)

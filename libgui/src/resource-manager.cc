@@ -55,8 +55,9 @@ default_qt_settings_file (void)
   std::string dsf = octave::sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
   if (dsf.empty ())
-    dsf = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () +
-          "default-qt-settings";
+    dsf = (octave::config::oct_etc_dir ()
+           + octave::sys::file_ops::dir_sep_str ()
+           + "default-qt-settings");
 
   return QString::fromStdString (dsf);
 }
@@ -93,7 +94,7 @@ resource_manager::get_gui_translation_dir (void)
   // get environment variable for the locale dir (e.g. from run-octave)
   std::string dldir = octave::sys::env::getenv ("OCTAVE_LOCALE_DIR");
   if (dldir.empty ())
-    dldir = Voct_locale_dir; // env-var empty, load the default location
+    dldir = octave::config::oct_locale_dir (); // env-var empty, load the default location
   return QString::fromStdString (dldir);
 }
 

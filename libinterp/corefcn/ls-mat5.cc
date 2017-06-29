@@ -863,7 +863,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                 if ((fpath.length () >= mroot.length ())
                     && fpath.substr (0, mroot.length ()) == mroot
-                    && Voctave_exec_home != mroot)
+                    && octave::config::octave_exec_home () != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
                     // doesn't equal __octave_config_info__ ("exec_prefix")
@@ -874,7 +874,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     // First check if just replacing matlabroot is enough
                     std::string str
-                      = Voctave_exec_home + fpath.substr (mroot.length ());
+                      = (octave::config::octave_exec_home ()
+                         + fpath.substr (mroot.length ()));
                     octave::sys::file_stat fs (str);
 
                     if (fs.exists ())

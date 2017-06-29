@@ -456,7 +456,7 @@ main_window::display_release_notes (void)
 {
   if (! release_notes_window)
     {
-      std::string news_file = Voct_etc_dir + "/NEWS";
+      std::string news_file = octave::config::oct_etc_dir () + "/NEWS";
 
       QString news;
 

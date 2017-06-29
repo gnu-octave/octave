@@ -88,7 +88,9 @@ octave_name_version_copyright_copying_and_warranty
          + br
          + octave_warranty_statement (extra_info)
          + sep
-         + "Octave was configured for \"" + Vcanonical_host_type + "\".";
+         + "Octave was configured for \""
+         + octave::config::canonical_host_type ()
+         + "\".";
 }
 
 std::string

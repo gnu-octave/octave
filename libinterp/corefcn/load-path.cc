@@ -212,15 +212,15 @@ namespace octave
 
     if (set_initial_path)
       {
-        maybe_add_path_elts (sys_path, Vlocal_ver_oct_file_dir);
-        maybe_add_path_elts (sys_path, Vlocal_api_oct_file_dir);
-        maybe_add_path_elts (sys_path, Vlocal_oct_file_dir);
-        maybe_add_path_elts (sys_path, Vlocal_ver_fcn_file_dir);
-        maybe_add_path_elts (sys_path, Vlocal_api_fcn_file_dir);
-        maybe_add_path_elts (sys_path, Vlocal_fcn_file_dir);
-        maybe_add_path_elts (sys_path, Voct_file_dir);
-        maybe_add_path_elts (sys_path, Vfcn_file_dir);
-        maybe_add_path_elts (sys_path, Voct_data_dir);
+        maybe_add_path_elts (sys_path, config::local_ver_oct_file_dir ());
+        maybe_add_path_elts (sys_path, config::local_api_oct_file_dir ());
+        maybe_add_path_elts (sys_path, config::local_oct_file_dir ());
+        maybe_add_path_elts (sys_path, config::local_ver_fcn_file_dir ());
+        maybe_add_path_elts (sys_path, config::local_api_fcn_file_dir ());
+        maybe_add_path_elts (sys_path, config::local_fcn_file_dir ());
+        maybe_add_path_elts (sys_path, config::oct_file_dir ());
+        maybe_add_path_elts (sys_path, config::fcn_file_dir ());
+        maybe_add_path_elts (sys_path, config::oct_data_dir ());
       }
 
     std::string tpath = load_path::m_command_line_path;

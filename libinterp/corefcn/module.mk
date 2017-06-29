@@ -31,6 +31,7 @@ COREFCN_INC = \
   %reldir%/dirfns.h \
   %reldir%/display.h \
   %reldir%/dynamic-ld.h \
+  %reldir%/environment.h \
   %reldir%/error.h \
   %reldir%/errwarn.h \
   %reldir%/event-queue.h \
@@ -138,6 +139,7 @@ COREFCN_SRC = \
   %reldir%/dynamic-ld.cc \
   %reldir%/eig.cc \
   %reldir%/ellipj.cc \
+  %reldir%/environment.cc \
   %reldir%/error.cc \
   %reldir%/errwarn.cc \
   %reldir%/event-queue.cc \

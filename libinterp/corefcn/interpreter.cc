@@ -374,6 +374,7 @@ namespace octave
 
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
+      m_environment (),
       m_dynamic_loader (*this),
       m_load_path (),
       m_symbol_table (),
@@ -468,11 +469,11 @@ namespace octave
 
         std::string exec_path = options.exec_path ();
         if (! exec_path.empty ())
-          set_exec_path (exec_path);
+          m_environment.exec_path (exec_path);
 
         std::string image_path = options.image_path ();
         if (! image_path.empty ())
-          set_image_path (image_path);
+          m_environment.image_path (image_path);
 
         if (options.no_window_system ())
           display_info::no_window_system ();

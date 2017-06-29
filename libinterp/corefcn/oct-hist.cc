@@ -440,7 +440,7 @@ unlink_cleanup (const char *file)
 }
 
 static void
-do_edit_history (const octave_value_list& args)
+do_edit_history (octave::interpreter& interp, const octave_value_list& args)
 {
   std::string name = mk_tmp_hist_file (args, false, "edit_history");
 
@@ -449,7 +449,8 @@ do_edit_history (const octave_value_list& args)
 
   // Call up our favorite editor on the file of commands.
 
-  std::string cmd = VEDITOR;
+  octave::environment& env = interp.get_environment ();
+  std::string cmd = env.editor ();
   cmd.append (" \"" + name + "\"");
 
   // Ignore interrupts while we are off editing commands.  Should we
@@ -551,8 +552,8 @@ octave_history_write_timestamp (void)
       octave_link::append_history (timestamp);
 }
 
-DEFUN (edit_history, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (edit_history, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} edit_history
 @deftypefnx {} {} edit_history @var{cmd_number}
 @deftypefnx {} {} edit_history @var{first} @var{last}
@@ -589,7 +590,7 @@ buffer to be edited.
   if (args.length () > 2)
     print_usage ();
 
-  do_edit_history (args);
+  do_edit_history (interp, args);
 
   return ovl ();
 }

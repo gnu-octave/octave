@@ -1,4 +1,3 @@
-// DO NOT EDIT!  Generated automatically by subst-default-vals.
 /*
 
 Copyright (C) 1993-2017 John W. Eaton
@@ -98,19 +97,6 @@ namespace octave
 // somewhere else?
 
 extern OCTINTERP_API std::string Vbuilt_in_docstrings_file;
-
-extern OCTINTERP_API std::string VEXEC_PATH;
-
-// Name of the editor to be invoked by the edit_history command.
-extern OCTINTERP_API std::string VEDITOR;
-
-extern OCTINTERP_API std::string VIMAGE_PATH;
-
-extern OCTINTERP_API void
-set_exec_path (const std::string& path = "");
-
-extern OCTINTERP_API void
-set_image_path (const std::string& path = "");
 
 extern OCTINTERP_API void install_defaults (void);
 

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "dynamic-ld.h"
+#include "environment.h"
 #include "load-path.h"
 #include "ov-classdef.h"
 #include "pt-eval.h"
@@ -137,6 +138,11 @@ namespace octave
       return m_initialized;
     }
 
+    environment& get_environment (void)
+    {
+      return m_environment;
+    }
+
     dynamic_loader& get_dynamic_loader (void)
     {
       return m_dynamic_loader;
@@ -199,6 +205,8 @@ namespace octave
     void cleanup (void);
 
     application *m_app_context;
+
+    environment m_environment;
 
     dynamic_loader m_dynamic_loader;
 

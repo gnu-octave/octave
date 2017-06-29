@@ -1,3 +1,4 @@
+// DO NOT EDIT!  Generated automatically by subst-default-vals.
 /*
 
 Copyright (C) 1996-2017 John W. Eaton
@@ -462,75 +463,6 @@ set_default_texi_macros_file (void)
 }
 
 static void
-set_default_editor (void)
-{
-  VEDITOR = "emacs";
-
-  std::string env_editor = octave::sys::env::getenv ("EDITOR");
-
-  if (! env_editor.empty ())
-    VEDITOR = env_editor;
-}
-
-void
-set_exec_path (const std::string& path_arg)
-{
-  std::string tpath = path_arg;
-
-  if (tpath.empty ())
-    tpath = octave::sys::env::getenv ("OCTAVE_EXEC_PATH");
-
-  if (tpath.empty ())
-    tpath = Vlocal_ver_arch_lib_dir + octave::directory_path::path_sep_str ()
-            + Vlocal_api_arch_lib_dir + octave::directory_path::path_sep_str ()
-            + Vlocal_arch_lib_dir + octave::directory_path::path_sep_str ()
-            + Varch_lib_dir + octave::directory_path::path_sep_str ()
-            + Vbin_dir;
-
-  VEXEC_PATH = tpath;
-
-  // FIXME: should we really be modifying PATH in the environment?
-  // The way things are now, Octave will ignore directories set in the
-  // PATH with calls like
-  //
-  //   setenv ("PATH", "/my/path");
-  //
-  // To fix this, I think Octave should be searching the combination of
-  // PATH and EXEC_PATH for programs that it executes instead of setting
-  // the PATH in the environment and relying on the shell to do the
-  // searching.
-
-  // This is static so that even if set_exec_path is called more than
-  // once, shell_path is the original PATH from the environment,
-  // before we start modifying it.
-  static std::string shell_path = octave::sys::env::getenv ("PATH");
-
-  if (! shell_path.empty ())
-    tpath = shell_path + octave::directory_path::path_sep_str () + tpath;
-
-  octave::sys::env::putenv ("PATH", tpath);
-}
-
-void
-set_image_path (const std::string& path)
-{
-  VIMAGE_PATH = ".";
-
-  std::string tpath = path;
-
-  if (tpath.empty ())
-    tpath = octave::sys::env::getenv ("OCTAVE_IMAGE_PATH");
-
-  if (! tpath.empty ())
-    VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;
-
-  tpath = octave::genpath (Vimage_dir, "");
-
-  if (! tpath.empty ())
-    VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;
-}
-
-static void
 set_default_doc_cache_file (void)
 {
   if (Vdoc_cache_file.empty ())
@@ -569,12 +501,6 @@ install_defaults (void)
   set_default_info_prog ();
 
   set_default_texi_macros_file ();
-
-  set_default_editor ();
-
-  set_exec_path ();
-
-  set_image_path ();
 
   set_default_doc_cache_file ();
 
@@ -644,109 +570,6 @@ namespace octave
 }
 
 #undef RETURN
-
-DEFUN (EDITOR, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} EDITOR ()
-@deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val})
-@deftypefnx {} {} EDITOR (@var{new_val}, "local")
-Query or set the internal variable that specifies the default text editor.
-
-The default value is taken from the environment variable @w{@env{EDITOR}}
-when Octave starts.  If the environment variable is not initialized,
-@w{@env{EDITOR}} will be set to @qcode{"emacs"}.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-
-@seealso{edit, edit_history}
-@end deftypefn */)
-{
-  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
-}
-
-/*
-%!test
-%! orig_val = EDITOR ();
-%! old_val = EDITOR ("X");
-%! assert (orig_val, old_val);
-%! assert (EDITOR (), "X");
-%! EDITOR (orig_val);
-%! assert (EDITOR (), orig_val);
-
-%!error (EDITOR (1, 2))
-*/
-
-DEFUN (EXEC_PATH, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} EXEC_PATH ()
-@deftypefnx {} {@var{old_val} =} EXEC_PATH (@var{new_val})
-@deftypefnx {} {} EXEC_PATH (@var{new_val}, "local")
-Query or set the internal variable that specifies a colon separated
-list of directories to append to the shell PATH when executing external
-programs.
-
-The initial value of is taken from the environment variable
-@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by the command
-line argument @option{--exec-path PATH}.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-
-@seealso{IMAGE_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
-@end deftypefn */)
-{
-  octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
-
-  if (args.length () > 0)
-    set_exec_path (VEXEC_PATH);
-
-  return retval;
-}
-
-/*
-%!test
-%! orig_val = EXEC_PATH ();
-%! old_val = EXEC_PATH ("X");
-%! assert (orig_val, old_val);
-%! assert (EXEC_PATH (), "X");
-%! EXEC_PATH (orig_val);
-%! assert (EXEC_PATH (), orig_val);
-
-%!error (EXEC_PATH (1, 2))
-*/
-
-DEFUN (IMAGE_PATH, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} IMAGE_PATH ()
-@deftypefnx {} {@var{old_val} =} IMAGE_PATH (@var{new_val})
-@deftypefnx {} {} IMAGE_PATH (@var{new_val}, "local")
-Query or set the internal variable that specifies a colon separated
-list of directories in which to search for image files.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-
-@seealso{EXEC_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
-@end deftypefn */)
-{
-  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
-}
-
-/*
-%!test
-%! orig_val = IMAGE_PATH ();
-%! old_val = IMAGE_PATH ("X");
-%! assert (orig_val, old_val);
-%! assert (IMAGE_PATH (), "X");
-%! IMAGE_PATH (orig_val);
-%! assert (IMAGE_PATH (), orig_val);
-
-%!error (IMAGE_PATH (1, 2))
-*/
 
 DEFUN (OCTAVE_HOME, args, ,
        doc: /* -*- texinfo -*-

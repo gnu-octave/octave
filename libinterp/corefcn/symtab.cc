@@ -115,14 +115,14 @@ namespace octave
   symbol_table::symbol_record::symbol_record_rep::dump (void) const
   {
     std::map<std::string, octave_value> m
-      = {{"name", name},
-         {"local", is_local ()},
-         {"automatic", is_automatic ()},
-         {"formal", is_formal ()},
-         {"hidden", is_hidden ()},
-         {"inherited", is_inherited ()},
-         {"global", is_global ()},
-         {"persistent", is_persistent ()}};
+      = {{ "name", name },
+         { "local", is_local () },
+         { "automatic", is_automatic () },
+         { "formal", is_formal () },
+         { "hidden", is_hidden () },
+         { "inherited", is_inherited () },
+         { "global", is_global () },
+         { "persistent", is_persistent () }};
 
     octave_value val = varval ();
 
@@ -1308,17 +1308,17 @@ namespace octave
   symbol_table::fcn_info::fcn_info_rep::dump (void) const
   {
     std::map<std::string, octave_value> m
-      = {{"name", full_name ()},
-         {"refcount", count.value ()},
-         {"package", package.dump ()},
-         {"local_functions", dump_function_map (local_functions)},
-         {"private_functions", dump_function_map (private_functions)},
-         {"class_methods", dump_function_map (class_methods)},
-         {"class_constructors", dump_function_map (class_constructors)},
-         {"cmdline_function", cmdline_function.dump ()},
-         {"autoload_function", autoload_function.dump ()},
-         {"function_on_path", function_on_path.dump ()},
-         {"built_in_function", built_in_function.dump ()}};
+      = {{ "name", full_name () },
+         { "refcount", count.value () },
+         { "package", package.dump () },
+         { "local_functions", dump_function_map (local_functions) },
+         { "private_functions", dump_function_map (private_functions) },
+         { "class_methods", dump_function_map (class_methods) },
+         { "class_constructors", dump_function_map (class_constructors) },
+         { "cmdline_function", cmdline_function.dump () },
+         { "autoload_function", autoload_function.dump () },
+         { "function_on_path", function_on_path.dump () },
+         { "built_in_function", built_in_function.dump () }};
 
     return octave_value (m);
   }
@@ -1457,9 +1457,9 @@ namespace octave
   symbol_table::dump (void) const
   {
     std::map<std::string, octave_value> m
-      = {{"function_info", dump_fcn_table_map ()},
-         {"precedence_table", dump_container_map (m_class_precedence_table)},
-         {"parent_classes", dump_container_map (m_parent_map)}};
+      = {{ "function_info", dump_fcn_table_map () },
+         { "precedence_table", dump_container_map (m_class_precedence_table) },
+         { "parent_classes", dump_container_map (m_parent_map) }};
 
     return octave_value (m);
   }
@@ -1714,10 +1714,10 @@ namespace octave
   symbol_table::scope::dump (void) const
   {
     std::map<std::string, octave_value> m
-      = {{"name", m_name},
-         {"symbols", dump_symbols_map ()},
-         {"persistent_variables", m_persistent_symbols},
-         {"subfunctions", dump_function_map (m_subfunctions)}};
+      = {{ "name", m_name },
+         { "symbols", dump_symbols_map () },
+         { "persistent_variables", m_persistent_symbols },
+         { "subfunctions", dump_function_map (m_subfunctions) }};
 
     return octave_value (m);
   }

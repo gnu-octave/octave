@@ -677,25 +677,25 @@ octave_value
 octave_user_function::dump (void) const
 {
   std::map<std::string, octave_value> m
-    = {{"file_name", file_name},
-       {"line", location_line},
-       {"col", location_column},
-       {"end_line", end_location_line},
-       {"end_col", end_location_column},
-       {"time_parsed", t_parsed},
-       {"time_checked", t_checked},
-       {"parent_name", parent_name},
-       {"system_fcn_file", system_fcn_file},
-       {"call_depth", call_depth},
-       {"num_named_args", num_named_args},
-       {"subfunction", subfunction},
-       {"inline_function", inline_function},
-       {"anonymous_function", anonymous_function},
-       {"nested_function", nested_function},
-       {"ctor_type", ctor_type_str ()},
-       {"class_method", class_method},
-       {"parent_scope", parent_scope ? parent_scope->name () : "0x0"},
-       {"scope_info", m_scope ? m_scope->dump () : "0x0"}};
+    = {{ "file_name", file_name },
+       { "line", location_line },
+       { "col", location_column },
+       { "end_line", end_location_line },
+       { "end_col", end_location_column },
+       { "time_parsed", t_parsed },
+       { "time_checked", t_checked },
+       { "parent_name", parent_name },
+       { "system_fcn_file", system_fcn_file },
+       { "call_depth", call_depth },
+       { "num_named_args", num_named_args },
+       { "subfunction", subfunction },
+       { "inline_function", inline_function },
+       { "anonymous_function", anonymous_function },
+       { "nested_function", nested_function },
+       { "ctor_type", ctor_type_str () },
+       { "class_method", class_method },
+       { "parent_scope", parent_scope ? parent_scope->name () : "0x0" },
+       { "scope_info", m_scope ? m_scope->dump () : "0x0" }};
 
   return octave_value (m);
 }

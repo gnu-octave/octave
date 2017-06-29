@@ -130,6 +130,7 @@ COREFCN_SRC = \
   %reldir%/dassl.cc \
   %reldir%/data.cc \
   %reldir%/debug.cc \
+  %reldir%/defaults.cc \
   %reldir%/defun.cc \
   %reldir%/det.cc \
   %reldir%/dirfns.cc \
@@ -251,7 +252,7 @@ COREFCN_SRC = \
 
 ## Special rules for sources which must be built before rest of compilation.
 
-%reldir%/defaults.cc: %reldir%/defaults.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
+%reldir%/default-defs.h: %reldir%/default-defs.in.h build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
 %reldir%/graphics.h: %reldir%/graphics.in.h %reldir%/genprops.awk | %reldir%/$(octave_dirstamp)
@@ -293,6 +294,9 @@ COREFCN_SRC = \
 %reldir%/oct-tex-parser.yy: %reldir%/oct-tex-parser.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)
 
+noinst_HEADERS += \
+  %reldir%/default-defs.h
+
 noinst_LTLIBRARIES += \
   %reldir%/libcorefcn.la
 
@@ -312,7 +316,7 @@ noinst_LTLIBRARIES += \
 %canon_reldir%_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 libinterp_EXTRA_DIST += \
-  %reldir%/defaults.in.cc \
+  %reldir%/default-defs.in.h \
   %reldir%/genprops.awk \
   %reldir%/graphics.in.h \
   %reldir%/mk-errno-list.sh \

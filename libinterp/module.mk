@@ -30,7 +30,7 @@ octlib_LTLIBRARIES += %reldir%/liboctinterp.la
 
 BUILT_SOURCES += \
   %reldir%/builtin-defun-decls.h \
-  %reldir%/corefcn/defaults.cc \
+  %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
   %reldir%/corefcn/mxarray.h \
@@ -70,7 +70,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/corefcn/mxarray.h \
   %reldir%/corefcn/oct-errno.cc \
-  %reldir%/corefcn/defaults.cc \
+  %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
   %reldir%/builtin-defun-decls.h \
@@ -150,7 +150,7 @@ endif
 nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/corefcn/mxarray.h \
   %reldir%/corefcn/oct-errno.cc \
-  %reldir%/corefcn/defaults.cc \
+  %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics.h \
   %reldir%/operators/ops.cc \
   %reldir%/builtin-defun-decls.h \
@@ -184,7 +184,6 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
 
 ULT_DIST_SRC := \
   $(filter-out $(GENERATED_PARSER_FILES), $(DIST_SRC)) \
-  %reldir%/corefcn/defaults.in.cc \
   $(ULT_PARSER_SRC)
 
 LIBINTERP_FOUND_DEFUN_FILES := \

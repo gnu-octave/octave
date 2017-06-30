@@ -19,7 +19,7 @@
 # <http://www.gnu.org/licenses/>.
 
 if [ $# -ne 2 ]; then
-  echo "usage: get-errno-list [--perl PERL|--python PYTHON]" 1>&2
+  echo "usage: get-errno-list [--perl PERL|--python PYTHON|--sed SED]" 1>&2
   exit 1
 fi
 
@@ -29,7 +29,8 @@ if [ $1 = "--perl" ]; then
     $x .= "#if defined ($key)\n    { \"$key\", $key, },\n#endif\n";
   }
   while (<>) {
-    s/^ *\@SYSDEP_ERRNO_LIST\@/$ x/;
+    s/^ *\@SYSDEP_ERRNO_LIST\@/$x/;
+    s/\@NO_EDIT_WARNING\@/DO NOT EDIT!  Generated automatically from oct-errno.in.cc by mk-errno-list.sh/;
     print;
   }'
 
@@ -44,9 +45,17 @@ errstr = ""
 for v in sorted (errorcode.values ()):
     errstr += t % tuple (3 * [v])
 
+noedit = "DO NOT EDIT!  Generated automatically from oct-errno.in.cc by mk-errno-list.sh"
+
+repls = ("@SYSDEP_ERRNO_LIST@", errstr), ("@NO_EDIT_WARNING@", noedit)
+
 for l in stdin:
-    stdout.write (l.replace ("@SYSDEP_ERRNO_LIST@", errstr))
+  stdout.write (reduce (lambda a, kv: a.replace (*kv), repls, l))
 '
+elif [ $1 = "--sed" ]; then
+  SED="$2"
+  $SED -e '/@SYSDEP_ERRNO_LIST@/D' \
+       -e 's/@NO_EDIT_WARNING@/DO NOT EDIT!  Generated automatically from oct-errno.in.cc by mk-errno-list.sh/'
 fi
 
 exit $?

@@ -1,4 +1,4 @@
-// DO NOT EDIT!  Generated automatically from oct-errno.in.cc by configure
+// @NO_EDIT_WARNING@
 /*
 
 Copyright (C) 2005-2017 John W. Eaton

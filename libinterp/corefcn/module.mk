@@ -272,7 +272,7 @@ COREFCN_SRC = \
 	elif test -n "$(PYTHON)"; then \
 	  $(SHELL) $(srcdir)/%reldir%/mk-errno-list.sh --python "$(PYTHON)" < $< > $@-t; \
 	else \
-	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
+	  $(SHELL) $(srcdir)/%reldir%/mk-errno-list.sh --sed "$(SED)" < $< > $@-t; \
 	fi && \
 	mv $@-t $@
 

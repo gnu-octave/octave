@@ -39,6 +39,8 @@ public slots:
 
   void notice_settings (const QSettings *settings);
 
+  void load_info_file ();
+
 protected slots:
   void copyClipboard ();
   void pasteClipboard ();

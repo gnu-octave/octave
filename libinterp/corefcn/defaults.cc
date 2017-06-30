@@ -31,24 +31,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "dir-ops.h"
+#include "file-ops.h"
 #include "oct-env.h"
-#include "file-stat.h"
-#include "pathsearch.h"
-#include "str-vec.h"
 
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
-#include "errwarn.h"
-#include "help.h"
-#include "input.h"
-#include "load-path.h"
 #include "ovl.h"
 #include "ov.h"
-#include "parse.h"
-#include "interpreter.h"
-#include "unwind-prot.h"
 #include "variables.h"
 #include "version.h"
 
@@ -102,20 +93,6 @@ static std::string Vstartupfile_dir;
 static std::string Vlocal_site_defaults_file;
 static std::string Vsite_defaults_file;
 
-// FIXME: these may be changed by users.  Maybe they should be defined
-// somewhere else?
-
-std::string Vbuilt_in_docstrings_file;
-
-// The path that will be searched for programs that we execute.
-// (--exec-path path)
-std::string VEXEC_PATH;
-
-// Name of the editor to be invoked by the edit_history command.
-std::string VEDITOR;
-
-std::string VIMAGE_PATH;
-
 // Variables that name directories or files are substituted into source
 // files with "${prefix}/" stripped from the beginning of the string.
 
@@ -137,18 +114,6 @@ prepend_home_dir (const std::string& hd, const std::string& s)
     std::replace (retval.begin (), retval.end (), '/', dir_sep_char);
 
   return retval;
-}
-
-static std::string
-prepend_octave_home (const std::string& s)
-{
-  return prepend_home_dir (Voctave_home, s);
-}
-
-static std::string
-prepend_octave_exec_home (const std::string& s)
-{
-  return prepend_home_dir (Voctave_exec_home, s);
 }
 
 static void
@@ -203,7 +168,7 @@ set_site_defaults_file (void)
     Vsite_defaults_file = sf;
 }
 
-void
+static void
 init_defaults (void)
 {
   if (initialized)
@@ -213,136 +178,62 @@ init_defaults (void)
 
   set_octave_home ();
 
-  Vbin_dir = prepend_octave_exec_home (OCTAVE_BINDIR);
-  Vdata_dir = prepend_octave_home (OCTAVE_DATADIR);
-  Vdataroot_dir = prepend_octave_home (OCTAVE_DATAROOTDIR);
-  Vinclude_dir = prepend_octave_home (OCTAVE_INCLUDEDIR);
-  Vlib_dir = prepend_octave_exec_home (OCTAVE_LIBDIR);
-  Vlibexec_dir = prepend_octave_exec_home (OCTAVE_LIBEXECDIR);
+  Vbin_dir = octave::config::prepend_octave_exec_home (OCTAVE_BINDIR);
+  Vdata_dir = octave::config::prepend_octave_home (OCTAVE_DATADIR);
+  Vdataroot_dir = octave::config::prepend_octave_home (OCTAVE_DATAROOTDIR);
+  Vinclude_dir = octave::config::prepend_octave_home (OCTAVE_INCLUDEDIR);
+  Vlib_dir = octave::config::prepend_octave_exec_home (OCTAVE_LIBDIR);
+  Vlibexec_dir = octave::config::prepend_octave_exec_home (OCTAVE_LIBEXECDIR);
 
-  Vlocal_ver_arch_lib_dir = prepend_octave_exec_home (OCTAVE_LOCALVERARCHLIBDIR);
-  Vlocal_api_arch_lib_dir = prepend_octave_exec_home (OCTAVE_LOCALAPIARCHLIBDIR);
-  Vlocal_arch_lib_dir = prepend_octave_exec_home (OCTAVE_LOCALARCHLIBDIR);
-  Varch_lib_dir = prepend_octave_exec_home (OCTAVE_ARCHLIBDIR);
+  Vlocal_ver_arch_lib_dir
+    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALVERARCHLIBDIR);
+  Vlocal_api_arch_lib_dir
+    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALAPIARCHLIBDIR);
+  Vlocal_arch_lib_dir
+    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALARCHLIBDIR);
+  Varch_lib_dir = octave::config::prepend_octave_exec_home (OCTAVE_ARCHLIBDIR);
 
-  Vlocal_ver_oct_file_dir = prepend_octave_exec_home (OCTAVE_LOCALVEROCTFILEDIR);
-  Vlocal_api_oct_file_dir = prepend_octave_exec_home (OCTAVE_LOCALAPIOCTFILEDIR);
-  Vlocal_oct_file_dir = prepend_octave_exec_home (OCTAVE_LOCALOCTFILEDIR);
-  Voct_file_dir = prepend_octave_exec_home (OCTAVE_OCTFILEDIR);
+  Vlocal_ver_oct_file_dir
+    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALVEROCTFILEDIR);
+  Vlocal_api_oct_file_dir
+    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALAPIOCTFILEDIR);
+  Vlocal_oct_file_dir
+    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALOCTFILEDIR);
+  Voct_file_dir = octave::config::prepend_octave_exec_home (OCTAVE_OCTFILEDIR);
 
-  Vlocal_ver_fcn_file_dir = prepend_octave_home (OCTAVE_LOCALVERFCNFILEDIR);
-  Vlocal_api_fcn_file_dir = prepend_octave_home (OCTAVE_LOCALAPIFCNFILEDIR);
-  Vlocal_fcn_file_dir = prepend_octave_home (OCTAVE_LOCALFCNFILEDIR);
-  Vfcn_file_dir = prepend_octave_home (OCTAVE_FCNFILEDIR);
+  Vlocal_ver_fcn_file_dir
+    = octave::config::prepend_octave_home (OCTAVE_LOCALVERFCNFILEDIR);
+  Vlocal_api_fcn_file_dir
+    = octave::config::prepend_octave_home (OCTAVE_LOCALAPIFCNFILEDIR);
+  Vlocal_fcn_file_dir
+    = octave::config::prepend_octave_home (OCTAVE_LOCALFCNFILEDIR);
+  Vfcn_file_dir = octave::config::prepend_octave_home (OCTAVE_FCNFILEDIR);
 
-  Voct_data_dir = prepend_octave_home (OCTAVE_OCTDATADIR);
-  Voct_etc_dir = prepend_octave_home (OCTAVE_OCTETCDIR);
-  Voct_include_dir = prepend_octave_home (OCTAVE_OCTINCLUDEDIR);
-  Voct_lib_dir = prepend_octave_exec_home (OCTAVE_OCTLIBDIR);
-  Voct_locale_dir = prepend_octave_home (OCTAVE_OCTLOCALEDIR);
-  Voct_tests_dir = prepend_octave_home (OCTAVE_OCTTESTSDIR);
+  Voct_data_dir = octave::config::prepend_octave_home (OCTAVE_OCTDATADIR);
+  Voct_etc_dir = octave::config::prepend_octave_home (OCTAVE_OCTETCDIR);
+  Voct_include_dir = octave::config::prepend_octave_home (OCTAVE_OCTINCLUDEDIR);
+  Voct_lib_dir = octave::config::prepend_octave_exec_home (OCTAVE_OCTLIBDIR);
+  Voct_locale_dir = octave::config::prepend_octave_home (OCTAVE_OCTLOCALEDIR);
+  Voct_tests_dir = octave::config::prepend_octave_home (OCTAVE_OCTTESTSDIR);
 
-  Vinfo_dir = prepend_octave_home (OCTAVE_INFODIR);
+  Vinfo_dir = octave::config::prepend_octave_home (OCTAVE_INFODIR);
 
-  Vman_dir = prepend_octave_home (OCTAVE_MANDIR);
-  Vman1_dir = prepend_octave_home (OCTAVE_MAN1DIR);
+  Vman_dir = octave::config::prepend_octave_home (OCTAVE_MANDIR);
+  Vman1_dir = octave::config::prepend_octave_home (OCTAVE_MAN1DIR);
   Vman1_ext = OCTAVE_MAN1EXT;
 
-  Vimage_dir = prepend_octave_home (OCTAVE_IMAGEDIR);
+  Vimage_dir = octave::config::prepend_octave_home (OCTAVE_IMAGEDIR);
 
-  Vlocal_startupfile_dir = prepend_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
-  Vstartupfile_dir = prepend_octave_home (OCTAVE_STARTUPFILEDIR);
+  Vlocal_startupfile_dir
+    = octave::config::prepend_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
+  Vstartupfile_dir
+    = octave::config::prepend_octave_home (OCTAVE_STARTUPFILEDIR);
 
   set_local_site_defaults_file ();
 
   set_site_defaults_file ();
 
   initialized = true;
-}
-
-static void
-set_default_info_file (void)
-{
-  if (Vinfo_file.empty ())
-    {
-      std::string std_info_file = prepend_octave_home (OCTAVE_INFOFILE);
-
-      std::string oct_info_file = octave::sys::env::getenv ("OCTAVE_INFO_FILE");
-
-      Vinfo_file = (oct_info_file.empty () ? std_info_file : oct_info_file);
-    }
-}
-
-static void
-set_default_info_prog (void)
-{
-  if (Vinfo_program.empty ())
-    {
-      std::string oct_info_prog = octave::sys::env::getenv ("OCTAVE_INFO_PROGRAM");
-
-      if (oct_info_prog.empty ())
-        Vinfo_program = "info";
-      else
-        Vinfo_program = std::string (oct_info_prog);
-    }
-}
-
-static void
-set_default_texi_macros_file (void)
-{
-  if (Vtexi_macros_file.empty ())
-    {
-      std::string def_file = prepend_octave_home (OCTAVE_TEXI_MACROS_FILE);
-
-      std::string env_file = octave::sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
-
-      Vtexi_macros_file = (env_file.empty () ? def_file : env_file);
-    }
-}
-
-static void
-set_default_doc_cache_file (void)
-{
-  if (Vdoc_cache_file.empty ())
-    {
-      std::string def_file = prepend_octave_home (OCTAVE_DOC_CACHE_FILE);
-
-      std::string env_file = octave::sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
-
-      Vdoc_cache_file = (env_file.empty () ? def_file : env_file);
-    }
-}
-
-static void
-set_built_in_docstrings_file (void)
-{
-  if (Vbuilt_in_docstrings_file.empty ())
-    {
-      std::string df = octave::sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
-
-      if (df.empty ())
-        Vbuilt_in_docstrings_file
-          = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () + "built-in-docstrings";
-      else
-        Vbuilt_in_docstrings_file = df;
-    }
-}
-
-void
-install_defaults (void)
-{
-  // In case this hasn't been done yet...
-  init_defaults ();
-
-  set_default_info_file ();
-
-  set_default_info_prog ();
-
-  set_default_texi_macros_file ();
-
-  set_default_doc_cache_file ();
-
-  set_built_in_docstrings_file ();
 }
 
 #define RETURN(VAR)                             \
@@ -354,6 +245,18 @@ namespace octave
 {
   namespace config
   {
+    std::string
+    prepend_octave_home (const std::string& s)
+    {
+      return prepend_home_dir (Voctave_home, s);
+    }
+
+    std::string
+    prepend_octave_exec_home (const std::string& s)
+    {
+      return prepend_home_dir (Voctave_exec_home, s);
+    }
+
     std::string canonical_host_type (void) { return OCTAVE_CANONICAL_HOST_TYPE; }
 
     std::string release (void) { return OCTAVE_RELEASE; }

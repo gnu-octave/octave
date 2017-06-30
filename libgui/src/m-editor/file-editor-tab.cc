@@ -690,16 +690,14 @@ file_editor_tab::update_lexer ()
               // keywords are always used
               add_octave_apis (Fiskeyword ());            // add new entries
 
-              if (octave_builtins)
-                {
-                  octave::interpreter& interp
-                    = octave::__get_interpreter__ ("file_editor_tab::update_lexer");
+              octave::interpreter& interp
+                = octave::__get_interpreter__ ("file_editor_tab::update_lexer");
 
-                  add_octave_apis (F__builtins__ (interp));       // add new entries
-                }
+              if (octave_builtins)
+                add_octave_apis (F__builtins__ (interp));       // add new entries
 
               if (octave_functions)
-                add_octave_apis (F__list_functions__ ()); // add new entries
+                add_octave_apis (F__list_functions__ (interp)); // add new entries
 
             }
           else

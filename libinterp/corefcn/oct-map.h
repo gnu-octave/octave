@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 #include <map>
 
+#include "oct-refcount.h"
+
 #include "Cell.h"
 #include "ovl.h"
 

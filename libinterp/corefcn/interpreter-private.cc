@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "error.h"
+#include "help.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -54,6 +55,13 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_dynamic_loader ();
+  }
+
+  help_system& __get_help_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_help_system ();
   }
 
   load_path& __get_load_path__ (const std::string& who)

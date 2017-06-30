@@ -371,9 +371,6 @@ namespace octave
 
     // This should probably happen early.
     sysdep_init ();
-
-    // Need to have global Vfoo variables defined early.
-    install_defaults ();
   }
 
   int cli_application::execute (void)

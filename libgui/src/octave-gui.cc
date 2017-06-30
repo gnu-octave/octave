@@ -75,9 +75,6 @@ namespace octave
   {
     // This should probably happen early.
     sysdep_init ();
-
-    // Need to have global Vfoo variables defined early.
-    install_defaults ();
   }
 
   bool gui_application::start_gui_p (void) const

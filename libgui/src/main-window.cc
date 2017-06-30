@@ -208,6 +208,9 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
   connect (m_interpreter, SIGNAL (octave_ready_signal ()),
            this, SLOT (handle_octave_ready ()));
 
+  connect (m_interpreter, SIGNAL (octave_ready_signal ()),
+           doc_browser_window, SLOT (load_info_file ()));
+
   m_interpreter->moveToThread (m_main_thread);
 
   m_main_thread->start ();
@@ -1507,8 +1510,11 @@ main_window::handle_edit_mfile_request (const QString& fname,
                                         const QString& ffile,
                                         const QString& curr_dir, int line)
 {
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("main_window::clear_workspace_callback");
+
   // Is it a regular function within the search path? (Call __which__)
-  octave_value_list fct = F__which__ (ovl (fname.toStdString ()),0);
+  octave_value_list fct = F__which__ (interp, ovl (fname.toStdString ()),0);
   octave_map map = fct(0).map_value ();
 
   QString type = QString::fromStdString (

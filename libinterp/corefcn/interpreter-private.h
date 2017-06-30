@@ -35,6 +35,7 @@ namespace octave
 {
   class interpreter;
   class dynamic_loader;
+  class help_system;
   class load_path;
   class tree_evaluator;
   class call_stack;
@@ -42,6 +43,8 @@ namespace octave
   extern interpreter& __get_interpreter__ (const std::string& who);
 
   extern dynamic_loader& __get_dynamic_loader__ (const std::string& who);
+
+  extern help_system& __get_help_system__ (const std::string& who);
 
   extern load_path& __get_load_path__ (const std::string& who);
 

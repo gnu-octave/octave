@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dynamic-ld.h"
 #include "environment.h"
+#include "help.h"
 #include "load-path.h"
 #include "ov-classdef.h"
 #include "pt-eval.h"
@@ -143,6 +144,11 @@ namespace octave
       return m_environment;
     }
 
+    help_system& get_help_system (void)
+    {
+      return m_help_system;
+    }
+
     dynamic_loader& get_dynamic_loader (void)
     {
       return m_dynamic_loader;
@@ -207,6 +213,8 @@ namespace octave
     application *m_app_context;
 
     environment m_environment;
+
+    help_system m_help_system;
 
     dynamic_loader m_dynamic_loader;
 

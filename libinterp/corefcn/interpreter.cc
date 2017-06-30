@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "file-io.h"
 #include "graphics.h"
+#include "help.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -375,6 +376,7 @@ namespace octave
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
       m_environment (),
+      m_help_system (*this),
       m_dynamic_loader (*this),
       m_load_path (),
       m_symbol_table (),
@@ -510,19 +512,19 @@ namespace octave
 
         std::string docstrings_file = options.docstrings_file ();
         if (! docstrings_file.empty ())
-          Fbuilt_in_docstrings_file (octave_value (docstrings_file));
+          Fbuilt_in_docstrings_file (*this, octave_value (docstrings_file));
 
         std::string doc_cache_file = options.doc_cache_file ();
         if (! doc_cache_file.empty ())
-          Fdoc_cache_file (octave_value (doc_cache_file));
+          Fdoc_cache_file (*this, octave_value (doc_cache_file));
 
         std::string info_file = options.info_file ();
         if (! info_file.empty ())
-          Finfo_file (octave_value (info_file));
+          Finfo_file (*this, octave_value (info_file));
 
         std::string info_program = options.info_program ();
         if (! info_program.empty ())
-          Finfo_program (octave_value (info_program));
+          Finfo_program (*this, octave_value (info_program));
 
         if (options.debug_jit ())
           Fdebug_jit (octave_value (true));
@@ -532,7 +534,7 @@ namespace octave
 
         std::string texi_macros_file = options.texi_macros_file ();
         if (! texi_macros_file.empty ())
-          Ftexi_macros_file (octave_value (texi_macros_file));
+          Ftexi_macros_file (*this, octave_value (texi_macros_file));
       }
 
     // Force default line editor if we don't want readline editing.

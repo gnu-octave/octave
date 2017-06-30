@@ -72,10 +72,13 @@ class webinfo : public QWidget
 public:
 
   webinfo (QWidget *parent = nullptr);
+
   bool set_info_path (const QString& info_path);
   void load_node (const QString& node_name);
   void load_ref (const QString& ref_name);
   void notice_settings (const QSettings *settings);
+
+  void load_info_file (const QString& info_file);
 
 public slots:
 

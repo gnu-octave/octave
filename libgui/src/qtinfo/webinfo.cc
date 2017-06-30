@@ -106,20 +106,6 @@ webinfo::webinfo (QWidget *p)
   connect (_search_line_edit, SIGNAL (returnPressed ()), this, SLOT (search ()));
 
   resize (500, 300);
-
-  if (! set_info_path (QString::fromStdString (Vinfo_file)))
-    {
-      // Info file does not exist
-      _search_check_box->setEnabled (false);
-      _search_line_edit->setEnabled (false);
-
-      QTextBrowser *msg = addNewTab (tr ("Error"));
-      QString msg_text = QString (
-          "<html><body><br><br><center><b>%1</b></center></body></html>").
-          arg (tr ("The info file<p>%1<p>or compressed versions do not exist").
-          arg (QString::fromStdString (Vinfo_file)));
-      msg->setHtml (msg_text);
-    }
 }
 
 // Add an action to a menu or the widget itself
@@ -161,6 +147,24 @@ webinfo::request_close_other_tabs (bool)
     if (current != index)
       close_tab (index);
   }
+}
+
+void
+webinfo::load_info_file (const QString& info_file)
+{
+  if (! set_info_path (info_file))
+    {
+      // Info file does not exist
+      _search_check_box->setEnabled (false);
+      _search_line_edit->setEnabled (false);
+
+      QTextBrowser *msg = addNewTab (tr ("Error"));
+      QString msg_text = QString (
+          "<html><body><br><br><center><b>%1</b></center></body></html>").
+          arg (tr ("The info file<p>%1<p>or compressed versions do not exist").
+          arg (info_file));
+      msg->setHtml (msg_text);
+    }
 }
 
 bool

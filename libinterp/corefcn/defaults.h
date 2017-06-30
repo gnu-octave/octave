@@ -33,6 +33,12 @@ namespace octave
 {
   namespace config
   {
+    extern OCTINTERP_API std::string
+    prepend_octave_home (const std::string& s);
+
+    extern OCTINTERP_API std::string
+    prepend_octave_exec_home (const std::string& s);
+
     // These could be defined as pure constants, but we'll use
     // functions to be consistent with the values that require
     // initialization.
@@ -92,12 +98,5 @@ namespace octave
     extern OCTINTERP_API std::string site_defaults_file (void);
   }
 }
-
-// FIXME: these may be changed by users.  Maybe they should be defined
-// somewhere else?
-
-extern OCTINTERP_API std::string Vbuilt_in_docstrings_file;
-
-extern OCTINTERP_API void install_defaults (void);
 
 #endif

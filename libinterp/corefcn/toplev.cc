@@ -379,7 +379,6 @@ specified option.
            { "imagedir", octave::config::image_dir () },
            { "includedir", octave::config::include_dir () },
            { "infodir", octave::config::info_dir () },
-           { "infofile", Vinfo_file },
            { "libdir", octave::config::lib_dir () },
            { "libexecdir", octave::config::libexec_dir () },
            // Each library and executable has its own definition of the hg

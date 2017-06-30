@@ -26,6 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "documentation-dock-widget.h"
 
+#include "help.h"
+#include "interpreter-private.h"
+
 documentation_dock_widget::documentation_dock_widget (QWidget *p)
   : octave_dock_widget (p)
 {
@@ -74,4 +77,15 @@ void
 documentation_dock_widget::notice_settings (const QSettings *settings)
 {
   _webinfo->notice_settings (settings);
+}
+
+void
+documentation_dock_widget::load_info_file ()
+{
+  octave::help_system& help_sys
+    = octave::__get_help_system__ ("doc widget: load_info_file");
+
+  QString info_file = QString::fromStdString (help_sys.info_file ());
+
+  _webinfo->load_info_file (info_file);
 }

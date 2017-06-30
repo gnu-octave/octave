@@ -29,8 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <string>
 
-#include "oct-map.h"
 #include "oct-refcount.h"
+
+#include "oct-map.h"
 #include "ov-base.h"
 
 class cdef_object;

@@ -369,7 +369,7 @@ generate_possible_completions (const std::string& text, std::string& prefix,
   if (deemed_struct)
     names = generate_struct_completions (text, prefix, hint);
   else
-    names = make_name_list ();
+    names = octave::make_name_list ();
 
   // Sort and remove duplicates.
 

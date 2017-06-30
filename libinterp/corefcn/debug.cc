@@ -316,8 +316,8 @@ files.
   return ovl ();
 }
 
-DEFUN (dbstatus, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbstatus, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbstatus
 @deftypefnx {} {} dbstatus @var{func}
 @deftypefnx {} {@var{bp_list} =} dbstatus @dots{}
@@ -447,6 +447,8 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
     }
   else
     {
+      octave::help_system& help_sys = interp.get_help_system ();
+
       // Fill in an array for return.
       int i = 0;
       octave_map retmap;
@@ -469,7 +471,8 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
           if (sub_fun)
             filename = filename.substr(0, sub_fun - filename.c_str ());
           octave_value path_name;
-          path_name = octave::sys::canonicalize_file_name (do_which (filename));
+          path_name
+            = octave::sys::canonicalize_file_name (help_sys.which (filename));
 
           for (const auto& bp : fnm_bp_p.second)
             {

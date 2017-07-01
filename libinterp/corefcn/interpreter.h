@@ -242,6 +242,8 @@ namespace octave
     bool m_history_initialized;
 
     bool m_initialized;
+
+    void maximum_braindamage (void);
   };
 }
 

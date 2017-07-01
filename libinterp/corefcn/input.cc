@@ -81,18 +81,6 @@ static std::string VPS1;
 // Secondary prompt string.
 static std::string VPS2;
 
-// String printed before echoed input (enabled by --echo-input).
-std::string VPS4 = "+ ";
-
-// Echo commands as they are executed?
-//
-//   1  ==>  echo commands read from script files
-//   2  ==>  echo commands from functions
-//   4  ==>  echo commands read from command line
-//
-// more than one state can be active at once.
-int Vecho_executing_commands = ECHO_OFF;
-
 // The time we last printed a prompt.
 octave::sys::time Vlast_prompt_time = 0.0;
 
@@ -141,43 +129,9 @@ set_default_prompts (void)
 
   VPS1 = "octave:\\#> ";
   VPS2 = "> ";
-  VPS4 = "+ ";
+  std::string VPS4 = "+ ";
 
   octave_link::set_default_prompts (VPS1, VPS2, VPS4);
-}
-
-namespace octave
-{
-  void
-  base_reader::do_input_echo (const std::string& input_string) const
-  {
-    bool forced_interactive = application::forced_interactive ();
-
-    int do_echo = reading_script_file ()
-      ? (Vecho_executing_commands & ECHO_SCRIPTS)
-      : ((Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive);
-
-    if (do_echo)
-      {
-        if (forced_interactive)
-          {
-            if (pflag > 0)
-              octave_stdout << command_editor::decode_prompt_string (VPS1);
-            else
-              octave_stdout << command_editor::decode_prompt_string (VPS2);
-          }
-        else
-          octave_stdout << command_editor::decode_prompt_string (VPS4);
-
-        if (! input_string.empty ())
-          {
-            octave_stdout << input_string;
-
-            if (input_string[input_string.length () - 1] != '\n')
-              octave_stdout << "\n";
-          }
-      }
-  }
 }
 
 static std::string
@@ -308,8 +262,6 @@ namespace octave
 
         if (retval[retval.length () - 1] != '\n')
           octave_diary << "\n";
-
-        do_input_echo (retval);
       }
     else
       octave_diary << "\n";
@@ -1025,137 +977,6 @@ If @code{keyboard} is invoked without arguments, a default prompt of
   return ovl ();
 }
 
-DEFUN (echo, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} echo
-@deftypefnx {} {} echo on
-@deftypefnx {} {} echo off
-@deftypefnx {} {} echo on all
-@deftypefnx {} {} echo off all
-Control whether commands are displayed as they are executed.
-
-Valid options are:
-
-@table @code
-@item on
-Enable echoing of commands as they are executed in script files.
-
-@item off
-Disable echoing of commands as they are executed in script files.
-
-@item on all
-Enable echoing of commands as they are executed in script files and
-functions.
-
-@item off all
-Disable echoing of commands as they are executed in script files and
-functions.
-@end table
-
-@noindent
-With no arguments, @code{echo} toggles the current echo state.
-
-@seealso{echo_executing_commands}
-@end deftypefn */)
-{
-  string_vector argv = args.make_argv ();
-
-  switch (args.length ())
-    {
-    case 0:
-      {
-        if ((Vecho_executing_commands & ECHO_SCRIPTS)
-            || (Vecho_executing_commands & ECHO_FUNCTIONS))
-          Vecho_executing_commands = ECHO_OFF;
-        else
-          Vecho_executing_commands = ECHO_SCRIPTS;
-      }
-      break;
-
-    case 1:
-      {
-        std::string arg = argv[0];
-
-        if (arg == "on")
-          Vecho_executing_commands = ECHO_SCRIPTS;
-        else if (arg == "off")
-          Vecho_executing_commands = ECHO_OFF;
-        else
-          print_usage ();
-      }
-      break;
-
-    case 2:
-      {
-        std::string arg = argv[0];
-
-        if (arg == "on" && argv[1] == "all")
-          {
-            int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
-            Vecho_executing_commands = tmp;
-          }
-        else if (arg == "off" && argv[1] == "all")
-          Vecho_executing_commands = ECHO_OFF;
-        else
-          print_usage ();
-      }
-      break;
-
-    default:
-      print_usage ();
-      break;
-    }
-
-  return ovl ();
-}
-
-/*
-%!test
-%! state = echo_executing_commands ();
-%! unwind_protect
-%!   echo ();
-%!   s1 = echo_executing_commands ();
-%!   assert (s1 != state);
-%!   echo ();
-%!   s2 = echo_executing_commands ();
-%!   assert (s2 != s1);
-%! unwind_protect_cleanup
-%!   echo_executing_commands (state);
-%! end_unwind_protect
-
-%!test
-%! state = echo_executing_commands ();
-%! unwind_protect
-%!   echo ("off");
-%!   assert (echo_executing_commands () == 0);
-%!   echo ("on");
-%!   assert (echo_executing_commands () != 0);
-%!   echo ("off");
-%!   assert (echo_executing_commands () == 0);
-%! unwind_protect_cleanup
-%!   echo_executing_commands (state);
-%! end_unwind_protect
-
-%!#test  # FIXME: This passes, but produces a lot of onscreen output
-%! state = echo_executing_commands ();
-%! unwind_protect
-%!   echo ("on", "all");
-%!   assert (echo_executing_commands () != 0);
-%!   echo ("off", "all");
-%!   assert (echo_executing_commands () == 0);
-%! unwind_protect_cleanup
-%!   echo_executing_commands (state);
-%! end_unwind_protect
-
-%!error echo ([])
-%!error echo (0)
-%!error echo ("")
-%!error echo ("Octave")
-%!error echo ("off", "invalid")
-%!error echo ("on", "invalid")
-%!error echo ("on", "all", "all")
-*/
-
 DEFUN (completion_matches, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} completion_matches (@var{hint})
@@ -1437,26 +1258,6 @@ The original variable value is restored when exiting the function.
   return SET_INTERNAL_VARIABLE (PS2);
 }
 
-DEFUN (PS4, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} PS4 ()
-@deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})
-@deftypefnx {} {} PS4 (@var{new_val}, "local")
-Query or set the character string used to prefix output produced
-when echoing commands is enabled.
-
-The default value is @qcode{"+ "}.
-@xref{Diary and Echo Commands}, for a description of echoing commands.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@seealso{echo, echo_executing_commands, PS1, PS2}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (PS4);
-}
-
 DEFUN (completion_append_char, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} completion_append_char ()
@@ -1473,42 +1274,6 @@ The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (completion_append_char);
-}
-
-DEFUN (echo_executing_commands, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} echo_executing_commands ()
-@deftypefnx {} {@var{old_val} =} echo_executing_commands (@var{new_val})
-@deftypefnx {} {} echo_executing_commands (@var{new_val}, "local")
-Query or set the internal variable that controls the echo state.
-
-It may be the sum of the following values:
-
-@table @asis
-@item 1
-Echo commands read from script files.
-
-@item 2
-Echo commands from functions.
-
-@item 4
-Echo commands read from command line.
-@end table
-
-More than one state can be active at once.  For example, a value of 3 is
-equivalent to the command @kbd{echo on all}.
-
-The value of @code{echo_executing_commands} may be set by the @kbd{echo}
-command or the command line option @option{--echo-commands}.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-
-@seealso{echo}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (echo_executing_commands);
 }
 
 DEFUN (__request_drawnow__, args, ,

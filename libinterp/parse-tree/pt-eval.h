@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <list>
+#include <set>
 #include <stack>
 #include <string>
 
@@ -41,12 +42,21 @@ namespace octave
   class tree_expression;
 
   class interpreter;
+  class unwind_protect;
 
   // How to evaluate the code that the parse trees represent.
 
   class OCTINTERP_API tree_evaluator : public tree_walker
   {
   public:
+
+    enum echo_state
+    {
+      ECHO_OFF = 0,
+      ECHO_SCRIPTS = 1,
+      ECHO_FUNCTIONS = 2,
+      ECHO_ALL = 4
+    };
 
     template <typename T>
     class value_stack
@@ -107,7 +117,9 @@ namespace octave
       : m_interpreter (interp), m_value_stack (), m_lvalue_list_stack (),
         m_nargout_stack (), m_call_stack (interp),
         m_max_recursion_depth (256), m_silent_functions (false),
-        m_string_fill_char (' ')
+        m_string_fill_char (' '), m_PS4 ("+ "), m_echo (ECHO_OFF),
+        m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
+        m_echo_files ()
     { }
 
     // No copying!
@@ -331,6 +343,31 @@ namespace octave
       return val;
     }
 
+    octave_value PS4 (const octave_value_list& args, int nargout);
+
+    std::string PS4 (void) const { return m_PS4; }
+
+    std::string PS4 (const std::string& s)
+    {
+      std::string val = m_PS4;
+      m_PS4 = s;
+      return val;
+    }
+
+    octave_value echo (const octave_value_list& args, int nargout);
+
+    int echo (void) const { return m_echo; }
+
+    int echo (int val)
+    {
+      int old_val = m_echo;
+      m_echo = val;
+      return old_val;
+    }
+
+    void push_echo_state (unwind_protect& frame, int type,
+                          const std::string& file_name);
+
     octave_value
     string_fill_char (const octave_value_list& args, int nargout);
 
@@ -353,6 +390,25 @@ namespace octave
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
+    // For unwind-protect.
+    void set_echo_state (bool val) { m_echo_state = val; }
+
+    // For unwind-protect.
+    void set_echo_file_name (const std::string& file_name)
+    {
+      m_echo_file_name = file_name;
+    }
+
+    // For unwind-protect.
+    void set_echo_file_pos (const size_t& file_pos)
+    {
+      m_echo_file_pos = file_pos;
+    }
+
+    bool echo_this_file (const std::string& file, int type) const;
+
+    void echo_code (size_t line);
+
     interpreter& m_interpreter;
 
     value_stack<octave_value_list> m_value_stack;
@@ -373,6 +429,26 @@ namespace octave
 
     // The character to fill with when creating string arrays.
     char m_string_fill_char;
+
+    // String printed before echoed commands (enabled by --echo-commands).
+    std::string m_PS4;
+
+    // Echo commands as they are executed?
+    //
+    //   1  ==>  echo commands read from script files
+    //   2  ==>  echo commands from functions
+    //
+    // more than one state can be active at once.
+    int m_echo;
+
+    // Are we currently echoing commands?  This state is set by the
+    // functions that execute fucntions and scripts.
+    bool m_echo_state;
+
+    std::string m_echo_file_name;
+    size_t m_echo_file_pos;
+
+    std::map<std::string, bool> m_echo_files;
   };
 }
 

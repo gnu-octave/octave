@@ -473,9 +473,9 @@ private:
 
   void maybe_relocate_end_internal (void);
 
-  void print_code_function_header (void);
+  void print_code_function_header (const std::string& prefix);
 
-  void print_code_function_trailer (void);
+  void print_code_function_trailer (const std::string& prefix);
 
   void bind_automatic_vars (octave::tree_evaluator& tw,
                             const string_vector& arg_names,

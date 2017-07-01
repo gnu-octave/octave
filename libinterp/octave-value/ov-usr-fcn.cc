@@ -145,6 +145,10 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       profile_data_accumulator::enter<octave_user_script>
         block (profiler, *this);
 
+      if (tw.echo ())
+        tw.push_echo_state (frame, octave::tree_evaluator::ECHO_SCRIPTS,
+                            file_name);
+
       cmd_list->accept (tw);
 
       if (octave::tree_return_command::returning)
@@ -548,11 +552,6 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
   frame.add_method (this, &octave_user_function::restore_warning_states);
 
-  bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
-
-  if (echo_commands)
-    print_code_function_header ();
-
   // Evaluate the commands that make up the function.
 
   frame.protect_var (octave::tree_evaluator::statement_context);
@@ -561,6 +560,10 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
   {
     profile_data_accumulator::enter<octave_user_function>
       block (profiler, *this);
+
+    if (tw.echo ())
+      tw.push_echo_state (frame, octave::tree_evaluator::ECHO_FUNCTIONS,
+                          file_name);
 
     if (is_special_expr ())
       {
@@ -580,9 +583,6 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
     else
       cmd_list->accept (tw);
   }
-
-  if (echo_commands)
-    print_code_function_trailer ();
 
   if (octave::tree_return_command::returning)
     octave::tree_return_command::returning = 0;
@@ -701,17 +701,17 @@ octave_user_function::dump (void) const
 }
 
 void
-octave_user_function::print_code_function_header (void)
+octave_user_function::print_code_function_header (const std::string& prefix)
 {
-  octave::tree_print_code tpc (octave_stdout, VPS4);
+  octave::tree_print_code tpc (octave_stdout, prefix);
 
   tpc.visit_octave_user_function_header (*this);
 }
 
 void
-octave_user_function::print_code_function_trailer (void)
+octave_user_function::print_code_function_trailer (const std::string& prefix)
 {
-  octave::tree_print_code tpc (octave_stdout, VPS4);
+  octave::tree_print_code tpc (octave_stdout, prefix);
 
   tpc.visit_octave_user_function_trailer (*this);
 }

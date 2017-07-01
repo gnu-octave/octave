@@ -173,33 +173,6 @@ initialize_error_handlers ()
   set_liboctave_warning_with_id_handler (warning_with_id);
 }
 
-// What internal options get configured by --traditional.
-
-static void
-maximum_braindamage (void)
-{
-  FPS1 (octave_value (">> "));
-  FPS2 (octave_value (""));
-  FPS4 (octave_value (""));
-  Fbeep_on_error (octave_value (true));
-  Fconfirm_recursive_rmdir (octave_value (false));
-  Fcrash_dumps_octave_core (octave_value (false));
-  Fdisable_diagonal_matrix (octave_value (true));
-  Fdisable_permutation_matrix (octave_value (true));
-  Fdisable_range (octave_value (true));
-  Ffixed_point_format (octave_value (true));
-  Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
-  Fpage_screen_output (octave_value (false));
-  Fprint_empty_dimensions (octave_value (false));
-  Fsave_default_options (octave_value ("-mat-binary"));
-  Fstruct_levels_to_print (octave_value (0));
-
-  disable_warning ("Octave:abbreviated-property-match");
-  disable_warning ("Octave:data-file-in-path");
-  disable_warning ("Octave:function-name-clash");
-  disable_warning ("Octave:possible-matlab-short-circuit-operator");
-}
-
 DEFUN (quit, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} exit
@@ -505,10 +478,8 @@ namespace octave
         // instead of using the interpreter-level functions.
 
         if (options.echo_commands ())
-          {
-            int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
-            Fecho_executing_commands (octave_value (val));
-          }
+          m_evaluator.echo
+            (tree_evaluator::ECHO_SCRIPTS | tree_evaluator::ECHO_FUNCTIONS);
 
         std::string docstrings_file = options.docstrings_file ();
         if (! docstrings_file.empty ())
@@ -700,16 +671,8 @@ namespace octave
               return exit_status;
           }
 
-        // Force input to be echoed if not really interactive,
-        // but the user has forced interactive behavior.
-
         if (options.forced_interactive ())
-          {
-            command_editor::blink_matching_paren (false);
-
-            // FIXME: is this the right thing to do?
-            Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
-          }
+          command_editor::blink_matching_paren (false);
       }
 
     // Avoid counting commands executed from startup or script files.
@@ -1309,5 +1272,33 @@ namespace octave
       }
 
     return found;
+  }
+
+  // What internal options get configured by --traditional.
+
+  void interpreter::maximum_braindamage (void)
+  {
+    FPS1 (octave_value (">> "));
+    FPS2 (octave_value (""));
+
+    m_evaluator.PS4 ("");
+
+    Fbeep_on_error (octave_value (true));
+    Fconfirm_recursive_rmdir (octave_value (false));
+    Fcrash_dumps_octave_core (octave_value (false));
+    Fdisable_diagonal_matrix (octave_value (true));
+    Fdisable_permutation_matrix (octave_value (true));
+    Fdisable_range (octave_value (true));
+    Ffixed_point_format (octave_value (true));
+    Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
+    Fpage_screen_output (octave_value (false));
+    Fprint_empty_dimensions (octave_value (false));
+    Fsave_default_options (octave_value ("-mat-binary"));
+    Fstruct_levels_to_print (octave_value (0));
+
+    disable_warning ("Octave:abbreviated-property-match");
+    disable_warning ("Octave:data-file-in-path");
+    disable_warning ("Octave:function-name-clash");
+    disable_warning ("Octave:possible-matlab-short-circuit-operator");
   }
 }

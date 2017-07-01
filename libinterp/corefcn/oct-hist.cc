@@ -492,17 +492,16 @@ do_edit_history (octave::interpreter& interp, const octave_value_list& args)
 
   file.close ();
 
-  // Turn on command echo, so the output from this will make better
-  // sense.
-
   octave::unwind_protect frame;
 
   frame.add_fcn (unlink_cleanup, name.c_str ());
-  frame.protect_var (Vecho_executing_commands);
   frame.protect_var (input_from_tmp_history_file);
 
-  Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
+
+  // FIXME: instead of sourcing a file, we should just iterate through
+  // the list of commands, parsing and executing them one at a time as
+  // if they were entered interactively.
 
   octave::source_file (name);
 }
@@ -515,16 +514,16 @@ do_run_history (const octave_value_list& args)
   if (name.empty ())
     return;
 
-  // Turn on command echo so the output from this will make better sense.
-
   octave::unwind_protect frame;
 
   frame.add_fcn (unlink_cleanup, name.c_str ());
-  frame.protect_var (Vecho_executing_commands);
   frame.protect_var (input_from_tmp_history_file);
 
-  Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
+
+  // FIXME: instead of sourcing a file, we should just iterate through
+  // the list of commands, parsing and executing them one at a time as
+  // if they were entered interactively.
 
   octave::source_file (name);
 }
@@ -587,6 +586,8 @@ buffer to be edited.
 @seealso{run_history, history}
 @end deftypefn */)
 {
+  // FIXME: should this be limited to the top-level context?
+
   if (args.length () > 2)
     print_usage ();
 
@@ -637,6 +638,8 @@ argument as a cell string and will not be output to screen.
 @seealso{edit_history, run_history}
 @end deftypefn */)
 {
+  // FIXME: should this be limited to the top-level context?
+
   // Call do_history even if nargout is zero to display history list.
 
   string_vector hlist = do_history (args, nargout);
@@ -696,6 +699,8 @@ run_history -1 -2
 @seealso{edit_history, history}
 @end deftypefn */)
 {
+  // FIXME: should this be limited to the top-level context?
+
   if (args.length () > 2)
     print_usage ();
 

@@ -31,6 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <fstream>
 #include <typeinfo>
 
+#include "cmd-edit.h"
+#include "oct-env.h"
+
 #include "bp-table.h"
 #include "call-stack.h"
 #include "defun.h"
@@ -49,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-tm-const.h"
 #include "symtab.h"
 #include "unwind-prot.h"
+#include "utils.h"
 #include "variables.h"
 
 //FIXME: This should be part of tree_evaluator
@@ -319,6 +323,13 @@ namespace octave
   void
   tree_evaluator::visit_break_command (tree_break_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
@@ -394,6 +405,13 @@ namespace octave
   void
   tree_evaluator::visit_continue_command (tree_continue_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
@@ -661,6 +679,13 @@ namespace octave
   void
   tree_evaluator::visit_decl_command (tree_decl_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
@@ -736,6 +761,14 @@ namespace octave
   void
   tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   {
+    size_t line = cmd.line ();
+
+    if (m_echo_state)
+      {
+        echo_code (line);
+        line++;
+      }
+
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
@@ -774,6 +807,9 @@ namespace octave
 
         for (octave_idx_type i = 0; i < steps; i++)
           {
+            if (m_echo_state)
+              m_echo_file_pos = line;
+
             octave_value val (rng.elem (i));
 
             ult.assign (octave_value::op_asn_eq, val);
@@ -787,6 +823,9 @@ namespace octave
       }
     else if (rhs.is_scalar_type ())
       {
+        if (m_echo_state)
+          m_echo_file_pos = line;
+
         ult.assign (octave_value::op_asn_eq, rhs);
 
         if (loop_body)
@@ -830,6 +869,9 @@ namespace octave
 
             for (octave_idx_type i = 1; i <= steps; i++)
               {
+                if (m_echo_state)
+                  m_echo_file_pos = line;
+
                 // do_index_op expects one-based indices.
                 idx(iidx) = i;
                 octave_value val = arg.do_index_op (idx);
@@ -857,6 +899,14 @@ namespace octave
   void
   tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   {
+    size_t line = cmd.line ();
+
+    if (m_echo_state)
+      {
+        echo_code (line);
+        line++;
+      }
+
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
@@ -902,6 +952,9 @@ namespace octave
 
     for (octave_idx_type i = 0; i < nel; i++)
       {
+        if (m_echo_state)
+          m_echo_file_pos = line;
+
         std::string key = keys[i];
 
         const Cell val_lst = tmp_val.contents (key);
@@ -1036,6 +1089,13 @@ namespace octave
   void
   tree_evaluator::visit_if_command (tree_if_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     tree_if_command_list *lst = cmd.cmd_list ();
 
     if (lst)
@@ -1822,6 +1882,13 @@ namespace octave
   void
   tree_evaluator::visit_no_op_command (tree_no_op_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     if (debug_mode && cmd.is_end_of_fcn_or_script ())
       do_breakpoint (cmd.is_breakpoint (true), true);
   }
@@ -1971,6 +2038,13 @@ namespace octave
   void
   tree_evaluator::visit_return_command (tree_return_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
@@ -2088,14 +2162,6 @@ namespace octave
 
             if (Vtrack_line_num)
               m_call_stack.set_location (stmt.line (), stmt.column ());
-
-            if ((statement_context == script
-                 && ((Vecho_executing_commands & ECHO_SCRIPTS
-                      && m_call_stack.all_scripts ())
-                     || Vecho_executing_commands & ECHO_FUNCTIONS))
-                || (statement_context == function
-                    && Vecho_executing_commands & ECHO_FUNCTIONS))
-              stmt.echo_code ();
           }
 
         try
@@ -2104,6 +2170,13 @@ namespace octave
               cmd->accept (*this);
             else
               {
+                if (m_echo_state)
+                  {
+                    size_t line = stmt.line ();
+                    echo_code (line);
+                    m_echo_file_pos = line + 1;
+                  }
+
                 if (debug_mode)
                   do_breakpoint (expr->is_breakpoint (true));
 
@@ -2216,6 +2289,13 @@ namespace octave
   void
   tree_evaluator::visit_switch_command (tree_switch_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
@@ -2249,6 +2329,13 @@ namespace octave
   void
   tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     bool execution_error = false;
 
     {
@@ -2399,6 +2486,13 @@ namespace octave
   void
   tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
   {
+    if (m_echo_state)
+      {
+        size_t line = cmd.line ();
+        echo_code (line);
+        m_echo_file_pos = line + 1;
+      }
+
     tree_statement_list *cleanup_code = cmd.cleanup ();
 
     tree_statement_list *unwind_protect_code = cmd.body ();
@@ -2442,6 +2536,14 @@ namespace octave
   void
   tree_evaluator::visit_while_command (tree_while_command& cmd)
   {
+    size_t line = cmd.line ();
+
+    if (m_echo_state)
+      {
+        echo_code (line);
+        line++;
+      }
+
 #if defined (HAVE_LLVM)
     if (tree_jit::execute (cmd))
       return;
@@ -2460,6 +2562,9 @@ namespace octave
 
     for (;;)
       {
+        if (m_echo_state)
+          m_echo_file_pos = line;
+
         if (debug_mode)
           do_breakpoint (cmd.is_breakpoint (true));
 
@@ -2481,6 +2586,14 @@ namespace octave
   void
   tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   {
+    size_t line = cmd.line ();
+
+    if (m_echo_state)
+      {
+        echo_code (line);
+        line++;
+      }
+
 #if defined (HAVE_LLVM)
     if (tree_jit::execute (cmd))
       return;
@@ -2501,6 +2614,9 @@ namespace octave
 
     for (;;)
       {
+        if (m_echo_state)
+          m_echo_file_pos = line;
+
         tree_statement_list *loop_body = cmd.body ();
 
         if (loop_body)
@@ -2727,11 +2843,200 @@ namespace octave
                                   "silent_functions");
   }
 
+  void
+  tree_evaluator::push_echo_state (unwind_protect& frame, int type,
+                                   const std::string& file_name)
+  {
+    frame.add_method (*this, &tree_evaluator::set_echo_state,
+                      m_echo_state);
+
+    frame.add_method (*this, &tree_evaluator::set_echo_file_name,
+                      m_echo_file_name);
+
+    frame.add_method (*this, &tree_evaluator::set_echo_file_pos,
+                      m_echo_file_pos);
+
+    m_echo_state = echo_this_file (file_name, type);
+    m_echo_file_name = file_name;
+    m_echo_file_pos = 1;
+  }
+
   octave_value
   tree_evaluator::string_fill_char (const octave_value_list& args, int nargout)
   {
     return set_internal_variable (m_string_fill_char, args, nargout,
                                   "string_fill_char");
+  }
+
+  octave_value
+  tree_evaluator::echo (const octave_value_list& args, int)
+  {
+    string_vector argv = args.make_argv ();
+
+    switch (args.length ())
+      {
+      case 0:
+        if ((m_echo & ECHO_SCRIPTS) || (m_echo & ECHO_FUNCTIONS))
+          {
+            m_echo = ECHO_OFF;
+            m_echo_files.clear ();
+          }
+        else
+          m_echo = ECHO_SCRIPTS;
+        break;
+
+      case 1:
+        {
+          std::string arg0 = argv[0];
+
+          if (arg0 == "on")
+            m_echo = ECHO_SCRIPTS;
+          else if (arg0 == "off")
+            m_echo = ECHO_OFF;
+          else
+            {
+              std::string file = fcn_file_in_path (arg0);
+              file = sys::env::make_absolute (file);
+
+              if (file.empty ())
+                error ("echo: no such file %s", arg0.c_str ());
+
+              if (m_echo & ECHO_ALL)
+                {
+                  // Echo is enabled for all functions, so turn it off
+                  // for this one.
+
+                  m_echo_files[file] = false;
+                }
+              else
+                {
+                  // Echo may be enabled for specific functions.
+
+                  auto p = m_echo_files.find (file);
+
+                  if (p == m_echo_files.end ())
+                    {
+                      // Not this one, so enable it.
+
+                      m_echo |= ECHO_FUNCTIONS;
+                      m_echo_files[file] = true;
+                    }
+                  else
+                    {
+                      // This one is already in the list.  Flip the
+                      // status for it.
+
+                      p->second = ! p->second;
+                    }
+                }
+            }
+        }
+        break;
+
+      case 2:
+        {
+          std::string arg0 = argv[0];
+          std::string arg1 = argv[1];
+
+          if (arg1 == "on" || arg1 == "off")
+            std::swap (arg0, arg1);
+
+          if (arg0 == "on")
+            {
+              if (arg1 == "all")
+                {
+                  m_echo = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_ALL);
+                  m_echo_files.clear ();
+                }
+              else
+                {
+                  std::string file = fcn_file_in_path (arg1);
+                  file = sys::env::make_absolute (file);
+
+                  if (file.empty ())
+                    error ("echo: no such file %s", arg1.c_str ());
+
+                  m_echo |= ECHO_FUNCTIONS;
+                  m_echo_files[file] = true;
+                }
+            }
+          else if (arg0 == "off")
+            {
+              if (arg1 == "all")
+                {
+                  m_echo = ECHO_OFF;
+                  m_echo_files.clear ();
+                }
+              else
+                {
+                  std::string file = fcn_file_in_path (arg1);
+                  file = sys::env::make_absolute (file);
+
+                  if (file.empty ())
+                    error ("echo: no such file %s", arg1.c_str ());
+
+                  m_echo_files[file] = false;
+                }
+            }
+          else
+            print_usage ();
+        }
+        break;
+
+      default:
+        print_usage ();
+        break;
+      }
+
+    return ovl ();
+  }
+
+  octave_value
+  tree_evaluator::PS4 (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_PS4, args, nargout, "PS4");
+  }
+
+  bool tree_evaluator::echo_this_file (const std::string& file, int type) const
+  {
+    if ((type & m_echo) == ECHO_SCRIPTS)
+      {
+        // Asking about scripts and echo is enabled for them.
+        return true;
+      }
+
+    if ((type & m_echo) == ECHO_FUNCTIONS)
+      {
+        // Asking about functions and echo is enabled for functions.
+        // Now, which ones?
+
+        auto p = m_echo_files.find (file);
+
+        if (m_echo & ECHO_ALL)
+          {
+            // Return true ulness echo was turned off for a specific
+            // file.
+
+            return (p == m_echo_files.end () || p->second);
+          }
+        else
+          {
+            // Return true if echo is specifically enabled for this file.
+
+            return p != m_echo_files.end () && p->second;
+          }
+      }
+
+    return false;
+  }
+
+  void tree_evaluator::echo_code (size_t line)
+  {
+    std::string prefix = command_editor::decode_prompt_string (m_PS4);
+
+    for (size_t i = m_echo_file_pos; i <= line; i++)
+      octave_stdout << prefix << get_file_line (m_echo_file_name, i)
+                    << std::endl;
   }
 }
 
@@ -2849,4 +3154,82 @@ The original variable value is restored when exiting the function.
 %!assert ( [ [], {1} ], {1} )
 
 %!error (string_fill_char (1, 2))
+*/
+
+DEFMETHOD (PS4, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} PS4 ()
+@deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})
+@deftypefnx {} {} PS4 (@var{new_val}, "local")
+Query or set the character string used to prefix output produced
+when echoing commands is enabled.
+
+The default value is @qcode{"+ "}.
+@xref{Diary and Echo Commands}, for a description of echoing commands.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{echo, PS1, PS2}
+@end deftypefn */)
+{
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.PS4 (args, nargout);
+}
+
+DEFMETHOD (echo, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} echo
+@deftypefnx {} {} echo on
+@deftypefnx {} {} echo off
+@deftypefnx {} {} echo on all
+@deftypefnx {} {} echo off all
+@deftypefnx {} {} echo @var{function} on
+@deftypefnx {} {} echo @var{function} off
+Control whether commands are displayed as they are executed.
+
+Valid options are:
+
+@table @code
+@item on
+Enable echoing of commands as they are executed in script files.
+
+@item off
+Disable echoing of commands as they are executed in script files.
+
+@item on all
+Enable echoing of commands as they are executed in script files and
+functions.
+
+@item off all
+Disable echoing of commands as they are executed in script files and
+functions.
+
+@item @var{function} on
+Enable echoing of commands as they are executed in the named function.
+
+@item @var{function} off
+Disable echoing of commands as they are executed in the named function.
+@end table
+
+@noindent
+With no arguments, @code{echo} toggles the current echo state.
+
+@seealso{PS4}
+@end deftypefn */)
+{
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.echo (args, nargout);
+}
+
+/*
+%!error echo ([])
+%!error echo (0)
+%!error echo ("")
+%!error echo ("Octave")
+%!error echo ("off", "invalid")
+%!error echo ("on", "invalid")
+%!error echo ("on", "all", "all")
 */

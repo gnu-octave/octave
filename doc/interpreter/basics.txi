@@ -846,8 +846,6 @@ some kinds of problems.
 
 @DOCSTRING(echo)
 
-@DOCSTRING(echo_executing_commands)
-
 @node Errors
 @section How Octave Reports Errors
 @cindex error messages

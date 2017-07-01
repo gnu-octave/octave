@@ -122,9 +122,9 @@ namespace octave
   }
 
   void
-  tree_statement::echo_code (void)
+  tree_statement::echo_code (const std::string& prefix)
   {
-    tree_print_code tpc (octave_stdout, VPS4);
+    tree_print_code tpc (octave_stdout, prefix);
 
     accept (tpc);
   }

@@ -70,19 +70,7 @@ extern void remove_input_event_hook_functions (void);
 
 extern void set_default_prompts (void);
 
-extern std::string VPS4;
-
 extern char Vfilemarker;
-
-enum echo_state
-{
-  ECHO_OFF = 0,
-  ECHO_SCRIPTS = 1,
-  ECHO_FUNCTIONS = 2,
-  ECHO_CMD_LINE = 4
-};
-
-extern int Vecho_executing_commands;
 
 extern octave::sys::time Vlast_prompt_time;
 
@@ -145,8 +133,6 @@ namespace octave
     int pflag;
 
     base_lexer *lexer;
-
-    void do_input_echo (const std::string&) const;
 
     static const std::string in_src;
   };

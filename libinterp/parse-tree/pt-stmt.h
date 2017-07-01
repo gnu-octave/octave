@@ -85,7 +85,7 @@ namespace octave
 
     void set_location (int l, int c);
 
-    void echo_code (void);
+    void echo_code (const std::string& prefix);
 
     tree_command * command (void) { return cmd; }
 

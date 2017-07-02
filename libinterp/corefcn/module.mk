@@ -294,9 +294,6 @@ COREFCN_SRC = \
 %reldir%/oct-tex-parser.yy: %reldir%/oct-tex-parser.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)
 
-noinst_HEADERS += \
-  %reldir%/default-defs.h
-
 noinst_LTLIBRARIES += \
   %reldir%/libcorefcn.la
 

@@ -65,18 +65,18 @@ LIBINTERP_BUILT_DISTFILES = \
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
 LIBINTERP_BUILT_NODISTFILES = \
-  %reldir%/build-env.cc \
   %reldir%/build-env-features.cc \
-  %reldir%/liboctinterp-build-info.cc \
-  %reldir%/corefcn/mxarray.h \
-  %reldir%/corefcn/oct-errno.cc \
+  %reldir%/build-env.cc \
+  %reldir%/builtin-defun-decls.h \
+  %reldir%/builtins.cc \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/builtin-defun-decls.h \
+  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/oct-errno.cc \
+  %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc \
-  %reldir%/version.h \
-  %reldir%/builtins.cc
+  %reldir%/version.h
 
 %canon_reldir%_EXTRA_DIST += \
   %reldir%/DOCSTRINGS \
@@ -148,16 +148,16 @@ endif
   $(TEMPLATE_INST_SRC)
 
 nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
-  %reldir%/corefcn/mxarray.h \
-  %reldir%/corefcn/oct-errno.cc \
-  %reldir%/corefcn/default-defs.h \
-  %reldir%/corefcn/graphics.h \
-  %reldir%/operators/ops.cc \
+  %reldir%/build-env-features.cc \
+  %reldir%/build-env.cc \
   %reldir%/builtin-defun-decls.h \
   %reldir%/builtins.cc \
-  %reldir%/build-env.cc \
-  %reldir%/build-env-features.cc \
+  %reldir%/corefcn/default-defs.h \
+  %reldir%/corefcn/graphics.h \
+  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
+  %reldir%/operators/ops.cc \
   %reldir%/version.h
 
 %canon_reldir%_liboctinterp_la_LIBADD = \

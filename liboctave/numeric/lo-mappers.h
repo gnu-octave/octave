@@ -107,31 +107,25 @@ namespace octave
     inline double exp2 (double x) { return std::exp2 (x); }
     inline float exp2 (float x) { return std::exp2f (x); }
 
-    // FIXME: Is ceil actually acceptably defined for complex values?
-    inline double ceil (double x) { return std::ceil (x); }
-    inline float ceil (float x) { return ::ceilf (x); }
-
     template <typename T>
     std::complex<T>
     ceil (const std::complex<T>& x)
     {
-      return std::complex<T> (ceil (std::real (x)), ceil (std::imag (x)));
+      return std::complex<T> (std::ceil (std::real (x)),
+                              std::ceil (std::imag (x)));
     }
-
-    // FIXME: Is trunc actually acceptably defined for complex values?
-    inline double trunc (double x) { return std::trunc (x); }
-    inline float trunc (float x) { return std::truncf (x); }
 
     template <typename T>
     std::complex<T>
     trunc (const std::complex<T>& x)
     {
-      return std::complex<T> (trunc (std::real (x)), trunc (std::imag (x)));
+      return std::complex<T> (std::trunc (std::real (x)),
+                              std::trunc (std::imag (x)));
     }
 
-    // FIXME: Do we need this alias for trunc?
-    inline double fix (double x) { return trunc (x); }
-    inline float fix (float x) { return trunc (x); }
+    // Provide alias for trunc under the more familiar name of fix.
+    inline double fix (double x) { return std::trunc (x); }
+    inline float fix (float x) { return std::trunc (x); }
 
     template <typename T>
     std::complex<T>
@@ -140,18 +134,14 @@ namespace octave
       return trunc (x);
     }
 
-    // FIXME: Do we need this alias for floor?
-    inline double floor (double x) { return std::floor (x); }
-    inline float floor (float x) { return std::floor (x); }
-
     template <typename T>
     std::complex<T>
     floor (const std::complex<T>& x)
     {
-      return std::complex<T> (floor (std::real (x)), floor (std::imag (x)));
+      return std::complex<T> (std::floor (std::real (x)),
+                              std::floor (std::imag (x)));
     }
 
-    // FIXME: Do we need this alias for round?
     inline double round (double x) { return std::round (x); }
     inline float round (float x) { return std::roundf (x); }
 
@@ -168,7 +158,7 @@ namespace octave
       double t = round (x);
 
       if (fabs (x - t) == 0.5)
-        t = 2 * trunc (0.5 * t);
+        t = 2 * std::trunc (0.5 * t);
 
       return t;
     }
@@ -179,7 +169,7 @@ namespace octave
       float t = round (x);
 
       if (fabsf (x - t) == 0.5f)
-        t = 2 * trunc (0.5f * t);
+        t = 2 * std::trunc (0.5f * t);
 
       return t;
     }
@@ -299,13 +289,13 @@ namespace octave
     template <>
     inline double x_nint (double x)
     {
-      return (isfinite (x) ? floor (x + 0.5) : x);
+      return (isfinite (x) ? std::floor (x + 0.5) : x);
     }
 
     template <>
     inline float x_nint (float x)
     {
-      return (isfinite (x) ? floor (x + 0.5f) : x);
+      return (isfinite (x) ? std::floor (x + 0.5f) : x);
     }
 
     extern OCTAVE_API octave_idx_type nint_big (double x);
@@ -332,7 +322,7 @@ namespace octave
             retval = 0;
           else
             {
-              T n = floor (q);
+              T n = std::floor (q);
 
               // Prevent use of extra precision.
               volatile T tmp = y * n;
@@ -365,7 +355,7 @@ namespace octave
             retval = 0;
           else
             {
-              T n = trunc (q);
+              T n = std::trunc (q);
 
               // Prevent use of extra precision.
               volatile T tmp = y * n;
@@ -584,10 +574,10 @@ inline double xexp2 (double x) { return octave::math::exp2 (x); }
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::exp2' instead")
 inline float xexp2 (float x) { return octave::math::exp2 (x); }
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::ceil' instead")
-inline double xceil (double x) { return octave::math::ceil (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::ceil' instead")
-inline float xceil (float x) { return octave::math::ceil (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::ceil' instead")
+inline double xceil (double x) { return std::ceil (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::ceil' instead")
+inline float xceil (float x) { return std::ceil (x); }
 
 template <typename T>
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::ceil' instead")
@@ -651,10 +641,10 @@ signum (const std::complex<T>& x)
   return octave::math::signum (x);
 }
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::trunc' instead")
-inline double xtrunc (double x) { return octave::math::trunc (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::trunc' instead")
-inline float xtrunc (float x) { return octave::math::trunc (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::trunc' instead")
+inline double xtrunc (double x) { return std::trunc (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::trunc' instead")
+inline float xtrunc (float x) { return std::trunc (x); }
 
 template <typename T>
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::trunc' instead")
@@ -677,10 +667,10 @@ fix (const std::complex<T>& x)
   return octave::math::fix (x);
 }
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::floor' instead")
-inline double xfloor (double x) { return octave::math::floor (x); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::floor' instead")
-inline float xfloor (float x) { return octave::math::floor (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::floor' instead")
+inline double xfloor (double x) { return std::floor (x); }
+OCTAVE_DEPRECATED (4.2, "use 'std::floor' instead")
+inline float xfloor (float x) { return std::floor (x); }
 
 template <typename T>
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::floor' instead")

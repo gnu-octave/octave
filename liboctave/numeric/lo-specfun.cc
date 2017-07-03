@@ -3252,7 +3252,7 @@ namespace octave
       static const double euler_mascheroni =
         0.577215664901532860606512090082402431042;
 
-      const bool is_int = (math::floor (z) == z);
+      const bool is_int = (std::floor (z) == z);
 
       T p = 0;
       if (z <= 0)
@@ -3271,7 +3271,7 @@ namespace octave
           for (octave_idx_type k = z - 1; k > 0; k--)
             p += 1.0 / k;
         }
-      else if (math::floor (z + 0.5) == z + 0.5)
+      else if (std::floor (z + 0.5) == z + 0.5)
         {
           // Abramowitz and Stegun, page 258, eq 6.3.3 and 6.3.4
           for (octave_idx_type k = z; k > 0; k--)

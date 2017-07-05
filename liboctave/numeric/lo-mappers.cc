@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-mappers.h"
 #include "lo-specfun.h"
-#include "math-wrappers.h"
 
 // FIXME: We used to have this situation:
 //
@@ -123,16 +122,6 @@ namespace octave
         return y;
     }
 
-    double frexp (double x, int *expptr)
-    {
-      return octave_frexp_wrapper (x, expptr);
-    }
-
-    float frexp (float x, int *expptr)
-    {
-      return octave_frexpf_wrapper (x, expptr);
-    }
-
     Complex
     log2 (const Complex& x)
     {
@@ -143,18 +132,6 @@ namespace octave
     log2 (const FloatComplex& x)
     {
       return std::log (x) / static_cast<float> (M_LN2);
-    }
-
-    double
-    log2 (double x, int& exp)
-    {
-      return frexp (x, &exp);
-    }
-
-    float
-    log2 (float x, int& exp)
-    {
-      return frexp (x, &exp);
     }
 
     Complex

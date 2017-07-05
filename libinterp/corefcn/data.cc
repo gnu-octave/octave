@@ -6930,6 +6930,21 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
   return retval;
 }
 
+/*
+%!assert (nth_element ([1:10], 1), 1)
+%!assert (nth_element ([1:10], 10), 10)
+%!assert (nth_element ([1:10], 1:3), [1 2 3])
+%!assert (nth_element ([1:10], 1:10), [1:10])
+
+%!assert <*51329> (nth_element ([1:10], [1:10]), [1:10])
+
+%!error nth_element ()
+%!error nth_element (1)
+%!error nth_element (1, 1.5)
+%!error nth_element (1, 2, 3, 4)
+%!error nth_element ("abcd", 3)
+*/
+
 template <typename NDT>
 static NDT
 do_accumarray_sum (const idx_vector& idx, const NDT& vals,

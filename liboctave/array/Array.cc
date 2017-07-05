@@ -2351,6 +2351,25 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
             lo = ns - 1 - n(0);
           }
       }
+    case idx_vector::class_vector:
+      // This case resolves bug #51329, a fallback to allow the given index
+      // to be a sequential vector instead of the typical scalar or range
+      if (n(1) - n(0) == 1)
+        {
+          mode = ASCENDING;
+          lo = n(0);
+        }
+      else if (n(1) - n(0) == -1)
+        {
+          mode = DESCENDING;
+          lo = ns - 1 - n(0);
+        }
+      // Ensure that the vector is actually an arithmetic contiguous sequence
+      for (octave_idx_type i = 2; i < n.length () && mode != UNSORTED; i++)
+        if ((mode == ASCENDING && n(i) - n(i-1) != 1)
+            || (mode == DESCENDING && n(i) - n(i-1) != -1))
+          mode = UNSORTED;
+      break;
     default:
       break;
     }

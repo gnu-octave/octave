@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 
 #include "file-info.h"
+#include "file-stat.h"
 #include "str-vec.h"
 
 #include "builtin-defun-decls.h"
@@ -66,11 +67,25 @@ octave_user_code::~octave_user_code (void)
   delete m_file_info;
 }
 
+void
+octave_user_code::get_file_info (void)
+{
+  std::string file_name = fcn_file_name ();
+
+  m_file_info = new octave::file_info (file_name);
+
+  octave::sys::file_stat fs (file_name);
+
+  if (fs && (fs.mtime () > time_parsed ()))
+    warning ("function file '%s' changed since it was parsed",
+             file_name.c_str ());
+}
+
 std::string
 octave_user_code::get_code_line (size_t line)
 {
   if (! m_file_info)
-    m_file_info = new octave::file_info (fcn_file_name ());
+    get_file_info ();
 
   return m_file_info->get_line (line);
 }
@@ -79,9 +94,22 @@ std::deque<std::string>
 octave_user_code::get_code_lines (size_t line, size_t num_lines)
 {
   if (! m_file_info)
-    m_file_info = new octave::file_info (fcn_file_name ());
+    get_file_info ();
 
   return m_file_info->get_lines (line, num_lines);
+}
+
+void
+octave_user_code::cache_function_text (const std::string& text,
+                                       const octave::sys::time& timestamp)
+{
+  if (m_file_info)
+    delete m_file_info;
+
+  if (timestamp > time_parsed ())
+    warning ("help text for function is newer than function");
+
+  m_file_info = new octave::file_info (text, timestamp);
 }
 
 std::map<std::string, octave_value>

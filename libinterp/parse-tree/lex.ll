@@ -2161,6 +2161,7 @@ namespace octave
     reading_fcn_file = false;
     reading_script_file = false;
     reading_classdef_file = false;
+    buffer_function_text = false;
     input_line_number = 1;
     current_input_column = 1;
     bracketflag = 0;
@@ -2174,6 +2175,7 @@ namespace octave
     current_input_line = "";
     comment_text = "";
     help_text = "";
+    function_text = "";
     string_text = "";
     string_line = 0;
     string_column = 0;
@@ -2730,7 +2732,13 @@ namespace octave
 
             if (! (reading_fcn_file || reading_script_file
                    || reading_classdef_file))
-              input_line_number = 1;
+              {
+                // Input must be coming from the terminal or stdin?
+                buffer_function_text = true;
+                function_text += (current_input_line + "\n");
+
+                input_line_number = 1;
+              }
             break;
 
           case magic_file_kw:
@@ -3643,7 +3651,22 @@ namespace octave
       {
         bool eof = false;
         current_input_line = reader.get_input (eof);
+
         input_buf.fill (current_input_line, eof);
+
+        // Attempt to capture text for functions defined on the
+        // command line.
+        //
+        // FIXME: the handling of newline here seems a bit clumsy.
+        //
+        // See also comments in push_lexer::append_input.
+
+        if (buffer_function_text)
+          {
+            function_text += current_input_line;
+            if (current_input_line[current_input_line.length () - 1] != '\n')
+              function_text += "\n";
+          }
       }
 
     if (! input_buf.empty ())
@@ -3652,6 +3675,24 @@ namespace octave
       status = YY_NULL;
 
     return status;
+  }
+
+  void
+  push_lexer::append_input (const std::string& input, bool eof)
+  {
+    // FIXME: input may contain more than one line, so how can we
+    // properly start buffering input for command-line functions?
+    //
+    // Currently, base_lexer::is_keyword_token starts buffering text
+    // for command-line functions by setting the initial value of
+    // function_text to current_input_line when function_kw is
+    // recognized.  To make that work, we need to do something like
+    // maintain a queue of input strings and pass them to the flex
+    // buffer one line at a time, while also setting
+    // current_input_line.  Some care will be needed if a single line
+    // of input arrives in multiple calls to append_input.
+
+    input_buf.fill (input, eof);
   }
 
   int

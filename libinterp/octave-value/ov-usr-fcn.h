@@ -91,11 +91,16 @@ public:
 
   std::deque<std::string> get_code_lines (size_t line, size_t num_lines);
 
+  void cache_function_text (const std::string& text,
+                            const octave::sys::time& timestamp);
+
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   virtual octave::tree_statement_list * body (void) = 0;
 
 protected:
+
+  void get_file_info (void);
 
   // pointer to the current unwind_protect frame of this function.
   octave::unwind_protect *curr_unwind_protect_frame;

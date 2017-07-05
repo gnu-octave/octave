@@ -43,6 +43,11 @@ namespace octave
       : m_file_buf (), m_offsets (), m_timestamp (static_cast<time_t> (0))
     { }
 
+    file_info (const std::string& text, const sys::time& timestamp)
+      : m_file_buf (text), m_offsets (get_line_offsets (m_file_buf)),
+        m_timestamp (timestamp)
+    { }
+
     file_info (const std::string& fname)
       : m_file_buf (snarf_file (fname)),
         m_offsets (get_line_offsets (m_file_buf)),

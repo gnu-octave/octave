@@ -3464,6 +3464,13 @@ namespace octave
             // parse_fcn_file, and
             // symbol_table::fcn_info::fcn_info_rep::find_user_function).
 
+            if (m_lexer.buffer_function_text)
+              {
+                fcn->cache_function_text (m_lexer.function_text,
+                                          fcn->time_parsed ());
+                m_lexer.buffer_function_text = false;
+              }
+
             retval = new tree_function_def (fcn);
           }
       }

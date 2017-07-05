@@ -272,13 +272,14 @@ namespace octave
         parsing_classdef_set_method (false),
         quote_is_transpose (false), force_script (false),
         reading_fcn_file (false), reading_script_file (false),
-        reading_classdef_file (false),
+        reading_classdef_file (false), buffer_function_text (false),
         input_line_number (1), current_input_column (1),
         bracketflag (0), braceflag (0),
         looping (0), defining_func (0), looking_at_function_handle (0),
         block_comment_nesting_level (0), command_arg_paren_count (0),
         token_count (0), current_input_line (), comment_text (),
-        help_text (), string_text (), string_line (0), string_column (0),
+        help_text (), function_text (), string_text (),
+        string_line (0), string_column (0),
         fcn_file_name (), fcn_file_full_name (), dir_name (),
         package_name (), looking_at_object_index (), parsed_function_name (),
         pending_local_variables (), symtab_context (), nesting_level (),
@@ -386,6 +387,10 @@ namespace octave
     // TRUE means we're parsing a classdef file.
     bool reading_classdef_file;
 
+    // TRUE means we should store the text of the function we are
+    // parsing.
+    bool buffer_function_text;
+
     // the current input line number.
     int input_line_number;
 
@@ -425,6 +430,9 @@ namespace octave
 
     // The current help text.
     std::string help_text;
+
+    // The text of functions entered on the command line.
+    std::string function_text;
 
     // The current character string text.
     std::string string_text;
@@ -824,10 +832,7 @@ namespace octave
       base_lexer::reset ();
     }
 
-    void append_input (const std::string& input, bool eof)
-    {
-      input_buf.fill (input, eof);
-    }
+    void append_input (const std::string& input, bool eof);
 
     void increment_promptflag (void) { pflag++; }
 

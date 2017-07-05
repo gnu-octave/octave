@@ -2843,9 +2843,53 @@ namespace octave
                                   "silent_functions");
   }
 
+  octave_value
+  tree_evaluator::string_fill_char (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_string_fill_char, args, nargout,
+                                  "string_fill_char");
+  }
+
   void
   tree_evaluator::push_echo_state (unwind_protect& frame, int type,
-                                   const std::string& file_name)
+                                   const std::string& file_name,
+                                   size_t pos)
+  {
+    push_echo_state_cleanup (frame);
+
+    set_echo_state (type, file_name, pos);
+  }
+
+  void
+  tree_evaluator::set_echo_state (int type, const std::string& file_name,
+                                  size_t pos)
+  {
+    m_echo_state = echo_this_file (file_name, type);
+    m_echo_file_name = file_name;
+    m_echo_file_pos = pos;
+  }
+
+  void
+  tree_evaluator::maybe_set_echo_state (void)
+  {
+    octave_function *caller = m_call_stack.caller ();
+
+    if (caller && caller->is_user_code ())
+      {
+        octave_user_code *fcn = dynamic_cast<octave_user_code *> (caller);
+
+        int type = fcn->is_user_function () ? ECHO_FUNCTIONS : ECHO_SCRIPTS;
+
+        std::string file_name = fcn->fcn_file_name ();
+
+        size_t pos = m_call_stack.current_line ();
+
+        set_echo_state (type, file_name, pos);
+      }
+  }
+
+  void
+  tree_evaluator::push_echo_state_cleanup (unwind_protect& frame)
   {
     frame.add_method (*this, &tree_evaluator::set_echo_state,
                       m_echo_state);
@@ -2855,22 +2899,39 @@ namespace octave
 
     frame.add_method (*this, &tree_evaluator::set_echo_file_pos,
                       m_echo_file_pos);
-
-    m_echo_state = echo_this_file (file_name, type);
-    m_echo_file_name = file_name;
-    m_echo_file_pos = 1;
   }
 
-  octave_value
-  tree_evaluator::string_fill_char (const octave_value_list& args, int nargout)
+  bool tree_evaluator::maybe_push_echo_state_cleanup (void)
   {
-    return set_internal_variable (m_string_fill_char, args, nargout,
-                                  "string_fill_char");
+    // This function is expected to be called from ECHO, which would be
+    // the top of the call stack.  If the caller of ECHO is a
+    // user-defined fucntion or script, then set up unwind-protect
+    // elements to restore echo state.
+
+    octave_function *caller = m_call_stack.caller ();
+
+    if (caller && caller->is_user_code ())
+      {
+        octave_user_code *fcn = dynamic_cast<octave_user_code *> (caller);
+
+        unwind_protect *frame = fcn->unwind_protect_frame ();
+
+        if (frame)
+          {
+            push_echo_state_cleanup (*frame);
+            return true;
+          }
+      }
+
+    return false;
   }
+
 
   octave_value
   tree_evaluator::echo (const octave_value_list& args, int)
   {
+    bool cleanup_pushed = maybe_push_echo_state_cleanup ();
+
     string_vector argv = args.make_argv ();
 
     switch (args.length ())
@@ -2987,6 +3048,9 @@ namespace octave
         print_usage ();
         break;
       }
+
+    if (cleanup_pushed)
+      maybe_set_echo_state ();
 
     return ovl ();
   }

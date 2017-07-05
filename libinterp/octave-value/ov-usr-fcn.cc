@@ -157,6 +157,12 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
 
       cs.push (this);
 
+      // Set pointer to the current unwind_protect frame to allow
+      // certain builtins register simple cleanup in a very optimized manner.
+      // This is *not* intended as a general-purpose on-cleanup mechanism,
+      frame.protect_var (curr_unwind_protect_frame);
+      curr_unwind_protect_frame = &frame;
+
       frame.add_method (cs, &octave::call_stack::pop);
 
       // Update line number even if debugging.
@@ -214,7 +220,7 @@ octave_user_function::octave_user_function
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
     class_constructor (none), class_method (false),
-    parent_scope (0), curr_unwind_protect_frame (0)
+    parent_scope (0)
 #if defined (HAVE_LLVM)
     , jit_info (0)
 #endif

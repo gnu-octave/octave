@@ -91,7 +91,6 @@ public:
 
   std::deque<std::string> get_code_lines (size_t line, size_t num_lines);
 
-
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   virtual octave::tree_statement_list * body (void) = 0;
@@ -388,12 +387,6 @@ public:
 
   void accept (octave::tree_walker& tw);
 
-  octave::unwind_protect *
-  unwind_protect_frame (void)
-  {
-    return curr_unwind_protect_frame;
-  }
-
 #if defined (HAVE_LLVM)
   jit_function_info * get_info (void) { return jit_info; }
 
@@ -486,9 +479,6 @@ private:
 
   // The scope of the parent function, if any.
   octave::symbol_table::scope *parent_scope;
-
-  // pointer to the current unwind_protect frame of this function.
-  octave::unwind_protect *curr_unwind_protect_frame;
 
 #if defined (HAVE_LLVM)
   jit_function_info *jit_info;

@@ -365,13 +365,21 @@ namespace octave
       return old_val;
     }
 
-    void push_echo_state (unwind_protect& frame, int type,
-                          const std::string& file_name);
-
     octave_value
     string_fill_char (const octave_value_list& args, int nargout);
 
+    void push_echo_state (unwind_protect& frame, int type,
+                          const std::string& file_name, size_t pos = 1);
+
   private:
+
+    void set_echo_state (int type, const std::string& file_name, size_t pos);
+
+    void maybe_set_echo_state (void);
+
+    void push_echo_state_cleanup (unwind_protect& frame);
+
+    bool maybe_push_echo_state_cleanup (void);
 
     void do_breakpoint (tree_statement& stmt) const;
 

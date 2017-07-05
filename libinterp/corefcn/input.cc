@@ -543,14 +543,14 @@ execute_in_debugger_handler (const std::pair<std::string, int>& arg)
 }
 
 static void
-get_debug_input (const std::string& prompt)
+get_debug_input (octave::interpreter& interp, const std::string& prompt)
 {
   octave::unwind_protect frame;
 
   bool silent = octave::tree_evaluator::quiet_breakpoint_flag;
   octave::tree_evaluator::quiet_breakpoint_flag = false;
 
-  octave::call_stack& cs = octave::__get_call_stack__ ("get_debug_input");
+  octave::call_stack& cs = interp.get_call_stack ();
 
   octave_user_code *caller = cs.caller_user_code ();
   std::string nm;
@@ -607,8 +607,10 @@ get_debug_input (const std::string& prompt)
 
               if (! silent)
                 {
-                  std::string line_buf
-                    = get_file_line (nm, curr_debug_line);
+                  std::string line_buf;
+
+                  if (caller)
+                    line_buf = caller->get_code_line (curr_debug_line);
 
                   if (! line_buf.empty ())
                     buf << "\n" << curr_debug_line << ": " << line_buf;
@@ -648,7 +650,7 @@ get_debug_input (const std::string& prompt)
 
   octave::parser curr_parser;
 
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("get_debug_input");
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
   while (Vdebugging)
     {
@@ -896,7 +898,7 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with
 }
 
 octave_value
-do_keyboard (const octave_value_list& args)
+do_keyboard (octave::interpreter& interp, const octave_value_list& args)
 {
   octave_value retval;
 
@@ -913,7 +915,7 @@ do_keyboard (const octave_value_list& args)
 
   frame.protect_var (Vdebugging);
 
-  octave::call_stack& cs = octave::__get_call_stack__ ("do_keyboard");
+  octave::call_stack& cs = interp.get_call_stack ();
 
   frame.add_method (cs, &octave::call_stack::restore_frame,
                     cs.current_frame ());
@@ -931,9 +933,17 @@ do_keyboard (const octave_value_list& args)
   if (nargin > 0)
     prompt = args(0).string_value ();
 
-  get_debug_input (prompt);
+  get_debug_input (interp, prompt);
 
   return retval;
+}
+
+octave_value
+do_keyboard (const octave_value_list& args)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("do_keyboard");
+
+  return do_keyboard (interp, args);
 }
 
 DEFMETHOD (keyboard, interp, args, ,
@@ -972,7 +982,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of
 
   octave::tree_evaluator::current_frame = cs.current_frame ();
 
-  do_keyboard (args);
+  do_keyboard (interp, args);
 
   return ovl ();
 }

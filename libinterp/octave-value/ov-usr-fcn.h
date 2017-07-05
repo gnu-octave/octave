@@ -43,6 +43,7 @@ class octave_value;
 
 namespace octave
 {
+  class file_info;
   class tree_parameter_list;
   class tree_statement_list;
   class tree_evaluator;
@@ -61,7 +62,9 @@ protected:
 
   octave_user_code (const std::string& nm,
                     const std::string& ds = "")
-    : octave_function (nm, ds) { }
+    : octave_function (nm, ds), curr_unwind_protect_frame (0),
+      m_file_info (0)
+  { }
 
 public:
 
@@ -74,13 +77,33 @@ public:
 
   octave_user_code& operator = (const octave_user_code& f) = delete;
 
-  ~octave_user_code (void) = default;
+  ~octave_user_code (void);
 
   bool is_user_code (void) const { return true; }
+
+  octave::unwind_protect *
+  unwind_protect_frame (void)
+  {
+    return curr_unwind_protect_frame;
+  }
+
+  std::string get_code_line (size_t line);
+
+  std::deque<std::string> get_code_lines (size_t line, size_t num_lines);
+
 
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   virtual octave::tree_statement_list * body (void) = 0;
+
+protected:
+
+  // pointer to the current unwind_protect frame of this function.
+  octave::unwind_protect *curr_unwind_protect_frame;
+
+  // Cached text of function or script code with line offsets
+  // calculated.
+  octave::file_info *m_file_info;
 };
 
 // Scripts.

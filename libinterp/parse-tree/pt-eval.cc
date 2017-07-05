@@ -3034,9 +3034,20 @@ namespace octave
   {
     std::string prefix = command_editor::decode_prompt_string (m_PS4);
 
-    for (size_t i = m_echo_file_pos; i <= line; i++)
-      octave_stdout << prefix << get_file_line (m_echo_file_name, i)
-                    << std::endl;
+    octave_function *curr_fcn = m_call_stack.current ();
+
+    if (curr_fcn && curr_fcn->is_user_code ())
+      {
+        octave_user_code *code = dynamic_cast<octave_user_code *> (curr_fcn);
+
+        size_t num_lines = line - m_echo_file_pos + 1;
+
+        std::deque<std::string> lines
+          = code->get_code_lines (m_echo_file_pos, num_lines);
+
+        for (auto& elt : lines)
+          octave_stdout << prefix << elt << std::endl;
+      }
   }
 }
 

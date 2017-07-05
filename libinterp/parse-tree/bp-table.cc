@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "file-ops.h"
-#include "file-stat.h"
 #include "singleton-cleanup.h"
 
 #include "bp-table.h"
@@ -63,105 +62,6 @@ bp_table *bp_table::instance = nullptr;
 std::set<std::string> bp_table::errors_that_stop;
 std::set<std::string> bp_table::caught_that_stop;
 std::set<std::string> bp_table::warnings_that_stop;
-
-// Read entire file called fname and return the contents as a string
-static std::string
-snarf_file (const std::string& fname)
-{
-  std::string retval;
-
-  octave::sys::file_stat fs (fname);
-
-  if (fs)
-    {
-      size_t sz = fs.size ();
-
-      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
-
-      if (file)
-        {
-          std::string buf (sz+1, 0);
-
-          file.read (&buf[0], sz+1);
-
-          if (! file.eof ())
-            error ("error reading file %s", fname.c_str ());
-
-          // Expected to read the entire file.
-          retval = buf;
-        }
-    }
-
-  return retval;
-}
-
-static std::deque<size_t>
-get_line_offsets (const std::string& buf)
-{
-  // FIXME: This could maybe be smarter.  Is deque the right thing to use here?
-
-  std::deque<size_t> offsets;
-
-  offsets.push_back (0);
-
-  size_t len = buf.length ();
-
-  for (size_t i = 0; i < len; i++)
-    {
-      char c = buf[i];
-
-      if (c == '\r' && ++i < len)
-        {
-          c = buf[i];
-
-          if (c == '\n')
-            offsets.push_back (i+1);
-          else
-            offsets.push_back (i);
-        }
-      else if (c == '\n')
-        offsets.push_back (i+1);
-    }
-
-  offsets.push_back (len);
-
-  return offsets;
-}
-
-std::string
-get_file_line (const std::string& fname, size_t line)
-{
-  std::string retval;
-
-  static std::string last_fname;
-
-  static std::string buf;
-
-  static std::deque<size_t> offsets;
-
-  if (fname != last_fname)
-    {
-      buf = snarf_file (fname);
-
-      offsets = get_line_offsets (buf);
-    }
-
-  if (line > 0)
-    line--;
-
-  if (line < offsets.size () - 1)
-    {
-      size_t bol = offsets[line];
-      size_t eol = offsets[line+1];
-
-      while (eol > 0 && eol > bol && (buf[eol-1] == '\n' || buf[eol-1] == '\r'))
-        eol--;
-
-      retval = buf.substr (bol, eol - bol);
-    }
-
-  return retval;
-}
 
 // Return a pointer to the user-defined function FNAME.  If FNAME is
 // empty, search backward for the first user-defined function in the

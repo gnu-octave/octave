@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sstream>
 
+#include "file-info.h"
 #include "str-vec.h"
 
 #include "builtin-defun-decls.h"
@@ -59,6 +60,29 @@ along with Octave; see the file COPYING.  If not, see
 
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
+
+octave_user_code::~octave_user_code (void)
+{
+  delete m_file_info;
+}
+
+std::string
+octave_user_code::get_code_line (size_t line)
+{
+  if (! m_file_info)
+    m_file_info = new octave::file_info (fcn_file_name ());
+
+  return m_file_info->get_line (line);
+}
+
+std::deque<std::string>
+octave_user_code::get_code_lines (size_t line, size_t num_lines)
+{
+  if (! m_file_info)
+    m_file_info = new octave::file_info (fcn_file_name ());
+
+  return m_file_info->get_lines (line, num_lines);
+}
 
 std::map<std::string, octave_value>
 octave_user_code::subfunctions (void) const

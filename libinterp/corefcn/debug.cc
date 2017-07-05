@@ -556,7 +556,7 @@ is stopped.
         {
           octave_stdout << " [" << file_name << "]" << std::endl;
 
-          std::string line = get_file_line (file_name, l);
+          std::string line = dbg_fcn->get_code_line (l);
 
           if (! line.empty ())
             octave_stdout << l << ": " << line << std::endl;
@@ -805,7 +805,8 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
           int l_max = l + n/2;
           do_dbtype (octave_stdout, name, l_min, l-1);
 
-          std::string line = get_file_line (name, l);
+          std::string line = dbg_fcn->get_code_line (l);
+
           if (! line.empty ())
             octave_stdout << l << "-->\t" << line << std::endl;
 

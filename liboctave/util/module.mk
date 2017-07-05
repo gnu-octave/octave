@@ -6,6 +6,7 @@ UTIL_INC = \
   %reldir%/cmd-edit.h \
   %reldir%/cmd-hist.h \
   %reldir%/data-conv.h \
+  %reldir%/file-info.h \
   %reldir%/functor.h \
   %reldir%/glob-match.h \
   %reldir%/lo-array-errwarn.h \
@@ -66,6 +67,7 @@ UTIL_SRC = \
   %reldir%/cmd-edit.cc \
   %reldir%/cmd-hist.cc \
   %reldir%/data-conv.cc \
+  %reldir%/file-info.cc \
   %reldir%/glob-match.cc \
   %reldir%/kpse.cc \
   %reldir%/lo-array-errwarn.cc \

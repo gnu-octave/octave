@@ -446,6 +446,8 @@ namespace octave
     bool m_echo_state;
 
     std::string m_echo_file_name;
+
+    // Next line to echo, counting from 1.
     size_t m_echo_file_pos;
 
     std::map<std::string, bool> m_echo_files;

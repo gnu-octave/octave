@@ -600,6 +600,7 @@ This is just the opposite of the corresponding C library function.
 %!assert (strcmp (y, {"foo"}), [false; false])
 %!assert (strcmp (y, {"foo"}), [false; false])
 %!assert (strcmp ("foobar", "foobar"), true)
+%!assert (strcmp ("foobar", "fooBar"), false)
 %!assert (strcmp ("fooba", "foobar"), false)
 
 %!error strcmp ()
@@ -653,6 +654,7 @@ This is just the opposite of the corresponding C library function.
 
 /*
 %!assert (strncmp ("abce", "abc", 3), true)
+%!assert (strncmp ("abce", "aBc", 3), false)
 %!assert (strncmp (100, 100, 1), false)
 %!assert (strncmp ("abce", {"abcd", "bca", "abc"}, 3), logical ([1, 0, 1]))
 %!assert (strncmp ("abc",  {"abcd", "bca", "abc"}, 4), logical ([0, 0, 0]))

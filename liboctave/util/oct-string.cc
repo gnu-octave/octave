@@ -147,7 +147,7 @@ octave::string::strncmp (const T& str_a, const T& str_b,
                          const typename T::size_type n)
 {
   return (numel (str_a) >= n && numel (str_b) >= n
-          && str_data_cmpi<T> (str_a.data (), str_b.data (), n));
+          && str_data_cmp<T> (str_a.data (), str_b.data (), n));
 }
 
 template<typename T>
@@ -156,7 +156,7 @@ octave::string::strncmp (const T& str_a, const typename T::value_type *str_b,
                          const typename T::size_type n)
 {
   return (numel (str_a) >= n && strlen<T> (str_b) >= n
-          && str_data_cmpi<T> (str_a.data (), str_b, n));
+          && str_data_cmp<T> (str_a.data (), str_b, n));
 }
 
 

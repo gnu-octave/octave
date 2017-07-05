@@ -1303,13 +1303,12 @@
                 </item>
                </layout>
               </item>
-
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_17">
+               <layout class="QHBoxLayout" name="horizontalLayout_autoclose">
                 <item>
                  <widget class="QLabel" name="label_auto_endif">
                   <property name="text">
-                   <string>Auto insert after "if" etc.</string>
+                   <string>Auto insert after &quot;if&quot; etc.</string>
                   </property>
                  </widget>
                 </item>
@@ -1334,18 +1333,18 @@
                   </item>
                   <item>
                    <property name="text">
-                    <string>"endif" etc.</string>
+                    <string>&quot;endif&quot; etc.</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
-                    <string>"end"</string>
+                    <string>&quot;end&quot;</string>
                    </property>
                   </item>
                  </widget>
                 </item>
                 <item>
-                 <spacer name="horizontalSpacer_33">
+                 <spacer name="horizontalSpacer_autoclose">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>

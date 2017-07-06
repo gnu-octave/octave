@@ -48,6 +48,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 #include "text-renderer.h"
 
+static void
+safe_pclose (FILE *f)
+{
+  if (f)
+    octave_pclose (f);
+}
+
+static void
+safe_fclose (FILE *f)
+{
+  if (f)
+    std::fclose (f);
+}
+
 namespace octave
 {
   class
@@ -237,6 +251,8 @@ namespace octave
 
         if (! tmpf)
           error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
+
+        frame.add_fcn (safe_fclose, tmpf);
 
         // Reset buffsize, unless this is 2nd pass of a texstandalone print.
         if (term.find ("tex") == std::string::npos)
@@ -810,20 +826,6 @@ namespace octave
                  halign, valign, props.get_rotation ());
   }
 
-}
-
-static void
-safe_pclose (FILE *f)
-{
-  if (f)
-    octave_pclose (f);
-}
-
-static void
-safe_fclose (FILE *f)
-{
-  if (f)
-    std::fclose (f);
 }
 
 #endif

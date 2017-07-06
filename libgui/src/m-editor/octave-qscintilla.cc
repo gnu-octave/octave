@@ -605,7 +605,7 @@ octave_qscintilla::smart_indent (int line, int /*col*/)
 
   QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|do|function"
                           "|unwind_protect|unwind_protect_cleanup|try)"
-                          "[\n\t #%]");
+                          "[\r]?[\n\t #%]");
   if (prevline.contains (bkey))
     {
       indent (line+1);
@@ -615,7 +615,7 @@ octave_qscintilla::smart_indent (int line, int /*col*/)
       return;
     }
 
-  QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\t #%\n]");
+  QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\r]?[\t #%\n]");
   if (prevline.contains (mkey))
     {
       int prev_ind = indentation (line-1);
@@ -632,7 +632,7 @@ octave_qscintilla::smart_indent (int line, int /*col*/)
     }
 
   QRegExp ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
-                          "|end_try_catch|end_unwind_protext)[\t #%\n(;]");
+                          "|end_try_catch|end_unwind_protext)[\r]?[\t #%\n(;]");
   if (prevline.contains (ekey))
     {
       if (indentation (line-1) <= indentation (line))

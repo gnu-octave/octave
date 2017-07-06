@@ -355,6 +355,7 @@ namespace octave
       m_symbol_table (),
       m_evaluator (*this),
       m_stream_list (*this),
+      m_url_handle_manager (),
       m_cdef_manager (*this),
       m_interactive (false),
       m_read_site_files (true),
@@ -1172,6 +1173,11 @@ namespace octave
   stream_list& interpreter::get_stream_list (void)
   {
     return m_stream_list;
+  }
+
+  url_handle_manager& interpreter::get_url_handle_manager (void)
+  {
+    return m_url_handle_manager;
   }
 
   symbol_table::scope *

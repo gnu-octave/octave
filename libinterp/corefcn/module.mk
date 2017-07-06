@@ -85,6 +85,7 @@ COREFCN_INC = \
   %reldir%/text-renderer.h \
   %reldir%/toplev.h \
   %reldir%/txt-eng.h \
+  %reldir%/url-handle-manager.h \
   %reldir%/utils.h \
   %reldir%/variables.h \
   %reldir%/workspace-element.h \
@@ -242,6 +243,7 @@ COREFCN_SRC = \
   %reldir%/txt-eng.cc \
   %reldir%/typecast.cc \
   %reldir%/urlwrite.cc \
+  %reldir%/url-handle-manager.cc \
   %reldir%/utils.cc \
   %reldir%/variables.cc \
   %reldir%/xdiv.cc \

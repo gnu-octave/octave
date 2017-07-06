@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-classdef.h"
 #include "pt-eval.h"
 #include "symtab.h"
+#include "url-handle-manager.h"
 
 extern OCTINTERP_API bool quit_allowed;
 
@@ -174,6 +175,8 @@ namespace octave
 
     stream_list& get_stream_list (void);
 
+    url_handle_manager& get_url_handle_manager (void);
+
     cdef_manager& get_cdef_manager (void)
     {
       return m_cdef_manager;
@@ -228,6 +231,8 @@ namespace octave
     tree_evaluator m_evaluator;
 
     stream_list m_stream_list;
+
+    url_handle_manager m_url_handle_manager;
 
     cdef_manager m_cdef_manager;
 

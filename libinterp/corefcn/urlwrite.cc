@@ -39,242 +39,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-handle.h"
 #include "glob-match.h"
-#include "singleton-cleanup.h"
 #include "url-transfer.h"
 
 #include "defun.h"
 #include "error.h"
-#include "ovl.h"
-#include "ov-cell.h"
-#include "pager.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "oct-refcount.h"
+#include "ov-cell.h"
+#include "ovl.h"
+#include "pager.h"
 #include "unwind-prot.h"
+#include "url-handle-manager.h"
 
 static void
 delete_file (const std::string& file)
 {
   octave::sys::unlink (file);
 }
-
-typedef octave_handle curl_handle;
-
-class OCTINTERP_API ch_manager
-{
-protected:
-
-  ch_manager (void)
-    : handle_map (), handle_free_list (),
-      next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)) { }
-
-public:
-
-  static void create_instance (void);
-
-  static bool instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      create_instance ();
-
-    if (! instance)
-      error ("unable to create ch_manager!");
-
-    return retval;
-  }
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
-  static curl_handle get_handle (void)
-  {
-    return instance_ok () ? instance->do_get_handle () : curl_handle ();
-  }
-
-  static void free (const curl_handle& h)
-  {
-    if (instance_ok ())
-      instance->do_free (h);
-  }
-
-  static curl_handle lookup (double val)
-  {
-    return instance_ok () ? instance->do_lookup (val) : curl_handle ();
-  }
-
-  static curl_handle lookup (const octave_value& val)
-  {
-    return val.is_real_scalar () ? lookup (val.double_value ())
-                                 : curl_handle ();
-  }
-
-  static octave::url_transfer get_object (double val)
-  {
-    return get_object (lookup (val));
-  }
-
-  static octave::url_transfer get_object (const octave_value& val)
-  {
-    return get_object (lookup (val));
-  }
-
-  static octave::url_transfer get_object (const curl_handle& h)
-  {
-    return instance_ok () ? instance->do_get_object (h) : octave::url_transfer ();
-  }
-
-  static curl_handle make_curl_handle (const std::string& host,
-                                       const std::string& user,
-                                       const std::string& passwd,
-                                       std::ostream& os)
-  {
-    return instance_ok ()
-             ? instance->do_make_curl_handle (host, user, passwd, os)
-             : curl_handle ();
-  }
-
-  static Matrix handle_list (void)
-  {
-    return instance_ok () ? instance->do_handle_list () : Matrix ();
-  }
-
-private:
-
-  static ch_manager *instance;
-
-  typedef std::map<curl_handle, octave::url_transfer>::iterator iterator;
-  typedef std::map<curl_handle, octave::url_transfer>::const_iterator const_iterator;
-
-  typedef std::set<curl_handle>::iterator free_list_iterator;
-  typedef std::set<curl_handle>::const_iterator const_free_list_iterator;
-
-  // A map of handles to curl objects.
-  std::map<curl_handle, octave::url_transfer> handle_map;
-
-  // The available curl handles.
-  std::set<curl_handle> handle_free_list;
-
-  // The next handle available if handle_free_list is empty.
-  double next_handle;
-
-  curl_handle do_get_handle (void);
-
-  void do_free (const curl_handle& h);
-
-  curl_handle do_lookup (double val)
-  {
-    iterator p = (octave::math::isnan (val) ? handle_map.end () : handle_map.find (val));
-
-    return (p != handle_map.end ()) ? p->first : curl_handle ();
-  }
-
-  octave::url_transfer do_get_object (const curl_handle& h)
-  {
-    iterator p = (h.ok () ? handle_map.find (h) : handle_map.end ());
-
-    return (p != handle_map.end ()) ? p->second : octave::url_transfer ();
-  }
-
-  curl_handle do_make_curl_handle (const std::string& host,
-                                   const std::string& user,
-                                   const std::string& passwd,
-                                   std::ostream& os)
-  {
-    curl_handle h = get_handle ();
-
-    octave::url_transfer obj (host, user, passwd, os);
-
-    if (! obj.is_valid ())
-      error ("support for URL transfers was disabled when Octave was built");
-
-    handle_map[h] = obj;
-
-    return h;
-  }
-
-  Matrix do_handle_list (void)
-  {
-    Matrix retval (1, handle_map.size ());
-
-    octave_idx_type i = 0;
-    for (const auto& h_obj : handle_map)
-      {
-        curl_handle h = h_obj.first;
-
-        retval(i++) = h.value ();
-      }
-
-    return retval;
-  }
-};
-
-void
-ch_manager::create_instance (void)
-{
-  instance = new ch_manager ();
-
-  if (instance)
-    singleton_cleanup_list::add (cleanup_instance);
-}
-
-static double
-make_handle_fraction (void)
-{
-  static double maxrand = RAND_MAX + 2.0;
-
-  return (rand () + 1.0) / maxrand;
-}
-
-curl_handle
-ch_manager::do_get_handle (void)
-{
-  curl_handle retval;
-
-  // Curl handles are negative integers plus some random fractional
-  // part.  To avoid running out of integers, we recycle the integer
-  // part but tack on a new random part each time.
-
-  free_list_iterator p = handle_free_list.begin ();
-
-  if (p != handle_free_list.end ())
-    {
-      retval = *p;
-      handle_free_list.erase (p);
-    }
-  else
-    {
-      retval = curl_handle (next_handle);
-
-      next_handle = std::ceil (next_handle) - 1.0 - make_handle_fraction ();
-    }
-
-  return retval;
-}
-
-void
-ch_manager::do_free (const curl_handle& h)
-{
-  if (h.ok ())
-    {
-      iterator p = handle_map.find (h);
-
-      if (p == handle_map.end ())
-        error ("ch_manager::free: invalid object %g", h.value ());
-
-      // Curl handles are negative integers plus some random
-      // fractional part.  To avoid running out of integers, we
-      // recycle the integer part but tack on a new random part
-      // each time.
-
-      handle_map.erase (p);
-
-      if (h.value () < 0)
-        handle_free_list.insert
-          (std::ceil (h.value ()) - make_handle_fraction ());
-    }
-}
-
-ch_manager *ch_manager::instance = nullptr;
 
 DEFUN (urlwrite, args, nargout,
        doc: /* -*- texinfo -*-
@@ -369,30 +151,30 @@ urlwrite ("http://www.google.com/search", "search.html",
 
   frame.add_fcn (delete_file, filename);
 
-  octave::url_transfer curl = octave::url_transfer (url, ofile);
+  octave::url_transfer url_xfer (url, ofile);
 
   octave_value_list retval;
 
-  if (! curl.is_valid ())
+  if (! url_xfer.is_valid ())
     error ("support for URL transfers was disabled when Octave was built");
 
-  curl.http_action (param, method);
+  url_xfer.http_action (param, method);
 
   ofile.close ();
 
-  if (curl.good ())
+  if (url_xfer.good ())
     frame.discard ();
 
   if (nargout > 0)
     {
-      if (curl.good ())
+      if (url_xfer.good ())
         retval = ovl (octave::sys::env::make_absolute (filename), true, "");
       else
-        retval = ovl ("", false, curl.lasterror ());
+        retval = ovl ("", false, url_xfer.lasterror ());
     }
 
-  if (nargout < 2 && ! curl.good ())
-    error ("urlwrite: %s", curl.lasterror ().c_str ());
+  if (nargout < 2 && ! url_xfer.good ())
+    error ("urlwrite: %s", url_xfer.lasterror ().c_str ());
 
   return retval;
 }
@@ -467,30 +249,30 @@ s = urlread ("http://www.google.com/search", "get",
 
   std::ostringstream buf;
 
-  octave::url_transfer curl = octave::url_transfer (url, buf);
+  octave::url_transfer url_xfer = octave::url_transfer (url, buf);
 
-  if (! curl.is_valid ())
+  if (! url_xfer.is_valid ())
     error ("support for URL transfers was disabled when Octave was built");
 
-  curl.http_action (param, method);
+  url_xfer.http_action (param, method);
 
   octave_value_list retval;
 
   if (nargout > 0)
     {
       // Return empty string if no error occurred.
-      retval = ovl (buf.str (), curl.good (),
-                    curl.good () ? "" : curl.lasterror ());
+      retval = ovl (buf.str (), url_xfer.good (),
+                    url_xfer.good () ? "" : url_xfer.lasterror ());
     }
 
-  if (nargout < 2 && ! curl.good ())
-    error ("urlread: %s", curl.lasterror ().c_str ());
+  if (nargout < 2 && ! url_xfer.good ())
+    error ("urlread: %s", url_xfer.lasterror ().c_str ());
 
   return retval;
 }
 
-DEFUN (__ftp__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{handle} =} __ftp__ (@var{host})
 @deftypefnx {} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})
 Undocumented internal function
@@ -511,14 +293,16 @@ Undocumented internal function
     ? args(2).xstring_value ("__ftp__: PASSWD must be a string")
     : "";
 
-  curl_handle ch
-    = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  return ovl (ch.value ());
+  octave::url_handle uh = uhm.make_url_handle (host, user, passwd,
+                                               octave_stdout);
+
+  return ovl (uh.value ());
 }
 
-DEFUN (__ftp_pwd__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_pwd__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_pwd__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
@@ -526,16 +310,18 @@ Undocumented internal function
   if (args.length () != 1)
     error ("__ftp_pwd__: incorrect number of arguments");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_pwd__: invalid ftp handle");
 
-  return ovl (curl.pwd ());
+  return ovl (url_xfer.pwd ());
 }
 
-DEFUN (__ftp_cwd__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_cwd__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_cwd__ (@var{handle}, @var{path})
 Undocumented internal function
 @end deftypefn */)
@@ -549,18 +335,20 @@ Undocumented internal function
   if (nargin > 1)
     path = args(1).xstring_value ("__ftp_cwd__: PATH must be a string");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_cwd__: invalid ftp handle");
 
-  curl.cwd (path);
+  url_xfer.cwd (path);
 
   return ovl ();
 }
 
-DEFUN (__ftp_dir__, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_dir__, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_dir__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
@@ -568,18 +356,20 @@ Undocumented internal function
   if (args.length () != 1)
     error ("__ftp_dir__: incorrect number of arguments");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_dir__: invalid ftp handle");
 
   octave_value retval;
 
   if (nargout == 0)
-    curl.dir ();
+    url_xfer.dir ();
   else
     {
-      string_vector sv = curl.list ();
+      string_vector sv = url_xfer.list ();
       octave_idx_type n = sv.numel ();
 
       if (n == 0)
@@ -611,7 +401,7 @@ Undocumented internal function
               bool fisdir;
               double fsize;
 
-              curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
+              url_xfer.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
               fileisdir (i) = fisdir;
               filectime (i) = ctime (&ftime);
@@ -631,8 +421,8 @@ Undocumented internal function
   return retval;
 }
 
-DEFUN (__ftp_ascii__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_ascii__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_ascii__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
@@ -640,18 +430,20 @@ Undocumented internal function
   if (args.length () != 1)
     error ("__ftp_ascii__: incorrect number of arguments");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_ascii__: invalid ftp handle");
 
-  curl.ascii ();
+  url_xfer.ascii ();
 
   return ovl ();
 }
 
-DEFUN (__ftp_binary__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_binary__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_binary__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
@@ -659,18 +451,20 @@ Undocumented internal function
   if (args.length () != 1)
     error ("__ftp_binary__: incorrect number of arguments");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_binary__: invalid ftp handle");
 
-  curl.binary ();
+  url_xfer.binary ();
 
   return ovl ();
 }
 
-DEFUN (__ftp_close__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_close__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_close__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
@@ -678,18 +472,20 @@ Undocumented internal function
   if (args.length () != 1)
     error ("__ftp_close__: incorrect number of arguments");
 
-  curl_handle h = ch_manager::lookup (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+
+  octave::url_handle h = uhm.lookup (args(0));
 
   if (! h.ok ())
     error ("__ftp_close__: invalid ftp handle");
 
-  ch_manager::free (h);
+  uhm.free (h);
 
   return ovl ();
 }
 
-DEFUN (__ftp_mode__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_mode__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_mode__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
@@ -697,16 +493,18 @@ Undocumented internal function
   if (args.length () != 1)
     error ("__ftp_mode__: incorrect number of arguments");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_binary__: invalid ftp handle");
 
-  return ovl (curl.is_ascii () ? "ascii" : "binary");
+  return ovl (url_xfer.is_ascii () ? "ascii" : "binary");
 }
 
-DEFUN (__ftp_delete__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_delete__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_delete__ (@var{handle}, @var{path})
 Undocumented internal function
 @end deftypefn */)
@@ -716,18 +514,20 @@ Undocumented internal function
 
   std::string file = args(1).xstring_value ("__ftp_delete__: FILE must be a string");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_delete__: invalid ftp handle");
 
-  curl.del (file);
+  url_xfer.del (file);
 
   return ovl ();
 }
 
-DEFUN (__ftp_rmdir__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_rmdir__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_rmdir__ (@var{handle}, @var{path})
 Undocumented internal function
 @end deftypefn */)
@@ -737,18 +537,20 @@ Undocumented internal function
 
   std::string dir = args(1).xstring_value ("__ftp_rmdir__: DIR must be a string");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_rmdir__: invalid ftp handle");
 
-  curl.rmdir (dir);
+  url_xfer.rmdir (dir);
 
   return ovl ();
 }
 
-DEFUN (__ftp_mkdir__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_mkdir__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_mkdir__ (@var{handle}, @var{path})
 Undocumented internal function
 @end deftypefn */)
@@ -758,18 +560,20 @@ Undocumented internal function
 
   std::string dir = args(1).xstring_value ("__ftp_mkdir__: DIR must be a string");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_mkdir__: invalid ftp handle");
 
-  curl.mkdir (dir);
+  url_xfer.mkdir (dir);
 
   return ovl ();
 }
 
-DEFUN (__ftp_rename__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_rename__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_rename__ (@var{handle}, @var{path})
 Undocumented internal function
 @end deftypefn */)
@@ -780,18 +584,20 @@ Undocumented internal function
   std::string oldname = args(1).xstring_value ("__ftp_rename__: OLDNAME must be a string");
   std::string newname = args(2).xstring_value ("__ftp_rename__: NEWNAME must be a string");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (url_xfer.is_valid ())
     error ("__ftp_rename__: invalid ftp handle");
 
-  curl.rename (oldname, newname);
+  url_xfer.rename (oldname, newname);
 
   return ovl ();
 }
 
-DEFUN (__ftp_mput__, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_mput__, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __ftp_mput__ (@var{handle}, @var{files})
 Undocumented internal function
 @end deftypefn */)
@@ -801,9 +607,11 @@ Undocumented internal function
 
   std::string pat = args(1).xstring_value ("__ftp_mput__: PATTERN must be a string");
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_mput__: invalid ftp handle");
 
   string_vector file_list;
@@ -822,10 +630,10 @@ Undocumented internal function
 
       if (fs.is_dir ())
         {
-          file_list.append (curl.mput_directory ("", file));
+          file_list.append (url_xfer.mput_directory ("", file));
 
-          if (! curl.good ())
-            error ("__ftp_mput__: %s", curl.lasterror ().c_str ());
+          if (! url_xfer.good ())
+            error ("__ftp_mput__: %s", url_xfer.lasterror ().c_str ());
         }
       else
         {
@@ -835,12 +643,12 @@ Undocumented internal function
           if (! ifile.is_open ())
             error ("__ftp_mput__: unable to open file");
 
-          curl.put (file, ifile);
+          url_xfer.put (file, ifile);
 
           ifile.close ();
 
-          if (! curl.good ())
-            error ("__ftp_mput__: %s", curl.lasterror ().c_str ());
+          if (! url_xfer.good ())
+            error ("__ftp_mput__: %s", url_xfer.lasterror ().c_str ());
 
           file_list.append (file);
         }
@@ -852,8 +660,8 @@ Undocumented internal function
     return ovl ();
 }
 
-DEFUN (__ftp_mget__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__ftp_mget__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __ftp_mget__ (@var{handle}, @var{pattern})
 @deftypefnx {} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})
 Undocumented internal function
@@ -871,12 +679,14 @@ Undocumented internal function
   if (nargin == 3 && ! args(2).isempty ())
     target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string") + octave::sys::file_ops::dir_sep_str ();
 
-  octave::url_transfer curl = ch_manager::get_object (args(0));
+  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  if (! curl.is_valid ())
+  octave::url_transfer url_xfer = uhm.get_object (args(0));
+
+  if (! url_xfer.is_valid ())
     error ("__ftp_mget__: invalid ftp handle");
 
-  string_vector sv = curl.list ();
+  string_vector sv = url_xfer.list ();
   octave_idx_type n = 0;
   glob_match pattern (file);
 
@@ -890,10 +700,10 @@ Undocumented internal function
           bool fisdir;
           double fsize;
 
-          curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
+          url_xfer.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
           if (fisdir)
-            curl.mget_directory (sv(i), target);
+            url_xfer.mget_directory (sv(i), target);
           else
             {
               std::ofstream ofile ((target + sv(i)).c_str (),
@@ -907,16 +717,16 @@ Undocumented internal function
 
               frame.add_fcn (delete_file, target + sv(i));
 
-              curl.get (sv(i), ofile);
+              url_xfer.get (sv(i), ofile);
 
               ofile.close ();
 
-              if (curl.good ())
+              if (url_xfer.good ())
                 frame.discard ();
             }
 
-          if (! curl.good ())
-            error ("__ftp_mget__: %s", curl.lasterror().c_str());
+          if (! url_xfer.good ())
+            error ("__ftp_mget__: %s", url_xfer.lasterror().c_str());
         }
     }
 

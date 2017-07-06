@@ -29,10 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-extern OCTINTERP_API void initialize_file_io (void);
-
-extern OCTINTERP_API void close_files (void);
-
 extern OCTINTERP_API void mark_for_deletion (const std::string&);
 
 extern OCTINTERP_API void cleanup_tmp_files (void);

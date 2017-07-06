@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "file-io.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"
@@ -78,37 +79,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
-
-static octave_value stdin_file;
-static octave_value stdout_file;
-static octave_value stderr_file;
-
-static octave::stream stdin_stream;
-static octave::stream stdout_stream;
-static octave::stream stderr_stream;
-
-void
-initialize_file_io (void)
-{
-  stdin_stream = octave_istream::create (&std::cin, "stdin");
-
-  // This uses octave_stdout (see pager.h), not std::cout so that Octave's
-  // standard output stream will pass through the pager.
-
-  stdout_stream = octave_ostream::create (&octave_stdout, "stdout");
-
-  stderr_stream = octave_ostream::create (&std::cerr, "stderr");
-
-  stdin_file = octave::stream_list::insert (stdin_stream);
-  stdout_file = octave::stream_list::insert (stdout_stream);
-  stderr_file = octave::stream_list::insert (stderr_stream);
-}
-
-void
-close_files (void)
-{
-  octave::stream_list::clear ();
-}
 
 // List of files to delete when we exit or crash.
 //
@@ -233,8 +203,8 @@ fopen_mode_to_ios_mode (const std::string& mode)
   return retval;
 }
 
-DEFUN (fclose, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fclose, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} fclose (@var{fid})
 @deftypefnx {} {} fclose ("all")
 @deftypefnx {} {@var{status} =} fclose ("all")
@@ -250,11 +220,13 @@ with gnuplot.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (octave::stream_list::remove (args(0), "fclose"));
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  return ovl (streams.remove (args(0), "fclose"));
 }
 
-DEFUN (fclear, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fclear, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} fclear (@var{fid})
 Clear the stream state for the file specified by the file descriptor
 @var{fid}.
@@ -264,17 +236,19 @@ Clear the stream state for the file specified by the file descriptor
   if (args.length () != 1)
     print_usage ();
 
-  int fid = octave::stream_list::get_file_number (args(0));
+  octave::stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = octave::stream_list::lookup (fid, "fclear");
+  int fid = streams.get_file_number (args(0));
+
+  octave::stream os = streams.lookup (fid, "fclear");
 
   os.clearerr ();
 
   return ovl ();
 }
 
-DEFUN (fflush, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fflush, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} fflush (@var{fid})
 Flush output to file descriptor @var{fid}.
 
@@ -293,8 +267,10 @@ always a good idea to flush the standard output stream before calling
 
   octave_value retval = -1;
 
+  octave::stream_list& streams = interp.get_stream_list ();
+
   // FIXME: any way to avoid special case for stdout?
-  int fid = octave::stream_list::get_file_number (args(0));
+  int fid = streams.get_file_number (args(0));
 
   if (fid == 1)
     {
@@ -304,7 +280,7 @@ always a good idea to flush the standard output stream before calling
     }
   else
     {
-      octave::stream os = octave::stream_list::lookup (fid, "fflush");
+      octave::stream os = streams.lookup (fid, "fflush");
 
       retval = os.flush ();
     }
@@ -312,8 +288,8 @@ always a good idea to flush the standard output stream before calling
   return retval;
 }
 
-DEFUN (fgetl, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fgetl, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{str} =} fgetl (@var{fid})
 @deftypefnx {} {@var{str} =} fgetl (@var{fid}, @var{len})
 Read characters from a file, stopping after a newline, or EOF,
@@ -338,7 +314,9 @@ To read a line and return the terminating newline see @code{fgets}.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), who);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), who);
 
   octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -352,8 +330,8 @@ To read a line and return the terminating newline see @code{fgets}.
     return ovl (-1, 0);
 }
 
-DEFUN (fgets, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fgets, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{str} =} fgets (@var{fid})
 @deftypefnx {} {@var{str} =} fgets (@var{fid}, @var{len})
 Read characters from a file, stopping after a newline, or EOF,
@@ -378,7 +356,9 @@ To read a line and discard the terminating newline see @code{fgetl}.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), who);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), who);
 
   octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -392,8 +372,8 @@ To read a line and discard the terminating newline see @code{fgetl}.
     return ovl (-1.0, 0.0);
 }
 
-DEFUN (fskipl, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fskipl, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{nlines} =} fskipl (@var{fid})
 @deftypefnx {} {@var{nlines} =} fskipl (@var{fid}, @var{count})
 @deftypefnx {} {@var{nlines} =} fskipl (@var{fid}, Inf)
@@ -418,7 +398,9 @@ Returns the number of lines skipped (end-of-line sequences encountered).
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), who);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), who);
 
   octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -507,8 +489,8 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
   return retval;
 }
 
-DEFUN (fopen, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fopen, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{fid} =} fopen (@var{name})
 @deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode})
 @deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode}, @var{arch})
@@ -615,6 +597,8 @@ When opening a new file that does not yet exist, permissions will be set to
 
   octave_value_list retval = ovl (-1.0);
 
+  octave::stream_list& streams = interp.get_stream_list ();
+
   if (nargin == 1)
     {
       if (args(0).is_string ())
@@ -624,11 +608,11 @@ When opening a new file that does not yet exist, permissions will be set to
           // with MODE = "r".  To open a file called "all", you have
           // to supply more than one argument.
           if (nargout < 2 && args(0).string_value () == "all")
-            return octave::stream_list::open_file_numbers ();
+            return streams.open_file_numbers ();
         }
       else
         {
-          string_vector tmp = octave::stream_list::get_info (args(0));
+          string_vector tmp = streams.get_info (args(0));
 
           retval = ovl (tmp(0), tmp(1), tmp(2));
 
@@ -647,7 +631,7 @@ When opening a new file that does not yet exist, permissions will be set to
   octave::stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
 
   if (os)
-    retval = ovl (octave::stream_list::insert (os), "");
+    retval = ovl (streams.insert (os), "");
   else
     {
       int error_number = 0;
@@ -672,8 +656,8 @@ When opening a new file that does not yet exist, permissions will be set to
 %! assert (arch, "");
 */
 
-DEFUN (freport, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (freport, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} freport ()
 Print a list of which files have been opened, and whether they are open
 for reading, writing, or both.
@@ -698,13 +682,15 @@ freport ()
   if (args.length () > 0)
     warning ("freport: ignoring extra arguments");
 
-  octave_stdout << octave::stream_list::list_open_files ();
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave_stdout << streams.list_open_files ();
 
   return ovl ();
 }
 
-DEFUN (frewind, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (frewind, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} frewind (@var{fid})
 @deftypefnx {} {@var{status} =} frewind (@var{fid})
 Move the file pointer to the beginning of the file specified by file
@@ -720,7 +706,9 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.
 
   int result = -1;
 
-  octave::stream os = octave::stream_list::lookup (args(0), "frewind");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), "frewind");
 
   result = os.rewind ();
 
@@ -730,8 +718,8 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.
     return ovl ();
 }
 
-DEFUN (fseek, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fseek, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} fseek (@var{fid}, @var{offset})
 @deftypefnx {} {} fseek (@var{fid}, @var{offset}, @var{origin})
 @deftypefnx {} {@var{status} =} fseek (@dots{})
@@ -754,15 +742,17 @@ be positive, negative, or zero but not all combinations of @var{origin} and
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), "fseek");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), "fseek");
 
   octave_value origin_arg = (nargin == 3) ? args(2) : octave_value (-1.0);
 
   return ovl (os.seek (args(1), origin_arg));
 }
 
-DEFUN (ftell, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (ftell, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {@var{pos} =} ftell (@var{fid})
 Return the position of the file pointer as the number of characters from the
 beginning of the file specified by file descriptor @var{fid}.
@@ -772,14 +762,16 @@ beginning of the file specified by file descriptor @var{fid}.
   if (args.length () != 1)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), "ftell");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), "ftell");
 
   return ovl (os.tell ());
 }
 
 static octave_value_list
-printf_internal (const std::string& who, const octave_value_list& args,
-                 int nargout)
+printf_internal (octave::interpreter& interp, const std::string& who,
+                 const octave_value_list& args, int nargout)
 {
   int nargin = args.length ();
 
@@ -791,12 +783,14 @@ printf_internal (const std::string& who, const octave_value_list& args,
   octave::stream os;
   int fmt_n = 0;
 
+  octave::stream_list& streams = interp.get_stream_list ();
+
   if (args(0).is_string ())
-    os = octave::stream_list::lookup (1, who);
+    os = streams.lookup (1, who);
   else
     {
       fmt_n = 1;
-      os = octave::stream_list::lookup (args(0), who);
+      os = streams.lookup (args(0), who);
     }
 
   if (! args(fmt_n).is_string ())
@@ -820,8 +814,8 @@ printf_internal (const std::string& who, const octave_value_list& args,
     return ovl ();
 }
 
-DEFUN (fprintf, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fprintf, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} fprintf (@var{fid}, @var{template}, @dots{})
 @deftypefnx {} {} fprintf (@var{template}, @dots{})
 @deftypefnx {} {@var{numbytes} =} fprintf (@dots{})
@@ -841,11 +835,11 @@ expanded even when the template string is defined with single quotes.
 {
   static std::string who = "fprintf";
 
-  return printf_internal (who, args, nargout);
+  return printf_internal (interp, who, args, nargout);
 }
 
-DEFUN (printf, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (printf, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} printf (@var{template}, @dots{})
 Print optional arguments under the control of the template string
 @var{template} to the stream @code{stdout} and return the number of
@@ -866,22 +860,26 @@ expanded even when the template string is defined with single quotes.
 
   octave_value_list tmp_args = args;
 
-  return printf_internal (who, tmp_args.prepend (octave_value (1)), nargout);
+  return printf_internal (interp, who, tmp_args.prepend (octave_value (1)),
+                          nargout);
 }
 
 static octave_value_list
-puts_internal (const std::string& who, const octave_value_list& args)
+puts_internal (octave::interpreter& interp, const std::string& who,
+               const octave_value_list& args)
 {
   if (args.length () != 2)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), who);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), who);
 
   return ovl (os.puts (args(1), who));
 }
 
-DEFUN (fputs, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fputs, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} fputs (@var{fid}, @var{string})
 @deftypefnx {} {@var{status} =} fputs (@var{fid}, @var{string})
 Write the string @var{string} to the file with file descriptor @var{fid}.
@@ -896,11 +894,11 @@ Return a non-negative number on success or EOF on error.
 {
   static std::string who = "fputs";
 
-  return puts_internal (who, args);
+  return puts_internal (interp, who, args);
 }
 
-DEFUN (puts, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (puts, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} puts (@var{string})
 @deftypefnx {} {@var{status} =} puts (@var{string})
 Write a string to the standard output with no formatting.
@@ -916,7 +914,7 @@ Return a non-negative number on success and EOF on error.
 
   octave_value_list tmp_args = args;
 
-  return puts_internal (who, tmp_args.prepend (octave_value (1)));
+  return puts_internal (interp, who, tmp_args.prepend (octave_value (1)));
 }
 
 DEFUN (sprintf, args, ,
@@ -983,7 +981,8 @@ expanded even when the template string is defined with single quotes.
 }
 
 static octave_value_list
-scanf_internal (const std::string& who, const octave_value_list& args)
+scanf_internal (octave::interpreter& interp, const std::string& who,
+                const octave_value_list& args)
 {
   int nargin = args.length ();
 
@@ -992,7 +991,9 @@ scanf_internal (const std::string& who, const octave_value_list& args)
 
   octave_value_list retval;
 
-  octave::stream os = octave::stream_list::lookup (args(0), who);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), who);
 
   if (! args(1).is_string ())
     error ("%s: format TEMPLATE must be a string", who.c_str ());
@@ -1018,8 +1019,8 @@ scanf_internal (const std::string& who, const octave_value_list& args)
   return retval;
 }
 
-DEFUN (fscanf, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fscanf, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})
 @deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, "C")
 In the first form, read from @var{fid} according to @var{template},
@@ -1070,7 +1071,7 @@ complete description of the syntax of the template string.
 {
   static std::string who = "fscanf";
 
-  return scanf_internal (who, args);
+  return scanf_internal (interp, who, args);
 }
 
 static std::string
@@ -1146,8 +1147,8 @@ character to be read is returned in @var{pos}.
   return retval;
 }
 
-DEFUN (scanf, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (scanf, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})
 @deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, "C")
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.
@@ -1160,11 +1161,12 @@ It is currently not useful to call @code{scanf} in interactive programs.
 
   octave_value_list tmp_args = args;
 
-  return scanf_internal (who, tmp_args.prepend (octave_value (0)));
+  return scanf_internal (interp, who, tmp_args.prepend (octave_value (0)));
 }
 
 static octave_value_list
-textscan_internal (const std::string& who, const octave_value_list& args)
+textscan_internal (octave::interpreter& interp, const std::string& who,
+                   const octave_value_list& args)
 {
   if (args.length () < 1)
     print_usage (who);
@@ -1181,7 +1183,11 @@ textscan_internal (const std::string& who, const octave_value_list& args)
         error ("%s: unable to create temporary input buffer", who.c_str ());
     }
   else
-    os =octave::stream_list::lookup (args(0), who);
+    {
+      octave::stream_list& streams = interp.get_stream_list ();
+
+      os = streams.lookup (args(0), who);
+    }
 
   int nskip = 1;
 
@@ -1231,8 +1237,8 @@ textscan_internal (const std::string& who, const octave_value_list& args)
   return ovl (result, count, errmsg);
 }
 
-DEFUN (textscan, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (textscan, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})
 @deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat})
 @deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})
@@ -1498,11 +1504,11 @@ from the beginning of the file or string, where processing stopped.
 {
   static std::string who = "textscan";
 
-  return textscan_internal (who, args);
+  return textscan_internal (interp, who, args);
 }
 
-DEFUN (__textscan__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__textscan__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {@var{C} =} __textscan__ (@var{who}, @dots{})
 Like @code{textscan} but accept additional argument @var{who} to use
 as the name of the function when reporting errors.
@@ -1511,7 +1517,8 @@ as the name of the function when reporting errors.
   if (args.length () == 0)
     print_usage ();
 
-  return textscan_internal (args(0).string_value (), args.splice (0, 1));
+  return textscan_internal (interp, args(0).string_value (),
+                            args.splice (0, 1));
 }
 
 /*
@@ -2285,8 +2292,8 @@ do_fread (octave::stream& os, const octave_value& size_arg,
                   flt_fmt, count);
 }
 
-DEFUN (fread, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fread, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} fread (@var{fid})
 @deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size})
 @deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision})
@@ -2461,7 +2468,9 @@ The optional return value @var{count} contains the number of elements read.
   if (nargin < 1 || nargin > 5)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), "fread");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), "fread");
 
   octave_value size = lo_ieee_inf_value ();
   octave_value prec = "uchar";
@@ -2532,8 +2541,8 @@ do_fwrite (octave::stream& os, const octave_value& data,
   return os.write (data, block_size, output_type, skip, flt_fmt);
 }
 
-DEFUN (fwrite, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (fwrite, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} fwrite (@var{fid}, @var{data})
 @deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision})
 @deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip})
@@ -2559,7 +2568,9 @@ are too large to fit in the specified precision.
   if (nargin < 2 || nargin > 5)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), "fwrite");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), "fwrite");
 
   octave_value prec = "uchar";
   octave_value skip = 0;
@@ -2586,8 +2597,8 @@ are too large to fit in the specified precision.
   return ovl (do_fwrite (os, data, prec, skip, arch));
 }
 
-DEFUNX ("feof", Ffeof, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("feof", Ffeof, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{status} =} feof (@var{fid})
 Return 1 if an end-of-file condition has been encountered for the file
 specified by file descriptor @var{fid} and 0 otherwise.
@@ -2601,13 +2612,15 @@ end-of-file condition.
   if (args.length () != 1)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), "feof");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), "feof");
 
   return ovl (os.eof () ? 1.0 : 0.0);
 }
 
-DEFUNX ("ferror", Fferror, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("ferror", Fferror, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{msg} =} ferror (@var{fid})
 @deftypefnx {} {[@var{msg}, @var{err}] =} ferror (@var{fid})
 @deftypefnx {} {[@dots{}] =} ferror (@var{fid}, "clear")
@@ -2632,7 +2645,9 @@ whether the next operation will result in an error condition.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream os = octave::stream_list::lookup (args(0), "ferror");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream os = streams.lookup (args(0), "ferror");
 
   bool clear = false;
 
@@ -2650,8 +2665,8 @@ whether the next operation will result in an error condition.
   return ovl (error_message, error_number);
 }
 
-DEFUNX ("popen", Fpopen, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("popen", Fpopen, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{fid} =} popen (@var{command}, @var{mode})
 Start a process and create a pipe.
 
@@ -2696,17 +2711,19 @@ endwhile
 
   octave_value retval;
 
+  octave::stream_list& streams = interp.get_stream_list ();
+
   if (mode == "r")
     {
       octave::stream ips = octave_iprocstream::create (name);
 
-      retval = octave::stream_list::insert (ips);
+      retval = streams.insert (ips);
     }
   else if (mode == "w")
     {
       octave::stream ops = octave_oprocstream::create (name);
 
-      retval = octave::stream_list::insert (ops);
+      retval = streams.insert (ops);
     }
   else
     error ("popen: invalid MODE specified");
@@ -2714,8 +2731,8 @@ endwhile
   return retval;
 }
 
-DEFUNX ("pclose", Fpclose, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("pclose", Fpclose, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {} pclose (@var{fid})
 Close a file identifier that was opened by @code{popen}.
 
@@ -2726,7 +2743,9 @@ The function @code{fclose} may also be used for the same purpose.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (octave::stream_list::remove (args(0), "pclose"));
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  return ovl (streams.remove (args(0), "pclose"));
 }
 
 DEFUN (tempname, args, ,
@@ -2822,8 +2841,8 @@ see @code{tmpfile}.
 %! end_unwind_protect
 */
 
-DEFUN (tmpfile, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (tmpfile, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{fid}, @var{msg}] =} tmpfile ()
 Return the file ID corresponding to a new temporary file with a unique
 name.
@@ -2855,7 +2874,9 @@ system-dependent error message.
       if (! s)
         error ("tmpfile: failed to create octave_stdiostream object");
 
-      retval = ovl (octave::stream_list::insert (s), "");
+      octave::stream_list& streams = interp.get_stream_list ();
+
+      retval = ovl (streams.insert (s), "");
     }
   else
     {
@@ -2865,8 +2886,8 @@ system-dependent error message.
   return retval;
 }
 
-DEFUN (mkstemp, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (mkstemp, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp ("@var{template}")
 @deftypefnx {} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp ("@var{template}", @var{delete})
 Return the file descriptor @var{fid} corresponding to a new temporary file
@@ -2930,7 +2951,9 @@ message.
           if (! s)
             error ("mkstemp: failed to create octave_stdiostream object");
 
-          retval(0) = octave::stream_list::insert (s);
+          octave::stream_list& streams = interp.get_stream_list ();
+
+          retval(0) = streams.insert (s);
           retval(1) = nm;
 
           if (nargin == 2 && args(1).is_true ())
@@ -3092,8 +3115,8 @@ const_value (const char *, const octave_value_list& args,
   return octave_value (val);
 }
 
-DEFUNX ("stdin", Fstdin, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("stdin", Fstdin, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {} stdin ()
 Return the numeric value corresponding to the standard input stream.
 
@@ -3102,11 +3125,13 @@ line editing functions.
 @seealso{stdout, stderr}
 @end deftypefn */)
 {
-  return const_value ("stdin", args, stdin_file);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  return const_value ("stdin", args, streams.stdin_file ());
 }
 
-DEFUNX ("stdout", Fstdout, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("stdout", Fstdout, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {} stdout ()
 Return the numeric value corresponding to the standard output stream.
 
@@ -3114,11 +3139,13 @@ Data written to the standard output is normally filtered through the pager.
 @seealso{stdin, stderr}
 @end deftypefn */)
 {
-  return const_value ("stdout", args, stdout_file);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  return const_value ("stdout", args, streams.stdout_file ());
 }
 
-DEFUNX ("stderr", Fstderr, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("stderr", Fstderr, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {} stderr ()
 Return the numeric value corresponding to the standard error stream.
 
@@ -3127,5 +3154,7 @@ It is useful for error messages and prompts.
 @seealso{stdin, stdout}
 @end deftypefn */)
 {
-  return const_value ("stderr", args, stderr_file);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  return const_value ("stderr", args, streams.stderr_file ());
 }

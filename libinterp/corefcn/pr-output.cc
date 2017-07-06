@@ -3502,8 +3502,8 @@ formatted output in a string.
   return retval;
 }
 
-DEFUN (fdisp, args, ,
-       classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
+DEFMETHOD (fdisp, interp, args, ,
+           classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
 @deftypefn {} {} fdisp (@var{fid}, @var{x})
 Display the value of @var{x} on the stream @var{fid}.
@@ -3527,9 +3527,11 @@ Note that the output from @code{fdisp} always ends with a newline.
   if (args.length () != 2)
     print_usage ();
 
-  int fid = octave::stream_list::get_file_number (args(0));
+  octave::stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = octave::stream_list::lookup (fid, "fdisp");
+  int fid = streams.get_file_number (args(0));
+
+  octave::stream os = streams.lookup (fid, "fdisp");
 
   std::ostream *osp = os.output_stream ();
 

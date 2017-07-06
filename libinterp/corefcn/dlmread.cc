@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 
 #include "defun.h"
+#include "interpreter.h"
 #include "oct-stream.h"
 #include "error.h"
 #include "ovl.h"
@@ -158,8 +159,8 @@ parse_range_spec (const octave_value& range_spec,
   return stat;
 }
 
-DEFUN (dlmread, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dlmread, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{data} =} dlmread (@var{file})
 @deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep})
 @deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})
@@ -228,7 +229,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
     }
   else if (args(0).is_scalar_type ())
     {
-      octave::stream is = octave::stream_list::lookup (args(0), "dlmread");
+      octave::stream_list& streams = interp.get_stream_list ();
+
+      octave::stream is = streams.lookup (args(0), "dlmread");
 
       input = is.input_stream ();
 

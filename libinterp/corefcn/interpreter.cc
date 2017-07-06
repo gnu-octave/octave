@@ -354,6 +354,7 @@ namespace octave
       m_load_path (),
       m_symbol_table (),
       m_evaluator (*this),
+      m_stream_list (*this),
       m_cdef_manager (*this),
       m_interactive (false),
       m_read_site_files (true),
@@ -408,8 +409,6 @@ namespace octave
       install_signal_handlers ();
     else
       quit_allowed = false;
-
-    initialize_file_io ();
 
     install_types ();
 
@@ -1137,8 +1136,6 @@ namespace octave
 
     OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
 
-    OCTAVE_SAFE_CALL (close_files, ());
-
     OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
 
     // FIXME:  May still need something like this to ensure that
@@ -1170,6 +1167,11 @@ namespace octave
   tree_evaluator& interpreter::get_evaluator (void)
   {
     return m_evaluator;
+  }
+
+  stream_list& interpreter::get_stream_list (void)
+  {
+    return m_stream_list;
   }
 
   symbol_table::scope *

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "environment.h"
 #include "help.h"
 #include "load-path.h"
+#include "oct-stream.h"
 #include "ov-classdef.h"
 #include "pt-eval.h"
 #include "symtab.h"
@@ -171,6 +172,8 @@ namespace octave
 
     tree_evaluator& get_evaluator (void);
 
+    stream_list& get_stream_list (void);
+
     cdef_manager& get_cdef_manager (void)
     {
       return m_cdef_manager;
@@ -223,6 +226,8 @@ namespace octave
     symbol_table m_symbol_table;
 
     tree_evaluator m_evaluator;
+
+    stream_list m_stream_list;
 
     cdef_manager m_cdef_manager;
 

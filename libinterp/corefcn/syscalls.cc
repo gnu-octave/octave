@@ -106,8 +106,8 @@ mk_stat_result (const octave::sys::base_file_stat& fs)
     return ovl (Matrix (), -1, fs.error ());
 }
 
-DEFUNX ("dup2", Fdup2, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("dup2", Fdup2, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})
 Duplicate a file descriptor.
 
@@ -120,9 +120,11 @@ error message.
   if (args.length () != 2)
     print_usage ();
 
-  octave::stream old_stream = octave::stream_list::lookup (args(0), "dup2");
+  octave::stream_list& streams = interp.get_stream_list ();
 
-  octave::stream new_stream = octave::stream_list::lookup (args(1), "dup2");
+  octave::stream old_stream = streams.lookup (args(0), "dup2");
+
+  octave::stream new_stream = streams.lookup (args(1), "dup2");
 
   int i_old = old_stream.file_number ();
   int i_new = new_stream.file_number ();
@@ -201,8 +203,8 @@ error message.
   return ovl (status, msg);
 }
 
-DEFUNX ("popen2", Fpopen2, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("popen2", Fpopen2, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
 Start a subprocess with two-way communication.
 
@@ -297,9 +299,9 @@ exit status, it will linger until Octave exits.
   octave::stream os
     = octave_stdiostream::create (exec_file + "-out", ofile, std::ios::out);
 
-  return ovl (octave::stream_list::insert (os),
-              octave::stream_list::insert (is),
-              pid);
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  return ovl (streams.insert (os), streams.insert (is), pid);
 }
 
 /*
@@ -370,8 +372,8 @@ exit status, it will linger until Octave exits.
 
 */
 
-DEFUNX ("fcntl", Ffcntl, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("fcntl", Ffcntl, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})
 Change the properties of the open file @var{fid}.
 
@@ -432,7 +434,9 @@ message.
   if (args.length () != 3)
     print_usage ();
 
-  octave::stream strm = octave::stream_list::lookup (args(0), "fcntl");
+  octave::stream_list& streams = interp.get_stream_list ();
+
+  octave::stream strm = streams.lookup (args(0), "fcntl");
 
   int fid = strm.file_number ();
 
@@ -716,8 +720,8 @@ error message.
 
 */
 
-DEFUNX ("pipe", Fpipe, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("pipe", Fpipe, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{read_fd}, @var{write_fd}, @var{err}, @var{msg}] =} pipe ()
 Create a pipe and return the reading and writing ends of the pipe into
 @var{read_fd} and @var{write_fd} respectively.
@@ -749,15 +753,14 @@ error message.
       octave::stream os
         = octave_stdiostream::create ("pipe-out", ofile, std::ios::out);
 
-      return ovl (octave::stream_list::insert (is),
-                  octave::stream_list::insert (os),
-                  status,
-                  msg);
+      octave::stream_list& streams = interp.get_stream_list ();
+
+      return ovl (streams.insert (is), streams.insert (os), status, msg);
     }
 }
 
-DEFUNX ("stat", Fstat, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("stat", Fstat, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})
 @deftypefnx {} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{fid})
 @deftypefnx {} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})
@@ -859,7 +862,9 @@ For example:
 
   if (args(0).is_scalar_type ())
     {
-      int fid = octave::stream_list::get_file_number (args(0));
+      octave::stream_list& streams = interp.get_stream_list ();
+
+      int fid = streams.get_file_number (args(0));
 
       octave::sys::file_fstat fs (fid);
 

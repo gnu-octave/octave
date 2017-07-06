@@ -45,6 +45,8 @@ class string_vector;
 
 namespace octave
 {
+  class interpreter;
+
   // These are only needed as arguments to private functions, so they
   // are also treated as private.
 
@@ -413,35 +415,37 @@ namespace octave
   OCTINTERP_API
   stream_list
   {
-  protected:
-
-    stream_list (void) : list (), lookup_cache (list.end ()) { }
-
   public:
 
-    ~stream_list (void) = default;
+    stream_list (interpreter& interp);
 
-    static bool instance_ok (void);
+    stream_list (const stream_list&) = delete;
+    stream_list& operator = (const stream_list&) = delete;
 
-    static int insert (stream& os);
+    ~stream_list (void);
 
-    static stream lookup (int fid, const std::string& who = "");
+    int insert (stream& os);
 
-    static stream lookup (const octave_value& fid, const std::string& who = "");
+    stream lookup (int fid, const std::string& who = "") const;
+    stream lookup (const octave_value& fid, const std::string& who = "") const;
 
-    static int remove (int fid, const std::string& who = "");
-    static int remove (const octave_value& fid, const std::string& who = "");
+    int remove (int fid, const std::string& who = "");
+    int remove (const octave_value& fid, const std::string& who = "");
 
-    static void clear (bool flush = true);
+    void clear (bool flush = true);
 
-    static string_vector get_info (int fid);
-    static string_vector get_info (const octave_value& fid);
+    string_vector get_info (int fid) const;
+    string_vector get_info (const octave_value& fid) const;
 
-    static std::string list_open_files (void);
+    std::string list_open_files (void) const;
 
-    static octave_value open_file_numbers (void);
+    octave_value open_file_numbers (void) const;
 
-    static int get_file_number (const octave_value& fid);
+    int get_file_number (const octave_value& fid) const;
+
+    octave_value stdin_file (void) const;
+    octave_value stdout_file (void) const;
+    octave_value stderr_file (void) const;
 
   private:
 
@@ -451,29 +455,9 @@ namespace octave
 
     mutable ostrl_map::const_iterator lookup_cache;
 
-    static stream_list *instance;
-
-    static void cleanup_instance (void) { delete instance; instance = 0; }
-
-    int do_insert (stream& os);
-
-    stream do_lookup (int fid, const std::string& who = "") const;
-    stream do_lookup (const octave_value& fid,
-                      const std::string& who = "") const;
-
-    int do_remove (int fid, const std::string& who = "");
-    int do_remove (const octave_value& fid, const std::string& who = "");
-
-    void do_clear (bool flush = true);
-
-    string_vector do_get_info (int fid) const;
-    string_vector do_get_info (const octave_value& fid) const;
-
-    std::string do_list_open_files (void) const;
-
-    octave_value do_open_file_numbers (void) const;
-
-    int do_get_file_number (const octave_value& fid) const;
+    int m_stdin_file;
+    int m_stdout_file;
+    int m_stderr_file;
   };
 }
 

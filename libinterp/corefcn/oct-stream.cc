@@ -52,10 +52,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "interpreter.h"
 #include "octave.h"
+#include "oct-iostrm.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "ov.h"
 #include "ovl.h"
+#include "pager.h"
 #include "utils.h"
 
 // Programming Note: There are two very different error functions used
@@ -7243,97 +7245,32 @@ namespace octave
     return retval;
   }
 
-  stream_list *stream_list::instance = nullptr;
-
-  bool
-  stream_list::instance_ok (void)
+  stream_list::stream_list (interpreter&)
+    : list (), lookup_cache (list.end ()), m_stdin_file (-1),
+      m_stdout_file (-1), m_stderr_file (-1)
   {
-    bool retval = true;
+    stream stdin_stream = octave_istream::create (&std::cin, "stdin");
 
-    if (! instance)
-      {
-        instance = new stream_list ();
+    // This uses octave_stdout (see pager.h), not std::cout so that
+    // Octave's standard output stream will pass through the pager.
 
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
+    // FIXME: we should be accessing octave_stdout from the interpreter.
 
-    if (! instance)
-      ::error ("unable to create stream list object!");
+    stream stdout_stream = octave_ostream::create (&octave_stdout, "stdout");
 
-    return retval;
+    stream stderr_stream = octave_ostream::create (&std::cerr, "stderr");
+
+    m_stdin_file = insert (stdin_stream);
+    m_stdout_file = insert (stdout_stream);
+    m_stderr_file = insert (stderr_stream);
   }
 
-  int
-  stream_list::insert (stream& os)
+  stream_list::~stream_list (void)
   {
-    return (instance_ok ()) ? instance->do_insert (os) : -1;
+    clear ();
   }
 
-  stream
-  stream_list::lookup (int fid, const std::string& who)
-  {
-    return (instance_ok ()) ? instance->do_lookup (fid, who) : stream ();
-  }
-
-  stream
-  stream_list::lookup (const octave_value& fid, const std::string& who)
-  {
-    return (instance_ok ()) ? instance->do_lookup (fid, who) : stream ();
-  }
-
-  int
-  stream_list::remove (int fid, const std::string& who)
-  {
-    return (instance_ok ()) ? instance->do_remove (fid, who) : -1;
-  }
-
-  int
-  stream_list::remove (const octave_value& fid, const std::string& who)
-  {
-    return (instance_ok ()) ? instance->do_remove (fid, who) : -1;
-  }
-
-  void
-  stream_list::clear (bool flush)
-  {
-    if (instance)
-      instance->do_clear (flush);
-  }
-
-  string_vector
-  stream_list::get_info (int fid)
-  {
-    return (instance_ok ()) ? instance->do_get_info (fid) : string_vector ();
-  }
-
-  string_vector
-  stream_list::get_info (const octave_value& fid)
-  {
-    return (instance_ok ()) ? instance->do_get_info (fid) : string_vector ();
-  }
-
-  std::string
-  stream_list::list_open_files (void)
-  {
-    return (instance_ok ()) ? instance->do_list_open_files () : "";
-  }
-
-  octave_value
-  stream_list::open_file_numbers (void)
-  {
-    return (instance_ok ())
-      ? instance->do_open_file_numbers () : octave_value ();
-  }
-
-  int
-  stream_list::get_file_number (const octave_value& fid)
-  {
-    return (instance_ok ()) ? instance->do_get_file_number (fid) : -1;
-  }
-
-  int
-  stream_list::do_insert (stream& os)
+  int stream_list::insert (stream& os)
   {
     // Insert item with key corresponding to file-descriptor.
 
@@ -7376,8 +7313,7 @@ err_invalid_file_id (int fid, const std::string& who)
 
 namespace octave
 {
-  stream
-  stream_list::do_lookup (int fid, const std::string& who) const
+  stream stream_list::lookup (int fid, const std::string& who) const
   {
     stream retval;
 
@@ -7400,17 +7336,15 @@ namespace octave
     return retval;
   }
 
-  stream
-  stream_list::do_lookup (const octave_value& fid,
-                          const std::string& who) const
+  stream stream_list::lookup (const octave_value& fid,
+                              const std::string& who) const
   {
     int i = get_file_number (fid);
 
-    return do_lookup (i, who);
+    return lookup (i, who);
   }
 
-  int
-  stream_list::do_remove (int fid, const std::string& who)
+  int stream_list::remove (int fid, const std::string& who)
   {
     // Can't remove stdin (std::cin), stdout (std::cout), or stderr (std::cerr).
     if (fid < 3)
@@ -7434,14 +7368,13 @@ namespace octave
     return 0;
   }
 
-  int
-  stream_list::do_remove (const octave_value& fid, const std::string& who)
+  int stream_list::remove (const octave_value& fid, const std::string& who)
   {
     int retval = -1;
 
     if (fid.is_string () && fid.string_value () == "all")
       {
-        do_clear (false);
+        clear (false);
 
         retval = 0;
       }
@@ -7449,14 +7382,13 @@ namespace octave
       {
         int i = get_file_number (fid);
 
-        retval = do_remove (i, who);
+        retval = remove (i, who);
       }
 
     return retval;
   }
 
-  void
-  stream_list::do_clear (bool flush)
+  void stream_list::clear (bool flush)
   {
     if (flush)
       {
@@ -7497,8 +7429,7 @@ namespace octave
     lookup_cache = list.end ();
   }
 
-  string_vector
-  stream_list::do_get_info (int fid) const
+  string_vector stream_list::get_info (int fid) const
   {
     string_vector retval (3);
 
@@ -7529,8 +7460,7 @@ namespace octave
     return retval;
   }
 
-  string_vector
-  stream_list::do_get_info (const octave_value& fid) const
+  string_vector stream_list::get_info (const octave_value& fid) const
   {
     int conv_err = 0;
 
@@ -7539,11 +7469,10 @@ namespace octave
     if (conv_err)
       ::error ("file id must be a file object or integer value");
 
-    return do_get_info (int_fid);
+    return get_info (int_fid);
   }
 
-  std::string
-  stream_list::do_list_open_files (void) const
+  std::string stream_list::list_open_files (void) const
   {
     std::ostringstream buf;
 
@@ -7575,8 +7504,7 @@ namespace octave
     return buf.str ();
   }
 
-  octave_value
-  stream_list::do_open_file_numbers (void) const
+  octave_value stream_list::open_file_numbers (void) const
   {
     Matrix retval (1, list.size (), 0.0);
 
@@ -7594,8 +7522,7 @@ namespace octave
     return retval;
   }
 
-  int
-  stream_list::do_get_file_number (const octave_value& fid) const
+  int stream_list::get_file_number (const octave_value& fid) const
   {
     int retval = -1;
 
@@ -7631,5 +7558,20 @@ namespace octave
       }
 
     return retval;
+  }
+
+  octave_value stream_list::stdin_file (void) const
+  {
+    return octave_value (m_stdin_file);
+  }
+
+  octave_value stream_list::stdout_file (void) const
+  {
+    return octave_value (m_stdout_file);
+  }
+
+  octave_value stream_list::stderr_file (void) const
+  {
+    return octave_value (m_stderr_file);
   }
 }

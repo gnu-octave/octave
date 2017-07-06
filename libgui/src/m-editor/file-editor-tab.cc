@@ -2636,7 +2636,7 @@ file_editor_tab::do_smart_indent ()
 
   QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|do|function"
                           "|unwind_protect|unwind_protect_cleanup|try)"
-                          "[\n\t #%]");
+                          "[\r]?[\n\t #%]");
   if (prev_line.contains (bkey))
     {
       _edit_area->indent (_line+1);
@@ -2646,7 +2646,7 @@ file_editor_tab::do_smart_indent ()
       return;
     }
 
-  QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\t #%\n]");
+  QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\r]?[\t #%\n]");
   if (prev_line.contains (mkey))
     {
       int prev_ind = _edit_area->indentation (_line-1);
@@ -2663,7 +2663,7 @@ file_editor_tab::do_smart_indent ()
     }
 
   QRegExp ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
-                          "|end_try_catch|end_unwind_protext)[\t #%\n(;]");
+                          "|end_try_catch|end_unwind_protext)[\r]?[\t #%\n(;]");
   if (prev_line.contains (ekey))
     {
       if (_edit_area->indentation (_line-1) <= _edit_area->indentation (_line))

@@ -2872,16 +2872,18 @@ system-dependent error message.
       octave::stream s = octave_stdiostream::create (nm, fid, md);
 
       if (! s)
-        error ("tmpfile: failed to create octave_stdiostream object");
+        {
+          fclose (fid);
+
+          error ("tmpfile: failed to create octave_stdiostream object");
+        }
 
       octave::stream_list& streams = interp.get_stream_list ();
 
       retval = ovl (streams.insert (s), "");
     }
   else
-    {
-      retval = ovl (-1, std::strerror (errno));
-    }
+    retval = ovl (-1, std::strerror (errno));
 
   return retval;
 }

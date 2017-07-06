@@ -777,27 +777,10 @@ beginning of the file specified by file descriptor @var{fid}.
   return ovl (os.tell ());
 }
 
-DEFUN (fprintf, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} fprintf (@var{fid}, @var{template}, @dots{})
-@deftypefnx {} {} fprintf (@var{template}, @dots{})
-@deftypefnx {} {@var{numbytes} =} fprintf (@dots{})
-This function is equivalent to @code{printf}, except that the output is
-written to the file descriptor @var{fid} instead of @code{stdout}.
-
-If @var{fid} is omitted, the output is written to @code{stdout} making the
-function exactly equivalent to @code{printf}.
-
-The optional output returns the number of bytes written to the file.
-
-Implementation Note: For compatibility with @sc{matlab}, escape sequences in
-the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
-expanded even when the template string is defined with single quotes.
-@seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}
-@end deftypefn */)
+static octave_value_list
+printf_internal (const std::string& who, const octave_value_list& args,
+                 int nargout)
 {
-  static std::string who = "fprintf";
-
   int nargin = args.length ();
 
   if (! (nargin > 1 || (nargin > 0 && args(0).is_string ())))
@@ -837,6 +820,30 @@ expanded even when the template string is defined with single quotes.
     return ovl ();
 }
 
+DEFUN (fprintf, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fprintf (@var{fid}, @var{template}, @dots{})
+@deftypefnx {} {} fprintf (@var{template}, @dots{})
+@deftypefnx {} {@var{numbytes} =} fprintf (@dots{})
+This function is equivalent to @code{printf}, except that the output is
+written to the file descriptor @var{fid} instead of @code{stdout}.
+
+If @var{fid} is omitted, the output is written to @code{stdout} making the
+function exactly equivalent to @code{printf}.
+
+The optional output returns the number of bytes written to the file.
+
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in
+the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+expanded even when the template string is defined with single quotes.
+@seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}
+@end deftypefn */)
+{
+  static std::string who = "fprintf";
+
+  return printf_internal (who, args, nargout);
+}
+
 DEFUN (printf, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} printf (@var{template}, @dots{})
@@ -857,32 +864,20 @@ expanded even when the template string is defined with single quotes.
 {
   static std::string who = "printf";
 
-  int nargin = args.length ();
+  octave_value_list tmp_args = args;
 
-  if (nargin == 0)
+  return printf_internal (who, tmp_args.prepend (octave_value (1)), nargout);
+}
+
+static octave_value_list
+puts_internal (const std::string& who, const octave_value_list& args)
+{
+  if (args.length () != 2)
     print_usage ();
 
-  int result;
+  octave::stream os = octave::stream_list::lookup (args(0), who);
 
-  if (! args(0).is_string ())
-    error ("%s: format TEMPLATE must be a string", who.c_str ());
-
-  octave_value_list tmp_args;
-
-  if (nargin > 1)
-    {
-      tmp_args.resize (nargin-1, octave_value ());
-
-      for (int i = 1; i < nargin; i++)
-        tmp_args(i-1) = args(i);
-    }
-
-  result = stdout_stream.printf (args(0), tmp_args, who);
-
-  if (nargout > 0)
-    return ovl (result);
-  else
-    return ovl ();
+  return ovl (os.puts (args(1), who));
 }
 
 DEFUN (fputs, args, ,
@@ -901,12 +896,7 @@ Return a non-negative number on success or EOF on error.
 {
   static std::string who = "fputs";
 
-  if (args.length () != 2)
-    print_usage ();
-
-  octave::stream os = octave::stream_list::lookup (args(0), who);
-
-  return ovl (os.puts (args(1), who));
+  return puts_internal (who, args);
 }
 
 DEFUN (puts, args, ,
@@ -924,10 +914,9 @@ Return a non-negative number on success and EOF on error.
 {
   static std::string who = "puts";
 
-  if (args.length () != 1)
-    print_usage ();
+  octave_value_list tmp_args = args;
 
-  return ovl (stdout_stream.puts (args(0), who));
+  return puts_internal (who, tmp_args.prepend (octave_value (1)));
 }
 
 DEFUN (sprintf, args, ,
@@ -993,6 +982,42 @@ expanded even when the template string is defined with single quotes.
   return retval;
 }
 
+static octave_value_list
+scanf_internal (const std::string& who, const octave_value_list& args)
+{
+  int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  octave_value_list retval;
+
+  octave::stream os = octave::stream_list::lookup (args(0), who);
+
+  if (! args(1).is_string ())
+    error ("%s: format TEMPLATE must be a string", who.c_str ());
+
+  if (nargin == 3 && args(2).is_string ())
+    {
+      retval = ovl (os.oscanf (args(1), who));
+    }
+  else
+    {
+      octave_idx_type count = 0;
+
+      Array<double> size
+        = (nargin == 3
+           ? args(2).vector_value ()
+           : Array<double> (dim_vector (1, 1), lo_ieee_inf_value ()));
+
+      octave_value tmp = os.scanf (args(1), size, count, who);
+
+      retval = ovl (tmp, count, os.error ());
+    }
+
+  return retval;
+}
+
 DEFUN (fscanf, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})
@@ -1045,37 +1070,7 @@ complete description of the syntax of the template string.
 {
   static std::string who = "fscanf";
 
-  int nargin = args.length ();
-
-  if (nargin < 2 || nargin > 3)
-    print_usage ();
-
-  octave_value_list retval;
-
-  octave::stream os = octave::stream_list::lookup (args(0), who);
-
-  if (! args(1).is_string ())
-    error ("%s: format TEMPLATE must be a string", who.c_str ());
-
-  if (nargin == 3 && args(2).is_string ())
-    {
-      retval = ovl (os.oscanf (args(1), who));
-    }
-  else
-    {
-      octave_idx_type count = 0;
-
-      Array<double> size = (nargin == 3)
-        ? args(2).vector_value ()
-        : Array<double> (dim_vector (1, 1),
-                         lo_ieee_inf_value ());
-
-      octave_value tmp = os.scanf (args(1), size, count, who);
-
-      retval = ovl (tmp, count, os.error ());
-    }
-
-  return retval;
+  return scanf_internal (who, args);
 }
 
 static std::string
@@ -1151,7 +1146,7 @@ character to be read is returned in @var{pos}.
   return retval;
 }
 
-DEFUN (scanf, args, nargout,
+DEFUN (scanf, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})
 @deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, "C")
@@ -1161,15 +1156,11 @@ It is currently not useful to call @code{scanf} in interactive programs.
 @seealso{fscanf, sscanf, printf}
 @end deftypefn */)
 {
-  int nargin = args.length ();
+  static std::string who = "scanf";
 
-  octave_value_list tmp_args (nargin+1, octave_value ());
+  octave_value_list tmp_args = args;
 
-  tmp_args (0) = 0.0;
-  for (int i = 0; i < nargin; i++)
-    tmp_args(i+1) = args(i);
-
-  return Ffscanf (tmp_args, nargout);
+  return scanf_internal (who, tmp_args.prepend (octave_value (0)));
 }
 
 static octave_value_list

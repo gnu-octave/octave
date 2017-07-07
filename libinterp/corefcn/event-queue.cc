@@ -27,10 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "event-queue.h"
 
-void
-event_queue_safe::warn_unhandled_exception (void) const
+namespace octave
 {
-  warning ("unhandled exception in event_queue_safe handler.  "
-           "It is a bug in Octave for this to happen.  "
-           "Please help improve Octave by reporting it.");
+  void
+  event_queue_safe::warn_unhandled_exception (void) const
+  {
+    warning ("unhandled exception in event_queue_safe handler.  "
+             "It is a bug in Octave for this to happen.  "
+             "Please help improve Octave by reporting it.");
+  }
 }

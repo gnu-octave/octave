@@ -400,7 +400,7 @@ protected:
   octave::mutex *event_queue_mutex;
 
   // Event Queue.
-  event_queue gui_event_queue;
+  octave::event_queue gui_event_queue;
 
   bool debugging;
   bool link_enabled;

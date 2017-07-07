@@ -30,93 +30,106 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "action-container.h"
 
-class
-event_queue : public action_container
+namespace octave
 {
-public:
-
-  event_queue (void) : fifo () { }
-
-  // No copying!
-
-  event_queue (const event_queue&) = delete;
-
-  event_queue& operator = (const event_queue&) = delete;
-
-  // Destructor should not raise an exception, so all actions
-  // registered should be exception-safe.  If you're not sure, see
-  // event_queue_safe.
-
-  ~event_queue (void) { run (); }
-
-  void add (elem *new_elem)
+  class
+  event_queue : public action_container
   {
-    fifo.push (new_elem);
-  }
+  public:
 
-  void run_first (void)
+    event_queue (void) : fifo () { }
+
+    // No copying!
+
+    event_queue (const event_queue&) = delete;
+
+    event_queue& operator = (const event_queue&) = delete;
+
+    // Destructor should not raise an exception, so all actions
+    // registered should be exception-safe.  If you're not sure, see
+    // event_queue_safe.
+
+    ~event_queue (void) { run (); }
+
+    void add (elem *new_elem)
+    {
+      fifo.push (new_elem);
+    }
+
+    void run_first (void)
+    {
+      if (! empty ())
+        {
+          // No leak on exception!
+          std::unique_ptr<elem> ptr (fifo.front ());
+          fifo.pop ();
+          ptr->run ();
+        }
+    }
+
+    void discard_first (void)
+    {
+      if (! empty ())
+        {
+          elem *ptr = fifo.front ();
+          fifo.pop ();
+          delete ptr;
+        }
+    }
+
+    size_t size (void) const { return fifo.size (); }
+
+  protected:
+
+    std::queue<elem *> fifo;
+  };
+
+  // Like event_queue, but this one will guard against the
+  // possibility of seeing an exception (or interrupt) in the cleanup actions.
+  // Not that we can do much about it, but at least we won't crash.
+
+  class
+  event_queue_safe : public event_queue
   {
-    if (! empty ())
-      {
-        // No leak on exception!
-        std::unique_ptr<elem> ptr (fifo.front ());
-        fifo.pop ();
-        ptr->run ();
-      }
-  }
+  private:
 
-  void discard_first (void)
-  {
-    if (! empty ())
-      {
-        elem *ptr = fifo.front ();
-        fifo.pop ();
-        delete ptr;
-      }
-  }
+    void warn_unhandled_exception (void) const;
 
-  size_t size (void) const { return fifo.size (); }
+  public:
 
-protected:
+    event_queue_safe (void) : event_queue () { }
 
-  std::queue<elem *> fifo;
-};
+    // No copying!
 
-// Like event_queue, but this one will guard against the
-// possibility of seeing an exception (or interrupt) in the cleanup actions.
-// Not that we can do much about it, but at least we won't crash.
+    event_queue_safe (const event_queue_safe&) = delete;
 
-class
-event_queue_safe : public event_queue
-{
-private:
+    event_queue_safe& operator = (const event_queue_safe&) = delete;
 
-  void warn_unhandled_exception (void) const;
+    ~event_queue_safe (void)
+    {
+      while (! empty ())
+        {
+          try
+            {
+              run_first ();
+            }
+          catch (...) // Yes, the black hole.  Remember we're in a dtor.
+            {
+              warn_unhandled_exception ();
+            }
+        }
+    }
+  };
+}
 
-public:
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  event_queue_safe (void) : event_queue () { }
+OCTAVE_DEPRECATED (4.4, "use 'octave::event_queue' instead")
+typedef octave::event_queue event_queue;
 
-  // No copying!
+OCTAVE_DEPRECATED (4.4, "use 'octave::event_queue_safe' instead")
+typedef octave::event_queue_safe event_queue_safe;
 
-  event_queue_safe (const event_queue_safe&) = delete;
-
-  event_queue_safe& operator = (const event_queue_safe&) = delete;
-
-  ~event_queue_safe (void)
-  {
-    while (! empty ())
-      {
-        try
-          {
-            run_first ();
-          }
-        catch (...) // Yes, the black hole.  Remember we're in a dtor.
-          {
-            warn_unhandled_exception ();
-          }
-      }
-  }
-};
+#endif
 
 #endif

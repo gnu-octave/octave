@@ -33,43 +33,23 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "pathsearch.h"
-#include "singleton-cleanup.h"
 
 namespace octave
 {
-  directory_path::static_members *directory_path::static_members::instance = nullptr;
-
-  directory_path::static_members::static_members (void)
-    : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }
-
-  bool
-  directory_path::static_members::instance_ok (void)
+  directory_path::directory_path (const std::string& s, const std::string& d)
+    : m_orig_path (s), m_default_path (d), m_initialized (false),
+      m_expanded_path (), m_path_elements ()
   {
-    bool retval = true;
-
-    if (! instance)
-      {
-        instance = new static_members ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create directory_path::static_members object!");
-
-    return retval;
+    if (! m_orig_path.empty ())
+      init ();
   }
 
-  std::list<std::string>
-  directory_path::elements (void)
+  std::list<std::string> directory_path::elements (void)
   {
     return m_initialized ? m_path_elements : std::list<std::string> ();
   }
 
-  std::list<std::string>
-  directory_path::all_directories (void)
+  std::list<std::string> directory_path::all_directories (void)
   {
     std::list<std::string> retval;
 
@@ -87,14 +67,12 @@ namespace octave
     return retval;
   }
 
-  std::string
-  directory_path::find_first (const std::string& nm)
+  std::string directory_path::find_first (const std::string& nm)
   {
     return m_initialized ? kpse_path_search (m_expanded_path, nm) : "";
   }
 
-  std::list<std::string>
-  directory_path::find_all (const std::string& nm)
+  std::list<std::string> directory_path::find_all (const std::string& nm)
   {
     return (m_initialized
             ? kpse_all_path_search (m_expanded_path, nm)
@@ -116,8 +94,7 @@ namespace octave
             : std::list<std::string> ());
   }
 
-  void
-  directory_path::init (void)
+  void directory_path::init (void)
   {
     static bool octave_kpse_initialized = false;
 
@@ -140,5 +117,15 @@ namespace octave
       m_path_elements.push_back (*pi);
 
     m_initialized = true;
+  }
+
+  char directory_path::path_sep_char (void)
+  {
+    return SEPCHAR;
+  }
+
+  std::string directory_path::path_sep_str (void)
+  {
+    return SEPCHAR_STR;
   }
 }

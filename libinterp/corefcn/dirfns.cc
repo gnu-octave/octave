@@ -652,45 +652,19 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
   return retval;
 }
 
-DEFUN (pathsep, args, nargout,
+DEFUN (pathsep, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} pathsep ()
-@deftypefnx {} {@var{old_val} =} pathsep (@var{new_val})
-Query or set the character used to separate directories in a path.
+Query the character used to separate directories in a path.
 @seealso{filesep}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
-  if (nargin > 1)
+  if (nargin > 0)
     print_usage ();
 
-  octave_value retval;
-
-  if (nargout > 0 || nargin == 0)
-    retval = octave::directory_path::path_sep_str ();
-
-  if (nargin == 1)
-    {
-      std::string sval = args(0).xstring_value ("pathsep: argument must be a single character");
-
-      switch (sval.length ())
-        {
-        case 1:
-          octave::directory_path::path_sep_char (sval[0]);
-          break;
-
-        case 0:
-          octave::directory_path::path_sep_char ('\0');
-          break;
-
-        default:
-          error ("pathsep: argument must be a single character");
-          break;
-        }
-    }
-
-  return retval;
+  return ovl (octave::directory_path::path_sep_str ());
 }
 
 DEFUN (confirm_recursive_rmdir, args, nargout,

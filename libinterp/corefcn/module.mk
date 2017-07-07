@@ -22,7 +22,6 @@ COREFCN_INC = \
   %reldir%/c-file-ptr-stream.h \
   %reldir%/call-stack.h \
   %reldir%/cdisplay.h \
-  %reldir%/comment-list.h \
   %reldir%/data.h \
   %reldir%/defaults.h \
   %reldir%/defun-dld.h \
@@ -124,7 +123,6 @@ COREFCN_SRC = \
   %reldir%/cellfun.cc \
   %reldir%/colloc.cc \
   %reldir%/coct-hdf5-types.c \
-  %reldir%/comment-list.cc \
   %reldir%/conv2.cc \
   %reldir%/daspk.cc \
   %reldir%/dasrt.cc \

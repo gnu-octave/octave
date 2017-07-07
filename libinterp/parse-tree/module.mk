@@ -1,5 +1,6 @@
 PARSE_TREE_INC = \
   %reldir%/bp-table.h \
+  %reldir%/comment-list.h \
   %reldir%/jit-ir.h \
   %reldir%/jit-typeinfo.h \
   %reldir%/jit-util.h \
@@ -46,6 +47,7 @@ PARSE_TREE_INC = \
 
 PARSE_TREE_SRC = \
   %reldir%/bp-table.cc \
+  %reldir%/comment-list.cc \
   %reldir%/jit-ir.cc \
   %reldir%/jit-typeinfo.cc \
   %reldir%/jit-util.cc \

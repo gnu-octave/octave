@@ -51,367 +51,356 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 
+// The following tilde-expansion code was stolen and adapted from
+// readline.
+
+// The default value of tilde_additional_prefixes.  This is set to
+// whitespace preceding a tilde so that simple programs which do not
+// perform any word separation get desired behavior.
+static const char *default_prefixes[] = { " ~", "\t~", ":~", 0 };
+
+// The default value of tilde_additional_suffixes.  This is set to
+// whitespace or newline so that simple programs which do not perform
+// any word separation get desired behavior.
+static const char *default_suffixes[] = { " ", "\n", ":", 0 };
+
+static size_t
+tilde_find_prefix (const std::string& s, size_t& len)
+{
+  len = 0;
+
+  size_t s_len = s.length ();
+
+  if (s_len == 0 || s[0] == '~')
+    return 0;
+
+  string_vector prefixes = octave::sys::file_ops::tilde_additional_prefixes;
+
+  if (! prefixes.empty ())
+    {
+      for (size_t i = 0; i < s_len; i++)
+        {
+          for (int j = 0; j < prefixes.numel (); j++)
+            {
+              size_t pfx_len = prefixes[j].length ();
+
+              if (prefixes[j] == s.substr (i, pfx_len))
+                {
+                  len = pfx_len - 1;
+                  return i + len;
+                }
+            }
+        }
+    }
+
+  return s_len;
+}
+
+// Find the end of a tilde expansion in S, and return the index
+// of the character which ends the tilde definition.
+
+static size_t
+tilde_find_suffix (const std::string& s)
+{
+  size_t s_len = s.length ();
+
+  string_vector suffixes = octave::sys::file_ops::tilde_additional_suffixes;
+
+  size_t i = 0;
+
+  for ( ; i < s_len; i++)
+    {
+      if (octave::sys::file_ops::is_dir_sep (s[i]))
+        break;
+
+      if (! suffixes.empty ())
+        {
+          for (int j = 0; j < suffixes.numel (); j++)
+            {
+              size_t sfx_len = suffixes[j].length ();
+
+              if (suffixes[j] == s.substr (i, sfx_len))
+                return i;
+            }
+        }
+    }
+
+  return i;
+}
+
+// Take FNAME and return the tilde prefix we want expanded.
+
+static std::string
+isolate_tilde_prefix (const std::string& fname)
+{
+  size_t f_len = fname.length ();
+
+  size_t len = 1;
+
+  while (len < f_len && ! octave::sys::file_ops::is_dir_sep (fname[len]))
+    len++;
+
+  return fname.substr (1, len);
+}
+
+// Do the work of tilde expansion on FILENAME.  FILENAME starts with a
+// tilde.
+
+static std::string
+tilde_expand_word (const std::string& filename)
+{
+  size_t f_len = filename.length ();
+
+  if (f_len == 0 || filename[0] != '~')
+    return std::string (filename);
+
+  // A leading '~/' or a bare '~' is *always* translated to the value
+  // of $HOME or the home directory of the current user, regardless of
+  // any preexpansion hook.
+
+  if (f_len == 1 || octave::sys::file_ops::is_dir_sep (filename[1]))
+    return octave::sys::env::get_home_directory () + filename.substr (1);
+
+  std::string username = isolate_tilde_prefix (filename);
+
+  size_t user_len = username.length ();
+
+  std::string dirname;
+
+  if (octave::sys::file_ops::tilde_expansion_preexpansion_hook)
+    {
+      std::string expansion
+        = octave::sys::file_ops::tilde_expansion_preexpansion_hook (username);
+
+      if (! expansion.empty ())
+        return expansion + filename.substr (user_len+1);
+    }
+
+  // No preexpansion hook, or the preexpansion hook failed.  Look in the
+  // password database.
+
+  octave::sys::password pw = octave::sys::password::getpwnam (username);
+
+  if (! pw)
+    {
+      // If the calling program has a special syntax for expanding tildes,
+      // and we couldn't find a standard expansion, then let them try.
+
+      if (octave::sys::file_ops::tilde_expansion_failure_hook)
+        {
+          std::string expansion
+            = octave::sys::file_ops::tilde_expansion_failure_hook (username);
+
+          if (! expansion.empty ())
+            dirname = expansion + filename.substr (user_len+1);
+        }
+
+      // If we don't have a failure hook, or if the failure hook did not
+      // expand the tilde, return a copy of what we were passed.
+
+      if (dirname.empty ())
+        dirname = filename;
+    }
+  else
+    dirname = pw.dir () + filename.substr (user_len+1);
+
+  return dirname;
+}
+
 namespace octave
 {
   namespace sys
   {
-    file_ops *sys::file_ops::instance = nullptr;
-
-    bool
-    sys::file_ops::instance_ok (void)
+    namespace file_ops
     {
-      bool retval = true;
-
-      if (! instance)
-        {
+      char dev_sep_char (void)
+      {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-          char system_dev_sep_char = ':';
-          char system_dir_sep_char = '\\';
-          std::string system_dir_sep_str = "\\";
+        return ':';
 #else
-          char system_dev_sep_char = 0;
-          char system_dir_sep_char = '/';
-          std::string system_dir_sep_str = "/";
-#endif
-#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
-          std::string system_dir_sep_chars = "/\\";
-#else
-          std::string system_dir_sep_chars = system_dir_sep_str;
-#endif
-
-          instance = new file_ops (system_dev_sep_char, system_dir_sep_char,
-                                   system_dir_sep_str, system_dir_sep_chars);
-
-          if (instance)
-            singleton_cleanup_list::add (cleanup_instance);
-        }
-
-      if (! instance)
-        (*current_liboctave_error_handler)
-          ("unable to create file_ops object!");
-
-      return retval;
-    }
-
-    // The following tilde-expansion code was stolen and adapted from
-    // readline.
-
-    // The default value of tilde_additional_prefixes.  This is set to
-    // whitespace preceding a tilde so that simple programs which do not
-    // perform any word separation get desired behavior.
-    static const char *default_prefixes[] = { " ~", "\t~", ":~", 0 };
-
-    // The default value of tilde_additional_suffixes.  This is set to
-    // whitespace or newline so that simple programs which do not perform
-    // any word separation get desired behavior.
-    static const char *default_suffixes[] = { " ", "\n", ":", 0 };
-
-    // If non-null, this contains the address of a function that the
-    // application wants called before trying the standard tilde
-    // expansions.  The function is called with the text sans tilde, and
-    // returns a malloc()'ed string which is the expansion, or a NULL
-    // pointer if the expansion fails.
-    sys::file_ops::tilde_expansion_hook
-      sys::file_ops::tilde_expansion_preexpansion_hook = 0;
-
-    // If non-null, this contains the address of a function to call if the
-    // standard meaning for expanding a tilde fails.  The function is
-    // called with the text (sans tilde, as in "foo"), and returns a
-    // malloc()'ed string which is the expansion, or a NULL pointer if
-    // there is no expansion.
-    sys::file_ops::tilde_expansion_hook
-      sys::file_ops::tilde_expansion_failure_hook = 0;
-
-    // When non-null, this is a NULL terminated array of strings which are
-    // duplicates for a tilde prefix.  Bash uses this to expand '=~' and
-    // ':~'.
-    string_vector sys::file_ops::tilde_additional_prefixes =
-      default_prefixes;
-
-    // When non-null, this is a NULL terminated array of strings which
-    // match the end of a username, instead of just "/".  Bash sets this
-    // to ':' and '=~'.
-    string_vector sys::file_ops::tilde_additional_suffixes =
-      default_suffixes;
-
-    // Find the start of a tilde expansion in S, and return the index
-    // of the tilde which starts the expansion.  Place the length of the
-    // text which identified this tilde starter in LEN, excluding the
-    // tilde itself.
-
-    static size_t
-    tilde_find_prefix (const std::string& s, size_t& len)
-    {
-      len = 0;
-
-      size_t s_len = s.length ();
-
-      if (s_len == 0 || s[0] == '~')
         return 0;
-
-      string_vector prefixes = sys::file_ops::tilde_additional_prefixes;
-
-      if (! prefixes.empty ())
-        {
-          for (size_t i = 0; i < s_len; i++)
-            {
-              for (int j = 0; j < prefixes.numel (); j++)
-                {
-                  size_t pfx_len = prefixes[j].length ();
-
-                  if (prefixes[j] == s.substr (i, pfx_len))
-                    {
-                      len = pfx_len - 1;
-                      return i + len;
-                    }
-                }
-            }
-        }
-
-      return s_len;
-    }
-
-    // Find the end of a tilde expansion in S, and return the index
-    // of the character which ends the tilde definition.
-
-    static size_t
-    tilde_find_suffix (const std::string& s)
-    {
-      size_t s_len = s.length ();
-
-      string_vector suffixes = sys::file_ops::tilde_additional_suffixes;
-
-      size_t i = 0;
-
-      for ( ; i < s_len; i++)
-        {
-          if (sys::file_ops::is_dir_sep (s[i]))
-            break;
-
-          if (! suffixes.empty ())
-            {
-              for (int j = 0; j < suffixes.numel (); j++)
-                {
-                  size_t sfx_len = suffixes[j].length ();
-
-                  if (suffixes[j] == s.substr (i, sfx_len))
-                    return i;
-                }
-            }
-        }
-
-      return i;
-    }
-
-    // Take FNAME and return the tilde prefix we want expanded.
-
-    static std::string
-    isolate_tilde_prefix (const std::string& fname)
-    {
-      size_t f_len = fname.length ();
-
-      size_t len = 1;
-
-      while (len < f_len && ! sys::file_ops::is_dir_sep (fname[len]))
-        len++;
-
-      return fname.substr (1, len);
-    }
-
-    // Do the work of tilde expansion on FILENAME.  FILENAME starts with a
-    // tilde.
-
-    static std::string
-    tilde_expand_word (const std::string& filename)
-    {
-      size_t f_len = filename.length ();
-
-      if (f_len == 0 || filename[0] != '~')
-        return std::string (filename);
-
-      // A leading '~/' or a bare '~' is *always* translated to the value
-      // of $HOME or the home directory of the current user, regardless of
-      // any preexpansion hook.
-
-      if (f_len == 1 || sys::file_ops::is_dir_sep (filename[1]))
-        return sys::env::get_home_directory () + filename.substr (1);
-
-      std::string username = isolate_tilde_prefix (filename);
-
-      size_t user_len = username.length ();
-
-      std::string dirname;
-
-      if (sys::file_ops::tilde_expansion_preexpansion_hook)
-        {
-          std::string expansion
-            = sys::file_ops::tilde_expansion_preexpansion_hook (username);
-
-          if (! expansion.empty ())
-            return expansion + filename.substr (user_len+1);
-        }
-
-      // No preexpansion hook, or the preexpansion hook failed.  Look in the
-      // password database.
-
-      sys::password pw = sys::password::getpwnam (username);
-
-      if (! pw)
-        {
-          // If the calling program has a special syntax for expanding tildes,
-          // and we couldn't find a standard expansion, then let them try.
-
-          if (sys::file_ops::tilde_expansion_failure_hook)
-            {
-              std::string expansion
-                = sys::file_ops::tilde_expansion_failure_hook (username);
-
-              if (! expansion.empty ())
-                dirname = expansion + filename.substr (user_len+1);
-            }
-
-          // If we don't have a failure hook, or if the failure hook did not
-          // expand the tilde, return a copy of what we were passed.
-
-          if (dirname.empty ())
-            dirname = filename;
-        }
-      else
-        dirname = pw.dir () + filename.substr (user_len+1);
-
-      return dirname;
-    }
-
-    bool
-    sys::file_ops::is_dev_sep (char c)
-    {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-      return c == dev_sep_char ();
-#else
-      octave_unused_parameter (c);
-
-      return false;
 #endif
+      }
+
+      char dir_sep_char (void)
+      {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+        return '\\';
+#else
+        return '/';
+#endif
+      }
+
+      std::string dir_sep_str (void)
+      {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+        return "\\";
+#else
+        return "/";
+#endif
+      }
+
+      std::string dir_sep_chars (void)
+      {
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+        return "/\\";
+#else
+        return dir_sep_str ();
+#endif
+      }
+
+      tilde_expansion_hook tilde_expansion_preexpansion_hook = 0;
+
+      tilde_expansion_hook tilde_expansion_failure_hook = 0;
+
+      string_vector tilde_additional_prefixes = default_prefixes;
+
+      string_vector tilde_additional_suffixes = default_suffixes;
+
+      bool is_dev_sep (char c)
+      {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+        return c == dev_sep_char ();
+#else
+        octave_unused_parameter (c);
+
+        return false;
+#endif
+      }
+
+      bool is_dir_sep (char c)
+      {
+        std::string tmp = dir_sep_chars ();
+        return tmp.find (c) != std::string::npos;
+      }
+
+      std::string tilde_expand (const std::string& name)
+      {
+        if (name.find ('~') == std::string::npos)
+          return std::string (name);
+        else
+          {
+            std::string result;
+
+            size_t name_len = name.length ();
+
+            // Scan through S expanding tildes as we come to them.
+
+            size_t pos = 0;
+
+            while (1)
+              {
+                if (pos > name_len)
+                  break;
+
+                size_t len;
+
+                // Make START point to the tilde which starts the expansion.
+
+                size_t start = tilde_find_prefix (name.substr (pos), len);
+
+                result.append (name.substr (pos, start));
+
+                // Advance STRING to the starting tilde.
+
+                pos += start;
+
+                // Make FINI be the index of one after the last character of the
+                // username.
+
+                size_t fini = tilde_find_suffix (name.substr (pos));
+
+                // If both START and FINI are zero, we are all done.
+
+                if (! (start || fini))
+                  break;
+
+                // Expand the entire tilde word, and copy it into RESULT.
+
+                std::string tilde_word = name.substr (pos, fini);
+
+                pos += fini;
+
+                std::string expansion = tilde_expand_word (tilde_word);
+
+                result.append (expansion);
+              }
+
+            return result;
+          }
+      }
+
+      string_vector tilde_expand (const string_vector& names)
+      {
+        string_vector retval;
+
+        int n = names.numel ();
+
+        retval.resize (n);
+
+        for (int i = 0; i < n; i++)
+          retval[i] = tilde_expand (names[i]);
+
+        return retval;
+      }
+
+      std::string concat (const std::string& dir, const std::string& file)
+      {
+        return dir.empty ()
+          ? file
+          : (is_dir_sep (dir[dir.length ()-1])
+             ? dir + file
+             : dir + dir_sep_char () + file);
+      }
+
+      std::string dirname (const std::string& path)
+      {
+        size_t ipos = path.find_last_of (dir_sep_chars ());
+
+        return (ipos != std::string::npos) ? path.substr (0, ipos) : "";
+      }
+
+      std::string tail (const std::string& path)
+      {
+        size_t ipos = path.find_last_of (dir_sep_chars ());
+
+        if (ipos != std::string::npos)
+          ipos++;
+        else
+          ipos = 0;
+
+        return path.substr (ipos);
+      }
+
+      std::string native_separator_path (const std::string& path)
+      {
+        std::string retval;
+
+        if (dir_sep_char () == '/')
+          retval = path;
+        else
+          {
+            size_t n = path.length ();
+            for (size_t i = 0; i < n; i++)
+              {
+                if (path[i] == '/')
+                  retval += dir_sep_char();
+                else
+                  retval += path[i];
+              }
+          }
+
+        return retval;
+      }
     }
 
-    // If NAME has a leading ~ or ~user, Unix-style, expand it to the
-    // user's home directory.  If no ~, or no <pwd.h>, just return NAME.
-
-    std::string
-    sys::file_ops::tilde_expand (const std::string& name)
-    {
-      if (name.find ('~') == std::string::npos)
-        return std::string (name);
-      else
-        {
-          std::string result;
-
-          size_t name_len = name.length ();
-
-          // Scan through S expanding tildes as we come to them.
-
-          size_t pos = 0;
-
-          while (1)
-            {
-              if (pos > name_len)
-                break;
-
-              size_t len;
-
-              // Make START point to the tilde which starts the expansion.
-
-              size_t start = tilde_find_prefix (name.substr (pos), len);
-
-              result.append (name.substr (pos, start));
-
-              // Advance STRING to the starting tilde.
-
-              pos += start;
-
-              // Make FINI be the index of one after the last character of the
-              // username.
-
-              size_t fini = tilde_find_suffix (name.substr (pos));
-
-              // If both START and FINI are zero, we are all done.
-
-              if (! (start || fini))
-                break;
-
-              // Expand the entire tilde word, and copy it into RESULT.
-
-              std::string tilde_word = name.substr (pos, fini);
-
-              pos += fini;
-
-              std::string expansion = tilde_expand_word (tilde_word);
-
-              result.append (expansion);
-            }
-
-          return result;
-        }
-    }
-
-    // A vector version of the above.
-
-    string_vector
-    sys::file_ops::tilde_expand (const string_vector& names)
-    {
-      string_vector retval;
-
-      int n = names.numel ();
-
-      retval.resize (n);
-
-      for (int i = 0; i < n; i++)
-        retval[i] = tilde_expand (names[i]);
-
-      return retval;
-    }
-
-    std::string
-    sys::file_ops::concat (const std::string& dir, const std::string& file)
-    {
-      return dir.empty ()
-             ? file
-             : (is_dir_sep (dir[dir.length ()-1])
-                ? dir + file
-                : dir + dir_sep_char () + file);
-    }
-
-    std::string
-    sys::file_ops::native_separator_path (const std::string& path)
-    {
-      std::string retval;
-
-      if (dir_sep_char () == '/')
-        retval = path;
-      else
-        {
-          size_t n = path.length ();
-          for (size_t i = 0; i < n; i++)
-            {
-              if (path[i] == '/')
-                retval += dir_sep_char();
-              else
-                retval += path[i];
-            }
-        }
-
-      return retval;
-    }
-
-    int
-    mkdir (const std::string& nm, mode_t md)
+    int mkdir (const std::string& nm, mode_t md)
     {
       std::string msg;
-      return sys::mkdir (nm, md, msg);
+      return mkdir (nm, md, msg);
     }
 
-    int
-    mkdir (const std::string& name, mode_t mode, std::string& msg)
+    int mkdir (const std::string& name, mode_t mode, std::string& msg)
     {
       msg = "";
 
@@ -423,15 +412,13 @@ namespace octave
       return status;
     }
 
-    int
-    mkfifo (const std::string& nm, mode_t md)
+    int mkfifo (const std::string& nm, mode_t md)
     {
       std::string msg;
       return mkfifo (nm, md, msg);
     }
 
-    int
-    mkfifo (const std::string& name, mode_t mode, std::string& msg)
+    int mkfifo (const std::string& name, mode_t mode, std::string& msg)
     {
       msg = "";
 
@@ -443,16 +430,14 @@ namespace octave
       return status;
     }
 
-    int
-    link (const std::string& old_name, const std::string& new_name)
+    int link (const std::string& old_name, const std::string& new_name)
     {
       std::string msg;
       return link (old_name, new_name, msg);
     }
 
-    int
-    link (const std::string& old_name, const std::string& new_name,
-          std::string& msg)
+    int link (const std::string& old_name, const std::string& new_name,
+              std::string& msg)
     {
       msg = "";
 
@@ -466,16 +451,14 @@ namespace octave
       return status;
     }
 
-    int
-    symlink (const std::string& old_name, const std::string& new_name)
+    int symlink (const std::string& old_name, const std::string& new_name)
     {
       std::string msg;
       return symlink (old_name, new_name, msg);
     }
 
-    int
-    symlink (const std::string& old_name,
-             const std::string& new_name, std::string& msg)
+    int symlink (const std::string& old_name, const std::string& new_name,
+                 std::string& msg)
     {
       msg = "";
 
@@ -489,15 +472,13 @@ namespace octave
       return status;
     }
 
-    int
-    readlink (const std::string& path, std::string& result)
+    int readlink (const std::string& path, std::string& result)
     {
       std::string msg;
       return readlink (path, result, msg);
     }
 
-    int
-    readlink (const std::string& path, std::string& result, std::string& msg)
+    int readlink (const std::string& path, std::string& result, std::string& msg)
     {
       int status = -1;
 
@@ -517,15 +498,13 @@ namespace octave
       return status;
     }
 
-    int
-    rename (const std::string& from, const std::string& to)
+    int rename (const std::string& from, const std::string& to)
     {
       std::string msg;
       return rename (from, to, msg);
     }
 
-    int
-    rename (const std::string& from, const std::string& to, std::string& msg)
+    int rename (const std::string& from, const std::string& to, std::string& msg)
     {
       int status = -1;
 
@@ -539,15 +518,13 @@ namespace octave
       return status;
     }
 
-    int
-    rmdir (const std::string& name)
+    int rmdir (const std::string& name)
     {
       std::string msg;
       return rmdir (name, msg);
     }
 
-    int
-    rmdir (const std::string& name, std::string& msg)
+    int rmdir (const std::string& name, std::string& msg)
     {
       msg = "";
 
@@ -563,21 +540,19 @@ namespace octave
 
     // And a version that works recursively.
 
-    int
-    recursive_rmdir (const std::string& name)
+    int recursive_rmdir (const std::string& name)
     {
       std::string msg;
       return recursive_rmdir (name, msg);
     }
 
-    int
-    recursive_rmdir (const std::string& name, std::string& msg)
+    int recursive_rmdir (const std::string& name, std::string& msg)
     {
       msg = "";
 
       int status = 0;
 
-      sys::dir_entry dir (name);
+      dir_entry dir (name);
 
       if (dir)
         {
@@ -593,10 +568,10 @@ namespace octave
               if (nm == "." || nm == "..")
                 continue;
 
-              std::string fullnm = name + sys::file_ops::dir_sep_str () + nm;
+              std::string fullnm = name + file_ops::dir_sep_str () + nm;
 
               // Get info about the file.  Don't follow links.
-              sys::file_stat fs (fullnm, false);
+              file_stat fs (fullnm, false);
 
               if (fs)
                 {
@@ -638,21 +613,18 @@ namespace octave
       return status;
     }
 
-    int
-    umask (mode_t mode)
+    int umask (mode_t mode)
     {
       return octave_umask_wrapper (mode);
     }
 
-    int
-    unlink (const std::string& name)
+    int unlink (const std::string& name)
     {
       std::string msg;
       return unlink (name, msg);
     }
 
-    int
-    unlink (const std::string& name, std::string& msg)
+    int unlink (const std::string& name, std::string& msg)
     {
       msg = "";
 
@@ -666,16 +638,14 @@ namespace octave
       return status;
     }
 
-    std::string
-    tempnam (const std::string& dir, const std::string& pfx)
+    std::string tempnam (const std::string& dir, const std::string& pfx)
     {
       std::string msg;
       return tempnam (dir, pfx, msg);
     }
 
-    std::string
-    tempnam (const std::string& dir, const std::string& pfx,
-             std::string& msg)
+    std::string tempnam (const std::string& dir, const std::string& pfx,
+                         std::string& msg)
     {
       msg = "";
 
@@ -684,15 +654,15 @@ namespace octave
       // get dir path to use for template
       std::string templatename;
       if (dir.empty ())
-        templatename = sys::env::get_temp_directory ();
-      else if (! sys::file_stat (dir, false).is_dir ())
-        templatename = sys::env::get_temp_directory ();
+        templatename = env::get_temp_directory ();
+      else if (! file_stat (dir, false).is_dir ())
+        templatename = env::get_temp_directory ();
       else
         templatename = dir;
 
       // add dir sep char if it is not there
-      if (*templatename.rbegin () != sys::file_ops::dir_sep_char ())
-        templatename += sys::file_ops::dir_sep_char ();
+      if (*templatename.rbegin () != file_ops::dir_sep_char ())
+        templatename += file_ops::dir_sep_char ();
 
       if (pfx.empty ())
         templatename += "file";
@@ -715,15 +685,13 @@ namespace octave
       return retval;
     }
 
-    std::string
-    canonicalize_file_name (const std::string& name)
+    std::string canonicalize_file_name (const std::string& name)
     {
       std::string msg;
       return canonicalize_file_name (name, msg);
     }
 
-    std::string
-    canonicalize_file_name (const std::string& name, std::string& msg)
+    std::string canonicalize_file_name (const std::string& name, std::string& msg)
     {
       msg = "";
 

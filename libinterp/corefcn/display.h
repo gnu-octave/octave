@@ -29,100 +29,124 @@ along with Octave; see the file COPYING.  If not, see
 
 class Matrix;
 
-class
-OCTINTERP_API
-display_info
+namespace octave
 {
-protected:
-
-  display_info (bool query = true)
-    : ht (1), wd (1), dp (0), rx (72), ry (72), dpy_avail (false),
-      err_msg ()
+  class
+  OCTINTERP_API
+  display_info
   {
-    init (query);
-  }
+  protected:
 
-public:
+    display_info (void)
+      : m_ht (1), m_wd (1), m_dp (0),
+        m_rx (72), m_ry (72), m_dpy_avail (false), m_err_msg ()
+    {
+      init ();
+    }
 
-  static int height (void)
-  {
-    return instance_ok () ? instance->do_height () : 0;
-  }
+    explicit display_info (const std::string& dpy_name)
+      : m_ht (1), m_wd (1), m_dp (0),
+        m_rx (72), m_ry (72), m_dpy_avail (false), m_err_msg ()
+    {
+      init (dpy_name);
+    }
 
-  static int width (void)
-  {
-    return instance_ok () ? instance->do_width () : 0;
-  }
+    explicit display_info (bool query)
+      : m_ht (1), m_wd (1), m_dp (0),
+        m_rx (72), m_ry (72), m_dpy_avail (false), m_err_msg ()
+    {
+      init ("", query);
+    }
 
-  static int depth (void)
-  {
-    return instance_ok () ? instance->do_depth () : 0;
-  }
+    explicit display_info (const std::string& dpy_name, bool query)
+      : m_ht (1), m_wd (1), m_dp (0),
+        m_rx (72), m_ry (72), m_dpy_avail (false), m_err_msg ()
+    {
+      init (dpy_name, query);
+    }
 
-  static double x_dpi (void)
-  {
-    return instance_ok () ? instance->do_x_dpi () : 0;
-  }
+  public:
 
-  static double y_dpi (void)
-  {
-    return instance_ok () ? instance->do_y_dpi () : 0;
-  }
+    static int height (void)
+    {
+      return instance_ok () ? instance->do_height () : 0;
+    }
 
-  static bool display_available (void)
-  {
-    std::string msg;
-    return instance_ok () ? instance->do_display_available (msg) : false;
-  }
+    static int width (void)
+    {
+      return instance_ok () ? instance->do_width () : 0;
+    }
 
-  static bool display_available (std::string& msg)
-  {
-    return instance_ok () ? instance->do_display_available (msg) : false;
-  }
+    static int depth (void)
+    {
+      return instance_ok () ? instance->do_depth () : 0;
+    }
 
-  // To disable querying the window system for defaults, this function
-  // must be called before any other display_info function.
-  static void no_window_system (void)
-  {
-    instance_ok (false);
-  }
+    static double x_dpi (void)
+    {
+      return instance_ok () ? instance->do_x_dpi () : 0;
+    }
 
-private:
+    static double y_dpi (void)
+    {
+      return instance_ok () ? instance->do_y_dpi () : 0;
+    }
 
-  static display_info *instance;
+    static bool display_available (void)
+    {
+      std::string msg;
+      return instance_ok () ? instance->do_display_available (msg) : false;
+    }
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+    static bool display_available (std::string& msg)
+    {
+      return instance_ok () ? instance->do_display_available (msg) : false;
+    }
 
-  // Height, width, and depth of the display.
-  int ht;
-  int wd;
-  int dp;
+    // To disable querying the window system for defaults, this function
+    // must be called before any other display_info function.
+    static void no_window_system (void)
+    {
+      instance_ok (false);
+    }
 
-  // X- and Y- Resolution of the display in dots (pixels) per inch.
-  double rx;
-  double ry;
+  private:
 
-  bool dpy_avail;
+    static display_info *instance;
 
-  std::string err_msg;
+    static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  int do_height (void) const { return ht; }
-  int do_width (void) const { return wd; }
-  int do_depth (void) const { return dp; }
+    // Height, width, and depth of the display.
+    int m_ht;
+    int m_wd;
+    int m_dp;
 
-  double do_x_dpi (void) const { return rx; }
-  double do_y_dpi (void) const { return ry; }
+    // X- and Y- Resolution of the display in dots (pixels) per inch.
+    double m_rx;
+    double m_ry;
 
-  bool do_display_available (std::string& msg) const
-  {
-    msg = err_msg;
+    bool m_dpy_avail;
 
-    return dpy_avail;
-  }
+    std::string m_err_msg;
 
-  void init (bool query = true);
+    int do_height (void) const { return m_ht; }
+    int do_width (void) const { return m_wd; }
+    int do_depth (void) const { return m_dp; }
 
-  static bool instance_ok (bool query = true);
-};
+    double do_x_dpi (void) const { return m_rx; }
+    double do_y_dpi (void) const { return m_ry; }
+
+    bool do_display_available (std::string& msg) const
+    {
+      msg = m_err_msg;
+
+      return m_dpy_avail;
+    }
+
+    void init (const std::string& dpy_name = "", bool query = true);
+
+    static bool instance_ok (bool query = true);
+  };
+}
 
 #endif

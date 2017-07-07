@@ -961,5 +961,5 @@ and false otherwise.
 @seealso{isguirunning}
 @end deftypefn */)
 {
-  return ovl (display_info::display_available ());
+  return ovl (octave::display_info::display_available ());
 }

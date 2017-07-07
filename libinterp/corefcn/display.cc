@@ -30,40 +30,47 @@ along with Octave; see the file COPYING.  If not, see
 #include "display.h"
 #include "error.h"
 
-display_info *display_info::instance = nullptr;
-
-void
-display_info::init (bool query)
+namespace octave
 {
-  if (query)
-    {
-      int avail = 0;
+  display_info *display_info::instance = nullptr;
 
-      const char *msg = octave_get_display_info (&ht, &wd, &dp, &rx, &ry,
-                                                 &avail);
+  void
+  display_info::init (const std::string& dpy_name, bool query)
+  {
+    if (query)
+      {
+        int avail = 0;
 
-      dpy_avail = avail;
+        const char *display_name
+          = dpy_name.empty () ? nullptr : dpy_name.c_str ();
 
-      if (msg)
-        err_msg = msg;
-    }
-}
+        const char *msg
+          = octave_get_display_info (display_name, &m_ht, &m_wd, &m_dp,
+                                     &m_rx, &m_ry, &avail);
 
-bool
-display_info::instance_ok (bool query)
-{
-  bool retval = true;
+        m_dpy_avail = avail;
 
-  if (! instance)
-    {
-      instance = new display_info (query);
+        if (msg)
+          m_err_msg = msg;
+      }
+  }
 
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
+  bool
+  display_info::instance_ok (bool query)
+  {
+    bool retval = true;
 
-  if (! instance)
-    error ("unable to create display_info object!");
+    if (! instance)
+      {
+        instance = new display_info (query);
 
-  return retval;
+        if (instance)
+          singleton_cleanup_list::add (cleanup_instance);
+      }
+
+    if (! instance)
+      error ("unable to create display_info object!");
+
+    return retval;
+  }
 }

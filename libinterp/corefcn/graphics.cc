@@ -218,7 +218,7 @@ viridis_colormap (void)
 static double
 default_screendepth (void)
 {
-  return display_info::depth ();
+  return octave::display_info::depth ();
 }
 
 static Matrix
@@ -228,8 +228,8 @@ default_screensize (void)
 
   retval(0) = 1.0;
   retval(1) = 1.0;
-  retval(2) = display_info::width ();
-  retval(3) = display_info::height ();
+  retval(2) = octave::display_info::width ();
+  retval(3) = octave::display_info::height ();
 
   return retval;
 }
@@ -237,7 +237,7 @@ default_screensize (void)
 static double
 default_screenpixelsperinch (void)
 {
-  return (display_info::x_dpi () + display_info::y_dpi ()) / 2;
+  return (octave::display_info::x_dpi () + octave::display_info::y_dpi ()) / 2;
 }
 
 static Matrix

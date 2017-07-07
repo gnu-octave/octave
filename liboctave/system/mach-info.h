@@ -29,22 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class
-  OCTAVE_API
-  mach_info
+  namespace mach_info
   {
-  protected:
-
-    mach_info (void);
-
-  public:
-
-    // No copying!
-
-    mach_info (const mach_info&) = delete;
-
-    mach_info& operator = (const mach_info&) = delete;
-
     enum float_format
     {
       flt_fmt_unknown,
@@ -52,30 +38,16 @@ namespace octave
       flt_fmt_ieee_big_endian,
     };
 
-    static bool instance_ok (void);
+    float_format native_float_format (void);
 
-    static float_format native_float_format (void);
+    bool words_big_endian (void);
 
-    static bool words_big_endian (void);
+    bool words_little_endian (void);
 
-    static bool words_little_endian (void);
+    float_format string_to_float_format (const std::string&);
 
-    static float_format string_to_float_format (const std::string&);
-
-    static std::string float_format_as_string (float_format);
-
-  private:
-
-    static mach_info *instance;
-
-    static void cleanup_instance (void) { delete instance; instance = 0; }
-
-    // The floating point format for the current machine.
-    mutable float_format native_float_fmt;
-
-    // TRUE if the byte order on this system is big endian.
-    mutable bool big_chief;
-  };
+    std::string float_format_as_string (float_format);
+  }
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)

@@ -7767,7 +7767,7 @@ Encode a double matrix or array @var{x} into the base64 format string
           size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char);  \
           const char *inc = reinterpret_cast<const char *> (in.data ()); \
           char *out;                                                     \
-          if (octave_base64_encode (inc, inlen, &out))                   \
+          if (octave::base64_encode (inc, inlen, &out))                  \
             {                                                            \
               retval(0) = octave_value (out);                            \
               ::free (out);                                              \
@@ -7796,7 +7796,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
-      if (octave_base64_encode (inc, inlen, &out))
+      if (octave::base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -7810,7 +7810,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
-      if (octave_base64_encode (inc, inlen, &out))
+      if (octave::base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -7862,7 +7862,7 @@ dimensions of the decoded array.
 
   std::string str = args(0).string_value ();
 
-  Array<double> retval = octave_base64_decode (str);
+  Array<double> retval = octave::base64_decode (str);
 
   if (nargin == 2)
     {

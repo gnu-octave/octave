@@ -29,75 +29,88 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "base-list.h"
 
-extern std::string get_comment_text (void);
-
-extern char * get_comment_text_c_str (void);
-
-extern void save_comment_text (const std::string& text);
-
-class
-octave_comment_elt
+namespace octave
 {
-public:
+  extern std::string get_comment_text (void);
 
-  enum comment_type
+  extern char * get_comment_text_c_str (void);
+
+  extern void save_comment_text (const std::string& text);
+
+  class
+  comment_elt
   {
-    unknown,
-    block,
-    full_line,
-    end_of_line,
-    doc_string,
-    copyright
+  public:
+
+    enum comment_type
+      {
+        unknown,
+        block,
+        full_line,
+        end_of_line,
+        doc_string,
+        copyright
+      };
+
+    comment_elt (const std::string& s = "",
+                        comment_type t = unknown)
+      : txt (s), typ (t) { }
+
+    comment_elt (const comment_elt& oc)
+      : txt (oc.txt), typ (oc.typ) { }
+
+    comment_elt& operator = (const comment_elt& oc)
+    {
+      if (this != &oc)
+        {
+          txt = oc.txt;
+          typ = oc.typ;
+        }
+
+      return *this;
+    }
+
+    std::string text (void) const { return txt; }
+
+    comment_type type (void) const { return typ; }
+
+    ~comment_elt (void) = default;
+
+  private:
+
+    // The text of the comment.
+    std::string txt;
+
+    // The type of comment.
+    comment_type typ;
   };
 
-  octave_comment_elt (const std::string& s = "",
-                      comment_type t = unknown)
-    : txt (s), typ (t) { }
-
-  octave_comment_elt (const octave_comment_elt& oc)
-    : txt (oc.txt), typ (oc.typ) { }
-
-  octave_comment_elt& operator = (const octave_comment_elt& oc)
+  class
+  comment_list : public octave::base_list<comment_elt>
   {
-    if (this != &oc)
-      {
-        txt = oc.txt;
-        typ = oc.typ;
-      }
+  public:
 
-    return *this;
-  }
+    comment_list (void) { }
 
-  std::string text (void) const { return txt; }
+    void append (const comment_elt& elt)
+    { octave::base_list<comment_elt>::append (elt); }
 
-  comment_type type (void) const { return typ; }
+    void append (const std::string& s,
+                 comment_elt::comment_type t = comment_elt::unknown)
+    { append (comment_elt (s, t)); }
 
-  ~octave_comment_elt (void) = default;
+    comment_list * dup (void) const;
+  };
+}
 
-private:
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  // The text of the comment.
-  std::string txt;
+OCTAVE_DEPRECATED (4.4, "use 'octave::comment_list' instead")
+typedef octave::comment_list octave_comment_list;
 
-  // The type of comment.
-  comment_type typ;
-};
+OCTAVE_DEPRECATED (4.4, "use 'octave::comment_elt' instead")
+typedef octave::comment_elt octave_comment_elt;
 
-class
-octave_comment_list : public octave::base_list<octave_comment_elt>
-{
-public:
-
-  octave_comment_list (void) { }
-
-  void append (const octave_comment_elt& elt)
-  { octave::base_list<octave_comment_elt>::append (elt); }
-
-  void append (const std::string& s,
-               octave_comment_elt::comment_type t = octave_comment_elt::unknown)
-  { append (octave_comment_elt (s, t)); }
-
-  octave_comment_list * dup (void) const;
-};
+#endif
 
 #endif

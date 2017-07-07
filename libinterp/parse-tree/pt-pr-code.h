@@ -28,11 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 #include <string>
 
-#include "comment-list.h"
 #include "pt-walk.h"
 
 namespace octave
 {
+  class comment_elt;
+  class comment_list;
   class tree_decl_command;
   class tree_expression;
 
@@ -183,11 +184,11 @@ namespace octave
 
     void print_parens (const tree_expression& expr, const char *txt);
 
-    void print_comment_list (octave_comment_list *comment_list);
+    void print_comment_list (comment_list *comment_list);
 
-    void print_comment_elt (const octave_comment_elt& comment_elt);
+    void print_comment_elt (const comment_elt& comment_elt);
 
-    void print_indented_comment (octave_comment_list *comment_list);
+    void print_indented_comment (comment_list *comment_list);
 
     // Must create with an output stream!
 

@@ -252,9 +252,9 @@ public:
 
   void stash_parent_fcn_scope (octave::symbol_table::scope *ps);
 
-  void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
+  void stash_leading_comment (octave::comment_list *lc) { lead_comm = lc; }
 
-  void stash_trailing_comment (octave_comment_list *tc) { trail_comm = tc; }
+  void stash_trailing_comment (octave::comment_list *tc) { trail_comm = tc; }
 
   void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
@@ -380,9 +380,9 @@ public:
 
   octave::tree_statement_list * body (void) { return cmd_list; }
 
-  octave_comment_list * leading_comment (void) { return lead_comm; }
+  octave::comment_list * leading_comment (void) { return lead_comm; }
 
-  octave_comment_list * trailing_comment (void) { return trail_comm; }
+  octave::comment_list * trailing_comment (void) { return trail_comm; }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
@@ -425,10 +425,10 @@ private:
   octave::tree_statement_list *cmd_list;
 
   // The comments preceding the FUNCTION token.
-  octave_comment_list *lead_comm;
+  octave::comment_list *lead_comm;
 
   // The comments preceding the ENDFUNCTION token.
-  octave_comment_list *trail_comm;
+  octave::comment_list *trail_comm;
 
   // The name of the file we parsed.
   std::string file_name;

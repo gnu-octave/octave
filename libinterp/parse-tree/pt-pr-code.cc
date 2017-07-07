@@ -328,7 +328,7 @@ namespace octave
   void
   tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
   {
-    octave_comment_list *leading_comment = fcn.leading_comment ();
+    comment_list *leading_comment = fcn.leading_comment ();
 
     if (leading_comment)
       {
@@ -1218,7 +1218,7 @@ namespace octave
   }
 
   void
-  tree_print_code::print_comment_elt (const octave_comment_elt& elt)
+  tree_print_code::print_comment_elt (const comment_elt& elt)
   {
     bool printed_something = false;
 
@@ -1278,15 +1278,15 @@ namespace octave
   }
 
   void
-  tree_print_code::print_comment_list (octave_comment_list *comment_list)
+  tree_print_code::print_comment_list (comment_list *comment_list)
   {
     if (comment_list)
       {
-        octave_comment_list::iterator p = comment_list->begin ();
+        comment_list::iterator p = comment_list->begin ();
 
         while (p != comment_list->end ())
           {
-            octave_comment_elt elt = *p++;
+            comment_elt elt = *p++;
 
             print_comment_elt (elt);
 
@@ -1297,7 +1297,7 @@ namespace octave
   }
 
   void
-  tree_print_code::print_indented_comment (octave_comment_list *comment_list)
+  tree_print_code::print_indented_comment (comment_list *comment_list)
   {
     increment_indent_level ();
 

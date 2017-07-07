@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
-#include "comment-list.h"
 #include "pt-cmd.h"
 #include "pt-walk.h"
 #include "symtab.h"
@@ -55,8 +54,8 @@ namespace octave
     { }
 
     tree_while_command (tree_expression *e,
-                        octave_comment_list *lc = nullptr,
-                        octave_comment_list *tc = nullptr,
+                        comment_list *lc = nullptr,
+                        comment_list *tc = nullptr,
                         int l = -1, int c = -1)
       : tree_command (l, c), expr (e), list (0), lead_comm (lc),
         trail_comm (tc)
@@ -66,8 +65,8 @@ namespace octave
     { }
 
     tree_while_command (tree_expression *e, tree_statement_list *lst,
-                        octave_comment_list *lc = nullptr,
-                        octave_comment_list *tc = nullptr,
+                        comment_list *lc = nullptr,
+                        comment_list *tc = nullptr,
                         int l = -1, int c = -1)
       : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
         trail_comm (tc)
@@ -88,9 +87,9 @@ namespace octave
 
     tree_statement_list * body (void) { return list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -119,10 +118,10 @@ namespace octave
     tree_statement_list *list;
 
     // Comment preceding WHILE token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding ENDWHILE token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
 
   private:
 
@@ -142,14 +141,14 @@ namespace octave
       : tree_while_command (l, c) { }
 
     tree_do_until_command (tree_expression *e,
-                           octave_comment_list *lc = nullptr,
-                           octave_comment_list *tc = nullptr,
+                           comment_list *lc = nullptr,
+                           comment_list *tc = nullptr,
                            int l = -1, int c = -1)
       : tree_while_command (e, lc, tc, l, c) { }
 
     tree_do_until_command (tree_expression *e, tree_statement_list *lst,
-                           octave_comment_list *lc = nullptr,
-                           octave_comment_list *tc = nullptr,
+                           comment_list *lc = nullptr,
+                           comment_list *tc = nullptr,
                            int l = -1, int c = -1)
       : tree_while_command (e, lst, lc, tc, l, c) { }
 
@@ -185,8 +184,8 @@ namespace octave
                              tree_expression *re,
                              tree_expression *maxproc_arg,
                              tree_statement_list *lst,
-                             octave_comment_list *lc = nullptr,
-                             octave_comment_list *tc = nullptr,
+                             comment_list *lc = nullptr,
+                             comment_list *tc = nullptr,
                              int l = -1, int c = -1)
       : tree_command (l, c), parallel (parallel_arg), lhs (le),
         expr (re), maxproc (maxproc_arg), list (lst),
@@ -214,9 +213,9 @@ namespace octave
 
     tree_statement_list * body (void) { return list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -255,10 +254,10 @@ namespace octave
     tree_statement_list *list;
 
     // Comment preceding FOR token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding ENDFOR token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
 
 #if defined (HAVE_LLVM)
     // compiled version of the loop
@@ -276,8 +275,8 @@ namespace octave
 
     tree_complex_for_command (tree_argument_list *le, tree_expression *re,
                               tree_statement_list *lst,
-                              octave_comment_list *lc = nullptr,
-                              octave_comment_list *tc = nullptr,
+                              comment_list *lc = nullptr,
+                              comment_list *tc = nullptr,
                               int l = -1, int c = -1)
       : tree_command (l, c), lhs (le), expr (re), list (lst),
         lead_comm (lc), trail_comm (tc) { }
@@ -296,9 +295,9 @@ namespace octave
 
     tree_statement_list * body (void) { return list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -317,10 +316,10 @@ namespace octave
     tree_statement_list *list;
 
     // Comment preceding FOR token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding ENDFOR token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
   };
 }
 

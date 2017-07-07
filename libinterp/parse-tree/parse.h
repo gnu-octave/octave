@@ -38,12 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-misc.h"
 #include "token.h"
 
-class octave_comment_list;
 class octave_function;
 class octave_user_function;
 
 namespace octave
 {
+  class comment_list;
   class tree;
   class tree_anon_fcn_handle;
   class tree_argument_list;
@@ -206,32 +206,32 @@ namespace octave
     tree_command *
     make_unwind_command (token *unwind_tok, tree_statement_list *body,
                          tree_statement_list *cleanup, token *end_tok,
-                         octave_comment_list *lc, octave_comment_list *mc);
+                         comment_list *lc, comment_list *mc);
 
     // Build a try-catch command.
     tree_command *
     make_try_command (token *try_tok, tree_statement_list *body,
                       char catch_sep, tree_statement_list *cleanup,
-                      token *end_tok, octave_comment_list *lc,
-                      octave_comment_list *mc);
+                      token *end_tok, comment_list *lc,
+                      comment_list *mc);
 
     // Build a while command.
     tree_command *
     make_while_command (token *while_tok, tree_expression *expr,
                         tree_statement_list *body, token *end_tok,
-                        octave_comment_list *lc);
+                        comment_list *lc);
 
     // Build a do-until command.
     tree_command *
     make_do_until_command (token *until_tok, tree_statement_list *body,
-                           tree_expression *expr, octave_comment_list *lc);
+                           tree_expression *expr, comment_list *lc);
 
     // Build a for command.
     tree_command *
     make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
                       tree_expression *expr, tree_expression *maxproc,
                       tree_statement_list *body, token *end_tok,
-                      octave_comment_list *lc);
+                      comment_list *lc);
 
     // Build a break command.
     tree_command * make_break_command (token *break_tok);
@@ -249,23 +249,23 @@ namespace octave
     // Finish an if command.
     tree_if_command *
     finish_if_command (token *if_tok, tree_if_command_list *list,
-                       token *end_tok, octave_comment_list *lc);
+                       token *end_tok, comment_list *lc);
 
     // Build an elseif clause.
     tree_if_clause *
     make_elseif_clause (token *elseif_tok, tree_expression *expr,
-                        tree_statement_list *list, octave_comment_list *lc);
+                        tree_statement_list *list, comment_list *lc);
 
     // Finish a switch command.
     tree_switch_command *
     finish_switch_command (token *switch_tok, tree_expression *expr,
                            tree_switch_case_list *list, token *end_tok,
-                           octave_comment_list *lc);
+                           comment_list *lc);
 
     // Build a switch case.
     tree_switch_case *
     make_switch_case (token *case_tok, tree_expression *expr,
-                      tree_statement_list *list, octave_comment_list *lc);
+                      tree_statement_list *list, comment_list *lc);
 
     // Build an assignment to a variable.
     tree_expression *
@@ -280,7 +280,7 @@ namespace octave
     make_function (token *fcn_tok, tree_parameter_list *ret_list,
                    tree_identifier *id, tree_parameter_list *param_list,
                    tree_statement_list *body, tree_statement *end_fcn_stmt,
-                   octave_comment_list *lc);
+                   comment_list *lc);
 
     // Begin defining a function.
     octave_user_function *
@@ -297,7 +297,7 @@ namespace octave
     // Finish defining a function.
     tree_function_def *
     finish_function (tree_parameter_list *ret_list,
-                     octave_user_function *fcn, octave_comment_list *lc,
+                     octave_user_function *fcn, comment_list *lc,
                      int l, int c);
 
     // Reset state after parsing function.
@@ -315,31 +315,31 @@ namespace octave
     make_classdef (token *tok_val, tree_classdef_attribute_list *a,
                    tree_identifier *id, tree_classdef_superclass_list *sc,
                    tree_classdef_body *body, token *end_tok,
-                   octave_comment_list *lc);
+                   comment_list *lc);
 
     tree_classdef_properties_block *
     make_classdef_properties_block (token *tok_val,
                                     tree_classdef_attribute_list *a,
                                     tree_classdef_property_list *plist,
-                                    token *end_tok, octave_comment_list *lc);
+                                    token *end_tok, comment_list *lc);
 
     tree_classdef_methods_block *
     make_classdef_methods_block (token *tok_val,
                                  tree_classdef_attribute_list *a,
                                  tree_classdef_methods_list *mlist,
-                                 token *end_tok, octave_comment_list *lc);
+                                 token *end_tok, comment_list *lc);
 
     tree_classdef_events_block *
     make_classdef_events_block (token *tok_val,
                                 tree_classdef_attribute_list *a,
                                 tree_classdef_events_list *elist,
-                                token *end_tok, octave_comment_list *lc);
+                                token *end_tok, comment_list *lc);
 
     tree_classdef_enum_block *
     make_classdef_enum_block (token *tok_val,
                               tree_classdef_attribute_list *a,
                               tree_classdef_enum_list *elist,
-                              token *end_tok, octave_comment_list *lc);
+                              token *end_tok, comment_list *lc);
 
     octave_user_function *
     start_classdef_external_method (tree_identifier *id,
@@ -348,7 +348,7 @@ namespace octave
     tree_function_def *
     finish_classdef_external_method (octave_user_function *fcn,
                                      tree_parameter_list *ret_list,
-                                     octave_comment_list *cl);
+                                     comment_list *cl);
 
     // Make an index expression.
     tree_index_expression *

@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "comment-list.h"
 #include "pt-cmd.h"
 #include "pt-id.h"
 #include "pt-walk.h"
@@ -33,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class comment_list;
   class tree_statement_list;
 
   // Simple exception handling.
@@ -47,9 +47,9 @@ namespace octave
 
     tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
                             tree_identifier *id,
-                            octave_comment_list *cl = nullptr,
-                            octave_comment_list *cm = nullptr,
-                            octave_comment_list *ct = nullptr,
+                            comment_list *cl = nullptr,
+                            comment_list *cm = nullptr,
+                            comment_list *ct = nullptr,
                             int l = -1, int c = -1)
       : tree_command (l, c), try_code (tc), catch_code (cc), expr_id (id),
         lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
@@ -68,11 +68,11 @@ namespace octave
 
     tree_statement_list * cleanup (void) { return catch_code; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * middle_comment (void) { return mid_comm; }
+    comment_list * middle_comment (void) { return mid_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -91,13 +91,13 @@ namespace octave
     tree_identifier *expr_id;
 
     // Comment preceding TRY token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding CATCH token.
-    octave_comment_list *mid_comm;
+    comment_list *mid_comm;
 
     // Comment preceding END_TRY_CATCH token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
   };
 
   // Simple exception handling.
@@ -112,9 +112,9 @@ namespace octave
 
     tree_unwind_protect_command (tree_statement_list *tc,
                                  tree_statement_list *cc,
-                                 octave_comment_list *cl = nullptr,
-                                 octave_comment_list *cm = nullptr,
-                                 octave_comment_list *ct = nullptr,
+                                 comment_list *cl = nullptr,
+                                 comment_list *cm = nullptr,
+                                 comment_list *ct = nullptr,
                                  int l = -1, int c = -1)
       : tree_command (l, c), unwind_protect_code (tc), cleanup_code (cc),
         lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
@@ -132,11 +132,11 @@ namespace octave
 
     tree_statement_list * cleanup (void) { return cleanup_code; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * middle_comment (void) { return mid_comm; }
+    comment_list * middle_comment (void) { return mid_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -153,13 +153,13 @@ namespace octave
     tree_statement_list *cleanup_code;
 
     // Comment preceding UNWIND_PROTECT token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding UNWIND_PROTECT_CLEANUP token.
-    octave_comment_list *mid_comm;
+    comment_list *mid_comm;
 
     // Comment preceding END_UNWIND_PROTECT token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
   };
 }
 

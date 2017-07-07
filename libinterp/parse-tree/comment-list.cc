@@ -29,13 +29,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "comment-list.h"
 #include "error.h"
 
-octave_comment_list *
-octave_comment_list::dup (void) const
+namespace octave
 {
-  octave_comment_list *new_cl = new octave_comment_list ();
+  comment_list *
+  comment_list::dup (void) const
+  {
+    comment_list *new_cl = new comment_list ();
 
-  for (const auto& elt : *this)
-    new_cl->append (elt);
+    for (const auto& elt : *this)
+      new_cl->append (elt);
 
-  return new_cl;
+    return new_cl;
+  }
 }

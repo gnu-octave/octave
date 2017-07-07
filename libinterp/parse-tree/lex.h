@@ -520,39 +520,39 @@ namespace octave
     {
     public:
 
-      comment_buffer (void) : comment_list (0) { }
+      comment_buffer (void) : m_comment_list (0) { }
 
-      ~comment_buffer (void) { delete comment_list; }
+      ~comment_buffer (void) { delete m_comment_list; }
 
-      void append (const std::string& s, octave_comment_elt::comment_type t)
+      void append (const std::string& s, comment_elt::comment_type t)
       {
-        if (! comment_list)
-          comment_list = new octave_comment_list ();
+        if (! m_comment_list)
+          m_comment_list = new comment_list ();
 
-        comment_list->append (s, t);
+        m_comment_list->append (s, t);
       }
 
       // Caller is expected to delete the returned value.
 
-      octave_comment_list * get_comment (void)
+      comment_list * get_comment (void)
       {
-        octave_comment_list *retval = comment_list;
+        comment_list *retval = m_comment_list;
 
-        comment_list = 0;
+        m_comment_list = 0;
 
         return retval;
       }
 
       void reset (void)
       {
-        delete comment_list;
+        delete m_comment_list;
 
-        comment_list = 0;
+        m_comment_list = 0;
       }
 
     private:
 
-      octave_comment_list *comment_list;
+      comment_list *m_comment_list;
     };
 
     base_lexer (interpreter *interp = nullptr)
@@ -614,9 +614,9 @@ namespace octave
 
     void handle_continuation (void);
 
-    void finish_comment (octave_comment_elt::comment_type typ);
+    void finish_comment (comment_elt::comment_type typ);
 
-    octave_comment_list * get_comment (void) { return comment_buf.get_comment (); }
+    comment_list * get_comment (void) { return comment_buf.get_comment (); }
 
     int handle_close_bracket (int bracket_type);
 

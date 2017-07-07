@@ -55,7 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
-#include "comment-list.h"
 #include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -140,7 +139,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
   octave::token *tok_val;
 
   // Comment strings that we need to deal with mid-rule.
-  octave_comment_list *comment_type;
+  octave::comment_list *comment_type;
 
   // Types for the nonterminals we generate.
   char punct_type;
@@ -2701,14 +2700,14 @@ namespace octave
                                     tree_statement_list *body,
                                     tree_statement_list *cleanup_stmts,
                                     token *end_tok,
-                                    octave_comment_list *lc,
-                                    octave_comment_list *mc)
+                                    comment_list *lc,
+                                    comment_list *mc)
   {
     tree_command *retval = 0;
 
     if (end_token_ok (end_tok, token::unwind_protect_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = unwind_tok->line ();
         int c = unwind_tok->column ();
@@ -2735,14 +2734,14 @@ namespace octave
                                  char catch_sep,
                                  tree_statement_list *cleanup_stmts,
                                  token *end_tok,
-                                 octave_comment_list *lc,
-                                 octave_comment_list *mc)
+                                 comment_list *lc,
+                                 comment_list *mc)
   {
     tree_command *retval = 0;
 
     if (end_token_ok (end_tok, token::try_catch_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = try_tok->line ();
         int c = try_tok->column ();
@@ -2790,7 +2789,7 @@ namespace octave
                                    tree_expression *expr,
                                    tree_statement_list *body,
                                    token *end_tok,
-                                   octave_comment_list *lc)
+                                   comment_list *lc)
   {
     tree_command *retval = 0;
 
@@ -2798,7 +2797,7 @@ namespace octave
 
     if (end_token_ok (end_tok, token::while_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         m_lexer.looping--;
 
@@ -2824,11 +2823,11 @@ namespace octave
   base_parser::make_do_until_command (token *until_tok,
                                       tree_statement_list *body,
                                       tree_expression *expr,
-                                      octave_comment_list *lc)
+                                      comment_list *lc)
   {
     maybe_warn_assign_as_truth_value (expr);
 
-    octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+    comment_list *tc = m_lexer.comment_buf.get_comment ();
 
     m_lexer.looping--;
 
@@ -2847,7 +2846,7 @@ namespace octave
                                  tree_expression *maxproc,
                                  tree_statement_list *body,
                                  token *end_tok,
-                                 octave_comment_list *lc)
+                                 comment_list *lc)
   {
     tree_command *retval = 0;
 
@@ -2857,7 +2856,7 @@ namespace octave
       {
         expr->mark_as_for_cmd_expr ();
 
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         m_lexer.looping--;
 
@@ -2960,13 +2959,13 @@ namespace octave
   base_parser::finish_if_command (token *if_tok,
                                   tree_if_command_list *list,
                                   token *end_tok,
-                                  octave_comment_list *lc)
+                                  comment_list *lc)
   {
     tree_if_command *retval = 0;
 
     if (end_token_ok (end_tok, token::if_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = if_tok->line ();
         int c = if_tok->column ();
@@ -3000,7 +2999,7 @@ namespace octave
   base_parser::make_elseif_clause (token *elseif_tok,
                                    tree_expression *expr,
                                    tree_statement_list *list,
-                                   octave_comment_list *lc)
+                                   comment_list *lc)
   {
     maybe_warn_assign_as_truth_value (expr);
 
@@ -3017,13 +3016,13 @@ namespace octave
                                       tree_expression *expr,
                                       tree_switch_case_list *list,
                                       token *end_tok,
-                                      octave_comment_list *lc)
+                                      comment_list *lc)
   {
     tree_switch_command *retval = 0;
 
     if (end_token_ok (end_tok, token::switch_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = switch_tok->line ();
         int c = switch_tok->column ();
@@ -3058,7 +3057,7 @@ namespace octave
   base_parser::make_switch_case (token *case_tok,
                                  tree_expression *expr,
                                  tree_statement_list *list,
-                                 octave_comment_list *lc)
+                                 comment_list *lc)
   {
     maybe_warn_variable_switch_label (expr);
 
@@ -3235,7 +3234,7 @@ namespace octave
                               tree_parameter_list *param_list,
                               tree_statement_list *body,
                               tree_statement *end_fcn_stmt,
-                              octave_comment_list *lc)
+                              comment_list *lc)
   {
     tree_function_def *retval = 0;
 
@@ -3285,7 +3284,7 @@ namespace octave
 
     if (fcn)
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         fcn->stash_trailing_comment (tc);
         fcn->stash_fcn_end_location (end_fcn_stmt->line (),
@@ -3397,7 +3396,7 @@ namespace octave
   tree_function_def *
   base_parser::finish_function (tree_parameter_list *ret_list,
                                 octave_user_function *fcn,
-                                octave_comment_list *lc,
+                                comment_list *lc,
                                 int l, int c)
   {
     tree_function_def *retval = 0;
@@ -3542,7 +3541,7 @@ namespace octave
                               tree_identifier *id,
                               tree_classdef_superclass_list *sc,
                               tree_classdef_body *body, token *end_tok,
-                              octave_comment_list *lc)
+                              comment_list *lc)
   {
     tree_classdef *retval = 0;
 
@@ -3571,7 +3570,7 @@ namespace octave
       {
         if (end_token_ok (end_tok, token::classdef_end))
           {
-            octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+            comment_list *tc = m_lexer.comment_buf.get_comment ();
 
             int l = tok_val->line ();
             int c = tok_val->column ();
@@ -3601,13 +3600,13 @@ namespace octave
                                                tree_classdef_attribute_list *a,
                                                tree_classdef_property_list *plist,
                                                token *end_tok,
-                                               octave_comment_list *lc)
+                                               comment_list *lc)
   {
     tree_classdef_properties_block *retval = 0;
 
     if (end_token_ok (end_tok, token::properties_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3633,13 +3632,13 @@ namespace octave
                                             tree_classdef_attribute_list *a,
                                             tree_classdef_methods_list *mlist,
                                             token *end_tok,
-                                            octave_comment_list *lc)
+                                            comment_list *lc)
   {
     tree_classdef_methods_block *retval = 0;
 
     if (end_token_ok (end_tok, token::methods_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3665,13 +3664,13 @@ namespace octave
                                            tree_classdef_attribute_list *a,
                                            tree_classdef_events_list *elist,
                                            token *end_tok,
-                                           octave_comment_list *lc)
+                                           comment_list *lc)
   {
     tree_classdef_events_block *retval = 0;
 
     if (end_token_ok (end_tok, token::events_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3697,13 +3696,13 @@ namespace octave
                                          tree_classdef_attribute_list *a,
                                          tree_classdef_enum_list *elist,
                                          token *end_tok,
-                                         octave_comment_list *lc)
+                                         comment_list *lc)
   {
     tree_classdef_enum_block *retval = 0;
 
     if (end_token_ok (end_tok, token::enumeration_end))
       {
-        octave_comment_list *tc = m_lexer.comment_buf.get_comment ();
+        comment_list *tc = m_lexer.comment_buf.get_comment ();
 
         int l = tok_val->line ();
         int c = tok_val->column ();
@@ -3776,7 +3775,7 @@ namespace octave
   tree_function_def *
   base_parser::finish_classdef_external_method (octave_user_function *fcn,
                                                 tree_parameter_list *ret_list,
-                                                octave_comment_list *cl)
+                                                comment_list *cl)
   {
     if (ret_list)
       fcn->define_ret_list (ret_list);
@@ -4205,7 +4204,7 @@ namespace octave
   tree_statement *
   base_parser::make_statement (T *arg)
   {
-    octave_comment_list *comment = m_lexer.get_comment ();
+    comment_list *comment = m_lexer.get_comment ();
 
     return new tree_statement (arg, comment);
   }

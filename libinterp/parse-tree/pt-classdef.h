@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
+#include "comment-list.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
@@ -168,7 +169,7 @@ namespace octave
 
     tree_classdef_element (tree_classdef_attribute_list *a,
                            base_list<T> *elist,
-                           octave_comment_list *lc, octave_comment_list *tc,
+                           comment_list *lc, comment_list *tc,
                            int l = -1, int c = -1)
       : tree (l, c), attr_list (a), elt_list (elist),
         lead_comm (lc), trail_comm (tc)
@@ -192,9 +193,9 @@ namespace octave
 
     base_list<T> * element_list (void) { return elt_list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker&) { }
 
@@ -207,10 +208,10 @@ namespace octave
     base_list<T> *elt_list;
 
     // Comment preceding the token marking the beginning of the block.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding END token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
   };
 
   class tree_classdef_property
@@ -280,8 +281,8 @@ namespace octave
 
     tree_classdef_properties_block (tree_classdef_attribute_list *a,
                                     tree_classdef_property_list *plist,
-                                    octave_comment_list *lc,
-                                    octave_comment_list *tc,
+                                    comment_list *lc,
+                                    comment_list *tc,
                                     int l = -1, int c = -1)
       : tree_classdef_element<tree_classdef_property *> (a, plist, lc, tc, l, c) { }
 
@@ -332,8 +333,8 @@ namespace octave
 
     tree_classdef_methods_block (tree_classdef_attribute_list *a,
                                  tree_classdef_methods_list *mlist,
-                                 octave_comment_list *lc,
-                                 octave_comment_list *tc, int l = -1, int c = -1)
+                                 comment_list *lc,
+                                 comment_list *tc, int l = -1, int c = -1)
       : tree_classdef_element<octave_value> (a, mlist, lc, tc, l, c) { }
 
     // No copying!
@@ -413,8 +414,8 @@ namespace octave
 
     tree_classdef_events_block (tree_classdef_attribute_list *a,
                                 tree_classdef_events_list *elist,
-                                octave_comment_list *lc,
-                                octave_comment_list *tc, int l = -1, int c = -1)
+                                comment_list *lc,
+                                comment_list *tc, int l = -1, int c = -1)
       : tree_classdef_element<tree_classdef_event *> (a, elist, lc, tc, l, c) { }
 
     // No copying!
@@ -500,8 +501,8 @@ namespace octave
 
     tree_classdef_enum_block (tree_classdef_attribute_list *a,
                               tree_classdef_enum_list *elist,
-                              octave_comment_list *lc,
-                              octave_comment_list *tc, int l = -1, int c = -1)
+                              comment_list *lc,
+                              comment_list *tc, int l = -1, int c = -1)
       : tree_classdef_element<tree_classdef_enum *> (a, elist, lc, tc, l, c) { }
 
     // No copying!
@@ -634,8 +635,8 @@ namespace octave
 
     tree_classdef (tree_classdef_attribute_list *a, tree_identifier *i,
                    tree_classdef_superclass_list *sc,
-                   tree_classdef_body *b, octave_comment_list *lc,
-                   octave_comment_list *tc,
+                   tree_classdef_body *b, comment_list *lc,
+                   comment_list *tc,
                    const std::string& pn = "", int l = -1,
                    int c = -1)
       : tree_command (l, c), attr_list (a), id (i),
@@ -666,8 +667,8 @@ namespace octave
 
     tree_classdef_body * body (void) { return element_list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     const std::string& package_name (void) const { return pack_name; }
 
@@ -689,8 +690,8 @@ namespace octave
 
     tree_classdef_body *element_list;
 
-    octave_comment_list *lead_comm;
-    octave_comment_list *trail_comm;
+    comment_list *lead_comm;
+    comment_list *trail_comm;
 
     std::string pack_name;
   };

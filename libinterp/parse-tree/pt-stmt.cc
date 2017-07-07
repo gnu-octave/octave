@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "bp-table.h"
+#include "comment-list.h"
 #include "input.h"
 #include "oct-lvalue.h"
 #include "octave-link.h"

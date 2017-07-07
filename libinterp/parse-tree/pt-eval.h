@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "call-stack.h"
-#include "comment-list.h"
 #include "ovl.h"
 #include "pt-exp.h"
 #include "pt-walk.h"

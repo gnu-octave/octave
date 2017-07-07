@@ -45,12 +45,12 @@ namespace octave
     tree_if_clause (int l = -1, int c = -1)
       : tree (l, c), expr (0), list (0), lead_comm (0) { }
 
-    tree_if_clause (tree_statement_list *sl, octave_comment_list *lc = nullptr,
+    tree_if_clause (tree_statement_list *sl, comment_list *lc = nullptr,
                     int l = -1, int c = -1)
       : tree (l, c), expr (0), list (sl), lead_comm (lc) { }
 
     tree_if_clause (tree_expression *e, tree_statement_list *sl,
-                    octave_comment_list *lc = nullptr,
+                    comment_list *lc = nullptr,
                     int l = -1, int c = -1)
       : tree (l, c), expr (e), list (sl), lead_comm (lc) { }
 
@@ -68,7 +68,7 @@ namespace octave
 
     tree_statement_list * commands (void) { return list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -84,7 +84,7 @@ namespace octave
     tree_statement_list *list;
 
     // Comment preceding ELSE or ELSEIF token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
   };
 
   class tree_if_command_list : public base_list<tree_if_clause *>
@@ -124,8 +124,8 @@ namespace octave
     tree_if_command (int l = -1, int c = -1)
       : tree_command (l, c), list (0), lead_comm (0), trail_comm (0) { }
 
-    tree_if_command (tree_if_command_list *lst, octave_comment_list *lc,
-                     octave_comment_list *tc, int l = -1, int c = -1)
+    tree_if_command (tree_if_command_list *lst, comment_list *lc,
+                     comment_list *tc, int l = -1, int c = -1)
       : tree_command (l, c), list (lst), lead_comm (lc), trail_comm (tc) { }
 
     // No copying!
@@ -138,9 +138,9 @@ namespace octave
 
     tree_if_command_list * cmd_list (void) { return list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -153,10 +153,10 @@ namespace octave
     tree_if_command_list *list;
 
     // Comment preceding IF token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding ENDIF token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
   };
 
   // Switch.
@@ -168,12 +168,12 @@ namespace octave
     tree_switch_case (int l = -1, int c = -1)
       : tree (l, c), label (0), list (0), lead_comm (0) { }
 
-    tree_switch_case (tree_statement_list *sl, octave_comment_list *lc = nullptr,
+    tree_switch_case (tree_statement_list *sl, comment_list *lc = nullptr,
                       int l = -1, int c = -1)
       : tree (l, c), label (0), list (sl), lead_comm (lc) { }
 
     tree_switch_case (tree_expression *e, tree_statement_list *sl,
-                      octave_comment_list *lc = nullptr,
+                      comment_list *lc = nullptr,
                       int l = -1, int c = -1)
       : tree (l, c), label (e), list (sl), lead_comm (lc) { }
 
@@ -191,7 +191,7 @@ namespace octave
 
     tree_statement_list * commands (void) { return list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -207,7 +207,7 @@ namespace octave
     tree_statement_list *list;
 
     // Comment preceding CASE or OTHERWISE token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
   };
 
   class tree_switch_case_list : public base_list<tree_switch_case *>
@@ -249,7 +249,7 @@ namespace octave
         trail_comm (0) { }
 
     tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
-                         octave_comment_list *lc, octave_comment_list *tc,
+                         comment_list *lc, comment_list *tc,
                          int l = -1, int c = -1)
       : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
         trail_comm (tc) { }
@@ -266,9 +266,9 @@ namespace octave
 
     tree_switch_case_list * case_list (void) { return list; }
 
-    octave_comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -284,10 +284,10 @@ namespace octave
     tree_switch_case_list *list;
 
     // Comment preceding SWITCH token.
-    octave_comment_list *lead_comm;
+    comment_list *lead_comm;
 
     // Comment preceding ENDSWITCH token.
-    octave_comment_list *trail_comm;
+    comment_list *trail_comm;
   };
 }
 

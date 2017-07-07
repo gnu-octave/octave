@@ -101,7 +101,6 @@ object) relevant global values before and after the nested call.
 // times.
 
 #include "Cell.h"
-#include "comment-list.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -658,7 +657,7 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->start_state () == LINE_COMMENT_START)
       {
         if (! curr_lexer->comment_text.empty ())
-          curr_lexer->finish_comment (octave_comment_elt::full_line);
+          curr_lexer->finish_comment (octave::comment_elt::full_line);
 
         curr_lexer->pop_start_state ();
       }
@@ -696,7 +695,7 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->block_comment_nesting_level > 1)
       curr_lexer->comment_text = "\n";
     else
-      curr_lexer->finish_comment (octave_comment_elt::block);
+      curr_lexer->finish_comment (octave::comment_elt::block);
 
     curr_lexer->block_comment_nesting_level--;
 
@@ -789,7 +788,7 @@ ANY_INCLUDING_NL (.|{NL})
               {
                 yyless (0);
 
-                curr_lexer->finish_comment (octave_comment_elt::full_line);
+                curr_lexer->finish_comment (octave::comment_elt::full_line);
 
                 curr_lexer->pop_start_state ();
               }
@@ -800,7 +799,7 @@ ANY_INCLUDING_NL (.|{NL})
         if (have_space)
           curr_lexer->mark_previous_token_trailing_space ();
 
-        curr_lexer->finish_comment (octave_comment_elt::end_of_line);
+        curr_lexer->finish_comment (octave::comment_elt::end_of_line);
 
         curr_lexer->pop_start_state ();
 
@@ -818,7 +817,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->xunput (yytext[0]);
 
-    curr_lexer->finish_comment (octave_comment_elt::full_line);
+    curr_lexer->finish_comment (octave::comment_elt::full_line);
 
     curr_lexer->pop_start_state ();
   }
@@ -830,7 +829,7 @@ ANY_INCLUDING_NL (.|{NL})
 <LINE_COMMENT_START><<EOF>> {
     curr_lexer->lexer_debug ("<LINE_COMMENT_START><<EOF>>");
 
-    curr_lexer->finish_comment (octave_comment_elt::full_line);
+    curr_lexer->finish_comment (octave::comment_elt::full_line);
 
     curr_lexer->pop_start_state ();
   }
@@ -2945,7 +2944,7 @@ namespace octave
 
         bool saved_bos = at_beginning_of_statement;
 
-        finish_comment (octave_comment_elt::end_of_line);
+        finish_comment (comment_elt::end_of_line);
 
         at_beginning_of_statement = saved_bos;
       }
@@ -2956,7 +2955,7 @@ namespace octave
   }
 
   void
-  base_lexer::finish_comment (octave_comment_elt::comment_type typ)
+  base_lexer::finish_comment (comment_elt::comment_type typ)
   {
     bool copyright = looks_like_copyright (comment_text);
 
@@ -2965,7 +2964,7 @@ namespace octave
       help_text = comment_text;
 
     if (copyright)
-      typ = octave_comment_elt::copyright;
+      typ = comment_elt::copyright;
 
     comment_buf.append (comment_text, typ);
 

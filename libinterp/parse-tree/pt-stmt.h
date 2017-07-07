@@ -31,13 +31,13 @@ class octave_value_list;
 
 #include "base-list.h"
 #include "bp-table.h"
-#include "comment-list.h"
 #include "pt.h"
 #include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
+  class comment_list;
   class tree_command;
   class tree_expression;
 
@@ -51,10 +51,10 @@ namespace octave
     tree_statement (void)
       : cmd (0), expr (0), comm (0) { }
 
-    tree_statement (tree_command *c, octave_comment_list *cl)
+    tree_statement (tree_command *c, comment_list *cl)
       : cmd (c), expr (0), comm (cl) { }
 
-    tree_statement (tree_expression *e, octave_comment_list *cl)
+    tree_statement (tree_expression *e, comment_list *cl)
       : cmd (0), expr (e), comm (cl) { }
 
     // No copying!
@@ -91,7 +91,7 @@ namespace octave
 
     tree_expression * expression (void) { return expr; }
 
-    octave_comment_list * comment_text (void) { return comm; }
+    comment_list * comment_text (void) { return comm; }
 
     bool is_null_statement (void) const { return ! (cmd || expr || comm); }
 
@@ -123,7 +123,7 @@ namespace octave
     tree_expression *expr;
 
     // Comment associated with this statement.
-    octave_comment_list *comm;
+    comment_list *comm;
   };
 
   // A list of statements to evaluate.

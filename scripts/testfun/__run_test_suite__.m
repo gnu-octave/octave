@@ -80,14 +80,14 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       nfail = dn - dp - dxf - dxb - drgrs;
       printf ("  %-30s %6d\n", "PASS", dp);
       printf ("  %-30s %6d\n", "FAIL", nfail);
+      if (drgrs > 0)
+        printf ("  %-30s %6d\n", "REGRESSION", drgrs);
+      endif
       if (dxf > 0)
         printf ("  %-30s %6d\n", "XFAIL (expected failure)", dxf);
       endif
       if (dxb > 0)
         printf ("  %-30s %6d\n", "XFAIL (reported bug)", dxb);
-      endif
-      if (drgrs > 0)
-        printf ("  %-30s %6d\n", "XFAIL (regression)", drgrs);
       endif
       if (dsk > 0)
         printf ("  %-30s %6d\n", "SKIPPED (feature)", dsk);
@@ -162,14 +162,14 @@ function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
     if (nfail > 0)
       printf ("\n%71s %3d", "FAIL ", nfail);
     endif
+    if (rgrs > 0)
+      printf ("\n%71s %3d", "REGRESSION", rgrs);
+    endif
     if (sk > 0)
       printf ("\n%71s %3d", "(missing feature) SKIP ", sk);
     endif
     if (rtsk > 0)
       printf ("\n%71s %3d", "(run-time condition) SKIP ", rtsk);
-    endif
-    if (rgrs > 0)
-      printf ("\n%71s %3d", "(regression) XFAIL", rgrs);
     endif
     if (xb > 0)
       printf ("\n%71s %3d", "(reported bug) XFAIL", xb);

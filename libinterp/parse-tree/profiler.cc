@@ -28,361 +28,363 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "defun.h"
+#include "interpreter.h"
 #include "oct-time.h"
 #include "ov-struct.h"
 #include "pager.h"
 #include "profiler.h"
 
-profile_data_accumulator::stats::stats ()
-  : time (0.0), calls (0), recursive (false),
-    parents (), children ()
-{ }
-
-octave_value
-profile_data_accumulator::stats::function_set_value (const function_set& list)
+namespace octave
 {
-  const octave_idx_type n = list.size ();
+  profiler::stats::stats ()
+    : time (0.0), calls (0), recursive (false),
+      parents (), children ()
+  { }
 
-  RowVector retval (n);
-  octave_idx_type i = 0;
-  for (const auto& nm : list)
-    retval(i++) = nm;
+  octave_value
+  profiler::stats::function_set_value (const function_set& list)
+  {
+    const octave_idx_type n = list.size ();
 
-  assert (i == n);
+    RowVector retval (n);
+    octave_idx_type i = 0;
+    for (const auto& nm : list)
+      retval(i++) = nm;
 
-  return retval;
-}
+    assert (i == n);
 
-profile_data_accumulator::tree_node::tree_node (tree_node *p, octave_idx_type f)
-  : parent (p), fcn_id (f), children (), time (0.0), calls (0)
-{ }
+    return retval;
+  }
 
-profile_data_accumulator::tree_node::~tree_node ()
-{
-  for (auto& idx_tnode : children)
-    delete idx_tnode.second;
-}
+  profiler::tree_node::tree_node (tree_node *p, octave_idx_type f)
+    : parent (p), fcn_id (f), children (), time (0.0), calls (0)
+  { }
 
-profile_data_accumulator::tree_node*
-profile_data_accumulator::tree_node::enter (octave_idx_type fcn)
-{
-  tree_node *retval;
+  profiler::tree_node::~tree_node ()
+  {
+    for (auto& idx_tnode : children)
+      delete idx_tnode.second;
+  }
 
-  child_map::iterator pos = children.find (fcn);
-  if (pos == children.end ())
-    {
-      retval = new tree_node (this, fcn);
-      children[fcn] = retval;
-    }
-  else
-    retval = pos->second;
+  profiler::tree_node*
+  profiler::tree_node::enter (octave_idx_type fcn)
+  {
+    tree_node *retval;
 
-  ++retval->calls;
-  return retval;
-}
-
-profile_data_accumulator::tree_node*
-profile_data_accumulator::tree_node::exit (octave_idx_type /* fcn */)
-{
-  // FIXME: These assert statements don't make sense if profile() is called
-  //        from within a function hierarchy to begin with.  See bug #39587.
-  //  assert (parent);
-  //  assert (fcn_id == fcn);
-
-  return parent;
-}
-
-void
-profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
-{
-  // If this is not the top-level node, update profile entry for this function.
-  if (fcn_id != 0)
-    {
-      stats& entry = data[fcn_id - 1];
-
-      entry.time += time;
-      entry.calls += calls;
-
-      assert (parent);
-      if (parent->fcn_id != 0)
-        {
-          entry.parents.insert (parent->fcn_id);
-          data[parent->fcn_id - 1].children.insert (fcn_id);
-        }
-
-      if (! entry.recursive)
-        for (const tree_node *i = parent; i; i = i->parent)
-          if (i->fcn_id == fcn_id)
-            {
-              entry.recursive = true;
-              break;
-            }
-    }
-
-  // Recurse on children.
-  for (const auto& idx_tnode : children)
-    idx_tnode.second->build_flat (data);
-}
-
-octave_value
-profile_data_accumulator::tree_node::get_hierarchical (double *total) const
-{
-  // Note that we don't generate the entry just for this node, but
-  // rather a struct-array with entries for all children.  This way, the
-  // top-node (for which we don't want a real entry) generates already
-  // the final hierarchical profile data.
-
-  const octave_idx_type n = children.size ();
-
-  Cell rv_indices (n, 1);
-  Cell rv_times (n, 1);
-  Cell rv_totals (n, 1);
-  Cell rv_calls (n, 1);
-  Cell rv_children (n, 1);
-
-  octave_idx_type i = 0;
-  for (const auto& idx_tnode : children)
-    {
-      const tree_node& entry = *idx_tnode.second;
-      double child_total = entry.time;
-
-      rv_indices(i) = octave_value (idx_tnode.first);
-      rv_times(i) = octave_value (entry.time);
-      rv_calls(i) = octave_value (entry.calls);
-      rv_children(i) = entry.get_hierarchical (&child_total);
-      rv_totals(i) = octave_value (child_total);
-
-      if (total)
-        *total += child_total;
-
-      ++i;
-    }
-  assert (i == n);
-
-  octave_map retval;
-
-  retval.assign ("Index", rv_indices);
-  retval.assign ("SelfTime", rv_times);
-  retval.assign ("TotalTime", rv_totals);
-  retval.assign ("NumCalls", rv_calls);
-  retval.assign ("Children", rv_children);
-
-  return retval;
-}
-
-profile_data_accumulator::profile_data_accumulator ()
-  : known_functions (), fcn_index (),
-    enabled (false), call_tree (new tree_node (0, 0)),
-    active_fcn (0), last_time (-1.0)
-{ }
-
-profile_data_accumulator::~profile_data_accumulator ()
-{
-  delete call_tree;
-}
-
-void
-profile_data_accumulator::set_active (bool value)
-{
-  enabled = value;
-}
-
-void
-profile_data_accumulator::enter_function (const std::string& fcn)
-{
-  // The enter class will check and only call us if the profiler is active.
-  assert (is_active ());
-  assert (call_tree);
-
-  // If there is already an active function, add to its time before
-  // pushing the new one.
-  if (active_fcn && active_fcn != call_tree)
-    add_current_time ();
-
-  // Map the function's name to its index.
-  octave_idx_type fcn_idx;
-  fcn_index_map::iterator pos = fcn_index.find (fcn);
-  if (pos == fcn_index.end ())
-    {
-      known_functions.push_back (fcn);
-      fcn_idx = known_functions.size ();
-      fcn_index[fcn] = fcn_idx;
-    }
-  else
-    fcn_idx = pos->second;
-
-  if (! active_fcn)
-    active_fcn = call_tree;
-
-  active_fcn = active_fcn->enter (fcn_idx);
-
-  last_time = query_time ();
-
-}
-
-void
-profile_data_accumulator::exit_function (const std::string& fcn)
-{
-  if (active_fcn)
-    {
-      assert (call_tree);
-      // FIXME: This assert statements doesn't make sense if profile() is called
-      //        from within a function hierarchy to begin with.  See bug #39587.
-      //assert (active_fcn != call_tree);
-
-      // Usually, if we are disabled this function is not even called.  But the
-      // call disabling the profiler is an exception.  So also check here
-      // and only record the time if enabled.
-      if (is_active ())
-        add_current_time ();
-
-      fcn_index_map::iterator pos = fcn_index.find (fcn);
-      // FIXME: This assert statements doesn't make sense if profile() is called
-      //        from within a function hierarchy to begin with.  See bug #39587.
-      //assert (pos != fcn_index.end ());
-      active_fcn = active_fcn->exit (pos->second);
-
-      // If this was an "inner call", we resume executing the parent function
-      // up the stack.  So note the start-time for this!
-      last_time = query_time ();
-    }
-}
-
-void
-profile_data_accumulator::reset (void)
-{
-  if (is_active ())
-    error ("Can't reset active profiler.");
-
-  known_functions.clear ();
-  fcn_index.clear ();
-
-  if (call_tree)
-    {
-      delete call_tree;
-      call_tree = new tree_node (0, 0);
-      active_fcn = 0;
-    }
-
-  last_time = -1.0;
-}
-
-octave_value
-profile_data_accumulator::get_flat (void) const
-{
-  octave_value retval;
-
-  const octave_idx_type n = known_functions.size ();
-
-  flat_profile flat (n);
-
-  if (call_tree)
-    {
-      call_tree->build_flat (flat);
-
-      Cell rv_names (n, 1);
-      Cell rv_times (n, 1);
-      Cell rv_calls (n, 1);
-      Cell rv_recursive (n, 1);
-      Cell rv_parents (n, 1);
-      Cell rv_children (n, 1);
-
-      for (octave_idx_type i = 0; i != n; ++i)
-        {
-          rv_names(i) = octave_value (known_functions[i]);
-          rv_times(i) = octave_value (flat[i].time);
-          rv_calls(i) = octave_value (flat[i].calls);
-          rv_recursive(i) = octave_value (flat[i].recursive);
-          rv_parents(i) = stats::function_set_value (flat[i].parents);
-          rv_children(i) = stats::function_set_value (flat[i].children);
-        }
-
-      octave_map m;
-
-      m.assign ("FunctionName", rv_names);
-      m.assign ("TotalTime", rv_times);
-      m.assign ("NumCalls", rv_calls);
-      m.assign ("IsRecursive", rv_recursive);
-      m.assign ("Parents", rv_parents);
-      m.assign ("Children", rv_children);
-
-      retval = m;
-    }
-  else
-    {
-      static const char *fn[] =
+    child_map::iterator pos = children.find (fcn);
+    if (pos == children.end ())
       {
-        "FunctionName",
-        "TotalTime",
-        "NumCalls",
-        "IsRecursive",
-        "Parents",
-        "Children",
-        0
-      };
+        retval = new tree_node (this, fcn);
+        children[fcn] = retval;
+      }
+    else
+      retval = pos->second;
 
-      static octave_map m (dim_vector (0, 1), string_vector (fn));
+    ++retval->calls;
+    return retval;
+  }
 
-      retval = m;
-    }
+  profiler::tree_node*
+  profiler::tree_node::exit (octave_idx_type /* fcn */)
+  {
+    // FIXME: These assert statements don't make sense if profile() is called
+    //        from within a function hierarchy to begin with.  See bug #39587.
+    //  assert (parent);
+    //  assert (fcn_id == fcn);
 
-  return retval;
-}
+    return parent;
+  }
 
-octave_value
-profile_data_accumulator::get_hierarchical (void) const
-{
-  octave_value retval;
-
-  if (call_tree)
-    retval = call_tree->get_hierarchical ();
-  else
-    {
-      static const char *fn[] =
+  void
+  profiler::tree_node::build_flat (flat_profile& data) const
+  {
+    // If this is not the top-level node, update profile entry for this function.
+    if (fcn_id != 0)
       {
-        "Index",
-        "SelfTime",
-        "NumCalls",
-        "Children",
-        0
-      };
+        stats& entry = data[fcn_id - 1];
 
-      static octave_map m (dim_vector (0, 1), string_vector (fn));
+        entry.time += time;
+        entry.calls += calls;
 
-      retval = m;
-    }
+        assert (parent);
+        if (parent->fcn_id != 0)
+          {
+            entry.parents.insert (parent->fcn_id);
+            data[parent->fcn_id - 1].children.insert (fcn_id);
+          }
 
-  return retval;
+        if (! entry.recursive)
+          for (const tree_node *i = parent; i; i = i->parent)
+            if (i->fcn_id == fcn_id)
+              {
+                entry.recursive = true;
+                break;
+              }
+      }
+
+    // Recurse on children.
+    for (const auto& idx_tnode : children)
+      idx_tnode.second->build_flat (data);
+  }
+
+  octave_value
+  profiler::tree_node::get_hierarchical (double *total) const
+  {
+    // Note that we don't generate the entry just for this node, but
+    // rather a struct-array with entries for all children.  This way, the
+    // top-node (for which we don't want a real entry) generates already
+    // the final hierarchical profile data.
+
+    const octave_idx_type n = children.size ();
+
+    Cell rv_indices (n, 1);
+    Cell rv_times (n, 1);
+    Cell rv_totals (n, 1);
+    Cell rv_calls (n, 1);
+    Cell rv_children (n, 1);
+
+    octave_idx_type i = 0;
+    for (const auto& idx_tnode : children)
+      {
+        const tree_node& entry = *idx_tnode.second;
+        double child_total = entry.time;
+
+        rv_indices(i) = octave_value (idx_tnode.first);
+        rv_times(i) = octave_value (entry.time);
+        rv_calls(i) = octave_value (entry.calls);
+        rv_children(i) = entry.get_hierarchical (&child_total);
+        rv_totals(i) = octave_value (child_total);
+
+        if (total)
+          *total += child_total;
+
+        ++i;
+      }
+    assert (i == n);
+
+    octave_map retval;
+
+    retval.assign ("Index", rv_indices);
+    retval.assign ("SelfTime", rv_times);
+    retval.assign ("TotalTime", rv_totals);
+    retval.assign ("NumCalls", rv_calls);
+    retval.assign ("Children", rv_children);
+
+    return retval;
+  }
+
+  profiler::profiler (void)
+    : known_functions (), fcn_index (),
+      enabled (false), call_tree (new tree_node (0, 0)),
+      active_fcn (0), last_time (-1.0)
+  { }
+
+  profiler::~profiler (void)
+  {
+    delete call_tree;
+  }
+
+  void
+  profiler::set_active (bool value)
+  {
+    enabled = value;
+  }
+
+  void
+  profiler::enter_function (const std::string& fcn)
+  {
+    // The enter class will check and only call us if the profiler is active.
+    assert (is_active ());
+    assert (call_tree);
+
+    // If there is already an active function, add to its time before
+    // pushing the new one.
+    if (active_fcn && active_fcn != call_tree)
+      add_current_time ();
+
+    // Map the function's name to its index.
+    octave_idx_type fcn_idx;
+    fcn_index_map::iterator pos = fcn_index.find (fcn);
+    if (pos == fcn_index.end ())
+      {
+        known_functions.push_back (fcn);
+        fcn_idx = known_functions.size ();
+        fcn_index[fcn] = fcn_idx;
+      }
+    else
+      fcn_idx = pos->second;
+
+    if (! active_fcn)
+      active_fcn = call_tree;
+
+    active_fcn = active_fcn->enter (fcn_idx);
+
+    last_time = query_time ();
+
+  }
+
+  void
+  profiler::exit_function (const std::string& fcn)
+  {
+    if (active_fcn)
+      {
+        assert (call_tree);
+        // FIXME: This assert statements doesn't make sense if profile() is called
+        //        from within a function hierarchy to begin with.  See bug #39587.
+        //assert (active_fcn != call_tree);
+
+        // Usually, if we are disabled this function is not even called.  But the
+        // call disabling the profiler is an exception.  So also check here
+        // and only record the time if enabled.
+        if (is_active ())
+          add_current_time ();
+
+        fcn_index_map::iterator pos = fcn_index.find (fcn);
+        // FIXME: This assert statements doesn't make sense if profile() is called
+        //        from within a function hierarchy to begin with.  See bug #39587.
+        //assert (pos != fcn_index.end ());
+        active_fcn = active_fcn->exit (pos->second);
+
+        // If this was an "inner call", we resume executing the parent function
+        // up the stack.  So note the start-time for this!
+        last_time = query_time ();
+      }
+  }
+
+  void
+  profiler::reset (void)
+  {
+    if (is_active ())
+      error ("Can't reset active profiler.");
+
+    known_functions.clear ();
+    fcn_index.clear ();
+
+    if (call_tree)
+      {
+        delete call_tree;
+        call_tree = new tree_node (0, 0);
+        active_fcn = 0;
+      }
+
+    last_time = -1.0;
+  }
+
+  octave_value
+  profiler::get_flat (void) const
+  {
+    octave_value retval;
+
+    const octave_idx_type n = known_functions.size ();
+
+    flat_profile flat (n);
+
+    if (call_tree)
+      {
+        call_tree->build_flat (flat);
+
+        Cell rv_names (n, 1);
+        Cell rv_times (n, 1);
+        Cell rv_calls (n, 1);
+        Cell rv_recursive (n, 1);
+        Cell rv_parents (n, 1);
+        Cell rv_children (n, 1);
+
+        for (octave_idx_type i = 0; i != n; ++i)
+          {
+            rv_names(i) = octave_value (known_functions[i]);
+            rv_times(i) = octave_value (flat[i].time);
+            rv_calls(i) = octave_value (flat[i].calls);
+            rv_recursive(i) = octave_value (flat[i].recursive);
+            rv_parents(i) = stats::function_set_value (flat[i].parents);
+            rv_children(i) = stats::function_set_value (flat[i].children);
+          }
+
+        octave_map m;
+
+        m.assign ("FunctionName", rv_names);
+        m.assign ("TotalTime", rv_times);
+        m.assign ("NumCalls", rv_calls);
+        m.assign ("IsRecursive", rv_recursive);
+        m.assign ("Parents", rv_parents);
+        m.assign ("Children", rv_children);
+
+        retval = m;
+      }
+    else
+      {
+        static const char *fn[] =
+          {
+            "FunctionName",
+            "TotalTime",
+            "NumCalls",
+            "IsRecursive",
+            "Parents",
+            "Children",
+            0
+          };
+
+        static octave_map m (dim_vector (0, 1), string_vector (fn));
+
+        retval = m;
+      }
+
+    return retval;
+  }
+
+  octave_value
+  profiler::get_hierarchical (void) const
+  {
+    octave_value retval;
+
+    if (call_tree)
+      retval = call_tree->get_hierarchical ();
+    else
+      {
+        static const char *fn[] =
+          {
+            "Index",
+            "SelfTime",
+            "NumCalls",
+            "Children",
+            0
+          };
+
+        static octave_map m (dim_vector (0, 1), string_vector (fn));
+
+        retval = m;
+      }
+
+    return retval;
+  }
+
+  double
+  profiler::query_time (void) const
+  {
+    sys::time now;
+
+    // FIXME: is this volatile declaration really needed?
+    // See bug #34210 for additional details.
+    volatile double dnow = now.double_value ();
+
+    return dnow;
+  }
+
+  void
+  profiler::add_current_time (void)
+  {
+    if (active_fcn)
+      {
+        const double t = query_time ();
+
+        active_fcn->add_time (t - last_time);
+      }
+  }
 }
-
-double
-profile_data_accumulator::query_time (void) const
-{
-  octave::sys::time now;
-
-  // FIXME: is this volatile declaration really needed?
-  // See bug #34210 for additional details.
-  volatile double dnow = now.double_value ();
-
-  return dnow;
-}
-
-void
-profile_data_accumulator::add_current_time (void)
-{
-  if (active_fcn)
-    {
-      const double t = query_time ();
-
-      active_fcn->add_time (t - last_time);
-    }
-}
-
-profile_data_accumulator profiler;
 
 // Enable or disable the profiler data collection.
-DEFUN (__profiler_enable__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__profiler_enable__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __profiler_enable__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -392,6 +394,8 @@ Undocumented internal function.
   if (nargin > 1)
     print_usage ();
 
+  octave::profiler& profiler = interp.get_profiler ();
+
   if (nargin == 1)
     profiler.set_active (args(0).bool_value ());
 
@@ -399,8 +403,8 @@ Undocumented internal function.
 }
 
 // Clear all collected profiling data.
-DEFUN (__profiler_reset__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__profiler_reset__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __profiler_reset__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -408,20 +412,24 @@ Undocumented internal function.
   if (args.length () != 0)
     print_usage ();
 
+  octave::profiler& profiler = interp.get_profiler ();
+
   profiler.reset ();
 
   return ovl ();
 }
 
 // Query the timings collected by the profiler.
-DEFUN (__profiler_data__, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__profiler_data__, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __profiler_data__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
+
+  octave::profiler& profiler = interp.get_profiler ();
 
   if (nargout > 1)
     return ovl (profiler.get_flat (), profiler.get_hierarchical ());

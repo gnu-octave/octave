@@ -88,7 +88,7 @@ call_mex (octave_mex_function& curr_mex_fcn, const octave_value_list& args,
           int nargout);
 
 octave_value_list
-octave_mex_function::call (octave::tree_evaluator&, int nargout,
+octave_mex_function::call (octave::tree_evaluator& tw, int nargout,
                            const octave_value_list& args)
 {
   octave_value_list retval;
@@ -105,7 +105,9 @@ octave_mex_function::call (octave::tree_evaluator&, int nargout,
 
   frame.add_method (cs, &octave::call_stack::pop);
 
-  profile_data_accumulator::enter<octave_mex_function> block (profiler, *this);
+  octave::profiler& profiler = tw.get_profiler ();
+
+  octave::profiler::enter<octave_mex_function> block (profiler, *this);
 
   retval = call_mex (*this, args, nargout);
 

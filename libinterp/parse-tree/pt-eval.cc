@@ -220,8 +220,8 @@ namespace octave
 
             if (b.is_defined ())
               {
-                profile_data_accumulator::enter<tree_binary_expression>
-                  block (profiler, expr);
+                profiler::enter<tree_binary_expression>
+                  block (m_profiler, expr);
 
                 // Note: The profiler does not catch the braindead
                 // short-circuit evaluation code above, but that should be
@@ -1969,8 +1969,7 @@ namespace octave
 
             val = ref.value ();
 
-            profile_data_accumulator::enter<tree_postfix_expression>
-              block (profiler, expr);
+            profiler::enter<tree_postfix_expression> block (m_profiler, expr);
 
             ref.do_unary_op (etype);
           }
@@ -1980,8 +1979,8 @@ namespace octave
 
             if (op_val.is_defined ())
               {
-                profile_data_accumulator::enter<tree_postfix_expression>
-                  block (profiler, expr);
+                profiler::enter<tree_postfix_expression>
+                  block (m_profiler, expr);
 
                 val = ::do_unary_op (etype, op_val);
               }
@@ -2006,8 +2005,7 @@ namespace octave
           {
             octave_lvalue op_ref = op->lvalue (this);
 
-            profile_data_accumulator::enter<tree_prefix_expression>
-              block (profiler, expr);
+            profiler::enter<tree_prefix_expression> block (m_profiler, expr);
 
             op_ref.do_unary_op (etype);
 
@@ -2019,8 +2017,8 @@ namespace octave
 
             if (op_val.is_defined ())
               {
-                profile_data_accumulator::enter<tree_prefix_expression>
-                  block (profiler, expr);
+                profiler::enter<tree_prefix_expression>
+                  block (m_profiler, expr);
 
                 // Attempt to do the operation in-place if it is unshared
                 // (a temporary expression).

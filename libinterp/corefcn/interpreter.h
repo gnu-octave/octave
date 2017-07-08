@@ -51,6 +51,7 @@ extern OCTINTERP_API bool octave_initialized;
 
 namespace octave
 {
+  class profiler;
   class call_stack;
   class tree_evaluator;
 
@@ -170,6 +171,8 @@ namespace octave
     symbol_table::scope * require_current_scope (const std::string& who);
 
     call_stack& get_call_stack (void);
+
+    profiler& get_profiler (void);
 
     tree_evaluator& get_evaluator (void);
 

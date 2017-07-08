@@ -1202,6 +1202,11 @@ namespace octave
     return m_evaluator.get_call_stack ();
   }
 
+  profiler& interpreter::get_profiler (void)
+  {
+    return m_evaluator.get_profiler ();
+  }
+
   void interpreter::mlock (void)
   {
     call_stack& cs = get_call_stack ();

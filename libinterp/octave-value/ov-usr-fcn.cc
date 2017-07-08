@@ -200,8 +200,9 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       frame.protect_var (octave::tree_evaluator::statement_context);
       octave::tree_evaluator::statement_context = octave::tree_evaluator::script;
 
-      profile_data_accumulator::enter<octave_user_script>
-        block (profiler, *this);
+      octave::profiler& profiler = tw.get_profiler ();
+
+      octave::profiler::enter<octave_user_script> block (profiler, *this);
 
       if (tw.echo ())
         tw.push_echo_state (frame, octave::tree_evaluator::ECHO_SCRIPTS,
@@ -616,8 +617,9 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
   octave::tree_evaluator::statement_context = octave::tree_evaluator::function;
 
   {
-    profile_data_accumulator::enter<octave_user_function>
-      block (profiler, *this);
+    octave::profiler& profiler = tw.get_profiler ();
+
+    octave::profiler::enter<octave_user_function> block (profiler, *this);
 
     if (tw.echo ())
       tw.push_echo_state (frame, octave::tree_evaluator::ECHO_FUNCTIONS,

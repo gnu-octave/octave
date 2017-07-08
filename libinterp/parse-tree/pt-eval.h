@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "ovl.h"
+#include "profiler.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
 
@@ -114,7 +115,7 @@ namespace octave
 
     tree_evaluator (interpreter& interp)
       : m_interpreter (interp), m_value_stack (), m_lvalue_list_stack (),
-        m_nargout_stack (), m_call_stack (interp),
+        m_nargout_stack (), m_call_stack (interp), m_profiler (),
         m_max_recursion_depth (256), m_silent_functions (false),
         m_string_fill_char (' '), m_PS4 ("+ "), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
@@ -309,6 +310,8 @@ namespace octave
 
     call_stack& get_call_stack (void) { return m_call_stack; }
 
+    profiler& get_profiler (void) { return m_profiler; }
+
     int max_recursion_depth (void) const { return m_max_recursion_depth; }
 
     int max_recursion_depth (int n)
@@ -425,6 +428,8 @@ namespace octave
     value_stack<int> m_nargout_stack;
 
     call_stack m_call_stack;
+
+    profiler m_profiler;
 
     // Maximum nesting level for functions, scripts, or sourced files
     // called recursively.

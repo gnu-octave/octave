@@ -41,7 +41,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin,
                                      "built-in function");
 
 octave_value_list
-octave_builtin::call (octave::tree_evaluator&, int nargout,
+octave_builtin::call (octave::tree_evaluator& tw, int nargout,
                       const octave_value_list& args)
 {
   octave_value_list retval;
@@ -57,7 +57,9 @@ octave_builtin::call (octave::tree_evaluator&, int nargout,
 
   frame.add_method (cs, &octave::call_stack::pop);
 
-  profile_data_accumulator::enter<octave_builtin> block (profiler, *this);
+  octave::profiler& profiler = tw.get_profiler ();
+
+  octave::profiler::enter<octave_builtin> block (profiler, *this);
 
   if (f)
     retval = (*f) (args, nargout);

@@ -75,7 +75,6 @@ COREFCN_INC = \
   %reldir%/pager.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \
-  %reldir%/profiler.h \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
@@ -209,7 +208,6 @@ COREFCN_SRC = \
   %reldir%/pinv.cc \
   %reldir%/pr-output.cc \
   %reldir%/procstream.cc \
-  %reldir%/profiler.cc \
   %reldir%/psi.cc \
   %reldir%/quad.cc \
   %reldir%/quadcc.cc \

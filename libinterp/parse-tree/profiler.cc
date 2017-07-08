@@ -392,7 +392,7 @@ Undocumented internal function.
   if (nargin > 1)
     print_usage ();
 
-  if (nargin > 0)
+  if (nargin == 1)
     profiler.set_active (args(0).bool_value ());
 
   return ovl (profiler.is_active ());
@@ -405,8 +405,8 @@ DEFUN (__profiler_reset__, args, ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  if (args.length () > 0)
-    warning ("profiler_reset: ignoring extra arguments");
+  if (args.length () != 0)
+    print_usage ();
 
   profiler.reset ();
 
@@ -420,8 +420,8 @@ DEFUN (__profiler_data__, args, nargout,
 Undocumented internal function.
 @end deftypefn */)
 {
-  if (args.length () > 0)
-    warning ("profiler_data: ignoring extra arguments");
+  if (args.length () != 0)
+    print_usage ();
 
   if (nargout > 1)
     return ovl (profiler.get_flat (), profiler.get_hierarchical ());

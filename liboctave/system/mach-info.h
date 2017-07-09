@@ -52,8 +52,42 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::mach_info' instead")
-typedef octave::mach_info oct_mach_info;
+class oct_mach_info
+{
+public:
+
+  typedef octave::mach_info::float_format float_format;
+
+  OCTAVE_DEPRECATED (4.4, "use 'octave::mach_info::native_float_format' instead")
+  static float_format native_float_format (void)
+  {
+    return octave::mach_info::native_float_format ();
+  }
+
+  OCTAVE_DEPRECATED (4.4, "use 'octave::mach_info::words_big_endian' instead")
+  static bool words_big_endian (void)
+  {
+    return octave::mach_info::words_big_endian ();
+  }
+
+  OCTAVE_DEPRECATED (4.4, "use 'octave::mach_info::words_little_endian' instead")
+  static bool words_little_endian (void)
+  {
+    return octave::mach_info::words_little_endian ();
+  }
+
+  OCTAVE_DEPRECATED (4.4, "use 'octave::mach_info::string_to_float_format' instead")
+  static float_format string_to_float_format (const std::string& str)
+  {
+    return octave::mach_info::string_to_float_format (str);
+  }
+
+  OCTAVE_DEPRECATED (4.4, "use 'octave::mach_info::float_format_as_string' instead")
+  static std::string float_format_as_string (float_format ff)
+  {
+    return octave::mach_info::float_format_as_string (ff);
+  }
+};
 
 #endif
 

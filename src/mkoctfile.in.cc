@@ -234,13 +234,13 @@ initialize (void)
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
 
   vars["OCTAVE_LINK_DEPS"] = get_variable ("OCTAVE_LINK_DEPS",
-                                           %OCTAVE_CONF_OCTAVE_LINK_DEPS%);
+                                           %OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%);
 
   vars["OCTAVE_LINK_OPTS"] = get_variable ("OCTAVE_LINK_OPTS",
                                            %OCTAVE_CONF_OCTAVE_LINK_OPTS%);
 
   vars["OCT_LINK_DEPS"] = get_variable ("OCT_LINK_DEPS",
-                                        %OCTAVE_CONF_OCT_LINK_DEPS%);
+                                        %OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%);
 
   vars["OCT_LINK_OPTS"] = get_variable ("OCT_LINK_OPTS",
                                         %OCTAVE_CONF_OCT_LINK_OPTS%);

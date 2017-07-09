@@ -183,9 +183,6 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::file_ops' instead")
-  typedef octave::sys::file_ops file_ops;
-
 OCTAVE_DEPRECATED (4.2, "use 'octave::sys::mkdir' instead")
 inline int
 octave_mkdir (const std::string& nm, mode_t md)

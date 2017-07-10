@@ -4950,8 +4950,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   // FIXME: This function is probably never called without mode == "reset"
   //        Check that this is the case with an assert statement (1/6/2017).
   //        If there are reports of problems then figure out what code is
-  //        calling it with the mode set to something else.  Otherwise,
-  //        delete branches of the code in this function that depend on mode.
+  //        calling it with the mode set to something else.
   assert (mode == "reset");
 
   Matrix tlim (1, 2, 0.0);
@@ -5092,53 +5091,14 @@ axes::properties::set_defaults (base_graphics_object& bgo,
 
   visible = "on";
 
-  // Replace/Reset preserves Position and Units properties
-  if (mode != "replace" && mode != "reset")
-    {
-      outerposition = default_axes_outerposition ();
-      position = default_axes_position ();
-      activepositionproperty = "outerposition";
-    }
-
-  if (mode != "reset")
-    {
-      delete_children (true);
-
-      xlabel.invalidate ();
-      ylabel.invalidate ();
-      zlabel.invalidate ();
-      title.invalidate ();
-
-      xlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                 false, false, false);
-      ylabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                 false, false, false);
-      zlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                 false, false, false);
-      title = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                false, false, false);
-
-      adopt (xlabel.handle_value ());
-      adopt (ylabel.handle_value ());
-      adopt (zlabel.handle_value ());
-      adopt (title.handle_value ());
-
-      update_xlabel_position ();
-      update_ylabel_position ();
-      update_zlabel_position ();
-      update_title_position ();
-    }
-  else
-    {
-      graphics_object go = gh_manager::get_object (xlabel.handle_value ());
-      go.reset_default_properties ();
-      go = gh_manager::get_object (ylabel.handle_value ());
-      go.reset_default_properties ();
-      go = gh_manager::get_object (zlabel.handle_value ());
-      go.reset_default_properties ();
-      go = gh_manager::get_object (title.handle_value ());
-      go.reset_default_properties ();
-    }
+  graphics_object go = gh_manager::get_object (xlabel.handle_value ());
+  go.reset_default_properties ();
+  go = gh_manager::get_object (ylabel.handle_value ());
+  go.reset_default_properties ();
+  go = gh_manager::get_object (zlabel.handle_value ());
+  go.reset_default_properties ();
+  go = gh_manager::get_object (title.handle_value ());
+  go.reset_default_properties ();
 
   xset (xlabel.handle_value (), "handlevisibility", "off");
   xset (ylabel.handle_value (), "handlevisibility", "off");

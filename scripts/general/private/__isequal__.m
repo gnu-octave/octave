@@ -117,14 +117,26 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         t = __isequal__ (args{:});
       endwhile
 
+    elseif (iscellstr (x) && all (cellfun (@iscellstr, varargin)))
+      ## Check that each element of a cellstr is equal.
+      l_x = numel (x);
+      idx = 0;
+      ## FIXME: It would be faster to use strcmp on whole cellstr arrays,
+      ## rather than element-by-element, but bug #51412 needs to be fixed.
+      while (t && idx < l_x)
+        idx += 1;
+        t = all (strcmp (x{idx}, [cellindexmat(varargin, idx){:}]));
+      endwhile
+
     elseif (iscell (x))
       ## Check that each element of a cell is equal.
       l_x = numel (x);
       idx = 0;
+      args = cell (1, 2+l_v);
+      args{1} = nans_compare_equal;
       while (t && idx < l_x)
         idx += 1;
-        args = cell (1, 2+l_v);
-        args(1:2) = {nans_compare_equal, x{idx}};
+        args{2} = x{idx};
         args(3:end) = [cellindexmat(varargin, idx){:}];
 
         t = __isequal__ (args{:});

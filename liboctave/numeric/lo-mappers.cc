@@ -268,14 +268,14 @@ namespace octave
     Complex
     rc_log2 (double x)
     {
-      const double PI_LN2 = 4.53236014182719380962;  // = pi / log(2)
+      constexpr double PI_LN2 = 4.53236014182719380962;  // = pi / log(2)
       return x < 0.0 ? Complex (log2 (-x), PI_LN2) : Complex (log2 (x));
     }
 
     FloatComplex
     rc_log2 (float x)
     {
-      const float PI_LN2 = 4.53236014182719380962f;  // = pi / log(2)
+      constexpr float PI_LN2 = 4.53236014182719380962f;  // = pi / log(2)
       return x < 0.0f ? FloatComplex (log2 (-x), PI_LN2)
                       : FloatComplex (log2 (x));
     }
@@ -283,14 +283,14 @@ namespace octave
     Complex
     rc_log10 (double x)
     {
-      const double PI_LN10 = 1.36437635384184134748;  // = pi / log(10)
+      constexpr double PI_LN10 = 1.36437635384184134748;  // = pi / log(10)
       return x < 0.0 ? Complex (log10 (-x), PI_LN10) : Complex (log10 (x));
     }
 
     FloatComplex
     rc_log10 (float x)
     {
-      const float PI_LN10 = 1.36437635384184134748f;  // = pi / log(10)
+      constexpr float PI_LN10 = 1.36437635384184134748f;  // = pi / log(10)
       return x < 0.0f ? FloatComplex (log10 (-x), PI_LN10)
                       : FloatComplex (log10f (x));
     }

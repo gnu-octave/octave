@@ -3449,17 +3449,15 @@ namespace octave
 
     Complex rc_log1p (double x)
     {
-      const double pi = 3.14159265358979323846;
       return (x < -1.0
-              ? Complex (std::log (-(1.0 + x)), pi)
+              ? Complex (std::log (-(1.0 + x)), M_PI)
               : Complex (log1p (x)));
     }
 
     FloatComplex rc_log1p (float x)
     {
-      const float pi = 3.14159265358979323846f;
       return (x < -1.0f
-              ? FloatComplex (std::log (-(1.0f + x)), pi)
+              ? FloatComplex (std::log (-(1.0f + x)), M_PI)
               : FloatComplex (log1p (x)));
     }
   }

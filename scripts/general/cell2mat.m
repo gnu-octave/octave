@@ -34,10 +34,8 @@ function m = cell2mat (c)
     print_usage ();
   endif
 
-  nb = numel (c);
-
-  if (nb == 0)
-    m = [];
+  if (isempty (c))
+    m = zeros (size (c));
   else
     if (! iscell (c))
       error ("cell2mat: C must be a cell array");
@@ -62,7 +60,6 @@ function m = cell2mat (c)
       ## Special case of all scalars
       m = reshape (cat (1, c{:}), sz);
     else
-
       ## The goal is to minimize the total number of cat() calls.
       ## The dimensions can be concatenated along in arbitrary order.
       ## The numbers of concatenations are:
@@ -96,6 +93,7 @@ endfunction
 
 %!assert (cell2mat ({}), [])
 %!assert (cell2mat ([]), [])
+%!assert (cell2mat (cell (2,0)), zeros (2,0))
 %!test
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! D = C; D(:,:,2) = C;

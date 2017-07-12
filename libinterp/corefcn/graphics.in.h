@@ -3254,6 +3254,12 @@ private:
 class OCTINTERP_API root_figure : public base_graphics_object
 {
 public:
+
+  // The gh_manager constructor creates the single instance of
+  // the root_figure object.
+
+  friend class gh_manager;
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
@@ -3297,14 +3303,23 @@ public:
   };
 
 private:
+
   properties xproperties;
+
+protected:
+
+  root_figure (void)
+    : xproperties (0, graphics_handle ()), default_properties (),
+      factory_properties (init_factory_properties ())
+  { }
 
 public:
 
-  root_figure (void)
-    : xproperties (0, graphics_handle ()), default_properties () { }
-
   ~root_figure (void) = default;
+
+  root_figure (const root_figure&) = delete;
+
+  root_figure& operator = (const root_figure&) = delete;
 
   void mark_modified (void) { }
 
@@ -3406,9 +3421,10 @@ public:
   }
 
 private:
+
   property_list default_properties;
 
-  static property_list factory_properties;
+  property_list factory_properties;
 
   static property_list::plist_map_type init_factory_properties (void);
 };

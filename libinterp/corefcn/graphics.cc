@@ -3685,9 +3685,6 @@ root_figure::properties::remove_child (const graphics_handle& h)
   base_properties::remove_child (h);
 }
 
-property_list
-root_figure::factory_properties = root_figure::init_factory_properties ();
-
 void
 root_figure::reset_default_properties (void)
 {

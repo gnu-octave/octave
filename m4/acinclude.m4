@@ -269,30 +269,6 @@ AC_DEFUN([OCTAVE_CHECK_FFTW_THREADS], [
   LIBS="$ac_octave_save_LIBS"
 ])
 dnl
-dnl Check if Fortran compiler has the intrinsic function ISNAN.
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
-  AC_CACHE_CHECK([whether $F77 has the intrinsic function ISNAN],
-    [octave_cv_func_fortran_isnan],
-    [AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE([[
-      program foo
-      implicit none
-      real x
-      double precision y
-      if (isnan(x)) then
-        print *, 'x is NaN'
-      end if
-      if (isnan(y)) then
-        print *, 'y is NaN'
-      end if
-      end program
-      ]],
-      octave_cv_func_fortran_isnan=yes, octave_cv_func_fortran_isnan=no)
-    AC_LANG_POP(Fortran 77)
-  ])
-])
-dnl
 dnl Check if function gluTessCallback is called with "(...)".
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [

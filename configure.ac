@@ -957,14 +957,6 @@ if test -z "$F77"; then
   AC_MSG_ERROR([to build Octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
 fi
 
-OCTAVE_CHECK_FUNC_FORTRAN_ISNAN
-F77_ISNAN_MACRO=
-if test $octave_cv_func_fortran_isnan = no; then
-  AC_MSG_NOTICE([substituting ISNAN(X) with X.NE.X in Fortran sources])
-  F77_ISNAN_MACRO="s|ISNAN(\(@<:@^)@:>@*\))|(\1.NE.\1)|"
-fi
-AC_SUBST(F77_ISNAN_MACRO)
-
 ### Check for BLAS and LAPACK libraries:
 
 ## Need to adjust FFLAGS to include correct integer size.

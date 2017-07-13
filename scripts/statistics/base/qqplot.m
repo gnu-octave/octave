@@ -73,7 +73,7 @@ function [qout, sout] = qqplot (x, dist, varargin)
     if (isnumeric (dist))
       f = @(y) empirical_inv (y, dist);
     elseif (ischar (dist) && (exist (invname = [dist "inv"])
-                              || exist (invname = [dist "%s_inv"])))
+                              || exist (invname = [dist "_inv"])))
       f = str2func (invname);
     else
       error ("qqplot: no inverse CDF found for distribution DIST");

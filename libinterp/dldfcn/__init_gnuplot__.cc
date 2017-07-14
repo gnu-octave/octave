@@ -141,8 +141,6 @@ public:
       {
         m_interpreter.munlock ("__init_gnuplot__");
 
-        gtk_manager::unload_toolkit ("gnuplot");
-
         toolkit_loaded = false;
       }
   }
@@ -227,8 +225,10 @@ Undocumented internal function.
     {
       interp.mlock ();
 
+      octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+
       graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
-      gtk_manager::load_toolkit (tk);
+      gtk_mgr.load_toolkit (tk);
 
       toolkit_loaded = true;
     }

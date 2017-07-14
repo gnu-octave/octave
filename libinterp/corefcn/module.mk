@@ -38,7 +38,10 @@ COREFCN_INC = \
   %reldir%/ft-text-renderer.h \
   %reldir%/gl-render.h \
   %reldir%/gl2ps-print.h \
+  %reldir%/graphics-handle.h \
+  %reldir%/graphics-toolkit.h \
   %reldir%/gripes.h \
+  %reldir%/gtk-manager.h \
   %reldir%/help.h \
   %reldir%/hook-fcn.h \
   %reldir%/input.h \
@@ -157,9 +160,11 @@ COREFCN_SRC = \
   %reldir%/givens.cc \
   %reldir%/gl-render.cc \
   %reldir%/gl2ps-print.cc \
+  %reldir%/graphics-toolkit.cc \
   %reldir%/graphics.cc \
   %reldir%/gripes.cc \
   %reldir%/gsvd.cc \
+  %reldir%/gtk-manager.cc \
   %reldir%/hash.cc \
   %reldir%/help.cc \
   %reldir%/hess.cc \

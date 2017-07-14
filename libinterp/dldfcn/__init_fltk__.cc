@@ -92,6 +92,7 @@ To initialize:
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
+#include "gtk-manager.h"
 #include "interpreter.h"
 #include "oct-map.h"
 #include "oct-opengl.h"
@@ -2494,9 +2495,11 @@ Undocumented internal function.
     {
       interp.mlock ();
 
+      octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+
       fltk_graphics_toolkit *fltk = new fltk_graphics_toolkit (interp);
       graphics_toolkit tk (fltk);
-      gtk_manager::load_toolkit (tk);
+      gtk_mgr.load_toolkit (tk);
       toolkit_loaded = true;
 
       octave_value fcn (new octave_builtin (F__fltk_check__));

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "error.h"
+#include "gtk-manager.h"
 #include "help.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -114,5 +115,12 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_cdef_manager ();
+  }
+
+  gtk_manager& __get_gtk_manager__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_gtk_manager ();
   }
 }

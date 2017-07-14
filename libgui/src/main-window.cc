@@ -121,7 +121,7 @@ octave_interpreter::execute (void)
 #if defined (HAVE_QT_GRAPHICS)
           install___init_qt___functions ();
 
-          Fregister_graphics_toolkit (ovl ("qt"));
+          Fregister_graphics_toolkit (interp, ovl ("qt"));
 #endif
 
           exit_status = interp.execute ();

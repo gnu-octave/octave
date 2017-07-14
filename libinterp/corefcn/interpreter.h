@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dynamic-ld.h"
 #include "environment.h"
+#include "gtk-manager.h"
 #include "help.h"
 #include "load-path.h"
 #include "oct-stream.h"
@@ -185,6 +186,11 @@ namespace octave
       return m_cdef_manager;
     }
 
+    gtk_manager& get_gtk_manager (void)
+    {
+      return m_gtk_manager;
+    }
+
     void mlock (void);
 
     void munlock (const std::string& nm);
@@ -238,6 +244,8 @@ namespace octave
     url_handle_manager m_url_handle_manager;
 
     cdef_manager m_cdef_manager;
+
+    gtk_manager m_gtk_manager;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

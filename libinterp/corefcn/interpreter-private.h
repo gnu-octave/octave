@@ -35,6 +35,7 @@ namespace octave
 {
   class interpreter;
   class dynamic_loader;
+  class gtk_manager;
   class help_system;
   class load_path;
   class tree_evaluator;
@@ -60,6 +61,8 @@ namespace octave
   extern call_stack& __get_call_stack__ (const std::string& who);
 
   extern cdef_manager& __get_cdef_manager__ (const std::string& who);
+
+  extern gtk_manager& __get_gtk_manager__ (const std::string& who);
 }
 
 #endif

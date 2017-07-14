@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "graphics.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "ov.h"
 #include "ovl.h"
@@ -504,6 +505,15 @@ default_figure_paperposition (void)
   m(3) = 6.00;
 
   return m;
+}
+
+static std::string
+default_graphics_toolkit (void)
+{
+  octave::gtk_manager& gtk_mgr
+    = octave::__get_gtk_manager__ ("default_graphics_toolkit");
+
+  return gtk_mgr.default_toolkit ();
 }
 
 static Matrix
@@ -2915,22 +2925,6 @@ xinitialize (const graphics_handle& h)
 // ---------------------------------------------------------------------
 
 void
-base_graphics_toolkit::update (const graphics_handle& h, int id)
-{
-  graphics_object go = gh_manager::get_object (h);
-
-  update (go, id);
-}
-
-bool
-base_graphics_toolkit::initialize (const graphics_handle& h)
-{
-  graphics_object go = gh_manager::get_object (h);
-
-  return initialize (go);
-}
-
-void
 base_graphics_toolkit::finalize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
@@ -3734,6 +3728,43 @@ figure::properties::remove_child (const graphics_handle& h)
         }
 
       currentaxes = new_currentaxes;
+    }
+}
+
+graphics_toolkit
+figure::properties::get_toolkit (void) const
+{
+  if (! toolkit)
+    {
+      octave::gtk_manager& gtk_mgr
+        = octave::__get_gtk_manager__ ("figure::properties::get_toolkit");
+
+      toolkit = gtk_mgr.get_toolkit ();
+    }
+
+  return toolkit;
+}
+
+void
+figure::properties::set___graphics_toolkit__ (const octave_value& val)
+{
+  if (! val.is_string ())
+    error ("set___graphics_toolkit__ must be a string");
+
+  std::string nm = val.string_value ();
+
+  octave::gtk_manager& gtk_mgr
+    = octave::__get_gtk_manager__ ("figure::properties::set___graphics_toolkit__");
+
+  graphics_toolkit b = gtk_mgr.find_toolkit (nm);
+
+  if (b.get_name () != nm)
+    error ("set___graphics_toolkit__: invalid graphics toolkit");
+
+  if (nm != get___graphics_toolkit__ ())
+    {
+      set_toolkit (b);
+      mark_modified ();
     }
 }
 
@@ -9508,8 +9539,10 @@ gh_manager::gh_manager (void)
 {
   handle_map[0] = graphics_object (new root_figure ());
 
+  octave::gtk_manager& gtk_mgr = octave::__get_gtk_manager__ ("gh_manager");
+
   // Make sure the default graphics toolkit is registered.
-  gtk_manager::default_toolkit ();
+  gtk_mgr.default_toolkit ();
 }
 
 void
@@ -11114,94 +11147,8 @@ Internal function: returns the pixel size of the image in normalized units.
   return ovl (dp);
 }
 
-gtk_manager *gtk_manager::instance = nullptr;
-
-void
-gtk_manager::create_instance (void)
-{
-  instance = new gtk_manager ();
-
-  if (instance)
-    singleton_cleanup_list::add (cleanup_instance);
-}
-
-graphics_toolkit
-gtk_manager::do_get_toolkit (void) const
-{
-  graphics_toolkit retval;
-
-  if (dtk.empty ())
-    error ("no graphics toolkits are available!");
-
-  const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
-
-  if (pl == loaded_toolkits.end ())
-    {
-      const_available_toolkits_iterator pa = available_toolkits.find (dtk);
-
-      if (pa == available_toolkits.end ())
-        error ("default graphics toolkit '%s' is not available!",
-               dtk.c_str ());
-
-      octave_value_list args;
-      args(0) = dtk;
-      octave::feval ("graphics_toolkit", args);
-
-      pl = loaded_toolkits.find (dtk);
-
-      if (pl == loaded_toolkits.end ())
-        error ("failed to load %s graphics toolkit", dtk.c_str ());
-
-      retval = pl->second;
-    }
-  else
-    retval = pl->second;
-
-  return retval;
-}
-
-void
-gtk_manager::do_register_toolkit (const std::string& name)
-{
-  if (dtk.empty () || name == "qt"
-      || (name == "fltk"
-          && available_toolkits.find ("qt") == available_toolkits.end ()))
-    dtk = name;
-
-  available_toolkits.insert (name);
-}
-
-void
-gtk_manager::do_unregister_toolkit (const std::string& name)
-{
-  available_toolkits.erase (name);
-
-  if (dtk == name)
-    {
-      if (available_toolkits.empty ())
-        dtk.clear ();
-      else
-        {
-          const_available_toolkits_iterator pa = available_toolkits.begin ();
-
-          dtk = *pa++;
-
-          while (pa != available_toolkits.end ())
-            {
-              std::string tk_name = *pa++;
-
-              if (tk_name == "qt"
-                  || (tk_name == "fltk"
-                      && (available_toolkits.find ("qt")
-                          == available_toolkits.end ())))
-                dtk = tk_name;
-            }
-        }
-    }
-}
-
-DEFUN (available_graphics_toolkits, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (available_graphics_toolkits, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} available_graphics_toolkits ()
 Return a cell array of registered graphics toolkits.
 @seealso{graphics_toolkit, register_graphics_toolkit}
@@ -11209,11 +11156,13 @@ Return a cell array of registered graphics toolkits.
 {
   gh_manager::auto_lock guard;
 
-  return ovl (gtk_manager::available_toolkits_list ());
+  octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+
+  return ovl (gtk_mgr.available_toolkits_list ());
 }
 
-DEFUN (register_graphics_toolkit, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (register_graphics_toolkit, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} register_graphics_toolkit (@var{toolkit})
 List @var{toolkit} as an available graphics toolkit.
 @seealso{available_graphics_toolkits}
@@ -11226,13 +11175,15 @@ List @var{toolkit} as an available graphics toolkit.
 
   std::string name = args(0).xstring_value ("register_graphics_toolkit: TOOLKIT must be a string");
 
-  gtk_manager::register_toolkit (name);
+  octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+
+  gtk_mgr.register_toolkit (name);
 
   return ovl ();
 }
 
-DEFUN (loaded_graphics_toolkits, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (loaded_graphics_toolkits, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} loaded_graphics_toolkits ()
 Return a cell array of the currently loaded graphics toolkits.
 @seealso{available_graphics_toolkits}
@@ -11240,7 +11191,9 @@ Return a cell array of the currently loaded graphics toolkits.
 {
   gh_manager::auto_lock guard;
 
-  return ovl (gtk_manager::loaded_toolkits_list ());
+  octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+
+  return ovl (gtk_mgr.loaded_toolkits_list ());
 }
 
 DEFUN (drawnow, args, ,

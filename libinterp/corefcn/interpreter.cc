@@ -357,6 +357,7 @@ namespace octave
       m_stream_list (*this),
       m_url_handle_manager (),
       m_cdef_manager (*this),
+      m_gtk_manager (),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != 0),
@@ -1135,7 +1136,7 @@ namespace octave
 
     OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
 
-    OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
+    m_gtk_manager.unload_all_toolkits ();
 
     OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
 

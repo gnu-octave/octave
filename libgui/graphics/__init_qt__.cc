@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRegExp>
 
 #include "graphics.h"
+#include "gtk-manager.h"
 #include "interpreter.h"
 #include "defun.h"
 
@@ -45,7 +46,7 @@ namespace QtHandles
   static bool qtHandlesInitialized = false;
 
   bool
-  __init__ (void)
+  __init__ (octave::interpreter& interp)
   {
     if (! qtHandlesInitialized)
       {
@@ -57,8 +58,10 @@ namespace QtHandles
 
             gh_manager::enable_event_processing (true);
 
+            octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+
             graphics_toolkit tk (new Backend ());
-            gtk_manager::load_toolkit (tk);
+            gtk_mgr.load_toolkit (tk);
 
             octave::interpreter::add_atexit_function ("__shutdown_qt__");
 
@@ -112,8 +115,6 @@ namespace QtHandles
       {
         gh_manager::auto_lock lock;
 
-        gtk_manager::unload_toolkit ("qt");
-
         gh_manager::enable_event_processing (false);
 
         qtHandlesInitialized = false;
@@ -123,12 +124,11 @@ namespace QtHandles
 
     return false;
   }
-
 }
 
-DEFUN (__init_qt__, , , "")
+DEFMETHOD (__init_qt__, interp, , , "")
 {
-  QtHandles::__init__ ();
+  QtHandles::__init__ (interp);
 
   return octave_value ();
 }

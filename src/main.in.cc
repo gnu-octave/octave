@@ -254,16 +254,36 @@ main (int argc, char **argv)
           start_gui = false;
           new_argv[k++] = argv[i];
         }
-      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet")
-               || ! strcmp (argv[i], "-q"))
+      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet"))
         {
           warn_display = false;
           new_argv[k++] = argv[i];
         }
-      else if (! strcmp (argv[i], "--no-window-system")
-               || ! strcmp (argv[i], "-W"))
+      else if (! strcmp (argv[i], "--no-window-system"))
         {
           no_display = true;
+          new_argv[k++] = argv[i];
+        }
+      else if (strlen (argv[i]) > 1 && argv[i][0] == '-' && argv[i][1] != '-')
+        {
+          // Handle all single-letter command line options here; they may
+          // occur alone or may be aggregated into a single argument.
+
+          size_t len = strlen (argv[i]);
+
+          for (size_t j = 1; j < len; j++)
+            switch (argv[i][j])
+              {
+                case 'W':
+                  no_display = true;
+                  break;
+                case 'q':
+                  warn_display = false;
+                  break;
+                default:
+                  break;
+              }
+
           new_argv[k++] = argv[i];
         }
       else

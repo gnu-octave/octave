@@ -2362,9 +2362,6 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   _edit_area->setTabWidth
         (settings->value ("editor/tab_width",2).toInt ());
 
-  _edit_area->set_auto_endif
-        (settings->value ("editor/auto_endif",1).toInt ());
-
   _edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
         settings->value ("editor/show_hscroll_bar",true).toBool ());
   _edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
@@ -2372,6 +2369,8 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
 
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());
+
+  _auto_endif = settings->value ("editor/auto_endif",1).toInt ();
 
   // long line marker
   int line_length = settings->value ("editor/long_line_column",80).toInt ();
@@ -2676,11 +2675,15 @@ file_editor_tab::handle_cursor_moved (int line, int col)
   if (_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))
     show_auto_completion (this);
 
-  if (_lines_changed)  // check for smart indentation
+  if (_lines_changed)  // cursor moved and lines have changed
     {
       _lines_changed = false;
-      if (_is_octave_file && _smart_indent && line == _line+1 && col < _col)
-        _edit_area->smart_indent (_line,_col);
+      if (_is_octave_file && line == _line+1 && col < _col)
+        {
+          // Obviously, we have a newline here
+          if (_smart_indent || _auto_endif)
+            _edit_area->smart_indent (_smart_indent, _auto_endif, _line);
+        }
     }
 
   _line = line;

@@ -57,8 +57,7 @@ public:
   QString comment_string ();
   int get_style (int pos = -1);
   int is_style_comment (int pos = -1);
-  void set_auto_endif (int ai) { _auto_endif = ai; }
-  void smart_indent (int line, int col);
+  void smart_indent (bool do_smart_indent, int do_auto_close, int line);
 
 signals:
 
@@ -90,9 +89,8 @@ protected:
 
 private:
 
-  void keyPressEvent (QKeyEvent *e);
-
-  int _auto_endif;
+  void auto_close (int auto_endif, int l,
+                   const QString& line, QString& first_word);
 
   QString _word_at_cursor;
 

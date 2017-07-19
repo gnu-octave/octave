@@ -283,6 +283,7 @@ private:
   bool _is_octave_file;
   bool _always_reload_changed_files;
   bool _smart_indent;
+  int _auto_endif;
 
   QFileSystemWatcher _file_system_watcher;
 

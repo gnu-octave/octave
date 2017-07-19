@@ -468,9 +468,7 @@ octregexp (const octave_value_list &args, int nargout,
       octave_value_list new_retval;
       new_retval.resize (nargout);
 
-      OCTAVE_LOCAL_BUFFER (int, arg_used, 6);
-      for (int j = 0; j < 6; j++)
-        arg_used[j] = false;
+      OCTAVE_LOCAL_BUFFER_INIT (int, arg_used, 7, false);
 
       for (int j = 2; j < nargin; j++)
         {
@@ -515,7 +513,7 @@ octregexp (const octave_value_list &args, int nargout,
       // Fill in the rest of the arguments
       if (n < nargout)
         {
-          for (int j = 0; j < 6; j++)
+          for (int j = 0; j < 7; j++)
             {
               if (! arg_used[j])
                 new_retval(n++) = retval(j);

@@ -259,7 +259,7 @@ namespace octave
 
     bool interpreter_initialized (void);
 
-    virtual void create_interpreter (void);
+    virtual interpreter& create_interpreter (void);
 
     virtual int initialize_interpreter (void);
 

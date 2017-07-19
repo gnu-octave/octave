@@ -315,10 +315,12 @@ namespace octave
     return m_interpreter ? m_interpreter->initialized () : false;
   }
 
-  void application::create_interpreter (void)
+  interpreter& application::create_interpreter (void)
   {
     if (! m_interpreter)
       m_interpreter = new interpreter (this);
+
+    return *m_interpreter;
   }
 
   int application::initialize_interpreter (void)
@@ -375,9 +377,9 @@ namespace octave
 
   int cli_application::execute (void)
   {
-    create_interpreter ();
+    interpreter& interp = create_interpreter ();
 
-    int status = execute_interpreter ();
+    int status = interp.execute ();
 
     delete_interpreter ();
 

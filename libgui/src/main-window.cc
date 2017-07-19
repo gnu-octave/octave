@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "__init_qt__.h"
 #endif
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "octave.h"
 #include "symtab.h"
@@ -96,13 +97,7 @@ octave_interpreter::execute (void)
 
   // The application context owns the interpreter.
 
-  m_app_context->create_interpreter ();
-
-#if defined (HAVE_QT_GRAPHICS)
-  install___init_qt___functions ();
-
-  Fregister_graphics_toolkit (ovl ("qt"));
-#endif
+  octave::interpreter& interp = m_app_context->create_interpreter ();
 
   int exit_status = 0;
 
@@ -112,9 +107,9 @@ octave_interpreter::execute (void)
       // initialization fails, return the last available status from
       // that process.
 
-      exit_status = m_app_context->initialize_interpreter ();
+      exit_status = interp.initialize ();
 
-      if (m_app_context->interpreter_initialized ())
+      if (interp.initialized ())
         {
           // The interpreter should be completely ready at this point so let
           // the GUI know.
@@ -123,7 +118,13 @@ octave_interpreter::execute (void)
 
           // Start executing commands in the command window.
 
-          exit_status = m_app_context->execute_interpreter ();
+#if defined (HAVE_QT_GRAPHICS)
+          install___init_qt___functions ();
+
+          Fregister_graphics_toolkit (ovl ("qt"));
+#endif
+
+          exit_status = interp.execute ();
         }
     }
   catch (const octave::exit_exception& ex)

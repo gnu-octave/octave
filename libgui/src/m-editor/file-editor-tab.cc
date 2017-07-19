@@ -445,10 +445,13 @@ file_editor_tab::set_file_name (const QString& fileName)
     _file_system_watcher.removePath (_file_name);
   if (! fileName.isEmpty ())
     _file_system_watcher.addPath (fileName);
-  _file_name = fileName;
 
-  // update lexer after _file_name change
-  update_lexer ();
+  // update lexer and file name variable if file name changes
+  if (_file_name != fileName)
+    {
+      _file_name = fileName;
+      update_lexer ();
+    }
 
   // update the file editor with current editing directory
   emit editor_state_changed (_copy_available, _is_octave_file);
@@ -529,18 +532,16 @@ file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
     }
 }
 
+
 void
 file_editor_tab::update_lexer ()
 {
-  if (_lexer_apis)
-    _lexer_apis->cancelPreparation ();  // stop preparing if apis exists
-
-  QsciLexer *lexer = _edit_area->lexer ();
-  delete lexer;
-  lexer = 0;
+  // Create a new lexer
+  QsciLexer *lexer = 0;
 
   _is_octave_file = false;
 
+  // Find the required lexer from file extensions
   if (_file_name.endsWith (".m")
       || _file_name.endsWith ("octaverc"))
     {
@@ -604,13 +605,48 @@ file_editor_tab::update_lexer ()
         }
     }
 
-  QSettings *settings = resource_manager::get_settings ();
+  // Get any existing lexer
+  QsciLexer *old_lexer = _edit_area->lexer ();
 
-  // build information for auto completion (APIs)
-  _lexer_apis = new QsciAPIs (lexer);
+  // If new file, no lexer, or lexer has changed,
+  // delete old one and set the newly created as current lexer
+  if (! old_lexer || ! valid_file_name ()
+      || QString(old_lexer->lexer ()) != QString(lexer->lexer ()))
+    {
+      // Delete and set new lexer
+      if (old_lexer)
+        delete old_lexer;
+      _edit_area->setLexer (lexer);
+
+      // build information for auto completion (APIs)
+      _lexer_apis = new QsciAPIs (lexer);
+
+      // Get the settings for this new lexer
+      update_lexer_settings ();
+    }
+  else
+    {
+      // Otherwise, delete the newly created lexer and
+      // use the old, exisiting one
+      if (lexer)
+        delete lexer;
+    }
+}
+
+
+// Update settings, which are lexer related and have to be updated
+// when a) the lexer changes or b) the settings have changed.
+void
+file_editor_tab::update_lexer_settings ()
+{
+  QsciLexer *lexer = _edit_area->lexer ();
+
+  QSettings *settings = resource_manager::get_settings ();
 
   if (_lexer_apis)
     {
+      _lexer_apis->cancelPreparation ();  // stop preparing if apis exists
+
       bool update_apis = false;  // flag, whether update of apis files
 
       // get path to prepared api info
@@ -691,7 +727,8 @@ file_editor_tab::update_lexer ()
               add_octave_apis (Fiskeyword ());            // add new entries
 
               octave::interpreter& interp
-                = octave::__get_interpreter__ ("file_editor_tab::update_lexer");
+                = octave::__get_interpreter__ (
+                                    "file_editor_tab::update_lexer_settings");
 
               if (octave_builtins)
                 add_octave_apis (F__builtins__ (interp));       // add new entries
@@ -730,8 +767,6 @@ file_editor_tab::update_lexer ()
     }
 
   lexer->readSettings (*settings);
-
-  _edit_area->setLexer (lexer);
 
   _edit_area->setCaretForegroundColor (lexer->color (0));
   _edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
@@ -789,8 +824,8 @@ file_editor_tab::update_lexer ()
     }
   else
     _edit_area->setMarginWidth (2,0);
-
 }
+
 
 // function for adding entries to the octave lexer's APIs
 void
@@ -2269,7 +2304,7 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   // QSettings pointer is checked before emitting.
 
   if (! init)
-    update_lexer ();
+    update_lexer_settings ();
 
   // code folding
   if (settings->value ("editor/code_folding",true).toBool ())

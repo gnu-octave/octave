@@ -244,6 +244,7 @@ private:
   bool unchanged_or_saved (void);
 
   void update_lexer ();
+  void update_lexer_settings ();
 
   void show_dialog (QDialog *dlg, bool modal);
   int check_file_modified ();

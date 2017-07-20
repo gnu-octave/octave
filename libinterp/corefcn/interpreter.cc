@@ -1162,8 +1162,6 @@ namespace octave
     // is unloaded.
     //
     // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
-
-    OCTAVE_SAFE_CALL (chunk_buffer::clear, ());
   }
 
   tree_evaluator& interpreter::get_evaluator (void)

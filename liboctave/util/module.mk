@@ -81,7 +81,6 @@ UTIL_SRC = \
   %reldir%/oct-base64.cc \
   %reldir%/oct-glob.cc \
   %reldir%/oct-inttypes.cc \
-  %reldir%/oct-locbuf.cc \
   %reldir%/oct-mutex.cc \
   %reldir%/oct-shlib.cc \
   %reldir%/oct-sparse.cc \

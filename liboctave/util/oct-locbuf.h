@@ -34,8 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_LOCAL_BUFFER(T, buf, size)                               \
   auto octave_local_buffer_ ## buf = std::make_unique<T []> (size);     \
-  T *buf = octave_local_buffer_ ## buf.get (); \
-  assert (0);
+  T *buf = octave_local_buffer_ ## buf.get ()
 
 #else
 

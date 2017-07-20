@@ -7558,11 +7558,23 @@ axes::update_axis_limits (const std::string& axis_type,
 
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
+          xproperties.set_has3Dkids ((max_val - min_val) > 
+                                      std::numeric_limits<double>::epsilon ());
+
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.zscale_is ("log"));
 
           update_type = 'z';
+        }
+      else
+        {
+          // FIXME: get_children_limits is only needed here in order to know 
+          // if there are 3D children. Is there a way to avoid this call?
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
+
+          xproperties.set_has3Dkids ((max_val - min_val) > 
+                                      std::numeric_limits<double>::epsilon ());
         }
     }
   else if (axis_type == "cdata" || axis_type == "climmode"
@@ -7727,11 +7739,23 @@ axes::update_axis_limits (const std::string& axis_type)
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
+          xproperties.set_has3Dkids ((max_val - min_val) > 
+                                      std::numeric_limits<double>::epsilon ());
+
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.zscale_is ("log"));
 
           update_type = 'z';
+        }
+      else
+        {
+          // FIXME: get_children_limits is only needed here in order to know 
+          // if there are 3D children. Is there a way to avoid this call?
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
+
+          xproperties.set_has3Dkids ((max_val - min_val) > 
+                                      std::numeric_limits<double>::epsilon ());
         }
     }
   else if (axis_type == "cdata" || axis_type == "climmode"

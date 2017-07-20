@@ -3483,7 +3483,9 @@ public:
     bool get_x2Dtop (void) const { return x2Dtop; }
     bool get_y2Dright (void) const { return y2Dright; }
     bool get_layer2Dtop (void) const { return layer2Dtop; }
-    bool get_is2D (void) const { return is2D; }
+    bool get_is2D (bool include_kids = false) const
+    { return (include_kids ? (is2D && ! has3Dkids) : is2D); }
+    void set_has3Dkids (bool val) { has3Dkids = val; }
     bool get_xySym (void) const { return xySym; }
     bool get_xyzSym (void) const { return xyzSym; }
     bool get_zSign (void) const { return zSign; }
@@ -3574,6 +3576,7 @@ public:
     bool y2Dright = false;
     bool layer2Dtop = false;
     bool is2D = false;
+    bool has3Dkids = false;
     bool xySym = false;
     bool xyzSym = false;
     bool zSign = false;

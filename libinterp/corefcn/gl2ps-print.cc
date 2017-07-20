@@ -201,6 +201,35 @@ namespace octave
     bool buffer_overflow;
   };
 
+  static bool
+  has_2D_axes (const graphics_handle& h)
+  {
+    bool retval = true;
+    graphics_object go = gh_manager::get_object (h);
+  
+    if (! go.valid_object ())
+      return retval;
+
+    if (go.isa ("figure") || go.isa ("uipanel"))
+      {
+        Matrix  children = go.get ("children").matrix_value ();
+        for (octave_idx_type ii = 0; ii < children.numel (); ii++)
+          {
+            retval = has_2D_axes (graphics_handle (children(ii)));
+            if (! retval)
+              break;
+          }
+      }
+    else if (go.isa ("axes"))
+      {
+        axes::properties& ap
+          = reinterpret_cast<axes::properties&> (go.get_properties ());
+        retval = ap.get_is2D (true);
+      }
+
+    return retval;
+  }
+
   void
   gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
   {
@@ -240,10 +269,9 @@ namespace octave
         // Default sort order optimizes for 3D plots
         GLint gl2ps_sort = GL2PS_BSP_SORT;
 
-        // For 2D plots we can use a simpler Z-depth sorting algorithm
         // FIXME: gl2ps does not provide a way to change the sorting algorythm
         // on a viewport basis, we thus disable sorting only if all axes are 2D
-        if (term.find ("is2D") != std::string::npos)
+        if (has_2D_axes (go.get ("__myhandle__")))
           gl2ps_sort = GL2PS_NO_SORT;
 
         // Use a temporary file in case an overflow happens

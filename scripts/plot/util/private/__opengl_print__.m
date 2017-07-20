@@ -148,17 +148,6 @@ function opts = __opengl_print__ (opts)
 
   opts.pipeline = pipeline;
 
-  ## Tell gl2ps to use different rendering options for 2D plots
-  haxes = findall (opts.figure, "type", "axes");
-  vw = get (haxes, "view");
-  if (iscell (vw))
-    vw = vertcat (vw{:});
-  endif
-  is2D = all (abs (vw(:,2)) == 90);
-  if (is2D)
-    gl2ps_device{end} = [gl2ps_device{end}, "is2D"];
-  endif
-
   for n = 1:numel (pipeline)
     if (opts.debug)
       fprintf ("opengl-pipeline: '%s'\n", pipeline{n});

@@ -1335,9 +1335,17 @@ namespace octave
     if (base_expr_val.is_undefined ())
       base_expr_val = evaluate (expr);
 
-    bool indexing_object = base_expr_val.isobject () || base_expr_val.isjava ()
-                           || base_expr_val.is_classdef_meta ();
-                           // ^ this check is for static methods on class name
+    // If we are indexing an object or looking at something like
+    //
+    //   classname.static_function (args, ...);
+    //
+    // then we'll just build a complete index list for one big subsref
+    // call.  If the expression we are indexing is a classname, then
+    // base_expr_val will be an octave_classdef_meta object.
+
+    bool indexing_object
+      = (base_expr_val.isobject () || base_expr_val.isjava ()
+         || base_expr_val.is_classdef_meta ());
 
     std::list<octave_value_list> idx;
 
@@ -1375,11 +1383,19 @@ namespace octave
                         beg = i;
                         idx.clear ();
 
-                        if (partial_expr_val.isobject () || partial_expr_val.isjava ())
+                        if (partial_expr_val.isobject ()
+                            || partial_expr_val.isjava ())
                           {
                             // Found an object, so now we'll build up
                             // complete index list for one big subsref
                             // call from this point on.
+
+                            // FIXME: is is also possible to have a
+                            // static method call buried somewhere in
+                            // the depths of a complex indexing
+                            // expression so that we would also need to
+                            // check for an octave_classdef_meta object
+                            // here?
 
                             indexing_object = true;
                           }

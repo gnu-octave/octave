@@ -1330,7 +1330,7 @@ void
         prelude = llvm::BasicBlock::Create (context, "prelude", function);
         builder.SetInsertPoint (prelude);
 
-        llvm::Value *arg = function->arg_begin ();
+        llvm::Value *arg = &*(function->arg_begin ());
         for (size_t i = 0; i < argument_vec.size (); ++i)
           {
             llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);

@@ -725,9 +725,9 @@ namespace octave
     for (size_t i = 0; i < idx; ++i, ++iter);
 
     if (args[idx]->pointer_arg (call_conv))
-      return builder.CreateLoad (iter);
+      return builder.CreateLoad (&*iter);
 
-    return iter;
+    return &*iter;
   }
 
   void
@@ -744,7 +744,7 @@ namespace octave
 
         if (sret ())
           {
-            builder.CreateStore (rval, llvm_function->arg_begin ());
+            builder.CreateStore (rval, &*(llvm_function->arg_begin ()));
             builder.CreateRetVoid ();
           }
         else

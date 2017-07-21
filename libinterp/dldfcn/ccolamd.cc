@@ -144,7 +144,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
+  static_assert (CCOLAMD_KNOBS <= 40, "ccolamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[CCOLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   CCOLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -257,7 +259,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, CCOLAMD_STATS);
+  static_assert (CCOLAMD_STATS <= 40, "ccolamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
 
   if (nargin > 2)
     {
@@ -405,7 +409,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
+  static_assert (CCOLAMD_KNOBS <= 40, "csymamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[CCOLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   CCOLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -492,7 +498,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, perm, n_col+1);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, CCOLAMD_STATS);
+  static_assert (CCOLAMD_STATS <= 40, "csymamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
 
   if (nargin > 2)
     {

@@ -1654,11 +1654,10 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
       // Blocked transpose to attempt to avoid cache misses.
 
-      // Don't use OCTAVE_LOCAL_BUFFER here as it doesn't work with bool
-      // on some compilers.
       T buf[64];
 
-      octave_idx_type ii = 0, jj;
+      octave_idx_type ii = 0;
+      octave_idx_type jj;
       for (jj = 0; jj < (nc - 8 + 1); jj += 8)
         {
           for (ii = 0; ii < (nr - 8 + 1); ii += 8)

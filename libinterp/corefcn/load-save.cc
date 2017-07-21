@@ -222,13 +222,14 @@ check_gzip_magic (const std::string& fname)
   bool retval = false;
 
   std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
-  OCTAVE_LOCAL_BUFFER (unsigned char, magic, 2);
 
-  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f
-      && magic[1] == 0x8b)
+  unsigned char magic[2];
+  if (file.read (reinterpret_cast<char *> (&magic[0]), 2)
+      && magic[0] == 0x1f && magic[1] == 0x8b)
     retval = true;
 
   file.close ();
+
   return retval;
 }
 #endif

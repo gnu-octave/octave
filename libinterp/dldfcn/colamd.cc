@@ -280,7 +280,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
+  static_assert (COLAMD_KNOBS <= 40, "colamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[COLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   COLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -380,7 +382,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
     A[i] = ridx[i];
 
   // Order the columns (destroys A)
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, COLAMD_STATS);
+  static_assert (COLAMD_STATS <= 40, "colamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[COLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
     {
       COLAMD_NAME (_report)(stats);
@@ -518,7 +522,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
+  static_assert (COLAMD_KNOBS <= 40, "symamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[COLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   COLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -580,7 +586,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, COLAMD_STATS);
+  static_assert (COLAMD_STATS <= 40, "symamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[COLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
   if (! SYMAMD_NAME () (n_col, octave::to_suitesparse_intptr (ridx),
                         octave::to_suitesparse_intptr (cidx),
                         octave::to_suitesparse_intptr (perm),

@@ -1656,10 +1656,10 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
       T buf[64];
 
-      octave_idx_type ii = 0;
       octave_idx_type jj;
       for (jj = 0; jj < (nc - 8 + 1); jj += 8)
         {
+          octave_idx_type ii;
           for (ii = 0; ii < (nr - 8 + 1); ii += 8)
             {
               // Copy to buffer
@@ -1702,7 +1702,7 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
 /*
 
-## Tranpose tests for matrices of the tile size and plus or minus a row
+## Transpose tests for matrices of the tile size and plus or minus a row
 ## and with four tiles.
 
 %!shared m7, mt7, m8, mt8, m9, mt9

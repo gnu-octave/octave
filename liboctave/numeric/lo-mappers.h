@@ -81,7 +81,7 @@ namespace octave
     inline FloatComplex atan (const FloatComplex& x) { return std::atan (x); }
 
     // The C++ standard would normally return a std::complex value for conj
-    // even when the input is fully real.  Octave overrides this. 
+    // even when the input is fully real.  Octave overrides this.
     inline double conj (double x) { return x; }
     inline float conj (float x) { return x; }
 

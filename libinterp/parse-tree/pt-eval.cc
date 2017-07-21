@@ -1336,7 +1336,7 @@ namespace octave
       base_expr_val = evaluate (expr);
 
     bool indexing_object = base_expr_val.isobject () || base_expr_val.isjava ()
-                           || base_expr_val.is_classdef_meta(); 
+                           || base_expr_val.is_classdef_meta ();
                            // ^ this check is for static methods on class name
 
     std::list<octave_value_list> idx;

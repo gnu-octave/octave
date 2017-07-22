@@ -1176,9 +1176,9 @@ namespace octave
 
     for (int op = 0; op < octave_value::num_binary_ops; ++op)
       {
-        llvm::Twine fn_name ("octave_jit_binary_any_any_");
-        fn_name = fn_name + llvm::Twine (op);
-
+        const llvm::Twine &fn_name =
+          "octave_jit_binary_any_any_" + llvm::Twine (op);
+ 
         fn = create_internal (fn_name, any, any, any);
         fn.mark_can_error ();
         llvm::BasicBlock *block = fn.new_block ();

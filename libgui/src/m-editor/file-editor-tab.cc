@@ -2440,7 +2440,24 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   // reload changed files
   _always_reload_changed_files =
         settings->value ("editor/always_reload_changed_files",false).toBool ();
+
+  // Set cursor blinking depending on the settings.
+  // QScintilla ignores the application global settings, so some special
+  // handling is required
+  bool cursor_blinking;
+
+  if (settings->contains ("cursor_blinking"))
+    cursor_blinking = settings->value ("cursor_blinking",true).toBool ();
+  else
+    cursor_blinking = settings->value ("terminal/cursorBlinking",true).toBool ();
+
+  if (cursor_blinking)
+    _edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD,500);
+  else
+    _edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD,0);
+
 }
+
 
 void
 file_editor_tab::auto_margin_width ()

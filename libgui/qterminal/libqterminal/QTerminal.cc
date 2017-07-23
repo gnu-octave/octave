@@ -168,8 +168,11 @@ QTerminal::notice_settings (const QSettings *settings)
   QString cursorType
     = settings->value ("terminal/cursorType", "ibeam").toString ();
 
-  bool cursorBlinking
-    = settings->value ("terminal/cursorBlinking", true).toBool ();
+  bool cursorBlinking;
+  if (settings->contains ("cursor_blinking"))
+    cursorBlinking = settings->value ("cursor_blinking",true).toBool ();
+  else
+    cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
 
   if (cursorType == "ibeam")
     setCursorType (QTerminal::IBeamCursor, cursorBlinking);

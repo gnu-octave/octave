@@ -872,7 +872,26 @@ main_window::notice_settings (const QSettings *settings)
   configure_shortcuts ();
   set_global_shortcuts (_active_dock == command_window);
   disable_menu_shortcuts (_active_dock == editor_window);
+
+
+  // Set cursor blinking depending on the settings
+  // Cursor blinking: consider old terminal related setting if not yet set
+  // TODO: This pref. can be deprecated / removed if Qt adds support for
+  //       getting the cursor blink preferences from all OS environments
+  bool cursor_blinking;
+
+  if (settings->contains ("cursor_blinking"))
+    cursor_blinking = settings->value ("cursor_blinking",true).toBool ();
+  else
+    cursor_blinking = settings->value ("terminal/cursorBlinking",true).toBool ();
+
+  if (cursor_blinking)
+    QApplication::setCursorFlashTime (1000);  // 1000 ms flash time
+  else
+    QApplication::setCursorFlashTime (0);  // no flashing
+
 }
+
 
 void
 main_window::confirm_shutdown_octave (void)

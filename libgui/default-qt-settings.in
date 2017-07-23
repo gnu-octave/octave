@@ -23,7 +23,6 @@ mru_file_list=@Invalid()
 [terminal]
 fontSize=__default_font_size__
 fontName=__default_font__
-cursorBlinking=true
 cursorType=ibeam
 
 [MainWindow]

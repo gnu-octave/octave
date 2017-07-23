@@ -489,10 +489,14 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   bool logicalvar;
   dim_vector dims;
   enum arrayclasstype arrayclass;
-  alignas (2) const uint8_t raw_number[2] {0x00, 0x01}; 
-  int16_t number = *(reinterpret_cast<const int16_t *> (&raw_number[0]));
   octave_idx_type nzmax;
   std::string classname;
+
+  // FIXME: Endianness determination in C++ is not easy.
+  // Until C++20 which introduces std::endian, use this hack.
+  int16_t number;
+  uint8_t raw_number[2] {0x00, 0x01}; 
+  std::memcpy (&number, raw_number, 2);
 
   // MAT files always use IEEE floating point
   octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;

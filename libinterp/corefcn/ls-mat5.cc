@@ -489,7 +489,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   bool logicalvar;
   dim_vector dims;
   enum arrayclasstype arrayclass;
-  int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
+  alignas (2) const uint8_t raw_number[2] {0x00, 0x01}; 
+  int16_t number = *(reinterpret_cast<const int16_t *> (&raw_number[0]));
   octave_idx_type nzmax;
   std::string classname;
 

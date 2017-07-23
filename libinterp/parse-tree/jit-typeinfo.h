@@ -38,6 +38,9 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
 
+  class jit_typeinfo;
+  class jit_module;
+
   // Defines the type system used by jit and a singleton class, jit_typeinfo, to
   // manage the types.
   //
@@ -219,8 +222,9 @@ namespace octave
   // seperate print function to allow easy printing if type is null
   std::ostream& jit_print (std::ostream& os, jit_type *atype);
 
-// Find common type
-jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
+  // Find common type
+  jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
+
 
 
   class jit_value;
@@ -235,7 +239,7 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
     // create a function in an invalid state
     jit_function ();
 
-    jit_function (llvm::Module *amodule, jit_convention::type acall_conv,
+    jit_function (const jit_module *amodule, jit_convention::type acall_conv,
                   const llvm::Twine& aname, jit_type *aresult,
                   const std::vector<jit_type *>& aargs);
 
@@ -248,12 +252,6 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
 
     // erase the interal LLVM function (if it exists).  Will become invalid.
     void erase (void);
-
-    template <typename T>
-    void add_mapping (llvm::ExecutionEngine *engine, T fn)
-    {
-      do_add_mapping (engine, reinterpret_cast<void *> (fn));
-    }
 
     bool valid (void) const { return llvm_function; }
 
@@ -329,10 +327,10 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
     }
 
     const std::vector<jit_type *>& arguments (void) const { return args; }
-  private:
-    void do_add_mapping (llvm::ExecutionEngine *engine, void *fn);
 
-    llvm::Module *module;
+  private:
+
+    const jit_module *module;
     llvm::Function *llvm_function;
     jit_type *mresult;
     std::vector<jit_type *> args;
@@ -348,6 +346,8 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
   jit_operation
   {
   public:
+    jit_operation (const std::string& aname)  { mname = aname; }
+
     // type signature vector
     typedef std::vector<jit_type *> signature_vec;
 
@@ -428,24 +428,18 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
     std::string mname;
   };
 
+
   class
   jit_index_operation : public jit_operation
   {
   public:
-    jit_index_operation (void) : module (0), engine (0) { }
+    jit_index_operation (const jit_typeinfo& ti, const std::string& name)
+      : jit_operation (name), typeinfo (ti) { }
 
-    void initialize (llvm::Module *amodule, llvm::ExecutionEngine *aengine)
-    {
-      module = amodule;
-      engine = aengine;
-      do_initialize ();
-    }
   protected:
     virtual jit_function * generate (const signature_vec& types) const;
 
     virtual jit_function * generate_matrix (const signature_vec& types) const = 0;
-
-    virtual void do_initialize (void) = 0;
 
     // helper functions
     // [start_idx, end_idx).
@@ -453,211 +447,201 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
                                     const jit_function& fn, size_t start_idx,
                                     size_t end_idx) const;
 
-    llvm::Module *module;
-    llvm::ExecutionEngine *engine;
+    const jit_typeinfo& typeinfo;
   };
 
   class
   jit_paren_subsref : public jit_index_operation
   {
+  public:
+    // FIXME: Avoid creating object in an invalid state?
+    jit_paren_subsref (const jit_typeinfo& ti);
+    ~jit_paren_subsref ();
+    void init_paren_scalar ();
+
   protected:
     virtual jit_function * generate_matrix (const signature_vec& types) const;
 
-    virtual void do_initialize (void);
   private:
-    jit_function paren_scalar;
+    jit_function *paren_scalar;
   };
 
   class
   jit_paren_subsasgn : public jit_index_operation
   {
+  public:
+    // FIXME: Avoid creating object in an invalid state?
+    jit_paren_subsasgn (const jit_typeinfo& ti);
+    ~jit_paren_subsasgn ();
+    void init_paren_scalar ();
+
   protected:
     jit_function * generate_matrix (const signature_vec& types) const;
 
-    virtual void do_initialize (void);
   private:
-    jit_function paren_scalar;
+    jit_function *paren_scalar;
   };
 
-  // A singleton class which handles the construction of jit_types and
-  // jit_operations.
+
+  // A singleton class which handles the construction of jit_types
   class
   jit_typeinfo
   {
+    // ----- Constructor/destructor (singleton pattern) -----
+
   public:
-    static void initialize (llvm::Module *m, llvm::ExecutionEngine *e);
+    ~jit_typeinfo ();
 
-
-    static jit_type * get_any (void) { return instance->any; }
-
-    static jit_type * get_matrix (void) { return instance->matrix; }
-
-    static jit_type * get_scalar (void) { return instance->scalar; }
-
-    static llvm::Type * get_scalar_llvm (void)
-    { return instance->scalar->to_llvm (); }
-
-    static jit_type * get_scalar_ptr (void) { return instance->scalar_ptr; }
-
-    static jit_type * get_any_ptr (void) { return instance->any_ptr; }
-
-    static jit_type * get_range (void) { return instance->range; }
-
-    static jit_type * get_string (void) { return instance->string; }
-
-    static jit_type * get_bool (void) { return instance->boolean; }
-
-    static jit_type * get_index (void) { return instance->index; }
-
-    static llvm::Type * get_index_llvm (void)
-    { return instance->index->to_llvm (); }
-
-    static jit_type * get_complex (void) { return instance->complex; }
-
-    // Get the jit_type of an octave_value
-    static jit_type * type_of (const octave_value& ov)
-    {
-      return instance->do_type_of (ov);
-    }
-
-    static const jit_operation& binary_op (int op)
-    {
-      return instance->do_binary_op (op);
-    }
-
-    static const jit_operation& unary_op (int op)
-    {
-      return instance->do_unary_op (op);
-    }
-
-    static const jit_operation& grab (void) { return instance->grab_fn; }
-
-    static const jit_function& get_grab (jit_type *type)
-    {
-      return instance->grab_fn.overload (type);
-    }
-
-    static const jit_operation& release (void)
-    {
-      return instance->release_fn;
-    }
-
-    static const jit_function& get_release (jit_type *type)
-    {
-      return instance->release_fn.overload (type);
-    }
-
-    static const jit_operation& destroy (void)
-    {
-      return instance->destroy_fn;
-    }
-
-    static const jit_operation& print_value (void)
-    {
-      return instance->print_fn;
-    }
-
-    static const jit_operation& for_init (void)
-    {
-      return instance->for_init_fn;
-    }
-
-    static const jit_operation& for_check (void)
-    {
-      return instance->for_check_fn;
-    }
-
-    static const jit_operation& for_index (void)
-    {
-      return instance->for_index_fn;
-    }
-
-    static const jit_operation& make_range (void)
-    {
-      return instance->make_range_fn;
-    }
-
-    static const jit_operation& paren_subsref (void)
-    {
-      return instance->paren_subsref_fn;
-    }
-
-    static const jit_operation& paren_subsasgn (void)
-    {
-      return instance->paren_subsasgn_fn;
-    }
-
-    static const jit_operation& logically_true (void)
-    {
-      return instance->logically_true_fn;
-    }
-
-    static const jit_operation& cast (jit_type *result)
-    {
-      return instance->do_cast (result);
-    }
-
-    static const jit_function& cast (jit_type *to, jit_type *from)
-    {
-      return instance->do_cast (to, from);
-    }
-
-    static llvm::Value * insert_error_check (llvm::IRBuilderD& bld)
-    {
-      return instance->do_insert_error_check (bld);
-    }
-
-    static llvm::Value * insert_interrupt_check (llvm::IRBuilderD& bld)
-    {
-      return instance->do_insert_interrupt_check (bld);
-    }
-
-    static const jit_operation& end (void)
-    {
-      return instance->end_fn;
-    }
-
-    static const jit_function& end (jit_value *value, jit_value *index,
-                                    jit_value *count)
-    {
-      return instance->do_end (value, index, count);
-    }
-
-    static const jit_operation& create_undef (void)
-    {
-      return instance->create_undef_fn;
-    }
-
-    static llvm::Value * create_complex (llvm::Value *real, llvm::Value *imag)
-    {
-      return instance->complex_new (real, imag);
-    }
   private:
-    jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
+    static jit_typeinfo& instance (void);
+    jit_typeinfo ();
+    static bool in_construction;
 
-    jit_type * do_difference (jit_type *lhs, jit_type *)
+    // ----- Registering types -----
+
+  public:
+    static jit_type *register_new_type (const std::string& name, jit_type *parent,
+                                        llvm::Type *llvm_type, bool skip_paren = false)
     {
-      // FIXME: Maybe we can do something smarter?
-      return lhs;
+      return instance ().do_register_new_type (name, parent, llvm_type, skip_paren);
     }
+
+  private:
+    // List of all registered types
+    std::vector<jit_type*> id_to_type;
+
+    // Register a new type
+    jit_type *do_register_new_type (const std::string& name, jit_type *parent,
+                                    llvm::Type *llvm_type, bool skip_paren = false);
+
+    // ----- Base types -----
+
+  public:
+    static jit_type *get_any (void)           { return instance ().any; }
+    static jit_type *get_matrix (void)        { return instance ().matrix; }
+    static jit_type *get_scalar (void)        { return instance ().scalar; }
+    static jit_type *get_scalar_ptr (void)    { return instance ().scalar_ptr; }
+    static jit_type *get_any_ptr (void)       { return instance ().any_ptr; }
+    static jit_type *get_range (void)         { return instance ().range; }
+    static jit_type *get_string (void)        { return instance ().string; }
+    static jit_type *get_bool (void)          { return instance ().boolean; }
+    static jit_type *get_index (void)         { return instance ().index; }
+    static jit_type *get_complex (void)       { return instance ().complex; }
+    static jit_type *intN (size_t nbits)  { return instance ().do_get_intN (nbits); }
+
+    // FIXME: do we really need these two ?
+    static llvm::Type *get_scalar_llvm (void) { return instance ().scalar->to_llvm (); }  // this one is weird
+    static llvm::Type *get_index_llvm (void)  { return instance ().index->to_llvm (); }  // this one is weird too
+
+  private:
+
+    // Base types as LLVM types
+
+    llvm::Type *any_t;
+    llvm::Type *bool_t;  // FIXME: should be "boolean_t", for consistency
+    llvm::Type *complex_t;
+    llvm::Type *index_t;
+    llvm::Type *scalar_t;
+    llvm::Type *string_t;
+
+    llvm::StructType *range_t;
+    llvm::StructType *matrix_t;
+
+    // Base types as jit_type objects)
+
+    jit_type *any;
+    jit_type *boolean;
+    jit_type *complex;
+    jit_type *index;
+    jit_type *scalar;
+    jit_type *string;
+
+    jit_type *range;
+    jit_type *matrix;
+
+    jit_type *scalar_ptr;  // a fake type for interfacing with C++
+    jit_type *any_ptr;     // a fake type for interfacing with C++ (bis)
+    jit_type *unknown_function;
+
+    // complex_ret is what is passed to C functions
+    // in order to get calling convention right
+    llvm::StructType *complex_ret;
+
+    // Get integer type from number of bits
+    jit_type *do_get_intN (size_t nbits) const;
+
+    // map container for integer types: int8, int16, etc.
+    // (note that they are also stored in id_to_types)
+    std::map<size_t, jit_type *> ints;
+
+
+    // ----- parenthesis subsref/subsasgn -----
+
+    friend jit_paren_subsref;
+    friend jit_paren_subsasgn;
+
+  public:
+    static const jit_operation& paren_subsref (void)   { return instance ().paren_subsref_fn; }
+    static const jit_operation& paren_subsasgn (void)  { return instance ().paren_subsasgn_fn; }
+
+  private:
+    jit_paren_subsref paren_subsref_fn;
+    jit_paren_subsasgn paren_subsasgn_fn;
+
+    // ----- Miscellaneous (FIXME: needs to be organized) -----
+
+  public:
+    // Get the jit_type of an octave_value
+    static jit_type *type_of (const octave_value &ov) { return instance ().do_type_of (ov); };
+
+    // Get a unary or binary operation from its integer id
+    static const jit_operation& binary_op (int op) { return instance ().do_binary_op (op); }
+    static const jit_operation& unary_op (int op) { return instance ().do_unary_op (op); }
+
+    static const jit_operation& grab (void)               { return instance ().grab_fn; }
+    static const jit_function& get_grab (jit_type *type)  { return instance ().grab_fn.overload (type); }
+
+    static const jit_operation& release (void)               { return instance ().release_fn; }
+    static const jit_function& get_release (jit_type *type)  { return instance ().release_fn.overload (type); }
+
+    static const jit_operation& destroy (void)         { return instance ().destroy_fn; }
+    static const jit_operation& print_value (void)     { return instance ().print_fn; }
+    static const jit_operation& for_init (void)        { return instance ().for_init_fn; }
+    static const jit_operation& for_check (void)       { return instance ().for_check_fn; }
+    static const jit_operation& for_index (void)       { return instance ().for_index_fn; }
+    static const jit_operation& make_range (void)      { return instance ().make_range_fn; }
+    static const jit_operation& logically_true (void)  { return instance ().logically_true_fn; }
+
+    static const jit_operation& cast (jit_type *result)             { return instance ().do_cast (result); }
+    static const jit_function& cast (jit_type *to, jit_type *from)  { return instance ().do_cast (to, from); }
+
+    static llvm::Value *insert_error_check (llvm::IRBuilderD& bld)      { return instance ().do_insert_error_check (bld); }
+    static llvm::Value *insert_interrupt_check (llvm::IRBuilderD& bld)  { return instance ().do_insert_interrupt_check (bld); }
+
+    static const jit_operation& end (void)                                               { return instance ().end_fn; }
+    static const jit_function&  end (jit_value *value, jit_value *idx, jit_value *count) { return instance ().do_end (value, idx, count); }
+
+    static const jit_operation& create_undef (void)  { return instance ().create_undef_fn; }
+
+    static llvm::Value *create_complex (llvm::Value *real, llvm::Value *imag)    { return instance ().complex_new (real, imag); }
+    static llvm::Value *pack_complex (llvm::IRBuilderD& bld, llvm::Value *cplx)  { return instance ().do_pack_complex (bld, cplx); }
+    static llvm::Value *unpack_complex (llvm::IRBuilderD& bld, llvm::Value *result);
+
+  private:
 
     jit_type * do_type_of (const octave_value& ov) const;
 
     const jit_operation& do_binary_op (int op) const
-    {
-      assert (static_cast<size_t>(op) < binary_ops.size ());
-      return binary_ops[op];
-    }
+    { assert (static_cast<size_t>(op) < binary_ops.size ());
+      return binary_ops[op]; }
 
     const jit_operation& do_unary_op (int op) const
-    {
-      assert (static_cast<size_t> (op) < unary_ops.size ());
-      return unary_ops[op];
-    }
+    { assert (static_cast<size_t> (op) < unary_ops.size ());
+      return unary_ops[op]; }
 
     const jit_operation& do_cast (jit_type *to)
     {
-      static jit_operation null_function;
+      static jit_operation null_function ("null_function");
       if (! to)
         return null_function;
 
@@ -675,9 +659,6 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
     const jit_function& do_end (jit_value *value, jit_value *index,
                                 jit_value *count);
 
-    jit_type * new_type (const std::string& name, jit_type *parent,
-                         llvm::Type *llvm_type, bool skip_paren = false);
-
     void add_print (jit_type *ty, void *fptr);
 
     void add_binary_op (jit_type *ty, int op, int llvm_op);
@@ -692,56 +673,42 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
     // create a function with an external calling convention
     // forces the function pointer to be specified
     template <typename T>
-    jit_function create_external (llvm::ExecutionEngine *ee, T fn,
-                                  const llvm::Twine& name, jit_type *ret,
-                                  const signature_vec& args
-                                  = signature_vec ())
-    {
-      jit_function retval = create_function (jit_convention::external, name, ret,
-                                             args);
-      retval.add_mapping (ee, fn);
-      return retval;
-    }
+    jit_function create_external (T fn, const llvm::Twine& name,
+                                  jit_type * ret, const signature_vec& args
+                                  = signature_vec ()) const;
 
     template <typename T, typename ...Args>
-    jit_function create_external (llvm::ExecutionEngine *ee, T fn,
-                                  const llvm::Twine& name, jit_type *ret,
-                                  signature_vec& args, jit_type * arg1,
-                                  Args... other_args)
+    jit_function create_external (T fn, const llvm::Twine& name,
+                                  jit_type * ret, signature_vec& args,
+                                  jit_type * arg1, Args... other_args) const
     {
       args.push_back (arg1);
-      return create_external (ee, fn, name, ret, args, other_args...);
+      return create_external (fn, name, ret, args, other_args...);
     }
 
     template <typename T, typename ...Args>
-    jit_function create_external (llvm::ExecutionEngine *ee, T fn,
-                                  const llvm::Twine& name, jit_type *ret,
-                                  jit_type * arg1, Args... other_args)
+    jit_function create_external (T fn, const llvm::Twine& name, jit_type *ret,
+                                  jit_type * arg1, Args... other_args) const
     {
       signature_vec args;
       args.reserve (1 + sizeof... (other_args));
       args.push_back (arg1);
-      return create_external (ee, fn, name, ret, args, other_args...);
+      return create_external (fn, name, ret, args, other_args...);
     }
-
-    // use create_external or create_internal directly
-    jit_function create_function (jit_convention::type cc,
-                                  const llvm::Twine& name, jit_type *ret,
-                                  const std::vector<jit_type *>& args
-                                  = std::vector<jit_type *> ());
 
     // create an internal calling convention (a function defined in llvm)
     jit_function create_internal (const llvm::Twine& name, jit_type *ret,
                                   const signature_vec& args
-                                  = signature_vec ())
+                                  = signature_vec ()) const
     {
-      return create_function (jit_convention::internal, name, ret, args);
+      return jit_function (base_jit_module, jit_convention::internal,
+                           name, ret, args);
     }
 
     template <typename ...Args>
     jit_function create_internal (const llvm::Twine& name, jit_type *ret,
                                   signature_vec& args,
-                                  jit_type * arg1, Args... other_args)
+                                  jit_type * arg1, Args... other_args) const
     {
       args.push_back (arg1);
       return create_internal (name, ret, args, other_args...);
@@ -749,7 +716,7 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
 
     template <typename ...Args>
     jit_function create_internal (const llvm::Twine& name, jit_type *ret,
-                                  jit_type * arg1, Args... other_args)
+                                  jit_type * arg1, Args... other_args) const
     {
       signature_vec args;
       args.reserve (1 + sizeof... (other_args));
@@ -791,12 +758,6 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
 
     llvm::Function * wrap_complex (llvm::Function *wrap);
 
-    static llvm::Value * pack_complex (llvm::IRBuilderD& bld,
-                                       llvm::Value *cplx);
-
-    static llvm::Value * unpack_complex (llvm::IRBuilderD& bld,
-                                         llvm::Value *result);
-
     llvm::Value * complex_real (llvm::Value *cx);
 
     llvm::Value * complex_real (llvm::Value *cx, llvm::Value *real);
@@ -807,14 +768,8 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
 
     llvm::Value * complex_new (llvm::Value *real, llvm::Value *imag);
 
-    void create_int (size_t nbits);
+    llvm::Value *do_pack_complex (llvm::IRBuilderD& bld, llvm::Value *cplx) const;
 
-    jit_type * intN (size_t nbits) const;
-
-    static jit_typeinfo *instance;
-
-    llvm::Module *module;
-    llvm::ExecutionEngine *engine;
     int next_id;
 
     llvm::GlobalVariable *lerror_state;
@@ -822,22 +777,7 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
 
     llvm::Type *sig_atomic_type;
 
-    std::vector<jit_type*> id_to_type;
-    jit_type *any;
-    jit_type *matrix;
-    jit_type *scalar;
-    jit_type *scalar_ptr; // a fake type for interfacing with C++
-    jit_type *any_ptr; // a fake type for interfacing with C++
-    jit_type *range;
-    jit_type *string;
-    jit_type *boolean;
-    jit_type *index;
-    jit_type *complex;
-    jit_type *unknown_function;
-    std::map<size_t, jit_type *> ints;
     std::map<std::string, jit_type *> builtins;
-
-    llvm::StructType *complex_ret;
 
     std::vector<jit_operation> binary_ops;
     std::vector<jit_operation> unary_ops;
@@ -850,8 +790,6 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
     jit_operation for_index_fn;
     jit_operation logically_true_fn;
     jit_operation make_range_fn;
-    jit_paren_subsref paren_subsref_fn;
-    jit_paren_subsasgn paren_subsasgn_fn;
     jit_operation end1_fn;
     jit_operation end_fn;
     jit_operation create_undef_fn;
@@ -864,6 +802,9 @@ jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
     // type id -> identity function
     std::vector<jit_function> identities;
 
+    jit_module *base_jit_module;
+
+    llvm::IRBuilderD *builder_ptr;
     llvm::IRBuilderD& builder;
   };
 

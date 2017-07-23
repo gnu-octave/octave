@@ -32,10 +32,9 @@ class octave_value;
 #include "symtab.h"
 #include "pt-jit.h"
 
-class jit_info;
-
 namespace octave
 {
+  class jit_info;
   class tree_argument_list;
   class tree_expression;
   class tree_statement_list;
@@ -99,12 +98,12 @@ namespace octave
 
 #if defined (HAVE_LLVM)
     // some functions use by tree_jit
-    octave::jit_info * get_info (void) const
+    jit_info * get_info (void) const
     {
       return compiled;
     }
 
-    void stash_info (octave::jit_info *jinfo)
+    void stash_info (jit_info *jinfo)
     {
       compiled = jinfo;
     }

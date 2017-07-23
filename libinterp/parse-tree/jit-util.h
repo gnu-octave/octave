@@ -60,11 +60,14 @@ namespace llvm
   class LLVMContext;
   class Type;
   class StructType;
+  class FunctionType;  
   class Twine;
+  class GlobalValue;
   class GlobalVariable;
   class TerminatorInst;
   class PHINode;
-
+  class TargetMachine;
+  
   class ConstantFolder;
 
   template <bool preserveNames>

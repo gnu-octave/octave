@@ -32,8 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_LLVM)
 
-#include "jit-typeinfo.h"
-
 #if defined (HAVE_LLVM_IR_VERIFIER_H)
 #  include <llvm/IR/Verifier.h>
 #else
@@ -66,6 +64,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <llvm/Support/raw_os_ostream.h>
 
+#include "jit-typeinfo.h"
+#include "pt-jit.h"
 #include "jit-ir.h"
 #include "ov.h"
 #include "ov-builtin.h"
@@ -76,10 +76,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-
   static llvm::LLVMContext& context = llvm::getGlobalContext ();
-
-  jit_typeinfo *jit_typeinfo::instance = nullptr;
 
   std::ostream& jit_print (std::ostream& os, jit_type *atype)
   {
@@ -480,6 +477,7 @@ namespace octave
     return 0;
   }
 
+
   // -------------------- jit_range --------------------
   bool
   jit_range::all_elements_are_ints () const
@@ -495,6 +493,7 @@ namespace octave
               << ", " << rng.nelem << ']';
   }
 
+
   // -------------------- jit_matrix --------------------
 
   std::ostream&
@@ -505,7 +504,9 @@ namespace octave
               << mat.array << ']';
   }
 
+
   // -------------------- jit_type --------------------
+
   jit_type::jit_type (const std::string& aname, jit_type *aparent,
                       llvm::Type *allvm_type, bool askip_paren, int aid) :
     mname (aname), mparent (aparent), llvm_type (allvm_type), mid (aid),
@@ -526,44 +527,45 @@ namespace octave
     return llvm_type ? llvm_type->getPointerTo () : nullptr;
   }
 
-jit_type*
-jit_type_join (jit_type *lhs, jit_type *rhs)
-{
-  // empty case
-  if (! lhs)
-    return rhs;
+  jit_type*
+  jit_type_join (jit_type *lhs, jit_type *rhs)
+  {
+    // empty case
+    if (! lhs)
+      return rhs;
 
-  if (! rhs)
+    if (! rhs)
+      return lhs;
+
+    // check for a shared parent
+    while (lhs != rhs)
+      {
+        if (lhs->depth () > rhs->depth ())
+          lhs = lhs->parent ();
+        else if (lhs->depth () < rhs->depth ())
+          rhs = rhs->parent ();
+        else
+          {
+            // we MUST have depth > 0 as any is the base type of everything
+            do
+              {
+                lhs = lhs->parent ();
+                rhs = rhs->parent ();
+              }
+            while (lhs != rhs);
+          }
+      }
     return lhs;
+  }
 
-  // check for a shared parent
-  while (lhs != rhs)
-    {
-      if (lhs->depth () > rhs->depth ())
-        lhs = lhs->parent ();
-      else if (lhs->depth () < rhs->depth ())
-        rhs = rhs->parent ();
-      else
-        {
-          // we MUST have depth > 0 as any is the base type of everything
-          do
-            {
-              lhs = lhs->parent ();
-              rhs = rhs->parent ();
-            }
-          while (lhs != rhs);
-        }
-    }
-  return lhs;
-}
 
   // -------------------- jit_function --------------------
-  jit_function::jit_function () : module (0), llvm_function (0), mresult (0),
-                                  call_conv (jit_convention::length),
-                                  mcan_error (false)
+  jit_function::jit_function ()
+    : module (nullptr), llvm_function (nullptr), mresult (nullptr),
+      call_conv (jit_convention::length), mcan_error (false)
   { }
 
-  jit_function::jit_function (llvm::Module *amodule,
+  jit_function::jit_function (const jit_module *amodule,
                               jit_convention::type acall_conv,
                               const llvm::Twine& aname, jit_type *aresult,
                               const std::vector<jit_type *>& aargs)
@@ -595,11 +597,8 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
         llvm_args.push_back (argty);
       }
 
-    // we mark all functinos as external linkage because this prevents llvm
-    // from getting rid of always inline functions
     llvm::FunctionType *ft = llvm::FunctionType::get (rtype, llvm_args, false);
-    llvm_function = llvm::Function::Create (ft, llvm::Function::ExternalLinkage,
-                                            aname, module);
+    llvm_function = module->create_llvm_function (ft, aname);
 
     if (sret ())
       {
@@ -788,13 +787,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
       llvm::verifyFunction (*llvm_function);
   }
 
-  void
-  jit_function::do_add_mapping (llvm::ExecutionEngine *engine, void *fn)
-  {
-    assert (valid ());
-    engine->addGlobalMapping (llvm_function, fn);
-  }
-
   std::ostream&
   operator<< (std::ostream& os, const jit_function& fn)
   {
@@ -854,8 +846,8 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
   const jit_function&
   jit_operation::overload (const std::vector<jit_type*>& types) const
   {
-  // Number of input arguments of the overload that is being looked for
-  size_t nargs = types.size ();
+    // Number of input arguments of the overload that is being looked for
+    size_t nargs = types.size ();
 
     static jit_function null_overload;
     for (size_t i = 0; i < nargs; ++i)
@@ -987,168 +979,252 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
   }
 
   // -------------------- jit_paren_subsref --------------------
+
+  jit_paren_subsref::jit_paren_subsref (const jit_typeinfo& ti)
+    : jit_index_operation (ti, "()subsref"),
+      paren_scalar (nullptr)
+  {
+  }
+
+  jit_paren_subsref::~jit_paren_subsref ()
+  {
+    delete paren_scalar;
+  }
+
   jit_function *
   jit_paren_subsref::generate_matrix (const signature_vec& types) const
   {
+    if (paren_scalar == nullptr)
+      panic_impossible ();
+
     std::stringstream ss;
     ss << "jit_paren_subsref_matrix_scalar" << (types.size () - 1);
 
-    jit_type *scalar = jit_typeinfo::get_scalar ();
-    jit_function *fn = new jit_function (module, jit_convention::internal,
-                                         ss.str (), scalar, types);
+    // FIXME: Where will this be deleted?
+    jit_function *fn = new jit_function
+      (typeinfo.create_internal (ss.str (), typeinfo.scalar, types));
+
     fn->mark_can_error ();
     llvm::BasicBlock *body = fn->new_block ();
     llvm::IRBuilder<> builder (body);
 
     llvm::Value *array = create_arg_array (builder, *fn, 1, types.size ());
-    jit_type *index = jit_typeinfo::get_index ();
-    llvm::Value *nelem = llvm::ConstantInt::get (index->to_llvm (),
+    llvm::Value *nelem = llvm::ConstantInt::get (typeinfo.index_t,
                                                  types.size () - 1);
     llvm::Value *mat = fn->argument (builder, 0);
-    llvm::Value *ret = paren_scalar.call (builder, mat, array, nelem);
+    llvm::Value *ret = paren_scalar->call (builder, mat, array, nelem);
     fn->do_return (builder, ret);
     return fn;
   }
 
   void
-  jit_paren_subsref::do_initialize (void)
+  jit_paren_subsref::init_paren_scalar ()
   {
     std::vector<jit_type *> types (3);
-    types[0] = jit_typeinfo::get_matrix ();
-    types[1] = jit_typeinfo::get_scalar_ptr ();
-    types[2] = jit_typeinfo::get_index ();
+    types[0] = typeinfo.matrix;
+    types[1] = typeinfo.scalar_ptr;
+    types[2] = typeinfo.index;
 
-    jit_type *scalar = jit_typeinfo::get_scalar ();
-    paren_scalar = jit_function (module, jit_convention::external,
-                                 "octave_jit_paren_scalar", scalar, types);
-    paren_scalar.add_mapping (engine, &octave_jit_paren_scalar);
-    paren_scalar.mark_can_error ();
+    paren_scalar = new jit_function
+      (typeinfo.create_external (&octave_jit_paren_scalar,
+                                 "octave_jit_paren_scalar",
+                                 typeinfo.scalar, types));
+
+    paren_scalar->mark_can_error ();
   }
 
   // -------------------- jit_paren_subsasgn --------------------
+
+  jit_paren_subsasgn::jit_paren_subsasgn (const jit_typeinfo& ti)
+    : jit_index_operation (ti, "()subsasgn"),
+      paren_scalar (nullptr)
+  {
+  }
+
+  jit_paren_subsasgn::~jit_paren_subsasgn ()
+  {
+    delete paren_scalar;
+  }
+
   jit_function *
   jit_paren_subsasgn::generate_matrix (const signature_vec& types) const
   {
+    if (paren_scalar == nullptr)
+      panic_impossible ();
+
     std::stringstream ss;
     ss << "jit_paren_subsasgn_matrix_scalar" << (types.size () - 2);
 
-    jit_type *matrix = jit_typeinfo::get_matrix ();
-    jit_function *fn = new jit_function (module, jit_convention::internal,
-                                         ss.str (), matrix, types);
+    // FIXME: Where will this be deleted?
+    jit_function *fn = new jit_function
+      (typeinfo.create_internal (ss.str (), typeinfo.matrix, types));
+
     fn->mark_can_error ();
     llvm::BasicBlock *body = fn->new_block ();
     llvm::IRBuilder<> builder (body);
 
     llvm::Value *array = create_arg_array (builder, *fn, 1, types.size () - 1);
-    jit_type *index = jit_typeinfo::get_index ();
-    llvm::Value *nelem = llvm::ConstantInt::get (index->to_llvm (),
+    llvm::Value *nelem = llvm::ConstantInt::get (typeinfo.index_t,
                                                  types.size () - 2);
 
     llvm::Value *mat = fn->argument (builder, 0);
     llvm::Value *value = fn->argument (builder, types.size () - 1);
-    llvm::Value *ret = paren_scalar.call (builder, mat, array, nelem, value);
+    llvm::Value *ret = paren_scalar->call (builder, mat, array, nelem, value);
     fn->do_return (builder, ret);
+
     return fn;
   }
 
   void
-  jit_paren_subsasgn::do_initialize (void)
+  jit_paren_subsasgn::init_paren_scalar ()
   {
-    if (paren_scalar.valid ())
-      return;
-
-    jit_type *matrix = jit_typeinfo::get_matrix ();
     std::vector<jit_type *> types (4);
-    types[0] = matrix;
-    types[1] = jit_typeinfo::get_scalar_ptr ();
-    types[2] = jit_typeinfo::get_index ();
-    types[3] = jit_typeinfo::get_scalar ();
+    types[0] = typeinfo.matrix;
+    types[1] = typeinfo.scalar_ptr;
+    types[2] = typeinfo.index;
+    types[3] = typeinfo.scalar;
 
-    paren_scalar = jit_function (module, jit_convention::external,
-                                 "octave_jit_paren_scalar", matrix, types);
-    paren_scalar.add_mapping (engine, &octave_jit_paren_scalar_subsasgn);
-    paren_scalar.mark_can_error ();
+    paren_scalar = new jit_function
+      (typeinfo.create_external (&octave_jit_paren_scalar_subsasgn,
+                                 "octave_jit_paren_scalar",
+                                 typeinfo.matrix, types));
+
+    paren_scalar->mark_can_error ();
   }
 
+
   // -------------------- jit_typeinfo --------------------
-  void
-  jit_typeinfo::initialize (llvm::Module *m, llvm::ExecutionEngine *e)
+
+  bool jit_typeinfo::in_construction = false;
+
+  // Static method that holds the singleton instance
+  jit_typeinfo&
+  jit_typeinfo::instance (void)
   {
-    new jit_typeinfo (m, e);
+    if (in_construction)
+      // This state is typically reached when the constructor calls one
+      // of the static methods of the singleton class...
+      panic_impossible ();
+
+    static jit_typeinfo typeinfo;
+    return typeinfo;
+  }
+
+  jit_typeinfo::~jit_typeinfo ()
+  {
+    while (! id_to_type.empty ())
+      {
+        delete id_to_type.back ();
+        id_to_type.pop_back ();
+      }
+
+    delete builder_ptr;
+    delete base_jit_module;
   }
 
   // wrap function names to simplify jit_typeinfo::create_external
-#define JIT_FN(fn) engine, &fn, #fn
+#define JIT_FN(fn) &fn, #fn
 
-  jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
-    : module (m), engine (e), next_id (0),
-      builder (*new llvm::IRBuilderD (context))
+  jit_typeinfo::jit_typeinfo ()
+    : paren_subsref_fn (*this),
+      paren_subsasgn_fn (*this),
+      next_id (0),
+      grab_fn ("grab"),
+      release_fn ("release"),
+      destroy_fn ("destroy"),
+      print_fn ("print"),
+      for_init_fn ("for_init"),
+      for_check_fn ("for_check"),
+      for_index_fn ("for_index"),
+      logically_true_fn ("logically_true"),
+      make_range_fn ("make_range"),
+      end1_fn ("end1"),
+      end_fn ("end"),
+      create_undef_fn ("create_undef"),
+      base_jit_module (new jit_module ("octaveJITBaseModule")),
+      builder_ptr (new llvm::IRBuilderD (context)),
+      builder (*builder_ptr)  // FIXME: Use a pointer directly in the constructor, and get rid of this
   {
-    instance = this;
+    in_construction = true;
 
-    // FIXME: We should be registering types like in octave_value_typeinfo
-    llvm::Type *any_t = llvm::StructType::create (context, "octave_base_value");
+    // ----- Register basic JIT types -----
+
+    // FIXME: It seems that our type lattice is not really a lattice
+    //        since any and any_ptr have no common upper_bound (?!?)
+
+    // jit_types: "any"     < (nullptr)
+    //            "any_ptr" < (nullptr)
+    any_t = llvm::StructType::create (context, "octave_base_value");
     any_t = any_t->getPointerTo ();
+    any = do_register_new_type ("any", nullptr, any_t);
+    any_ptr = do_register_new_type ("any_ptr", nullptr, any_t->getPointerTo ());
 
-    llvm::Type *scalar_t = llvm::Type::getDoubleTy (context);
-    llvm::Type *bool_t = llvm::Type::getInt1Ty (context);
-    llvm::Type *string_t = llvm::Type::getInt8Ty (context);
+    // jit_types: "scalar"     < "complex" < "any"
+    //       and: "scalar_ptr" < (nullptr)
+    // FIXME: what about sing-precision floats ???
+    // FIXME: shouldn't we make scalar_ptr a sub_type of any_ptr ?
+    scalar_t = llvm::Type::getDoubleTy (context);
+    complex_t = llvm::ArrayType::get (scalar_t, 2);
+    complex = do_register_new_type ("complex", any, complex_t);
+    scalar = do_register_new_type ("scalar", complex, scalar_t);
+    scalar_ptr = do_register_new_type ("scalar_ptr", nullptr, scalar_t->getPointerTo ());
+
+    // jit_type: "bool" < "any"
+    bool_t = llvm::Type::getInt1Ty (context);
+    boolean = do_register_new_type ("bool", any, bool_t);
+
+    // jit_types: "int8", "int16", "int32", "int64" < "any"
+    ints[ 8] = do_register_new_type ("int8",  any, llvm::Type::getIntNTy (context,  8));
+    ints[16] = do_register_new_type ("int16", any, llvm::Type::getIntNTy (context, 16));
+    ints[32] = do_register_new_type ("int32", any, llvm::Type::getIntNTy (context, 32));
+    ints[64] = do_register_new_type ("int64", any, llvm::Type::getIntNTy (context, 64));
+
+    // jit_type: "string" < "any"
+    string_t = llvm::Type::getInt8Ty (context);
     string_t = string_t->getPointerTo ();
-    llvm::Type *index_t = llvm::Type::getIntNTy (context,
-                                                 sizeof(octave_idx_type) * 8);
+    string = do_register_new_type ("string", any, string_t);
 
-    llvm::StructType *range_t = llvm::StructType::create (context, "range");
-    std::vector<llvm::Type *> range_contents (4, scalar_t);
-    range_contents[3] = index_t;
-    range_t->setBody (range_contents);
+    // jit_type: "index" < "any"
+    index_t = llvm::Type::getIntNTy (context, sizeof (octave_idx_type) * 8);
+    index = do_register_new_type ("index", any, index_t);
 
-    llvm::Type *refcount_t = llvm::Type::getIntNTy (context, sizeof(int) * 8);
+    // jit_type: "range" < "any"
+    range_t = llvm::StructType::create (context, "range");
+    {
+      std::vector<llvm::Type *> range_contents (4, scalar_t);
+      range_contents[3] = index_t;
+      range_t->setBody (range_contents);
+    }
+    range = do_register_new_type ("range", any, range_t);
 
-    llvm::StructType *matrix_t = llvm::StructType::create (context, "matrix");
-    llvm::Type *matrix_contents[5];
-    matrix_contents[0] = refcount_t->getPointerTo ();
-    matrix_contents[1] = scalar_t->getPointerTo ();
-    matrix_contents[2] = index_t;
-    matrix_contents[3] = index_t->getPointerTo ();
-    matrix_contents[4] = string_t;
-    matrix_t->setBody (llvm::makeArrayRef (matrix_contents, 5));
+    // jit_type: "matrix" < "any"
+    matrix_t = llvm::StructType::create (context, "matrix");
+    {
+      llvm::Type *refcount_t = llvm::Type::getIntNTy (context, sizeof(int) * 8);    
+      llvm::Type *matrix_contents[5];
+      matrix_contents[0] = refcount_t->getPointerTo ();
+      matrix_contents[1] = scalar_t->getPointerTo ();
+      matrix_contents[2] = index_t;
+      matrix_contents[3] = index_t->getPointerTo ();
+      matrix_contents[4] = string_t;
+      matrix_t->setBody (llvm::makeArrayRef (matrix_contents, 5));
+    }
+    matrix = do_register_new_type ("matrix", any, matrix_t);
 
-    llvm::Type *complex_t = llvm::ArrayType::get (scalar_t, 2);
+    // ----- Specify calling conventions -----
 
-    // complex_ret is what is passed to C functions in order to get calling
-    // convention right
-    llvm::Type *cmplx_inner_cont[] = {scalar_t, scalar_t};
-    llvm::StructType *cmplx_inner = llvm::StructType::create (cmplx_inner_cont);
-
+    // complex_ret is what is passed to C functions
+    // in order to get calling convention right
     complex_ret = llvm::StructType::create (context, "complex_ret");
     {
+      llvm::Type *cmplx_inner_cont[] = {scalar_t, scalar_t};
+      llvm::StructType *cmplx_inner = llvm::StructType::create (cmplx_inner_cont);
       llvm::Type *contents[] = {cmplx_inner};
       complex_ret->setBody (contents);
     }
 
-    // create types
-    any = new_type ("any", 0, any_t);
-    matrix = new_type ("matrix", any, matrix_t);
-    complex = new_type ("complex", any, complex_t);
-    scalar = new_type ("scalar", complex, scalar_t);
-    scalar_ptr = new_type ("scalar_ptr", 0, scalar_t->getPointerTo ());
-    any_ptr = new_type ("any_ptr", 0, any_t->getPointerTo ());
-    range = new_type ("range", any, range_t);
-    string = new_type ("string", any, string_t);
-    boolean = new_type ("bool", any, bool_t);
-    index = new_type ("index", any, index_t);
-
-    create_int (8);
-    create_int (16);
-    create_int (32);
-    create_int (64);
-
-    casts.resize (next_id + 1);
-    identities.resize (next_id + 1);
-
-    // specify calling conventions
-    // FIXME: We should detect architecture and do something sane based on that
-    // here we assume x86 or x86_64
+    // FIXME: We should detect architecture and do something sane
+    //        based on that here we assume x86 or x86_64
     matrix->mark_sret (jit_convention::external);
     matrix->mark_pointer_arg (jit_convention::external);
 
@@ -1162,60 +1238,58 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     if (sizeof (void *) == 4)
       complex->mark_sret (jit_convention::external);
 
-    paren_subsref_fn.initialize (module, engine);
-    paren_subsasgn_fn.initialize (module, engine);
+    paren_subsref_fn.init_paren_scalar ();
+    paren_subsasgn_fn.init_paren_scalar ();
 
     // bind global variables
-    lerror_state = new llvm::GlobalVariable (*module, bool_t, false,
-                                             llvm::GlobalValue::ExternalLinkage,
-                                             0, "error_state");
-    engine->addGlobalMapping (lerror_state,
-                              reinterpret_cast<void *> (&error_state));
+    lerror_state = base_jit_module->create_global_variable (bool_t, false,
+                                                            "error_state");
+
+    base_jit_module->add_global_mapping (lerror_state, &error_state);
 
     // sig_atomic_type is going to be some sort of integer
     sig_atomic_type = llvm::Type::getIntNTy (context, sizeof(sig_atomic_t) * 8);
-    loctave_interrupt_state
-      = new llvm::GlobalVariable (*module, sig_atomic_type, false,
-                                  llvm::GlobalValue::ExternalLinkage, 0,
-                                  "octave_interrupt_state");
-    engine->addGlobalMapping (loctave_interrupt_state,
-                              reinterpret_cast<void *> (&octave_interrupt_state));
+
+    loctave_interrupt_state = base_jit_module->create_global_variable
+      (sig_atomic_type, false, "octave_interrupt_state");
+
+    base_jit_module->add_global_mapping (loctave_interrupt_state,
+                                         &octave_interrupt_state);
 
     // generic call function
     {
-      jit_type *int_t = intN (sizeof (octave_builtin::fcn) * 8);
+      jit_type *int_t = do_get_intN (sizeof (octave_builtin::fcn) * 8);
       any_call = create_external (JIT_FN (octave_jit_call), any, int_t, int_t,
                                   any_ptr, int_t);
     }
 
     // any with anything is an any op
     jit_function fn;
-    jit_type *binary_op_type = intN (sizeof (octave_value::binary_op) * 8);
+    jit_type *binary_op_type = do_get_intN (sizeof (octave_value::binary_op) * 8);
     llvm::Type *llvm_bo_type = binary_op_type->to_llvm ();
     jit_function any_binary = create_external (JIT_FN (octave_jit_binary_any_any),
                                                any, binary_op_type, any, any);
     any_binary.mark_can_error ();
-    binary_ops.resize (octave_value::num_binary_ops);
+
     for (size_t i = 0; i < octave_value::num_binary_ops; ++i)
       {
         octave_value::binary_op op = static_cast<octave_value::binary_op> (i);
         std::string op_name = octave_value::binary_op_as_string (op);
-        binary_ops[i].stash_name ("binary" + op_name);
+        binary_ops.push_back (jit_operation ("binary" + op_name));
       }
 
-    unary_ops.resize (octave_value::num_unary_ops);
     for (size_t i = 0; i < octave_value::num_unary_ops; ++i)
       {
         octave_value::unary_op op = static_cast<octave_value::unary_op> (i);
         std::string op_name = octave_value::unary_op_as_string (op);
-        unary_ops[i].stash_name ("unary" + op_name);
+        unary_ops.push_back (jit_operation ("unary" + op_name));
       }
 
     for (int op = 0; op < octave_value::num_binary_ops; ++op)
       {
         const llvm::Twine &fn_name =
           "octave_jit_binary_any_any_" + llvm::Twine (op);
- 
+
         fn = create_internal (fn_name, any, any, any);
         fn.mark_can_error ();
         llvm::BasicBlock *block = fn.new_block ();
@@ -1233,7 +1307,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     // grab matrix
     fn = create_external (JIT_FN (octave_jit_grab_matrix), matrix, matrix);
     grab_fn.add_overload (fn);
-
     grab_fn.add_overload (create_identity (scalar));
     grab_fn.add_overload (create_identity (scalar_ptr));
     grab_fn.add_overload (create_identity (any_ptr));
@@ -1244,7 +1317,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     // release any
     fn = create_external (JIT_FN (octave_jit_release_any), nullptr, any);
     release_fn.add_overload (fn);
-    release_fn.stash_name ("release");
 
     // release matrix
     fn = create_external (JIT_FN (octave_jit_release_matrix), nullptr, matrix);
@@ -1252,7 +1324,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
 
     // destroy
     destroy_fn = release_fn;
-    destroy_fn.stash_name ("destroy");
     destroy_fn.add_overload (create_identity(scalar));
     destroy_fn.add_overload (create_identity(boolean));
     destroy_fn.add_overload (create_identity(index));
@@ -1492,13 +1563,10 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     add_binary_op (boolean, octave_value::op_el_and, llvm::Instruction::And);
 
     // now for printing functions
-    print_fn.stash_name ("print");
     add_print (any, reinterpret_cast<void *> (&octave_jit_print_any));
     add_print (scalar, reinterpret_cast<void *> (&octave_jit_print_scalar));
 
     // initialize for loop
-    for_init_fn.stash_name ("for_init");
-
     fn = create_internal ("octave_jit_for_range_init", index, range);
     body = fn.new_block ();
     builder.SetInsertPoint (body);
@@ -1509,8 +1577,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     for_init_fn.add_overload (fn);
 
     // bounds check for for loop
-    for_check_fn.stash_name ("for_check");
-
     fn = create_internal ("octave_jit_for_range_check", boolean, range, index);
     body = fn.new_block ();
     builder.SetInsertPoint (body);
@@ -1524,8 +1590,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     for_check_fn.add_overload (fn);
 
     // index variabe for for loop
-    for_index_fn.stash_name ("for_index");
-
     fn = create_internal ("octave_jit_for_range_idx", scalar, range, index);
     body = fn.new_block ();
     builder.SetInsertPoint (body);
@@ -1543,15 +1607,11 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     for_index_fn.add_overload (fn);
 
     // logically true
-    logically_true_fn.stash_name ("logically_true");
-
     jit_function gripe_nantl
       = create_external (JIT_FN (octave_jit_err_nan_to_logical_conversion), nullptr);
     gripe_nantl.mark_can_error ();
-
     fn = create_internal ("octave_jit_logically_true_scalar", boolean, scalar);
     fn.mark_can_error ();
-
     body = fn.new_block ();
     builder.SetInsertPoint (body);
     {
@@ -1579,11 +1639,9 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
 
     // make_range
     // FIXME: May be benificial to implement all in LLVM
-    make_range_fn.stash_name ("make_range");
     jit_function compute_nelem
       = create_external (JIT_FN (octave_jit_compute_nelem),
                          index, scalar, scalar, scalar);
-
     fn = create_internal ("octave_jit_make_range", range, scalar, scalar, scalar);
     body = fn.new_block ();
     builder.SetInsertPoint (body);
@@ -1606,7 +1664,7 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     make_range_fn.add_overload (fn);
 
     // paren_subsref
-    jit_type *jit_int = intN (sizeof (int) * 8);
+    jit_type *jit_int = do_get_intN (sizeof (int) * 8);
     llvm::Type *int_t = jit_int->to_llvm ();
     jit_function ginvalid_index
       = create_external (JIT_FN (octave_jit_ginvalid_index), nullptr);
@@ -1675,12 +1733,9 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     paren_subsref_fn.add_overload (fn);
 
     // paren subsasgn
-    paren_subsasgn_fn.stash_name ("()subsasgn");
-
     jit_function resize_paren_subsasgn
       = create_external (JIT_FN (octave_jit_paren_subsasgn_impl), matrix, matrix,
                          index, scalar);
-
     fn = create_internal ("octave_jit_paren_subsasgn", matrix, matrix, scalar,
                           scalar);
     fn.mark_can_error ();
@@ -1751,7 +1806,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     fn.mark_can_error ();
     paren_subsasgn_fn.add_overload (fn);
 
-    end1_fn.stash_name ("end1");
     fn = create_internal ("octave_jit_end1_matrix", scalar, matrix, index, index);
     body = fn.new_block ();
     builder.SetInsertPoint (body);
@@ -1762,13 +1816,11 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     }
     end1_fn.add_overload (fn);
 
-    end_fn.stash_name ("end");
     fn = create_external (JIT_FN (octave_jit_end_matrix),scalar, matrix, index,
                           index);
     end_fn.add_overload (fn);
 
     // -------------------- create_undef --------------------
-    create_undef_fn.stash_name ("create_undef");
     fn = create_external (JIT_FN (octave_jit_create_undef), any);
     create_undef_fn.add_overload (fn);
 
@@ -1882,11 +1934,13 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     add_builtin ("mod");
     register_generic ("mod", scalar, std::vector<jit_type *> (2, scalar));
 
-    casts.resize (next_id + 1);
+    // casts.resize (next_id + 1);
     jit_function any_id = create_identity (any);
     jit_function grab_any = create_external (JIT_FN (octave_jit_grab_any),
                                              any, any);
-    jit_function release_any = get_release (any);
+
+    jit_function release_any = release_fn.overload (any);
+
     std::vector<jit_type *> args;
     args.resize (1);
 
@@ -1904,6 +1958,55 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
         casts[btype->type_id ()].add_overload (jit_function (any_id, btype,
                                                              args));
       }
+
+    base_jit_module->finalizeObject ();
+
+    in_construction = false;
+  }
+
+  // create a function with an external calling convention
+  // forces the function pointer to be specified
+  template <typename fn_ptr_type> jit_function
+  jit_typeinfo::create_external (fn_ptr_type fn,
+                                 const llvm::Twine& name,
+                                 jit_type *ret,
+                                 const std::vector<jit_type *>& args) const
+  {
+    jit_function retval (base_jit_module, jit_convention::external,
+                         name, ret, args);
+
+    base_jit_module->add_global_mapping (retval.to_llvm (), fn);
+
+    return retval;
+  }
+
+  jit_type*
+  jit_typeinfo::do_register_new_type (const std::string& name,
+                                      jit_type *parent,
+                                      llvm::Type *llvm_type,
+                                      bool skip_paren)
+  {
+    // FIXME: Currently our types do *not* form a lattice
+    assert ((name == "any") || (name == "any_ptr") ||
+            (name == "scalar_ptr") || (parent != nullptr));
+
+    jit_type *ret = new jit_type (name, parent, llvm_type, skip_paren, next_id++);
+    id_to_type.push_back (ret);
+
+    casts.push_back (jit_operation ("(" + name + ")"));
+    identities.push_back (jit_function ());
+
+    return ret;
+  }
+
+  jit_type*
+  jit_typeinfo::do_get_intN (size_t nbits) const
+  {
+    std::map<size_t, jit_type *>::const_iterator iter = ints.find (nbits);
+    if (iter != ints.end ())
+      return iter->second;
+
+    throw jit_fail_exception ("No such integer type");
   }
 
   const jit_function&
@@ -1916,22 +2019,15 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     return end_fn.overload (value->type (), idx->type (), count->type ());
   }
 
-  jit_type*
-  jit_typeinfo::new_type (const std::string& name, jit_type *parent,
-                          llvm::Type *llvm_type, bool skip_paren)
-  {
-    jit_type *ret = new jit_type (name, parent, llvm_type, skip_paren, next_id++);
-    id_to_type.push_back (ret);
-    return ret;
-  }
-
   void
   jit_typeinfo::add_print (jit_type *ty, void *fptr)
   {
     std::stringstream name;
     name << "octave_jit_print_" << ty->name ();
-    jit_function fn = create_external (engine, fptr, name.str (),
-                                       nullptr, intN (8), ty);
+
+    jit_function fn = create_external (fptr, name.str (), nullptr,
+                                       do_get_intN (8), ty);
+
     print_fn.add_overload (fn);
   }
 
@@ -1995,15 +2091,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
   }
 
   jit_function
-  jit_typeinfo::create_function (jit_convention::type cc, const llvm::Twine& name,
-                                 jit_type *ret,
-                                 const std::vector<jit_type *>& args)
-  {
-    jit_function result (module, cc, name, ret, args);
-    return result;
-  }
-
-  jit_function
   jit_typeinfo::create_identity (jit_type *type)
   {
     size_t id = type->type_id ();
@@ -2042,7 +2129,7 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
   void
   jit_typeinfo::add_builtin (const std::string& name)
   {
-    jit_type *btype = new_type (name, any, any->to_llvm (), true);
+    jit_type *btype = do_register_new_type (name, any, any_t, true);
     builtins[name] = btype;
 
     octave_builtin *ov_builtin = find_builtin (name);
@@ -2057,13 +2144,13 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
   {
     jit_type *builtin_type = builtins[name];
     size_t nargs = args.size ();
-    llvm::SmallVector<llvm::Type *, 5> llvm_args (nargs);
+    std::vector<llvm::Type*> llvm_args (nargs);
     for (size_t i = 0; i < nargs; ++i)
       llvm_args[i] = args[i]->to_llvm ();
 
-    llvm::Intrinsic::ID id = static_cast<llvm::Intrinsic::ID> (iid);
-    llvm::Function *ifun = llvm::Intrinsic::getDeclaration (module, id,
-                                                            llvm_args);
+    llvm::Function *ifun = base_jit_module->
+      get_intrinsic_declaration (iid, llvm_args);
+
     std::stringstream fn_name;
     fn_name << "octave_jit_" << name;
 
@@ -2113,16 +2200,15 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     fn.mark_can_error ();
     llvm::BasicBlock *block = fn.new_block ();
     builder.SetInsertPoint (block);
-    llvm::Type *any_t = any->to_llvm ();
     llvm::ArrayType *array_t = llvm::ArrayType::get (any_t, args.size ());
     llvm::Value *array = llvm::UndefValue::get (array_t);
     for (size_t i = 0; i < args.size (); ++i)
       {
         llvm::Value *arg = fn.argument (builder, i + 1);
-        jit_function agrab = get_grab (args[i]);
+        jit_function agrab = grab_fn.overload (args[i]);
         if (agrab.valid ())
           arg = agrab.call (builder, arg);
-        jit_function acast = cast (any, args[i]);
+        jit_function acast = do_cast (any, args[i]);
         array = builder.CreateInsertValue (array, acast.call (builder, arg), i);
       }
 
@@ -2130,7 +2216,7 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     builder.CreateStore (array, array_mem);
     array = builder.CreateBitCast (array_mem, any_t->getPointerTo ());
 
-    jit_type *jintTy = intN (sizeof (octave_builtin::fcn) * 8);
+    jit_type *jintTy = do_get_intN (sizeof (octave_builtin::fcn) * 8);
     llvm::Type *intTy = jintTy->to_llvm ();
     size_t fcn_int = reinterpret_cast<size_t> (builtin->function ());
     llvm::Value *fcn = llvm::ConstantInt::get (intTy, fcn_int);
@@ -2139,7 +2225,7 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     llvm::Value *res_llvm = llvm::ConstantInt::get (intTy, result_int);
     llvm::Value *ret = any_call.call (builder, fcn, nargin, array, res_llvm);
 
-    jit_function cast_result = cast (result, any);
+    jit_function cast_result = do_cast (result, any);
     fn.do_return (builder, cast_result.call (builder, ret));
     paren_subsref_fn.add_overload (fn);
   }
@@ -2166,9 +2252,8 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
   }
 
   llvm::Value *
-  jit_typeinfo::pack_complex (llvm::IRBuilderD& bld, llvm::Value *cplx)
+  jit_typeinfo::do_pack_complex (llvm::IRBuilderD& bld, llvm::Value *cplx) const
   {
-    llvm::Type *complex_ret = instance->complex_ret;
     llvm::Value *real = bld.CreateExtractValue (cplx, 0);
     llvm::Value *imag = bld.CreateExtractValue (cplx, 1);
     llvm::Value *ret = llvm::UndefValue::get (complex_ret);
@@ -2226,25 +2311,6 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
     return complex_imag (ret, imag);
   }
 
-  void
-  jit_typeinfo::create_int (size_t nbits)
-  {
-    std::stringstream tname;
-    tname << "int" << nbits;
-    ints[nbits] = new_type (tname.str (), any, llvm::Type::getIntNTy (context,
-                                                                      nbits));
-  }
-
-  jit_type *
-  jit_typeinfo::intN (size_t nbits) const
-  {
-    std::map<size_t, jit_type *>::const_iterator iter = ints.find (nbits);
-    if (iter != ints.end ())
-      return iter->second;
-
-    throw jit_fail_exception ("No such integer type");
-  }
-
   jit_type *
   jit_typeinfo::do_type_of (const octave_value& ov) const
   {
@@ -2259,15 +2325,15 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
       }
 
     if (ov.is_range ())
-      return get_range ();
+      return range;
 
     if (ov.is_double_type () && ! ov.iscomplex ())
       {
         if (ov.is_real_scalar ())
-          return get_scalar ();
+          return scalar;
 
         if (ov.is_matrix_type ())
-          return get_matrix ();
+          return matrix;
       }
 
     if (ov.is_complex_scalar ())
@@ -2277,10 +2343,10 @@ jit_type_join (jit_type *lhs, jit_type *rhs)
         // We don't really represent complex values, instead we represent
         // complex_or_scalar.  If the imag value is zero, we assume a scalar.
         if (cv.imag () != 0)
-          return get_complex ();
+          return complex;
       }
 
-    return get_any ();
+    return any;
   }
 
 }

@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_LLVM)
 
+#include "jit-typeinfo.h"
 #include "jit-ir.h"
 #include "pt-walk.h"
 #include "symtab.h"
@@ -38,6 +39,22 @@ class octave_value_list;
 
 namespace octave
 {
+  namespace jit
+  {
+
+#if defined (LEGACY_PASSMANAGER)
+    typedef llvm::legacy::PassManager PassManager;
+    typedef llvm::legacy::FunctionPassManager FunctionPassManager;
+#else
+    typedef llvm::PassManager PassManager;
+    typedef llvm::FunctionPassManager FunctionPassManager;
+#endif
+
+    typedef std::unique_ptr<llvm::Module> ModuleOwner;
+    typedef std::unique_ptr<llvm::ExecutionEngine> EngineOwner;
+
+  }
+
   // Convert from the parse tree (AST) to the low level Octave IR.
   class
   jit_convert : public tree_walker
@@ -242,11 +259,12 @@ namespace octave
   jit_convert_llvm : public jit_ir_walker
   {
   public:
-    llvm::Function * convert_loop (llvm::Module *module,
+    llvm::Function * convert_loop (const jit_module& module,
                                    const jit_block_list& blocks,
-                                   const std::list<jit_value *>& constants);
+                                   const std::list<jit_value *>& constants,
+                                   const std::string& llvm_function_name);
 
-    jit_function convert_function (llvm::Module *module,
+    jit_function convert_function (const jit_module& module,
                                    const jit_block_list& blocks,
                                    const std::list<jit_value *>& constants,
                                    octave_user_function& fcn,
@@ -343,59 +361,235 @@ namespace octave
     void simplify_phi (jit_phi& phi);
   };
 
+
+  class jit_module;
+
   class
   tree_jit
   {
+    // ----- Constructor/destructor (singleton pattern) -----
+
   public:
     ~tree_jit (void);
 
-    static bool execute (tree_simple_for_command& cmd,
-                         const octave_value& bounds);
-
-    static bool execute (tree_while_command& cmd);
-
-    static bool execute (octave_user_function& fcn, const octave_value_list& args,
-                         octave_value_list& retval);
-
-    llvm::ExecutionEngine * get_engine (void) const { return engine; }
-
-    llvm::Module * get_module (void) const { return module; }
-
-    void optimize (llvm::Function *fn);
   private:
     tree_jit (void);
-
     static tree_jit& instance (void);
 
-    bool initialize (void);
+    // ----- Initialization -----
 
-    bool do_execute (tree_simple_for_command& cmd, const octave_value& bounds);
+  private:
+    static bool initialized;
+    bool do_initialize (void);
+
+    // ----- Target machine ----
+
+  public:
+    static const llvm::TargetMachine* get_target_machine (void)
+    { return instance ().target_machine; }
+
+  private:
+    llvm::TargetMachine *target_machine;
+
+    // ----- Create LLVM modules and engines -----
+
+  public:
+    static jit::ModuleOwner
+    open_new_module (const std::string& module_name = generate_unique_module_name ());
+
+    static jit::EngineOwner
+    create_new_engine (jit::ModuleOwner module_owner);
+
+  private:
+    jit::ModuleOwner
+    do_open_new_module (const std::string& module_name) const;
+
+    // ----- Registering JIT modules (module+engine pairs) -----
+
+  public:
+    static void register_jit_module (jit_module* jm)
+    { instance ().do_register_jit_module (jm); }
+    static void unregister_jit_module (jit_module* jm)
+    { instance ().do_unregister_jit_module (jm); }
+  private:
+    // List of all currently registered jit modules
+    std::list<jit_module*> jm_list;
+    void do_register_jit_module (jit_module* jm);
+    void do_unregister_jit_module (jit_module* jm);
+    void do_dump_all_modules (void) const;
+
+    // ----- Symbol resolution -----
+
+  public:
+    static void* getPointerToNamedFunction (const std::string &name)
+    { return instance ().do_getPointerToNamedFunction (name); }
+    static uint64_t getSymbolAddress (const std::string &name)
+    { return instance ().do_getSymbolAddress (name); }
+
+  private:
+    void* do_getPointerToNamedFunction (const std::string &Name) const;
+    uint64_t do_getSymbolAddress (const std::string &name) const;
+
+    // ----- Generate unique identifiers -----
+
+  public:
+    static std::string generate_unique_forloop_name (void)
+    { return std::string ("jittedForLoop")
+        + std::to_string (next_forloop_number ++); }
+    // FIXME: Check that the identifier does not exist
+
+    static std::string generate_unique_function_name (void)
+    { return std::string ("jittedFunction")
+        + std::to_string (next_function_number ++); }
+    // FIXME: Check that the identifier does not exist
+
+    static std::string generate_unique_module_name (void)
+    { return std::string ("octaveJITModule")
+        + std::to_string (next_module_number ++); }
+    // FIXME: Check that the identifier does not exist
+
+  private:
+    static int next_forloop_number;
+    static int next_function_number;
+    static int next_module_number;
+
+    // ----- JIT and execute ASTs -----
+
+  public:
+    static bool execute (tree_simple_for_command& cmd,
+                         const octave_value& bounds)
+    { return instance ().do_execute (cmd, bounds); }
+
+    static bool execute (tree_while_command& cmd)
+    { return instance ().do_execute (cmd); }
+
+    static bool execute (octave_user_function& fcn,
+                         const octave_value_list& args,
+                         octave_value_list& retval)
+    { return instance ().do_execute (fcn, args, retval); }
+
+  private:
+    bool do_execute (tree_simple_for_command& cmd,
+                     const octave_value& bounds);
 
     bool do_execute (tree_while_command& cmd);
 
-    bool do_execute (octave_user_function& fcn, const octave_value_list& args,
+    bool do_execute (octave_user_function& fcn,
+                     const octave_value_list& args,
                      octave_value_list& retval);
+
+    // ----- Miscellaneous -----
 
     bool enabled (void);
 
     size_t trip_count (const octave_value& bounds) const;
 
+  };
+
+
+  class
+  jit_module
+  {
+    // TODO: Encapsulate all operations that can modify the module,
+    //       and prevent them if the module has been finalized
+
+    // TODO: Consider creating the engine at the end only?
+    //       I have read somewhere that this is more efficient (nor sure)
+
+  public:
+
+    // Create an open module and associated JIT engine
+    jit_module (const std::string& module_name
+                = tree_jit::generate_unique_module_name ());
+
+    // Delete the underlying JIT engine
+    ~jit_module ();
+
+    // Create an LLVM function in the module, with external linkage
+    llvm::Function*
+    create_llvm_function (llvm::FunctionType *ftype,
+                          const llvm::Twine &name) const;
+
+    // Create a global in the module, with external linkage
+    llvm::GlobalVariable*
+    create_global_variable (llvm::Type *type, bool is_constant,
+                            const llvm::Twine& name) const;
+
+    // Create or insert an LLVM Function declaration for an intrinsic,
+    // and return it
+    llvm::Function*
+    get_intrinsic_declaration (size_t id,
+                               std::vector<llvm::Type*> types) const;
+
+    // Underlying type of enums defined in yet-inconplete types
+    typedef unsigned llvm_gv_linkage;  // FIXME: autoconf this
+
+    // add_global_mapping tells the execution engine where a specified
+    // global value (variable or function) is
+    template <typename ptr_type>
+    void add_global_mapping (const llvm::GlobalValue* gv, ptr_type p) const
+    {
+      do_add_global_mapping (gv, reinterpret_cast<void *> (p));
+    }
+
+    // Return the address of the specified function.
+    uint64_t getFunctionAddress (const std::string &name) const;
+
+    // Optimize a function in the LLVM module
+    void optimize (llvm::Function *fn) const;
+
+    // FIXME: Once this has been called, we should not be able
+    // to change anything in the module...
+    void finalizeObject (void);
+
+  private:  
+    void do_add_global_mapping (const llvm::GlobalValue* gv, void* p) const;
+
     llvm::Module *module;
-#if defined (LEGACY_PASSMANAGER)
-    llvm::legacy::PassManager *module_pass_manager;
-    llvm::legacy::FunctionPassManager *pass_manager;
-#else
-    llvm::PassManager *module_pass_manager;
-    llvm::FunctionPassManager *pass_manager;
-#endif
     llvm::ExecutionEngine *engine;
   };
 
+
   class
-  jit_function_info
+  jit_info : public jit_module
   {
   public:
-    jit_function_info (tree_jit& tjit, octave_user_function& fcn,
+    // we use a pointer here so we don't have to include ov.h
+    typedef std::map<std::string, const octave_value *> vmap;
+
+    jit_info (tree& tee);
+
+    jit_info (tree& tee, const octave_value& for_bounds);
+
+    jit_info (tree_simple_for_command& tee, const octave_value& for_bounds);
+
+    bool execute (const vmap& extra_vars = vmap ()) const;
+
+    bool match (const vmap& extra_vars = vmap ()) const;
+
+  private:
+    typedef jit_convert::type_bound type_bound;
+    typedef jit_convert::type_bound_vector type_bound_vector;
+    typedef void (*jited_function)(octave_base_value**);
+
+    void compile (tree& tee, jit_type *for_bounds = 0);
+
+    octave_value find (const vmap& extra_vars, const std::string& vname) const;
+
+    // LLVM function associated to this jit_info object
+    std::string llvm_function_name;
+    jited_function function;
+
+    std::vector<std::pair<std::string, bool>> arguments;
+    type_bound_vector bounds;
+  };
+
+
+  class
+  jit_function_info : public jit_module
+  {
+  public:
+    jit_function_info (octave_user_function& fcn,
                        const octave_value_list& ov_args);
 
     bool execute (const octave_value_list& ov_args,
@@ -405,41 +599,11 @@ namespace octave
   private:
     typedef octave_base_value *(*jited_function)(octave_base_value**);
 
+    // LLVM function associated to this jit_info object
+    std::string llvm_function_name;
+    jited_function function;
+
     std::vector<jit_type *> argument_types;
-    jited_function function;
-  };
-
-  class
-  jit_info
-  {
-  public:
-    // we use a pointer here so we don't have to include ov.h
-    typedef std::map<std::string, const octave_value *> vmap;
-
-    jit_info (tree_jit& tjit, tree& tee);
-
-    jit_info (tree_jit& tjit, tree& tee, const octave_value& for_bounds);
-
-    ~jit_info (void);
-
-    bool execute (const vmap& extra_vars = vmap ()) const;
-
-    bool match (const vmap& extra_vars = vmap ()) const;
-  private:
-    typedef jit_convert::type_bound type_bound;
-    typedef jit_convert::type_bound_vector type_bound_vector;
-    typedef void (*jited_function)(octave_base_value**);
-
-    void compile (tree_jit& tjit, tree& tee, jit_type *for_bounds = nullptr);
-
-    octave_value find (const vmap& extra_vars, const std::string& vname) const;
-
-    llvm::ExecutionEngine *engine;
-    jited_function function;
-    llvm::Function *llvm_function;
-
-    std::vector<std::pair<std::string, bool>> arguments;
-    type_bound_vector bounds;
   };
 
 }

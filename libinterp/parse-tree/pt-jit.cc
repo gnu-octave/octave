@@ -64,7 +64,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
-#include <llvm/ExecutionEngine/JIT.h>
+// #include <llvm/ExecutionEngine/JIT.h>  // old JIT, LLVM < 3.6.0
+#include <llvm/ExecutionEngine/MCJIT.h>   // MCJIT, LLVM >= 3.0.0
+#include "llvm/ExecutionEngine/SectionMemoryManager.h"
 
 #if defined (LEGACY_PASSMANAGER)
 #  include <llvm/IR/LegacyPassManager.h>
@@ -75,9 +77,11 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_LLVM_IR_FUNCTION_H)
 #  include <llvm/IR/LLVMContext.h>
 #  include <llvm/IR/Module.h>
+#  include <llvm/IR/Intrinsics.h>
 #else
 #  include <llvm/LLVMContext.h>
 #  include <llvm/Module.h>
+#  include <llvm/Intrinsics.h>
 #endif
 
 #if defined (HAVE_LLVM_SUPPORT_IRBUILDER_H)
@@ -1306,9 +1310,10 @@ void
 
   // -------------------- jit_convert_llvm --------------------
   llvm::Function *
-  jit_convert_llvm::convert_loop (llvm::Module *module,
+  jit_convert_llvm::convert_loop (const jit_module& module,
                                   const jit_block_list& blocks,
-                                  const std::list<jit_value *>& constants)
+                                  const std::list<jit_value *>& constants,
+                                  const std::string& llvm_function_name)
   {
     converting_function = false;
 
@@ -1328,19 +1333,21 @@ void
     llvm::FunctionType *ft;
     ft = llvm::FunctionType::get (llvm::Type::getVoidTy (context),
                                   arg_type->getPointerTo (), false);
-    function = llvm::Function::Create (ft, llvm::Function::ExternalLinkage,
-                                       "foobar", module);
 
+    function = module.create_llvm_function (ft, llvm_function_name);
     try
       {
         prelude = llvm::BasicBlock::Create (context, "prelude", function);
         builder.SetInsertPoint (prelude);
 
+        // The jitted function will have only one function argument, of octave_base_value** type
         llvm::Value *arg = &*(function->arg_begin ());
+
         for (size_t i = 0; i < argument_vec.size (); ++i)
           {
             // llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);         // LLVM <= 3.6
             llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg_type, arg, i);  // LLVM >= 3.7
+
             arguments[argument_vec[i].first] = loaded_arg;
           }
 
@@ -1356,7 +1363,7 @@ void
   }
 
   jit_function
-  jit_convert_llvm::convert_function (llvm::Module *module,
+  jit_convert_llvm::convert_function (const jit_module& module,
                                       const jit_block_list& blocks,
                                       const std::list<jit_value *>& constants,
                                       octave_user_function& fcn,
@@ -1368,7 +1375,7 @@ void
     jit_return *ret = dynamic_cast<jit_return *> (final_block->back ());
     assert (ret);
 
-    creating = jit_function (module, jit_convention::internal,
+    creating = jit_function (&module, jit_convention::internal,
                              "foobar", ret->result_type (), args);
     function = creating.to_llvm ();
 
@@ -2021,111 +2028,224 @@ void
       }
   }
 
+
+  // ---------------- jit_memory_manager ------------------
+
+  // A simple memory manager for our LLVM engines,
+  // based on LLVM's Kaleidoscope example
+
+  class jit_memory_manager : public llvm::SectionMemoryManager
+  {
+    jit_memory_manager (const jit_memory_manager&) = delete;
+    void operator= (const jit_memory_manager&) = delete;
+  public:
+    jit_memory_manager () {}
+    virtual ~jit_memory_manager () {}
+
+    // The Kaleidoscope example in LLVM 3.8 indicates that
+    // getPointerToNamedFunction has to be overloaded, but actually it is
+    // getSymbolAddress that must be overloaded.
+    virtual uint64_t getSymbolAddress (const std::string &name);
+
+    // Is it still useful to overload getPointerToNamedFunction to support
+    // some older version of LLVM?  Are there others virtual functions
+    // that must be overloaded?
+    virtual void* getPointerToNamedFunction (const std::string& name, bool abort_on_failure);
+  };
+
+  void*
+  jit_memory_manager::getPointerToNamedFunction (const std::string& name,
+                                                 bool abort_on_failure)
+  {
+    // Try the standard symbol resolution first, but ask it not to abort
+    void *pfn = llvm::RTDyldMemoryManager::getPointerToNamedFunction (name, false);
+    if (pfn)
+      return pfn;
+
+    pfn = tree_jit::getPointerToNamedFunction (name);
+    if ((pfn == nullptr) && abort_on_failure)
+      llvm::report_fatal_error ("Program used external function '" + name +
+                                "' which could not be resolved!");
+    return pfn;
+  }
+
+  uint64_t
+  jit_memory_manager::getSymbolAddress (const std::string &name)
+  {
+    uint64_t addr = llvm::SectionMemoryManager::getSymbolAddress (name);
+    if (addr)
+      return addr;
+
+    addr = tree_jit::getSymbolAddress (name);
+    if (addr == 0)
+      llvm::report_fatal_error ("Program used extern function '" + name +
+                                "' which could not be resolved!");
+
+    return addr;
+  }
+
+
   // -------------------- tree_jit --------------------
 
-  tree_jit::tree_jit (void) : module (0), engine (0)
-  { }
+  bool tree_jit::initialized = false;
+
+  int tree_jit::next_forloop_number = 0;
+  int tree_jit::next_function_number = 0;
+  int tree_jit::next_module_number = 0;
+
+  tree_jit::tree_jit (void)
+    : target_machine (nullptr)
+  {
+    // target_machine will be truly initialized by tree_jit::do_initialize ()
+  }
 
   tree_jit::~tree_jit (void)
-  { }
-
-  bool
-  tree_jit::execute (tree_simple_for_command& cmd, const octave_value& bounds)
   {
-    return instance ().do_execute (cmd, bounds);
-  }
-
-  bool
-  tree_jit::execute (tree_while_command& cmd)
-  {
-    return instance ().do_execute (cmd);
-  }
-
-  bool
-  tree_jit::execute (octave_user_function& fcn, const octave_value_list& args,
-                     octave_value_list& retval)
-  {
-    return instance ().do_execute (fcn, args, retval);
+    delete target_machine;
   }
 
   tree_jit&
   tree_jit::instance (void)
   {
-    static tree_jit ret;
+    static tree_jit ret;  // singleton instance of tree_jit
+
+    if (! initialized)
+      // Try to initialize the singleton instance
+      ret.do_initialize ();
+
     return ret;
   }
 
-  bool
-  tree_jit::initialize (void)
+  jit::EngineOwner
+  tree_jit::create_new_engine (jit::ModuleOwner module_owner)
   {
-    if (engine)
-      return true;
+    std::string err;
 
-    if (! module)
+    llvm::ExecutionEngine *e = llvm::EngineBuilder (std::move (module_owner))
+      .setErrorStr (&err)
+      .setMCJITMemoryManager(llvm::make_unique<jit_memory_manager> ())
+      .create ();
+
+    // Note: in some versions of LLVM, we should call .setUseMCJIT (true) before .create () ?
+    // FIXME: autconf this
+
+    if (e == nullptr)
       {
-        llvm::InitializeNativeTarget ();
-        module = new llvm::Module ("octave", context);
+        std::cerr << "Failed to create JIT engine" << std::endl;
+        std::cerr << err << std::endl;
       }
 
-    // sometimes this fails pre main
-    engine = llvm::ExecutionEngine::createJIT (module);
+    return jit::EngineOwner (e);
+  }
 
-    if (! engine)
-      return false;
+  void
+  tree_jit::do_register_jit_module (jit_module* jm)
+  {
+    jm_list.push_back (jm);
+  }
 
-#if defined (LEGACY_PASSMANAGER)
-    module_pass_manager = new llvm::legacy::PassManager ();
-    pass_manager = new llvm::legacy::FunctionPassManager (module);
-#else
-    module_pass_manager = new llvm::PassManager ();
-    pass_manager = new llvm::FunctionPassManager (module);
-#endif
-    module_pass_manager->add (llvm::createAlwaysInlinerPass ());
+  void
+  tree_jit::do_unregister_jit_module (jit_module* jm)
+  {
+    jm_list.remove (jm);
+  }
 
-#if defined (HAVE_LLVM_DATALAYOUT)
-    pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
-#else
-    pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));
-#endif
+  void*
+  tree_jit::do_getPointerToNamedFunction (const std::string &name) const
+  {
+    std::list<jit_module*>::const_iterator it;
 
-    pass_manager->add (llvm::createCFGSimplificationPass ());
+    for (it = jm_list.begin (); it != jm_list.end (); it++)
+      {
+        uint64_t addr = (*it)->getFunctionAddress (name);
 
-#if defined (HAVE_LLVM_ANALYSIS_BASICALIASANALYSIS_H)
-    pass_manager->add (llvm::createBasicAAWrapperPass ());
-#else
-    pass_manager->add (llvm::createBasicAliasAnalysisPass ());
-#endif
+        if (addr)
+          return reinterpret_cast<void*> (addr);
+      }
 
-    pass_manager->add (llvm::createPromoteMemoryToRegisterPass ());
-    pass_manager->add (llvm::createInstructionCombiningPass ());
-    pass_manager->add (llvm::createReassociatePass ());
-    pass_manager->add (llvm::createGVNPass ());
-    pass_manager->add (llvm::createCFGSimplificationPass ());
-    pass_manager->doInitialization ();
+    return nullptr;
+  }
 
-    jit_typeinfo::initialize (module, engine);
+  uint64_t
+  tree_jit::do_getSymbolAddress(const std::string &name) const
+  {
+    std::list<jit_module*>::const_iterator it;
 
-    return true;
+    for (it = jm_list.begin (); it != jm_list.end (); it++)
+      {
+        uint64_t addr = (*it)->getFunctionAddress (name);
+
+        if (addr)
+          return addr;
+      }
+
+    return 0;
   }
 
   bool
-  tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
+  tree_jit::do_initialize (void)
+  {
+    if (initialized)
+      return true;
+
+    llvm::InitializeNativeTarget ();
+    llvm::InitializeNativeTargetAsmPrinter ();
+    llvm::InitializeNativeTargetAsmParser ();
+    // FIXME: Check that these three initializations succeed
+
+    if (target_machine == nullptr)
+      {
+        target_machine = llvm::EngineBuilder ().selectTarget ();
+        if (target_machine == nullptr)
+          return false;
+      }
+
+    return (initialized = true);
+  }
+
+  jit::ModuleOwner
+  tree_jit::open_new_module (const std::string& module_name)
+  {
+    return instance ().do_open_new_module (module_name);
+  }
+
+  jit::ModuleOwner
+  tree_jit::do_open_new_module (const std::string& module_name) const
+  {
+    if (! initialized)
+      return nullptr;
+
+    jit::ModuleOwner m (new llvm::Module (module_name, context));
+
+
+    if (m != nullptr)
+      m->setDataLayout (target_machine->createDataLayout ());
+
+    return m;
+  }
+
+  bool
+  tree_jit::do_execute (tree_simple_for_command& cmd,
+                        const octave_value& bounds)
   {
     size_t tc = trip_count (bounds);
-    if (! tc || ! initialize () || ! enabled ())
+    if (! tc || ! initialized || ! enabled ())
       return false;
 
     jit_info::vmap extra_vars;
     extra_vars["#for_bounds0"] = &bounds;
 
     jit_info *info = cmd.get_info ();
+
     if (! info || ! info->match (extra_vars))
       {
         if (tc < static_cast<size_t> (Vjit_startcnt))
           return false;
 
         delete info;
-        info = new jit_info (*this, cmd, bounds);
+
+        info = new jit_info (cmd, bounds);
+
         cmd.stash_info (info);
       }
 
@@ -2135,14 +2255,14 @@ void
   bool
   tree_jit::do_execute (tree_while_command& cmd)
   {
-    if (! initialize () || ! enabled ())
+    if (! initialized || ! enabled ())
       return false;
 
     jit_info *info = cmd.get_info ();
     if (! info || ! info->match ())
       {
         delete info;
-        info = new jit_info (*this, cmd);
+        info = new jit_info (cmd);
         cmd.stash_info (info);
       }
 
@@ -2150,17 +2270,18 @@ void
   }
 
   bool
-  tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
+  tree_jit::do_execute (octave_user_function& fcn,
+                        const octave_value_list& args,
                         octave_value_list& retval)
   {
-    if (! initialize () || ! enabled ())
+    if (! initialized || ! enabled ())
       return false;
 
     jit_function_info *info = fcn.get_info ();
     if (! info || ! info->match (args))
       {
         delete info;
-        info = new jit_function_info (*this, fcn, args);
+        info = new jit_function_info (fcn, args);
         fcn.stash_info (info);
       }
 
@@ -2190,14 +2311,132 @@ void
     return 0;
   }
 
+
+  // -------------------- jit_module --------------------
+
+  jit_module::jit_module (const std::string& module_name)
+    : module (nullptr), engine (nullptr)
+  {
+    jit::ModuleOwner module_owner = tree_jit::open_new_module (module_name);
+    // FIXME: what if this fails? exception?
+
+    // Get a pointer to the module before ownership is transfered to engine
+    module = module_owner.get ();
+
+    jit::EngineOwner engine_owner = std::move
+      (tree_jit::create_new_engine (std::move (module_owner)));
+    // FIXME: what if this fails? exception?
+
+    // TODO?: Consider creating the engine just before jitting
+
+    // We take responsibility for deleting the engine
+    engine = engine_owner.get ();
+    engine_owner.release ();
+
+    tree_jit::register_jit_module (this);
+  }
+
+  jit_module::~jit_module ()
+  {
+    tree_jit::unregister_jit_module (this);
+
+    delete engine;
+  }
+
+  // Create an LLVM function in the module, with external linkage
+  llvm::Function*
+  jit_module::create_llvm_function (llvm::FunctionType *ftype,
+                                    const llvm::Twine &name) const
+  {
+    // we mark all functinos as external linkage because this prevents
+    // llvm from getting rid of always inline functions
+
+    return llvm::Function::Create (ftype, llvm::Function::ExternalLinkage,
+                                   name, module);
+  }
+
+  // Create or insert an LLVM Function declaration for an intrinsic and return it
+  llvm::Function*
+  jit_module::get_intrinsic_declaration (size_t id,
+                                         std::vector<llvm::Type*> types) const
+  {
+    return llvm::Intrinsic::getDeclaration
+      (module, static_cast<llvm::Intrinsic::ID> (id), types);
+  }
+
+  // Create a global in the module
+  llvm::GlobalVariable*
+  jit_module::create_global_variable (llvm::Type *type, bool is_constant,
+                                      const llvm::Twine& name) const
+  {
+    return new llvm::GlobalVariable (*module, type, is_constant,
+                                     llvm::GlobalValue::ExternalLinkage,
+                                     nullptr, name);
+  }
+
   void
-  tree_jit::optimize (llvm::Function *fn)
+  jit_module::do_add_global_mapping (const llvm::GlobalValue* gv, void* p) const
+  {
+    assert (gv);
+    engine->addGlobalMapping (gv, p);
+  }
+
+  // Return the address of the specified function.
+  uint64_t
+  jit_module::getFunctionAddress (const std::string &name) const
+  {
+    return engine->getFunctionAddress (name);
+  }
+
+  void
+  jit_module::optimize (llvm::Function *fn) const
   {
     if (Vdebug_jit)
       llvm::verifyModule (*module);
 
+    // DOCUMENT-ME: Why do we need two separate pass managers?
+
+    jit::PassManager *module_pass_manager = new jit::PassManager ();
+    jit::FunctionPassManager *pass_manager = new jit::FunctionPassManager (module);
+
+    module_pass_manager->add (llvm::createAlwaysInlinerPass ());
+
+    // In 3.6, a pass was inserted in the pipeline to make the DataLayout accessible:
+    //    MyPassManager->add(new DataLayoutPass(MyTargetMachine->getDataLayout()));
+    // In 3.7, you don’t need a pass, you set the DataLayout on the Module:
+    //    MyModule->setDataLayout(MyTargetMachine->createDataLayout());
+    //
+    // FIXME: autoconf to support <= 3.6
+    //
+    // #if defined (HAVE_LLVM_DATALAYOUT)
+    //   pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
+    // #else
+    //   // For very old LLVM releases ???
+    //   pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));
+    // #endif
+
+    // DOCUMENT-ME: What does each of these passes actually do?
+
+    pass_manager->add (llvm::createCFGSimplificationPass ());
+
+#if defined (HAVE_LLVM_ANALYSIS_BASICALIASANALYSIS_H)
+    pass_manager->add (llvm::createBasicAAWrapperPass ());
+#else
+    pass_manager->add (llvm::createBasicAliasAnalysisPass ());
+#endif
+
+    pass_manager->add (llvm::createPromoteMemoryToRegisterPass ());
+    pass_manager->add (llvm::createInstructionCombiningPass ());
+    pass_manager->add (llvm::createReassociatePass ());
+    pass_manager->add (llvm::createGVNPass ());
+    pass_manager->add (llvm::createCFGSimplificationPass ());
+    pass_manager->doInitialization ();
+
     module_pass_manager->run (*module);
     pass_manager->run (*fn);
+
+    delete module_pass_manager;
+    delete pass_manager;
 
     if (Vdebug_jit)
       {
@@ -2216,11 +2455,19 @@ void
       }
   }
 
+  void
+  jit_module::finalizeObject (void)
+  {
+    engine->finalizeObject ();
+  }
+
+
   // -------------------- jit_function_info --------------------
-  jit_function_info::jit_function_info (tree_jit& tjit,
-                                        octave_user_function& fcn,
+  jit_function_info::jit_function_info (octave_user_function& fcn,
                                         const octave_value_list& ov_args)
-    : argument_types (ov_args.length ()), function (0)
+    : llvm_function_name (""),
+      function (nullptr),
+      argument_types (ov_args.length ())
   {
     size_t nargs = ov_args.length ();
     for (size_t i = 0; i < nargs; ++i)
@@ -2251,9 +2498,8 @@ void
           }
 
         jit_factory& factory = conv.get_factory ();
-        llvm::Module *module = tjit.get_module ();
         jit_convert_llvm to_llvm;
-        raw_fn = to_llvm.convert_function (module, infer.get_blocks (),
+        raw_fn = to_llvm.convert_function (*this, infer.get_blocks (),
                                            factory.constants (), fcn,
                                            argument_types);
 
@@ -2265,11 +2511,11 @@ void
             llvm::verifyFunction (*raw_fn.to_llvm ());
           }
 
-        std::string wrapper_name = fcn.name () + "_wrapper";
+        llvm_function_name = fcn.name () + "_wrapper";
         jit_type *any_t = jit_typeinfo::get_any ();
         std::vector<jit_type *> wrapper_args (1, jit_typeinfo::get_any_ptr ());
-        wrapper = jit_function (module, jit_convention::internal, wrapper_name,
-                                any_t, wrapper_args);
+        wrapper = jit_function (this, jit_convention::internal,
+                                llvm_function_name, any_t, wrapper_args);
 
         llvm::BasicBlock *wrapper_body = wrapper.new_block ();
         builder.SetInsertPoint (wrapper_body);
@@ -2304,7 +2550,7 @@ void
         wrapper.do_return (builder, result);
 
         llvm::Function *llvm_function = wrapper.to_llvm ();
-        tjit.optimize (llvm_function);
+        optimize (llvm_function);
 
         if (Vdebug_jit)
           {
@@ -2314,9 +2560,20 @@ void
             llvm::verifyFunction (*llvm_function);
           }
 
-        llvm::ExecutionEngine *engine = tjit.get_engine ();
-        void *void_fn = engine->getPointerToFunction (llvm_function);
-        function = reinterpret_cast<jited_function> (void_fn);
+        finalizeObject ();
+
+        uint64_t void_fn = getFunctionAddress (llvm_function_name);
+
+        if (void_fn == 0)
+          {
+            llvm_function->eraseFromParent ();
+            llvm_function = nullptr;
+            function = nullptr;
+          }
+        else
+          {
+            function = reinterpret_cast<jited_function> (void_fn);
+          }
       }
     catch (const jit_fail_exception& e)
       {
@@ -2378,23 +2635,27 @@ void
     return true;
   }
 
+
   // -------------------- jit_info --------------------
-  jit_info::jit_info (tree_jit& tjit, tree& tee)
-    : engine (tjit.get_engine ()), function (0), llvm_function (0)
+  jit_info::jit_info (tree& tee)
+    : llvm_function_name (tree_jit::generate_unique_function_name ()),
+      function (nullptr)
   {
-    compile (tjit, tee);
+    compile (tee);
   }
 
-  jit_info::jit_info (tree_jit& tjit, tree& tee, const octave_value& for_bounds)
-    : engine (tjit.get_engine ()), function (0), llvm_function (0)
+  jit_info::jit_info (tree& tee, const octave_value& for_bounds)
+    : llvm_function_name (tree_jit::generate_unique_function_name ()),
+      function (nullptr)
   {
-    compile (tjit, tee, jit_typeinfo::type_of (for_bounds));
+    compile (tee, jit_typeinfo::type_of (for_bounds));
   }
 
-  jit_info::~jit_info (void)
+  jit_info::jit_info (tree_simple_for_command& tee, const octave_value& for_bounds)
+    : llvm_function_name (tree_jit::generate_unique_forloop_name ()),
+      function (nullptr)
   {
-    if (llvm_function)
-      llvm_function->eraseFromParent ();
+    compile (tee, jit_typeinfo::type_of (for_bounds));
   }
 
   bool
@@ -2410,7 +2671,9 @@ void
           {
             octave_value current = find (extra_vars, arguments[i].first);
             octave_base_value *obv = current.internal_rep ();
+
             obv->grab ();
+
             real_arguments[i] = obv;
           }
       }
@@ -2454,8 +2717,10 @@ void
   }
 
   void
-  jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
+  jit_info::compile (tree& tee, jit_type *for_bounds)
   {
+    llvm::Function * llvm_function = nullptr;
+
     try
       {
         jit_convert conv (tee, for_bounds);
@@ -2475,10 +2740,13 @@ void
 
         jit_factory& factory = conv.get_factory ();
         jit_convert_llvm to_llvm;
-        llvm_function = to_llvm.convert_loop (tjit.get_module (),
-                                              infer.get_blocks (),
-                                              factory.constants ());
+
+        llvm_function = to_llvm.convert_loop (*this, infer.get_blocks (),
+                                              factory.constants (),
+                                              llvm_function_name);
+
         arguments = to_llvm.get_arguments ();
+
         bounds = conv.get_bounds ();
       }
     catch (const jit_fail_exception& e)
@@ -2502,7 +2770,7 @@ void
             llvm::verifyFunction (*llvm_function);
           }
 
-        tjit.optimize (llvm_function);
+        optimize (llvm_function);
 
         if (Vdebug_jit)
           {
@@ -2511,8 +2779,20 @@ void
             std::cout << *llvm_function << std::endl;
           }
 
-        void *void_fn = engine->getPointerToFunction (llvm_function);
-        function = reinterpret_cast<jited_function> (void_fn);
+        finalizeObject ();
+
+        uint64_t void_fn = getFunctionAddress (llvm_function_name);
+
+        if (void_fn == 0)
+          {
+            llvm_function->eraseFromParent ();
+            llvm_function = nullptr;
+            function = nullptr;
+          }
+        else
+          {
+            function = reinterpret_cast<jited_function> (void_fn);
+          }
       }
   }
 
@@ -2530,7 +2810,6 @@ void
     else
       return *iter->second;
   }
-
 }
 
 #endif

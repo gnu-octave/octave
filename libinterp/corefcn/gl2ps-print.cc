@@ -708,7 +708,7 @@ namespace octave
 
     OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
 
-    static const float maxval = std::numeric_limits<float>::max ();
+    static const float maxval = std::numeric_limits<uint8_t>::max ();
 
     for (int i = 0; i < 3*w*h; i++)
       tmp_data[i] = data[i] / maxval;
@@ -723,7 +723,7 @@ namespace octave
 
     OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
 
-    static const float maxval = std::numeric_limits<float>::max ();
+    static const float maxval = std::numeric_limits<uint16_t>::max ();
 
     for (int i = 0; i < 3*w*h; i++)
       tmp_data[i] = data[i] / maxval;

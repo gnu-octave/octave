@@ -55,6 +55,13 @@ along with Octave; see the file COPYING.  If not, see
 #  include <llvm/Analysis/Verifier.h>
 #endif
 
+#if defined (HAVE_LLVM_ANALYSIS_BASICALIASANALYSIS_H)
+// In LLVM 3.8.x and later, we use createBasicAAWrapperPass from:
+#  include <llvm/Analysis/BasicAliasAnalysis.h>
+#endif
+// In LLVM 3.7.x and earlier, we use createBasicAliasAnalysisPass
+// from llvm/Analysis/Passes.h (already included above)
+
 #include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
@@ -2080,8 +2087,15 @@ void
 #else
     pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));
 #endif
+
     pass_manager->add (llvm::createCFGSimplificationPass ());
+
+#if defined (HAVE_LLVM_ANALYSIS_BASICALIASANALYSIS_H)
+    pass_manager->add (llvm::createBasicAAWrapperPass ());
+#else
     pass_manager->add (llvm::createBasicAliasAnalysisPass ());
+#endif
+
     pass_manager->add (llvm::createPromoteMemoryToRegisterPass ());
     pass_manager->add (llvm::createInstructionCombiningPass ());
     pass_manager->add (llvm::createReassociatePass ());

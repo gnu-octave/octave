@@ -3492,7 +3492,7 @@ namespace octave
           {
             is.clear (is.rdstate () & ~std::ios::failbit);
 
-            if (! is.eof () && ~is_delim (is.peek ()))
+            if (! is.eof () && ! is_delim (is.peek ()))
               this_conversion_failed = true;
           }
 

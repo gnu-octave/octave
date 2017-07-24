@@ -1840,7 +1840,7 @@ void QWinTerminalImpl::dropEvent (QDropEvent *event)
       foreach (QUrl url, event->mimeData ()->urls ())
         {
           if(dropText.length () > 0)
-            dropText += "\n";
+            dropText += '\n';
           dropText  += url.toLocalFile ();
         }
       sendText (dropText);

@@ -3404,7 +3404,7 @@ base_graphics_object::values_as_string (void)
     }
 
   if (! retval.empty ())
-    retval += "\n";
+    retval += '\n';
 
   return retval;
 }
@@ -3431,7 +3431,7 @@ base_graphics_object::value_as_string (const std::string& prop)
     }
 
   if (! retval.empty ())
-    retval += "\n";
+    retval += '\n';
 
   return retval;
 }

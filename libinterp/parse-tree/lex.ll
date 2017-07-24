@@ -3666,7 +3666,7 @@ namespace octave
             {
               function_text += current_input_line;
               if (current_input_line.back () != '\n')
-                function_text += "\n";
+                function_text += '\n';
             }
           }
       }

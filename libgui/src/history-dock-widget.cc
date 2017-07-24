@@ -229,7 +229,7 @@ void history_dock_widget::handle_contextmenu_copy (bool)
       if ((*it).isValid ())
         {
           if (prev_valid_row)
-            text += "\n";
+            text += '\n';
           text += (*it).data ().toString ();
           prev_valid_row = true;
         }
@@ -262,7 +262,7 @@ history_dock_widget::handle_contextmenu_create_script (bool)
       if ((*it).isValid ())
         {
           if (prev_valid_row)
-            text += "\n";
+            text += '\n';
           text += (*it).data ().toString ();
           prev_valid_row = true;
         }

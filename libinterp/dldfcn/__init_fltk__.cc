@@ -2512,6 +2512,8 @@ Undocumented internal function.
   return octave_value_list ();
 
 #else
+  octave_unused_parameter (interp);
+
   err_disabled_feature ("__init_fltk__", "OpenGL and FLTK");
 #endif
 }

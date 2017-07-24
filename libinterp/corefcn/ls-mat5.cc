@@ -492,11 +492,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   octave_idx_type nzmax;
   std::string classname;
 
+  bool flt_fmt_is_big_endian
+    = (octave::mach_info::native_float_format ()
+       == octave::mach_info::flt_fmt_ieee_big_endian);
+
   // MAT files always use IEEE floating point
   octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
-  if ((octave::mach_info::native_float_format ()
-       == octave::mach_info::flt_fmt_ieee_big_endian)
-      ^ swap)
+  if ((flt_fmt_is_big_endian && ! swap) || (! flt_fmt_is_big_endian && swap))
     flt_fmt = octave::mach_info::flt_fmt_ieee_big_endian;
   else
     flt_fmt = octave::mach_info::flt_fmt_ieee_little_endian;

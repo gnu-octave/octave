@@ -565,7 +565,8 @@ namespace QtHandles
     if (! visible)
       visible = hasUiMenuChildren (properties<figure> ());
 
-    if (m_menuBar->isVisible () ^ visible)
+    if ((m_menuBar->isVisible () && ! visible)
+        || (! m_menuBar->isVisible () && visible))
       {
         int dy = qMax (h1, h2);
         QRect r = qWidget<QWidget> ()->geometry ();

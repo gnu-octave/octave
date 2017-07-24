@@ -2187,14 +2187,17 @@ void
 
     if (Vdebug_jit)
       {
-        std::string error;
-#if defined (RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS)
-        llvm::raw_fd_ostream fout ("test.bc", error,
-                                   llvm::sys::fs::F_Binary);
-#else
-        llvm::raw_fd_ostream fout ("test.bc", error,
-                                   llvm::raw_fd_ostream::F_Binary);
-#endif
+        // This should be OK in LLVM 3.6 -- 3.8 (and later ?)
+        std::error_code ec;
+        llvm::raw_fd_ostream fout ("test.bc", ec, llvm::sys::fs::F_None);
+
+        //      std::string error;
+        //#if defined (RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS)
+        //      llvm::raw_fd_ostream fout ("test.bc", error, llvm::sys::fs::F_Binary);
+        //#else
+        //      llvm::raw_fd_ostream fout ("test.bc", error, llvm::raw_fd_ostream::F_Binary);
+        //#endif
+
         llvm::WriteBitcodeToFile (module, fout);
       }
   }

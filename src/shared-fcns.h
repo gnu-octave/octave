@@ -170,6 +170,12 @@ prepend_home_dir (const std::string& hd, const std::string& s)
   return retval;
 }
 
+// prepend_octave_home is used in mkoctfile.in.cc and
+// octave-config.in.cc but not in main.in.cc.  Tagging it as unused
+// avoids warnings from GCC about an unused function but should not
+// cause trouble in the event that it actually is used.
+
+OCTAVE_UNUSED
 static std::string
 prepend_octave_home (const std::string& s)
 {

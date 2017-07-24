@@ -474,11 +474,11 @@ endfunction
 %!demo
 %! ## Colored patch
 %! clf;
-%! view (3);
 %! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! h_axes = axes ();
+%! view (3);
 %! fv = isosurface (x, y, z, val, .039, z);
 %! h_patch = patch (fv, "FaceColor", "flat", "EdgeColor", "none", ...
 %!                      "FaceLighting", "Gouraud");

@@ -3662,9 +3662,12 @@ namespace octave
 
         if (buffer_function_text)
           {
-            function_text += current_input_line;
-            if (current_input_line[current_input_line.length () - 1] != '\n')
-              function_text += "\n";
+            if (! current_input_line.empty ())
+            {
+              function_text += current_input_line;
+              if (current_input_line.back () != '\n')
+                function_text += "\n";
+            }
           }
       }
 

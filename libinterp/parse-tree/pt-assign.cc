@@ -57,10 +57,16 @@ namespace octave
   }
 
   tree_expression *
-  tree_simple_assignment::dup (symbol_table::scope&) const
+  tree_simple_assignment::dup (symbol_table::scope& scope) const
   {
-    panic_impossible ();
-    return 0;
+    tree_simple_assignment *new_sa
+      = new tree_simple_assignment (lhs ? lhs->dup (scope) : 0,
+                                    rhs ? rhs->dup (scope) : 0,
+                                    preserve, etype);
+
+    new_sa->copy_base (*this);
+
+    return new_sa;
   }
 
   // Multi-valued assignment expressions.

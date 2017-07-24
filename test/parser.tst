@@ -326,3 +326,8 @@
 ## Maybe unnecessary, but check that further changes to parser don't
 ## invalidate error handling (bug #46534).
 #!error <vertical dimensions mismatch \(1x2 vs 1x1\)> z = [1, 2; 3]
+
+%!test
+%! f = @(s,t=toeplitz(s),u=t(x=2:end-1,x)=32)t;
+%! assert (f (1), 1);
+%! assert (f (1, 2), 2);

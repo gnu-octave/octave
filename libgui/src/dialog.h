@@ -180,7 +180,7 @@ private:
   {
     // Reroute the close tab to a button click so there is only a single
     // route to waking the wait condition.
-    emit buttonClicked (0);
+    emit buttonClicked (nullptr);
   }
 };
 

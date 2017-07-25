@@ -47,7 +47,7 @@ namespace octave
 
     typedef bool (*child_event_handler) (pid_t, int);
 
-    child (pid_t id = -1, child_event_handler f = 0)
+    child (pid_t id = -1, child_event_handler f = nullptr)
       : pid (id), handler (f), have_status (0), status (0) { }
 
     child (const child& oc)
@@ -119,7 +119,7 @@ namespace octave
 
     static child_list_rep *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
   };
 }
 

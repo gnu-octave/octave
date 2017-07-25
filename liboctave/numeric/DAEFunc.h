@@ -46,10 +46,10 @@ public:
                                 double t, double cj);
 
   DAEFunc (void)
-    : fun (0), jac (0), reset (true) { }
+    : fun (nullptr), jac (nullptr), reset (true) { }
 
   DAEFunc (DAERHSFunc f)
-    : fun (f), jac (0), reset (true) { }
+    : fun (f), jac (nullptr), reset (true) { }
 
   DAEFunc (DAERHSFunc f, DAEJacFunc j)
     : fun (f), jac (j), reset (true) { }

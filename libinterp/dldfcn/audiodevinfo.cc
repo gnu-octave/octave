@@ -319,14 +319,14 @@ recording using those parameters.
           stream_parameters.suggestedLatency
             = device_info->defaultLowInputLatency;
 
-          stream_parameters.hostApiSpecificStreamInfo = 0;
+          stream_parameters.hostApiSpecificStreamInfo = nullptr;
 
           if (io == 0)
             {
               if (device_info->maxOutputChannels < chans)
                 continue;
 
-              err = Pa_IsFormatSupported (0, &stream_parameters, rate);
+              err = Pa_IsFormatSupported (nullptr, &stream_parameters, rate);
 
               if (err == paFormatIsSupported)
                 {
@@ -339,7 +339,7 @@ recording using those parameters.
               if (device_info->maxInputChannels < chans)
                 continue;
 
-              err = Pa_IsFormatSupported (&stream_parameters, 0, rate);
+              err = Pa_IsFormatSupported (&stream_parameters, nullptr, rate);
               if (err == paFormatIsSupported)
                 {
                   retval = i;
@@ -374,7 +374,7 @@ recording using those parameters.
       stream_parameters.suggestedLatency
         = device_info->defaultLowInputLatency;
 
-      stream_parameters.hostApiSpecificStreamInfo = 0;
+      stream_parameters.hostApiSpecificStreamInfo = nullptr;
       if (io == 0)
         {
           if (device_info->maxOutputChannels < chans)
@@ -382,7 +382,7 @@ recording using those parameters.
               retval = 0;
               return retval;
             }
-          err = Pa_IsFormatSupported (0, &stream_parameters, rate);
+          err = Pa_IsFormatSupported (nullptr, &stream_parameters, rate);
           if (err == paFormatIsSupported)
             {
               retval = 1;
@@ -396,7 +396,7 @@ recording using those parameters.
               retval = 0;
               return retval;
             }
-          err = Pa_IsFormatSupported (&stream_parameters, 0, rate);
+          err = Pa_IsFormatSupported (&stream_parameters, nullptr, rate);
           if (err == paFormatIsSupported)
             {
               retval = 1;
@@ -824,10 +824,10 @@ safe_audioplayer_stop (audioplayer *player)
 }
 
 audioplayer::audioplayer (void)
-  : octave_callback_function (0),
+  : octave_callback_function (nullptr),
     id (-1), fs (0), nbits (16), channels (0), sample_number (0),
     end_sample (-1), tag (""), y (), userdata (Matrix ()),
-    left (), right (), stream (0), output_parameters (), type ()
+    left (), right (), stream (nullptr), output_parameters (), type ()
 { }
 
 audioplayer::~audioplayer (void)
@@ -880,7 +880,7 @@ audioplayer::init_fn (void)
   output_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighOutputLatency : -1);
 
-  output_parameters.hostApiSpecificStreamInfo = 0;
+  output_parameters.hostApiSpecificStreamInfo = nullptr;
 }
 
 void
@@ -924,7 +924,7 @@ audioplayer::init (void)
   output_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighOutputLatency : -1);
 
-  output_parameters.hostApiSpecificStreamInfo = 0;
+  output_parameters.hostApiSpecificStreamInfo = nullptr;
 }
 
 void
@@ -1097,8 +1097,8 @@ audioplayer::playblocking (void)
   OCTAVE_LOCAL_BUFFER (uint32_t, buffer, buffer_size * 2);
 
   PaError err;
-  err = Pa_OpenStream (&stream, 0, &(output_parameters), get_fs (),
-                       buffer_size, paClipOff, 0, 0);
+  err = Pa_OpenStream (&stream, nullptr, &(output_parameters), get_fs (),
+                       buffer_size, paClipOff, nullptr, nullptr);
   if (err != paNoError)
     error ("audioplayer: unable to open audio playback stream");
 
@@ -1118,10 +1118,10 @@ audioplayer::playblocking (void)
     {
       octave_quit ();
 
-      if (octave_callback_function != 0)
-        octave_play_callback (0, buffer, buffer_size, 0, 0, this);
+      if (octave_callback_function != nullptr)
+        octave_play_callback (nullptr, buffer, buffer_size, nullptr, 0, this);
       else
-        portaudio_play_callback (0, buffer, buffer_size, 0, 0, this);
+        portaudio_play_callback (nullptr, buffer, buffer_size, nullptr, 0, this);
 
       err = Pa_WriteStream (stream, buffer, buffer_size);
     }
@@ -1136,12 +1136,12 @@ audioplayer::play (void)
   const unsigned int buffer_size = get_fs () / 20;
 
   PaError err;
-  if (octave_callback_function != 0)
-    err = Pa_OpenStream (&stream, 0, &(output_parameters),
+  if (octave_callback_function != nullptr)
+    err = Pa_OpenStream (&stream, nullptr, &(output_parameters),
                          get_fs (), buffer_size, paClipOff,
                          octave_play_callback, this);
   else
-    err = Pa_OpenStream (&stream, 0, &(output_parameters),
+    err = Pa_OpenStream (&stream, nullptr, &(output_parameters),
                          get_fs (), buffer_size, paClipOff,
                          portaudio_play_callback, this);
 
@@ -1156,7 +1156,7 @@ audioplayer::play (void)
 void
 audioplayer::pause (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return;
 
   PaError err;
@@ -1168,7 +1168,7 @@ audioplayer::pause (void)
 void
 audioplayer::resume (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return;
 
   PaError err;
@@ -1186,7 +1186,7 @@ audioplayer::get_stream (void)
 void
 audioplayer::stop (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return;
 
   PaError err;
@@ -1203,13 +1203,13 @@ audioplayer::stop (void)
   if (err != paNoError)
     error ("audioplayer: failed to close audio playback stream");
 
-  stream = 0;
+  stream = nullptr;
 }
 
 bool
 audioplayer::isplaying (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return false;
 
   PaError err;
@@ -1460,10 +1460,10 @@ safe_audiorecorder_stop (audiorecorder *recorder)
 }
 
 audiorecorder::audiorecorder (void)
-  : octave_callback_function (0),
+  : octave_callback_function (nullptr),
     id (-1), fs (44100), nbits (16), channels (2), sample_number (0),
     end_sample (-1), tag (""), y (), userdata (Matrix ()),
-    left (), right (), stream (0), input_parameters (), type ()
+    left (), right (), stream (nullptr), input_parameters (), type ()
 { }
 
 audiorecorder::~audiorecorder (void)
@@ -1516,7 +1516,7 @@ audiorecorder::init (void)
   input_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighInputLatency : -1);
 
-  input_parameters.hostApiSpecificStreamInfo = 0;
+  input_parameters.hostApiSpecificStreamInfo = nullptr;
 }
 
 void
@@ -1664,7 +1664,7 @@ audiorecorder::getplayer (void)
 bool
 audiorecorder::isrecording (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return false;
 
   PaError err;
@@ -1687,15 +1687,15 @@ audiorecorder::record (void)
   const unsigned int buffer_size = get_fs () / 20;
 
   PaError err;
-  if (octave_callback_function != 0)
+  if (octave_callback_function != nullptr)
     {
-      err = Pa_OpenStream (&stream, &(input_parameters), 0,
+      err = Pa_OpenStream (&stream, &(input_parameters), nullptr,
                            get_fs (), buffer_size, paClipOff,
                            octave_record_callback, this);
     }
   else
     {
-      err = Pa_OpenStream (&stream, &(input_parameters), 0,
+      err = Pa_OpenStream (&stream, &(input_parameters), nullptr,
                            get_fs (), buffer_size, paClipOff,
                            portaudio_record_callback, this);
     }
@@ -1720,8 +1720,8 @@ audiorecorder::recordblocking (float seconds)
   OCTAVE_LOCAL_BUFFER (uint8_t, buffer, buffer_size * 2 * 3);
 
   PaError err;
-  err = Pa_OpenStream (&stream, &(input_parameters), 0,
-                       get_fs (), buffer_size, paClipOff, 0, this);
+  err = Pa_OpenStream (&stream, &(input_parameters), nullptr,
+                       get_fs (), buffer_size, paClipOff, nullptr, this);
   if (err != paNoError)
     error ("audiorecorder: unable to open audio recording stream");
 
@@ -1741,17 +1741,17 @@ audiorecorder::recordblocking (float seconds)
 
       Pa_ReadStream (get_stream (), buffer, buffer_size);
 
-      if (octave_callback_function != 0)
-        octave_record_callback (buffer, 0, buffer_size, 0, 0, this);
+      if (octave_callback_function != nullptr)
+        octave_record_callback (buffer, nullptr, buffer_size, nullptr, 0, this);
       else
-        portaudio_record_callback (buffer, 0, buffer_size, 0, 0, this);
+        portaudio_record_callback (buffer, nullptr, buffer_size, nullptr, 0, this);
     }
 }
 
 void
 audiorecorder::pause (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return;
 
   PaError err;
@@ -1763,7 +1763,7 @@ audiorecorder::pause (void)
 void
 audiorecorder::resume (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return;
 
   PaError err;
@@ -1775,7 +1775,7 @@ audiorecorder::resume (void)
 void
 audiorecorder::stop (void)
 {
-  if (get_stream () == 0)
+  if (get_stream () == nullptr)
     return;
 
   PaError err;
@@ -1792,7 +1792,7 @@ audiorecorder::stop (void)
 
   set_sample_number (0);
   reset_end_sample ();
-  stream = 0;
+  stream = nullptr;
 }
 
 void

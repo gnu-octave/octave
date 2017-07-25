@@ -37,7 +37,7 @@ namespace QtHandles
     BaseControl (const graphics_object& go, QWidget *w);
     ~BaseControl (void);
 
-    Container * innerContainer (void) { return 0; }
+    Container * innerContainer (void) { return nullptr; }
 
     bool eventFilter (QObject *watched, QEvent *e);
 

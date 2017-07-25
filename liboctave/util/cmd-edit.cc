@@ -238,11 +238,11 @@ namespace octave
   std::string gnu_readline::completer_quote_characters = "";
 
   gnu_readline::gnu_readline ()
-    : command_editor (), previous_startup_hook (0),
-      previous_pre_input_hook (0),
-      previous_event_hook (0), completion_function (0),
-      quoting_function (0), dequoting_function (0),
-      char_is_quoted_function (0), user_accept_line_function (0)
+    : command_editor (), previous_startup_hook (nullptr),
+      previous_pre_input_hook (nullptr),
+      previous_event_hook (nullptr), completion_function (nullptr),
+      quoting_function (nullptr), dequoting_function (nullptr),
+      char_is_quoted_function (nullptr), user_accept_line_function (nullptr)
   {
     // FIXME: need interface to rl_add_defun, rl_initialize, and
     // a function to set rl_terminal_name
@@ -445,7 +445,7 @@ namespace octave
     completion_function = f;
 
     rl_attempted_completion_fcn_ptr fp
-      = (f ? gnu_readline::command_completer : 0);
+      = (f ? gnu_readline::command_completer : nullptr);
 
     ::octave_rl_set_completion_function (fp);
   }
@@ -456,7 +456,7 @@ namespace octave
     quoting_function = f;
 
     rl_quoting_fcn_ptr fp
-      = (f ? gnu_readline::command_quoter : 0);
+      = (f ? gnu_readline::command_quoter : nullptr);
 
     ::octave_rl_set_quoting_function (fp);
   }
@@ -467,7 +467,7 @@ namespace octave
     dequoting_function = f;
 
     rl_dequoting_fcn_ptr fp
-      = (f ? gnu_readline::command_dequoter : 0);
+      = (f ? gnu_readline::command_dequoter : nullptr);
 
     ::octave_rl_set_dequoting_function (fp);
   }
@@ -478,7 +478,7 @@ namespace octave
     char_is_quoted_function = f;
 
     rl_char_is_quoted_fcn_ptr fp
-      = (f ? gnu_readline::command_char_is_quoted : 0);
+      = (f ? gnu_readline::command_char_is_quoted : nullptr);
 
     ::octave_rl_set_char_is_quoted_function (fp);
   }
@@ -907,7 +907,7 @@ namespace octave
   char **
   gnu_readline::command_completer (const char *text, int, int)
   {
-    char **matches = 0;
+    char **matches = nullptr;
     matches
       = ::octave_rl_completion_matches (text, gnu_readline::command_generator);
     return matches;
@@ -1189,7 +1189,7 @@ namespace octave
   command_editor::get_input_stream (void)
   {
     return (instance_ok ())
-           ? instance->do_get_input_stream () : 0;
+           ? instance->do_get_input_stream () : nullptr;
   }
 
   void
@@ -1203,7 +1203,7 @@ namespace octave
   command_editor::get_output_stream (void)
   {
     return (instance_ok ())
-           ? instance->do_get_output_stream () : 0;
+           ? instance->do_get_output_stream () : nullptr;
   }
 
   void
@@ -1384,28 +1384,28 @@ namespace octave
   command_editor::get_quoting_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_quoting_function () : 0;
+           ? instance->do_get_quoting_function () : nullptr;
   }
 
   command_editor::dequoting_fcn
   command_editor::get_dequoting_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_dequoting_function () : 0;
+           ? instance->do_get_dequoting_function () : nullptr;
   }
 
   command_editor::char_is_quoted_fcn
   command_editor::get_char_is_quoted_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_char_is_quoted_function () : 0;
+           ? instance->do_get_char_is_quoted_function () : nullptr;
   }
 
   command_editor::user_accept_line_fcn
   command_editor::get_user_accept_line_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_user_accept_line_function () : 0;
+           ? instance->do_get_user_accept_line_function () : nullptr;
   }
 
   string_vector

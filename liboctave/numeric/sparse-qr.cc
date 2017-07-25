@@ -180,7 +180,7 @@ namespace octave
     (const SparseMatrix& a, int order)
       : count (1), nrows (a.rows ()), ncols (a.columns ())
 #if defined (HAVE_CXSPARSE)
-      , S (0), N (0)
+      , S (nullptr), N (nullptr)
 #endif
     {
 #if defined (HAVE_CXSPARSE)
@@ -950,7 +950,7 @@ namespace octave
     (const SparseComplexMatrix& a, int order)
       : count (1), nrows (a.rows ()), ncols (a.columns ())
 #if defined (HAVE_CXSPARSE)
-      , S (0), N (0)
+      , S (nullptr), N (nullptr)
 #endif
     {
 #if defined (HAVE_CXSPARSE)

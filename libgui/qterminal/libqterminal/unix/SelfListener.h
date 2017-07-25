@@ -25,7 +25,7 @@ class SelfListener : public QThread
 {
     Q_OBJECT
 public:
-    explicit SelfListener(int a, QObject *parent = 0);
+    explicit SelfListener(int a, QObject *parent = nullptr);
 
 signals:
     void recvData(const char* stdOutBuffer, int stdOutlen);

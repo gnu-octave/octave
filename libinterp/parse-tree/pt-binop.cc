@@ -53,8 +53,8 @@ namespace octave
   tree_binary_expression::dup (symbol_table::scope& scope) const
   {
     tree_binary_expression *new_be
-      = new tree_binary_expression (op_lhs ? op_lhs->dup (scope) : 0,
-                                    op_rhs ? op_rhs->dup (scope) : 0,
+      = new tree_binary_expression (op_lhs ? op_lhs->dup (scope) : nullptr,
+                                    op_rhs ? op_rhs->dup (scope) : nullptr,
                                     line (), column (), etype);
 
     new_be->copy_base (*this);
@@ -90,8 +90,8 @@ namespace octave
   tree_boolean_expression::dup (symbol_table::scope& scope) const
   {
     tree_boolean_expression *new_be
-      = new tree_boolean_expression (op_lhs ? op_lhs->dup (scope) : 0,
-                                     op_rhs ? op_rhs->dup (scope) : 0,
+      = new tree_boolean_expression (op_lhs ? op_lhs->dup (scope) : nullptr,
+                                     op_rhs ? op_rhs->dup (scope) : nullptr,
                                      line (), column (), etype);
 
     new_be->copy_base (*this);

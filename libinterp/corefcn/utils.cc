@@ -187,7 +187,7 @@ keyword_almost_match (const char * const *std, int *min_len,
 
   s2[tok_count] = beg;
   char *end;
-  while ((end = strchr (beg, ' ')) != 0)
+  while ((end = strchr (beg, ' ')) != nullptr)
     {
       *end = '\0';
       beg = end + 1;
@@ -204,7 +204,7 @@ keyword_almost_match (const char * const *std, int *min_len,
 
       s2[tok_count] = beg;
     }
-  s2[tok_count+1] = 0;
+  s2[tok_count+1] = nullptr;
 
   s2 = to_match;
 

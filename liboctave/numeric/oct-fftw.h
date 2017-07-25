@@ -73,7 +73,7 @@ namespace octave
       return instance_ok ()
         ? instance->do_create_plan (dir, rank, dims, howmany, stride,
                                     dist, in, out)
-        : 0;
+        : nullptr;
     }
 
     static void *
@@ -84,7 +84,7 @@ namespace octave
       return instance_ok ()
         ? instance->do_create_plan (rank, dims, howmany, stride, dist,
                                     in, out)
-        : 0;
+        : nullptr;
     }
 
     static FftwMethod method (void)
@@ -112,7 +112,7 @@ namespace octave
 
     static fftw_planner *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     void *
     do_create_plan (int dir, const int rank, const dim_vector& dims,
@@ -219,7 +219,7 @@ namespace octave
       return instance_ok ()
         ? instance->do_create_plan (dir, rank, dims, howmany, stride,
                                     dist, in, out)
-        : 0;
+        : nullptr;
     }
 
     static void *
@@ -230,7 +230,7 @@ namespace octave
       return instance_ok ()
         ? instance->do_create_plan (rank, dims, howmany, stride, dist,
                                     in, out)
-        : 0;
+        : nullptr;
     }
 
     static FftwMethod method (void)
@@ -258,7 +258,7 @@ namespace octave
 
     static float_fftw_planner *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     void *
     do_create_plan (int dir, const int rank, const dim_vector& dims,

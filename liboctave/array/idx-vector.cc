@@ -316,7 +316,7 @@ idx_vector::idx_scalar_rep::as_array (void)
 template <typename T>
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
   : idx_base_rep (), data (0), len (nda.numel ()), ext (0),
-    aowner (0), orig_dims (nda.dims ())
+    aowner (nullptr), orig_dims (nda.dims ())
 {
   if (len != 0)
     {
@@ -372,7 +372,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda,
 }
 
 idx_vector::idx_vector_rep::idx_vector_rep (bool b)
-  : idx_base_rep (), data (0), len (b ? 1 : 0), ext (0), aowner (0),
+  : idx_base_rep (), data (0), len (b ? 1 : 0), ext (0), aowner (nullptr),
     orig_dims (len, len)
 {
   if (len != 0)
@@ -386,7 +386,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (bool b)
 
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
                                             octave_idx_type nnz)
-  : idx_base_rep (), data (0), len (nnz), ext (0), aowner (0), orig_dims ()
+  : idx_base_rep (), data (0), len (nnz), ext (0), aowner (nullptr), orig_dims ()
 {
   if (nnz < 0)
     len = bnda.nnz ();
@@ -413,7 +413,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
 }
 
 idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
-  : idx_base_rep (), data (0), len (bnda.nnz ()), ext (0), aowner (0),
+  : idx_base_rep (), data (0), len (bnda.nnz ()), ext (0), aowner (nullptr),
     orig_dims ()
 {
   const dim_vector dv = bnda.dims ();
@@ -467,7 +467,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
 
   // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
   std::unique_ptr<idx_vector_rep> new_rep (
-    new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
+    new idx_vector_rep (nullptr, len, ext, orig_dims, DIRECT));
 
   if (ext > len*octave::math::log2 (1.0 + len))
     {
@@ -540,7 +540,7 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
 {
   // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
   std::unique_ptr<idx_vector_rep> new_rep (
-    new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
+    new idx_vector_rep (nullptr, len, ext, orig_dims, DIRECT));
 
   if (ext > len*octave::math::log2 (1.0 + len))
     {
@@ -641,7 +641,7 @@ idx_vector::idx_vector_rep::as_array (void)
 
 idx_vector::idx_mask_rep::idx_mask_rep (bool b)
   : idx_base_rep (), data (0), len (b ? 1 : 0), ext (0),
-    lsti (-1), lste (-1), aowner (0), orig_dims (len, len)
+    lsti (-1), lste (-1), aowner (nullptr), orig_dims (len, len)
 {
   if (len != 0)
     {
@@ -655,7 +655,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (bool b)
 idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
                                         octave_idx_type nnz)
   : idx_base_rep (), data (0), len (nnz), ext (bnda.numel ()),
-    lsti (-1), lste (-1), aowner (0), orig_dims ()
+    lsti (-1), lste (-1), aowner (nullptr), orig_dims ()
 {
   if (nnz < 0)
     len = bnda.nnz ();
@@ -768,7 +768,7 @@ idx_vector::idx_mask_rep::sort_idx (Array<octave_idx_type>& idx)
 const idx_vector idx_vector::colon (new idx_vector::idx_colon_rep ());
 
 idx_vector::idx_vector (const Array<bool>& bnda)
-  : rep (0)
+  : rep (nullptr)
 {
   // Convert only if it means saving at least half the memory.
   static const int factor = (2 * sizeof (octave_idx_type));
@@ -1040,7 +1040,7 @@ idx_vector::raw (void)
 
   idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
 
-  assert (r != 0);
+  assert (r != nullptr);
 
   return r->get_data ();
 }

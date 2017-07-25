@@ -117,11 +117,11 @@ public:
 
   std::istream * input_stream (void) { return &is; }
 
-  std::ostream * output_stream (void) { return 0; }
+  std::ostream * output_stream (void) { return nullptr; }
 
   off_t tell (void) { return is.tellg (); }
 
-  std::streambuf * rdbuf (void) { return is ? is.rdbuf () : 0; }
+  std::streambuf * rdbuf (void) { return is ? is.rdbuf () : nullptr; }
 
   bool bad (void) const { return is.bad (); }
 
@@ -163,13 +163,13 @@ public:
 
   bool eof (void) const { return os.eof (); }
 
-  std::istream * input_stream (void) { return 0; }
+  std::istream * input_stream (void) { return nullptr; }
 
   std::ostream * output_stream (void) { return &os; }
 
   std::string str (void) { return os.str (); }
 
-  std::streambuf * rdbuf (void) { return os ? os.rdbuf () : 0; }
+  std::streambuf * rdbuf (void) { return os ? os.rdbuf () : nullptr; }
 
   bool bad (void) const { return os.bad (); }
 

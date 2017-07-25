@@ -103,13 +103,13 @@ namespace octave
     // pointer to a valid istream, scanf(), read(), getl(), and gets()
     // will automatically work for this stream.
 
-    virtual std::istream * input_stream (void) { return 0; }
+    virtual std::istream * input_stream (void) { return nullptr; }
 
     // If the derived class provides this function and it returns a
     // pointer to a valid ostream, flush(), write(), and printf() will
     // automatically work for this stream.
 
-    virtual std::ostream * output_stream (void) { return 0; }
+    virtual std::ostream * output_stream (void) { return nullptr; }
 
     // Return TRUE if this stream is open.
 
@@ -349,7 +349,7 @@ namespace octave
 
     int file_number (void) { return rep ? rep->file_number () : -1; }
 
-    bool is_valid (void) const { return (rep != 0); }
+    bool is_valid (void) const { return (rep != nullptr); }
 
     bool ok (void) const { return rep && rep->ok (); }
 
@@ -365,12 +365,12 @@ namespace octave
 
     std::istream * input_stream (void)
     {
-      return rep ? rep->input_stream () : 0;
+      return rep ? rep->input_stream () : nullptr;
     }
 
     std::ostream * output_stream (void)
     {
-      return rep ? rep->output_stream () : 0;
+      return rep ? rep->output_stream () : nullptr;
     }
 
     void clearerr (void) { if (rep) rep->clearerr (); }

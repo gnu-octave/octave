@@ -221,7 +221,7 @@ public:
 
   llvm::Type * type_llvm (void) const
   {
-    return ty ? ty->to_llvm () : 0;
+    return ty ? ty->to_llvm () : nullptr;
   }
 
   const std::string& type_name (void) const
@@ -1395,13 +1395,13 @@ public:
 
   jit_value * result (void) const
   {
-    return argument_count () ? argument (0) : 0;
+    return argument_count () ? argument (0) : nullptr;
   }
 
   jit_type * result_type (void) const
   {
     jit_value *res = result ();
-    return res ? res->type () : 0;
+    return res ? res->type () : nullptr;
   }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const

@@ -77,7 +77,7 @@ namespace QtHandles
           return new ListBoxControl (go, new QListWidget (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget *list)

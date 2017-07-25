@@ -39,7 +39,7 @@ namespace QtHandles
     ToolBarButton (const graphics_object& go, QAction *action);
     ~ToolBarButton (void);
 
-    Container * innerContainer (void) { return 0; }
+    Container * innerContainer (void) { return nullptr; }
 
   protected:
     void update (int pId);

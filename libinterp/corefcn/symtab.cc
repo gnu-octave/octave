@@ -221,7 +221,7 @@ namespace octave
   symbol_table::dummy_symbol_record (static_cast<symbol_table::scope*> (nullptr));
 
   symbol_table::symbol_reference::symbol_reference (const symbol_record& record)
-    : m_scope (0), m_context (0),m_sym (record)
+    : m_scope (nullptr), m_context (0), m_sym (record)
   {
     m_scope = __get_current_scope__ ("symbol_reference");
   }
@@ -819,7 +819,7 @@ namespace octave
         symbol_table::scope *scope
           = __get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::xfind");
 
-        octave_user_function *current_fcn = scope ? scope->function () : 0;
+        octave_user_function *current_fcn = scope ? scope->function () : nullptr;
 
         // Local function.
 
@@ -1023,7 +1023,7 @@ namespace octave
     symbol_table::scope *scope
       = __get_current_scope__ ("symbol_table::fcn_info::fcn_info_rep::x_builtin_find");
 
-    octave_user_function *current_fcn = scope ? scope->function () : 0;
+    octave_user_function *current_fcn = scope ? scope->function () : nullptr;
 
     if (current_fcn)
       {

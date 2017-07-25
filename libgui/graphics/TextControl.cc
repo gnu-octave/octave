@@ -46,7 +46,7 @@ namespace QtHandles
           return new TextControl (go, new QLabel (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   TextControl::TextControl (const graphics_object& go, QLabel *label)

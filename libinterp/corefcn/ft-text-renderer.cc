@@ -156,14 +156,14 @@ namespace octave
       return retval;
     }
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     static FT_Face get_font (const std::string& name, const std::string& weight,
                              const std::string& angle, double size)
     {
       return (instance_ok ()
               ? instance->do_get_font (name, weight, angle, size)
-              : 0);
+              : nullptr);
     }
 
     static void font_destroyed (FT_Face face)
@@ -187,7 +187,7 @@ namespace octave
     FT_Face do_get_font (const std::string& name, const std::string& weight,
                          const std::string& angle, double size)
     {
-      FT_Face retval = 0;
+      FT_Face retval = nullptr;
 
 #if defined (HAVE_FT_REFERENCE_FACE)
       // Look first into the font cache, then use fontconfig.  If the font
@@ -236,13 +236,13 @@ namespace octave
           FcPatternAddInteger (pat, FC_SLANT, fc_angle);
           FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
 
-          if (FcConfigSubstitute (0, pat, FcMatchPattern))
+          if (FcConfigSubstitute (nullptr, pat, FcMatchPattern))
             {
               FcResult res;
               FcPattern *match;
 
               FcDefaultSubstitute (pat);
-              match = FcFontMatch (0, pat, &res);
+              match = FcFontMatch (nullptr, pat, &res);
 
               // FIXME: originally, this test also required that
               // res != FcResultNoMatch.  Is that really needed?
@@ -307,7 +307,7 @@ namespace octave
 
           cache.erase (*pkey);
           delete pkey;
-          face->generic.data = 0;
+          face->generic.data = nullptr;
         }
     }
 
@@ -423,10 +423,10 @@ namespace octave
     public:
 
       ft_font (void)
-        : text_renderer::font (), face (0) { }
+        : text_renderer::font (), face (nullptr) { }
 
       ft_font (const std::string& nm, const std::string& wt,
-               const std::string& ang, double sz, FT_Face f = 0)
+               const std::string& ang, double sz, FT_Face f = nullptr)
         : text_renderer::font (nm, wt, ang, sz), face (f)
       { }
 
@@ -520,7 +520,7 @@ namespace octave
   {
     // FIXME: take "fontunits" into account
 
-    font = ft_font (name, weight, angle, size, 0);
+    font = ft_font (name, weight, angle, size, nullptr);
   }
 
   void
@@ -904,7 +904,7 @@ namespace octave
                 if (r != 0)
                   ::warning ("ft_text_renderer: failed to decode string `%s' with "
                              "locale `%s'", str.c_str (),
-                             std::setlocale (LC_CTYPE, 0));
+                             std::setlocale (LC_CTYPE, nullptr));
                 break;
               }
           }
@@ -1321,7 +1321,7 @@ namespace octave
   }
 
   ft_text_renderer::ft_font::ft_font (const ft_font& ft)
-    : text_renderer::font (ft), face (0)
+    : text_renderer::font (ft), face (nullptr)
   {
 #if defined (HAVE_FT_REFERENCE_FACE)
     FT_Face ft_face = ft.get_face ();
@@ -1341,7 +1341,7 @@ namespace octave
         if (face)
           {
             FT_Done_Face (face);
-            face = 0;
+            face = nullptr;
           }
 
 #if defined (HAVE_FT_REFERENCE_FACE)

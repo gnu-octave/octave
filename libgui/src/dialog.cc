@@ -134,7 +134,7 @@ MessageDialog::MessageDialog (const QString& message,
                               const QString& defbutton,
                               const QStringList& role)
   : QMessageBox (QMessageBox::NoIcon, title.isEmpty () ? " " : title,
-                 message, 0, 0)
+                 message, 0, nullptr)
 {
   // Create a NonModal message.
   setWindowModality (Qt::NonModal);

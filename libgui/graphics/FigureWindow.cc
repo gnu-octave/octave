@@ -45,7 +45,7 @@ namespace QtHandles
   FigureWindow::createPopupMenu (void)
   {
     // For the time being, disable menubar/toolbar popup menu
-    return 0;
+    return nullptr;
   }
 
 }

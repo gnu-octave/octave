@@ -160,7 +160,7 @@ namespace octave
   public:
 
     tree_decl_command (const std::string& n, int l = -1, int c = -1)
-      : tree_command (l, c), cmd_name (n), init_list (0) { }
+      : tree_command (l, c), cmd_name (n), init_list (nullptr) { }
 
     tree_decl_command (const std::string& n, tree_decl_init_list *t,
                        int l = -1, int c = -1);

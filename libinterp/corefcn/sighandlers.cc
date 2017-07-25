@@ -330,7 +330,7 @@ namespace octave
 #endif
     }
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     static base_interrupt_manager *instance;
   };

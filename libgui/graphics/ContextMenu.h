@@ -44,7 +44,7 @@ namespace QtHandles
     static ContextMenu * create (const graphics_object& go);
     static void executeAt (const base_properties& props, const QPoint& pt);
 
-    Container * innerContainer (void) { return 0; }
+    Container * innerContainer (void) { return nullptr; }
 
     QWidget * menu (void);
 

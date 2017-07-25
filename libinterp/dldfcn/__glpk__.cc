@@ -171,7 +171,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   if (save_pb)
     {
       static char tmp[] = "outpb.lp";
-      if (glp_write_lp (lp, 0, tmp) != 0)
+      if (glp_write_lp (lp, nullptr, tmp) != 0)
         error ("__glpk__: unable to write problem");
     }
 

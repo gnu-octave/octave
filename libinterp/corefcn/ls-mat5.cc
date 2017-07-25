@@ -739,7 +739,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             scm = SparseComplexMatrix (nr, nc, nzmax);
             ridx = scm.ridx ();
             cidx = scm.cidx ();
-            data = 0;
+            data = nullptr;
           }
         else
           {

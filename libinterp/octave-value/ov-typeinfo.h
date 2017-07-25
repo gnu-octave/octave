@@ -204,7 +204,7 @@ protected:
       assign_ops (dim_vector (octave_value::num_assign_ops, init_tab_sz, init_tab_sz), 0),
       assignany_ops (dim_vector (octave_value::num_assign_ops, init_tab_sz), 0),
       pref_assign_conv (dim_vector (init_tab_sz, init_tab_sz), -1),
-      widening_ops (dim_vector (init_tab_sz, init_tab_sz), 0)  { }
+      widening_ops (dim_vector (init_tab_sz, init_tab_sz), nullptr)  { }
 
   // No copying!
 
@@ -220,7 +220,7 @@ private:
 
   static octave_value_typeinfo *instance;
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   int num_types;
 

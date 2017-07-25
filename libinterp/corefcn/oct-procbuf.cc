@@ -98,10 +98,10 @@ octave_procbuf::open (const char *command, int mode)
   volatile int parent_end, child_end;
 
   if (is_open ())
-    return 0;
+    return nullptr;
 
   if (octave::sys::pipe (pipe_fds) < 0)
-    return 0;
+    return nullptr;
 
   if (mode & std::ios::in)
     {
@@ -133,13 +133,13 @@ octave_procbuf::open (const char *command, int mode)
           if (fp)
             {
               std::fclose (fp);
-              fp = 0;
+              fp = nullptr;
             }
 
           octave_procbuf_list = octave_procbuf_list->next;
         }
 
-      execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (0));
+      execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (nullptr));
 
       exit (127);
     }
@@ -149,13 +149,13 @@ octave_procbuf::open (const char *command, int mode)
   if (proc_pid < 0)
     {
       octave_close_wrapper (parent_end);
-      return 0;
+      return nullptr;
     }
 
   f = (::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w"));
 
   if (mode & std::ios::out)
-    ::setvbuf (f, 0, _IOLBF, BUFSIZ);
+    ::setvbuf (f, nullptr, _IOLBF, BUFSIZ);
 
   open_p = true;
 
@@ -195,7 +195,7 @@ octave_procbuf::close (void)
       int status = -1;
 
       for (octave_procbuf **ptr = &octave_procbuf_list;
-           *ptr != 0;
+           *ptr != nullptr;
            ptr = &(*ptr)->next)
         {
           if (*ptr == this)
@@ -217,7 +217,7 @@ octave_procbuf::close (void)
           while (wait_pid == -1 && errno == EINTR);
         }
 
-      f = 0;
+      f = nullptr;
     }
 
   open_p = false;

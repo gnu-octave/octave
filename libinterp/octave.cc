@@ -283,7 +283,7 @@ namespace octave
 
   void application::interactive (bool arg)
   {
-    interpreter *interp = (instance ? instance->m_interpreter : 0);
+    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
 
     if (interp)
       interp->interactive (arg);
@@ -296,7 +296,7 @@ namespace octave
 
   bool application::interactive (void)
   {
-    interpreter *interp = (instance ? instance->m_interpreter : 0);
+    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
 
     return interp ? interp->interactive () : false;
   }
@@ -307,7 +307,7 @@ namespace octave
 
     delete m_interpreter;
 
-    instance = 0;
+    instance = nullptr;
   }
 
   bool application::interpreter_initialized (void)
@@ -337,7 +337,7 @@ namespace octave
   {
     delete m_interpreter;
 
-    m_interpreter = 0;
+    m_interpreter = nullptr;
   }
 
   void application::init (void)

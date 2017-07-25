@@ -231,7 +231,7 @@ bool KPty::open()
 #ifdef HAVE_OPENPTY
 
   char ptsn[PATH_MAX];
-  if (::openpty( &d->masterFd, &d->slaveFd, ptsn, 0, 0))
+  if (::openpty( &d->masterFd, &d->slaveFd, ptsn, nullptr, nullptr))
   {
     d->masterFd = -1;
     d->slaveFd = -1;

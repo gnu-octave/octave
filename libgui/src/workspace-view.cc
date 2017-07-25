@@ -401,7 +401,7 @@ workspace_view::handle_contextmenu_rename (void)
       bool ok = false;
 
       QString new_name
-        = inputDialog->getText (0, "Rename Variable", "New name:",
+        = inputDialog->getText (nullptr, "Rename Variable", "New name:",
                                 QLineEdit::Normal, var_name, &ok);
 
       if (ok && ! new_name.isEmpty ())
@@ -506,7 +506,7 @@ workspace_view::notice_settings (const QSettings *settings)
   _columns_shown_keys.append ("workspaceview/show_value");
   _columns_shown_keys.append ("workspaceview/show_attribute");
 
-  _sig_mapper = 0;
+  _sig_mapper = nullptr;
 }
 
 void

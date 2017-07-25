@@ -43,7 +43,7 @@ namespace QtHandles
 
     static ToolBar * create (const graphics_object& go);
 
-    Container * innerContainer (void) { return 0; }
+    Container * innerContainer (void) { return nullptr; }
 
     bool eventFilter (QObject *watched, QEvent *event);
 

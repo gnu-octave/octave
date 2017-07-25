@@ -46,10 +46,10 @@ namespace octave
   public:
 
     tree_while_command (int l = -1, int c = -1)
-      : tree_command (l, c), expr (0), list (0), lead_comm (0),
-        trail_comm (0)
+      : tree_command (l, c), expr (nullptr), list (nullptr),
+        lead_comm (nullptr), trail_comm (nullptr)
 #if defined (HAVE_LLVM)
-      , compiled (0)
+      , compiled (nullptr)
 #endif
     { }
 
@@ -57,10 +57,10 @@ namespace octave
                         comment_list *lc = nullptr,
                         comment_list *tc = nullptr,
                         int l = -1, int c = -1)
-      : tree_command (l, c), expr (e), list (0), lead_comm (lc),
-        trail_comm (tc)
+      : tree_command (l, c), expr (e), list (nullptr),
+        lead_comm (lc), trail_comm (tc)
 #if defined (HAVE_LLVM)
-      , compiled (0)
+      , compiled (nullptr)
 #endif
     { }
 
@@ -71,7 +71,7 @@ namespace octave
       : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
         trail_comm (tc)
 #if defined (HAVE_LLVM)
-      , compiled (0)
+      , compiled (nullptr)
 #endif
     { }
 
@@ -174,9 +174,9 @@ namespace octave
 
     tree_simple_for_command (int l = -1, int c = -1)
       : tree_command (l, c), parallel (false), lhs (0), expr (0),
-        maxproc (0), list (0), lead_comm (0), trail_comm (0)
+        maxproc (0), list (nullptr), lead_comm (nullptr), trail_comm (nullptr)
 #if defined (HAVE_LLVM)
-      , compiled (0)
+      , compiled (nullptr)
 #endif
     { }
 
@@ -270,8 +270,8 @@ namespace octave
   public:
 
     tree_complex_for_command (int l = -1, int c = -1)
-      : tree_command (l, c), lhs (0), expr (0), list (0), lead_comm (0),
-        trail_comm (0) { }
+      : tree_command (l, c), lhs (nullptr), expr (nullptr), list (nullptr),
+        lead_comm (nullptr), trail_comm (nullptr) { }
 
     tree_complex_for_command (tree_argument_list *le, tree_expression *re,
                               tree_statement_list *lst,

@@ -42,8 +42,9 @@ namespace octave
   public:
 
     tree_try_catch_command (int l = -1, int c = -1)
-      : tree_command (l, c), try_code (0), catch_code (0), expr_id (0),
-        lead_comm (0), mid_comm (0), trail_comm (0) { }
+      : tree_command (l, c),
+        try_code (nullptr), catch_code (nullptr), expr_id (nullptr),
+        lead_comm (nullptr), mid_comm (nullptr), trail_comm (nullptr) { }
 
     tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
                             tree_identifier *id,
@@ -107,8 +108,9 @@ namespace octave
   public:
 
     tree_unwind_protect_command (int l = -1, int c = -1)
-      : tree_command (l, c), unwind_protect_code (0), cleanup_code (0),
-        lead_comm (0), mid_comm (0), trail_comm (0) { }
+      : tree_command (l, c),
+        unwind_protect_code (nullptr), cleanup_code (nullptr),
+        lead_comm (nullptr), mid_comm (nullptr), trail_comm (nullptr) { }
 
     tree_unwind_protect_command (tree_statement_list *tc,
                                  tree_statement_list *cc,

@@ -44,7 +44,7 @@ namespace octave
       // will allocate a buffer as large as necessary if buf and size are
       // both 0.
 
-      char *tmp = octave_getcwd_wrapper (0, 0);
+      char *tmp = octave_getcwd_wrapper (nullptr, 0);
 
       if (! tmp)
         (*current_liboctave_error_handler) ("unable to find current directory");

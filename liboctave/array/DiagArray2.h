@@ -156,7 +156,7 @@ public:
   }
 
   DiagArray2<T> transpose (void) const;
-  DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;
+  DiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const;
 
   Array<T> array_value (void) const;
 

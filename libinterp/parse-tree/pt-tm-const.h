@@ -119,7 +119,7 @@ namespace octave
     typedef tm_row_const_rep::const_iterator const_iterator;
 
     tm_row_const (void)
-      : rep (0) { }
+      : rep (nullptr) { }
 
     tm_row_const (const tree_argument_list& row, tree_evaluator *tw)
       : rep (new tm_row_const_rep (row, tw)) { }
@@ -197,7 +197,7 @@ namespace octave
   {
   public:
 
-    tm_const (const tree_matrix& tm, tree_evaluator *tw = 0)
+    tm_const (const tree_matrix& tm, tree_evaluator *tw = nullptr)
       : dv (0, 0), all_str (false), all_sq_str (false),
         all_dq_str (false),
         some_str (false), all_real (false), all_cmplx (false),

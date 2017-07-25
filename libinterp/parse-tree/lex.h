@@ -214,33 +214,33 @@ namespace octave
       // Direct access.
       token * at (size_t n)
       {
-        return empty () ? 0 : buffer.at (n);
+        return empty () ? nullptr : buffer.at (n);
       }
 
       const token * at (size_t n) const
       {
-        return empty () ? 0 : buffer.at (n);
+        return empty () ? nullptr : buffer.at (n);
       }
 
       // Most recently pushed.
       token * front (void)
       {
-        return empty () ? 0 : buffer.front ();
+        return empty () ? nullptr : buffer.front ();
       }
 
       const token * front (void) const
       {
-        return empty () ? 0 : buffer.front ();
+        return empty () ? nullptr : buffer.front ();
       }
 
       token * back (void)
       {
-        return empty () ? 0 : buffer.back ();
+        return empty () ? nullptr : buffer.back ();
       }
 
       const token * back (void) const
       {
-        return empty () ? 0 : buffer.back ();
+        return empty () ? nullptr : buffer.back ();
       }
 
       // Number of elements currently in the buffer.
@@ -493,7 +493,7 @@ namespace octave
     public:
 
       input_buffer (void)
-        : buffer (), pos (0), chars_left (0), eof (false)
+        : buffer (), pos (nullptr), chars_left (0), eof (false)
       { }
 
       void fill (const std::string& input, bool eof_arg);
@@ -520,7 +520,7 @@ namespace octave
     {
     public:
 
-      comment_buffer (void) : m_comment_list (0) { }
+      comment_buffer (void) : m_comment_list (nullptr) { }
 
       ~comment_buffer (void) { delete m_comment_list; }
 
@@ -538,7 +538,7 @@ namespace octave
       {
         comment_list *retval = m_comment_list;
 
-        m_comment_list = 0;
+        m_comment_list = nullptr;
 
         return retval;
       }
@@ -547,7 +547,7 @@ namespace octave
       {
         delete m_comment_list;
 
-        m_comment_list = 0;
+        m_comment_list = nullptr;
       }
 
     private:
@@ -556,7 +556,7 @@ namespace octave
     };
 
     base_lexer (interpreter *interp = nullptr)
-      : lexical_feedback (), scanner (0), input_buf (), comment_buf (),
+      : lexical_feedback (), scanner (nullptr), input_buf (), comment_buf (),
         m_interpreter (interp)
     {
       init ();

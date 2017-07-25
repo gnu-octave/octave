@@ -64,7 +64,7 @@ nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
 Array<FloatComplex>::compare_fcn_type
 safe_comparator (sortmode mode, const Array<FloatComplex>& a, bool allow_chk)
 {
-  Array<FloatComplex>::compare_fcn_type result = 0;
+  Array<FloatComplex>::compare_fcn_type result = nullptr;
 
   if (allow_chk)
     {

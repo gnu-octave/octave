@@ -75,7 +75,7 @@ char *
 strsave (const char *s)
 {
   if (! s)
-    return 0;
+    return nullptr;
 
   int len = strlen (s);
   char *tmp = new char [len+1];
@@ -165,7 +165,7 @@ octave_fgets (FILE *f, bool& eof)
 
               free (buf);
 
-              buf = 0;
+              buf = nullptr;
             }
 
           break;

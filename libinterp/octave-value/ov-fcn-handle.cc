@@ -739,7 +739,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
   hdims[0] = 0;
   hdims[1] = 0;
-  space_hid = H5Screate_simple (0 , hdims, 0);
+  space_hid = H5Screate_simple (0 , hdims, nullptr);
   if (space_hid < 0)
     {
       H5Tclose (type_hid);
@@ -871,7 +871,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Sclose (space_hid);
       hdims[0] = 1;
       hdims[1] = octaveroot.length ();
-      space_hid = H5Screate_simple (0 , hdims, 0);
+      space_hid = H5Screate_simple (0 , hdims, nullptr);
       if (space_hid < 0)
         {
           H5Tclose (type_hid);
@@ -907,7 +907,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Sclose (space_hid);
       hdims[0] = 1;
       hdims[1] = fpath.length ();
-      space_hid = H5Screate_simple (0 , hdims, 0);
+      space_hid = H5Screate_simple (0 , hdims, nullptr);
       if (space_hid < 0)
         {
           H5Tclose (type_hid);
@@ -1123,10 +1123,10 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // reporting function:
 #if defined (HAVE_HDF5_18)
       H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+      H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
 #else
       H5Eget_auto (&err_func, &err_func_data);
-      H5Eset_auto (0, 0);
+      H5Eset_auto (0, nullptr);
 #endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "SYMBOL_TABLE");
@@ -1239,10 +1239,10 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // reporting function:
 #if defined (HAVE_HDF5_18)
       H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+      H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
 #else
       H5Eget_auto (&err_func, &err_func_data);
-      H5Eset_auto (0, 0);
+      H5Eset_auto (0, nullptr);
 #endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "OCTAVEROOT");
@@ -1632,7 +1632,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 
       // Globally visible (or no match yet).  Query overloads.
       std::list<std::string> classes = lp.overloads (tnm);
-      bool any_match = fptr != 0 || classes.size () > 0;
+      bool any_match = fptr != nullptr || classes.size () > 0;
       if (! any_match)
         {
           // No match found, try updating load_path and query classes again.
@@ -1758,7 +1758,7 @@ particular output format.
 
   octave_fcn_handle *fh = args(0).fcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
 
-  octave_function *fcn = (fh ? fh->function_value () : 0);
+  octave_function *fcn = (fh ? fh->function_value () : nullptr);
 
   if (! fcn)
     error ("functions: FCN_HANDLE is not a valid function handle object");
@@ -1972,7 +1972,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
   octave_fcn_handle *retval = nullptr;
 
   octave_user_function *usr_fcn = f.user_function_value (false);
-  octave::tree_parameter_list *param_list = (usr_fcn ? usr_fcn->parameter_list () : 0);
+  octave::tree_parameter_list *param_list = (usr_fcn ? usr_fcn->parameter_list ()
+                                                     : nullptr);
 
   octave::tree_statement_list *cmd_list = nullptr;
   octave::tree_expression *body_expr = nullptr;
@@ -1984,7 +1985,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
         {
           // Verify that body is a single expression (always true in theory).
           body_expr = (cmd_list->length () == 1
-                       ? cmd_list->front ()->expression () : 0);
+                       ? cmd_list->front ()->expression () : nullptr);
         }
     }
 
@@ -2017,7 +2018,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
               for (auto& param_p : *param_list)
                 {
                   octave::tree_decl_elt *elt = param_p;
-                  octave::tree_identifier *id = (elt ? elt->ident () : 0);
+                  octave::tree_identifier *id = (elt ? elt->ident () : nullptr);
                   if (id && ! id->is_black_hole ())
                     arginmap[id->name ()] = npar;
                 }

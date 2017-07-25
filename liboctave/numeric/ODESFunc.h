@@ -50,13 +50,13 @@ public:
                                const ColumnVector& theta);
 
   ODESFunc (void)
-    : fsub (0), bsub (0), jsub (0) { }
+    : fsub (nullptr), bsub (nullptr), jsub (nullptr) { }
 
   ODESFunc (ODES_fsub f)
-    : fsub (f), bsub (0), jsub (0) { }
+    : fsub (f), bsub (nullptr), jsub (nullptr) { }
 
   ODESFunc (ODES_fsub f, ODES_bsub b)
-    : fsub (f), bsub (b), jsub (0) { }
+    : fsub (f), bsub (b), jsub (nullptr) { }
 
   ODESFunc (ODES_fsub f, ODES_bsub b, ODES_jsub j)
     : fsub (f), bsub (b), jsub (j) { }

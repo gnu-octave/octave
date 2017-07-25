@@ -286,7 +286,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   else
     {
       // Order the columns (destroys A)
-      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, 0))
+      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, nullptr))
         {
           CCOLAMD_NAME (_report) (stats);
 
@@ -529,7 +529,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
       if (! CSYMAMD_NAME () (n_col,
                              octave::to_suitesparse_intptr (ridx),
                              octave::to_suitesparse_intptr (cidx),
-                             perm, knobs, stats, &calloc, &free, 0, -1))
+                             perm, knobs, stats, &calloc, &free, nullptr, -1))
         {
           CSYMAMD_NAME (_report)(stats);
 

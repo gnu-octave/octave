@@ -287,7 +287,7 @@ edit_history_readline (std::fstream& stream)
   if (! lindex)
     {
       delete [] line;
-      return 0;
+      return nullptr;
     }
 
   if (lindex + 2 >= line_len)
@@ -475,7 +475,7 @@ do_edit_history (octave::interpreter& interp, const octave_value_list& args)
 
   char *line;
   //int first = 1;
-  while ((line = edit_history_readline (file)) != 0)
+  while ((line = edit_history_readline (file)) != nullptr)
     {
       // Skip blank lines.
 

@@ -84,7 +84,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open () const { return (file != 0); }
+  is_open () const { return (file != nullptr); }
 
   /**
    *  @brief  Open gzipped file.

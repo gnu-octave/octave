@@ -38,7 +38,7 @@ namespace QtHandles
 {
 
   Container::Container (QWidget *xparent)
-    : ContainerBase (xparent), m_canvas (0)
+    : ContainerBase (xparent), m_canvas (nullptr)
   {
     setFocusPolicy (Qt::ClickFocus);
   }

@@ -1690,7 +1690,7 @@ This is a private internal function not intended for direct use.
       error ("Magick++ exception: %s", e.what ());
     }
 
-  static const char *fields[] = {"rows", "columns", "format", 0};
+  static const char *fields[] = {"rows", "columns", "format", nullptr};
   octave_scalar_map ping = octave_scalar_map (string_vector (fields));
   ping.setfield ("rows",    octave_value (img.rows ()));
   ping.setfield ("columns", octave_value (img.columns ()));
@@ -1967,7 +1967,7 @@ Use @code{imfinfo} instead.
     //  backgroundColor() -> BackgroundColor
     //  interlaceType()   -> Interlaced, InterlaceType, and PlanarConfiguration
     //  label()           -> Title
-    0
+    nullptr
   };
 
   // The one we will return at the end
@@ -2105,7 +2105,7 @@ Use @code{imfinfo} instead.
           "Software",
           "Artist",
           "Copyright",
-          0,
+          nullptr,
         };
         static const string_vector base_exif_str (base_exif_str_fields);
         static const octave_idx_type n_base_exif_str = base_exif_str.numel ();
@@ -2144,7 +2144,7 @@ Use @code{imfinfo} instead.
               // be strings.  Even if they're not GM returns a string anyway.
               "UserComment",
               "MakerComment",
-              0
+              nullptr
             };
             static const string_vector exif_str (exif_str_fields);
             static const octave_idx_type n_exif_str = exif_str.numel ();
@@ -2188,7 +2188,7 @@ Use @code{imfinfo} instead.
               "Saturation",
               "Sharpness",
               "SubjectDistanceRange",
-              0
+              nullptr
             };
             static const string_vector exif_int (exif_int_fields);
             static const octave_idx_type n_exif_int = exif_int.numel ();
@@ -2216,7 +2216,7 @@ Use @code{imfinfo} instead.
               "DigitalZoomRatio",
               // Listed as RATIONAL or SRATIONAL with more than 1 count.
               "LensSpecification",
-              0
+              nullptr
             };
             static const string_vector exif_float (exif_float_fields);
             static const octave_idx_type n_exif_float = exif_float.numel ();
@@ -2249,7 +2249,7 @@ Use @code{imfinfo} instead.
                   "GPSDestBearingRef",
                   "GPSDestDistanceRef",
                   "GPSDateStamp",
-                  0
+                  nullptr
                 };
                 static const string_vector gps_str (gps_str_fields);
                 static const octave_idx_type n_gps_str = gps_str.numel ();
@@ -2259,7 +2259,7 @@ Use @code{imfinfo} instead.
                 static const char *gps_int_fields[] =
                 {
                   "GPSDifferential",
-                  0
+                  nullptr
                 };
                 static const string_vector gps_int (gps_int_fields);
                 static const octave_idx_type n_gps_int = gps_int.numel ();
@@ -2282,7 +2282,7 @@ Use @code{imfinfo} instead.
                   "GPSTimeStamp",
                   "GPSDestLatitude",
                   "GPSDestLongitude",
-                  0
+                  nullptr
                 };
                 static const string_vector gps_float (gps_float_fields);
                 static const octave_idx_type n_gps_float = gps_float.numel ();

@@ -44,7 +44,7 @@ namespace octave
   // Index expressions.
 
   tree_index_expression::tree_index_expression (int l, int c)
-    : tree_expression (l, c), expr (0), args (0), type (),
+    : tree_expression (l, c), expr (nullptr), args (0), type (),
       arg_nm (), dyn_field () { }
 
   tree_index_expression::tree_index_expression (tree_expression *e,
@@ -80,7 +80,7 @@ namespace octave
     args.push_back (lst);
     type.append (1, t);
     arg_nm.push_back (lst ? lst->get_arg_names () : string_vector ());
-    dyn_field.push_back (static_cast<tree_expression *> (0));
+    dyn_field.push_back (static_cast<tree_expression *> (nullptr));
 
     if (lst && lst->has_magic_tilde ())
       error ("invalid use of empty argument (~) in index expression");
@@ -89,16 +89,16 @@ namespace octave
   void
   tree_index_expression::append (const std::string& n)
   {
-    args.push_back (static_cast<tree_argument_list *> (0));
+    args.push_back (static_cast<tree_argument_list *> (nullptr));
     type.append (".");
     arg_nm.push_back (n);
-    dyn_field.push_back (static_cast<tree_expression *> (0));
+    dyn_field.push_back (static_cast<tree_expression *> (nullptr));
   }
 
   void
   tree_index_expression::append (tree_expression *df)
   {
-    args.push_back (static_cast<tree_argument_list *> (0));
+    args.push_back (static_cast<tree_argument_list *> (nullptr));
     type.append (".");
     arg_nm.push_back ("");
     dyn_field.push_back (df);
@@ -391,12 +391,12 @@ namespace octave
     tree_index_expression *new_idx_expr
       = new tree_index_expression (line (), column ());
 
-    new_idx_expr->expr = (expr ? expr->dup (scope) : 0);
+    new_idx_expr->expr = (expr ? expr->dup (scope) : nullptr);
 
     std::list<tree_argument_list *> new_args;
 
     for (const tree_argument_list *elt : args)
-      new_args.push_back (elt ? elt->dup (scope) : 0);
+      new_args.push_back (elt ? elt->dup (scope) : nullptr);
 
     new_idx_expr->args = new_args;
 
@@ -407,7 +407,7 @@ namespace octave
     std::list<tree_expression *> new_dyn_field;
 
     for (const tree_expression *elt : dyn_field)
-      new_dyn_field.push_back (elt ? elt->dup (scope) : 0);
+      new_dyn_field.push_back (elt ? elt->dup (scope) : nullptr);
 
     new_idx_expr->dyn_field = new_dyn_field;
 

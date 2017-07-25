@@ -275,7 +275,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   octave_base_value *obvp = find_parent_class (method_class);
 
-  if (obvp == 0)
+  if (obvp == nullptr)
     error ("malformed class");
 
   octave_map my_map = (obvp != this) ? obvp->map_value () : map;
@@ -1418,7 +1418,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     goto error_cleanup;
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, 0);
+  space_hid = H5Screate_simple (0 , hdims, nullptr);
   if (space_hid < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)

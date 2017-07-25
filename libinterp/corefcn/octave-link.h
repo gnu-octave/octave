@@ -163,7 +163,7 @@ public:
                    const std::string& btn3, const std::string& btndef)
   {
     return enabled () ? instance->do_question_dialog (msg, title, btn1,
-                                                      btn2, btn3, btndef) : 0;
+                                                      btn2, btn3, btndef) : "";
   }
 
   static std::pair<std::list<int>, int>
@@ -316,13 +316,13 @@ public:
     if (delete_instance)
       {
         delete instance;
-        instance = 0;
-        return 0;
+        instance = nullptr;
+        return nullptr;
       }
     else
       {
         octave_link *retval = instance;
-        instance = 0;
+        instance = nullptr;
         return retval;
       }
   }
@@ -392,7 +392,7 @@ private:
 
   static octave_link *instance;
 
-  static bool instance_ok (void) { return instance != 0; }
+  static bool instance_ok (void) { return instance != nullptr; }
 
 protected:
 

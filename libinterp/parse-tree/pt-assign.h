@@ -49,8 +49,8 @@ namespace octave
 
     tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
                             octave_value::assign_op t = octave_value::op_asn_eq)
-      : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), ans_ass (),
-        etype (t) { }
+      : tree_expression (l, c), lhs (nullptr), rhs (nullptr), preserve (plhs),
+        ans_ass (), etype (t) { }
 
     tree_simple_assignment (tree_expression *le, tree_expression *re,
                             bool plhs = false, int l = -1, int c = -1,
@@ -115,7 +115,8 @@ namespace octave
   public:
 
     tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
-      : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs) { }
+      : tree_expression (l, c), lhs (nullptr), rhs (nullptr), preserve (plhs)
+      { }
 
     tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
                            bool plhs = false, int l = -1, int c = -1);

@@ -63,10 +63,10 @@ namespace octave
   // Note that it is profitable to store the FFTW3 plans, for small FFTs.
 
   fftw_planner::fftw_planner (void)
-    : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),
+    : meth (ESTIMATE), rplan (nullptr), rd (0), rs (0), rr (0), rh (0), rn (),
       rsimd_align (false), nthreads (1)
   {
-    plan[0] = plan[1] = 0;
+    plan[0] = plan[1] = nullptr;
     d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
     simd_align[0] = simd_align[1] = false;
     inplace[0] = inplace[1] = false;
@@ -133,7 +133,7 @@ namespace octave
         instance->nthreads = nt;
         fftw_plan_with_nthreads (nt);
         // Clear the current plans.
-        instance->rplan = instance->plan[0] = instance->plan[1] = 0;
+        instance->rplan = instance->plan[0] = instance->plan[1] = nullptr;
       }
 #else
     (*current_liboctave_warning_handler)
@@ -162,7 +162,7 @@ namespace octave
     // can do SIMD.  This prevents endlessly recreating plans if we
     // change the alignment.
 
-    if (plan[which] == 0 || d[which] != dist || s[which] != stride
+    if (plan[which] == nullptr || d[which] != dist || s[which] != stride
         || r[which] != rank || h[which] != howmany
         || ioinplace != inplace[which]
         || ((ioalign != simd_align[which]) ? ! ioalign : false))
@@ -248,21 +248,21 @@ namespace octave
             *cur_plan_p =
               fftw_plan_many_dft (rank, tmp, howmany,
                                   reinterpret_cast<fftw_complex *> (itmp),
-                                  0, stride, dist,
+                                  nullptr, stride, dist,
                                   reinterpret_cast<fftw_complex *> (out),
-                                  0, stride, dist, dir, plan_flags);
+                                  nullptr, stride, dist, dir, plan_flags);
           }
         else
           {
             *cur_plan_p =
               fftw_plan_many_dft (rank, tmp, howmany,
                                   reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
-                                  0, stride, dist,
+                                  nullptr, stride, dist,
                                   reinterpret_cast<fftw_complex *> (out),
-                                  0, stride, dist, dir, plan_flags);
+                                  nullptr, stride, dist, dir, plan_flags);
           }
 
-        if (*cur_plan_p == 0)
+        if (*cur_plan_p == nullptr)
           (*current_liboctave_error_handler) ("Error creating fftw plan");
       }
 
@@ -284,7 +284,7 @@ namespace octave
     // can do SIMD.  This prevents endlessly recreating plans if we
     // change the alignment.
 
-    if (rplan == 0 || rd != dist || rs != stride || rr != rank
+    if (rplan == nullptr || rd != dist || rs != stride || rr != rank
         || rh != howmany || ((ioalign != rsimd_align) ? ! ioalign : false))
       create_new_plan = true;
     else
@@ -366,21 +366,21 @@ namespace octave
 
             *cur_plan_p =
               fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                      0, stride, dist,
+                                      nullptr, stride, dist,
                                       reinterpret_cast<fftw_complex *> (out),
-                                      0, stride, dist, plan_flags);
+                                      nullptr, stride, dist, plan_flags);
           }
         else
           {
             *cur_plan_p =
               fftw_plan_many_dft_r2c (rank, tmp, howmany,
                                       (const_cast<double *> (in)),
-                                      0, stride, dist,
+                                      nullptr, stride, dist,
                                       reinterpret_cast<fftw_complex *> (out),
-                                      0, stride, dist, plan_flags);
+                                      nullptr, stride, dist, plan_flags);
           }
 
-        if (*cur_plan_p == 0)
+        if (*cur_plan_p == nullptr)
           (*current_liboctave_error_handler) ("Error creating fftw plan");
       }
 
@@ -410,7 +410,7 @@ namespace octave
               fftw_destroy_plan (reinterpret_cast<fftw_plan> (plan[0]));
             if (plan[1])
               fftw_destroy_plan (reinterpret_cast<fftw_plan> (plan[1]));
-            rplan = plan[0] = plan[1] = 0;
+            rplan = plan[0] = plan[1] = nullptr;
           }
       }
     else
@@ -421,10 +421,10 @@ namespace octave
   float_fftw_planner *float_fftw_planner::instance = nullptr;
 
   float_fftw_planner::float_fftw_planner (void)
-    : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),
+    : meth (ESTIMATE), rplan (nullptr), rd (0), rs (0), rr (0), rh (0), rn (),
       rsimd_align (false), nthreads (1)
   {
-    plan[0] = plan[1] = 0;
+    plan[0] = plan[1] = nullptr;
     d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
     simd_align[0] = simd_align[1] = false;
     inplace[0] = inplace[1] = false;
@@ -491,7 +491,7 @@ namespace octave
         instance->nthreads = nt;
         fftwf_plan_with_nthreads (nt);
         // Clear the current plans.
-        instance->rplan = instance->plan[0] = instance->plan[1] = 0;
+        instance->rplan = instance->plan[0] = instance->plan[1] = nullptr;
       }
 #else
     (*current_liboctave_warning_handler)
@@ -518,7 +518,7 @@ namespace octave
     // can do SIMD.  This prevents endlessly recreating plans if we
     // change the alignment.
 
-    if (plan[which] == 0 || d[which] != dist || s[which] != stride
+    if (plan[which] == nullptr || d[which] != dist || s[which] != stride
         || r[which] != rank || h[which] != howmany
         || ioinplace != inplace[which]
         || ((ioalign != simd_align[which]) ? ! ioalign : false))
@@ -604,21 +604,21 @@ namespace octave
             *cur_plan_p =
               fftwf_plan_many_dft (rank, tmp, howmany,
                                    reinterpret_cast<fftwf_complex *> (itmp),
-                                   0, stride, dist,
+                                   nullptr, stride, dist,
                                    reinterpret_cast<fftwf_complex *> (out),
-                                   0, stride, dist, dir, plan_flags);
+                                   nullptr, stride, dist, dir, plan_flags);
           }
         else
           {
             *cur_plan_p =
               fftwf_plan_many_dft (rank, tmp, howmany,
                                    reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
-                                   0, stride, dist,
+                                   nullptr, stride, dist,
                                    reinterpret_cast<fftwf_complex *> (out),
-                                   0, stride, dist, dir, plan_flags);
+                                   nullptr, stride, dist, dir, plan_flags);
           }
 
-        if (*cur_plan_p == 0)
+        if (*cur_plan_p == nullptr)
           (*current_liboctave_error_handler) ("Error creating fftw plan");
       }
 
@@ -640,7 +640,7 @@ namespace octave
     // can do SIMD.  This prevents endlessly recreating plans if we
     // change the alignment.
 
-    if (rplan == 0 || rd != dist || rs != stride || rr != rank
+    if (rplan == nullptr || rd != dist || rs != stride || rr != rank
         || rh != howmany || ((ioalign != rsimd_align) ? ! ioalign : false))
       create_new_plan = true;
     else
@@ -722,21 +722,21 @@ namespace octave
 
             *cur_plan_p =
               fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                       0, stride, dist,
+                                       nullptr, stride, dist,
                                        reinterpret_cast<fftwf_complex *> (out),
-                                       0, stride, dist, plan_flags);
+                                       nullptr, stride, dist, plan_flags);
           }
         else
           {
             *cur_plan_p =
               fftwf_plan_many_dft_r2c (rank, tmp, howmany,
                                        (const_cast<float *> (in)),
-                                       0, stride, dist,
+                                       nullptr, stride, dist,
                                        reinterpret_cast<fftwf_complex *> (out),
-                                       0, stride, dist, plan_flags);
+                                       nullptr, stride, dist, plan_flags);
           }
 
-        if (*cur_plan_p == 0)
+        if (*cur_plan_p == nullptr)
           (*current_liboctave_error_handler) ("Error creating fftw plan");
       }
 
@@ -766,7 +766,7 @@ namespace octave
               fftwf_destroy_plan (reinterpret_cast<fftwf_plan> (plan[0]));
             if (plan[1])
               fftwf_destroy_plan (reinterpret_cast<fftwf_plan> (plan[1]));
-            rplan = plan[0] = plan[1] = 0;
+            rplan = plan[0] = plan[1] = nullptr;
           }
       }
     else

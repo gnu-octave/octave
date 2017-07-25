@@ -352,9 +352,9 @@ parameters for @code{dasrt}.
 
   int argp = 0;
   std::string fcn_name, fname, jac_name, jname;
-  dasrt_f = 0;
-  dasrt_j = 0;
-  dasrt_cf = 0;
+  dasrt_f = nullptr;
+  dasrt_j = nullptr;
+  dasrt_cf = nullptr;
 
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
@@ -400,7 +400,7 @@ parameters for @code{dasrt}.
                     {
                       if (fcn_name.length ())
                         symtab.clear_function (fcn_name);
-                      dasrt_f = 0;
+                      dasrt_f = nullptr;
                     }
                 }
             }
@@ -447,7 +447,7 @@ parameters for @code{dasrt}.
                                                 jname, "; endfunction");
 
                     if (! dasrt_j)
-                      dasrt_f = 0;
+                      dasrt_f = nullptr;
                   }
               }
               break;

@@ -37,7 +37,7 @@ namespace QtHandles
 {
 
   ObjectProxy::ObjectProxy (Object *obj)
-    : QObject (), m_object (0)
+    : QObject (), m_object (nullptr)
   {
     init (obj);
   }
@@ -96,7 +96,7 @@ namespace QtHandles
   ObjectProxy::finalize (void)
   {
     emit sendFinalize ();
-    init (0);
+    init (nullptr);
   }
 
   void

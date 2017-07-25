@@ -653,8 +653,8 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
 static void
 set_format (double d, int& fw)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
+  curr_real_fmt = nullptr;
+  curr_imag_fmt = nullptr;
 
   if (free_format)
     return;
@@ -806,8 +806,8 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
 static void
 set_format (const Matrix& m, int& fw, double& scale)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
+  curr_real_fmt = nullptr;
+  curr_imag_fmt = nullptr;
 
   if (free_format)
     return;
@@ -986,8 +986,8 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
 static void
 set_format (const Complex& c, int& r_fw, int& i_fw)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
+  curr_real_fmt = nullptr;
+  curr_imag_fmt = nullptr;
 
   if (free_format)
     return;
@@ -1202,8 +1202,8 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
 static void
 set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
+  curr_real_fmt = nullptr;
+  curr_imag_fmt = nullptr;
 
   if (free_format)
     return;
@@ -1358,8 +1358,8 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
 static void
 set_format (const Range& r, int& fw, double& scale)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
+  curr_real_fmt = nullptr;
+  curr_imag_fmt = nullptr;
 
   if (free_format)
     return;

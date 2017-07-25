@@ -190,7 +190,7 @@ public:
   class type_conv_info
   {
   public:
-    type_conv_info (type_conv_fcn f = 0, int t = -1)
+    type_conv_info (type_conv_fcn f = nullptr, int t = -1)
       : _fcn (f), _type_id (t) { }
 
     operator type_conv_fcn (void) const { return _fcn; }
@@ -252,7 +252,7 @@ public:
   virtual octave_value as_uint32 (void) const;
   virtual octave_value as_uint64 (void) const;
 
-  virtual octave_base_value * try_narrowing_conversion (void) { return 0; }
+  virtual octave_base_value * try_narrowing_conversion (void) { return nullptr; }
 
   virtual void maybe_economize (void) { }
 
@@ -586,10 +586,10 @@ public:
   virtual string_vector parent_class_names (void) const;
 
   virtual octave_base_value * find_parent_class (const std::string&)
-  { return 0; }
+  { return nullptr; }
 
   virtual octave_base_value * unique_parent_class (const std::string&)
-  { return 0; }
+  { return nullptr; }
 
   virtual bool is_instance_of (const std::string&) const
   { return false; }
@@ -658,11 +658,11 @@ public:
          oct_data_conv::data_type output_type, int skip,
          octave::mach_info::float_format flt_fmt) const;
 
-  virtual void * mex_get_data (void) const { return 0; }
+  virtual void * mex_get_data (void) const { return nullptr; }
 
-  virtual octave_idx_type * mex_get_ir (void) const { return 0; }
+  virtual octave_idx_type * mex_get_ir (void) const { return nullptr; }
 
-  virtual octave_idx_type * mex_get_jc (void) const { return 0; }
+  virtual octave_idx_type * mex_get_jc (void) const { return nullptr; }
 
   virtual mxArray * as_mxArray (void) const;
 

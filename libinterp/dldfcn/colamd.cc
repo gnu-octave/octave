@@ -714,7 +714,7 @@ permutations on the tree.
       if (n_row != n_col)
         error ("etree: S is marked as symmetric, but is not square");
 
-      symetree (ridx, cidx, etree, 0, n_col);
+      symetree (ridx, cidx, etree, nullptr, n_col);
     }
   else
     {

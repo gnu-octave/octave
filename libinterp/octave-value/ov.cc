@@ -1521,7 +1521,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
     operator = (rhs.storable_value ());
   else if (is_defined ())
     {
-      octave_value_typeinfo::assign_op_fcn f = 0;
+      octave_value_typeinfo::assign_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
       if (rep->count == 1)
@@ -2192,12 +2192,12 @@ do_binary_op (octave_value::binary_op op,
           if (cf2.type_id () >= 0
               && octave_value_typeinfo::lookup_binary_op (op, t1,
                                                           cf2.type_id ()))
-            cf1 = 0;
+            cf1 = nullptr;
           else if (cf1.type_id () >= 0
                    && octave_value_typeinfo::lookup_binary_op (op,
                                                                cf1.type_id (),
                                                                t2))
-            cf2 = 0;
+            cf2 = nullptr;
 
           if (cf1)
             {
@@ -2240,12 +2240,12 @@ do_binary_op (octave_value::binary_op op,
               if (cf2.type_id () >= 0
                   && octave_value_typeinfo::lookup_binary_op (op, t1,
                                                               cf2.type_id ()))
-                cf1 = 0;
+                cf1 = nullptr;
               else if (cf1.type_id () >= 0
                        && octave_value_typeinfo::lookup_binary_op (op,
                                                                    cf1.type_id (),
                                                                    t2))
-                cf2 = 0;
+                cf2 = nullptr;
 
               if (cf1)
                 {
@@ -2415,10 +2415,10 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
       // Try biased (one-sided) conversions first.
       if (cf2.type_id () >= 0
           && octave_value_typeinfo::lookup_cat_op (t1, cf2.type_id ()))
-        cf1 = 0;
+        cf1 = nullptr;
       else if (cf1.type_id () >= 0
                && octave_value_typeinfo::lookup_cat_op (cf1.type_id (), t2))
-        cf2 = 0;
+        cf2 = nullptr;
 
       if (cf1)
         {
@@ -2712,7 +2712,7 @@ octave_value::do_non_const_unary_op (unary_op op)
       // Non-genuine.
       int t = type_id ();
 
-      octave_value_typeinfo::non_const_unary_op_fcn f = 0;
+      octave_value_typeinfo::non_const_unary_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
       if (rep->count == 1)

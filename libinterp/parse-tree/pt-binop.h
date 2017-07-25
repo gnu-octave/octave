@@ -46,7 +46,7 @@ namespace octave
     tree_binary_expression (int l = -1, int c = -1,
                             octave_value::binary_op t
                             = octave_value::unknown_binary_op)
-      : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t),
+      : tree_expression (l, c), op_lhs (nullptr), op_rhs (nullptr), etype (t),
         eligible_for_braindead_shortcircuit (false),
         braindead_shortcircuit_warning_issued (false) { }
 

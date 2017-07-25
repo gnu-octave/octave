@@ -33,12 +33,12 @@ octave_base_value *
 octave_function::clone (void) const
 {
   panic_impossible ();
-  return 0;
+  return nullptr;
 }
 
 octave_base_value *
 octave_function::empty_clone (void) const
 {
   panic_impossible ();
-  return 0;
+  return nullptr;
 }

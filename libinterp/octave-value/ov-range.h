@@ -71,7 +71,7 @@ public:
 
   octave_range (const octave_range& r)
     : octave_base_value (), range (r.range),
-      idx_cache (r.idx_cache ? new idx_vector (*r.idx_cache) : 0)
+      idx_cache (r.idx_cache ? new idx_vector (*r.idx_cache) : nullptr)
   { }
 
   octave_range (const Range& r, const idx_vector& cache)
@@ -308,13 +308,13 @@ private:
   idx_vector set_idx_cache (const idx_vector& idx) const
   {
     delete idx_cache;
-    idx_cache = (idx ? new idx_vector (idx) : 0);
+    idx_cache = (idx ? new idx_vector (idx) : nullptr);
     return idx;
   }
 
   void clear_cached_info (void) const
   {
-    delete idx_cache; idx_cache = 0;
+    delete idx_cache; idx_cache = nullptr;
   }
 
   mutable idx_vector *idx_cache;

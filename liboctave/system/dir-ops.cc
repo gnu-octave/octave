@@ -63,7 +63,7 @@ namespace octave
       else
         errmsg = "dir_entry::open: empty filename";
 
-      return dir != 0;
+      return dir != nullptr;
     }
 
     string_vector
@@ -95,7 +95,7 @@ namespace octave
         {
           retval = (octave_closedir_wrapper (dir) == 0);
 
-          dir = 0;
+          dir = nullptr;
         }
 
       return retval;

@@ -253,11 +253,11 @@ pr_where_2 (std::ostream& os, const char *fmt, va_list args)
                   if (len > 1)
                     {
                       std::string tmp_fmt (fmt, len - 1);
-                      verror (false, os, 0, "", tmp_fmt.c_str (), args);
+                      verror (false, os, nullptr, "", tmp_fmt.c_str (), args);
                     }
                 }
               else
-                verror (false, os, 0, "", fmt, args);
+                verror (false, os, nullptr, "", fmt, args);
             }
         }
     }
@@ -541,7 +541,7 @@ error_1 (octave::execution_exception& e, std::ostream& os,
                   octave::call_stack& cs
                     = octave::__get_call_stack__ ("error_1");
 
-                  bool in_user_code = cs.caller_user_code () != 0;
+                  bool in_user_code = cs.caller_user_code () != nullptr;
 
                   if (in_user_code && ! discard_error_messages)
                     show_stack_trace = true;
@@ -763,7 +763,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
       octave::call_stack& cs = octave::__get_call_stack__ ("warning_1");
 
-      bool in_user_code = cs.caller_user_code () != 0;
+      bool in_user_code = cs.caller_user_code () != nullptr;
 
       if (! fmt_suppresses_backtrace && in_user_code
           && Vbacktrace_on_warning
@@ -820,7 +820,7 @@ warning_with_id (const char *id, const char *fmt, ...)
 void
 vparse_error (const char *fmt, va_list args)
 {
-  error_1 (std::cerr, 0, "", fmt, args);
+  error_1 (std::cerr, nullptr, "", fmt, args);
 }
 
 void
@@ -835,7 +835,7 @@ parse_error (const char *fmt, ...)
 void
 vparse_error_with_id (const char *id, const char *fmt, va_list args)
 {
-  error_1 (std::cerr, 0, id, fmt, args);
+  error_1 (std::cerr, nullptr, id, fmt, args);
 }
 
 void
@@ -852,7 +852,7 @@ rethrow_error (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (std::cerr, 0, id, fmt, args);
+  error_1 (std::cerr, nullptr, id, fmt, args);
   va_end (args);
 }
 
@@ -892,7 +892,7 @@ rethrow_error_1 (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (false, std::cerr, 0, id, fmt, args);
+  verror (false, std::cerr, nullptr, id, fmt, args);
   va_end (args);
 }
 
@@ -953,7 +953,7 @@ defun_usage_message_1 (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (octave_stdout, 0, "", fmt, args);
+  error_1 (octave_stdout, nullptr, "", fmt, args);
   va_end (args);
 }
 

@@ -118,12 +118,12 @@ The Python license is
 
 template <typename T>
 octave_sort<T>::octave_sort (void) :
-  compare (ascending_compare), ms (0)
+  compare (ascending_compare), ms (nullptr)
 { }
 
 template <typename T>
 octave_sort<T>::octave_sort (compare_fcn_type comp)
-  : compare (comp), ms (0)
+  : compare (comp), ms (nullptr)
 { }
 
 template <typename T>

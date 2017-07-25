@@ -59,7 +59,7 @@ namespace octave
   tree::meets_bp_condition () const
   {
     bool retval;
-    if (bp == 0)
+    if (bp == nullptr)
       retval = false;
     else if (bp->empty ())     // empty condition always met
       retval = true;

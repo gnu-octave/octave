@@ -629,7 +629,7 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
 
-  space_hid = H5Screate_simple (0, dimens, 0);
+  space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0) return false;
 
   type_hid = hdf5_make_range_type (H5T_NATIVE_DOUBLE);

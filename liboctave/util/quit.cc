@@ -31,9 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 
-void (*octave_signal_hook) (void) = 0;
-void (*octave_interrupt_hook) (void) = 0;
-void (*octave_bad_alloc_hook) (void) = 0;
+void (*octave_signal_hook) (void) = nullptr;
+void (*octave_interrupt_hook) (void) = nullptr;
+void (*octave_bad_alloc_hook) (void) = nullptr;
 
 void
 octave_handle_signal (void)

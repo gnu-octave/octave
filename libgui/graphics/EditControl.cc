@@ -54,7 +54,7 @@ namespace QtHandles
           }
       }
 
-    return 0;
+    return nullptr;
   }
 
   EditControl::EditControl (const graphics_object& go, QLineEdit *edit)

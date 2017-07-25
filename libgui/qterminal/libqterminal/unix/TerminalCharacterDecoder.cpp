@@ -28,7 +28,7 @@
 #include <QtCore/QTextStream>
 
 PlainTextDecoder::PlainTextDecoder()
- : _output(0)
+ : _output(nullptr)
  , _includeTrailingWhitespace(true)
 {
 
@@ -86,8 +86,8 @@ void PlainTextDecoder::decodeLine(const Character* const characters, int count, 
 }
 
 HTMLDecoder::HTMLDecoder() :
-        _output(0)
-	   ,_colorTable(base_color_table)
+        _output(nullptr)
+       ,_colorTable(base_color_table)
        ,_innerSpanOpen(false)
        ,_lastRendition(DEFAULT_RENDITION)
 {
@@ -116,7 +116,7 @@ void HTMLDecoder::end()
 
     *_output << text;
 
-    _output = 0;
+    _output = nullptr;
 
 }
 

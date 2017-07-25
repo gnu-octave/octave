@@ -65,11 +65,11 @@ lusolve (const SM& L, const SM& U, M& m)
   MatrixType utyp (MatrixType::Upper);
 
   // Sparse L is lower triangular, Dense L is permuted lower triangular!!!
-  m = L.solve (m, err, rcond, 0);
+  m = L.solve (m, err, rcond, nullptr);
   if (err)
     return err;
 
-  m = U.solve (utyp, m, err, rcond, 0);
+  m = U.solve (utyp, m, err, rcond, nullptr);
 
   return err;
 }
@@ -91,7 +91,7 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
       for (octave_idx_type i = 0; i < n; i++)
         retval.elem (i,j) = m.elem (static_cast<octave_idx_type>(qv[i]), j);
     }
-  return L.solve (ltyp, retval, err, rcond, 0);
+  return L.solve (ltyp, retval, err, rcond, nullptr);
 }
 
 template <typename SM, typename M>
@@ -104,7 +104,7 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
   octave_idx_type err = 0;
   double rcond;
   MatrixType utyp (MatrixType::Upper);
-  M tmp = U.solve (utyp, m, err, rcond, 0);
+  M tmp = U.solve (utyp, m, err, rcond, nullptr);
   M retval;
   const double *qv = Q.fortran_vec ();
 

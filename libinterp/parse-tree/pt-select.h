@@ -43,11 +43,11 @@ namespace octave
   public:
 
     tree_if_clause (int l = -1, int c = -1)
-      : tree (l, c), expr (0), list (0), lead_comm (0) { }
+      : tree (l, c), expr (nullptr), list (nullptr), lead_comm (nullptr) { }
 
     tree_if_clause (tree_statement_list *sl, comment_list *lc = nullptr,
                     int l = -1, int c = -1)
-      : tree (l, c), expr (0), list (sl), lead_comm (lc) { }
+      : tree (l, c), expr (nullptr), list (sl), lead_comm (lc) { }
 
     tree_if_clause (tree_expression *e, tree_statement_list *sl,
                     comment_list *lc = nullptr,
@@ -122,7 +122,9 @@ namespace octave
   public:
 
     tree_if_command (int l = -1, int c = -1)
-      : tree_command (l, c), list (0), lead_comm (0), trail_comm (0) { }
+      : tree_command (l, c), list (nullptr),
+        lead_comm (nullptr), trail_comm (nullptr)
+    { }
 
     tree_if_command (tree_if_command_list *lst, comment_list *lc,
                      comment_list *tc, int l = -1, int c = -1)
@@ -166,11 +168,11 @@ namespace octave
   public:
 
     tree_switch_case (int l = -1, int c = -1)
-      : tree (l, c), label (0), list (0), lead_comm (0) { }
+      : tree (l, c), label (nullptr), list (nullptr), lead_comm (nullptr) { }
 
     tree_switch_case (tree_statement_list *sl, comment_list *lc = nullptr,
                       int l = -1, int c = -1)
-      : tree (l, c), label (0), list (sl), lead_comm (lc) { }
+      : tree (l, c), label (nullptr), list (sl), lead_comm (lc) { }
 
     tree_switch_case (tree_expression *e, tree_statement_list *sl,
                       comment_list *lc = nullptr,
@@ -245,8 +247,8 @@ namespace octave
   public:
 
     tree_switch_command (int l = -1, int c = -1)
-      : tree_command (l, c), expr (0), list (0), lead_comm (0),
-        trail_comm (0) { }
+      : tree_command (l, c), expr (nullptr), list (nullptr),
+        lead_comm (nullptr), trail_comm (nullptr) { }
 
     tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
                          comment_list *lc, comment_list *tc,

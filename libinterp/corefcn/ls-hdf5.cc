@@ -235,10 +235,10 @@ hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name)
 
 #if defined (HAVE_HDF5_18)
   H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-  H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+  H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
 #else
   H5Eget_auto (&err_func, &err_func_data);
-  H5Eset_auto (0, 0);
+  H5Eset_auto (0, nullptr);
 #endif
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);
@@ -283,10 +283,10 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 
 #if defined (HAVE_HDF5_18)
   H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-  H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+  H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
 #else
   H5Eget_auto (&err_func, &err_func_data);
-  H5Eset_auto (0, 0);
+  H5Eset_auto (0, nullptr);
 #endif
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);
@@ -661,7 +661,7 @@ done:
   if (retval > 0)
     {
       // get documentation string, if any:
-      int comment_length = H5Gget_comment (group_id, name, 0, 0);
+      int comment_length = H5Gget_comment (group_id, name, 0, nullptr);
 
       if (comment_length > 1)
         {
@@ -755,7 +755,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
       bool found = false;
       size_t len = 0;
 
-      len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, 0, 0);
+      len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, nullptr, 0);
       var_name.resize (len+1);
       H5Gget_objname_by_idx (hs.file_id, hs.current_item, &var_name[0], len+1);
 
@@ -910,7 +910,7 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector& d)
   if (! empty)
     return 0;
 
-  space_hid = H5Screate_simple (1, &sz, 0);
+  space_hid = H5Screate_simple (1, &sz, nullptr);
   if (space_hid < 0) return space_hid;
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid,
@@ -1081,7 +1081,7 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
     goto error_cleanup;
 
   dims[0] = 0;
-  space_id = H5Screate_simple (0 , dims, 0);
+  space_id = H5Screate_simple (0 , dims, nullptr);
   if (space_id < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)

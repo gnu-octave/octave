@@ -66,7 +66,7 @@ namespace octave
           }
       }
 
-    return rep != 0;
+    return rep != nullptr;
   }
 
   Matrix

@@ -305,13 +305,13 @@ namespace octave
       return UMFPACK_ZNAME (get_numeric) (to_suitesparse_intptr (Lp),
                                           to_suitesparse_intptr (Lj),
                                           reinterpret_cast<double *> (Lz),
-                                          0, to_suitesparse_intptr (Up),
+                                          nullptr, to_suitesparse_intptr (Up),
                                           to_suitesparse_intptr (Ui),
                                           reinterpret_cast<double *> (Uz),
-                                          0, to_suitesparse_intptr (p),
+                                          nullptr, to_suitesparse_intptr (p),
                                           to_suitesparse_intptr (q),
                                           reinterpret_cast<double *> (Dz),
-                                          0, to_suitesparse_intptr (do_recip),
+                                          nullptr, to_suitesparse_intptr (do_recip),
                                           Rs, Numeric);
     }
 
@@ -325,7 +325,7 @@ namespace octave
       return UMFPACK_ZNAME (numeric) (to_suitesparse_intptr (Ap),
                                       to_suitesparse_intptr (Ai),
                                       reinterpret_cast<const double *> (Az),
-                                      0, Symbolic, Numeric, Control, Info);
+                                      nullptr, Symbolic, Numeric, Control, Info);
     }
 
     template <>
@@ -340,7 +340,7 @@ namespace octave
                                         to_suitesparse_intptr (Ap),
                                         to_suitesparse_intptr (Ai),
                                         reinterpret_cast<const double *> (Az),
-                                        0, to_suitesparse_intptr (Qinit),
+                                        nullptr, to_suitesparse_intptr (Qinit),
                                         Symbolic, Control, Info);
     }
 
@@ -369,7 +369,7 @@ namespace octave
                                      to_suitesparse_intptr (Ap),
                                      to_suitesparse_intptr (Ai),
                                      reinterpret_cast<const double *> (Az),
-                                     0, col_form, Control);
+                                     nullptr, col_form, Control);
     }
 
     template <>
@@ -466,7 +466,7 @@ namespace octave
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
-      int status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, 0,
+      int status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, nullptr,
                                                    &Symbolic, control, info);
 
       if (status < 0)
@@ -559,7 +559,7 @@ namespace octave
                   octave_idx_type do_recip;
                   status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
                                                              Up, Uj, Ux,
-                                                             p, q, 0,
+                                                             p, q, nullptr,
                                                              &do_recip, Rx,
                                                              Numeric);
 
@@ -797,7 +797,7 @@ namespace octave
                   octave_idx_type do_recip;
                   status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
                                                              Up, Uj, Ux,
-                                                             p, q, 0,
+                                                             p, q, nullptr,
                                                              &do_recip,
                                                              Rx, Numeric);
 

@@ -76,11 +76,11 @@ namespace QtHandles
           return new ToolBar (go, new QToolBar (parentWidget));
       }
 
-    return 0;
+    return nullptr;
   }
 
   ToolBar::ToolBar (const graphics_object& go, QToolBar *bar)
-    : Object (go, bar), m_empty (0), m_figure (0)
+    : Object (go, bar), m_empty (nullptr), m_figure (nullptr)
   {
     uitoolbar::properties& tp = properties<uitoolbar> ();
 

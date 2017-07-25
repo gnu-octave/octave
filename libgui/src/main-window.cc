@@ -150,11 +150,11 @@ octave_interpreter::interrupt (void)
 main_window::main_window (QWidget *p, octave::gui_application *app_context)
   : QMainWindow (p), m_app_context (app_context),
     m_interpreter (new octave_interpreter (app_context)),
-    m_main_thread (new QThread ()), _workspace_model (0), status_bar (0),
-    command_window (0), history_window (0), file_browser_window (0),
-    doc_browser_window (0), editor_window (0), workspace_window (0),
-    _settings_dlg (0), find_files_dlg (0), release_notes_window (0),
-    community_news_window (0), _octave_qt_link (0),
+    m_main_thread (new QThread ()), _workspace_model (nullptr), status_bar (nullptr),
+    command_window (nullptr), history_window (nullptr), file_browser_window (nullptr),
+    doc_browser_window (nullptr), editor_window (nullptr), workspace_window (nullptr),
+    _settings_dlg (nullptr), find_files_dlg (nullptr), release_notes_window (nullptr),
+    community_news_window (nullptr), _octave_qt_link (nullptr),
     _clipboard (QApplication::clipboard ()),
     _prevent_readline_conflicts (true),
     _suppress_dbg_location (true),
@@ -236,22 +236,22 @@ main_window::~main_window (void)
   if (find_files_dlg)
     {
       delete find_files_dlg;
-      find_files_dlg = 0;
+      find_files_dlg = nullptr;
     }
   if (release_notes_window)
     {
       delete release_notes_window;
-      release_notes_window = 0;
+      release_notes_window = nullptr;
     }
   if (_settings_dlg)
     {
       delete _settings_dlg;
-      _settings_dlg = 0;
+      _settings_dlg = nullptr;
     }
   if (community_news_window)
     {
       delete community_news_window;
-      community_news_window = 0;
+      community_news_window = nullptr;
     }
 }
 
@@ -351,7 +351,8 @@ void
 main_window::handle_save_workspace_request (void)
 {
   QString file
-    = QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".", 0, 0,
+    = QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".",
+                                    nullptr, nullptr,
                                     QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
@@ -365,7 +366,8 @@ main_window::handle_load_workspace_request (const QString& file_arg)
   QString file = file_arg;
 
   if (file.isEmpty ())
-    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".", 0, 0,
+    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".",
+                                         nullptr, nullptr,
                                          QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
@@ -865,7 +867,7 @@ main_window::notice_settings (const QSettings *settings)
 
   resource_manager::update_network_settings ();
 
-  emit active_dock_changed (0, _active_dock); // update dock widget styles
+  emit active_dock_changed (nullptr, _active_dock); // update dock widget styles
 
   configure_shortcuts ();
   set_global_shortcuts (_active_dock == command_window);
@@ -952,7 +954,7 @@ void
 main_window::browse_for_directory (void)
 {
   QString dir
-    = QFileDialog::getExistingDirectory (this, tr ("Browse directories"), 0,
+    = QFileDialog::getExistingDirectory (this, tr ("Browse directories"), nullptr,
                                          QFileDialog::ShowDirsOnly |
                                          QFileDialog::DontUseNativeDialog);
 

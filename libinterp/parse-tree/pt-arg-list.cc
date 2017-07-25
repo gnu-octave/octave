@@ -311,7 +311,7 @@ namespace octave
     new_list->simple_assign_lhs = simple_assign_lhs;
 
     for (const tree_expression *elt : *this)
-      new_list->append (elt ? elt->dup (scope) : 0);
+      new_list->append (elt ? elt->dup (scope) : nullptr);
 
     return new_list;
   }

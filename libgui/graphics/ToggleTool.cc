@@ -44,7 +44,7 @@ namespace QtHandles
           return new ToggleTool (go, new QAction (parentWidget));
       }
 
-    return 0;
+    return nullptr;
   }
 
   ToggleTool::ToggleTool (const graphics_object& go, QAction *action)

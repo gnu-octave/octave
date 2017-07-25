@@ -44,7 +44,7 @@ namespace QtHandles
           return new PushTool (go, new QAction (parentWidget));
       }
 
-    return 0;
+    return nullptr;
   }
 
   PushTool::PushTool (const graphics_object& go, QAction *action)

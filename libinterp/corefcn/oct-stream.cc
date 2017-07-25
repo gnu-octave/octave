@@ -312,7 +312,7 @@ namespace octave
 
     const scanf_format_elt * current (void) const
     {
-      return length () > 0 ? fmt_elts[curr_idx] : 0;
+      return length () > 0 ? fmt_elts[curr_idx] : nullptr;
     }
 
     const scanf_format_elt * next (bool cycle = true)
@@ -821,7 +821,7 @@ namespace octave
 
     const printf_format_elt * current (void) const
     {
-      return length () > 0 ? fmt_elts[curr_idx] : 0;
+      return length () > 0 ? fmt_elts[curr_idx] : nullptr;
     }
 
     size_t length (void) const { return fmt_elts.size (); }
@@ -835,7 +835,7 @@ namespace octave
           if (cycle)
             curr_idx = 0;
           else
-            return 0;
+            return nullptr;
         }
 
       return current ();
@@ -1297,7 +1297,7 @@ namespace octave
       return (eob == buf && i_stream.eof ()) || (flags & std::ios_base::eofbit);
     }
 
-    operator const void* (void) { return (! eof () && ! flags) ? this : 0; }
+    operator const void* (void) { return (! eof () && ! flags) ? this : nullptr; }
 
     bool fail (void) { return flags & std::ios_base::failbit; }
 
@@ -1726,7 +1726,7 @@ namespace octave
 
     const textscan_format_elt * current (void) const
     {
-      return numel () > 0 ? fmt_elts[curr_idx] : 0;
+      return numel () > 0 ? fmt_elts[curr_idx] : nullptr;
     }
 
     const textscan_format_elt * next (bool cycle = true)
@@ -1738,7 +1738,7 @@ namespace octave
           if (cycle)
             curr_idx = 0;
           else
-            return 0;
+            return nullptr;
         }
 
       return current ();
@@ -1748,7 +1748,7 @@ namespace octave
 
     bool ok (void) const { return (nconv >= 0); }
 
-    operator const void* (void) const { return ok () ? this : 0; }
+    operator const void* (void) const { return ok () ? this : nullptr; }
 
     // What function name should be shown when reporting errors.
     std::string who;
@@ -6395,7 +6395,7 @@ namespace octave
       {
         for (int i = 0; i < oct_data_conv::dt_unknown; i++)
           for (int j = 0; j < 14; j++)
-            conv_fptr_table[i][j] = 0;
+            conv_fptr_table[i][j] = nullptr;
 
         FILL_TABLE_ROW (dt_int8, int8_t);
         FILL_TABLE_ROW (dt_uint8, uint8_t);

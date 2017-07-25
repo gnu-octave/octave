@@ -34,7 +34,7 @@ namespace QtHandles
 {
 
   MouseModeActionGroup::MouseModeActionGroup (QObject *xparent)
-    : QObject (xparent), m_current (0)
+    : QObject (xparent), m_current (nullptr)
   {
     m_actions.append (new QAction (QIcon (":/images/rotate.png"),
                                    tr ("Rotate"), this));
@@ -70,7 +70,7 @@ namespace QtHandles
       {
         if (sender () == m_current)
           {
-            m_current = 0;
+            m_current = nullptr;
             emit modeChanged (NoMode);
           }
       }

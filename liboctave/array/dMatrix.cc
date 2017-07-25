@@ -1741,7 +1741,7 @@ Matrix::solve (MatrixType& mattype, const Matrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 Matrix
@@ -1749,14 +1749,14 @@ Matrix::solve (MatrixType& mattype, const Matrix& b,
                octave_idx_type& info) const
 {
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 Matrix
 Matrix::solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                double& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 Matrix
@@ -1798,7 +1798,7 @@ Matrix::solve (MatrixType& mattype, const ComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
@@ -1806,14 +1806,14 @@ Matrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                octave_idx_type& info) const
 {
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
 Matrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                octave_idx_type& info, double& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 static Matrix
@@ -1878,7 +1878,7 @@ ColumnVector
 Matrix::solve (MatrixType& mattype, const ColumnVector& b,
                octave_idx_type& info, double& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ColumnVector
@@ -1930,20 +1930,20 @@ Matrix::solve (const Matrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 Matrix
 Matrix::solve (const Matrix& b, octave_idx_type& info) const
 {
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 Matrix
 Matrix::solve (const Matrix& b, octave_idx_type& info, double& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 Matrix
@@ -2003,7 +2003,7 @@ Matrix::solve (const ColumnVector& b, octave_idx_type& info) const
 ColumnVector
 Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ColumnVector

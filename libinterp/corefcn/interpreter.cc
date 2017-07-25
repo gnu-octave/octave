@@ -360,7 +360,7 @@ namespace octave
       m_gtk_manager (),
       m_interactive (false),
       m_read_site_files (true),
-      m_read_init_files (m_app_context != 0),
+      m_read_init_files (m_app_context != nullptr),
       m_verbose (false),
       m_inhibit_startup_message (false),
       m_load_path_initialized (false),
@@ -842,8 +842,8 @@ namespace octave
     can_interrupt = true;
 
     octave_signal_hook = signal_handler;
-    octave_interrupt_hook = 0;
-    octave_bad_alloc_hook = 0;
+    octave_interrupt_hook = nullptr;
+    octave_bad_alloc_hook = nullptr;
 
     catch_interrupts ();
 
@@ -886,8 +886,8 @@ namespace octave
     can_interrupt = true;
 
     octave_signal_hook = signal_handler;
-    octave_interrupt_hook = 0;
-    octave_bad_alloc_hook = 0;
+    octave_interrupt_hook = nullptr;
+    octave_bad_alloc_hook = nullptr;
 
     catch_interrupts ();
 
@@ -940,8 +940,8 @@ namespace octave
     can_interrupt = true;
 
     octave_signal_hook = signal_handler;
-    octave_interrupt_hook = 0;
-    octave_bad_alloc_hook = 0;
+    octave_interrupt_hook = nullptr;
+    octave_bad_alloc_hook = nullptr;
 
     catch_interrupts ();
 

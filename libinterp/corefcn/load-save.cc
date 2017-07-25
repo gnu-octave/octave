@@ -1361,7 +1361,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
         }
     }
 
-  message (0, "save to '%s' complete", fname);
+  message (nullptr, "save to '%s' complete", fname);
 }
 
 void
@@ -1373,7 +1373,7 @@ dump_octave_core (void)
 
       const char *fname = Voctave_core_file_name.c_str ();
 
-      message (0, "attempting to save variables to '%s'...", fname);
+      message (nullptr, "attempting to save variables to '%s'...", fname);
 
       load_save_format format = LS_BINARY;
 

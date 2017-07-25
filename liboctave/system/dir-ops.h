@@ -40,7 +40,7 @@ namespace octave
     public:
 
       dir_entry (const std::string& n = "")
-        : name (n), dir (0), fail (false), errmsg ()
+        : name (n), dir (nullptr), fail (false), errmsg ()
       {
         if (! name.empty ())
           open ();

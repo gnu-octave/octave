@@ -103,7 +103,7 @@ public:
   MArray<T> transpose (void) const
   { return Array<T>::transpose (); }
 
-  MArray<T> hermitian (T (*fcn) (const T&) = 0) const
+  MArray<T> hermitian (T (*fcn) (const T&) = nullptr) const
   { return Array<T>::hermitian (fcn); }
 
   //! Performs indexed accumulative addition.

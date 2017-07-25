@@ -64,8 +64,8 @@ namespace octave
       virtual bool is_open (void) const
       { return false; }
 
-      virtual void * search (const std::string&, name_mangler = 0)
-      { return 0; }
+      virtual void * search (const std::string&, name_mangler = nullptr)
+      { return nullptr; }
 
       bool is_out_of_date (void) const;
 
@@ -166,7 +166,7 @@ namespace octave
       return removed_fcns;
     }
 
-    void * search (const std::string& nm, name_mangler mangler = 0) const
+    void * search (const std::string& nm, name_mangler mangler = nullptr) const
     {
       void *f = rep->search (nm, mangler);
       if (f)

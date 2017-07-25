@@ -35,7 +35,7 @@ namespace QtHandles
 {
 
   Object::Object (const graphics_object& go, QObject *obj)
-    : QObject (), m_handle (go.get_handle ()), m_qobject (0)
+    : QObject (), m_handle (go.get_handle ()), m_qobject (nullptr)
   {
     gh_manager::auto_lock lock (false);
 
@@ -138,7 +138,7 @@ namespace QtHandles
     if (m_qobject)
       {
         delete m_qobject;
-        m_qobject = 0;
+        m_qobject = nullptr;
       }
     deleteLater ();
   }
@@ -158,7 +158,7 @@ namespace QtHandles
   void Object::objectDestroyed (QObject *obj)
   {
     if (obj && obj == m_qobject)
-      m_qobject = 0;
+      m_qobject = nullptr;
   }
 
   Object*
@@ -180,7 +180,7 @@ namespace QtHandles
     if (v.isValid ())
       return reinterpret_cast<Object *> (qvariant_cast<void*> (v));
 
-    return 0;
+    return nullptr;
   }
 
 }

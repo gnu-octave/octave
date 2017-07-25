@@ -171,7 +171,7 @@ private:
 
   static bp_table *instance;
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   bool do_add_breakpoint_1 (octave_user_code *fcn, const std::string& fname,
                             const intmap& line, const std::string& condition,

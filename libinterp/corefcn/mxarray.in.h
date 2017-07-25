@@ -137,7 +137,7 @@ public:
 
   virtual mxArray_base * dup (void) const = 0;
 
-  virtual mxArray * as_mxArray (void) const { return 0; }
+  virtual mxArray * as_mxArray (void) const { return nullptr; }
 
   virtual ~mxArray_base (void) = default;
 
@@ -280,7 +280,7 @@ public:
 
   virtual bool mutation_needed (void) const { return false; }
 
-  virtual mxArray * mutate (void) const { return 0; }
+  virtual mxArray * mutate (void) const { return nullptr; }
 
   virtual octave_value as_octave_value (void) const = 0;
 

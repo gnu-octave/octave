@@ -43,13 +43,13 @@ namespace octave
   public:
 
     tree_colon_expression (int l = -1, int c = -1)
-      : tree_expression (l, c), op_base (0), op_limit (0),
-        op_increment (0), save_base (false) { }
+      : tree_expression (l, c), op_base (nullptr), op_limit (nullptr),
+        op_increment (nullptr), save_base (false) { }
 
     tree_colon_expression (tree_expression *bas, tree_expression *lim,
                            int l = -1, int c = -1)
       : tree_expression (l, c), op_base (bas), op_limit (lim),
-        op_increment (0), save_base (false) { }
+        op_increment (nullptr), save_base (false) { }
 
     tree_colon_expression (tree_expression *bas, tree_expression *lim,
                            tree_expression *inc, int l = -1, int c = -1)

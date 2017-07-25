@@ -44,7 +44,7 @@ public:
 
   static bool instance_ok (void);
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   static int lookup (const std::string& name);
 

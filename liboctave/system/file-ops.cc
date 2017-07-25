@@ -57,12 +57,12 @@ along with Octave; see the file COPYING.  If not, see
 // The default value of tilde_additional_prefixes.  This is set to
 // whitespace preceding a tilde so that simple programs which do not
 // perform any word separation get desired behavior.
-static const char *default_prefixes[] = { " ~", "\t~", ":~", 0 };
+static const char *default_prefixes[] = { " ~", "\t~", ":~", nullptr };
 
 // The default value of tilde_additional_suffixes.  This is set to
 // whitespace or newline so that simple programs which do not perform
 // any word separation get desired behavior.
-static const char *default_suffixes[] = { " ", "\n", ":", 0 };
+static const char *default_suffixes[] = { " ", "\n", ":", nullptr };
 
 static size_t
 tilde_find_prefix (const std::string& s, size_t& len)
@@ -249,9 +249,9 @@ namespace octave
 #endif
       }
 
-      tilde_expansion_hook tilde_expansion_preexpansion_hook = 0;
+      tilde_expansion_hook tilde_expansion_preexpansion_hook = nullptr;
 
-      tilde_expansion_hook tilde_expansion_failure_hook = 0;
+      tilde_expansion_hook tilde_expansion_failure_hook = nullptr;
 
       string_vector tilde_additional_prefixes = default_prefixes;
 

@@ -313,7 +313,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hdims[1] = ifargs.numel ();
   hdims[0] = len + 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
   if (space_hid < 0)
     {
       H5Gclose (group_hid);
@@ -366,7 +366,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, 0);
+  space_hid = H5Screate_simple (0 , hdims, nullptr);
   if (space_hid < 0)
     {
       H5Tclose (type_hid);

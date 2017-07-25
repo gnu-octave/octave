@@ -297,7 +297,7 @@ namespace octave
               include_graph = "foobar-inc";
 
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
-            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave", 0,
+            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave", nullptr,
                                         gl2ps_term, gl2ps_sort,
                                         (GL2PS_NO_BLENDING
                                          | GL2PS_OCCLUSION_CULL
@@ -306,7 +306,7 @@ namespace octave
                                          | GL2PS_DRAW_BACKGROUND
                                          | GL2PS_NO_PS3_SHADING
                                          | GL2PS_USE_CURRENT_VIEWPORT),
-                                        GL_RGBA, 0, 0, 0, 0, 0,
+                                        GL_RGBA, 0, nullptr, 0, 0, 0,
                                         buffsize, tmpf, include_graph.c_str ());
             if (ret == GL2PS_ERROR)
               {

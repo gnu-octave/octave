@@ -121,7 +121,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   cholmod_sparse *A = &Astore;
   A->packed = true;
   A->sorted = true;
-  A->nz = 0;
+  A->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
   A->itype = CHOLMOD_LONG;
 #else
@@ -212,7 +212,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   if (spu == 0.)
     {
       cm->print = -1;
-      SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+      SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
     }
   else
     {
@@ -249,14 +249,14 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       goto cleanup;
     }
 
-  if (CHOLMOD_NAME(postorder) (Parent, n, 0, Post, cm) != n)
+  if (CHOLMOD_NAME(postorder) (Parent, n, nullptr, Post, cm) != n)
     {
       err_msg = "symbfact: postorder failed";
       goto cleanup;
     }
 
-  CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0, ColCount, First,
-                              octave::to_suitesparse_intptr (Level), cm);
+  CHOLMOD_NAME(rowcolcounts) (Alo, nullptr, 0, Parent, Post, nullptr, ColCount,
+                              First, octave::to_suitesparse_intptr (Level), cm);
 
   if (cm->status < CHOLMOD_OK)
     {
@@ -271,12 +271,12 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       if (A->stype == 1)
         {
           A1 = A;
-          A2 = 0;
+          A2 = nullptr;
         }
       else if (A->stype == -1)
         {
           A1 = F;
-          A2 = 0;
+          A2 = nullptr;
         }
       else if (coletree)
         {

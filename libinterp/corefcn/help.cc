@@ -119,7 +119,7 @@ const static char * const operators[] =
   "]",
   "|",
   "||",
-  0
+  nullptr
 };
 
 const static string_vector operator_names (operators);

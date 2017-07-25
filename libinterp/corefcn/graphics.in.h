@@ -226,7 +226,7 @@ public:
     if (rep)
       {
         delete rep;
-        rep = 0;
+        rep = nullptr;
       }
 
     rep = s.rep->clone ();
@@ -239,7 +239,7 @@ public:
     if (rep)
       {
         delete rep;
-        rep = 0;
+        rep = nullptr;
       }
 
     if (s == "log")
@@ -5942,7 +5942,7 @@ graphics_event
 public:
   typedef void (*event_fcn) (void*);
 
-  graphics_event (void) : rep (0) { }
+  graphics_event (void) : rep (nullptr) { }
 
   graphics_event (const graphics_event& e) : rep (e.rep)
   {
@@ -5974,7 +5974,7 @@ public:
   { if (rep) rep->execute (); }
 
   bool ok (void) const
-  { return (rep != 0); }
+  { return (rep != nullptr); }
 
   static graphics_event
   create_callback_event (const graphics_handle& h,
@@ -6020,7 +6020,7 @@ public:
     return retval;
   }
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   static graphics_handle get_handle (bool integer_figure_handle)
   {

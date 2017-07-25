@@ -47,7 +47,7 @@ namespace QtHandles
           return new PushButtonControl (go, new QPushButton (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   PushButtonControl::PushButtonControl (const graphics_object& go,

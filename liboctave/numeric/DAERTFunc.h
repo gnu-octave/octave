@@ -35,13 +35,13 @@ public:
   typedef ColumnVector (*DAERTConstrFunc) (const ColumnVector& x, double t);
 
   DAERTFunc (void)
-    : DAEFunc (), constr (0), reset (true) { }
+    : DAEFunc (), constr (nullptr), reset (true) { }
 
   DAERTFunc (DAERHSFunc f)
-    : DAEFunc (f), constr (0), reset (true) { }
+    : DAEFunc (f), constr (nullptr), reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAEJacFunc j)
-    : DAEFunc (f, j), constr (0), reset (true) { }
+    : DAEFunc (f, j), constr (nullptr), reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAERTConstrFunc cf)
     : DAEFunc (f), constr (cf), reset (true) { }

@@ -160,7 +160,7 @@ c_file_ptr_buf::buf_close (void)
   if (f)
     {
       retval = cf (f);
-      f = 0;
+      f = nullptr;
     }
 
   return retval;
@@ -307,7 +307,7 @@ c_zfile_ptr_buf::buf_close (void)
   if (f)
     {
       retval = cf (f);
-      f = 0;
+      f = nullptr;
     }
 
   return retval;

@@ -50,7 +50,7 @@ public:
 
   static QSettings * get_settings (void)
   {
-    return instance_ok () ? instance->do_get_settings () : 0;
+    return instance_ok () ? instance->do_get_settings () : nullptr;
   }
 
   static QIcon icon (const QString& icon_name, bool fallback = true)
@@ -63,7 +63,7 @@ public:
 
   static QSettings * get_default_settings (void)
   {
-    return instance_ok () ? instance->do_get_default_settings () : 0;
+    return instance_ok () ? instance->do_get_default_settings () : nullptr;
   }
 
   static QString get_settings_file (void)
@@ -116,7 +116,7 @@ public:
 
 public slots:
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
 private:
 

@@ -519,7 +519,7 @@ jit_type::jit_type (const std::string& aname, jit_type *aparent,
 llvm::Type *
 jit_type::to_llvm_arg (void) const
 {
-  return llvm_type ? llvm_type->getPointerTo () : 0;
+  return llvm_type ? llvm_type->getPointerTo () : nullptr;
 }
 
 // -------------------- jit_function --------------------

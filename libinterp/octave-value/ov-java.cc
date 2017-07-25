@@ -77,7 +77,7 @@ class java_local_ref
 public:
 
   java_local_ref (JNIEnv *_env)
-    : jobj (0), detached (false), env (_env) { }
+    : jobj (nullptr), detached (false), env (_env) { }
 
   java_local_ref (JNIEnv *_env, T obj)
     : jobj (obj), detached (false), env (_env) { }
@@ -106,7 +106,7 @@ private:
     if (env && jobj && ! detached)
       env->DeleteLocalRef (jobj);
 
-    jobj = 0;
+    jobj = nullptr;
   }
 
   java_local_ref (void)
@@ -193,7 +193,7 @@ namespace octave
     {
       vm_args.version = JNI_VERSION_1_2;
       vm_args.nOptions = 0;
-      vm_args.options = 0;
+      vm_args.options = nullptr;
       vm_args.ignoreUnrecognized = false;
     }
 
@@ -237,14 +237,14 @@ namespace octave
 
     void clean (void)
     {
-      if (vm_args.options != 0)
+      if (vm_args.options != nullptr)
         {
           for (int i = 0; i < vm_args.nOptions; i++)
             delete [] vm_args.options[i].optionString;
 
           delete [] vm_args.options;
 
-          vm_args.options = 0;
+          vm_args.options = nullptr;
           vm_args.nOptions = 0;
         }
     }
@@ -496,7 +496,7 @@ initialize_jvm (void)
     return;
 
   JNIEnv *current_env;
-  const char *static_locale = setlocale (LC_ALL, 0);
+  const char *static_locale = setlocale (LC_ALL, nullptr);
   const std::string locale (static_locale);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -598,7 +598,7 @@ initialize_jvm (void)
           JavaVMAttachArgs vm_args;
           vm_args.version = JNI_VERSION_1_2;
           vm_args.name = const_cast<char *> ("octave");
-          vm_args.group = 0;
+          vm_args.group = nullptr;
           if (jvm->AttachCurrentThread (reinterpret_cast<void **> (&current_env),
                                         &vm_args) < 0)
             error ("JVM internal error, unable to attach octave to existing JVM");
@@ -660,7 +660,7 @@ terminate_jvm (void)
       else
         jvm->DestroyJavaVM ();
 
-      jvm = 0;
+      jvm = nullptr;
       jvm_attached = false;
 
       if (jvm_lib)
@@ -677,7 +677,7 @@ jstring_to_string (JNIEnv *jni_env, jstring s)
 
   if (jni_env)
     {
-      const char *cstr = jni_env->GetStringUTFChars (s, 0);
+      const char *cstr = jni_env->GetStringUTFChars (s, nullptr);
       retval = cstr;
       jni_env->ReleaseStringUTFChars (s, cstr);
     }
@@ -809,11 +809,11 @@ static jclass
 find_octave_class (JNIEnv *jni_env, const char *name)
 {
   static std::string class_loader;
-  static jclass uiClass = 0;
+  static jclass uiClass = nullptr;
 
   jclass jcls = jni_env->FindClass (name);
 
-  if (jcls == 0)
+  if (jcls == nullptr)
     {
       jni_env->ExceptionClear ();
 
@@ -911,7 +911,7 @@ compute_array_dimensions (JNIEnv *jni_env, jobject obj)
       jobj = len > 0
         ? reinterpret_cast<jobjectArray> (jni_env->GetObjectArrayElement (jobj,
                                                                           0))
-        : 0;
+        : nullptr;
       idx++;
     }
 
@@ -924,7 +924,7 @@ static jobject
 make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
 {
   jclass_ref ocls (jni_env, jni_env->FindClass ("[I"));
-  jobjectArray retval = jni_env->NewObjectArray (idx.length (), ocls, 0);
+  jobjectArray retval = jni_env->NewObjectArray (idx.length (), ocls, nullptr);
  // Here retval has the same length as idx
 
   // Fill in entries of idx into retval
@@ -934,7 +934,7 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
         idx_vector v = idx(i).index_vector ();
 
         jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
-        jint *buf = jni_env->GetIntArrayElements (i_array, 0);
+        jint *buf = jni_env->GetIntArrayElements (i_array, nullptr);
         // Here, buf points to the beginning of i_array
 
         // Copy v to buf
@@ -1274,7 +1274,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
               jintArray_ref iv (jni_env,
                                 reinterpret_cast<jintArray>
                                 (jni_env->CallObjectMethod (jobj, mID)));
-              jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), 0);
+              jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), nullptr);
               dim_vector dims;
               dims.resize (jni_env->GetArrayLength (jintArray (iv)));
 
@@ -1611,8 +1611,8 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
     }
   else if (val.isempty ())
     {
-      jobj = 0;
-      jcls = 0;
+      jobj = nullptr;
+      jcls = nullptr;
       //jcls = jni_env->FindClass ("java/lang/Object");
     }
   else if (! Vjava_matrix_autoconversion
@@ -1634,7 +1634,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
                                                    "org/octave/Matrix"));
       dim_vector dims = val.dims ();
       jintArray_ref iv (jni_env, jni_env->NewIntArray (dims.ndims ()));
-      jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), 0);
+      jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), nullptr);
 
       for (int i = 0; i < dims.ndims (); i++)
         iv_data[i] = dims(i);
@@ -1719,10 +1719,10 @@ unbox (JNIEnv *jni_env, const octave_value_list& args,
   jclass_ref ccls (jni_env, jni_env->FindClass ("java/lang/Class"));
 
   if (! jobjs)
-    jobjs = jni_env->NewObjectArray (args.length (), ocls, 0);
+    jobjs = jni_env->NewObjectArray (args.length (), ocls, nullptr);
 
   if (! jclss)
-    jclss = jni_env->NewObjectArray (args.length (), ccls, 0);
+    jclss = jni_env->NewObjectArray (args.length (), ccls, nullptr);
 
   for (int i = 0; i < args.length (); i++)
     {
@@ -1819,7 +1819,7 @@ Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
   octave_value_list varargin, varargout;
 
   for (int i = 0; i < nargin; i++)
-    varargin(i) = box (env, env->GetObjectArrayElement (argin, i), 0);
+    varargin(i) = box (env, env->GetObjectArrayElement (argin, i), nullptr);
 
   varargout = octave::feval (fname, varargin, nargout);
 
@@ -1849,7 +1849,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
       for (int i = 0; i < len; i++)
         {
           jobject_ref jobj (env, env->GetObjectArrayElement (args, i));
-          oct_args(i) = box (env, jobj, 0);
+          oct_args(i) = box (env, jobj, nullptr);
         }
 
       BEGIN_INTERRUPT_WITH_EXCEPTIONS;
@@ -1897,7 +1897,7 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
 // octave_java class definition
 
 octave_java::octave_java (void)
-  : octave_base_value (), java_object (0), java_class (0)
+  : octave_base_value (), java_object (nullptr), java_class (nullptr)
 {
 #if ! defined (HAVE_JAVA)
 
@@ -1907,7 +1907,7 @@ octave_java::octave_java (void)
 }
 
 octave_java::octave_java (const voidptr& jobj, void *jcls)
-  : octave_base_value (), java_object (0), java_class (0)
+  : octave_base_value (), java_object (nullptr), java_class (nullptr)
 {
 #if defined (HAVE_JAVA)
 
@@ -2389,7 +2389,7 @@ octave_java::do_javaObject (void *jni_env_arg, const std::string& name,
                                                                         jstring (clsName), jobjectArray (arg_objs), jobjectArray (arg_types)));
 
           if (resObj)
-            retval = octave_value (new octave_java (resObj, 0));
+            retval = octave_value (new octave_java (resObj, nullptr));
           else
             check_exception (jni_env);
         }
@@ -2751,8 +2751,8 @@ octave_java::release (void)
       if (java_class)
         current_env->DeleteGlobalRef (TO_JCLASS (java_class));
 
-      java_object = 0;
-      java_class = 0;
+      java_object = nullptr;
+      java_class = nullptr;
     }
 
 #else
@@ -3085,7 +3085,7 @@ Undocumented internal function.
   if (args(0).isjava ())
     {
       octave_java *jobj = TO_JAVA (args(0));
-      retval = ovl (box_more (current_env, jobj->to_java (), 0));
+      retval = ovl (box_more (current_env, jobj->to_java (), nullptr));
     }
   else
     retval = ovl (args(0));

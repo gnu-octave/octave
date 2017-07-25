@@ -219,7 +219,7 @@ namespace QtHandles
     if (proxy)
       return proxy->object ();
 
-    return 0;
+    return nullptr;
   }
 
   ObjectProxy*
@@ -237,7 +237,7 @@ namespace QtHandles
           }
       }
 
-    return 0;
+    return nullptr;
   }
 
 };

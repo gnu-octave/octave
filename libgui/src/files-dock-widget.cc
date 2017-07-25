@@ -69,7 +69,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   set_title (tr ("File Browser"));
   setToolTip (tr ("Browse your files"));
 
-  _sig_mapper = 0;
+  _sig_mapper = nullptr;
 
   _columns_shown = QStringList ();
   _columns_shown.append (tr ("File size"));

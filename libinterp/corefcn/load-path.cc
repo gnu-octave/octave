@@ -123,7 +123,7 @@ find_private_file (const std::string& fname)
 
   octave::symbol_table::scope *scope = octave::__get_current_scope__ ("find_private_file");
 
-  octave_user_function *curr_fcn = scope ? scope->function () : 0;
+  octave_user_function *curr_fcn = scope ? scope->function () : nullptr;
 
   if (curr_fcn)
     {
@@ -282,7 +282,7 @@ namespace octave
     unwind_protect frame;
     frame.protect_var (add_hook);
 
-    add_hook = 0;
+    add_hook = nullptr;
 
     clear ();
 

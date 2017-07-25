@@ -175,13 +175,13 @@ namespace octave
     ~octave_dlopen_shlib (void);
 
     void * search (const std::string& name,
-                   dynamic_library::name_mangler mangler = 0);
+                   dynamic_library::name_mangler mangler = nullptr);
 
     // FIXME: this is possibly redundant because failure to open a library will
     // normally throw an exception, avoiding the construction of an invalid
     // library.  Leave it here for possible future use.
 
-    bool is_open (void) const { return (library != 0); }
+    bool is_open (void) const { return (library != nullptr); }
 
   private:
 
@@ -189,7 +189,7 @@ namespace octave
   };
 
   octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), library (0)
+    : dynamic_library::dynlib_rep (f), library (nullptr)
   {
     int flags = 0;
 
@@ -435,7 +435,7 @@ namespace octave
     void open (const std::string& f);
 
     void * search (const std::string& name,
-                   dynamic_library::name_mangler mangler = 0);
+                   dynamic_library::name_mangler mangler = nullptr);
 
     void close (void);
 

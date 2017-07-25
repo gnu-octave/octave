@@ -108,13 +108,13 @@ namespace QtHandles
           }
       }
 
-    return 0;
+    return nullptr;
   }
 
   ButtonGroup::ButtonGroup (const graphics_object& go, QButtonGroup *buttongroup,
                             QFrame *frame)
-    : Object (go, frame), m_hiddenbutton(0), m_container (0), m_title (0),
-      m_blockUpdates (false)
+    : Object (go, frame), m_hiddenbutton(nullptr), m_container (nullptr),
+      m_title (nullptr), m_blockUpdates (false)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
 
@@ -293,7 +293,7 @@ namespace QtHandles
             {
               if (m_title)
                 delete m_title;
-              m_title = 0;
+              m_title = nullptr;
             }
           else
             {

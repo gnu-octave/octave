@@ -42,7 +42,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 {
   _parent = static_cast<QMainWindow *> (p);     // store main window
   _floating = false;
-  _predecessor_widget = 0;
+  _predecessor_widget = nullptr;
 
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility_changed (bool)));
@@ -189,7 +189,7 @@ octave_dock_widget::set_focus_predecessor ()
   if (_predecessor_widget)    // only != 0 if widget was tabbed
     _predecessor_widget->focus ();
 
-  _predecessor_widget = 0;
+  _predecessor_widget = nullptr;
 }
 
 // make the widget floating

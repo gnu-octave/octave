@@ -63,8 +63,8 @@ default_qt_settings_file (void)
 }
 
 resource_manager::resource_manager (void)
-  : settings_directory (), settings_file (), settings (0),
-    default_settings (0)
+  : settings_directory (), settings_file (), settings (nullptr),
+    default_settings (nullptr)
 {
 #if defined (HAVE_QT4)
   QString home_path
@@ -250,7 +250,7 @@ resource_manager::do_set_settings (const QString& file)
         "does not exist and can not be created.\n"
         "Make sure you have read and write permissions to\n%2\n\n"
         "Octave GUI must be closed now."));
-      QMessageBox::critical (0, QString (QT_TR_NOOP ("Octave Critical Error")),
+      QMessageBox::critical (nullptr, QString (QT_TR_NOOP ("Octave Critical Error")),
           msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
       exit (1);
     }

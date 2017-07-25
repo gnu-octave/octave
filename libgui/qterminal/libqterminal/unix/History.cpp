@@ -84,7 +84,7 @@ FIXME: There is noticeable decrease in speed, also. Perhaps,
 HistoryFile::HistoryFile()
   : ion(-1),
     length(0),
-	fileMap(0)
+	fileMap(nullptr)
 {
   if (tmpFile.open())
   {
@@ -104,15 +104,15 @@ HistoryFile::~HistoryFile()
 //to avoid this.
 void HistoryFile::map()
 {
-	assert( fileMap == 0 );
+	assert( fileMap == nullptr );
 
-	fileMap = (char*)mmap( 0 , length , PROT_READ , MAP_PRIVATE , ion , 0 );
+	fileMap = (char*)mmap( nullptr , length , PROT_READ , MAP_PRIVATE , ion , 0 );
 
     //if mmap'ing fails, fall back to the read-lseek combination
     if ( fileMap == MAP_FAILED )
     {
             readWriteBalance = 0;
-            fileMap = 0;
+            fileMap = nullptr;
             qDebug() << ": mmap'ing history failed.  errno = " << errno;
     }
 }
@@ -122,12 +122,12 @@ void HistoryFile::unmap()
 	int result = munmap( fileMap , length );
 	assert( result == 0 );
 
-	fileMap = 0;
+	fileMap = nullptr;
 }
 
 bool HistoryFile::isMapped()
 {
-	return (fileMap != 0);
+	return (fileMap != nullptr);
 }
 
 void HistoryFile::add(const unsigned char* bytes, int len)
@@ -666,7 +666,7 @@ HistoryScroll* HistoryTypeFile::scroll(HistoryScroll *old) const
   HistoryScroll *newScroll = new HistoryScrollFile(m_fileName);
 
   Character line[LINE_SIZE];
-  int lines = (old != 0) ? old->getLines() : 0;
+  int lines = (old != nullptr) ? old->getLines() : 0;
   for(int i = 0; i < lines; i++)
   {
      int size = old->getLineLen(i);

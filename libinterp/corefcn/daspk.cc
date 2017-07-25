@@ -276,8 +276,8 @@ parameters for @code{daspk}.
     error ("daspk: invalid recursive call");
 
   std::string fcn_name, fname, jac_name, jname;
-  daspk_fcn = 0;
-  daspk_jac = 0;
+  daspk_fcn = nullptr;
+  daspk_jac = nullptr;
 
   octave_value f_arg = args(0);
 
@@ -317,7 +317,7 @@ parameters for @code{daspk}.
                     {
                       if (fcn_name.length ())
                         symtab.clear_function (fcn_name);
-                      daspk_fcn = 0;
+                      daspk_fcn = nullptr;
                     }
                 }
             }
@@ -371,7 +371,7 @@ parameters for @code{daspk}.
                       {
                         if (fcn_name.length ())
                           symtab.clear_function (fcn_name);
-                        daspk_fcn = 0;
+                        daspk_fcn = nullptr;
                       }
                   }
               }

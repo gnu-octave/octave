@@ -406,7 +406,7 @@ norm (@var{x} - @var{u}*@var{s}*@var{v'}, "fro")
 @seealso{svd}
 @end deftypefn */)
 {
-  static const char *driver_names[] = { "gesvd", "gesdd", 0 };
+  static const char *driver_names[] = { "gesvd", "gesdd", nullptr };
 
   return SET_INTERNAL_VARIABLE_CHOICES (svd_driver, driver_names);
 }

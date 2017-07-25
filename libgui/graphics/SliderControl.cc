@@ -48,7 +48,7 @@ namespace QtHandles
           return new SliderControl (go, new QScrollBar (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   SliderControl::SliderControl (const graphics_object& go,

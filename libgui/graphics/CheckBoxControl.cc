@@ -45,7 +45,7 @@ namespace QtHandles
           return new CheckBoxControl (go, new QCheckBox (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   CheckBoxControl::CheckBoxControl (const graphics_object& go, QCheckBox *box)

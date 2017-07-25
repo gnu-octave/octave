@@ -78,13 +78,13 @@ iprocstream : public std::istream, public procstreambase
 {
 public:
 
-  iprocstream (void) : std::istream (0), procstreambase () { }
+  iprocstream (void) : std::istream (nullptr), procstreambase () { }
 
   iprocstream (const std::string& name, int mode = std::ios::in)
-    : std::istream (0), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode) { }
 
   iprocstream (const char *name, int mode = std::ios::in)
-    : std::istream (0), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode) { }
 
   ~iprocstream (void) = default;
 
@@ -108,13 +108,13 @@ oprocstream : public std::ostream, public procstreambase
 {
 public:
 
-  oprocstream (void) : std::ostream (0), procstreambase () { }
+  oprocstream (void) : std::ostream (nullptr), procstreambase () { }
 
   oprocstream (const std::string& name, int mode = std::ios::out)
-    : std::ostream (0), procstreambase (name, mode) { }
+    : std::ostream (nullptr), procstreambase (name, mode) { }
 
   oprocstream (const char *name, int mode = std::ios::out)
-    : std::ostream (0), procstreambase (name, mode) { }
+    : std::ostream (nullptr), procstreambase (name, mode) { }
 
   ~oprocstream (void) = default;
 
@@ -138,13 +138,13 @@ procstream : public std::iostream, public procstreambase
 {
 public:
 
-  procstream (void) : std::iostream (0), procstreambase () { }
+  procstream (void) : std::iostream (nullptr), procstreambase () { }
 
   procstream (const std::string& name, int mode)
-    : std::iostream (0), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode) { }
 
   procstream (const char *name, int mode)
-    : std::iostream (0), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode) { }
 
   ~procstream (void) = default;
 

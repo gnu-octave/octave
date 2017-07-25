@@ -905,7 +905,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 {
   octave_value retval;
   int nchoices = 0;
-  while (choices[nchoices] != 0)
+  while (choices[nchoices] != nullptr)
     nchoices++;
 
   int nargin = args.length ();
@@ -950,7 +950,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 {
   octave_value retval;
   int nchoices = 0;
-  while (choices[nchoices] != 0)
+  while (choices[nchoices] != nullptr)
     nchoices++;
 
   int nargin = args.length ();

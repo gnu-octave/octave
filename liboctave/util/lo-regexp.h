@@ -49,7 +49,7 @@ namespace octave
     regexp (const std::string& pat = "",
             const regexp::opts& opt = regexp::opts (),
             const std::string& w = "regexp")
-      : pattern (pat), options (opt), data (0), named_pats (),
+      : pattern (pat), options (opt), data (nullptr), named_pats (),
         nnames (0), named_idx (), who (w)
     {
       compile_internal ();

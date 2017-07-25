@@ -65,12 +65,12 @@ MatrixType::MatrixType (void)
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0),
-    lower_band (0), dense (false), full (false), nperm (0), perm (0) { }
+    lower_band (0), dense (false), full (false), nperm (0), perm (nullptr) { }
 
 MatrixType::MatrixType (const MatrixType& a)
   : typ (a.typ), sp_bandden (a.sp_bandden), bandden (a.bandden),
     upper_band (a.upper_band), lower_band (a.lower_band),
-    dense (a.dense), full (a.full), nperm (a.nperm), perm (0)
+    dense (a.dense), full (a.full), nperm (a.nperm), perm (nullptr)
 {
   if (nperm != 0)
     {
@@ -200,7 +200,7 @@ matrix_complex_probe (const MArray<std::complex<T>>& a)
 MatrixType::MatrixType (const Matrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_real_probe (a);
 }
@@ -208,7 +208,7 @@ MatrixType::MatrixType (const Matrix& a)
 MatrixType::MatrixType (const ComplexMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_complex_probe (a);
 }
@@ -216,7 +216,7 @@ MatrixType::MatrixType (const ComplexMatrix& a)
 MatrixType::MatrixType (const FloatMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_real_probe (a);
 }
@@ -224,7 +224,7 @@ MatrixType::MatrixType (const FloatMatrix& a)
 MatrixType::MatrixType (const FloatComplexMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_complex_probe (a);
 }
@@ -234,7 +234,7 @@ template <typename T>
 MatrixType::MatrixType (const MSparse<T>& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (false), nperm (0), perm (0)
+    dense (false), full (false), nperm (0), perm (nullptr)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
@@ -558,7 +558,7 @@ MatrixType::MatrixType (const matrix_type t, bool _full)
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (_full), nperm (0), perm (0)
+    dense (false), full (_full), nperm (0), perm (nullptr)
 {
   if (t == MatrixType::Unknown || t == MatrixType::Full
       || t == MatrixType::Diagonal || t == MatrixType::Permuted_Diagonal
@@ -575,10 +575,10 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (_full), nperm (0), perm (0)
+    dense (false), full (_full), nperm (0), perm (nullptr)
 {
   if ((t == MatrixType::Permuted_Upper || t == MatrixType::Permuted_Lower)
-      && np > 0 && p != 0)
+      && np > 0 && p != nullptr)
     {
       typ = t;
       nperm = np;
@@ -595,7 +595,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (_full), nperm (0), perm (0)
+    dense (false), full (_full), nperm (0), perm (nullptr)
 {
   if (t == MatrixType::Banded || t == MatrixType::Banded_Hermitian)
     {

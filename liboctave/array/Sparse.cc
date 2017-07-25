@@ -206,7 +206,7 @@ Sparse<T>::SparseRep::any_element_is_nan (void) const
 
 template <typename T>
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
-  : rep (0), dimensions (dim_vector (nr, nc))
+  : rep (nullptr), dimensions (dim_vector (nr, nc))
 {
   if (val != T ())
     {
@@ -234,7 +234,7 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
 
 template <typename T>
 Sparse<T>::Sparse (const dim_vector& dv)
-  : rep (0), dimensions (dv)
+  : rep (nullptr), dimensions (dv)
 {
   if (dv.ndims () != 2)
     (*current_liboctave_error_handler)
@@ -245,7 +245,7 @@ Sparse<T>::Sparse (const dim_vector& dv)
 
 template <typename T>
 Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
-  : rep (0), dimensions (dv)
+  : rep (nullptr), dimensions (dv)
 {
 
   // Work in unsigned long long to avoid overflow issues with numel
@@ -290,7 +290,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                    const idx_vector& c, octave_idx_type nr,
                    octave_idx_type nc, bool sum_terms,
                    octave_idx_type nzm)
-  : rep (0), dimensions ()
+  : rep (nullptr), dimensions ()
 {
   if (nr < 0)
     nr = r.extent (0);
@@ -647,7 +647,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
 
 template <typename T>
 Sparse<T>::Sparse (const Array<T>& a)
-  : rep (0), dimensions (a.dims ())
+  : rep (nullptr), dimensions (a.dims ())
 {
   if (dimensions.ndims () > 2)
     (*current_liboctave_error_handler)

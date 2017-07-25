@@ -282,14 +282,14 @@ private:
   public:
 
     idx_vector_rep (void)
-      : data (0), len (0), ext (0), aowner (0), orig_dims ()
+      : data (0), len (0), ext (0), aowner (nullptr), orig_dims ()
     { }
 
     // Direct constructor.
     idx_vector_rep (octave_idx_type *_data, octave_idx_type _len,
                     octave_idx_type _ext, const dim_vector& od, direct)
       : idx_base_rep (), data (_data), len (_len), ext (_ext),
-        aowner (0), orig_dims (od)
+        aowner (nullptr), orig_dims (od)
     { }
 
     // Zero-based constructor.
@@ -369,7 +369,7 @@ private:
     idx_mask_rep (bool *_data, octave_idx_type _len,
                   octave_idx_type _ext, const dim_vector& od, direct)
       : idx_base_rep (), data (_data), len (_len), ext (_ext),
-        lsti (-1), lste (-1), aowner (0), orig_dims (od)
+        lsti (-1), lste (-1), aowner (nullptr), orig_dims (od)
     { }
 
     idx_mask_rep (bool);

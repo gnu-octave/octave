@@ -53,7 +53,7 @@ public:
       instance->do_add (f);
   }
 
-  static void cleanup (void) { delete instance; instance = 0; }
+  static void cleanup (void) { delete instance; instance = nullptr; }
 
 private:
 
@@ -61,7 +61,7 @@ private:
 
   static bool instance_ok (void);
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   std::set<fptr> fcn_list;
 

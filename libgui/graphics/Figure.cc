@@ -124,8 +124,9 @@ namespace QtHandles
   }
 
   Figure::Figure (const graphics_object& go, FigureWindow *win)
-    : Object (go, win), m_blockUpdates (false), m_figureToolBar (0),
-      m_menuBar (0), m_innerRect (), m_outerRect (), m_mouseModeGroup (0)
+    : Object (go, win), m_blockUpdates (false), m_figureToolBar (nullptr),
+      m_menuBar (nullptr), m_innerRect (), m_outerRect (),
+      m_mouseModeGroup (nullptr)
   {
     m_container = new Container (win);
     win->setCentralWidget (m_container);
@@ -873,7 +874,8 @@ namespace QtHandles
 
         file = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
                                              tr ("Save Figure As"),
-                                             finfo.absoluteFilePath (), 0, 0,
+                                             finfo.absoluteFilePath (),
+                                             nullptr, nullptr,
                                              QFileDialog::DontUseNativeDialog);
       }
 

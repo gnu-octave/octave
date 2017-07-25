@@ -123,7 +123,7 @@ class OpenGL_fltk : public Fl_Gl_Window
 public:
 
   OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
-    : Fl_Gl_Window (xx, yy, ww, hh, 0), m_number (num), m_renderer (),
+    : Fl_Gl_Window (xx, yy, ww, hh, nullptr), m_number (num), m_renderer (),
       m_in_zoom (false), m_zoom_box ()
   {
 #if defined (HAVE_OPENGL)
@@ -486,7 +486,7 @@ public:
               item->callback (static_cast<Fl_Callback *> (script_cb),
                               static_cast<void *> (&uimenup));
             else
-              item->callback (0, static_cast<void *> (0));
+              item->callback (nullptr, static_cast<void *> (nullptr));
           }
       }
   }
@@ -625,7 +625,8 @@ public:
                   flags = FL_SUBMENU;
                 if (len == 0 && uimenup.is_checked ())
                   flags += FL_MENU_TOGGLE + FL_MENU_VALUE;
-                m_menubar->add (fltk_label.c_str (), 0, 0, 0, flags);
+                m_menubar->add (fltk_label.c_str (),
+                                0, nullptr, nullptr, flags);
                 item_added = true;
               }
           }
@@ -786,10 +787,10 @@ public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp,
                bool internal)
     : Fl_Window (xx, yy, ww, hh + m_menu_h + m_status_h + 2, "octave"),
-      m_window_label (), m_fp (xfp), m_uimenu (0), m_canvas (0),
-      m_autoscale (0), m_togglegrid (0), m_panzoom (0), m_rotate (0),
-      m_help (0), m_status (0), m_resize_dummy (0), m_ax_obj (),
-      m_pos_x (0), m_pos_y (0)
+      m_window_label (), m_fp (xfp), m_uimenu (nullptr), m_canvas (nullptr),
+      m_autoscale (nullptr), m_togglegrid (nullptr), m_panzoom (nullptr),
+      m_rotate (nullptr), m_help (nullptr), m_status (nullptr),
+      m_resize_dummy (nullptr), m_ax_obj (), m_pos_x (0), m_pos_y (0)
   {
     callback (window_close, static_cast<void *> (this));
 

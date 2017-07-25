@@ -125,7 +125,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
                                      "user-defined script");
 
 octave_user_script::octave_user_script (void)
-  : octave_user_code (), cmd_list (0), file_name (),
+  : octave_user_code (), cmd_list (nullptr), file_name (),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     call_depth (-1)
@@ -147,7 +147,7 @@ octave_user_script::octave_user_script (const std::string& fnm,
 octave_user_script::octave_user_script (const std::string& fnm,
                                         const std::string& nm,
                                         const std::string& ds)
-  : octave_user_code (nm, ds), cmd_list (0), file_name (fnm),
+  : octave_user_code (nm, ds), cmd_list (nullptr), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     call_depth (-1)
@@ -249,7 +249,7 @@ octave_user_function::octave_user_function
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
     class_constructor (none), class_method (false),
-    parent_scope (0)
+    parent_scope (nullptr)
 #if defined (HAVE_LLVM)
     , jit_info (0)
 #endif

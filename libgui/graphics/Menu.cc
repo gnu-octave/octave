@@ -70,11 +70,11 @@ namespace QtHandles
           return new Menu (go, new QAction (qObj), parent_obj);
       }
 
-    return 0;
+    return nullptr;
   }
 
   Menu::Menu (const graphics_object& go, QAction *action, Object *xparent)
-    : Object (go, action), m_parent (0), m_separator (0)
+    : Object (go, action), m_parent (nullptr), m_separator (nullptr)
   {
     uimenu::properties& up = properties<uimenu> ();
 
@@ -109,8 +109,8 @@ namespace QtHandles
         if (pos <= 0)
           {
             if (m_separator)
-              m_parent->insertAction (0, m_separator);
-            m_parent->insertAction (0, action);
+              m_parent->insertAction (nullptr, m_separator);
+            m_parent->insertAction (nullptr, action);
 
             int count = 0;
 
@@ -208,7 +208,7 @@ namespace QtHandles
           {
             if (m_separator)
               delete m_separator;
-            m_separator = 0;
+            m_separator = nullptr;
           }
         break;
 

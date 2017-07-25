@@ -165,7 +165,7 @@ namespace octave
       ~zipper (void)
       {
         if (m_bz != nullptr)
-          BZ2_bzWriteClose (&m_status, m_bz, 1, 0, 0);
+          BZ2_bzWriteClose (&m_status, m_bz, 1, nullptr, nullptr);
       }
 
       void deflate (void)
@@ -188,7 +188,7 @@ namespace octave
       void close (void)
       {
         int abandon = (m_status == BZ_IO_ERROR) ? 1 : 0;
-        BZ2_bzWriteClose (&m_status, m_bz, abandon, 0, 0);
+        BZ2_bzWriteClose (&m_status, m_bz, abandon, nullptr, nullptr);
         if (m_status != BZ_OK)
           throw std::runtime_error ("failed to close bzip2 stream");
         m_bz = nullptr;

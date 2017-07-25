@@ -277,8 +277,8 @@ parameters for @code{lsode}.
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
   std::string fcn_name, fname, jac_name, jname;
-  lsode_fcn = 0;
-  lsode_jac = 0;
+  lsode_fcn = nullptr;
+  lsode_jac = nullptr;
 
   octave_value f_arg = args(0);
 
@@ -318,7 +318,7 @@ parameters for @code{lsode}.
                     {
                       if (fcn_name.length ())
                         symtab.clear_function (fcn_name);
-                      lsode_fcn = 0;
+                      lsode_fcn = nullptr;
                     }
                 }
             }
@@ -373,7 +373,7 @@ parameters for @code{lsode}.
                       {
                         if (fcn_name.length ())
                           symtab.clear_function (fcn_name);
-                        lsode_fcn = 0;
+                        lsode_fcn = nullptr;
                       }
                   }
               }

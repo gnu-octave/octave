@@ -230,7 +230,7 @@ namespace octave
          | (options.lineanchors () ? PCRE_MULTILINE : 0)
          | (options.freespacing () ? PCRE_EXTENDED : 0));
 
-    data = pcre_compile (buf_str.c_str (), pcre_options, &err, &erroffset, 0);
+    data = pcre_compile (buf_str.c_str (), pcre_options, &err, &erroffset, nullptr);
 
     if (! data)
       (*current_liboctave_error_handler)
@@ -252,10 +252,10 @@ namespace octave
 
     pcre *re = static_cast<pcre *> (data);
 
-    pcre_fullinfo (re, 0, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
-    pcre_fullinfo (re, 0, PCRE_INFO_NAMECOUNT, &namecount);
-    pcre_fullinfo (re, 0, PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
-    pcre_fullinfo (re, 0, PCRE_INFO_NAMETABLE, &nametable);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMECOUNT, &namecount);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMETABLE, &nametable);
 
     OCTAVE_LOCAL_BUFFER (int, ovector, (subpatterns+1)*3);
     OCTAVE_LOCAL_BUFFER (int, nidx, namecount);
@@ -272,7 +272,7 @@ namespace octave
       {
         octave_quit ();
 
-        int matches = pcre_exec (re, 0, buffer.c_str (),
+        int matches = pcre_exec (re, nullptr, buffer.c_str (),
                                  buffer.length (), idx,
                                  (idx ? PCRE_NOTBOL : 0),
                                  ovector, (subpatterns+1)*3);

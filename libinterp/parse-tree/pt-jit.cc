@@ -1118,7 +1118,7 @@ jit_convert::find_variable (const std::string& vname) const
 {
   variable_map::const_iterator iter;
   iter = vmap.find (vname);
-  return iter != vmap.end () ? iter->second : 0;
+  return iter != vmap.end () ? iter->second : nullptr;
 }
 
 jit_variable *

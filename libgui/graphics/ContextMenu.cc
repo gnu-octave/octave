@@ -45,7 +45,7 @@ namespace QtHandles
         return new ContextMenu (go, new QMenu (w));
       }
 
-    return 0;
+    return nullptr;
   }
 
   ContextMenu::ContextMenu (const graphics_object& go, QMenu *xmenu)

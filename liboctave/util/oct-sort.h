@@ -195,7 +195,7 @@ private:
   struct MergeState
   {
     MergeState (void)
-      : min_gallop (), a (0), ia (0), alloced (0), n (0)
+      : min_gallop (), a (nullptr), ia (nullptr), alloced (0), n (0)
     { reset (); }
 
     // No copying!

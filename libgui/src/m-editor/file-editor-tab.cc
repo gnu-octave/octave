@@ -94,7 +94,7 @@ bool file_editor_tab::_cancelled = false;
 // WindowModal messages don't affect grandparents.
 file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
-  _lexer_apis = 0;
+  _lexer_apis = nullptr;
   _is_octave_file = true;
   _lines_changed = false;
 
@@ -159,7 +159,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _status_bar->addWidget (new QLabel (" ", this), 0);
 
   // Leave the find dialog box out of memory until requested.
-  _find_dialog = 0;
+  _find_dialog = nullptr;
   _find_dialog_is_visible = false;
 
   // symbols
@@ -257,12 +257,12 @@ file_editor_tab::~file_editor_tab (void)
   if (lexer)
     {
       delete lexer;
-      _edit_area->setLexer (0);
+      _edit_area->setLexer (nullptr);
     }
   if (_find_dialog)
     {
       delete _find_dialog;
-      _find_dialog = 0;
+      _find_dialog = nullptr;
     }
 
   // Destroy _edit_area.
@@ -537,7 +537,7 @@ void
 file_editor_tab::update_lexer ()
 {
   // Create a new lexer
-  QsciLexer *lexer = 0;
+  QsciLexer *lexer = nullptr;
 
   _is_octave_file = false;
 
@@ -2492,7 +2492,7 @@ file_editor_tab::file_name_query (const QWidget *ID)
 {
   // A zero (null pointer) means that all file editor tabs
   // should respond, otherwise just the desired file editor tab.
-  if (ID != this && ID != 0)
+  if (ID != this && ID != nullptr)
     return;
 
   // This list also includes windows with name ""
@@ -2537,7 +2537,7 @@ file_editor_tab::handle_file_resave_answer (int decision)
 void
 file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
 {
-  if (ID != this || ID == 0)
+  if (ID != this || ID == nullptr)
     return;
 
   emit remove_all_positions ();  // debugger_position, unsure_debugger_position
@@ -2600,7 +2600,7 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
 void
 file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
 {
-  if (ID != this || ID == 0)
+  if (ID != this || ID == nullptr)
     return;
 
   if (line > 0)
@@ -2611,7 +2611,7 @@ void
 file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line,
                                        const QString& cond)
 {
-  if (ID != this || ID == 0)
+  if (ID != this || ID == nullptr)
     return;
 
   if (line > 0)
@@ -2624,18 +2624,18 @@ file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line,
           // If comes back indicating a non-zero breakpoint marker,
           // reuse it if possible
           emit find_translated_line_number (line, editor_linenr, bp);
-          if (bp != 0)
+          if (bp != nullptr)
             {
               if ((cond == "") != (bp->get_cond () == ""))
                 {       // can only reuse conditional bp as conditional
                   emit remove_breakpoint_via_debugger_linenr (line);
-                  bp = 0;
+                  bp = nullptr;
                 }
               else
                 bp->set_cond (cond);
             }
 
-          if (bp == 0)
+          if (bp == nullptr)
             {
               bp = new marker (_edit_area, line,
                                cond == "" ? marker::breakpoint

@@ -218,7 +218,7 @@ namespace octave
     // The real thing.
     static command_editor *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   protected:
 
@@ -291,17 +291,17 @@ namespace octave
 
     virtual void do_set_user_accept_line_function (user_accept_line_fcn) { }
 
-    virtual completion_fcn do_get_completion_function (void) const { return 0; }
+    virtual completion_fcn do_get_completion_function (void) const { return nullptr; }
 
-    virtual quoting_fcn do_get_quoting_function (void) const { return 0; }
+    virtual quoting_fcn do_get_quoting_function (void) const { return nullptr; }
 
-    virtual dequoting_fcn do_get_dequoting_function (void) const { return 0; }
+    virtual dequoting_fcn do_get_dequoting_function (void) const { return nullptr; }
 
     virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const
-    { return 0; }
+    { return nullptr; }
 
     virtual user_accept_line_fcn do_get_user_accept_line_function (void) const
-    { return 0; }
+    { return nullptr; }
 
     virtual string_vector
     do_generate_filename_completions (const std::string& text) = 0;

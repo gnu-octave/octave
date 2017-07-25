@@ -46,7 +46,7 @@ namespace QtHandles
           return new PopupMenuControl (go, new QComboBox (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)

@@ -115,7 +115,7 @@ const Block* BlockArray::at(size_t i)
 
     if (i > index) {
         qDebug() << "BlockArray::at() i > index\n";
-        return 0;
+        return nullptr;
     }
 
 //     if (index - i >= length) {
@@ -144,7 +144,7 @@ void BlockArray::unmap()
         int res = munmap((char*)lastmap, blocksize);
         if (res < 0) perror("munmap");
     }
-    lastmap = 0;
+    lastmap = nullptr;
     lastmap_index = size_t(-1);
 }
 
@@ -164,7 +164,7 @@ bool BlockArray::setHistorySize(size_t newsize)
 
     if (!newsize) {
         delete lastblock;
-        lastblock = 0;
+        lastblock = nullptr;
         if (ion >= 0) close(ion);
         ion = -1;
         current = size_t(-1);

@@ -5730,7 +5730,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {
@@ -5955,7 +5955,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {
@@ -6226,7 +6226,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {
@@ -6471,7 +6471,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {

@@ -53,7 +53,7 @@ public:
 
   octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
     : octave_base_value (), matrix (m),
-      typ (t.is_known () ? new MatrixType (t) : 0), idx_cache ()
+      typ (t.is_known () ? new MatrixType (t) : nullptr), idx_cache ()
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
@@ -61,8 +61,8 @@ public:
 
   octave_base_matrix (const octave_base_matrix& m)
     : octave_base_value (), matrix (m.matrix),
-      typ (m.typ ? new MatrixType (*m.typ) : 0),
-      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : 0)
+      typ (m.typ ? new MatrixType (*m.typ) : nullptr),
+      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : nullptr)
   { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }
@@ -187,14 +187,14 @@ protected:
   idx_vector set_idx_cache (const idx_vector& idx) const
   {
     delete idx_cache;
-    idx_cache = (idx ? new idx_vector (idx) : 0);
+    idx_cache = (idx ? new idx_vector (idx) : nullptr);
     return idx;
   }
 
   void clear_cached_info (void) const
   {
-    delete typ; typ = 0;
-    delete idx_cache; idx_cache = 0;
+    delete typ; typ = nullptr;
+    delete idx_cache; idx_cache = nullptr;
   }
 
   mutable MatrixType *typ;

@@ -128,7 +128,7 @@ namespace octave
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
-      volatile double_selector selector = 0;
+      volatile double_selector selector = nullptr;
       if (ord_char == 'A' || ord_char == 'a')
         selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')
@@ -215,7 +215,7 @@ namespace octave
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
-      volatile float_selector selector = 0;
+      volatile float_selector selector = nullptr;
       if (ord_char == 'A' || ord_char == 'a')
         selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')
@@ -302,7 +302,7 @@ namespace octave
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
-      volatile complex_selector selector = 0;
+      volatile complex_selector selector = nullptr;
       if (ord_char == 'A' || ord_char == 'a')
         selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')
@@ -410,7 +410,7 @@ namespace octave
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
-      volatile float_complex_selector selector = 0;
+      volatile float_complex_selector selector = nullptr;
       if (ord_char == 'A' || ord_char == 'a')
         selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')

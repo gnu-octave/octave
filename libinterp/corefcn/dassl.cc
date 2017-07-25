@@ -277,8 +277,8 @@ parameters for @code{dassl}.
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
   std::string fcn_name, fname, jac_name, jname;
-  dassl_fcn = 0;
-  dassl_jac = 0;
+  dassl_fcn = nullptr;
+  dassl_jac = nullptr;
 
   octave_value f_arg = args(0);
 
@@ -318,7 +318,7 @@ parameters for @code{dassl}.
                     {
                       if (fcn_name.length ())
                         symtab.clear_function (fcn_name);
-                      dassl_fcn = 0;
+                      dassl_fcn = nullptr;
                     }
                 }
             }
@@ -373,7 +373,7 @@ parameters for @code{dassl}.
                       {
                         if (fcn_name.length ())
                           symtab.clear_function (fcn_name);
-                        dassl_fcn = 0;
+                        dassl_fcn = nullptr;
                       }
                   }
               }

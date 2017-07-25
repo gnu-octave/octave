@@ -2076,7 +2076,7 @@ ComplexMatrix::solve (MatrixType& mattype, const Matrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
@@ -2084,14 +2084,14 @@ ComplexMatrix::solve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& info) const
 {
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& info, double& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
@@ -2110,7 +2110,7 @@ ComplexMatrix::solve (MatrixType& mattype, const ComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
@@ -2118,14 +2118,14 @@ ComplexMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& info) const
 {
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& info, double& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexMatrix
@@ -2171,7 +2171,7 @@ ComplexMatrix::solve (MatrixType& mattype, const ColumnVector& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (mattype, ComplexColumnVector (b), info, rcon, 0);
+  return solve (mattype, ComplexColumnVector (b), info, rcon, nullptr);
 }
 
 ComplexColumnVector
@@ -2179,14 +2179,14 @@ ComplexMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                       octave_idx_type& info) const
 {
   double rcon;
-  return solve (mattype, ComplexColumnVector (b), info, rcon, 0);
+  return solve (mattype, ComplexColumnVector (b), info, rcon, nullptr);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                       octave_idx_type& info, double& rcon) const
 {
-  return solve (mattype, ComplexColumnVector (b), info, rcon, 0);
+  return solve (mattype, ComplexColumnVector (b), info, rcon, nullptr);
 }
 
 ComplexColumnVector
@@ -2204,7 +2204,7 @@ ComplexMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexColumnVector
@@ -2212,14 +2212,14 @@ ComplexMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                       octave_idx_type& info) const
 {
   double rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                       octave_idx_type& info, double& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 ComplexColumnVector
@@ -2239,21 +2239,21 @@ ComplexMatrix::solve (const Matrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const Matrix& b, octave_idx_type& info) const
 {
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const Matrix& b, octave_idx_type& info,
                       double& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexMatrix
@@ -2270,21 +2270,21 @@ ComplexMatrix::solve (const ComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info) const
 {
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info,
                       double& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexMatrix
@@ -2302,21 +2302,21 @@ ComplexMatrix::solve (const ColumnVector& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (ComplexColumnVector (b), info, rcon, 0);
+  return solve (ComplexColumnVector (b), info, rcon, nullptr);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info) const
 {
   double rcon;
-  return solve (ComplexColumnVector (b), info, rcon, 0);
+  return solve (ComplexColumnVector (b), info, rcon, nullptr);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info,
                       double& rcon) const
 {
-  return solve (ComplexColumnVector (b), info, rcon, 0);
+  return solve (ComplexColumnVector (b), info, rcon, nullptr);
 }
 
 ComplexColumnVector
@@ -2333,21 +2333,21 @@ ComplexMatrix::solve (const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
   double rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
                       double& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 ComplexColumnVector

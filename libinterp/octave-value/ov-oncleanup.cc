@@ -47,11 +47,11 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
       octave_user_function *uptr
         = dynamic_cast<octave_user_function *> (fptr);
 
-      if (uptr != 0)
+      if (uptr != nullptr)
         {
           octave::tree_parameter_list *pl = uptr->parameter_list ();
 
-          if (pl != 0 && pl->length () > 0)
+          if (pl != nullptr && pl->length () > 0)
             warning ("onCleanup: cleanup action takes parameters");
         }
     }

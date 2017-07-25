@@ -39,7 +39,7 @@ public:
   octave_java (const voidptr& obj, void *cls = nullptr);
 
   octave_java (const octave_java& jobj)
-    : octave_base_value (jobj), java_object (0), java_class (0)
+    : octave_base_value (jobj), java_object (nullptr), java_class (nullptr)
   {
     init (jobj.java_object, jobj.java_class);
   }

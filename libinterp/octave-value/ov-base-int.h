@@ -117,7 +117,7 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_base_int_scalar (); }
 
-  octave_base_value * try_narrowing_conversion (void) { return 0; }
+  octave_base_value * try_narrowing_conversion (void) { return nullptr; }
 
   bool isreal (void) const { return true; }
 

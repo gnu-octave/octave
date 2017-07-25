@@ -101,7 +101,7 @@ public:
   { return DiagArray2<T>::extract_diag (k); }
 
   MDiagArray2<T> transpose (void) const { return DiagArray2<T>::transpose (); }
-  MDiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const
+  MDiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const
   { return DiagArray2<T>::hermitian (fcn); }
 
   bool is_multiple_of_identity (T val) const;

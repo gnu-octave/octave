@@ -66,7 +66,7 @@ class TerminalView : public QWidget
 
 public:
     /** Constructs a new terminal display widget with the specified parent. */
-    TerminalView(QWidget *parent = 0);
+    TerminalView(QWidget *parent = nullptr);
     virtual ~TerminalView();
 
     /** Returns the terminal color palette used by the display. */

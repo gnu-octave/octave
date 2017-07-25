@@ -125,7 +125,7 @@ namespace octave
       // The real thing.
       static env *instance;
 
-      static void cleanup_instance (void) { delete instance; instance = 0; }
+      static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
       // TRUE means follow symbolic links that point to directories just
       // as if they are real directories.

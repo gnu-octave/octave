@@ -47,7 +47,7 @@ namespace QtHandles
           return new RadioButtonControl (go, new QRadioButton (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   RadioButtonControl::RadioButtonControl (const graphics_object& go,

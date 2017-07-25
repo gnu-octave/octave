@@ -35,7 +35,7 @@ const int
 octave_value_typeinfo::init_tab_sz (16);
 
 octave_value_typeinfo *
-octave_value_typeinfo::instance (0);
+octave_value_typeinfo::instance (nullptr);
 
 bool
 octave_value_typeinfo::instance_ok (void)
@@ -191,28 +191,28 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
 
       vals.resize (dim_vector (len, 1), octave_value ());
 
-      unary_ops.resize (dim_vector (octave_value::num_unary_ops, len), 0);
+      unary_ops.resize (dim_vector (octave_value::num_unary_ops, len), nullptr);
 
       non_const_unary_ops.resize
-        (dim_vector (octave_value::num_unary_ops, len), 0);
+        (dim_vector (octave_value::num_unary_ops, len), nullptr);
 
       binary_ops.resize
-        (dim_vector (octave_value::num_binary_ops, len, len), 0);
+        (dim_vector (octave_value::num_binary_ops, len, len), nullptr);
 
       compound_binary_ops.resize
-        (dim_vector (octave_value::num_compound_binary_ops, len, len), 0);
+        (dim_vector (octave_value::num_compound_binary_ops, len, len), nullptr);
 
-      cat_ops.resize (dim_vector (len, len), 0);
+      cat_ops.resize (dim_vector (len, len), nullptr);
 
       assign_ops.resize
-        (dim_vector (octave_value::num_assign_ops, len, len), 0);
+        (dim_vector (octave_value::num_assign_ops, len, len), nullptr);
 
       assignany_ops.resize
-        (dim_vector (octave_value::num_assign_ops, len), 0);
+        (dim_vector (octave_value::num_assign_ops, len), nullptr);
 
       pref_assign_conv.resize (dim_vector (len, len), -1);
 
-      widening_ops.resize (dim_vector (len, len), 0);
+      widening_ops.resize (dim_vector (len, len), nullptr);
     }
 
   types (i) = t_name;
@@ -715,7 +715,7 @@ octave_value_typeinfo::unary_ops_map (void) const
       boolNDArray tab (tab_dims);
 
       for (int i = 0; i < len; i++)
-        tab.xelem (i) = (unary_ops(j,i) != 0);
+        tab.xelem (i) = (unary_ops(j,i) != nullptr);
 
       octave_value::unary_op op_id = static_cast<octave_value::unary_op> (j);
 
@@ -740,7 +740,7 @@ octave_value_typeinfo::non_const_unary_ops_map (void) const
       boolNDArray tab (tab_dims);
 
       for (int i = 0; i < len; i++)
-        tab.xelem (i) = (non_const_unary_ops(j,i) != 0);
+        tab.xelem (i) = (non_const_unary_ops(j,i) != nullptr);
 
       octave_value::unary_op op_id = static_cast<octave_value::unary_op> (j);
 
@@ -765,7 +765,7 @@ octave_value_typeinfo::binary_ops_map (void) const
 
       for (int j = 0; j < len; j++)
         for (int i = 0; i < len; i++)
-          tab.xelem (j,i) = (binary_ops(k,j,i) != 0);
+          tab.xelem (j,i) = (binary_ops(k,j,i) != nullptr);
 
       octave_value::binary_op op_id = static_cast<octave_value::binary_op> (k);
 
@@ -791,7 +791,7 @@ octave_value_typeinfo::compound_binary_ops_map (void) const
 
       for (int j = 0; j < len; j++)
         for (int i = 0; i < len; i++)
-          tab.xelem (j,i) = (compound_binary_ops(k,j,i) != 0);
+          tab.xelem (j,i) = (compound_binary_ops(k,j,i) != nullptr);
 
       octave_value::compound_binary_op op_id
         = static_cast<octave_value::compound_binary_op> (k);
@@ -817,7 +817,7 @@ octave_value_typeinfo::assign_ops_map (void) const
 
       for (int j = 0; j < len; j++)
         for (int i = 0; i < len; i++)
-          tab.xelem (j,i) = (assign_ops(k,j,i) != 0);
+          tab.xelem (j,i) = (assign_ops(k,j,i) != nullptr);
 
       octave_value::assign_op op_id = static_cast<octave_value::assign_op> (k);
 
@@ -841,7 +841,7 @@ octave_value_typeinfo::assignany_ops_map (void) const
       boolNDArray tab (tab_dims);
 
       for (int i = 0; i < len; i++)
-        tab.xelem (i) = (assignany_ops(j,i) != 0);
+        tab.xelem (i) = (assignany_ops(j,i) != nullptr);
 
       octave_value::assign_op op_id = static_cast<octave_value::assign_op> (j);
 

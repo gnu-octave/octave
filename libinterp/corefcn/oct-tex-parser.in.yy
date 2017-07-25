@@ -212,7 +212,7 @@ text_parser_tex::parse (const std::string& s)
 
   if (init_lexer (s))
     {
-      result = 0;
+      result = nullptr;
 
       if (octave_tex_parse (*this) == 0)
         return result;

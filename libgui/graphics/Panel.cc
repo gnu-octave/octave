@@ -97,11 +97,12 @@ namespace QtHandles
           return new Panel (go, new QFrame (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   Panel::Panel (const graphics_object& go, QFrame *frame)
-    : Object (go, frame), m_container (0), m_title (0), m_blockUpdates (false)
+    : Object (go, frame), m_container (nullptr), m_title (nullptr),
+      m_blockUpdates (false)
   {
     uipanel::properties& pp = properties<uipanel> ();
 
@@ -275,7 +276,7 @@ namespace QtHandles
             {
               if (m_title)
                 delete m_title;
-              m_title = 0;
+              m_title = nullptr;
             }
           else
             {

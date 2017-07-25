@@ -45,7 +45,7 @@ namespace octave
     tree_unary_expression (int l = -1, int c = -1,
                            octave_value::unary_op t
                            = octave_value::unknown_unary_op)
-      : tree_expression (l, c), op (0), etype (t)  { }
+      : tree_expression (l, c), op (nullptr), etype (t)  { }
 
     tree_unary_expression (tree_expression *e, int l = -1, int c = -1,
                            octave_value::unary_op t

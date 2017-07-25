@@ -35,7 +35,7 @@ namespace QtHandles
 
   template <typename T>
   ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction *action)
-    : Object (go, action), m_separator (0)
+    : Object (go, action), m_separator (nullptr)
   {
     typename T::properties& tp = properties<T> ();
 
@@ -107,7 +107,7 @@ namespace QtHandles
           {
             if (m_separator)
               delete m_separator;
-            m_separator = 0;
+            m_separator = nullptr;
           }
         break;
 

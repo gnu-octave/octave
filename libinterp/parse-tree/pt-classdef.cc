@@ -152,6 +152,6 @@ namespace octave
     if (cls.ok ())
       return cls.get_constructor_function ();
 
-    return 0;
+    return nullptr;
   }
 }

@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #define MAYBE_CAST(VAR, CLASS)                                          \
   const CLASS *VAR = (arg.type_id () == CLASS::static_type_id ()        \
                       ? dynamic_cast<const CLASS *> (&arg.get_rep ())   \
-                      : 0)
+                      : nullptr)
 
 DEFUN (det, args, nargout,
        doc: /* -*- texinfo -*-

@@ -81,7 +81,7 @@ void KeyboardTranslatorManager::findTranslators()
         QString name = QFileInfo(translatorPath).baseName();
 
         if ( !_translators.contains(name) ) {
-            _translators.insert(name,0);
+            _translators.insert(name,nullptr);
 	}
     }
     _haveLoadedAll = true;
@@ -95,13 +95,13 @@ const KeyboardTranslator* KeyboardTranslatorManager::findTranslator(const QStrin
     //here was smth wrong in original Konsole source
     findTranslators();
 
-    if ( _translators.contains(name) && _translators[name] != 0 ) {
+    if ( _translators.contains(name) && _translators[name] != nullptr ) {
         return _translators[name];
     }
 
     KeyboardTranslator* translator = loadTranslator(name);
 
-    if ( translator != 0 )
+    if ( translator != nullptr )
         _translators[name] = translator;
     else if ( !name.isEmpty() )
         qWarning() << "Unable to load translator" << name;
@@ -147,7 +147,7 @@ KeyboardTranslator* KeyboardTranslatorManager::loadTranslator(const QString& nam
     QFile source(path);
 
     if (name.isEmpty() || !source.open(QIODevice::ReadOnly | QIODevice::Text))
-        return 0;
+        return nullptr;
 
     return loadTranslator(&source,name);
 }
@@ -158,7 +158,7 @@ const KeyboardTranslator* KeyboardTranslatorManager::defaultTranslator()
     textBuffer.setData(defaultTranslatorText,strlen(defaultTranslatorText));
 
     if (!textBuffer.open(QIODevice::ReadOnly))
-        return 0;
+        return nullptr;
 
     return loadTranslator(&textBuffer,"fallback");
 }
@@ -182,7 +182,7 @@ KeyboardTranslator* KeyboardTranslatorManager::loadTranslator(QIODevice* source,
     else
     {
         delete translator;
-        return 0;
+        return nullptr;
     }
 }
 

@@ -105,20 +105,20 @@ namespace octave
     //Default
     IDA (void)
       : t0 (0.0), y0 (), yp0 (), havejac (false), havejacfun (false),
-        havejacsparse (false), mem (0), num (), ida_fun (0),
-        ida_jac (0), dfdy (0), dfdyp (0), spdfdy (0),
-        spdfdyp (0), fun (0), jacfun (0), jacspfun (0),
-        jacdcell (0), jacspcell (0)
+        havejacsparse (false), mem (nullptr), num (), ida_fun (nullptr),
+        ida_jac (nullptr), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
+        spdfdyp (nullptr), fun (nullptr), jacfun (nullptr), jacspfun (nullptr),
+        jacdcell (nullptr), jacspcell (nullptr)
     { }
 
 
     IDA (realtype t, ColumnVector y, ColumnVector yp,
          octave_function *ida_fcn, DAERHSFuncIDA daefun)
       : t0 (t), y0 (y), yp0 (yp), havejac (false), havejacfun (false),
-        havejacsparse (false), mem (0), num (), ida_fun (ida_fcn),
-        ida_jac (0), dfdy (0), dfdyp (0), spdfdy (0),
-        spdfdyp (0), fun (daefun), jacfun (0), jacspfun (0),
-        jacdcell (0), jacspcell (0)
+        havejacsparse (false), mem (nullptr), num (), ida_fun (ida_fcn),
+        ida_jac (nullptr), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
+        spdfdyp (nullptr), fun (daefun), jacfun (nullptr), jacspfun (nullptr),
+        jacdcell (nullptr), jacspcell (nullptr)
     { }
 
 

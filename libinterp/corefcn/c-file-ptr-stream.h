@@ -107,7 +107,7 @@ c_file_ptr_stream : public STREAM_T
 public:
 
   c_file_ptr_stream (FILE_T f, typename BUF_T::close_fcn cf = BUF_T::file_close)
-    : STREAM_T (0), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
+    : STREAM_T (nullptr), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
 
   // No copying!
 
@@ -115,7 +115,7 @@ public:
 
   c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
 
-  ~c_file_ptr_stream (void) { delete buf; buf = 0; }
+  ~c_file_ptr_stream (void) { delete buf; buf = nullptr; }
 
   BUF_T * rdbuf (void) { return buf; }
 

@@ -1533,7 +1533,7 @@ void Screen::setScroll(const HistoryType& t , bool copyPreviousScroll)
   else
   {
       HistoryScroll* oldScroll = hist;
-      hist = t.scroll(0);
+      hist = t.scroll(nullptr);
       delete oldScroll;
   }
 }

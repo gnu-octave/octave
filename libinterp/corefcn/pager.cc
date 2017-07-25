@@ -99,7 +99,7 @@ clear_external_pager (void)
       octave::child_list::remove (external_pager->pid ());
 
       delete external_pager;
-      external_pager = 0;
+      external_pager = nullptr;
     }
 }
 
@@ -304,7 +304,7 @@ namespace octave
 
   pager_stream *pager_stream::instance = nullptr;
 
-  pager_stream::pager_stream (void) : std::ostream (0), pb (0)
+  pager_stream::pager_stream (void) : std::ostream (nullptr), pb (nullptr)
   {
     pb = new pager_buf ();
     rdbuf (pb);
@@ -393,7 +393,7 @@ namespace octave
 
   diary_stream *diary_stream::instance = nullptr;
 
-  diary_stream::diary_stream (void) : std::ostream (0), db (0)
+  diary_stream::diary_stream (void) : std::ostream (nullptr), db (nullptr)
   {
     db = new diary_buf ();
     rdbuf (db);

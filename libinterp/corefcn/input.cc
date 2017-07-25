@@ -866,7 +866,7 @@ octave_yes_or_no (const std::string& prompt)
       else if (input_buf == "no")
         return false;
       else
-        message (0, "Please answer yes or no.");
+        message (nullptr, "Please answer yes or no.");
     }
 }
 

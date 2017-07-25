@@ -157,7 +157,7 @@ string_vector::c_str_vec (void) const
 
   char **retval = new char * [len + 1];
 
-  retval[len] = 0;
+  retval[len] = nullptr;
 
   for (octave_idx_type i = 0; i < len; i++)
     retval[i] = strsave (elem (i).c_str ());

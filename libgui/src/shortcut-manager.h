@@ -106,7 +106,7 @@ public:
 
 public slots:
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
 signals:
 
@@ -137,7 +137,7 @@ private:
   public:
 
     shortcut_t (void)
-      : tree_item (0), description (), settings_key (),
+      : tree_item (nullptr), description (), settings_key (),
         actual_sc (QKeySequence ()), default_sc (QKeySequence ())
     {  }
 

@@ -268,7 +268,7 @@ namespace octave
 
   public:
 
-    opengl_tesselator (void) : glu_tess (0), fill () { init (); }
+    opengl_tesselator (void) : glu_tess (nullptr), fill () { init (); }
 
     // No copying!
 
@@ -3429,7 +3429,7 @@ namespace octave
     glEnable (GL_BLEND);
     glEnable (GL_ALPHA_TEST);
     glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
-    glBitmap (0, 0, 0, 0, bbox(0), bbox(1), 0);
+    glBitmap (0, 0, 0, 0, bbox(0), bbox(1), nullptr);
     glDrawPixels (bbox(2), bbox(3),
                   GL_RGBA, GL_UNSIGNED_BYTE, props.get_pixels ().data ());
     glDisable (GL_ALPHA_TEST);
@@ -4300,7 +4300,7 @@ namespace octave
         glEnable (GL_BLEND);
         glEnable (GL_ALPHA_TEST);
         glRasterPos3d (x, y, z);
-        glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
+        glBitmap(0, 0, 0, 0, bbox(0), bbox(1), nullptr);
         glDrawPixels (bbox(2), bbox(3),
                       GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
         glDisable (GL_ALPHA_TEST);

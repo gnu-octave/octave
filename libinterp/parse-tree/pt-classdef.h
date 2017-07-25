@@ -50,7 +50,7 @@ namespace octave
       : id (i), expr (e), neg (false) { }
 
     tree_classdef_attribute (tree_identifier *i, bool b)
-      : id (i), expr (0), neg (b) { }
+      : id (i), expr (nullptr), neg (b) { }
 
     // No copying!
 
@@ -437,7 +437,7 @@ namespace octave
   {
   public:
 
-    tree_classdef_enum (void) : id (0), expr (0) { }
+    tree_classdef_enum (void) : id (nullptr), expr (nullptr) { }
 
     tree_classdef_enum (tree_identifier *i, tree_expression *e)
       : id (i), expr (e) { }

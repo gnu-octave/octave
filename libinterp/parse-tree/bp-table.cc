@@ -604,7 +604,7 @@ find_fcn_by_line (octave_user_code *main_fcn, int lineno, int *end_line = nullpt
         retval = main_fcn;
     }
 
-  if (end_line != 0 && earliest_end < *end_line)
+  if (end_line != nullptr && earliest_end < *end_line)
     *end_line = earliest_end;
 
   return retval;

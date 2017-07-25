@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 // Use static fields for the best efficiency.
 // NOTE: C++0x will allow these two to be merged into one.
 static const char *bt_fieldnames[] =
-  { "file", "name", "line", "column", "scope", "context", 0 };
+  { "file", "name", "line", "column", "scope", "context", nullptr };
 static const octave_fields bt_fields (bt_fieldnames);
 
 namespace octave
@@ -91,7 +91,7 @@ namespace octave
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    push (0, symtab.top_scope (), 0);
+    push (nullptr, symtab.top_scope (), 0);
   }
 
   int

@@ -52,7 +52,7 @@ namespace octave
       friend class call_stack;
 
       stack_frame (octave_function *fcn = nullptr,
-                   symbol_table::scope *scope = 0,
+                   symbol_table::scope *scope = nullptr,
                    symbol_table::context_id context = 0, size_t prev = 0)
         : m_fcn (fcn), m_line (-1), m_column (-1), m_scope (scope),
           m_context (context), m_prev (prev)
@@ -127,7 +127,7 @@ namespace octave
     symbol_table::scope *current_scope (void) const
     {
       return (curr_frame > 0 && curr_frame < cs.size ()
-              ? cs[curr_frame].m_scope : 0);
+              ? cs[curr_frame].m_scope : nullptr);
     }
 
     symbol_table::context_id current_context (void) const

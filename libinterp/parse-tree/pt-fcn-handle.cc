@@ -74,7 +74,7 @@ namespace octave
     symbol_table& symtab
       = __get_symbol_table__ ("tree_anon_fcn_handle::dup");
 
-    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : 0;
+    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : nullptr;
 
     // FIXME: why should we inherit from the current scope here?  That
     // doesn't seem right, but with the way things work now it appears
@@ -84,8 +84,8 @@ namespace octave
       symtab.inherit (new_scope);
 
     tree_anon_fcn_handle *new_afh = new
-      tree_anon_fcn_handle (param_list ? param_list->dup (*new_scope) : 0,
-                            expr ? expr->dup (*new_scope) : 0,
+      tree_anon_fcn_handle (param_list ? param_list->dup (*new_scope) : nullptr,
+                            expr ? expr->dup (*new_scope) : nullptr,
                             new_scope, af_parent_scope, line (), column ());
 
     new_afh->copy_base (*this);

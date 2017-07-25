@@ -90,7 +90,7 @@ void TerminalView::setScreenWindow(ScreenWindow* window)
   // disconnect existing screen window if any
   if ( _screenWindow )
     {
-      disconnect( _screenWindow , 0 , this , 0 );
+      disconnect( _screenWindow , nullptr , this , nullptr );
     }
 
   _screenWindow = window;
@@ -713,11 +713,12 @@ void TerminalView::scrollImage(int lines , const QRect& screenWindowRegion)
   QRect region = screenWindowRegion;
   region.setBottom( qMin(region.bottom(),this->_lines-2) );
 
-  if (    lines == 0
-          || _image == 0
-          || !region.isValid()
-          || (region.top() + abs(lines)) >= region.bottom()
-          || this->_lines <= region.height() ) return;
+  if (lines == 0
+      || _image == nullptr
+      || !region.isValid()
+      || (region.top() + abs(lines)) >= region.bottom()
+      || this->_lines <= region.height() )
+    return;
 
   QRect scrollRect;
 

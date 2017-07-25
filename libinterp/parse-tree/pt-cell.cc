@@ -39,7 +39,7 @@ namespace octave
   tree_expression *
   tree_cell::dup (symbol_table::scope& scope) const
   {
-    tree_cell *new_cell = new tree_cell (0, line (), column ());
+    tree_cell *new_cell = new tree_cell (nullptr, line (), column ());
 
     new_cell->copy_base (*this, scope);
 

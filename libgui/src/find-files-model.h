@@ -34,7 +34,7 @@ class find_files_model : public QAbstractListModel
   Q_OBJECT
 
 public:
-  find_files_model (QObject *p=0);
+  find_files_model (QObject *p = nullptr);
   ~find_files_model ();
 
   void clear ();

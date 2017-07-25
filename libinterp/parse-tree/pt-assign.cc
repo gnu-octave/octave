@@ -60,8 +60,8 @@ namespace octave
   tree_simple_assignment::dup (symbol_table::scope& scope) const
   {
     tree_simple_assignment *new_sa
-      = new tree_simple_assignment (lhs ? lhs->dup (scope) : 0,
-                                    rhs ? rhs->dup (scope) : 0,
+      = new tree_simple_assignment (lhs ? lhs->dup (scope) : nullptr,
+                                    rhs ? rhs->dup (scope) : nullptr,
                                     preserve, etype);
 
     new_sa->copy_base (*this);
@@ -95,7 +95,7 @@ namespace octave
   tree_multi_assignment::dup (symbol_table::scope&) const
   {
     panic_impossible ();
-    return 0;
+    return nullptr;
   }
 }
 

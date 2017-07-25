@@ -43,7 +43,7 @@ class QTerminal : public QWidget
 
 public:
 
-  static QTerminal *create (QWidget *xparent = 0);
+  static QTerminal *create (QWidget *xparent = nullptr);
 
   static QList<QColor> default_colors (void);
 
@@ -121,7 +121,7 @@ public slots:
 
 protected:
 
-  QTerminal (QWidget *xparent = 0) : QWidget (xparent)
+  QTerminal (QWidget *xparent = nullptr) : QWidget (xparent)
   {
     // context menu
     setContextMenuPolicy (Qt::CustomContextMenu);

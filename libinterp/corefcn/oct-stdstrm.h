@@ -40,7 +40,7 @@ public:
                          = octave::mach_info::native_float_format (),
                        typename BUF_T::close_fcn cf = BUF_T::file_close)
     : octave::base_stream (m, ff), nm (n), md (m),
-      s (f ? new STREAM_T (f, cf) : 0), fnum (fid)
+      s (f ? new STREAM_T (f, cf) : nullptr), fnum (fid)
   { }
 
   // No copying!
@@ -66,13 +66,13 @@ public:
 
   std::string name (void) const { return nm; }
 
-  std::istream * input_stream (void) { return (md & std::ios::in) ? s : 0; }
+  std::istream * input_stream (void) { return (md & std::ios::in) ? s : nullptr; }
 
-  std::ostream * output_stream (void) { return (md & std::ios::out) ? s : 0; }
+  std::ostream * output_stream (void) { return (md & std::ios::out) ? s : nullptr; }
 
   // FIXME: should not have to cast away const here.
   BUF_T * rdbuf (void) const
-  { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : 0; }
+  { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : nullptr; }
 
   int file_number (void) const { return fnum; }
 
@@ -139,7 +139,7 @@ octave_zstdiostream
 {
 public:
 
-  octave_zstdiostream (const std::string& n, gzFile f = 0, int fid = 0,
+  octave_zstdiostream (const std::string& n, gzFile f = nullptr, int fid = 0,
                        std::ios::openmode m = std::ios::in | std::ios::out,
                        octave::mach_info::float_format ff
                          = octave::mach_info::native_float_format (),
@@ -149,7 +149,7 @@ public:
        (n, f, fid, m, ff, cf) { }
 
   static octave::stream
-  create (const std::string& n, gzFile f = 0, int fid = 0,
+  create (const std::string& n, gzFile f = nullptr, int fid = 0,
           std::ios::openmode m = std::ios::in | std::ios::out,
           octave::mach_info::float_format ff
             = octave::mach_info::native_float_format (),

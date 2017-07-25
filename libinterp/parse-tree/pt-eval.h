@@ -260,7 +260,7 @@ namespace octave
 
     const std::list<octave_lvalue> * lvalue_list (void)
     {
-      return m_lvalue_list_stack.empty () ? 0 : m_lvalue_list_stack.top ();
+      return m_lvalue_list_stack.empty () ? nullptr : m_lvalue_list_stack.top ();
     }
 
     octave_value evaluate (tree_expression *expr, int nargout = 1)

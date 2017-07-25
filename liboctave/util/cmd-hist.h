@@ -132,7 +132,7 @@ namespace octave
     // The real thing.
     static command_history *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   protected:
 

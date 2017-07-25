@@ -1003,7 +1003,7 @@ octave_base_value::write (octave::stream&, int, oct_data_conv::data_type,
 mxArray *
 octave_base_value::as_mxArray (void) const
 {
-  return 0;
+  return nullptr;
 }
 
 octave_value
@@ -1274,13 +1274,13 @@ octave_base_value::numeric_assign (const std::string& type,
                                                            cf_rhs.type_id ())
                   || octave_value_typeinfo::lookup_pref_assign_conv (t_lhs,
                                                                      cf_rhs.type_id ()) >= 0))
-            cf_this = 0;
+            cf_this = nullptr;
           else if (cf_this.type_id () >= 0
                    && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
                                                                 cf_this.type_id (), t_rhs)
                        || octave_value_typeinfo::lookup_pref_assign_conv (cf_this.type_id (),
                                                                           t_rhs) >= 0))
-            cf_rhs = 0;
+            cf_rhs = nullptr;
 
           if (cf_rhs)
             {

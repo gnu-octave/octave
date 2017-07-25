@@ -49,13 +49,13 @@ namespace octave
   public:
 
     tree_statement (void)
-      : cmd (0), expr (0), comm (0) { }
+      : cmd (nullptr), expr (nullptr), comm (nullptr) { }
 
     tree_statement (tree_command *c, comment_list *cl)
-      : cmd (c), expr (0), comm (cl) { }
+      : cmd (c), expr (nullptr), comm (cl) { }
 
     tree_statement (tree_expression *e, comment_list *cl)
-      : cmd (0), expr (e), comm (cl) { }
+      : cmd (nullptr), expr (e), comm (cl) { }
 
     // No copying!
 
@@ -69,9 +69,9 @@ namespace octave
 
     bool print_result (void);
 
-    bool is_command (void) const { return cmd != 0; }
+    bool is_command (void) const { return cmd != nullptr; }
 
-    bool is_expression (void) const { return expr != 0; }
+    bool is_expression (void) const { return expr != nullptr; }
 
     void set_breakpoint (const std::string& condition);
 

@@ -175,8 +175,8 @@ namespace octave
 
   profiler::profiler (void)
     : known_functions (), fcn_index (),
-      enabled (false), call_tree (new tree_node (0, 0)),
-      active_fcn (0), last_time (-1.0)
+      enabled (false), call_tree (new tree_node (nullptr, 0)),
+      active_fcn (nullptr), last_time (-1.0)
   { }
 
   profiler::~profiler (void)
@@ -263,8 +263,8 @@ namespace octave
     if (call_tree)
       {
         delete call_tree;
-        call_tree = new tree_node (0, 0);
-        active_fcn = 0;
+        call_tree = new tree_node (nullptr, 0);
+        active_fcn = nullptr;
       }
 
     last_time = -1.0;
@@ -321,7 +321,7 @@ namespace octave
             "IsRecursive",
             "Parents",
             "Children",
-            0
+            nullptr
           };
 
         static octave_map m (dim_vector (0, 1), string_vector (fn));
@@ -347,7 +347,7 @@ namespace octave
             "SelfTime",
             "NumCalls",
             "Children",
-            0
+            nullptr
           };
 
         static octave_map m (dim_vector (0, 1), string_vector (fn));

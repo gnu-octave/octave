@@ -410,7 +410,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   octave_idx_type tmp;
   hsize_t hdims[2];
 
-  space_hid = H5Screate_simple (0, hdims, 0);
+  space_hid = H5Screate_simple (0, hdims, nullptr);
   if (space_hid < 0)
     {
       H5Gclose (group_hid);
@@ -495,7 +495,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hdims[0] = m.cols () + 1;
   hdims[1] = 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
 
   if (space_hid < 0)
     {
@@ -533,7 +533,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hdims[0] = m.nnz ();
   hdims[1] = 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
 
   if (space_hid < 0)
     {

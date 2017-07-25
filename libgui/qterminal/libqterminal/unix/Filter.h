@@ -115,7 +115,7 @@ public:
         * one of the objects from the actions() list.  In which case the associated
         * action should be performed.
         */
-       virtual void activate(QObject* object = 0) = 0;
+       virtual void activate(QObject* object = nullptr) = 0;
        /**
         * Returns a list of actions associated with the hotspot which can be used in a
         * menu or toolbar
@@ -211,7 +211,7 @@ public:
     public:
         HotSpot(int startLine, int startColumn,
                 int endLine , int endColumn, Filter::Type);
-        virtual void activate(QObject* object = 0);
+        virtual void activate(QObject* object = nullptr);
 
         /** Sets the captured texts associated with this hotspot */
         void setCapturedTexts(const QStringList& texts);
@@ -284,7 +284,7 @@ public:
          * Open a web browser at the current URL.  The url itself can be determined using
          * the capturedTexts() method.
          */
-        virtual void activate(QObject* object = 0);
+        virtual void activate(QObject* object = nullptr);
 
         virtual QString tooltip() const;
 

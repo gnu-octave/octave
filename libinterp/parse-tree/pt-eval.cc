@@ -97,24 +97,24 @@ namespace octave
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
     symbol_table::scope *af_parent_scope
-      = anon_fh.has_parent_scope () ? symtab.current_scope () : 0;
+      = anon_fh.has_parent_scope () ? symtab.current_scope () : nullptr;
 
-    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : 0;
+    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : nullptr;
 
     if (new_scope && af_parent_scope)
       new_scope->inherit (af_parent_scope);
 
     tree_parameter_list *param_list_dup
-      = param_list ? param_list->dup (*new_scope) : 0;
+      = param_list ? param_list->dup (*new_scope) : nullptr;
 
-    tree_parameter_list *ret_list = 0;
+    tree_parameter_list *ret_list = nullptr;
 
-    tree_statement_list *stmt_list = 0;
+    tree_statement_list *stmt_list = nullptr;
 
     if (expr)
       {
         tree_expression *expr_dup = expr->dup (*new_scope);
-        tree_statement *stmt = new tree_statement (expr_dup, 0);
+        tree_statement *stmt = new tree_statement (expr_dup, nullptr);
         stmt_list = new tree_statement_list (stmt);
       }
 
@@ -1278,7 +1278,7 @@ namespace octave
 
                 unwind_protect frame;
 
-                m_lvalue_list_stack.push (0);
+                m_lvalue_list_stack.push (nullptr);
 
                 frame.add_method (m_lvalue_list_stack,
                                   &value_stack<const std::list<octave_lvalue>*>::pop);
@@ -1686,7 +1686,7 @@ namespace octave
 
     unwind_protect frame;
 
-    m_lvalue_list_stack.push (0);
+    m_lvalue_list_stack.push (nullptr);
 
     frame.add_method (m_lvalue_list_stack,
                       &value_stack<const std::list<octave_lvalue>*>::pop);
@@ -2813,7 +2813,7 @@ namespace octave
 
         unwind_protect frame;
 
-        m_lvalue_list_stack.push (0);
+        m_lvalue_list_stack.push (nullptr);
 
         frame.add_method (m_lvalue_list_stack,
                           &value_stack<const std::list<octave_lvalue>*>::pop);

@@ -198,7 +198,7 @@ namespace octave
               buf[0] = '\0';
 
               chars_written
-                = octave_strftime_wrapper (buf, bufsize, fmt_str, &t, 0, 0);
+                = octave_strftime_wrapper (buf, bufsize, fmt_str, &t, nullptr, 0);
 
               bufsize *= 2;
             }

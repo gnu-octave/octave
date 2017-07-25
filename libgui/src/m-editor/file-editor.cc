@@ -57,10 +57,10 @@ file_editor::file_editor (QWidget *p)
 
   // set action that are later added by the main window to null,
   // preventing access to them when they are still undefined
-  _undo_action = 0;
-  _copy_action = 0;
-  _paste_action = 0;
-  _selectall_action = 0;
+  _undo_action = nullptr;
+  _copy_action = nullptr;
+  _paste_action = nullptr;
+  _selectall_action = nullptr;
   _closed = false;
 
   construct ();
@@ -91,7 +91,7 @@ file_editor::check_closing (void)
 
   // Have all file editor tabs signal what their filenames are.
   editor_tab_map.clear ();
-  emit fetab_file_name_query (0);
+  emit fetab_file_name_query (nullptr);
 
   // Save all tabs with confirmation.
   file_editor_tab::reset_cancel ();
@@ -307,7 +307,7 @@ file_editor::request_open_file (const QString& openFileName,
     {
       // Have all file editor tabs signal what their filenames are.
       editor_tab_map.clear ();
-      emit fetab_file_name_query (0);
+      emit fetab_file_name_query (nullptr);
 
       // Check whether this file is already open in the editor.
       QWidget *tab = find_tab_widget (openFileName);
@@ -343,7 +343,7 @@ file_editor::request_open_file (const QString& openFileName,
             {
               fileEditorTab = static_cast<file_editor_tab *>(tab);
               if (fileEditorTab->qsci_edit_area ()->isModified ())
-                fileEditorTab = 0;
+                fileEditorTab = nullptr;
               else
                 reusing = true;
             }
@@ -412,7 +412,7 @@ file_editor::request_open_file (const QString& openFileName,
                                                     tr ("Octave Editor"),
                                                     tr ("File\n%1\ndoes not exist. "
                                                         "Do you want to create it?").arg (openFileName),
-                                                    QMessageBox::NoButton,0);
+                                                    QMessageBox::NoButton,nullptr);
                           QPushButton *create_button =
                             msgBox->addButton (tr ("Create"), QMessageBox::YesRole);
                           msgBox->addButton (tr ("Cancel"), QMessageBox::RejectRole);
@@ -480,7 +480,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
 {
   // Have all file editor tabs signal what their filenames are.
   editor_tab_map.clear ();
-  emit fetab_file_name_query (0);
+  emit fetab_file_name_query (nullptr);
 
   // Check whether this file is already open in the editor.
   QWidget *tab = find_tab_widget (saveFileName);
@@ -500,7 +500,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
                            tr ("File not saved! A file with the selected name\n%1\n"
                                "is already open in the editor").
                            arg (saveFileName),
-                           QMessageBox::Ok, 0);
+                           QMessageBox::Ok, nullptr);
 
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -526,7 +526,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
       QMessageBox *msgBox
         = new QMessageBox (QMessageBox::Critical, tr ("Octave Editor"),
                            tr ("The associated file editor tab has disappeared."),
-                           QMessageBox::Ok, 0);
+                           QMessageBox::Ok, nullptr);
 
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -554,7 +554,7 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file,
     {
       // Have all file editor tabs signal what their filenames are.
       editor_tab_map.clear ();
-      emit fetab_file_name_query (0);
+      emit fetab_file_name_query (nullptr);
 
       // Check whether this file is already open in the editor.
       QWidget *tab = find_tab_widget (file);
@@ -1615,13 +1615,13 @@ file_editor::construct (void)
 
   // tab navigation (no menu, only actions)
 
-  _switch_left_tab_action = add_action (0, QIcon (), "",
+  _switch_left_tab_action = add_action (nullptr, QIcon (), "",
                                         SLOT (switch_left_tab ()));
-  _switch_right_tab_action = add_action (0, QIcon (), "",
+  _switch_right_tab_action = add_action (nullptr, QIcon (), "",
                                          SLOT (switch_right_tab ()));
-  _move_tab_left_action = add_action (0, QIcon (), "",
+  _move_tab_left_action = add_action (nullptr, QIcon (), "",
                                       SLOT (move_tab_left ()));
-  _move_tab_right_action = add_action (0, QIcon (), "",
+  _move_tab_right_action = add_action (nullptr, QIcon (), "",
                                        SLOT (move_tab_right ()));
 
   // toolbar

@@ -656,7 +656,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
       // Declared static to avoid vfork/long jump compiler complaints.
       static sort_function sort_test;
-      sort_test = 0;
+      sort_test = nullptr;
 
       switch (ord_job)
         {

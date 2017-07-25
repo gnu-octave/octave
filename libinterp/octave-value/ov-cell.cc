@@ -1008,7 +1008,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   // Have to save cell array shape, since can't have a
   // dataset of groups....
 
-  space_hid = H5Screate_simple (1, &rank, 0);
+  space_hid = H5Screate_simple (1, &rank, nullptr);
 
   if (space_hid < 0)
     {

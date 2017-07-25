@@ -53,14 +53,14 @@ namespace octave
       sparse_chol_rep (void)
         : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (0), Common ()
+        , Lsparse (nullptr), Common ()
 #endif
       { }
 
       sparse_chol_rep (const chol_type& a, bool natural, bool force)
         : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (0), Common ()
+        , Lsparse (nullptr), Common ()
 #endif
       {
         init (a, natural, force);
@@ -70,7 +70,7 @@ namespace octave
                        bool natural, bool force)
         : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (0), Common ()
+        , Lsparse (nullptr), Common ()
 #endif
       {
         info = init (a, natural, force);
@@ -234,7 +234,7 @@ namespace octave
       if (spu == 0.)
         {
           cm->print = -1;
-          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
         }
       else
         {

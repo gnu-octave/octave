@@ -114,7 +114,7 @@ namespace octave
 
     static display_info *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     // Height, width, and depth of the display.
     int m_ht;

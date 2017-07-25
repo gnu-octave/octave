@@ -82,7 +82,7 @@ namespace octave
                               symbol_table::scope& scope)
   {
     for (const tree_argument_list *elt : array_list)
-      append (elt ? elt->dup (scope) : 0);
+      append (elt ? elt->dup (scope) : nullptr);
 
     copy_base (*this);
   }
@@ -91,7 +91,7 @@ namespace octave
   tree_array_list::dup (symbol_table::scope&) const
   {
     panic_impossible ();
-    return 0;
+    return nullptr;
   }
 
   void

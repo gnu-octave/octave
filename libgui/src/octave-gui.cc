@@ -225,7 +225,7 @@ namespace octave
 
     // Create and show main window.
 
-    main_window w (0, this);
+    main_window w (nullptr, this);
 
     if (start_gui)
       {

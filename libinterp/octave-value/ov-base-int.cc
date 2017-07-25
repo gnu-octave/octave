@@ -427,7 +427,7 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, 0);
+  space_hid = H5Screate_simple (rank, hdims, nullptr);
 
   if (space_hid < 0) return false;
 #if defined (HAVE_HDF5_18)
@@ -711,7 +711,7 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
 
-  space_hid = H5Screate_simple (0, dimens, 0);
+  space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0) return false;
 
 #if defined (HAVE_HDF5_18)

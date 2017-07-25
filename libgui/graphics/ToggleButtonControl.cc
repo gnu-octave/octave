@@ -47,7 +47,7 @@ namespace QtHandles
           return new ToggleButtonControl (go, new QPushButton (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
   ToggleButtonControl::ToggleButtonControl (const graphics_object& go,

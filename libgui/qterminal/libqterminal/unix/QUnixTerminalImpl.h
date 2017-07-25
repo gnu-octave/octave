@@ -34,7 +34,7 @@ class QUnixTerminalImpl : public QTerminal
     int fdstderr;
 
 public:
-    QUnixTerminalImpl(QWidget *parent = 0);
+    QUnixTerminalImpl(QWidget *parent = nullptr);
     virtual ~QUnixTerminalImpl();
 
     void setTerminalFont(const QFont &font);

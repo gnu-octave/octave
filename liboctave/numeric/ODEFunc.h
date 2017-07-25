@@ -37,10 +37,10 @@ public:
   typedef Matrix (*ODEJacFunc) (const ColumnVector&, double);
 
   ODEFunc (void)
-    : fun (0), jac (0), reset (true) { }
+    : fun (nullptr), jac (nullptr), reset (true) { }
 
   ODEFunc (ODERHSFunc f)
-    : fun (f), jac (0), reset (true) { }
+    : fun (f), jac (nullptr), reset (true) { }
 
   ODEFunc (ODERHSFunc f, ODEJacFunc j)
     : fun (f), jac (j), reset (true) { }

@@ -99,7 +99,7 @@ public:
 
   std::istream * input_stream (void) { return is; }
 
-  std::ostream * output_stream (void) { return 0; }
+  std::ostream * output_stream (void) { return nullptr; }
 
 protected:
 
@@ -136,7 +136,7 @@ public:
 
   bool eof (void) const;
 
-  std::istream * input_stream (void) { return 0; }
+  std::istream * input_stream (void) { return nullptr; }
 
   std::ostream * output_stream (void) { return os; }
 

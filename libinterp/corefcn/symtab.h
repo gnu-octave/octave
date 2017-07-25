@@ -96,7 +96,7 @@ namespace octave
 
         symbol_record_rep (scope *s, const std::string& nm,
                            const octave_value& v, unsigned int sc)
-          : m_decl_scope (s), curr_fcn (0), name (nm), value_stack (),
+          : m_decl_scope (s), curr_fcn (nullptr), name (nm), value_stack (),
             storage_class (sc), /* finfo (), */ valid (true), count (1)
         {
           value_stack.push_back (v);
@@ -492,7 +492,7 @@ namespace octave
     {
     public:
 
-      symbol_reference (void) : m_scope (0), m_context (0) { }
+      symbol_reference (void) : m_scope (nullptr), m_context (0) { }
 
       symbol_reference (const symbol_record& record);
 
@@ -1536,7 +1536,7 @@ namespace octave
 
     octave_user_function * get_curr_fcn (void)
     {
-      return m_current_scope ? m_current_scope->function () : 0;
+      return m_current_scope ? m_current_scope->function () : nullptr;
     }
 
     void cleanup (void);
@@ -1544,7 +1544,7 @@ namespace octave
     fcn_info * get_fcn_info (const std::string& name)
     {
       fcn_table_iterator p = m_fcn_table.find (name);
-      return p != m_fcn_table.end () ? &p->second : 0;
+      return p != m_fcn_table.end () ? &p->second : nullptr;
     }
 
     class scope
@@ -1567,7 +1567,7 @@ namespace octave
 
       scope (const std::string& name = "")
         : m_name (name), m_symbols (), m_persistent_symbols (), m_subfunctions (),
-          m_fcn (0), m_parent (0), m_children (), m_is_nested (false),
+          m_fcn (nullptr), m_parent (nullptr), m_children (), m_is_nested (false),
           m_is_static (false), m_context (0)
       { }
 

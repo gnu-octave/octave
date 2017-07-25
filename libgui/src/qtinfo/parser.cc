@@ -102,7 +102,7 @@ parser::open_file (QFileInfo & file_info)
       iprocstream ips (command.toStdString ());
 
       if (ips.bad ())
-        return 0;
+        return nullptr;
 
       QByteArray result;
       char buffer[1024];
@@ -117,7 +117,7 @@ parser::open_file (QFileInfo & file_info)
       io->setData (result);
 
       if (! io->open (QIODevice::ReadOnly | QIODevice::Text))
-        return 0;
+        return nullptr;
 
       iodevice = io;
     }
@@ -125,7 +125,7 @@ parser::open_file (QFileInfo & file_info)
     {
       QFile *io = new QFile (file_info.absoluteFilePath ());
       if (! io->open (QIODevice::ReadOnly | QIODevice::Text))
-        return 0;
+        return nullptr;
       iodevice = io;
     }
 

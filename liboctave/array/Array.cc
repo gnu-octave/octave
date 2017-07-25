@@ -630,7 +630,7 @@ class rec_resize_helper
 
 public:
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
-    : cext (0), sext (0), dext (0), n (0)
+    : cext (nullptr), sext (nullptr), dext (nullptr), n (0)
   {
     int l = ndv.ndims ();
     assert (odv.ndims () == l);

@@ -411,7 +411,7 @@ text_parser_tex : public text_parser
 {
 public:
   text_parser_tex (void)
-    : text_parser (), scanner (0), buffer_state (0), result (0)
+    : text_parser (), scanner (nullptr), buffer_state (nullptr), result (nullptr)
   { }
 
   ~text_parser_tex (void)

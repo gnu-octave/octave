@@ -359,7 +359,7 @@ shortcut_manager::init (const QString& description, const QString& key,
 void
 shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
 {
-  _dialog = 0;
+  _dialog = nullptr;
   _level_hash.clear ();
 
 #if defined (HAVE_QT4)
@@ -464,11 +464,11 @@ shortcut_manager::do_write_shortcuts (QSettings *settings,
 
   if (closing)
     {
-      delete _dialog;  // the dialog for key sequences can be removed now
-      _dialog = 0;     // make sure it is zero again
+      delete _dialog;     // the dialog for key sequences can be removed now
+      _dialog = nullptr;  // make sure it is zero again
     }
 
-  settings->sync ();    // sync the settings file
+  settings->sync ();      // sync the settings file
 }
 
 void
@@ -694,12 +694,12 @@ shortcut_manager::do_import_export (int action)
         file = QFileDialog::getOpenFileName (this,
                     tr ("Import shortcuts from file ..."), QString (),
                     tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                    0, QFileDialog::DontUseNativeDialog);
+                    nullptr, QFileDialog::DontUseNativeDialog);
       else if (action == OSC_EXPORT)
         file = QFileDialog::getSaveFileName (this,
                     tr ("Export shortcuts into file ..."), QString (),
                     tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                    0, QFileDialog::DontUseNativeDialog);
+                    nullptr, QFileDialog::DontUseNativeDialog);
 
       if (file.isEmpty ())
         return false;
@@ -722,7 +722,7 @@ shortcut_manager::do_import_export (int action)
     }
   else
     {
-      import_shortcuts (0);
+      import_shortcuts (nullptr);
     }
 
   return true;

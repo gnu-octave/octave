@@ -173,8 +173,9 @@ namespace octave
   public:
 
     tree_simple_for_command (int l = -1, int c = -1)
-      : tree_command (l, c), parallel (false), lhs (0), expr (0),
-        maxproc (0), list (nullptr), lead_comm (nullptr), trail_comm (nullptr)
+      : tree_command (l, c), parallel (false), lhs (nullptr), expr (nullptr),
+        maxproc (nullptr), list (nullptr), lead_comm (nullptr),
+        trail_comm (nullptr)
 #if defined (HAVE_LLVM)
       , compiled (nullptr)
 #endif

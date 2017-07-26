@@ -582,7 +582,7 @@ sub emit_option_table_entry
 
   if ($empty)
     {
-      print "  { 0,\n";
+      print "  { nullptr,\n";
     }
   else
     {
@@ -595,7 +595,7 @@ sub emit_option_table_entry
     {
       if ($empty or $k > $n)
         {
-          print " 0,";
+          print " nullptr,";
         }
       else
         {

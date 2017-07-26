@@ -1123,10 +1123,10 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // reporting function:
 #if defined (HAVE_HDF5_18)
       H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
+      H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
       H5Eget_auto (&err_func, &err_func_data);
-      H5Eset_auto (0, nullptr);
+      H5Eset_auto (nullptr, nullptr);
 #endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "SYMBOL_TABLE");
@@ -1239,10 +1239,10 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // reporting function:
 #if defined (HAVE_HDF5_18)
       H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
+      H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
       H5Eget_auto (&err_func, &err_func_data);
-      H5Eset_auto (0, nullptr);
+      H5Eset_auto (nullptr, nullptr);
 #endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "OCTAVEROOT");

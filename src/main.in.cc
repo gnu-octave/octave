@@ -186,7 +186,7 @@ static char *
 strsave (const char *s)
 {
   if (! s)
-    return 0;
+    return nullptr;
 
   int len = strlen (s);
   char *tmp = new char [len+1];
@@ -290,7 +290,7 @@ main (int argc, char **argv)
         new_argv[k++] = argv[i];
     }
 
-  new_argv[k] = 0;
+  new_argv[k] = nullptr;
 
   if (no_display)
     {

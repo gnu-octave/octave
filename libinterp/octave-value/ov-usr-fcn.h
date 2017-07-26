@@ -62,7 +62,7 @@ protected:
 
   octave_user_code (const std::string& nm,
                     const std::string& ds = "")
-    : octave_function (nm, ds), curr_unwind_protect_frame (0),
+    : octave_function (nm, ds), curr_unwind_protect_frame (nullptr),
       m_file_info (nullptr)
   { }
 

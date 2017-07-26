@@ -38,11 +38,11 @@ octave_procbuf : public c_file_ptr_buf
 public:
 
   octave_procbuf (void)
-    : c_file_ptr_buf (0), wstatus (-1), open_p (false), proc_pid (-1),
+    : c_file_ptr_buf (nullptr), wstatus (-1), open_p (false), proc_pid (-1),
       next (nullptr) { }
 
   octave_procbuf (const char *command, int mode)
-    : c_file_ptr_buf (0), wstatus (-1), open_p (false), proc_pid (-1),
+    : c_file_ptr_buf (nullptr), wstatus (-1), open_p (false), proc_pid (-1),
       next (nullptr) { open (command, mode); }
 
   // No copying!

@@ -2082,7 +2082,7 @@ FloatComplexMatrix::solve (MatrixType& mattype, const FloatMatrix& b) const
 {
   octave_idx_type info;
   float rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
@@ -2090,14 +2090,14 @@ FloatComplexMatrix::solve (MatrixType& mattype, const FloatMatrix& b,
                            octave_idx_type& info) const
 {
   float rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::solve (MatrixType& mattype, const FloatMatrix& b,
                            octave_idx_type& info, float& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
@@ -2117,7 +2117,7 @@ FloatComplexMatrix::solve (MatrixType& mattype,
 {
   octave_idx_type info;
   float rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
@@ -2125,14 +2125,14 @@ FloatComplexMatrix::solve (MatrixType& mattype, const FloatComplexMatrix& b,
                            octave_idx_type& info) const
 {
   float rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::solve (MatrixType& mattype, const FloatComplexMatrix& b,
                            octave_idx_type& info, float& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
@@ -2181,7 +2181,7 @@ FloatComplexMatrix::solve (MatrixType& mattype,
 {
   octave_idx_type info;
   float rcon;
-  return solve (mattype, FloatComplexColumnVector (b), info, rcon, 0);
+  return solve (mattype, FloatComplexColumnVector (b), info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2189,14 +2189,14 @@ FloatComplexMatrix::solve (MatrixType& mattype, const FloatColumnVector& b,
                            octave_idx_type& info) const
 {
   float rcon;
-  return solve (mattype, FloatComplexColumnVector (b), info, rcon, 0);
+  return solve (mattype, FloatComplexColumnVector (b), info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
 FloatComplexMatrix::solve (MatrixType& mattype, const FloatColumnVector& b,
                            octave_idx_type& info, float& rcon) const
 {
-  return solve (mattype, FloatComplexColumnVector (b), info, rcon, 0);
+  return solve (mattype, FloatComplexColumnVector (b), info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2215,7 +2215,7 @@ FloatComplexMatrix::solve (MatrixType& mattype,
 {
   octave_idx_type info;
   float rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2224,7 +2224,7 @@ FloatComplexMatrix::solve (MatrixType& mattype,
                            octave_idx_type& info) const
 {
   float rcon;
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2232,7 +2232,7 @@ FloatComplexMatrix::solve (MatrixType& mattype,
                            const FloatComplexColumnVector& b,
                            octave_idx_type& info, float& rcon) const
 {
-  return solve (mattype, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2253,21 +2253,21 @@ FloatComplexMatrix::solve (const FloatMatrix& b) const
 {
   octave_idx_type info;
   float rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::solve (const FloatMatrix& b, octave_idx_type& info) const
 {
   float rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::solve (const FloatMatrix& b, octave_idx_type& info,
                            float& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
@@ -2285,7 +2285,7 @@ FloatComplexMatrix::solve (const FloatComplexMatrix& b) const
 {
   octave_idx_type info;
   float rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
@@ -2293,14 +2293,14 @@ FloatComplexMatrix::solve (const FloatComplexMatrix& b,
                            octave_idx_type& info) const
 {
   float rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::solve (const FloatComplexMatrix& b, octave_idx_type& info,
                            float& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexMatrix
@@ -2318,7 +2318,7 @@ FloatComplexMatrix::solve (const FloatColumnVector& b) const
 {
   octave_idx_type info;
   float rcon;
-  return solve (FloatComplexColumnVector (b), info, rcon, 0);
+  return solve (FloatComplexColumnVector (b), info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2326,7 +2326,7 @@ FloatComplexMatrix::solve (const FloatColumnVector& b,
                            octave_idx_type& info) const
 {
   float rcon;
-  return solve (FloatComplexColumnVector (b), info, rcon, 0);
+  return solve (FloatComplexColumnVector (b), info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2350,7 +2350,7 @@ FloatComplexMatrix::solve (const FloatComplexColumnVector& b) const
 {
   octave_idx_type info;
   float rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2358,7 +2358,7 @@ FloatComplexMatrix::solve (const FloatComplexColumnVector& b,
                            octave_idx_type& info) const
 {
   float rcon;
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexColumnVector
@@ -2366,7 +2366,7 @@ FloatComplexMatrix::solve (const FloatComplexColumnVector& b,
                            octave_idx_type& info,
                            float& rcon) const
 {
-  return solve (b, info, rcon, 0);
+  return solve (b, info, rcon, nullptr);
 }
 
 FloatComplexColumnVector

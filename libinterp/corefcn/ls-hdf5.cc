@@ -235,10 +235,10 @@ hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name)
 
 #if defined (HAVE_HDF5_18)
   H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-  H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
+  H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
   H5Eget_auto (&err_func, &err_func_data);
-  H5Eset_auto (0, nullptr);
+  H5Eset_auto (nullptr, nullptr);
 #endif
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);
@@ -283,10 +283,10 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 
 #if defined (HAVE_HDF5_18)
   H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-  H5Eset_auto (octave_H5E_DEFAULT, 0, nullptr);
+  H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
   H5Eget_auto (&err_func, &err_func_data);
-  H5Eset_auto (0, nullptr);
+  H5Eset_auto (nullptr, nullptr);
 #endif
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);

@@ -1377,7 +1377,7 @@ namespace octave
   command_editor::get_completion_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_completion_function () : 0;
+           ? instance->do_get_completion_function () : nullptr;
   }
 
   command_editor::quoting_fcn

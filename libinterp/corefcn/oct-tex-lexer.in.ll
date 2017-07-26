@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 #endif
 
 // Define away the deprecated register storage class specifier to avoid
@@ -220,7 +221,7 @@ text_parser_tex::init_lexer (const std::string& s)
         {
           octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
                                      scanner);
-          buffer_state = 0;
+          buffer_state = nullptr;
         }
 
       buffer_state = octave_tex__scan_bytes (s.data (), s.length (), scanner);
@@ -236,12 +237,12 @@ text_parser_tex::destroy_lexer (void)
     {
       octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
                                  scanner);
-      buffer_state = 0;
+      buffer_state = nullptr;
     }
 
   if (scanner)
     {
       octave_tex_lex_destroy (scanner);
-      scanner = 0;
+      scanner = nullptr;
     }
 }

@@ -52,7 +52,7 @@ find_files_dialog::find_files_dialog (QWidget *p)
   setWindowTitle (tr ("Find Files"));
   setWindowIcon (resource_manager::icon ("edit-find"));
 
-  _dir_iterator = 0;
+  _dir_iterator = nullptr;
 
   _timer = new QTimer (this);
   connect (_timer, SIGNAL (timeout ()), this, SLOT (look_for_files ()));

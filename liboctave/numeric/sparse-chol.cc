@@ -269,7 +269,7 @@ namespace octave
       ac->nzmax = a.nnz ();
       ac->packed = true;
       ac->sorted = true;
-      ac->nz = 0;
+      ac->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
       ac->itype = CHOLMOD_LONG;
 #else

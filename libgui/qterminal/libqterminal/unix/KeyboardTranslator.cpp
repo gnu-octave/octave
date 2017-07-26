@@ -653,7 +653,7 @@ QByteArray KeyboardTranslator::Entry::escapedText(bool expandWildCards,Qt::Keybo
 
         if ( replacement == 'x' )
         {
-          result.replace(i,1,"\\x"+QByteArray::number(QByteArray(1,ch).toInt(0, 16)));
+          result.replace(i,1,"\\x"+QByteArray::number(QByteArray(1,ch).toInt(nullptr, 16)));
         } else if ( replacement != 0 )
         {
             result.remove(i,1);

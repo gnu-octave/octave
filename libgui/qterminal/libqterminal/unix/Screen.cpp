@@ -74,7 +74,7 @@ Screen::Screen(int l, int c)
     cuX(0), cuY(0),
     cu_re(0),
     tmargin(0), bmargin(0),
-    tabstops(0),
+    tabstops(nullptr),
     sel_begin(0), sel_TL(0), sel_BR(0),
     sel_busy(false),
     columnmode(false),

@@ -318,7 +318,7 @@ namespace octave
     const scanf_format_elt * next (bool cycle = true)
     {
       static scanf_format_elt dummy
-        (0, 0, false, scanf_format_elt::null, '\0', "");
+        (nullptr, 0, false, scanf_format_elt::null, '\0', "");
 
       curr_idx++;
 

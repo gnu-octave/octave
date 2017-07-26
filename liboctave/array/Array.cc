@@ -2025,7 +2025,7 @@ safe_comparator (sortmode mode, const Array<T>& /* a */,
   else if (mode == DESCENDING)
     return octave_sort<T>::descending_compare;
   else
-    return 0;
+    return nullptr;
 }
 
 template <typename T>
@@ -2487,7 +2487,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
   Array<T>::compare_fcn_type                                            \
   safe_comparator (sortmode, const Array<T>&, bool)                     \
   {                                                                     \
-    return 0;                                                           \
+    return nullptr;                                                     \
   }                                                                     \
   template <> Array<octave_idx_type>                                    \
   Array<T>::sort_rows_idx (sortmode) const                              \

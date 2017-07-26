@@ -46,6 +46,8 @@ object) relevant global values before and after the nested call.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+
 #endif
 
 // Define away the deprecated register storage class specifier to avoid
@@ -1973,7 +1975,7 @@ namespace octave
     // keywords.  Likewise for "enumeration", "events", "methods", and
     // "properties".
 
-    return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
+    return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != nullptr
             && ! (s == "set" || s == "get"
                   || s == "enumeration" || s == "events"
                   || s == "methods" || s == "properties"));
@@ -2121,7 +2123,7 @@ namespace octave
   {
     size_t sz = size ();
 
-    return sz > 1 ? frame_stack[1] : (sz == 1 ? frame_stack[0] : 0);
+    return sz > 1 ? frame_stack[1] : (sz == 1 ? frame_stack[0] : nullptr);
   }
 
   lexical_feedback::~lexical_feedback (void)
@@ -2553,7 +2555,7 @@ namespace octave
         // May be reset to true for some token types.
         at_beginning_of_statement = false;
 
-        token *tok_val = 0;
+        token *tok_val = nullptr;
 
         switch (kw->kw_id)
           {

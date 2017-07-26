@@ -50,7 +50,7 @@ octave_builtin : public octave_function
 {
 public:
 
-  octave_builtin (void) : octave_function (), f (0), file (), jtype (nullptr) { }
+  octave_builtin (void) : octave_function (), f (nullptr), file (), jtype (nullptr) { }
 
   typedef octave_value_list (*meth) (octave::interpreter&,
                                      const octave_value_list&, int);
@@ -59,19 +59,19 @@ public:
 
   octave_builtin (fcn ff, const std::string& nm = "",
                   const std::string& ds = "")
-    : octave_function (nm, ds), f (ff), m (0), file (), jtype (nullptr) { }
+    : octave_function (nm, ds), f (ff), m (nullptr), file (), jtype (nullptr) { }
 
   octave_builtin (meth mm, const std::string& nm = "",
                   const std::string& ds = "")
-    : octave_function (nm, ds), f (0), m (mm), file (), jtype (nullptr) { }
+    : octave_function (nm, ds), f (nullptr), m (mm), file (), jtype (nullptr) { }
 
   octave_builtin (fcn ff, const std::string& nm, const std::string& fnm,
                   const std::string& ds)
-    : octave_function (nm, ds), f (ff), m (0), file (fnm), jtype (nullptr) { }
+    : octave_function (nm, ds), f (ff), m (nullptr), file (fnm), jtype (nullptr) { }
 
   octave_builtin (meth mm, const std::string& nm, const std::string& fnm,
                   const std::string& ds)
-    : octave_function (nm, ds), f (0), m (mm), file (fnm), jtype (nullptr) { }
+    : octave_function (nm, ds), f (nullptr), m (mm), file (fnm), jtype (nullptr) { }
 
   // No copying!
 

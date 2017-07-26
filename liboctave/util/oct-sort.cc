@@ -141,7 +141,7 @@ octave_sort<T>::set_compare (sortmode mode)
   else if (mode == DESCENDING)
     compare = descending_compare;
   else
-    compare = 0;
+    compare = nullptr;
 }
 
 template <typename T>

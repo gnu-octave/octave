@@ -47,7 +47,7 @@ void PlainTextDecoder::begin(QTextStream* output)
 }
 void PlainTextDecoder::end()
 {
-    _output = 0;
+    _output = nullptr;
 }
 void PlainTextDecoder::decodeLine(const Character* const characters, int count, LineProperty /*properties*/
 							 )

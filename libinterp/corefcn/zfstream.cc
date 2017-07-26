@@ -416,7 +416,7 @@ gzfilebuf::enable_buffer ()
           buffer = new char_type [buffer_size];
           this->setg (buffer, buffer, buffer);
           // "Unbuffered" means no put buffer
-          this->setp (0, 0);
+          this->setp (nullptr, nullptr);
         }
     }
   else
@@ -440,8 +440,8 @@ gzfilebuf::disable_buffer ()
         buffer_size = 0;
       delete[] buffer;
       buffer = nullptr;
-      this->setg (0, 0, 0);
-      this->setp (0, 0);
+      this->setg (nullptr, nullptr, nullptr);
+      this->setp (nullptr, nullptr);
     }
   else
     {
@@ -450,7 +450,7 @@ gzfilebuf::disable_buffer ()
       if (buffer)
         this->setp (buffer, buffer + buffer_size - 1);
       else
-        this->setp (0, 0);
+        this->setp (nullptr, nullptr);
     }
 }
 

@@ -282,7 +282,7 @@ private:
   public:
 
     idx_vector_rep (void)
-      : data (0), len (0), ext (0), aowner (nullptr), orig_dims ()
+      : data (nullptr), len (0), ext (0), aowner (nullptr), orig_dims ()
     { }
 
     // Direct constructor.

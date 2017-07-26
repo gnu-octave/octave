@@ -315,7 +315,7 @@ idx_vector::idx_scalar_rep::as_array (void)
 
 template <typename T>
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
-  : idx_base_rep (), data (0), len (nda.numel ()), ext (0),
+  : idx_base_rep (), data (nullptr), len (nda.numel ()), ext (0),
     aowner (nullptr), orig_dims (nda.dims ())
 {
   if (len != 0)
@@ -372,8 +372,8 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda,
 }
 
 idx_vector::idx_vector_rep::idx_vector_rep (bool b)
-  : idx_base_rep (), data (0), len (b ? 1 : 0), ext (0), aowner (nullptr),
-    orig_dims (len, len)
+  : idx_base_rep (), data (nullptr), len (b ? 1 : 0), ext (0),
+    aowner (nullptr), orig_dims (len, len)
 {
   if (len != 0)
     {
@@ -386,7 +386,8 @@ idx_vector::idx_vector_rep::idx_vector_rep (bool b)
 
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
                                             octave_idx_type nnz)
-  : idx_base_rep (), data (0), len (nnz), ext (0), aowner (nullptr), orig_dims ()
+  : idx_base_rep (), data (nullptr), len (nnz), ext (0), aowner (nullptr),
+    orig_dims ()
 {
   if (nnz < 0)
     len = bnda.nnz ();
@@ -413,8 +414,8 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
 }
 
 idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
-  : idx_base_rep (), data (0), len (bnda.nnz ()), ext (0), aowner (nullptr),
-    orig_dims ()
+  : idx_base_rep (), data (nullptr), len (bnda.nnz ()), ext (0),
+    aowner (nullptr), orig_dims ()
 {
   const dim_vector dv = bnda.dims ();
 
@@ -640,7 +641,7 @@ idx_vector::idx_vector_rep::as_array (void)
 }
 
 idx_vector::idx_mask_rep::idx_mask_rep (bool b)
-  : idx_base_rep (), data (0), len (b ? 1 : 0), ext (0),
+  : idx_base_rep (), data (nullptr), len (b ? 1 : 0), ext (0),
     lsti (-1), lste (-1), aowner (nullptr), orig_dims (len, len)
 {
   if (len != 0)
@@ -654,7 +655,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (bool b)
 
 idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
                                         octave_idx_type nnz)
-  : idx_base_rep (), data (0), len (nnz), ext (bnda.numel ()),
+  : idx_base_rep (), data (nullptr), len (nnz), ext (bnda.numel ()),
     lsti (-1), lste (-1), aowner (nullptr), orig_dims ()
 {
   if (nnz < 0)

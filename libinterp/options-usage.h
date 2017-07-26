@@ -46,6 +46,13 @@ static const char *usage_string =
 // to prevent getopt from permuting arguments!
 static const char *short_opts = "+HWVdfhip:qvx";
 
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Disable warning temporarily
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
 #define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
@@ -103,6 +110,11 @@ struct octave_getopt_options long_opts[] =
   { "version",                  octave_no_arg,       0, 'v' },
   { 0,                          0,                   0, 0 }
 };
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Restore prevailing warning state for remainder of the file.
+#pragma GCC diagnostic pop
+#endif
 
 // Usage message with extra help.
 

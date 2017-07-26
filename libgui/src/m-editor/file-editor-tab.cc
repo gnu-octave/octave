@@ -487,7 +487,7 @@ file_editor_tab::unchanged_or_saved (void)
   bool retval = true;
   if (_edit_area->isModified ())
     {
-      int ans = QMessageBox::question (0, tr ("Octave Editor"),
+      int ans = QMessageBox::question (nullptr, tr ("Octave Editor"),
                   tr ("Cannot add breakpoint to modified file.\n"
                       "Save and add breakpoint, or cancel?"),
                   QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
@@ -752,7 +752,7 @@ file_editor_tab::update_lexer_settings ()
             }
 
           // disconnect slot for saving prepared info if already connected
-          disconnect (_lexer_apis, SIGNAL (apiPreparationFinished ()), 0, 0);
+          disconnect (_lexer_apis, SIGNAL (apiPreparationFinished ()), nullptr, nullptr);
           // check whether path for prepared info exists or can be created
           if (QDir ("/").mkpath (prep_apis_path))
             {
@@ -1853,7 +1853,7 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
     {
       if (names(i).string_value () == base_name)
         {
-          int ans = QMessageBox::question (0, tr ("Debug or Save"),
+          int ans = QMessageBox::question (nullptr, tr ("Debug or Save"),
              tr ("This file is currently being executed.\n"
                           "Quit debugging and save?"),
               QMessageBox::Save | QMessageBox::Cancel);
@@ -1931,7 +1931,7 @@ file_editor_tab::save_file (const QString& saveFileName,
                            tr ("Octave Editor"),
                            tr ("Could not open file %1 for write:\n%2.").
                            arg (file_to_save).arg (file.errorString ()),
-                           QMessageBox::Ok, 0);
+                           QMessageBox::Ok, nullptr);
       show_dialog (msgBox, false);
 
       return;
@@ -2143,7 +2143,7 @@ file_editor_tab::check_valid_identifier (QString file_name)
   if ((file.suffix () == "m")
       && (! valid_identifier (base_name.toStdString ())))
     {
-      int ans = QMessageBox::question (0, tr ("Octave Editor"),
+      int ans = QMessageBox::question (nullptr, tr ("Octave Editor"),
          tr ("\"%1\"\n"
              "is not a valid identifier.\n\n"
              "If you keep this filename, you will not be able to\n"
@@ -2163,7 +2163,7 @@ file_editor_tab::check_valid_codec (QTextCodec *codec)
 {
   if (! codec->canEncode (_edit_area->text ()))
     {
-      int ans = QMessageBox::warning (0,
+      int ans = QMessageBox::warning (nullptr,
             tr ("Octave Editor"),
             tr ("The current editor contents can not be encoded\n"
                 "with the selected codec %1.\n"
@@ -2285,7 +2285,7 @@ file_editor_tab::file_has_changed (const QString&)
                                "%1\n"
                                "has been deleted or renamed. Do you want to save it now?%2").
                            arg (_file_name).arg (modified),
-                           QMessageBox::Save | QMessageBox::Close, 0);
+                           QMessageBox::Save | QMessageBox::Close, nullptr);
 
       _edit_area->setReadOnly (true);
 
@@ -2378,7 +2378,7 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   else
     {
       _edit_area->setMarginLineNumbers (2, false);
-      disconnect (_edit_area, SIGNAL (linesChanged ()), 0, 0);
+      disconnect (_edit_area, SIGNAL (linesChanged ()), nullptr, nullptr);
     }
 
   _smart_indent = settings->value ("editor/auto_indent",true).toBool ();

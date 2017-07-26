@@ -183,7 +183,7 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
   bool connect_to_web = true;
   QDateTime last_checked;
   int serial = 0;
-  _active_dock = 0;
+  _active_dock = nullptr;
 
   if (settings)
     {

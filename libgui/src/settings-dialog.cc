@@ -140,11 +140,11 @@ read_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer,
       attrib_font[0+3*i] = new QCheckBox (QObject::tr ("b", "short form for bold"));
       attrib_font[1+3*i] = new QCheckBox (QObject::tr ("i", "short form for italic"));
       attrib_font[2+3*i] = new QCheckBox (QObject::tr ("u", "short form for underlined"));
-      attrib_font[0+3*i]->setChecked (Qt::Checked && actual_font.bold ());
+      attrib_font[0+3*i]->setChecked (actual_font.bold ());
       attrib_font[0+3*i]->setObjectName (actual_name+"_bold");
-      attrib_font[1+3*i]->setChecked (Qt::Checked && actual_font.italic ());
+      attrib_font[1+3*i]->setChecked (actual_font.italic ());
       attrib_font[1+3*i]->setObjectName (actual_name+"_italic");
-      attrib_font[2+3*i]->setChecked (Qt::Checked && actual_font.underline ());
+      attrib_font[2+3*i]->setChecked (actual_font.underline ());
       attrib_font[2+3*i]->setObjectName (actual_name+"_underline");
       color[i] = new color_picker (lexer->color (styles[i]));
       color[i]->setObjectName (actual_name+"_color");

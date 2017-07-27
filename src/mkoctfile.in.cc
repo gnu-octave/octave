@@ -40,6 +40,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include <sys/types.h>
 #  include <sys/wait.h>
 #  include <unistd.h>
+
+#  ifndef OCTAVE_UNUSED
+#    define OCTAVE_UNUSED
+#  endif
 #else
 #  include "unistd-wrappers.h"
 #  include "wait-wrappers.h"

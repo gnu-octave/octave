@@ -39,6 +39,10 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_EXEC_PREFIX %OCTAVE_EXEC_PREFIX%
 #endif
 
+#ifndef OCTAVE_UNUSED
+#  define OCTAVE_UNUSED
+#endif
+
 #include "shared-fcns.h"
 
 static std::map<std::string,std::string> vars;

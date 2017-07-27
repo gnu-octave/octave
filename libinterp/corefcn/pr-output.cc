@@ -1743,7 +1743,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
     }
   else
     {
-      int fw;
+      int fw = 0;
       double scale = 1.0;
       set_format (m, fw, scale);
       int column_width = fw + 2;

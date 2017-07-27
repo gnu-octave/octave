@@ -2350,6 +2350,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
             lo = ns - 1 - n(0);
           }
       }
+      break;
     case idx_vector::class_vector:
       // This case resolves bug #51329, a fallback to allow the given index
       // to be a sequential vector instead of the typical scalar or range

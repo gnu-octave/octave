@@ -1780,6 +1780,8 @@ private:
                   }
               }
 
+              break;
+
             case FL_RELEASE:
               if (! m_fp.get_windowbuttonupfcn ().isempty ())
                 {

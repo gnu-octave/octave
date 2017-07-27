@@ -901,6 +901,7 @@ glob_pattern_p (const std::string& pattern)
         case '\\':
           if (i == len - 1)
             return false;
+          continue;
 
         default:
           continue;

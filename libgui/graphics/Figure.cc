@@ -766,6 +766,7 @@ namespace QtHandles
 
                     enableMouseTracking ();
                   }
+                break;
 
               case QEvent::ChildRemoved:
                 if (dynamic_cast<QChildEvent *> (xevent)->child
@@ -774,6 +775,7 @@ namespace QtHandles
                     gh_manager::auto_lock lock;
                     update (figure::properties::ID_TOOLBAR);
                   }
+                break;
 
               default:
                 break;

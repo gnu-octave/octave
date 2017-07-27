@@ -26,7 +26,7 @@ fi
 if [ $1 = "--perl" ]; then
   PERL="$2"
   $PERL -e 'foreach $key (sort (keys (%!))) {
-    $x .= "#if defined ($key)\n    { \"$key\", $key, },\n#endif\n";
+    $x .= "#if defined ($key)\n    { \"$key\", $key },\n#endif\n";
   }
   while (<>) {
     s/^ *\@SYSDEP_ERRNO_LIST\@/$x/;
@@ -40,7 +40,7 @@ elif [ $1 = "--python" ]; then
 from errno import errorcode
 from sys import stdin, stdout
 
-t = "#if defined (%s)\n    { \"%s\", %s, },\n#endif\n"
+t = "#if defined (%s)\n    { \"%s\", %s },\n#endif\n"
 errstr = ""
 for v in sorted (errorcode.values ()):
     errstr += t % tuple (3 * [v])

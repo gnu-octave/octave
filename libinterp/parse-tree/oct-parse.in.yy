@@ -1897,7 +1897,7 @@ events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep
                     YYUSE ($4);
 
                     if (! ($$ = parser.make_classdef_events_block
-                           ($1, $3, 0, $5, $2)))
+                           ($1, $3, nullptr, $5, $2)))
                       {
                         // make_classdef_events_block deleted $3.
                         YYABORT;
@@ -2796,7 +2796,7 @@ namespace octave
                                    token *end_tok,
                                    comment_list *lc)
   {
-    tree_command *retval = 0;
+    tree_command *retval = nullptr;
 
     maybe_warn_assign_as_truth_value (expr);
 

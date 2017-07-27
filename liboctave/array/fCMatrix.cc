@@ -2333,7 +2333,7 @@ FloatComplexColumnVector
 FloatComplexMatrix::solve (const FloatColumnVector& b, octave_idx_type& info,
                            float& rcon) const
 {
-  return solve (FloatComplexColumnVector (b), info, rcon, 0);
+  return solve (FloatComplexColumnVector (b), info, rcon, nullptr);
 }
 
 FloatComplexColumnVector

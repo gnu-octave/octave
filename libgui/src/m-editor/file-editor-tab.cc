@@ -678,10 +678,10 @@ file_editor_tab::update_lexer_settings ()
 
           // Buitlins are only used if the user settings say so
           if (octave_builtins)
-            _prep_apis_file += "b";
+            _prep_apis_file += 'b';
 
           if (octave_functions)
-            _prep_apis_file += "f";
+            _prep_apis_file += 'f';
 
          _prep_apis_file += ".pap"; // final name of apis file
 

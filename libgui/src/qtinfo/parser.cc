@@ -562,7 +562,7 @@ parser::global_search (const QString& text, int max_founds)
   QString re_program ("(" + QRegExp::escape (words.at (0)));
   for (int i = 1; i < words.size (); i++)
     re_program += "|" + QRegExp::escape (words.at (i));
-  re_program += ")";
+  re_program += ')';
 
   QRegExp re (re_program, Qt::CaseInsensitive);
 

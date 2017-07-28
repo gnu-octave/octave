@@ -369,7 +369,7 @@ public:
           {
             // item has submenu
             if (! menupath.empty ())
-              menupath += "/";
+              menupath += '/';
             menupath += m->label ();
 
             if (menupath == findname)
@@ -390,7 +390,7 @@ public:
             // Menu item?
             std::string itempath = menupath;
             if (! itempath.empty ())
-              itempath += "/";
+              itempath += '/';
             itempath += m->label ();
 
             if (itempath == findname)

@@ -286,7 +286,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
       charNDArray tmp = char_array_value ();
       os << "# ndims: " << dv.ndims () << "\n";
       for (int i=0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
       os << "\n";
       os.write (tmp.fortran_vec (), dv.numel ());
       os << "\n";

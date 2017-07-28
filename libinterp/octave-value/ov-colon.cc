@@ -44,5 +44,5 @@ octave_magic_colon::print (std::ostream& os, bool)
 void
 octave_magic_colon::print_raw (std::ostream& os, bool) const
 {
-  os << ":";
+  os << ':';
 }

@@ -116,7 +116,7 @@ pager_event_handler (pid_t pid, int status)
           // which would be bad news.
 
           std::cerr << "warning: connection to external pager lost (pid = "
-                    << pid << ")" << std::endl;
+                    << pid << ')' << std::endl;
           std::cerr << "warning: flushing pending output (please wait)"
                     << std::endl;
 
@@ -136,7 +136,7 @@ pager_command (void)
   std::string cmd = VPAGER;
 
   if (! (cmd.empty () || VPAGER_FLAGS.empty ()))
-    cmd += " " + VPAGER_FLAGS;
+    cmd += ' ' + VPAGER_FLAGS;
 
   return cmd;
 }

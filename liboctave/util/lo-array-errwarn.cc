@@ -136,7 +136,7 @@ namespace octave
       {
         if (dim < 5)
           {
-            buf << "(";
+            buf << '(';
 
             for (octave_idx_type i = 1; i < dim; i++)
               buf << "_,";
@@ -155,7 +155,7 @@ namespace octave
               buf << ",_";
 
             if (nd >= dim)
-              buf << ")";
+              buf << ')';
           }
         else
           buf << "...[x" << nd - dim << "]...)";

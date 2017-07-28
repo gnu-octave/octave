@@ -666,7 +666,7 @@ octave_struct::save_ascii (std::ostream& os)
   os << "# ndims: " << dv.ndims () << "\n";
 
   for (int i = 0; i < dv.ndims (); i++)
-    os << " " << dv(i);
+    os << ' ' << dv(i);
   os << "\n";
 
   os << "# length: " << nf << "\n";
@@ -1288,7 +1288,7 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
               indent (os);
               os << key;
               dim_vector dv = val.dims ();
-              os << ": " << dv.str () << " " << val.type_name ();
+              os << ": " << dv.str () << ' ' << val.type_name ();
               newline (os);
             }
           else
@@ -1341,7 +1341,7 @@ octave_scalar_struct::save_ascii (std::ostream& os)
   os << "# ndims: " << dv.ndims () << "\n";
 
   for (int i = 0; i < dv.ndims (); i++)
-    os << " " << dv(i);
+    os << ' ' << dv(i);
   os << "\n";
 
   os << "# length: " << nf << "\n";

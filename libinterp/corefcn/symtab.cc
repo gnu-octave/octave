@@ -1399,7 +1399,7 @@ namespace octave
   {
     octave_value fcn;
 
-    std::string full_name = "@" + dispatch_type +
+    std::string full_name = '@' + dispatch_type +
       sys::file_ops::dir_sep_str () + name;
     size_t pos = full_name.find_first_of (Vfilemarker);
 

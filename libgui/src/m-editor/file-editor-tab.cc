@@ -227,10 +227,10 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   // encoding, not updated with the settings
 #if defined (Q_OS_WIN32)
-  _encoding = settings->value ("editor/default_encoding","SYSTEM")
+  _encoding = settings->value ("editor/default_encoding", "SYSTEM")
                                .toString ();
 #else
-  _encoding = settings->value ("editor/default_encoding","UTF-8")
+  _encoding = settings->value ("editor/default_encoding", "UTF-8")
                                .toString ();
 #endif
   _enc_indicator->setText (_encoding);
@@ -387,7 +387,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
       if (cond == "")
         cond = _edit_area->selectedText ();
       else
-        cond = "(" + cond + ") || (" + _edit_area->selectedText () + ")";
+        cond = '(' + cond + ") || (" + _edit_area->selectedText () + ')';
     }
 
   bool valid = false;
@@ -2445,7 +2445,7 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
 void
 file_editor_tab::auto_margin_width ()
 {
-  _edit_area->setMarginWidth (2, "1"+QString::number (_edit_area->lines ()));
+  _edit_area->setMarginWidth (2, "1" + QString::number (_edit_area->lines ()));
 }
 
 // the following close request was changed from a signal slot into a

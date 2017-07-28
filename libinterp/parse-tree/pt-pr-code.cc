@@ -88,7 +88,7 @@ namespace octave
     if (op1)
       op1->accept (*this);
 
-    os << " " << expr.oper () << " ";
+    os << ' ' << expr.oper () << ' ';
 
     tree_expression *op2 = expr.rhs ();
 
@@ -124,7 +124,7 @@ namespace octave
 
     if (op3)
       {
-        os << ":";
+        os << ':';
         op3->accept (*this);
       }
 
@@ -132,7 +132,7 @@ namespace octave
 
     if (op2)
       {
-        os << ":";
+        os << ':';
         op2->accept (*this);
       }
 
@@ -152,7 +152,7 @@ namespace octave
   {
     indent ();
 
-    os << cmd.name () << " ";
+    os << cmd.name () << ' ';
 
     tree_decl_init_list *init_list = cmd.initializer_list ();
 
@@ -211,7 +211,7 @@ namespace octave
     tree_expression *maxproc = cmd.maxproc_expr ();
 
     if (maxproc)
-      os << "(";
+      os << '(';
 
     if (lhs)
       lhs->accept (*this);
@@ -227,7 +227,7 @@ namespace octave
       {
         os << ", ";
         maxproc->accept (*this);
-        os << ")";
+        os << ')';
       }
 
     newline ();
@@ -350,7 +350,7 @@ namespace octave
 
         if (len > 1 || takes_var_return)
           {
-            os << "[";
+            os << '[';
             nesting.push ('[');
           }
 
@@ -367,7 +367,7 @@ namespace octave
         if (len > 1 || takes_var_return)
           {
             nesting.pop ();
-            os << "]";
+            os << ']';
           }
 
         os << " = ";
@@ -375,7 +375,7 @@ namespace octave
 
     std::string fcn_name = fcn.name ();
 
-    os << (fcn_name.empty () ? std::string ("(empty)") : fcn_name) << " ";
+    os << (fcn_name.empty () ? std::string ("(empty)") : fcn_name) << ' ';
 
     tree_parameter_list *param_list = fcn.parameter_list ();
 
@@ -387,7 +387,7 @@ namespace octave
 
         if (len > 0 || takes_varargs)
           {
-            os << "(";
+            os << '(';
             nesting.push ('(');
           }
 
@@ -404,7 +404,7 @@ namespace octave
         if (len > 0 || takes_varargs)
           {
             nesting.pop ();
-            os << ")";
+            os << ')';
             newline ();
           }
       }
@@ -553,7 +553,7 @@ namespace octave
             {
               char nc = nesting.top ();
               if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
-                os << "(";
+                os << '(';
               else
                 os << " (";
               nesting.push ('(');
@@ -563,7 +563,7 @@ namespace octave
                 l->accept (*this);
 
               nesting.pop ();
-              os << ")";
+              os << ')';
             }
             break;
 
@@ -571,7 +571,7 @@ namespace octave
             {
               char nc = nesting.top ();
               if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
-                os << "{";
+                os << '{';
               else
                 os << " {";
               // We only care about whitespace inside [] and {} when we
@@ -583,7 +583,7 @@ namespace octave
                 l->accept (*this);
 
               nesting.pop ();
-              os << "}";
+              os << '}';
             }
             break;
 
@@ -591,7 +591,7 @@ namespace octave
             {
               string_vector nm = *p_arg_names;
               assert (nm.numel () == 1);
-              os << "." << nm(0);
+              os << '.' << nm(0);
             }
             break;
 
@@ -613,7 +613,7 @@ namespace octave
 
     print_parens (lst, "(");
 
-    os << "[";
+    os << '[';
     nesting.push ('[');
 
     tree_matrix::iterator p = lst.begin ();
@@ -632,7 +632,7 @@ namespace octave
       }
 
     nesting.pop ();
-    os << "]";
+    os << ']';
 
     print_parens (lst, ")");
   }
@@ -644,7 +644,7 @@ namespace octave
 
     print_parens (lst, "(");
 
-    os << "{";
+    os << '{';
     nesting.push ('{');
 
     tree_cell::iterator p = lst.begin ();
@@ -663,7 +663,7 @@ namespace octave
       }
 
     nesting.pop ();
-    os << "}";
+    os << '}';
 
     print_parens (lst, ")");
   }
@@ -683,7 +683,7 @@ namespace octave
 
         if (len > 1)
           {
-            os << "[";
+            os << '[';
             nesting.push ('[');
           }
 
@@ -692,11 +692,11 @@ namespace octave
         if (len > 1)
           {
             nesting.pop ();
-            os << "]";
+            os << ']';
           }
       }
 
-    os << " " << expr.oper () << " ";
+    os << ' ' << expr.oper () << ' ';
 
     tree_expression *rhs = expr.right_hand_side ();
 
@@ -845,7 +845,7 @@ namespace octave
     if (lhs)
       lhs->accept (*this);
 
-    os << " " << expr.oper () << " ";
+    os << ' ' << expr.oper () << ' ';
 
     tree_expression *rhs = expr.right_hand_side ();
 
@@ -878,7 +878,7 @@ namespace octave
 
             if (! stmt.print_result ())
               {
-                os << ";";
+                os << ';';
                 newline (" ");
               }
             else
@@ -1009,7 +1009,7 @@ namespace octave
 
     if (expr_id)
       {
-        os << " ";
+        os << ' ';
         expr_id->accept (*this);
       }
 
@@ -1264,7 +1264,7 @@ namespace octave
                 os << "##";
 
                 if (! (isspace (c) || c == '!'))
-                  os << " ";
+                  os << ' ';
               }
 
             os << static_cast<char> (c);

@@ -219,7 +219,7 @@ jit_instruction::short_print (std::ostream& os) const
 {
   if (type ())
     jit_print (os, type ()) << ": ";
-  return os << "#" << mid;
+  return os << '#' << mid;
 }
 
 void
@@ -402,12 +402,12 @@ jit_block::print_dom (std::ostream& os) const
   os << "  mid: " << mid << std::endl;
   os << "  predecessors: ";
   for (jit_use *use = first_use (); use; use = use->next ())
-    os << *use->user_parent () << " ";
+    os << *use->user_parent () << ' ';
   os << std::endl;
 
   os << "  successors: ";
   for (size_t i = 0; i < successor_count (); ++i)
-    os << *successor (i) << " ";
+    os << *successor (i) << ' ';
   os << std::endl;
 
   os << "  idom: ";
@@ -418,12 +418,12 @@ jit_block::print_dom (std::ostream& os) const
   os << std::endl;
   os << "  df: ";
   for (df_iterator iter = df_begin (); iter != df_end (); ++iter)
-    os << **iter << " ";
+    os << **iter << ' ';
   os << std::endl;
 
   os << "  dom_succ: ";
   for (size_t i = 0; i < dom_succ.size (); ++i)
-    os << *dom_succ[i] << " ";
+    os << *dom_succ[i] << ' ';
 
   return os << std::endl;
 }
@@ -832,7 +832,7 @@ jit_magic_end::print (std::ostream& os, size_t indent) const
 {
   context ctx = resolve_context ();
   short_print (print_indent (os, indent)) << " (" << *ctx.value << ", ";
-  return os << *ctx.index << ", " << *ctx.count << ")";
+  return os << *ctx.index << ", " << *ctx.count << ')';
 }
 
 const jit_function&

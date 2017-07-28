@@ -293,7 +293,7 @@ Comment.
   int samplerate = args(2).int_value ();
 
   std::string ext;
-  size_t dotpos = filename.find_last_of (".");
+  size_t dotpos = filename.find_last_of ('.');
   if (dotpos != std::string::npos)
     ext = filename.substr (dotpos + 1);
   std::transform (ext.begin (), ext.end (), ext.begin (), ::tolower);

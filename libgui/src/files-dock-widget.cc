@@ -663,8 +663,8 @@ files_dock_widget::contextmenu_rename (bool)
                                  QLineEdit::Normal, old_name, &ok);
       if (ok && new_name.length () > 0)
         {
-          new_name = path.absolutePath () + "/" + new_name;
-          old_name = path.absolutePath () + "/" + old_name;
+          new_name = path.absolutePath () + '/' + new_name;
+          old_name = path.absolutePath () + '/' + old_name;
           path.rename (old_name, new_name);
           _file_system_model->revert ();
         }
@@ -880,7 +880,7 @@ files_dock_widget::process_new_file (const QString& parent_dir)
        QLineEdit::Normal, tr ("New File.txt"), &ok);
   if (ok && name.length () > 0)
     {
-      name = parent_dir + "/" + name;
+      name = parent_dir + '/' + name;
 
       QFile file (name);
       file.open (QIODevice::WriteOnly);

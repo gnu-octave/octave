@@ -139,7 +139,7 @@ idx_vector
 octave_complex::index_vector (bool) const
 {
   std::ostringstream buf;
-  buf << scalar.real () << std::showpos << scalar.imag () << "i";
+  buf << scalar.real () << std::showpos << scalar.imag () << 'i';
   octave::complex_index_exception e (buf.str ());
 
   throw e;

@@ -2806,7 +2806,7 @@ operator << (std::ostream& os, const FloatMatrix& a)
     {
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
-          os << " ";
+          os << ' ';
           octave_write_float (os, a.elem (i, j));
         }
       os << "\n";

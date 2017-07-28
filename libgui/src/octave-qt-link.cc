@@ -232,7 +232,7 @@ make_filter_list (const octave_link::filter_list& lst)
           name = ext.toUpper () + " Files";
         }
 
-      retval.append (name + " (" + ext + ")");
+      retval.append (name + " (" + ext + ')');
     }
 
   return retval;

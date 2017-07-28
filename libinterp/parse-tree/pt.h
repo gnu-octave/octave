@@ -84,7 +84,7 @@ namespace octave
     // breakpoint condition, or "0" (i.e., "false") if no breakpoint.
     // To distinguish "0" from a disabled breakpoint, test "is_breakpoint" too.
     const std::string bp_cond (void) const
-    { return bp ? *bp : std::string("0"); }
+    { return bp ? *bp : "0"; }
 
     std::string str_print_code (void);
 

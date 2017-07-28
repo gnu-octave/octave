@@ -494,7 +494,7 @@ operator << (std::ostream& os, const CollocWt& a)
 
   os << "\n";
 
-  os << a.Alpha << " " << a.Beta << "\n\n"
+  os << a.Alpha << ' ' << a.Beta << "\n\n"
      << a.r << "\n\n"
      << a.q << "\n\n"
      << a.A << "\n"

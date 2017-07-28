@@ -169,7 +169,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
       // print knob settings if spumoni is set
       if (spumoni)
         {
-          octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << "."
+          octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << '.'
                         <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE
                         << ":\nknobs(1): " << User_knobs(0) << ", order for ";
           if (knobs[CCOLAMD_LU] != 0)
@@ -431,7 +431,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
       if (spumoni)
         {
           octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION
-                        << "." << CCOLAMD_SUB_VERSION
+                        << '.' << CCOLAMD_SUB_VERSION
                         << ", " << CCOLAMD_DATE << "\n";
 
           if (knobs[CCOLAMD_DENSE_ROW] >= 0)

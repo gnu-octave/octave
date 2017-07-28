@@ -1312,11 +1312,11 @@ file_editor::m_add_menu (QMenuBar *p, QString name)
 
   QString base_name = name;  // get a copy
   // replace intended '&' ("&&") by a temp. string
-  base_name.replace ("&&","___octave_amp_replacement___");
+  base_name.replace ("&&", "___octave_amp_replacement___");
   // remove single '&' (shortcut)
   base_name.remove ("&");
   // restore intended '&'
-  base_name.replace ("___octave_amp_replacement___","&&");
+  base_name.replace ("___octave_amp_replacement___", "&&");
 
   // remember names with and without shortcut
   _hash_menu_text[menu] = QStringList () << name << base_name;

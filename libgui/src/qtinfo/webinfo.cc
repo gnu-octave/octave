@@ -184,7 +184,7 @@ webinfo::load_node (const QString& node_name)
 {
   // no XREF in the tabs
   QString tab_text = node_name;
-  tab_text.replace ("XREF","");
+  tab_text.replace ("XREF", "");
 
   //Check if node has been already opened.
   for (int i = 0; i < _tab_bar->count (); i++)

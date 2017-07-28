@@ -370,16 +370,16 @@ octave_user_function::profiler_name (void) const
 
   if (is_anonymous_function ())
     result << "anonymous@" << fcn_file_name ()
-           << ":" << location_line << ":" << location_column;
+           << ':' << location_line << ':' << location_column;
   else if (is_subfunction ())
-    result << parent_fcn_name () << ">" << name ();
+    result << parent_fcn_name () << '>' << name ();
   else if (is_class_method ())
-    result << "@" << dispatch_class () << "/" << name ();
+    result << '@' << dispatch_class () << '/' << name ();
   else if (is_class_constructor () || is_classdef_constructor ())
-    result << "@" << name ();
+    result << '@' << name ();
   else if (is_inline_function ())
     result << "inline@" << fcn_file_name ()
-           << ":" << location_line << ":" << location_column;
+           << ':' << location_line << ':' << location_column;
   else
     result << name ();
 

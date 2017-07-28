@@ -823,7 +823,7 @@ operator << (std::ostream& os, const FloatNDArray& a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      os << " ";
+      os << ' ';
       octave_write_float (os, a.elem (i));
       os << "\n";
     }

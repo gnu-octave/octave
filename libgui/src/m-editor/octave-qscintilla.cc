@@ -249,12 +249,12 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
           _word_at_cursor = wordAtPoint (local_pos);
           if (! _word_at_cursor.isEmpty ())
             {
-              context_menu->addAction (tr ("Help on") + " " + _word_at_cursor,
+              context_menu->addAction (tr ("Help on") + ' ' + _word_at_cursor,
                                        this, SLOT (contextmenu_help (bool)));
               context_menu->addAction (tr ("Documentation on")
-                                       + " " + _word_at_cursor,
+                                       + ' ' + _word_at_cursor,
                                        this, SLOT (contextmenu_doc (bool)));
-              context_menu->addAction (tr ("Edit") + " " + _word_at_cursor,
+              context_menu->addAction (tr ("Edit") + ' ' + _word_at_cursor,
                                        this, SLOT (contextmenu_edit (bool)));
             }
         }
@@ -534,7 +534,7 @@ octave_qscintilla::auto_close (int auto_endif, int linenr,
     else
       {
         if (first_word == "unwind_protect")
-          first_word = "_" + first_word;
+          first_word = '_' + first_word;
         next_line = "end" + first_word + "\n";
       }
 

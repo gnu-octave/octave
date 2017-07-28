@@ -502,9 +502,9 @@ operator << (std::ostream& os, const ComplexDiagMatrix& a)
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
           if (i == j)
-            os << " " /* setw (field_width) */ << a.elem (i, i);
+            os << ' ' /* setw (field_width) */ << a.elem (i, i);
           else
-            os << " " /* setw (field_width) */ << ZERO;
+            os << ' ' /* setw (field_width) */ << ZERO;
         }
       os << "\n";
     }

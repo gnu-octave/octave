@@ -61,7 +61,7 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
     return idx_vector (array_value ());
   else
     {
-      std::string nm = "<" + type_name () + ">";
+      std::string nm = '<' + type_name () + '>';
       octave::err_invalid_index (nm.c_str ());
     }
 }

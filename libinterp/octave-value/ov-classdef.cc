@@ -977,7 +977,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
   os << "<object ";
   if (object.is_array ())
     os << "array ";
-  os << class_name () << ">";
+  os << class_name () << '>';
   newline (os);
 }
 
@@ -2536,7 +2536,7 @@ cdef_class::make_meta_class (octave::interpreter& interp,
 
   class_name = full_class_name = t->ident ()->name ();
   if (! t->package_name ().empty ())
-    full_class_name = t->package_name () + "." + full_class_name;
+    full_class_name = t->package_name () + '.' + full_class_name;
 
 #if DEBUG_TRACE
   std::cerr << "class: " << full_class_name << std::endl;
@@ -2653,10 +2653,10 @@ cdef_class::make_meta_class (octave::interpreter& interp,
 
                   if (mprefix == "get.")
                     get_methods[mname.substr (4)] =
-                      make_fcn_handle (mtd, full_class_name + ">" + mname);
+                      make_fcn_handle (mtd, full_class_name + '>' + mname);
                   else if (mprefix == "set.")
                     set_methods[mname.substr (4)] =
-                      make_fcn_handle (mtd, full_class_name + ">" + mname);
+                      make_fcn_handle (mtd, full_class_name + '>' + mname);
                   else
                     {
                       cdef_method meth = make_method (retval, mname, mtd);
@@ -3256,7 +3256,7 @@ cdef_package::cdef_package_rep::get_packages (void) const
 octave_value
 cdef_package::cdef_package_rep::find (const std::string& nm)
 {
-  std::string symbol_name = get_name () + "." + nm;
+  std::string symbol_name = get_name () + '.' + nm;
 
   octave::symbol_table& symtab
     = octave::__get_symbol_table__ ("cdef_package::cdef_package_rep::find");
@@ -3816,7 +3816,7 @@ Undocumented internal function.
 {
 #if DEBUG_TRACE
   std::cerr << "__meta_class_query__ ("
-            << args(0).string_value () << ")"
+            << args(0).string_value () << ')'
             << std::endl;
 #endif
 

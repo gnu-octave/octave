@@ -397,11 +397,11 @@ octave_write_double (std::ostream& os, double d)
 void
 octave_write_complex (std::ostream& os, const Complex& c)
 {
-  os << "(";
+  os << '(';
   octave_write_double (os, real (c));
-  os << ",";
+  os << ',';
   octave_write_double (os, imag (c));
-  os << ")";
+  os << ')';
 }
 
 void
@@ -420,9 +420,9 @@ octave_write_float (std::ostream& os, float d)
 void
 octave_write_float_complex (std::ostream& os, const FloatComplex& c)
 {
-  os << "(";
+  os << '(';
   octave_write_float (os, real (c));
-  os << ",";
+  os << ',';
   octave_write_float (os, imag (c));
-  os << ")";
+  os << ')';
 }

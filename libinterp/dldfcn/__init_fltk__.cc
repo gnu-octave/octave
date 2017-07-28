@@ -148,7 +148,7 @@ public:
 
   void print (const std::string& cmd, const std::string& term)
   {
-    //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << "x" << h () << std::endl;
+    //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << 'x' << h () << std::endl;
 
     octave::gl2ps_print (gh_manager::get_object (m_number), cmd, term);
   }
@@ -380,7 +380,7 @@ public:
             // End of submenu? Pop back one level.
             if (! m->label ())
               {
-                size_t idx = menupath.find_last_of ("/");
+                size_t idx = menupath.find_last_of ('/');
                 if (idx != std::string::npos)
                   menupath.erase (idx);
                 else
@@ -600,8 +600,8 @@ public:
             if (item)
               {
                 //avoid duplicate menulabels
-                size_t idx1 = fltk_label.find_last_of ("(");
-                size_t idx2 = fltk_label.find_last_of (")");
+                size_t idx1 = fltk_label.find_last_of ('(');
+                size_t idx2 = fltk_label.find_last_of (')');
                 int len = idx2 - idx1;
                 int val = 1;
                 if (len > 0)
@@ -614,7 +614,7 @@ public:
                   }
                 std::ostringstream valstream;
                 valstream << val;
-                fltk_label += "(" + valstream.str () + ")";
+                fltk_label += '(' + valstream.str () + ')';
               }
             else
               {
@@ -1242,11 +1242,11 @@ private:
     cbuf.precision (4);
     cbuf.width (6);
     pixel2pos (ax, px0, py0, x0, y0);
-    cbuf << "[" << x0 << ", " << y0 << "]";
+    cbuf << '[' << x0 << ", " << y0 << ']';
     if (px1 >= 0)
       {
         pixel2pos (ax, px1, py1, x1, y1);
-        cbuf << " -> ["<< x1 << ", " << y1 << "]";
+        cbuf << " -> ["<< x1 << ", " << y1 << ']';
       }
 
     m_status->value (cbuf.str ().c_str ());
@@ -1263,7 +1263,7 @@ private:
         cbuf.width (6);
         Matrix v (1,2,0);
         v = ap.get ("view").matrix_value ();
-        cbuf << "[azimuth: " << v(0) << ", elevation: " << v(1) << "]";
+        cbuf << "[azimuth: " << v(0) << ", elevation: " << v(1) << ']';
 
         m_status->value (cbuf.str ().c_str ());
       }
@@ -1393,7 +1393,7 @@ private:
       }
     else if (e_key >= (FL_F + 1) && e_key <= (FL_F + 12))
       {
-        tmp_str << "f" << (e_key - FL_F);
+        tmp_str << 'f' << (e_key - FL_F);
         key_str = tmp_str.str ();
       }
     else if (e_key == ',')
@@ -2299,7 +2299,7 @@ public:
         if (go.isa ("uimenu"))
           fltk_label = dynamic_cast<const uimenu::properties&>
                        (go.get_properties ()).get___fltk_label__ ()
-                       + "/"
+                       + '/'
                        + fltk_label;
         else if (go.isa ("figure") || go.isa ("uicontextmenu"))
           ;

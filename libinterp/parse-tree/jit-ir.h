@@ -274,7 +274,7 @@ protected:
   std::ostream& print_indent (std::ostream& os, size_t indent = 0) const
   {
     for (size_t i = 0; i < indent * 8; ++i)
-      os << " ";
+      os << ' ';
     return os;
   }
 
@@ -536,10 +536,10 @@ public:
     print_indent (os, indent);
     jit_print (os, type ()) << ": ";
     if (QUOTE)
-      os << R"(")";
+      os << '"';
     os << mvalue;
     if (QUOTE)
-      os << R"(")";
+      os << '"';
     return os;
   }
 
@@ -723,7 +723,7 @@ public:
     if (mid != NO_ID)
       os << mid;
     else
-      os << "!";
+      os << '!';
     return os;
   }
 
@@ -901,7 +901,7 @@ public:
       jit_print (os, type ()) << ": ";
 
     dest ()->short_print (os);
-    return os << "#" << id ();
+    return os << '#' << id ();
   }
 private:
   jit_variable *mdest;
@@ -1202,7 +1202,7 @@ public:
         if (i + 1 < argument_count ())
           os << ", ";
       }
-    return os << ")";
+    return os << ')';
   }
 
   virtual bool infer (void);
@@ -1294,7 +1294,7 @@ public:
 
   virtual std::ostream& short_print (std::ostream& os) const
   {
-    return os << "magic_end" << "#" << id ();
+    return os << "magic_end" << '#' << id ();
   }
 
   JIT_VALUE_ACCEPT;
@@ -1409,7 +1409,7 @@ public:
     print_indent (os, indent) << "return";
 
     if (result ())
-      os << " " << *result ();
+      os << ' ' << *result ();
 
     return os;
   }

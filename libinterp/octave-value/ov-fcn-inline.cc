@@ -643,7 +643,7 @@ octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   if (nm.empty ())
     buf << "f(";
   else
-    buf << nm << "(";
+    buf << nm << '(';
 
   for (int i = 0; i < ifargs.numel (); i++)
     {
@@ -785,7 +785,7 @@ functions from strings is through the use of anonymous functions
             }
         }
 
-      // Sort the arguments into ascii order.
+      // Sort the arguments into ASCII order.
       fargs.sort ();
 
       if (fargs.isempty ())
@@ -809,7 +809,7 @@ functions from strings is through the use of anonymous functions
       for (int i = 1; i < n+1; i++)
         {
           std::ostringstream buf;
-          buf << "P" << i;
+          buf << 'P' << i;
           fargs(i) = buf.str ();
         }
     }
@@ -962,13 +962,13 @@ quadv (fcn, 0, 3)
       if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
         {
           if (i && old_func.substr (i-1, 1) != ".")
-            new_func.append (".");
+            new_func += '.';
 
           // Special case for ** operator.
           if (t1 == "*" && i < (old_func.length () - 1)
               && old_func.substr (i+1, 1) == "*")
             {
-              new_func.append ("*");
+              new_func += '*';
               i++;
             }
         }

@@ -287,7 +287,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   // System at beginning
   ui->comboBox_language->insertItem (0,tr ("System setting"));
   ui->comboBox_language->insertSeparator (1);    // separator after System
-  QString language = settings->value ("language","SYSTEM").toString ();
+  QString language = settings->value ("language", "SYSTEM").toString ();
   if (language == "SYSTEM")
     language = tr ("System setting");
   int selected = ui->comboBox_language->findText (language);
@@ -312,7 +312,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   icon_group->addButton (ui->general_icon_graphic);
   icon_group->addButton (ui->general_icon_letter);
   QString widget_icon_set =
-    settings->value ("DockWidgets/widget_icon_set","NONE").toString ();
+    settings->value ("DockWidgets/widget_icon_set", "NONE").toString ();
   ui->general_icon_octave-> setChecked (true);  // the default (if invalid set)
   ui->general_icon_octave-> setChecked (widget_icon_set == "NONE");
   ui->general_icon_graphic-> setChecked (widget_icon_set == "GRAPHIC");
@@ -501,7 +501,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   // terminal
   ui->terminal_fontName->setCurrentFont (QFont (
-      settings->value ("terminal/fontName","Courier New").toString ()));
+      settings->value ("terminal/fontName", "Courier New").toString ()));
   ui->terminal_fontSize->setValue (
     settings->value ("terminal/fontSize", 10).toInt ());
   ui->terminal_history_buffer->setValue (

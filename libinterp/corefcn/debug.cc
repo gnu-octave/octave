@@ -420,13 +420,13 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
           if (have_unconditional)
             {
               const char *_s_ = (have_unconditional > 1) ? "s" : "";
-              octave_stdout << "breakpoint" << _s_ <<" in " << fnm_bp_p.first
-                            << " at line" << _s_ << " ";
+              octave_stdout << "breakpoint" << _s_ << " in " << fnm_bp_p.first
+                            << " at line" << _s_ << ' ';
 
               for (const auto& bp : m)
                 {
                   if (bp.cond == "")
-                    octave_stdout << bp.line << " ";
+                    octave_stdout << bp.line << ' ';
                 }
               octave_stdout << std::endl;
             }
@@ -554,7 +554,7 @@ is stopped.
 
       if (! file_name.empty ())
         {
-          octave_stdout << " [" << file_name << "]" << std::endl;
+          octave_stdout << " [" << file_name << ']' << std::endl;
 
           std::string line = dbg_fcn->get_code_line (l);
 
@@ -908,7 +908,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
               os << (i == curr_frame ? "  --> " : "      ")
                  << std::setw (max_name_len) << name
                  << " at line " << line
-                 << " [" << file << "]"
+                 << " [" << file << ']'
                  << std::endl;
             }
 

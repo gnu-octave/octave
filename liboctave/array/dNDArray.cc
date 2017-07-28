@@ -860,7 +860,7 @@ operator << (std::ostream& os, const NDArray& a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      os << " ";
+      os << ' ';
       octave_write_double (os, a.elem (i));
       os << "\n";
     }

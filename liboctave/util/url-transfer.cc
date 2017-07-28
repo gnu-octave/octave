@@ -434,7 +434,7 @@ namespace octave
 
     void put (const std::string& file, std::istream& is)
     {
-      url = "ftp://" + host_or_url + "/" + file;
+      url = "ftp://" + host_or_url + '/' + file;
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_UPLOAD, 1);
       SETOPT (CURLOPT_NOBODY, 0);
@@ -453,7 +453,7 @@ namespace octave
 
     void get (const std::string& file, std::ostream& os)
     {
-      url = "ftp://" + host_or_url + "/" + file;
+      url = "ftp://" + host_or_url + '/' + file;
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_NOBODY, 0);
       std::ostream& old_os = set_ostream (os);
@@ -470,7 +470,7 @@ namespace octave
 
     void dir (void)
     {
-      url = "ftp://" + host_or_url + "/";
+      url = "ftp://" + host_or_url + '/';
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_NOBODY, 0);
 
@@ -488,7 +488,7 @@ namespace octave
       string_vector retval;
 
       std::ostringstream buf;
-      url = "ftp://" + host_or_url + "/";
+      url = "ftp://" + host_or_url + '/';
       SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (&buf));
       SETOPTR (CURLOPT_URL, url.c_str ());
       SETOPTR (CURLOPT_DIRLISTONLY, 1);
@@ -536,7 +536,7 @@ namespace octave
     {
       std::string path = pwd ();
 
-      url = "ftp://" + host_or_url + "/" + path + "/" + filename;
+      url = "ftp://" + host_or_url + '/' + path + '/' + filename;
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_FILETIME, 1);
       SETOPT (CURLOPT_HEADERFUNCTION, throw_away);
@@ -575,7 +575,7 @@ namespace octave
       // servers I tested with, so cd again into the correct path.  Make
       // the path absolute so that this will work even with servers that
       // don't end up in the root after an MDTM command.
-      cwd ("/" + path);
+      cwd ('/' + path);
     }
 
     std::string pwd (void)
@@ -619,7 +619,7 @@ namespace octave
       std::string query_string = form_query_string (param);
 
       if (! query_string.empty ())
-        url += "?" + query_string;
+        url += '?' + query_string;
 
       SETOPT (CURLOPT_URL, url.c_str ());
 
@@ -683,7 +683,7 @@ namespace octave
       // Set the username and password
       userpwd = user;
       if (! passwd.empty ())
-        userpwd += ":" + passwd;
+        userpwd += ':' + passwd;
       if (! userpwd.empty ())
         SETOPT (CURLOPT_USERPWD, userpwd.c_str ());
 
@@ -729,13 +729,13 @@ namespace octave
           char *enc_text = curl_easy_escape (curl, text.c_str (),
                                              text.length ());
 
-          query << enc_name << "=" << enc_text;
+          query << enc_name << '=' << enc_text;
 
           curl_free (enc_name);
           curl_free (enc_text);
 
           if (i < param.numel ()-1)
-            query << "&";
+            query << '&';
         }
 
       query.flush ();
@@ -752,7 +752,7 @@ namespace octave
 
       frame.add_fcn (curl_slist_free_all, slist);
 
-      std::string cmd = action + " " + file_or_dir;
+      std::string cmd = action + ' ' + file_or_dir;
 
       slist = curl_slist_append (slist, cmd.c_str ());
 

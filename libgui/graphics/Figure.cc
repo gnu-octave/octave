@@ -285,7 +285,7 @@ namespace QtHandles
 
         std::string direction = zm.getfield ("Direction").string_value ();
 
-        mode += " " + direction;
+        mode += ' ' + direction;
       }
 
     return mouse_mode_from_string (mode);
@@ -906,7 +906,7 @@ namespace QtHandles
   {
     std::string msg;
 
-    std::string file = octave::sys::tempnam ("", "oct-", msg) + "." + format;
+    std::string file = octave::sys::tempnam ("", "oct-", msg) + '.' + format;
 
     if (file.empty ())
       {

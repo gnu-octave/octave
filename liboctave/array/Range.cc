@@ -341,9 +341,9 @@ operator << (std::ostream& os, const Range& a)
   if (num_elem > 1)
     {
       // First element must be the base *exactly* (-0).
-      os << b << " ";
+      os << b << ' ';
       for (octave_idx_type i = 1; i < num_elem-1; i++)
-        os << b + i * increment << " ";
+        os << b + i * increment << ' ';
     }
 
   // Print out exactly the last element, rather than a calculated last element.

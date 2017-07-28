@@ -96,7 +96,7 @@ namespace octave
     {
       preserve_stream_state stream_state (os);
 
-      os << ot.ot_unix_time << "."
+      os << ot.ot_unix_time << '.'
          << std::setw (6) << std::setfill ('0') << ot.ot_usec;
 
       return os;

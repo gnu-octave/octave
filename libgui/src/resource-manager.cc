@@ -115,7 +115,7 @@ resource_manager::config_translators (QTranslator *qt_tr,
   if (settings)
     {
       // get the locale from the settings if already available
-      language = settings->value ("language","SYSTEM").toString ();
+      language = settings->value ("language", "SYSTEM").toString ();
     }
 
   if (language == "SYSTEM")

@@ -648,7 +648,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
       if (nr > 0 && nc > 0)
         {
           indent (os);
-          os << "{";
+          os << '{';
           newline (os);
 
           increment_indent_level ();
@@ -660,7 +660,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
                   octave_quit ();
 
                   std::ostringstream buf;
-                  buf << "[" << i+1 << "," << j+1 << "]";
+                  buf << '[' << i+1 << ',' << j+1 << ']';
 
                   octave_value val = matrix(i,j);
 
@@ -671,7 +671,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
           decrement_indent_level ();
 
           indent (os);
-          os << "}";
+          os << '}';
           newline (os);
         }
       else
@@ -679,7 +679,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
           indent (os);
           os << "{}";
           if (Vprint_empty_dimensions)
-            os << "(" << nr << "x" << nc << ")";
+            os << '(' << nr << 'x' << nc << ')';
           newline (os);
         }
     }
@@ -687,7 +687,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
     {
       indent (os);
       dim_vector dv = matrix.dims ();
-      os << "{" << dv.str () << " Cell Array}";
+      os << '{' << dv.str () << " Cell Array}";
       newline (os);
     }
 }
@@ -728,7 +728,7 @@ octave_cell::save_ascii (std::ostream& os)
       os << "# ndims: " << dv.ndims () << "\n";
 
       for (int i = 0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
       os << "\n";
 
       Cell tmp = cell_value ();
@@ -1059,7 +1059,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       std::ostringstream buf;
       int digits = static_cast<int> (std::floor (::log10 (static_cast<double>
                                      (nel)) + 1.0));
-      buf << "_" << std::setw (digits) << std::setfill ('0') << i;
+      buf << '_' << std::setw (digits) << std::setfill ('0') << i;
       std::string s = buf.str ();
 
       if (! add_hdf5_data (data_hid, tmp.elem (i), s.c_str (), "", false,

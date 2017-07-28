@@ -60,7 +60,7 @@ check_hg_versions (void)
                 << octave_id
                 << ") does not match liboctave hg id ("
                 << liboctave_id
-                << ")" << std::endl;
+                << ')' << std::endl;
       ok = false;
     }
 
@@ -70,7 +70,7 @@ check_hg_versions (void)
                 << octave_id
                 << ") does not match liboctinterp hg id ("
                 << liboctinterp_id
-                << ")" << std::endl;
+                << ')' << std::endl;
       ok = false;
     }
 

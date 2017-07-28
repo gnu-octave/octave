@@ -1228,14 +1228,14 @@ radio_values::values_as_string (void) const
       if (retval.empty ())
         {
           if (val == default_value ())
-            retval = "{" + val + "}";
+            retval = '{' + val + '}';
           else
             retval = val;
         }
       else
         {
           if (val == default_value ())
-            retval += " | {" + val + "}";
+            retval += " | {" + val + '}';
           else
             retval += " | " + val;
         }
@@ -7297,20 +7297,20 @@ axes::properties::calc_ticklabels (const array_property& ticks,
           os.str ("");
           if ((std::abs (significand) - 1) >
               10*std::numeric_limits<double>::epsilon())
-            os << significand << "x";
+            os << significand << 'x';
           else if (significand < 0)
-            os << "-";
+            os << '-';
 
           os << "10^{";
 
           if (exponent < 0.0)
             {
-              os << "-";
+              os << '-';
               exponent = -exponent;
             }
           if (exponent < 10. && (exp_max > 9 || exp_min < -9))
-            os << "0";
-          os << exponent << "}";
+            os << '0';
+          os << exponent << '}';
           c(i) = os.str ();
         }
     }
@@ -7351,8 +7351,8 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
       if (limits(0) <= val && val <= limits(1))
         {
           std::string label (ticklabels(i));
-          label.erase (0, label.find_first_not_of (" "));
-          label = label.substr (0, label.find_last_not_of (" ")+1);
+          label.erase (0, label.find_first_not_of (' '));
+          label = label.substr (0, label.find_last_not_of (' ')+1);
 
           if (txt_renderer.ok ())
             {

@@ -477,7 +477,7 @@ octave_matrix::save_ascii (std::ostream& os)
       os << "# ndims: " << dv.ndims () << "\n";
 
       for (int i=0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
 
       os << "\n" << tmp;
     }

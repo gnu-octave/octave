@@ -551,7 +551,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           else
             {
               if (int_sign == H5T_SGN_NONE)
-                int_typ.append ("u");
+                int_typ.push_back ('u');
               int_typ.append ("int");
 
               int slen = H5Tget_size (type_id);

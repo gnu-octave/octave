@@ -403,7 +403,7 @@ namespace octave
             width = 0;
             discard = false;
             modifier = '\0';
-            buf << " ";
+            buf << ' ';
 
             while (++i < n && isspace (s[i]))
               ; // skip whitespace
@@ -5781,7 +5781,7 @@ namespace octave
 
             if (elt->type == '%')
               {
-                os << "%";
+                os << '%';
                 retval++;
               }
             else if (elt->args == 0 && elt->text)

@@ -404,7 +404,7 @@ rational_approx (double val, int len)
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
           buf << std::setprecision (0) << static_cast<int>(n)
-              << "/" << static_cast<int>(d);
+              << '/' << static_cast<int>(d);
           m++;
 
           if (n < 0 && d < 0)
@@ -431,7 +431,7 @@ rational_approx (double val, int len)
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
           buf << std::setprecision (0) << static_cast<int>(lastn)
-              << "/" << static_cast<int>(lastd);
+              << '/' << static_cast<int>(lastd);
           s = buf.str ();
         }
     }
@@ -481,7 +481,7 @@ operator << (std::ostream& os, const pr_rational_float& prf)
             (prf.f.fmt | prf.f.up | prf.f.sp));
 
   if (fw > 0 && s.length () > static_cast<unsigned int>(fw))
-    os << "*";
+    os << '*';
   else
     os << s;
 
@@ -1588,7 +1588,7 @@ pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
 
           pr_imag_float (os, i, i_fw);
         }
-      os << "i";
+      os << 'i';
     }
 }
 
@@ -1603,14 +1603,14 @@ print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc,
       if (nr == 0 && nc == 0)
         os << "[]";
       else
-        os << "zeros (" << nr << ", " << nc << ")";
+        os << "zeros (" << nr << ", " << nc << ')';
     }
   else
     {
       os << "[]";
 
       if (Vprint_empty_dimensions)
-        os << "(" << nr << "x" << nc << ")";
+        os << '(' << nr << 'x' << nc << ')';
     }
 }
 
@@ -1621,13 +1621,13 @@ print_empty_nd_array (std::ostream& os, const dim_vector& dims,
   assert (dims.any_zero ());
 
   if (pr_as_read_syntax)
-    os << "zeros (" << dims.str (',') << ")";
+    os << "zeros (" << dims.str (',') << ')';
   else
     {
       os << "[]";
 
       if (Vprint_empty_dimensions)
-        os << "(" << dims.str () << ")";
+        os << '(' << dims.str () << ')';
     }
 }
 
@@ -1766,7 +1766,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
           os << m;
 
           if (pr_as_read_syntax)
-            os << "]";
+            os << ']';
 
           return;
         }
@@ -1902,7 +1902,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
           os << Matrix (m);
 
           if (pr_as_read_syntax)
-            os << "]";
+            os << ']';
 
           return;
         }
@@ -1948,7 +1948,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
               else
                 os << " ...\n";
             }
-          os << ")";
+          os << ')';
         }
       else
         {
@@ -2042,9 +2042,9 @@ void print_nd_array (std::ostream& os, const NDA_T& nda,
                   buf << ra_idx(k) + 1;
 
                   if (k < ndims - 1)
-                    buf << ",";
+                    buf << ',';
                   else
-                    buf << ")";
+                    buf << ')';
                 }
 
               nm += buf.str ();
@@ -2105,14 +2105,14 @@ pr_plus_format<> (std::ostream& os, const Complex& c)
   if (rp == 0.0)
     {
       if (ip == 0.0)
-        os << " ";
+        os << ' ';
       else
-        os << "i";
+        os << 'i';
     }
   else if (ip == 0.0)
     pr_plus_format (os, rp);
   else
-    os << "c";
+    os << 'c';
 }
 
 void
@@ -2184,7 +2184,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
           os << cm;
 
           if (pr_as_read_syntax)
-            os << "]";
+            os << ']';
 
           return;
         }
@@ -2322,7 +2322,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
           os << ComplexMatrix (cm);
 
           if (pr_as_read_syntax)
-            os << "]";
+            os << ']';
 
           return;
         }
@@ -2368,7 +2368,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
               else
                 os << " ...\n";
             }
-          os << ")";
+          os << ')';
         }
       else
         {
@@ -2467,7 +2467,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
           os << Matrix (m);
 
           if (pr_as_read_syntax)
-            os << "]";
+            os << ']';
 
           return;
         }
@@ -2516,7 +2516,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
               else
                 os << " ...\n";
             }
-          os << ")";
+          os << ')';
         }
       else
         {
@@ -2903,9 +2903,9 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
                   buf << ra_idx(k) + 1;
 
                   if (k < ndims - 1)
-                    buf << ",";
+                    buf << ',';
                   else
-                    buf << ")";
+                    buf << ')';
                 }
 
               nm += buf.str ();
@@ -3168,9 +3168,9 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                   buf << ra_idx(k) + 1;
 
                   if (k < ndims - 1)
-                    buf << ",";
+                    buf << ',';
                   else
-                    buf << ")";
+                    buf << ')';
                 }
 
               nm += buf.str ();
@@ -3276,9 +3276,9 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                   buf << ra_idx(k) + 1;
 
                   if (k < ndims - 1)
-                    buf << ",";
+                    buf << ',';
                   else
-                    buf << ")";
+                    buf << ')';
                 }
 
               nm += buf.str ();
@@ -3315,7 +3315,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                 }
 
               if (pr_as_read_syntax)
-                os << "]";
+                os << ']';
             }
           else
             {

@@ -266,7 +266,7 @@ log_search (const std::list<std::string>& filenames)
       for (const auto& filename : filenames)
         {
           octave::sys::time now;
-          std::cerr << now.unix_time () << " " << filename << std::endl;
+          std::cerr << now.unix_time () << ' ' << filename << std::endl;
         }
     }
 }
@@ -562,7 +562,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
             std::cerr << ", " << *p;
         }
 
-      std::cerr << "), path=" << path << "." << std::endl;
+      std::cerr << "), path=" << path << '.' << std::endl;
     }
 
   for (const auto& name : names)

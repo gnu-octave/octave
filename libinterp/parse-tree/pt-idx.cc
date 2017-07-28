@@ -90,7 +90,7 @@ namespace octave
   tree_index_expression::append (const std::string& n)
   {
     args.push_back (static_cast<tree_argument_list *> (nullptr));
-    type.append (".");
+    type += '.';
     arg_nm.push_back (n);
     dyn_field.push_back (static_cast<tree_expression *> (nullptr));
   }
@@ -99,7 +99,7 @@ namespace octave
   tree_index_expression::append (tree_expression *df)
   {
     args.push_back (static_cast<tree_argument_list *> (nullptr));
-    type.append (".");
+    type += '.';
     arg_nm.push_back ("");
     dyn_field.push_back (df);
   }

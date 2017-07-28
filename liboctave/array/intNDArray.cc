@@ -145,7 +145,7 @@ operator << (std::ostream& os, const intNDArray<T>& a)
   octave_idx_type nel = a.numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    os << " " << a.elem (i) << "\n";
+    os << ' ' << a.elem (i) << "\n";
 
   return os;
 }

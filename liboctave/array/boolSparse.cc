@@ -269,7 +269,7 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
     {
       octave_quit ();
       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-        os << a.ridx (i) + 1 << " "  << j + 1 << " " << a.data (i) << "\n";
+        os << a.ridx (i) + 1 << ' '  << j + 1 << ' ' << a.data (i) << "\n";
     }
 
   return os;

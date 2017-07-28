@@ -278,18 +278,18 @@ namespace octave
 
             std::string include_graph;
 
-            size_t found_redirect = old_print_cmd.find (">");
+            size_t found_redirect = old_print_cmd.find ('>');
 
             if (found_redirect != std::string::npos)
               include_graph = old_print_cmd.substr (found_redirect + 1);
             else
               include_graph = old_print_cmd;
 
-            size_t n_begin = include_graph.find_first_not_of (" ");
+            size_t n_begin = include_graph.find_first_not_of (' ');
 
             if (n_begin != std::string::npos)
               {
-                size_t n_end = include_graph.find_last_not_of (" ");
+                size_t n_end = include_graph.find_last_not_of (' ');
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
               }
@@ -424,7 +424,7 @@ code_to_symbol (uint32_t code)
   uint32_t idx = code - 945;
   if (idx < 25)
     {
-      std::string characters("abgdezhqiklmnxoprVstufcyw");
+      std::string characters ("abgdezhqiklmnxoprVstufcyw");
       retval = characters[idx];
       return retval;
     }
@@ -432,137 +432,137 @@ code_to_symbol (uint32_t code)
   idx = code - 913;
   if (idx < 25)
     {
-      std::string characters("ABGDEZHQIKLMNXOPRVSTUFCYW");
+      std::string characters ("ABGDEZHQIKLMNXOPRVSTUFCYW");
       retval = characters[idx];
     }
   else if (code == 978)
-    retval = std::string ("U");
+    retval = "U";
   else if (code == 215)
-    retval = std::string ("\xb4");
+    retval = "\xb4";
   else if (code == 177)
-    retval = std::string ("\xb1");
+    retval = "\xb1";
   else if (code == 8501)
-    retval = std::string ("\xc0");
+    retval = "\xc0";
   else if (code == 8465)
-    retval = std::string ("\xc1");
+    retval = "\xc1";
   else if (code == 8242)
-    retval = std::string ("\xa2");
+    retval = "\xa2";
   else if (code == 8736)
-    retval = std::string ("\xd0");
+    retval = "\xd0";
   else if (code == 172)
-    retval = std::string ("\xd8");
+    retval = "\xd8";
   else if (code == 9829)
-    retval = std::string ("\xa9");
+    retval = "\xa9";
   else if (code == 8472)
-    retval = std::string ("\xc3");
+    retval = "\xc3";
   else if (code == 8706)
-    retval = std::string ("\xb6");
+    retval = "\xb6";
   else if (code == 8704)
-    retval = std::string ("\x22");
+    retval = "\x22";
   else if (code == 9827)
-    retval = std::string ("\xa7");
+    retval = "\xa7";
   else if (code == 9824)
-    retval = std::string ("\xaa");
+    retval = "\xaa";
   else if (code == 8476)
-    retval = std::string ("\xc2");
+    retval = "\xc2";
   else if (code == 8734)
-    retval = std::string ("\xa5");
+    retval = "\xa5";
   else if (code == 8730)
-    retval = std::string ("\xd6");
+    retval = "\xd6";
   else if (code == 8707)
-    retval = std::string ("\x24");
+    retval = "\x24";
   else if (code == 9830)
-    retval = std::string ("\xa8");
+    retval = "\xa8";
   else if (code == 8747)
-    retval = std::string ("\xf2");
+    retval = "\xf2";
   else if (code == 8727)
-    retval = std::string ("\x2a");
+    retval = "\x2a";
   else if (code == 8744)
-    retval = std::string ("\xda");
+    retval = "\xda";
   else if (code == 8855)
-    retval = std::string ("\xc4");
+    retval = "\xc4";
   else if (code == 8901)
-    retval = std::string ("\xd7");
+    retval = "\xd7";
   else if (code == 8728)
-    retval = std::string ("\xb0");
+    retval = "\xb0";
   else if (code == 8745)
-    retval = std::string ("\xc7");
+    retval = "\xc7";
   else if (code == 8743)
-    retval = std::string ("\xd9");
+    retval = "\xd9";
   else if (code == 8856)
-    retval = std::string ("\xc6");
+    retval = "\xc6";
   else if (code == 8729)
-    retval = std::string ("\xb7");
+    retval = "\xb7";
   else if (code == 8746)
-    retval = std::string ("\xc8");
+    retval = "\xc8";
   else if (code == 8853)
-    retval = std::string ("\xc5");
+    retval = "\xc5";
   else if (code == 8804)
-    retval = std::string ("\xa3");
+    retval = "\xa3";
   else if (code == 8712)
-    retval = std::string ("\xce");
+    retval = "\xce";
   else if (code == 8839)
-    retval = std::string ("\xca");
+    retval = "\xca";
   else if (code == 8801)
-    retval = std::string ("\xba");
+    retval = "\xba";
   else if (code == 8773)
-    retval = std::string ("\x40");
+    retval = "\x40";
   else if (code == 8834)
-    retval = std::string ("\xcc");
+    retval = "\xcc";
   else if (code == 8805)
-    retval = std::string ("\xb3");
+    retval = "\xb3";
   else if (code == 8715)
-    retval = std::string ("\x27");
+    retval = "\x27";
   else if (code == 8764)
-    retval = std::string ("\x7e");
+    retval = "\x7e";
   else if (code == 8733)
-    retval = std::string ("\xb5");
+    retval = "\xb5";
   else if (code == 8838)
-    retval = std::string ("\xcd");
+    retval = "\xcd";
   else if (code == 8835)
-    retval = std::string ("\xc9");
+    retval = "\xc9";
   else if (code == 8739)
-    retval = std::string ("\xbd");
+    retval = "\xbd";
   else if (code == 8776)
-    retval = std::string ("\xbb");
+    retval = "\xbb";
   else if (code == 8869)
-    retval = std::string ("\x5e");
+    retval = "\x5e";
   else if (code == 8656)
-    retval = std::string ("\xdc");
+    retval = "\xdc";
   else if (code == 8592)
-    retval = std::string ("\xac");
+    retval = "\xac";
   else if (code == 8658)
-    retval = std::string ("\xde");
+    retval = "\xde";
   else if (code == 8594)
-    retval = std::string ("\xae");
+    retval = "\xae";
   else if (code == 8596)
-    retval = std::string ("\xab");
+    retval = "\xab";
   else if (code == 8593)
-    retval = std::string ("\xad");
+    retval = "\xad";
   else if (code == 8595)
-    retval = std::string ("\xaf");
+    retval = "\xaf";
   else if (code == 8970)
-    retval = std::string ("\xeb");
+    retval = "\xeb";
   else if (code == 8971)
-    retval = std::string ("\xfb");
+    retval = "\xfb";
   else if (code == 10216)
-    retval = std::string ("\xe1");
+    retval = "\xe1";
   else if (code == 10217)
-    retval = std::string ("\xf1");
+    retval = "\xf1";
   else if (code == 8968)
-    retval = std::string ("\xe9");
+    retval = "\xe9";
   else if (code == 8969)
-    retval = std::string ("\xf9");
+    retval = "\xf9";
   else if (code == 8800)
-    retval = std::string ("\xb9");
+    retval = "\xb9";
   else if (code == 8230)
-    retval = std::string ("\xbc");
+    retval = "\xbc";
   else if (code == 176)
-    retval = std::string ("\xb0");
+    retval = "\xb0";
   else if (code == 8709)
-    retval = std::string ("\xc6");
+    retval = "\xc6";
   else if (code == 169)
-    retval = std::string ("\xd3");
+    retval = "\xd3";
 
   if (retval.empty ())
     warning ("print: unhandled symbol %d", code);
@@ -700,7 +700,7 @@ namespace octave
               {
                 std::stringstream ss;
                 ss << txtobj.get_code ();
-                str = "&#" + ss.str () + ";";
+                str = "&#" + ss.str () + ';';
               }
           }
         else

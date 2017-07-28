@@ -309,7 +309,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
   F77_INT nc = octave::to_f77_int (args(0).columns ());
 
 #if defined (DEBUG)
-  std::cout << "Matrix A dimensions: (" << nn << "," << nc << ")" << std::endl;
+  std::cout << "Matrix A dimensions: (" << nn << ',' << nc << ')' << std::endl;
 #endif
 
   if (args(0).isempty ())
@@ -782,9 +782,9 @@ Note: @code{qz} performs permutation balancing, but not scaling
                 {
                   for (F77_INT idc = j; idc <= j+1; idc++)
                     {
-                      std::cout << "aa(" << idr << "," << idc << ")="
+                      std::cout << "aa(" << idr << ',' << idc << ")="
                                 << aa(idr,idc) << std::endl;
-                      std::cout << "bb(" << idr << "," << idc << ")="
+                      std::cout << "bb(" << idr << ',' << idc << ")="
                                 << bb(idr,idc) << std::endl;
                     }
                 }

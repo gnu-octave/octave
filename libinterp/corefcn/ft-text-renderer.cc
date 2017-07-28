@@ -193,7 +193,7 @@ namespace octave
       // Look first into the font cache, then use fontconfig.  If the font
       // is present in the cache, simply add a reference and return it.
 
-      ft_key key (name + ":" + weight + ":" + angle, size);
+      ft_key key (name + ':' + weight + ':' + angle, size);
       ft_cache::const_iterator it = cache.find (key);
 
       if (it != cache.end ())
@@ -1056,7 +1056,7 @@ namespace octave
   {
     uint32_t code = e.get_symbol_code ();
 
-    text_renderer::string fs (std::string ("-"), font, xoffset, yoffset);
+    text_renderer::string fs ("-", font, xoffset, yoffset);
 
     if (code != text_element_symbol::invalid_code && font.is_valid ())
       {

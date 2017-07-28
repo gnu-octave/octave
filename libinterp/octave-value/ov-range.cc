@@ -472,12 +472,12 @@ octave_range::short_disp (std::ostream& os) const
     os << "[]";
   else
     {
-      os << range.base () << ":";
+      os << range.base () << ':';
 
       if (len > 1)
         {
           if (range.inc () != 1)
-            os << range.inc () << ":";
+            os << range.inc () << ':';
 
           os << range.limit ();
         }
@@ -516,12 +516,12 @@ octave_range::save_ascii (std::ostream& os)
     os << "# base, length, increment\n";
 
   octave_write_double (os, base);
-  os << " ";
+  os << ' ';
   if (inc != 0)
     octave_write_double (os, limit);
   else
     os << len;
-  os << " ";
+  os << ' ';
   octave_write_double (os, inc);
   os << "\n";
 

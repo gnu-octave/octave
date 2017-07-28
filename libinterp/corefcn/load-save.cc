@@ -115,9 +115,9 @@ default_save_header_format (void)
     std::string ("# Created by Octave " OCTAVE_VERSION
                  ", %a %b %d %H:%M:%S %Y %Z <")
     + octave::sys::env::get_user_name ()
-    + std::string ("@")
+    + '@'
     + octave::sys::env::get_host_name ()
-    + std::string (">");
+    + '>';
 }
 
 // The format string for the comment line at the top of text-format
@@ -500,7 +500,7 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
 {
   std::string fname = find_data_file_in_load_path ("load", name, true);
 
-  size_t dot_pos = fname.rfind (".");
+  size_t dot_pos = fname.rfind ('.');
   size_t sep_pos = fname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
   if (dot_pos == std::string::npos

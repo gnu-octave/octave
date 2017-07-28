@@ -226,7 +226,7 @@ octave_dock_widget::make_window ()
   setWindowFlags (Qt::Window);
 
   QString css = styleSheet ();
-  css.replace ("widget-undock","widget-dock");
+  css.replace ("widget-undock", "widget-dock");
   setStyleSheet (css);
 
 #endif
@@ -282,7 +282,7 @@ octave_dock_widget::make_widget (bool dock)
   setWindowFlags (Qt::Widget);
 
   QString css = styleSheet ();
-  css.replace ("widget-dock","widget-undock");
+  css.replace ("widget-dock", "widget-undock");
   setStyleSheet (css);
 
 #endif

@@ -133,7 +133,7 @@ Undocumented internal function.
           Array<std::string> tmp = args(1).cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += tmp(i) + " ";
+            options += tmp(i) + ' ';
         }
       else
         error ("__delaunayn__: OPTIONS argument must be a string, cell array of strings, or empty");

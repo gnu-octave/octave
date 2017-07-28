@@ -249,7 +249,7 @@ octave_base_value::do_index_op (const octave_value_list&, bool)
 idx_vector
 octave_base_value::index_vector (bool /* require_integers */) const
 {
-  std::string nm = "<" + type_name () + ">";
+  std::string nm = '<' + type_name () + '>';
   octave::err_invalid_index (nm.c_str ());
 }
 
@@ -1346,7 +1346,7 @@ octave_base_value::indent (std::ostream& os) const
       // os << prefix;
 
       for (int i = 0; i < curr_print_indent_level; i++)
-        os << " ";
+        os << ' ';
 
       beginning_of_line = false;
     }

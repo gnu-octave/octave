@@ -180,7 +180,7 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   os << "onCleanup (";
   if (fcn.is_defined ())
     fcn.print_raw (os, pr_as_read_syntax);
-  os << ")";
+  os << ')';
 }
 
 DEFUN (onCleanup, args, ,

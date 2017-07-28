@@ -1013,7 +1013,7 @@ octave_class::print_raw (std::ostream& os, bool) const
   octave::unwind_protect frame;
 
   indent (os);
-  os << "  <class " << class_name () << ">";
+  os << "  <class " << class_name () << '>';
   newline (os);
 }
 

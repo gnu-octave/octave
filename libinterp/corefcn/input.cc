@@ -342,7 +342,7 @@ is_completing_dirfns (void)
 
   for (size_t i = 0; i < dirfns_commands_length; i++)
     {
-      int index = line.find (dirfns_commands[i] + " ");
+      int index = line.find (dirfns_commands[i] + ' ');
 
       if (index == 0)
         {
@@ -428,7 +428,7 @@ generate_completion (const std::string& text, int state)
               // Special case: array reference forces prefix="."
               //               in generate_struct_completions ()
               if (list_index <= name_list_len && ! prefix.empty ())
-                retval = (prefix == "." ? "" : prefix) + "." + name;
+                retval = (prefix == "." ? "" : prefix) + '.' + name;
               else
                 retval = name;
 
@@ -459,7 +459,7 @@ quoting_filename (const std::string& text, int, char quote)
   if (quote)
     return text;
   else
-    return (std::string ("'") + text);
+    return ("'" + text);
 }
 
 // Try to parse a partial command line in reverse, excluding trailing TEXT.
@@ -580,7 +580,7 @@ get_debug_input (octave::interpreter& interp, const std::string& prompt)
         {
           static char ctrl_z = 'Z' & 0x1f;
 
-          buf << ctrl_z << ctrl_z << nm << ":" << curr_debug_line;
+          buf << ctrl_z << ctrl_z << nm << ':' << curr_debug_line;
         }
       else
         {

@@ -471,7 +471,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
       octave_idx_type nr = matrix.rows ();
       octave_idx_type nc = matrix.columns ();
 
-      os << "[";
+      os << '[';
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -480,7 +480,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
               std::ostringstream buf;
               octave_print_internal (buf, matrix(j*nr+i));
               std::string tmp = buf.str ();
-              size_t pos = tmp.find_first_not_of (" ");
+              size_t pos = tmp.find_first_not_of (' ');
               if (pos != std::string::npos)
                 os << tmp.substr (pos);
               else if (! tmp.empty ())
@@ -500,7 +500,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
     done:
 
       if (nel <= max_elts)
-        os << "]";
+        os << ']';
     }
   else
     os << "...";

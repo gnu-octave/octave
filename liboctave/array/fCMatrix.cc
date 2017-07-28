@@ -3359,7 +3359,7 @@ operator << (std::ostream& os, const FloatComplexMatrix& a)
     {
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
-          os << " ";
+          os << ' ';
           octave_write_complex (os, a.elem (i, j));
         }
       os << "\n";

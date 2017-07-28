@@ -835,7 +835,7 @@ operator << (std::ostream& os, const ComplexNDArray& a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      os << " ";
+      os << ' ';
       octave_write_complex (os, a.elem (i));
       os << "\n";
     }

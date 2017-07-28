@@ -326,13 +326,13 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
 
       menu.addSeparator ();
 
-      menu.addAction ("disp (" + var_name + ")", this,
+      menu.addAction ("disp (" + var_name + ')', this,
                       SLOT (handle_contextmenu_disp ()));
 
-      menu.addAction ("plot (" + var_name + ")", this,
+      menu.addAction ("plot (" + var_name + ')', this,
                       SLOT (handle_contextmenu_plot ()));
 
-      menu.addAction ("stem (" + var_name + ")", this,
+      menu.addAction ("stem (" + var_name + ')', this,
                       SLOT (handle_contextmenu_stem ()));
 
       menu.addSeparator ();

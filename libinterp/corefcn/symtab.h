@@ -708,7 +708,7 @@ namespace octave
           if (package_name.empty ())
             return name;
           else
-            return package_name + "." + name;
+            return package_name + '.' + name;
         }
 
         std::string name;

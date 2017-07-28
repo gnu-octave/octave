@@ -63,7 +63,7 @@ namespace octave
               os << ", ";
           }
 
-        os << ")";
+        os << ')';
       }
   }
 

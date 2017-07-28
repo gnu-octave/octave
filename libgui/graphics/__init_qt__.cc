@@ -187,7 +187,7 @@ static QString
 appendDirSep (const QString& d)
 {
   if (! d.endsWith ("/") && ! d.endsWith (QDir::separator ()))
-    return (d + "/");
+    return (d + '/');
   return d;
 }
 
@@ -220,7 +220,7 @@ DEFUN (__uigetfile_qt__, args, , "")
   if (defaultFileName.isEmpty ())
     defaultFileName = defaultDirectory;
   else
-    defaultFileName = defaultDirectory + "/" + defaultFileName;
+    defaultFileName = defaultDirectory + '/' + defaultFileName;
 
   QStringList filterSpecs = makeFilterSpecs (args(0).cell_value ());
 
@@ -298,7 +298,7 @@ DEFUN (__uiputfile_qt__, args, , "")
   if (defaultFileName.isEmpty ())
     defaultFileName = defaultDirectory;
   else
-    defaultFileName = defaultDirectory + "/" + defaultFileName;
+    defaultFileName = defaultDirectory + '/' + defaultFileName;
 
   QStringList filterSpecs = makeFilterSpecs (args(0).cell_value ());
 

@@ -144,7 +144,7 @@ namespace octave
                 if (m_code_to_eval.empty ())
                   m_code_to_eval = octave_optarg_wrapper ();
                 else
-                  m_code_to_eval += std::string (" ") + octave_optarg_wrapper ();
+                  m_code_to_eval += ' ' + octave_optarg_wrapper ();
               }
             break;
 

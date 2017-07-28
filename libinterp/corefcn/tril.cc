@@ -286,7 +286,7 @@ do_trilu (const std::string& name,
         idx_tmp.push_back (ov_idx);
         ov_idx(1) = static_cast<double> (nc);
         tmp = tmp.resize (dim_vector (0,0));
-        tmp = tmp.subsasgn ("(",idx_tmp, arg.do_index_op (ov_idx));
+        tmp = tmp.subsasgn ("(", idx_tmp, arg.do_index_op (ov_idx));
         tmp = tmp.resize (dims);
 
         if (lower)

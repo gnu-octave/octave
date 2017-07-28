@@ -237,7 +237,7 @@ operator << (std::ostream& os, const FloatRowVector& a)
 //  int field_width = os.precision () + 7;
 
   for (octave_idx_type i = 0; i < a.numel (); i++)
-    os << " " /* setw (field_width) */ << a.elem (i);
+    os << ' ' /* setw (field_width) */ << a.elem (i);
   return os;
 }
 

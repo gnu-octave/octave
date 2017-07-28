@@ -303,7 +303,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
         {
 
           octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION
-                        << "." <<  COLAMD_SUB_VERSION
+                        << '.' <<  COLAMD_SUB_VERSION
                         << ", " << COLAMD_DATE << ":\n";
 
           if (knobs[COLAMD_DENSE_ROW] >= 0)
@@ -702,7 +702,7 @@ permutations on the tree.
   if (nargin == 2)
     {
       std::string str = args(1).xstring_value ("etree: TYP must be a string");
-      if (str.find ("C") == 0 || str.find ("c") == 0)
+      if (str.find ('C') == 0 || str.find ('c') == 0)
         is_sym = false;
     }
 

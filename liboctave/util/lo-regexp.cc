@@ -184,7 +184,7 @@ namespace octave
                            who.c_str (), MAXLOOKBEHIND);
                       }
 
-                    buf << pattern.substr (pos, new_pos - pos) << "(";
+                    buf << pattern.substr (pos, new_pos - pos) << '(';
 
                     size_t i;
 
@@ -196,13 +196,13 @@ namespace octave
                     for (; i < max_length + 1; i++)
                       {
                         buf << pattern.substr (new_pos, tmp_pos3 - new_pos)
-                            << "{" << i << "}";
+                            << '{' << i << '}';
                         buf << pattern.substr (tmp_pos3 + 1,
                                                tmp_pos1 - tmp_pos3 - 1);
                         if (i != max_length)
-                          buf << "|";
+                          buf << '|';
                       }
-                    buf << ")";
+                    buf << ')';
                   }
                 else
                   buf << pattern.substr (pos, tmp_pos1 - pos);

@@ -528,7 +528,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       size_t varlen = vars.size ();
 
       if (varlen > 0)
-        nmbuf << nm << " " << varlen;
+        nmbuf << nm << ' ' << varlen;
       else
         nmbuf << nm;
 
@@ -1472,7 +1472,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
     }
 
   if (! printed)
-    octave_print_internal (os, "@" + nm, pr_as_read_syntax,
+    octave_print_internal (os, '@' + nm, pr_as_read_syntax,
                            current_print_indent_level ());
 }
 

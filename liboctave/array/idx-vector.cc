@@ -110,7 +110,7 @@ idx_vector::idx_colon_rep::sort_idx (Array<octave_idx_type>&)
 std::ostream&
 idx_vector::idx_colon_rep::print (std::ostream& os) const
 {
-  return os << ":";
+  return os << ':';
 }
 
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,

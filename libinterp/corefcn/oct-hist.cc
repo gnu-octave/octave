@@ -110,9 +110,9 @@ default_history_timestamp_format (void)
   return
     std::string ("# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
     + octave::sys::env::get_user_name ()
-    + std::string ("@")
+    + '@'
     + octave::sys::env::get_host_name ()
-    + std::string (">");
+    + '>';
 }
 
 // The format of the timestamp marker written to the history file when

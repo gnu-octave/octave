@@ -2562,7 +2562,7 @@ octave_value::print_info (std::ostream& os, const std::string& prefix) const
      << prefix << "count:     " << get_count () << "\n"
      << prefix << "rep info:  ";
 
-  rep->print_info (os, prefix + " ");
+  rep->print_info (os, prefix + ' ');
 }
 
 OCTAVE_NORETURN static void

@@ -299,7 +299,7 @@ namespace octave
   std::string
   dynamic_loader::name_mangler (const std::string& name)
   {
-    return "G" + name;
+    return 'G' + name;
   }
 
   std::string

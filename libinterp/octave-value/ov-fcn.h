@@ -186,7 +186,7 @@ public:
     if (xpackage_name.empty ())
       return my_name;
     else
-      return xpackage_name + "." + my_name;
+      return xpackage_name + '.' + my_name;
   }
 
   void document (const std::string& ds) { doc = ds; }

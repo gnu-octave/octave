@@ -921,7 +921,7 @@ namespace octave
         std::string full_name = pkg_di.first;
 
         if (! pname.empty ())
-          full_name = pname + "." + full_name;
+          full_name = pname + '.' + full_name;
 
         move (pkg_di.second, at_end, full_name);
       }
@@ -996,7 +996,7 @@ namespace octave
         std::string full_name = pkg_di.first;
 
         if (! pname.empty ())
-          full_name = pname + "." + full_name;
+          full_name = pname + '.' + full_name;
 
         remove (pkg_di.second, full_name);
       }
@@ -1029,7 +1029,7 @@ namespace octave
         std::string full_name = pkg_di.first;
 
         if (! pname.empty ())
-          full_name = pname + "." + full_name;
+          full_name = pname + '.' + full_name;
 
         add (pkg_di.second, at_end, full_name);
       }
@@ -1607,7 +1607,7 @@ namespace octave
             std::string class_name = cls_fnmap.first;
 
             if (! m_package_name.empty ())
-              class_name = m_package_name + "." + class_name;
+              class_name = m_package_name + '.' + class_name;
 
             l.push_back (class_name);
           }
@@ -1759,7 +1759,7 @@ namespace octave
         fcn_map_type& fm = method_map[class_name];
 
         std::string full_dir_name
-          = sys::file_ops::concat (dir_name, "@" + class_name);
+          = sys::file_ops::concat (dir_name, '@' + class_name);
 
         const dir_info::class_info& ci = cls_ci.second;
 
@@ -1867,7 +1867,7 @@ namespace octave
         fcn_map_type& fn_map = cls_fnmap.second;
 
         std::string full_dir_name
-          = sys::file_ops::concat (dir_name, "@" + class_name);
+          = sys::file_ops::concat (dir_name, '@' + class_name);
 
         for (auto& nm_filst : fn_map)
           {
@@ -1958,7 +1958,7 @@ namespace octave
         fcn_map_type& fn_map = cls_fnmap.second;
 
         std::string full_dir_name
-          = sys::file_ops::concat (dir, "@" + class_name);
+          = sys::file_ops::concat (dir, '@' + class_name);
 
         for (auto& nm_filst : fn_map)
           {
@@ -2096,7 +2096,7 @@ namespace octave
     if (types & load_path::MEX_FILE)
       {
         if (printed_type)
-          os << "|";
+          os << '|';
         os << "mex";
         printed_type = true;
       }
@@ -2104,8 +2104,8 @@ namespace octave
     if (types & load_path::M_FILE)
       {
         if (printed_type)
-          os << "|";
-        os << "m";
+          os << '|';
+        os << 'm';
         printed_type = true;
       }
   }

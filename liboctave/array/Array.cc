@@ -2782,7 +2782,7 @@ operator << (std::ostream& os, const Array<T>& a)
   os << n_dims << "-dimensional array";
 
   if (n_dims)
-    os << " (" << a_dims.str () << ")";
+    os << " (" << a_dims.str () << ')';
 
   os <<"\n\n";
 
@@ -2815,7 +2815,7 @@ operator << (std::ostream& os, const Array<T>& a)
                   for (octave_idx_type k = 0; k < cols; k++)
                     {
                       ra_idx(1) = k;
-                      os << " " << a.elem (ra_idx);
+                      os << ' ' << a.elem (ra_idx);
                     }
                   os << "\n";
                 }
@@ -2827,7 +2827,7 @@ operator << (std::ostream& os, const Array<T>& a)
               for (octave_idx_type k = 0; k < rows; k++)
                 {
                   ra_idx(0) = k;
-                  os << " " << a.elem (ra_idx);
+                  os << ' ' << a.elem (ra_idx);
                 }
               break;
             }
@@ -2844,7 +2844,7 @@ operator << (std::ostream& os, const Array<T>& a)
               os << "\n(:,:,";
 
               for (int j = 2; j < n_dims - 1; j++)
-                os << ra_idx(j) + 1 << ",";
+                os << ra_idx(j) + 1 << ',';
 
               os << ra_idx(n_dims - 1) + 1 << ") = \n";
 
@@ -2855,7 +2855,7 @@ operator << (std::ostream& os, const Array<T>& a)
                   for (octave_idx_type k = 0; k < cols; k++)
                     {
                       ra_idx(1) = k;
-                      os << " " << a.elem (ra_idx);
+                      os << ' ' << a.elem (ra_idx);
                     }
 
                   os << "\n";

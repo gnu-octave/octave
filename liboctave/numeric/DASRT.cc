@@ -587,7 +587,7 @@ DASRT::error_message (void) const
 
     case -1:
       retval = std::string ("a large amount of work has been expended (t =")
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     case -2:
@@ -602,17 +602,17 @@ DASRT::error_message (void) const
 
     case -6:
       retval = std::string ("repeated error test failures on the last attempted step (t = ")
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     case -7:
       retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     case -8:
       retval = std::string ("the matrix of partial derivatives is singular (t = ")
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     case -9:
@@ -622,12 +622,12 @@ DASRT::error_message (void) const
 
     case -10:
       retval = std::string ("corrector could not converge because IRES was -1 (t = ")
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     case -11:
       retval = std::string ("return requested in user-supplied function (t = ")
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     case -12:

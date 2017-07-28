@@ -531,7 +531,7 @@ news_reader::process (void)
       // run while we wait for the page to load.  Then emit the signal
       // to display it when we have the page contents.
 
-      QString url = base_url + "/" + page;
+      QString url = base_url + '/' + page;
       std::ostringstream buf;
       octave::url_transfer octave_dot_org (url.toStdString (), buf);
 
@@ -2020,11 +2020,11 @@ main_window::m_add_menu (QMenuBar *p, QString name)
 
   QString base_name = name;  // get a copy
   // replace intended '&' ("&&") by a temp. string
-  base_name.replace ("&&","___octave_amp_replacement___");
+  base_name.replace ("&&", "___octave_amp_replacement___");
   // remove single '&' (shortcut)
   base_name.remove ("&");
   // restore intended '&'
-  base_name.replace ("___octave_amp_replacement___","&&");
+  base_name.replace ("___octave_amp_replacement___", "&&");
 
   // remember names with and without shortcut
   _hash_menu_text[menu] = QStringList () << name << base_name;

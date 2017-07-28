@@ -158,7 +158,7 @@ public:
 
         std::ostringstream buf;
         buf << fh;
-        ident = fh->fcn_name () + ":" + buf.str ();
+        ident = fh->fcn_name () + ':' + buf.str ();
       }
   }
 

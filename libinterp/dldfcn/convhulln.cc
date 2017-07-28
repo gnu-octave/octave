@@ -140,7 +140,7 @@ convex hull is calculated.
   if (nargin == 2)
     {
       if (args(1).is_string ())
-        options = " " + args(1).string_value ();
+        options = ' ' + args(1).string_value ();
       else if (args(1).isempty ())
         ; // Use default options.
       else if (args(1).iscellstr ())
@@ -150,7 +150,7 @@ convex hull is calculated.
           Array<std::string> tmp = args(1).cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += " " + tmp(i);
+            options += ' ' + tmp(i);
         }
       else
         error ("convhulln: OPTIONS must be a string, cell array of strings, or empty");

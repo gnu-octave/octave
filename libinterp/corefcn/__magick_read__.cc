@@ -95,7 +95,7 @@ is_indexed (const Magick::Image& img)
           // GM PseudoClass says.
           const std::string color_type =
             const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig");
-          if (! color_type.empty() && color_type != "3")
+          if (! color_type.empty () && color_type != "3")
             indexed = false;
         }
     }
@@ -1442,7 +1442,7 @@ write_file (const std::string& filename,
 {
   try
     {
-      Magick::writeImages (imvec.begin (), imvec.end (), ext + ":" + filename);
+      Magick::writeImages (imvec.begin (), imvec.end (), ext + ':' + filename);
     }
   catch (Magick::Warning& w)
     {

@@ -5837,8 +5837,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -6076,8 +6076,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -6332,8 +6332,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -6593,8 +6593,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -7487,7 +7487,7 @@ operator << (std::ostream& os, const SparseMatrix& a)
       octave_quit ();
       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
-          os << a.ridx (i) + 1 << " "  << j + 1 << " ";
+          os << a.ridx (i) + 1 << ' '  << j + 1 << ' ';
           octave_write_double (os, a.data (i));
           os << "\n";
         }

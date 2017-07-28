@@ -123,7 +123,7 @@ Undocumented internal function.
       octave_value opt_arg = args(2);
 
       if (opt_arg.is_string ())
-        options = " " + opt_arg.string_value ();
+        options = ' ' + opt_arg.string_value ();
       else if (opt_arg.isempty ())
         ; // Use default options.
       else if (opt_arg.iscellstr ())
@@ -133,7 +133,7 @@ Undocumented internal function.
           Array<std::string> tmp = opt_arg.cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += " " + tmp(i);
+            options += ' ' + tmp(i);
         }
       else
         error ("%s: OPTIONS must be a string, cell array of strings, or empty",

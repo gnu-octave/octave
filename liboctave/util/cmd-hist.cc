@@ -129,7 +129,7 @@ namespace octave
           beg++;
         else
           {
-            size_t end = control_arg.find (":", beg);
+            size_t end = control_arg.find (':', beg);
 
             if (end == std::string::npos)
               end = len;
@@ -169,7 +169,7 @@ namespace octave
     if (history_control & HC_IGNDUPS)
       {
         if (retval.length () > 0)
-          retval.append (":");
+          retval += ':';
 
         retval.append ("ignoredups");
       }
@@ -177,7 +177,7 @@ namespace octave
     if (history_control & HC_ERASEDUPS)
       {
         if (retval.length () > 0)
-          retval.append (":");
+          retval += ':';
 
         retval.append ("erasedups");
       }

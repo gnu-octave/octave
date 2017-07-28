@@ -225,7 +225,7 @@ namespace octave
             {
               std::getline (js, line);
 
-              if (line.find ("-") == 0)
+              if (line.find ('-') == 0)
                 java_opts.push_back (line);
               else if (line.length () > 0 && Vdebug_java)
                 std::cerr << "invalid JVM option, skipping: " << line << std::endl;
@@ -437,7 +437,7 @@ initial_class_path (void)
             {
               std::string filename = cp_list[i];
               std::string cp_file = filename;
-              octave::sys::file_stat   cp_exists;
+              octave::sys::file_stat cp_exists;
 
               // Try to find classpath file in the current directory.
 
@@ -453,7 +453,7 @@ initial_class_path (void)
 
               if (cwd != home_dir)
                 {
-                  cp_file = "~" + sep + filename;
+                  cp_file = '~' + sep + filename;
                   cp_file = octave::sys::file_ops::tilde_expand (cp_file);
                   cp_exists = octave::sys::file_stat (cp_file);
                   if (cp_exists)
@@ -2172,7 +2172,7 @@ octave_java::print (std::ostream& os, bool)
 void
 octave_java::print_raw (std::ostream& os, bool) const
 {
-  os << "<Java object: " << java_classname << ">";
+  os << "<Java object: " << java_classname << '>';
 }
 
 // FIXME: Need routines to actually save/load java objects through Serialize.

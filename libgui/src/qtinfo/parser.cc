@@ -62,7 +62,7 @@ parser::set_info_path (const QString& infoPath)
     {
       if (info_file_exists)
         break;
-      info_file_exists = QFileInfo (info.absoluteFilePath () + "." +
+      info_file_exists = QFileInfo (info.absoluteFilePath () + '.' +
                                     it.key ()).exists ();
     }
 
@@ -73,7 +73,7 @@ parser::set_info_path (const QString& infoPath)
 
       QDir infoDir (path);
       QStringList filter;
-      filter.append (fileName + "*");
+      filter.append (fileName + '*');
 
       _info_files = infoDir.entryInfoList (filter, QDir::Files);
 
@@ -240,7 +240,7 @@ parser::get_next_node (QIODevice *io)
           line = line_buffer;             // and take the first instead
           // now correct the size of the dropped line and 5 additional chars
           for (i = 1; i < len + 6; i++)
-            line.insert (line.size ()-1,QByteArray (" "));  // adding blanks
+            line.insert (line.size ()-1, QByteArray (" "));  // adding blanks
         }
 
       if (line.at(0) == 31)
@@ -318,8 +318,8 @@ replace_links (QString& text)
       if (url_link.isEmpty ())
         url_link = note;
 
-      term.replace (":","");
-      note.replace (":","");
+      term.replace (":", "");
+      note.replace (":", "");
       note.replace (QRegExp ("`([^']+)'"),"\\1");  // no extra format in links
 
       QRegExp re_break ("(\n[ ]*)");
@@ -334,16 +334,16 @@ replace_links (QString& text)
       if (re_break.indexIn (url_link) != -1)
         term += re_break.cap (1);
       else if (re_break.indexIn (re.cap (2)) != -1)
-        href = re_break.cap (1) + " ";
+        href = re_break.cap (1) + ' ';
       else if (re_break.indexIn (note) != -1)
         term += re_break.cap (1);
       note.replace (re_break,"&nbsp;");
 
       url_link = url_link.trimmed ();
-      url_link.replace ("\n"," ");
-      url_link.replace (QRegExp ("  +")," ");
-      url_link.replace ("<b>","");
-      url_link.replace ("</b>","");
+      url_link.replace ("\n", " ");
+      url_link.replace (QRegExp ("  +"), " ");
+      url_link.replace ("<b>", "");
+      url_link.replace ("</b>", "");
 
       href += R"(<font style="color:DarkGray; font-weight:bold;">&raquo;</font>)";
       href += "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
@@ -559,9 +559,9 @@ parser::global_search (const QString& text, int max_founds)
   QString results;
   QStringList words = text.split (" ", QString::SkipEmptyParts);
 
-  QString re_program ("(" + QRegExp::escape (words.at (0)));
+  QString re_program ('(' + QRegExp::escape (words.at (0)));
   for (int i = 1; i < words.size (); i++)
-    re_program += "|" + QRegExp::escape (words.at (i));
+    re_program += '|' + QRegExp::escape (words.at (i));
   re_program += ')';
 
   QRegExp re (re_program, Qt::CaseInsensitive);

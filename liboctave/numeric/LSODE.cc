@@ -364,7 +364,7 @@ LSODE::error_message (void) const
 
     case -13:
       retval = "return requested in user-supplied function (t = "
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     default:

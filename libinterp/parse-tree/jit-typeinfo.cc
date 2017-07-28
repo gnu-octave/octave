@@ -488,7 +488,7 @@ std::ostream&
 operator<< (std::ostream& os, const jit_range& rng)
 {
   return os << "Range[" << rng.base << ", " << rng.limit << ", " << rng.inc
-         << ", " << rng.nelem << "]";
+         << ", " << rng.nelem << ']';
 }
 
 // -------------------- jit_matrix --------------------
@@ -498,7 +498,7 @@ operator<< (std::ostream& os, const jit_matrix& mat)
 {
   return os << "Matrix[" << mat.ref_count << ", " << mat.slice_data << ", "
          << mat.slice_len << ", " << mat.dimensions << ", "
-         << mat.array << "]";
+         << mat.array << ']';
 }
 
 // -------------------- jit_type --------------------
@@ -1901,7 +1901,7 @@ jit_typeinfo::add_binary_op (jit_type *ty, int op, int llvm_op)
   std::stringstream fname;
   octave_value::binary_op ov_op = static_cast<octave_value::binary_op>(op);
   fname << "octave_jit_" << octave_value::binary_op_as_string (ov_op)
-        << "_" << ty->name ();
+        << '_' << ty->name ();
 
   jit_function fn = create_internal (fname.str (), ty, ty, ty);
   llvm::BasicBlock *block = fn.new_block ();
@@ -1921,7 +1921,7 @@ jit_typeinfo::add_binary_icmp (jit_type *ty, int op, int llvm_op)
   std::stringstream fname;
   octave_value::binary_op ov_op = static_cast<octave_value::binary_op>(op);
   fname << "octave_jit" << octave_value::binary_op_as_string (ov_op)
-        << "_" << ty->name ();
+        << '_' << ty->name ();
 
   jit_function fn = create_internal (fname.str (), boolean, ty, ty);
   llvm::BasicBlock *block = fn.new_block ();
@@ -1940,7 +1940,7 @@ jit_typeinfo::add_binary_fcmp (jit_type *ty, int op, int llvm_op)
   std::stringstream fname;
   octave_value::binary_op ov_op = static_cast<octave_value::binary_op>(op);
   fname << "octave_jit" << octave_value::binary_op_as_string (ov_op)
-        << "_" << ty->name ();
+        << '_' << ty->name ();
 
   jit_function fn = create_internal (fname.str (), boolean, ty, ty);
   llvm::BasicBlock *block = fn.new_block ();

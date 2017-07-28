@@ -2181,8 +2181,7 @@ namespace octave
     m_function_scopes.clear ();
     m_primary_fcn_ptr  = nullptr;
     m_subfunction_names.clear ();
-    // FIXME: What about m_classdef_object?  Shouldn't this be required?
-    // m_classdef_object = nullptr;
+    m_classdef_object = nullptr;
 
     delete m_stmt_list;
     m_stmt_list = nullptr;

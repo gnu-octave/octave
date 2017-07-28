@@ -486,7 +486,7 @@ workspace_view::notice_settings (const QSettings *settings)
       for (i = 0; i < resource_manager::storage_class_chars ().length (); i++)
         {
           tool_tip +=
-            QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
+            QString (R"(<div style="background-color:%1;color:#000000">%2</div>)")
             .arg (_model->storage_class_color (i).name ())
             .arg (resource_manager::storage_class_names ().at (i));
         }

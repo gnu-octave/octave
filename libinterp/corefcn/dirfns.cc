@@ -281,7 +281,7 @@ identifier.
   if (nargin == 2)
     {
       if (args(1).string_value () != "s")
-        error ("rmdir: second argument must be \"s\" for recursive removal");
+        error (R"(rmdir: second argument must be "s" for recursive removal)");
 
       bool doit = true;
 
@@ -644,7 +644,7 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
     {
       std::string s = args(0).xstring_value ("filesep: argument must be a string");
       if (s != "all")
-        error ("filesep: argument must be \"all\"");
+        error (R"(filesep: argument must be "all")");
 
       retval = octave::sys::file_ops::dir_sep_chars ();
     }

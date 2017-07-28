@@ -117,7 +117,7 @@ namespace octave
 
     void static_workspace_error (void)
     {
-      error ("can not add variable \"%s\" to a static workspace",
+      error (R"(can not add variable "%s" to a static workspace)",
              name ().c_str ());
     }
 

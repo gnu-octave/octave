@@ -860,7 +860,7 @@ namespace octave
         fp = octave_popen (cmd.c_str (), "w");
 
         if (! fp)
-          error ("print: failed to open pipe \"%s\"", stream.c_str ());
+          error (R"(print: failed to open pipe "%s")", stream.c_str ());
 
         frame.add_fcn (safe_pclose, fp);
       }
@@ -871,7 +871,7 @@ namespace octave
         fp = std::fopen (stream.c_str (), "w");
 
         if (! fp)
-          error ("gl2ps_print: failed to create file \"%s\"", stream.c_str ());
+          error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());
 
         frame.add_fcn (safe_fclose, fp);
       }

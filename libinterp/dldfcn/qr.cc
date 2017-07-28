@@ -1087,7 +1087,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   bool col = (orient == "col");
 
   if (! col && orient != "row")
-    error ("qrinsert: ORIENT must be \"col\" or \"row\"");
+    error (R"(qrinsert: ORIENT must be "col" or "row")");
 
   if (! check_qr_dims (argq, argr, col) || (! col && argx.rows () != 1))
     error ("qrinsert: dimension mismatch");
@@ -1281,7 +1281,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   bool col = orient == "col";
 
   if (! col && orient != "row")
-    error ("qrdelete: ORIENT must be \"col\" or \"row\"");
+    error (R"(qrdelete: ORIENT must be "col" or "row")");
 
   if (! check_qr_dims (argq, argr, col))
     error ("qrdelete: dimension mismatch");

@@ -362,7 +362,7 @@ namespace octave
 
     if (m_have_eval_option_code && m_have_script_file)
       {
-        warning ("--eval \"CODE\" and script file are mutually exclusive options");
+        warning (R"(--eval "CODE" and script file are mutually exclusive options)");
 
         octave_print_terse_usage_and_exit ();
       }

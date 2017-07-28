@@ -131,7 +131,7 @@ static Sparse<T>
 do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
-    error ("tril: \"pack\" not implemented for sparse matrices");
+    error (R"(tril: "pack" not implemented for sparse matrices)");
 
   Sparse<T> m = a;
   octave_idx_type nc = m.cols ();
@@ -151,7 +151,7 @@ static Sparse<T>
 do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
-    error ("triu: \"pack\" not implemented for sparse matrices");
+    error (R"(triu: "pack" not implemented for sparse matrices)");
 
   Sparse<T> m = a;
   octave_idx_type nc = m.cols ();
@@ -261,7 +261,7 @@ do_trilu (const std::string& name,
         // Generic code that works on octave-values, that is slow
         // but will also work on arbitrary user types
         if (pack) // FIXME
-          error ("%s: \"pack\" not implemented for class %s",
+          error (R"(%s: "pack" not implemented for class %s)",
                  name.c_str (), arg.class_name ().c_str ());
 
         octave_value tmp = arg;

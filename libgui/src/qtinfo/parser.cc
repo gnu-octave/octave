@@ -40,11 +40,11 @@ along with Octave; see the file COPYING.  If not, see
 parser::parser (QObject *p)
   : QObject(p)
 {
-  _compressors_map.insert ("bz2",  "bzip2 -dc \"%1\"");
-  _compressors_map.insert ("gz",   "gzip -dc \"%1\"");
-  _compressors_map.insert ("lzma", "lzma -dc \"%1\"");
-  _compressors_map.insert ("xz",   "xz -dc \"%1\"");
-  _compressors_map.insert ("Z",    "gunzip -c \"%1\"");
+  _compressors_map.insert ( "bz2",  R"(bzip2 -dc "%1")" );
+  _compressors_map.insert ( "gz",   R"(gzip -dc "%1")"  );
+  _compressors_map.insert ( "lzma", R"(lzma -dc "%1")"  );
+  _compressors_map.insert ( "xz",   R"(xz -dc "%1")"    );
+  _compressors_map.insert ( "Z",    R"(gunzip -c "%1")" );
 }
 
 bool
@@ -345,7 +345,7 @@ replace_links (QString& text)
       url_link.replace ("<b>","");
       url_link.replace ("</b>","");
 
-      href += "<font style=\"color:DarkGray; font-weight:bold;\">&raquo;</font>";
+      href += R"(<font style="color:DarkGray; font-weight:bold;">&raquo;</font>)";
       href += "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
       f = re.matchedLength ();
       text.replace (i, f, href);
@@ -361,7 +361,7 @@ replace_colons (QString& text)
   while ((i = re.indexIn (text, i)) != -1)
     {
       QString t = re.cap (1);
-      QString bold = "<font style=\"color:SteelBlue;font-weight:bold\">" + t +
+      QString bold = R"(<font style="color:SteelBlue;font-weight:bold">)" + t +
                      "</font>";
 
       f = re.matchedLength ();
@@ -380,7 +380,7 @@ info_to_html (QString& text)
   text.replace ("\n *Menu:",
                 "\n<font style=\"color:DarkRed;font-weight:bold\">Menu:</font>");
   text.replace ("See also:",
-                "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");
+                R"(<font style="color:DarkRed;font-style:italic;font-weight:bold">See also:</font>)");
   replace_links (text);
   replace_colons (text);
 }
@@ -408,7 +408,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       info_to_html (text2);
 
       text = text1 + "<a name='" + anchor
-             + "'/><font style=\"color:DarkBlue; font: bold monospace large;\">&diams;</font><br>&nbsp;"
+             + R"('/><font style="color:DarkBlue; font: bold monospace large;">&diams;</font><br>&nbsp;)"
              + text2;
     }
   else
@@ -419,7 +419,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
     }
 
   QString navigationLinks = QString (
-        "<b>Section:</b> <font style=\"color:DarkRed\">%1</font><br>"
+        R"(<b>Section:</b> <font style="color:DarkRed">%1</font><br>)"
         "<b>Previous Section:</b> <a href='%2'>%3</a><br>"
         "<b>Next Section:</b> <a href='%4'>%5</a><br>"
         "<b>Up:</b> <a href='%6'>%7</a><br>\n"

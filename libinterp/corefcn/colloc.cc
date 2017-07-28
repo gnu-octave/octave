@@ -73,7 +73,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
                || s == "left")
         left = 1;
       else
-        error ("colloc: string argument must be \"left\" or \"right\"");
+        error (R"(colloc: string argument must be "left" or "right")");
     }
 
   ntot += left + right;

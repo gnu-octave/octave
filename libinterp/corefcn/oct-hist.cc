@@ -451,7 +451,7 @@ do_edit_history (octave::interpreter& interp, const octave_value_list& args)
 
   octave::environment& env = interp.get_environment ();
   std::string cmd = env.editor ();
-  cmd.append (" \"" + name + "\"");
+  cmd.append (R"( ")" + name + '"');
 
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?

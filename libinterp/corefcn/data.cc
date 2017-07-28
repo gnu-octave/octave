@@ -6430,7 +6430,7 @@ ordered lists.
           else if (mode == "descend")
             smode = DESCENDING;
           else
-            error ("sort: MODE must be either \"ascend\" or \"descend\"");
+            error (R"(sort: MODE must be either "ascend" or "descend")");
         }
       else
         dim = args(1).nint_value () - 1;
@@ -6448,7 +6448,7 @@ ordered lists.
       else if (mode == "descend")
         smode = DESCENDING;
       else
-        error ("sort: MODE must be either \"ascend\" or \"descend\"");
+        error (R"(sort: MODE must be either "ascend" or "descend")");
     }
 
   const dim_vector dv = arg.dims ();
@@ -6684,7 +6684,7 @@ Undocumented internal function.
       else if (mode == "descend")
         smode = DESCENDING;
       else
-        error ("__sort_rows_idx__: MODE must be either \"ascend\" or \"descend\"");
+        error (R"(__sort_rows_idx__: MODE must be either "ascend" or "descend")");
     }
 
   octave_value arg = args(0);
@@ -6718,7 +6718,7 @@ get_sort_mode_option (const octave_value& arg)
   else if (mode == "either")
     smode = UNSORTED;
   else
-    error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
+    error (R"(issorted: MODE must be "ascending", "descending", or "either")");
 
   return smode;
 }

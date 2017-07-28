@@ -182,7 +182,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       else if (ch == 'l')     // 'lo'
         A->stype = -1;
       else
-        error ("symbfact: unrecognized TYP \"%s\"", str.c_str ());
+        error (R"(symbfact: unrecognized TYP "%s")", str.c_str ());
     }
 
   if (nargin == 3)
@@ -192,7 +192,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       char ch;
       ch = toupper (str[0]);
       if (ch != 'L')
-        error ("symbfact: unrecognized MODE \"%s\"", str.c_str ());
+        error (R"(symbfact: unrecognized MODE "%s")", str.c_str ());
     }
 
   if (A->stype && A->nrow != A->ncol)

@@ -78,7 +78,7 @@ const static char * const operators[] =
   "~",
   "!=",
   "~=",
-  "\"",
+  R"(")",
   "#",
   "%",
   "#{",

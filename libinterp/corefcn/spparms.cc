@@ -135,7 +135,7 @@ longer running time.
               static bool warned = false;
               if (! warned && str == "defaults")
                 {
-                  warning ("spparms: use \"default\" instead of \"defaults\"");
+                  warning (R"(spparms: use "default" instead of "defaults")");
                   warned = true;
                 }
               octave_sparse_params::defaults ();

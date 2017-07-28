@@ -327,7 +327,7 @@ namespace octave
       {
         if (dir_arg == ".")
           {
-            warning ("rmpath: can't remove \".\" from path");
+            warning (R"(rmpath: can't remove "." from path)");
 
             // Avoid additional warnings.
             retval = true;

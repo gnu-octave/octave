@@ -86,7 +86,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
   bool lower = true;
   if (nargin == 3)
     {
-      std::string s = args(2).xstring_value ("gammainc: third argument must be \"lower\" or \"upper\"");
+      std::string s = args(2).xstring_value (R"(gammainc: third argument must be "lower" or "upper")");
 
       std::transform (s.begin (), s.end (), s.begin (), tolower);
 
@@ -95,7 +95,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
       else if (s == "lower")
         lower = true;
       else
-        error ("gammainc: third argument must be \"lower\" or \"upper\"");
+        error (R"(gammainc: third argument must be "lower" or "upper")");
     }
 
   octave_value retval;

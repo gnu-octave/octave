@@ -612,14 +612,14 @@ The current state can be determined via @code{page_screen_output}.
 
   if (nargin > 0)
     {
-      std::string arg = args(0).xstring_value ("more: argument must be string \"on\" or \"off\"");
+      std::string arg = args(0).xstring_value (R"(more: argument must be string "on" or "off")");
 
       if (arg == "on")
         Vpage_screen_output = true;
       else if (arg == "off")
         Vpage_screen_output = false;
       else
-        error ("more: argument must be \"on\" or \"off\"");
+        error (R"(more: argument must be "on" or "off")");
     }
   else
     Vpage_screen_output = ! Vpage_screen_output;

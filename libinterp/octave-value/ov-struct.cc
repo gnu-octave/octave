@@ -1725,7 +1725,7 @@ produces a struct @strong{array}.
   for (int i = 0; i < nargin; i += 2)
     {
       if (! args(i).is_string () || i + 1 >= nargin)
-        error ("struct: additional arguments must occur as \"field\", VALUE pairs");
+        error (R"(struct: additional arguments must occur as "field", VALUE pairs)");
     }
 
   // Check that the dimensions of the values correspond.

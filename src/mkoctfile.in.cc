@@ -120,7 +120,7 @@ static std::string
 quote_path (const std::string& s)
 {
   if (s.find (' ') != std::string::npos && s[0] != '"')
-    return "\"" + s + "\"";
+    return '"' + s + '"';
   else
     return s;
 }

@@ -526,7 +526,7 @@ initialize_command_input (void)
 
   octave::command_editor::set_completer_word_break_characters (s);
 
-  octave::command_editor::set_basic_quote_characters ("\"");
+  octave::command_editor::set_basic_quote_characters (R"(")");
 
   octave::command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
   octave::command_editor::set_completer_quote_characters ("'\"");

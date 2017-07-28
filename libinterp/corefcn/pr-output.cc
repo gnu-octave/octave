@@ -2806,7 +2806,7 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 
               if (pr_as_read_syntax)
                 {
-                  os << "\"" << undo_string_escapes (row) << "\"";
+                  os << '"' << undo_string_escapes (row) << '"';
 
                   if (i < nstr - 1)
                     os << "; ";

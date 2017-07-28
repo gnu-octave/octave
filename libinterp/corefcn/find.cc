@@ -418,7 +418,7 @@ b = sparse (i, j, v, sz(1), sz(2));
       else if (s_arg == "last")
         direction = -1;
       else
-        error ("find: DIRECTION must be \"first\" or \"last\"");
+        error (R"(find: DIRECTION must be "first" or "last")");
     }
 
   octave_value_list retval;

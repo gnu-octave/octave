@@ -312,17 +312,17 @@ public:
 
   virtual octave_value get (void) const
   {
-    error ("get: invalid property \"%s\"", name.c_str ());
+    error (R"(get: invalid property "%s")", name.c_str ());
   }
 
   virtual std::string values_as_string (void) const
   {
-    error ("values_as_string: invalid property \"%s\"", name.c_str ());
+    error (R"(values_as_string: invalid property "%s")", name.c_str ());
   }
 
   virtual Cell values_as_cell (void) const
   {
-    error ("values_as_cell: invalid property \"%s\"", name.c_str ());
+    error (R"(values_as_cell: invalid property "%s")", name.c_str ());
   }
 
   base_property& operator = (const octave_value& val)
@@ -396,7 +396,7 @@ public:
 protected:
   virtual bool do_set (const octave_value&)
   {
-    error ("set: invalid property \"%s\"", name.c_str ());
+    error (R"(set: invalid property "%s")", name.c_str ());
   }
 
 private:
@@ -444,7 +444,7 @@ protected:
   bool do_set (const octave_value& val)
   {
     if (! val.is_string ())
-      error ("set: invalid string property value for \"%s\"",
+      error (R"(set: invalid string property value for "%s")",
              get_name ().c_str ());
 
     std::string new_str = val.string_value ();
@@ -497,7 +497,7 @@ public:
     : base_property (s, h), desired_type (typ), separator (sep), str ()
   {
     if (! c.iscellstr ())
-      error ("set: invalid order property value for \"%s\"",
+      error (R"(set: invalid order property value for "%s")",
              get_name ().c_str ());
 
     string_vector strings (c.numel ());
@@ -649,7 +649,7 @@ protected:
           }
       }
     else
-      error ("set: invalid string property value for \"%s\"",
+      error (R"(set: invalid string property value for "%s")",
              get_name ().c_str ());
 
     return false;
@@ -797,7 +797,7 @@ protected:
           }
         catch (octave::execution_exception& e)
           {
-            error (e, "set: invalid string property value for \"%s\"",
+            error (e, R"(set: invalid string property value for "%s")",
                    get_name ().c_str ());
           }
 
@@ -953,7 +953,7 @@ protected:
   bool do_set (const octave_value& newval)
   {
     if (! newval.is_string ())
-      error ("set: invalid value for radio property \"%s\"",
+      error (R"(set: invalid value for radio property "%s")",
              get_name ().c_str ());
 
     std::string s = newval.string_value ();
@@ -961,7 +961,7 @@ protected:
     std::string match;
 
     if (! vals.validate (s, match))
-      error ("set: invalid value for radio property \"%s\" (value = %s)",
+      error (R"(set: invalid value for radio property "%s" (value = %s))",
              get_name ().c_str (), s.c_str ());
 
     if (match != current_val)
@@ -1211,7 +1211,7 @@ protected:
   bool do_set (const octave_value& v)
   {
     if (! v.is_scalar_type () || ! v.isreal ())
-      error ("set: invalid value for double property \"%s\"",
+      error (R"(set: invalid value for double property "%s")",
              get_name ().c_str ());
 
     double new_val = v.double_value ();
@@ -1220,20 +1220,20 @@ protected:
     if (! octave::math::isnan (minval.first))
       {
         if (minval.second && minval.first > new_val)
-          error ("set: \"%s\" must be greater than or equal to %g",
+          error (R"(set: "%s" must be greater than or equal to %g)",
                  get_name ().c_str (), minval.first);
         else if (! minval.second && minval.first >= new_val)
-          error ("set: \"%s\" must be greater than %g",
+          error (R"(set: "%s" must be greater than %g)",
                  get_name ().c_str (), minval.first);
       }
 
     if (! octave::math::isnan (maxval.first))
       {
         if (maxval.second && maxval.first < new_val)
-          error ("set: \"%s\" must be less than or equal to %g",
+          error (R"(set: "%s" must be less than or equal to %g)",
                  get_name ().c_str (), maxval.first);
         else if (! maxval.second && maxval.first <= new_val)
-          error ("set: \"%s\" must be less than %g",
+          error (R"(set: "%s" must be less than %g)",
                  get_name ().c_str (), maxval.first);
       }
 
@@ -1241,17 +1241,17 @@ protected:
       else if (finite_constraint == FINITE)
         {
           if (! octave::math::isfinite (new_val))
-            error ("set: \"%s\" must be finite", get_name ().c_str ());
+            error (R"(set: "%s" must be finite)", get_name ().c_str ());
         }
       else if (finite_constraint == NOT_NAN)
         {
           if (octave::math::isnan (new_val))
-            error ("set: \"%s\" must not be nan", get_name ().c_str ());
+            error (R"(set: "%s" must not be nan)", get_name ().c_str ());
         }
       else if (finite_constraint == NOT_INF)
         {
           if (octave::math::isinf (new_val))
-            error ("set: \"%s\" must not be infinite", get_name ().c_str ());
+            error (R"(set: "%s" must not be infinite)", get_name ().c_str ());
         }
 
     if (new_val != current_val)
@@ -1449,7 +1449,7 @@ protected:
     octave_value tmp = (v.issparse () ? v.full_value () : v);
 
     if (! validate (tmp))
-      error ("invalid value for array property \"%s\"",
+      error (R"(invalid value for array property "%s")",
              get_name ().c_str ());
 
     // FIXME: should we check for actual data change?
@@ -1917,7 +1917,7 @@ protected:
   bool do_set (const octave_value& v)
   {
     if (! validate (v))
-      error ("invalid value for callback property \"%s\"",
+      error (R"(invalid value for callback property "%s")",
              get_name ().c_str ());
 
     callback = v;

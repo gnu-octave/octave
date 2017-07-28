@@ -214,7 +214,7 @@ command shell that is started to run the command.
       else if (type_str == "async")
         type = et_async;
       else
-        error ("system: TYPE must be \"sync\" or \"async\"");
+        error (R"(system: TYPE must be "sync" or "async")");
     }
 
   octave_value_list retval;
@@ -244,7 +244,7 @@ command shell that is started to run the command.
 #if defined (OCTAVE_USE_WINDOWS_API)
   // Work around weird double-quote handling on Windows systems.
   if (type == et_sync)
-    cmd_str = "\"" + cmd_str + "\"";
+    cmd_str = '"' + cmd_str + '"';
 #endif
 
   if (type == et_async)

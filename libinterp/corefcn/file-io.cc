@@ -121,7 +121,7 @@ normalize_fopen_mode (std::string& mode, bool& use_zlib)
       if (pos != std::string::npos)
         {
           warning_with_id ("Octave:fopen-mode",
-                           "fopen: treating mode \"W\" as equivalent to \"w\"");
+                           R"(fopen: treating mode "W" as equivalent to "w")");
           mode[pos] = 'w';
         }
 
@@ -130,7 +130,7 @@ normalize_fopen_mode (std::string& mode, bool& use_zlib)
       if (pos != std::string::npos)
         {
           warning_with_id ("Octave:fopen-mode",
-                           "fopen: treating mode \"R\" as equivalent to \"r\"");
+                           R"(fopen: treating mode "R" as equivalent to "r")");
           mode[pos] = 'r';
         }
 
@@ -139,7 +139,7 @@ normalize_fopen_mode (std::string& mode, bool& use_zlib)
       if (pos != std::string::npos)
         {
           warning_with_id ("Octave:fopen-mode",
-                           "fopen: treating mode \"A\" as equivalent to \"a\"");
+                           R"(fopen: treating mode "A" as equivalent to "a")");
           mode[pos] = 'a';
         }
 

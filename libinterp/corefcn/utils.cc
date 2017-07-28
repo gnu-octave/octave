@@ -321,7 +321,7 @@ If no files are found, return an empty cell array.
       std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
 
       if (opt != "all")
-        error ("file_in_loadpath: \"all\" is only valid second argument");
+        error (R"(file_in_loadpath: "all" is only valid second argument)");
 
       return ovl (Cell (make_absolute (lp.find_all_first_of (names))));
     }
@@ -392,7 +392,7 @@ If no files are found, return an empty cell array.
       std::string opt = args(2).xstring_value ("file_in_path: optional third argument must be a string");
 
       if (opt != "all")
-        error ("file_in_path: \"all\" is only valid third argument");
+        error (R"(file_in_path: "all" is only valid third argument)");
 
       return ovl (Cell (make_absolute (search_path_for_all_files (path, names))));
     }
@@ -804,34 +804,34 @@ undo_string_escape (char c)
   switch (c)
     {
     case '\0':
-      return "\\0";
+      return R"(\0)";
 
     case '\a':
-      return "\\a";
+      return R"(\a)";
 
     case '\b': // backspace
-      return "\\b";
+      return R"(\b)";
 
     case '\f': // formfeed
-      return "\\f";
+      return R"(\f)";
 
     case '\n': // newline
-      return "\\n";
+      return R"(\n)";
 
     case '\r': // carriage return
-      return "\\r";
+      return R"(\r)";
 
     case '\t': // horizontal tab
-      return "\\t";
+      return R"(\t)";
 
     case '\v': // vertical tab
-      return "\\v";
+      return R"(\v)";
 
     case '\\': // backslash
-      return "\\\\";
+      return R"(\\)";
 
     case '"': // double quote
-      return "\\\"";
+      return R"(\")";
 
     default:
       {

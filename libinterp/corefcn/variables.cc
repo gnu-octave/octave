@@ -383,7 +383,7 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
 
   if (! (search_any || search_var || search_dir || search_file ||
          search_builtin || search_class))
-    error ("exist: unrecognized type argument \"%s\"", type.c_str ());
+    error (R"(exist: unrecognized type argument "%s")", type.c_str ());
 
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
@@ -594,7 +594,7 @@ them.
       std::string type = args(1).xstring_value ("exist: TYPE must be a string");
 
       if (type == "class")
-        warning ("exist: \"class\" type argument is not implemented");
+        warning (R"(exist: "class" type argument is not implemented)");
 
       return ovl (symbol_exist (interp, name, type));
     }
@@ -682,7 +682,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
   if (nargin == 2)
     {
       if (! args(1).is_string () || args(1).string_value () != "local")
-        error_with_cfn ("second argument must be \"local\"");
+        error_with_cfn (R"(second argument must be "local")");
 
       nargin = 1;
       retval = true;
@@ -735,7 +735,7 @@ set_internal_variable (bool& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -765,7 +765,7 @@ set_internal_variable (char& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -809,7 +809,7 @@ set_internal_variable (int& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -845,7 +845,7 @@ set_internal_variable (double& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -880,7 +880,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -918,7 +918,7 @@ set_internal_variable (int& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -938,7 +938,7 @@ set_internal_variable (int& var, const octave_value_list& args,
             }
         }
       if (i == nchoices)
-        error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
+        error (R"(%s: value not allowed ("%s"))", nm, sval.c_str ());
     }
 
   return retval;
@@ -961,7 +961,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -981,7 +981,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
             }
         }
       if (i == nchoices)
-        error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
+        error (R"(%s: value not allowed ("%s"))", nm, sval.c_str ());
     }
 
   return retval;

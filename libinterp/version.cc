@@ -40,7 +40,7 @@ FITNESS FOR A PARTICULAR PURPOSE."
 static std::string
 format_url (bool html, const std::string& url)
 {
-  return html ? "<a href=\"" + url + "\">" + url + "</a>" : url;
+  return html ? R"(<a href=")" + url + R"(">)" + url + "</a>" : url;
 }
 
 std::string
@@ -88,9 +88,9 @@ octave_name_version_copyright_copying_and_warranty
          + br
          + octave_warranty_statement (extra_info)
          + sep
-         + "Octave was configured for \""
+         + R"(Octave was configured for ")"
          + octave::config::canonical_host_type ()
-         + "\".";
+         + R"(".)";
 }
 
 std::string

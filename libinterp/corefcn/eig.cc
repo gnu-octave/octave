@@ -160,29 +160,29 @@ The eigenvalues returned by @code{eig} are not ordered.
       else if (octave::string::strcmpi (arg_i, "vector"))
         vector_flag = true;
       else
-        error ("eig: invalid option \"%s\"", arg_i.c_str ());
+        error (R"(eig: invalid option "%s")", arg_i.c_str ());
     }
 
   if (balance_flag && no_balance_flag)
-    error ("eig: \"balance\" and \"nobalance\" options are mutually exclusive");
+    error (R"(eig: "balance" and "nobalance" options are mutually exclusive)");
   if (vector_flag && matrix_flag)
-    error ("eig: \"vector\" and \"matrix\" options are mutually exclusive");
+    error (R"(eig: "vector" and "matrix" options are mutually exclusive)");
   if (qz_flag && chol_flag)
-    error ("eig: \"qz\" and \"chol\" options are mutually exclusive");
+    error (R"(eig: "qz" and "chol" options are mutually exclusive)");
 
   if (AEPcase)
     {
       if (qz_flag)
-        error ("eig: invalid \"qz\" option for algebraic eigenvalue problem");
+        error (R"(eig: invalid "qz" option for algebraic eigenvalue problem)");
       if (chol_flag)
-        error ("eig: invalid \"chol\" option for algebraic eigenvalue problem");
+        error (R"(eig: invalid "chol" option for algebraic eigenvalue problem)");
     }
   else
     {
       if (balance_flag)
-        error ("eig: invalid \"balance\" option for generalized eigenvalue problem");
+        error (R"(eig: invalid "balance" option for generalized eigenvalue problem)");
       if (no_balance_flag)
-        error ("eig: invalid \"nobalance\" option for generalized eigenvalue problem");
+        error (R"(eig: invalid "nobalance" option for generalized eigenvalue problem)");
     }
 
   // Default is to balance

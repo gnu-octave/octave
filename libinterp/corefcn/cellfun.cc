@@ -182,7 +182,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
   else if (name == "size")
     {
       if (nargin != 3)
-        error ("cellfun: not enough arguments for \"size\"");
+        error (R"(cellfun: not enough arguments for "size")");
 
       int d = args(2).nint_value () - 1;
 
@@ -205,7 +205,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
   else if (name == "isclass")
     {
       if (nargin != 3)
-        error ("cellfun: not enough arguments for \"isclass\"");
+        error (R"(cellfun: not enough arguments for "isclass")");
 
       std::string class_name = args(2).string_value ();
       BNDA result (f_args.dims ());

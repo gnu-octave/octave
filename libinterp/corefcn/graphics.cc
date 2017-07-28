@@ -1309,7 +1309,7 @@ color_property::do_set (const octave_value& val)
       std::string s = val.string_value ();
 
       if (s.empty ())
-        error ("invalid value for color property \"%s\"",
+        error (R"(invalid value for color property "%s")",
                get_name ().c_str ());
 
       std::string match;
@@ -1343,7 +1343,7 @@ color_property::do_set (const octave_value& val)
             }
           catch (octave::execution_exception& e)
             {
-              error (e, "invalid value for color property \"%s\" (value = %s)",
+              error (e, R"(invalid value for color property "%s" (value = %s))",
                      get_name ().c_str (), s.c_str ());
             }
         }
@@ -1353,7 +1353,7 @@ color_property::do_set (const octave_value& val)
       Matrix m = val.matrix_value ();
 
       if (m.numel () != 3)
-        error ("invalid value for color property \"%s\"",
+        error (R"(invalid value for color property "%s")",
                get_name ().c_str ());
 
       color_values col (m(0), m(1), m(2));
@@ -1366,7 +1366,7 @@ color_property::do_set (const octave_value& val)
         }
     }
   else
-    error ("invalid value for color property \"%s\"",
+    error (R"(invalid value for color property "%s")",
            get_name ().c_str ());
 
   return false;
@@ -1381,7 +1381,7 @@ double_radio_property::do_set (const octave_value& val)
       std::string match;
 
       if (s.empty () || ! radio_val.contains (s, match))
-        error ("invalid value for double_radio property \"%s\"",
+        error (R"(invalid value for double_radio property "%s")",
                get_name ().c_str ());
 
       if (current_type != radio_t || match != current_val)
@@ -1408,7 +1408,7 @@ double_radio_property::do_set (const octave_value& val)
         }
     }
   else
-    error ("invalid value for double_radio property \"%s\"",
+    error (R"(invalid value for double_radio property "%s")",
            get_name ().c_str ());
 
   return false;
@@ -1477,10 +1477,10 @@ array_property::validate (const octave_value& v)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
             if (minval.second && minval.first > v_mat(i))
-              error ("set: \"%s\" must be greater than or equal to %g",
+              error (R"(set: "%s" must be greater than or equal to %g)",
                      get_name ().c_str (), minval.first);
             else if (! minval.second && minval.first >= v_mat(i))
-              error ("set: \"%s\" must be greater than %g",
+              error (R"(set: "%s" must be greater than %g)",
                      get_name ().c_str (), minval.first);
         }
 
@@ -1488,10 +1488,10 @@ array_property::validate (const octave_value& v)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
             if (maxval.second && maxval.first < v_mat(i))
-              error ("set: \"%s\" must be less than or equal to %g",
+              error (R"(set: "%s" must be less than or equal to %g)",
                      get_name ().c_str (), maxval.first);
             else if (! maxval.second && maxval.first <= v_mat(i))
-              error ("set: \"%s\" must be less than %g",
+              error (R"(set: "%s" must be less than %g)",
                      get_name ().c_str (), maxval.first);
         }
 
@@ -1500,19 +1500,19 @@ array_property::validate (const octave_value& v)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
             if (! octave::math::isfinite (v_mat(i)))
-              error ("set: \"%s\" must be finite", get_name ().c_str ());
+              error (R"(set: "%s" must be finite)", get_name ().c_str ());
         }
       else if (finite_constraint == NOT_NAN)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
             if (octave::math::isnan (v_mat(i)))
-              error ("set: \"%s\" must not be nan", get_name ().c_str ());
+              error (R"(set: "%s" must not be nan)", get_name ().c_str ());
         }
       else if (finite_constraint == NOT_INF)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
             if (octave::math::isinf (v_mat(i)))
-              error ("set: \"%s\" must not be infinite", get_name ().c_str ());
+              error (R"(set: "%s" must not be infinite)", get_name ().c_str ());
         }
 
     }
@@ -1634,7 +1634,7 @@ handle_property::do_set (const octave_value& v)
         return false;
     }
 
-  double dv = v.xdouble_value ("set: invalid graphics handle for property \"%s\"",
+  double dv = v.xdouble_value (R"(set: invalid graphics handle for property "%s")",
                                get_name ().c_str ());
 
   graphics_handle gh = gh_manager::lookup (dv);
@@ -1657,10 +1657,10 @@ handle_property::do_set (const octave_value& v)
   if (! octave::math::isnan (gh.value ()) && ! (gh.ok () && type_ok))
     {
       if (type_ok)
-        error ("set: invalid graphics handle (= %g) for property \"%s\"",
+        error (R"(set: invalid graphics handle (= %g) for property "%s")",
                dv, get_name ().c_str ());
       else
-        error ("set: invalid graphics object type for property \"%s\"",
+        error (R"(set: invalid graphics object type for property "%s")",
                get_name ().c_str ());
     }
 
@@ -3045,7 +3045,7 @@ base_properties::get_dynamic (const caseless_str& pname) const
     all_props.find (pname);
 
   if (it == all_props.end ())
-    error ("get: unknown property \"%s\"", pname.c_str ());
+    error (R"(get: unknown property "%s")", pname.c_str ());
 
   return it->second.get ();
 }
@@ -3088,7 +3088,7 @@ base_properties::set_dynamic (const caseless_str& pname,
     all_props.find (pname);
 
   if (it == all_props.end ())
-    error ("set: unknown property \"%s\"", pname.c_str ());
+    error (R"(set: unknown property "%s")", pname.c_str ());
 
   it->second.set (val);
 
@@ -3104,7 +3104,7 @@ base_properties::get_property_dynamic (const caseless_str& pname)
     all_props.find (pname);
 
   if (it == all_props.end ())
-    error ("get_property: unknown property \"%s\"", pname.c_str ());
+    error (R"(get_property: unknown property "%s")", pname.c_str ());
 
   return it->second;
 }
@@ -8565,7 +8565,7 @@ patch::properties::update_data (void)
   bad_data_msg = "";
   if (static_cast<double> (nvert) < idx.row_max ().max ())
     {
-      bad_data_msg = "some vertices in \"faces\" property are undefined";
+      bad_data_msg = R"(some vertices in "faces" property are undefined)";
       return;
     }
 

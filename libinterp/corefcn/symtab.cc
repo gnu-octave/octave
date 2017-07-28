@@ -1902,7 +1902,7 @@ determine whether functions defined in function files need to recompiled.
       else if (sval == "none")
         Vignore_function_time_stamp = 0;
       else
-        error ("ignore_function_time_stamp: argument must be one of \"all\", \"system\", or \"none\"");
+        error (R"(ignore_function_time_stamp: argument must be one of "all", "system", or "none")");
     }
 
   return retval;

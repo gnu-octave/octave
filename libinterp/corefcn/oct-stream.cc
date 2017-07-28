@@ -3223,20 +3223,20 @@ namespace octave
   {
     skip_whitespace (is);
 
-    if (is.peek () != '\"')
+    if (is.peek () != '"')
       scan_string (is, fmt, val);
     else
       {
         is.get ();
-        scan_caret (is, "\"", val);       // read everything until "
+        scan_caret (is, R"(")", val);     // read everything until "
         is.get ();                        // swallow "
 
-        while (is && is.peek () == '\"')  // if double ", insert one in stream,
+        while (is && is.peek () == '"')  // if double ", insert one in stream,
           {                               // and keep looking for single "
             is.get ();
             std::string val1;
-            scan_caret (is, "\"", val1);
-            val = val + "\"" + val1;
+            scan_caret (is, R"(")", val1);
+            val = val + '"' + val1;
             is.get_undelim ();
           }
       }

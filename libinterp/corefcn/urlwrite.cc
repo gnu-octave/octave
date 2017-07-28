@@ -128,7 +128,7 @@ urlwrite ("http://www.google.com/search", "search.html",
       method = args(2).xstring_value ("urlwrite: METHOD must be a string");
 
       if (method != "get" && method != "post")
-        error ("urlwrite: METHOD must be \"get\" or \"post\"");
+        error (R"(urlwrite: METHOD must be "get" or "post")");
 
       param = args(3).xcellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
@@ -239,7 +239,7 @@ s = urlread ("http://www.google.com/search", "get",
       method = args(1).xstring_value ("urlread: METHOD must be a string");
 
       if (method != "get" && method != "post")
-        error ("urlread: METHOD must be \"get\" or \"post\"");
+        error (R"(urlread: METHOD must be "get" or "post")");
 
       param = args(2).xcellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 

@@ -1129,7 +1129,7 @@ parse_save_options (const string_vector& argv,
       if (format == LS_MAT_ASCII)
         format.opts |= LS_MAT_ASCII_LONG;
       else
-        warning ("save: \"-double\" option only has an effect with \"-ascii\"");
+        warning (R"(save: "-double" option only has an effect with "-ascii")");
     }
 
   if (do_tabs)
@@ -1137,7 +1137,7 @@ parse_save_options (const string_vector& argv,
       if (format == LS_MAT_ASCII)
         format.opts |= LS_MAT_ASCII_TABS;
       else
-        warning ("save: \"-tabs\" option only has an effect with \"-ascii\"");
+        warning (R"(save: "-tabs" option only has an effect with "-ascii")");
     }
 
   return retval;

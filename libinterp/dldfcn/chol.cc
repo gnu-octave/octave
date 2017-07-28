@@ -170,7 +170,7 @@ sparse matrices.
       else if (octave::string::strcmpi (tmp, "upper"))
         LLt = false;
       else
-        error ("chol: optional argument must be one of \"vector\", \"lower\", or \"upper\"");
+        error (R"(chol: optional argument must be one of "vector", "lower", or "upper")");
     }
 
   octave_value_list retval;
@@ -241,7 +241,7 @@ sparse matrices.
   else if (arg.is_single_type ())
     {
       if (vecout)
-        error ("chol: A must be sparse for the \"vector\" option");
+        error (R"(chol: A must be sparse for the "vector" option)");
       if (arg.isreal ())
         {
           FloatMatrix m = arg.float_matrix_value ();
@@ -274,7 +274,7 @@ sparse matrices.
   else
     {
       if (vecout)
-        error ("chol: A must be sparse for the \"vector\" option");
+        error (R"(chol: A must be sparse for the "vector" option)");
       if (arg.isreal ())
         {
           Matrix m = arg.matrix_value ();
@@ -642,7 +642,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   bool down = (op == "-");
 
   if (! down && op != "+")
-    error ("cholupdate: OP must be \"+\" or \"-\"");
+    error (R"(cholupdate: OP must be "+" or "-")");
 
   if (argr.columns () != n || argu.rows () != n || argu.columns () != 1)
     error ("cholupdate: dimension mismatch between R and U");

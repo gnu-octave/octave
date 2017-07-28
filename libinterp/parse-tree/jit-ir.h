@@ -536,10 +536,10 @@ public:
     print_indent (os, indent);
     jit_print (os, type ()) << ": ";
     if (QUOTE)
-      os << "\"";
+      os << R"(")";
     os << mvalue;
     if (QUOTE)
-      os << "\"";
+      os << R"(")";
     return os;
   }
 

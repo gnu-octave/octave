@@ -62,7 +62,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_WINDOWS_API)
       if (path.length () == 2 && path[1] == ':')
-        path += "\\";
+        path += '\\';
 #endif
 
       return octave_chdir_wrapper (path.c_str ());

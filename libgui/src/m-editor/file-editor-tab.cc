@@ -744,9 +744,9 @@ file_editor_tab::update_lexer_settings ()
 
               for (i=1; i<=3; i++) // test the first 5 keyword sets
                 {
-                  keyword = QString (lexer->keywords (i));          // get list
-                  keyword_list = keyword.split (QRegExp ("\\s+"));  // split
-                  for (j = 0; j < keyword_list.size (); j++)        // add to API
+                  keyword = QString (lexer->keywords (i));           // get list
+                  keyword_list = keyword.split (QRegExp (R"(\s+)")); // split
+                  for (j = 0; j < keyword_list.size (); j++)         // add to API
                     _lexer_apis->add (keyword_list.at (j));
                 }
             }

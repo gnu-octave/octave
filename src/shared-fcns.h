@@ -52,7 +52,7 @@ w32_get_octave_home (void)
       namebuf[MAX_PATH] = '\0';
 
       std::string exe_name = namebuf;
-      size_t pos = exe_name.rfind ("\\");
+      size_t pos = exe_name.rfind ('\\');
 
       if (pos != std::string::npos)
         bin_dir = exe_name.substr (0, pos + 1);
@@ -60,7 +60,7 @@ w32_get_octave_home (void)
 
   if (! bin_dir.empty ())
     {
-      size_t pos = bin_dir.rfind ("\\bin\\");
+      size_t pos = bin_dir.rfind (R"(\bin\)");
 
       if (pos != std::string::npos)
         retval = bin_dir.substr (0, pos);
@@ -82,7 +82,7 @@ static const char dir_sep_char = '/';
 #endif
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
-static std::string dir_sep_chars = "/\\";
+static std::string dir_sep_chars = R"(/\)";
 #else
 static std::string dir_sep_chars = "/";
 #endif

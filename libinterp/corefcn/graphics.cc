@@ -2511,9 +2511,9 @@ graphics_object::set_value_or_default (const caseless_str& pname,
       else
         {
           // Matlab specifically uses "\default" to escape string setting
-          if (sval == "\\default")
+          if (sval == R"(\default)")
             rep->set (pname, "default");
-          else if (sval == "\\factory")
+          else if (sval == R"(\factory)")
             rep->set (pname, "factory");
           else
             rep->set (pname, val);
@@ -11784,7 +11784,7 @@ In all cases, typing CTRL-C stops program execution immediately.
 
       if (pname != "timeout")
         {
-          if (pname.compare ("\\timeout"))
+          if (pname.compare (R"(\timeout)"))
             pname = "timeout";
 
           static octave_value wf_listener;

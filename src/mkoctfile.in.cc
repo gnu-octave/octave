@@ -151,7 +151,7 @@ initialize (void)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string DEFAULT_INCFLAGS
-    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
+    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + R"(\..)")
       + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
   std::string DEFAULT_INCFLAGS

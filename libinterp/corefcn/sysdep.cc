@@ -149,7 +149,7 @@ w32_set_octave_home (void)
 
   if (! bin_dir.empty ())
     {
-      size_t pos = bin_dir.rfind ("\\bin\\");
+      size_t pos = bin_dir.rfind (R"(\bin\)");
 
       if (pos != std::string::npos)
         octave::sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
@@ -584,7 +584,7 @@ get_P_tmpdir (void)
   // P_tmpdir, or they define it to a single backslash, neither of which
   // is particularly helpful.
 
-  if (retval.empty () || retval == "\\")
+  if (retval.empty () || retval == '\\')
     {
       retval = octave::sys::env::getenv ("TEMP");
 
@@ -592,7 +592,7 @@ get_P_tmpdir (void)
         retval = octave::sys::env::getenv ("TMP");
 
       if (retval.empty ())
-        retval = "c:\\temp";
+        retval = R"(c:\temp)";
     }
 
   return retval;

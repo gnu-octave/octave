@@ -519,7 +519,7 @@ initialize_jvm (void)
       // and load the symbol from the dll.
       std::string key, value;
 
-      key = "software\\javasoft\\java runtime environment";
+      key = R"(software\javasoft\java runtime environment)";
 
       value = octave::sys::env::getenv ("JAVA_VERSION");
       if (value.empty ())
@@ -534,7 +534,7 @@ initialize_jvm (void)
           value = regval;
         }
 
-      key = key + "\\" + value;
+      key = key + '\\' + value;
       value = "RuntimeLib";
       jvm_lib_path = read_registry_string (key, value);
 

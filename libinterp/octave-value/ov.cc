@@ -193,7 +193,7 @@ octave_value::binary_op_as_string (binary_op op)
       return "^";
 
     case op_ldiv:
-      return "\\";
+      return R"(\)";
 
     case op_lt:
       return "<";
@@ -223,7 +223,7 @@ octave_value::binary_op_as_string (binary_op op)
       return ".^";
 
     case op_el_ldiv:
-      return ".\\";
+      return R"(.\)";
 
     case op_el_and:
       return "&";
@@ -364,7 +364,7 @@ octave_value::assign_op_as_string (assign_op op)
       return "/=";
 
     case op_ldiv_eq:
-      return "\\=";
+      return R"(\=)";
 
     case op_pow_eq:
       return "^=";
@@ -376,7 +376,7 @@ octave_value::assign_op_as_string (assign_op op)
       return "./=";
 
     case op_el_ldiv_eq:
-      return ".\\=";
+      return R"(.\=)";
 
     case op_el_pow_eq:
       return ".^=";

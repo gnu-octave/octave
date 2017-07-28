@@ -127,7 +127,7 @@ set_default_prompts (void)
   // Use literal "octave" instead of "\\s" to avoid setting the prompt
   // to "octave.exe" or "octave-gui", etc.
 
-  VPS1 = "octave:\\#> ";
+  VPS1 = R"(octave:\#> )";
   VPS2 = "> ";
   std::string VPS4 = "+ ";
 

@@ -234,7 +234,7 @@ namespace octave
       std::string dir_sep_str (void)
       {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-        return "\\";
+        return R"(\)";
 #else
         return "/";
 #endif
@@ -243,7 +243,7 @@ namespace octave
       std::string dir_sep_chars (void)
       {
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
-        return "/\\";
+        return R"(/\)";
 #else
         return dir_sep_str ();
 #endif

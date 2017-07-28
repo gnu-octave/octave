@@ -3693,7 +3693,7 @@ namespace octave
         else if (param == "endofline")
           {
             bool valid = true;
-            std::string s = args(i+1).xstring_value ("%s: EndOfLine must be at most one character or '\\r\\n'", who.c_str ());
+            std::string s = args(i+1).xstring_value (R"(%s: EndOfLine must be at most one character or '\r\n')", who.c_str ());
             if (args(i+1).is_sq_string ())
               s = do_string_escapes (s);
             int l = s.length ();
@@ -3712,7 +3712,7 @@ namespace octave
               valid = false;
 
             if (! valid)
-              error ("%s: EndOfLine must be at most one character or '\\r\\n'",
+              error (R"(%s: EndOfLine must be at most one character or '\r\n')",
                      who.c_str ());
           }
         else

@@ -497,7 +497,7 @@ octave_qscintilla::auto_close (int auto_endif, int linenr,
         return;
       if (next_start == start)      // same => check if already is "end"
         {
-          QRegExp rx_start = QRegExp ("(\\w+)");
+          QRegExp rx_start = QRegExp (R"((\w+))");
           int tmp = rx_start.indexIn (next_line, start);
            if (tmp != -1 && is_end (rx_start.cap(1), first_word))
              return;

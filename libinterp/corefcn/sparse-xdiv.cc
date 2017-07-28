@@ -59,7 +59,7 @@ mx_leftdiv_conform (const T1& a, const T2& b)
       octave_idx_type a_nc = a.cols ();
       octave_idx_type b_nc = b.cols ();
 
-      octave::err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
+      octave::err_nonconformant (R"(operator \)", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;

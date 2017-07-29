@@ -207,7 +207,7 @@ namespace octave
 
       // Some versions of MinGW and MSVC either don't define P_tmpdir, or
       // define it to a single backslash.  In such cases just use C:\temp.
-      if (tempd.empty () || tempd == '\\')
+      if (tempd.empty () || tempd == R"(\)")
         tempd = R"(c:\temp)";
 
 #else

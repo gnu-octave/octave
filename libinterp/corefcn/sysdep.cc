@@ -584,7 +584,7 @@ get_P_tmpdir (void)
   // P_tmpdir, or they define it to a single backslash, neither of which
   // is particularly helpful.
 
-  if (retval.empty () || retval == '\\')
+  if (retval.empty () || retval == R"(\)")
     {
       retval = octave::sys::env::getenv ("TEMP");
 

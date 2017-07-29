@@ -125,22 +125,6 @@ public:
     FilterChain* filterChain() const;
 
     /**
-     * Updates the filters in the display's filter chain.  This will cause
-     * the hotspots to be updated to match the current image.
-     *
-     * WARNING:  This function can be expensive depending on the
-     * image size and number of filters in the filterChain()
-     *
-     * TODO - This API does not really allow efficient usage.  Revise it so
-     * that the processing can be done in a better way.
-     *
-     * eg:
-     *      - Area of interest may be known ( eg. mouse cursor hovering
-     *      over an area )
-     */
-    void processFilters();
-
-    /**
      * Returns a list of menu actions created by the filters for the content
      * at the given @p position.
      */
@@ -390,7 +374,28 @@ public:
     /** Returns the terminal screen section which is displayed in this widget.  See setScreenWindow() */
     ScreenWindow* screenWindow() const;
 
+    /** Is called, when the terminal's visibility has changed in order to
+     *  stop orstart timers etc.
+     */
+    void visibility_changed (bool visible);
+
 public slots:
+
+    /**
+     * Updates the filters in the display's filter chain.  This will cause
+     * the hotspots to be updated to match the current image.
+     *
+     * WARNING:  This function can be expensive depending on the
+     * image size and number of filters in the filterChain()
+     *
+     * TODO - This API does not really allow efficient usage.  Revise it so
+     * that the processing can be done in a better way.
+     *
+     * eg:
+     *      - Area of interest may be known ( eg. mouse cursor hovering
+     *      over an area )
+     */
+    void processFilters();
 
     /**
      * Causes the terminal display to fetch the latest character image from the associated
@@ -686,6 +691,7 @@ private:
     bool _isFixedSize; //Columns / lines are locked.
     QTimer* _blinkTimer;  // active when hasBlinker
     QTimer* _blinkCursorTimer;  // active when hasBlinkingCursor
+    QTimer* _process_filter_timer;  // active when visible, filter processing
 
 //    KMenu* _drop;
     QString _dropText;

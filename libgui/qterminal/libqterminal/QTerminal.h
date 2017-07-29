@@ -119,6 +119,8 @@ public slots:
 
   void edit_file (void);
 
+  virtual void handle_visibility_changed (bool) { };
+
 protected:
 
   QTerminal (QWidget *xparent = nullptr) : QWidget (xparent)

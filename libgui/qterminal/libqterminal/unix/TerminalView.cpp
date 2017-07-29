@@ -300,8 +300,14 @@ TerminalView::TerminalView(QWidget *parent)
   // setup timers for blinking cursor and text
   _blinkTimer   = new QTimer(this);
   connect(_blinkTimer, SIGNAL(timeout()), this, SLOT(blinkEvent()));
+
   _blinkCursorTimer   = new QTimer(this);
   connect(_blinkCursorTimer, SIGNAL(timeout()), this, SLOT(blinkCursorEvent()));
+
+  _process_filter_timer = new QTimer (this);
+  connect (_process_filter_timer, SIGNAL (timeout ()),
+           this, SLOT (processFilters ()));
+  _process_filter_timer->start (300);
 
   //  QCursor::setAutoHideCursor( this, true );
 
@@ -1397,9 +1403,6 @@ void TerminalView::blinkCursorEvent()
   QRect cursorRect = imageToWidget( QRect(cursorPosition(),QSize(1,1)) );
 
   update(cursorRect);
-
-  // use this timer event for updating the hot spots
-  processFilters ();
 }
 
 /* ------------------------------------------------------------------------- */
@@ -2735,4 +2738,15 @@ QString TerminalView::selectedText ()
 {
   QString text = _screenWindow->selectedText (_preserveLineBreaks);
   return text;
+}
+
+void
+TerminalView::visibility_changed (bool visible)
+{
+  // Disable the timer for processing the filter chain, since this might time
+  // consuming
+  if (visible)
+    _process_filter_timer->start (300);
+  else
+    _process_filter_timer->stop ();
 }

@@ -42,6 +42,10 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
 
   connect (terminal, SIGNAL (interrupt_signal (void)),
            this, SLOT (terminal_interrupt ()));
+
+  // Connect the visibility signal to the terminal for dis-/enabling timers
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           terminal, SLOT (handle_visibility_changed (bool)));
 }
 
 bool

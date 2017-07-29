@@ -56,6 +56,7 @@ public slots:
     void copyClipboard();
     void pasteClipboard();
     void selectAll();
+    virtual void handle_visibility_changed (bool visible);
 
 protected:
     void showEvent(QShowEvent *);

@@ -254,3 +254,9 @@ QUnixTerminalImpl::has_extra_interrupt (bool extra)
 {
   _extra_interrupt = extra;
 }
+
+void
+QUnixTerminalImpl::handle_visibility_changed (bool visible)
+{
+  m_terminalView->visibility_changed (visible);
+};

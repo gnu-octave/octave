@@ -943,36 +943,37 @@ quadv (fcn, 0, 3)
     old_func = args(0).string_value ();
   else
     {
-      old = args(0).fcn_inline_value (true);
       func_is_string = false;
 
-      if (old)
-        old_func = old->fcn_text ();
-      else
+      old = args(0).fcn_inline_value (true);
+      if (! old)
         error ("vectorize: FUN must be a string or inline function");
+
+      old_func = old->fcn_text ();
     }
 
+  size_t len = old_func.length ();
   std::string new_func;
+  new_func.reserve (len + 10);
+
   size_t i = 0;
-
-  while (i < old_func.length ())
+  while (i < len)
     {
-      std::string t1 = old_func.substr (i, 1);
+      char t1 = old_func[i];
 
-      if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
+      if (t1 == '*' || t1 == '/' || t1 == '\\' || t1 == '^')
         {
-          if (i && old_func.substr (i-1, 1) != ".")
-            new_func += '.';
+          if (i && old_func[i-1] != '.')
+            new_func.push_back ('.');
 
           // Special case for ** operator.
-          if (t1 == "*" && i < (old_func.length () - 1)
-              && old_func.substr (i+1, 1) == "*")
+          if (t1 == '*' && i < (len - 1) && old_func[i+1] == '*')
             {
-              new_func += '*';
+              new_func.push_back ('*');
               i++;
             }
         }
-      new_func.append (t1);
+      new_func.push_back (t1);
       i++;
     }
 

@@ -616,7 +616,6 @@ namespace octave
                 // Famous last words:  Most large directories will not
                 // have more than a few hundred files, so we should not
                 // resize too many times even if the growth is linear...
-
                 n += 100;
                 retval.resize (n);
               }

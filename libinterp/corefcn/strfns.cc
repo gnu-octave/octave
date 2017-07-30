@@ -221,7 +221,7 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
         {
           for (size_t j = 0; j < n; j++)
             {
-              if (s[j].length () > 0)
+              if (! s[j].empty ())
                 n_elts++;
             }
         }

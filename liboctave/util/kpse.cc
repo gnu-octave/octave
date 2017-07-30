@@ -724,7 +724,7 @@ kpse_tilde_expand (const std::string& name)
         home = home.substr (1);
 
       /* If HOME ends in /, omit the / after ~user. */
-      if (name.length () > c && IS_DIR_SEP (home[home.length () - 1]))
+      if (name.length () > c && IS_DIR_SEP (home.back ()))
         c++;
 
       expansion = (name.length () > c ? home : home + name.substr (c));
@@ -782,9 +782,8 @@ kpse_expand_kpse_dot (const std::string& path)
         ret += kpse_dot + DIR_SEP_STRING + elt + ENV_SEP_STRING;
     }
 
-  int len = ret.length ();
-  if (len > 0)
-    ret.resize (len-1);
+  if (! ret.empty ())
+    ret.pop_back ();
 
   return ret;
 }
@@ -818,7 +817,7 @@ kpse_brace_expand_element (const std::string& elt)
       ret += x + ENV_SEP_STRING;
     }
 
-  ret.resize (ret.length () - 1);
+  ret.pop_back ();
 
   return ret;
 }
@@ -849,9 +848,8 @@ kpse_brace_expand (const std::string& path)
       ret += expansion + ENV_SEP_STRING;
     }
 
-  size_t len = ret.length ();
-  if (len > 0)
-    ret.resize (len-1);
+  if (! ret.empty ())
+    ret.pop_back ();
 
   return kpse_expand_kpse_dot (ret);
 }
@@ -924,8 +922,8 @@ kpse_path_expand (const std::string& path)
         }
     }
 
-  if (len > 0)
-    ret.resize (len-1);
+  if (! ret.empty ())
+    ret.pop_back ();
 
   return ret;
 }
@@ -1214,7 +1212,7 @@ kpse_element_dir (const std::string& elt)
     {
       ret = elt;
 
-      char last_char = ret[ret.length () - 1];
+      char last_char = ret.back ();
 
       if (! (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)))
         ret += DIR_SEP_STRING;

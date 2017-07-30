@@ -730,7 +730,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
   std::string retval;
 
-  doc.resize (0);
+  doc.clear ();
 
   hdf5_ifstream& hs = dynamic_cast<hdf5_ifstream&> (is);
   hdf5_callback_data d;

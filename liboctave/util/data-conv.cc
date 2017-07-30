@@ -135,7 +135,7 @@ strip_spaces (const std::string& str)
 
   size_t k = 0;
 
-  std::string s (n, ' ');
+  std::string s (n, '\0');
 
   for (size_t i = 0; i < n; i++)
     if (! isspace (str[i]))

@@ -332,11 +332,9 @@ namespace octave
 
       string_vector tilde_expand (const string_vector& names)
       {
-        string_vector retval;
-
         int n = names.numel ();
 
-        retval.resize (n);
+        string_vector retval (n);
 
         for (int i = 0; i < n; i++)
           retval[i] = tilde_expand (names[i]);
@@ -348,7 +346,7 @@ namespace octave
       {
         return dir.empty ()
           ? file
-          : (is_dir_sep (dir[dir.length ()-1])
+          : (is_dir_sep (dir.back ())
              ? dir + file
              : dir + dir_sep_char () + file);
       }

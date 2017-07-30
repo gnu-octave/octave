@@ -557,14 +557,8 @@ namespace octave
             tmp = do_make_absolute (newdir, current_directory);
 
           // Get rid of trailing directory separator.
-
-          size_t len = tmp.length ();
-
-          if (len > 1)
-            {
-              if (sys::file_ops::is_dir_sep (tmp[--len]))
-                tmp.resize (len);
-            }
+          if (tmp.length () > 1 && sys::file_ops::is_dir_sep (tmp.back ()))
+            tmp.pop_back ();
 
           if (! sys::chdir (tmp))
             {

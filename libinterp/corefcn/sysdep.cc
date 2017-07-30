@@ -136,8 +136,8 @@ w32_set_octave_home (void)
               if (mod_name.find ("octinterp") != std::string::npos)
                 {
                   bin_dir = mod_info.szExePath;
-                  if (bin_dir[bin_dir.length () - 1] != '\\')
-                    bin_dir.append (1, '\\');
+                  if (! bin_dir.empty () && bin_dir.back () != '\\')
+                    bin_dir.push_back ('\\');
                   break;
                 }
             }

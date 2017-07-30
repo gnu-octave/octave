@@ -1080,15 +1080,14 @@ maybe_extract_message_id (const std::string& caller,
     {
       std::string arg1 = args(0).string_value ();
 
-      // For compatibility with Matlab, an identifier must contain
-      // ':', but not at the beginning or the end, and it must not
-      // contain '%' (even if it is not a valid conversion
-      // operator) or whitespace.
+      // For compatibility with Matlab, an identifier must contain ':',
+      // but not at the beginning or the end, and it must not contain '%'
+      // (even if it is not a valid conversion operator) or whitespace.
 
       if (arg1.find_first_of ("% \f\n\r\t\v") == std::string::npos
           && arg1.find (':') != std::string::npos
           && arg1[0] != ':'
-          && arg1[arg1.length ()-1] != ':')
+          && arg1.back () != ':')
         {
           if (nargin > 1)
             {

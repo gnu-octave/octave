@@ -129,7 +129,7 @@ read_binary_data (std::istream& is, bool swap,
   int32_t name_len = 0;
   int32_t doc_len = 0;
 
-  doc.resize (0);
+  doc.clear ();
 
   // We expect to fail here, at the beginning of a record, so not
   // being able to read another name should not result in an error.

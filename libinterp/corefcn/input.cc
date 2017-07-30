@@ -260,7 +260,7 @@ namespace octave
 
         octave_diary << retval;
 
-        if (retval[retval.length () - 1] != '\n')
+        if (retval.back () != '\n')
           octave_diary << "\n";
       }
     else

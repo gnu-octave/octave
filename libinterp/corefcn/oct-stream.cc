@@ -1600,7 +1600,8 @@ namespace octave
   int
   delimited_stream::getline (std::string& out, char delim)
   {
-    int len = out.length (), used = 0;
+    int len = out.length ();
+    int used = 0;
     int ch;
     while ((ch = get_undelim ()) != delim
            && ch != std::istream::traits_type::eof ())
@@ -2473,9 +2474,8 @@ namespace octave
 
     is.getline (first_line, static_cast<char> (ts.eol2));
 
-    if (! first_line.empty ()
-        && first_line[first_line.length () - 1] == ts.eol1)
-      first_line.resize (first_line.length () - 1);
+    if (! first_line.empty () && first_line.back () == ts.eol1)
+      first_line.pop_back ();
 
     std::istringstream strstr (first_line);
     delimited_stream ds (strstr, is);

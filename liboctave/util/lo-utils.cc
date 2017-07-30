@@ -193,10 +193,8 @@ octave_fgetl (FILE *f, bool& eof)
 {
   std::string retval = octave_fgets (f, eof);
 
-  size_t len = retval.length ();
-
-  if (retval[len-1] == '\n')
-    retval.resize (len-1);
+  if (! retval.empty () && retval.back () == '\n')
+    retval.pop_back ();
 
   return retval;
 }

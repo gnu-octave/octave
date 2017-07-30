@@ -196,9 +196,8 @@ namespace octave
 
         // Strip newline before adding to list
         std::string stmp = s;
-        int stmp_len = stmp.length ();
-        if (stmp[stmp_len - 1] == '\n')
-          stmp.resize (stmp_len - 1);
+        if (stmp.back () == '\n')
+          stmp.pop_back ();
 
         int added = ::octave_add_history (stmp.c_str (), history_control);
         lines_this_session += added;

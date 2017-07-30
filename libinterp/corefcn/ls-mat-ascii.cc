@@ -170,9 +170,8 @@ get_lines_and_columns (std::istream& is,
               if (beg == std::string::npos
                   || (buf[beg] == '\r' && beg == buf.length () - 1))
                 {
-                  // We had a line with trailing spaces and
-                  // ending with a CRLF, so this should look like EOL,
-                  // not a new colum.
+                  // We had a line with trailing spaces and ending with a CRLF,
+                  // so this should look like EOL, not a new column.
                   break;
                 }
             }

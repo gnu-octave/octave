@@ -360,6 +360,22 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->cb_widget_custom_style->setChecked (
     settings->value ("DockWidgets/widget_title_custom_style",false).toBool ());
 
+  // Cursor blinking: consider old terminal related setting if not yet set
+  // TODO: This pref. can be deprecated / removed if Qt adds support for
+  //       getting the cursor blink preferences from all OS environments
+  if (settings->contains ("cursor_blinking"))
+    {
+      // Preference exists, read its value
+      ui->cb_cursor_blinking->setChecked (
+        settings->value ("cursor_blinking",true).toBool ());
+    }
+  else
+    {
+      // Pref. does not exist, so take old terminal related pref.
+      ui->cb_cursor_blinking->setChecked (
+        settings->value ("terminal/cursorBlinking",true).toBool ());
+    }
+
   // prompt on exit
   ui->cb_prompt_to_exit->setChecked (
     settings->value ("prompt_to_exit",false).toBool ());
@@ -506,8 +522,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("terminal/fontSize", 10).toInt ());
   ui->terminal_history_buffer->setValue (
     settings->value ("terminal/history_buffer",1000).toInt ());
-  ui->terminal_cursorBlinking->setChecked (
-    settings->value ("terminal/cursorBlinking",true).toBool ());
   ui->terminal_cursorUseForegroundColor->setChecked (
     settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
   ui->terminal_focus_command->setChecked (
@@ -779,6 +793,9 @@ settings_dialog::write_changed_settings (bool closing)
     icon_size = 1;
   settings->setValue ("toolbar_icon_size", icon_size);
 
+  // cursor blinking
+  settings->setValue ("cursor_blinking", ui->cb_cursor_blinking->isChecked ());
+
   // promp to exit
   settings->setValue ("prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
 
@@ -906,8 +923,6 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("proxyPort", ui->proxyPort->text ());
   settings->setValue ("proxyUserName", ui->proxyUserName->text ());
   settings->setValue ("proxyPassword", ui->proxyPassword->text ());
-  settings->setValue ("terminal/cursorBlinking",
-                      ui->terminal_cursorBlinking->isChecked ());
   settings->setValue ("terminal/cursorUseForegroundColor",
                       ui->terminal_cursorUseForegroundColor->isChecked ());
   settings->setValue ("terminal/focus_after_command",

@@ -98,14 +98,8 @@ namespace octave
     extern OCTAVE_API Complex log2 (const Complex& x);
     extern OCTAVE_API FloatComplex log2 (const FloatComplex& x);
 
-    inline double log2 (double x, int& exp)
-    {
-      return std::frexp (x, &exp);
-    }
-    inline float log2 (float x, int& exp)
-    {
-      return std::frexp (x, &exp);
-    }
+    extern OCTAVE_API double log2 (double x, int& exp);
+    extern OCTAVE_API float log2 (float x, int& exp);
 
     extern OCTAVE_API Complex log2 (const Complex& x, int& exp);
     extern OCTAVE_API FloatComplex log2 (const FloatComplex& x, int& exp);
@@ -187,15 +181,8 @@ namespace octave
       return std::complex<T> (roundb (std::real (x)), roundb (std::imag (x)));
     }
 
-    inline double frexp (double x, int *expptr)
-    {
-      return std::frexp (x, expptr);
-    }
-
-    inline float frexp (float x, int *expptr)
-    {
-      return std::frexp (x, expptr);
-    }
+    extern OCTAVE_API double frexp (double x, int *expptr);
+    extern OCTAVE_API float frexp (float x, int *expptr);
 
     inline bool isnan (bool) { return false; }
     inline bool isnan (char) { return false; }

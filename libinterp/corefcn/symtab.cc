@@ -827,6 +827,19 @@ namespace octave
           {
             std::string fcn_file = current_fcn->fcn_file_name ();
 
+            // For anonymous functions we look at the parent scope so that if
+            // they were defined within class methods and use local functions
+            // (helper functions) we can still use those anonymous functions
+
+            if (current_fcn->is_anonymous_function ())
+              {
+                if (fcn_file.empty ()
+                    && scope->parent_scope () != nullptr
+                    && scope->parent_scope ()->function () != nullptr)
+                  fcn_file
+                    = scope->parent_scope ()->function ()->fcn_file_name();
+              }
+
             if (! fcn_file.empty ())
               {
                 str_val_iterator r = local_functions.find (fcn_file);

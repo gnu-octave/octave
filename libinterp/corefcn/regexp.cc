@@ -837,6 +837,18 @@ Return zero-length matches.
 are zero or more @qcode{'b'} characters at positions 1 and end-of-string.
 
 @end table
+Stack Limitation Note: Pattern searches are done with a recursive function
+which can overflow the program stack when there are a high number of matches.
+For example,
+
+@example
+@code{regexp (repmat ('a', 1, 1e5), '(a)+')}
+@end example
+
+may lead to a segfault.  As an alternative, consider constructing pattern
+searches that reduce the number of matches (e.g., by creatively using set
+complement), and then further processing the return variables (now reduced in
+size) with successive @code{regexp} searches.
 @seealso{regexpi, strfind, regexprep}
 @end deftypefn */)
 {

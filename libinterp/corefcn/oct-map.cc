@@ -529,6 +529,10 @@ octave_map::reshape (const dim_vector& dv) const
   octave_map retval (xkeys);
   retval.dimensions = dv;
 
+  // When reshaping xvals the Array constructor chops trailing singletons,
+  // hence we need to do the same for the whole map.
+  retval.dimensions.chop_trailing_singletons ();
+
   octave_idx_type nf = nfields ();
   if (nf > 0)
     {
@@ -554,6 +558,19 @@ octave_map::reshape (const dim_vector& dv) const
 %!test
 %! x(1,1).d = 10;  x(4,6).a = "b";  x(2,4).f = 27;
 %! assert (fieldnames (reshape (x, 3, 8)), {"d"; "a"; "f"});
+
+## test chopping of trailing singletons
+%!test <51634>
+%! x(1,1).d = 10;  x(4,6).a = "b";  x(2,4).f = 27;
+%! reshape (x, 3, 8, 1, 1);
+
+%!test <46385>
+%! M = repmat (struct ('a', ones(100), 'b', true), 1, 2);
+%! M = repmat(M, 1, 2);
+%! assert (size (M), [1, 4]);
+
+libinterp/corefcn/oct-map.cc
+
 */
 
 void

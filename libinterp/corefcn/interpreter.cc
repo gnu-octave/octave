@@ -615,10 +615,10 @@ namespace octave
 
   // This may be called separately from execute
 
-  int interpreter::initialize (void)
+  void interpreter::initialize (void)
   {
     if (m_initialized)
-      return 0;
+      return;
 
     display_startup_message ();
 
@@ -636,63 +636,61 @@ namespace octave
 
     initialize_load_path ();
 
-    // We ignore errors in startup files.
-
-    execute_startup_files ();
-
-    int exit_status = 0;
-
-    if (m_app_context)
-      {
-        const cmdline_options& options = m_app_context->options ();
-
-        if (m_app_context->have_eval_option_code ())
-          {
-            int status = execute_eval_option_code ();
-
-            if (status )
-              exit_status = status;
-
-            if (! options.persist ())
-              return exit_status;
-          }
-
-        // If there is an extra argument, see if it names a file to
-        // read.  Additional arguments are taken as command line options
-        // for the script.
-
-        if (m_app_context->have_script_file ())
-          {
-            int status = execute_command_line_file ();
-
-            if (status)
-              exit_status = status;
-
-            if (! options.persist ())
-              return exit_status;
-          }
-
-        if (options.forced_interactive ())
-          command_editor::blink_matching_paren (false);
-      }
-
-    // Avoid counting commands executed from startup or script files.
-
-    command_editor::reset_current_command_number (1);
-
     m_initialized = true;
-
-    return exit_status;
   }
+
+  // FIXME: this function is intended to be executed only once.  Should
+  // we enforce that restriction?
 
   int interpreter::execute (void)
   {
     try
       {
-        int status = initialize ();
+        initialize ();
 
-        if (! m_initialized)
-          return status;
+        // We ignore errors in startup files.
+
+        execute_startup_files ();
+
+        int exit_status = 0;
+
+        if (m_app_context)
+          {
+            const cmdline_options& options = m_app_context->options ();
+
+            if (m_app_context->have_eval_option_code ())
+              {
+                int status = execute_eval_option_code ();
+
+                if (status )
+                  exit_status = status;
+
+                if (! options.persist ())
+                  return exit_status;
+              }
+
+            // If there is an extra argument, see if it names a file to
+            // read.  Additional arguments are taken as command line options
+            // for the script.
+
+            if (m_app_context->have_script_file ())
+              {
+                int status = execute_command_line_file ();
+
+                if (status)
+                  exit_status = status;
+
+                if (! options.persist ())
+                  return exit_status;
+              }
+
+            if (options.forced_interactive ())
+              command_editor::blink_matching_paren (false);
+          }
+
+        // Avoid counting commands executed from startup or script files.
+
+        command_editor::reset_current_command_number (1);
 
         return main_loop ();
       }

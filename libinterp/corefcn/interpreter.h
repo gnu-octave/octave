@@ -67,8 +67,7 @@ namespace octave
   {
   public:
 
-    // Create an interpreter object and perform basic initialization
-    // up to the point of reading history and setting the load path.
+    // Create an interpreter object and perform basic initialization.
 
     interpreter (application *app_context = nullptr);
 
@@ -98,12 +97,12 @@ namespace octave
 
     void initialize_load_path (bool set_initial_path = true);
 
-    // Load command line history, set the load path and execute
-    // startup files.  May throw an exit_exception.
+    // Load command line history, set the load path.
 
-    int initialize (void);
+    void initialize (void);
 
-    // Initialize the interpreter and execute --eval option code,
+    // Initialize the interpreter (if not already done by an explicit
+    // call to intialize), execute startup files, --eval option code,
     // script files, and/or interactive commands.
 
     int execute (void);

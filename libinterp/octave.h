@@ -261,7 +261,7 @@ namespace octave
 
     virtual interpreter& create_interpreter (void);
 
-    virtual int initialize_interpreter (void);
+    virtual void initialize_interpreter (void);
 
     virtual int execute_interpreter (void);
 

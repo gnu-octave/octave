@@ -103,11 +103,9 @@ octave_interpreter::execute (void)
 
   try
     {
-      // Final initialization including executing startup files.  If
-      // initialization fails, return the last available status from
-      // that process.
+      // Final initialization.
 
-      exit_status = interp.initialize ();
+      interp.initialize ();
 
       if (interp.initialized ())
         {
@@ -119,6 +117,9 @@ octave_interpreter::execute (void)
           // Start executing commands in the command window.
 
 #if defined (HAVE_QT_GRAPHICS)
+          // The qt graphics toolkit must be initialized before startup
+          // files are executed.
+
           install___init_qt___functions ();
 
           Fregister_graphics_toolkit (interp, ovl ("qt"));

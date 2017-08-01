@@ -323,9 +323,10 @@ namespace octave
     return *m_interpreter;
   }
 
-  int application::initialize_interpreter (void)
+  void application::initialize_interpreter (void)
   {
-    return m_interpreter ? m_interpreter->initialize () : -1;
+    if (m_interpreter)
+      m_interpreter->initialize ();
   }
 
   int application::execute_interpreter (void)

@@ -96,6 +96,9 @@ namespace octave
 
     void draw_axes (const axes::properties& props)
     {
+      if (! props.is_visible ())
+        return;
+
       // Initialize a sorting tree (viewport) in gl2ps for each axes
       GLint vp[4];
       glGetIntegerv (GL_VIEWPORT, vp);

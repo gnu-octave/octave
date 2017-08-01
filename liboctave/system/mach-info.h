@@ -33,9 +33,12 @@ namespace octave
   {
     enum float_format
     {
-      flt_fmt_unknown,
-      flt_fmt_ieee_little_endian,
-      flt_fmt_ieee_big_endian,
+      // If these values change, you must also change the values
+      // returned by octave_get_float_format.
+
+      flt_fmt_unknown = 0,
+      flt_fmt_ieee_little_endian = 1,
+      flt_fmt_ieee_big_endian = 2,
     };
 
     float_format native_float_format (void);

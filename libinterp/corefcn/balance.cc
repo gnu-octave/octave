@@ -255,18 +255,22 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
                 {
                 case 4:
                   retval(3) = result.balanced_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 3:
                   retval(2) = result.balanced_matrix ();
                   retval(1) = result.balancing_matrix2 ();
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 case 2:
                   retval(1) = result.balancing_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 1:
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 default:
                   error ("balance: invalid number of output arguments");
                   break;
@@ -280,18 +284,22 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
                 {
                 case 4:
                   retval(3) = result.balanced_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 3:
                   retval(2) = result.balanced_matrix ();
                   retval(1) = result.balancing_matrix2 ();
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 case 2:
                   retval(1) = result.balancing_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 1:
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 default:
                   error ("balance: invalid number of output arguments");
                   break;
@@ -308,18 +316,22 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
                 {
                 case 4:
                   retval(3) = result.balanced_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 3:
                   retval(2) = result.balanced_matrix ();
                   retval(1) = result.balancing_matrix2 ();
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 case 2:
                   retval(1) = result.balancing_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 1:
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 default:
                   error ("balance: invalid number of output arguments");
                   break;
@@ -333,18 +345,22 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
                 {
                 case 4:
                   retval(3) = result.balanced_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 3:
                   retval(2) = result.balanced_matrix ();
                   retval(1) = result.balancing_matrix2 ();
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 case 2:
                   retval(1) = result.balancing_matrix2 ();
-                  // fall through
+                  OCTAVE_FALLTHROUGH;
+
                 case 1:
                   retval(0) = result.balancing_matrix ();
                   break;
+
                 default:
                   error ("balance: invalid number of output arguments");
                   break;

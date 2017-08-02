@@ -256,6 +256,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           have_sing = true;
 
           sing = args(4).xfloat_vector_value ("quad: fifth argument SING must be a vector of singularities");
+          OCTAVE_FALLTHROUGH;
 
         case 4:
           tol = args(3).xfloat_vector_value ("quad: TOL must be a 1 or 2-element vector");
@@ -264,6 +265,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
             {
             case 2:
               quad_opts.set_single_precision_relative_tolerance (tol (1));
+              OCTAVE_FALLTHROUGH;
 
             case 1:
               quad_opts.set_single_precision_absolute_tolerance (tol (0));
@@ -349,6 +351,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           have_sing = true;
 
           sing = args(4).vector_value ("quad: fifth argument SING must be a vector of singularities");
+          OCTAVE_FALLTHROUGH;
 
         case 4:
           tol = args(3).xvector_value ("quad: TOL must be a 1 or 2-element vector");
@@ -357,6 +360,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
             {
             case 2:
               quad_opts.set_relative_tolerance (tol (1));
+              OCTAVE_FALLTHROUGH;
 
             case 1:
               quad_opts.set_absolute_tolerance (tol (0));

@@ -122,6 +122,16 @@ since all of Octave's header files already include it.
 /* #    undef HAVE_OCTAVE_UNUSED_ATTR */
 #  endif
 
+#  if ! defined (OCTAVE_FALLTHROUGH)
+#    if defined (__cplusplus) && __cplusplus > 201402L
+#      define OCTAVE_FALLTHROUGH [[fallthrough]]
+#    elif defined (__GNUC__) && __GNUC__ < 7
+#      define OCTAVE_FALLTHROUGH ((void) 0)
+#    else
+#      define OCTAVE_FALLTHROUGH __attribute__ ((__fallthrough__))
+#    endif
+#  endif
+
 #  define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
 
 #  if defined (__cplusplus)

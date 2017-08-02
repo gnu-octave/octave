@@ -993,14 +993,17 @@ Note: @code{qz} performs permutation balancing, but not scaling
     {
     case 7:
       retval(6) = gev;
+      OCTAVE_FALLTHROUGH;
 
     case 6:
       // Return left eigenvectors.
       retval(5) = CVL;
+      OCTAVE_FALLTHROUGH;
 
     case 5:
       // Return right eigenvectors.
       retval(4) = CVR;
+      OCTAVE_FALLTHROUGH;
 
     case 4:
       if (nargin == 3)
@@ -1019,6 +1022,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
           else
             retval(3) = ZZ;
         }
+      OCTAVE_FALLTHROUGH;
 
     case 3:
       if (nargin == 3)
@@ -1035,6 +1039,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
           else
             retval(2) = QQ.transpose ();
         }
+      OCTAVE_FALLTHROUGH;
 
     case 2:
       {

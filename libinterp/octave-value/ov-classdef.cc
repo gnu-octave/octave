@@ -1524,7 +1524,7 @@ cdef_object_array::subsref (const std::string& type,
 
           break;
         }
-      // fall through "default"
+      OCTAVE_FALLTHROUGH;
 
     default:
       error ("can't perform indexing operation on array of %s objects",

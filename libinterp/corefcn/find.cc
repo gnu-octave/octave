@@ -56,7 +56,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     default:
     case 3:
       retval(2) = Array<T> (nda.index (idx_vector (idx)));
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 2:
       {
@@ -71,7 +71,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
         iext = -1;
         retval(1) = idx_vector (jdx, -1);
       }
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 1:
     case 0:
@@ -208,15 +208,15 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 
     case 5:
       retval(4) = nc;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 4:
       retval(3) = nr;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 3:
       retval(2) = val;
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 2:
       retval(1) = j_idx;
@@ -303,15 +303,15 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
     case 5:
       retval(4) = nc;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 4:
       retval(3) = nc;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 3:
       retval(2) = val;
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 2:
       retval(1) = j_idx;

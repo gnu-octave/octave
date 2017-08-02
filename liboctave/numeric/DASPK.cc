@@ -325,7 +325,7 @@ DASPK::do_integrate (double tout)
                 return retval;
               }
           }
-        // Fall through...
+          OCTAVE_FALLTHROUGH;
 
         case 0:
         case 2:

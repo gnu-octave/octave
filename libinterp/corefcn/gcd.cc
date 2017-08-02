@@ -272,7 +272,7 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
           retval = do_simple_gcd<SparseMatrix> (a, b);
           break;
         }
-      // fall through!
+      OCTAVE_FALLTHROUGH;
 
     case btyp_float:
       retval = do_simple_gcd<NDArray> (a, b);

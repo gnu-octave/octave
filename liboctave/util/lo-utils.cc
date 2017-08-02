@@ -275,7 +275,7 @@ octave_read_fp_value (std::istream& is)
     {
     case '-':
       neg = true;
-      // fall through...
+      OCTAVE_FALLTHROUGH;
 
     case '+':
       {

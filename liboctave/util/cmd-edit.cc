@@ -1688,7 +1688,7 @@ namespace octave
                 {
                   int n = read_octal (s.substr (i, 3));
 
-                  tmpstr = "\\";
+                  tmpstr = '\\';
 
                   if (n != -1)
                     {
@@ -1858,7 +1858,7 @@ namespace octave
 
               case '\\':
                 {
-                  tmpstr = "\\";
+                  tmpstr = '\\';
 
                   break;
                 }

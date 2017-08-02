@@ -3170,8 +3170,11 @@ namespace octave
 
         for (i = 0; i < width; i++)
           {
-            if (i+1 > val.length ())
-              val = val + val + ' ';      // grow even if empty
+            // Grow string in an exponential fashion if necessary.
+            if (i >= val.length ())
+              val.append (std::max (val.length (),
+                                    static_cast<size_t> (16)), '\0');
+
             int ch = is.get ();
             if (is_delim (ch) || ch == std::istream::traits_type::eof ())
               {
@@ -3185,11 +3188,11 @@ namespace octave
       }
     else  // Cell array of multi-character delimiters
       {
-        std::string ends ("");
+        std::string ends (delim_list.numel (), '\0');
         for (int i = 0; i < delim_list.numel (); i++)
           {
             std::string tmp = delim_list(i).string_value ();
-            ends += tmp.substr (tmp.length () - 1);
+            ends[i] = tmp.back ();
           }
         val = textscan::read_until (is, delim_list, ends);
       }

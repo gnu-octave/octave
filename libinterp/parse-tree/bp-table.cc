@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <algorithm>
 #include <fstream>
 #include <limits>
 #include <list>
@@ -63,8 +64,8 @@ std::set<std::string> bp_table::errors_that_stop;
 std::set<std::string> bp_table::caught_that_stop;
 std::set<std::string> bp_table::warnings_that_stop;
 
-// Return a pointer to the user-defined function FNAME.  If FNAME is
-// empty, search backward for the first user-defined function in the
+// Return a pointer to the user-defined function FNAME.  If FNAME is empty,
+// search backward for the first user-defined function in the
 // current call stack.
 
 octave_user_code *
@@ -84,18 +85,18 @@ get_user_code (const std::string& fname)
 
       if (octave::sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
         {
-          int len = name.length () - 1;         // -1: can't have trailing '/'
-          for (int i = 2; i < len; i++)         //  2: can't have @/method
-            if (name[i] == '/')
-              name[i] = octave::sys::file_ops::dir_sep_char ();
+          auto beg = name.begin () + 2;  // never have @/method
+          auto end = name.end () - 1;    // never have trailing '/'
+          std::replace (beg, end, octave::sys::file_ops::dir_sep_char (), '/');
         }
 
       size_t name_len = name.length ();
 
-      if (! name.empty () && name_len > 2 && name.substr (name_len-2) == ".m")
+      if (name_len > 2 && name.substr (name_len-2) == ".m")
         name = name.substr (0, name_len-2);
 
-      octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_user_code");
+      octave::symbol_table& symtab =
+        octave::__get_symbol_table__ ("get_user_code");
 
       octave_value fcn = symtab.find_function (name);
 

@@ -624,7 +624,7 @@ escape_character (const std::string chr, std::string& str)
   std::size_t idx = str.find (chr);
   while (idx != std::string::npos)
     {
-      str.insert (idx, "\\");
+      str.insert (idx, 1, '\\');
       idx = str.find (chr, idx + 2);
     }
 }

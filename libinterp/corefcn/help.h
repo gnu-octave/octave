@@ -30,12 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 
 class string_vector;
 
-class interpreter;
 class octave_value;
 class octave_value_list;
 
 namespace octave
 {
+  class interpreter;
+
   class help_system
   {
   public:

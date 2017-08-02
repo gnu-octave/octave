@@ -1560,7 +1560,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
              sidx_major, sidx_minor);
   endif
 
-  if (! isempty (hlgnd) && ! isempty (hlgnd.children)
+  if (! isempty (hlgnd) && strcmp (hlgnd.visible, "on")
+      && ! isempty (hlgnd.children)
       && any (strcmp (get (hlgnd.children, "visible"), "on")))
     if (strcmp (hlgnd.box, "on"))
       box = "box";

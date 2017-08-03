@@ -7956,6 +7956,12 @@ axes::properties::zoom (const std::string& mode,
                         const Matrix& xl, const Matrix& yl,
                         bool push_to_zoom_stack)
 {
+  if (xl(0) == xl(1) || yl(0) == yl(1))
+    {
+      warning ("invalid zoom region");
+      return;
+    }
+
   if (push_to_zoom_stack)
     push_zoom_stack ();
 

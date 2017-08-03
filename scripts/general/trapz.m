@@ -72,6 +72,10 @@ function z = trapz (x, y, dim)
     have_xy = true;
     have_dim = true;
   elseif (nargin == 2)
+    if (isvector (x) && isvector (y))
+      x = x(:);
+      y = y(:);
+    endif
     if (! size_equal (x, y) && isscalar (y))
       dim = y;
       have_dim = true;
@@ -127,6 +131,10 @@ endfunction
 
 
 %!assert (trapz (1:5), 12)
+%!assert (trapz ([1:5], [1:5]), 12)
+%!assert (trapz ([1:5], [1:5]'), 12)
+%!assert (trapz ([1:5]', [1:5]'), 12)
+%!assert (trapz ([1:5]', [1:5]), 12)
 %!assert (trapz (0:0.5:2,1:5), 6)
 %!assert (trapz ([1:5;1:5].',1), [12,12])
 %!assert (trapz ([1:5;1:5],2), [12;12])

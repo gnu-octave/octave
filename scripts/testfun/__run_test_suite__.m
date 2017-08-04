@@ -47,13 +47,13 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
     page_screen_output (false);
     warning ("on", "quiet");
     warning ("off", "Octave:deprecated-function");
+    nfail = dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
     try
       fid = fopen (logfile, "wt");
       if (fid < 0)
         error ("__run_test_suite__: could not open %s for writing", logfile);
       endif
       test ("", "explain", fid);
-      dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
       puts ("\nIntegrated test scripts:\n\n");
       for i = 1:length (fcndirs)
         [p, n, xf, xb, sk, rtsk, rgrs] = run_test_script (fid, fcndirs{i});

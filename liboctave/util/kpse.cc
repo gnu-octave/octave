@@ -714,7 +714,7 @@ kpse_tilde_expand (const std::string& name)
       octave::sys::password p = octave::sys::password::getpwnam (user);
 
       /* If no such user, just use '.'.  */
-      std::string home = (p ? p.dir () : std::string ("."));
+      std::string home = (p ? p.dir () : ".");
 
       if (home.empty ())
         home = ".";

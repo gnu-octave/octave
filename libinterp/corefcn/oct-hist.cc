@@ -108,7 +108,7 @@ static std::string
 default_history_timestamp_format (void)
 {
   return
-    std::string ("# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
+    "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <"
     + octave::sys::env::get_user_name ()
     + '@'
     + octave::sys::env::get_host_name ()

@@ -112,14 +112,14 @@ namespace QtHandles
 
       if (! mapsInitialized)
         {
-          weightMap[std::string ("normal")] = QFont::Normal;
-          weightMap[std::string ("light")] = QFont::Light;
-          weightMap[std::string ("demi")] = QFont::DemiBold;
-          weightMap[std::string ("bold")] = QFont::Bold;
+          weightMap["normal"] = QFont::Normal;
+          weightMap["light"] = QFont::Light;
+          weightMap["demi"] = QFont::DemiBold;
+          weightMap["bold"] = QFont::Bold;
 
-          angleMap[std::string ("normal")] = QFont::StyleNormal;
-          angleMap[std::string ("italic")] = QFont::StyleItalic;
-          angleMap[std::string ("oblique")] = QFont::StyleOblique;
+          angleMap["normal"] = QFont::StyleNormal;
+          angleMap["italic"] = QFont::StyleItalic;
+          angleMap["oblique"] = QFont::StyleOblique;
 
           mapsInitialized = true;
         }
@@ -170,7 +170,7 @@ namespace QtHandles
     figureSelectionType (QMouseEvent *event, bool isDoubleClick)
     {
       if (isDoubleClick)
-        return std::string ("open");
+        return "open";
       else
         {
           Qt::MouseButtons buttons = event->buttons ();
@@ -179,27 +179,27 @@ namespace QtHandles
           if (mods == Qt::NoModifier)
             {
               if (buttons == Qt::LeftButton)
-                return std::string ("normal");
+                return "normal";
               else if (buttons == Qt::RightButton)
-                return std::string ("alt");
+                return "alt";
 #if defined (Q_WS_WIN)
               else if (buttons == (Qt::LeftButton | Qt::RightButton))
-                return std::string ("extend");
+                return "extend";
 #elif defined (Q_WS_X11)
               else if (buttons == Qt::MidButton)
-                return std::string ("extend");
+                return "extend";
 #endif
             }
           else if (buttons == Qt::LeftButton)
             {
               if (mods == Qt::ShiftModifier)
-                return std::string ("extend");
+                return "extend";
               else if (mods == Qt::ControlModifier)
-                return std::string ("alt");
+                return "alt";
             }
         }
 
-      return std::string ("normal");
+      return "normal";
     }
 
     /*

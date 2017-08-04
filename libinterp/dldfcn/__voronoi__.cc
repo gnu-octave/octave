@@ -343,7 +343,7 @@ Undocumented internal function.
   std::string caller
     = (args.length () > 0
        ? args(0).xstring_value ("__voronoi__: CALLER must be a string")
-       : std::string ("__voronoi__"));
+       : "__voronoi__");
 
   err_disabled_feature (caller, "Qhull");
 

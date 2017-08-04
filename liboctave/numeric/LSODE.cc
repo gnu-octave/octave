@@ -333,8 +333,8 @@ LSODE::error_message (void) const
       break;
 
     case -1:
-      retval = std::string ("excess work on this call (t = ")
-               + t_curr + "; perhaps wrong integration method)";
+      retval = "excess work on this call (t = " + t_curr +
+               "; perhaps wrong integration method)";
       break;
 
     case -2:
@@ -346,20 +346,18 @@ LSODE::error_message (void) const
       break;
 
     case -4:
-      retval = std::string ("repeated error test failures (t = ")
-               + t_curr + "; check all inputs)";
+      retval = "repeated error test failures (t = " + t_curr +
+               "; check all inputs)";
       break;
 
     case -5:
-      retval = std::string ("repeated convergence failures (t = ")
-               + t_curr
-               + "; perhaps bad Jacobian supplied or wrong choice of integration method or tolerances)";
+      retval = "repeated convergence failures (t = " + t_curr +
+               "; perhaps bad Jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:
-      retval = std::string ("error weight became zero during problem. (t = ")
-               + t_curr
-               + "; solution component i vanished, and atol or atol(i) == 0)";
+      retval = "error weight became zero during problem. (t = " + t_curr +
+               "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -13:

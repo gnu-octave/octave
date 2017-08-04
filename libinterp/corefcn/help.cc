@@ -286,8 +286,7 @@ namespace octave
                       }
                   }
                 else
-                  type = val.is_user_script ()
-                    ? std::string ("script") : std::string ("function");
+                  type = val.is_user_script () ? "script" : "function";
               }
           }
         else

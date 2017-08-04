@@ -250,7 +250,7 @@ namespace QtHandles
           keyMapper[Qt::Key_ydiaeresis] = "ydiaeresis";
         }
 
-      return keyMapper.value (key, std::string ("<unknown key>"));
+      return keyMapper.value (key, "<unknown key>");
     }
 
   }

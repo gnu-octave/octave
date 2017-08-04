@@ -3926,7 +3926,7 @@ set_format_style (int argc, const string_vector& argv)
     {
       init_format_state ();
       set_output_prec_and_fw (5, 10);
-      format = std::string ("short");
+      format = "short";
     }
 
   format_string = format;

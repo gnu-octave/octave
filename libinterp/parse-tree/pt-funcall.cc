@@ -50,7 +50,7 @@ namespace octave
     else
       {
         octave_function *fp = fcn.function_value ();
-        std::string nm = (fp ? fp->name () : std::string ("<invalid-function>"));
+        std::string nm = (fp ? fp->name () : "<invalid-function>");
 
         os << nm << " (";
 

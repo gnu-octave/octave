@@ -375,7 +375,7 @@ namespace octave
 
     std::string fcn_name = fcn.name ();
 
-    os << (fcn_name.empty () ? std::string ("(empty)") : fcn_name) << ' ';
+    os << (fcn_name.empty () ? "(empty)" : fcn_name) << ' ';
 
     tree_parameter_list *param_list = fcn.parameter_list ();
 
@@ -444,7 +444,7 @@ namespace octave
     print_parens (id, "(");
 
     std::string nm = id.name ();
-    os << (nm.empty () ? std::string ("(empty)") : nm);
+    os << (nm.empty () ? "(empty)" : nm);
 
     print_parens (id, ")");
   }

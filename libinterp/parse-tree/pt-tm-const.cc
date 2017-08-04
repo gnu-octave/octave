@@ -63,8 +63,8 @@ namespace octave
   tm_row_const::tm_row_const_rep::do_init_element (const octave_value& val,
                                                    bool& first_elem)
   {
-    std::string this_elt_class_nm
-      = val.isobject () ? std::string ("class") : val.class_name ();
+    std::string this_elt_class_nm = val.isobject () ? "class"
+                                                    : val.class_name ();
 
     class_nm = get_concat_class (class_nm, this_elt_class_nm);
 

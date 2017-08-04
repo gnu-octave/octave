@@ -287,7 +287,7 @@ Undocumented internal function
 
   std::string user = (nargin > 1)
     ? args(1).xstring_value ("__ftp__: USER must be a string")
-    : std::string ("anonymous");
+    : "anonymous";
 
   std::string passwd = (nargin > 2)
     ? args(2).xstring_value ("__ftp__: PASSWD must be a string")

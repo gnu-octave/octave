@@ -520,13 +520,12 @@ contents_file_in_path (const std::string& dir)
 {
   std::string retval;
 
-  if (dir.length () > 0)
+  if (! dir.empty ())
     {
       octave::load_path& lp = octave::__get_load_path__ ("contents_in_file_path");
 
       std::string tcontents
-        = octave::sys::file_ops::concat (lp.find_dir (dir),
-                                         std::string ("Contents.m"));
+        = octave::sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
 
       octave::sys::file_stat fs (tcontents);
 
@@ -835,7 +834,7 @@ undo_string_escape (char c)
 
     default:
       {
-        static char retval[2] = "\0";
+        static char retval[2] {'\0', '\0'};
 
         retval[0] = c;
         return retval;

@@ -2522,7 +2522,7 @@ attribute_value_to_string (T *t, octave_value v)
   else if (t->expression ())
     return t->expression ()->original_text ();
   else
-    return std::string ("true");
+    return "true";
 }
 
 cdef_class

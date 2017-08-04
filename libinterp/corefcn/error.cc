@@ -209,7 +209,7 @@ verror (bool save_last_error, std::ostream& os,
         }
     }
 
-  msg_string += base_msg + "\n";
+  msg_string += base_msg + '\n';
 
   if (save_last_error)
     {
@@ -411,7 +411,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
   if (name)
     msg_string = std::string (name) + ": ";
 
-  msg_string += base_msg + "\n";
+  msg_string += base_msg + '\n';
 
   Vlast_warning_id = id;
   Vlast_warning_message = base_msg;

@@ -691,10 +691,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       std::string octaveroot;
       std::string fpath;
 
-      if (nm.find_first_of ("\n") != std::string::npos)
+      if (nm.find_first_of ('\n') != std::string::npos)
         {
-          size_t pos1 = nm.find_first_of ("\n");
-          size_t pos2 = nm.find_first_of ("\n", pos1 + 1);
+          size_t pos1 = nm.find_first_of ('\n');
+          size_t pos2 = nm.find_first_of ('\n', pos1 + 1);
           octaveroot = nm.substr (pos1 + 1, pos2 - pos1 - 1);
           fpath = nm.substr (pos2 + 1);
           nm = nm.substr (0, pos1);

@@ -507,7 +507,7 @@ namespace octave
           sys::password pw = sys::password::getpwuid (
                                        sys::getuid ());
 
-          user_name = (pw ? pw.name () : std::string ("unknown"));
+          user_name = (pw ? pw.name () : "unknown");
         }
 
       return user_name;
@@ -536,8 +536,8 @@ namespace octave
       return value ? value : "";
     }
 
-    // Do the work of changing to the directory NEWDIR.  Handle symbolic
-    // link following, etc.
+    // Do the work of changing to the directory NEWDIR.
+    // Handle symbolic link following, etc.
 
     bool
     env::do_chdir (const std::string& newdir)

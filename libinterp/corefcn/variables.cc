@@ -1651,8 +1651,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
           octave::feval ("load", octave_value (nm), 0);
 
-          std::string newmsg = std::string ("Variables in the file ")
-                               + nm + ":\n\n";
+          std::string newmsg = "Variables in the file " + nm + ":\n\n";
 
           retval = do_who (interp, i, argv, return_list, verbose, newmsg);
 

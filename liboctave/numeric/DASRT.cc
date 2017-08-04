@@ -586,8 +586,7 @@ DASRT::error_message (void) const
       break;
 
     case -1:
-      retval = std::string ("a large amount of work has been expended (t =")
-               + t_curr + ')';
+      retval = "a large amount of work has been expended (t =" + t_curr + ')';
       break;
 
     case -2:
@@ -595,39 +594,37 @@ DASRT::error_message (void) const
       break;
 
     case -3:
-      retval = std::string ("error weight became zero during problem. (t = ")
-               + t_curr
-               + "; solution component i vanished, and atol or atol(i) == 0)";
+      retval = "error weight became zero during problem. (t = " + t_curr +
+               "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -6:
-      retval = std::string ("repeated error test failures on the last attempted step (t = ")
+      retval = "repeated error test failures on the last attempted step (t = "
                + t_curr + ')';
       break;
 
     case -7:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + ')';
+      retval = "the corrector could not converge (t = " + t_curr + ')';
       break;
 
     case -8:
-      retval = std::string ("the matrix of partial derivatives is singular (t = ")
-               + t_curr + ')';
+      retval = "the matrix of partial derivatives is singular (t = " + t_curr +
+               ')';
       break;
 
     case -9:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + "; repeated test failures)";
+      retval = "the corrector could not converge (t = " + t_curr +
+               "; repeated test failures)";
       break;
 
     case -10:
-      retval = std::string ("corrector could not converge because IRES was -1 (t = ")
+      retval = "corrector could not converge because IRES was -1 (t = "
                + t_curr + ')';
       break;
 
     case -11:
-      retval = std::string ("return requested in user-supplied function (t = ")
-               + t_curr + ')';
+      retval = "return requested in user-supplied function (t = " + t_curr +
+               ')';
       break;
 
     case -12:

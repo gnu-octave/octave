@@ -15,6 +15,7 @@ TEST_FILES += \
   %reldir%/colormaps.tst \
   %reldir%/command.tst \
   %reldir%/complex.tst \
+  %reldir%/deprecate-props.tst \
   %reldir%/diag-perm.tst \
   %reldir%/error.tst \
   %reldir%/eval-catch.tst \
@@ -55,10 +56,11 @@ include %reldir%/bug-46660/module.mk
 include %reldir%/bug-50014/module.mk
 include %reldir%/bug-50035/module.mk
 include %reldir%/bug-50716/module.mk
+include %reldir%/bug-51192/module.mk
 include %reldir%/bug-51599/module.mk
 include %reldir%/class-concat/module.mk
-include %reldir%/classdef/module.mk
 include %reldir%/classdef-multiple-inheritance/module.mk
+include %reldir%/classdef/module.mk
 include %reldir%/classes/module.mk
 include %reldir%/ctor-vs-method/module.mk
 include %reldir%/fcn-handle-derived-resolution/module.mk

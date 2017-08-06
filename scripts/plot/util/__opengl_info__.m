@@ -42,6 +42,8 @@
 ## List of enabled extensions for the OpenGL driver.
 ## @end table
 ##
+## Example Code:
+##
 ## @example
 ## glinfo = __opengl_info__ ();
 ## @end example
@@ -50,7 +52,6 @@
 
 function retval = __opengl_info__ ()
 
-  ## currently we only handle a single argument
   if (nargin != 0)
     print_usage ();
   endif
@@ -74,27 +75,28 @@ function retval = __opengl_info__ ()
 endfunction
 
 function info = fig_gl_info (h)
+
   info = [];
 
   if (ishandle (h) && strcmp (get (h, "renderer"), "opengl"))
-    vers = get (h, "__gl_version__");
     vend = get (h, "__gl_vendor__");
-    rend = get (h, "__gl_renderer__");
-    exts = get (h, "__gl_extensions__");
-    if (! isempty (vend))
-      info.version = vers;
-      info.vendor = vend;
-      info.renderer = rend;
-      info.extensions = strsplit (strtrim (exts));
+    if (isempty (vend))
+      return;
     endif
+    info.vendor   = vend;
+    info.version  = get (h, "__gl_version__");
+    info.renderer = get (h, "__gl_renderer__");
+    info.extensions = strsplit (strtrim (get (h, "__gl_extensions__")));
   endif
+  
 endfunction
 
 function [info, msg] = gl_info ()
+
   info = [];
   msg = "";
 
-  ## If we have any open figures, take a look for any OpenGL info.
+  ## If we have any open figures, take a look there for OpenGL info.
   figs = findall (0, "type", "figure");
 
   for hf = figs.'
@@ -107,12 +109,12 @@ function [info, msg] = gl_info ()
   ## If no info yet, try open a figure to get the info.
   if (isempty (info))
     ## Need to create a figure, place an OpenGL object, and force drawing.
-    h = figure ("position", [0,0,1,1], "toolbar", "none", "menubar", "none");
+    hf = figure ("position", [0,0,1,1], "toolbar", "none", "menubar", "none");
     hax = axes ();
-    ## Hmm, drawnow did not seem to be working as intended here.
-    pause (0.2);
-    info = fig_gl_info (h);
-    close (h);
+    pause (0.1);  # FIXME: Race condition means this delay may not always work.
+    refresh (hf);
+    info = fig_gl_info (hf);
+    close (hf);
   endif
 
   if (isempty (info))
@@ -122,17 +124,26 @@ function [info, msg] = gl_info ()
 endfunction
 
 
-## Duplicate the test since there is currently no way to write
-## "HAVE_OPENGL && (HAVE_FLTK || HAVE_QT)"
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+%! old_toolkit = graphics_toolkit ();
+%! unwind_protect
+%!   graphics_toolkit ("fltk");
+%!   a = __opengl_info__ ();
+%! unwind_protect_cleanup
+%!   graphics_toolkit (old_toolkit); 
+%! end_unwind_protect
+%! assert (! isempty (a));
+%! assert (isfield (a, "version"));
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system
-%! a = __opengl_info__ ();
-%! assert (! isempty (a))
-%! assert (isfield (a, "version"))
-
-%!testif HAVE_OPENGL, HAVE_QT; have_window_system
-%! a = __opengl_info__ ();
-%! assert (! isempty (a))
-%! assert (isfield (a, "version"))
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%! old_toolkit = graphics_toolkit ();
+%! unwind_protect
+%!   graphics_toolkit ("qt");
+%!   a = __opengl_info__ ();
+%! unwind_protect_cleanup
+%!   graphics_toolkit (old_toolkit); 
+%! end_unwind_protect
+%! assert (! isempty (a));
+%! assert (isfield (a, "version"));
 
 %!error __opengl_info ("foobar")

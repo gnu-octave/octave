@@ -21,33 +21,35 @@
 ## @deftypefn  {} {} toeplitz (@var{c})
 ## @deftypefnx {} {} toeplitz (@var{c}, @var{r})
 ## Return the Toeplitz matrix constructed from the first column @var{c},
-## and (optionally) the first row @var{r}.
+## and optionally the first row @var{r}.
 ##
-## If the first element of @var{r} is not the same as the first element of
-## @var{c}, the first element of @var{c} is used.  If the second argument is
-## omitted, the first row is taken to be the same as the first column.
+## If the second argument is omitted, the first row is taken to be the
+## same as the first column.  If the first element of @var{r} is not the same
+## as the first element of @var{c}, the first element of @var{c} is used.
 ##
-## A square Toeplitz matrix has the form:
+## A Toeplitz, or diagonal-constant, matrix has the same value along each
+## diagonal.  Although it need not be square, it often is.  An MxN Toeplitz 
+## matrix has the form:
 ## @tex
 ## $$
-## \left[\matrix{c_0    & r_1     & r_2      & \cdots & r_n\cr
-##               c_1    & c_0     & r_1      & \cdots & r_{n-1}\cr
-##               c_2    & c_1     & c_0      & \cdots & r_{n-2}\cr
+## \left[\matrix{c_1    & r_2     & r_3      & \cdots & r_n\cr
+##               c_2    & c_1     & r_2      & \cdots & r_{n-1}\cr
+##               c_3    & c_2     & c_1      & \cdots & r_{n-2}\cr
 ##               \vdots & \vdots  & \vdots   & \ddots & \vdots\cr
-##               c_n    & c_{n-1} & c_{n-2} & \ldots & c_0}\right]
+##               c_m    & c_{m-1} & c_{m-2} & \ldots & c{m-n+1}}\right]
 ## $$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-## c(0)  r(1)   r(2)  @dots{}  r(n)
-## c(1)  c(0)   r(1)  @dots{} r(n-1)
-## c(2)  c(1)   c(0)  @dots{} r(n-2)
+## c(1)  r(2)   r(3)  @dots{}  r(n)
+## c(2)  c(1)   r(2)  @dots{} r(n-1)
+## c(3)  c(2)   c(1)  @dots{} r(n-2)
 ##  .     .      .   .      .
 ##  .     .      .     .    .
 ##  .     .      .       .  .
-## c(n) c(n-1) c(n-2) @dots{}  c(0)
+## c(m) c(m-1) c(m-2) @dots{} c(m-n+1)
 ## @end group
 ## @end example
 ##

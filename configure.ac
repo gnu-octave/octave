@@ -1664,9 +1664,9 @@ if test $check_magick = yes; then
     ## packages add extra flags that are useful when building
     ## Graphics/ImageMagick++ extentions.  These extra flags break the
     ## Octave build.
-    MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
-    MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
-    MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
+    MAGICK_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $magick++ | $SED -e 's/^ *$//')"
+    MAGICK_LDFLAGS="$($PKG_CONFIG --libs-only-L $magick++ | $SED -e 's/^ *$//')"
+    MAGICK_LIBS="$($PKG_CONFIG --libs-only-l $magick++ | $SED -e 's/^ *$//')"
 
     warn_magick="$magick++ library fails tests.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
 

@@ -509,12 +509,12 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   if test $ac_octave_$1_pkg_check = yes; then
     PKG_CHECK_EXISTS(m4_default([$9], [$1]), [
       if test -z "$m4_toupper([$1])_CPPFLAGS"; then
-        m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I m4_default([$9], [$1]))"
+        m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
       fi
       if test -z "$m4_toupper([$1])_LDFLAGS"; then
-        m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]))"
+        m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
       fi
-      m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l m4_default([$9], [$1]))"
+      m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
     ])
   fi
 
@@ -1404,9 +1404,9 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
   if test $build_qt_gui = yes; then
     ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I $QT_MODULES`"
-    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L $QT_MODULES`"
-    QT_LIBS="`$PKG_CONFIG --libs-only-l $QT_MODULES`"
+    QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
+    QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
+    QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
 
     case $host_os in
       *darwin*)

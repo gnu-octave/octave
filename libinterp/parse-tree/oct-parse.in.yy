@@ -4816,6 +4816,10 @@ not loaded anymore during the current Octave session.
 
 namespace octave
 {
+  // Execute the contents of a script file.  For compatibility with
+  // Matlab, also execute a function file by calling the function it
+  // defines with no arguments and nargout = 0.
+
   void
   source_file (const std::string& file_name, const std::string& context,
                bool verbose, bool require_file, const std::string& warn_for)
@@ -4909,12 +4913,15 @@ namespace octave
     symbol_table& symtab = __get_symbol_table__ ("source_file");
     octave_value ov_code = symtab.find (symbol);
 
-    if (ov_code.is_user_script ())
-      {
-        octave_user_script *script = ov_code.user_script_value ();
+    // For compatibility with Matlab, accept both scripts and
+    // functions.
 
-        if (! script
-            || (sys::canonicalize_file_name (script->fcn_file_name ())
+    if (ov_code.is_user_code ())
+      {
+        octave_user_code *code = ov_code.user_code_value ();
+
+        if (! code
+            || (sys::canonicalize_file_name (code->fcn_file_name ())
                 != full_name))
           {
             // Wrong file, so load it below.
@@ -4945,11 +4952,12 @@ namespace octave
           }
       }
 
-    // Return or error if we don't have a valid script
+    // Return or error if we don't have a valid script or function.
+
     if (ov_code.is_undefined ())
       return;
 
-    if (! ov_code.is_user_script ())
+    if (! ov_code.is_user_code ())
       error ("source: %s is not a script", full_name.c_str ());
 
     if (verbose)
@@ -4958,9 +4966,9 @@ namespace octave
         std::cout.flush ();
       }
 
-    octave_user_script *script = ov_code.user_script_value ();
+    octave_user_code *code = ov_code.user_code_value ();
 
-    script->call (tw, 0);
+    code->call (tw, 0, octave_value_list ());
 
     if (verbose)
       std::cout << "done." << std::endl;

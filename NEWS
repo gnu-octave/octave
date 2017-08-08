@@ -30,11 +30,6 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     array, rather than a struct with a cell array for each field.  This
     change was made for Matlab compatibility.
 
- ** New keyword "import" added to parser.
-
-    The parser recognizes the reserved keyword "import", but there is no
-    implementation of the functionality.
-
  ** Other new functions added in 4.4:
 
       corrcoef

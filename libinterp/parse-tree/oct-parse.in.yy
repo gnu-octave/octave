@@ -215,7 +215,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok_val> FCN_HANDLE
 %token <tok_val> CLASSDEF
 %token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
-%token <tok_val> IMPORT
 %token <tok_val> METAQUERY
 %token <tok_val> SUPERCLASSREF
 %token <tok_val> FQ_IDENT

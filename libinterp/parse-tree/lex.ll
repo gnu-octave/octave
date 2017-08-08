@@ -2579,10 +2579,6 @@ namespace octave
           case until_kw:
             break;
 
-          case import_kw:
-            at_beginning_of_statement = true;
-            break;
-
           case end_kw:
             if (inside_any_object_index ()
                 || (defining_func

@@ -69,7 +69,10 @@ function retval = center (x, dim)
   if (n == 0)
     retval = x;
   else
-    retval = x - mean (x, dim);
+    ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
+    ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
+    retval = bsxfun (@minus, x, mean (x, dim));
+    ## retval = x - mean (x, dim);   # automatic broadcasting
   endif
 
 endfunction

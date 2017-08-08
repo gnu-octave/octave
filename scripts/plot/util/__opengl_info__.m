@@ -88,7 +88,7 @@ function info = fig_gl_info (h)
     info.renderer = get (h, "__gl_renderer__");
     info.extensions = strsplit (strtrim (get (h, "__gl_extensions__")));
   endif
-  
+
 endfunction
 
 function [info, msg] = gl_info ()
@@ -130,7 +130,7 @@ endfunction
 %!   graphics_toolkit ("fltk");
 %!   a = __opengl_info__ ();
 %! unwind_protect_cleanup
-%!   graphics_toolkit (old_toolkit); 
+%!   graphics_toolkit (old_toolkit);
 %! end_unwind_protect
 %! assert (! isempty (a));
 %! assert (isfield (a, "version"));
@@ -141,7 +141,7 @@ endfunction
 %!   graphics_toolkit ("qt");
 %!   a = __opengl_info__ ();
 %! unwind_protect_cleanup
-%!   graphics_toolkit (old_toolkit); 
+%!   graphics_toolkit (old_toolkit);
 %! end_unwind_protect
 %! assert (! isempty (a));
 %! assert (isfield (a, "version"));

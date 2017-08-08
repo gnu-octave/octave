@@ -1341,8 +1341,8 @@ namespace octave
     //
     // then we'll just build a complete index list for one big subsref call.
     // If the expression we are indexing is a classname then base_expr_val will
-    // be an octave_classdef_meta object. 
-    // If we have files in a +packagename folder, they will also be an 
+    // be an octave_classdef_meta object.
+    // If we have files in a +packagename folder, they will also be an
     // octave_classdef_meta object, but we don't want to index them.
 
     bool indexing_object = (   base_expr_val.isobject ()

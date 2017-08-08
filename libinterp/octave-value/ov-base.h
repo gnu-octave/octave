@@ -373,7 +373,7 @@ public:
   virtual bool is_classdef_meta (void) const { return false; }
 
   virtual bool is_classdef_object (void) const { return false; }
-  
+
   virtual bool is_package (void) const { return false; }
 
   virtual bool isjava (void) const { return false; }

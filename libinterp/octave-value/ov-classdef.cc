@@ -1018,7 +1018,7 @@ public:
   { object.meta_release (); }
 
   bool is_classdef_meta (void) const { return true; }
-  
+
   bool is_package (void) const { return object.is_package(); }
 
   octave_function * function_value (bool = false) { return this; }

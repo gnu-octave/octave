@@ -591,7 +591,7 @@ public:
 
   bool is_classdef_object (void) const
   { return rep->is_classdef_object (); }
-  
+
   bool is_package (void) const
   { return rep->is_package (); }
 

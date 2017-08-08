@@ -55,6 +55,7 @@ enum octave_kw_id
   get_kw,
   global_kw,
   if_kw,
+  import_kw,
   magic_file_kw,
   magic_line_kw,
   methods_kw,
@@ -103,6 +104,7 @@ function, FCN, function_kw
 get, GET, get_kw
 global, GLOBAL, global_kw
 if, IF, if_kw
+import, IMPORT, import_kw
 methods, METHODS, methods_kw
 otherwise, OTHERWISE, otherwise_kw
 parfor, PARFOR, parfor_kw

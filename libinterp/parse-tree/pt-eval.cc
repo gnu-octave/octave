@@ -1339,13 +1339,13 @@ namespace octave
     //
     //   classname.static_function (args, ...);
     //
-    // then we'll just build a complete index list for one big subsref call.
-    // If the expression we are indexing is a classname then base_expr_val will
-    // be an octave_classdef_meta object.
-    // If we have files in a +packagename folder, they will also be an
+    // then we'll just build a complete index list for one big subsref
+    // call.  If the expression we are indexing is a classname then
+    // base_expr_val will be an octave_classdef_meta object.  If we have
+    // files in a +packagename folder, they will also be an
     // octave_classdef_meta object, but we don't want to index them.
 
-    bool indexing_object = (   base_expr_val.isobject ()
+    bool indexing_object = (base_expr_val.isobject ()
                             || base_expr_val.isjava ()
                             || (base_expr_val.is_classdef_meta ()
                                 && ! base_expr_val.is_package ()));
@@ -1444,7 +1444,7 @@ namespace octave
       {
         // This is for +package and other classdef_meta objects
         if (! base_expr_val.is_function ()
-              || base_expr_val.is_classdef_meta ())
+            || base_expr_val.is_classdef_meta ())
           {
             try
               {

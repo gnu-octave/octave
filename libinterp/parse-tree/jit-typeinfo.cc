@@ -1205,12 +1205,12 @@ namespace octave
     grab_fn.add_overload (create_identity (index));
 
     // release any
-    fn = create_external (JIT_FN (octave_jit_release_any), 0, any);
+    fn = create_external (JIT_FN (octave_jit_release_any), nullptr, any);
     release_fn.add_overload (fn);
     release_fn.stash_name ("release");
 
     // release matrix
-    fn = create_external (JIT_FN (octave_jit_release_matrix), 0, matrix);
+    fn = create_external (JIT_FN (octave_jit_release_matrix), nullptr, matrix);
     release_fn.add_overload (fn);
 
     // destroy
@@ -1236,7 +1236,7 @@ namespace octave
     add_binary_fcmp (scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
     add_binary_fcmp (scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
 
-    jit_function gripe_div0 = create_external (JIT_FN (warn_divide_by_zero), 0);
+    jit_function gripe_div0 = create_external (JIT_FN (warn_divide_by_zero), nullptr);
     gripe_div0.mark_can_error ();
 
     // divide is annoying because it might error
@@ -1509,7 +1509,7 @@ namespace octave
     logically_true_fn.stash_name ("logically_true");
 
     jit_function gripe_nantl
-      = create_external (JIT_FN (octave_jit_err_nan_to_logical_conversion), 0);
+      = create_external (JIT_FN (octave_jit_err_nan_to_logical_conversion), nullptr);
     gripe_nantl.mark_can_error ();
 
     fn = create_internal ("octave_jit_logically_true_scalar", boolean, scalar);
@@ -1572,9 +1572,9 @@ namespace octave
     jit_type *jit_int = intN (sizeof (int) * 8);
     llvm::Type *int_t = jit_int->to_llvm ();
     jit_function ginvalid_index
-      = create_external (JIT_FN (octave_jit_ginvalid_index), 0);
+      = create_external (JIT_FN (octave_jit_ginvalid_index), nullptr);
     jit_function gindex_range = create_external (JIT_FN (octave_jit_gindex_range),
-                                                 0, jit_int, jit_int, index,
+                                                 nullptr, jit_int, jit_int, index,
                                                  index);
 
     fn = create_internal ("()subsref", scalar, matrix, scalar);
@@ -1894,7 +1894,7 @@ namespace octave
     std::stringstream name;
     name << "octave_jit_print_" << ty->name ();
     jit_function fn = create_external (engine, fptr, name.str (),
-                                       0, intN (8), ty);
+                                       nullptr, intN (8), ty);
     print_fn.add_overload (fn);
   }
 

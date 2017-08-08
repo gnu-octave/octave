@@ -363,9 +363,8 @@ namespace octave
   jit_terminator *
   jit_block::terminator (void) const
   {
-    assert (this);
     if (instructions.empty ())
-      return 0;
+      return nullptr;
 
     jit_instruction *last = instructions.back ();
     return dynamic_cast<jit_terminator *> (last);

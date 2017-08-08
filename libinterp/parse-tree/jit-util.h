@@ -140,7 +140,9 @@ namespace octave
   public:
     typedef jit_internal_list<LIST_T, NODE_T> jit_ilist;
 
-    jit_internal_node (void) : mvalue (0), mnext (0), mprev (0) { }
+    jit_internal_node (void)
+      : mvalue (nullptr), mnext (nullptr), mprev (nullptr)
+    { }
 
     ~jit_internal_node (void) { remove (); }
 

@@ -58,6 +58,7 @@ include %reldir%/bug-50035/module.mk
 include %reldir%/bug-50716/module.mk
 include %reldir%/bug-51192/module.mk
 include %reldir%/bug-51532/module.mk
+include %reldir%/bug-51534/module.mk
 include %reldir%/bug-51599/module.mk
 include %reldir%/class-concat/module.mk
 include %reldir%/classdef/module.mk

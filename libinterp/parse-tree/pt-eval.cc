@@ -1370,9 +1370,11 @@ namespace octave
                     // Silently ignore extra output values.
 
                     octave_value_list tmp_list
-                      = base_expr_val.subsref (type.substr (beg, i-beg), idx, nargout);
+                      = base_expr_val.subsref (type.substr (beg, i-beg),
+                                               idx, nargout);
 
-                    partial_expr_val = tmp_list.length () ? tmp_list(0) : octave_value ();
+                    partial_expr_val
+                      = tmp_list.length () ? tmp_list(0) : octave_value ();
 
                     if (! indexing_object)
                       {
@@ -1435,23 +1437,50 @@ namespace octave
         p_dyn_field++;
       }
 
-    if (! idx.empty () && (! base_expr_val.is_function ()
-                           || base_expr_val.is_classdef_meta ()))
-      {
-        try
-          {
-            retval = base_expr_val.subsref (type.substr (beg, n-beg), idx, nargout);
 
-            beg = n;
-            idx.clear ();
-          }
-        catch (index_exception& e)  // range problems, bad index type, etc.
+    // If ! idx.empty () that means we still have stuff to index otherwise
+    // they would have been dealt with and idx would have been emptied.
+    if (! idx.empty ())
+      {
+        // This is for +package and other classdef_meta objects
+        if (! base_expr_val.is_function ()
+              || base_expr_val.is_classdef_meta ())
           {
-            final_index_error (e, expr);
+            try
+              {
+                retval = base_expr_val.subsref (type.substr (beg, n-beg),
+                                                idx, nargout);
+              }
+            catch (octave::index_exception& e)
+              {
+                final_index_error (e, expr);
+              }
+          }
+        else
+          {
+            // FIXME: we want this to only be a superclass constructor
+            // call Should we actually make a check for this or are all
+            // other types of calls already dealt with?
+
+            octave_function *fcn = base_expr_val.function_value ();
+
+            if (fcn)
+              {
+                try
+                  {
+                    retval = fcn->call (*this, nargout, idx);
+                  }
+                catch (octave::index_exception& e)
+                  {
+                    final_index_error (e, expr);
+                  }
+              }
           }
       }
 
-    // This happens if... ??
+    // FIXME: when can the following happen?  In what case does indexing
+    // result in a value that is a function?  Classdef method calls?
+    // Something else?
 
     octave_value val = (retval.length () ? retval(0) : octave_value ());
 

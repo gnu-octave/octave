@@ -242,8 +242,9 @@ extern OCTINTERP_API void mxSetImagData (mxArray *ptr, void *pi);
 /* Classes.  */
 extern OCTINTERP_API mxClassID mxGetClassID (const mxArray *ptr);
 extern OCTINTERP_API const char * mxGetClassName (const mxArray *ptr);
-
 extern OCTINTERP_API void mxSetClassName (mxArray *ptr, const char *name);
+extern OCTINTERP_API mxArray * mxGetProperty(const mxArray *ptr, mwIndex idx,
+                                             const char *propertName);
 
 /* Cell support.  */
 extern OCTINTERP_API mxArray * mxGetCell (const mxArray *ptr, mwIndex idx);

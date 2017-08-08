@@ -224,6 +224,11 @@ public:
 
   virtual void set_class_name (const char *name_arg) = 0;
 
+  virtual mxArray * get_property (mwIndex /*idx*/, const char */*name*/) const
+  {
+    return nullptr;
+  }
+
   // FIXME: Why not just have this '= 0' as the others?
   // Could then eliminate err_invalid_type function and #include "error.h".
   virtual mxArray * get_cell (mwIndex /*idx*/) const
@@ -440,6 +445,9 @@ public:
   mxClassID get_class_id (void) const { return rep->get_class_id (); }
 
   const char * get_class_name (void) const { return rep->get_class_name (); }
+  
+  mxArray * get_property (mwIndex idx, const char * propNm) const
+  { return rep->get_property (idx, propNm); }
 
   void set_class_name (const char *name_arg)
   { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }

@@ -377,6 +377,31 @@ public:
   // Not allowed.
   void set_class_name (const char * /*name_arg*/) { request_mutation (); }
 
+  mxArray * get_property (mwIndex idx, const char *name) const
+  {
+    mxArray *retval = nullptr;
+
+    if (val.is_classdef_object ())
+      {
+        octave_classdef *ov_cdef = val.classdef_object_value ();
+
+        if (ov_cdef)
+          {
+            cdef_object& cdef = ov_cdef->get_object_ref ();
+
+            if (cdef.is_array ())
+              cdef = cdef.array_value ().elem (idx);
+
+            octave_value prop_val = cdef.get (name);
+
+            if (prop_val.is_defined())
+              retval = new mxArray (prop_val);
+          }
+      }
+
+    return retval;
+  }
+
   mxArray * get_cell (mwIndex /*idx*/) const
   {
     request_mutation ();
@@ -2948,6 +2973,11 @@ void
 mxSetClassName (mxArray *ptr, const char *name)
 {
   ptr->set_class_name (name);
+}
+
+mxArray *mxGetProperty (const mxArray *ptr, mwIndex idx, const char *propertyName)
+{
+  return ptr->get_property (idx, propertyName);
 }
 
 // Cell support.

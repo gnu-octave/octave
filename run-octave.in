@@ -36,9 +36,9 @@ d2="$builddir/scripts"
 d3="$builddir/libinterp"
 d4="$top_srcdir/examples/data"
 
-d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d4_list=`$FIND "$d4" -type d -exec echo '{}' ';' | $SED 's/$/:/'`
 
 d1_path=`echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`

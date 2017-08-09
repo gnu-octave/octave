@@ -790,10 +790,13 @@ namespace octave
   jit_operation::add_overload (const jit_function& func,
                                const std::vector<jit_type*>& args)
   {
-    if (args.size () >= overloads.size ())
-      overloads.resize (args.size () + 1);
+    // Number of input arguments of the overload that is being registered
+    size_t nargs = args.size ();
 
-    Array<jit_function>& over = overloads[args.size ()];
+    if (nargs >= overloads.size ())
+      overloads.resize (nargs + 1);
+
+    Array<jit_function>& over = overloads[nargs];
     dim_vector dv (over.dims ());
     Array<octave_idx_type> idx = to_idx (args);
     bool must_resize = false;
@@ -820,15 +823,18 @@ namespace octave
   const jit_function&
   jit_operation::overload (const std::vector<jit_type*>& types) const
   {
+  // Number of input arguments of the overload that is being looked for
+  size_t nargs = types.size ();
+
     static jit_function null_overload;
-    for (size_t i = 0; i < types.size (); ++i)
+    for (size_t i = 0; i < nargs; ++i)
       if (! types[i])
         return null_overload;
 
-    if (types.size () >= overloads.size ())
+    if (nargs >= overloads.size ())
       return do_generate (types);
 
-    const Array<jit_function>& over = overloads[types.size ()];
+    const Array<jit_function>& over = overloads[nargs];
     dim_vector dv (over.dims ());
     Array<octave_idx_type> idx = to_idx (types);
     for (octave_idx_type i = 0; i < dv.length (); ++i)

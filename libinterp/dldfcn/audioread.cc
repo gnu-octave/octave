@@ -349,10 +349,11 @@ Comment.
       if (i >= nargin - 1)
         error ("audiowrite: invalid number of arguments");
 
-      std::string keyword = args(i).string_value ();
+      std::string keyword_orig = args(i).string_value ();
+      std::string keyword = args(i).xtolower ().string_value ();
       octave_value value_arg = args(i+1);
 
-      if (keyword == "BitsPerSample")
+      if (keyword == "bitspersample")
         {
           info.format &= ~SF_FORMAT_SUBMASK;
           int bits = value_arg.int_value ();
@@ -372,19 +373,23 @@ Comment.
           else
             error ("audiowrite: wrong number of bits specified");
         }
-      else if (keyword == "BitRate")
-        ;
+      else if (keyword == "bitrate")
+        warning_with_id ("Octave:audiowrite:unused-parameter",
+                         "audiowrite: 'BitRate' accepted for Matlab "
+                         "compatibility, but is ignored");
       // FIXME: Quality is currently unused?
-      // else if (keyword == "Quality")
-      //   quality = value_arg.int_value () * 0.01;
-      else if (keyword == "Title")
+      else if (keyword == "quality")
+        warning_with_id ("Octave:audiowrite:unused-parameter",
+                         "audiowrite: ignoring 'Quality' option, "
+                         "not yet unimplemented");
+      else if (keyword == "title")
         title = value_arg.string_value ();
-      else if (keyword == "Artist")
+      else if (keyword == "artist")
         artist = value_arg.string_value ();
-      else if (keyword == "Comment")
+      else if (keyword == "comment")
         comment = value_arg.string_value ();
       else
-        error ("audiowrite: wrong argument name");
+        error ("audiowrite: unrecognized option: '%s'", keyword_orig.c_str ());
     }
 
   SNDFILE *file = sf_open (filename.c_str (), SFM_WRITE, &info);

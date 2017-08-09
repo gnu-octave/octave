@@ -17,5 +17,5 @@
 ## <http://www.gnu.org/licenses/>.
 
 %!test
-%! a = child_bug51534 ('asd');
-%! assert (strcmp (a.prop, 'asd'));
+%! a = child_bug51534 ("asd");
+%! assert (a.prop, "asd");

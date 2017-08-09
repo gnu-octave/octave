@@ -99,7 +99,7 @@ function h = polar (varargin)
       hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
 
       set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
-                "zlim", [-1 1]);
+                "zlim", [-1 1], "tag", "polaraxes");
 
       if (! isprop (hax, "rtick"))
         addproperty ("rtick", hax, "data");

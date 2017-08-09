@@ -96,7 +96,9 @@ namespace octave
 
     void draw_axes (const axes::properties& props)
     {
-      if (! props.is_visible ())
+      // FIXME: Until polar axes are first class axes, need to print
+      // the invisible polar axes.  See bugs #51697, #51374.
+      if (! props.is_visible () && props.get_tag () != "polaraxes")
         return;
 
       // Initialize a sorting tree (viewport) in gl2ps for each axes

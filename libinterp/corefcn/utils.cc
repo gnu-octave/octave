@@ -1029,6 +1029,13 @@ all name matches rather than just the first.
 %! lst = dir_in_loadpath ("$$probably_!! _not_&&_a_!! _dir$$", "all");
 %! assert (lst, {});
 
+%!test <51706>
+%! tmpdir = tempname ();
+%! mkdir (tmpdir);
+%! d = dir_in_loadpath (tmpdir);
+%! rmdir (tmpdir);
+%! assert (d, "");
+
 %!error dir_in_loadpath ()
 %!error dir_in_loadpath ("foo", "bar", 1)
 */

@@ -19,6 +19,11 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     storing and retrieving values by name, rather than by position which
     is how arrays work.
 
+ ** The bareword "import" is now recognized in scripts and functions.
+    However, the functionality to import functions and classes from
+    other namespaces into the local scope has not yet been implemented.
+    Attempting to use "import" will provoke an error message.
+
  ** hex2num and num2hex now work for integer and char types and num2hex
     may optionally return a cell array of strings instead of a character
     array.  If given a cell array of strings, hex2num now returns a

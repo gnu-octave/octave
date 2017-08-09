@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} import PACKAGE.FUNCTION
-## @deftypefn {} {} import PACKAGE.CLASS
-## @deftypefn {} {} import PACKAGE.*
-## @deftypefn {} {} import
-## @deftypefn {} {@var{list} =} import
+## @deftypefn  {} {} import PACKAGE.FUNCTION
+## @deftypefnx {} {} import PACKAGE.CLASS
+## @deftypefnx {} {} import PACKAGE.*
+## @deftypefnx {} {} import
+## @deftypefnx {} {@var{list} =} import
 ##
 ## Import function or classes into the current scope.
 ##
@@ -36,16 +36,18 @@
 ## Example
 ##
 ## @example
+## @group
 ## import containers.Map;
 ##
 ## m = Map ({"A", "B"}, {[1], [2]});
+## @end group
 ## @end example
 ##
-## When called with no inputs and no outputs @code{import} prints a list of 
+## When called with no inputs and no outputs @code{import} prints a list of
 ## any import definitions.
 ##
 ## When called with no inputs and one output, a cell array of strings
-## @var{list} is returned with any import definitions. 
+## @var{list} is returned with any import definitions.
 ##
 ## @end deftypefn
 

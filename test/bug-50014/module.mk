@@ -1,4 +1,3 @@
-
 bug_50014_TEST_FILES = \
   %reldir%/bug-50014.tst \
   %reldir%/duplicate_nested_function.m \

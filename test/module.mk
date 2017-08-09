@@ -120,14 +120,14 @@ coverage: all
 	@echo ""
 .PHONY: coverage
 
-%reldir%/sparse.tst: %reldir%/mk-sparse-tst.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/%reldir%/mk-sparse-tst.sh > $@-t && \
-	mv $@-t $@
-
 %reldir%/conv.tst: %reldir%/mk-conv-tst.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SHELL) $(srcdir)/%reldir%/mk-conv-tst.sh > $@-t && \
+	mv $@-t $@
+
+%reldir%/sparse.tst: %reldir%/mk-sparse-tst.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SHELL) $(srcdir)/%reldir%/mk-sparse-tst.sh > $@-t && \
 	mv $@-t $@
 
 GENERATED_BC_OVERLOADS_DIRS := \

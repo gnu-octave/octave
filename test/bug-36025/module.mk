@@ -1,4 +1,3 @@
-
 bug_36025_TEST_FILES = \
   %reldir%/@testclass/one.m \
   %reldir%/@testclass/testclass.m \

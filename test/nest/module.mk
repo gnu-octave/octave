@@ -1,6 +1,7 @@
 nest_TEST_FILES = \
   %reldir%/arg_nest.m \
   %reldir%/arg_ret.m \
+  %reldir%/nest.tst \
   %reldir%/nest_eval.m \
   %reldir%/no_closure.m \
   %reldir%/persistent_nest.m \
@@ -13,7 +14,6 @@ nest_TEST_FILES = \
   %reldir%/scope3.m \
   %reldir%/script_nest.m \
   %reldir%/script_nest_script.m \
-  %reldir%/nest.tst \
   %reldir%/varg_nest.m \
   %reldir%/varg_nest2.m
 

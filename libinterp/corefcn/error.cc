@@ -1570,7 +1570,7 @@ disable escape sequence expansion use a second backslash before the sequence
               m.contents ("identifier") = ids;
               m.contents ("state") = states;
 
-              scope->assign (".saved_warning_states.", m);
+              scope->force_assign (".saved_warning_states.", m);
 
               // Now ignore the "local" argument and continue to
               // handle the current setting.

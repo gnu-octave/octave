@@ -2420,11 +2420,13 @@ namespace octave
 
     expr->set_print_flag (false);
 
+    fcn_scope->mark_static ();
+
     tree_anon_fcn_handle *retval
       = new tree_anon_fcn_handle (param_list, expr, fcn_scope,
                                   parent_scope, l, c);
 
-// FIXME: Stash the filename.  This does not work and produces
+    // FIXME: Stash the filename.  This does not work and produces
     // errors when executed.
     //retval->stash_file_name (m_lexer.fcn_file_name);
 

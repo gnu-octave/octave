@@ -1588,6 +1588,10 @@ namespace octave
 
       void mark_nested (void) { m_is_nested = true; }
 
+      bool is_static (void) const { return m_is_static; }
+
+      void mark_static (void) { m_is_static = true; }
+
       scope * parent_scope (void) const { return m_parent; }
 
       scope * dup (void) const

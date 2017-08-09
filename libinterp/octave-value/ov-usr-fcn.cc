@@ -807,7 +807,7 @@ octave_user_function::bind_automatic_vars
   m_scope->mark_automatic (".nargin.");
   m_scope->mark_automatic (".nargout.");
 
-  m_scope->assign (".saved_warning_states.");
+  m_scope->force_assign (".saved_warning_states.", octave_value ());
 
   m_scope->mark_automatic (".saved_warning_states.");
   m_scope->mark_automatic (".saved_warning_states.");
@@ -817,7 +817,7 @@ octave_user_function::bind_automatic_vars
 
   Matrix ignored_fcn_outputs = tw.ignored_fcn_outputs ();
 
-  m_scope->assign (".ignored.", ignored_fcn_outputs);
+  m_scope->force_assign (".ignored.", ignored_fcn_outputs);
 
   m_scope->mark_hidden (".ignored.");
   m_scope->mark_automatic (".ignored.");

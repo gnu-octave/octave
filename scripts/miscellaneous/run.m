@@ -90,48 +90,46 @@ function run (script)
 endfunction
 
 
+## Test script file execution
+%!test
+%! clear A  # the variable "A" should be set by the script
+%! assert (exist ("A"), 0);
+%! tmp_dir = tempname ();
+%! mkdir (tmp_dir);
+%! test_script = fullfile (tmp_dir, "test_script.m");
+%! fid = fopen (test_script, "w");
+%! fprintf (fid, "A = 1337;\n");
+%! fclose (fid);
+%! run (test_script);
+%! unlink (test_script);
+%! rmdir (tmp_dir);
+%! assert (exist ("A", "var"), 1);
+%! assert (A, 1337);
+
+## Test function file execution
+%!test
+%! tmp_dir = tempname ();
+%! mkdir (tmp_dir);
+%! test_function = fullfile (tmp_dir, "tf.m");
+%! fid = fopen (test_function, "w");
+%! fprintf (fid, "function tf ()\n");
+%! fprintf (fid, "  addpath (\"%s\");\n", tmp_dir);
+%! fprintf (fid, "endfunction\n");
+%! fclose (fid);
+%! ## Check if temporary directory is on the loadpath.
+%! ## Function 'dir_in_loadpath' is broken for this use case, so code a test.
+%! dirs = strsplit (path (), ":");
+%! tstval1 = any (strcmp (tmp_dir, dirs));
+%! run (test_function);
+%! dirs = strsplit (path (), ":");
+%! tstval2 = any (strcmp (tmp_dir, dirs));
+%! unlink (test_function);
+%! rmdir (tmp_dir);
+%! rmpath (tmp_dir);
+%! assert (tstval1, false);
+%! assert (tstval2, true);
+
 ## Test input validation
 %!error run ()
 %!error run ("a", "b")
 %!error <SCRIPT must exist> run ("__A_very_#unlikely#_file_name__")
-
-## Test script file execution
-%!test
-%! unwind_protect
-%!   clear A  # the variable "A" should be set by the script
-%!   assert (exist ("A"), 0);
-%!   tmp_dir = tempname ();
-%!   mkdir (tmp_dir);
-%!   test_script = fullfile (tmp_dir, "test_script.m");
-%!   fid = fopen (test_script, "w");
-%!   fprintf (fid, "A = 1337;\n");
-%!   fclose (fid);
-%!   run (test_script);
-%!   assert (exist ("A", "var"), 1);
-%!   assert (A, 1337);
-%! unwind_protect_cleanup
-%!   rmdir (tmp_dir);
-%! end_unwind_protect
-
-## Test function file execution
-%!test
-%! unwind_protect
-%!   tmp_dir = tempname ();
-%!   mkdir (tmp_dir);
-%!   test_function = fullfile (tmp_dir, "tf.m");
-%!   fid = fopen (test_function, "w");
-%!   fprintf (fid, "function tf ()\n");
-%!   fprintf (fid, "addpath (\"%s\");\n", tmp_dir);
-%!   fprintf (fid, "endfunction\n");
-%!   fclose (fid);
-%!   ## Check if temporary directory is on the loadpath.
-%!   ## Function `dir_in_loadpath` seems not applicable for this check.
-%!   dirs = strsplit (path (), ":");
-%!   assert (any (strcmp (tmp_dir, dirs)), false)
-%!   run (test_function);
-%!   dirs = strsplit (path (), ":");
-%!   assert (any (strcmp (tmp_dir, dirs)))
-%! unwind_protect_cleanup
-%!   rmdir (tmp_dir);
-%!   rmpath (tmp_dir);
-%! end_unwind_protect

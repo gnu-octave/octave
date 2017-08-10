@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-syscalls.h"
 #include "singleton-cleanup.h"
 
+#include "build-env.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
@@ -64,10 +65,8 @@ default_pager (void)
 {
   std::string pager_binary = octave::sys::env::getenv ("PAGER");
 
-#if defined (OCTAVE_DEFAULT_PAGER)
   if (pager_binary.empty ())
-    pager_binary = OCTAVE_DEFAULT_PAGER;
-#endif
+    pager_binary = octave::build_env::DEFAULT_PAGER;
 
   return pager_binary;
 }

@@ -1450,7 +1450,9 @@ namespace octave
               {
                 retval = base_expr_val.subsref (type.substr (beg, n-beg),
                                                 idx, nargout);
-              }
+                beg = n;
+                idx.clear ();
+	      }
             catch (octave::index_exception& e)
               {
                 final_index_error (e, expr);

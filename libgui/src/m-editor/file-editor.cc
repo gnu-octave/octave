@@ -227,8 +227,13 @@ file_editor::request_new_file (const QString& commands)
 
 // Check whether this file is already open in the editor.
 QWidget *
-file_editor::find_tab_widget (const QString& file) const
+file_editor::find_tab_widget (const QString& file)
 {
+  // Have all file editor tabs signal what their filenames are.
+  editor_tab_map.clear ();
+  emit fetab_file_name_query (nullptr);
+
+  // Check all tabs for the given file name
   QWidget *retval = nullptr;
 
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
@@ -305,10 +310,6 @@ file_editor::request_open_file (const QString& openFileName,
     }
   else
     {
-      // Have all file editor tabs signal what their filenames are.
-      editor_tab_map.clear ();
-      emit fetab_file_name_query (nullptr);
-
       // Check whether this file is already open in the editor.
       QWidget *tab = find_tab_widget (openFileName);
 
@@ -478,10 +479,6 @@ void
 file_editor::check_conflict_save (const QString& saveFileName,
                                   bool remove_on_success)
 {
-  // Have all file editor tabs signal what their filenames are.
-  editor_tab_map.clear ();
-  emit fetab_file_name_query (nullptr);
-
   // Check whether this file is already open in the editor.
   QWidget *tab = find_tab_widget (saveFileName);
 
@@ -552,10 +549,6 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file,
 {
   if (! file.isEmpty ())
     {
-      // Have all file editor tabs signal what their filenames are.
-      editor_tab_map.clear ();
-      emit fetab_file_name_query (nullptr);
-
       // Check whether this file is already open in the editor.
       QWidget *tab = find_tab_widget (file);
 

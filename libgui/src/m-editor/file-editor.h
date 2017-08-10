@@ -348,7 +348,7 @@ private:
 
   bool editor_tab_has_focus ();
 
-  QWidget * find_tab_widget (const QString& openFileName) const;
+  QWidget * find_tab_widget (const QString& openFileName);
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                         const char *member);
 

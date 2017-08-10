@@ -72,6 +72,7 @@ and ending frames.
 The optional argument @var{datatype} specifies the datatype to return.
 If it is @qcode{"native"}, then the type of data depends on how the data
 is stored in the audio file.
+@seealso{audiowrite, audioformats, audioinfo}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
@@ -265,6 +266,7 @@ Artist name.
 @item Comment
 Comment.
 @end table
+@seealso{audioread, audioformats, audioinfo}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
@@ -449,6 +451,45 @@ DEFUN_DLD (audioinfo, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{info} =} audioinfo (@var{filename})
 Return information about an audio file specified by @var{filename}.
+
+The output @var{info} is a structure containing the following fields:
+
+@table @samp
+@item Filename
+Name of the audio file.
+
+@item CompressionMethod
+Audio compression method.  Unused, only present for compatibility with
+@sc{matlab}.
+
+@item NumChannels
+Number of audio channels.
+
+@item SampleRate
+Sample rate of the audio, in Hertz.
+
+@item TotalSamples
+Number of samples in the file.
+
+@item Duration
+Duration of the audio, in seconds.
+
+@item BitsPerSample
+Number of bits per sample.
+
+@item BitRate
+Audio bitrate.  Unused, only present for compatibility with @sc{matlab}.
+
+@item Title
+@qcode{"Title"} audio metadata value as a string, or empty if not present.
+
+@item Artist
+@qcode{"Artist"} audio metadata value as a string, or empty if not present.
+
+@item Comment
+@qcode{"Comment"} audio metadata value as a string, or empty if not present.
+@end table
+@seealso{audioread, audiowrite}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
@@ -556,6 +597,7 @@ Display information about all supported audio formats.
 
 If the optional argument @var{format} is given, then display only formats
 with names that start with @var{format}.
+@seealso{audioread, audiowrite}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)

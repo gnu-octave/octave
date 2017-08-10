@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dMatrix.h"
 #include "dRowVector.h"
+#include "file-ops.h"
+#include "file-stat.h"
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
@@ -505,12 +507,16 @@ Audio bitrate.  Unused, only present for compatibility with @sc{matlab}.
 
   std::string filename = args(0).xstring_value ("audioinfo: FILENAME must be a string");
 
+  octave::sys::file_stat fs (filename);
+  if (! fs.exists ())
+    error ("audioinfo: FILENAME '%s' not found", filename.c_str ());
+
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    error ("audioinfo: failed to open file %s", filename.c_str ());
+    error ("audioinfo: failed to open file '%s'", filename.c_str ());
 
   octave::unwind_protect frame;
 
@@ -518,7 +524,9 @@ Audio bitrate.  Unused, only present for compatibility with @sc{matlab}.
 
   octave_scalar_map result;
 
-  result.assign ("Filename", filename);
+  std::string full_name = octave::sys::canonicalize_file_name (filename);
+
+  result.assign ("Filename", full_name);
   result.assign ("CompressionMethod", "");
   result.assign ("NumChannels", info.channels);
   result.assign ("SampleRate", info.samplerate);

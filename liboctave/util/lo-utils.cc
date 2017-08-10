@@ -173,8 +173,7 @@ octave_fgets (FILE *f, bool& eof)
     }
   while (retval.empty ());
 
-  if (buf)
-    free (buf);
+  free (buf);
 
   octave_quit ();
 

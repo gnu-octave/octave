@@ -202,12 +202,9 @@ octave_remove_history (int n)
   HIST_ENTRY *discard = remove_history (n);
 
   if (discard)
-    {
-      if (discard->line)
-        free (discard->line);
+    free (discard->line);
 
-      free (discard);
-    }
+  free (discard);
 }
 
 void
@@ -309,12 +306,9 @@ octave_replace_history_entry (int which, const char *line)
   HIST_ENTRY *discard = replace_history_entry (which, line, 0);
 
   if (discard)
-    {
-      if (discard->line)
-        free (discard->line);
+    free (discard->line);
 
-      free (discard);
-    }
+  free (discard);
 }
 
 #endif

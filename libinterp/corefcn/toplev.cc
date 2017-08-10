@@ -662,8 +662,7 @@ __builtin_delete (void *ptr)
   if (debug_new_delete)
     std::cerr << "__builtin_delete: " << ptr << std::endl;
 
-  if (ptr)
-    free (ptr);
+  free (ptr);
 }
 
 #endif

@@ -344,8 +344,8 @@ Comment.
   std::string title = "";
   std::string artist = "";
   std::string comment = "";
-  // FIXME: Quality is currently unused?
-  // float quality = 0.75;
+  double quality = 0.75;
+
   for (int i = 3; i < nargin; i += 2)
     {
       if (i >= nargin - 1)
@@ -379,11 +379,15 @@ Comment.
         warning_with_id ("Octave:audiowrite:unused-parameter",
                          "audiowrite: 'BitRate' accepted for Matlab "
                          "compatibility, but is ignored");
-      // FIXME: Quality is currently unused?
       else if (keyword == "quality")
-        warning_with_id ("Octave:audiowrite:unused-parameter",
-                         "audiowrite: ignoring 'Quality' option, "
-                         "not yet unimplemented");
+        {
+          double value = value_arg.xdouble_value ("audiowrite: Quality value must be a scalar");
+
+          if (octave::math::isnan (value) || value < 0 || value > 100)
+            error ("audiowrite: Quality must be a number between 0 and 100");
+
+          quality = value / 100;
+        }
       else if (keyword == "title")
         title = value_arg.string_value ();
       else if (keyword == "artist")
@@ -402,6 +406,8 @@ Comment.
   octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
+
+  sf_command (file, SFC_SET_VBR_ENCODING_QUALITY, &quality, sizeof (quality));
 
   if (title != "")
     sf_set_string (file, SF_STR_TITLE, title.c_str ());

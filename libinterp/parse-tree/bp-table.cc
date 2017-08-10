@@ -440,7 +440,7 @@ bp_table::parse_dbfunction_params (const char *who,
               for (; pos < nargin; pos++)
                 {
                   if (args(pos).is_string ())
-                    cond = cond + ' ' + args(pos).string_value ();
+                    cond += ' ' + args(pos).string_value ();
                   else
                     error ("%s: arguments to 'if' must all be strings", who);
                 }

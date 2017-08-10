@@ -206,7 +206,7 @@ namespace octave
   {
     bool retval = true;
     graphics_object go = gh_manager::get_object (h);
-  
+
     if (! go.valid_object ())
       return retval;
 

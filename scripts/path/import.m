@@ -58,4 +58,4 @@ function list = import (varargin)
 endfunction
 
 
-%!error <not yet implemented> import ("foobar"); 
+%!error <not yet implemented> import ("foobar");

@@ -68,14 +68,14 @@ AC_REQUIRE([AX_BLAS])
 
 # F77 call-compatibility checks
 if test "$cross_compiling" = yes ; then
-	ifelse($3, ,$1,$3)
+        ifelse($3, ,$1,$3)
 elif test x"$ax_blas_ok" = xyes; then
-	save_ax_blas_f77_func_LIBS="$LIBS"
-	LIBS="$BLAS_LIBS $LIBS"
-	AC_LANG_PUSH(Fortran 77)
+        save_ax_blas_f77_func_LIBS="$LIBS"
+        LIBS="$BLAS_LIBS $LIBS"
+        AC_LANG_PUSH(Fortran 77)
 # LSAME check (LOGICAL return values)
-	AC_MSG_CHECKING([whether LSAME is called correctly from Fortran])
-	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+        AC_MSG_CHECKING([whether LSAME is called correctly from Fortran])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       logical lsame,w
       external lsame
       character c1,c2
@@ -86,11 +86,11 @@ elif test x"$ax_blas_ok" = xyes; then
       w = lsame(c1,c1)
       if (.not. w) stop 1
       ]]),[ax_blas_lsame_fcall_ok=yes],
-	[ax_blas_lsame_fcall_ok=no])
-	AC_MSG_RESULT([$ax_blas_lsame_fcall_ok])
+        [ax_blas_lsame_fcall_ok=no])
+        AC_MSG_RESULT([$ax_blas_lsame_fcall_ok])
 # ISAMAX check (INTEGER return values)
-	AC_MSG_CHECKING([whether ISAMAX is called correctly from Fortran])
-	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+        AC_MSG_CHECKING([whether ISAMAX is called correctly from Fortran])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       integer isamax,i
       external isamax
       real a(2)
@@ -99,11 +99,11 @@ elif test x"$ax_blas_ok" = xyes; then
       i = isamax(2,a,1)
       if (i.ne.2) stop 1
       ]]),[ax_blas_isamax_fcall_ok=yes],
-	[ax_blas_isamax_fcall_ok=no])
-	AC_MSG_RESULT([$ax_blas_isamax_fcall_ok])
+        [ax_blas_isamax_fcall_ok=no])
+        AC_MSG_RESULT([$ax_blas_isamax_fcall_ok])
 # SDOT check (REAL return values)
-	AC_MSG_CHECKING([whether SDOT is called correctly from Fortran])
-	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+        AC_MSG_CHECKING([whether SDOT is called correctly from Fortran])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       real sdot,a(1),b(1),w
       external sdot
       a(1) = 1e0
@@ -111,11 +111,11 @@ elif test x"$ax_blas_ok" = xyes; then
       w = sdot(1,a,1,b,1)
       if (w .ne. a(1)*b(1)) stop 1
       ]]),[ax_blas_sdot_fcall_ok=yes],
-	[ax_blas_sdot_fcall_ok=no])
-	AC_MSG_RESULT([$ax_blas_sdot_fcall_ok])
+        [ax_blas_sdot_fcall_ok=no])
+        AC_MSG_RESULT([$ax_blas_sdot_fcall_ok])
 # DDOT check (DOUBLE return values)
-	AC_MSG_CHECKING([whether DDOT is called correctly from Fortran])
-	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+        AC_MSG_CHECKING([whether DDOT is called correctly from Fortran])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       double precision ddot,a(1),b(1),w
       external ddot
       a(1) = 1d0
@@ -123,11 +123,11 @@ elif test x"$ax_blas_ok" = xyes; then
       w = ddot(1,a,1,b,1)
       if (w .ne. a(1)*b(1)) stop 1
       ]]),[ax_blas_ddot_fcall_ok=yes],
-	[ax_blas_ddot_fcall_ok=no])
-	AC_MSG_RESULT([$ax_blas_ddot_fcall_ok])
+        [ax_blas_ddot_fcall_ok=no])
+        AC_MSG_RESULT([$ax_blas_ddot_fcall_ok])
 # CDOTU check (COMPLEX return values)
-	AC_MSG_CHECKING([whether CDOTU is called correctly from Fortran])
-	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+        AC_MSG_CHECKING([whether CDOTU is called correctly from Fortran])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       complex cdotu,a(1),b(1),w
       external cdotu
       a(1) = cmplx(1e0,1e0)
@@ -135,11 +135,11 @@ elif test x"$ax_blas_ok" = xyes; then
       w = cdotu(1,a,1,b,1)
       if (w .ne. a(1)*b(1)) stop 1
       ]]),[ax_blas_cdotu_fcall_ok=yes],
-	[ax_blas_cdotu_fcall_ok=no])
-	AC_MSG_RESULT([$ax_blas_cdotu_fcall_ok])
+        [ax_blas_cdotu_fcall_ok=no])
+        AC_MSG_RESULT([$ax_blas_cdotu_fcall_ok])
 # ZDOTU check (DOUBLE COMPLEX return values)
-	AC_MSG_CHECKING([whether ZDOTU is called correctly from Fortran])
-	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+        AC_MSG_CHECKING([whether ZDOTU is called correctly from Fortran])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       double complex zdotu,a(1),b(1),w
       external zdotu
       a(1) = dcmplx(1d0,1d0)
@@ -147,8 +147,8 @@ elif test x"$ax_blas_ok" = xyes; then
       w = zdotu(1,a,1,b,1)
       if (w .ne. a(1)*b(1)) stop 1
       ]]),[ax_blas_zdotu_fcall_ok=yes],
-	[ax_blas_zdotu_fcall_ok=no])
-	AC_MSG_RESULT([$ax_blas_zdotu_fcall_ok])
+        [ax_blas_zdotu_fcall_ok=no])
+        AC_MSG_RESULT([$ax_blas_zdotu_fcall_ok])
 # Check BLAS library integer size.  If it does not appear to be
 # 8 bytes, we assume it is 4 bytes.
 # FIXME: this may fail with things like -ftrapping-math.
@@ -175,24 +175,24 @@ c Check that our expectation about the type conversion is correct.
       s = sdot(n,a,1,b,1)
       if (s .ne. 0.0) stop 1
        ]]),[ax_blas_integer_size=8],
-	[ax_blas_integer_size=4])
-	AC_MSG_RESULT([$ax_blas_integer_size])
+        [ax_blas_integer_size=4])
+        AC_MSG_RESULT([$ax_blas_integer_size])
 
-	AC_LANG_POP(Fortran 77)
+        AC_LANG_POP(Fortran 77)
 
 # if any of the tests failed, reject the BLAS library
-	if test $ax_blas_lsame_fcall_ok = yes \
-		-a $ax_blas_sdot_fcall_ok = yes \
-		-a $ax_blas_ddot_fcall_ok = yes \
-		-a $ax_blas_cdotu_fcall_ok = yes \
-		-a $ax_blas_zdotu_fcall_ok = yes ; then
-		ax_blas_f77_func_ok=yes;
-		$1
-	else
-		ax_blas_f77_func_ok=no;
-		$2
-	fi
-	LIBS="$save_ax_blas_f77_func_LIBS"
+        if test $ax_blas_lsame_fcall_ok = yes \
+                -a $ax_blas_sdot_fcall_ok = yes \
+                -a $ax_blas_ddot_fcall_ok = yes \
+                -a $ax_blas_cdotu_fcall_ok = yes \
+                -a $ax_blas_zdotu_fcall_ok = yes ; then
+                ax_blas_f77_func_ok=yes;
+                $1
+        else
+                ax_blas_f77_func_ok=no;
+                $2
+        fi
+        LIBS="$save_ax_blas_f77_func_LIBS"
 fi
 
 ])dnl AX_BLAS_F77_FUNC
@@ -201,11 +201,11 @@ AC_DEFUN([OCTAVE_BLAS_WITH_F77_FUNC], [
 AC_PREREQ(2.50)
 AX_BLAS([# disable special action], [])
 if test x$ax_blas_ok = xyes ; then
-	OCTAVE_BLAS_F77_FUNC(
-	[ifelse([$1],,AC_DEFINE(HAVE_BLAS,1,[Define if you have a BLAS library.]),[$1])],
-	[ax_blas_ok=no; BLAS_LIBS=])
+        OCTAVE_BLAS_F77_FUNC(
+        [ifelse([$1],,AC_DEFINE(HAVE_BLAS,1,[Define if you have a BLAS library.]),[$1])],
+        [ax_blas_ok=no; BLAS_LIBS=])
 fi
 if test x$ax_blas_ok = xno ; then
-	$2
+        $2
 fi
 ])dnl AX_BLAS_WITH_F77_FUNC

@@ -39,7 +39,7 @@
 ## @group
 ## import containers.Map;
 ##
-## m = Map ({"A", "B"}, {[1], [2]});
+## m = Map (@{"A", "B"@}, @{[1], [2]@});
 ## @end group
 ## @end example
 ##

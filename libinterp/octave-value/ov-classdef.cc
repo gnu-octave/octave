@@ -1080,6 +1080,8 @@ public:
 
   ~octave_classdef_superclass_ref (void) = default;
 
+  bool is_classdef_superclass_ref (void) { return true; }
+
   octave_function * function_value (bool = false) { return this; }
 
   octave_value_list

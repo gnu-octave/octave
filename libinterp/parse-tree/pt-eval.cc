@@ -1456,7 +1456,7 @@ namespace octave
                 final_index_error (e, expr);
               }
           }
-        else
+        else if (base_expr_val.is_classdef_superclass_ref ())
           {
             // FIXME: we want this to only be a superclass constructor
             // call Should we actually make a check for this or are all

@@ -96,11 +96,6 @@ namespace octave
 
     void draw_axes (const axes::properties& props)
     {
-      // FIXME: Until polar axes are first class axes, need to print
-      // the invisible polar axes.  See bugs #51697, #51374.
-      if (! props.is_visible () && props.get_tag () != "polaraxes")
-        return;
-
       // Initialize a sorting tree (viewport) in gl2ps for each axes
       GLint vp[4];
       glGetIntegerv (GL_VIEWPORT, vp);
@@ -112,7 +107,7 @@ namespace octave
 
       // Finalize viewport
       GLint state = gl2psEndViewport ();
-      if (state == GL2PS_NO_FEEDBACK)
+      if (state == GL2PS_NO_FEEDBACK && props.is_visible ())
         warning ("gl2ps_renderer::draw_axes: empty feedback buffer and/or nothing else to print");
       else if (state == GL2PS_ERROR)
         error ("gl2ps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");

@@ -98,7 +98,7 @@ function s = hdl2struct (h)
       cb = findobj (par, "-depth", 1, "tag", "colorbar");
       if (! isempty (cb))
         ## identify colorbars which are attached to this axes.
-        idx2 = ([get(cb).axes] == h);
+        idx = ([get(cb).axes] == h);
         cb = cb(idx);
       endif
       ncb = length (cb);

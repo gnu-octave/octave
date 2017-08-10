@@ -75,3 +75,10 @@
 %!error <parse error> plist_t1
 %!assert (class (plist_t2), "plist_t2")
 %!assert (class (plist_t3), "plist_t3")
+
+## Do not change this to "containers.Map()".  This test is intended to
+## ensure that calling a function in a +package directory will work
+## properly.
+%!test <*51715>
+%! x = containers.Map;
+%! assert (isobject (x));

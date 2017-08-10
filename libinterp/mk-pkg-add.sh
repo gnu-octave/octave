@@ -18,6 +18,10 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+## Attempt to get traditional sort behavior based on byte values.
+LC_ALL=C
+export LC_ALL
+
 set -e
 
 SED=${SED:-sed}
@@ -36,7 +40,7 @@ do
     base=`basename "$src_file" | $SED 's/\.cc$//'`
     fcns=`$SED -n -e 's/^ *DEFUN_DLD *( *\([^, ]*\) *,.*$/\1/p' \
                   -e 's/^ *DEFUNX_DLD *( *"\([^"]*\)".*$/\1/p' "$src_file" | \
-          LC_COLLATE=C sort -u`
+          sort -u`
     if [ -n "$fcns" ]; then
       for n in $fcns; do
         if [ "$n" = "$base" ]; then

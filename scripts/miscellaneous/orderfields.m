@@ -127,7 +127,7 @@ function [sout, p] = orderfields (s1, s2)
       if (! isequal (ns1, ns2))
         error ("orderfields: structures S1 and S2 do not have the same fields");
       endif
-      p = idx1(idx2);
+      p = eye (numel (idx2))(idx2,:).' * idx1;
 
     elseif (iscellstr (s2))
       ## A structure and a list of fields: order by the list of fields.
@@ -137,7 +137,7 @@ function [sout, p] = orderfields (s1, s2)
       if (! isequal (ns1, ns2))
         error ("orderfields: CELLSTR list does not match structure fields");
       endif
-      p = idx1(idx2);
+      p = eye (numel (idx2))(idx2,:).' * idx1;
 
     elseif (isnumeric (s2))
       ## A structure and a permutation vector: permute the order of s1.
@@ -163,26 +163,34 @@ endfunction
 
 
 %!shared a, b, c
-%! a = struct ("foo", {1, 2}, "bar", {3, 4});
-%! b = struct ("bar", 6, "foo", 5);
-%! c = struct ("bar", {7, 8}, "foo", 9);
+%! a = struct ("C", {1, 2}, "A", {3, 4}, "B", {5, 6});
+%! b = struct ("A", 1, "B", 2, "C", 3);
+%! c = struct ("B", {7, 8}, "C", 9, "A", 10);
 %!test
-%! a(2) = orderfields (b, a);
-%! assert (a(2).foo, 5);
-%! assert (a(2).bar, 6);
+%! x = orderfields (b, a);
+%! assert (fieldnames (x), {"C"; "A"; "B"});
+%! assert (x.A, 1);
+%! assert (x.B, 2);
+%! assert (x.C, 3);
 %!test
-%! [a(2), p] = orderfields (b, [2 1]);
-%! assert (a(2).foo, 5);
-%! assert (a(2).bar, 6);
-%! assert (p, [2; 1]);
+%! [x, p] = orderfields (b, [3 2 1]);
+%! assert (fieldnames (x), {"C"; "B"; "A"});
+%! assert (p, [3; 2; 1]);
+%! assert (x.A, 1);
+%! assert (x.B, 2);
+%! assert (x.C, 3);
 %!test
-%! a(2) = orderfields (b, fieldnames (a));
-%! assert (a(2).foo, 5);
-%! assert (a(2).bar, 6);
+%! x = orderfields (b, {"B", "C", "A"});
+%! assert (fieldnames (x), {"B"; "C"; "A"});
+%! assert (x.A, 1);
+%! assert (x.B, 2);
+%! assert (x.C, 3);
 %!test
-%! a(1:2) = orderfields (c, fieldnames (a));
-%! assert (a(2).foo, 9);
-%! assert (a(2).bar, 8);
+%! x(1:2) = orderfields (c, {"C", "A", "B"});
+%! assert (fieldnames (x), {"C"; "A"; "B"});
+%! assert (x(2).A, 10);
+%! assert (x(2).B, 8);
+%! assert (x(2).C, 9);
 
 %!test
 %! aa.x = {1, 2};

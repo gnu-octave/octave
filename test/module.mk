@@ -75,7 +75,7 @@ ALL_LOCAL_TARGETS += %reldir%/.gdbinit
 	@$(gdbinit_install_rule)
 
 define run-octave-tests
-  cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/test
+  cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/test; \
   if $(AM_V_P); then \
     echo ""; \
     if [ -f %reldir%/fntests.log ]; then \
@@ -89,11 +89,11 @@ define run-octave-tests
 endef
 
 check-local: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
-	$(call run-octave-tests)
+	$(AM_V_at)$(call run-octave-tests)
 
 if AMCOND_HAVE_LLVM
 check-jit: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
-	$(call run-octave-tests,--jit-compiler)
+	$(AM_V_at)$(call run-octave-tests,--jit-compiler)
 endif
 
 COVERAGE_DIR = %reldir%/coverage

@@ -99,19 +99,17 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       printf ("See the file %s for additional details.\n", logfile);
       if (dxf > 0 || dxb > 0)
         puts ("\n");
-        puts ("Items listed as XFAIL above are expected failures or\n");
-        puts ("bugs that have already been reported.  Bug report numbers\n");
-        puts ("for them may be found in the log file:\n");
+        puts ("XFAIL items are expected failures or known bugs.\n");
+        puts ("Bug report numbers may be found in the log file:\n");
         puts (logfile);
         puts ("\nPlease help improve Octave by contributing fixes for them.\n");
       endif
       if (dsk > 0 || drtsk > 0)
         puts ("\n");
-        puts ("Tests are most often skipped because the features they require\n");
-        puts ("have been disabled.  Features are most often disabled because\n");
-        puts ("they require dependencies that were not present when Octave\n");
-        puts ("was built.  The configure script should have printed a summary\n");
-        puts ("at the end of its run indicating which dependencies were not found.\n");
+        puts ("Tests are often skipped because required features were\n");
+        puts ("disabled or were not present when Octave was built.\n");
+        puts ("The configure script should have printed a summary\n");
+        puts ("indicating which dependencies were not found.\n");
       endif
 
       ## Weed out deprecated and private functions

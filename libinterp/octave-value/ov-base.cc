@@ -433,8 +433,6 @@ bool
 octave_base_value::print_name_tag (std::ostream& os,
                                    const std::string& name) const
 {
-  bool retval = false;
-
   indent (os);
 
   if (print_as_scalar ())
@@ -446,10 +444,10 @@ octave_base_value::print_name_tag (std::ostream& os,
       if (! Vcompact_format)
         newline (os);
 
-      retval = true;
+      return true;
     }
 
-  return retval;
+  return false;
 }
 
 void
@@ -635,13 +633,9 @@ octave_base_value::bool_array_value (bool) const
 charMatrix
 octave_base_value::char_matrix_value (bool force) const
 {
-  charMatrix retval;
-
   octave_value tmp = convert_to_str (false, force);
 
-  retval = tmp.char_matrix_value ();
-
-  return retval;
+  return tmp.char_matrix_value ();
 }
 
 charNDArray
@@ -802,33 +796,25 @@ octave_base_value::uint64_array_value (void) const
 string_vector
 octave_base_value::string_vector_value (bool pad) const
 {
-  string_vector retval;
-
   octave_value tmp = convert_to_str (pad, true);
 
-  retval = tmp.string_vector_value ();
-
-  return retval;
+  return tmp.string_vector_value ();
 }
 
 std::string
 octave_base_value::string_value (bool force) const
 {
-  std::string retval;
-
   octave_value tmp = convert_to_str (force);
 
-  retval = tmp.string_value ();
-
-  return retval;
+  return tmp.string_value ();
 }
 
 std::string
 octave_base_value::xstring_value (void) const
 {
-  std::string retval;
   wrong_type_arg_error ();
-  return retval;
+
+  return std::string ();
 }
 
 Array<std::string>
@@ -888,79 +874,65 @@ octave_base_value::parent_class_names (void) const
 octave_classdef *
 octave_base_value::classdef_object_value (bool silent)
 {
-  octave_classdef *retval = nullptr;
-
   if (! silent)
     err_wrong_type_arg ("octave_base_value::classdef_object_value()",
                         type_name ());
 
-  return retval;
+  return nullptr;
 }
 
 octave_function *
 octave_base_value::function_value (bool silent)
 {
-  octave_function *retval = nullptr;
-
   if (! silent)
     err_wrong_type_arg ("octave_base_value::function_value()", type_name ());
 
-  return retval;
+  return nullptr;
 }
 
 octave_user_function *
 octave_base_value::user_function_value (bool silent)
 {
-  octave_user_function *retval = nullptr;
-
   if (! silent)
     err_wrong_type_arg ("octave_base_value::user_function_value()",
                         type_name ());
-  return retval;
+  return nullptr;
 }
 
 octave_user_script *
 octave_base_value::user_script_value (bool silent)
 {
-  octave_user_script *retval = nullptr;
-
   if (! silent)
     err_wrong_type_arg ("octave_base_value::user_script_value()", type_name ());
 
-  return retval;
+  return nullptr;
 }
 
 octave_user_code *
 octave_base_value::user_code_value (bool silent)
 {
-  octave_user_code *retval = nullptr;
-
   if (! silent)
     err_wrong_type_arg ("octave_base_value::user_code_value()", type_name ());
 
-  return retval;
+  return nullptr;
 }
 
 octave_fcn_handle *
 octave_base_value::fcn_handle_value (bool silent)
 {
-  octave_fcn_handle *retval = nullptr;
-
   if (! silent)
     err_wrong_type_arg ("octave_base_value::fcn_handle_value()", type_name ());
 
-  return retval;
+  return nullptr;
 }
 
 octave_fcn_inline *
 octave_base_value::fcn_inline_value (bool silent)
 {
-  octave_fcn_inline *retval = nullptr;
-
   if (! silent)
     err_wrong_type_arg ("octave_base_value::fcn_inline_value()", type_name ());
 
-  return retval;
+  return nullptr;
 }
 
 octave_value_list

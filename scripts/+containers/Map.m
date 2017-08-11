@@ -377,6 +377,9 @@ classdef Map < handle
               error ("containters.Map: unknown property '%s'", s(1).subs);
           endswitch
         case "()"
+          if (isempty (s(1).subs))
+            error ("containers.Map: no key specified");
+          endif
           key = s(1).subs{1};
           if ((! this.numeric_keys && ! ischar (key))
               || (this.numeric_keys && (! (isnumeric (key) || islogical (key))

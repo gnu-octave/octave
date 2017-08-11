@@ -1398,6 +1398,8 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_classdef (object.empty_clone ()); }
 
+  octave_classdef * classdef_object_value (bool = false) { return this; }
+
   cdef_object get_object (void) const { return object; }
 
   cdef_object& get_object_ref (void) { return object; }

@@ -986,6 +986,8 @@ public:
   bool is_instance_of (const std::string& cls_name) const
   { return rep->is_instance_of (cls_name); }
 
+  octave_classdef * classdef_object_value (bool silent = false) const;
+
   octave_function * function_value (bool silent = false) const;
 
   octave_user_function * user_function_value (bool silent = false) const;

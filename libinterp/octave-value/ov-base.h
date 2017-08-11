@@ -47,6 +47,7 @@ class octave_map;
 class octave_scalar_map;
 class octave_value;
 class octave_value_list;
+class octave_classdef;
 class octave_function;
 class octave_user_function;
 class octave_user_script;
@@ -597,6 +598,8 @@ public:
 
   virtual bool is_instance_of (const std::string&) const
   { return false; }
+
+  virtual octave_classdef * classdef_object_value (bool silent = false);
 
   virtual octave_function * function_value (bool silent = false);
 

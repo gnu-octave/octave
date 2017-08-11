@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-cell.h"
 #include "ov-ch-mat.h"
+#include "ov-classdef.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-fcn-handle.h"
@@ -882,6 +883,18 @@ string_vector
 octave_base_value::parent_class_names (void) const
 {
   err_wrong_type_arg ("octave_base_value::parent_class_names()", type_name ());
+}
+
+octave_classdef *
+octave_base_value::classdef_object_value (bool silent)
+{
+  octave_classdef *retval = nullptr;
+
+  if (! silent)
+    err_wrong_type_arg ("octave_base_value::classdef_object_value()",
+                        type_name ());
+
+  return retval;
 }
 
 octave_function *

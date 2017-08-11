@@ -1642,6 +1642,12 @@ octave_value::function_value (bool silent) const
   return rep->function_value (silent);
 }
 
+octave_classdef *
+octave_value::classdef_object_value (bool silent) const
+{
+  return rep->classdef_object_value (silent);
+}
+
 octave_user_function *
 octave_value::user_function_value (bool silent) const
 {

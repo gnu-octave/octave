@@ -132,6 +132,9 @@ signals:
   /** Emitted, whenever wants to search for a file . */
   void find_files_signal (const QString& startdir);
 
+  /** Emitted, whenever the user removes or renames a file. */
+  void file_remove_signal (const QString& old_name, const QString& new_name);
+
 private:
   void process_new_file (const QString& parent_name);
   void process_new_dir (const QString& parent_name);

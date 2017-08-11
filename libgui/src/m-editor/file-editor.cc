@@ -62,6 +62,7 @@ file_editor::file_editor (QWidget *p)
   _paste_action = nullptr;
   _selectall_action = nullptr;
   _closed = false;
+  _external_close_request = false;
 
   construct ();
 
@@ -153,6 +154,9 @@ file_editor::check_closing (void)
 void
 file_editor::focus (void)
 {
+  if (_external_close_request)
+    return;  // No focus for the editor if external open/close request
+
   octave_dock_widget::focus ();
 
   // set focus to current tab
@@ -240,7 +244,6 @@ file_editor::find_tab_widget (const QString& file)
        p != editor_tab_map.end (); p++)
     {
       QString tab_file = p->first;
-
       if (same_file (file.toStdString (), tab_file.toStdString ())
           || file == tab_file)     // needed as same_file ("","") is false.
         {
@@ -577,6 +580,32 @@ void
 file_editor::handle_edit_file_request (const QString& file)
 {
   request_open_file (file);
+}
+
+void
+file_editor::handle_file_remove (const QString& old_name,
+                                 const QString& new_name)
+{
+
+  if (! old_name.isEmpty () && new_name.isEmpty ())
+    {
+      // Only old name is set, no new name -> close old name
+
+      // Have all file editor tabs signal what their filenames are.
+      editor_tab_map.clear ();
+      emit fetab_file_name_query (nullptr);
+
+      // Is old file open?
+      file_editor_tab *editor_tab
+        = static_cast<file_editor_tab *> (find_tab_widget (old_name));
+
+      if (editor_tab)
+        {
+          _external_close_request = true;  // Remember for not focussing editor
+          editor_tab->file_has_changed ("close");  // Close the tab
+          _external_close_request = false;  // Back to normal
+        }
+    }
 }
 
 void
@@ -1014,6 +1043,7 @@ file_editor::handle_tab_remove_request (void)
   check_actions ();
 
   focus ();     // focus stays in editor when tab is closed
+
 }
 
 void

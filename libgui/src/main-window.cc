@@ -1813,7 +1813,12 @@ main_window::construct (void)
                SLOT (handle_update_breakpoint_marker_request (bool,
                                                               const QString&,
                                                               int,
-                                                                                                        const QString&)));
+                                                              const QString&)));
+
+      connect (file_browser_window,
+               SIGNAL (file_remove_signal (const QString&, const QString&)),
+               editor_window,
+               SLOT (handle_file_remove (const QString&, const QString&)));
 #endif
 
       octave_link::post_event (this,

@@ -1,9 +1,4 @@
-## Copyright (C) 2015 Markus Bergholz <markuman@gmail.com>
-## Co-author  Nicholas R. Jankowski <jankowskin@asme.org> **
-##   ** U.S. government employee, contributions are public domain
-##      with no personal assertion of copyright
-## prepareIdx routine Copyright (C) 2015 Peter John Acklam <pjacklam@gmail.com>, 
-## used with permission.
+## Copyright (C) 2015 Markus Bergholz
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +21,7 @@
 ## @deftypefnx {} {} repelem (@var{X}, @var{R_1}, @dots{}, @var{R_n})
 ## Construct an array of repeated elements from X.
 ##
-## @var{X} must be a scalar, a vector or an n-dimensional array. 
+## @var{X} must be a scalar, a vector or an n-dimensional array.
 ##
 ## Each @var{R_j} must be either scalar, in which case
 ## each component in dimension @var{j} is repeated @var{R_j} times,
@@ -67,10 +62,10 @@
 ##@end example
 ##
 ## More @var{R_j} may be specified than the number of dimensions of @var{X}.
-## Those excess @var{R_j} must be scalars (because @var{X}'s size in those 
-## dimensions is only 1), and @var{X} will be replicated in those dimension 
-## accordingly. 
-##  
+## Those excess @var{R_j} must be scalars (because @var{X}'s size in those
+## dimensions is only 1), and @var{X} will be replicated in those dimension
+## accordingly.
+##
 ##@example
 ## A = [1 2 3 4 5];
 ## B1 = 2;
@@ -80,12 +75,12 @@
 ##  ==>    ans(:,:,1) =
 ##            1   1   2   3   3   3   5   5
 ##            1   1   2   3   3   3   5   5
-##         
+##
 ##         ans(:,:,2) =
-##         
+##
 ##            1   1   2   3   3   3   5   5
 ##            1   1   2   3   3   3   5   5
-##         
+##
 ##         ans(:,:,3) =
 ##            1   1   2   3   3   3   5   5
 ##            1   1   2   3   3   3   5   5
@@ -93,7 +88,7 @@
 ##
 ## @var{R_n} must be specified in order.
 ## A placeholder of 1 can be used in dimensions not needing replication.
-## Inputs of [] will produce an error. 
+## Inputs of [] will produce an error.
 ##
 ##@example
 ## repelem([-1 0;0 1],1,2,1,2)
@@ -103,7 +98,7 @@
 ##
 ##       ans(:,:,1,2) =
 ##         -1  -1   0   0
-##          0   0   1   1 
+##          0   0   1   1
 ##@end example
 ##
 ## If fewer @var{R_n} are given than dimensions in @var{X},
@@ -131,11 +126,11 @@
 ##         -1  -1  -1   0   0   0
 ##          0   0   0   1   1   1
 ##          0   0   0   1   1   1
-##@end example 
+##@end example
 ##
 ## @code{repelem} will preserve the class of @var{X},
 ## and works with strings, NA and NAN inputs.
-## Any @var{R_n} = 0 will produce an empty array. 
+## Any @var{R_n} = 0 will produce an empty array.
 ##
 ##@example
 ## repelem("Octave",2,3)
@@ -149,14 +144,22 @@
 ## @seealso{cat, kron, repmat}
 ## @end deftypefn
 
+## Author: Markus Bergholz <markuman@gmail.com>
+## Author: Nicholas R. Jankowski <jankowskin@asme.org>
+
+## As a U.S. government employee, Nicholas R. Jankowski makes no claim
+## of copyright.
+
+## The prepareIdx routine is Copyright (C) 2015 Peter John Acklam
+## <pjacklam@gmail.com>, used with permission.
 
 function retval = repelem (element, varargin)
 
   if (nargin <= 1)
     print_usage ();
-    
+
   elseif (nargin == 2)
-  
+
     v = varargin{1};
 
     if (isscalar (v))
@@ -182,30 +185,29 @@ function retval = repelem (element, varargin)
         ## Basic run-length decoding in function prepareIdx returned
         ## idx2 as a row vector of element indices in the right positions.
         idx2 = prepareIdx (v);
-        ## fills with element values, direction matches element. 
+        ## fills with element values, direction matches element.
         retval  = element (idx2);
 
       else # catch unequal element counts
         error (["repelem: R1 must either be scalar or have the same" ...
                 " number of elements as the vector to be replicated"]);
       endif
-      
+
     else # catch any arrays passed to element or varargin with nargin==2
       error (["repelem: when called with only two inputs they must be" ...
               " either scalars or vectors, not %s and %s."],
               typeinfo (element), typeinfo (v));
     endif
-  
-  
+
   elseif (nargin == 3)  #can simplify for known dimension count
-    
+
     ## avoid repeated function calls
     elsize = size (element);
 
     ## 'numel' or 'length' faster than isvector in cellfun
     scalarv = (cellfun ("numel", varargin) == 1);
     nonscalarv = ! scalarv;
-    
+
     ##INPUT CHECK
 
     ##1:check that all varargin are either scalars or vectors, no arrays.
@@ -220,19 +222,19 @@ function retval = repelem (element, varargin)
       error (["repelem: R_n must either be scalar or have the same" ...
               " number of elements as the size of dimension n of X"]);
 
-    endif 
-    
+    endif
+
     ## Create index arrays to pass to element.
     ## (It is no slower passing to prepareIdx than
     ## checking and doing scalars directly.)
     idx1 = prepareIdx (varargin{1}, elsize (1));
     idx2 = prepareIdx (varargin{2}, elsize (2));
-  
+
     ## The ":" at the end takes care of size(element)>2.
     retval = element (idx1, idx2, :);
 
   else  # if (nargin > 3) **no need for elseif
-  
+
     ## avoid repeated function calls
     elsize = size (element);
     eldims = numel (elsize);
@@ -259,8 +261,8 @@ function retval = repelem (element, varargin)
       error (["repelem: varargin(n) must either be scalar or have the same" ...
               " number of elements as the size of dimension n of X"]);
 
-    endif 
-    
+    endif
+
     ## First, preallocate idx which will contain index array
     ## to be put into element.
     idx = cell (1, vasize);
@@ -275,23 +277,22 @@ function retval = repelem (element, varargin)
     ## input tests have verified they are just scalars,
     ## so add [1 1 1 1 1... 1] to those dims
     ## to perform concatenation in those dims.
-    
+
     ### can cellfun check speed against for loop.
     if (vasize > eldims)
       idx (eldims + 1:vasize) = cellfun ("ones", {1}, ...
                                          {varargin(eldims + 1:end){:}}, ...
                                          "UniformOutput", false);
     endif
-    
+
     ## Use completed idx to specify repetition of element values in
     ## all dimensions.
     ## The trailing ":" will take care of any case where eldims > vasize.
     retval = element (idx{:}, :);
-  
+
   endif
 
 endfunction
-
 
 function idx = prepareIdx (v, elsize_n)
 ## returns a row vector of indices prepared for replicating.
@@ -301,7 +302,7 @@ function idx = prepareIdx (v, elsize_n)
     idx = [1:elsize_n](ones (v, 1), :)(:)';
 
   else
-  
+
     ## This works for a row or column vector.
     ## idx2 output will be a row vector.
 
@@ -321,9 +322,8 @@ function idx = prepareIdx (v, elsize_n)
     idx = (find (v != 0))(cumsum (idx));
 
   endif
-  
-endfunction
 
+endfunction
 
 %%% tests for help examples
 %!assert (repelem([1 2 3 4 5], [2 1 0 1 2]), [1 1 2 4 5 5]);

@@ -224,13 +224,23 @@ public:
 
   virtual void set_class_name (const char *name_arg) = 0;
 
-  virtual mxArray * get_property (mwIndex /*idx*/, const char * /*name*/) const
+  // The following functions aren't pure virtual becuase they are only
+  // valid for one type.  Making them pure virtual would mean tha they
+  // have to be implemented for all derived types, and all of those
+  // would need to throw errors instead of just doing it once here.
+
+  virtual mxArray *
+  get_property (mwIndex /*idx*/, const char * /*pname*/) const
   {
     return nullptr;
   }
 
-  // FIXME: Why not just have this '= 0' as the others?
-  // Could then eliminate err_invalid_type function and #include "error.h".
+  virtual void set_property (mwIndex /*idx*/, const char * /*pname*/,
+                             const mxArray * /*pval*/)
+  {
+    err_invalid_type ();
+  }
+
   virtual mxArray * get_cell (mwIndex /*idx*/) const
   {
     err_invalid_type ();
@@ -445,9 +455,12 @@ public:
   mxClassID get_class_id (void) const { return rep->get_class_id (); }
 
   const char * get_class_name (void) const { return rep->get_class_name (); }
-  
-  mxArray * get_property (mwIndex idx, const char * propNm) const
-  { return rep->get_property (idx, propNm); }
+
+  mxArray * get_property (mwIndex idx, const char *pname) const
+  { return rep->get_property (idx, pname); }
+
+  void set_property (mwIndex idx, const char *pname, const mxArray *pval)
+  { rep->set_property (idx, pname, pval); }
 
   void set_class_name (const char *name_arg)
   { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
@@ -533,8 +546,6 @@ public:
   }
 
   static octave_value as_octave_value (const mxArray *ptr);
-
-protected:
 
   octave_value as_octave_value (void) const;
 

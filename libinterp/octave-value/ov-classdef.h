@@ -110,6 +110,17 @@ public:
     err_invalid_object ("get");
   }
 
+  virtual void set_property (octave_idx_type, const std::string&,
+                             const octave_value&)
+  {
+    err_invalid_object ("set_property");
+  }
+
+  virtual octave_value get_property (octave_idx_type, const std::string&) const
+  {
+    err_invalid_object ("get_property");
+  }
+
   virtual octave_value_list
   subsref (const std::string&, const std::list<octave_value_list>&,
            int, size_t&, const cdef_class&, bool)
@@ -258,6 +269,14 @@ public:
   octave_value get (const std::string& pname) const
   { return rep->get (pname); }
 
+  void set_property (octave_idx_type idx, const std::string& pname,
+                     const octave_value& pval)
+  { return rep->set_property (idx, pname, pval); }
+
+  octave_value
+  get_property (octave_idx_type idx, const std::string& pname) const
+  { return rep->get_property (idx, pname); }
+
   octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
            int nargout, size_t& skip, const cdef_class& context,
@@ -381,6 +400,22 @@ public:
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
+  void set_property (octave_idx_type idx, const std::string& pname,
+                     const octave_value& pval)
+  {
+    cdef_object& tmp = array.elem (idx);
+
+    return tmp.put (pname, pval);
+  }
+
+  octave_value
+  get_property (octave_idx_type idx, const std::string& pname) const
+  {
+    cdef_object tmp = array.elem (idx);
+
+    return tmp.get (pname);
+  }
+
 private:
   Array<cdef_object> array;
 
@@ -417,6 +452,24 @@ public:
       error ("get: unknown slot: %s", pname.c_str ());
 
     return val(0, 0);
+  }
+
+  void set_property (octave_idx_type idx, const std::string& pname,
+                     const octave_value& pval)
+  {
+    if (idx != 0)
+      error ("invalid index");  // FIXME
+
+    put (pname, pval);
+  }
+
+  octave_value
+  get_property (octave_idx_type idx, const std::string& pname) const
+  {
+    if (idx != 0)
+      error ("invalid index");  // FIXME
+
+    return get (pname);
   }
 
   octave_value_list
@@ -1452,6 +1505,18 @@ public:
   octave_map map_value (void) const { return object.map_value (); }
 
   dim_vector dims (void) const { return object.dims (); }
+
+  void set_property (octave_idx_type idx, const std::string& name,
+                     const octave_value& pval)
+  {
+    object.set_property (idx, name, pval);
+  }
+
+  octave_value
+  get_property (octave_idx_type idx, const std::string& name) const
+  {
+    return object.get_property (idx, name);
+  }
 
 public:
   int type_id (void) const { return t_id; }

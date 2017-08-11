@@ -245,6 +245,9 @@ extern OCTINTERP_API const char * mxGetClassName (const mxArray *ptr);
 extern OCTINTERP_API void mxSetClassName (mxArray *ptr, const char *name);
 extern OCTINTERP_API mxArray * mxGetProperty (const mxArray *ptr, mwIndex idx,
                                               const char *property_name);
+extern OCTINTERP_API void mxSetProperty (mxArray *ptr, mwIndex idx,
+                                         const char *property_name,
+                                         const mxArray *property_value);
 
 /* Cell support.  */
 extern OCTINTERP_API mxArray * mxGetCell (const mxArray *ptr, mwIndex idx);

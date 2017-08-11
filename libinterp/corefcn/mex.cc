@@ -377,7 +377,7 @@ public:
   // Not allowed.
   void set_class_name (const char * /*name_arg*/) { request_mutation (); }
 
-  mxArray * get_property (mwIndex idx, const char *name) const
+  mxArray * get_property (mwIndex idx, const char *pname) const
   {
     mxArray *retval = nullptr;
 
@@ -387,19 +387,27 @@ public:
 
         if (ov_cdef)
           {
-            cdef_object& cdef = ov_cdef->get_object_ref ();
+            octave_value pval = ov_cdef->get_property (idx, pname);
 
-            if (cdef.is_array ())
-              cdef = cdef.array_value ().elem (idx);
-
-            octave_value prop_val = cdef.get (name);
-
-            if (prop_val.is_defined())
-              retval = new mxArray (prop_val);
+            if (val.is_defined())
+              retval = new mxArray (pval);
           }
       }
 
     return retval;
+  }
+
+  void set_property (mwIndex idx, const char *pname, const mxArray *pval)
+  {
+    if (val.is_classdef_object ())
+      {
+        octave_classdef *ov_cdef = val.classdef_object_value ();
+
+        if (ov_cdef)
+          ov_cdef->set_property (idx, pname, pval->as_octave_value ());
+      }
+    else
+      err_invalid_type ();
   }
 
   mxArray * get_cell (mwIndex /*idx*/) const
@@ -2973,6 +2981,13 @@ void
 mxSetClassName (mxArray *ptr, const char *name)
 {
   ptr->set_class_name (name);
+}
+
+void
+mxSetProperty (mxArray *ptr, mwIndex idx, const char *property_name,
+               const mxArray *property_value)
+{
+  ptr->set_property (idx, property_name, property_value);
 }
 
 mxArray *

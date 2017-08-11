@@ -537,8 +537,10 @@ octave_struct::subsasgn (const std::string& type,
 octave_value
 octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // octave_map handles indexing itself.
-  return map.index (idx, resize_ok);
+  if (idx.length () == 0)
+    return map;
+  else  // octave_map handles indexing itself.
+    return map.index (idx, resize_ok);
 }
 
 size_t

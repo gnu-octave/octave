@@ -230,9 +230,19 @@
 %! s(3).foo = 42;
 %! assert (s(3), struct ("foo", 42));
 
+## empty index should return entire struct
+%!test <51633>
+%! x.a = 1:10;
+%! y = x;
+%! assert (! isempty (y));
+%! assert (y, x);
+%! z = x();
+%! assert (! isempty (z));
+%! assert (z, x);
+%! assert (z, y);
+
 ## test assigning to multi-dim struct with trailing singleton dimensions,
-## Bug #35841.
-%!test
+%!test <35841>
 %! a(1,1,1).b(1) = 1;
 %! a(1,1,1).b(1) = 2;
 %! a(1,1,:).b(1) = 3;

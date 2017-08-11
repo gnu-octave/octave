@@ -705,6 +705,10 @@ files_dock_widget::contextmenu_delete (bool)
             }
           else
             {
+              // Close the file in the editor if open
+              emit file_remove_signal (info.filePath (), QString ());
+              // Remove the file. This operation might fail, but we will not
+              // reopen a possibly related editor tab in this case.
               _file_system_model->remove (index);
             }
 

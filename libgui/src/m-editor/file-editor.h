@@ -281,6 +281,8 @@ public slots:
 
   void handle_edit_file_request (const QString& file);
 
+  void handle_file_remove (const QString&, const QString&);
+
   // Tells the editor to react on changed settings.
   void notice_settings (const QSettings *settings);
 
@@ -462,6 +464,7 @@ private:
   int _marker_breakpoint;
 
   bool _closed;
+  bool _external_close_request;
 
   enum { MaxMRUFiles = 10 };
   QMenu *_mru_file_menu;

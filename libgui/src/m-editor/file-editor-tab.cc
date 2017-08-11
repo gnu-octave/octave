@@ -2226,7 +2226,7 @@ file_editor_tab::handle_save_file_as_answer_cancel ()
 }
 
 void
-file_editor_tab::file_has_changed (const QString&)
+file_editor_tab::file_has_changed (const QString& do_close)
 {
   // Prevent popping up multiple message boxes when the file has
   // been changed multiple times by temporarily removing from the
@@ -2235,8 +2235,9 @@ file_editor_tab::file_has_changed (const QString&)
   if (! trackedFiles.isEmpty ())
     _file_system_watcher.removePath (_file_name);
 
-  if (QFile::exists (_file_name))
+  if (QFile::exists (_file_name) && do_close.isEmpty ())
     {
+      // The file is modified
       if (_always_reload_changed_files)
 
               load_file (_file_name);
@@ -2267,6 +2268,14 @@ file_editor_tab::file_has_changed (const QString&)
     }
   else
     {
+      // If desired and if file is not modified,
+      // close the file without any user interaction
+      if (! do_close.isEmpty () && ! _edit_area->isModified ())
+        {
+          handle_file_resave_answer (QMessageBox::Cancel);
+          return;
+        }
+
       // give editor and this tab the focus,
       // possibly making the editor visible  if it is hidden
       emit set_focus_editor_signal (this);

@@ -224,7 +224,7 @@ public:
 
   virtual void set_class_name (const char *name_arg) = 0;
 
-  virtual mxArray * get_property (mwIndex /*idx*/, const char */*name*/) const
+  virtual mxArray * get_property (mwIndex /*idx*/, const char * /*name*/) const
   {
     return nullptr;
   }

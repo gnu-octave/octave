@@ -2975,9 +2975,10 @@ mxSetClassName (mxArray *ptr, const char *name)
   ptr->set_class_name (name);
 }
 
-mxArray *mxGetProperty (const mxArray *ptr, mwIndex idx, const char *propertyName)
+mxArray *
+mxGetProperty (const mxArray *ptr, mwIndex idx, const char *property_name)
 {
-  return ptr->get_property (idx, propertyName);
+  return ptr->get_property (idx, property_name);
 }
 
 // Cell support.

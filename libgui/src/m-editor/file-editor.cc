@@ -602,7 +602,7 @@ file_editor::handle_file_remove (const QString& old_name,
       if (editor_tab)
         {
           _external_close_request = true;  // Remember for not focussing editor
-          editor_tab->file_has_changed ("close");  // Close the tab
+          editor_tab->file_has_changed (QString (), true);  // Close the tab
           _external_close_request = false;  // Back to normal
         }
     }

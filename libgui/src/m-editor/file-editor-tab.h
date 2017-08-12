@@ -136,7 +136,7 @@ public slots:
 
   void new_file (const QString& commands = QString ());
 
-  void file_has_changed (const QString& do_close);
+  void file_has_changed (const QString& path, bool do_close = false);
 
   void handle_context_menu_edit (const QString&);
   void handle_context_menu_break_condition (int linenr);

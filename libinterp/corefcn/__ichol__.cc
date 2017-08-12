@@ -254,8 +254,8 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Lfirst, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Llist, n);
   OCTAVE_LOCAL_BUFFER (T, col_drops, n);
-  std::vector <octave_idx_type> vec;
-  vec.resize (n);
+  std::vector<octave_idx_type> vec (n, 0);
+  std::vector<bool> mark (n, false);
 
   T zero = T (0);
   cidx_l[0] = cidx[0];
@@ -265,7 +265,6 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
       Lfirst[i] = -1;
       w_data[i] = 0;
       col_drops[i] = zero;
-      vec[i] = 0;
     }
 
   total_len = 0;
@@ -275,6 +274,9 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
       for (j = cidx[k]; j < cidx[k+1]; j++)
         {
           w_data[ridx[j]] = data[j];
+          // Mark column index, intentionally outside the if-clause to ensure
+          // that mark[k] will be set to true as well.
+          mark[ridx[j]] = true;
           if (ridx[j] != k)
             {
               vec[ind] = ridx[j];
@@ -292,8 +294,9 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
               // If the element in the j position of the row is zero,
               // then it will become non-zero, so we add it to the
               // vector that tracks non-zero elements in the working row.
-              if (w_data[j] == zero)
+              if (! mark[j])
                 {
+                  mark[j] = true;
                   vec[ind] = j;
                   ind++;
                 }
@@ -355,8 +358,10 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
                   ridx_l[total_len + w_len] = jrow;
                   w_len++;
                 }
-              vec[i] = 0;
             }
+          // Clear mark, vec, and w_data.  However, mark[k] is not set to zero.
+          mark[jrow] = false;
+          vec[i] = 0;
           w_data[jrow] = zero;
         }
 

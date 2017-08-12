@@ -94,7 +94,8 @@ function plotimages (d, nm, typ)
     title ("erf (x) with text annotation");
     if (strcmp (typ, "pdf") && ! strcmp (graphics_toolkit, "gnuplot"))
       text (0.65, 0.6175, ['$\displaystyle\leftarrow x = {2\over\sqrt{\pi}}'...
-                           '\int_{0}^{x}e^{-t^2} dt = 0.6175$']);
+                           '\int_{0}^{x}e^{-t^2} dt = 0.6175$'],
+            "interpreter", "latex");
       ## Be very careful about modifying this.  pdflatex expects to be in
       ## the same directory as the file it is operating on.
       cd (make_absolute_filename (d));

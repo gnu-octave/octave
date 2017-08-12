@@ -666,8 +666,8 @@ which special control sequences in the text are rendered.
 The interpreter property can take three values: @qcode{"none"}, @qcode{"tex"},
 @qcode{"latex"}.  If the interpreter is set to @qcode{"none"} then no special
 rendering occurs---the displayed text is a verbatim copy of the specified text.
-Currently, the @qcode{"latex"} interpreter is not implemented and is equivalent
-to @qcode{"none"}.
+Currently, the @qcode{"latex"} interpreter is not implemented for on-screen
+display and is equivalent to @qcode{"none"}.
 
 The @qcode{"tex"} option implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
@@ -984,15 +984,14 @@ print -deps foo.eps
 saves the current figure to an encapsulated PostScript file called
 @file{foo.eps}.
 
-The current graphic toolkits produce very similar graphic displays but differ
-in their capability to display text and in print capabilities.  In particular,
-the OpenGL based toolkits such as @code{fltk} and @code{qt} do not support the
-@qcode{"interpreter"} property of text objects.  This means that when using
-OpenGL toolkits special symbols drawn with the @qcode{"tex"} interpreter will
-appear correctly on-screen but will be rendered with interpreter @qcode{"none"}
-when printing unless one of the @code{standalone} (see below) modes is used.
-These modes provide access to the pdflatex processor and therefore allow full
-use of @LaTeX{} commands.
+The current graphic toolkits produce very similar graphic displays, but differ
+in their capability to display unusual text and in their ability to print
+such text.  In general, the @qcode{"tex"} interpreter (default) is the best
+all-around performer for both on-screen display and printing.  However, for the
+reproduction of complicated text formulas the @qcode{"latex"} interpreter is
+preferred.  The @qcode{"latex"} interpreter will not display symbols on-screen,
+but the printed output will be correct.  When printing, use one of the
+@code{standalone} options which provide full access to @LaTeX{} commands.
 
 A complete example showing the capabilities of text printing using the
 @option{-dpdflatexstandalone} option is:
@@ -1005,16 +1004,15 @@ plot (x, erf (x));
 hold on;
 plot (x, x, "r");
 axis ([0, 3, 0, 1]);
-text (0.65, 0.6175, ['$\displaystyle\leftarrow x = @{2\over\sqrt@{\pi@}@}'...
-                     '\int_@{0@}^@{x@}e^@{-t^2@} dt = 0.6175$']);
+text (0.65, 0.6175, ['$\displaystyle\leftarrow x = @{2 \over \sqrt@{\pi@}@}'...
+                     '\int_@{0@}^@{x@} e^@{-t^2@} dt = 0.6175$'],
+      "interpreter", "latex");
 xlabel ("x");
 ylabel ("erf (x)");
 title ("erf (x) with text annotation");
-set (hf, "visible", "off");
 print (hf, "plot15_7.pdf", "-dpdflatexstandalone");
-set (hf, "visible", "on");
 system ("pdflatex plot15_7");
-open ("plot15_7.pdf");
+open plot15_7.pdf
 @end group
 @end example
 

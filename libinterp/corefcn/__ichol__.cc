@@ -453,6 +453,14 @@ Undocumented internal function.
 }
 
 /*
-## No test needed for internal helper function.
-%!assert (1)
+%!test <51736>
+%! k = 4;
+%! n = 2^k;
+%! Afull = diag (ones (n,1)) / ...
+%!          2+triu ([zeros(n,2), [n.^-[1;1;2]*ones(1,n-2);zeros(n-3,n-2)]], 1);
+%! A = sparse (Afull + Afull.');
+%! opts.type = "ict";
+%! opts.droptol = 0;
+%! L = ichol (A, opts);
+%! assert (norm (A - L*L.'), 0, 2*eps);
 */

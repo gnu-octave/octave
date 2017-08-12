@@ -389,7 +389,7 @@ public:
           {
             octave_value pval = ov_cdef->get_property (idx, pname);
 
-            if (val.is_defined())
+            if (pval.is_defined())
               retval = new mxArray (pval);
           }
       }

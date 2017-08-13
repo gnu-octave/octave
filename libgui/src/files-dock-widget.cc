@@ -665,7 +665,9 @@ files_dock_widget::contextmenu_rename (bool)
         {
           new_name = path.absolutePath () + '/' + new_name;
           old_name = path.absolutePath () + '/' + old_name;
+          emit file_remove_signal (old_name, new_name);  // editor: close old
           path.rename (old_name, new_name);
+          emit file_renamed_signal ();  // editor: load new file
           _file_system_model->revert ();
         }
     }

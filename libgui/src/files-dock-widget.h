@@ -135,6 +135,9 @@ signals:
   /** Emitted, whenever the user removes or renames a file. */
   void file_remove_signal (const QString& old_name, const QString& new_name);
 
+  /** Emitted, when a file or directory is renamed. */
+  void file_renamed_signal (void);
+
 private:
   void process_new_file (const QString& parent_name);
   void process_new_dir (const QString& parent_name);

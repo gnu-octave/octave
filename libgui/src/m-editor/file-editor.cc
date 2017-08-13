@@ -62,7 +62,7 @@ file_editor::file_editor (QWidget *p)
   _paste_action = nullptr;
   _selectall_action = nullptr;
   _closed = false;
-  _external_close_request = false;
+  _no_focus = false;
 
   construct ();
 
@@ -154,7 +154,7 @@ file_editor::check_closing (void)
 void
 file_editor::focus (void)
 {
-  if (_external_close_request)
+  if (_no_focus)
     return;  // No focus for the editor if external open/close request
 
   octave_dock_widget::focus ();
@@ -582,31 +582,60 @@ file_editor::handle_edit_file_request (const QString& file)
   request_open_file (file);
 }
 
+
+// Slot used for signals indicating that a file was changed/rename or
+// is going to be deleted/renamed
 void
 file_editor::handle_file_remove (const QString& old_name,
                                  const QString& new_name)
 {
+  // Is old file open?
+  file_editor_tab *editor_tab
+    = static_cast<file_editor_tab *> (find_tab_widget (old_name));
 
-  if (! old_name.isEmpty () && new_name.isEmpty ())
+  if (editor_tab)
     {
-      // Only old name is set, no new name -> close old name
+      // Yes, close it silently
+      _no_focus = true;  // Remember for not focussing editor
+      editor_tab->file_has_changed (QString (), true);  // Close the tab
+      _no_focus = false;  // Back to normal
 
-      // Have all file editor tabs signal what their filenames are.
-      editor_tab_map.clear ();
-      emit fetab_file_name_query (nullptr);
-
-      // Is old file open?
-      file_editor_tab *editor_tab
-        = static_cast<file_editor_tab *> (find_tab_widget (old_name));
-
-      if (editor_tab)
+      if (! new_name.isEmpty ())
         {
-          _external_close_request = true;  // Remember for not focussing editor
-          editor_tab->file_has_changed (QString (), true);  // Close the tab
-          _external_close_request = false;  // Back to normal
+          // New name is set, store new name and its encoding
+          // loading this file after the renaming is complete.
+          // The new name is not signaled after the renaming for being able
+          // to use this construct for renaming a whole directory, too.
+
+          _tmp_closed_files = QStringList ();
+          _tmp_closed_files << new_name;
+
+          // Get and store the related encoding
+          for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
+               p != editor_tab_map.end (); p++)
+            {
+              if (editor_tab == p->second.fet_ID)
+                {
+                  _tmp_closed_files << p->second.encoding;
+                  break;
+                }
+            }
         }
     }
 }
+
+
+// Slot for signal indicating that a file was renamed
+void
+file_editor::handle_file_renamed ()
+{
+  _no_focus = true;  // Remember for not focussing editor
+  for (int i = 0; i < _tmp_closed_files.count (); i = i + 2)
+    request_open_file (_tmp_closed_files.at (i),
+                       _tmp_closed_files.at (i+1));
+  _no_focus = false;  // Back to normal focus
+}
+
 
 void
 file_editor::do_undo ()

@@ -282,6 +282,7 @@ public slots:
   void handle_edit_file_request (const QString& file);
 
   void handle_file_remove (const QString&, const QString&);
+  void handle_file_renamed (void);
 
   // Tells the editor to react on changed settings.
   void notice_settings (const QSettings *settings);
@@ -464,13 +465,16 @@ private:
   int _marker_breakpoint;
 
   bool _closed;
-  bool _external_close_request;
+  bool _no_focus;
 
   enum { MaxMRUFiles = 10 };
   QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
   QStringList _mru_files_encodings;
+
+  // List of temporarily closed files while they are renamed
+  QStringList _tmp_closed_files;
 };
 
 #endif

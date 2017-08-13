@@ -349,6 +349,8 @@ private:
 
   void switch_tab (int direction, bool movetab = false);
 
+  void handle_dir_remove (const QString& old_name, const QString& new_name);
+
   bool editor_tab_has_focus ();
 
   QWidget * find_tab_widget (const QString& openFileName);

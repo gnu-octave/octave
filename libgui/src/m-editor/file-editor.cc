@@ -589,6 +589,15 @@ void
 file_editor::handle_file_remove (const QString& old_name,
                                  const QString& new_name)
 {
+  // Check if old name is a file or directory
+  QFileInfo old (old_name);
+  if (old.isDir ())
+    {
+      // Call the function which handles directories and return
+      handle_dir_remove (old_name, new_name);
+      return;
+    }
+
   // Is old file open?
   file_editor_tab *editor_tab
     = static_cast<file_editor_tab *> (find_tab_widget (old_name));
@@ -624,6 +633,48 @@ file_editor::handle_file_remove (const QString& old_name,
     }
 }
 
+
+// Function for closing the files in a removed directory
+void
+file_editor::handle_dir_remove (const QString& old_name,
+                                const QString& new_name)
+{
+  QDir old_dir (old_name);
+
+  // Have all file editor tabs signal what their filenames are.
+  editor_tab_map.clear ();
+  emit fetab_file_name_query (nullptr);
+
+  // Loop over all open files and pick those within old_dir
+  _tmp_closed_files = QStringList ();
+
+  for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
+       p != editor_tab_map.end (); p++)
+    {
+      QString rel_path_to_file = old_dir.relativeFilePath (p->first);
+      if (rel_path_to_file.left (3) != QString ("../"))
+        {
+          // We directly go down from old_dir to reach our file: Our
+          // file is included in the removed/renamed diectory.
+          // Thus delete it.
+          _no_focus = true;  // Remember for not focussing editor
+          file_editor_tab *editor_tab
+              = static_cast<file_editor_tab *> (p->second.fet_ID);
+          editor_tab->file_has_changed (QString (), true);  // Close
+          _no_focus = false;  // Back to normal
+
+
+          // Add the new file path and the encoding for later reloading
+          // if new_name is given
+          if (! new_name.isEmpty ())
+            {
+              QDir new_dir (new_name);
+              _tmp_closed_files << new_dir.absoluteFilePath (rel_path_to_file);
+              _tmp_closed_files << p->second.encoding;
+            }
+        }
+    }
+}
 
 // Slot for signal indicating that a file was renamed
 void

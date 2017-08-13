@@ -578,23 +578,19 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!test shapes_GEP (single ([1, 2; 3, 8]),  single ([8, 3; 4, 3]));
 %!test shapes_GEP (single ([1, 2; -1, 1]),  single ([3, 3; 1, 2]));
 
+## Check if correct default method is used for symmetric input
 %!function chol_qz_accuracy (A, B, is_qz_accurate, is_chol_accurate)
-%!  [V1,D1] = eig (A,B, 'qz');
-%!  [V2,D2] = eig (A,B); #default is chol
-%!  assert (isequal (A*V1,A*V1*D1), is_qz_accurate)
+%!  [V1, D1] = eig (A, B, 'qz');
+%!  [V2, D2] = eig (A, B); #default is chol
+%!  assert (isequal (A*V1, A*V1*D1), is_qz_accurate)
 %!  assert (isequal (A*V2, A*V2*D2), is_chol_accurate)
 %!endfunction
-
 %!test
-%! minij_100 = gallery('minij',100);
+%! minij_100 = gallery ('minij', 100);
 %! chol_qz_accuracy (minij_100, minij_100, false, true);
-
-%!test
-%! moler_100 = gallery('moler',100);
+%! moler_100 = gallery ('moler', 100);
 %! chol_qz_accuracy (moler_100, moler_100, false, true);
-
-%!test
-%! A = diag([10^-16, 10^-15]);
+%! A = diag([1e-16, 1e-15]);
 %! chol_qz_accuracy (A, A, true, false);
 
 %!error eig ()

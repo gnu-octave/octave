@@ -43,8 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 static octave_value
 mk_gr_map (const octave::sys::group& gr)
 {
-  octave_value retval;
-
   if (gr)
     {
       octave_scalar_map m;
@@ -54,12 +52,10 @@ mk_gr_map (const octave::sys::group& gr)
       m.assign ("gid", static_cast<double> (gr.gid ()));
       m.assign ("mem", octave_value (gr.mem ()));
 
-      retval = ovl (m);
+      return octave_value (m);
     }
   else
-    retval = ovl (0);
-
-  return retval;
+    return octave_value (0);
 }
 
 DEFUN (getgrent, args, ,

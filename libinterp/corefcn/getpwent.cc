@@ -57,12 +57,10 @@ mk_pw_map (const octave::sys::password& pw)
       m.assign ("dir", pw.dir ());
       m.assign ("shell", pw.shell ());
 
-      retval = ovl (m);
+      return octave_value (m);
     }
   else
-    retval = ovl (0);
-
-  return retval;
+    return octave_value (0);
 }
 
 DEFUN (getpwent, args, ,

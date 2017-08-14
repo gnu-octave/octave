@@ -11612,7 +11612,7 @@ get_property_from_handle (double handle, const std::string& property,
   if (! go)
     error ("%s: invalid handle (= %g)", func.c_str (), handle);
 
-  return ovl (go.get (caseless_str (property)));
+  return go.get (caseless_str (property));
 }
 
 bool

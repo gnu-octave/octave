@@ -3102,7 +3102,7 @@ namespace octave
     if (cleanup_pushed)
       maybe_set_echo_state ();
 
-    return ovl ();
+    return octave_value ();
   }
 
   octave_value

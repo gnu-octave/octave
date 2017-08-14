@@ -289,7 +289,9 @@ public:
   OCTAVE_DEPRECATED (4.4, "note: second argument is always ignored; use octave_value (const octave_value_list&) instead")
   octave_value (const octave_value_list& m, bool);
 
-  octave_value (const octave_value_list& m);
+  // This one is explicit because it can cause some trouble to
+  // accidentally create a cs-list when one was not intended.
+  explicit octave_value (const octave_value_list& m);
 
   octave_value (octave_value::magic_colon);
 

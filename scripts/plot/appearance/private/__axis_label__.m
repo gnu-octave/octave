@@ -27,7 +27,8 @@ function retval = __axis_label__ (hax, caller, txt, varargin)
 
   h = get (hax, caller);
 
-  set (h, "string", txt, varargin{:});
+  ## Set other prop/values first in case they influence appearance of string.
+  set (h, varargin{:}, "string", txt);
 
   if (nargout > 0)
     retval = h;

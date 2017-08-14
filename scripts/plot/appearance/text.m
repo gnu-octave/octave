@@ -141,7 +141,7 @@ function h = text (varargin)
     hax = hax(1);
   endif
 
-  ## Position argument may alse be in PROP/VAL pair
+  ## Position argument may also be in PROP/VAL pair
   idx = find (strcmpi (varargin, "position"), 1);
   if (idx)
     pos = varargin{idx+1};
@@ -153,15 +153,13 @@ function h = text (varargin)
   ## Call __go_text__ to do the work
   htmp = zeros (nt, 1);
   if (nx == 1)
-    htmp = __go_text__ (hax, "string", string{1},
-                             ## varargin first, in case "Units" set for pos.
-                             varargin{:},
-                             "position", pos);
+    ## Set varargin first, in case it changes units or interpreter properties.
+    htmp = __go_text__ (hax, varargin{:}, "position", pos,
+                             "string", string{1});
   else
     for n = 1:nt
-      htmp(n) = __go_text__ (hax, "string", string{n},
-                                  varargin{:},
-                                  "position", pos(n,:));
+      htmp(n) = __go_text__ (hax, varargin{:}, "position", pos(n,:),
+                                  "string", string{n});
     endfor
     __request_drawnow__ ();
   endif

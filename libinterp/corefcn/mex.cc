@@ -2075,7 +2075,7 @@ mxArray::set_name (const char *name_arg)
 octave_value
 mxArray::as_octave_value (const mxArray *ptr)
 {
-  return ptr ? ptr->as_octave_value () : octave_value (Matrix ());
+  return ptr ? ptr->as_octave_value () : octave_value ();
 }
 
 octave_value

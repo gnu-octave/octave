@@ -50,9 +50,14 @@ mexFunction (int nlhs, mxArray *plhs[],
 
   mexPrintf ("I have %d inputs and %d outputs\n", nrhs, nlhs);
 
+  /* Demonstrate returning a matrix with a double value */
   mxArray *v = mxCreateDoubleMatrix (1, 1, mxREAL);
   double *data = mxGetPr (v);
   *data = 1.23456789;
-
   plhs[0] = v;
+
+  /* Return empty matrices for any other outputs */
+  int i;
+  for (i = 1; i < nlhs; i++)
+    plhs[i] = mxCreateDoubleMatrix (0, 0, mxREAL);
 }

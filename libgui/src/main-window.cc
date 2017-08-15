@@ -1819,8 +1819,8 @@ main_window::construct (void)
                SIGNAL (file_remove_signal (const QString&, const QString&)),
                editor_window,
                SLOT (handle_file_remove (const QString&, const QString&)));
-      connect (file_browser_window, SIGNAL (file_renamed_signal (void)),
-               editor_window, SLOT (handle_file_renamed (void)));
+      connect (file_browser_window, SIGNAL (file_renamed_signal (bool)),
+               editor_window, SLOT (handle_file_renamed (bool)));
 #endif
 
       octave_link::post_event (this,

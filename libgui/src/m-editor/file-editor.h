@@ -282,7 +282,7 @@ public slots:
   void handle_edit_file_request (const QString& file);
 
   void handle_file_remove (const QString&, const QString&);
-  void handle_file_renamed (void);
+  void handle_file_renamed (bool load_new = true);
 
   // Tells the editor to react on changed settings.
   void notice_settings (const QSettings *settings);
@@ -475,7 +475,10 @@ private:
   QStringList _mru_files;
   QStringList _mru_files_encodings;
 
-  // List of temporarily closed files while they are renamed
+  // List of temporarily closed files for later reloading.
+  // Order: first closed old file
+  //        first new location of closed file
+  //        encoding to use for reload
   QStringList _tmp_closed_files;
 };
 

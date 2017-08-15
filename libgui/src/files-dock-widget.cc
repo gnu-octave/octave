@@ -665,9 +665,13 @@ files_dock_widget::contextmenu_rename (bool)
         {
           new_name = path.absolutePath () + '/' + new_name;
           old_name = path.absolutePath () + '/' + old_name;
-          emit file_remove_signal (old_name, new_name);  // editor: close old
-          path.rename (old_name, new_name);
-          emit file_renamed_signal ();  // editor: load new file
+          // editor: close old
+          emit file_remove_signal (old_name, new_name);
+          // Do the renaming
+          bool st = path.rename (old_name, new_name);
+          // editor: load new/old file depending on success
+          emit file_renamed_signal (st);
+          // Clear cache of file browser
           _file_system_model->revert ();
         }
     }
@@ -709,9 +713,11 @@ files_dock_widget::contextmenu_delete (bool)
             {
               // Close the file in the editor if open
               emit file_remove_signal (info.filePath (), QString ());
-              // Remove the file. This operation might fail, but we will not
-              // reopen a possibly related editor tab in this case.
-              _file_system_model->remove (index);
+              // Remove the file.
+              bool st = _file_system_model->remove (index);
+              // reload the old file if removing was not successful
+              if (! st)
+                emit file_renamed_signal (false);
             }
 
           _file_system_model->revert ();

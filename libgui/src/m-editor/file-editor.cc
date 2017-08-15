@@ -589,6 +589,9 @@ void
 file_editor::handle_file_remove (const QString& old_name,
                                  const QString& new_name)
 {
+  // Clear old lsit of files to reload
+  _tmp_closed_files.clear ();
+
   // Check if old name is a file or directory
   QFileInfo old (old_name);
   if (old.isDir ())
@@ -609,25 +612,21 @@ file_editor::handle_file_remove (const QString& old_name,
       editor_tab->file_has_changed (QString (), true);  // Close the tab
       _no_focus = false;  // Back to normal
 
+      _tmp_closed_files << old_name;  // for reloading if error removing
+
       if (! new_name.isEmpty ())
+        _tmp_closed_files << new_name;  // store new name
+      else
+        _tmp_closed_files << ""; // no new name, just removing this file
+
+      // Get and store the related encoding
+      for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
+           p != editor_tab_map.end (); p++)
         {
-          // New name is set, store new name and its encoding
-          // loading this file after the renaming is complete.
-          // The new name is not signaled after the renaming for being able
-          // to use this construct for renaming a whole directory, too.
-
-          _tmp_closed_files = QStringList ();
-          _tmp_closed_files << new_name;
-
-          // Get and store the related encoding
-          for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
-               p != editor_tab_map.end (); p++)
+          if (editor_tab == p->second.fet_ID)
             {
-              if (editor_tab == p->second.fet_ID)
-                {
-                  _tmp_closed_files << p->second.encoding;
-                  break;
-                }
+              _tmp_closed_files << p->second.encoding;
+              break;
             }
         }
     }
@@ -646,8 +645,6 @@ file_editor::handle_dir_remove (const QString& old_name,
   emit fetab_file_name_query (nullptr);
 
   // Loop over all open files and pick those within old_dir
-  _tmp_closed_files = QStringList ();
-
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
     {
@@ -663,6 +660,8 @@ file_editor::handle_dir_remove (const QString& old_name,
           editor_tab->file_has_changed (QString (), true);  // Close
           _no_focus = false;  // Back to normal
 
+          // Store file for possible later reload
+          _tmp_closed_files << p->first;
 
           // Add the new file path and the encoding for later reloading
           // if new_name is given
@@ -670,20 +669,26 @@ file_editor::handle_dir_remove (const QString& old_name,
             {
               QDir new_dir (new_name);
               _tmp_closed_files << new_dir.absoluteFilePath (rel_path_to_file);
-              _tmp_closed_files << p->second.encoding;
             }
+          else
+            _tmp_closed_files << ""; // no new name, just removing this file
+
+          _tmp_closed_files << p->second.encoding; // store the encoding
         }
     }
 }
 
 // Slot for signal indicating that a file was renamed
 void
-file_editor::handle_file_renamed ()
+file_editor::handle_file_renamed (bool load_new)
 {
   _no_focus = true;  // Remember for not focussing editor
-  for (int i = 0; i < _tmp_closed_files.count (); i = i + 2)
-    request_open_file (_tmp_closed_files.at (i),
-                       _tmp_closed_files.at (i+1));
+  for (int i = 0; i < _tmp_closed_files.count (); i = i + 3)
+    {
+      if (! _tmp_closed_files.at (i + load_new).isEmpty ())
+        request_open_file (_tmp_closed_files.at (i + load_new),
+                           _tmp_closed_files.at (i+2));
+    }
   _no_focus = false;  // Back to normal focus
 }
 

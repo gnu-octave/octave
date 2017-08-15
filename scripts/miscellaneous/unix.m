@@ -51,7 +51,6 @@ endfunction
 
 %!test
 %! cmd = ls_command ();
-%! warning ("off", "Octave:undefined-return-values", "local");
 %! [status, output] = unix (cmd);
 %!
 %! if (isunix ())

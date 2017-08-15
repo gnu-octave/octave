@@ -77,6 +77,10 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       syl
       usage
 
+ ** The "Octave:undefined-return-values" warning ID is obsolete.  Octave
+    now throws an error for any attempts to assign undefined values that
+    might be returned from functions.
+
  ** Deprecated graphics properties.
 
     The following properties or allowed corresponding values have been

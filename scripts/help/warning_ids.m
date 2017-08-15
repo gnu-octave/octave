@@ -334,12 +334,6 @@
 ## elicits a warning if the @code{Octave:str-to-num} warning is enabled.
 ## By default, the @code{Octave:str-to-num} warning is disabled.
 ##
-## @item Octave:undefined-return-values
-## If the @code{Octave:undefined-return-values} warning is disabled,
-## print a warning if a function does not define all the values in
-## the return list which are expected.
-## By default, the @code{Octave:undefined-return-values} warning is enabled.
-##
 ## @item Octave:variable-switch-label
 ## If the @code{Octave:variable-switch-label} warning is enabled, Octave
 ## will print a warning if a switch label is not a constant or constant

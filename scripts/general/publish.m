@@ -1014,25 +1014,24 @@ function doc = eval_code (doc, options)
 endfunction
 
 
-function ___cstr___ = eval_code_helper (___context___, ___code___)
+function cstr = eval_code_helper (context, code)
   ## EVAL_CODE_HELPER evaluates a given string with Octave code in an extra
   ## temporary context and returns a cellstring with the eval output.
 
-  ## FIXME: code may contain potential conflicting variables named ___code___,
-  ## ___context___, or ___cstr___.  Is there a better solution?
-
-  if (isempty (___code___))
+  if (isempty (code))
     return;
   endif
 
-  if (exist (___context___, "file") == 2)
-    load (___context___);
+  load_snippet = "";
+  if (exist (context, "file") == 2)
+    load_snippet = sprintf ("load (\"%s\");", context);
   endif
+  save_snippet = sprintf ("save (\"-binary\", \"%s\");", context);
 
-  ___cstr___ = strsplit (evalc (___code___), "\n");
+  eval (sprintf ("function __eval__ ()\n%s\n%s\n%s\nendfunction",
+                 load_snippet, code, save_snippet));
 
-  clear ___code___;
-  save ("-binary", ___context___);
+  cstr = strsplit (evalc ("__eval__"), "\n");
 endfunction
 
 

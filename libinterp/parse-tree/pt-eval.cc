@@ -482,64 +482,6 @@ namespace octave
   }
 
   void
-  tree_evaluator::initialize_undefined_parameter_list_elements
-    (tree_parameter_list *param_list, const std::string& warnfor,
-     int nargout, const octave_value& val)
-  {
-    bool warned = false;
-
-    int count = 0;
-
-    symbol_table::scope *scope
-      = m_interpreter.require_current_scope ("tree_evaluator::initialize_undefined_parameter_list_elements");
-
-    octave_value tmp = scope->varval (".ignored.");
-    const Matrix ignored = (tmp.is_defined () ? tmp.matrix_value () : Matrix ());
-
-    octave_idx_type k = 0;
-
-    for (tree_decl_elt *elt : *param_list)
-      {
-        if (++count > nargout)
-          break;
-
-        if (! elt->is_variable ())
-          {
-            if (! warned)
-              {
-                warned = true;
-
-                while (k < ignored.numel ())
-                  {
-                    octave_idx_type l = ignored (k);
-                    if (l == count)
-                      {
-                        warned = false;
-                        break;
-                      }
-                    else if (l > count)
-                      break;
-                    else
-                      k++;
-                  }
-
-                if (warned)
-                  {
-                    warning_with_id
-                      ("Octave:undefined-return-values",
-                       "%s: some elements in list of return values are undefined",
-                       warnfor.c_str ());
-                  }
-              }
-
-            octave_lvalue lval = elt->lvalue (this);
-
-            lval.assign (octave_value::op_asn_eq, val);
-          }
-      }
-  }
-
-  void
   tree_evaluator::define_parameter_list_from_arg_vector
     (tree_parameter_list *param_list, const octave_value_list& args)
   {
@@ -578,11 +520,11 @@ namespace octave
   }
 
   octave_value_list
-  tree_evaluator::convert_parameter_list_to_const_vector
-    (tree_parameter_list *param_list, int nargout, const Cell& varargout)
+  tree_evaluator::convert_return_list_to_const_vector
+    (tree_parameter_list *ret_list, int nargout, const Cell& varargout)
   {
     octave_idx_type vlen = varargout.numel ();
-    int len = param_list->length ();
+    int len = ret_list->length ();
 
     // Special case.  Will do a shallow copy.
     if (len == 0)
@@ -593,15 +535,15 @@ namespace octave
 
         int i = 0;
 
-        for (tree_decl_elt *elt : *param_list)
+        for (tree_decl_elt *elt : *ret_list)
           {
             if (elt->is_defined ())
               {
                 octave_value tmp = evaluate (elt);
-                retval(i++) = tmp;
+                retval(i) = tmp;
               }
-            else
-              break;
+
+            i++;
           }
 
         return retval;
@@ -612,7 +554,7 @@ namespace octave
 
         int i = 0;
 
-        for (tree_decl_elt *elt : *param_list)
+        for (tree_decl_elt *elt : *ret_list)
           retval(i++) = evaluate (elt);
 
         for (octave_idx_type j = 0; j < vlen; j++)
@@ -1868,8 +1810,6 @@ namespace octave
               {
                 if (k < n)
                   {
-                    ult.assign (octave_value::op_asn_eq, rhs_val(k));
-
                     if (ult.is_black_hole ())
                       {
                         k++;
@@ -1877,7 +1817,15 @@ namespace octave
                       }
                     else
                       {
-                        retval_list.push_back (rhs_val(k));
+                        octave_value tmp = rhs_val(k);
+
+                        if (tmp.is_undefined ())
+                          error ("element number %d undefined in return list",
+                                 k+1);
+
+                        ult.assign (octave_value::op_asn_eq, tmp);
+
+                        retval_list.push_back (tmp);
 
                         k++;
                       }

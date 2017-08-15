@@ -289,19 +289,14 @@ namespace octave
 
     octave_value evaluate (tree_decl_elt *);
 
-    void
-    initialize_undefined_parameter_list_elements
-      (tree_parameter_list *param_list, const std::string& warnfor,
-       int nargout, const octave_value& val);
-
     void define_parameter_list_from_arg_vector
       (tree_parameter_list *param_list, const octave_value_list& args);
 
     void undefine_parameter_list (tree_parameter_list *param_list);
 
     octave_value_list
-    convert_parameter_list_to_const_vector
-      (tree_parameter_list *param_list, int nargout, const Cell& varargout);
+    convert_return_list_to_const_vector
+      (tree_parameter_list *ret_list, int nargout, const Cell& varargout);
 
     bool eval_decl_elt (tree_decl_elt *elt);
 

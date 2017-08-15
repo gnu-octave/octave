@@ -654,9 +654,6 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
   if (ret_list && ! is_special_expr ())
     {
-      tw.initialize_undefined_parameter_list_elements (ret_list, my_name,
-                                                       nargout, Matrix ());
-
       Cell varargout;
 
       if (ret_list->takes_varargs ())
@@ -667,7 +664,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
             varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
         }
 
-      retval = tw.convert_parameter_list_to_const_vector (ret_list, nargout, varargout);
+      retval = tw.convert_return_list_to_const_vector (ret_list, nargout, varargout);
     }
 
   return retval;

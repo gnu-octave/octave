@@ -2330,7 +2330,8 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   if (strcmp (labelmode, "manual"))
     k = 1;
     ntics = numel (tics);
-    nlabels = numel (labels);
+    labels(end+1:1) = {""};
+    labels = repmat (labels(:), ceil (ntics/numel (labels)), 1);
     fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
              tickdir, ticklength, axispos, mirror);
     labels = strrep (labels, "%", "%%");
@@ -2338,9 +2339,6 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
       if (i < ntics)
         fputs (plot_stream, ", ");
-      endif
-      if (k > nlabels)
-        k = 1;
       endif
     endfor
     fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);

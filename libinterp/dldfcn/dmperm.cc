@@ -143,7 +143,7 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (dmperm_internal (false, args(0), nargout));
+  return dmperm_internal (false, args(0), nargout);
 
 #else
 
@@ -191,7 +191,7 @@ such the numerical rank of the matrix @var{S} is bounded by
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (dmperm_internal (true, args(0), nargout));
+  return dmperm_internal (true, args(0), nargout);
 
 #else
 

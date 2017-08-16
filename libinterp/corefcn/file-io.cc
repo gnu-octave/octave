@@ -1000,7 +1000,7 @@ scanf_internal (octave::interpreter& interp, const std::string& who,
 
   if (nargin == 3 && args(2).is_string ())
     {
-      retval = ovl (os.oscanf (args(1), who));
+      retval = os.oscanf (args(1), who);
     }
   else
     {
@@ -1123,7 +1123,7 @@ character to be read is returned in @var{pos}.
 
   if (nargin == 3 && args(2).is_string ())
     {
-      retval = ovl (os.oscanf (args(1), who));
+      retval = os.oscanf (args(1), who);
     }
   else
     {

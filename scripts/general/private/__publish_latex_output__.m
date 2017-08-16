@@ -71,6 +71,12 @@
 ## @samp{text} (str)
 ##
 ## @item
+## @samp{blockmath} (str)
+##
+## @item
+## @samp{inlinemath} (str)
+##
+## @item
 ## @samp{bold} (str)
 ##
 ## @item
@@ -228,6 +234,14 @@ endfunction
 
 function outstr = do_text (str)
   outstr = ["\n\n" escape_latex(str) "\n\n"];
+endfunction
+
+function outstr = do_blockmath (str)
+  outstr = ["$$" str "$$"];
+endfunction
+
+function outstr = do_inlinemath (str)
+  outstr = ["$" str "$"];
 endfunction
 
 function outstr = do_bold (str)

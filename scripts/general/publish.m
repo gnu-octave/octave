@@ -816,21 +816,51 @@ endfunction
 
 function str = format_text (str, formatter)
   ## FORMAT_TEXT formats inline formats in strings.
-  ##   These are: links, bold, italic, monospaced, (TM), (R)
+  ##   These are: links, block/inline math, bold, italic, monospaced, (TM), (R)
+
+  ## Helper to clarify the following regular expressions.  It is suitable for
+  ## inline formatting, that is delimited literally at start and end by
+  ## `delim`.  `term` is an indicating character for the end delimiter.
+  ##
+  ## Best explained by example ('^' start and '$' end of input):
+  ##
+  ##  Positive matches:
+  ##
+  ##    ^*bold*$
+  ##    ^*bold*.$
+  ##    ^(*bold*)$
+  ##    ^ *bold* $
+  ##    ^Text *bold* text$
+  ##    ^*bold text*$
+  ##
+  ##  Negative matches:
+  ##
+  ##    ^Text*bold*text$
+  ##    ^*bold *$
+  ##    ^* bold* $
+  ##    ^*bold text *$
+  ##
+  regex_helper = @(delim, term) ['(^|(?<=\s)|(?=\W))', delim, ...
+    '(?!\s)[^', term, ']*(?<!\s)', delim, '($|(?=\s)|(?=\W))'];
 
   ## Regular expressions for the formats:
   ##
-  ## * Links "<http://www.someurl.com>"
-  ## * Links "<octave:Function TEXT>"
-  ## * Links "<http://www.someurl.com TEXT>"
-  ## * inline "$" and block "$$" LaTeX math
+  ## 1) Links "<http://www.someurl.com>"
+  ## 2) Links "<octave:Function TEXT>"
+  ## 3) Links "<http://www.someurl.com TEXT>"
+  ## 4) LaTeX block math "$$x^2$$"
+  ## 5) LaTeX inline math "$x^2$"
+  ## 6) Bold *text*
+  ## 7) Italic _text_
+  ## 8) Monospaced |text|
   regexes = {'<\S{3,}[^\s<>]*>', ...
              '<octave:[^\s<>]* *[^<>$]*>', ...
              '<\S{3,}[^\s<>]* *[^<>$]*>', ...
-             '\${1,2}.*?\${1,2}', ...
-             '\*[^*]*\*', ...  # Bold
-             '_[^_]*_', ...    # Italic
-             '\|[^|]*\|'};     # Monospaced
+             regex_helper('\$\$', '$'), ...
+             regex_helper('\$', '$'), ...
+             regex_helper('\*', '*'), ...
+             regex_helper('_', '_'), ...
+             regex_helper('\|', '|')};
 
   ## Function to escape some special characters for the GNU Octave manual,
   ## see https://www.gnu.org/software/texinfo/manual/texinfo/html_node/HTML-Xref-Node-Name-Expansion.html
@@ -873,16 +903,22 @@ function str = format_text (str, formatter)
           txt = format_text (txt(idx+1:end-1), formatter);
           cstr{j} = formatter ("link", url, txt);
         case 4
-          ## inline "$" and block "$$" LaTeX math --> do nothing
+          ## LaTeX block math "$$"
+          txt = cstr{j};
+          cstr{j} = formatter ("blockmath", txt(3:end-2));
         case 5
+          ## LaTeX inline math "$"
+          txt = cstr{j};
+          cstr{j} = formatter ("inlinemath", txt(2:end-1));
+        case 6
           ## Bold
           txt = cstr{j};
           cstr{j} = formatter ("bold", format_text (txt(2:end-1), formatter));
-        case 6
+        case 7
           ## Italic
           txt = cstr{j};
           cstr{j} = formatter ("italic", format_text (txt(2:end-1), formatter));
-        case 7
+        case 8
           ## Monospaced
           txt = cstr{j};
           cstr{j} = formatter ("monospaced", format_text (txt(2:end-1), ...

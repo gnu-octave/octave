@@ -71,6 +71,12 @@
 ## @samp{text} (str)
 ##
 ## @item
+## @samp{blockmath} (str)
+##
+## @item
+## @samp{inlinemath} (str)
+##
+## @item
 ## @samp{bold} (str)
 ##
 ## @item
@@ -107,7 +113,7 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 "});",
 "</script>",
 ["<script type=\"text/javascript\" async ", ...
- "src=\"https://cdn.mathjax.org/mathjax/latest/MathJax.js?", ...
+ "src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?", ...
  "config=TeX-MML-AM_CHTML\"></script>"]);
 
   stylesheet_str = sprintf ("%s\n",
@@ -264,6 +270,14 @@ endfunction
 
 function outstr = do_text (str)
   outstr = ["\n<p>" str "</p>\n"];
+endfunction
+
+function outstr = do_blockmath (str)
+  outstr = ["$$" str "$$"];
+endfunction
+
+function outstr = do_inlinemath (str)
+  outstr = ["$" str "$"];
 endfunction
 
 function outstr = do_bold (str)

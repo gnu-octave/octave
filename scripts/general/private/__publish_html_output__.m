@@ -257,7 +257,7 @@ function outstr = do_graphic (str)
 endfunction
 
 function outstr = do_html (str)
-  outstr = str;
+  outstr = ["\n" str "\n"];
 endfunction
 
 function outstr = do_latex (str)

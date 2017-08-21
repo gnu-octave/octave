@@ -587,8 +587,34 @@ function p_content = parse_paragraph_content (content)
     return;
   endif
 
+  ## Extract <html> and <latex> blocks recursively.
+  content_str = strjoin (content, "\n");
+  tags = {"html", "latex"};
+  for i = 1:length(tags)
+    tok = regexp (content_str, ...
+      ['(.*?)(^|\n\n)(<', tags{i}, '>)\n(.*?)\n(<\/', ...
+        tags{i}, '>)($|\n\n)(.*)'], "tokens", "once");
+    if (! isempty (tok))
+      ## If there was some text before that block --> recursion
+      if (! strcmpi (tok{1}, ["<", tags{i}, ">"]))
+        p_content = parse_paragraph_content (strsplit (tok{1}, "\n"));
+        tok(1:2) = [];
+      endif
+      ## Extract the block content
+      p_content{end+1}.type = tags{i};
+      p_content{end}.content = tok{2};
+      ## If there was some text after that block --> recursion
+      if (length (tok) == 5)
+        p_content = [p_content, ...
+          parse_paragraph_content(strsplit (tok{5}, "\n"))];
+      endif
+      return;
+    endif
+  endfor
+
   ## Split into blocks separated by empty lines
   idx = [0, find(cellfun (@isempty, content)), length(content) + 1];
+
   ## For each block
   for i = find (diff (idx) > 1)
     block = content(idx(i) + 1:idx(i+1) - 1);
@@ -652,58 +678,21 @@ function p_content = parse_paragraph_content (content)
       continue;
     endif
 
-    ## Parse remaining blocks line by line
-    j = 1;
-    while (j <= numel (block))
-      ## HTML markup
-      if (strcmpi (block{j}, "<html>"))
-        start_html = j + 1;
-        while (j < numel (block) && ! strcmpi (block{j}, "</html>"))
-          j++;
-        endwhile
-        if (j == numel (block) && ! strcmpi (block{j}, "</html>"))
-          warning ("publish: no closing </html> found");
-        else
-          j++;  # Skip closing tag
-        endif
-        if (j > start_html)
-          p_content{end+1}.type = "html";
-          p_content{end}.content = strjoin (block(start_html:j-2), "\n");
-        endif
-      ## LaTeX markup
-      elseif (strcmpi (block{j}, "<latex>"))
-        start_latex = j + 1;
-        while (j < numel (block) && ! strcmpi (block{j}, "</latex>"))
-          j++;
-        endwhile
-        if (j == numel (block) && ! strcmpi (block{j}, "</latex>"))
-          warning ("publish: no closing </latex> found");
-        else
-          j++;  # Skip closing tag
-        endif
-        if (j > start_latex)
-          p_content{end+1}.type = "latex";
-          p_content{end}.content = strjoin (block(start_latex:j-2), "\n");
-        endif
-      ## Remaining normal text or markups belonging to normal text
-      ## that are handled while output generation:
-      ##
-      ## * Italic "_", bold "*", and monospaced "|" text
-      ## * Inline "$" and block "$$" LaTeX math
-      ## * Links
-      ## * Trademark symbols
-      else
-        if (j == 1 || isempty (p_content)
-            || ! strcmp (p_content{end}.type, "text"))
-          p_content{end+1}.type = "text";
-          p_content{end}.content = block{j};
-        else
-          p_content{end}.content = strjoin ({p_content{end}.content, ...
-                                             block{j}}, "\n");
-        endif
-        j++;
-      endif
-    endwhile
+    ## Now it can be only normal text or markups belonging to normal text
+    ## that are handled while output generation:
+    ##
+    ## * Italic "_", bold "*", and monospaced "|" text
+    ## * Inline "$" and block "$$" LaTeX math
+    ## * Links
+    ## * Trademark symbols
+    block = strjoin (block, "\n");
+    if (isempty (p_content) || ! strcmp (p_content{end}.type, "text"))
+      p_content{end+1}.type = "text";
+      p_content{end}.content = block;
+    else
+      p_content{end}.content = strjoin ({p_content{end}.content, block}, ...
+                                        "\n");
+    endif
   endfor
 endfunction
 

@@ -225,7 +225,7 @@ function outstr = do_html (str)
 endfunction
 
 function outstr = do_latex (str)
-  outstr = str;
+  outstr = ["\n" str "\n"];
 endfunction
 
 function outstr = do_link (url_str, str)

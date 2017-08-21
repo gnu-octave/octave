@@ -225,6 +225,30 @@ plot (x,y)
 # </html>
 #
 
+%% HTML Markup with empty lines
+% <html>
+% <table><tr>
+% <td style="border: 1px solid black;">one</td>
+% <td style="border: 1px solid black;">two</td></tr>
+% </table>
+%
+% and some text.
+% </html>
+%
+
+## HTML Markup with empty lines
+# <html>
+# <table>
+# <tr>
+# <td style="border: 1px solid black;">one</td>
+# <td style="border: 1px solid black;">two</td>
+# </tr>
+# </table>
+#
+# and some text.
+# </html>
+#
+
 %% LaTeX Markup
 % <latex>
 % \begin{equation}
@@ -237,6 +261,30 @@ plot (x,y)
 
 ## LaTeX Markup
 # <latex>
+# \begin{equation}
+# \begin{pmatrix}
+# 1 & 2 \\ 3 & 4
+# \end{pmatrix}
+# \end{equation}
+# </latex>
+#
+
+%% LaTeX Markup with empty lines
+% <latex>
+% Some text
+%
+% \begin{equation}
+% \begin{pmatrix}
+% 1 & 2 \\ 3 & 4
+% \end{pmatrix}
+% \end{equation}
+% </latex>
+%
+
+## LaTeX Markup with empty lines
+# <latex>
+# Some text
+#
 # \begin{equation}
 # \begin{pmatrix}
 # 1 & 2 \\ 3 & 4

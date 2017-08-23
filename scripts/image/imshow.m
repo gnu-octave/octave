@@ -224,7 +224,7 @@ endfunction
 %!demo
 %! clf;
 %! imshow ("default.img");
-%! colormap (autumn (64));
+%! colormap (gca, autumn (64));
 
 %!demo
 %! clf;
@@ -245,7 +245,7 @@ endfunction
 %!demo
 %! clf;
 %! imshow (rand (100, 100));
-%! colormap (jet (64));
+%! colormap (gca, jet (64));
 %! title ({"imshow with random 100x100 matrix", "colormap() makes color image"});
 
 %!demo

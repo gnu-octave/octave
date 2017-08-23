@@ -198,8 +198,13 @@ function hax = newplot (hsave = [])
           delete (ca);
           ca = axes ();
         elseif (do_reset)
+          rcn = getappdata (ca, "__subplotrcn__");
           delete (allchild (ca));
           reset (ca);
+          ## Reinstall listeners for subplot
+          if (! isempty (rcn))
+            subplot (rcn{:}, ca)
+          endif
         endif
       endif
   endswitch

@@ -16,5 +16,5 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%!test <38236>
+%!test <*38236>
 %! u_vr

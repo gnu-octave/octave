@@ -191,7 +191,7 @@ namespace octave
 
     JVMArgs (void)
     {
-      vm_args.version = JNI_VERSION_1_2;
+      vm_args.version = JNI_VERSION_1_6;
       vm_args.nOptions = 0;
       vm_args.options = nullptr;
       vm_args.ignoreUnrecognized = false;
@@ -591,12 +591,12 @@ initialize_jvm (void)
       // At least one JVM exists, try to attach to it
 
       switch (jvm->GetEnv (reinterpret_cast<void **> (&current_env),
-                           JNI_VERSION_1_2))
+                           JNI_VERSION_1_6))
         {
         case JNI_EDETACHED:
           // Attach the current thread
           JavaVMAttachArgs vm_args;
-          vm_args.version = JNI_VERSION_1_2;
+          vm_args.version = JNI_VERSION_1_6;
           vm_args.name = const_cast<char *> ("octave");
           vm_args.group = nullptr;
           if (jvm->AttachCurrentThread (reinterpret_cast<void **> (&current_env),
@@ -710,7 +710,7 @@ thread_jni_env (void)
   JNIEnv *env = nullptr;
 
   if (jvm)
-    jvm->GetEnv (reinterpret_cast<void **> (&env), JNI_VERSION_1_2);
+    jvm->GetEnv (reinterpret_cast<void **> (&env), JNI_VERSION_1_6);
 
   return env;
 }

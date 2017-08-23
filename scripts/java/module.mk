@@ -36,7 +36,10 @@ JAVA_CLASSES = $(JAVA_SRC:.java=.class)
 
 $(%canon_reldir%_JAVA_CLASSES) : %.class : %.java | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(MKDIR_P) %reldir%/$(org_octave_dir) && \
-		( cd $(srcdir)/scripts/java; "$(JAVAC)" -source 1.3 -target 1.3 -Xlint:-options -d $(abs_top_builddir)/scripts/java $(org_octave_dir)/$(<F) )
+	( cd $(srcdir)/scripts/java; \
+	  "$(JAVAC)" -source 1.6 -target 1.6 -Xlint:-options \
+	             -d $(abs_top_builddir)/scripts/java \
+	             $(org_octave_dir)/$(<F) )
 
 if AMCOND_HAVE_JAVA
 %reldir%/octave.jar: $(%canon_reldir%_JAVA_CLASSES)

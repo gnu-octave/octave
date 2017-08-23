@@ -132,7 +132,7 @@ variable_editor::construct_tool_bar ()
 
   QToolButton *plot_tool_button = new QToolButton (tool_bar);
   plot_tool_button->setText (tr ("Plot"));
-  plot_tool_button->setIcon (resource_manager::icon("logo"));//QIcon (":/actions/icons/gear.png")); // TODO
+  plot_tool_button->setIcon (resource_manager::icon ("applications-system"));
 
   plot_tool_button->setPopupMode (QToolButton::InstantPopup);
 
@@ -1111,6 +1111,18 @@ void variable_editor::notice_settings(const QSettings *settings)
   int toolsize = settings->value("variable_editor/toolbar_size",QVariant(0)).toInt();
   if (toolsize > 0)
       tool_bar->setIconSize(QSize(toolsize,toolsize));
+
+  // Icon size in the toolbar
+  int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();
+  QStyle *st = style ();
+  int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
+
+  if (icon_size_settings == 1)
+    icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
+  else if (icon_size_settings == -1)
+    icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
+
+  tool_bar->setIconSize (QSize (icon_size,icon_size));
 }
 
 /// Also updates the font

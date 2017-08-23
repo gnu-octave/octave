@@ -59,7 +59,6 @@ PKG_ADD_FILES += %reldir%/PKG_ADD
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 scripts_EXTRA_DIST += \
-  $(%canon_reldir%_JAR_FILES) \
   $(%canon_reldir%_JAVA_SRC)
 
 scripts_CLEANFILES += \

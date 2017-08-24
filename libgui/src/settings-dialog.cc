@@ -601,7 +601,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->varedit_fontSize->setValue(settings->value("variable_editor/font_size",QVariant(10)).toInt());
   ui->varedit_useTerminalFont->setChecked(settings->value("variable_editor/use_terminal_font",false).toBool());
   ui->varedit_alternate->setChecked(settings->value("variable_editor/alternate_rows",QVariant(false)).toBool());
-  ui->varedit_toolbarSize->setValue(settings->value("variable_editor/toolbar_size",24).toInt());
 
   // variable editor colors
   read_varedit_colors(settings);
@@ -1067,7 +1066,6 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue("variable_editor/alternate_rows",ui->varedit_alternate->isChecked());
   settings->setValue("variable_editor/font_name",ui->varedit_font->currentFont().family());
   settings->setValue("variable_editor/font_size",ui->varedit_fontSize->value());
-  settings->setValue("variable_editor/toolbar_size",ui->varedit_toolbarSize->value());
   write_varedit_colors(settings);
 
   // shortcuts

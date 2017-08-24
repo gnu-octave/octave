@@ -1108,9 +1108,6 @@ void variable_editor::notice_settings(const QSettings *settings)
       table_colors.replace (i,setting_color);
     }
   update_colors();
-  int toolsize = settings->value("variable_editor/toolbar_size",QVariant(0)).toInt();
-  if (toolsize > 0)
-      tool_bar->setIconSize(QSize(toolsize,toolsize));
 
   // Icon size in the toolbar
   int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();

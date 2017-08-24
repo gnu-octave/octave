@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>8</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -2672,8 +2672,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>384</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2722,19 +2722,6 @@
                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
-               </item>
-               <item row="2" column="6">
-                <spacer name="horizontalSpacer_18">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
                </item>
                <item row="0" column="5">
                 <widget class="QCheckBox" name="varedit_useTerminalFont">
@@ -2798,6 +2785,9 @@
                </item>
                <item row="1" column="3" colspan="2">
                 <widget class="QComboBox" name="varedit_autofitType">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="currentIndex">
                   <number>0</number>
                  </property>
@@ -2813,31 +2803,18 @@
                  </item>
                 </widget>
                </item>
-               <item row="1" column="5">
-                <widget class="QLabel" name="label_28">
-                 <property name="text">
-                  <string>Toolbar Size</string>
+               <item row="2" column="6">
+                <spacer name="horizontalSpacer_18">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
                  </property>
-                </widget>
-               </item>
-               <item row="1" column="6">
-                <widget class="QSpinBox" name="varedit_toolbarSize">
-                 <property name="minimum">
-                  <number>8</number>
-                 </property>
-                 <property name="maximum">
-                  <number>64</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>8</number>
-                 </property>
-                 <property name="value">
-                  <number>32</number>
-                 </property>
-                </widget>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -3449,6 +3426,22 @@
     <hint type="destinationlabel">
      <x>488</x>
      <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>varedit_autoFitColumnWidth</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>varedit_autofitType</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>334</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>429</x>
+     <y>98</y>
     </hint>
    </hints>
   </connection>

@@ -2350,7 +2350,7 @@ main_window::construct_window_menu (QMenuBar *p)
             (window_menu, tr ("Documentation"), false, doc_browser_window);
 
   _variable_editor_action = construct_window_menu_item
-            (window_menu, tr ("Documentation"), false, variable_editor_window);
+            (window_menu, tr ("Variable Editor"), false, variable_editor_window);
 
   window_menu->addSeparator ();
 
@@ -2662,6 +2662,8 @@ main_window::configure_shortcuts ()
   shortcut_manager::set_shortcut (_show_editor_action, "main_window:show_editor");
   shortcut_manager::set_shortcut (_show_documentation_action,
                                   "main_window:show_doc");
+  shortcut_manager::set_shortcut (_show_variable_editor_action,
+                                  "main_window:show_variable_editor");
   shortcut_manager::set_shortcut (_command_window_action, "main_window:command");
   shortcut_manager::set_shortcut (_history_action, "main_window:history");
   shortcut_manager::set_shortcut (_workspace_action,  "main_window:workspace");

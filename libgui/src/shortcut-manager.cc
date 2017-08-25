@@ -151,6 +151,8 @@ shortcut_manager::do_init_data ()
         prefix + ctrl_shift + Qt::Key_4);
   init (tr ("Show Documentation"), "main_window:show_doc",
         prefix + ctrl_shift + Qt::Key_5);
+  init (tr ("Show Variable Editor"), "main_window:show_variable_editor",
+        prefix + ctrl_shift + Qt::Key_6);
   init (tr ("Command Window"), "main_window:command",
         prefix + ctrl + Qt::Key_0);
   init (tr ("Command History"), "main_window:history",
@@ -163,6 +165,8 @@ shortcut_manager::do_init_data ()
         prefix + ctrl + Qt::Key_4);
   init (tr ("Documentation"), "main_window:doc",
         prefix + ctrl + Qt::Key_5);
+  init (tr ("Variable Editor"), "main_window:variable_editor",
+        prefix + ctrl + Qt::Key_6);
   init (tr ("Reset Default Window Layout"), "main_window:reset", QKeySequence ());
 
   // help

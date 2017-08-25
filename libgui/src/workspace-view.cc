@@ -150,6 +150,9 @@ workspace_view::workspace_view (QWidget *p)
   connect (view, SIGNAL (customContextMenuRequested (const QPoint&)),
            this, SLOT (contextmenu_requested (const QPoint&)));
 
+  connect (view, SIGNAL (doubleClicked (QModelIndex)),
+           this, SLOT (handle_contextmenu_edit (void)));
+
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
 
@@ -309,6 +312,9 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
     {
       QString var_name = get_var_name (index);
 
+      menu.addAction (tr ("Open in Variable Editor"), this,
+                      SLOT (handle_contextmenu_edit ()));
+
       menu.addAction (tr ("Copy name"), this,
                       SLOT (handle_contextmenu_copy ()));
 
@@ -326,9 +332,6 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
           rename->setDisabled (true);
           rename->setToolTip (tr ("Only top-level symbols may be renamed"));
         }
-
-      menu.addAction (tr ("Open in Variable Editor"), this,
-                      SLOT (handle_contextmenu_edit ()));
 
       menu.addSeparator ();
 

@@ -176,10 +176,8 @@ variable_editor::construct_tool_bar ()
 
 
   tool_bar->addSeparator ();
-  tool_bar->addAction
-    (QIcon (":/actions/icons/arrow_up.png"),
-     tr ("Up"),
-     this, SLOT (up ()));
+  tool_bar->addAction (QIcon (resource_manager::icon ("go-up")), tr ("Up"),
+                       this, SLOT (up ()));
 
   tool_bar->setEnabled (false);  // Disabled when no tab is present
 }

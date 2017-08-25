@@ -383,10 +383,10 @@ Undocumented internal function.
 }
 
 DEFUN (openvar, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} openvar (@var{name})\n\
-Open the variable @var{name} in the GUI Variable Editor.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} openvar (@var{name})
+Open the variable @var{name} in the graphical Variable Editor.
+@end deftypefn */)
 {
   octave_value retval;
 

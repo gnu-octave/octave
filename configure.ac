@@ -1938,7 +1938,18 @@ if test $check_fltk = yes; then
         ;;
       esac
     done
-    FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
+    ## Split -L and -l options into FLTK_LDFLAGS and FLTK_LIBS
+    fltk_ldflags=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
+    for fltk_option in $fltk_ldflags; do
+      case $fltk_option in
+        -l*)
+          FLTK_LIBS="$FLTK_LIBS $fltk_option"
+        ;;
+        *)
+          FLTK_LDFLAGS="$FLTK_LDFLAGS $fltk_option"
+        ;;
+      esac
+    done
 
     case $host_os in
       mingw*)

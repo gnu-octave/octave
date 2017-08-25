@@ -128,6 +128,12 @@ sub split_info
 
       next if (length ($symbol) > 2 && $symbol =~ m/$private_name_pat/);
 
+      if (! defined ($doc))
+      {
+        warn "mk-doc-cache.pl: function '$symbol' may be undocumented";
+        next;
+      }
+
       $doc =~ s/^[\r\n]+//;
       next if (! $doc);
 

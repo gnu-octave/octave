@@ -180,6 +180,8 @@ variable_editor::construct_tool_bar ()
     (QIcon (":/actions/icons/arrow_up.png"),
      tr ("Up"),
      this, SLOT (up ()));
+
+  tool_bar->setEnabled (false);  // Disabled when no tab is present
 }
 
 /*variable_editor::~variable_editor ()
@@ -265,6 +267,10 @@ variable_editor::edit_variable (const QString &name)
   page->setProperty ("data", QVariant::fromValue (table_data (table)));
   int tab_idx = tab_widget->addTab (page, name);
   tab_widget->setCurrentIndex (tab_idx);
+
+  if (tab_widget->count () == 1)
+    tool_bar->setEnabled (true);  // This is the first tab -> enable tool bar
+
   if (autofit)
     {
       table->resizeColumnsToContents();
@@ -326,6 +332,10 @@ variable_editor::closeTab (int idx)
   QWidget *const wdgt = tab_widget->widget (idx);
   tab_widget->removeTab (idx);
   delete wdgt;
+
+  if (tab_widget->count () == 0)
+    tool_bar->setEnabled (false);  // This was the last tab -> disable tool bar
+
 }
 
 void

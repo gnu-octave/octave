@@ -667,7 +667,9 @@ endfunction
 %!   a = logspace (-5, 1, 10);
 %!   loglog (a, -a);
 %!   axis tight;
-%!   assert (axis (), [1e-5, 10, -10, -1e-5]);
+%!   ## Compare to powers of 10 rather than exponential literals because of an
+%!   ## upstream bug in mingw-w64: https://sourceforge.net/p/mingw-w64/bugs/466/
+%!   assert (axis (), [10^-5, 10, -10, -10^-5]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

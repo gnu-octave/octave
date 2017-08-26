@@ -87,7 +87,7 @@ get_user_code (const std::string& fname)
         {
           auto beg = name.begin () + 2;  // never have @/method
           auto end = name.end () - 1;    // never have trailing '/'
-          std::replace (beg, end, octave::sys::file_ops::dir_sep_char (), '/');
+          std::replace (beg, end, '/', octave::sys::file_ops::dir_sep_char ());
         }
 
       size_t name_len = name.length ();

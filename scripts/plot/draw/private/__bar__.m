@@ -200,7 +200,9 @@ function varargout = __bar__ (vertical, func, varargin)
                    have_line_spec, bv, newargs{:});
 
       if (! ishold ())
-        if (all (x(:,1) == fix (x(:,1))))
+        if (numel (x(:,1)) <= 15 && all (x(:,1) == fix (x(:,1))))
+          ## Set manual ticks, rather than relying on autoselection,
+          ## when ticks are a small number of integers.
           if (vertical)
             set (hax, "xtick", x(:,1));
           else

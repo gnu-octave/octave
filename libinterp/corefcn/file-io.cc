@@ -2368,6 +2368,7 @@ Unsigned character.
 64-bit unsigned integer.
 
 @item  @qcode{"single"}
+@itemx @qcode{"float"}
 @itemx @qcode{"float32"}
 @itemx @qcode{"real*4"}
 32-bit floating point number.
@@ -2402,8 +2403,6 @@ Unsigned integer (size is platform dependent).
 @itemx @qcode{"unsigned long"}
 Unsigned long integer (size is platform dependent).
 
-@item @qcode{"float"}
-Single precision floating point number (size is platform dependent).
 @end table
 
 @noindent

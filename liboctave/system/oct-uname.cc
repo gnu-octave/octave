@@ -51,6 +51,7 @@ namespace octave
           m_release = release;
           m_version = version;
           m_machine = machine;
+          msg = "";
         }
     }
   }

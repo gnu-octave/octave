@@ -1061,6 +1061,15 @@ system-dependent error message.
   return ovl (m, sysinfo.error (), sysinfo.message ());
 }
 
+/*
+%!test <51869>
+%! [info, status, msg] = uname ();
+%! if (status == 0)
+%!   assert (isstruct (info))
+%!   assert (ischar (msg) && isempty (msg))
+%! endif
+*/
+
 DEFUNX ("unlink", Funlink, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{err}, @var{msg}] =} unlink (@var{file})

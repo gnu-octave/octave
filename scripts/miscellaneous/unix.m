@@ -39,7 +39,12 @@ function [status, text] = unix (command, echo_arg)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (isunix ())
+  endif
+
+  status = 1;
+  text = "";
+
+  if (isunix ())
     [status, text] = system (command);
     if (nargin > 1 || nargout == 0)
       printf ("%s\n", text);
@@ -58,8 +63,8 @@ endfunction
 %!   assert (ischar (output));
 %!   assert (! isempty (output));
 %! else
-%!   assert (status, []);
-%!   assert (output, []);
+%!   assert (status, 1);
+%!   assert (output, "");
 %! endif
 
 %!error unix ()

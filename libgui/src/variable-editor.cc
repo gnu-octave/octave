@@ -70,7 +70,6 @@ variable_editor::variable_editor (QWidget *p)
    */
 
   setObjectName ("variable_editor");
-  setWindowTitle (tr ("Variable Editor"));
   set_title (tr ("Variable Editor"));
   setStatusTip (tr ("Edit variables."));
   setWindowIcon (QIcon (":/actions/icons/logo.png"));

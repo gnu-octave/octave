@@ -91,7 +91,8 @@ is stored in the audio file.
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    error ("audioread: failed to open input file %s", filename.c_str ());
+    error ("audioread: failed to open input file '%s': %s",
+           filename.c_str (), sf_strerror (file));
 
   octave::unwind_protect frame;
 
@@ -403,7 +404,8 @@ Comment.
   SNDFILE *file = sf_open (filename.c_str (), SFM_WRITE, &info);
 
   if (! file)
-    error ("audiowrite: failed to open output file %s", filename.c_str ());
+    error ("audiowrite: failed to open output file '%s': %s",
+           filename.c_str (), sf_strerror (file));
 
   octave::unwind_protect frame;
 
@@ -516,7 +518,8 @@ Audio bitrate.  Unused, only present for compatibility with @sc{matlab}.
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    error ("audioinfo: failed to open file '%s'", filename.c_str ());
+    error ("audioinfo: failed to open input file '%s': %s",
+           filename.c_str (), sf_strerror (file));
 
   octave::unwind_protect frame;
 

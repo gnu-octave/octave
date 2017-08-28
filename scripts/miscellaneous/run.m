@@ -113,15 +113,15 @@ endfunction
 %! test_function = fullfile (tmp_dir, "tf.m");
 %! fid = fopen (test_function, "w");
 %! fprintf (fid, "function tf ()\n");
-%! fprintf (fid, "  addpath (\"%s\");\n", tmp_dir);
+%! fprintf (fid, "  addpath ('%s');\n", tmp_dir);
 %! fprintf (fid, "endfunction\n");
 %! fclose (fid);
 %! ## Check if temporary directory is on the loadpath.
 %! ## Function 'dir_in_loadpath' is broken for this use case, so code a test.
-%! dirs = strsplit (path (), ":");
+%! dirs = strsplit (path (), pathsep ());
 %! tstval1 = any (strcmp (tmp_dir, dirs));
 %! run (test_function);
-%! dirs = strsplit (path (), ":");
+%! dirs = strsplit (path (), pathsep ());
 %! tstval2 = any (strcmp (tmp_dir, dirs));
 %! unlink (test_function);
 %! rmdir (tmp_dir);

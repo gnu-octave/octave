@@ -7002,11 +7002,16 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               retval(1) = std::pow (10., retval(1));
               return retval;
             }
-          if (min_val <= 0 && max_val > 0)
+          if (min_val <= 0)
             {
-              warning_with_id ("Octave:negative-data-log-axis",
-                               "axis: omitting non-positive data in log plot");
-              min_val = min_pos;
+              if (max_val > 0)
+                {
+                  warning_with_id ("Octave:negative-data-log-axis",
+                                   "axis: omitting non-positive data in log plot");
+                  min_val = min_pos;
+                }
+              else if (max_val == 0)
+                max_val = max_neg;
             }
           // FIXME: maybe this test should also be relative?
           if (std::abs (min_val - max_val)

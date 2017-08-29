@@ -361,7 +361,8 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           // Allocate result.
           change_capacity (nzm > new_nz ? nzm : new_nz);
           xcidx (0) = 0;
-          xcidx (1) = new_nz;
+          for (octave_idx_type j = 0; j < nc; j++)
+            xcidx (j+1) = j >= c(0) ? new_nz : 0;
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
 
@@ -509,7 +510,8 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       // Allocate result.
       change_capacity (nzm > new_nz ? nzm : new_nz);
       xcidx (0) = 0;
-      xcidx (1) = new_nz;
+      for (octave_idx_type j = 0; j < nc; j++)
+        xcidx (j+1) = j >= c(0) ? new_nz : 0;
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 
@@ -645,6 +647,12 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       maybe_compress (true);
     }
 }
+
+/*
+%!assert <51880> (sparse (1:2, 2, 1:2, 2, 2), sparse ([0, 1; 0, 2]))
+%!assert <51880> (sparse (1:2, 1, 1:2, 2, 2), sparse ([1, 0; 2, 0]))
+%!assert <51880> (sparse (1:2, 2, 1:2, 2, 3), sparse ([0, 1, 0; 0, 2, 0]))
+*/
 
 template <typename T>
 Sparse<T>::Sparse (const Array<T>& a)

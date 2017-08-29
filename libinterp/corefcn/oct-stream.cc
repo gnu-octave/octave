@@ -5057,29 +5057,93 @@ namespace octave
 
           case 'd': case 'i':
             {
-              int tmp;
-
-              if (octave_scan (is, *elt, &tmp))
+              switch (elt->modifier)
                 {
-                  if (! discard)
-                    retval = tmp;
+                case 'h':
+                  {
+                    int16_t tmp;
+                    if (octave_scan (is, *elt, &tmp))
+                      {
+                        if (! discard)
+                          retval = tmp;
+                      }
+                    else
+                      quit = true;
+                  }
+                  break;
+
+                case 'l':
+                  {
+                    int64_t tmp;
+                    if (octave_scan (is, *elt, &tmp))
+                      {
+                        if (! discard)
+                          retval = tmp;
+                      }
+                    else
+                      quit = true;
+                  }
+                  break;
+
+                default:
+                  {
+                    int32_t tmp;
+                    if (octave_scan (is, *elt, &tmp))
+                      {
+                        if (! discard)
+                          retval = tmp;
+                      }
+                    else
+                      quit = true;
+                  }
+                  break;
                 }
-              else
-                quit = true;
             }
             break;
 
           case 'o': case 'u': case 'x':
             {
-              long int tmp;
-
-              if (octave_scan (is, *elt, &tmp))
+              switch (elt->modifier)
                 {
-                  if (! discard)
-                    retval = tmp;
+                case 'h':
+                  {
+                    uint16_t tmp;
+                    if (octave_scan (is, *elt, &tmp))
+                      {
+                        if (! discard)
+                          retval = tmp;
+                      }
+                    else
+                      quit = true;
+                  }
+                  break;
+
+                case 'l':
+                  {
+                    uint64_t tmp;
+                    if (octave_scan (is, *elt, &tmp))
+                      {
+                        if (! discard)
+                          retval = tmp;
+                      }
+                    else
+                      quit = true;
+                  }
+                  break;
+
+                default:
+                  {
+                    uint32_t tmp;
+                    if (octave_scan (is, *elt, &tmp))
+                      {
+                        if (! discard)
+                          retval = tmp;
+                      }
+                    else
+                      quit = true;
+                  }
+                  break;
                 }
-              else
-                quit = true;
             }
             break;
 

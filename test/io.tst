@@ -312,6 +312,20 @@
 %!assert (sscanf ('7777777777777777777777', '%lo'), double (intmax ("uint64")))
 %!assert (sscanf ('ffffffffffffffffffffff', '%lx'), double (intmax ("uint64")))
 
+## bug 51794
+%!assert (sscanf ('2147483647', '%d', 'C'), 2147483647)
+%!assert (sscanf ('2147483647', '%i', 'C'), 2147483647)
+%!assert (sscanf ('4294967295', '%u', 'C'), 4294967295)
+%!assert (sscanf ('37777777777', '%o', 'C'), 4294967295)
+%!assert (sscanf ('ffffffff', '%x', 'C'), 4294967295)
+## FIXME: scanf should return int64/uint64 if all conversions are %l[dioux].
+## Until then only test values that are within precision range of a double.
+%!assert (sscanf ('281474976710655', '%ld', 'C'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%li', 'C'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%lu', 'C'), 281474976710655)
+%!assert (sscanf ('7777777777777777', '%lo', 'C'), 281474976710655)
+%!assert (sscanf ('ffffffffffff', '%lx', 'C'), 281474976710655)
+
 %!test
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);

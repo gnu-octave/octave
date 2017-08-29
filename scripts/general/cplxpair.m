@@ -25,12 +25,13 @@
 ##
 ## The negative imaginary complex numbers are placed first within each pair.
 ## All real numbers (those with
-## @code{abs (imag (@var{z}) / @var{z}) < @var{tol}}) are placed after the
-## complex pairs.
+## @code{abs (imag (@var{z})) / abs (@var{z}) < @var{tol}}) are placed after
+## the complex pairs.
 ##
-## @var{tol} is a weighting factor which determines the tolerance of matching.
-## The default value is 100 and the resulting tolerance for a given complex
-## pair is @code{100 * eps (abs (@var{z}(i)))}.
+## @var{tol} is a weighting factor in the range [0, 1) which determines the
+## tolerance of the matching.  The default value is @code{100 * eps} and the
+## resulting tolerance for a given complex pair is
+## @code{@var{tol} * abs (@var{z}(i)))}.
 ##
 ## By default the complex pairs are sorted along the first non-singleton
 ## dimension of @var{z}.  If @var{dim} is specified, then the complex pairs are
@@ -47,11 +48,6 @@
 ## @end smallexample
 ## @end deftypefn
 
-## FIXME: subsort returned pairs by imaginary magnitude
-## FIXME: Why doesn't exp (2i*pi*[0:4]'/5) produce exact conjugates?  Does
-## FIXME: it in Matlab?  The reason is that complex pairs are supposed
-## FIXME: to be exact conjugates, and not rely on a tolerance test.
-
 ## 2006-05-12 David Bateman - Modified for NDArrays
 
 function y = cplxpair (z, tol, dim)
@@ -67,9 +63,9 @@ function y = cplxpair (z, tol, dim)
 
   cls = ifelse (isa (z, "single"), "single", "double");
   if (nargin < 2 || isempty (tol))
-    tol = 100*eps(cls);
+    tol = 100*eps (cls);
   elseif (! isscalar (tol) || tol < 0 || tol >= 1)
-    error ("cplxpair: TOL must be a scalar number such that 0 <= TOL < 1");
+    error ("cplxpair: TOL must be a scalar number in the range 0 <= TOL < 1");
   endif
 
   nd = ndims (z);
@@ -84,7 +80,7 @@ function y = cplxpair (z, tol, dim)
     endif
   endif
 
-  ## Move dimension to treat to first position, and convert to a 2-D matrix.
+  ## Move dimension to analyze to first position, and convert to a 2-D matrix.
   perm = [dim:nd, 1:dim-1];
   z = permute (z, perm);
   sz = size (z);
@@ -93,20 +89,17 @@ function y = cplxpair (z, tol, dim)
   z = reshape (z, n, m);
 
   ## Sort the sequence in terms of increasing real values.
-  [q, idx] = sort (real (z), 1);
+  [~, idx] = sort (real (z), 1);
   z = z(idx + n * ones (n, 1) * [0:m-1]);
 
-
   ## Put the purely real values at the end of the returned list.
-  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin (cls)) ...
-                       <= tol);
+  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin (cls)) <= tol);
   ## Force values detected to be real within tolerance to actually be real.
   z(idxi + n*(idxj-1)) = real (z(idxi + n*(idxj-1)));
   q = sparse (idxi, idxj, 1, n, m);
   nr = sum (q, 1);
-  [q, idx] = sort (q, 1);
-  si = size(idx);
-  midx=idx+[0:si(2)-1]*si(1);
+  [~, idx] = sort (q, 1);
+  midx = idx + rows (idx) * ones (rows (idx), 1) * [0:columns(idx)-1];
   z = z(midx);
   y = z;
 
@@ -119,12 +112,11 @@ function y = cplxpair (z, tol, dim)
         error ("cplxpair: could not pair all complex numbers");
       endif
       [v, idx] = min (abs (z(i+1:p,j) - conj (z(i,j))));
-      if (v >= tol*abs(z(i,j)))
+      if (v >= tol * abs (z(i,j)))
         error ("cplxpair: could not pair all complex numbers");
       endif
-      ## For pairs, select the one with positive imaginary part
-      ## and use it and it's conjugate, but the pair with negative
-      ## imaginary part first
+      ## For pairs, select the one with positive imaginary part and use it and
+      ## it's conjugate, but list the negative imaginary pair first.
       if (imag (z(i,j)) > 0)
         y([i, i+1],j) = [conj(z(i,j)), z(i,j)];
       else
@@ -167,18 +159,18 @@ endfunction
 %!assert (cplxpair ([z(randperm (7)), y(randperm (7))]), [z,y])
 %!assert (cplxpair ([z(randperm (7)), y(randperm (7)),z(randperm (7))]), [z,y,z])
 
-
 ## Test tolerance
 %!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]), ...
 %!        [(2000 - 4j); (2000 + 4j)], 100*eps(200))
-%!error <could not pair> cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j], 0)
-
-%!error <could not pair> cplxpair ([2e6 + j; 2e6 - j; 1e-9 * (1 + j); 1e-9 * (1 - 2j)])
+%!error <could not pair>
+%! cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j], 0);
+%!error <could not pair>
+%! cplxpair ([2e6 + j; 2e6 - j; 1e-9 * (1 + j); 1e-9 * (1 - 2j)]);
 
 ## Test input validation
 %!error cplxpair ()
 %!error cplxpair (1,2,3,4)
-%!error <cplxpair: TOL must be .* scalar number> cplxpair (1, -1)
 %!error <cplxpair: TOL must be .* scalar number> cplxpair (1, ones (2,2))
+%!error <cplxpair: TOL must be .* in the range 0 <= TOL < 1> cplxpair (1, -1)
+%!error <cplxpair: TOL must be .* in the range 0 <= TOL < 1> cplxpair (1, -1)
 %!error <invalid dimension DIM> cplxpair (1, [], 3)
-

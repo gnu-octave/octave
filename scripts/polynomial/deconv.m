@@ -57,33 +57,25 @@ function [b, r] = deconv (y, a)
   if (ly > la)
     x = zeros (size (y) - size (a) + 1);
     x(1) = 1;
-    b = filter (y, a, x);
+    [b, r] = filter (y, a, x);
+    r *= a(1);
   elseif (ly == la)
-    b = filter (y, a, 1);
+    [b, r] = filter (y, a, 1);
+    r *= a(1);
   else
     b = 0;
+    r = y;
   endif
 
   if (isargout (2))
-    lc = la + length (b) - 1;
-    if (ly == lc)
-      r = y - conv (a, b);
-    else
-      ## Respect the orientation of Y.
-      if (rows (y) <= columns (y))
-        r = [(zeros (1, lc - ly)), y] - conv (a, b);
-      else
-        r = [(zeros (lc - ly, 1)); y] - conv (a, b);
-      endif
-      if (ly < la)
-        ## Trim the remainder to be the length of Y.
-        r = r(end-(length(y)-1):end);
-      endif
+    if (ly >= la)
+      r = [zeros(ly - la + 1, 1); r(1:la - 1)];
+      ## Respect the orientation of Y
+      r = reshape (r, size (y));
     endif
   endif
 
 endfunction
-
 
 %!test
 %! [b, r] = deconv ([3, 6, 9, 9], [1, 2, 3]);
@@ -117,3 +109,27 @@ endfunction
 %!error deconv (1,2,3)
 %!error <Y .* must be vector> deconv ([3, 6], [1, 2; 3, 4])
 %!error <A must be vector> deconv ([3, 6], [1, 2; 3, 4])
+
+%!test
+%! y = (10:-1:1);
+%! a = (4:-1:1);
+%! [b, r] = deconv (y, a);
+%! assert (conv (a, b) + r, y, eps)
+
+%!test <51221>
+%! a = [1.92306958582241e+15, 3.20449986572221e+24, 1.34271290136344e+32, ...
+%!     2.32739765751038e+38];
+%! b = [7.33727670161595e+27, 1.05919311870816e+36, 4.56169848520627e+42];
+%! [div, rem] = deconv (a, b);
+%! assert (rem, [0, 0, -2.89443678763879e+32  -1.58695290534499e+39], -10*eps)
+%! a(2) = 3.204499865722215e+24;
+%! [div, rem] = deconv (a, b);
+%! assert (rem, [0, 0, -2.89443678763879e+32  -1.58695290534499e+39], -10*eps)
+
+%!test
+%! [b, r] = deconv ([1, 1], 1);
+%! assert (r, [0, 0])
+
+%!test
+%! [b, r] = deconv ([1; 1], 1);
+%! assert (r, [0; 0])

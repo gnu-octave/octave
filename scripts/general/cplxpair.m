@@ -65,10 +65,11 @@ function y = cplxpair (z, tol, dim)
     return;
   endif
 
+  cls = ifelse (isa (z, "single"), "single", "double");
   if (nargin < 2 || isempty (tol))
-    tol = 100;
-  elseif (! isscalar (tol) || tol < 0)
-    error ("cplxpair: TOL must be a positive scalar number");
+    tol = 100*eps(cls);
+  elseif (! isscalar (tol) || tol < 0 || tol >= 1)
+    error ("cplxpair: TOL must be a scalar number such that 0 <= TOL < 1");
   endif
 
   nd = ndims (z);
@@ -95,14 +96,18 @@ function y = cplxpair (z, tol, dim)
   [q, idx] = sort (real (z), 1);
   z = z(idx + n * ones (n, 1) * [0:m-1]);
 
+
   ## Put the purely real values at the end of the returned list.
-  cls = ifelse (isa (z, "single"), "single", "double");
   [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin (cls)) ...
-                       < tol*eps (abs (z)));
+                       <= tol);
+  ## Force values detected to be real within tolerance to actually be real.
+  z(idxi + n*(idxj-1)) = real (z(idxi + n*(idxj-1)));
   q = sparse (idxi, idxj, 1, n, m);
   nr = sum (q, 1);
   [q, idx] = sort (q, 1);
-  z = z(idx);
+  si = size(idx);
+  midx=idx+[0:si(2)-1]*si(1);
+  z = z(midx);
   y = z;
 
   ## For each remaining z, place the value and its conjugate at the start of
@@ -113,16 +118,19 @@ function y = cplxpair (z, tol, dim)
       if (i+1 > p)
         error ("cplxpair: could not pair all complex numbers");
       endif
-      [v, idx] = min (abs (z(i+1:p) - conj (z(i))));
-      if (v > tol*eps (abs (z(i))))
+      [v, idx] = min (abs (z(i+1:p,j) - conj (z(i,j))));
+      if (v >= tol*abs(z(i,j)))
         error ("cplxpair: could not pair all complex numbers");
       endif
-      if (imag (z(i)) < 0)
-        y([i, i+1]) = z([i, idx+i]);
+      ## For pairs, select the one with positive imaginary part
+      ## and use it and it's conjugate, but the pair with negative
+      ## imaginary part first
+      if (imag (z(i,j)) > 0)
+        y([i, i+1],j) = [conj(z(i,j)), z(i,j)];
       else
-        y([i, i+1]) = z([idx+i, i]);
+        y([i, i+1],j) = [conj(z(idx+i,j)), z(idx+i,j)];
       endif
-      z(idx+i) = z(i+1);
+      z(idx+i,j) = z(i+1,j);
     endfor
   endfor
 
@@ -144,14 +152,21 @@ endfunction
 %!                  [1-1i; 1+1i; 1-1i; 1+1i; 1; 2])
 %!assert (cplxpair ([0, 1, 2]), [0, 1, 2])
 
-%!shared z
+%!shared z,y
 %! z = exp (2i*pi*[4; 3; 5; 2; 6; 1; 0]/7);
+%! z(2) = conj(z(1));
+%! z(4) = conj(z(3));
+%! z(6) = conj(z(5));
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair ([z(randperm (7)), z(randperm (7))]), [z,z])
 %!assert (cplxpair ([z(randperm (7)), z(randperm (7))],[],1), [z,z])
 %!assert (cplxpair ([z(randperm (7)).'; z(randperm (7)).'],[],2), [z.';z.'])
+%! y = [ -1-1i; -1+1i;-3; -2; 1; 2; 3];
+%!assert (cplxpair ([z(randperm (7)), y(randperm (7))]), [z,y])
+%!assert (cplxpair ([z(randperm (7)), y(randperm (7)),z(randperm (7))]), [z,y,z])
+
 
 ## Test tolerance
 %!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]), ...
@@ -163,6 +178,7 @@ endfunction
 ## Test input validation
 %!error cplxpair ()
 %!error cplxpair (1,2,3,4)
-%!error <TOL must be .* positive> cplxpair (1, -1)
-%!error <TOL must be .* scalar number> cplxpair (1, ones (2,2))
+%!error <cplxpair: TOL must be .* scalar number> cplxpair (1, -1)
+%!error <cplxpair: TOL must be .* scalar number> cplxpair (1, ones (2,2))
 %!error <invalid dimension DIM> cplxpair (1, [], 3)
+

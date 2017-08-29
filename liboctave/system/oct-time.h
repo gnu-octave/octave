@@ -283,7 +283,7 @@ namespace octave
       // Days since January 1 (0, 365).
       int m_yday;
 
-      // Daylight Savings Time flag.
+      // Daylight saving time flag.
       int m_isdst;
 
       // Time zone.

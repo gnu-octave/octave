@@ -47,7 +47,7 @@ function t = now ()
   ##   t = (time - mktime(gmtime(0)))/86400 + 719529;
   ##
   ## mktime (gmtime (0)) does indeed return the offset from Greenwich to the
-  ## local time zone, but we need to account for daylight savings time
+  ## local time zone, but we need to account for daylight saving time
   ## changing by an hour the offset from CUT for part of the year.
 
 endfunction

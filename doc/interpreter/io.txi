@@ -969,8 +969,9 @@ integers in octal, decimal, and hexadecimal radices, respectively.
 The @samp{%X} conversion is identical to the @samp{%x} conversion.  They
 both permit either uppercase or lowercase letters to be used as digits.
 
-Unlike the C language @code{scanf}, Octave ignores the @samp{h},
-@samp{l}, and @samp{L} modifiers.
+By default, integers are read as 32-bit quantities.  With the @samp{h}
+modifier, 16-bit integers are used, and with the @samp{l} modifier,
+64-bit integers are used.
 
 @node String Input Conversions
 @subsection String Input Conversions

@@ -93,6 +93,9 @@
 ##
 ## @item
 ## @samp{R} ()
+##
+## @item
+## @samp{escape_special_chars} (str)
 ## @end itemize
 ## @end deftypefn
 
@@ -148,7 +151,7 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 "",
 '\begin{document}',
 "",
-['{\Huge\section*{' escape_latex(title_str) '}}'],
+['{\Huge\section*{' title_str '}}'],
 "",
 '\tableofcontents',
 '\vspace*{4em}',
@@ -178,8 +181,8 @@ function outstr = do_section (str)
 "",
 "",
 '\phantomsection',
-['\addcontentsline{toc}{section}{' escape_latex(str) '}'],
-['\subsection*{' escape_latex(str) '}'],
+['\addcontentsline{toc}{section}{' str '}'],
+['\subsection*{' str '}'],
 "");
 endfunction
 
@@ -200,7 +203,7 @@ endfunction
 function outstr = do_bulleted_list (cstr)
   outstr = ["\n" '\begin{itemize}' "\n"];
   for i = 1:numel (cstr)
-    outstr = [outstr, '\item ' escape_latex(cstr{i}) "\n"];
+    outstr = [outstr, '\item ' cstr{i} "\n"];
   endfor
   outstr = [outstr, '\end{itemize}' "\n"];
 endfunction
@@ -208,7 +211,7 @@ endfunction
 function outstr = do_numbered_list (cstr)
   outstr = ["\n" '\begin{enumerate}' "\n"];
   for i = 1:numel (cstr)
-    outstr = [outstr, '\item ' escape_latex(cstr{i}) "\n"];
+    outstr = [outstr, '\item ' cstr{i} "\n"];
   endfor
   outstr = [outstr, "\\end{enumerate}\n"];
 endfunction
@@ -233,7 +236,7 @@ function outstr = do_link (url_str, str)
 endfunction
 
 function outstr = do_text (str)
-  outstr = ["\n\n" escape_latex(str) "\n\n"];
+  outstr = ["\n\n" str "\n\n"];
 endfunction
 
 function outstr = do_blockmath (str)
@@ -264,12 +267,14 @@ function outstr = do_R ()
   outstr = '\textregistered ';
 endfunction
 
-function str = escape_latex (str)
-  ## Escape "&", "%", "#", "_", "~", "^", "<", ">"
-  ## FIXME: What about: "\", "{", "}"
-  str = regexprep (str, '(?<!\\)(&|%|#|_)', '\\$1');
-  str = regexprep (str, '(?<!\\)(~)', "\\ensuremath{\\tilde{\;}}");
-  str = regexprep (str, '(?<!\\)(\^)', "\\^{}");
-  str = regexprep (str, '(?<!\\)(<)', "\\ensuremath{<}");
-  str = regexprep (str, '(?<!\\)(>)', "\\ensuremath{>}");
+function str = do_escape_special_chars (str)
+  ## Escape \, {, }, &, %, #, _, ~, ^, <, >
+  str = regexprep (str, '\\', "\\ensuremath{\\backslash}");
+  str = regexprep (str, '(?<!\\)(\{|\}|&|%|#|_)', '\\$1');
+  ## Revert accidential {} replacements for backslashes
+  str = strrep (str, '\ensuremath\{\backslash\}', '\ensuremath{\backslash}');
+  str = regexprep (str, '(?<!\\)~', "\\ensuremath{\\tilde{\\;}}");
+  str = regexprep (str, '(?<!\\)\^', "\\^{}");
+  str = regexprep (str, '(?<!\\)<', "\\ensuremath{<}");
+  str = regexprep (str, '(?<!\\)>', "\\ensuremath{>}");
 endfunction

@@ -93,6 +93,9 @@
 ##
 ## @item
 ## @samp{R} ()
+##
+## @item
+## @samp{escape_special_chars} (str)
 ## @end itemize
 ## @end deftypefn
 
@@ -208,6 +211,7 @@ function outstr = do_code (str)
 endfunction
 
 function outstr = do_code_output (str)
+  str = do_escape_special_chars (str);
   outstr = ["\n", '<pre class="oct-code-output">' str "</pre>\n"];
 endfunction
 
@@ -233,6 +237,7 @@ function outstr = do_preformatted_code (str)
 endfunction
 
 function outstr = do_preformatted_text (str)
+  str = do_escape_special_chars (str);
   outstr = ["\n", '<pre class="pre-text">' str "</pre>\n"];
 endfunction
 
@@ -300,9 +305,17 @@ function outstr = do_R ()
   outstr = "&reg;";
 endfunction
 
+function str = do_escape_special_chars (str)
+  str = regexprep (str, '&', '&amp;');
+  str = regexprep (str, '<', '&lt;');
+  str = regexprep (str, '>', '&gt;');
+  ## str = regexprep (str, '"', '&quot;'); ## MATLAB R2017a compatibility.
+endfunction
+
 ## SYNTAX_HIGHLIGHT: A primitive parser to highlight syntax via <span> tags.
 ## FIXME: Needs to be replaced by a better solution.
 function outstr = syntax_highlight (str)
+  str = do_escape_special_chars (str);
   outstr = "";
   placeholder_cstr = {};
   i = 1;

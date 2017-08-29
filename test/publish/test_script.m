@@ -96,6 +96,12 @@ plot (y,x)
 % again another plot
 plot (x,y)
 
+%% *BOLD*, _ITALIC_, |MONOSPACED| <http://www.someURL.com *Header* (R)>
+%
+
+## *BOLD*, _ITALIC_, |MONOSPACED| <http://www.someURL.com *Header* (R)>
+#
+
 %% Bulleted List
 %
 % * BULLETED ITEM 1
@@ -175,16 +181,24 @@ plot (x,y)
 #
 
 %% Inline LaTeX
+% This should be escaped properly: \, {, }, &, %, #, _, ~, ^, <, >
+%
 % $f(n) = n^5 + 4n^2 + 2 |_{n=17}$
+%
+% $$f(n) = n^5 + 4n^2 + 2 |_{n=17}$$
+%
+% $$e^x = \lim\limits_{n\rightarrow\infty}\left(1+\dfrac{x}{n}\right)^{n}$$
+%
 
 ## Inline LaTeX
+# This should be escaped properly: \, {, }, &, %, #, _, ~, ^, <, >
+#
 # $f(n) = n^5 + 4n^2 + 2 |_{n=17}$
-
-%% Block LaTeX
-% $$f(n) = n^5 + 4n^2 + 2 |_{n=17}$$
-
-## Block LaTeX
+#
 # $$f(n) = n^5 + 4n^2 + 2 |_{n=17}$$
+#
+# $$e^x = \lim\limits_{n\rightarrow\infty}\left(1+\dfrac{x}{n}\right)^{n}$$
+#
 
 %% Links
 % <https://www.gnu.org/software/octave>
@@ -206,15 +220,41 @@ plot (x,y)
 # PLAIN TEXT(TM) _ITALIC TEXT_(R) *BOLD TEXT* |MONOSPACED TEXT|>
 #
 
-%% HTML Markup
+%% Code with HTML/LaTeX special chars
+%
+
+function ret = foo (a, b)
+  ret = (a > b) && (a < b^a);
+endfunction
+sprintf ("(a > b) && (a < b^a) = %f", foo (0, 1))
+
+%% HTML Markup & < > "
+% This should be escaped properly: & < > "
+%
+% The HTML entity should remain visible: &amp; &lt; &gt; &quot;
+%
+% The HTML entity should remain visible: |&amp;| |&lt;| |&gt;| |&quot;|
+%
+
+## HTML Markup & < > "
+# This should be escaped properly: & < > "
+#
+# The HTML entity should remain visible: &amp; &lt; &gt; &quot;
+#
+# The HTML entity should remain visible: |&amp;| |&lt;| |&gt;| |&quot;|
+#
+
+%% HTML block markup
 % <html>
 % <table><tr>
 % <td style="border: 1px solid black;">one</td>
-% <td style="border: 1px solid black;">two</td></tr></table>
+% <td style="border: 1px solid black;">two</td>
+% </tr>
+% </table>
 % </html>
 %
 
-## HTML Markup
+## HTML block markup
 # <html>
 # <table>
 # <tr>
@@ -225,7 +265,7 @@ plot (x,y)
 # </html>
 #
 
-%% HTML Markup with empty lines
+%% HTML block markup with empty lines
 % <html>
 % <table><tr>
 % <td style="border: 1px solid black;">one</td>
@@ -236,7 +276,7 @@ plot (x,y)
 % </html>
 %
 
-## HTML Markup with empty lines
+## HTML block markup with empty lines
 # <html>
 # <table>
 # <tr>
@@ -249,7 +289,7 @@ plot (x,y)
 # </html>
 #
 
-%% LaTeX Markup
+%% LaTeX block markup
 % <latex>
 % \begin{equation}
 % \begin{pmatrix}
@@ -259,7 +299,7 @@ plot (x,y)
 % </latex>
 %
 
-## LaTeX Markup
+## LaTeX block markup
 # <latex>
 # \begin{equation}
 # \begin{pmatrix}
@@ -269,7 +309,7 @@ plot (x,y)
 # </latex>
 #
 
-%% LaTeX Markup with empty lines
+%% LaTeX block markup with empty lines
 % <latex>
 % Some text
 %
@@ -281,7 +321,7 @@ plot (x,y)
 % </latex>
 %
 
-## LaTeX Markup with empty lines
+## LaTeX block markup with empty lines
 # <latex>
 # Some text
 #

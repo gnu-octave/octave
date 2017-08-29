@@ -685,14 +685,8 @@ function p_content = parse_paragraph_content (content)
     ## * Inline "$" and block "$$" LaTeX math
     ## * Links
     ## * Trademark symbols
-    block = strjoin (block, "\n");
-    if (isempty (p_content) || ! strcmp (p_content{end}.type, "text"))
-      p_content{end+1}.type = "text";
-      p_content{end}.content = block;
-    else
-      p_content{end}.content = strjoin ({p_content{end}.content, block}, ...
-                                        "\n");
-    endif
+    p_content{end+1}.type = "text";
+    p_content{end}.content = strjoin (block, "\n");
   endfor
 endfunction
 
@@ -730,7 +724,8 @@ function ofile = create_output (doc, options)
     [~, title_str] = fileparts (doc.m_source_file_name);
   endif
 
-  content = formatter ("header", title_str,
+  content = formatter ("header",
+                       formatter ("escape_special_chars", title_str),
                        format_output (doc.intro, formatter, options),
                        get_toc (doc.body, formatter));
   content = [content, format_output(doc.body, formatter, options)];
@@ -783,7 +778,7 @@ function str = format_output (cstr, formatter, options)
     switch (cstr{i}.type)
       case "code"
         if (options.showCode)
-          str = [str, formatter(cstr{i}.type, cstr{i}.content)];
+          str = [str, formatter("code", cstr{i}.content)];
         endif
         if ((options.evalCode) && (! isempty (cstr{i}.output)))
           str = [str, formatter("code_output", cstr{i}.output)];
@@ -842,6 +837,7 @@ function str = format_text (str, formatter)
   ## 6) Bold *text*
   ## 7) Italic _text_
   ## 8) Monospaced |text|
+  ## 9) (TM) or (R)
   regexes = {'<\S{3,}[^\s<>]*>', ...
              '<octave:[^\s<>]* *[^<>$]*>', ...
              '<\S{3,}[^\s<>]* *[^<>$]*>', ...
@@ -849,7 +845,8 @@ function str = format_text (str, formatter)
              regex_helper('\$', '$'), ...
              regex_helper('\*', '*'), ...
              regex_helper('_', '_'), ...
-             regex_helper('\|', '|')};
+             regex_helper('\|', '|'), ...
+             '\((TM|R)\)'};
 
   ## Function to escape some special characters for the GNU Octave manual,
   ## see https://www.gnu.org/software/texinfo/manual/texinfo/html_node/HTML-Xref-Node-Name-Expansion.html
@@ -912,14 +909,17 @@ function str = format_text (str, formatter)
           txt = cstr{j};
           cstr{j} = formatter ("monospaced", format_text (txt(2:end-1), ...
                                formatter));
+        case 9
+          ## (TM) or (R)
+          txt = cstr{j};
+          cstr{j} = formatter (txt(2:end-1));
       endswitch
     endfor
     placeholder_cstr = [placeholder_cstr, cstr];
   endfor
 
   ## Replace special symbols
-  str = strrep (str, "(TM)", formatter ("TM"));
-  str = strrep (str, "(R)", formatter ("R"));
+  str = formatter ("escape_special_chars", str);
 
   ## Restore placeholders
   for i = plh:-1:1

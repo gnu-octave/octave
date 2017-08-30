@@ -4524,12 +4524,20 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
               octave::interpreter& interp
                 = octave::__get_interpreter__ ("parse_fcn_file");
 
-              fcn_ptr
-                = parser.m_classdef_object->make_meta_class (interp, is_at_folder);
+              try
+                {
+                  fcn_ptr = parser.m_classdef_object->make_meta_class (interp, is_at_folder);
+                }
+              catch (const octave::execution_exception&)
+                {
+                  delete parser.m_classdef_object;
+                  throw;
+                }
+
               if (fcn_ptr)
                 retval = octave_value (fcn_ptr);
 
-              delete (parser.m_classdef_object);
+              delete parser.m_classdef_object;
 
               parser.m_classdef_object = nullptr;
             }

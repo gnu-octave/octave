@@ -25,18 +25,27 @@ FCN_FILE_DIRS += \
   %reldir%/material.m \
   %reldir%/orient.m \
   %reldir%/pbaspect.m \
+  %reldir%/rticks.m \
   %reldir%/shading.m \
   %reldir%/specular.m \
   %reldir%/text.m \
+  %reldir%/thetaticks.m \
   %reldir%/title.m \
   %reldir%/view.m \
   %reldir%/whitebg.m \
   %reldir%/xlabel.m \
   %reldir%/xlim.m \
+  %reldir%/xticks.m \
+  %reldir%/xticklabels.m \
   %reldir%/ylabel.m \
   %reldir%/ylim.m \
+  %reldir%/yticks.m \
+  %reldir%/yticklabels.m \
   %reldir%/zlabel.m \
-  %reldir%/zlim.m
+  %reldir%/zlim.m \
+  %reldir%/zticks.m \
+  %reldir%/zticklabels.m
+  
 
 %canon_reldir%dir = $(fcnfiledir)/plot/appearance
 

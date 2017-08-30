@@ -283,6 +283,36 @@ get or set individual axis limits.  Each has the same form.
 @findex zlim
 @DOCSTRING(xlim)
 
+The @code{xticks}, @code{yticks}, @code{zticks}, @code{rticks}, and
+@code{thetaticks} functions may be used to get or set the tick mark locations
+and modes on the respective axis.  Each has the same form, although mode 
+options are not currently avaliable for @code{rticks}, and @code{thetaticks}. 
+
+@c FIXME: Update this section if polarplot and polar axes changes change the
+@c        associated axis properties.
+@anchor{XREFyticks}
+@anchor{XREFzticks}
+@anchor{XREFrticks}
+@anchor{XREFthetaticks}
+@findex yticks
+@findex zticks
+@findex rticks
+@findex thetaticks
+@DOCSTRING(xticks)
+
+The @code{xticklabels}, @code{yticklabels}, and @code{zticklabels} functions
+may be used to get or set the label assigned to each tick location and the
+labeling mode on the respective axis.  Each has the same form. 
+
+@c FIXME: Update this section if polarplot and polar axes changes change the
+@c        associated axis properties.
+@c        Matlab also implements rticklabels and thetaticklabels.
+@anchor{XREFyticklabels}
+@anchor{XREFzticklabels}
+@findex yticklabels
+@findex zticklabels
+@DOCSTRING(xticklabels)
+
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
 @cindex plotting, two-dimensional functions

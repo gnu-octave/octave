@@ -50,6 +50,14 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       humps
       openvar
       repelem
+      rticks
+      thetaticks
+      xticklabels
+      xticks
+      yticklabels
+      yticks
+      zticklabels
+      zticks
 
  ** Deprecated functions.
 

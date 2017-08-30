@@ -26,13 +26,15 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "builtin-defun-decls.h"
 #include "cmd-edit.h"
 #include "defun.h"
-#include "interpreter-private.h"
 #include "interpreter.h"
+#include "interpreter-private.h"
+#include "octave-link.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
-#include "octave-link.h"
+#include "ovl.h"
 #include "pager.h"
 
 static int
@@ -388,21 +390,27 @@ DEFUN (openvar, args, ,
 Open the variable @var{name} in the graphical Variable Editor.
 @end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      std::string name = args (0).string_value ();
-      if (! error_state)
-        octave_link::openvar (name);
-      else
-        error ("invalid arguments");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  if (! args(0).is_string ())
+    error ("openvar: NAME must be a string"); 
+
+  std::string name = args(0).string_value ();
+
+  if (! (Fisguirunning ())(0).is_true ())
+    warning ("openvar: GUI is not running, can't start Variable Editor"); 
+  else
+    octave_link::openvar (name);
+
+  return ovl ();
 }
+
+/*
+%!error openvar ()
+%!error openvar ("a", "b")
+%!error <NAME must be a string> openvar (1:10)
+*/
 
 DEFUN (__octave_link_show_doc__, args, ,
        doc: /* -*- texinfo -*-

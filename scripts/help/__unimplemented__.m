@@ -754,7 +754,6 @@ function list = missing_functions ()
   "odextend",
   "openfig",
   "opengl",
-  "openvar",
   "ordeig",
   "ordqz",
   "outerjoin",

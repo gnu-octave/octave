@@ -1,6 +1,12 @@
 Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 ----------------------------------------------------------------------
 
+ ** A graphical Variable Editor has been added to the GUI interface.
+    It uses a spreadsheet-like interface for quick, intuitive editing
+    of variables.  The Variable Editor is launched by double-clicking
+    on a variable name in the Workspace Window or by typing
+    "openvar VARIABLE_NAME" in the Command Window.
+
  ** On systems with 64-bit pointers, --enable-64 is now the default and
     Octave always uses 64-bit indexing.  However, if the configure
     script determines that the BLAS library uses 32-bit integers, then
@@ -42,6 +48,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       gsvd
       hgtransform
       humps
+      openvar
       repelem
 
  ** Deprecated functions.

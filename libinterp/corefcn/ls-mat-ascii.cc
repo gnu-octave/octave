@@ -345,6 +345,9 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
   if (val.iscomplex ())
     warning ("save: omitting imaginary part for ASCII file");
 
+  if (val.ndims () > 2)
+    error ("save: only 2-D matrices can be saved to ASCII file");
+
   Matrix m;
 
   try
@@ -375,7 +378,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
                 {
                   // Omit leading tabs.
                   if (j != 0) os << '\t';
-                  octave_write_double (os, m (i, j));
+                  octave_write_double (os, m(i, j));
                 }
               os << "\n";
             }
@@ -383,8 +386,8 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
       else
         os << m;
 
+      // Restore format
       os.flags (oflags);
-
       os.precision (old_precision);
     }
 

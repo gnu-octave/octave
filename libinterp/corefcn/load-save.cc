@@ -1463,21 +1463,24 @@ DEFUN (save, args, nargout,
 @deftypefn  {} {} save file
 @deftypefnx {} {} save options file
 @deftypefnx {} {} save options file @var{v1} @var{v2} @dots{}
+@deftypefnx {} {} save options file -struct @var{STRUCT}
 @deftypefnx {} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}
 @deftypefnx {} {} save - @var{v1} @var{v2} @dots{}
 @deftypefnx {} {@var{str} =} save ("-", @qcode{"@var{v1}"}, @qcode{"@var{v2}"}, @dots{})
-Save the named variables @var{v1}, @var{v2}, @dots{}, in the file
-@var{file}.
+Save the named variables @var{v1}, @var{v2}, @dots{}, in the file @var{file}.
 
-The special filename @samp{-} may be used to return the
-content of the variables as a string.  If no variable names are listed,
-Octave saves all the variables in the current scope.  Otherwise, full
-variable names or pattern syntax can be used to specify the variables to
-save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}
-@dots{} of the scalar structure @var{STRUCT} are saved as if they were
-variables with corresponding names.  Valid options for the @code{save}
-command are listed in the following table.  Options that modify the output
-format override the format specified by @code{save_default_options}.
+The special filename @samp{-} may be used to return the content of the
+variables as a string.  If no variable names are listed, Octave saves all the
+variables in the current scope.  Otherwise, full variable names or pattern
+syntax can be used to specify the variables to save.  If the @option{-struct}
+modifier is used then the fields of the @strong{scalar} struct are saved as if
+they were variables with the corresponding field names.  The @option{-struct}
+option can be combined with specific field names @var{f1}, @var{f2}, @dots{} to
+write only certain fields to the file.
+
+Valid options for the @code{save} command are listed in the following table.
+Options that modify the output format override the format specified by
+@code{save_default_options}.
 
 If save is invoked using the functional form
 
@@ -1486,38 +1489,48 @@ save ("-option1", @dots{}, "file", "v1", @dots{})
 @end example
 
 @noindent
-then the @var{options}, @var{file}, and variable name arguments
-(@var{v1}, @dots{}) must be specified as character strings.
+then the @var{options}, @var{file}, and variable name arguments (@var{v1},
+@dots{}) must be specified as character strings.
 
-If called with a filename of @qcode{"-"}, write the output to stdout
-if nargout is 0, otherwise return the output in a character string.
+If called with a filename of @qcode{"-"}, write the output to stdout if nargout
+is 0, otherwise return the output in a character string.
 
 @table @code
 @item -append
 Append to the destination instead of overwriting.
 
 @item -ascii
-Save a single matrix in a text file without header or any other information.
+Save a matrix in a text file without a header or any other information.  The
+matrix must be 2-D and only the real part of any complex value is written to
+the file.  Numbers are stored in single-precision format and separated by
+spaces.  Additional options for the @code{-ascii} format are
+
+@table @code
+@item -double
+Store numbers in double-precision format.
+
+@item -tabs
+Separate numbers with tabs.
+@end table
 
 @item -binary
 Save the data in Octave's binary data format.
 
 @item -float-binary
-Save the data in Octave's binary data format but only using single
-precision.  Only use this format if you know that all the
-values to be saved can be represented in single precision.
+Save the data in Octave's binary data format but using only single precision.
+Use this format @strong{only} if you know that all the values to be saved can
+be represented in single precision.
 
 @item -hdf5
 Save the data in @sc{hdf5} format.
-(HDF5 is a free, portable binary format developed by the National
-Center for Supercomputing Applications at the University of Illinois.)
-This format is only available if Octave was built with a link to the
-@sc{hdf5} libraries.
+(HDF5 is a free, portable, binary format developed by the National Center for
+Supercomputing Applications at the University of Illinois.) This format is only
+available if Octave was built with a link to the @sc{hdf5} libraries.
 
 @item -float-hdf5
-Save the data in @sc{hdf5} format but only using single precision.
-Only use this format if you know that all the
-values to be saved can be represented in single precision.
+Save the data in @sc{hdf5} format but using only single precision.  Use this
+format @strong{only} if you know that all the values to be saved can be
+represented in single precision.
 
 @item  -V7
 @itemx -v7
@@ -1543,15 +1556,14 @@ Save the data in Octave's text data format.  (default).
 
 @item  -zip
 @itemx -z
-Use the gzip algorithm to compress the file.  This works equally on files
-that are compressed with gzip outside of octave, and gzip can equally be
-used to convert the files for backward compatibility.
-This option is only available if Octave was built with a link to the zlib
-libraries.
+Use the gzip algorithm to compress the file.  This works on files that are
+compressed with gzip outside of Octave, and gzip can also be used to convert
+the files for backward compatibility.  This option is only available if Octave
+was built with a link to the zlib libraries.
 @end table
 
-The list of variables to save may use wildcard patterns containing
-the following special characters:
+The list of variables to save may use wildcard patterns containing the
+following special characters:
 
 @table @code
 @item ?
@@ -1561,21 +1573,20 @@ Match any single character.
 Match zero or more characters.
 
 @item [ @var{list} ]
-Match the list of characters specified by @var{list}.  If the first
-character is @code{!} or @code{^}, match all characters except those
-specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will
-match all lower and uppercase alphabetic characters.
+Match the list of characters specified by @var{list}.  If the first character
+is @code{!} or @code{^}, match all characters except those specified by
+@var{list}.  For example, the pattern @code{[a-zA-Z]} will match all lower and
+uppercase alphabetic characters.
 
-Wildcards may also be used in the field name specifications when using
-the @option{-struct} modifier (but not in the struct name itself).
+Wildcards may also be used in the field name specifications when using the
+@option{-struct} modifier (but not in the struct name itself).
 
 @end table
 
-Except when using the @sc{matlab} binary data file format or the
-@samp{-ascii} format, saving global
-variables also saves the global status of the variable.  If the variable
-is restored at a later time using @samp{load}, it will be restored as a
-global variable.
+Except when using the @sc{matlab} binary data file format or the @samp{-ascii}
+format, saving global variables also saves the global status of the variable.
+If the variable is restored at a later time using @samp{load}, it will be
+restored as a global variable.
 
 The command
 
@@ -1584,8 +1595,8 @@ save -binary data a b*
 @end example
 
 @noindent
-saves the variable @samp{a} and all variables beginning with @samp{b} to
-the file @file{data} in Octave's binary format.
+saves the variable @samp{a} and all variables beginning with @samp{b} to the
+file @file{data} in Octave's binary format.
 @seealso{load, save_default_options, save_header_format_string, save_precision, dlmread, csvread, fread}
 @end deftypefn */)
 {

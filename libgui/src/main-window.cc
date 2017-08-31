@@ -138,7 +138,7 @@ octave_interpreter::execute (void)
 
   m_app_context->delete_interpreter ();
 
-  qApp->exit (exit_status);
+  emit octave_finished_signal (exit_status);
 }
 
 void
@@ -214,6 +214,9 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
   connect (m_interpreter, SIGNAL (octave_ready_signal ()),
            doc_browser_window, SLOT (load_info_file ()));
 
+  connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
+           this, SLOT (handle_octave_finished (int)));
+
   m_interpreter->moveToThread (m_main_thread);
 
   m_main_thread->start ();
@@ -235,7 +238,18 @@ main_window::~main_window (void)
   delete _workspace_model;
   delete variable_editor_window;
   delete m_interpreter;
+
+  // We are supposed to arrive here after the main thread is done, but
+  // if that doesn't happen for some reason, then terminate and wait
+  // before deleting it.
+  if (! m_main_thread->isFinished ())
+    {
+      m_main_thread->terminate ();
+      // FIXME: should there be a limit on how long we wait?
+      m_main_thread->wait ();
+    }
   delete m_main_thread;
+
   if (find_files_dlg)
     {
       delete find_files_dlg;
@@ -1892,7 +1906,18 @@ main_window::handle_octave_ready ()
 
   if (_start_gui)
     focus_command_window ();  // make sure that the command window has focus
+}
 
+void
+main_window::handle_octave_finished (int exit_status)
+{
+  // The main thread is done, so we can terminate it and wait for it to
+  // finish.
+  m_main_thread->terminate ();
+  // FIXME: should there be a limit on how long we wait?
+  m_main_thread->wait ();
+
+  qApp->exit (exit_status);
 }
 
 void

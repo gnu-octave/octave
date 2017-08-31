@@ -81,6 +81,7 @@ public:
 signals:
 
   void octave_ready_signal ();
+  void octave_finished_signal (int);
 
 public slots:
 
@@ -246,6 +247,7 @@ public slots:
   void handle_show_doc (const QString& file);
 
   void handle_octave_ready ();
+  void handle_octave_finished (int);
 
   // find files dialog
   void find_files (const QString& startdir = QDir::currentPath ());

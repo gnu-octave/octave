@@ -2254,31 +2254,11 @@ LIBS="$save_LIBS"
 
 OCTAVE_ENABLE_READLINE
 
-### Check for existence of various libraries
-
-## OS-specific test for dirent, opendir.
-case $host_os in
-  mingw*)
-    if test $have_msvc = yes; then
-      AC_CHECK_LIB([dirent], [opendir])
-      LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
-    else
-      LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
-    fi
-    LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
-  ;;
-  msdosmsvc)
-    AC_CHECK_LIB([dirent], [opendir])
-    LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
-  ;;
-esac
-
 ## Find a termlib to use.
 OCTAVE_CHECK_LIB_TERMLIB
 
 ### Checks for header files.
 
-AC_HEADER_DIRENT
 AC_HEADER_SYS_WAIT
 
 ## C headers

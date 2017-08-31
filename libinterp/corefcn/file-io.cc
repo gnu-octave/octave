@@ -2330,42 +2330,42 @@ The optional argument @var{precision} is a string specifying the type of
 data to read and may be one of
 
 @table @asis
-@item  @qcode{"schar"}
-@itemx @qcode{"signed char"}
-Signed character.
-
-@item  @qcode{"uchar"}
-@itemx @qcode{"unsigned char"}
-Unsigned character.
+@item @qcode{"uint8"} (default)
+8-bit unsigned integer.
 
 @item  @qcode{"int8"}
 @itemx @qcode{"integer*1"}
-
 8-bit signed integer.
+
+@item  @qcode{"uint16"}
+@itemx @qcode{"ushort"}
+@itemx @qcode{"unsigned short"}
+16-bit unsigned integer.
 
 @item  @qcode{"int16"}
 @itemx @qcode{"integer*2"}
+@itemx @qcode{"short"}
 16-bit signed integer.
 
-@item  @qcode{"int32"}
+@item  @qcode{"uint"}
+@itemx @qcode{"uint32"}
+@itemx @qcode{"unsigned int"}
+@itemx @qcode{"ulong"}
+@itemx @qcode{"unsigned long"}
+32-bit unsigned integer.
+
+@item  @qcode{"int"}
+@itemx @qcode{"int32"}
 @itemx @qcode{"integer*4"}
+@itemx @qcode{"long"}
 32-bit signed integer.
+
+@item @qcode{"uint64"}
+64-bit unsigned integer.
 
 @item  @qcode{"int64"}
 @itemx @qcode{"integer*8"}
 64-bit signed integer.
-
-@item @qcode{"uint8"}
-8-bit unsigned integer.
-
-@item @qcode{"uint16"}
-16-bit unsigned integer.
-
-@item @qcode{"uint32"}
-32-bit unsigned integer.
-
-@item @qcode{"uint64"}
-64-bit unsigned integer.
 
 @item  @qcode{"single"}
 @itemx @qcode{"float"}
@@ -2380,33 +2380,20 @@ Unsigned character.
 
 @item  @qcode{"char"}
 @itemx @qcode{"char*1"}
-Single character.
+8-bit single character.
 
-@item @qcode{"short"}
-Short integer (size is platform dependent).
+@item  @qcode{"uchar"}
+@itemx @qcode{"unsigned char"}
+8-bit unsigned character.
 
-@item @qcode{"int"}
-Integer (size is platform dependent).
-
-@item @qcode{"long"}
-Long integer (size is platform dependent).
-
-@item  @qcode{"ushort"}
-@itemx @qcode{"unsigned short"}
-Unsigned short integer (size is platform dependent).
-
-@item  @qcode{"uint"}
-@itemx @qcode{"unsigned int"}
-Unsigned integer (size is platform dependent).
-
-@item  @qcode{"ulong"}
-@itemx @qcode{"unsigned long"}
-Unsigned long integer (size is platform dependent).
+@item  @qcode{"schar"}
+@itemx @qcode{"signed char"}
+8-bit signed character.
 
 @end table
 
 @noindent
-The default precision is @qcode{"uchar"}.
+The default precision is @qcode{"uint8"}.
 
 The @var{precision} argument may also specify an optional repeat
 count.  For example, @samp{32*single} causes @code{fread} to read
@@ -2472,7 +2459,7 @@ The optional return value @var{count} contains the number of elements read.
   octave::stream os = streams.lookup (args(0), "fread");
 
   octave_value size = lo_ieee_inf_value ();
-  octave_value prec = "uchar";
+  octave_value prec = "uint8";
   octave_value skip = 0;
   octave_value arch = "unknown";
 

@@ -37,6 +37,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
 
+// FIXME: Almost all platform-dependent sizes such as "short" are now defined
+// to take fixed values (such as 2B).  This was instigated for Matlab
+// compatibility (bug #41672).  It means a lot of this code is probably
+// obsolete and could be pared down or removed entirely.
+
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
 #  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q)                         \
   do                                                                    \
@@ -298,10 +303,23 @@ oct_data_conv::string_to_data_type (const std::string& str)
 
   std::string s = strip_spaces (str);
 
-  if (s == "int8" || s == "integer*1")
-    retval = dt_int8;
-  else if (s == "uint8")
+  // Organized so most frequent precision appears first
+  if (s == "uint8")
     retval = dt_uint8;
+  else if (s == "double" || s == "float64" || s == "real*8")
+    retval = dt_double;
+  else if (s == "single" || s == "float" || s == "float32" || s == "real*4")
+    retval = dt_single;
+  else if (s == "char" || s == "char*1")
+    retval = dt_char;
+  else if (s == "int")
+    retval = dt_int32;
+  else if (s == "uchar" || s == "unsignedchar")
+    retval = dt_uint8;
+  else if (s == "schar" || s == "signedchar")
+    retval = dt_int8;
+  else if (s == "int8" || s == "integer*1")
+    retval = dt_int8;
   else if (s == "int16" || s == "integer*2")
     retval = dt_int16;
   else if (s == "uint16")
@@ -314,39 +332,21 @@ oct_data_conv::string_to_data_type (const std::string& str)
     retval = dt_int64;
   else if (s == "uint64")
     retval = dt_uint64;
-  else if (s == "single" || s == "float32" || s == "real*4")
-    retval = dt_single;
-  else if (s == "double" || s == "float64" || s == "real*8")
-    retval = dt_double;
-  else if (s == "char" || s == "char*1")
-    retval = dt_char;
-  else if (s == "schar" || s == "signedchar")
-    retval = dt_schar;
-  else if (s == "uchar" || s == "unsignedchar")
-    retval = dt_uchar;
   else if (s == "short")
-    GET_SIZED_INT_TYPE (short, );
+    retval = dt_int16;
   else if (s == "ushort" || s == "unsignedshort")
-    GET_SIZED_INT_TYPE (unsigned short, u);
-  else if (s == "int")
-    GET_SIZED_INT_TYPE (int, );
+    retval = dt_uint16;
   else if (s == "uint" || s == "unsignedint")
-    GET_SIZED_INT_TYPE (unsigned int, u);
+    retval = dt_uint32;
   else if (s == "long")
-    GET_SIZED_INT_TYPE (long, );
+    retval = dt_int32;
   else if (s == "ulong" || s == "unsignedlong")
-    GET_SIZED_INT_TYPE (unsigned long, u);
+    retval = dt_uint32;
+  // FIXME: The following are undocumented precisions
   else if (s == "longlong")
     GET_SIZED_INT_TYPE (long long, );
   else if (s == "ulonglong" || s == "unsignedlonglong")
     GET_SIZED_INT_TYPE (unsigned long long, u);
-  else if (s == "float")
-    {
-      if (sizeof (float) == sizeof (double))
-        retval = dt_double;
-      else
-        retval = dt_single;
-    }
   else if (s == "logical")
     retval = dt_logical;
   else

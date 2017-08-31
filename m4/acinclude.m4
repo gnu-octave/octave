@@ -1598,12 +1598,12 @@ c assume the default integer size is 32-bits.
   FFLAGS="$ac_octave_save_FFLAGS"
 ])
 dnl
-dnl Check whether Sundials IDA library is configured with double
+dnl Check whether SUNDIALS IDA library is configured with double
 dnl precision realtype.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
   AC_CHECK_HEADERS([ida/ida.h ida.h])
-  AC_CACHE_CHECK([whether Sundials IDA is configured with double precision realtype],
+  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with double precision realtype],
     [octave_cv_sundials_realtype_is_double],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_IDA_IDA_H)
@@ -1620,17 +1620,17 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
       octave_cv_sundials_realtype_is_double=no)
   ])
   if test $octave_cv_sundials_realtype_is_double = no; then
-    warn_sundials_realtype="Sundials IDA library not configured with double precision realtype, ode15i and ode15s will be disabled"
+    warn_sundials_realtype="SUNDIALS IDA library not configured with double precision realtype, ode15i and ode15s will be disabled"
     OCTAVE_CONFIGURE_WARNING([warn_sundials_realtype])
   fi
 ])
 dnl
-dnl Check whether Sundials IDA library is configured with IDAKLU
+dnl Check whether SUNDIALS IDA library is configured with IDAKLU
 dnl enabled.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDAKLU], [
   AC_CHECK_HEADERS([ida/ida_klu.h ida_klu.h])
-  AC_CACHE_CHECK([whether Sundials IDA is configured with IDAKLU enabled],
+  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with IDAKLU enabled],
     [octave_cv_sundials_idaklu],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_KLU_H)
@@ -1646,9 +1646,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDAKLU], [
     ])
   if test $octave_cv_sundials_idaklu = yes; then
     AC_DEFINE(HAVE_SUNDIALS_IDAKLU, 1,
-      [Define to 1 if Sundials IDA is configured with IDAKLU enabled.])
+      [Define to 1 if SUNDIALS IDA is configured with IDAKLU enabled.])
   else
-    warn_sundials_idaklu="Sundials IDA library not configured with IDAKLU, ode15i and ode15s will not support the sparse Jacobian feature"
+    warn_sundials_idaklu="SUNDIALS IDA library not configured with IDAKLU, ode15i and ode15s will not support the sparse Jacobian feature"
     OCTAVE_CONFIGURE_WARNING([warn_sundials_idaklu])
   fi
 ])

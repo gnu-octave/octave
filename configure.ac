@@ -2191,26 +2191,21 @@ if test -n "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
-### Check for Sundials nvecserial library and header.
+### Check for SUNDIALS NVECTOR serial library and header.
 
-OCTAVE_CHECK_LIB(sundials_nvecserial, [Sundials nvecserial],
-  [Sundials nvecserial library not found.  Solvers ode15i and ode15s will be disabled.],
+OCTAVE_CHECK_LIB(sundials_nvecserial, [SUNDIALS NVECTOR],
+  [SUNDIALS NVECTOR serial library not found.  Solvers ode15i and ode15s will be disabled.],
   [nvector/nvector_serial.h nvector_serial.h ], [N_VNew_Serial],
-  [], [don't use Sundials nvecserial library, solvers ode15i and ode15s will be disabled])
+  [], [don't use SUNDIALS NVECTOR library, solvers ode15i and ode15s will be disabled])
 
-if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
-  AC_DEFINE(HAVE_SUNDIALS_NVECSERIAL, 1,
-    [Define to 1 if Sundials nvecserial is available.])
-fi
-
-### Check for Sundials IDA library and header.
+### Check for SUNDIALS IDA library and header.
 
 save_LIBS="$LIBS"
 LIBS="$SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
-OCTAVE_CHECK_LIB(sundials_ida, [Sundials IDA],
-  [Sundials IDA library not found.  Solvers ode15i and ode15s will be disabled.],
+OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
+  [SUNDIALS IDA library not found.  Solvers ode15i and ode15s will be disabled.],
   [ida/ida.h ida.h], [IDAInit],
-  [], [don't use Sundials IDA library, solvers ode15i and ode15s will be disabled],
+  [], [don't use SUNDIALS IDA library, solvers ode15i and ode15s will be disabled],
   [warn_sundials_ida=
    OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
    OCTAVE_CHECK_SUNDIALS_IDAKLU])
@@ -2221,7 +2216,7 @@ LIBS="$save_LIBS"
 if test -n "$SUNDIALS_IDA_LIBS" \
     && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
     && test $octave_cv_sundials_realtype_is_double = yes; then
-  AC_DEFINE(HAVE_SUNDIALS, 1, [Define Sundials is available.])
+  AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 fi
 
 ## Collections of flags.  These are here instead of just in the
@@ -3292,12 +3287,12 @@ Octave is now configured for $canonical_host_type
   Sndfile LDFLAGS:               $SNDFILE_LDFLAGS
   Sndfile libraries:             $SNDFILE_LIBS
   SuiteSparse config libraries:  $SUITESPARSE_CONFIG_LIBS
-  SUNDIALS_IDA CPPFLAGS:         $SUNDIALS_IDA_CPPFLAGS
-  SUNDIALS_IDA LDFLAGS:          $SUNDIALS_IDA_LDFLAGS
-  SUNDIALS_IDA libraries:        $SUNDIALS_IDA_LIBS
-  SUNDIALS_NVECSERIAL CPPFLAGS:  $SUNDIALS_NVECSERIAL_CPPFLAGS
-  SUNDIALS_NVECSERIAL LDFLAGS:   $SUNDIALS_NVECSERIAL_LDFLAGS
-  SUNDIALS_NVECSERIAL libraries: $SUNDIALS_NVECSERIAL_LIBS
+  SUNDIALS IDA CPPFLAGS:         $SUNDIALS_IDA_CPPFLAGS
+  SUNDIALS IDA LDFLAGS:          $SUNDIALS_IDA_LDFLAGS
+  SUNDIALS IDA libraries:        $SUNDIALS_IDA_LIBS
+  SUNDIALS NVECTOR CPPFLAGS:     $SUNDIALS_NVECSERIAL_CPPFLAGS
+  SUNDIALS NVECTOR LDFLAGS:      $SUNDIALS_NVECSERIAL_LDFLAGS
+  SUNDIALS NVECTOR libraries:    $SUNDIALS_NVECSERIAL_LIBS
   TERM libraries:                $TERM_LIBS
   UMFPACK CPPFLAGS:              $UMFPACK_CPPFLAGS
   UMFPACK LDFLAGS:               $UMFPACK_LDFLAGS

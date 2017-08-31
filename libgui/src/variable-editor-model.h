@@ -22,20 +22,21 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (variable_editor_model_h)
+#if ! defined (variable_editor_model_h)
 #define variable_editor_model_h 1
 
 #include <QAbstractTableModel>
+
 #include "ov.h"
 
 class QLabel;
 
 enum sub_editor_types
 {
-    sub_none,
-    sub_matrix,
-    sub_string,
-    sub_struct
+  sub_none,
+  sub_matrix,
+  sub_string,
+  sub_struct
 };
 
 class
@@ -88,8 +89,6 @@ public:
    */
   QString parens () const;
 
-  // TODO insertRows(), removeRows(), insertColumns(), and removeColumns().
-
 signals: // private
 
   void data_ready (int r, int c, const QString& data,
@@ -139,13 +138,9 @@ private:
 
   Q_DISABLE_COPY (variable_editor_model)
 
-  /** Change the display if the variable
-   * does not exist (Yet)
-   */
+  // Change the display if the variable does not exist (Yet)
   void display_invalid ();
-  /** Change the display now that the
-   * variable exists
-   */
+  // Change the display now that the variable exists
   void display_valid ();
 
   QObject *p;

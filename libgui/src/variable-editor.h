@@ -22,12 +22,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef variable_editor_h
-#define variable_editor_h
+#if ! defined (variable_editor_h)
+#define variable_editor_h 1
 
-#include "octave-dock-widget.h"
 #include <QHeaderView>
 #include <QSettings>
+
+#include "octave-dock-widget.h"
 
 class QTabWidget;
 class QToolBar;
@@ -114,8 +115,8 @@ private:
 
   QFont font;
 
-  // If use_terminal_font then this will be different since "font"
-  // will contain the terminal font.
+  // If use_terminal_font is true then this will be different since
+  // "font" will contain the terminal font.
   QFont sel_font;
   QList<QColor> table_colors;
 
@@ -129,4 +130,4 @@ private:
   QList<int> octave_to_coords (QString&);
 };
 
-#endif //variable_editor_h
+#endif

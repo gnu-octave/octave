@@ -2264,18 +2264,14 @@ AC_HEADER_SYS_WAIT
 ## C headers
 
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h fpu_control.h])
-AC_CHECK_HEADERS([grp.h ieeefp.h inttypes.h locale.h memory.h ncurses.h])
-AC_CHECK_HEADERS([poll.h pthread.h pwd.h sys/ioctl.h])
-AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h])
-AC_CHECK_HEADERS([sys/select.h sys/stropts.h termcap.h])
+AC_CHECK_HEADERS([dlfcn.h floatingpoint.h fpu_control.h grp.h])
+AC_CHECK_HEADERS([ieeefp.h pthread.h pwd.h sys/ioctl.h])
 
 ## Find a termio header to include.
 
 AC_CHECK_HEADERS([termios.h], have_termios_h=yes, have_termios_h=no)
 AC_CHECK_HEADERS([termio.h], have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS([sgtty.h], have_sgtty_h=yes, have_sgtty_h=no)
-AC_CHECK_HEADERS([fnmatch.h], have_fnmatch_h=yes, have_fnmatch_h=no)
 AC_CHECK_HEADERS([conio.h], have_conio_h=yes, have_conio_h=no)
 
 if test $have_termios_h != yes \

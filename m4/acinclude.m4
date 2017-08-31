@@ -1601,10 +1601,11 @@ dnl
 dnl Check whether Sundials IDA library is configured with double
 dnl precision realtype.
 dnl
-AC_DEFUN([OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE], [
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
+  AC_CHECK_HEADERS([ida/ida.h ida.h])
   AC_CACHE_CHECK([whether Sundials IDA is configured with double precision realtype],
-    [octave_cv_sizeof_ida_double],
-    [AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+    [octave_cv_sundials_realtype_is_double],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_IDA_IDA_H)
         #include <ida/ida.h>
         #else
@@ -1612,17 +1613,15 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE], [
         #endif
         #include <assert.h>
         ]], [[
-        assert (sizeof (double) == sizeof (realtype));
+        static_assert (sizeof (realtype) == sizeof (double),
+                       "SUNDIALS is not configured for double precision");
       ]])],
-      octave_cv_sizeof_ida_double=yes,
-      octave_cv_sizeof_ida_double=no)
+      octave_cv_sundials_realtype_is_double=yes,
+      octave_cv_sundials_realtype_is_double=no)
   ])
-  if test $octave_cv_sizeof_ida_double = yes; then
-    AC_DEFINE(HAVE_SUNDIALS_IDA_DOUBLE, 1,
-      [Define to 1 if Sundials IDA is configured with realtype as double.])
-  else
-    warn_sundials_ida_double="Sundials IDA library not configured with double precision realtype, ode15i and ode15s will be disabled"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_ida_double])
+  if test $octave_cv_sundials_realtype_is_double = no; then
+    warn_sundials_realtype="Sundials IDA library not configured with double precision realtype, ode15i and ode15s will be disabled"
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_realtype])
   fi
 ])
 dnl

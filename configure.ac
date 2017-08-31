@@ -2212,7 +2212,7 @@ OCTAVE_CHECK_LIB(sundials_ida, [Sundials IDA],
   [ida/ida.h ida.h], [IDAInit],
   [], [don't use Sundials IDA library, solvers ode15i and ode15s will be disabled],
   [warn_sundials_ida=
-   OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE
+   OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
    OCTAVE_CHECK_SUNDIALS_IDAKLU])
 LIBS="$save_LIBS"
 
@@ -2220,7 +2220,7 @@ LIBS="$save_LIBS"
 ## the build features script will get the correct value.
 if test -n "$SUNDIALS_IDA_LIBS" \
     && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
-    && test $octave_cv_sizeof_ida_double = yes; then
+    && test $octave_cv_sundials_realtype_is_double = yes; then
   AC_DEFINE(HAVE_SUNDIALS, 1, [Define Sundials is available.])
 fi
 

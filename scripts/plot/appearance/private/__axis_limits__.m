@@ -44,18 +44,10 @@ function retval = __axis_limits__ (fcn, varargin)
     else
       if (! isnumeric (arg) && any (size (arg(:)) != [2, 1]))
         error ("%s: LIMITS must be a 2-element vector", fcn);
-      else
-        if (arg(1) >= arg(2))
-          error ("%s: axis limits must be increasing", fcn);
-        else
-          autoscale = isinf (arg);
-          if (any (autoscale))
-            set (hax, fcnmode, "auto");
-            arg(autoscale) = get (hax, fcn)(autoscale);
-          endif
-          set (hax, fcn, arg(:));
-        endif
+      elseif (arg(1) >= arg(2))
+        error ("%s: axis limits must be increasing", fcn);
       endif
+      set (hax, fcn, arg(:));
     endif
   endif
 

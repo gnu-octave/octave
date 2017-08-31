@@ -4093,10 +4093,15 @@ public:
   public:
     Matrix get_axis_limits (double xmin, double xmax,
                             double min_pos, double max_neg,
-                            bool logscale);
+                            const bool logscale);
+
+    void check_axis_limits (Matrix &limits, const Matrix kids,
+                            const bool logscale, char &update_type);
 
     void update_xlim ()
     {
+      update_axis_limits ("xlim");
+
       calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
                            xtickmode.is ("auto"), xscale.is ("log"));
       if (xticklabelmode.is ("auto"))
@@ -4116,6 +4121,8 @@ public:
 
     void update_ylim (void)
     {
+      update_axis_limits ("ylim");
+
       calc_ticks_and_lims (ylim, ytick, yminortickvalues, ylimmode.is ("auto"),
                            ytickmode.is ("auto"), yscale.is ("log"));
       if (yticklabelmode.is ("auto"))
@@ -4135,6 +4142,8 @@ public:
 
     void update_zlim (void)
     {
+      update_axis_limits ("zlim");
+
       calc_ticks_and_lims (zlim, ztick, zminortickvalues, zlimmode.is ("auto"),
                            ztickmode.is ("auto"), zscale.is ("log"));
       if (zticklabelmode.is ("auto"))

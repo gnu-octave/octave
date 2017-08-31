@@ -6975,7 +6975,7 @@ axes::properties::calc_tick_sep (double lo, double hi)
 Matrix
 axes::properties::get_axis_limits (double xmin, double xmax,
                                    double min_pos, double max_neg,
-                                   bool logscale)
+                                   const bool logscale)
 {
   Matrix retval;
 
@@ -6997,9 +6997,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               // FIXME: max_neg is needed for "loglog ([0 -Inf])"
               //        This is the *only* place where max_neg is needed.
               //        Is there another way?
-              retval = default_lim ();
-              retval(0) = std::pow (10., retval(0));
-              retval(1) = std::pow (10., retval(1));
+              retval = default_lim (logscale);
               return retval;
             }
           if (min_val <= 0)
@@ -7073,6 +7071,204 @@ axes::properties::get_axis_limits (double xmin, double xmax,
 
   return retval;
 }
+
+void
+axes::properties::check_axis_limits (Matrix &limits, const Matrix kids,
+                                     const bool logscale, char &update_type)
+{
+  double min_val = octave::numeric_limits<double>::Inf ();
+  double max_val = -octave::numeric_limits<double>::Inf ();
+  double min_pos = octave::numeric_limits<double>::Inf ();
+  double max_neg = -octave::numeric_limits<double>::Inf ();
+  double eps = std::numeric_limits<double>::epsilon ();
+  bool do_update = false;
+  bool have_children_limits = false;
+
+  // check whether we need to get children limits
+  if (! octave::math::isfinite (limits(0)) ||
+      ! octave::math::isfinite (limits(1)))
+    {
+      get_children_limits (min_val, max_val, min_pos, max_neg, kids,
+                           update_type);
+      have_children_limits = true;
+    }
+  if (! octave::math::isfinite (limits(0)))
+    {
+      limits(0) = min_val;
+      do_update = true;
+    }
+  if (! octave::math::isfinite (limits(1)))
+    {
+      limits(1) = max_val;
+      do_update = true;
+    }
+  if (limits(0) == 0 && limits(1) == 0)
+    {
+      limits = default_lim (logscale);
+      do_update = true;
+    }
+  // FIXME: maybe this test should also be relative?
+  else if (std::abs (limits(0) - limits(1)) < sqrt (eps))
+    {
+      if (logscale)
+        {
+          limits(0) = (limits(0) < 0 ? 10.0 * limits(0) : 0.1 * limits(0));
+          limits(1) = (limits(1) < 0 ? 0.1 * limits(1) : 10.0 * limits(1));
+        }
+      else
+        {
+          limits(0) -= 0.1 * std::abs (limits(0));
+          limits(1) += 0.1 * std::abs (limits(1));
+        }
+      do_update = true;
+    }
+
+  if (logscale && limits(0)*limits(1) <= 0)
+    {
+      if (! have_children_limits)
+        get_children_limits (min_val, max_val, min_pos, max_neg, kids,
+                             update_type);
+
+      if (limits(1) > 0)
+        {
+          warning_with_id ("Octave:axis-non-positive-log-limits",
+                           "Non-positive limit for logarithmic axis ignored\n");
+          if (octave::math::isfinite (min_pos))
+            limits(0) = min_pos;
+          else
+            limits(0) = 0.1 * limits(1);
+        }
+      else
+        {
+          warning_with_id ("Octave:axis-non-negative-log-limits",
+                           "Non-negative limit for logarithmic axis ignored\n");
+          if (octave::math::isfinite (max_neg))
+            limits(1) = max_neg;
+          else
+            limits(1) = 0.1 * limits(0);
+        }
+      // FIXME: maybe this test should also be relative?
+      if (std::abs (limits(0) - limits(1)) < sqrt (eps))
+        {
+          // Widen range when too small
+          if (limits(0) > 0)
+            {
+              limits(0) *= 0.9;
+              limits(1) *= 1.1;
+            }
+          else
+            {
+              limits(0) *= 1.1;
+              limits(1) *= 0.9;
+            }
+        }
+      do_update = true;
+    }
+
+  if (! do_update)
+    update_type = 0;
+
+}
+
+/*
+## Test validation of auto and manual axis limits
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   plot (0, pi);
+%!   assert (get (hax, "xlim"), [-1, 1]);
+%!   assert (get (hax, "xlimmode"), "auto");
+%!   assert (get (hax, "ylim"), [2.8, 3.5], 2*eps);
+%!   assert (get (hax, "ylimmode"), "auto");
+%!   set (hax, "xlim", [1, 1], "ylim", [0, 0]);
+%!   assert (get (hax, "xlim"), [0.9, 1.1]);
+%!   assert (get (hax, "xlimmode"), "manual");
+%!   assert (get (hax, "ylim"), [0, 1]);
+%!   assert (get (hax, "ylimmode"), "manual");
+%!   set (hax, "xlim", [-Inf, Inf], "ylim", [-Inf, Inf]);
+%!   ## Matlab does not update the properties
+%!   assert (get (hax, "xlim"), [0, 1]);
+%!   assert (get (hax, "ylim"), [0.9, 1.1]*pi, 2*eps);
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   plot ([0, exp(1)], [-pi, 3]);
+%!   assert (get (hax, "xlim"), [0, 3]);
+%!   assert (get (hax, "xlimmode"), "auto");
+%!   assert (get (hax, "ylim"), [-4, 3]);
+%!   assert (get (hax, "ylimmode"), "auto");
+%!   set (hax, "xlim", [-Inf, Inf], "ylim", [-Inf, Inf]);
+%!   ## Matlab does not update the properties but uses tight limits on screen
+%!   assert (get (hax, "xlim"), [0, exp(1)]);
+%!   assert (get (hax, "xlimmode"), "manual");
+%!   assert (get (hax, "ylim"), [-pi, 3]);
+%!   assert (get (hax, "ylimmode"), "manual");
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   loglog (0, pi);
+%!   assert (get (hax, "xlim"), [0.1, 1.0]);
+%!   assert (get (hax, "xlimmode"), "auto");
+%!   assert (get (hax, "ylim"), [1, 10]);
+%!   assert (get (hax, "ylimmode"), "auto");
+%!   set (hax, "xlim", [1, 1], "ylim", [0, 0]);
+%!   assert (get (hax, "xlim"), [0.1, 10]);
+%!   assert (get (hax, "xlimmode"), "manual");
+%!   assert (get (hax, "ylim"), [0.1, 1.0]);
+%!   assert (get (hax, "ylimmode"), "manual");
+%!   set (hax, "xlim", [-Inf, Inf], "ylim", [-Inf, Inf]);
+%!   ## Matlab does not update the properties
+%!   assert (get (hax, "xlim"), [0.1, 1.0]);
+%!   assert (get (hax, "ylim"), [0.1, 10]*pi);
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   loglog ([0 -1], [0 1]);
+%!   assert (get (hax, "xlim"), [-10, -0.1]);
+%!   assert (get (hax, "xlimmode"), "auto");
+%!   assert (get (hax, "ylim"), [0.1, 10]);
+%!   assert (get (hax, "ylimmode"), "auto");
+%!   set (hax, "xlim", [-Inf, Inf], "ylim", [-Inf, Inf]);
+%!   ## Matlab does not update the properties
+%!   assert (get (hax, "xlim"), [-1.1, -0.9]);
+%!   assert (get (hax, "ylim"), [0.9, 1.1]);
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   loglog ([1 -1], [1 pi]);
+%!   assert (get (hax, "xlim"), [0.1, 10]);
+%!   assert (get (hax, "xlimmode"), "auto");
+%!   assert (get (hax, "ylim"), [1, 10]);
+%!   assert (get (hax, "ylimmode"), "auto");
+%!   set (hax, "xlim", [-Inf, Inf], "ylim", [-Inf, Inf]);
+%!   ## Matlab does not update the properties but uses tight limits on screen
+%!   assert (get (hax, "xlim"), [0.9, 1.1]);
+%!   assert (get (hax, "ylim"), [1, pi]);
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+*/
 
 void
 axes::properties::calc_ticks_and_lims (array_property& lims,
@@ -7495,16 +7691,16 @@ axes::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4)                     \
     {                                           \
       val = limits(0);                          \
-      if (octave::math::isfinite (val))           \
+      if (octave::math::isfinite (val))         \
         min_val = val;                          \
       val = limits(1);                          \
-      if (octave::math::isfinite (val))           \
+      if (octave::math::isfinite (val))         \
         max_val = val;                          \
       val = limits(2);                          \
-      if (octave::math::isfinite (val))           \
+      if (octave::math::isfinite (val))         \
         min_pos = val;                          \
       val = limits(3);                          \
-      if (octave::math::isfinite (val))           \
+      if (octave::math::isfinite (val))         \
         max_neg = val;                          \
     }                                           \
   else                                          \
@@ -7520,47 +7716,54 @@ axes::update_axis_limits (const std::string& axis_type,
       || axis_type == "xlimmode" || axis_type == "xliminclude"
       || axis_type == "xlim")
     {
+      limits = xproperties.get_xlim ().matrix_value ();
+      FIX_LIMITS;
+
+      update_type = 'x';
       if (xproperties.xlimmode_is ("auto"))
         {
-          limits = xproperties.get_xlim ().matrix_value ();
-          FIX_LIMITS;
-
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
 
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.xscale_is ("log"));
-
-          update_type = 'x';
         }
+      else
+        xproperties.check_axis_limits (limits, kids,
+                                       xproperties.xscale_is ("log"),
+                                       update_type);
     }
   else if (axis_type == "ydata" || axis_type == "yscale"
            || axis_type == "ylimmode" || axis_type == "yliminclude"
            || axis_type == "ylim")
     {
+      limits = xproperties.get_ylim ().matrix_value ();
+      FIX_LIMITS;
+
+      update_type = 'y';
       if (xproperties.ylimmode_is ("auto"))
         {
-          limits = xproperties.get_ylim ().matrix_value ();
-          FIX_LIMITS;
-
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
 
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.yscale_is ("log"));
-
-          update_type = 'y';
         }
+      else
+        xproperties.check_axis_limits (limits, kids,
+                                       xproperties.yscale_is ("log"),
+                                       update_type);
     }
   else if (axis_type == "zdata" || axis_type == "zscale"
            || axis_type == "zlimmode" || axis_type == "zliminclude"
            || axis_type == "zlim")
     {
+      limits = xproperties.get_zlim ().matrix_value ();
+      FIX_LIMITS;
+
+      update_type = 'z';
       if (xproperties.zlimmode_is ("auto"))
         {
-          limits = xproperties.get_zlim ().matrix_value ();
-          FIX_LIMITS;
-
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           xproperties.set_has3Dkids ((max_val - min_val) >
@@ -7569,8 +7772,6 @@ axes::update_axis_limits (const std::string& axis_type,
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.zscale_is ("log"));
-
-          update_type = 'z';
         }
       else
         {
@@ -7580,6 +7781,10 @@ axes::update_axis_limits (const std::string& axis_type,
 
           xproperties.set_has3Dkids ((max_val - min_val) >
                                       std::numeric_limits<double>::epsilon ());
+
+          xproperties.check_axis_limits (limits, kids,
+                                         xproperties.zscale_is ("log"),
+                                         update_type);
         }
     }
   else if (axis_type == "cdata" || axis_type == "climmode"
@@ -7648,24 +7853,31 @@ axes::update_axis_limits (const std::string& axis_type,
   frame.protect_var (updating_axis_limits);
 
   updating_axis_limits.insert (get_handle ().value ());
+  bool is_auto;
 
   switch (update_type)
     {
     case 'x':
+      is_auto = xproperties.xlimmode_is ("auto");
       xproperties.set_xlim (limits);
-      xproperties.set_xlimmode ("auto");
+      if (is_auto)
+        xproperties.set_xlimmode ("auto");
       xproperties.update_xlim ();
       break;
 
     case 'y':
+      is_auto = xproperties.ylimmode_is ("auto");
       xproperties.set_ylim (limits);
-      xproperties.set_ylimmode ("auto");
+      if (is_auto)
+        xproperties.set_ylimmode ("auto");
       xproperties.update_ylim ();
       break;
 
     case 'z':
+      is_auto = xproperties.zlimmode_is ("auto");
       xproperties.set_zlim (limits);
-      xproperties.set_zlimmode ("auto");
+      if (is_auto)
+        xproperties.set_zlimmode ("auto");
       xproperties.update_zlim ();
       break;
 
@@ -7710,6 +7922,7 @@ axes::update_axis_limits (const std::string& axis_type)
       || axis_type == "xlimmode" || axis_type == "xliminclude"
       || axis_type == "xlim")
     {
+      update_type = 'x';
       if (xproperties.xlimmode_is ("auto"))
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
@@ -7717,14 +7930,20 @@ axes::update_axis_limits (const std::string& axis_type)
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.xscale_is ("log"));
-
-          update_type = 'x';
+        }
+      else
+        {
+          limits = xproperties.get_xlim ().matrix_value ();
+          xproperties.check_axis_limits (limits, kids,
+                                         xproperties.xscale_is ("log"),
+                                         update_type);
         }
     }
   else if (axis_type == "ydata" || axis_type == "yscale"
            || axis_type == "ylimmode" || axis_type == "yliminclude"
            || axis_type == "ylim")
     {
+      update_type = 'y';
       if (xproperties.ylimmode_is ("auto"))
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
@@ -7732,26 +7951,31 @@ axes::update_axis_limits (const std::string& axis_type)
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.yscale_is ("log"));
-
-          update_type = 'y';
+        }
+      else
+        {
+          limits = xproperties.get_ylim ().matrix_value ();
+          xproperties.check_axis_limits (limits, kids,
+                                         xproperties.yscale_is ("log"),
+                                         update_type);
         }
     }
   else if (axis_type == "zdata" || axis_type == "zscale"
            || axis_type == "zlimmode" || axis_type == "zliminclude"
            || axis_type == "zlim")
     {
+      update_type = 'z';
       if (xproperties.zlimmode_is ("auto"))
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           xproperties.set_has3Dkids ((max_val - min_val) >
-                                      std::numeric_limits<double>::epsilon ());
+                                     std::numeric_limits<double>::epsilon ());
+
 
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,
                                                 xproperties.zscale_is ("log"));
-
-          update_type = 'z';
         }
       else
         {
@@ -7760,7 +7984,12 @@ axes::update_axis_limits (const std::string& axis_type)
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           xproperties.set_has3Dkids ((max_val - min_val) >
-                                      std::numeric_limits<double>::epsilon ());
+                                     std::numeric_limits<double>::epsilon ());
+
+          limits = xproperties.get_zlim ().matrix_value ();
+          xproperties.check_axis_limits (limits, kids,
+                                         xproperties.zscale_is ("log"),
+                                         update_type);
         }
     }
   else if (axis_type == "cdata" || axis_type == "climmode"
@@ -7821,24 +8050,31 @@ axes::update_axis_limits (const std::string& axis_type)
   frame.protect_var (updating_axis_limits);
 
   updating_axis_limits.insert (get_handle ().value ());
+  bool is_auto;
 
   switch (update_type)
     {
     case 'x':
+      is_auto = xproperties.xlimmode_is ("auto");
       xproperties.set_xlim (limits);
-      xproperties.set_xlimmode ("auto");
+      if (is_auto)
+        xproperties.set_xlimmode ("auto");
       xproperties.update_xlim ();
       break;
 
     case 'y':
+      is_auto = xproperties.ylimmode_is ("auto");
       xproperties.set_ylim (limits);
-      xproperties.set_ylimmode ("auto");
+      if (is_auto)
+        xproperties.set_ylimmode ("auto");
       xproperties.update_ylim ();
       break;
 
     case 'z':
+      is_auto = xproperties.zlimmode_is ("auto");
       xproperties.set_zlim (limits);
-      xproperties.set_zlimmode ("auto");
+      if (is_auto)
+        xproperties.set_zlimmode ("auto");
       xproperties.update_zlim ();
       break;
 

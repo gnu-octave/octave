@@ -2451,6 +2451,10 @@ case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_FUNCS([setvbuf], [],
                    [AC_MSG_ERROR([Missing function required to build Octave])])
+
+    ## We need this for GetDeviceCaps.  Should we actually check for
+    ## the function and library?
+    LIBS="-lgdi32 $LIBS"
   ;;
 esac
 

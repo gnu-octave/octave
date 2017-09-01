@@ -323,15 +323,6 @@ fi
 ### Disable running Make in the doc directory.
 ### This is useful, for example, when building Octave on systems without TeX.
 
-ENABLE_DOCS=yes
-AC_ARG_ENABLE([docs],
-  [AS_HELP_STRING([--disable-docs], [don't build documentation files])],
-  [if test "$enableval" = no; then
-     ENABLE_DOCS=no
-     warn_docs="building documentation disabled; make dist will fail"
-     OCTAVE_CONFIGURE_WARNING([warn_docs])
-   fi], [])
-
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
 AC_CHECK_SIZEOF([void *])
@@ -1186,7 +1177,6 @@ AC_SUBST(ENABLE_DYNAMIC_LINKING)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
 
-
 if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   CROSS_TOOL_PREFIX="$ac_tool_prefix"
   MKOCTFILE_AR=`echo "$AR" | $SED "s,$CROSS_TOOL_PREFIX,,"`
@@ -1335,6 +1325,250 @@ AC_ARG_VAR([BUILD_LDFLAGS],
 AC_ARG_VAR([BUILD_EXEEXT],
   [build system executable extension (used if cross compiling)])
 
+### Check compiler characteristics.
+
+## Check if C++ compiler can auto allocate variable sized arrays.
+OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS
+
+## Check that C compiler and libraries support IEEE754 data format.
+OCTAVE_IEEE754_DATA_FORMAT
+
+## Are bit_and, bit_or, and bit_xor defined as templated operators?
+OCTAVE_CXX_BITWISE_OP_TEMPLATES
+
+## Can complex class set components independently?
+OCTAVE_CXX_COMPLEX_SETTERS
+
+## Are there functions to access real/imag parts of numbers via references?
+OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
+
+## Check if fast integer arithmetics based on bit tricks is available.
+OCTAVE_FAST_INT_OPS
+
+## Does the C compiler handle alloca and const correctly?
+AC_FUNC_ALLOCA
+
+## Does the C compiler support Automake subdir-objects option?
+AM_PROG_CC_C_O
+
+### gnulib initialization: part 2
+### Must take place after part 1, after standard compiler options and
+### search paths have been established, at the same priority level as
+### system library function and header checks, but before checks for all
+### external library dependencies.
+
+gl_INIT
+
+### Checks for header files.
+
+AC_HEADER_SYS_WAIT
+
+## C headers
+
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_HEADERS([dlfcn.h floatingpoint.h fpu_control.h grp.h])
+AC_CHECK_HEADERS([ieeefp.h pthread.h pwd.h sys/ioctl.h])
+
+## Find a termio header to include.
+
+AC_CHECK_HEADERS([termios.h], have_termios_h=yes, have_termios_h=no)
+AC_CHECK_HEADERS([termio.h], have_termio_h=yes, have_termio_h=no)
+AC_CHECK_HEADERS([sgtty.h], have_sgtty_h=yes, have_sgtty_h=no)
+AC_CHECK_HEADERS([conio.h], have_conio_h=yes, have_conio_h=no)
+
+if test $have_termios_h != yes \
+    && test $have_termio_h != yes \
+    && test $have_sgtty_h != yes; then
+  AC_MSG_WARN([I couldn't find termios.h, termio.h, or sgtty.h!])
+fi
+
+## For MSVC compilers, avoid #define of min/max from windows.h header
+if test $have_msvc = yes; then
+  AC_DEFINE(NOMINMAX, 1, [Define to 1 to avoid min/max macro definition in Windows headers.])
+fi
+
+### Determine types and size of types.
+
+AC_TYPE_INT64_T
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
+AC_TYPE_UID_T
+AC_TYPE_UINT64_T
+AC_CHECK_TYPES([dev_t, ino_t])
+AC_CHECK_TYPES([ptrdiff_t])
+
+AC_CHECK_TYPES([long long int])
+if test $ac_cv_type_long_long_int = yes; then
+  AC_DEFINE(OCTAVE_HAVE_LONG_LONG_INT, 1,
+    [Define to 1 if the system has the type 'long long int'.])
+fi
+
+AC_CHECK_TYPES([unsigned long long int])
+if test $ac_cv_type_unsigned_long_long_int = yes; then
+  AC_DEFINE(OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT, 1,
+    [Define to 1 if the system has the type 'unsigned long long int'.])
+fi
+
+## Check for long double type (may be used for 64-bit integer computations).
+AC_CHECK_SIZEOF([long double])
+
+### Check structures and existence of necessary members
+
+AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks,
+                  struct stat.st_rdev])
+AC_CHECK_MEMBERS([struct group.gr_passwd])
+
+AC_STRUCT_TIMEZONE
+
+## Check if C++ compiler allows overload of char, int8_t, and uint8_t.
+AC_CACHE_CHECK([whether ${CXX-g++} allows overload of char, int8_t, and uint8_t],
+  [octave_cv_overload_char_int8_t],
+  [AC_LANG_PUSH(C++)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+    #include <stdint.h>
+    void somefunc(char x) {};
+    void somefunc(int8_t x) {};
+    void somefunc(uint8_t x) {};
+    ]])],
+    octave_cv_overload_char_int8_t=yes,
+    octave_cv_overload_char_int8_t=no)
+  AC_LANG_POP(C++)
+  ])
+if test $octave_cv_overload_char_int8_t = yes; then
+  AC_DEFINE(OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES, 1,
+    [Define to 1 if C++ allows overload of char, int8_t, and uint8_t types.])
+fi
+
+### Checks for functions and variables.
+
+dnl These checks define/undefine HAVE_FUNCNAME in config.h.
+dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_FUNCS([ctermid dup2])
+AC_CHECK_FUNCS([endgrent endpwent execvp fork])
+AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
+AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
+AC_CHECK_FUNCS([isascii kill])
+AC_CHECK_FUNCS([lgamma_r lgammaf_r])
+AC_CHECK_FUNCS([realpath resolvepath])
+AC_CHECK_FUNCS([select setgrent setpwent setsid siglongjmp strsignal])
+AC_CHECK_FUNCS([tcgetattr tcsetattr toascii])
+AC_CHECK_FUNCS([umask waitpid])
+AC_CHECK_FUNCS([_getch _kbhit])
+
+## Check for math defines such as M_LN2 in math.h
+AC_CACHE_CHECK([for MATH DEFINES in math.h],
+  [octave_cv_header_math_defines],
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+    #include <math.h>
+    ]], [[
+    double x = M_LN2;]])],
+    octave_cv_header_math_defines=yes,
+    octave_cv_header_math_defines=no)
+  ])
+
+if test $octave_cv_header_math_defines = no; then
+  ## Check again and try defining _USE_MATH_DEFINES
+  AC_CACHE_CHECK([whether _USE_MATH_DEFINES needs to be defined],
+    [octave_cv_header__use_math_defines],
+    [save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <math.h>
+      ]], [[
+      double x = M_LN2;]])],
+      octave_cv_header__use_math_defines=yes,
+      octave_cv_header__use_math_defines=no)
+    CPPFLAGS="$save_CPPFLAGS"
+    ])
+  if test $octave_cv_header__use_math_defines = yes; then
+    octave_cv_header_math_defines=yes
+    AC_DEFINE(_USE_MATH_DEFINES, 1,
+      [Define to 1 if _USE_MATH_DEFINES is required to get math constants like M_LN2.])
+    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
+  fi
+fi
+
+if test $octave_cv_header_math_defines = yes; then
+  AC_DEFINE(HAVE_MATH_DEFINES, 1,
+    [Define to 1 if defines such as M_PI are available in math.h])
+else
+  AC_MSG_ERROR([MATH DEFINES in math.h such as M_PI are required to build Octave])
+fi
+
+## Windows-specific tests for extra #defines
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_MSG_CHECKING([for required _WIN32_WINNT])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <windows.h>
+        #if _WIN32_WINNT < 0x0403
+        #error "Wrong version"
+        #endif
+        ]], [])],
+      [AC_MSG_RESULT([none])],
+      [AC_DEFINE(_WIN32_WINNT, 0x0403,
+        [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
+       AC_MSG_RESULT([0x0403])])
+  ;;
+esac
+
+## Windows-specific use of functions
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_CHECK_FUNCS([setvbuf], [],
+                   [AC_MSG_ERROR([Missing function required to build Octave])])
+
+    ## We need this for GetDeviceCaps.  Should we actually check for
+    ## the function and library?
+    LIBS="-lgdi32 $LIBS"
+  ;;
+esac
+
+## Cygwin kluge for getrusage.
+AC_CHECK_FUNCS([getrusage])
+case $host_os in
+  cygwin*)
+    AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
+      [Define to 1 if the struct rusage only has time information.])
+  ;;
+esac
+
+AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
+
+AC_FUNC_CLOSEDIR_VOID
+
+## Check return type of matherr
+AC_CACHE_CHECK([for struct exception in math.h],
+  [octave_cv_func_matherr_type],
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <math.h>
+      ]], [[
+      struct exception *x;
+      x->type;
+      x->name;
+      ]])],
+    octave_cv_func_matherr_type=yes,
+    octave_cv_func_matherr_type=no)
+  ])
+if test $octave_cv_func_matherr_type = yes; then
+  AC_DEFINE(EXCEPTION_IN_MATH, 1,
+    [Define to 1 if math.h declares struct exception for matherr.])
+fi
+
+## Signal stuff.
+
+AC_CHECK_DECLS([sys_siglist], [], [],
+[[#include <signal.h>
+/* NetBSD declares sys_siglist in unistd.h.  */
+#if HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+]])
+
 ### Check for the Qhull library
 
 OCTAVE_CHECK_LIB(qhull, QHull,
@@ -1353,6 +1587,13 @@ OCTAVE_CHECK_LIB(pcre, PCRE,
   [], [pcre.h pcre/pcre.h], [pcre_compile], [], [], [],
   [libpcre], [REQUIRED])
 
+### Check for readline library.
+
+OCTAVE_ENABLE_READLINE
+
+## Find a termlib to use.
+OCTAVE_CHECK_LIB_TERMLIB
+
 ### Check for ZLIB library.
 
 OCTAVE_CHECK_LIB(z, ZLIB,
@@ -1369,7 +1610,6 @@ fi
 OCTAVE_CHECK_LIB(bz2, BZIP2,
   [BZIP2 library not found.  Octave will not be able to compress or decompress bzip2 files.],
   [bzlib.h], [BZ2_bzCompressInit])
-
 
 ### Check for the LLVM library
 
@@ -1410,7 +1650,6 @@ if test $ENABLE_JIT = yes; then
     LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
     LLVM_CXXFLAGS=
     LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-
 
     LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
     LLVM_SO=LLVM-`$LLVM_CONFIG --version`
@@ -1738,7 +1977,8 @@ if test "$have_x" = yes; then
   AC_SUBST(X11_LIBS)
 fi
 
-### Check for the Carbon framework on MacOSX systems
+### Check for the Carbon framework on macOS systems
+
 OCTAVE_HAVE_FRAMEWORK([Carbon],
   [[#include <Carbon/Carbon.h>]], [[CGMainDisplayID ()]],
   [have_framework_carbon=yes], [have_framework_carbon=no])
@@ -1748,6 +1988,11 @@ if test $have_framework_carbon = yes; then
   CARBON_LIBS="-framework Carbon"
   AC_MSG_NOTICE([adding -framework Carbon to CARBON_LIBS])
   AC_SUBST(CARBON_LIBS)
+fi
+
+## Check for the CGDisplayBitsPerPixel function
+if test $have_framework_carbon = yes; then
+  OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL
 fi
 
 ### Check for list of libraries needed for OpenGL graphics renderer.
@@ -2247,413 +2492,6 @@ OCTAVE_CHECK_LIB([arpack], ARPACK,
      [warn_arpack="ARPACK library found, but does not seem to work properly; disabling eigs function"])])
 LIBS="$save_LIBS"
 
-### Check for readline library.
-
-OCTAVE_ENABLE_READLINE
-
-## Find a termlib to use.
-OCTAVE_CHECK_LIB_TERMLIB
-
-### Checks for header files.
-
-AC_HEADER_SYS_WAIT
-
-## C headers
-
-dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_HEADERS([dlfcn.h floatingpoint.h fpu_control.h grp.h])
-AC_CHECK_HEADERS([ieeefp.h pthread.h pwd.h sys/ioctl.h])
-
-## Find a termio header to include.
-
-AC_CHECK_HEADERS([termios.h], have_termios_h=yes, have_termios_h=no)
-AC_CHECK_HEADERS([termio.h], have_termio_h=yes, have_termio_h=no)
-AC_CHECK_HEADERS([sgtty.h], have_sgtty_h=yes, have_sgtty_h=no)
-AC_CHECK_HEADERS([conio.h], have_conio_h=yes, have_conio_h=no)
-
-if test $have_termios_h != yes \
-    && test $have_termio_h != yes \
-    && test $have_sgtty_h != yes; then
-  AC_MSG_WARN([I couldn't find termios.h, termio.h, or sgtty.h!])
-fi
-
-## For MSVC compilers, avoid #define of min/max from windows.h header
-if test $have_msvc = yes; then
-  AC_DEFINE(NOMINMAX, 1, [Define to 1 to avoid min/max macro definition in Windows headers.])
-fi
-
-### Determine types and size of types.
-
-AC_TYPE_INT64_T
-AC_TYPE_MODE_T
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_SIZE_T
-AC_TYPE_SSIZE_T
-AC_TYPE_UID_T
-AC_TYPE_UINT64_T
-AC_CHECK_TYPES([dev_t, ino_t])
-AC_CHECK_TYPES([ptrdiff_t])
-
-AC_CHECK_TYPES([long long int])
-if test $ac_cv_type_long_long_int = yes; then
-  AC_DEFINE(OCTAVE_HAVE_LONG_LONG_INT, 1,
-    [Define to 1 if the system has the type 'long long int'.])
-fi
-
-AC_CHECK_TYPES([unsigned long long int])
-if test $ac_cv_type_unsigned_long_long_int = yes; then
-  AC_DEFINE(OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT, 1,
-    [Define to 1 if the system has the type 'unsigned long long int'.])
-fi
-
-## Check for long double type (may be used for 64-bit integer computations).
-AC_CHECK_SIZEOF([long double])
-
-### Check structures and existence of necessary members
-
-AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks,
-                  struct stat.st_rdev])
-AC_CHECK_MEMBERS([struct group.gr_passwd])
-
-AC_STRUCT_TIMEZONE
-
-## Check if C++ compiler allows overload of char, int8_t, and uint8_t.
-AC_CACHE_CHECK([whether ${CXX-g++} allows overload of char, int8_t, and uint8_t],
-  [octave_cv_overload_char_int8_t],
-  [AC_LANG_PUSH(C++)
-  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-    #include <stdint.h>
-    void somefunc(char x) {};
-    void somefunc(int8_t x) {};
-    void somefunc(uint8_t x) {};
-    ]])],
-    octave_cv_overload_char_int8_t=yes,
-    octave_cv_overload_char_int8_t=no)
-  AC_LANG_POP(C++)
-  ])
-if test $octave_cv_overload_char_int8_t = yes; then
-  AC_DEFINE(OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES, 1,
-    [Define to 1 if C++ allows overload of char, int8_t, and uint8_t types.])
-fi
-
-### Check compiler characteristics.
-
-## Check if C++ compiler can auto allocate variable sized arrays.
-OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS
-
-## Check that C compiler and libraries support IEEE754 data format.
-OCTAVE_IEEE754_DATA_FORMAT
-
-## Are bit_and, bit_or, and bit_xor defined as templated operators?
-OCTAVE_CXX_BITWISE_OP_TEMPLATES
-
-## Can complex class set components independently?
-OCTAVE_CXX_COMPLEX_SETTERS
-
-## Are there functions to access real/imag parts of numbers via references?
-OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
-
-## Check if fast integer arithmetics based on bit tricks is available.
-OCTAVE_FAST_INT_OPS
-
-## Does the C compiler handle alloca and const correctly?
-AC_FUNC_ALLOCA
-
-## Does the C compiler support Automake subdir-objects option?
-AM_PROG_CC_C_O
-
-### gnulib initialization: part 2
-### After all include and path modifications have taken place
-### and at the same priority level as function checks.
-
-gl_INIT
-
-### Checks for functions and variables.
-
-dnl These checks define/undefine HAVE_FUNCNAME in config.h.
-dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
-dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_FUNCS([ctermid dup2])
-AC_CHECK_FUNCS([endgrent endpwent execvp fork])
-AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
-AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
-AC_CHECK_FUNCS([isascii kill])
-AC_CHECK_FUNCS([lgamma_r lgammaf_r])
-AC_CHECK_FUNCS([realpath resolvepath])
-AC_CHECK_FUNCS([select setgrent setpwent setsid siglongjmp strsignal])
-AC_CHECK_FUNCS([tcgetattr tcsetattr toascii])
-AC_CHECK_FUNCS([umask waitpid])
-AC_CHECK_FUNCS([_getch _kbhit])
-
-## Check for math defines such as M_LN2 in math.h
-AC_CACHE_CHECK([for MATH DEFINES in math.h],
-  [octave_cv_header_math_defines],
-  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-    #include <math.h>
-    ]], [[
-    double x = M_LN2;]])],
-    octave_cv_header_math_defines=yes,
-    octave_cv_header_math_defines=no)
-  ])
-
-if test $octave_cv_header_math_defines = no; then
-  ## Check again and try defining _USE_MATH_DEFINES
-  AC_CACHE_CHECK([whether _USE_MATH_DEFINES needs to be defined],
-    [octave_cv_header__use_math_defines],
-    [save_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-      #include <math.h>
-      ]], [[
-      double x = M_LN2;]])],
-      octave_cv_header__use_math_defines=yes,
-      octave_cv_header__use_math_defines=no)
-    CPPFLAGS="$save_CPPFLAGS"
-    ])
-  if test $octave_cv_header__use_math_defines = yes; then
-    octave_cv_header_math_defines=yes
-    AC_DEFINE(_USE_MATH_DEFINES, 1,
-      [Define to 1 if _USE_MATH_DEFINES is required to get math constants like M_LN2.])
-    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
-  fi
-fi
-
-if test $octave_cv_header_math_defines = yes; then
-  AC_DEFINE(HAVE_MATH_DEFINES, 1,
-    [Define to 1 if defines such as M_PI are available in math.h])
-else
-  AC_MSG_ERROR([MATH DEFINES in math.h such as M_PI are required to build Octave])
-fi
-
-## Windows-specific tests for extra #defines
-case $host_os in
-  msdosmsvc | mingw*)
-    AC_MSG_CHECKING([for required _WIN32_WINNT])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <windows.h>
-        #if _WIN32_WINNT < 0x0403
-        #error "Wrong version"
-        #endif
-        ]], [])],
-      [AC_MSG_RESULT([none])],
-      [AC_DEFINE(_WIN32_WINNT, 0x0403,
-        [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
-       AC_MSG_RESULT([0x0403])])
-  ;;
-esac
-
-## Windows-specific use of functions
-case $host_os in
-  msdosmsvc | mingw*)
-    AC_CHECK_FUNCS([setvbuf], [],
-                   [AC_MSG_ERROR([Missing function required to build Octave])])
-
-    ## We need this for GetDeviceCaps.  Should we actually check for
-    ## the function and library?
-    LIBS="-lgdi32 $LIBS"
-  ;;
-esac
-
-## Cygwin kluge for getrusage.
-AC_CHECK_FUNCS([getrusage])
-case $host_os in
-  cygwin*)
-    AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
-      [Define to 1 if the struct rusage only has time information.])
-  ;;
-esac
-
-## Check for CGDisplayBitsPerPixel function on Mac OSX systems with Carbon
-if test $have_framework_carbon = yes; then
-  OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL
-fi
-
-AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
-
-AC_FUNC_CLOSEDIR_VOID
-
-## Check return type of matherr
-AC_CACHE_CHECK([for struct exception in math.h],
-  [octave_cv_func_matherr_type],
-  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-      #include <math.h>
-      ]], [[
-      struct exception *x;
-      x->type;
-      x->name;
-      ]])],
-    octave_cv_func_matherr_type=yes,
-    octave_cv_func_matherr_type=no)
-  ])
-if test $octave_cv_func_matherr_type = yes; then
-  AC_DEFINE(EXCEPTION_IN_MATH, 1,
-    [Define to 1 if math.h declares struct exception for matherr.])
-fi
-
-## Signal stuff.
-
-AC_CHECK_DECLS([sys_siglist], [], [],
-[[#include <signal.h>
-/* NetBSD declares sys_siglist in unistd.h.  */
-#if HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-]])
-
-### Need to disable building documentation if either gnuplot or
-### makeinfo are missing.  Skip this warning if building docs was
-### disabled with a configure option.
-
-if test $ENABLE_DOCS = yes; then
-  if test $opengl_graphics = no || test -n "$warn_OSMesa"; then
-    if test -n "$warn_gnuplot"; then
-      ENABLE_DOCS=no
-      warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail"
-        OCTAVE_CONFIGURE_WARNING([warn_docs_graphics])
-    fi
-  fi
-  if test -n "$warn_makeinfo"; then
-    ENABLE_DOCS=no
-    warn_docs_makeinfo="building documentation disabled because makeinfo was not found; make dist will fail"
-    OCTAVE_CONFIGURE_WARNING([warn_docs_makeinfo])
-  fi
-fi
-if test $ENABLE_DOCS = yes; then
-  AC_DEFINE(ENABLE_DOCS, 1,
-    [Define to 1 to build Octave documentation files.])
-fi
-AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
-
-case "$GCC_VERSION" in
-  *4*)
-  ;;
-  *)
-    GCC_WSHADOW_OPTION=-Wshadow
-  ;;
-esac
-
-### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
-### done feature testing.
-
-GCC_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
-GXX_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
-
-try_extra_warning_flags=yes
-
-AC_ARG_ENABLE([extra-warning-flags],
-  [AS_HELP_STRING([--disable-extra-warning-flags],
-    [don't add -Wall, -W, -Wformat, -Wold-style-cast, and other warning options to CFLAGS and CXXFLAGS])],
-  [if test "$enableval" = no; then
-     try_extra_warning_flags=no
-   fi],
-  [])
-
-if test $try_extra_warning_flags = yes; then
-  for flag in $GCC_EXTRA_FLAGS; do
-    OCTAVE_CC_FLAG([$flag], [
-      WARN_CFLAGS="$WARN_CFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
-  done
-  for flag in $GXX_EXTRA_FLAGS; do
-    OCTAVE_CXX_FLAG([$flag], [
-      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
-  done
-fi
-
-GCC_STRICT_FLAGS="-Wconversion"
-GXX_STRICT_FLAGS="-Wconversion -Weffc++"
-
-try_strict_warning_flags=no
-
-AC_ARG_ENABLE([strict-warning-flags],
-  [AS_HELP_STRING([--enable-strict-warning-flags],
-    [add extra strict warning options to CFLAGS and CXXFLAGS])],
-  [if test "$enableval" = yes; then
-     try_strict_warning_flags=yes
-   fi],
-  [])
-
-if test $try_strict_warning_flags = yes; then
-  for flag in $GCC_STRICT_FLAGS; do
-    OCTAVE_CC_FLAG([$flag], [
-      WARN_CFLAGS="$WARN_CFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
-  done
-  for flag in $GXX_STRICT_FLAGS; do
-    OCTAVE_CXX_FLAG([$flag], [
-      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
-  done
-fi
-
-GCC_ADDRESS_SANITIZER_FLAGS="-fsanitize=address -fno-omit-frame-pointer"
-GXX_ADDRESS_SANITIZER_FLAGS="-fsanitize=address -fno-omit-frame-pointer"
-LD_ADDRESS_SANITIZER_FLAGS="-fsanitize=address"
-
-try_address_sanitizer_flags=no
-
-AC_ARG_ENABLE([address-sanitizer-flags],
-  [AS_HELP_STRING([--enable-address-sanitizer-flags],
-    [add extra -fsanitize=address and -fno-omit-frame-pointer options to CFLAGS, CXXFLAGS, and LDFLAGS])],
-  [if test "$enableval" = yes; then
-     try_address_sanitizer_flags=yes
-   fi],
-  [])
-
-if test $try_address_sanitizer_flags = yes; then
-  ADDRESS_SANITIZER_OPTIONS="symbolize=1"
-  AC_SUBST(ADDRESS_SANITIZER_OPTIONS)
-fi
-
-AM_CONDITIONAL([AMCOND_ADDRESS_SANITIZER_ENABLED],
-  [test $try_address_sanitizer_flags = yes])
-
-if test $try_address_sanitizer_flags = yes; then
-  for flag in $GCC_ADDRESS_SANITIZER_FLAGS; do
-    OCTAVE_CC_FLAG([$flag], [
-      WARN_CFLAGS="$WARN_CFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
-  done
-  for flag in $GXX_ADDRESS_SANITIZER_FLAGS; do
-    OCTAVE_CXX_FLAG([$flag], [
-      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
-  done
-  dnl FIXME: do we really need an LD-specific test, or is this good enough?
-  for flag in $LD_ADDRESS_SANITIZER_FLAGS; do
-    OCTAVE_CC_FLAG([$flag], [
-      WARN_LDFLAGS="$WARN_LDFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_LDFLAGS])])
-  done
-fi
-
-AC_SUBST(WARN_CFLAGS)
-AC_SUBST(WARN_CXXFLAGS)
-AC_SUBST(WARN_LDFLAGS)
-
-## Also check for the GCC-specific pragmas for controlling warnings.
-
-AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignore],
-  [octave_cv_gcc_has_pragma_GCC_diagnostic],
-  [AC_LANG_PUSH(C++)
-   AC_TRY_COMPILE([], [
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignore "-Wold-style-cast"
-  int three = (int) 3.1415926;
-#pragma GCC diagnostic pop
-    ],
-    [octave_cv_gcc_has_pragma_GCC_diagnostic=yes],
-    [octave_cv_gcc_has_pragma_GCC_diagnostic=no])
-   AC_LANG_POP(C++)],
-  ])
-
-if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
-  AC_DEFINE(HAVE_PRAGMA_GCC_DIAGNOSTIC, 1,
-   [define if GCC supports @%:@pragma GCC diagnostic ...])
-fi
-
 ### Check for Java.
 
 build_java=yes
@@ -2919,6 +2757,164 @@ AC_SUBST(JAVA_CPPFLAGS)
 AC_SUBST(JAVA_LIBS)
 AC_DEFINE_UNQUOTED([JAVA_HOME], ["$JAVA_HOME"], [Java home (top-level installation dir)])
 AC_DEFINE_UNQUOTED([JAVA_LDPATH], ["$JAVA_LDPATH"], [Java library path (libjvm)])
+
+### Need to disable building documentation if either gnuplot or
+### makeinfo are missing.  Skip these warnings if building docs was
+### intentionally disabled with a configure option.
+
+ENABLE_DOCS=yes
+AC_ARG_ENABLE([docs],
+  [AS_HELP_STRING([--disable-docs], [don't build documentation files])],
+  [if test "$enableval" = no; then
+     ENABLE_DOCS=no
+     warn_docs="building documentation disabled; make dist will fail"
+     OCTAVE_CONFIGURE_WARNING([warn_docs])
+   fi], [])
+if test $ENABLE_DOCS = yes; then
+  if test $opengl_graphics = no || test -n "$warn_OSMesa"; then
+    if test -n "$warn_gnuplot"; then
+      ENABLE_DOCS=no
+      warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail"
+        OCTAVE_CONFIGURE_WARNING([warn_docs_graphics])
+    fi
+  fi
+  if test -n "$warn_makeinfo"; then
+    ENABLE_DOCS=no
+    warn_docs_makeinfo="building documentation disabled because makeinfo was not found; make dist will fail"
+    OCTAVE_CONFIGURE_WARNING([warn_docs_makeinfo])
+  fi
+fi
+if test $ENABLE_DOCS = yes; then
+  AC_DEFINE(ENABLE_DOCS, 1,
+    [Define to 1 to build Octave documentation files.])
+fi
+AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
+
+### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
+### done feature testing.  But don't add -Wshadow for GCC 4.x.
+
+case "$GCC_VERSION" in
+  *4*) ;;
+  *)   GCC_WSHADOW_OPTION=-Wshadow ;;
+esac
+
+GCC_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
+GXX_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
+
+try_extra_warning_flags=yes
+
+AC_ARG_ENABLE([extra-warning-flags],
+  [AS_HELP_STRING([--disable-extra-warning-flags],
+    [don't add -Wall, -W, -Wformat, -Wold-style-cast, and other warning options to CFLAGS and CXXFLAGS])],
+  [if test "$enableval" = no; then
+     try_extra_warning_flags=no
+   fi],
+  [])
+
+if test $try_extra_warning_flags = yes; then
+  for flag in $GCC_EXTRA_FLAGS; do
+    OCTAVE_CC_FLAG([$flag], [
+      WARN_CFLAGS="$WARN_CFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
+  done
+  for flag in $GXX_EXTRA_FLAGS; do
+    OCTAVE_CXX_FLAG([$flag], [
+      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
+  done
+fi
+
+GCC_STRICT_FLAGS="-Wconversion"
+GXX_STRICT_FLAGS="-Wconversion -Weffc++"
+
+try_strict_warning_flags=no
+
+AC_ARG_ENABLE([strict-warning-flags],
+  [AS_HELP_STRING([--enable-strict-warning-flags],
+    [add extra strict warning options to CFLAGS and CXXFLAGS])],
+  [if test "$enableval" = yes; then
+     try_strict_warning_flags=yes
+   fi],
+  [])
+
+if test $try_strict_warning_flags = yes; then
+  for flag in $GCC_STRICT_FLAGS; do
+    OCTAVE_CC_FLAG([$flag], [
+      WARN_CFLAGS="$WARN_CFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
+  done
+  for flag in $GXX_STRICT_FLAGS; do
+    OCTAVE_CXX_FLAG([$flag], [
+      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
+  done
+fi
+
+GCC_ADDRESS_SANITIZER_FLAGS="-fsanitize=address -fno-omit-frame-pointer"
+GXX_ADDRESS_SANITIZER_FLAGS="-fsanitize=address -fno-omit-frame-pointer"
+LD_ADDRESS_SANITIZER_FLAGS="-fsanitize=address"
+
+try_address_sanitizer_flags=no
+
+AC_ARG_ENABLE([address-sanitizer-flags],
+  [AS_HELP_STRING([--enable-address-sanitizer-flags],
+    [add extra -fsanitize=address and -fno-omit-frame-pointer options to CFLAGS, CXXFLAGS, and LDFLAGS])],
+  [if test "$enableval" = yes; then
+     try_address_sanitizer_flags=yes
+   fi],
+  [])
+
+if test $try_address_sanitizer_flags = yes; then
+  ADDRESS_SANITIZER_OPTIONS="symbolize=1"
+  AC_SUBST(ADDRESS_SANITIZER_OPTIONS)
+fi
+
+AM_CONDITIONAL([AMCOND_ADDRESS_SANITIZER_ENABLED],
+  [test $try_address_sanitizer_flags = yes])
+
+if test $try_address_sanitizer_flags = yes; then
+  for flag in $GCC_ADDRESS_SANITIZER_FLAGS; do
+    OCTAVE_CC_FLAG([$flag], [
+      WARN_CFLAGS="$WARN_CFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
+  done
+  for flag in $GXX_ADDRESS_SANITIZER_FLAGS; do
+    OCTAVE_CXX_FLAG([$flag], [
+      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
+  done
+  dnl FIXME: do we really need an LD-specific test, or is this good enough?
+  for flag in $LD_ADDRESS_SANITIZER_FLAGS; do
+    OCTAVE_CC_FLAG([$flag], [
+      WARN_LDFLAGS="$WARN_LDFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_LDFLAGS])])
+  done
+fi
+
+AC_SUBST(WARN_CFLAGS)
+AC_SUBST(WARN_CXXFLAGS)
+AC_SUBST(WARN_LDFLAGS)
+
+## Also check for the GCC-specific pragmas for controlling warnings.
+
+AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignore],
+  [octave_cv_gcc_has_pragma_GCC_diagnostic],
+  [AC_LANG_PUSH(C++)
+   AC_TRY_COMPILE([], [
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignore "-Wold-style-cast"
+  int three = (int) 3.1415926;
+#pragma GCC diagnostic pop
+    ],
+    [octave_cv_gcc_has_pragma_GCC_diagnostic=yes],
+    [octave_cv_gcc_has_pragma_GCC_diagnostic=no])
+   AC_LANG_POP(C++)],
+  ])
+
+if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
+  AC_DEFINE(HAVE_PRAGMA_GCC_DIAGNOSTIC, 1,
+   [define if GCC supports @%:@pragma GCC diagnostic ...])
+fi
 
 ### These are recommended by the gnulib bootstrap script:
 

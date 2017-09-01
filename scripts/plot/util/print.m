@@ -613,65 +613,66 @@ function cmd = epstool (opts, filein, fileout)
              "print.m: eps preview may not be combined with -tight");
   endif
   if (! isempty (opts.preview) || opts.tight_flag)
-    if (! isempty (opts.epstool_binary))
-      if (opts.tight_flag)
-        cmd = "--copy --bbox";
-      elseif (! isempty (opts.preview))
-        switch (opts.preview)
-          case "tiff"
-            cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
-          case {"tiff6u", "tiff6p", "metafile"}
-            cmd = sprintf ("--add-%s-preview --device bmpgray", opts.preview);
-          case {"tiff4", "interchange"}
-            cmd = sprintf ("--add-%s-preview", opts.preview);
-          case "pict"
-            cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
-          otherwise
-            error ("print:invalidpreview",
-                   "print.m: epstool cannot include preview for format '%s'",
-                   opts.preview);
-        endswitch
-        if (! isempty (opts.ghostscript.resolution))
-          cmd = sprintf ("%s --dpi %d", cmd, fix (opts.ghostscript.resolution));
-        endif
+
+    if (isempty (opts.epstool_binary))
+      error ("print:noepstool", "print.m: 'epstool' is required for specified output format, but binary is not available in PATH");
+    endif
+
+    if (opts.tight_flag)
+      cmd = "--copy --bbox";
+    elseif (! isempty (opts.preview))
+      switch (opts.preview)
+        case "tiff"
+          cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
+        case {"tiff6u", "tiff6p", "metafile"}
+          cmd = sprintf ("--add-%s-preview --device bmpgray", opts.preview);
+        case {"tiff4", "interchange"}
+          cmd = sprintf ("--add-%s-preview", opts.preview);
+        case "pict"
+          cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
+        otherwise
+          error ("print:invalidpreview",
+                 "print.m: epstool cannot include preview for format '%s'",
+                 opts.preview);
+      endswitch
+      if (! isempty (opts.ghostscript.resolution))
+        cmd = sprintf ("%s --dpi %d", cmd, fix (opts.ghostscript.resolution));
+      endif
+    else
+      cmd = "";
+    endif
+    if (! isempty (cmd))
+      cmd = sprintf ("%s --quiet %s %s %s ", opts.epstool_binary,
+                     cmd, filein, fileout);
+    endif
+    if (pipein)
+      if (dos_shell)
+        filein(filein=="'") = "\"";
+        gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
+                                  "device", epsdevice,
+                                  "source", "-",
+                                  "output", filein);
+        cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
       else
-        cmd = "";
+        cmd = sprintf ("cat > %s ; %s", filein, cmd);
       endif
-      if (! isempty (cmd))
-        cmd = sprintf ("%s --quiet %s %s %s ", opts.epstool_binary,
-                       cmd, filein, fileout);
+    endif
+    if (pipeout)
+      if (dos_shell)
+        cmd = sprintf ("%s & type %s", cmd, fileout);
+      else
+        cmd = sprintf ("%s ; cat %s", cmd, fileout);
       endif
-      if (pipein)
-        if (dos_shell)
-          filein(filein=="'") = "\"";
-          gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                                    "device", epsdevice,
-                                    "source", "-",
-                                    "output", filein);
-          cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
-        else
-          cmd = sprintf ("cat > %s ; %s", filein, cmd);
-        endif
+    endif
+    if (! isempty (cleanup))
+      if (pipeout && dos_shell)
+        error ("print:epstoolpipe",
+               "print.m: cannot pipe output of 'epstool' for DOS shell");
+      elseif (pipeout)
+        cmd = sprintf ("( %s %s )", cmd, cleanup);
+      else
+        cmd = sprintf ("%s %s", cmd, cleanup);
       endif
-      if (pipeout)
-        if (dos_shell)
-          cmd = sprintf ("%s & type %s", cmd, fileout);
-        else
-          cmd = sprintf ("%s ; cat %s", cmd, fileout);
-        endif
-      endif
-      if (! isempty (cleanup))
-        if (pipeout && dos_shell)
-          error ("print:epstoolpipe",
-                 "print.m: cannot pipe output of 'epstool' for DOS shell");
-        elseif (pipeout)
-          cmd = sprintf ("( %s %s )", cmd, cleanup);
-        else
-          cmd = sprintf ("%s %s", cmd, cleanup);
-        endif
-      endif
-    elseif (isempty (opts.epstool_binary))
-      error ("print:noepstool", "print.m: 'epstool' not found in PATH");
     endif
   else
     if (pipein && pipeout)
@@ -720,17 +721,18 @@ function cmd = fig2dev (opts, devopt)
     devopt = opts.devopt;
   endif
 
-  dos_shell = (ispc () && ! isunix ());
-  if (! isempty (opts.fig2dev_binary))
-    if (dos_shell)
-      ## FIXME: Is this the right thing to do for DOS?
-      cmd = sprintf ("%s -L %s 2> NUL", opts.fig2dev_binary, devopt);
-    else
-      cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
-    endif
-  elseif (isempty (opts.fig2dev_binary))
-    error ("print:nofig2dev", "print.m: 'fig2dev' not found in PATH");
+  if (isempty (opts.fig2dev_binary))
+    error ("print:nofig2dev", "print.m: 'fig2dev' is required for specified output format, but binary is not available in PATH");
   endif
+
+  dos_shell = (ispc () && ! isunix ());
+  if (dos_shell)
+    ## FIXME: Is this the right thing to do for DOS?
+    cmd = sprintf ("%s -L %s 2> NUL", opts.fig2dev_binary, devopt);
+  else
+    cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
+  endif
+
   if (opts.debug)
     fprintf ("fig2dev command: '%s'\n", cmd);
   endif
@@ -827,17 +829,18 @@ function cmd = pstoedit (opts, devopt)
     devopt = opts.devopt;
   endif
 
-  dos_shell = (ispc () && ! isunix ());
-  if (! isempty (opts.pstoedit_binary))
-    if (dos_shell)
-      cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
-    else
-      ## FIXME: Is this the right thing to do for DOS?
-      cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
-    endif
-  elseif (isempty (opts.pstoedit_binary))
-    error ("print:nopstoedit", "print.m: 'pstoedit' not found in PATH");
+  if (isempty (opts.pstoedit_binary))
+    error ("print:nopstoedit", "print.m: 'pstoedit' is required for specified output format, but binary is not available in PATH");
   endif
+
+  dos_shell = (ispc () && ! isunix ());
+  if (dos_shell)
+    cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
+  else
+    ## FIXME: Is this the right thing to do for DOS?
+    cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
+  endif
+
   if (opts.debug)
     fprintf ("pstoedit command: '%s'\n", cmd);
   endif

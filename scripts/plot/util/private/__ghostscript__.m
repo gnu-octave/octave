@@ -60,6 +60,10 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     opts.(args{n}) = args{n+1};
   endfor
 
+  if (isempty (opts.binary))
+    error ("print:no_ghostscript", "__ghostscript__.m: Ghostscript binary is required for specified output format, but binary is not available in PATH");
+  endif
+
   if (isempty (opts.papersize))
     format_for_printer = false;
   else
@@ -140,12 +144,11 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     endif
   endif
 
-  if (isempty (opts.binary))
-    error ("print:no_ghostscript", "__ghostscript__.m: ghostscript is required.");
-  elseif (isempty (opts.output))
+  if (isempty (opts.output))
     cmd = sprintf ("%s %s", opts.binary, gs_opts);
   else
-    cmd = sprintf ("%s %s -sOutputFile=\"%s\"", opts.binary, gs_opts, opts.output);
+    cmd = sprintf ('%s %s -sOutputFile="%s"',
+                   opts.binary, gs_opts, opts.output);
   endif
   if (! isempty (opts.prepend)
       && any (strcmpi (opts.device, {"pswrite", "ps2write", "pdfwrite"})))

@@ -24,7 +24,7 @@
 
 function arg_st = __print_parse_opts__ (varargin)
 
-  persistent warn_on_missing_binary = true
+  persistent warn_on_missing_ghostscript = true;
 
   arg_st.append_to_file = false;
   arg_st.canvas_size = [];
@@ -102,7 +102,8 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.tight_flag = true;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
-      elseif (any (strcmp (arg, {"-interchange", "-metafile", "-pict", "-tiff"})))
+      elseif (any (strcmp (arg,
+                           {"-interchange", "-metafile", "-pict", "-tiff"})))
         arg_st.preview = arg(2:end);
       elseif (strncmp (arg, "-debug", 6))
         arg_st.debug = true;
@@ -121,41 +122,38 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (strncmp (arg, "-PSTOEDIT:", 9))
         arg_st.pstoedit_binary = arg(10:end);
       elseif (strncmpi (arg, "-textalphabits=", 15))
-        n = find (arg == "=");
-        if (! isempty (n) && n == numel (arg) - 1 && any (arg(end) == "124"))
-          arg_st.ghostscript.antialiasing_textalphabits = str2num (arg(end));
+        if (length (arg) == 16 && any (arg(end) == "124"))
+          arg_st.ghostscript.antialiasing_textalphabits = str2double (arg(end));
         else
           error ("print: improper syntax, or value, for TextAlphaBits");
         endif
       elseif (strncmpi (arg, "-graphicsalphabits=", 19))
-        n = find (arg == "=");
-        if (! isempty (n) && n == numel (arg) - 1 && any (arg(end) == "124"))
-          arg_st.ghostscript.antialiasing_graphicsalphabits = str2num (arg(end));
+        if (numel (arg) == 20 && any (arg(end) == "124"))
+          arg_st.ghostscript.antialiasing_graphicsalphabits = str2double (arg(end));
         else
           error ("print: improper syntax, or value, for GraphicsAlphaBits");
         endif
-      elseif ((length (arg) > 2) && arg(1:2) == "-G")
+      elseif (length (arg) > 2 && arg(1:2) == "-G")
         arg_st.ghostscript.binary = file_in_path (getenv ("PATH"), arg(3:end));
         if (isempty (arg_st.ghostscript.binary))
-          error ("print: Ghostscript binary ""%s"" could not be located",
+          error ('print: Ghostscript binary "%s" not found in PATH',
                  arg(3:end));
-        else
-          arg_st.ghostscript.binary = __quote_path__ (arg_st.ghostscript.binary);
         endif
+        arg_st.ghostscript.binary = __quote_path__ (arg_st.ghostscript.binary);
       elseif (length (arg) > 2 && arg(1:2) == "-F")
         idx = rindex (arg, ":");
         if (idx)
           arg_st.font = arg(3:idx-1);
-          arg_st.fontsize = str2num (arg(idx+1:end));
+          arg_st.fontsize = str2double (arg(idx+1:end));
         else
           arg_st.font = arg(3:end);
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-S")
-        arg_st.canvas_size = str2num (arg(3:end));
+        arg_st.canvas_size = str2double (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-r")
         arg_st.ghostscript.resolution = str2double (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-f")
-        arg_st.figure = str2num (arg(3:end));
+        arg_st.figure = str2double (arg(3:end));
       elseif (any (strcmp (arg, {"-painters", "-opengl"})))
         warning ("print: '%s' accepted for Matlab compatibility, but is ignored", arg);
       elseif (strcmp (arg, "-noui"))
@@ -184,10 +182,6 @@ function arg_st = __print_parse_opts__ (varargin)
       ## Allows tests to be run without error.
       arg_st.orientation = "portrait";
     endif
-  endif
-
-  if (isempty (arg_st.ghostscript.binary))
-    arg_st.ghostscript.binary = __ghostscript_binary__ ();
   endif
 
   dot = rindex (arg_st.name, ".");
@@ -219,7 +213,7 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.devopt = "jpeg";
   endif
 
-  dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
+  persistent dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
               "gif", "pbm", "pbmraw", "dxf", "mf", ...
               "svg", "hpgl", "ps", "ps2", "psc", ...
               "psc2", "eps", "eps2", "epsc", "epsc2", ...
@@ -233,7 +227,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "epscairolatex", "epscairolatexstandalone", "pstricks", ...
               "epswrite", "eps2write", "pswrite", "ps2write", "pdfwrite"};
 
-  suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
+  persistent suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
               "gif", "pbm", "pbm", "dxf", "mf", ...
               "svg", "hpgl", "ps", "ps", "ps", ...
               "ps", "eps", "eps", "eps", "eps", ...
@@ -259,11 +253,10 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   match = strcmpi (dev_list, arg_st.devopt);
-  if (any (match))
-    default_suffix = suffixes{match};
-  else
+  if (! any (match))
     error ("print: unknown device %s", arg_st.devopt);
   endif
+  default_suffix = suffixes{match};
 
   if (dot == 0 && ! isempty (arg_st.name))
     arg_st.name = [arg_st.name "." default_suffix];
@@ -276,14 +269,13 @@ function arg_st = __print_parse_opts__ (varargin)
                                           "ps", "ps2", "psc", "psc2", "pdf"})))
       have_ghostscript = ! isempty (__ghostscript_binary__ ());
       if (have_ghostscript)
-        file_exists = ((numel (dir (arg_st.name)) == 1)
-                       && (! isdir (arg_st.name)));
+        file_exists = (numel (dir (arg_st.name)) == 1 && ! isdir (arg_st.name));
         if (! file_exists)
           arg_st.append_to_file = false;
         endif
       else
         arg_st.append_to_file = false;
-        warning ("print.m: appended output requires ghostscript to be installed");
+        warning ("print.m: appended output requires Ghostscript to be installed");
       endif
     else
       warning ("print.m: appended output is not supported for device '%s'",
@@ -347,7 +339,7 @@ function arg_st = __print_parse_opts__ (varargin)
       [arg_st.ghostscript.papersize, paperposition] = ...
                            gs_papersize (arg_st.figure, arg_st.orientation);
     else
-      ## allows tests to be run
+      ## allows BIST tests to be run
       arg_st.ghostscript.papersize = "letter";
       paperposition = [0.25, 2.50, 8.00, 6.00] * 72;
     endif
@@ -377,21 +369,11 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.ghostscript.pageoffset = [0, 0];
   endif
 
-  if (warn_on_missing_binary)
+  if (warn_on_missing_ghostscript)
     if (isempty (arg_st.ghostscript.binary))
-      warning ("print:missing_gs", "print.m: Ghostscript binary is not available.\nOnly eps output is available.");
-    else
-      if (isempty (arg_st.epstool_binary))
-        warning ("print:missing_epstool", "print.m: epstool binary is not available.\nSome output formats are not available.");
-      endif
-      if (isempty (arg_st.fig2dev_binary))
-        warning ("print:missing_fig2dev", "print.m: fig2dev binary is not available.\nSome output formats are not available.");
-      endif
-      if (isempty (arg_st.pstoedit_binary))
-        warning ("print:missing_pstoedit", "print.m: pstoedit binary is not available.\nSome output formats are not available.");
-      endif
+      warning ("print:missing_gs", "print.m: Ghostscript binary is not available.  Only eps output is possible");
     endif
-    warn_on_missing_binary = false;
+    warn_on_missing_ghostscript = false;
   endif
 
 endfunction
@@ -475,9 +457,8 @@ endfunction
 
 function gs = __ghostscript_binary__ ()
 
-  persistent ghostscript_binary = ""
-  persistent warn_on_no_ghostscript = true
-  persistent warn_on_bad_gsc = true
+  persistent ghostscript_binary = "";
+  persistent warn_on_bad_gsc = true;
 
   if (isempty (ghostscript_binary))
     GSC = getenv ("GSC");
@@ -492,6 +473,7 @@ function gs = __ghostscript_binary__ ()
     else
       gs_binaries = {};
     endif
+
     if (isunix ())
       ## Unix - Includes Mac OSX and Cygwin.
       gs_binaries = [gs_binaries, {"gs", "gs.exe"}];
@@ -502,14 +484,8 @@ function gs = __ghostscript_binary__ ()
     endif
     n = 0;
     while (n < numel (gs_binaries) && isempty (ghostscript_binary))
-      n += 1;
-      ghostscript_binary = file_in_path (getenv ("PATH"), gs_binaries{n});
+      ghostscript_binary = file_in_path (getenv ("PATH"), gs_binaries{++n});
     endwhile
-    if (warn_on_no_ghostscript && isempty (ghostscript_binary))
-      warning ("print:noghostscript",
-               "print.m: ghostscript not found in PATH");
-      warn_on_no_ghostscript = false;
-    endif
   endif
 
   gs = ghostscript_binary;
@@ -518,12 +494,10 @@ endfunction
 
 function bin = __find_binary__ (binary)
 
-  persistent data = struct ()
+  persistent data = struct ();
 
   if (! isfield (data, binary))
-    ## Reinitialize when 'user_binaries' is present.
     data.(binary).bin = "";
-    data.(binary).warn_on_absence = false;
   endif
 
   if (isempty (data.(binary).bin))
@@ -536,14 +510,8 @@ function bin = __find_binary__ (binary)
     endif
     n = 0;
     while (n < numel (binaries) && isempty (data.(binary).bin))
-      n += 1;
-      data.(binary).bin = file_in_path (getenv ("PATH"), binaries{n});
+      data.(binary).bin = file_in_path (getenv ("PATH"), binaries{++n});
     endwhile
-    if (isempty (data.(binary).bin) && data.(binary).warn_on_absence)
-      warning (sprintf ("print:no%s", binary),
-               "print.m: '%s' not found in PATH", binary);
-      data.(binary).warn_on_absence = false;
-    endif
   endif
 
   bin = data.(binary).bin;
@@ -551,7 +519,7 @@ function bin = __find_binary__ (binary)
 endfunction
 
 function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
-  persistent papertypes papersizes
+  persistent papertypes papersizes;
 
   if (isempty (papertypes))
     papertypes = {"usletter", "uslegal",     "a0",     "a1", ...

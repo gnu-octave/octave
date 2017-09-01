@@ -2280,18 +2280,17 @@ fi
 ## On some systems, explicitly linking with -lsuitesparseconfig is
 ## needed when using SuiteSparse libraries.  If so, the checks below
 ## for specific SuiteSparse libraries may fail without it.
-## On some systems, explicitly linking with -lrt is also needed.
+## Include LIB_CLOCK_GETTIME (from gnulib) on systems where needed.
 
 save_LIBS="$LIBS"
-AC_CHECK_LIB([rt], [clock_gettime], [SSCONFIG_RT_LIB="-lrt"], [])
-LIBS="$SSCONFIG_RT_LIB $LIBS"
+LIBS="$LIB_CLOCK_GETTIME $LIBS"
 OCTAVE_CHECK_LIB(suitesparseconfig, SUITESPARSECONFIG,
   [], [], [SuiteSparse_time], [],
   [don't link directly with suitesparseconfig library])
 LIBS="$save_LIBS"
 
-if test -n "$SUITESPARSECONFIG_LIBS" && test -n "$SSCONFIG_RT_LIB"; then
-  SUITESPARSECONFIG_LIBS="$SUITESPARSECONFIG_LIBS $SSCONFIG_RT_LIB"
+if test -n "$SUITESPARSECONFIG_LIBS" && test -n "$LIB_CLOCK_GETTIME"; then
+  SUITESPARSECONFIG_LIBS="$SUITESPARSECONFIG_LIBS $LIB_CLOCK_GETTIME"
 fi
 
 ### Reset below, after all checks for SuiteSparse libraries.
@@ -2918,9 +2917,9 @@ fi
 
 ### These are recommended by the gnulib bootstrap script:
 
-GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $LTLIBICONV $LTLIBINTL $LTLIBTHREAD"
+GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CLOCK_GETTIME $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $LTLIBICONV $LTLIBINTL $LTLIBTHREAD"
 
-MKOCTFILE_GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $LIBICONV $LIBINTL $LIBTHREAD"
+MKOCTFILE_GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CLOCK_GETTIME $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $LIBICONV $LIBINTL $LIBTHREAD"
 
 AC_SUBST(GNULIB_LINK_DEPS)
 

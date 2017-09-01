@@ -2032,6 +2032,27 @@ else
   UMFPACK_TAG="_zi_"
 fi
 
+## On some systems, explicitly linking with -lsuitesparseconfig is
+## needed when using SuiteSparse libraries.  If so, the checks below
+## for specific SuiteSparse libraries may fail without it.
+## On some systems, explicitly linking with -lrt is also needed.
+
+save_LIBS="$LIBS"
+AC_CHECK_LIB([rt], [clock_gettime], [SSCONFIG_RT_LIB="-lrt"], [])
+LIBS="$SSCONFIG_RT_LIB $LIBS"
+OCTAVE_CHECK_LIB(suitesparseconfig, SUITESPARSECONFIG,
+  [], [], [SuiteSparse_time], [],
+  [don't link directly with suitesparseconfig library])
+LIBS="$save_LIBS"
+
+if test -n "$SUITESPARSECONFIG_LIBS" && test -n "$SSCONFIG_RT_LIB"; then
+  SUITESPARSECONFIG_LIBS="$SUITESPARSECONFIG_LIBS $SSCONFIG_RT_LIB"
+fi
+
+### Reset below, after all checks for SuiteSparse libraries.
+suitesparse_save_LIBS="$LIBS"
+LIBS="$SUITESPARSECONFIG_LIBS $LIBS"
+
 ### Check for AMD library
 
 OCTAVE_CHECK_LIB(amd, AMD,
@@ -2131,32 +2152,8 @@ OCTAVE_CHECK_LIB(klu, KLU,
   [suitesparse/klu.h ufsparse/klu.h klu/klu.h klu.h], [klu_solve],
   [], [don't use KLU library, disable some sparse matrix functionality])
 
-## If using SuiteSparse libraries, check for suitesparseconfig library.
-
-SUITESPARSE_CONFIG_LIBS=
-if test x$octave_cv_lib_amd = xyes \
-   || test x$octave_cv_lib_camd = xyes \
-   || test x$octave_cv_lib_colamd = xyes \
-   || test x$octave_cv_lib_ccolamd = xyes \
-   || test x$octave_cv_lib_cholmod = xyes \
-   || test x$octave_cv_lib_cxsparse = xyes \
-   || test x$octave_cv_lib_klu = xyes \
-   || test x$octave_cv_lib_umfpack = xyes; then
-  ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time
-  save_CPPFLAGS="$CPPFLAGS"
-  save_LIBS="$LIBS";
-  CPPFLAGS="$UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CPPFLAGS"
-  LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
-  xtra_libs=
-  AC_CHECK_LIB([suitesparseconfig], [SuiteSparse_time],
-    [SUITESPARSE_CONFIG_LIBS="-lsuitesparseconfig"],
-    [AC_CHECK_LIB([rt], [clock_gettime],
-      [AC_CHECK_LIB([suitesparseconfig], [SuiteSparse_time],
-        [SUITESPARSE_CONFIG_LIBS="-lsuitesparseconfig -lrt"], [], [-lrt])])])
-  LIBS="$save_LIBS"
-  CPPFLAGS="$save_CPPFLAGS"
-fi
-AC_SUBST(SUITESPARSE_CONFIG_LIBS)
+### SUITESPARSECONFIG_LIBS added to LIBS above.
+LIBS="$suitesparse_save_LIBS"
 
 ## Collections of flags.  These are here instead of just in the
 ## Makefile.am file because we substitute some of them into other
@@ -2168,7 +2165,7 @@ SPARSE_XCPPFLAGS="$CHOLMOD_CPPFLAGS $UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CAMD_CPPFLA
 
 SPARSE_XLDFLAGS="$CHOLMOD_LDFLAGS $UMFPACK_LDFLAGS $AMD_LDFLAGS $CAMD_LDFLAGS $COLAMD_LDFLAGS  $CCOLAMD_LDFLAGS $CXSPARSE_LDFLAGS"
 
-SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS $SUITESPARSE_CONFIG_LIBS"
+SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS $SUITESPARSECONFIG_LIBS"
 
 AC_SUBST(SPARSE_XCPPFLAGS)
 AC_SUBST(SPARSE_XLDFLAGS)
@@ -3266,7 +3263,7 @@ Octave is now configured for $canonical_host_type
   Sndfile CPPFLAGS:              $SNDFILE_CPPFLAGS
   Sndfile LDFLAGS:               $SNDFILE_LDFLAGS
   Sndfile libraries:             $SNDFILE_LIBS
-  SuiteSparse config libraries:  $SUITESPARSE_CONFIG_LIBS
+  SuiteSparse config libraries:  $SUITESPARSECONFIG_LIBS
   SUNDIALS IDA CPPFLAGS:         $SUNDIALS_IDA_CPPFLAGS
   SUNDIALS IDA LDFLAGS:          $SUNDIALS_IDA_LDFLAGS
   SUNDIALS IDA libraries:        $SUNDIALS_IDA_LIBS

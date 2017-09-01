@@ -158,7 +158,7 @@ namespace octave
     extern const char *SH_LD;
     extern const char *SH_LDFLAGS;
     extern const char *STATIC_LIBS;
-    extern const char *SUITESPARSE_CONFIG_LIBS;
+    extern const char *SUITESPARSECONFIG_LIBS;
     extern const char *SUNDIALS_IDA_CPPFLAGS;
     extern const char *SUNDIALS_IDA_LDFLAGS;
     extern const char *SUNDIALS_IDA_LIBS;

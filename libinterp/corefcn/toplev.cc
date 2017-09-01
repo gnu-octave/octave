@@ -526,7 +526,7 @@ specified option.
            { "SH_LD", octave::build_env::SH_LD },
            { "SH_LDFLAGS", octave::build_env::SH_LDFLAGS },
            { "STATIC_LIBS", octave::build_env::STATIC_LIBS },
-           { "SUITESPARSE_CONFIG_LIBS", octave::build_env::SUITESPARSE_CONFIG_LIBS },
+           { "SUITESPARSECONFIG_LIBS", octave::build_env::SUITESPARSECONFIG_LIBS },
            { "TERM_LIBS", octave::build_env::TERM_LIBS },
            { "UMFPACK_CPPFLAGS", octave::build_env::UMFPACK_CPPFLAGS },
            { "UMFPACK_LDFLAGS", octave::build_env::UMFPACK_LDFLAGS },

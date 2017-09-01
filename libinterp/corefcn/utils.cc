@@ -284,13 +284,16 @@ make_absolute (const string_vector& sv)
 
 DEFMETHOD (file_in_loadpath, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} file_in_loadpath (@var{file})
-@deftypefnx {} {} file_in_loadpath (@var{file}, "all")
-
-Return the absolute name of @var{file} if it can be found in
-the list of directories specified by @code{path}.
+@deftypefn  {} {@var{fname} =} file_in_loadpath (@var{file})
+@deftypefnx {} {@var{fname} =} file_in_loadpath (@var{file}, "all")
+Return the absolute name of @var{file} if it can be found in the list of
+directories specified by @code{path}.
 
 If no file is found, return an empty character string.
+
+When @var{file} is already an absolute name, the name is checked against the
+file system instead of Octave's loadpath.  In this case, if @var{file} exists
+it will be returned in @var{fname}, otherwise an empty string is returned.
 
 If the first argument is a cell array of strings, search each directory of
 the loadpath for element of the cell array and return the first that
@@ -983,15 +986,21 @@ No check is done for the existence of @var{file}.
 
 DEFMETHOD (dir_in_loadpath, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} dir_in_loadpath (@var{dir})
-@deftypefnx {} {} dir_in_loadpath (@var{dir}, "all")
-Return the full name of the path element matching @var{dir}.
+@deftypefn  {} {@var{dirname} =} dir_in_loadpath (@var{dir})
+@deftypefnx {} {@var{dirname} =} dir_in_loadpath (@var{dir}, "all")
+Return the absolute name of the loadpath element matching @var{dir} if it can
+be found in the list of directories specified by @code{path}.
+
+If no match is found, return an empty character string.
 
 The match is performed at the end of each path element.  For example, if
 @var{dir} is @qcode{"foo/bar"}, it matches the path element
 @nospell{@qcode{"/some/dir/foo/bar"}}, but not
 @nospell{@qcode{"/some/dir/foo/bar/baz"}}
-@nospell{@qcode{"/some/dir/allfoo/bar"}}.
+@nospell{@qcode{"/some/dir/allfoo/bar"}}.  When @var{dir} is an absolute name,
+rather than just a path fragment, it is matched against the file system
+instead of Octave's loadpath.  In this case, if @var{dir} exists it will be
+returned in @var{dirname}, otherwise an empty string is returned.
 
 If the optional second argument is supplied, return a cell array containing
 all name matches rather than just the first.

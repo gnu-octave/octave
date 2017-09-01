@@ -2431,6 +2431,20 @@ For each directory that is added, and that was not already in the path,
                                   }),
                      dir.end ());
 
+          auto pos = dir.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+          if (pos == std::string::npos)
+            {
+              if (! dir.empty () && dir[0] == '+')
+                warning_with_id ("Octave:addpath-pkg",
+                                 "addpath: package directories should not be added to path: %s\n", dir.c_str ());
+            }
+          else
+            {
+              if (pos + 1 < dir.length () && dir[pos+1] == '+')
+                warning_with_id ("Octave:addpath-pkg",
+                                 "addpath: package directories should not be added to path: %s\n", dir.c_str ());
+            }
+
           if (append)
             lp.append (dir, true);
           else

@@ -23,6 +23,13 @@
 ## @item Octave:abbreviated-property-match
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
 ##
+## @item Octave:addpath-pkg
+## If the @code{Octave:addpath-pkg} warning is enabled,
+## Octave will warn when a package directory (i.e., +package_name) is added
+## to the @code{path}.  Typically, only the parent directory which contains the
+## package directory should be added to the load path.
+## By default, the @code{Octave:addpath-pkg} warning is enabled.
+##
 ## @item Octave:array-as-logical
 ## If the @code{Octave:array-as-logical} warning is enabled,
 ## Octave will warn when an array of size greater than 1x1 is used

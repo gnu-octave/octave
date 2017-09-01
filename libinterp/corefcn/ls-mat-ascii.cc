@@ -346,7 +346,10 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
     warning ("save: omitting imaginary part for ASCII file");
 
   if (val.ndims () > 2)
-    error ("save: only 2-D matrices can be saved to ASCII file");
+    {
+      warning ("save: skipping variable which is not a 2-D matrix");
+      return true;
+    }
 
   Matrix m;
 

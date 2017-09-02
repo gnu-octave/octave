@@ -418,12 +418,16 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            _editor_current_line_color, SLOT (setEnabled (bool)));
   ui->editor_highlightCurrentLine->setChecked (
     settings->value ("editor/highlightCurrentLine",true).toBool ());
-  ui->editor_long_line_marker_none->setChecked (
-    settings->value ("editor/long_line_marker_none",false).toBool ());
   ui->editor_long_line_marker->setChecked (
-    settings->value ("editor/long_line_marker",true).toBool ());
-  ui->editor_long_line_marker_background->setChecked (
-    settings->value ("editor/long_line_marker_background",false).toBool ());
+            settings->value ("editor/long_line_marker",true).toBool ());
+  bool long_line =
+        settings->value ("editor/long_line_marker_line",true).toBool ();
+  ui->editor_long_line_marker_line->setChecked (long_line);
+  bool long_back =
+        settings->value ("editor/long_line_marker_background",false).toBool ();
+  ui->editor_long_line_marker_background->setChecked (long_back);
+  if (! (long_line || long_back))
+    ui->editor_long_line_marker_line->setChecked (true);
   ui->editor_long_line_column->setValue (
     settings->value ("editor/long_line_column",80).toInt ());
   ui->editor_break_checkbox->setChecked (
@@ -892,10 +896,10 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->editor_highlightCurrentLine->isChecked ());
   settings->setValue ("editor/highlight_current_line_color",
                       _editor_current_line_color->color ());
-  settings->setValue ("editor/long_line_marker_none",
-                      ui->editor_long_line_marker_none->isChecked ());
   settings->setValue ("editor/long_line_marker",
                       ui->editor_long_line_marker->isChecked ());
+  settings->setValue ("editor/long_line_marker_line",
+                      ui->editor_long_line_marker_line->isChecked ());
   settings->setValue ("editor/long_line_marker_background",
                       ui->editor_long_line_marker_background->isChecked ());
   settings->setValue ("editor/long_line_column",

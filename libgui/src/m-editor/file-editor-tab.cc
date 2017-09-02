@@ -2419,11 +2419,22 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   // long line marker
   int line_length = settings->value ("editor/long_line_column",80).toInt ();
   _edit_area->setEdgeColumn (line_length);
-  _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
+
   if (settings->value ("editor/long_line_marker",true).toBool ())
-    _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
-  if (settings->value ("editor/long_line_marker_background",true).toBool ())
-    _edit_area->setEdgeMode (QsciScintilla::EdgeBackground);
+    {
+      if (settings->value ("editor/long_line_marker_line",true).toBool ())
+        _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
+      else
+        {
+          if (settings->value ("editor/long_line_marker_background",false)
+                        .toBool ())
+            _edit_area->setEdgeMode (QsciScintilla::EdgeBackground);
+          else
+            _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
+        }
+    }
+  else
+    _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
 
   // line wrapping and breaking
   _edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);

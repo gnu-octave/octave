@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>8</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>573</height>
+            <width>570</width>
+            <height>404</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1101,16 +1101,9 @@
                 <item row="0" column="5">
                  <layout class="QHBoxLayout" name="horizontalLayout_3">
                   <item>
-                   <widget class="QLabel" name="label_24">
+                   <widget class="QCheckBox" name="editor_long_line_marker">
                     <property name="text">
-                     <string>Long line marker:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="editor_long_line_marker_none">
-                    <property name="text">
-                     <string>None</string>
+                     <string>Long line marker</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1118,9 +1111,12 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="editor_long_line_marker">
+                   <widget class="QRadioButton" name="editor_long_line_marker_line">
                     <property name="text">
                      <string>Line</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -1820,8 +1816,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>573</height>
+            <width>481</width>
+            <height>230</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -2101,8 +2097,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>573</height>
+            <width>474</width>
+            <height>196</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2245,8 +2241,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>573</height>
+            <width>200</width>
+            <height>77</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2314,8 +2310,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>573</height>
+            <width>364</width>
+            <height>210</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2513,8 +2509,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>573</height>
+            <width>529</width>
+            <height>199</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2672,8 +2668,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>573</height>
+            <width>615</width>
+            <height>169</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -3442,6 +3438,38 @@
     <hint type="destinationlabel">
      <x>429</x>
      <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_long_line_marker</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_long_line_marker_line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>397</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>346</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_long_line_marker</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_long_line_marker_background</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>397</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>397</y>
     </hint>
    </hints>
   </connection>

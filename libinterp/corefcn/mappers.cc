@@ -125,9 +125,8 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! assert (acos ([2 0i]), [ival*i, pi/2], 2*eps);
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!test <*45507>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
@@ -177,9 +176,8 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! assert (acosh (single (-10i)), re - i*im, 5*eps ("single"));
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!test <*45507>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
@@ -298,9 +296,8 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! assert (asin ([2 0i]), [rval - ival*i, 0], 2*eps);
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!test <*45507>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
@@ -334,9 +331,8 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! assert (asinh (x), v,  sqrt (eps ("single")));
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!test <*45507>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);

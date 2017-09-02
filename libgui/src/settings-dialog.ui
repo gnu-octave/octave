@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>8</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>570</width>
-            <height>404</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1816,8 +1816,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>481</width>
-            <height>230</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -2097,8 +2097,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>474</width>
-            <height>196</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2241,8 +2241,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>200</width>
-            <height>77</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2310,8 +2310,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>364</width>
-            <height>210</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2509,8 +2509,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>529</width>
-            <height>199</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2668,8 +2668,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>615</width>
-            <height>169</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2682,9 +2682,9 @@
             </rect>
            </property>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
+            <layout class="QVBoxLayout" name="verticalLayout_ve">
              <item>
-              <layout class="QGridLayout" name="gridLayout_2">
+              <layout class="QGridLayout" name="gridLayout_ve">
                <item row="2" column="0">
                 <widget class="QLabel" name="label_27">
                  <property name="text">
@@ -2710,7 +2710,7 @@
                 </widget>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_16">
+                <widget class="QLabel" name="label_ve_colwidth">
                  <property name="text">
                   <string>Default column width</string>
                  </property>
@@ -2800,7 +2800,7 @@
                 </widget>
                </item>
                <item row="2" column="6">
-                <spacer name="horizontalSpacer_18">
+                <spacer name="horizontalSpacer_ve">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>

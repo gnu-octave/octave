@@ -217,6 +217,12 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
   connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
            this, SLOT (handle_octave_finished (int)));
 
+  connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
+           m_main_thread, SLOT (quit ()));
+
+  connect (m_main_thread, SIGNAL (finished ()),
+           m_main_thread, SLOT (deleteLater ()));
+
   m_interpreter->moveToThread (m_main_thread);
 
   m_main_thread->start ();
@@ -224,6 +230,10 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
 
 main_window::~main_window (void)
 {
+  // Note that we don't delete m_main_thread here.  That is handled by
+  // deleteLater slot that is called when the m_main_thread issues a
+  // finished signal.
+
   // Destroy the terminal first so that STDERR stream is redirected back
   // to its original pipe to capture error messages at exit.
 
@@ -238,17 +248,6 @@ main_window::~main_window (void)
   delete _workspace_model;
   delete variable_editor_window;
   delete m_interpreter;
-
-  // We are supposed to arrive here after the main thread is done, but
-  // if that doesn't happen for some reason, then terminate and wait
-  // before deleting it.
-  if (! m_main_thread->isFinished ())
-    {
-      m_main_thread->terminate ();
-      // FIXME: should there be a limit on how long we wait?
-      m_main_thread->wait ();
-    }
-  delete m_main_thread;
 
   if (find_files_dlg)
     {
@@ -1911,12 +1910,6 @@ main_window::handle_octave_ready ()
 void
 main_window::handle_octave_finished (int exit_status)
 {
-  // The main thread is done, so we can terminate it and wait for it to
-  // finish.
-  m_main_thread->terminate ();
-  // FIXME: should there be a limit on how long we wait?
-  m_main_thread->wait ();
-
   qApp->exit (exit_status);
 }
 

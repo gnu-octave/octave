@@ -29,7 +29,7 @@
 ## is repeated @var{R_j} times.  If the instruction is a vector then it must
 ## have the same number of elements as the corresponding dimension @var{j} of
 ## @var{x}.  In this case, the @var{k}th component of dimension @var{j} is
-## repeated @var{R_j(k)} times.
+## repeated @code{@var{R_j}(@var{k})} times.
 ##
 ## If @var{x} is a scalar or vector then @code{repelem} may be called with just
 ## a single repeat instruction @var{R} and @code{repelem} will return a vector

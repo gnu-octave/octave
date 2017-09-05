@@ -46,6 +46,8 @@ signals:
 
   void octave_ready_signal ();
 
+  void octave_finished_signal (int);
+
 public slots:
 
   // Initialize and execute the octave interpreter.

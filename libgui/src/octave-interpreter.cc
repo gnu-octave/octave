@@ -48,6 +48,8 @@ octave_interpreter::execute (void)
   emit octave_ready_signal ();
 
   m_exit_status = m_app_context->execute_interpreter ();
+
+  emit octave_finished_signal (m_exit_status);
 }
 
 void

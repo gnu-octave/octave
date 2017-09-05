@@ -60,6 +60,12 @@ octave_qt_link::octave_qt_link (QWidget *p,
   connect (command_interpreter, SIGNAL (octave_ready_signal ()),
            p, SLOT (handle_octave_ready ()));
 
+  connect (command_interpreter, SIGNAL (octave_finished_signal (int)),
+           main_thread, SLOT (quit ()));
+
+  connect (main_thread, SIGNAL (finished ()),
+           main_thread, SLOT (deleteLater ()));
+
   command_interpreter->moveToThread (main_thread);
 
   main_thread->start ();
@@ -67,8 +73,11 @@ octave_qt_link::octave_qt_link (QWidget *p,
 
 octave_qt_link::~octave_qt_link (void)
 {
+  // Note that we don't delete main_thread here.  That is handled by
+  // deleteLater slot that is called when the main_thread issues a
+  // finished signal.
+
   delete command_interpreter;
-  delete main_thread;
 }
 
 void

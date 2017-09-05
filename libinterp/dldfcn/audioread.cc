@@ -295,6 +295,8 @@ Comment.
 
   Matrix audio = args(1).matrix_value ();
 
+  // FIXME: SampleRate is supposed to be a positive scalar greater than 0
+  //        Need check for that, and possibly convert to uint.
   int samplerate = args(2).int_value ();
 
   std::string ext;
@@ -372,9 +374,17 @@ Comment.
           else if (bits == 16)
             info.format |= SF_FORMAT_PCM_16;
           else if (bits == 24)
-            info.format |= SF_FORMAT_PCM_24;
-          else if (bits == 32)
             info.format |= SF_FORMAT_PCM_32;
+          else if (bits == 32)
+            {
+              if ((info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV
+                  && args(1).isfloat ())
+                info.format |= SF_FORMAT_FLOAT;
+              else
+                info.format |= SF_FORMAT_PCM_32;
+            }
+          else if (bits == 64)
+            info.format |= SF_FORMAT_DOUBLE;
           else
             error ("audiowrite: wrong number of bits specified");
         }
@@ -384,10 +394,13 @@ Comment.
                          "compatibility, but is ignored");
       else if (keyword == "quality")
         {
-          double value = value_arg.xdouble_value ("audiowrite: Quality value must be a scalar");
+          if (! value_arg.is_scalar_type ())
+            error ("audiowrite: Quality value must be a scalar");
+
+          double value = value_arg.xdouble_value ("audiowrite: Quality value must be a numeric scalar between 0 and 100");
 
           if (octave::math::isnan (value) || value < 0 || value > 100)
-            error ("audiowrite: Quality must be a number between 0 and 100");
+            error ("audiowrite: Quality value must be a number between 0 and 100");
 
           quality = value / 100;
         }
@@ -456,6 +469,20 @@ Comment.
 
 #endif
 }
+
+/*
+## Test input validation
+%!testif HAVE_SNDFILE
+%! fail ("audiowrite (1, 1, 8e3)", "FILENAME must be a string");
+%! fail ("audiowrite ('foo', int64 (1), 8e3)", "wrong type argument 'int64 scalar'");
+%! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample')", "invalid number of arguments");
+%! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample', 48)", "wrong number of bits specified");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', [2 3 4])", "Quality value must be a scalar");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', NaN)", "Quality value must be .* between 0 and 100");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', -1)", "Quality value must be .* between 0 and 100");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', 101)", "Quality value must be .* between 0 and 100");
+%! fail ("audiowrite ('foo', 1, 8e3, 'foo', 'bar')", "unrecognized option: 'foo'");
+*/
 
 DEFUN_DLD (audioinfo, args, ,
            doc: /* -*- texinfo -*-

@@ -728,3 +728,14 @@ endfunction
 %!               "MStateDependence", "none");
 %! [t, y, te, ye, ie] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.5, 0.5, 0, 0]);
+
+## Initial solution as row vector
+%!testif HAVE_SUNDIALS
+%! A = zeros (2);
+%! [tout, yout] = ode15s (@(t, y) A * y, [0, 1], [1, 1]);
+%! assert (yout, ones (18, 2))
+
+%!testif HAVE_SUNDIALS
+%! A = zeros (2);
+%! fail ("ode15s (@(t, y) A * y, [0, 1], eye (2))",
+%!       "ode15s: YP0 must be a numeric vector");

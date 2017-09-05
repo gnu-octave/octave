@@ -514,6 +514,19 @@ endfunction
 %!                              [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.2, 0.2, 0, 0]);
 
+## Initial solutions as row vectors
+%!testif HAVE_SUNDIALS
+%! A = eye (2);
+%! [tout, yout] = ode15i (@(t, y, yp) A * y - A * yp, ...
+%! [0, 1], [1, 1], [1, 1]);
+%! assert (size (yout), [20, 2])
+
+%!testif HAVE_SUNDIALS
+%! A = eye (2);
+%! [tout, yout] = ode15i (@(t, y, yp) A * y - A * yp, ...
+%! [0, 1], [1, 1], [1; 1]);
+%! assert (size (yout), [20, 2])
+
 ## Jacobian fun wrong dimension
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", @jacwrong);
@@ -637,3 +650,13 @@ endfunction
 %! opt = odeset ("AbsTol", [1, 1, 1]);
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
 %!       "ode15i: invalid value assigned to field 'AbsTol'");
+
+%!testif HAVE_SUNDIALS
+%! A = zeros (2);
+%! fail ("ode15i (@(t, y, yp) A * y - A * yp, [0, 1], eye (2), [1, 1])",
+%!       "ode15i: Y0 must be a numeric vector");
+
+%!testif HAVE_SUNDIALS
+%! A = zeros (2);
+%! fail ("ode15i (@(t, y, yp) A * y - A * yp, [0, 1], [1, 1], eye (2))",
+%!       "ode15i: YP0 must be a numeric vector");

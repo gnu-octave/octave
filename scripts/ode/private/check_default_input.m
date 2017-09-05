@@ -51,9 +51,20 @@ function [fun] = check_default_input (fun, trange, solver, varargin);
 
   ## Check y0 and yp0
   y0 = varargin{1};
+  if (! isnumeric (y0) || ! isvector (y0))
+    error ("Octave:invalid-input-arg",
+           [solver ": Y0 must be a numeric vector"]);
+  endif
+  y0 = y0(:);
 
   if (nargin == 5)
     yp0 = varargin{2};
+    if (! isnumeric (yp0) || ! isvector (yp0))
+      error ("Octave:invalid-input-arg",
+             [solver ": YP0 must be a numeric vector"]);
+    endif
+    yp0 = yp0(:);
+
     n = numel (feval (fun, trange(1), y0, yp0));
     validateattributes (yp0, {"float"}, {"numel", n}, solver, "yp0");
   else

@@ -188,7 +188,7 @@ exit status of the command and the second is any output from the
 command that was written to the standard output stream.  For example,
 
 @example
-[status, output] = system ("echo foo; exit 2");
+[status, output] = system ("echo foo & exit 2");
 @end example
 
 @noindent
@@ -197,6 +197,10 @@ variable @code{status} to the integer @samp{2}.
 
 For commands run asynchronously, @var{status} is the process id of the
 command shell that is started to run the command.
+
+The shell used for executing commands varies with operating system and is
+typically @file{/bin/sh} for UNIX systems and @file{cmd.exe} for Windows
+systems.
 @seealso{unix, dos}
 @end deftypefn */)
 {

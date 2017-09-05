@@ -647,6 +647,8 @@ parser::global_search (const QString& text, int max_founds)
 QString
 parser::find_ref (const QString& ref_name)
 {
+  QString ref_nm = ref_name;
+  ref_nm.remove (' ');  // Delete spaces as XREF uses no whitespace
   QString text = "";
 
   QHash<QString, node_position>::iterator it;
@@ -655,10 +657,10 @@ parser::find_ref (const QString& ref_name)
       QString k = it.key ();
       node_position p = it.value ();
 
-      if (k == "XREF" + ref_name)
+      if (k == "XREF" + ref_nm)
         {
           // found ref, so return its name
-          text = "XREF" + ref_name;
+          text = "XREF" + ref_nm;
           break;
         }
     }

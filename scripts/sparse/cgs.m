@@ -73,7 +73,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, rtol, maxit, M1, M2, x0)
   if (nargin >= 2 && nargin <= 7 && isvector (full (b)))
 
     if (ischar (A))
-      A = str2func (A);
+      Ax = str2func (A);
     elseif (isnumeric (A) && issquare (A))
       Ax = @(x) A * x;
     elseif (isa (A, "function_handle"))

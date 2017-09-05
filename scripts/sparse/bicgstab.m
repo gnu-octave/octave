@@ -77,7 +77,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, rtol, maxit,
   endif
 
   if (ischar (A))
-    A = str2func (A);
+    Ax = str2func (A);
   elseif (isnumeric(A) && issquare (A))
     Ax = @(x) A  * x;
   elseif (isa (A, "function_handle"))

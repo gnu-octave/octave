@@ -76,8 +76,8 @@ Describe the conditions for copying and distributing Octave.
 {
   octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
 \n\
-GNU Octave is free software; you can redistribute it and/or modify\n\
-it under the terms of the GNU General Public License as published by\n\
+GNU Octave is free software; you can redistribute it and/or modify it\n\
+under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
@@ -87,7 +87,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
-along with GNU Octave.  If not, see <http://www.gnu.org/licenses/>.\n\
+along with GNU Octave; see the file COPYING.  If not, see\n\
+<http://www.gnu.org/licenses/>.\n\
 \n";
 
   return ovl ();

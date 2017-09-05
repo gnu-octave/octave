@@ -41,6 +41,7 @@ FCN_FILE_DIRS += \
   %reldir%/idivide.m \
   %reldir%/inputParser.m \
   %reldir%/int2str.m \
+  %reldir%/integral.m \
   %reldir%/interp1.m \
   %reldir%/interp2.m \
   %reldir%/interp3.m \

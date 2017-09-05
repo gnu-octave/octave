@@ -32,14 +32,14 @@ of a function numerically (termed quadrature).  These functions all solve
 @node Functions of One Variable
 @section Functions of One Variable
 
-Octave supports five different algorithms for computing the integral
+Octave supports five different adaptive quadrature algorithms for computing
+the integral
 @tex
 $$
  \int_a^b f(x) d x
 $$
 @end tex
-of a function @math{f} over the interval from @math{a} to @math{b}.
-These are
+of a function @math{f} over the interval from @math{a} to @math{b}.  These are
 
 @table @code
 @item quad
@@ -56,6 +56,12 @@ Numerical integration using an adaptive Gauss-Konrod rule.
 
 @item quadcc
 Numerical integration using adaptive @nospell{Clenshaw-Curtis} rules.
+
+In addition, the following functions are also provided:
+
+@item integral
+A compatibility wrapper function that will choose between @code(quadv) and
+@code(quadgk) depending on the integrand and options chosen.
 
 @item trapz, cumtrapz
 Numerical integration of data using the trapezoidal method.
@@ -164,6 +170,8 @@ quadcc (f, 0, Inf)
 @DOCSTRING(quadgk)
 
 @DOCSTRING(quadcc)
+
+@DOCSTRING(integral)
 
 Sometimes one does not have the function, but only the raw (x, y) points from
 which to perform an integration.  This can occur when collecting data in an

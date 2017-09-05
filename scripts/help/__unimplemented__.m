@@ -59,10 +59,6 @@ function txt = __unimplemented__ (fcn)
       txt = ["griddedInterpolant is not implemented.  ", ...
              "Consider using griddata."];
 
-    case "integral"
-      txt = ["Octave provides many routines for 1-D numerical integration.  ", ...
-             "Consider quadcc, quad, quadv, quadl, quadgk."];
-
     case "integral2"
       txt = ["integral2 is not implemented.  Consider using dblquad."];
 

@@ -1339,7 +1339,9 @@ namespace octave
                         idx.clear ();
 
                         if (partial_expr_val.isobject ()
-                            || partial_expr_val.isjava ())
+                            || partial_expr_val.isjava ()
+                            || (partial_expr_val.is_classdef_meta ()
+                                && ! partial_expr_val.is_package ()))
                           {
                             // Found an object, so now we'll build up
                             // complete index list for one big subsref

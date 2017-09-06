@@ -76,6 +76,10 @@
 %!assert (class (plist_t2), "plist_t2")
 %!assert (class (plist_t3), "plist_t3")
 
+%% Test for meta.class.fromName
+%!test <*51935>
+%! meta.class.fromName ("inputParser");
+
 ## Do not change this to "containers.Map()".  This test is intended to
 ## ensure that calling a function in a +package directory will work
 ## properly.

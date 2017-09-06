@@ -32,20 +32,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPushButton>
 #include <QColorDialog>
 
-class color_picker: public QPushButton
+class color_picker : public QPushButton
 {
   Q_OBJECT
 
 public:
-  color_picker (QColor color = QColor (0,0,0), QWidget *parent = nullptr);
-  QColor color () const { return _color; }
+
+  color_picker (QColor color = QColor (0, 0, 0), QWidget *parent = nullptr);
+
+  QColor color (void) const { return m_color; }
 
 private slots:
-  void select_color ();
+
+  void select_color (void);
 
 private:
-  virtual void update_button ();
-  QColor _color;
+
+  virtual void update_button (void);
+
+  QColor m_color;
 };
 
 #endif

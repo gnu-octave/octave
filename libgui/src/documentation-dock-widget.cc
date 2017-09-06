@@ -37,28 +37,47 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
   set_title (tr ("Documentation"));
   setStatusTip (tr ("See the documentation for help."));
 
-  _webinfo = new webinfo (this);
-  setWidget (_webinfo);
-  setFocusProxy (_webinfo);
+  m_webinfo = new webinfo (this);
+  setWidget (m_webinfo);
+  setFocusProxy (m_webinfo);
 
-  connect (p, SIGNAL (show_doc_signal (const QString &)),
-           this, SLOT (showDoc (const QString &)));
+  connect (p, SIGNAL (show_doc_signal (const QString&)),
+           this, SLOT (showDoc (const QString&)));
 }
 
 void
-documentation_dock_widget::copyClipboard ()
+documentation_dock_widget::notice_settings (const QSettings *settings)
 {
-  _webinfo->copyClipboard ();
+  m_webinfo->notice_settings (settings);
 }
+
 void
-documentation_dock_widget::pasteClipboard ()
+documentation_dock_widget::load_info_file (void)
 {
-  _webinfo->pasteClipboard ();
+  octave::help_system& help_sys
+    = octave::__get_help_system__ ("doc widget: load_info_file");
+
+  QString info_file = QString::fromStdString (help_sys.info_file ());
+
+  m_webinfo->load_info_file (info_file);
 }
+
 void
-documentation_dock_widget::selectAll ()
+documentation_dock_widget::copyClipboard (void)
 {
-  _webinfo->selectAll ();
+  m_webinfo->copyClipboard ();
+}
+
+void
+documentation_dock_widget::pasteClipboard (void)
+{
+  m_webinfo->pasteClipboard ();
+}
+
+void
+documentation_dock_widget::selectAll (void)
+{
+  m_webinfo->selectAll ();
 }
 
 void
@@ -67,25 +86,8 @@ documentation_dock_widget::showDoc (const QString& name)
   // show the doc pane without focus for carrying on typing in the console
   if (! isVisible ())
     setVisible (true);
+
   raise ();
 
-  _webinfo->load_ref (name);
-
-}
-
-void
-documentation_dock_widget::notice_settings (const QSettings *settings)
-{
-  _webinfo->notice_settings (settings);
-}
-
-void
-documentation_dock_widget::load_info_file ()
-{
-  octave::help_system& help_sys
-    = octave::__get_help_system__ ("doc widget: load_info_file");
-
-  QString info_file = QString::fromStdString (help_sys.info_file ());
-
-  _webinfo->load_info_file (info_file);
+  m_webinfo->load_ref (name);
 }

@@ -52,115 +52,114 @@ find_files_dialog::find_files_dialog (QWidget *p)
   setWindowTitle (tr ("Find Files"));
   setWindowIcon (resource_manager::icon ("edit-find"));
 
-  _dir_iterator = nullptr;
+  m_dir_iterator = nullptr;
 
-  _timer = new QTimer (this);
-  connect (_timer, SIGNAL (timeout ()), this, SLOT (look_for_files ()));
+  m_timer = new QTimer (this);
+  connect (m_timer, SIGNAL (timeout (void)),
+           this, SLOT (look_for_files (void)));
 
   QSettings *settings = resource_manager::get_settings ();
 
   QLabel *file_name_label = new QLabel (tr ("Named:"));
-  _file_name_edit = new QLineEdit;
-  _file_name_edit->setToolTip (tr ("Enter the filename search expression"));
+  m_file_name_edit = new QLineEdit;
+  m_file_name_edit->setToolTip (tr ("Enter the filename search expression"));
 
-  _file_name_edit->setText (settings->value ("findfiles/file_name",
-                                             "*").toString ());
-  file_name_label->setBuddy (_file_name_edit);
+  m_file_name_edit->setText (settings->value ("findfiles/file_name",
+                                              "*").toString ());
+  file_name_label->setBuddy (m_file_name_edit);
 
   QLabel *start_dir_label = new QLabel (tr ("Start in:"));
 
-  _start_dir_edit = new QLineEdit;
-  _start_dir_edit->setText (settings->value ("findfiles/start_dir",
-                            QDir::currentPath ()).toString ());
-  _start_dir_edit->setToolTip (tr ("Enter the start directory"));
-  start_dir_label->setBuddy (_start_dir_edit);
+  m_start_dir_edit = new QLineEdit;
+  m_start_dir_edit->setText (settings->value ("findfiles/start_dir",
+                                              QDir::currentPath ()).toString ());
+  m_start_dir_edit->setToolTip (tr ("Enter the start directory"));
+  start_dir_label->setBuddy (m_start_dir_edit);
 
-  _browse_button = new QPushButton (tr ("Browse..."));
-  _browse_button->setToolTip (tr ("Browse for start directory"));
-  connect (_browse_button, SIGNAL (clicked ()), this, SLOT (browse_folders ()));
+  m_browse_button = new QPushButton (tr ("Browse..."));
+  m_browse_button->setToolTip (tr ("Browse for start directory"));
+  connect (m_browse_button, SIGNAL (clicked (void)),
+           this, SLOT (browse_folders (void)));
 
-  _recurse_dirs_check = new QCheckBox (tr ("Search subdirectories"));
-  _recurse_dirs_check->setChecked (settings->value ("findfiles/recurse_dirs",
-                                                    false).toBool ());
-  _recurse_dirs_check->setToolTip (
-    tr ("Search recursively through directories for matching files"));
+  m_recurse_dirs_check = new QCheckBox (tr ("Search subdirectories"));
+  m_recurse_dirs_check->setChecked (settings->value ("findfiles/recurse_dirs",
+                                                     false).toBool ());
+  m_recurse_dirs_check->setToolTip (tr ("Search recursively through directories for matching files"));
 
-  _include_dirs_check = new QCheckBox (tr ("Include directory names"));
-  _include_dirs_check->setChecked (settings->value ("findfiles/include_dirs",
-                                                    false).toBool ());
-  _include_dirs_check->setToolTip (
-    tr ("Include matching directories in search results"));
+  m_include_dirs_check = new QCheckBox (tr ("Include directory names"));
+  m_include_dirs_check->setChecked (settings->value ("findfiles/include_dirs",
+                                                     false).toBool ());
+  m_include_dirs_check->setToolTip (tr ("Include matching directories in search results"));
 
-  _name_case_check = new QCheckBox (tr ("Name case insensitive"));
-  _name_case_check->setChecked (settings->value ("findfiles/name_case",
-                                                 false).toBool ());
-  _name_case_check->setToolTip (tr ("Set matching name is case insensitive"));
+  m_name_case_check = new QCheckBox (tr ("Name case insensitive"));
+  m_name_case_check->setChecked (settings->value ("findfiles/name_case",
+                                                  false).toBool ());
+  m_name_case_check->setToolTip (tr ("Set matching name is case insensitive"));
 
-  _contains_text_check = new QCheckBox (tr ("Contains text:"));
-  _contains_text_check->setToolTip (tr ("Enter the file content search expression"));
-  _contains_text_check->setChecked (settings->value ("findfiles/check_text",
+  m_contains_text_check = new QCheckBox (tr ("Contains text:"));
+  m_contains_text_check->setToolTip (tr ("Enter the file content search expression"));
+  m_contains_text_check->setChecked (settings->value ("findfiles/check_text",
                                                       false).toBool ());
 
-  _contains_text_edit = new QLineEdit ();
-  _contains_text_edit->setToolTip (tr ("Text to match"));
-  _contains_text_edit->setText (settings->value ("findfiles/contains_text",
-                                                 "").toString ());
+  m_contains_text_edit = new QLineEdit ();
+  m_contains_text_edit->setToolTip (tr ("Text to match"));
+  m_contains_text_edit->setText (settings->value ("findfiles/contains_text",
+                                                  "").toString ());
 
-  _content_case_check = new QCheckBox (tr ("Text case insensitive"));
-  _content_case_check->setChecked (settings->value ("findfiles/content_case",
-                                                    false).toBool ());
-  _content_case_check->setToolTip (tr ("Set text content is case insensitive"));
+  m_content_case_check = new QCheckBox (tr ("Text case insensitive"));
+  m_content_case_check->setChecked (settings->value ("findfiles/content_case",
+                                                     false).toBool ());
+  m_content_case_check->setToolTip (tr ("Set text content is case insensitive"));
 
   find_files_model *model = new find_files_model (this);
 
-  _file_list = new QTableView;
-  _file_list->setWordWrap (false);
-  _file_list->setModel (model);
-  _file_list->setShowGrid (false);
-  _file_list->setSelectionBehavior (QAbstractItemView::SelectRows);
-  _file_list->setSelectionMode (QAbstractItemView::SingleSelection);
-  _file_list->setAlternatingRowColors (true);
-  _file_list->setToolTip (tr ("Search results"));
-  _file_list->setSortingEnabled (true);
-  _file_list->horizontalHeader ()->restoreState (
-    settings->value ("findfiles/column_state").toByteArray ());
-  _file_list->horizontalHeader ()->setSortIndicatorShown (true);
+  m_file_list = new QTableView;
+  m_file_list->setWordWrap (false);
+  m_file_list->setModel (model);
+  m_file_list->setShowGrid (false);
+  m_file_list->setSelectionBehavior (QAbstractItemView::SelectRows);
+  m_file_list->setSelectionMode (QAbstractItemView::SingleSelection);
+  m_file_list->setAlternatingRowColors (true);
+  m_file_list->setToolTip (tr ("Search results"));
+  m_file_list->setSortingEnabled (true);
+  m_file_list->horizontalHeader ()->restoreState (settings->value ("findfiles/column_state").toByteArray ());
+  m_file_list->horizontalHeader ()->setSortIndicatorShown (true);
 #if defined (HAVE_QT4)
-  _file_list->horizontalHeader ()->setClickable (true);
+  m_file_list->horizontalHeader ()->setClickable (true);
 #else
-  _file_list->horizontalHeader ()->setSectionsClickable (true);
+  m_file_list->horizontalHeader ()->setSectionsClickable (true);
 #endif
-  _file_list->horizontalHeader ()->setStretchLastSection (true);
-  _file_list->sortByColumn (
-                settings->value ("findfiles/sort_files_by_column",0).toInt (),
-                static_cast<Qt::SortOrder>
-                  (settings->value ("findfiles/sort_files_by_order",
-                                    Qt::AscendingOrder).toUInt ()));
+  m_file_list->horizontalHeader ()->setStretchLastSection (true);
+  m_file_list->sortByColumn (settings->value ("findfiles/sort_files_by_column",0).toInt (),
+                             static_cast<Qt::SortOrder>
+                             (settings->value ("findfiles/sort_files_by_order",
+                                               Qt::AscendingOrder).toUInt ()));
 
-  connect (_file_list, SIGNAL (doubleClicked (const QModelIndex&)),
-           this,       SLOT (item_double_clicked (const QModelIndex &)));
+  connect (m_file_list, SIGNAL (doubleClicked (const QModelIndex&)),
+           this, SLOT (item_double_clicked (const QModelIndex &)));
 
-  _status_bar = new QStatusBar;
-  _status_bar->showMessage (tr ("Idle."));
+  m_status_bar = new QStatusBar;
+  m_status_bar->showMessage (tr ("Idle."));
 
-  _find_button = new QPushButton (tr ("Find"));
-  _find_button->setToolTip (tr ("Start search for matching files"));
-  connect (_find_button, SIGNAL (clicked ()), this, SLOT (start_find ()));
+  m_find_button = new QPushButton (tr ("Find"));
+  m_find_button->setToolTip (tr ("Start search for matching files"));
+  connect (m_find_button, SIGNAL (clicked (void)),
+           this, SLOT (start_find (void)));
 
-  _stop_button = new QPushButton (tr ("Stop"));
-  _stop_button->setToolTip (tr ("Stop searching"));
-  _stop_button->setEnabled (false);
-  connect (_stop_button, SIGNAL (clicked ()), this, SLOT (stop_find ()));
+  m_stop_button = new QPushButton (tr ("Stop"));
+  m_stop_button->setToolTip (tr ("Stop searching"));
+  m_stop_button->setEnabled (false);
+  connect (m_stop_button, SIGNAL (clicked (void)),
+           this, SLOT (stop_find (void)));
 
   // layout everything
   QDialogButtonBox *button_box = new QDialogButtonBox (Qt::Vertical);
-  button_box->addButton (_find_button, QDialogButtonBox::ActionRole);
-  button_box->addButton (_stop_button, QDialogButtonBox::ActionRole);
+  button_box->addButton (m_find_button, QDialogButtonBox::ActionRole);
+  button_box->addButton (m_stop_button, QDialogButtonBox::ActionRole);
 
   // add dialog close button
-  _close_button = button_box->addButton (QDialogButtonBox::Close);
-  connect (button_box,    SIGNAL (rejected ()),
-           this,          SLOT (close ()));
+  m_close_button = button_box->addButton (QDialogButtonBox::Close);
+  connect (button_box, SIGNAL (rejected (void)), this, SLOT (close (void)));
 
   // name options
   QGroupBox *name_group = new QGroupBox (tr ("Filename/location"));
@@ -168,38 +167,43 @@ find_files_dialog::find_files_dialog (QWidget *p)
   name_group->setLayout (name_layout);
 
   name_layout->addWidget (file_name_label,1,1, 1,1);
-  name_layout->addWidget (_file_name_edit,1,2, 1,-1);
+  name_layout->addWidget (m_file_name_edit,1,2, 1,-1);
 
   name_layout->addWidget (start_dir_label,2,1);
-  name_layout->addWidget (_start_dir_edit,2,2,1,3);
-  name_layout->addWidget (_browse_button,2,5);
+  name_layout->addWidget (m_start_dir_edit,2,2,1,3);
+  name_layout->addWidget (m_browse_button,2,5);
   name_layout->setColumnStretch (2,1);
 
-  name_layout->addWidget (_recurse_dirs_check,3,1);
-  name_layout->addWidget (_include_dirs_check,3,2);
-  name_layout->addWidget (_name_case_check,3,3);
+  name_layout->addWidget (m_recurse_dirs_check,3,1);
+  name_layout->addWidget (m_include_dirs_check,3,2);
+  name_layout->addWidget (m_name_case_check,3,3);
 
   // content options
   QGroupBox *content_group = new QGroupBox (tr ("File contents"));
   QGridLayout *content_layout = new QGridLayout;
   content_group->setLayout (content_layout);
-  content_layout->addWidget (_contains_text_check,4,1);
-  content_layout->addWidget (_contains_text_edit,4,2,1,3);
+  content_layout->addWidget (m_contains_text_check,4,1);
+  content_layout->addWidget (m_contains_text_edit,4,2,1,3);
   content_layout->setColumnStretch (2,1);
-  content_layout->addWidget (_content_case_check,5,1);
+  content_layout->addWidget (m_content_case_check,5,1);
 
   QGridLayout *main_layout = new QGridLayout;
   main_layout->setSizeConstraint (QLayout::SetFixedSize);
   main_layout->addWidget (name_group, 0, 0);
   main_layout->addWidget (content_group, 1, 0);
   main_layout->addWidget (button_box, 0, 1,3,1);
-  main_layout->addWidget (_file_list,2,0);
+  main_layout->addWidget (m_file_list,2,0);
   main_layout->setRowStretch (2,1);
-  main_layout->addWidget (_status_bar,3,0,1,-1);
+  main_layout->addWidget (m_status_bar,3,0,1,-1);
 
   setLayout (main_layout);
 
   connect (this, SIGNAL (finished (int)), this, SLOT (handle_done (int)));
+}
+
+find_files_dialog::~find_files_dialog (void)
+{
+  delete m_dir_iterator;
 }
 
 void
@@ -210,132 +214,119 @@ find_files_dialog::save_settings (void)
   if (! settings)
     return;
 
-  int sort_column = _file_list->horizontalHeader ()->sortIndicatorSection ();
+  int sort_column = m_file_list->horizontalHeader ()->sortIndicatorSection ();
   Qt::SortOrder sort_order
-    = _file_list->horizontalHeader ()->sortIndicatorOrder ();
+    = m_file_list->horizontalHeader ()->sortIndicatorOrder ();
   settings->setValue ("findfiles/sort_files_by_column", sort_column);
   settings->setValue ("findfiles/sort_files_by_order", sort_order);
   settings->setValue ("findfiles/column_state",
-                      _file_list->horizontalHeader ()->saveState ());
+                      m_file_list->horizontalHeader ()->saveState ());
 
-  settings->setValue ("findfiles/file_name", _file_name_edit->text ());
+  settings->setValue ("findfiles/file_name", m_file_name_edit->text ());
 
-  settings->setValue ("findfiles/start_dir", _start_dir_edit->text ());
+  settings->setValue ("findfiles/start_dir", m_start_dir_edit->text ());
 
-  settings->setValue ("findfiles/recurse_dirs", _recurse_dirs_check->text ());
-  settings->setValue ("findfiles/include_dirs", _include_dirs_check->text ());
-  settings->setValue ("findfiles/name_case", _name_case_check->text ());
+  settings->setValue ("findfiles/recurse_dirs", m_recurse_dirs_check->text ());
+  settings->setValue ("findfiles/include_dirs", m_include_dirs_check->text ());
+  settings->setValue ("findfiles/name_case", m_name_case_check->text ());
 
-  settings->setValue ("findfiles/contains_text", _contains_text_edit->text ());
+  settings->setValue ("findfiles/contains_text", m_contains_text_edit->text ());
   settings->setValue ("findfiles/check_text",
-                      _contains_text_check->isChecked ());
+                      m_contains_text_check->isChecked ());
   settings->setValue ("findfiles/content_case",
-                      _content_case_check->isChecked ());
+                      m_content_case_check->isChecked ());
 
   settings->sync ();
-}
-
-find_files_dialog::~find_files_dialog ()
-{
-  if (_dir_iterator)
-    delete _dir_iterator;
-}
-
-void find_files_dialog::handle_done (int)
-{
-  // make sure we stopped processing
-  stop_find ();
 }
 
 void find_files_dialog::set_search_dir (const QString& dir)
 {
   stop_find ();
-  _start_dir_edit->setText (dir);
+  m_start_dir_edit->setText (dir);
 }
 
 void
-find_files_dialog::start_find ()
+find_files_dialog::start_find (void)
 {
   stop_find ();
 
-  find_files_model *m = static_cast<find_files_model *> (_file_list->model ());
+  find_files_model *m = static_cast<find_files_model *> (m_file_list->model ());
   m->clear ();
 
   QDirIterator::IteratorFlags flags = QDirIterator::NoIteratorFlags;
-  if (_recurse_dirs_check->isChecked ())
+  if (m_recurse_dirs_check->isChecked ())
     flags |= QDirIterator::Subdirectories;
 
   QDir::Filters filters = QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files;
-  if (! _name_case_check->isChecked ())
+  if (! m_name_case_check->isChecked ())
     filters |= QDir::CaseSensitive;
 
   QStringList nameFilters;
-  nameFilters.append (_file_name_edit->text ());
+  nameFilters.append (m_file_name_edit->text ());
 
-  if (_dir_iterator) delete _dir_iterator;
+  if (m_dir_iterator)
+    delete m_dir_iterator;
 
-  _dir_iterator = new QDirIterator (_start_dir_edit->text (), nameFilters,
-                                    filters, flags);
+  m_dir_iterator = new QDirIterator (m_start_dir_edit->text (), nameFilters,
+                                     filters, flags);
 
   // enable/disable widgets
-  _find_button->setEnabled (false);
-  _stop_button->setEnabled (true);
-  _close_button->setEnabled (false);
-  _browse_button->setEnabled (false);
-  _start_dir_edit->setEnabled (false);
-  _file_name_edit->setEnabled (false);
-  _recurse_dirs_check->setEnabled (false);
-  _include_dirs_check->setEnabled (false);
-  _name_case_check->setEnabled (false);
-  _contains_text_check->setEnabled (false);
-  _content_case_check->setEnabled (false);
-  _contains_text_edit->setEnabled (false);
+  m_find_button->setEnabled (false);
+  m_stop_button->setEnabled (true);
+  m_close_button->setEnabled (false);
+  m_browse_button->setEnabled (false);
+  m_start_dir_edit->setEnabled (false);
+  m_file_name_edit->setEnabled (false);
+  m_recurse_dirs_check->setEnabled (false);
+  m_include_dirs_check->setEnabled (false);
+  m_name_case_check->setEnabled (false);
+  m_contains_text_check->setEnabled (false);
+  m_content_case_check->setEnabled (false);
+  m_contains_text_edit->setEnabled (false);
 
-  _status_bar->showMessage (tr ("Searching..."));
-  _timer->start (0);
+  m_status_bar->showMessage (tr ("Searching..."));
+  m_timer->start (0);
 }
 
 void
-find_files_dialog::stop_find ()
+find_files_dialog::stop_find (void)
 {
-  _timer->stop ();
+  m_timer->stop ();
 
-  _find_button->setEnabled (true);
-  _stop_button->setEnabled (false);
-  _close_button->setEnabled (true);
-  _browse_button->setEnabled (true);
-  _start_dir_edit->setEnabled (true);
-  _file_name_edit->setEnabled (true);
-  _recurse_dirs_check->setEnabled (true);
-  _include_dirs_check->setEnabled (true);
-  _name_case_check->setEnabled (true);
-  _contains_text_check->setEnabled (true);
-  _content_case_check->setEnabled (true);
-  _contains_text_edit->setEnabled (true);
+  m_find_button->setEnabled (true);
+  m_stop_button->setEnabled (false);
+  m_close_button->setEnabled (true);
+  m_browse_button->setEnabled (true);
+  m_start_dir_edit->setEnabled (true);
+  m_file_name_edit->setEnabled (true);
+  m_recurse_dirs_check->setEnabled (true);
+  m_include_dirs_check->setEnabled (true);
+  m_name_case_check->setEnabled (true);
+  m_contains_text_check->setEnabled (true);
+  m_content_case_check->setEnabled (true);
+  m_contains_text_edit->setEnabled (true);
 
-  find_files_model *m = static_cast<find_files_model *> (_file_list->model ());
+  find_files_model *m = static_cast<find_files_model *> (m_file_list->model ());
   QString res_str = QString (tr ("%1 match (es)")).arg (m->rowCount ());
 
-  _status_bar->showMessage (res_str);
+  m_status_bar->showMessage (res_str);
 }
 
 void
-find_files_dialog::browse_folders ()
+find_files_dialog::browse_folders (void)
 {
   QString dir =
     QFileDialog::getExistingDirectory (this, tr ("Set search directory"),
-                                       _start_dir_edit->text ());
+                                       m_start_dir_edit->text ());
 
   if (! dir.isEmpty ())
-    {
-      _start_dir_edit->setText (dir);
-    }
+    m_start_dir_edit->setText (dir);
 }
 
 void
 find_files_dialog::item_double_clicked (const QModelIndex& idx)
 {
-  find_files_model *m = static_cast<find_files_model *> (_file_list->model ());
+  find_files_model *m = static_cast<find_files_model *> (m_file_list->model ());
 
   QFileInfo info = m->fileInfo (idx);
 
@@ -355,14 +346,14 @@ find_files_dialog::item_double_clicked (const QModelIndex& idx)
 }
 
 void
-find_files_dialog::look_for_files ()
+find_files_dialog::look_for_files (void)
 {
-  if (_dir_iterator && _dir_iterator->hasNext ())
+  if (m_dir_iterator && m_dir_iterator->hasNext ())
     {
-      QFileInfo info (_dir_iterator->next ());
+      QFileInfo info (m_dir_iterator->next ());
 
       find_files_model *m
-        = static_cast<find_files_model *> (_file_list->model ());
+        = static_cast<find_files_model *> (m_file_list->model ());
 
       if (is_match (info))
         m->addFile (info);
@@ -373,18 +364,26 @@ find_files_dialog::look_for_files ()
     }
 }
 
-bool find_files_dialog::is_match (const QFileInfo& info)
+void
+find_files_dialog::handle_done (int)
+{
+  // make sure we stopped processing
+  stop_find ();
+}
+
+bool
+find_files_dialog::is_match (const QFileInfo& info)
 {
   bool match = true;
   if (info.isDir ())
     {
-      if (! _include_dirs_check->isChecked ()) match = false;
-      if (_contains_text_check->isChecked ()) match = false;
+      if (! m_include_dirs_check->isChecked ()) match = false;
+      if (m_contains_text_check->isChecked ()) match = false;
     }
   else
     {
       // a file
-      if (_contains_text_check->isChecked ())
+      if (m_contains_text_check->isChecked ())
         {
           match = false;
 
@@ -394,10 +393,10 @@ bool find_files_dialog::is_match (const QFileInfo& info)
               QTextStream stream (&file);
 
               QString line;
-              QString match_str = _contains_text_edit->text ();
+              QString match_str = m_contains_text_edit->text ();
 
-              Qt::CaseSensitivity cs = _content_case_check->isChecked () ?
-                                       Qt::CaseInsensitive : Qt::CaseSensitive;
+              Qt::CaseSensitivity cs = m_content_case_check->isChecked () ?
+                Qt::CaseInsensitive : Qt::CaseSensitive;
 
               do
                 {

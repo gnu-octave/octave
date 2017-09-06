@@ -32,14 +32,14 @@ along with Octave; see the file COPYING.  If not, see
 class find_file_less_than
 {
 public:
-  find_file_less_than (int ord)
-  {
-    _sortorder = ord;
-  }
+
+  find_file_less_than (int ord) { m_sortorder = ord; }
+
   QVariant getValue (const QFileInfo& f) const
   {
     QVariant val;
-    int col = (_sortorder > 0) ? _sortorder : -_sortorder;
+
+    int col = (m_sortorder > 0) ? m_sortorder : -m_sortorder;
 
     switch (col-1)
       {
@@ -54,46 +54,46 @@ public:
       default:
         break;
       }
+
     return val;
   }
+
   bool lessThan (const QVariant& left, const QVariant& right) const
   {
     return
       left.toString ().compare (right.toString (), Qt::CaseInsensitive) < 0;
   }
+
   bool operator () (const QFileInfo& left, const QFileInfo& right) const
   {
     QVariant leftval = getValue (left);
     QVariant rightval = getValue (right);
 
-    if (_sortorder > 0)
+    if (m_sortorder > 0)
       return lessThan (leftval, rightval);
     else
       return ! lessThan (leftval, rightval);
   }
 
 private:
-  int _sortorder;
 
+  int m_sortorder;
 };
 
 find_files_model::find_files_model (QObject *p)
   : QAbstractListModel (p)
 {
-  _columnNames.append (tr ("Filename"));
-  _columnNames.append (tr ("Directory"));
-  _sortorder = 0;
+  m_columnNames.append (tr ("Filename"));
+  m_columnNames.append (tr ("Directory"));
+  m_sortorder = 0;
 }
 
-find_files_model::~find_files_model ()
-{ }
-
 void
-find_files_model::clear ()
+find_files_model::clear (void)
 {
   beginResetModel ();
 
-  _files.clear ();
+  m_files.clear ();
 
   endResetModel ();
 }
@@ -101,17 +101,18 @@ find_files_model::clear ()
 void
 find_files_model::addFile (const QFileInfo& info)
 {
-  beginInsertRows (QModelIndex (), _files.size (), _files.size ());
+  beginInsertRows (QModelIndex (), m_files.size (), m_files.size ());
 
   QList<QFileInfo>::Iterator it;
-  find_file_less_than less_than (_sortorder);
+  find_file_less_than less_than (m_sortorder);
 
-  for (it=_files.begin (); it!=_files.end (); it++)
+  for (it = m_files.begin (); it != m_files.end (); it++)
     {
-      if (less_than (info, *it)) break;
+      if (less_than (info, *it))
+        break;
     }
 
-  _files.insert (it, info);
+  m_files.insert (it, info);
 
   endInsertRows ();
 }
@@ -119,13 +120,13 @@ find_files_model::addFile (const QFileInfo& info)
 int
 find_files_model::rowCount (const QModelIndex &) const
 {
-  return _files.size ();
+  return m_files.size ();
 }
 
 int
 find_files_model::columnCount (const QModelIndex &) const
 {
-  return _columnNames.size ();
+  return m_columnNames.size ();
 }
 
 QVariant
@@ -140,11 +141,11 @@ find_files_model::data (const QModelIndex& idx, int role) const
           switch (idx.column ())
             {
             case 0:
-              retval = QVariant (_files[idx.row ()].fileName ());
+              retval = QVariant (m_files[idx.row ()].fileName ());
               break;
 
             case 1:
-              retval = QVariant (_files[idx.row ()].absolutePath ());
+              retval = QVariant (m_files[idx.row ()].absolutePath ());
               break;
 
             default:
@@ -157,6 +158,7 @@ find_files_model::data (const QModelIndex& idx, int role) const
             {
             case 0:
               retval = fileIcon (idx);
+
             default:
               break;
             }
@@ -170,10 +172,8 @@ QVariant
 find_files_model::headerData (int section, Qt::Orientation orientation,
                               int role) const
 {
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-    return _columnNames[section];
-  else
-    return QVariant ();
+  return ((orientation == Qt::Horizontal && role == Qt::DisplayRole)
+          ? m_columnNames[section] : QVariant ());
 }
 
 void
@@ -182,17 +182,20 @@ find_files_model::sort (int column, Qt::SortOrder order)
   if (column >= 0)
     {
       if (order == Qt::DescendingOrder)
-        _sortorder = -(column+1);
+        m_sortorder = -(column+1);
       else
-        _sortorder = column+1;
+        m_sortorder = column+1;
     }
   else
-    _sortorder = 0;
+    m_sortorder = 0;
 
-  if (_sortorder != 0)
+  if (m_sortorder != 0)
     {
       beginResetModel ();
-      qSort (_files.begin (), _files.end (), find_file_less_than (_sortorder));
+
+      qSort (m_files.begin (), m_files.end (),
+             find_file_less_than (m_sortorder));
+
       endResetModel ();
     }
 }
@@ -200,20 +203,13 @@ find_files_model::sort (int column, Qt::SortOrder order)
 QFileInfo
 find_files_model::fileInfo (const QModelIndex & p) const
 {
-  if (p.isValid ())
-    {
-      return _files[p.row ()];
-    }
-  return QFileInfo ();
+  return p.isValid () ? m_files[p.row ()] : QFileInfo ();
 }
 
 QIcon
 find_files_model::fileIcon (const QModelIndex& p) const
 {
   QFileIconProvider icon_provider;
-  if (p.isValid ())
-    {
-      return icon_provider.icon (_files[p.row ()]);
-    }
-  return QIcon ();
+
+  return p.isValid () ? icon_provider.icon (m_files[p.row ()]) : QIcon ();
 }

@@ -39,6 +39,7 @@ class history_dock_widget : public octave_dock_widget
 public:
 
   history_dock_widget (QWidget *parent = nullptr);
+
   ~history_dock_widget (void) = default;
 
 public slots:
@@ -61,35 +62,37 @@ signals:
 
 private slots:
 
-  void update_filter_history ();
+  void update_filter_history (void);
   void filter_activate (bool enable);
 
+  void ctxMenu (const QPoint& pos);
   void handle_double_click (QModelIndex modelIndex);
   void handle_contextmenu_copy (bool flag);
   void handle_contextmenu_evaluate (bool flag);
   void handle_contextmenu_create_script (bool flag);
   void handle_contextmenu_filter (void);
-  void ctxMenu (const QPoint& pos);
 
-  void copyClipboard ();
-  void pasteClipboard ();
-  void selectAll ();
+  void copyClipboard (void);
+  void pasteClipboard (void);
+  void selectAll (void);
 
   virtual void handle_visibility (bool visible);
 
 private:
 
-  void construct ();
-  QListView *_history_list_view;
-  QSortFilterProxyModel _sort_filter_proxy_model;
+  void construct (void);
+
+  QListView *m_history_list_view;
+  QSortFilterProxyModel m_sort_filter_proxy_model;
 
   /** Stores the current history_model. */
-  QStringListModel *_history_model;
+  QStringListModel *m_history_model;
 
-  QCheckBox *_filter_checkbox;
-  QComboBox *_filter;
-  QWidget *_filter_widget;
-  bool _filter_shown;
+  QCheckBox *m_filter_checkbox;
+  QComboBox *m_filter;
+  QWidget *m_filter_widget;
+  bool m_filter_shown;
+
   enum { MaxFilterHistory = 10 };
 };
 

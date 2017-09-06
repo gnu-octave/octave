@@ -37,43 +37,53 @@ class QStatusBar;
 class find_files_dialog : public QDialog
 {
   Q_OBJECT
+
 public:
+
   find_files_dialog (QWidget *parent = nullptr);
-  virtual ~find_files_dialog ();
+
+  virtual ~find_files_dialog (void);
+
   void save_settings (void);
 
 signals:
+
   void file_selected (const QString& fileName);
   void dir_selected (const QString& fileName);
 
 public slots:
+
   void set_search_dir (const QString& dir);
 
 private slots:
-  void start_find ();
-  void stop_find ();
-  void browse_folders ();
-  void look_for_files ();
+
+  void start_find (void);
+  void stop_find (void);
+  void browse_folders (void);
+  void look_for_files (void);
   void item_double_clicked (const QModelIndex&);
   void handle_done (int);
+
 private:
+
   bool is_match (const QFileInfo& info);
-  QLineEdit   *_start_dir_edit;
-  QLineEdit   *_file_name_edit;
-  QPushButton *_stop_button;
-  QPushButton *_find_button;
-  QPushButton *_close_button;
-  QPushButton *_browse_button;
-  QTableView  *_file_list;
-  QTimer      *_timer;
-  QCheckBox   *_recurse_dirs_check;
-  QCheckBox   *_include_dirs_check;
-  QCheckBox   *_name_case_check;
-  QCheckBox   *_contains_text_check;
-  QCheckBox   *_content_case_check;
-  QLineEdit   *_contains_text_edit;
-  QDirIterator *_dir_iterator;
-  QStatusBar  *_status_bar;
+
+  QLineEdit *m_start_dir_edit;
+  QLineEdit *m_file_name_edit;
+  QPushButton *m_stop_button;
+  QPushButton *m_find_button;
+  QPushButton *m_close_button;
+  QPushButton *m_browse_button;
+  QTableView *m_file_list;
+  QTimer *m_timer;
+  QCheckBox *m_recurse_dirs_check;
+  QCheckBox *m_include_dirs_check;
+  QCheckBox *m_name_case_check;
+  QCheckBox *m_contains_text_check;
+  QCheckBox *m_content_case_check;
+  QLineEdit *m_contains_text_edit;
+  QDirIterator *m_dir_iterator;
+  QStatusBar *m_status_bar;
 };
 
 #endif

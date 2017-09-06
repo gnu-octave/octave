@@ -57,18 +57,18 @@ class pthread_thread_manager : public octave_base_thread_manager
 public:
 
   pthread_thread_manager (void)
-    : octave_base_thread_manager (), my_thread (), initialized (false)
+    : octave_base_thread_manager (), m_my_thread (), m_initialized (false)
   { }
 
   void register_current_thread (void)
   {
-    my_thread = pthread_self ();
-    initialized = true;
+    m_my_thread = pthread_self ();
+    m_initialized = true;
   }
 
   void interrupt (void)
   {
-    if (initialized)
+    if (m_initialized)
       {
         // Send SIGINT to all other processes in our process group.
         // This is needed to interrupt calls to system (), for example.
@@ -89,15 +89,15 @@ public:
 
 private:
 
-  pthread_t my_thread;
+  pthread_t m_my_thread;
 
-  bool initialized;
+  bool m_initialized;
 };
 
 #endif
 
 octave_thread_manager::octave_thread_manager (void)
-  : rep (octave_thread_manager::create_rep ())
+  : m_rep (octave_thread_manager::create_rep ())
 { }
 
 void

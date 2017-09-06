@@ -35,7 +35,8 @@ class external_editor_interface : public QWidget
 public:
 
   external_editor_interface (QWidget *main_win);
-  ~external_editor_interface () { };
+
+  ~external_editor_interface (void) = default;
 
 signals:
 
@@ -44,18 +45,20 @@ signals:
 public slots:
 
   bool call_custom_editor (const QString& file = QString (), int line = -1);
+
   void request_open_file (const QString& fileName,
                           const QString& encoding = QString (),
                           int line = -1, bool debug_pointer = false,
                           bool breakpoint_marker = false, bool insert = true,
                           const QString& cond = "");
+
   void request_new_file (const QString&);
+
   void handle_edit_file_request (const QString& file);
 
 private:
 
-  QString external_editor ();
-
+  QString external_editor (void);
 };
 
 #endif

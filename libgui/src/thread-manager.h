@@ -33,10 +33,10 @@ public:
 
   friend class octave_thread_manager;
 
-  octave_base_thread_manager (void) : count (1) { }
+  octave_base_thread_manager (void) : m_count (1) { }
 
   octave_base_thread_manager (const octave_base_thread_manager&)
-    : count (1)
+    : m_count (1)
   { }
 
   virtual ~octave_base_thread_manager (void) = default;
@@ -47,7 +47,7 @@ public:
 
 protected:
 
-  octave::refcount<int> count;
+  octave::refcount<int> m_count;
 };
 
 class octave_thread_manager
@@ -58,29 +58,29 @@ public:
 
   ~octave_thread_manager (void)
   {
-    if (--rep->count == 0)
-      delete rep;
+    if (--m_rep->m_count == 0)
+      delete m_rep;
   }
 
-  octave_thread_manager (const octave_thread_manager& tm) : rep (tm.rep) { }
+  octave_thread_manager (const octave_thread_manager& tm) : m_rep (tm.m_rep) { }
 
   octave_thread_manager& operator = (const octave_thread_manager& tm)
   {
-    if (rep != tm.rep)
+    if (m_rep != tm.m_rep)
       {
-        if (--rep->count == 0)
-          delete rep;
+        if (--m_rep->m_count == 0)
+          delete m_rep;
 
-        rep = tm.rep;
-        rep->count++;
+        m_rep = tm.m_rep;
+        m_rep->m_count++;
       }
 
     return *this;
   }
 
-  void register_current_thread (void) { rep->register_current_thread (); }
+  void register_current_thread (void) { m_rep->register_current_thread (); }
 
-  void interrupt (void) { rep->interrupt (); }
+  void interrupt (void) { m_rep->interrupt (); }
 
   static void block_interrupt_signal (void);
 
@@ -88,7 +88,7 @@ public:
 
 private:
 
-  octave_base_thread_manager *rep;
+  octave_base_thread_manager *m_rep;
 
   static octave_base_thread_manager * create_rep (void);
 };

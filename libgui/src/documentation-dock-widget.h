@@ -39,18 +39,19 @@ public slots:
 
   void notice_settings (const QSettings *settings);
 
-  void load_info_file ();
+  void load_info_file (void);
 
 protected slots:
-  void copyClipboard ();
-  void pasteClipboard ();
-  void selectAll ();
+
+  void copyClipboard (void);
+  void pasteClipboard (void);
+  void selectAll (void);
 
   void showDoc (const QString & name);
 
 private:
 
-  webinfo *_webinfo;
+  webinfo *m_webinfo;
 };
 
 #endif

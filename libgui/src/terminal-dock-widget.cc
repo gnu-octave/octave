@@ -41,11 +41,16 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   setFocusProxy (terminal);
 
   connect (terminal, SIGNAL (interrupt_signal (void)),
-           this, SLOT (terminal_interrupt ()));
+           this, SLOT (terminal_interrupt (void)));
 
   // Connect the visibility signal to the terminal for dis-/enabling timers
   connect (this, SIGNAL (visibilityChanged (bool)),
            terminal, SLOT (handle_visibility_changed (bool)));
+}
+
+terminal_dock_widget::~terminal_dock_widget (void)
+{
+  delete terminal;
 }
 
 bool
@@ -72,9 +77,4 @@ void
 terminal_dock_widget::terminal_interrupt (void)
 {
   emit interrupt_signal ();
-}
-
-terminal_dock_widget::~terminal_dock_widget (void)
-{
-  delete terminal;
 }

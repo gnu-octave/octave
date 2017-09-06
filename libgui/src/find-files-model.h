@@ -34,10 +34,12 @@ class find_files_model : public QAbstractListModel
   Q_OBJECT
 
 public:
-  find_files_model (QObject *p = nullptr);
-  ~find_files_model ();
 
-  void clear ();
+  find_files_model (QObject *p = nullptr);
+
+  ~find_files_model (void) = default;
+
+  void clear (void);
 
   void addFile (const QFileInfo& info);
 
@@ -53,11 +55,14 @@ public:
   void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
 
   QFileInfo fileInfo (const QModelIndex& p) const;
-  QIcon     fileIcon (const QModelIndex& p) const;
+
+  QIcon fileIcon (const QModelIndex& p) const;
+
 private:
-  QList<QFileInfo> _files;
-  QStringList _columnNames;
-  int _sortorder;
+
+  QList<QFileInfo> m_files;
+  QStringList m_columnNames;
+  int m_sortorder;
 };
 
 #endif

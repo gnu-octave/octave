@@ -163,7 +163,7 @@ private:
 public:
 
   Sparse (void)
-    : rep (nil_rep ()), dimensions (dim_vector(0,0))
+    : rep (nil_rep ()), dimensions (dim_vector (0,0))
   {
     rep->count++;
   }
@@ -190,12 +190,12 @@ public:
   // is their only common ancestor.
   explicit Sparse (const PermMatrix& a);
 
-  // Type conversion case.  Preserves capacity ().
+  // Type conversion case.  Preserves nzmax.
   template <typename U>
   Sparse (const Sparse<U>& a)
     : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols,
-           a.rep->nzmx)),
-    dimensions (a.dimensions)
+                                              a.rep->nzmx)),
+      dimensions (a.dimensions)
   {
     octave_idx_type nz = a.nnz ();
     std::copy_n (a.rep->d, nz, rep->d);
@@ -270,7 +270,7 @@ public:
 
   size_t byte_size (void) const
   {
-    return (static_cast<size_t>(cols () + 1) * sizeof (octave_idx_type)
+    return (static_cast<size_t> (cols () + 1) * sizeof (octave_idx_type)
             + static_cast<size_t> (nzmax ())
             * (sizeof (T) + sizeof (octave_idx_type)));
   }
@@ -281,6 +281,8 @@ public:
 
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
+  // FIXME: Functions are marked as NORETURN, but they are used with
+  //        a return statement in following code.  Shouldn't that be fixed?
   OCTAVE_NORETURN T range_error (const char *fcn, octave_idx_type n) const;
   OCTAVE_NORETURN T& range_error (const char *fcn, octave_idx_type n);
 
@@ -322,13 +324,13 @@ public:
   T xelem (const Array<octave_idx_type>& ra_idx) const
   { return xelem (compute_index (ra_idx)); }
 
-  // FIXME: would be nice to fix this so that we don't
-  // unnecessarily force a copy, but that is not so easy, and I see no
-  // clean way to do it.
+  // FIXME: would be nice to fix this so that we don't unnecessarily force a
+  // copy, but that is not so easy, and I see no clean way to do it.
 
   T& checkelem (octave_idx_type n)
   {
     if (n < 0 || n >= numel ())
+      // FIXME: Why should we "return" when range_error is OCTAVE_NORETURN? 
       return range_error ("T& Sparse<T>::checkelem", n);
     else
       {
@@ -436,7 +438,7 @@ public:
   Sparse<T> maybe_compress (bool remove_zeros = false)
   {
     if (remove_zeros)
-      make_unique (); // Needs to unshare because elements are removed.
+      make_unique ();  // Need to unshare because elements are removed.
 
     rep->maybe_compress (remove_zeros);
     return (*this);
@@ -460,7 +462,7 @@ public:
   void change_capacity (octave_idx_type nz)
   {
     if (nz < nnz ())
-      make_unique (); // Unshare now because elements will be truncated.
+      make_unique ();  // Unshare now because elements will be truncated.
     rep->change_length (nz);
   }
 
@@ -595,9 +597,9 @@ public:
   map (F fcn) const
   {
     Sparse<U> result;
-    U f_zero = fcn (0.);
+    U f_zero = fcn (0.0);
 
-    if (f_zero != 0.)
+    if (f_zero != 0.0)
       {
         octave_idx_type nr = rows ();
         octave_idx_type nc = cols ();

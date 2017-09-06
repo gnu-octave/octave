@@ -60,24 +60,6 @@ Sparse<T>::nil_rep (void)
 }
 
 template <typename T>
-Sparse<T>::Sparse (const PermMatrix& a)
-  : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
-    dimensions (dim_vector (a.rows (), a.cols ()))
-{
-  octave_idx_type n = a.rows ();
-  for (octave_idx_type i = 0; i <= n; i++)
-    cidx (i) = i;
-
-  const Array<octave_idx_type> pv = a.col_perm_vec ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    ridx (i) = pv(i);
-
-  for (octave_idx_type i = 0; i < n; i++)
-    data (i) = 1.0;
-}
-
-template <typename T>
 T&
 Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 {
@@ -160,8 +142,7 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
   for (octave_idx_type j = ncols; j > 0 && c[j] > nz; j--)
     c[j] = nz;
 
-  // We shall skip reallocation if we have less than 1/frac extra elements to
-  // discard.
+  // Skip reallocation if we have less than 1/frac extra elements to discard.
   static const int frac = 5;
   if (nz > nzmx || nz < nzmx - nzmx/frac)
     {
@@ -230,6 +211,24 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
       for (octave_idx_type j = 0; j < nc+1; j++)
         xcidx (j) = 0;
     }
+}
+
+template <typename T>
+Sparse<T>::Sparse (const PermMatrix& a)
+  : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
+    dimensions (dim_vector (a.rows (), a.cols ()))
+{
+  octave_idx_type n = a.rows ();
+  for (octave_idx_type i = 0; i <= n; i++)
+    cidx (i) = i;
+
+  const Array<octave_idx_type> pv = a.col_perm_vec ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    ridx (i) = pv(i);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    data (i) = 1.0;
 }
 
 template <typename T>
@@ -329,12 +328,9 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       if (n == 1 && a(0) != T ())
         {
           change_capacity (nzm > 1 ? nzm : 1);
-          xcidx (0) = 0;
           xridx (0) = r(0);
           xdata (0) = a(0);
-
-          for (octave_idx_type j = 0; j < nc; j++)
-            xcidx (j+1) = j >= c(0);
+          std::fill_n (xcidx () + c(0) + 1, nc - c(0), 1);
         }
     }
   else if (a_scalar)
@@ -357,11 +353,11 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           octave_idx_type new_nz = 1;
           for (octave_idx_type i = 1; i < n; i++)
             new_nz += rd[i-1] != rd[i];
+
           // Allocate result.
           change_capacity (nzm > new_nz ? nzm : new_nz);
-          xcidx (0) = 0;
-          for (octave_idx_type j = 0; j < nc; j++)
-            xcidx (j+1) = j >= c(0) ? new_nz : 0;
+          std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
+
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
 
@@ -506,11 +502,11 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       octave_idx_type new_nz = 1;
       for (octave_idx_type i = 1; i < n; i++)
         new_nz += rd[i-1] != rd[i];
+
       // Allocate result.
       change_capacity (nzm > new_nz ? nzm : new_nz);
-      xcidx (0) = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        xcidx (j+1) = j >= c(0) ? new_nz : 0;
+      std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
+
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 
@@ -864,7 +860,6 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
                   // Original calculation subject to overflow
                   // ii = (i*old_nr + ridx (j)) % new_nr
                   // jj = (i*old_nr + ridx (j)) / new_nr
-
                   for (octave_idx_type k = kk; k < jj; k++)
                     retval.xcidx (k+1) = j;
                   kk = jj;

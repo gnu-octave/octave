@@ -80,7 +80,7 @@ public:
 
 signals:
 
-  void octave_ready_signal ();
+  void octave_ready_signal (void);
   void octave_finished_signal (int);
 
 public slots:
@@ -91,7 +91,7 @@ public slots:
 
 private:
 
-  octave_thread_manager thread_manager;
+  octave_thread_manager m_thread_manager;
 
   octave::application *m_app_context;
 };
@@ -146,17 +146,17 @@ signals:
 public slots:
 
   void focus_changed (QWidget *w_old, QWidget *w_new);
-  void request_reload_settings ();
+  void request_reload_settings (void);
 
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
   void handle_load_workspace_request (const QString& file = QString ());
-  void handle_clear_command_window_request (void);
   void handle_clear_workspace_request (void);
+  void handle_clear_command_window_request (void);
   void handle_clear_history_request (void);
+  void handle_undo_request (void);
   void handle_rename_variable_request (const QString& old_name,
                                        const QString& new_name);
-  void handle_undo_request (void);
   void new_file (const QString& commands = QString ());
   void open_file (const QString& file_name = QString (), int line = -1);
   void edit_mfile (const QString&, int);
@@ -251,7 +251,7 @@ public slots:
 
   // find files dialog
   void find_files (const QString& startdir = QDir::currentPath ());
-  void find_files_finished (int);
+  void find_files_finished (int) { }
 
   // setting global shortcuts
   void set_global_shortcuts (bool enable);
@@ -265,26 +265,27 @@ public slots:
   void interrupt_interpreter (void);
 
   // get the dockwidgets
-  QList<octave_dock_widget *> get_dock_widget_list ()
-  { return dock_widget_list (); }
+  QList<octave_dock_widget *> get_dock_widget_list (void)
+  {
+    return dock_widget_list ();
+  }
 
 private slots:
 
   void disable_menu_shortcuts (bool disable);
-  void restore_create_file_setting ();
+  void restore_create_file_setting (void);
   void set_file_encoding (const QString& new_encoding);
   void request_open_files (const QStringList& open_file_names);
 
   // open variable_editor
-  void
-  edit_variable (const QString &name);
+  void edit_variable (const QString &name);
 
-  void
-  clear_variable_editor_cache ();
+  void clear_variable_editor_cache (void);
 
-  void variable_editor_callback();
+  void variable_editor_callback (void);
 
 protected:
+
   void closeEvent (QCloseEvent *closeEvent);
 
 private:
@@ -314,8 +315,6 @@ private:
 
   void construct_tool_bar (void);
 
-  void establish_octave_link (void);
-
   void save_workspace_callback (const std::string& file);
 
   void load_workspace_callback (const std::string& file);
@@ -334,17 +333,19 @@ private:
 
   void clear_history_callback (void);
 
-  void execute_command_callback ();
   void run_file_callback (const QFileInfo& info);
-  bool focus_console_after_command ();
+
+  bool focus_console_after_command (void);
 
   void new_figure_callback (void);
 
   void change_directory_callback (const std::string& directory);
 
-  void queue_command (octave_cmd *cmd);
+  void configure_shortcuts (void);
 
-  void configure_shortcuts ();
+  void force_refresh_workspace (void);
+
+  QList<octave_dock_widget *> dock_widget_list (void);
 
   octave::gui_application *m_app_context;
 
@@ -352,127 +353,121 @@ private:
 
   QThread *m_main_thread;
 
-  bool confirm_exit_octave ();
+  workspace_model *m_workspace_model;
 
-  void force_refresh_workspace();
-
-  workspace_model *_workspace_model;
-
-  QHash<QMenu*, QStringList> _hash_menu_text;
+  QHash<QMenu*, QStringList> m_hash_menu_text;
 
   // Toolbars.
-  QStatusBar *status_bar;
+  QStatusBar *m_status_bar;
 
   // Subwindows.
-  terminal_dock_widget *command_window;
-  history_dock_widget *history_window;
-  files_dock_widget *file_browser_window;
-  documentation_dock_widget *doc_browser_window;
-  file_editor_interface *editor_window;
-  workspace_view *workspace_window;
-  variable_editor *variable_editor_window;
+  terminal_dock_widget *m_command_window;
+  history_dock_widget *m_history_window;
+  files_dock_widget *m_file_browser_window;
+  documentation_dock_widget *m_doc_browser_window;
+  file_editor_interface *m_editor_window;
+  workspace_view *m_workspace_window;
+  variable_editor *m_variable_editor_window;
 
-  external_editor_interface *_external_editor;
-  QWidget *_active_editor;
+  external_editor_interface *m_external_editor;
+  QWidget *m_active_editor;
 
-  QList<octave_dock_widget *> dock_widget_list ();
+  octave_dock_widget *m_active_dock;
 
-  octave_dock_widget *_active_dock;
+  QString m_release_notes_icon;
 
-  QString _release_notes_icon;
+  QToolBar *m_main_tool_bar;
 
-  QToolBar *_main_tool_bar;
+  QMenu *m_debug_menu;
 
-  QMenu *_debug_menu;
+  QAction *m_debug_continue;
+  QAction *m_debug_step_into;
+  QAction *m_debug_step_over;
+  QAction *m_debug_step_out;
+  QAction *m_debug_quit;
 
-  QAction *_debug_continue;
-  QAction *_debug_step_into;
-  QAction *_debug_step_over;
-  QAction *_debug_step_out;
-  QAction *_debug_quit;
+  QAction *m_new_script_action;
+  QAction *m_new_function_action;
+  QAction *m_open_action;
+  QAction *m_new_figure_action;
+  QAction *m_load_workspace_action;
+  QAction *m_save_workspace_action;
+  QAction *m_preferences_action;
+  QAction *m_exit_action;
 
-  QAction *_new_script_action;
-  QAction *_new_function_action;
-  QAction *_open_action;
-  QAction *_new_figure_action;
-  QAction *_load_workspace_action;
-  QAction *_save_workspace_action;
-  QAction *_preferences_action;
-  QAction *_exit_action;
+  QAction *m_copy_action;
+  QAction *m_paste_action;
+  QAction *m_clear_clipboard_action;
+  QAction *m_undo_action;
+  QAction *m_clear_command_window_action;
+  QAction *m_clear_command_history_action;
+  QAction *m_clear_workspace_action;
+  QAction *m_find_files_action;
+  QAction *m_select_all_action;
 
-  QAction *_copy_action;
-  QAction *_paste_action;
-  QAction *_clear_clipboard_action;
-  QAction *_undo_action;
-  QAction *_clear_command_window_action;
-  QAction *_clear_command_history_action;
-  QAction *_clear_workspace_action;
-  QAction *_find_files_action;
-  QAction *_select_all_action;
+  QAction *m_show_command_window_action;
+  QAction *m_show_history_action;
+  QAction *m_show_workspace_action;
+  QAction *m_show_file_browser_action;
+  QAction *m_show_editor_action;
+  QAction *m_show_documentation_action;
+  QAction *m_show_variable_editor_action;
+  QAction *m_command_window_action;
+  QAction *m_history_action;
+  QAction *m_workspace_action;
+  QAction *m_file_browser_action;
+  QAction *m_editor_action;
+  QAction *m_documentation_action;
+  QAction *m_variable_editor_action;
+  QAction *m_reset_windows_action;
 
-  QAction *_show_command_window_action;
-  QAction *_show_history_action;
-  QAction *_show_workspace_action;
-  QAction *_show_file_browser_action;
-  QAction *_show_editor_action;
-  QAction *_show_documentation_action;
-  QAction *_show_variable_editor_action;
-  QAction *_command_window_action;
-  QAction *_history_action;
-  QAction *_workspace_action;
-  QAction *_file_browser_action;
-  QAction *_editor_action;
-  QAction *_documentation_action;
-  QAction *_variable_editor_action;
-  QAction *_reset_windows_action;
+  QAction *m_ondisk_doc_action;
+  QAction *m_online_doc_action;
+  QAction *m_report_bug_action;
+  QAction *m_octave_packages_action;
+  QAction *m_contribute_action;
+  QAction *m_developer_action;
+  QAction *m_about_octave_action;
 
-  QAction *_ondisk_doc_action;
-  QAction *_online_doc_action;
-  QAction *_report_bug_action;
-  QAction *_octave_packages_action;
-  QAction *_contribute_action;
-  QAction *_developer_action;
-  QAction *_about_octave_action;
-
-  QAction *_release_notes_action;
-  QAction *_current_news_action;
+  QAction *m_release_notes_action;
+  QAction *m_current_news_action;
 
   // Toolbars.
-  QComboBox *_current_directory_combo_box;
+  QComboBox *m_current_directory_combo_box;
   static const int current_directory_max_visible = 16;
   static const int current_directory_max_count = 16;
-  QLineEdit *_current_directory_line_edit;
+  QLineEdit *m_current_directory_line_edit;
 
   // settings dialog as guarded pointer (set to 0 when deleted)
-  QPointer<settings_dialog> _settings_dlg;
+  QPointer<settings_dialog> m_settings_dlg;
 
   // Find files dialog
-  find_files_dialog *find_files_dlg;
+  find_files_dialog *m_find_files_dlg;
 
   // release notes window
-  QWidget *release_notes_window;
+  QWidget *m_release_notes_window;
 
-  QWidget *community_news_window;
+  QWidget *m_community_news_window;
 
-  octave_qt_link *_octave_qt_link;
+  octave_qt_link *m_octave_qt_link;
 
-  QClipboard *_clipboard;
+  QClipboard *m_clipboard;
 
   // Flag for closing whole application.
-  bool _closing;
+  bool m_closing;
 
   // command queue and semaphore to synchronize execution signals
   // and related callback
 
   // the queue for the command structures
-  octave_command_queue _cmd_queue;
+  octave_command_queue m_cmd_queue;
 
   // some class global flags
-  bool _prevent_readline_conflicts;
-  bool _suppress_dbg_location;
-  bool _start_gui;
+  bool m_prevent_readline_conflicts;
+  bool m_suppress_dbg_location;
+  bool m_start_gui;
 
-  QString _file_encoding;
+  QString m_file_encoding;
 };
 
 class news_reader : public QObject
@@ -481,10 +476,10 @@ class news_reader : public QObject
 
 public:
 
-  news_reader (const QString& xbase_url, const QString& xpage,
-               int xserial = -1, bool xconnect_to_web = false)
-    : QObject (), base_url (xbase_url), page (xpage), serial (xserial),
-      connect_to_web (xconnect_to_web)
+  news_reader (const QString& base_url, const QString& page,
+               int serial = -1, bool connect_to_web = false)
+    : QObject (), m_base_url (base_url), m_page (page), m_serial (serial),
+      m_connect_to_web (connect_to_web)
   { }
 
 public slots:
@@ -499,10 +494,10 @@ signals:
 
 private:
 
-  QString base_url;
-  QString page;
-  int serial;
-  bool connect_to_web;
+  QString m_base_url;
+  QString m_page;
+  int m_serial;
+  bool m_connect_to_web;
 };
 
 #endif

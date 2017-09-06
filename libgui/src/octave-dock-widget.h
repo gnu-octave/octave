@@ -37,13 +37,16 @@ class octave_dock_widget : public QDockWidget
 public:
 
   octave_dock_widget (QWidget *p = nullptr);
+
   virtual ~octave_dock_widget (void) = default;
 
   virtual void connect_visibility_changed (void);
+
   void make_window (void);
   void make_widget (bool dock=true);
   void set_title (const QString&);
   void set_predecessor_widget (octave_dock_widget *prev_widget);
+
 signals:
 
   /** Custom signal that tells whether a user has clicked away
@@ -55,7 +58,7 @@ protected:
 
   virtual void closeEvent (QCloseEvent *e);
 
-  QWidget * focusWidget ();
+  QWidget * focusWidget (void);
 
 public slots:
 
@@ -75,13 +78,13 @@ public slots:
       focus ();
   }
 
-  virtual void notice_settings (const QSettings*)
-  { }
+  virtual void notice_settings (const QSettings*) { }
+
   void handle_settings (const QSettings*);
 
   void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
-  QMainWindow * main_win () { return _parent; }
+  QMainWindow * main_win (void) { return m_parent; }
 
   void save_settings (void);
 
@@ -93,12 +96,13 @@ protected slots:
     if (visible)
       emit active_changed (true);
   }
+
   /** slots to handle copy & paste */
-  virtual void copyClipboard () {  }
-  virtual void pasteClipboard () {  }
-  virtual void selectAll () {  }
+  virtual void copyClipboard (void) {  }
+  virtual void pasteClipboard (void) {  }
+  virtual void selectAll (void) {  }
   /** slots to handle undo */
-  virtual void do_undo () {  }
+  virtual void do_undo (void) {  }
 
   // event filter for double clicks into the window decoration elements
   bool eventFilter (QObject *obj, QEvent *e);
@@ -111,29 +115,28 @@ private slots:
 private:
 
   void set_style (bool active);
-  void set_focus_predecessor ();
+  void set_focus_predecessor (void);
 
-  QMainWindow *_parent;  // store the parent since we are reparenting to 0
-  bool _floating;
-  bool _custom_style;
-  int _title_3d;
-  int _icon_size;
-  QColor _bg_color;
-  QColor _bg_color_active;
-  QColor _fg_color;
-  QColor _fg_color_active;
-  QString _icon_color;
-  QString _icon_color_active;
-  octave_dock_widget *_predecessor_widget;
+  QMainWindow *m_parent;  // store the parent since we are reparenting to 0
+  bool m_floating;
+  bool m_custom_style;
+  int m_title_3d;
+  int m_icon_size;
+  QColor m_bg_color;
+  QColor m_bg_color_active;
+  QColor m_fg_color;
+  QColor m_fg_color_active;
+  QString m_icon_color;
+  QString m_icon_color_active;
+  octave_dock_widget *m_predecessor_widget;
 
 #if defined (Q_OS_WIN32)
-  QWidget *_title_widget;
-  QToolButton *_dock_button;
-  QToolButton *_close_button;
-  QAction *_dock_action;
-  QAction *_close_action;
+  QWidget *m_title_widget;
+  QToolButton *m_dock_button;
+  QToolButton *m_close_button;
+  QAction *m_dock_action;
+  QAction *m_close_action;
 #endif
-
 };
 
 #endif

@@ -48,7 +48,7 @@ public:
 
   variable_editor_model (const QString &expr, QLabel *label, QObject *p = 0);
 
-  ~variable_editor_model ();
+  ~variable_editor_model (void);
 
   int rowCount (const QModelIndex& = QModelIndex ()) const;
 
@@ -73,7 +73,7 @@ public:
   bool removeColumns (int column, int count,
                       const QModelIndex& parent = QModelIndex());
 
-  void clear_data_cache ();
+  void clear_data_cache (void);
 
   // Is cell at idx complex enough to require a sub editor?
   bool requires_sub_editor (const QModelIndex& idx) const;
@@ -87,7 +87,7 @@ public:
    * {%1,%2} for cell and (%1,%2) for matrices.  Use QString::arg to
    * set the index.
    */
-  QString parens () const;
+  QString parens (void) const;
 
 signals: // private
 
@@ -103,7 +103,7 @@ signals: // private
   void initialize_data (const QString& class_name, const QString& paren,
                         int rows, int cols);
 
-  void updated ();
+  void updated (void);
 
 private slots:
 
@@ -120,17 +120,18 @@ private slots:
                                  const QString& paren, int rows, int cols);
 
 private:
+
   /** Get data for ov(row, col)
    * This must be executed in the octave thread!
    */
   void get_data_oct (int row, int col, const std::string& v) /*const*/;
 
   void set_data_oct (const std::string& v, int row, int col,
-                     std::string val);
+                     const std::string& val);
 
   void init_from_oct (const std::string& x);
 
-  void eval_oct (const std::string& name, std::string expr);
+  void eval_oct (const std::string& name, const std::string& expr);
 
   octave_value retrieve_variable (const std::string& x, int& parse_status);
 
@@ -139,14 +140,14 @@ private:
   Q_DISABLE_COPY (variable_editor_model)
 
   // Change the display if the variable does not exist (Yet)
-  void display_invalid ();
+  void display_invalid (void);
+
   // Change the display now that the variable exists
-  void display_valid ();
+  void display_valid (void);
 
-  QObject *p;
+  QObject *m_p;
   struct impl;
-  impl *d;
-
+  impl *m_d;
 };
 
 #endif

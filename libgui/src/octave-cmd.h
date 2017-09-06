@@ -36,10 +36,11 @@ class octave_cmd
 {
 public:
 
-  octave_cmd () { };
-  virtual ~octave_cmd () { };
+  octave_cmd (void) = default;
 
-  virtual void execute () { };
+  virtual ~octave_cmd (void) = default;
+
+  virtual void execute (void) { }
 };
 
 // ---------------------------------------------------------------------
@@ -49,12 +50,13 @@ class octave_cmd_exec : public octave_cmd
 {
 public:
 
-  octave_cmd_exec (const QString& cmd) : octave_cmd () { _cmd = cmd; };
-  void execute ();
+  octave_cmd_exec (const QString& cmd) : octave_cmd () { m_cmd = cmd; }
+
+  void execute (void);
 
 protected:
 
-  QString _cmd;
+  QString m_cmd;
 };
 
 // ---------------------------------------------------------------------
@@ -64,12 +66,13 @@ class octave_cmd_eval : public octave_cmd
 {
 public:
 
-  octave_cmd_eval (const QFileInfo& info) : octave_cmd () { _info = info; };
-  void execute ();
+  octave_cmd_eval (const QFileInfo& info) : octave_cmd () { m_info = info; }
+
+  void execute (void);
 
 protected:
 
-  QFileInfo _info;
+  QFileInfo m_info;
 };
 
 // ---------------------------------------------------------------------
@@ -80,16 +83,13 @@ class octave_cmd_debug : public octave_cmd_exec
 public:
 
   octave_cmd_debug (const QString& cmd, bool suppress_location)
-    : octave_cmd_exec (cmd)
-  {
-    _suppress_dbg_location = suppress_location;
-  };
+    : octave_cmd_exec (cmd), m_suppress_dbg_location (suppress_location) { }
 
-  void execute ();
+  void execute (void);
 
 protected:
 
-  bool _suppress_dbg_location;
+  bool m_suppress_dbg_location;
 };
 
 /**
@@ -106,17 +106,19 @@ class octave_command_queue : QObject
 
 public:
 
-  octave_command_queue (void) : QObject (),
-      _queue (QList<octave_cmd *> ()),
-      _processing (1),
-      _queue_mutex () { };
-  ~octave_command_queue (void) = default;;
+  octave_command_queue (void)
+    : QObject (), m_queue (QList<octave_cmd *> ()), m_processing (1),
+      m_queue_mutex ()
+  { }
+
+  ~octave_command_queue (void) = default;
 
   /**
    * Adds a new octave command to the command queue.
    * @param cmd The octave command to be queued
    */
   void add_cmd (octave_cmd *cmd);
+
   /**
    * Callback routine for executing the command by the worker thread
    */
@@ -124,9 +126,9 @@ public:
 
 private:
 
-  QList<octave_cmd *>  _queue;
-  QSemaphore   _processing;
-  QMutex       _queue_mutex;
+  QList<octave_cmd *> m_queue;
+  QSemaphore m_processing;
+  QMutex m_queue_mutex;
 };
 
 #endif

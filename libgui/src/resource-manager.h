@@ -126,33 +126,33 @@ private:
 
   static bool instance_ok (void);
 
-  QString settings_directory;
-
-  QString settings_file;
-
-  QSettings *settings;
-
-  QSettings *default_settings;
-
   QSettings * do_get_settings (void) const;
 
   QSettings * do_get_default_settings (void) const;
 
-  QString do_get_settings_file (void);
-
   QString do_get_settings_directory (void);
+
+  QString do_get_settings_file (void);
 
   void do_reload_settings (void);
 
   void do_set_settings (const QString& file);
 
-  void do_update_network_settings (void);
-
   bool do_is_first_run (void) const;
+
+  void do_update_network_settings (void);
 
   QIcon do_icon (const QString& icon, bool fallback);
 
   void do_combo_encoding (QComboBox *combo, QString current);
+
+  QString m_settings_directory;
+
+  QString m_settings_file;
+
+  QSettings *m_settings;
+
+  QSettings *m_default_settings;
 };
 
 #endif

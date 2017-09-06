@@ -46,96 +46,106 @@ struct variable_editor_model::impl
 {
   struct cell
   {
-    enum state_t {
-      avail,
-      notavail,
-      pending,
-      unset
-    };
+    enum state_t
+      {
+        avail,
+        notavail,
+        pending,
+        unset
+      };
 
     cell ()
-      : state (unset)
+      : m_state (unset)
     { }
 
     cell (state_t s)
-      : state (s)
+      : m_state (s)
     { }
 
-    cell (const QString &d, const QString &s, const QString &t,
+    cell (const QString& d, const QString& s, const QString& t,
           bool rse, sub_editor_types edtype)
-      : state (avail), data (d), status_tip (s), tool_tip (t),
-        requires_sub_editor (rse), editor_type (edtype)
+      : m_state (avail), m_data (d), m_status_tip (s), m_tool_tip (t),
+        m_requires_sub_editor (rse), m_editor_type (edtype)
     { }
 
-    state_t state;
-    QVariant data;
-    QVariant status_tip;
-    QVariant tool_tip;
-    QVariant background;
-    bool requires_sub_editor;
+    state_t m_state;
+    QVariant m_data;
+    QVariant m_status_tip;
+    QVariant m_tool_tip;
+    QVariant m_background;
+    bool m_requires_sub_editor;
 
-    sub_editor_types editor_type;
+    sub_editor_types m_editor_type;
 
     // FIXME: Other variables needed?
   };
 
-  void set (const QModelIndex &idx, const cell &dat)
+  void set (const QModelIndex& idx, const cell& dat)
   {
     if (idx.isValid ())
-      table[model_to_index (idx)] = dat;
-  }
-  void set (int r, int c, const cell &dat)
-  {
-    if (0 <= r && r < _rows && 0 <= c && c <= columns ())
-      table[c * _rows + r] = dat;
-  }
-  bool is_set (const QModelIndex &idx) const
-  {
-    return idx.isValid ()
-           && table[model_to_index (idx)].state == cell::avail;
-  }
-  bool is_notavail (const QModelIndex &idx) const
-  {
-    return idx.isValid ()
-           && table[model_to_index (idx)].state == cell::notavail;
-  }
-  bool is_pending (const QModelIndex &idx) const
-  {
-    return idx.isValid ()
-           && table[model_to_index (idx)].state == cell::pending;
-  }
-  void pending (const QModelIndex &idx)
-  {
-    if (idx.isValid ())
-      table[model_to_index (idx)].state = cell::pending;
-  }
-  void notavail (int r, int c)
-  {
-    if (0 <= r && r < _rows && 0 <= c && c <= columns ())
-      table[c * _rows + r].state = cell::notavail;
-  }
-  bool requires_sub_editor (const QModelIndex &idx)
-  {
-    return idx.isValid ()
-           && table[model_to_index (idx)].requires_sub_editor;
+      m_table[model_to_index (idx)] = dat;
   }
 
-  sub_editor_types sub_editor_type (const QModelIndex &idx)
+  void set (int r, int c, const cell& dat)
   {
-    return idx.isValid () ? table[model_to_index (idx)].editor_type : sub_none;
+    if (0 <= r && r < m_rows && 0 <= c && c <= columns ())
+      m_table[c * m_rows + r] = dat;
+  }
+
+  bool is_set (const QModelIndex& idx) const
+  {
+    return idx.isValid ()
+           && m_table[model_to_index (idx)].m_state == cell::avail;
+  }
+
+  bool is_notavail (const QModelIndex& idx) const
+  {
+    return idx.isValid ()
+           && m_table[model_to_index (idx)].m_state == cell::notavail;
+  }
+
+  bool is_pending (const QModelIndex& idx) const
+  {
+    return idx.isValid ()
+           && m_table[model_to_index (idx)].m_state == cell::pending;
+  }
+
+  void pending (const QModelIndex& idx)
+  {
+    if (idx.isValid ())
+      m_table[model_to_index (idx)].m_state = cell::pending;
+  }
+
+  void notavail (int r, int c)
+  {
+    if (0 <= r && r < m_rows && 0 <= c && c <= columns ())
+      m_table[c * m_rows + r].m_state = cell::notavail;
+  }
+
+  bool requires_sub_editor (const QModelIndex& idx)
+  {
+    return idx.isValid ()
+           && m_table[model_to_index (idx)].m_requires_sub_editor;
+  }
+
+  sub_editor_types sub_editor_type (const QModelIndex& idx)
+  {
+    return idx.isValid () ? m_table[model_to_index (idx)].m_editor_type : sub_none;
   }
 
   void unset (int r, int c)
   {
-    if (0 <= r && r < _rows && 0 <= c && c <= columns ())
-      table[c * _rows + r].state = cell::unset;
+    if (0 <= r && r < m_rows && 0 <= c && c <= columns ())
+      m_table[c * m_rows + r].m_state = cell::unset;
   }
-  void clear ()
+
+  void clear (void)
   {
-    for (int i = 0; i < table.size (); ++i)
-      table[i].state = cell::unset;
+    for (int i = 0; i < m_table.size (); ++i)
+      m_table[i].m_state = cell::unset;
   }
-  QVariant data (const QModelIndex &idx, int role) const
+
+  QVariant data (const QModelIndex& idx, int role) const
   {
     if (idx.isValid ())
       {
@@ -144,45 +154,47 @@ struct variable_editor_model::impl
           {
           case Qt::DisplayRole:
           case Qt::EditRole:
-            return table[i].data;
+            return m_table[i].m_data;
           case Qt::StatusTipRole:
-            return table[i].status_tip;
+            return m_table[i].m_status_tip;
           case Qt::ToolTipRole:
-            return table[i].tool_tip;
+            return m_table[i].m_tool_tip;
           case Qt::BackgroundRole:
-            return table[i].background;
+            return m_table[i].m_background;
           }
       }
     return QVariant ();
   }
-  octave_idx_type rows () const { return _rows; }
-  octave_idx_type columns () const { return _cols; }
 
-  int model_to_index (const QModelIndex &idx) const
+  octave_idx_type rows (void) const { return m_rows; }
+
+  octave_idx_type columns (void) const { return m_cols; }
+
+  int model_to_index (const QModelIndex& idx) const
   {
-    return idx.column () * _rows + idx.row ();
+    return idx.column () * m_rows + idx.row ();
   }
 
-  impl (const QString &n, QLabel *l)
-    : name (n.toStdString ()), type (),
-      _rows (0), _cols (0), table (), label (l),
-      _validity (true), validtext ()
+  impl (const QString& n, QLabel *l)
+    : m_name (n.toStdString ()), m_type (),
+      m_rows (0), m_cols (0), m_table (), m_label (l),
+      m_validity (true), m_validtext ()
   { }
 
-  const std::string name;
-  std::string type;
-  octave_idx_type _rows;
-  octave_idx_type _cols;
-  QVector<cell> table;
-  QLabel *label;
-  bool _validity;
-  QString validtext;
+  const std::string m_name;
+  std::string m_type;
+  octave_idx_type m_rows;
+  octave_idx_type m_cols;
+  QVector<cell> m_table;
+  QLabel *m_label;
+  bool m_validity;
+  QString m_validtext;
 };
 
-variable_editor_model::variable_editor_model (const QString &expr,
+variable_editor_model::variable_editor_model (const QString& expr,
                                               QLabel *label,
                                               QObject *parent)
-  : QAbstractTableModel (parent), p (parent), d (new impl (expr, label))
+  : QAbstractTableModel (parent), m_p (parent), m_d (new impl (expr, label))
 {
   connect (this, SIGNAL (data_ready (int, int, const QString&,
                                      const QString&,
@@ -205,43 +217,43 @@ variable_editor_model::variable_editor_model (const QString &expr,
   clear_data_cache (); // initializes everything
 }
 
-variable_editor_model::~variable_editor_model ()
+variable_editor_model::~variable_editor_model (void)
 {
-  delete d;
+  delete m_d;
 }
 
 void
-variable_editor_model::clear_data_cache ()
+variable_editor_model::clear_data_cache (void)
 {
   octave_link::post_event
-    (this, &variable_editor_model::init_from_oct, d->name);
+    (this, &variable_editor_model::init_from_oct, m_d->m_name);
 }
 
 bool
-variable_editor_model::requires_sub_editor (const QModelIndex &idx) const
+variable_editor_model::requires_sub_editor (const QModelIndex& idx) const
 {
-  return d->requires_sub_editor (idx);
+  return m_d->requires_sub_editor (idx);
 }
 
-bool variable_editor_model::editor_type_matrix (const QModelIndex &idx) const
+bool variable_editor_model::editor_type_matrix (const QModelIndex& idx) const
 {
-  return d->sub_editor_type (idx) == sub_matrix;
+  return m_d->sub_editor_type (idx) == sub_matrix;
 }
 
-bool variable_editor_model::editor_type_string (const QModelIndex &idx) const
+bool variable_editor_model::editor_type_string (const QModelIndex& idx) const
 {
-  return d->sub_editor_type (idx) == sub_string;
+  return m_d->sub_editor_type (idx) == sub_string;
 }
 
-sub_editor_types variable_editor_model::editor_type (const QModelIndex &idx) const
+sub_editor_types variable_editor_model::editor_type (const QModelIndex& idx) const
 {
-  return d->sub_editor_type (idx);
+  return m_d->sub_editor_type (idx);
 }
 
 QString
-variable_editor_model::parens () const
+variable_editor_model::parens (void) const
 {
-  if (d->type == "{")
+  if (m_d->m_type == "{")
     return "{%1, %2}";
   else
     return "(%1, %2)";
@@ -250,8 +262,8 @@ variable_editor_model::parens () const
 int
 variable_editor_model::rowCount (const QModelIndex&) const
 {
-  if (d->_validity)
-    return d->rows ();
+  if (m_d->m_validity)
+    return m_d->rows ();
 
   return 1;
 }
@@ -259,43 +271,43 @@ variable_editor_model::rowCount (const QModelIndex&) const
 int
 variable_editor_model::columnCount (const QModelIndex&) const
 {
-  if (d->_validity)
-    return d->columns ();
+  if (m_d->m_validity)
+    return m_d->columns ();
 
   return 1;
 }
 
 QVariant
-variable_editor_model::data (const QModelIndex &idx, int role) const
+variable_editor_model::data (const QModelIndex& idx, int role) const
 {
-  if (! d->_validity)
+  if (! m_d->m_validity)
     {
       if (idx.isValid ())
         {
           if (role == Qt::DisplayRole)
             return QVariant (QString ("Variable %d not found")
-                             .arg (QString::fromStdString (d->name)));
+                             .arg (QString::fromStdString (m_d->m_name)));
         }
       return QVariant (QString ("x"));
     }
 
   if (idx.isValid ())
     {
-      if (d->is_set (idx))
-        return d->data (idx, role);
+      if (m_d->is_set (idx))
+        return m_d->data (idx, role);
       else
         {
-          if (! d->is_pending (idx))
+          if (! m_d->is_pending (idx))
             {
               octave_link::post_event<variable_editor_model, int, int,
                                       const std::string&>
                 (const_cast<variable_editor_model *> (this),
                  &variable_editor_model::get_data_oct,
-                 idx.row (), idx.column (), d->name);
-              d->pending (idx);
+                 idx.row (), idx.column (), m_d->m_name);
+              m_d->pending (idx);
             }
           if (role == Qt::DisplayRole)
-            return QVariant (QString (d->is_notavail (idx) ? "⌛" : "✗"));
+            return QVariant (QString (m_d->is_notavail (idx) ? "⌛" : "✗"));
           else
             return QVariant ();
         }
@@ -305,7 +317,7 @@ variable_editor_model::data (const QModelIndex &idx, int role) const
 }
 
 bool
-variable_editor_model::setData (const QModelIndex &idx, const QVariant &v,
+variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
                                 int role)
 {
   if (idx.isValid () && role == Qt::EditRole)
@@ -316,9 +328,9 @@ variable_editor_model::setData (const QModelIndex &idx, const QVariant &v,
           return false;
         }
       octave_link::post_event<variable_editor_model, const std::string&,
-                              int, int, std::string>
+                              int, int, const std::string&>
         (this, &variable_editor_model::set_data_oct,
-         d->name, idx.row (), idx.column (),
+         m_d->m_name, idx.row (), idx.column (),
          v.toString ().toStdString ());
       return true;
     }
@@ -331,10 +343,10 @@ variable_editor_model::insertRows (int row, int count, const QModelIndex&)
 {
   // FIXME: cells?
   octave_link::post_event <variable_editor_model, const std::string&,
-                           std::string>
-    (this, &variable_editor_model::eval_oct, d->name,
+                           const std::string&>
+    (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1 = [ %1(1:%2,:) ; zeros(%3, columns(%1)) ; %1(%2+%3:end,:) ]")
-     .arg (QString::fromStdString (d->name))
+     .arg (QString::fromStdString (m_d->m_name))
      .arg (row)
      .arg (count)
      .toStdString ());
@@ -345,18 +357,18 @@ variable_editor_model::insertRows (int row, int count, const QModelIndex&)
 bool
 variable_editor_model::removeRows (int row, int count, const QModelIndex&)
 {
-  if (row + count > d->_rows)
+  if (row + count > m_d->m_rows)
     {
-      qDebug () << "Try to remove too many rows " << d->_rows << " "
+      qDebug () << "Try to remove too many rows " << m_d->m_rows << " "
                 << count << " (" << row << ")";
       return false;
     }
 
   octave_link::post_event <variable_editor_model, const std::string&,
-                           std::string>
-    (this, &variable_editor_model::eval_oct, d->name,
+                           const std::string&>
+    (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1 (%2:%3, :) = []")
-     .arg (QString::fromStdString (d->name))
+     .arg (QString::fromStdString (m_d->m_name))
      .arg (row)
      .arg (row + count)
      .toStdString ());
@@ -368,10 +380,10 @@ bool
 variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
 {
   octave_link::post_event <variable_editor_model, const std::string&,
-                           std::string>
-    (this, &variable_editor_model::eval_oct, d->name,
+                           const std::string&>
+    (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1 = [ %1(:,1:%2) ; zeros(rows(%1), %3) %1(:,%2+%3:end) ]")
-     .arg (QString::fromStdString (d->name))
+     .arg (QString::fromStdString (m_d->m_name))
      .arg (col)
      .arg (count)
      .toStdString ());
@@ -382,18 +394,18 @@ variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
 bool
 variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
 {
-  if (col + count > d->_cols)
+  if (col + count > m_d->m_cols)
     {
-      qDebug () << "Try to remove too many cols " << d->_cols << " "
+      qDebug () << "Try to remove too many cols " << m_d->m_cols << " "
                 << count << " (" << col << ")";
       return false;
     }
 
   octave_link::post_event <variable_editor_model, const std::string&,
-                           std::string>
-    (this, &variable_editor_model::eval_oct, d->name,
+                           const std::string&>
+    (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1 (:, %2:%3) = []")
-     .arg (QString::fromStdString (d->name))
+     .arg (QString::fromStdString (m_d->m_name))
      .arg (col)
      .arg (col + count)
      .toStdString ());
@@ -402,9 +414,9 @@ variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
 }
 
 Qt::ItemFlags
-variable_editor_model::flags (const QModelIndex &idx) const
+variable_editor_model::flags (const QModelIndex& idx) const
 {
-  if (d->_validity)
+  if (m_d->m_validity)
     {
       if (requires_sub_editor (idx))
         {
@@ -422,8 +434,8 @@ variable_editor_model::flags (const QModelIndex &idx) const
 
 void
 variable_editor_model::received_data (int r, int c,
-                                      const QString &dat,
-                                      const QString &class_info,
+                                      const QString& dat,
+                                      const QString& class_info,
                                       int rows, int cols)
 {
   // trim data
@@ -448,7 +460,7 @@ variable_editor_model::received_data (int r, int c,
 
 
 
-  d->set (r, c, impl::cell (dat, status_tip, tool_tip,
+  m_d->set (r, c, impl::cell (dat, status_tip, tool_tip,
                             rows > 1 || cols > 1
                             || class_info == QString ("struct"),
                             edittype));
@@ -461,49 +473,49 @@ variable_editor_model::received_data (int r, int c,
 void
 variable_editor_model::received_no_data (int r, int c)
 {
-  d->notavail (r, c);
+  m_d->notavail (r, c);
 }
 
 void
 variable_editor_model::received_unset_data (int r, int c)
 {
-  d->unset (r, c);
+  m_d->unset (r, c);
 }
 
 void
-variable_editor_model::received_user_error (const QString &title,
-                                            const QString &msg)
+variable_editor_model::received_user_error (const QString& title,
+                                            const QString& msg)
 {
   QMessageBox::critical (0x0, title, msg);
 }
 
 void
-variable_editor_model::received_initialize_data (const QString &class_name,
-                                                 const QString &paren,
+variable_editor_model::received_initialize_data (const QString& class_name,
+                                                 const QString& paren,
                                                  int rows, int cols)
 {
-  if (!(d->_validity))
+  if (!(m_d->m_validity))
   {
     return;
   }
-  d->type = paren.toStdString ();
+  m_d->m_type = paren.toStdString ();
 
-  const int r = d->_rows - rows;
+  const int r = m_d->m_rows - rows;
   if (r > 0)
-    emit beginRemoveRows (QModelIndex (), rows, d->_rows - 1);
+    emit beginRemoveRows (QModelIndex (), rows, m_d->m_rows - 1);
   else if (r < 0)
-    emit beginInsertRows (QModelIndex (), d->_rows, rows - 1);
+    emit beginInsertRows (QModelIndex (), m_d->m_rows, rows - 1);
 
-  const int c = d->_cols - cols;
+  const int c = m_d->m_cols - cols;
   if (c > 0)
-    emit beginRemoveColumns (QModelIndex (), cols, d->_cols - 1);
+    emit beginRemoveColumns (QModelIndex (), cols, m_d->m_cols - 1);
   else if (c < 0)
-    emit beginInsertColumns (QModelIndex (), d->_cols, cols - 1);
+    emit beginInsertColumns (QModelIndex (), m_d->m_cols, cols - 1);
 
-  d->_rows = rows;
-  d->_cols = cols;
-  d->table.clear ();
-  d->table.resize (rows * cols);
+  m_d->m_rows = rows;
+  m_d->m_cols = cols;
+  m_d->m_table.clear ();
+  m_d->m_table.resize (rows * cols);
 
   if (c > 0)
     emit endRemoveColumns ();
@@ -516,22 +528,22 @@ variable_editor_model::received_initialize_data (const QString &class_name,
     emit endInsertRows ();
 
   emit dataChanged (QAbstractTableModel::index (0, 0),
-                    QAbstractTableModel::index (d->_rows - 1, d->_cols - 1));
+                    QAbstractTableModel::index (m_d->m_rows - 1, m_d->m_cols - 1));
 
-  d->label->setTextFormat (Qt::PlainText);
+  m_d->m_label->setTextFormat (Qt::PlainText);
   QString description = QString ("%1: %2 %3x%4")
-                        .arg (QString::fromStdString (d->name))
+                        .arg (QString::fromStdString (m_d->m_name))
                         .arg (class_name)
                         .arg (rows)
                         .arg (cols);
-  d->label->setText (description);
-  d->validtext=description;
+  m_d->m_label->setText (description);
+  m_d->m_validtext = description;
 }
 
 // private
 
 void
-variable_editor_model::get_data_oct (int row, int col, const std::string &x)
+variable_editor_model::get_data_oct (int row, int col, const std::string& x)
 {
   int parse_status = 0;
 
@@ -542,11 +554,11 @@ variable_editor_model::get_data_oct (int row, int col, const std::string &x)
   if (parse_status != 0 || ! v.is_defined ())
     {
       emit no_data (row, col);
-      d->_validity = false;
+      m_d->m_validity = false;
       return;
     }
   octave_value_list ovlidx = ovl (row + 1, col + 1);
-  /*const*/ octave_value elem = v.single_subsref (d->type, ovlidx);
+  /*const*/ octave_value elem = v.single_subsref (m_d->m_type, ovlidx);
 
   if (elem.is_defined ())
     {
@@ -569,10 +581,10 @@ variable_editor_model::get_data_oct (int row, int col, const std::string &x)
 
 // val has to be copied!
 void
-variable_editor_model::set_data_oct (const std::string &x, int row, int col,
-                                     std::string val)
+variable_editor_model::set_data_oct (const std::string& x, int row, int col,
+                                     const std::string& val)
 {
-  d->_validity = true;
+  m_d->m_validity = true;
   int parse_status = 0;
   // Accessing directly since
   // 1) retrieve_variable does not support writeback, and
@@ -592,7 +604,7 @@ variable_editor_model::set_data_oct (const std::string &x, int row, int col,
   //eval_string (x, true, parse_status);
   if (parse_status != 0 || ! v.is_defined ())
     {
-      d->_validity = false;
+      m_d->m_validity = false;
       emit user_error ("Table invalid",
                        QString ("Table expression `%1' invalid")
                        .arg (QString::fromStdString (x)));
@@ -602,7 +614,7 @@ variable_editor_model::set_data_oct (const std::string &x, int row, int col,
   octave_value_list ovlidx = ovl (row + 1, col + 1);
   std::list<octave_value_list> idxl;
   idxl.push_back (ovlidx);
-  v.subsasgn (d->type, idxl, ret);
+  v.subsasgn (m_d->m_type, idxl, ret);
   emit unset_data (row, col);
   QModelIndex idx = QAbstractTableModel::index (row, col);
   emit dataChanged (idx, idx);
@@ -615,8 +627,8 @@ variable_editor_model::set_data_oct (const std::string &x, int row, int col,
  * This allows the variable to be opened before it is created.
  */
 octave_value
-variable_editor_model::retrieve_variable (const std::string &x,
-                                          int &parse_status)
+variable_editor_model::retrieve_variable (const std::string& x,
+                                          int& parse_status)
 {
   std::string name = x;
 
@@ -633,14 +645,14 @@ variable_editor_model::retrieve_variable (const std::string &x,
 
 
 void
-variable_editor_model::init_from_oct (const std::string &x)
+variable_editor_model::init_from_oct (const std::string& x)
 {
   int parse_status = 0;
   const octave_value ov = retrieve_variable (x, parse_status);//eval_string (x, true, parse_status);
-  d->_validity = true;
+  m_d->m_validity = true;
   if (parse_status != 0 || ! ov.is_defined ())
     {
-      d->_validity = false;
+      m_d->m_validity = false;
       display_invalid ();
       return;
     }
@@ -654,7 +666,7 @@ variable_editor_model::init_from_oct (const std::string &x)
 }
 
 void
-variable_editor_model::eval_oct (const std::string &name, std::string x)
+variable_editor_model::eval_oct (const std::string& name, const std::string& x)
 {
   int parse_status = 0;
   octave::eval_string (x, true, parse_status);
@@ -666,20 +678,20 @@ variable_editor_model::eval_oct (const std::string &name, std::string x)
 }
 
 void
-variable_editor_model::display_invalid ()
+variable_editor_model::display_invalid (void)
 {
-  d->label->setTextFormat (Qt::PlainText);
+  m_d->m_label->setTextFormat (Qt::PlainText);
   QString description = QString ("%1: [not found or out-of-scope]")
-                        .arg (QString::fromStdString (d->name));
-  d->label->setText (description);
-  dynamic_cast<QWidget *> (p)->setVisible (false);
+                        .arg (QString::fromStdString (m_d->m_name));
+  m_d->m_label->setText (description);
+  dynamic_cast<QWidget *> (m_p)->setVisible (false);
 }
 
 void
-variable_editor_model::display_valid ()
+variable_editor_model::display_valid (void)
 {
-  d->label->setTextFormat (Qt::PlainText);
-  d->label->setText (d->validtext);
-  dynamic_cast<QWidget *> (p)->setVisible (true);
+  m_d->m_label->setTextFormat (Qt::PlainText);
+  m_d->m_label->setText (m_d->m_validtext);
+  dynamic_cast<QWidget *> (m_p)->setVisible (true);
 }
 

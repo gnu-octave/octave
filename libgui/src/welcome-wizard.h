@@ -42,10 +42,10 @@ public:
 
 private:
 
-  QList<page_creator_fptr> page_ctor_list;
-  QList<page_creator_fptr>::iterator page_list_iterator;
-  QWidget *current_page;
-  bool allow_web_connect_state;
+  QList<page_creator_fptr> m_page_ctor_list;
+  QList<page_creator_fptr>::iterator m_page_list_iterator;
+  QWidget *m_current_page;
+  bool m_allow_web_connect_state;
 
 private slots:
 
@@ -74,11 +74,11 @@ public:
 
 private:
 
-  QLabel *title;
-  QLabel *message;
-  QLabel *logo;
-  QPushButton *next;
-  QPushButton *cancel;
+  QLabel *m_title;
+  QLabel *m_message;
+  QLabel *m_logo;
+  QPushButton *m_next;
+  QPushButton *m_cancel;
 };
 
 
@@ -97,14 +97,14 @@ public:
 
 private:
 
-  QLabel *title;
-  QLabel *message;
-  QCheckBox *checkbox;
-  QLabel *checkbox_message;
-  QLabel *logo;
-  QPushButton *previous;
-  QPushButton *next;
-  QPushButton *cancel;
+  QLabel *m_title;
+  QLabel *m_message;
+  QCheckBox *m_checkbox;
+  QLabel *m_checkbox_message;
+  QLabel *m_logo;
+  QPushButton *m_previous;
+  QPushButton *m_next;
+  QPushButton *m_cancel;
 };
 
 
@@ -123,13 +123,13 @@ public:
 
 private:
 
-  QLabel *title;
-  QLabel *message;
-  QLabel *logo;
-  QLabel *links;
-  QPushButton *previous;
-  QPushButton *finish;
-  QPushButton *cancel;
+  QLabel *m_title;
+  QLabel *m_message;
+  QLabel *m_logo;
+  QLabel *m_links;
+  QPushButton *m_previous;
+  QPushButton *m_finish;
+  QPushButton *m_cancel;
 };
 
 #endif

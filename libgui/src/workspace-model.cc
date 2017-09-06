@@ -35,14 +35,14 @@ along with Octave; see the file COPYING.  If not, see
 workspace_model::workspace_model (QObject *p)
   : QAbstractTableModel (p)
 {
-  _columnNames.append (tr ("Name"));
-  _columnNames.append (tr ("Class"));
-  _columnNames.append (tr ("Dimension"));
-  _columnNames.append (tr ("Value"));
-  _columnNames.append (tr ("Attribute"));
+  m_columnNames.append (tr ("Name"));
+  m_columnNames.append (tr ("Class"));
+  m_columnNames.append (tr ("Dimension"));
+  m_columnNames.append (tr ("Value"));
+  m_columnNames.append (tr ("Attribute"));
 
   for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
-    _storage_class_colors.append (QColor (Qt::white));
+    m_storage_class_colors.append (QColor (Qt::white));
 
 }
 
@@ -53,12 +53,12 @@ workspace_model::storage_class_default_colors (void)
 
   if (colors.isEmpty ())
     {
-      colors << QColor (190,255,255)
-             << QColor (220,255,220)
-             << QColor (220,220,255)
-             << QColor (255,255,190)
-             << QColor (255,220,220)
-             << QColor (255,190,255);
+      colors << QColor (190, 255, 255)
+             << QColor (220, 255, 220)
+             << QColor (220, 220, 255)
+             << QColor (255, 255, 190)
+             << QColor (255, 220, 220)
+             << QColor (255, 190, 255);
     }
 
   return colors;
@@ -85,13 +85,13 @@ workspace_model::storage_class_names (void)
 int
 workspace_model::rowCount (const QModelIndex&) const
 {
-  return _symbols.size ();
+  return m_symbols.size ();
 }
 
 int
 workspace_model::columnCount (const QModelIndex&) const
 {
-  return _columnNames.size ();
+  return m_columnNames.size ();
 }
 
 Qt::ItemFlags
@@ -103,7 +103,7 @@ workspace_model::flags (const QModelIndex& idx) const
     {
       retval |= Qt::ItemIsEnabled;
 
-      if (_top_level && idx.column () == 0)
+      if (m_top_level && idx.column () == 0)
         retval |= Qt::ItemIsSelectable;
     }
 
@@ -115,7 +115,7 @@ workspace_model::headerData (int section, Qt::Orientation orientation,
                              int role) const
 {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-    return _columnNames[section];
+    return m_columnNames[section];
   else
     return QVariant ();
 }
@@ -131,9 +131,9 @@ workspace_model::data (const QModelIndex& idx, int role) const
         {
           QString class_chars = resource_manager::storage_class_chars ();
           int actual_class
-            = class_chars.indexOf (_scopes[idx.row ()].toLatin1 ());
+            = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
           if (actual_class >= 0)
-            return QVariant (_storage_class_colors.at (actual_class));
+            return QVariant (m_storage_class_colors.at (actual_class));
           else
             return retval;
         }
@@ -149,19 +149,19 @@ workspace_model::data (const QModelIndex& idx, int role) const
                 retval
                   = QVariant (tr ("Right click to copy, rename, or display"));
               else
-                retval = QVariant (_symbols[idx.row ()]);
+                retval = QVariant (m_symbols[idx.row ()]);
               break;
 
             case 1:
-              retval = QVariant (_class_names[idx.row ()]);
+              retval = QVariant (m_class_names[idx.row ()]);
               break;
 
             case 2:
-              retval = QVariant (_dimensions[idx.row ()]);
+              retval = QVariant (m_dimensions[idx.row ()]);
               break;
 
             case 3:
-              retval = QVariant (_values[idx.row ()]);
+              retval = QVariant (m_values[idx.row ()]);
               break;
 
             case 4:
@@ -171,7 +171,7 @@ workspace_model::data (const QModelIndex& idx, int role) const
                 QString class_chars = resource_manager::storage_class_chars ();
 
                 int actual_class
-                  = class_chars.indexOf (_scopes[idx.row ()].toLatin1 ());
+                  = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
 
                 if (actual_class >= 0)
                   {
@@ -181,7 +181,7 @@ workspace_model::data (const QModelIndex& idx, int role) const
                     sclass = class_names.at (actual_class);
                   }
 
-                if (_complex_flags[idx.row ()])
+                if (m_complex_flags[idx.row ()])
                   {
                     if (sclass.isEmpty ())
                       sclass = tr ("complex");
@@ -207,7 +207,7 @@ workspace_model::setData (const QModelIndex& idx, const QVariant& value,
 
   if (idx.column () == 0 && role == Qt::EditRole)
     {
-      QString qold_name = _symbols[idx.row ()];
+      QString qold_name = m_symbols[idx.row ()];
 
       QString qnew_name = value.toString ();
 
@@ -234,13 +234,13 @@ workspace_model::set_workspace (bool top_level,
                                 const QStringList& values,
                                 const QIntList& complex_flags)
 {
-  _top_level = top_level;
-  _scopes = scopes;
-  _symbols = symbols;
-  _class_names = class_names;
-  _dimensions = dimensions;
-  _values = values;
-  _complex_flags = complex_flags;
+  m_top_level = top_level;
+  m_scopes = scopes;
+  m_symbols = symbols;
+  m_class_names = class_names;
+  m_dimensions = dimensions;
+  m_values = values;
+  m_complex_flags = complex_flags;
 
   update_table ();
 }
@@ -250,30 +250,6 @@ workspace_model::clear_workspace (void)
 {
   clear_data ();
   update_table ();
-}
-
-void
-workspace_model::clear_data (void)
-{
-  _top_level = false;
-  _scopes = QString ();
-  _symbols = QStringList ();
-  _class_names = QStringList ();
-  _dimensions = QStringList ();
-  _values = QStringList ();
-  _complex_flags = QIntList ();
-}
-
-void
-workspace_model::update_table (void)
-{
-  beginResetModel ();
-
-  // Nothing to do except tell the world to recalc.
-
-  endResetModel ();
-
-  emit model_changed ();
 }
 
 void
@@ -289,6 +265,30 @@ workspace_model::notice_settings (const QSettings *settings)
       QColor setting_color = settings->value ("workspaceview/color_"
                                               + class_chars.mid (i,1),
                                               default_var).value<QColor> ();
-      _storage_class_colors.replace (i,setting_color);
+      m_storage_class_colors.replace (i,setting_color);
     }
+}
+
+void
+workspace_model::clear_data (void)
+{
+  m_top_level = false;
+  m_scopes = QString ();
+  m_symbols = QStringList ();
+  m_class_names = QStringList ();
+  m_dimensions = QStringList ();
+  m_values = QStringList ();
+  m_complex_flags = QIntList ();
+}
+
+void
+workspace_model::update_table (void)
+{
+  beginResetModel ();
+
+  // Nothing to do except tell the world to recalc.
+
+  endResetModel ();
+
+  emit model_changed ();
 }

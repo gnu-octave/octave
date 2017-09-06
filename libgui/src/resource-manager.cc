@@ -64,8 +64,8 @@ default_qt_settings_file (void)
 }
 
 resource_manager::resource_manager (void)
-  : settings_directory (), settings_file (), settings (nullptr),
-    default_settings (nullptr)
+  : m_settings_directory (), m_settings_file (), m_settings (nullptr),
+    m_default_settings (nullptr)
 {
 #if defined (HAVE_QT4)
   QString home_path
@@ -75,18 +75,18 @@ resource_manager::resource_manager (void)
     = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
 #endif
 
-  settings_directory = home_path + "/.config/octave";
+  m_settings_directory = home_path + "/.config/octave";
 
-  settings_file = settings_directory + "/qt-settings";
+  m_settings_file = m_settings_directory + "/qt-settings";
 
-  default_settings = new QSettings (default_qt_settings_file (),
+  m_default_settings = new QSettings (default_qt_settings_file (),
                                     QSettings::IniFormat);
 }
 
 resource_manager::~resource_manager (void)
 {
-  delete settings;
-  delete default_settings;
+  delete m_settings;
+  delete m_default_settings;
 }
 
 QString
@@ -138,164 +138,6 @@ resource_manager::config_translators (QTranslator *qt_tr,
   gui_tr->load (language, get_gui_translation_dir ());
 }
 
-bool
-resource_manager::instance_ok (void)
-{
-  bool retval = true;
-
-  if (! instance)
-    instance = new resource_manager ();
-
-  if (! instance)
-    {
-      error ("unable to create resource_manager object!");
-
-      retval = false;
-    }
-
-  return retval;
-}
-
-QSettings *
-resource_manager::do_get_settings (void) const
-{
-  return settings;
-}
-
-QSettings *
-resource_manager::do_get_default_settings (void) const
-{
-  return default_settings;
-}
-
-QString
-resource_manager::do_get_settings_directory (void)
-{
-  return settings_directory;
-}
-
-QString
-resource_manager::do_get_settings_file (void)
-{
-  return settings_file;
-}
-
-void
-resource_manager::do_reload_settings (void)
-{
-  if (! QFile::exists (settings_file))
-    {
-      QDir ("/").mkpath (settings_directory);
-      QFile qt_settings (default_qt_settings_file ());
-
-      if (! qt_settings.open (QFile::ReadOnly))
-        return;
-
-      QTextStream in (&qt_settings);
-      QString settings_text = in.readAll ();
-      qt_settings.close ();
-
-      // Get the default monospaced font
-#if defined (HAVE_QFONT_MONOSPACE)
-      QFont fixed_font;
-      fixed_font.setStyleHint (QFont::Monospace);
-      QString default_family = fixed_font.defaultFamily ();
-#elif defined (Q_WS_X11) || defined (Q_WS_WIN)
-      QString default_family = "Courier New";
-#elif defined (Q_WS_MAC)
-      QString default_family = "Courier";
-#else
-      QString default_family = "courier";
-#endif
-
-      // Get the default custom editor
-#if defined (Q_OS_WIN32)
-      QString custom_editor = "notepad++ -n%l %f";
-#else
-      QString custom_editor = "emacs +%l %f";
-#endif
-
-      // Replace placeholders
-      settings_text.replace ("__default_custom_editor__", custom_editor);
-      settings_text.replace ("__default_font__", default_family);
-      settings_text.replace ("__default_font_size__", "10");
-
-      QFile user_settings (settings_file);
-
-      if (! user_settings.open (QIODevice::WriteOnly))
-        return;
-
-      QTextStream out (&user_settings);
-
-      out << settings_text;
-
-      user_settings.close ();
-    }
-
-  do_set_settings (settings_file);
-}
-
-void
-resource_manager::do_set_settings (const QString& file)
-{
-  delete settings;
-  settings = new QSettings (file, QSettings::IniFormat);
-
-  if (! (settings
-         && QFile::exists (settings->fileName ())
-         && settings->isWritable ()
-         && settings->status () == QSettings::NoError))
-    {
-      QString msg = QString (QT_TR_NOOP (
-        "The settings file\n%1\n"
-        "does not exist and can not be created.\n"
-        "Make sure you have read and write permissions to\n%2\n\n"
-        "Octave GUI must be closed now."));
-      QMessageBox::critical (nullptr, QString (QT_TR_NOOP ("Octave Critical Error")),
-          msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
-      exit (1);
-    }
-}
-
-bool
-resource_manager::do_is_first_run (void) const
-{
-  return ! QFile::exists (settings_file);
-}
-
-void
-resource_manager::do_update_network_settings (void)
-{
-  if (settings)
-    {
-      QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-
-      if (settings->value ("useProxyServer",false).toBool ())
-        {
-          QString proxyTypeString = settings->value ("proxyType").toString ();
-
-          if (proxyTypeString == "Socks5Proxy")
-            proxyType = QNetworkProxy::Socks5Proxy;
-          else if (proxyTypeString == "HttpProxy")
-            proxyType = QNetworkProxy::HttpProxy;
-        }
-
-      QNetworkProxy proxy;
-
-      proxy.setType (proxyType);
-      proxy.setHostName (settings->value ("proxyHostName").toString ());
-      proxy.setPort (settings->value ("proxyPort",80).toInt ());
-      proxy.setUser (settings->value ("proxyUserName").toString ());
-      proxy.setPassword (settings->value ("proxyPassword").toString ());
-
-      QNetworkProxy::setApplicationProxy (proxy);
-    }
-  else
-    {
-      // FIXME: Is this an error?  If so, what should we do?
-    }
-}
-
 QStringList
 resource_manager::storage_class_names (void)
 {
@@ -330,6 +172,164 @@ QStringList
 resource_manager::varedit_color_names(void)
 {
   return variable_editor::color_names ();
+}
+
+bool
+resource_manager::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    instance = new resource_manager ();
+
+  if (! instance)
+    {
+      error ("unable to create resource_manager object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
+QSettings *
+resource_manager::do_get_settings (void) const
+{
+  return m_settings;
+}
+
+QSettings *
+resource_manager::do_get_default_settings (void) const
+{
+  return m_default_settings;
+}
+
+QString
+resource_manager::do_get_settings_directory (void)
+{
+  return m_settings_directory;
+}
+
+QString
+resource_manager::do_get_settings_file (void)
+{
+  return m_settings_file;
+}
+
+void
+resource_manager::do_reload_settings (void)
+{
+  if (! QFile::exists (m_settings_file))
+    {
+      QDir ("/").mkpath (m_settings_directory);
+      QFile qt_settings (default_qt_settings_file ());
+
+      if (! qt_settings.open (QFile::ReadOnly))
+        return;
+
+      QTextStream in (&qt_settings);
+      QString settings_text = in.readAll ();
+      qt_settings.close ();
+
+      // Get the default monospaced font
+#if defined (HAVE_QFONT_MONOSPACE)
+      QFont fixed_font;
+      fixed_font.setStyleHint (QFont::Monospace);
+      QString default_family = fixed_font.defaultFamily ();
+#elif defined (Q_WS_X11) || defined (Q_WS_WIN)
+      QString default_family = "Courier New";
+#elif defined (Q_WS_MAC)
+      QString default_family = "Courier";
+#else
+      QString default_family = "courier";
+#endif
+
+      // Get the default custom editor
+#if defined (Q_OS_WIN32)
+      QString custom_editor = "notepad++ -n%l %f";
+#else
+      QString custom_editor = "emacs +%l %f";
+#endif
+
+      // Replace placeholders
+      settings_text.replace ("__default_custom_editor__", custom_editor);
+      settings_text.replace ("__default_font__", default_family);
+      settings_text.replace ("__default_font_size__", "10");
+
+      QFile user_settings (m_settings_file);
+
+      if (! user_settings.open (QIODevice::WriteOnly))
+        return;
+
+      QTextStream out (&user_settings);
+
+      out << settings_text;
+
+      user_settings.close ();
+    }
+
+  do_set_settings (m_settings_file);
+}
+
+void
+resource_manager::do_set_settings (const QString& file)
+{
+  delete m_settings;
+  m_settings = new QSettings (file, QSettings::IniFormat);
+
+  if (! (m_settings
+         && QFile::exists (m_settings->fileName ())
+         && m_settings->isWritable ()
+         && m_settings->status () == QSettings::NoError))
+    {
+      QString msg = QString (QT_TR_NOOP (
+        "The settings file\n%1\n"
+        "does not exist and can not be created.\n"
+        "Make sure you have read and write permissions to\n%2\n\n"
+        "Octave GUI must be closed now."));
+      QMessageBox::critical (nullptr, QString (QT_TR_NOOP ("Octave Critical Error")),
+          msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
+      exit (1);
+    }
+}
+
+bool
+resource_manager::do_is_first_run (void) const
+{
+  return ! QFile::exists (m_settings_file);
+}
+
+void
+resource_manager::do_update_network_settings (void)
+{
+  if (m_settings)
+    {
+      QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+
+      if (m_settings->value ("useProxyServer",false).toBool ())
+        {
+          QString proxyTypeString = m_settings->value ("proxyType").toString ();
+
+          if (proxyTypeString == "Socks5Proxy")
+            proxyType = QNetworkProxy::Socks5Proxy;
+          else if (proxyTypeString == "HttpProxy")
+            proxyType = QNetworkProxy::HttpProxy;
+        }
+
+      QNetworkProxy proxy;
+
+      proxy.setType (proxyType);
+      proxy.setHostName (m_settings->value ("proxyHostName").toString ());
+      proxy.setPort (m_settings->value ("proxyPort",80).toInt ());
+      proxy.setUser (m_settings->value ("proxyUserName").toString ());
+      proxy.setPassword (m_settings->value ("proxyPassword").toString ());
+
+      QNetworkProxy::setApplicationProxy (proxy);
+    }
+  else
+    {
+      // FIXME: Is this an error?  If so, what should we do?
+    }
 }
 
 QIcon
@@ -368,7 +368,7 @@ resource_manager::do_combo_encoding (QComboBox *combo, QString current)
   QString enc = current;
   if (enc.isEmpty ())
     {
-      enc = settings->value ("editor/default_encoding",def_enc).toString ();
+      enc = m_settings->value ("editor/default_encoding",def_enc).toString ();
       if (enc.isEmpty ())  // still empty?
         enc = def_enc;     // take default
     }

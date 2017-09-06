@@ -47,234 +47,16 @@ make_octave_logo (QWidget *p = nullptr, int height = 100)
   return logo;
 };
 
-
-initial_page::initial_page (welcome_wizard *wizard)
-  : QWidget (wizard),
-    title (new QLabel (tr ("Welcome to Octave!"), this)),
-    message (new QLabel (this)),
-    logo (make_octave_logo (this)),
-    next (new QPushButton (tr ("Next"), this)),
-    cancel (new QPushButton (tr ("Cancel"), this))
-{
-  QFont ft;
-  ft.setPointSize (20);
-  title->setFont (ft);
-
-  message->setText
-  (tr ("<html><body>\n"
-       "<p>You seem to be using the Octave graphical interface for the first time on this computer.\n"
-       "Click 'Next' to create a configuration file and launch Octave.</p>\n"
-       "<p>The configuration file is stored in<br>%1.</p>\n"
-       "</body></html>").
-   arg (resource_manager::get_settings_file ()));
-  message->setWordWrap (true);
-  message->setMinimumWidth (400);
-
-  QVBoxLayout *message_layout = new QVBoxLayout;
-
-  message_layout->addWidget (title);
-  message_layout->addWidget (message);
-
-  QHBoxLayout *message_and_logo = new QHBoxLayout;
-
-  message_and_logo->addLayout (message_layout);
-  message_and_logo->addStretch (10);
-  message_and_logo->addWidget (logo, 0, Qt::AlignTop);
-
-  QHBoxLayout *button_bar = new QHBoxLayout;
-
-  button_bar->addStretch (10);
-  button_bar->addWidget (next);
-  button_bar->addWidget (cancel);
-
-  QVBoxLayout *page_layout = new QVBoxLayout (this);
-  setLayout (page_layout);
-
-  page_layout->addLayout (message_and_logo);
-  page_layout->addStretch (10);
-  page_layout->addLayout (button_bar);
-
-  next->setDefault (true);
-  next->setFocus ();
-
-  connect (next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
-  connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
-}
-
-setup_community_news::setup_community_news (welcome_wizard *wizard)
-  : QWidget (wizard),
-    title (new QLabel (tr ("Community News"), this)),
-    message (new QLabel (this)),
-    checkbox (new QCheckBox (this)),
-    checkbox_message (new QLabel (this)),
-    logo (make_octave_logo (this)),
-    previous (new QPushButton (tr ("Previous"), this)),
-    next (new QPushButton (tr ("Next"), this)),
-    cancel (new QPushButton (tr ("Cancel"), this))
-{
-  QFont ft;
-  ft.setPointSize (20);
-  title->setFont (ft);
-
-  message->setText
-  (tr ("<html><body>\n"
-       "<p>When the Octave GUI starts, it will check the Octave web site for current news and information about the Octave community.\n"
-       "The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.</p>\n"
-       "<p>You may also view the news by selecting the \"Community News\" item in the \"Help\" menu in the GUI, or by visiting\n"
-       "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>.</p>\n"
-       "</body></html>"));
-  message->setWordWrap (true);
-  message->setMinimumWidth (400);
-  message->setOpenExternalLinks (true);
-
-  QVBoxLayout *message_layout = new QVBoxLayout;
-
-  message_layout->addWidget (title);
-  message_layout->addWidget (message);
-
-  QHBoxLayout *message_and_logo = new QHBoxLayout;
-
-  message_and_logo->addLayout (message_layout);
-  message_and_logo->addStretch (10);
-  message_and_logo->addWidget (logo, 0, Qt::AlignTop);
-
-  QHBoxLayout *checkbox_layout = new QHBoxLayout;
-
-  checkbox->setCheckState (Qt::Checked);
-
-  checkbox_message->setText
-  (tr ("<html><head>\n"
-       "<style>\n"
-       "a:link { text-decoration: underline; color: #0000ff; }\n"
-       "</style>\n"
-       "<head/><body>\n"
-       "<p>Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.</p>\n"
-       "</body></html>"));
-  checkbox_message->setWordWrap (true);
-  checkbox_message->setOpenExternalLinks (true);
-  checkbox_message->setMinimumWidth (500);
-
-  checkbox_layout->addWidget (checkbox, 0, Qt::AlignTop);
-  checkbox_layout->addSpacing (20);
-  checkbox_layout->addWidget (checkbox_message, 0, Qt::AlignTop);
-  checkbox_layout->addStretch (10);
-
-  QVBoxLayout *message_logo_and_checkbox = new QVBoxLayout;
-
-  message_logo_and_checkbox->addLayout (message_and_logo);
-  message_logo_and_checkbox->addSpacing (20);
-  message_logo_and_checkbox->addLayout (checkbox_layout);
-
-  QHBoxLayout *button_bar = new QHBoxLayout;
-
-  button_bar->addStretch (10);
-  button_bar->addWidget (previous);
-  button_bar->addWidget (next);
-  button_bar->addWidget (cancel);
-
-  QVBoxLayout *page_layout = new QVBoxLayout (this);
-  setLayout (page_layout);
-
-  page_layout->addLayout (message_logo_and_checkbox);
-  page_layout->addStretch (10);
-  page_layout->addLayout (button_bar);
-
-  next->setDefault (true);
-  next->setFocus ();
-
-  connect (checkbox, SIGNAL (stateChanged (int)),
-           wizard, SLOT (handle_web_connect_option (int)));
-
-  connect (previous, SIGNAL (clicked ()), wizard, SLOT (previous_page ()));
-  connect (next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
-  connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
-}
-
-final_page::final_page (welcome_wizard *wizard)
-  : QWidget (wizard),
-    title (new QLabel (tr ("Enjoy!"), this)),
-    message (new QLabel (this)),
-    logo (make_octave_logo (this)),
-    links (new QLabel (this)),
-    previous (new QPushButton (tr ("Previous"), this)),
-    finish (new QPushButton (tr ("Finish"), this)),
-    cancel (new QPushButton (tr ("Cancel"), this))
-{
-  QFont ft;
-  ft.setPointSize (20);
-  title->setFont (ft);
-
-  message->setText
-  (tr ("<html><body>\n"
-       "<p>We hope you find Octave to be a useful tool.</p>\n"
-       "<p>If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.\n"
-       "You can find more information about each of these by visiting <a href=\"http://octave.org/support.html\">http://octave.org/support.html</a> (opens in external browser).</p>\n"
-       "</body></html>"));
-  message->setWordWrap (true);
-  message->setMinimumWidth (400);
-  message->setOpenExternalLinks (true);
-
-  QVBoxLayout *message_layout = new QVBoxLayout;
-
-  message_layout->addWidget (title);
-  message_layout->addWidget (message);
-
-  QHBoxLayout *message_and_logo = new QHBoxLayout;
-
-  message_and_logo->addLayout (message_layout);
-  message_and_logo->addStretch (10);
-  message_and_logo->addWidget (logo, 0, Qt::AlignTop);
-
-  links->setText
-  (tr ("<html><head>\n"
-       "<style>\n"
-       "a:link { text-decoration: underline; color: #0000ff; }\n"
-       "</style>\n"
-       "<head/><body>\n"
-       "<p>For more information about Octave:</p>\n"
-       "<ul>\n"
-       "<li>Visit <a href=\"http://octave.org\">http://octave.org</a> (opens in external browser)</li>\n"
-       "<li>Get the documentation online as <a href=\"http://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"http://www.gnu.org/software/octave/octave.pdf\">pdf</span></a>-document (opens in external browser)</li>\n"
-       "<li>Open the documentation browser of the Octave GUI with the help menu</li>\n"
-       "</ul>\n"
-       "</body></html>"));
-  links->setWordWrap (true);
-  links->setOpenExternalLinks (true);
-
-  QHBoxLayout *button_bar = new QHBoxLayout;
-
-  button_bar->addStretch (10);
-  button_bar->addWidget (previous);
-  button_bar->addWidget (finish);
-  button_bar->addWidget (cancel);
-
-  QVBoxLayout *page_layout = new QVBoxLayout (this);
-  setLayout (page_layout);
-
-  page_layout->addLayout (message_and_logo);
-  page_layout->addSpacing (20);
-  page_layout->addWidget (links);
-  page_layout->addStretch (10);
-  page_layout->addLayout (button_bar);
-
-  finish->setDefault (true);
-  finish->setFocus ();
-
-  connect (previous, SIGNAL (clicked ()), wizard, SLOT (previous_page ()));
-  connect (finish, SIGNAL (clicked ()), wizard, SLOT (accept ()));
-  connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
-}
-
 welcome_wizard::welcome_wizard (QWidget *p)
-  : QDialog (p), page_ctor_list (), page_list_iterator (),
-    current_page (initial_page::create (this)),
-    allow_web_connect_state (true)
+  : QDialog (p), m_page_ctor_list (), m_page_list_iterator (),
+    m_current_page (initial_page::create (this)),
+    m_allow_web_connect_state (true)
 {
-  page_ctor_list.push_back (initial_page::create);
-  page_ctor_list.push_back (setup_community_news::create);
-  page_ctor_list.push_back (final_page::create);
+  m_page_ctor_list.push_back (initial_page::create);
+  m_page_ctor_list.push_back (setup_community_news::create);
+  m_page_ctor_list.push_back (final_page::create);
 
-  page_list_iterator = page_ctor_list.begin ();
+  m_page_list_iterator = m_page_ctor_list.begin ();
 
   setWindowTitle (tr ("Welcome to GNU Octave"));
 
@@ -293,27 +75,27 @@ welcome_wizard::welcome_wizard (QWidget *p)
 void
 welcome_wizard::handle_web_connect_option (int state)
 {
-  allow_web_connect_state = state == Qt::Checked;
+  m_allow_web_connect_state = state == Qt::Checked;
 }
 
 void
 welcome_wizard::show_page (void)
 {
-  delete current_page;
+  delete m_current_page;
   delete layout ();
 
-  current_page = (*page_list_iterator) (this);
+  m_current_page = (*m_page_list_iterator) (this);
 
   QVBoxLayout *new_layout = new QVBoxLayout ();
   setLayout (new_layout);
 
-  new_layout->addWidget (current_page);
+  new_layout->addWidget (m_current_page);
 }
 
 void
 welcome_wizard::previous_page (void)
 {
-  --page_list_iterator;
+  --m_page_list_iterator;
 
   show_page ();
 }
@@ -321,7 +103,7 @@ welcome_wizard::previous_page (void)
 void
 welcome_wizard::next_page (void)
 {
-  ++page_list_iterator;
+  ++m_page_list_iterator;
 
   show_page ();
 }
@@ -338,10 +120,227 @@ welcome_wizard::accept (void)
   if (settings)
     {
       settings->setValue ("news/allow_web_connection",
-                          allow_web_connect_state);
+                          m_allow_web_connect_state);
 
       settings->sync ();
     }
 
   QDialog::accept ();
+}
+
+initial_page::initial_page (welcome_wizard *wizard)
+  : QWidget (wizard),
+    m_title (new QLabel (tr ("Welcome to Octave!"), this)),
+    m_message (new QLabel (this)),
+    m_logo (make_octave_logo (this)),
+    m_next (new QPushButton (tr ("Next"), this)),
+    m_cancel (new QPushButton (tr ("Cancel"), this))
+{
+  QFont ft;
+  ft.setPointSize (20);
+  m_title->setFont (ft);
+
+  m_message->setText
+  (tr ("<html><body>\n"
+       "<p>You seem to be using the Octave graphical interface for the first time on this computer.\n"
+       "Click 'Next' to create a configuration file and launch Octave.</p>\n"
+       "<p>The configuration file is stored in<br>%1.</p>\n"
+       "</body></html>").
+   arg (resource_manager::get_settings_file ()));
+  m_message->setWordWrap (true);
+  m_message->setMinimumWidth (400);
+
+  QVBoxLayout *message_layout = new QVBoxLayout;
+
+  message_layout->addWidget (m_title);
+  message_layout->addWidget (m_message);
+
+  QHBoxLayout *message_and_logo = new QHBoxLayout;
+
+  message_and_logo->addLayout (message_layout);
+  message_and_logo->addStretch (10);
+  message_and_logo->addWidget (m_logo, 0, Qt::AlignTop);
+
+  QHBoxLayout *button_bar = new QHBoxLayout;
+
+  button_bar->addStretch (10);
+  button_bar->addWidget (m_next);
+  button_bar->addWidget (m_cancel);
+
+  QVBoxLayout *page_layout = new QVBoxLayout (this);
+  setLayout (page_layout);
+
+  page_layout->addLayout (message_and_logo);
+  page_layout->addStretch (10);
+  page_layout->addLayout (button_bar);
+
+  m_next->setDefault (true);
+  m_next->setFocus ();
+
+  connect (m_next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
+  connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
+}
+
+setup_community_news::setup_community_news (welcome_wizard *wizard)
+  : QWidget (wizard),
+    m_title (new QLabel (tr ("Community News"), this)),
+    m_message (new QLabel (this)),
+    m_checkbox (new QCheckBox (this)),
+    m_checkbox_message (new QLabel (this)),
+    m_logo (make_octave_logo (this)),
+    m_previous (new QPushButton (tr ("Previous"), this)),
+    m_next (new QPushButton (tr ("Next"), this)),
+    m_cancel (new QPushButton (tr ("Cancel"), this))
+{
+  QFont ft;
+  ft.setPointSize (20);
+  m_title->setFont (ft);
+
+  m_message->setText
+  (tr ("<html><body>\n"
+       "<p>When the Octave GUI starts, it will check the Octave web site for current news and information about the Octave community.\n"
+       "The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.</p>\n"
+       "<p>You may also view the news by selecting the \"Community News\" item in the \"Help\" menu in the GUI, or by visiting\n"
+       "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>.</p>\n"
+       "</body></html>"));
+  m_message->setWordWrap (true);
+  m_message->setMinimumWidth (400);
+  m_message->setOpenExternalLinks (true);
+
+  QVBoxLayout *message_layout = new QVBoxLayout;
+
+  message_layout->addWidget (m_title);
+  message_layout->addWidget (m_message);
+
+  QHBoxLayout *message_and_logo = new QHBoxLayout;
+
+  message_and_logo->addLayout (message_layout);
+  message_and_logo->addStretch (10);
+  message_and_logo->addWidget (m_logo, 0, Qt::AlignTop);
+
+  QHBoxLayout *checkbox_layout = new QHBoxLayout;
+
+  m_checkbox->setCheckState (Qt::Checked);
+
+  m_checkbox_message->setText
+  (tr ("<html><head>\n"
+       "<style>\n"
+       "a:link { text-decoration: underline; color: #0000ff; }\n"
+       "</style>\n"
+       "<head/><body>\n"
+       "<p>Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.</p>\n"
+       "</body></html>"));
+  m_checkbox_message->setWordWrap (true);
+  m_checkbox_message->setOpenExternalLinks (true);
+  m_checkbox_message->setMinimumWidth (500);
+
+  checkbox_layout->addWidget (m_checkbox, 0, Qt::AlignTop);
+  checkbox_layout->addSpacing (20);
+  checkbox_layout->addWidget (m_checkbox_message, 0, Qt::AlignTop);
+  checkbox_layout->addStretch (10);
+
+  QVBoxLayout *message_logo_and_checkbox = new QVBoxLayout;
+
+  message_logo_and_checkbox->addLayout (message_and_logo);
+  message_logo_and_checkbox->addSpacing (20);
+  message_logo_and_checkbox->addLayout (checkbox_layout);
+
+  QHBoxLayout *button_bar = new QHBoxLayout;
+
+  button_bar->addStretch (10);
+  button_bar->addWidget (m_previous);
+  button_bar->addWidget (m_next);
+  button_bar->addWidget (m_cancel);
+
+  QVBoxLayout *page_layout = new QVBoxLayout (this);
+  setLayout (page_layout);
+
+  page_layout->addLayout (message_logo_and_checkbox);
+  page_layout->addStretch (10);
+  page_layout->addLayout (button_bar);
+
+  m_next->setDefault (true);
+  m_next->setFocus ();
+
+  connect (m_checkbox, SIGNAL (stateChanged (int)),
+           wizard, SLOT (handle_web_connect_option (int)));
+
+  connect (m_previous, SIGNAL (clicked ()), wizard, SLOT (previous_page ()));
+  connect (m_next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
+  connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
+}
+
+final_page::final_page (welcome_wizard *wizard)
+  : QWidget (wizard),
+    m_title (new QLabel (tr ("Enjoy!"), this)),
+    m_message (new QLabel (this)),
+    m_logo (make_octave_logo (this)),
+    m_links (new QLabel (this)),
+    m_previous (new QPushButton (tr ("Previous"), this)),
+    m_finish (new QPushButton (tr ("Finish"), this)),
+    m_cancel (new QPushButton (tr ("Cancel"), this))
+{
+  QFont ft;
+  ft.setPointSize (20);
+  m_title->setFont (ft);
+
+  m_message->setText
+  (tr ("<html><body>\n"
+       "<p>We hope you find Octave to be a useful tool.</p>\n"
+       "<p>If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.\n"
+       "You can find more information about each of these by visiting <a href=\"http://octave.org/support.html\">http://octave.org/support.html</a> (opens in external browser).</p>\n"
+       "</body></html>"));
+  m_message->setWordWrap (true);
+  m_message->setMinimumWidth (400);
+  m_message->setOpenExternalLinks (true);
+
+  QVBoxLayout *message_layout = new QVBoxLayout;
+
+  message_layout->addWidget (m_title);
+  message_layout->addWidget (m_message);
+
+  QHBoxLayout *message_and_logo = new QHBoxLayout;
+
+  message_and_logo->addLayout (message_layout);
+  message_and_logo->addStretch (10);
+  message_and_logo->addWidget (m_logo, 0, Qt::AlignTop);
+
+  m_links->setText
+  (tr ("<html><head>\n"
+       "<style>\n"
+       "a:link { text-decoration: underline; color: #0000ff; }\n"
+       "</style>\n"
+       "<head/><body>\n"
+       "<p>For more information about Octave:</p>\n"
+       "<ul>\n"
+       "<li>Visit <a href=\"http://octave.org\">http://octave.org</a> (opens in external browser)</li>\n"
+       "<li>Get the documentation online as <a href=\"http://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"http://www.gnu.org/software/octave/octave.pdf\">pdf</span></a>-document (opens in external browser)</li>\n"
+       "<li>Open the documentation browser of the Octave GUI with the help menu</li>\n"
+       "</ul>\n"
+       "</body></html>"));
+  m_links->setWordWrap (true);
+  m_links->setOpenExternalLinks (true);
+
+  QHBoxLayout *button_bar = new QHBoxLayout;
+
+  button_bar->addStretch (10);
+  button_bar->addWidget (m_previous);
+  button_bar->addWidget (m_finish);
+  button_bar->addWidget (m_cancel);
+
+  QVBoxLayout *page_layout = new QVBoxLayout (this);
+  setLayout (page_layout);
+
+  page_layout->addLayout (message_and_logo);
+  page_layout->addSpacing (20);
+  page_layout->addWidget (m_links);
+  page_layout->addStretch (10);
+  page_layout->addLayout (button_bar);
+
+  m_finish->setDefault (true);
+  m_finish->setFocus ();
+
+  connect (m_previous, SIGNAL (clicked ()), wizard, SLOT (previous_page ()));
+  connect (m_finish, SIGNAL (clicked ()), wizard, SLOT (accept ()));
+  connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
 }

@@ -51,24 +51,26 @@ public:
 
   static QStringList storage_class_names (void);
 
-  QVariant data (const QModelIndex& index, int role) const;
+  int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
-  bool setData (const QModelIndex& index, const QVariant& value,
-                int role = Qt::EditRole);
+  int columnCount (const QModelIndex& parent = QModelIndex ()) const;
 
   Qt::ItemFlags flags (const QModelIndex& index) const;
 
   QVariant headerData (int section, Qt::Orientation orientation,
                        int role = Qt::DisplayRole) const;
 
-  int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+  QVariant data (const QModelIndex& index, int role) const;
 
-  int columnCount (const QModelIndex& parent = QModelIndex ()) const;
+  bool setData (const QModelIndex& index, const QVariant& value,
+                int role = Qt::EditRole);
 
-  bool is_top_level (void) const { return _top_level; }
+  bool is_top_level (void) const { return m_top_level; }
 
   QColor storage_class_color (int s_class)
-  { return _storage_class_colors.at (s_class); }
+  {
+    return m_storage_class_colors.at (s_class);
+  }
 
 public slots:
 
@@ -97,17 +99,17 @@ private:
   void clear_data (void);
   void update_table (void);
 
-  bool _top_level;
-  QString _scopes;
-  QStringList _symbols;
-  QStringList _class_names;
-  QStringList _dimensions;
-  QStringList _values;
-  QIntList _complex_flags;
+  bool m_top_level;
+  QString m_scopes;
+  QStringList m_symbols;
+  QStringList m_class_names;
+  QStringList m_dimensions;
+  QStringList m_values;
+  QIntList m_complex_flags;
 
-  QStringList _columnNames;
+  QStringList m_columnNames;
 
-  QList<QColor>  _storage_class_colors;
+  QList<QColor>  m_storage_class_colors;
 
 };
 

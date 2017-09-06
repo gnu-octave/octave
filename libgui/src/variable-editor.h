@@ -44,17 +44,17 @@ public:
 
   variable_editor (QWidget *parent = nullptr);
 
-  //~variable_editor ();
+  ~variable_editor (void);
 
   void edit_variable (const QString& name);
 
   /// Clear all the models' data cache
-  void clear_data_cache ();
+  void clear_data_cache (void);
 
-  bool has_focus ();
+  bool has_focus (void);
 
-  static QList<QColor> default_colors ();
-  static QStringList color_names ();
+  static QList<QColor> default_colors (void);
+  static QStringList color_names (void);
 
 public slots:
 
@@ -74,17 +74,17 @@ protected slots:
 
   void double_click (const QModelIndex& idx);
 
-  void save ();
-  void clearContent ();
-  void cutClipboard ();
-  void copyClipboard ();
-  void pasteClipboard ();
-  void pasteTableClipboard ();
-  void createVariable ();
-  void transposeContent ();
-  void up ();
+  void save (void);
+  void clearContent (void);
+  void cutClipboard (void);
+  void copyClipboard (void);
+  void pasteClipboard (void);
+  void pasteTableClipboard (void);
+  void createVariable (void);
+  void transposeContent (void);
+  void up (void);
 
-  void delete_selected();
+  void delete_selected (void);
 
   /** Send command to Octave interpreter.
    * %1 in CMD is replaced with the value of selected_to_octave.
@@ -93,41 +93,42 @@ protected slots:
 
 signals:
 
-  void updated ();
-  void finished ();
+  void updated (void);
+  void finished (void);
   void command_requested (const QString& cmd);
 
 private:
-  QMainWindow *main;
-  QToolBar *tool_bar;
-  QTabWidget *tab_widget;
 
-  int default_width;
-  int default_height;
-  int add_font_height;
+  QMainWindow *m_main;
+  QToolBar *m_tool_bar;
+  QTabWidget *m_tab_widget;
 
-  bool autofit;
-  bool autofit_max;
-  bool use_terminal_font;
-  bool alternate_rows;
+  int m_default_width;
+  int m_default_height;
+  int m_add_font_height;
 
-  QString stylesheet;
+  bool m_autofit;
+  bool m_autofit_max;
+  bool m_use_terminal_font;
+  bool m_alternate_rows;
 
-  QFont font;
+  QString m_stylesheet;
+
+  QFont m_font;
 
   // If use_terminal_font is true then this will be different since
   // "font" will contain the terminal font.
-  QFont sel_font;
-  QList<QColor> table_colors;
-
-  void update_colors ();
-
-  void construct_tool_bar ();
-
-  // Convert selection to an Octave expression.
-  QString selected_to_octave ();
+  QFont m_sel_font;
+  QList<QColor> m_table_colors;
 
   QList<int> octave_to_coords (QString&);
+
+  // Convert selection to an Octave expression.
+  QString selected_to_octave (void);
+
+  void update_colors (void);
+
+  void construct_tool_bar (void);
 };
 
 #endif

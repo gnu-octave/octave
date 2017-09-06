@@ -38,12 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 //  class octave_cmd_exec: executing a command
 
 void
-octave_cmd_exec::execute ()
+octave_cmd_exec::execute (void)
 {
   std::string pending_input = octave::command_editor::get_current_line ();
 
   octave::command_editor::set_initial_input (pending_input);
-  octave::command_editor::replace_line (_cmd.toStdString ());
+  octave::command_editor::replace_line (m_cmd.toStdString ());
   octave::command_editor::redisplay ();
   octave::command_editor::accept_line ();
 }
@@ -52,18 +52,18 @@ octave_cmd_exec::execute ()
 //  class octave_cmd_eval: running a file
 
 void
-octave_cmd_eval::execute ()
+octave_cmd_eval::execute (void)
 {
-  QString function_name = _info.fileName ();
-  function_name.chop (_info.suffix ().length () + 1);
-  std::string file_path = _info.absoluteFilePath ().toStdString ();
+  QString function_name = m_info.fileName ();
+  function_name.chop (m_info.suffix ().length () + 1);
+  std::string file_path = m_info.absoluteFilePath ().toStdString ();
 
   std::string pending_input = octave::command_editor::get_current_line ();
 
   if (valid_identifier (function_name.toStdString ()))
     {
       // valid identifier: call as function with possibility to debug
-      std::string path = _info.absolutePath ().toStdString ();
+      std::string path = m_info.absolutePath ().toStdString ();
       if (octave_qt_link::file_in_path (file_path, path))
         octave::command_editor::replace_line (function_name.toStdString ());
     }
@@ -84,24 +84,24 @@ octave_cmd_eval::execute ()
 //  class octave_cmd_debug: executing a debugger command
 
 void
-octave_cmd_debug::execute ()
+octave_cmd_debug::execute (void)
 {
-  if (_cmd == "step")
+  if (m_cmd == "step")
     {
-      F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+      F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
       Fdbstep ();
     }
-  else if (_cmd == "cont")
+  else if (m_cmd == "cont")
     {
-      F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+      F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
       Fdbcont ();
     }
-  else if (_cmd == "quit")
+  else if (m_cmd == "quit")
     Fdbquit ();
   else
     {
-      F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
-      Fdbstep (ovl (_cmd.toStdString ()));
+      F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
+      Fdbstep (ovl (m_cmd.toStdString ()));
     }
 
   octave::command_editor::interrupt (true);
@@ -114,32 +114,31 @@ octave_cmd_debug::execute ()
 void
 octave_command_queue::add_cmd (octave_cmd *cmd)
 {
-  _queue_mutex.lock ();
-  _queue.append (cmd);
-  _queue_mutex.unlock ();
+  m_queue_mutex.lock ();
+  m_queue.append (cmd);
+  m_queue_mutex.unlock ();
 
-  if (_processing.tryAcquire ())  // if callback not processing, post event
-    octave_link::post_event (this,
-                             &octave_command_queue::execute_command_callback);
+  if (m_processing.tryAcquire ())  // if callback not processing, post event
+    octave_link::post_event (this, &octave_command_queue::execute_command_callback);
 }
 
 // callback for executing the command by the worker thread
 void
-octave_command_queue::execute_command_callback ()
+octave_command_queue::execute_command_callback (void)
 {
   bool repost = false;          // flag for reposting event for this callback
 
-  if (! _queue.isEmpty ())  // list can not be empty here, just to make sure
+  if (! m_queue.isEmpty ())  // list can not be empty here, just to make sure
     {
-      _queue_mutex.lock ();     // critical path
+      m_queue_mutex.lock ();     // critical path
 
-      octave_cmd *cmd = _queue.takeFirst ();
+      octave_cmd *cmd = m_queue.takeFirst ();
 
-      if (_queue.isEmpty ())
-        _processing.release (); // cmd queue empty, processing will stop
+      if (m_queue.isEmpty ())
+        m_processing.release (); // cmd queue empty, processing will stop
       else
         repost = true;          // not empty, repost at end
-      _queue_mutex.unlock ();
+      m_queue_mutex.unlock ();
 
       cmd->execute ();
 
@@ -147,7 +146,5 @@ octave_command_queue::execute_command_callback ()
     }
 
   if (repost)  // queue not empty, so repost event for further processing
-    octave_link::post_event (this,
-                             &octave_command_queue::execute_command_callback);
-
+    octave_link::post_event (this, &octave_command_queue::execute_command_callback);
 }

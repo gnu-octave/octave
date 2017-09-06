@@ -47,9 +47,9 @@ public:
 
 public slots:
 
-  void notice_settings (const QSettings *);
-
   void setModel (workspace_model *model);
+
+  void notice_settings (const QSettings *);
 
   void save_settings (void);
 
@@ -67,9 +67,16 @@ protected:
 
 protected slots:
 
+  void filter_update (const QString& expression);
+  void filter_activate (bool enable);
+  void update_filter_history (void);
+
+  void header_contextmenu_requested (const QPoint& mpos);
+
+  void toggle_header (int column);
+
   void contextmenu_requested (const QPoint& pos);
 
-  // context menu slots
   void handle_contextmenu_copy (void);
   void handle_contextmenu_copy_value (void);
   void handle_contextmenu_rename (void);
@@ -79,38 +86,32 @@ protected slots:
   void handle_contextmenu_stem (void);
   void handle_contextmenu_filter (void);
 
-  void header_contextmenu_requested (const QPoint& mpos);
-  void toggle_header (int column);
-
   void handle_model_changed (void);
 
-  void copyClipboard ();
-  void selectAll ();
-
-  void filter_update (const QString& expression);
-  void filter_activate (bool enable);
-  void update_filter_history ();
+  void copyClipboard (void);
+  void selectAll (void);
 
 private:
 
   void relay_contextmenu_command (const QString& cmdname);
 
   QString get_var_name (QModelIndex index);
-  QTableView *view;
-  int view_previous_row_count;
-  workspace_model *_model;
 
-  QSortFilterProxyModel _filter_model;
-  QCheckBox *_filter_checkbox;
-  QComboBox *_filter;
-  QWidget *_filter_widget;
-  bool _filter_shown;
+  QTableView *m_view;
+  int m_view_previous_row_count;
+  workspace_model *m_model;
+
+  QSortFilterProxyModel m_filter_model;
+  QCheckBox *m_filter_checkbox;
+  QComboBox *m_filter;
+  QWidget *m_filter_widget;
+  bool m_filter_shown;
 
   enum { MaxFilterHistory = 10 };
 
-  QStringList _columns_shown;
-  QStringList _columns_shown_keys;
-  QSignalMapper *_sig_mapper;
+  QStringList m_columns_shown;
+  QStringList m_columns_shown_keys;
+  QSignalMapper *m_sig_mapper;
 };
 
 #endif

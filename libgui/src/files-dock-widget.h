@@ -60,19 +60,19 @@ public slots:
   void item_double_clicked (const QModelIndex & index);
 
   /** Slot for handling the up-directory button in the toolbar. */
-  void change_directory_up ();
+  void change_directory_up (void);
 
   /** Slot for handling the sync octave directory button in the toolbar. */
-  void do_sync_octave_directory ();
+  void do_sync_octave_directory (void);
 
   /** Slot for handling the sync browser directory button in the toolbar. */
-  void do_sync_browser_directory ();
+  void do_sync_browser_directory (void);
 
   /** Sets the current directory being displayed. */
   void set_current_directory (const QString& dir);
 
   /** Accepts user input a the line edit for the current directory. */
-  void accept_directory_line_edit ();
+  void accept_directory_line_edit (void);
 
   /** set the internal variable that holds the actual octave variable **/
   void update_octave_directory (const QString& dir);
@@ -150,26 +150,30 @@ private:
   void open_item_in_app (const QModelIndex& index);
 
   /** Variables for the actions **/
-  QToolBar *        _navigation_tool_bar;
-  QAction *         _sync_octave_directory_action;
-  QAction *         _sync_browser_directory_action;
+  QToolBar *m_navigation_tool_bar;
+  QAction *m_sync_octave_directory_action;
+  QAction *m_sync_browser_directory_action;
 
   /** The file system model. */
-  QFileSystemModel *_file_system_model;
+  QFileSystemModel *m_file_system_model;
 
   /** The file system view. */
-  QTreeView *       _file_tree_view;
-  QComboBox *       _current_directory;
+  QTreeView *m_file_tree_view;
+  QComboBox *m_current_directory;
 
   /** Internal variables **/
-  bool              _sync_octave_dir;    // flag if syncing with octave
-  QString           _octave_dir;         // the actual octave dir
+
+  // flag if syncing with octave
+  bool m_sync_octave_dir;
+
+  // the actual octave dir
+  QString m_octave_dir;
 
   enum { MaxMRUDirs = 10 };
 
-  QStringList _columns_shown;
-  QStringList _columns_shown_keys;
-  QSignalMapper *_sig_mapper;
+  QStringList m_columns_shown;
+  QStringList m_columns_shown_keys;
+  QSignalMapper *m_sig_mapper;
 };
 
 #endif

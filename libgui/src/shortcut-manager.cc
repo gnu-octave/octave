@@ -42,9 +42,59 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 
+// enter_shortcut:
+// class derived from QLineEdit for directly entering key sequences which
+
+enter_shortcut::enter_shortcut (QWidget *p) : QLineEdit (p)
+{
+  m_direct_shortcut = true;      // the shortcut is directly entered
+}
+
+// new keyPressEvent
+void
+enter_shortcut::keyPressEvent (QKeyEvent *e)
+{
+  if (! m_direct_shortcut)
+    {
+      QLineEdit::keyPressEvent (e);
+      return;
+    }
+
+  if (e->type () == QEvent::KeyPress)
+    {
+      int key = e->key ();
+
+      if (key == Qt::Key_unknown || key == 0)
+        return;
+
+      Qt::KeyboardModifiers modifiers = e->modifiers ();
+
+      if (modifiers & Qt::ShiftModifier)
+        key += Qt::SHIFT;
+      if (modifiers & Qt::ControlModifier)
+        key += Qt::CTRL;
+      if (modifiers & Qt::AltModifier)
+        key += Qt::ALT;
+      if (modifiers & Qt::MetaModifier)
+        key += Qt::META;
+
+      setText (QKeySequence (key).toString ());
+    }
+}
+
+// slot for checkbox whether the shortcut is directly entered or not
+void
+enter_shortcut::handle_direct_shortcut (int state)
+{
+  if (state)
+    m_direct_shortcut = true;  // the shortcut is directly entered
+  else
+    m_direct_shortcut = false; // the shortcut has to be written as text
+}
+
 shortcut_manager *shortcut_manager::instance = nullptr;
 
-shortcut_manager::shortcut_manager ()
+shortcut_manager::shortcut_manager (void)
 {
   setObjectName ("Shortcut_Manager");
 
@@ -53,11 +103,70 @@ shortcut_manager::shortcut_manager ()
   QCoreApplication::setAttribute (Qt::AA_MacDontSwapCtrlAndMeta, true);
 #endif
 
-  _settings = resource_manager::get_settings ();
+  m_settings = resource_manager::get_settings ();
 }
 
-shortcut_manager::~shortcut_manager ()
-{ }
+void
+shortcut_manager::handle_double_clicked (QTreeWidgetItem *item, int col)
+{
+  if (col != 2)
+    return;
+
+  int i = m_item_index_hash[item];
+  if (i == 0)
+    return;  // top-level-item clicked
+
+  shortcut_dialog (i-1); // correct to index starting at 0
+}
+
+void
+shortcut_manager::shortcut_dialog_finished (int result)
+{
+  if (result == QDialog::Rejected)
+    return;
+
+  // check for duplicate
+  int double_index = m_shortcut_hash[m_edit_actual->text ()] - 1;
+
+  if (double_index >= 0 && double_index != m_handled_index)
+    {
+      int ret = QMessageBox::warning (this, tr ("Double Shortcut"),
+                  tr ("The chosen shortcut\n  \"%1\"\n"
+                      "is already used for the action\n  \"%2\".\n"
+                      "Do you want to use the shortcut anyhow removing it "
+                      "from the previous action?")
+                     .arg (m_edit_actual->text ())
+                     .arg (m_sc.at (double_index).m_description),
+                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+      if (ret == QMessageBox::Yes)
+        {
+          shortcut_t double_shortcut = m_sc.at (double_index);
+          double_shortcut.m_actual_sc = QKeySequence ();
+          m_sc.replace (double_index, double_shortcut);
+          m_index_item_hash[double_index]->setText (2, QString ());
+        }
+      else
+        return;
+    }
+
+  shortcut_t shortcut = m_sc.at (m_handled_index);
+  if (! shortcut.m_actual_sc.isEmpty ())
+    m_shortcut_hash.remove (shortcut.m_actual_sc.toString ());
+  shortcut.m_actual_sc = m_edit_actual->text ();
+  m_sc.replace (m_handled_index, shortcut);
+
+  m_index_item_hash[m_handled_index]->setText (2, shortcut.m_actual_sc.toString ());
+
+  if (! shortcut.m_actual_sc.isEmpty ())
+    m_shortcut_hash[shortcut.m_actual_sc.toString ()] = m_handled_index + 1;
+}
+
+void
+shortcut_manager::shortcut_dialog_set_default (void)
+{
+  m_edit_actual->setText (m_label_default->text ());
+}
 
 bool
 shortcut_manager::instance_ok (void)
@@ -78,7 +187,33 @@ shortcut_manager::instance_ok (void)
 }
 
 void
-shortcut_manager::do_init_data ()
+shortcut_manager::init (const QString& description, const QString& key,
+                        const QKeySequence& def_sc)
+{
+  QKeySequence actual
+    = QKeySequence (m_settings->value ("shortcuts/" + key, def_sc).toString ());
+
+  // append the new shortcut to the list
+  shortcut_t shortcut_info;
+  shortcut_info.m_description = description;
+  shortcut_info.m_settings_key = key;
+  shortcut_info.m_actual_sc = actual;
+  shortcut_info.m_default_sc = def_sc;
+  m_sc << shortcut_info;
+
+  // insert shortcut in order check for duplicates later
+  if (! actual.isEmpty ())
+    m_shortcut_hash[actual.toString ()] = m_sc.count ();
+  m_action_hash[key] = m_sc.count ();
+
+  // check whether ctrl+d is used from main window, i.e. is a global shortcut
+  if (key.startsWith ("main_")
+      && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+    m_settings->setValue ("shortcuts/main_ctrld",true);
+}
+
+void
+shortcut_manager::do_init_data (void)
 {
   Qt::KeyboardModifier ctrl;
   int prefix;
@@ -99,7 +234,7 @@ shortcut_manager::do_init_data ()
 
   // actions of the main window
 
-  _settings->setValue ("shortcuts/main_ctrld",false); // reset use fo ctrl-d
+  m_settings->setValue ("shortcuts/main_ctrld",false); // reset use fo ctrl-d
 
   // file
   init (tr ("New File"), "main_file:new_file", QKeySequence::New);
@@ -334,37 +469,53 @@ shortcut_manager::do_init_data ()
 
 }
 
+// write one or all actual shortcut set(s) into a settings file
 void
-shortcut_manager::init (const QString& description, const QString& key,
-                        const QKeySequence& def_sc)
+shortcut_manager::do_write_shortcuts (QSettings *settings,
+                                      bool closing)
 {
-  QKeySequence actual
-    = QKeySequence (_settings->value ("shortcuts/"+key, def_sc).toString ());
+  bool sc_ctrld = false;
 
-  // append the new shortcut to the list
-  shortcut_t shortcut_info;
-  shortcut_info.description = description;
-  shortcut_info.settings_key = key;
-  shortcut_info.actual_sc = actual;
-  shortcut_info.default_sc = def_sc;
-  _sc << shortcut_info;
+  for (int i = 0; i < m_sc.count (); i++)  // loop over all shortcuts
+    {
+      settings->setValue ("shortcuts/" + m_sc.at (i).m_settings_key,
+                          m_sc.at (i).m_actual_sc.toString ());
+      // special: check main-window for Ctrl-D (Terminal)
+      if (m_sc.at (i).m_settings_key.startsWith ("main_")
+          && m_sc.at (i).m_actual_sc == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+        sc_ctrld = true;
+    }
 
-  // insert shortcut in order check for duplicates later
-  if (! actual.isEmpty ())
-    _shortcut_hash[actual.toString ()] = _sc.count ();
-  _action_hash[key] = _sc.count ();
+  settings->setValue ("shortcuts/main_ctrld",sc_ctrld);
 
-  // check whether ctrl+d is used from main window, i.e. is a global shortcut
-  if (key.startsWith ("main_")
-      && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
-    _settings->setValue ("shortcuts/main_ctrld",true);
+  if (closing)
+    {
+      delete m_dialog;     // the dialog for key sequences can be removed now
+      m_dialog = nullptr;  // make sure it is zero again
+    }
+
+  settings->sync ();      // sync the settings file
+}
+
+void
+shortcut_manager::do_set_shortcut (QAction *action, const QString& key)
+{
+  int index;
+
+  index = m_action_hash[key] - 1;
+
+  if (index > -1 && index < m_sc.count ())
+    action->setShortcut (QKeySequence (
+      m_settings->value ("shortcuts/" + key, m_sc.at (index).m_default_sc).toString ()));
+  else
+    qDebug () << "Key: " << key << " not found in m_action_hash";
 }
 
 void
 shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
 {
-  _dialog = nullptr;
-  _level_hash.clear ();
+  m_dialog = nullptr;
+  m_level_hash.clear ();
 
 #if defined (HAVE_QT4)
   tree_view->header ()->setResizeMode (QHeaderView::ResizeToContents);
@@ -388,12 +539,12 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   QTreeWidgetItem *main_news = new QTreeWidgetItem (main);
   main_news->setText (0, tr ("News"));
 
-  _level_hash["main_file"]   = main_file;
-  _level_hash["main_edit"]   = main_edit;
-  _level_hash["main_debug"]   = main_debug;
-  _level_hash["main_window"]   = main_window;
-  _level_hash["main_help"]   = main_help;
-  _level_hash["main_news"]   = main_news;
+  m_level_hash["main_file"]   = main_file;
+  m_level_hash["main_edit"]   = main_edit;
+  m_level_hash["main_debug"]   = main_debug;
+  m_level_hash["main_window"]   = main_window;
+  m_level_hash["main_help"]   = main_help;
+  m_level_hash["main_news"]   = main_news;
 
   QTreeWidgetItem *editor = new QTreeWidgetItem (tree_view);
   editor->setText (0, tr ("Editor"));
@@ -413,22 +564,22 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   QTreeWidgetItem *editor_tabs = new QTreeWidgetItem (editor);
   editor_tabs->setText (0, tr ("Tabs"));
 
-  _level_hash["editor_file"] = editor_file;
-  _level_hash["editor_edit"] = editor_edit;
-  _level_hash["editor_view"] = editor_view;
-  _level_hash["editor_debug"] = editor_debug;
-  _level_hash["editor_run"] = editor_run;
-  _level_hash["editor_help"] = editor_help;
-  _level_hash["editor_tabs"] = editor_tabs;
+  m_level_hash["editor_file"] = editor_file;
+  m_level_hash["editor_edit"] = editor_edit;
+  m_level_hash["editor_view"] = editor_view;
+  m_level_hash["editor_debug"] = editor_debug;
+  m_level_hash["editor_run"] = editor_run;
+  m_level_hash["editor_help"] = editor_help;
+  m_level_hash["editor_tabs"] = editor_tabs;
 
   connect (tree_view, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
            this, SLOT (handle_double_clicked (QTreeWidgetItem*, int)));
 
-  for (int i = 0; i < _sc.count (); i++)
+  for (int i = 0; i < m_sc.count (); i++)
     {
-      shortcut_t sc = _sc.at (i);
+      shortcut_t sc = m_sc.at (i);
 
-      QTreeWidgetItem *section = _level_hash[sc.settings_key.section (':',0,0)];
+      QTreeWidgetItem *section = m_level_hash[sc.m_settings_key.section (':',0,0)];
       QTreeWidgetItem *tree_item = new QTreeWidgetItem (section);
 
       // set a slightly transparent foreground for default columns
@@ -437,242 +588,14 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
       tree_item->setForeground (1, QBrush (fg));
 
       // write the shortcuts
-      tree_item->setText (0, sc.description);
-      tree_item->setText (1, sc.default_sc.toString ());
-      tree_item->setText (2, sc.actual_sc.toString ());
+      tree_item->setText (0, sc.m_description);
+      tree_item->setText (1, sc.m_default_sc.toString ());
+      tree_item->setText (2, sc.m_actual_sc.toString ());
 
-      _item_index_hash[tree_item] = i + 1; // index+1 to avoid 0
-      _index_item_hash[i] = tree_item;
+      m_item_index_hash[tree_item] = i + 1; // index+1 to avoid 0
+      m_index_item_hash[i] = tree_item;
     }
 
-}
-
-// write one or all actual shortcut set(s) into a settings file
-void
-shortcut_manager::do_write_shortcuts (QSettings *settings,
-                                      bool closing)
-{
-  bool sc_ctrld = false;
-
-  for (int i = 0; i < _sc.count (); i++)  // loop over all shortcuts
-    {
-      settings->setValue ("shortcuts/"+_sc.at (i).settings_key,
-                          _sc.at (i).actual_sc.toString ());
-      // special: check main-window for Ctrl-D (Terminal)
-      if (_sc.at (i).settings_key.startsWith ("main_")
-          && _sc.at (i).actual_sc == QKeySequence (Qt::ControlModifier+Qt::Key_D))
-        sc_ctrld = true;
-    }
-
-  settings->setValue ("shortcuts/main_ctrld",sc_ctrld);
-
-  if (closing)
-    {
-      delete _dialog;     // the dialog for key sequences can be removed now
-      _dialog = nullptr;  // make sure it is zero again
-    }
-
-  settings->sync ();      // sync the settings file
-}
-
-void
-shortcut_manager::do_set_shortcut (QAction *action, const QString& key)
-{
-  int index;
-
-  index = _action_hash[key] - 1;
-
-  if (index > -1 && index < _sc.count ())
-    action->setShortcut (QKeySequence (
-      _settings->value ("shortcuts/" + key, _sc.at (index).default_sc).toString ()));
-  else
-    qDebug () << "Key: " << key << " not found in _action_hash";
-}
-
-void
-shortcut_manager::handle_double_clicked (QTreeWidgetItem *item, int col)
-{
-  if (col != 2)
-    return;
-
-  int i = _item_index_hash[item];
-  if (i == 0)
-    return;  // top-level-item clicked
-
-  shortcut_dialog (i-1); // correct to index starting at 0
-}
-
-void
-shortcut_manager::shortcut_dialog (int index)
-{
-  if (! _dialog)
-    {
-      _dialog = new QDialog (this);
-
-      _dialog->setWindowTitle (tr ("Enter new Shortcut"));
-
-      QVBoxLayout *box = new QVBoxLayout (_dialog);
-
-      QLabel *help = new QLabel (tr ("Apply the desired shortcut or click "
-                                     "on the right button to reset the "
-                                     "shortcut to its default."));
-      help->setWordWrap (true);
-      box->addWidget (help);
-
-      QCheckBox *direct = new QCheckBox (
-        tr ("Enter shortcut directly by performing it"));
-      direct->setCheckState (Qt::Checked);
-      box->addWidget (direct);
-
-      QGridLayout *grid = new QGridLayout ();
-
-      QLabel *actual = new QLabel (tr ("Actual shortcut"));
-      _edit_actual = new enter_shortcut (_dialog);
-      _edit_actual->setAlignment (Qt::AlignHCenter);
-      grid->addWidget (actual, 0, 0);
-      grid->addWidget (_edit_actual, 0, 1);
-
-      QLabel *def = new QLabel (tr ("Default shortcut"));
-      _label_default = new QLabel (_dialog);
-      _label_default->setAlignment (Qt::AlignHCenter);
-      grid->addWidget (def, 1, 0);
-      grid->addWidget (_label_default, 1, 1);
-
-      QPushButton *set_default = new QPushButton (tr ("Set to default"));
-      grid->addWidget (set_default, 0, 2);
-      connect (set_default, SIGNAL (clicked ()),
-               this, SLOT (shortcut_dialog_set_default ()));
-
-      box->addLayout (grid);
-
-      QDialogButtonBox *button_box = new QDialogButtonBox (QDialogButtonBox::Ok
-                                                   | QDialogButtonBox::Cancel);
-      QList<QAbstractButton *> buttons = button_box->buttons ();
-      for (int i = 0; i < buttons.count (); i++)
-        buttons.at (i)->setShortcut (QKeySequence ());
-      connect (button_box, SIGNAL (accepted ()), _dialog, SLOT (accept ()));
-      connect (button_box, SIGNAL (rejected ()), _dialog, SLOT (reject ()));
-      box->addWidget (button_box);
-
-      _dialog->setLayout (box);
-
-      connect (direct, SIGNAL (stateChanged (int)),
-               _edit_actual, SLOT (handle_direct_shortcut (int)));
-      connect (_dialog, SIGNAL (finished (int)),
-               this, SLOT (shortcut_dialog_finished (int)));
-
-    }
-
-  _edit_actual->setText (_sc.at (index).actual_sc.toString ());
-  _label_default->setText (_sc.at (index).default_sc.toString ());
-  _handled_index = index;
-
-  _edit_actual->setFocus ();
-  _dialog->setFocusProxy (_edit_actual);
-  _dialog->exec ();
-}
-
-void
-shortcut_manager::shortcut_dialog_finished (int result)
-{
-  if (result == QDialog::Rejected)
-    return;
-
-  // check for duplicate
-  int double_index = _shortcut_hash[_edit_actual->text ()] - 1;
-
-  if (double_index >= 0 && double_index != _handled_index)
-    {
-      int ret = QMessageBox::warning (this, tr ("Double Shortcut"),
-                  tr ("The chosen shortcut\n  \"%1\"\n"
-                      "is already used for the action\n  \"%2\".\n"
-                      "Do you want to use the shortcut anyhow removing it "
-                      "from the previous action?")
-                     .arg (_edit_actual->text ())
-                     .arg (_sc.at (double_index).description),
-                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-      if (ret == QMessageBox::Yes)
-        {
-          shortcut_t double_shortcut = _sc.at (double_index);
-          double_shortcut.actual_sc = QKeySequence ();
-          _sc.replace (double_index, double_shortcut);
-          _index_item_hash[double_index]->setText (2, QString ());
-        }
-      else
-        return;
-    }
-
-  shortcut_t shortcut = _sc.at (_handled_index);
-  if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash.remove (shortcut.actual_sc.toString ());
-  shortcut.actual_sc = _edit_actual->text ();
-  _sc.replace (_handled_index, shortcut);
-
-  _index_item_hash[_handled_index]->setText (2, shortcut.actual_sc.toString ());
-
-  if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash[shortcut.actual_sc.toString ()] = _handled_index + 1;
-}
-
-void
-shortcut_manager::shortcut_dialog_set_default ()
-{
-  _edit_actual->setText (_label_default->text ());
-}
-
-// import a shortcut set from a given settings file or reset to
-// the defaults (settings = 0) and refresh the tree view
-void
-shortcut_manager::import_shortcuts (QSettings *settings)
-{
-  for (int i = 0; i < _sc.count (); i++)
-    {
-      // update the list of all shortcuts
-      shortcut_t sc = _sc.at (i);           // make a copy
-
-      if (settings)
-        sc.actual_sc = QKeySequence (         // get new shortcut from settings
-          settings->value ("shortcuts/"+sc.settings_key,sc.actual_sc).
-                          toString ());       // and use the old one as default
-      else
-        sc.actual_sc = QKeySequence (sc.default_sc); // get default shortcut
-
-      _sc.replace (i,sc);                   // replace the old with the new one
-
-      // update the tree view
-      QTreeWidgetItem *tree_item = _index_item_hash[i]; // get related tree item
-      tree_item->setText (2, sc.actual_sc.toString ()); // display new shortcut
-    }
-}
-
-// ask the user whether to save the current shortcut set;
-// returns true to proceed with import action, false to abort it
-bool
-shortcut_manager::overwrite_all_shortcuts ()
-{
-  QMessageBox msg_box;
-  msg_box.setWindowTitle (tr ("Overwriting Shortcuts"));
-  msg_box.setIcon (QMessageBox::Warning);
-  msg_box.setText (tr ("You are about to overwrite all shortcuts.\n"
-     "Would you like to save the current shortcut set or cancel the action?"));
-  msg_box.setStandardButtons (QMessageBox::Save | QMessageBox::Cancel);
-  QPushButton *discard = msg_box.addButton (tr ("Don't save"),
-                                            QMessageBox::DestructiveRole);
-  msg_box.setDefaultButton (QMessageBox::Save);
-
-  int ret = msg_box.exec ();
-
-  if (msg_box.clickedButton () == discard)
-    return true;  // do not save and go ahead
-
-  if (ret == QMessageBox::Save)
-    {
-      if (do_import_export (OSC_EXPORT))
-        return true;  // go ahead
-    }
-
-  return false; // abort the import
 }
 
 // import or export of shortcut sets,
@@ -732,54 +655,126 @@ shortcut_manager::do_import_export (int action)
   return true;
 }
 
-// enter_shortcut:
-// class derived from QLineEdit for directly entering key sequences which
-enter_shortcut::enter_shortcut (QWidget *p) : QLineEdit (p)
-{
-  _direct_shortcut = true;      // the shortcut is directly entered
-}
-
-enter_shortcut::~enter_shortcut ()
-{ }
-
-// slot for checkbox whether the shortcut is directly entered or not
 void
-enter_shortcut::handle_direct_shortcut (int state)
+shortcut_manager::shortcut_dialog (int index)
 {
-  if (state)
-    _direct_shortcut = true;  // the shortcut is directly entered
-  else
-    _direct_shortcut = false; // the shortcut has to be written as text
-}
-
-// new keyPressEvent
-void
-enter_shortcut::keyPressEvent (QKeyEvent *e)
-{
-  if (! _direct_shortcut)
+  if (! m_dialog)
     {
-      QLineEdit::keyPressEvent (e);
-      return;
+      m_dialog = new QDialog (this);
+
+      m_dialog->setWindowTitle (tr ("Enter new Shortcut"));
+
+      QVBoxLayout *box = new QVBoxLayout (m_dialog);
+
+      QLabel *help = new QLabel (tr ("Apply the desired shortcut or click "
+                                     "on the right button to reset the "
+                                     "shortcut to its default."));
+      help->setWordWrap (true);
+      box->addWidget (help);
+
+      QCheckBox *direct = new QCheckBox (
+        tr ("Enter shortcut directly by performing it"));
+      direct->setCheckState (Qt::Checked);
+      box->addWidget (direct);
+
+      QGridLayout *grid = new QGridLayout ();
+
+      QLabel *actual = new QLabel (tr ("Actual shortcut"));
+      m_edit_actual = new enter_shortcut (m_dialog);
+      m_edit_actual->setAlignment (Qt::AlignHCenter);
+      grid->addWidget (actual, 0, 0);
+      grid->addWidget (m_edit_actual, 0, 1);
+
+      QLabel *def = new QLabel (tr ("Default shortcut"));
+      m_label_default = new QLabel (m_dialog);
+      m_label_default->setAlignment (Qt::AlignHCenter);
+      grid->addWidget (def, 1, 0);
+      grid->addWidget (m_label_default, 1, 1);
+
+      QPushButton *set_default = new QPushButton (tr ("Set to default"));
+      grid->addWidget (set_default, 0, 2);
+      connect (set_default, SIGNAL (clicked ()),
+               this, SLOT (shortcut_dialog_set_default ()));
+
+      box->addLayout (grid);
+
+      QDialogButtonBox *button_box = new QDialogButtonBox (QDialogButtonBox::Ok
+                                                   | QDialogButtonBox::Cancel);
+      QList<QAbstractButton *> buttons = button_box->buttons ();
+      for (int i = 0; i < buttons.count (); i++)
+        buttons.at (i)->setShortcut (QKeySequence ());
+      connect (button_box, SIGNAL (accepted ()), m_dialog, SLOT (accept ()));
+      connect (button_box, SIGNAL (rejected ()), m_dialog, SLOT (reject ()));
+      box->addWidget (button_box);
+
+      m_dialog->setLayout (box);
+
+      connect (direct, SIGNAL (stateChanged (int)),
+               m_edit_actual, SLOT (handle_direct_shortcut (int)));
+      connect (m_dialog, SIGNAL (finished (int)),
+               this, SLOT (shortcut_dialog_finished (int)));
+
     }
 
-  if (e->type () == QEvent::KeyPress)
+  m_edit_actual->setText (m_sc.at (index).m_actual_sc.toString ());
+  m_label_default->setText (m_sc.at (index).m_default_sc.toString ());
+  m_handled_index = index;
+
+  m_edit_actual->setFocus ();
+  m_dialog->setFocusProxy (m_edit_actual);
+  m_dialog->exec ();
+}
+
+// import a shortcut set from a given settings file or reset to
+// the defaults (settings = 0) and refresh the tree view
+void
+shortcut_manager::import_shortcuts (QSettings *settings)
+{
+  for (int i = 0; i < m_sc.count (); i++)
     {
-      int key = e->key ();
+      // update the list of all shortcuts
+      shortcut_t sc = m_sc.at (i);           // make a copy
 
-      if (key == Qt::Key_unknown || key == 0)
-        return;
+      if (settings)
+        sc.m_actual_sc = QKeySequence (         // get new shortcut from settings
+          settings->value ("shortcuts/" + sc.m_settings_key,sc.m_actual_sc).
+                          toString ());       // and use the old one as default
+      else
+        sc.m_actual_sc = QKeySequence (sc.m_default_sc); // get default shortcut
 
-      Qt::KeyboardModifiers modifiers = e->modifiers ();
+      m_sc.replace (i,sc);                   // replace the old with the new one
 
-      if (modifiers & Qt::ShiftModifier)
-        key += Qt::SHIFT;
-      if (modifiers & Qt::ControlModifier)
-        key += Qt::CTRL;
-      if (modifiers & Qt::AltModifier)
-        key += Qt::ALT;
-      if (modifiers & Qt::MetaModifier)
-        key += Qt::META;
-
-      setText (QKeySequence (key).toString ());
+      // update the tree view
+      QTreeWidgetItem *tree_item = m_index_item_hash[i]; // get related tree item
+      tree_item->setText (2, sc.m_actual_sc.toString ()); // display new shortcut
     }
+}
+
+// ask the user whether to save the current shortcut set;
+// returns true to proceed with import action, false to abort it
+bool
+shortcut_manager::overwrite_all_shortcuts (void)
+{
+  QMessageBox msg_box;
+  msg_box.setWindowTitle (tr ("Overwriting Shortcuts"));
+  msg_box.setIcon (QMessageBox::Warning);
+  msg_box.setText (tr ("You are about to overwrite all shortcuts.\n"
+     "Would you like to save the current shortcut set or cancel the action?"));
+  msg_box.setStandardButtons (QMessageBox::Save | QMessageBox::Cancel);
+  QPushButton *discard = msg_box.addButton (tr ("Don't save"),
+                                            QMessageBox::DestructiveRole);
+  msg_box.setDefaultButton (QMessageBox::Save);
+
+  int ret = msg_box.exec ();
+
+  if (msg_box.clickedButton () == discard)
+    return true;  // do not save and go ahead
+
+  if (ret == QMessageBox::Save)
+    {
+      if (do_import_export (OSC_EXPORT))
+        return true;  // go ahead
+    }
+
+  return false; // abort the import
 }

@@ -35,16 +35,20 @@ class enter_shortcut : public QLineEdit
   Q_OBJECT
 
 public:
+
   enter_shortcut (QWidget *p = nullptr);
-  ~enter_shortcut ();
+
+  ~enter_shortcut (void) = default;
 
   virtual void keyPressEvent (QKeyEvent *e);
 
 public slots:
+
   void handle_direct_shortcut (int);
 
 private:
-  bool _direct_shortcut;
+
+  bool m_direct_shortcut;
 
 };
 
@@ -62,7 +66,7 @@ public:
     OSC_DEFAULT = 2
   };
 
-  shortcut_manager ();
+  shortcut_manager (void);
 
   // No copying!
 
@@ -70,9 +74,9 @@ public:
 
   shortcut_manager& operator = (const shortcut_manager&) = delete;
 
-  ~shortcut_manager ();
+  ~shortcut_manager (void) = default;
 
-  static void init_data ()
+  static void init_data (void)
   {
     if (instance_ok ())
       instance->do_init_data ();
@@ -108,10 +112,6 @@ public slots:
 
   static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
-signals:
-
-protected:
-
 protected slots:
 
   void handle_double_clicked (QTreeWidgetItem*, int);
@@ -137,60 +137,58 @@ private:
   public:
 
     shortcut_t (void)
-      : tree_item (nullptr), description (), settings_key (),
-        actual_sc (QKeySequence ()), default_sc (QKeySequence ())
-    {  }
+      : m_tree_item (nullptr), m_description (), m_settings_key (),
+        m_actual_sc (QKeySequence ()), m_default_sc (QKeySequence ())
+    { }
 
     shortcut_t (const shortcut_t& x)
-      : tree_item (x.tree_item), description (x.description),
-        settings_key (x.settings_key)
+      : m_tree_item (x.m_tree_item), m_description (x.m_description),
+        m_settings_key (x.m_settings_key)
     {
-      actual_sc = x.actual_sc;
-      default_sc = x.default_sc;
+      m_actual_sc = x.m_actual_sc;
+      m_default_sc = x.m_default_sc;
     }
 
     shortcut_t& operator = (const shortcut_t& x)
     {
       if (&x != this)
         {
-          tree_item = x.tree_item;
-          description = x.description;
-          settings_key = x.settings_key;
+          m_tree_item = x.m_tree_item;
+          m_description = x.m_description;
+          m_settings_key = x.m_settings_key;
 
-          actual_sc = QKeySequence ();
-          default_sc = QKeySequence ();
+          m_actual_sc = QKeySequence ();
+          m_default_sc = QKeySequence ();
 
-          actual_sc = x.actual_sc;
-          default_sc = x.default_sc;
+          m_actual_sc = x.m_actual_sc;
+          m_default_sc = x.m_default_sc;
         }
 
       return *this;
     }
 
-    ~shortcut_t (void)
-    { }
+    ~shortcut_t (void) = default;
 
-    QTreeWidgetItem *tree_item;
-    QString description;
-    QString settings_key;
-    QKeySequence actual_sc;
-    QKeySequence default_sc;
+    QTreeWidgetItem *m_tree_item;
+    QString m_description;
+    QString m_settings_key;
+    QKeySequence m_actual_sc;
+    QKeySequence m_default_sc;
   };
 
-  QList<shortcut_t> _sc;
-  QHash<QString, int> _shortcut_hash;
-  QHash<QString, int> _action_hash;
-  QHash <QString, QTreeWidgetItem*> _level_hash;
-  QHash<int, QTreeWidgetItem*> _index_item_hash;
-  QHash<QTreeWidgetItem*, int> _item_index_hash;
+  QList<shortcut_t> m_sc;
+  QHash<QString, int> m_shortcut_hash;
+  QHash<QString, int> m_action_hash;
+  QHash <QString, QTreeWidgetItem*> m_level_hash;
+  QHash<int, QTreeWidgetItem*> m_index_item_hash;
+  QHash<QTreeWidgetItem*, int> m_item_index_hash;
 
-  QDialog *_dialog;
-  enter_shortcut *_edit_actual;
-  QLabel *_label_default;
-  int _handled_index;
+  QDialog *m_dialog;
+  enter_shortcut *m_edit_actual;
+  QLabel *m_label_default;
+  int m_handled_index;
 
-  QSettings *_settings;
-
+  QSettings *m_settings;
 };
 
 #endif

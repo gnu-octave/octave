@@ -53,133 +53,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "operators/ops.h"
 #include "ov.h"
 
-variable_editor::variable_editor (QWidget *p)
-  : octave_dock_widget (p),
-    main (new QMainWindow ()),
-    tool_bar (new QToolBar (main)),
-    tab_widget (new QTabWidget (main)),
-    default_width (20), default_height (100),
-    add_font_height (0),
-    autofit (false), autofit_max (false),
-    use_terminal_font (true), alternate_rows (true),
-    stylesheet (""), font (), sel_font (),
-    table_colors ()
-{
-  // Use a MainWindow
-  setObjectName ("variable_editor");
-  set_title (tr ("Variable Editor"));
-  setStatusTip (tr ("Edit variables."));
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
-
-  // Tool Bar
-  construct_tool_bar ();
-  main->addToolBar (tool_bar);
-
-  for (int i = 0; i < resource_manager::varedit_color_chars ().length (); i++)
-    table_colors.append (QColor (Qt::white));
-
-  // Tab Widget
-  tab_widget->setTabsClosable (true);
-  tab_widget->setMovable (true);
-  connect (tab_widget, SIGNAL (tabCloseRequested (int)),
-           this, SLOT (closeTab (int)));
-  main->setCentralWidget (tab_widget);
-
-  // Main
-  main->setParent (this);
-  setWidget (main);
-
-  connect (this, SIGNAL (command_requested (const QString&)),
-           p, SLOT (execute_command_in_terminal (const QString&)));
-}
-
-void
-variable_editor::construct_tool_bar ()
-{
-  tool_bar->setObjectName ("VariableEditorToolBar");
-  tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
-
-  tool_bar->addAction (resource_manager::icon ("document-save"), tr ("Save"),
-                       this, SLOT (save ()));
-  tool_bar->addSeparator ();
-
-  tool_bar->addAction (resource_manager::icon ("edit-cut"), tr ("Cut"),
-                       this, SLOT (cutClipboard ()));
-  tool_bar->addAction (resource_manager::icon ("edit-copy"), tr ("Copy"),
-                       this, SLOT (copyClipboard ()));
-  tool_bar->addAction (resource_manager::icon ("edit-paste"), tr ("Paste"),
-                       this, SLOT (pasteClipboard ()));
-  // FIXME: Different icon for Paste Table?
-  tool_bar->addAction (resource_manager::icon ("edit-paste"), tr ("Paste Table"),
-                       this, SLOT (pasteTableClipboard ()));
-  tool_bar->addSeparator ();
-
-  // FIXME: Add a print item?
-  //QAction *print_action; /icons/fileprint.png
-  //tool_bar->addSeparator ();
-
-  QToolButton *plot_tool_button = new QToolButton (tool_bar);
-  plot_tool_button->setText (tr ("Plot"));
-  plot_tool_button->setIcon (resource_manager::icon ("applications-system"));
-
-  plot_tool_button->setPopupMode (QToolButton::InstantPopup);
-
-  QMenu *plot_menu = new QMenu (tr ("Plot"), plot_tool_button);
-  plot_menu->setSeparatorsCollapsible (false);
-  QSignalMapper *plot_mapper = new QSignalMapper (plot_menu);
-  plot_mapper->setMapping (plot_menu->addAction ("plot",
-                                                 plot_mapper,
-                                                 SLOT (map ())),
-                          "figure (); plot (%1);");
-  plot_mapper->setMapping (plot_menu->addAction ("bar",
-                                                 plot_mapper,
-                                                 SLOT (map ())),
-                          "figure (); bar (%1);");
-  plot_mapper->setMapping (plot_menu->addAction ("stem",
-                                                 plot_mapper,
-                                                 SLOT (map ())),
-                          "figure (); stem (%1);");
-  plot_mapper->setMapping (plot_menu->addAction ("stairs",
-                                                 plot_mapper,
-                                                 SLOT (map ())),
-                          "figure (); stairs (%1);");
-  plot_mapper->setMapping (plot_menu->addAction ("area",
-                                                 plot_mapper,
-                                                 SLOT (map ())),
-                          "figure (); area (%1);");
-  plot_mapper->setMapping (plot_menu->addAction ("pie",
-                                                 plot_mapper,
-                                                 SLOT (map ())),
-                          "figure (); pie (%1);");
-  plot_mapper->setMapping (plot_menu->addAction ("hist",
-                                                 plot_mapper,
-                                                 SLOT (map ())),
-                          "figure (); hist (%1);");
-  connect (plot_mapper, SIGNAL (mapped (const QString &)),
-           this, SLOT (relay_command (const QString &)));
-
-  plot_tool_button->setMenu (plot_menu);
-  tool_bar->addWidget (plot_tool_button);
-
-  tool_bar->addSeparator ();
-  tool_bar->addAction (QIcon (resource_manager::icon ("go-up")), tr ("Up"),
-                       this, SLOT (up ()));
-
-  tool_bar->setEnabled (false);  // Disabled when no tab is present
-}
-
-// FIXME: Why is there no destructor?  And if there isn't, can this be deleted?
-//variable_editor::~variable_editor () { }
-
 namespace
 {
   // Helper struct to store widget pointers in "data" Tab property.
   struct table_data
   {
     table_data (QTableView *t = nullptr)
-      : table (t)
+      : m_table (t)
     { }
-    QTableView *table;
+
+    QTableView *m_table;
   };
 
   table_data get_table_data (QTabWidget *w, int tidx)
@@ -192,22 +75,79 @@ namespace
     return get_table_data (w, w->currentIndex ());
   }
 }
+
 Q_DECLARE_METATYPE (table_data)
 
-void
-variable_editor::edit_variable (const QString &name)
+static
+QString idx_to_expr (int32_t from, int32_t to)
 {
-  if (stylesheet.isEmpty ())
+  if (from == to)
+    return QString ("%1").arg (from + 1);
+  else
+    return QString ("%1:%2").arg (from + 1).arg (to + 1);
+}
+
+variable_editor::variable_editor (QWidget *p)
+  : octave_dock_widget (p),
+    m_main (new QMainWindow ()),
+    m_tool_bar (new QToolBar (m_main)),
+    m_tab_widget (new QTabWidget (m_main)),
+    m_default_width (20), m_default_height (100),
+    m_add_font_height (0),
+    m_autofit (false), m_autofit_max (false),
+    m_use_terminal_font (true), m_alternate_rows (true),
+    m_stylesheet (""), m_font (), m_sel_font (),
+    m_table_colors ()
+{
+  // Use a MainWindow
+  setObjectName ("variable_editor");
+  set_title (tr ("Variable Editor"));
+  setStatusTip (tr ("Edit variables."));
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
+
+  // Tool Bar
+  construct_tool_bar ();
+  m_main->addToolBar (m_tool_bar);
+
+  for (int i = 0; i < resource_manager::varedit_color_chars ().length (); i++)
+    m_table_colors.append (QColor (Qt::white));
+
+  // Tab Widget
+  m_tab_widget->setTabsClosable (true);
+  m_tab_widget->setMovable (true);
+  connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
+           this, SLOT (closeTab (int)));
+  m_main->setCentralWidget (m_tab_widget);
+
+  // Main
+  m_main->setParent (this);
+  setWidget (m_main);
+
+  connect (this, SIGNAL (command_requested (const QString&)),
+           p, SLOT (execute_command_in_terminal (const QString&)));
+}
+
+variable_editor::~variable_editor (void)
+{
+  delete m_main;
+  delete m_tool_bar;
+  delete m_tab_widget;
+}
+
+void
+variable_editor::edit_variable (const QString& name)
+{
+  if (m_stylesheet.isEmpty ())
     {
       QSettings *settings = resource_manager::get_settings ();
       notice_settings (settings);
     }
 
-  const int tab_count = tab_widget->count ();
+  const int tab_count = m_tab_widget->count ();
   for (int i = 0; i < tab_count; ++i)
-    if (tab_widget->tabText (i) == name)
+    if (m_tab_widget->tabText (i) == name)
       {
-        tab_widget->setCurrentIndex (i);
+        m_tab_widget->setCurrentIndex (i);
         return;  // already open
       }
 
@@ -236,10 +176,10 @@ variable_editor::edit_variable (const QString &name)
 
   connect (table->horizontalHeader (),
            SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT (columnmenu_requested (const QPoint &)));
+           this, SLOT (columnmenu_requested (const QPoint&)));
   connect (table->verticalHeader (),
            SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT (rowmenu_requested (const QPoint &)));
+           this, SLOT (rowmenu_requested (const QPoint&)));
   connect (table, SIGNAL (customContextMenuRequested (const QPoint&)),
            this, SLOT (contextmenu_requested (const QPoint&)));
   connect (table, SIGNAL (doubleClicked (const QModelIndex&)),
@@ -250,16 +190,16 @@ variable_editor::edit_variable (const QString &name)
   vbox->addWidget (table);
 
   page->setProperty ("data", QVariant::fromValue (table_data (table)));
-  int tab_idx = tab_widget->addTab (page, name);
-  tab_widget->setCurrentIndex (tab_idx);
+  int tab_idx = m_tab_widget->addTab (page, name);
+  m_tab_widget->setCurrentIndex (tab_idx);
 
-  if (tab_widget->count () == 1)
-    tool_bar->setEnabled (true);  // This is the first tab -> enable tool bar
+  if (m_tab_widget->count () == 1)
+    m_tool_bar->setEnabled (true);  // This is the first tab -> enable tool bar
 
-  if (autofit)
+  if (m_autofit)
     {
       table->resizeColumnsToContents ();
-      if (autofit_max)
+      if (m_autofit_max)
         {
           int mx = 0;
           for (int i = 0; i < table->model ()->columnCount (); i++)
@@ -272,28 +212,88 @@ variable_editor::edit_variable (const QString &name)
     }
   else
     {
-      table->horizontalHeader ()->setDefaultSectionSize (default_width);
+      table->horizontalHeader ()->setDefaultSectionSize (m_default_width);
     }
-  table->setFont (font);
-  table->setStyleSheet (stylesheet);
-  table->setAlternatingRowColors (alternate_rows);
+  table->setFont (m_font);
+  table->setStyleSheet (m_stylesheet);
+  table->setAlternatingRowColors (m_alternate_rows);
 #if defined (HAVE_QT4)
   table->verticalHeader ()->setResizeMode (QHeaderView::Interactive);
 #else
   table->verticalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
 #endif
-  table->verticalHeader ()->setDefaultSectionSize (default_height
-                                                   + add_font_height);
+  table->verticalHeader ()->setDefaultSectionSize (m_default_height
+                                                   + m_add_font_height);
+}
+
+void variable_editor::clear_data_cache (void)
+{
+  for (int i = 0; i < m_tab_widget->count (); ++i)
+    {
+      QTableView *const table = get_table_data (m_tab_widget, i).m_table;
+      QAbstractItemModel *const model = table->model ();
+      qobject_cast<variable_editor_model *> (model)->clear_data_cache ();
+    }
+}
+
+bool
+variable_editor::has_focus (void)
+{
+  // FIXME: This only generates exceptions in certain circumstances.
+  //        Get a definitive list and eliminate the need to handle exceptions.
+  if (m_tab_widget->currentIndex () == -1)
+    return false;  // No tabs
+
+  try
+    {
+      QTableView *view = get_table_data (m_tab_widget).m_table;
+      if (view)
+        return view->hasFocus ();
+
+      return false;
+    }
+  catch (...)
+    {
+      return false;
+    }
+
+  return false;
+}
+
+QList<QColor> variable_editor::default_colors (void)
+{
+  QList<QColor> colorlist;
+
+  colorlist << qApp->palette ().color (QPalette::WindowText);
+  colorlist << qApp->palette ().color (QPalette::Base);
+  colorlist << qApp->palette ().color (QPalette::HighlightedText);
+  colorlist << qApp->palette ().color (QPalette::Highlight);
+  colorlist << qApp->palette ().color (QPalette::AlternateBase);
+
+  return colorlist;
+}
+
+QStringList variable_editor::color_names (void)
+{
+  QStringList output;
+
+  output << "Foreground";
+  output << "Background";
+  output << "Selected Foreground";
+  output << "Selected Background";
+  output << "Alternate Background";
+
+  return output;
 }
 
 void
 variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
 {
-  if (autofit)
+  if (m_autofit)
     {
-      QTableView *view = get_table_data (tab_widget).table;
+      QTableView *view = get_table_data (m_tab_widget).m_table;
       view->resizeColumnsToContents ();
-      if (autofit_max)
+      if (m_autofit_max)
         {
           int mx = 0;
           for (int i = 0; i < view->model ()->columnCount (); i++)
@@ -309,18 +309,75 @@ variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
   emit updated ();
 }
 
-void
-variable_editor::closeTab (int idx)
+void variable_editor::notice_settings (const QSettings *settings)
 {
-  if (idx < 0 || idx > tab_widget->count ())
-    return;
+  // FIXME: Why use object->tostring->toint?  Why not just 100?
+  m_default_width = settings->value ("variable_editor/column_width",
+                                     QVariant ("100")).toString ().toInt ();
+  m_autofit = settings->value ("variable_editor/autofit_column_width",
+                               QVariant (false)).toBool ();
+  // FIXME: Magic Number 1 here, why not use enum?
+  if (m_autofit)
+    {
+      if (settings->value ("variable_editor/autofit_type", 0).toInt () == 1)
+        m_autofit_max = true;
+    }
 
-  QWidget *const wdgt = tab_widget->widget (idx);
-  tab_widget->removeTab (idx);
-  delete wdgt;
+  m_default_height = settings->value ("variable_editor/row_height",
+                                    QVariant ("10")).toString ().toInt ();
+  m_alternate_rows = settings->value ("variable_editor/alternate_rows",
+                                    QVariant (false)).toBool ();
 
-  if (tab_widget->count () == 0)
-    tool_bar->setEnabled (false);  // This was the last tab, disable tool bar.
+  QList<QColor> _default_colors = resource_manager::varedit_default_colors ();
+  QString class_chars = resource_manager::varedit_color_chars ();
+
+  m_use_terminal_font = settings->value ("variable_editor/use_terminal_font", true).toBool ();
+
+  QString font_name;
+  int font_size;
+
+  if (m_use_terminal_font)
+    {
+      font_name = settings->value ("terminal/fontName", "").toString ();
+      font_size = settings->value ("terminal/fontSize", 10).toInt ();
+    }
+  else
+    {
+      font_name = settings->value ("variable_editor/font_name", "").toString ();
+      font_size = settings->value ("variable_editor/font_size", 10).toInt ();
+    }
+  m_font = QFont (font_name, font_size);
+
+  if (settings->value ("variable_editor/autofit_row_height", false).toBool ())
+    {
+      QFontMetrics fm (m_font);
+      m_add_font_height = fm.height ();
+    }
+  else
+    m_add_font_height = 0;
+
+  for (int i = 0; i < class_chars.length (); i++)
+    {
+      QVariant default_var = _default_colors.at (i);
+      QColor setting_color = settings->value ("variable_editor/color_"
+                                              + class_chars.mid (i, 1),
+                                              default_var).value<QColor> ();
+      m_table_colors.replace (i, setting_color);
+    }
+  update_colors ();
+
+  // Icon size in the toolbar
+  int icon_size_settings = settings->value ("toolbar_icon_size", 0).toInt ();
+  QStyle *st = style ();
+  int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
+
+  // FIXME: Magic numbers.  Use enum?
+  if (icon_size_settings == 1)
+    icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
+  else if (icon_size_settings == -1)
+    icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
+
+  m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 }
 
 void
@@ -331,9 +388,23 @@ variable_editor::closeEvent (QCloseEvent *e)
 }
 
 void
-variable_editor::contextmenu_requested (const QPoint &qpos)
+variable_editor::closeTab (int idx)
 {
-  QTableView *view = get_table_data (tab_widget).table;
+  if (idx < 0 || idx > m_tab_widget->count ())
+    return;
+
+  QWidget *const wdgt = m_tab_widget->widget (idx);
+  m_tab_widget->removeTab (idx);
+  delete wdgt;
+
+  if (m_tab_widget->count () == 0)
+    m_tool_bar->setEnabled (false);  // This was the last tab, disable tool bar.
+}
+
+void
+variable_editor::contextmenu_requested (const QPoint& qpos)
+{
+  QTableView *view = get_table_data (m_tab_widget).m_table;
   QModelIndex index = view->indexAt (qpos);
 
   if (index.isValid ())
@@ -370,130 +441,43 @@ variable_editor::contextmenu_requested (const QPoint &qpos)
           plot_mapper->setMapping (menu->addAction ("plot",
                                                     plot_mapper,
                                                     SLOT (map ())),
-                                  "figure (); plot (%1);");
+                                   "figure (); plot (%1);");
           plot_mapper->setMapping (menu->addAction ("bar",
                                                     plot_mapper,
                                                     SLOT (map ())),
-                                  "figure (); bar (%1);");
+                                   "figure (); bar (%1);");
           plot_mapper->setMapping (menu->addAction ("stem",
                                                     plot_mapper,
                                                     SLOT (map ())),
-                                  "figure (); stem (%1);");
+                                   "figure (); stem (%1);");
           plot_mapper->setMapping (menu->addAction ("stairs",
                                                     plot_mapper,
                                                     SLOT (map ())),
-                                  "figure (); stairs (%1);");
+                                   "figure (); stairs (%1);");
           plot_mapper->setMapping (menu->addAction ("area",
                                                     plot_mapper,
                                                     SLOT (map ())),
-                                  "figure (); area (%1);");
+                                   "figure (); area (%1);");
           plot_mapper->setMapping (menu->addAction ("pie",
                                                     plot_mapper,
                                                     SLOT (map ())),
-                                  "figure (); pie (%1);");
+                                   "figure (); pie (%1);");
           plot_mapper->setMapping (menu->addAction ("hist",
                                                     plot_mapper,
                                                     SLOT (map ())),
-                                  "figure (); hist (%1);");
-          connect (plot_mapper, SIGNAL (mapped (const QString &)),
-                   this, SLOT (relay_command (const QString &)));
+                                   "figure (); hist (%1);");
+          connect (plot_mapper, SIGNAL (mapped (const QString&)),
+                   this, SLOT (relay_command (const QString&)));
         }
 
       menu->exec (view->mapToGlobal (qpos));
     }
 }
 
-QList<int>
-variable_editor::octave_to_coords (QString& selection)
-{
-  // FIXME: Is this necessary or would it be quicker to clone the function that
-  // gives us the QString?
-
-  // sanity check
-  if (selection.count (",") != 1)
-    return QList<int> ();
-
-  QList<int> output;
-  output.clear ();
-  // remove braces
-  int firstbracket = std::max (selection.indexOf ("("),
-                               selection.indexOf ("{"));
-  selection = selection.mid (firstbracket + 1,
-                             selection.length () - (firstbracket + 2));
-
-  QString rows = selection.left (selection.indexOf (","));
-  if (! rows.contains (":"))
-    {
-      // Only one row
-      output.push_back (rows.toInt ());
-      output.push_back (output.last ());
-    }
-  else
-    {
-      output.push_back (rows.left (rows.indexOf (":")).toInt ());
-      output.push_back (rows.right (rows.length () - (rows.indexOf (":") + 1))
-                                   .toInt ());
-    }
-
-  QString cols;
-  cols = selection.right (selection.length () - (selection.indexOf (",") + 1));
-  if (cols.left (1) == " ")
-    cols = cols.right (cols.length () - 1);
-
-  if (! cols.contains (":"))
-    {
-      // Only one row
-      output.push_back (cols.toInt ());
-      output.push_back (output.last ());
-    }
-  else
-    {
-      output.push_back (cols.left (cols.indexOf (":")).toInt ());
-      output.push_back (cols.right (cols.length () - (cols.indexOf (":") + 1))
-                                   .toInt ());
-    }
-
-  return output;
-}
-
 void
-variable_editor::delete_selected ()
+variable_editor::columnmenu_requested (const QPoint& pt)
 {
-  QTableView *view = get_table_data (tab_widget).table;
-  QString selection = selected_to_octave ();
-  QList<int> coords = octave_to_coords (selection);
-
-  if (coords.isEmpty ())
-    return;
-
-  bool whole_columns_selected = coords[0] == 1
-                                && coords[1] == view->model ()->rowCount ();
-  bool whole_rows_selected = coords[2] == 1
-                             && coords[3] == view->model ()->columnCount ();
-
-  emit command_requested (QString ("disp ('")
-                          + QString::number (coords[0]) + ","
-                          + QString::number (coords[1]) + ","
-                          + QString::number (coords[2]) + ","
-                          + QString::number (coords[3]) + "');");
-
-  // Must be deleting whole columns or whole rows, and not the whole thing.
-  if (whole_columns_selected == whole_rows_selected)  // all or nothing
-    return;
-
-  if (whole_rows_selected)
-    view->model ()->removeRows (coords[0], coords[1] - coords[0]);
-
-  if (whole_columns_selected)
-    view->model ()->removeColumns (coords[2], coords[3] - coords[2]);
-
-  emit updated ();
-}
-
-void
-variable_editor::columnmenu_requested (const QPoint &pt)
-{
-  QTableView *view = get_table_data (tab_widget).table;
+  QTableView *view = get_table_data (m_tab_widget).m_table;
 
   int index = view->horizontalHeader ()->logicalIndexAt (pt);
 
@@ -511,8 +495,8 @@ variable_editor::columnmenu_requested (const QPoint &pt)
 
   bool whole_columns_selected =
     nothingSelected ? false
-                    : (coords[0] == 1
-                       && coords[1] == view->model ()->rowCount ());
+    : (coords[0] == 1
+       && coords[1] == view->model ()->rowCount ());
 
   bool current_column_selected =
     nothingSelected ? false : (coords[2] <= index+1 && coords[3] > index);
@@ -589,8 +573,8 @@ variable_editor::columnmenu_requested (const QPoint &pt)
                                             plot_mapper,
                                             SLOT (map ())),
                            "figure (); hist (%1);");
-  connect (plot_mapper, SIGNAL (mapped (const QString &)),
-           this, SLOT (relay_command (const QString &)));
+  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+           this, SLOT (relay_command (const QString&)));
 
   QPoint menupos = pt;
   menupos.setY (view->horizontalHeader ()->height ());
@@ -599,9 +583,9 @@ variable_editor::columnmenu_requested (const QPoint &pt)
 }
 
 void
-variable_editor::rowmenu_requested (const QPoint &pt)
+variable_editor::rowmenu_requested (const QPoint& pt)
 {
-  QTableView *view = get_table_data (tab_widget).table;
+  QTableView *view = get_table_data (m_tab_widget).m_table;
 
   int index = view->verticalHeader ()->logicalIndexAt (pt);
 
@@ -621,12 +605,12 @@ variable_editor::rowmenu_requested (const QPoint &pt)
 
   bool whole_rows_selected =
     nothingSelected ? false
-                    : (coords[2] == 1
-                       && coords[3] == view->model ()->columnCount ());
+    : (coords[2] == 1
+       && coords[3] == view->model ()->columnCount ());
 
   bool current_row_selected =
     nothingSelected ? false
-                    : (coords[0] <= index+1 && coords[1] > index);
+    : (coords[0] <= index+1 && coords[1] > index);
 
   int rowselection_count = nothingSelected ? 0 : (coords[3] - coords[2] + 1);
 
@@ -698,8 +682,8 @@ variable_editor::rowmenu_requested (const QPoint &pt)
                                             plot_mapper,
                                             SLOT (map ())),
                            "figure (); hist (%1);");
-  connect (plot_mapper, SIGNAL (mapped (const QString &)),
-           this, SLOT (relay_command (const QString &)));
+  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+           this, SLOT (relay_command (const QString&)));
 
   QPoint menupos = pt;
   menupos.setX (view->verticalHeader ()->width ());
@@ -709,81 +693,34 @@ variable_editor::rowmenu_requested (const QPoint &pt)
   menu->exec (view->mapToGlobal (menupos));
 }
 
-static
-QString idx_to_expr (int32_t from, int32_t to)
-{
-  if (from == to)
-    return QString ("%1").arg (from + 1);
-  else
-    return QString ("%1:%2").arg (from + 1).arg (to + 1);
-}
-
-QString
-variable_editor::selected_to_octave ()
-{
-  QString name = tab_widget->tabText (tab_widget->currentIndex ());
-  QTableView *view = get_table_data (tab_widget).table;
-  QItemSelectionModel *sel = view->selectionModel ();
-
-  if (! sel->hasSelection ())
-    return name;  // Nothing selected
-
-  QList<QModelIndex> indices = sel->selectedIndexes ();  // it's indices!
-
-  int32_t from_row = std::numeric_limits<int32_t>::max ();
-  int32_t to_row = 0;
-  int32_t from_col = std::numeric_limits<int32_t>::max ();
-  int32_t to_col = 0;
-
-  for (const auto& idx : indices)
-    {
-      from_row = std::min (from_row, idx.row ());
-      to_row = std::max (to_row, idx.row ());
-      from_col = std::min (from_col, idx.column ());
-      to_col = std::max (to_col, idx.column ());
-    }
-
-  QString rows = idx_to_expr (from_row, to_row);
-  QString cols = idx_to_expr (from_col, to_col);
-
-  // FIXME: Cells?
-  return QString ("%1 (%2, %3)").arg (name).arg (rows).arg (cols);
-}
-
 void
-variable_editor::double_click (const QModelIndex &idx)
+variable_editor::double_click (const QModelIndex& idx)
 {
-  QString name = tab_widget->tabText (tab_widget->currentIndex ());
-  QTableView *const table = get_table_data (tab_widget).table;
+  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
+  QTableView *const table = get_table_data (m_tab_widget).m_table;
   variable_editor_model *const model =
     qobject_cast<variable_editor_model *> (table->model ());
   if (model->requires_sub_editor (idx))
     {
       if (model ->editor_type_matrix (idx))
         edit_variable (name +
-                      model->parens ()
-                      .arg (idx.row () + 1)
-                      .arg (idx.column () + 1));
+                       model->parens ()
+                       .arg (idx.row () + 1)
+                       .arg (idx.column () + 1));
       /*        emit command_requested ("openvar ('" + name +
-                                      model->parens ()
-                                      .arg (idx.row () + 1)
-                                      .arg (idx.column () + 1)
-                                      + "');");
+                model->parens ()
+                .arg (idx.row () + 1)
+                .arg (idx.column () + 1)
+                + "');");
       */
 
     }
 }
 
 void
-variable_editor::relay_command (const QString &cmd)
+variable_editor::save (void)
 {
-  emit command_requested (cmd.arg (selected_to_octave ()));
-}
-
-void
-variable_editor::save ()
-{
-  QString name = tab_widget->tabText (tab_widget->currentIndex ());
+  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
   QString file =
     QFileDialog::getSaveFileName (this,
                                   tr ("Save Variable %1 As").arg (name),
@@ -798,10 +735,10 @@ variable_editor::save ()
 }
 
 void
-variable_editor::clearContent ()
+variable_editor::clearContent (void)
 {
   // FIXME: shift?
-  QTableView *view = get_table_data (tab_widget).table;
+  QTableView *view = get_table_data (m_tab_widget).m_table;
   QAbstractItemModel *model = view->model ();
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
@@ -810,7 +747,7 @@ variable_editor::clearContent ()
 }
 
 void
-variable_editor::cutClipboard ()
+variable_editor::cutClipboard (void)
 {
   if (! has_focus ())
     return;
@@ -820,12 +757,12 @@ variable_editor::cutClipboard ()
 }
 
 void
-variable_editor::copyClipboard ()
+variable_editor::copyClipboard (void)
 {
   if (! has_focus ())
     return;
 
-  QTableView *view = get_table_data (tab_widget).table;
+  QTableView *view = get_table_data (m_tab_widget).m_table;
   QAbstractItemModel *model = view->model ();
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
@@ -850,32 +787,8 @@ variable_editor::copyClipboard ()
   clipboard->setText (copy);
 }
 
-bool
-variable_editor::has_focus ()
-{
-  // FIXME: This only generates exceptions in certain circumstances.
-  //        Get a definitive list and eliminate the need to handle exceptions.
-  if (tab_widget->currentIndex () == -1)
-    return false;  // No tabs
-
-  try
-    {
-      QTableView *view = get_table_data (tab_widget).table;
-      if (view)
-        return view->hasFocus ();
-
-      return false;
-    }
-  catch (...)
-    {
-      return false;
-    }
-
-  return false;
-}
-
 void
-variable_editor::pasteClipboard ()
+variable_editor::pasteClipboard (void)
 {
   // FIXME: ???
   if (! has_focus ())
@@ -884,7 +797,7 @@ variable_editor::pasteClipboard ()
   QClipboard *clipboard = QApplication::clipboard ();
   QString text = clipboard->text ();
 
-  QTableView *view = get_table_data (tab_widget).table;
+  QTableView *view = get_table_data (m_tab_widget).m_table;
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
 
@@ -913,7 +826,7 @@ variable_editor::pasteClipboard ()
   emit updated ();
 }
 
-void variable_editor::pasteTableClipboard ()
+void variable_editor::pasteTableClipboard (void)
 {
   if (! has_focus ())
     return;
@@ -921,7 +834,7 @@ void variable_editor::pasteTableClipboard ()
   QClipboard *clipboard = QApplication::clipboard ();
   QString text = clipboard->text ();
 
-  QTableView *view = get_table_data (tab_widget).table;
+  QTableView *view = get_table_data (m_tab_widget).m_table;
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
 
@@ -988,7 +901,7 @@ void variable_editor::pasteTableClipboard ()
                                         colnum + start.y ()),
                           QVariant (col));
 
-//          relay_command ("disp ('" + QString::number (colnum+start.y ()) + "," + QString::number (rownum+start.x ()) +"');");
+          //          relay_command ("disp ('" + QString::number (colnum+start.y ()) + "," + QString::number (rownum+start.x ()) +"');");
           colnum++;
         }
       colnum = 0;
@@ -999,24 +912,24 @@ void variable_editor::pasteTableClipboard ()
 }
 
 void
-variable_editor::createVariable ()
+variable_editor::createVariable (void)
 {
   // FIXME: unnamed1..n if exist ('unnamed', 'var')
   relay_command ("unnamed = %1");
 }
 
 void
-variable_editor::transposeContent ()
+variable_editor::transposeContent (void)
 {
-  QString name = tab_widget->tabText (tab_widget->currentIndex ());
+  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
   emit command_requested (QString ("%1 = %1';").arg (name));
   emit updated ();
 }
 
 void
-variable_editor::up ()
+variable_editor::up (void)
 {
-  QString name = tab_widget->tabText (tab_widget->currentIndex ());
+  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
   // FIXME: is there a better way?
   if (name.endsWith (')') || name.endsWith ('}'))
     {
@@ -1027,142 +940,235 @@ variable_editor::up ()
     }
 }
 
-void variable_editor::clear_data_cache ()
+void
+variable_editor::delete_selected (void)
 {
-  for (int i = 0; i < tab_widget->count (); ++i)
-    {
-      QTableView *const table = get_table_data (tab_widget, i).table;
-      QAbstractItemModel *const model = table->model ();
-      qobject_cast<variable_editor_model *> (model)->clear_data_cache ();
-    }
-}
+  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QString selection = selected_to_octave ();
+  QList<int> coords = octave_to_coords (selection);
 
-void variable_editor::notice_settings (const QSettings *settings)
-{
-  // FIXME: Why use object->tostring->toint?  Why not just 100?
-  default_width = settings->value ("variable_editor/column_width",
-                                   QVariant ("100")).toString ().toInt ();
-  autofit = settings->value ("variable_editor/autofit_column_width",
-                             QVariant (false)).toBool ();
-  // FIXME: Magic Number 1 here, why not use enum?
-  if (autofit)
-    {
-      if (settings->value ("variable_editor/autofit_type", 0).toInt () == 1)
-        autofit_max = true;
-    }
-
-  default_height = settings->value ("variable_editor/row_height",
-                                    QVariant ("10")).toString ().toInt ();
-  alternate_rows = settings->value ("variable_editor/alternate_rows",
-                                    QVariant (false)).toBool ();
-
-  QList<QColor> _default_colors = resource_manager::varedit_default_colors ();
-  QString class_chars = resource_manager::varedit_color_chars ();
-
-  use_terminal_font = settings->value ("variable_editor/use_terminal_font", true).toBool ();
-
-  QString font_name;
-  int font_size;
-
-  if (use_terminal_font)
-    {
-      font_name = settings->value ("terminal/fontName", "").toString ();
-      font_size = settings->value ("terminal/fontSize", 10).toInt ();
-    }
-  else
-    {
-      font_name = settings->value ("variable_editor/font_name", "").toString ();
-      font_size = settings->value ("variable_editor/font_size", 10).toInt ();
-    }
-  font = QFont (font_name, font_size);
-
-  if (settings->value ("variable_editor/autofit_row_height", false).toBool ())
-    {
-      QFontMetrics fm (font);
-      add_font_height = fm.height ();
-    }
-  else
-    add_font_height = 0;
-
-  for (int i = 0; i < class_chars.length (); i++)
-    {
-      QVariant default_var = _default_colors.at (i);
-      QColor setting_color = settings->value ("variable_editor/color_"
-                                              + class_chars.mid (i, 1),
-                                              default_var).value<QColor> ();
-      table_colors.replace (i, setting_color);
-    }
-  update_colors ();
-
-  // Icon size in the toolbar
-  int icon_size_settings = settings->value ("toolbar_icon_size", 0).toInt ();
-  QStyle *st = style ();
-  int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
-
-  // FIXME: Magic numbers.  Use enum?
-  if (icon_size_settings == 1)
-    icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
-  else if (icon_size_settings == -1)
-    icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
-
-  tool_bar->setIconSize (QSize (icon_size, icon_size));
-}
-
-/// Also updates the font
-void variable_editor::update_colors ()
-{
-  stylesheet = "";
-  stylesheet += "QTableView::item{ foreground-color: "
-                + table_colors[0].name () +" }";
-  stylesheet += "QTableView::item{ background-color: "
-                + table_colors[1].name () +" }";
-  stylesheet += "QTableView::item{ selection-color: "
-                + table_colors[2].name () +" }";
-  stylesheet += "QTableView::item:selected{ background-color: "
-                + table_colors[3].name () +" }";
-  if (table_colors.length () > 4 && alternate_rows)
-    {
-      stylesheet += "QTableView::item:alternate{ background-color: "
-                    + table_colors[4].name () +" }";
-      stylesheet += "QTableView::item:alternate:selected{ background-color: "
-                    + table_colors[3].name () +" }";
-    }
-
-  if (tab_widget->count () < 1)
+  if (coords.isEmpty ())
     return;
 
-  for (int i=0; i < tab_widget->count (); i++)
-    {
-      QTableView *view = get_table_data (tab_widget).table;
-      view->setAlternatingRowColors (alternate_rows);
-      view->setStyleSheet (stylesheet);
-      view->setFont (font);
-    }
+  bool whole_columns_selected = coords[0] == 1
+    && coords[1] == view->model ()->rowCount ();
+  bool whole_rows_selected = coords[2] == 1
+    && coords[3] == view->model ()->columnCount ();
 
+  emit command_requested (QString ("disp ('")
+                          + QString::number (coords[0]) + ","
+                          + QString::number (coords[1]) + ","
+                          + QString::number (coords[2]) + ","
+                          + QString::number (coords[3]) + "');");
+
+  // Must be deleting whole columns or whole rows, and not the whole thing.
+  if (whole_columns_selected == whole_rows_selected)  // all or nothing
+    return;
+
+  if (whole_rows_selected)
+    view->model ()->removeRows (coords[0], coords[1] - coords[0]);
+
+  if (whole_columns_selected)
+    view->model ()->removeColumns (coords[2], coords[3] - coords[2]);
+
+  emit updated ();
 }
 
-QStringList variable_editor::color_names ()
+void
+variable_editor::relay_command (const QString& cmd)
 {
-  QStringList output;
+  emit command_requested (cmd.arg (selected_to_octave ()));
+}
 
-  output << "Foreground";
-  output << "Background";
-  output << "Selected Foreground";
-  output << "Selected Background";
-  output << "Alternate Background";
+QList<int>
+variable_editor::octave_to_coords (QString& selection)
+{
+  // FIXME: Is this necessary or would it be quicker to clone the function that
+  // gives us the QString?
+
+  // sanity check
+  if (selection.count (",") != 1)
+    return QList<int> ();
+
+  QList<int> output;
+  output.clear ();
+  // remove braces
+  int firstbracket = std::max (selection.indexOf ("("),
+                               selection.indexOf ("{"));
+  selection = selection.mid (firstbracket + 1,
+                             selection.length () - (firstbracket + 2));
+
+  QString rows = selection.left (selection.indexOf (","));
+  if (! rows.contains (":"))
+    {
+      // Only one row
+      output.push_back (rows.toInt ());
+      output.push_back (output.last ());
+    }
+  else
+    {
+      output.push_back (rows.left (rows.indexOf (":")).toInt ());
+      output.push_back (rows.right (rows.length () - (rows.indexOf (":") + 1))
+                        .toInt ());
+    }
+
+  QString cols;
+  cols = selection.right (selection.length () - (selection.indexOf (",") + 1));
+  if (cols.left (1) == " ")
+    cols = cols.right (cols.length () - 1);
+
+  if (! cols.contains (":"))
+    {
+      // Only one row
+      output.push_back (cols.toInt ());
+      output.push_back (output.last ());
+    }
+  else
+    {
+      output.push_back (cols.left (cols.indexOf (":")).toInt ());
+      output.push_back (cols.right (cols.length () - (cols.indexOf (":") + 1))
+                        .toInt ());
+    }
 
   return output;
 }
 
-QList<QColor> variable_editor::default_colors ()
+QString
+variable_editor::selected_to_octave (void)
 {
-  QList<QColor> colorlist;
+  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
+  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QItemSelectionModel *sel = view->selectionModel ();
 
-  colorlist << qApp->palette ().color (QPalette::WindowText);
-  colorlist << qApp->palette ().color (QPalette::Base);
-  colorlist << qApp->palette ().color (QPalette::HighlightedText);
-  colorlist << qApp->palette ().color (QPalette::Highlight);
-  colorlist << qApp->palette ().color (QPalette::AlternateBase);
+  if (! sel->hasSelection ())
+    return name;  // Nothing selected
 
-  return colorlist;
+  QList<QModelIndex> indices = sel->selectedIndexes ();  // it's indices!
+
+  int32_t from_row = std::numeric_limits<int32_t>::max ();
+  int32_t to_row = 0;
+  int32_t from_col = std::numeric_limits<int32_t>::max ();
+  int32_t to_col = 0;
+
+  for (const auto& idx : indices)
+    {
+      from_row = std::min (from_row, idx.row ());
+      to_row = std::max (to_row, idx.row ());
+      from_col = std::min (from_col, idx.column ());
+      to_col = std::max (to_col, idx.column ());
+    }
+
+  QString rows = idx_to_expr (from_row, to_row);
+  QString cols = idx_to_expr (from_col, to_col);
+
+  // FIXME: Cells?
+  return QString ("%1 (%2, %3)").arg (name).arg (rows).arg (cols);
+}
+
+/// Also updates the font
+void variable_editor::update_colors (void)
+{
+  m_stylesheet = "";
+  m_stylesheet += "QTableView::item{ foreground-color: "
+    + m_table_colors[0].name () +" }";
+  m_stylesheet += "QTableView::item{ background-color: "
+    + m_table_colors[1].name () +" }";
+  m_stylesheet += "QTableView::item{ selection-color: "
+    + m_table_colors[2].name () +" }";
+  m_stylesheet += "QTableView::item:selected{ background-color: "
+    + m_table_colors[3].name () +" }";
+  if (m_table_colors.length () > 4 && m_alternate_rows)
+    {
+      m_stylesheet += "QTableView::item:alternate{ background-color: "
+        + m_table_colors[4].name () +" }";
+      m_stylesheet += "QTableView::item:alternate:selected{ background-color: "
+        + m_table_colors[3].name () +" }";
+    }
+
+  if (m_tab_widget->count () < 1)
+    return;
+
+  for (int i=0; i < m_tab_widget->count (); i++)
+    {
+      QTableView *view = get_table_data (m_tab_widget).m_table;
+      view->setAlternatingRowColors (m_alternate_rows);
+      view->setStyleSheet (m_stylesheet);
+      view->setFont (m_font);
+    }
+
+}
+
+void
+variable_editor::construct_tool_bar (void)
+{
+  m_tool_bar->setObjectName ("VariableEditorToolBar");
+  m_tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
+
+  m_tool_bar->addAction (resource_manager::icon ("document-save"), tr ("Save"),
+                         this, SLOT (save ()));
+  m_tool_bar->addSeparator ();
+
+  m_tool_bar->addAction (resource_manager::icon ("edit-cut"), tr ("Cut"),
+                         this, SLOT (cutClipboard ()));
+  m_tool_bar->addAction (resource_manager::icon ("edit-copy"), tr ("Copy"),
+                         this, SLOT (copyClipboard ()));
+  m_tool_bar->addAction (resource_manager::icon ("edit-paste"), tr ("Paste"),
+                         this, SLOT (pasteClipboard ()));
+  // FIXME: Different icon for Paste Table?
+  m_tool_bar->addAction (resource_manager::icon ("edit-paste"), tr ("Paste Table"),
+                         this, SLOT (pasteTableClipboard ()));
+  m_tool_bar->addSeparator ();
+
+  // FIXME: Add a print item?
+  //QAction *print_action; /icons/fileprint.png
+  //m_tool_bar->addSeparator ();
+
+  QToolButton *plot_tool_button = new QToolButton (m_tool_bar);
+  plot_tool_button->setText (tr ("Plot"));
+  plot_tool_button->setIcon (resource_manager::icon ("applications-system"));
+
+  plot_tool_button->setPopupMode (QToolButton::InstantPopup);
+
+  QMenu *plot_menu = new QMenu (tr ("Plot"), plot_tool_button);
+  plot_menu->setSeparatorsCollapsible (false);
+  QSignalMapper *plot_mapper = new QSignalMapper (plot_menu);
+  plot_mapper->setMapping (plot_menu->addAction ("plot",
+                                                 plot_mapper,
+                                                 SLOT (map ())),
+                           "figure (); plot (%1);");
+  plot_mapper->setMapping (plot_menu->addAction ("bar",
+                                                 plot_mapper,
+                                                 SLOT (map ())),
+                           "figure (); bar (%1);");
+  plot_mapper->setMapping (plot_menu->addAction ("stem",
+                                                 plot_mapper,
+                                                 SLOT (map ())),
+                           "figure (); stem (%1);");
+  plot_mapper->setMapping (plot_menu->addAction ("stairs",
+                                                 plot_mapper,
+                                                 SLOT (map ())),
+                           "figure (); stairs (%1);");
+  plot_mapper->setMapping (plot_menu->addAction ("area",
+                                                 plot_mapper,
+                                                 SLOT (map ())),
+                           "figure (); area (%1);");
+  plot_mapper->setMapping (plot_menu->addAction ("pie",
+                                                 plot_mapper,
+                                                 SLOT (map ())),
+                           "figure (); pie (%1);");
+  plot_mapper->setMapping (plot_menu->addAction ("hist",
+                                                 plot_mapper,
+                                                 SLOT (map ())),
+                           "figure (); hist (%1);");
+  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+           this, SLOT (relay_command (const QString&)));
+
+  plot_tool_button->setMenu (plot_menu);
+  m_tool_bar->addWidget (plot_tool_button);
+
+  m_tool_bar->addSeparator ();
+  m_tool_bar->addAction (QIcon (resource_manager::icon ("go-up")), tr ("Up"),
+                         this, SLOT (up ()));
+
+  m_tool_bar->setEnabled (false);  // Disabled when no tab is present
 }

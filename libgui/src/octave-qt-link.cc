@@ -50,8 +50,8 @@ octave_qt_link::octave_qt_link (QWidget *,
                                 octave::gui_application *app_context)
   : octave_link (), m_app_context (app_context)
 {
-  _current_directory = "";
-  _new_dir = true;
+  m_current_directory = "";
+  m_new_dir = true;
 }
 
 bool
@@ -69,7 +69,7 @@ octave_qt_link::do_confirm_shutdown (void)
 
   mutex.unlock ();
 
-  return _shutdown_confirm_result;
+  return m_shutdown_confirm_result;
 }
 
 bool
@@ -410,15 +410,15 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 void
 octave_qt_link::do_change_directory (const std::string& dir)
 {
-  _current_directory = QString::fromStdString (dir);
-  _new_dir = true;
+  m_current_directory = QString::fromStdString (dir);
+  m_new_dir = true;
 }
 
 void
 octave_qt_link::update_directory ()
 {
-  emit change_directory_signal (_current_directory);
-  _new_dir = false;
+  emit change_directory_signal (m_current_directory);
+  m_new_dir = false;
 }
 
 void
@@ -435,7 +435,7 @@ octave_qt_link::do_set_workspace (bool top_level, bool debug,
   if (! top_level && ! debug)
     return;
 
-  if (_new_dir)
+  if (m_new_dir)
     update_directory ();
 
   QString scopes;
@@ -543,18 +543,6 @@ octave_qt_link::do_set_default_prompts (std::string& ps1, std::string& ps2,
     }
 }
 
-void
-octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
-{
-  emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
-}
-
-void
-octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
-{
-  emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
-}
-
 bool
 octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
 {
@@ -630,9 +618,15 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
 }
 
 void
-octave_qt_link::do_show_preferences ()
+octave_qt_link::do_show_preferences (void)
 {
   emit show_preferences_signal ();
+}
+
+void
+octave_qt_link::do_show_doc (const std::string& file)
+{
+  emit show_doc_signal (QString::fromStdString (file));
 }
 
 void
@@ -642,7 +636,13 @@ octave_qt_link::do_openvar (const std::string &expr)
 }
 
 void
-octave_qt_link::do_show_doc (const std::string& file)
+octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
 {
-  emit show_doc_signal (QString::fromStdString (file));
+  emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
+}
+
+void
+octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
+{
+  emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
 }

@@ -61,7 +61,7 @@ public:
     // Use the last button in the list as the reject result, i.e., when no
     // button is pressed such as in the case of the upper right close tab.
     if (! button.isEmpty ())
-      dialog_button = button.last ();
+      m_dialog_button = button.last ();
 
     QString xicon = icon;
     if (xicon.isEmpty ())
@@ -70,9 +70,9 @@ public:
     emit create_dialog (message, title, xicon, button, defbutton, role);
   };
 
-  int get_dialog_result (void) { return dialog_result; }
+  int get_dialog_result (void) { return m_dialog_result; }
 
-  QString get_dialog_button (void) { return dialog_button; }
+  QString get_dialog_button (void) { return m_dialog_button; }
 
   bool signal_listview (const QStringList& list, const QString& mode,
                         int wd, int ht, const QList<int>& initial,
@@ -88,7 +88,7 @@ public:
     return true;
   };
 
-  const QIntList * get_list_index (void) { return list_index; }
+  const QIntList * get_list_index (void) { return m_list_index; }
 
   bool signal_inputlayout (const QStringList& prompt, const QString& title,
                            const QFloatList& nr, const QFloatList& nc,
@@ -102,7 +102,7 @@ public:
     return true;
   };
 
-  const QStringList * get_string_list (void) { return string_list; }
+  const QStringList * get_string_list (void) { return m_string_list; }
 
   bool signal_filedialog (const QStringList& filters, const QString& title,
                           const QString& filename, const QString& dirname,
@@ -112,7 +112,7 @@ public:
     return true;
   }
 
-  const QString * get_dialog_path (void) { return path_name; }
+  const QString * get_dialog_path (void) { return m_path_name; }
 
   // GUI objects cannot be accessed in the non-GUI thread.  However,
   // signals can be sent to slots across threads with proper
@@ -149,16 +149,15 @@ public slots:
 
 private:
 
-  int dialog_result;
-  QString dialog_button;
+  int m_dialog_result;
+  QString m_dialog_button;
 
   // The list could conceivably be big.  Not sure how things are
   // stored internally, so keep off of the stack.
-  QStringList *string_list;
-  QIntList *list_index;
+  QStringList *m_string_list;
+  QIntList *m_list_index;
 
-  QString *path_name;
-
+  QString *m_path_name;
 };
 
 extern QUIWidgetCreator uiwidget_creator;
@@ -215,7 +214,7 @@ public slots:
 
 private:
 
-  QAbstractItemModel *model;
+  QAbstractItemModel *m_model;
 };
 
 class InputDialog : public QDialog
@@ -259,9 +258,9 @@ signals:
 
 private slots:
 
-  void rejectSelection (void);
-
   void acceptSelection (void);
+
+  void rejectSelection (void);
 };
 
 #endif

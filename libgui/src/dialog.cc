@@ -45,16 +45,16 @@ along with Octave; see the file COPYING.  If not, see
 QUIWidgetCreator uiwidget_creator;
 
 QUIWidgetCreator::QUIWidgetCreator (void)
-  : QObject (), dialog_result (-1), dialog_button (),
-    string_list (new QStringList ()), list_index (new QIntList ()),
-    path_name (new QString ())
+  : QObject (), m_dialog_result (-1), m_dialog_button (),
+    m_string_list (new QStringList ()), m_list_index (new QIntList ()),
+    m_path_name (new QString ())
 { }
 
 QUIWidgetCreator::~QUIWidgetCreator (void)
 {
-  delete string_list;
-  delete list_index;
-  delete path_name;
+  delete m_string_list;
+  delete m_list_index;
+  delete m_path_name;
 }
 
 void
@@ -65,10 +65,10 @@ QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
 
   // Store the value so that builtin functions can retrieve.
   if (button)
-    dialog_button = button->text ();
+    m_dialog_button = button->text ();
 
   // The value should always be 1 for the Octave functions.
-  dialog_result = 1;
+  m_dialog_result = 1;
 
   mutex.unlock ();
 
@@ -84,8 +84,8 @@ QUIWidgetCreator::list_select_finished (const QIntList& selected,
   mutex.lock ();
 
   // Store the value so that builtin functions can retrieve.
-  *list_index = selected;
-  dialog_result = button_pressed;
+  *m_list_index = selected;
+  m_dialog_result = button_pressed;
 
   mutex.unlock ();
 
@@ -100,8 +100,8 @@ QUIWidgetCreator::input_finished (const QStringList& input, int button_pressed)
   mutex.lock ();
 
   // Store the value so that builtin functions can retrieve.
-  *string_list = input;
-  dialog_result = button_pressed;
+  *m_string_list = input;
+  m_dialog_result = button_pressed;
 
   mutex.unlock ();
 
@@ -117,9 +117,9 @@ QUIWidgetCreator::filedialog_finished (const QStringList& files,
   mutex.lock ();
 
   // Store the value so that builtin functions can retrieve.
-  *string_list = files;
-  dialog_result = filterindex;
-  *path_name = path;
+  *m_string_list = files;
+  m_dialog_result = filterindex;
+  *m_path_name = path;
 
   mutex.unlock ();
 
@@ -200,10 +200,10 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
                         int wd, int ht, const QList<int>& initial,
                         const QString& title, const QStringList& prompt,
                         const QString& ok_string, const QString& cancel_string)
-  : QDialog (), model (new QStringListModel (list))
+  : QDialog (), m_model (new QStringListModel (list))
 {
   QListView *view = new QListView;
-  view->setModel (model);
+  view->setModel (m_model);
 
   if (mode == "single")
     view->setSelectionMode (QAbstractItemView::SingleSelection);
@@ -217,8 +217,8 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   for (QList<int>::const_iterator it = initial.begin ();
        it != initial.end (); it++)
     {
-      QModelIndex idx = model->index (initial.value (i++) - 1, 0,
-                                      QModelIndex ());
+      QModelIndex idx = m_model->index (initial.value (i++) - 1, 0,
+                                        QModelIndex ());
       selector->select (idx, QItemSelectionModel::Select);
     }
 
@@ -299,7 +299,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
 
 ListDialog::~ListDialog (void)
 {
-  delete model;
+  delete m_model;
 }
 
 void

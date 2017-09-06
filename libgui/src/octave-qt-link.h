@@ -56,7 +56,13 @@ public:
 
   octave_qt_link (QWidget *p, octave::gui_application *app_context);
 
-  ~octave_qt_link (void) { }
+  // No copying!
+
+  octave_qt_link (const octave_qt_link&) = delete;
+
+  octave_qt_link& operator = (const octave_qt_link&) = delete;
+
+  ~octave_qt_link (void) = default;
 
   bool do_confirm_shutdown (void);
 
@@ -102,6 +108,8 @@ public:
 
   void do_change_directory (const std::string& dir);
 
+  void update_directory (void);
+
   void do_execute_command_in_terminal (const std::string& command);
 
   void do_set_workspace (bool top_level, bool debug,
@@ -133,28 +141,24 @@ public:
 
   void do_show_doc (const std::string& file);
 
+  void do_openvar (const std::string &name);
+
+  void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
+
   QMutex mutex;
   QWaitCondition waitcondition;
-  void shutdown_confirmation (bool sd) {_shutdown_confirm_result = sd;}
 
-  void update_directory (void);
-
-  void do_openvar (const std::string &name);
 private:
-
-  bool _shutdown_confirm_result;
-
-  octave_qt_link (const octave_qt_link&);
-
-  octave_qt_link& operator = (const octave_qt_link&);
 
   void do_insert_debugger_pointer (const std::string& file, int line);
   void do_delete_debugger_pointer (const std::string& file, int line);
 
   octave::gui_application *m_app_context;
 
-  QString _current_directory;
-  bool    _new_dir;
+  bool m_shutdown_confirm_result;
+
+  QString m_current_directory;
+  bool m_new_dir;
 
 signals:
 

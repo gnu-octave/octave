@@ -738,4 +738,4 @@ endfunction
 %!testif HAVE_SUNDIALS
 %! A = zeros (2);
 %! fail ("ode15s (@(t, y) A * y, [0, 1], eye (2))",
-%!       "ode15s: YP0 must be a numeric vector");
+%!       "ode15s: Y0 must be a numeric vector");

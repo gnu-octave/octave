@@ -937,15 +937,14 @@ main_window::confirm_shutdown_octave (void)
     }
 
   // Wait for link thread to go to sleep state.
-  _octave_qt_link->mutex.lock ();
+  _octave_qt_link->lock ();
 
   _octave_qt_link->shutdown_confirmation (closenow);
 
-  _octave_qt_link->mutex.unlock ();
+  _octave_qt_link->unlock ();
 
   // Awake the worker thread so that it continues shutting down (or not).
-  _octave_qt_link->waitcondition.wakeAll ();
-
+  _octave_qt_link->wake_all ();
 }
 
 void

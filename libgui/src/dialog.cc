@@ -61,7 +61,7 @@ void
 QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
 {
   // Wait for link thread to go to sleep state.
-  mutex.lock ();
+  lock ();
 
   // Store the value so that builtin functions can retrieve.
   if (button)
@@ -70,10 +70,10 @@ QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
   // The value should always be 1 for the Octave functions.
   m_dialog_result = 1;
 
-  mutex.unlock ();
+  unlock ();
 
   // Wake up Octave process so that it continues.
-  waitcondition.wakeAll ();
+  wake_all ();
 }
 
 void
@@ -81,32 +81,32 @@ QUIWidgetCreator::list_select_finished (const QIntList& selected,
                                         int button_pressed)
 {
   // Wait for link thread to go to sleep state.
-  mutex.lock ();
+  lock ();
 
   // Store the value so that builtin functions can retrieve.
   *m_list_index = selected;
   m_dialog_result = button_pressed;
 
-  mutex.unlock ();
+  unlock ();
 
   // Wake up Octave process so that it continues.
-  waitcondition.wakeAll ();
+  wake_all ();
 }
 
 void
 QUIWidgetCreator::input_finished (const QStringList& input, int button_pressed)
 {
   // Wait for link thread to go to sleep state.
-  mutex.lock ();
+  lock ();
 
   // Store the value so that builtin functions can retrieve.
   *m_string_list = input;
   m_dialog_result = button_pressed;
 
-  mutex.unlock ();
+  unlock ();
 
   // Wake up Octave process so that it continues.
-  waitcondition.wakeAll ();
+  wake_all ();
 }
 
 void
@@ -114,17 +114,17 @@ QUIWidgetCreator::filedialog_finished (const QStringList& files,
                                        const QString& path, int filterindex)
 {
   // Wait for link thread to go to sleep state.
-  mutex.lock ();
+  lock ();
 
   // Store the value so that builtin functions can retrieve.
   *m_string_list = files;
   m_dialog_result = filterindex;
   *m_path_name = path;
 
-  mutex.unlock ();
+  unlock ();
 
   // Wake up Octave process so that it continues.
-  waitcondition.wakeAll ();
+  wake_all ();
 }
 
 MessageDialog::MessageDialog (const QString& message,

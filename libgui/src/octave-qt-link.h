@@ -145,8 +145,10 @@ public:
 
   void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
 
-  QMutex mutex;
-  QWaitCondition waitcondition;
+  void lock (void) { m_mutex.lock (); }
+  void wait (void) { m_waitcondition.wait (&m_mutex); }
+  void unlock (void) { m_mutex.unlock (); }
+  void wake_all (void) { m_waitcondition.wakeAll (); }
 
 private:
 
@@ -159,6 +161,9 @@ private:
 
   QString m_current_directory;
   bool m_new_dir;
+
+  QMutex m_mutex;
+  QWaitCondition m_waitcondition;
 
 signals:
 

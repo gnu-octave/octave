@@ -282,55 +282,6 @@ namespace octave
     extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatRowVector& alpha,
                                                    const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API double betainc (double x, double a, double b);
-    extern OCTAVE_API Array<double> betainc (double x, double a,
-                                             const Array<double>& b);
-    extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a,
-                                             double b);
-    extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a,
-                                             const Array<double>& b);
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a,
-                                             double b);
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a,
-                                             const Array<double>& b);
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x,
-                                             const Array<double>& a, double b);
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x,
-                                             const Array<double>& a, const Array<double>& b);
-
-    extern OCTAVE_API float betainc (float x, float a, float b);
-    extern OCTAVE_API Array<float> betainc (float x, float a,
-                                            const Array<float>& b);
-    extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a,
-                                            float b);
-    extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a,
-                                            const Array<float>& b);
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a,
-                                            float b);
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a,
-                                            const Array<float>& b);
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x,
-                                            const Array<float>& a, float b);
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x,
-                                            const Array<float>& a, const Array<float>& b);
-
-    extern OCTAVE_API double betaincinv (double x, double a, double b);
-    extern OCTAVE_API Array<double> betaincinv (double x, double a,
-                                                const Array<double>& b);
-    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
-                                                double b);
-    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
-                                                const Array<double>& b);
-
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
-                                                double b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
-                                                const Array<double>& b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
-                                                const Array<double>& a, double b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
-                                                const Array<double>& a, const Array<double>& b);
-
     extern OCTAVE_API Complex biry (const Complex& z, bool deriv, bool scaled,
                                     octave_idx_type& ierr);
     extern OCTAVE_API ComplexMatrix biry (const ComplexMatrix& z, bool deriv,
@@ -771,42 +722,6 @@ extern OCTAVE_API FloatComplexNDArray airy (const FloatComplexNDArray& z, bool d
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::biry' instead")
 extern OCTAVE_API FloatComplexNDArray biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-inline double betainc (double x, double a, double b) { return octave::math::betainc (x, a, b); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<double> betainc (double x, double a, const Array<double>& b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a, double b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a, const Array<double>& b);
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-inline float betainc (float x, float a, float b) { return octave::math::betainc (x, a, b); }
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a, const Array<double>& b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<double> betainc (const Array<double>& x, const Array<double>& a, double b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<double> betainc (const Array<double>& x, const Array<double>& a, const Array<double>& b);
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API float betainc (float x, float a, float b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<float> betainc (float x, float a, const Array<float>& b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a, float b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a, const Array<float>& b);
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a, float b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a, const Array<float>& b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<float> betainc (const Array<float>& x, const Array<float>& a, float b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betainc' instead")
-extern OCTAVE_API Array<float> betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b);
-
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::gammainc' instead")
 inline double gammainc (double x, double a, bool& err) { return octave::math::gammainc (x, a, err); }
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::gammainc' instead")
@@ -886,27 +801,6 @@ OCTAVE_DEPRECATED (4.2, "use 'octave::math::dawson' instead")
 inline Complex dawson (const Complex& x) { return octave::math::dawson (x); }
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::dawson' instead")
 inline FloatComplex dawson (const FloatComplex& x) { return octave::math::dawson (x); }
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-inline double betaincinv (double x, double a, double b) { return octave::math::betaincinv (x, a, b); }
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API double betaincinv (double x, double a, double b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API Array<double> betaincinv (double x, double a, const Array<double>& b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a, double b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a, const Array<double>& b);
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, double b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, const Array<double>& b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, double b);
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::betaincinv' instead")
-extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b);
 
 OCTAVE_DEPRECATED (4.2, "use 'octave::math::ellipj' instead")
 inline void ellipj (double u, double m, double& sn, double& cn, double& dn, double& err) { octave::math::ellipj (u, m, sn, cn, dn, err); }

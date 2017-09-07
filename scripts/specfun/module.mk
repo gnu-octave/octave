@@ -2,6 +2,8 @@ FCN_FILE_DIRS += scripts/specfun
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/beta.m \
+  %reldir%/betainc.m \
+  %reldir%/betaincinv.m \
   %reldir%/betaln.m \
   %reldir%/ellipke.m \
   %reldir%/expint.m \

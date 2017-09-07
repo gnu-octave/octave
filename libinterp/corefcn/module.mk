@@ -107,6 +107,7 @@ NOINSTALL_COREFCN_INC = \
 
 COREFCN_SRC = \
   %reldir%/Cell.cc \
+  %reldir%/__betainc_lentz__.cc \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
   %reldir%/__gammainc_lentz__.cc \
@@ -119,7 +120,6 @@ COREFCN_SRC = \
   %reldir%/__qp__.cc \
   %reldir%/balance.cc \
   %reldir%/besselj.cc \
-  %reldir%/betainc.cc \
   %reldir%/bitfcns.cc \
   %reldir%/bsxfun.cc \
   %reldir%/c-file-ptr-stream.cc \

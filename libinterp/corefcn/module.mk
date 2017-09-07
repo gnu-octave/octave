@@ -110,6 +110,7 @@ COREFCN_SRC = \
   %reldir%/__betainc_lentz__.cc \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
+  %reldir%/__expint_lentz__.cc \
   %reldir%/__gammainc_lentz__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \

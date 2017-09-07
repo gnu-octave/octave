@@ -11,8 +11,6 @@ EXTERNAL_SOURCES += \
   %reldir%/d9lgmc.f \
   %reldir%/dbetai.f \
   %reldir%/dcsevl.f \
-  %reldir%/dgami.f \
-  %reldir%/dgamit.f \
   %reldir%/dgamlm.f \
   %reldir%/dgamma.f \
   %reldir%/dgamr.f \
@@ -23,8 +21,6 @@ EXTERNAL_SOURCES += \
   %reldir%/dpchim.f \
   %reldir%/dpchst.f \
   %reldir%/dpsifn.f \
-  %reldir%/gami.f \
-  %reldir%/gamit.f \
   %reldir%/gamlim.f \
   %reldir%/gamma.f \
   %reldir%/gamr.f \
@@ -38,10 +34,6 @@ EXTERNAL_SOURCES += \
   %reldir%/r9gmit.f \
   %reldir%/r9lgic.f \
   %reldir%/xdbetai.f \
-  %reldir%/xdgami.f \
-  %reldir%/xdgamit.f \
-  %reldir%/xgmainc.f \
-  %reldir%/xsgmainc.f \
   %reldir%/xbetai.f
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

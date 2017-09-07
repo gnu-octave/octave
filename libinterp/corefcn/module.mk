@@ -109,6 +109,7 @@ COREFCN_SRC = \
   %reldir%/Cell.cc \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
+  %reldir%/__gammainc_lentz__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \
   %reldir%/__lin_interpn__.cc \
@@ -155,7 +156,6 @@ COREFCN_SRC = \
   %reldir%/filter.cc \
   %reldir%/find.cc \
   %reldir%/ft-text-renderer.cc \
-  %reldir%/gammainc.cc \
   %reldir%/gcd.cc \
   %reldir%/getgrent.cc \
   %reldir%/getpwent.cc \

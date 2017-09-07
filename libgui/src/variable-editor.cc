@@ -129,11 +129,8 @@ variable_editor::variable_editor (QWidget *p)
 
 variable_editor::~variable_editor (void)
 {
-  // FIXME: This doesn't work yet.
-  //
-  //  delete m_main;
-  //  delete m_tool_bar;
-  //  delete m_tab_widget;
+  // m_tool_bar and m_tab_widget are contained within m_main
+  delete m_main;
 }
 
 void

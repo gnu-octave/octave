@@ -13,3 +13,21 @@ John W. Eaton
 jwe@octave.org
 
 Wed Nov 11 17:29:50 1998
+
+More files have been modified to recover Matlab compatibility for
+Bessel functions. Now the output is always computed, independently
+from the magnitude of the input
+
+  cbesh.f
+  cbesi.f
+  cbesj.f
+  cbesk.f
+  zbesh.f
+  zbesi.f
+  zbesj.f
+  zbesk.f
+
+Michele Ginesi
+michele.ginesi@gmail.com
+
+Sat Jul 22 11:43:40 2017

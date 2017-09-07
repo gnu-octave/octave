@@ -200,6 +200,7 @@ C-----------------------------------------------------------------------
 C     CALCULATE CSGN=EXP(FNU*HPI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE
 C     WHEN FNU IS LARGE
 C-----------------------------------------------------------------------
+  35  CONTINUE
       CII = 1.0D0
       INU = INT(SNGL(FNU))
       INUH = INU/2
@@ -260,7 +261,7 @@ C       CYR(I) = STR
       IERR=5
       RETURN
   260 CONTINUE
-      NZ=0
       IERR=4
+      GO TO 35
       RETURN
       END

@@ -335,7 +335,7 @@ Loss of significance by argument reduction results in less than half of machine
 accuracy.
 
 @item
-Complete loss of significance by argument reduction, return @code{NaN}.
+Loss of significance by argument reduction, output may be inaccurate.
 
 @item
 Error---no computation, algorithm termination condition not met, return
@@ -648,7 +648,7 @@ Loss of significance by argument reduction results in less than half
  of machine accuracy.
 
 @item
-Complete loss of significance by argument reduction, return @code{NaN}.
+Loss of significance by argument reduction, output may be inaccurate.
 
 @item
 Error---no computation, algorithm termination condition not met,

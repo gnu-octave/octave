@@ -220,6 +220,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     OVERFLOW TEST ON THE LAST MEMBER OF THE SEQUENCE
 C-----------------------------------------------------------------------
+   35 CONTINUE
       UFL = D1MACH(1)*1.0D+3
       IF (AZ.LT.UFL) GO TO 230
       IF (FNU.GT.FNUL) GO TO 90
@@ -342,7 +343,6 @@ C       ZNR = STR
       IERR=5
       RETURN
   260 CONTINUE
-      NZ=0
       IERR=4
-      RETURN
+      GO TO 35
       END

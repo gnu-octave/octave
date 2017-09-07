@@ -36,7 +36,8 @@ class octave_qscintilla : public QsciScintilla
 public:
 
   octave_qscintilla (QWidget *p);
-  ~octave_qscintilla ();
+
+  ~octave_qscintilla (void) = default;
 
   enum
     {
@@ -48,13 +49,13 @@ public:
   virtual void contextMenuEvent (QContextMenuEvent *e);
 
   void context_help_doc (bool);
-  void context_edit ();
-  void context_run ();
+  void context_edit (void);
+  void context_run (void);
   void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
-  bool get_actual_word ();
+  bool get_actual_word (void);
   void clear_indicator (int indicator_style);
   void get_current_position (int *pos, int *line, int *col);
-  QString comment_string ();
+  QString comment_string (void);
   int get_style (int pos = -1);
   int is_style_comment (int pos = -1);
   void smart_indent (bool do_smart_indent, int do_auto_close, int line);
@@ -65,7 +66,7 @@ signals:
   void create_context_menu_signal (QMenu*);
   void context_menu_edit_signal (const QString&);
   void qsci_has_focus_signal (bool);
-  void status_update (bool,bool);
+  void status_update (bool, bool);
   void show_doc_signal (const QString&);
   void context_menu_break_condition_signal (int);
   void context_menu_break_once (int);
@@ -92,8 +93,7 @@ private:
   void auto_close (int auto_endif, int l,
                    const QString& line, QString& first_word);
 
-  QString _word_at_cursor;
-
+  QString m_word_at_cursor;
 };
 
 #endif

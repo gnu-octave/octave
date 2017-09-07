@@ -28,115 +28,102 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "marker.h"
 
-
 marker::marker (QsciScintilla *area, int original_linenr, editor_markers type,
-                int editor_linenr, const QString& condition) : QObject ()
+                int editor_linenr, const QString& condition)
+  : QObject ()
 {
   construct (area, original_linenr, type, editor_linenr, condition);
 }
 
-
 marker::marker (QsciScintilla *area, int original_linenr,
-                editor_markers type, const QString& condition) : QObject ()
+                editor_markers type, const QString& condition)
+  : QObject ()
 {
   construct (area, original_linenr, type, original_linenr - 1, condition);
 }
-
-
-marker::~marker (void)
-{ }
-
 
 void
 marker::construct (QsciScintilla *area, int original_linenr,
                    editor_markers type, int editor_linenr,
                    const QString& condition)
 {
-  _edit_area = area;
-  _original_linenr = original_linenr;
-  _marker_type = type;
-  _mhandle = _edit_area->markerAdd (editor_linenr, _marker_type);
-  _condition = condition;
+  m_edit_area = area;
+  m_original_linenr = original_linenr;
+  m_marker_type = type;
+  m_mhandle = m_edit_area->markerAdd (editor_linenr, m_marker_type);
+  m_condition = condition;
 }
-
 
 void
 marker::handle_remove_via_original_linenr (int linenr)
 {
-  if (_original_linenr == linenr)
+  if (m_original_linenr == linenr)
     {
-      _edit_area->markerDeleteHandle (_mhandle);
+      m_edit_area->markerDeleteHandle (m_mhandle);
       delete this;
     }
 }
-
 
 void
 marker::handle_request_remove_via_editor_linenr (int linenr)
 {
   // Get line number from the edit area and if it matches
   // the requested line number, remove.
-  if (_edit_area->markerLine (_mhandle) == linenr)
+  if (m_edit_area->markerLine (m_mhandle) == linenr)
     {
       // Rather than delete editor marker directly, issue command
       // to Octave core.  Octave core should signal back to remove
       // this breakpoint via debugger line number.
-      emit request_remove (_original_linenr);
+      emit request_remove (m_original_linenr);
     }
 }
-
 
 void
 marker::handle_remove (void)
 {
-  _edit_area->markerDeleteHandle (_mhandle);
+  m_edit_area->markerDeleteHandle (m_mhandle);
   delete this;
 }
-
 
 void
 marker::handle_find_translation (int linenr, int& translation_linenr,
                                  marker *& bp)
 {
-  if (_original_linenr == linenr)
+  if (m_original_linenr == linenr)
     {
-      translation_linenr = _edit_area->markerLine (_mhandle);
+      translation_linenr = m_edit_area->markerLine (m_mhandle);
       bp = this;
     }
 }
-
 
 void
 marker::handle_find_just_before (int linenr, int& original_linenr,
                                  int& editor_linenr)
 {
-  if (_original_linenr < linenr && _original_linenr >= original_linenr)
+  if (m_original_linenr < linenr && m_original_linenr >= original_linenr)
     {
-      original_linenr = _original_linenr;
-      editor_linenr = _edit_area->markerLine (_mhandle);
+      original_linenr = m_original_linenr;
+      editor_linenr = m_edit_area->markerLine (m_mhandle);
     }
 }
-
 
 void
 marker::handle_find_just_after (int linenr, int& original_linenr,
                                 int& editor_linenr)
 {
-  if (_original_linenr > linenr && _original_linenr <= original_linenr)
+  if (m_original_linenr > linenr && m_original_linenr <= original_linenr)
     {
-      original_linenr = _original_linenr;
-      editor_linenr = _edit_area->markerLine (_mhandle);
+      original_linenr = m_original_linenr;
+      editor_linenr = m_edit_area->markerLine (m_mhandle);
     }
 }
-
 
 void
 marker::handle_report_editor_linenr (QIntList& lines, QStringList& conditions)
 {
-  lines << _edit_area->markerLine (_mhandle);
-  conditions << _condition;
+  lines << m_edit_area->markerLine (m_mhandle);
+  conditions << m_condition;
 }
-
 
 void
 marker::handle_marker_line_deleted (int mhandle)
@@ -146,20 +133,18 @@ marker::handle_marker_line_deleted (int mhandle)
   // of knowing this.  QsciScintilla will place the marker at a
   // different line rather than remove it from the margin.  I (DJS) will
   // lobby for such a signal.
-  if (_mhandle == mhandle)
+  if (m_mhandle == mhandle)
     {
-      if (_marker_type == breakpoint || _marker_type == debugger_position)
+      if (m_marker_type == breakpoint || m_marker_type == debugger_position)
         {
-          int editor_linenr = _edit_area->markerLine (_mhandle);
-          _edit_area->markerDeleteHandle (_mhandle);
-          _marker_type = (_marker_type == breakpoint
-                          ? unsure_breakpoint
-                          : unsure_debugger_position);
-          _mhandle = _edit_area->markerAdd (editor_linenr, _marker_type);
+          int editor_linenr = m_edit_area->markerLine (m_mhandle);
+          m_edit_area->markerDeleteHandle (m_mhandle);
+          m_marker_type = (m_marker_type == breakpoint
+                           ? unsure_breakpoint : unsure_debugger_position);
+          m_mhandle = m_edit_area->markerAdd (editor_linenr, m_marker_type);
         }
     }
 }
-
 
 void
 marker::handle_marker_line_undeleted (int mhandle)
@@ -169,17 +154,16 @@ marker::handle_marker_line_undeleted (int mhandle)
   // of knowing this.  QsciScintilla will place the marker at a
   // different line rather than remove it from the margin.  I (DJS) will
   // lobby for such a signal.
-  if (_mhandle == mhandle)
+  if (m_mhandle == mhandle)
     {
-      if (_marker_type == unsure_breakpoint
-          || _marker_type == unsure_debugger_position)
+      if (m_marker_type == unsure_breakpoint
+          || m_marker_type == unsure_debugger_position)
         {
-          int editor_linenr = _edit_area->markerLine (_mhandle);
-          _edit_area->markerDeleteHandle (_mhandle);
-          _marker_type = (_marker_type == unsure_breakpoint
-                          ? breakpoint
-                          : debugger_position);
-          _mhandle = _edit_area->markerAdd (editor_linenr, _marker_type);
+          int editor_linenr = m_edit_area->markerLine (m_mhandle);
+          m_edit_area->markerDeleteHandle (m_mhandle);
+          m_marker_type = (m_marker_type == unsure_breakpoint
+                           ? breakpoint : debugger_position);
+          m_mhandle = m_edit_area->markerAdd (editor_linenr, m_marker_type);
         }
     }
 }

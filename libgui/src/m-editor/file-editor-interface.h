@@ -33,17 +33,18 @@ class file_editor_interface : public octave_dock_widget
   Q_OBJECT
 
 public:
+
   file_editor_interface (QWidget *p)
     : octave_dock_widget (p)
   {
     setObjectName ("FileEditor");
   }
 
-  virtual ~file_editor_interface () { }
+  virtual ~file_editor_interface (void) = default;
 
-  virtual QMenu * get_mru_menu () = 0;
-  virtual QMenu * debug_menu () = 0;
-  virtual QToolBar * toolbar () = 0;
+  virtual QMenu * get_mru_menu (void) = 0;
+  virtual QMenu * debug_menu (void) = 0;
+  virtual QToolBar * toolbar (void) = 0;
 
   virtual void insert_global_actions (QList<QAction*>) = 0;
   virtual void handle_enter_debug_mode (void) = 0;
@@ -70,7 +71,9 @@ public:
   virtual void enable_menu_shortcuts (bool enable) = 0;
 
 public slots:
+
   virtual void request_new_file (const QString& command = QString ()) = 0;
+
   virtual void request_open_file (const QString& openFileName,
                                   const QString& encoding = QString (),
                                   int line = -1,
@@ -78,12 +81,6 @@ public slots:
                                   bool breakpoint_marker = false,
                                   bool insert = true,
                                   const QString& cond = "") = 0;
-//signals:
-
-//protected:
-
-//protected slots:
-
 };
 
 #endif

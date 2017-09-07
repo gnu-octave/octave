@@ -39,9 +39,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
 
-//
+
 // subclassed QTabBar for usable tab-bar and reimplemented mouse event
-//
+
 class file_editor_tab_bar : public QTabBar
 {
   Q_OBJECT
@@ -49,7 +49,9 @@ class file_editor_tab_bar : public QTabBar
 public:
 
   file_editor_tab_bar (QWidget *p);
-  ~file_editor_tab_bar ();
+
+  ~file_editor_tab_bar (void);
+
   void create_context_menu (QList<QAction*> *actions);
 
 signals:
@@ -62,13 +64,11 @@ protected:
 
 private:
 
-  QMenu *_context_menu;
+  QMenu *m_context_menu;
 };
 
-
-//
 // subclassed QTabWidget for using custom tabbar
-//
+
 class file_editor_tab_widget : public QTabWidget
 {
   Q_OBJECT
@@ -76,16 +76,14 @@ class file_editor_tab_widget : public QTabWidget
 public:
 
   file_editor_tab_widget (QWidget *p);
-  ~file_editor_tab_widget ();
 
-  QTabBar * tabBar () const;
+  ~file_editor_tab_widget (void) = default;
 
+  QTabBar * tabBar (void) const;
 };
 
-
-//
 // the class for the file editor
-//
+
 class file_editor : public file_editor_interface
 {
   Q_OBJECT
@@ -95,7 +93,7 @@ public:
   struct tab_info
   {
     QWidget *fet_ID;
-    QString  encoding;
+    QString encoding;
   };
 
   typedef std::map<QString, tab_info>::iterator editor_tab_map_iterator;
@@ -115,15 +113,17 @@ public:
   };
 
   file_editor (QWidget *p);
+
   ~file_editor (void);
 
-  void loadFile (const QString& fileName);
+  QMenu * get_mru_menu (void) { return m_mru_file_menu; }
 
-  QMenu * get_mru_menu (void) { return _mru_file_menu; }
-  QMenu * debug_menu (void);
-  QToolBar * toolbar (void);
+  QMenu * debug_menu (void) { return m_debug_menu; }
+
+  QToolBar * toolbar (void) { return m_tool_bar; }
 
   void insert_global_actions (QList<QAction*>);
+
   enum shared_actions_idx
   {
     NEW_SCRIPT_ACTION = 0,
@@ -197,7 +197,7 @@ signals:
   void request_settings_dialog (const QString&);
   void execute_command_in_terminal_signal (const QString&);
   void request_open_file_external (const QString& file_name, int line);
-  void file_loaded_signal ();
+  void file_loaded_signal (void);
 
 public slots:
 
@@ -287,7 +287,7 @@ public slots:
   // Tells the editor to react on changed settings.
   void notice_settings (const QSettings *settings);
 
-  void set_shortcuts ();
+  void set_shortcuts (void);
 
   void handle_visibility (bool visible);
 
@@ -295,10 +295,10 @@ public slots:
 
 protected slots:
 
-  void copyClipboard ();
-  void pasteClipboard ();
-  void selectAll ();
-  void do_undo ();
+  void copyClipboard (void);
+  void pasteClipboard (void);
+  void selectAll (void);
+  void do_undo (void);
 
 private slots:
 
@@ -322,10 +322,10 @@ private slots:
   void zoom_out (bool);
   void zoom_normal (bool);
 
-  void switch_left_tab ();
-  void switch_right_tab ();
-  void move_tab_left ();
-  void move_tab_right ();
+  void switch_left_tab (void);
+  void switch_right_tab (void);
+  void move_tab_left (void);
+  void move_tab_right (void);
 
   void create_context_menu (QMenu *);
   void edit_status_update (bool, bool);
@@ -338,10 +338,9 @@ protected:
 
 private:
 
-  bool is_editor_console_tabbed ();
+  bool is_editor_console_tabbed (void);
   void construct (void);
   void add_file_editor_tab (file_editor_tab *f, const QString& fn);
-  void save_file_as (QWidget *fetabID = nullptr);
   void mru_menu_update (void);
   bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
@@ -351,135 +350,135 @@ private:
 
   void handle_dir_remove (const QString& old_name, const QString& new_name);
 
-  bool editor_tab_has_focus ();
+  bool editor_tab_has_focus (void);
 
   QWidget * find_tab_widget (const QString& openFileName);
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                         const char *member);
 
-  QMenu * m_add_menu (QMenuBar *p, QString text);
+  QMenu * add_menu (QMenuBar *p, QString text);
 
-  std::map<QString, tab_info> editor_tab_map;
-  QHash<QMenu*, QStringList> _hash_menu_text;
+  std::map<QString, tab_info> m_editor_tab_map;
+  QHash<QMenu*, QStringList> m_hash_menu_text;
 
-  QString ced;
+  QString m_ced;
 
-  QMenuBar *_menu_bar;
-  QToolBar *_tool_bar;
-  QMenu *_debug_menu;
+  QMenuBar *m_menu_bar;
+  QToolBar *m_tool_bar;
+  QMenu *m_debug_menu;
 
-  QAction *_new_action;
-  QAction *_new_function_action;
-  QAction *_open_action;
+  QAction *m_new_action;
+  QAction *m_new_function_action;
+  QAction *m_open_action;
 
-  QAction *_upper_case_action;
-  QAction *_lower_case_action;
-  QAction *_comment_selection_action;
-  QAction *_uncomment_selection_action;
-  QAction *_indent_selection_action;
-  QAction *_unindent_selection_action;
-  QAction *_conv_eol_windows_action;
-  QAction *_conv_eol_unix_action;
-  QAction *_conv_eol_mac_action;
+  QAction *m_upper_case_action;
+  QAction *m_lower_case_action;
+  QAction *m_comment_selection_action;
+  QAction *m_uncomment_selection_action;
+  QAction *m_indent_selection_action;
+  QAction *m_unindent_selection_action;
+  QAction *m_conv_eol_windows_action;
+  QAction *m_conv_eol_unix_action;
+  QAction *m_conv_eol_mac_action;
 
-  QAction *_copy_action;
-  QAction *_cut_action;
-  QAction *_paste_action;
-  QAction *_selectall_action;
-  QAction *_context_help_action;
-  QAction *_context_doc_action;
+  QAction *m_copy_action;
+  QAction *m_cut_action;
+  QAction *m_paste_action;
+  QAction *m_selectall_action;
+  QAction *m_context_help_action;
+  QAction *m_context_doc_action;
 
-  QAction *_show_linenum_action;
-  QAction *_show_whitespace_action;
-  QAction *_show_eol_action;
-  QAction *_show_indguide_action;
-  QAction *_show_longline_action;
-  QAction *_show_toolbar_action;
-  QAction *_show_statusbar_action;
-  QAction *_show_hscrollbar_action;
-  QAction *_zoom_in_action;
-  QAction *_zoom_out_action;
-  QAction *_zoom_normal_action;
+  QAction *m_show_linenum_action;
+  QAction *m_show_whitespace_action;
+  QAction *m_show_eol_action;
+  QAction *m_show_indguide_action;
+  QAction *m_show_longline_action;
+  QAction *m_show_toolbar_action;
+  QAction *m_show_statusbar_action;
+  QAction *m_show_hscrollbar_action;
+  QAction *m_zoom_in_action;
+  QAction *m_zoom_out_action;
+  QAction *m_zoom_normal_action;
 
-  QAction *_delete_start_word_action;
-  QAction *_delete_end_word_action;
-  QAction *_delete_start_line_action;
-  QAction *_delete_end_line_action;
-  QAction *_delete_line_action;
-  QAction *_copy_line_action;
-  QAction *_cut_line_action;
-  QAction *_duplicate_selection_action;
-  QAction *_transpose_line_action;
+  QAction *m_delete_start_word_action;
+  QAction *m_delete_end_word_action;
+  QAction *m_delete_start_line_action;
+  QAction *m_delete_end_line_action;
+  QAction *m_delete_line_action;
+  QAction *m_copy_line_action;
+  QAction *m_cut_line_action;
+  QAction *m_duplicate_selection_action;
+  QAction *m_transpose_line_action;
 
-  QAction *_find_action;
-  QAction *_find_next_action;
-  QAction *_find_previous_action;
-  QAction *_find_files_action;
-  QAction *_goto_line_action;
-  QAction *_completion_action;
+  QAction *m_find_action;
+  QAction *m_find_next_action;
+  QAction *m_find_previous_action;
+  QAction *m_find_files_action;
+  QAction *m_goto_line_action;
+  QAction *m_completion_action;
 
-  QAction *_move_to_matching_brace;
-  QAction *_sel_to_matching_brace;
-  QAction *_next_bookmark_action;
-  QAction *_previous_bookmark_action;
-  QAction *_toggle_bookmark_action;
-  QAction *_remove_bookmark_action;
+  QAction *m_move_to_matching_brace;
+  QAction *m_sel_to_matching_brace;
+  QAction *m_next_bookmark_action;
+  QAction *m_previous_bookmark_action;
+  QAction *m_toggle_bookmark_action;
+  QAction *m_remove_bookmark_action;
 
-  QAction *_print_action;
-  QAction *_run_action;
-  QAction *_run_selection_action;
+  QAction *m_print_action;
+  QAction *m_run_action;
+  QAction *m_run_selection_action;
 
-  QAction *_edit_function_action;
-  QAction *_popdown_mru_action;
-  QAction *_save_action;
-  QAction *_save_as_action;
-  QAction *_close_action;
-  QAction *_close_all_action;
-  QAction *_close_others_action;
+  QAction *m_edit_function_action;
+  QAction *m_popdown_mru_action;
+  QAction *m_save_action;
+  QAction *m_save_as_action;
+  QAction *m_close_action;
+  QAction *m_close_all_action;
+  QAction *m_close_others_action;
 
-  QAction *_redo_action;
-  QAction *_undo_action;
+  QAction *m_redo_action;
+  QAction *m_undo_action;
 
-  QAction *_preferences_action;
-  QAction *_styles_preferences_action;
+  QAction *m_preferences_action;
+  QAction *m_styles_preferences_action;
 
-  QAction *_switch_left_tab_action;
-  QAction *_switch_right_tab_action;
-  QAction *_move_tab_left_action;
-  QAction *_move_tab_right_action;
+  QAction *m_switch_left_tab_action;
+  QAction *m_switch_right_tab_action;
+  QAction *m_move_tab_left_action;
+  QAction *m_move_tab_right_action;
 
-  QAction *_toggle_breakpoint_action;
-  QAction *_next_breakpoint_action;
-  QAction *_previous_breakpoint_action;
-  QAction *_remove_all_breakpoints_action;
+  QAction *m_toggle_breakpoint_action;
+  QAction *m_next_breakpoint_action;
+  QAction *m_previous_breakpoint_action;
+  QAction *m_remove_all_breakpoints_action;
 
-  QMenu *_edit_menu;
-  QMenu *_edit_cmd_menu;
-  QMenu *_edit_fmt_menu;
-  QMenu *_edit_nav_menu;
-  QMenu *_fileMenu;
-  QMenu *_view_editor_menu;
+  QMenu *m_edit_menu;
+  QMenu *m_edit_cmd_menu;
+  QMenu *m_edit_fmt_menu;
+  QMenu *m_edit_nav_menu;
+  QMenu *m_fileMenu;
+  QMenu *m_view_editor_menu;
 
-  QList<QAction*> _fetab_actions;
+  QList<QAction*> m_fetab_actions;
 
-  file_editor_tab_widget *_tab_widget;
+  file_editor_tab_widget *m_tab_widget;
 
-  int _marker_breakpoint;
+  int m_marker_breakpoint;
 
-  bool _closed;
-  bool _no_focus;
+  bool m_closed;
+  bool m_no_focus;
 
   enum { MaxMRUFiles = 10 };
-  QMenu *_mru_file_menu;
-  QAction *_mru_file_actions[MaxMRUFiles];
-  QStringList _mru_files;
-  QStringList _mru_files_encodings;
+  QMenu *m_mru_file_menu;
+  QAction *m_mru_file_actions[MaxMRUFiles];
+  QStringList m_mru_files;
+  QStringList m_mru_files_encodings;
 
   // List of temporarily closed files for later reloading.
   // Order: first closed old file
   //        first new location of closed file
   //        encoding to use for reload
-  QStringList _tmp_closed_files;
+  QStringList m_tmp_closed_files;
 };
 
 #endif

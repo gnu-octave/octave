@@ -42,13 +42,13 @@ octave_txt_lexer::description (int style) const
 };
 
 const char*
-octave_txt_lexer::language () const
+octave_txt_lexer::language (void) const
 {
   return "Text";
 }
 
 const char*
-octave_txt_lexer::lexer () const
+octave_txt_lexer::lexer (void) const
 {
   return "text";
 }

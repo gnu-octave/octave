@@ -52,10 +52,51 @@ along with Octave; see the file COPYING.  If not, see
 #include "shortcut-manager.h"
 #include "resource-manager.h"
 
+// Return true if CANDIDATE is a "closing" that matches OPENING,
+// such as "end" or "endif" for "if", or "catch" for "try".
+// Used for testing the last word of an "if" etc. line,
+// or the first word of the following line.
+static bool
+is_end (const QString& candidate, const QString& opening)
+{
+  bool retval = false;
+
+  if (opening == "do")          // The only one that can't be ended by "end"
+    {
+      if (candidate == "until")
+        retval = true;
+    }
+  else
+    {
+      if (candidate == "end")
+        retval =  true;
+      else
+        {
+          if (opening == "try")
+            {
+              if (candidate == "catch" || candidate == "end_try_catch")
+                retval = true;
+            }
+          else if (opening == "unwind_protect")
+            {
+              if (candidate == "unwind_protect_cleanup"
+                  || candidate == "end_unwind_protect")
+                retval = true;
+            }
+          else if (candidate == "end" + opening)
+            retval = true;
+          else if (opening == "if" && candidate == "else")
+            retval = true;
+        }
+    }
+
+  return retval;
+}
+
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p)
 {
-  connect (this, SIGNAL (textChanged ()), this, SLOT (text_changed ()));
+  connect (this, SIGNAL (textChanged (void)), this, SLOT (text_changed (void)));
 
   // clear scintilla edit shortcuts that are handled by the editor
   QsciCommandSet *cmd_set = standardCommands ();
@@ -149,58 +190,6 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
   emit status_update (isUndoAvailable (), isRedoAvailable ());
 }
 
-octave_qscintilla::~octave_qscintilla ()
-{ }
-
-void
-octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos,
-                                              QPoint *local_pos)
-{
-  long position = SendScintilla (SCI_GETCURRENTPOS);
-  long point_x  = SendScintilla
-                    (SCI_POINTXFROMPOSITION,0,position);
-  long point_y  = SendScintilla
-                    (SCI_POINTYFROMPOSITION,0,position);
-  *local_pos = QPoint (point_x,point_y);  // local cursor position
-  *global_pos = mapToGlobal (*local_pos); // global position of cursor
-}
-
-// determine the actual word and whether we are in an octave or matlab script
-bool
-octave_qscintilla::get_actual_word ()
-{
-  QPoint global_pos, local_pos;
-  get_global_textcursor_pos (&global_pos, &local_pos);
-  _word_at_cursor = wordAtPoint (local_pos);
-  QString lexer_name = lexer ()->lexer ();
-  return ((lexer_name == "octave" || lexer_name == "matlab")
-          && ! _word_at_cursor.isEmpty ());
-}
-
-// call documentation or help on the current word
-void
-octave_qscintilla::context_help_doc (bool documentation)
-{
-  if (get_actual_word ())
-    contextmenu_help_doc (documentation);
-}
-
-// call edit the function related to the current word
-void
-octave_qscintilla::context_edit ()
-{
-  if (get_actual_word ())
-    contextmenu_edit (true);
-}
-
-// call edit the function related to the current word
-void
-octave_qscintilla::context_run ()
-{
-  if (hasSelectedText ())
-    contextmenu_run (true);
-}
-
 // context menu requested
 void
 octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
@@ -246,15 +235,15 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
       QString lexer_name = lexer ()->lexer ();
       if (lexer_name == "octave" || lexer_name == "matlab")
         {
-          _word_at_cursor = wordAtPoint (local_pos);
-          if (! _word_at_cursor.isEmpty ())
+          m_word_at_cursor = wordAtPoint (local_pos);
+          if (! m_word_at_cursor.isEmpty ())
             {
-              context_menu->addAction (tr ("Help on") + ' ' + _word_at_cursor,
+              context_menu->addAction (tr ("Help on") + ' ' + m_word_at_cursor,
                                        this, SLOT (contextmenu_help (bool)));
               context_menu->addAction (tr ("Documentation on")
-                                       + ' ' + _word_at_cursor,
+                                       + ' ' + m_word_at_cursor,
                                        this, SLOT (contextmenu_doc (bool)));
-              context_menu->addAction (tr ("Edit") + ' ' + _word_at_cursor,
+              context_menu->addAction (tr ("Edit") + ' ' + m_word_at_cursor,
                                        this, SLOT (contextmenu_edit (bool)));
             }
         }
@@ -280,86 +269,80 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 #endif
 }
 
-// handle the menu entry for calling help or doc
-void
-octave_qscintilla::contextmenu_doc (bool)
-{
-  contextmenu_help_doc (true);
-}
-void
-octave_qscintilla::contextmenu_help (bool)
-{
-  contextmenu_help_doc (false);
-}
-
 // common function with flag for documentation
 void
 octave_qscintilla::contextmenu_help_doc (bool documentation)
 {
   if (documentation)
-    emit show_doc_signal (_word_at_cursor);
+    emit show_doc_signal (m_word_at_cursor);
   else
-    emit execute_command_in_terminal_signal ("help " + _word_at_cursor);
+    emit execute_command_in_terminal_signal ("help " + m_word_at_cursor);
+}
+
+// call edit the function related to the current word
+void
+octave_qscintilla::context_edit (void)
+{
+  if (get_actual_word ())
+    contextmenu_edit (true);
+}
+
+// call edit the function related to the current word
+void
+octave_qscintilla::context_run (void)
+{
+  if (hasSelectedText ())
+    contextmenu_run (true);
 }
 
 void
-octave_qscintilla::contextmenu_edit (bool)
+octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos,
+                                              QPoint *local_pos)
 {
-  emit context_menu_edit_signal (_word_at_cursor);
+  long position = SendScintilla (SCI_GETCURRENTPOS);
+  long point_x  = SendScintilla
+                    (SCI_POINTXFROMPOSITION,0,position);
+  long point_y  = SendScintilla
+                    (SCI_POINTYFROMPOSITION,0,position);
+  *local_pos = QPoint (point_x,point_y);  // local cursor position
+  *global_pos = mapToGlobal (*local_pos); // global position of cursor
 }
 
+// determine the actual word and whether we are in an octave or matlab script
+bool
+octave_qscintilla::get_actual_word (void)
+{
+  QPoint global_pos, local_pos;
+  get_global_textcursor_pos (&global_pos, &local_pos);
+  m_word_at_cursor = wordAtPoint (local_pos);
+  QString lexer_name = lexer ()->lexer ();
+  return ((lexer_name == "octave" || lexer_name == "matlab")
+          && ! m_word_at_cursor.isEmpty ());
+}
+
+// helper function for clearing all indicators of a specific style
 void
-octave_qscintilla::contextmenu_run (bool)
+octave_qscintilla::clear_indicator (int indicator_style)
 {
-  QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
-                                                QString::SkipEmptyParts);
-  for (int i = 0; i < commands.size (); i++)
-    emit execute_command_in_terminal_signal (commands.at (i));
+  int end_pos = text ().length ();
+  int end_line, end_col;
+  lineIndexFromPosition (end_pos, &end_line, &end_col);
+  clearIndicatorRange (0, 0, end_line, end_col, indicator_style);
 }
 
-// wrappers for dbstop related context menu items
-
-// FIXME: Why can't the data be sent as the argument to the function???
+// Function returning the true cursor position where the tab length
+// is taken into account.
 void
-octave_qscintilla::contextmenu_break_condition (bool)
+octave_qscintilla::get_current_position (int *pos, int *line, int *col)
 {
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-  QAction *action = qobject_cast<QAction *>(sender ());
-  QPoint local_pos = action->data ().value<QPoint> ();
-
-  // pick point just right of margins, so lineAt doesn't give -1
-  int margins = marginWidth (1) + marginWidth (2) + marginWidth (3);
-  local_pos = QPoint (margins + 1, local_pos.y ());
-
-  emit context_menu_break_condition_signal (lineAt (local_pos));
-#endif
-}
-
-void
-octave_qscintilla::contextmenu_break_once (const QPoint& local_pos)
-{
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-  emit context_menu_break_once (lineAt (local_pos));
-#endif
-}
-
-void
-octave_qscintilla::text_changed ()
-{
-  emit status_update (isUndoAvailable (), isRedoAvailable ());
-}
-
-// when edit area gets focus update information on undo/redo actions
-void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
-{
-  emit status_update (isUndoAvailable (), isRedoAvailable ());
-
-  QsciScintilla::focusInEvent (focusEvent);
+  *pos = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
+  *line = SendScintilla (QsciScintillaBase::SCI_LINEFROMPOSITION, *pos);
+  *col = SendScintilla (QsciScintillaBase::SCI_GETCOLUMN, *pos);
 }
 
 // Function returning the comment string of the current lexer
 QString
-octave_qscintilla::comment_string ()
+octave_qscintilla::comment_string (void)
 {
   int lexer = SendScintilla (SCI_GETLEXER);
 
@@ -398,16 +381,6 @@ octave_qscintilla::comment_string ()
     return QString ("%");  // should never happen
 }
 
-// helper function for clearing all indicators of a specific style
-void
-octave_qscintilla::clear_indicator (int indicator_style)
-{
-  int end_pos = text ().length ();
-  int end_line, end_col;
-  lineIndexFromPosition (end_pos, &end_line, &end_col);
-  clearIndicatorRange (0, 0, end_line, end_col, indicator_style);
-}
-
 // provide the style at a specific position
 int
 octave_qscintilla::get_style (int pos)
@@ -422,125 +395,51 @@ octave_qscintilla::get_style (int pos)
   return SendScintilla (QsciScintillaBase::SCI_GETSTYLEAT, position);
 }
 
-// Return true if CANDIDATE is a "closing" that matches OPENING,
-// such as "end" or "endif" for "if", or "catch" for "try".
-// Used for testing the last word of an "if" etc. line,
-// or the first word of the following line.
-static bool
-is_end (const QString& candidate, const QString& opening)
+// Is a specific cursor position in a line or block comment?
+int
+octave_qscintilla::is_style_comment (int pos)
 {
-  bool retval = false;
+  int lexer = SendScintilla (QsciScintillaBase::SCI_GETLEXER);
+  int style = get_style (pos);
 
-  if (opening == "do")          // The only one that can't be ended by "end"
+  switch (lexer)
     {
-      if (candidate == "until")
-        retval = true;
-    }
-  else
-    {
-      if (candidate == "end")
-        retval =  true;
-      else
-        {
-          if (opening == "try")
-            {
-              if (candidate == "catch" || candidate == "end_try_catch")
-                retval = true;
-            }
-          else if (opening == "unwind_protect")
-            {
-              if (candidate == "unwind_protect_cleanup"
-                  || candidate == "end_unwind_protect")
-                retval = true;
-            }
-          else if (candidate == "end" + opening)
-            retval = true;
-          else if (opening == "if" && candidate == "else")
-            retval = true;
-        }
+      case SCLEX_CPP:
+        return (ST_LINE_COMMENT * (
+                          style == QsciLexerCPP::CommentLine
+                       || style == QsciLexerCPP::CommentLineDoc)
+              + ST_BLOCK_COMMENT * (
+                           style == QsciLexerCPP::Comment
+                        || style == QsciLexerCPP::CommentDoc
+                        || style == QsciLexerCPP::CommentDocKeyword
+                        || style == QsciLexerCPP::CommentDocKeywordError)
+                );
+
+#if defined (HAVE_LEXER_MATLAB)
+      case SCLEX_MATLAB:
+        return (ST_LINE_COMMENT * (style == QsciLexerMatlab::Comment));
+#endif
+#if  defined (HAVE_LEXER_OCTAVE)
+      case SCLEX_OCTAVE:
+        return (ST_LINE_COMMENT * (style == QsciLexerOctave::Comment));
+#endif
+
+      case SCLEX_PERL:
+        return (ST_LINE_COMMENT * (style == QsciLexerPerl::Comment));
+
+      case SCLEX_BATCH:
+        return (ST_LINE_COMMENT * (style == QsciLexerBatch::Comment));
+
+      case SCLEX_DIFF:
+        return (ST_LINE_COMMENT * (style == QsciLexerDiff::Comment));
+
+      case SCLEX_BASH:
+        return (ST_LINE_COMMENT * (style == QsciLexerBash::Comment));
+
     }
 
-  return retval;
+  return ST_NONE;
 }
-
-void
-octave_qscintilla::auto_close (int auto_endif, int linenr,
-                               const QString& line, QString& first_word)
-{
-  // Insert and "end" for an "if" etc., if needed.
-  // (Use of "while" allows "return" to skip the rest.
-  // It may be clearer to use "if" and "goto",
-  // but that violates the coding standards.)
-
-  bool autofill_simple_end = (auto_endif == 2);
-
-  size_t start = line.toStdString ().find_first_not_of (" \t");
-
-  // Check if following line has the same or less indentation
-  // Check if the following line does not start with
-  //       end* (until) (catch)
-  if (linenr < lines () - 1)
-    {
-      int offset = 1;
-      size_t next_start;
-      QString next_line;
-      do                            // find next non-blank line
-        {
-          next_line = text (linenr + offset++);
-          next_start = next_line.toStdString ().find_first_not_of (" \t\n");
-        }
-      while (linenr + offset < lines ()
-             && next_start == std::string::npos);
-      if (next_start == std::string::npos)
-        next_start = 0;
-      if (next_start > start)       // more indented => don't add "end"
-        return;
-      if (next_start == start)      // same => check if already is "end"
-        {
-          QRegExp rx_start = QRegExp (R"((\w+))");
-          int tmp = rx_start.indexIn (next_line, start);
-           if (tmp != -1 && is_end (rx_start.cap(1), first_word))
-             return;
-        }
-    }
-
-    // If all of the above, insert a new line, with matching indent
-    // and either 'end' or 'end...', depending on a flag.
-
-    // If we insert directly after the last line, the "end" is autoindented,
-    // so add a dummy line.
-    if (linenr + 2 == lines ())
-      insertAt (QString ("\n"), linenr + 2, 0);
-
-    // For try/catch/end, fill "end" first, so "catch" is top of undo stack
-    if (first_word == "try")
-      insertAt (QString (start, ' ')
-                + (autofill_simple_end ? "end\n" : "end_try_catch\n"),
-                linenr + 2, 0);
-    else if (first_word == "unwind_protect")
-      insertAt (QString (start, ' ')
-                + (autofill_simple_end ? "end\n" : "end_unwind_protect\n"),
-                linenr + 2, 0);
-
-    QString next_line;
-    if (first_word == "do")
-      next_line = "until\n";
-    else if (first_word == "try")
-      next_line = "catch\n";
-    else if (first_word == "unwind_protect")
-      next_line = "unwind_protect_cleanup\n";
-    else if (autofill_simple_end)
-      next_line = "end\n";
-    else
-      {
-        if (first_word == "unwind_protect")
-          first_word = '_' + first_word;
-        next_line = "end" + first_word + "\n";
-      }
-
-    insertAt (QString (start, ' ') + next_line, linenr + 2, 0);
-}
-
 
 // Do smart indendation after if, for, ...
 void
@@ -622,59 +521,156 @@ octave_qscintilla::smart_indent (bool do_smart_indent,
 
 }
 
-// Is a specific cursor position in a line or block comment?
-int
-octave_qscintilla::is_style_comment (int pos)
+void
+octave_qscintilla::contextmenu_help (bool)
 {
-  int lexer = SendScintilla (QsciScintillaBase::SCI_GETLEXER);
-  int style = get_style (pos);
+  contextmenu_help_doc (false);
+}
 
-  switch (lexer)
+void
+octave_qscintilla::contextmenu_doc (bool)
+{
+  contextmenu_help_doc (true);
+}
+
+void
+octave_qscintilla::context_help_doc (bool documentation)
+{
+  if (get_actual_word ())
+    contextmenu_help_doc (documentation);
+}
+
+void
+octave_qscintilla::contextmenu_edit (bool)
+{
+  emit context_menu_edit_signal (m_word_at_cursor);
+}
+
+void
+octave_qscintilla::contextmenu_run (bool)
+{
+  QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
+                                                QString::SkipEmptyParts);
+  for (int i = 0; i < commands.size (); i++)
+    emit execute_command_in_terminal_signal (commands.at (i));
+}
+
+// wrappers for dbstop related context menu items
+
+// FIXME: Why can't the data be sent as the argument to the function???
+void
+octave_qscintilla::contextmenu_break_condition (bool)
+{
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+  QAction *action = qobject_cast<QAction *>(sender ());
+  QPoint local_pos = action->data ().value<QPoint> ();
+
+  // pick point just right of margins, so lineAt doesn't give -1
+  int margins = marginWidth (1) + marginWidth (2) + marginWidth (3);
+  local_pos = QPoint (margins + 1, local_pos.y ());
+
+  emit context_menu_break_condition_signal (lineAt (local_pos));
+#endif
+}
+
+void
+octave_qscintilla::contextmenu_break_once (const QPoint& local_pos)
+{
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+  emit context_menu_break_once (lineAt (local_pos));
+#endif
+}
+
+void
+octave_qscintilla::text_changed (void)
+{
+  emit status_update (isUndoAvailable (), isRedoAvailable ());
+}
+
+// when edit area gets focus update information on undo/redo actions
+void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
+{
+  emit status_update (isUndoAvailable (), isRedoAvailable ());
+
+  QsciScintilla::focusInEvent (focusEvent);
+}
+
+void
+octave_qscintilla::auto_close (int auto_endif, int linenr,
+                               const QString& line, QString& first_word)
+{
+  // Insert and "end" for an "if" etc., if needed.
+  // (Use of "while" allows "return" to skip the rest.
+  // It may be clearer to use "if" and "goto",
+  // but that violates the coding standards.)
+
+  bool autofill_simple_end = (auto_endif == 2);
+
+  size_t start = line.toStdString ().find_first_not_of (" \t");
+
+  // Check if following line has the same or less indentation
+  // Check if the following line does not start with
+  //       end* (until) (catch)
+  if (linenr < lines () - 1)
     {
-      case SCLEX_CPP:
-        return (ST_LINE_COMMENT * (
-                          style == QsciLexerCPP::CommentLine
-                       || style == QsciLexerCPP::CommentLineDoc)
-              + ST_BLOCK_COMMENT * (
-                           style == QsciLexerCPP::Comment
-                        || style == QsciLexerCPP::CommentDoc
-                        || style == QsciLexerCPP::CommentDocKeyword
-                        || style == QsciLexerCPP::CommentDocKeywordError)
-                );
-
-#if defined (HAVE_LEXER_MATLAB)
-      case SCLEX_MATLAB:
-        return (ST_LINE_COMMENT * (style == QsciLexerMatlab::Comment));
-#endif
-#if  defined (HAVE_LEXER_OCTAVE)
-      case SCLEX_OCTAVE:
-        return (ST_LINE_COMMENT * (style == QsciLexerOctave::Comment));
-#endif
-
-      case SCLEX_PERL:
-        return (ST_LINE_COMMENT * (style == QsciLexerPerl::Comment));
-
-      case SCLEX_BATCH:
-        return (ST_LINE_COMMENT * (style == QsciLexerBatch::Comment));
-
-      case SCLEX_DIFF:
-        return (ST_LINE_COMMENT * (style == QsciLexerDiff::Comment));
-
-      case SCLEX_BASH:
-        return (ST_LINE_COMMENT * (style == QsciLexerBash::Comment));
-
+      int offset = 1;
+      size_t next_start;
+      QString next_line;
+      do                            // find next non-blank line
+        {
+          next_line = text (linenr + offset++);
+          next_start = next_line.toStdString ().find_first_not_of (" \t\n");
+        }
+      while (linenr + offset < lines ()
+             && next_start == std::string::npos);
+      if (next_start == std::string::npos)
+        next_start = 0;
+      if (next_start > start)       // more indented => don't add "end"
+        return;
+      if (next_start == start)      // same => check if already is "end"
+        {
+          QRegExp rx_start = QRegExp (R"((\w+))");
+          int tmp = rx_start.indexIn (next_line, start);
+           if (tmp != -1 && is_end (rx_start.cap(1), first_word))
+             return;
+        }
     }
 
-  return ST_NONE;
+    // If all of the above, insert a new line, with matching indent
+    // and either 'end' or 'end...', depending on a flag.
+
+    // If we insert directly after the last line, the "end" is autoindented,
+    // so add a dummy line.
+    if (linenr + 2 == lines ())
+      insertAt (QString ("\n"), linenr + 2, 0);
+
+    // For try/catch/end, fill "end" first, so "catch" is top of undo stack
+    if (first_word == "try")
+      insertAt (QString (start, ' ')
+                + (autofill_simple_end ? "end\n" : "end_try_catch\n"),
+                linenr + 2, 0);
+    else if (first_word == "unwind_protect")
+      insertAt (QString (start, ' ')
+                + (autofill_simple_end ? "end\n" : "end_unwind_protect\n"),
+                linenr + 2, 0);
+
+    QString next_line;
+    if (first_word == "do")
+      next_line = "until\n";
+    else if (first_word == "try")
+      next_line = "catch\n";
+    else if (first_word == "unwind_protect")
+      next_line = "unwind_protect_cleanup\n";
+    else if (autofill_simple_end)
+      next_line = "end\n";
+    else
+      {
+        if (first_word == "unwind_protect")
+          first_word = '_' + first_word;
+        next_line = "end" + first_word + "\n";
+      }
+
+    insertAt (QString (start, ' ') + next_line, linenr + 2, 0);
 }
 
-// Function returning the true cursor position where the tab length
-// is taken into account.
-void
-octave_qscintilla::get_current_position (int *pos, int *line, int *col)
-{
-  *pos = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
-  *line = SendScintilla (QsciScintillaBase::SCI_LINEFROMPOSITION, *pos);
-  *col = SendScintilla (QsciScintillaBase::SCI_GETCOLUMN, *pos);
-}
 #endif

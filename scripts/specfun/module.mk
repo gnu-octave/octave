@@ -8,6 +8,7 @@ FCN_FILE_DIRS += scripts/specfun
   %reldir%/factor.m \
   %reldir%/factorial.m \
   %reldir%/gammainc.m \
+  %reldir%/gammaincinv.m \
   %reldir%/isprime.m \
   %reldir%/lcm.m \
   %reldir%/legendre.m \

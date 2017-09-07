@@ -85,7 +85,7 @@
 ## @cite{Numerical Recipes in Fortran 77},
 ## ch. 6.2, Vol 1, 1992.
 ##
-## @seealso{gamma, gammaln}
+## @seealso{gamma, gammainc, gammaln}
 ## @end deftypefn
 
 ## P(a,x) = gamma(a,x)/Gamma(a), upper

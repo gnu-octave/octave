@@ -321,6 +321,8 @@ cos (pi/2)
 
 @DOCSTRING(gammainc)
 
+@DOCSTRING(gammaincinv)
+
 @DOCSTRING(legendre)
 
 @anchor{XREFgammaln}

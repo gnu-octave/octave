@@ -253,6 +253,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       camzoom
       corrcoef
       erase
+      gammaincinv
       getframe
       groot
       gsvd

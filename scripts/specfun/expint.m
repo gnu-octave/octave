@@ -86,7 +86,7 @@
 ## @cite{Asymptotic expansions of integrals}
 ## 1986.
 ##
-## @seealso{exp}
+## @seealso{cosint, exp, sinint}
 ##
 ## @end deftypefn
 

@@ -295,6 +295,8 @@ cos (pi/2)
 
 @DOCSTRING(commutation_matrix)
 
+@DOCSTRING(cosint)
+
 @DOCSTRING(duplication_matrix)
 
 @DOCSTRING(dawson)
@@ -329,6 +331,8 @@ cos (pi/2)
 @DOCSTRING(lgamma)
 
 @DOCSTRING(psi)
+
+@DOCSTRING(sinint)
 
 @node Rational Approximations
 @section Rational Approximations

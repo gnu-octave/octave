@@ -252,6 +252,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       camva
       camzoom
       corrcoef
+      cosint
       erase
       gammaincinv
       getframe
@@ -270,6 +271,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       repelem
       rgb2gray
       rticks
+      sinint
       tfqmr
       thetaticks
       vecnorm

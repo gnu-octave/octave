@@ -307,9 +307,22 @@ octave_read_fp_value (std::istream& is)
   std::ios::iostate status = is.rdstate ();
   if (status & std::ios::failbit)
     {
-      is.clear ();
-      is.seekg (pos);
-      is.setstate (status);
+      // Convert MAX_VAL returned by C++ streams for very large numbers to Inf
+      if (val == std::numeric_limits<T>::max ())
+        {
+          if (neg)
+            val = -std::numeric_limits<T>::infinity ();
+          else
+            val = std::numeric_limits<T>::infinity ();
+          is.clear (status & ~std::ios::failbit);
+        }
+      else
+        {
+          // True error.  Reset stream to original position and pass status on.
+          is.clear ();
+          is.seekg (pos);
+          is.setstate (status);
+        }
     }
 
   return val;

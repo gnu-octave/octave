@@ -518,8 +518,11 @@ are drawn in an invisible axes, on top of every other axes.
 
 See @ref{Text Properties} for the properties that you can set.
 
+@c Add cross-references and function index entries for other label functions.
 @anchor{XREFylabel}
 @anchor{XREFzlabel}
+@findex ylabel
+@findex zlabel
 @DOCSTRING(xlabel)
 
 @DOCSTRING(clabel)

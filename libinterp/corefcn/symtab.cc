@@ -1803,6 +1803,23 @@ namespace octave
   }
 
   void
+  symbol_table::scope::set_parent (scope *p)
+  {
+    m_parent = p;
+
+    if (m_parent)
+      {
+        // If m_parent is the top-level scope, there will be no parent
+        // function.
+
+        octave_function *ov_fcn = m_parent->function ();
+
+        if (ov_fcn)
+          m_parent_fcn = octave_value (ov_fcn, true);
+      }
+  }
+
+  void
   symbol_table::scope::update_nest (void)
   {
     if (m_parent)

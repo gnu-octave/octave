@@ -1567,7 +1567,7 @@ namespace octave
 
       scope (const std::string& name = "")
         : m_name (name), m_symbols (), m_persistent_symbols (), m_subfunctions (),
-          m_fcn (nullptr), m_parent (nullptr), m_children (), m_is_nested (false),
+          m_fcn (nullptr), m_parent (nullptr), m_parent_fcn (), m_children (), m_is_nested (false),
           m_is_static (false), m_context (0)
       { }
 
@@ -1593,6 +1593,7 @@ namespace octave
       void mark_static (void) { m_is_static = true; }
 
       scope * parent_scope (void) const { return m_parent; }
+      octave_value parent_fcn (void) const { return m_parent_fcn; }
 
       scope * dup (void) const
       {
@@ -1602,6 +1603,7 @@ namespace octave
           new_sid->insert_symbol_record (nm_sr.second.dup (new_sid));
 
         new_sid->m_parent = m_parent;
+        new_sid->m_parent_fcn = m_parent_fcn;
 
         return new_sid;
       }
@@ -2034,7 +2036,7 @@ namespace octave
 
       void set_function (octave_user_function *fcn) { m_fcn = fcn; }
 
-      void set_parent (scope *p) { m_parent = p; }
+      void set_parent (scope *p);
 
       void update_nest (void);
 
@@ -2061,6 +2063,7 @@ namespace octave
 
       // Parent of nested function (may be null).
       scope *m_parent;
+      octave_value m_parent_fcn;
 
       // Child nested functions.
       std::vector<scope*> m_children;

@@ -1593,9 +1593,9 @@ c assume the default integer size is 32-bits.
        octave_cv_sizeof_fortran_integer=8,
        octave_cv_sizeof_fortran_integer=4,
        octave_cv_sizeof_fortran_integer=4)
+     AC_LANG_POP(Fortran 77)
+     FFLAGS="$ac_octave_save_FFLAGS"
   ])
-  AC_LANG_POP(Fortran 77)
-  FFLAGS="$ac_octave_save_FFLAGS"
 ])
 dnl
 dnl Check whether SUNDIALS IDA library is configured with double

@@ -133,6 +133,16 @@ variable_editor::~variable_editor (void)
   delete m_main;
 }
 
+// Returns the real variable name from the tab addressed by 'index'
+// cleaned from '&' possible inserted by KDE
+QString
+variable_editor::real_var_name (int index)
+{
+  QString var_name = m_tab_widget->tabText (index);
+  var_name.remove (QChar ('&'));
+  return var_name;
+}
+
 void
 variable_editor::edit_variable (const QString& name)
 {
@@ -144,7 +154,7 @@ variable_editor::edit_variable (const QString& name)
 
   const int tab_count = m_tab_widget->count ();
   for (int i = 0; i < tab_count; ++i)
-    if (m_tab_widget->tabText (i) == name)
+    if (real_var_name (i) == name)
       {
         m_tab_widget->setCurrentIndex (i);
         return;  // already open
@@ -695,7 +705,7 @@ variable_editor::rowmenu_requested (const QPoint& pt)
 void
 variable_editor::double_click (const QModelIndex& idx)
 {
-  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
+  QString name = real_var_name (m_tab_widget->currentIndex ());
   QTableView *const table = get_table_data (m_tab_widget).m_table;
   variable_editor_model *const model =
     qobject_cast<variable_editor_model *> (table->model ());
@@ -719,7 +729,7 @@ variable_editor::double_click (const QModelIndex& idx)
 void
 variable_editor::save (void)
 {
-  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
+  QString name = real_var_name (m_tab_widget->currentIndex ());
   QString file =
     QFileDialog::getSaveFileName (this,
                                   tr ("Save Variable %1 As").arg (name),
@@ -920,7 +930,7 @@ variable_editor::createVariable (void)
 void
 variable_editor::transposeContent (void)
 {
-  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
+  QString name = real_var_name (m_tab_widget->currentIndex ());
   emit command_requested (QString ("%1 = %1';").arg (name));
   emit updated ();
 }
@@ -928,7 +938,7 @@ variable_editor::transposeContent (void)
 void
 variable_editor::up (void)
 {
-  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
+  QString name = real_var_name (m_tab_widget->currentIndex ());
   // FIXME: is there a better way?
   if (name.endsWith (')') || name.endsWith ('}'))
     {
@@ -1035,7 +1045,7 @@ variable_editor::octave_to_coords (QString& selection)
 QString
 variable_editor::selected_to_octave (void)
 {
-  QString name = m_tab_widget->tabText (m_tab_widget->currentIndex ());
+  QString name = real_var_name (m_tab_widget->currentIndex ());
   QTableView *view = get_table_data (m_tab_widget).m_table;
   QItemSelectionModel *sel = view->selectionModel ();
 

@@ -123,6 +123,9 @@ private:
 
   QList<int> octave_to_coords (QString&);
 
+  // Get the real variable name from the tab text
+  QString real_var_name (int index);
+
   // Convert selection to an Octave expression.
   QString selected_to_octave (void);
 

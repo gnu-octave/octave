@@ -46,7 +46,8 @@ variable_editor_model : public QAbstractTableModel
 
 public:
 
-  variable_editor_model (const QString &expr, QLabel *label, QObject *p = 0);
+  variable_editor_model (const QString &expr, QLabel *label,
+                         QObject *p = nullptr);
 
   ~variable_editor_model (void);
 
@@ -82,11 +83,8 @@ public:
   bool editor_type_matrix (const QModelIndex& idx) const;
   bool editor_type_string (const QModelIndex& idx) const;
 
-  /** Return the proper parens to access the data structure.
-   *
-   * {%1,%2} for cell and (%1,%2) for matrices.  Use QString::arg to
-   * set the index.
-   */
+  // Return the proper parens to access the data structure.
+  // {%1,%2} for cell and (%1,%2) for matrices.
   QString parens (void) const;
 
 signals: // private
@@ -121,9 +119,7 @@ private slots:
 
 private:
 
-  /** Get data for ov(row, col)
-   * This must be executed in the octave thread!
-   */
+  // Get data for ov(row, col).  This must be executed in the octave thread!
   void get_data_oct (int row, int col, const std::string& v) /*const*/;
 
   void set_data_oct (const std::string& v, int row, int col,

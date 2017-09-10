@@ -133,8 +133,8 @@ variable_editor::~variable_editor (void)
   delete m_main;
 }
 
-// Returns the real variable name from the tab addressed by 'index'
-// cleaned from '&' possible inserted by KDE
+// Returns the real variable name from the tab addressed by 'index',
+// cleaned of any '&' possibly inserted by KDE.
 QString
 variable_editor::real_var_name (int index)
 {
@@ -340,7 +340,8 @@ void variable_editor::notice_settings (const QSettings *settings)
   QList<QColor> _default_colors = resource_manager::varedit_default_colors ();
   QString class_chars = resource_manager::varedit_color_chars ();
 
-  m_use_terminal_font = settings->value ("variable_editor/use_terminal_font", true).toBool ();
+  m_use_terminal_font = settings->value ("variable_editor/use_terminal_font",
+                                         true).toBool ();
 
   QString font_name;
   int font_size;
@@ -407,7 +408,7 @@ variable_editor::closeTab (int idx)
   delete wdgt;
 
   if (m_tab_widget->count () == 0)
-    m_tool_bar->setEnabled (false);  // This was the last tab, disable tool bar.
+    m_tool_bar->setEnabled (false);  // Last tab, disable tool bar.
 }
 
 void
@@ -425,7 +426,7 @@ variable_editor::contextmenu_requested (const QPoint& qpos)
                        this, SLOT (copyClipboard ()));
       menu->addAction (resource_manager::icon ("edit-paste"), tr ("Paste"),
                        this, SLOT (pasteClipboard ()));
-      // FIXME: better icon for paste table?
+      // FIXME: need different icon for paste table separate from paste?
       menu->addAction (resource_manager::icon ("edit-paste"), tr ("Paste Table"),
                        this, SLOT (pasteTableClipboard ()));
 
@@ -521,8 +522,8 @@ variable_editor::columnmenu_requested (const QPoint& pt)
       whole_columns_selected = true;
     }
 
-  QString column_string =
-    tr (column_selection_count > 1 ? " columns" : " column");
+  QString column_string = tr (column_selection_count > 1 ? " columns"
+                                                         : " column");
 
   QMenu *menu = new QMenu (this);
   menu->addAction (resource_manager::icon ("edit-cut"),
@@ -534,7 +535,7 @@ variable_editor::columnmenu_requested (const QPoint& pt)
   menu->addAction (resource_manager::icon ("edit-paste"),
                    tr ("Paste"),
                    this, SLOT (pasteClipboard ()));
-  // FIXME: better icon for Paste Table?
+  // FIXME: different icon for Paste Table?
   menu->addAction (resource_manager::icon ("edit-paste"),
                    tr ("Paste Table"),
                    this, SLOT (pasteTableClipboard ()));
@@ -737,8 +738,8 @@ variable_editor::save (void)
                                   QFileDialog::DontUseNativeDialog);
   // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
   if (! file.isEmpty ())
-    // FIXME: Use octave_value::save_*?
-    emit command_requested (QString ("save ('%1', '%2');")
+    // FIXME: Call octave_value::save_* directly?
+    emit command_requested (QString ("save (\"%1\", \"%2\");")
                             .arg (file)
                             .arg (name));
 }
@@ -799,7 +800,6 @@ variable_editor::copyClipboard (void)
 void
 variable_editor::pasteClipboard (void)
 {
-  // FIXME: ???
   if (! has_focus ())
     return;
 
@@ -923,7 +923,7 @@ void variable_editor::pasteTableClipboard (void)
 void
 variable_editor::createVariable (void)
 {
-  // FIXME: unnamed1..n if exist ('unnamed', 'var')
+  // FIXME: Create unnamed1..n if exist ('unnamed', 'var') is true.
   relay_command ("unnamed = %1");
 }
 
@@ -960,9 +960,9 @@ variable_editor::delete_selected (void)
     return;
 
   bool whole_columns_selected = coords[0] == 1
-    && coords[1] == view->model ()->rowCount ();
+                                && coords[1] == view->model ()->rowCount ();
   bool whole_rows_selected = coords[2] == 1
-    && coords[3] == view->model ()->columnCount ();
+                             && coords[3] == view->model ()->columnCount ();
 
   emit command_requested (QString ("disp ('")
                           + QString::number (coords[0]) + ","
@@ -992,15 +992,15 @@ variable_editor::relay_command (const QString& cmd)
 QList<int>
 variable_editor::octave_to_coords (QString& selection)
 {
-  // FIXME: Is this necessary or would it be quicker to clone the function that
-  // gives us the QString?
+  // FIXME: Is this necessary or would it be quicker to clone the function
+  //        that gives us the QString?
 
   // sanity check
   if (selection.count (",") != 1)
     return QList<int> ();
 
   QList<int> output;
-  output.clear ();
+  output.clear ();  // FIXME: Why clear if object has just been created?
   // remove braces
   int firstbracket = std::max (selection.indexOf ("("),
                                selection.indexOf ("{"));
@@ -1054,6 +1054,9 @@ variable_editor::selected_to_octave (void)
 
   QList<QModelIndex> indices = sel->selectedIndexes ();  // it's indices!
 
+  // FIXME: Shouldn't this be keyed to octave_idx_type?
+  // If octave_idx_type is 64-bit then one could have 2^64,1 vector which
+  // overflows int32_t type.
   int32_t from_row = std::numeric_limits<int32_t>::max ();
   int32_t to_row = 0;
   int32_t from_col = std::numeric_limits<int32_t>::max ();
@@ -1070,8 +1073,8 @@ variable_editor::selected_to_octave (void)
   QString rows = idx_to_expr (from_row, to_row);
   QString cols = idx_to_expr (from_col, to_col);
 
-  // FIXME: Cells?
-  return QString ("%1 (%2, %3)").arg (name).arg (rows).arg (cols);
+  // FIXME: Do cell needs separate handling?  Maybe use '{.,.}'?
+  return QString ("%1(%2, %3)").arg (name).arg (rows).arg (cols);
 }
 
 /// Also updates the font
@@ -1079,25 +1082,25 @@ void variable_editor::update_colors (void)
 {
   m_stylesheet = "";
   m_stylesheet += "QTableView::item{ foreground-color: "
-    + m_table_colors[0].name () +" }";
+                  + m_table_colors[0].name () +" }";
   m_stylesheet += "QTableView::item{ background-color: "
-    + m_table_colors[1].name () +" }";
+                  + m_table_colors[1].name () +" }";
   m_stylesheet += "QTableView::item{ selection-color: "
-    + m_table_colors[2].name () +" }";
+                  + m_table_colors[2].name () +" }";
   m_stylesheet += "QTableView::item:selected{ background-color: "
-    + m_table_colors[3].name () +" }";
+                  + m_table_colors[3].name () +" }";
   if (m_table_colors.length () > 4 && m_alternate_rows)
     {
       m_stylesheet += "QTableView::item:alternate{ background-color: "
-        + m_table_colors[4].name () +" }";
+                      + m_table_colors[4].name () +" }";
       m_stylesheet += "QTableView::item:alternate:selected{ background-color: "
-        + m_table_colors[3].name () +" }";
+                      + m_table_colors[3].name () +" }";
     }
 
   if (m_tab_widget->count () < 1)
     return;
 
-  for (int i=0; i < m_tab_widget->count (); i++)
+  for (int i = 0; i < m_tab_widget->count (); i++)
     {
       QTableView *view = get_table_data (m_tab_widget).m_table;
       view->setAlternatingRowColors (m_alternate_rows);
@@ -1115,6 +1118,7 @@ variable_editor::construct_tool_bar (void)
 
   m_tool_bar->addAction (resource_manager::icon ("document-save"), tr ("Save"),
                          this, SLOT (save ()));
+
   m_tool_bar->addSeparator ();
 
   m_tool_bar->addAction (resource_manager::icon ("edit-cut"), tr ("Cut"),
@@ -1126,6 +1130,7 @@ variable_editor::construct_tool_bar (void)
   // FIXME: Different icon for Paste Table?
   m_tool_bar->addAction (resource_manager::icon ("edit-paste"), tr ("Paste Table"),
                          this, SLOT (pasteTableClipboard ()));
+
   m_tool_bar->addSeparator ();
 
   // FIXME: Add a print item?

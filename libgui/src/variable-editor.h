@@ -86,9 +86,8 @@ protected slots:
 
   void delete_selected (void);
 
-  /** Send command to Octave interpreter.
-   * %1 in CMD is replaced with the value of selected_to_octave.
-   */
+  // Send command to Octave interpreter.
+  // %1 in CMD is replaced with the value of selected_to_octave.
   void relay_command (const QString& cmd);
 
 signals:

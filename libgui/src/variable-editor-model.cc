@@ -214,7 +214,7 @@ variable_editor_model::variable_editor_model (const QString& expr,
                                                  const QString&,
                                                  int, int)));
 
-  clear_data_cache (); // initializes everything
+  clear_data_cache ();  // initializes everything
 }
 
 variable_editor_model::~variable_editor_model (void)
@@ -359,7 +359,7 @@ variable_editor_model::removeRows (int row, int count, const QModelIndex&)
 {
   if (row + count > m_d->m_rows)
     {
-      qDebug () << "Try to remove too many rows " << m_d->m_rows << " "
+      qDebug () << "Tried to remove too many rows " << m_d->m_rows << " "
                 << count << " (" << row << ")";
       return false;
     }
@@ -367,7 +367,7 @@ variable_editor_model::removeRows (int row, int count, const QModelIndex&)
   octave_link::post_event <variable_editor_model, const std::string&,
                            const std::string&>
     (this, &variable_editor_model::eval_oct, m_d->m_name,
-     QString ("%1 (%2:%3, :) = []")
+     QString ("%1(%2:%3, :) = []")
      .arg (QString::fromStdString (m_d->m_name))
      .arg (row)
      .arg (row + count)
@@ -396,7 +396,7 @@ variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
 {
   if (col + count > m_d->m_cols)
     {
-      qDebug () << "Try to remove too many cols " << m_d->m_cols << " "
+      qDebug () << "Tried to remove too many cols " << m_d->m_cols << " "
                 << count << " (" << col << ")";
       return false;
     }
@@ -404,7 +404,7 @@ variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
   octave_link::post_event <variable_editor_model, const std::string&,
                            const std::string&>
     (this, &variable_editor_model::eval_oct, m_d->m_name,
-     QString ("%1 (:, %2:%3) = []")
+     QString ("%1(:, %2:%3) = []")
      .arg (QString::fromStdString (m_d->m_name))
      .arg (col)
      .arg (col + count)
@@ -450,7 +450,7 @@ variable_editor_model::received_data (int r, int c,
     edittype = sub_none;
   else
     {
-      if (class_info == QString("char") && rows == 1)
+      if (class_info == QString ("char") && rows == 1)
         edittype = sub_string;
       else
         edittype = sub_matrix;
@@ -461,9 +461,9 @@ variable_editor_model::received_data (int r, int c,
 
 
   m_d->set (r, c, impl::cell (dat, status_tip, tool_tip,
-                            rows > 1 || cols > 1
-                            || class_info == QString ("struct"),
-                            edittype));
+                              rows > 1 || cols > 1
+                              || class_info == QString ("struct"),
+                              edittype));
 
   QModelIndex idx = QAbstractTableModel::index (r, c);
 
@@ -620,12 +620,9 @@ variable_editor_model::set_data_oct (const std::string& x, int row, int col,
   emit dataChanged (idx, idx);
 }
 
-/**
- * If the variable exists, load it into the data model. If it doesn't exist,
- * flag the data model as referring to a nonexistant variable.
- *
- * This allows the variable to be opened before it is created.
- */
+// If the variable exists, load it into the data model.  If it doesn't exist,
+// flag the data model as referring to a nonexistent variable.
+// This allows the variable to be opened before it is created.
 octave_value
 variable_editor_model::retrieve_variable (const std::string& x,
                                           int& parse_status)

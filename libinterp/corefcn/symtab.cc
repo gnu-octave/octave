@@ -1970,7 +1970,11 @@ Return the current scope and context as integers.
 {
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
-  return ovl (symtab.current_scope (), symtab.current_context ());
+  octave::symbol_table::scope *scope = symtab.current_scope ();
+
+  std::string nm = scope ? scope->name () : "<unknown>";
+
+  return ovl (nm, symtab.current_context ());
 }
 
 DEFMETHOD (__dump_symtab_info__, interp, args, ,

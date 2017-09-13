@@ -252,22 +252,8 @@
 ## If the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled, Octave will warn about using the not short circuiting
 ## operators @code{&} and @code{|} inside @code{if} or @code{while}
-## conditions.  They normally never short circuit, but @sc{matlab} always
-## short circuits if any logical operators are used in a condition.  You
-## can turn on the option
-##
-## @example
-## @group
-## do_braindead_shortcircuit_evaluation (1)
-## @end group
-## @end example
-##
-## @noindent
-## if you would like to enable this short-circuit evaluation in
-## Octave.  Note that the @code{&&} and @code{||} operators always short
-## circuit in both Octave and @sc{matlab}, so it's only necessary to
-## enable @sc{matlab}-style short-circuiting if it's too arduous to modify
-## existing code that relies on this behavior.
+## conditions.  They normally never short circuit, but they do short
+## circuit when used in a condition.
 ## By default, the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled.
 ##

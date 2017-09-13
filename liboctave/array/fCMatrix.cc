@@ -843,7 +843,7 @@ FloatComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
   info = tmp_info;
 
   lwork = static_cast<F77_INT> (std::real (z(0)));
-  lwork = (lwork <  2 *nc ? 2*nc : lwork);
+  lwork = (lwork < 2 * nc ? 2 * nc : lwork);
   z.resize (dim_vector (lwork, 1));
   FloatComplex *pz = z.fortran_vec ();
 
@@ -871,17 +871,18 @@ FloatComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
     info = -1;
   else if (calc_cond)
     {
+      F77_INT cgecon_info = 0;
+
       // Now calculate the condition number for non-singular matrix.
-      F77_INT zgecon_info = 0;
       char job = '1';
       Array<float> rz (dim_vector (2 * nc, 1));
       float *prz = rz.fortran_vec ();
       F77_XFCN (cgecon, CGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                  nc, F77_CMPLX_ARG (tmp_data), nr, anorm,
-                                 rcon, F77_CMPLX_ARG (pz), prz, zgecon_info
+                                 rcon, F77_CMPLX_ARG (pz), prz, cgecon_info
                                  F77_CHAR_ARG_LEN (1)));
 
-      if (zgecon_info != 0)
+      if (cgecon_info != 0)
         info = -1;
     }
 

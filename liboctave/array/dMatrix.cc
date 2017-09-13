@@ -549,8 +549,10 @@ Matrix::finverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
   F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
                              z.fortran_vec (), lwork, tmp_info));
 
+  info = tmp_info;
+
   lwork = static_cast<F77_INT> (z(0));
-  lwork = (lwork < 2 *nc ? 2*nc : lwork);
+  lwork = (lwork < 4 * nc ? 4 * nc : lwork);
   z.resize (dim_vector (lwork, 1));
   double *pz = z.fortran_vec ();
 

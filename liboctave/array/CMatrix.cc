@@ -840,7 +840,7 @@ ComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
   info = tmp_info;
 
   lwork = static_cast<F77_INT> (std::real (z(0)));
-  lwork = (lwork <  2 *nc ? 2*nc : lwork);
+  lwork = (lwork < 2 * nc ? 2 * nc : lwork);
   z.resize (dim_vector (lwork, 1));
   Complex *pz = z.fortran_vec ();
 
@@ -869,8 +869,9 @@ ComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
     info = -1;
   else if (calc_cond)
     {
-      // Now calculate the condition number for non-singular matrix.
       F77_INT zgecon_info = 0;
+
+      // Now calculate the condition number for non-singular matrix.
       char job = '1';
       Array<double> rz (dim_vector (2 * nc, 1));
       double *prz = rz.fortran_vec ();

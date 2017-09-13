@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 %!test
+%! path_orig = path ();
 %! unwind_protect
 %!   addpath dir1;
 %!   [d1_r, d1_f1, d1_f2, d1_f3] = func1 (0);
@@ -31,6 +32,5 @@
 %!   assert (d2_f2, "dir2/func2");
 %!   assert (d2_f3, "dir2/func3");
 %! unwind_protect_cleanup
-%!   rmpath dir1;
-%!   rmpath dir2;
+%!   path (path_orig);
 %! end_unwind_protect

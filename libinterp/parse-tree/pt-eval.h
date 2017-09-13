@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "profiler.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
+#include "symtab.h"
 
 namespace octave
 {
@@ -306,6 +307,8 @@ namespace octave
     call_stack& get_call_stack (void) { return m_call_stack; }
 
     profiler& get_profiler (void) { return m_profiler; }
+
+    symbol_table::scope *get_current_scope (void);
 
     int max_recursion_depth (void) const { return m_max_recursion_depth; }
 

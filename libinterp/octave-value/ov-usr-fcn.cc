@@ -64,6 +64,7 @@ static bool Voptimize_subsasgn_calls = true;
 
 octave_user_code::~octave_user_code (void)
 {
+  delete m_scope;
   delete m_file_info;
 }
 
@@ -131,11 +132,11 @@ octave_user_script::octave_user_script (void)
     call_depth (-1)
 { }
 
-octave_user_script::octave_user_script (const std::string& fnm,
-                                        const std::string& nm,
-                                        octave::tree_statement_list *cmds,
-                                        const std::string& ds)
-  : octave_user_code (nm, ds), cmd_list (cmds), file_name (fnm),
+octave_user_script::octave_user_script
+  (const std::string& fnm, const std::string& nm,
+   octave::symbol_table::scope *scope, octave::tree_statement_list *cmds,
+   const std::string& ds)
+  : octave_user_code (nm, scope, ds), cmd_list (cmds), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     call_depth (-1)
@@ -144,10 +145,10 @@ octave_user_script::octave_user_script (const std::string& fnm,
     cmd_list->mark_as_script_body ();
 }
 
-octave_user_script::octave_user_script (const std::string& fnm,
-                                        const std::string& nm,
-                                        const std::string& ds)
-  : octave_user_code (nm, ds), cmd_list (nullptr), file_name (fnm),
+octave_user_script::octave_user_script
+  (const std::string& fnm, const std::string& nm,
+   octave::symbol_table::scope *scope, const std::string& ds)
+  : octave_user_code (nm, scope, ds), cmd_list (nullptr), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     call_depth (-1)
@@ -204,6 +205,10 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
 
       octave::profiler::enter<octave_user_script> block (profiler, *this);
 
+      frame.add_method (m_scope,
+                        &octave::symbol_table::scope::unbind_script_symbols);
+      m_scope->bind_script_symbols (tw.get_current_scope ());
+
       if (tw.echo ())
         tw.push_echo_state (frame, octave::tree_evaluator::ECHO_SCRIPTS,
                             file_name);
@@ -238,7 +243,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 octave_user_function::octave_user_function
   (octave::symbol_table::scope *scope, octave::tree_parameter_list *pl,
    octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
-  : octave_user_code ("", ""), m_scope (scope),
+  : octave_user_code ("", scope, ""),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
     location_line (0), location_column (0),
@@ -266,8 +271,6 @@ octave_user_function::~octave_user_function (void)
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (cmd_list)
     cmd_list->remove_all_breakpoints (file_name);
-
-  delete m_scope;
 
   delete param_list;
   delete ret_list;

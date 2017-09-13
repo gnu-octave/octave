@@ -61,15 +61,18 @@ octave_user_code : public octave_function
 protected:
 
   octave_user_code (const std::string& nm,
+                    octave::symbol_table::scope *scope = nullptr,
                     const std::string& ds = "")
-    : octave_function (nm, ds), curr_unwind_protect_frame (nullptr),
-      m_file_info (nullptr)
+    : octave_function (nm, ds), m_scope (scope), m_file_info (nullptr),
+      curr_unwind_protect_frame (nullptr)
   { }
 
 public:
 
   octave_user_code (void)
-    : octave_function () { }
+    : octave_function (), m_scope (nullptr), m_file_info (nullptr),
+      curr_unwind_protect_frame (nullptr)
+  { }
 
   // No copying!
 
@@ -94,6 +97,8 @@ public:
   void cache_function_text (const std::string& text,
                             const octave::sys::time& timestamp);
 
+  octave::symbol_table::scope *scope (void) { return m_scope; }
+
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   virtual octave::tree_statement_list * body (void) = 0;
@@ -102,12 +107,15 @@ protected:
 
   void get_file_info (void);
 
-  // pointer to the current unwind_protect frame of this function.
-  octave::unwind_protect *curr_unwind_protect_frame;
+  // Our symbol table scope.
+  octave::symbol_table::scope *m_scope;
 
   // Cached text of function or script code with line offsets
   // calculated.
   octave::file_info *m_file_info;
+
+  // pointer to the current unwind_protect frame of this function.
+  octave::unwind_protect *curr_unwind_protect_frame;
 };
 
 // Scripts.
@@ -120,10 +128,12 @@ public:
   octave_user_script (void);
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      octave::tree_statement_list *cmds,
+                      octave::symbol_table::scope *scope = nullptr,
+                      octave::tree_statement_list *cmds = nullptr,
                       const std::string& ds = "");
 
   octave_user_script (const std::string& fnm, const std::string& nm,
+                      octave::symbol_table::scope *scope = nullptr,
                       const std::string& ds = "");
 
   // No copying!
@@ -273,8 +283,6 @@ public:
   octave::symbol_table::scope *
   parent_fcn_scope (void) const { return parent_scope; }
 
-  octave::symbol_table::scope *scope (void) { return m_scope; }
-
   octave::sys::time time_parsed (void) const { return t_parsed; }
 
   octave::sys::time time_checked (void) const { return t_checked; }
@@ -410,9 +418,6 @@ private:
   };
 
   std::string ctor_type_str (void) const;
-
-  // Our symbol table scope.
-  octave::symbol_table::scope *m_scope;
 
   // List of arguments for this function.  These are local variables.
   octave::tree_parameter_list *param_list;

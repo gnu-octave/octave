@@ -60,7 +60,7 @@ namespace octave
   octave_lvalue
   tree_identifier::lvalue (tree_evaluator *)
   {
-    if (sym->is_added_static ())
+    if (sym.is_added_static ())
       static_workspace_error ();
 
     return octave_lvalue (sym);

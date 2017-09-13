@@ -38,13 +38,13 @@ octave_lvalue
 {
 public:
 
-  octave_lvalue (const octave::symbol_table::symbol_reference& s
-                   = octave::symbol_table::symbol_reference ())
-    : sym (s), type (), idx (), nel (1)
+  octave_lvalue (const octave::symbol_table::symbol_record& s
+                   = octave::symbol_table::symbol_record ())
+    : sym (s), black_hole (false), type (), idx (), nel (1)
   { }
 
   octave_lvalue (const octave_lvalue& vr)
-    : sym (vr.sym), type (vr.type), idx (vr.idx), nel (vr.nel)
+    : sym (vr.sym), black_hole (vr.black_hole), type (vr.type), idx (vr.idx), nel (vr.nel)
   { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
@@ -52,6 +52,7 @@ public:
     if (this != &vr)
       {
         sym = vr.sym;
+        black_hole = vr.black_hole;
         type = vr.type;
         idx = vr.idx;
         nel = vr.nel;
@@ -62,21 +63,23 @@ public:
 
   ~octave_lvalue (void) = default;
 
-  bool is_black_hole (void) const { return sym.is_black_hole (); }
+  bool is_black_hole (void) const { return black_hole; }
+
+  void mark_black_hole (void) { black_hole = true; }
 
   bool is_defined (void) const
   {
-    return ! is_black_hole () && sym->is_defined ();
+    return ! is_black_hole () && sym.is_defined ();
   }
 
   bool is_undefined (void) const
   {
-    return is_black_hole () || sym->is_undefined ();
+    return is_black_hole () || sym.is_undefined ();
   }
 
   bool isstruct (void) const { return value().isstruct (); }
 
-  void define (const octave_value& v) { sym->assign (v); }
+  void define (const octave_value& v) { sym.assign (v); }
 
   void assign (octave_value::assign_op, const octave_value&);
 
@@ -98,7 +101,9 @@ public:
 
 private:
 
-  octave::symbol_table::symbol_reference sym;
+  octave::symbol_table::symbol_record sym;
+
+  bool black_hole;
 
   std::string type;
 

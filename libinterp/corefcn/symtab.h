@@ -96,7 +96,8 @@ namespace octave
 
         symbol_record_rep (scope *s, const std::string& nm,
                            const octave_value& v, unsigned int sc)
-          : m_decl_scope (s), curr_fcn (nullptr), name (nm), value_stack (),
+          : m_decl_scope (s), curr_fcn (nullptr), name (nm),
+            m_fwd_rep (nullptr), value_stack (),
             storage_class (sc), /* finfo (), */ valid (true), count (1)
         {
           value_stack.push_back (v);
@@ -112,6 +113,12 @@ namespace octave
 
         void assign (const octave_value& value)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->assign (value);
+              return;
+            }
+
           varref () = value;
         }
 
@@ -120,16 +127,34 @@ namespace octave
                      const std::list<octave_value_list>& idx,
                      const octave_value& value)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->assign (op, type, idx, value);
+              return;
+            }
+
           varref().assign (op, type, idx, value);
         }
 
         void assign (octave_value::assign_op op, const octave_value& value)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->assign (op, value);
+              return;
+            }
+
           varref().assign (op, value);
         }
 
         void do_non_const_unary_op (octave_value::unary_op op)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->do_non_const_unary_op (op);
+              return;
+            }
+
           varref().do_non_const_unary_op (op);
         }
 
@@ -137,11 +162,20 @@ namespace octave
                                     const std::string& type,
                                     const std::list<octave_value_list>& idx)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->do_non_const_unary_op (op, type, idx);
+              return;
+            }
+
           varref().do_non_const_unary_op (op, type, idx);
         }
 
         octave_value& varref (void)
         {
+          if (m_fwd_rep)
+            return m_fwd_rep->varref ();
+
           context_id context
             = m_decl_scope ? m_decl_scope->current_context () : 0;
 
@@ -161,6 +195,9 @@ namespace octave
 
         octave_value varval (void) const
         {
+          if (m_fwd_rep)
+            return m_fwd_rep->varval ();
+
           context_id context
             = m_decl_scope ? m_decl_scope->current_context () : 0;
 
@@ -179,6 +216,12 @@ namespace octave
 
         void push_context (scope *sid)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->push_context (sid);
+              return;
+            }
+
           if (! (is_persistent () || is_global ())
               && sid == decl_scope ())
             value_stack.push_back (octave_value ());
@@ -200,6 +243,9 @@ namespace octave
 
         size_t pop_context (scope *sid)
         {
+          if (m_fwd_rep)
+            return m_fwd_rep->pop_context (sid);
+
           size_t retval = 1;
 
           if (! (is_persistent () || is_global ())
@@ -212,79 +258,329 @@ namespace octave
           return retval;
         }
 
-        void clear (void) { clear (decl_scope ()); }
+        void clear (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->clear ();
+              return;
+            }
+
+          clear (decl_scope ());
+        }
 
         void clear (scope *sid);
 
         bool is_defined (void) const
         {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_defined ();
+
           return varval ().is_defined ();
         }
 
         bool is_valid (void) const
         {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_valid ();
+
           return valid;
         }
 
         bool is_variable (void) const
         {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_variable ();
+
           return (! is_local () || is_defined ());
         }
 
-        bool is_local (void) const { return storage_class & local; }
-        bool is_automatic (void) const { return storage_class & automatic; }
-        bool is_formal (void) const { return storage_class & formal; }
-        bool is_hidden (void) const { return storage_class & hidden; }
-        bool is_inherited (void) const { return storage_class & inherited; }
-        bool is_global (void) const { return storage_class & global; }
-        bool is_persistent (void) const { return storage_class & persistent; }
-        bool is_added_static (void) const {return storage_class & added_static; }
+        bool is_local (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_local ();
 
-        void mark_local (void) { storage_class |= local; }
-        void mark_automatic (void) { storage_class |= automatic; }
-        void mark_formal (void) { storage_class |= formal; }
-        void mark_hidden (void) { storage_class |= hidden; }
-        void mark_inherited (void) { storage_class |= inherited; }
+          return storage_class & local;
+        }
+
+        bool is_automatic (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_automatic ();
+
+          return storage_class & automatic;
+        }
+
+        bool is_formal (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_formal ();
+
+          return storage_class & formal;
+        }
+
+        bool is_hidden (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_hidden ();
+
+          return storage_class & hidden;
+        }
+
+        bool is_inherited (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_inherited ();
+
+          return storage_class & inherited;
+        }
+
+        bool is_global (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_global ();
+
+          return storage_class & global;
+        }
+
+        bool is_persistent (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_persistent ();
+
+          return storage_class & persistent;
+        }
+
+        bool is_added_static (void) const
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->is_added_static ();
+
+          return storage_class & added_static;
+        }
+
+        void mark_local (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_local ();
+              return;
+            }
+
+          storage_class |= local;
+        }
+
+        void mark_automatic (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_automatic ();
+              return;
+            }
+
+          storage_class |= automatic;
+        }
+
+        void mark_formal (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_formal ();
+              return;
+            }
+
+          storage_class |= formal;
+        }
+
+        void mark_hidden (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_hidden ();
+              return;
+            }
+
+          storage_class |= hidden;
+        }
+
+        void mark_inherited (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_inherited ();
+              return;
+            }
+
+          storage_class |= inherited;
+        }
+
         void mark_global (void)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_global ();
+              return;
+            }
+
           if (is_persistent ())
             error ("can't make persistent variable %s global", name.c_str ());
 
           storage_class |= global;
         }
+
         void mark_persistent (void)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_persistent ();
+              return;
+            }
+
           if (is_global ())
             error ("can't make global variable %s persistent", name.c_str ());
 
           storage_class |= persistent;
         }
-        void mark_added_static (void) { storage_class |= added_static; }
 
-        void unmark_local (void) { storage_class &= ~local; }
-        void unmark_automatic (void) { storage_class &= ~automatic; }
-        void unmark_formal (void) { storage_class &= ~formal; }
-        void unmark_hidden (void) { storage_class &= ~hidden; }
-        void unmark_inherited (void) { storage_class &= ~inherited; }
-        void unmark_global (void) { storage_class &= ~global; }
-        void unmark_persistent (void) { storage_class &= ~persistent; }
-        void unmark_added_static (void) { storage_class &= ~added_static; }
+        void mark_added_static (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->mark_added_static ();
+              return;
+            }
+
+          storage_class |= added_static;
+        }
+
+        void unmark_local (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_local ();
+              return;
+            }
+
+          storage_class &= ~local;
+        }
+
+        void unmark_automatic (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_automatic ();
+              return;
+            }
+
+          storage_class &= ~automatic;
+        }
+
+        void unmark_formal (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_formal ();
+              return;
+            }
+
+          storage_class &= ~formal;
+        }
+
+        void unmark_hidden (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_hidden ();
+              return;
+            }
+
+          storage_class &= ~hidden;
+        }
+
+        void unmark_inherited (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_inherited ();
+              return;
+            }
+
+          storage_class &= ~inherited;
+        }
+
+        void unmark_global (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_global ();
+              return;
+            }
+
+          storage_class &= ~global;
+        }
+
+        void unmark_persistent (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_persistent ();
+              return;
+            }
+
+          storage_class &= ~persistent;
+        }
+
+        void unmark_added_static (void)
+        {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->unmark_added_static ();
+              return;
+            }
+
+          storage_class &= ~added_static;
+        }
 
         void init_persistent (void);
 
         void invalidate (void)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->invalidate ();
+              return;
+            }
+
           valid = false;
         }
 
         void erase_persistent (void);
 
-        scope *decl_scope (void) { return m_decl_scope; }
+        scope *decl_scope (void)
+        {
+          if (m_fwd_rep)
+            return m_fwd_rep->decl_scope ();
+
+          return m_decl_scope;
+        }
 
         void set_curr_fcn (octave_user_function *fcn)
         {
+          if (m_fwd_rep)
+            {
+              m_fwd_rep->set_curr_fcn (fcn);
+              return;
+            }
+
           curr_fcn = fcn;
         }
+
+        // We don't forward more than once, so no need to forward the
+        // next two.
+
+        void bind_fwd_rep (symbol_record_rep *rep) { m_fwd_rep = rep; }
+
+        void unbind_fwd_rep (void) { m_fwd_rep = nullptr; }
 
         symbol_record_rep * dup (scope *new_scope) const;
 
@@ -295,6 +591,8 @@ namespace octave
         octave_user_function *curr_fcn;
 
         std::string name;
+
+        symbol_record_rep *m_fwd_rep;
 
         std::deque<octave_value> value_stack;
 
@@ -470,7 +768,17 @@ namespace octave
 
       unsigned int xstorage_class (void) const { return rep->storage_class; }
 
-      void set_curr_fcn (octave_user_function *fcn) { rep->set_curr_fcn (fcn); }
+      void set_curr_fcn (octave_user_function *fcn)
+      {
+        rep->set_curr_fcn (fcn);
+      }
+
+      void bind_fwd_rep (const symbol_record& sr)
+      {
+        rep->bind_fwd_rep (sr.rep);
+      }
+
+      void unbind_fwd_rep (void) { rep->unbind_fwd_rep (); }
 
       octave_value dump (void) const { return rep->dump (); }
 
@@ -481,76 +789,6 @@ namespace octave
       symbol_record_rep *rep;
 
       symbol_record (symbol_record_rep *new_rep) : rep (new_rep) { }
-    };
-
-    static symbol_record dummy_symbol_record;
-
-    // Always access a symbol from the current scope.
-    // Useful for scripts, as they may be executed in more than one scope.
-    class
-      symbol_reference
-    {
-    public:
-
-      symbol_reference (void) : m_scope (nullptr), m_context (0) { }
-
-      symbol_reference (const symbol_record& record);
-
-      symbol_reference (const symbol_record& record, scope *curr_scope,
-                        context_id context)
-        : m_scope (curr_scope), m_context (context), m_sym (record)
-      { }
-
-      symbol_reference (const symbol_reference& ref) = default;
-
-      symbol_reference& operator = (const symbol_reference& ref) = default;
-
-      bool is_black_hole (void) const { return ! m_scope; }
-
-      symbol_table::scope * scope (void) const
-      {
-        update ();
-        return m_scope;
-      }
-
-      context_id context (void) const
-      {
-        update ();
-        return m_context;
-      }
-
-      // The name is the same regardless of scope.
-      const std::string& name (void) const { return m_sym.name (); }
-
-      symbol_record *operator-> (void)
-      {
-        update ();
-        return &m_sym;
-      }
-
-      symbol_record *operator-> (void) const
-      {
-        update ();
-        return &m_sym;
-      }
-
-      // can be used to place symbol_reference in maps, we don't overload < as
-      // it doesn't make any sense for symbol_reference
-      struct comparator
-      {
-        bool operator ()(const symbol_reference& lhs,
-                         const symbol_reference& rhs) const
-        {
-          return lhs.name () < rhs.name ();
-        }
-      };
-    private:
-
-      void update (void) const;
-
-      mutable symbol_table::scope *m_scope;
-      mutable context_id m_context;
-      mutable symbol_record m_sym;
     };
 
     class fcn_info
@@ -969,7 +1207,7 @@ namespace octave
         m_current_scope->assign (name, value);
     }
 
-    octave_value varval (const std::string& name)
+    octave_value varval (const std::string& name) const
     {
       return (m_current_scope
               ? m_current_scope->varval (name) : octave_value ());
@@ -987,8 +1225,7 @@ namespace octave
         p->second = value;
     }
 
-    octave_value
-      global_varval (const std::string& name)
+    octave_value global_varval (const std::string& name) const
     {
       global_symbols_const_iterator p = m_global_symbols.find (name);
 
@@ -1002,8 +1239,7 @@ namespace octave
       m_top_scope->assign (name, value);
     }
 
-    octave_value
-      top_level_varval (const std::string& name)
+    octave_value top_level_varval (const std::string& name) const
     {
       return m_top_scope->varval (name);
     }
@@ -1765,7 +2001,7 @@ namespace octave
                 ? m_persistent_symbols[name] : p->second);
       }
 
-      octave_value persistent_varval (const std::string& name)
+      octave_value persistent_varval (const std::string& name) const
       {
         m_persistent_symbols_const_iterator p = m_persistent_symbols.find (name);
 
@@ -2042,6 +2278,10 @@ namespace octave
 
       bool look_nonlocal (const std::string& name,
                           symbol_table::symbol_record& result);
+
+      void bind_script_symbols (scope *curr_scope);
+
+      void unbind_script_symbols (void);
 
     private:
 

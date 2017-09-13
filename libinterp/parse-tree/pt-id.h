@@ -73,9 +73,9 @@ namespace octave
     // accessing it through sym so that this function may remain const.
     std::string name (void) const { return sym.name (); }
 
-    bool is_defined (void) { return sym->is_defined (); }
+    bool is_defined (void) { return sym.is_defined (); }
 
-    virtual bool is_variable (void) const { return sym->is_variable (); }
+    virtual bool is_variable (void) const { return sym.is_variable (); }
 
     virtual bool is_black_hole (void) { return false; }
 
@@ -97,14 +97,14 @@ namespace octave
     octave_value
     do_lookup (const octave_value_list& args = octave_value_list ())
     {
-      return sym->find (args);
+      return sym.find (args);
     }
 
-    void mark_global (void) { sym->mark_global (); }
+    void mark_global (void) { sym.mark_global (); }
 
-    void mark_persistent (void) { sym->init_persistent (); }
+    void mark_persistent (void) { sym.init_persistent (); }
 
-    void mark_as_formal_parameter (void) { sym->mark_formal (); }
+    void mark_as_formal_parameter (void) { sym.mark_formal (); }
 
     // We really need to know whether this symbol referst to a variable
     // or a function, but we may not know that yet.
@@ -128,14 +128,15 @@ namespace octave
       tw.visit_identifier (*this);
     }
 
-    symbol_table::symbol_reference symbol (void) const
+    symbol_table::symbol_record symbol (void) const
     {
       return sym;
     }
+
   private:
 
     // The symbol record that this identifier references.
-    symbol_table::symbol_reference sym;
+    symbol_table::symbol_record sym;
   };
 
   class tree_black_hole : public tree_identifier
@@ -158,7 +159,9 @@ namespace octave
 
     octave_lvalue lvalue (tree_evaluator *)
     {
-      return octave_lvalue (); // black hole lvalue
+      octave_lvalue retval;
+      retval.mark_black_hole ();
+      return retval;
     }
   };
 }

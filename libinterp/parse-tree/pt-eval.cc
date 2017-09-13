@@ -618,6 +618,14 @@ namespace octave
     return false;
   }
 
+  symbol_table::scope *
+  tree_evaluator::get_current_scope (void)
+  {
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    return symtab.current_scope ();
+  }
+
   void
   tree_evaluator::visit_decl_command (tree_decl_command& cmd)
   {
@@ -972,9 +980,9 @@ namespace octave
   {
     octave_value_list retval;
 
-    symbol_table::symbol_reference sym = expr.symbol ();
+    symbol_table::symbol_record sym = expr.symbol ();
 
-    octave_value val = sym->find ();
+    octave_value val = sym.find ();
 
     if (val.is_defined ())
       {
@@ -1014,7 +1022,7 @@ namespace octave
             retval = val;
           }
       }
-    else if (sym->is_added_static ())
+    else if (sym.is_added_static ())
       expr.static_workspace_error ();
     else
       expr.eval_undefined_error ();

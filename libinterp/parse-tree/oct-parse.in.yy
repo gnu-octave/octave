@@ -230,7 +230,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token<dummy_type> '(' ')' '[' ']' '{' '}' '.' ',' ';' '@' '\n'
 
 // Nonterminals we construct.
-%type <dummy_type> indirect_ref_op decl_param_init push_fcn_symtab
+%type <dummy_type> indirect_ref_op decl_param_init
+%type <dummy_type> push_fcn_symtab push_script_symtab begin_file
 %type <dummy_type> param_list_beg param_list_end stmt_begin parse_error
 %type <dummy_type> parsing_local_fcns
 %type <comment_type> stash_comment
@@ -1438,7 +1439,19 @@ parsing_local_fcns
                   { parser.m_parsing_local_functions = true; }
                 ;
 
-file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
+push_script_symtab : // empty
+                  {
+                    $$ = 0;
+
+                    lexer.symtab_context.push (new octave::symbol_table::scope ());
+                  }
+                ;
+
+begin_file      : push_script_symtab INPUT_FILE
+                  { $$ = 0; }
+                ;
+
+file            : begin_file opt_nl opt_list END_OF_INPUT
                   {
                     YYUSE ($2);
 
@@ -1449,6 +1462,9 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                         // definitions found in the file have already
                         // been stored in the symbol table or in
                         // base_parser::m_primary_fcn_ptr.
+
+                        // Unused symbol table context.
+                        lexer.symtab_context.pop ();
 
                         delete $3;
                       }
@@ -1464,11 +1480,14 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
 
                     $$ = nullptr;
                   }
-                | INPUT_FILE opt_nl classdef parsing_local_fcns opt_sep opt_fcn_list END_OF_INPUT
+                | begin_file opt_nl classdef parsing_local_fcns opt_sep opt_fcn_list END_OF_INPUT
                   {
                     YYUSE ($2);
                     YYUSE ($5);
                     YYUSE ($6);
+
+                    // Unused symbol table context.
+                    lexer.symtab_context.pop ();
 
                     if (lexer.reading_classdef_file)
                       parser.m_classdef_object = $3;
@@ -3216,8 +3235,10 @@ namespace octave
     octave_user_script *script
       = new octave_user_script (m_lexer.fcn_file_full_name,
                                 m_lexer.fcn_file_name,
+                                m_lexer.symtab_context.curr_scope (),
                                 cmds, m_lexer.help_text);
 
+    m_lexer.symtab_context.pop ();
     m_lexer.help_text = "";
 
     sys::time now;

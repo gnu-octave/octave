@@ -1428,55 +1428,106 @@ DEFMETHOD (warning, interp, args, nargout,
 @deftypefnx {} {} warning (@var{id}, @var{template}, @dots{})
 @deftypefnx {} {} warning ("on", @var{id})
 @deftypefnx {} {} warning ("off", @var{id})
-@deftypefnx {} {} warning ("query", @var{id})
 @deftypefnx {} {} warning ("error", @var{id})
-@deftypefnx {} {} warning (@var{state}, "backtrace")
+@deftypefnx {} {} warning ("query", @var{id})
 @deftypefnx {} {} warning (@var{state}, @var{id}, "local")
+@deftypefnx {} {} warning (@var{stin})
+@deftypefnx {} {@var{stout} =} warning (@dots{})
+@deftypefnx {} {@var{mode_st} =} warning (@var{state}, @var{mode})
+@deftypefnx {} {} warning (@var{mode_st})
+
 Display a warning message or control the behavior of Octave's warning
 system.
 
-Format the optional arguments under the control of the template string
-@var{template} using the same rules as the @code{printf} family of
-functions (@pxref{Formatted Output}) and print the resulting message
-on the @code{stderr} stream.  The message is prefixed by the character
-string @samp{warning: }.
-You should use this function when you want to notify the user
-of an unusual condition, but only when it makes sense for your program
-to go on.
-
-The optional message identifier allows users to enable or disable
-warnings tagged by @var{id}.  A message identifier is of the form
-"NAMESPACE:WARNING-NAME".  Octave's own warnings use the
-@qcode{"Octave"} namespace (@pxref{XREFwarning_ids}).  The special
-identifier @qcode{"all"} may be used to set the state of all warnings.
-
-If the first argument is @qcode{"on"} or @qcode{"off"},
-set the state of a particular warning using the identifier @var{id}.  If the
-first argument is @qcode{"query"}, query the state of this warning
-instead.  If the identifier is omitted, a value of @qcode{"all"} is
-assumed.  If you set the state of a warning to @qcode{"error"}, the
-warning named by @var{id} is handled as if it were an error instead.  So,
-for example, the following handles all warnings as errors:
+The first call form uses a template @var{template} and optional
+additional arguments to display a message on the @code{stderr} stream.
+The message is formatted using the same rules as the @code{printf} family
+of functions (@pxref{Formatted Output}) and prefixed by the character
+string @samp{warning: }.  You should use this function when you want to
+notify the user of an unusual condition, but only when it makes sense for
+your program to go on.  For example:
 
 @example
 @group
-warning ("error");
+warning ("foo: maybe something wrong here");
 @end group
 @end example
 
-If the state is @qcode{"on"} or @qcode{"off"} and the third argument
-is @qcode{"backtrace"}, then a stack trace is printed along with the
-warning message when warnings occur inside function calls.  This option
-is enabled by default.
+The optional warning identifier @var{id} allows users to enable or disable
+warnings tagged by this identifier.  A message identifier is a string of the
+form @qcode{"NAMESPACE:WARNING-NAME"}.  Octave's own warnings use the
+@qcode{"Octave"} namespace (@pxref{XREFwarning_ids}).  For example:
 
-If the state is @qcode{"on"}, @qcode{"off"}, or @qcode{"error"}
-and the third argument is @qcode{"local"}, then the warning state
-will be set temporarily, until the end of the current function.
-Changes to warning states that are set locally affect the current
-function and all functions called from the current scope.  The
-previous warning state is restored on return from the current
-function.  The @qcode{"local"} option is ignored if used in the top-level
-workspace.
+@example
+@group
+warning ("MyNameSpace:check-something",
+         "foo: maybe something wrong here");
+@end group
+@end example
+
+The second call form is meant to change and/or query the state of warnings.
+The first input argument must be a string @var{state} (@qcode{"on"},
+@qcode{"off"}, @qcode{"error"}, or @qcode{"query"}) followed by an optional
+warning identifier @var{id} or @qcode{"all"} (default).
+
+The optional output argument @var{stout} is a structure or structure array
+with fields @qcode{"state"} and @qcode{"identifier"}.  The @var{state} argument
+may have the following values:
+
+@table @asis
+@item @qcode{"on"}|@qcode{"off"}:
+Enable or disable the display of warnings identified by @var{id} and optionally
+return their previous state @var{stout}.
+
+@item @qcode{"error"}:
+Turn warnings identified by @var{id} into errors and optionally return their
+previous state @var{stout}.
+
+@item @qcode{"query"}:
+Return the current state of warnings identified by @var{id}.
+@end table
+
+A structure or structure array @var{stin}, with fields @qcode{"state"} and
+@qcode{"identifier"}, may be passed to achieve equivalent results.  The
+following example shows how to temporarily disable a warning and then restore
+its original state:
+
+@example
+@group
+loglog (-1:10);
+## Disable the previous warning and save its original state
+[~, id] = lastwarn ();
+warnstate = warning ("off", id);
+loglog (-1:10);
+## Restore its original state
+warning (warnstate);
+@end group
+@end example
+
+If a final argument @qcode{"local"} is provided then the warning state will be
+set temporarily until the end of the current function.  Changes to warning
+states that are set locally affect the current function and all functions
+called from the current scope.  The previous warning state is restored on
+return from the current function.  The @qcode{"local"} option is ignored if
+used in the top-level workspace.
+
+With no input argument @code{warning ()} is equivalent to
+@code{warning ("query", "all")} except that in the absence of an output
+argument, the state of warnings is displayed on @code{stderr}.
+
+The level of verbosity of the warning system may also be controlled by two
+modes @var{mode}:
+
+@table @asis
+@item @qcode{"backtrace"}:
+enable/disable the display of the stack trace after the warning message
+
+@item @qcode{"verbose"}:
+enable/disable the display of additional information after the warning message
+@end table
+
+In this case the @var{state} argument may only be @qcode{"on"} or
+@qcode{"off"}.
 
 Implementation Note: For compatibility with @sc{matlab}, escape
 sequences in @var{template} (e.g., @qcode{"@xbackslashchar{}n"} =>
@@ -1505,7 +1556,12 @@ disable escape sequence expansion use a second backslash before the sequence
 
       if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
-          octave_map old_warning_options = warning_options;
+          // Prepare output structure
+          octave_map old_warning_options;
+          if (arg2 == "all")
+            old_warning_options = warning_options;
+          else
+            old_warning_options = octave_map (warning_query (arg2));
 
           octave::symbol_table& symtab = interp.get_symbol_table ();
 
@@ -1695,7 +1751,7 @@ disable escape sequence expansion use a second backslash before the sequence
     {
       octave_value arg = args(0);
 
-      octave_map old_warning_options = warning_options;
+      octave_map old_warning_options;
 
       if (arg.isstruct ())
         {
@@ -1711,6 +1767,18 @@ disable escape sequence expansion use a second backslash before the sequence
 
           octave_idx_type nel = ident.numel ();
 
+          // Prepare output structure
+          old_warning_options = octave_map (m);
+          Cell oldstate (state);
+
+          for (octave_idx_type i = 0; i < nel; i++)
+            {
+              std::string tid = ident(i).string_value ();
+              oldstate(i) = warning_query (tid).getfield ("state");
+            }
+          old_warning_options.setfield ("state", oldstate);
+
+          // Set new values
           for (octave_idx_type i = 0; i < nel; i++)
             {
               std::string tst = state(i).string_value ();
@@ -1751,6 +1819,19 @@ disable escape sequence expansion use a second backslash before the sequence
 %!test <*45753>
 %! warning ("error");
 %! assert (! isempty (help ("warning")));
+*/
+
+/*
+%!test <*51997>
+%! id = "Octave:divide-by-zero";
+%! current = warning ("query", id);
+%! current_all = warning ();
+%! previous = warning (current_all);
+%! assert (previous, current_all);
+%! previous = warning (current);
+%! assert (previous, current);
+%! previous = warning (current.state, id);
+%! assert (previous, current);
 */
 
 octave_value_list

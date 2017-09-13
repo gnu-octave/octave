@@ -333,8 +333,11 @@ function assert (cond, varargin)
             err.expected(end+1:end+length (erridx)) = ...
               strtrim (cellstr (num2str (B(erridx) (:))));
             err.reason(end+1:end+length (erridx)) = ...
-              ostrsplit (deblank (sprintf ("Abs err %.5g exceeds tol %.5g\n",...
-              [abs(A_null(erridx) - B_null(erridx))(:) mtol(erridx)(:)]')), "\n");
+              ostrsplit (deblank (
+                         sprintf ("Abs err %.5g exceeds tol %.5g by %.1g\n",
+                [abs(A_null(erridx) - B_null(erridx))(:), mtol(erridx)(:), ...
+                 abs(A_null(erridx) - B_null(erridx))(:)-mtol(erridx)(:)].')),
+                         "\n");
           endif
 
           k = (mtol > 0);
@@ -347,8 +350,11 @@ function assert (cond, varargin)
             err.expected(end+1:end+length (erridx)) = ...
               strtrim (cellstr (num2str (B(erridx) (:))));
             err.reason(end+1:end+length (erridx)) = ...
-              ostrsplit (deblank (sprintf ("Abs err %.5g exceeds tol %.5g\n",...
-              [abs(A_null(erridx) - B_null(erridx))(:) mtol(erridx)(:)]')), "\n");
+              ostrsplit (deblank (
+                         sprintf ("Abs err %.5g exceeds tol %.5g by %.1g\n",
+                [abs(A_null(erridx) - B_null(erridx))(:), mtol(erridx)(:), ...
+                 abs(A_null(erridx) - B_null(erridx))(:)-mtol(erridx)(:)].')),
+                         "\n");
           endif
 
           k = (mtol < 0);
@@ -363,8 +369,11 @@ function assert (cond, varargin)
               err.expected(end+1:end+length (erridx)) = ...
                 strtrim (cellstr (num2str (B(erridx) (:))));
               err.reason(end+1:end+length (erridx)) = ...
-                ostrsplit (deblank (sprintf ("Abs err %.5g exceeds tol %.5g\n",
-                [abs(A_null(erridx) - B_null(erridx)) -mtol(erridx)]')), "\n");
+                ostrsplit (deblank (
+                           sprintf ("Abs err %.5g exceeds tol %.5g by %.1g\n",
+                      [abs(A_null(erridx) - B_null(erridx)), -mtol(erridx), ...
+                       abs(A_null(erridx) - B_null(erridx))+mtol(erridx)].')),
+                           "\n");
             endif
             ## Test for relative error
             Bdiv = Inf (size (B_null));
@@ -379,8 +388,11 @@ function assert (cond, varargin)
               err.expected(end+1:end+length (erridx)) = ...
                 strtrim (cellstr (num2str (B(erridx) (:))));
               err.reason(end+1:end+length (erridx)) = ...
-                ostrsplit (deblank (sprintf ("Rel err %.5g exceeds tol %.5g\n",
-                [relerr(erridx)(:) -mtol(erridx)(:)]')), "\n");
+                ostrsplit (deblank (
+                           sprintf ("Rel err %.5g exceeds tol %.5g by %.1g\n",
+                                    [relerr(erridx)(:), -mtol(erridx)(:), ...
+                                     relerr(erridx)(:)+mtol(erridx)(:)].')),
+                           "\n");
             endif
           endif
         endif

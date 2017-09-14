@@ -83,9 +83,6 @@ enum builtin_type_t
 extern OCTINTERP_API std::string
 btyp_class_name [btyp_num_types];
 
-extern OCTINTERP_API string_vector
-get_builtin_classes (void);
-
 inline bool btyp_isnumeric (builtin_type_t btyp)
 { return btyp <= btyp_uint64; }
 

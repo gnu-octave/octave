@@ -833,7 +833,7 @@ void TerminalView::updateImage()
   _screenWindow->resetScrollCount();
 
   Character* const newimg = _screenWindow->getImage();
-  int lines = _screenWindow->windowLines() + 1;
+  int lines = _screenWindow->windowLines();
   int columns = _screenWindow->windowColumns();
 
   setScroll( _screenWindow->currentLine() , _screenWindow->lineCount() );

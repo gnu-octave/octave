@@ -95,16 +95,20 @@ inline bool btyp_isfloat (builtin_type_t btyp)
 inline bool btyp_isarray (builtin_type_t btyp)
 { return btyp <= btyp_char; }
 
-// Compute numeric type for a possible mixed-type operation, using these rules:
-// bool -> double
-// single + double -> single
-// real + complex -> complex
-// integer + real -> integer
-// uint + uint -> uint (the bigger one)
-// sint + sint -> sint (the bigger one)
-//
-// failing otherwise.
-
+/*!
+ * \brief Determine the resulting type for a possible mixed-type operation.
+ *
+ * Rules for the resulting type:
+ *   - bool -> double
+ *   - single + double -> single
+ *   - real + complex -> complex
+ *   - integer + real -> integer
+ *   - uint + uint -> uint (the bigger one)
+ *   - sint + sint -> sint (the bigger one)
+ *
+ * \return The resulting type or "unknown type", if the resulting type cannot
+ *         be determined.
+ */
 extern OCTINTERP_API
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y);
 

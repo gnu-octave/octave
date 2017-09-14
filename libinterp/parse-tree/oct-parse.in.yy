@@ -3473,9 +3473,10 @@ namespace octave
                }
           }
 
-        if (m_parsing_local_functions )
+        if (m_parsing_local_functions && m_curr_fcn_depth == 1)
           symtab.install_local_function (nm, octave_value (fcn), file);
-        else if (m_curr_fcn_depth == 1)
+
+        if (m_curr_fcn_depth == 1)
           fcn_scope->update_nest ();
 
         if (! m_lexer.reading_fcn_file && m_curr_fcn_depth == 1)

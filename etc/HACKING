@@ -267,6 +267,8 @@ An overview of the directory layout of Octave's source files:
 
     @ftp             ftp object class
 
+    +containers      container classes (Map)
+
     audio            play and record sound files (system dependent)
 
     deprecated       older deprecated functions

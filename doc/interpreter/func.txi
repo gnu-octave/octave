@@ -1917,6 +1917,12 @@ The following is a list of all the function file subdirectories, and the
 types of functions you will find there.
 
 @table @file
+@item @@ftp
+Class functions for the FTP object.
+
+@item +containers
+Package for the containers classes.
+
 @item audio
 Functions for playing and recording sounds.
 
@@ -1926,9 +1932,6 @@ Out-of-date functions which will eventually be removed from Octave.
 @item elfun
 Elementary functions, principally trigonometric.
 
-@item @@ftp
-Class functions for the FTP object.
-
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
@@ -1936,6 +1939,9 @@ and @code{triu}, as well as other basic functions, like
 
 @item geometry
 Functions related to Delaunay triangulation.
+
+@item gui
+Functions for GUI elements like dialog, message box, etc.
 
 @item help
 Functions for Octave's built-in help system.
@@ -1946,11 +1952,17 @@ Image processing tools.  These functions require the X Window System.
 @item io
 Input-output functions.
 
+@item java
+Functions related to the Java integration.
+
 @item linear-algebra
 Functions for linear algebra.
 
 @item miscellaneous
 Functions that don't really belong anywhere else.
+
+@item ode
+Functions to solve ordinary differential equations (ODEs).
 
 @item optimization
 Functions related to minimization, optimization, and root finding.

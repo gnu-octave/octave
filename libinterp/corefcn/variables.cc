@@ -1641,7 +1641,8 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
           // implement this option there so that the variables are never
           // stored at all.
           if (i == argc - 1)
-            error ("whos: -file argument must be followed by a filename");
+            error ("%s: -file argument must be followed by a filename",
+                   my_name.c_str ());
 
           std::string nm = argv[i + 1];
 

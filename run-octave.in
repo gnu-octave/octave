@@ -49,7 +49,7 @@ d4_path=`echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s);
 octave_executable="$builddir/src/octave"
 
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
-IMAGEPATH="$top_srcdir/scripts/image"
+IMAGEPATH=".:$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
 BUILT_IN_DOCSTRINGS_FILE="$builddir/libinterp/DOCSTRINGS"
 TEXIMACROSFILE="$top_srcdir/doc/interpreter/macros.texi"

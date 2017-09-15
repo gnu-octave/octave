@@ -1464,6 +1464,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                         // base_parser::m_primary_fcn_ptr.
 
                         // Unused symbol table context.
+                        delete lexer.symtab_context.curr_scope ();
                         lexer.symtab_context.pop ();
 
                         delete $3;
@@ -1487,6 +1488,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                     YYUSE ($6);
 
                     // Unused symbol table context.
+                    delete lexer.symtab_context.curr_scope ();
                     lexer.symtab_context.pop ();
 
                     if (lexer.reading_classdef_file)

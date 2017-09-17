@@ -1946,12 +1946,22 @@ main_window::construct (void)
                                                               int,
                                                               const QString&)));
 
+      // Signals for removing/renaming files/dirs in the file browser
       connect (m_file_browser_window,
                SIGNAL (file_remove_signal (const QString&, const QString&)),
                m_editor_window,
                SLOT (handle_file_remove (const QString&, const QString&)));
 
       connect (m_file_browser_window, SIGNAL (file_renamed_signal (bool)),
+               m_editor_window, SLOT (handle_file_renamed (bool)));
+      // Signals for removing/renaming files/dirs in the temrinal window
+      connect (m_octave_qt_link,
+               SIGNAL (file_remove_signal (const QString&, const QString&,
+                                           QMutex*)),
+               m_editor_window,
+               SLOT (handle_file_remove (const QString&, const QString&,
+                                         QMutex*)));
+      connect (m_octave_qt_link, SIGNAL (file_renamed_signal (bool)),
                m_editor_window, SLOT (handle_file_renamed (bool)));
 #endif
 

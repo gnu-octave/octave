@@ -110,6 +110,10 @@ public:
 
   void update_directory (void);
 
+  void do_file_remove (const std::string& old_name,
+                       const std::string& new_name);
+  void do_file_renamed (bool load_new = true);
+
   void do_execute_command_in_terminal (const std::string& command);
 
   void do_set_workspace (bool top_level, bool debug,
@@ -172,6 +176,10 @@ signals:
   void edit_file_signal (const QString& file);
 
   void change_directory_signal (const QString& dir);
+
+  void file_remove_signal (const QString& old_name,
+                           const QString& new_name, QMutex *wait_closing);
+  void file_renamed_signal (bool load_new);
 
   void execute_command_in_terminal_signal (const QString& command);
 

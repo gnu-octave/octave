@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolBar>
 #include <QAction>
 #include <QMenuBar>
+#include <QMutex>
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QTabWidget>
@@ -281,7 +282,8 @@ public slots:
 
   void handle_edit_file_request (const QString& file);
 
-  void handle_file_remove (const QString&, const QString&);
+  void handle_file_remove (const QString&, const QString&,
+                           QMutex *wait_closing = 0);
   void handle_file_renamed (bool load_new = true);
 
   // Tells the editor to react on changed settings.

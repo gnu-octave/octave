@@ -394,12 +394,12 @@ Open the variable @var{name} in the graphical Variable Editor.
     print_usage ();
 
   if (! args(0).is_string ())
-    error ("openvar: NAME must be a string"); 
+    error ("openvar: NAME must be a string");
 
   std::string name = args(0).string_value ();
 
   if (! (Fisguirunning ())(0).is_true ())
-    warning ("openvar: GUI is not running, can't start Variable Editor"); 
+    warning ("openvar: GUI is not running, can't start Variable Editor");
   else
     octave_link::openvar (name);
 

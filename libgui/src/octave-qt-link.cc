@@ -405,6 +405,26 @@ namespace octave
     emit change_directory_signal (QString::fromStdString (dir));
   }
 
+  void octave_qt_link::do_file_remove (const std::string& old_name,
+                                       const std::string& new_name)
+  {
+    // Lock the mutex before signaling
+    lock ();
+
+    // Emit the signal for the editor for closing the file if it is open
+    emit file_remove_signal (QString::fromStdString (old_name),
+                             QString::fromStdString (new_name));
+
+    // Wait for the GUI and unlock when resumed
+    wait ();
+    unlock ();
+  }
+
+  void octave_qt_link::do_file_renamed (bool load_new)
+  {
+    emit file_renamed_signal (load_new);
+  }
+
   void octave_qt_link::do_execute_command_in_terminal
     (const std::string& command)
   {

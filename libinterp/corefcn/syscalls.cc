@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-syscalls.h"
 #include "oct-uname.h"
-
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -52,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
+#include "octave-link.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
@@ -1088,7 +1088,11 @@ error message.
 
   std::string msg;
 
+  octave_link::file_remove (name, "");
+
   int status = octave::sys::unlink (name, msg);
+
+  octave_link::file_renamed (status == 0);
 
   return ovl (status, msg);
 }

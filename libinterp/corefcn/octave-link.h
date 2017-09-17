@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "oct-mutex.h"
-
+#include "octave.h"
 #include "event-queue.h"
 
 class octave_value;
@@ -219,6 +219,20 @@ public:
   {
     if (enabled ())
       instance->do_change_directory (dir);
+  }
+
+  // Methods for removing/renaming files which might be open in editor
+  static void file_remove (const std::string& old_name,
+                           const std::string& new_name)
+  {
+    if (octave::application::is_gui_running () && enabled ())
+      instance->do_file_remove (old_name, new_name);
+  }
+
+  static void file_renamed (bool load_new)
+  {
+    if (octave::application::is_gui_running () && enabled ())
+      instance->do_file_renamed (load_new);
   }
 
   // Preserves pending input.
@@ -515,6 +529,10 @@ protected:
                                 bool addpath_option) = 0;
 
   virtual void do_change_directory (const std::string& dir) = 0;
+
+  virtual void do_file_remove (const std::string& old_name,
+                               const std::string& new_name) = 0;
+  virtual void do_file_renamed (bool) = 0;
 
   virtual void do_execute_command_in_terminal (const std::string& command) = 0;
 

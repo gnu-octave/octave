@@ -155,6 +155,7 @@ namespace octave
     void new_file (const QString& commands = QString ());
     void open_file (const QString& file_name = QString (), int line = -1);
     void edit_mfile (const QString&, int);
+    void file_remove_proxy (const QString& o, const QString& n);
     void open_online_documentation_page (void);
     void display_release_notes (void);
     void load_and_display_community_news (int serial = -1);

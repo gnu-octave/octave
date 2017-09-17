@@ -298,10 +298,18 @@ identifier.
         }
 
       if (doit)
-        status = octave::sys::recursive_rmdir (fulldir, msg);
+        {
+          octave_link::file_remove (fulldir, "");
+          status = octave::sys::recursive_rmdir (fulldir, msg);
+        }
     }
   else
-    status = octave::sys::rmdir (fulldir, msg);
+    {
+      octave_link::file_remove (fulldir, "");
+      status = octave::sys::rmdir (fulldir, msg);
+    }
+
+  octave_link::file_renamed (status >= 0);
 
   if (status < 0)
     return ovl (false, msg, "rmdir");
@@ -424,12 +432,20 @@ error message.
 
   std::string msg;
 
+  octave_link::file_remove (from, to);
+
   int status = octave::sys::rename (from, to, msg);
 
   if (status < 0)
-    return ovl (-1.0, msg);
+    {
+      octave_link::file_renamed (false);
+      return ovl (-1.0, msg);
+    }
   else
-    return ovl (status, "");
+    {
+      octave_link::file_renamed (true);
+      return ovl (status, "");
+    }
 }
 
 DEFUN (glob, args, ,

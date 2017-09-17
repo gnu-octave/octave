@@ -73,6 +73,8 @@ namespace octave
 
   public slots:
 
+    virtual void handle_file_remove (const QString& o, const QString& n) = 0;
+
     virtual void request_new_file (const QString& command = QString ()) = 0;
 
     virtual void request_open_file (const QString& openFileName,

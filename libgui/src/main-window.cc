@@ -462,6 +462,19 @@ namespace octave
     handle_edit_mfile_request (name, QString (), QString (), line);
   }
 
+  void main_window::file_remove_proxy (const QString& o, const QString& n)
+  {
+    // Wait for worker to suspend
+    m_octave_qt_link->lock ();
+
+    // Close the file if opened
+    m_editor_window->handle_file_remove (o, n);
+
+    // We are done: Unlock and wake the worker thread
+    m_octave_qt_link->unlock ();
+    m_octave_qt_link->wake_all ();
+  }
+
   void main_window::open_online_documentation_page (void)
   {
     QDesktopServices::openUrl (
@@ -1932,12 +1945,20 @@ namespace octave
                                                                 int,
                                                                 const QString&)));
 
+        // Signals for removing/renaming files/dirs in the file browser
         connect (m_file_browser_window,
                  SIGNAL (file_remove_signal (const QString&, const QString&)),
                  m_editor_window,
                  SLOT (handle_file_remove (const QString&, const QString&)));
 
         connect (m_file_browser_window, SIGNAL (file_renamed_signal (bool)),
+                 m_editor_window, SLOT (handle_file_renamed (bool)));
+
+        // Signals for removing/renaming files/dirs in the temrinal window
+        connect (m_octave_qt_link,
+                 SIGNAL (file_remove_signal (const QString&, const QString&)),
+                 this, SLOT (file_remove_proxy (const QString&, const QString&)));
+        connect (m_octave_qt_link, SIGNAL (file_renamed_signal (bool)),
                  m_editor_window, SLOT (handle_file_renamed (bool)));
 #endif
 

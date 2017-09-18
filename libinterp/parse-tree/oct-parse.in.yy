@@ -3234,10 +3234,13 @@ namespace octave
 
     cmds->append (end_script);
 
+    symbol_table::scope *script_scope = m_lexer.symtab_context.curr_scope ();
+
+    script_scope->cache_name (m_lexer.fcn_file_full_name);
+
     octave_user_script *script
       = new octave_user_script (m_lexer.fcn_file_full_name,
-                                m_lexer.fcn_file_name,
-                                m_lexer.symtab_context.curr_scope (),
+                                m_lexer.fcn_file_name, script_scope,
                                 cmds, m_lexer.help_text);
 
     m_lexer.symtab_context.pop ();

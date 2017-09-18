@@ -154,7 +154,7 @@ function info = imfinfo (filename, varargin)
     print_usage ();
   elseif (! ischar (filename))
     error ("imfinfo: FILENAME must be a string");
-  elseif (nargin > 1 && ! ischar (ext))
+  elseif (nargin > 1 && ! ischar (varargin{1}))
     error ("imfinfo: EXT must be a string");
   endif
 
@@ -181,3 +181,9 @@ endfunction
 %!   imformats ("update", "jpg", fmt_ori);
 %! end_unwind_protect
 %! assert (error_thrown, true);
+
+## Test input validation
+%!error imfinfo ()
+%!error imfinfo (1,2,3)
+%!error <FILENAME must be a string> imfinfo (1)
+%!error <EXT must be a string> imfinfo ("foo", 1)

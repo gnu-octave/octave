@@ -543,8 +543,8 @@ QString QConsolePrivate::getSelection (void)
                 }
 
               QChar c (buf[i].Char.UnicodeChar);
-              if (c.isNull())
-                c = QChar(QChar::Space);
+              if (c.isNull ())
+                c = QChar (QChar::Space);
 
               selection.append (c);
               if (! c.isSpace ())

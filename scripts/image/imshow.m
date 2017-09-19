@@ -178,7 +178,7 @@ function h = imshow (im, varargin)
 
   ## Set default display range if display_range not set yet.
   if (isempty (display_range))
-    display_range = [min(im(:)), max(im(:))];
+    display_range = double ([min(im(:)), max(im(:))]);
   elseif (isna (display_range))
     t = class (im);
     switch (t)

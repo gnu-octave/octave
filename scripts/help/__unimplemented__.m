@@ -658,7 +658,6 @@ function list = missing_functions ()
   "freqspace",
   "funm",
   "gammaincinv",
-  "getframe",
   "getpixelposition",
   "getReport",
   "gobjects",

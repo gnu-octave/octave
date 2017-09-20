@@ -73,23 +73,23 @@ function limits = caxis (varargin)
 
 endfunction
 
-function limits = __caxis__ (ca, ax, varargin)
+function limits = __caxis__ (ca, arg1, varargin)
 
   if (nargin == 1)
     limits = get (ca, "clim");
-  elseif (ischar (ax))
-    if (strcmpi (ax, "auto"))
+  elseif (ischar (arg1))
+    if (strcmpi (arg1, "auto"))
       set (ca, "climmode", "auto");
-    elseif (strcmpi (ax, "manual"))
+    elseif (strcmpi (arg1, "manual"))
       set (ca, "climmode", "manual");
     endif
-  elseif (isvector (ax))
-    len = length (ax);
-    if (len != 2)
-      error ("caxis: LIMITS must be a 2-element vector");
+  elseif (isvector (arg1))
+    if (numel (arg1) != 2 || ! isnumeric (arg1) || arg1(1) >= arg1(2))
+      error (["caxis: "
+              "LIMITS must be a numeric 2-element vector where LIM1 < LIM2"]);
     endif
 
-    set (ca, "clim", [ax(1), ax(2)]);
+    set (ca, "clim", arg1);
   else
     error ("caxis: expecting no args, a string, or a 2 element vector");
   endif

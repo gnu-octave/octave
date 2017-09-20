@@ -103,7 +103,7 @@ function h = imagesc (varargin)
     if (do_new && ! ishold (hax))
       ## use given climits or guess them from the matrix
       if (numel (climits) == 2 && climits(1) <= climits(2))
-        set (hax, "clim", climits);
+        set (hax, "clim", double (climits));
       elseif (! isempty (climits))
         error ("imagesc: CLIMITS must be in form [lo, hi]");
       endif

@@ -24,8 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 // Author: P. L. Lucas
 // Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
-#if ! defined (octave_parser_h)
-#define octave_parser_h 1
+#if ! defined (octave_texinfo_parser_h)
+#define octave_texinfo_parser_h 1
 
 #include <QStringList>
 #include <QIODevice>
@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHash>
 
 /**
- * @class parser
+ * @class texinfo_parser
  * This class processes Texinfo `*.info`-files and their contained nodes
  * for searching and translation to HTML.
  *
@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
  * But is not so easy. There is headers, and qtinfo must not take these
  * headers into account.
  */
-class parser
+class texinfo_parser
   : public QObject
 {
   Q_OBJECT
@@ -56,7 +56,7 @@ public:
   /**
    * Ctor.
    */
-  parser (QObject* parent = nullptr);
+  texinfo_parser (QObject* parent = nullptr);
 
   /**
    * Sets the path of the Texinfo files to \p info_path.

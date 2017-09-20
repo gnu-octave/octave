@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_webinfo_h 1
 
 #include <QTextBrowser>
-#include "parser.h"
+#include "texinfo-parser.h"
 #include <QStackedWidget>
 #include <QTabBar>
 #include <QPushButton>
@@ -110,7 +110,7 @@ private:
   QToolButton         *_zoom_in_button;
   QToolButton         *_zoom_out_button;
 
-  parser              _parser;
+  texinfo_parser      _parser;
   QFont               _font_web;
 
   QTextBrowser * addNewTab (const QString& name);

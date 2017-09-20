@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "parser.h"
+#include "texinfo-parser.h"
 #include "procstream.h"
 #include <QFileInfo>
 #include <QDir>
@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRegExp>
 #include <QBuffer>
 
-parser::parser (QObject *p)
+texinfo_parser::texinfo_parser (QObject *p)
   : QObject(p)
 {
   _compressors_map.insert ( "bz2",  R"(bzip2 -dc "%1")" );
@@ -48,7 +48,7 @@ parser::parser (QObject *p)
 }
 
 bool
-parser::set_info_path (const QString& infoPath)
+texinfo_parser::set_info_path (const QString& infoPath)
 {
   this->_info_path = infoPath;
 
@@ -86,13 +86,13 @@ parser::set_info_path (const QString& infoPath)
 }
 
 QString
-parser::get_info_path ()
+texinfo_parser::get_info_path ()
 {
   return _info_path;
 }
 
 QIODevice *
-parser::open_file (QFileInfo & file_info)
+texinfo_parser::open_file (QFileInfo & file_info)
 {
   QIODevice *iodevice = nullptr;
   if (_compressors_map.contains (file_info.suffix ()))
@@ -133,7 +133,7 @@ parser::open_file (QFileInfo & file_info)
 }
 
 QString
-parser::find_reference (const QString& ref_name)
+texinfo_parser::find_reference (const QString& ref_name)
 {
   QString xref_name = "XREF" + ref_name;
   xref_name.remove (' ');  // Delete spaces as XREF uses no whitespace
@@ -150,13 +150,13 @@ parser::find_reference (const QString& ref_name)
 }
 
 bool
-parser::is_reference (const QString& ref)
+texinfo_parser::is_reference (const QString& ref)
 {
   return _ref_map.contains (ref);
 }
 
 QString
-parser::search_node (const QString& node_arg)
+texinfo_parser::search_node (const QString& node_arg)
 {
   QString node = node_arg;
   QString text = "";
@@ -187,7 +187,7 @@ parser::search_node (const QString& node_arg)
 }
 
 void
-parser::append_line (QString *text, const char *line)
+texinfo_parser::append_line (QString *text, const char *line)
 {
   QString line_converted = QString::fromLatin1 (line);
   int len = line_converted.length ();
@@ -198,7 +198,7 @@ parser::append_line (QString *text, const char *line)
 }
 
 QString
-parser::get_next_node (QIODevice *io)
+texinfo_parser::get_next_node (QIODevice *io)
 {
   QString text;
   QByteArray line, line_buffer;
@@ -252,7 +252,7 @@ get_first_line (const QString& text)
 }
 
 static QString
-parser_node (const QString& text, const QString& node_name)
+texinfo_parser_node (const QString& text, const QString& node_name)
 {
   QString firstLine = get_first_line (text);
   QStringList nodes = firstLine.split (",");
@@ -267,27 +267,27 @@ parser_node (const QString& text, const QString& node_name)
 }
 
 QString
-parser::get_node_name (const QString& text)
+texinfo_parser::get_node_name (const QString& text)
 {
-  return parser_node (text, "Node:");
+  return texinfo_parser_node (text, "Node:");
 }
 
 QString
-parser::get_node_up (const QString& text)
+texinfo_parser::get_node_up (const QString& text)
 {
-  return parser_node (text, "Up:");
+  return texinfo_parser_node (text, "Up:");
 }
 
 QString
-parser::get_node_next (const QString& text)
+texinfo_parser::get_node_next (const QString& text)
 {
-  return parser_node (text, "Next:");
+  return texinfo_parser_node (text, "Next:");
 }
 
 QString
-parser::get_node_prev (const QString& text)
+texinfo_parser::get_node_prev (const QString& text)
 {
-  return parser_node (text, "Prev:");
+  return texinfo_parser_node (text, "Prev:");
 }
 
 static void
@@ -374,7 +374,7 @@ info_to_html (QString& text)
 }
 
 QString
-parser::node_as_html (const QString& node, const QString& anchor)
+texinfo_parser::node_as_html (const QString& node, const QString& anchor)
 {
   QString text = search_node (node);
 
@@ -426,7 +426,7 @@ parser::node_as_html (const QString& node, const QString& anchor)
 }
 
 void
-parser::parse_info_map ()
+texinfo_parser::parse_info_map ()
 {
   QRegExp re ("(Node|Ref): ([^\\0177]+)\\0177(\\d+)\n");
   QRegExp re_files ("([^:]+): (\\d+)\n");
@@ -506,7 +506,7 @@ parser::parse_info_map ()
 }
 
 void
-parser::real_position (int pos, QFileInfo& file_info, int& real_pos)
+texinfo_parser::real_position (int pos, QFileInfo& file_info, int& real_pos)
 {
   int header = -1;
   int sum = 0;
@@ -531,7 +531,7 @@ parser::real_position (int pos, QFileInfo& file_info, int& real_pos)
 }
 
 void
-parser::seek (QIODevice *io, int pos)
+texinfo_parser::seek (QIODevice *io, int pos)
 {
   char ch;
   while (! io->atEnd () && pos > 0)
@@ -542,7 +542,7 @@ parser::seek (QIODevice *io, int pos)
 }
 
 QString
-parser::global_search (const QString& text, int max_results)
+texinfo_parser::global_search (const QString& text, int max_results)
 {
   QString results;
   QStringList words = text.split (" ", QString::SkipEmptyParts);

@@ -58,7 +58,7 @@
 ##
 ## @item ArrayValued
 ## @code{integral} expects @var{f} to return a scalar value unless
-## @var(arrayvalued) is specified as true.  This option will cause
+## @var{arrayvalued} is specified as true.  This option will cause
 ## @code{integral} to perform the integration over the entire array and return
 ## @var{q} with the same dimensions as returned by @var{f}.
 ## @end table

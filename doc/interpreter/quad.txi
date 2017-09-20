@@ -60,8 +60,8 @@ Numerical integration using adaptive @nospell{Clenshaw-Curtis} rules.
 In addition, the following functions are also provided:
 
 @item integral
-A compatibility wrapper function that will choose between @code(quadv) and
-@code(quadgk) depending on the integrand and options chosen.
+A compatibility wrapper function that will choose between @code{quadv} and
+@code{quadgk} depending on the integrand and options chosen.
 
 @item trapz, cumtrapz
 Numerical integration of data using the trapezoidal method.

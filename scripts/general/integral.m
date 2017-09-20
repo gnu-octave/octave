@@ -82,7 +82,7 @@ function q = integral (f, a, b, varargin)
     ## Let quadgk function handle input checks on function and limits.
     q = quadgk (f, a, b);
   else
-    ## Parse options to determine how to call integrator
+    ## Parse options to determine how to call integrator.
     abstol = [];
     reltol = [];
     waypoints = [];
@@ -109,28 +109,30 @@ function q = integral (f, a, b, varargin)
       endswitch
     endwhile
 
-    if (arrayvalued)
-      ## FIXME: replace warning with arrayfun(?) call to quadgk
+    if (! arrayvalued)
+      ## quadgk will accept empty values of optional parameters.
+      q = quadgk (f, a, b,
+                  "AbsTol", abstol, "RelTol", reltol, "WayPoints", waypoints);
+    else
+      ## FIXME: Replace warning with array compatible call to quadgk
       if (! isempty (waypoints))
         warning(["integral: array-valued quadrature routine currently ", ...
                  "unable to handle WayPoints.  WayPoints are ignored."]);
       endif
 
-      ## FIXME: remove warning once we have reltol compatible arrayval'd
-      ## quad or arrayfun call to quadgk.
+      ## FIXME: Remove warning once we have reltol compatible arrayval'd
+      ##        quad or arrayfun call to quadgk.
       if (! isempty (reltol))
         warning(["integral: array-valued quadrature only accepts AbsTol.", ...
                  "  RelTol ignored."]);
       endif
 
-      ## quadv accepts empty abstol input.
+      if (isempty (abstol))
+        issingle = isa (a, "single") || isa (b, "single");
+        abstol = ifelse (issingle, 1e-5, 1e-10);
+      endif
+
       q = quadv (f, a, b, abstol);
-
-    else
-      ## quadgk will accept empty values of optional parameters
-      q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol, ...
-                  "WayPoints", waypoints);
-
     endif
   endif
 
@@ -142,12 +144,12 @@ endfunction
 %! f = @(x) exp (-x.^2) .* log (x).^2;
 %! emgamma = 0.57721566490153286;
 %! exact = (sqrt (pi)*(8*log (2)^2+8*emgamma*log (2)+pi^2+2*emgamma^2))/16;
-%! assert (integral (f, 0, Inf), exact, 1e-6);
-%! assert (integral (f, 0, Inf, "RelTol", 1e-12), exact, 1e-12);
+%! assert (integral (f, 0, Inf), exact, -1e-6);
+%! assert (integral (f, 0, Inf, "RelTol", 1e-12), exact, -1e-12);
 
 %!test  # with parameter
 %! f = @(x, c) 1 ./ (x.^3 - 2*x - c);
-%! assert (integral (@(x) f(x,5), 0, 2), -0.4605015338467329, 1e-12);
+%! assert (integral (@(x) f(x,5), 0, 2), -0.4605015338467329, 1e-10);
 
 %!test  # with tolerances
 %! f = @(x) log(x);
@@ -155,7 +157,7 @@ endfunction
 
 %!test  # waypoints
 %! f = @(x) 1./(2.*x-1);
-%! assert (integral (f, 0, 0, "Waypoints", [1+1i, 1-1i]), -pi*1i, 1e-12);
+%! assert (integral (f, 0, 0, "Waypoints", [1+1i, 1-1i]), -pi*1i, 1e-10);
 
 %!test  # test array function
 %! f = @(x) sin ((1:5)*x);
@@ -164,36 +166,31 @@ endfunction
 
 %!test
 %! f = @(x) x.^5 .* exp (-x) .* sin (x);
-%! assert (integral (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, 2e-12);
+%! assert (integral (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
 
 ## tests from quadgk
-%!test
-%!assert (integral (@sin,-pi,pi), 0, 1e-6);
-%!assert (integral (inline ("sin"),-pi,pi), 0, 1e-6);
-%!assert (integral ("sin",-pi,pi), 0, 1e-6);
-%!assert (integral (@sin,-pi,pi), 0, 1e-6);
-
-%!assert (integral (@sin,-pi,0), -2, 1e-6);
-%!assert (integral (@sin,0,pi), 2, 1e-6);
-%!assert (integral (@(x) 1./sqrt (x),0,1), 2, 1e-6);
-%!assert (integral (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-6);
-%!assert (integral (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-6);
-%!assert (integral (@(z) log (z),1+i,1+i, "WayPoints", [1-i, -1,-i, -1+i]), ...
-%!        -pi * 1i, 1e-6);
-%!assert (integral (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), 1e-6);
-%!assert (integral (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, 1e-6);
+%!assert (integral (inline ("sin"),-pi,pi), 0, 1e-10);
+%!assert (integral ("sin",-pi,pi), 0, 1e-10);
+%!assert (integral (@sin,-pi,pi), 0, 1e-10);
+%!assert (integral (@sin,-pi,0), -2, 1e-10);
+%!assert (integral (@sin,0,pi), 2, 1e-10);
+%!assert (integral (@(x) 1./sqrt (x), 0, 1), 2, 1e-10);
+%!assert (integral (@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1), 2, 1e-10);
+%!assert (integral (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-10);
+%!assert (integral (@(z) log (z),1+i,1+i, "WayPoints", [1-i, -1,-i, -1+i]),
+%!        -pi * 1i, 1e-10);
+%!assert (integral (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), -1e-6);
+%!assert (integral (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, -1e-6);
 
 ## tests from quadv
 ## Test vector-valued functions
-%!assert (integral (@(x) [(sin (x)), (sin (2*x))], 0, pi, "ArrayValued", 1), ...
-%!        [2, 0], 1e-5);
+%!assert (integral (@(x) [(sin (x)), (sin (2*x))], 0, pi, "ArrayValued", 1),
+%!        [2, 0], 1e-10);
 
 ## Test matrix-valued functions
 %!test
-%! warning ("off", "Octave:divide-by-zero", "local");
-%! assert (integral (@(x) [x, x, x; x, 1./sqrt(x), x; x, x, x], 0, 1, ...
-%!                   "ArrayValued", 1), ...
-%!         [0.5, 0.5, 0.5; 0.5, 2, 0.5; 0.5, 0.5, 0.5], 1e-5);
+%! assert (integral (@(x) [x,x,x; x,exp(x),x; x,x,x], 0, 1, "ArrayValued", 1),
+%!         [0.5,0.5,0.5; 0.5,(exp (1) - 1),0.5; 0.5,0.5,0.5], 1e-10);
 
 ## Test input validation
 %!error integral (@sin)

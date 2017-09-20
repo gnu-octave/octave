@@ -1513,6 +1513,13 @@ fcn_name        : identifier
                   {
                     std::string id = $1->name ();
 
+                    // Make classdef local functions unique from
+                    // classdef methods.
+
+                    if (parser.m_parsing_local_functions
+                        && parser.m_curr_fcn_depth == 1)
+                      id = lexer.fcn_file_name + ">" + id;
+
                     if (! parser.m_function_scopes.name_current_scope (id))
                       {
                         parser.bison_error ("duplicate subfunction or nested function name",

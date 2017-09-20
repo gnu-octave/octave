@@ -196,15 +196,11 @@ webinfo::load_node (const QString& node_name)
         }
     }
 
-  QString text = _parser.search_node (node_name);
-  int i = _parser.is_ref (node_name);
   _text_browser = addNewTab (tab_text);
-  _text_browser->setHtml (_parser.node_text_to_html (text, i - 1, "anchor"));
+  _text_browser->setHtml (_parser.node_as_html (node_name, "anchor"));
 
-  if (i != -1)
-    {
-      _text_browser->scrollToAnchor ("anchor");
-    }
+  if (_parser.is_reference (node_name))
+    _text_browser->scrollToAnchor ("anchor");
 }
 
 void
@@ -293,16 +289,8 @@ webinfo::close_tab (int index)
 void
 webinfo::load_ref (const QString& ref_name)
 {
-  QString text = _parser.find_ref (ref_name);
-  if (text.length () > 0)
-    {
-      load_node (text);
-    }
-  else
-    {
-      // not found
-      load_node ("Top");
-    }
+  // Will load "Top", if ref_name was not found.
+  load_node (_parser.find_reference (ref_name));
 
   if (_text_browser)
     _text_browser->setFocus ();
@@ -481,5 +469,3 @@ webinfo_tab_bar::mousePressEvent (QMouseEvent *me)
       QTabBar::mousePressEvent (me);
     }
 }
-
-

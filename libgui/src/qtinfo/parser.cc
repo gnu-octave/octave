@@ -132,70 +132,58 @@ parser::open_file (QFileInfo & file_info)
   return iodevice;
 }
 
-int
-parser::is_ref (const QString& node)
+QString
+parser::find_reference (const QString& ref_name)
 {
-  if (_ref_map.contains (node))
+  QString xref_name = "XREF" + ref_name;
+  xref_name.remove (' ');  // Delete spaces as XREF uses no whitespace
+
+  if (_ref_map.contains (xref_name))
+    return xref_name;
+  else if (_node_map.contains ("The " + ref_name + " Statement"))
     {
-      node_position ref = _ref_map [node];
-
-      return ref.pos-_node_map [ref._node_name].pos;
+      // See, for example "The while Statement" which has no XREF.
+      return "The " + ref_name + " Statement";
     }
-  if (_node_map.contains (node))
-    return 0;  // node: show from the beginning
+  else
+    return "Top";
+}
 
-  return -1;
+bool
+parser::is_reference (const QString& ref)
+{
+  return _ref_map.contains (ref);
 }
 
 QString
 parser::search_node (const QString& node_arg)
 {
   QString node = node_arg;
+  QString text = "";
 
-  QFileInfo file_info;
-  QString ref;
-
-  if (_ref_map.contains (node))
-    {
-      ref = node;
-      node = _ref_map [ref]._node_name;
-    }
+  // If node_arg was a reference, translate to node.
+  if (_ref_map.contains (node_arg))
+    node = _ref_map [node_arg]._node_name;
 
   if (_node_map.contains (node))
     {
-      int pos = _node_map [node].pos;
-      int realPos;
+      QFileInfo file_info;
+      int real_pos;
+      real_position (_node_map [node].pos, file_info, real_pos);
 
-      real_position (pos, file_info, realPos);
-
-      QIODevice *io = open_file (file_info);
+      QIODevice* io = open_file (file_info);
       if (! io)
-        return QString ();
-
-      seek (io, realPos);
-
-      QString text = get_next_node (io);
-      if (! text.isEmpty ())
         return text;
+
+      seek (io, real_pos);
+
+      text = get_next_node (io);
 
       io->close ();
       delete io;
     }
 
-  return QString ();
-}
-
-QString
-parser::search_node (const QString& node, QIODevice *io)
-{
-  while (! io->atEnd ())
-    {
-      QString text = get_next_node (io);
-      if (node == get_node_name (text))
-        return text;
-    }
-
-  return QString ();
+  return text;
 }
 
 void
@@ -386,23 +374,25 @@ info_to_html (QString& text)
 }
 
 QString
-parser::node_text_to_html (const QString& text_arg, int anchorPos,
-                           const QString& anchor)
+parser::node_as_html (const QString& node, const QString& anchor)
 {
-  QString text = text_arg;
+  QString text = search_node (node);
 
   QString nodeName = get_node_name (text);
   QString nodeUp   = get_node_up (text);
   QString nodeNext = get_node_next (text);
   QString nodePrev = get_node_prev (text);
 
-  if (anchorPos > -1)
+  // Insert anchor, if node is a XREF-reference
+  if (is_reference (node))
     {
-      QString text1 = text.left (anchorPos);
-      QString text2 = text.mid (anchorPos);
+      node_position ref = _ref_map[node];
+      int anchor_pos = ref.pos - _node_map[ref._node_name].pos;
 
-      int n = text1.indexOf ("\n");
-      text1.remove (0, n);
+      QString text1 = text.left (anchor_pos);
+      QString text2 = text.mid (anchor_pos);
+
+      text1.remove (0, text1.indexOf ("\n"));
 
       info_to_html (text1);
       info_to_html (text2);
@@ -413,8 +403,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
     }
   else
     {
-      int n = text.indexOf ("\n");
-      text.remove (0, n);
+      text.remove (0, text.indexOf ("\n"));
       info_to_html (text);
     }
 
@@ -434,7 +423,6 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
   text.append ("</body></html>\n");
 
   return text;
-
 }
 
 void
@@ -518,7 +506,7 @@ parser::parse_info_map ()
 }
 
 void
-parser::real_position (int pos, QFileInfo & file_info, int & real_pos)
+parser::real_position (int pos, QFileInfo& file_info, int& real_pos)
 {
   int header = -1;
   int sum = 0;
@@ -554,7 +542,7 @@ parser::seek (QIODevice *io, int pos)
 }
 
 QString
-parser::global_search (const QString& text, int max_founds)
+parser::global_search (const QString& text, int max_results)
 {
   QString results;
   QStringList words = text.split (" ", QString::SkipEmptyParts);
@@ -585,8 +573,7 @@ parser::global_search (const QString& text, int max_founds)
           if (node.isEmpty ())
             continue;
 
-          int n = node_text.indexOf ("\n");
-          node_text.remove (0, n);
+          node_text.remove (0, node_text.indexOf ("\n"));
 
           int pos = 0;
           int founds = 0;
@@ -601,7 +588,7 @@ parser::global_search (const QString& text, int max_founds)
           founds = 0;
 
           while ((pos = re.indexIn (node_text, pos)) != -1
-                 && founds < max_founds)
+                 && founds < max_results)
             {
               if (founds == 0)
                 {
@@ -642,43 +629,4 @@ parser::global_search (const QString& text, int max_founds)
 
   results.append ("</body></html>");
   return results;
-}
-
-QString
-parser::find_ref (const QString& ref_name)
-{
-  QString ref_nm = ref_name;
-  ref_nm.remove (' ');  // Delete spaces as XREF uses no whitespace
-  QString text = "";
-
-  QHash<QString, node_position>::iterator it;
-  for (it = _ref_map.begin (); it != _ref_map.end (); ++it)
-    {
-      QString k = it.key ();
-      node_position p = it.value ();
-
-      if (k == "XREF" + ref_nm)
-        {
-          // found ref, so return its name
-          text = "XREF" + ref_nm;
-          break;
-        }
-    }
-
-  if (text.isEmpty ())  // try the statement-nodes
-    {
-      QHash<QString, node_map_item>::iterator itn;
-      for (itn = _node_map.begin (); itn != _node_map.end (); ++itn)
-        {
-          QString k = itn.key ();
-          if (k == "The " + ref_name + " Statement")
-            {
-              // found ref, so return its name
-              text = k;
-              break;
-            }
-        }
-    }
-
-  return text;
 }

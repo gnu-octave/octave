@@ -34,20 +34,18 @@ along with Octave; see the file COPYING.  If not, see
 
 /**
  * @class parser
- * This class gets nodes and searchs inside of 'info files'.
- * <p>Each info file has nodes. Every node has the documentation.
- * Info files contains a map with position of each node.</p>
- * <p>What is position?
- * There is a simple answer:
- * If you make a queue with info files, position will be the number of bytes
- * from begining to node position.</p>
- * <p>
+ * This class processes Texinfo `*.info`-files and their contained nodes
+ * for searching and translation to HTML.
+ *
+ * Texinfo files are structured by nodes and contain a map with the
+ * `position` of each node.  The nodes themselves hold the actual
+ * documentation.
+ *
+ * If you make a queue with info files, `position` will be the number of
+ * bytes from begining to a node position.
+ *
  * But is not so easy. There is headers, and qtinfo must not take these
  * headers into account.
- * </p>
- * <p>
- * This class also translates info files to html.
- * </p>
  */
 class parser
   : public QObject
@@ -55,24 +53,54 @@ class parser
   Q_OBJECT
 
 public:
-  parser (QObject *parent = nullptr);
-  bool set_info_path (const QString& _info_path);
+  /**
+   * Ctor.
+   */
+  parser (QObject* parent = nullptr);
+
+  /**
+   * Sets the path of the Texinfo files to \p info_path.
+   *
+   * \returns true, if successful, otherwise false.
+   */
+  bool set_info_path (const QString& info_path);
+
+  /**
+   * Returns the path of the Texinfo files.
+   */
   QString get_info_path ();
+
+  /**
+   * Search for the text of \p node.
+   */
   QString search_node (const QString& node);
-  QString global_search (const QString& text, int maxFounds);
 
-  QString find_ref (const QString& name);
+  /**
+   * Search for string \p text with \p max_results search results.
+   */
+  QString global_search (const QString& text, int max_results);
 
-  /** Checks if this node is reference. If node is reference, it will be
-   *  returned its position in text, else it will be returned -1.
-    */
-  int is_ref (const QString& node);
+  /**
+   * Find reference \p ref.
+   *
+   * \returns A valid XREF-reference, if \p ref exists.
+   *          Otherwise node "Top" is returned.
+   */
+  QString find_reference (const QString& ref);
 
-  /** Translates text of node to Html. If anchorPos is not -1, then anchor is
-   *  inserted in that position.
-    */
-  QString node_text_to_html (const QString& text, int anchorPos = -1,
-                             const QString& anchor = QString ());
+  /**
+   * Checks if \p ref is a XREF-reference.
+   */
+  bool is_reference (const QString& ref);
+
+  /**
+   * Get a HTML representation of \p node.
+   * \param anchor name of the anchor `<a name="anchor">`, if \p node is
+   *        a XREF-reference.
+   * \returns HTML string.
+   */
+  QString node_as_html (const QString& node,
+                        const QString& anchor = QString ());
 
 private:
   struct node_position
@@ -92,28 +120,37 @@ private:
     int real_size;
   };
 
-  QString search_node (const QString& node, QIODevice *io);
-  QString get_next_node (QIODevice *io);
+  QString get_next_node (QIODevice* io);
   QString get_node_name (const QString& text);
   QString get_node_up (const QString& text);
   QString get_node_next (const QString& text);
   QString get_node_prev (const QString& text);
-  void append_line (QString *test, const char *line);
 
-  /** Parses info files and gets map of node positions.*/
+  /**
+   * Append \p line to \text.
+   */
+  void append_line (QString *text, const char *line);
+
+  /**
+   * Parse `*.info` file and generate map of nodes and their positions.
+   */
   void parse_info_map ();
 
-  /** Open info files and uncompress them. */
-  QIODevice * open_file (QFileInfo & fileInfo);
+  /**
+   * Open compressed `*.info` file \p fileInfo.
+   */
+  QIODevice* open_file (QFileInfo& fileInfo);
 
   /** Calculates real position of nodes.
-    * @param pos position from info file.
-    * @param fileInfo returns file what contains that position.
-    * @param realPos returns real position inside of fileInfo.
-    */
-  void real_position (int pos, QFileInfo & file_info, int & real_pos);
+   * \param pos position from info file.
+   * \param file_info returns file that contains \p pos.
+   * \param real_pos returns real position inside \p file_info.
+   */
+  void real_position (int pos, QFileInfo& file_info, int& real_pos);
 
-  /** Seeks to position pos. */
+  /**
+   * Seeks in \p io to position \p pos.
+   */
   void seek (QIODevice *io, int pos);
 
   QString                       _info_path;

@@ -2268,8 +2268,6 @@ Undocumented internal function.
 {
   octave::load_path& lp = interp.get_load_path ();
 
-  lp.initialize (true);
-
   return ovl (lp.system_path ());
 }
 

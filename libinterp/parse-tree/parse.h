@@ -350,6 +350,10 @@ namespace octave
                                      tree_parameter_list *ret_list,
                                      comment_list *cl);
 
+    void
+    finish_classdef_file (tree_classdef *cls,
+                          tree_statement_list *local_fcns);
+
     // Make an index expression.
     tree_index_expression *
     make_index_expression (tree_expression *expr,

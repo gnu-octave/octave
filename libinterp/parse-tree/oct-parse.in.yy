@@ -1485,14 +1485,12 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                   {
                     YYUSE ($2);
                     YYUSE ($5);
-                    YYUSE ($6);
 
                     // Unused symbol table context.
                     delete lexer.symtab_context.curr_scope ();
                     lexer.symtab_context.pop ();
 
-                    if (lexer.reading_classdef_file)
-                      parser.m_classdef_object = $3;
+                    parser.finish_classdef_file ($3, $6);
 
                     $$ = nullptr;
                   }
@@ -3445,10 +3443,6 @@ namespace octave
         if (! file.empty ())
           tmp += ": " + file;
 
-        symbol_table& symtab
-          = __get_symbol_table__ ("base_parser::finish_function");
-
-
         symbol_table::scope *fcn_scope = fcn->scope ();
         fcn_scope->cache_name (tmp);
 
@@ -3477,9 +3471,6 @@ namespace octave
                 m_primary_fcn_scope->install_subfunction (nm, ov_fcn);
                }
           }
-
-        if (m_parsing_local_functions && m_curr_fcn_depth == 1)
-          symtab.install_local_function (nm, octave_value (fcn), file);
 
         if (m_curr_fcn_depth == 1)
           fcn_scope->update_nest ();
@@ -3820,6 +3811,37 @@ namespace octave
     int c = fcn->beginning_column ();
 
     return new tree_function_def (fcn, l, c);
+  }
+
+  void
+  base_parser::finish_classdef_file (tree_classdef *cls,
+                                     tree_statement_list *local_fcns)
+  {
+    if (m_lexer.reading_classdef_file)
+      m_classdef_object = cls;
+
+    if (local_fcns)
+      {
+        symbol_table& symtab
+          = __get_symbol_table__ ("base_parser::finish_classdef_file");
+
+        for (tree_statement *elt : *local_fcns)
+          {
+            tree_command *cmd = elt->command ();
+
+            tree_function_def *fcn_def
+              = dynamic_cast<tree_function_def *> (cmd);
+
+            octave_value ov_fcn = fcn_def->function ();
+            octave_function *fcn = ov_fcn.function_value ();
+            std::string nm = fcn->name ();
+            std::string file = fcn->fcn_file_name ();
+
+            symtab.install_local_function (nm, ov_fcn, file);
+          }
+
+        delete local_fcns;
+      }
   }
 
   // Make an index expression.

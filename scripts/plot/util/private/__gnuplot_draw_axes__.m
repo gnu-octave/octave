@@ -1857,8 +1857,8 @@ function idx = do_border_2d (obj, plot_stream, idx)
 
   function idx = zeroaxis (idx, lc, ax)
     idx = idx + 1;
-    do_linestyle_command (obj, lc, idx, false, plot_stream);
-    fprintf (plot_stream, "set %szeroaxis ls %d ", ax, idx);
+    [~, ltidx] = do_linestyle_command (obj, lc, idx, plot_stream);
+    fprintf (plot_stream, "set %szeroaxis ls %d ", ax, ltidx);
     fprintf (plot_stream, "lw %.3f\n", obj.linewidth);
   endfunction
 

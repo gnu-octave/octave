@@ -1766,28 +1766,59 @@ callback_property::validate (const octave_value& v) const
   return false;
 }
 
-// If TRUE, we are executing any callback function, or the functions it calls.
-// Used to determine handle visibility inside callback functions.
-static bool executing_callback = false;
+class callback_props
+{
+public:
+
+  callback_props (void) : m_set () { }
+
+  callback_props (const callback_props&) = delete;
+
+  callback_props& operator = (const callback_props&) = delete;
+
+  ~callback_props (void) = default;
+
+  bool empty (void) const { return m_set.empty (); }
+
+  void insert (const callback_property *ptr)
+  {
+    m_set.insert (reinterpret_cast<intptr_t> (ptr));
+  }
+
+  void erase (const callback_property *ptr)
+  {
+    m_set.erase (reinterpret_cast<intptr_t> (ptr));
+  }
+
+  bool contains (const callback_property *ptr) const
+  {
+    return m_set.find (reinterpret_cast<intptr_t> (ptr)) != m_set.end ();
+  }
+
+private:
+
+  std::set<intptr_t> m_set;
+};
+
+// Elements of this set are pointers to currently executing
+// callback_property objects.  Used to determine handle visibility
+// inside callback functions.
+
+static callback_props executing_callbacks;
 
 void
 callback_property::execute (const octave_value& data) const
 {
   octave::unwind_protect frame;
 
-  // We are executing the callback function associated with this
-  // callback property.  When set to true, we avoid recursive calls to
-  // callback routines.
-  frame.protect_var (executing);
-
   // We are executing a callback function, so allow handles that have
   // their handlevisibility property set to "callback" to be visible.
-  frame.protect_var (executing_callback);
 
-  if (! executing)
+  frame.add_method (executing_callbacks, &callback_props::erase, this);
+
+  if (! executing_callbacks.contains (this))
     {
-      executing = true;
-      executing_callback = true;
+      executing_callbacks.insert (this);
 
       if (callback.is_defined () && ! callback.isempty ())
         gh_manager::execute_callback (get_parent (), callback, data);
@@ -3217,7 +3248,7 @@ bool
 base_properties::is_handle_visible (void) const
 {
   return (handlevisibility.is ("on")
-          || (executing_callback && ! handlevisibility.is ("off")));
+          || (! executing_callbacks.empty () && ! handlevisibility.is ("off")));
 }
 
 graphics_toolkit

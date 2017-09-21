@@ -1891,10 +1891,10 @@ class callback_property : public base_property
 public:
   callback_property (const std::string& nm, const graphics_handle& h,
                      const octave_value& m)
-    : base_property (nm, h), callback (m), executing (false) { }
+    : base_property (nm, h), callback (m) { }
 
   callback_property (const callback_property& p)
-    : base_property (p), callback (p.callback), executing (false) { }
+    : base_property (p), callback (p.callback) { }
 
   octave_value get (void) const { return callback; }
 
@@ -1930,9 +1930,6 @@ private:
 
 private:
   octave_value callback;
-
-  // If TRUE, we are executing this callback.
-  mutable bool executing;
 };
 
 // ---------------------------------------------------------------------

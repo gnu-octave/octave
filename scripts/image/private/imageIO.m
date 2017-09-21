@@ -70,7 +70,7 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
   endif
 
   if (isempty (fn))
-    error ([func ": unable to find file " filename]);
+    error ([func ": unable to find file '" filename "'"]);
   endif
 
   ## unwind_protect block because we may have a file to remove in the end

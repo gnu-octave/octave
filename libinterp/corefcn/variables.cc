@@ -1657,8 +1657,6 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
           cs.push (&tmp_scope, 0);
           frame.add_method (cs, &octave::call_stack::pop);
 
-          frame.add_method (tmp_scope, &octave::symbol_table::scope::clear_variables);
-
           octave::feval ("load", octave_value (nm), 0);
 
           std::string newmsg = "Variables in the file " + nm + ":\n\n";

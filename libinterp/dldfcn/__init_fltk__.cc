@@ -762,7 +762,7 @@ public:
 
   ~fltk_uimenu (void)
   {
-    delete m_menubar;
+    // FLTK is supposed to manage memory for widgets.
   }
 
 private:
@@ -895,6 +895,10 @@ public:
   {
     this->hide ();
     Fl::check ();
+
+    delete m_uimenu;
+
+    // FLTK is supposed to manage memory for widgets.
   }
 
   double number (void) { return m_fp.get___myhandle__ ().value (); }

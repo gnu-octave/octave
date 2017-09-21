@@ -26,6 +26,7 @@ export FIND
 export SED
 export SHELL
 export PERL
+export TAR_OPTIONS
 
 version := ${OCTAVE_VERSION}
 api_version := ${OCTAVE_API_VERSION}
@@ -79,6 +80,13 @@ LIBOCTGUI_LINK_OPTS = @LIBOCTGUI_LINK_OPTS@
 
 OCTAVE_GUI_LINK_DEPS = @OCTAVE_GUI_LINK_DEPS@
 OCTAVE_GUI_LINK_OPTS = @OCTAVE_GUI_LINK_OPTS@
+
+# Options used for creating the source distribution.
+
+GZIP_ENV = --best --no-name
+SOURCE_MTIME := \
+  $(shell $(SHELL) $(top_srcdir)/build-aux/get-source-mtime.sh "$(srcdir)")
+TAR_OPTIONS = $(REPRODUCIBLE_TAR_FLAGS) --mtime=@$(SOURCE_MTIME)
 
 # The arguments passed to configure.
 

@@ -5,6 +5,7 @@ EXTRA_DIST += \
   %reldir%/check-subst-vars.in.sh \
   %reldir%/find-defun-files.sh \
   %reldir%/find-files-with-tests.sh \
+  %reldir%/get-source-mtime.sh \
   %reldir%/mk-hg-id.sh \
   %reldir%/mk-octave-config-h.sh \
   %reldir%/mk-opts.pl \

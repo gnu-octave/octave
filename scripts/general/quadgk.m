@@ -459,24 +459,26 @@ function t = __quadgk_finite_waypoint__ (x, a, b)
 endfunction
 
 
-%!assert (quadgk (@sin,-pi,pi), 0, 1e-6)
-%!assert (quadgk (inline ("sin"),-pi,pi), 0, 1e-6)
-%!assert (quadgk ("sin",-pi,pi), 0, 1e-6)
-%!assert (quadgk (@sin,-pi,pi, "waypoints", 0, "MaxIntervalCount", 100, "reltol", 1e-3, "abstol", 1e-6, "trace", false), 0, 1e-6)
-%!assert (quadgk (@sin,-pi,pi, 1e-6,false), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi), 0, 1e-10)
+%!assert (quadgk (inline ("sin"),-pi,pi), 0, 1e-10)
+%!assert (quadgk ("sin",-pi,pi), 0, 1e-10)
+%!assert (quadgk (@sin,-pi,pi, "WayPoints", 0, "MaxIntervalCount", 100,
+%!                "RelTol", 1e-3, "AbsTol", 1e-6, "trace", false), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi, 1e-6, false), 0, 1e-6)
 %!assert <51867> (quadgk (@(x) x, 0, 0), 0, 0)
 
-%!assert (quadgk (@sin,-pi,0), -2, 1e-6)
-%!assert (quadgk (@sin,0,pi), 2, 1e-6)
-%!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-6)
-%!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-6)
-%!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-6)
-%!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
-%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), 1e-6)
-%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, 1e-6)
+%!assert (quadgk (@sin,-pi,0), -2, 1e-10)
+%!assert (quadgk (@sin,0,pi), 2, 1e-10)
+%!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-10)
+%!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-10)
+%!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-10)
+%!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]),
+%!        -pi * 1i, 1e-10)
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), -1e-6)
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, -1e-6)
 %!test
 %! f = @(x) x .^ 5 .* exp (-x) .* sin (x);
-%! assert (quadgk (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, 2e-12);
+%! assert (quadgk (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
 
 ## Test input validation
 %!error quadgk (@sin)

@@ -30,7 +30,7 @@ syntax: regexp
 
 # e.g. doc/faq/OctaveFAQ.info
 #      doc/interpreter/octave.info-4
-^doc/.*\.info(-\d)?$
+^doc/.*\.info(-\d+)?$
 
 ^doc/\w*/stamp-(vti|\d+)$
 ^doc/\w*/version-\w+\.texi$

@@ -885,6 +885,26 @@ public:
   void delete_object (cdef_object obj)
   { get_rep ()->delete_object (obj); }
 
+  //! Analyze the tree_classdef tree and transform it to a cdef_class
+  //!
+  //! <b>All attribute validation should occur here.</b>
+  //!
+  //! Classdef attribute values can be given in the form of
+  //! expressions.  These expressions must be evaluated before
+  //! assigning them as attribute values.  Evaluating them as they are
+  //! parsed causes trouble with possible recusion in the parser so we
+  //! do it here.  For example
+  //!
+  //! @code
+  //! classdef recursion_class
+  //!   methods (Access = ?recursion_class)
+  //!   endmethods
+  //! endclassdef
+  //! @endcode
+  //!
+  //! will fail because each attempt to compute the metaclass of
+  //! recursion_class will cause recursion_class to be parsed again.
+
   static cdef_class
   make_meta_class (octave::interpreter& interp, octave::tree_classdef *t,
                    bool is_at_folder = false);

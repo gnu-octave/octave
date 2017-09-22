@@ -152,6 +152,11 @@ convolve (const MArray<T>& a, const MArray<R>& b,
 
   MArray<T> c (cdims, T ());
 
+  // "valid" shape can sometimes result in empty matrices which must avoid
+  // calling Fortran code which does not expect this (bug #52067)
+  if (c.isempty ())
+    return c;
+
   convolve_nd<T, R> (a.fortran_vec (), adims, adims.cumulative (),
                      b.fortran_vec (), bdims, bdims.cumulative (),
                      c.fortran_vec (), cdims.cumulative (),

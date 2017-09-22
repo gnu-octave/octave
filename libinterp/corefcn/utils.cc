@@ -1362,10 +1362,14 @@ octave_sleep (double seconds)
                 : static_cast<time_t> (seconds));
 
   struct timespec delay = { sec, static_cast<long> (fraction) };
-  struct timespec remaining;
-  octave_nanosleep_wrapper (&delay, &remaining);
+  int status;
 
-  octave_quit ();
+  do
+    {
+      status = octave_nanosleep_wrapper (&delay, &delay);
+      octave_quit ();
+    }
+  while (status == -1 && errno == EINTR);
 }
 
 DEFUN (isindex, args, ,

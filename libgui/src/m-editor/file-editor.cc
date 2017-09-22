@@ -1054,56 +1054,49 @@ file_editor::handle_edit_file_request (const QString& file)
 // is going to be deleted/renamed
 void
 file_editor::handle_file_remove (const QString& old_name,
-                                 const QString& new_name,
-                                 QMutex *wait_closing)
+                                 const QString& new_name)
 {
   // Clear old lsit of files to reload
   m_tmp_closed_files.clear ();
 
   // Check if old name is a file or directory
   QFileInfo old (old_name);
-
   if (old.isDir ())
     {
       // Call the function which handles directories and return
       handle_dir_remove (old_name, new_name);
+      return;
     }
-  else
+
+  // Is old file open?
+  file_editor_tab *editor_tab
+    = static_cast<file_editor_tab *> (find_tab_widget (old_name));
+
+  if (editor_tab)
     {
-      // It is a single file. IT is open?
-      file_editor_tab *editor_tab
-        = static_cast<file_editor_tab *> (find_tab_widget (old_name));
+      // Yes, close it silently
+      m_no_focus = true;  // Remember for not focussing editor
+      editor_tab->file_has_changed (QString (), true);  // Close the tab
+      m_no_focus = false;  // Back to normal
 
-      if (editor_tab)
+      m_tmp_closed_files << old_name;  // for reloading if error removing
+
+      if (! new_name.isEmpty ())
+        m_tmp_closed_files << new_name;  // store new name
+      else
+        m_tmp_closed_files << ""; // no new name, just removing this file
+
+      // Get and store the related encoding
+      for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
+           p != m_editor_tab_map.end (); p++)
         {
-          // Yes, close it silently
-          m_no_focus = true;  // Remember for not focussing editor
-          editor_tab->file_has_changed (QString (), true);  // Close the tab
-          m_no_focus = false;  // Back to normal
-
-          m_tmp_closed_files << old_name;  // for reloading if error removing
-
-          if (! new_name.isEmpty ())
-            m_tmp_closed_files << new_name;  // store new name
-          else
-            m_tmp_closed_files << ""; // no new name, just removing this file
-
-          // Get and store the related encoding
-          for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-               p != m_editor_tab_map.end (); p++)
+          if (editor_tab == p->second.fet_ID)
             {
-              if (editor_tab == p->second.fet_ID)
-                {
-                  m_tmp_closed_files << p->second.encoding;
-                  break;
-                }
+              m_tmp_closed_files << p->second.encoding;
+              break;
             }
         }
     }
-
-  // Finally, if a mutex was given, unlock it for enabling the removing
-  if (wait_closing)
-    wait_closing->unlock ();
 }
 
 // Slot for signal indicating that a file was renamed

@@ -422,31 +422,6 @@ octave_qt_link::update_directory ()
 }
 
 void
-octave_qt_link::do_file_remove (const std::string& old_name,
-                                const std::string& new_name)
-{
-  QMutex wait_closing;
-
-  // Emit the signal for the editor for closing the file if it is open
-  emit file_remove_signal (QString::fromStdString (old_name),
-                           QString::fromStdString (new_name), &wait_closing);
-
-  // Unlock and lock the mutex (make sure it is locked without being blocked)
-  wait_closing.unlock ();
-  wait_closing.lock ();
-  // Try to lock it again, thus waiting for the unlock of the editor after
-  // closing the files. Chose a timeout of 1 s for not being blocked forever
-  // when something goes wrong
-  wait_closing.tryLock (1000);
-}
-
-void
-octave_qt_link::do_file_renamed (bool load_new)
-{
-  emit file_renamed_signal (load_new);
-}
-
-void
 octave_qt_link::do_execute_command_in_terminal (const std::string& command)
 {
   emit execute_command_in_terminal_signal (QString::fromStdString (command));

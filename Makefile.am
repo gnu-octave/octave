@@ -83,7 +83,7 @@ OCTAVE_GUI_LINK_OPTS = @OCTAVE_GUI_LINK_OPTS@
 
 # Options used for creating the source distribution.
 
-GZIP_ENV = --best --no-name
+GZIP_ENV = '--best --no-name'
 SOURCE_MTIME := \
   $(shell $(SHELL) $(top_srcdir)/build-aux/get-source-mtime.sh "$(srcdir)")
 TAR_OPTIONS = $(REPRODUCIBLE_TAR_FLAGS) --mtime=@$(SOURCE_MTIME)

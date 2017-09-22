@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 // Provides some commonly repeated, basic loop templates.
 
 template <typename R, typename S>
-inline void mx_inline_fill (size_t n, R *r, S s) throw ()
+inline void mx_inline_fill (size_t n, R *r, S s)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = s;
@@ -51,7 +51,7 @@ inline void mx_inline_fill (size_t n, R *r, S s) throw ()
 
 template <typename R, typename X>
 inline void
-mx_inline_uminus (size_t n, R *r, const X *x) throw ()
+mx_inline_uminus (size_t n, R *r, const X *x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = -x[i];
@@ -59,7 +59,7 @@ mx_inline_uminus (size_t n, R *r, const X *x) throw ()
 
 template <typename R>
 inline void
-mx_inline_uminus2 (size_t n, R *r) throw ()
+mx_inline_uminus2 (size_t n, R *r)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = -r[i];
@@ -67,7 +67,7 @@ mx_inline_uminus2 (size_t n, R *r) throw ()
 
 template <typename X>
 inline void
-mx_inline_iszero (size_t n, bool *r, const X *x) throw ()
+mx_inline_iszero (size_t n, bool *r, const X *x)
 {
   const X zero = X ();
   for (size_t i = 0; i < n; i++)
@@ -76,7 +76,7 @@ mx_inline_iszero (size_t n, bool *r, const X *x) throw ()
 
 template <typename X>
 inline void
-mx_inline_notzero (size_t n, bool *r, const X *x) throw ()
+mx_inline_notzero (size_t n, bool *r, const X *x)
 {
   const X zero = X ();
   for (size_t i = 0; i < n; i++)
@@ -85,19 +85,19 @@ mx_inline_notzero (size_t n, bool *r, const X *x) throw ()
 
 #define DEFMXBINOP(F, OP)                                               \
   template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, const X *x, const Y *y) throw ()       \
+  inline void F (size_t n, R *r, const X *x, const Y *y)        \
   {                                                                     \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = x[i] OP y[i];                                              \
   }                                                                     \
   template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, const X *x, Y y) throw ()              \
+  inline void F (size_t n, R *r, const X *x, Y y)               \
   {                                                                     \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = x[i] OP y;                                                 \
   }                                                                     \
   template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, X x, const Y *y) throw ()              \
+  inline void F (size_t n, R *r, X x, const Y *y)               \
   {                                                                     \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = x OP y[i];                                                 \
@@ -110,13 +110,13 @@ DEFMXBINOP (mx_inline_div, /)
 
 #define DEFMXBINOPEQ(F, OP)                             \
   template <typename R, typename X>                     \
-  inline void F (size_t n, R *r, const X *x) throw ()   \
+  inline void F (size_t n, R *r, const X *x)    \
   {                                                     \
     for (size_t i = 0; i < n; i++)                      \
       r[i] OP x[i];                                     \
   }                                                     \
   template <typename R, typename X>                     \
-  inline void F (size_t n, R *r, X x) throw ()          \
+  inline void F (size_t n, R *r, X x)           \
   {                                                     \
     for (size_t i = 0; i < n; i++)                      \
       r[i] OP x;                                        \
@@ -129,19 +129,19 @@ DEFMXBINOPEQ (mx_inline_div2, /=)
 
 #define DEFMXCMPOP(F, OP)                                               \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, const Y *y) throw ()    \
+  inline void F (size_t n, bool *r, const X *x, const Y *y)     \
   {                                                                     \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = x[i] OP y[i];                                              \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, Y y) throw ()           \
+  inline void F (size_t n, bool *r, const X *x, Y y)            \
   {                                                                     \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = x[i] OP y;                                                 \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, X x, const Y *y) throw ()           \
+  inline void F (size_t n, bool *r, X x, const Y *y)            \
   {                                                                     \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = x OP y[i];                                                 \
@@ -177,13 +177,13 @@ logical_value (const octave_int<T>& x)
 }
 
 template <typename X>
-void mx_inline_not (size_t n, bool *r, const X *x) throw ()
+void mx_inline_not (size_t n, bool *r, const X *x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = ! logical_value (x[i]);
 }
 
-inline void mx_inline_not2 (size_t n, bool *r) throw ()
+inline void mx_inline_not2 (size_t n, bool *r)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = ! r[i];
@@ -191,21 +191,21 @@ inline void mx_inline_not2 (size_t n, bool *r) throw ()
 
 #define DEFMXBOOLOP(F, NOT1, OP, NOT2)                                  \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, const Y *y) throw ()    \
+  inline void F (size_t n, bool *r, const X *x, const Y *y)     \
   {                                                                     \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = ((NOT1 logical_value (x[i]))                               \
               OP (NOT2 logical_value (y[i])));                          \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, Y y) throw ()           \
+  inline void F (size_t n, bool *r, const X *x, Y y)            \
   {                                                                     \
     const bool yy = (NOT2 logical_value (y));                           \
     for (size_t i = 0; i < n; i++)                                      \
       r[i] = (NOT1 logical_value (x[i])) OP yy;                         \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, X x, const Y *y) throw ()           \
+  inline void F (size_t n, bool *r, X x, const Y *y)            \
   {                                                                     \
     const bool xx = (NOT1 logical_value (x));                           \
     for (size_t i = 0; i < n; i++)                                      \
@@ -221,7 +221,7 @@ DEFMXBOOLOP (mx_inline_or_not, , |, !)
 
 template <typename X>
 inline void
-mx_inline_and2 (size_t n, bool *r, const X *x) throw ()
+mx_inline_and2 (size_t n, bool *r, const X *x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] &= logical_value (x[i]);
@@ -229,7 +229,7 @@ mx_inline_and2 (size_t n, bool *r, const X *x) throw ()
 
 template <typename X>
 inline void
-mx_inline_and2 (size_t n, bool *r, X x) throw ()
+mx_inline_and2 (size_t n, bool *r, X x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] &= x;
@@ -237,7 +237,7 @@ mx_inline_and2 (size_t n, bool *r, X x) throw ()
 
 template <typename X>
 inline void
-mx_inline_or2 (size_t n, bool *r, const X *x) throw ()
+mx_inline_or2 (size_t n, bool *r, const X *x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] |= logical_value (x[i]);
@@ -245,7 +245,7 @@ mx_inline_or2 (size_t n, bool *r, const X *x) throw ()
 
 template <typename X>
 inline void
-mx_inline_or2 (size_t n, bool *r, X x) throw ()
+mx_inline_or2 (size_t n, bool *r, X x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] |= x;
@@ -253,7 +253,7 @@ mx_inline_or2 (size_t n, bool *r, X x) throw ()
 
 template <typename T>
 inline bool
-mx_inline_any_nan (size_t n, const T *x)  throw ()
+mx_inline_any_nan (size_t n, const T *x)
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -266,7 +266,7 @@ mx_inline_any_nan (size_t n, const T *x)  throw ()
 
 template <typename T>
 inline bool
-mx_inline_all_finite (size_t n, const T *x)  throw ()
+mx_inline_all_finite (size_t n, const T *x)
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -279,7 +279,7 @@ mx_inline_all_finite (size_t n, const T *x)  throw ()
 
 template <typename T>
 inline bool
-mx_inline_any_negative (size_t n, const T *x) throw ()
+mx_inline_any_negative (size_t n, const T *x)
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -292,7 +292,7 @@ mx_inline_any_negative (size_t n, const T *x) throw ()
 
 template <typename T>
 inline bool
-mx_inline_any_positive (size_t n, const T *x) throw ()
+mx_inline_any_positive (size_t n, const T *x)
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -305,7 +305,7 @@ mx_inline_any_positive (size_t n, const T *x) throw ()
 
 template <typename T>
 inline bool
-mx_inline_all_real (size_t n, const std::complex<T>* x) throw ()
+mx_inline_all_real (size_t n, const std::complex<T>* x)
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -317,14 +317,14 @@ mx_inline_all_real (size_t n, const std::complex<T>* x) throw ()
 }
 
 template <typename T>
-inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x) throw ()
+inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = x[i].real ();
 }
 
 template <typename T>
-inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x) throw ()
+inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = x[i].imag ();
@@ -332,7 +332,7 @@ inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x) throw ()
 
 template <typename T>
 inline void
-mx_inline_xmin (size_t n, T *r, const T *x, const T *y) throw ()
+mx_inline_xmin (size_t n, T *r, const T *x, const T *y)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x[i], y[i]);
@@ -340,7 +340,7 @@ mx_inline_xmin (size_t n, T *r, const T *x, const T *y) throw ()
 
 template <typename T>
 inline void
-mx_inline_xmin (size_t n, T *r, const T *x, T y) throw ()
+mx_inline_xmin (size_t n, T *r, const T *x, T y)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x[i], y);
@@ -348,7 +348,7 @@ mx_inline_xmin (size_t n, T *r, const T *x, T y) throw ()
 
 template <typename T>
 inline void
-mx_inline_xmin (size_t n, T *r, T x, const T *y) throw ()
+mx_inline_xmin (size_t n, T *r, T x, const T *y)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x, y[i]);
@@ -356,7 +356,7 @@ mx_inline_xmin (size_t n, T *r, T x, const T *y) throw ()
 
 template <typename T>
 inline void
-mx_inline_xmax (size_t n, T *r, const T *x, const T *y) throw ()
+mx_inline_xmax (size_t n, T *r, const T *x, const T *y)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = octave::math::max (x[i], y[i]);
@@ -364,7 +364,7 @@ mx_inline_xmax (size_t n, T *r, const T *x, const T *y) throw ()
 
 template <typename T>
 inline void
-mx_inline_xmax (size_t n, T *r, const T *x, T y) throw ()
+mx_inline_xmax (size_t n, T *r, const T *x, T y)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = octave::math::max (x[i], y);
@@ -372,7 +372,7 @@ mx_inline_xmax (size_t n, T *r, const T *x, T y) throw ()
 
 template <typename T>
 inline void
-mx_inline_xmax (size_t n, T *r, T x, const T *y) throw ()
+mx_inline_xmax (size_t n, T *r, T x, const T *y)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = octave::math::max (x, y[i]);
@@ -381,7 +381,7 @@ mx_inline_xmax (size_t n, T *r, T x, const T *y) throw ()
 // Specialize array-scalar max/min
 #define DEFMINMAXSPEC(T, F, OP)                                 \
   template <>                                                   \
-  inline void F<T> (size_t n, T *r, const T *x, T y) throw ()   \
+  inline void F<T> (size_t n, T *r, const T *x, T y)    \
   {                                                             \
     if (octave::math::isnan (y))                                \
       std::memcpy (r, x, n * sizeof (T));                       \
@@ -390,7 +390,7 @@ mx_inline_xmax (size_t n, T *r, T x, const T *y) throw ()
         r[i] = (x[i] OP y ? x[i] : y);                          \
   }                                                             \
   template <>                                                   \
-  inline void F<T> (size_t n, T *r, T x, const T *y) throw ()   \
+  inline void F<T> (size_t n, T *r, T x, const T *y)    \
   {                                                             \
     if (octave::math::isnan (x))                                \
       std::memcpy (r, y, n * sizeof (T));                       \
@@ -410,7 +410,7 @@ DEFMINMAXSPEC (float, mx_inline_xmax, >=)
 
 template <typename R, typename X, typename Y>
 inline void
-mx_inline_pow (size_t n, R *r, const X *x, const Y *y) throw ()
+mx_inline_pow (size_t n, R *r, const X *x, const Y *y)
 {
   using std::pow;
 
@@ -420,7 +420,7 @@ mx_inline_pow (size_t n, R *r, const X *x, const Y *y) throw ()
 
 template <typename R, typename X, typename Y>
 inline void
-mx_inline_pow (size_t n, R *r, const X *x, Y y) throw ()
+mx_inline_pow (size_t n, R *r, const X *x, Y y)
 {
   using std::pow;
 
@@ -430,7 +430,7 @@ mx_inline_pow (size_t n, R *r, const X *x, Y y) throw ()
 
 template <typename R, typename X, typename Y>
 inline void
-mx_inline_pow (size_t n, R *r, X x, const Y *y) throw ()
+mx_inline_pow (size_t n, R *r, X x, const Y *y)
 {
   using std::pow;
 
@@ -441,14 +441,14 @@ mx_inline_pow (size_t n, R *r, X x, const Y *y) throw ()
 // Arbitrary function appliers.
 // The function is a template parameter to enable inlining.
 template <typename R, typename X, R fun (X x)>
-inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
+inline void mx_inline_map (size_t n, R *r, const X *x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = fun (x[i]);
 }
 
 template <typename R, typename X, R fun (const X& x)>
-inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
+inline void mx_inline_map (size_t n, R *r, const X *x)
 {
   for (size_t i = 0; i < n; i++)
     r[i] = fun (x[i]);
@@ -460,7 +460,7 @@ inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
 template <typename R, typename X>
 inline Array<R>
 do_mx_unary_op (const Array<X>& x,
-                void (*op) (size_t, R *, const X *) throw ())
+                void (*op) (size_t, R *, const X *))
 {
   Array<R> r (x.dims ());
   op (r.numel (), r.fortran_vec (), x.data ());
@@ -486,7 +486,7 @@ do_mx_unary_map (const Array<X>& x)
 template <typename R>
 inline Array<R>&
 do_mx_inplace_op (Array<R>& r,
-                  void (*op) (size_t, R *) throw ())
+                  void (*op) (size_t, R *))
 {
   op (r.numel (), r.fortran_vec ());
   return r;
@@ -495,9 +495,9 @@ do_mx_inplace_op (Array<R>& r,
 template <typename R, typename X, typename Y>
 inline Array<R>
 do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
-                 void (*op) (size_t, R *, const X *, const Y *) throw (),
-                 void (*op1) (size_t, R *, X, const Y *) throw (),
-                 void (*op2) (size_t, R *, const X *, Y) throw (),
+                 void (*op) (size_t, R *, const X *, const Y *),
+                 void (*op1) (size_t, R *, X, const Y *),
+                 void (*op2) (size_t, R *, const X *, Y),
                  const char *opname)
 {
   dim_vector dx = x.dims ();
@@ -519,7 +519,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
 template <typename R, typename X, typename Y>
 inline Array<R>
 do_ms_binary_op (const Array<X>& x, const Y& y,
-                 void (*op) (size_t, R *, const X *, Y) throw ())
+                 void (*op) (size_t, R *, const X *, Y))
 {
   Array<R> r (x.dims ());
   op (r.numel (), r.fortran_vec (), x.data (), y);
@@ -529,7 +529,7 @@ do_ms_binary_op (const Array<X>& x, const Y& y,
 template <typename R, typename X, typename Y>
 inline Array<R>
 do_sm_binary_op (const X& x, const Array<Y>& y,
-                 void (*op) (size_t, R *, X, const Y *) throw ())
+                 void (*op) (size_t, R *, X, const Y *))
 {
   Array<R> r (y.dims ());
   op (r.numel (), r.fortran_vec (), x, y.data ());
@@ -539,8 +539,8 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
 template <typename R, typename X>
 inline Array<R>&
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
-                  void (*op) (size_t, R *, const X *) throw (),
-                  void (*op1) (size_t, R *, X) throw (),
+                  void (*op) (size_t, R *, const X *) ,
+                  void (*op1) (size_t, R *, X) ,
                   const char *opname)
 {
   dim_vector dr = r.dims ();
@@ -558,7 +558,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
 template <typename R, typename X>
 inline Array<R>&
 do_ms_inplace_op (Array<R>& r, const X& x,
-                  void (*op) (size_t, R *, X) throw ())
+                  void (*op) (size_t, R *, X))
 {
   op (r.numel (), r.fortran_vec (), x);
   return r;
@@ -566,7 +566,7 @@ do_ms_inplace_op (Array<R>& r, const X& x,
 
 template <typename T1, typename T2>
 inline bool
-mx_inline_equal (size_t n, const T1 *x, const T2 *y) throw ()
+mx_inline_equal (size_t n, const T1 *x, const T2 *y)
 {
   for (size_t i = 0; i < n; i++)
     if (x[i] != y[i])
@@ -577,7 +577,7 @@ mx_inline_equal (size_t n, const T1 *x, const T2 *y) throw ()
 template <typename T>
 inline bool
 do_mx_check (const Array<T>& a,
-             bool (*op) (size_t, const T *) throw ())
+             bool (*op) (size_t, const T *))
 {
   return op (a.numel (), a.data ());
 }

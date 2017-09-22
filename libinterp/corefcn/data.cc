@@ -233,7 +233,7 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, ::atan2f, "atan2");
+          retval = binmap<float> (a0, a1, std::atan2, "atan2");
         }
     }
   else
@@ -244,13 +244,13 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, ::atan2, "atan2");
+          retval = binmap<double> (m0, m1, std::atan2, "atan2");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, ::atan2, "atan2");
+          retval = binmap<double> (a0, a1, std::atan2, "atan2");
         }
     }
 
@@ -343,7 +343,7 @@ do_hypot (const octave_value& x, const octave_value& y)
         {
           FloatNDArray a0 = arg0.float_array_value ();
           FloatNDArray a1 = arg1.float_array_value ();
-          retval = binmap<float> (a0, a1, std::hypotf, "hypot");
+          retval = binmap<float> (a0, a1, std::hypot, "hypot");
         }
     }
   else

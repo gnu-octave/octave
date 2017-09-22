@@ -791,6 +791,8 @@ namespace octave
     Matrix prev_color (1, 3, -1);
 
     std::ostringstream ss;
+    ss << "gsave\n";
+
     for (const auto& txtobj : lst)
       {
         // Color
@@ -832,7 +834,7 @@ namespace octave
            << " /" << fontname << " SRX\n";
       }
 
-    ss << "\n";
+    ss << "grestore\n";
 
     return ss.str ();
   }

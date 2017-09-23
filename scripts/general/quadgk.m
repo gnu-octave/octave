@@ -45,7 +45,7 @@
 ## same.
 ##
 ## The optional argument @var{tol} defines the absolute tolerance used to stop
-## the integration procedure.  The default value is 1e-10.
+## the integration procedure.  The default value is 1e-10 (1e-5 for single).
 ##
 ## The algorithm used by @code{quadgk} involves subdividing the integration
 ## interval and evaluating each subinterval.  If @var{trace} is true then after
@@ -120,7 +120,8 @@
 ## Computational and Applied Mathematics, pp. 131--140, Vol 211, Issue 2,
 ## Feb 2008.
 ##
-## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad}
+## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad, integral, 
+##           integral2, integral3}
 ## @end deftypefn
 
 function [q, err] = quadgk (f, a, b, varargin)

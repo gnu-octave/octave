@@ -43,7 +43,8 @@
 ## Additional arguments, are passed directly to @var{f}.  To use the default
 ## value for @var{tol} or @var{quadf} one may pass @qcode{':'} or an empty
 ## matrix ([]).
-## @seealso{dblquad, quad, quadv, quadl, quadgk, quadcc, trapz}
+## @seealso{integral3, integral2, dblquad, quad, quadv, quadl, quadgk, quadcc,
+##          trapz}
 ## @end deftypefn
 
 function q = triplequad (f, xa, xb, ya, yb, za, zb, tol = 1e-6, quadf = @quadcc, varargin)

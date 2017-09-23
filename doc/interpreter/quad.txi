@@ -319,8 +319,8 @@ I = quadgk ("g", 0, 1)
 @end example
 
 The above process can be simplified with the @code{dblquad} and
-@code{triplequad} functions for integrals over two and three
-variables.  For example:
+@code{triplequad} functions for integrals over two and three variables.  For
+example:
 
 @example
 @group
@@ -332,6 +332,13 @@ I = dblquad (@@(x, y) sin (pi*x.*y) .* sqrt (x.*y), 0, 1, 0, 1)
 @DOCSTRING(dblquad)
 
 @DOCSTRING(triplequad)
+
+@code{integral2} and @code{integral3} are also provided as partial
+compatibility wrappers to @code{dblquad} and @code{triplequad}:
+
+@DOCSTRING(integral2)
+
+@DOCSTRING(integral3)
 
 The above mentioned approach works, but is fairly slow, and that problem
 increases exponentially with the dimensionality of the integral.  Another

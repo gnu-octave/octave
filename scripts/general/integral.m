@@ -24,8 +24,8 @@
 ## adaptive quadrature.
 ##
 ## @code{integral} is a wrapper for @code{quadgk} (for scalar integrands) and
-## @code{quadv} (for array-valued integrands) intended to provide Matlab
-## compatibility. More control of the numerical integration may be achievable
+## @code{quadv} (for array-valued integrands) intended to provide @sc{matlab}
+## compatibility.  More control of the numerical integration may be achievable
 ## by calling the various quadrature functions directly.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
@@ -36,20 +36,12 @@
 ## or both limits may be infinite or contain weak end singularities.  If either
 ## or both limits are complex, @code{integral} will perform a straight line
 ## path integral.  Alternatively, a complex domain path can be specified using
-## the "Waypoints" option (see below).
+## the @qcode{"Waypoints"} option (see below).
 ##
 ## Additional optional parameters can be specified using
 ## @qcode{"@var{property}", @var{value}} pairs.  Valid properties are:
 ##
 ## @table @code
-## @item AbsTol
-## Define the absolute error tolerance for the quadrature.  The default
-## absolute tolerance is 1e-10 (1e-5 for single).
-##
-## @item RelTol
-## Define the relative error tolerance for the quadrature.  The default
-## relative tolerance is 1e-6 (1e-4 for single).
-##
 ## @item Waypoints
 ## Specifies points to be used in defining subintervals of the quadrature
 ## algorithm, or if @var{a}, @var{b}, or @var{waypoints} are complex then
@@ -61,14 +53,50 @@
 ## @var{arrayvalued} is specified as true.  This option will cause
 ## @code{integral} to perform the integration over the entire array and return
 ## @var{q} with the same dimensions as returned by @var{f}.
+##
+## @item AbsTol
+## Define the absolute error tolerance for the quadrature.  The default
+## absolute tolerance is 1e-10 (1e-5 for single).
+##
+## @item RelTol
+## Define the relative error tolerance for the quadrature.  The default
+## relative tolerance is 1e-6 (1e-4 for single).
 ## @end table
 ##
-## Implementation Note: As a consequence of using @code{quadgk} and
-## @code{quadv}, certain option combinations are currently unsupported.
-## @qcode{"ArrayValued"} cannot be combined with @qcode{"RelTol"} or
-## @qcode{"Waypoints"}.  This is a known incompatibility with Matlab.
+## Adaptive quadrature is used to minimize the estimate of error until the
+## following is satisfied:
+## @tex
+## $$error \leq \max \left( AbsTol, RelTol\cdot\vert q\vert \right)$$
+## @end tex
+## @ifnottex
 ##
-## @seealso{quad, quadgk, quadv, quadl, quadcc, trapz, dblquad, triplequad}
+## @example
+## @group
+##   @var{error} <= max (@var{AbsTol}, @var{RelTol}*|@var{q}|).
+## @end group
+## @end example
+##
+## @end ifnottex
+##
+## Known @sc{matlab} incompatibilities:
+##
+## @enumerate
+## @item
+## If tolerances are left unspecified, and any integration limits or waypoints
+## are of type @code{single}, then Octave's integral functions automatically
+## reduce the default absolute and relative error tolerances as specified
+## above.  If tighter tolerances are desired they must be specified. 
+## @sc{matlab} leaves the tighter tolerances appropriate for @code{double}
+## inputs in place regardless of the class of the integration limits.
+##
+## @item
+## As a consequence of using @code{quadgk} and @code{quadv}, certain option
+## combinations are not supported.  Currently, @qcode{"ArrayValued"} cannot be
+## combined with @qcode{"RelTol"} or @qcode{"Waypoints"}.
+## @end enumerate
+##
+## @seealso{integral2, integral3, quad, quadgk, quadv, quadl, quadcc, trapz,
+##          dblquad, triplequad}
 ## @end deftypefn
 
 function q = integral (f, a, b, varargin)

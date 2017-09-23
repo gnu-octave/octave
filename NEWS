@@ -67,6 +67,8 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       hgtransform
       humps
       integral
+      integral2
+      integral3
       openvar
       repelem
       rticks

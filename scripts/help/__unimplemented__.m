@@ -59,12 +59,6 @@ function txt = __unimplemented__ (fcn)
       txt = ["griddedInterpolant is not implemented.  ", ...
              "Consider using griddata."];
 
-    case "integral2"
-      txt = ["integral2 is not implemented.  Consider using dblquad."];
-
-    case "integral3"
-      txt = ["integral3 is not implemented.  Consider using triplequad"];
-
     case "linprog"
       txt = ["Octave does not currently provide linprog.  ", ...
              "Linear programming problems may be solved using @code{glpk}.  ", ...

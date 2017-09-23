@@ -526,6 +526,37 @@ namespace octave
     return llvm_type ? llvm_type->getPointerTo () : nullptr;
   }
 
+jit_type*
+jit_type_join (jit_type *lhs, jit_type *rhs)
+{
+  // empty case
+  if (! lhs)
+    return rhs;
+
+  if (! rhs)
+    return lhs;
+
+  // check for a shared parent
+  while (lhs != rhs)
+    {
+      if (lhs->depth () > rhs->depth ())
+        lhs = lhs->parent ();
+      else if (lhs->depth () < rhs->depth ())
+        rhs = rhs->parent ();
+      else
+        {
+          // we MUST have depth > 0 as any is the base type of everything
+          do
+            {
+              lhs = lhs->parent ();
+              rhs = rhs->parent ();
+            }
+          while (lhs != rhs);
+        }
+    }
+  return lhs;
+}
+
   // -------------------- jit_function --------------------
   jit_function::jit_function () : module (0), llvm_function (0), mresult (0),
                                   call_conv (jit_convention::length),

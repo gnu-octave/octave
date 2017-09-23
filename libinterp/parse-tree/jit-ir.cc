@@ -651,7 +651,7 @@ namespace octave
       {
         jit_block *inc = incomming (i);
         if (inc->branch_alive (p))
-          infered = jit_typeinfo::join (infered, argument_type (i));
+          infered = jit_type_join (infered, argument_type (i));
       }
 
     if (infered != type ())

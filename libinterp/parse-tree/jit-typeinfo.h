@@ -219,6 +219,10 @@ namespace octave
   // seperate print function to allow easy printing if type is null
   std::ostream& jit_print (std::ostream& os, jit_type *atype);
 
+// Find common type
+jit_type* jit_type_join (jit_type *lhs, jit_type *rhs);
+
+
   class jit_value;
 
   // An abstraction for calling llvm functions with jit_values.  Deals with
@@ -483,10 +487,6 @@ namespace octave
   public:
     static void initialize (llvm::Module *m, llvm::ExecutionEngine *e);
 
-    static jit_type * join (jit_type *lhs, jit_type *rhs)
-    {
-      return instance->do_join (lhs, rhs);
-    }
 
     static jit_type * get_any (void) { return instance->any; }
 
@@ -634,38 +634,6 @@ namespace octave
     }
   private:
     jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
-
-    // FIXME: Do these methods really need to be in jit_typeinfo?
-    jit_type * do_join (jit_type *lhs, jit_type *rhs)
-    {
-      // empty case
-      if (! lhs)
-        return rhs;
-
-      if (! rhs)
-        return lhs;
-
-      // check for a shared parent
-      while (lhs != rhs)
-        {
-          if (lhs->depth () > rhs->depth ())
-            lhs = lhs->parent ();
-          else if (lhs->depth () < rhs->depth ())
-            rhs = rhs->parent ();
-          else
-            {
-              // we MUST have depth > 0 as any is the base type of everything
-              do
-                {
-                  lhs = lhs->parent ();
-                  rhs = rhs->parent ();
-                }
-              while (lhs != rhs);
-            }
-        }
-
-      return lhs;
-    }
 
     jit_type * do_difference (jit_type *lhs, jit_type *)
     {

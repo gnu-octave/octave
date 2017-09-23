@@ -79,7 +79,7 @@ webinfo::webinfo (QWidget *p)
   vbox_layout->addLayout (hbox_layout);
 
   _search_line_edit = new QLineEdit (this);
-#if defined (HAVE_SETPLACEHOLDERTEXT)
+#if defined (HAVE_QLINEEDIT_SETPLACEHOLDERTEXT)
   _search_line_edit->setPlaceholderText (
     tr ("Type here and press \'Return\' to search"));
 #endif

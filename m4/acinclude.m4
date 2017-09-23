@@ -295,12 +295,15 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
   fi
 ])
 dnl
-dnl Check whether the Qt QAbstractItemModel::beginResetModel function exists.
-dnl Also checks for QAbstractItemModel::endResetModel.  These are two of the
-dnl newest Qt functions that the Octave GUI depends on, added in Qt 4.6.
+dnl Check whether the Qt class QAbstractItemModel exists and has the
+dnl beginResetModel and endResetModel member functions.  These member
+dnl functions were introduced in Qt 4.6.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.6 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
-  AC_CACHE_CHECK([whether Qt has the QAbstractItemModel::beginResetModel function],
+  AC_CACHE_CHECK([for QAbstractItemModel::beginResetModel in <QAbstractItemModel>],
     [octave_cv_func_qabstractitemmodel_beginresetmodel],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -337,15 +340,52 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   ])
   if test $octave_cv_func_qabstractitemmodel_beginresetmodel = yes; then
     AC_DEFINE(HAVE_QABSTRACTITEMMODEL_BEGINRESETMODEL, 1,
-      [Define to 1 if Qt has the QAbstractItemModel::beginResetModel() function.])
+      [Define to 1 if you have the `QAbstractItemModel::beginResetModel' member function.])
   fi
 ])
 dnl
-dnl Check whether the QsciScintilla::findFirstInSelection function exists.
-dnl This function was added in QScintilla 2.7.
+dnl Check whether the Qt class QLineEdit has the setPlaceholderText member
+dnl function.  This member function was introduced in Qt 4.7.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.7 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT], [
+  AC_CACHE_CHECK([for QLineEdit::setPlaceholderText in <QLinedEdit>],
+    [octave_cv_func_qlineedit_setplaceholdertext],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QLineEdit>
+        ]], [[
+        QLineEdit line_edit;
+        line_edit.setPlaceholderText ("placeholder text");
+        ]])],
+      octave_cv_func_qlineedit_setplaceholdertext=yes,
+      octave_cv_func_qlineedit_setplaceholdertext=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qlineedit_setplaceholdertext = yes; then
+    AC_DEFINE(HAVE_QLINEEDIT_SETPLACEHOLDERTEXT, 1,
+      [Define to 1 if you have the `QLineEdit::setPlaceholderText' member function.])
+  fi
+])
+dnl
+dnl Check whether the QScintilla class QsciScintilla has the
+dnl findFirstInSelection member function.  This member function was introduced
+dnl in QScintilla 2.7.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that QScintilla 2.7
+dnl or later is in use everywhere, or when we drop support for Qt 4 (Qt 5 only
+dnl works with QScintilla 2.7.1 or later).
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
-  AC_CACHE_CHECK([whether QSci has the QsciScintilla::findFirstInSelection function],
+  AC_CACHE_CHECK([for QsciScintilla::findFirstInSelection in <Qsci/qsciscintilla.h>],
     [octave_cv_func_qsci_findfirstinselection],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -372,15 +412,18 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
   ])
   if test $octave_cv_func_qsci_findfirstinselection = yes; then
     AC_DEFINE(HAVE_QSCI_FINDSELECTION, 1,
-      [Define to 1 if Qsci has the QsciScintilla::findFirstInSelection function.])
+      [Define to 1 if you have the `QsciScintilla::findFirstInSelection' member function.])
   fi
 ])
 dnl
-dnl Check whether the Qt QTabWidget::setMovable function exists.
-dnl This function was added in Qt 4.5.
+dnl Check whether the Qt class QTabWidget has the setMovable member function.
+dnl This member function was introduced in Qt 4.5.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.5 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
-  AC_CACHE_CHECK([whether Qt has the QTabWidget::setMovable function],
+  AC_CACHE_CHECK([for QTabWidget::setMovable in <QTabWidget>],
     [octave_cv_func_qtabwidget_setmovable],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -406,35 +449,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
   ])
   if test $octave_cv_func_qtabwidget_setmovable = yes; then
     AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
-      [Define to 1 if Qt has the QTabWidget::setMovable function.])
-  fi
-])
-dnl
-dnl Check whether QScintilla SetPlaceholderText function exists.
-dnl FIXME: This test uses a version number.  It potentially could
-dnl        be re-written to actually call the function, but is it worth it?
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
-  AC_CACHE_CHECK([whether Qt has SetPlaceholderText function],
-    [octave_cv_func_setplaceholdertext],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
-        #include <qglobal.h>
-        ]], [[
-        #if QT_VERSION < 0x040700
-        #error No SetPlacholderText function available.
-        #endif
-        ]])],
-      octave_cv_func_setplaceholdertext=yes,
-      octave_cv_func_setplaceholdertext=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_func_setplaceholdertext = yes; then
-    AC_DEFINE(HAVE_SETPLACEHOLDERTEXT, 1,
-      [Define to 1 if you have the Qt SetPlaceholderText function.])
+      [Define to 1 if you have the `QTabWidget::setMovable' member function.])
   fi
 ])
 dnl
@@ -1039,10 +1054,14 @@ dnl  done
   AC_SUBST(TERM_LIBS)
 ])
 dnl
-dnl Check whether Qt provides QFont::ForceIntegerMetrics
+dnl Check whether the Qt class QFont has the ForceIntegerMetrics enumerated
+dnl type member.  This property was introduced in Qt 4.7.
 dnl
-AC_DEFUN([OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS], [
-  AC_CACHE_CHECK([whether Qt provides QFont::ForceIntegerMetrics],
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.7 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS], [
+  AC_CACHE_CHECK([for QFont::ForceIntegerMetrics in <QFont>],
     [octave_cv_decl_qfont_force_integer_metrics],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -1062,14 +1081,18 @@ AC_DEFUN([OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS], [
   ])
   if test $octave_cv_decl_qfont_force_integer_metrics = yes; then
     AC_DEFINE(HAVE_QFONT_FORCE_INTEGER_METRICS, 1,
-      [Define to 1 if Qt provides QFont::ForceIntegerMetrics.])
+      [Define to 1 if `ForceIntegerMetrics' is a member of `QFont'.])
   fi
 ])
 dnl
-dnl Check whether Qt provides QFont::Monospace
+dnl Check whether the Qt class QFont has the Monospace enumerated type member.
+dnl This property was introduced in Qt 4.7.
 dnl
-AC_DEFUN([OCTAVE_CHECK_QFONT_MONOSPACE], [
-  AC_CACHE_CHECK([whether Qt provides QFont::Monospace],
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.7 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE], [
+  AC_CACHE_CHECK([for QFont::Monospace in <QFont>],
     [octave_cv_decl_qfont_monospace],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -1089,7 +1112,7 @@ AC_DEFUN([OCTAVE_CHECK_QFONT_MONOSPACE], [
   ])
   if test $octave_cv_decl_qfont_monospace = yes; then
     AC_DEFINE(HAVE_QFONT_MONOSPACE, 1,
-      [Define to 1 if Qt provides QFont::Monospace.])
+      [Define to 1 if `Monospace' is a member of `QFont'.])
   fi
 ])
 dnl
@@ -1213,7 +1236,6 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       CPPFLAGS="$save_CPPFLAGS"
       CXXFLAGS="$save_CXXFLAGS"
 
-      OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
       OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
 
       use_qscintilla=yes
@@ -1543,9 +1565,10 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ## tests if they fail because we have already decided that the Qt
     ## version that we are testing now will be the one used.
 
-    OCTAVE_CHECK_QFONT_MONOSPACE
-    OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
+    OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
+    OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS
+    OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],

@@ -527,7 +527,7 @@ class_fromName (const octave_value_list& args, int /* nargout */)
 
   std::string name = args(0).xstring_value ("fromName: CLASS_NAME must be a string");
 
-  retval(0) = to_ov (lookup_class (name));
+  retval(0) = to_ov (lookup_class (name, false));
 
   return retval;
 }
@@ -3107,11 +3107,12 @@ cdef_method::cdef_method_rep::meta_subsref
 }
 
 static cdef_package
-lookup_package (const std::string& name)
+lookup_package (const std::string& name, bool error_if_not_found = true,
+                bool load_if_not_found = true)
 {
   cdef_manager& cdm = octave::__get_cdef_manager__ ("lookup_package");
 
-  return cdm.find_package (name);
+  return cdm.find_package (name, error_if_not_found, load_if_not_found);
 }
 
 static octave_value_list
@@ -3124,7 +3125,7 @@ package_fromName (const octave_value_list& args, int /* nargout */)
 
   std::string name = args(0).xstring_value ("fromName: PACKAGE_NAME must be a string");
 
-  retval(0) = to_ov (lookup_package (name));
+  retval(0) = to_ov (lookup_package (name, false));
 
   return retval;
 }

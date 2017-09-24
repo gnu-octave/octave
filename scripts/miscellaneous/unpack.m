@@ -240,11 +240,17 @@ function filelist = unpack (file, dir = ".", filetype = "")
     error ("unpack: %s: not a directory", dir);
   endif
 
+  ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.
+  tar_options_env = getenv ("TAR_OPTIONS");
   unwind_protect
+    unsetenv ("TAR_OPTIONS");
     cd (dir);
     [status, output] = system (sprintf ([command " 2>&1"], file));
   unwind_protect_cleanup
     cd (origdir);
+    if (! isempty (tar_options_env))
+      setenv ("TAR_OPTIONS", tar_options_env);
+    endif
   end_unwind_protect
 
   if (status)

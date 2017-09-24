@@ -63,7 +63,16 @@ function filelist = tar (tarfile, files, rootdir = ".")
   cmd = sprintf ("tar cvf %s -C %s %s",
                           tarfile, rootdir, sprintf (" %s", files{:}));
 
-  [status, output] = system (cmd);
+  ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.
+  tar_options_env = getenv ("TAR_OPTIONS");
+  unwind_protect
+    unsetenv ("TAR_OPTIONS");
+    [status, output] = system (cmd);
+  unwind_protect_cleanup
+    if (! isempty (tar_options_env))
+      setenv ("TAR_OPTIONS", tar_options_env);
+    endif
+  end_unwind_protect
 
   if (status)
     error ("tar: tar exited with status = %d", status);

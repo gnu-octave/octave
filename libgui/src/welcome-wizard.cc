@@ -50,7 +50,7 @@ make_octave_logo (QWidget *p = nullptr, int height = 100)
 welcome_wizard::welcome_wizard (QWidget *p)
   : QDialog (p), m_page_ctor_list (), m_page_list_iterator (),
     m_current_page (initial_page::create (this)),
-    m_allow_web_connect_state (true)
+    m_allow_web_connect_state (false)
 {
   m_page_ctor_list.push_back (initial_page::create);
   m_page_ctor_list.push_back (setup_community_news::create);
@@ -198,9 +198,9 @@ setup_community_news::setup_community_news (welcome_wizard *wizard)
 
   m_message->setText
   (tr ("<html><body>\n"
-       "<p>When the Octave GUI starts, it will check the Octave web site for current news and information about the Octave community.\n"
+       "<p>When Octave starts, it will optionally check the Octave web site for current news and information about the Octave community.\n"
        "The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.</p>\n"
-       "<p>You may also view the news by selecting the \"Community News\" item in the \"Help\" menu in the GUI, or by visiting\n"
+       "<p>You may also view the news by selecting the \"Community News\" item in the \"Help\" menu, or by visiting\n"
        "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>.</p>\n"
        "</body></html>"));
   m_message->setWordWrap (true);
@@ -220,7 +220,9 @@ setup_community_news::setup_community_news (welcome_wizard *wizard)
 
   QHBoxLayout *checkbox_layout = new QHBoxLayout;
 
-  m_checkbox->setCheckState (Qt::Checked);
+  // FIXME: Synchronize the initial state of this checkbox with the default
+  // value of "news/allow_web_connection" stored elsewhere.
+  m_checkbox->setCheckState (Qt::Unchecked);
 
   m_checkbox_message->setText
   (tr ("<html><head>\n"

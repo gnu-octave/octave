@@ -190,7 +190,7 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
   if (settings)
     {
       connect_to_web
-        = settings->value ("news/allow_web_connection", true).toBool ();
+        = settings->value ("news/allow_web_connection", false).toBool ();
 
       last_checked
         = settings->value ("news/last_time_checked", QDateTime ()).toDateTime ();
@@ -515,7 +515,7 @@ main_window::load_and_display_community_news (int serial)
 
   bool connect_to_web
     = (settings
-       ? settings->value ("news/allow_web_connection", true).toBool ()
+       ? settings->value ("news/allow_web_connection", false).toBool ()
        : true);
 
   QString base_url = "http://octave.org";

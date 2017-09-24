@@ -834,7 +834,7 @@ files_dock_widget::notice_settings (const QSettings *settings)
   // enable the buttons to sync octave/browser dir
   // only if this is not done by default
   m_sync_octave_dir
-    = settings->value ("filesdockwidget/sync_octave_directory",false).toBool ();
+    = settings->value ("filesdockwidget/sync_octave_directory",true).toBool ();
   m_sync_octave_directory_action->setEnabled (! m_sync_octave_dir);
   m_sync_browser_directory_action->setEnabled (! m_sync_octave_dir);
 

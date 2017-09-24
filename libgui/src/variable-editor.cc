@@ -348,17 +348,17 @@ void variable_editor::notice_settings (const QSettings *settings)
 
   if (m_use_terminal_font)
     {
-      font_name = settings->value ("terminal/fontName", "").toString ();
+      font_name = settings->value ("terminal/fontName", "Courier New").toString ();
       font_size = settings->value ("terminal/fontSize", 10).toInt ();
     }
   else
     {
-      font_name = settings->value ("variable_editor/font_name", "").toString ();
+      font_name = settings->value ("variable_editor/font_name", settings->value ("terminal/fontName", "Courier New")).toString ();
       font_size = settings->value ("variable_editor/font_size", 10).toInt ();
     }
   m_font = QFont (font_name, font_size);
 
-  if (settings->value ("variable_editor/autofit_row_height", false).toBool ())
+  if (settings->value ("variable_editor/autofit_row_height", true).toBool ())
     {
       QFontMetrics fm (m_font);
       m_add_font_height = fm.height ();

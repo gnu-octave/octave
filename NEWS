@@ -41,6 +41,24 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     array, rather than a struct with a cell array for each field.  This
     change was made for Matlab compatibility.
 
+ ** The quadcc function now uses both absolute tolerance and relative
+    tolerance to determine the stopping criteria for an integration.
+    To be compatible with other quadXXX functions such as quadgk the
+    calling syntax has changed to
+
+      quadcc (f, a, b, [AbsTol, [RelTol]])
+
+    To update existing code, change instances of RelTol to [0, RelTol].
+
+      quadcc (f, a, b, tol) => quadcc (f, a, b, [0, tol])
+
+    A warning that a single tolerance input is now interpreted as an
+    absolute tolerance will be issued in Octave versions 4.4 and 4.6,
+    after which it will be removed.  The warning has ID
+    "Octave:quadcc:RelTol-conversion" and can be disabled with
+
+      warning ("off", "Octave:quadcc:RelTol-conversion")
+
  ** Other new functions added in 4.4:
 
       corrcoef

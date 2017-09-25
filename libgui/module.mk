@@ -136,11 +136,9 @@ DIRSTAMP_FILES += \
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \
-  %reldir%/liboctgui-build-info.cc
-
-%canon_reldir%_DISTCLEANFILES += \
+  $(LOCALES) \
   %reldir%/default-qt-settings \
-  $(LOCALES)
+  %reldir%/liboctgui-build-info.cc
 
 CLEANFILES += $(%canon_reldir%_CLEANFILES)
 DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)

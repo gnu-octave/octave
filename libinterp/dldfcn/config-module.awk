@@ -89,4 +89,6 @@ BEGIN {
   print "";
   print "$(srcdir)/%reldir%/module.mk: $(srcdir)/%reldir%/config-module.sh $(srcdir)/%reldir%/config-module.awk $(srcdir)/%reldir%/module-files";
   print "\t$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-module.sh $(srcdir)";
+  print "";
+  print "libinterp_MAINTAINERCLEANFILES += $(srcdir)/%reldir%/module.mk";
 }

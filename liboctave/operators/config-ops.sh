@@ -43,6 +43,8 @@ fi
 
 move_if_change="$top_srcdir/build-aux/move-if-change"
 
+clean_varname="liboctave_MAINTAINERCLEANFILES"
+
 liboctave_dir="$top_srcdir/liboctave/operators"
 
 mk_ops="$liboctave_dir/mk-ops.awk"
@@ -51,9 +53,11 @@ case "$obj_type" in
   vx | all)
     case "$src_type" in
       inc | all)
+        fn=vx-op-inc.mk
         VX_INC=$($AWK -f $mk_ops -v prefix=vx -v list_h_files=1 $liboctave_dir/vx-ops)
-        echo "VX_OP_INC = $VX_INC" > $liboctave_dir/vx-op-inc.mk-t
-        $SHELL $move_if_change $liboctave_dir/vx-op-inc.mk-t $liboctave_dir/vx-op-inc.mk
+        echo "VX_OP_INC = $VX_INC" > $liboctave_dir/$fn-t
+        echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
+        $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
     esac
   ;;
@@ -63,9 +67,11 @@ case "$obj_type" in
   vx | all)
     case "$src_type" in
       src | all)
+        fn=vx-op-src.mk
         VX_SRC=$($AWK -f $mk_ops -v prefix=vx -v list_cc_files=1 $liboctave_dir/vx-ops)
-        echo "VX_OP_SRC = $VX_SRC" > $liboctave_dir/vx-op-src.mk-t
-        $SHELL $move_if_change $liboctave_dir/vx-op-src.mk-t $liboctave_dir/vx-op-src.mk
+        echo "VX_OP_SRC = $VX_SRC" > $liboctave_dir/$fn-t
+        echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
+        $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
     esac
   ;;
@@ -75,9 +81,11 @@ case "$obj_type" in
   mx | all)
     case "$src_type" in
       inc | all)
+        fn=mx-op-inc.mk
         MX_INC=$($AWK -f $mk_ops -v prefix=mx -v list_h_files=1 $liboctave_dir/mx-ops)
-        echo "MX_OP_INC = $MX_INC" > $liboctave_dir/mx-op-inc.mk-t
-        $SHELL $move_if_change $liboctave_dir/mx-op-inc.mk-t $liboctave_dir/mx-op-inc.mk
+        echo "MX_OP_INC = $MX_INC" > $liboctave_dir/$fn-t
+        echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
+        $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
     esac
   ;;
@@ -87,9 +95,11 @@ case "$obj_type" in
   mx | all)
     case "$src_type" in
       src | all)
+        fn=mx-op-src.mk
         MX_SRC=$($AWK -f $mk_ops -v prefix=mx -v list_cc_files=1 $liboctave_dir/mx-ops)
-        echo "MX_OP_SRC = $MX_SRC" > $liboctave_dir/mx-op-src.mk-t
-        $SHELL $move_if_change $liboctave_dir/mx-op-src.mk-t $liboctave_dir/mx-op-src.mk
+        echo "MX_OP_SRC = $MX_SRC" > $liboctave_dir/$fn-t
+        echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
+        $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
     esac
   ;;
@@ -99,9 +109,11 @@ case "$obj_type" in
   smx | all)
     case "$src_type" in
       inc | all)
+        fn=smx-op-inc.mk
         SMX_INC=$($AWK -f $mk_ops -v prefix=smx -v list_h_files=1 $liboctave_dir/smx-ops)
-        echo "SMX_OP_INC = $SMX_INC" > $liboctave_dir/smx-op-inc.mk-t
-        $SHELL $move_if_change $liboctave_dir/smx-op-inc.mk-t $liboctave_dir/smx-op-inc.mk
+        echo "SMX_OP_INC = $SMX_INC" > $liboctave_dir/$fn-t
+        echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
+        $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
     esac
   ;;
@@ -111,9 +123,11 @@ case "$obj_type" in
   smx | all)
     case "$src_type" in
       src | all)
+        fn=smx-op-src.mk
         SMX_SRC=$($AWK -f $mk_ops -v prefix=smx -v list_cc_files=1 $liboctave_dir/smx-ops)
-        echo "SMX_OP_SRC = $SMX_SRC" > $liboctave_dir/smx-op-src.mk-t
-        $SHELL $move_if_change $liboctave_dir/smx-op-src.mk-t $liboctave_dir/smx-op-src.mk
+        echo "SMX_OP_SRC = $SMX_SRC" > $liboctave_dir/$fn-t
+        echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
+        $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
     esac
   ;;

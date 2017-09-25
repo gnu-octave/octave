@@ -54,4 +54,6 @@ BEGIN {
 }
 END {
   print "endif";
+  print "";
+  print "doc_MAINTAINERCLEANFILES += $(srcdir)/%reldir%/images.mk";
 }

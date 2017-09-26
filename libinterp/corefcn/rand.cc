@@ -641,9 +641,9 @@ J. Statistical Software, vol 5, 2000,
 
 DEFUN (randg, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} randg (@var{n})
-@deftypefnx {} {} randg (@var{m}, @var{n}, @dots{})
-@deftypefnx {} {} randg ([@var{m} @var{n} @dots{}])
+@deftypefn  {} {} randg (@var{a}, @var{n})
+@deftypefnx {} {} randg (@var{a}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {} randg (@var{a}, [@var{m} @var{n} @dots{}])
 @deftypefnx {} {@var{v} =} randg ("state")
 @deftypefnx {} {} randg ("state", @var{v})
 @deftypefnx {} {} randg ("state", "reset")
@@ -652,6 +652,7 @@ DEFUN (randg, args, ,
 @deftypefnx {} {} randg ("seed", "reset")
 @deftypefnx {} {} randg (@dots{}, "single")
 @deftypefnx {} {} randg (@dots{}, "double")
+
 Return a matrix with @code{gamma (@var{a},1)} distributed random elements.
 
 The arguments are handled the same as the arguments for @code{rand}, except

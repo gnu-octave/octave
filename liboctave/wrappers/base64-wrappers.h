@@ -23,6 +23,13 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_base64_wrappers_h)
 #define octave_base64_wrappers_h 1
 
+#if defined (__cplusplus)
+#  include <cstddef>
+#else
+#  include <stdbool.h>
+#  include <stddef.h>
+#endif
+
 #if defined __cplusplus
 extern "C" {
 #endif

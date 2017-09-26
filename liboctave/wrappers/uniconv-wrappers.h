@@ -23,6 +23,14 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_uniconv_wrappers_h)
 #define octave_uniconv_wrappers_h 1
 
+#if defined (__cplusplus)
+#  include <cstddef>
+#  include <cstdint>
+#else
+#  include <stddef.h>
+#  include <stdint.h>
+#endif
+
 #if defined __cplusplus
 extern "C" {
 #endif

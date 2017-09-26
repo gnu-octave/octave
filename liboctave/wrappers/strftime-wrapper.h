@@ -25,8 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined __cplusplus
 #  include <cstddef>
+#  include <ctime>
 #else
 #  include <stddef.h>
+#  include <time.h>
 #endif
 
 #if defined __cplusplus

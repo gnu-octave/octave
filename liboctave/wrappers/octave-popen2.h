@@ -23,6 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_octave_popen2_h)
 #define octave_octave_popen2_h 1
 
+#if ! defined (__cplusplus)
+#  include <stdbool.h>
+#endif
+
+#include <sys/types.h>
+
 #if defined __cplusplus
 extern "C" {
 #endif

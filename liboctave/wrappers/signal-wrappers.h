@@ -23,11 +23,11 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_signal_wrappers_h)
 #define octave_signal_wrappers_h 1
 
-#include <sys/types.h>
-
 #if ! defined (__cplusplus)
 #  include <stdbool.h>
 #endif
+
+#include <sys/types.h>
 
 #if defined __cplusplus
 extern "C" {

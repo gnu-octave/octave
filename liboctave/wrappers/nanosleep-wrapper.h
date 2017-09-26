@@ -23,6 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_nanosleep_wrapper_h)
 #define octave_nanosleep_wrapper_h 1
 
+#if defined (__cplusplus)
+#  include <ctime>
+#else
+#  include <time.h>
+#endif
+
 #if defined __cplusplus
 extern "C" {
 #endif

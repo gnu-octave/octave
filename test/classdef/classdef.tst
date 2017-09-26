@@ -87,5 +87,5 @@
 %! x = containers.Map;
 %! assert (isobject (x));
 
-%!assert <*52096> isempty (meta.class.fromName ("__nonexi$tent_cl@$$__"))
-%!assert <*52096> isempty (meta.package.fromName ("__nonexi$tent_p@ck@ge__"))
+%!assert <*52096> (isempty (meta.class.fromName ("__nonexi$tent_cl@$$__")))
+%!assert <*52096> (isempty (meta.package.fromName ("__nonexi$tent_p@ck@ge__")))

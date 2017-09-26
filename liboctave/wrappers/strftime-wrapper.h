@@ -35,7 +35,7 @@ extern "C" {
 
 extern size_t
 octave_strftime_wrapper (char *buf, size_t len, const char *fmt,
-                         const struct tm *t, struct tm_zone *tz, int ns);
+                         const struct tm *t);
 
 #if defined __cplusplus
 }

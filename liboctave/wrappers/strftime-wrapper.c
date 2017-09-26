@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 size_t
 octave_strftime_wrapper (char *buf, size_t len, const char *fmt,
-                         const struct tm *t, struct tm_zone *tz, int ns)
+                         const struct tm *t)
 {
-  return nstrftime (buf, len, fmt, t, tz, ns);
+  return nstrftime (buf, len, fmt, t, NULL, 0);
 }

@@ -174,6 +174,8 @@ protected:
   // Overloads for other classes.
   str_ov_map overloads;
 
+  bool parse_anon_fcn_handle (const std::string& fcn_text);
+
   virtual octave_value_list call (int nargout, const octave_value_list& args);
 
   friend octave_value make_fcn_handle (const std::string &, bool);

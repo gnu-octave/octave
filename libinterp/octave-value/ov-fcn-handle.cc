@@ -385,6 +385,43 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 }
 
 bool
+octave_fcn_handle::parse_anon_fcn_handle (const std::string& fcn_text)
+{
+  bool success = true;
+
+  int parse_status;
+
+  octave_value anon_fcn_handle =
+    octave::eval_string (fcn_text, true, parse_status);
+
+  if (parse_status == 0)
+    {
+      octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+
+      if (fh)
+        {
+          fcn = fh->fcn;
+
+          octave_user_function *uf = fcn.user_function_value (true);
+
+          if (uf)
+            {
+              octave::symbol_table::scope *uf_scope = uf->scope ();
+
+              if (uf_scope)
+                uf_scope->cache_name (nm);
+            }
+        }
+      else
+        success = false;
+    }
+  else
+    success = false;
+
+  return success;
+}
+
+bool
 octave_fcn_handle::load_ascii (std::istream& is)
 {
   bool success = true;
@@ -469,36 +506,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
         }
 
       if (is && success)
-        {
-          int parse_status;
-          octave_value anon_fcn_handle =
-            octave::eval_string (buf, true, parse_status);
-
-          if (parse_status == 0)
-            {
-              octave_fcn_handle *fh =
-                anon_fcn_handle.fcn_handle_value ();
-
-              if (fh)
-                {
-                  fcn = fh->fcn;
-
-                  octave_user_function *uf = fcn.user_function_value (true);
-
-                  if (uf)
-                    {
-                      octave::symbol_table::scope *uf_scope = uf->scope ();
-
-                      if (uf_scope)
-                        uf_scope->cache_name (nm);
-                    }
-                }
-              else
-                success = false;
-            }
-          else
-            success = false;
-        }
+        success = parse_anon_fcn_handle (buf);
       else
         success = false;
     }
@@ -656,35 +664,9 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
         }
 
       if (is && success)
-        {
-          int parse_status;
-          octave_value anon_fcn_handle
-            = octave::eval_string (ctmp2, true, parse_status);
-
-          if (parse_status == 0)
-            {
-              octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
-
-              if (fh)
-                {
-                  fcn = fh->fcn;
-
-                  octave_user_function *uf = fcn.user_function_value (true);
-
-                  if (uf)
-                    {
-                      octave::symbol_table::scope *uf_scope = uf->scope ();
-
-                      if (uf_scope)
-                        uf_scope->cache_name (nm);
-                    }
-                }
-              else
-                success = false;
-            }
-          else
-            success = false;
-        }
+        success = parse_anon_fcn_handle (ctmp2);
+      else
+        success = false;
     }
   else
     {
@@ -1191,35 +1173,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
         }
 
       if (success)
-        {
-          int parse_status;
-          octave_value anon_fcn_handle
-            = octave::eval_string (fcn_tmp, true, parse_status);
-
-          if (parse_status == 0)
-            {
-              octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
-
-              if (fh)
-                {
-                  fcn = fh->fcn;
-
-                  octave_user_function *uf = fcn.user_function_value (true);
-
-                  if (uf)
-                    {
-                      octave::symbol_table::scope *uf_scope = uf->scope ();
-
-                      if (uf_scope)
-                        uf_scope->cache_name (nm);
-                    }
-                }
-              else
-                success = false;
-            }
-          else
-            success = false;
-        }
+        success = parse_anon_fcn_handle (fcn_tmp);
 
       frame.run ();
     }

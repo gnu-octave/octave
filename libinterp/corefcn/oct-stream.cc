@@ -1377,19 +1377,10 @@ namespace octave
   }
 
   // Used to create a stream from a strstream from data read from a dstr.
-  // FIXME: Find a more efficient approach.  Perhaps derived dstr
   delimited_stream::delimited_stream (std::istream& is,
                                       const delimited_stream& ds)
-    : bufsize (ds.bufsize), i_stream (is), longest (ds.longest),
-      delims (ds.delims),
-      flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
-  {
-    buf = new char[bufsize];
-    eob = buf + bufsize;
-    idx = eob;                    // refresh_buf shouldn't try to copy old data
-    progress_marker = idx;
-    refresh_buf ();               // load the first batch of data
-  }
+    : delimited_stream (is, ds.delims, ds.longest, ds.bufsize)
+  {}
 
   delimited_stream::~delimited_stream (void)
   {

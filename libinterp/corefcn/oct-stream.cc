@@ -1475,6 +1475,8 @@ namespace octave
         buf_in_file += (idx - buf);
         memmove (buf, idx, old_remaining);
       }
+    else
+      buf_in_file = i_stream.tellg ();    // record for destructor
 
     progress_marker -= idx - buf;         // where original idx would have been
     idx = buf;
@@ -1482,7 +1484,6 @@ namespace octave
     int gcount;   // chars read
     if (! i_stream.eof ())
       {
-        buf_in_file = i_stream.tellg ();   // record for destructor
         i_stream.read (buf + old_remaining, bufsize - old_remaining);
         gcount = i_stream.gcount ();
       }

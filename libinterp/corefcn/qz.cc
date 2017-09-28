@@ -252,17 +252,17 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
   // Determine ordering option.
   // declared volatile to avoid compiler warnings about long jumps vforks.
-  volatile char ord_job;
-  double safmin;
+  volatile char ord_job = 'N';
+  double safmin = 0.0;
 
-  if (nargin == 2)
-    ord_job = 'N';
-  else
+  if (nargin == 3)
     {
       std::string opt = args(2).xstring_value ("qz: OPT must be a string");
 
-      if (! opt.empty ())
-        ord_job = std::toupper (opt[0]);
+      if (opt.empty ())
+        error ("qz: OPT must be a non-empty string");
+
+      ord_job = std::toupper (opt[0]);
 
       std::string valid_opts = "NSB+-";
 

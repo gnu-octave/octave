@@ -578,7 +578,7 @@ namespace octave
         // We don't forward more than once, so no need to forward the
         // next two.
 
-        void bind_fwd_rep (symbol_record_rep *rep) { m_fwd_rep = rep; }
+        void bind_fwd_rep (symbol_record_rep *fwd_rep) { m_fwd_rep = fwd_rep; }
 
         void unbind_fwd_rep (void) { m_fwd_rep = nullptr; }
 

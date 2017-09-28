@@ -2321,8 +2321,11 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     endif
     fprintf (plot_stream, "set %stics %s %s %s %s (", ax, tickdir,
              ticklength, axispos, mirror);
-    fprintf (plot_stream, " %.15g,", tics(1:end-1));
-    fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
+    fprintf (plot_stream, "%.15g", tics(1));
+    if (numel (tics) > 1)
+      fprintf (plot_stream, ",%.15g", tics(2:end));
+    endif
+    fprintf (plot_stream, ") %s;\n", fontspec);
   else
     fprintf (plot_stream, "set %stics %s %s %s %s %s %s;\n", ax,
              tickdir, ticklength, axispos, mirror, colorspec, fontspec);

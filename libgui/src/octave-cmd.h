@@ -92,13 +92,7 @@ protected:
   bool m_suppress_dbg_location;
 };
 
-/**
- * @class octave_command_queue
- *
- * Queuing commands from the GUI for the worker thread
- */
-// ---------------------------------------------------------------------
-//  class octave_command_queue: queue of octave commands
+//! Queuing octave commands from the GUI for the worker thread.
 
 class octave_command_queue : QObject
 {
@@ -113,15 +107,14 @@ public:
 
   ~octave_command_queue (void) = default;
 
-  /**
-   * Adds a new octave command to the command queue.
-   * @param cmd The octave command to be queued
-   */
+  //! Adds a new octave command to the command queue.
+  //!
+  //! @param cmd The octave command to be queued.
+
   void add_cmd (octave_cmd *cmd);
 
-  /**
-   * Callback routine for executing the command by the worker thread
-   */
+  //! Callback routine for executing the command by the worker thread.
+
   void execute_command_callback (void);
 
 private:

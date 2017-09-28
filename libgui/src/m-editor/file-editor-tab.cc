@@ -20,10 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-/**
- @file A single GUI file tab.
- This interfaces QsciScintilla with the rest of Octave.
- */
+//! @file A single GUI file tab.
+//!
+//! This interfaces QsciScintilla with the rest of Octave.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -84,14 +83,13 @@ along with Octave; see the file COPYING.  If not, see
 
 bool file_editor_tab::_cancelled = false;
 
-/**
- A file_editor_tab object consists of a text area and three left margins.
- The first holds breakpoints, bookmarks, and the debug program counter.
- The second holds line numbers.
- The third holds "fold" marks, to hide sections of text.
- */
-// Make parent null for the file editor tab so that warning
-// WindowModal messages don't affect grandparents.
+//! A file_editor_tab object consists of a text area and three left margins.
+//! The first holds breakpoints, bookmarks, and the debug program counter.
+//! The second holds line numbers.  The third holds "fold" marks, to hide
+//! sections of text.
+
+// Make parent null for the file editor tab so that warning WindowModal
+// messages don't affect grandparents.
 file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   _lexer_apis = nullptr;

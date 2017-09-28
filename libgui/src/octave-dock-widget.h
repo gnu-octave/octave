@@ -49,9 +49,9 @@ public:
 
 signals:
 
-  /** Custom signal that tells whether a user has clicked away
-   *  that dock widget, i.e the active dock widget has
-   *  changed. */
+  //! Custom signal that tells whether a user has clicked away that dock
+  //! widget, i.e the active dock widget has changed.
+
   void active_changed (bool active);
 
 protected:
@@ -90,21 +90,27 @@ public slots:
 
 protected slots:
 
-  /** Slot to steer changing visibility from outside. */
+  //! Slot to steer changing visibility from outside.
+
   virtual void handle_visibility_changed (bool visible)
   {
     if (visible)
       emit active_changed (true);
   }
 
-  /** slots to handle copy & paste */
+  //! Slots to handle copy & paste.
+  //!@{
   virtual void copyClipboard (void) {  }
   virtual void pasteClipboard (void) {  }
   virtual void selectAll (void) {  }
-  /** slots to handle undo */
+  //!@}
+
+  //! Slot to handle undo.
+
   virtual void do_undo (void) {  }
 
-  // event filter for double clicks into the window decoration elements
+  //! Event filter for double clicks into the window decoration elements.
+
   bool eventFilter (QObject *obj, QEvent *e);
 
 private slots:
@@ -117,7 +123,10 @@ private:
   void set_style (bool active);
   void set_focus_predecessor (void);
 
-  QMainWindow *m_parent;  // store the parent since we are reparenting to 0
+  //! Stores the parent, since we are reparenting to 0.
+
+  QMainWindow *m_parent;
+
   bool m_floating;
   bool m_custom_style;
   int m_title_3d;

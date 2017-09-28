@@ -55,10 +55,12 @@ public slots:
 
 signals:
 
-  /** signal that user had requested a command on a variable */
+  //! Signal that user had requested a command on a variable.
+
   void command_requested (const QString& cmd);
 
-  /// signal that user wants to edit a variable
+  //! Signal that user wants to edit a variable.
+
   void edit_variable_signal (const QString&);
 
 protected:

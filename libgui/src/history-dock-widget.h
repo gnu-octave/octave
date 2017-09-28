@@ -53,11 +53,14 @@ signals:
 
   void information (const QString& message);
 
-  /** Emitted, whenever the user double-clicked a command in the history. */
+  //! Signal emitted, whenever the user double-clicked a command in the
+  //! history.
+
   void command_double_clicked (const QString& command);
 
-  /** Emitted whenever the user selects command and chooses Create
-      script from popupmenu. */
+  //! Signale emitted, whenever the user selects commands and chooses
+  //! "Create script" from the popup menu.
+
   void command_create_script (const QString& commands);
 
 private slots:
@@ -85,7 +88,8 @@ private:
   QListView *m_history_list_view;
   QSortFilterProxyModel m_sort_filter_proxy_model;
 
-  /** Stores the current history_model. */
+  //! Stores the current history_model.
+
   QStringListModel *m_history_model;
 
   QCheckBox *m_filter_checkbox;

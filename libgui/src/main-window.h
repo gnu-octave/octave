@@ -64,13 +64,13 @@ along with Octave; see the file COPYING.  If not, see
 
 class settings_dialog;
 
+//! QObject to manage the Octave interpreter.
+
 class octave_interpreter : public QObject
 {
   Q_OBJECT
 
 public:
-
-  // An object to manage the Octave interpreter.
 
   octave_interpreter (octave::application *app_context);
 
@@ -85,7 +85,7 @@ signals:
 
 public slots:
 
-  // Initialize and execute the octave interpreter.
+  //! Initialize and execute the octave interpreter.
 
   void execute (void);
 
@@ -96,11 +96,8 @@ private:
   octave::application *m_app_context;
 };
 
-/**
- * @class MainWindow
- *
- * Represents the main window.
- */
+//! Represents the main window.
+
 class main_window : public QMainWindow
 {
   Q_OBJECT
@@ -249,22 +246,28 @@ public slots:
   void handle_octave_ready ();
   void handle_octave_finished (int);
 
-  // find files dialog
+  //! Find files dialog.
+  //!@{
   void find_files (const QString& startdir = QDir::currentPath ());
   void find_files_finished (int) { }
+  //!@}
 
-  // setting global shortcuts
+  //! Setting global shortcuts.
+
   void set_global_shortcuts (bool enable);
 
   void set_screen_size (int ht, int wd);
 
-  // handling the clipboard
+  //! Handling the clipboard.
+  //!@{
   void clipboard_has_changed (QClipboard::Mode);
   void clear_clipboard ();
+  //!@}
 
   void interrupt_interpreter (void);
 
-  // get the dockwidgets
+  //! Returns a list of dock widgets.
+
   QList<octave_dock_widget *> get_dock_widget_list (void)
   {
     return dock_widget_list ();
@@ -277,7 +280,8 @@ private slots:
   void set_file_encoding (const QString& new_encoding);
   void request_open_files (const QStringList& open_file_names);
 
-  // open variable_editor
+  //! Opens the variable editor for @p name.
+
   void edit_variable (const QString &name);
 
   void clear_variable_editor_cache (void);
@@ -357,10 +361,12 @@ private:
 
   QHash<QMenu*, QStringList> m_hash_menu_text;
 
-  // Toolbars.
+  //! Toolbar.
+
   QStatusBar *m_status_bar;
 
-  // Subwindows.
+  //! Dock widgets.
+  //!@{
   terminal_dock_widget *m_command_window;
   history_dock_widget *m_history_window;
   files_dock_widget *m_file_browser_window;
@@ -368,6 +374,7 @@ private:
   file_editor_interface *m_editor_window;
   workspace_view *m_workspace_window;
   variable_editor *m_variable_editor_window;
+  //!@}
 
   external_editor_interface *m_external_editor;
   QWidget *m_active_editor;
@@ -432,19 +439,24 @@ private:
   QAction *m_release_notes_action;
   QAction *m_current_news_action;
 
-  // Toolbars.
+  //! For Toolbars.
+  //!@{
   QComboBox *m_current_directory_combo_box;
   static const int current_directory_max_visible = 16;
   static const int current_directory_max_count = 16;
   QLineEdit *m_current_directory_line_edit;
+  //!@}
 
-  // settings dialog as guarded pointer (set to 0 when deleted)
+  //! Settings dialog as guarded pointer (set to 0 when deleted).
+
   QPointer<settings_dialog> m_settings_dlg;
 
-  // Find files dialog
+  //! Find files dialog.
+
   find_files_dialog *m_find_files_dlg;
 
-  // release notes window
+  //! Release notes window.
+
   QWidget *m_release_notes_window;
 
   QWidget *m_community_news_window;
@@ -453,19 +465,21 @@ private:
 
   QClipboard *m_clipboard;
 
-  // Flag for closing whole application.
-  bool m_closing;
+  //! Command queue and semaphore to synchronize execution signals and
+  //! related callbacks.
 
-  // command queue and semaphore to synchronize execution signals
-  // and related callback
-
-  // the queue for the command structures
   octave_command_queue m_cmd_queue;
 
-  // some class global flags
+  //! Some class global flags.
+  //!@{
   bool m_prevent_readline_conflicts;
   bool m_suppress_dbg_location;
   bool m_start_gui;
+
+  //! Flag for closing the whole application.
+
+  bool m_closing;
+  //!@}
 
   QString m_file_encoding;
 };

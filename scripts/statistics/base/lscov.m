@@ -76,10 +76,10 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
     else
       ## n-by-n covariance matrix
       try
-        ## ordinarily V will be positive definite
+        ## Ordinarily V will be positive definite
         B = chol (V)';
       catch
-        ## if V is only positive semidefinite, use its
+        ## If V is only positive semidefinite, use its
         ## eigendecomposition to find a factor B such that V = B*B'
         [B, lambda] = eig (V);
         image_dims = (diag (lambda) > 0);
@@ -90,28 +90,27 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
     endif
   endif
 
-  pinv_A = pinv (A); #pseudoinverse
+  pinv_A = pinv (A);
 
   x = pinv_A * b;
 
-  if (isargout (3))
-    dof = n - p; #degrees of freedom remaining after fit
+  if (nargout > 1)
+    dof = n - p;  # degrees of freedom remaining after fit
     SSE = sumsq (b - A * x);
     mse = SSE / dof;
-  endif
-
-  s = pinv_A * pinv_A';
-
-  stdx = sqrt (diag (s) * mse);
-
-  if (isargout (4))
-    if (k == 1)
-      S = mse * s;
-    else
-      S = NaN (p, p, k);
-      for i = 1:k
-        S(:, :, i) = mse(i) * s;
-      endfor
+    
+    s = pinv_A * pinv_A';
+    stdx = sqrt (diag (s) * mse);
+    
+    if (nargout > 3)
+      if (k == 1)
+        S = mse * s;
+      else
+        S = NaN (p, p, k);
+        for i = 1:k
+          S(:, :, i) = mse(i) * s;
+        endfor
+      endif
     endif
   endif
 

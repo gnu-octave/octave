@@ -150,28 +150,6 @@ looks_like_texinfo (const std::string& msg, size_t& p1)
   return (p2 != std::string::npos);
 }
 
-// FIXME: Are we sure this function always does the right thing?
-static inline bool
-file_is_in_dir (const std::string filename, const std::string dir)
-{
-  if (filename.find (dir) == 0)
-    {
-      const int dir_len = dir.size ();
-      const int filename_len = filename.size ();
-      const int max_allowed_seps =
-        (octave::sys::file_ops::is_dir_sep (dir[dir_len-1]) ? 0 : 1);
-
-      int num_seps = 0;
-      for (int i = dir_len; i < filename_len; i++)
-        if (octave::sys::file_ops::is_dir_sep (filename[i]))
-          num_seps++;
-
-      return (num_seps <= max_allowed_seps);
-    }
-  else
-    return false;
-}
-
 namespace octave
 {
   octave_value

@@ -124,9 +124,9 @@ private slots:
 
   //! Inherited from octave_doc_widget.
   //!@{
-  void copyClipboard () override;
-  void pasteClipboard () override;
-  void selectAll () override;
+  void copyClipboard ();
+  void pasteClipboard ();
+  void selectAll ();
   //!@}
 
 signals:

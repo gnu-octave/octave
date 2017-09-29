@@ -27,6 +27,10 @@ function varargout = __bar__ (vertical, func, varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ (func, varargin{:});
 
+  if (! isnumeric (varargin{1}))
+    error ("%s: Y must be numeric", func);
+  endif
+
   width = 0.8;
   group = true;
   histc = NA;
@@ -46,16 +50,16 @@ function varargout = __bar__ (vertical, func, varargin)
     if (isvector (y))
       y = y(:);
     endif
-    if (rows (x) != rows (y))
-      y = varargin{1};
-      if (isvector (y))
-        y = y(:);
-      endif
+    if (isscalar (y) && ! isscalar (x))
+      ## "y" is actually "width" argument
+      y = x;
       x = [1:rows(y)]';
       idx = 2;
     else
       if (! isvector (x))
         error ("%s: X must be a vector", func);
+      elseif (numel (unique (x)) != numel (x))
+        error ("%s: X vector values must be unique", func);
       endif
       idx = 3;
     endif
@@ -115,11 +119,12 @@ function varargout = __bar__ (vertical, func, varargin)
   endwhile
 
   ngrp = rows (x);
+
+  if (isvector (y) && ngrp != rows (y))
+    y = y.';
+  endif
   if (ngrp != rows (y))
     error ("%s: length of X and Y must be equal", func);
-  endif
-  if (any (x(2:end) < x(1:end-1)))
-    error ("%s: X vector values must be in ascending order", func);
   endif
 
   nbars = columns (y);
@@ -372,7 +377,6 @@ function update_basevalue_logscale (hax, ~, hg)
       set (hg, "basevalue", 1);
     endif
   else
-#    warning ("off", "Octave:negative-data-log-axis", "local");
     if (get (hg, "basevalue") == 1)
       set (hg, "basevalue", 0);
     endif

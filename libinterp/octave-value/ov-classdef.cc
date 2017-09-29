@@ -3639,13 +3639,16 @@ cdef_manager::cdef_manager (octave::interpreter& interp)
     ("meta.package",
      octave_value (m_meta_package.get_constructor_function ()));
 
-  symtab.install_built_in_function
-    ("meta.event",
-     octave_value (tmp_meta_event.get_constructor_function ()));
+// FIXME: meta.event and meta.dynproperty are not implemented
+//        and should not be installed into symbol table.
 
-  symtab.install_built_in_function
-    ("meta.dynproperty",
-     octave_value (tmp_meta_dynproperty.get_constructor_function ()));
+//  symtab.install_built_in_function
+//    ("meta.event",
+//     octave_value (tmp_meta_event.get_constructor_function ()));
+
+//  symtab.install_built_in_function
+//    ("meta.dynproperty",
+//     octave_value (tmp_meta_dynproperty.get_constructor_function ()));
 }
 
 cdef_class

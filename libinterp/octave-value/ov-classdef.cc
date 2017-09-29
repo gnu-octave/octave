@@ -3338,7 +3338,9 @@ cdef_package::cdef_package_rep::meta_release (void)
   cdef_manager& cdm
     = octave::__get_cdef_manager__ ("cdef_package::cdef_package_rep::meta_release");
 
-  cdm.unregister_package (wrap ());
+  // Don't delete the "meta" package.
+  if (this != cdm.meta ().get_rep ())
+    cdm.unregister_package (wrap ());
 }
 
 //----------------------------------------------------------------------------

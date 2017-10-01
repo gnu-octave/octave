@@ -142,6 +142,14 @@ octave_fstat_wrapper (int fid, mode_t *mode, ino_t *ino,
   return status;
 }
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Disable the unused parameter warning for the following wrapper functions.
+// The <sys/stat.h> header provided by gnulib may define some of the S_IS*
+// macros to expand to a constant and ignore the parameter.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
+
 bool
 octave_is_blk_wrapper (mode_t mode)
 {
@@ -211,6 +219,11 @@ octave_is_sock_wrapper (mode_t mode)
   return false;
 #endif
 }
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Restore prevailing warning state for remainder of the file.
+#pragma GCC diagnostic pop
+#endif
 
 bool
 octave_have_struct_stat_st_rdev (void)

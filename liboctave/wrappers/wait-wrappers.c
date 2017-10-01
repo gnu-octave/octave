@@ -46,10 +46,18 @@ along with Octave; see the file COPYING.  If not, see
 #  define WUNTRACED 0
 #endif
 
+#if ! defined (WIFCONTINUED)
+#  define WIFCONTINUED(x) false
+#endif
+
 pid_t
 octave_waitpid_wrapper (pid_t pid, int *statusp, int options)
 {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
+
+  octave_unused_parameter (pid);
+  octave_unused_parameter (options);
+
   // gnulib's waitpid replacement currently uses _cwait, which
   // apparently only works with console applications.
   *statusp = 0;
@@ -66,14 +74,36 @@ octave_wcontinue_wrapper (void)
 }
 
 int
+octave_wnohang_wrapper (void)
+{
+  return WNOHANG;
+}
+
+int
+octave_wuntraced_wrapper (void)
+{
+  return WUNTRACED;
+}
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Disable the unused parameter warning for the following wrapper functions.
+// The <sys/wait.h> header provided by gnulib may define some of the W*
+// macros to expand to a constant and ignore the parameter.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
+
+int
 octave_wcoredump_wrapper (int status)
 {
   return WCOREDUMP (status);
 }
 
-#if ! defined (WIFCONTINUED)
-#  define WIFCONTINUED(x) false
-#endif
+int
+octave_wexitstatus_wrapper (int status)
+{
+  return WEXITSTATUS (status);
+}
 
 bool
 octave_wifcontinued_wrapper (int status)
@@ -100,18 +130,6 @@ octave_wifstopped_wrapper (int status)
 }
 
 int
-octave_wexitstatus_wrapper (int status)
-{
-  return WEXITSTATUS (status);
-}
-
-int
-octave_wnohang_wrapper (void)
-{
-  return WNOHANG;
-}
-
-int
 octave_wstopsig_wrapper (int status)
 {
   return WSTOPSIG (status);
@@ -123,8 +141,7 @@ octave_wtermsig_wrapper (int status)
   return WTERMSIG (status);
 }
 
-int
-octave_wuntraced_wrapper (void)
-{
-  return WUNTRACED;
-}
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Restore prevailing warning state for remainder of the file.
+#pragma GCC diagnostic pop
+#endif

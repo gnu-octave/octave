@@ -164,10 +164,6 @@ w32_init (void)
   octave::command_editor::prefer_env_winsize (true);
 }
 
-static bool
-w32_shell_execute (const std::string& file)
-{ }
-
 #endif
 
 // Set app id if we have the SetCurrentProcessExplicitAppUserModelID
@@ -461,6 +457,8 @@ raw_mode (bool on, bool wait)
   }
 #elif defined (HAVE_SGTTY_H)
   {
+    octave_unused_parameter (wait);
+
     struct sgttyb s;
     static struct sgttyb save_term;
 
@@ -492,6 +490,9 @@ raw_mode (bool on, bool wait)
     ioctl (tty_fd, TIOCSETN, &s);
   }
 #else
+
+  octave_unused_parameter (wait);
+
   warn_disabled_feature ("", "raw mode console I/O");
 
   // Make sure the current mode doesn't toggle.

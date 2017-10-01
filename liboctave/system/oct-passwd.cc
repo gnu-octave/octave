@@ -143,6 +143,8 @@ namespace octave
       msg = "";
       return password (::getpwuid (uid), msg);
 #else
+      octave_unused_parameter (uid);
+
       msg = NOT_SUPPORTED ("getpwuid");
       return password ();
 #endif
@@ -162,6 +164,8 @@ namespace octave
       msg = "";
       return password (::getpwnam (nm.c_str ()), msg);
 #else
+      octave_unused_parameter (nm);
+
       msg = NOT_SUPPORTED ("getpwnam");
       return password ();
 #endif
@@ -229,6 +233,8 @@ namespace octave
           valid = true;
         }
 #else
+      octave_unused_parameter (p);
+
       msg = NOT_SUPPORTED ("password functions");
 #endif
     }

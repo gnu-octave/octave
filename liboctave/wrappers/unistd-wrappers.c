@@ -141,7 +141,7 @@ octave_dup2_wrapper (int fd1, int fd2)
   " \001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037"
 
 static char **
-prepare_spawn (char **argv)
+prepare_spawn (char *const *argv)
 {
   size_t argc;
   char **new_argv;

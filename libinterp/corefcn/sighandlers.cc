@@ -157,9 +157,9 @@ namespace octave
           GetThreadContext (thread, &threadContext);
 
 #if (defined (__MINGW64__) || defined (_WIN64))
-          threadContext.Rip = (DWORD64) jump_to_enclosing_context_sync;
+          threadContext.Rip = reinterpret_cast<DWORD64> (jump_to_enclosing_context_sync);
 #else
-          threadContext.Eip = (DWORD) jump_to_enclosing_context_sync;
+          threadContext.Eip = reinterpret_cast<DWORD> (jump_to_enclosing_context_sync);
 #endif
 
           SetThreadContext (thread, &threadContext);

@@ -51,6 +51,8 @@ octave_wait_for_input (int fid)
       retval = select (FD_SETSIZE, &set, 0, 0, 0);
     }
 #else
+  octave_unused_parameter (fid);
+
   retval = 1;
 #endif
 

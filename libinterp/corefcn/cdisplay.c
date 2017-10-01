@@ -57,6 +57,8 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
+  octave_unused_parameter (dpy_name);
+
   HDC hdc = GetDC (0);
 
   if (hdc)
@@ -78,6 +80,8 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
     msg = "no graphical display found";
 
 #elif defined (HAVE_FRAMEWORK_CARBON)
+
+  octave_unused_parameter (dpy_name);
 
   CGDirectDisplayID display = CGMainDisplayID ();
 
@@ -163,6 +167,7 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
 
 #else
 
+  octave_unused_parameter (dpy_name);
   octave_unused_parameter (ht);
   octave_unused_parameter (wd);
   octave_unused_parameter (dp);

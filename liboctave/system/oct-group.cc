@@ -117,6 +117,8 @@ namespace octave
       msg = "";
       return group (::getgrgid (gid), msg);
 #else
+      octave_unused_parameter (gid);
+
       msg = NOT_SUPPORTED ("getgruid");
       return group ();
 #endif
@@ -136,6 +138,8 @@ namespace octave
       msg = "";
       return group (::getgrnam (nm.c_str ()), msg);
 #else
+      octave_unused_parameter (nm);
+
       msg = NOT_SUPPORTED ("getgrnam");
       return group ();
 #endif
@@ -221,6 +225,8 @@ namespace octave
           valid = true;
         }
 #else
+      octave_unused_parameter (p);
+
       msg = NOT_SUPPORTED ("group functions");
 #endif
     }

@@ -48,6 +48,10 @@ octave_kill_wrapper (pid_t pid, int signum)
 #if defined (HAVE_KILL)
   return kill (pid, signum);
 #else
+
+  octave_unused_parameter (pid);
+  octave_unused_parameter (signum);
+
   return -1;
 #endif
 }
@@ -451,6 +455,11 @@ block_or_unblock_signal (int how, int sig)
   sigaddset (&signal_mask, sig);
 
   pthread_sigmask (how, &signal_mask, 0);
+#else
+
+  octave_unused_parameter (how);
+  octave_unused_parameter (sig);
+
 #endif
 }
 

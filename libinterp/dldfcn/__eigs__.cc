@@ -571,6 +571,7 @@ Undocumented internal function.
 
 #else
 
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
   octave_unused_parameter (nargout);
 

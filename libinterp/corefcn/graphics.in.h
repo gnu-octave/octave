@@ -5555,8 +5555,8 @@ public:
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position , default_panel_position ()
       callback_property resizefcn , Matrix ()
-      handle_property selectedobject S , graphics_handle()
-      callback_property selectionchangedfcn , Matrix()
+      handle_property selectedobject S , graphics_handle ()
+      callback_property selectionchangedfcn , Matrix ()
       color_property shadowcolor , color_values (0, 0, 0)
       callback_property sizechangedfcn , Matrix ()
       radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"

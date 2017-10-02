@@ -147,7 +147,7 @@ function emit_get_accessor (i, rtype, faccess)
   printf ("  %s get_%s (void) const", rtype, name[i]);
 
   if (emit_get[i] == "definition" && deprecated[i])
-    printf ("\n{\n  warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n  return %s.%s ();\n}\n", name[i], name[i], faccess);
+    printf ("\n  {\n    warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n    return %s.%s ();\n  }\n", name[i], name[i], faccess);
   else if (emit_get[i] == "definition")
     printf (" { return %s.%s (); }\n", name[i], faccess);
   else
@@ -386,24 +386,24 @@ function emit_declarations ()
         else
           has_builtin_listeners = 0;
 
-        printf ("\n  {\n      {\n        if (%s.set (val, %s))\n          {\n",
+        printf ("\n  {\n    if (%s.set (val, %s))\n      {\n",
           name[i], (has_builtin_listeners ? "false" : "true"));
         if (mode[i])
-          printf ("            set_%smode (\"manual\");\n", name[i]);
+          printf ("        set_%smode (\"manual\");\n", name[i]);
         if (updater[i])
-          printf ("            update_%s ();\n", name[i]);
+          printf ("        update_%s ();\n", name[i]);
         if (deprecated[i])
-          printf ("            warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n", name[i]);
+          printf ("        warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n", name[i]);
         if (limits[i])
-          printf ("            update_axis_limits (\"%s\");\n", name[i]);
+          printf ("        update_axis_limits (\"%s\");\n", name[i]);
         if (has_builtin_listeners)
-          printf ("            %s.run_listeners (POSTSET);\n", name[i]);
+          printf ("        %s.run_listeners (POSTSET);\n", name[i]);
         if (! mutable[i])
-          printf ("            mark_modified ();\n");
-        printf ("          }\n");
+          printf ("        mark_modified ();\n");
+        printf ("      }\n");
         if (mode[i])
-          printf ("        else\n          set_%smode (\"manual\");\n", name[i]);
-        printf ("      }\n  }\n\n");
+          printf ("    else\n      set_%smode (\"manual\");\n", name[i]);
+        printf ("  }\n\n");
       }
       else
         printf (";\n\n");

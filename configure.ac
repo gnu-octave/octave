@@ -2020,24 +2020,35 @@ fi
 
 ## Check for FreeType 2 library
 
+check_freetype=yes
 warn_freetype=""
-PKG_CHECK_MODULES([FT2], [freetype2], [
-  min_ft2_version=9.03
-  AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
-  $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
-  ac_status=$?
-  if test "$ac_status" = 0; then
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if Freetype is available.])
-    save_LIBS="$LIBS"
-    LIBS="$FT2_LIBS $LIBS"
-    AC_CHECK_FUNCS([FT_Reference_Face])
-    LIBS="$save_LIBS"
-  else
-    AC_MSG_RESULT(no)
-    warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
-  fi],
-  [warn_freetype="FreeType library not found.  OpenGL graphics will not be fully functional."])
+AC_ARG_WITH([freetype],
+  [AS_HELP_STRING([--without-freetype],
+    [don't use FreeType library, OpenGL graphics will not be fully functional])],
+  [if test x"$withval" = xno; then
+     check_freetype=no
+     warn_freetype="--without-freetype specified.  OpenGL graphics will not be fully functional."
+   fi])
+
+if test $check_freetype = yes; then
+  PKG_CHECK_MODULES([FT2], [freetype2], [
+    min_ft2_version=9.03
+    AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
+    $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
+    ac_status=$?
+    if test "$ac_status" = 0; then
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if Freetype is available.])
+      save_LIBS="$LIBS"
+      LIBS="$FT2_LIBS $LIBS"
+      AC_CHECK_FUNCS([FT_Reference_Face])
+      LIBS="$save_LIBS"
+    else
+      AC_MSG_RESULT(no)
+      warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
+    fi],
+    [warn_freetype="FreeType library not found.  OpenGL graphics will not be fully functional."])
+fi
 
 if test -n "$warn_freetype"; then
   OCTAVE_CONFIGURE_WARNING([warn_freetype])

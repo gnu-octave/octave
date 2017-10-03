@@ -21,6 +21,17 @@
   %reldir%/OLD-ChangeLogs/src-ChangeLog \
   %reldir%/OLD-ChangeLogs/test-ChangeLog
 
+etc_fontsdir = $(octetcdir)/fonts
+
+etc_fonts_DATA = \
+  %reldir%/fonts/FreeSans.otf \
+  %reldir%/fonts/FreeSansBold.otf \
+  %reldir%/fonts/FreeSansBoldOblique.otf \
+  %reldir%/fonts/FreeSansOblique.otf
+
+%canon_reldir%_EXTRA_DIST += \
+  $(etc_fonts_DATA)
+
 icon_IMAGE_FILES = \
   %reldir%/icons/octave-logo.svg \
   %reldir%/icons/octave-sombrero.png

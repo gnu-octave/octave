@@ -54,7 +54,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "singleton-cleanup.h"
 
+#include "defaults.h"
 #include "error.h"
+#include "file-ops.h"
+#include "oct-env.h"
 #include "pr-output.h"
 #include "text-renderer.h"
 
@@ -203,10 +206,36 @@ namespace octave
         }
 #endif
 
+      static std::string font_dir;
+
+      if (font_dir.empty ())
+        {
+          font_dir = sys::env::getenv ("OCTAVE_FONT_DIR");
+
+          if (font_dir.empty ())
+            font_dir = config::oct_etc_dir () + sys::file_ops::dir_sep_str ()
+                       + "fonts";
+        }
+
+
+      // Default font file
       std::string file;
 
+      if (! font_dir.empty ())
+        {
+          file = font_dir + octave::sys::file_ops::dir_sep_str () + "FreeSans";
+
+          if (weight == "bold")
+            file += "Bold";
+
+          if (angle == "italic" || angle == "oblique")
+            file += "Oblique";
+
+          file += ".otf";
+        }
+
 #if defined (HAVE_FONTCONFIG)
-      if (fontconfig_initialized)
+      if (name != "*" && fontconfig_initialized)
         {
           int fc_weight, fc_angle;
 
@@ -230,7 +259,7 @@ namespace octave
 
           FcPatternAddString (pat, FC_FAMILY,
                               (reinterpret_cast<const FcChar8 *>
-                               (name == "*" ? "sans" : name.c_str ())));
+                               (name.c_str ())));
 
           FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
           FcPatternAddInteger (pat, FC_SLANT, fc_angle);
@@ -254,7 +283,7 @@ namespace octave
                   file = reinterpret_cast<char *> (tmp);
                 }
               else
-                ::warning ("could not match any font: %s-%s-%s-%g",
+                ::warning ("could not match any font: %s-%s-%s-%g, using default font",
                            name.c_str (), weight.c_str (), angle.c_str (),
                            size);
 
@@ -267,15 +296,8 @@ namespace octave
 #endif
 
       if (file.empty ())
-        {
-#if defined (OCTAVE_USE_WINDOWS_API)
-          file = "C:/WINDOWS/Fonts/verdana.ttf";
-#else
-          // FIXME: find a "standard" font for UNIX platforms
-#endif
-        }
-
-      if (! file.empty ())
+        ::warning ("unable to find default font files");
+      else
         {
           if (FT_New_Face (library, file.c_str (), 0, &retval))
             ::warning ("ft_manager: unable to load font: %s", file.c_str ());

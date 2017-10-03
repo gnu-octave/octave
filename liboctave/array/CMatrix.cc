@@ -3472,7 +3472,7 @@ operator * (const Matrix& m, const ComplexMatrix& a)
 %!assert ([rv*M;rv*M], [rv;rv]*M, 1e-14)
 %!assert ([rv*M.';rv*M.'], [rv;rv]*M.', 1e-14)
 %!assert ([rv*M';rv*M'], [rv;rv]*M', 1e-14)
-%!assert (2*rv*cv, [rv,rv]*[cv;cv], 1e-14)
+%!assert (2*rv*cv, [rv,rv]*[cv;cv], 2e-14)
 
 */
 

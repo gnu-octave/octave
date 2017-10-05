@@ -107,6 +107,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   _bp_lines.clear ();      // start with empty lists of breakpoints
   _bp_conditions.clear ();
+  m_bp_restore_count = 0;
 
   // disable editor drag & drop so parent can handle
   _edit_area->setAcceptDrops (false);
@@ -1330,6 +1331,14 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
   if (ID != this)
     return;
 
+  if (m_bp_restore_count > 0)
+    {
+      // This goto-line request is invoked by restoring a breakpoint during
+      // saving the file, thus, do not go to the related line
+      m_bp_restore_count--;
+      return;
+    }
+
   if (line <= 0)  // ask for desired line
     {
       bool ok = false;
@@ -1625,6 +1634,7 @@ file_editor_tab::check_restore_breakpoints ()
       remove_all_breakpoints (this);
 
       // and set breakpoints at the new linenumbers
+      m_bp_restore_count = _bp_lines.length ();
       for (int i = 0; i < _bp_lines.length (); i++)
         handle_request_add_breakpoint (_bp_lines.value (i) + 1,
                                        _bp_conditions.value (i));

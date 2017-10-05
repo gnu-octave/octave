@@ -1347,7 +1347,8 @@ file_editor::request_open_file (const QString& openFileName,
 
           if (line > 0)
             {
-              emit fetab_goto_line (tab, line);
+              if (insert)
+                emit fetab_goto_line (tab, line);
 
               if (debug_pointer)
                 emit fetab_insert_debugger_pointer (tab, line);
@@ -1399,7 +1400,8 @@ file_editor::request_open_file (const QString& openFileName,
 
                   if (line > 0)
                     {
-                      emit fetab_goto_line (fileEditorTab, line);
+                      if (insert)
+                        emit fetab_goto_line (fileEditorTab, line);
 
                       if (debug_pointer)
                         emit fetab_insert_debugger_pointer (fileEditorTab,

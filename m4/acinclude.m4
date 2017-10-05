@@ -1171,7 +1171,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
   ## Check for Qt libraries
   case "$qt_version" in
     4)
-      octave_qscintilla_libnames="qscintilla2 qscintilla2-qt4 qscintilla2_qt4 qt4scintilla2"
+      octave_qscintilla_libnames="qscintilla2-qt4 qscintilla2_qt4 qt4scintilla2 qscintilla2"
     ;;
     5)
       octave_qscintilla_libnames="qscintilla2-qt5 qscintilla2_qt5 qt5scintilla2"

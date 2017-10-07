@@ -255,34 +255,49 @@ public:
   llvm::BasicBlock * new_block (const std::string& aname = "body",
                                 llvm::BasicBlock *insert_before = nullptr);
 
+  typedef std::vector<llvm::Value *> arg_vec;
+
+  llvm::Value * call (llvm::IRBuilderD& builder,
+                      const arg_vec& in_args = arg_vec ()) const;
+
   llvm::Value * call (llvm::IRBuilderD& builder,
                       const std::vector<jit_value *>& in_args) const;
 
-  llvm::Value * call (llvm::IRBuilderD& builder,
-                      const std::vector<llvm::Value *>& in_args
-                      = std::vector<llvm::Value *> ()) const;
+  template <typename ...Args>
+  llvm::Value * call (llvm::IRBuilderD& builder, arg_vec& in_args,
+                      llvm::Value * arg1, Args... other_args) const
+  {
+    in_args.push_back (arg1);
+    return call (builder, in_args, other_args...);
+  }
 
-#define JIT_PARAM_ARGS llvm::IRBuilderD& builder,
-#define JIT_PARAMS builder,
-#define JIT_CALL(N) JIT_EXPAND (llvm::Value *, call, llvm::Value *, const, N)
+  template <typename T, typename ...Args>
+  llvm::Value * call (llvm::IRBuilderD& builder, arg_vec& in_args,
+                      T * arg1, Args... other_args) const
+  {
+    in_args.push_back (arg1->to_llvm ());
+    return call (builder, in_args, other_args...);
+  }
 
-  JIT_CALL (1)
-  JIT_CALL (2)
-  JIT_CALL (3)
-  JIT_CALL (4)
-  JIT_CALL (5)
+  template <typename ...Args>
+  llvm::Value * call (llvm::IRBuilderD& builder, llvm::Value * arg1,
+                      Args... other_args) const
+  {
+    arg_vec in_args;
+    in_args.reserve (1 + sizeof... (other_args));
+    in_args.push_back (arg1);
+    return call (builder, in_args, other_args...);
+  }
 
-#undef JIT_CALL
-
-#define JIT_CALL(N) JIT_EXPAND (llvm::Value *, call, jit_value *, const, N)
-
-  JIT_CALL (1);
-  JIT_CALL (2);
-  JIT_CALL (3);
-
-#undef JIT_CALL
-#undef JIT_PARAMS
-#undef JIT_PARAM_ARGS
+  template <typename T, typename ...Args>
+  llvm::Value * call (llvm::IRBuilderD& builder, T * arg1,
+                      Args... other_args) const
+  {
+    arg_vec in_args;
+    in_args.reserve (1 + sizeof... (other_args));
+    in_args.push_back (arg1->to_llvm ());
+    return call (builder, in_args, other_args...);
+  }
 
   llvm::Value * argument (llvm::IRBuilderD& builder, size_t idx) const;
 
@@ -341,24 +356,45 @@ public:
 
   const jit_function& overload (const signature_vec& types) const;
 
+  template <typename ...Args>
+  const jit_function& overload (signature_vec& args, jit_type * arg1,
+                                Args... other_args) const
+  {
+    args.push_back (arg1);
+    return overload (args, other_args...);
+  }
+
+  template <typename ...Args>
+  const jit_function& overload (jit_type * arg1, Args... other_args) const
+  {
+    signature_vec args;
+    args.reserve (1 + sizeof... (other_args));
+    args.push_back (arg1);
+    return overload (args, other_args...);
+  }
+
   jit_type * result (const signature_vec& types) const
   {
     const jit_function& temp = overload (types);
     return temp.result ();
   }
 
-#define JIT_PARAMS
-#define JIT_PARAM_ARGS
-#define JIT_OVERLOAD(N)                                              \
-  JIT_EXPAND (const jit_function&, overload, jit_type *, const, N)   \
-  JIT_EXPAND (jit_type *, result, jit_type *, const, N)
+  template <typename ...Args>
+  jit_type * result (signature_vec& args, jit_type * arg1,
+                     Args... other_args) const
+  {
+    args.push_back (arg1);
+    return overload (args, other_args...);
+  }
 
-  JIT_OVERLOAD (1);
-  JIT_OVERLOAD (2);
-  JIT_OVERLOAD (3);
-
-#undef JIT_PARAMS
-#undef JIT_PARAM_ARGS
+  template <typename ...Args>
+  jit_type * result (jit_type * arg1, Args... other_args) const
+  {
+    signature_vec args;
+    args.reserve (1 + sizeof... (other_args));
+    args.push_back (arg1);
+    return overload (args, other_args...);
+  }
 
   const std::string& name (void) const { return mname; }
 
@@ -679,13 +715,16 @@ private:
 
   void add_binary_fcmp (jit_type *ty, int op, int llvm_op);
 
+  // type signature vector
+  typedef std::vector<jit_type *> signature_vec;
+
   // create a function with an external calling convention
   // forces the function pointer to be specified
   template <typename T>
   jit_function create_external (llvm::ExecutionEngine *ee, T fn,
                                 const llvm::Twine& name, jit_type *ret,
-                                const std::vector<jit_type *>& args
-                                = std::vector<jit_type *> ())
+                                const signature_vec& args
+                                = signature_vec ())
   {
     jit_function retval = create_function (jit_convention::external, name, ret,
                                            args);
@@ -693,21 +732,26 @@ private:
     return retval;
   }
 
-#define JIT_PARAM_ARGS llvm::ExecutionEngine *ee, T fn, \
-    const llvm::Twine& name, jit_type *ret,
-#define JIT_PARAMS ee, fn, name, ret,
-#define CREATE_FUNCTION(N) JIT_EXPAND(template <typename T> jit_function, \
-                                      create_external,                  \
-                                      jit_type *, /* empty */, N)
+  template <typename T, typename ...Args>
+  jit_function create_external (llvm::ExecutionEngine *ee, T fn,
+                                const llvm::Twine& name, jit_type *ret,
+                                signature_vec& args, jit_type * arg1,
+                                Args... other_args)
+  {
+    args.push_back (arg1);
+    return create_external (ee, fn, name, ret, args, other_args...);
+  }
 
-  CREATE_FUNCTION(1);
-  CREATE_FUNCTION(2);
-  CREATE_FUNCTION(3);
-  CREATE_FUNCTION(4);
-
-#undef JIT_PARAM_ARGS
-#undef JIT_PARAMS
-#undef CREATE_FUNCTION
+  template <typename T, typename ...Args>
+  jit_function create_external (llvm::ExecutionEngine *ee, T fn,
+                                const llvm::Twine& name, jit_type *ret,
+                                jit_type * arg1, Args... other_args)
+  {
+    signature_vec args;
+    args.reserve (1 + sizeof... (other_args));
+    args.push_back (arg1);
+    return create_external (ee, fn, name, ret, args, other_args...);
+  }
 
   // use create_external or create_internal directly
   jit_function create_function (jit_convention::type cc,
@@ -717,25 +761,30 @@ private:
 
   // create an internal calling convention (a function defined in llvm)
   jit_function create_internal (const llvm::Twine& name, jit_type *ret,
-                                const std::vector<jit_type *>& args
-                                = std::vector<jit_type *> ())
+                                const signature_vec& args
+                                = signature_vec ())
   {
     return create_function (jit_convention::internal, name, ret, args);
   }
 
-#define JIT_PARAM_ARGS const llvm::Twine& name, jit_type *ret,
-#define JIT_PARAMS name, ret,
-#define CREATE_FUNCTION(N) JIT_EXPAND(jit_function, create_internal,    \
-                                      jit_type *, /* empty */, N)
+  template <typename ...Args>
+  jit_function create_internal (const llvm::Twine& name, jit_type *ret,
+                                signature_vec& args,
+                                jit_type * arg1, Args... other_args)
+  {
+    args.push_back (arg1);
+    return create_internal (name, ret, args, other_args...);
+  }
 
-  CREATE_FUNCTION(1);
-  CREATE_FUNCTION(2);
-  CREATE_FUNCTION(3);
-  CREATE_FUNCTION(4);
-
-#undef JIT_PARAM_ARGS
-#undef JIT_PARAMS
-#undef CREATE_FUNCTION
+  template <typename ...Args>
+  jit_function create_internal (const llvm::Twine& name, jit_type *ret,
+                                jit_type * arg1, Args... other_args)
+  {
+    signature_vec args;
+    args.reserve (1 + sizeof... (other_args));
+    args.push_back (arg1);
+    return create_internal (name, ret, args, other_args...);
+  }
 
   jit_function create_identity (jit_type *type);
 

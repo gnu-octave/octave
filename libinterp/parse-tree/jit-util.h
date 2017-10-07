@@ -206,14 +206,5 @@ bool isa (U *value)
   return dynamic_cast<T *> (value);
 }
 
-#define JIT_ASSIGN_ARG(i) the_args[i] = arg ## i;
-#define JIT_EXPAND(ret, fname, type, isconst, N)                        \
-  ret fname (JIT_PARAM_ARGS OCT_MAKE_DECL_LIST (type, arg, N)) isconst  \
-  {                                                                     \
-    std::vector<type> the_args (N);                                     \
-    OCT_ITERATE_MACRO (JIT_ASSIGN_ARG, N);                              \
-    return fname (JIT_PARAMS the_args);                                 \
-  }
-
 #endif
 #endif

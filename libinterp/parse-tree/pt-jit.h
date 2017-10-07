@@ -48,22 +48,12 @@ public:
 
   jit_convert (octave_user_function& fcn, const std::vector<jit_type *>& args);
 
-#define DECL_ARG(n) const ARG ## n& arg ## n
-#define JIT_CREATE_CHECKED(N)                                           \
-  template <OCT_MAKE_DECL_LIST (typename, ARG, N)>                      \
-  jit_call * create_checked (OCT_MAKE_LIST (DECL_ARG, N))               \
-  {                                                                     \
-    jit_call *ret = factory.create<jit_call> (OCT_MAKE_ARG_LIST (arg, N)); \
-    return create_checked_impl (ret);                                   \
+  template <typename ...Args>
+  jit_call * create_checked (const Args&... args)
+  {
+    jit_call *ret = factory.create<jit_call> (args...);
+    return create_checked_impl (ret);
   }
-
-  JIT_CREATE_CHECKED (1)
-  JIT_CREATE_CHECKED (2)
-  JIT_CREATE_CHECKED (3)
-  JIT_CREATE_CHECKED (4)
-
-#undef JIT_CREATE_CHECKED
-#undef DECL_ARG
 
   jit_block_list& get_blocks (void) { return blocks; }
 

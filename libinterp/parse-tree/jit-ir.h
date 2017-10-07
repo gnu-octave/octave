@@ -109,32 +109,13 @@ public:
 
   const value_list& constants (void) const { return mconstants; }
 
-  template <typename T>
-  T * create (void)
+  template <typename T, typename ...Args>
+  T * create (const Args&... args)
   {
-    T *ret = new T ();
+    T *ret = new T (args...);
     track_value (ret);
     return ret;
   }
-
-#define DECL_ARG(n) const ARG ## n& arg ## n
-
-#define JIT_CREATE(N)                                           \
-  template <typename T, OCT_MAKE_DECL_LIST (typename, ARG, N)>  \
-  T * create (OCT_MAKE_LIST (DECL_ARG, N))                      \
-  {                                                             \
-    T *ret = new T (OCT_MAKE_ARG_LIST (arg, N));                \
-    track_value (ret);                                          \
-    return ret;                                                 \
-  }
-
-  JIT_CREATE (1)
-  JIT_CREATE (2)
-  JIT_CREATE (3)
-  JIT_CREATE (4)
-
-#undef JIT_CREATE
-#undef DECL_ARG
 
 private:
 
@@ -344,22 +325,14 @@ public:
     marguments.reserve (nargs);
   }
 
-#define STASH_ARG(i) stash_argument (i, arg ## i);
-
-#define JIT_INSTRUCTION_CTOR(N)                                         \
-  jit_instruction (OCT_MAKE_DECL_LIST (jit_value *, arg, N))            \
-  : already_infered (N), marguments (N), mid (next_id ()), mparent (0)  \
-  {                                                                     \
-    OCT_ITERATE_MACRO (STASH_ARG, N);                                   \
+  template <typename ...Args>
+  jit_instruction (jit_value * arg1, Args... other_args)
+    : already_infered (1 + sizeof... (other_args)),
+      marguments (1 + sizeof... (other_args)),
+      mid (next_id ()), mparent (nullptr)
+  {
+    stash_argument (0, arg1, other_args...);
   }
-
-  JIT_INSTRUCTION_CTOR(1)
-  JIT_INSTRUCTION_CTOR(2)
-  JIT_INSTRUCTION_CTOR(3)
-  JIT_INSTRUCTION_CTOR(4)
-
-#undef STASH_ARG
-#undef JIT_INSTRUCTION_CTOR
 
   jit_instruction (const std::vector<jit_value *>& aarguments)
     : already_infered (aarguments.size ()), marguments (aarguments.size ()),
@@ -404,9 +377,16 @@ public:
       return os << "NULL";
   }
 
-  void stash_argument (size_t i, jit_value *arg)
+  void stash_argument (size_t i, jit_value * arg)
   {
     marguments[i].stash_value (arg, this, i);
+  }
+
+  template <typename ...Args>
+  void stash_argument (size_t i, jit_value * arg1, Args... aargs)
+  {
+    marguments[i].stash_value (arg1, this, i);
+    stash_argument (++i, aargs...);
   }
 
   void push_argument (jit_value *arg)
@@ -1029,17 +1009,10 @@ jit_terminator : public jit_instruction
 {
 public:
 
-#define JIT_TERMINATOR_CONST(N)                                 \
-  jit_terminator (size_t asuccessor_count,                      \
-                  OCT_MAKE_DECL_LIST (jit_value *, arg, N))     \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)),             \
+  template <typename ...Args>
+  jit_terminator (size_t asuccessor_count, Args... args)
+    : jit_instruction (args...),
       malive (asuccessor_count, false) { }
-
-  JIT_TERMINATOR_CONST (1)
-  JIT_TERMINATOR_CONST (2)
-  JIT_TERMINATOR_CONST (3)
-
-#undef JIT_TERMINATOR_CONST
 
   jit_block * successor (size_t idx = 0) const
   {
@@ -1152,22 +1125,17 @@ public:
       stash_type (ol.result ());
   }
 
-#define JIT_CALL_CONST(N)                                               \
-  jit_call (const jit_operation& aoperation,                            \
-            OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), moperation (aoperation) { } \
-                                                                        \
-  jit_call (const jit_operation& (*aoperation) (void),                  \
-            OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), moperation (aoperation ()) \
+  template <typename ...Args>
+  jit_call (const jit_operation& aoperation,
+            jit_value * arg1, Args... other_args)
+    : jit_instruction (arg1, other_args...), moperation (aoperation)
   { }
 
-  JIT_CALL_CONST (1)
-  JIT_CALL_CONST (2)
-  JIT_CALL_CONST (3)
-  JIT_CALL_CONST (4)
-
-#undef JIT_CALL_CONST
+  template <typename ...Args>
+  jit_call (const jit_operation& (*aoperation) (void),
+            jit_value * arg1, Args... other_args)
+    : jit_instruction (arg1, other_args...), moperation (aoperation ())
+  { }
 
   jit_call (const jit_operation& aoperation,
             const std::vector<jit_value *>& args)

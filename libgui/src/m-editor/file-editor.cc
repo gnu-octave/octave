@@ -1696,10 +1696,13 @@ file_editor::construct (void)
 
   // FIXME: what was the intended purpose of this unused variable?
   // QStyle *editor_style = QApplication::style ();
+
+  // Menu bar: do not set it native, required in MacOS and Ubuntu Unity (Qt5)
+  // for a visible menu bar in the editor widget. This property is ignored
+  // on other platforms.
   m_menu_bar = new QMenuBar (editor_widget);
-#if defined (Q_OS_MAC)
   m_menu_bar->setNativeMenuBar (false);
-#endif
+
   m_tool_bar = new QToolBar (editor_widget);
   m_tool_bar->setMovable (true);
 

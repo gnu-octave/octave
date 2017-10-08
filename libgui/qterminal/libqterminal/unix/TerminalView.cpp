@@ -1206,9 +1206,9 @@ void TerminalView::paintFilters(QPainter& painter)
             {
               QFontMetrics metrics(font());
 
-              // find the baseline (which is the invisible line that the characters in the font sit on,
-              // with some having tails dangling below)
-              int baseline = r.bottom() - metrics.descent();
+              // find the baseline (which is the invisible line that the
+              // characters in the font sit on
+              int baseline = r.bottom() + 1;
               // find the position of the underline below that
               int underlinePos = baseline + metrics.underlinePos();
 
@@ -1217,7 +1217,7 @@ void TerminalView::paintFilters(QPainter& painter)
                   if (spot->type () == Filter::ErrorLink)
                     painter.setPen (QColor (255,0,0));
                   painter.drawLine (r.left(), underlinePos,
-                                    r.right(), underlinePos);
+                                    r.right() + 2, underlinePos);
                 }
             }
           // Marker hotspots simply have a transparent rectanglular shape

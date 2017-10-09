@@ -258,7 +258,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = subplot (1, 2, 1);
-%!   sphere (hax1);
+%!   sphere (hax);
 %!   x = campos ();
 %!   camorbit (20, 30)
 %!   subplot (1, 2, 2);

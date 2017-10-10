@@ -1169,8 +1169,17 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facealpha"
-        s.doc = sprintf (doc_notimpl, "Transparency");
-        s.valid = valid_scalmat;
+        s.doc = "Transparency level of the faces of the surface object.  Only \
+double values are supported at present where a value of 0 means complete \
+transparency and a value of 1 means solid faces without transparency.  Setting \
+the property to @qcode{\"flat\"}, @qcode{\"interp\"} or @qcode{\"texturemap\"} \
+causes the faces to not being rendered.  Additionally, the faces are not sorted \
+from back to front which might lead to unexpected results when rendering \
+layered transparent faces.";
+        s.valid = packopt ({"scalar", ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"interp\"}", ...
+                            "@qcode{\"texturemap\"}"});
 
       case "facecolor"
       case "facelighting"
@@ -1292,8 +1301,16 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facealpha"
-        s.doc = sprintf (doc_notimpl, "Transparency");
-        s.valid = valid_scalmat;
+        s.doc = "Transparency level of the faces of the patch object.  Only \
+double values are supported at present where a value of 0 means complete \
+transparency and a value of 1 means solid faces without transparency.  Setting \
+the property to @qcode{\"flat\"} or @qcode{\"interp\"} causes the faces to not \
+being rendered.  Additionally, the faces are not sorted from back to front \
+which might lead to unexpected results when rendering layered transparent \
+faces.";
+        s.valid = packopt ({"scalar", ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"interp\"}"});
 
       case "facecolor"
         ## Don't provide a default value, and mark colorspec with

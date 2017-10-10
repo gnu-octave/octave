@@ -488,7 +488,7 @@ namespace octave
 
           if (col.numel () == 3)
             {
-              glColor3dv (col.data ());
+              glColor4d (col(0), col(1), col(2), v->alpha);
               if (light_mode > 0)
                 {
                   float buf[4] = { 0, 0, 0, 1 };
@@ -2323,6 +2323,7 @@ namespace octave
     Matrix fcolor = (fc_mode == TEXTURE ? Matrix (1, 3, 1.0)
                                         : props.get_facecolor_rgb ());
     Matrix ecolor = props.get_edgecolor_rgb ();
+    double fa = 1.0;
 
     float as = props.get_ambientstrength ();
     float ds = props.get_diffusestrength ();
@@ -2374,11 +2375,12 @@ namespace octave
 
     if (! props.facecolor_is ("none"))
       {
-        if (props.get_facealpha_double () == 1)
+        if (fa_mode == 0)
           {
+            fa = props.get_facealpha_double ();
             if (fc_mode == UNIFORM || fc_mode == TEXTURE)
               {
-                glColor3dv (fcolor.data ());
+                glColor4d (fcolor(1), fcolor(2), fcolor(3), fa);
                 if (fl_mode > 0)
                   {
                     for (int i = 0; i < 3; i++)
@@ -2449,7 +2451,8 @@ namespace octave
                         // FIXME: is there a smarter way to do this?
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i-1, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2478,7 +2481,8 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2508,7 +2512,8 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2537,7 +2542,8 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i-1, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2572,7 +2578,7 @@ namespace octave
           }
         else
           {
-            // FIXME: implement transparency
+            // FIXME: implement flat, interp and texturemap transparency
           }
       }
 
@@ -2916,6 +2922,7 @@ namespace octave
     Matrix c;
     const Matrix n = props.get_vertexnormals ().matrix_value ();
     Matrix a;
+    double fa = 1.0;
 
     int nv = v.rows ();
     int nf = f.rows ();
@@ -3010,6 +3017,9 @@ namespace octave
         has_facealpha = ((a.numel () > 0) && (a.rows () == f.rows ()));
       }
 
+    if (fa_mode == 0)
+      fa = props.get_facealpha_double ();
+
     octave_idx_type fr = f.rows ();
     std::vector<vertex_data> vdata (f.numel ());
 
@@ -3046,7 +3056,9 @@ namespace octave
               else
                 cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
             }
-          if (a.numel () > 0)
+          if (fa_mode == 0)
+            aa = fa;
+          else if (a.numel () > 0)
             {
               if (has_facealpha)
                 aa = a(i);
@@ -3063,11 +3075,11 @@ namespace octave
     if (! props.facecolor_is ("none"))
       {
         // FIXME: adapt to double-radio property
-        if (props.get_facealpha_double () == 1)
+        if (fa_mode == 0)
           {
             if (fc_mode == UNIFORM)
               {
-                glColor3dv (fcolor.data ());
+                glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
                 if (fl_mode > 0)
                   {
                     float cb[4] = { 0, 0, 0, 1 };
@@ -3122,7 +3134,7 @@ namespace octave
 
                         if (col.numel () == 3)
                           {
-                            glColor3dv (col.data ());
+                            glColor4d (col(0), col(1), col(2), fa);
                             if (fl_mode > 0)
                               {
                                 float cb[4] = { 0, 0, 0, 1 };
@@ -3155,7 +3167,7 @@ namespace octave
           }
         else
           {
-            // FIXME: implement transparency
+            // FIXME: implement flat and interp transparency
           }
       }
 

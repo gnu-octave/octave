@@ -65,9 +65,10 @@
 ## object.
 ##
 ## Implementation Note: Patches are highly configurable objects.  To truly
-## customize them requires setting patch properties directly.  Useful patch
-## properties are: @qcode{"cdata"}, @qcode{"edgecolor"},
-## @qcode{"facecolor"}, @qcode{"faces"}, @qcode{"facevertexcdata"}.
+## customize them requires setting patch properties directly 
+## (@pxref{Patch Properties}).  Useful patch properties include: @qcode{"cdata"},
+## @qcode{"edgecolor"}, @qcode{"facecolor"}, @qcode{"faces"},
+## @qcode{"facevertexcdata"}.
 ## @seealso{fill, get, set}
 ## @end deftypefn
 

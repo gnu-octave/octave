@@ -35,7 +35,8 @@
 ## taken to be @code{1:rows (@var{z})} and @var{y} is
 ## @code{1:columns (@var{z})}.
 ##
-## Any property/value input pairs are assigned to the surface object.
+## Any property/value input pairs are assigned to the surface object
+## (@pxref{Surface Properties}).
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.

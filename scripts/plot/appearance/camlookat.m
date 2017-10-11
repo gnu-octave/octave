@@ -52,10 +52,20 @@ function camlookat (hh)
   endif
 
   if (nargin == 0)
-    hh = get (gca (), "children");
+    hax = gca ();
+    hh = get (hax, "children");
   elseif (nargin == 1)
     if (isaxes (hh))
-      hh = get (hh, "children");
+      hax = hh;
+      hh = get (hax, "children");
+    elseif (all (ishandle (hh)))
+      hax = ancestor (hh, "axes");
+      if numel (hax) > 1
+        hax = unique ([hax{:}]);
+      endif
+      if (numel (hax) > 1)
+        error ("camlookat: HANDLE_LIST must be children of the same axes.")
+      endif
     endif
   endif
 
@@ -89,33 +99,52 @@ function camlookat (hh)
     endif
   endfor
 
-  ## current view direction and projection operator
-  curdir = camtarget () - campos ();
+  dar = daspect (hax);
+  
+  ## current view direction
+  curdir = (camtarget () - campos ()) ./ dar;
   curdir /= norm (curdir);
-  P = eye (3) - (curdir.' * curdir);
 
   ## target to middle of bounding box
-  mid = [x0+x1; y0+y1; z0+z1]/2;
+  mid = [x0+x1, y0+y1, z0+z1]/2 ./ dar;
 
   ## vertices of the bounding box
-  bb = [x0 x0 x0 x0 x1 x1 x1 x1;
-        y0 y0 y1 y1 y0 y0 y1 y1;
-        z0 z1 z0 z1 z0 z1 z0 z1];
+  bb = [x0 y0 z0;
+        x0 y0 z1;
+        x0 y1 z0;
+        x0 y1 z1;
+        x1 y0 z0;
+        x1 y0 z1;
+        x1 y1 z0;
+        x1 y1 z1] ./ dar;
+ 
+  ## Find corner of bounding box with maximum opening angle.
+  ## Make sure temporary pov is well outside boundary of bounding box.
+  bb_diag = norm ([x0-x1, y0-y1, z0-z1] ./ dar);
+  cp_test = mid - 2*bb_diag*curdir;
+  bb_cp = bb - cp_test;
+  bb_cp ./= norm (bb_cp, 2, "rows");
+  aperture = norm (curdir .* bb_cp, 2, "rows");
+  max_corner = find (aperture == max (aperture), 1, "first");
+  
+  ## projection of corner on line of sight
+  sz = curdir * (bb(max_corner,:) - mid)';
+  bb_proj = mid + sz * curdir;
 
-  ## project bounding box onto view plane
-  Pbb = P*(bb - mid) + mid;
+  ## Calculate distance for which that corner appears at camva/2
+  dist = norm (bb(max_corner,:) - bb_proj) / tand (camva () / 2);
 
-  ## estimate size based on projected bb, choose distance for campos
-  ## (XXX: only matches Matlab to about 1 digit, see xtests)
-  sz = max (norm (Pbb - mid, 2, "cols"));
-  dist = 2*sz / tand (camva ());
+  ## Is bb_proj in front of or behind mid?
+  if (curdir * (mid - bb_proj)' > 0)
+    cp = bb_proj - dist * curdir;
+  else
+    cp = 2*mid - bb_proj - dist * curdir;
+  endif
 
-  ## avoid auto-adjusting
-  camva ("manual")
-
-  camtarget (mid.')
-
-  campos (mid.' - dist*curdir)
+  ## set camera properties
+  camva ("manual")  # avoid auto-adjusting
+  camtarget (mid .* dar)
+  campos (cp .* dar)
 
 endfunction
 
@@ -223,7 +252,7 @@ endfunction
 %! end_unwind_protect
 
 ## compare to matlab2014a output
-%!xtest
+%!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   [x, y, z] = peaks ();
@@ -253,3 +282,15 @@ endfunction
 ## Test input validation
 %!error <Invalid call> camlookat (1, 2)
 %!error <must be handle> camlookat ("a")
+%!error <children of the same axes>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   [x, y, z] = sphere ();
+%!   hax1 = subplot (1, 2, 1);
+%!   hs1 = surf (hax1, x, y, z);
+%!   hax2 = subplot (1, 2, 2);
+%!   hs2 = surf (hax2, x, y, z);
+%!   camlookat ([hs1 hs2]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

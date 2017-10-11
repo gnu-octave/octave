@@ -1139,7 +1139,7 @@ variable_editor::construct_tool_bar (void)
 
   QToolButton *plot_tool_button = new QToolButton (m_tool_bar);
   plot_tool_button->setText (tr ("Plot"));
-  plot_tool_button->setIcon (resource_manager::icon ("applications-system"));
+  plot_tool_button->setIcon (resource_manager::icon ("plot-xy-curve"));
 
   plot_tool_button->setPopupMode (QToolButton::InstantPopup);
 

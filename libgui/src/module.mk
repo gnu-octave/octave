@@ -61,6 +61,7 @@ octave_gui_ICONS = \
   %reldir%/icons/letter_logo_WorkspaceView.svg \
   %reldir%/icons/letter_logo_ReleaseWidget.svg \
   %reldir%/icons/logo.png \
+  %reldir%/icons/plot-xy-curve.png \
   %reldir%/icons/preferences-system.png \
   %reldir%/icons/system-run.png \
   %reldir%/icons/user-home.png \

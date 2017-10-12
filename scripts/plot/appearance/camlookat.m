@@ -64,7 +64,7 @@ function camlookat (hh)
         hax = unique ([hax{:}]);
       endif
       if (numel (hax) > 1)
-        error ("camlookat: HANDLE_LIST must be children of the same axes.")
+        error ("camlookat: HANDLE_LIST must be children of the same axes.");
       endif
     endif
   endif
@@ -78,7 +78,7 @@ function camlookat (hh)
     h = hh(i);
 
     if (! ishandle (h))
-      error ("camlookat: Inputs must be handles.")
+      error ("camlookat: Inputs must be handles.");
     end
 
     x0_ = min (get (h, "xdata")(:));
@@ -102,7 +102,7 @@ function camlookat (hh)
   dar = daspect (hax);
   
   ## current view direction
-  curdir = (camtarget () - campos ()) ./ dar;
+  curdir = (camtarget (hax) - campos (hax)) ./ dar;
   curdir /= norm (curdir);
 
   ## target to middle of bounding box
@@ -142,33 +142,33 @@ function camlookat (hh)
   endif
 
   ## set camera properties
-  camva ("manual")  # avoid auto-adjusting
-  camtarget (mid .* dar)
-  campos (cp .* dar)
+  camva (hax, "manual");  # avoid auto-adjusting
+  camtarget (hax, mid .* dar);
+  campos (hax, cp .* dar);
 
 endfunction
 
 
 %!demo
 %! [x, y, z] = peaks ();
-%! surf(x, y, z/5);
+%! surf (x, y, z/5);
 %! hold on
 %! [x, y, z] = sphere ();
-%! s1 = surf(x/2, y/2+1.5, z/2+2);
-%! s2 = surf(x/5+0.2, y/5-2, z/5+1);
+%! s1 = surf (x/2, y/2+1.5, z/2+2);
+%! s2 = surf (x/5+0.2, y/5-2, z/5+1);
 %! axis equal
 %! axis tight
-%! pause
-%! camlookat (s1)
-%! pause
-%! camlookat (s2)
-%! pause
-%! camlookat ([s1 s2])
+%! pause (1);
+%! camlookat (s1);
+%! pause (1);
+%! camlookat (s2);
+%! pause (1);
+%! camlookat ([s1 s2]);
 
 
 %!test
 %! ## not an error (does nothing)
-%! camlookat ([])
+%! camlookat ([]);
 
 %!test
 %! hf = figure ("visible", "off");
@@ -251,30 +251,54 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## act on given axes
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   [x, y, z] = sphere ();
+%!   hax1 = subplot (1, 2, 1);
+%!   hs11 = surf (hax1, x, y, z);
+%!   hold on
+%!   hs12 = surf (hax1, x, y+2, z+3);
+%!   hax2 = subplot (1, 2, 2);
+%!   hs21 = surf (hax2, x, y, z);
+%!   hold on
+%!   hs22 = surf (hax2, x, y+2, z+3);
+%!   ct2 = camtarget (hax2);
+%!   camlookat (hs11);
+%!   assert (camtarget (hax1), [0 0 0]);
+%!   assert (camtarget (hax2), ct2);
+%!   camlookat (hs22);
+%!   assert (camtarget (hax1), [0 0 0]);
+%!   assert (camtarget (hax2), [0 2 3]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## compare to matlab2014a output
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   [x, y, z] = peaks ();
-%!   s3 = surf(x, y, z/5);
+%!   s3 = surf (x, y, z/5);
 %!   hold on
 %!   [x, y, z] = sphere ();
-%!   s2 = surf(x/2, y/2+1.5, z/2+2);
-%!   s1 = mesh(x/2-4, 3*y, z/2 - 1);
+%!   s2 = surf (x/2, y/2+1.5, z/2+2);
+%!   s1 = mesh (x/2-4, 3*y, z/2 - 1);
 %!   axis equal
 %!   axis tight
-%!   camlookat (s1)
-%!   assert (camtarget (), [-4 0 -1], -eps)
-%!   assert (campos (), [-22.806319527016 -24.5088727773662 16.8359421671461], -1e-7)
-%!   camlookat (s2)
-%!   assert (camtarget (), [0 1.5 2], -eps)
-%!   assert (campos (), [-5.82093528266174 -6.08599055403138 7.52058391388657], -1e-7)
-%!   camlookat (s3)
-%!   assert (camtarget (), [0 0 0.1528529020838], 1e-10)
-%!   assert (campos (), [-30.3728392082653 -39.5826547014375 28.9585000034444], -1e-7)
-%!   camlookat ()
-%!   assert (camtarget (), [-0.75 0 0.5], -eps)
-%!   assert (campos (), [-35.7955620339723 -45.6722656481532 33.7372645671114], -1e-7)
+%!   camlookat (s1);
+%!   assert (camtarget (), [-4 0 -1], -eps);
+%!   assert (campos (), [-22.806319527016 -24.5088727773662 16.8359421671461], -1e-7);
+%!   camlookat (s2);
+%!   assert (camtarget (), [0 1.5 2], -eps);
+%!   assert (campos (), [-5.82093528266174 -6.08599055403138 7.52058391388657], -1e-7);
+%!   camlookat (s3);
+%!   assert (camtarget (), [0 0 0.1528529020838], 1e-10);
+%!   assert (campos (), [-30.3728392082653 -39.5826547014375 28.9585000034444], -1e-7);
+%!   camlookat ();
+%!   assert (camtarget (), [-0.75 0 0.5], -eps);
+%!   assert (campos (), [-35.7955620339723 -45.6722656481532 33.7372645671114], -1e-7);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -357,6 +357,7 @@ function print (varargin)
   unwind_protect
 
     ## Modify properties as specified by options
+    tk = get (opts.figure, "__graphics_toolkit__");
     props = [];
     nfig = 0;
 
@@ -378,7 +379,7 @@ function print (varargin)
     ## print() requires axes units = "normalized"
     hax = findall (opts.figure, "-depth", 1, "type", "axes", ...
       "-not", "units", "normalized");
-    for n = 1:numel(hax)
+    for n = 1:numel (hax)
       props(end+1).h = hax(n);
       props(end).name = "units";
       props(end).value = {get(hax(n), "units")};
@@ -386,6 +387,36 @@ function print (varargin)
       nfig += 1;
     endfor
 
+    ## FIXME: line transparency is only handled for svg output when
+    ## using gl2ps. For other formats, switch grid lines to light gray
+    ## so that the image output approximately matches on-screen experience.
+    hax = findall (opts.figure, "type", "axes");
+    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.devopt, "svg"))
+      for n = 1:numel (hax)
+        if (strcmp (get (hax(n), "gridcolormode"), "auto"))
+          props(end+1).h = hax(n);
+          props(end).name = "gridcolormode";
+          props(end).value = {"auto"};
+          props(end+1).h = hax(n);
+          props(end).name = "gridcolor";
+          props(end).value = {get(hax(n), "gridcolor")};
+          set (hax(n), "gridcolor", [0.85 0.85 0.85]);
+          nfig += 2;
+        endif
+
+        if (strcmp (get (hax(n), "minorgridcolormode"), "auto"))
+          props(end+1).h = hax(n);
+          props(end).name = "minorgridcolormode";
+          props(end).value = {"auto"};
+          props(end+1).h = hax(n);
+          props(end).name = "minorgridcolor";
+          props(end).value = {get(hax(n), "minorgridcolor")};
+          set (hax(n), "minorgridcolor", [0.75 0.75 0.75]);
+          nfig += 2;
+        endif
+      endfor
+    endif
+    
     ## print() requires figure units to be "pixels"
     props(end+1).h = opts.figure;
     props(end).name = "units";
@@ -514,7 +545,7 @@ function print (varargin)
     endif
 
     ## call the graphics toolkit print script
-    switch (get (opts.figure, "__graphics_toolkit__"))
+    switch (tk)
       case "gnuplot"
         opts = __gnuplot_print__ (opts);
       otherwise

@@ -20,6 +20,11 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+
+//! @file ov-java.cc
+//!
+//! Provides Octave's Java interface.
+
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
@@ -168,15 +173,32 @@ extern "C"
   Java_org_octave_Octave_needThreadedInvokation (JNIEnv *, jclass);
 }
 
+//! The pointer to a java virtual machine either created in the current thread
+//! or attached this thread to it.
+
 static JavaVM *jvm = nullptr;
+
+//! Whether the current thread is attached to the jvm given by #jvm.
+//! This is @c false also if no jvm exists, i.e. if #jvm is @c nullptr.
+//! @see #initialize_jvm()
+//! @see #terminate_jvm()
+
 static bool jvm_attached = false;
 
-// Need to keep hold of the shared library handle until exit.
+//! Need to keep hold of the shared library handle until exit.
+//! @see #initialize_jvm()
+//! @see #terminate_jvm()
+
 static octave::dynamic_library jvm_lib;
 
 static std::map<int,octave_value> listener_map;
 static std::map<int,octave_value> octave_ref_map;
 static int octave_java_refcount = 0;
+
+//! The thread id of the currently executing thread or @c -1 if this is
+//! unknown.
+//! @see #initialize_java()
+
 static long octave_thread_ID = -1;
 
 bool Vjava_matrix_autoconversion = false;
@@ -335,6 +357,25 @@ get_module_filename (HMODULE hMod)
 
 #endif
 
+//! The java initialization directory is given by the environment variable
+//! @c OCTAVE_JAVA_DIR if defined; otherwise it is the directory of Octave's
+//! m-files defining Java functions.
+//!
+//! The Java initialization directory is the directory where resides:
+//!
+//! - @c octave.jar, defining the java classes implementing octave's java
+//!   interface,
+//! - @c javaclasspath.txt, defining the installation defined portion of the
+//!   (static) classpath,
+//! - @c java.opts, defining the configurable options of the java virtual
+//!   machine.
+//!
+//! Note that the (static) java classpath of the java virtual machine starts
+//! with @c octave.jar, and that the static java classpath ends with what
+//! is read from @c javaclasspath.txt located in the initial java directory.
+//! Moreover, the java virtual machine is created essentially with
+//! the options given by @c java.opts.
+
 static std::string
 initial_java_dir (void)
 {
@@ -352,16 +393,19 @@ initial_java_dir (void)
   return java_dir;
 }
 
-// Read the content of a file filename (usually "classpath.txt")
-//
-// Returns a string with all lines concatenated and separated
-// by the path separator character.
-// The return string also starts with a path separator so that
-// it can be appended easily to a base classpath.
-//
-// The file "classpath.txt" must contain single lines, each
-// with a classpath.
-// Comment lines starting with a '#' or a '%' in column 1 are allowed.
+//! Return the classpath in the given file @c filepath as a string.
+//!
+//! In the classpath file, each line which is neither empty nor a comment, is
+//! interpreted as a segment of a path.  Comment lines are those starting with
+//! a @c # or with a @c % in the very first column.
+//!
+//! @param filepath The path to the file (usually @c classpath.txt) containing
+//!   a portion of the classpath.
+//!
+//! @returns A string consisting of the lines of @c filepath which are neither
+//!   comments nor empty without trailing whitespace separated by
+//!   `octave::directory_path::path_sep_str()`.  The returned string also
+//!   starts with that path separator.
 
 static std::string
 read_classpath_txt (const std::string& filepath)
@@ -399,6 +443,25 @@ read_classpath_txt (const std::string& filepath)
   return (classpath);
 }
 
+
+//! Return the initial classpath.
+//!
+//! The initial classpath starts with a pointer to @c octave.jar which is
+//! located in the initial java directory given by #java_init_dir().
+//!
+//! @attention This is nowhere documented and also the script
+//! @c javaclasspath.m drops this.  On the other hand, this is vital because
+//! @c octave.jar contains the java core classes of octave's java interface.
+//!
+//! The rest of the classpath is read sequentially from files
+//! @c javaclasspath.txt located in either:
+//!
+//! - the current directory,
+//! - the user's home directory,
+//! - the initial java directory returned by #initial_java_dir()
+//!
+//! @returns The initial classpath.
+
 static std::string
 initial_class_path (void)
 {
@@ -406,7 +469,7 @@ initial_class_path (void)
 
   std::string retval = java_dir;
 
-  // find octave.jar file
+  // Find octave.jar file.
   if (! retval.empty ())
     {
       std::string sep = octave::sys::file_ops::dir_sep_str ();
@@ -417,7 +480,7 @@ initial_class_path (void)
 
       if (jar_exists)
         {
-          // initialize static classpath to octave.jar
+          // Initialize static classpath to octave.jar.
           retval = jar_file;
 
           // The base classpath has been set.
@@ -488,10 +551,36 @@ initial_class_path (void)
   return retval;
 }
 
+//! Initialize the java virtual machine (jvm) and field #jvm if necessary.
+//!
+//! If the jvm exists and is initialized, #jvm points to it, i.e. is not 0
+//! and there is nothing to do.
+//!
+//! If #jvm is 0 and if at least one jvm exists, attach the current thread to
+//! it by setting #jvm_attached.  Otherwise, create a #jvm with some hard-
+//! coded options:
+//!
+//! - `-Djava.class.path=classpath`, where @c classpath is given by
+//!   #initial_class_path().
+//! - `-Djava.system.class.loader=org.octave.OctClassLoader`.
+//! - `-Xrs`
+//!
+//! Further options are read from the file @c java.opts in the directory given
+//! by #java_init_dir().
+//!
+//! Note that #initial_class_path() determines the initial classpath.  This
+//! is the static classpath which cannot be changed.  Elements of the dynamic
+//! classpath can be added and removed using the m-file scripts
+//! @c javaaddpath.m and @c javarmpath.m.
+//!
+//! @see #terminate_jvm()
+
 static void
 initialize_jvm (void)
 {
   // Most of the time JVM already exists and has been initialized.
+  // Also it seems, as if jvm is set, the jvm is already attached.
+  // This does not fit terminate_jvm.
   if (jvm)
     return;
 
@@ -506,8 +595,8 @@ initialize_jvm (void)
 
   if (hMod)
     {
-      // JVM seems to be already loaded, better to use that DLL instead
-      // of looking in the registry, to avoid opening a different JVM.
+      // JVM seems to be already loaded, better to use that DLL instead of
+      // looking in the registry, to avoid opening a different JVM.
       jvm_lib_path = get_module_filename (hMod);
 
       if (jvm_lib_path.empty ())
@@ -554,6 +643,7 @@ initialize_jvm (void)
 
 #endif
 
+  //! The number of created jvm's.
   jsize nVMs = 0;
 
 #if ! defined (__APPLE__) && ! defined (__MACH__)
@@ -588,7 +678,7 @@ initialize_jvm (void)
 #endif
 
     {
-      // At least one JVM exists, try to attach to it
+      // At least one JVM exists, try to attach the current thread to it.
 
       switch (jvm->GetEnv (reinterpret_cast<void **> (&current_env),
                            JNI_VERSION_1_6))
@@ -614,7 +704,6 @@ initialize_jvm (void)
         }
 
       jvm_attached = true;
-      //printf ("JVM attached\n");
     }
   else
     {
@@ -622,9 +711,12 @@ initialize_jvm (void)
 
       octave::JVMArgs vm_args;
 
+      // Hard-coded options for the jvm.
       vm_args.add ("-Djava.class.path=" + initial_class_path ());
-      vm_args.add ("-Xrs");
       vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
+      vm_args.add ("-Xrs");
+
+      // Additional options given by file java.opts.
       vm_args.read_java_opts (initial_java_dir () +
                               octave::sys::file_ops::dir_sep_str () +
                               "java.opts");
@@ -650,11 +742,20 @@ initialize_jvm (void)
   setlocale (LC_ALL, locale.c_str ());
 }
 
+//! Terminate the current jvm, if there is any.
+//!
+//! Otherwise, detach the jvm if this thread is attached to it and unload it
+//! if this thread created it itself.
+//!
+//! @see #initialize_jvm()
+
 static void
 terminate_jvm (void)
 {
+  // There is nothing to do if jvm is not set (= nullptr).
   if (jvm)
     {
+      // FIXME: Seems that if jvm_attached is always true if jvm is not null.
       if (jvm_attached)
         jvm->DetachCurrentThread ();
       else
@@ -670,6 +771,8 @@ terminate_jvm (void)
     }
 }
 
+//! Converts a Java string object to std::string.
+//!{
 static std::string
 jstring_to_string (JNIEnv *jni_env, jstring s)
 {
@@ -703,6 +806,12 @@ jstring_to_string (JNIEnv *jni_env, jobject obj)
 
   return retval;
 }
+//!}
+
+//! Returns a reference to the jni (java native interface) environment of the
+//! Java virtual machine #jvm.
+//!
+//! @returns A reference to jni, if #jvm is present, otherwise @c nullptr.
 
 static inline JNIEnv *
 thread_jni_env (void)
@@ -734,8 +843,8 @@ octave_java::is_java_string (void) const
 
 #else
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -766,8 +875,8 @@ octave_java::is_instance_of (const std::string& cls_name) const
 
   octave_unused_parameter (cls_name);
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -937,11 +1046,11 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
         jint *buf = jni_env->GetIntArrayElements (i_array, nullptr);
         // Here, buf points to the beginning of i_array
 
-        // Copy v to buf
+        // Copy v to buf.
         for (int k = 0; k < v.length (); k++)
           buf[k] = v(k);
 
-        // set retval[i]=i_array
+        // Set retval[i] = i_array
         jni_env->ReleaseIntArrayElements (i_array, buf, 0);
         jni_env->SetObjectArrayElement (retval, i, i_array);
 
@@ -1175,9 +1284,10 @@ is_auto_convertible_number (JNIEnv *jni_env, jobject jobj)
 //! Convert the Java object pointed to by @c jobj_arg with class @c jcls_arg
 //! to an Octave value.
 //!
-//! @param jni_env JNI environment pointer
-//! @param jobj_arg pointer to a Java object
-//! @param jcls_arg optional pointer to the Java class of @c jobj_arg
+//! @param jni_env JNI environment pointer.
+//! @param jobj_arg Pointer to a Java object.
+//! @param jcls_arg Optional pointer to the Java class of @c jobj_arg.
+//!
 //! @return
 //!   @arg numeric value as a @c double if @c jobj_arg is of type @c Byte,
 //!     @c Short, @c Integer, @c Long, @c Float or @c Double
@@ -1187,8 +1297,10 @@ is_auto_convertible_number (JNIEnv *jni_env, jobject jobj)
 //!     a Java array of primitive types
 //!   @arg Octave matrix if @c jobj_arg is of type @c org.octave.Matrix and
 //!     #Vjava_matrix_autoconversion is enabled
-//!   @arg Octave object if @c jobj_arg is of type @c org.octave.OctaveReference
-//!   @arg @c octave_java object wrapping the Java object otherwise
+//!   @arg Octave object if @c jobj_arg is of type
+//!     @c org.octave.OctaveReference
+//!   @arg @c octave_java object wrapping the Java object otherwise.
+
 static octave_value
 box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
 {
@@ -1375,7 +1487,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
           break;
         }
 
-      // No suitable class found.  Return a generic octave_java object
+      // No suitable class found.  Return a generic octave_java object.
       retval = octave_value (new octave_java (jobj, jcls));
       break;
     }
@@ -1740,11 +1852,19 @@ unbox (JNIEnv *jni_env, const octave_value_list& args,
   return found;
 }
 
+//! Returns the id of the current thread.
+//!
+//! @param jni_env The current environment or @c nullptr.
+//!
+//! @returns The id of the current thread or -1 otherwise.  The latter happens
+//!   if @c jni_env is @c nullptr, for example.
+
 static long
 get_current_thread_ID (JNIEnv *jni_env)
 {
   if (jni_env)
     {
+      // Call Java method static Thread java.lang.Thread.currentThread().
       jclass_ref cls (jni_env, jni_env->FindClass ("java/lang/Thread"));
       jmethodID mID = jni_env->GetStaticMethodID (cls, "currentThread",
                                                   "()Ljava/lang/Thread;");
@@ -1752,16 +1872,20 @@ get_current_thread_ID (JNIEnv *jni_env)
 
       if (jthread)
         {
+          // Call Java method long java.lang.Thread.getId().
           jclass_ref jth_cls (jni_env, jni_env->GetObjectClass (jthread));
           mID = jni_env->GetMethodID (jth_cls, "getId", "()J");
           long result = jni_env->CallLongMethod (jthread, mID);
-          //printf ("current java thread ID = %ld\n", result);
           return result;
         }
     }
 
   return -1;
 }
+
+//! Run the java method @c org.octave.Octave.checkPendingAction().
+//!
+//! @returns 0 in any case for good reason.
 
 static int
 java_event_hook (void)
@@ -1770,6 +1894,7 @@ java_event_hook (void)
 
   if (current_env)
     {
+      // Invoke static void org.octave.Octave.checkPendingAction().
       jclass_ref cls (current_env, find_octave_class (current_env,
                                                       "org/octave/Octave"));
       jmethodID mID = current_env->GetStaticMethodID
@@ -1781,6 +1906,13 @@ java_event_hook (void)
 
   return 0;
 }
+
+//! Initialize java including the virtual machine (jvm) if necessary.
+//!
+//! Initializes the fields #jvm, #jvm_attached, #jvm_lib, and
+//! #octave_thread_ID.  To ensure that java is initialized, this method is
+//! used as part of octave functions @c javaObject, @c javaMethod,
+//! @c __java_get__, @c __java_set__, and @c java2mat.
 
 static void
 initialize_java (void)
@@ -1796,7 +1928,6 @@ initialize_java (void)
           octave::command_editor::add_event_hook (java_event_hook);
 
           octave_thread_ID = get_current_thread_ID (current_env);
-          //printf ("octave thread ID=%ld\n", octave_thread_ID);
         }
       catch (std::string msg)
         {
@@ -1894,7 +2025,7 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
 
 #endif
 
-// octave_java class definition
+//! Ctor.
 
 octave_java::octave_java (void)
   : octave_base_value (), java_object (nullptr), java_class (nullptr)
@@ -1952,8 +2083,8 @@ octave_java::dims (void) const
 
 #else
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -2017,8 +2148,8 @@ octave_java::subsref (const std::string& type,
   octave_unused_parameter (idx);
   octave_unused_parameter (nargout);
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -2107,8 +2238,8 @@ octave_java::subsasgn (const std::string& type,
   octave_unused_parameter (idx);
   octave_unused_parameter (rhs);
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -2129,8 +2260,8 @@ octave_java::map_keys (void) const
 
 #else
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -2154,8 +2285,8 @@ octave_java::convert_to_str_internal (bool, bool force, char type) const
   octave_unused_parameter (force);
   octave_unused_parameter (type);
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -2263,8 +2394,8 @@ octave_java::do_javaMethod (void *jni_env_arg, const std::string& name,
   octave_unused_parameter (name);
   octave_unused_parameter (args);
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
@@ -2757,16 +2888,16 @@ octave_java::release (void)
 
 #else
 
-  // This shouldn't happen because construction of octave_java
-  // objects is supposed to be impossible if Java is not available.
+  // This shouldn't happen because construction of octave_java objects is
+  // supposed to be impossible if Java is not available.
 
   panic_impossible ();
 
 #endif
 }
 
-// DEFUN blocks below must be outside of HAVE_JAVA block so that
-// documentation strings are always available, even when functions are not.
+// DEFUN blocks below must be outside of HAVE_JAVA block so that documentation
+// strings are always available, even when functions are not.
 
 DEFUN (__java_init__, , ,
        doc: /* -*- texinfo -*-

@@ -1335,15 +1335,19 @@ dnl
 dnl Check whether Qt works with full OpenGL support
 dnl
 AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
+  dnl Normally the language and compiler flags would be set and restored
+  dnl inside of the AC_CACHE_CHECK body.  Because we also need to check for
+  dnl Qt header files associated with the compilation test, set and restore
+  dnl these values outside of the AC_CACHE_CHECK for this macro only.
+  AC_LANG_PUSH(C++)
+  ac_octave_save_CPPFLAGS="$CPPFLAGS"
+  ac_octave_save_CXXFLAGS="$CXXFLAGS"
+  CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+  CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
   AC_CHECK_HEADERS([QOpenGLWidget QGLWidget])
   AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
     [octave_cv_qt_opengl_ok],
-    [AC_LANG_PUSH(C++)
-     ac_octave_save_CPPFLAGS="$CPPFLAGS"
-     ac_octave_save_CXXFLAGS="$CXXFLAGS"
-     CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-     CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if HAVE_WINDOWS_H
          #  include <windows.h>
          #endif
@@ -1376,10 +1380,10 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
        ]])],
        octave_cv_qt_opengl_ok=yes,
        octave_cv_qt_opengl_ok=no)
-     CPPFLAGS="$ac_octave_save_CPPFLAGS"
-     CXXFLAGS="$ac_octave_save_CXXFLAGS"
-     AC_LANG_POP(C++)
   ])
+  CPPFLAGS="$ac_octave_save_CPPFLAGS"
+  CXXFLAGS="$ac_octave_save_CXXFLAGS"
+  AC_LANG_POP(C++)
   if test $octave_cv_qt_opengl_ok = yes; then
     $1
     :

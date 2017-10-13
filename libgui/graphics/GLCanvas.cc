@@ -32,18 +32,22 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace QtHandles
 {
+#if defined (HAVE_QOPENGLWIDGET)
+#  define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS
+#else
+#  if defined (Q_OS_WIN32)
+#    define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS         \
+  QGLFormat (QGL::SampleBuffers | QGL::AlphaChannel     \
+             | QGL::IndirectRendering),
+#  else
+#    define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS \
+  QGLFormat (QGL::SampleBuffers | QGL::AlphaChannel),
+#  endif
+#endif
 
   GLCanvas::GLCanvas (QWidget *xparent, const graphics_handle& gh)
-#if defined (Q_OS_WIN32)
-    : QGLWidget (QGLFormat (QGL::SampleBuffers | QGL::AlphaChannel |
-                            QGL::IndirectRendering),
-                 xparent),
+    : OCTAVE_QT_OPENGL_WIDGET (OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS xparent),
       Canvas (gh)
-#else
-    : QGLWidget (QGLFormat (QGL::SampleBuffers | QGL::AlphaChannel),
-                 xparent),
-      Canvas (gh)
-#endif
   {
     setFocusPolicy (Qt::ClickFocus);
     setFocus ();
@@ -204,14 +208,14 @@ namespace QtHandles
   GLCanvas::keyPressEvent (QKeyEvent *xevent)
   {
     if (! canvasKeyPressEvent (xevent))
-      QGLWidget::keyPressEvent (xevent);
+      OCTAVE_QT_OPENGL_WIDGET::keyPressEvent (xevent);
   }
 
   void
   GLCanvas::keyReleaseEvent (QKeyEvent *xevent)
   {
     if (! canvasKeyReleaseEvent (xevent))
-      QGLWidget::keyReleaseEvent (xevent);
+      OCTAVE_QT_OPENGL_WIDGET::keyReleaseEvent (xevent);
   }
 
 }

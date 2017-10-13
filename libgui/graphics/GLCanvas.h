@@ -23,14 +23,21 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_GLCanvas_h)
 #define octave_GLCanvas_h 1
 
-#include <QGLWidget>
+#if defined (HAVE_QOPENGLWIDGET)
+#  include <QOpenGLWidget>
+#  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
+#elif defined (HAVE_QGLWIDGET)
+#  include <QGLWidget>
+#  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
+#else
+#  error "configuration error: must have <QOpenGLWidget> or <QGLWidget>."
+#endif
 
 #include "Canvas.h"
 
 namespace QtHandles
 {
-
-  class GLCanvas : public QGLWidget, public Canvas
+  class GLCanvas : public OCTAVE_QT_OPENGL_WIDGET, public Canvas
   {
   public:
     GLCanvas (QWidget *parent, const graphics_handle& handle);

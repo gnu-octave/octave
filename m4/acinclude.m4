@@ -1342,25 +1342,33 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
      ac_octave_save_CXXFLAGS="$CXXFLAGS"
      CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
      CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+     AC_CHECK_HEADERS([QOpenGLWidget QGLWidget])
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if HAVE_WINDOWS_H
-         # include <windows.h>
+         #  include <windows.h>
          #endif
          #if defined (HAVE_GL_GL_H)
-         # include <GL/gl.h>
+         #  include <GL/gl.h>
          #elif defined (HAVE_OPENGL_GL_H)
-         # include <OpenGL/gl.h>
+         #  include <OpenGL/gl.h>
          #endif
          #if defined (HAVE_GL_GLU_H)
-         # include <GL/glu.h>
+         #  include <GL/glu.h>
          #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
-         # include <OpenGL/glu.h>
+         #  include <OpenGL/glu.h>
          #endif
-         #include <QGLWidget>
-         class gl_widget : public QGLWidget
+         #if defined (HAVE_QOPENGLWIDGET)
+         #  include <QOpenGLWidget>
+         #  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
+         #elif defined (HAVE_QGLWIDGET)
+         #  include <QGLWidget>
+         #  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
+         #endif
+         class gl_widget : public OCTAVE_QT_OPENGL_WIDGET
          {
          public:
-           gl_widget (QWidget *parent = 0) : QGLWidget (parent) {}
+           gl_widget (QWidget *parent = 0)
+             : OCTAVE_QT_OPENGL_WIDGET (parent) { }
            ~gl_widget () {}
          };
          ]], [[

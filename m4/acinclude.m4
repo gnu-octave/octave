@@ -1335,6 +1335,7 @@ dnl
 dnl Check whether Qt works with full OpenGL support
 dnl
 AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
+  AC_CHECK_HEADERS([QOpenGLWidget QGLWidget])
   AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
     [octave_cv_qt_opengl_ok],
     [AC_LANG_PUSH(C++)
@@ -1342,7 +1343,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
      ac_octave_save_CXXFLAGS="$CXXFLAGS"
      CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
      CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-     AC_CHECK_HEADERS([QOpenGLWidget QGLWidget])
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if HAVE_WINDOWS_H
          #  include <windows.h>

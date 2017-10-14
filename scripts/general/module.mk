@@ -66,6 +66,7 @@ FCN_FILE_DIRS += \
   %reldir%/postpad.m \
   %reldir%/prepad.m \
   %reldir%/publish.m \
+  %reldir%/quad2d.m \
   %reldir%/quadgk.m \
   %reldir%/quadl.m \
   %reldir%/quadv.m \

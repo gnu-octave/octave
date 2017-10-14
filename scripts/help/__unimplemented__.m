@@ -66,7 +66,7 @@ function txt = __unimplemented__ (fcn)
 
     case "matlabrc"
       txt = ["matlabrc is not implemented.  ", ...
-             'Octave uses the file ".octaverc" instead.'];
+             "Octave uses the file '.octaverc' instead."];
 
     case {"ode113", "ode15i", "ode15s", "ode23s", "ode23t", "ode23tb"}
       txt = ["Octave provides lsode and ode45 for solving differential equations. ", ...
@@ -77,9 +77,6 @@ function txt = __unimplemented__ (fcn)
     case "startup"
       txt = ["startup is not implemented.  ", ...
              'Octave uses the file ".octaverc" instead.'];
-
-    case "quad2d"
-      txt = ["quad2d is not implemented.  Consider using dblquad."];
 
     case {"xlsread", "xlsfinfo", "xlswrite", "wk1read", "wk1finfo", "wk1write"}
       txt = ["Functions for spreadsheet style I/O ", ...
@@ -843,11 +840,10 @@ function list = missing_functions ()
   };
 endfunction
 
-
 %!test
 %! str = __unimplemented__ ("no_name_function");
 %! assert (isempty (str));
-%! str = __unimplemented__ ("quad2d");
-%! assert (str(1:51), "quad2d is not implemented.  Consider using dblquad.");
+%! str = __unimplemented__ ("matlabrc");
+%! assert (str(1:71), "matlabrc is not implemented.  Octave uses the file '.octaverc' instead.");
 %! str = __unimplemented__ ("MException");
 %! assert (str(1:58), "the 'MException' function is not yet implemented in Octave");

@@ -1,4 +1,4 @@
-## Copyright (C) 2017 Nicholas Jankowski
+## Copyright (C) 2017 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -23,17 +23,15 @@
 ## Numerically evaluate the three-dimensional integral of @var{f} using
 ## adaptive quadrature over the three-dimensional domain defined by
 ## @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{za}, @var{zb} (scalars may
-## be finite or infinite).
-##
-## @code{integral3} is a wrapper for @code{triplequad} intended to provide
-## @sc{matlab} compatibility.  More control of the numerical integration may be
-## achievable by calling the various quadrature functions directly.
+## be finite or infinite).  Additionally, @var{ya} and @var{yb} may be
+## scalar functions of @var{x} and @var{za}, and @var{zb} maybe be scalar
+## functions of @var{x} and @var{y}, allowing for integration over
+## non-rectangular domains.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be of the form
-## @math{w = f(x,y,z)} where either @var{x} or @var{y} is a vector and the
-## remaining inputs are scalars.  @var{f} should return a vector of the same
-## length and orientation as the vector input @var{x} or @var{y}.
+## @math{z = f(x,y)} where @var{x} is a vector and @var{y} is a scalar.  It
+## should return a vector of the same length and orientation as @var{x}.
 ##
 ## Additional optional parameters can be specified using
 ## @qcode{"@var{property}", @var{value}} pairs.  Valid properties are:
@@ -46,6 +44,19 @@
 ## @item RelTol
 ## Define the relative error tolerance for the quadrature.  The default
 ## value is 1e-6 (1e-4 for single).
+##
+## @item Method
+## Specify the two-dimensional integration method to be used, with valid
+## options being @qcode{"auto"} (default), @qcode{"tiled"}, or
+## @qcode{"iterated"}.  When using @qcode{"auto"}, Octave will choose the
+## @qcode{"tiled"} method unless any of the integration limits are infinite.
+##
+## @item Vectorized
+## Enable or disable vectorized integration.  A value of @code{false} forces
+## Octave to use only scalar inputs when calling the integrand, which enables
+## integrands @math{f(x,y)} that have not been vectorized and only accept
+## @var{x} and @var{y} as scalars to be used.  The default value is
+## @code{true}.
 ## @end table
 ##
 ## Adaptive quadrature is used to minimize the estimate of error until the
@@ -57,61 +68,67 @@
 ##
 ## @example
 ## @group
-##   @var{error} <= max (@var{AbsTol}, @var{RelTol}*|@var{q}|).
+##         @var{error} <= max (@var{AbsTol}, @var{RelTol}*|@var{q}|)
 ## @end group
 ## @end example
 ##
 ## @end ifnottex
 ##
-## Known @sc{matlab} incompatibilities:
+## @var{err} is an approximate bound on the error in the integral
+## @code{abs (@var{q} - @var{I})}, where @var{I} is the exact value of the
+## integral.
 ##
-## @enumerate
-## @item
-## If tolerances are left unspecified, and any integration limits or waypoints
-## are of type @code{single}, then Octave's integral functions automatically
-## reduce the default absolute and relative error tolerances as specified
-## above.  If tighter tolerances are desired they must be specified.
-## @sc{matlab} leaves the tighter tolerances appropriate for @code{double}
-## inputs in place regardless of the class of the integration limits.
+## Example 1 : integrate over a rectangular volume
 ##
-## @item
-## @code{integral3} currently only integrates functions over rectangular
-## volumes.  Implementing @var{ya} and @var{yb} as functions of @var{x}, and
-## @var{za} and @var{zb} as functions of (@var{x,y}) is a planned future
-## improvement.
+## @example
+## @group
+## @var{f} = @@(@var{x},@var{y},@var{z}) ones (size (@var{x}));
+## @var{q} = integral3 (@var{f}, 0, 1, 0, 1, 0, 1)
+##   @result{} @var{q} =  1
+## @end group
+## @end example
 ##
-## @item
-## The @qcode{"Method"} property is not yet implemented in Octave due to the
-## lack of a @qcode{"tiled"} integrator implementation.  All integrals are
-## evaluated using an equivalent of the @qcode{"iterated"} method.
-## @end enumerate
+## For this constant-value integrand, the result is a volume which is just
+## @code{@var{Length} * @var{Width} x @var{Height}}.
 ##
-## @seealso{integral, integral2, quad, quadgk, quadv, quadl, quadcc, trapz,
-##          dblquad, triplequad}
+## Example 2 : integrate over a spherical volume
+##
+## @example
+## @group
+## @var{f} = @@(@var{x},@var{y}) ones (size (@var{x}));
+## @var{ymax} = @@(@var{x}) sqrt (1 - @var{x}.^2);
+## @var{zmax} = @@(@var{x}) sqrt (1 - @var{x}.^2 - @var{y}.^2);
+## @var{q} = integral3 (@var{f}, 0, 1, 0, @var{ymax})
+##   @result{} @var{q} =  0.52360
+## @end group
+## @end example
+##
+## For this constant-value integrand, the result is a volume which is 1/8th
+## of a unit sphere or @code{1/8 * 4/3 * pi}.
+##
+## Programming Notes: If there are singularities within the integration region
+## it is best to split the integral and place the singularities on the
+## boundary.
+##
+## Known @sc{matlab} incompatibility: If tolerances are left unspecified, and
+## any integration limits are of type @code{single}, then Octave's integral
+## functions automatically reduce the default absolute and relative error
+## tolerances as specified above.  If tighter tolerances are desired they
+## must be specified.  @sc{matlab} leaves the tighter tolerances appropriate
+## for @code{double} inputs in place regardless of the class of the
+## integration limits.
+##
+## Reference: @nospell{L.F. Shampine},
+## @cite{@sc{matlab} program for quadrature in 2D}, Applied Mathematics and
+## Computation, pp. 266--274, Vol 1, 2008.
+##
+## @seealso{triplequad, integral, quad, quadgk, quadv, quadl,
+##          quadcc, trapz, integral2, quad2d, dblquad}
 ## @end deftypefn
 
 function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
-  ## FIXME: it is possible that a non-rectangular domain could be handled by
-  ##        overlaying the integrand with a boolean mask function such that
-  ##        the integration occurs over a rectangle but regions outside the
-  ##        desired domain contribute zero to the integral. This may be an
-  ##        inefficient but acceptable hack to get around the rectangular domain
-  ##        limit without having to rewrite the integrating function.
 
-  ## FIXME: implement 'method' property to let the user select between iterated
-  ##        and tiled integration. Tiled integration follows the method of
-  ##        matlab's quad2d function, currently unimplemented in Octave. Should
-  ##        probably just wait for a quad2d implementation to point the
-  ##        integral3 wrapper to instead of trying to recreate it here. The
-  ##        following can be added to the help docstring once it is functional:
-  ## @item Method
-  ## Specifies the underlying 2D integration method to be used on the y and z
-  ## dimensions, with valid options being @var{"auto"}, @var{"tiled"}, or
-  ## @var{"iterated"}. @code{integral3} will use @var{"auto"} by default, where
-  ## it will usually choose @var{"tiled"} unless any of the integration limits
-  ## are infinite.
-
-  if (nargin < 7 || (mod (nargin, 2) == 0))
+  if (nargin < 7 || mod (nargin, 2) == 0)
     print_usage ();
   endif
 
@@ -119,14 +136,16 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
     print_usage ();
   endif
 
-  if (! (isscalar (xa) && isscalar (xb)
-         && isscalar (ya) && isscalar (yb)
-         && isscalar (za) && isscalar (zb)))
+  if (! (isreal (xa) && isscalar (xa) && isreal (xb) && isscalar (xb)))
     print_usage ();
   endif
 
   ## Check for single or double limits to set appropriate default tolerance.
-  issingle = isa ([xa, xb, ya, yb, za, zb], "single");
+  issingle = (isa ([xa, xb], "single")
+              || (! is_function_handle (ya) && isa (ya, "single"))
+              || (! is_function_handle (yb) && isa (yb, "single"))
+              || (! is_function_handle (za) && isa (za, "single"))
+              || (! is_function_handle (zb) && isa (zb, "single")));
 
   ## Set defaults, update with any specified parameters.
   if (issingle)
@@ -137,81 +156,187 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
     reltol = 1e-6;
   endif
 
-  if (nargin == 7)
-    ## Pass the simplest case directly to integrator.
-    ## Let quadcc function handle input checks.
-    q = triplequad (f, xa, xb, ya, yb, za, zb, [abstol, reltol], @quadcc);
+  method = "auto";
+  vectorized = true;
+  idx = 1;
+  while (idx < nargin - 7)
+    prop = varargin{idx++};
+    if (! ischar (prop))
+      error ("integral3: property PROP must be a string");
+    endif
 
-  else
-    ## Parse options to determine how to call integrator.
-    intmethod = [];
+    switch (tolower (prop))
+      case "abstol"
+        abstol = varargin{idx++};
+        if (! (isnumeric (abstol) && isscalar (abstol) && abstol >= 0))
+          error ("integral3: AbsTol value must be a numeric scalar >= 0");
+        endif
 
-    idx = 1;
-    while (idx < nargin - 7)
-      prop = varargin{idx++};
-      if (! ischar (prop))
-        error ("integral3: property PROP must be a string");
-      endif
+      case "reltol"
+        reltol = varargin{idx++};
+        if (! (isnumeric (reltol) && isscalar (reltol) && reltol >= 0))
+          error ("integral3: RelTol value must be a numeric scalar >= 0");
+        endif
 
-      switch (tolower (prop))
-        case "abstol"
-          abstol = varargin{idx++};
-          if (! (isnumeric (abstol) && isscalar (abstol) && abstol >= 0))
-            error ("integral3: AbsTol value must be a numeric scalar >= 0");
-          endif
+      case "method"
+        method = tolower (varargin{idx++});
+        if (! any (strcmp (method, {"auto", "iterated", "tiled"})))
+          error ("integral3 : unrecognized method '%s'", method);
+        endif
 
-        case "reltol"
-          reltol = varargin{idx++};
-          if (! (isnumeric (reltol) && isscalar (reltol) && reltol >= 0))
-            error ("integral2: RelTol value must be a numeric scalar >= 0");
-          endif
+      case "vectorized"
+        vectorized = varargin{idx++};
+        if (! (isscalar (vectorized) && isreal (vectorized)))
+          error ('integral3: Vectorized must be a logical value');
+        endif
 
-        case "method"
-          intmethod = varargin{idx++};
-          warning (["integral3: Only 'iterated' method implemented.  ", ...
-                    "Method property ignored."]);
-        otherwise
-          error ("integral3: unknown property '%s'", prop);
-      endswitch
-    endwhile
+      otherwise
+        error ("integral3: unknown property '%s'", prop);
 
-    q = triplequad (f, xa, xb, ya, yb, za, zb, [abstol, reltol], @quadcc);
+    endswitch
+  endwhile
 
+  if (strcmp (method, "auto"))
+    if (isinf (xa) || isinf (xb)
+        || (! is_function_handle (ya) && isinf (ya))
+        || (! is_function_handle (yb) && isinf (yb))
+        || (! is_function_handle (za) && isinf (za))
+        || (! is_function_handle (zb) && isinf (zb)))
+      method = "iterated";
+    else
+      method = "tiled";
+    endif
   endif
+
+  ## check upper and lower bounds of y
+  if (! is_function_handle (ya))
+    if (! (isreal (ya) && isscalar (ya)))
+      error ("integral3: YA must be a real scalar or a function");
+    endif
+    ya = @(x) ya * ones (size (x));
+  endif
+  if (! is_function_handle (yb))
+    if (! (isreal (yb) && isscalar (yb)))
+      error ("integral3: YB must be a real scalar or a function");
+    endif
+    yb = @(x) yb * ones (size (x));
+  endif
+
+  ## check upper and lower bounds of z
+  if (! is_function_handle (za))
+    if (! (isreal (za) && isscalar (za)))
+      error ("integral3: ZA must be a real scalar or a function");
+    endif
+    za = @(x, y) za * ones (size(y));
+  endif
+  if (! is_function_handle (zb))
+    if (! (isreal (zb) && isscalar (zb)))
+      error ("integral3: ZB must be a real scalar or a function")
+    endif
+    zb = @(x, y) zb * ones (size (y));
+  endif
+
+  finner = @(x) inner (x, f, ya, yb, za, zb, vectorized, method, abstol, reltol);
+  q = quadcc (finner, xa, xb, [abstol, reltol]);
 
 endfunction
 
+function q = inner (x, f, ya, yb, za, zb, vectorized, method, abstol, reltol)
+  q = zeros (size (x));
+  for i = 1 : length (x)
+    za2 = @(y) za(x(i), y);
+    zb2 = @(y) zb(x(i), y);
+    f2 = @(y, z) f(x(i), y, z);
+    if (! vectorized)
+      f2 = @(y, z) arrayfun (f2, y, z);
+    endif
+    if (strcmp (method, "iterated"))
+      finner_iter = @(y) inner_iterated (y, f2, za2, zb2, abstol, reltol);
+      q(i) = quadcc (finner_iter, ya(x(i)), yb(x(i)), [abstol, reltol]);
+    else
+      q(i) = quad2d (f2, ya(x(i)), yb(x(i)), za2, zb2,
+                     "AbsTol", abstol, "RelTol", reltol);
+    endif
+  endfor
+endfunction
 
+function q = inner_iterated (y, f2, za2, zb2, abstol, reltol)
+  q = zeros (size (y));
+  for i = 1 : length (y)
+    q(i) = quadcc (@(z) f2(y(i), z), za2(y(i)), zb2(y(i)), [abstol, reltol]);
+  endfor
+endfunction
+
+
+## method tests
+%!shared f
+%! f = @(x, y, z) x .* y .* z;
+
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1), 0.125, 1e-10);
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "tiled"), 0.125, 1e-10);
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "iterated"), 0.125, 1e-10);
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "auto"), 0.125, 1e-10);
+
+## vectorized = false test
 %!test
-%! f = @(x, y, z) x.*y.*z;
-%! assert (integral3 (f, 0, 1, 0, 1, 0, 1), 0.125, 1e-10);
+%! f = @(x, y, z) x * y * z;
+%! assert (integral3 (f, 0, 1, 0, 1, 0, 1, "vectorized", false), 0.125, 1e-10);
 
-%!test
-%! f = @(x,y,z) y.*sin(x) + z.*cos(x);
-%! assert (integral3 (f, 0, pi, 0, 1, -1, 1), 2, 1e-10);
+## tolerance tests
+%!shared f
+%! f = @(x, y, z) 2 * x.^2 + 3 * y.^2 + 4 * z.^2;
 
-## tests from triplequad
-%! assert (integral3 (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1,
-%!         1), pi^(3/2) * erf (1).^3, 1e-10);
+%!assert (integral3 (f, 0, 5, -5, 0, 0, 5, "AbsTol", 1e-9), 9375, 1e-9)
+%!assert (integral3 (f, 0, 5, -5, 0, 0, 5, "RelTol", 1e-5), 9375, -1e-5)
+%!assert (integral3 (f, 0, 5, -5, 0, 0, 5, "RelTol", 1e-6, "AbsTol", 1e-9),
+%!        9375, 1e-9)
+
+## non-rectangular region
+## This test is too slow with "iterated" method
+%!assert (integral3 (@(x,y,z) 1 ./ (x + y + z), 0, 1, 0, @(x) 1 - x, 0,
+%!        @(x, y) 1 - x - y, "method", "tiled"), 0.25, 1e-6)
 
 ## Test input validation
-%!error integral3 (0, 1 ,2 ,3 ,4, 5, 6)
+%!error integral3
 %!error integral3 (@plus)
 %!error integral3 (@plus, 1)
 %!error integral3 (@plus, 1, 2)
 %!error integral3 (@plus, 1, 2, 3)
 %!error integral3 (@plus, 1, 2, 3, 4)
 %!error integral3 (@plus, 1, 2, 3, 4, 5)
-%!error integral3 (@plus, 1, 2, 3, 4, 5, [6 7])
-%!error integral3 (@plus, 1, 2, 3, 4, 5, "test")
 %!error integral3 (@plus, 1, 2, 3, 4, 5, 6, "foo")
-%!error <unknown property 'foo'> integral3 (@plus, 1, 2, 3, 4, 5, 6, "foo", "bar")
-%!error <property PROP must be a string> integral3 (@plus, 1, 2, 3, 4, 5, 6, NA, "bar")
-%!error <AbsTol value must be a numeric> integral3 (@plus, 1, 2, 3, 4, 5, 6, "AbsTol", "foo")
-%!error <AbsTol value must be a .* scalar> integral3 (@plus, 1, 2, 3, 4, 5, 6, "AbsTol", [1, 2])
-%!error <AbsTol value must be.* .= 0> integral3 (@plus, 1, 2, 3, 4, 5, 6, "AbsTol", -1)
-%!error <RelTol value must be a numeric> integral3 (@plus, 1, 2, 3, 4, 5, 6, "RelTol", "foo")
-%!error <RelTol value must be a .* scalar> integral3 (@plus, 1, 2, 3, 4, 5, 6, "RelTol", [1, 2])
-%!error <RelTol value must be.* .= 0> integral3 (@plus, 1, 2, 3, 4, 5, 6, "RelTol", -1)
-%!warning <Only 'iterated' method implemented>
-%! q = integral3 (@plus, 0, 1, 0, 1, 0, 1, "Method", "tiled");
+%!error integral3 (0, 1, 2, 3, 4, 5, 6)          # f must be a function handle
+%!error integral3 (@plus, 1i, 2, 3, 4, 5, 6)     # real limits
+%!error integral3 (@plus, 1, 2i, 3, 4, 5, 6)     # real limits
+%!error integral3 (@plus, [1 1], 2, 3, 4, 5, 6)  # scalar limits
+%!error integral3 (@plus, 1, [2 2], 3, 4, 5, 6)  # scalar limits
+%!error <property PROP must be a string>
+%! integral3 (@plus, 1, 2, 3, 4, 5, 6, 99, "bar");
+%!error <AbsTol value must be a numeric>
+%! integral3 (@plus, 1, 2, 3, 4, 5, 6, "AbsTol", "foo");
+%!error <AbsTol value must be a .* scalar>
+%! integral3 (@plus, 1, 2, 3, 4, 5, 6, "AbsTol", [1, 2]);
+%!error <AbsTol value must be.* .= 0>
+%! integral3 (@plus, 1, 2, 3, 4, 5, 6, "AbsTol", -1);
+%!error <RelTol value must be a numeric>
+%! integral3 (@plus, 1, 2, 3, 4, 5, 6, "RelTol", "foo");
+%!error <RelTol value must be a .* scalar>
+%! integral3 (@plus, 1, 2, 3, 4, 5, 6, "RelTol", [1, 2]);
+%!error <RelTol value must be.* .= 0>
+%! integral3 (@plus, 1, 2, 3, 4, 5, 6, "RelTol", -1);
+%!error <unrecognized method 'foo'>
+%! integral3 (@plus,1,2,3,4,5,6, "method", "foo");
+%!error <Vectorized must be a logical value>
+%! integral3 (@plus,1,2,3,4,5,6, "Vectorized", [0 1]);
+%!error <Vectorized must be a logical value>
+%! integral3 (@plus,1,2,3,4,5,6, "Vectorized", {true});
+%!error <unknown property 'foo'>
+%! integral3 (@plus, 1, 2, 3, 4, 6, 6, "foo", "bar");
+%!error <YA must be a real scalar> integral3 (@plus, 1, 2, 3i, 4, 5, 6)
+%!error <YA must be a real scalar> integral3 (@plus, 1, 2, [3 3], 4, 5, 6)
+%!error <YB must be a real scalar> integral3 (@plus, 1, 2, 3, 4i, 5, 6)
+%!error <YB must be a real scalar> integral3 (@plus, 1, 2, 3, [4 4], 5, 6)
+%!error <ZA must be a real scalar> integral3 (@plus, 1, 2, 3, 4, 5i, 6)
+%!error <ZA must be a real scalar> integral3 (@plus, 1, 2, 3, 4, [5 5], 6)
+%!error <ZB must be a real scalar> integral3 (@plus, 1, 2, 3, 4, 5, 6i)
+%!error <ZB must be a real scalar> integral3 (@plus, 1, 2, 3, 4, 5, [6 6])

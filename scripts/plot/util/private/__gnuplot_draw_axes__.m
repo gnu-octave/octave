@@ -132,6 +132,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   ## FIXME: We should have an function to initialize the axis.
   ##        Presently, this is dispersed in this function.
   fputs (plot_stream, "unset label;\n");
+  fputs (plot_stream, "unset arrow;\n");
   fputs (plot_stream, "unset xtics;\n");
   fputs (plot_stream, "unset ytics;\n");
   fputs (plot_stream, "unset ztics;\n");
@@ -1811,6 +1812,7 @@ endfunction
 function idx = do_border_2d (obj, plot_stream, idx)
 
   fprintf (plot_stream, "set border 0\n");
+  fprintf (plot_stream, "unset arrow\n");
 
   if (strcmp (obj.box, "on") || strcmp (obj.xaxislocation, "bottom"))
     arrow (1, obj.xcolor, obj.linewidth, [0,0,0], [1,0,0]);

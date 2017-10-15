@@ -34,12 +34,12 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 class octave_value_list;
-class jit_type;
 
 namespace octave
 {
   class tree_evaluator;
   class interpreter;
+  class jit_type;
 }
 
 // Builtin functions.
@@ -91,9 +91,9 @@ public:
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ());
 
-  jit_type * to_jit (void) const;
+  octave::jit_type * to_jit (void) const;
 
-  void stash_jit (jit_type& type);
+  void stash_jit (octave::jit_type& type);
 
   fcn function (void) const;
 
@@ -116,7 +116,7 @@ protected:
   std::set<std::string> dispatch_classes;
 
   // A pointer to the jit type that represents the function.
-  jit_type *jtype;
+  octave::jit_type *jtype;
 
 private:
 

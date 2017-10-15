@@ -49,11 +49,11 @@ namespace octave
   class tree_evaluator;
   class tree_expression;
   class tree_walker;
-}
-
 #if defined (HAVE_LLVM)
-class jit_function_info;
+  class jit_function_info;
 #endif
+
+}
 
 class
 octave_user_code : public octave_function
@@ -401,9 +401,9 @@ public:
   void accept (octave::tree_walker& tw);
 
 #if defined (HAVE_LLVM)
-  jit_function_info * get_info (void) { return jit_info; }
+  octave::jit_function_info * get_info (void) { return jit_info; }
 
-  void stash_info (jit_function_info *info) { jit_info = info; }
+  void stash_info (octave::jit_function_info *info) { jit_info = info; }
 #endif
 
   octave_value dump (void) const;
@@ -491,7 +491,7 @@ private:
   octave::symbol_table::scope *parent_scope;
 
 #if defined (HAVE_LLVM)
-  jit_function_info *jit_info;
+  octave::jit_function_info *jit_info;
 #endif
 
   void maybe_relocate_end_internal (void);

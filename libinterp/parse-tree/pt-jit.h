@@ -33,411 +33,416 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "symtab.h"
 
+// octave_value_list is not (yet) in the octave namespace
 class octave_value_list;
 
-// Convert from the parse tree (AST) to the low level Octave IR.
-class
-jit_convert : public tree_walker
+namespace octave
 {
-public:
-  typedef std::pair<jit_type *, std::string> type_bound;
-  typedef std::vector<type_bound> type_bound_vector;
-  typedef std::map<std::string, jit_variable *> variable_map;
-
-  jit_convert (tree& tee, jit_type *for_bounds = nullptr);
-
-  jit_convert (octave_user_function& fcn, const std::vector<jit_type *>& args);
-
-  template <typename ...Args>
-  jit_call * create_checked (const Args&... args)
+  // Convert from the parse tree (AST) to the low level Octave IR.
+  class
+  jit_convert : public tree_walker
   {
-    jit_call *ret = factory.create<jit_call> (args...);
-    return create_checked_impl (ret);
-  }
+  public:
+    typedef std::pair<jit_type *, std::string> type_bound;
+    typedef std::vector<type_bound> type_bound_vector;
+    typedef std::map<std::string, jit_variable *> variable_map;
 
-  jit_block_list& get_blocks (void) { return blocks; }
+    jit_convert (tree& tee, jit_type *for_bounds = nullptr);
 
-  const type_bound_vector& get_bounds (void) const { return bounds; }
+    jit_convert (octave_user_function& fcn, const std::vector<jit_type *>& args);
 
-  jit_factory& get_factory (void) { return factory; }
+    template <typename ...Args>
+    jit_call * create_checked (const Args&... args)
+    {
+      jit_call *ret = factory.create<jit_call> (args...);
+      return create_checked_impl (ret);
+    }
 
-  llvm::Function *get_function (void) const { return function; }
+    jit_block_list& get_blocks (void) { return blocks; }
 
-  const variable_map& get_variable_map (void) const { return vmap; }
+    const type_bound_vector& get_bounds (void) const { return bounds; }
 
-  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
+    jit_factory& get_factory (void) { return factory; }
 
-  void visit_argument_list (tree_argument_list&);
+    llvm::Function *get_function (void) const { return function; }
 
-  void visit_binary_expression (tree_binary_expression&);
+    const variable_map& get_variable_map (void) const { return vmap; }
 
-  void visit_boolean_expression (tree_boolean_expression&);
+    void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
-  void visit_break_command (tree_break_command&);
+    void visit_argument_list (tree_argument_list&);
 
-  void visit_colon_expression (tree_colon_expression&);
+    void visit_binary_expression (tree_binary_expression&);
 
-  void visit_continue_command (tree_continue_command&);
+    void visit_boolean_expression (tree_boolean_expression&);
 
-  void visit_decl_command (tree_decl_command&);
+    void visit_break_command (tree_break_command&);
 
-  void visit_decl_init_list (tree_decl_init_list&);
+    void visit_colon_expression (tree_colon_expression&);
 
-  void visit_decl_elt (tree_decl_elt&);
+    void visit_continue_command (tree_continue_command&);
 
-  void visit_simple_for_command (tree_simple_for_command&);
+    void visit_decl_command (tree_decl_command&);
 
-  void visit_complex_for_command (tree_complex_for_command&);
+    void visit_decl_init_list (tree_decl_init_list&);
 
-  void visit_octave_user_script (octave_user_script&);
+    void visit_decl_elt (tree_decl_elt&);
 
-  void visit_octave_user_function (octave_user_function&);
+    void visit_simple_for_command (tree_simple_for_command&);
 
-  void visit_octave_user_function_header (octave_user_function&);
+    void visit_complex_for_command (tree_complex_for_command&);
 
-  void visit_octave_user_function_trailer (octave_user_function&);
+    void visit_octave_user_script (octave_user_script&);
 
-  void visit_function_def (tree_function_def&);
+    void visit_octave_user_function (octave_user_function&);
 
-  void visit_identifier (tree_identifier&);
+    void visit_octave_user_function_header (octave_user_function&);
 
-  void visit_if_clause (tree_if_clause&);
+    void visit_octave_user_function_trailer (octave_user_function&);
 
-  void visit_if_command (tree_if_command&);
+    void visit_function_def (tree_function_def&);
 
-  void visit_if_command_list (tree_if_command_list&);
+    void visit_identifier (tree_identifier&);
 
-  void visit_index_expression (tree_index_expression&);
+    void visit_if_clause (tree_if_clause&);
 
-  void visit_matrix (tree_matrix&);
+    void visit_if_command (tree_if_command&);
 
-  void visit_cell (tree_cell&);
+    void visit_if_command_list (tree_if_command_list&);
 
-  void visit_multi_assignment (tree_multi_assignment&);
+    void visit_index_expression (tree_index_expression&);
 
-  void visit_no_op_command (tree_no_op_command&);
+    void visit_matrix (tree_matrix&);
 
-  void visit_constant (tree_constant&);
+    void visit_cell (tree_cell&);
 
-  void visit_fcn_handle (tree_fcn_handle&);
+    void visit_multi_assignment (tree_multi_assignment&);
 
-  void visit_funcall (tree_funcall&);
+    void visit_no_op_command (tree_no_op_command&);
 
-  void visit_parameter_list (tree_parameter_list&);
+    void visit_constant (tree_constant&);
 
-  void visit_postfix_expression (tree_postfix_expression&);
+    void visit_fcn_handle (tree_fcn_handle&);
 
-  void visit_prefix_expression (tree_prefix_expression&);
+    void visit_funcall (tree_funcall&);
 
-  void visit_return_command (tree_return_command&);
+    void visit_parameter_list (tree_parameter_list&);
 
-  void visit_return_list (tree_return_list&);
+    void visit_postfix_expression (tree_postfix_expression&);
 
-  void visit_simple_assignment (tree_simple_assignment&);
+    void visit_prefix_expression (tree_prefix_expression&);
 
-  void visit_statement (tree_statement&);
+    void visit_return_command (tree_return_command&);
 
-  void visit_statement_list (tree_statement_list&);
+    void visit_return_list (tree_return_list&);
 
-  void visit_switch_case (tree_switch_case&);
+    void visit_simple_assignment (tree_simple_assignment&);
 
-  void visit_switch_case_list (tree_switch_case_list&);
+    void visit_statement (tree_statement&);
 
-  void visit_switch_command (tree_switch_command&);
+    void visit_statement_list (tree_statement_list&);
 
-  void visit_try_catch_command (tree_try_catch_command&);
+    void visit_switch_case (tree_switch_case&);
 
-  void visit_unwind_protect_command (tree_unwind_protect_command&);
+    void visit_switch_case_list (tree_switch_case_list&);
 
-  void visit_while_command (tree_while_command&);
+    void visit_switch_command (tree_switch_command&);
 
-  void visit_do_until_command (tree_do_until_command&);
-private:
-  std::vector<std::pair<std::string, bool>> arguments;
-  type_bound_vector bounds;
+    void visit_try_catch_command (tree_try_catch_command&);
 
-  bool converting_function;
+    void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-  // the scope of the function we are converting, or the current scope
-  octave::symbol_table::scope *scope;
+    void visit_while_command (tree_while_command&);
 
-  jit_factory factory;
+    void visit_do_until_command (tree_do_until_command&);
+  private:
+    std::vector<std::pair<std::string, bool>> arguments;
+    type_bound_vector bounds;
 
-  // used instead of return values from visit_* functions
-  jit_value *result;
+    bool converting_function;
 
-  jit_block *entry_block;
+    // the scope of the function we are converting, or the current scope
+    symbol_table::scope *scope;
 
-  jit_block *final_block;
+    jit_factory factory;
 
-  jit_block *block;
+    // used instead of return values from visit_* functions
+    jit_value *result;
 
-  llvm::Function *function;
+    jit_block *entry_block;
 
-  jit_block_list blocks;
+    jit_block *final_block;
 
-  std::vector<jit_magic_end::context> end_context;
+    jit_block *block;
 
-  size_t iterator_count;
-  size_t for_bounds_count;
-  size_t short_count;
+    llvm::Function *function;
 
-  variable_map vmap;
+    jit_block_list blocks;
 
-  void initialize (octave::symbol_table::scope *s);
+    std::vector<jit_magic_end::context> end_context;
 
-  jit_call * create_checked_impl (jit_call *ret);
+    size_t iterator_count;
+    size_t for_bounds_count;
+    size_t short_count;
 
-  // get an existing vairable.  If the variable does not exist, it will not be
-  // created
-  jit_variable * find_variable (const std::string& vname) const;
+    variable_map vmap;
 
-  // get a variable, create it if it does not exist.  The type will default to
-  // the variable's current type in the symbol table.
-  jit_variable * get_variable (const std::string& vname);
+    void initialize (symbol_table::scope *s);
 
-  // create a variable of the given name and given type.  Will also insert an
-  // extract statement
-  jit_variable * create_variable (const std::string& vname, jit_type *type,
-                                  bool isarg = true);
+    jit_call * create_checked_impl (jit_call *ret);
 
-  // The name of the next for loop iterator.  If inc is false, then the
-  // iterator counter will not be incremented.
-  std::string next_iterator (bool inc = true)
-  { return next_name ("#iter", iterator_count, inc); }
+    // get an existing vairable.  If the variable does not exist, it will not be
+    // created
+    jit_variable * find_variable (const std::string& vname) const;
 
-  std::string next_for_bounds (bool inc = true)
-  { return next_name ("#for_bounds", for_bounds_count, inc); }
+    // get a variable, create it if it does not exist.  The type will default to
+    // the variable's current type in the symbol table.
+    jit_variable * get_variable (const std::string& vname);
 
-  std::string next_shortcircut_result (bool inc = true)
-  { return next_name ("#shortcircut_result", short_count, inc); }
+    // create a variable of the given name and given type.  Will also insert an
+    // extract statement
+    jit_variable * create_variable (const std::string& vname, jit_type *type,
+                                    bool isarg = true);
 
-  std::string next_name (const char *prefix, size_t& count, bool inc);
+    // The name of the next for loop iterator.  If inc is false, then the
+    // iterator counter will not be incremented.
+    std::string next_iterator (bool inc = true)
+    { return next_name ("#iter", iterator_count, inc); }
 
-  jit_instruction * resolve (tree_index_expression& exp,
-                             jit_value *extra_arg = nullptr, bool lhs = false);
+    std::string next_for_bounds (bool inc = true)
+    { return next_name ("#for_bounds", for_bounds_count, inc); }
 
-  jit_value * do_assign (tree_expression *exp, jit_value *rhs,
-                         bool artificial = false);
+    std::string next_shortcircut_result (bool inc = true)
+    { return next_name ("#shortcircut_result", short_count, inc); }
 
-  jit_value * do_assign (const std::string& lhs, jit_value *rhs, bool print,
-                         bool artificial = false);
+    std::string next_name (const char *prefix, size_t& count, bool inc);
 
-  jit_value * visit (tree *tee) { return visit (*tee); }
+    jit_instruction * resolve (tree_index_expression& exp,
+                               jit_value *extra_arg = nullptr, bool lhs = false);
 
-  jit_value * visit (tree& tee);
+    jit_value * do_assign (tree_expression *exp, jit_value *rhs,
+                           bool artificial = false);
 
-  typedef std::list<jit_block *> block_list;
-  block_list breaks;
-  block_list continues;
+    jit_value * do_assign (const std::string& lhs, jit_value *rhs, bool print,
+                           bool artificial = false);
 
-  void finish_breaks (jit_block *dest, const block_list& lst);
-};
+    jit_value * visit (tree *tee) { return visit (*tee); }
 
-// Convert from the low level Octave IR to LLVM
-class
-jit_convert_llvm : public jit_ir_walker
-{
-public:
-  llvm::Function * convert_loop (llvm::Module *module,
-                                 const jit_block_list& blocks,
-                                 const std::list<jit_value *>& constants);
+    jit_value * visit (tree& tee);
 
-  jit_function convert_function (llvm::Module *module,
-                                 const jit_block_list& blocks,
-                                 const std::list<jit_value *>& constants,
-                                 octave_user_function& fcn,
-                                 const std::vector<jit_type *>& args);
+    typedef std::list<jit_block *> block_list;
+    block_list breaks;
+    block_list continues;
 
-  // arguments to the llvm::Function for loops
-  const std::vector<std::pair<std::string, bool>>& get_arguments(void) const
-  { return argument_vec; }
+    void finish_breaks (jit_block *dest, const block_list& lst);
+  };
+
+  // Convert from the low level Octave IR to LLVM
+  class
+  jit_convert_llvm : public jit_ir_walker
+  {
+  public:
+    llvm::Function * convert_loop (llvm::Module *module,
+                                   const jit_block_list& blocks,
+                                   const std::list<jit_value *>& constants);
+
+    jit_function convert_function (llvm::Module *module,
+                                   const jit_block_list& blocks,
+                                   const std::list<jit_value *>& constants,
+                                   octave_user_function& fcn,
+                                   const std::vector<jit_type *>& args);
+
+    // arguments to the llvm::Function for loops
+    const std::vector<std::pair<std::string, bool>>& get_arguments(void) const
+    { return argument_vec; }
 
 #define JIT_METH(clname)                        \
-  virtual void visit (jit_ ## clname&);
+    virtual void visit (jit_ ## clname&);
 
-  JIT_VISIT_IR_CLASSES;
+    JIT_VISIT_IR_CLASSES;
 
 #undef JIT_METH
-private:
-  // name -> argument index (used for compiling functions)
-  std::map<std::string, int> argument_index;
+  private:
+    // name -> argument index (used for compiling functions)
+    std::map<std::string, int> argument_index;
 
-  std::vector<std::pair<std::string, bool>> argument_vec;
+    std::vector<std::pair<std::string, bool>> argument_vec;
 
-  // name -> llvm argument (used for compiling loops)
-  std::map<std::string, llvm::Value *> arguments;
+    // name -> llvm argument (used for compiling loops)
+    std::map<std::string, llvm::Value *> arguments;
 
-  bool converting_function;
+    bool converting_function;
 
-  // only used if we are converting a function
-  jit_function creating;
+    // only used if we are converting a function
+    jit_function creating;
 
-  llvm::Function *function;
-  llvm::BasicBlock *prelude;
+    llvm::Function *function;
+    llvm::BasicBlock *prelude;
 
-  void convert (const jit_block_list& blocks,
-                const std::list<jit_value *>& constants);
+    void convert (const jit_block_list& blocks,
+                  const std::list<jit_value *>& constants);
 
-  void finish_phi (jit_phi *phi);
+    void finish_phi (jit_phi *phi);
 
-  void visit (jit_value *jvalue)
+    void visit (jit_value *jvalue)
+    {
+      return visit (*jvalue);
+    }
+
+    void visit (jit_value& jvalue)
+    {
+      jvalue.accept (*this);
+    }
+  };
+
+  // type inference and SSA construction on the low level Octave IR
+  class
+  jit_infer
   {
-    return visit (*jvalue);
-  }
+  public:
+    typedef jit_convert::variable_map variable_map;
 
-  void visit (jit_value& jvalue)
+    jit_infer (jit_factory& afactory, jit_block_list& ablocks,
+               const variable_map& avmap);
+
+    jit_block_list& get_blocks (void) const { return blocks; }
+
+    jit_factory& get_factory (void) const { return factory; }
+
+    void infer (void);
+  private:
+    jit_block_list& blocks;
+    jit_factory& factory;
+    const variable_map& vmap;
+    std::list<jit_instruction *> worklist;
+
+    void append_users (jit_value *v);
+
+    void append_users_term (jit_terminator *term);
+
+    void construct_ssa (void);
+
+    void do_construct_ssa (jit_block& block, size_t avisit_count);
+
+    jit_block& entry_block (void) { return *blocks.front (); }
+
+    jit_block& final_block (void) { return *blocks.back (); }
+
+    void place_releases (void);
+
+    void push_worklist (jit_instruction *instr);
+
+    void remove_dead ();
+
+    void release_dead_phi (jit_block& ablock);
+
+    void release_temp (jit_block& ablock, std::set<jit_value *>& temp);
+
+    void simplify_phi (void);
+
+    void simplify_phi (jit_phi& phi);
+  };
+
+  class
+  tree_jit
   {
-    jvalue.accept (*this);
-  }
-};
+  public:
+    ~tree_jit (void);
 
-// type inference and SSA construction on the low level Octave IR
-class
-jit_infer
-{
-public:
-  typedef jit_convert::variable_map variable_map;
+    static bool execute (tree_simple_for_command& cmd,
+                         const octave_value& bounds);
 
-  jit_infer (jit_factory& afactory, jit_block_list& ablocks,
-             const variable_map& avmap);
+    static bool execute (tree_while_command& cmd);
 
-  jit_block_list& get_blocks (void) const { return blocks; }
+    static bool execute (octave_user_function& fcn, const octave_value_list& args,
+                         octave_value_list& retval);
 
-  jit_factory& get_factory (void) const { return factory; }
+    llvm::ExecutionEngine * get_engine (void) const { return engine; }
 
-  void infer (void);
-private:
-  jit_block_list& blocks;
-  jit_factory& factory;
-  const variable_map& vmap;
-  std::list<jit_instruction *> worklist;
+    llvm::Module * get_module (void) const { return module; }
 
-  void append_users (jit_value *v);
+    void optimize (llvm::Function *fn);
+  private:
+    tree_jit (void);
 
-  void append_users_term (jit_terminator *term);
+    static tree_jit& instance (void);
 
-  void construct_ssa (void);
+    bool initialize (void);
 
-  void do_construct_ssa (jit_block& block, size_t avisit_count);
+    bool do_execute (tree_simple_for_command& cmd, const octave_value& bounds);
 
-  jit_block& entry_block (void) { return *blocks.front (); }
+    bool do_execute (tree_while_command& cmd);
 
-  jit_block& final_block (void) { return *blocks.back (); }
+    bool do_execute (octave_user_function& fcn, const octave_value_list& args,
+                     octave_value_list& retval);
 
-  void place_releases (void);
+    bool enabled (void);
 
-  void push_worklist (jit_instruction *instr);
+    size_t trip_count (const octave_value& bounds) const;
 
-  void remove_dead ();
-
-  void release_dead_phi (jit_block& ablock);
-
-  void release_temp (jit_block& ablock, std::set<jit_value *>& temp);
-
-  void simplify_phi (void);
-
-  void simplify_phi (jit_phi& phi);
-};
-
-class
-tree_jit
-{
-public:
-  ~tree_jit (void);
-
-  static bool execute (tree_simple_for_command& cmd,
-                       const octave_value& bounds);
-
-  static bool execute (tree_while_command& cmd);
-
-  static bool execute (octave_user_function& fcn, const octave_value_list& args,
-                       octave_value_list& retval);
-
-  llvm::ExecutionEngine * get_engine (void) const { return engine; }
-
-  llvm::Module * get_module (void) const { return module; }
-
-  void optimize (llvm::Function *fn);
-private:
-  tree_jit (void);
-
-  static tree_jit& instance (void);
-
-  bool initialize (void);
-
-  bool do_execute (tree_simple_for_command& cmd, const octave_value& bounds);
-
-  bool do_execute (tree_while_command& cmd);
-
-  bool do_execute (octave_user_function& fcn, const octave_value_list& args,
-                   octave_value_list& retval);
-
-  bool enabled (void);
-
-  size_t trip_count (const octave_value& bounds) const;
-
-  llvm::Module *module;
+    llvm::Module *module;
 #if defined (LEGACY_PASSMANAGER)
-  llvm::legacy::PassManager *module_pass_manager;
-  llvm::legacy::FunctionPassManager *pass_manager;
+    llvm::legacy::PassManager *module_pass_manager;
+    llvm::legacy::FunctionPassManager *pass_manager;
 #else
-  llvm::PassManager *module_pass_manager;
-  llvm::FunctionPassManager *pass_manager;
+    llvm::PassManager *module_pass_manager;
+    llvm::FunctionPassManager *pass_manager;
 #endif
-  llvm::ExecutionEngine *engine;
-};
+    llvm::ExecutionEngine *engine;
+  };
 
-class
-jit_function_info
-{
-public:
-  jit_function_info (tree_jit& tjit, octave_user_function& fcn,
-                     const octave_value_list& ov_args);
+  class
+  jit_function_info
+  {
+  public:
+    jit_function_info (tree_jit& tjit, octave_user_function& fcn,
+                       const octave_value_list& ov_args);
 
-  bool execute (const octave_value_list& ov_args,
-                octave_value_list& retval) const;
+    bool execute (const octave_value_list& ov_args,
+                  octave_value_list& retval) const;
 
-  bool match (const octave_value_list& ov_args) const;
-private:
-  typedef octave_base_value *(*jited_function)(octave_base_value**);
+    bool match (const octave_value_list& ov_args) const;
+  private:
+    typedef octave_base_value *(*jited_function)(octave_base_value**);
 
-  std::vector<jit_type *> argument_types;
-  jited_function function;
-};
+    std::vector<jit_type *> argument_types;
+    jited_function function;
+  };
 
-class
-jit_info
-{
-public:
-  // we use a pointer here so we don't have to include ov.h
-  typedef std::map<std::string, const octave_value *> vmap;
+  class
+  jit_info
+  {
+  public:
+    // we use a pointer here so we don't have to include ov.h
+    typedef std::map<std::string, const octave_value *> vmap;
 
-  jit_info (tree_jit& tjit, tree& tee);
+    jit_info (tree_jit& tjit, tree& tee);
 
-  jit_info (tree_jit& tjit, tree& tee, const octave_value& for_bounds);
+    jit_info (tree_jit& tjit, tree& tee, const octave_value& for_bounds);
 
-  ~jit_info (void);
+    ~jit_info (void);
 
-  bool execute (const vmap& extra_vars = vmap ()) const;
+    bool execute (const vmap& extra_vars = vmap ()) const;
 
-  bool match (const vmap& extra_vars = vmap ()) const;
-private:
-  typedef jit_convert::type_bound type_bound;
-  typedef jit_convert::type_bound_vector type_bound_vector;
-  typedef void (*jited_function)(octave_base_value**);
+    bool match (const vmap& extra_vars = vmap ()) const;
+  private:
+    typedef jit_convert::type_bound type_bound;
+    typedef jit_convert::type_bound_vector type_bound_vector;
+    typedef void (*jited_function)(octave_base_value**);
 
-  void compile (tree_jit& tjit, tree& tee, jit_type *for_bounds = nullptr);
+    void compile (tree_jit& tjit, tree& tee, jit_type *for_bounds = nullptr);
 
-  octave_value find (const vmap& extra_vars, const std::string& vname) const;
+    octave_value find (const vmap& extra_vars, const std::string& vname) const;
 
-  llvm::ExecutionEngine *engine;
-  jited_function function;
-  llvm::Function *llvm_function;
+    llvm::ExecutionEngine *engine;
+    jited_function function;
+    llvm::Function *llvm_function;
 
-  std::vector<std::pair<std::string, bool>> arguments;
-  type_bound_vector bounds;
-};
+    std::vector<std::pair<std::string, bool>> arguments;
+    type_bound_vector bounds;
+  };
+
+}
 
 #endif
 #endif

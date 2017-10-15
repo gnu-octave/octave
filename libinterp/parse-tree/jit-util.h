@@ -1,22 +1,22 @@
 /*
 
-Copyright (C) 2012-2017 Max Brister
+  Copyright (C) 2012-2017 Max Brister
 
-This file is part of Octave.
+  This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
+  Octave is free software; you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+  Octave is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with Octave; see the file COPYING.  If not, see
+  <http://www.gnu.org/licenses/>.
 
 */
 
@@ -73,137 +73,142 @@ namespace llvm
   template <bool preserveNames, typename T, typename Inserter>
   class IRBuilder;
 
-typedef IRBuilder<true, ConstantFolder, IRBuilderDefaultInserter<true>>
-IRBuilderD;
+  typedef IRBuilder<true, ConstantFolder, IRBuilderDefaultInserter<true>>
+    IRBuilderD;
 }
 
+// some octave classes that are not (yet) in the octave namespace
 class octave_base_value;
 class octave_builtin;
 class octave_value;
 class tree;
 class tree_expression;
 
-// thrown when we should give up on JIT and interpret
-class jit_fail_exception : public std::runtime_error
+namespace octave
 {
-public:
-  jit_fail_exception (void) : std::runtime_error ("unknown"), mknown (false) { }
-  jit_fail_exception (const std::string& reason) : std::runtime_error (reason),
-                                                   mknown (true)
-  { }
-
-  bool known (void) const { return mknown; }
-private:
-  bool mknown;
-};
-
-// llvm doesn't provide this, and it's really useful for debugging
-std::ostream& operator<< (std::ostream& os, const llvm::Value& v);
-
-template <typename HOLDER_T, typename SUB_T>
-class jit_internal_node;
-
-// jit_internal_list and jit_internal_node implement generic embedded doubly
-// linked lists.  List items extend from jit_internal_list, and can be placed
-// in nodes of type jit_internal_node.  We use CRTP twice.
-template <typename LIST_T, typename NODE_T>
-class
-jit_internal_list
-{
-  friend class jit_internal_node<LIST_T, NODE_T>;
-public:
-  jit_internal_list (void) : use_head (0), use_tail (0), muse_count (0) { }
-
-  virtual ~jit_internal_list (void)
+  // thrown when we should give up on JIT and interpret
+  class jit_fail_exception : public std::runtime_error
   {
-    while (use_head)
-      use_head->stash_value (0);
+  public:
+    jit_fail_exception (void) : std::runtime_error ("unknown"), mknown (false) { }
+    jit_fail_exception (const std::string& reason) : std::runtime_error (reason),
+                                                     mknown (true)
+    { }
+
+    bool known (void) const { return mknown; }
+  private:
+    bool mknown;
+  };
+
+  // llvm doesn't provide this, and it's really useful for debugging
+  std::ostream& operator<< (std::ostream& os, const llvm::Value& v);
+
+  template <typename HOLDER_T, typename SUB_T>
+  class jit_internal_node;
+
+  // jit_internal_list and jit_internal_node implement generic embedded doubly
+  // linked lists.  List items extend from jit_internal_list, and can be placed
+  // in nodes of type jit_internal_node.  We use CRTP twice.
+  template <typename LIST_T, typename NODE_T>
+  class
+  jit_internal_list
+  {
+    friend class jit_internal_node<LIST_T, NODE_T>;
+  public:
+    jit_internal_list (void) : use_head (0), use_tail (0), muse_count (0) { }
+
+    virtual ~jit_internal_list (void)
+    {
+      while (use_head)
+        use_head->stash_value (0);
+    }
+
+    NODE_T * first_use (void) const { return use_head; }
+
+    size_t use_count (void) const { return muse_count; }
+  private:
+    NODE_T *use_head;
+    NODE_T *use_tail;
+    size_t muse_count;
+  };
+
+  // a node for internal linked lists
+  template <typename LIST_T, typename NODE_T>
+  class
+  jit_internal_node
+  {
+  public:
+    typedef jit_internal_list<LIST_T, NODE_T> jit_ilist;
+
+    jit_internal_node (void) : mvalue (0), mnext (0), mprev (0) { }
+
+    ~jit_internal_node (void) { remove (); }
+
+    LIST_T * value (void) const { return mvalue; }
+
+    void stash_value (LIST_T *avalue)
+    {
+      remove ();
+
+      mvalue = avalue;
+
+      if (mvalue)
+        {
+          jit_ilist *ilist = mvalue;
+          NODE_T *sthis = static_cast<NODE_T *> (this);
+          if (ilist->use_head)
+            {
+              ilist->use_tail->mnext = sthis;
+              mprev = ilist->use_tail;
+            }
+          else
+            ilist->use_head = sthis;
+
+          ilist->use_tail = sthis;
+          ++ilist->muse_count;
+        }
+    }
+
+    NODE_T * next (void) const { return mnext; }
+
+    NODE_T * prev (void) const { return mprev; }
+  private:
+    void remove ()
+    {
+      if (mvalue)
+        {
+          jit_ilist *ilist = mvalue;
+          if (mprev)
+            mprev->mnext = mnext;
+          else
+            // we are the use_head
+            ilist->use_head = mnext;
+
+          if (mnext)
+            mnext->mprev = mprev;
+          else
+            // we are the use tail
+            ilist->use_tail = mprev;
+
+          mnext = mprev = 0;
+          --ilist->muse_count;
+          mvalue = 0;
+        }
+    }
+
+    LIST_T *mvalue;
+    NODE_T *mnext;
+    NODE_T *mprev;
+  };
+
+  // Use like: isa<jit_phi> (value)
+  // basically just a short cut type typing dyanmic_cast.
+  template <typename T, typename U>
+  bool isa (U *value)
+  {
+    return dynamic_cast<T *> (value);
   }
 
-  NODE_T * first_use (void) const { return use_head; }
-
-  size_t use_count (void) const { return muse_count; }
-private:
-  NODE_T *use_head;
-  NODE_T *use_tail;
-  size_t muse_count;
-};
-
-// a node for internal linked lists
-template <typename LIST_T, typename NODE_T>
-class
-jit_internal_node
-{
-public:
-  typedef jit_internal_list<LIST_T, NODE_T> jit_ilist;
-
-  jit_internal_node (void) : mvalue (0), mnext (0), mprev (0) { }
-
-  ~jit_internal_node (void) { remove (); }
-
-  LIST_T * value (void) const { return mvalue; }
-
-  void stash_value (LIST_T *avalue)
-  {
-    remove ();
-
-    mvalue = avalue;
-
-    if (mvalue)
-      {
-        jit_ilist *ilist = mvalue;
-        NODE_T *sthis = static_cast<NODE_T *> (this);
-        if (ilist->use_head)
-          {
-            ilist->use_tail->mnext = sthis;
-            mprev = ilist->use_tail;
-          }
-        else
-          ilist->use_head = sthis;
-
-        ilist->use_tail = sthis;
-        ++ilist->muse_count;
-      }
-  }
-
-  NODE_T * next (void) const { return mnext; }
-
-  NODE_T * prev (void) const { return mprev; }
-private:
-  void remove ()
-  {
-    if (mvalue)
-      {
-        jit_ilist *ilist = mvalue;
-        if (mprev)
-          mprev->mnext = mnext;
-        else
-          // we are the use_head
-          ilist->use_head = mnext;
-
-        if (mnext)
-          mnext->mprev = mprev;
-        else
-          // we are the use tail
-          ilist->use_tail = mprev;
-
-        mnext = mprev = 0;
-        --ilist->muse_count;
-        mvalue = 0;
-      }
-  }
-
-  LIST_T *mvalue;
-  NODE_T *mnext;
-  NODE_T *mprev;
-};
-
-// Use like: isa<jit_phi> (value)
-// basically just a short cut type typing dyanmic_cast.
-template <typename T, typename U>
-bool isa (U *value)
-{
-  return dynamic_cast<T *> (value);
 }
 
 #endif

@@ -99,12 +99,12 @@ namespace octave
 
 #if defined (HAVE_LLVM)
     // some functions use by tree_jit
-    jit_info * get_info (void) const
+    octave::jit_info * get_info (void) const
     {
       return compiled;
     }
 
-    void stash_info (jit_info *jinfo)
+    void stash_info (octave::jit_info *jinfo)
     {
       compiled = jinfo;
     }

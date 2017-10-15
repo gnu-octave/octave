@@ -39,9 +39,9 @@ along with Octave; see the file COPYING.  If not, see
 extern template class OCTAVE_API Array<idx_vector>;
 extern template class OCTAVE_API Array<octave_idx_type>;
 
-NO_INSTANTIATE_ARRAY_SORT (jit_function);
+NO_INSTANTIATE_ARRAY_SORT (octave::jit_function);
 
-INSTANTIATE_ARRAY (jit_function, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave::jit_function, OCTINTERP_API);
 
 #if defined (Cell_h)
 #  error Must not include Cell.h in Array-jit.h

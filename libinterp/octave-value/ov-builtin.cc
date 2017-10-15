@@ -93,14 +93,14 @@ octave_builtin::call (octave::tree_evaluator& tw, int nargout,
   return retval;
 }
 
-jit_type *
+octave::jit_type *
 octave_builtin::to_jit (void) const
 {
   return jtype;
 }
 
 void
-octave_builtin::stash_jit (jit_type& type)
+octave_builtin::stash_jit (octave::jit_type& type)
 {
   jtype = &type;
 }

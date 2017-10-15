@@ -40,12 +40,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <llvm/Support/raw_os_ostream.h>
 
-std::ostream&
-operator<< (std::ostream& os, const llvm::Value& v)
+namespace octave
 {
-  llvm::raw_os_ostream llvm_out (os);
-  v.print (llvm_out);
-  return os;
+
+  std::ostream&
+  operator<< (std::ostream& os, const llvm::Value& v)
+  {
+    llvm::raw_os_ostream llvm_out (os);
+    v.print (llvm_out);
+    return os;
+  }
+
 }
 
 #endif

@@ -1196,7 +1196,7 @@ namespace octave
 
     // Axes planes
     set_color (axe_color);
-    set_polygon_offset (true, 2.5);
+    set_polygon_offset (true, 9.0);
 
     glBegin (GL_QUADS);
 
@@ -2401,7 +2401,7 @@ namespace octave
               glEnable (GL_LIGHTING);
             glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD)
                           ? GL_SMOOTH : GL_FLAT);
-            set_polygon_offset (true, 1);
+            set_polygon_offset (true, 1.0);
             if (fc_mode == TEXTURE)
               glEnable (GL_TEXTURE_2D);
 
@@ -3431,12 +3431,22 @@ namespace octave
     if (props.get_string ().isempty ())
       return;
 
+    Matrix pos = xform.scale (props.get_data_position ());
+
+    // Handle clipping manually when drawing text background
+    if (! props.is_clipping () ||
+        (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) ==
+         octave_uint8 (0x40)))
+      {
+        set_clipping (false);
+        draw_text_background (props);
+        set_clipping (props.is_clipping ());
+      }
+
     set_font (props);
 
-    Matrix pos = xform.scale (props.get_data_position ());
     const Matrix bbox = props.get_extent_matrix ();
 
-    // FIXME: handle margin and surrounding box
     bool blend = glIsEnabled (GL_BLEND);
 
     glEnable (GL_BLEND);
@@ -3452,6 +3462,110 @@ namespace octave
 #else
 
     octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
+  opengl_renderer::draw_text_background (const text::properties& props,
+                                         bool do_rotate)
+  {
+#if defined (HAVE_OPENGL)
+
+    Matrix bgcol = props.get_backgroundcolor_rgb ();
+    Matrix ecol = props.get_edgecolor_rgb ();
+
+    if (bgcol.isempty () && ecol.isempty ())
+      return;
+
+    Matrix pos = xform.scale (props.get_data_position ());
+    ColumnVector pixpos = get_transform ().transform (pos(0), pos(1),
+                                                      pos(2), false);
+    const Matrix bbox = props.get_extent_matrix ();
+
+#  if defined (HAVE_FRAMEWORK_OPENGL)
+    GLint vp[4];
+#  else
+    int vp[4];
+#  endif
+
+    glGetIntegerv (GL_VIEWPORT, vp);
+
+    // Save current transform matrices and set orthogonal window coordinates
+    glMatrixMode (GL_PROJECTION);
+    glPushMatrix ();
+    glLoadIdentity ();
+    glOrtho (0, vp[2], vp[3], 0, xZ1, xZ2);
+    glMatrixMode (GL_MODELVIEW);
+    glPushMatrix ();
+    glLoadIdentity ();
+
+    // Translate coordinates so that the text anchor is (0,0)
+    glTranslated (pixpos(0), pixpos(1), -pixpos(2));
+
+    // FIXME: Only multiples of 90° are handled by the text renderer.
+    //        Handle others here.
+    double rotation = props.get_rotation ();
+
+    if (do_rotate && rotation != 0.0 && rotation != 90.0
+        && rotation != 180.0 && rotation != 270.0)
+      glRotated (-rotation, 0.0, 0.0, 1.0);
+
+    double m = props.get_margin ();
+    double x0 = bbox (0) - m;
+    double x1 = x0 + bbox(2) + 2 * m;
+    double y0 = -(bbox (1) - m);
+    double y1 = y0 - (bbox(3) + 2 * m);
+
+    if (! bgcol.isempty ())
+      {
+        glColor3f (bgcol(0), bgcol(1), bgcol(2));
+
+        bool depth_test = glIsEnabled (GL_DEPTH_TEST);
+        if (depth_test)
+          set_polygon_offset (true, 4.0);
+
+        glBegin (GL_QUADS);
+        glVertex2d (x0, y0);
+        glVertex2d (x1, y0);
+        glVertex2d (x1, y1);
+        glVertex2d (x0, y1);
+        glEnd ();
+
+        if (depth_test)
+          set_polygon_offset (false);
+      }
+
+    if (! ecol.isempty ())
+      {
+        glColor3f (ecol(0), ecol(1), ecol(2));
+
+        set_linestyle (props.get_linestyle (), false, props.get_linewidth ());
+        set_linewidth (props.get_linewidth ());
+
+        glBegin (GL_LINE_STRIP);
+        glVertex2d (x0, y0);
+        glVertex2d (x1, y0);
+        glVertex2d (x1, y1);
+        glVertex2d (x0, y1);
+        glVertex2d (x0, y0);
+        glEnd ();
+      }
+
+    // Restore previous coordinate system
+    glPopMatrix();
+    glMatrixMode (GL_PROJECTION);
+    glPopMatrix();
+
+#else
+
+    octave_unused_parameter (props);
+    octave_unused_parameter (do_rotate);
 
     // This shouldn't happen because construction of opengl_renderer
     // objects is supposed to be impossible if OpenGL is not available.

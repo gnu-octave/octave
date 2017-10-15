@@ -59,6 +59,10 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
       warning ("off", "Octave:quadcc:RelTol-conversion")
 
+ ** The properties "BackgroundColor", "EdgeColor", "LineStyle",
+    "LineWidth", and "Margin" are now implemented for text objects using
+    an OpenGL toolkit.
+
  ** Other new functions added in 4.4:
 
       camlookat

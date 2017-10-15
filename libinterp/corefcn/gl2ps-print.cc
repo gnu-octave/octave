@@ -947,6 +947,8 @@ namespace octave
     if (props.get_string ().isempty ())
       return;
 
+    draw_text_background (props, true);
+
     // First set font properties: freetype will use them to compute
     // coordinates and gl2ps will retrieve the color directly from the
     // feedback buffer

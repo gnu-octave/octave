@@ -76,6 +76,8 @@ namespace octave
     virtual void draw_light (const light::properties& props);
     virtual void draw_hggroup (const hggroup::properties& props);
     virtual void draw_text (const text::properties& props);
+    virtual void draw_text_background (const text::properties& props,
+                                       bool do_rotate = false);
     virtual void draw_image (const image::properties& props);
     virtual void draw_uipanel (const uipanel::properties& props,
                                const graphics_object& go);

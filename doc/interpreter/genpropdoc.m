@@ -1004,7 +1004,8 @@ z data.";
 
       ## Specific properties
       case "backgroundcolor"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Color of the background area.  \
+@xref{Colors, , colorspec}.";
         s.valid = valid_color;
 
       case "color"
@@ -1013,7 +1014,8 @@ z data.";
 
       case "displayname"
       case "edgecolor"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Color of the outline of the background area.  \
+@xref{Colors, , colorspec}.";
         s.valid = valid_color;
 
       case "editing"
@@ -1048,14 +1050,16 @@ interpreted.\n\
 @xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
 
       case "linestyle"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Style of the outline.  @xref{Line Styles}.";
 
       case "linewidth"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Width of the outline.";
         s.valid = "scalar";
 
       case "margin"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Margins between the borders of the background area \
+and the texts.  The value is currently interpreted as pixels, regardless \
+of the @qcode{\"fontunits\"} property.";
         s.valid = "scalar";
 
       case "position"

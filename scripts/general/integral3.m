@@ -283,9 +283,8 @@ endfunction
 %! assert (integral3 (f, 0, 1, 0, 1, 0, 1, "vectorized", false), 0.125, 1e-10);
 
 ## tolerance tests
-%!shared f
+%!test
 %! f = @(x, y, z) 2 * x.^2 + 3 * y.^2 + 4 * z.^2;
-
 %!assert (integral3 (f, 0, 5, -5, 0, 0, 5, "AbsTol", 1e-9), 9375, 1e-9)
 %!assert (integral3 (f, 0, 5, -5, 0, 0, 5, "RelTol", 1e-5), 9375, -1e-5)
 %!assert (integral3 (f, 0, 5, -5, 0, 0, 5, "RelTol", 1e-6, "AbsTol", 1e-9),
@@ -293,8 +292,11 @@ endfunction
 
 ## non-rectangular region
 ## This test is too slow with "iterated" method
-%!assert (integral3 (@(x,y,z) 1 ./ (x + y + z), 0, 1, 0, @(x) 1 - x, 0,
-%!        @(x, y) 1 - x - y, "method", "tiled"), 0.25, 1e-6)
+%!test
+%! f = @(x,y,z) 1 ./ (x + y + z);
+%! ymax = @(x) 1 - x;
+%! zmax = @(x, y) 1 - x - y;
+%! assert (integral3 (f, 0, 1, 0, ymax, 0, zmax, "method", "tiled"), 0.25, 1e-6);
 
 ## Test input validation
 %!error integral3

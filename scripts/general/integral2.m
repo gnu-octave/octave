@@ -257,49 +257,43 @@ endfunction
 ## vectorized = false test
 %!test
 %! f = @(x, y) x * y;
-%! assert (integral2 (f, 0, 1, 0, 1, "vectorized", false), 0.25, 1e-10);
+%!assert (integral2 (f, 0, 1, 0, 1, "vectorized", false), 0.25, 1e-10)
 
 ## tolerance tests
-%!shared f
+%!test
 %! f = @(x, y) 9 * x.^2 + 15 * y.^2;
-
 %!assert (integral2 (f, 0, 5, -5, 0, "AbsTol", 1e-9), 5000, 1e-9)
 %!assert (integral2 (f, 0, 5, -5, 0, "RelTol", 1e-5), 5000, -1e-5)
-%!assert (integral2 (f, 0, 5, -5, 0, "RelTol", 1e-6, "AbsTol", 1e-9),
-%!        5000, 1e-9)
+%!assert (integral2 (f, 0, 5, -5, 0, "RelTol", 1e-6, "AbsTol", 1e-9), 5000, 1e-9)
 
 ## tests from dblquad
-%!assert (integral2 (@(x, y) 1 ./ (x+y), 0, 1, 0, 1, "AbsTol", 1e-7),
-%!        2*log (2), 1e-7)
-%!assert (integral2 (@(x, y) 1 ./ (x+y), 0, 1, 0, 1, "RelTol", 1e-5),
-%!        2*log (2), -1e-5)
-%!assert (integral2 (@(x, y) 1 ./ (x+y), 0, 1, 0, 1, "AbsTol", 1e-8,
-%!                                                   "RelTol", 1e-6),
+%!test
+%! f = @(x, y) 1 ./ (x+y);
+%!assert (integral2 (f, 0, 1, 0, 1, "AbsTol", 1e-7), 2*log (2), 1e-7)
+%!assert (integral2 (f, 0, 1, 0, 1, "RelTol", 1e-5), 2*log (2), -1e-5)
+%!assert (integral2 (f, 0, 1, 0, 1, "AbsTol", 1e-8, "RelTol", 1e-6),
 %!        2*log (2), -1e-6)
+%!assert (integral2 (f, 0, 1, 0, @(x) 1 - x), 1, -1e-6)
+
 %!assert (integral2 (@(x, y) exp (-x.^2 - y.^2) , -1, 1, -1, 1),
 %!        pi * erf (1).^2, 1e-10)
 
 %!assert (integral2 (@plus, 1, 2, 3, 4), 5, 1e-10)
-%!assert (integral2 (@(x,y) 1 ./ (x + y), 0, 1, 0, @(x) 1 - x), 1, -1e-6)
 
 ## tests from dblquad w/method specified
-%!assert (integral2 (@(x, y) 1 ./ (x+y), 0, 1, 0, 1,
-%!                   "AbsTol", 1e-7, "method", "iterated"),
+%!assert (integral2 (f, 0, 1, 0, 1, "AbsTol", 1e-7, "method", "iterated"),
 %!        2*log (2), 1e-7)
-%!assert (integral2 (@(x, y) 1 ./ (x+y), 0, 1, 0, 1,
-%!                   "RelTol", 1e-5, "method", "iterated"),
+%!assert (integral2 (f, 0, 1, 0, 1, "RelTol", 1e-5, "method", "iterated"),
 %!        2*log (2), -1e-5)
-%!assert (integral2 (@(x, y) 1 ./ (x+y), 0, 1, 0, 1,
-%!                   "AbsTol", 1e-8, "RelTol", 1e-6, "method", "iterated"),
+%!assert (integral2 (f, 0, 1, 0, 1, "AbsTol", 1e-8, "RelTol", 1e-6,
+%!                                  "Method", "iterated"),
 %!        2*log (2), -1e-6)
+%!assert (integral2 (f, 0, 1, 0, @(x) 1 - x, "Method", "iterated"), 1, -1e-6)
 %!assert (integral2 (@(x, y) exp (-x.^2 - y.^2) , -1, 1, -1, 1,
-%!                   "method", "iterated"),
+%!                                                "Method", "iterated"),
 %!        pi * erf (1).^2, 1e-10)
 
 %!assert (integral2 (@plus, 1, 2, 3, 4, "method", "iterated"), 5, 1e-10)
-%!assert (integral2 (@(x,y) 1 ./ (x + y), 0, 1, 0, @(x) 1 - x,
-%!                   "method", "iterated"),
-%!        1, -1e-6)
 
 ## Test input validation
 %!error integral2 ()

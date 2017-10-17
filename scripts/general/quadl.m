@@ -149,7 +149,7 @@ function [q, nfun, hmin] = adaptlobstp (f, a, b, fa, fb, q0, nfun, hmin,
   if ((abs (i1-i2) < tol || mll <= a || b <= mrr) && nfun > 2)
     q = i1;
   else
-    q = zeros (6, 1);
+    q = zeros (6, 1, class (x));
     [q(1), nfun, hmin] = adaptlobstp (f, a  , mll, fa  , fmll, q0/6, nfun, hmin,
                                       tol, trace, varargin{:});
     [q(2), nfun, hmin] = adaptlobstp (f, mll, ml , fmll, fml , q0/6, nfun, hmin,
@@ -186,6 +186,11 @@ endfunction
 %! [q, nfun2] = quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.1, []);
 %! assert (q, (60 + sin(4) - sin(64))/12, 0.1);
 %! assert (nfun2 > nfun1);
+
+%!test  # test single input/output
+%! assert (class (quadl (@sin, 0, 1)), "double");
+%! assert (class (quadl (@sin, single (0), 1)), "single");
+%! assert (class (quadl (@sin, 0, single (1))), "single");
 
 ## Test input validation
 %!error quadl ()

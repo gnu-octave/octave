@@ -322,9 +322,6 @@ if test $ENABLE_ATOMIC_REFCOUNT = yes; then
     [Define to 1 to use atomic operations for reference counting.])
 fi
 
-### Disable running Make in the doc directory.
-### This is useful, for example, when building Octave on systems without TeX.
-
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
 AC_CHECK_SIZEOF([void *])

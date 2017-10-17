@@ -2412,7 +2412,7 @@ jit_info::execute (const vmap& extra_vars) const
 
       // do not store for loop bounds temporary
       if (name.size () && name[0] != '#')
-        symtab::assign (arguments[i].first, real_arguments[i]);
+        symtab.assign (arguments[i].first, real_arguments[i]);
     }
 
   octave_quit ();

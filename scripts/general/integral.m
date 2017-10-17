@@ -23,8 +23,9 @@
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
 ## adaptive quadrature.
 ##
-## @code{integral} is a wrapper for @code{quadgk} (for scalar integrands) and
-## @code{quadv} (for array-valued integrands) intended to provide @sc{matlab}
+## @code{integral} is a wrapper for @code{quadcc} (general scalar integrands),
+## @code{quadgk} (integrals with specified integration paths), and @code{quadv}
+## (array-valued integrands) that is intended to provide @sc{matlab}
 ## compatibility.  More control of the numerical integration may be achievable
 ## by calling the various quadrature functions directly.
 ##
@@ -52,7 +53,8 @@
 ## @code{integral} expects @var{f} to return a scalar value unless
 ## @var{arrayvalued} is specified as true.  This option will cause
 ## @code{integral} to perform the integration over the entire array and return
-## @var{q} with the same dimensions as returned by @var{f}.
+## @var{q} with the same dimensions as returned by @var{f}.  For more detail
+## see @code{quadv}.
 ##
 ## @item AbsTol
 ## Define the absolute error tolerance for the quadrature.  The default
@@ -85,14 +87,15 @@
 ## If tolerances are left unspecified, and any integration limits or waypoints
 ## are of type @code{single}, then Octave's integral functions automatically
 ## reduce the default absolute and relative error tolerances as specified
-## above.  If tighter tolerances are desired they must be specified. 
+## above.  If tighter tolerances are desired they must be specified.
 ## @sc{matlab} leaves the tighter tolerances appropriate for @code{double}
 ## inputs in place regardless of the class of the integration limits.
 ##
 ## @item
-## As a consequence of using @code{quadgk} and @code{quadv}, certain option
-## combinations are not supported.  Currently, @qcode{"ArrayValued"} cannot be
-## combined with @qcode{"RelTol"} or @qcode{"Waypoints"}.
+## As a consequence of using @code{quadcc}, @code{quadgk}, and @code{quadv},
+## certain option combinations are not supported.  Currently,
+## @qcode{"ArrayValued"} cannot be combined with @qcode{"RelTol"} or
+## @qcode{"Waypoints"}.
 ## @end enumerate
 ##
 ## @seealso{integral2, integral3, quad, quadgk, quadv, quadl, quadcc, trapz,
@@ -106,9 +109,10 @@ function q = integral (f, a, b, varargin)
   endif
 
   if (nargin == 3)
+    issingle = isa (a, "single") || isa (b, "single");
     ## Pass the simplest case directly to general integrator.
-    ## Let quadgk function handle input checks on function and limits.
-    q = quadgk (f, a, b);
+    ## Let quadcc function handle input checks on function and limits.
+    q = quadcc (f, a, b);
   else
     ## Parse options to determine how to call integrator.
     abstol = [];
@@ -137,31 +141,49 @@ function q = integral (f, a, b, varargin)
       endswitch
     endwhile
 
-    if (! arrayvalued)
-      ## quadgk will accept empty values of optional parameters.
-      q = quadgk (f, a, b,
-                  "AbsTol", abstol, "RelTol", reltol, "WayPoints", waypoints);
-    else
-      ## FIXME: Replace warning with array compatible call to quadgk
+    issingle = (isa (a, "single") || isa (b, "single")
+                || isa (waypoints, "single"));
+
+    if (arrayvalued)
+      ## Pass vector valued function to quadv, checking for conflicting params
+
+      ## FIXME: Replace warning when have array compatible call with waypoints
       if (! isempty (waypoints))
         warning(["integral: array-valued quadrature routine currently ", ...
                  "unable to handle WayPoints.  WayPoints are ignored."]);
       endif
 
-      ## FIXME: Remove warning once we have reltol compatible arrayval'd
-      ##        quad or arrayfun call to quadgk.
+      ## FIXME: Remove warning once we have reltol compatible arrayval'd quadfn
       if (! isempty (reltol))
         warning(["integral: array-valued quadrature only accepts AbsTol.", ...
                  "  RelTol ignored."]);
       endif
-
       if (isempty (abstol))
-        issingle = isa (a, "single") || isa (b, "single");
         abstol = ifelse (issingle, 1e-5, 1e-10);
       endif
 
       q = quadv (f, a, b, abstol);
+
+    else
+      if (isempty (abstol))
+        abstol = ifelse (issingle, 1e-5, 1e-10);
+      endif
+      if (isempty (reltol))
+        reltol = ifelse (issingle, 1e-4, 1e-6);
+      endif
+
+      if (! isempty (waypoints))
+        q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol,
+                             "WayPoints", waypoints);
+      else
+        q = quadcc (f, a, b, [abstol, reltol]);
+      endif
     endif
+  endif
+
+  ## Preserve type single for output which quadcc may have discarded
+  if (issingle)
+    q = single (q);
   endif
 
 endfunction
@@ -187,28 +209,44 @@ endfunction
 %! f = @(x) 1./(2.*x-1);
 %! assert (integral (f, 0, 0, "Waypoints", [1+1i, 1-1i]), -pi*1i, 1e-10);
 
-%!test  # test array function
+%!test  # an array-valued function
 %! f = @(x) sin ((1:5)*x);
 %! assert (integral (f, 0, 1, "ArrayValued", true), 1./[1:5]-cos(1:5)./[1:5],
 %!         1e-10);
+
+%!test  # test single input/output
+%! assert (integral (@sin, 0, 1), cos(0)-cos(1), 1e-10);
+%! assert (class (integral (@sin, single (0), 1)), "single");
+%! assert (class (integral (@sin, 0, single (1))), "single");
+%! assert (class (integral (@sin, single (0), single (1))), "single");
+%! assert (integral (@sin, 0, 1, "Waypoints", 0.5), cos(0)-cos(1), 1e-10);
+%! assert (class (integral (@sin, 0, 1, "Waypoints", single (0.5))), "single");
+%! assert (class (integral (@sin, single (0), 1, "Waypoints", 0.5)), "single");
+%! assert (class (integral (@sin, 0, single (1), "Waypoints", 0.5)), "single");
 
 %!test
 %! f = @(x) x.^5 .* exp (-x) .* sin (x);
 %! assert (integral (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
 
+## tests from quadcc
+%!assert (integral (@sin, -pi, pi), 0, 1e-10)
+%!assert (integral (inline ("sin"), -pi, pi), 0, 1e-10)
+%!assert (integral ("sin", -pi, pi), 0, 1e-10)
+%!assert (integral (@sin, -pi, 0), -2, 1e-10)
+%!assert (integral (@sin, 0, pi), 2, 1e-10)
+%!assert (integral (@(x) 1./(sqrt (x).*(x+1)), 0, Inf), pi, -1e-6)
+%!assert (integral (@(x) 1./(sqrt (x).*(x+1)), 0, Inf,
+%!                  "AbsTol", 0, "RelTol", 1e-8),
+%!        pi, -1e-8)
+%!assert (integral (@(x) exp (-x .^ 2), -Inf, Inf), sqrt (pi), 1e-10)
+%!assert (integral (@(x) exp (-x .^ 2), -Inf, 0), sqrt (pi)/2, 1e-10)
+
 ## tests from quadgk
-%!assert (integral (inline ("sin"),-pi,pi), 0, 1e-10);
-%!assert (integral ("sin",-pi,pi), 0, 1e-10);
-%!assert (integral (@sin,-pi,pi), 0, 1e-10);
-%!assert (integral (@sin,-pi,0), -2, 1e-10);
-%!assert (integral (@sin,0,pi), 2, 1e-10);
-%!assert (integral (@(x) 1./sqrt (x), 0, 1), 2, 1e-10);
+%!assert (integral (@sin,-pi,pi, "WayPoints",0, "AbsTol",1e-6, "RelTol",1e-3),
+%!        0, 1e-6)
 %!assert (integral (@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1), 2, 1e-10);
-%!assert (integral (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-10);
 %!assert (integral (@(z) log (z),1+i,1+i, "WayPoints", [1-i, -1,-i, -1+i]),
 %!        -pi * 1i, 1e-10);
-%!assert (integral (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), -1e-6);
-%!assert (integral (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, -1e-6);
 
 ## tests from quadv
 ## Test vector-valued functions

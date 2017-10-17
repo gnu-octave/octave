@@ -544,7 +544,7 @@ QString QConsolePrivate::getSelection (void)
 
               QChar c (buf[i].Char.UnicodeChar);
               if (c.isNull ())
-                c = QChar (QChar::Space);
+                c = QChar (' ');
 
               selection.append (c);
               if (! c.isSpace ())

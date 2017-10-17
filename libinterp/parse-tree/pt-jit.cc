@@ -353,15 +353,9 @@ jit_convert::visit_continue_command (tree_continue_command&)
 }
 
 void
-jit_convert::visit_global_command (tree_global_command&)
+jit_convert::visit_decl_command (tree_decl_command&)
 {
-  throw jit_fail_exception ("No visit_global_command implemenation");
-}
-
-void
-jit_convert::visit_persistent_command (tree_persistent_command&)
-{
-  throw jit_fail_exception ("No visit_persistent_command implementation");
+  throw jit_fail_exception ("No visit_decl_command implementation");
 }
 
 void

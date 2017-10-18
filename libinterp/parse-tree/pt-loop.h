@@ -30,6 +30,7 @@ class octave_value;
 #include "pt-cmd.h"
 #include "pt-walk.h"
 #include "symtab.h"
+#include "pt-jit.h"
 
 class jit_info;
 

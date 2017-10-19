@@ -1513,8 +1513,8 @@ desired accuracy of the result.  The first element of the vector is the desired
 absolute tolerance, and the second element is the desired relative tolerance.
 To choose a relative test only, set the absolute tolerance to zero.  To choose
 an absolute test only, set the relative tolerance to zero.  The default
-absolute tolerance is @math{1e^{-10}} and the default relative tolerance is
-@math{1e^{-6}}.
+absolute tolerance is @math{1e^{-10}} (@math{1e^{-5}} for single), and the
+default relative tolerance is @math{1e^{-6}} (@math{1e^{-4}} for single).
 
 The optional argument @var{sing} contains a list of points where the integrand
 has known singularities, or discontinuities in any of its derivatives, inside
@@ -1577,6 +1577,7 @@ Software, Vol. 37, Issue 3, Article No. 3, 2010.
   int nargin = args.length ();
   octave_function *fcn;
   double a, b, abstol, reltol, *sing;
+  bool issingle;
 
   // Variables needed for transforming the integrand.
   bool wrap = false;
@@ -1614,15 +1615,25 @@ Software, Vol. 37, Issue 3, Article No. 3, 2010.
   if (! args(1).is_real_scalar ())
     error ("quadcc: lower limit of integration (A) must be a real scalar");
   a = args(1).double_value ();
+  issingle = args(1).is_single_type ();
 
   if (! args(2).is_real_scalar ())
     error ("quadcc: upper limit of integration (B) must be a real scalar");
   b = args(2).double_value ();
+  issingle = (issingle || args(2).is_single_type ());
 
   if (nargin < 4 || args(3).isempty ())
     {
-      abstol = 1.0e-10;
-      reltol = 1.0e-6;
+      if (issingle)
+        {
+          abstol = 1.0e-5;
+          reltol = 1.0e-4;
+        }
+      else
+        {
+          abstol = 1.0e-10;
+          reltol = 1.0e-6;
+        }
     }
   else if (! args(3).isnumeric () || args(3).numel () > 2)
     error ("quadcc: TOL must be a 1- or 2-element vector [AbsTol, RelTol]");
@@ -1645,7 +1656,10 @@ Software, Vol. 37, Issue 3, Article No. 3, 2010.
               do_warn = false;
             }
 
-          reltol = 1.0e-6;
+          if (issingle)
+            reltol = 1.0e-4;
+          else
+            reltol = 1.0e-6;
         }
       else
         {
@@ -2213,7 +2227,10 @@ Software, Vol. 37, Issue 3, Article No. 3, 2010.
     }
 #endif
 
-  return ovl (igral, err, neval);
+  if (issingle)
+    return ovl (static_cast<float> (igral), err, neval);
+  else
+    return ovl (igral, err, neval);
 }
 
 /*
@@ -2242,6 +2259,12 @@ Software, Vol. 37, Issue 3, Article No. 3, 2010.
 %! [q, err, npoints] = quadcc ("__nansin", -pi, pi, [0, 1e-6]);
 %! assert (q, 0, -1e-6);
 %! assert (err, 0, 15*eps);
+
+%!test
+%! assert (class (quadcc (@sin, 0, 1)), "double");
+%! assert (class (quadcc (@sin, single (0), 1)), "single");
+%! assert (class (quadcc (@sin, 0, single (1))), "single");
+%! assert (class (quadcc (@sin, single (0), single (1))), "single");
 
 ## Test input validation
 %!error (quadcc ())

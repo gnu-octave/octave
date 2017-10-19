@@ -147,7 +147,14 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
               || (! is_function_handle (za) && isa (za, "single"))
               || (! is_function_handle (zb) && isa (zb, "single")));
 
-  ## Set defaults, update with any specified parameters.
+  ## Communicate to downstream quadrature routines that at least one limit of
+  ## integration was of single type by casting xa, xb to single.
+  if (issingle)
+    xa = single (xa);
+    xb = single (xb);
+  endif
+
+  ## Set default tolerances, and then update with any specified parameters.
   if (issingle)
     abstol = 1e-5;
     reltol = 1e-4;

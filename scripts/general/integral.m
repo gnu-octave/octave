@@ -109,7 +109,6 @@ function q = integral (f, a, b, varargin)
   endif
 
   if (nargin == 3)
-    issingle = isa (a, "single") || isa (b, "single");
     ## Pass the simplest case directly to general integrator.
     ## Let quadcc function handle input checks on function and limits.
     q = quadcc (f, a, b);
@@ -145,7 +144,7 @@ function q = integral (f, a, b, varargin)
                 || isa (waypoints, "single"));
 
     if (arrayvalued)
-      ## Pass vector valued function to quadv, checking for conflicting params
+      ## Pass vector-valued function to quadv, checking for conflicting params
 
       ## FIXME: Replace warning when have array compatible call with waypoints
       if (! isempty (waypoints))
@@ -179,11 +178,6 @@ function q = integral (f, a, b, varargin)
         q = quadcc (f, a, b, [abstol, reltol]);
       endif
     endif
-  endif
-
-  ## Preserve type single for output which quadcc may have discarded
-  if (issingle)
-    q = single (q);
   endif
 
 endfunction

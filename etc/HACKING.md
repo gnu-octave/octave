@@ -342,12 +342,6 @@ An overview of the directory layout of Octave's source files:
     fntests.m        script to run function tests embedded in C++ and
                      .m files
 
-----
-John W. Eaton
-jwe@octave.org
-
-Last updated: Thu, 26 Jan 2017 08:29:19 EST
-
 
 ################################################################################
 

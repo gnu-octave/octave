@@ -448,9 +448,9 @@ octave_qscintilla::smart_indent (bool do_smart_indent,
 {
   QString prevline = text (line);
 
-  QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|do|function"
-                          "|properties|events|classdef|unwind_protect"
-                          "|unwind_protect_cleanup|try)"
+  QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|otherwise"
+                          "|do|function|properties|events|classdef"
+                          "|unwind_protect|unwind_protect_cleanup|try)"
                           "[\r]?[\n\t #%]");
   // last word except for comments, assuming no ' or " in comment.
   // rx_end = QRegExp ("(\\w+)[ \t;\r\n]*([%#][^\"']*)?$");
@@ -480,7 +480,9 @@ octave_qscintilla::smart_indent (bool do_smart_indent,
           setCursorPosition (line+1, indentation (line) + indentationWidth ());
         }
 
-      if (do_auto_close && ! inline_end)
+      if (do_auto_close
+              && ! inline_end
+              && ! first_word.contains (QRegExp ("(case|otherwise)")))
         {
           // Do auto close
           auto_close (do_auto_close, line, prevline, first_word);

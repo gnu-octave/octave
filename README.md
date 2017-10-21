@@ -1,13 +1,20 @@
-GNU Octave -- a high-level language for numerical computations.
+GNU Octave -- a high-level language for numerical computations     {#mainpage}
+==============================================================
 
 Copyright (C) 1996-2017 John W. Eaton
 
 Overview
 --------
 
-GNU Octave is a high-level language, primarily intended for numerical
-computations.  It provides a convenient command line interface for
-solving linear and nonlinear problems numerically.
+GNU Octave is a high-level interpreted language, primarily intended
+for numerical computations.  It provides capabilities for the
+numerical solution of linear and nonlinear problems, and for
+performing other numerical experiments.  It also provides extensive
+graphics capabilities for data visualization and manipulation.  GNU
+Octave is normally used through its interactive interface (CLI and
+GUI), but it can also be used to write non-interactive programs.
+The GNU Octave language is quite similar to Matlab so that most
+programs are easily portable.
 
 GNU Octave is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by
@@ -21,17 +28,17 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 Availability
 ------------
 
-The latest released version of Octave is always available via
-anonymous ftp from ftp.gnu.org and its many mirror sites around the
+The latest released version of Octave is always available from
+<https://ftp.gnu.org/gnu/octave/> and many mirror sites around the
 world.  You may also find links to binary distributions at
-http://www.octave.org/download.html.  The current development sources
-may be found on Savannah (http://savannah.gnu.org/projects/octave)
-under the Source Code tab.
+<https://www.octave.org/download.html>.  The current development
+sources may be found under the Source Code tab on
+[Savannah](https://savannah.gnu.org/projects/octave/).
 
 Installation
 ------------
@@ -43,43 +50,49 @@ approximately 350 MB of disk space (again, considerably less, 70 MB,
 if you don't build shared libraries or the binaries and libraries do
 not include debugging symbols).
 
-To compile Octave, you will need a recent version of GNU Make.  You
-will also need a recent version of g++ or another ANSI C++ compiler.
-You will also need a Fortran 77 compiler or f2c.  If you use f2c, you
-will need a script like fort77 that works like a normal Fortran
-compiler by combining f2c with your C compiler in a single script.
+To compile Octave, you will need a recent version of:
 
-YOU MUST HAVE GNU MAKE TO COMPILE OCTAVE.  Octave's Makefiles use
-features of GNU Make that are not present in other versions of make.
-GNU Make is very portable and easy to install.
+- [GNU Make](https://www.gnu.org/software/make/)
+- [GNU G++](https://gcc.gnu.org/) or another C++11 compiler
+- [GNU Fortran](https://gcc.gnu.org/fortran/), another Fortran 77
+  compiler, or [f2c](http://www.netlib.org/f2c/)
 
-See the notes in the files INSTALL.OCTAVE and the system-specific README
-files in the etc directory of the Octave source distribution for more
-specific installation instructions.
+Octave's Makefiles use features of GNU Make that are not present in
+other versions of make.  If you use `f2c`, you will need a script
+like `fort77` that works like a normal Fortran compiler by combining
+`f2c` with your C compiler in a single script.
+
+See the notes in the files `INSTALL.OCTAVE` and the system-specific
+`README` files in the `etc` directory of the Octave source
+distribution for more detailed installation instructions.
 
 Bugs and Patches
 ----------------
 
-The file BUGS explains the recommended procedure for reporting bugs
-or contributing patches.
+The file `BUGS` explains the recommended procedure for reporting bugs
+on the [bug tracker](http://bugs.octave.org) or contributing patches.
 
 Documentation
 -------------
 
-Octave's manual has been revised for version 3.4, but it is lagging a
-bit behind the development of the software.  In particular, there is
-currently no complete documentation of the C++ class libraries.  If
-you notice omissions or inconsistencies, please report them on the
-bug tracker at http://bugs.octave.org.  Specific suggestions for ways
-to improve Octave and its documentation are always welcome.  Reports
-with patches are even more welcome.
+* [Octave's manual](https://www.octave.org/doc/interpreter/) is a
+  comprehensive user guide covering introductive and more advanced
+  topics.
+* [Octave's wiki](https://wiki.octave.org) is a user community page,
+  covering various topics and answering
+  [FAQ](https://wiki.octave.org/FAQ).
+* [Octave's Doxygen](https://www.octave.org/doxygen/) documentation
+  explains the C++ class libraries.
+
+Partially, the up-to-dateness of the documentation is lagging a bit
+behind the development of the software.  If you notice omissions or
+inconsistencies, please report them at our bug tracker.  Specific
+suggestions for ways to improve Octave and its documentation are
+always welcome.  Reports with patches are even more welcome.
 
 Additional Information
 ----------------------
 
-Up to date information about Octave is available on the WWW at the
-URL http://www.octave.org, including archives of the help, bug, and
-maintainers mailing lists.
-
-
-Last updated: Fri, 10 Jun 2011 14:02:32 EDT
+Up to date information about Octave is available on the WWW at
+<https://www.octave.org>, or ask for help via email
+<help@octave.org>.

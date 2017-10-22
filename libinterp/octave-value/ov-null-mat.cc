@@ -99,18 +99,38 @@ DEFUN (isnull, args, ,
 Return true if @var{x} is a special null matrix, string, or single quoted
 string.
 
-Indexed assignment with such a value on the right-hand side should delete
-array elements.  This function should be used when overloading indexed
-assignment for user-defined classes instead of @code{isempty}, to
-distinguish the cases:
+Indexed assignment with such a null value on the right-hand side should delete
+array elements.  This function is used in place of @code{isempty} when
+overloading the indexed assignment method (@code{subsasgn}) for user-defined
+classes.  @code{isnull} is used to distinguish between these two cases:
 
-@table @asis
-@item @code{A(I) = []}
-This should delete elements if @code{I} is nonempty.
+@code{@var{A}(@var{I}) = []}
 
-@item @code{X = []; A(I) = X}
-This should give an error if @code{I} is nonempty.
-@end table
+and
+
+@code{@var{X} = []; @var{A}(@var{I}) = @var{X}}
+
+In the first assignment, the right-hand side is @code{[]} which is a special
+null value.  As long as the index @var{I} is not empty, this code should
+delete elements from @var{A} rather than perform assignment.
+
+In the second assignment, the right-hand side is empty (because @var{X} is
+@code{[]}), but it is @strong{not} null.  This code should assign the empty
+value to elements in @var{A}.
+
+An example from Octave's built-in char class demonstrates the interpreter
+behavior when @code{isnull} is used correctly.
+
+@example
+@group
+str = "Hello World";
+nm = "Wally";
+str(7:end) = nm                # indexed assignment
+  @result{} str = Hello Wally
+str(7:end) = ""                # indexed deletion
+  @result{} str = Hello 
+@end group
+@end example
 @seealso{isempty, isindex}
 @end deftypefn */)
 {

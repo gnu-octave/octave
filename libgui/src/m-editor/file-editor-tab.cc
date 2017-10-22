@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-//! @file A single GUI file tab.
+//! @file file-editor-tab.cc A single GUI file tab.
 //!
 //! This interfaces QsciScintilla with the rest of Octave.
 

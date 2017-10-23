@@ -235,18 +235,6 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _enc_indicator->setText (_encoding);
   // no changes in encoding yet
   _new_encoding = _encoding;
-
-  // indicators
-  _indicator_highlight_all
-        = _edit_area->indicatorDefine (QsciScintilla::StraightBoxIndicator);
-  if (_indicator_highlight_all == -1)
-    _indicator_highlight_all = 1;
-
-  _edit_area->setIndicatorDrawUnder (true, _indicator_highlight_all);
-
-  _marker_highlight_all = _edit_area->markerDefine (QsciScintilla::Minus);
-  if (_marker_highlight_all == -1)
-    _marker_highlight_all = 1;
 }
 
 file_editor_tab::~file_editor_tab (void)
@@ -803,12 +791,7 @@ file_editor_tab::update_lexer_settings ()
   // color indicator for highlighting all occurrences:
   // applications highlight color with more transparency
   QColor hg = QApplication::palette ().color (QPalette::Highlight);
-  hg.setAlphaF (0.25);
-  _edit_area->setIndicatorForegroundColor (hg, _indicator_highlight_all);
-  _edit_area->setIndicatorOutlineColor (hg, _indicator_highlight_all);
-
-  _edit_area->setMarkerBackgroundColor (hg, _marker_highlight_all);
-  _edit_area->setMarkerForegroundColor (hg, _marker_highlight_all);
+  _edit_area->set_selection_marker_color (hg);
 
   // fix line number width with respect to the font size of the lexer and
   // set the line numbers font depending on the lexers font
@@ -2856,11 +2839,13 @@ file_editor_tab::handle_double_click (int, int, int modifier)
     {
       // double clicks without modifier
       // clear any existing indicators of this type
-      _edit_area->clear_indicator (_indicator_highlight_all,
-                                   _marker_highlight_all);
+      _edit_area->clear_selection_markers ();
 
       if (_highlight_all_occurrences)
         {
+          // Clear any previous selection.
+          _edit_area->set_word_selection ();
+
           // highlighting of all occurrences of the clicked word is enabled
 
           // get the resulting cursor position
@@ -2902,12 +2887,8 @@ file_editor_tab::handle_double_click (int, int, int modifier)
                 {
                   // get cursor position after having found an occurrence
                   _edit_area->getCursorPosition (&oline, &ocol);
-                  // set the indicator
-                  _edit_area->fillIndicatorRange (oline, ocol - wlen,
-                                                  oline, ocol,
-                                                  _indicator_highlight_all);
-
-                  _edit_area->markerAdd (oline, _marker_highlight_all);
+                  // mark the selection
+                  _edit_area->show_selection_markers (oline, ocol, wlen);
 
                   // find next occurrence
                   find_result_available = _edit_area->findNext ();
@@ -2918,6 +2899,7 @@ file_editor_tab::handle_double_click (int, int, int modifier)
               _edit_area->setFirstVisibleLine (first_line);
               _edit_area->setCursorPosition (line, col);
               _edit_area->setSelection (line, col - wlen, line, col);
+              _edit_area->set_word_selection (word);
             }
         }
     }

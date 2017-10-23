@@ -51,7 +51,8 @@ public:
     unsure_breakpoint,
     bookmark,
     debugger_position,
-    unsure_debugger_position
+    unsure_debugger_position,
+    selection
   };
 
   marker (QsciScintilla *edit_area, int original_linenr,

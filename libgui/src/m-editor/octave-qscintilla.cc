@@ -44,8 +44,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexerdiff.h>
 
 #include <Qsci/qscicommandset.h>
+
 #include <QShortcut>
-#include <QMessageBox>
+
+// FIXME: hardwired marker numbers?
+#include "marker.h"
 
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
@@ -94,9 +97,13 @@ is_end (const QString& candidate, const QString& opening)
 }
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
-  : QsciScintilla (p)
+  : QsciScintilla (p), m_word_at_cursor (), m_selection (),
+    m_selection_line (-1), m_selection_col (-1), m_indicator_id (1)
 {
   connect (this, SIGNAL (textChanged (void)), this, SLOT (text_changed (void)));
+
+  connect (this, SIGNAL (cursorPositionChanged (int, int)),
+           this, SLOT (cursor_position_changed (int, int)));
 
   // clear scintilla edit shortcuts that are handled by the editor
   QsciCommandSet *cmd_set = standardCommands ();
@@ -186,8 +193,30 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
     }
 #endif
 
+  // selection markers
+
+  m_indicator_id = indicatorDefine (QsciScintilla::StraightBoxIndicator);
+  if (m_indicator_id == -1)
+    m_indicator_id = 1;
+
+  setIndicatorDrawUnder (true, m_indicator_id);
+
+  markerDefine (QsciScintilla::Minus, marker::selection);
+
   // init state of undo/redo action for this tab
   emit status_update (isUndoAvailable (), isRedoAvailable ());
+}
+
+void
+octave_qscintilla::set_selection_marker_color (const QColor& c)
+{
+  QColor ic = c;
+  ic.setAlphaF (0.25);
+  setIndicatorForegroundColor (ic, m_indicator_id);
+  setIndicatorOutlineColor (ic, m_indicator_id);
+
+  setMarkerForegroundColor (c, marker::selection);
+  setMarkerBackgroundColor (c, marker::selection);
 }
 
 // context menu requested
@@ -322,14 +351,14 @@ octave_qscintilla::get_actual_word (void)
 
 // helper function for clearing all indicators of a specific style
 void
-octave_qscintilla::clear_indicator (int indicator_style, int marker_style)
+octave_qscintilla::clear_selection_markers (void)
 {
   int end_pos = text ().length ();
   int end_line, end_col;
   lineIndexFromPosition (end_pos, &end_line, &end_col);
-  clearIndicatorRange (0, 0, end_line, end_col, indicator_style);
+  clearIndicatorRange (0, 0, end_line, end_col, m_indicator_id);
 
-  markerDeleteAll (marker_style);
+  markerDeleteAll (marker::selection);
 }
 
 // Function returning the true cursor position where the tab length
@@ -528,6 +557,30 @@ octave_qscintilla::smart_indent (bool do_smart_indent,
 }
 
 void
+octave_qscintilla::set_word_selection (const QString& word)
+{
+  m_selection = word;
+
+  if (word.isEmpty ())
+    {
+      m_selection_line = -1;
+      m_selection_col = -1;
+
+      clear_selection_markers ();
+    }
+  else
+    getCursorPosition (&m_selection_line, &m_selection_col);
+}
+
+void
+octave_qscintilla::show_selection_markers (int line, int col, int len)
+{
+  fillIndicatorRange (line, col - len, line, col, m_indicator_id);
+
+  markerAdd (line, marker::selection);
+}
+
+void
 octave_qscintilla::contextmenu_help (bool)
 {
   contextmenu_help_doc (false);
@@ -591,6 +644,19 @@ void
 octave_qscintilla::text_changed (void)
 {
   emit status_update (isUndoAvailable (), isRedoAvailable ());
+}
+
+void
+octave_qscintilla::cursor_position_changed (int line, int col)
+{
+  // Clear the selection if we move away from it.  We have to check the
+  // position, because we allow entering text at the point of the
+  // selection to trigger a search and replace that does not clear the
+  // selection until it is complete.
+
+  if (! m_selection.isEmpty ()
+      && (line != m_selection_line || col != m_selection_col))
+    set_word_selection ();
 }
 
 // when edit area gets focus update information on undo/redo actions

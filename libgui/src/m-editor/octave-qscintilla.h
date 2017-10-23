@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_octave_qscintilla_h 1
 
 #include <Qsci/qsciscintilla.h>
+
 #include <QMenu>
 #include <QContextMenuEvent>
 
@@ -53,12 +54,18 @@ public:
   void context_run (void);
   void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
   bool get_actual_word (void);
-  void clear_indicator (int indicator_style, int marker_style);
+  void clear_selection_markers (void);
   void get_current_position (int *pos, int *line, int *col);
   QString comment_string (void);
   int get_style (int pos = -1);
   int is_style_comment (int pos = -1);
   void smart_indent (bool do_smart_indent, int do_auto_close, int line);
+
+  void set_word_selection (const QString& word = QString ());
+
+  void show_selection_markers (int line, int col, int len);
+
+  void set_selection_marker_color (const QColor& c);
 
 signals:
 
@@ -83,6 +90,7 @@ private slots:
   void contextmenu_break_once (const QPoint&);
 
   void text_changed (void);
+  void cursor_position_changed (int, int);
 
 protected:
 
@@ -94,6 +102,11 @@ private:
                    const QString& line, QString& first_word);
 
   QString m_word_at_cursor;
+
+  QString m_selection;
+  int m_selection_line;
+  int m_selection_col;
+  int m_indicator_id;
 };
 
 #endif

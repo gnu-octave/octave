@@ -306,8 +306,6 @@ private:
   int _col;
   bool _lines_changed;
   bool _highlight_all_occurrences;
-  int _indicator_highlight_all;
-  int _marker_highlight_all;
   int m_bp_restore_count;
 
 };

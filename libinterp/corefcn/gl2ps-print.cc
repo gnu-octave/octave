@@ -93,6 +93,35 @@ namespace octave
                         int halign, int valign, double rotation = 0.0);
 
     void set_font (const base_properties& props);
+  
+    static bool has_alpha (const graphics_handle& h)
+    {
+      bool retval = false;
+      graphics_object go = gh_manager::get_object (h);
+
+      if (! go.valid_object ())
+        return retval;
+
+      if (go.isa ("axes") || go.isa ("hggroup"))
+        {
+          Matrix  children = go.get ("children").matrix_value ();
+          for (octave_idx_type ii = 0; ii < children.numel (); ii++)
+            {
+              retval = has_alpha (graphics_handle (children(ii)));
+              if (retval)
+                break;
+            }
+        }
+      else if (go.isa ("patch") || go.isa ("surface"))
+        {
+          octave_value fa = go.get ("facealpha");
+          if (fa.is_scalar_type () && fa.is_double_type () 
+              && fa.double_value () < 1)
+            retval = true;
+        }
+
+      return retval;
+    }
 
     void draw_axes (const axes::properties& props)
     {
@@ -101,7 +130,28 @@ namespace octave
       glGetIntegerv (GL_VIEWPORT, vp);
       gl2psBeginViewport (vp);
 
-      // Draw and finish () or there may primitives missing in the gl2ps output.
+
+      // Don't remove hidden primitives when some of them are transparent
+      GLint opts;
+      gl2psGetOptions (&opts);
+      if (has_alpha (props.get___myhandle__ ()))
+        {
+          opts &= ~GL2PS_OCCLUSION_CULL;
+          // FIXME: currently the GL2PS_BLEND (which is more an equivalent of 
+          // GL_ALPHA_TEST than GL_BLEND) is not working on a per primitive
+          // basis. We thus set it once per viewport.
+          gl2psEnable (GL2PS_BLEND);
+        }
+      else
+        {
+          opts |= GL2PS_OCCLUSION_CULL;
+          gl2psDisable (GL2PS_BLEND);
+        }
+
+      gl2psSetOptions (opts);
+
+      // Draw and finish () or there may be primitives missing in the gl2ps 
+      // output.
       opengl_renderer::draw_axes (props);
       finish ();
 
@@ -114,8 +164,8 @@ namespace octave
 
       buffer_overflow |= (state == GL2PS_OVERFLOW);
 
-      // Don't draw background for subsequent viewports (legends, subplots, etc.)
-      GLint opts;
+      // Don't draw background for subsequent viewports (legends, subplots, 
+      // etc.)
       gl2psGetOptions (&opts);
       opts &= ~GL2PS_DRAW_BACKGROUND;
       gl2psSetOptions (opts);
@@ -335,11 +385,9 @@ namespace octave
               include_graph = "foobar-inc";
 
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
-            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave", nullptr,
-                                        gl2ps_term, gl2ps_sort,
-                                        (GL2PS_NO_BLENDING
-                                         | GL2PS_OCCLUSION_CULL
-                                         | GL2PS_BEST_ROOT
+            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave", 
+                                        nullptr, gl2ps_term, gl2ps_sort,
+                                        (GL2PS_BEST_ROOT
                                          | gl2ps_text
                                          | GL2PS_DRAW_BACKGROUND
                                          | GL2PS_NO_PS3_SHADING

@@ -120,7 +120,7 @@ EXTRA_DIST += \
   COPYING \
   INSTALL \
   NEWS \
-  README.md \
+  README \
   run-octave.in \
   $(BUILT_DISTFILES)
 
@@ -342,13 +342,6 @@ check-subst-vars: build-aux/check-subst-vars.sh make-vars config-vars
 nonexistent-file:
 	$(AM_V_at)rm -f bits/stl_algo.h
 .PHONY: nonexistent-file
-
-## We have README.md, not README.  This dummy rule prevents automake
-## from complaining that we are not following the GNU coding standards.
-## We don't generate README from README.md since it is probably more
-## confusing to have both than to just have README.md.
-
-README: README.md
 
 .gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)

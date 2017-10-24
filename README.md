@@ -1,4 +1,4 @@
-GNU Octave -- a high-level language for numerical computations
+GNU Octave -- a high-level language for numerical computations     {#mainpage}
 ==============================================================
 
 Copyright (C) 1996-2017 John W. Eaton

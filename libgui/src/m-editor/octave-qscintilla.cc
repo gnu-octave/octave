@@ -45,7 +45,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <Qsci/qscicommandset.h>
 
+#include <QKeySequence>
 #include <QShortcut>
+#include <QToolTip>
+#include <QVBoxLayout>
 
 // FIXME: hardwired marker numbers?
 #include "marker.h"
@@ -98,7 +101,8 @@ is_end (const QString& candidate, const QString& opening)
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p), m_word_at_cursor (), m_selection (),
-    m_selection_line (-1), m_selection_col (-1), m_indicator_id (1)
+    m_selection_replacement (), m_selection_line (-1),
+    m_selection_col (-1), m_indicator_id (1)
 {
   connect (this, SIGNAL (textChanged (void)), this, SLOT (text_changed (void)));
 
@@ -566,7 +570,11 @@ octave_qscintilla::set_word_selection (const QString& word)
       m_selection_line = -1;
       m_selection_col = -1;
 
+      m_selection_replacement = "";
+
       clear_selection_markers ();
+
+      QToolTip::hideText ();
     }
   else
     getCursorPosition (&m_selection_line, &m_selection_col);
@@ -665,6 +673,114 @@ void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
   emit status_update (isUndoAvailable (), isRedoAvailable ());
 
   QsciScintilla::focusInEvent (focusEvent);
+}
+
+void
+octave_qscintilla::keyPressEvent (QKeyEvent *key_event)
+{
+  if (m_selection.isEmpty ())
+    QsciScintilla::keyPressEvent (key_event);
+  else
+    {
+      if (key_event->key () == Qt::Key_Return
+          && key_event->modifiers () == Qt::ShiftModifier)
+        {
+          // get the resulting cursor position
+          // (required if click was beyond a line ending)
+          int line, col;
+          getCursorPosition (&line, &col);
+
+          // remember first visible line for restoring the view afterwards
+          int first_line = firstVisibleLine ();
+
+          // search for first occurrence of the detected word
+          bool find_result_available
+            = findFirst (m_selection,
+                         false,   // no regexp
+                         true,    // case sensitive
+                         true,    // whole words only
+                         false,   // do not wrap
+                         true,    // forward
+                         0, 0,    // from the beginning
+                         false
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+                         , true
+#endif
+                         );
+
+          while (find_result_available)
+            {
+              replace (m_selection_replacement);
+
+              // FIXME: is this the right thing to do?  findNext doesn't
+              // work properly if the length of the replacement text is
+              // different from the original.
+
+              int new_line, new_col;
+              getCursorPosition (&new_line, &new_col);
+
+              find_result_available
+                = findFirst (m_selection,
+                             false,   // no regexp
+                             true,    // case sensitive
+                             true,    // whole words only
+                             false,   // do not wrap
+                             true,    // forward
+                             new_line, new_col,    // from new pos
+                             false
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+                             , true
+#endif
+                             );
+            }
+
+          // restore the visible area of the file, the cursor position,
+          // and the selection
+          setFirstVisibleLine (first_line);
+          setCursorPosition (line, col);
+
+          // Clear the selection.
+          set_word_selection ();
+        }
+      else
+        {
+          // FIXME: End selection replacement if text is not valid as
+          // a word constituent (control characters, etc.).
+          // FIXME: Should backspace and delete remove the last
+          // character entered or end selection replacement?
+
+          m_selection_replacement += key_event->text ();
+
+          // Perform default action.
+
+          QsciScintilla::keyPressEvent (key_event);
+
+          getCursorPosition (&m_selection_line, &m_selection_col);
+
+          // Offer to replace other instances.
+
+          QKeySequence keyseq = Qt::SHIFT + Qt::Key_Return;
+
+          QString msg = (tr ("Press '%1' to replace all occurrences of '%2' with '%3'.")
+                         . arg (keyseq.toString ())
+                         . arg (m_selection)
+                         . arg (m_selection_replacement));
+
+          QPoint global_pos;
+          QPoint local_pos;
+
+          get_global_textcursor_pos (&global_pos, &local_pos);
+
+          QFontMetrics ttfm (QToolTip::font ());
+
+          // Try to avoid overlapping with the text completion dialog
+          // and the text that is currently being edited.
+
+          global_pos += QPoint (2*ttfm.maxWidth (), -3*ttfm.height ());
+
+          QToolTip::showText (global_pos, msg);
+        }
+    }
 }
 
 void

@@ -27,8 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <Qsci/qsciscintilla.h>
 
-#include <QMenu>
 #include <QContextMenuEvent>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QMenu>
 
 class octave_qscintilla : public QsciScintilla
 {
@@ -96,6 +98,8 @@ protected:
 
   void focusInEvent (QFocusEvent *focusEvent);
 
+  void keyPressEvent (QKeyEvent *e);
+
 private:
 
   void auto_close (int auto_endif, int l,
@@ -104,6 +108,7 @@ private:
   QString m_word_at_cursor;
 
   QString m_selection;
+  QString m_selection_replacement;
   int m_selection_line;
   int m_selection_col;
   int m_indicator_id;

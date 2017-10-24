@@ -53,7 +53,7 @@ public:
   void context_run (void);
   void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
   bool get_actual_word (void);
-  void clear_indicator (int indicator_style);
+  void clear_indicator (int indicator_style, int marker_style);
   void get_current_position (int *pos, int *line, int *col);
   QString comment_string (void);
   int get_style (int pos = -1);

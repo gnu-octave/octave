@@ -243,6 +243,10 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
     _indicator_highlight_all = 1;
 
   _edit_area->setIndicatorDrawUnder (true, _indicator_highlight_all);
+
+  _marker_highlight_all = _edit_area->markerDefine (QsciScintilla::Minus);
+  if (_marker_highlight_all == -1)
+    _marker_highlight_all = 1;
 }
 
 file_editor_tab::~file_editor_tab (void)
@@ -802,6 +806,9 @@ file_editor_tab::update_lexer_settings ()
   hg.setAlphaF (0.25);
   _edit_area->setIndicatorForegroundColor (hg, _indicator_highlight_all);
   _edit_area->setIndicatorOutlineColor (hg, _indicator_highlight_all);
+
+  _edit_area->setMarkerBackgroundColor (hg, _marker_highlight_all);
+  _edit_area->setMarkerForegroundColor (hg, _marker_highlight_all);
 
   // fix line number width with respect to the font size of the lexer and
   // set the line numbers font depending on the lexers font
@@ -2849,7 +2856,8 @@ file_editor_tab::handle_double_click (int, int, int modifier)
     {
       // double clicks without modifier
       // clear any existing indicators of this type
-      _edit_area->clear_indicator (_indicator_highlight_all);
+      _edit_area->clear_indicator (_indicator_highlight_all,
+                                   _marker_highlight_all);
 
       if (_highlight_all_occurrences)
         {
@@ -2898,6 +2906,9 @@ file_editor_tab::handle_double_click (int, int, int modifier)
                   _edit_area->fillIndicatorRange (oline, ocol - wlen,
                                                   oline, ocol,
                                                   _indicator_highlight_all);
+
+                  _edit_area->markerAdd (oline, _marker_highlight_all);
+
                   // find next occurrence
                   find_result_available = _edit_area->findNext ();
                 }

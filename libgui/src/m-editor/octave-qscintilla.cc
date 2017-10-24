@@ -322,12 +322,14 @@ octave_qscintilla::get_actual_word (void)
 
 // helper function for clearing all indicators of a specific style
 void
-octave_qscintilla::clear_indicator (int indicator_style)
+octave_qscintilla::clear_indicator (int indicator_style, int marker_style)
 {
   int end_pos = text ().length ();
   int end_line, end_col;
   lineIndexFromPosition (end_pos, &end_line, &end_col);
   clearIndicatorRange (0, 0, end_line, end_col, indicator_style);
+
+  markerDeleteAll (marker_style);
 }
 
 // Function returning the true cursor position where the tab length

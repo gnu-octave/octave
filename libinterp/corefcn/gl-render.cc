@@ -2119,10 +2119,11 @@ namespace octave
     draw_axes_planes (props);
 
     if (! is2D || props.layer_is ("bottom"))
-      draw_axes_grids (props);
-
-    if (props.get_tag () != "legend" || props.get_box () != "off")
-      draw_axes_boxes (props);
+      {
+        draw_axes_grids (props);
+        if (props.get_tag () != "legend" || props.get_box () != "off")
+          draw_axes_boxes (props);
+      }
 
     set_linestyle ("-");  // Disable LineStipple
 
@@ -2131,7 +2132,11 @@ namespace octave
     draw_axes_children (props);
 
     if (is2D && props.layer_is ("top"))
-      draw_axes_grids (props);
+      {
+        draw_axes_grids (props);
+        if (props.get_tag () != "legend" || props.get_box () != "off")
+          draw_axes_boxes (props);
+      }
 
 #else
 

@@ -2385,7 +2385,7 @@ namespace octave
             fa = props.get_facealpha_double ();
             if (fc_mode == UNIFORM || fc_mode == TEXTURE)
               {
-                glColor4d (fcolor(1), fcolor(2), fcolor(3), fa);
+                glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
                 if (fl_mode > 0)
                   {
                     for (int i = 0; i < 3; i++)

@@ -1012,6 +1012,15 @@ width 0.6pt \tabskip=0pt\cr
 @end tex
 @end float
 
+@subsubsection Degree Symbol
+@cindex Degree Symbol
+
+Conformance to both @TeX{} and @sc{matlab} with respect to the @code{\circ}
+symbol is impossible.  While @TeX{} translates this symbol to @w{Unicode 2218}
+(U+2218), @sc{matlab} maps this to @w{Unicode 00B0} (U+00B0) instead.  Octave
+has chosen to follow the @TeX{} specification, but has added the additional
+symbol @code{\deg} which maps to the degree symbol (U+00B0).
+
 @node Printing and Saving Plots
 @subsection Printing and Saving Plots
 @cindex plotting, saving and printing plots

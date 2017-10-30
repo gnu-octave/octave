@@ -22,17 +22,17 @@
 ## @end deftypefn
 
 function ret = __prog_output_assert__ (str)
-  global _assert_printf = "";
+  global __assert_printf__ = "";
 
-  if (isempty (_assert_printf))
+  if (isempty (__assert_printf__))
     ret = isempty (str);
-  elseif (_assert_printf(end) == "\n")
-    ret = strcmp (_assert_printf(1:(end-1)), str);
+  elseif (__assert_printf__(end) == "\n")
+    ret = strcmp (__assert_printf__(1:(end-1)), str);
   else
-    ret = strcmp (_assert_printf, str);
+    ret = strcmp (__assert_printf__, str);
   endif
 
-  _assert_printf = "";
+  __assert_printf__ = "";
 
 endfunction
 

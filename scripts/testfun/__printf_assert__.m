@@ -22,9 +22,9 @@
 ## @end deftypefn
 
 function __printf_assert__ (varargin)
-  global _assert_printf = "";
+  global __assert_printf__ = "";
 
-  _assert_printf = cat (2, _assert_printf, sprintf (varargin{:}));
+  __assert_printf__ = cat (2, __assert_printf__, sprintf (varargin{:}));
 
 endfunction
 

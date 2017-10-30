@@ -47,6 +47,7 @@ TEST_FILES += \
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 include %reldir%/bug-35448/module.mk
+include %reldir%/bug-35881/module.mk
 include %reldir%/bug-36025/module.mk
 include %reldir%/bug-38236/module.mk
 include %reldir%/bug-38691/module.mk

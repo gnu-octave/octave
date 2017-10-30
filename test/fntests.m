@@ -18,11 +18,6 @@
 
 clear all;
 
-global files_with_no_tests = {};
-global files_with_tests = {};
-global topsrcdir;
-global topbuilddir;
-
 currdir = canonicalize_file_name (".");
 
 debug_on_error (true);
@@ -54,4 +49,4 @@ if (! strcmp (currdir, srcdir))
   fundirs{end+1} = local_script_tree;
 endif
 
-__run_test_suite__ (fundirs, testdirs);
+__run_test_suite__ (fundirs, testdirs, topsrcdir, topbuilddir);

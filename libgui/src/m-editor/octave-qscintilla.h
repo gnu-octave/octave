@@ -98,6 +98,8 @@ protected:
 
   void focusInEvent (QFocusEvent *focusEvent);
 
+  void show_replace_action_tooltip (void);
+
   void keyPressEvent (QKeyEvent *e);
 
 private:

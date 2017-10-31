@@ -676,14 +676,45 @@ void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
 }
 
 void
+octave_qscintilla::show_replace_action_tooltip (void)
+{
+  getCursorPosition (&m_selection_line, &m_selection_col);
+
+  // Offer to replace other instances.
+
+  QKeySequence keyseq = Qt::SHIFT + Qt::Key_Return;
+
+  QString msg = (tr ("Press '%1' to replace all occurrences of '%2' with '%3'.")
+                 . arg (keyseq.toString ())
+                 . arg (m_selection)
+                 . arg (m_selection_replacement));
+
+  QPoint global_pos;
+  QPoint local_pos;
+
+  get_global_textcursor_pos (&global_pos, &local_pos);
+
+  QFontMetrics ttfm (QToolTip::font ());
+
+  // Try to avoid overlapping with the text completion dialog
+  // and the text that is currently being edited.
+
+  global_pos += QPoint (2*ttfm.maxWidth (), -3*ttfm.height ());
+
+  QToolTip::showText (global_pos, msg);
+}
+
+void
 octave_qscintilla::keyPressEvent (QKeyEvent *key_event)
 {
   if (m_selection.isEmpty ())
     QsciScintilla::keyPressEvent (key_event);
   else
     {
-      if (key_event->key () == Qt::Key_Return
-          && key_event->modifiers () == Qt::ShiftModifier)
+      int key = key_event->key ();
+      Qt::KeyboardModifiers modifiers = key_event->modifiers ();
+
+      if (key == Qt::Key_Return && modifiers == Qt::ShiftModifier)
         {
           // get the resulting cursor position
           // (required if click was beyond a line ending)
@@ -744,41 +775,40 @@ octave_qscintilla::keyPressEvent (QKeyEvent *key_event)
         }
       else
         {
-          // FIXME: End selection replacement if text is not valid as
-          // a word constituent (control characters, etc.).
-          // FIXME: Should backspace and delete remove the last
-          // character entered or end selection replacement?
+          // The idea here is to allow backspace to remove the last
+          // character of the replacement text to allow minimal editing
+          // and to also end the selection replacement action if text is
+          // not valid as a word constituent (control characters,
+          // etc.).  Is there a better way than having special cases for
+          // DEL and ESC here?
 
-          m_selection_replacement += key_event->text ();
+          QString text = key_event->text ();
+
+          bool cancel_replacement = false;
+
+          if (key == Qt::Key_Backspace)
+            {
+              if (m_selection_replacement.isEmpty ())
+                cancel_replacement = true;
+              else
+                m_selection_replacement.chop (1);
+            }
+          else if (key == Qt::Key_Delete || key == Qt::Key_Escape)
+            cancel_replacement = true;
+          else if (! text.isEmpty ())
+            m_selection_replacement += text;
+          else if (modifiers != Qt::ShiftModifier)
+            cancel_replacement = true;
 
           // Perform default action.
 
           QsciScintilla::keyPressEvent (key_event);
 
-          getCursorPosition (&m_selection_line, &m_selection_col);
+          if (cancel_replacement)
+            set_word_selection ();
 
-          // Offer to replace other instances.
-
-          QKeySequence keyseq = Qt::SHIFT + Qt::Key_Return;
-
-          QString msg = (tr ("Press '%1' to replace all occurrences of '%2' with '%3'.")
-                         . arg (keyseq.toString ())
-                         . arg (m_selection)
-                         . arg (m_selection_replacement));
-
-          QPoint global_pos;
-          QPoint local_pos;
-
-          get_global_textcursor_pos (&global_pos, &local_pos);
-
-          QFontMetrics ttfm (QToolTip::font ());
-
-          // Try to avoid overlapping with the text completion dialog
-          // and the text that is currently being edited.
-
-          global_pos += QPoint (2*ttfm.maxWidth (), -3*ttfm.height ());
-
-          QToolTip::showText (global_pos, msg);
+          if (! m_selection_replacement.isEmpty ())
+            show_replace_action_tooltip ();
         }
     }
 }

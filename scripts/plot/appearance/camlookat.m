@@ -150,6 +150,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! [x, y, z] = peaks ();
 %! surf (x, y, z/5);
 %! hold on

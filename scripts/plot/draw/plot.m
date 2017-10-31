@@ -239,16 +239,19 @@ endfunction
 
 
 %!demo
+%! clf;
 %! x = 1:5;  y = 1:5;
 %! plot (x,y,"g");
 %! title ("plot() of green line at 45 degrees");
 
 %!demo
+%! clf;
 %! x = 1:5;  y = 1:5;
 %! plot (x,y,"g*");
 %! title ("plot() of green stars along a line at 45 degrees");
 
 %!demo
+%! clf;
 %! x1 = 1:5;  y1 = 1:5;
 %! x2 = 5:9; y2 = 5:-1:1;
 %! plot (x1,y1,"bo-", x2,y2,"rs-");
@@ -257,18 +260,21 @@ endfunction
 %!         "connecting lines drawn"});
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! plot (x, rand (numel (x), 3));
 %! axis ([0 10 0 1]);
 %! title ({"Three random variables", "x[1x11], y[11x3]"});
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! plot (x, rand (3, numel (x)));
 %! axis ([0 10 0 1]);
 %! title ({"Three random variables", "x[1x11], y[3x11]"});
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! plot (repmat (x, 2, 1), rand (2, numel (x)), "-s");
 %! axis ([0 10 0 1]);
@@ -276,12 +282,14 @@ endfunction
 %!         "x[2x11], y[2,11]"});
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! plot (repmat (x(:), 1, 2), rand (numel (x), 2));
 %! axis ([0 10 0 1]);
 %! title ({"Two random variables", "x[11x2], y[11x2]"});
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! shape = [1, 1, numel(x), 2];
 %! x = reshape (repmat (x(:), 1, 2), shape);

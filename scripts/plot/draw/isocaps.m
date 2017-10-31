@@ -366,6 +366,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! isoval = .4;
 %! lin = linspace (0, 1.2, 15);
 %! [x, y, z] = meshgrid (lin, lin, lin);
@@ -395,6 +396,7 @@ endfunction
 %! title ({"isocaps()", "sphere with 6 end-caps"});
 
 %!demo
+%! clf;
 %! v = smooth3 (rand (6, 8, 4));
 %! isoval = .5;
 %! x = 1:3:22;  y = -14:5:11;  z = linspace (16, 18, 4);

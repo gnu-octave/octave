@@ -181,6 +181,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! peaks ();
 %! ## rotate the camera upwards
 %! camorbit (0, 30);

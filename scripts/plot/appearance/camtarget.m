@@ -116,6 +116,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! sphere ();
 %! ## where is camera pointing?
 %! x1 = camtarget ()

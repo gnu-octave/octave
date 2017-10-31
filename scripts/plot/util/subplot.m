@@ -535,6 +535,7 @@ endfunction
 %! ylabel ylabel;
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! subplot (221);
 %!  plot (x, rand (3, 11));

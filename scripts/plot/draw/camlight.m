@@ -199,6 +199,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! ## Adding lights to a scene
 %! sphere (64);
 %! camlight
@@ -209,6 +210,7 @@ endfunction
 %! title ({"camlight()", "lights are left and right"});
 
 %!demo
+%! clf;
 %! sphere (48);
 %! title ({"camlight()", "light in fixed position ignores camera change"});
 %! axis equal;
@@ -224,6 +226,7 @@ endfunction
 %! endfor
 
 %!demo
+%! clf;
 %! sphere (48);
 %! title ({"camlight()", "update light position with camera change"});
 %! axis equal;  shading flat

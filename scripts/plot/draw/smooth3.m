@@ -145,8 +145,8 @@ endfunction
 
 
 %!demo
-%! data = rand (10, 10, 10);
 %! clf;
+%! data = rand (10, 10, 10);
 %! subplot (1, 2, 1);
 %!  patch (isosurface (data, .5), ...
 %!         "FaceColor", "blue", "EdgeColor", "k");

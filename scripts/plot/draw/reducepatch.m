@@ -350,10 +350,10 @@ endfunction
 
 
 %!demo
+%! clf;
 %! [x,y,z] = meshgrid (-2:0.5:2, -2:0.5:2, -2:0.5:2);
 %! val = x.^2 + y.^2 + z.^2;
 %! fv = isosurface (x, y, z, val, 1);
-%! figure;
 %! ax1 = subplot (1, 2, 1);
 %! patch (fv, "FaceColor", "g");
 %! view (3);  axis equal;

@@ -106,6 +106,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! sphere ();
 %! ## where is camera located?
 %! x1 = campos ()

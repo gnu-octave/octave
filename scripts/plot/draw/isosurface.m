@@ -381,6 +381,7 @@ endfunction
 %! title ("isosurfaces of two nested spheres");
 
 %!demo
+%! clf;
 %! x = 0:2;
 %! y = 0:3;
 %! z = 0:1;
@@ -388,7 +389,6 @@ endfunction
 %! v        = [0, 0, 0; 0, 0, 0; 0, 0, 1; 0, 0, 1];
 %! v(:,:,2) = [0, 0, 0; 0, 0, 1; 0, 1, 2; 0, 1, 2];
 %! iso = 0.8;
-%! clf;
 %!
 %! ## Three arguments, no output
 %! subplot (2, 2, 1);

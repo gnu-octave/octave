@@ -131,7 +131,7 @@ endfunction
 %! lin = linspace (0, 2, N);
 %! [x, y, z] = meshgrid (lin, lin, lin);
 %! val = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
-%! figure (); # Open another figure window
+%! clf;
 %!
 %! subplot (2,2,1);
 %!  view (-38, 20);

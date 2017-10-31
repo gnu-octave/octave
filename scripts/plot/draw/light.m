@@ -374,6 +374,7 @@ endfunction
 
 %!demo
 %! ## BackFaceLighting
+%! clf;
 %! [x,y,z] = meshgrid (-.5:0.1:2, -2:0.1:2, -2:0.1:2);
 %! val = x.^2 + y.^2 + z.^2;
 %! fv = isosurface (x, y, z, val, 1);
@@ -408,6 +409,7 @@ endfunction
 %!demo
 %! ## BackFaceLighting 2
 %! ## Matlab fails for "reverselit" with negated isonormals and for "unlit"
+%! clf;
 %! N = 30; iso = .8;
 %! lin = linspace (-1, 1, N);
 %! [x, y, z] = meshgrid (1.2*lin, 1.2*lin, lin);
@@ -416,7 +418,6 @@ endfunction
 %! fv = isosurface (x, y, z, val, iso);
 %! vn = isonormals (x, y, z, val, fv.vertices);
 %!
-%! clf;
 %! subplot (2, 3, 1);
 %!  view (140, 20);
 %!  axis equal

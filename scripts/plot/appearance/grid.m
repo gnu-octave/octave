@@ -150,6 +150,7 @@ endfunction
 %!  title ("yminorgrid on");
 
 %!demo
+%! clf;
 %! subplot (2,2,1);
 %!  semilogy (1:100);
 %!  grid off;

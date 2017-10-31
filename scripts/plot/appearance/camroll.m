@@ -92,7 +92,8 @@ endfunction
 
 
 %!demo
-%! peaks ()
+%! clf;
+%! peaks ();
 %! camroll (30)
 
 %!test

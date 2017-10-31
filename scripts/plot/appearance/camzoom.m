@@ -81,6 +81,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! peaks ();
 %! camzoom (2);
 

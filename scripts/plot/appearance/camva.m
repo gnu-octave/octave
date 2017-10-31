@@ -98,6 +98,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! peaks ();
 %! ## query the viewing angle
 %! a1 = camva ()

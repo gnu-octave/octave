@@ -88,6 +88,7 @@ endfunction
 
 %!demo
 %! ## sinc function using function handle
+%! clf;
 %! f = @(x) sin (pi*x) ./ (pi*x);
 %! ezplot (f);
 

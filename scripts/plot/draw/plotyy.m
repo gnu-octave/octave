@@ -304,17 +304,3 @@ endfunction
 %! subplot (2,2,4);
 %!  plotyy (x,10*sin(2*pi*x), x,cos(2*pi*x));
 %!  axis square;
-
-%!demo
-%! clf;
-%! hold on
-%! t = (0:0.1:9);
-%! x = sin (t);
-%! y = 5 * cos (t);
-%! [hax, h1, h2] = plotyy (t, x, t, y);
-%! [~, h3, h4] = plotyy (t+1, x, t+1, y);
-%! set ([h3, h4], "linestyle", "--");
-%! xlabel (hax(1), "xlabel");
-%! title (hax(2), 'Two plotyy graphs on same figure using "hold on"');
-%! ylabel (hax(1), "Left axis is Blue");
-%! ylabel (hax(2), "Right axis is Orange");

@@ -3808,18 +3808,20 @@ public:
     void update_layer (void) { update_axes_layout (); }
     void update_box (void)
     {
-      calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
-                       xaxislocation_is ("origin"),
-                       yscale.is ("log") ? 2 :
-                         (yaxislocation_is ("origin") ? 0 :
-                           (yaxislocation_is ("left") ? -1 : 1)),
-                       xlim);
-      calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
-                       yaxislocation_is ("origin"),
-                       xscale.is ("log") ? 2 :
-                         (xaxislocation_is ("origin") ? 0 :
-                           (xaxislocation_is ("bottom") ? -1 : 1)),
-                       ylim);
+      if (xticklabelmode.is ("auto"))
+        calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                         xaxislocation_is ("origin"),
+                         yscale.is ("log") ? 2 :
+                           (yaxislocation_is ("origin") ? 0 :
+                             (yaxislocation_is ("left") ? -1 : 1)),
+                         xlim);
+      if (yticklabelmode.is ("auto"))
+        calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                         yaxislocation_is ("origin"),
+                         xscale.is ("log") ? 2 :
+                           (xaxislocation_is ("origin") ? 0 :
+                             (xaxislocation_is ("bottom") ? -1 : 1)),
+                         ylim);
     }
     void update_yaxislocation (void)
     {
@@ -3830,18 +3832,20 @@ public:
                          "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
-      calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
-                       xaxislocation_is ("origin"),
-                       yscale.is ("log") ? 2 :
-                         (yaxislocation_is ("origin") ? 0 :
-                           (yaxislocation_is ("left") ? -1 : 1)),
-                       xlim);
-      calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
-                       yaxislocation_is ("origin"),
-                       xscale.is ("log") ? 2 :
-                         (xaxislocation_is ("origin") ? 0 :
-                           (xaxislocation_is ("bottom") ? -1 : 1)),
-                       ylim);
+      if (xticklabelmode.is ("auto"))
+        calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                         xaxislocation_is ("origin"),
+                         yscale.is ("log") ? 2 :
+                           (yaxislocation_is ("origin") ? 0 :
+                             (yaxislocation_is ("left") ? -1 : 1)),
+                         xlim);
+      if (yticklabelmode.is ("auto"))
+        calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                         yaxislocation_is ("origin"),
+                         xscale.is ("log") ? 2 :
+                           (xaxislocation_is ("origin") ? 0 :
+                             (xaxislocation_is ("bottom") ? -1 : 1)),
+                         ylim);
       update_ylabel_position ();
     }
     void update_xaxislocation (void)
@@ -3853,18 +3857,20 @@ public:
                          "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
-      calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
-                       xaxislocation_is ("origin"),
-                       yscale.is ("log") ? 2 :
-                         (yaxislocation_is ("origin") ? 0 :
-                           (yaxislocation_is ("left") ? -1 : 1)),
-                       xlim);
-      calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
-                       yaxislocation_is ("origin"),
-                       xscale.is ("log") ? 2 :
-                         (xaxislocation_is ("origin") ? 0 :
-                           (xaxislocation_is ("bottom") ? -1 : 1)),
-                       ylim);
+      if (xticklabelmode.is ("auto"))
+        calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                         xaxislocation_is ("origin"),
+                         yscale.is ("log") ? 2 :
+                           (yaxislocation_is ("origin") ? 0 :
+                             (yaxislocation_is ("left") ? -1 : 1)),
+                         xlim);
+      if (yticklabelmode.is ("auto"))
+        calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                         yaxislocation_is ("origin"),
+                         xscale.is ("log") ? 2 :
+                           (xaxislocation_is ("origin") ? 0 :
+                             (xaxislocation_is ("bottom") ? -1 : 1)),
+                         ylim);
       update_xlabel_position ();
     }
 

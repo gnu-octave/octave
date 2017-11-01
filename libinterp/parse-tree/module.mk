@@ -111,11 +111,18 @@ noinst_LTLIBRARIES += \
 
 %canon_reldir%_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)
 
-%canon_reldir%_libparse_tree_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS)
+%canon_reldir%_libparse_tree_la_CPPFLAGS = \
+  $(libinterp_liboctinterp_la_CPPFLAGS) \
+  $(LLVM_CPPFLAGS)
 
-%canon_reldir%_libparse_tree_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%_libparse_tree_la_CFLAGS = \
+  $(AM_CFLAGS) \
+  $(WARN_CFLAGS)
 
-%canon_reldir%_libparse_tree_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+%canon_reldir%_libparse_tree_la_CXXFLAGS = \
+  $(AM_CXXFLAGS) \
+  $(WARN_CXXFLAGS) \
+  $(LLVM_CXXFLAGS)
 
 libinterp_EXTRA_DIST += \
   %reldir%/oct-parse.in.yy \

@@ -1788,6 +1788,9 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 
 handle_cdef_object::~handle_cdef_object (void)
 {
+  // Call classdef "delete()" method on object
+  get_class ().delete_object (get_class ());
+
 #if DEBUG_TRACE
   std::cerr << "deleting " << get_class ().get_name ()
             << " object (handle)" << std::endl;

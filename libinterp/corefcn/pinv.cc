@@ -39,18 +39,17 @@ DEFUN (pinv, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} pinv (@var{x})
 @deftypefnx {} {} pinv (@var{x}, @var{tol})
-Return the pseudoinverse of @var{x}.
+Return the Moore-Penrose pseudoinverse of @var{x}.
 
 Singular values less than @var{tol} are ignored.
 
 If the second argument is omitted, it is taken to be
 
 @example
-tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,
+tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 @end example
 
-@noindent
-where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
+@seealso(inv, ldivide)
 @end deftypefn */)
 {
   int nargin = args.length ();

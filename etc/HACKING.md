@@ -1,4 +1,4 @@
-Hacking Octave
+Hacking Octave  {#Hacking}
 ==============
 
 This file attempts to describe the rules to use when hacking the

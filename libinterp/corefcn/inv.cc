@@ -54,7 +54,7 @@ equations (@var{A}*@math{x} = @math{b}) with
 If called with a sparse matrix, then in general @var{x} will be a full
 matrix requiring significantly more storage.  Avoid forming the inverse of a
 sparse matrix if possible.
-@seealso{ldivide, rdivide}
+@seealso{ldivide, rdivide, pinv}
 @end deftypefn */)
 {
   if (args.length () != 1)

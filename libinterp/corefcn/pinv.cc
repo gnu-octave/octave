@@ -189,4 +189,13 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
 %! y = pinv (x, 2);
 %! assert (diag (y), [1/3 1/2 0 0 0]');
 
+## Test special case of 0 scalars and vectors
+%!assert (pinv (0), 0)
+%!assert (pinv ([0, 0, 0]), [0; 0; 0])
+%!assert (pinv (single (0)), single (0))
+%!assert (pinv (single ([0, 0, 0])), single ([0; 0; 0]))
+%!assert (pinv (complex (0,0)), 0)
+%!assert (pinv (complex ([0,0,0], [0,0,0])), [0; 0; 0])
+%!assert (pinv (complex (single (0),0)), single (0))
+%!assert (pinv (complex (single ([0,0,0]), [0,0,0])), single ([0; 0; 0]))
 */

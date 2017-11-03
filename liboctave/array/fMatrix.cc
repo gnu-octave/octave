@@ -675,9 +675,12 @@ FloatMatrix::pseudo_inverse (float tol) const
   if (tol <= 0.0)
     {
       if (nr > nc)
-        tol = nr * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
+        tol = nr * sigma.elem (0) * std::numeric_limits<float>::epsilon ();
       else
-        tol = nc * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
+        tol = nc * sigma.elem (0) * std::numeric_limits<float>::epsilon ();
+
+      if (tol == 0)
+        tol = std::numeric_limits<float>::min ();
     }
 
   while (r >= 0 && sigma.elem (r) < tol)

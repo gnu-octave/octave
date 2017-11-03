@@ -973,6 +973,9 @@ ComplexMatrix::pseudo_inverse (double tol) const
         tol = nr * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
       else
         tol = nc * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
+
+      if (tol == 0)
+        tol = std::numeric_limits<double>::min ();
     }
 
   while (r >= 0 && sigma.elem (r) < tol)

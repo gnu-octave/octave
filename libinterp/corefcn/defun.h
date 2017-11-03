@@ -31,45 +31,182 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-int.h"
 
-// Define a builtin function.
-//
-//   name is the name of the function, unqouted.
-//
-//   args_name is the name of the octave_value_list variable used to pass
-//     the argument list to this function.
-//
-//   nargout_name is the name of the int variable used to pass the
-//     number of output arguments this function is expected to produce.
-//
-//   doc is the simple help text for the function.
+//! Macro to define a builtin function.
+//!
+//! For detailed information, see \ref Macros.
+//!
+//! @param name The **unqouted** name of the function that should be installed
+//!             on the `octave::symbol_table` and can be called by the
+//!             interpreter.  Internally, the function name is prepended by an
+//!             `F`.
+//! @param args_name The name of the octave_value_list variable used to pass
+//!                  the argument list to this function.  If this value is
+//!                  omitted, the function cannot access the argument list.
+//! @param nargout_name The name of the `int` variable used to pass the number
+//!                     of output arguments this function is expected to
+//!                     produce from the caller.  If this value is
+//!                     omitted, the function cannot access this number.
+//! @param doc Texinfo help text (docstring) for the function.
+//!
+//! @see DEFUNX, DEFCONSTFUN
 
 #define DEFUN(name, args_name, nargout_name, doc)       \
   DECLARE_FUN (name, args_name, nargout_name)
 
-#define DEFMETHOD(name, interp_name, args_name, nargout_name, doc)      \
-  DECLARE_METHOD (name, interp_name, args_name, nargout_name)
-
-// This one can be used when 'name' cannot be used directly (if it is
-// already defined as a macro).  In that case, name is already a
-// quoted string, and the internal name of the function must be passed
-// too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").
+//! Macro to define a builtin function with certain internal name.
+//!
+//! @warning Consider to use #DEFUN, unless you have good reason.
+//!
+//! For detailed information, see \ref Macros.
+//!
+//! This macro can be used when @p name cannot be used directly (for example if
+//! it is already defined as a macro).  In that case, @p name is already a
+//! quoted string (thus unaffected by macros), and the internal name of the
+//! function is given by @p fname.
+//!
+//! @param name The **qouted** name of the function that should be callable
+//!             by the interpreter.
+//! @param fname The internal **unqouted** name of the function.  This internal
+//!              name is by convention prepended by an `F`.
+//! @param args_name The name of the octave_value_list variable used to pass
+//!                  the argument list to this function.  If this value is
+//!                  omitted, the function cannot access the argument list.
+//! @param nargout_name The name of the `int` variable used to pass the number
+//!                     of output arguments this function is expected to
+//!                     produce from the caller.  If this value is
+//!                     omitted, the function cannot access this number.
+//! @param doc Texinfo help text (docstring) for the function.
+//!
+//! @see DEFUN, DEFCONSTFUN
 
 #define DEFUNX(name, fname, args_name, nargout_name, doc)       \
   DECLARE_FUNX (fname, args_name, nargout_name)
 
+//! Macro to define a builtin function that cannot be hidden by a variable.
+//!
+//! @warning Consider to use #DEFUN, unless you have good reason.
+//!
+//! For detailed information, see \ref Macros.
+//!
+//! The function gets installed to the `octave::symbol_table` in a way, such
+//! that no variable is allowed to hide this function name.
+//!
+//! @param name The **unqouted** name of the function that should be installed
+//!             on the `octave::symbol_table` and can be called by the
+//!             interpreter.  Internally, the function name is prepended by an
+//!             `F`.
+//! @param args_name The name of the octave_value_list variable used to pass
+//!                  the argument list to this function.  If this value is
+//!                  omitted, the function cannot access the argument list.
+//! @param nargout_name The name of the `int` variable used to pass the number
+//!                     of output arguments this function is expected to
+//!                     produce from the caller.  If this value is
+//!                     omitted, the function cannot access this number.
+//! @param doc Texinfo help text (docstring) for the function.
+//!
+//! @see DEFUN, DEFUNX
+
+#define DEFCONSTFUN(name, args_name, nargout_name, doc) \
+  DECLARE_FUN (name, args_name, nargout_name)
+
+//! Macro to define a builtin method.
+//!
+//! For detailed information, see \ref Macros.
+//!
+//! @param name The **unqouted** name of the method that should be installed
+//!             on the `octave::symbol_table` and can be called by the
+//!             interpreter.  Internally, the method name is prepended by an
+//!             `F`.
+//! @param interp_name The name of the `octave::interpreter` reference that can
+//!                    be used by this method.  If this value is omitted,
+//!                    there is no access to the interpreter and one should
+//!                    use #DEFUN to define a function instead.
+//! @param args_name The name of the octave_value_list variable used to pass
+//!                  the argument list to this method.  If this value is
+//!                  omitted, the method cannot access the argument list.
+//! @param nargout_name The name of the `int` variable used to pass the number
+//!                     of output arguments this method is expected to
+//!                     produce from the caller.  If this value is
+//!                     omitted, the method cannot access this number.
+//! @param doc Texinfo help text (docstring) for the method.
+//!
+//! @see DEFMETHODX, DEFCONSTMETHOD
+
+#define DEFMETHOD(name, interp_name, args_name, nargout_name, doc)      \
+  DECLARE_METHOD (name, interp_name, args_name, nargout_name)
+
+//! Macro to define a builtin method with certain internal name.
+//!
+//! @warning Consider to use #DEFMETHOD, unless you have good reason.
+//!
+//! For detailed information, see \ref Macros.
+//!
+//! This macro can be used when @p name cannot be used directly (for example if
+//! it is already defined as a macro).  In that case, @p name is already a
+//! quoted string (thus unaffected by macros), and the internal name of the
+//! method is given by @p fname.
+//!
+//! @param name The **qouted** name of the method that should be callable
+//!             by the interpreter.
+//! @param fname The internal **unqouted** name of the method.  This internal
+//!              name is by convention prepended by an `F`.
+//! @param interp_name The name of the `octave::interpreter` reference that can
+//!                    be used by this method.  If this value is omitted,
+//!                    there is no access to the interpreter and one should
+//!                    use #DEFUNX to define a function instead.
+//! @param args_name The name of the octave_value_list variable used to pass
+//!                  the argument list to this method.  If this value is
+//!                  omitted, the method cannot access the argument list.
+//! @param nargout_name The name of the `int` variable used to pass the number
+//!                     of output arguments this method is expected to
+//!                     produce from the caller.  If this value is
+//!                     omitted, the method cannot access this number.
+//! @param doc Texinfo help text (docstring) for the method.
+//!
+//! @see DEFMETHOD, DEFCONSTMETHOD
+
 #define DEFMETHODX(name, fname, interp_name, args_name, nargout_name, doc) \
   DECLARE_METHODX (fname, interp_name, args_name, nargout_name)
 
-// This is a function with a name that can't be hidden by a variable.
-#define DEFCONSTFUN(name, args_name, nargout_name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name)
+//! Macro to define a builtin method that cannot be hidden by a variable.
+//!
+//! @warning Consider to use #DEFMETHOD, unless you have good reason.
+//!
+//! For detailed information, see \ref Macros.
+//!
+//! The method gets installed to the `octave::symbol_table` in a way, such
+//! that no variable is allowed to hide this method name.
+//!
+//! @param name The **unqouted** name of the method that should be installed
+//!             on the `octave::symbol_table` and can be called by the
+//!             interpreter.  Internally, the method name is prepended by an
+//!             `F`.
+//! @param interp_name The name of the `octave::interpreter` reference that can
+//!                    be used by this method.  If this value is omitted,
+//!                    there is no access to the interpreter and one should
+//!                    use #DEFCONSTFUN to define a function instead.
+//! @param args_name The name of the octave_value_list variable used to pass
+//!                  the argument list to this method.  If this value is
+//!                  omitted, the method cannot access the argument list.
+//! @param nargout_name The name of the `int` variable used to pass the number
+//!                     of output arguments this method is expected to
+//!                     produce from the caller.  If this value is
+//!                     omitted, the method cannot access this number.
+//! @param doc Texinfo help text (docstring) for the method.
+//!
+//! @see DEFMETHOD, DEFMETHODX
 
 #define DEFCONSTMETHOD(name, interp_name, args_name, nargout_name, doc) \
   DECLARE_METHOD (name, interp_name, args_name, nargout_name)
 
-// Make alias another name for the existing function name.  This macro
-// is processed by the mkbuiltins to generate code in builtins.cc to
-// create the alias in the symbol table.
+//! Macro to define an alias for another existing function name.
+//!
+//! For detailed information, see \ref Macros.
+//!
+//! @param alias For another existing function name.
+//! @param name The name of the other existing function.
+//!
+//! @see DEFUN
 
 #define DEFALIAS(alias, name)
 

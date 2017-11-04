@@ -152,7 +152,7 @@ find_files_model::data (const QModelIndex& idx, int role) const
               break;
             }
         }
-      else if (role == Qt:: DecorationRole)
+      else if (role == Qt::DecorationRole)
         {
           switch (idx.column ())
             {

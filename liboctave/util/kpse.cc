@@ -601,7 +601,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
           for (auto p = names.cbegin (); p != names.cend (); p++)
             {
               if (p == names.cbegin ())
-                std:: cerr << *p;
+                std::cerr << *p;
               else
                 std::cerr << ", " << *p;
             }

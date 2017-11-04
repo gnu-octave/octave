@@ -292,8 +292,8 @@ class octave_int_base
 {
 public:
 
-  static T min_val () { return std::numeric_limits<T>:: min (); }
-  static T max_val () { return std::numeric_limits<T>:: max (); }
+  static T min_val () { return std::numeric_limits<T>::min (); }
+  static T max_val () { return std::numeric_limits<T>::max (); }
 
   // Convert integer value.
   template <typename S>

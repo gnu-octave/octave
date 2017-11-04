@@ -2750,7 +2750,7 @@ namespace octave
     {
       Complex retval;
 
-      if (std:: abs (x) < 1)
+      if (std::abs (x) < 1)
         {
           double im = x.imag ();
           double u = expm1 (x.real ());
@@ -2769,7 +2769,7 @@ namespace octave
     {
       FloatComplex retval;
 
-      if (std:: abs (x) < 1)
+      if (std::abs (x) < 1)
         {
           float im = x.imag ();
           float u = expm1 (x.real ());

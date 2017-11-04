@@ -2430,10 +2430,10 @@ octave_java::do_javaMethod (const std::string& name,
 }
 
 octave_value
-octave_java:: do_javaMethod (void *jni_env_arg,
-                             const std::string& class_name,
-                             const std::string& name,
-                             const octave_value_list& args)
+octave_java::do_javaMethod (void *jni_env_arg,
+                            const std::string& class_name,
+                            const std::string& name,
+                            const octave_value_list& args)
 {
 #if defined (HAVE_JAVA)
 

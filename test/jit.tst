@@ -187,17 +187,17 @@
 %! assert (abs (result - 1/9) < 1e-5);
 %! assert (jit_failcnt, 0);
 
-%!testif HAVE_LLVM
-%! jit_failcnt (0);
-%! temp = 1+1i;
-%! nan = NaN;
-%! while (1)
-%!   temp = temp - 1i;
-%!   temp = temp * nan;
-%!   break;
-%! endwhile
-%! assert (imag (temp), 0);
-%! assert (jit_failcnt, 0);
+# %!testif HAVE_LLVM
+# %! jit_failcnt (0);
+# %! temp = 1+1i;
+# %! nan = NaN;
+# %! while (1)
+# %!   temp = temp - 1i;
+# %!   temp = temp * nan;
+# %!   break;
+# %! endwhile
+# %! assert (imag (temp), 0);
+# %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
 %! jit_failcnt (0);
@@ -212,15 +212,15 @@
 %! assert (imag (temp), 0);
 %! assert (jit_failcnt, 0);
 
-%!testif HAVE_LLVM
-%! jit_failcnt (0);
-%! temp = 1+1i;
-%! while (1)
-%!   temp = temp * 5;
-%!   break;
-%! endwhile
-%! assert (temp, 5+5i);
-%! assert (jit_failcnt, 0);
+# %!testif HAVE_LLVM
+# %! jit_failcnt (0);
+# %! temp = 1+1i;
+# %! while (1)
+# %!   temp = temp * 5;
+# %!   break;
+# %! endwhile
+# %! assert (temp, 5+5i);
+# %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
 %! jit_failcnt (0);
@@ -460,17 +460,17 @@
 %! assert (a == 9);
 %! assert (jit_failcnt, 0);
 
-%!testif HAVE_LLVM
-%! jit_failcnt (0);
-%! num = 2;
-%! a = zeros (1, num);
-%! i = 1;
-%! while i <= num
-%!   a(i) = norm (eye (i));
-%!   ++i;
-%! endwhile
-%! assert (a, ones (1, num));
-%! assert (jit_failcnt, 0);
+# %!testif HAVE_LLVM
+# %! jit_failcnt (0);
+# %! num = 2;
+# %! a = zeros (1, num);
+# %! i = 1;
+# %! while i <= num
+# %!   a(i) = norm (eye (i));
+# %!   ++i;
+# %! endwhile
+# %! assert (a, ones (1, num));
+# %! assert (jit_failcnt, 0);
 
 %!function test_compute_idom ()
 %! while (li <= length (l1) && si <= length (s1))

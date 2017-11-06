@@ -49,7 +49,7 @@ If the second argument is omitted, it is taken to be
 tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 @end example
 
-@seealso(inv, ldivide)
+@seealso{inv, ldivide}
 @end deftypefn */)
 {
   int nargin = args.length ();

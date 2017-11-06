@@ -30,7 +30,8 @@ scripts_linear_algebra_FCN_FILES = \
   %reldir%/rref.m \
   %reldir%/subspace.m \
   %reldir%/trace.m \
-  %reldir%/vech.m
+  %reldir%/vech.m \
+  %reldir%/vecnorm.m
 
 %canon_reldir%dir = $(fcnfiledir)/linear-algebra
 

@@ -5581,7 +5581,7 @@ If @var{opt} is the value @qcode{"rows"}, treat each row as a vector and
 compute its norm.  The result is returned as a column vector.
 Similarly, if @var{opt} is @qcode{"columns"} or @qcode{"cols"} then
 compute the norms of each column and return a row vector.
-@seealso{normest, normest1, cond, svd}
+@seealso{normest, normest1, vecnorm, cond, svd}
 @end deftypefn */)
 {
   int nargin = args.length ();

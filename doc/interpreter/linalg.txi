@@ -137,6 +137,8 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(rref)
 
+@DOCSTRING(vecnorm)
+
 @node Matrix Factorizations
 @section Matrix Factorizations
 @cindex matrix factorizations

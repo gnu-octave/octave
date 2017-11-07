@@ -67,25 +67,32 @@ function save_cb (h, e)
   if (strcmp (lbl, "&Save"))
     fname = get (hfig, "filename");
     if (isempty (fname))
-      __save_as__ (hcbo);
+      __save_as__ (hfig);
     else
-      saveas (hcbo, fname);
+      saveas (hfig, fname);
     endif
   elseif (strcmp (lbl, "Save &As"))
-    __save_as__ (hcbo);
+    __save_as__ (hfig);
   endif
 endfunction
 
 
 function __save_as__ (caller)
-  [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg",
-                                    "Supported Graphic Formats"},
-                                   "Save Figure",
-                                   [pwd, filesep, "untitled.pdf"]);
+  [filename, filedir] = uiputfile ...
+    ({"*.fig", "Figure File";
+      "*.eps;*.epsc;*.pdf;*.svg;*.ps;*.tikz", "Vector Image Formats";
+      "*.gif;*.jpg;*.png;*.tiff", "Bitmap Image Formats"},
+     "Save Figure", fullfile (pwd, "untitled.fig"));
+
   if (filename != 0)
-    fname = [filedir filesep() filename];
+    fname = fullfile (filedir, filename);
     set (gcbf, "filename", fname);
-    saveas (caller, fname);
+    flen = numel (fname);
+    if (flen > 4 && strcmp (fname(flen-3:end), ".fig"))
+      hgsave (caller, fname);
+    else
+      saveas (caller, fname);
+    endif
   endif
 endfunction
 

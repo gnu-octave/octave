@@ -128,7 +128,7 @@ nm = "Wally";
 str(7:end) = nm                # indexed assignment
   @result{} str = Hello Wally
 str(7:end) = ""                # indexed deletion
-  @result{} str = Hello 
+  @result{} str = Hello
 @end group
 @end example
 @seealso{isempty, isindex}

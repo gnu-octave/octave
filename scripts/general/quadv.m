@@ -57,7 +57,7 @@
 ## Note: @code{quadv} is written in Octave's scripting language and can be
 ## used recursively in @code{dblquad} and @code{triplequad}, unlike the
 ## @code{quad} function.
-## @seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad, integral, 
+## @seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad, integral,
 ##          integral2, integral3}
 ## @end deftypefn
 

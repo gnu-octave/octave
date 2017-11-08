@@ -98,10 +98,10 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
     dof = n - p;  # degrees of freedom remaining after fit
     SSE = sumsq (b - A * x);
     mse = SSE / dof;
-    
+
     s = pinv_A * pinv_A';
     stdx = sqrt (diag (s) * mse);
-    
+
     if (nargout > 3)
       if (k == 1)
         S = mse * s;

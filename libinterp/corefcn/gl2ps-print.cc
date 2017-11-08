@@ -93,7 +93,7 @@ namespace octave
                         int halign, int valign, double rotation = 0.0);
 
     void set_font (const base_properties& props);
-  
+
     static bool has_alpha (const graphics_handle& h)
     {
       bool retval = false;
@@ -115,7 +115,7 @@ namespace octave
       else if (go.isa ("patch") || go.isa ("surface"))
         {
           octave_value fa = go.get ("facealpha");
-          if (fa.is_scalar_type () && fa.is_double_type () 
+          if (fa.is_scalar_type () && fa.is_double_type ()
               && fa.double_value () < 1)
             retval = true;
         }
@@ -137,7 +137,7 @@ namespace octave
       if (has_alpha (props.get___myhandle__ ()))
         {
           opts &= ~GL2PS_OCCLUSION_CULL;
-          // FIXME: currently the GL2PS_BLEND (which is more an equivalent of 
+          // FIXME: currently the GL2PS_BLEND (which is more an equivalent of
           // GL_ALPHA_TEST than GL_BLEND) is not working on a per primitive
           // basis. We thus set it once per viewport.
           gl2psEnable (GL2PS_BLEND);
@@ -150,7 +150,7 @@ namespace octave
 
       gl2psSetOptions (opts);
 
-      // Draw and finish () or there may be primitives missing in the gl2ps 
+      // Draw and finish () or there may be primitives missing in the gl2ps
       // output.
       opengl_renderer::draw_axes (props);
       finish ();
@@ -164,7 +164,7 @@ namespace octave
 
       buffer_overflow |= (state == GL2PS_OVERFLOW);
 
-      // Don't draw background for subsequent viewports (legends, subplots, 
+      // Don't draw background for subsequent viewports (legends, subplots,
       // etc.)
       gl2psGetOptions (&opts);
       opts &= ~GL2PS_DRAW_BACKGROUND;
@@ -385,7 +385,7 @@ namespace octave
               include_graph = "foobar-inc";
 
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
-            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave", 
+            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave",
                                         nullptr, gl2ps_term, gl2ps_sort,
                                         (GL2PS_BEST_ROOT
                                          | gl2ps_text

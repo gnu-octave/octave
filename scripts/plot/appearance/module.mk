@@ -54,7 +54,6 @@ FCN_FILE_DIRS += \
   %reldir%/zlim.m \
   %reldir%/zticks.m \
   %reldir%/zticklabels.m
-  
 
 %canon_reldir%dir = $(fcnfiledir)/plot/appearance
 

@@ -100,7 +100,7 @@ function camlookat (hh)
   endfor
 
   dar = daspect (hax);
-  
+
   ## current view direction
   curdir = (camtarget (hax) - campos (hax)) ./ dar;
   curdir /= norm (curdir);
@@ -117,7 +117,7 @@ function camlookat (hh)
         x1 y0 z1;
         x1 y1 z0;
         x1 y1 z1] ./ dar;
- 
+
   ## Find corner of bounding box with maximum opening angle.
   ## Make sure temporary pov is well outside boundary of bounding box.
   bb_diag = norm ([x0-x1, y0-y1, z0-z1] ./ dar);
@@ -126,7 +126,7 @@ function camlookat (hh)
   bb_cp ./= norm (bb_cp, 2, "rows");
   aperture = norm (curdir .* bb_cp, 2, "rows");
   max_corner = find (aperture == max (aperture), 1, "first");
-  
+
   ## projection of corner on line of sight
   sz = curdir * (bb(max_corner,:) - mid)';
   bb_proj = mid + sz * curdir;

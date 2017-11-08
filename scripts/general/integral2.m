@@ -108,7 +108,7 @@
 ## Programming Notes: If there are singularities within the integration region
 ## it is best to split the integral and place the singularities on the
 ## boundary.
-## 
+##
 ## Known @sc{matlab} incompatibility: If tolerances are left unspecified, and
 ## any integration limits are of type @code{single}, then Octave's integral
 ## functions automatically reduce the default absolute and relative error

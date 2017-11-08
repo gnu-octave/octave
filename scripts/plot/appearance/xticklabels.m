@@ -65,7 +65,7 @@ function retval = xticklabels (varargin)
         retval = get (varargin{1}, "xticklabel");
         return;
       else
-        arg = varargin{1};     
+        arg = varargin{1};
       endif
 
     case 2

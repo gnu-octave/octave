@@ -1668,7 +1668,7 @@ Software, Vol. 37, Issue 3, Article No. 3, 2010.
             error ("quadcc: relative tolerance must be >=0");
         }
     }
-  
+
   if (nargin < 5)
     nivals = 1;
   else if (! (args(4).is_real_scalar () || args(4).is_real_matrix ()))

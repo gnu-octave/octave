@@ -20,12 +20,12 @@
 %! global _tstvar_;  # Final test does "clear all" which removes this var.
 %!
 %! _tstvar_ = struct ("init1",-1, "a1",-1, "init2",-1, "a2",-1);
-%! bug35881 (0); 
+%! bug35881 (0);
 %! assert (_tstvar_, struct ("init1",true, "a1",1, "init2",false, "a2",1));
 %! clear -f bug35881
 %!
 %! _tstvar_ = struct ("init1",-1, "a1",-1, "init2",-1, "a2",-1);
-%! bug35881 (1); 
+%! bug35881 (1);
 %! assert (_tstvar_, struct ("init1",true, "a1",1, "init2",false, "a2",1));
 %!
 %! _tstvar_ = struct ("init1",-1, "a1",-1, "init2",-1, "a2",-1);

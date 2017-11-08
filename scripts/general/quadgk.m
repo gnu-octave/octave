@@ -120,7 +120,7 @@
 ## Computational and Applied Mathematics, pp. 131--140, Vol 211, Issue 2,
 ## Feb 2008.
 ##
-## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad, integral, 
+## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad, integral,
 ##           integral2, integral3}
 ## @end deftypefn
 

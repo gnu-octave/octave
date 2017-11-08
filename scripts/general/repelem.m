@@ -50,7 +50,7 @@
 ##   @result{}   1   1   2   4   5   5
 ## @end group
 ## @end example
-## 
+##
 ## @example
 ## @group
 ## A = magic (3)
@@ -198,7 +198,7 @@ function retval = repelem (x, varargin)
         error (["repelem: R1 must either be scalar or have the same " ...
                 "number of elements as the vector to be replicated"]);
       endif
-        
+
       ## Basic run-length decoding in function prepareIdx returns
       ## idx2 as a row vector of element indices in the right positions.
       idx2 = prepareIdx (R);

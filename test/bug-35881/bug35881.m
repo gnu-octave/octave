@@ -55,6 +55,6 @@ subf: a=1
 subf: INIT, a=1
 subf: Reference to a cleared variable a.
 Error in test_clear_inside_function (line 13)
-subf ();  fprintf ('a=%d\n', a); 
+subf ();  fprintf ('a=%d\n', a);
 #}
 

@@ -285,8 +285,8 @@ get or set individual axis limits.  Each has the same form.
 
 The @code{xticks}, @code{yticks}, @code{zticks}, @code{rticks}, and
 @code{thetaticks} functions may be used to get or set the tick mark locations
-and modes on the respective axis.  Each has the same form, although mode 
-options are not currently avaliable for @code{rticks}, and @code{thetaticks}. 
+and modes on the respective axis.  Each has the same form, although mode
+options are not currently avaliable for @code{rticks}, and @code{thetaticks}.
 
 @c FIXME: Update this section if polarplot and polar axes changes change the
 @c        associated axis properties.
@@ -302,7 +302,7 @@ options are not currently avaliable for @code{rticks}, and @code{thetaticks}.
 
 The @code{xticklabels}, @code{yticklabels}, and @code{zticklabels} functions
 may be used to get or set the label assigned to each tick location and the
-labeling mode on the respective axis.  Each has the same form. 
+labeling mode on the respective axis.  Each has the same form.
 
 @c FIXME: Update this section if polarplot and polar axes changes change the
 @c        associated axis properties.

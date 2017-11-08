@@ -61,7 +61,7 @@ function retval = thetaticks (varargin)
         retval = get (varargin{1}, "ttick");
         return;
       else
-        arg = varargin{1};     
+        arg = varargin{1};
       endif
 
     case 2

@@ -62,7 +62,7 @@ function retval = yticks (varargin)
         retval = get (varargin{1}, "ytick");
         return;
       else
-        arg = varargin{1};     
+        arg = varargin{1};
       endif
 
     case 2

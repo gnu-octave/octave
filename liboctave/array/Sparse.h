@@ -330,7 +330,7 @@ public:
   T& checkelem (octave_idx_type n)
   {
     if (n < 0 || n >= numel ())
-      // FIXME: Why should we "return" when range_error is OCTAVE_NORETURN? 
+      // FIXME: Why should we "return" when range_error is OCTAVE_NORETURN?
       return range_error ("T& Sparse<T>::checkelem", n);
     else
       {

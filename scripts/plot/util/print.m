@@ -416,7 +416,7 @@ function print (varargin)
         endif
       endfor
     endif
-    
+
     ## print() requires figure units to be "pixels"
     props(end+1).h = opts.figure;
     props(end).name = "units";

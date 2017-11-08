@@ -62,7 +62,7 @@ function retval = xticks (varargin)
         retval = get (varargin{1}, "xtick");
         return;
       else
-        arg = varargin{1};     
+        arg = varargin{1};
       endif
 
     case 2

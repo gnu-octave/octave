@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
 
 #include "base-list.h"
@@ -89,7 +90,7 @@ namespace octave
 
     tree_identifier * ident (void) { return id; }
 
-    std::string name (void) { return id ? id->name () : ""; }
+    std::string name (void) const { return id ? id->name () : ""; }
 
     tree_expression * expression (void) { return expr; }
 
@@ -145,6 +146,21 @@ namespace octave
     {
       for (tree_decl_elt *elt : *this)
         elt->mark_persistent ();
+    }
+
+    std::list<std::string> variable_names (void) const
+    {
+      std::list<std::string> retval;
+
+      for (const tree_decl_elt *elt : *this)
+      {
+        std::string nm = elt->name ();
+
+        if (! nm.empty ())
+          retval.push_back (nm);
+      }
+
+      return retval;
     }
 
     void accept (tree_walker& tw)

@@ -3962,17 +3962,8 @@ namespace octave
     int l = tok_val->line ();
     int c = tok_val->column ();
 
-    std::list<std::string> names;
-    for (tree_decl_init_list::iterator p = lst->begin ();
-         p != lst->end (); p++)
-      {
-        tree_decl_elt *elt = *p;
-
-        std::string nm = elt->name ();
-        if (! nm.empty ())
-          names.push_back (nm);
-      }
-    m_lexer.mark_as_variables (names);
+    if (lst)
+      m_lexer.mark_as_variables (lst->variable_names ());
 
     switch (tok)
       {

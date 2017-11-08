@@ -132,7 +132,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
   if (! retval)
     {
-      std::string s = arg.xstring_value ("%s: first argument must be a string",
+      std::string s = arg.xstring_value ("%s: argument must be a string",
                                          warn_for.c_str ());
 
       std::string cmd = header;

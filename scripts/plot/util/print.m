@@ -189,7 +189,6 @@
 ##
 ##   @item pdf
 ##     Portable document format
-##   @end table
 ##
 ##   @item svg
 ##     Scalable vector graphics
@@ -201,6 +200,7 @@
 ## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
 ## TikZ file (@samp{tikzstandalone} and is only available for the Gnuplot
 ## graphics toolkit).
+##   @end table
 ##
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as PostScript.

@@ -485,13 +485,11 @@ parameters for @code{dasrt}.
       func.set_constraint_function (dasrt_user_cf);
     }
 
-  ColumnVector state = args(argp).xvector_value ("dasrt: initial state X_0 must be a vector");
+  ColumnVector state = args(argp++).xvector_value ("dasrt: initial state X_0 must be a vector");
 
-  ColumnVector stateprime = args(argp).xvector_value ("dasrt: initial derivatives XDOT_0 must be a vector");
-  argp++;
+  ColumnVector stateprime = args(argp++).xvector_value ("dasrt: initial derivatives XDOT_0 must be a vector");
 
-  ColumnVector out_times = args(argp).xvector_value ("dasrt: output time variable T must be a vector");
-  argp++;
+  ColumnVector out_times = args(argp++).xvector_value ("dasrt: output time variable T must be a vector");
 
   double tzero = out_times (0);
 

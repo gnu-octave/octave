@@ -877,7 +877,7 @@ namespace QtHandles
         file = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
                                              tr ("Save Figure As"),
                                              finfo.absoluteFilePath (),
-                                             tr ("Figure File (*.fig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)",
+                                             tr ("Figure File (*.fig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)"),
                                              nullptr,
                                              QFileDialog::DontUseNativeDialog);
     }

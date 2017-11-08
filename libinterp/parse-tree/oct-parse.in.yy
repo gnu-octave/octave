@@ -3972,7 +3972,7 @@ namespace octave
         if (! nm.empty ())
           names.push_back (nm);
       }
-    lexer.mark_as_variables (names);
+    m_lexer.mark_as_variables (names);
 
     switch (tok)
       {

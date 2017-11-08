@@ -192,10 +192,10 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
 DEFMETHOD (dasrt, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn}, [], @var{x_0}, @var{xdot_0}, @var{t})
-@deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t})
-@deftypefnx {} {@dots{} =} dasrt (@var{fcn}, [], @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
+@deftypefn  {} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t})
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
+@deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t})
+@deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 Solve the set of differential-algebraic equations
 @tex
 $$ 0 = f (x, \dot{x}, t) $$

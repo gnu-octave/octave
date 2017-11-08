@@ -867,7 +867,7 @@ namespace QtHandles
       {
         prompt = true;
 
-        file = "untitled.fig";
+        file = "untitled.ofig";
       }
 
     if (prompt || file.isEmpty ())
@@ -877,7 +877,7 @@ namespace QtHandles
         file = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
                                              tr ("Save Figure As"),
                                              finfo.absoluteFilePath (),
-                                             tr ("Figure File (*.fig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)"),
+                                             tr ("Octave Figure File (*.ofig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)"),
                                              nullptr,
                                              QFileDialog::DontUseNativeDialog);
     }
@@ -901,7 +901,7 @@ namespace QtHandles
 
     size_t flen = file.length ();
 
-    if (flen > 4 && file.substr (flen-4, 4) == ".fig")
+    if (flen > 4 && file.substr (flen-4, 4) == ".ofig")
       Ffeval (ovl ("hgsave", fnum, file));
     else
       Ffeval (ovl ("print", fnum, file));

@@ -79,16 +79,16 @@ endfunction
 
 function __save_as__ (caller)
   [filename, filedir] = uiputfile ...
-    ({"*.fig", "Figure File";
+    ({"*.ofig", "Octave Figure File";
       "*.eps;*.epsc;*.pdf;*.svg;*.ps;*.tikz", "Vector Image Formats";
       "*.gif;*.jpg;*.png;*.tiff", "Bitmap Image Formats"},
-     "Save Figure", fullfile (pwd, "untitled.fig"));
+     "Save Figure", fullfile (pwd, "untitled.ofig"));
 
   if (filename != 0)
     fname = fullfile (filedir, filename);
     set (gcbf, "filename", fname);
     flen = numel (fname);
-    if (flen > 4 && strcmp (fname(flen-3:end), ".fig"))
+    if (flen > 4 && strcmp (fname(flen-3:end), ".ofig"))
       hgsave (caller, fname);
     else
       saveas (caller, fname);

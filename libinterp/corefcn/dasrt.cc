@@ -465,23 +465,37 @@ parameters for @code{dasrt}.
 
   argp++;
 
-  if (args(1).is_function_handle () || args(1).is_inline_function ())
-    dasrt_cf = args(1).function_value ();
+  if (args(1).isempty () && args(1).is_double_type ())
+    {
+      // Allow [] to skip constraint function.  This feature is
+      // undocumented now, but was supported by earlier versions.
+
+      argp++;
+    }
   else
     {
-      fcn_name = unique_symbol_name ("__dasrt_constraint_fcn__");
-      fname = "function g_out = ";
-      fname.append (fcn_name);
-      fname.append (" (x, t) g_out = ");
-      dasrt_cf = extract_function (f_arg, "dasrt", fcn_name, fname,
-                                   "; endfunction");
+      if (args(1).is_function_handle () || args(1).is_inline_function ())
+        dasrt_cf = args(1).function_value ();
+      else if (args(1).is_string ())
+        {
+          fcn_name = unique_symbol_name ("__dasrt_constraint_fcn__");
+          fname = "function g_out = ";
+          fname.append (fcn_name);
+          fname.append (" (x, t) g_out = ");
+          dasrt_cf = extract_function (args(1), "dasrt", fcn_name, fname,
+                                       "; endfunction");
+        }
+
+      if (dasrt_cf)
+        {
+          argp++;
+
+          func.set_constraint_function (dasrt_user_cf);
+        }
     }
 
-  if (! dasrt_cf)
-    error ("dasrt: invalid constraint function G");
-
-  argp++;
-  func.set_constraint_function (dasrt_user_cf);
+  if (argp + 3 > nargin)
+    print_usage ();
 
   ColumnVector state = args(argp++).xvector_value ("dasrt: initial state X_0 must be a vector");
 

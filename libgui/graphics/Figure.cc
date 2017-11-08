@@ -901,7 +901,7 @@ namespace QtHandles
 
     size_t flen = file.length ();
 
-    if (flen > 4 && file.substr (flen-4, 4) == ".ofig")
+    if (flen > 5 && file.substr (flen-5) == ".ofig")
       Ffeval (ovl ("hgsave", fnum, file));
     else
       Ffeval (ovl ("print", fnum, file));

@@ -88,7 +88,7 @@ function __save_as__ (caller)
     fname = fullfile (filedir, filename);
     set (gcbf, "filename", fname);
     flen = numel (fname);
-    if (flen > 4 && strcmp (fname(flen-3:end), ".ofig"))
+    if (flen > 5 && strcmp (fname(flen-4:end), ".ofig"))
       hgsave (caller, fname);
     else
       saveas (caller, fname);

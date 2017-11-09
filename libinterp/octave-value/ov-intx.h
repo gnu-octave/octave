@@ -369,6 +369,10 @@ public:
       }
   }
 
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag);
+
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+
 private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
@@ -672,7 +676,11 @@ public:
       }
   }
 
-private:
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag);
+
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+
+ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

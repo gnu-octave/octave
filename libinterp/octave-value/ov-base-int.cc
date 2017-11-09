@@ -405,14 +405,15 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
 
 template <typename T>
 bool
-octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                      bool)
+octave_base_int_matrix<T>::save_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name, bool)
 {
   bool retval = false;
 
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
   dim_vector dv = this->dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
@@ -461,13 +462,15 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 template <typename T>
 bool
-octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+octave_base_int_matrix<T>::load_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name)
 {
   bool retval = false;
 
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
@@ -699,14 +702,15 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
 
 template <typename T>
 bool
-octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                      bool)
+octave_base_int_scalar<T>::save_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name, bool)
 {
   bool retval = false;
 
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
   hsize_t dimens[3];
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
@@ -745,11 +749,13 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 template <typename T>
 bool
-octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+octave_base_int_scalar<T>::load_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name)
 {
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
 #if defined (HAVE_HDF5_18)
   hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else

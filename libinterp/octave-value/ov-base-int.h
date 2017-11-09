@@ -93,9 +93,13 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format);
 
-  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
+protected:
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+  bool save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name, bool);
+
+  bool load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name);
 };
 
 // base int scalar values.
@@ -150,10 +154,13 @@ public:
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format);
+protected:
 
-  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
+  bool save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name, bool);
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+  bool load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name);
 };
 
 #endif

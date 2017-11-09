@@ -40,6 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_HDF5)
 #  define HDF5_SAVE_TYPE H5T_NATIVE_INT64
+#else
+// This value will not be used.
+#  define HDF5_SAVE_TYPE 0
 #endif
 
 #include "ov-base-int.h"
@@ -65,9 +68,35 @@ template class octave_base_int_matrix<int64NDArray>;
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int64_matrix,
                                      "int64 matrix", "int64");
 
+bool
+octave_int64_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                bool flag)
+{
+  return save_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name, flag);
+}
+
+bool
+octave_int64_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+  return load_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name);
+}
+
 template class octave_base_scalar<octave_int64>;
 
 template class octave_base_int_scalar<octave_int64>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int64_scalar,
                                      "int64 scalar", "int64");
+
+bool
+octave_int64_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                bool flag)
+{
+  return save_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name, flag);
+}
+
+bool
+octave_int64_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+  return load_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name);
+}

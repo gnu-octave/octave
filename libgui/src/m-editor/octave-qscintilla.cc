@@ -383,10 +383,11 @@ octave_qscintilla::comment_string (void)
 
   switch (lexer)
     {
-#if defined (HAVE_LEXER_MATLAB)
-      case SCLEX_MATLAB:
+#if defined (HAVE_LEXER_OCTAVE) || defined (HAVE_LEXER_MATLAB)
 #if defined (HAVE_LEXER_OCTAVE)
       case SCLEX_OCTAVE:
+#else
+      case SCLEX_MATLAB:
 #endif
        {
           QSettings *settings = resource_manager::get_settings ();

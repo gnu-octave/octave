@@ -1355,7 +1355,7 @@ file_editor_tab::do_indent_selected_text (bool indent)
         }
       //set selection on (un)indented section
       _edit_area->setSelection (lineFrom, 0, lineTo,
-                                _edit_area->text (lineTo).length ());
+                                _edit_area->text (lineTo).length ()-1);
     }
   else
     {
@@ -1400,7 +1400,7 @@ file_editor_tab::do_comment_selected_text (bool comment)
         }
       //set selection on (un)commented section
       _edit_area->setSelection (lineFrom, 0, lineTo,
-                                _edit_area->text (lineTo).length ());
+                                _edit_area->text (lineTo).length ()-1);
     }
   else
     {

@@ -155,6 +155,8 @@ function opts = __opengl_print__ (opts)
 
     if (strcmp (get (opts.figure, "visible"), "on"))
       ## Use toolkits "print_figure" method
+      disp (gl2ps_device{n})
+      disp (pipeline{n})
       drawnow (gl2ps_device{n}, ['|' pipeline{n}]);
     else
       ## Use OpenGL offscreen rendering with OSMesa

@@ -99,8 +99,9 @@ function cmap = colormap (varargin)
   endif
 
   if (nargin == 1)
-    map = tolower (varargin{1});
+    map = varargin{1};
     if (ischar (map))
+      map = tolower (map);
       if (strcmp (map, "default"))
         map = viridis (64);
       else

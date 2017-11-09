@@ -113,6 +113,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     ## "pageoffset" is relative to the coordinates, not the BBox LLHC.
     str = sprintf ("%s [%d %d] %s", "<< /Margins [0 0] /.HWMargins [0 0 0 0] /PageOffset",
                    fix (opts.pageoffset), ">> setpagedevice");
+    str
     offset_ps = {"%!PS-Adobe-3.0", str, "%%EOF"};
     if (isfield (opts, "offsetfile"))
       offsetfile = opts.offsetfile;

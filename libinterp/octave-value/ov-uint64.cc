@@ -56,6 +56,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
+octave_hdf5_id octave_uint64_matrix::hdf5_save_type = HDF5_SAVE_TYPE;
+octave_hdf5_id octave_uint64_scalar::hdf5_save_type = HDF5_SAVE_TYPE;
+
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
@@ -68,35 +71,9 @@ template class octave_base_int_matrix<uint64NDArray>;
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint64_matrix,
                                      "uint64 matrix", "uint64");
 
-bool
-octave_uint64_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                 bool flag)
-{
-  return save_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name, flag);
-}
-
-bool
-octave_uint64_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
-{
-  return load_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name);
-}
-
 template class octave_base_scalar<octave_uint64>;
 
 template class octave_base_int_scalar<octave_uint64>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint64_scalar,
                                      "uint64 scalar", "uint64");
-
-bool
-octave_uint64_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                 bool flag)
-{
-  return save_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name, flag);
-}
-
-bool
-octave_uint64_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
-{
-  return load_hdf5_internal (loc_id, HDF5_SAVE_TYPE, name);
-}

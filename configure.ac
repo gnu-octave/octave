@@ -1652,7 +1652,8 @@ if test $ENABLE_JIT = yes; then
 
     LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
     LLVM_SO=LLVM-`$LLVM_CONFIG --version`
-    AC_CHECK_LIB([$LLVM_SO], [LLVMBuildAdd], [LLVM_LIBS="-l$LLVM_SO"], [LLVM_LIBS=`$LLVM_CONFIG --libs`])
+    AC_CHECK_LIB([$LLVM_SO], [LLVMBuildAdd], [LLVM_LIBS="-l$LLVM_SO"],
+                 [LLVM_LIBS="`$LLVM_CONFIG --libs` `$LLVM_CONFIG --system-libs`"])
 
     dnl
     dnl Define some extra flags that LLVM requires in order to include headers.

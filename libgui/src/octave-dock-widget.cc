@@ -431,17 +431,17 @@ octave_dock_widget::handle_settings (const QSettings *settings)
     = settings->value ("DockWidgets/widget_title_3d",50).toInt ();
 
   QColor default_var = QColor (0,0,0);
-  _fg_color = settings->value ("Dockwidgets/title_fg_color",
+  _fg_color = settings->value ("DockWidgets/title_fg_color",
                                default_var).value<QColor> ();
   default_var = QColor (0,0,0);
-  _fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
+  _fg_color_active = settings->value ("DockWidgets/title_fg_color_active",
                                       default_var).value<QColor> ();
 
   default_var = QColor (255,255,255);
-  _bg_color = settings->value ("Dockwidgets/title_bg_color",
+  _bg_color = settings->value ("DockWidgets/title_bg_color",
                                default_var).value<QColor> ();
   default_var = QColor (192,192,192);
-  _bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
+  _bg_color_active = settings->value ("DockWidgets/title_bg_color_active",
                                       default_var).value<QColor> ();
 
   int r, g, b;

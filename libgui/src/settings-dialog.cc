@@ -320,7 +320,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   // custom title bar of dock widget
   QVariant default_var = QColor (255,255,255);
-  QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
+  QColor bg_color = settings->value ("DockWidgets/title_bg_color",
                                      default_var).value<QColor> ();
   _widget_title_bg_color = new color_picker (bg_color);
   _widget_title_bg_color->setEnabled (false);
@@ -329,7 +329,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            _widget_title_bg_color, SLOT (setEnabled (bool)));
 
   default_var = QColor (192,192,192);
-  QColor bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
+  QColor bg_color_active = settings->value ("DockWidgets/title_bg_color_active",
                                             default_var).value<QColor> ();
   _widget_title_bg_color_active = new color_picker (bg_color_active);
   _widget_title_bg_color_active->setEnabled (false);
@@ -338,7 +338,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            _widget_title_bg_color_active, SLOT (setEnabled (bool)));
 
   default_var = QColor (0,0,0);
-  QColor fg_color = settings->value ("Dockwidgets/title_fg_color",
+  QColor fg_color = settings->value ("DockWidgets/title_fg_color",
                                      default_var).value<QColor> ();
   _widget_title_fg_color = new color_picker (fg_color);
   _widget_title_fg_color->setEnabled (false);
@@ -347,7 +347,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            _widget_title_fg_color, SLOT (setEnabled (bool)));
 
   default_var = QColor (0,0,0);
-  QColor fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
+  QColor fg_color_active = settings->value ("DockWidgets/title_fg_color_active",
                                             default_var).value<QColor> ();
   _widget_title_fg_color_active = new color_picker (fg_color_active);
   _widget_title_fg_color_active->setEnabled (false);
@@ -742,13 +742,13 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_widget_custom_style->isChecked ());
   settings->setValue ("DockWidgets/widget_title_3d",
                       ui->sb_3d_title->value ());
-  settings->setValue ("Dockwidgets/title_bg_color",
+  settings->setValue ("DockWidgets/title_bg_color",
                       _widget_title_bg_color->color ());
-  settings->setValue ("Dockwidgets/title_bg_color_active",
+  settings->setValue ("DockWidgets/title_bg_color_active",
                       _widget_title_bg_color_active->color ());
-  settings->setValue ("Dockwidgets/title_fg_color",
+  settings->setValue ("DockWidgets/title_fg_color",
                       _widget_title_fg_color->color ());
-  settings->setValue ("Dockwidgets/title_fg_color_active",
+  settings->setValue ("DockWidgets/title_fg_color_active",
                       _widget_title_fg_color_active->color ());
 
   // icon size

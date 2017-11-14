@@ -173,6 +173,7 @@ signals:
   void fetab_uncomment_selected_text (const QWidget *ID);
   void fetab_indent_selected_text (const QWidget *ID);
   void fetab_unindent_selected_text (const QWidget *ID);
+  void fetab_smart_indent_line_or_selected_text (const QWidget *ID);
   void fetab_convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode);
   void fetab_find (const QWidget *ID, QList<QAction *>);
   void fetab_find_next (const QWidget *ID);
@@ -251,6 +252,7 @@ public slots:
   void request_lower_case (bool);
   void request_indent_selected_text (bool);
   void request_unindent_selected_text (bool);
+  void request_smart_indent_line_or_selected_text (void);
   void request_conv_eol_windows (bool);
   void request_conv_eol_unix (bool);
   void request_conv_eol_mac (bool);
@@ -377,6 +379,7 @@ private:
   QAction *m_uncomment_selection_action;
   QAction *m_indent_selection_action;
   QAction *m_unindent_selection_action;
+  QAction *m_smart_indent_line_or_selection_action;
   QAction *m_conv_eol_windows_action;
   QAction *m_conv_eol_unix_action;
   QAction *m_conv_eol_mac_action;

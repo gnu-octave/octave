@@ -63,6 +63,8 @@ public:
   int is_style_comment (int pos = -1);
   void smart_indent (bool do_smart_indent, int do_auto_close, int line);
 
+  void smart_indent_line_or_selected_text (int lineFrom, int lineTo);
+
   void set_word_selection (const QString& word = QString ());
 
   void show_selection_markers (int line, int col, int len);

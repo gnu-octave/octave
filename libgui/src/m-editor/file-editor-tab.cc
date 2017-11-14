@@ -1208,6 +1208,15 @@ file_editor_tab::unindent_selected_text (const QWidget *ID)
 }
 
 void
+file_editor_tab::smart_indent_line_or_selected_text (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  do_smart_indent_line_or_selected_text ();
+}
+
+void
 file_editor_tab::convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode)
 {
   if (ID != this)
@@ -1418,6 +1427,34 @@ file_editor_tab::do_indent_selected_text (bool indent)
       else
         _edit_area->unindent (cpline);
     }
+
+  _edit_area->endUndoAction ();
+}
+
+void
+file_editor_tab::do_smart_indent_line_or_selected_text (void)
+{
+  _edit_area->beginUndoAction ();
+
+  int lineFrom, lineTo;
+
+  if (_edit_area->hasSelectedText ())
+    {
+      int colFrom, colTo;
+      _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
+
+      if (colTo == 0)  // the beginning of last line is not selected
+        lineTo--;        // stop at line above
+    }
+  else
+    {
+      int col;
+      _edit_area->getCursorPosition (&lineFrom, &col);
+
+      lineTo = lineFrom;
+    }
+
+  _edit_area->smart_indent_line_or_selected_text (lineFrom, lineTo);
 
   _edit_area->endUndoAction ();
 }

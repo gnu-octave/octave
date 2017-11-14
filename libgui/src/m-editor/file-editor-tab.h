@@ -108,6 +108,7 @@ public slots:
 
   void indent_selected_text (const QWidget *ID);
   void unindent_selected_text (const QWidget *ID);
+  void smart_indent_line_or_selected_text (const QWidget *ID);
   void convert_eol (const QWidget *ID, QsciScintilla::EolMode);
 
   void zoom_in (const QWidget *ID);
@@ -250,6 +251,7 @@ private:
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
   void do_indent_selected_text (bool indent);
+  void do_smart_indent_line_or_selected_text (void);
 
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);

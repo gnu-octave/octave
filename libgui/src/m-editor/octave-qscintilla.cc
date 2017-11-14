@@ -558,7 +558,69 @@ octave_qscintilla::smart_indent (bool do_smart_indent,
         }
       return;
     }
+}
 
+// Do smart indendation of current selection or line.
+void
+octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom, int lineTo)
+{
+  QRegExp blank_line_regexp = QRegExp ("^[\t ]*$");
+
+  QRegExp begin_block_regexp
+    = QRegExp ("^([\t ]*)(if|elseif|else"
+               "|for|while|do|parfor"
+               "|switch|case|otherwise"
+               "|function"
+               "|classdef|properties|events|enumeration|methods"
+               "|unwind_protect|unwind_protect_cleanup|try|catch)"
+               "[\r\n\t #%]");
+
+  QRegExp end_block_regexp
+    = QRegExp ("^([\t ]*)(end"
+               "|end(for|function|if|parfor|switch|while"
+               "|classdef|enumeration|events|methods|properties)"
+               "|end_(try_catch|unwind_protect)"
+               "|until)"
+               "[\r\n\t #%]");
+
+  int indent_column = -1;
+  int indent_increment = indentationWidth ();
+
+  for (int line = lineFrom-1; line >= 0; line--)
+    {
+      QString line_text = text (line);
+
+      if (blank_line_regexp.indexIn (line_text) < 0)
+        {
+          // Found first non-blank line above beginning of region or
+          // current line.  Base indentation from this line, increasing
+          // indentation by indentationWidth if it looks like the
+          // beginning of a code block.
+
+          indent_column = indentation (line);
+
+          if (begin_block_regexp.indexIn (line_text) > -1)
+            indent_column += indent_increment;
+
+          break;
+        }
+    }
+
+  if (indent_column < 0)
+    indent_column = indentation (lineFrom);
+
+  for (int line = lineFrom; line <= lineTo; line++)
+    {
+      QString line_text = text (line);
+
+      if (end_block_regexp.indexIn (line_text) > -1)
+        indent_column -= indent_increment;
+
+      setIndentation (line, indent_column);
+
+      if (begin_block_regexp.indexIn (line_text) > -1)
+        indent_column += indent_increment;
+    }
 }
 
 void

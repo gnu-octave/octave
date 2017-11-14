@@ -263,6 +263,7 @@ file_editor::check_actions (void)
   m_uncomment_selection_action->setEnabled (have_tabs);
   m_indent_selection_action->setEnabled (have_tabs);
   m_unindent_selection_action->setEnabled (have_tabs);
+  m_smart_indent_line_or_selection_action->setEnabled (have_tabs);
 
   m_context_help_action->setEnabled (have_tabs);
   m_context_doc_action->setEnabled (have_tabs);
@@ -797,6 +798,12 @@ file_editor::request_unindent_selected_text (bool)
 }
 
 void
+file_editor::request_smart_indent_line_or_selected_text ()
+{
+  emit fetab_smart_indent_line_or_selected_text (m_tab_widget->currentWidget ());
+}
+
+void
 file_editor::request_conv_eol_windows (bool)
 {
   emit fetab_convert_eol (m_tab_widget->currentWidget (),
@@ -1209,6 +1216,7 @@ file_editor::set_shortcuts (void)
   shortcut_manager::set_shortcut (m_lower_case_action, "editor_edit:lower_case");
   shortcut_manager::set_shortcut (m_indent_selection_action, "editor_edit:indent_selection");
   shortcut_manager::set_shortcut (m_unindent_selection_action, "editor_edit:unindent_selection");
+  shortcut_manager::set_shortcut (m_smart_indent_line_or_selection_action, "editor_edit:smart_indent_line_or_selection");
   shortcut_manager::set_shortcut (m_completion_action, "editor_edit:completion_list");
   shortcut_manager::set_shortcut (m_goto_line_action, "editor_edit:goto_line");
   shortcut_manager::set_shortcut (m_move_to_matching_brace, "editor_edit:move_to_brace");
@@ -1844,9 +1852,13 @@ file_editor::construct (void)
   m_edit_fmt_menu->addSeparator ();
 
   m_indent_selection_action = add_action (m_edit_fmt_menu, QIcon (),
-          tr ("&Indent"), SLOT (request_indent_selected_text (bool)));
+          tr ("&Indent Selection Rigidly"), SLOT (request_indent_selected_text (bool)));
   m_unindent_selection_action = add_action (m_edit_fmt_menu, QIcon (),
-          tr ("&Unindent"), SLOT (request_unindent_selected_text (bool)));
+          tr ("&Unindent Selection Rigidly"), SLOT (request_unindent_selected_text (bool)));
+
+  m_smart_indent_line_or_selection_action
+    = add_action (m_edit_fmt_menu, QIcon (),
+          tr ("Indent Code"), SLOT (request_smart_indent_line_or_selected_text (void)));
 
   m_edit_fmt_menu->addSeparator ();
 
@@ -2218,6 +2230,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   connect (this, SIGNAL (fetab_unindent_selected_text (const QWidget*)),
            f, SLOT (unindent_selected_text (const QWidget*)));
+
+  connect (this, SIGNAL (fetab_smart_indent_line_or_selected_text (const QWidget*)),
+           f, SLOT (smart_indent_line_or_selected_text (const QWidget*)));
 
   connect (this,
            SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),

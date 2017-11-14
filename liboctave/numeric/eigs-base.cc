@@ -282,7 +282,7 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
         {
           if (permB.numel ())
             {
-              SparseMatrix tmp(n,n,n);
+              SparseMatrix tmp (n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
                 {
                   tmp.xcidx (i) = i;
@@ -446,7 +446,7 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
         {
           if (permB.numel ())
             {
-              SparseMatrix tmp(n,n,n);
+              SparseMatrix tmp (n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
                 {
                   tmp.xcidx (i) = i;
@@ -627,9 +627,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       octave_rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -653,7 +651,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -912,9 +910,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       octave_rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -938,7 +934,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -1044,7 +1040,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
                   vector_product (b, workd+iptr(0)-1, dtmp);
 
-                  Matrix tmp(n, 1);
+                  Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
                     tmp(i,0) = dtmp[P[i]];
@@ -1060,7 +1056,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
               else
                 {
                   double *ip2 = workd+iptr(2)-1;
-                  Matrix tmp(n, 1);
+                  Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
                     tmp(i,0) = ip2[P[i]];
@@ -1074,10 +1070,9 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
             }
           else
             {
-              // ido cannot be 2 for non-generalized problems
-              // see dsaupd2
+              // ido cannot be 2 for non-generalized problems (see dsaupd2).
               double *ip2 = workd+iptr(0)-1;
-              Matrix tmp(n, 1);
+              Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
                 tmp(i,0) = ip2[P[i]];
@@ -1194,9 +1189,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       octave_rand::distribution (rand_dist);
     }
   else if (n != resid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -1220,7 +1213,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (! have_sigma)
     {
@@ -1451,9 +1444,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       octave_rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -1477,7 +1468,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -1560,15 +1551,15 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
-      // on exit, ip(4) <= k + 1 is the number of converged eigenvalues
-      // see dnaupd2
+      // On exit, ip(4) <= k + 1 is the number of converged eigenvalues.
+      // See dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
          F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, tmp_info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-       // k is not changed
+      // k is not changed
 
       info = tmp_info;
 
@@ -1652,7 +1643,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   for (F77_INT i = 0; i < k+1; i++)
     dr[i] = di[i] = 0.;
 
-  F77_INT k0 = k; // original number of eigenvalues required
+  F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
     (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
      sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -1660,7 +1651,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
      ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
      F77_CHAR_ARG_LEN(2));
   // on exit, if (and only if) rvec == true, k may have been increased by one
-  // and be equal to ip(4), see dngets
+  // and be equal to ip(4), see dngets.
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler)
@@ -1773,9 +1764,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       octave_rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -1799,7 +1788,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -1862,8 +1851,8 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
-      // on exit, ip(4) <= k + 1 is the number of converged eigenvalues
-      // see dnaupd2
+      // On exit, ip(4) <= k + 1 is the number of converged eigenvalues.
+      // See dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
          F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
@@ -1908,7 +1897,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
                   vector_product (b, workd+iptr(0)-1, dtmp);
 
-                  Matrix tmp(n, 1);
+                  Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
                     tmp(i,0) = dtmp[P[i]];
@@ -1924,7 +1913,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               else
                 {
                   double *ip2 = workd+iptr(2)-1;
-                  Matrix tmp(n, 1);
+                  Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
                     tmp(i,0) = ip2[P[i]];
@@ -1938,10 +1927,9 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             }
           else
             {
-              // ido cannot be 2 for non-generalized problems
-              // see dnaupd2
+              // ido cannot be 2 for non-generalized problems (see dnaupd2).
               double *ip2 = workd+iptr(0)-1;
-              Matrix tmp(n, 1);
+              Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
                 tmp(i,0) = ip2[P[i]];
@@ -1992,15 +1980,15 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   for (F77_INT i = 0; i < k+1; i++)
     dr[i] = di[i] = 0.;
 
-  F77_INT k0 = k; // original number of eigenvalues required
+  F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
     (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
      sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
      ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
      F77_CHAR_ARG_LEN(2));
-  // on exit, if (and only if) rvec == true, k may have been increased by one
-  // and be equal to ip(4), see dngets
+  // On exit, if (and only if) rvec == true, k may have been increased by one
+  // and be equal to ip(4), see dngets.
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler)
@@ -2097,9 +2085,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       octave_rand::distribution (rand_dist);
     }
   else if (n != resid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -2123,7 +2109,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (! have_sigma)
     {
@@ -2183,15 +2169,15 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
-      // on exit, ip(4) <= k + 1 is the number of converged eigenvalues
-      // see dnaupd2
+      // On exit, ip(4) <= k + 1 is the number of converged eigenvalues
+      // see dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
          (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
          F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, tmp_info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-       // k is not changed
+      // k is not changed
 
       info = tmp_info;
 
@@ -2275,15 +2261,15 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
   for (F77_INT i = 0; i < k+1; i++)
     dr[i] = di[i] = 0.;
 
-  F77_INT k0 = k; // original number of eigenvalues required
+  F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
     (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
      sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
      ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
      F77_CHAR_ARG_LEN(2));
-  // on exit, if (and only if) rvec == true, k may have been increased by one
-  // and be equal to ip(4), see dngets
+  // On exit, if (and only if) rvec == true, k may have been increased by one
+  // and be equal to ip(4), see dngets.
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler)
@@ -2393,9 +2379,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       octave_rand::distribution (rand_dist);
     }
   else if (m.cols () != cresid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -2419,7 +2403,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -2686,9 +2670,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       octave_rand::distribution (rand_dist);
     }
   else if (m.cols () != cresid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -2712,7 +2694,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -2820,7 +2802,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
                   vector_product (b, workd+iptr(0)-1, ctmp);
 
-                  ComplexMatrix tmp(n, 1);
+                  ComplexMatrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
                     tmp(i,0) = ctmp[P[i]];
@@ -2836,7 +2818,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
               else
                 {
                   Complex *ip2 = workd+iptr(2)-1;
-                  ComplexMatrix tmp(n, 1);
+                  ComplexMatrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
                     tmp(i,0) = ip2[P[i]];
@@ -2850,10 +2832,9 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
             }
           else
             {
-              // ido cannot be 2 for non-generalized problems
-              // see znaup2
+              // ido cannot be 2 for non-generalized problems (see znaup2).
               Complex *ip2 = workd+iptr(0)-1;
-              ComplexMatrix tmp(n, 1);
+              ComplexMatrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
                 tmp(i,0) = ip2[P[i]];
@@ -2983,13 +2964,10 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
       octave_rand::distribution (rand_dist);
     }
   else if (n != cresid.numel ())
-    {
-      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
-    }
+    (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
 
   if (n < 3)
-    (*current_liboctave_error_handler)
-      ("eigs: n must be at least 3");
+    (*current_liboctave_error_handler) ("eigs: n must be at least 3");
 
   if (p < 0)
     {
@@ -3010,7 +2988,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
 
   if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less or equal to n");
+      ("eigs: opts.p must be greater than k and less than or equal to n");
 
   if (! have_sigma)
     {

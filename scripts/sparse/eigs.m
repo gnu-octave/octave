@@ -124,9 +124,8 @@
 ## @item p
 ## The number of Lanzcos basis vectors to use.  More vectors will result in
 ## faster convergence, but a greater use of memory.  The optimal value of
-## @code{p} is problem dependent and should be in the range
-## @code{@var{k} + 1} to @var{n}.
-## The default value is @code{2 * @var{k}}.
+## @code{p} is problem dependent and should be in the range @code{@var{k} + 1}
+## to @var{n}.  The default value is @code{2 * @var{k}}.
 ##
 ## @item v0
 ## The starting vector for the algorithm.  An initial vector close to the
@@ -1248,8 +1247,8 @@ endfunction
 %! A(1, 1) = 0;
 %! A(1, 9) = 1;
 %! [V, L] = eigs (A, 4, -1);
-%! assert (!any (isnan (diag (L))))
-%! assert (any (abs (diag (L)) <= 2 * eps))
+%! assert (!any (isnan (diag (L))));
+%! assert (any (abs (diag (L)) <= 2 * eps));
 %!testif HAVE_ARPACK
 %! A = diag (ones (9, 1), 1);
 %! A(10,:) = [-1, zeros(1, 8), -1];
@@ -1257,45 +1256,45 @@ endfunction
 %! typ = "lr";
 %! [v, m] = eigs (A, 5, typ, opts);
 %! assert (sort (real (diag (m))), ...
-%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4)
+%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
 %! m = eigs (A, 5, typ, opts);
 %! assert (sort (real (m)), ...
-%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4)
+%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
 %! typ = "li";
 %! [v, m] = eigs (A, 5, typ, opts);
 %! assert (sort (abs (imag (diag (m)))), ...
-%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4)
+%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
 %! m = eigs (A, 5, typ, opts);
 %! assert (sort (abs (imag (m))), ...
-%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4)
+%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
 %! typ = "sr";
 %! [v, m] = eigs (A, 5, typ, opts);
 %! assert (sort (real (diag (m))), ...
-%!         [-1.12180; -1.12180; -0.69077; -0.08175; -0.08175], 1e-4)
+%!         [-1.12180; -1.12180; -0.69077; -0.08175; -0.08175], 1e-4);
 %! m = eigs (A, 5, typ, opts);
 %! assert (sort (real (m)), ...
-%!         [-1.12180; -1.12180; -0.69077; -0.69077; -0.08175], 1e-4)
+%!         [-1.12180; -1.12180; -0.69077; -0.69077; -0.08175], 1e-4);
 %! typ = "si";
 %! [v, m] = eigs (A, 5, typ, opts);
 %! assert (sort (abs (imag (diag (m)))), ...
-%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4)
+%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4);
 %! m = eigs (A, 5, typ, opts);
 %! assert (sort (abs (imag (m))), ...
-%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4)
+%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4);
 %! typ = "lm";
 %! [v, m] = eigs (A, 5, typ, opts);
 %! assert (sort (abs (diag (m))), ...
-%!         [0.96863; 0.96863;  1.02294; 1.15054; 1.15054], 1e-4)
+%!         [0.96863; 0.96863;  1.02294; 1.15054; 1.15054], 1e-4);
 %! m = eigs (A, 5, typ, opts);
 %! assert (sort (abs (m)), ...
-%!         [0.96863; 1.02294; 1.02294; 1.15054; 1.15054], 1e-4)
+%!         [0.96863; 1.02294; 1.02294; 1.15054; 1.15054], 1e-4);
 %! typ = "sm";
 %! [v, m] = eigs (A, 5, typ, opts);
 %! assert (sort (abs (diag (m))), ...
-%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4)
+%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4);
 %! m = eigs (A, 5, typ, opts);
 %! assert (sort (abs (m)), ...
-%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4)
+%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4);
 %!testif HAVE_ARPACK
 %! A = toeplitz (sparse ([2, 1, zeros(1,8)]));
 %! opts.v0 = (1:10)';

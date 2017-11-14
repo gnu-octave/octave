@@ -26,6 +26,7 @@ TEST_FILES += \
   %reldir%/index.tst \
   %reldir%/io.tst \
   %reldir%/jit.tst \
+  %reldir%/leftdiv.tst \
   %reldir%/line-continue.tst \
   %reldir%/logical-index.tst \
   %reldir%/null-assign.tst \

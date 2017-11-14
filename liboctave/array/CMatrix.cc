@@ -2559,7 +2559,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
         {
           rcon = 0.0;
           octave::warn_singular_matrix ();
-          retval = Matrix (n, m, 0.0);
+          retval = Matrix (n, b_nc, 0.0);
         }
       else
         {

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 
 #include "str-vec.h"
@@ -57,7 +58,7 @@ namespace octave
     friend class url_transfer;
 
     base_url_transfer (void)
-      : count (1), host_or_url (), valid (false), ftp (false),
+      : host_or_url (), valid (false), ftp (false),
         ascii_mode (false), ok (true), errmsg (),
         curr_istream (&std::cin), curr_ostream (&std::cout) { }
 
@@ -65,12 +66,12 @@ namespace octave
                        const std::string& /* user_arg */,
                        const std::string& /* passwd */,
                        std::ostream& os)
-      : count (1), host_or_url (host), valid (false), ftp (true),
+      : host_or_url (host), valid (false), ftp (true),
         ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
         curr_ostream (&os) { }
 
     base_url_transfer (const std::string& url, std::ostream& os)
-      : count (1), host_or_url (url), valid (false), ftp (false),
+      : host_or_url (url), valid (false), ftp (false),
         ascii_mode (false), ok (true), errmsg (),
         curr_istream (&std::cin), curr_ostream (&os) { }
 
@@ -151,9 +152,6 @@ namespace octave
 
   protected:
 
-    // Reference count.
-    refcount<size_t> count;
-
     // Host for ftp transfers or full URL for http requests.
     std::string host_or_url;
     bool valid;
@@ -178,30 +176,11 @@ namespace octave
 
     url_transfer (const std::string& url, std::ostream& os);
 
-    url_transfer (const url_transfer& h) : rep (h.rep)
-    {
-      rep->count++;
-    }
+    url_transfer (const url_transfer& h) = default;
 
-    url_transfer& operator = (const url_transfer& h)
-    {
-      if (this != &h)
-        {
-          if (--rep->count == 0)
-            delete rep;
+    url_transfer& operator = (const url_transfer& h) = default;
 
-          rep = h.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
-
-    ~url_transfer (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+    ~url_transfer (void) = default;
 
     bool is_valid (void) const { return rep->is_valid (); }
 
@@ -286,7 +265,7 @@ namespace octave
 
   private:
 
-    base_url_transfer *rep;
+    std::shared_ptr<base_url_transfer> rep;
   };
 }
 

@@ -5715,7 +5715,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_dense Bstore;
@@ -5728,7 +5728,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           B->xtype = CHOLMOD_REAL;
 
           B->x = const_cast<double *>(b.fortran_vec ());
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;
@@ -5965,7 +5965,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_sparse Bstore;
@@ -5988,7 +5988,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           B->xtype = CHOLMOD_REAL;
 
           B->x = b.data ();
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;
@@ -6264,7 +6264,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_dense Bstore;
@@ -6277,7 +6277,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           B->xtype = CHOLMOD_COMPLEX;
 
           B->x = const_cast<Complex *>(b.fortran_vec ());
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;
@@ -6493,7 +6493,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_sparse Bstore;
@@ -6516,7 +6516,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           B->xtype = CHOLMOD_COMPLEX;
 
           B->x = b.data ();
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;

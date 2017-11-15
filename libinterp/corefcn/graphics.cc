@@ -10055,11 +10055,7 @@ graphics_event::create_callback_event (const graphics_handle& h,
                                        const std::string& name,
                                        const octave_value& data)
 {
-  graphics_event e;
-
-  e.rep = new callback_event (h, name, data);
-
-  return e;
+  return graphics_event (new callback_event (h, name, data));
 }
 
 graphics_event
@@ -10067,22 +10063,14 @@ graphics_event::create_callback_event (const graphics_handle& h,
                                        const octave_value& cb,
                                        const octave_value& data)
 {
-  graphics_event e;
-
-  e.rep = new callback_event (h, cb, data);
-
-  return e;
+  return graphics_event (new callback_event (h, cb, data));
 }
 
 graphics_event
 graphics_event::create_function_event (graphics_event::event_fcn fcn,
                                        void *data)
 {
-  graphics_event e;
-
-  e.rep = new function_event (fcn, data);
-
-  return e;
+  return graphics_event (new function_event (fcn, data));
 }
 
 graphics_event
@@ -10091,11 +10079,7 @@ graphics_event::create_set_event (const graphics_handle& h,
                                   const octave_value& data,
                                   bool notify_toolkit)
 {
-  graphics_event e;
-
-  e.rep = new set_event (h, name, data, notify_toolkit);
-
-  return e;
+  return graphics_event (new set_event (h, name, data, notify_toolkit));
 }
 
 static void

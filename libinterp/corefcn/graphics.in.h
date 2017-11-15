@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <sstream>
 #include <string>
@@ -2405,7 +2406,7 @@ class OCTINTERP_API base_graphics_object
 public:
   friend class graphics_object;
 
-  base_graphics_object (void) : count (1), toolkit_flag (false) { }
+  base_graphics_object (void) : toolkit_flag (false) { }
 
   // No copying!
 
@@ -2642,8 +2643,6 @@ protected:
   }
 
 protected:
-  // A reference count.
-  octave::refcount<int> count;
 
   // A flag telling whether this object is a valid object
   // in the backend context.
@@ -2653,35 +2652,16 @@ protected:
 class OCTINTERP_API graphics_object
 {
 public:
+
   graphics_object (void) : rep (new base_graphics_object ()) { }
 
-  graphics_object (base_graphics_object *new_rep)
-    : rep (new_rep) { }
+  graphics_object (base_graphics_object *new_rep) : rep (new_rep) { }
 
-  graphics_object (const graphics_object& obj) : rep (obj.rep)
-  {
-    rep->count++;
-  }
+  graphics_object (const graphics_object& obj) = default;
 
-  graphics_object& operator = (const graphics_object& obj)
-  {
-    if (rep != obj.rep)
-      {
-        if (--rep->count == 0)
-          delete rep;
+  graphics_object& operator = (const graphics_object& obj) = default;
 
-        rep = obj.rep;
-        rep->count++;
-      }
-
-    return *this;
-  }
-
-  ~graphics_object (void)
-  {
-    if (--rep->count == 0)
-      delete rep;
-  }
+  ~graphics_object (void) = default;
 
   void mark_modified (void) { rep->mark_modified (); }
 
@@ -2879,7 +2859,8 @@ public:
   { rep->reset_default_properties (); }
 
 private:
-  base_graphics_object *rep;
+
+  std::shared_ptr<base_graphics_object> rep;
 };
 
 // ---------------------------------------------------------------------
@@ -5966,57 +5947,40 @@ class
 base_graphics_event
 {
 public:
+
   friend class graphics_event;
 
-  base_graphics_event (void) : count (1) { }
+  base_graphics_event (void) = default;
 
   virtual ~base_graphics_event (void) = default;
 
   virtual void execute (void) = 0;
-
-private:
-  octave::refcount<int> count;
 };
 
 class
 graphics_event
 {
 public:
+
   typedef void (*event_fcn) (void*);
 
-  graphics_event (void) : rep (nullptr) { }
+  graphics_event (void) = default;
 
-  graphics_event (const graphics_event& e) : rep (e.rep)
-  {
-    rep->count++;
-  }
+  graphics_event (base_graphics_event *new_rep) : rep (new_rep) { }
 
-  ~graphics_event (void)
-  {
-    if (rep && --rep->count == 0)
-      delete rep;
-  }
+  graphics_event (const graphics_event& e) = default;
 
-  graphics_event& operator = (const graphics_event& e)
-  {
-    if (rep != e.rep)
-      {
-        if (rep && --rep->count == 0)
-          delete rep;
+  ~graphics_event (void) = default;
 
-        rep = e.rep;
-        if (rep)
-          rep->count++;
-      }
-
-    return *this;
-  }
+  graphics_event& operator = (const graphics_event& e) = default;
 
   void execute (void)
-  { if (rep) rep->execute (); }
+  {
+    if (ok ())
+      rep->execute ();
+  }
 
-  bool ok (void) const
-  { return (rep != nullptr); }
+  bool ok (void) const { return (rep != nullptr); }
 
   static graphics_event
   create_callback_event (const graphics_handle& h,
@@ -6036,7 +6000,8 @@ public:
                     const octave_value& value,
                     bool notify_toolkit = true);
 private:
-  base_graphics_event *rep;
+
+  std::shared_ptr <base_graphics_event> rep;
 };
 
 class OCTINTERP_API gh_manager

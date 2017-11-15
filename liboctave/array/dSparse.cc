@@ -5739,10 +5739,9 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_REAL;
 
-          if (nr < 1)
+          A->x = data ();
+          if (A->x == 0)
             A->x = &dummy;
-          else
-            A->x = data ();
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
@@ -5752,11 +5751,10 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           B->nzmax = B->nrow * B->ncol;
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_REAL;
-          if (nc < 1 || b.cols () < 1)
+
+          B->x = const_cast<double *>(b.fortran_vec ());
+          if (B->x == 0)
             B->x = &dummy;
-          else
-            // We won't alter it, honest :-)
-            B->x = const_cast<double *>(b.fortran_vec ());
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -5963,10 +5961,9 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_REAL;
 
-          if (nr < 1)
+          A->x = data ();
+          if (A->x == 0)
             A->x = &dummy;
-          else
-            A->x = data ();
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
@@ -5987,10 +5984,9 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           B->stype = 0;
           B->xtype = CHOLMOD_REAL;
 
-          if (b.rows () < 1 || b.cols () < 1)
+          B->x = b.data ();
+          if (B->x == 0)
             B->x = &dummy;
-          else
-            B->x = b.data ();
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -6232,10 +6228,9 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_REAL;
 
-          if (nr < 1)
+          A->x = data ();
+          if (A->x == 0)
             A->x = &dummy;
-          else
-            A->x = data ();
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
@@ -6245,11 +6240,10 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           B->nzmax = B->nrow * B->ncol;
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_COMPLEX;
-          if (nc < 1 || b.cols () < 1)
+
+          B->x = const_cast<Complex *>(b.fortran_vec ());
+          if (B->x == 0)
             B->x = &dummy;
-          else
-            // We won't alter it, honest :-)
-            B->x = const_cast<Complex *>(b.fortran_vec ());
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -6473,10 +6467,9 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_REAL;
 
-          if (nr < 1)
+          A->x = data ();
+          if (A->x == 0)
             A->x = &dummy;
-          else
-            A->x = data ();
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
@@ -6497,10 +6490,9 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           B->stype = 0;
           B->xtype = CHOLMOD_COMPLEX;
 
-          if (b.rows () < 1 || b.cols () < 1)
+          B->x = b.data ();
+          if (B->x == 0)
             B->x = &dummy;
-          else
-            B->x = b.data ();
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;

@@ -67,6 +67,19 @@ close_fcn (FILE *f)
   std::fclose (f);
 }
 
+static void
+free_qhull_memory ()
+{
+  qh_freeqhull (! qh_ALL);
+
+  int curlong, totlong;
+  qh_memfreeshort (&curlong, &totlong);
+
+  if (curlong || totlong)
+    warning ("__voronoi__: did not free %d bytes of long memory (%d pieces)",
+             totlong, curlong);
+}
+
 static bool
 octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 {
@@ -167,6 +180,9 @@ Undocumented internal function.
 
   int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
                                ismalloc, cmd_str, outfile, errfile);
+
+  frame.add_fcn (free_qhull_memory);
+
   if (exitcode)
     error ("%s: qhull failed", caller.c_str ());
 
@@ -323,16 +339,6 @@ Undocumented internal function.
     }
 
   retval = ovl (F, C, at_inf);
-
-  // Free memory from Qhull
-  qh_freeqhull (! qh_ALL);
-
-  int curlong, totlong;
-  qh_memfreeshort (&curlong, &totlong);
-
-  if (curlong || totlong)
-    warning ("%s: qhull did not free %d bytes of long memory (%d pieces)",
-             caller.c_str (), totlong, curlong);
 
   return retval;
 

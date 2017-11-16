@@ -81,7 +81,7 @@ free_qhull_memory ()
   qh_memfreeshort (&curlong, &totlong);
 
   if (curlong || totlong)
-    warning ("__delaunay__: did not free %d bytes of long memory (%d pieces)",
+    warning ("__delaunayn__: did not free %d bytes of long memory (%d pieces)",
              totlong, curlong);
 }
 

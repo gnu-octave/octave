@@ -34,6 +34,7 @@ COREFCN_INC = \
   %reldir%/error.h \
   %reldir%/errwarn.h \
   %reldir%/event-queue.h \
+  %reldir%/fcn-info.h \
   %reldir%/file-io.h \
   %reldir%/ft-text-renderer.h \
   %reldir%/gl-render.h \
@@ -78,9 +79,11 @@ COREFCN_INC = \
   %reldir%/pager.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \
+  %reldir%/scope.h \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
+  %reldir%/symrec.h \
   %reldir%/symtab.h \
   %reldir%/sysdep.h \
   %reldir%/text-renderer.h \
@@ -145,6 +148,7 @@ COREFCN_SRC = \
   %reldir%/error.cc \
   %reldir%/errwarn.cc \
   %reldir%/event-queue.cc \
+  %reldir%/fcn-info.cc \
   %reldir%/fft.cc \
   %reldir%/fft2.cc \
   %reldir%/fftn.cc \
@@ -221,6 +225,7 @@ COREFCN_SRC = \
   %reldir%/rcond.cc \
   %reldir%/regexp.cc \
   %reldir%/schur.cc \
+  %reldir%/scope.cc \
   %reldir%/sighandlers.cc \
   %reldir%/sparse-xdiv.cc \
   %reldir%/sparse-xpow.cc \
@@ -233,6 +238,7 @@ COREFCN_SRC = \
   %reldir%/sub2ind.cc \
   %reldir%/svd.cc \
   %reldir%/sylvester.cc \
+  %reldir%/symrec.cc \
   %reldir%/symtab.cc \
   %reldir%/syscalls.cc \
   %reldir%/sysdep.cc \

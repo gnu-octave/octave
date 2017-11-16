@@ -72,6 +72,19 @@ close_fcn (FILE *f)
   std::fclose (f);
 }
 
+static void
+free_qhull_memory ()
+{
+  qh_freeqhull (! qh_ALL);
+
+  int curlong, totlong;
+  qh_memfreeshort (&curlong, &totlong);
+
+  if (curlong || totlong)
+    warning ("__delaunay__: did not free %d bytes of long memory (%d pieces)",
+             totlong, curlong);
+}
+
 static bool
 octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 {
@@ -167,6 +180,9 @@ Undocumented internal function.
 
       int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);
+
+      frame.add_fcn (free_qhull_memory);
+
       if (exitcode)
         error ("__delaunayn__: qhull failed");
 
@@ -208,16 +224,6 @@ Undocumented internal function.
 
           retval(0) = simpl;
         }
-
-      // Free memory from Qhull
-      qh_freeqhull (! qh_ALL);
-
-      int curlong, totlong;
-      qh_memfreeshort (&curlong, &totlong);
-
-      if (curlong || totlong)
-        warning ("__delaunay__: did not free %d bytes of long memory (%d pieces)",
-                 totlong, curlong);
     }
   else if (n == dim + 1)
     {

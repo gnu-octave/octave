@@ -123,45 +123,37 @@ endfunction
 
 ## Should work for any array type, such as cells and structs, and not
 ## only for numeric data.
-%!test <52431>
-%! assert (perms ({1}), {1})
-%! assert (perms ({0.1, "foo"}),
-%!         {"foo", 0.1; 0.1, "foo"})
-%! assert (perms ({"foo", 0.1}),
-%!         {0.1, "foo"; "foo", 0.1})
-%! assert (perms ({"foo"; 0.1}),
-%!         {0.1, "foo"; "foo", 0.1})
-%! assert (perms ({0.1; "foo"}),
-%!         {"foo", 0.1; 0.1, "foo"})
-%! assert (perms ({"foo", "bar"}),
-%!         {"bar", "foo"; "foo", "bar"})
-%! assert (perms ({"bar", "foo"}),
-%!         {"foo", "bar"; "bar", "foo"})
+
+%!assert <52431> (perms ({1}), {1})
+%!assert <52431> (perms ({0.1, "foo"}), {"foo", 0.1; 0.1, "foo"})
+%!assert <52431> (perms ({"foo", 0.1}), {0.1, "foo"; "foo", 0.1})
+%!assert <52431> (perms ({"foo"; 0.1}), {0.1, "foo"; "foo", 0.1})
+%!assert <52431> (perms ({0.1; "foo"}), {"foo", 0.1; 0.1, "foo"})
+%!assert <52431> (perms ({"foo", "bar"}), {"bar", "foo"; "foo", "bar"})
+%!assert <52431> (perms ({"bar", "foo"}), {"foo", "bar"; "bar", "foo"})
 %!
-%! assert (perms (struct ()), struct ())
-%! assert (perms (struct ("foo", {1, 2})),
-%!         struct ("foo", {2, 1; 1, 2}))
-%! assert (perms (struct ("foo", {1, 2}, "bar", {3, 4})),
-%!         struct ("foo", {2, 1; 1, 2}, "bar", {4, 3; 3, 4}))
+%!assert <52431> (perms (struct ()), struct ())
+%!assert <52431> (perms (struct ("foo", {1, 2})),
+%!                struct ("foo", {2, 1; 1, 2}))
+%!assert <52431> (perms (struct ("foo", {1, 2}, "bar", {3, 4})),
+%!                struct ("foo", {2, 1; 1, 2}, "bar", {4, 3; 3, 4}))
 
 ## Also sort logical input with order dependent on the input order and
 ## not their values.
-%!test <52431>
-%! assert (perms (logical ([1 0])),
-%!         logical ([0 1;, 1 0]))
-%! assert (perms (logical ([0 1])),
-%!         logical ([1 0; 0 1]))
-%! assert (perms (logical ([0 1 0])),
-%!         logical ([0 1 0; 0 0 1; 1 0 0; 1 0 0; 0 0 1; 0 1 0]))
-%! assert (perms (logical ([0 1 1])),
-%!         logical ([1 1 0; 1 0 1; 1 1 0; 1 0 1; 0 1 1; 0 1 1]))
+
+%!assert <52431> (perms (logical ([1 0])), logical ([0 1;, 1 0]))
+%!assert <52431> (perms (logical ([0 1])), logical ([1 0; 0 1]))
+%!assert <52431> (perms (logical ([0 1 0])),
+%!                logical ([0 1 0; 0 0 1; 1 0 0; 1 0 0; 0 0 1; 0 1 0]))
+%!assert <52431> (perms (logical ([0 1 1])),
+%!                logical ([1 1 0; 1 0 1; 1 1 0; 1 0 1; 0 1 1; 0 1 1]))
+
+%!assert <52432> (perms ([]), reshape ([], 1, 0))
+%!assert <52432> (perms (single ([])), reshape (single ([]), 1, 0))
+%!assert <52432> (perms (int8 ([])), reshape (int8 ([]), 1, 0))
+%!assert <52432> (perms ({}), cell (1, 0))
 
 %!test <52432>
-%! assert (perms ([]), reshape ([], 1, 0))
-%! assert (perms (single ([])), reshape (single ([]), 1, 0))
-%! assert (perms (int8 ([])), reshape (int8 ([]), 1, 0))
-%! assert (perms ({}), cell (1, 0))
-%!
 %! s = struct ();
 %! s(1) = [];
 %! assert (perms (reshape (s, 0, 0)), reshape (s, 1, 0))

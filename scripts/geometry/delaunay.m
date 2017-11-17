@@ -24,20 +24,20 @@
 ## Compute the Delaunay triangulation for a 2-D or 3-D set of points.
 ##
 ## For 2-D sets, the return value @var{tri} is a set of triangles which
-## satisfies the Delaunay circum-circle criterion, i.e., only a single data
-## point from [@var{x}, @var{y}] is within the circum-circle of the defining
-## triangle.  The set of triangles @var{tri} is a matrix of size [n, 3].  Each
-## row defines a triangle and the three columns are the three vertices of the
-## triangle.  The value of @code{@var{tri}(i,j)} is an index into @var{x} and
-## @var{y} for the location of the j-th vertex of the i-th triangle.
+## satisfies the Delaunay circum-circle criterion, i.e., no data point from
+## [@var{x}, @var{y}] is within the circum-circle of the defining triangle.
+## The set of triangles @var{tri} is a matrix of size [n, 3].  Each row defines
+## a triangle and the three columns are the three vertices of the triangle.
+## The value of @code{@var{tri}(i,j)} is an index into @var{x} and @var{y} for
+## the location of the j-th vertex of the i-th triangle.
 ##
 ## For 3-D sets, the return value @var{tetr} is a set of tetrahedrons which
-## satisfies the Delaunay circum-circle criterion, i.e., only a single data
-## point from [@var{x}, @var{y}, @var{z}] is within the circum-circle of the
-## defining tetrahedron.  The set of tetrahedrons is a matrix of size [n, 4].
-## Each row defines a tetrahedron and the four columns are the four vertices of
-## the tetrahedron.  The value of @code{@var{tetr}(i,j)} is an index into
-## @var{x}, @var{y}, @var{z} for the location of the j-th vertex of the i-th
+## satisfies the Delaunay circum-circle criterion, i.e., no data point from
+## [@var{x}, @var{y}, @var{z}] is within the circum-circle of the defining
+## tetrahedron.  The set of tetrahedrons is a matrix of size [n, 4].  Each row
+## defines a tetrahedron and the four columns are the four vertices of the
+## tetrahedron.  The value of @code{@var{tetr}(i,j)} is an index into @var{x},
+## @var{y}, @var{z} for the location of the j-th vertex of the i-th
 ## tetrahedron.
 ##
 ## The input @var{x} may also be a matrix with two or three columns where the

@@ -25,7 +25,7 @@
 ##
 ## Compute the Delaunay triangulation for a 3-D set of points.
 ## The return value @var{tetr} is a set of tetrahedrons which satisfies the
-## Delaunay circum-circle criterion, i.e., only a single data point from
+## Delaunay circum-circle criterion, i.e., no data point from
 ## [@var{x}, @var{y}, @var{z}] is within the circum-circle of the defining
 ## tetrahedron.
 ##

@@ -57,11 +57,13 @@ function A = perms (v)
     print_usage ();
   endif
 
-  if (! (isreal (v) || iscomplex (v)))
-    error ("perms: V must be a numeric, char, or logical vector");
+  v = v(:).';
+  if (isnumeric (v) || ischar (v))
+    ## Order of output is only dependent on the actual values for
+    ## character and numeric arrays.
+    v = sort (v, "ascend");
   endif
-  v = sort (reshape (v, 1, []), "descend");
-  n = length (v);
+  n = numel (v);
 
   if (n < 4)    # special cases for small n
     switch (n)
@@ -70,11 +72,12 @@ function A = perms (v)
       case 1
         A = v;
       case 2
-        A = [v;v([2 1])];
+        A = [v([2 1]);v];
       case 3
-        A = v([1, 2, 3; 1, 3, 2; 2, 1, 3; 2, 3, 1; 3, 1, 2; 3, 2, 1]);
+        A = v([3 2 1; 3 1 2; 2 3 1; 2 1 3; 1 3 2; 1 2 3]);
     endswitch
   else
+    v = v(end:-1:1);
     n-= 1;
 
     idx = zeros (factorial (n), n);
@@ -99,7 +102,7 @@ function A = perms (v)
     for i = 1:n
       b = v([1:i-1 i+1:n]);
       A((1:f)+(i-1)*f, 2:end) = b(idx);
-    end
+    endfor
   endif
 
 endfunction
@@ -130,12 +133,28 @@ endfunction
 %!         {0.1, "foo"; "foo", 0.1})
 %! assert (perms ({0.1; "foo"}),
 %!         {"foo", 0.1; 0.1, "foo"})
+%! assert (perms ({"foo", "bar"}),
+%!         {"bar", "foo"; "foo", "bar"})
+%! assert (perms ({"bar", "foo"}),
+%!         {"foo", "bar"; "bar", "foo"})
 %!
 %! assert (perms (struct ()), struct ())
 %! assert (perms (struct ("foo", {1, 2})),
 %!         struct ("foo", {2, 1; 1, 2}))
 %! assert (perms (struct ("foo", {1, 2}, "bar", {3, 4})),
 %!         struct ("foo", {2, 1; 1, 2}, "bar", {4, 3; 3, 4}))
+
+## Also sort logical input with order dependent on the input order and
+## not their values.
+%!test <52431>
+%! assert (perms (logical ([1 0])),
+%!         logical ([0 1;, 1 0]))
+%! assert (perms (logical ([0 1])),
+%!         logical ([1 0; 0 1]))
+%! assert (perms (logical ([0 1 0])),
+%!         logical ([0 1 0; 0 0 1; 1 0 0; 1 0 0; 0 0 1; 0 1 0]))
+%! assert (perms (logical ([0 1 1])),
+%!         logical ([1 1 0; 1 0 1; 1 1 0; 1 0 1; 0 1 1; 0 1 1]))
 
 %!test <52432>
 %! assert (perms ([]), reshape ([], 1, 0))

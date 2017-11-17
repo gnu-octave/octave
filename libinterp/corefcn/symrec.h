@@ -28,9 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <deque>
 #include <list>
+#include <memory>
 #include <string>
-
-#include "oct-refcount.h"
 
 class octave_user_function;
 
@@ -83,8 +82,8 @@ namespace octave
       symbol_record_rep (symbol_scope *s, const std::string& nm,
                          const octave_value& v, unsigned int sc)
         : m_decl_scope (s), curr_fcn (nullptr), name (nm),
-          m_fwd_rep (nullptr), value_stack (),
-          storage_class (sc), /* finfo (), */ valid (true), count (1)
+          m_fwd_rep (), value_stack (),
+          storage_class (sc), /* finfo (), */ valid (true)
       {
         value_stack.push_back (v);
       }
@@ -99,9 +98,9 @@ namespace octave
 
       void assign (const octave_value& value)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->assign (value);
+            t_fwd_rep->assign (value);
             return;
           }
 
@@ -113,9 +112,9 @@ namespace octave
                    const std::list<octave_value_list>& idx,
                    const octave_value& value)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->assign (op, type, idx, value);
+            t_fwd_rep->assign (op, type, idx, value);
             return;
           }
 
@@ -124,9 +123,9 @@ namespace octave
 
       void assign (octave_value::assign_op op, const octave_value& value)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->assign (op, value);
+            t_fwd_rep->assign (op, value);
             return;
           }
 
@@ -135,9 +134,9 @@ namespace octave
 
       void do_non_const_unary_op (octave_value::unary_op op)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->do_non_const_unary_op (op);
+            t_fwd_rep->do_non_const_unary_op (op);
             return;
           }
 
@@ -148,9 +147,9 @@ namespace octave
                                   const std::string& type,
                                   const std::list<octave_value_list>& idx)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->do_non_const_unary_op (op, type, idx);
+            t_fwd_rep->do_non_const_unary_op (op, type, idx);
             return;
           }
 
@@ -161,8 +160,8 @@ namespace octave
 
       octave_value& varref (void)
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->varref ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->varref ();
 
         context_id context = m_decl_scope ? get_decl_scope_context () : 0;
 
@@ -182,8 +181,8 @@ namespace octave
 
       octave_value varval (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->varval ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->varval ();
 
         context_id context = m_decl_scope ? get_decl_scope_context () : 0;
 
@@ -202,9 +201,9 @@ namespace octave
 
       void push_context (symbol_scope *sid)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->push_context (sid);
+            t_fwd_rep->push_context (sid);
             return;
           }
 
@@ -229,8 +228,8 @@ namespace octave
 
       size_t pop_context (symbol_scope *sid)
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->pop_context (sid);
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->pop_context (sid);
 
         size_t retval = 1;
 
@@ -246,9 +245,9 @@ namespace octave
 
       void clear (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->clear ();
+            t_fwd_rep->clear ();
             return;
           }
 
@@ -259,97 +258,97 @@ namespace octave
 
       bool is_defined (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_defined ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_defined ();
 
         return varval ().is_defined ();
       }
 
       bool is_valid (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_valid ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_valid ();
 
         return valid;
       }
 
       bool is_variable (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_variable ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_variable ();
 
         return (! is_local () || is_defined ());
       }
 
       bool is_local (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_local ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_local ();
 
         return storage_class & local;
       }
 
       bool is_automatic (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_automatic ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_automatic ();
 
         return storage_class & automatic;
       }
 
       bool is_formal (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_formal ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_formal ();
 
         return storage_class & formal;
       }
 
       bool is_hidden (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_hidden ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_hidden ();
 
         return storage_class & hidden;
       }
 
       bool is_inherited (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_inherited ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_inherited ();
 
         return storage_class & inherited;
       }
 
       bool is_global (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_global ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_global ();
 
         return storage_class & global;
       }
 
       bool is_persistent (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_persistent ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_persistent ();
 
         return storage_class & persistent;
       }
 
       bool is_added_static (void) const
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->is_added_static ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->is_added_static ();
 
         return storage_class & added_static;
       }
 
       void mark_local (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_local ();
+            t_fwd_rep->mark_local ();
             return;
           }
 
@@ -358,9 +357,9 @@ namespace octave
 
       void mark_automatic (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_automatic ();
+            t_fwd_rep->mark_automatic ();
             return;
           }
 
@@ -369,9 +368,9 @@ namespace octave
 
       void mark_formal (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_formal ();
+            t_fwd_rep->mark_formal ();
             return;
           }
 
@@ -380,9 +379,9 @@ namespace octave
 
       void mark_hidden (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_hidden ();
+            t_fwd_rep->mark_hidden ();
             return;
           }
 
@@ -391,9 +390,9 @@ namespace octave
 
       void mark_inherited (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_inherited ();
+            t_fwd_rep->mark_inherited ();
             return;
           }
 
@@ -402,9 +401,9 @@ namespace octave
 
       void mark_global (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_global ();
+            t_fwd_rep->mark_global ();
             return;
           }
 
@@ -416,9 +415,9 @@ namespace octave
 
       void mark_persistent (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_persistent ();
+            t_fwd_rep->mark_persistent ();
             return;
           }
 
@@ -430,9 +429,9 @@ namespace octave
 
       void mark_added_static (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->mark_added_static ();
+            t_fwd_rep->mark_added_static ();
             return;
           }
 
@@ -441,9 +440,9 @@ namespace octave
 
       void unmark_local (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_local ();
+            t_fwd_rep->unmark_local ();
             return;
           }
 
@@ -452,9 +451,9 @@ namespace octave
 
       void unmark_automatic (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_automatic ();
+            t_fwd_rep->unmark_automatic ();
             return;
           }
 
@@ -463,9 +462,9 @@ namespace octave
 
       void unmark_formal (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_formal ();
+            t_fwd_rep->unmark_formal ();
             return;
           }
 
@@ -474,9 +473,9 @@ namespace octave
 
       void unmark_hidden (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_hidden ();
+            t_fwd_rep->unmark_hidden ();
             return;
           }
 
@@ -485,9 +484,9 @@ namespace octave
 
       void unmark_inherited (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_inherited ();
+            t_fwd_rep->unmark_inherited ();
             return;
           }
 
@@ -496,9 +495,9 @@ namespace octave
 
       void unmark_global (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_global ();
+            t_fwd_rep->unmark_global ();
             return;
           }
 
@@ -507,9 +506,9 @@ namespace octave
 
       void unmark_persistent (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_persistent ();
+            t_fwd_rep->unmark_persistent ();
             return;
           }
 
@@ -518,9 +517,9 @@ namespace octave
 
       void unmark_added_static (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->unmark_added_static ();
+            t_fwd_rep->unmark_added_static ();
             return;
           }
 
@@ -531,9 +530,9 @@ namespace octave
 
       void invalidate (void)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->invalidate ();
+            t_fwd_rep->invalidate ();
             return;
           }
 
@@ -544,17 +543,17 @@ namespace octave
 
       symbol_scope *decl_scope (void)
       {
-        if (m_fwd_rep)
-          return m_fwd_rep->decl_scope ();
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return t_fwd_rep->decl_scope ();
 
         return m_decl_scope;
       }
 
       void set_curr_fcn (octave_user_function *fcn)
       {
-        if (m_fwd_rep)
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
-            m_fwd_rep->set_curr_fcn (fcn);
+            t_fwd_rep->set_curr_fcn (fcn);
             return;
           }
 
@@ -564,9 +563,12 @@ namespace octave
       // We don't forward more than once, so no need to forward the
       // next two.
 
-      void bind_fwd_rep (symbol_record_rep *fwd_rep) { m_fwd_rep = fwd_rep; }
+      void bind_fwd_rep (const std::shared_ptr<symbol_record_rep>& fwd_rep)
+      {
+        m_fwd_rep = fwd_rep;
+      }
 
-      void unbind_fwd_rep (void) { m_fwd_rep = nullptr; }
+      void unbind_fwd_rep (void) { m_fwd_rep.reset (); }
 
       symbol_record_rep * dup (symbol_scope *new_scope) const;
 
@@ -578,7 +580,7 @@ namespace octave
 
       std::string name;
 
-      symbol_record_rep *m_fwd_rep;
+      std::weak_ptr<symbol_record_rep> m_fwd_rep;
 
       std::deque<octave_value> value_stack;
 
@@ -587,8 +589,6 @@ namespace octave
       //      fcn_info *finfo;
 
       bool valid;
-
-      refcount<size_t> count;
 
     private:
 
@@ -610,31 +610,11 @@ namespace octave
                    unsigned int sc = local)
       : rep (new symbol_record_rep (s, nm, v, sc)) { }
 
-    symbol_record (const symbol_record& sr)
-      : rep (sr.rep)
-    {
-      rep->count++;
-    }
+    symbol_record (const symbol_record& sr) = default;
 
-    symbol_record& operator = (const symbol_record& sr)
-    {
-      if (this != &sr)
-        {
-          if (--rep->count == 0)
-            delete rep;
+    symbol_record& operator = (const symbol_record& sr) = default;
 
-          rep = sr.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
-
-    ~symbol_record (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+    ~symbol_record (void) = default;
 
     symbol_record dup (symbol_scope *sid) const
     {
@@ -768,13 +748,13 @@ namespace octave
 
     octave_value dump (void) const { return rep->dump (); }
 
-    const symbol_record_rep *xrep (void) const { return rep; }
+    //    const symbol_record_rep *xrep (void) const { return rep; }
 
   private:
 
     static octave_value dummy_octave_value;
 
-    symbol_record_rep *rep;
+    std::shared_ptr<symbol_record_rep> rep;
 
     symbol_record (symbol_record_rep *new_rep) : rep (new_rep) { }
   };

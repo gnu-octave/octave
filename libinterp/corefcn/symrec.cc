@@ -50,9 +50,9 @@ namespace octave
   void
   symbol_record::symbol_record_rep::clear (symbol_scope *sid)
   {
-    if (m_fwd_rep)
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
       {
-        m_fwd_rep->clear (sid);
+        t_fwd_rep->clear (sid);
         return;
       }
 
@@ -76,9 +76,9 @@ namespace octave
   void
   symbol_record::symbol_record_rep::init_persistent (void)
   {
-    if (m_fwd_rep)
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
       {
-        m_fwd_rep->init_persistent ();
+        t_fwd_rep->init_persistent ();
         return;
       }
 
@@ -99,9 +99,9 @@ namespace octave
   void
   symbol_record::symbol_record_rep::erase_persistent (void)
   {
-    if (m_fwd_rep)
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
       {
-        m_fwd_rep->erase_persistent ();
+        t_fwd_rep->erase_persistent ();
         return;
       }
 
@@ -117,8 +117,8 @@ namespace octave
   symbol_record::symbol_record_rep::dup (symbol_scope *new_scope) const
   {
     // FIXME: is this the right thing do to?
-    if (m_fwd_rep)
-      return m_fwd_rep->dup (new_scope);
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
+      return t_fwd_rep->dup (new_scope);
 
     return new symbol_record_rep (new_scope, name, varval (), storage_class);
   }
@@ -126,8 +126,8 @@ namespace octave
   octave_value
   symbol_record::symbol_record_rep::dump (void) const
   {
-    if (m_fwd_rep)
-      return m_fwd_rep->dump ();
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
+      return t_fwd_rep->dump ();
 
     std::map<std::string, octave_value> m
       = {{ "name", name },
@@ -150,8 +150,8 @@ namespace octave
   octave_value&
   symbol_record::symbol_record_rep::xglobal_varref (void)
   {
-    if (m_fwd_rep)
-      return m_fwd_rep->xglobal_varref ();
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
+      return t_fwd_rep->xglobal_varref ();
 
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_record::symbol_record_rep::xglobal_varref");
@@ -162,8 +162,8 @@ namespace octave
   octave_value&
   symbol_record::symbol_record_rep::xpersistent_varref (void)
   {
-    if (m_fwd_rep)
-      return m_fwd_rep->xpersistent_varref ();
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
+      return t_fwd_rep->xpersistent_varref ();
 
     symbol_scope *curr_scope
       = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varref");
@@ -175,8 +175,8 @@ namespace octave
   octave_value
   symbol_record::symbol_record_rep::xglobal_varval (void) const
   {
-    if (m_fwd_rep)
-      return m_fwd_rep->xglobal_varval ();
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
+      return t_fwd_rep->xglobal_varval ();
 
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_record::symbol_record_rep::xglobal_varval");
@@ -187,8 +187,8 @@ namespace octave
   octave_value
   symbol_record::symbol_record_rep::xpersistent_varval (void) const
   {
-    if (m_fwd_rep)
-      return m_fwd_rep->xpersistent_varval ();
+    if (auto t_fwd_rep = m_fwd_rep.lock ())
+      return t_fwd_rep->xpersistent_varval ();
 
     symbol_scope *curr_scope
       = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varval");

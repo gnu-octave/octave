@@ -134,7 +134,7 @@ octave_user_script::octave_user_script (void)
 
 octave_user_script::octave_user_script
   (const std::string& fnm, const std::string& nm,
-   octave::symbol_table::scope *scope, octave::tree_statement_list *cmds,
+   octave::symbol_scope *scope, octave::tree_statement_list *cmds,
    const std::string& ds)
   : octave_user_code (nm, scope, ds), cmd_list (cmds), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
@@ -147,7 +147,7 @@ octave_user_script::octave_user_script
 
 octave_user_script::octave_user_script
   (const std::string& fnm, const std::string& nm,
-   octave::symbol_table::scope *scope, const std::string& ds)
+   octave::symbol_scope *scope, const std::string& ds)
   : octave_user_code (nm, scope, ds), cmd_list (nullptr), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
@@ -206,7 +206,7 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       octave::profiler::enter<octave_user_script> block (profiler, *this);
 
       frame.add_method (m_scope,
-                        &octave::symbol_table::scope::unbind_script_symbols);
+                        &octave::symbol_scope::unbind_script_symbols);
       m_scope->bind_script_symbols (tw.get_current_scope ());
 
       if (tw.echo ())
@@ -241,7 +241,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 // extrinsic/intrinsic state?).
 
 octave_user_function::octave_user_function
-  (octave::symbol_table::scope *scope, octave::tree_parameter_list *pl,
+  (octave::symbol_scope *scope, octave::tree_parameter_list *pl,
    octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", scope, ""),
     param_list (pl), ret_list (rl), cmd_list (cl),
@@ -361,7 +361,7 @@ octave_user_function::maybe_relocate_end (void)
 }
 
 void
-octave_user_function::stash_parent_fcn_scope (octave::symbol_table::scope *ps)
+octave_user_function::stash_parent_fcn_scope (octave::symbol_scope *ps)
 {
   parent_scope = ps;
 }
@@ -552,7 +552,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
                 << " context: " << m_scope->current_context () << std::endl;
 #endif
 
-      frame.add_method (m_scope, &octave::symbol_table::scope::pop_context);
+      frame.add_method (m_scope, &octave::symbol_scope::pop_context);
     }
 
   string_vector arg_names = _args.name_tags ();
@@ -606,7 +606,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
       // declared global will be unmarked as global before they are
       // undefined by the clear_param_list cleanup function.
 
-      frame.add_method (m_scope, &octave::symbol_table::scope::clear_variables);
+      frame.add_method (m_scope, &octave::symbol_scope::clear_variables);
     }
 
   bind_automatic_vars (tw, arg_names, args.length (), nargout,
@@ -927,7 +927,7 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      octave::symbol_table::scope *scope = symtab.require_current_scope ("nargin");
+      octave::symbol_scope *scope = symtab.require_current_scope ("nargin");
       retval = scope->varval (".nargin.");
 
       if (retval.is_undefined ())
@@ -1053,7 +1053,7 @@ returns -1 for all anonymous functions.
       if (symtab.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      octave::symbol_table::scope *scope = symtab.require_current_scope ("nargout");
+      octave::symbol_scope *scope = symtab.require_current_scope ("nargout");
       retval = scope->varval (".nargout.");
 
       if (retval.is_undefined ())
@@ -1126,7 +1126,7 @@ element-by-element and a logical array is returned.  At the top level,
   if (symtab.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  octave::symbol_table::scope *scope = symtab.require_current_scope ("isargout");
+  octave::symbol_scope *scope = symtab.require_current_scope ("isargout");
 
   int nargout1 = scope->varval (".nargout.").int_value ();
 

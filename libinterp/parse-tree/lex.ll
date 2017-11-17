@@ -2080,7 +2080,7 @@ namespace octave
   {
     while (! frame_stack.empty ())
       {
-        symbol_table::scope *scope = curr_scope ();
+        symbol_scope *scope = curr_scope ();
 
         delete scope;
 
@@ -2097,12 +2097,12 @@ namespace octave
     frame_stack.pop_front ();
   }
 
-  symbol_table::scope *
+  symbol_scope *
   lexical_feedback::symbol_table_context::curr_scope (void) const
   {
     if (empty ())
       {
-        symbol_table::scope *scope
+        symbol_scope *scope
           = __get_current_scope__ ("lexical_feedback::symbol_table_context::curr_scope");
 
         return scope;
@@ -2111,7 +2111,7 @@ namespace octave
       return frame_stack.front ();
   }
 
-  symbol_table::scope *
+  symbol_scope *
   lexical_feedback::symbol_table_context::parent_scope (void) const
   {
     size_t sz = size ();
@@ -2522,7 +2522,7 @@ namespace octave
 
   bool
   base_lexer::is_variable (const std::string& name,
-                           symbol_table::scope *scope)
+                           symbol_scope *scope)
   {
     return ((scope && scope->is_variable (name))
             || (pending_local_variables.find (name)
@@ -3156,12 +3156,12 @@ namespace octave
 
     // Find the token in the symbol table.
 
-    symbol_table::scope *scope = symtab_context.curr_scope ();
+    symbol_scope *scope = symtab_context.curr_scope ();
 
-    symbol_table::symbol_record sr
+    symbol_record sr
       = (scope
          ? scope->insert (ident)
-         : symbol_table::symbol_record (scope, ident));
+         : symbol_record (scope, ident));
 
     token *tok = new token (NAME, sr, input_line_number, current_input_column);
 
@@ -3344,7 +3344,7 @@ namespace octave
       case NAME:
         {
           token *tok_val = current_token ();
-          symbol_table::symbol_record sr = tok_val->sym_rec ();
+          symbol_record sr = tok_val->sym_rec ();
           std::cerr << "NAME [" << sr.name () << "]\n";
         }
         break;

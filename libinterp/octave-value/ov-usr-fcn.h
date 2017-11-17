@@ -61,7 +61,7 @@ octave_user_code : public octave_function
 protected:
 
   octave_user_code (const std::string& nm,
-                    octave::symbol_table::scope *scope = nullptr,
+                    octave::symbol_scope *scope = nullptr,
                     const std::string& ds = "")
     : octave_function (nm, ds), m_scope (scope), m_file_info (nullptr),
       curr_unwind_protect_frame (nullptr)
@@ -97,7 +97,7 @@ public:
   void cache_function_text (const std::string& text,
                             const octave::sys::time& timestamp);
 
-  octave::symbol_table::scope *scope (void) { return m_scope; }
+  octave::symbol_scope *scope (void) { return m_scope; }
 
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
@@ -108,7 +108,7 @@ protected:
   void get_file_info (void);
 
   // Our symbol table scope.
-  octave::symbol_table::scope *m_scope;
+  octave::symbol_scope *m_scope;
 
   // Cached text of function or script code with line offsets
   // calculated.
@@ -128,12 +128,12 @@ public:
   octave_user_script (void);
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      octave::symbol_table::scope *scope = nullptr,
+                      octave::symbol_scope *scope = nullptr,
                       octave::tree_statement_list *cmds = nullptr,
                       const std::string& ds = "");
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      octave::symbol_table::scope *scope = nullptr,
+                      octave::symbol_scope *scope = nullptr,
                       const std::string& ds = "");
 
   // No copying!
@@ -207,7 +207,7 @@ octave_user_function : public octave_user_code
 {
 public:
 
-  octave_user_function (octave::symbol_table::scope *scope = nullptr,
+  octave_user_function (octave::symbol_scope *scope = nullptr,
                         octave::tree_parameter_list *pl = nullptr,
                         octave::tree_parameter_list *rl = nullptr,
                         octave::tree_statement_list *cl = nullptr);
@@ -260,7 +260,7 @@ public:
 
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
-  void stash_parent_fcn_scope (octave::symbol_table::scope *ps);
+  void stash_parent_fcn_scope (octave::symbol_scope *ps);
 
   void stash_leading_comment (octave::comment_list *lc) { lead_comm = lc; }
 
@@ -280,7 +280,7 @@ public:
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
-  octave::symbol_table::scope *
+  octave::symbol_scope *
   parent_fcn_scope (void) const { return parent_scope; }
 
   octave::sys::time time_parsed (void) const { return t_parsed; }
@@ -488,7 +488,7 @@ private:
   bool class_method;
 
   // The scope of the parent function, if any.
-  octave::symbol_table::scope *parent_scope;
+  octave::symbol_scope *parent_scope;
 
 #if defined (HAVE_LLVM)
   octave::jit_function_info *jit_info;

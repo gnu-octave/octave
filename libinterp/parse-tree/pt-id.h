@@ -53,7 +53,7 @@ namespace octave
     tree_identifier (int l = -1, int c = -1)
       : tree_expression (l, c) { }
 
-    tree_identifier (const symbol_table::symbol_record& s,
+    tree_identifier (const symbol_record& s,
                      int l = -1, int c = -1)
       : tree_expression (l, c), sym (s) { }
 
@@ -121,14 +121,14 @@ namespace octave
              name ().c_str ());
     }
 
-    tree_identifier * dup (symbol_table::scope& scope) const;
+    tree_identifier * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {
       tw.visit_identifier (*this);
     }
 
-    symbol_table::symbol_record symbol (void) const
+    symbol_record symbol (void) const
     {
       return sym;
     }
@@ -136,7 +136,7 @@ namespace octave
   private:
 
     // The symbol record that this identifier references.
-    symbol_table::symbol_record sym;
+    symbol_record sym;
   };
 
   class tree_black_hole : public tree_identifier
@@ -152,7 +152,7 @@ namespace octave
 
     bool is_black_hole (void) { return true; }
 
-    tree_black_hole * dup (symbol_table::scope&) const
+    tree_black_hole * dup (symbol_scope&) const
     {
       return new tree_black_hole;
     }

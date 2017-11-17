@@ -57,7 +57,7 @@ namespace octave
   }
 
   tree_expression *
-  tree_simple_assignment::dup (symbol_table::scope& scope) const
+  tree_simple_assignment::dup (symbol_scope& scope) const
   {
     tree_simple_assignment *new_sa
       = new tree_simple_assignment (lhs ? lhs->dup (scope) : nullptr,
@@ -92,7 +92,7 @@ namespace octave
   }
 
   tree_expression *
-  tree_multi_assignment::dup (symbol_table::scope&) const
+  tree_multi_assignment::dup (symbol_scope&) const
   {
     panic_impossible ();
     return nullptr;

@@ -1568,7 +1568,7 @@ disable escape sequence expansion use a second backslash before the sequence
           if (nargin == 3 && argv[3] == "local"
               && ! symtab.at_top_level ())
             {
-              octave::symbol_table::scope *scope
+              octave::symbol_scope *scope
                 = symtab.require_current_scope ("warning");
 
               octave_scalar_map val = warning_query (arg2);

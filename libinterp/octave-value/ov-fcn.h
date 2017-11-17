@@ -80,12 +80,12 @@ public:
 
   virtual std::string parent_fcn_name (void) const { return ""; }
 
-  virtual octave::symbol_table::scope * parent_fcn_scope (void) const
+  virtual octave::symbol_scope * parent_fcn_scope (void) const
   { return nullptr; }
 
   virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
-  virtual octave::symbol_table::scope * scope (void) { return nullptr; }
+  virtual octave::symbol_scope * scope (void) { return nullptr; }
 
   virtual octave::sys::time time_parsed (void) const
   { return octave::sys::time (static_cast<time_t> (0)); }

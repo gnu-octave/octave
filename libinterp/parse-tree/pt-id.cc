@@ -67,12 +67,12 @@ namespace octave
   }
 
   tree_identifier *
-  tree_identifier::dup (symbol_table::scope& scope) const
+  tree_identifier::dup (symbol_scope& scope) const
   {
     // The new tree_identifier object contains a symbol_record
     // entry from the duplicated scope.
 
-    symbol_table::symbol_record new_sym = scope.find_symbol (name ());
+    symbol_record new_sym = scope.find_symbol (name ());
 
     tree_identifier *new_id
       = new tree_identifier (new_sym, line (), column ());

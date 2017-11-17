@@ -69,17 +69,17 @@ namespace octave
 
       void pop (void);
 
-      void push (symbol_table::scope *scope)
+      void push (symbol_scope *scope)
       {
         frame_stack.push_front (scope);
       }
 
-      symbol_table::scope *curr_scope (void) const;
-      symbol_table::scope *parent_scope (void) const;
+      symbol_scope *curr_scope (void) const;
+      symbol_scope *parent_scope (void) const;
 
     private:
 
-      std::deque<symbol_table::scope*> frame_stack;
+      std::deque<symbol_scope*> frame_stack;
     };
 
     // Track nesting of square brackets, curly braces, and parentheses.
@@ -602,7 +602,7 @@ namespace octave
 
     bool inside_any_object_index (void);
 
-    bool is_variable (const std::string& name, symbol_table::scope *scope);
+    bool is_variable (const std::string& name, symbol_scope *scope);
 
     int is_keyword_token (const std::string& s);
 

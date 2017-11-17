@@ -77,9 +77,9 @@ namespace octave
     void copy_base (const tree_array_list& array_list);
 
     void copy_base (const tree_array_list& array_list,
-                    symbol_table::scope& scope);
+                    symbol_scope& scope);
 
-    tree_expression * dup (symbol_table::scope& scope) const;
+    tree_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw);
   };

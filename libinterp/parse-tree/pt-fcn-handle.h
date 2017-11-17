@@ -73,7 +73,7 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression * dup (symbol_table::scope& scope) const;
+    tree_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {
@@ -97,8 +97,8 @@ namespace octave
     { }
 
     tree_anon_fcn_handle (tree_parameter_list *pl, tree_expression *ex,
-                          symbol_table::scope *scope,
-                          symbol_table::scope *parent_scope,
+                          symbol_scope *scope,
+                          symbol_scope *parent_scope,
                           int l = -1, int c = -1)
       : tree_expression (l, c), m_parameter_list (pl), m_expression (ex),
         m_scope (scope), m_parent_scope (parent_scope), m_file_name ()
@@ -123,13 +123,13 @@ namespace octave
 
     tree_expression * expression (void) const { return m_expression; }
 
-    symbol_table::scope *scope (void) const { return m_scope; }
+    symbol_scope *scope (void) const { return m_scope; }
 
-    symbol_table::scope *parent_scope (void) const { return m_parent_scope; }
+    symbol_scope *parent_scope (void) const { return m_parent_scope; }
 
     bool has_parent_scope (void) const { return m_parent_scope; }
 
-    tree_expression * dup (symbol_table::scope& scope) const;
+    tree_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw) { tw.visit_anon_fcn_handle (*this); }
 
@@ -146,10 +146,10 @@ namespace octave
     tree_expression *m_expression;
 
     // Function scope.
-    symbol_table::scope *m_scope;
+    symbol_scope *m_scope;
 
     // Parent scope, or 0 if none.
-    symbol_table::scope *m_parent_scope;
+    symbol_scope *m_parent_scope;
 
     // Filename where the handle was defined.
     std::string m_file_name;

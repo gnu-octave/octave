@@ -76,7 +76,7 @@ namespace octave
 
     tree_expression * right_hand_side (void) { return rhs; }
 
-    tree_expression * dup (symbol_table::scope& scope) const;
+    tree_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {
@@ -141,7 +141,7 @@ namespace octave
 
     tree_expression * right_hand_side (void) { return rhs; }
 
-    tree_expression * dup (symbol_table::scope& scope) const;
+    tree_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {

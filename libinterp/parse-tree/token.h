@@ -72,7 +72,7 @@ namespace octave
     token (int tv, double d, const std::string& s = "",
            int l = -1, int c = -1);
     token (int tv, end_tok_type t, int l = -1, int c = -1);
-    token (int tv, const symbol_table::symbol_record& s,
+    token (int tv, const symbol_record& s,
            int l = -1, int c = -1);
     token (int tv, const std::string& mth, const std::string& cls,
            int l = -1, int c = -1);
@@ -112,7 +112,7 @@ namespace octave
     double number (void) const;
     token_type ttype (void) const;
     end_tok_type ettype (void) const;
-    symbol_table::symbol_record sym_rec (void) const;
+    symbol_record sym_rec (void) const;
 
     std::string superclass_method_name (void) const;
     std::string superclass_class_name (void) const;
@@ -145,8 +145,8 @@ namespace octave
 
       tok_info (end_tok_type et) : m_et (et) { }
 
-      tok_info (const symbol_table::symbol_record& sr)
-        : m_sr (new symbol_table::symbol_record (sr))
+      tok_info (const symbol_record& sr)
+        : m_sr (new symbol_record (sr))
       { }
 
       tok_info (const std::string& method_nm, const std::string& class_nm)
@@ -165,7 +165,7 @@ namespace octave
 
       end_tok_type m_et;
 
-      symbol_table::symbol_record *m_sr;
+      symbol_record *m_sr;
 
       struct superclass_info
       {

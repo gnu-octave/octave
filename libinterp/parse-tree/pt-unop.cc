@@ -40,7 +40,7 @@ namespace octave
   // Prefix expressions.
 
   tree_expression *
-  tree_prefix_expression::dup (symbol_table::scope& scope) const
+  tree_prefix_expression::dup (symbol_scope& scope) const
   {
     tree_prefix_expression *new_pe
       = new tree_prefix_expression (op ? op->dup (scope) : nullptr,
@@ -54,7 +54,7 @@ namespace octave
   // Postfix expressions.
 
   tree_expression *
-  tree_postfix_expression::dup (symbol_table::scope& scope) const
+  tree_postfix_expression::dup (symbol_scope& scope) const
   {
     tree_postfix_expression *new_pe
       = new tree_postfix_expression (op ? op->dup (scope) : nullptr,

@@ -94,7 +94,7 @@ namespace octave
 
     octave_lvalue lvalue (tree_evaluator *tw);
 
-    tree_index_expression * dup (symbol_table::scope& scope) const;
+    tree_index_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {

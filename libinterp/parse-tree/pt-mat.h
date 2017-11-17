@@ -63,7 +63,7 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression * dup (symbol_table::scope& scope) const;
+    tree_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {

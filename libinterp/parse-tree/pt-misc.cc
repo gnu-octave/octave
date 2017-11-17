@@ -77,7 +77,7 @@ namespace octave
   }
 
   tree_parameter_list *
-  tree_parameter_list::dup (symbol_table::scope& scope) const
+  tree_parameter_list::dup (symbol_scope& scope) const
   {
     tree_parameter_list *new_list = new tree_parameter_list ();
 

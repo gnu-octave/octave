@@ -31,7 +31,7 @@ namespace octave
   // Colon expressions.
 
   tree_expression *
-  tree_colon_expression::dup (symbol_table::scope& scope) const
+  tree_colon_expression::dup (symbol_scope& scope) const
   {
     tree_colon_expression *new_ce
       = new tree_colon_expression (op_base ? op_base->dup (scope) : nullptr,

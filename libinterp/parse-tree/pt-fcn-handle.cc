@@ -46,7 +46,7 @@ namespace octave
   }
 
   tree_expression *
-  tree_fcn_handle::dup (symbol_table::scope&) const
+  tree_fcn_handle::dup (symbol_scope&) const
   {
     tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
 
@@ -63,18 +63,18 @@ namespace octave
   }
 
   tree_expression *
-  tree_anon_fcn_handle::dup (symbol_table::scope&) const
+  tree_anon_fcn_handle::dup (symbol_scope&) const
   {
     tree_parameter_list *param_list = parameter_list ();
     tree_expression *expr = expression ();
 
-    symbol_table::scope *af_scope = m_scope;
-    symbol_table::scope *af_parent_scope = m_parent_scope;
+    symbol_scope *af_scope = m_scope;
+    symbol_scope *af_parent_scope = m_parent_scope;
 
     symbol_table& symtab
       = __get_symbol_table__ ("tree_anon_fcn_handle::dup");
 
-    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : nullptr;
+    symbol_scope *new_scope = af_scope ? af_scope->dup () : nullptr;
 
     // FIXME: why should we inherit from the current scope here?  That
     // doesn't seem right, but with the way things work now it appears

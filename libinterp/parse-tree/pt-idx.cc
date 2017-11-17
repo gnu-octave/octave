@@ -386,7 +386,7 @@ namespace octave
   }
 
   tree_index_expression *
-  tree_index_expression::dup (symbol_table::scope& scope) const
+  tree_index_expression::dup (symbol_scope& scope) const
   {
     tree_index_expression *new_idx_expr
       = new tree_index_expression (line (), column ());

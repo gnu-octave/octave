@@ -78,7 +78,7 @@ namespace octave
 
     octave_value value (void) { return val; }
 
-    tree_expression * dup (symbol_table::scope& scope) const;
+    tree_expression * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {

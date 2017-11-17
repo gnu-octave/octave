@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   tree_expression *
-  tree_cell::dup (symbol_table::scope& scope) const
+  tree_cell::dup (symbol_scope& scope) const
   {
     tree_cell *new_cell = new tree_cell (nullptr, line (), column ());
 

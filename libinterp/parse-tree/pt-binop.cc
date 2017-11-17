@@ -50,7 +50,7 @@ namespace octave
   }
 
   tree_expression *
-  tree_binary_expression::dup (symbol_table::scope& scope) const
+  tree_binary_expression::dup (symbol_scope& scope) const
   {
     tree_binary_expression *new_be
       = new tree_binary_expression (op_lhs ? op_lhs->dup (scope) : nullptr,
@@ -87,7 +87,7 @@ namespace octave
   }
 
   tree_expression *
-  tree_boolean_expression::dup (symbol_table::scope& scope) const
+  tree_boolean_expression::dup (symbol_scope& scope) const
   {
     tree_boolean_expression *new_be
       = new tree_boolean_expression (op_lhs ? op_lhs->dup (scope) : nullptr,

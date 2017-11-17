@@ -38,8 +38,8 @@ octave_lvalue
 {
 public:
 
-  octave_lvalue (const octave::symbol_table::symbol_record& s
-                   = octave::symbol_table::symbol_record ())
+  octave_lvalue (const octave::symbol_record& s
+                   = octave::symbol_record ())
     : sym (s), black_hole (false), type (), idx (), nel (1)
   { }
 
@@ -101,7 +101,7 @@ public:
 
 private:
 
-  octave::symbol_table::symbol_record sym;
+  octave::symbol_record sym;
 
   bool black_hole;
 

@@ -1088,7 +1088,7 @@ void
   }
 
   void
-  jit_convert::initialize (symbol_table::scope *s)
+  jit_convert::initialize (symbol_scope *s)
   {
     scope = s;
     iterator_count = 0;
@@ -1136,7 +1136,7 @@ void
 
     symbol_table& symtab = __get_symbol_table__ ("jit_convert::find_variable");
 
-    symbol_table::symbol_record record = symtab.find_symbol (vname, scope);
+    symbol_record record = symtab.find_symbol (vname, scope);
     if (record.is_persistent () || record.is_global ())
       throw jit_fail_exception ("Persistent and global not yet supported");
 
@@ -2803,7 +2803,7 @@ void
 
     if (iter == extra_vars.end ())
       {
-        symbol_table::scope *scope = __require_current_scope__ ("jit_convert::find");
+        symbol_scope *scope = __require_current_scope__ ("jit_convert::find");
 
         return scope->varval (vname);
       }

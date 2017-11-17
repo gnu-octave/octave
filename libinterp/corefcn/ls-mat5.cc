@@ -976,7 +976,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             octave::symbol_table& symtab
               = octave::__get_symbol_table__ ("read_mat5_binary_element");
 
-            octave::symbol_table::scope local_scope;
+            octave::symbol_scope local_scope;
 
             symtab.set_scope (&local_scope);
 

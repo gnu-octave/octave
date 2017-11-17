@@ -303,7 +303,7 @@ namespace octave
   }
 
   tree_argument_list *
-  tree_argument_list::dup (symbol_table::scope& scope) const
+  tree_argument_list::dup (symbol_scope& scope) const
   {
     tree_argument_list *new_list = new tree_argument_list ();
 

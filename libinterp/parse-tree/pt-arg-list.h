@@ -96,7 +96,7 @@ namespace octave
 
     std::list<std::string> variable_names (void) const;
 
-    tree_argument_list * dup (symbol_table::scope& scope) const;
+    tree_argument_list * dup (symbol_scope& scope) const;
 
     void accept (tree_walker& tw)
     {

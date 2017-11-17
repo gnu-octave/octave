@@ -92,14 +92,14 @@ namespace octave
     tree_parameter_list *param_list = anon_fh.parameter_list ();
     tree_expression *expr = anon_fh.expression ();
 
-    symbol_table::scope *af_scope = anon_fh.scope ();
+    symbol_scope *af_scope = anon_fh.scope ();
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    symbol_table::scope *af_parent_scope
+    symbol_scope *af_parent_scope
       = anon_fh.has_parent_scope () ? symtab.current_scope () : nullptr;
 
-    symbol_table::scope *new_scope = af_scope ? af_scope->dup () : nullptr;
+    symbol_scope *new_scope = af_scope ? af_scope->dup () : nullptr;
 
     if (new_scope && af_parent_scope)
       new_scope->inherit (af_parent_scope);
@@ -618,7 +618,7 @@ namespace octave
     return false;
   }
 
-  symbol_table::scope *
+  symbol_scope *
   tree_evaluator::get_current_scope (void)
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
@@ -968,7 +968,7 @@ namespace octave
         // Make sure that any variable with the same name as the new
         // function is cleared.
 
-        symbol_table::scope *scope = symtab.current_scope ();
+        symbol_scope *scope = symtab.current_scope ();
 
         if (scope)
           scope->assign (nm);
@@ -980,7 +980,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    symbol_table::symbol_record sym = expr.symbol ();
+    symbol_record sym = expr.symbol ();
 
     octave_value val = sym.find ();
 
@@ -2658,7 +2658,7 @@ namespace octave
           }
         else
           {
-            symbol_table::scope *scope
+            symbol_scope *scope
               = m_interpreter.require_current_scope ("tree_evaluator::bind_ans");
 
             scope->force_assign (ans, val);

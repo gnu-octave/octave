@@ -67,7 +67,7 @@ namespace octave
       m_orig_text ()
   { }
 
-  token::token (int tv, const symbol_table::symbol_record& sr, int l, int c)
+  token::token (int tv, const symbol_record& sr, int l, int c)
     : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
       m_tok_val (tv), m_type_tag (sym_rec_token), m_tok_info (sr),
       m_orig_text ()
@@ -126,7 +126,7 @@ namespace octave
     return m_tok_info.m_et;
   }
 
-  symbol_table::symbol_record
+  symbol_record
   token::sym_rec (void) const
   {
     assert (m_type_tag == sym_rec_token);

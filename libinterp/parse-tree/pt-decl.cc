@@ -48,7 +48,7 @@ namespace octave
   }
 
   tree_decl_elt *
-  tree_decl_elt::dup (symbol_table::scope& scope) const
+  tree_decl_elt::dup (symbol_scope& scope) const
   {
     return new tree_decl_elt (id ? id->dup (scope) : nullptr,
                               expr ? expr->dup (scope) : nullptr);

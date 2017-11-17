@@ -2537,7 +2537,7 @@ main_window::load_workspace_callback (const std::string& file)
 {
   Fload (ovl (file));
 
-  octave::symbol_table::scope *scope
+  octave::symbol_scope *scope
    = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 
   if (scope)
@@ -2547,7 +2547,7 @@ main_window::load_workspace_callback (const std::string& file)
 void
 main_window::rename_variable_callback (const main_window::name_pair& names)
 {
-  octave::symbol_table::scope *scope
+  octave::symbol_scope *scope
     = octave::__get_current_scope__ ("main_window::rename_variable_callback");
 
   if (scope)
@@ -2713,7 +2713,7 @@ main_window::configure_shortcuts (void)
 void
 main_window::force_refresh_workspace (void)
 {
-  octave::symbol_table::scope *scope
+  octave::symbol_scope *scope
    = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 
   if (scope)

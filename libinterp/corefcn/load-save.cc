@@ -148,7 +148,7 @@ install_loaded_variable (const std::string& name,
   octave::symbol_table& symtab
     = octave::__get_symbol_table__ ("install_loaded_varaible");
 
-  octave::symbol_table::scope *scope
+  octave::symbol_scope *scope
     = symtab.require_current_scope ("install_loaded_variable");
 
   if (global)
@@ -959,7 +959,7 @@ do_save (std::ostream& os, const octave_value& tc,
 // Save the info from SR on stream OS in the format specified by FMT.
 
 void
-do_save (std::ostream& os, const octave::symbol_table::symbol_record& sr,
+do_save (std::ostream& os, const octave::symbol_record& sr,
          load_save_format fmt, bool save_as_floats)
 {
   octave_value val = sr.varval ();
@@ -1011,7 +1011,7 @@ save_vars (std::ostream& os, const std::string& pattern,
 {
   octave::symbol_table& symtab = octave::__get_symbol_table__ ("save_vars");
 
-  std::list<octave::symbol_table::symbol_record> vars = symtab.glob (pattern);
+  std::list<octave::symbol_record> vars = symtab.glob (pattern);
 
   size_t saved = 0;
 
@@ -1278,7 +1278,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       std::string struct_name = argv[argv_idx];
 
-      octave::symbol_table::scope *scope = octave::__get_current_scope__ ("save_vars");
+      octave::symbol_scope *scope = octave::__get_current_scope__ ("save_vars");
 
       octave_value struct_var;
 
@@ -1332,9 +1332,9 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
   octave::symbol_table& symtab = octave::__get_symbol_table__ ("dump_octave_core");
 
-  octave::symbol_table::scope *top_scope = symtab.top_scope ();
+  octave::symbol_scope *top_scope = symtab.top_scope ();
 
-  std::list<octave::symbol_table::symbol_record> vars = top_scope->all_variables ();
+  std::list<octave::symbol_record> vars = top_scope->all_variables ();
 
   double save_mem_size = 0;
 

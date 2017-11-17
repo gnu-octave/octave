@@ -86,7 +86,7 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 
   if (uf && nm != anonymous)
     {
-      octave::symbol_table::scope *uf_scope = uf->scope ();
+      octave::symbol_scope *uf_scope = uf->scope ();
 
       if (uf_scope)
         uf_scope->cache_name (nm);
@@ -349,10 +349,10 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       if (fcn.is_undefined ())
         return false;
 
-      std::list<octave::symbol_table::symbol_record> vars;
+      std::list<octave::symbol_record> vars;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_table::scope *f_scope = f->scope ();
+      octave::symbol_scope *f_scope = f->scope ();
       if (f_scope)
         vars = f_scope->all_variables ();
 
@@ -406,7 +406,7 @@ octave_fcn_handle::parse_anon_fcn_handle (const std::string& fcn_text)
 
           if (uf)
             {
-              octave::symbol_table::scope *uf_scope = uf->scope ();
+              octave::symbol_scope *uf_scope = uf->scope ();
 
               if (uf_scope)
                 uf_scope->cache_name (nm);
@@ -468,7 +468,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_ascii");
 
-      octave::symbol_table::scope local_scope;
+      octave::symbol_scope local_scope;
 
       symtab.set_scope (&local_scope);
 
@@ -526,10 +526,10 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       if (fcn.is_undefined ())
         return false;
 
-      std::list<octave::symbol_table::symbol_record> vars;
+      std::list<octave::symbol_record> vars;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_table::scope *f_scope = f->scope ();
+      octave::symbol_scope *f_scope = f->scope ();
       if (f_scope)
         vars = f_scope->all_variables ();
 
@@ -634,7 +634,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_binary");
 
-      octave::symbol_table::scope local_scope;
+      octave::symbol_scope local_scope;
 
       symtab.set_scope (&local_scope);
 
@@ -782,10 +782,10 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       H5Dclose (data_hid);
 
-      std::list<octave::symbol_table::symbol_record> vars;
+      std::list<octave::symbol_record> vars;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_table::scope *f_scope = f->scope ();
+      octave::symbol_scope *f_scope = f->scope ();
       if (f_scope)
         vars = f_scope->all_variables ();
 
@@ -1136,7 +1136,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
 
-      octave::symbol_table::scope local_scope;
+      octave::symbol_scope local_scope;
 
       symtab.set_scope (&local_scope);
 
@@ -1755,10 +1755,10 @@ particular output format.
     {
       m.setfield ("file", nm);
 
-      std::list<octave::symbol_table::symbol_record> vars;
+      std::list<octave::symbol_record> vars;
 
       octave_user_function *fu = fh->user_function_value ();
-      octave::symbol_table::scope *fu_scope = fu->scope ();
+      octave::symbol_scope *fu_scope = fu->scope ();
       if (fu_scope)
         vars = fu_scope->all_variables ();
 

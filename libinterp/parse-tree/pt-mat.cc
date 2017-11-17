@@ -122,7 +122,7 @@ namespace octave
   }
 
   tree_expression *
-  tree_matrix::dup (symbol_table::scope& scope) const
+  tree_matrix::dup (symbol_scope& scope) const
   {
     tree_matrix *new_matrix = new tree_matrix (nullptr, line (), column ());
 

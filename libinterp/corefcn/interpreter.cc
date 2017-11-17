@@ -539,7 +539,7 @@ namespace octave
   void interpreter::intern_nargin (octave_idx_type nargs)
   {
     // FIXME: should this explicitly be top_scope?
-    symbol_table::scope *scope = m_symbol_table.current_scope ();
+    symbol_scope *scope = m_symbol_table.current_scope ();
 
     if (scope)
       {
@@ -1177,16 +1177,16 @@ namespace octave
     return m_url_handle_manager;
   }
 
-  symbol_table::scope *
+  symbol_scope *
   interpreter::get_current_scope (void)
   {
     return m_symbol_table.current_scope ();
   }
 
-  symbol_table::scope *
+  symbol_scope *
   interpreter::require_current_scope (const std::string& who)
   {
-    symbol_table::scope *scope = get_current_scope ();
+    symbol_scope *scope = get_current_scope ();
 
     if (! scope)
       error ("%s: symbol table scope missing", who.c_str ());

@@ -361,7 +361,7 @@ namespace octave
   }
 
   void
-  call_stack::push (octave_function *fcn, symbol_table::scope *scope,
+  call_stack::push (octave_function *fcn, symbol_scope *scope,
                     symbol_table::context_id context)
   {
     size_t prev_frame = curr_frame;

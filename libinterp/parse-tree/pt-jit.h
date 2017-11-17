@@ -179,7 +179,7 @@ namespace octave
     bool converting_function;
 
     // the scope of the function we are converting, or the current scope
-    symbol_table::scope *scope;
+    symbol_scope *scope;
 
     jit_factory factory;
 
@@ -204,7 +204,7 @@ namespace octave
 
     variable_map vmap;
 
-    void initialize (symbol_table::scope *s);
+    void initialize (symbol_scope *s);
 
     jit_call * create_checked_impl (jit_call *ret);
 

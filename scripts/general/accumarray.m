@@ -47,8 +47,8 @@
 ## The elements of the returned array that have no subscripts associated
 ## with them are set to zero.  Defining @var{fillval} to some other value
 ## allows these values to be defined.  This behavior changes, however,
-## for certain values of @var{func}.  If @var{func} is @code{min}
-## (respectively, @code{max}) then the result will be filled with the
+## for certain values of @var{func}.  If @var{func} is @code{@@min}
+## (respectively, @code{@@max}) then the result will be filled with the
 ## minimum (respectively, maximum) integer if @var{vals} is of integral
 ## type, logical false (respectively, logical true) if @var{vals} is of
 ## logical type, zero if @var{fillval} is zero and all values are

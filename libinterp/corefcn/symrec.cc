@@ -64,7 +64,7 @@ namespace octave
 
         if (is_persistent ())
           {
-            sid->persistent_assign (name, varval ());
+            sid->persistent_assign (m_name, varval ());
 
             unmark_persistent ();
           }
@@ -89,7 +89,7 @@ namespace octave
       {
         mark_persistent ();
 
-        assign (curr_scope->persistent_varval (name));
+        assign (curr_scope->persistent_varval (m_name));
       }
     // FIXME: this causes trouble with recursive calls.
     // else
@@ -110,7 +110,7 @@ namespace octave
     symbol_scope *curr_scope
       = __require_current_scope__ ("symbol_record::symbol_record_rep::erase_persistent");
 
-    curr_scope->erase_persistent (name);
+    curr_scope->erase_persistent (m_name);
   }
 
   symbol_record::symbol_record_rep *
@@ -120,7 +120,8 @@ namespace octave
     if (auto t_fwd_rep = m_fwd_rep.lock ())
       return t_fwd_rep->dup (new_scope);
 
-    return new symbol_record_rep (new_scope, name, varval (), storage_class);
+    return new symbol_record_rep (new_scope, m_name, varval (),
+                                  m_storage_class);
   }
 
   octave_value
@@ -130,7 +131,7 @@ namespace octave
       return t_fwd_rep->dump ();
 
     std::map<std::string, octave_value> m
-      = {{ "name", name },
+      = {{ "name", m_name },
          { "local", is_local () },
          { "automatic", is_automatic () },
          { "formal", is_formal () },
@@ -156,7 +157,7 @@ namespace octave
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_record::symbol_record_rep::xglobal_varref");
 
-    return symtab.global_varref (name);
+    return symtab.global_varref (m_name);
   }
 
   octave_value&
@@ -169,7 +170,7 @@ namespace octave
       = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varref");
 
     return (curr_scope
-            ? curr_scope->persistent_varref (name) : dummy_octave_value);
+            ? curr_scope->persistent_varref (m_name) : dummy_octave_value);
   }
 
   octave_value
@@ -181,7 +182,7 @@ namespace octave
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_record::symbol_record_rep::xglobal_varval");
 
-    return symtab.global_varval (name);
+    return symtab.global_varval (m_name);
   }
 
   octave_value
@@ -193,12 +194,13 @@ namespace octave
     symbol_scope *curr_scope
       = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varval");
 
-    return curr_scope ? curr_scope->persistent_varval (name) : octave_value ();
+    return (curr_scope
+            ? curr_scope->persistent_varval (m_name) : octave_value ());
   }
 
   symbol_record::symbol_record (void)
-    : rep (new symbol_record_rep (__get_current_scope__ ("symbol_record"),
-                                  "", octave_value (), local))
+    : m_rep (new symbol_record_rep (__get_current_scope__ ("symbol_record"),
+                                    "", octave_value (), local))
 
   { }
 
@@ -218,23 +220,10 @@ namespace octave
 
         if (retval.is_undefined ())
           {
-#if 0
-            // Use cached fcn_info pointer if possible.
-            if (rep->finfo)
-              retval = rep->finfo->find (args);
-            else
-#endif
-              {
-                retval = symtab.find_function (name (), args);
+            retval = symtab.find_function (name (), args);
 
-                if (retval.is_defined ())
-                  return retval;
-#if 0
-                {
-                  rep->finfo = symtab.get_fcn_info (name ());
-                }
-#endif
-              }
+            if (retval.is_defined ())
+              return retval;
           }
       }
 

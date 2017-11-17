@@ -403,7 +403,7 @@ namespace octave
           const symbol_record& sr = nm_sr.second;
 
           if ((defined_only && ! sr.is_defined ())
-              || (sr.xstorage_class () & exclude))
+              || (sr.storage_class () & exclude))
             continue;
 
           retval.push_back (sr);

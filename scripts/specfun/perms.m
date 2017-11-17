@@ -60,14 +60,13 @@ function A = perms (v)
   if (! (isreal (v) || iscomplex (v)))
     error ("perms: V must be a numeric, char, or logical vector");
   endif
-
   v = sort (reshape (v, 1, []), "descend");
   n = length (v);
 
   if (n < 4)    # special cases for small n
     switch (n)
       case 0
-        A = [];
+        A = reshape (v, 1, 0);
       case 1
         A = v;
       case 2
@@ -107,7 +106,6 @@ endfunction
 
 
 %!assert (rows (perms (1:6)), factorial (6))
-%!assert (perms ([]), [])
 %!assert (perms (pi), pi)
 %!assert (perms ([pi, e]), [pi, e; e, pi])
 %!assert (perms ([1,2,3]), [3,2,1;3,1,2;2,3,1;2,1,3;1,3,2;1,2,3])
@@ -124,7 +122,6 @@ endfunction
 ## only for numeric data.
 %!test <52431>
 %! assert (perms ({1}), {1})
-%! assert (perms ({}), cell (1, 0))
 %! assert (perms ({0.1, "foo"}),
 %!         {"foo", 0.1; 0.1, "foo"})
 %! assert (perms ({"foo", 0.1}),
@@ -139,3 +136,14 @@ endfunction
 %!         struct ("foo", {2, 1; 1, 2}))
 %! assert (perms (struct ("foo", {1, 2}, "bar", {3, 4})),
 %!         struct ("foo", {2, 1; 1, 2}, "bar", {4, 3; 3, 4}))
+
+%!test <52432>
+%! assert (perms ([]), reshape ([], 1, 0))
+%! assert (perms (single ([])), reshape (single ([]), 1, 0))
+%! assert (perms (int8 ([])), reshape (int8 ([]), 1, 0))
+%! assert (perms ({}), cell (1, 0))
+%!
+%! s = struct ();
+%! s(1) = [];
+%! assert (perms (reshape (s, 0, 0)), reshape (s, 1, 0))
+%! assert (perms (reshape (s, 0, 1)), reshape (s, 1, 0))

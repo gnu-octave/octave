@@ -119,4 +119,23 @@ endfunction
 
 %!error perms ()
 %!error perms (1, 2)
-%!error <V must be a numeric> perms ({1})
+
+## Should work for any array type, such as cells and structs, and not
+## only for numeric data.
+%!test <52431>
+%! assert (perms ({1}), {1})
+%! assert (perms ({}), cell (1, 0))
+%! assert (perms ({0.1, "foo"}),
+%!         {"foo", 0.1; 0.1, "foo"})
+%! assert (perms ({"foo", 0.1}),
+%!         {0.1, "foo"; "foo", 0.1})
+%! assert (perms ({"foo"; 0.1}),
+%!         {0.1, "foo"; "foo", 0.1})
+%! assert (perms ({0.1; "foo"}),
+%!         {"foo", 0.1; 0.1, "foo"})
+%!
+%! assert (perms (struct ()), struct ())
+%! assert (perms (struct ("foo", {1, 2})),
+%!         struct ("foo", {2, 1; 1, 2}))
+%! assert (perms (struct ("foo", {1, 2}, "bar", {3, 4})),
+%!         struct ("foo", {2, 1; 1, 2}, "bar", {4, 3; 3, 4}))

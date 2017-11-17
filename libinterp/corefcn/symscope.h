@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_scope_h)
-#define octave_scope_h 1
+#if ! defined (octave_symscope_h)
+#define octave_symscope_h 1
 
 #include "octave-config.h"
 
@@ -47,7 +47,7 @@ class octave_user_function;
 
 namespace octave
 {
-  class scope
+  class symbol_scope
   {
   public:
 
@@ -68,7 +68,7 @@ namespace octave
     typedef std::map<std::string, octave_value>::iterator
     subfunctions_iterator;
 
-    scope (const std::string& name = "")
+    symbol_scope (const std::string& name = "")
       : m_name (name), m_symbols (), m_persistent_symbols (), m_subfunctions (),
         m_fcn (nullptr), m_parent (nullptr), m_parent_fcn (), m_children (), m_is_nested (false),
         m_is_static (false), m_context (0)
@@ -76,11 +76,11 @@ namespace octave
 
     // No copying!
 
-    scope (const scope&) = delete;
+    symbol_scope (const symbol_scope&) = delete;
 
-    scope& operator = (const scope&) = delete;
+    symbol_scope& operator = (const symbol_scope&) = delete;
 
-    ~scope (void) = default;
+    ~symbol_scope (void) = default;
 
     void insert_symbol_record (const symbol_record& sr)
     {
@@ -95,12 +95,12 @@ namespace octave
 
     void mark_static (void) { m_is_static = true; }
 
-    scope * parent_scope (void) const { return m_parent; }
+    symbol_scope * parent_scope (void) const { return m_parent; }
     octave_value parent_fcn (void) const { return m_parent_fcn; }
 
-    scope * dup (void) const
+    symbol_scope * dup (void) const
     {
-      scope *new_sid = new scope ();
+      symbol_scope *new_sid = new symbol_scope ();
 
       for (const auto& nm_sr : m_symbols)
         new_sid->insert_symbol_record (nm_sr.second.dup (new_sid));
@@ -125,7 +125,7 @@ namespace octave
         return p->second;
     }
 
-    void inherit_internal (scope& donor_scope)
+    void inherit_internal (symbol_scope& donor_scope)
     {
       for (auto& nm_sr : m_symbols)
         {
@@ -150,7 +150,7 @@ namespace octave
         }
     }
 
-    void inherit (scope *donor_scope)
+    void inherit (symbol_scope *donor_scope)
     {
       while (donor_scope)
         {
@@ -537,13 +537,13 @@ namespace octave
 
     void set_function (octave_user_function *fcn) { m_fcn = fcn; }
 
-    void set_parent (scope *p);
+    void set_parent (symbol_scope *p);
 
     void update_nest (void);
 
     bool look_nonlocal (const std::string& name, symbol_record& result);
 
-    void bind_script_symbols (scope *curr_scope);
+    void bind_script_symbols (symbol_scope *curr_scope);
 
     void unbind_script_symbols (void);
 
@@ -566,11 +566,11 @@ namespace octave
     octave_user_function *m_fcn;
 
     // Parent of nested function (may be null).
-    scope *m_parent;
+    symbol_scope *m_parent;
     octave_value m_parent_fcn;
 
     // Child nested functions.
-    std::vector<scope*> m_children;
+    std::vector<symbol_scope*> m_children;
 
     // If true, then this scope belongs to a nested function.
     bool m_is_nested;

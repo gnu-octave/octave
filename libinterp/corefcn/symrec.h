@@ -40,7 +40,7 @@ class octave_user_function;
 namespace octave
 {
   class fcn_info;
-  class scope;
+  class symbol_scope;
 
   class symbol_record
   {
@@ -80,7 +80,7 @@ namespace octave
     {
     public:
 
-      symbol_record_rep (scope *s, const std::string& nm,
+      symbol_record_rep (symbol_scope *s, const std::string& nm,
                          const octave_value& v, unsigned int sc)
         : m_decl_scope (s), curr_fcn (nullptr), name (nm),
           m_fwd_rep (nullptr), value_stack (),
@@ -200,7 +200,7 @@ namespace octave
           }
       }
 
-      void push_context (scope *sid)
+      void push_context (symbol_scope *sid)
       {
         if (m_fwd_rep)
           {
@@ -227,7 +227,7 @@ namespace octave
       //
       // Here, X should only exist in the final stack frame.
 
-      size_t pop_context (scope *sid)
+      size_t pop_context (symbol_scope *sid)
       {
         if (m_fwd_rep)
           return m_fwd_rep->pop_context (sid);
@@ -255,7 +255,7 @@ namespace octave
         clear (decl_scope ());
       }
 
-      void clear (scope *sid);
+      void clear (symbol_scope *sid);
 
       bool is_defined (void) const
       {
@@ -542,7 +542,7 @@ namespace octave
 
       void erase_persistent (void);
 
-      scope *decl_scope (void)
+      symbol_scope *decl_scope (void)
       {
         if (m_fwd_rep)
           return m_fwd_rep->decl_scope ();
@@ -568,11 +568,11 @@ namespace octave
 
       void unbind_fwd_rep (void) { m_fwd_rep = nullptr; }
 
-      symbol_record_rep * dup (scope *new_scope) const;
+      symbol_record_rep * dup (symbol_scope *new_scope) const;
 
       octave_value dump (void) const;
 
-      scope *m_decl_scope;
+      symbol_scope *m_decl_scope;
 
       octave_user_function *curr_fcn;
 
@@ -605,7 +605,7 @@ namespace octave
 
     symbol_record (void);
 
-    symbol_record (scope *s, const std::string& nm = "",
+    symbol_record (symbol_scope *s, const std::string& nm = "",
                    const octave_value& v = octave_value (),
                    unsigned int sc = local)
       : rep (new symbol_record_rep (s, nm, v, sc)) { }
@@ -636,7 +636,7 @@ namespace octave
         delete rep;
     }
 
-    symbol_record dup (scope *sid) const
+    symbol_record dup (symbol_scope *sid) const
     {
       return symbol_record (rep->dup (sid));
     }
@@ -689,13 +689,13 @@ namespace octave
       return rep->varval ();
     }
 
-    void push_context (scope *sid) { rep->push_context (sid); }
+    void push_context (symbol_scope *sid) { rep->push_context (sid); }
 
-    size_t pop_context (scope *sid) { return rep->pop_context (sid); }
+    size_t pop_context (symbol_scope *sid) { return rep->pop_context (sid); }
 
     void clear (void) { rep->clear (); }
 
-    void clear (scope *sid) { rep->clear (sid); }
+    void clear (symbol_scope *sid) { rep->clear (sid); }
 
     bool is_defined (void) const
     {
@@ -750,7 +750,7 @@ namespace octave
 
     void invalidate (void) { rep->invalidate (); }
 
-    scope *decl_scope (void) { return rep->decl_scope (); }
+    symbol_scope *decl_scope (void) { return rep->decl_scope (); }
 
     unsigned int xstorage_class (void) const { return rep->storage_class; }
 

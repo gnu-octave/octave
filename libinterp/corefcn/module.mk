@@ -79,11 +79,11 @@ COREFCN_INC = \
   %reldir%/pager.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \
-  %reldir%/scope.h \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
   %reldir%/symrec.h \
+  %reldir%/symscope.h \
   %reldir%/symtab.h \
   %reldir%/sysdep.h \
   %reldir%/text-renderer.h \
@@ -225,7 +225,6 @@ COREFCN_SRC = \
   %reldir%/rcond.cc \
   %reldir%/regexp.cc \
   %reldir%/schur.cc \
-  %reldir%/scope.cc \
   %reldir%/sighandlers.cc \
   %reldir%/sparse-xdiv.cc \
   %reldir%/sparse-xpow.cc \
@@ -239,6 +238,7 @@ COREFCN_SRC = \
   %reldir%/svd.cc \
   %reldir%/sylvester.cc \
   %reldir%/symrec.cc \
+  %reldir%/symscope.cc \
   %reldir%/symtab.cc \
   %reldir%/syscalls.cc \
   %reldir%/sysdep.cc \

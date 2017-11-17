@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "parse.h"
-#include "scope.h"
 #include "symrec.h"
+#include "symscope.h"
 #include "symtab.h"
 
 namespace octave
@@ -374,7 +374,7 @@ namespace octave
   {
     if (local_funcs)
       {
-        scope *curr_scope
+        symbol_scope *curr_scope
           = __get_current_scope__ ("fcn_info::fcn_info_rep::xfind");
 
         octave_user_function *current_fcn
@@ -592,7 +592,7 @@ namespace octave
 
     // Private function.
 
-    scope *curr_scope
+    symbol_scope *curr_scope
       = __get_current_scope__ ("fcn_info::fcn_info_rep::x_builtin_find");
 
     octave_user_function *current_fcn = curr_scope ? curr_scope->function () : nullptr;

@@ -32,21 +32,21 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
-#include "scope.h"
 #include "symrec.h"
+#include "symscope.h"
 #include "symtab.h"
 #include "utils.h"
 
 namespace octave
 {
   octave_value
-  scope::find (const std::string& name, const octave_value_list& args,
-               bool skip_variables, bool local_funcs)
+  symbol_scope::find (const std::string& name, const octave_value_list& args,
+                      bool skip_variables, bool local_funcs)
   {
     // Variable.
 
     symbol_table& symtab
-      = __get_symbol_table__ ("scope::find");
+      = __get_symbol_table__ ("symbol_scope::find");
 
     if (! skip_variables)
       {
@@ -84,7 +84,7 @@ namespace octave
   }
 
   symbol_record&
-  scope::insert (const std::string& name, bool force_add)
+  symbol_scope::insert (const std::string& name, bool force_add)
   {
     table_iterator p = m_symbols.find (name);
 
@@ -107,7 +107,7 @@ namespace octave
   }
 
   void
-  scope::clear_global (const std::string& name)
+  symbol_scope::clear_global (const std::string& name)
   {
     table_iterator p = m_symbols.find (name);
 
@@ -120,13 +120,13 @@ namespace octave
       }
 
     symbol_table& symtab
-      = __get_symbol_table__ ("scope::clear_global");
+      = __get_symbol_table__ ("symbol_scope::clear_global");
 
     symtab.erase_global (name);
   }
 
   void
-  scope::clear_global_pattern (const std::string& pat)
+  symbol_scope::clear_global_pattern (const std::string& pat)
   {
     glob_match pattern (pat);
 
@@ -139,13 +139,13 @@ namespace octave
       }
 
     symbol_table& symtab
-      = __get_symbol_table__ ("scope::clear_global_pattern");
+      = __get_symbol_table__ ("symbol_scope::clear_global_pattern");
 
     symtab.erase_global_pattern (pattern);
   }
 
   std::list<workspace_element>
-  scope::workspace_info (void) const
+  symbol_scope::workspace_info (void) const
   {
     std::list<workspace_element> retval;
 
@@ -199,7 +199,7 @@ namespace octave
   }
 
   octave_value
-  scope::dump (void) const
+  symbol_scope::dump (void) const
   {
     std::map<std::string, octave_value> m
       = {{ "name", m_name },
@@ -211,7 +211,7 @@ namespace octave
   }
 
   octave_value
-  scope::dump_symbols_map (void) const
+  symbol_scope::dump_symbols_map (void) const
   {
     std::map<std::string, octave_value> info_map;
 
@@ -226,8 +226,8 @@ namespace octave
   }
 
   void
-  scope::install_subfunction (const std::string& name,
-                              const octave_value& fval, bool is_nested)
+  symbol_scope::install_subfunction (const std::string& name,
+                                     const octave_value& fval, bool is_nested)
   {
     m_subfunctions[name] = fval;
 
@@ -235,7 +235,7 @@ namespace octave
     // object...
     octave_user_function *fcn = fval.user_function_value ();
 
-    scope *fcn_scope = fcn->scope ();
+    symbol_scope *fcn_scope = fcn->scope ();
 
     fcn_scope->set_parent (this);
 
@@ -251,7 +251,7 @@ namespace octave
   }
 
   octave_value
-  scope::find_subfunction (const std::string& name) const
+  symbol_scope::find_subfunction (const std::string& name) const
   {
     subfunctions_const_iterator p = m_subfunctions.find (name);
 
@@ -265,7 +265,7 @@ namespace octave
   }
 
   void
-  scope::mark_subfunctions_in_scope_as_private (const std::string& class_name)
+  symbol_scope::mark_subfunctions_in_scope_as_private (const std::string& class_name)
   {
     for (auto& nm_sf : m_subfunctions)
       {
@@ -277,7 +277,7 @@ namespace octave
   }
 
   void
-  scope::set_parent (scope *p)
+  symbol_scope::set_parent (symbol_scope *p)
   {
     m_parent = p;
 
@@ -299,7 +299,7 @@ namespace octave
   }
 
   void
-  scope::update_nest (void)
+  symbol_scope::update_nest (void)
   {
     if (m_parent)
       {
@@ -335,7 +335,7 @@ namespace octave
   }
 
   bool
-  scope::look_nonlocal (const std::string& name, symbol_record& result)
+  symbol_scope::look_nonlocal (const std::string& name, symbol_record& result)
   {
     table_iterator p = m_symbols.find (name);
     if (p == m_symbols.end ())
@@ -353,14 +353,14 @@ namespace octave
   }
 
   void
-  scope::bind_script_symbols (scope *curr_scope)
+  symbol_scope::bind_script_symbols (symbol_scope *curr_scope)
   {
     for (auto& nm_sr : m_symbols)
       nm_sr.second.bind_fwd_rep (curr_scope->find_symbol (nm_sr.first));
   }
 
   void
-  scope::unbind_script_symbols (void)
+  symbol_scope::unbind_script_symbols (void)
   {
     for (auto& nm_sr : m_symbols)
       nm_sr.second.unbind_fwd_rep ();

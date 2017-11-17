@@ -43,8 +43,8 @@ class octave_user_function;
 #include "fcn-info.h"
 #include "ov.h"
 #include "ovl.h"
-#include "scope.h"
 #include "symrec.h"
+#include "symscope.h"
 #include "workspace-element.h"
 
 namespace octave
@@ -54,16 +54,16 @@ namespace octave
   public:
 
     typedef octave::symbol_record symbol_record;
-    typedef octave::scope scope;
+    typedef octave::symbol_scope scope;
     typedef octave::fcn_info fcn_info;
 
     typedef scope::context_id context_id;
 
     symbol_table (void)
       : m_global_symbols (), m_fcn_table (), m_class_precedence_table (),
-      m_parent_map (), m_global_scope (new scope ("global scope")),
-      m_top_scope (new scope ("top scope")),
-      m_current_scope (m_top_scope)
+        m_parent_map (), m_global_scope (new scope ("global scope")),
+        m_top_scope (new symbol_scope ("top scope")),
+        m_current_scope (m_top_scope)
       { }
 
     // No copying!
@@ -78,12 +78,12 @@ namespace octave
         delete m_global_scope;
       }
 
-    scope *global_scope (void) { return m_global_scope; }
-    scope *top_scope (void) { return m_top_scope; }
+    symbol_scope *global_scope (void) { return m_global_scope; }
+    symbol_scope *top_scope (void) { return m_top_scope; }
 
-    scope *current_scope (void) { return m_current_scope; }
+    symbol_scope *current_scope (void) { return m_current_scope; }
 
-    scope *require_current_scope (const std::string& who)
+    symbol_scope *require_current_scope (const std::string& who)
     {
       if (! m_current_scope)
         error ("%s: missing scope", who.c_str ());
@@ -96,12 +96,12 @@ namespace octave
       return m_current_scope ? m_current_scope->current_context () : 0;
     }
 
-    void set_scope (scope *sid)
+    void set_scope (symbol_scope *sid)
     {
       set_scope_and_context (sid, 0);
     }
 
-    void set_scope_and_context (scope *sid, context_id context)
+    void set_scope_and_context (symbol_scope *sid, context_id context)
     {
       if (sid == m_global_scope)
         error ("can't set scope to global");
@@ -112,7 +112,7 @@ namespace octave
         m_current_scope->set_context (context);
     }
 
-    symbol_record find_symbol (const std::string& name, scope *sid)
+    symbol_record find_symbol (const std::string& name, symbol_scope *sid)
     {
       return sid ? sid->find_symbol (name) : symbol_record ();
     }
@@ -122,13 +122,13 @@ namespace octave
       return find_symbol (name, m_current_scope);
     }
 
-    void inherit (scope *recipient_scope, scope *donor_scope)
+    void inherit (symbol_scope *recipient_scope, symbol_scope *donor_scope)
     {
       if (recipient_scope)
         recipient_scope->inherit (donor_scope);
     }
 
-    void inherit (scope *recipient_scope)
+    void inherit (symbol_scope *recipient_scope)
     {
       inherit (recipient_scope, m_current_scope);
     }
@@ -788,10 +788,10 @@ namespace octave
     typedef std::map<std::string, std::list<std::string>>::iterator
       parent_map_iterator;
 
-    scope *m_global_scope;
-    scope *m_top_scope;
+    symbol_scope *m_global_scope;
+    symbol_scope *m_top_scope;
 
-    scope *m_current_scope;
+    symbol_scope *m_current_scope;
 
     octave_value dump_fcn_table_map (void) const;
   };

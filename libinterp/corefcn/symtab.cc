@@ -46,8 +46,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "parse.h"
 #include "pt-pr-code.h"
-#include "scope.h"
 #include "symrec.h"
+#include "symscope.h"
 #include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -443,7 +443,7 @@ namespace octave
         else
           {
             std::string fcn_scope = name.substr (0, pos);
-            scope *stored_scope = m_current_scope;
+            symbol_scope *stored_scope = m_current_scope;
             m_current_scope = m_top_scope;
             octave_value parent = find_function (name.substr (0, pos),
                                                  octave_value_list (), false);
@@ -482,7 +482,7 @@ namespace octave
     if (pos != std::string::npos)
       {
         std::string fcn_scope = full_name.substr (0, pos);
-        scope *stored_scope = m_current_scope;
+        symbol_scope *stored_scope = m_current_scope;
         m_current_scope = m_top_scope;
         octave_value parent = find_function (full_name.substr (0, pos),
                                              octave_value_list (), false);
@@ -658,7 +658,7 @@ Return the current scope and context as integers.
 {
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
-  octave::scope *scope = symtab.current_scope ();
+  octave::symbol_scope *scope = symtab.current_scope ();
 
   std::string nm = scope ? scope->name () : "<unknown>";
 

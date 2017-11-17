@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "fcn-info.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "scope.h"
 #include "symrec.h"
+#include "symscope.h"
 #include "symtab.h"
 
 namespace octave
@@ -48,7 +48,7 @@ namespace octave
   }
 
   void
-  symbol_record::symbol_record_rep::clear (scope *sid)
+  symbol_record::symbol_record_rep::clear (symbol_scope *sid)
   {
     if (m_fwd_rep)
       {
@@ -82,7 +82,7 @@ namespace octave
         return;
       }
 
-    scope *curr_scope
+    symbol_scope *curr_scope
       = __require_current_scope__ ("symbol_record::symbol_record_rep::init_persistent");
 
     if (! is_defined ())
@@ -107,14 +107,14 @@ namespace octave
 
     unmark_persistent ();
 
-    scope *curr_scope
+    symbol_scope *curr_scope
       = __require_current_scope__ ("symbol_record::symbol_record_rep::erase_persistent");
 
     curr_scope->erase_persistent (name);
   }
 
   symbol_record::symbol_record_rep *
-  symbol_record::symbol_record_rep::dup (scope *new_scope) const
+  symbol_record::symbol_record_rep::dup (symbol_scope *new_scope) const
   {
     // FIXME: is this the right thing do to?
     if (m_fwd_rep)
@@ -165,7 +165,7 @@ namespace octave
     if (m_fwd_rep)
       return m_fwd_rep->xpersistent_varref ();
 
-    scope *curr_scope
+    symbol_scope *curr_scope
       = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varref");
 
     return (curr_scope
@@ -190,7 +190,7 @@ namespace octave
     if (m_fwd_rep)
       return m_fwd_rep->xpersistent_varval ();
 
-    scope *curr_scope
+    symbol_scope *curr_scope
       = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varval");
 
     return curr_scope ? curr_scope->persistent_varval (name) : octave_value ();

@@ -49,6 +49,11 @@ if AMCOND_BUILD_QT_GUI
   OCTAVE_INTERPRETER_TARGETS += %reldir%/octave-gui$(EXEEXT)
 endif
 
+if AMCOND_BUILD_QT_GUI
+  archlib_PROGRAMS += %reldir%/octave-svgconvert
+  OCTAVE_INTERPRETER_TARGETS += %reldir%/octave-svgconvert$(EXEEXT)
+endif
+
 OCTAVE_CORE_LIBS = \
   libinterp/liboctinterp.la \
   liboctave/liboctave.la \
@@ -114,6 +119,14 @@ endif
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_GUI_LINK_OPTS) \
   $(WARN_LDFLAGS)
+
+%canon_reldir%_octave_svgconvert_SOURCES = %reldir%/octave-svgconvert.cc
+
+%canon_reldir%_octave_svgconvert_CPPFLAGS = $(QT_CPPFLAGS)
+
+%canon_reldir%_octave_svgconvert_LDADD = $(QT_LIBS)
+
+%canon_reldir%_octave_svgconvert_LDFLAGS = $(QT_LDFLAGS)
 
 %canon_reldir%_mkoctfile_SOURCES =
 

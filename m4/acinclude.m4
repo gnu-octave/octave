@@ -1975,11 +1975,11 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   case "$qt_version" in
     4)
       QT_OPENGL_MODULE="QtOpenGL"
-      QT_MODULES="QtCore QtGui QtNetwork QtHelp"
+      QT_MODULES="QtCore QtGui QtNetwork QtHelp QtXml"
     ;;
     5)
       QT_OPENGL_MODULE="Qt5OpenGL"
-      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5PrintSupport Qt5Help"
+      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5PrintSupport Qt5Help Qt5Xml"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])

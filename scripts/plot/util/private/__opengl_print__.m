@@ -78,7 +78,15 @@ function opts = __opengl_print__ (opts)
     case "svg"
       ## format GL2PS_SVG
       gl2ps_device = {"svg"};
-      pipeline = {sprintf("cat > %s", opts.name)};
+      svgcmd = "";
+      if (opts.svgconvert)
+        svgcmd = opts.svgconvert_cmd (opts, opts.ghostscript.device);
+      endif
+      if (! isempty (svgcmd))
+        pipeline = {sprintf(svgcmd, "svg", opts.name)};
+      else
+        pipeline = {sprintf("cat > %s", opts.name)};
+      endif
     case fig2dev_devices
       cmd_pstoedit = opts.pstoedit_cmd (opts, "fig");
       cmd_fig2dev = opts.fig2dev_cmd (opts, opts.devopt);
@@ -110,36 +118,63 @@ function opts = __opengl_print__ (opts)
       pipeline = {sprintf("%s > %s", cmd, opts.name)};
     case {"corel", "gif"}
       error ("print:unsupporteddevice",
-             "print.m: %s output is not available for the FLTK graphics toolkit",
+             "print.m: %s output is not available for OpenGL graphics toolkits",
              upper (opts.devopt));
     case opts.ghostscript.device
-      opts.ghostscript.source = "-";
+      ## Except for postscript, use svg format and first convert to pdf
+      ## before going through ghostscript for final adjusments
+      svgcmd = "";
+      if (opts.svgconvert)
+        svgcmd = opts.svgconvert_cmd (opts, opts.ghostscript.device);
+      endif
+      dosvg = ! (strcmp (opts.devopt, "ps2write") || isempty (svgcmd));
+      if (! dosvg)
+        opts.ghostscript.source = "-";
+      else
+        tmp = tempname ();
+        opts.ghostscript.source = tmp;
+        opts.unlink = [opts.unlink tmp];
+        svgcmd = sprintf (svgcmd, "pdf", tmp);
+      endif
+
       opts.ghostscript.output = opts.name;
       if (opts.send_to_printer)
         opts.unlink(strcmp (opts.unlink, opts.ghostscript.output)) = [];
         opts.ghostscript.output = "-";
       endif
+
       [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
       if (opts.send_to_printer || isempty (opts.name))
         cmd_lpr = opts.lpr_cmd (opts);
         cmd = sprintf ("%s | %s", cmd_gs, cmd_lpr);
+      elseif (dosvg)
+        if (dos_shell)
+          cmd = sprintf ("%s & %s", svgcmd, cmd_gs);
+        else
+          cmd = sprintf ("%s ; %s", svgcmd, cmd_gs);
+        endif
       else
         cmd = sprintf ("%s", cmd_gs);
       endif
-      if (! isempty (cmd_cleanup))
+
+      if (dosvg)
+        gl2ps_device = {"svg"};
+      else
         gl2ps_device = {"eps"};
+      endif
+
+      if (! isempty (cmd_cleanup))
         if (dos_shell)
           pipeline = {sprintf("%s & %s", cmd, cmd_cleanup)};
         else
           pipeline = {sprintf("%s ; %s", cmd, cmd_cleanup)};
         endif
       else
-        gl2ps_device = {"eps"};
         pipeline = {cmd};
       endif
     otherwise
       error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: %s output is not available for GL2PS output",
+             "print.m: %s output is not available for OpenGL toolkits",
              upper (opts.devopt));
   endswitch
 

@@ -22,7 +22,7 @@
 ## @deftypefnx {} {} print (@var{filename}, @var{options})
 ## @deftypefnx {} {} print (@var{h}, @var{filename}, @var{options})
 ## @deftypefnx {} {@var{rgb} = } print (@var{-RGBImage}, @dots{})
-## Format a figure and send it to a printer, save it to a file or
+## Format a figure for printing and send it to a printer, save it to a file or
 ## return an RGB image.
 ##
 ## @var{filename} defines the name of the output file.  If the filename has
@@ -183,7 +183,8 @@
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
-## is one of:
+## is one of (devices marked with a "*" are available only with Gnuplot
+## toolkit):
 ##
 ##   @table @code
 ##   @item  ps
@@ -191,14 +192,19 @@
 ##   @itemx psc
 ##   @itemx psc2
 ##     PostScript (level 1 and 2, mono and color).  The OpenGL-based toolkits
-## always generate PostScript level 3.0.
+## always generate PostScript level 3.0 and have a limited support for
+## text.
 ##
 ##   @item  eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
 ##     Encapsulated PostScript (level 1 and 2, mono and color).  The
-## OpenGL-based toolkits always generate PostScript level 3.0.
+## OpenGL-based toolkits always generate PostScript level 3.0 and have a
+## limited support for text.  Only the set of ASCII characters may be
+## used and the only supported fonts are the base postscript fonts:
+## Helvetica (the default), Times, Courier and their variants (bold or
+## italic).  Any other font will be replaced by Helvetica.
 ##
 ##   @item  pslatex
 ##   @itemx epslatex
@@ -224,31 +230,30 @@
 ## braces).  The @samp{pdflatex} device, and any of the @samp{standalone}
 ## formats, are not available with the Gnuplot toolkit.
 ##
-##   @item  epscairo
-##   @itemx pdfcairo
-##   @itemx epscairolatex
-##   @itemx pdfcairolatex
-##   @itemx epscairolatexstandalone
-##   @itemx pdfcairolatexstandalone
-##     Generate Cairo-based output when using the Gnuplot graphics toolkit.
-## The @samp{epscairo} and @samp{pdfcairo} devices are synonymous with
-## the @samp{epsc} device.  The @LaTeX{} variants generate a @LaTeX{} file,
-## @file{@var{filename}.tex}, for the text portions of a plot, and an image
-## file, @file{@var{filename}.(eps|pdf)}, for the graph portion of the plot.
-## The @samp{standalone} variants behave as described for
+##   @item  epscairo*
+##   @itemx pdfcairo*
+##   @itemx epscairolatex*
+##   @itemx pdfcairolatex*
+##   @itemx epscairolatexstandalone*
+##   @itemx pdfcairolatexstandalone*
+##     Generate Cairo based output.  The @samp{epscairo} and
+## @samp{pdfcairo} devices are synonymous with the @samp{epsc} device.
+## The @LaTeX{} variants generate a @LaTeX{} file,
+## @file{@var{filename}.tex}, for the text portions of a plot, and an
+## image file, @file{@var{filename}.(eps|pdf)}, for the graph portion of
+## the plot.  The @samp{standalone} variants behave as described for
 ## @samp{epslatexstandalone} above.
 ##
 ##   @item  ill
 ##   @itemx @nospell{aifm}
 ##     Adobe Illustrator (obsolete for Gnuplot versions > 4.2)
 ##
-##   @item canvas
-##     Javascript-based drawing on HTML5 canvas viewable in a web browser
-## (only available for the Gnuplot graphics toolkit).
+##   @item canvas*
+##     Javascript-based drawing on HTML5 canvas viewable in a web browser.
 ##
-##   @item  cdr
-##   @itemx @nospell{corel}
-##     @nospell{CorelDraw}
+##   @item  cdr*
+##   @itemx @nospell{corel*}
+##     CorelDraw.
 ##
 ##   @item cgm
 ##     Computer Graphics Metafile, Version 1, ANSI X3.122-1986
@@ -267,9 +272,8 @@
 ## whether the special flag should be set for the text in the figure.
 ## (default is @option{-textnormal})
 ##
-##   @item gif
-##     GIF image
-## (only available for the Gnuplot graphics toolkit).
+##   @item gif*
+##     GIF image.
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -278,10 +282,9 @@
 ##   @itemx jpeg
 ##     JPEG image
 ##
-##   @item latex
-##   @itemx eepic
-##     @LaTeX{} picture environment and extended picture environment
-## (only available for the Gnuplot graphics toolkit).
+##   @item latex*
+##   @itemx eepic*
+##     @LaTeX{} picture environment and extended picture environment.
 ##
 ##   @item mf
 ##     Metafont
@@ -293,22 +296,28 @@
 ##     PBMplus
 ##
 ##   @item pdf
-##     Portable Document Format
+##   @itemx pdfcrop
+##     Portable Document Format. The @code{pdfcrop} device removes the default
+## surrounding page.
+##
+## By default PDF output has limited support for text and doesn't
+## support transparency at all.  For complete text support and basic
+## transparency, use the @code{-svgconvert} option.
 ##
 ##   @item svg
 ##     Scalable Vector Graphics
 ##
 ##   @item  tif
 ##   @itemx tiff
-##     TIFF image, compressed
+##   @itemx tiffn
+##     TIFF image with lzm compression (tif, tiff) or uncompressed (tiffn).
 ##
 ##   @item  tikz
-##   @itemx tikzstandalone
+##   @itemx tikzstandalone*
 ##     Generate a @LaTeX{} file using PGF/TikZ format.  The OpenGL-based
 ## toolkits create a PGF file while Gnuplot creates a TikZ file.  The
 ## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
-## TikZ file (@samp{tikzstandalone} and is only available for the Gnuplot
-## graphics toolkit).
+## TikZ file.
 ##   @end table
 ##
 ##   If the device is omitted, it is inferred from the file extension,
@@ -319,9 +328,6 @@
 ## Some examples are;
 ##
 ##   @table @code
-##   @item pdfwrite
-##     Produces pdf output from eps
-##
 ##   @item ljet2p
 ##     HP LaserJet @nospell{IIP}
 ##
@@ -343,6 +349,19 @@
 ## @item -G@var{ghostscript_command}
 ##   Specify the command for calling Ghostscript.  For Unix and Windows the
 ## defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
+##
+## @item -svgconvert
+##   For OpenGL based toolkits, this option adds support for printing
+## arbitrary characters and fonts in PDF outputs.  It also avoids some
+## antialiasing artifacts in patch and surface objects rendering.
+## Finally it adds support for printing transparent line, patch and surface 
+## objects.
+##
+## This option only affects PDF outputs, unless it is combined with
+## @code{-painters} option, in which case raster outputs are also affected.
+##
+## Caution: @code{-svgconvert} may lead to innacurate rendering of
+## image objects.
 ##
 ## @item  -TextAlphaBits=@var{n}
 ## @itemx -GraphicsAlphaBits=@var{n}
@@ -383,6 +402,7 @@ function rgbout = print (varargin)
   opts.latex_standalone = @latex_standalone;
   opts.lpr_cmd = @lpr;
   opts.epstool_cmd = @epstool;
+  opts.svgconvert_cmd = @svgconvert;
 
   if (isempty (opts.figure) || ! isfigure (opts.figure))
     error ("print: no figure to print");
@@ -453,12 +473,14 @@ function rgbout = print (varargin)
       nfig += 1;
     endfor
 
-    ## FIXME: line transparency is only handled for svg output when
-    ## using gl2ps. For other formats, switch grid lines to light gray
-    ## so that the image output approximately matches on-screen experience.
+    ## With the -painters (gl2ps) renderer, line transparency is only
+    ## handled for svg and pdf outputs using svgconvert.
+    ## Otherwise, switch grid lines color to light gray so that the image 
+    ## output approximately matches on-screen experience.
     hax = findall (opts.figure, "type", "axes");
-    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.devopt, "svg")
-        && ! strcmp (opts.renderer, "opengl"))
+    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.renderer, "opengl")
+        && ! (opts.svgconvert && strcmp (opts.devopt, "pdfwrite"))
+        && ! strcmp (opts.devopt, "svg"))
       for n = 1:numel (hax)
         if (strcmp (get (hax(n), "gridcolormode"), "auto"))
           props(end+1).h = hax(n);
@@ -659,7 +681,8 @@ function rgbout = print (varargin)
     for n = 1:numel (opts.unlink)
       [status, output] = unlink (opts.unlink{n});
       if (status != 0)
-        warning ("print.m: %s, '%s'", output, opts.unlink{n});
+        warning ("octave:print:unlinkerror", ...
+                 "print.m: %s, '%s'", output, opts.unlink{n});
       endif
     endfor
   end_unwind_protect
@@ -727,7 +750,7 @@ function cmd = epstool (opts, filein, fileout)
   endif
 
   if (! isempty (opts.preview) && opts.tight_flag)
-    warning ("print:previewandtight",
+    warning ("octave:print:previewandtight",
              "print.m: eps preview may not be combined with -tight");
   endif
   if (! isempty (opts.preview) || opts.tight_flag)
@@ -961,6 +984,31 @@ function cmd = pstoedit (opts, devopt)
 
   if (opts.debug)
     fprintf ("pstoedit command: '%s'\n", cmd);
+  endif
+
+endfunction
+
+function cmd = svgconvert (opts, devopt)
+
+  cmd = "";
+
+  if (nargin < 2)
+    devopt = opts.devopt;
+  endif
+
+  if (isempty (opts.svgconvert_binary))
+    warning ("octave:print:nosvgconvert", ...
+             ["print.m: unale to find octave-svgconvert, ", ...
+              "falling back to eps convertion"]);
+  else
+    def_font = fullfile (__octave_config_info__ ("datadir"), "font", ...
+                         "FreeSans.otf");
+    cmd = sprintf ("%s - %%s %3.2f %s %d %%s", opts.svgconvert_binary, ...
+                   get (0, "screenpixelsperinch"), def_font, 1);
+
+    if (opts.debug)
+      fprintf ("svgconvert command: '%s'\n", cmd);
+    endif
   endif
 
 endfunction

@@ -62,6 +62,8 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.rgb_output = false;
   arg_st.send_to_printer = false;
   arg_st.special_flag = "textnormal";
+  arg_st.svgconvert = false;
+  arg_st.svgconvert_binary = __quote_path__ (__svgconv_binary__ ());
   arg_st.tight_flag = false;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
 
@@ -107,6 +109,8 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (strcmp (arg, "-tight"))
         arg_st.loose = false;
         arg_st.tight_flag = true;
+      elseif (strcmp (arg, "-svgconvert"))
+        arg_st.svgconvert = true;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
       elseif (any (strcmp (arg,
@@ -162,7 +166,9 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2double (arg(3:end));
       elseif (strcmp (arg, "-noui"))
-        warning ("print: option '-noui' not yet implemented");
+        warning ("octave:ignoredargument", ...
+                 ["print: '%s' accepted for Matlab compatibility, ", ...
+                  "but is ignored."], arg);
       elseif (length (arg) >= 1 && arg(1) == "-")
         error ("print: unknown option '%s'", arg);
       elseif (length (arg) > 0)
@@ -175,11 +181,13 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endfor
 
+  ## Resolution
   if (arg_st.ghostscript.resolution == 0)
     ## Do as Matlab does.
     arg_st.ghostscript.resolution = get (0, "screenpixelsperinch");
   endif
 
+  ## Orientation
   if (isempty (arg_st.orientation))
     if (isfigure (arg_st.figure))
       arg_st.orientation = get (arg_st.figure, "paperorientation");
@@ -189,6 +197,7 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
+  ## The device is infered from extension if not provided
   dot = rindex (arg_st.name, ".");
   if (isempty (arg_st.devopt))
     if (arg_st.rgb_output)
@@ -200,11 +209,16 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  ## The opengl renderer is only available for raster outputs
+  ## By default, postprocess svg files using svgconvert.
+  if (strcmp (arg_st.devopt, "svg"))
+    arg_st.svgconvert = true;
+  endif
+
+  ## By default, use the "opengl" renderer for all raster outputs
+  ## supported by "imwrite".
   fmts = imformats ();
   persistent gl_devlist = [fmts(! cellfun (@isempty, {fmts.write})).ext, ...
                            "tiffn"];
-
   opengl_ok = any (strcmp (gl_devlist, arg_st.devopt));
 
   if (strcmp (arg_st.renderer, "auto")
@@ -224,6 +238,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "\"opengl\"."], arg_st.devopt);
   endif
 
+  
   if (arg_st.use_color == 0)
     if (any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt)))
       arg_st.use_color = -1;
@@ -244,6 +259,8 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.devopt = "jpeg";
   elseif (strcmp (arg_st.devopt, "tif"))
     arg_st.devopt = "tiff";
+  elseif (strcmp (arg_st.devopt, "pdfcrop"))
+    arg_st.devopt = "pdfwrite";
   endif
 
   persistent dev_list = [{"aifm", "corel", "fig", "png", "jpeg", ...
@@ -252,7 +269,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "psc2", "eps", "eps2", "epsc", "epsc2", ...
               "emf", "pdf", "pslatex", "epslatex", "epslatexstandalone", ...
               "pslatexstandalone", "pdflatexstandalone", ...
-              "pstex", "tiff", "tiffn" "tikz", "pcxmono", ...
+              "pstex", "tiff", "tiffn", "tikz", "tikzstandalone", "pcxmono", ...
               "pcx24b", "pcx256", "pcx16", "pgm", "pgmraw", ...
               "ppm", "ppmraw", "pdflatex", "texdraw", ...
               "epscairo", "pdfcairo", "pngcairo", "cairolatex", ...
@@ -267,7 +284,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "ps", "eps", "eps", "eps", "eps", ...
               "emf", "pdf", "tex", "tex", "tex", ...
               "tex", "tex", ...
-              "ps", "tiff", "tiff", "tikz", "pcx", ...
+              "ps", "tiff", "tiff", "tikz", "tikz", "pcx", ...
               "pcx", "pcx", "pcx", "pgm", "pgm", ...
               "ppm", "ppm", "tex", "tex", ...
               "eps", "pdf", "png", "tex", ...
@@ -423,7 +440,8 @@ function arg_st = __print_parse_opts__ (varargin)
   if (warn_on_missing_ghostscript)
     if (isempty (arg_st.ghostscript.binary))
       warning ("octave:print:missing_gs", ...
-               "print.m: Ghostscript binary is not available.  Only eps output is possible");
+               ["print.m: Ghostscript binary is not available.  ", ...
+                "Only eps output is possible"]);
     endif
     warn_on_missing_ghostscript = false;
   endif
@@ -506,7 +524,6 @@ function cmd = __quote_path__ (cmd)
 
 endfunction
 
-
 function gs = __ghostscript_binary__ ()
 
   persistent ghostscript_binary = "";
@@ -518,7 +535,7 @@ function gs = __ghostscript_binary__ ()
         || (! isempty (GSC) && file_in_path (getenv ("PATH"), GSC)))
       gs_binaries = {GSC};
     elseif (! isempty (GSC) && warn_on_bad_gsc)
-      warning ("print:badgscenv",
+      warning ("octave:print:badgscenv",
                "print.m: GSC environment variable not set properly");
       warn_on_bad_gsc = false;
       gs_binaries = {};
@@ -541,6 +558,32 @@ function gs = __ghostscript_binary__ ()
   endif
 
   gs = ghostscript_binary;
+
+endfunction
+
+function bin = __svgconv_binary__ ()
+
+  persistent binary = "";
+
+  if (isempty (binary))
+    bindir = getenv ("OCTAVE_ARCHLIBDIR");
+    if (isempty (bindir))
+      bindir = __octave_config_info__ ("archlibdir");
+    endif
+    
+    binary = fullfile (bindir, "octave-svgconvert");
+
+    if (! exist (binary, "file"))
+      if (! isunix () && exist ([binary, ".exe"], "file"))
+        ## Unix - Includes Mac OSX and Cygwin.
+        binary = [binary, ".exe"];
+      else
+        binary = "";
+      endif
+    endif
+  endif
+
+  bin = binary;
 
 endfunction
 

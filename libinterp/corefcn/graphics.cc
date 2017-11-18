@@ -1434,11 +1434,8 @@ array_property::validate (const octave_value& v)
   else
     xok = v.isnumeric () || v.is_bool_scalar ();
 
-  if (xok)
+  if (xok && size_constraints.size () > 0)
     {
-      if (size_constraints.size () == 0)
-        return true;
-
       dim_vector vdims = v.dims ();
       int vlen = vdims.ndims ();
 

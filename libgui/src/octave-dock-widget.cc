@@ -196,16 +196,12 @@ octave_dock_widget::make_widget (bool dock)
 
   if (dock)
     {
-      // add widget to last saved docking area (dock=true is default)
-      int area
-        = settings->value ("DockWidgets/" + objectName () + "_dock_area",
-                           Qt::TopDockWidgetArea).toInt ();
-      m_parent->addDockWidget (static_cast<Qt::DockWidgetArea> (area), this);
-
-      // FIXME: restoreGeometry is ignored for docked widgets
-      //        and its child widget
-      restoreGeometry (settings->value
-             ("DockWidgets/" + objectName ()).toByteArray ());
+      settings->setValue ("MainWindow/windowState", m_parent->saveState ());
+      m_parent->addDockWidget (Qt::TopDockWidgetArea, this);
+      // recover old window states, hide and re-show new added widget
+      m_parent->restoreState (settings->value ("MainWindow/windowState").toByteArray ());
+      focus ();
+      QApplication::setActiveWindow (this);
     }
   else  // only reparent, no docking
     setParent (m_parent);

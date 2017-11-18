@@ -1265,10 +1265,8 @@ main_window::init_terminal_size (void)
 void
 main_window::set_window_layout (QSettings *settings)
 {
-#if ! defined (Q_OS_WIN32)
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
-#endif
 
   // Restore the geometry of all dock-widgets
   foreach (octave_dock_widget *widget, dock_widget_list ())
@@ -1309,10 +1307,8 @@ main_window::set_window_layout (QSettings *settings)
         }
     }
 
-#if defined (Q_OS_WIN32)
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
-#endif
 
   show ();
 }

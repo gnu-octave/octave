@@ -1547,6 +1547,9 @@ public:
 
     p->type_constraints = type_constraints;
     p->size_constraints = size_constraints;
+    p->finite_constraint = finite_constraint;
+    p->minval = minval;
+    p->maxval = maxval;
 
     return p;
   }

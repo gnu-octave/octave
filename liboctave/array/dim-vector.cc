@@ -122,53 +122,11 @@ dim_vector
 dim_vector::squeeze (void) const
 {
   dim_vector new_dims = *this;
+  new_dims.chop_all_singletons ();
 
-  bool dims_changed = 1;
-
-  int k = 0;
-
-  for (int i = 0; i < ndims (); i++)
-    {
-      if (xelem (i) == 1)
-        dims_changed = true;
-      else
-        new_dims(k++) = xelem (i);
-    }
-
-  if (dims_changed)
-    {
-      if (k == 0)
-        new_dims = dim_vector (1, 1);
-      else if (k == 1)
-        {
-          // There is one non-singleton dimension, so we need
-          // to decide the correct orientation.
-
-          if (elem (0) == 1)
-            {
-              // The original dimension vector had a leading
-              // singleton dimension.
-
-              octave_idx_type tmp = new_dims(0);
-
-              new_dims.resize (2);
-
-              new_dims(0) = 1;
-              new_dims(1) = tmp;
-            }
-          else
-            {
-              // The first element of the original dimension vector
-              // was not a singleton dimension.
-
-              new_dims.resize (2);
-
-              new_dims(1) = 1;
-            }
-        }
-      else
-        new_dims.resize (k);
-    }
+  // preserve orientation if there is only one non-singleton dimension left
+  if (new_dims.ndims () == 2 && xelem(0) == 1 && new_dims.elem(1) == 1)
+    return new_dims.as_row ();
 
   return new_dims;
 }

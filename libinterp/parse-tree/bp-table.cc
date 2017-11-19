@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-int.h"
 #include "call-stack.h"
 #include "error.h"
-#include "input.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
 #include "octave-link.h"
@@ -257,7 +256,7 @@ bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
               // Normalize to store only the file name.
               // Otherwise, there can be an entry for both file>subfunction and
               // file, which causes a crash on dbclear all
-              const char *s = strchr (fname.c_str (), Vfilemarker);
+              const char *s = strchr (fname.c_str (), '>');
               if (s)
                 bp_set.insert (fname.substr (0, s - fname.c_str ()));
               else
@@ -870,7 +869,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                             = cmds->breakpoints_and_conds ();
 
                           if (! bkpts.empty ())
-                            retval[bp_fname + Vfilemarker + ff->name ()] = bkpts;
+                            retval[bp_fname + '>' + ff->name ()] = bkpts;
                         }
                     }
                 }

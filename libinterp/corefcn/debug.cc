@@ -467,7 +467,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
       for (const auto& fnm_bp_p : bp_list)
         {
           std::string filename = fnm_bp_p.first;
-          const char *sub_fun = strchr (filename.c_str (), Vfilemarker);
+          const char *sub_fun = strchr (filename.c_str (), '>');
           if (sub_fun)
             filename = filename.substr(0, sub_fun - filename.c_str ());
           octave_value path_name;

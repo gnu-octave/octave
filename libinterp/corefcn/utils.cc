@@ -53,7 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
-#include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
@@ -502,7 +501,7 @@ fcn_file_in_path (const std::string& name)
       else
         {
           std::string fname = name;
-          size_t pos = name.find_first_of (Vfilemarker);
+          size_t pos = name.find_first_of ('>');
           if (pos != std::string::npos)
             fname = name.substr (0, pos);
 

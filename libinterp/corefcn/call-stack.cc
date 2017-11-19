@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "call-stack.h"
-#include "input.h"
 #include "interpreter.h"
 #include "oct-map.h"
 #include "ov.h"
@@ -58,7 +57,7 @@ namespace octave
         std::string parent_fcn_name = m_fcn->parent_fcn_name ();
 
         if (print_subfn && ! parent_fcn_name.empty ())
-          retval = parent_fcn_name + Vfilemarker;
+          retval = parent_fcn_name + '>';
 
         if (m_fcn->is_anonymous_function ())
           retval += octave_fcn_handle::anonymous;

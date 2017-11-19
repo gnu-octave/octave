@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "dirfns.h"
 #include "fcn-info.h"
-#include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -436,7 +435,7 @@ namespace octave
       }
     else
       {
-        size_t pos = name.find_first_of (Vfilemarker);
+        size_t pos = name.find_first_of ('>');
 
         if (pos == std::string::npos)
           retval = find (name, args, true, local_funcs);
@@ -477,7 +476,7 @@ namespace octave
 
     std::string full_name = '@' + dispatch_type +
       sys::file_ops::dir_sep_str () + name;
-    size_t pos = full_name.find_first_of (Vfilemarker);
+    size_t pos = full_name.find_first_of ('>');
 
     if (pos != std::string::npos)
       {

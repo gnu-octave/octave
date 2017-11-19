@@ -109,9 +109,6 @@ static std::string last_debugging_command = "\n";
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
 
-// The filemarker used to separate filenames from subfunction names
-char Vfilemarker = '>';
-
 static hook_function_list input_event_hook_functions;
 
 // For octave_quit.
@@ -1323,55 +1320,6 @@ Undocumented internal function.
     retval = ovl (Vgud_mode);
   else
     Vgud_mode = args(0).bool_value ();
-
-  return retval;
-}
-
-DEFUN (filemarker, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} filemarker ()
-@deftypefnx {} {@var{old_val} =} filemarker (@var{new_val})
-@deftypefnx {} {} filemarker (@var{new_val}, "local")
-Query or set the character used to separate the filename from the
-subfunction names contained within the file.
-
-By default this is the character @samp{>}.
-This can be used in a generic manner to interact with subfunctions.
-For example,
-
-@example
-help (["myfunc", filemarker, "mysubfunc"])
-@end example
-
-@noindent
-returns the help string associated with the subfunction @code{mysubfunc}
-located in the file @file{myfunc.m}.
-
-@code{filemarker} is also useful during debugging for placing breakpoints
-within subfunctions or nested functions.
-For example,
-
-@example
-dbstop (["myfunc", filemarker, "mysubfunc"])
-@end example
-
-@noindent
-will set a breakpoint at the first line of the subfunction @code{mysubfunc}.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  char tmp = Vfilemarker;
-  octave_value retval = SET_INTERNAL_VARIABLE (filemarker);
-
-  // The character passed must not be a legal character for a function name
-  if (::isalnum (Vfilemarker) || Vfilemarker == '_')
-    {
-      Vfilemarker = tmp;
-      error ("filemarker: character can not be a valid character for a function name");
-    }
 
   return retval;
 }

@@ -70,8 +70,6 @@ extern void remove_input_event_hook_functions (void);
 
 extern void set_default_prompts (void);
 
-extern char Vfilemarker;
-
 extern octave::sys::time Vlast_prompt_time;
 
 namespace octave

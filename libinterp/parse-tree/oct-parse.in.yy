@@ -608,6 +608,14 @@ anon_fcn_handle : '@' param_list stmt_begin expr_no_assign
                     $$ = parser.make_anon_fcn_handle ($2, $4);
                     lexer.nesting_level.remove ();
                   }
+                | '@' param_list stmt_begin error
+                  {
+                    YYUSE ($2);
+
+                    $$ = nullptr;
+                    parser.bison_error ("anonymous function bodies must be single expressions");
+                    YYABORT;
+                  }
                 ;
 
 primary_expr    : identifier

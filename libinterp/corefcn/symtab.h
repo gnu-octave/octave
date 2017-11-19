@@ -516,32 +516,6 @@ namespace octave
         error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
     }
 
-    void push_context (void)
-    {
-      if (m_current_scope == m_top_scope)
-        error ("invalid call to symtab::push_context");
-
-      if (m_current_scope)
-        m_current_scope->push_context ();
-    }
-
-    // This is written as two separate functions instead of a single
-    // function with default values so that it will work properly with
-    // unwind_protect.
-
-    void pop_context (void)
-    {
-      if (m_current_scope == m_top_scope)
-        error ("invalid call to symtab::pop_context");
-
-      if (m_current_scope)
-        m_current_scope->pop_context ();
-    }
-
-    // For unwind_protect where a pointer argument is needed.
-
-    void pop_context (void *) { pop_context (); }
-
     std::list<symbol_record> glob (const std::string& pattern)
     {
       return (m_current_scope

@@ -460,14 +460,19 @@ octave_user_function::subfunctions (void) const
 bool
 octave_user_function::has_subfunctions (void) const
 {
-  return ! subfcn_names.empty ();
+  return m_scope->has_subfunctions ();
 }
 
 void
-octave_user_function::stash_subfunction_names
-  (const std::list<std::string>& names)
+octave_user_function::stash_subfunction_names (const std::list<std::string>& names)
 {
-  subfcn_names = names;
+  m_scope->stash_subfunction_names (names);
+}
+
+std::list<std::string>
+octave_user_function::subfunction_names (void) const
+{
+  return m_scope->subfunction_names ();
 }
 
 octave_value_list

@@ -525,6 +525,21 @@ namespace octave
 
     void mark_subfunctions_in_scope_as_private (const std::string& class_name);
 
+    bool has_subfunctions (void) const
+    {
+      return ! m_subfunction_names.empty ();
+    }
+
+    void stash_subfunction_names (const std::list<std::string>& names)
+    {
+      m_subfunction_names = names;
+    }
+
+    std::list<std::string> subfunction_names (void) const
+    {
+      return m_subfunction_names;
+    }
+
     std::list<workspace_element> workspace_info (void) const;
 
     octave_value dump (void) const;
@@ -561,6 +576,10 @@ namespace octave
 
     // Map from symbol names to subfunctions.
     std::map<std::string, octave_value> m_subfunctions;
+
+    // The list of subfunctions (if any) in the order they appear in
+    // the function file.
+    std::list<std::string> m_subfunction_names;
 
     // The associated user code (may be null).
     octave_user_function *m_fcn;

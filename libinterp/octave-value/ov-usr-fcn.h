@@ -311,10 +311,7 @@ public:
 
   void stash_subfunction_names (const std::list<std::string>& names);
 
-  std::list<std::string> subfunction_names (void) const
-  {
-    return subfcn_names;
-  }
+  std::list<std::string> subfunction_names (void) const;
 
   octave_value_list all_va_args (const octave_value_list& args);
 
@@ -447,10 +444,6 @@ private:
   // The name of the parent function, if any.
   std::string parent_name;
 
-  // The list of subfunctions (if any) in the order they appear in the
-  // file.
-  std::list<std::string> subfcn_names;
-
   // The time the file was parsed.
   octave::sys::time t_parsed;
 
@@ -469,7 +462,7 @@ private:
   // The number of arguments that have names.
   int num_named_args;
 
-  // TRUE means this subfunction of a primary function.
+  // TRUE means this is a subfunction of a primary function.
   bool subfunction;
 
   // TRUE means this is an inline function.

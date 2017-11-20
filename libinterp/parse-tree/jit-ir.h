@@ -683,7 +683,7 @@ namespace octave
       return dom_succ.size ();
     }
 
-    // call pop_varaible on all instructions
+    // call pop_variable on all instructions
     void pop_all (void);
 
     virtual std::ostream& print (std::ostream& os, size_t indent = 0) const;

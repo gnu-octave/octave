@@ -146,7 +146,7 @@ install_loaded_variable (const std::string& name,
                          bool global, const std::string& /*doc*/)
 {
   octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_loaded_varaible");
+    = octave::__get_symbol_table__ ("install_loaded_variable");
 
   octave::symbol_scope *scope
     = symtab.require_current_scope ("install_loaded_variable");

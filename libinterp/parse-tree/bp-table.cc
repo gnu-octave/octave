@@ -833,11 +833,11 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
       if (fname_list.empty ()
           || do_find_bkpt_list (fname_list, bp_fname) != "")
         {
-          octave_user_code *f = get_user_code (bp_fname);
+          octave_user_code *dbg_fcn = get_user_code (bp_fname);
 
-          if (f)
+          if (dbg_fcn)
             {
-              octave::tree_statement_list *cmds = f->body ();
+              octave::tree_statement_list *cmds = dbg_fcn->body ();
 
               // FIXME: move the operation on cmds to the
               //        tree_statement_list class?
@@ -850,26 +850,34 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                 }
 
               // look for breakpoints in subfunctions
-              const std::list<std::string> subf_nm = f->subfunction_names ();
+              const std::list<std::string> subf_nm
+                = dbg_fcn->subfunction_names ();
 
-              std::map<std::string, octave_value> subf = f->subfunctions ();
+              std::map<std::string, octave_value> subfcns
+                = dbg_fcn->subfunctions ();
 
               for (const auto& subfcn_nm : subf_nm)
                 {
-                  const auto q = subf.find (subfcn_nm);
+                  const auto q = subfcns.find (subfcn_nm);
 
-                  if (q != subf.end ())
+                  if (q != subfcns.end ())
                     {
-                      octave_user_code *ff = q->second.user_code_value ();
+                      octave_user_code *dbg_subfcn
+                        = q->second.user_code_value ();
 
-                      cmds = ff->body ();
+                      cmds = dbg_subfcn->body ();
                       if (cmds)
                         {
                           std::list<bp_type> bkpts
                             = cmds->breakpoints_and_conds ();
 
                           if (! bkpts.empty ())
-                            retval[bp_fname + '>' + ff->name ()] = bkpts;
+                            {
+                              std::string key
+                                = bp_fname + '>' + dbg_subfcn->name ();
+
+                              retval[key] = bkpts;
+                            }
                         }
                     }
                 }

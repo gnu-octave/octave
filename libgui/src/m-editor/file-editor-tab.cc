@@ -1463,6 +1463,9 @@ void
 file_editor_tab::do_comment_selected_text (bool comment)
 {
   QString comment_str = _edit_area->comment_string ();
+  QRegExp rxc = QRegExp ("^([ \\t]*)" + comment_str);
+  int len, lenc = comment_str.length ();
+
   _edit_area->beginUndoAction ();
 
   if (_edit_area->hasSelectedText ())
@@ -1480,9 +1483,10 @@ file_editor_tab::do_comment_selected_text (bool comment)
           else
             {
               QString line (_edit_area->text (i));
-              if (line.startsWith (comment_str))
+              if (line.contains (rxc))
                 {
-                  _edit_area->setSelection (i, 0, i, comment_str.length ());
+                  len = rxc.matchedLength ();
+                  _edit_area->setSelection (i, len-lenc, i, len);
                   _edit_area->removeSelectedText ();
                 }
             }
@@ -1500,9 +1504,10 @@ file_editor_tab::do_comment_selected_text (bool comment)
       else
         {
           QString line (_edit_area->text (cpline));
-          if (line.startsWith (comment_str))
+          if (line.contains (rxc))
             {
-              _edit_area->setSelection (cpline, 0, cpline, comment_str.length ());
+              len = rxc.matchedLength ();
+              _edit_area->setSelection (cpline, len-lenc, cpline, len);
               _edit_area->removeSelectedText ();
             }
         }

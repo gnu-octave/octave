@@ -83,6 +83,13 @@ public:
       instance->do_set_settings (file);
   }
 
+  static bool update_settings_key (const QString& new_key,
+                                   const QString& old_key)
+  {
+    return instance_ok () ? instance->do_update_settings_key (new_key, old_key)
+                          : false;
+  }
+
   static void combo_encoding (QComboBox *combo, QString current = QString ())
   {
     if (instance_ok ())
@@ -137,6 +144,8 @@ private:
   void do_reload_settings (void);
 
   void do_set_settings (const QString& file);
+
+  bool do_update_settings_key (const QString& new_key, const QString& old_key);
 
   bool do_is_first_run (void) const;
 

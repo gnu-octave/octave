@@ -493,4 +493,18 @@ octave_dock_widget::set_focus_predecessor (void)
     m_predecessor_widget->focus ();
 
   m_predecessor_widget = nullptr;
+  // FIXME: Until cset bda0c5b38bda, the wrong keys "Dockwidget/..." were used
+  // here.  This had no effect in Qt4, but does in Qt5.  In the following, the
+  // four incorrect keys are updated if still present in the settings files.
+  // The keys are also used in the settings dialog, but
+  // octave_dock_widget::handle_settings is already called at program start.
+  // These tests can be removed in a future version of Octave (version 4.8).
+  resource_manager::update_settings_key ("Dockwidgets/title_bg_color",
+                                         "DockWidgets/title_bg_color");
+  resource_manager::update_settings_key ("Dockwidgets/title_bg_color_active",
+                                         "DockWidgets/title_bg_color_active");
+  resource_manager::update_settings_key ("Dockwidgets/title_fg_color",
+                                         "DockWidgets/title_fg_color");
+  resource_manager::update_settings_key ("Dockwidgets/title_fg_color_active",
+                                         "DockWidgets/title_fg_color_active");
 }

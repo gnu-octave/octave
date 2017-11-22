@@ -294,6 +294,21 @@ resource_manager::do_set_settings (const QString& file)
 }
 
 bool
+resource_manager::do_update_settings_key (const QString& old_key,
+                                          const QString& new_key)
+{
+  if (m_settings->contains (old_key))
+    {
+      QVariant preference = m_settings->value (old_key);
+      m_settings->setValue (new_key, preference);
+      m_settings->remove (old_key);
+      return true;
+    }
+
+  return false;
+}
+
+bool
 resource_manager::do_is_first_run (void) const
 {
   return ! QFile::exists (m_settings_file);

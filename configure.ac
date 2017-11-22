@@ -2498,9 +2498,14 @@ OCTAVE_CHECK_LIB([arpack], ARPACK,
   [dseupd],
   [Fortran 77], [don't use the ARPACK library, disable eigs function],
   [warn_arpack=
-   OCTAVE_CHECK_LIB_ARPACK_OK(
+   OCTAVE_CHECK_LIB_ARPACK_OK_1(
      [AC_DEFINE(HAVE_ARPACK, 1, [Define to 1 if ARPACK is available.])],
-     [warn_arpack="ARPACK library found, but does not seem to work properly; disabling eigs function"])])
+     [warn_arpack="ARPACK library found, but does not seem to work properly; disabling eigs function"])
+   if test -z "$warn_arpack"; then
+     OCTAVE_CHECK_LIB_ARPACK_OK_2([],
+       [warn_arpack="ARPACK library found, but is buggy; upgrade library (>= v3.3.0) for better results"])
+   fi
+   ])
 LIBS="$save_LIBS"
 
 ### Check for Java.

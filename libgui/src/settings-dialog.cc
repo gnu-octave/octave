@@ -322,7 +322,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   // custom title bar of dock widget
   QVariant default_var = QColor (255, 255, 255);
-  QColor bg_color = settings->value ("DockWidgets/title_bg_color", default_var).value<QColor> ();
+  QColor bg_color = settings->value ("DockWidgets/title_bg_color",
+                                     default_var).value<QColor> ();
   m_widget_title_bg_color = new color_picker (bg_color);
   m_widget_title_bg_color->setEnabled (false);
   ui->layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
@@ -331,7 +332,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            m_widget_title_bg_color, SLOT (setEnabled (bool)));
 
   default_var = QColor (192, 192, 192);
-  QColor bg_color_active = settings->value ("DockWidgets/title_bg_color_active", default_var).value<QColor> ();
+  QColor bg_color_active = settings->value ("DockWidgets/title_bg_color_active",
+                                            default_var).value<QColor> ();
   m_widget_title_bg_color_active = new color_picker (bg_color_active);
   m_widget_title_bg_color_active->setEnabled (false);
   ui->layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
@@ -340,7 +342,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            m_widget_title_bg_color_active, SLOT (setEnabled (bool)));
 
   default_var = QColor (0, 0, 0);
-  QColor fg_color = settings->value ("DockWidgets/title_fg_color", default_var).value<QColor> ();
+  QColor fg_color = settings->value ("DockWidgets/title_fg_color",
+                                     default_var).value<QColor> ();
   m_widget_title_fg_color = new color_picker (fg_color);
   m_widget_title_fg_color->setEnabled (false);
   ui->layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
@@ -349,7 +352,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            m_widget_title_fg_color, SLOT (setEnabled (bool)));
 
   default_var = QColor (0, 0, 0);
-  QColor fg_color_active = settings->value ("DockWidgets/title_fg_color_active", default_var).value<QColor> ();
+  QColor fg_color_active = settings->value ("DockWidgets/title_fg_color_active",
+                                            default_var).value<QColor> ();
   m_widget_title_fg_color_active = new color_picker (fg_color_active);
   m_widget_title_fg_color_active->setEnabled (false);
   ui->layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);

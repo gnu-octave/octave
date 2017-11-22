@@ -4476,7 +4476,7 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const Matrix& b,
 
           err = tmp_err;
 
-          // Throw-away extra info LAPACK gives so as to not
+          // Throw away extra info LAPACK gives so as to not
           // change output.
           if (err != 0)
             {

@@ -491,7 +491,7 @@ Matrix::tinverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
 
   info = tmp_info;
 
-  // Throw-away extra info LAPACK gives so as to not change output.
+  // Throw away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
   if (info != 0)
     info = -1;
@@ -569,7 +569,7 @@ Matrix::finverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
 
   info = tmp_info;
 
-  // Throw-away extra info LAPACK gives so as to not change output.
+  // Throw away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
   if (info != 0)
     info = -1;
@@ -1130,7 +1130,7 @@ Matrix::determinant (MatrixType& mattype,
 
       info = tmp_info;
 
-      // Throw-away extra info LAPACK gives so as to not change output.
+      // Throw away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
       if (info != 0)
         {
@@ -1581,7 +1581,7 @@ Matrix::fsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
 
           info = tmp_info;
 
-          // Throw-away extra info LAPACK gives so as to not change output.
+          // Throw away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
           if (info != 0)
             {
@@ -1669,7 +1669,7 @@ Matrix::fsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
 
           info = tmp_info;
 
-          // Throw-away extra info LAPACK gives so as to not change output.
+          // Throw away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
           if (info != 0)
             {

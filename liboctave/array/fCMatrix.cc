@@ -780,7 +780,7 @@ FloatComplexMatrix::tinverse (MatrixType& mattype, octave_idx_type& info,
 
   info = tmp_info;
 
-  // Throw-away extra info LAPACK gives so as to not change output.
+  // Throw away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
   if (info != 0)
     info = -1;
@@ -865,7 +865,7 @@ FloatComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
       info = tmp_info;
     }
 
-  // Throw-away extra info LAPACK gives so as to not change output.
+  // Throw away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
   if (info != 0)
     info = -1;
@@ -1443,7 +1443,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
           info = tmp_info;
         }
 
-      // Throw-away extra info LAPACK gives so as to not change output.
+      // Throw away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
       if (info != 0)
         {
@@ -1913,7 +1913,7 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
 
           info = tmp_info;
 
-          // Throw-away extra info LAPACK gives so as to not change output.
+          // Throw away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
           if (info != 0)
             {
@@ -2007,7 +2007,7 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
               info = tmp_info;
             }
 
-          // Throw-away extra info LAPACK gives so as to not change output.
+          // Throw away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
           if (info != 0)
             {

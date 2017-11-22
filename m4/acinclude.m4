@@ -742,16 +742,16 @@ dnl
 dnl Check whether ARPACK works (does not crash).
 dnl
 dnl Using a pure Fortran program doesn't seem to crash when linked
-dnl with the buggy ARPACK library but the C++ program does.  Maybe it
+dnl with the buggy ARPACK library, but the C++ program does.  Maybe it
 dnl is the memory allocation that exposes the bug and using statically
 dnl allocated arrays in Fortran does not?
 dnl
 dnl FIXME: it would be nice to avoid the duplication of F77 macros
 dnl and typedefs here and in the f77-fcn.h header file.
 dnl
-AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK], [
+AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_1], [
   AC_CACHE_CHECK([whether the arpack library works],
-    [octave_cv_lib_arpack_ok],
+    [octave_cv_lib_arpack_ok_1],
     [AC_LANG_PUSH(C++)
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 
@@ -818,13 +818,13 @@ doit (void)
 {
   // Based on function EigsRealNonSymmetricMatrix from liboctave/eigs-base.cc.
 
-  // Problem matrix.  See bug #31479
+  // Problem matrix.  See bug #31479.
   octave_idx_type n = 4;
   double *m = new double [n * n];
   m[0] = 1, m[4] = 0, m[8]  = 0, m[12] = -1;
-  m[1] = 0, m[5] = 1, m[9]  = 0, m[13] = 0;
-  m[2] = 0, m[6] = 0, m[10] = 1, m[14] = 0;
-  m[3] = 0, m[7] = 0, m[11] = 2, m[15] = 1;
+  m[1] = 0, m[5] = 1, m[9]  = 0, m[13] =  0;
+  m[2] = 0, m[6] = 0, m[10] = 1, m[14] =  0;
+  m[3] = 0, m[7] = 0, m[11] = 2, m[15] =  1;
 
   double *resid = new double [4];
 
@@ -883,9 +883,7 @@ doit (void)
       else
         {
           if (info < 0)
-            {
-              return;  // Error
-            }
+            return;  // Error
 
           break;
         }
@@ -900,7 +898,7 @@ doit (void)
   double *workev = new double [3 * p];
 
   for (octave_idx_type i = 0; i < k + 1; i++)
-    dr[i] = di[i] = 0.;
+    dr[i] = di[i] = 0.0;
 
   octave_idx_type rvec = 1;
 
@@ -925,13 +923,149 @@ doit (void)
 
   for (int i = 0; i < 10; i++)
     doit ();
+
     ]])],
-    octave_cv_lib_arpack_ok=yes,
-    octave_cv_lib_arpack_ok=no,
-    octave_cv_lib_arpack_ok=yes)
+    octave_cv_lib_arpack_ok_1=yes,
+    octave_cv_lib_arpack_ok_1=no,
+    octave_cv_lib_arpack_ok_1=yes)
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_lib_arpack_ok = yes; then
+  if test $octave_cv_lib_arpack_ok_1 = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
+dnl Check whether ARPACK is buggy (it doesn't crash, but gets wrong answers).
+dnl
+dnl ARPACK versions < 3.3.0 have a bug which results in different eigenvalues
+dnl being calculated depending on whether eigenvectors are also requested.
+dnl See bug #52425.
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_2], [
+  AC_CACHE_CHECK([whether the arpack library is free of bugs],
+    [octave_cv_lib_arpack_ok_2],
+    [AC_LANG_PUSH(Fortran 77)
+    AC_RUN_IFELSE([[
+      program bug_52425 
+c
+      integer          maxn, maxnev, maxncv, ldv
+      parameter       (maxn=256, maxnev=10, maxncv=25, 
+     $                 ldv=maxn )
+c
+      Double precision
+     &                 v(ldv,maxncv), workl(maxncv*(maxncv+8)),
+     &                 workd(3*maxn), d(maxncv,2), resid(maxn),
+     &                 ax(maxn)
+      logical          select(maxncv)
+      integer          iparam(11), ipntr(11)
+c
+      character        bmat*1, which*2
+      integer          ido, n, nev, ncv, lworkl, info, ierr, j, 
+     &                 nx, nconv, maxitr, mode, ishfts
+      logical          rvec
+      Double precision      
+     &                 tol, sigma
+c
+      Double precision
+     &                 zero
+      parameter        (zero = 0.0D+0)
+c
+      Double precision           
+     &                 dnrm2
+      external         dnrm2, daxpy
+c
+      intrinsic        abs
+c
+      n = 20
+      nev =  4 
+      ncv =  20 
+      bmat = 'I'
+      which = 'BE'
+c
+      lworkl = ncv*(ncv+8)
+      tol = zero 
+      info = 1
+      do j = 1,n
+         resid (j) = 1.0d0
+      end do
+      ido = 0
+c
+      ishfts = 1
+      maxitr = 300
+      mode   = 1
+c
+      iparam(1) = ishfts 
+      iparam(3) = maxitr 
+      iparam(7) = mode 
+c
+ 10   continue
+c
+         call dsaupd ( ido, bmat, n, which, nev, tol, resid, 
+     &                 ncv, v, ldv, iparam, ipntr, workd, workl,
+     &                 lworkl, info )
+c
+         if (ido .eq. -1 .or. ido .eq. 1) then
+            call av (n, workd(ipntr(1)), workd(ipntr(2)))
+            go to 10
+         end if 
+c
+      if ( info .lt. 0 ) then
+          stop 1
+      else 
+         rvec = .false.
+c
+         call dseupd ( rvec, 'All', select, d, v, ldv, sigma, 
+     &        bmat, n, which, nev, tol, resid, ncv, v, ldv, 
+     &        iparam, ipntr, workd, workl, lworkl, ierr )
+c
+         if ( ierr .ne. 0) then
+             stop 1
+         else
+             nconv =  iparam(5)
+             do 20 j=1, nconv
+                call av(n, v(1,j), ax)
+                call daxpy(n, -d(j,1), v(1,j), 1, ax, 1)
+                d(j,2) = dnrm2(n, ax, 1)
+                d(j,2) = d(j,2) / abs(d(j,1))
+c
+ 20          continue
+c
+c            | Litmus test: return 1 or 0 based on returned eigenvalue
+c     
+             if (abs(d(1,1) - 2.0810) > 1.0d-4) then
+                stop 1
+             else
+                stop 0
+             end if
+         end if
+      end if
+c
+      end
+c
+      subroutine av (n, v, w)
+      integer           n, j
+      Double precision v(n), w(n)
+c
+      w(1) = 4*v(1) + v(3)
+      w(2) = 4*v(2) + v(4)
+      do 10 j = 3, n - 2
+         w(j) = v(j-2) + 4*v(j) + v(j+2)
+ 10   continue
+      w(n-1) = v(n-3) + 4 * v(n-1)
+      w(n) = v(n-2) + 4 * v(n)
+      return
+      end
+    ]],
+    octave_cv_lib_arpack_ok_2=yes,
+    octave_cv_lib_arpack_ok_2=no,
+    octave_cv_lib_arpack_ok_2=yes)
+    AC_LANG_POP(Fortran 77)
+  ])
+  if test $octave_cv_lib_arpack_ok_2 = yes; then
     $1
     :
   else

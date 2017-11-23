@@ -4451,6 +4451,31 @@ either @qcode{"double"} or @qcode{"single"}.
   return fill_matrix (args, e_val, "e");
 }
 
+template <typename T>
+T
+eps (const T& x)
+{
+  T epsval = x.abs ();
+  typedef typename T::value_type P;
+  for (octave_idx_type i = 0; i < x.numel (); i++)
+    {
+      P val = epsval.xelem (i);
+      if (octave::math::isnan (val) || octave::math::isinf (val))
+        epsval(i) = octave::numeric_limits<P>::NaN ();
+      else if (val < std::numeric_limits<P>::min ())
+        epsval(i) = std::numeric_limits<P>::denorm_min ();
+      else
+        {
+          int exponent;
+          octave::math::frexp (val, &exponent);
+          const P digits = std::numeric_limits<P>::digits;
+          epsval(i) = std::pow (static_cast<P> (2.0),
+                                static_cast<P> (exponent - digits));
+        }
+    }
+  return epsval;
+}
+
 DEFUN (eps, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} eps
@@ -4490,54 +4515,15 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 
   if (args.length () == 1 && ! args(0).is_string ())
     {
-      octave_value arg0 = args(0).abs ();
-
+      octave_value arg0 = args(0);
       if (arg0.is_single_type ())
         {
-          Array<float> x = arg0.float_array_value ();
-
-          Array<float> epsval (x.dims ());
-
-          for (octave_idx_type i = 0; i < x.numel (); i++)
-            {
-              float val = x.xelem (i);
-              if (octave::math::isnan (val) || octave::math::isinf (val))
-                epsval(i) = lo_ieee_nan_value ();
-              else if (val < std::numeric_limits<float>::min ())
-                epsval(i) = powf (2.0, -149e0);
-              else
-                {
-                  int exponent;
-                  octave::math::frexp (val, &exponent);
-                  epsval(i) = std::pow (2.0f,
-                                        static_cast<float> (exponent - 24));
-                }
-            }
-
+          FloatNDArray epsval = eps (arg0.float_array_value ());
           retval = epsval;
         }
       else
         {
-          Array<double> x = arg0.array_value ();
-
-          Array<double> epsval (x.dims ());
-
-          for (octave_idx_type i = 0; i < x.numel (); i++)
-            {
-              double val = x.xelem (i);
-              if (octave::math::isnan (val) || octave::math::isinf (val))
-                epsval(i) = lo_ieee_nan_value ();
-              else if (val < std::numeric_limits<double>::min ())
-                epsval(i) = std::pow (2.0, -1074e0);
-              else
-                {
-                  int exponent;
-                  octave::math::frexp (val, &exponent);
-                  epsval(i) = std::pow (2.0,
-                                        static_cast<double> (exponent - 53));
-                }
-            }
-
+          NDArray epsval = eps (arg0.array_value ());
           retval = epsval;
         }
     }

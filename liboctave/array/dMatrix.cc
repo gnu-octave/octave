@@ -425,6 +425,28 @@ Matrix::column (octave_idx_type i) const
   return index (idx_vector::colon, idx_vector (i));
 }
 
+// Local function to calculate the 1-norm.
+static
+double
+norm1 (const Matrix& a)
+{
+  ColumnVector colsum = a.abs ().sum ().row (0);
+  double anorm = -octave::numeric_limits<double>::Inf ();
+
+  for (octave_idx_type i = 0; i < colsum.numel (); i++)
+    {
+      if (octave::math::isnan (colsum.xelem (i)))
+        {
+          anorm = octave::numeric_limits<double>::NaN ();
+          break;
+        }
+      else
+        anorm = std::max (anorm, colsum.xelem (i));
+    }
+
+  return anorm;
+}
+
 Matrix
 Matrix::inverse (void) const
 {
@@ -555,8 +577,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
   // Calculate the norm of the matrix, for later use.
   double anorm = 0;
   if (calc_cond)
-    anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0))
-            .max ();
+    anorm = norm1 (retval);
 
   F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -1034,9 +1055,8 @@ Matrix::determinant (MatrixType& mattype,
 
   volatile int typ = mattype.type ();
 
-  // Even though the matrix is marked as singular (Rectangular), we may
-  // still get a useful number from the LU factorization, because it always
-  // completes.
+  // Even though the matrix is marked as singular (Rectangular), we may still
+  // get a useful number from the LU factorization, because it always completes.
 
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
@@ -1054,7 +1074,8 @@ Matrix::determinant (MatrixType& mattype,
       double *tmp_data = atmp.fortran_vec ();
 
       double anorm = 0;
-      if (calc_cond) anorm = xnorm (*this, 1);
+      if (calc_cond)
+        anorm = norm1 (*this);
 
       char job = 'L';
       F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
@@ -1103,7 +1124,8 @@ Matrix::determinant (MatrixType& mattype,
 
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
-      if (calc_cond) anorm = xnorm (*this, 1);
+      if (calc_cond)
+        anorm = norm1 (*this);
 
       F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -1245,8 +1267,7 @@ Matrix::rcond (MatrixType &mattype) const
               Matrix atmp = *this;
               double *tmp_data = atmp.fortran_vec ();
 
-              anorm = atmp.abs().sum().
-                      row(static_cast<octave_idx_type>(0)).max();
+              anorm = norm1 (atmp);
 
               F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
@@ -1286,8 +1307,7 @@ Matrix::rcond (MatrixType &mattype) const
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
               if (anorm < 0.)
-                anorm = atmp.abs ().sum ().
-                        row(static_cast<octave_idx_type>(0)).max ();
+                anorm = norm1 (atmp);
 
               Array<double> z (dim_vector (4 * nc, 1));
               double *pz = z.fortran_vec ();
@@ -1530,7 +1550,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
 
-          anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+          anorm = norm1 (atmp);
 
           F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
@@ -1606,7 +1626,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
           double *tmp_data = atmp.fortran_vec ();
 
           if (anorm < 0.)
-            anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+            anorm = norm1 (atmp);
 
           Array<double> z (dim_vector (4 * nc, 1));
           double *pz = z.fortran_vec ();
@@ -2132,7 +2152,7 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (work(0));
       work.resize (dim_vector (lwork, 1));
 
-      anorm = xnorm (*this, 1);
+      anorm = norm1 (*this);
 
       if (octave::math::isinf (anorm) || octave::math::isnan (anorm))
         {

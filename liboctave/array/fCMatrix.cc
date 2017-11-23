@@ -716,6 +716,28 @@ FloatComplexMatrix::column (octave_idx_type i) const
   return index (idx_vector::colon, idx_vector (i));
 }
 
+// Local function to calculate the 1-norm.
+static
+float
+norm1 (const FloatComplexMatrix& a)
+{
+  FloatColumnVector colsum = a.abs ().sum ().row (0);
+  float anorm = -octave::numeric_limits<float>::Inf ();
+
+  for (octave_idx_type i = 0; i < colsum.numel (); i++)
+    {
+      if (octave::math::isnan (colsum.xelem (i)))
+        {
+          anorm = octave::numeric_limits<float>::NaN ();
+          break;
+        }
+      else
+        anorm = std::max (anorm, colsum.xelem (i));
+    }
+
+  return anorm;
+}
+
 FloatComplexMatrix
 FloatComplexMatrix::inverse (void) const
 {
@@ -844,9 +866,8 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
   info = 0;
 
-  // Calculate (always, see bug #45577) the norm of the matrix, for later use.
-  float anorm =
-    retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
+  // Calculate norm of the matrix (always, see bug #45577) for later use.
+  float anorm = norm1 (retval);
 
   // Work around bug #45577, LAPACK crashes Octave if norm is NaN
   // and bug #46330, segfault with matrices containing Inf & NaN
@@ -1356,7 +1377,8 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
       FloatComplex *tmp_data = atmp.fortran_vec ();
 
       float anorm = 0;
-      if (calc_cond) anorm = xnorm (*this, 1);
+      if (calc_cond)
+        anorm = norm1 (*this);
 
       char job = 'L';
       F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
@@ -1403,8 +1425,8 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
 
       info = 0;
 
-      // Calculate (always, see bug #45577) the norm of the matrix, for later use.
-      float anorm = xnorm (*this, 1);
+      // Calculate norm of the matrix (always, see bug #45577) for later use.
+      float anorm = norm1 (*this);
 
       // Work around bug #45577, LAPACK crashes Octave if norm is NaN
       if (octave::math::isnan (anorm))
@@ -1412,7 +1434,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
       else
         F77_XFCN (cgetrf, CGETRF, (nr, nr, F77_CMPLX_ARG (tmp_data), nr, pipvt, info));
 
-      // Throw-away extra info LAPACK gives so as to not change output.
+      // Throw away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
       if (info != 0)
         {
@@ -1550,8 +1572,7 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
               FloatComplexMatrix atmp = *this;
               FloatComplex *tmp_data = atmp.fortran_vec ();
 
-              anorm = atmp.abs().sum().
-                      row(static_cast<octave_idx_type>(0)).max();
+              anorm = norm1 (atmp);
 
               F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          F77_CMPLX_ARG (tmp_data), nr, info
@@ -1592,8 +1613,7 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
               if (anorm < 0.)
-                anorm = atmp.abs ().sum ().
-                        row(static_cast<octave_idx_type>(0)).max ();
+                anorm = norm1 (atmp);
 
               Array<FloatComplex> z (dim_vector (2 * nc, 1));
               FloatComplex *pz = z.fortran_vec ();
@@ -1851,7 +1871,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
           FloatComplexMatrix atmp = *this;
           FloatComplex *tmp_data = atmp.fortran_vec ();
 
-          anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+          anorm = norm1 (atmp);
 
           F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      F77_CMPLX_ARG (tmp_data), nr, info
@@ -1933,8 +1953,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
 
           // Calculate the norm of the matrix, for later use.
           if (anorm < 0.)
-            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0))
-                    .max ();
+            anorm = norm1 (atmp);
 
           // Work around bug #45577, LAPACK crashes Octave if norm is NaN
           // and bug #46330, segfault with matrices containing Inf & NaN
@@ -2492,7 +2511,7 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (octave::math::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
-      anorm = xnorm (*this, 1);
+      anorm = norm1 (*this);
 
       if (octave::math::isinf (anorm) || octave::math::isnan (anorm))
         {

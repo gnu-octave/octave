@@ -713,6 +713,28 @@ ComplexMatrix::column (octave_idx_type i) const
   return index (idx_vector::colon, idx_vector (i));
 }
 
+// Local function to calculate the 1-norm.
+static
+double
+norm1 (const ComplexMatrix& a)
+{
+  ColumnVector colsum = a.abs ().sum ().row (0);
+  double anorm = -octave::numeric_limits<double>::Inf ();
+
+  for (octave_idx_type i = 0; i < colsum.numel (); i++)
+    {
+      if (octave::math::isnan (colsum.xelem (i)))
+        {
+          anorm = octave::numeric_limits<double>::NaN ();
+          break;
+        }
+      else
+        anorm = std::max (anorm, colsum.xelem (i));
+    }
+
+  return anorm;
+}
+
 ComplexMatrix
 ComplexMatrix::inverse (void) const
 {
@@ -841,9 +863,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
   info = 0;
 
-  // Calculate (always, see bug #45577) the norm of the matrix, for later use.
-  double anorm =
-    retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
+  // Calculate norm of the matrix (always, see bug #45577) for later use.
+  double anorm = norm1 (retval);
 
   // Work around bug #45577, LAPACK crashes Octave if norm is NaN
   // and bug #46330, segfault with matrices containing Inf & NaN
@@ -1356,7 +1377,8 @@ ComplexMatrix::determinant (MatrixType& mattype,
       Complex *tmp_data = atmp.fortran_vec ();
 
       double anorm = 0;
-      if (calc_cond) anorm = xnorm (*this, 1);
+      if (calc_cond)
+        anorm = norm1 (*this);
 
       char job = 'L';
       F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
@@ -1403,8 +1425,8 @@ ComplexMatrix::determinant (MatrixType& mattype,
 
       info = 0;
 
-      // Calculate (always, see bug #45577) the norm of the matrix, for later use.
-      double anorm = xnorm (*this, 1);
+      // Calculate norm of the matrix (always, see bug #45577) for later use.
+      double anorm = norm1 (*this);
 
       // Work around bug #45577, LAPACK crashes Octave if norm is NaN
       if (octave::math::isnan (anorm))
@@ -1551,8 +1573,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               ComplexMatrix atmp = *this;
               Complex *tmp_data = atmp.fortran_vec ();
 
-              anorm = atmp.abs().sum().
-                      row(static_cast<octave_idx_type>(0)).max();
+              anorm = norm1 (atmp);
 
               F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          F77_DBLE_CMPLX_ARG (tmp_data), nr, info
@@ -1593,8 +1614,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
               if (anorm < 0.)
-                anorm = atmp.abs ().sum ().
-                        row(static_cast<octave_idx_type>(0)).max ();
+                anorm = norm1 (atmp);
 
               Array<Complex> z (dim_vector (2 * nc, 1));
               Complex *pz = z.fortran_vec ();
@@ -1845,7 +1865,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           ComplexMatrix atmp = *this;
           Complex *tmp_data = atmp.fortran_vec ();
 
-          anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+          anorm = norm1 (atmp);
 
           F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      F77_DBLE_CMPLX_ARG (tmp_data), nr, info
@@ -1927,8 +1947,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           // Calculate the norm of the matrix, for later use.
           if (anorm < 0.)
-            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0))
-                    .max ();
+            anorm = norm1 (atmp);
 
           // Work around bug #45577, LAPACK crashes Octave if norm is NaN
           // and bug #46330, segfault with matrices containing Inf & NaN
@@ -2475,7 +2494,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (octave::math::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
-      anorm = xnorm (*this, 1);
+      anorm = norm1 (*this);
 
       if (octave::math::isinf (anorm) || octave::math::isnan (anorm))
         {

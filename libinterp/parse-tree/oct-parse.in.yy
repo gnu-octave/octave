@@ -3417,8 +3417,12 @@ namespace octave
 
     fcn->stash_function_name (id_name);
 
-    if (! m_lexer.help_text.empty () && m_curr_fcn_depth == 1
-        && ! m_parsing_subfunctions)
+    // Record help text for functions other than nested functions.
+    // We cannot currently record help for nested functions (bug #46008)
+    // because the doc_string of the outermost function is read first,
+    // whereas this function is called for the innermost function first.
+    // We could have a stack of help_text in lexer.
+    if (! m_lexer.help_text.empty () && m_curr_fcn_depth == 1)
       {
         fcn->document (m_lexer.help_text);
 

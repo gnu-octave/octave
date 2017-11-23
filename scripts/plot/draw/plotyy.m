@@ -112,7 +112,11 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
 
   h1 = feval (fun1, x1, y1);
 
-  set (ax(1), "ycolor", getcolor (h1(1)), "xlim", xlim);
+  set (ax(1), "xlim", xlim);
+  if (isscalar (h1))
+    ## Coloring y-axis only makes sense if plot contains exactly one line
+    set (ax(1), "ycolor", getcolor (h1));
+  endif
 
   set (gcf (), "nextplot", "add");
 
@@ -133,8 +137,12 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   endif
   h2 = feval (fun2, x2, y2);
 
-  set (ax(2), "yaxislocation", "right", "color", "none",
-              "ycolor", getcolor (h2(1)), "box", "off", "xlim", xlim);
+  set (ax(2), "yaxislocation", "right", "color", "none", "box", "off",
+              "xlim", xlim);
+  if (isscalar (h2))
+    ## Coloring y-axis only makes sense if plot contains exactly one line
+    set (ax(2), "ycolor", getcolor (h2));
+  endif
 
   if (strcmp (get(ax(1), "activepositionproperty"), "position"))
     set (ax(2), "position", get (ax(1), "position"));

@@ -369,8 +369,8 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 
   QString title = tr ("Change Directory or Add Directory to Load Path");
 
-  QString cd_txt = tr ("Change Directory");
-  QString addpath_txt = tr ("Add Directory to Load Path");
+  QString cd_txt = tr ("&Change Directory");
+  QString addpath_txt = tr ("&Add Directory to Load Path");
   QString cancel_txt = tr ("Cancel");
 
   QStringList btn;

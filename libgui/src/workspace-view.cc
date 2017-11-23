@@ -243,6 +243,8 @@ workspace_view::save_settings (void)
 
   settings->sync ();
 
+  octave_dock_widget::save_settings ();
+
   if (m_sig_mapper)
     delete m_sig_mapper;
 }

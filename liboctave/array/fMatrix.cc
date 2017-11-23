@@ -429,6 +429,28 @@ FloatMatrix::column (octave_idx_type i) const
   return index (idx_vector::colon, idx_vector (i));
 }
 
+// Local function to calculate the 1-norm.
+static
+float
+norm1 (const FloatMatrix& a)
+{
+  FloatColumnVector colsum = a.abs ().sum ().row (0);
+  float anorm = -octave::numeric_limits<float>::Inf ();
+
+  for (octave_idx_type i = 0; i < colsum.numel (); i++)
+    {
+      if (octave::math::isnan (colsum.xelem (i)))
+        {
+          anorm = octave::numeric_limits<float>::NaN ();
+          break;
+        }
+      else
+        anorm = std::max (anorm, colsum.xelem (i));
+    }
+
+  return anorm;
+}
+
 FloatMatrix
 FloatMatrix::inverse (void) const
 {
@@ -568,8 +590,7 @@ FloatMatrix::finverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
   // Calculate the norm of the matrix, for later use.
   float anorm = 0;
   if (calc_cond)
-    anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0))
-            .max ();
+    anorm = norm1 (retval);
 
   F77_XFCN (sgetrf, SGETRF, (nc, nc, tmp_data, nr, pipvt, tmp_info));
 
@@ -1074,7 +1095,8 @@ FloatMatrix::determinant (MatrixType& mattype,
       float *tmp_data = atmp.fortran_vec ();
 
       float anorm = 0;
-      if (calc_cond) anorm = xnorm (*this, 1);
+      if (calc_cond)
+        anorm = norm1 (*this);
 
       F77_INT tmp_info = 0;
 
@@ -1130,7 +1152,8 @@ FloatMatrix::determinant (MatrixType& mattype,
 
       // Calculate the norm of the matrix, for later use.
       float anorm = 0;
-      if (calc_cond) anorm = xnorm (*this, 1);
+      if (calc_cond)
+        anorm = norm1 (*this);
 
       F77_XFCN (sgetrf, SGETRF, (nr, nr, tmp_data, nr, pipvt, tmp_info));
 
@@ -1276,8 +1299,7 @@ FloatMatrix::rcond (MatrixType& mattype) const
               FloatMatrix atmp = *this;
               float *tmp_data = atmp.fortran_vec ();
 
-              anorm = atmp.abs().sum().
-                      row(static_cast<octave_idx_type>(0)).max();
+              anorm = norm1 (atmp);
 
               F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
@@ -1317,8 +1339,7 @@ FloatMatrix::rcond (MatrixType& mattype) const
               F77_INT *pipvt = ipvt.fortran_vec ();
 
               if (anorm < 0.)
-                anorm = atmp.abs ().sum ().
-                        row(static_cast<octave_idx_type>(0)).max ();
+                anorm = norm1 (atmp);
 
               Array<float> z (dim_vector (4 * nc, 1));
               float *pz = z.fortran_vec ();
@@ -1592,7 +1613,7 @@ FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
           FloatMatrix atmp = *this;
           float *tmp_data = atmp.fortran_vec ();
 
-          anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+          anorm = norm1 (atmp);
 
           F77_INT tmp_info = 0;
 
@@ -1673,8 +1694,8 @@ FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
           FloatMatrix atmp = *this;
           float *tmp_data = atmp.fortran_vec ();
 
-          if (anorm < 0.)
-            anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+          if (anorm < 0.0)
+            anorm = norm1 (atmp);
 
           Array<float> z (dim_vector (4 * nc, 1));
           float *pz = z.fortran_vec ();
@@ -2098,6 +2119,7 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
   return lssolve (b, info, rank, rcon);
 }
 
+
 FloatMatrix
 FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
                       octave_idx_type& rank, float& rcon) const
@@ -2227,7 +2249,7 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
       lwork = static_cast<F77_INT> (work(0));
       work.resize (dim_vector (lwork, 1));
 
-      anorm = xnorm (*this, 1);
+      anorm = norm1 (*this);
 
       if (octave::math::isinf (anorm) || octave::math::isnan (anorm))
         {

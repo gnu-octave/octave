@@ -4521,11 +4521,13 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
           FloatNDArray epsval = eps (arg0.float_array_value ());
           retval = epsval;
         }
-      else
+      else if (arg0.is_double_type ())
         {
           NDArray epsval = eps (arg0.array_value ());
           retval = epsval;
         }
+      else
+        error ("eps: X must be of a floating point type");
     }
   else
     retval = fill_matrix (args, std::numeric_limits<double>::epsilon (),
@@ -4557,7 +4559,7 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 %!assert (eps (single (NaN)), single (NaN))
 %!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])),
 %!             single ([2^(-24) 2^(-23) 2^(-22) 2^104 2^(-149) 2^(-149) 2^(-149) NaN NaN]))
-
+%!error <X must be of a floating point type> eps (uint8 ([0 1 2]))
 */
 
 DEFUN (pi, args, ,

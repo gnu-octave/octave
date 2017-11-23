@@ -131,7 +131,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   if (strcmp (get (ax(1), "nextplot"), "replace"))
     set (ax(2), "nextplot", "replacechildren");
   endif
-  h2 = feval (fun2, ax(2), x2, y2);
+  h2 = feval (fun2, x2, y2);
 
   set (ax(2), "yaxislocation", "right", "color", "none",
               "ycolor", getcolor (h2(1)), "box", "off", "xlim", xlim);

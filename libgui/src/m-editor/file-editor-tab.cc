@@ -1464,13 +1464,18 @@ file_editor_tab::do_comment_selected_text (bool comment)
 {
   QString comment_str = _edit_area->comment_string ();
   QRegExp rxc = QRegExp ("^([ \\t]*)" + comment_str);
-  int len, lenc = comment_str.length ();
+  int len = 0;
+  int lenc = comment_str.length ();
 
   _edit_area->beginUndoAction ();
 
   if (_edit_area->hasSelectedText ())
     {
       int lineFrom, lineTo, colFrom, colTo;
+      int change_col_from = 1;
+      int change_col_to = 1;
+      bool removed;
+
       _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
 
       if (colTo == 0)  // the beginning of last line is not selected
@@ -1479,21 +1484,47 @@ file_editor_tab::do_comment_selected_text (bool comment)
       for (int i = lineFrom; i <= lineTo; i++)
         {
           if (comment)
-            _edit_area->insertAt (comment_str, i, 0);
+            {
+              _edit_area->insertAt (comment_str, i, 0);
+
+            }
           else
             {
               QString line (_edit_area->text (i));
-              if (line.contains (rxc))
+              if ((removed = line.contains (rxc)))
                 {
                   len = rxc.matchedLength ();
                   _edit_area->setSelection (i, len-lenc, i, len);
                   _edit_area->removeSelectedText ();
                 }
+
+              // handle case, where the selection remains unchanged
+              if (i == lineFrom && (colFrom < len-lenc || ! removed))
+                change_col_from = 0;  // do not change start of selection
+              if (i == lineTo && (colTo < len-lenc || ! removed))
+                change_col_to = 0;    // do not change end of selection
             }
         }
-      //set selection on (un)commented section
-      _edit_area->setSelection (lineFrom, 0, lineTo,
-                                _edit_area->text (lineTo).length ()-1);
+
+      // update the selection area
+      if (comment)
+        {
+          colFrom = colFrom + lenc;   // shift start position by comment length
+          if (colTo > 0)
+            colTo = colTo + lenc;     // shift end position by comment length
+          else
+            lineTo++;                 // colTo == 0 , fully select previous line
+        }
+      else
+        {
+          if (colTo == 0)
+            lineTo++;                 // colTo == 0 , fully select previous line
+          colFrom = colFrom - change_col_from*lenc;
+          colTo = colTo - change_col_to*lenc;
+        }
+
+      // set updated selection area
+      _edit_area->setSelection (lineFrom, colFrom, lineTo, colTo);
     }
   else
     {

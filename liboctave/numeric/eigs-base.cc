@@ -861,19 +861,27 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
   if (info2 == 0)
     {
-      F77_INT k2 = k / 2;
+      for (F77_INT i = ip(4); i < k; i++)
+        d[i] = octave::numeric_limits<double>::NaN ();
+      F77_INT k2 = ip(4) / 2;
       if (typ != "SM" && typ != "BE" && ! (typ == "SA" && rvec))
         {
           for (F77_INT i = 0; i < k2; i++)
             {
               double dtmp = d[i];
-              d[i] = d[k - i - 1];
-              d[k - i - 1] = dtmp;
+              d[i] = d[ip(4) - i - 1];
+              d[ip(4) - i - 1] = dtmp;
             }
         }
 
       if (rvec)
         {
+          for (F77_INT i = ip(4); i < k; i++)
+            {
+              F77_INT off1 = i * n;
+              for (F77_INT j = 0; j < n; j++)
+                z[off1 + j] = octave::numeric_limits<double>::NaN ();
+            }
           if (typ != "SM" && typ != "BE" && typ != "SA")
             {
               OCTAVE_LOCAL_BUFFER (double, dtmp, n);
@@ -881,7 +889,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
               for (F77_INT i = 0; i < k2; i++)
                 {
                   F77_INT off1 = i * n;
-                  F77_INT off2 = (k - i - 1) * n;
+                  F77_INT off2 = (ip(4) - i - 1) * n;
 
                   if (off1 == off2)
                     continue;
@@ -1170,22 +1178,30 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
   if (info2 == 0)
     {
-      F77_INT k2 = k / 2;
+      for (F77_INT i = ip(4); i < k; i++)
+        d[i] = octave::numeric_limits<double>::NaN ();
+      F77_INT k2 = ip(4) / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           double dtmp = d[i];
-          d[i] = d[k - i - 1];
-          d[k - i - 1] = dtmp;
+          d[i] = d[ip(4) - i - 1];
+          d[ip(4) - i - 1] = dtmp;
         }
 
       if (rvec)
         {
           OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
+          for (F77_INT i = ip(4); i < k; i++)
+            {
+              F77_INT off1 = i * n;
+              for (F77_INT j = 0; j < n; j++)
+                z[off1 + j] = octave::numeric_limits<double>::NaN ();
+            }
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (k - i - 1) * n;
+              F77_INT off2 = (ip(4) - i - 1) * n;
 
               if (off1 == off2)
                 continue;
@@ -1418,19 +1434,27 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   if (info2 == 0)
     {
-      F77_INT k2 = k / 2;
+      for (F77_INT i = ip(4); i < k; i++)
+        d[i] = octave::numeric_limits<double>::NaN ();
+      F77_INT k2 = ip(4) / 2;
       if (typ != "SM" && typ != "BE")
         {
           for (F77_INT i = 0; i < k2; i++)
             {
               double dtmp = d[i];
-              d[i] = d[k - i - 1];
-              d[k - i - 1] = dtmp;
+              d[i] = d[ip(4) - i - 1];
+              d[ip(4) - i - 1] = dtmp;
             }
         }
 
       if (rvec)
         {
+          for (F77_INT i = ip(4); i < k; i++)
+            {
+              F77_INT off1 = i * n;
+              for (F77_INT j = 0; j < n; j++)
+                z[off1 + j] = octave::numeric_limits<double>::NaN ();
+            }
           if (typ != "SM" && typ != "BE")
             {
               OCTAVE_LOCAL_BUFFER (double, dtmp, n);
@@ -1438,7 +1462,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
               for (F77_INT i = 0; i < k2; i++)
                 {
                   F77_INT off1 = i * n;
-                  F77_INT off2 = (k - i - 1) * n;
+                  F77_INT off2 = (ip(4) - i - 1) * n;
 
                   if (off1 == off2)
                     continue;
@@ -1728,18 +1752,37 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
   if (info2 == 0)
     {
-      for (F77_INT i = 0; i < k; i++)
-        d[i] = Complex (dr[i], di[i]);
-
+      bool have_cplx_eig = false;
+      for (F77_INT i = 0; i < ip(4); i++)
+        {
+          if (di[i] == 0)
+            d[i] = Complex (dr[i], 0.);
+          else
+            {
+              have_cplx_eig = true;
+              d[i] = Complex (dr[i], di[i]);
+            }
+        }
+      if (have_cplx_eig)
+        {
+          for (F77_INT i = ip(4); i < k; i++)
+            d[i] = Complex (octave::numeric_limits<double>::NaN (),
+                            octave::numeric_limits<double>::NaN ());
+        }
+      else
+        {
+          for (F77_INT i = ip(4); i < k; i++)
+            d[i] = Complex (octave::numeric_limits<double>::NaN (), 0.);
+        }
       if (! rvec)
         {
           // ARPACK seems to give the eigenvalues in reversed order
-          F77_INT k2 = k / 2;
+          F77_INT k2 = ip(4) / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
               Complex dtmp = d[i];
-              d[i] = d[k - i - 1];
-              d[k - i - 1] = dtmp;
+              d[i] = d[ip(4) - i - 1];
+              d[ip(4) - i - 1] = dtmp;
             }
         }
       else
@@ -1747,7 +1790,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
           // When eigenvectors required, ARPACK seems to give the right order
           eig_vec.resize (n, k);
           F77_INT i = 0;
-          while (i < k)
+          while (i < ip(4))
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
@@ -1755,7 +1798,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                 {
                   for (F77_INT j = 0; j < n; j++)
                     eig_vec(j,i) =
-                      Complex (z[j+off1],0.);
+                      Complex (z[j+off1], 0.);
                   i++;
                 }
               else
@@ -1764,14 +1807,28 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                     {
                       eig_vec(j,i) =
                         Complex (z[j+off1],z[j+off2]);
-                      if (i < k - 1)
+                      if (i < ip(4) - 1)
                         eig_vec(j,i+1) =
                           Complex (z[j+off1],-z[j+off2]);
                     }
                   i+=2;
                 }
             }
-
+          if (have_cplx_eig)
+            {
+              for (F77_INT i = ip(4); i < k; i++)
+                for (F77_INT j = 0; j < n; j++)
+                  eig_vec(j,i) =
+                    Complex (octave::numeric_limits<double>::NaN (),
+                             octave::numeric_limits<double>::NaN ());
+            }
+          else
+            {
+              for (F77_INT i = ip(4); i < k; i++)
+                for (F77_INT j = 0; j < n; j++)
+                  eig_vec(j,i) =
+                    Complex (octave::numeric_limits<double>::NaN (), 0.);
+            }
           if (note3)
             eig_vec = utsolve (bt, permB, eig_vec);
         }
@@ -2076,18 +2133,38 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
   if (info2 == 0)
     {
-      for (F77_INT i = 0; i < k; i++)
-        d[i] = Complex (dr[i], di[i]);
+      bool have_cplx_eig = false;
+      for (F77_INT i = 0; i < ip(4); i++)
+        {
+          if (di[i] == 0.)
+            d[i] = Complex (dr[i], 0.);
+          else
+            {
+              have_cplx_eig = true;
+              d[i] = Complex (dr[i], di[i]);
+            }
+        }
+      if (have_cplx_eig)
+        {
+          for (F77_INT i = ip(4); i < k; i++)
+            d[i] = Complex (octave::numeric_limits<double>::NaN (),
+                            octave::numeric_limits<double>::NaN ());
+        }
+      else
+        {
+          for (F77_INT i = ip(4); i < k; i++)
+            d[i] = Complex (octave::numeric_limits<double>::NaN (), 0.);
+        }
 
       if (! rvec)
         {
           // ARPACK seems to give the eigenvalues in reversed order
-          F77_INT k2 = k / 2;
+          F77_INT k2 = ip(4) / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
               Complex dtmp = d[i];
-              d[i] = d[k - i - 1];
-              d[k - i - 1] = dtmp;
+              d[i] = d[ip(4) - i - 1];
+              d[ip(4) - i - 1] = dtmp;
             }
         }
       else
@@ -2095,7 +2172,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
           // When eigenvectors required, ARPACK seems to give the right order
           eig_vec.resize (n, k);
           F77_INT i = 0;
-          while (i < k)
+          while (i < ip(4))
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
@@ -2103,7 +2180,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                 {
                   for (F77_INT j = 0; j < n; j++)
                     eig_vec(j,i) =
-                      Complex (z[j+off1],0.);
+                      Complex (z[j+off1], 0.);
                   i++;
                 }
               else
@@ -2112,12 +2189,27 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                     {
                       eig_vec(j,i) =
                         Complex (z[j+off1],z[j+off2]);
-                      if (i < k - 1)
+                      if (i < ip(4) - 1)
                         eig_vec(j,i+1) =
                           Complex (z[j+off1],-z[j+off2]);
                     }
                   i+=2;
                 }
+            }
+          if (have_cplx_eig)
+            {
+              for (F77_INT i = ip(4); i < k; i++)
+                for (F77_INT j = 0; j < n; j++)
+                  eig_vec(j,i) =
+                    Complex (octave::numeric_limits<double>::NaN (),
+                             octave::numeric_limits<double>::NaN ());
+            }
+          else
+            {
+              for (F77_INT i = ip(4); i < k; i++)
+                for (F77_INT j = 0; j < n; j++)
+                  eig_vec(j,i) =
+                    Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
         }
       if (k0 < k)
@@ -2367,18 +2459,39 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   if (info2 == 0)
     {
-      for (F77_INT i = 0; i < k; i++)
-        d[i] = Complex (dr[i], di[i]);
+      bool have_cplx_eig = false;
+      for (F77_INT i = 0; i < ip(4); i++)
+        {
+          if (di[i] == 0.)
+            d[i] = Complex (dr[i], 0.);
+          else
+            {
+              have_cplx_eig = true;
+              d[i] = Complex (dr[i], di[i]);
+            }
+        }
+      if (have_cplx_eig)
+        {
+          for (F77_INT i = ip(4); i < k; i++)
+            d[i] = Complex (octave::numeric_limits<double>::NaN (),
+                            octave::numeric_limits<double>::NaN ());
+        }
+      else
+        {
+          for (F77_INT i = ip(4); i < k; i++)
+            d[i] = Complex (octave::numeric_limits<double>::NaN (), 0.);
+        }
+
 
       if (! rvec)
         {
           // ARPACK seems to give the eigenvalues in reversed order
-          octave_idx_type k2 = k / 2;
+          octave_idx_type k2 = ip(4) / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
               Complex dtmp = d[i];
-              d[i] = d[k - i - 1];
-              d[k - i - 1] = dtmp;
+              d[i] = d[ip(4) - i - 1];
+              d[ip(4) - i - 1] = dtmp;
             }
         }
       else
@@ -2386,7 +2499,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
           // ARPACK seems to give the eigenvalues in reversed order
           eig_vec.resize (n, k);
           F77_INT i = 0;
-          while (i < k)
+          while (i < ip(4))
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
@@ -2394,7 +2507,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                 {
                   for (F77_INT j = 0; j < n; j++)
                     eig_vec(j,i) =
-                      Complex (z[j+off1],0.);
+                      Complex (z[j+off1], 0.);
                   i++;
                 }
               else
@@ -2403,12 +2516,27 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                     {
                       eig_vec(j,i) =
                         Complex (z[j+off1],z[j+off2]);
-                      if (i < k - 1)
+                      if (i < ip(4) - 1)
                         eig_vec(j,i+1) =
                           Complex (z[j+off1],-z[j+off2]);
                     }
                   i+=2;
                 }
+            }
+          if (have_cplx_eig)
+            {
+              for (F77_INT i = ip(4); i < k; i++)
+                for (F77_INT j = 0; j < n; j++)
+                  eig_vec(j,i) =
+                    Complex (octave::numeric_limits<double>::NaN (),
+                             octave::numeric_limits<double>::NaN ());
+            }
+          else
+            {
+              for (F77_INT i = ip(4); i < k; i++)
+                for (F77_INT j = 0; j < n; j++)
+                  eig_vec(j,i) =
+                    Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
         }
       if (k0 < k)
@@ -2678,12 +2806,16 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
   if (info2 == 0)
     {
-      F77_INT k2 = k / 2;
+      for (F77_INT i = ip(4); i < k; i++)
+        d[i] = Complex (octave::numeric_limits<double>::NaN (),
+                        octave::numeric_limits<double>::NaN ());
+
+      F77_INT k2 = ip(4) / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           Complex ctmp = d[i];
-          d[i] = d[k - i - 1];
-          d[k - i - 1] = ctmp;
+          d[i] = d[ip(4) - i - 1];
+          d[ip(4) - i - 1] = ctmp;
         }
       eig_val.resize (k);
 
@@ -2691,10 +2823,18 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
+          for (F77_INT i = ip(4); i < k; i++)
+            {
+              F77_INT off1 = i * n;
+              for (F77_INT j = 0; j < n; j++)
+                z[off1 + j] = Complex (octave::numeric_limits<double>::NaN (),
+                                       octave::numeric_limits<double>::NaN ());
+            }
+
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (k - i - 1) * n;
+              F77_INT off2 = (ip(4) - i - 1) * n;
 
               if (off1 == off2)
                 continue;
@@ -2997,12 +3137,16 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
   if (info2 == 0)
     {
-      F77_INT k2 = k / 2;
+      for (F77_INT i = ip(4); i < k; i++)
+        d[i] = Complex (octave::numeric_limits<double>::NaN (),
+                        octave::numeric_limits<double>::NaN ());
+
+      F77_INT k2 = ip(4) / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           Complex ctmp = d[i];
-          d[i] = d[k - i - 1];
-          d[k - i - 1] = ctmp;
+          d[i] = d[ip(4) - i - 1];
+          d[ip(4) - i - 1] = ctmp;
         }
       eig_val.resize (k);
 
@@ -3010,10 +3154,18 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         {
           OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
+          for (F77_INT i = ip(4); i < k; i++)
+            {
+              F77_INT off1 = i * n;
+              for (F77_INT j = 0; j < n; j++)
+                z[off1 + j] = Complex (octave::numeric_limits<double>::NaN (),
+                                       octave::numeric_limits<double>::NaN ());
+            }
+
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (k - i - 1) * n;
+              F77_INT off2 = (ip(4) - i - 1) * n;
 
               if (off1 == off2)
                 continue;
@@ -3260,12 +3412,16 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
 
   if (info2 == 0)
     {
-      F77_INT k2 = k / 2;
+      for (F77_INT i = ip(4); i < k; i++)
+        d[i] = Complex (octave::numeric_limits<double>::NaN (),
+                        octave::numeric_limits<double>::NaN ());
+
+      F77_INT k2 = ip(4) / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           Complex ctmp = d[i];
-          d[i] = d[k - i - 1];
-          d[k - i - 1] = ctmp;
+          d[i] = d[ip(4) - i - 1];
+          d[ip(4) - i - 1] = ctmp;
         }
       eig_val.resize (k);
 
@@ -3273,10 +3429,18 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
         {
           OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
+          for (F77_INT i = ip(4); i < k; i++)
+            {
+              F77_INT off1 = i * n;
+              for (F77_INT j = 0; j < n; j++)
+                z[off1 + j] = Complex (octave::numeric_limits<double>::NaN (),
+                                       octave::numeric_limits<double>::NaN ());
+            }
+
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (k - i - 1) * n;
+              F77_INT off2 = (ip(4) - i - 1) * n;
 
               if (off1 == off2)
                 continue;

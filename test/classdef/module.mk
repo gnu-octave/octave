@@ -5,6 +5,7 @@ classdef_TEST_FILES = \
   test/classdef/classdef.tst \
   test/classdef/plist_t1.m \
   test/classdef/plist_t2.m \
-  test/classdef/plist_t3.m
+  test/classdef/plist_t3.m \
+  test/classdef/struct_wrapper.m
 
 TEST_FILES += $(classdef_TEST_FILES)

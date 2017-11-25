@@ -2210,6 +2210,17 @@ as the name of the function when reporting errors.
 
 ## Check for delimiter after exponent
 %!assert (textscan ("1e-3|42", "%f", "delimiter", "|"), {[1e-3; 42]})
+
+%!test <*52479>
+%! str = "\t\ta\tb\tc\n";
+%! ret = textscan (str, "%s", "delimiter", "\t");
+%! assert (ret, { {''; ''; 'a'; 'b'; 'c'} }) ;
+
+%!test <*52479>
+%! str = "\t\ta\tb\tc\n";
+%! ret = textscan (str, "%s", "delimiter", {"\t"});
+%! assert (ret, { {''; ''; 'a'; 'b'; 'c'} }) ;
+
 */
 
 // These tests have end-comment sequences, so can't just be in a comment

@@ -28,18 +28,22 @@
 ##
 ## @var{tri} is typically the output of a Delaunay triangulation over the
 ## grid of @var{x}, @var{y}.  Every row of @var{tri} represents one triangle
-## and contains three indices into [@var{x}, @var{y}] which are the
-## vertices of the triangles in the x-y plane.  @var{z} determines the
-## height above the plane of each vertex.
+## and contains three indices into [@var{x}, @var{y}] which are the vertices of
+## the triangles in the x-y plane.  @var{z} determines the height above the
+## plane of each vertex.
 ##
-## The color of the trimesh is computed by linearly scaling the @var{z} values
-## to fit the range of the current colormap.  Use @code{caxis} and/or
-## change the colormap to control the appearance.
+## The color of the trisurf is computed by linearly scaling the @var{z} values
+## to fit the range of the current colormap.  Use @code{caxis} and/or change
+## the colormap to control the appearance.
 ##
 ## Optionally, the color of the mesh can be specified independently of @var{z}
-## by supplying a color matrix, @var{c}.  If @var{z} has N elements, then
-## @var{c} should be an Nx1 vector for colormap data or an Nx3 matrix for
-## RGB data.
+## by supplying @var{c}, which is a vector for colormap data, or a matrix with
+## three columns for RGB data.  The number of colors specified in @var{c} must
+## either equal the number of vertices in @var{z} or the number of triangles
+## in @var{tri}.  When specifying the color at each vertex the triangle will
+## be colored according to the color of the first vertex only (see patch
+## documentation and the @qcode{"FaceColor"} property when set to
+## @qcode{"flat"}).
 ##
 ## Any property/value pairs are passed directly to the underlying patch object.
 ##
@@ -58,12 +62,12 @@ function h = trisurf (tri, x, y, z, varargin)
     c = varargin{1};
     varargin(1) = [];
     if (isvector (c))
-      if (numel (c) != numel (z))
-        error ("trisurf: C must have 'numel (Z)' elements");
-      endif
       c = c(:);
-    elseif (rows (c) != numel (z) || columns (c) != 3)
-      error ("trisurf: TrueColor C matrix must be 'numel (Z)' rows by 3 columns");
+    end
+    if (rows (c) != numel (z) && rows (c) != rows (tri))
+      error ("trisurf: the numbers of colors specified in C must equal the number of vertices in Z or the number of triangles in TRI");
+    elseif (columns (c) != 1 && columns (c) != 3)
+      error ("trisurf: TrueColor C matrix must have 3 columns");
     endif
   else
     c = z(:);
@@ -161,7 +165,8 @@ endfunction
 %!error trisurf (1)
 %!error trisurf (1,2)
 %!error trisurf (1,2,3)
-%!error <C must have 'numel \(Z\)' elements> trisurf (1,2,3,4,[5 6])
-%!error <C must have 'numel \(Z\)' elements> trisurf (1,2,3,4,[5 6]')
-%!error <TrueColor C matrix must> trisurf ([1;1],[2;2],[3;3],[4;4],zeros(3,3))
-%!error <TrueColor C matrix must> trisurf ([1;1],[2;2],[3;3],[4;4],zeros(2,2))
+%!error <the numbers of colors> trisurf (1,2,3,4,[5 6])
+%!error <the numbers of colors> trisurf (1,2,3,4,[5 6]')
+%!error <the numbers of colors> trisurf ([1;1],[2;2],[3;3],[4;4], zeros (3,3))
+%!error <TrueColor C matrix must have 3 columns>
+%! trisurf ([1;1],[2;2],[3;3],[4;4], zeros (2,2))

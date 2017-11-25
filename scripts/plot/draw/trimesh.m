@@ -39,9 +39,10 @@
 ## change the colormap to control the appearance.
 ##
 ## Optionally, the color of the mesh can be specified independently of @var{z}
-## by supplying a color matrix, @var{c}.  If @var{z} has N elements, then
-## @var{c} should be an Nx1 vector for colormap data or an Nx3 matrix for
-## RGB data.
+## by supplying @var{c}, which is a vector for colormap data, or a matrix with
+## three columns for RGB data.  The number of colors specified in @var{c} must
+## either equal the number of vertices in @var{z} or the number of triangles
+## in @var{tri}.
 ##
 ## Any property/value pairs are passed directly to the underlying patch object.
 ##
@@ -66,12 +67,12 @@ function h = trimesh (tri, x, y, z, varargin)
       c = varargin{1};
       varargin(1) = [];
       if (isvector (c))
-        if (numel (c) != numel (z))
-          error ("trimesh: C must have 'numel (Z)' elements");
-        endif
         c = c(:);
-      elseif (rows (c) != numel (z) || columns (c) != 3)
-        error ("trimesh: TrueColor C matrix must be 'numel (Z)' rows by 3 columns");
+      end
+      if (rows (c) != numel (z) && rows (c) != rows (tri))
+        error ("trimesh: the numbers of colors specified in C must equal the number of vertices in Z or the number of triangles in TRI");
+      elseif (columns (c) != 1 && columns (c) != 3)
+        error ("trimesh: TrueColor C matrix must have 3 columns");
       endif
     else
       c = z(:);
@@ -80,10 +81,11 @@ function h = trimesh (tri, x, y, z, varargin)
     hax = newplot ();
 
     ## Tag object as "trimesh" so that hidden() can find it.
-    htmp = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
+    htmp = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
                   "FaceVertexCdata", c, "EdgeColor", "flat", "FaceColor", "w",
                   "FaceLighting", "none", "EdgeLighting", "flat",
                   "Tag", "trimesh", varargin{:});
+
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
@@ -114,7 +116,8 @@ endfunction
 %!error trimesh ()
 %!error trimesh (1)
 %!error trimesh (1,2)
-%!error <C must have 'numel \(Z\)' elements> trimesh (1,2,3,4,[5 6])
-%!error <C must have 'numel \(Z\)' elements> trimesh (1,2,3,4,[5 6]')
-%!error <TrueColor C matrix must> trimesh ([1;1],[2;2],[3;3],[4;4],zeros(3,3))
-%!error <TrueColor C matrix must> trimesh ([1;1],[2;2],[3;3],[4;4],zeros(2,2))
+%!error <the numbers of colors> trimesh (1,2,3,4,[5 6])
+%!error <the numbers of colors> trimesh (1,2,3,4,[5 6]')
+%!error <the numbers of colors> trimesh ([1;1],[2;2],[3;3],[4;4], zeros (3,3))
+%!error <TrueColor C matrix must have 3 columns>
+%! trimesh ([1;1],[2;2],[3;3],[4;4],zeros (2,2))

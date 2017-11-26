@@ -249,6 +249,8 @@ function t = isequal (x, varargin)
     endif
   endif
 
+  t = full (t);  # Always return full logical value for Matlab compatibility.
+
 endfunction
 
 
@@ -458,6 +460,10 @@ endfunction
 %!assert (isequal (struct ("a",NaN,"b",2), struct ("a",NaN,"b",2)), false)
 %!assert (isequal (struct ("a",NaN,"b",2), struct ("a",NaN,"b",2),
 %!                 struct ("a",NaN,"b",2)), false)
+
+## Matlab compatibility
+%!assert (isequal (sparse (1), sparse (1)), true)
+%!assert (isequal (sparse (1), sparse (1)), sparse (1)), true)
 
 ## test input validation
 %!error isequal ()

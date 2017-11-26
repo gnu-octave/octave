@@ -259,6 +259,8 @@ function t = isequaln (x, varargin)
     endif
   endif
 
+  t = full (t);  # Always return full logical value for Matlab compatibility.
+
 endfunction
 
 

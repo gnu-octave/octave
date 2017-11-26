@@ -434,18 +434,19 @@ static
 float
 norm1 (const FloatMatrix& a)
 {
+  float anorm = 0.0;
   FloatColumnVector colsum = a.abs ().sum ().row (0);
-  float anorm = -octave::numeric_limits<float>::Inf ();
 
   for (octave_idx_type i = 0; i < colsum.numel (); i++)
     {
-      if (octave::math::isnan (colsum.xelem (i)))
+      float sum = colsum.xelem (i);
+      if (octave::math::isinf (sum) || octave::math::isnan (sum))
         {
-          anorm = octave::numeric_limits<float>::NaN ();
+          anorm = sum;  // Pass Inf or NaN to output
           break;
         }
       else
-        anorm = std::max (anorm, colsum.xelem (i));
+        anorm = std::max (anorm, sum);
     }
 
   return anorm;
@@ -2251,11 +2252,17 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
 
       anorm = norm1 (*this);
 
-      if (octave::math::isinf (anorm) || octave::math::isnan (anorm))
+      if (octave::math::isinf (anorm))
         {
           rcon = 0.0;
           octave::warn_singular_matrix ();
-          retval = Matrix (n, b_nc, 0.0);
+          retval = FloatMatrix (n, b_nc, 0.0);
+        }
+      else if (octave::math::isnan (anorm))
+        {
+          rcon = octave::numeric_limits<float>::NaN ();
+          retval = FloatMatrix (n, b_nc,
+                                octave::numeric_limits<float>::NaN ());
         }
       else
         {

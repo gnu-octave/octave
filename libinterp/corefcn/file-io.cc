@@ -2216,7 +2216,7 @@ as the name of the function when reporting errors.
 %! ret = textscan (str, "%s", "delimiter", "\t");
 %! assert (ret, { {''; ''; 'a'; 'b'; 'c'} }) ;
 
-%!test <*52479>
+%!test <52479>
 %! str = "\t\ta\tb\tc\n";
 %! ret = textscan (str, "%s", "delimiter", {"\t"});
 %! assert (ret, { {''; ''; 'a'; 'b'; 'c'} }) ;

@@ -3,7 +3,6 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__isequal__.m \
   %reldir%/private/__publish_html_output__.m \
   %reldir%/private/__publish_latex_output__.m \
   %reldir%/private/__splinen__.m

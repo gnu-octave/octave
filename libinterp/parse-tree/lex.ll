@@ -2079,13 +2079,7 @@ namespace octave
   lexical_feedback::symbol_table_context::clear (void)
   {
     while (! frame_stack.empty ())
-      {
-        symbol_scope *scope = curr_scope ();
-
-        delete scope;
-
-        frame_stack.pop_front ();
-      }
+      frame_stack.pop_front ();
   }
 
   void
@@ -2097,12 +2091,12 @@ namespace octave
     frame_stack.pop_front ();
   }
 
-  symbol_scope *
+  symbol_scope
   lexical_feedback::symbol_table_context::curr_scope (void) const
   {
     if (empty ())
       {
-        symbol_scope *scope
+        symbol_scope scope
           = __get_current_scope__ ("lexical_feedback::symbol_table_context::curr_scope");
 
         return scope;
@@ -2111,12 +2105,12 @@ namespace octave
       return frame_stack.front ();
   }
 
-  symbol_scope *
+  symbol_scope
   lexical_feedback::symbol_table_context::parent_scope (void) const
   {
     size_t sz = size ();
 
-    return sz > 1 ? frame_stack[1] : (sz == 1 ? frame_stack[0] : nullptr);
+    return sz > 1 ? frame_stack[1] : (sz == 1 ? frame_stack[0] : symbol_scope ());
   }
 
   lexical_feedback::~lexical_feedback (void)
@@ -2522,9 +2516,9 @@ namespace octave
 
   bool
   base_lexer::is_variable (const std::string& name,
-                           symbol_scope *scope)
+                           const symbol_scope& scope)
   {
-    return ((scope && scope->is_variable (name))
+    return ((scope && scope.is_variable (name))
             || (pending_local_variables.find (name)
                 != pending_local_variables.end ()));
   }
@@ -3156,9 +3150,9 @@ namespace octave
 
     // Find the token in the symbol table.
 
-    symbol_scope *scope = symtab_context.curr_scope ();
+    symbol_scope scope = symtab_context.curr_scope ();
 
-    symbol_record sr = (scope ? scope->insert (ident) : symbol_record (ident));
+    symbol_record sr = (scope ? scope.insert (ident) : symbol_record (ident));
 
     token *tok = new token (NAME, sr, input_line_number, current_input_column);
 

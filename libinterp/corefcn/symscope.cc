@@ -40,13 +40,14 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   octave_value
-  symbol_scope::find (const std::string& name, const octave_value_list& args,
-                      bool skip_variables, bool local_funcs)
+  symbol_scope_rep::find (const std::string& name,
+                          const octave_value_list& args,
+                          bool skip_variables, bool local_funcs)
   {
     // Variable.
 
     symbol_table& symtab
-      = __get_symbol_table__ ("symbol_scope::find");
+      = __get_symbol_table__ ("symbol_scope_rep::find");
 
     if (! skip_variables)
       {
@@ -84,7 +85,7 @@ namespace octave
   }
 
   symbol_record&
-  symbol_scope::insert (const std::string& name, bool force_add)
+  symbol_scope_rep::insert (const std::string& name, bool force_add)
   {
     table_iterator p = m_symbols.find (name);
 
@@ -107,7 +108,7 @@ namespace octave
   }
 
   std::list<workspace_element>
-  symbol_scope::workspace_info (void) const
+  symbol_scope_rep::workspace_info (void) const
   {
     std::list<workspace_element> retval;
 
@@ -161,7 +162,7 @@ namespace octave
   }
 
   octave_value
-  symbol_scope::dump (void) const
+  symbol_scope_rep::dump (void) const
   {
     std::map<std::string, octave_value> m
       = {{ "name", m_name },
@@ -172,7 +173,7 @@ namespace octave
   }
 
   octave_value
-  symbol_scope::dump_symbols_map (void) const
+  symbol_scope_rep::dump_symbols_map (void) const
   {
     std::map<std::string, octave_value> info_map;
 
@@ -187,8 +188,9 @@ namespace octave
   }
 
   void
-  symbol_scope::install_subfunction (const std::string& name,
-                                     const octave_value& fval, bool is_nested)
+  symbol_scope_rep::install_subfunction (const std::string& name,
+                                         const octave_value& fval,
+                                         bool is_nested)
   {
     m_subfunctions[name] = fval;
 
@@ -196,9 +198,9 @@ namespace octave
     // object...
     octave_user_function *fcn = fval.user_function_value ();
 
-    symbol_scope *fcn_scope = fcn->scope ();
+    symbol_scope fcn_scope = fcn->scope ();
 
-    fcn_scope->set_parent (this);
+    fcn_scope.set_parent (this);
 
     if (is_nested)
       {
@@ -206,13 +208,12 @@ namespace octave
 
         fcn->mark_as_nested_function ();
 
-        fcn_scope->m_is_nested = true;
+        fcn_scope.mark_nested ();
       }
-
   }
 
   octave_value
-  symbol_scope::find_subfunction (const std::string& name) const
+  symbol_scope_rep::find_subfunction (const std::string& name) const
   {
     subfunctions_const_iterator p = m_subfunctions.find (name);
 
@@ -226,7 +227,7 @@ namespace octave
   }
 
   void
-  symbol_scope::mark_subfunctions_in_scope_as_private (const std::string& class_name)
+  symbol_scope_rep::mark_subfunctions_in_scope_as_private (const std::string& class_name)
   {
     for (auto& nm_sf : m_subfunctions)
       {
@@ -238,7 +239,7 @@ namespace octave
   }
 
   void
-  symbol_scope::set_parent (symbol_scope *p)
+  symbol_scope_rep::set_parent (symbol_scope_rep *p)
   {
     m_parent = p;
 
@@ -260,7 +261,7 @@ namespace octave
   }
 
   void
-  symbol_scope::update_nest (void)
+  symbol_scope_rep::update_nest (void)
   {
     if (m_parent)
       {
@@ -286,12 +287,13 @@ namespace octave
         m_is_static = true;
       }
 
-    for (auto& symtab_p : m_children)
-      symtab_p->update_nest ();
+    for (auto& scope_obj : m_children)
+      scope_obj.update_nest ();
   }
 
   bool
-  symbol_scope::look_nonlocal (const std::string& name, symbol_record& result)
+  symbol_scope_rep::look_nonlocal (const std::string& name,
+                                   symbol_record& result)
   {
     table_iterator p = m_symbols.find (name);
     if (p == m_symbols.end ())
@@ -309,7 +311,7 @@ namespace octave
   }
 
   void
-  symbol_scope::bind_script_symbols (symbol_scope *curr_scope)
+  symbol_scope_rep::bind_script_symbols (symbol_scope_rep *curr_scope)
   {
     for (auto& nm_sr : m_symbols)
       nm_sr.second.bind_fwd_rep (curr_scope,
@@ -317,7 +319,7 @@ namespace octave
   }
 
   void
-  symbol_scope::unbind_script_symbols (void)
+  symbol_scope_rep::unbind_script_symbols (void)
   {
     for (auto& nm_sr : m_symbols)
       nm_sr.second.unbind_fwd_rep ();

@@ -360,7 +360,7 @@ namespace octave
   }
 
   void
-  call_stack::push (octave_function *fcn, symbol_scope *scope,
+  call_stack::push (octave_function *fcn, const symbol_scope& scope,
                     symbol_table::context_id context)
   {
     size_t prev_frame = curr_frame;
@@ -394,7 +394,7 @@ namespace octave
                         << " at line " << elt.m_line
                         << " column " << elt.m_column
                         << " [" << elt.fcn_file_name () << "] "
-                        << " (scope = " << elt.m_scope
+                        << " (scope = " << elt.m_scope.get_rep_ptr ()
                         << "[context = " << elt.m_context << "])"
                         << std::endl;
       }
@@ -585,7 +585,7 @@ namespace octave
 
     for (const auto& frm : frames)
       {
-        scope(k)   = frm.m_scope;
+        scope(k)   = frm.m_scope.get_rep_ptr ();
         context(k) = frm.m_context;
         file(k)    = frm.fcn_file_name ();
         name(k)    = frm.fcn_name (print_subfn);

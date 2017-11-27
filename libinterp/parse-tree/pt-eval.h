@@ -313,7 +313,7 @@ namespace octave
 
     profiler& get_profiler (void) { return m_profiler; }
 
-    symbol_scope *get_current_scope (void);
+    symbol_scope get_current_scope (void);
 
     int max_recursion_depth (void) const { return m_max_recursion_depth; }
 

@@ -978,11 +978,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             octave::symbol_scope local_scope;
 
-            symtab.set_scope (&local_scope);
+            symtab.set_scope (local_scope);
 
             octave::call_stack& cs
               = octave::__get_call_stack__ ("read_mat5_binary_element");
-            cs.push (&local_scope, 0);
+            cs.push (local_scope, 0);
             frame.add_method (cs, &octave::call_stack::pop);
 
             if (m2.nfields () > 0)

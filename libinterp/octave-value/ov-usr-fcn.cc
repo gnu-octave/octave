@@ -64,7 +64,6 @@ static bool Voptimize_subsasgn_calls = true;
 
 octave_user_code::~octave_user_code (void)
 {
-  delete m_scope;
   delete m_file_info;
 }
 
@@ -134,7 +133,7 @@ octave_user_script::octave_user_script (void)
 
 octave_user_script::octave_user_script
   (const std::string& fnm, const std::string& nm,
-   octave::symbol_scope *scope, octave::tree_statement_list *cmds,
+   const octave::symbol_scope& scope, octave::tree_statement_list *cmds,
    const std::string& ds)
   : octave_user_code (nm, scope, ds), cmd_list (cmds), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
@@ -147,7 +146,7 @@ octave_user_script::octave_user_script
 
 octave_user_script::octave_user_script
   (const std::string& fnm, const std::string& nm,
-   octave::symbol_scope *scope, const std::string& ds)
+   const octave::symbol_scope& scope, const std::string& ds)
   : octave_user_code (nm, scope, ds), cmd_list (nullptr), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
@@ -207,7 +206,7 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
 
       frame.add_method (m_scope,
                         &octave::symbol_scope::unbind_script_symbols);
-      m_scope->bind_script_symbols (tw.get_current_scope ());
+      m_scope.bind_script_symbols (tw.get_current_scope ());
 
       if (tw.echo ())
         tw.push_echo_state (frame, octave::tree_evaluator::ECHO_SCRIPTS,
@@ -241,7 +240,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 // extrinsic/intrinsic state?).
 
 octave_user_function::octave_user_function
-  (octave::symbol_scope *scope, octave::tree_parameter_list *pl,
+  (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
    octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", scope, ""),
     param_list (pl), ret_list (rl), cmd_list (cl),
@@ -254,7 +253,7 @@ octave_user_function::octave_user_function
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
     class_constructor (none), class_method (false),
-    parent_scope (nullptr)
+    parent_scope ()
 #if defined (HAVE_LLVM)
     , jit_info (0)
 #endif
@@ -263,7 +262,7 @@ octave_user_function::octave_user_function
     cmd_list->mark_as_function_body ();
 
   if (m_scope)
-    m_scope->set_function (this);
+    m_scope.set_function (this);
 }
 
 octave_user_function::~octave_user_function (void)
@@ -361,7 +360,7 @@ octave_user_function::maybe_relocate_end (void)
 }
 
 void
-octave_user_function::stash_parent_fcn_scope (octave::symbol_scope *ps)
+octave_user_function::stash_parent_fcn_scope (const octave::symbol_scope& ps)
 {
   parent_scope = ps;
 }
@@ -416,7 +415,7 @@ octave_user_function::mark_as_system_fcn_file (void)
 void
 octave_user_function::erase_subfunctions (void)
 {
-  m_scope->erase_subfunctions ();
+  m_scope.erase_subfunctions ();
 }
 
 bool
@@ -434,7 +433,7 @@ octave_user_function::takes_var_return (void) const
 void
 octave_user_function::mark_as_private_function (const std::string& cname)
 {
-  m_scope->mark_subfunctions_in_scope_as_private (cname);
+  m_scope.mark_subfunctions_in_scope_as_private (cname);
 
   octave_function::mark_as_private_function (cname);
 }
@@ -442,37 +441,37 @@ octave_user_function::mark_as_private_function (const std::string& cname)
 void
 octave_user_function::lock_subfunctions (void)
 {
-  m_scope->lock_subfunctions ();
+  m_scope.lock_subfunctions ();
 }
 
 void
 octave_user_function::unlock_subfunctions (void)
 {
-  m_scope->unlock_subfunctions ();
+  m_scope.unlock_subfunctions ();
 }
 
 std::map<std::string, octave_value>
 octave_user_function::subfunctions (void) const
 {
-  return m_scope->subfunctions ();
+  return m_scope.subfunctions ();
 }
 
 bool
 octave_user_function::has_subfunctions (void) const
 {
-  return m_scope->has_subfunctions ();
+  return m_scope.has_subfunctions ();
 }
 
 void
 octave_user_function::stash_subfunction_names (const std::list<std::string>& names)
 {
-  m_scope->stash_subfunction_names (names);
+  m_scope.stash_subfunction_names (names);
 }
 
 std::list<std::string>
 octave_user_function::subfunction_names (void) const
 {
-  return m_scope->subfunction_names ();
+  return m_scope.subfunction_names ();
 }
 
 octave_value_list
@@ -549,12 +548,12 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
   if (call_depth > 0 && ! is_anonymous_function ())
     {
-      m_scope->push_context ();
+      m_scope.push_context ();
 
 #if 0
       std::cerr << name () << " scope: " << m_scope
                 << " call depth: " << call_depth
-                << " context: " << m_scope->current_context () << std::endl;
+                << " context: " << m_scope.current_context () << std::endl;
 #endif
 
       frame.add_method (m_scope, &octave::symbol_scope::pop_context);
@@ -566,7 +565,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
     {
 #if 0
       std::cerr << "defining param list, scope: " << m_scope
-                << ", context: " << m_scope->current_context () << std::endl;
+                << ", context: " << m_scope.current_context () << std::endl;
 #endif
       tw.define_parameter_list_from_arg_vector (param_list, args);
     }
@@ -666,7 +665,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
       if (ret_list->takes_varargs ())
         {
-          octave_value varargout_varval = m_scope->varval ("varargout");
+          octave_value varargout_varval = m_scope.varval ("varargout");
 
           if (varargout_varval.is_defined ())
             varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
@@ -759,8 +758,8 @@ octave_user_function::dump (void) const
        { "nested_function", nested_function },
        { "ctor_type", ctor_type_str () },
        { "class_method", class_method },
-       { "parent_scope", parent_scope ? parent_scope->name () : "0x0" },
-       { "scope_info", m_scope ? m_scope->dump () : "0x0" }};
+       { "parent_scope", parent_scope ? parent_scope.name () : "0x0" },
+       { "scope_info", m_scope ? m_scope.dump () : "0x0" }};
 
   return octave_value (m);
 }
@@ -794,44 +793,44 @@ octave_user_function::bind_automatic_vars
       // for backward compatibility of functions that use it directly.
 
       charMatrix chm (arg_names, tw.string_fill_char ());
-      m_scope->force_assign ("argn", chm);
-      m_scope->force_assign (".argn.", Cell (arg_names));
+      m_scope.force_assign ("argn", chm);
+      m_scope.force_assign (".argn.", Cell (arg_names));
 
-      m_scope->mark_hidden (".argn.");
+      m_scope.mark_hidden (".argn.");
 
-      m_scope->mark_automatic ("argn");
-      m_scope->mark_automatic (".argn.");
+      m_scope.mark_automatic ("argn");
+      m_scope.mark_automatic (".argn.");
     }
 
-  m_scope->force_assign (".nargin.", nargin);
-  m_scope->force_assign (".nargout.", nargout);
+  m_scope.force_assign (".nargin.", nargin);
+  m_scope.force_assign (".nargout.", nargout);
 
-  m_scope->mark_hidden (".nargin.");
-  m_scope->mark_hidden (".nargout.");
+  m_scope.mark_hidden (".nargin.");
+  m_scope.mark_hidden (".nargout.");
 
-  m_scope->mark_automatic (".nargin.");
-  m_scope->mark_automatic (".nargout.");
+  m_scope.mark_automatic (".nargin.");
+  m_scope.mark_automatic (".nargout.");
 
-  m_scope->force_assign (".saved_warning_states.", octave_value ());
+  m_scope.force_assign (".saved_warning_states.", octave_value ());
 
-  m_scope->mark_automatic (".saved_warning_states.");
-  m_scope->mark_automatic (".saved_warning_states.");
+  m_scope.mark_automatic (".saved_warning_states.");
+  m_scope.mark_automatic (".saved_warning_states.");
 
   if (takes_varargs ())
-    m_scope->assign ("varargin", va_args.cell_value ());
+    m_scope.assign ("varargin", va_args.cell_value ());
 
   Matrix ignored_fcn_outputs = tw.ignored_fcn_outputs ();
 
-  m_scope->force_assign (".ignored.", ignored_fcn_outputs);
+  m_scope.force_assign (".ignored.", ignored_fcn_outputs);
 
-  m_scope->mark_hidden (".ignored.");
-  m_scope->mark_automatic (".ignored.");
+  m_scope.mark_hidden (".ignored.");
+  m_scope.mark_automatic (".ignored.");
 }
 
 void
 octave_user_function::restore_warning_states (void)
 {
-  octave_value val = m_scope->varval (".saved_warning_states.");
+  octave_value val = m_scope.varval (".saved_warning_states.");
 
   if (val.is_defined ())
     {
@@ -932,8 +931,8 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      octave::symbol_scope *scope = symtab.require_current_scope ("nargin");
-      retval = scope->varval (".nargin.");
+      octave::symbol_scope scope = symtab.require_current_scope ("nargin");
+      retval = scope.varval (".nargin.");
 
       if (retval.is_undefined ())
         retval = 0;
@@ -1058,8 +1057,8 @@ returns -1 for all anonymous functions.
       if (symtab.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      octave::symbol_scope *scope = symtab.require_current_scope ("nargout");
-      retval = scope->varval (".nargout.");
+      octave::symbol_scope scope = symtab.require_current_scope ("nargout");
+      retval = scope.varval (".nargout.");
 
       if (retval.is_undefined ())
         retval = 0;
@@ -1131,12 +1130,12 @@ element-by-element and a logical array is returned.  At the top level,
   if (symtab.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  octave::symbol_scope *scope = symtab.require_current_scope ("isargout");
+  octave::symbol_scope scope = symtab.require_current_scope ("isargout");
 
-  int nargout1 = scope->varval (".nargout.").int_value ();
+  int nargout1 = scope.varval (".nargout.").int_value ();
 
   Matrix ignored;
-  octave_value tmp = scope->varval (".ignored.");
+  octave_value tmp = scope.varval (".ignored.");
   if (tmp.is_defined ())
     ignored = tmp.matrix_value ();
 

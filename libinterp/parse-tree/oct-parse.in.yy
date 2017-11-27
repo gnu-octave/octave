@@ -1285,8 +1285,7 @@ push_fcn_symtab : // empty
                       parser.m_max_fcn_depth = parser.m_curr_fcn_depth;
 
                     // Will get a real name later.
-                    lexer.symtab_context.push (new octave::symbol_scope ("parser:push_fcn_symtab"));
-
+                    lexer.symtab_context.push (octave::symbol_scope ("parser:push_fcn_symtab"));
                     parser.m_function_scopes.push (lexer.symtab_context.curr_scope ());
 
                     if (! lexer.reading_script_file
@@ -1316,7 +1315,7 @@ param_list_beg  : '('
                     if (lexer.looking_at_function_handle)
                       {
                         // Will get a real name later.
-                        lexer.symtab_context.push (new octave::symbol_scope ("parser:param_lsit_beg"));
+                        lexer.symtab_context.push (octave::symbol_scope ("parser:param_lsit_beg"));
                         lexer.looking_at_function_handle--;
                         lexer.looking_at_anon_fcn_args = true;
                       }
@@ -1454,7 +1453,7 @@ push_script_symtab : // empty
                     $$ = 0;
 
                     // Will get a real name later.
-                    lexer.symtab_context.push (new octave::symbol_scope ("parser:push_script_symtab"));
+                    lexer.symtab_context.push (octave::symbol_scope ("parser:push_script_symtab"));
                   }
                 ;
 
@@ -1475,7 +1474,6 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                         // base_parser::m_primary_fcn_ptr.
 
                         // Unused symbol table context.
-                        delete lexer.symtab_context.curr_scope ();
                         lexer.symtab_context.pop ();
 
                         delete $3;
@@ -1498,7 +1496,6 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                     YYUSE ($5);
 
                     // Unused symbol table context.
-                    delete lexer.symtab_context.curr_scope ();
                     lexer.symtab_context.pop ();
 
                     parser.finish_classdef_file ($3, $6);
@@ -1541,9 +1538,9 @@ fcn_name        : identifier
                         YYABORT;
                       }
 
-                    octave::symbol_scope *curr_scope
+                    octave::symbol_scope curr_scope
                       = lexer.symtab_context.curr_scope ();
-                    curr_scope->cache_name (id);
+                    curr_scope.cache_name (id);
 
                     lexer.parsed_function_name.top () = true;
                     lexer.maybe_classdef_get_set_method = false;
@@ -1649,7 +1646,7 @@ classdef_beg    : CLASSDEF
                       }
 
                     // Create invalid parent scope.
-                    lexer.symtab_context.push (nullptr);
+                    lexer.symtab_context.push (octave::symbol_scope ());
                     lexer.parsing_classdef = true;
                     $$ = $1;
                   }
@@ -2103,7 +2100,7 @@ namespace octave
   }
 
   void
-  base_parser::parent_scope_info::push (symbol_scope *scope)
+  base_parser::parent_scope_info::push (const symbol_scope& scope)
   {
     push (value_type (scope, ""));
   }
@@ -2156,10 +2153,10 @@ namespace octave
     return true;
   }
 
-  symbol_scope *
+  symbol_scope
   base_parser::parent_scope_info::parent_scope (void) const
   {
-    return size () > 1 ? m_info[size()-2].first : nullptr;
+    return size () > 1 ? m_info[size()-2].first : symbol_scope ();
   }
 
   std::string
@@ -2178,7 +2175,7 @@ namespace octave
     : m_endfunction_found (false), m_autoloading (false),
       m_fcn_file_from_relative_lookup (false),
       m_parsing_subfunctions (false), m_parsing_local_functions (false),
-      m_max_fcn_depth (0), m_curr_fcn_depth (0), m_primary_fcn_scope (nullptr),
+      m_max_fcn_depth (0), m_curr_fcn_depth (0), m_primary_fcn_scope (),
       m_curr_class_name (), m_curr_package_name (), m_function_scopes (),
       m_primary_fcn_ptr (nullptr), m_subfunction_names (),
       m_classdef_object (nullptr), m_stmt_list (nullptr), m_lexer (lxr),
@@ -2212,7 +2209,7 @@ namespace octave
     m_parsing_local_functions = false;
     m_max_fcn_depth = 0;
     m_curr_fcn_depth = 0;
-    m_primary_fcn_scope = nullptr;
+    m_primary_fcn_scope = symbol_scope ();
     m_curr_class_name = "";
     m_curr_package_name = "";
     m_function_scopes.clear ();
@@ -2450,14 +2447,14 @@ namespace octave
     int l = m_lexer.input_line_number;
     int c = m_lexer.current_input_column;
 
-    symbol_scope *fcn_scope = m_lexer.symtab_context.curr_scope ();
-    symbol_scope *parent_scope = m_lexer.symtab_context.parent_scope ();
+    symbol_scope fcn_scope = m_lexer.symtab_context.curr_scope ();
+    symbol_scope parent_scope = m_lexer.symtab_context.parent_scope ();
 
     m_lexer.symtab_context.pop ();
 
     expr->set_print_flag (false);
 
-    fcn_scope->mark_static ();
+    fcn_scope.mark_static ();
 
     tree_anon_fcn_handle *retval
       = new tree_anon_fcn_handle (param_list, expr, fcn_scope,
@@ -2480,7 +2477,7 @@ namespace octave
 
     std::string scope_name = buf.str ();
 
-    fcn_scope->cache_name (scope_name);
+    fcn_scope.cache_name (scope_name);
 
     // FIXME: Stash the filename.  This does not work and produces
     // errors when executed.
@@ -3269,9 +3266,9 @@ namespace octave
 
     cmds->append (end_script);
 
-    symbol_scope *script_scope = m_lexer.symtab_context.curr_scope ();
+    symbol_scope script_scope = m_lexer.symtab_context.curr_scope ();
 
-    script_scope->cache_name (m_lexer.fcn_file_full_name);
+    script_scope.cache_name (m_lexer.fcn_file_full_name);
 
     octave_user_script *script
       = new octave_user_script (m_lexer.fcn_file_full_name,
@@ -3484,8 +3481,8 @@ namespace octave
         if (! file.empty ())
           tmp += ": " + file;
 
-        symbol_scope *fcn_scope = fcn->scope ();
-        fcn_scope->cache_name (tmp);
+        symbol_scope fcn_scope = fcn->scope ();
+        fcn_scope.cache_name (tmp);
 
         if (lc)
           fcn->stash_leading_comment (lc);
@@ -3500,21 +3497,21 @@ namespace octave
 
             if (m_endfunction_found && m_function_scopes.size () > 1)
               {
-                symbol_scope *pscope = m_function_scopes.parent_scope ();
+                symbol_scope pscope = m_function_scopes.parent_scope ();
 
-                pscope->install_nestfunction (nm, ov_fcn);
+                pscope.install_nestfunction (nm, ov_fcn);
               }
             else
               {
                 fcn->mark_as_subfunction ();
                 m_subfunction_names.push_back (nm);
 
-                m_primary_fcn_scope->install_subfunction (nm, ov_fcn);
+                m_primary_fcn_scope.install_subfunction (nm, ov_fcn);
                }
           }
 
         if (m_curr_fcn_depth == 1)
-          fcn_scope->update_nest ();
+          fcn_scope.update_nest ();
 
         if (! m_lexer.reading_fcn_file && m_curr_fcn_depth == 1)
           {
@@ -3814,7 +3811,7 @@ namespace octave
             // Create a dummy function that is used until the real method
             // is loaded.
 
-            retval = new octave_user_function (nullptr, pl);
+            retval = new octave_user_function (symbol_scope (), pl);
 
             retval->stash_function_name (mname);
 
@@ -5421,10 +5418,10 @@ namespace octave
 
                     if (expr->is_identifier ())
                       {
-                        octave::symbol_scope *scope = tw.get_current_scope ();
+                        octave::symbol_scope scope = tw.get_current_scope ();
 
                         octave::symbol_record::context_id context
-                          = scope->current_context ();
+                          = scope.current_context ();
 
                         tree_identifier *id
                           = dynamic_cast<tree_identifier *> (expr);
@@ -5671,10 +5668,10 @@ may be either @qcode{"base"} or @qcode{"caller"}.
       if (octave::is_keyword (nm))
         error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
 
-      octave::symbol_scope *scope = interp.get_current_scope ();
+      octave::symbol_scope scope = interp.get_current_scope ();
 
       if (scope)
-        scope->assign (nm, args(2));
+        scope.assign (nm, args(2));
     }
   else
     error ("assignin: invalid variable name in argument VARNAME");

@@ -61,9 +61,8 @@ namespace octave
 
     symbol_table (void)
       : m_fcn_table (), m_class_precedence_table (),
-        m_parent_map (), m_global_scope (new scope ("global scope")),
-        m_top_scope (new symbol_scope ("top scope")),
-        m_current_scope (m_top_scope)
+        m_parent_map (), m_global_scope ("global scope"),
+        m_top_scope ("top scope"), m_current_scope (m_top_scope)
       { }
 
     // No copying!
@@ -72,18 +71,14 @@ namespace octave
 
     symbol_table& operator = (const symbol_table&) = delete;
 
-    ~symbol_table (void)
-      {
-        delete m_top_scope;
-        delete m_global_scope;
-      }
+    ~symbol_table (void) = default;
 
-    symbol_scope *global_scope (void) { return m_global_scope; }
-    symbol_scope *top_scope (void) { return m_top_scope; }
+    symbol_scope global_scope (void) { return m_global_scope; }
+    symbol_scope top_scope (void) { return m_top_scope; }
 
-    symbol_scope *current_scope (void) { return m_current_scope; }
+    symbol_scope current_scope (void) { return m_current_scope; }
 
-    symbol_scope *require_current_scope (const std::string& who)
+    symbol_scope require_current_scope (const std::string& who)
     {
       if (! m_current_scope)
         error ("%s: missing scope", who.c_str ());
@@ -93,15 +88,15 @@ namespace octave
 
     context_id current_context (void) const
     {
-      return m_current_scope ? m_current_scope->current_context () : 0;
+      return m_current_scope ? m_current_scope.current_context () : 0;
     }
 
-    void set_scope (symbol_scope *sid)
+    void set_scope (const symbol_scope& sid)
     {
       set_scope_and_context (sid, 0);
     }
 
-    void set_scope_and_context (symbol_scope *sid, context_id context)
+    void set_scope_and_context (const symbol_scope& sid, context_id context)
     {
       if (sid == m_global_scope)
         error ("can't set scope to global");
@@ -109,12 +104,12 @@ namespace octave
       m_current_scope = sid;
 
       if (m_current_scope)
-        m_current_scope->set_context (context);
+        m_current_scope.set_context (context);
     }
 
-    symbol_record find_symbol (const std::string& name, symbol_scope *sid)
+    symbol_record find_symbol (const std::string& name, symbol_scope& sid)
     {
-      return sid ? sid->find_symbol (name) : symbol_record ();
+      return sid ? sid.find_symbol (name) : symbol_record ();
     }
 
     symbol_record find_symbol (const std::string& name)
@@ -131,13 +126,14 @@ namespace octave
       return sym;
     }
 
-    void inherit (symbol_scope *recipient_scope, symbol_scope *donor_scope)
+    void
+    inherit (symbol_scope& recipient_scope, const symbol_scope& donor_scope)
     {
       if (recipient_scope)
-        recipient_scope->inherit (donor_scope);
+        recipient_scope.inherit (donor_scope);
     }
 
-    void inherit (symbol_scope *recipient_scope)
+    void inherit (symbol_scope& recipient_scope)
     {
       inherit (recipient_scope, m_current_scope);
     }
@@ -154,43 +150,43 @@ namespace octave
     void assign (const std::string& name, const octave_value& value, bool force_add)
     {
       if (m_current_scope)
-        m_current_scope->assign (name, value, force_add);
+        m_current_scope.assign (name, value, force_add);
     }
 
     void assign (const std::string& name,
                  const octave_value& value = octave_value ())
     {
       if (m_current_scope)
-        m_current_scope->assign (name, value);
+        m_current_scope.assign (name, value);
     }
 
     octave_value varval (const std::string& name) const
     {
       return (m_current_scope
-              ? m_current_scope->varval (name) : octave_value ());
+              ? m_current_scope.varval (name) : octave_value ());
     }
 
     void global_assign (const std::string& name,
                         const octave_value& value = octave_value ())
     {
-      m_global_scope->assign (name, value);
+      m_global_scope.assign (name, value);
     }
 
     octave_value global_varval (const std::string& name) const
     {
-      return m_global_scope->varval (name);
+      return m_global_scope.varval (name);
     }
 
     void
       top_level_assign (const std::string& name,
                         const octave_value& value = octave_value ())
     {
-      m_top_scope->assign (name, value);
+      m_top_scope.assign (name, value);
     }
 
     octave_value top_level_varval (const std::string& name) const
     {
-      return m_top_scope->varval (name);
+      return m_top_scope.varval (name);
     }
 
     bool
@@ -370,10 +366,8 @@ namespace octave
 
     void clear_all (bool force = false)
     {
-      if (m_current_scope)
-        m_current_scope->clear_variables ();
-
-      m_global_scope->clear_variables ();
+      m_current_scope.clear_variables ();
+      m_global_scope.clear_variables ();
 
       clear_functions (force);
     }
@@ -404,7 +398,7 @@ namespace octave
       // FIXME: are we supposed to do both here?
 
       if (m_current_scope)
-        m_current_scope->clear_variable (name);
+        m_current_scope.clear_variable (name);
 
       clear_function (name);
     }
@@ -429,7 +423,7 @@ namespace octave
       // FIXME: are we supposed to do both here?
 
       if (m_current_scope)
-        m_current_scope->clear_variable_pattern (pat);
+        m_current_scope.clear_variable_pattern (pat);
 
       clear_function_pattern (pat);
     }
@@ -511,18 +505,18 @@ namespace octave
     std::list<symbol_record> glob (const std::string& pattern)
     {
       return (m_current_scope
-              ? m_current_scope->glob (pattern) : std::list<symbol_record> ());
+              ? m_current_scope.glob (pattern) : std::list<symbol_record> ());
     }
 
     std::list<symbol_record> glob_global_variables (const std::string& pattern)
     {
-      return m_global_scope->glob (pattern);
+      return m_global_scope.glob (pattern);
     }
 
     std::list<symbol_record>
     regexp_global_variables (const std::string& pattern)
     {
-      return m_global_scope->regexp (pattern);
+      return m_global_scope.regexp (pattern);
     }
 
     std::list<symbol_record> glob_variables (const string_vector& patterns)
@@ -536,7 +530,7 @@ namespace octave
 
       for (size_t i = 0; i < len; i++)
         {
-          std::list<symbol_record> tmp = m_current_scope->glob (patterns[i]);
+          std::list<symbol_record> tmp = m_current_scope.glob (patterns[i]);
 
           retval.insert (retval.begin (), tmp.begin (), tmp.end ());
         }
@@ -555,7 +549,7 @@ namespace octave
 
       for (size_t i = 0; i < len; i++)
         {
-          std::list<symbol_record> tmp = m_current_scope->regexp (patterns[i]);
+          std::list<symbol_record> tmp = m_current_scope.regexp (patterns[i]);
 
           retval.insert (retval.begin (), tmp.begin (), tmp.end ());
         }
@@ -581,19 +575,19 @@ namespace octave
 
     std::list<std::string> global_variable_names (void)
     {
-      return m_global_scope->variable_names ();
+      return m_global_scope.variable_names ();
     }
 
     std::list<std::string> top_level_variable_names (void)
     {
       return (m_top_scope
-              ? m_top_scope->variable_names () : std::list<std::string> ());
+              ? m_top_scope.variable_names () : std::list<std::string> ());
     }
 
     std::list<std::string> variable_names (void)
     {
       return (m_current_scope
-              ? m_current_scope->variable_names () : std::list<std::string> ());
+              ? m_current_scope.variable_names () : std::list<std::string> ());
     }
 
     std::list<std::string> built_in_function_names (void)
@@ -667,7 +661,7 @@ namespace octave
 
     octave_user_function * get_curr_fcn (void)
     {
-      return m_current_scope ? m_current_scope->function () : nullptr;
+      return m_current_scope ? m_current_scope.function () : nullptr;
     }
 
     void cleanup (void);
@@ -713,10 +707,10 @@ namespace octave
     typedef std::map<std::string, std::list<std::string>>::iterator
       parent_map_iterator;
 
-    symbol_scope *m_global_scope;
-    symbol_scope *m_top_scope;
+    symbol_scope m_global_scope;
+    symbol_scope m_top_scope;
 
-    symbol_scope *m_current_scope;
+    symbol_scope m_current_scope;
 
     octave_value dump_fcn_table_map (void) const;
   };

@@ -52,7 +52,7 @@ namespace octave
       friend class call_stack;
 
       stack_frame (octave_function *fcn = nullptr,
-                   symbol_scope *scope = nullptr,
+                   const symbol_scope& scope = symbol_scope (),
                    symbol_table::context_id context = 0, size_t prev = 0)
         : m_fcn (fcn), m_line (-1), m_column (-1), m_scope (scope),
           m_context (context), m_prev (prev)
@@ -78,7 +78,7 @@ namespace octave
       octave_function *m_fcn;
       int m_line;
       int m_column;
-      symbol_scope *m_scope;
+      symbol_scope m_scope;
       symbol_table::context_id m_context;
       size_t m_prev;
     };
@@ -124,10 +124,10 @@ namespace octave
 
     size_t num_user_code_frames (octave_idx_type& curr_user_frame) const;
 
-    symbol_scope *current_scope (void) const
+    symbol_scope current_scope (void) const
     {
       return (curr_frame > 0 && curr_frame < cs.size ()
-              ? cs[curr_frame].m_scope : nullptr);
+              ? cs[curr_frame].m_scope : symbol_scope ());
     }
 
     symbol_table::context_id current_context (void) const
@@ -173,7 +173,7 @@ namespace octave
     bool all_scripts (void) const;
 
     void push (octave_function *fcn);
-    void push (octave_function *fcn, symbol_scope *scope,
+    void push (octave_function *fcn, const symbol_scope& scope,
                symbol_table::context_id context);
 
     void push (void)
@@ -181,7 +181,7 @@ namespace octave
       push (nullptr);
     }
 
-    void push (symbol_scope *scope, symbol_table::context_id context)
+    void push (const symbol_scope& scope, symbol_table::context_id context)
     {
       push (nullptr, scope, context);
     }

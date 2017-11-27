@@ -1568,7 +1568,7 @@ disable escape sequence expansion use a second backslash before the sequence
           if (nargin == 3 && argv[3] == "local"
               && ! symtab.at_top_level ())
             {
-              octave::symbol_scope *scope
+              octave::symbol_scope scope
                 = symtab.require_current_scope ("warning");
 
               octave_scalar_map val = warning_query (arg2);
@@ -1578,7 +1578,7 @@ disable escape sequence expansion use a second backslash before the sequence
               // FIXME: this might be better with a dictionary object.
 
               octave_value curr_warning_states
-                = scope->varval (".saved_warning_states.");
+                = scope.varval (".saved_warning_states.");
 
               octave_map m;
 
@@ -1626,7 +1626,7 @@ disable escape sequence expansion use a second backslash before the sequence
               m.contents ("identifier") = ids;
               m.contents ("state") = states;
 
-              scope->force_assign (".saved_warning_states.", m);
+              scope.force_assign (".saved_warning_states.", m);
 
               // Now ignore the "local" argument and continue to
               // handle the current setting.

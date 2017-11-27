@@ -295,13 +295,13 @@ namespace octave
   void
   symbol_table::clear_global (const std::string& name)
   {
-    m_global_scope->clear_variable (name);
+    m_global_scope.clear_variable (name);
   }
 
   void
   symbol_table::clear_global_pattern (const std::string& pattern)
   {
-    m_global_scope->clear_variable_pattern (pattern);
+    m_global_scope.clear_variable_pattern (pattern);
   }
 
   // Insert INF_CLASS in the set of class names that are considered
@@ -354,7 +354,7 @@ namespace octave
                       bool skip_variables, bool local_funcs)
   {
     return (m_current_scope
-            ? m_current_scope->find (name, args, skip_variables, local_funcs)
+            ? m_current_scope.find (name, args, skip_variables, local_funcs)
             : octave_value ());
   }
 
@@ -431,7 +431,7 @@ namespace octave
         else
           {
             std::string fcn_scope = name.substr (0, pos);
-            symbol_scope *stored_scope = m_current_scope;
+            symbol_scope stored_scope = m_current_scope;
             m_current_scope = m_top_scope;
             octave_value parent = find_function (name.substr (0, pos),
                                                  octave_value_list (), false);
@@ -470,7 +470,7 @@ namespace octave
     if (pos != std::string::npos)
       {
         std::string fcn_scope = full_name.substr (0, pos);
-        symbol_scope *stored_scope = m_current_scope;
+        symbol_scope stored_scope = m_current_scope;
         m_current_scope = m_top_scope;
         octave_value parent = find_function (full_name.substr (0, pos),
                                              octave_value_list (), false);
@@ -645,9 +645,9 @@ Return the current scope and context as integers.
 {
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
-  octave::symbol_scope *scope = symtab.current_scope ();
+  octave::symbol_scope scope = symtab.current_scope ();
 
-  std::string nm = scope ? scope->name () : "<unknown>";
+  std::string nm = scope ? scope.name () : "<unknown>";
 
   return ovl (nm, symtab.current_context ());
 }

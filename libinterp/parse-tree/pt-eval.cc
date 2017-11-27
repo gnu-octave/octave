@@ -92,20 +92,23 @@ namespace octave
     tree_parameter_list *param_list = anon_fh.parameter_list ();
     tree_expression *expr = anon_fh.expression ();
 
-    symbol_scope *af_scope = anon_fh.scope ();
+    symbol_scope af_scope = anon_fh.scope ();
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    symbol_scope *af_parent_scope
-      = anon_fh.has_parent_scope () ? symtab.current_scope () : nullptr;
+    symbol_scope af_parent_scope;
+    if (anon_fh.has_parent_scope ())
+      af_parent_scope = symtab.current_scope ();
 
-    symbol_scope *new_scope = af_scope ? af_scope->dup () : nullptr;
+    symbol_scope new_scope;
+    if (af_scope)
+      new_scope = af_scope.dup ();
 
     if (new_scope && af_parent_scope)
-      new_scope->inherit (af_parent_scope);
+      new_scope.inherit (af_parent_scope);
 
     tree_parameter_list *param_list_dup
-      = param_list ? param_list->dup (*new_scope) : nullptr;
+      = param_list ? param_list->dup (new_scope) : nullptr;
 
     tree_parameter_list *ret_list = nullptr;
 
@@ -113,7 +116,7 @@ namespace octave
 
     if (expr)
       {
-        tree_expression *expr_dup = expr->dup (*new_scope);
+        tree_expression *expr_dup = expr->dup (new_scope);
         tree_statement *stmt = new tree_statement (expr_dup, nullptr);
         stmt_list = new tree_statement_list (stmt);
       }
@@ -122,7 +125,7 @@ namespace octave
       = new octave_user_function (new_scope, param_list_dup, ret_list,
                                   stmt_list);
 
-    new_scope->set_parent (af_parent_scope);
+    new_scope.set_parent (af_parent_scope);
 
     octave_function *curr_fcn = m_call_stack.current ();
 
@@ -582,9 +585,9 @@ namespace octave
       return varargout;
     else if (nargout <= len)
       {
-        symbol_scope *scope = get_current_scope ();
+        symbol_scope scope = get_current_scope ();
 
-        symbol_record::context_id context = scope->current_context ();
+        symbol_record::context_id context = scope.current_context ();
 
         octave_value_list retval (nargout);
 
@@ -673,7 +676,7 @@ namespace octave
     return false;
   }
 
-  symbol_scope *
+  symbol_scope
   tree_evaluator::get_current_scope (void)
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
@@ -1029,10 +1032,10 @@ namespace octave
         // Make sure that any variable with the same name as the new
         // function is cleared.
 
-        symbol_scope *scope = symtab.current_scope ();
+        symbol_scope scope = symtab.current_scope ();
 
         if (scope)
-          scope->assign (nm);
+          scope.assign (nm);
       }
   }
 
@@ -1041,9 +1044,9 @@ namespace octave
   {
     octave_value_list retval;
 
-    symbol_scope *scope = get_current_scope ();
+    symbol_scope scope = get_current_scope ();
 
-    symbol_record::context_id context = scope->current_context ();
+    symbol_record::context_id context = scope.current_context ();
 
     symbol_record sym = expr.symbol ();
 
@@ -1156,10 +1159,10 @@ final_index_error (octave::index_exception& e,
   // FIXME: make this a member function for direct access to symbol
   // table and scope?
 
-  octave::symbol_scope *scope
+  octave::symbol_scope scope
     = octave::__require_current_scope__ ("final_index_error");
 
-  octave::symbol_record::context_id context = scope->current_context ();
+  octave::symbol_record::context_id context = scope.current_context ();
 
   if (expr->is_identifier ()
       && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
@@ -1288,9 +1291,9 @@ namespace octave
       {
         tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-        symbol_scope *scope = get_current_scope ();
+        symbol_scope scope = get_current_scope ();
 
-        symbol_record::context_id context = scope->current_context ();
+        symbol_record::context_id context = scope.current_context ();
 
         if (! id->is_variable (context))
           {
@@ -2278,9 +2281,9 @@ namespace octave
 
                 if (expr->is_identifier ())
                   {
-                    symbol_scope *scope = get_current_scope ();
+                    symbol_scope scope = get_current_scope ();
 
-                    symbol_record::context_id context = scope->current_context ();
+                    symbol_record::context_id context = scope.current_context ();
 
                     tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
@@ -2738,9 +2741,9 @@ namespace octave
           }
         else
           {
-            symbol_scope *scope = get_current_scope ();
+            symbol_scope scope = get_current_scope ();
 
-            scope->force_assign (ans, val);
+            scope.force_assign (ans, val);
 
             if (print)
               {

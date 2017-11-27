@@ -1113,10 +1113,10 @@ public:
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        octave::symbol_scope *scope
+        octave::symbol_scope scope
           = octave::__require_current_scope__ ("octave_classdef_superclass_ref::call");
 
-        octave_value sym = scope->varval (mname);
+        octave_value sym = scope.varval (mname);
 
         cls.run_constructor (to_cdef_ref (sym), idx);
 

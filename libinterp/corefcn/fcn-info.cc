@@ -374,11 +374,11 @@ namespace octave
   {
     if (local_funcs)
       {
-        symbol_scope *curr_scope
+        symbol_scope curr_scope
           = __get_current_scope__ ("fcn_info::fcn_info_rep::xfind");
 
         octave_user_function *current_fcn
-          = curr_scope ? curr_scope->function () : nullptr;
+          = curr_scope ? curr_scope.function () : nullptr;
 
         // Local function.
 
@@ -393,10 +393,10 @@ namespace octave
             if (current_fcn->is_anonymous_function ())
               {
                 if (fcn_file.empty ()
-                    && curr_scope->parent_scope () != nullptr
-                    && curr_scope->parent_scope ()->function () != nullptr)
+                    && curr_scope.parent_scope ()
+                    && curr_scope.parent_scope ()->function () != nullptr)
                   fcn_file
-                    = curr_scope->parent_scope ()->function ()->fcn_file_name();
+                    = curr_scope.parent_scope ()->function ()->fcn_file_name();
               }
 
             if (! fcn_file.empty ())
@@ -592,10 +592,10 @@ namespace octave
 
     // Private function.
 
-    symbol_scope *curr_scope
+    symbol_scope curr_scope
       = __get_current_scope__ ("fcn_info::fcn_info_rep::x_builtin_find");
 
-    octave_user_function *current_fcn = curr_scope ? curr_scope->function () : nullptr;
+    octave_user_function *current_fcn = curr_scope ? curr_scope.function () : nullptr;
 
     if (current_fcn)
       {
@@ -659,7 +659,7 @@ namespace octave
 
     if (curr_scope)
       {
-        octave_value val = curr_scope->find_subfunction (name);
+        octave_value val = curr_scope.find_subfunction (name);
 
         if (val.is_defined ())
           return val;

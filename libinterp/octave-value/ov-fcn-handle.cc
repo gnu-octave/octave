@@ -87,10 +87,10 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 
   if (uf && nm != anonymous)
     {
-      octave::symbol_scope *uf_scope = uf->scope ();
+      octave::symbol_scope uf_scope = uf->scope ();
 
       if (uf_scope)
-        uf_scope->cache_name (nm);
+        uf_scope.cache_name (nm);
     }
 
   if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
@@ -353,12 +353,12 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       std::list<octave::symbol_record> vars;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_scope *f_scope = f->scope ();
       octave::symbol_record::context_id context = 0;
+      octave::symbol_scope f_scope = f->scope ();
       if (f_scope)
         {
-          vars = f_scope->all_variables ();
-          context = f_scope->current_context ();
+          vars = f_scope.all_variables ();
+          context = f_scope.current_context ();
         }
 
       size_t varlen = vars.size ();
@@ -411,10 +411,10 @@ octave_fcn_handle::parse_anon_fcn_handle (const std::string& fcn_text)
 
           if (uf)
             {
-              octave::symbol_scope *uf_scope = uf->scope ();
+              octave::symbol_scope uf_scope = uf->scope ();
 
               if (uf_scope)
-                uf_scope->cache_name (nm);
+                uf_scope.cache_name (nm);
             }
         }
       else
@@ -475,12 +475,12 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       octave::symbol_scope local_scope (buf);
 
-      symtab.set_scope (&local_scope);
+      symtab.set_scope (local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_ascii");
 
-      cs.push (&local_scope, 0);
+      cs.push (local_scope, 0);
       frame.add_method (cs, &octave::call_stack::pop);
 
       octave_idx_type len = 0;
@@ -534,12 +534,12 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       std::list<octave::symbol_record> vars;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_scope *f_scope = f->scope ();
+      octave::symbol_scope f_scope = f->scope ();
       octave::symbol_record::context_id context = 0;
       if (f_scope)
         {
-          vars = f_scope->all_variables ();
-          context = f_scope->current_context ();
+          vars = f_scope.all_variables ();
+          context = f_scope.current_context ();
         }
 
       size_t varlen = vars.size ();
@@ -645,12 +645,12 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 
       octave::symbol_scope local_scope (ctmp2);
 
-      symtab.set_scope (&local_scope);
+      symtab.set_scope (local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_binary");
 
-      cs.push (&local_scope, 0);
+      cs.push (local_scope, 0);
       frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0)
@@ -794,12 +794,12 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       std::list<octave::symbol_record> vars;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_scope *f_scope = f->scope ();
+      octave::symbol_scope f_scope = f->scope ();
       octave::symbol_record::context_id context = 0;
       if (f_scope)
         {
-          vars = f_scope->all_variables ();
-          context = f_scope->current_context ();
+          vars = f_scope.all_variables ();
+          context = f_scope.current_context ();
         }
 
       size_t varlen = vars.size ();
@@ -1151,12 +1151,12 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       octave::symbol_scope local_scope (fcn_tmp);
 
-      symtab.set_scope (&local_scope);
+      symtab.set_scope (local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_hdf5");
 
-      cs.push (&local_scope, 0);
+      cs.push (local_scope, 0);
       frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0 && success)
@@ -1771,12 +1771,12 @@ particular output format.
       std::list<octave::symbol_record> vars;
 
       octave_user_function *fu = fh->user_function_value ();
-      octave::symbol_scope *fu_scope = fu->scope ();
+      octave::symbol_scope fu_scope = fu->scope ();
       octave::symbol_record::context_id context = 0;
       if (fu_scope)
         {
-          vars = fu_scope->all_variables ();
-          context = fu_scope->current_context ();
+          vars = fu_scope.all_variables ();
+          context = fu_scope.current_context ();
         }
 
       size_t varlen = vars.size ();
@@ -1997,10 +1997,10 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
 
           if (arg_list && arg_list->length () > 0)
             {
-              octave::symbol_scope *scope = tw->get_current_scope ();
+              octave::symbol_scope scope = tw->get_current_scope ();
 
               octave::symbol_record::context_id context
-                = scope->current_context ();
+                = scope.current_context ();
 
               bool bad = false;
               int nargs = arg_list->length ();

@@ -71,9 +71,9 @@ octave_link::set_workspace (void)
         = octave::__get_symbol_table__ ("octave_link::set_workspace");
 
       std::list<workspace_element> workspace_info;
-      octave::symbol_scope *scope = symtab.current_scope ();
+      octave::symbol_scope scope = symtab.current_scope ();
       if (scope)
-        workspace_info = scope->workspace_info ();
+        workspace_info = scope.workspace_info ();
 
       instance->do_set_workspace (symtab.at_top_level (),
                                   instance->debugging, workspace_info);

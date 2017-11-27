@@ -797,7 +797,7 @@ void
           {
             tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-            do_bind_ans = (! id->is_variable (scope->current_context ()));
+            do_bind_ans = (! id->is_variable (scope.current_context ()));
           }
         else
           do_bind_ans = (! expr->is_assignment_expression ());
@@ -1088,7 +1088,7 @@ void
   }
 
   void
-  jit_convert::initialize (symbol_scope *s)
+  jit_convert::initialize (const symbol_scope& s)
   {
     scope = s;
     iterator_count = 0;
@@ -1144,7 +1144,7 @@ void
       return create_variable (vname, jit_typeinfo::get_any (), false);
     else
       {
-        octave_value val = record.varval (scope->current_context ());
+        octave_value val = record.varval (scope.current_context ());
         if (val.is_undefined ())
           val = symtab.find_function (vname);
 
@@ -2680,7 +2680,7 @@ void
 
     function (&real_arguments[0]);
 
-    symbol_table& symtab = __get_symbol_table__ ("jit_info::execute");
+    symbol_scope scope = __require_current_scope__ ("jit_info::execute");
 
     for (size_t i = 0; i < arguments.size (); ++i)
       {
@@ -2688,7 +2688,7 @@ void
 
         // do not store for loop bounds temporary
         if (name.size () && name[0] != '#')
-          symtab.assign (arguments[i].first, real_arguments[i]);
+          scope.assign (arguments[i].first, real_arguments[i]);
       }
 
     octave_quit ();
@@ -2803,9 +2803,9 @@ void
 
     if (iter == extra_vars.end ())
       {
-        symbol_scope *scope = __require_current_scope__ ("jit_convert::find");
+        symbol_scope scope = __require_current_scope__ ("jit_convert::find");
 
-        return scope->varval (vname);
+        return scope.varval (vname);
       }
     else
       return *iter->second;

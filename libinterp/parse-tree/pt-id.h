@@ -105,7 +105,7 @@ namespace octave
       return sym.find (context, args);
     }
 
-    void link_to_global (symbol_scope *global_scope,
+    void link_to_global (const symbol_scope& global_scope,
                          const symbol_record& global_sym);
 
     void mark_persistent (void) { sym.init_persistent (); }

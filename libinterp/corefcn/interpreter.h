@@ -167,8 +167,8 @@ namespace octave
       return m_symbol_table;
     }
 
-    symbol_scope * get_current_scope (void);
-    symbol_scope * require_current_scope (const std::string& who);
+    symbol_scope get_current_scope (void);
+    symbol_scope require_current_scope (const std::string& who);
 
     call_stack& get_call_stack (void);
 

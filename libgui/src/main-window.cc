@@ -2528,24 +2528,24 @@ main_window::load_workspace_callback (const std::string& file)
 {
   Fload (ovl (file));
 
-  octave::symbol_scope *scope
+  octave::symbol_scope scope
    = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 
   if (scope)
-    octave_link::set_workspace (true, scope->workspace_info ());
+    octave_link::set_workspace (true, scope.workspace_info ());
 }
 
 void
 main_window::rename_variable_callback (const main_window::name_pair& names)
 {
-  octave::symbol_scope *scope
+  octave::symbol_scope scope
     = octave::__get_current_scope__ ("main_window::rename_variable_callback");
 
   if (scope)
     {
-      scope->rename (names.first, names.second);
+      scope.rename (names.first, names.second);
 
-      octave_link::set_workspace (true, scope->workspace_info ());
+      octave_link::set_workspace (true, scope.workspace_info ());
     }
 
   // FIXME: if this action fails, do we need a way to display that info
@@ -2704,11 +2704,11 @@ main_window::configure_shortcuts (void)
 void
 main_window::force_refresh_workspace (void)
 {
-  octave::symbol_scope *scope
+  octave::symbol_scope scope
    = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 
   if (scope)
-    octave_link::set_workspace (true, scope->workspace_info (), false);
+    octave_link::set_workspace (true, scope.workspace_info (), false);
 }
 
 QList<octave_dock_widget *>

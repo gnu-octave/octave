@@ -60,7 +60,7 @@ namespace octave
   }
 
   symbol_record::symbol_record_rep *
-  symbol_record::symbol_record_rep::dup (symbol_scope *new_scope) const
+  symbol_record::symbol_record_rep::dup (symbol_scope_rep *new_scope) const
   {
     // FIXME: is this the right thing do to?
     if (auto t_fwd_rep = m_fwd_rep.lock ())

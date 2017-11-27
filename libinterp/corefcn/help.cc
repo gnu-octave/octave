@@ -494,8 +494,8 @@ namespace octave
     // All subfunctions are listed in the top-level function of this file.
     while (curr_fcn->is_subfunction ())
       {
-        symbol_scope *pscope = curr_fcn->parent_fcn_scope ();
-        curr_fcn = pscope->function ();
+        symbol_scope pscope = curr_fcn->parent_fcn_scope ();
+        curr_fcn = pscope.function ();
       }
 
     // Get subfunctions.

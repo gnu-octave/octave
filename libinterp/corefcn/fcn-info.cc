@@ -811,7 +811,6 @@ namespace octave
   {
     std::map<std::string, octave_value> m
       = {{ "name", full_name () },
-         { "refcount", count.value () },
          { "package", package.dump () },
          { "local_functions", dump_function_map (local_functions) },
          { "private_functions", dump_function_map (private_functions) },

@@ -28,9 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <list>
 #include <map>
+#include <memory>
 #include <string>
-
-#include "oct-refcount.h"
 
 #include "ov.h"
 #include "ovl.h"
@@ -55,7 +54,7 @@ namespace octave
         : name (nm), package_name (), local_functions (),
           private_functions (), class_constructors (), class_methods (),
           cmdline_function (), autoload_function (), function_on_path (),
-          built_in_function (), count (1)
+          built_in_function ()
       {
         size_t pos = name.rfind ('.');
 
@@ -221,8 +220,6 @@ namespace octave
 
       octave_value built_in_function;
 
-      refcount<size_t> count;
-
     private:
 
       octave_value xfind (const octave_value_list& args, bool local_funcs);
@@ -233,126 +230,107 @@ namespace octave
   public:
 
     fcn_info (const std::string& nm = "")
-      : rep (new fcn_info_rep (nm)) { }
+      : m_rep (new fcn_info_rep (nm)) { }
 
-    fcn_info (const fcn_info& fi) : rep (fi.rep)
-    {
-      rep->count++;
-    }
+    fcn_info (const fcn_info& fi) = default;
 
-    fcn_info& operator = (const fcn_info& fi)
-    {
-      if (this != &fi)
-        {
-          if (--rep->count == 0)
-            delete rep;
+    fcn_info& operator = (const fcn_info& fi) = default;
 
-          rep = fi.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
-
-    ~fcn_info (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+    ~fcn_info (void) = default;
 
     octave_value find (const octave_value_list& args = octave_value_list (),
                        bool local_funcs = true)
     {
-      return rep->find (args, local_funcs);
+      return m_rep->find (args, local_funcs);
     }
 
     octave_value builtin_find (void)
     {
-      return rep->builtin_find ();
+      return m_rep->builtin_find ();
     }
 
     octave_value find_method (const std::string& dispatch_type) const
     {
-      return rep->find_method (dispatch_type);
+      return m_rep->find_method (dispatch_type);
     }
 
     octave_value find_built_in_function (void) const
     {
-      return rep->built_in_function;
+      return m_rep->built_in_function;
     }
 
     octave_value find_cmdline_function (void) const
     {
-      return rep->cmdline_function;
+      return m_rep->cmdline_function;
     }
 
     octave_value find_autoload (void)
     {
-      return rep->find_autoload ();
+      return m_rep->find_autoload ();
     }
 
     octave_value find_user_function (void)
     {
-      return rep->find_user_function ();
+      return m_rep->find_user_function ();
     }
 
     bool is_user_function_defined (void) const
     {
-      return rep->is_user_function_defined ();
+      return m_rep->is_user_function_defined ();
     }
 
     octave_value find_function (const octave_value_list& args
                                 = octave_value_list (),
                                 bool local_funcs = true)
     {
-      return rep->find_function (args, local_funcs);
+      return m_rep->find_function (args, local_funcs);
     }
 
     void install_cmdline_function (const octave_value& f)
     {
-      rep->install_cmdline_function (f);
+      m_rep->install_cmdline_function (f);
     }
 
     void install_local_function (const octave_value& f,
                                  const std::string& file_name)
     {
-      rep->install_local_function (f, file_name);
+      m_rep->install_local_function (f, file_name);
     }
 
     void install_user_function (const octave_value& f)
     {
-      rep->install_user_function (f);
+      m_rep->install_user_function (f);
     }
 
     void install_built_in_function (const octave_value& f)
     {
-      rep->install_built_in_function (f);
+      m_rep->install_built_in_function (f);
     }
 
     void install_built_in_dispatch (const std::string& klass)
     {
-      rep->install_built_in_dispatch (klass);
+      m_rep->install_built_in_dispatch (klass);
     }
 
-    void clear (bool force = false) { rep->clear (force); }
+    void clear (bool force = false) { m_rep->clear (force); }
 
     void clear_user_function (bool force = false)
     {
-      rep->clear_user_function (force);
+      m_rep->clear_user_function (force);
     }
 
     void clear_autoload_function (bool force = false)
     {
-      rep->clear_autoload_function (force);
+      m_rep->clear_autoload_function (force);
     }
 
-    void clear_mex_function (void) { rep->clear_mex_function (); }
+    void clear_mex_function (void) { m_rep->clear_mex_function (); }
 
-    octave_value dump (void) const { return rep->dump (); }
+    octave_value dump (void) const { return m_rep->dump (); }
 
   private:
 
-    fcn_info_rep *rep;
+    std::shared_ptr<fcn_info_rep> m_rep;
   };
 
   octave_value

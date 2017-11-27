@@ -58,8 +58,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   QStyle *st = style ();
   m_icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
 
-#if defined (Q_OS_WIN32)
-  // windows: add an extra title bar that persists when floating
+  // add an extra title bar that persists when floating
 
   setFeatures (QDockWidget::DockWidgetMovable); // not floatable or closeable
 
@@ -98,18 +97,6 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   m_title_widget->setLayout (h_layout);
   setTitleBarWidget (m_title_widget);
 
-#else
-
-  // non windows: qt takes control of floating widgets
-  setFeatures (QDockWidget::DockWidgetMovable |
-               QDockWidget::DockWidgetClosable |
-               QDockWidget::DockWidgetFloatable); // floatable and closeable
-
-  connect (this, SIGNAL (topLevelChanged (bool)),
-           this, SLOT (change_floating (bool)));
-
-#endif
-
   // copy & paste handling
   connect (p, SIGNAL (copyClipboard_signal ()),
            this, SLOT (copyClipboard ()));
@@ -138,9 +125,7 @@ octave_dock_widget::connect_visibility_changed (void)
 void
 octave_dock_widget::make_window (void)
 {
-#if defined (Q_OS_WIN32)
-
-  // windows: the widget has to be reparented (parent = 0)
+  // the widget has to be reparented (parent = 0)
 
   QSettings *settings = resource_manager::get_settings ();
 
@@ -162,17 +147,6 @@ octave_dock_widget::make_window (void)
                                 + "_floating_geometry",
                                 QRect (50,100,480,480)).toRect ());
 
-#else
-
-  // non windows: Just set the appripriate window flag
-  setWindowFlags (Qt::Window);
-
-  QString css = styleSheet ();
-  css.replace ("widget-undock", "widget-dock");
-  setStyleSheet (css);
-
-#endif
-
   m_floating = true;
 
   set_focus_predecessor ();  // set focus previously active widget if tabbed
@@ -182,9 +156,7 @@ octave_dock_widget::make_window (void)
 void
 octave_dock_widget::make_widget (bool dock)
 {
-#if defined (Q_OS_WIN32)
-
-  // windows: Since floating widget has no parent, we have to read it
+  // Since floating widget has no parent, we have to read it
 
   QSettings *settings = resource_manager::get_settings ();
 
@@ -211,20 +183,6 @@ octave_dock_widget::make_widget (bool dock)
                                 + m_icon_color + ".png"));
   m_dock_action->setToolTip (tr ("Undock widget"));
 
-#else
-
-  // non windows: just say we are a docked widget again
-
-  Q_UNUSED (dock);
-
-  setWindowFlags (Qt::Widget);
-
-  QString css = styleSheet ();
-  css.replace ("widget-dock", "widget-undock");
-  setStyleSheet (css);
-
-#endif
-
   m_floating = false;
 }
 
@@ -232,13 +190,11 @@ octave_dock_widget::make_widget (bool dock)
 void
 octave_dock_widget::set_title (const QString& title)
 {
-#if defined (Q_OS_WIN32)
   QHBoxLayout *h_layout
     = static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
   QLabel *label = new QLabel (title);
   label->setStyleSheet ("background: transparent;");
   h_layout->insertWidget (0,label);
-#endif
   setWindowTitle (title);
 }
 
@@ -337,12 +293,10 @@ octave_dock_widget::save_settings (void)
 
   settings->beginGroup ("DockWidgets");
 
-#if defined (Q_OS_WIN32)
   if (m_floating) // widget is floating (windows), save actual floating geometry
     settings->setValue (name+"_floating_geometry", geometry ());
   else           // not floating save docked (normal) geometry
-#endif
-    settings->setValue (name, saveGeometry ());
+  settings->setValue (name, saveGeometry ());
 
   settings->setValue (name+"Visible", isVisible ()); // store visibility
   settings->setValue (name+"Floating", m_floating);    // store visibility
@@ -440,38 +394,13 @@ octave_dock_widget::set_style (bool active)
         arg (bg_col.name ()).
         arg (bg_col_bottom.name ());
 
-#if defined (Q_OS_WIN32)
       css = background + QString (" color: %1 ;").arg (fg_col.name ());
-#else
-      css = QString ("QDockWidget::title { " + background +
-                     "                     text-align: " + alignment + ";"
-                     "                     padding: 0px 0px 0px 4px;}\n"
-                     "QDockWidget { color: %1 ; "
-                     "  titlebar-close-icon: url(:/actions/icons/widget-close%2.png);"
-                     "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"%2); }"
-                     "QDockWidget::close-button,"
-                     "QDockWidget::float-button { border: 0px; icon-size: %3px; width: %3px}"
-                     ).
-                     arg (fg_col.name ()).arg (icon_col).arg (m_icon_size);
-#endif
     }
   else
     {
-#if defined (Q_OS_WIN32)
       css = QString ("");
-#else
-      css = QString ("QDockWidget::title { text-align: " + alignment + ";"
-                     "                     padding: 0px 0px 0px 4px;}"
-                     "QDockWidget {"
-                     "  titlebar-close-icon: url(:/actions/icons/widget-close.png);"
-                     "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"); }"
-                     "QDockWidget::close-button,"
-                     "QDockWidget::float-button { border: 0px; icon-size: %1px; width: %1px}"
-                    ).arg (m_icon_size);
-#endif
     }
 
-#if defined (Q_OS_WIN32)
   m_title_widget->setStyleSheet (css);
   css_button = QString ("background: transparent; border: 0px;");
   m_dock_button->setStyleSheet (css_button);
@@ -480,9 +409,6 @@ octave_dock_widget::set_style (bool active)
                                 ".png"));
   m_close_action->setIcon (QIcon (":/actions/icons/widget-close" + icon_col +
                                  ".png"));
-#else
-  setStyleSheet (css);
-#endif
 }
 
 // set focus to previously active widget in tabbed widget stack

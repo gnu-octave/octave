@@ -139,13 +139,11 @@ private:
   QString m_icon_color_active;
   octave_dock_widget *m_predecessor_widget;
 
-#if defined (Q_OS_WIN32)
   QWidget *m_title_widget;
   QToolButton *m_dock_button;
   QToolButton *m_close_button;
   QAction *m_dock_action;
   QAction *m_close_action;
-#endif
 };
 
 #endif

@@ -1282,27 +1282,25 @@ main_window::set_window_layout (QSettings *settings)
 
           // If floating, make window from widget.
           if (floating)
-            widget->make_window ();
-          else if (! widget->parent ())  // should not be floating but is
-            widget->make_widget (false); // no docking, just reparent
-#if ! defined (Q_OS_WIN32)
-          // restore geometry
-          QVariant val = settings->value ("DockWidgets/" + name);
-          widget->restoreGeometry (val.toByteArray ());
-#endif
-          // make widget visible if desired
-          if (floating && visible)              // floating and visible
             {
-              if (settings->value ("DockWidgets/" + widget->objectName ()
-                                   + "_minimized").toBool ())
-                widget->showMinimized ();
-              else
-                widget->setVisible (true);
+              widget->make_window ();
+
+              if (visible)
+                {
+                  if (settings->value ("DockWidgets/" + widget->objectName ()
+                                      + "_minimized").toBool ())
+                    widget->showMinimized ();
+                  else
+                    widget->setVisible (true);
+                }
             }
-          else
+          else  // not floating
             {
+              if (! widget->parent ())        // should not be floating but is
+                widget->make_widget (false);  // no docking, just reparent
+
               widget->make_widget ();
-              widget->setVisible (visible);     // not floating -> show
+              widget->setVisible (visible);   // not floating -> show
             }
         }
     }

@@ -463,7 +463,7 @@ endfunction
 
 ## Matlab compatibility
 %!assert (isequal (sparse (1), sparse (1)), true)
-%!assert (isequal (sparse (1), sparse (1)), sparse (1)), true)
+%!assert (isequal (sparse (1), sparse (1)), sparse (1), true)
 
 ## test input validation
 %!error isequal ()

@@ -205,8 +205,6 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(filesep)
 
-@DOCSTRING(filemarker)
-
 @DOCSTRING(fileparts)
 
 @DOCSTRING(fullfile)

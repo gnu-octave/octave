@@ -133,19 +133,13 @@ then a breakpoint can be set at the start of the subfunction directly with
 
 @example
 @group
-dbstop (["func1", filemarker(), "func2"])
+dbstop func1>func2
 @result{} 5
 @end group
 @end example
 
-Note that @code{filemarker} returns the character that marks subfunctions from
-the file containing them.  Unless the default has been changed this character
-is @samp{>}.  Thus, a quicker and more normal way to set the breakpoint would
-be
-
-@example
-dbstop func1>func2
-@end example
+Note that @samp{>} is the character that distinguishes subfunctions from the
+m-file containing them.
 
 Another simple way of setting a breakpoint in an Octave script is the
 use of the @code{keyboard} function.

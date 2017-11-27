@@ -107,7 +107,7 @@ function h = compass (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    hlist = polar (r, p, line_spec);
+    htmp = polar (r, p, line_spec);
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -115,7 +115,7 @@ function h = compass (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    h = hlist;
+    h = htmp;
   endif
 
 endfunction

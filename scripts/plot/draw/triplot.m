@@ -43,11 +43,11 @@ function h = triplot (tri, x, y, varargin)
 
   idx = tri(:, [1, 2, 3, 1]).';
   nt = rows (tri);
-  handle = plot ([x(idx); NaN(1, nt)](:),
-                 [y(idx); NaN(1, nt)](:), varargin{:});
+  htmp = plot ([x(idx); NaN(1, nt)](:),
+               [y(idx); NaN(1, nt)](:), varargin{:});
 
   if (nargout > 0)
-    h = handle;
+    h = htmp;
   endif
 
 endfunction

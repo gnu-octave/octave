@@ -106,7 +106,7 @@ function h = feather (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    hlist = plot (x, y, line_spec, [1, n], [0, 0], line_spec);
+    htmp = plot (x, y, line_spec, [1, n], [0, 0], line_spec);
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -114,7 +114,7 @@ function h = feather (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    h = hlist;
+    h = htmp;
   endif
 
 endfunction

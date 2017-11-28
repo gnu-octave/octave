@@ -28,8 +28,8 @@
 ## (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z} correspond
 ## to different @var{x} values and rows of @var{z} correspond to different
 ## @var{y} values.  If only a single input @var{z} is given then @var{x} is
-## taken to be @code{1:rows (@var{z})} and @var{y} is
-## @code{1:columns (@var{z})}.
+## taken to be @code{1:columns (@var{z})} and @var{y} is
+## @code{1:rows (@var{z})}.
 ##
 ## If no return arguments are requested, a surface plot with the normal
 ## vectors to the surface is plotted.

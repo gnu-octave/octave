@@ -540,8 +540,6 @@ namespace octave
         m_valid = false;
       }
 
-      void erase_persistent (void);
-
       symbol_scope *decl_scope (void)
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
@@ -730,8 +728,6 @@ namespace octave
     void unmark_added_static (void) { m_rep->unmark_added_static (); }
 
     void init_persistent (void) { m_rep->init_persistent (); }
-
-    void erase_persistent (void) { m_rep->erase_persistent (); }
 
     void invalidate (void) { m_rep->invalidate (); }
 

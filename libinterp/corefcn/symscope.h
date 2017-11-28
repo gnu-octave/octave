@@ -273,14 +273,6 @@ namespace octave
       return (p != m_persistent_symbols.end ()) ? p->second : octave_value ();
     }
 
-    void erase_persistent (const std::string& name)
-    {
-      m_persistent_symbols_iterator p = m_persistent_symbols.find (name);
-
-      if (p != m_persistent_symbols.end ())
-        m_persistent_symbols.erase (p);
-    }
-
     bool is_variable (const std::string& name) const
     {
       bool retval = false;

@@ -96,23 +96,6 @@ namespace octave
     //   error ("unable to declare existing variable persistent");
   }
 
-  void
-  symbol_record::symbol_record_rep::erase_persistent (void)
-  {
-    if (auto t_fwd_rep = m_fwd_rep.lock ())
-      {
-        t_fwd_rep->erase_persistent ();
-        return;
-      }
-
-    unmark_persistent ();
-
-    symbol_scope *curr_scope
-      = __require_current_scope__ ("symbol_record::symbol_record_rep::erase_persistent");
-
-    curr_scope->erase_persistent (m_name);
-  }
-
   symbol_record::symbol_record_rep *
   symbol_record::symbol_record_rep::dup (symbol_scope *new_scope) const
   {

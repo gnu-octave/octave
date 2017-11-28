@@ -59,18 +59,14 @@ namespace octave
     table_iterator;
 
     typedef std::map<std::string, octave_value>::const_iterator
-    m_persistent_symbols_const_iterator;
-    typedef std::map<std::string, octave_value>::iterator
-    m_persistent_symbols_iterator;
-
-    typedef std::map<std::string, octave_value>::const_iterator
     subfunctions_const_iterator;
     typedef std::map<std::string, octave_value>::iterator
     subfunctions_iterator;
 
     symbol_scope (const std::string& name = "")
-      : m_name (name), m_symbols (), m_persistent_symbols (), m_subfunctions (),
-        m_fcn (nullptr), m_parent (nullptr), m_parent_fcn (), m_children (), m_is_nested (false),
+      : m_name (name), m_symbols (), m_subfunctions (),
+        m_fcn (nullptr), m_parent (nullptr), m_parent_fcn (),
+        m_children (), m_is_nested (false),
         m_is_static (false), m_context (0)
     { }
 
@@ -246,33 +242,6 @@ namespace octave
               ? p->second.varval () : octave_value ());
     }
 
-    void persistent_assign (const std::string& name, const octave_value& value)
-    {
-      m_persistent_symbols_iterator p = m_persistent_symbols.find (name);
-
-      if (p == m_persistent_symbols.end ())
-        m_persistent_symbols[name] = value;
-      else
-        p->second = value;
-    }
-
-    // Use persistent_assign (name, value) instead.
-    // Delete when deprecated varref functions are removed.
-    octave_value& persistent_varref (const std::string& name)
-    {
-      m_persistent_symbols_iterator p = m_persistent_symbols.find (name);
-
-      return (p == m_persistent_symbols.end ()
-              ? m_persistent_symbols[name] : p->second);
-    }
-
-    octave_value persistent_varval (const std::string& name) const
-    {
-      m_persistent_symbols_const_iterator p = m_persistent_symbols.find (name);
-
-      return (p != m_persistent_symbols.end ()) ? p->second : octave_value ();
-    }
-
     bool is_variable (const std::string& name) const
     {
       bool retval = false;
@@ -305,6 +274,17 @@ namespace octave
             m_symbols.erase (tbl_it++);
           else
             tbl_it++;
+        }
+    }
+
+    void refresh (void)
+    {
+      for (auto& nm_sr : m_symbols)
+        {
+          symbol_record& sr = nm_sr.second;
+
+          if (! sr.is_persistent ())
+            sr.clear (this);
         }
     }
 
@@ -562,9 +542,6 @@ namespace octave
 
     // Map from symbol names to symbol info.
     std::map<std::string, symbol_record> m_symbols;
-
-    // Map from names of persistent variables to values.
-    std::map<std::string, octave_value> m_persistent_symbols;
 
     // Map from symbol names to subfunctions.
     std::map<std::string, octave_value> m_subfunctions;

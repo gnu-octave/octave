@@ -204,7 +204,6 @@ namespace octave
     std::map<std::string, octave_value> m
       = {{ "name", m_name },
          { "symbols", dump_symbols_map () },
-         { "persistent_variables", m_persistent_symbols },
          { "subfunctions", dump_function_map (m_subfunctions) }};
 
     return octave_value (m);

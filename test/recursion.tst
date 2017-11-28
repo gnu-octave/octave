@@ -38,4 +38,30 @@
 %!
 %!assert (f (5), 120)
 
+%!function r = f (x)
+%!  persistent p = 1;
+%!  if (x == 1)
+%!    f (x + 1);
+%!    r = p;
+%!  else
+%!    clear p
+%!    p = 13;
+%!  endif
+%!endfunction
+%!
+%!error <'p' undefined> f (1)
+
+%!function r = f (x)
+%!  persistent p = 1;
+%!  if (x == 1)
+%!    f (x + 1);
+%!    r = p;
+%!  else
+%!    p = 13;
+%!  endif
+%!endfunction
+%!
+%!assert (f (1), 13)
+
+
 %%FIXME: Need test for maximum recursion depth

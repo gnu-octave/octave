@@ -62,14 +62,10 @@ namespace octave
         if (is_global ())
           unmark_global ();
 
-        if (is_persistent ())
-          {
-            sid->persistent_assign (m_name, varval ());
-
-            unmark_persistent ();
-          }
-
         assign (octave_value ());
+
+        if (is_persistent ())
+          unmark_persistent ();
       }
   }
 
@@ -82,18 +78,7 @@ namespace octave
         return;
       }
 
-    symbol_scope *curr_scope
-      = __require_current_scope__ ("symbol_record::symbol_record_rep::init_persistent");
-
-    if (! is_defined ())
-      {
-        mark_persistent ();
-
-        assign (curr_scope->persistent_varval (m_name));
-      }
-    // FIXME: this causes trouble with recursive calls.
-    // else
-    //   error ("unable to declare existing variable persistent");
+    mark_persistent ();
   }
 
   symbol_record::symbol_record_rep *
@@ -143,19 +128,6 @@ namespace octave
     return symtab.global_varref (m_name);
   }
 
-  octave_value&
-  symbol_record::symbol_record_rep::xpersistent_varref (void)
-  {
-    if (auto t_fwd_rep = m_fwd_rep.lock ())
-      return t_fwd_rep->xpersistent_varref ();
-
-    symbol_scope *curr_scope
-      = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varref");
-
-    return (curr_scope
-            ? curr_scope->persistent_varref (m_name) : dummy_octave_value);
-  }
-
   octave_value
   symbol_record::symbol_record_rep::xglobal_varval (void) const
   {
@@ -166,19 +138,6 @@ namespace octave
       = __get_symbol_table__ ("symbol_record::symbol_record_rep::xglobal_varval");
 
     return symtab.global_varval (m_name);
-  }
-
-  octave_value
-  symbol_record::symbol_record_rep::xpersistent_varval (void) const
-  {
-    if (auto t_fwd_rep = m_fwd_rep.lock ())
-      return t_fwd_rep->xpersistent_varval ();
-
-    symbol_scope *curr_scope
-      = __get_current_scope__ ("symbol_record::symbol_record_rep::xpersistent_varval");
-
-    return (curr_scope
-            ? curr_scope->persistent_varval (m_name) : octave_value ());
   }
 
   symbol_record::symbol_record (void)

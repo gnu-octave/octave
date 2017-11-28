@@ -611,7 +611,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
       // declared global will be unmarked as global before they are
       // undefined by the clear_param_list cleanup function.
 
-      frame.add_method (m_scope, &octave::symbol_scope::clear_variables);
+      frame.add_method (m_scope, &octave::symbol_scope::refresh);
     }
 
   bind_automatic_vars (tw, arg_names, args.length (), nargout,

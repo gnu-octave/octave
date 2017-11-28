@@ -162,20 +162,19 @@ namespace octave
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           return t_fwd_rep->varref ();
 
-        context_id context = m_decl_scope ? get_decl_scope_context () : 0;
-
         if (is_global ())
           return xglobal_varref ();
-        else if (is_persistent ())
-          return xpersistent_varref ();
-        else
-          {
-            context_id n = m_value_stack.size ();
-            while (n++ <= context)
-              m_value_stack.push_back (octave_value ());
 
-            return m_value_stack[context];
-          }
+        context_id context = 0;
+
+        if (m_decl_scope && ! is_persistent ())
+          context = get_decl_scope_context ();
+
+        context_id n = m_value_stack.size ();
+        while (n++ <= context)
+          m_value_stack.push_back (octave_value ());
+
+        return m_value_stack[context];
       }
 
       octave_value varval (void) const
@@ -183,19 +182,18 @@ namespace octave
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           return t_fwd_rep->varval ();
 
-        context_id context = m_decl_scope ? get_decl_scope_context () : 0;
-
         if (is_global ())
           return xglobal_varval ();
-        else if (is_persistent ())
-          return xpersistent_varval ();
+
+        context_id context = 0;
+
+        if (m_decl_scope && ! is_persistent ())
+          context = get_decl_scope_context ();
+
+        if (context < m_value_stack.size ())
+          return m_value_stack[context];
         else
-          {
-            if (context < m_value_stack.size ())
-              return m_value_stack[context];
-            else
-              return octave_value ();
-          }
+          return octave_value ();
       }
 
       void push_context (symbol_scope *sid)
@@ -597,11 +595,7 @@ namespace octave
 
       octave_value& xglobal_varref (void);
 
-      octave_value& xpersistent_varref (void);
-
       octave_value xglobal_varval (void) const;
-
-      octave_value xpersistent_varval (void) const;
     };
 
   public:

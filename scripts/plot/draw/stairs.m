@@ -28,7 +28,8 @@
 ##
 ## The arguments @var{x} and @var{y} may be vectors or matrices.
 ## If only one argument is given, it is taken as a vector of Y values
-## and the X coordinates are taken to be the indices of the elements.
+## and the X coordinates are taken to be the indices of the elements
+## (@code{@var{x} = 1:numel (@var{y})}).
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.

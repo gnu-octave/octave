@@ -196,16 +196,12 @@ namespace octave
           return octave_value ();
       }
 
-      void push_context (symbol_scope *sid)
+      void push_context (void)
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->push_context (sid);
-            return;
-          }
+          return;
 
-        if (! (is_persistent () || is_global ())
-            && sid == decl_scope ())
+        if (! (is_persistent () || is_global ()))
           m_value_stack.push_back (octave_value ());
       }
 
@@ -223,15 +219,14 @@ namespace octave
       //
       // Here, X should only exist in the final stack frame.
 
-      size_t pop_context (symbol_scope *sid)
+      size_t pop_context (void)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return t_fwd_rep->pop_context (sid);
-
         size_t retval = 1;
 
-        if (! (is_persistent () || is_global ())
-            && sid == decl_scope ())
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return retval;
+
+        if (! (is_persistent () || is_global ()))
           {
             m_value_stack.pop_back ();
             retval = m_value_stack.size ();
@@ -242,16 +237,32 @@ namespace octave
 
       void clear (void)
       {
+        // There is no need to do anything with a fowarded
+        // symbol_record_rep here.
+        //
+        // For scripts, we are never executing in the script "scope".
+        //
+        // For globals, we are only interested in breaking the link to
+        // the global value and clearing the local value, not the
+        // global one.
+
+        // For persistent values, we clear the value then unmark so
+        // that we clear the first element of the value stack.
+
         if (auto t_fwd_rep = m_fwd_rep.lock ())
+          return;
+
+        if (! (is_hidden () || is_inherited ()))
           {
-            t_fwd_rep->clear ();
-            return;
+            if (is_global ())
+              unmark_global ();
+
+            assign (octave_value ());
+
+            if (is_persistent ())
+              unmark_persistent ();
           }
-
-        clear (decl_scope ());
       }
-
-      void clear (symbol_scope *sid);
 
       bool is_defined (void) const
       {
@@ -666,13 +677,11 @@ namespace octave
       return m_rep->varval ();
     }
 
-    void push_context (symbol_scope *sid) { m_rep->push_context (sid); }
+    void push_context (void) { m_rep->push_context (); }
 
-    size_t pop_context (symbol_scope *sid) { return m_rep->pop_context (sid); }
+    size_t pop_context (void) { return m_rep->pop_context (); }
 
     void clear (void) { m_rep->clear (); }
-
-    void clear (symbol_scope *sid) { m_rep->clear (sid); }
 
     bool is_defined (void) const
     {

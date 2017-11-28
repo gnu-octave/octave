@@ -48,28 +48,6 @@ namespace octave
   }
 
   void
-  symbol_record::symbol_record_rep::clear (symbol_scope *sid)
-  {
-    if (auto t_fwd_rep = m_fwd_rep.lock ())
-      {
-        t_fwd_rep->clear (sid);
-        return;
-      }
-
-    if (! (is_hidden () || is_inherited ())
-        && sid == decl_scope ())
-      {
-        if (is_global ())
-          unmark_global ();
-
-        assign (octave_value ());
-
-        if (is_persistent ())
-          unmark_persistent ();
-      }
-  }
-
-  void
   symbol_record::symbol_record_rep::init_persistent (void)
   {
     if (auto t_fwd_rep = m_fwd_rep.lock ())

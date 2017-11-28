@@ -261,7 +261,7 @@ namespace octave
     void push_context (void)
     {
       for (auto& nm_sr : m_symbols)
-        nm_sr.second.push_context (this);
+        nm_sr.second.push_context ();
     }
 
     void pop_context (void)
@@ -270,7 +270,7 @@ namespace octave
 
       while (tbl_it != m_symbols.end ())
         {
-          if (tbl_it->second.pop_context (this) == 0)
+          if (tbl_it->second.pop_context () == 0)
             m_symbols.erase (tbl_it++);
           else
             tbl_it++;
@@ -284,14 +284,14 @@ namespace octave
           symbol_record& sr = nm_sr.second;
 
           if (! sr.is_persistent ())
-            sr.clear (this);
+            sr.clear ();
         }
     }
 
     void clear_variables (void)
     {
       for (auto& nm_sr : m_symbols)
-        nm_sr.second.clear (this);
+        nm_sr.second.clear ();
     }
 
     void clear_objects (void)
@@ -301,7 +301,7 @@ namespace octave
           symbol_record& sr = nm_sr.second;
           octave_value val = sr.varval ();
           if (val.isobject ())
-            nm_sr.second.clear (this);
+            nm_sr.second.clear ();
         }
     }
 
@@ -312,7 +312,7 @@ namespace octave
       table_iterator p = m_symbols.find (name);
 
       if (p != m_symbols.end ())
-        p->second.clear (this);
+        p->second.clear ();
     }
 
     void clear_global_pattern (const std::string& pat);
@@ -328,7 +328,7 @@ namespace octave
           if (sr.is_defined () || sr.is_global ())
             {
               if (pattern.match (sr.name ()))
-                sr.clear (this);
+                sr.clear ();
             }
         }
     }
@@ -344,7 +344,7 @@ namespace octave
           if (sr.is_defined () || sr.is_global ())
             {
               if (pattern.is_match (sr.name ()))
-                sr.clear (this);
+                sr.clear ();
             }
         }
     }

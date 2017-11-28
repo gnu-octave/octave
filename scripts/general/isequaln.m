@@ -125,12 +125,23 @@ function t = isequaln (x, varargin)
 
         ## Test that all field values are equal.  Slow because of recursion.
         if (t)
-          for fldnm = s_fnm_x.'
-            t = isequaln (x.(fldnm{1}), y.(fldnm{1}));
-            if (! t)
-              break;
-            endif
-          endfor
+          if (isscalar (x))
+            for fldnm = s_fnm_x.'
+              t = isequaln (x.(fldnm{1}), y.(fldnm{1}));
+              if (! t)
+                break;
+              endif
+            endfor
+          else
+            ## struct arrays have to have the contents of each field wrapped
+            ## in a cell since it expands to a collection of values.
+            for fldnm = s_fnm_x.'
+              t = isequaln ({x.(fldnm{1})}, {y.(fldnm{1})});
+              if (! t)
+                break;
+              endif
+            endfor
+          endif
         endif
 
       elseif (iscellstr (x) && iscellstr (y))
@@ -207,18 +218,35 @@ function t = isequaln (x, varargin)
         ## Test that all field values are equal.  Slow because of recursion.
         if (t)
           args = cell (1, 1 + nvarargin);
-          for fldnm = fnm_x.'
-            args(1) = x.(fldnm{1});
-            for argn = 1:nvarargin
-              args(argn+1) = varargin{argn}.(fldnm{1});
+          if (isscalar (x))
+            for fldnm = fnm_x.'
+              args{1} = x.(fldnm{1});
+              for argn = 1:nvarargin
+                args{argn+1} = varargin{argn}.(fldnm{1});
+              endfor
+
+              t = isequaln (args{:});
+
+              if (! t)
+                break;
+              endif
             endfor
+          else
+            ## struct arrays have to have the contents of each field wrapped
+            ## in a cell since it expands to a collection of values.
+            for fldnm = fnm_x.'
+              args{1} = { x.(fldnm{1}) };
+              for argn = 1:nvarargin
+                args{argn+1} = { varargin{argn}.(fldnm{1}) };
+              endfor
 
-            t = isequaln (args{:});
+              t = isequaln (args{:});
 
-            if (! t)
-              break;
-            endif
-          endfor
+              if (! t)
+                break;
+              endif
+            endfor
+          endif
         endif
 
       elseif (iscellstr (x) && all (cellfun (@iscellstr, varargin)))

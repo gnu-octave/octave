@@ -119,12 +119,23 @@ function t = isequal (x, varargin)
 
         ## Test that all field values are equal.  Slow because of recursion.
         if (t)
-          for fldnm = s_fnm_x.'
-            t = isequal (x.(fldnm{1}), y.(fldnm{1}));
-            if (! t)
-              break;
-            endif
-          endfor
+          if (isscalar (x))
+            for fldnm = s_fnm_x.'
+              t = isequal (x.(fldnm{1}), y.(fldnm{1}));
+              if (! t)
+                break;
+              endif
+            endfor
+          else
+            ## struct arrays have to have the contents of each field wrapped
+            ## in a cell since it expands to a collection of values.
+            for fldnm = s_fnm_x.'
+              t = isequal ({x.(fldnm{1})}, {y.(fldnm{1})});
+              if (! t)
+                break;
+              endif
+            endfor
+          endif
         endif
 
       elseif (iscellstr (x) && iscellstr (y))
@@ -197,18 +208,35 @@ function t = isequal (x, varargin)
         ## Test that all field values are equal.  Slow because of recursion.
         if (t)
           args = cell (1, 1 + nvarargin);
-          for fldnm = fnm_x.'
-            args(1) = x.(fldnm{1});
-            for argn = 1:nvarargin
-              args(argn+1) = varargin{argn}.(fldnm{1});
+          if (isscalar (x))
+            for fldnm = fnm_x.'
+              args{1} = x.(fldnm{1});
+              for argn = 1:nvarargin
+                args{argn+1} = varargin{argn}.(fldnm{1});
+              endfor
+
+              t = isequal (args{:});
+
+              if (! t)
+                break;
+              endif
             endfor
+          else
+            ## struct arrays have to have the contents of each field wrapped
+            ## in a cell since it expands to a collection of values.
+            for fldnm = fnm_x.'
+              args{1} = { x.(fldnm{1}) };
+              for argn = 1:nvarargin
+                args{argn+1} = { varargin{argn}.(fldnm{1}) };
+              endfor
 
-            t = isequal (args{:});
+              t = isequal (args{:});
 
-            if (! t)
-              break;
-            endif
-          endfor
+              if (! t)
+                break;
+              endif
+            endfor
+          endif
         endif
 
       elseif (iscellstr (x) && all (cellfun (@iscellstr, varargin)))
@@ -364,6 +392,17 @@ endfunction
 %! y = x;
 %! y.b = rmfield (y.b, "b");
 %! y.b.b.a = "bba1";
+%! assert (isequal (x, y), false);
+%! assert (isequal (x, x, y), false);
+
+## struct array
+%!test
+%! x(1).a = 'A';
+%! x(2).a = magic (3);
+%! assert (isequal (x, x), true);
+%! assert (isequal (x, x, x), true);
+%! y = x;
+%! y(2).a = { magic(3) };
 %! assert (isequal (x, y), false);
 %! assert (isequal (x, x, y), false);
 

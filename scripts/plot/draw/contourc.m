@@ -25,8 +25,8 @@
 ##
 ## The matrix @var{z} contains height values above the rectangular grid
 ## determined by @var{x} and @var{y}.  If only a single input @var{z} is
-## provided then @var{x} is taken to be @code{1:rows (@var{z})} and @var{y} is
-## taken to be @code{1:columns (@var{z})}.
+## provided then @var{x} is taken to be @code{1:columns (@var{z})} and @var{y}
+## is taken to be @code{1:rows (@var{z})}.
 ##
 ## The optional input @var{vn} is either a scalar denoting the number of
 ## contour lines to compute or a vector containing the Z values where lines

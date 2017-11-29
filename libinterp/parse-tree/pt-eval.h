@@ -259,9 +259,14 @@ namespace octave
 
     Matrix ignored_fcn_outputs (void) const;
 
-    const std::list<octave_lvalue> * lvalue_list (void)
+    bool isargout (int nargout, int iout) const;
+
+    void isargout (int nargout, int nout, bool *isargout) const;
+
+    const std::list<octave_lvalue> * lvalue_list (void) const
     {
-      return m_lvalue_list_stack.empty () ? nullptr : m_lvalue_list_stack.top ();
+      return (m_lvalue_list_stack.empty ()
+              ? nullptr : m_lvalue_list_stack.top ());
     }
 
     octave_value evaluate (tree_expression *expr, int nargout = 1)

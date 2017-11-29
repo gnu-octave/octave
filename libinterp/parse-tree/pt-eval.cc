@@ -439,17 +439,14 @@ namespace octave
   {
     Matrix retval;
 
-    if (m_lvalue_list_stack.empty ())
-      return retval;
+    const std::list<octave_lvalue> *lvalues = lvalue_list ();
 
-    const std::list<octave_lvalue> *lvalue_list = m_lvalue_list_stack.top ();
-
-    if (! lvalue_list)
+    if (! lvalues)
       return retval;
 
     octave_idx_type nbh = 0;
 
-    for (const auto& lval : *lvalue_list)
+    for (const auto& lval : *lvalues)
       nbh += lval.is_black_hole ();
 
     if (nbh > 0)
@@ -459,7 +456,7 @@ namespace octave
         octave_idx_type k = 0;
         octave_idx_type l = 0;
 
-        for (const auto& lval : *lvalue_list)
+        for (const auto& lval : *lvalues)
           {
             if (lval.is_black_hole ())
               retval(l++) = k+1;
@@ -469,6 +466,60 @@ namespace octave
       }
 
     return retval;
+  }
+
+  bool
+  tree_evaluator::isargout (int nargout, int iout) const
+  {
+    const std::list<octave_lvalue> *lvalues = lvalue_list ();
+
+    if (iout >= std::max (nargout, 1))
+      return false;
+    else if (lvalues)
+      {
+        int k = 0;
+        for (const auto& lval : *lvalues)
+          {
+            if (k == iout)
+              return ! lval.is_black_hole ();
+            k += lval.numel ();
+            if (k > iout)
+              break;
+          }
+
+        return true;
+      }
+    else
+      return true;
+  }
+
+  void
+  tree_evaluator::isargout (int nargout, int nout, bool *isargout) const
+  {
+    const std::list<octave_lvalue> *lvalues = lvalue_list ();
+
+    if (lvalues)
+      {
+        int k = 0;
+        for (const auto& lval : *lvalues)
+          {
+            if (lval.is_black_hole ())
+              isargout[k++] = false;
+            else
+              {
+                int l = std::min (k + lval.numel (),
+                                  static_cast<octave_idx_type> (nout));
+                while (k < l)
+                  isargout[k++] = true;
+              }
+          }
+      }
+    else
+      for (int i = 0; i < nout; i++)
+        isargout[i] = true;
+
+    for (int i = std::max (nargout, 1); i < nout; i++)
+      isargout[i] = false;
   }
 
   octave_value

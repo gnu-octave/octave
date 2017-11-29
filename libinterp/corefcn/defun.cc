@@ -213,26 +213,7 @@ defun_isargout (int nargout, int iout)
 {
   octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
 
-  const std::list<octave_lvalue> *lvalue_list = tw.lvalue_list ();
-
-  if (iout >= std::max (nargout, 1))
-    return false;
-  else if (lvalue_list)
-    {
-      int k = 0;
-      for (const auto& lval : *lvalue_list)
-        {
-          if (k == iout)
-            return ! lval.is_black_hole ();
-          k += lval.numel ();
-          if (k > iout)
-            break;
-        }
-
-      return true;
-    }
-  else
-    return true;
+  return tw.isargout (nargout, iout);
 }
 
 void
@@ -240,28 +221,5 @@ defun_isargout (int nargout, int nout, bool *isargout)
 {
   octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
 
-  const std::list<octave_lvalue> *lvalue_list = tw.lvalue_list ();
-
-  if (lvalue_list)
-    {
-      int k = 0;
-      for (const auto& lval : *lvalue_list)
-        {
-          if (lval.is_black_hole ())
-            isargout[k++] = false;
-          else
-            {
-              int l = std::min (k + lval.numel (),
-                                static_cast<octave_idx_type> (nout));
-              while (k < l)
-                isargout[k++] = true;
-            }
-        }
-    }
-  else
-    for (int i = 0; i < nout; i++)
-      isargout[i] = true;
-
-  for (int i = std::max (nargout, 1); i < nout; i++)
-    isargout[i] = false;
+  return tw.isargout (nargout, nout, isargout);
 }

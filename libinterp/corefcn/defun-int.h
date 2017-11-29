@@ -103,14 +103,15 @@ namespace octave
 OCTAVE_DEPRECATED (4.4, "use 'octave::auto_shlib' instead")
 typedef octave::auto_shlib octave_auto_shlib;
 
-#endif
-
-
+OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::isargout' instead")
 extern OCTINTERP_API bool
 defun_isargout (int, int);
 
+OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::isargout' instead")
 extern OCTINTERP_API void
 defun_isargout (int, int, bool *);
+
+#endif
 
 #define FORWARD_DECLARE_FUNX(name)              \
   extern OCTAVE_EXPORT octave_value_list        \

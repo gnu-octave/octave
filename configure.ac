@@ -2407,7 +2407,6 @@ OCTAVE_CHECK_LIB(klu, KLU,
   [KLU library not found.  This will result in some lack of functionality for sparse matrices],
   [suitesparse/klu.h ufsparse/klu.h klu/klu.h klu.h], [klu_solve],
   [], [don't use KLU library, disable some sparse matrix functionality])
-       [AC_MSG_WARN([ARPACK library found, but is buggy; upgrade library (>= v3.3.0) for better results])])
 
 ### SUITESPARSECONFIG_LIBS added to LIBS above.
 LIBS="$suitesparse_save_LIBS"
@@ -2504,7 +2503,7 @@ OCTAVE_CHECK_LIB([arpack], ARPACK,
      [warn_arpack="ARPACK library found, but does not seem to work properly; disabling eigs function"])
    if test -z "$warn_arpack"; then
      OCTAVE_CHECK_LIB_ARPACK_OK_2([],
-       [warn_arpack="ARPACK library found, but is buggy; upgrade library (>= v3.3.0) for better results"])
+       [AC_MSG_WARN([ARPACK library found, but is buggy; upgrade library (>= v3.3.0) for better results])])
    fi
    ])
 LIBS="$save_LIBS"

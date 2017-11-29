@@ -493,15 +493,24 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         box = "on";
       endif
 
+      ## Use axis which is appropriate for legend location.  This is only
+      ## necessary for plotyy figures where there are two axes.
+      if (numel (ca) == 1)
+        cax = ca(1);
+      elseif (strfind (location, "east"))
+        cax = ca(2);
+      else
+        cax = ca(1);
+      endif
       ## Get axis size and fontsize in points.
       ## Rely on listener to handle conversion.
-      units = get (ca(1), "units");
+      units = get (cax, "units");
       unwind_protect
-        set (ca(1), "units", "points");
-        set (ca(1), "fontunits", "points");
+        set (cax, "units", "points");
+        set (cax, "fontunits", "points");
         if (isempty (hlegend) || ! isprop (hlegend, "unmodified_axes_position"))
-          unmodified_axes_position = get (ca(1), "position");
-          unmodified_axes_outerposition = get (ca(1), "outerposition");
+          unmodified_axes_position = get (cax, "position");
+          unmodified_axes_outerposition = get (cax, "outerposition");
         else
           unmodified_axes_position = get (hlegend, "unmodified_axes_position");
           unmodified_axes_outerposition = get (hlegend, ...
@@ -514,7 +523,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           tightinset = max (tightinset, get (ca(i), "tightinset"));
         endfor
       unwind_protect_cleanup
-        set (ca(1), "units", units);
+        set (cax, "units", units);
       end_unwind_protect
 
       ## Padding between legend entries horizontally and vertically
@@ -523,7 +532,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
       linelength = 15;
 
-      ## Create the axis first
+      ## Create the axes object first
       oldfig = get (0, "currentfigure");
       if (oldfig != fig)
         set (0, "currentfigure", fig);
@@ -544,8 +553,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                           "xlim", [0, 1], "ylim", [0, 1],
                           "activepositionproperty", "position");
           ## Inherit properties from current axis
-          ## "fontunits" shoud be first because it affects interpretation
-          ## of "fontsize" property
+          ## "fontunits" should be first because it affects interpretation
+          ## of "fontsize" property.
           proplist = {"fontunits", "fontangle", "fontname", "fontsize", ...
                       "fontweight"};
           ca_props = get (ca(1), proplist);
@@ -658,7 +667,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
         gnuplot = strcmp (get (fig, "__graphics_toolkit__"), "gnuplot");
         if (gnuplot)
-          ## Gnuplot places the key (legend) at edge of the figure window.
+          ## gnuplot places the key (legend) at edge of the figure window.
           ## OpenGL places the legend box at edge of the unmodified axes
           ## position.
           if (isempty (strfind (location, "east")))
@@ -679,9 +688,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           gnuplot_offset = 0;
         endif
 
-        ## For legend's outside the associated axes postion,
-        ## align their edge to the unmodified_axes_outerpostion,
-        ## and adjust the axes postion accordingly.
+        ## For legend's outside the associated axes position,
+        ## align their edge to the unmodified_axes_outerposition,
+        ## and adjust the axes position accordingly.
         switch (location)
           case "north"
             if (outside)
@@ -916,7 +925,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endfor
 
         ## Add an invisible text object to original axis
-        ## that when it is destroyed will remove the legend
+        ## that, when it is destroyed, will remove the legend.
         props = {"parent", ca(1), "tag", "deletelegend", ...
                  "handlevisibility", "off", "visible", "off", ...
                  "xliminclude", "off", "yliminclude", "off"};
@@ -946,9 +955,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
             unwind_protect
               set (ca(i), "units", "points");
               if (gnuplot && numel (ca) == 1)
-                ## Let Gnuplot handle the positioning of the keybox.
+                ## Let gnuplot handle the positioning of the keybox.
                 ## This violates strict Matlab compatibility, but reliably
-                ## renders an esthetic result.
+                ## renders an aesthetic result.
                 set (ca(i), "position",  unmodified_axes_position);
                 set (ca(i), "activepositionproperty", "outerposition");
               else

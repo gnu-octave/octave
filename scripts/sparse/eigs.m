@@ -1334,17 +1334,17 @@ endfunction
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 3;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "lm", opts);
-%! assert (d(2:4), [NaN; NaN; NaN])
+%! assert (d(2:4), [NaN; NaN; NaN]);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([-2, 1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "sm", opts);
-%! assert (d(4), NaN)
+%! assert (d(4), NaN);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([-2, 1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
@@ -1352,79 +1352,79 @@ endfunction
 %! opts.v0 = (1:100)';
 %! opts.maxit = 3;
 %! opts.issym = true;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (Afun, 100, 4, "sm", opts);
-%! assert (d(2:4), [NaN; NaN; NaN])
+%! assert (d(2:4), [NaN; NaN; NaN]);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([-2, 1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! A(1, 2) = 10;
 %! opts.v0 = (1:100)';
 %! opts.maxit = 5;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "lm", opts);
-%! assert (d(3:4), [NaN; NaN])
+%! assert (d(3:4), [NaN; NaN]);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 5;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "lm", opts);
-%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN])
+%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);
 %!testif HAVE_ARPACK
 %! A = magic (100);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "lm", opts);
-%! assert (d(4), NaN)
+%! assert (d(4), NaN);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
 %! A(1, 1) = 1;
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "sm", opts);
-%! assert (d(3:4), [NaN; NaN])
-%! assert (imag (d(3:4)), [0; 0])
+%! assert (d(3:4), [NaN; NaN]);
+%! assert (imag (d(3:4)), [0; 0]);
 %!testif HAVE_ARPACK
 %! A = magic (100) / 100 + eye (100);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "sm", opts);
-%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN])
+%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! Afun = @(x) A * x;
 %! opts.v0 = (1:100)';
 %! opts.maxit = 5;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (Afun, 100, 4, "lm", opts);
-%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN])
+%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);
 %!testif HAVE_ARPACK
 %! A = 1i * magic (100);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "lm", opts);
-%! assert (d(4), NaN+1i*NaN)
+%! assert (d(4), NaN+1i*NaN);
 %!testif HAVE_ARPACK
 %! A = 1i * magic (100) / 100 + eye (100);
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "sm", opts);
-%! assert (d(2:4), [NaN+1i*NaN; NaN+1i*NaN; NaN+1i*NaN])
+%! assert (d(2:4), [NaN+1i*NaN; NaN+1i*NaN; NaN+1i*NaN]);
 %!testif HAVE_ARPACK
 %! A = 1i * magic (100);
 %! Afun = @(x) A * x;
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
 %! opts.isreal = false;
-%! warning ("off", "all")
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (Afun, 100, 4, "lm", opts);
-%! assert (d(4), NaN+1i*NaN)
+%! assert (d(4), NaN+1i*NaN);

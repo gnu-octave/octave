@@ -163,6 +163,13 @@
 ## warning is issued when Octave encounters a division by zero.
 ## By default, the @code{Octave:divide-by-zero} warning is enabled.
 ##
+## @item Octave:eigs:UnconvergedEigenvalues
+## If the @code{Octave:eigs:UnconvergedEigenvalues} warning is enabled then
+## the eigs function will issue a warning if the number of calculated
+## eigenvalues is less than the number of requested eigenvalues.
+## By default, the @code{Octave:eigs:UnconvergedEigenvalues} warning is
+## enabled.
+##
 ## @item Octave:fopen-file-in-path
 ## By default, the @code{Octave:fopen-file-in-path} warning is enabled.
 ##

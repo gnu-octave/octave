@@ -55,7 +55,6 @@ class octave_user_code;
 class octave_fcn_handle;
 class octave_fcn_inline;
 class octave_value_list;
-class octave_lvalue;
 
 enum builtin_type_t
 {

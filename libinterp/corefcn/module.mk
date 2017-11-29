@@ -65,7 +65,6 @@ COREFCN_INC = \
   %reldir%/oct-hdf5-types.h \
   %reldir%/oct-hist.h \
   %reldir%/oct-iostrm.h \
-  %reldir%/oct-lvalue.h \
   %reldir%/oct-map.h \
   %reldir%/oct-obj.h \
   %reldir%/oct-prcstrm.h \
@@ -202,7 +201,6 @@ COREFCN_SRC = \
   %reldir%/oct-hdf5-types.cc \
   %reldir%/oct-hist.cc \
   %reldir%/oct-iostrm.cc \
-  %reldir%/oct-lvalue.cc \
   %reldir%/oct-map.cc \
   %reldir%/oct-prcstrm.cc \
   %reldir%/oct-procbuf.cc \

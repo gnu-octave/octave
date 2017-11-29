@@ -5,6 +5,7 @@ PARSE_TREE_INC = \
   %reldir%/jit-typeinfo.h \
   %reldir%/jit-util.h \
   %reldir%/lex.h \
+  %reldir%/oct-lvalue.h \
   %reldir%/parse.h \
   %reldir%/profiler.h \
   %reldir%/pt-all.h \
@@ -54,6 +55,7 @@ PARSE_TREE_SRC = \
   %reldir%/jit-util.cc \
   %reldir%/lex.ll \
   %reldir%/oct-gperf.h \
+  %reldir%/oct-lvalue.cc \
   %reldir%/oct-parse.h \
   %reldir%/oct-parse.yy \
   %reldir%/profiler.cc \

@@ -331,3 +331,9 @@
 %! f = @(s,t=toeplitz(s),u=t(x=2:end-1,x)=32)t;
 %! assert (f (1), 1);
 %! assert (f (1, 2), 2);
+
+## FIXME: We need a sequence of concatenation tests since this seems
+##        to be a frequently reported source of incompatibilities w/Matlab
+## Check concatenation of empty char matrices (bug #52542)
+%!assert (double ([char(ones(0,3)); 'A']), 65)
+%!assert (double ([char(ones(0,3)); char(ones(2,0)); 'A']), 65)

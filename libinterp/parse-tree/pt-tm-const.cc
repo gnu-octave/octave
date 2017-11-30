@@ -341,11 +341,20 @@ namespace octave
         else if (all_str && dv.ndims () == 2
                  && this_elt_dv.ndims () == 2)
           {
-            // FIXME: this is Octave's specialty.
-            // Character matrices allow rows of unequal length.
-            if (this_elt_nc > cols ())
-              dv(1) = this_elt_nc;
-            dv(0) += this_elt_nr;
+            // This is Octave's specialty.
+            // Character matrices support rows of unequal length.
+            if (dv.any_zero ())
+              {
+                // Empty existing element (bug #52542).
+                // Replace empty element with non-empty one.
+                dv = this_elt_dv;
+              }
+            else
+              {
+                if (this_elt_nc > cols ())
+                  dv(1) = this_elt_nc;
+                dv(0) += this_elt_nr;
+              }
           }
         else if ((! any_class) && (! dv.hvcat (this_elt_dv, 0)))
           eval_error ("vertical dimensions mismatch", dv, this_elt_dv);

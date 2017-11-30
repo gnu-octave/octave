@@ -1816,17 +1816,17 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             }
           if (have_cplx_eig)
             {
-              for (F77_INT i = ip(4); i < k; i++)
-                for (F77_INT j = 0; j < n; j++)
-                  eig_vec(j,i) =
+              for (F77_INT ii = ip(4); ii < k; ii++)
+                for (F77_INT jj = 0; jj < n; jj++)
+                  eig_vec(jj,ii) =
                     Complex (octave::numeric_limits<double>::NaN (),
                              octave::numeric_limits<double>::NaN ());
             }
           else
             {
-              for (F77_INT i = ip(4); i < k; i++)
-                for (F77_INT j = 0; j < n; j++)
-                  eig_vec(j,i) =
+              for (F77_INT ii = ip(4); ii < k; ii++)
+                for (F77_INT jj = 0; jj < n; jj++)
+                  eig_vec(jj,ii) =
                     Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
           if (note3)
@@ -2198,17 +2198,17 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             }
           if (have_cplx_eig)
             {
-              for (F77_INT i = ip(4); i < k; i++)
-                for (F77_INT j = 0; j < n; j++)
-                  eig_vec(j,i) =
+              for (F77_INT ii = ip(4); ii < k; ii++)
+                for (F77_INT jj = 0; jj < n; jj++)
+                  eig_vec(jj,ii) =
                     Complex (octave::numeric_limits<double>::NaN (),
                              octave::numeric_limits<double>::NaN ());
             }
           else
             {
-              for (F77_INT i = ip(4); i < k; i++)
-                for (F77_INT j = 0; j < n; j++)
-                  eig_vec(j,i) =
+              for (F77_INT ii = ip(4); ii < k; ii++)
+                for (F77_INT jj = 0; jj < n; jj++)
+                  eig_vec(jj,ii) =
                     Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
         }
@@ -2525,17 +2525,17 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             }
           if (have_cplx_eig)
             {
-              for (F77_INT i = ip(4); i < k; i++)
-                for (F77_INT j = 0; j < n; j++)
-                  eig_vec(j,i) =
+              for (F77_INT ii = ip(4); ii < k; ii++)
+                for (F77_INT jj = 0; jj < n; jj++)
+                  eig_vec(jj,ii) =
                     Complex (octave::numeric_limits<double>::NaN (),
                              octave::numeric_limits<double>::NaN ());
             }
           else
             {
-              for (F77_INT i = ip(4); i < k; i++)
-                for (F77_INT j = 0; j < n; j++)
-                  eig_vec(j,i) =
+              for (F77_INT ii = ip(4); ii < k; ii++)
+                for (F77_INT jj = 0; jj < n; jj++)
+                  eig_vec(jj,ii) =
                     Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
         }

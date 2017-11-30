@@ -1986,7 +1986,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
       if (f77_exception_encountered)
         (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in dsaupd");
+          ("eigs: unrecoverable exception encountered in dnaupd");
 
       if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
@@ -2402,7 +2402,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dsaupd", info);
+              ("eigs: error %d in dnaupd", info);
 
           break;
         }
@@ -3368,7 +3368,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dsaupd", info);
+              ("eigs: error %d in znaupd", info);
 
           break;
         }

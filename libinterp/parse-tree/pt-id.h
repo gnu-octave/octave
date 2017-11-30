@@ -36,7 +36,7 @@ class octave_function;
 #include "pt-bp.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
-#include "symtab.h"
+#include "symscope.h"
 
 namespace octave
 {
@@ -69,8 +69,6 @@ namespace octave
 
     bool is_identifier (void) const { return true; }
 
-    // The name doesn't change with scope, so use sym instead of
-    // accessing it through sym so that this function may remain const.
     std::string name (void) const { return sym.name (); }
 
     bool is_defined (void) { return sym.is_defined (); }
@@ -100,7 +98,7 @@ namespace octave
       return sym.find (args);
     }
 
-    void mark_global (void) { sym.mark_global (); }
+    void link_to_global (const symbol_record& global_sym);
 
     void mark_persistent (void) { sym.init_persistent (); }
 

@@ -711,7 +711,13 @@ namespace octave
     if (id)
       {
         if (elt.is_global ())
-          id->mark_global ();
+          {
+            symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+            symbol_record global_sym = symtab.find_global_symbol (id->name ());
+
+            id->link_to_global (global_sym);
+          }
         else if (elt.is_persistent ())
           id->mark_persistent ();
         else

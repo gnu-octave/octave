@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-const.h"
 #include "pt-id.h"
-#include "symtab.h"
+#include "symscope.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -39,6 +39,12 @@ namespace octave
   // Symbols from the symbol table.
 
   class tree_evaluator;
+
+  void tree_identifier::link_to_global (const symbol_record& global_sym)
+  {
+    if (! sym.is_global ())
+      sym.bind_fwd_rep (global_sym);
+  }
 
   void
   tree_identifier::eval_undefined_error (void)

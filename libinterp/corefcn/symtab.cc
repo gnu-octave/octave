@@ -293,26 +293,15 @@ namespace octave
   }
 
   void
-  symbol_table::erase_global (const std::string& name)
+  symbol_table::clear_global (const std::string& name)
   {
-    global_symbols_iterator q = m_global_symbols.find (name);
-
-    if (q != m_global_symbols.end ())
-      m_global_symbols.erase (q);
+    m_global_scope->clear_variable (name);
   }
 
   void
-  symbol_table::erase_global_pattern (const glob_match& pattern)
+  symbol_table::clear_global_pattern (const std::string& pattern)
   {
-    global_symbols_iterator q = m_global_symbols.begin ();
-
-    while (q != m_global_symbols.end ())
-      {
-        if (pattern.match (q->first))
-          m_global_symbols.erase (q++);
-        else
-          q++;
-      }
+    m_global_scope->clear_variable_pattern (pattern);
   }
 
   // Insert INF_CLASS in the set of class names that are considered
@@ -544,7 +533,6 @@ namespace octave
   {
     clear_all (true);
 
-    m_global_symbols.clear ();
     m_fcn_table.clear ();
     m_class_precedence_table.clear ();
     m_parent_map.clear ();

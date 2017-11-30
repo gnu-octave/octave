@@ -162,12 +162,9 @@ namespace octave
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           return t_fwd_rep->varref ();
 
-        if (is_global ())
-          return xglobal_varref ();
-
         context_id context = 0;
 
-        if (m_decl_scope && ! is_persistent ())
+        if (m_decl_scope && ! (is_persistent () || is_global ()))
           context = get_decl_scope_context ();
 
         context_id n = m_value_stack.size ();
@@ -182,12 +179,9 @@ namespace octave
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           return t_fwd_rep->varval ();
 
-        if (is_global ())
-          return xglobal_varval ();
-
         context_id context = 0;
 
-        if (m_decl_scope && ! is_persistent ())
+        if (m_decl_scope && ! (is_persistent () || is_global ()))
           context = get_decl_scope_context ();
 
         if (context < m_value_stack.size ())
@@ -255,7 +249,7 @@ namespace octave
         if (! (is_hidden () || is_inherited ()))
           {
             if (is_global ())
-              unmark_global ();
+              unbind_fwd_rep ();
 
             assign (octave_value ());
 
@@ -407,17 +401,12 @@ namespace octave
         m_storage_class |= inherited;
       }
 
+      // This flag should only be set for a symbol record that is
+      // actually in the global symbol_scope, and that should only
+      // happen when it is added to the global symbol_scope.
+
       void mark_global (void)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->mark_global ();
-            return;
-          }
-
-        if (is_persistent ())
-          error ("can't make persistent variable %s global", m_name.c_str ());
-
         m_storage_class |= global;
       }
 
@@ -501,17 +490,6 @@ namespace octave
         m_storage_class &= ~inherited;
       }
 
-      void unmark_global (void)
-      {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->unmark_global ();
-            return;
-          }
-
-        m_storage_class &= ~global;
-      }
-
       void unmark_persistent (void)
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
@@ -557,15 +535,21 @@ namespace octave
         return m_decl_scope;
       }
 
-      // We don't forward more than once, so no need to forward the
-      // next two.
-
       void bind_fwd_rep (const std::shared_ptr<symbol_record_rep>& fwd_rep)
       {
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          t_fwd_rep->bind_fwd_rep (fwd_rep);
+
         m_fwd_rep = fwd_rep;
       }
 
-      void unbind_fwd_rep (void) { m_fwd_rep.reset (); }
+      void unbind_fwd_rep (void)
+      {
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          t_fwd_rep->unbind_fwd_rep ();
+
+        m_fwd_rep.reset ();
+      }
 
       symbol_record_rep * dup (symbol_scope *new_scope) const;
 
@@ -588,12 +572,6 @@ namespace octave
       unsigned int m_storage_class;
 
       bool m_valid;
-
-    private:
-
-      octave_value& xglobal_varref (void);
-
-      octave_value xglobal_varval (void) const;
     };
 
   public:
@@ -653,12 +631,6 @@ namespace octave
       m_rep->do_non_const_unary_op (op, type, idx);
     }
 
-    // Delete when deprecated varref functions are removed.
-    octave_value& varref (void)
-    {
-      return m_rep->varref ();
-    }
-
     octave_value varval (void) const
     {
       return m_rep->varval ();
@@ -713,7 +685,6 @@ namespace octave
     void unmark_formal (void) { m_rep->unmark_formal (); }
     void unmark_hidden (void) { m_rep->unmark_hidden (); }
     void unmark_inherited (void) { m_rep->unmark_inherited (); }
-    void unmark_global (void) { m_rep->unmark_global (); }
     void unmark_persistent (void) { m_rep->unmark_persistent (); }
     void unmark_added_static (void) { m_rep->unmark_added_static (); }
 

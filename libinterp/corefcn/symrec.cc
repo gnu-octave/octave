@@ -94,30 +94,6 @@ namespace octave
     return octave_value (m);
   }
 
-  octave_value&
-  symbol_record::symbol_record_rep::xglobal_varref (void)
-  {
-    if (auto t_fwd_rep = m_fwd_rep.lock ())
-      return t_fwd_rep->xglobal_varref ();
-
-    symbol_table& symtab
-      = __get_symbol_table__ ("symbol_record::symbol_record_rep::xglobal_varref");
-
-    return symtab.global_varref (m_name);
-  }
-
-  octave_value
-  symbol_record::symbol_record_rep::xglobal_varval (void) const
-  {
-    if (auto t_fwd_rep = m_fwd_rep.lock ())
-      return t_fwd_rep->xglobal_varval ();
-
-    symbol_table& symtab
-      = __get_symbol_table__ ("symbol_record::symbol_record_rep::xglobal_varval");
-
-    return symtab.global_varval (m_name);
-  }
-
   symbol_record::symbol_record (void)
     : m_rep (new symbol_record_rep (__get_current_scope__ ("symbol_record"),
                                     "", octave_value (), local))
@@ -132,19 +108,15 @@ namespace octave
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_record::find");
 
-    if (is_global ())
-      retval = symtab.global_varval (name ());
-    else
+    retval = varval ();
+
+    if (retval.is_undefined ())
       {
-        retval = varval ();
+        // FIXME
+        retval = symtab.find_function (name (), args);
 
-        if (retval.is_undefined ())
-          {
-            retval = symtab.find_function (name (), args);
-
-            if (retval.is_defined ())
-              return retval;
-          }
+        if (retval.is_defined ())
+          return retval;
       }
 
     return retval;

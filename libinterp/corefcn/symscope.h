@@ -218,22 +218,6 @@ namespace octave
         p->second.assign (value);
     }
 
-    // Use assign (name, value, force_add) instead.
-    // Delete when deprecated varref functions are removed.
-    octave_value& varref (const std::string& name, bool force_add)
-    {
-      table_iterator p = m_symbols.find (name);
-
-      if (p == m_symbols.end ())
-        {
-          symbol_record& sr = insert (name, force_add);
-
-          return sr.varref ();
-        }
-      else
-        return p->second.varref ();
-    }
-
     octave_value varval (const std::string& name) const
     {
       table_const_iterator p = m_symbols.find (name);
@@ -305,8 +289,6 @@ namespace octave
         }
     }
 
-    void clear_global (const std::string& name);
-
     void clear_variable (const std::string& name)
     {
       table_iterator p = m_symbols.find (name);
@@ -314,8 +296,6 @@ namespace octave
       if (p != m_symbols.end ())
         p->second.clear ();
     }
-
-    void clear_global_pattern (const std::string& pat);
 
     void clear_variable_pattern (const std::string& pat)
     {

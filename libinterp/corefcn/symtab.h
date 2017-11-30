@@ -60,7 +60,7 @@ namespace octave
     typedef scope::context_id context_id;
 
     symbol_table (void)
-      : m_global_symbols (), m_fcn_table (), m_class_precedence_table (),
+      : m_fcn_table (), m_class_precedence_table (),
         m_parent_map (), m_global_scope (new scope ("global scope")),
         m_top_scope (new symbol_scope ("top scope")),
         m_current_scope (m_top_scope)
@@ -122,6 +122,15 @@ namespace octave
       return find_symbol (name, m_current_scope);
     }
 
+    symbol_record find_global_symbol (const std::string& name)
+    {
+      symbol_record sym = find_symbol (name, m_global_scope);
+
+      sym.mark_global ();
+
+      return sym;
+    }
+
     void inherit (symbol_scope *recipient_scope, symbol_scope *donor_scope)
     {
       if (recipient_scope)
@@ -161,31 +170,15 @@ namespace octave
               ? m_current_scope->varval (name) : octave_value ());
     }
 
-    void
-      global_assign (const std::string& name,
-                     const octave_value& value = octave_value ())
+    void global_assign (const std::string& name,
+                        const octave_value& value = octave_value ())
     {
-      global_symbols_iterator p = m_global_symbols.find (name);
-
-      if (p == m_global_symbols.end ())
-        m_global_symbols[name] = value;
-      else
-        p->second = value;
-    }
-
-    octave_value& global_varref (const std::string& name)
-    {
-      global_symbols_iterator p = m_global_symbols.find (name);
-
-      return (p == m_global_symbols.end ()
-              ? m_global_symbols[name] : p->second);
+      m_global_scope->assign (name, value);
     }
 
     octave_value global_varval (const std::string& name) const
     {
-      global_symbols_const_iterator p = m_global_symbols.find (name);
-
-      return (p != m_global_symbols.end ()) ? p->second : octave_value ();
+      return m_global_scope->varval (name);
     }
 
     void
@@ -378,13 +371,16 @@ namespace octave
     void clear_all (bool force = false)
     {
       if (m_current_scope)
-        {
-          m_current_scope->clear_variables ();
-          m_current_scope->clear_global_pattern ("*");
-        }
+        m_current_scope->clear_variables ();
+
+      m_global_scope->clear_variables ();
 
       clear_functions (force);
     }
+
+    void clear_global (const std::string& name);
+
+    void clear_global_pattern (const std::string& pattern);
 
     // This is written as two separate functions instead of a single
     // function with default values so that it will work properly with
@@ -475,10 +471,6 @@ namespace octave
         (p++)->second.clear_mex_function ();
     }
 
-    void erase_global (const std::string& name);
-
-    void erase_global_pattern (const glob_match& pattern);
-
     bool set_class_relationship (const std::string& sup_class,
                                  const std::string& inf_class);
 
@@ -522,46 +514,15 @@ namespace octave
               ? m_current_scope->glob (pattern) : std::list<symbol_record> ());
     }
 
-    std::list<symbol_record>
-      glob_global_variables (const std::string& pattern)
+    std::list<symbol_record> glob_global_variables (const std::string& pattern)
     {
-      std::list<symbol_record> retval;
-
-      glob_match pat (pattern);
-
-      for (const auto& nm_val : m_global_symbols)
-        {
-          // We generate a list of symbol_record objects so that the results from
-          // glob_variables and glob_global_variables may be handled the same
-          // way.
-          if (pat.match (nm_val.first))
-            retval.push_back (symbol_record (m_global_scope,
-                                             nm_val.first, nm_val.second,
-                                             symbol_record::global));
-        }
-
-      return retval;
+      return m_global_scope->glob (pattern);
     }
 
     std::list<symbol_record>
-      regexp_global_variables (const std::string& pattern)
+    regexp_global_variables (const std::string& pattern)
     {
-      std::list<symbol_record> retval;
-
-      octave::regexp pat (pattern);
-
-      for (const auto& nm_val : m_global_symbols)
-        {
-          // We generate a list of symbol_record objects so that the results from
-          // regexp_variables and regexp_global_variables may be handled the same
-          // way.
-          if (pat.is_match (nm_val.first))
-            retval.push_back (symbol_record (m_global_scope,
-                                             nm_val.first, nm_val.second,
-                                             symbol_record::global));
-        }
-
-      return retval;
+      return m_global_scope->regexp (pattern);
     }
 
     std::list<symbol_record> glob_variables (const string_vector& patterns)
@@ -620,14 +581,7 @@ namespace octave
 
     std::list<std::string> global_variable_names (void)
     {
-      std::list<std::string> retval;
-
-      for (const auto& nm_val : m_global_symbols)
-        retval.push_back (nm_val.first);
-
-      retval.sort ();
-
-      return retval;
+      return m_global_scope->variable_names ();
     }
 
     std::list<std::string> top_level_variable_names (void)
@@ -735,9 +689,6 @@ namespace octave
       fcn_table_const_iterator;
     typedef std::map<std::string, fcn_info>::iterator
       fcn_table_iterator;
-
-    // Map from names of global variables to values.
-    std::map<std::string, octave_value> m_global_symbols;
 
     // Map from function names to function info (private
     // functions, class constructors, class methods, etc.)

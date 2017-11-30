@@ -2112,7 +2112,12 @@ do_clear_globals (octave::symbol_table& symtab,
       int gcount = gvars.numel ();
 
       for (int i = 0; i < gcount; i++)
-        scope->clear_global (gvars[i]);
+        {
+          std::string name = gvars[i];
+
+          scope->clear_variable (name);
+          symtab.clear_global (name);
+        }
     }
   else
     {
@@ -2124,16 +2129,24 @@ do_clear_globals (octave::symbol_table& symtab,
 
           for (int i = 0; i < gcount; i++)
             {
-              std::string nm = gvars[i];
+              std::string name = gvars[i];
 
-              if (! name_matches_any_pattern (nm, argv, argc, idx))
-                scope->clear_global (nm);
+              if (! name_matches_any_pattern (name, argv, argc, idx))
+                {
+                  scope->clear_variable (name);
+                  symtab.clear_global (name);
+                }
             }
         }
       else
         {
           while (idx < argc)
-            scope->clear_global_pattern (argv[idx++]);
+            {
+              std::string pattern = argv[idx++];
+
+              scope->clear_variable_pattern (pattern);
+              symtab.clear_global_pattern (pattern);
+            }
         }
     }
 }

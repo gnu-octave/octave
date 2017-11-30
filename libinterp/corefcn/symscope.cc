@@ -106,44 +106,6 @@ namespace octave
       return p->second;
   }
 
-  void
-  symbol_scope::clear_global (const std::string& name)
-  {
-    table_iterator p = m_symbols.find (name);
-
-    if (p != m_symbols.end ())
-      {
-        symbol_record& sr = p->second;
-
-        if (sr.is_global ())
-          sr.unmark_global ();
-      }
-
-    symbol_table& symtab
-      = __get_symbol_table__ ("symbol_scope::clear_global");
-
-    symtab.erase_global (name);
-  }
-
-  void
-  symbol_scope::clear_global_pattern (const std::string& pat)
-  {
-    glob_match pattern (pat);
-
-    for (auto& nm_sr : m_symbols)
-      {
-        symbol_record& sr = nm_sr.second;
-
-        if (sr.is_global () && pattern.match (sr.name ()))
-          sr.unmark_global ();
-      }
-
-    symbol_table& symtab
-      = __get_symbol_table__ ("symbol_scope::clear_global_pattern");
-
-    symtab.erase_global_pattern (pattern);
-  }
-
   std::list<workspace_element>
   symbol_scope::workspace_info (void) const
   {

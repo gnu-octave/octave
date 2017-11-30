@@ -80,7 +80,7 @@ namespace octave
 
       symbol_record_rep (symbol_scope *s, const std::string& nm,
                          const octave_value& v, unsigned int sc)
-        : m_decl_scope (s), m_curr_fcn (nullptr), m_name (nm),
+        : m_decl_scope (s), m_name (nm),
           m_fwd_rep (), m_value_stack (), m_storage_class (sc),
           m_valid (true)
       {
@@ -557,17 +557,6 @@ namespace octave
         return m_decl_scope;
       }
 
-      void set_curr_fcn (octave_user_function *fcn)
-      {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->set_curr_fcn (fcn);
-            return;
-          }
-
-        m_curr_fcn = fcn;
-      }
-
       // We don't forward more than once, so no need to forward the
       // next two.
 
@@ -589,8 +578,6 @@ namespace octave
     private:
 
       symbol_scope *m_decl_scope;
-
-      octave_user_function *m_curr_fcn;
 
       std::string m_name;
 
@@ -737,11 +724,6 @@ namespace octave
     symbol_scope *decl_scope (void) { return m_rep->decl_scope (); }
 
     unsigned int storage_class (void) const { return m_rep->storage_class (); }
-
-    void set_curr_fcn (octave_user_function *fcn)
-    {
-      m_rep->set_curr_fcn (fcn);
-    }
 
     void bind_fwd_rep (const symbol_record& sr)
     {

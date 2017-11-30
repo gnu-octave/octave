@@ -313,8 +313,6 @@ namespace octave
                 if (ours.is_global () || ours.is_persistent ())
                   error ("global and persistent may only be used in the topmost level in which a nested variable is used");
               }
-            else
-              ours.set_curr_fcn (m_fcn);
           }
 
         // The scopes of nested functions are static.
@@ -324,9 +322,6 @@ namespace octave
       {
         // Parents of nested functions have static scopes.
         m_is_static = true;
-
-        for (auto& nm_sr : m_symbols)
-          nm_sr.second.set_curr_fcn (m_fcn);
       }
 
     for (auto& symtab_p : m_children)

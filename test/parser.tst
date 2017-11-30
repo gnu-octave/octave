@@ -326,3 +326,10 @@
 ## Maybe unnecessary, but check that further changes to parser don't
 ## invalidate error handling (bug #46534).
 #!error <vertical dimensions mismatch \(1x2 vs 1x1\)> z = [1, 2; 3]
+
+## FIXME: We need a sequence of concatenation tests since this seems
+##        to be a frequently reported source of incompatibilities w/Matlab
+## Check concatenation of empty char matrices (bug #52542)
+%!assert (double ([char(ones(0,3)); 'A']), 65)
+%!assert (double ([char(ones(0,3)); char(ones(2,0)); 'A']), 65)
+

@@ -10488,7 +10488,7 @@ each individual object will be reset.
   for (octave_idx_type n = 0; n < hcv.numel (); n++)
     gh_manager::get_object (hcv(n)).reset_default_properties ();
 
-  Fdrawnow ();
+  Vdrawnow_requested = true;
 
   return ovl ();
 }

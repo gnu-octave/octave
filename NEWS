@@ -66,6 +66,11 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
  ** An initial implementation of alpha transparency has been made for
     patch and surface objects.  Printing to svg and pdf is supported.
 
+ ** The following statistical functions have been moved from core
+    Octave to the statistics package available from Octave Forge.
+
+    table -> crosstab
+
  ** Other new functions added in 4.4:
 
       camlookat

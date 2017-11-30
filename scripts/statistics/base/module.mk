@@ -6,6 +6,7 @@ FCN_FILE_DIRS += scripts/statistics/base
   %reldir%/corr.m \
   %reldir%/corrcoef.m \
   %reldir%/cov.m \
+  %reldir%/crosstab.m \
   %reldir%/gls.m \
   %reldir%/histc.m \
   %reldir%/iqr.m \
@@ -32,7 +33,6 @@ FCN_FILE_DIRS += scripts/statistics/base
   %reldir%/spearman.m \
   %reldir%/statistics.m \
   %reldir%/std.m \
-  %reldir%/table.m \
   %reldir%/var.m \
   %reldir%/zscore.m
 

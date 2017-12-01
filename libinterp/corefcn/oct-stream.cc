@@ -2914,22 +2914,6 @@ namespace octave
           }
       }
 
-    // Check for +/- inf and NaN
-    if (! valid && width_left >= 3)
-      {
-        int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
-        if (i == 0)
-          {
-            retval = numeric_limits<double>::Inf ();
-            valid = true;
-          }
-        else if (i == 1)
-          {
-            retval = numeric_limits<double>::NaN ();
-            valid = true;
-          }
-      }
-
     if (! valid)
       is.setstate (std::ios::failbit);
     else
@@ -3126,6 +3110,9 @@ namespace octave
 
         if (last != std::istream::traits_type::eof ())
           {
+            if (last == eol1 || last == eol2)
+                break;
+
             retval = retval + static_cast<char> (last);
             for (int i = 0; i < delimiters.numel (); i++)
               {
@@ -3138,6 +3125,8 @@ namespace octave
                   {
                     done = true;
                     retval = retval.substr (0, start);
+                    if (start == 0)
+                      is.putback (last);
                     break;
                   }
               }
@@ -3181,12 +3170,15 @@ namespace octave
       }
     else  // Cell array of multi-character delimiters
       {
-        std::string ends (delim_list.numel (), '\0');
-        for (int i = 0; i < delim_list.numel (); i++)
+        std::string ends (delim_list.numel () + 2, '\0');
+        int i;
+        for (i = 0; i < delim_list.numel (); i++)
           {
             std::string tmp = delim_list(i).string_value ();
             ends[i] = tmp.back ();
           }
+        ends[i++] = eol1;
+        ends[i++] = eol2;
         val = textscan::read_until (is, delim_list, ends);
       }
   }
@@ -3488,8 +3480,22 @@ namespace octave
           {
             is.clear (is.rdstate () & ~std::ios::failbit);
 
-            if (! is.eof () && ! is_delim (is.peek ()))
-              this_conversion_failed = true;
+            if (! is.eof ())
+              {
+                if (delim_list.isempty ())
+                  {
+                    if (! is_delim (is.peek ()))
+                      this_conversion_failed = true;
+                  }
+                else  // Cell array of multi-character delimiters
+                  {
+                    char *pos = is.tellg ();
+                    if (-1 == lookahead (is, delim_list, delim_len))
+                      this_conversion_failed = true;
+                    is.clear ();
+                    is.seekg (pos);     // reset to position before look-ahead
+                  }
+              }
           }
 
         if (! elem->discard)
@@ -3861,7 +3867,7 @@ namespace octave
     char *look = is.read (&tmp[0], tmp.size (), pos);
 
     is.clear ();
-    is.seekg (pos);              // reset to position before look-ahead
+    is.seekg (pos);              // reset to position before read
                                  // FIXME: pos may be corrupted by is.read
 
     int i;

@@ -232,7 +232,7 @@ namespace octave
     // Check for various incompatible argument pairs
     if (m_force_gui && m_no_gui)
       {
-        warning ("only one of --force-gui and --no-gui may be used");
+        std::cerr << "error: only one of --force-gui and --no-gui may be used\n";
 
         octave_print_terse_usage_and_exit ();
       }
@@ -364,7 +364,7 @@ namespace octave
 
     if (m_have_eval_option_code && m_have_script_file)
       {
-        warning (R"(--eval "CODE" and script file are mutually exclusive options)");
+        std::cerr << R"(error: --eval "CODE" and script file are mutually exclusive options)" << std::endl;
 
         octave_print_terse_usage_and_exit ();
       }
@@ -397,14 +397,15 @@ octave_main (int argc, char **argv, int embedded)
   if (embedded)
     {
       if (argc > 0)
-        warning ("ignoring command line options for embedded octave");
+        std::cerr << "warning: ignoring command line options for embedded octave\n";
 
       static octave::interpreter embedded_interpreter;
       return embedded_interpreter.execute ();
     }
   else
     {
-      warning ("octave_main should only be used to create an embedded interpreter");
+      std::cerr << "warning: octave_main should only be used to create an embedded interpreter";
+
       static octave::cli_application app (argc, argv);
       return app.execute ();
     }

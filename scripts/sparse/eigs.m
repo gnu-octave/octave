@@ -1387,8 +1387,11 @@ endfunction
 %! opts.maxit = 1;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "sm", opts);
-%! assert (d(4), NaN);
-%! assert (imag (d(4)), 0);
+%! if (isreal (d))
+%!   assert (d(4), NaN);
+%! else
+%!   assert (d(4), NaN +1i*NaN);
+%! endif
 %!testif HAVE_ARPACK
 %! A = magic (100) / 10 + eye (100);
 %! opts.v0 = (1:100)';

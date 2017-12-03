@@ -468,7 +468,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_ascii");
 
-      octave::symbol_scope local_scope;
+      octave::symbol_scope local_scope (buf);
 
       symtab.set_scope (&local_scope);
 
@@ -634,7 +634,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_binary");
 
-      octave::symbol_scope local_scope;
+      octave::symbol_scope local_scope (ctmp2);
 
       symtab.set_scope (&local_scope);
 
@@ -1136,7 +1136,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
 
-      octave::symbol_scope local_scope;
+      octave::symbol_scope local_scope (fcn_tmp);
 
       symtab.set_scope (&local_scope);
 

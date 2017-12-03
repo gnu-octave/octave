@@ -83,6 +83,8 @@ namespace octave
     if (new_scope)
       symtab.inherit (new_scope);
 
+    // FIXME: if new scope is nullptr, then we are in big trouble here...
+
     tree_anon_fcn_handle *new_afh = new
       tree_anon_fcn_handle (param_list ? param_list->dup (*new_scope) : nullptr,
                             expr ? expr->dup (*new_scope) : nullptr,

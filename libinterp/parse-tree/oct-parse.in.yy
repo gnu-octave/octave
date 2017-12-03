@@ -1284,7 +1284,8 @@ push_fcn_symtab : // empty
                     if (parser.m_max_fcn_depth < parser.m_curr_fcn_depth)
                       parser.m_max_fcn_depth = parser.m_curr_fcn_depth;
 
-                    lexer.symtab_context.push (new octave::symbol_scope ());
+                    // Will get a real name later.
+                    lexer.symtab_context.push (new octave::symbol_scope ("parser:push_fcn_symtab"));
 
                     parser.m_function_scopes.push (lexer.symtab_context.curr_scope ());
 
@@ -1314,7 +1315,8 @@ param_list_beg  : '('
 
                     if (lexer.looking_at_function_handle)
                       {
-                        lexer.symtab_context.push (new octave::symbol_scope ());
+                        // Will get a real name later.
+                        lexer.symtab_context.push (new octave::symbol_scope ("parser:param_lsit_beg"));
                         lexer.looking_at_function_handle--;
                         lexer.looking_at_anon_fcn_args = true;
                       }
@@ -1451,7 +1453,8 @@ push_script_symtab : // empty
                   {
                     $$ = 0;
 
-                    lexer.symtab_context.push (new octave::symbol_scope ());
+                    // Will get a real name later.
+                    lexer.symtab_context.push (new octave::symbol_scope ("parser:push_script_symtab"));
                   }
                 ;
 
@@ -2459,6 +2462,25 @@ namespace octave
     tree_anon_fcn_handle *retval
       = new tree_anon_fcn_handle (param_list, expr, fcn_scope,
                                   parent_scope, l, c);
+
+    std::ostringstream buf;
+
+    tree_print_code tpc (buf);
+
+    retval->accept (tpc);
+
+    std::string file = m_lexer.fcn_file_full_name;
+    if (! file.empty ())
+      buf << ": file: " << file;
+    else if (m_lexer.input_from_terminal ())
+      buf << ": *terminal input*";
+    else if (m_lexer.input_from_eval_string ())
+      buf << ": *eval string*";
+    buf << ": line: " << l << " column: " << c;
+
+    std::string scope_name = buf.str ();
+
+    fcn_scope->cache_name (scope_name);
 
     // FIXME: Stash the filename.  This does not work and produces
     // errors when executed.

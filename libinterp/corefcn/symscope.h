@@ -96,7 +96,7 @@ namespace octave
 
     symbol_scope * dup (void) const
     {
-      symbol_scope *new_sid = new symbol_scope ();
+      symbol_scope *new_sid = new symbol_scope (m_name);
 
       for (const auto& nm_sr : m_symbols)
         new_sid->insert_symbol_record (nm_sr.second.dup (new_sid));

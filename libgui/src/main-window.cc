@@ -1305,9 +1305,6 @@ main_window::set_window_layout (QSettings *settings)
         }
     }
 
-  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
-  restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
-
   show ();
 }
 

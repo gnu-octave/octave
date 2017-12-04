@@ -36,8 +36,14 @@ namespace octave
   {
   public:
 
-    octave_lvalue (const symbol_record& sr = symbol_record ())
-      : m_sym (sr), m_black_hole (false), m_type (), m_idx (), m_nel (1)
+    octave_lvalue (void)
+      : m_sym (), m_context (0), m_black_hole (false), m_type (),
+        m_idx (), m_nel (1)
+    { }
+
+    octave_lvalue (const symbol_record& sr, symbol_record::context_id context)
+      : m_sym (sr), m_context (context), m_black_hole (false),
+        m_type (), m_idx (), m_nel (1)
     { }
 
     octave_lvalue (const octave_lvalue& vr) = default;
@@ -52,17 +58,17 @@ namespace octave
 
     bool is_defined (void) const
     {
-      return ! is_black_hole () && m_sym.is_defined ();
+      return ! is_black_hole () && m_sym.is_defined (m_context);
     }
 
     bool is_undefined (void) const
     {
-      return is_black_hole () || m_sym.is_undefined ();
+      return is_black_hole () || m_sym.is_undefined (m_context);
     }
 
     bool isstruct (void) const { return value().isstruct (); }
 
-    void define (const octave_value& v) { m_sym.assign (v); }
+    void define (const octave_value& v) { m_sym.assign (v, m_context); }
 
     void assign (octave_value::assign_op, const octave_value&);
 
@@ -85,6 +91,8 @@ namespace octave
   private:
 
     symbol_record m_sym;
+
+    symbol_record::context_id m_context;
 
     bool m_black_hole;
 

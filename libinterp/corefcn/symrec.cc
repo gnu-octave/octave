@@ -42,9 +42,9 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   symbol_record::context_id
-  symbol_record::symbol_record_rep::get_decl_scope_context (void) const
+  symbol_record::symbol_record_rep::get_fwd_scope_context (void) const
   {
-    return m_decl_scope ? m_decl_scope->current_context () : 0;
+    return m_fwd_scope ? m_fwd_scope->current_context () : 0;
   }
 
   void
@@ -66,15 +66,17 @@ namespace octave
     if (auto t_fwd_rep = m_fwd_rep.lock ())
       return t_fwd_rep->dup (new_scope);
 
-    return new symbol_record_rep (new_scope, m_name, varval (),
+    static const context_id FIXME_CONTEXT = 0;
+
+    return new symbol_record_rep (m_name, varval (FIXME_CONTEXT),
                                   m_storage_class);
   }
 
   octave_value
-  symbol_record::symbol_record_rep::dump (void) const
+  symbol_record::symbol_record_rep::dump (context_id context) const
   {
     if (auto t_fwd_rep = m_fwd_rep.lock ())
-      return t_fwd_rep->dump ();
+      return t_fwd_rep->dump (context);
 
     std::map<std::string, octave_value> m
       = {{ "name", m_name },
@@ -86,7 +88,7 @@ namespace octave
          { "global", is_global () },
          { "persistent", is_persistent () }};
 
-    octave_value val = varval ();
+    octave_value val = varval (context);
 
     if (val.is_defined ())
       m["value"] = val;
@@ -94,21 +96,16 @@ namespace octave
     return octave_value (m);
   }
 
-  symbol_record::symbol_record (void)
-    : m_rep (new symbol_record_rep (__get_current_scope__ ("symbol_record"),
-                                    "", octave_value (), local))
-
-  { }
-
   octave_value
-  symbol_record::find (const octave_value_list& args) const
+  symbol_record::find (context_id context,
+                       const octave_value_list& args) const
   {
     octave_value retval;
 
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_record::find");
 
-    retval = varval ();
+    retval = varval (context);
 
     if (retval.is_undefined ())
       {

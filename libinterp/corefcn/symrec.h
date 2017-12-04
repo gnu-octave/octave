@@ -78,11 +78,10 @@ namespace octave
     {
     public:
 
-      symbol_record_rep (symbol_scope *s, const std::string& nm,
+      symbol_record_rep (const std::string& nm,
                          const octave_value& v, unsigned int sc)
-        : m_decl_scope (s), m_name (nm),
-          m_fwd_rep (), m_value_stack (), m_storage_class (sc),
-          m_valid (true)
+        : m_storage_class (sc), m_name (nm), m_fwd_scope (nullptr),
+          m_fwd_rep (), m_value_stack (), m_valid (true)
       {
         m_value_stack.push_back (v);
       }
@@ -95,77 +94,48 @@ namespace octave
 
       ~symbol_record_rep (void) = default;
 
-      void assign (const octave_value& value)
+      void assign (const octave_value& value, context_id context)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->assign (value);
-            return;
-          }
-
-        varref () = value;
+        varref(context) = value;
       }
 
       void assign (octave_value::assign_op op,
                    const std::string& type,
                    const std::list<octave_value_list>& idx,
-                   const octave_value& value)
+                   const octave_value& value, context_id context)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->assign (op, type, idx, value);
-            return;
-          }
-
-        varref().assign (op, type, idx, value);
+        varref(context).assign (op, type, idx, value);
       }
 
-      void assign (octave_value::assign_op op, const octave_value& value)
+      void assign (octave_value::assign_op op, const octave_value& value,
+                   context_id context)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->assign (op, value);
-            return;
-          }
-
-        varref().assign (op, value);
+        varref(context).assign (op, value);
       }
 
-      void do_non_const_unary_op (octave_value::unary_op op)
+      void do_non_const_unary_op (octave_value::unary_op op,
+                                  context_id context)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->do_non_const_unary_op (op);
-            return;
-          }
-
-        varref().do_non_const_unary_op (op);
+        varref(context).do_non_const_unary_op (op);
       }
 
       void do_non_const_unary_op (octave_value::unary_op op,
                                   const std::string& type,
-                                  const std::list<octave_value_list>& idx)
+                                  const std::list<octave_value_list>& idx,
+                                  context_id context)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->do_non_const_unary_op (op, type, idx);
-            return;
-          }
-
-        varref().do_non_const_unary_op (op, type, idx);
+        varref(context).do_non_const_unary_op (op, type, idx);
       }
 
-      context_id get_decl_scope_context (void) const;
+      context_id get_fwd_scope_context (void) const;
 
-      octave_value& varref (void)
+      octave_value& varref (context_id context)
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return t_fwd_rep->varref ();
+          return t_fwd_rep->varref (get_fwd_scope_context ());
 
-        context_id context = 0;
-
-        if (m_decl_scope && ! (is_persistent () || is_global ()))
-          context = get_decl_scope_context ();
+        if (is_persistent ())
+          context = 0;
 
         context_id n = m_value_stack.size ();
         while (n++ <= context)
@@ -174,15 +144,13 @@ namespace octave
         return m_value_stack[context];
       }
 
-      octave_value varval (void) const
+      octave_value varval (context_id context) const
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return t_fwd_rep->varval ();
+          return t_fwd_rep->varval (get_fwd_scope_context ());
 
-        context_id context = 0;
-
-        if (m_decl_scope && ! (is_persistent () || is_global ()))
-          context = get_decl_scope_context ();
+        if (is_persistent ())
+          context = 0;
 
         if (context < m_value_stack.size ())
           return m_value_stack[context];
@@ -229,7 +197,7 @@ namespace octave
         return retval;
       }
 
-      void clear (void)
+      void clear (context_id context)
       {
         // There is no need to do anything with a fowarded
         // symbol_record_rep here.
@@ -251,19 +219,16 @@ namespace octave
             if (is_global ())
               unbind_fwd_rep ();
 
-            assign (octave_value ());
+            assign (octave_value (), context);
 
             if (is_persistent ())
               unmark_persistent ();
           }
       }
 
-      bool is_defined (void) const
+      bool is_defined (context_id context) const
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return t_fwd_rep->is_defined ();
-
-        return varval ().is_defined ();
+        return varval (context).is_defined ();
       }
 
       bool is_valid (void) const
@@ -274,12 +239,12 @@ namespace octave
         return m_valid;
       }
 
-      bool is_variable (void) const
+      bool is_variable (context_id context) const
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return t_fwd_rep->is_variable ();
+          return t_fwd_rep->is_variable (context);
 
-        return (! is_local () || is_defined ());
+        return (! is_local () || is_defined (context));
       }
 
       bool is_local (void) const
@@ -527,33 +492,34 @@ namespace octave
         m_valid = false;
       }
 
-      symbol_scope *decl_scope (void)
+      void bind_fwd_rep (symbol_scope *fwd_scope,
+                         const std::shared_ptr<symbol_record_rep>& fwd_rep)
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return t_fwd_rep->decl_scope ();
+          {
+            t_fwd_rep->bind_fwd_rep (fwd_scope, fwd_rep);
+            return;
+          }
 
-        return m_decl_scope;
-      }
-
-      void bind_fwd_rep (const std::shared_ptr<symbol_record_rep>& fwd_rep)
-      {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          t_fwd_rep->bind_fwd_rep (fwd_rep);
-
+        m_fwd_scope = fwd_scope;
         m_fwd_rep = fwd_rep;
       }
 
       void unbind_fwd_rep (void)
       {
         if (auto t_fwd_rep = m_fwd_rep.lock ())
-          t_fwd_rep->unbind_fwd_rep ();
+          {
+            t_fwd_rep->unbind_fwd_rep ();
+            return;
+          }
 
+        m_fwd_scope = nullptr;
         m_fwd_rep.reset ();
       }
 
       symbol_record_rep * dup (symbol_scope *new_scope) const;
 
-      octave_value dump (void) const;
+      octave_value dump (context_id context) const;
 
       std::string name (void) const { return m_name; }
 
@@ -561,27 +527,26 @@ namespace octave
 
     private:
 
-      symbol_scope *m_decl_scope;
+      unsigned int m_storage_class;
 
       std::string m_name;
+
+      symbol_scope *m_fwd_scope;
 
       std::weak_ptr<symbol_record_rep> m_fwd_rep;
 
       std::deque<octave_value> m_value_stack;
-
-      unsigned int m_storage_class;
 
       bool m_valid;
     };
 
   public:
 
-    symbol_record (void);
-
-    symbol_record (symbol_scope *s, const std::string& nm = "",
+    symbol_record (const std::string& nm = "",
                    const octave_value& v = octave_value (),
                    unsigned int sc = local)
-      : m_rep (new symbol_record_rep (s, nm, v, sc)) { }
+      : m_rep (new symbol_record_rep (nm, v, sc))
+    { }
 
     symbol_record (const symbol_record& sr) = default;
 
@@ -599,57 +564,60 @@ namespace octave
     void rename (const std::string& new_name) { m_rep->rename (new_name); }
 
     octave_value
-    find (const octave_value_list& args = octave_value_list ()) const;
+    find (context_id context,
+          const octave_value_list& args = octave_value_list ()) const;
 
-    void assign (const octave_value& value)
+    void assign (const octave_value& value, context_id context)
     {
-      m_rep->assign (value);
+      m_rep->assign (value, context);
     }
 
     void assign (octave_value::assign_op op,
                  const std::string& type,
                  const std::list<octave_value_list>& idx,
-                 const octave_value& value)
+                 const octave_value& value, context_id context)
     {
-      m_rep->assign (op, type, idx, value);
+      m_rep->assign (op, type, idx, value, context);
     }
 
-    void assign (octave_value::assign_op op, const octave_value& value)
+    void assign (octave_value::assign_op op, const octave_value& value,
+                 context_id context)
     {
-      m_rep->assign (op, value);
+      m_rep->assign (op, value, context);
     }
 
-    void do_non_const_unary_op (octave_value::unary_op op)
+    void do_non_const_unary_op (octave_value::unary_op op, context_id context)
     {
-      m_rep->do_non_const_unary_op (op);
+      m_rep->do_non_const_unary_op (op, context);
     }
 
     void do_non_const_unary_op (octave_value::unary_op op,
                                 const std::string& type,
-                                const std::list<octave_value_list>& idx)
+                                const std::list<octave_value_list>& idx,
+                                context_id context)
     {
-      m_rep->do_non_const_unary_op (op, type, idx);
+      m_rep->do_non_const_unary_op (op, type, idx, context);
     }
 
-    octave_value varval (void) const
+    octave_value varval (context_id context) const
     {
-      return m_rep->varval ();
+      return m_rep->varval (context);
     }
 
     void push_context (void) { m_rep->push_context (); }
 
     size_t pop_context (void) { return m_rep->pop_context (); }
 
-    void clear (void) { m_rep->clear (); }
+    void clear (context_id context) { m_rep->clear (context); }
 
-    bool is_defined (void) const
+    bool is_defined (context_id context) const
     {
-      return m_rep->is_defined ();
+      return m_rep->is_defined (context);
     }
 
-    bool is_undefined (void) const
+    bool is_undefined (context_id context) const
     {
-      return ! m_rep->is_defined ();
+      return ! m_rep->is_defined (context);
     }
 
     bool is_valid (void) const
@@ -657,9 +625,9 @@ namespace octave
       return m_rep->is_valid ();
     }
 
-    bool is_variable (void) const
+    bool is_variable (context_id context) const
     {
-      return m_rep->is_variable ();
+      return m_rep->is_variable (context);
     }
 
     bool is_local (void) const { return m_rep->is_local (); }
@@ -692,18 +660,19 @@ namespace octave
 
     void invalidate (void) { m_rep->invalidate (); }
 
-    symbol_scope *decl_scope (void) { return m_rep->decl_scope (); }
-
     unsigned int storage_class (void) const { return m_rep->storage_class (); }
 
-    void bind_fwd_rep (const symbol_record& sr)
+    void bind_fwd_rep (symbol_scope *fwd_scope, const symbol_record& sr)
     {
-      m_rep->bind_fwd_rep (sr.m_rep);
+      m_rep->bind_fwd_rep (fwd_scope, sr.m_rep);
     }
 
     void unbind_fwd_rep (void) { m_rep->unbind_fwd_rep (); }
 
-    octave_value dump (void) const { return m_rep->dump (); }
+    octave_value dump (context_id context) const
+    {
+      return m_rep->dump (context);
+    }
 
   private:
 

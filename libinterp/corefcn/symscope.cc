@@ -60,7 +60,7 @@ namespace octave
               return symtab.global_varval (name);
             else
               {
-                octave_value val = sr.varval ();
+                octave_value val = sr.varval (m_context);
 
                 if (val.is_defined ())
                   return val;
@@ -90,7 +90,7 @@ namespace octave
 
     if (p == m_symbols.end ())
       {
-        symbol_record ret (this, name);
+        symbol_record ret (name);
 
         if (m_is_nested && m_parent && m_parent->look_nonlocal (name, ret))
           return m_symbols[name] = ret;
@@ -118,7 +118,7 @@ namespace octave
 
         if (! sr.is_hidden ())
           {
-            octave_value val = sr.varval ();
+            octave_value val = sr.varval (m_context);
 
             if (val.is_defined ())
               {
@@ -180,7 +180,7 @@ namespace octave
       {
         std::string nm = nm_sr.first;
         const symbol_record& sr = nm_sr.second;
-        info_map[nm] = sr.dump ();
+        info_map[nm] = sr.dump (m_context);
       }
 
     return octave_value (info_map);
@@ -301,7 +301,7 @@ namespace octave
       }
     else if (! p->second.is_automatic ())
       {
-        result.bind_fwd_rep (p->second);
+        result.bind_fwd_rep (this, p->second);
         return true;
       }
 
@@ -312,7 +312,8 @@ namespace octave
   symbol_scope::bind_script_symbols (symbol_scope *curr_scope)
   {
     for (auto& nm_sr : m_symbols)
-      nm_sr.second.bind_fwd_rep (curr_scope->find_symbol (nm_sr.first));
+      nm_sr.second.bind_fwd_rep (curr_scope,
+                                 curr_scope->find_symbol (nm_sr.first));
   }
 
   void

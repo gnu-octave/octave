@@ -137,7 +137,7 @@ namespace octave
 
                   if (val.is_defined ())
                     {
-                      sr.assign (val);
+                      sr.assign (val, m_context);
 
                       sr.mark_inherited ();
                     }
@@ -192,10 +192,10 @@ namespace octave
         {
           symbol_record& sr = insert (name, force_add);
 
-          sr.assign (value);
+          sr.assign (value, m_context);
         }
       else
-        p->second.assign (value);
+        p->second.assign (value, m_context);
     }
 
     void assign (const std::string& name,
@@ -212,10 +212,10 @@ namespace octave
         {
           symbol_record& sr = insert (name, true);
 
-          sr.assign (value);
+          sr.assign (value, m_context);
         }
       else
-        p->second.assign (value);
+        p->second.assign (value, m_context);
     }
 
     octave_value varval (const std::string& name) const
@@ -223,7 +223,7 @@ namespace octave
       table_const_iterator p = m_symbols.find (name);
 
       return (p != m_symbols.end ()
-              ? p->second.varval () : octave_value ());
+              ? p->second.varval (m_context) : octave_value ());
     }
 
     bool is_variable (const std::string& name) const
@@ -236,7 +236,7 @@ namespace octave
         {
           const symbol_record& sr = p->second;
 
-          retval = sr.is_variable ();
+          retval = sr.is_variable (m_context);
         }
 
       return retval;
@@ -268,14 +268,14 @@ namespace octave
           symbol_record& sr = nm_sr.second;
 
           if (! sr.is_persistent ())
-            sr.clear ();
+            sr.clear (m_context);
         }
     }
 
     void clear_variables (void)
     {
       for (auto& nm_sr : m_symbols)
-        nm_sr.second.clear ();
+        nm_sr.second.clear (m_context);
     }
 
     void clear_objects (void)
@@ -283,9 +283,9 @@ namespace octave
       for (auto& nm_sr : m_symbols)
         {
           symbol_record& sr = nm_sr.second;
-          octave_value val = sr.varval ();
+          octave_value val = sr.varval (m_context);
           if (val.isobject ())
-            nm_sr.second.clear ();
+            nm_sr.second.clear (m_context);
         }
     }
 
@@ -294,7 +294,7 @@ namespace octave
       table_iterator p = m_symbols.find (name);
 
       if (p != m_symbols.end ())
-        p->second.clear ();
+        p->second.clear (m_context);
     }
 
     void clear_variable_pattern (const std::string& pat)
@@ -305,10 +305,10 @@ namespace octave
         {
           symbol_record& sr = nm_sr.second;
 
-          if (sr.is_defined () || sr.is_global ())
+          if (sr.is_defined (m_context) || sr.is_global ())
             {
               if (pattern.match (sr.name ()))
-                sr.clear ();
+                sr.clear (m_context);
             }
         }
     }
@@ -321,10 +321,10 @@ namespace octave
         {
           symbol_record& sr = nm_sr.second;
 
-          if (sr.is_defined () || sr.is_global ())
+          if (sr.is_defined (m_context) || sr.is_global ())
             {
               if (pattern.is_match (sr.name ()))
-                sr.clear ();
+                sr.clear (m_context);
             }
         }
     }
@@ -354,7 +354,7 @@ namespace octave
         {
           const symbol_record& sr = nm_sr.second;
 
-          if ((defined_only && ! sr.is_defined ())
+          if ((defined_only && ! sr.is_defined (m_context))
               || (sr.storage_class () & exclude))
             continue;
 
@@ -377,7 +377,7 @@ namespace octave
             {
               const symbol_record& sr = nm_sr.second;
 
-              if (vars_only && ! sr.is_variable ())
+              if (vars_only && ! sr.is_variable (m_context))
                 continue;
 
               retval.push_back (sr);
@@ -400,7 +400,7 @@ namespace octave
             {
               const symbol_record& sr = nm_sr.second;
 
-              if (vars_only && ! sr.is_variable ())
+              if (vars_only && ! sr.is_variable (m_context))
                 continue;
 
               retval.push_back (sr);
@@ -416,7 +416,7 @@ namespace octave
 
       for (const auto& nm_sr : m_symbols)
         {
-          if (nm_sr.second.is_variable ())
+          if (nm_sr.second.is_variable (m_context))
             retval.push_back (nm_sr.first);
         }
 
@@ -431,7 +431,7 @@ namespace octave
 
       return (p != m_symbols.end ()
               && ! p->second.is_global ()
-              && p->second.is_defined ());
+              && p->second.is_defined (m_context));
     }
 
     bool is_global (const std::string& name) const

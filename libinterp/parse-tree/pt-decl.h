@@ -65,9 +65,15 @@ namespace octave
 
     ~tree_decl_elt (void);
 
-    bool is_defined (void) { return id ? id->is_defined () : false; }
+    bool is_defined (symbol_record::context_id context)
+    {
+      return id ? id->is_defined (context) : false;
+    }
 
-    bool is_variable (void) { return id ? id->is_variable () : false; }
+    bool is_variable (symbol_record::context_id context)
+    {
+      return id ? id->is_variable (context) : false;
+    }
 
     void mark_as_formal_parameter (void)
     {

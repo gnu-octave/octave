@@ -71,9 +71,15 @@ namespace octave
 
     std::string name (void) const { return sym.name (); }
 
-    bool is_defined (void) { return sym.is_defined (); }
+    bool is_defined (symbol_record::context_id context)
+    {
+      return sym.is_defined (context);
+    }
 
-    virtual bool is_variable (void) const { return sym.is_variable (); }
+    virtual bool is_variable (symbol_record::context_id context) const
+    {
+      return sym.is_variable (context);
+    }
 
     virtual bool is_black_hole (void) { return false; }
 
@@ -93,12 +99,14 @@ namespace octave
     //     then .mex files, then .m files.
 
     octave_value
-    do_lookup (const octave_value_list& args = octave_value_list ())
+    do_lookup (symbol_record::context_id context,
+               const octave_value_list& args = octave_value_list ())
     {
-      return sym.find (args);
+      return sym.find (context, args);
     }
 
-    void link_to_global (const symbol_record& global_sym);
+    void link_to_global (symbol_scope *global_scope,
+                         const symbol_record& global_sym);
 
     void mark_persistent (void) { sym.init_persistent (); }
 
@@ -146,7 +154,7 @@ namespace octave
 
     std::string name (void) const { return "~"; }
 
-    bool is_variable (void) const { return false; }
+    bool is_variable (symbol_record::context_id) const { return false; }
 
     bool is_black_hole (void) { return true; }
 

@@ -5421,10 +5421,15 @@ namespace octave
 
                     if (expr->is_identifier ())
                       {
+                        octave::symbol_scope *scope = tw.get_current_scope ();
+
+                        octave::symbol_record::context_id context
+                          = scope->current_context ();
+
                         tree_identifier *id
                           = dynamic_cast<tree_identifier *> (expr);
 
-                        do_bind_ans = (! id->is_variable ());
+                        do_bind_ans = (! id->is_variable (context));
                       }
                     else
                       do_bind_ans = (! expr->is_assignment_expression ());

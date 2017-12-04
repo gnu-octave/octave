@@ -61,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
+#include "symscope.h"
 #include "unwind-prot.h"
 #include "variables.h"
 
@@ -353,8 +354,12 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 
       octave_user_function *f = fcn.user_function_value ();
       octave::symbol_scope *f_scope = f->scope ();
+      octave::symbol_record::context_id context = 0;
       if (f_scope)
-        vars = f_scope->all_variables ();
+        {
+          vars = f_scope->all_variables ();
+          context = f_scope->current_context ();
+        }
 
       size_t varlen = vars.size ();
 
@@ -364,8 +369,8 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 
           for (const auto& symrec : vars)
             {
-              if (! save_text_data (os, symrec.varval (), symrec.name (),
-                                    false, 0))
+              if (! save_text_data (os, symrec.varval (context),
+                                    symrec.name (), false, 0))
                 return ! os.fail ();
             }
         }
@@ -530,8 +535,12 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
       octave_user_function *f = fcn.user_function_value ();
       octave::symbol_scope *f_scope = f->scope ();
+      octave::symbol_record::context_id context = 0;
       if (f_scope)
-        vars = f_scope->all_variables ();
+        {
+          vars = f_scope->all_variables ();
+          context = f_scope->current_context ();
+        }
 
       size_t varlen = vars.size ();
 
@@ -556,8 +565,8 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
         {
           for (const auto& symrec : vars)
             {
-              if (! save_binary_data (os, symrec.varval (), symrec.name (),
-                                      "", 0, save_as_floats))
+              if (! save_binary_data (os, symrec.varval (context),
+                                      symrec.name (), "", 0, save_as_floats))
                 return ! os.fail ();
             }
         }
@@ -786,8 +795,12 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       octave_user_function *f = fcn.user_function_value ();
       octave::symbol_scope *f_scope = f->scope ();
+      octave::symbol_record::context_id context = 0;
       if (f_scope)
-        vars = f_scope->all_variables ();
+        {
+          vars = f_scope->all_variables ();
+          context = f_scope->current_context ();
+        }
 
       size_t varlen = vars.size ();
 
@@ -836,8 +849,8 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
           for (const auto& symrec : vars)
             {
-              if (! add_hdf5_data (data_hid, symrec.varval (), symrec.name (),
-                                   "", false, save_as_floats))
+              if (! add_hdf5_data (data_hid, symrec.varval (context),
+                                   symrec.name (), "", false, save_as_floats))
                 break;
             }
           H5Gclose (data_hid);
@@ -1759,8 +1772,12 @@ particular output format.
 
       octave_user_function *fu = fh->user_function_value ();
       octave::symbol_scope *fu_scope = fu->scope ();
+      octave::symbol_record::context_id context = 0;
       if (fu_scope)
-        vars = fu_scope->all_variables ();
+        {
+          vars = fu_scope->all_variables ();
+          context = fu_scope->current_context ();
+        }
 
       size_t varlen = vars.size ();
 
@@ -1768,7 +1785,7 @@ particular output format.
         {
           octave_scalar_map ws;
           for (const auto& symrec : vars)
-            ws.assign (symrec.name (), symrec.varval ());
+            ws.assign (symrec.name (), symrec.varval (context));
 
           m.setfield ("workspace", ws);
         }
@@ -1980,6 +1997,11 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
 
           if (arg_list && arg_list->length () > 0)
             {
+              octave::symbol_scope *scope = tw->get_current_scope ();
+
+              octave::symbol_record::context_id context
+                = scope->current_context ();
+
               bool bad = false;
               int nargs = arg_list->length ();
               octave_value_list arg_template (nargs);
@@ -2005,7 +2027,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
                         {
                           arg_mask[iarg] = arginmap[elt_id->name ()];
                         }
-                      else if (elt_id->is_defined ())
+                      else if (elt_id->is_defined (context))
                         {
                           arg_template(iarg) = tw->evaluate (elt_id);
                           arg_mask[iarg] = -1;
@@ -2028,7 +2050,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
               if (! bad)
                 {
                   // If the head is a value, use it as root.
-                  if (head_id->is_defined ())
+                  if (head_id->is_defined (context))
                     root_val = tw->evaluate (head_id);
                   else
                     {

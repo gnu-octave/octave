@@ -797,7 +797,7 @@ void
           {
             tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-            do_bind_ans = (! id->is_variable ());
+            do_bind_ans = (! id->is_variable (scope->current_context ()));
           }
         else
           do_bind_ans = (! expr->is_assignment_expression ());
@@ -1144,7 +1144,7 @@ void
       return create_variable (vname, jit_typeinfo::get_any (), false);
     else
       {
-        octave_value val = record.varval ();
+        octave_value val = record.varval (scope->current_context ());
         if (val.is_undefined ())
           val = symtab.find_function (vname);
 

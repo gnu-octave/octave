@@ -582,13 +582,17 @@ namespace octave
       return varargout;
     else if (nargout <= len)
       {
+        symbol_scope *scope = get_current_scope ();
+
+        symbol_record::context_id context = scope->current_context ();
+
         octave_value_list retval (nargout);
 
         int i = 0;
 
         for (tree_decl_elt *elt : *ret_list)
           {
-            if (elt->is_defined ())
+            if (elt->is_defined (context))
               {
                 octave_value tmp = evaluate (elt);
                 retval(i) = tmp;
@@ -716,7 +720,7 @@ namespace octave
 
             symbol_record global_sym = symtab.find_global_symbol (id->name ());
 
-            id->link_to_global (global_sym);
+            id->link_to_global (symtab.global_scope (), global_sym);
           }
         else if (elt.is_persistent ())
           id->mark_persistent ();
@@ -1037,9 +1041,13 @@ namespace octave
   {
     octave_value_list retval;
 
+    symbol_scope *scope = get_current_scope ();
+
+    symbol_record::context_id context = scope->current_context ();
+
     symbol_record sym = expr.symbol ();
 
-    octave_value val = sym.find ();
+    octave_value val = sym.find (context);
 
     if (val.is_defined ())
       {
@@ -1145,8 +1153,16 @@ final_index_error (octave::index_exception& e,
 {
   std::string extra_message;
 
+  // FIXME: make this a member function for direct access to symbol
+  // table and scope?
+
+  octave::symbol_scope *scope
+    = octave::__require_current_scope__ ("final_index_error");
+
+  octave::symbol_record::context_id context = scope->current_context ();
+
   if (expr->is_identifier ()
-      && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable ())
+      && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
     {
       std::string var = expr->name ();
 
@@ -1272,7 +1288,11 @@ namespace octave
       {
         tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-        if (! id->is_variable ())
+        symbol_scope *scope = get_current_scope ();
+
+        symbol_record::context_id context = scope->current_context ();
+
+        if (! id->is_variable (context))
           {
             octave_value_list first_args;
 
@@ -1297,7 +1317,7 @@ namespace octave
 
             octave_function *fcn = nullptr;
 
-            octave_value val = id->do_lookup (first_args);
+            octave_value val = id->do_lookup (context, first_args);
 
             if (val.is_function ())
               fcn = val.function_value (true);
@@ -2258,9 +2278,13 @@ namespace octave
 
                 if (expr->is_identifier ())
                   {
+                    symbol_scope *scope = get_current_scope ();
+
+                    symbol_record::context_id context = scope->current_context ();
+
                     tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-                    do_bind_ans = (! id->is_variable ());
+                    do_bind_ans = (! id->is_variable (context));
                   }
                 else
                   do_bind_ans = (! expr->is_assignment_expression ());
@@ -2447,11 +2471,10 @@ namespace octave
         if (catch_code)
           {
             tree_identifier *expr_id = cmd.identifier ();
-            octave_lvalue ult;
 
             if (expr_id)
               {
-                ult = expr_id->lvalue (this);
+                octave_lvalue ult = expr_id->lvalue (this);
 
                 octave_scalar_map err;
 
@@ -2715,8 +2738,7 @@ namespace octave
           }
         else
           {
-            symbol_scope *scope
-              = m_interpreter.require_current_scope ("tree_evaluator::bind_ans");
+            symbol_scope *scope = get_current_scope ();
 
             scope->force_assign (ans, val);
 

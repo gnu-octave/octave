@@ -1131,6 +1131,7 @@ private:
   struct symbol_info
   {
     symbol_info (const octave::symbol_record& sr,
+                 octave::symbol_record::context_id context,
                  const std::string& expr_str = "",
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
@@ -1141,7 +1142,8 @@ private:
         is_global (sr.is_global ()),
         is_persistent (sr.is_persistent ())
     {
-      varval = (expr_val.is_undefined () ? sr.varval () : expr_val);
+      varval = (expr_val.is_undefined ()
+                ? sr.varval (context) : expr_val);
 
       is_complex = varval.iscomplex ();
     }
@@ -1294,16 +1296,18 @@ public:
 
   ~symbol_info_list (void) = default;
 
-  void append (const octave::symbol_record& sr)
+  void append (const octave::symbol_record& sr,
+               octave::symbol_record::context_id context)
   {
-    lst.push_back (symbol_info (sr));
+    lst.push_back (symbol_info (sr, context));
   }
 
   void append (const octave::symbol_record& sr,
+               octave::symbol_record::context_id context,
                const std::string& expr_str,
                const octave_value& expr_val)
   {
-    lst.push_back (symbol_info (sr, expr_str, expr_val));
+    lst.push_back (symbol_info (sr, context, expr_str, expr_val));
   }
 
   size_t size (void) const { return lst.size (); }
@@ -1695,6 +1699,8 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
   octave::symbol_scope *scope = symtab.current_scope ();
 
+  octave::symbol_record::context_id context = scope->current_context ();
+
   for (int j = 0; j < npats; j++)
     {
       std::string pat = pats[j];
@@ -1708,10 +1714,10 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
           for (const auto& symrec : tmp)
             {
-              if (symrec.is_variable ())
+              if (symrec.is_variable (context))
                 {
                   if (verbose)
-                    symbol_stats.append (symrec);
+                    symbol_stats.append (symrec, context);
                   else
                     symbol_names.push_back (symrec.name ());
                 }
@@ -1746,7 +1752,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
                           octave_value expr_val
                             = octave::eval_string (pat, true, parse_status);
 
-                          symbol_stats.append (sr, pat, expr_val);
+                          symbol_stats.append (sr, context, pat, expr_val);
                         }
                     }
                 }
@@ -1760,10 +1766,10 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
               for (const auto& symrec : tmp)
                 {
-                  if (symrec.is_variable ())
+                  if (symrec.is_variable (context))
                     {
                       if (verbose)
-                        symbol_stats.append (symrec);
+                        symbol_stats.append (symrec, context);
                       else
                         symbol_names.push_back (symrec.name ());
                     }

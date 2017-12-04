@@ -37,9 +37,9 @@ namespace octave
     if (! is_black_hole ())
       {
         if (m_idx.empty ())
-          m_sym.assign (op, rhs);
+          m_sym.assign (op, rhs, m_context);
         else
-          m_sym.assign (op, m_type, m_idx, rhs);
+          m_sym.assign (op, m_type, m_idx, rhs, m_context);
       }
   }
 
@@ -72,9 +72,9 @@ namespace octave
     if (! is_black_hole ())
       {
         if (m_idx.empty ())
-          m_sym.do_non_const_unary_op (op);
+          m_sym.do_non_const_unary_op (op, m_context);
         else
-          m_sym.do_non_const_unary_op (op, m_type, m_idx);
+          m_sym.do_non_const_unary_op (op, m_type, m_idx, m_context);
       }
   }
 
@@ -84,7 +84,7 @@ namespace octave
 
     if (! is_black_hole ())
       {
-        octave_value val = m_sym.varval ();
+        octave_value val = m_sym.varval (m_context);
 
         if (m_idx.empty ())
           retval = val;

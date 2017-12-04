@@ -206,14 +206,16 @@ final_index_error (octave::index_exception& e,
 {
   std::string extra_message;
 
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
+
+  octave::symbol_record::context_id context = symtab.current_context ();
+
   if (expr->is_identifier ()
-      && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable ())
+      && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
     {
       std::string var = expr->name ();
 
       e.set_var (var);
-
-      octave::symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
 
       octave_value fcn = symtab.find_function (var);
 

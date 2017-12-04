@@ -960,9 +960,10 @@ do_save (std::ostream& os, const octave_value& tc,
 
 void
 do_save (std::ostream& os, const octave::symbol_record& sr,
+         octave::symbol_record::context_id context,
          load_save_format fmt, bool save_as_floats)
 {
-  octave_value val = sr.varval ();
+  octave_value val = sr.varval (context);
 
   if (val.is_defined ())
     {
@@ -1009,15 +1010,17 @@ static size_t
 save_vars (std::ostream& os, const std::string& pattern,
            load_save_format fmt, bool save_as_floats)
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("save_vars");
+  octave::symbol_scope *scope = octave::__require_current_scope__ ("save_vars");
 
-  std::list<octave::symbol_record> vars = symtab.glob (pattern);
+  octave::symbol_record::context_id context = scope->current_context ();
+
+  std::list<octave::symbol_record> vars = scope->glob (pattern);
 
   size_t saved = 0;
 
   for (const auto& var : vars)
     {
-      do_save (os, var, fmt, save_as_floats);
+      do_save (os, var, context, fmt, save_as_floats);
 
       saved++;
     }
@@ -1334,13 +1337,15 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
   octave::symbol_scope *top_scope = symtab.top_scope ();
 
+  octave::symbol_record::context_id context = top_scope->current_context ();
+
   std::list<octave::symbol_record> vars = top_scope->all_variables ();
 
   double save_mem_size = 0;
 
   for (const auto& var : vars)
     {
-      octave_value val = var.varval ();
+      octave_value val = var.varval (context);
 
       if (val.is_defined ())
         {

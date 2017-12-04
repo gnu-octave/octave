@@ -40,10 +40,11 @@ namespace octave
 
   class tree_evaluator;
 
-  void tree_identifier::link_to_global (const symbol_record& global_sym)
+  void tree_identifier::link_to_global (symbol_scope *global_scope,
+                                        const symbol_record& global_sym)
   {
     if (! sym.is_global ())
-      sym.bind_fwd_rep (global_sym);
+      sym.bind_fwd_rep (global_scope, global_sym);
   }
 
   void
@@ -64,12 +65,14 @@ namespace octave
   }
 
   octave_lvalue
-  tree_identifier::lvalue (tree_evaluator *)
+  tree_identifier::lvalue (tree_evaluator *tw)
   {
     if (sym.is_added_static ())
       static_workspace_error ();
 
-    return octave_lvalue (sym);
+    symbol_scope *scope = tw->get_current_scope ();
+
+    return octave_lvalue (sym, scope->current_context ());
   }
 
   tree_identifier *

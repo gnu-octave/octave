@@ -3158,10 +3158,7 @@ namespace octave
 
     symbol_scope *scope = symtab_context.curr_scope ();
 
-    symbol_record sr
-      = (scope
-         ? scope->insert (ident)
-         : symbol_record (scope, ident));
+    symbol_record sr = (scope ? scope->insert (ident) : symbol_record (ident));
 
     token *tok = new token (NAME, sr, input_line_number, current_input_column);
 

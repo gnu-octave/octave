@@ -29,79 +29,78 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-lvalue.h"
 #include "ov.h"
 
-void
-octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
+namespace octave
 {
-  if (! is_black_hole ())
-    {
-      if (idx.empty ())
-        sym.assign (op, rhs);
-      else
-        sym.assign (op, type, idx, rhs);
-    }
-}
+  void octave_lvalue::assign (octave_value::assign_op op,
+                              const octave_value& rhs)
+  {
+    if (! is_black_hole ())
+      {
+        if (m_idx.empty ())
+          m_sym.assign (op, rhs);
+        else
+          m_sym.assign (op, m_type, m_idx, rhs);
+      }
+  }
 
-void
-octave_lvalue::set_index (const std::string& t,
-                          const std::list<octave_value_list>& i)
-{
-  if (! idx.empty ())
-    error ("invalid index expression in assignment");
+  void octave_lvalue::set_index (const std::string& t,
+                                 const std::list<octave_value_list>& i)
+  {
+    if (! m_idx.empty ())
+      error ("invalid index expression in assignment");
 
-  type = t;
-  idx = i;
-}
+    m_type = t;
+    m_idx = i;
+  }
 
-bool
-octave_lvalue::index_is_empty (void) const
-{
-  bool retval = false;
+  bool octave_lvalue::index_is_empty (void) const
+  {
+    bool retval = false;
 
-  if (idx.size () == 1)
-    {
-      octave_value_list tmp = idx.front ();
+    if (m_idx.size () == 1)
+      {
+        octave_value_list tmp = m_idx.front ();
 
-      retval = (tmp.length () == 1 && tmp(0).isempty ());
-    }
+        retval = (tmp.length () == 1 && tmp(0).isempty ());
+      }
 
-  return retval;
-}
+    return retval;
+  }
 
-void
-octave_lvalue::do_unary_op (octave_value::unary_op op)
-{
-  if (! is_black_hole ())
-    {
-      if (idx.empty ())
-        sym.do_non_const_unary_op (op);
-      else
-        sym.do_non_const_unary_op (op, type, idx);
-    }
-}
+  void octave_lvalue::do_unary_op (octave_value::unary_op op)
+  {
+    if (! is_black_hole ())
+      {
+        if (m_idx.empty ())
+          m_sym.do_non_const_unary_op (op);
+        else
+          m_sym.do_non_const_unary_op (op, m_type, m_idx);
+      }
+  }
 
-octave_value
-octave_lvalue::value (void) const
-{
-  octave_value retval;
+  octave_value octave_lvalue::value (void) const
+  {
+    octave_value retval;
 
-  if (! is_black_hole ())
-    {
-      octave_value val = sym.varval ();
+    if (! is_black_hole ())
+      {
+        octave_value val = m_sym.varval ();
 
-      if (idx.empty ())
-        retval = val;
-      else
-        {
-          if (val.is_constant ())
-            retval = val.subsref (type, idx);
-          else
-            {
-              octave_value_list t = val.subsref (type, idx, 1);
-              if (t.length () > 0)
-                retval = t(0);
-            }
-        }
-    }
+        if (m_idx.empty ())
+          retval = val;
+        else
+          {
+            if (val.is_constant ())
+              retval = val.subsref (m_type, m_idx);
+            else
+              {
+                octave_value_list t = val.subsref (m_type, m_idx, 1);
+                if (t.length () > 0)
+                  retval = t(0);
+              }
+          }
+      }
 
-  return retval;
+    return retval;
+  }
 }

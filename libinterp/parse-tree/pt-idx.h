@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 class octave_map;
 class octave_value;
 class octave_value_list;
-class octave_lvalue;
 
 #include "str-vec.h"
 
@@ -40,6 +39,7 @@ class octave_lvalue;
 
 namespace octave
 {
+  class octave_lvalue;
   class tree_argument_list;
   class tree_evaluator;
 

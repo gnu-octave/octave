@@ -25,91 +25,75 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-class octave_value;
-class octave_value_list;
-
 #include <string>
 
 #include "ovl.h"
 #include "symtab.h"
 
-class
-octave_lvalue
+namespace octave
 {
-public:
-
-  octave_lvalue (const octave::symbol_record& s
-                   = octave::symbol_record ())
-    : sym (s), black_hole (false), type (), idx (), nel (1)
-  { }
-
-  octave_lvalue (const octave_lvalue& vr)
-    : sym (vr.sym), black_hole (vr.black_hole), type (vr.type), idx (vr.idx), nel (vr.nel)
-  { }
-
-  octave_lvalue& operator = (const octave_lvalue& vr)
+  class octave_lvalue
   {
-    if (this != &vr)
-      {
-        sym = vr.sym;
-        black_hole = vr.black_hole;
-        type = vr.type;
-        idx = vr.idx;
-        nel = vr.nel;
-      }
+  public:
 
-    return *this;
-  }
+    octave_lvalue (const symbol_record& sr = symbol_record ())
+      : m_sym (sr), m_black_hole (false), m_type (), m_idx (), m_nel (1)
+    { }
 
-  ~octave_lvalue (void) = default;
+    octave_lvalue (const octave_lvalue& vr) = default;
 
-  bool is_black_hole (void) const { return black_hole; }
+    octave_lvalue& operator = (const octave_lvalue& vr) = default;
 
-  void mark_black_hole (void) { black_hole = true; }
+    ~octave_lvalue (void) = default;
 
-  bool is_defined (void) const
-  {
-    return ! is_black_hole () && sym.is_defined ();
-  }
+    bool is_black_hole (void) const { return m_black_hole; }
 
-  bool is_undefined (void) const
-  {
-    return is_black_hole () || sym.is_undefined ();
-  }
+    void mark_black_hole (void) { m_black_hole = true; }
 
-  bool isstruct (void) const { return value().isstruct (); }
+    bool is_defined (void) const
+    {
+      return ! is_black_hole () && m_sym.is_defined ();
+    }
 
-  void define (const octave_value& v) { sym.assign (v); }
+    bool is_undefined (void) const
+    {
+      return is_black_hole () || m_sym.is_undefined ();
+    }
 
-  void assign (octave_value::assign_op, const octave_value&);
+    bool isstruct (void) const { return value().isstruct (); }
 
-  void numel (octave_idx_type n) { nel = n; }
+    void define (const octave_value& v) { m_sym.assign (v); }
 
-  octave_idx_type numel (void) const { return nel; }
+    void assign (octave_value::assign_op, const octave_value&);
 
-  void set_index (const std::string& t, const std::list<octave_value_list>& i);
+    void numel (octave_idx_type n) { m_nel = n; }
 
-  void clear_index (void) { type = ""; idx.clear (); }
+    octave_idx_type numel (void) const { return m_nel; }
 
-  std::string index_type (void) const { return type; }
+    void set_index (const std::string& t, const std::list<octave_value_list>& i);
 
-  bool index_is_empty (void) const;
+    void clear_index (void) { m_type = ""; m_idx.clear (); }
 
-  void do_unary_op (octave_value::unary_op op);
+    std::string index_type (void) const { return m_type; }
 
-  octave_value value (void) const;
+    bool index_is_empty (void) const;
 
-private:
+    void do_unary_op (octave_value::unary_op op);
 
-  octave::symbol_record sym;
+    octave_value value (void) const;
 
-  bool black_hole;
+  private:
 
-  std::string type;
+    symbol_record m_sym;
 
-  std::list<octave_value_list> idx;
+    bool m_black_hole;
 
-  octave_idx_type nel;
-};
+    std::string m_type;
+
+    std::list<octave_value_list> m_idx;
+
+    octave_idx_type m_nel;
+  };
+}
 
 #endif

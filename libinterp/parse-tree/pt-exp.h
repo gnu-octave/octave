@@ -29,13 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 
 class octave_value;
-class octave_lvalue;
 
 #include "pt.h"
 #include "symtab.h"
 
 namespace octave
 {
+  class octave_lvalue;
   class tree_evaluator;
 
   // A base class for expressions.

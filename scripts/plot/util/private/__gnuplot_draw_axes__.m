@@ -609,7 +609,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         titlespec{data_idx} = "title \"\"";
         usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
             x_dim, y_dim, x_origin, y_origin, dx, dy, format);
-        withclause{data_idx} = sprintf ("with %s;", imagetype);
+        withclause{data_idx} = sprintf ("with %s", imagetype);
 
       case "line"
         if (strcmp (get (obj.parent, "type"), "hggroup"))
@@ -1660,6 +1660,20 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   fputs (plot_stream, "unset colorbox;\n");
 
   if (have_data)
+    for i = 1:data_idx
+      ## Images can be obscured by background or foreground image
+      if (is_image_data (i))
+        if (bg_is_set)
+          fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
+          bg_is_set = false;
+        endif
+        if (fg_is_set)
+          fputs (plot_stream, "unset obj 2; \\\n");
+          fg_is_set = false;
+        endif
+        break;
+      endif
+    endfor
     if (nd == 2)
       plot_cmd = "plot";
     else
@@ -1695,13 +1709,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                usingclause{1}, titlespec{1}, withclause{1});
     elseif (is_image_data (1))
-      if (numel (is_image_data) > 1 && is_image_data(2))
-        ## Remove terminating semicolon
-        n = max (strfind (withclause{1}, ";"));
-        if (! isempty (n))
-          withclause{1} = withclause{1}(1:n-1);
-        endif
-      endif
       fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                usingclause{1}, titlespec{1}, withclause{1});
     else
@@ -1713,41 +1720,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         fprintf (plot_stream, ", \"-\" %s %s %s \\\n",
                  usingclause{i}, titlespec{i}, withclause{i});
       elseif (is_image_data (i))
-        if (! is_image_data (i-1))
-          fputs (plot_stream, "; ");
-          if (bg_is_set)
-            fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
-            bg_is_set = false;
-          endif
-          if (fg_is_set)
-            fputs (plot_stream, "unset obj 2; \\\n");
-            fg_is_set = false;
-          endif
-          if (numel (is_image_data) > i && is_image_data(i+1))
-            ## Remove terminating semicolon
-            n = max (strfind (withclause{i}, ";"));
-            if (! isempty (n))
-              withclause{i} = withclause{i}(1:n-1);
-            endif
-          endif
-          fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
-                   usingclause{i}, titlespec{i}, withclause{i});
-        else
-          ## For consecutive images continue with the same plot command
-          fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", ",",
-                   usingclause{i}, titlespec{i}, withclause{i});
-        endif
-      elseif (is_image_data (i-1))
-        if (bg_is_set)
-          fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
-          bg_is_set = false;
-        endif
-        if (fg_is_set)
-          fputs (plot_stream, "unset obj 2; \\\n");
-          fg_is_set = false;
-        endif
-        fprintf (plot_stream,"%s \"-\" binary format='%%float64' %s %s %s \\\n",
-                 plot_cmd, usingclause{i}, titlespec{i}, withclause{i});
+        fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", ",",
+                 usingclause{i}, titlespec{i}, withclause{i});
       else
         fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
                  usingclause{i}, titlespec{i}, withclause{i});

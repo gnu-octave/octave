@@ -818,9 +818,7 @@ For simplicity, a more advanced implementation of a @code{classdef} class is
 shown using the @code{polynomial} example again (@pxref{Creating a Class}):
 
 @example
-@group
 @EXAMPLEFILE(polynomial2.m)
-@end group
 @end example
 
 @noindent

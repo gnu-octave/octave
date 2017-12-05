@@ -1,6 +1,6 @@
 classdef polynomial2
   properties
-    poly = 0
+    poly = 0;
   endproperties
 
   methods

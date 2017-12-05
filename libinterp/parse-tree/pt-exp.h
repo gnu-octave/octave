@@ -31,10 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 
 #include "pt.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
   class octave_lvalue;
   class tree_evaluator;
 

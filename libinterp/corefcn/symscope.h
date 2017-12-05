@@ -54,8 +54,6 @@ namespace octave
   {
   public:
 
-    typedef symbol_record::context_id context_id;
-
     typedef std::map<std::string, symbol_record>::const_iterator
     table_const_iterator;
     typedef std::map<std::string, symbol_record>::iterator
@@ -111,9 +109,15 @@ namespace octave
       return new_sid;
     }
 
-    void set_context (context_id context) { m_context = context; }
+    void set_context (symbol_record::context_id context)
+    {
+      m_context = context;
+    }
 
-    context_id current_context (void) const { return m_context; }
+    symbol_record::context_id current_context (void) const
+    {
+      return m_context;
+    }
 
     symbol_record find_symbol (const std::string& name)
     {
@@ -551,14 +555,12 @@ namespace octave
     // If true then no variables can be added.
     bool m_is_static;
 
-    context_id m_context;
+    symbol_record::context_id m_context;
   };
 
   class symbol_scope
   {
   public:
-
-    typedef symbol_record::context_id context_id;
 
     symbol_scope (const std::string& name = "")
       : m_rep (new symbol_scope_rep (name))
@@ -614,12 +616,12 @@ namespace octave
       return symbol_scope (m_rep->dup ());
     }
 
-    void set_context (context_id context)
+    void set_context (symbol_record::context_id context)
     {
       m_rep->set_context (context);
     }
 
-    context_id current_context (void) const
+    symbol_record::context_id current_context (void) const
     {
       return m_rep->current_context ();
     }

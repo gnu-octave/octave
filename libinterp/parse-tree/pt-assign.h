@@ -34,10 +34,10 @@ class octave_value_list;
 #include "ov.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
   class octave_lvalue;
   class tree_argument_list;
 

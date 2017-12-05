@@ -27,16 +27,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <list>
 
+class octave_value;
 class octave_value_list;
 
 #include "str-vec.h"
 
 #include "base-list.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
   class tree_evaluator;
   class tree_expression;
 
@@ -89,8 +90,9 @@ namespace octave
 
     bool is_valid_lvalue_list (void) const;
 
-    octave_value_list convert_to_const_vector (tree_evaluator *tw,
-                                               const octave_value *object = nullptr);
+    octave_value_list
+    convert_to_const_vector (tree_evaluator *tw,
+                             const octave_value *object = nullptr);
 
     string_vector get_arg_names (void) const;
 

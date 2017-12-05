@@ -43,9 +43,7 @@ namespace octave
 
 #include "lo-ieee.h"
 
-//#include "ov.h"
 #include "ov-builtin.h"
-#include "symtab.h"
 
 extern OCTINTERP_API octave_function *
 is_valid_function (const octave_value&, const std::string& = "",

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
-#include "symtab.h"
+#include "symscope.h"
 #include "unwind-prot.h"
 
 class string_vector;
@@ -220,10 +220,10 @@ public:
 
   ~octave_user_function (void);
 
-  octave::symbol_table::context_id active_context () const
+  octave::symbol_record::context_id active_context () const
   {
     return is_anonymous_function ()
-      ? 0 : static_cast<octave::symbol_table::context_id>(call_depth);
+      ? 0 : static_cast<octave::symbol_record::context_id>(call_depth);
   }
 
   octave_function * function_value (bool = false) { return this; }

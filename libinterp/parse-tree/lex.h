@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   class interpreter;
-  class symbol_table;
+  class symbol_scope;
 
   // Is the given string a keyword?
   extern bool is_keyword (const std::string& s);

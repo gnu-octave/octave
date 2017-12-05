@@ -32,10 +32,10 @@ class octave_value_list;
 
 #include "pt-mat.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
   class tree_argument_list;
 
   // General cells.

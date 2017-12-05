@@ -28,10 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-list.h"
 #include "pt-decl.h"
 #include "pt-walk.h"
-#include "symtab.h"
+#include "symrec.h"
 
 namespace octave
 {
+  class symbol_scope;
   class tree_identifier;
   class tree_index_expression;
 

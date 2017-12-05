@@ -29,8 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mach-info.h"
-#include "symtab.h"
 
+namespace octave
+{
+  class symbol_record;
+}
+
+class string_vector;
 class octave_value;
 
 // FIXME: maybe MAT5 and MAT7 should be options to MAT_BINARY.

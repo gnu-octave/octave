@@ -33,7 +33,6 @@ class octave_value_list;
 #include "ov.h"
 #include "pt-binop.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {

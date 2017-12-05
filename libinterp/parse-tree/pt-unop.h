@@ -32,10 +32,11 @@ class octave_value_list;
 
 #include "pt-exp.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
+
   // Unary expressions.
 
   class tree_unary_expression : public tree_expression

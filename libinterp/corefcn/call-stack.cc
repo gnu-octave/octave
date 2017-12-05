@@ -361,7 +361,7 @@ namespace octave
 
   void
   call_stack::push (octave_function *fcn, const symbol_scope& scope,
-                    symbol_table::context_id context)
+                    symbol_record::context_id context)
   {
     size_t prev_frame = curr_frame;
     curr_frame = cs.size ();

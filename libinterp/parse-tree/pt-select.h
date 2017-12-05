@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "comment-list.h"
 #include "pt-cmd.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {

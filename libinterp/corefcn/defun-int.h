@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov-builtin.h"
 #include "ov-dld-fcn.h"
-#include "symtab.h"
 #include "version.h"
 
 namespace octave

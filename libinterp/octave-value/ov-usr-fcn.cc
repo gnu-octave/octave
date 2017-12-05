@@ -533,7 +533,9 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
   octave::call_stack& cs
     = octave::__get_call_stack__ ("octave_user_function::call");
 
-  octave::symbol_table::context_id context = anonymous_function ? 0 : call_depth;
+  octave::symbol_record::context_id context
+    = anonymous_function ? 0 : call_depth;
+
   cs.push (this, m_scope, context);
 
   // Set pointer to the current unwind_protect frame to allow

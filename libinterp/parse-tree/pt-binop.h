@@ -33,10 +33,11 @@ class octave_value_list;
 #include "ov.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
+
   // Binary expressions.
 
   class tree_binary_expression : public tree_expression

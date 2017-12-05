@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
-#include "symtab.h"
 #include "ov-fcn-handle.h"
 
 // Inline functions.

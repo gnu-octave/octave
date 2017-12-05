@@ -33,13 +33,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-misc.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
-#include "symtab.h"
+#include "symscope.h"
 
 class octave_value_list;
 
 #include "ov.h"
 #include "ov-usr-fcn.h"
-#include "symtab.h"
 
 namespace octave
 {

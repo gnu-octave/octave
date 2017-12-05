@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 
 #include "lex.h"
-#include "symtab.h"
 #include "pt-misc.h"
+#include "symscope.h"
 #include "token.h"
 
 class octave_function;

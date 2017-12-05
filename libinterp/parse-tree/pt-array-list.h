@@ -28,10 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-list.h"
 #include "pt-arg-list.h"
 #include "pt-exp.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
   class tree_walker;
 
   // Base class for cell arrays and matrices.

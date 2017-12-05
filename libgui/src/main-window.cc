@@ -68,7 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "oct-map.h"
 #include "octave.h"
-#include "symtab.h"
+#include "symscope.h"
 #include "utils.h"
 #include "version.h"
 

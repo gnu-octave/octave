@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
-#include "symtab.h"
+#include "symscope.h"
 
 namespace octave
 {

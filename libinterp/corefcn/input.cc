@@ -68,7 +68,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-eval.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
-#include "symtab.h"
 #include "sysdep.h"
 #include "interpreter.h"
 #include "unwind-prot.h"

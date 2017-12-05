@@ -33,10 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-cmd.h"
 #include "pt-id.h"
 #include "pt-walk.h"
-#include "symtab.h"
+#include "symrec.h"
 
 namespace octave
 {
+  class symbol_scope;
   class tree_evaluator;
   class tree_expression;
   class tree_identifier;

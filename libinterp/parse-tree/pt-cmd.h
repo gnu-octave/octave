@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt.h"
 #include "pt-bp.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {

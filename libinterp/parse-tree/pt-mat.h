@@ -34,10 +34,10 @@ class octave_value_list;
 #include "pt-array-list.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
   class tree_argument_list;
 
   // General matrices.  This allows us to construct matrices from

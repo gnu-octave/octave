@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "jit-typeinfo.h"
 #include "jit-ir.h"
 #include "pt-walk.h"
-#include "symtab.h"
+#include "symscope.h"
 
 // octave_value_list is not (yet) in the octave namespace
 class octave_value_list;

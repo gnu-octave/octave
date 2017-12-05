@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 
 #include "interpreter-private.h"
-#include "symtab.h"
+#include "symscope.h"
 
 workspace_view::workspace_view (QWidget *p)
   : octave_dock_widget (p), m_view (new QTableView (this))

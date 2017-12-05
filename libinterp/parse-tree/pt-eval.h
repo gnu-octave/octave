@@ -35,10 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "profiler.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 namespace octave
 {
+  class symbol_scope;
   class tree_decl_elt;
   class tree_expression;
 

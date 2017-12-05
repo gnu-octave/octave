@@ -33,7 +33,7 @@ class octave_map;
 class octave_user_code;
 class octave_user_script;
 
-#include "symtab.h"
+#include "symscope.h"
 
 namespace octave
 {
@@ -53,7 +53,7 @@ namespace octave
 
       stack_frame (octave_function *fcn = nullptr,
                    const symbol_scope& scope = symbol_scope (),
-                   symbol_table::context_id context = 0, size_t prev = 0)
+                   symbol_record::context_id context = 0, size_t prev = 0)
         : m_fcn (fcn), m_line (-1), m_column (-1), m_scope (scope),
           m_context (context), m_prev (prev)
       { }
@@ -79,7 +79,7 @@ namespace octave
       int m_line;
       int m_column;
       symbol_scope m_scope;
-      symbol_table::context_id m_context;
+      symbol_record::context_id m_context;
       size_t m_prev;
     };
 
@@ -130,7 +130,7 @@ namespace octave
               ? cs[curr_frame].m_scope : symbol_scope ());
     }
 
-    symbol_table::context_id current_context (void) const
+    symbol_record::context_id current_context (void) const
     {
       return (curr_frame > 0 && curr_frame < cs.size ()
               ? cs[curr_frame].m_context : 0);
@@ -174,14 +174,14 @@ namespace octave
 
     void push (octave_function *fcn);
     void push (octave_function *fcn, const symbol_scope& scope,
-               symbol_table::context_id context);
+               symbol_record::context_id context);
 
     void push (void)
     {
       push (nullptr);
     }
 
-    void push (const symbol_scope& scope, symbol_table::context_id context)
+    void push (const symbol_scope& scope, symbol_record::context_id context)
     {
       push (nullptr, scope, context);
     }

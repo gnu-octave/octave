@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 
-#include "symtab.h"
+#include "symrec.h"
 #include "token.h"
 
 namespace octave

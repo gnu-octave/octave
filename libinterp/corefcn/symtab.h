@@ -43,7 +43,6 @@ class octave_user_function;
 #include "fcn-info.h"
 #include "ov.h"
 #include "ovl.h"
-#include "symrec.h"
 #include "symscope.h"
 #include "workspace-element.h"
 
@@ -56,8 +55,6 @@ namespace octave
     typedef octave::symbol_record symbol_record;
     typedef octave::symbol_scope scope;
     typedef octave::fcn_info fcn_info;
-
-    typedef scope::context_id context_id;
 
     symbol_table (void)
       : m_fcn_table (), m_class_precedence_table (),
@@ -86,7 +83,7 @@ namespace octave
       return m_current_scope;
     }
 
-    context_id current_context (void) const
+    symbol_record::context_id current_context (void) const
     {
       return m_current_scope ? m_current_scope.current_context () : 0;
     }
@@ -96,7 +93,8 @@ namespace octave
       set_scope_and_context (sid, 0);
     }
 
-    void set_scope_and_context (const symbol_scope& sid, context_id context)
+    void set_scope_and_context (const symbol_scope& sid,
+                                symbol_record::context_id context)
     {
       if (sid == m_global_scope)
         error ("can't set scope to global");

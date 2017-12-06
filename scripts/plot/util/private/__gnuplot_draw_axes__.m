@@ -956,7 +956,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                   if (do_interp_warning && numel (ccol) == 3)
                     warning ('"interp" not supported, using 1st entry of cdata');
                     do_interp_warning = false;
-                    color = ccol(1,:);
+                    color = mapcdata (ccol(:), obj.cdatamapping, clim, cmap_sz);
                   else
                     if (isscalar (ccol))
                       ccol = repmat (ccol, numel (xcol), 1);

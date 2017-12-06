@@ -63,7 +63,7 @@ function filelist = zip (zipfile, files, rootdir = ".")
   zipfile = regexprep (zipfile, "'", "\\'");  # escape single quotes
   cmd = sprintf ("zip -r '%s' %s", zipfile, files);
   if (ispc () && ! isunix ())
-    cmd = strrep (cmd, "\\", "/");
+    cmd = strrep (cmd, '\', '/');
   endif
 
   origdir = pwd ();

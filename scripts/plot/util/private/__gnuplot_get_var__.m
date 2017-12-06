@@ -71,7 +71,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
     ## or Alt-F4.  Further, this abrupt close also requires the leading
     ## "\n" on the next line.
     if (use_mkfifo)
-      fprintf (ostream, "\nset print \"%s\";\n", gpin_name);
+      fprintf (ostream, ["\n" 'set print "%s";' "\n"], gpin_name);
       fflush (ostream);
       [gpin, err] = fopen (gpin_name, "r");
       if (err)
@@ -81,7 +81,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
       if (err)
         error ("__gnuplot_get_var__: can not open FIFO");
       endif
-      gp_cmd = sprintf ("\nif (exists(\"%s\")) print %s; else print NaN\n",
+      gp_cmd = sprintf (["\n" 'if (exists("%s")) print %s; else print NaN' "\n"],
                         gp_var_name(1:n), gp_var_name);
       fputs (ostream, gp_cmd);
 
@@ -103,9 +103,9 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
       fclose (gpin);
     else
       ## Direct gnuplot to print to <STDOUT>
-      fprintf (ostream, "set print \"-\";\n");
+      fprintf (ostream, ['set print "-";' "\n"]);
       fflush (ostream);
-      gp_cmd = sprintf ("\nif (exists(\"%s\")) print \"OCTAVE: \", %s; else print NaN\n",
+      gp_cmd = sprintf (["\n" 'if (exists("%s")) print "OCTAVE: ", %s; else print NaN' "\n"],
                         gp_var_name(1:n), gp_var_name);
       fputs (ostream, gp_cmd);
       fflush (ostream);

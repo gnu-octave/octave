@@ -1049,9 +1049,9 @@ function cstr = eval_code_helper (context, code)
 
   load_snippet = "";
   if (exist (context, "file") == 2)
-    load_snippet = sprintf ("load (\"%s\");", context);
+    load_snippet = sprintf ('load ("%s");', context);
   endif
-  save_snippet = sprintf ("save (\"-binary\", \"%s\");", context);
+  save_snippet = sprintf ('save ("-binary", "%s");', context);
 
   eval (sprintf ("function __eval__ ()\n%s\n%s\n%s\nendfunction",
                  load_snippet, code, save_snippet));

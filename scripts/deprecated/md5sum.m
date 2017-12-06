@@ -25,13 +25,13 @@
 ## with:
 ##
 ## @example
-## hash (\"md5\", fileread (@var{file}))
+## hash ("md5", fileread (@var{file}))
 ## @end example
 ##
 ## And calls like @code{md5sum (@var{str}, true)} with:
 ##
 ## @example
-## hash (\"md5\", fileread (@var{str}))
+## hash ("md5", fileread (@var{str}))
 ## @end example
 ##
 ## Calculate the MD5 sum of the file @var{file}.

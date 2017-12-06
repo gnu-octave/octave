@@ -678,7 +678,7 @@ function cmd = epstool (opts, filein, fileout)
     endif
     if (pipein)
       if (dos_shell)
-        filein(filein=="'") = "\"";
+        filein(filein=="'") = '"';
         gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
                                   "device", epsdevice,
                                   "source", "-",
@@ -718,7 +718,7 @@ function cmd = epstool (opts, filein, fileout)
     elseif (pipein && ! pipeout)
       if (dos_shell)
         ## ghostscript expects double, not single, quotes
-        fileout(fileout=="'") = "\"";
+        fileout(fileout=="'") = '"';
         cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
                                "device", epsdevice,
                                "source", "-",

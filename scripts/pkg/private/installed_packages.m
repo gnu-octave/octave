@@ -59,7 +59,7 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
 
   ## Now check if the package is loaded.
   ## FIXME: Couldn't dir_in_loadpath() be used here?
-  tmppath = strrep (path (), "\\", "/");
+  tmppath = strrep (path (), '\', '/');
   for i = 1:numel (installed_pkgs_lst)
     if (strfind (tmppath, strrep (installed_pkgs_lst{i}.dir, '\', '/')))
       installed_pkgs_lst{i}.loaded = true;

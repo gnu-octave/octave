@@ -109,7 +109,7 @@ endfunction
 function [status, output] = shell (cmd, verbose)
   persistent have_sh;
 
-  cmd = strrep (cmd, "\\", "/");
+  cmd = strrep (cmd, '\', '/');
   if (ispc () && ! isunix ())
     if (isempty (have_sh))
       if (system ('sh.exe -c "exit"'))

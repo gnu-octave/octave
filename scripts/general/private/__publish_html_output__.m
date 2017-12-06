@@ -109,15 +109,15 @@ endfunction
 
 function outstr = do_header (title_str, intro_str, toc_cstr)
   mathjax_str = sprintf ("%s\n",
-"<script type=\"text/x-mathjax-config\">",
+'<script type="text/x-mathjax-config">',
 "MathJax.Hub.Config({",
 "  tex2jax: { inlineMath: [['$','$'], ['\\\\(','\\\\)']] },",
 "  TeX: { equationNumbers: { autoNumber: 'all' } }",
 "});",
 "</script>",
-["<script type=\"text/javascript\" async ", ...
- "src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?", ...
- "config=TeX-MML-AM_CHTML\"></script>"]);
+['<script type="text/javascript" async ', ...
+ 'src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?', ...
+ 'config=TeX-MML-AM_CHTML"></script>']);
 
   stylesheet_str = sprintf ("%s\n",
 "<style>",
@@ -125,7 +125,7 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 "  max-width: 42em;",
 "}",
 "body {",
-"  font-family: \"Roboto Condensed\", sans-serif;",
+'  font-family: "Roboto Condensed", sans-serif;",
 "  padding-left: 7.5em;",
 "  padding-right: 7.5em;",
 "}",
@@ -157,7 +157,7 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 "  color: Blue;",
 "}",
 "h2 {",
-"  font-family: \"Roboto Condensed\", serif;",
+'  font-family: "Roboto Condensed", serif;",
 "  margin-top: 1.5em;",
 "}",
 "h2 a, h2 a:visited {",
@@ -169,7 +169,7 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 "<!DOCTYPE html>",
 "<html>",
 "<head>",
-"<meta charset=\"UTF-8\">",
+'<meta charset="UTF-8">',
 ["<title>" title_str "</title>"],
 mathjax_str,
 stylesheet_str,
@@ -195,7 +195,7 @@ function outstr = do_footer (m_source_str)
 "",
 "<footer>",
 "<hr>",
-["<a href=\"http://www.octave.org\">Published with GNU Octave " version() "</a>"],
+['<a href="http://www.octave.org">Published with GNU Octave ' version() '</a>'],
 "</footer>",
 "<!--",
 "##### SOURCE BEGIN #####",

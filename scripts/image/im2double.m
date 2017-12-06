@@ -67,12 +67,12 @@ function img = im2double (img, im_type)
       case "single",  img = double (img);
       case "logical", img = double (img);
       case "double",  # do nothing
-      otherwise, error ("im2double: IMG is of unsupported class \"%s\"", class (img));
+      otherwise, error ('im2double: IMG is of unsupported class "%s"', class (img));
     endswitch
   else
     ## indexed images
     if (! strcmpi (im_type, "indexed"))
-      error ("im2double: second input argument must be the string \"indexed\"");
+      error ('im2double: second input argument must be the string "indexed"');
     elseif (any (isa (img, {"uint8", "uint16"})))
       img = double (img) + 1;
     elseif (isfloat (img) || isbool (img))

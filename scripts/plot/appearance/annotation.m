@@ -1008,7 +1008,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
       x = [0 0 0];
       y = [0 0 0];
     otherwise
-      error ("annotation: \"%s\" headstyle not implemented", headstyle);
+      error ('annotation: "%s" headstyle not implemented', headstyle);
   endswitch
 
   R = [cos(ang) -sin(ang);

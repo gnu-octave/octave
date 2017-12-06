@@ -444,7 +444,7 @@ function cmd = __quote_path__ (cmd)
     if (! is_quoted)
       dos_shell = ! isunix () && ispc ();
       if (dos_shell && any (cmd == "/"))
-        cmd = strrep (cmd, "/", "\\");
+        cmd = strrep (cmd, '/', '\');
       endif
       if (any (cmd == " "))
         cmd = ['"' strrep(cmd, '"', '""') '"'];

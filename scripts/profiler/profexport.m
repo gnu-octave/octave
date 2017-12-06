@@ -290,10 +290,10 @@ function str = __readTemplate (name)
 endfunction
 
 function str = __escapeHtml (str)
-  str = strrep (str, "&", "&amp;");
-  str = strrep (str, "<", "&lt;");
-  str = strrep (str, ">", "&gt;");
-  str = strrep (str, "\"", "&quot;");
+  str = strrep (str, '&', "&amp;");
+  str = strrep (str, '<', "&lt;");
+  str = strrep (str, '>', "&gt;");
+  str = strrep (str, '"', "&quot;");
 endfunction
 
 ################################################################################

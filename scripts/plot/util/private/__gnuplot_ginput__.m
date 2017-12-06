@@ -80,14 +80,14 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
       ## or Alt-F4.  Further, this abrupt close also requires the leading
       ## "\n" on the next line.
       if (use_mkfifo)
-        fprintf (ostream, "set print \"%s\";\n", gpin_name);
+        fprintf (ostream, ['set print "%s";' "\n"], gpin_name);
         fflush (ostream);
         [gpin, err] = fopen (gpin_name, "r");
         if (err)
           error ("ginput: Can not open FIFO (%s)", msg);
         endif
         fputs (ostream, "pause mouse any;\n\n");
-        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
+        fputs (ostream, ["\n" 'if (exists("MOUSE_KEY") && exists("MOUSE_X")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print "0 0 -1"' "\n"]);
 
         ## Close output file, to force it to be flushed
         fputs (ostream, "set print;\n");
@@ -97,10 +97,10 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         [x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
         fclose (gpin);
       else
-        fputs (ostream, "set print \"-\";\n");
+        fputs (ostream, ['set print "-";' "\n"]);
         fflush (ostream);
         fputs (ostream, "pause mouse any;\n\n");
-        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) key = (MOUSE_KEY==1063 ? 1 : MOUSE_KEY); print \"OCTAVE: \", MOUSE_X, MOUSE_Y, key; else print \"0 0 -1\"\n");
+        fputs (ostream, ["\n" 'if (exists("MOUSE_KEY") && exists("MOUSE_X")) key = (MOUSE_KEY==1063 ? 1 : MOUSE_KEY); print "OCTAVE: ", MOUSE_X, MOUSE_Y, key; else print "0 0 -1"' "\n"]);
 
         ## Close output file, to force it to be flushed
         fputs (ostream, "set print;\n");

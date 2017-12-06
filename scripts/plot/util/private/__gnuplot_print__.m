@@ -47,7 +47,7 @@ function opts = __gnuplot_print__ (opts)
   gp_opts = font_spec (opts);
   bg = get (opts.figure, "color");
   if (isnumeric (bg))
-    gp_opts = sprintf ("%s background rgb \"#%02x%02x%02x\"",
+    gp_opts = sprintf ('%s background rgb "#%02x%02x%02x"',
                        gp_opts, round (255 * bg));
   else
     gp_opts = sprintf ("%s nobackground", gp_opts);

@@ -147,7 +147,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       colorspec = get_text_colorspec (t.color);
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
-      fprintf (plot_stream, "set title \"%s\" %s %s %s;\n",
+      fprintf (plot_stream, ['set title "%s" %s %s %s;' "\n"],
                undo_string_escapes (tt), fontspec, colorspec,
                __do_enhanced_option__ (enhanced, t));
     else
@@ -180,11 +180,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
       if (strcmp (axis_obj.xaxislocation, "top"))
-        fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
+        fprintf (plot_stream, 'set x2label "%s" %s %s %s',
                  undo_string_escapes (tt), colorspec, fontspec,
                  __do_enhanced_option__ (enhanced, t));
       else
-        fprintf (plot_stream, "set xlabel \"%s\" %s %s %s",
+        fprintf (plot_stream, 'set xlabel "%s" %s %s %s',
                  undo_string_escapes (tt), colorspec, fontspec,
                  __do_enhanced_option__ (enhanced, t));
       endif
@@ -208,11 +208,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
       if (strcmp (axis_obj.yaxislocation, "right"))
-        fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
+        fprintf (plot_stream, 'set y2label "%s" %s %s %s',
                  undo_string_escapes (tt), colorspec, fontspec,
                  __do_enhanced_option__ (enhanced, t));
       else
-        fprintf (plot_stream, "set ylabel \"%s\" %s %s %s",
+        fprintf (plot_stream, 'set ylabel "%s" %s %s %s',
                  undo_string_escapes (tt), colorspec, fontspec,
                  __do_enhanced_option__ (enhanced, t));
       endif
@@ -234,7 +234,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     else
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
-      fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
+      fprintf (plot_stream, 'set zlabel "%s" %s %s %s',
                undo_string_escapes (tt), colorspec, fontspec,
                __do_enhanced_option__ (enhanced, t));
       fprintf (plot_stream, " rotate by %f;\n", angle);
@@ -604,7 +604,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           imagetype = "image";
         endif
 
-        titlespec{data_idx} = "title \"\"";
+        titlespec{data_idx} = 'title ""';
         usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
             x_dim, y_dim, x_origin, y_origin, dx, dy, format);
         withclause{data_idx} = sprintf ("with %s", imagetype);
@@ -668,7 +668,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         have_cdata(data_idx) = false;
         have_3d_patch(data_idx) = false;
         if (isempty (obj.displayname))
-          titlespec{data_idx} = "title \"\"";
+          titlespec{data_idx} = 'title ""';
         else
           tmp = undo_string_escapes (
                   __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
@@ -713,7 +713,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           parametric(data_idx) = parametric(data_idx - 1);
           have_cdata(data_idx) = have_cdata(data_idx - 1);
           have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-          titlespec{data_idx} = "title \"\"";
+          titlespec{data_idx} = 'title ""';
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
           withclause{data_idx} = sprintf ("with %s linestyle %d",
@@ -725,7 +725,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           parametric(data_idx) = parametric(data_idx - 1);
           have_cdata(data_idx) = have_cdata(data_idx - 1);
           have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-          titlespec{data_idx} = "title \"\"";
+          titlespec{data_idx} = 'title ""';
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
           withclause{data_idx} = sprintf ("with %s linestyle %d",
@@ -791,7 +791,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               endif
 
               if (i > 1 || isempty (obj.displayname))
-                titlespec{local_idx} = "title \"\"";
+                titlespec{local_idx} = 'title ""';
               else
                 tmp = undo_string_escapes (
                         __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
@@ -872,10 +872,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                                      [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
               else
                 if (isscalar (obj.facealpha))
-                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
+                  colorspec = sprintf ('lc rgb "#%02x%02x%02x" fillstyle transparent solid %f',
                                        round (255*color), obj.facealpha);
                 else
-                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                  colorspec = sprintf ('lc rgb "#%02x%02x%02x"',
                                        round (255*color));
                 endif
 
@@ -899,7 +899,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             parametric(data_idx) = false;
             have_cdata(data_idx) = false;
             have_3d_patch(data_idx) = false;
-            titlespec{data_idx} = "title \"\"";
+            titlespec{data_idx} = 'title ""';
             usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
 
             if (isfield (obj, "markersize"))
@@ -999,7 +999,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 ccol = 255*ccol*[0x1; 0x100; 0x10000];
               endif
             else
-              colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+              colorspec = sprintf ('lc rgb "#%02x%02x%02x"',
                                    uint8 (255*color));
             endif
 
@@ -1042,7 +1042,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                   sidx += 1;
                 endif
                 if (isnumeric (obj.markerfacecolor))
-                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                  colorspec = sprintf ('lc rgb "#%02x%02x%02x"',
                                        round (255*obj.markerfacecolor));
                 endif
                 style = "points";
@@ -1099,10 +1099,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
                 if (! isempty (pt))
                   if (strcmp (obj.markeredgecolor, "auto"))
-                    colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                    colorspec = sprintf ('lc rgb "#%02x%02x%02x"',
                                          round (255*color));
                   elseif (isnumeric (obj.markeredgecolor))
-                    colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                    colorspec = sprintf ('lc rgb "#%02x%02x%02x"',
                                          round (255*obj.markeredgecolor));
                   endif
                   style = "points";
@@ -1177,7 +1177,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               parametric(data_idx) = parametric(data_idx - 1);
               have_cdata(data_idx) = have_cdata(data_idx - 1);
               have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-              titlespec{data_idx} = "title \"\"";
+              titlespec{data_idx} = 'title ""';
               usingclause{data_idx} = usingclause{data_idx - 1};
               data{data_idx} = data{data_idx - 1};
               withclause{data_idx} = tmpwith{2};
@@ -1188,7 +1188,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               parametric(data_idx) = parametric(data_idx - 1);
               have_cdata(data_idx) = have_cdata(data_idx - 1);
               have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-              titlespec{data_idx} = "title \"\"";
+              titlespec{data_idx} = 'title ""';
               usingclause{data_idx} = usingclause{data_idx - 1};
               data{data_idx} = data{data_idx - 1};
               withclause{data_idx} = tmpwith{3};
@@ -1212,7 +1212,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           titlespec{data_idx} = ['title "' tmp '"'];
           data{data_idx} = NaN (3,1);
           usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3)");
-          withclause{data_idx} = sprintf ("with line linewidth 10 linecolor rgb \"#%02x%02x%02x\"",
+          withclause{data_idx} = sprintf ('with line linewidth 10 linecolor rgb "#%02x%02x%02x"',
                                           round (255*cmap(end/2,:)));
         endif
 
@@ -1252,7 +1252,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           have_3d_patch(data_idx) = false;
 
           titlespec{data_idx} = tspec;
-          tspec = "title \"\"";
+          tspec = 'title ""';
 
           flat_interp_face = (strcmp (obj.facecolor, "flat")
                               || strcmp (obj.facecolor, "interp"));
@@ -1632,7 +1632,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
              "set palette positive color model RGB maxcolors %i;\n",
              cmap_sz);
     fprintf (plot_stream,
-             "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+             ['set palette file "-" binary record=%d using 1:2:3:4;' "\n"],
              cmap_sz);
     fwrite (plot_stream, [1:cmap_sz; cmap.'], "float32");
     fwrite (plot_stream, "\n");
@@ -1645,7 +1645,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       ## Images can be obscured by background or foreground image
       if (is_image_data (i))
         if (bg_is_set)
-          fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
+          fputs (plot_stream, ['if (GPVAL_TERM eq "qt") unset obj 1;' "\n"]);
           bg_is_set = false;
         endif
         if (fg_is_set)
@@ -1687,6 +1687,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
     if (have_3d_patch (1))
       fputs (plot_stream, "set pm3d depthorder\n");
+      ## FIXME: Must leave strings ending in '\', CHAR in double quotes.
+      ## Otherwise, fprintf routine tries to do escape processing and fails.
       fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                usingclause{1}, titlespec{1}, withclause{1});
     elseif (is_image_data (1))
@@ -1742,7 +1744,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   if (bg_is_set)
-    fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
+    fputs (plot_stream, ['if (GPVAL_TERM eq "qt") unset obj 1;' "\n"]);
     bg_is_set = false;
   endif
 
@@ -1780,9 +1782,9 @@ endfunction
 function fontspec = create_fontspec (f, s, gp_term)
 
   if (isempty (f) || strcmp (f, "*") || strcmp (gp_term, "tikz"))
-    fontspec = sprintf ("font \",%d\"", s);
+    fontspec = sprintf ('font ",%d"', s);
   else
-    fontspec = sprintf ("font \"%s,%d\"", f, s);
+    fontspec = sprintf ('font "%s,%d"', f, s);
   endif
 
 endfunction
@@ -1849,12 +1851,12 @@ function idx = do_border_tick_3d (obj, plot_stream, idx)
   function tick (axischar, color, tickdir, mirrorstr);
     if (isnumeric (color))
       if (length (color) == 3)
-        colorspec = sprintf ("rgb \"#%02x%02x%02x\"", round (255*color));
+        colorspec = sprintf ('rgb "#%02x%02x%02x"', round (255*color));
       else
         colorspec = sprintf ("palatte %d", round (color));
       endif
     else
-      colorspec = sprintf ("\"%s\"", color);
+      colorspec = sprintf ('"%s"', color);
     endif
     fprintf (plot_stream, "set %ctics %s %s textcolor %s\n",
              axischar, tickdir, mirrorstr, colorspec);
@@ -1880,7 +1882,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
     else
       alphastr = "";
     endif
-    fprintf (plot_stream, " linecolor rgb \"#%s%02x%02x%02x\"",
+    fprintf (plot_stream, ' linecolor rgb "#%s%02x%02x%02x"',
              alphastr, round (255*color));
   else
     color = [0, 0, 0];
@@ -1943,7 +1945,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
       fprintf (plot_stream, "set style line %d default;\n", idx);
       fprintf (plot_stream, "set style line %d", idx);
       if (isnumeric (obj.markerfacecolor))
-        fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+        fprintf (plot_stream, ' linecolor rgb "#%02x%02x%02x"',
                  round (255*obj.markerfacecolor));
       else
         fprintf (plot_stream, " palette");
@@ -1990,7 +1992,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
         else
           edgecolor = obj.color;
         end
-        fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+        fprintf (plot_stream, ' linecolor rgb "#%02x%02x%02x"',
                  round (255*edgecolor));
       else
         fprintf (plot_stream, " palette");
@@ -2270,7 +2272,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     num_mtics = 5;
   endif
   colorspec = get_text_colorspec (color);
-  fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
+  fprintf (plot_stream, ['set format %s "%s";' "\n"], ax, fmt);
   if (strcmp (ticmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
@@ -2296,7 +2298,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
              tickdir, ticklength, axispos, mirror);
     labels = strrep (labels, "%", "%%");
     for i = 1:ntics
-      fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
+      fprintf (plot_stream, ' "%s" %.15g', labels{k++}, tics(i));
       if (i < ntics)
         fputs (plot_stream, ", ");
       endif
@@ -2324,7 +2326,7 @@ function ticklabel = ticklabel_to_cell (ticklabel)
 endfunction
 
 function colorspec = get_text_colorspec (color)
-  colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"", round (255*color));
+  colorspec = sprintf ('textcolor rgb "#%02x%02x%02x"', round (255*color));
 endfunction
 
 function [f, s, fnt, it, bld] = get_fontname_and_size (t)
@@ -2826,7 +2828,7 @@ function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
     zstr = "";
   endif
   fprintf (stream,
-           "set label \"%s\" at %s %.15e,%.15e%s %s rotate by %f offset character %f,%f %s %s front %s;\n",
+           ['set label "%s" at %s %.15e,%.15e%s %s rotate by %f offset character %f,%f %s %s front %s;' "\n"],
            undo_string_escapes (label), units, lpos(1),
            lpos(2), zstr, halign, angle, dx_and_dy, fontspec,
            __do_enhanced_option__ (enhanced, obj), colorspec);

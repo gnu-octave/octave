@@ -68,12 +68,12 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     ## create appropriate parent if needed
     if (any (strcmp (s.type, othertypes)))
       for ii = (paridx+1) : (numel (partypes)-1)
-        eval (["hpar = " partypes{ii} "(\"parent\", hpar);"]);
+        eval (["hpar = " partypes{ii} '("parent", hpar);']);
         p = [p [NaN; hpar]];
       endfor
     elseif (any (strcmp (s.type, {"hggroup", "axes"})))
       for ii = (paridx+1) : (kididx-1)
-        eval (["hpar = " partypes{ii} "(\"parent\", hpar);"]);
+        eval (["hpar = " partypes{ii} '("parent", hpar);']);
         p = [p [NaN; hpar]];
       endfor
     else

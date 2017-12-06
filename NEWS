@@ -66,10 +66,6 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
  ** An initial implementation of alpha transparency has been made for
     patch and surface objects.  Printing to svg and pdf is supported.
 
- ** All directories are now converted to absolute names when they are
-    added to the load path.  This change was made for compatibility with
-    Matlab, which was changed similarly in release 2016b.
-
  ** The following statistical functions have been moved from core
     Octave to the statistics package available from Octave Forge.
 

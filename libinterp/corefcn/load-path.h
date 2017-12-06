@@ -252,8 +252,8 @@ namespace octave
       dir_info (void) = default;
 
       dir_info (const std::string& d)
-        : dir_name (d), abs_dir_name (), dir_mtime (),
-          dir_time_last_checked (), all_files (), fcn_files (),
+        : dir_name (d), abs_dir_name (), is_relative (false),
+          dir_mtime (), dir_time_last_checked (), all_files (), fcn_files (),
           private_file_map (), method_file_map (), package_dir_map ()
       {
         initialize ();
@@ -269,6 +269,7 @@ namespace octave
 
       std::string dir_name;
       std::string abs_dir_name;
+      bool is_relative;
       sys::time dir_mtime;
       sys::time dir_time_last_checked;
       string_vector all_files;

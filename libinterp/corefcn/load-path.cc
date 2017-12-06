@@ -497,7 +497,7 @@ namespace octave
       {
         for (const auto& di : dir_info_list)
           {
-            std::string dname = sys::env::make_absolute (di.dir_name);
+            std::string dname = di.dir_name;
 
             size_t dname_len = dname.length ();
 
@@ -543,7 +543,7 @@ namespace octave
       {
         for (const auto& di : dir_info_list)
           {
-            std::string dname = sys::env::make_absolute (di.dir_name);
+            std::string dname = di.dir_name;
 
             size_t dname_len = dname.length ();
 
@@ -1123,59 +1123,8 @@ namespace octave
         std::string msg = fs.error ();
         warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
       }
-    else
-      {
-        if (is_relative)
-          {
-            try
-              {
-                std::string abs_name = sys::env::make_absolute (dir_name);
-
-                const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
-
-                if (p != abs_dir_cache.end ())
-                  {
-                    // The directory is in the cache of all directories we have
-                    // visited (indexed by absolute name).  If it is out of date,
-                    // initialize it.  Otherwise, copy the info from the cache.
-                    // By doing that, we avoid unnecessary calls to stat that can
-                    // slow things down tremendously for large directories.
-                    const dir_info& di = p->second;
-
-                    if (fs.mtime () + fs.time_resolution ()
-                        > di.dir_time_last_checked)
-                      initialize ();
-                    else
-                      {
-                        // Copy over info from cache, but leave dir_name and
-                        // is_relative unmodified.
-                        this->abs_dir_name = di.abs_dir_name;
-                        this->dir_mtime = di.dir_mtime;
-                        this->dir_time_last_checked = di.dir_time_last_checked;
-                        this->all_files = di.all_files;
-                        this->fcn_files = di.fcn_files;
-                        this->private_file_map = di.private_file_map;
-                        this->method_file_map = di.method_file_map;
-                        this->package_dir_map = di.package_dir_map;
-                      }
-                  }
-                else
-                  {
-                    // We haven't seen this directory before.
-                    initialize ();
-                  }
-              }
-            catch (const execution_exception&)
-              {
-                // Skip updating if we don't know where we are,
-                // but don't treat it as an error.
-                interpreter::recover_from_exception ();
-              }
-          }
-        // Absolute path, check timestamp to see whether it requires re-caching
-        else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
-          initialize ();
-      }
+    else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
+      initialize ();
   }
 
   bool
@@ -1202,7 +1151,9 @@ namespace octave
   void
   load_path::dir_info::initialize (void)
   {
-    is_relative = ! sys::env::absolute_pathname (dir_name);
+    // We only handle absolute directory names.
+
+    dir_name = sys::env::make_absolute (dir_name);
 
     dir_time_last_checked = sys::time (static_cast<time_t> (0));
 
@@ -1218,23 +1169,11 @@ namespace octave
 
         get_file_list (dir_name);
 
-        try
-          {
-            std::string abs_name = sys::env::make_absolute (dir_name);
+        // FIXME: nothing is ever removed from this cache of directory
+        // information, so there could be some resource problems.
+        // Perhaps it should be pruned from time to time.
 
-            // FIXME: nothing is ever removed from this cache of
-            // directory information, so there could be some resource
-            // problems.  Perhaps it should be pruned from time to time.
-
-            abs_dir_cache[abs_name] = *this;
-          }
-        catch (const execution_exception&)
-          {
-            // Skip updating if we don't know where we are but don't treat
-            // it as an error.
-
-            interpreter::recover_from_exception ();
-          }
+        abs_dir_cache[dir_name] = *this;
       }
     else
       {

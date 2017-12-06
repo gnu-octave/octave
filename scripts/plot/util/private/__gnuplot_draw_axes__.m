@@ -733,6 +733,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         endif
 
       case "patch"
+        persistent do_interp_warning = true;
+
         if (strcmp (get (obj.parent, "type"), "hggroup"))
           obj.displayname = get (obj.parent, "displayname");
         endif
@@ -839,8 +841,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                         ccdat = mapcdata (ccdat(:), obj.cdatamapping, clim, cmap_sz);
                       endif
                     else
-                      if (sum (diff (ccol)))
-                        warning ("\"interp\" not supported, using 1st entry of cdata");
+                      if (do_interp_warning && sum (diff (ccol)))
+                        warning ('"interp" not supported, using 1st entry of cdata');
+                        do_interp_warning = false;
                       endif
                       r = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
                       color = cmap(r(1),:);
@@ -950,8 +953,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                     have_cdata(data_idx) = true;
                   endif
                 elseif (strcmp (ec, "interp"))
-                  if (numel (ccol) == 3)
-                    warning ("\"interp\" not supported, using 1st entry of cdata");
+                  if (do_interp_warning && numel (ccol) == 3)
+                    warning ('"interp" not supported, using 1st entry of cdata');
+                    do_interp_warning = false;
                     color = ccol(1,:);
                   else
                     if (isscalar (ccol))

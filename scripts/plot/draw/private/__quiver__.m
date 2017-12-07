@@ -149,10 +149,12 @@ function hg = __quiver__ (varargin)
 
   hstate = get (hax, "nextplot");
   unwind_protect
-
     if (have_line_spec)
       ls = linespec.linestyle;
       lc = linespec.color;
+      if (isempty (lc))
+        lc = __next_line_color__ ();
+      endif
     else
       ls = "-";
       lc = __next_line_color__ ();
@@ -230,9 +232,11 @@ function hg = __quiver__ (varargin)
     endif
 
     ## Draw arrowhead as one line object
+
+    ## Arrowhead is constructed, but NOT displayed, when marker is present.
     if (have_line_spec)
       if (! isempty (linespec.marker) && ! strcmp (linespec.marker, "none"))
-        ls = "none";  # No arrowhead drawn when marker present
+        ls = "none";
       endif
     endif
 
@@ -254,12 +258,14 @@ function hg = __quiver__ (varargin)
       mk = linespec.marker;
     endif
     if (is3d)
-      h3 = plot3 (x, y, z, "linestyle", "none", "marker", mk, "parent", hg);
+      h3 = plot3 (x, y, z, "linestyle", "none", "color", lc, "marker", mk,
+                           "parent", hg);
     else
-      h3 = plot (x, y, "linestyle", "none", "marker", mk, "parent", hg);
+      h3 = plot (x, y, "linestyle", "none", "color", lc, "marker", mk,
+                 "parent", hg);
     endif
     if (have_filled)
-      set (h3, "markerfacecolor", get (h1, "color"));
+      set (h3, "markerfacecolor", lc);
     endif
 
     ## Set up the hggroup properties and listeners

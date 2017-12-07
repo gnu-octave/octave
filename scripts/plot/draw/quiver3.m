@@ -27,22 +27,26 @@
 ##
 ## Plot a 3-D vector field with arrows.
 ##
-## Plot the (@var{u}, @var{v}, @var{w}) components of a vector field in
-## an (@var{x}, @var{y}, @var{z}) meshgrid.  If the grid is uniform then
-## @var{x}, @var{y}, and @var{z} can be specified as vectors.
+## Plot the (@var{u}, @var{v}, @var{w}) components of a vector field at the
+## grid points defined by (@var{x}, @var{y}, @var{z}).  If the grid is uniform
+## then @var{x}, @var{y}, and @var{z} can be specified as vectors and
+## @code{meshgrid} is used to create the 3-D grid.
 ##
-## If @var{x}, @var{y}, and @var{z} are undefined they are assumed to be
-## @code{(1:@var{m}, 1:@var{n}, 1:@var{p})} where @code{[@var{m}, @var{n}] =
-## size (@var{u})} and @code{@var{p} = max (size (@var{w}))}.
+## If @var{x}, @var{y}, and @var{z} are not given they are assumed to be
+## @code{(1:@var{m}, 1:@var{n}, 1:@var{p})} where
+## @code{[@var{m}, @var{n}] = size (@var{u})} and
+## @code{@var{p} = max (size (@var{w}))}.
 ##
-## The variable @var{s} is a scalar defining a scaling factor to use for
-## the arrows of the field relative to the mesh spacing.  A value of 0
+## The optional input @var{s} is a scalar defining a scaling factor to use for
+## the arrows of the field relative to the mesh spacing.  A value of 1.0 will
+## result in the longest vector exactly filling one grid cube.  A value of 0
 ## disables all scaling.  The default value is 0.9.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
-## of the same format as the @code{plot} command.
-## If a marker is specified then markers at the grid points of the vectors are
-## drawn rather than arrows.  If the argument @qcode{"filled"} is given then
+## of the same format as the @code{plot} command.  If a marker is specified
+## then the markers are drawn at the origin of the vectors (which are the grid
+## points defined by @var{x}, @var{y}, @var{z}).  When a marker is specified,
+## the arrowhead is not drawn.  If the argument @qcode{"filled"} is given then
 ## the markers are filled.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
@@ -109,7 +113,7 @@ endfunction
 %! h = quiver3 (x, y, z, u, v, w);
 %! set (h, "maxheadsize", 0.25);
 %! hold off;
-%! title ("quiver3 of surface normals to peaks() function");
+%! title ("quiver3() of surface normals to peaks() function");
 
 %!demo
 %! clf;
@@ -122,5 +126,5 @@ endfunction
 %! set (h, "maxheadsize", 0.25);
 %! hold off;
 %! shading interp;
-%! title ({"quiver3 of surface normals to peaks() function"; ...
+%! title ({"quiver3() of surface normals to peaks() function"; ...
 %!         'shading "interp"'});

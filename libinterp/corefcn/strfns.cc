@@ -764,13 +764,13 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
 
   octave::unwind_protect frame;
 
-  frame.add_fcn (::free, static_cast<void *> (utf8_str));
-
   utf8_str = octave_u8_conv_from_encoding (codepage, src, srclen, &length);
 
   if (! utf8_str)
     error ("native2unicode: converting from codepage '%s' to UTF-8: %s",
            codepage, std::strerror (errno));
+
+  frame.add_fcn (::free, static_cast<void *> (utf8_str));
 
   octave_idx_type len = length;
 
@@ -810,13 +810,13 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 
   octave::unwind_protect frame;
 
-  frame.add_fcn (::free, static_cast<void *> (native_bytes));
-
   native_bytes = octave_u8_conv_to_encoding (codepage, src, srclen, &length);
 
   if (! native_bytes)
     error ("native2unicode: converting from UTF-8 to codepage '%s': %s",
            codepage, std::strerror (errno));
+
+  frame.add_fcn (::free, static_cast<void *> (native_bytes));
 
   octave_idx_type len = length;
 

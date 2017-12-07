@@ -33,12 +33,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "comment-list.h"
 #include "input.h"
+#include "symscope.h"
 #include "token.h"
 
 namespace octave
 {
   class interpreter;
-  class symbol_scope;
 
   // Is the given string a keyword?
   extern bool is_keyword (const std::string& s);

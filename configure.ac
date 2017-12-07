@@ -2929,7 +2929,14 @@ AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignore],
 
 if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
   AC_DEFINE(HAVE_PRAGMA_GCC_DIAGNOSTIC, 1,
-   [define if GCC supports @%:@pragma GCC diagnostic ...])
+    [define if GCC supports @%:@pragma GCC diagnostic ...])
+fi
+
+## Check for one unusual warning used in pragmas that is not always available
+if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
+  OCTAVE_CC_FLAG([-Wimplicit-fallthrough],
+    [AC_DEFINE(HAVE_WARN_IMPLICIT_FALLTHROUGH, 1,
+      [define if GCC supports -Wimplicit-fallthrough warning])])
 fi
 
 ### These are recommended by the gnulib bootstrap script:

@@ -1714,7 +1714,7 @@ dnl   ## JIT build disabled
 dnl   warn_llvm="JIT compiler disabled, some performance loss for loops"
 dnl   OCTAVE_CONFIGURE_WARNING([warn_llvm])
 fi
-if test $ENABLE_JIT; then
+if test $ENABLE_JIT = yes; then
   AC_DEFINE(ENABLE_JIT, 1, [Define to 1 to enable JIT compiler.])
 fi
 

@@ -985,7 +985,12 @@ namespace QtHandles
 
                   double factor = (event->delta () > 0 ? 0.1 : -0.1);
 
-                  ap.pan (mode, factor);
+                  if (event->modifiers () == Qt::NoModifier 
+                      && mode != "horizontal")
+                    ap.pan ("vertical", factor);
+                  else if (event->modifiers () == Qt::ShiftModifier 
+                      && mode != "vertical")
+                    ap.pan ("horizontal", factor);
                 }
                 break;
 

@@ -1452,7 +1452,8 @@ push_script_symtab : // empty
                   {
                     $$ = 0;
 
-                    // Will get a real name later.
+                    // This scope may serve as the parent scope for local
+                    // functions in classdef files..
                     lexer.symtab_context.push (octave::symbol_scope ("parser:push_script_symtab"));
                   }
                 ;

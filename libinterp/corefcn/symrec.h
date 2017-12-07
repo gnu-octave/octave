@@ -81,7 +81,7 @@ namespace octave
       symbol_record_rep (const std::string& nm, const octave_value& v,
                          unsigned int sc)
         : m_storage_class (sc), m_name (nm), m_fwd_scope (nullptr),
-          m_fwd_rep (), m_value_stack (), m_valid (true)
+          m_fwd_rep (), m_value_stack ()
       {
         m_value_stack.push_back (v);
       }
@@ -229,14 +229,6 @@ namespace octave
       bool is_defined (context_id context) const
       {
         return varval (context).is_defined ();
-      }
-
-      bool is_valid (void) const
-      {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return t_fwd_rep->is_valid ();
-
-        return m_valid;
       }
 
       bool is_variable (context_id context) const
@@ -481,17 +473,6 @@ namespace octave
 
       void init_persistent (void);
 
-      void invalidate (void)
-      {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->invalidate ();
-            return;
-          }
-
-        m_valid = false;
-      }
-
       void bind_fwd_rep (symbol_scope_rep *fwd_scope,
                          const std::shared_ptr<symbol_record_rep>& fwd_rep)
       {
@@ -524,8 +505,6 @@ namespace octave
       std::weak_ptr<symbol_record_rep> m_fwd_rep;
 
       std::deque<octave_value> m_value_stack;
-
-      bool m_valid;
     };
 
   public:
@@ -608,11 +587,6 @@ namespace octave
       return ! m_rep->is_defined (context);
     }
 
-    bool is_valid (void) const
-    {
-      return m_rep->is_valid ();
-    }
-
     bool is_variable (context_id context) const
     {
       return m_rep->is_variable (context);
@@ -645,8 +619,6 @@ namespace octave
     void unmark_added_static (void) { m_rep->unmark_added_static (); }
 
     void init_persistent (void) { m_rep->init_persistent (); }
-
-    void invalidate (void) { m_rep->invalidate (); }
 
     unsigned int storage_class (void) const { return m_rep->storage_class (); }
 

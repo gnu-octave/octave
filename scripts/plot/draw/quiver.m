@@ -27,23 +27,26 @@
 ##
 ## Plot a 2-D vector field with arrows.
 ##
-## Plot the (@var{u}, @var{v}) components of a vector field in
-## an (@var{x}, @var{y}) meshgrid.  If the grid is uniform then @var{x} and
-## @var{y} can be specified as vectors.
+## Plot the (@var{u}, @var{v}) components of a vector field at the grid points
+## defined by (@var{x}, @var{y}).  If the grid is uniform then @var{x} and
+## @var{y} can be specified as vectors and @code{meshgrid} is used to create
+## the 2-D grid.
 ##
-## If @var{x} and @var{y} are undefined they are assumed to be
+## If @var{x} and @var{y} are not given they are assumed to be
 ## @code{(1:@var{m}, 1:@var{n})} where
 ## @code{[@var{m}, @var{n}] = size (@var{u})}.
 ##
-## The variable @var{s} is a scalar defining a scaling factor to use for
-## the arrows of the field relative to the mesh spacing.  A value of 0
+## The optional input @var{s} is a scalar defining a scaling factor to use for
+## the arrows of the field relative to the mesh spacing.  A value of 1.0 will
+## result in the longest vector exactly filling one grid square.  A value of 0
 ## disables all scaling.  The default value is 0.9.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
-## of the same format as the @code{plot} command.
-## If a marker is specified then markers at the grid points of the vectors are
-## drawn rather than arrows.  If the argument @qcode{"filled"} is given then
-## the markers are filled.
+## of the same format as the @code{plot} command.  If a marker is specified
+## then the markers are drawn at the origin of the vectors (which are the grid
+## points defined by @var{x} and @var{y}).  When a marker is specified, the
+## arrowhead is not drawn.  If the argument @qcode{"filled"} is given then the
+## markers are filled.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
@@ -104,7 +107,20 @@ endfunction
 %! clf;
 %! [x,y] = meshgrid (1:2:20);
 %! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10));
-%! title ("quiver plot");
+%! title ("quiver() plot w/arrowheads (default)");
+
+%!demo
+%! clf;
+%! [x,y] = meshgrid (1:2:20);
+%! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10), "o");
+%! title ("quiver() plot w/origin markers");
+
+%!demo
+%! clf;
+%! [x,y] = meshgrid (1:2:20);
+%! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10));
+%! set (h, "marker", "o");
+%! title ("quiver() plot w/origin markers and arrowheads");
 
 %!demo
 %! clf;

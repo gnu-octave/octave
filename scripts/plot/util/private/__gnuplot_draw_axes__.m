@@ -2835,7 +2835,7 @@ function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
 
 endfunction
 
-function retval = mapcdata (cdata, mode, clim, cmap_sz)
+function cdata = mapcdata (cdata, mode, clim, cmap_sz)
   if (ndims (cdata) == 3)
     ## True Color, clamp data to 8-bit
     clim = double (clim);
@@ -2847,8 +2847,6 @@ function retval = mapcdata (cdata, mode, clim, cmap_sz)
     else
       cdata(:) = 255;
     endif
-    ## Scale using inverse of gnuplot's cbrange mapping
-    retval = 1 + cdata * (cmap_sz-1)/255;
   else
     if (islogical (cdata))
       cdata += 1;
@@ -2868,6 +2866,6 @@ function retval = mapcdata (cdata, mode, clim, cmap_sz)
         cdata = fix (cdata);
       endif
     endif
-    retval = max (1, min (cdata, cmap_sz));
+    cdata = max (1, min (cdata, cmap_sz));
   endif
 endfunction

@@ -59,9 +59,12 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
       warning ("off", "Octave:quadcc:RelTol-conversion")
 
- ** The properties "BackgroundColor", "EdgeColor", "LineStyle",
-    "LineWidth", and "Margin" are now implemented for text objects using
-    an OpenGL toolkit.
+ ** The qr function now returns a standard factorization unless
+    explicitly instructed to perform an economy factorization by using a
+    final argument of 0.
+
+ ** Text objects now implement the properties "BackgroundColor",
+    "EdgeColor", "LineStyle", "LineWidth", and "Margin".
 
  ** An initial implementation of alpha transparency has been made for
     patch and surface objects.  Printing to svg and pdf is supported.

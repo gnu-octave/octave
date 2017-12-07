@@ -495,24 +495,12 @@ namespace octave
       void bind_fwd_rep (symbol_scope_rep *fwd_scope,
                          const std::shared_ptr<symbol_record_rep>& fwd_rep)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->bind_fwd_rep (fwd_scope, fwd_rep);
-            return;
-          }
-
         m_fwd_scope = fwd_scope;
         m_fwd_rep = fwd_rep;
       }
 
       void unbind_fwd_rep (void)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->unbind_fwd_rep ();
-            return;
-          }
-
         m_fwd_scope = nullptr;
         m_fwd_rep.reset ();
       }

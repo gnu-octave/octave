@@ -153,7 +153,7 @@ endfunction
 
 
 %!test
-%! def_tmpdir = P_tmpdir ();
+%! def_tmpdir = canonicalize_file_name (P_tmpdir ());
 %! while (length (def_tmpdir) > 2 && strfind (filesep ("all"), def_tmpdir(end)))
 %!   def_tmpdir(end) = [];
 %! endwhile

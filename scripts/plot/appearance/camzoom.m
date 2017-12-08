@@ -143,7 +143,7 @@ endfunction
 %!   camzoom (hax1, 2)
 %!   x = camva (hax1);
 %!   y = camva (hax2);
-%!   assert (tand (y/2) / tand (x/2), 2)
+%!   assert (tand (y/2) / tand (x/2), 2, 2*eps)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

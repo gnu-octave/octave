@@ -2611,8 +2611,8 @@ do
   AC_MSG_RESULT([$java_version])
   java_major=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
   java_minor=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
-  if test $java_major -ge 1 && test $java_minor -ge 5; then
-    :  # Version is ok.  Do nothing.
+  if test $java_major -gt 1 || (test $java_major -eq 1 && test $java_minor -ge 5); then
+    :  # Version is OK.  Do nothing.
   else
     warn_java="Java version is too old (< 1.5).  Octave will not be able to call Java methods."
     break

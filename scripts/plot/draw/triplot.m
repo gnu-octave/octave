@@ -63,3 +63,4 @@ endfunction
 %! y = rand (N, 1);
 %! tri = delaunay (x, y);
 %! triplot (tri, x, y);
+%! title ("triplot() of random 2-D Delaunay triangulation");

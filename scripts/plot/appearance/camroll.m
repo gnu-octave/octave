@@ -94,7 +94,8 @@ endfunction
 %!demo
 %! clf;
 %! peaks ();
-%! camroll (30)
+%! camroll (30);
+%! title ("camroll() demo #1");
 
 %!test
 %! hf = figure ("visible", "off");

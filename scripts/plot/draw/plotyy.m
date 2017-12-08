@@ -305,10 +305,12 @@ endfunction
 %! x = linspace (-1, 1, 201);
 %! subplot (2,2,1);
 %!  plotyy (x,sin(pi*x), x,10*cos(pi*x));
+%!  title ("plotyy() in subplot");
 %! subplot (2,2,2);
 %!  surf (peaks (25));
 %! subplot (2,2,3);
 %!  contour (peaks (25));
 %! subplot (2,2,4);
 %!  plotyy (x,10*sin(2*pi*x), x,cos(2*pi*x));
+%!  title ("plotyy() in subplot");
 %!  axis square;

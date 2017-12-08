@@ -84,6 +84,7 @@ endfunction
 %! clf;
 %! peaks ();
 %! camzoom (2);
+%! title ("camzoom() demo #1");
 
 %!test
 %! hf = figure ("visible", "off");

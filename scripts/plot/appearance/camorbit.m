@@ -183,6 +183,7 @@ endfunction
 %!demo
 %! clf;
 %! peaks ();
+%! title ("camorbit() demo #1");
 %! ## rotate the camera upwards
 %! camorbit (0, 30);
 %! ## rotate the camera right

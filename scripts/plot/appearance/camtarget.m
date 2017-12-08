@@ -118,10 +118,11 @@ endfunction
 %!demo
 %! clf;
 %! sphere ();
+%! title ("camtarget() demo #1");
 %! ## where is camera pointing?
 %! x1 = camtarget ()
 %! ## point the camera upwards
-%! camtarget (x1 + [0 0 1])
+%! camtarget (x1 + [0 0 1]);
 %! x2 = camtarget ()
 
 %!test
@@ -182,7 +183,7 @@ endfunction
 %!error <invalid value>
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!  camtarget ("mod")
+%!  camtarget ("mod");
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect

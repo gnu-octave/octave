@@ -111,6 +111,7 @@ endfunction
 %!demo
 %! clf;
 %! plotmatrix (randn (100, 3), "g+");
+%! title ("plotmatrix() demo #1");
 
 
 function plotmatrixdelete (h, d, ax)

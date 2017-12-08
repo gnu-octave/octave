@@ -124,6 +124,67 @@ function restack_axes (h, cf)
 endfunction
 
 
+## FIXME: These demos actually just show how axes objects behave.
+##        They do not show how the axes() function itself works.
+%!demo
+%! clf;
+%! x = -10:10;
+%! plot (x,x, x,-x);
+%! set (gca, "yscale", "log");
+%! legend ({"x >= 1", "x <= 1"}, "location", "north");
+%! title ({"log axes discard negative data", "ylim = [1, 10]"});
+
+%!demo
+%! clf;
+%! x = -10:0.1:10;
+%! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! set (gca, "xaxislocation", "origin");
+%! set (gca, "yaxislocation", "origin");
+%! box off;
+%! title ({"no plot box", "xaxislocation = origin, yaxislocation = origin"});
+
+%!demo
+%! clf;
+%! x = -10:0.1:10;
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! set (gca, "xaxislocation", "origin");
+%! set (gca, "yaxislocation", "left");
+%! box off;
+%! title ({"no plot box", "xaxislocation = origin, yaxislocation = left"});
+
+%!demo
+%! clf;
+%! x = -10:0.1:10;
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! title ("no plot box");
+%! set (gca, "xaxislocation", "origin");
+%! set (gca, "yaxislocation", "right");
+%! box off;
+%! title ({"no plot box", "xaxislocation = origin, yaxislocation = right"});
+
+%!demo
+%! clf;
+%! x = -10:0.1:10;
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! set (gca, "xaxislocation", "bottom");
+%! set (gca, "yaxislocation", "origin");
+%! box off;
+%! title ({"no plot box", "xaxislocation = bottom, yaxislocation = origin"});
+
+%!demo
+%! clf;
+%! x = -10:0.1:10;
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! set (gca, "xaxislocation", "top");
+%! set (gca, "yaxislocation", "origin");
+%! box off;
+%! title ({"no plot box", "xaxislocation = top, yaxislocation = origin"});
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

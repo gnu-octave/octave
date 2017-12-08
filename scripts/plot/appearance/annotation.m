@@ -1460,6 +1460,7 @@ endfunction
 %!                   "linestyle", "--", "headstyle", "none");
 %! endfor
 %! set (h, "string", "Extrema", "fontsize", 15);
+%! title ("annotation() demo of TextArrows");
 
 ## test line properties
 %!test

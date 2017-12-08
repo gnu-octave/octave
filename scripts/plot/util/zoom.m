@@ -180,6 +180,7 @@ endfunction
 %!demo
 %! clf;
 %! sombrero ();
+%! title ("zoom() demo #1");
 %! pause (1);
 %! ## zoom in by a factor of 2
 %! zoom (2);

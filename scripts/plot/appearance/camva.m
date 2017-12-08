@@ -100,10 +100,11 @@ endfunction
 %!demo
 %! clf;
 %! peaks ();
+%! title ("camva() demo #1");
 %! ## query the viewing angle
 %! a1 = camva ()
 %! ## get a close-up view by decreasing the viewing angle:
-%! camva (0.5*a1)
+%! camva (0.5*a1);
 %! a2 = camva ()
 
 %!test

@@ -207,6 +207,7 @@ endfunction
 %! [x, y, z] = meshgrid (linspace (-8, 8, 32));
 %! v = sin (sqrt (x.^2 + y.^2 + z.^2)) ./ (sqrt (x.^2 + y.^2 + z.^2));
 %! slice (x, y, z, v, [], 0, []);
+%! title ("slice() demo #1");
 
 %!demo
 %! clf;
@@ -216,3 +217,4 @@ endfunction
 %! [xi, yi] = meshgrid (linspace (-7, 7));
 %! zi = xi + yi;
 %! slice (x, y, z, v, xi, yi, zi);
+%! title ("slice() demo #2");

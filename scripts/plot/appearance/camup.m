@@ -113,10 +113,11 @@ endfunction
 %!demo
 %! clf;
 %! sphere ();
+%! title ("camup() demo #1");
 %! ## what direction is "up" for the camera?
 %! x1 = camup ()
 %! ## re-orient the camera with a new up-vector
-%! camup ([1 0 0])
+%! camup ([1 0 0]);
 %! x2 = camup ()
 
 %!test

@@ -111,6 +111,7 @@ endfunction
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
 %! trimesh (tri, x(:), y(:), z(:));
+%! title ("trimesh() plot of sparsely-sampled peaks() function");
 
 ## Test input validation
 %!error trimesh ()

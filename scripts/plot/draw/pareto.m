@@ -122,6 +122,7 @@ endfunction
 %! Cheese = {"Cheddar", "Swiss", "Camembert", "Munster", "Stilton", "Blue"};
 %! Sold = [105, 30, 70, 10, 15, 20];
 %! pareto (Sold, Cheese);
+%! title ("pareto() demo #1");
 
 %!demo
 %! clf;
@@ -131,3 +132,4 @@ endfunction
 %! SoldUnits = [54723 41114 16939 1576091 168000 687197 120222 168195, ...
 %!              1084118 55576]';
 %! pareto (Value.*SoldUnits, Codes);
+%! title ("pareto() demo #2");

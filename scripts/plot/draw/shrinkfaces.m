@@ -160,6 +160,7 @@ endfunction
 %! patch (fv);
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
+%! title ("shrinkfaces() on triangular shapes");
 
 %!demo
 %! clf;
@@ -171,6 +172,7 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
+%! title ("shrinkfaces() on rhomboid shapes");
 
 %!demo
 %! clf;
@@ -182,7 +184,7 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
-%! title "faces which are not convex are clearly not allowed"
+%! title ("shrinkfaces() does not work on concave shapes");
 
 %!demo
 %! clf;
@@ -195,6 +197,7 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
+%! title ("shrinkfaces() on 2-D complex shapes tesselated with triangles");
 
 %!demo
 %! clf;
@@ -210,6 +213,7 @@ endfunction
 %! view (115, 30);
 %! drawnow;
 %! shrinkfaces (p, 0.6);
+%! title ("shrinkfaces() on 3-D complex shapes");
 
 %!shared faces, vertices, nfv, nfv2
 %! faces = [1 2 3];

@@ -582,72 +582,13 @@ endfunction
 %! s = x1 / max (x(:));
 %! pcolor (s*x+x1, s*y+x1/2, 5*z);
 %! axis tight;
+%! title ('"tight" when two axes objects exist');
 
 %!demo
 %! clf;
 %! loglog (1:20, "-s");
 %! axis tight;
-
-## FIXME: These demos aren't actually of the axis function.
-##        They are demos for an axes object and belong elsewhere.
-%!demo
-%! clf;
-%! x = -10:10;
-%! plot (x,x, x,-x);
-%! set (gca, "yscale", "log");
-%! legend ({"x >= 1", "x <= 1"}, "location", "north");
-%! title ("ylim = [1, 10]");
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "origin");
-%! set (gca, "yaxislocation", "origin");
-%! box off;
-%! title ({"no plot box", "xaxislocation = origin, yaxislocation = origin"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "origin");
-%! set (gca, "yaxislocation", "left");
-%! box off;
-%! title ({"no plot box", "xaxislocation = origin, yaxislocation = left"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! title ("no plot box");
-%! set (gca, "xaxislocation", "origin");
-%! set (gca, "yaxislocation", "right");
-%! box off;
-%! title ({"no plot box", "xaxislocation = origin, yaxislocation = right"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "bottom");
-%! set (gca, "yaxislocation", "origin");
-%! box off;
-%! title ({"no plot box", "xaxislocation = bottom, yaxislocation = origin"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "top");
-%! set (gca, "yaxislocation", "origin");
-%! box off;
-%! title ({"no plot box", "xaxislocation = top, yaxislocation = origin"});
+%! title ('"tight" on loglog plot');
 
 %!test
 %! hf = figure ("visible", "off");

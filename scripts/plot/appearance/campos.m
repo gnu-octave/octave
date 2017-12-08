@@ -108,10 +108,11 @@ endfunction
 %!demo
 %! clf;
 %! sphere ();
+%! title ("campos() demo #1");
 %! ## where is camera located?
 %! x1 = campos ()
 %! ## move the camera upwards
-%! campos (x1 + [0 0 2])
+%! campos (x1 + [0 0 2]);
 %! x2 = campos ()
 
 %!test

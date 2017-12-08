@@ -159,6 +159,7 @@ endfunction
 %! s2 = surf (x/5+0.2, y/5-2, z/5+1);
 %! axis equal
 %! axis tight
+%! title ("camlookat() demo #1");
 %! pause (1);
 %! camlookat (s1);
 %! pause (1);

@@ -101,10 +101,10 @@ endfunction
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
-%! h = trisurf (tri, x, y, z, "facecolor", "interp");
+%! h = trisurf (tri, x, y, z, "facecolor", "flat");
 %! axis tight;
 %! zlim auto;
-%! title (sprintf ("facecolor = %s", get (h, "facecolor")));
+%! title ({"trisurf() of peaks() function", 'facecolor = "flat"'});
 
 %!demo
 %! clf;
@@ -113,12 +113,10 @@ endfunction
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
-%! h = trisurf (tri, x, y, z, "facecolor", "flat");
+%! h = trisurf (tri, x, y, z, "facecolor", "interp");
 %! axis tight;
 %! zlim auto;
-%! title (sprintf ("facecolor = %s", get (h, "facecolor")));
-
-## FIXME: The demos below should each have a title
+%! title ({"trisurf() of peaks() function", 'facecolor = "interp"'});
 
 %!demo
 %! clf;
@@ -132,6 +130,7 @@ endfunction
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
 %! trisurf (tri, x(:), y(:), z(:));
+%! title ("trisurf() of sparsely-sampled triangulation of peaks()");
 
 %!demo
 %! clf;
@@ -141,6 +140,7 @@ endfunction
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z);
+%! title ({"trisurf() of random data", 'default "facecolor" = "flat", "edgecolor" = "black"'});
 
 %!demo
 %! clf;
@@ -150,6 +150,7 @@ endfunction
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z, "facecolor", "interp");
+%! title ({"trisurf() of random data", '"facecolor" = "interp"'});
 
 %!demo
 %! clf;
@@ -158,7 +159,8 @@ endfunction
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k");
+%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "w");
+%! title ({"trisurf() of random data", '"facecolor" = "interp", "edgecolor" = "white"'});
 
 ## Test input validation
 %!error trisurf ()

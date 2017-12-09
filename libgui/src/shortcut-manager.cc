@@ -372,16 +372,18 @@ shortcut_manager::do_init_data (void)
         QKeySequence (ctrl_alt + Qt::Key_U));
 
 #if defined (Q_OS_MAC)
-  init (tr ("Indent Selection"), "editor_edit:indent_selection",
+  init (tr ("Indent Selection Rigidly"), "editor_edit:indent_selection",
         QKeySequence (prefix + Qt::Key_Tab));
-  init (tr ("Unindent Selection"), "editor_edit:unindent_selection",
+  init (tr ("Unindent Selection Rigidly"), "editor_edit:unindent_selection",
         QKeySequence (prefix + Qt::ShiftModifier + Qt::Key_Tab));
 #else
-  init (tr ("Indent Selection"), "editor_edit:indent_selection",
+  init (tr ("Indent Selection Rigidly"), "editor_edit:indent_selection",
         QKeySequence (ctrl + Qt::Key_Tab));
-  init (tr ("Unindent Selection"), "editor_edit:unindent_selection",
+  init (tr ("Unindent Selection Rigidly"), "editor_edit:unindent_selection",
         QKeySequence (ctrl_shift + Qt::Key_Tab));
 #endif
+  init (tr ("Indent Code"), "editor_edit:smart_indent_line_or_selection",
+        QKeySequence ());
 
   init (tr ("Convert Line Endings to Windows"), "editor_edit:conv_eol_winows",
         QKeySequence ());

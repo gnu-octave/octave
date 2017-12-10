@@ -2362,7 +2362,7 @@ protected:
     bool_property clipping , "on"
     callback_property createfcn , Matrix ()
     callback_property deletefcn , Matrix ()
-    radio_property handlevisibility , "{on}|callback|off"
+    radio_property handlevisibility u , "{on}|callback|off"
     bool_property hittest , "on"
     bool_property interruptible , "on"
     handle_property parent fs , p
@@ -2377,6 +2377,8 @@ protected:
     bool_property __modified__ hs , "on"
     graphics_handle __myhandle__ fhrs , mh
   END_PROPERTIES
+
+    virtual void update_handlevisibility (void);
 
 protected:
   struct cmp_caseless_str
@@ -3202,6 +3204,8 @@ public:
         paperposition.set (get_auto_paperposition ());
     }
 
+    void update_handlevisibility (void);
+
     mutable graphics_toolkit toolkit;
   };
 
@@ -3499,6 +3503,7 @@ public:
                       bool push_to_zoom_stack = true);
 
     void unzoom (void);
+    void update_handlevisibility (void);
     void push_zoom_stack (void);
     void clear_zoom_stack (bool do_unzoom = true);
 

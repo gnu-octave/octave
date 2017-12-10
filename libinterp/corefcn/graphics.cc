@@ -2057,6 +2057,28 @@ figure::properties::set___mouse_mode__ (const octave_value& val_arg)
     }
 }
 
+void
+figure::properties::update_handlevisibility (void)
+{
+  if (! is_handle_visible ())
+    {
+      octave_value cf = gh_manager::get_object (0).get ("currentfigure");
+      if (! cf.isempty () && cf.double_value () == __myhandle__)
+        {
+          gh_manager::auto_lock guard;
+          octave_value kids =  gh_manager::get_object (0).get ("children");
+          if (kids.isempty ())
+            gh_manager::get_object (0).set ("currentfigure", Matrix ());
+          else
+            {
+              NDArray kidsarray = kids.array_value ();
+              gh_manager::get_object (0).set ("currentfigure", kidsarray(0));
+            }
+        }
+    }
+
+  base_properties::update_handlevisibility ();
+}
 // ---------------------------------------------------------------------
 
 void
@@ -3281,6 +3303,78 @@ base_properties::update_autopos (const std::string& elem_type)
   if (parent_go.valid_object ())
     parent_go.get_properties ().update_autopos (elem_type);
 }
+
+void
+base_properties::update_handlevisibility (void)
+{
+  if (is_handle_visible ())
+    return;
+  
+  // This object should not be the root "callbackobject"
+  graphics_object rt = gh_manager::get_object (0);
+  octave_value cbo = rt.get ("callbackobject");
+  if (! cbo.isempty () && cbo.double_value () == __myhandle__)
+    {
+      gh_manager::auto_lock guard;
+      auto& root_props =
+        dynamic_cast<root_figure::properties&> (rt.get_properties ());
+      root_props.set_callbackobject (Matrix ());
+    }
+
+  // This object should not be the figure "currentobject"
+  graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+  graphics_object fig (go.get_ancestor ("figure"));
+  if (fig.valid_object ())
+    {
+      octave_value co = fig.get ("currentobject");
+      if (! co.isempty () && co.double_value () == __myhandle__)
+        {
+          gh_manager::auto_lock guard;
+          auto& fig_props =
+            dynamic_cast<figure::properties&> (fig.get_properties ());
+          fig_props.set_currentobject (Matrix ());
+        }
+    }
+}
+
+/*
+## test current figure and current axes have visible handles 
+%!test
+%! hf1 = figure ("visible", "off");
+%! hf2 = figure ("visible", "off");
+%! hax1 = axes ();
+%! hax2 = axes ();
+%! unwind_protect
+%!   assert (get (0, "currentfigure"), hf2);
+%!   assert (get (hf2, "currentaxes"), hax2);
+%!   set (hf2, "handlevisibility", "off");
+%!   assert (get (0, "currentfigure"), hf1);
+%!   set (hax2, "handlevisibility", "off");
+%!   assert (get (hf2, "currentaxes"), hax1);
+%!   assert (get (hf2, "currentobject"), []);
+%! unwind_protect_cleanup
+%!   close ([hf1, hf2]);
+%! end_unwind_protect;
+*/
+
+/*
+## test current callback object have visible handle 
+%!test
+%! hf = figure ("visible", "off");
+%! hax = axes ();
+%! unwind_protect
+%!   fcn = @(h) assert (gcbo (), h);
+%!   addlistener (hax, "color", fcn);
+%!   set (hax, "color", "r");
+%!   dellistener (hax, "color", fcn);
+%!   set (hax, "handlevisibility", "off");
+%!   fcn = @() assert (gcbo (), []);
+%!   addlistener (hax, "color", fcn);
+%!   set (hax, "color", "b");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect;
+*/
 
 void
 base_properties::add_listener (const caseless_str& pname,
@@ -8486,6 +8580,31 @@ axes::properties::unzoom (void)
 }
 
 void
+axes::properties::update_handlevisibility (void)
+{
+  if (! is_handle_visible ())
+    {
+      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+      graphics_object fig (go.get_ancestor ("figure"));
+      octave_value ca = fig.get ("currentaxes");
+      if (! ca.isempty () && ca.double_value () == __myhandle__)
+        {
+          gh_manager::auto_lock guard;
+          octave_value kids =  fig.get ("children");
+          if (kids.isempty ())
+            fig.set ("currentaxes", Matrix ());
+          else
+            {
+              NDArray kidsarray = kids.array_value ();
+              fig.set ("currentaxes", kidsarray(0));
+            }
+        }
+    }
+
+  base_properties::update_handlevisibility ();
+}
+
+void
 axes::properties::clear_zoom_stack (bool do_unzoom)
 {
   size_t items_to_leave_on_stack = (do_unzoom ? 7 : 0);
@@ -10133,13 +10252,11 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       octave::unwind_protect_safe frame;
       frame.add_fcn (gh_manager::restore_gcbo);
 
-      if (true)
-        {
-          gh_manager::auto_lock guard;
-
-          callback_objects.push_front (get_object (h));
-          xset_gcbo (h);
-        }
+      gh_manager::auto_lock guard;
+      graphics_object go (get_object (h));
+      callback_objects.push_front (go);
+      if (go.get ("handlevisibility").string_value () != "off")
+        xset_gcbo (h);
 
       // Copy CB because "function_value" method is non-const.
 

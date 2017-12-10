@@ -90,7 +90,10 @@ function h = figure (varargin)
     set (f, varargin{:});
   endif
 
-  set (0, "currentfigure", f);
+  if (strcmp (get (f, "handlevisibility"), "on"))
+    set (0, "currentfigure", f);
+  endif
+  
   ## When switching to figure N, make figure visible and on top of stack,
   ## unless visibility is explicitly switched off.
   if (! init_new_figure && ! any (strcmpi (varargin(1:2:end), "visible")

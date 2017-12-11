@@ -427,7 +427,7 @@ variable_editor_model::flags (const QModelIndex& idx) const
       //return requires_sub_editor(idx) ?  QAbstractTableModel::flags (idx) : QAbstractTableModel::flags (idx) | Qt::ItemIsEditable;
     }
 
-  return 0;
+  return Qt::NoItemFlags;
 }
 
 // private slots

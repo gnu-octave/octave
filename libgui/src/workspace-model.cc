@@ -97,7 +97,7 @@ workspace_model::columnCount (const QModelIndex&) const
 Qt::ItemFlags
 workspace_model::flags (const QModelIndex& idx) const
 {
-  Qt::ItemFlags retval = nullptr;
+  Qt::ItemFlags retval = Qt::NoItemFlags;
 
   if (idx.isValid ())
     {

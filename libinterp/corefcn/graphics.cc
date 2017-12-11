@@ -11197,7 +11197,7 @@ addlistener (gcf, "position", @{@@my_listener, "my string"@})
 @end group
 @end example
 
-@seealso{addproperty, hggroup}
+@seealso{dellistener, addproperty, hggroup}
 @end deftypefn */)
 {
   gh_manager::auto_lock guard;
@@ -11256,6 +11256,7 @@ dellistener (gcf, "position", c);
 @end group
 @end example
 
+@seealso{addlistener}
 @end deftypefn */)
 {
   gh_manager::auto_lock guard;

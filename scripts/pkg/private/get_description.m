@@ -56,7 +56,7 @@ function desc = get_description (filename)
                     keyword, desc.name);
         endif
         if (isfield (desc, keyword))
-          warning ('pkg: duplicate keyword "%s" in DESCRIPTION, ignoring",
+          warning ('pkg: duplicate keyword "%s" in DESCRIPTION, ignoring',
                    keyword);
         else
           desc.(keyword) = value;

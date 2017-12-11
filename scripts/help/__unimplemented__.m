@@ -74,6 +74,9 @@ function txt = __unimplemented__ (fcn)
              "Matlab-compatible ODE functions are provided by the odepkg ", ...
              "package.  See @url{http://octave.sourceforge.net/odepkg/}."];
 
+    case "polarplot"
+      txt = ["polarplot is not implemented.  Consider using polar."];
+
     case "startup"
       txt = ["startup is not implemented.  ", ...
              'Octave uses the file ".octaverc" instead.'];

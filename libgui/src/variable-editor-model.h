@@ -120,9 +120,9 @@ private slots:
 private:
 
   // Get data for ov(row, col).  This must be executed in the octave thread!
-  void get_data_oct (int row, int col, const std::string& v) /*const*/;
+  void get_data_oct (const int& row, const int& col, const std::string& v) /*const*/;
 
-  void set_data_oct (const std::string& v, int row, int col,
+  void set_data_oct (const std::string& v, const int& row, const int& col,
                      const std::string& val);
 
   void init_from_oct (const std::string& x);

@@ -299,8 +299,8 @@ variable_editor_model::data (const QModelIndex& idx, int role) const
         {
           if (! m_d->is_pending (idx))
             {
-              octave_link::post_event<variable_editor_model, int, int,
-                                      const std::string&>
+              octave_link::post_event<variable_editor_model,
+                                      int, int, std::string>
                 (const_cast<variable_editor_model *> (this),
                  &variable_editor_model::get_data_oct,
                  idx.row (), idx.column (), m_d->m_name);
@@ -327,8 +327,8 @@ variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
           qDebug () << v.typeName () << " Expected String!";
           return false;
         }
-      octave_link::post_event<variable_editor_model, const std::string&,
-                              int, int, const std::string&>
+      octave_link::post_event<variable_editor_model,
+                              std::string, int, int, std::string>
         (this, &variable_editor_model::set_data_oct,
          m_d->m_name, idx.row (), idx.column (),
          v.toString ().toStdString ());
@@ -342,8 +342,7 @@ bool
 variable_editor_model::insertRows (int row, int count, const QModelIndex&)
 {
   // FIXME: cells?
-  octave_link::post_event <variable_editor_model, const std::string&,
-                           const std::string&>
+  octave_link::post_event <variable_editor_model, std::string, std::string>
     (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1 = [ %1(1:%2,:) ; zeros(%3, columns(%1)) ; %1(%2+%3:end,:) ]")
      .arg (QString::fromStdString (m_d->m_name))
@@ -364,8 +363,7 @@ variable_editor_model::removeRows (int row, int count, const QModelIndex&)
       return false;
     }
 
-  octave_link::post_event <variable_editor_model, const std::string&,
-                           const std::string&>
+  octave_link::post_event <variable_editor_model, std::string, std::string>
     (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1(%2:%3, :) = []")
      .arg (QString::fromStdString (m_d->m_name))
@@ -379,8 +377,7 @@ variable_editor_model::removeRows (int row, int count, const QModelIndex&)
 bool
 variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
 {
-  octave_link::post_event <variable_editor_model, const std::string&,
-                           const std::string&>
+  octave_link::post_event <variable_editor_model, std::string, std::string>
     (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1 = [ %1(:,1:%2) ; zeros(rows(%1), %3) %1(:,%2+%3:end) ]")
      .arg (QString::fromStdString (m_d->m_name))
@@ -401,8 +398,7 @@ variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
       return false;
     }
 
-  octave_link::post_event <variable_editor_model, const std::string&,
-                           const std::string&>
+  octave_link::post_event <variable_editor_model, std::string, std::string>
     (this, &variable_editor_model::eval_oct, m_d->m_name,
      QString ("%1(:, %2:%3) = []")
      .arg (QString::fromStdString (m_d->m_name))
@@ -543,7 +539,8 @@ variable_editor_model::received_initialize_data (const QString& class_name,
 // private
 
 void
-variable_editor_model::get_data_oct (int row, int col, const std::string& x)
+variable_editor_model::get_data_oct (const int& row, const int& col,
+                                     const std::string& x)
 {
   int parse_status = 0;
 
@@ -581,7 +578,8 @@ variable_editor_model::get_data_oct (int row, int col, const std::string& x)
 
 // val has to be copied!
 void
-variable_editor_model::set_data_oct (const std::string& x, int row, int col,
+variable_editor_model::set_data_oct (const std::string& x,
+                                     const int& row, const int& col,
                                      const std::string& val)
 {
   m_d->m_validity = true;

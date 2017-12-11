@@ -121,8 +121,8 @@ public:
   }
 
   template <class T, class A, class B>
-  static void post_event (T *obj, void (T::*method) (A, B),
-                          A arg_a, B arg_b)
+  static void post_event (T *obj, void (T::*method) (const A&, const B&),
+                          const A& arg_a, const B& arg_b)
   {
     if (enabled ())
       instance->do_post_event<T, A, B> (obj, method, arg_a, arg_b);
@@ -130,17 +130,18 @@ public:
 
   template <class T, class A, class B, class C>
   static void post_event (T *obj,
-                          void (T::*method) (A, B, C),
-                          A arg_a, B arg_b, C arg_c)
+                          void (T::*method) (const A&, const B&, const C&),
+                          const A& arg_a, const B& arg_b, const C& arg_c)
   {
     if (enabled ())
       instance->do_post_event<T, A, B, C> (obj, method, arg_a, arg_b, arg_c);
   }
 
   template <class T, class A, class B, class C, class D>
-  static void post_event (T *obj,
-                          void (T::*method) (A, B, C, D),
-                          A arg_a, B arg_b, C arg_c, D arg_d)
+  static void
+  post_event (T *obj,
+              void (T::*method) (const A&, const B&, const C&, const D&),
+              const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
   {
     if (enabled ())
       instance->do_post_event<T, A, B, C, D>
@@ -467,24 +468,27 @@ protected:
   }
 
   template <class T, class A, class B>
-  void do_post_event (T *obj, void (T::*method) (A, B),
-                      A arg_a, B arg_b)
+  void do_post_event (T *obj, void (T::*method) (const A&, const B&),
+                      const A& arg_a, const B& arg_b)
   {
     gui_event_queue.add_method<T, A, B>
       (obj, method, arg_a, arg_b);
   }
 
   template <class T, class A, class B, class C>
-    void do_post_event (T *obj, void (T::*method) (A, B, C),
-                      A arg_a, B arg_b, C arg_c)
+  void do_post_event (T *obj,
+                      void (T::*method) (const A&, const B&, const C&),
+                      const A& arg_a, const B& arg_b, const C& arg_c)
   {
     gui_event_queue.add_method<T, A, B, C>
       (obj, method, arg_a, arg_b, arg_c);
   }
 
   template <class T, class A, class B, class C, class D>
-  void do_post_event (T *obj, void (T::*method) (A, B, C, D),
-                      A arg_a, B arg_b, C arg_c, D arg_d)
+  void
+  do_post_event (T *obj,
+                 void (T::*method) (const A&, const B&, const C&, const D&),
+                 const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
   {
     gui_event_queue.add_method<T, A, B, C, D>
       (obj, method, arg_a, arg_b, arg_c, arg_d);

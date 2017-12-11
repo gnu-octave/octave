@@ -34,6 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 
 // FIXME: is there a better name for this class?
 
+// FIXME: we should probably be using std::function, std::bind, and
+// related c++11 features to implement this functionality.
+
 namespace octave
 {
   class
@@ -218,8 +221,8 @@ namespace octave
     class method_arg2_elem : public elem
     {
     public:
-      method_arg2_elem (T *obj, void (T::*method) (A, B),
-                        A arg_a, B arg_b)
+      method_arg2_elem (T *obj, void (T::*method) (const A&, const B&),
+                        const A& arg_a, const B& arg_b)
         : e_obj (obj), e_method (method),
           e_arg_a (arg_a), e_arg_b (arg_b) { }
 
@@ -228,7 +231,7 @@ namespace octave
     private:
 
       T *e_obj;
-      void (T::*e_method) (A, B);
+      void (T::*e_method) (const A&, const B&);
       A e_arg_a;
       B e_arg_b;
 
@@ -244,8 +247,8 @@ namespace octave
     class method_arg3_elem : public elem
     {
     public:
-      method_arg3_elem (T *obj, void (T::*method) (A, B, C),
-                        A arg_a, B arg_b, C arg_c)
+      method_arg3_elem (T *obj, void (T::*method) (const A&, const B&, const C&),
+                        const A& arg_a, const B& arg_b, const C& arg_c)
         : e_obj (obj), e_method (method),
           e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c)
       { }
@@ -255,7 +258,7 @@ namespace octave
     private:
 
       T *e_obj;
-      void (T::*e_method) (A, B, C);
+      void (T::*e_method) (const A&, const B&, const C&);
       A e_arg_a;
       B e_arg_b;
       C e_arg_c;
@@ -272,8 +275,8 @@ namespace octave
     class method_arg4_elem : public elem
     {
     public:
-      method_arg4_elem (T *obj, void (T::*method) (A, B, C, D),
-                        A arg_a, B arg_b, C arg_c, D arg_d)
+      method_arg4_elem (T *obj, void (T::*method) (const A&, const B&, const C&, const D&),
+                        const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
         : e_obj (obj), e_method (method),
           e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c), e_arg_d (arg_d)
       { }
@@ -285,7 +288,7 @@ namespace octave
     private:
 
       T *e_obj;
-      void (T::*e_method) (A, B, C, D);
+      void (T::*e_method) (const A&, const B&, const C&, const D&);
       A e_arg_a;
       B e_arg_b;
       C e_arg_c;
@@ -417,16 +420,17 @@ namespace octave
 
     // Call to T::method (A, B).
     template <class T, class A, class B>
-    void add_method (T *obj, void (T::*method) (A, B),
-                     A arg_a, B arg_b)
+    void add_method (T *obj, void (T::*method) (const A&, const B&),
+                     const A& arg_a, const B& arg_b)
     {
       add (new method_arg2_elem<T, A, B> (obj, method, arg_a, arg_b));
     }
 
     // Call to T::method (A, B, C).
     template <class T, class A, class B, class C>
-    void add_method (T *obj, void (T::*method) (A, B, C),
-                     A arg_a, B arg_b, C arg_c)
+    void add_method (T *obj,
+                     void (T::*method) (const A&, const B&, const C&),
+                     const A& arg_a, const B& arg_b, const C& arg_c)
     {
       add (new method_arg3_elem<T, A, B, C> (obj, method, arg_a,
                                              arg_b, arg_c));
@@ -434,9 +438,10 @@ namespace octave
 
     // Call to T::method (A, B, C, D).
     template <class T, class A, class B, class C, class D>
-    void add_method (T *obj, void (T::*method) (A, B, C, D),
-                     A arg_a, B arg_b,
-                     C arg_c, D arg_d)
+    void add_method (T *obj,
+                     void (T::*method) (const A&, const B&, const C&, const D&),
+                     const A& arg_a, const B& arg_b,
+                     const C& arg_c, const D& arg_d)
     {
       add (new method_arg4_elem<T, A, B, C, D> (obj, method, arg_a,
                                                 arg_b, arg_c, arg_d));

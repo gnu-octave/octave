@@ -412,6 +412,10 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endwhile
         if (k > 0)
           if (have_labels)
+            ## FIXME: This is inefficient on an existing legend object because
+            ##        it triggers the updateline() callback which then calls
+            ##        legend() itself.  Possibly better to delete the callback
+            ##        on displayname and then re-attach it.  See bug #52641.
             set (kids(k), "displayname", arg);
           endif
           hplots(end+1) = kids(k);
@@ -1182,7 +1186,11 @@ function updateline (h, ~, hlegend, linelength, update_name)
   if (update_name)
     ## When string changes, have to rebuild legend completely
     [hplots, text_strings] = __getlegenddata__ (hlegend);
-    legend (get (hplots(1), "parent"), hplots, text_strings);
+    ## FIXME: See bug #52641.  Changing an existing legend string to a blank
+    ##        can trigger this.
+    if (! isempty (hplots))
+      legend (get (hplots(1), "parent"), hplots, text_strings);
+    endif
   else
     kids = get (hlegend, "children");
     ll = lm = [];

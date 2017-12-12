@@ -1,8 +1,8 @@
 /*
 
+Copyright (C) 2013-2017 John W. Eaton
 Copyright (C) 2015 Michael Barnes
 Copyright (C) 2013 Rüdiger Sonderfeld
-Copyright (C) 2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -81,6 +81,7 @@ public:
 
   // If a sub editor is required, is it a standard type?
   bool editor_type_matrix (const QModelIndex& idx) const;
+
   bool editor_type_string (const QModelIndex& idx) const;
 
   // Return the proper parens to access the data structure.
@@ -120,7 +121,8 @@ private slots:
 private:
 
   // Get data for ov(row, col).  This must be executed in the octave thread!
-  void get_data_oct (const int& row, const int& col, const std::string& v) /*const*/;
+  void get_data_oct (const int& row, const int& col,
+                     const std::string& v) /*const*/;
 
   void set_data_oct (const std::string& v, const int& row, const int& col,
                      const std::string& val);
@@ -142,7 +144,9 @@ private:
   void display_valid (void);
 
   QObject *m_p;
+
   struct impl;
+
   impl *m_d;
 };
 

@@ -1,8 +1,8 @@
 /*
 
+Copyright (C) 2013-2017 John W. Eaton
 Copyright (C) 2015 Michael Barnes
 Copyright (C) 2013 Rüdiger Sonderfeld
-Copyright (C) 2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -48,12 +48,13 @@ public:
 
   void edit_variable (const QString& name);
 
-  /// Clear all the models' data cache
+  // Clear all the models' data cache.
   void clear_data_cache (void);
 
   bool has_focus (void);
 
   static QList<QColor> default_colors (void);
+
   static QStringList color_names (void);
 
 public slots:
@@ -69,19 +70,29 @@ protected slots:
   void closeTab (int idx);
 
   void contextmenu_requested (const QPoint& pt);
+
   void columnmenu_requested (const QPoint& pt);
+
   void rowmenu_requested (const QPoint& pt);
 
   void double_click (const QModelIndex& idx);
 
   void save (void);
+
   void clearContent (void);
+
   void cutClipboard (void);
+
   void copyClipboard (void);
+
   void pasteClipboard (void);
+
   void pasteTableClipboard (void);
+
   void createVariable (void);
+
   void transposeContent (void);
+
   void up (void);
 
   void delete_selected (void);
@@ -93,22 +104,31 @@ protected slots:
 signals:
 
   void updated (void);
+
   void finished (void);
+
   void command_requested (const QString& cmd);
 
 private:
 
   QMainWindow *m_main;
+
   QToolBar *m_tool_bar;
+
   QTabWidget *m_tab_widget;
 
   int m_default_width;
+
   int m_default_height;
+
   int m_add_font_height;
 
   bool m_autofit;
+
   bool m_autofit_max;
+
   bool m_use_terminal_font;
+
   bool m_alternate_rows;
 
   QString m_stylesheet;
@@ -118,6 +138,7 @@ private:
   // If use_terminal_font is true then this will be different since
   // "font" will contain the terminal font.
   QFont m_sel_font;
+
   QList<QColor> m_table_colors;
 
   QList<int> octave_to_coords (QString&);

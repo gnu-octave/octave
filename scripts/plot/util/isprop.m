@@ -54,7 +54,7 @@ endfunction
 %!assert (isprop (0, "foobar"), false)
 %!assert (isprop (0, "screenpixelsperinch"), true)
 %!assert (isprop (zeros (2, 3), "visible"), true (2, 3))
-%!assert (isprop (0:2, "visible"), [true false false])
+%!assert (isprop ([-2, -1, 0], "visible"), [false, false, true])
 
 %!error isprop ()
 %!error isprop (1)

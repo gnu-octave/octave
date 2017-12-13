@@ -513,7 +513,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       obj.zdata = double (obj.zdata);
     endif
 
-    if (isfield (obj, "units"))
+    if (strcmp (obj.type, "text"))
       units = obj.units;
       unwind_protect
         set (h_obj, "units", "data");

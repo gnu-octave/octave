@@ -19,9 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} close
 ## @deftypefnx {} {} close @var{h}
+## @deftypefnx {} {} close @var{figname}
 ## @deftypefnx {} {} close (@var{h})
-## @deftypefnx {} {} close (@var{h}, "hidden")
-## @deftypefnx {} {} close (@var{h}, "force")
+## @deftypefnx {} {} close (@var{figname})
+## @deftypefnx {} {} close (@dots{}, "hidden")
+## @deftypefnx {} {} close (@dots{}, "force")
 ## @deftypefnx {} {} close all
 ## @deftypefnx {} {} close all hidden
 ## @deftypefnx {} {} close all force
@@ -29,7 +31,9 @@
 ##
 ## When called with no arguments, close the current figure.  This is equivalent
 ## to @code{close (gcf)}.  If the input @var{h} is a graphic handle, or vector
-## of graphics handles, then close each figure in @var{h}.
+## of graphics handles, then close each figure in @var{h}.  The figure to
+## close may also be specified by name @var{figname} which is matched against
+## the @qcode{"Name"} property of all figures.
 ##
 ## If the argument @qcode{"all"} is given then all figures with visible handles
 ## (HandleVisibility = @qcode{"on"}) are closed.
@@ -65,28 +69,36 @@ function retval = close (arg1, arg2)
       figs = [];
     endif
   elseif (nargin == 1)
-    if (ischar (arg1) && strcmpi (arg1, "all"))
-      figs = get (0, "children");
-      figs = figs(isfigure (figs));
+    if (ischar (arg1))
+      if (strcmpi (arg1, "all"))
+        figs = get (0, "children");
+        figs = figs(isfigure (figs));
+      else
+        figs = findobj ("-depth", 1, "name", arg1, "type", "figure");
+      endif
     elseif (any (isfigure (arg1)))
       figs = arg1(isfigure (arg1));
       figs = figs(strcmp ("on", get (figs, "handlevisibility")));
     elseif (isempty (arg1))
       figs = [];  # Silently accept null argument for Matlab compatibility
     else
-      error ('close: first argument must be "all" or a figure handle');
+      error ('close: first argument must be "all", a figure handle, or a figure name');
     endif
   elseif (ischar (arg2)
           && (strcmpi (arg2, "hidden") || strcmpi (arg2, "force")))
-    if (ischar (arg1) && strcmpi (arg1, "all"))
-      figs = allchild (0);
-      figs = figs(isfigure (figs));
+    if (ischar (arg1))
+      if (strcmpi (arg1, "all"))
+        figs = allchild (0);
+        figs = figs(isfigure (figs));
+      else
+        figs = findall ("-depth", 1, "name", arg1, "type", "figure");
+      endif
     elseif (any (isfigure (arg1)))
       figs = arg1(isfigure (arg1));
     elseif (isempty (arg1))
       figs = [];  # Silently accept null argument for Matlab compatibility
     else
-      error ('close: first argument must be "all" or a figure handle');
+      error ('close: first argument must be "all", a figure handle, or a figure name');
     endif
     if (strcmpi (arg2, "force"))
       delete (figs);
@@ -130,10 +142,22 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## Test closing specified figure handle
+%! ## Test closing specified numeric figure handle
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   close (hf);
+%!   assert (! isfigure (hf));
+%! unwind_protect_cleanup
+%!   if (isfigure (hf))
+%!     delete (hf);
+%!   endif
+%! end_unwind_protect
+
+%!test
+%! ## Test closing specified named figure handle
+%! hf = figure ("visible", "off", "name", "__foobar__");
+%! unwind_protect
+%!   close __foobar__;
 %!   assert (! isfigure (hf));
 %! unwind_protect_cleanup
 %!   if (isfigure (hf))
@@ -177,8 +201,7 @@ endfunction
 
 ## Test input validation
 %!error close (1,2,3)
-%!error <first argument must be "all" or a figure> close ({"all"})
-%!error <first argument must be "all" or a figure> close ("all_and_more")
-%!error <first argument must be "all" or a figure> close (-1)
+%!error <first argument must be "all", a figure handle> close ({"all"})
+%!error <first argument must be "all", a figure handle> close (-1)
 %!error <second argument must be "hidden"> close all hid
 %!error <second argument must be "hidden"> close all for

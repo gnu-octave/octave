@@ -1473,7 +1473,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       fprintf (plot_stream, "set cbrange [1:%.15e];\n",
                cmap_sz + rows (addedcmap));
     else
-      fprintf (plot_stream, "set cbrange [1:%.15e];\n", cmap_sz);
+      fprintf (plot_stream, "set cbrange [1:%.15e];\n", max ([cmap_sz 2]));
     endif
   endif
 
@@ -2845,7 +2845,7 @@ function cdata = mapcdata (cdata, mode, clim, cmap_sz)
       cdata = 255 * (cdata - clim(1)) / clim_rng;
       cdata(cdata < 0) = 0;  cdata(cdata > 255) = 255;
     else
-      cdata(:) = 255;
+      cdata(:) = fix (255 / 2);
     endif
   else
     if (strcmp (mode, "scaled"))
@@ -2855,7 +2855,7 @@ function cdata = mapcdata (cdata, mode, clim, cmap_sz)
       if (clim_rng != 0)
         cdata = 1 + fix (cmap_sz * (cdata - clim(1)) / clim_rng);
       else
-        cdata(:) = cmap_sz;
+        cdata(:) = 1 + fix (cmap_sz / 2);
       endif
     else
       if (islogical (cdata) || isinteger (cdata))

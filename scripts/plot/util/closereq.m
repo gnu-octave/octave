@@ -33,13 +33,14 @@ function closereq ()
     print_usage ();
   endif
 
-  cf = gcbf ();
-  if (isempty (cf))
-    warning ("closereq: calling closereq from octave prompt is not supported, use 'close' instead");
-    cf = get (0, "currentfigure");
-  endif
-  if (! isempty (cf) && isfigure (cf))
+  ## Get current figure, but don't use gcf to avoid creating a new figure.
+  cf = get (0, "currentfigure");
+  if (isfigure (cf))
     delete (cf);
   endif
 
 endfunction
+
+
+## No BIST tests required.  Testing done in close.m.
+%!assert (1)

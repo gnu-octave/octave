@@ -25,7 +25,7 @@
 ## @deftypefnx {} {@var{h} =} findall (@var{hlist}, @dots{})
 ## @deftypefnx {} {@var{h} =} findall (@var{hlist}, "flat", @dots{})
 ## @deftypefnx {} {@var{h} =} findall (@var{hlist}, "-depth", @var{d}, @dots{})
-## Find graphics object, including hidden ones, with specified property values.
+## Find graphics object, including hidden ones, with specified properties.
 ##
 ## The return value @var{h} is a list of handles to the found graphic objects.
 ##

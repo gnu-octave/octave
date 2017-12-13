@@ -237,8 +237,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
               set (0, "units", units);
             end_unwind_protect
             if (all (screen_size > 0))
-              ## For X11/Windows, set the figure positon as well as the size
-              ## gnuplot position is UL, Octave's is LL (same for screen/window)
+              ## Set the figure position as well as the size.  gnuplot position
+              ## is UL, Octave's is LL (same for screen/window)
               gnuplot_pos(2) = screen_size(2) - gnuplot_pos(2) - gnuplot_size(2);
               gnuplot_pos = max (gnuplot_pos, 1);
               size_str = sprintf ("%s position %d,%d", size_str,

@@ -2848,9 +2848,7 @@ function cdata = mapcdata (cdata, mode, clim, cmap_sz)
       cdata(:) = 255;
     endif
   else
-    if (islogical (cdata))
-      cdata += 1;
-    elseif (strcmp (mode, "scaled"))
+    if (strcmp (mode, "scaled"))
       clim = double (clim);
       cdata = double (cdata);
       clim_rng = clim(2) - clim(1);
@@ -2860,7 +2858,7 @@ function cdata = mapcdata (cdata, mode, clim, cmap_sz)
         cdata(:) = cmap_sz;
       endif
     else
-      if (isinteger (cdata))
+      if (islogical (cdata) || isinteger (cdata))
         cdata += 1;
       else
         cdata = fix (cdata);

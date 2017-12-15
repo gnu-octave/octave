@@ -239,8 +239,9 @@ jac = ---- = |                       |
 
 @end ifnottex
 
-The second and third arguments specify the initial state of the system,
-@math{x_0}, and the initial value of the independent variable @math{t_0}.
+The second argument specifies the initial state of the system @math{x_0}.  The
+third argument is a vector, @var{t}, specifying the time values for which a
+solution is sought.
 
 The fourth argument is optional, and may be used to specify a set of
 times that the ODE solver should not integrate past.  It is useful for

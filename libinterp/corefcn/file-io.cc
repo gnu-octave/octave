@@ -549,7 +549,7 @@ separate file id.  It is not an error to open a file several times,
 though writing to the same file through several different file ids may
 produce unexpected results.
 
-The possible values @samp{mode} may have are
+The possible values of @var{mode} are
 
 @table @asis
 @item @samp{r} (default)
@@ -574,11 +574,10 @@ file.
 @end table
 
 Append a @qcode{"t"} to the mode string to open the file in text mode or a
-@qcode{"b"} to open in binary mode.  On Windows and Macintosh systems,
+@qcode{"b"} to open in binary mode.  On Windows systems,
 text mode reading and writing automatically converts linefeeds to the
 appropriate line end character for the system (carriage-return linefeed on
-Windows, carriage-return on Macintosh).  The default when no mode is
-specified is binary mode.
+Windows).  The default when no mode is specified is binary.
 
 Additionally, you may append a @qcode{"z"} to the mode string to open a
 gzipped file for reading or writing.  For this to be successful, you
@@ -604,6 +603,14 @@ However, conversions are currently only supported for @samp{native},
 
 When opening a new file that does not yet exist, permissions will be set to
 @code{0666 - @var{umask}}.
+
+Compatibility Note: Octave opens files using buffered I/O.  Small writes are
+accumulated until an internal buffer is filled, and then everything is written
+in a single operation.  This is very efficient and improves performance.
+@sc{matlab}, however, opens files using flushed I/O where every write operation
+is immediately performed.  If the write operation must be performed immediately
+after data has been written then the write should be followed by a call to
+@code{fflush} to flush the internal buffer.
 @seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite, fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
 @end deftypefn */)
 {

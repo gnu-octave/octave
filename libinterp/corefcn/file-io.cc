@@ -110,38 +110,27 @@ normalize_fopen_mode (std::string& mode, bool& use_zlib)
 
   if (! mode.empty ())
     {
-      // Could probably be faster, but does it really matter?
-
-      // Accept 'W', 'R', and 'A' as 'w', 'r', and 'a' but we warn about
-      // them because Matlab says they don't perform "automatic
-      // flushing" but we don't know precisely what action that implies.
+      // Matlab uses 'A' and 'W' to indicate that buffered writing should
+      // take place.  Octave already does that.  Theoretically, we should
+      // warn about using 'a', 'r', or 'w' because Octave does not enable
+      // automatic flushing with these modes.  The performance hit is ~4X
+      // when using automatic flushing and seems completely unnecessary.
+      // See bug #52644.
 
       size_t pos = mode.find ('W');
 
       if (pos != std::string::npos)
-        {
-          warning_with_id ("Octave:fopen-mode",
-                           R"(fopen: treating mode "W" as equivalent to "w")");
-          mode[pos] = 'w';
-        }
+        mode[pos] = 'w';
 
       pos = mode.find ('R');
 
       if (pos != std::string::npos)
-        {
-          warning_with_id ("Octave:fopen-mode",
-                           R"(fopen: treating mode "R" as equivalent to "r")");
-          mode[pos] = 'r';
-        }
+        mode[pos] = 'r';
 
       pos = mode.find ('A');
 
       if (pos != std::string::npos)
-        {
-          warning_with_id ("Octave:fopen-mode",
-                           R"(fopen: treating mode "A" as equivalent to "a")");
-          mode[pos] = 'a';
-        }
+        mode[pos] = 'a';
 
       pos = mode.find ('z');
 

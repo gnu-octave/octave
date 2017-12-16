@@ -18,12 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} close
-## @deftypefnx {} {} close @var{h}
-## @deftypefnx {} {} close @var{figname}
 ## @deftypefnx {} {} close (@var{h})
-## @deftypefnx {} {} close (@var{figname})
-## @deftypefnx {} {} close (@dots{}, "hidden")
-## @deftypefnx {} {} close (@dots{}, "force")
+## @deftypefnx {} {} close @var{figname}
 ## @deftypefnx {} {} close all
 ## @deftypefnx {} {} close all hidden
 ## @deftypefnx {} {} close all force
@@ -38,11 +34,12 @@
 ## If the argument @qcode{"all"} is given then all figures with visible handles
 ## (HandleVisibility = @qcode{"on"}) are closed.
 ##
-## If the argument @qcode{"hidden"} is given then figures, including hidden
-## ones, are closed.
+## If the additional argument @qcode{"hidden"} is given then all figures,
+## including hidden ones, are closed.
 ##
-## If the argument @qcode{"force"} is given then figures are closed even when
-## @qcode{"closerequestfcn"} has been altered to prevent closing the window.
+## If the additional argument @qcode{"force"} is given then figures are closed
+## even when @qcode{"closerequestfcn"} has been altered to prevent closing the
+## window.
 ##
 ## Implementation Note: @code{close} operates by making the handle @var{h} the
 ## current figure, and then calling the function specified by the
@@ -74,11 +71,10 @@ function retval = close (arg1, arg2)
         figs = get (0, "children");
         figs = figs(isfigure (figs));
       else
-        figs = findobj ("-depth", 1, "name", arg1, "type", "figure");
+        figs = findall ("-depth", 1, "name", arg1, "type", "figure");
       endif
     elseif (any (isfigure (arg1)))
       figs = arg1(isfigure (arg1));
-      figs = figs(strcmp ("on", get (figs, "handlevisibility")));
     elseif (isempty (arg1))
       figs = [];  # Silently accept null argument for Matlab compatibility
     else
@@ -104,8 +100,6 @@ function retval = close (arg1, arg2)
       delete (figs);
       return;
     endif
-    ## Unhide hidden figures that are about to be deleted
-    set (figs, "handlevisibility", "on");
   else
     error ('close: second argument must be "hidden" or "force"');
   endif
@@ -162,26 +156,6 @@ endfunction
 %! unwind_protect_cleanup
 %!   if (isfigure (hf))
 %!     delete (hf);
-%!   endif
-%! end_unwind_protect
-
-%!test
-%! ## Test closing hidden figures
-%! hf1 = figure ("visible", "off", "handlevisibility", "off");
-%! hf2 = figure ("visible", "off");
-%! unwind_protect
-%!   close (hf1);
-%!   assert (isfigure (hf1));    # figure not deleted
-%!   close ([hf1 hf2]);
-%!   assert (isfigure (hf1) && ! isfigure (hf2));
-%!   close (hf1, "hidden");
-%!   assert (! isfigure (hf1));  # figure finally deleted
-%! unwind_protect_cleanup
-%!   if (isfigure (hf1))
-%!     delete (hf1);
-%!   endif
-%!   if (isfigure (hf2))
-%!     delete (hf2);
 %!   endif
 %! end_unwind_protect
 

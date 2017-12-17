@@ -485,7 +485,7 @@ function print (varargin)
         h = setdiff (h, hnone);
         m = numel (props);
         for n = 1:numel (h)
-          if (ishandle (h(n)))
+          if (ishghandle (h(n)))
             ## Need to verify objects exist since callbacks may delete objects
             ## as the colors for others are modified.
             rgb = get (h(n), color_props{c});
@@ -507,14 +507,14 @@ function print (varargin)
       h = findall (opts.figure, "-property", "fontname");
       m = numel (props);
       for n = 1:numel (h)
-        if (ishandle (h(n)))
+        if (ishghandle (h(n)))
           if (! isempty (opts.font))
             props(end+1).h = h(n);
             props(end).name = "fontname";
             props(end).value = {get(h(n), "fontname")};
           endif
         endif
-        if (ishandle (h(n)))
+        if (ishghandle (h(n)))
           if (! isempty (opts.fontsize))
             props(end+1).h = h(n);
             props(end).name = "fontsize";
@@ -523,7 +523,7 @@ function print (varargin)
         endif
       endfor
       if (! isempty (opts.font))
-        set (h(ishandle (h)), "fontname", opts.font);
+        set (h(ishghandle (h)), "fontname", opts.font);
       endif
       if (! isempty (opts.fontsize))
         if (ischar (opts.fontsize))
@@ -537,7 +537,7 @@ function print (varargin)
         endif
         ## FIXME: legend child objects need to be acted on first.
         ##        or legend fontsize callback will destroy them.
-        hlist = h(ishandle (h));
+        hlist = h(ishghandle (h));
         haxes = strcmp (get (hlist, "type"), "axes");
         set (hlist(! haxes), "fontsize", fontsize);
         set (hlist(haxes), "fontsize", fontsize);
@@ -557,12 +557,12 @@ function print (varargin)
     if (isstruct (props))
       ## Restore figure position and units first
       for n = nfig:-1:1
-        if (ishandle (props(n).h))
+        if (ishghandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
       endfor
       for n = numel (props):-1:(nfig + 1)
-        if (ishandle (props(n).h))
+        if (ishghandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
       endfor

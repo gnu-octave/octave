@@ -55,7 +55,7 @@ function delete (varargin)
       endfor
     endfor
 
-  elseif (isscalar (varargin) && all (ishandle (varargin{1}(:))))
+  elseif (isscalar (varargin) && all (ishghandle (varargin{1}(:))))
     ## Delete a graphics object.
     __go_delete__ (varargin{1});
 

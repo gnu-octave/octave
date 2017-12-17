@@ -51,7 +51,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   elseif (! all (isfield (s, fields)))
     print_usage ();
   elseif (isscalar (p))
-    if (! ishandle (p))
+    if (! ishghandle (p))
       error ("struct2hdl: P is not a handle to a graphic object");
     endif
     if (any (strcmp (get (p).type, partypes)))

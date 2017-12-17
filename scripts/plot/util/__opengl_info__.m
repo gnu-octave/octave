@@ -78,7 +78,7 @@ function info = fig_gl_info (h)
 
   info = [];
 
-  if (ishandle (h) && strcmp (get (h, "renderer"), "opengl"))
+  if (ishghandle (h) && strcmp (get (h, "renderer"), "opengl"))
     vend = get (h, "__gl_vendor__");
     if (isempty (vend))
       return;

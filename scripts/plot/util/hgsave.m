@@ -65,7 +65,7 @@ function hgsave (h, filename, fmt = "-binary")
     if (isempty (h))
       error ("hgsave: No current figure to save");
     endif
-  elseif (! (ishandle (h) && ischar (filename)))
+  elseif (! (ishghandle (h) && ischar (filename)))
     print_usage ();
   endif
 

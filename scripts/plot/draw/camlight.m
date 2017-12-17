@@ -99,9 +99,9 @@ function h = camlight (varargin)
   ## specifying azimuth and a light handle object (also a numeric double).
   ## We don't worry about that.
   if (numel (varargin) > 0 && numel (varargin{1}) == 1
-      && ishandle (varargin{1}))
+      && ishghandle (varargin{1}))
     hl = varargin{1};
-    if (! ishghandle (hl, "light"))
+    if (! isgraphics (hl, "light"))
       error ("camlight: HL must be a handle to a light object");
     endif
     varargin(1) = [];

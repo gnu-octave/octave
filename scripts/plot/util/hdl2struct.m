@@ -31,7 +31,7 @@
 
 function s = hdl2struct (h)
 
-  if (nargin != 1 || ! ishandle (h))
+  if (nargin != 1 || ! ishghandle (h))
     print_usage ();
   endif
 

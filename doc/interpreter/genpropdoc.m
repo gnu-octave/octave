@@ -1635,7 +1635,7 @@ endfunction
 function s = getstructure (objname, base = [])
   hf = [];
   if (! strcmp (objname, "root"))
-    ## Use an improbable number to avoid ishandle to return true for 1
+    ## Use an improbable number to avoid ishghandle to return true for 1
     hf = figure (2265465, "visible", "off");
   endif
 
@@ -1705,7 +1705,7 @@ function def = getdefault (h, objname, field)
   def = get (h, field);
 
   ## Don't print default values for graphics handles
-  if (isscalar (def) && def != 0 && ishandle (def))
+  if (isscalar (def) && def != 0 && ishghandle (def))
     def = "";
   else
     if (ischar (def))

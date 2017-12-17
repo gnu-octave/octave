@@ -49,7 +49,7 @@ function rmap = brighten (arg1, beta)
     m = colormap ();
     h = gcf ();
   else
-    if (ishandle (arg1))
+    if (ishghandle (arg1))
       h = arg1;
       m = get (h, "colormap");
     elseif (iscolormap (arg1))
@@ -70,7 +70,7 @@ function rmap = brighten (arg1, beta)
   endif
 
   if (nargout == 0)
-    if (ishandle (h))
+    if (ishghandle (h))
       set (h, "colormap", m .^ gamma);
     else
       colormap (m .^ gamma);

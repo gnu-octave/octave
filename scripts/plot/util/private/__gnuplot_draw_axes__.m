@@ -40,11 +40,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   ## Set to false for plotyy axes.
   ymirror = true;
   if (isfield (axis_obj, "__plotyy_axes__"))
-    if (all (ishandle (axis_obj.__plotyy_axes__)))
+    if (all (ishghandle (axis_obj.__plotyy_axes__)))
       ymirror = false;
     else
       h = axis_obj.__plotyy_axes__;
-      h = h(ishandle (h));
+      h = h(ishghandle (h));
       h = h(isprop (h, "__plotyy_axes__"));
       rmappdata (h, "__plotyy_axes__");
     endif

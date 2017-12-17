@@ -38,7 +38,7 @@ function rmappdata (h, varargin)
   endif
 
   h = h(:).';
-  if (! all (ishandle (h)))
+  if (! all (ishghandle (h)))
     error ("rmappdata: H must be a scalar or vector of graphic handles");
   elseif (! iscellstr (varargin))
     error ("rmappdata: NAME must be a string");

@@ -26,7 +26,7 @@
 
 function pos = __actual_axis_position__ (h)
 
-  if (ishandle (h))
+  if (ishghandle (h))
     axis_obj = get (h);
   elseif (isstruct (h))
     axis_obj = h;

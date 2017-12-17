@@ -39,7 +39,7 @@ function dataout = guidata (h, data)
     print_usage ();
   endif
 
-  if (! ishandle (h))
+  if (! ishghandle (h))
     error ("guidata: H must be a valid object handle");
   endif
   h = ancestor (h, "figure");

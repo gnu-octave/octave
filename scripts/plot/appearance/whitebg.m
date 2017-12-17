@@ -66,7 +66,7 @@ function whitebg (varargin)
   have_fig = false;
 
   if (nargin > 0)
-    if (all (ishandle (varargin{1})))
+    if (all (ishghandle (varargin{1})))
       h = varargin{1};
       have_fig = true;
       if (nargin == 2)

@@ -69,7 +69,7 @@ function saveas (h, filename, fmt)
     print_usage ();
   endif
 
-  if (! ishandle (h))
+  if (! ishghandle (h))
     error ("saveas: H must be a graphics handle");
   endif
   if (! ischar (filename))

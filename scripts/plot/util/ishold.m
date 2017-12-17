@@ -38,7 +38,7 @@ function retval = ishold (h)
     fig = gcf ();
     ax = get (fig, "currentaxes");
   else
-    if (! ishandle (h))
+    if (! ishghandle (h))
       error ("ishold: H must be an axes or figure graphics handle");
     endif
 

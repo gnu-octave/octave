@@ -30,7 +30,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
   offset = 1;
 
   if (! isempty (in_args))
-    if (ishandle (in_args{1}))
+    if (ishghandle (in_args{1}))
       parent = in_args{1};
       offset = 2;
     elseif (! ischar (in_args{1}))
@@ -48,7 +48,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
     i = find (strcmpi (args(1:2:end), "parent"), 1, "first");
     if (! isempty (i) && length (args) >= 2*i)
       parent = args{2*i};
-      if (! ishandle (parent))
+      if (! ishghandle (parent))
         error ("%s: invalid parent handle.", who);
       endif
       args([2*i-1, 2*i]) = [];

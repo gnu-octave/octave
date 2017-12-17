@@ -22,7 +22,7 @@
 ##
 ## If @var{h} is a matrix then return a logical array which is true where the
 ## elements of @var{h} are axes graphics handles and false where they are not.
-## @seealso{isaxes, ishandle}
+## @seealso{isaxes, ishghandle}
 ## @end deftypefn
 
 ## Author: jwe
@@ -33,7 +33,7 @@ function retval = isaxes (h)
     print_usage ();
   endif
 
-  hlist = ishandle (h);
+  hlist = ishghandle (h);
   retval = hlist;
 
   if (any (hlist))

@@ -40,7 +40,7 @@ function res = isprop (obj, prop)
 
   res = false (size (obj));
   for i = 1:numel (res)
-    if (ishandle (obj(i)))
+    if (ishghandle (obj(i)))
       try
         v = get (obj(i), prop);
         res(i) = true;

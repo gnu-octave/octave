@@ -68,7 +68,7 @@ function [vx, vy] = voronoi (varargin)
 
   narg = 1;
   hax = NaN;
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+  if (isscalar (varargin{1}) && ishghandle (varargin{1}))
     hax = varargin{1};
     if (! isaxes (hax))
       error ("voronoi: HAX argument must be an axes object");

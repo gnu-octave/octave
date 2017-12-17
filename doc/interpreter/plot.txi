@@ -1182,11 +1182,13 @@ the root object.
 @code{surface}, @code{image}, and @code{light} objects.
 
 Graphics handles may be distinguished from function handles
-(@pxref{Function Handles}) by means of the function @code{ishandle}.
-@code{ishandle} returns true if its argument is a handle of a graphics object.
+(@pxref{Function Handles}) by means of the function @code{ishghandle}.
+@code{ishghandle} returns true if its argument is a handle of a graphics object.
 In addition, a figure or axes object may be tested using @code{isfigure} or
-@code{isaxes} respectively.  The test functions return true only if the
-argument is both a handle and of the correct type (figure or axes).
+@code{isaxes} respectively.  To test for a specific type of graphics handle,
+such as a patch or line object, use @code{isgraphics}.  The more specific test
+functions return true only if the argument is both a graphics handle and of the
+correct type (figure, axes, specified object type).
 
 The @code{whos} function can be used to show the object type of each currently
 defined graphics handle.  (Note: this is not true today, but it is, I hope,
@@ -1352,12 +1354,14 @@ Instead of calling @code{line}, use @code{plot}.  Or use @code{surf} instead of
 @cindex handle functions
 
 To determine whether a variable is a graphics object index, or an index
-to an axes or figure, use the functions @code{ishandle}, @code{isaxes}, and
-@code{isfigure}.
-
-@DOCSTRING(ishandle)
+to an axes or figure, use the functions @code{ishghandle}, @code{isgraphics},
+@code{isaxes}, and @code{isfigure}.
 
 @DOCSTRING(ishghandle)
+
+@DOCSTRING(isgraphics)
+
+@DOCSTRING(ishandle)
 
 @DOCSTRING(isaxes)
 

@@ -42,7 +42,7 @@ function hdata = guihandles (h)
   endif
 
   if (nargin == 1)
-    if (! ishandle (h))
+    if (! ishghandle (h))
       error ("guidata: H must be a valid object handle");
     endif
     h = ancestor (h, "figure");

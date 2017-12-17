@@ -94,7 +94,7 @@ function cdat = isocolors (varargin)
   if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
-  elseif (ishghandle (vp, "patch"))
+  elseif (isgraphics (vp, "patch"))
     pa = vp;
     v = get (pa, "Vertices");
   else

@@ -23,7 +23,7 @@
 ## If @var{h} is a matrix then return a logical array which is true where the
 ## elements of @var{h} are figure graphics handles and false where they are
 ## not.
-## @seealso{isaxes, ishandle}
+## @seealso{isaxes, ishghandle}
 ## @end deftypefn
 
 ## Author: jwe
@@ -34,7 +34,7 @@ function retval = isfigure (h)
     print_usage ();
   endif
 
-  hlist = ishandle (h);
+  hlist = ishghandle (h);
   if (any (hlist))
     retval(hlist) = strcmp (get (h(hlist), "type"), "figure");
   else

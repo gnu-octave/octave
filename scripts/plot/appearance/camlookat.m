@@ -58,7 +58,7 @@ function camlookat (hh)
     if (isaxes (hh))
       hax = hh;
       hh = get (hax, "children");
-    elseif (all (ishandle (hh)))
+    elseif (all (ishghandle (hh)))
       hax = ancestor (hh, "axes");
       if numel (hax) > 1
         hax = unique ([hax{:}]);
@@ -77,7 +77,7 @@ function camlookat (hh)
   for i = 1:numel (hh)
     h = hh(i);
 
-    if (! ishandle (h))
+    if (! ishghandle (h))
       error ("camlookat: Inputs must be handles.");
     end
 

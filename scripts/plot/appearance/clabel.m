@@ -73,7 +73,7 @@ function h = clabel (c, varargin)
     hparent = gca ();
   else
     arg = varargin{1};
-    if (isscalar (arg) && ishandle (arg)
+    if (isscalar (arg) && ishghandle (arg)
         && strcmp (get (arg, "type"), "hggroup"))
       try
         get (arg, "contourmatrix");

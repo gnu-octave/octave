@@ -42,7 +42,7 @@ function rotate (h, direction, alpha, origin)
     print_usage ();
   endif
 
-  is_h = ishandle (h);
+  is_h = ishghandle (h);
   if (is_h)
     ax_list = get (h, "parent");
     if (iscell (ax_list))

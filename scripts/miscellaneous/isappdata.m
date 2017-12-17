@@ -34,7 +34,7 @@ function valid = isappdata (h, name)
     print_usage ();
   endif
 
-  if (! all (ishandle (h(:))))
+  if (! all (ishghandle (h(:))))
     error ("isappdata: H must be a scalar or vector of graphic handles");
   elseif (! ischar (name))
     error ("isappdata: NAME must be a string");

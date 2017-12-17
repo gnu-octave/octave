@@ -121,7 +121,7 @@ function plotmatrixdelete (h, d, ax)
     if (isaxes (hc) && strcmpi (get (hc, "beingdeleted"), "off"))
       parent = get (hc, "parent");
       ## If the parent is invalid or being deleted, then do nothing
-      if (ishandle (parent) && strcmpi (get (parent, "beingdeleted"), "off"))
+      if (ishghandle (parent) && strcmpi (get (parent, "beingdeleted"), "off"))
         delete (hc);
       endif
     endif

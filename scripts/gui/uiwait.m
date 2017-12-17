@@ -71,7 +71,7 @@ function uiwait (varargin)
       endif
       waitfor (waitfor_args{:});
     unwind_protect_cleanup
-      if (ishandle (h) && isprop (h, "__uiwait_state__"))
+      if (ishghandle (h) && isprop (h, "__uiwait_state__"))
         set (h, "__uiwait_state__", "none");
       endif
     end_unwind_protect

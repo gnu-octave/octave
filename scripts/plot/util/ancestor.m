@@ -61,7 +61,7 @@ function p = ancestor (h, type, toplevel)
     h = num2cell (h);
     for nh = 1:numel (h)
       while (true)
-        if (isempty (h{nh}) || ! ishandle (h{nh}))
+        if (isempty (h{nh}) || ! ishghandle (h{nh}))
           break;
         endif
         if (any (strcmpi (get (h{nh}, "type"), type)))

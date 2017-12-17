@@ -65,7 +65,7 @@ function h = waitbar (varargin)
   endif
 
   ## Use existing waitbar if it still points to a valid graphics handle.
-  if (nargin == 1 && ishandle (curr_waitbar))
+  if (nargin == 1 && ishghandle (curr_waitbar))
     hf = curr_waitbar;
   else
     hf = false;
@@ -264,7 +264,7 @@ endfunction
 %!              "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
 %! for ii = 1:niter
 %!   ## Check cancel request
-%!   if (! ishandle (hf))
+%!   if (! ishghandle (hf))
 %!     break;
 %!   elseif (getappdata (hf, "interrupt"))
 %!     delete (hf);
@@ -292,7 +292,7 @@ endfunction
 %!   pause (0.5);
 %! endfor
 %!
-%! if (ishandle (hf))
+%! if (ishghandle (hf))
 %!   delete (hf);
 %! endif
 

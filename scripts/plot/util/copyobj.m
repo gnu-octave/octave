@@ -44,9 +44,9 @@ function hnew = copyobj (horig, hparent = 0)
   othertypes = {"line", "patch", "surface", "image", "text"};
   alltypes = [partypes othertypes];
 
-  if (! ishandle (horig) || nargin > 2)
+  if (! ishghandle (horig) || nargin > 2)
     print_usage ();
-  elseif (! ishandle (hparent))
+  elseif (! ishghandle (hparent))
     hparent = figure (fix (hparent));
   else
     for hp = hparent(:)'

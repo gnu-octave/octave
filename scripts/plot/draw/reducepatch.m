@@ -181,7 +181,7 @@ function [faces, vertices, max_faces, patch_handle, fast, verbose] = ...
     endif
   elseif (isscalar (arg1))
     patch_handle = arg1;
-    if (ishghandle (patch_handle, "patch"))
+    if (isgraphics (patch_handle, "patch"))
       vertices = get (patch_handle, "Vertices");
       faces = get (patch_handle, "Faces");
     else

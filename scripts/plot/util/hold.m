@@ -56,7 +56,7 @@ function hold (varargin)
     varargin(1) = [];
     nargs = numel (varargin);
     hfig = ancestor (hax, "figure");
-  elseif (nargin > 0 && numel (varargin{1}) > 1 && ishandle (varargin{1}))
+  elseif (nargin > 0 && numel (varargin{1}) > 1 && ishghandle (varargin{1}))
     print_usage ();
   else
     hax = gca ();

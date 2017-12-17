@@ -69,6 +69,11 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
  ** An initial implementation of alpha transparency has been made for
     patch and surface objects.  Printing to svg and pdf is supported.
 
+ ** ishandle now returns true for both graphics handle objects and
+    Java objects.  The latter change was made for Matlab compatibility.
+    Use ishghandle or isgraphics if it is important not to include Java
+    objects.
+
  ** The following statistical functions have been moved from core
     Octave to the statistics package available from Octave Forge.
 
@@ -92,6 +97,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       integral
       integral2
       integral3
+      isgraphics
       openvar
       quad2d
       repelem

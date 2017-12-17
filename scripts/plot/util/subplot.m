@@ -232,7 +232,7 @@ function h = subplot (varargin)
         ## case anymore due to the deletion of previous children (due to
         ## "deletefcn" callback or for legends/colorbars that are deleted
         ## with their corresponding axes).
-        if (! ishandle (child))
+        if (! ishghandle (child))
           continue;
         endif
         if (strcmp (get (child, "type"), "axes"))
@@ -579,7 +579,7 @@ endfunction
 %!   subplot (3,3,1);
 %!   assert (gca (), hax(1));
 %!   subplot (2,1,1);
-%!   assert (ishandle (hax),[false(1,6), true(1,3)]);
+%!   assert (ishghandle (hax),[false(1,6), true(1,3)]);
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect
@@ -595,7 +595,7 @@ endfunction
 %!   subplot ("position", [0.5 0.5 0.3 0.3]);
 %!   assert (gca (), h2);
 %!   subplot ("position", [0.5 0.5 0.3 0.2]);
-%!   assert (! ishandle (h2));
+%!   assert (! ishghandle (h2));
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect
@@ -609,8 +609,8 @@ endfunction
 %!   subplot (3,5,1, "align");
 %!   assert (gca (), h1);
 %!   subplot (3,2,1, "align");
-%!   assert (! ishandle (h1));
-%!   assert (! ishandle (h2));
+%!   assert (! ishghandle (h1));
+%!   assert (! ishghandle (h2));
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect

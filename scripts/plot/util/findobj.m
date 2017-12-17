@@ -96,7 +96,7 @@ function h = findobj (varargin)
     n1 = 0;
   else
     if (! isempty (varargin{1}))
-      if (ishandle (varargin{1}(1)))
+      if (ishghandle (varargin{1}(1)))
         handles = varargin{1};
         n1 = 2;
       else

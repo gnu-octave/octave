@@ -35,7 +35,7 @@
 function setappdata (h, varargin)
 
   h = h(:).';
-  if (! all (ishandle (h)))
+  if (! all (ishghandle (h)))
     error ("setappdata: H must be a scalar or vector of graphic handles");
   elseif (mod (numel (varargin), 2) != 0)
     error ("setappdata: NAME/VALUE arguments must occur in pairs");

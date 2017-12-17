@@ -62,7 +62,7 @@ function hlink = linkprop (h, prop)
 
   if (numel (h) < 2)
     error ("linkprop: H must contain at least 2 handles");
-  elseif (! all (ishandle (h(:))))
+  elseif (! all (ishghandle (h(:))))
     error ("linkprop: invalid graphic handle in input H");
   endif
 
@@ -97,7 +97,7 @@ function update_prop (h, ~, hlist, prop)
   if (! recursion)
     unwind_protect
       recursion = true;
-      set (hlist(ishandle (hlist)), prop, get (h, prop));
+      set (hlist(ishghandle (hlist)), prop, get (h, prop));
     unwind_protect_cleanup
       recursion = false;
     end_unwind_protect
@@ -108,7 +108,7 @@ endfunction
 function delete_linkprop (hlist, prop)
 
   for i = 1 : numel (hlist)
-    if (ishandle (hlist(i)))
+    if (ishghandle (hlist(i)))
       for j = 1 : numel (prop)
         dellistener (hlist(i), prop{j});
       endfor

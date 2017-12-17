@@ -82,7 +82,7 @@ function retval = material (varargin)
   h = [];
   if (nargout == 0)
     ## Check whether first argument is list of graphics handles.
-    if (all (ishandle (varargin{1})))
+    if (all (ishghandle (varargin{1})))
       h = varargin{1};
       varargin(1) = [];
     endif

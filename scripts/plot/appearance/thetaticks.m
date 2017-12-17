@@ -65,7 +65,7 @@ function retval = thetaticks (varargin)
       endif
 
     case 2
-      if (! ishandle (varargin{1}))
+      if (! ishghandle (varargin{1}))
         error ("thetaticks: HAX must be a handle to an axes object");
       endif
       hax = varargin{1};

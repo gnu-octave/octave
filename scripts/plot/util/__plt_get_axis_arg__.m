@@ -31,7 +31,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
   ## Look for a scalar which is a graphics handle but not the
   ## Root Figure (0) or an ordinary figure (integer).
   if (numel (varargin) > 0 && numel (varargin{1}) == 1
-      && ishandle (varargin{1}) && varargin{1} != 0 && ! isfigure (varargin{1}))
+      && ishghandle (varargin{1}) && varargin{1} != 0 && ! isfigure (varargin{1}))
     htmp = varargin{1};
     if (! isaxes (htmp))
       error ("%s: first argument must be axes handle", caller);
@@ -42,7 +42,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     endif
   ## Look for "parent"/axis prop/value pair
   elseif (numel (varargin) > 1 && ! isempty (parent))
-    if (parent < numel (varargin) && ishandle (varargin{parent+1}))
+    if (parent < numel (varargin) && ishghandle (varargin{parent+1}))
       htmp = varargin{parent+1};
       if (isaxes (htmp) && ! strcmp (get (htmp, "tag"), "legend"))
         h = htmp;

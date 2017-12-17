@@ -118,7 +118,7 @@
 function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
   if (nargin > 0
-      && (! ishandle (varargin{1})
+      && (! ishghandle (varargin{1})
           || (strcmp (get (varargin{1}, "type"), "axes")
               && ! strcmp (get (varargin{1}, "tag"), "legend"))))
     [ca, varargin, nargin] = __plt_get_axis_arg__ ("legend", varargin{:});
@@ -135,13 +135,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   endif
 
   ## Special handling for plotyy which has two axes objects
-  if (ishandle (ca) && isprop (ca, "__plotyy_axes__"))
+  if (ishghandle (ca) && isprop (ca, "__plotyy_axes__"))
     plty = get (ca, "__plotyy_axes__");
-    if (isscalar (plty) && ishandle (plty))
+    if (isscalar (plty) && ishghandle (plty))
       ca = [ca, plty];
     elseif (iscell (plty))
       ca = [ca, plty{:}];
-    elseif (all (ishandle (plty)))
+    elseif (all (ishghandle (plty)))
       ca = [ca, plty(:).'];
     else
       error ("legend.m: This should not happen.  File a bug report.");
@@ -151,7 +151,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     ca = ca(sort (n));
   endif
 
-  if (nargin > 0 && all (ishandle (varargin{1})))
+  if (nargin > 0 && all (ishghandle (varargin{1})))
     kids = flipud (varargin{1}(:));
     varargin(1) = [];
   else
@@ -1169,13 +1169,13 @@ function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
     endif
   endfor
 
-  if (ishandle (t1))
+  if (ishghandle (t1))
     set (t1, "deletefcn", "");
     delete (t1);
   endif
 
   for i = 1 : numel (hplots)
-    if (ishandle (hplots(i)) && strcmp (get (hplots(i), "type"), "line"))
+    if (ishghandle (hplots(i)) && strcmp (get (hplots(i), "type"), "line"))
       dellistener (hplots(i), "color");
       dellistener (hplots(i), "linestyle");
       dellistener (hplots(i), "linewidth");

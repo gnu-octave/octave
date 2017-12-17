@@ -60,7 +60,8 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
   %reldir%/hold.m \
   %reldir%/isaxes.m \
   %reldir%/isfigure.m \
-  %reldir%/ishghandle.m \
+  %reldir%/isgraphics.m \
+  %reldir%/ishandle.m \
   %reldir%/ishold.m \
   %reldir%/isprop.m \
   %reldir%/linkaxes.m \

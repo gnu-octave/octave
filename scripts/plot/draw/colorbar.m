@@ -331,7 +331,7 @@ endfunction
 function update_colorbar_cmap (hf, d, hi, vert, init_sz)
   persistent sz = init_sz;
 
-  if (ishandle (hf) && strcmp (get (hf, "type"), "figure")
+  if (ishghandle (hf) && strcmp (get (hf, "type"), "figure")
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
     clen = rows (get (hf, "colormap"));
     if (clen != sz)

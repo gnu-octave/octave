@@ -244,7 +244,7 @@ endfunction
 %!   li2 = line (1:10, sin (1:10), "parent", hg2);
 %!   hold off;
 %!   newplot (hg2);
-%!   assert (ishandle (li0), false);
+%!   assert (ishghandle (li0), false);
 %!   assert (get (hax, "children"), hg1);
 %!
 %!   ## kids are preserved for hggroups
@@ -254,7 +254,7 @@ endfunction
 %!
 %!   ## preserve objects
 %!   newplot (li1);
-%!   assert (ishandle (li1));
+%!   assert (ishghandle (li1));
 %!
 %!   ## kids are deleted for axes
 %!   newplot (hax);

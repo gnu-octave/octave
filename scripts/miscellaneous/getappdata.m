@@ -38,7 +38,7 @@ function value = getappdata (h, name)
     print_usage ();
   endif
 
-  if (! all (ishandle (h(:))))
+  if (! all (ishghandle (h(:))))
     error ("getappdata: H must be a scalar or vector of graphic handles");
   endif
 

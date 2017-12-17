@@ -2913,13 +2913,13 @@ adopt (const graphics_handle& parent_h, const graphics_handle& h)
 }
 
 static bool
-is_handle (const graphics_handle& h)
+is_hghandle (const graphics_handle& h)
 {
   return h.ok ();
 }
 
 static bool
-is_handle (double val)
+is_hghandle (double val)
 {
   graphics_handle h = gh_manager::lookup (val);
 
@@ -2927,11 +2927,11 @@ is_handle (double val)
 }
 
 static octave_value
-is_handle (const octave_value& val)
+is_hghandle (const octave_value& val)
 {
   octave_value retval = false;
 
-  if (val.is_real_scalar () && is_handle (val.double_value ()))
+  if (val.is_real_scalar () && is_hghandle (val.double_value ()))
     retval = true;
   else if (val.isnumeric () && val.isreal ())
     {
@@ -2940,7 +2940,7 @@ is_handle (const octave_value& val)
       boolNDArray result (handles.dims ());
 
       for (octave_idx_type i = 0; i < handles.numel (); i++)
-        result.xelem (i) = is_handle (handles(i));
+        result.xelem (i) = is_hghandle (handles(i));
 
       retval = result;
     }
@@ -3645,7 +3645,7 @@ root_figure::properties::set_callbackobject (const octave_value& v)
 
       callbackobject = val;
     }
-  else if (is_handle (val))
+  else if (is_hghandle (val))
     {
       if (get_callbackobject ().ok ())
         cbo_stack.push_front (get_callbackobject ());
@@ -3661,7 +3661,7 @@ root_figure::properties::set_currentfigure (const octave_value& v)
 {
   graphics_handle val (v);
 
-  if (octave::math::isnan (val.value ()) || is_handle (val))
+  if (octave::math::isnan (val.value ()) || is_hghandle (val))
     {
       currentfigure = val;
 
@@ -3819,7 +3819,7 @@ figure::properties::set_currentaxes (const octave_value& val)
 {
   graphics_handle hax (val);
 
-  if (octave::math::isnan (hax.value ()) || is_handle (hax))
+  if (octave::math::isnan (hax.value ()) || is_hghandle (hax))
     currentaxes = hax;
   else
     err_set_invalid ("currentaxes");
@@ -10515,15 +10515,15 @@ root_figure::init_factory_properties (void)
 
 // ---------------------------------------------------------------------
 
-DEFUN (ishandle, args, ,
+DEFUN (ishghandle, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} ishandle (@var{h})
+@deftypefn {} {} ishghandle (@var{h})
 Return true if @var{h} is a graphics handle and false otherwise.
 
 @var{h} may also be a matrix of handles in which case a logical array is
 returned that is true where the elements of @var{h} are graphics handles and
 false where they are not.
-@seealso{isaxes, isfigure}
+@seealso{isgraphics, isaxes, isfigure, ishandle}
 @end deftypefn */)
 {
   gh_manager::auto_lock guard;
@@ -10531,8 +10531,27 @@ false where they are not.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (is_handle (args(0)));
+  return ovl (is_hghandle (args(0)));
 }
+
+/*
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   assert (ishghandle (hf));
+%!   assert (! ishghandle (-hf));
+%!   ax = gca;
+%!   l = line;
+%!   assert (ishghandle (ax));
+%!   assert (! ishghandle (-ax));
+%!   assert (ishghandle ([l, -1, ax, hf]), logical ([1, 0, 1, 1]));
+%!   assert (ishghandle ([l, -1, ax, hf]'), logical ([1, 0, 1, 1]'));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!assert (ishghandle ([-1 0]), [false true])
+*/
 
 static bool
 is_handle_visible (const graphics_handle& h)

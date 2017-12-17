@@ -76,7 +76,7 @@ function [nf, nv] = shrinkfaces (varargin)
   colors = [];
   p = varargin{1};
 
-  if (isscalar (p) && ishandle (p) && nargin < 3
+  if (isscalar (p) && ishghandle (p) && nargin < 3
       && strcmp (get (p, "type"), "patch"))
     faces = get (p, "Faces");
     vertices = get (p, "Vertices");
@@ -134,7 +134,7 @@ function [nf, nv] = shrinkfaces (varargin)
 
   switch (nargout)
     case 0
-      if (ishandle (p))
+      if (ishghandle (p))
         ## avoid exceptions
         set (p, "FaceVertexCData", [], "CData", []);
         set (p, "Vertices", v, "Faces", f, "FaceVertexCData", c);

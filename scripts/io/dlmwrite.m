@@ -160,7 +160,7 @@ function dlmwrite (file, M, varargin)
 
   if (ischar (file))
     [fid, msg] = fopen (file, opentype);
-  elseif (isscalar (file) && isnumeric (file))
+  elseif (is_valid_file_id (file))
     [fid, msg] = deal (file, "invalid file number");
   else
     error ("dlmwrite: FILE must be a filename string or numeric FID");
@@ -194,7 +194,7 @@ function dlmwrite (file, M, varargin)
     else
       fprintf (fid, template, M.');
     endif
-    if (! isscalar (file))
+    if (ischar (file))
       fclose (fid);
     endif
   endif

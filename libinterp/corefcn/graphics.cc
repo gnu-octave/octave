@@ -1732,7 +1732,7 @@ children_property::do_delete_children (bool clear)
     {
       graphics_object go = gh_manager::get_object (hchild);
 
-      if (go.valid_object ())
+      if (go.valid_object () && ! go.get_properties ().is_beingdeleted ())
         gh_manager::free (hchild);
     }
 

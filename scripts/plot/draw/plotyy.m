@@ -203,9 +203,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
 endfunction
 
 function deleteplotyy (h, ~, ax2, t2)
-  if (isaxes (ax2)
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
-      && strcmp (get (ax2, "beingdeleted"), "off"))
+  if (isaxes (ax2))
     set (t2, "deletefcn", []);
     delete (ax2);
   endif

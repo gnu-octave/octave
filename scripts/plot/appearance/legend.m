@@ -1115,18 +1115,12 @@ endfunction
 
 function hideshowlegend (h, ~, ca, pos1, pos2)
 
-  isvisible = strcmp (get (h, "visible"), "off");
-  if (! isvisible)
-    kids = get (h, "children");
-    if (any (! strcmp (get (kids, "visible"), "off")))
-      isvisible = true;
-    endif
-  endif
+  isvisible = strcmp (get (h, "visible"), "on");
 
+  ## FIXME: Can't use a single set() call because of linked axes and
+  ##        listeners on plotyy graphs.
   for i = 1 : numel (ca)
-    if (isaxes (ca(i))
-        && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off"))
-        && strcmp (get (ca(i), "beingdeleted"), "off"))
+    if (isaxes (ca(i)))
       units = get (ca(i), "units");
       unwind_protect
         set (ca(i), "units", "points");
@@ -1144,38 +1138,42 @@ function hideshowlegend (h, ~, ca, pos1, pos2)
 endfunction
 
 function deletelegend1 (h, ~, hlegend)
-  if (isaxes (hlegend)
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
-      && strcmp (get (hlegend, "beingdeleted"), "off"))
+  if (isaxes (hlegend))
     delete (hlegend);
   endif
 endfunction
 
 function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
 
-  for i = 1 : numel (ca)
-    if (isaxes (ca(i))
-        && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
-        && strcmp (get (ca(i), "beingdeleted"), "off"))
-      if (! isempty (pos) && ! isempty (outpos))
-        units = get (ca(i), "units");
-        unwind_protect
-          set (ca(i), "units", "points");
-          set (ca(i), "position", pos, "deletefcn", "");
-        unwind_protect_cleanup
-          set (ca(i), "units", units);
-        end_unwind_protect
-      endif
-    endif
-  endfor
+  hf = ancestor (ca(1), "figure");
+  if (strcmp (get (hf, "beingdeleted"), "on") ||
+      strcmp (get (ca(1), "beingdeleted"), "on"))
+    ## Skip restoring axes if entire figure or axes is being destroyed.
+    return;
+  endif
 
+  ## Remove text object used to trigger legend delete when axes is deleted
   if (ishghandle (t1))
-    set (t1, "deletefcn", "");
+    set (t1, "deletefcn", []);
     delete (t1);
   endif
 
+  ## Restore original axes positions
+  for i = 1 : numel (ca)
+    if (isaxes (ca(i)))
+      units = get (ca(i), "units");
+      unwind_protect
+        set (ca(i), "units", "points");
+        set (ca(i), "position", pos);
+      unwind_protect_cleanup
+        set (ca(i), "units", units);
+      end_unwind_protect
+    endif
+  endfor
+
+  ## Remove listeners from plot objects
   for i = 1 : numel (hplots)
-    if (ishghandle (hplots(i)) && strcmp (get (hplots(i), "type"), "line"))
+    if (isgraphics (hplots(i), "line"))
       dellistener (hplots(i), "color");
       dellistener (hplots(i), "linestyle");
       dellistener (hplots(i), "linewidth");

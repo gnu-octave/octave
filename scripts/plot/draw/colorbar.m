@@ -256,23 +256,10 @@ function h = colorbar (varargin)
 endfunction
 
 function deletecolorbar (h, ~, hc, orig_props)
-  ## Don't delete the colorbar and reset the axis size
-  ## if the parent figure is being deleted.
-  if (isaxes (hc)
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
-    if (strcmp (get (hc, "beingdeleted"), "off"))
-      delete (hc);
-    endif
-    if (! isempty (ancestor (h, "axes"))
-        && strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
-      ax = ancestor (h, "axes");
-      units = get (ax, "units");
-      set (ax, "units", orig_props.units);
-      set (ancestor (h, "axes"), "position", orig_props.position,
-                            "outerposition", orig_props.outerposition,
-                   "activepositionproperty", orig_props.activepositionproperty);
-      set (ax, "units", units);
-    endif
+
+  if (isaxes (hc))
+    set (hc, "deletefcn", []);
+    delete (hc);
   endif
 
 endfunction
@@ -286,9 +273,16 @@ endfunction
 
 function resetaxis (cax, ~, ax, orig_props)
 
+  hf = ancestor (ax, "figure");
+  if (strcmp (get (hf, "beingdeleted"), "on"))
+    ## Skip restoring axes if entire figure is being destroyed.
+    return;
+  endif
+
   if (isaxes (ax))
-    ## FIXME: Probably don't want to delete everyone's listeners on colormap.
-    dellistener (ancestor (ax, "figure"), "colormap");
+    ## FIXME: It is wrong to delete every listener for colormap on figure,
+    ##        but we don't have a way of deleting just this instance.
+    dellistener (hf, "colormap");
     dellistener (ax, "clim");
     dellistener (ax, "dataaspectratio");
     dellistener (ax, "dataaspectratiomode");
@@ -296,6 +290,7 @@ function resetaxis (cax, ~, ax, orig_props)
     dellistener (ax, "plotboxaspectratiomode");
     dellistener (ax, "position");
 
+    ## Restore axes position
     units = get (ax, "units");
     set (ax, "units", orig_props.units);
     set (ax, "position", orig_props.position,
@@ -308,8 +303,7 @@ endfunction
 
 function update_colorbar_clim (hax, ~, hi, vert)
 
-  if (isaxes (hax)
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
+  if (isaxes (hax))
     clen = rows (get (ancestor (hax, "figure"), "colormap"));
     cext = get (hax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
@@ -331,8 +325,7 @@ endfunction
 function update_colorbar_cmap (hf, d, hi, vert, init_sz)
   persistent sz = init_sz;
 
-  if (ishghandle (hf) && strcmp (get (hf, "type"), "figure")
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
+  if (isfigure (hf))
     clen = rows (get (hf, "colormap"));
     if (clen != sz)
       if (vert)
@@ -350,8 +343,7 @@ endfunction
 
 function update_colorbar_axis (h, ~, cax, orig_props)
 
-  if (isaxes (cax)
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))
+  if (isaxes (cax))
     loc = get (cax, "location");
     obj = get (h);
     obj.__cbar_hax__ = h;

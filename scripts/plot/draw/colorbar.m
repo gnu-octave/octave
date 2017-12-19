@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} colorbar
-## @deftypefnx {} {} colorbar (@dots, @var{loc})
+## @deftypefnx {} {} colorbar (@dots{}, @var{loc})
 ## @deftypefnx {} {} colorbar (@var{delete_option})
 ## @deftypefnx {} {} colorbar (@var{hcb}, @dots{})
 ## @deftypefnx {} {} colorbar (@var{hax}, @dots{})

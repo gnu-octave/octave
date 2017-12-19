@@ -81,7 +81,7 @@
 ## objects drawn by @code{plot3}.  If the @var{fmt} argument is supplied it
 ## will format the line objects in the same manner as @code{plot}.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.

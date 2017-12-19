@@ -25,7 +25,7 @@
 ##
 ## This function is called at the beginning of all high-level plotting
 ## functions.  It is not normally required in user programs.  @code{newplot}
-## queries the @qcode{"NextPlot"} field of the current figure and axis to
+## queries the @qcode{"NextPlot"} field of the current figure and axes to
 ## determine what to do.
 ##
 ## @multitable @columnfractions .25 .75
@@ -47,17 +47,17 @@
 ## @end multitable
 ##
 ## @multitable @columnfractions .25 .75
-## @headitem Axis NextPlot @tab Action
+## @headitem Axes NextPlot @tab Action
 ## @item @qcode{"add"} @tab Add new graphic objects to the current axes.  This
 ## is equivalent to @code{hold on}.
 ##
 ## @item @qcode{"replacechildren"} @tab Delete child objects whose
-## HandleVisibility is set to @qcode{"on"}, but leave axis properties
+## HandleVisibility is set to @qcode{"on"}, but leave axes properties
 ## unmodified.  This typically clears a plot, but preserves special settings
 ## such as log scaling for axes.  This is equivalent to @code{cla}.
 ##
 ## @item @qcode{"replace"} (default) @tab Delete all child objects of the
-## axis and reset all axis properties to their defaults.  However, the
+## axes and reset all axes properties to their defaults.  However, the
 ## following properties are not reset: Position, Units.  This is equivalent
 ## to @code{cla reset}.
 ## @end multitable
@@ -69,7 +69,7 @@
 ## axes object (not figure).
 ##
 ## @strong{Caution:} Calling @code{newplot} may change the current figure and
-## current axis.
+## current axes.
 ## @end deftypefn
 
 ## FIXME: The Matlab function takes an optional list of file handles, hsave,
@@ -78,7 +78,7 @@
 ##        compatibility is really tricky and doesn't serve much purpose since
 ##        newplot is nearly exclusively used by Octave's internal plotting
 ##        functions.  In Octave's case the argument is almost always null,
-##        or occasionally the axis handle to plot into.
+##        or occasionally the axes handle to plot into.
 
 function hax = newplot (hsave = [])
 

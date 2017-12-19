@@ -33,7 +33,7 @@
 ## Legend entries may be specified as individual character string arguments,
 ## a character array, or a cell array of character strings.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.  If the handles,
 ## @var{hobjs}, are not specified then the legend's strings will be associated
 ## with the axes' descendants.  @code{legend} works on line graphs,

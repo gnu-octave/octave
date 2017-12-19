@@ -27,12 +27,12 @@
 ## handles (HandleVisibility = @qcode{"on"}).
 ##
 ## If the optional argument @qcode{"reset"} is specified, delete all child
-## objects including those with hidden handles and reset all axis properties
+## objects including those with hidden handles and reset all axes properties
 ## to their defaults.  However, the following properties are not reset:
 ## Position, Units.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## this axes rather than the current axes returned by @code{gca}.
 ## @seealso{clf, delete, reset}
 ## @end deftypefn
 

@@ -49,7 +49,7 @@
 ## the arrowhead is not drawn.  If the argument @qcode{"filled"} is given then
 ## the markers are filled.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to a quiver object.

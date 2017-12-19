@@ -35,7 +35,7 @@
 ## invisible.
 ## @end table
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ## @seealso{fill, mesh, patch, pcolor, surf, surface, hidden, lighting}
 ## @end deftypefn

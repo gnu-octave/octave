@@ -59,7 +59,7 @@
 ##
 ## @end ifnottex
 ##
-## @var{index} may also be a vector.  In this case, the new axis will enclose
+## @var{index} may also be a vector.  In this case, the new axes will enclose
 ## the grid locations specified.  The first demo illustrates this:
 ##
 ## @example
@@ -70,10 +70,10 @@
 ## handle, @var{hax}, returned from a previous @code{subplot} command.
 ##
 ## If the option @qcode{"align"} is given then the plot boxes of the subwindows
-## will align, but this may leave no room for axis tick marks or labels.
+## will align, but this may leave no room for axes tick marks or labels.
 ##
-## If the option @qcode{"replace"} is given then the subplot axis will be
-## reset, rather than just switching the current axis for plotting to the
+## If the option @qcode{"replace"} is given then the subplot axes will be
+## reset, rather than just switching the current axes for plotting to the
 ## requested subplot.
 ##
 ## The @qcode{"position"} property can be used to exactly position the subplot
@@ -83,7 +83,7 @@
 ##
 ## Any property/value pairs are passed directly to the underlying axes object.
 ##
-## If the output @var{hax} is requested, subplot returns the axis handle for
+## If the output @var{hax} is requested, subplot returns the axes handle for
 ## the subplot.  This is useful for modifying the properties of a subplot
 ## using @code{set}.
 ## @seealso{axes, plot, gca, set}

@@ -35,8 +35,8 @@
 ## If @qcode{"linespec"} is given it is used to set the color and line style of
 ## the plot.
 ##
-## If an axis graphics handle @var{hax} is supplied then the Voronoi diagram is
-## drawn on the specified axis rather than in a new figure.
+## If an axes graphics handle @var{hax} is supplied then the Voronoi diagram is
+## drawn on the specified axes rather than in a new figure.
 ##
 ## If a single output argument is requested then the Voronoi diagram will be
 ## plotted and a graphics handle @var{h} to the plot is returned.

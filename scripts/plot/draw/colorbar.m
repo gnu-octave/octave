@@ -66,7 +66,7 @@
 ## If the argument @qcode{"peer"} is given, then the following argument is
 ## treated as the axes handle in which to add the colorbar.  Alternatively,
 ## If the first argument @var{hax} is an axes handle, then the colorbar is
-## added to this axis, rather than the current axes returned by @code{gca}.
+## added to this axes, rather than the current axes returned by @code{gca}.
 ##
 ## If the first argument @var{hcb} is a handle to a colorbar object, then
 ## operate on this colorbar directly.

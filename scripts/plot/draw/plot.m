@@ -192,7 +192,7 @@
 ## This will plot the cosine and sine functions and label them accordingly
 ## in the legend.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to

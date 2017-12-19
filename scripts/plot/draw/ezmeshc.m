@@ -44,7 +44,7 @@
 ## If the argument @qcode{"circ"} is given, then the function is plotted over
 ## a disk centered on the middle of the domain @var{dom}.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a 2-element vector with a graphics

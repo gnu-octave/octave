@@ -59,7 +59,7 @@
 ## Optional property/value pairs are passed directly to the underlying patch
 ## objects.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of handles to the created

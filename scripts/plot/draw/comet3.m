@@ -31,7 +31,7 @@
 ## time each point is displayed before moving to the next one.  The default for
 ## @var{p} is 0.1 seconds.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ## @seealso{comet}
 ## @end deftypefn

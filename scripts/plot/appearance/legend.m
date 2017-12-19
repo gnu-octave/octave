@@ -137,12 +137,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   ## Special handling for plotyy which has two axes objects
   if (ishghandle (ca) && isprop (ca, "__plotyy_axes__"))
     plty = get (ca, "__plotyy_axes__");
-    if (isscalar (plty) && ishghandle (plty))
-      ca = [ca, plty];
-    elseif (iscell (plty))
-      ca = [ca, plty{:}];
-    elseif (all (ishghandle (plty)))
-      ca = [ca, plty(:).'];
+    if (all (ishghandle (plty)))
+      ca = [ca, plty.'];
     else
       error ("legend.m: This should not happen.  File a bug report.");
     endif

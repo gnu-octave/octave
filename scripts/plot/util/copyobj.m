@@ -169,6 +169,35 @@ endfunction
 %! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
+%!demo
+%! hobj = clf;
+%! set (hobj, "name", "Original", "numbertitle", "off");
+%! x = 0:0.1:2*pi;
+%! y1 = sin (x);
+%! y2 = exp (x - 1);
+%! ax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
+%! xlabel ("X");
+%! ylabel (ax(1), "Axis 1");
+%! ylabel (ax(2), "Axis 2");
+%! lcolor = get (gca, "ColorOrder")(1,:);
+%! rcolor = get (gca, "ColorOrder")(2,:);
+%! text (0.5, 0.5, "Left Axis", ...
+%!       "color", lcolor, "horizontalalignment", "center", "parent", ax(1));
+%! text (4.5, 80, "Right Axis", ...
+%!       "color", rcolor, "horizontalalignment", "center", "parent", ax(2));
+%! title ({"plotyy() example"; "left axis uses @plot, right axis uses @semilogy"});
+%! drawnow ();
+%! pos = get (hobj, "position");
+%! scrn = get (0, "screensize");
+%! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
+%! hnew = copyobj (hobj);
+%! drawnow ();
+%! set (hnew, "name", "Copyobj");
+%! drawnow ();
+%! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
+
 %!testif HAVE_MAGICK; any (strcmp ("gnuplot", available_graphics_toolkits ()))
 %! toolkit = graphics_toolkit ();
 %! graphics_toolkit ("gnuplot");

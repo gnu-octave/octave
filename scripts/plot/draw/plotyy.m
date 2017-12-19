@@ -76,10 +76,10 @@ function [ax, h1, h2] = plotyy (varargin)
     ## FIXME: Second conditional test shouldn't be required.
     ##        'cla reset' needs to delete user properties like __plotyy_axes__.
     if (isprop (hax, "__plotyy_axes__")
-        && isaxes (get (hax, "__plotyy_axes__")) == [true true])
+        && isaxes (get (hax, "__plotyy_axes__")) == [true; true])
       hax = get (hax, "__plotyy_axes__");
     else
-      hax(2) = axes ("nextplot", get (hax(1), "nextplot"));
+      hax = [hax; axes("nextplot", get (hax(1), "nextplot"))];
     endif
 
     [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});
@@ -158,10 +158,13 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   ## also remove the other axis
   t1 = text (0, 0, "", "parent", ax(1), "tag", "plotyy",
              "visible", "off", "handlevisibility", "off",
-             "xliminclude", "off", "yliminclude", "off");
+             "xliminclude", "off", "yliminclude", "off",
+             "zliminclude", "off");
+
   t2 = text (0, 0, "", "parent", ax(2), "tag", "plotyy",
              "visible", "off", "handlevisibility", "off",
-             "xliminclude", "off", "yliminclude", "off");
+             "xliminclude", "off", "yliminclude", "off",
+             "zliminclude", "off");
 
   set (t1, "deletefcn", {@deleteplotyy, ax(2), t2});
   set (t2, "deletefcn", {@deleteplotyy, ax(1), t1});
@@ -183,21 +186,17 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   addlistener (ax(2), "nextplot", {@update_nextplot, ax(1)});
 
   ## Store the axes handles for the sister axes.
-  if (ishghandle (ax(1)) && ! isprop (ax(1), "__plotyy_axes__"))
+  if (! isprop (ax(1), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(1), "data");
     set (ax(1), "__plotyy_axes__", ax);
-  elseif (ishghandle (ax(1)))
-    set (ax(1), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen.  File a bug report.");
+    set (ax(1), "__plotyy_axes__", ax);
   endif
-  if (ishghandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
+  if (! isprop (ax(2), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(2), "data");
     set (ax(2), "__plotyy_axes__", ax);
-  elseif (ishghandle (ax(2)))
-    set (ax(2), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen.  File a bug report.");
+    set (ax(2), "__plotyy_axes__", ax);
   endif
 
 endfunction

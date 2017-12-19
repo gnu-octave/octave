@@ -21,15 +21,19 @@
 ## @deftypefnx {} {} cla reset
 ## @deftypefnx {} {} cla (@var{hax})
 ## @deftypefnx {} {} cla (@var{hax}, "reset")
-## Clear the current axes.
+## Clear the current or specified (@var{hax}) axes object.
 ##
 ## @code{cla} operates by deleting child graphic objects with visible
-## handles (HandleVisibility = @qcode{"on"}).
+## handles (@code{HandleVisibility} = @qcode{"on"}).  This typically clears the
+## axes of any visual objects, but leaves in place axes limits, tick marks and
+## labels, camera view, etc.  In addition, the automatic coloring and styling
+## of lines is reset by changing the axes properties @code{ColorOrderIndex},
+## @code{LinestyleOrderIndex} to 1.
 ##
 ## If the optional argument @qcode{"reset"} is specified, delete all child
-## objects including those with hidden handles and reset all axes properties
+## objects, including those with hidden handles, and reset all axes properties
 ## to their defaults.  However, the following properties are not reset:
-## Position, Units.
+## @code{Position}, @code{Units}.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axes rather than the current axes returned by @code{gca}.
@@ -39,27 +43,26 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2008-10-03
 
-function cla (varargin)
+function cla (hax, do_reset = false)
 
   if (nargin > 2)
     print_usage ();
-  elseif (nargin == 0)
+  endif
+
+  if (nargin == 0)
     hax = gca;
-    do_reset = false;
   elseif (nargin == 1)
-    if (isscalar (varargin{1}) && isaxes (varargin{1}))
-      hax = varargin{1};
-      do_reset = false;
-    elseif (ischar (varargin{1}) && strcmpi (varargin{1}, "reset"))
+    if (isscalar (hax) && isaxes (hax))
+      ## Normal case : cla (hax) without reset
+    elseif (ischar (hax) && strcmpi (hax, "reset"))
       hax = gca;
       do_reset = true;
     else
       print_usage ();
     endif
   else
-    if (isscalar (varargin{1}) && isaxes (varargin{1})
-        && ischar (varargin{2}) && strcmpi (varargin{2}, "reset"))
-      hax = varargin{1};
+    if (isscalar (hax) && isaxes (hax)
+        && ischar (do_reset) && strcmpi (do_reset, "reset"))
       do_reset = true;
     else
       print_usage ();
@@ -68,6 +71,7 @@ function cla (varargin)
 
   if (! do_reset)
     delete (get (hax, "children"));
+    set (hax, "colororderindex", 1, "linestyleorderindex", 1);
   else
     delete (allchild (hax));
     reset (hax);
@@ -92,15 +96,22 @@ endfunction
 %! unwind_protect
 %!   hax = gca;
 %!   plot (hax, 1:10);
+%!   assert (get (hax, "colororderindex"), 2);
 %!   set (hax, "ticklabelinterpreter", "none");
 %!   cla (hax);
 %!   kids = get (hax, "children");
 %!   assert (numel (kids), 0);
+%!   assert (get (hax, "colororderindex"), 1);
 %!   assert (get (hax, "ticklabelinterpreter"), "none");
-%!   plot (hax, 1:10);
+%!
+%!   hp = plot (hax, 1:10, "handlevisibility", "off");
+%!   cla (hax);
+%!   assert (ishghandle (hp), true);
+%!
 %!   cla (hax, "reset");
 %!   kids = get (hax, "children");
 %!   assert (numel (kids), 0);
+%!   assert (ishghandle (hp), false);
 %!   assert (get (hax, "ticklabelinterpreter"), "tex");
 %! unwind_protect_cleanup
 %!   close (hf);

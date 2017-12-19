@@ -111,7 +111,7 @@
 ## Set xyboxes plot style.
 ## @end table
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a handle to the hggroup object

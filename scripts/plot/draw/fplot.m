@@ -44,7 +44,7 @@
 ## The @var{fmt} argument specifies the linestyle to be used by the plot
 ## command.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## With no output arguments the results are immediately plotted.  With two

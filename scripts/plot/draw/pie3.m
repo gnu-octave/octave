@@ -36,7 +36,7 @@
 ## The optional input @var{labels} is a cell array of strings of the same
 ## length as @var{x} specifying the label for each slice.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a list of graphics handles to the

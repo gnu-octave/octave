@@ -37,7 +37,7 @@
 ## and @w{@var{elevation} = 30}, which is the default for 3-D graphs.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## this axes rather than the current axes returned by @code{gca}.
 ##
 ## If no inputs are given, return the current @var{azimuth} and
 ## @var{elevation}.

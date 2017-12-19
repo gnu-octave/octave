@@ -37,8 +37,8 @@
 ## Multiple property/value pairs may be specified, but they must appear in
 ## pairs.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into this axis,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
+## rather than the current axes returned by @code{gca}.
 ##
 ## If one output argument is requested, return a graphics handle to the
 ## created plot.  If two output arguments are specified, the data are generated

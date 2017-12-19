@@ -31,7 +31,7 @@
 ## The optional input @var{n} determines the number of faces around the
 ## circumference of the cylinder.  The default value is 20.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## If outputs are requested @code{cylinder} returns three matrices in

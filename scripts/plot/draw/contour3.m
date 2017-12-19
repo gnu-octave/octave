@@ -39,7 +39,7 @@
 ## in the same manner as @code{plot}.  Only line style and color are used;
 ## Any markers defined by @var{style} are ignored.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional output @var{c} are the contour levels in @code{contourc}

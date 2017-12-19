@@ -40,7 +40,7 @@
 ## or @qcode{"manual"} as the argument.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## this axes rather than the current axes returned by @code{gca}.
 ##
 ## Programming Note: The @code{ylim} function operates by modifying the
 ## @qcode{"ylim"} and @qcode{"ylimmode"} properties of an axes object.  These

@@ -32,7 +32,7 @@
 ## The optional parameter @var{width} specifies the width of a single ribbon
 ## (default is 0.75).
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to

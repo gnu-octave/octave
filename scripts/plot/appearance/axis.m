@@ -34,7 +34,7 @@
 ## and sixth specify the limits for the z-axis, and the seventh and eighth
 ## specify the limits for the color axis.  The special values -Inf and Inf may
 ## be used to indicate that the limit should be automatically computed based
-## on the data in the axis.
+## on the data in the axes.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
@@ -95,7 +95,7 @@
 ## Turn tick labels off for all axes.
 ## @end table
 ##
-## Note: If there are no tick marks for an axis then there can be no labels.
+## Note: If there are no tick marks for an axes then there can be no labels.
 ##
 ## @noindent
 ## The following options affect the direction of increasing values on the axes.

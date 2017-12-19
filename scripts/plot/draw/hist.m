@@ -61,7 +61,7 @@
 ## @end group
 ## @end example
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## With two output arguments, produce the values @var{nn} (numbers of elements)

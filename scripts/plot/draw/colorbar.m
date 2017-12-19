@@ -65,7 +65,7 @@
 ## the @var{delete_option}: @qcode{"off"}, @qcode{"delete"}, @qcode{"hide"}.
 ##
 ## If the first argument @var{hax} is an axes handle, then the colorbar is
-## added to this axis, rather than the current axes returned by @code{gca}.
+## added to this axes, rather than the current axes returned by @code{gca}.
 ## Alternatively, If the argument @qcode{"peer"} is given, then the following
 ## argument is treated as the axes handle in which to add the colorbar.  The
 ## @qcode{"peer"} calling syntax may be removed in the future and is not

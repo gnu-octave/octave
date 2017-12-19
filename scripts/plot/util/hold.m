@@ -35,7 +35,7 @@
 ## Equivalent to @code{hold on}.
 ##
 ## @item hold off
-## Restore default graphics settings which clear the graph and reset axis
+## Restore default graphics settings which clear the graph and reset axes
 ## properties before each new plot command.  (default).
 ##
 ## @item hold
@@ -43,7 +43,7 @@
 ## @end table
 ##
 ## When given the additional argument @var{hax}, the hold state is modified
-## for this axis rather than the current axes returned by @code{gca}.
+## for this axes rather than the current axes returned by @code{gca}.
 ##
 ## To query the current hold state use the @code{ishold} function.
 ## @seealso{ishold, cla, clf, newplot}

@@ -33,7 +33,7 @@
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the

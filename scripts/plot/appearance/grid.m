@@ -33,9 +33,9 @@
 ## modify the minor grid rather than the major grid.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## this axes rather than the current axes returned by @code{gca}.
 ##
-## To control the grid lines for an individual axis use the @code{set}
+## To control the grid lines for an individual axes use the @code{set}
 ## function.  For example:
 ##
 ## @example

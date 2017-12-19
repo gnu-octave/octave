@@ -36,7 +36,7 @@
 ## numeric values in the @qcode{"clim"} property are used for limits.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## this axes rather than the current axes returned by @code{gca}.
 ##
 ## Called without arguments the current color axis limits are returned.
 ##

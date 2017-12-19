@@ -36,7 +36,7 @@
 ## @end table
 ##
 ## If the first argument @var{hax} is an axes handle, then change the lighting
-## effects of objects in this axis, rather than the current axes returned by
+## effects of objects in this axes, rather than the current axes returned by
 ## @code{gca}.
 ##
 ## The lighting effects are only visible if at least one light object is

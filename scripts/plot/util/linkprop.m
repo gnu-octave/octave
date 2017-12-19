@@ -30,10 +30,10 @@
 ## the first object in the list @var{h}.
 ##
 ## The function returns @var{hlink} which is a special object describing the
-## link.  As long as the reference @var{hlink} exists the link between graphic
+## link.  As long as the reference @var{hlink} exists, the link between graphic
 ## objects will be active.  This means that @var{hlink} must be preserved in
 ## a workspace variable, a global variable, or otherwise stored using a
-## function such as @code{setappdata}, @code{guidata}.  To unlink properties,
+## function such as @code{setappdata} or @code{guidata}.  To unlink properties,
 ## execute @code{clear @var{hlink}}.
 ##
 ## An example of the use of @code{linkprop} is
@@ -51,7 +51,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{linkaxes}
+## @seealso{linkaxes, addlistener}
 ## @end deftypefn
 
 function hlink = linkprop (h, prop)
@@ -72,7 +72,7 @@ function hlink = linkprop (h, prop)
     error ("linkprop: PROP must be a string or cell string array");
   endif
 
-  h = h(:)';  # set() prefers column vectors
+  h = h(:);
   ## Match all objects to the first one in the list before linking
   for j = 1 : numel (prop)
     set (h(2:end), prop{j}, get (h(1), prop{j}));
@@ -82,15 +82,15 @@ function hlink = linkprop (h, prop)
   for i = 1 : numel (h)
     for j = 1 : numel (prop)
       addlistener (h(i), prop{j},
-                   {@update_prop, [h(1:i-1),h(i+1:end)], prop{j}});
+                   {@cb_sync_prop, [h(1:i-1), h(i+1:end)], prop{j}});
     endfor
   endfor
 
-  hlink = onCleanup (@() delete_linkprop (h, prop));
+  hlink = onCleanup (@() unlink_linkprop (h, prop));
 
 endfunction
 
-function update_prop (h, ~, hlist, prop)
+function cb_sync_prop (h, ~, hlist, prop)
   persistent recursion = false;
 
   ## Don't allow recursion
@@ -105,14 +105,13 @@ function update_prop (h, ~, hlist, prop)
 
 endfunction
 
-function delete_linkprop (hlist, prop)
+function unlink_linkprop (hlist, prop)
 
+  hlist = hlist(ishghandle (hlist));
   for i = 1 : numel (hlist)
-    if (ishghandle (hlist(i)))
-      for j = 1 : numel (prop)
-        dellistener (hlist(i), prop{j});
-      endfor
-    endif
+    for j = 1 : numel (prop)
+      dellistener (hlist(i), prop{j});
+    endfor
   endfor
 
 endfunction

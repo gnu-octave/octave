@@ -110,8 +110,9 @@ namespace QtHandles
 
     static void updateBoundingBoxHelper (void*);
 
-    void save_figure_callback (const std::string& file);
+    void close_figure_callback (void);
     void copy_figure_callback (const std::string& format);
+    void save_figure_callback (const std::string& file);
 
     void enableMouseTracking (void);
 

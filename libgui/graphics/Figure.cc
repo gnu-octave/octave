@@ -696,6 +696,15 @@ namespace QtHandles
     gh_manager::post_function (Figure::updateBoundingBoxHelper, d);
   }
 
+  void
+  Figure::close_figure_callback (void)
+  {
+    figure::properties& fp = properties<figure> ();
+    octave_value fnum = fp.get___myhandle__ ().as_octave_value ();
+    
+    Ffeval (ovl ("close", fnum));
+  }
+
   bool
   Figure::eventNotifyBefore (QObject *obj, QEvent *xevent)
   {
@@ -732,7 +741,7 @@ namespace QtHandles
               {
               case QEvent::Close:
                 xevent->ignore ();
-                gh_manager::post_callback (m_handle, "closerequestfcn");
+                octave_link::post_event (this, &Figure::close_figure_callback);
                 return true;
 
               default:

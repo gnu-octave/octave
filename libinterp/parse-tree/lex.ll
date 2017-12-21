@@ -47,7 +47,7 @@ object) relevant global values before and after the nested call.
 #  pragma GCC diagnostic ignored "-Wold-style-cast"
 #  pragma GCC diagnostic ignored "-Wsign-compare"
 #  pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-#  if defined (HAVE_WARNING_IMPLICIT_FALLTHROUGH)
+#  if defined (HAVE_WARN_IMPLICIT_FALLTHROUGH)
 #    pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 #  endif
 #endif

@@ -69,7 +69,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "Cell.h"
 #include "defun.h"
-#include "display.h"
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
@@ -949,18 +948,3 @@ equivalent to
 %!   assert (get_home_directory (), getenv ("HOME"));
 %! endif
 */
-
-// This function really belongs in display.cc, but including defun.h in
-// that file results in conflicts with symbols from headers that are
-// needed for X11 and Carbon functions.
-
-DEFUN (have_window_system, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} have_window_system ()
-Return true if a window system is available (X11, Windows, or Apple OS X)
-and false otherwise.
-@seealso{isguirunning}
-@end deftypefn */)
-{
-  return ovl (octave::display_info::display_available ());
-}

@@ -27,8 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "singleton-cleanup.h"
 
 #include "cdisplay.h"
+#include "defun.h"
 #include "display.h"
 #include "error.h"
+#include "ov.h"
+#include "ovl.h"
 
 namespace octave
 {
@@ -73,4 +76,15 @@ namespace octave
 
     return retval;
   }
+}
+
+DEFUN (have_window_system, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} have_window_system ()
+Return true if a window system is available (X11, Windows, or Apple OS X)
+and false otherwise.
+@seealso{isguirunning}
+@end deftypefn */)
+{
+  return ovl (octave::display_info::display_available ());
 }

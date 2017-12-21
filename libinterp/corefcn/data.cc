@@ -3360,9 +3360,9 @@ With 1 real argument @var{x}, return the complex result
 @w{@code{@var{x} + 0i}}.
 
 With 2 real arguments, return the complex result
-@w{@code{@var{re} + @var{im}}}.
+@w{@code{@var{re} + @var{im}i}}.
 @code{complex} can often be more convenient than expressions such as
-@w{@code{a + i*b}}.
+@w{@code{a + b*i}}.
 For example:
 
 @example

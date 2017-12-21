@@ -1439,7 +1439,7 @@ to go on.
 The optional message identifier allows users to enable or disable
 warnings tagged by @var{id}.  A message identifier is of the form
 "NAMESPACE:WARNING-NAME".  Octave's own warnings use the
-@qcode{"Octave"} namespace (@pxref{XREFwarning_ids}).  The special
+@qcode{"Octave"} namespace (@pxref{XREFwarning_ids,,warning_ids}).  The special
 identifier @qcode{"all"} may be used to set the state of all warnings.
 
 If the first argument is @qcode{"on"} or @qcode{"off"},

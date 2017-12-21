@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{t} =} table (@var{x}, @var{y})
+## @deftypefn {} {@var{t} =} crosstab (@var{x}, @var{y})
 ## Create a cross-tabulation (contingency table) @var{t} from data vectors.
 ##
 ## The inputs @var{x}, @var{y} must be vectors of equal length with a data

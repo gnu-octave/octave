@@ -4592,7 +4592,8 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
                       data = mval.fortran_vec ();                       \
                     }                                                   \
                                                                         \
-                  data[data_index++] = tmp[i++];                        \
+                  data[data_index++] = static_cast<unsigned char>       \
+                                                  (tmp[i++]);           \
                 }                                                       \
             }                                                           \
         }                                                               \

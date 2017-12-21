@@ -68,13 +68,13 @@ converted through @code{char} can mostly be converted back with
 @example
 @group
 char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
-   @result{} ["abc  "
-       "     "
-       "98   "
-       "99   "
-       "d    "
-       "str1 "
-       "half "]
+   @result{} ["abc "
+       "    "
+       "98  "
+       "99  "
+       "d   "
+       "str1"
+       "half"]
 @end group
 @end example
 @seealso{strvcat, cellstr}

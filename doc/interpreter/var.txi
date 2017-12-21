@@ -312,10 +312,10 @@ different information about what is in memory, as the following shows.
 @example
 @group
 str = "A random string";
-who -variables
-     @print{} *** local user variables:
-     @print{}
-     @print{} __nargin__  str
+who
+ @print{} Variables in the current scope:
+ @print{}
+ @print{} ans  str
 @end group
 @end example
 

@@ -258,7 +258,7 @@ x(2).b = 2;
 @end example
 
 @noindent
-which creates a 2-by-1 structure array with two fields.  Another way
+which creates a 1-by-2 structure array with two fields.  Another way
 to create a structure array is with the @code{struct} function
 (@pxref{Creating Structures}).  As previously, to print the value of
 the structure array, you can type its name:

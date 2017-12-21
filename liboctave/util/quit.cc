@@ -90,14 +90,14 @@ octave_throw_exit_exception (int exit_status, int safe_to_return)
   octave_exception_state = octave_quit_exception;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
   throw octave_exit_exception (exit_status, safe_to_return);
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 #endif
 }
 
@@ -122,8 +122,8 @@ octave_rethrow_exception (void)
           break;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
         case octave_quit_exception:
@@ -132,7 +132,7 @@ octave_rethrow_exception (void)
           break;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 #endif
 
         default:

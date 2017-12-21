@@ -57,18 +57,18 @@ static inline realtype *
 nv_data_s (N_Vector& v)
 {
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-// Disable warning from GCC about old-style casts in Sundials macro
-// expansions.  Do this in a function so that this diagnostic may still
-// be enabled for the rest of the file.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
+   // Disable warning from GCC about old-style casts in Sundials
+   // macro expansions.  Do this in a function so that this
+   // diagnostic may still be enabled for the rest of the file.
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
   return NV_DATA_S (v);
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-// Restore prevailing warning state for remainder of the file.
-#pragma GCC diagnostic pop
+   // Restore prevailing warning state for remainder of the file.
+#  pragma GCC diagnostic pop
 #endif
 }
 

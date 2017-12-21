@@ -31,8 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_FREETYPE)
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
 #include <ft2build.h>
@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 #endif
 
 #include <clocale>

@@ -710,6 +710,16 @@ namespace QtHandles
   {
     if (! m_blockUpdates)
       {
+        // Clicking the toolbar or the menubar makes this figure current
+        if (xevent->type () == QEvent::MouseButtonPress)
+          {
+            figure::properties& fp = properties<figure> ();
+            graphics_object root = gh_manager::get_object (0);
+            if (fp.get_handlevisibility () == "on")
+              root.set ("currentfigure",
+                        fp.get___myhandle__ ().as_octave_value ());
+          }
+
         if (obj == m_container)
           {
             // Do nothing...

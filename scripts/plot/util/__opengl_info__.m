@@ -107,15 +107,18 @@ function [info, msg] = gl_info ()
   endfor
 
   ## If no info yet, try open a figure to get the info.
-  if (isempty (info))
+  attempts = 1;
+  while (isempty (info) && attempts++ <= 3)
     ## Need to create a figure, place an OpenGL object, and force drawing.
     hf = figure ("position", [0,0,1,1], "toolbar", "none", "menubar", "none");
     hax = axes ();
-    pause (0.1);  # FIXME: Race condition means this delay may not always work.
+    ## FIXME: Race condition means this delay may not always work.
+    pause (0.1 * attempts);
     refresh (hf);
     info = fig_gl_info (hf);
     close (hf);
-  endif
+    attempts
+  endwhile
 
   if (isempty (info))
     msg = "__opengl_info__: can not obtain OpenGL information";

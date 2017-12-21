@@ -542,7 +542,7 @@ namespace octave
     // to change anything in the module...
     void finalizeObject (void);
 
-  private:  
+  private:
     void do_add_global_mapping (const llvm::GlobalValue* gv, void* p) const;
 
     llvm::Module *module;

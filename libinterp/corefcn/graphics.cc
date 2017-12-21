@@ -3309,7 +3309,7 @@ base_properties::update_handlevisibility (void)
 {
   if (is_handle_visible ())
     return;
-  
+
   // This object should not be the root "callbackobject"
   graphics_object rt = gh_manager::get_object (0);
   octave_value cbo = rt.get ("callbackobject");
@@ -3338,7 +3338,7 @@ base_properties::update_handlevisibility (void)
 }
 
 /*
-## test current figure and current axes have visible handles 
+## test current figure and current axes have visible handles
 %!test
 %! hf1 = figure ("visible", "off");
 %! hf2 = figure ("visible", "off");
@@ -3358,7 +3358,7 @@ base_properties::update_handlevisibility (void)
 */
 
 /*
-## test current callback object have visible handle 
+## test current callback object have visible handle
 %!test
 %! hf = figure ("visible", "off");
 %! hax = axes ();

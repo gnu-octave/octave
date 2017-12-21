@@ -789,10 +789,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_2], [
     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
     AC_LANG_PUSH(Fortran 77)
     AC_RUN_IFELSE([[
-      program bug_52425 
+      program bug_52425
 c
       integer          maxn, maxnev, maxncv, ldv
-      parameter       (maxn=256, maxnev=10, maxncv=25, 
+      parameter       (maxn=256, maxnev=10, maxncv=25,
      $                 ldv=maxn )
 c
       Double precision
@@ -803,30 +803,30 @@ c
       integer          iparam(11), ipntr(11)
 c
       character        bmat*1, which*2
-      integer          ido, n, nev, ncv, lworkl, info, ierr, j, 
+      integer          ido, n, nev, ncv, lworkl, info, ierr, j,
      &                 nx, nconv, maxitr, mode, ishfts
       logical          rvec
-      Double precision      
+      Double precision
      &                 tol, sigma
 c
       Double precision
      &                 zero
       parameter        (zero = 0.0D+0)
 c
-      Double precision           
+      Double precision
      &                 dnrm2
       external         dnrm2, daxpy
 c
       intrinsic        abs
 c
       n = 20
-      nev =  4 
-      ncv =  20 
+      nev =  4
+      ncv =  20
       bmat = 'I'
       which = 'BE'
 c
       lworkl = ncv*(ncv+8)
-      tol = zero 
+      tol = zero
       info = 1
       do j = 1,n
          resid (j) = 1.0d0
@@ -837,28 +837,28 @@ c
       maxitr = 300
       mode   = 1
 c
-      iparam(1) = ishfts 
-      iparam(3) = maxitr 
-      iparam(7) = mode 
+      iparam(1) = ishfts
+      iparam(3) = maxitr
+      iparam(7) = mode
 c
  10   continue
 c
-         call dsaupd ( ido, bmat, n, which, nev, tol, resid, 
+         call dsaupd ( ido, bmat, n, which, nev, tol, resid,
      &                 ncv, v, ldv, iparam, ipntr, workd, workl,
      &                 lworkl, info )
 c
          if (ido .eq. -1 .or. ido .eq. 1) then
             call av (n, workd(ipntr(1)), workd(ipntr(2)))
             go to 10
-         end if 
+         end if
 c
       if ( info .lt. 0 ) then
           stop 1
-      else 
+      else
          rvec = .false.
 c
-         call dseupd ( rvec, 'All', select, d, v, ldv, sigma, 
-     &        bmat, n, which, nev, tol, resid, ncv, v, ldv, 
+         call dseupd ( rvec, 'All', select, d, v, ldv, sigma,
+     &        bmat, n, which, nev, tol, resid, ncv, v, ldv,
      &        iparam, ipntr, workd, workl, lworkl, ierr )
 c
          if ( ierr .ne. 0) then
@@ -874,7 +874,7 @@ c
  20          continue
 c
 c            | Litmus test: return 1 or 0 based on returned eigenvalue
-c     
+c
              if (abs(d(1,1) - 2.0810) > 1.0d-4) then
                 stop 1
              else

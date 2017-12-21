@@ -701,7 +701,7 @@ namespace QtHandles
   {
     figure::properties& fp = properties<figure> ();
     octave_value fnum = fp.get___myhandle__ ().as_octave_value ();
-    
+
     Ffeval (ovl ("close", fnum));
   }
 

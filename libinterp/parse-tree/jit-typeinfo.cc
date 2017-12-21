@@ -1200,7 +1200,7 @@ namespace octave
     // jit_type: "matrix" < "any"
     matrix_t = llvm::StructType::create (context, "matrix");
     {
-      llvm::Type *refcount_t = llvm::Type::getIntNTy (context, sizeof(int) * 8);    
+      llvm::Type *refcount_t = llvm::Type::getIntNTy (context, sizeof(int) * 8);
       llvm::Type *matrix_contents[5];
       matrix_contents[0] = refcount_t->getPointerTo ();
       matrix_contents[1] = scalar_t->getPointerTo ();

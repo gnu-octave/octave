@@ -46,7 +46,9 @@
 ## @itemx %u
 ## The word is parsed as a number and converted to int32.
 ##
-## @item %*', '%*f', '%*s
+## @item  %*
+## @itemx %*f
+## @itemx %*s
 ## The word is skipped.
 ##
 ## For %s and %d, %f, %n, %u and the associated %*s @dots{} specifiers an

@@ -32,8 +32,8 @@
 ## @code{-2*pi <= @var{x} | @var{y} <= 2*pi} with 60 points in each dimension.
 ##
 ## If three functions are passed, then plot the parametrically defined
-## function @code{[@var{fx} (@var{s}, @var{t}), @var{fy} (@var{s}, @var{t}),
-## @var{fz} (@var{s}, @var{t})]}.
+## function @code{[@var{fx}(@var{s}, @var{t}), @var{fy}(@var{s}, @var{t}),
+## @var{fz}(@var{s}, @var{t})]}.
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
 ## values of both @var{x} and @var{y}.  If @var{dom} is a four element vector,

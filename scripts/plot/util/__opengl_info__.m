@@ -117,7 +117,6 @@ function [info, msg] = gl_info ()
     refresh (hf);
     info = fig_gl_info (hf);
     close (hf);
-    attempts
   endwhile
 
   if (isempty (info))

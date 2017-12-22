@@ -44,6 +44,11 @@ namespace octave
   symbol_record::context_id
   symbol_record::symbol_record_rep::get_fwd_scope_context (void) const
   {
+    // This should NOT recurse.  We only want to know the current
+    // context of the immediately forwarded rep object.  This is used
+    // only in symbol_record::symbol_record_rep::varref and
+    // symbol_record::symbol_record_rep::varval.
+
     return m_fwd_scope ? m_fwd_scope->current_context () : 0;
   }
 

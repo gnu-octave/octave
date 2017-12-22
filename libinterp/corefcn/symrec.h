@@ -211,14 +211,17 @@ namespace octave
         // For persistent values, we clear the value then unmark so
         // that we clear the first element of the value stack.
 
+        if (is_global ())
+          {
+            unbind_fwd_rep ();
+            return;
+          }
+
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           return;
 
         if (! (is_hidden () || is_inherited ()))
           {
-            if (is_global ())
-              unbind_fwd_rep ();
-
             assign (octave_value (), context);
 
             if (is_persistent ())
@@ -476,12 +479,29 @@ namespace octave
       void bind_fwd_rep (symbol_scope_rep *fwd_scope,
                          const std::shared_ptr<symbol_record_rep>& fwd_rep)
       {
+        // If this object is already bound to another scope (for
+        // example, a variable in a script or nested function is bound
+        // to the enclosing scope), then bind that object to the next
+        // scope.  FIXME: can this happen for any other reason than we
+        // are making a variable in a script global?
+
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          {
+            t_fwd_rep->bind_fwd_rep (fwd_scope, fwd_rep);
+            return;
+          }
+
         m_fwd_scope = fwd_scope;
         m_fwd_rep = fwd_rep;
       }
 
       void unbind_fwd_rep (void)
       {
+        // When unbinding an object, only break the immediate link.
+        // By doing that, we ensure that any variables that are made
+        // global in a script remain linked as globals in the
+        // enclosing scope.
+
         m_fwd_scope = nullptr;
         m_fwd_rep.reset ();
       }

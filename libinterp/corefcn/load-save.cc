@@ -155,7 +155,7 @@ install_loaded_variable (const std::string& name,
     {
       scope.clear_variable (name);
       scope.mark_global (name);
-      symtab.global_assign (name, val);
+      symtab.assign (name, val);
     }
   else
     scope.assign (name, val);

@@ -2366,6 +2366,7 @@ protected:
     bool_property hittest , "on"
     bool_property interruptible , "on"
     handle_property parent fs , p
+    radio_property pickableparts , "{visible}|none"
     bool_property selected , "off"
     bool_property selectionhighlight , "on"
     string_property tag s , ""
@@ -2373,7 +2374,8 @@ protected:
     handle_property uicontextmenu u , graphics_handle ()
     any_property userdata , Matrix ()
     bool_property visible , "on"
-    // additional (Octave-specific) properties
+
+    // Octave-specific properties
     bool_property __modified__ hs , "on"
     graphics_handle __myhandle__ fhrs , mh
   END_PROPERTIES
@@ -2914,6 +2916,8 @@ public:
       array_property screensize r , default_screensize ()
       bool_property showhiddenhandles , "off"
       radio_property units U , "inches|centimeters|normalized|points|{pixels}"
+      // Hide base properties which don't make sense for root object
+      //radio_property beingdeleted h , "{off}|on"
     END_PROPERTIES
 
   private:
@@ -3153,6 +3157,10 @@ public:
       callback_property windowkeyreleasefcn , Matrix ()
       callback_property windowscrollwheelfcn , Matrix ()
       radio_property windowstyle , "{normal}|modal|docked"
+
+      // Base properties which don't exist on object
+      // radio_property pickableparts h , "{visible}|none"
+
       // Octave-specific properties
       mutable string_property __gl_extensions__ hr , ""
       mutable string_property __gl_renderer__ hr , ""
@@ -3631,9 +3639,9 @@ public:
       radio_property minorgridlinestyle , "{:}|-|--|-.|none"
       radio_property nextplot , "{replace}|add|replacechildren"
       array_property outerposition u , default_axes_outerposition ()
+      radio_property pickableparts , "{visible}|all|none"
       row_vector_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
-      radio_property pickableparts , "{visible}|all|none"
       array_property position u , default_axes_position ()
       radio_property projection , "{orthographic}|perspective"
       radio_property sortmethod , "{depth}|childorder"
@@ -3699,9 +3707,11 @@ public:
       radio_property zticklabelmode u , "{auto}|manual"
       double_property zticklabelrotation , 0.0
       radio_property ztickmode u , "{auto}|manual"
+
       // Octave-specific properties
       array_property __colormap__ h , Matrix ()
       double_property mousewheelzoom , 0.5
+
       // hidden properties for alignment of subplots
       radio_property __autopos_tag__ h , "{none}|subplot"
       // hidden properties for inset
@@ -4287,7 +4297,7 @@ public:
     BEGIN_PROPERTIES (line)
       color_property color , color_property (color_values (0, 0, 0), radio_values ("none"))
       string_property displayname , ""
-      // FIXME: Remove erasemode property in version 4.6.
+      // FIXME: Remove erasemode property in version 4.6.  (rm all instances in file)
       radio_property erasemode h , "{normal}|none|xor|background"
       // FIXME: Remove interpreter property in version 4.8
       radio_property interpreter hd , "{tex}|none|latex"
@@ -4298,6 +4308,7 @@ public:
       color_property markeredgecolor , color_property (radio_values ("{auto}|none"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("auto|{none}"), color_values (0, 0, 0))
       double_property markersize , 6
+      radio_property pickableparts , "{visible}|all|none"
       row_vector_property xdata u , default_data ()
       string_property xdatasource , ""
       row_vector_property ydata u , default_data ()
@@ -4413,6 +4424,7 @@ public:
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       double_property margin , 2
+      radio_property pickableparts , "{visible}|all|none"
       array_property position smu , Matrix (1, 3, 0.0)
       double_property rotation mu , 0
       text_label_property string u , ""
@@ -4578,6 +4590,7 @@ public:
       array_property cdata u , default_image_cdata ()
       radio_property cdatamapping al , "scaled|{direct}"
       radio_property erasemode h , "{normal}|none|xor|background"
+      radio_property pickableparts , "{visible}|all|none"
       row_vector_property xdata mu , Matrix ()
       row_vector_property ydata mu , Matrix ()
       // hidden properties for limit computation
@@ -4865,6 +4878,7 @@ public:
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
       radio_property normalmode hsg , "{auto}|manual"
+      radio_property pickableparts , "{visible}|all|none"
       double_property specularcolorreflectance , 1.0
       double_property specularexponent , 10.0
       double_property specularstrength , 0.9
@@ -5077,6 +5091,7 @@ public:
       double_property markersize , 6
       radio_property meshstyle , "{both}|row|column"
       radio_property normalmode hsg , "{auto}|manual"
+      radio_property pickableparts , "{visible}|all|none"
       double_property specularcolorreflectance , 1
       double_property specularexponent , 10
       double_property specularstrength , 0.9
@@ -5322,7 +5337,6 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uimenu)
-      any_property __object__ h , Matrix ()
       string_property accelerator , ""
       callback_property callback , Matrix ()
       bool_property checked , "off"
@@ -5331,8 +5345,10 @@ public:
       string_property label , ""
       double_property position , 0
       bool_property separator , "off"
+
       // Octave-specific properties
       string_property __fltk_label__ h , ""
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -5390,9 +5406,11 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontextmenu)
-      any_property __object__ h , Matrix ()
       callback_property callback , Matrix ()
       array_property position , Matrix (1, 2, 0.0)
+
+      // Octave-specific properties
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -5452,7 +5470,6 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontrol)
-      any_property __object__ h , Matrix ()
       color_property backgroundcolor , color_values (1, 1, 1)
       callback_property callback , Matrix ()
       array_property cdata , Matrix ()
@@ -5478,6 +5495,9 @@ public:
       radio_property units u , "normalized|inches|centimeters|points|{pixels}|characters"
       row_vector_property value , Matrix (1, 1, 0.0)
       radio_property verticalalignment , "top|{middle}|bottom"
+
+      // Octave-specific properties
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   private:
@@ -5561,7 +5581,6 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uibuttongroup)
-      any_property __object__ h , Matrix ()
       color_property backgroundcolor , color_values (1, 1, 1)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
@@ -5582,6 +5601,9 @@ public:
       radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"
       string_property title , ""
       radio_property titleposition , "{lefttop}|centertop|righttop|leftbottom|centerbottom|rightbottom"
+
+      // Octave-specific properties
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -5656,7 +5678,6 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipanel)
-      any_property __object__ h , Matrix ()
       color_property backgroundcolor , color_values (1, 1, 1)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
@@ -5673,6 +5694,8 @@ public:
       string_property title , ""
       radio_property titleposition , "{lefttop}|centertop|righttop|leftbottom|centerbottom|rightbottom"
       radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"
+      // Octave-specific properties
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -5734,6 +5757,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uitoolbar)
+      // Octave-specific properties
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 
@@ -5834,12 +5858,14 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipushtool)
-      any_property __object__ h , Matrix ()
       array_property cdata , Matrix ()
       callback_property clickedcallback , Matrix ()
       bool_property enable , "on"
       bool_property separator , "off"
       string_property tooltipstring , ""
+
+      // Octave-specific properties
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -5890,7 +5916,6 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uitoggletool)
-      any_property __object__ h , Matrix ()
       array_property cdata , Matrix ()
       callback_property clickedcallback , Matrix ()
       bool_property enable , "on"
@@ -5899,6 +5924,9 @@ public:
       bool_property separator , "off"
       bool_property state , "off"
       string_property tooltipstring , ""
+
+      // Octave-specific properties
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   protected:

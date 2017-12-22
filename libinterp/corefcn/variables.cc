@@ -1516,6 +1516,14 @@ public:
             if (items < 2)
               error ("whos_line_format: parameter structure without command in whos_line_format");
 
+            // Exception case of bare class command 'c' without modifier 'l/r'
+            if (param.modifier == 'c'
+                && param_string.find (param.command) == std::string::npos)
+              {
+                param.modifier = 'r';
+                param.command = 'c';
+              }
+
             // Insert data into parameter
             param.first_parameter_length = 0;
             pos = param_string.find (param.command);

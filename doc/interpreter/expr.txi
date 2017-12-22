@@ -134,17 +134,17 @@ a(end:-1:1)       # reversal of a => [4, 3, 2 , 1]
 @node Advanced Indexing
 @subsection Advanced Indexing
 
-An array with @samp{n} dimensions can be indexed using @samp{m}
+An array with @samp{nd} dimensions can be indexed using @samp{m}
 indices.  More generally, the set of index tuples determining the
 result is formed by the Cartesian product of the index vectors (or
 ranges or scalars).
 
-For the ordinary and most common case, @w{@code{m == n}}, and each
-index corresponds to its respective dimension.  If @w{@code{m < n}}
-and every index is less than the size of the array in the
-@math{i^{th}} dimension, @code{m(i) < n(i)}, then the index expression
-is padded with trailing singleton dimensions (@code{[ones (m-n, 1)]}).
-If @w{@code{m < n}} but one of the indices @code{m(i)} is outside the
+For the ordinary and most common case, @w{@code{m == nd}}, and each
+index corresponds to its respective dimension.  If @w{@code{m < nd}},
+and every index is less than the size of the array in the @math{i^{th}}
+dimension (@code{m(i) < size (@var{array}, i)}), then the index expression
+is padded with @w{@code{n - m}} trailing singleton dimensions. 
+If @w{@code{m < nd}} but one of the indices @code{m(i)} is outside the
 size of the current array, then the last @w{@code{n-m+1}} dimensions
 are folded into a single dimension with an extent equal to the product
 of extents of the original dimensions.  This is easiest to understand
@@ -535,8 +535,7 @@ Element-by-element subtraction.  This operator is equivalent to @code{-}.
 @item @var{x} * @var{y}
 @opindex *
 Matrix multiplication.  The number of columns of @var{x} must agree with
-the number of rows of @var{y}, or they must be broadcastable to the same
-shape.
+the number of rows of @var{y}.
 
 @item @var{x} .* @var{y}
 @opindex .*

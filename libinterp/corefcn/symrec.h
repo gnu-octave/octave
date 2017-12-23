@@ -381,6 +381,8 @@ namespace octave
         if (is_global ())
           error ("can't make global variable %s persistent", m_name.c_str ());
 
+        if (is_formal ())
+          error ("can't make function parameter %s persistent", m_name.c_str ());
         m_storage_class |= persistent;
       }
 

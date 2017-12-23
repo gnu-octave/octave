@@ -142,7 +142,7 @@ function varargout = imformats (arg1, arg2, arg3)
 
 endfunction
 
-function formats = default_formats ()
+function rformats = default_formats ()
 
   ## The available formats are dependent on what the user has installed at
   ## a given time, and how GraphicsMagick was built.  Checking for
@@ -178,6 +178,7 @@ function formats = default_formats ()
   ## there's no need to go and calculate it all over again if we are
   ## requested to reset back to factory.
   if (! isempty (formats))
+    rformats = formats;
     return;
   endif
 
@@ -256,6 +257,8 @@ function formats = default_formats ()
 
   ## fills rest of format information by checking with GraphicsMagick
   formats = __magick_formats__ (formats);
+
+  rformats = formats;
 
 endfunction
 

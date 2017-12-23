@@ -546,7 +546,7 @@ function txt = check_package (fcn, name, classes)
 
 endfunction
 
-function list = missing_functions ()
+function rlist = missing_functions ()
   persistent list = {
   "addcats",
   "addCause",
@@ -841,6 +841,8 @@ function list = missing_functions ()
   "xmlwrite",
   "xslt",
   };
+
+  rlist = list;
 endfunction
 
 %!test

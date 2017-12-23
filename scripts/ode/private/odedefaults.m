@@ -22,7 +22,7 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [defaults, classes, attributes] = odedefaults (n, t0, tf)
+function [rdefaults, rclasses, rattributes] = odedefaults (n, t0, tf)
 
   persistent defaults = struct ("AbsTol", 1e-6,
                                 "BDF", "off",
@@ -99,5 +99,9 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
 
   attributes.InitialSlope = {"real", "vector", "numel", n};
   attributes.OutputSel = {"vector", "integer", "positive", ">", 0, "<=", n};
+
+  rdefaults = defaults;
+  rclasses = classes;
+  rattributes = attributes;
 
 endfunction

@@ -110,7 +110,7 @@ function varargout = ginput (n = -1)
 
 endfunction
 
-function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
+function [rx, ry, rn, rbutton] = ginput_accumulator (mode, xn, yn, btn)
   persistent x y n button;
 
   if (mode == 0)
@@ -126,7 +126,12 @@ function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
   elseif (mode == 2)
     ## The end due to Enter.
     n = -1;
- endif
+  endif
+
+  rx = x;
+  ry = y;
+  rn = n;
+  rbutton = button;
 
 endfunction
 

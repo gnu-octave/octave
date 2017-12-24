@@ -1,0 +1,2 @@
+global a b c
+

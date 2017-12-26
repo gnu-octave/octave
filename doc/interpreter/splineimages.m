@@ -22,7 +22,7 @@ function splineimages (d, nm, typ)
   hide_output ();
   outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
-    set (0, "defaulttextfontname", "*");
+    set (groot, "defaulttextfontname", "*");
   endif
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
@@ -188,12 +188,12 @@ endfunction
 function set_print_size ()
   image_size = [8.0, 6.0]; # in inches, 4:3 format
   border = 0;              # For postscript use 50/72
-  set (0, "defaultfigurepapertype", "<custom>");
-  set (0, "defaultfigurepaperorientation", "landscape");
-  set (0, "defaultfigurepapersize", image_size + 2*border);
-  set (0, "defaultfigurepaperposition", [border, border, image_size]);
+  set (groot, "defaultfigurepapertype", "<custom>");
+  set (groot, "defaultfigurepaperorientation", "landscape");
+  set (groot, "defaultfigurepapersize", image_size + 2*border);
+  set (groot, "defaultfigurepaperposition", [border, border, image_size]);
   ## FIXME: Required until listener for legend exists (bug #39697)
-  set (0, "defaultfigureposition", [ 72*[border, border, image_size] ]);
+  set (groot, "defaultfigureposition", [ 72*[border, border, image_size] ]);
 endfunction
 
 ## Use this function before plotting commands and after every call to print

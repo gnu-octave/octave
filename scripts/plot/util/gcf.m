@@ -45,7 +45,7 @@
 ## object.
 ##
 ## @example
-## get (0, "currentfigure");
+## get (groot, "currentfigure");
 ## @end example
 ##
 ## @seealso{gca, gco, gcbf, gcbo, get, set}

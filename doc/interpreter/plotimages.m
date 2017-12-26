@@ -22,7 +22,7 @@ function plotimages (d, nm, typ)
   hide_output ();
   outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
-    set (0, "defaulttextfontname", "*");
+    set (groot, "defaulttextfontname", "*");
   endif
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
@@ -136,10 +136,10 @@ endfunction
 function set_print_size ()
   image_size = [5.0, 3.5]; # in inches, 16:9 format
   border = 0;              # For postscript use 50/72
-  set (0, "defaultfigurepapertype", "<custom>");
-  set (0, "defaultfigurepaperorientation", "landscape");
-  set (0, "defaultfigurepapersize", image_size + 2*border);
-  set (0, "defaultfigurepaperposition", [border, border, image_size]);
+  set (groot, "defaultfigurepapertype", "<custom>");
+  set (groot, "defaultfigurepaperorientation", "landscape");
+  set (groot, "defaultfigurepapersize", image_size + 2*border);
+  set (groot, "defaultfigurepaperposition", [border, border, image_size]);
 endfunction
 
 ## Use this function before plotting commands and after every call to print

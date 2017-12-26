@@ -1171,12 +1171,13 @@ to a complex data structure as documented in
 
 The graphics objects are arranged in a hierarchy:
 
-1. The root is at 0.  In other words, @code{get (0)} returns the properties of
+1. The root object is returned by @code{groot} (historically, equivalent to
+the handle 0).  In other words, @code{get (groot)} returns the properties of
 the root object.
 
 2. Below the root are @code{figure} objects.
 
-3. Below the @code{figure} objects are @code{axes} objects.
+3. Below the @code{figure} objects are @code{axes} or @code{hggroup} objects.
 
 4. Below the @code{axes} objects are @code{line}, @code{text}, @code{patch},
 @code{surface}, @code{image}, and @code{light} objects.
@@ -1252,8 +1253,8 @@ currentpoint           pointershapehotspot    xvisualmode
 deletefcn              position
 @end smallexample
 
-The root figure has index 0.  Its properties may be displayed by:
-@code{get (0, "")}.
+The properties of the root figure may be displayed by:
+@code{get (groot, "")}.
 
 The uses of @code{get} and @code{set} are further explained in
 @ref{XREFget,,get}, @ref{XREFset,,set}.
@@ -1276,8 +1277,8 @@ graphics objects are always referenced by @dfn{handle}.
 @item root figure
 @cindex root figure graphics object
 @cindex graphics object, root figure
-the top level of the hierarchy and the parent of all figure objects.
-The handle index of the root figure is 0.
+The top level of the hierarchy and the parent of all figure objects.
+Use @code{groot} to obtain the handle of the root graphics object.
 
 @item figure
 @cindex figure graphics object
@@ -1331,7 +1332,7 @@ same name as the object; In other words, @code{figure}, @code{axes},
 @code{light} functions.  These fundamental graphic objects automatically become
 children of the current axes object as if @code{hold on} was in place.
 Separately, axes will automatically become children of the current figure
-object and figures will become children of the root object 0.
+object and figures will become children of the root object.
 
 If this auto-joining feature is not desired then it is important to call
 @code{newplot} first to prepare a new figure and axes for plotting.
@@ -1372,6 +1373,8 @@ or creates one if none exists.  Similarly, @code{gca} returns the
 current axes object, or creates one (and its parent figure object) if
 none exists.
 
+@DOCSTRING(groot)
+
 @DOCSTRING(gcf)
 
 @DOCSTRING(gca)
@@ -1383,7 +1386,7 @@ properties for graphics objects.  For example,
 
 @example
 @group
-get (0)
+get (groot)
     @result{} ans =
        @{
          type = root
@@ -1681,7 +1684,7 @@ objects to @qcode{"green"}, for the @code{root} object, will result in all
 value.
 
 @example
-set (0, "defaultlinecolor", "green");
+set (groot, "defaultlinecolor", "green");
 @end example
 
 @noindent
@@ -1696,7 +1699,7 @@ This rule can lead to some strange looking names, for example
 @code{defaultlinelinewidth"} specifies the default @code{linewidth}
 property for @code{line} objects.
 
-The example above used the root figure object, 0, so the default
+The example above used the root figure object so the default
 property value will apply to all line objects.  However, default values
 are hierarchical, so defaults set in a figure objects override those
 set in the root figure object.  Likewise, defaults set in axes objects
@@ -1705,7 +1708,7 @@ override those set in figure or root figure objects.  For example,
 @example
 @group
 subplot (2, 1, 1);
-set (0, "defaultlinecolor", "red");
+set (groot, "defaultlinecolor", "red");
 set (1, "defaultlinecolor", "green");
 set (gca (), "defaultlinecolor", "blue");
 line (1:10, rand (1, 10));
@@ -1753,7 +1756,7 @@ Factory default values are stored in the root figure object.  The
 command
 
 @example
-get (0, "factory");
+get (groot, "factory");
 @end example
 
 @noindent

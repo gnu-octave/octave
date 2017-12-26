@@ -52,6 +52,7 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
   %reldir%/gco.m \
   %reldir%/ginput.m \
   %reldir%/graphics_toolkit.m \
+  %reldir%/groot.m \
   %reldir%/hdl2struct.m \
   %reldir%/hggroup.m \
   %reldir%/hgload.m \

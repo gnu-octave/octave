@@ -1,2 +1,2 @@
 %!test
-%! eval ("include_globals");
+%! include_globals

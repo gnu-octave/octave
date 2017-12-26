@@ -19,12 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} setappdata (@var{h}, @var{name}, @var{value})
 ## @deftypefnx {} {} setappdata (@var{h}, @var{name1}, @var{value1}, @var{name2}, @var{value3}, @dots{})
+## @deftypefnx {} {} setappdata (@var{h}, @{@var{name1}, @var{name2}, @dots{}@}, @{@var{value1}, @var{value2}, @dots{}@})
 ## Set the application data @var{name} to @var{value} for the graphics object
 ## with handle @var{h}.
 ##
 ## @var{h} may also be a vector of graphics handles.  If the application data
-## with the specified @var{name} does not exist, it is created.  Multiple
-## @var{name}/@var{value} pairs can be specified at a time.
+## with the specified @var{name} does not exist, it is created.
+##
+## Multiple @var{name}/@var{value} pairs can be specified.  Alternatively, a
+## cell array of @var{names} and a corresponding cell array of @var{values} can
+## be specified.
 ##
 ## @seealso{getappdata, isappdata, rmappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
@@ -34,11 +38,38 @@
 
 function setappdata (h, varargin)
 
+  if (nargin < 3)
+    print_usage ();
+  endif
+
   h = h(:).';
   if (! all (ishghandle (h)))
     error ("setappdata: H must be a scalar or vector of graphic handles");
   elseif (mod (numel (varargin), 2) != 0)
     error ("setappdata: NAME/VALUE arguments must occur in pairs");
+  endif
+
+  if (iscellstr (varargin{1}))
+    if (nargin != 3)
+      error ("setappdata: only 3 arguments possible when NAME is a cellstr");
+    elseif (! iscell (varargin{2}))
+      varargin{2} = varargin(2);  # convert to cell
+    endif
+    names = varargin{1};
+    values = varargin{2};
+    n_names = numel (names);
+    n_value = numel (values);
+    if (n_value == 1 && n_names > 1);
+      values = repmat (values, [1, n_names]);
+    elseif (n_names != n_value);
+      error ("setappdata: number of NAME and VALUE arguments must match");
+    endif
+    varargin = cell (1, 2*numel (names));
+    varargin(1:2:end) = names;
+    varargin(2:2:end) = values;
+   
+  elseif (! all (cellfun ("isclass", varargin(1:2:end), "char")))
+    error ("setappdata: NAME must be a string or cellstr");
   endif
 
   for hg = h
@@ -49,17 +80,9 @@ function setappdata (h, varargin)
       addproperty ("__appdata__", hg, "any", appdata);
     end_try_catch
 
+    ## Slow, but not likely to be that many elements in loop
     for narg = 1:2:numel (varargin)
-      if (ischar (varargin{narg}))
-        appdata.(varargin{narg}) = varargin{narg+1};
-      elseif (iscellstr (varargin{narg}))
-        ## Handle cell arrays like set() does.
-        set (hg, "__appdata__", appdata);
-        setappdata (hg, vertcat (varargin{narg}', varargin{narg+1}'){:});
-        appdata = get (hg, "__appdata__");
-      else
-        error ("setappdata: NAME must be a string or cellstr");
-      endif
+      appdata.(varargin{narg}) = varargin{narg+1};
     endfor
 
     set (hg, "__appdata__", appdata);
@@ -88,7 +111,28 @@ endfunction
 %!   rmappdata (0, "%data1%", "%data2%");
 %! end_unwind_protect
 
+%!test
+%! unwind_protect
+%!   setappdata (0, {"%data1%", "%data2%"}, {ones(3), "hello world"});
+%!   assert (getappdata (0, "%data1%"), ones (3));
+%!   assert (getappdata (0, "%data2%"), "hello world");
+%!   setappdata (0, "%data1%", zeros (3));
+%!   assert (getappdata (0, "%data1%"), zeros (3));
+%!   rmappdata (0, "%data1%", "%data2%");
+%!   setappdata (0, {"%data1%", "%data2%"}, pi);
+%!   assert (getappdata (0, "%data1%"), pi);
+%!   assert (getappdata (0, "%data2%"), pi);
+%! unwind_protect_cleanup
+%!   rmappdata (0, "%data1%", "%data2%");
+%! end_unwind_protect
+
 ## Test input validation
-%!error <H must be a scalar .* graphic handle> rmappdata (-1, "hello")
+%!error setappdata ()
+%!error setappdata (0)
+%!error setappdata (0, "name")
+%!error <H must be a scalar .* graphic handle> setappdata (-1, "foo", "bar")
+%!error <NAME/VALUE arguments must occur in pairs> setappdata (0, "1", 2, "3")
+%!error <only 3 arguments possible> setappdata (0, {"1"}, 2, "3", 4)
+%!error <number of NAME and VALUE arguments must match>
+%! setappdata (0, {"1", "2"}, {2, 3, 4})
 %!error <NAME must be a string> setappdata (0, 1, 2)
-%!error <NAME/VALUE arguments must occur in pairs> setappdata (0, "1")

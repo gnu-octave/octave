@@ -389,7 +389,7 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double ("i*2 + 3"), 3+2i)
 %!assert (str2double (".5*i + 3.5"), 3.5+0.5i)
 %!assert (str2double ("1e-3 + i*.25"), 1e-3 + 0.25i)
-%!assert (str2double (["2 + j";"1.25e-3";"-05"]), [2+i; 1.25e-3; -5])
+%!assert (str2double (char ("2 + j","1.25e-3","-05")), [2+i; 1.25e-3; -5])
 %!assert (str2double ({"2 + j","1.25e-3","-05"}), [2+i, 1.25e-3, -5])
 %!assert (str2double (1), NaN)
 %!assert (str2double ("1 2 3 4"), NaN)

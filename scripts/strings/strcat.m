@@ -138,7 +138,7 @@ endfunction
 
 ## test for deblanking implied trailing spaces of character input
 %!assert (strcat ("foo", "bar"), "foobar")
-%!assert (strcat (["a"; "bb"], ["foo"; "bar"]), ["afoo "; "bbbar"])
+%!assert (strcat (["a "; "bb"], ["foo"; "bar"]), ["afoo "; "bbbar"])
 
 ## test for mixing character and cell inputs
 %!assert (strcat ("a", {"bc", "de"}, "f"), {"abcf", "adef"})

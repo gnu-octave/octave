@@ -158,7 +158,7 @@ char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 %!assert (char (100, [], 100), ["d";" ";"d"])
 %!assert (char ({100, [], 100}), ["d";" ";"d"])
 %!assert (char ({100,{100, {""}}}), ["d";"d";" "])
-%!assert (char (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
+%!assert (char (["a ";"be"], {"c", 100}), ["a ";"be";"c ";"d "])
 %!assert (char ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
 %!assert (char ([65, 83, 67, 73, 73]), "ASCII")
 
@@ -277,7 +277,7 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 %!assert (strvcat (100, [], 100), ["d";"d"])
 %!assert (strvcat ({100, [], 100}), ["d";"d"])
 %!assert (strvcat ({100,{100, {""}}}), ["d";"d"])
-%!assert (strvcat (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
+%!assert (strvcat (["a ";"be"], {"c", 100}), ["a ";"be";"c ";"d "])
 %!assert (strvcat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
 %!assert (strvcat (), "")
 */
@@ -894,11 +894,11 @@ whos ans
 %! result = "abc     mnop\ndef     qrs\nghijkl  tuv\n";
 %! assert (list_in_columns (input, 20), result);
 %!test
-%! input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
+%! input  = char ("abc", "def", "ghijkl", "mnop", "qrs", "tuv");
 %! result = "abc     mnop  \ndef     qrs   \nghijkl  tuv   \n";
 %! assert (list_in_columns (input, 20), result);
 %!test
-%! input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
+%! input  = char ("abc", "def", "ghijkl", "mnop", "qrs", "tuv");
 %! result = "  abc     mnop  \n  def     qrs   \n  ghijkl  tuv   \n";
 %! assert (list_in_columns (input, 20, "  "), result);
 

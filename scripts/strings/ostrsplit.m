@@ -106,9 +106,10 @@ endfunction
 %!assert (ostrsplit ("road to hell", " "), {"road", "to", "hell"})
 %!assert (ostrsplit ("road to^hell", " ^"), {"road", "to", "hell"})
 %!assert (ostrsplit ("road   to--hell", " -", true), {"road", "to", "hell"})
-%!assert (ostrsplit (["a,bc";",de"], ","), {"a", "bc", char(ones(1,0)), "de "})
-%!assert (ostrsplit (["a,bc";",de"], ",", true), {"a", "bc", "de "})
-%!assert (ostrsplit (["a,bc";",de"], ", ", true), {"a", "bc", "de"})
+%!assert (ostrsplit (char ("a,bc", ",de"), ","),
+%!        {"a", "bc", char(ones(1,0)), "de "})
+%!assert (ostrsplit (char ("a,bc", ",de"), ",", true), {"a", "bc", "de "})
+%!assert (ostrsplit (char ("a,bc", ",de"), ", ", true), {"a", "bc", "de"})
 
 ## Test input validation
 %!error ostrsplit ()

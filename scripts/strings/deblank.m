@@ -86,7 +86,7 @@ endfunction
 
 %!assert (deblank (" f o o \0"), " f o o")
 %!assert (deblank (" \t f o o \t \0"), " \t f o o")
-%!assert (deblank ([" abc   "; "   def   "]), [" abc  " ; "   def"])
+%!assert (deblank (char (" abc   ", "   def   ")), [" abc  " ; "   def"])
 %!assert (deblank (["   "; "   "]), "")
 %!assert (deblank ('   '), '')
 %!assert (deblank ("   "), "")

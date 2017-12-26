@@ -80,7 +80,7 @@ endfunction
 %!assert (strtrim ("    abc  "), "abc")
 %!assert (strtrim ("  "), "")
 %!assert (strtrim ("abc"), "abc")
-%!assert (strtrim ([" abc   "; "   def   "]), ["abc  "; "  def"])
+%!assert (strtrim (char (" abc   ", "   def   ")), ["abc  "; "  def"])
 %!assert (strtrim ({" abc   "; "   def   "}), {"abc"; "def"})
 %!assert (strtrim ({" abc   ", {"   def   "}}), {"abc", {"def"}})
 

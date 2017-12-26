@@ -97,12 +97,12 @@ function y = strjust (s, pos = "right")
 endfunction
 
 
-%!assert (strjust (["a"; "ab"; "abc"; "abcd"]),
+%!assert (strjust (char ("a", "ab", "abc", "abcd")),
 %!        ["   a";"  ab"; " abc"; "abcd"])
-%!assert (strjust ([" a"; "  ab"; "abc"; "abcd"], "left"),
+%!assert (strjust (char (" a", "  ab", "abc", "abcd"), "left"),
 %!        ["a   "; "ab  "; "abc "; "abcd"])
-%!assert (strjust (["a"; "ab"; "abc"; "abcd"], "CENTER"),
-%!        [" a  "; " ab"; "abc "; "abcd"])
+%!assert (strjust (char ("a", "ab", "abc", "abcd"), "CENTER"),
+%!        [" a  "; " ab "; "abc "; "abcd"])
 %!assert (strjust (["";""]), "")
 
 ## Test input validation

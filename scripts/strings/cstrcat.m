@@ -65,7 +65,7 @@ endfunction
 %!assert (cstrcat (["ab ";"cde"], ["ab ";"cde"]), ["ab ab ";"cdecde"])
 
 %!assert (cstrcat ("foo", "bar"), "foobar")
-%!assert (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
+%!assert (cstrcat (["a "; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
 %!assert (cstrcat (), "")
 

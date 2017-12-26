@@ -53,10 +53,10 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
               ## This is so ugly.  If there was a way of getting
               ## gnuplot to give us the text extents of strings
               ## then we could get rid of this mess.
-              lh = getfield (get (kids(i), "userdata"), "handle");
+              lh = getappdata (kids(i), "handle");
               if (isscalar (lh))
                 ## We have a legend with a single parent.  It'll be handled
-                ## below as a gnuplot key to the axis it corresponds to
+                ## below as a gnuplot key to the axis it corresponds to.
                 continue;
               else
                 ca = lh(1);
@@ -91,8 +91,8 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                       if (! strcmp (get (hobj(k), "type"), "line"))
                         continue;
                       endif
-                      if (get (hobj(j), "userdata")
-                          != get (hobj(k), "userdata"))
+                      if (getappdata (hobj(j), "handle")
+                          != getappdata (hobj(k), "handle"))
                         continue;
                       endif
                       if (! strcmp (get (hobj(k), "linestyle"), "none"))
@@ -161,16 +161,15 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                   if (ishghandle (fkids (j))
                       && strcmp (get (fkids (j), "type"), "axes")
                       && (strcmp (get (fkids (j), "tag"), "legend")))
-                    udata = get (fkids (j), "userdata");
-                    if (isscalar (udata.handle)
-                        && ! isempty (intersect (udata.handle, kids (i))))
-                      hlegend = get (fkids (j));
+                    leghandle = getappdata (fkids(j), "handle");
+                    if (! isempty (intersect (leghandle, kids(i))))
+                      hlegend = get (fkids(j));
                       break;
                     endif
                   endif
                 endfor
                 __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced,
-                                  bg_is_set, fg_is_set, hlegend);
+                                       bg_is_set, fg_is_set, hlegend);
               unwind_protect_cleanup
                 ## Return axes "units" and "position" back to
                 ## their original values.

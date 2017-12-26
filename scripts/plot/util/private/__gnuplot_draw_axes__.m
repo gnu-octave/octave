@@ -1544,7 +1544,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   if (! isempty (hlgnd) && strcmp (hlgnd.visible, "on")
       && ! isempty (hlgnd.children)
-      && any (strcmp (get ([get(hlgnd.children, "userdata"){:}], "visible"),
+      && any (strcmp (get ([getappdata(hlgnd.children, "handle"){:}], "visible"),
                       "on")))
 
     if (strcmp (hlgnd.box, "on"))

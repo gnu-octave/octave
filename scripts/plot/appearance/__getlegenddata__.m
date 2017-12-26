@@ -25,7 +25,7 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
 
   hplots = [];
   text_strings = {};
-  ca = getfield (get (hlegend, "userdata"), "handle");
+  ca = getappdata (hlegend, "handle");
   if (numel (ca) == 1)
     kids = get (ca, "children");
   else

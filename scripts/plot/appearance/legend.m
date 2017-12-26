@@ -190,8 +190,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   for i = 1 : numel (fkids)
     if (   strcmp (get (fkids(i), "type"), "axes")
         && strcmp (get (fkids(i), "tag"), "legend"))
-      udata = get (fkids(i), "userdata");
-      if (any (ismember (udata.handle, ca)))
+      handle = getappdata (fkids(i), "handle");
+      if (any (ismember (handle, ca)))
         hlegend = fkids(i);
         break;
       endif
@@ -404,9 +404,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
     if (! isempty (hlegend))
       ## Disable callbacks while modifying an existing legend
-      legdata = get (hlegend, "userdata");
-      legdata.nocallbacks = true;
-      set (hlegend, "userdata", legdata);
+      setappdata (hlegend, "nocallbacks", true);
     endif
 
     if (have_labels)
@@ -601,11 +599,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         if (isempty (hlegend))
           ## Create a legend object (axes + new properties)
           addprops = true;
-          hlegend = axes ("tag", "legend", "userdata", struct ("handle", ud),
+          hlegend = axes ("tag", "legend",
                           "box", box,
                           "xtick", [], "ytick", [],
                           "xlim", [0, 1], "ylim", [0, 1],
                           "activepositionproperty", "position");
+          setappdata (hlegend, "handle", ud);
           ## Inherit fontsize from current axis
           ## "fontunits" should be first because it affects interpretation
           ## of "fontsize" property.
@@ -667,8 +666,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           texthandle(k) = text (0, 0, text_strings{k},
                                 "units", "points",
                                 "horizontalalignment", halign,
-                                txtprops{:},
-                                "userdata", hplots(k));
+                                txtprops{:});
+          setappdata (texthandle(k), "handle", hplots(k));
           extents = get (texthandle(k), "extent");
           maxwidth = max (maxwidth, extents(3));
           maxheight = max (maxheight, extents(4));
@@ -880,8 +879,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                 l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
                            "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
                            "color", color, "linestyle", style, "linewidth", lwidth,
-                           "marker", "none",
-                           "userdata", hplt);
+                           "marker", "none");
+                setappdata (l1, "handle", hplt);
                 hobjects(end+1) = l1;
               endif
               marker = get (hplt, "marker");
@@ -892,8 +891,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                            "marker", marker,
                            "markeredgecolor", get (hplt, "markeredgecolor"),
                            "markerfacecolor", get (hplt, "markerfacecolor"),
-                           "markersize", min (get (hplt, "markersize"),10),
-                           "userdata", hplt);
+                           "markersize", min (get (hplt, "markersize"),10));
+                setappdata (l1, "handle", hplt);
                 hobjects(end+1) = l1;
               endif
 
@@ -927,7 +926,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
                             "facecolor", facecolor, "edgecolor", edgecolor,
-                            "cdata", cdata, "userdata", hplt);
+                            "cdata", cdata);
+                setappdata (p1, "handle", hplt);
               else
                 ## non-standard patch only making use of marker styles
                 ## such as scatter plot.
@@ -937,7 +937,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                             "markeredgecolor",get (hplt,"markeredgecolor"),
                             "markerfacecolor",get (hplt,"markerfacecolor"),
                             "markersize", min (get (hplt,"markersize"),10),
-                            "cdata", cdata, "userdata", hplt);
+                            "cdata", cdata);
+                setappdata (p1, "handle", hplt);
               endif
               hobjects(end+1) = p1;
               ## Copy clim from axes so that colors work out.
@@ -956,7 +957,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
                             "facecolor", facecolor, "edgecolor", edgecolor,
-                            "cdata", cdata, "userdata", hplt);
+                            "cdata", cdata);
+                setappdata (p1, "handle", hplt);
                 hobjects(end+1) = p1;
               endif
               ## FIXME: Need listeners, as for line objects.
@@ -1103,9 +1105,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   endif
 
   ## Restore operation of callbacks
-  legdata = get (hlegend, "userdata");
-  legdata.nocallbacks = false;
-  set (hlegend, "userdata", legdata);
+  setappdata (hlegend, "nocallbacks", false);
 
   if (nargout > 0)
     hleg = hlegend;
@@ -1123,7 +1123,7 @@ function cb_legend_update (hleg, ~)
   if (! recursive)
     recursive = true;
     unwind_protect
-      hax = getfield (get (hleg, "userdata"), "handle");
+      hax = getappdata (hleg, "handle");
       ## Hack.  Maybe store this somewhere else such as appdata.
       hplots = [ get(hleg, "deletefcn"){6:end} ];
       text_strings = get (hleg, "string");
@@ -1261,7 +1261,7 @@ endfunction
 function cb_line_listener (h, ~, hlegend, linelength, update_name)
 
   ## Don't execute callbacks when legend is under construction
-  legdata = get (hlegend, "userdata");
+  legdata = getappdata (hlegend);
   if (legdata.nocallbacks)
     return;
   endif
@@ -1276,7 +1276,7 @@ function cb_line_listener (h, ~, hlegend, linelength, update_name)
     endif
   else
     kids = get (hlegend, "children");
-    kids = kids([get(kids, "userdata"){:}] == h);
+    kids = kids([getappdata(kids, "handle"){:}] == h);
     kids = kids(strcmp (get (kids, "type"), "line"));
     idx = strcmp (get (kids, "marker"), "none");
     ll = kids (idx);
@@ -1301,20 +1301,22 @@ function cb_line_listener (h, ~, hlegend, linelength, update_name)
     endif
 
     if (! strcmp (linestyle, "none"))
-      line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"),
-            "linestyle", get (h, "linestyle"),
-            "linewidth", min (get (h, "linewidth"), 5),
-            "marker", "none",
-            "userdata", h, "parent", hlegend);
+      hl = line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"),
+                 "linestyle", get (h, "linestyle"),
+                 "linewidth", min (get (h, "linewidth"), 5),
+                 "marker", "none",
+                 "parent", hlegend);
+      setappdata (hl, "handle", h);
     endif
     if (! strcmp (marker, "none"))
-      line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
-            "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
-            "markerfacecolor", get (h, "markerfacecolor"),
-            "markersize", min (get (h, "markersize"), 10),
-            "linestyle", "none",
-            "linewidth", min (get (h, "linewidth"), 5),
-            "userdata", h, "parent", hlegend);
+      hl = line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
+                 "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
+                 "markerfacecolor", get (h, "markerfacecolor"),
+                 "markersize", min (get (h, "markersize"), 10),
+                 "linestyle", "none",
+                 "linewidth", min (get (h, "linewidth"), 5),
+                 "parent", hlegend);
+      setappdata (hl, "handle", h);
     endif
   endif
 
@@ -1744,10 +1746,10 @@ endfunction
 %!   hax2 = subplot (1,2,2);
 %!   plot (1:10);
 %!   hleg1 = legend (hax1, "foo");
-%!   assert (get (hleg1, "userdata").handle, hax1);
+%!   assert (getappdata (hleg1, "handle"), hax1);
 %!   assert (gca (), hax2);
 %!   hleg2 = legend ("bar");
-%!   assert (get (hleg2, "userdata").handle, gca ());
+%!   assert (getappdata (hleg2, "handle"), gca ());
 %! unwind_protect_cleanup
 %!   close (h);
 %! end_unwind_protect

@@ -106,11 +106,11 @@ function restack_axes (h, cf)
     ## Stack the legend associated with this axes on top of the axes itself
     hleg = hax(strcmp (get (hax, "tag"), "legend"));
     if (any (hleg))
-      ## Get field "handle" from structure stored in "userdata" property
+      ## Get axes handles associated with legend
       if (isscalar (hleg))
-        hlegaxes = get (hleg, "userdata").handle;
+        hlegaxes = getappdata (hleg, "handle");
       else
-        hlegaxes = [[get(hleg, "userdata"){:}].handle](:);
+        hlegaxes = [getappdata(hleg, "handle"){:}](:);
       endif
       hleg = hleg(hlegaxes == h);
       h = [hleg; h];

@@ -134,25 +134,28 @@ a(end:-1:1)       # reversal of a => [4, 3, 2 , 1]
 @node Advanced Indexing
 @subsection Advanced Indexing
 
-An array with @samp{nd} dimensions can be indexed using @samp{m}
-indices.  More generally, the set of index tuples determining the
-result is formed by the Cartesian product of the index vectors (or
-ranges or scalars).
+An array with @samp{nd} dimensions can be indexed by a vector @var{idx} which
+has from 1 to @samp{nd} elements.  If any element of @var{idx} is not a
+scalar then the complete set of index tuples will be generated from the
+Cartesian product of the index elements.
 
-For the ordinary and most common case, @w{@code{m == nd}}, and each
-index corresponds to its respective dimension.  If @w{@code{m < nd}},
-and every index is less than the size of the array in the @math{i^{th}}
-dimension (@code{m(i) < size (@var{array}, i)}), then the index expression
-is padded with @w{@code{n - m}} trailing singleton dimensions. 
-If @w{@code{m < nd}} but one of the indices @code{m(i)} is outside the
-size of the current array, then the last @w{@code{n-m+1}} dimensions
-are folded into a single dimension with an extent equal to the product
-of extents of the original dimensions.  This is easiest to understand
-with an example.
+For the ordinary and most common case, the number of indices
+(@code{nidx = numel (@var{idx})}) matches the number of dimensions @samp{nd}.
+In this case, each element of @var{idx} corresponds to its respective dimension,
+i.e., @code{@var{idx}(1)} refers to dimension 1, @code{@var{idx}(2)} refers to
+dimension 2, etc.  If @w{@code{nidx < nd}}, and every index is less than the
+size of the array in the @math{i^{th}} dimension
+(@code{@var{idx}(i) < size (@var{array}, i)}), then the index expression is
+padded with @w{@code{nd - nidx}} trailing singleton dimensions.  If
+@w{@code{nidx < nd}} but one of the indices @code{@var{idx}(i)} is outside the
+size of the current array, then the last @w{@code{nd - nidx + 1}} dimensions
+are folded into a single dimension with an extent equal to the product of
+extents of the original dimensions.  This is easiest to understand with an
+example.  
 
 @example
-a = reshape (1:8, 2, 2, 2)  # Create 3-D array
-a =
+A = reshape (1:8, 2, 2, 2)  # Create 3-D array
+A =
 
 ans(:,:,1) =
 
@@ -164,10 +167,10 @@ ans(:,:,2) =
    5   7
    6   8
 
-a(2,1,2);   # Case (m == n): ans = 6
-a(2,1);     # Case (m < n), idx within array:
-            # equivalent to a(2,1,1), ans = 2
-a(2,4);     # Case (m < n), idx outside array:
+A(2,1,2);   # Case (nidx == nd): ans = 6
+A(2,1);     # Case (nidx < nd), idx within array:
+            # equivalent to A(2,1,1), ans = 2
+A(2,4);     # Case (nidx < nd), idx outside array:
             # Dimension 2 & 3 folded into new dimension of size 2x2 = 4
             # Select 2nd row, 4th element of [2, 4, 6, 8], ans = 8
 @end example

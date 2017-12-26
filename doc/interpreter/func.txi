@@ -1047,7 +1047,7 @@ function ex_top ()
   ## Can NOT call: ex_aa and ex_ab
 
   function ex_a ()
-    ## Call call everything
+    ## Can call everything
 
     function ex_aa ()
       ## Can call everything

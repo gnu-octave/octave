@@ -1146,7 +1146,7 @@ character to be read is returned in @var{pos}.
 DEFMETHOD (scanf, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})
-@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, "C")
+@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} scanf (@var{template}, "C")
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.
 
 It is currently not useful to call @code{scanf} in interactive programs.

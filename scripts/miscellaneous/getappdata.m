@@ -48,13 +48,10 @@ function value = getappdata (h, name)
     endif
 
     value = cell (numel (h), 1);
-    appdata = struct ();
     for i = 1:numel (h)
-      value{i} = [];
-      pval = get (h(i));
-      if (isfield (pval, "__appdata__") && isfield (pval.__appdata__, name))
-        value{i} = pval.__appdata__.(name);
-      endif
+      try
+        value{i} = (get (h(i), "__appdata__")).(name);
+      end_try_catch
     endfor
 
     if (i == 1)

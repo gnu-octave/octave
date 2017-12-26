@@ -1124,7 +1124,9 @@ function cb_legend_update (hleg, ~)
     recursive = true;
     unwind_protect
       hax = getfield (get (hleg, "userdata"), "handle");
-      [hplots, ~] = __getlegenddata__ (hleg);
+      ## Hack.  Maybe store this somewhere else such as appdata.
+      hplots = [ get(hleg, "deletefcn"){6:end} ];
+      text_strings = get (hleg, "string");
       position = get (hleg, "unmodified_axes_position");
       outerposition = get (hleg, "unmodified_axes_outerposition");
       units = get (hax, "units");
@@ -1143,7 +1145,7 @@ function cb_legend_update (hleg, ~)
         set (hax, {"units"}, units);
       endif
 
-      hleg = legend (hax(1), hplots, get (hleg, "string"));
+      hleg = legend (hax(1), hplots, text_strings);
     unwind_protect_cleanup
       recursive = false;
     end_unwind_protect
@@ -1270,7 +1272,7 @@ function cb_line_listener (h, ~, hlegend, linelength, update_name)
     if (isempty (hplots))
       delete (hlegend);
     else
-      legend (legdata.handle, hplots, text_strings);
+      legend (legdata.handle(1), hplots, text_strings);
     endif
   else
     kids = get (hlegend, "children");
@@ -1797,5 +1799,3 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-
-

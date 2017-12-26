@@ -19,7 +19,7 @@
 ## This piece of test code ensures that all operations which work on
 ## dimensions alone (squeeze, triu, etc.) work for all objects and
 ## preserve type. Even if the object is an empty matrix. This code is
-## not to check that the function itself returns teh correct result,
+## not to check that the function itself returns the correct result,
 ## just that the results are consistent for all types.
 
 %!function __fntestfunc__ (fn, mn, varargin)
@@ -190,3 +190,19 @@
 %! __fntestfunc__ ("rotdim", m2, -1, [1, 2]);
 %!test
 %! __fntestfunc__ ("rotdim", m3, 1, [1, 2]);
+
+## Check for error if function parameter is made persistent 
+%!function retval = __fnpersist1__ (in1)
+%!  persistent retval;
+%!  
+%!  retval = 1;
+%!endfunction
+
+%!function retval = __fnpersist2__ (in1)
+%!  persistent in1;
+%!  
+%!  retval = in1;
+%!endfunction
+
+%!error <can't make function parameter retval persistent> __fnpersist1__ (1);
+%!error <can't make function parameter in1 persistent> __fnpersist2__ (1);

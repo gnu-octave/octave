@@ -80,6 +80,8 @@ function newstr = erase (str, ptn)
 
   if (ischar (ptn)) 
     if (rows (ptn) > 1)
+      warning ("Octave:erase:chararray",
+               "erase: using character array for PTN is not recommended, consider cell array of strings instead");
       ## Convert to cell.  Can't use cellstr which trims spaces.
       ptn = mat2cell (ptn, ones (1, rows (ptn)));
     endif
@@ -137,3 +139,5 @@ endfunction
 %!error erase ("a", "b", "c")
 %!error <STR must be a string> erase ([1], "foo") 
 %!error <PTN must be a string> erase ("foo", [1]) 
+%!warning <using character array for PTN is not recommended>
+%! erase ("a", ["a";"b"]);

@@ -170,6 +170,13 @@
 ## By default, the @code{Octave:eigs:UnconvergedEigenvalues} warning is
 ## enabled.
 ##
+## @item Octave:erase:chararray
+## If the @code{Octave:erase:chararray} warning is enabled then the erase
+## function will issue a warning if the input pattern is a character array
+## rather than a string or cell array of strings.
+## By default, the @code{Octave:eigs:UnconvergedEigenvalues} warning is
+## enabled.
+##
 ## @item Octave:fopen-file-in-path
 ## By default, the @code{Octave:fopen-file-in-path} warning is enabled.
 ##

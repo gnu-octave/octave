@@ -1462,11 +1462,52 @@ file_editor_tab::do_smart_indent_line_or_selected_text (void)
 void
 file_editor_tab::do_comment_selected_text (bool comment)
 {
-  QString comment_str = _edit_area->comment_string ();
-  QRegExp rxc = QRegExp ("^([ \\t]*)" + comment_str);
-  int len = 0;
-  int lenc = comment_str.length ();
+  QStringList comment_str = _edit_area->comment_string (comment);
+  QRegExp rxc;
+  QString ws = "^([ \\t]*)";
 
+  if (comment)
+    {
+      // Commenting (only one string possible)
+      rxc = QRegExp (ws + comment_str.at (0));
+    }
+  else
+    {
+      // Uncommenting (several strings possible)
+
+      // Sort strings according their length
+      QStringList comment_str_sorted (comment_str.at (0));
+      bool inserted;
+
+      for (int i = 1; i < comment_str.length (); i++)
+        {
+          inserted = false;
+          for (int j = 0; j < comment_str_sorted.length (); j++)
+            {
+              if (comment_str.at (i).length () > comment_str_sorted.at (j).length ())
+                {
+                  comment_str_sorted.insert (j, comment_str.at (i));
+                  inserted = true;
+                  break;
+                }
+            }
+          if (! inserted)
+            comment_str_sorted << comment_str.at (i);
+        }
+
+      // Create regular expression
+      QString regexp;
+      for (int i = 0; i < comment_str_sorted.length (); i++)
+        {
+          if (i > 0)
+            regexp = regexp + QString ("|");
+          regexp = regexp + comment_str_sorted.at (i);
+        }
+      rxc = QRegExp (ws + "(" + regexp + ")");
+    }
+
+  // Do the commenting/uncommenting
+  int len = 0, lenc = 0;
   _edit_area->beginUndoAction ();
 
   if (_edit_area->hasSelectedText ())
@@ -1485,15 +1526,16 @@ file_editor_tab::do_comment_selected_text (bool comment)
         {
           if (comment)
             {
-              _edit_area->insertAt (comment_str, i, 0);
-
+              _edit_area->insertAt (comment_str.at (0), i, 0);
             }
           else
             {
               QString line (_edit_area->text (i));
               if ((removed = line.contains (rxc)))
                 {
-                  len = rxc.matchedLength ();
+                  len = rxc.matchedLength ();   // complete length
+                  QString matched_text = rxc.capturedTexts ().at (0);
+                  lenc = matched_text.remove (QRegExp (ws)).length ();  // only comment string
                   _edit_area->setSelection (i, len-lenc, i, len);
                   _edit_area->removeSelectedText ();
                 }
@@ -1531,13 +1573,15 @@ file_editor_tab::do_comment_selected_text (bool comment)
       int cpline, col;
       _edit_area->getCursorPosition (&cpline, &col);
       if (comment)
-        _edit_area->insertAt (comment_str, cpline, 0);
+        _edit_area->insertAt (comment_str.at (0), cpline, 0);
       else
         {
           QString line (_edit_area->text (cpline));
           if (line.contains (rxc))
             {
-              len = rxc.matchedLength ();
+              len = rxc.matchedLength ();   // complete length
+              QString matched_text = rxc.capturedTexts ().at (0);
+              lenc = matched_text.remove (QRegExp (ws)).length ();  // only comment string
               _edit_area->setSelection (cpline, len-lenc, cpline, len);
               _edit_area->removeSelectedText ();
             }
@@ -2894,7 +2938,7 @@ file_editor_tab::handle_char_added (int)
     QString newline = QString ("\n");
     style_comment = _edit_area->is_style_comment ();
     if (style_comment == octave_qscintilla::ST_LINE_COMMENT)
-      newline = newline + _edit_area->comment_string ();
+      newline = newline + _edit_area->comment_string ().at (0);
     _edit_area->insertAt (newline, line, col_newline);
 
     // Automatically indent the new line to the indentation of previous line

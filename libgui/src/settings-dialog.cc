@@ -445,7 +445,39 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->editor_ws_indent_checkbox->setChecked (settings->value ("editor/show_white_space_indent", false).toBool ());
   ui->cb_show_eol->setChecked (settings->value ("editor/show_eol_chars", false).toBool ());
   ui->cb_show_hscrollbar->setChecked (settings->value ("editor/show_hscroll_bar", true).toBool ());
-  ui->combo_oct_comment_str->setCurrentIndex (settings->value ("editor/octave_comment_string", 0).toInt ());
+
+  int selected_comment_string, selected_uncomment_string;
+
+  if (settings->contains (oct_comment_str))   // new version (radio buttons)
+    selected_comment_string = settings->value (oct_comment_str,
+                                               oct_comment_str_d).toInt ();
+  else                                         // old version (combo box)
+    selected_comment_string = settings->value (oct_comment_str_old,
+                                               oct_comment_str_d).toInt ();
+
+  selected_uncomment_string = settings->value (oct_uncomment_str,
+                                               oct_uncomment_str_d).toInt ();
+
+  for (int i = 0; i < oct_comment_strings_count; i++)
+    {
+      m_rb_comment_strings[i] = new QRadioButton ();
+      m_rb_uncomment_strings[i] = new QRadioButton ();
+
+      connect (m_rb_comment_strings[i], SIGNAL (clicked (bool)),
+               m_rb_uncomment_strings[i], SLOT (setChecked (bool)));
+      connect (m_rb_comment_strings[i], SIGNAL (toggled (bool)),
+               m_rb_uncomment_strings[i], SLOT (setDisabled (bool)));
+
+      m_rb_comment_strings[i]->setText (oct_comment_strings.at(i));
+      m_rb_comment_strings[i]->setChecked (i == selected_comment_string);
+      ui->layout_comment_strings->addWidget (m_rb_comment_strings[i]);
+
+      m_rb_uncomment_strings[i]->setText (oct_comment_strings.at(i));
+      m_rb_uncomment_strings[i]->setAutoExclusive (false);
+      m_rb_uncomment_strings[i]->setChecked ( 1 << i & selected_uncomment_string);
+      ui->layout_uncomment_strings->addWidget (m_rb_uncomment_strings[i]);
+    }
+
 
 #if defined (HAVE_QSCINTILLA)
 #  if defined (Q_OS_WIN32)
@@ -799,7 +831,24 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("editor/show_eol_chars", ui->cb_show_eol->isChecked ());
   settings->setValue ("editor/show_hscroll_bar", ui->cb_show_hscrollbar->isChecked ());
   settings->setValue ("editor/default_eol_mode", ui->combo_eol_mode->currentIndex ());
-  settings->setValue ("editor/octave_comment_string", ui->combo_oct_comment_str->currentIndex ());
+
+  // Comment strings
+  int rb_uncomment = 0;
+  for (int i = 0; i < oct_comment_strings_count; i++)
+    {
+      if (m_rb_comment_strings[i]->isChecked ())
+        {
+          settings->setValue (oct_comment_str, i);
+          if (i < 3)
+            settings->setValue (oct_comment_str_old, i);
+          else
+            settings->setValue (oct_comment_str_old, oct_comment_str_d);
+        }
+      if (m_rb_uncomment_strings[i]->isChecked ())
+        rb_uncomment = rb_uncomment + (1 << i);
+    }
+  settings->setValue (oct_uncomment_str, rb_uncomment);
+
   settings->setValue ("editor/default_encoding", ui->editor_combo_encoding->currentText ());
   settings->setValue ("editor/auto_indent", ui->editor_auto_ind_checkbox->isChecked ());
   settings->setValue ("editor/tab_indents_line", ui->editor_tab_ind_checkbox->isChecked ());

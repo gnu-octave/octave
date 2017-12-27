@@ -58,7 +58,7 @@ public:
   bool get_actual_word (void);
   void clear_selection_markers (void);
   void get_current_position (int *pos, int *line, int *col);
-  QString comment_string (void);
+  QStringList comment_string (bool comment = true);
   int get_style (int pos = -1);
   int is_style_comment (int pos = -1);
   void smart_indent (bool do_smart_indent, int do_auto_close, int line);

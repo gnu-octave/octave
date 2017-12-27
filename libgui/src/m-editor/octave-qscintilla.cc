@@ -57,6 +57,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-tab.h"
 #include "shortcut-manager.h"
 #include "resource-manager.h"
+#include "octave-settings.h"
+
 
 // Return true if CANDIDATE is a "closing" that matches OPENING,
 // such as "end" or "endif" for "if", or "catch" for "try".
@@ -376,8 +378,8 @@ octave_qscintilla::get_current_position (int *pos, int *line, int *col)
 }
 
 // Function returning the comment string of the current lexer
-QString
-octave_qscintilla::comment_string (void)
+QStringList
+octave_qscintilla::comment_string (bool comment)
 {
   int lexer = SendScintilla (SCI_GETLEXER);
 
@@ -389,33 +391,57 @@ octave_qscintilla::comment_string (void)
 #else
       case SCLEX_MATLAB:
 #endif
-       {
+        {
           QSettings *settings = resource_manager::get_settings ();
-          int comment_index
-                = settings->value ("editor/octave_comment_string", 0).toInt ();
-          if (comment_index == 1)
-            return QString ("#");
-          else if (comment_index == 2)
-            return QString ("%");
+          int comment_string;
+
+          if (comment)
+            {
+              // The commenting string is requested
+              if (settings->contains (oct_comment_str))   // new version (radio buttons)
+                comment_string = settings->value (oct_comment_str,
+                                                  oct_comment_str_d).toInt ();
+              else                                         // old version (combo box)
+                comment_string = settings->value (oct_comment_str_old,
+                                                  oct_comment_str_d).toInt ();
+
+              return (QStringList (oct_comment_strings.at (comment_string)));
+            }
           else
-            return QString ("##");  // default and for index 0
+            {
+              QStringList c_str;
+
+              // The possible uncommenting string(s) are requested
+              comment_string = settings->value (oct_uncomment_str,
+                                                oct_uncomment_str_d).toInt ();
+
+              for (int i = 0; i < oct_comment_strings_count; i++)
+                {
+                  if (1 << i & comment_string)
+                    c_str.append (oct_comment_strings.at (i));
+                }
+
+              return c_str;
+            }
+
         }
 #endif
 
       case SCLEX_PERL:
       case SCLEX_BASH:
       case SCLEX_DIFF:
-        return QString ("#");
+        return QStringList ("#");
 
       case SCLEX_CPP:
-        return QString ("//");
+        return QStringList ("//");
 
       case SCLEX_BATCH:
-        return QString ("REM ");
+        return QStringList ("REM ");
     }
 
-    return QString ("%");  // should never happen
+    return QStringList ("%");  // should never happen
 }
+
 
 // provide the style at a specific position
 int

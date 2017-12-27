@@ -52,8 +52,7 @@ function state = hidden (mode = "toggle")
   endif
 
   for h = (get (gca (), "children")).';
-    htype = get (h, "type");
-    htag = get (h, "tag");
+    [htype, htag] = get (h, {"type", "tag"}){:};
     if (strcmp (htype, "surface") || strcmp (htag, "trimesh"))
       fc = get (h, "facecolor");
       if ((! ischar (fc) && is_white (fc))

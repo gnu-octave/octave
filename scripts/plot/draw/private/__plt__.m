@@ -40,8 +40,7 @@ function retval = __plt__ (caller, h, varargin)
     hlegend = [];
     fkids = get (gcf (), "children");
     for i = 1 : numel (fkids)
-      if (   strcmp (get (fkids(i), "type"), "axes")
-          && strcmp (get (fkids(i), "tag"), "legend"))
+      if (strcmp (get (fkids(i), {"type", "tag"}), {"axes", "legend"}))
         leghandle = getappdata (fkids(i), "handle");
         if (! isempty (intersect (leghandle, gca ())))
           hlegend = fkids(i);

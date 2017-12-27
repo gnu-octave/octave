@@ -159,8 +159,8 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                 fkids = get (h, "children");
                 for j = 1 : numel (fkids)
                   if (ishghandle (fkids (j))
-                      && strcmp (get (fkids (j), "type"), "axes")
-                      && (strcmp (get (fkids (j), "tag"), "legend")))
+                      && strcmp (get (fkids(j), {"type", "tag"}),
+                                 {"axes", "legend"}))
                     leghandle = getappdata (fkids(j), "handle");
                     if (! isempty (intersect (leghandle, kids(i))))
                       hlegend = get (fkids(j));

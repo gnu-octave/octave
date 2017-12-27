@@ -64,8 +64,7 @@
 
 function hui = uibuttongroup (varargin)
 
-  if (nargin == 1 && ishghandle (varargin{1})
-      && strcmpi (get (varargin{1}, "type"), "uibuttongroup"))
+  if (nargin == 1 && isgraphics (varargin{1}, "uibuttongroup"))
     error ("uibuttongroup: focusing not implemented yet");
   endif
 

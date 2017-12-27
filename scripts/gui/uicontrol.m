@@ -100,8 +100,7 @@
 
 function hui = uicontrol (varargin)
 
-  if (nargin == 1 && ishghandle (varargin{1})
-      && strcmpi (get (varargin{1}, "type"), "uicontrol"))
+  if (nargin == 1 && isgraphics (varargin{1}, "uicontrol"))
     error ("uicontrol: focusing not implemented yet");
   endif
 

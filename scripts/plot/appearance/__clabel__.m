@@ -32,8 +32,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   xspacing = axpos(3) / (lims(2) - lims (1));
   yspacing = axpos(4) / (lims(4) - lims (3));
 
-  if (isscalar (hparent) && ishghandle (hparent)
-      && strcmp (get (hparent, "type"), "hggroup"))
+  if (isscalar (hparent) && isgraphics (hparent, "hggroup"))
     x = get (hparent, "xdata");
     xmin = min (x(:));
     xmax = max (x(:));

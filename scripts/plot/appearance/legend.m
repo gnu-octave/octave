@@ -188,8 +188,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   hlegend = [];
   fkids = get (fig, "children");
   for i = 1 : numel (fkids)
-    if (   strcmp (get (fkids(i), "type"), "axes")
-        && strcmp (get (fkids(i), "tag"), "legend"))
+    if (strcmp (get (fkids(i), {"type", "tag"}), {"axes", "legend"}))
       handle = getappdata (fkids(i), "handle");
       if (any (ismember (handle, ca)))
         hlegend = fkids(i);

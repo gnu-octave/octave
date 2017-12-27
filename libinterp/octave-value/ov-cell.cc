@@ -1269,7 +1269,7 @@ DEFUN (iscellstr, args, ,
 @deftypefn {} {} iscellstr (@var{cell})
 Return true if every element of the cell array @var{cell} is a character
 string.
-@seealso{ischar}
+@seealso{ischar, isstring}
 @end deftypefn */)
 {
   if (args.length () != 1)

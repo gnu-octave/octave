@@ -14,6 +14,7 @@ FCN_FILE_DIRS += scripts/strings
   %reldir%/hex2dec.m \
   %reldir%/index.m \
   %reldir%/isletter.m \
+  %reldir%/isstring.m \
   %reldir%/isstrprop.m \
   %reldir%/mat2str.m \
   %reldir%/native2unicode.m \

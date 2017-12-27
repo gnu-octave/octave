@@ -3102,7 +3102,7 @@ DEFUN (islogical, args, ,
 @deftypefn  {} {} islogical (@var{x})
 @deftypefnx {} {} isbool (@var{x})
 Return true if @var{x} is a logical object.
-@seealso{isfloat, isinteger, ischar, isnumeric, isa}
+@seealso{ischar, isfloat, isinteger, isstring, isnumeric, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3134,7 +3134,7 @@ Return true if @var{x} is an integer object (int8, uint8, int16, etc.).
 
 Note that @w{@code{isinteger (14)}} is false because numeric constants in
 Octave are double precision floating point values.
-@seealso{isfloat, ischar, islogical, isnumeric, isa}
+@seealso{isfloat, ischar, islogical, isstring, isnumeric, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3189,7 +3189,7 @@ DEFUN (iscomplex, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} iscomplex (@var{x})
 Return true if @var{x} is a complex-valued numeric object.
-@seealso{isreal, isnumeric, islogical, ischar, isfloat, isa}
+@seealso{isreal, isnumeric, ischar, isfloat, islogical, isstring, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3204,7 +3204,7 @@ DEFUN (isfloat, args, ,
 Return true if @var{x} is a floating-point numeric object.
 
 Objects of class double or single are floating-point objects.
-@seealso{isinteger, ischar, islogical, isnumeric, isa}
+@seealso{isinteger, ischar, islogical, isnumeric, isstring, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3565,7 +3565,7 @@ Return true if @var{x} is a numeric object, i.e., an integer, real, or
 complex array.
 
 Logical and character arrays are not considered to be numeric.
-@seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct, isa}
+@seealso{isinteger, isfloat, isreal, iscomplex, ischar, islogical, isstring, iscell, isstruct, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)

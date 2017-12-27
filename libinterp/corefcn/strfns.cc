@@ -286,7 +286,7 @@ DEFUN (ischar, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} ischar (@var{x})
 Return true if @var{x} is a character array.
-@seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}
+@seealso{isfloat, isinteger, islogical, isnumeric, isstring, iscellstr, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)

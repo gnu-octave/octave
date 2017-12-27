@@ -22,10 +22,8 @@
 ##
 ## If @var{h} is a matrix then return a logical array which is true where the
 ## elements of @var{h} are axes graphics handles and false where they are not.
-## @seealso{isaxes, ishghandle}
+## @seealso{isfigure, ishghandle, isgraphics}
 ## @end deftypefn
-
-## Author: jwe
 
 function retval = isaxes (h)
 
@@ -33,11 +31,10 @@ function retval = isaxes (h)
     print_usage ();
   endif
 
-  hlist = ishghandle (h);
-  retval = hlist;
+  retval = ishghandle (h);
 
-  if (any (hlist))
-    retval(hlist) = strcmp (get (h(hlist), "type"), "axes");
+  if (any (retval))
+    retval(retval) = strcmp (get (h(retval), "type"), "axes");
   endif
 
 endfunction
@@ -61,3 +58,6 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!error isaxes ()
+%!error isaxes (1, 2)

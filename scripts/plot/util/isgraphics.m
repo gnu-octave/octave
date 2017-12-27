@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2017 David Bateman
+## Copyright (C) 2017 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ##
 ## When no @var{type} is specified the function is equivalent to
 ## @code{ishghandle}.
-## @seealso{ishghandle, ishandle}
+## @seealso{ishghandle, ishandle, isaxes, isfigure}
 ## @end deftypefn
 
 function retval = isgraphics (h, type = "")
@@ -33,7 +33,7 @@ function retval = isgraphics (h, type = "")
     print_usage ();
   endif
 
-  if (nargin == 2 && (! ischar (type) || ! isrow (type)))
+  if (nargin == 2 && ! (ischar (type) && isrow (type)))
     error ("isgraphics: TYPE must be a string");
   endif
 
@@ -41,8 +41,7 @@ function retval = isgraphics (h, type = "")
   retval = ishghandle (h);
 
   if (nargin == 2 && any (retval))
-    typematch = strcmpi (get (h(retval), "type"), type);
-    retval(retval) = typematch;
+    retval(retval) = strcmpi (get (h(retval), "type"), type);
   endif
 
 endfunction

@@ -4424,22 +4424,22 @@ namespace octave
     }                                                                   \
   while (0)
 
-#define DO_PCT_CONVERSION()                     \
-  do                                            \
-    {                                           \
-  int c = is.get ();                            \
-                                                \
-  if (c != std::istream::traits_type::eof ())   \
-    {                                           \
-  if (c != '%')                                 \
-    {                                           \
-  is.putback (c);                               \
-  is.setstate (std::ios::failbit);              \
-}                                               \
-}                                               \
-  else                                          \
-    is.setstate (std::ios::failbit);            \
-}                                               \
+#define DO_PCT_CONVERSION()                             \
+  do                                                    \
+    {                                                   \
+      int c = is.get ();                                \
+                                                        \
+      if (c != std::istream::traits_type::eof ())       \
+        {                                               \
+          if (c != '%')                                 \
+            {                                           \
+              is.putback (c);                           \
+              is.setstate (std::ios::failbit);          \
+            }                                           \
+        }                                               \
+      else                                              \
+        is.setstate (std::ios::failbit);                \
+    }                                                   \
   while (0)
 
 #define BEGIN_C_CONVERSION()                                            \
@@ -7065,7 +7065,7 @@ namespace octave
                  octave_idx_type skip,                                  \
                  mach_info::float_format flt_fmt)
 
-    INSTANTIATE_WRITE (octave_int8);
+  INSTANTIATE_WRITE (octave_int8);
   INSTANTIATE_WRITE (octave_uint8);
   INSTANTIATE_WRITE (octave_int16);
   INSTANTIATE_WRITE (octave_uint16);

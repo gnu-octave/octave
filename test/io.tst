@@ -326,21 +326,48 @@
 %!assert (sscanf ('7777777777777777', '%lo', 'C'), 281474976710655)
 %!assert (sscanf ('ffffffffffff', '%lx', 'C'), 281474976710655)
 
-%!test
+%!testif ; ! ismac ()
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "");
 %! assert (pos, 2);
 
-%!test
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! [val, count, msg, pos] = sscanf ("3I2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!testif ; ! ismac ()
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "");
 %! assert (pos, 2);
 
-%!test
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! [val, count, msg, pos] = sscanf ("3In2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!testif ; ! ismac ()
+%! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
+%! assert (val, [3; Inf; 2]);
+%! assert (count, 3);
+%! assert (msg, "");
+%! assert (pos, 6);
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
 %! assert (val, [3; Inf; 2]);
 %! assert (count, 3);

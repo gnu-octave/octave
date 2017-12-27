@@ -462,7 +462,22 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!test
+%!testif ; ! ismac ()
+%! ## Complex numbers
+%! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\t-7.2\t0-3.4i\n0.012\t-6.5+7.2i\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, '\t');
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
 %! ## Complex numbers
 %! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
 %! fn  = tempname ();

@@ -533,7 +533,30 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!test
+%!testif ; ! ismac () 
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ","), [1,2,3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", 10, 0), []);
+%!   assert (dlmread (file, ",", 0, 10), []);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");

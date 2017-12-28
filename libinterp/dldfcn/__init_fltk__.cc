@@ -1651,13 +1651,6 @@ private:
 
               if (gh.ok ())
                 {
-                  int ndim = calc_dimensions (m_ax_obj);
-
-                  if (ndim == 3)
-                    m_rotate->activate ();
-                  else // ndim == 2
-                    m_rotate->deactivate ();
-
                   m_fp.set_currentobject (m_ax_obj.get_handle ().value ());
 
                   base_properties& props = m_ax_obj.get_properties ();

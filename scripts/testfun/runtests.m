@@ -75,8 +75,8 @@ function run_all_tests (directory, do_class_dirs)
       ff = fullfile (directory, f);
       if (has_tests (ff))
         print_test_file_name (f);
-        [p, n, xf, sk] = test (ff, "quiet");
-        print_pass_fail (n, p, xf);
+        [p, n, xf, xb, sk, rtsk, rgrs] = test (ff, "quiet");
+        print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
         fflush (stdout);
       elseif (has_functions (ff))
         no_tests(end+1) = f;
@@ -132,22 +132,34 @@ function retval = has_tests (f)
 
   str = fread (fid, "*char").';
   fclose (fid);
-  retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
-                                   'lineanchors', 'once'));
+  retval = ! isempty (regexp (str,
+                              '^%!(assert|error|fail|test|xtest|warning)',
+                              'lineanchors', 'once'));
 
 endfunction
 
-function print_pass_fail (n, p, xf)
+function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
 
-  if (n > 0)
-    printf (" PASS %4d/%-4d", p, n);
-    nfail = n - p;
+  if ((n + sk + rtsk + rgrs) > 0)
+    printf (" PASS   %4d/%-4d", p, n);
+    nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)
-      if (nfail != xf)
-        printf (" FAIL %d", nfail - xf);
-      else
-        printf (" XFAIL %d", xf);
-      endif
+      printf ("\n%71s %3d", "FAIL ", nfail);
+    endif
+    if (rgrs > 0)
+      printf ("\n%71s %3d", "REGRESSION", rgrs);
+    endif
+    if (sk > 0)
+      printf ("\n%71s %3d", "(missing feature) SKIP ", sk);
+    endif
+    if (rtsk > 0)
+      printf ("\n%71s %3d", "(run-time condition) SKIP ", rtsk);
+    endif
+    if (xb > 0)
+      printf ("\n%71s %3d", "(reported bug) XFAIL", xb);
+    endif
+    if (xf > 0)
+      printf ("\n%71s %3d", "(expected failure) XFAIL", xf);
     endif
   endif
   puts ("\n");
@@ -155,7 +167,7 @@ function print_pass_fail (n, p, xf)
 endfunction
 
 function print_test_file_name (nm)
-  filler = repmat (".", 1, 55-length (nm));
+  filler = repmat (".", 1, 60-length (nm));
   printf ("  %s %s", nm, filler);
 endfunction
 

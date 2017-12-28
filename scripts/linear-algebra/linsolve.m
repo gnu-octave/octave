@@ -32,11 +32,11 @@
 ## In this case Octave will skip the matrix examination and proceed directly
 ## to solving the linear system.
 ##
-## @strong{Warning:} If the matrix @var{A} does not have the properties
-## listed in the @var{opts} structure then the result will not be accurate
-## AND no warning will be given.  When in doubt, let Octave examine the matrix
-## and choose the appropriate solver as this step takes little time and the
-## result is cached so that it is only done once per linear system.
+## @strong{Warning:} If the matrix @var{A} does not have the properties listed
+## in the @var{opts} structure then the result will not be accurate AND no
+## warning will be given.  When in doubt, let Octave examine the matrix and
+## choose the appropriate solver as this step takes little time and the result
+## is cached so that it is only done once per linear system.
 ##
 ## Possible @var{opts} fields (set value to true/false):
 ##
@@ -60,7 +60,7 @@
 ##   @var{A} is general rectangular (currently makes no difference)
 ##
 ## @item TRANSA
-##   Solve @code{A'*x = b} by @code{transpose (A) \ b}
+##   Solve @code{A'*x = b} if true rather than @code{A*x = b}
 ## @end table
 ##
 ## The optional second output @var{R} is the inverse condition number of

@@ -85,7 +85,8 @@ FCN_FILE_DIRS += \
   %reldir%/subsindex.m \
   %reldir%/trapz.m \
   %reldir%/triplequad.m \
-  %reldir%/validateattributes.m
+  %reldir%/validateattributes.m \
+  %reldir%/xor.m
 
 %canon_reldir%dir = $(fcnfiledir)/general
 

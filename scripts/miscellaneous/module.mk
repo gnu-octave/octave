@@ -66,7 +66,6 @@ FCN_FILE_DIRS += \
   %reldir%/ver.m \
   %reldir%/version.m \
   %reldir%/what.m \
-  %reldir%/xor.m \
   %reldir%/zip.m
 
 %canon_reldir%dir = $(fcnfiledir)/miscellaneous

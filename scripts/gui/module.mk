@@ -15,13 +15,17 @@ FCN_FILE_DIRS += \
 %canon_reldir%_FCN_FILES = \
   %reldir%/dialog.m \
   %reldir%/errordlg.m \
+  %reldir%/getappdata.m \
   %reldir%/guidata.m \
   %reldir%/guihandles.m \
   %reldir%/helpdlg.m \
   %reldir%/inputdlg.m \
+  %reldir%/isappdata.m \
   %reldir%/listdlg.m \
   %reldir%/msgbox.m \
   %reldir%/questdlg.m \
+  %reldir%/rmappdata.m \
+  %reldir%/setappdata.m \
   %reldir%/uibuttongroup.m \
   %reldir%/uicontextmenu.m \
   %reldir%/uicontrol.m \

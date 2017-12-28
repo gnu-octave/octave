@@ -24,12 +24,10 @@ FCN_FILE_DIRS += \
   %reldir%/fileparts.m \
   %reldir%/fullfile.m \
   %reldir%/genvarname.m \
-  %reldir%/getappdata.m \
   %reldir%/getfield.m \
   %reldir%/gunzip.m \
   %reldir%/info.m \
   %reldir%/inputname.m \
-  %reldir%/isappdata.m \
   %reldir%/isdeployed.m \
   %reldir%/ismac.m \
   %reldir%/ispc.m \
@@ -53,9 +51,7 @@ FCN_FILE_DIRS += \
   %reldir%/perl.m \
   %reldir%/python.m \
   %reldir%/recycle.m \
-  %reldir%/rmappdata.m \
   %reldir%/run.m \
-  %reldir%/setappdata.m \
   %reldir%/setfield.m \
   %reldir%/substruct.m \
   %reldir%/swapbytes.m \

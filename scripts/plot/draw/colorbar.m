@@ -256,7 +256,7 @@ function h = colorbar (varargin)
                   "visible", "off", "handlevisibility", "off",
                   "xliminclude", "off", "yliminclude", "off",
                   "zliminclude", "off",
-                  "deletefcn", {@cb_axes_deleted, hcb});
+                  "deletefcn", {@cb_axes_deleted, hax, hcb});
 
     set (hcb, "deletefcn", {@cb_restore_axes, hax, props});
 
@@ -283,10 +283,13 @@ function h = colorbar (varargin)
 
 endfunction
 
-## Axes to which colorbar was attached has been deleted.  Delete colorbar.
-function cb_axes_deleted (~, ~, hcb, orig_props)
+## Axes to which colorbar was attached is being deleted/reset. Delete colorbar.
+function cb_axes_deleted (~, ~, hax, hcb)
   if (isaxes (hcb))
-    set (hcb, "deletefcn", []);
+    if (strcmp (get (hax, "beingdeleted"), "on"))
+      ## Axes are being deleted.  Disable call to cb_restore_axes.
+      set (hcb, "deletefcn", []);
+    endif
     delete (hcb);
   endif
 endfunction

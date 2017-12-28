@@ -991,7 +991,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         htdel = findall (ca(1), "tag", "deletelegend", "type", "text");
         if (isempty (htdel))
           htdel = text (0, 0, "", props{:});
-          set (htdel, "deletefcn", {@cb_axes_deleted, hlegend});
+          set (htdel, "deletefcn", {@cb_axes_deleted, ca, hlegend});
         endif
         if (isprop (hlegend, "unmodified_axes_position"))
           set (hlegend, "unmodified_axes_position",
@@ -1200,10 +1200,13 @@ function cb_legend_location (hleg, d)
   endif
 
 endfunction
-## Axes to which legend was attached has been deleted.  Delete legend.
-function cb_axes_deleted (~, ~, hlegend)
+## Axes to which legend was attached is being deleted/reset.  Delete legend.
+function cb_axes_deleted (~, ~, ca, hlegend)
   if (isaxes (hlegend))
-    set (hlegend, "deletefcn", []);
+    if (strcmp (get (ca(1), "beingdeleted"), "on"))
+      ## Axes are being deleted.  Disable call to cb_restore_axes.
+      set (hlegend, "deletefcn", []);
+    endif
     delete (hlegend);
   endif
 endfunction

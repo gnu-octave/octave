@@ -27,18 +27,18 @@
 ## $$
 ## {\rm std} (x) = \sigma = \sqrt{{\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}}
 ## $$
-## where $\bar{x}$ is the mean value of $x$ and $N$ is the number of elements.
+## where $\bar{x}$ is the mean value of @var{x} and $N$ is the number of elements of @var{x}.
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-## std (x) = sqrt ( 1/(N-1) SUM_i (x(i) - mean(x))^2 )
+## std (@var{x}) = sqrt ( 1/(N-1) SUM_i (@var{x}(i) - mean(@var{x}))^2 )
 ## @end group
 ## @end example
 ##
 ## @noindent
-## where @math{N} is the number of elements.
+## where @math{N} is the number of elements of the @var{x} vector.
 ## @end ifnottex
 ##
 ## If @var{x} is a matrix, compute the standard deviation for each column and

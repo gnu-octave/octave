@@ -22,27 +22,30 @@
 ## @deftypefnx {} {} median (@var{x}, @var{dim})
 ## Compute the median value of the elements of the vector @var{x}.
 ##
-## When the elements of @var{x} are sorted, the median is defined as
+## When the elements of @var{x} are sorted, say @code{@var{s} = sort (@var{x})},
+## the median is defined as
 ## @tex
 ## $$
 ## {\rm median} (x) =
-##   \cases{x(\lceil N/2\rceil), & $N$ odd;\cr
-##           (x(N/2)+x(N/2+1))/2, & $N$ even.}
+##   \cases{s(\lceil N/2\rceil), & $N$ odd;\cr
+##           (s(N/2)+s(N/2+1))/2, & $N$ even.}
 ## $$
+## where $N$ is the number of elements of @var{x}.
+##
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-##               x(ceil(N/2))             N odd
-## median (x) =
-##              (x(N/2) + x((N/2)+1))/2   N even
+##              |  @var{s}(ceil(N/2))           N odd
+## median (@var{x}) = |
+##              | (@var{s}(N/2) + @var{s}(N/2+1))/2   N even
 ## @end group
 ## @end example
 ##
 ## @end ifnottex
 ## If @var{x} is of a discrete type such as integer or logical, then
-## the case of even N rounds up (or toward @code{true}).
+## the case of even @math{N} rounds up (or toward @code{true}).
 ##
 ## If @var{x} is a matrix, compute the median value for each column and
 ## return them in a row vector.

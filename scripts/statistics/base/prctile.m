@@ -24,7 +24,7 @@
 ## to the cumulative probability values, @var{p}, in percent.
 ##
 ## If @var{x} is a matrix, compute the percentiles for each column and return
-## them in a matrix, such that the i-th row of @var{y} contains the
+## them in a matrix, such that the i-th row of @var{q} contains the
 ## @var{p}(i)th percentiles of each column of @var{x}.
 ##
 ## If @var{p} is unspecified, return the quantiles for @code{[0 25 50 75 100]}.

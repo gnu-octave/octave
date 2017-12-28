@@ -27,9 +27,9 @@
 ## @tex
 ## $$
 ## \kappa_1 = {{{1\over N}\,
-##          \sum_{i=1}^N (@var{x}_i - \bar{@var{x}})^4} \over \sigma^4},
+##          \sum_{i=1}^N (x_i - \bar{x})^4} \over \sigma^4},
 ## $$
-## where $N$ is the length of @var{x}, $\bar{@var{x}}$ its mean, and $\sigma$
+## where $N$ is the length of @var{x}, $\bar{x}$ its mean, and $\sigma$
 ## its (uncorrected) standard deviation.
 ## @end tex
 ## @ifnottex
@@ -64,6 +64,8 @@
 ##          (N - 2)(N - 3)
 ## @end group
 ## @end example
+##
+## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex
 ## The bias-corrected kurtosis coefficient is obtained by replacing the sample

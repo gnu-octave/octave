@@ -20,23 +20,35 @@
 ## @deftypefn  {} {} kendall (@var{x})
 ## @deftypefnx {} {} kendall (@var{x}, @var{y})
 ## @cindex Kendall's Tau
-## Compute Kendall's @var{tau}.
+## Compute Kendall's
+## @tex
+## $\tau$.
+## @end tex
+## @ifnottex
+## @var{tau}.
+## @end ifnottex
 ##
-## For two data vectors @var{x}, @var{y} of common length @var{n}, Kendall's
-## @var{tau} is the correlation of the signs of all rank differences of
+## For two data vectors @var{x}, @var{y} of common length @math{N}, Kendall's
+## @tex
+## $\tau$
+## @end tex
+## @ifnottex
+## @var{tau}
+## @end ifnottex
+## is the correlation of the signs of all rank differences of
 ## @var{x} and @var{y}; i.e., if both @var{x} and @var{y} have distinct
 ## entries, then
 ##
 ## @tex
-## $$ \tau = {1 \over n(n-1)} \sum_{i,j} {\rm sign}(q_i-q_j) {\rm sign}(r_i-r_j) $$
+## $$ \tau = {1 \over N(N-1)} \sum_{i,j} {\rm sign}(q_i-q_j) \, {\rm sign}(r_i-r_j) $$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
 ##          1
-## tau = -------   SUM sign (q(i) - q(j)) * sign (r(i) - r(j))
-##       n (n-1)   i,j
+## @var{tau} = -------   SUM sign (@var{q}(i) - @var{q}(j)) * sign (@var{r}(i) - @var{r}(j))
+##       N (N-1)   i,j
 ## @end group
 ## @end example
 ##
@@ -47,17 +59,24 @@
 ## $q_i$ and $r_i$
 ## @end tex
 ## @ifnottex
-## @var{q}(@var{i}) and @var{r}(@var{i})
+## @var{q}(i) and @var{r}(i)
 ## @end ifnottex
 ## are the ranks of @var{x} and @var{y}, respectively.
 ##
 ## If @var{x} and @var{y} are drawn from independent distributions,
-## Kendall's @var{tau} is asymptotically normal with mean 0 and variance
+## Kendall's
 ## @tex
-## ${2 (2n+5) \over 9n(n-1)}$.
+## $\tau$
 ## @end tex
 ## @ifnottex
-## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
+## @var{tau}
+## @end ifnottex
+## is asymptotically normal with mean 0 and variance
+## @tex
+## ${2 (2N+5) \over 9N(N-1)}$.
+## @end tex
+## @ifnottex
+## @code{(2 * (2N+5)) / (9 * N * (N-1))}.
 ## @end ifnottex
 ##
 ## @code{kendall (@var{x})} is equivalent to @code{kendall (@var{x},

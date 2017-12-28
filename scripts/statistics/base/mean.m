@@ -27,12 +27,16 @@
 ##
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
+## where $N$ is the number of elements of @var{x}.
+##
 ## @end tex
 ## @ifnottex
 ##
 ## @example
-## mean (x) = SUM_i x(i) / N
+## mean (@var{x}) = SUM_i @var{x}(i) / N
 ## @end example
+##
+## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex
 ## If @var{x} is a matrix, compute the mean for each column and return them

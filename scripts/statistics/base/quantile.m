@@ -37,7 +37,7 @@
 ##
 ## The methods available to calculate sample quantiles are the nine methods
 ## used by R (@url{http://www.r-project.org/}).  The default value is
-## @w{METHOD = 5}.
+## @w{@var{method} = 5}.
 ##
 ## Discontinuous sample quantile methods 1, 2, and 3
 ##
@@ -49,28 +49,72 @@
 ## @item Method 3: SAS definition: nearest even order statistic.
 ## @end enumerate
 ##
-## Continuous sample quantile methods 4 through 9, where p(k) is the linear
-## interpolation function respecting each methods' representative cdf.
+## Continuous sample quantile methods 4 through 9, where
+## @tex
+## $p(k)$
+## @end tex
+## @ifnottex
+## @var{p}(k)
+## @end ifnottex
+## is the linear
+## interpolation function respecting each method's representative cdf.
 ##
 ## @enumerate 4
-## @item Method 4: p(k) = k / n.  That is, linear interpolation of the
-## empirical cdf.
+## @item Method 4:
+## @tex
+## $p(k) = k / N$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = k / N.
+## @end ifnottex
+## That is, linear interpolation of the empirical cdf, where @math{N} is the
+## length of @var{P}.
 ##
-## @item Method 5: p(k) = (k - 0.5) / n.  That is a piecewise linear function
-## where the knots are the values midway through the steps of the empirical
-## cdf.
+## @item Method 5:
+## @tex
+## $p(k) = (k - 0.5) / N$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 0.5) / N.
+## @end ifnottex
+## That is, a piecewise linear function where the knots are the values midway
+## through the steps of the empirical cdf.
 ##
-## @item Method 6: p(k) = k / (n + 1).
+## @item Method 6:
+## @tex
+## $p(k) = k / (N + 1)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = k / (N + 1).
+## @end ifnottex
 ##
-## @item Method 7: p(k) = (k - 1) / (n - 1).
+## @item Method 7:
+## @tex
+## $p(k) = (k - 1) / (N - 1)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 1) / (N - 1).
+## @end ifnottex
 ##
-## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile
-## estimates are approximately median-unbiased regardless of the distribution
-## of @var{x}.
+## @item Method 8:
+## @tex
+## $p(k) = (k - 1/3) / (N + 1/3)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 1/3) / (N + 1/3).
+## @end ifnottex
+## The resulting quantile estimates are approximately median-unbiased
+## regardless of the distribution of @var{x}.
 ##
-## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile
-## estimates are approximately unbiased for the expected order statistics if
-## @var{x} is normally distributed.
+## @item Method 9:
+## @tex
+## $p(k) = (k - 3/8) / (N + 1/4)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 3/8) / (N + 1/4).
+## @end ifnottex
+## The resulting quantile estimates are approximately unbiased for the
+## expected order statistics if @var{x} is normally distributed.
 ## @end enumerate
 ##
 ## @nospell{Hyndman and Fan} (1996) recommend method 8.  Maxima, S, and R

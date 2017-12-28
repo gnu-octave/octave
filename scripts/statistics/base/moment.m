@@ -22,20 +22,25 @@
 ## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim})
 ## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
 ## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
-## Compute the @var{p}-th central moment of the vector @var{x}.
+## Compute the @var{p}-th central moment of the vector @var{x}:
 ##
 ## @tex
 ## $$
 ## {\sum_{i=1}^N (x_i - \bar{x})^p \over N}
 ## $$
+## where $\bar{x}$ is the mean value of @var{x} and $N$ is the number of elements of @var{x}.
+##
+##
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-## 1/N SUM_i (x(i) - mean(x))^p
+## 1/N SUM_i (@var{x}(i) - mean(@var{x}))^@var{p}
 ## @end group
 ## @end example
+##
+## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex
 ##
@@ -64,7 +69,7 @@
 ##
 ## @example
 ## @group
-## 1/N SUM_i (abs (x(i) - mean(x)))^p
+## 1/N SUM_i (abs (@var{x}(i) - mean(@var{x})))^@var{p}
 ## @end group
 ## @end example
 ##
@@ -82,7 +87,7 @@
 ##
 ## @example
 ## @group
-## moment (x) = 1/N SUM_i x(i)^p
+## moment (@var{x}) = 1/N SUM_i @var{x}(i)^@var{p}
 ## @end group
 ## @end example
 ##
@@ -99,7 +104,7 @@
 ##
 ## @example
 ## @group
-## 1/N SUM_i ( abs (x(i)) )^p
+## 1/N SUM_i ( abs (@var{x}(i)) )^@var{p}
 ## @end group
 ## @end example
 ##

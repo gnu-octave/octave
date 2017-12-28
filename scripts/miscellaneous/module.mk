@@ -14,7 +14,6 @@ FCN_FILE_DIRS += \
   %reldir%/compare_versions.m \
   %reldir%/computer.m \
   %reldir%/copyfile.m \
-  %reldir%/debug.m \
   %reldir%/delete.m \
   %reldir%/desktop.m \
   %reldir%/dir.m \

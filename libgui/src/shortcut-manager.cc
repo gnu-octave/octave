@@ -366,6 +366,8 @@ shortcut_manager::do_init_data (void)
         QKeySequence (ctrl + Qt::Key_R));
   init (tr ("Uncomment Selection"), "editor_edit:uncomment_selection",
         QKeySequence (ctrl_shift + Qt::Key_R));
+  init (tr ("Comment Selection (Choosing String)"), "editor_edit:comment_var_selection",
+        QKeySequence (ctrl_alt + Qt::Key_R));
   init (tr ("Uppercase Selection"), "editor_edit:upper_case",
         QKeySequence (ctrl + Qt::Key_U));
   init (tr ("Lowercase Selection"), "editor_edit:lower_case",

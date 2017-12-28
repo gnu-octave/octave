@@ -169,7 +169,7 @@ signals:
   void fetab_next_breakpoint (const QWidget *ID);
   void fetab_previous_breakpoint (const QWidget *ID);
   void fetab_remove_all_breakpoints (const QWidget *ID);
-  void fetab_comment_selected_text (const QWidget *ID);
+  void fetab_comment_selected_text (const QWidget *ID, bool);
   void fetab_uncomment_selected_text (const QWidget *ID);
   void fetab_indent_selected_text (const QWidget *ID);
   void fetab_unindent_selected_text (const QWidget *ID);
@@ -247,6 +247,7 @@ public slots:
 
   void request_comment_selected_text (bool);
   void request_uncomment_selected_text (bool);
+  void request_comment_var_selected_text (bool);
 
   void request_upper_case (bool);
   void request_lower_case (bool);
@@ -376,6 +377,7 @@ private:
   QAction *m_upper_case_action;
   QAction *m_lower_case_action;
   QAction *m_comment_selection_action;
+  QAction *m_comment_var_selection_action;
   QAction *m_uncomment_selection_action;
   QAction *m_indent_selection_action;
   QAction *m_unindent_selection_action;

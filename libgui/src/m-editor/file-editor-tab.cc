@@ -1172,12 +1172,12 @@ file_editor_tab::scintilla_command (const QWidget *ID, unsigned int sci_msg)
 }
 
 void
-file_editor_tab::comment_selected_text (const QWidget *ID)
+file_editor_tab::comment_selected_text (const QWidget *ID, bool input_str)
 {
   if (ID != this)
     return;
 
-  do_comment_selected_text (true);
+  do_comment_selected_text (true, input_str);
 }
 
 void
@@ -1460,16 +1460,26 @@ file_editor_tab::do_smart_indent_line_or_selected_text (void)
 }
 
 void
-file_editor_tab::do_comment_selected_text (bool comment)
+file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
 {
-  QStringList comment_str = _edit_area->comment_string (comment);
   QRegExp rxc;
   QString ws = "^([ \\t]*)";
+  QStringList comment_str = _edit_area->comment_string (comment);
+  QString used_comment_str = comment_str.at (0);
 
   if (comment)
     {
-      // Commenting (only one string possible)
-      rxc = QRegExp (ws + comment_str.at (0));
+      if (input_str)
+        {
+          bool ok;
+
+          used_comment_str = QInputDialog::getText (
+              this, tr ("Comment selected text"), tr ("Comment string to use:\n"),
+              QLineEdit::Normal, comment_str.at (0), &ok);
+
+          if ((! ok) || used_comment_str.isEmpty ())
+            used_comment_str = comment_str.at (0);  // No input, use preference
+        }
     }
   else
     {
@@ -1526,7 +1536,7 @@ file_editor_tab::do_comment_selected_text (bool comment)
         {
           if (comment)
             {
-              _edit_area->insertAt (comment_str.at (0), i, 0);
+              _edit_area->insertAt (used_comment_str, i, 0);
             }
           else
             {
@@ -1573,7 +1583,7 @@ file_editor_tab::do_comment_selected_text (bool comment)
       int cpline, col;
       _edit_area->getCursorPosition (&cpline, &col);
       if (comment)
-        _edit_area->insertAt (comment_str.at (0), cpline, 0);
+        _edit_area->insertAt (used_comment_str, cpline, 0);
       else
         {
           QString line (_edit_area->text (cpline));

@@ -261,6 +261,7 @@ file_editor::check_actions (void)
 
   m_comment_selection_action->setEnabled (have_tabs);
   m_uncomment_selection_action->setEnabled (have_tabs);
+  m_comment_var_selection_action->setEnabled (have_tabs);
   m_indent_selection_action->setEnabled (have_tabs);
   m_unindent_selection_action->setEnabled (have_tabs);
   m_smart_indent_line_or_selection_action->setEnabled (have_tabs);
@@ -763,13 +764,19 @@ file_editor::request_transpose_line (bool)
 void
 file_editor::request_comment_selected_text (bool)
 {
-  emit fetab_comment_selected_text (m_tab_widget->currentWidget ());
+  emit fetab_comment_selected_text (m_tab_widget->currentWidget (), false);
 }
 
 void
 file_editor::request_uncomment_selected_text (bool)
 {
   emit fetab_uncomment_selected_text (m_tab_widget->currentWidget ());
+}
+
+void
+file_editor::request_comment_var_selected_text (bool)
+{
+  emit fetab_comment_selected_text (m_tab_widget->currentWidget (), true);
 }
 
 // slots for Edit->Format actions
@@ -1211,6 +1218,7 @@ file_editor::set_shortcuts (void)
   shortcut_manager::set_shortcut (m_transpose_line_action, "editor_edit:transpose_line");
   shortcut_manager::set_shortcut (m_comment_selection_action, "editor_edit:comment_selection");
   shortcut_manager::set_shortcut (m_uncomment_selection_action, "editor_edit:uncomment_selection");
+  shortcut_manager::set_shortcut (m_comment_var_selection_action, "editor_edit:comment_var_selection");
 
   shortcut_manager::set_shortcut (m_upper_case_action, "editor_edit:upper_case");
   shortcut_manager::set_shortcut (m_lower_case_action, "editor_edit:lower_case");
@@ -1848,6 +1856,8 @@ file_editor::construct (void)
           tr ("&Comment"), SLOT (request_comment_selected_text (bool)));
   m_uncomment_selection_action = add_action (m_edit_fmt_menu, QIcon (),
           tr ("&Uncomment"), SLOT (request_uncomment_selected_text (bool)));
+  m_comment_var_selection_action = add_action (m_edit_fmt_menu, QIcon (),
+          tr ("Comment (Choosing String)"), SLOT (request_comment_var_selected_text (bool)));
 
   m_edit_fmt_menu->addSeparator ();
 
@@ -2219,8 +2229,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
                                                   unsigned int)),
            f, SLOT (scintilla_command (const QWidget *, unsigned int)));
 
-  connect (this, SIGNAL (fetab_comment_selected_text (const QWidget*)),
-           f, SLOT (comment_selected_text (const QWidget*)));
+  connect (this, SIGNAL (fetab_comment_selected_text (const QWidget*, bool)),
+           f, SLOT (comment_selected_text (const QWidget*, bool)));
 
   connect (this, SIGNAL (fetab_uncomment_selected_text (const QWidget*)),
            f, SLOT (uncomment_selected_text (const QWidget*)));

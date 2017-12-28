@@ -103,7 +103,7 @@ public slots:
 
   void scintilla_command (const QWidget *, unsigned int);
 
-  void comment_selected_text (const QWidget *ID);
+  void comment_selected_text (const QWidget *ID, bool input_str);
   void uncomment_selected_text (const QWidget *ID);
 
   void indent_selected_text (const QWidget *ID);
@@ -249,7 +249,7 @@ private:
 
   void show_dialog (QDialog *dlg, bool modal);
   int check_file_modified ();
-  void do_comment_selected_text (bool comment);
+  void do_comment_selected_text (bool comment, bool input_str = false);
   void do_indent_selected_text (bool indent);
   void do_smart_indent_line_or_selected_text (void);
 

@@ -522,8 +522,8 @@ DEFMETHOD (exist, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{c} =} exist (@var{name})
 @deftypefnx {} {@var{c} =} exist (@var{name}, @var{type})
-Check for the existence of @var{name} as a variable, function, file,
-directory, or class.
+Check for the existence of @var{name} as a variable, function, file, directory,
+or class.
 
 The return code @var{c} is one of
 
@@ -532,9 +532,8 @@ The return code @var{c} is one of
 @var{name} is a variable.
 
 @item 2
-@var{name} is an absolute filename, an ordinary file in Octave's
-@code{path}, or (after appending @samp{.m}) a function file in Octave's
-@code{path}.
+@var{name} is an absolute filename, an ordinary file in Octave's @code{path},
+or (after appending @samp{.m}) a function file in Octave's @code{path}.
 
 @item 3
 @var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.
@@ -545,6 +544,9 @@ The return code @var{c} is one of
 @item 7
 @var{name} is a directory.
 
+@item 8
+@var{name} is a class.  (Note: not currently implemented)
+
 @item 103
 @var{name} is a function not associated with a file (entered on the command
 line).
@@ -553,8 +555,8 @@ line).
 @var{name} does not exist.
 @end table
 
-If the optional argument @var{type} is supplied, check only for symbols of
-the specified type.  Valid types are
+If the optional argument @var{type} is supplied, check only for symbols of the
+specified type.  Valid types are
 
 @table @asis
 @item @qcode{"var"}
@@ -579,14 +581,13 @@ If no type is given, and there are multiple possible matches for name,
 variable, built-in function, oct-file, directory, file, class.
 
 @code{exist} returns 2 if a regular file called @var{name} is present in
-Octave's search path.  If you want information about other types of files
-not on the search path you should use some combination of the functions
-@code{file_in_path} and @code{stat} instead.
+Octave's search path.  For information about other types of files not on the
+search path use some combination of the functions @code{file_in_path} and
+@code{stat} instead.
 
 Programming Note: If @var{name} is implemented by a buggy .oct/.mex file,
-calling @var{exist} may cause Octave to crash.  To maintain high
-performance, Octave trusts .oct/.mex files instead of @nospell{sandboxing}
-them.
+calling @var{exist} may cause Octave to crash.  To maintain high performance,
+Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 
 @seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}
 @end deftypefn */)

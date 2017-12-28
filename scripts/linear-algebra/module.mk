@@ -9,6 +9,7 @@ scripts_linear_algebra_FCN_FILES = \
   %reldir%/cross.m \
   %reldir%/duplication_matrix.m \
   %reldir%/expm.m \
+  %reldir%/gls.m \
   %reldir%/housh.m \
   %reldir%/isbanded.m \
   %reldir%/isdefinite.m \
@@ -19,10 +20,12 @@ scripts_linear_algebra_FCN_FILES = \
   %reldir%/istriu.m \
   %reldir%/krylov.m \
   %reldir%/linsolve.m \
+  %reldir%/lscov.m \
   %reldir%/logm.m \
   %reldir%/normest.m \
   %reldir%/normest1.m \
   %reldir%/null.m \
+  %reldir%/ols.m \
   %reldir%/orth.m \
   %reldir%/planerot.m \
   %reldir%/qzhess.m \

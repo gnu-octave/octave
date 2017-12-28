@@ -7,19 +7,16 @@ FCN_FILE_DIRS += scripts/statistics/base
   %reldir%/corrcoef.m \
   %reldir%/cov.m \
   %reldir%/crosstab.m \
-  %reldir%/gls.m \
   %reldir%/histc.m \
   %reldir%/iqr.m \
   %reldir%/kendall.m \
   %reldir%/kurtosis.m \
   %reldir%/logit.m \
-  %reldir%/lscov.m \
   %reldir%/mean.m \
   %reldir%/meansq.m \
   %reldir%/median.m \
   %reldir%/mode.m \
   %reldir%/moment.m \
-  %reldir%/ols.m \
   %reldir%/ppplot.m \
   %reldir%/prctile.m \
   %reldir%/probit.m \

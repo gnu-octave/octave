@@ -149,17 +149,17 @@ function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
     if (rgrs > 0)
       printf ("\n%71s %3d", "REGRESSION", rgrs);
     endif
-    if (sk > 0)
-      printf ("\n%71s %3d", "(missing feature) SKIP ", sk);
-    endif
-    if (rtsk > 0)
-      printf ("\n%71s %3d", "(run-time condition) SKIP ", rtsk);
-    endif
     if (xb > 0)
       printf ("\n%71s %3d", "(reported bug) XFAIL", xb);
     endif
     if (xf > 0)
       printf ("\n%71s %3d", "(expected failure) XFAIL", xf);
+    endif
+    if (sk > 0)
+      printf ("\n%71s %3d", "(missing feature) SKIP", sk);
+    endif
+    if (rtsk > 0)
+      printf ("\n%71s %3d", "(run-time condition) SKIP", rtsk);
     endif
   endif
   puts ("\n");

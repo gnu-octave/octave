@@ -86,23 +86,23 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       if (drgrs > 0)
         printf ("  %-30s %6d\n", "REGRESSION", drgrs);
       endif
-      if (dxf > 0)
-        printf ("  %-30s %6d\n", "XFAIL (expected failure)", dxf);
-      endif
       if (dxb > 0)
         printf ("  %-30s %6d\n", "XFAIL (reported bug)", dxb);
       endif
+      if (dxf > 0)
+        printf ("  %-30s %6d\n", "XFAIL (expected failure)", dxf);
+      endif
       if (dsk > 0)
-        printf ("  %-30s %6d\n", "SKIPPED (feature)", dsk);
+        printf ("  %-30s %6d\n", "SKIP (missing feature)", dsk);
       endif
       if (drtsk > 0)
-        printf ("  %-30s %6d\n", "SKIPPED (run-time condition)", drtsk);
+        printf ("  %-30s %6d\n", "SKIP (run-time condition)", drtsk);
       endif
       puts ("\n");
       printf ("See the file %s for additional details.\n", logfile);
       if (dxf > 0 || dxb > 0)
         puts ("\n");
-        puts ("XFAIL items are expected failures or known bugs.\n");
+        puts ("XFAIL items are known bugs or expected failures.\n");
         puts ("Bug report numbers may be found in the log file:\n");
         puts (logfile);
         puts ("\nPlease help improve Octave by contributing fixes for them.\n");

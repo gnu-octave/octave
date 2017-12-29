@@ -46,7 +46,7 @@
 ##
 ## @example
 ## @group
-## mag = sqrt (nx.^2 + ny.^2 + nz.^2);
+## len = sqrt (nx.^2 + ny.^2 + nz.^2);
 ## nx ./= len;  ny ./= len;  nz ./= len;
 ## @end group
 ## @end example

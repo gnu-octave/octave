@@ -35,6 +35,7 @@ const int oct_comment_str_old_d = 0;
 
 const QString oct_comment_str ("editor/oct_comment_str");
 const QString oct_uncomment_str ("editor/oct_uncomment_str");
+const QString oct_last_comment_str ("editor/oct_last_comment_str");
 const QStringList oct_comment_strings (QStringList () << "##" << "#" << "%"<< "%%" << "%!");
 const int oct_comment_strings_count = 5;
 const int oct_comment_str_d = 0;

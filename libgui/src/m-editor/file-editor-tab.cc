@@ -80,6 +80,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "version.h"
+#include "octave-settings.h"
 
 bool file_editor_tab::_cancelled = false;
 
@@ -1472,13 +1473,18 @@ file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
       if (input_str)
         {
           bool ok;
+          QSettings *settings = resource_manager::get_settings ();
 
           used_comment_str = QInputDialog::getText (
-              this, tr ("Comment selected text"), tr ("Comment string to use:\n"),
-              QLineEdit::Normal, comment_str.at (0), &ok);
+              this, tr ("Comment selected text"),
+              tr ("Comment string to use:\n"), QLineEdit::Normal,
+              settings->value (oct_last_comment_str, comment_str.at (0)).toString (),
+              &ok);
 
           if ((! ok) || used_comment_str.isEmpty ())
-            used_comment_str = comment_str.at (0);  // No input, use preference
+            return;  // No input, do nothing
+          else
+            settings->setValue (oct_last_comment_str, used_comment_str);  // Store last
         }
     }
   else

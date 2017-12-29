@@ -3,8 +3,6 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__publish_html_output__.m \
-  %reldir%/private/__publish_latex_output__.m \
   %reldir%/private/__splinen__.m
 
 %canon_reldir%_FCN_FILES = \
@@ -30,15 +28,12 @@ FCN_FILE_DIRS += \
   %reldir%/deg2rad.m \
   %reldir%/del2.m \
   %reldir%/divergence.m \
-  %reldir%/fieldnames.m \
   %reldir%/flip.m \
   %reldir%/flipdim.m \
   %reldir%/fliplr.m \
   %reldir%/flipud.m \
-  %reldir%/grabcode.m \
   %reldir%/gradient.m \
   %reldir%/idivide.m \
-  %reldir%/inputParser.m \
   %reldir%/int2str.m \
   %reldir%/integral.m \
   %reldir%/integral2.m \
@@ -48,23 +43,15 @@ FCN_FILE_DIRS += \
   %reldir%/interp3.m \
   %reldir%/interpft.m \
   %reldir%/interpn.m \
-  %reldir%/isdir.m \
   %reldir%/isequal.m \
   %reldir%/isequaln.m \
-  %reldir%/loadobj.m \
   %reldir%/logspace.m \
-  %reldir%/methods.m \
-  %reldir%/nargchk.m \
-  %reldir%/narginchk.m \
-  %reldir%/nargoutchk.m \
   %reldir%/nextpow2.m \
-  %reldir%/nthargout.m \
   %reldir%/num2str.m \
   %reldir%/pol2cart.m \
   %reldir%/polyarea.m \
   %reldir%/postpad.m \
   %reldir%/prepad.m \
-  %reldir%/publish.m \
   %reldir%/quad2d.m \
   %reldir%/quadgk.m \
   %reldir%/quadl.m \
@@ -76,7 +63,6 @@ FCN_FILE_DIRS += \
   %reldir%/repmat.m \
   %reldir%/rot90.m \
   %reldir%/rotdim.m \
-  %reldir%/saveobj.m \
   %reldir%/shift.m \
   %reldir%/shiftdim.m \
   %reldir%/sortrows.m \
@@ -85,7 +71,6 @@ FCN_FILE_DIRS += \
   %reldir%/subsindex.m \
   %reldir%/trapz.m \
   %reldir%/triplequad.m \
-  %reldir%/validateattributes.m \
   %reldir%/xor.m
 
 %canon_reldir%dir = $(fcnfiledir)/general

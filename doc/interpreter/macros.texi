@@ -107,3 +107,6 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on

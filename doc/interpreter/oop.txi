@@ -81,6 +81,7 @@ Thus the polynomial can be represented by a vector
 a = [a0, a1, a2, @dots{}, an];
 @end example
 
+@opindex @@ class methods
 This is a sufficient specification to begin writing the constructor for the
 polynomial class.  All object oriented classes in Octave must be located in a
 directory that is the name of the class prepended with the @samp{@@} symbol.

@@ -383,6 +383,26 @@ Element by element logical 'or' operator.
 Logical 'or' (with short-circuit evaluation) operator.
 @seealso{|, or}
 @end deftypefn
+@
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} @@
+Return handle to a function.
+
+Example:
+
+@example
+@group
+f = @@plus;
+f (2, 2)
+@result{}  4
+@end group
+@end example
+
+(Note: @@ also finds use in creating classes.  See manual chapter titled
+Object Oriented Programming for detailed description.)
+@seealso{function, functions, func2str, str2func}
+@end deftypefn
 break
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-

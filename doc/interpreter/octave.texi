@@ -359,6 +359,7 @@ Calling Functions
 
 * Call by Value::
 * Recursion::
+* Access via Handle::
 
 Boolean Expressions
 

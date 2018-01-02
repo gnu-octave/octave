@@ -388,6 +388,7 @@ expressions.  See also @ref{Index Expressions}, and @ref{Assignment Ops}.
 @menu
 * Call by Value::
 * Recursion::
+* Access via Handle::
 @end menu
 
 @node Call by Value
@@ -483,6 +484,7 @@ endfunction
 @end group
 @end example
 
+@noindent
 This function is recursive because it calls itself directly.  It
 eventually terminates because each time it calls itself, it uses an
 argument that is one less than was used for the previous call.  Once the
@@ -493,6 +495,52 @@ The built-in variable @code{max_recursion_depth} specifies a limit to
 the recursion depth and prevents Octave from recursing infinitely.
 
 @DOCSTRING(max_recursion_depth)
+
+@node Access via Handle
+@subsection Access via Handle
+@cindex function handle
+@cindex indirect function call
+
+@opindex @@ function handle
+A function may be abstracted and referenced via a function handle acquired
+using the special operator @samp{@@}.  For example,
+
+@example
+@group
+f = @@plus;
+f (2, 2)
+@result{}  4
+@end group
+@end example
+
+@noindent
+is equivalent to calling @code{plus (2, 2)} directly.  Beyond abstraction for
+general programming, function handles find use in callback methods for figures
+and graphics by adding listeners to properties or assigning pre-existing
+actions, such as in the following example:
+
+@cindex figure deletefcn
+@example
+@group
+function mydeletefcn (h, ~, msg)
+  printf (msg);
+endfunction
+sombrero;
+set (gcf, "deletefcn", @{@@mydeletefcn, "Bye!\n"@});
+close;
+@end group
+@end example
+
+@noindent
+The above will print "Bye!" to the terminal upon the closing (deleting) of the
+figure.  There are many graphics property actions for which a callback function
+may be assigned, including, @code{buttondownfcn}, @code{windowscrollwheelfcn},
+@code{createfcn}, @code{deletefcn}, @code{keypressfcn}, etc.
+
+Note that the @samp{@@} character also plays a role in defining class
+functions, i.e., methods, but not as a syntactical element.  Rather it begins a
+directory name containing methods for a class that shares the directory name
+sans the @samp{@@} character.  See @ref{Object Oriented Programming}.
 
 @node Arithmetic Ops
 @section Arithmetic Operators

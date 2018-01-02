@@ -80,10 +80,10 @@
 ## The optional return value @var{h} is a graphics handle to the created
 ## colorbar object.
 ##
-## Implementation Note: A colorbar is created as an additional axes to the
-## current figure with the @qcode{"tag"} property set to @qcode{"colorbar"}.
-## The created axes object has the extra property @qcode{"location"} which
-## controls the positioning of the colorbar.
+## Implementation Note: A colorbar is created as an additional axes object
+## with the @qcode{"tag"} property set to @qcode{"colorbar"}.  The created
+## object has the extra property @qcode{"location"} which controls the
+## positioning of the colorbar.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -98,8 +98,9 @@ function h = colorbar (varargin)
     hax = [];
   endif
   loc = "";
+  cbpos = [];
   args = {};
-  deleting = false;
+  delete_cbar = false;
 
   i = 1;
   while (i <= nargin)
@@ -122,14 +123,13 @@ function h = colorbar (varargin)
         endif
         loc = tolower (varargin{i++});
 
-      case {"delete", "hide", "off", "none"}
-        deleting = true;
+      case {"delete", "hide", "off"}
+        delete_cbar = true;
 
       case "peer"
         if (i > nargin)
           error ('colorbar: missing axes handle after "peer"');
         endif
-
         hax = varargin{i++};
         if (! isscalar (hax) || ! isaxes (hax))
           error ('colorbar: invalid axes handle following "peer"');
@@ -142,68 +142,111 @@ function h = colorbar (varargin)
         endif
         args{end+1} = arg;
         args{end+1} = varargin{i++};
+        if (strcmpi (arg, "position"))
+          loc = "manual";
+          cbpos = args{end};
+        endif
 
     endswitch
   endwhile
 
-  ## Handle changes to existing colorbar
-  if (! isempty (hcb))
-    if (deleting)
-      delete (hcb);
-      if (nargout > 0)
-        h = [];
-      endif
-      return;
-    else
-      ## FIXME: No listener on location property so have to re-create
-      ##        colorbar whenever an option changes.
-      ##        re-instate this code if listener is developed.
-      ## if (! isempty (loc))
-      ##   set (hcb, "location", loc);
-      ## endif
-      ## if (! isempty (args))
-      ##   set (hcb, args{:});
-      ## endif
-      hax = get (ancestor (hcb, "figure"), "currrentaxes");
-    endif
-  endif
-
   if (isempty (loc))
     loc = "eastoutside";
-  endif
-  if (isempty (hax))
-    hax = gca ();
-  endif
-
-  ## Remove existing colorbar
-  hpar = ancestor (hax, "figure");
-  hcb = findall (hpar, "tag", "colorbar", "type", "axes", "axes", hax);
-  if (! isempty (hcb))
-    delete (hcb);
+  else
+    ## Validate location
+    if (! any (strcmp (loc, {"eastoutside"; "east"; "westoutside"; "west";
+                             "northoutside"; "north"; "southoutside"; "south";
+                             "manual"})))
+      error ("colorbar: unrecognized colorbar location");
+    endif
   endif
 
-  if (! deleting)
-    ## Create a colorbar
-
-    ## Special handling for plotyy which has two axes objects
-    if (isprop (hax, "__plotyy_axes__"))
-      hyy = get (hax, "__plotyy_axes__");
-
-      ## Use axis which is appropriate for legend location.
-      ## necessary for plotyy figures where there are two axes.
-      if (strfind (loc, "east"))
-        hax = hyy(2);
-      else
-        hax = hyy(1);
+  ## Handle deletion case early and return
+  if (delete_cbar)
+    if (isempty (hcb))
+      if (isempty (hax))
+        hax = get (get (0, "currentfigure"), "currentaxes");
       endif
+      try
+        hcb = get (hax, "__colorbar_handle__");
+      end_try_catch
     endif
 
+    delete (hcb);
+
+    if (nargout > 0)
+      h = [];
+    endif
+    return;
+  endif
+
+  ## Handle changes to specified colorbar
+  if (! isempty (hcb))
+    ## FIXME: No listener on location property so have to re-create
+    ##        colorbar whenever an option changes.
+    ##        re-instate this code if listener is developed.
+    ## if (! isempty (loc))
+    ##   set (hcb, "location", loc);
+    ## endif
+    ## if (! isempty (args))
+    ##   set (hcb, args{:});
+    ## endif
+    hax = get (hcb, "__axes_handle__");
+  else
+    ## Find any colorbar associated with this axes
+    if (isempty (hax))
+      hax = gca ();
+    endif
+    try
+      hcb = get (hax, "__colorbar_handle__");
+    end_try_catch
+  endif
+
+  ## New or existing colorbar?
+  new_colorbar = isempty (hcb);
+
+  if (! new_colorbar)
+    ## Restore original axes position before applying new colorbar settings
+    orig_props = get (hcb, "deletefcn"){3};
+    units = get (hax, "units");
+    set (hax, "units", orig_props.units);
+    set (hax, "position", orig_props.position,
+              "outerposition", orig_props.outerposition,
+              "activepositionproperty", orig_props.activepositionproperty);
+    set (hax, "units", units);
+  endif
+
+  ## Create a colorbar
+
+  ## Special handling for plotyy which has two axes objects
+  if (isprop (hax, "__plotyy_axes__"))
+    hyy = get (hax, "__plotyy_axes__");
+
+    ## Use axis which is appropriate for legend location;
+    ## Necessary for plotyy figures where there are two axes.
+    if (strfind (loc, "east"))
+      hax = hyy(2);
+    else
+      hax = hyy(1);
+    endif
+  endif
+
+  ## Preamble code to restore figure and axes after colorbar creation
+  hfig = ancestor (hax, "figure");
+  origfig = get (0, "currentfigure");
+  if (origfig != hfig)
+    set (0, "currentfigure", hfig);
+  else
+    origfig = [];
+  endif
+  origaxes = get (hfig, "currentaxes");
+  unwind_protect
     ## FIXME: Matlab does not require the "position" property to be active.
     ##        Is there a way to determine the plotbox position for the
-    ##        gnuplot graphics toolkit with the outerposition is active?
+    ##        gnuplot graphics toolkit when the outerposition is active?
     set (hax, "activepositionproperty", "position");
     props = get (hax);
-    props.__cbar_hax__ = hax;
+    props.__axes_handle__ = hax;
     position = props.position;
 
     clen = rows (get (hax, "colormap"));
@@ -212,70 +255,126 @@ function h = colorbar (varargin)
     cmin = cext(1) + cdiff;
     cmax = cext(2) - cdiff;
 
-    [pos, cpos, vertical, mirror] = __position_colorbox__ (loc, props, hpar);
-    set (hax, "position", pos);
+    hpar = get (hax, "parent");
 
-    hcb = __go_axes__ (hpar, "tag", "colorbar",
-                             "activepositionproperty", "position",
-                             "position", cpos,
-                             "box", "on");
-    addproperty ("location", hcb, "radio",
-                 "eastoutside|east|westoutside|west|northoutside|north|southoutside|south|manual",
-                 loc);
-    addproperty ("axes", hcb, "handle", hax);
+    if (isempty (cbpos))
+      ## auto positioning
+      ## FIXME: Should handle user-specified "AxisLocation" property (mirror).
+      [axpos, cbpos, vertical, mirror] = ...
+        calc_cbar_position (loc, props, ancestor (hpar, "figure"));
+      set (hax, "position", axpos);
+    endif
 
-    if (vertical)
+    ## Create colorbar axes if necessary
+    if (new_colorbar)
+      hcb = axes ("parent", hpar, "tag", "colorbar",
+                  "activepositionproperty", "position", "position", cbpos,
+                  "box", "on", "xdir", "normal", "ydir", "normal");
+
+      addproperty ("axislocation", hcb, "radio", "{out}|in");
+      addproperty ("axislocationmode", hcb, "radio", "{auto}|manual");
+      addproperty ("label", hcb, "handle", get (hcb, "ylabel"));
+      addproperty ("direction", hcb, "AxesYdir", "normal");
+      addproperty ("limits", hcb, "AxesYlim");
+      addproperty ("limitsmode", hcb, "AxesYlimMode", "auto");
+      addproperty ("location", hcb, "radio",
+                   "{eastoutside}|east|westoutside|west|northoutside|north|southoutside|south|manual",
+                   loc);
+      addproperty ("tickdirection", hcb, "AxesTickdir", "in");
+      ## FIXME: Matlab uses just a scalar for ticklength, but axes already
+      ##        has a 2-element ticklength property which cannot be overridden.
+      ##addproperty ("ticklength", hcb, "double", 0.01);
+
+      ## Add a pointer from colorbar directly to axes
+      addproperty ("__axes_handle__", hcb, "handle", hax);
+      ## Also add a pointer back from axes to this colorbar
+      try
+        addproperty ("__colorbar_handle__", hax, "handle", hcb);
+      catch
+        set (hax, "__colorbar_handle__", hcb);
+      end_try_catch
+      addproperty ("__vertical__", hcb, "boolean", vertical);
       ## Use low-level form to avoid calling newplot which changes axes
       hi = image (hcb, "xdata", [0,1], "ydata", [cmin, cmax],
                        "cdata", [1 : clen]');
-      if (mirror)
-        set (hcb, "xtick", [], "xdir", "normal", "ydir", "normal",
-                  "ylim", cext, "ylimmode", "manual",
-                  "yaxislocation", "right", "layer", "top", args{:});
-      else
-        set (hcb, "xtick", [], "xdir", "normal", "ydir", "normal",
-                  "ylim", cext, "ylimmode", "manual",
-                  "yaxislocation", "left", "layer", "top", args{:});
-      endif
     else
-      hi = image (hcb, "xdata", [cmin, cmax], "ydata", [0,1],
-                       "cdata", [1 : clen]);
-      if (mirror)
-        set (hcb, "ytick", [], "xdir", "normal", "ydir", "normal",
-                  "xlim", cext, "xlimmode", "manual",
-                  "xaxislocation", "top", "layer", "top", args{:});
-      else
-        set (hcb, "ytick", [], "xdir", "normal", "ydir", "normal",
-                  "xlim", cext, "xlimmode", "manual",
-                  "xaxislocation", "bottom", "layer", "top", args{:});
-      endif
+      ## Change settings of existing colorbar
+      set (hcb, "parent", hpar, "position", cbpos, "location", loc);
+      ## Fetch image handle from existing colorbar
+      hi = get (hcb, "children");
     endif
-
-    ## Dummy object placed on axes to delete colorbar when axes is deleted.
-    ctext = text (0, 0, "", "tag", "colorbar",
-                  "visible", "off", "handlevisibility", "off",
-                  "xliminclude", "off", "yliminclude", "off",
-                  "zliminclude", "off",
-                  "deletefcn", {@cb_axes_deleted, hax, hcb});
-
-    set (hcb, "deletefcn", {@cb_restore_axes, hax, props});
 
     if (vertical)
-      addlistener (hcb, "yscale", {@cb_error_on_logscale, "yscale"});
+      set (hi, "xdata", [0,1], "ydata", [cmin, cmax], "cdata", [1 : clen]');
+      if (mirror)
+        set (hcb, "xtick", [], "xlim", [-0.5, 1.5],
+                  "ytickmode", "auto", "ylim", cext, 
+                  "yaxislocation", "right", "label", get (hcb, "ylabel"),
+                  "__vertical__", vertical,
+                  "layer", "top", args{:});
+      else
+        set (hcb, "xtick", [], "xlim", [-0.5, 1.5],
+                  "ytickmode", "auto", "ylim", cext, 
+                  "yaxislocation", "left", "label", get (hcb, "ylabel"),
+                  "__vertical__", vertical,
+                  "layer", "top", args{:});
+      endif
     else
-      addlistener (hcb, "xscale", {@cb_error_on_logscale, "xscale"});
+      set (hi, "xdata", [cmin, cmax], "ydata", [0,1], "cdata", [1 : clen]);
+      if (mirror)
+        set (hcb, "ytick", [], "ylim", [-0.5, 1.5],
+                  "xtickmode", "auto", "xlim", cext, 
+                  "xaxislocation", "top", "label", get (hcb, "xlabel"),
+                  "__vertical__", vertical,
+                  "layer", "top", args{:});
+      else
+        set (hcb, "ytick", [], "ylim", [-0.5, 1.5],
+                  "xtickmode", "auto", "xlim", cext, 
+                  "xaxislocation", "bottom", "label", get (hcb, "xlabel"),
+                  "__vertical__", vertical,
+                  "layer", "top", args{:});
+      endif
     endif
-    addlistener (hpar, "colormap", {@cb_colormap, hi, vertical, clen});
-    ## FIXME: listener on axes colormap does not work yet.
-    addlistener (hax, "colormap", {@cb_colormap, hi, vertical, clen});
-    addlistener (hax, "clim", {@cb_clim, hi, vertical});
-    addlistener (hax, "dataaspectratio", {@cb_colorbar_axis, hcb, props});
-    addlistener (hax, "dataaspectratiomode", {@cb_colorbar_axis, hcb, props});
-    addlistener (hax, "plotboxaspectratio", {@cb_colorbar_axis, hcb, props});
-    addlistener (hax, "plotboxaspectratiomode",{@cb_colorbar_axis, hcb, props});
-    addlistener (hax, "position", {@cb_colorbar_axis, hcb, props});
 
-  endif
+    ## Add listeners, but only to a new colorbar
+    if (new_colorbar)
+      ## Dummy object placed on axes to delete colorbar when axes is deleted.
+      ctext = text (0, 0, "", "tag", "colorbar", "parent", hax,
+                    "visible", "off", "handlevisibility", "off",
+                    "xliminclude", "off", "yliminclude", "off",
+                    "zliminclude", "off",
+                    "deletefcn", {@cb_axes_deleted, hax, hcb});
+
+      set (hcb, "deletefcn", {@cb_restore_axes, hax, props});
+
+      addlistener (hcb, "xscale", {@cb_error_on_logscale, "xscale"});
+      addlistener (hcb, "yscale", {@cb_error_on_logscale, "yscale"});
+      addlistener (hcb, "tickdirection", @cb_tickdirection);
+
+      if (strcmp (get (hpar, "type"), "figure"))
+        addlistener (hpar, "colormap", {@cb_colormap, ...
+                                        hcb, hi, clen});
+      endif
+      ## FIXME: listener on axes colormap does not work yet.
+      addlistener (hax, "colormap", {@cb_colormap, hcb, hi, clen});
+      addlistener (hax, "clim", {@cb_clim, hcb, hi});
+      addlistener (hax, "dataaspectratio", {@cb_colorbar_axis, hcb, props});
+      addlistener (hax, "dataaspectratiomode", {@cb_colorbar_axis, ...
+                                                hcb, props});
+      addlistener (hax, "plotboxaspectratio", {@cb_colorbar_axis, hcb, props});
+      addlistener (hax, "plotboxaspectratiomode", {@cb_colorbar_axis, ...
+                                                   hcb, props});
+      addlistener (hax, "position", {@cb_colorbar_axis, hcb, props});
+
+      ## FIXME: Need listeners for colorbar: axislocation, axislocationmode,
+      ##        direction, limits, limitsmode, location.
+    endif
+  unwind_protect_cleanup
+    set (hfig, "currentaxes", origaxes);
+    if (! isempty (origfig))
+      set (0, "currentfigure", origfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
     h = hcb;
@@ -300,6 +399,11 @@ function cb_error_on_logscale (hcb, ~, scale)
     set (hcb, scale, "linear");
     error ("colorbar: Only linear colorbars are possible");
   endif
+endfunction
+
+## Colorbar "TickDirection" callback which just maps to axes "TickDir"
+function cb_tickdirection (hcb, ~)
+  set (hcb, "tickdir", get (hcb, "tickdirection"));
 endfunction
 
 ## Restore position of axes object when colorbar is deleted.
@@ -328,12 +432,15 @@ function cb_restore_axes (hcb, ~, hax, orig_props)
               "outerposition", orig_props.outerposition,
               "activepositionproperty", orig_props.activepositionproperty);
     set (hax, "units", units);
+
+    ## Nullify colorbar link (can't delete properties yet)
+    set (hax, "__colorbar_handle__", []);
   endif
 
 endfunction
 
 ## Update colorbar when clim has changed
-function cb_clim (hax, ~, hi, vert)
+function cb_clim (hax, ~, hcb, hi)
 
   if (isaxes (hax))
     clen = rows (get (hax, "colormap"));
@@ -342,33 +449,32 @@ function cb_clim (hax, ~, hi, vert)
     cmin = cext(1) + cdiff;
     cmax = cext(2) - cdiff;
 
-    hiax = get (hi, "parent");
-    if (vert)
+    if (strcmp (get (hcb, "__vertical__"), "on"))
       set (hi, "ydata", [cmin, cmax]);
-      set (hiax, "ylim", cext);
+      set (hcb, "ylim", cext);
     else
       set (hi, "xdata", [cmin, cmax]);
-      set (hiax, "xlim", cext);
+      set (hcb, "xlim", cext);
     endif
   endif
 
 endfunction
 
 ## Update colorbar when changes to axes or figure colormap have occurred.
-function cb_colormap (h, d, hi, vert, init_sz)
+function cb_colormap (h, d, hcb, hi, init_sz)
   persistent sz = init_sz;
 
   if (ishghandle (h))
     clen = rows (get (h, "colormap"));
     if (clen != sz)
-      if (vert)
+      if (strcmp (get (hcb, "__vertical__"), "on"))
         set (hi, "cdata", [1:clen]');
       else
         set (hi, "cdata", [1:clen]);
       endif
       sz = clen;
       ## Also update limits on colorbar axes or there will be white gaps
-      cb_clim (get (hi, "parent"), d, hi, vert);
+      cb_clim (hcb, d, hcb, hi);
     endif
   endif
 
@@ -379,52 +485,40 @@ function cb_colorbar_axis (hax, ~, hcb, orig_props)
 
   if (isaxes (hcb))
     loc = get (hcb, "location");
-    props = get (hax);
-    props.__cbar_hax__ = hax;
-    props.position = orig_props.position;
-    props.outerposition = orig_props.outerposition;
-    [pos, cpos, vertical, mirror] = ...
-       __position_colorbox__ (loc, props, ancestor (hax, "figure"));
-
-    if (vertical)
-      if (mirror)
-        set (hcb, "xtick", [], "xdir", "normal", "ydir", "normal",
-                  "yaxislocation", "right", "position", cpos);
-      else
-        set (hcb, "xtick", [], "xdir", "normal", "ydir", "normal",
-                  "yaxislocation", "left", "position", cpos);
-      endif
-    else
-      if (mirror)
-        set (hcb, "ytick", [], "xdir", "normal", "ydir", "normal",
-                  "xaxislocation", "top", "position", cpos);
-      else
-        set (hcb, "ytick", [], "xdir", "normal", "ydir", "normal",
-                  "xaxislocation", "bottom", "position", cpos);
-      endif
+    if (strcmp (loc, "manual"))
+      return;  # Use user-specified positioning
     endif
 
+    props = get (hax);
+    props.__axes_handle__ = hax;
+    props.position = orig_props.position;
+    props.outerposition = orig_props.outerposition;
+    [axpos, cbpos, vertical, mirror] = ...
+       calc_cbar_position (loc, props, ancestor (hax, "figure"));
+
+    set (hcb, "position", cbpos);
   endif
 
 endfunction
 
 ## FIXME: The algorithm for positioning in legend.m is much more sophisticated
 ##        and should be borrowed for colorbar.  One problem is that colorbar
-##        positioning does not take in to account multi-line axes labels
-function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, props, cf)
+##        positioning does not take in to account multi-line axes labels.
+## FIXME: Should handle user-specified "AxisLocation" property (mirror var).
+function [axpos, cbpos, vertical, mirr] = calc_cbar_position (loc, props, cf)
 
   ## This will always represent the position prior to adding the colorbar.
-  pos = props.position;
-  sz = pos(3:4);
+  axpos = props.position;
+  sz = axpos(3:4);
 
   if (strcmp (props.plotboxaspectratiomode, "manual")
       || strcmp (props.dataaspectratiomode, "manual"))
-    if (isempty (strfind (cbox, "outside")))
+    if (isempty (strfind (loc, "outside")))
       scale = 1.0;
     else
       scale = 0.8;
     endif
-    if (isempty (strfind (cbox, "east")) && isempty (strfind (cbox, "west")))
+    if (isempty (strfind (loc, "east")) && isempty (strfind (loc, "west")))
       scale = [1, scale];
     else
       scale = [scale, 1];
@@ -441,62 +535,62 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, props, cf)
     off = 0.0;
   endif
 
-  switch (cbox)
+  switch (loc)
     case "northoutside"
-      origin = pos(1:2) + [0., 0.9] .* sz + [1, -1] .* off;
+      origin = axpos(1:2) + [0., 0.9] .* sz + [1, -1] .* off;
       sz .*= [1.0, 0.06];
-      pos(4) = 0.8 * pos(4);
+      axpos(4) = 0.8 * axpos(4);
       mirr = true;
       vertical = false;
     case "north"
-      origin = pos(1:2) + [0.05, 0.9] .* sz + [1, -1] .* off;
+      origin = axpos(1:2) + [0.05, 0.9] .* sz + [1, -1] .* off;
       sz .*= [1.0, 0.06] * 0.9;
       mirr = false;
       vertical = false;
     case "southoutside"
-      origin = pos(1:2) + off;
+      origin = axpos(1:2) + off;
       sz .*= [1.0, 0.06];
-      pos(2) = pos(2) + pos(4) * 0.2;
-      pos(4) = 0.8 * pos(4);
+      axpos(2) = axpos(2) + axpos(4) * 0.2;
+      axpos(4) = 0.8 * axpos(4);
       mirr = false;
       vertical = false;
     case "south"
-      origin = pos(1:2) + [0.05, 0.05] .* sz + off;
+      origin = axpos(1:2) + [0.05, 0.05] .* sz + off;
       sz .*= [1.0, 0.06] * 0.9;
       mirr = true;
       vertical = false;
     case "eastoutside"
-      origin = pos(1:2) + [0.9, 0] .* sz + [-1, 1] .* off;
+      origin = axpos(1:2) + [0.9, 0] .* sz + [-1, 1] .* off;
       sz .*= [0.06, 1.0];
-      pos(3) = 0.8 * pos(3);
+      axpos(3) = 0.8 * axpos(3);
       mirr = true;
       vertical = true;
     case "east"
-      origin = pos(1:2) + [0.9, 0.05] .* sz + [-1, 1] .* off;
+      origin = axpos(1:2) + [0.9, 0.05] .* sz + [-1, 1] .* off;
       sz .*= [0.06, 1.0] * 0.9;
       mirr = false;
       vertical = true;
     case "westoutside"
-      origin = pos(1:2) + off;
+      origin = axpos(1:2) + off;
       sz .*= [0.06, 1.0];
-      pos(1) = pos(1) + pos(3) * 0.2;
-      pos(3) = 0.8 * pos(3);
+      axpos(1) = axpos(1) + axpos(3) * 0.2;
+      axpos(3) = 0.8 * axpos(3);
       mirr = false;
       vertical = true;
     case "west"
-      origin = pos(1:2) + [0.05, 0.05] .* sz + off;
+      origin = axpos(1:2) + [0.05, 0.05] .* sz + off;
       sz .*= [0.06, 1.0] .* 0.9;
       mirr = true;
       vertical = true;
   endswitch
 
-  cpos = [origin, sz];
+  cbpos = [origin, sz];
 
   if (strcmp (props.plotboxaspectratiomode, "manual")
       || strcmp (props.dataaspectratiomode, "manual"))
-    props.position = pos;
+    props.position = axpos;
     actual_pos = __actual_axis_position__ (props);
-    if (strfind (cbox, "outside"))
+    if (strfind (loc, "outside"))
       scale = 1.0;
     else
       scale = 0.9;
@@ -504,13 +598,13 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, props, cf)
     if (sz(1) > sz(2))
       ## Ensure north or south colorbars are the proper length
       dx = (1-scale)*actual_pos(3);
-      cpos(1) = actual_pos(1) + dx/2;
-      cpos(3) = actual_pos(3) - dx;
+      cbpos(1) = actual_pos(1) + dx/2;
+      cbpos(3) = actual_pos(3) - dx;
     else
       ## Ensure east or west colorbars are the proper height
       dy = (1-scale)*actual_pos(4);
-      cpos(2) = actual_pos(2) + dy/2;
-      cpos(4) = actual_pos(4) - dy;
+      cbpos(2) = actual_pos(2) + dy/2;
+      cbpos(4) = actual_pos(4) - dy;
     endif
   endif
 
@@ -796,6 +890,7 @@ endfunction
 %! colorbar ("eastoutside");
 %! axis equal;
 
+## FIXME: need many BIST tests for colorbar
 
 ## Test input validation
 %!error <expected string argument at position 1> colorbar (-pi)
@@ -804,4 +899,5 @@ endfunction
 %!error <missing axes handle after "peer"> colorbar ("peer")
 %!error <invalid axes handle following "peer"> colorbar ("peer", -1)
 %!error <PROP/VAL inputs must occur in pairs> colorbar ("PROP")
+%!error <unrecognized colorbar location> colorbar ("location", "foobar")
 

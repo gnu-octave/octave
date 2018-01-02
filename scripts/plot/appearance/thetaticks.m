@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tickval} =} thetaticks
-## @deftypefnx {} thetaticks (@var{tickval})
+## @deftypefnx {} {} thetaticks (@var{tickval})
 ## @deftypefnx {} {@dots{} =} thetaticks (@var{hax}, @dots{})
 ## Query or set the tick values on the theta-axis of the current axis.
 ##

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tickval} =} rticks
-## @deftypefnx {} rticks (@var{tickval})
+## @deftypefnx {} {} rticks (@var{tickval})
 ## @deftypefnx {} {@dots{} =} rticks (@var{hax}, @dots{})
 ## Query or set the tick values on the r-axis of the current axis.
 ##

@@ -867,9 +867,8 @@ will automatically store the output of @code{lasterror} in the structure
 @node Continuation Lines
 @section Continuation Lines
 @cindex continuation lines
-@cindex @code{...} continuation marker
-@cindex @code{\} continuation marker
 
+@opindex @code{...} continuation marker
 In the Octave language, most statements end with a newline character and
 you must tell Octave to ignore the newline character in order to
 continue a statement from one line to the next.  Lines that end with the
@@ -901,6 +900,7 @@ x = long_variable_name ...    # comment one
 @noindent
 is equivalent to the one shown above.
 
+@opindex @code{\} continuation marker
 Inside double-quoted string constants, the character @code{\} has to be
 used as continuation marker.  The @code{\} must appear at the end of the
 line just before the newline character:

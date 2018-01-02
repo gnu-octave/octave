@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tickval} =} zticklabels
 ## @deftypefnx {} {@var{mode} =} zticklabels ("mode")
-## @deftypefnx {} zticklabels (@var{tickval})
-## @deftypefnx {} zticklabels ("auto")
-## @deftypefnx {} zticklabels ("manual")
+## @deftypefnx {} {} zticklabels (@var{tickval})
+## @deftypefnx {} {} zticklabels ("auto")
+## @deftypefnx {} {} zticklabels ("manual")
 ## @deftypefnx {} {@dots{} =} zticklabels (@var{hax}, @dots{})
 ## Query or set the tick labels on the x-axis of the current axis.
 ##

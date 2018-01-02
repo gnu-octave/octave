@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tickval} =} xticks
 ## @deftypefnx {} {@var{mode} =} xticks ("mode")
-## @deftypefnx {} xticks (@var{tickval})
-## @deftypefnx {} xticks ("auto")
-## @deftypefnx {} xticks ("manual")
+## @deftypefnx {} {} xticks (@var{tickval})
+## @deftypefnx {} {} xticks ("auto")
+## @deftypefnx {} {} xticks ("manual")
 ## @deftypefnx {} {@dots{} =} xticks (@var{hax}, @dots{})
 ## Query or set the tick values on the x-axis of the current axis.
 ##

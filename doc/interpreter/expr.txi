@@ -106,7 +106,7 @@ a(1, :)       # row 1, all columns
 @end example
 
 @cindex @code{end}, indexing
-@cindex :end
+@cindex @sortas{end:} @code{end:} and @code{:end}
 
 In index expressions the keyword @code{end} automatically refers to
 the last entry for a particular dimension.  This magic index can also

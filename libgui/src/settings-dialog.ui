@@ -2824,7 +2824,7 @@
              <item>
               <widget class="QGroupBox" name="varedit_colors_box">
                <property name="title">
-                <string>Variable Editor Colours</string>
+                <string>Variable Editor Colors</string>
                </property>
               </widget>
              </item>
@@ -2836,7 +2836,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Use alternating row colours</string>
+              <string>Use alternating row colors</string>
              </property>
             </widget>
            </item>

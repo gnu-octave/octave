@@ -92,6 +92,10 @@ gui_driver_set_signal_handler (const char *signame,
 static void
 install_signal_handlers (void)
 {
+  // FIXME: do we need to handle and forward all the signals that Octave
+  // handles, or is it sufficient to only forward things like SIGINT,
+  // SIGBREAK, SIGABRT, SIGQUIT, and possibly a few others?
+
   gui_driver_set_signal_handler ("SIGINT", gui_driver_sig_handler);
   gui_driver_set_signal_handler ("SIGBREAK", gui_driver_sig_handler);
   gui_driver_set_signal_handler ("SIGABRT", gui_driver_sig_handler);
@@ -329,6 +333,16 @@ main (int argc, char **argv)
 
   new_argv[0] = strsave (file.c_str ());
 
+  // The Octave interpreter may be multithreaded.  If so, we attempt to
+  // ensure that signals are delivered to the main interpreter thread
+  // and no others by blocking signals before we exec the Octave
+  // interpreter executable.  When that process starts, it will unblock
+  // signals in the main interpreter thread.  When running the GUI as a
+  // subprocess, we also unblock signals that the parent process handles
+  // so we can forward them to the child.
+
+  octave_block_async_signals ();
+
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
   if (gui_libs && start_gui)
@@ -342,8 +356,6 @@ main (int argc, char **argv)
       // interrupting the interpreter.  See also bug #49609 and the
       // function pthread_thread_manager::interrupt in the file
       // libgui/src/thread-manager.cc.
-
-      install_signal_handlers ();
 
       gui_pid = octave_fork_wrapper ();
 
@@ -369,6 +381,10 @@ main (int argc, char **argv)
       else
         {
           // Parent.  Forward signals to child while waiting for it to exit.
+
+          install_signal_handlers ();
+
+          octave_unblock_async_signals ();
 
           int status;
 

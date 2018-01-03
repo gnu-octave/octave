@@ -93,8 +93,6 @@ octave_interpreter::execute (void)
 {
   m_thread_manager.register_current_thread ();
 
-  octave_thread_manager::unblock_interrupt_signal ();
-
   // The application context owns the interpreter.
 
   octave::interpreter& interp = m_app_context->create_interpreter ();

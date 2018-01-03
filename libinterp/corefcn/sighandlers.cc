@@ -74,268 +74,14 @@ namespace octave
   // no effect if Vcrash_dumps_octave_core is FALSE.
   static bool Vsighup_dumps_octave_core = true;
 
+  // Similar to Vsighup_dumps_octave_core, but for SIGQUIT signal.
+  static bool Vsigquit_dumps_octave_core = true;
+
   // Similar to Vsighup_dumps_octave_core, but for SIGTERM signal.
   static bool Vsigterm_dumps_octave_core = true;
 
   // List of signals we have caught since last call to signal_handler.
   static bool *signals_caught = nullptr;
-
-  // Forward declarations.
-  static void user_terminate (int sig_number);
-  static void user_abort (int sig_number);
-
-  class
-  base_interrupt_manager
-  {
-  public:
-
-    base_interrupt_manager (void) { }
-
-    // No copying!
-
-    base_interrupt_manager (const base_interrupt_manager&) = delete;
-
-    base_interrupt_manager& operator = (const base_interrupt_manager&) = delete;
-
-    virtual ~base_interrupt_manager (void) = default;
-
-    virtual void do_jump_to_enclosing_context (void) = 0;
-
-    virtual void do_user_terminate (int sig_number) = 0;
-
-    virtual void do_user_abort (int sig_number) = 0;
-
-    virtual void do_raise_sigint (void) = 0;
-  };
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-
-  class
-  w32_interrupt_manager : public base_interrupt_manager
-  {
-  public:
-
-    w32_interrupt_manager (void)
-      : thread (0), thread_id (0)
-    {
-      thread_id = GetCurrentThreadId ();
-
-      DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
-                       GetCurrentProcess (), &thread, 0, FALSE,
-                       DUPLICATE_SAME_ACCESS);
-    }
-
-    // No copying!
-
-    w32_interrupt_manager (const w32_interrupt_manager&) = delete;
-
-    w32_interrupt_manager& operator = (const w32_interrupt_manager&) = delete;
-
-    ~w32_interrupt_manager (void) = default;
-
-    static void jump_to_enclosing_context_sync (void)
-    {
-#if defined (_MSC_VER)
-      _fpreset ();
-#endif
-      ::octave_jump_to_enclosing_context ();
-    }
-
-    void do_jump_to_enclosing_context (void)
-    {
-      bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
-
-      if (is_interrupt_thread)
-        jump_to_enclosing_context_sync ();
-      else
-        {
-
-          CONTEXT threadContext;
-
-          SuspendThread (thread);
-          threadContext.ContextFlags = CONTEXT_CONTROL;
-          GetThreadContext (thread, &threadContext);
-
-#if (defined (__MINGW64__) || defined (_WIN64))
-          threadContext.Rip = reinterpret_cast<DWORD64> (jump_to_enclosing_context_sync);
-#else
-          threadContext.Eip = reinterpret_cast<DWORD> (jump_to_enclosing_context_sync);
-#endif
-
-          SetThreadContext (thread, &threadContext);
-
-          ResumeThread (thread);
-        }
-    }
-
-    void do_user_terminate (int sig_number)
-    {
-      bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
-
-      if (is_interrupt_thread)
-        user_terminate (sig_number);
-      else
-        {
-          SuspendThread (thread);
-          user_terminate (sig_number);
-          ResumeThread (thread);
-        }
-    }
-
-    void do_user_abort (int sig_number)
-    {
-      bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
-
-      if (is_interrupt_thread)
-        user_abort (sig_number);
-      else
-        {
-          SuspendThread (thread);
-          user_abort (sig_number);
-          ResumeThread (thread);
-        }
-    }
-
-    void do_raise_sigint (void)
-    {
-      bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
-
-      if (is_interrupt_thread)
-        octave_raise_wrapper (SIGINT);
-      else
-        {
-          SuspendThread (thread);
-          octave_raise_wrapper (SIGINT);
-          ResumeThread (thread);
-        }
-    }
-
-  private:
-
-    // A handle to the thread that is running the octave interpreter.
-    HANDLE thread;
-
-    // The ID of the thread that is running the octave interpreter.
-    DWORD thread_id;
-  };
-
-#endif
-
-  class
-  posix_interrupt_manager : public base_interrupt_manager
-  {
-  public:
-
-    posix_interrupt_manager (void)
-      : base_interrupt_manager ()
-    { }
-
-    // No copying!
-
-    posix_interrupt_manager (const posix_interrupt_manager&) = delete;
-
-    posix_interrupt_manager&
-    operator = (const posix_interrupt_manager&) = delete;
-
-    ~posix_interrupt_manager (void) = default;
-
-    void do_jump_to_enclosing_context (void)
-    {
-      ::octave_jump_to_enclosing_context ();
-    }
-
-    void do_user_terminate (int sig_number)
-    {
-      user_terminate (sig_number);
-    }
-
-    void do_user_abort (int sig_number)
-    {
-      user_abort (sig_number);
-    }
-
-    void do_raise_sigint (void)
-    {
-      octave_raise_wrapper (SIGINT);
-    }
-  };
-
-  class
-  interrupt_manager
-  {
-  public:
-
-    ~interrupt_manager (void) = default;
-
-    static bool init (void) { return instance_ok (); }
-
-    static void jump_to_enclosing_context (void)
-    {
-      if (instance_ok ())
-        instance->do_jump_to_enclosing_context ();
-    }
-
-    static void user_terminate (int sig_number)
-    {
-      if (instance_ok ())
-        instance->do_user_terminate (sig_number);
-    }
-
-    static void user_abort (int sig_number)
-    {
-      if (instance_ok ())
-        instance->do_user_abort (sig_number);
-    }
-
-    static void raise_sigint (void)
-    {
-      if (instance_ok ())
-        instance->do_raise_sigint ();
-    }
-
-  private:
-
-    interrupt_manager (void) { }
-
-    // No copying!
-
-    interrupt_manager (const interrupt_manager&) = delete;
-
-    interrupt_manager& operator = (const interrupt_manager&) = delete;
-
-    static bool instance_ok (void)
-    {
-      bool retval = true;
-
-      if (! instance)
-        {
-          instance = create_instance ();
-
-          if (instance)
-            singleton_cleanup_list::add (cleanup_instance);
-        }
-
-      if (! instance)
-        error ("unable to create interrupt_manager");
-
-      return retval;
-    }
-
-    static base_interrupt_manager * create_instance (void)
-    {
-#if defined (OCTAVE_USE_WINDOWS_API)
-      return new w32_interrupt_manager ();
-#else
-      return new posix_interrupt_manager ();
-#endif
-    }
-
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
-
-    static base_interrupt_manager *instance;
-  };
-
-  base_interrupt_manager *interrupt_manager::instance = nullptr;
 
   static void
   my_friendly_exit (int sig, bool save_vars = true)
@@ -356,31 +102,95 @@ namespace octave
   // we have caught.
 
   void
-  signal_handler (void)
+  respond_to_pending_signals (void)
   {
     // The list of signals is relatively short, so we will just go
     // linearly through the list.
 
-    static int sigchld;
-    static int sigfpe;
+    // Interrupt signals are currently handled separately.
+
+    static int sigint;
+    static const bool have_sigint
+      = octave_get_sig_number ("SIGINT", &sigint);
+
+    static int sigbreak;
+    static const bool have_sigbreak
+    = octave_get_sig_number ("SIGBREAK", &sigbreak);
+
+    // Termination signals.
+
     static int sighup;
+    static const bool have_sighup
+      = octave_get_sig_number ("SIGHUP", &sighup);
+
+    static int sigquit;
+    static const bool have_sigquit
+      = octave_get_sig_number ("SIGQUIT", &sigquit);
+
     static int sigterm;
+    static const bool have_sigterm
+      = octave_get_sig_number ("SIGTERM", &sigterm);
+
+    // Alarm signals.
+
+    static int sigalrm;
+    static const bool have_sigalrm
+      = octave_get_sig_number ("SIGALRM", &sigalrm);
+
+    // I/O signals.
+
+    static int sigio;
+    static const bool have_sigio
+      = octave_get_sig_number ("SIGIO", &sigio);
+
+    static int siglost;
+    static const bool have_siglost
+      = octave_get_sig_number ("SIGLOST", &siglost);
+
     static int sigpipe;
+    static const bool have_sigpipe
+      = octave_get_sig_number ("SIGPIPE", &sigpipe);
 
-    static const bool have_sigchld = octave_get_sig_number ("SIGCHLD", &sigchld);
-    static const bool have_sigfpe = octave_get_sig_number ("SIGFPE", &sigfpe);
-    static const bool have_sighup = octave_get_sig_number ("SIGHUP", &sighup);
-    static const bool have_sigterm = octave_get_sig_number ("SIGTERM", &sigterm);
-    static const bool have_sigpipe = octave_get_sig_number ("SIGPIPE", &sigpipe);
+    // Job control signals.
 
-    for (int i = 0; i < octave_num_signals (); i++)
+    static int sigchld;
+    static const bool have_sigchld
+      = octave_get_sig_number ("SIGCHLD", &sigchld);
+
+    static int sigcld;
+    static const bool have_sigcld
+      = octave_get_sig_number ("SIGCLD", &sigcld);
+
+    // Resource limit signals.
+
+    static int sigxcpu;
+    static const bool have_sigxcpu
+      = octave_get_sig_number ("SIGXCPU", &sigxcpu);
+
+    static int sigxfsz;
+    static const bool have_sigxfsz
+      = octave_get_sig_number ("SIGXFSZ", &sigxfsz);
+
+    // User signals.
+
+    static int sigusr1;
+    static const bool have_sigusr1
+      = octave_get_sig_number ("SIGUSR1", &sigusr1);
+
+    static int sigusr2;
+    static const bool have_sigusr2
+      = octave_get_sig_number ("SIGUSR2", &sigusr2);
+
+    for (int sig = 0; sig < octave_num_signals (); sig++)
       {
-        if (signals_caught[i])
+        if (signals_caught[sig])
           {
-            signals_caught[i] = false;
+            signals_caught[sig] = false;
 
-            if (have_sigchld && i == sigchld)
+            if ((have_sigchld && sig == sigchld)
+                || (have_sigcld && sig == sigcld))
               {
+                // FIXME: should we block or ignore?
                 volatile interrupt_handler saved_interrupt_handler
                   = ignore_interrupts ();
 
@@ -394,14 +204,41 @@ namespace octave
 
                 child_list::reap ();
               }
-            else if (have_sigfpe && i == sigfpe)
-              std::cerr << "warning: floating point exception" << std::endl;
-            else if (have_sighup && i == sighup)
+            else if (have_sigpipe && sig == sigpipe)
+              {
+                std::cerr << "warning: broken pipe" << std::endl;
+
+                // Don't loop forever on account of this.
+                // FIXME: is this really needed?  Does it do anything
+                // useful now?
+
+                if (pipe_handler_error_count++ > 100
+                    && octave_interrupt_state >= 0)
+                  octave_interrupt_state++;
+              }
+            else if (have_sighup && sig == sighup)
               my_friendly_exit (sighup, Vsighup_dumps_octave_core);
-            else if (have_sigterm && i == sigterm)
+            else if (have_sigquit && sig == sigquit)
+              my_friendly_exit (sigquit, Vsigquit_dumps_octave_core);
+            else if (have_sigterm && sig == sigterm)
               my_friendly_exit (sigterm, Vsigterm_dumps_octave_core);
-            else if (have_sigpipe && i == sigpipe)
-              std::cerr << "warning: broken pipe" << std::endl;
+            else if ((have_sigalrm && sig == sigalrm)
+                     || (have_sigio && sig == sigio)
+                     || (have_siglost && sig == siglost)
+                     || (have_sigxcpu && sig == sigxcpu)
+                     || (have_sigxfsz && sig == sigxfsz)
+                     || (have_sigusr1 && sig == sigusr1)
+                     || (have_sigusr2 && sig == sigusr2))
+              std::cerr << "warning: ignoring signal: "
+                        << octave_strsignal_wrapper (sig)
+                        << std::endl;
+            else if ((have_sigint && sig == sigint)
+                     || (have_sigbreak && sig == sigbreak))
+              /* handled separately; do nothing */;
+            else
+              std::cerr << "warning: ignoring unexpected signal: "
+                        << octave_strsignal_wrapper (sig)
+                        << std::endl;
           }
       }
   }
@@ -423,45 +260,45 @@ namespace octave
   static void
   generic_sig_handler (int sig)
   {
+    // FIXME: this function may execute in a separate signal handler or
+    // signal watcher thread so it should probably be more careful about
+    // how it accesses global objects.
+
     octave_signal_caught = 1;
 
     signals_caught[sig] = true;
+
+    static int sigint;
+    static const bool have_sigint
+      = octave_get_sig_number ("SIGINT", &sigint);
+
+    static int sigbreak;
+    static const bool have_sigbreak
+      = octave_get_sig_number ("SIGBREAK", &sigbreak);
+
+    if ((have_sigint && sig == sigint)
+        || (have_sigbreak && sig == sigbreak))
+      octave_interrupt_state++;
   }
 
-#if defined (__alpha__)
   static void
-  sigfpe_handler (int sig)
+  deadly_sig_handler (int sig)
   {
-    if (can_interrupt && octave_interrupt_state >= 0)
-      {
-        octave_signal_caught = 1;
+    std::cerr << "fatal: caught signal "
+              << octave_strsignal_wrapper (sig)
+              << " -- stopping myself..." << std::endl;
 
-        signals_caught[sig] = true;
+    octave_set_default_signal_handler (sig);
 
-        octave_interrupt_state++;
-      }
+    octave_raise_wrapper (sig);
   }
-#endif
-
-  // Handle SIGHUP and SIGTERM.
 
   static void
-  user_terminate (int sig_number)
+  fpe_sig_handler (int)
   {
-    if (! octave_initialized)
-      exit (1);
+    // FIXME: is there something better we can do?
 
-    octave_signal_caught = 1;
-
-    signals_caught[sig_number] = true;
-
-    if (octave_interrupt_immediately)
-      {
-        // Try to get to a place where it is safe to throw an
-        // exception.
-
-        interrupt_manager::jump_to_enclosing_context ();
-      }
+    std::cerr << "warning: floating point exception" << std::endl;
   }
 
   // Handle SIGINT.
@@ -471,96 +308,22 @@ namespace octave
   // for SIGINT only.
 
   static void
-  user_abort (int sig_number)
+  sigint_handler (int)
   {
     if (! octave_initialized)
       exit (1);
 
     if (can_interrupt)
       {
-        if (Vdebug_on_interrupt)
-          {
-            if (! octave_debug_on_interrupt_state)
-              {
-                tree_evaluator::debug_mode = true;
-                octave_debug_on_interrupt_state = true;
-
-                return;
-              }
-            else
-              {
-                // Clear the flag and do normal interrupt stuff.
-
-                tree_evaluator::debug_mode
-                  = bp_table::have_breakpoints () || Vdebugging;
-                octave_debug_on_interrupt_state = false;
-              }
-          }
-
-        if (octave_interrupt_immediately)
-          {
-            if (octave_interrupt_state == 0)
-              octave_interrupt_state = 1;
-
-            // Try to get to a place where it is safe to throw an
-            // exception.
-
-            interrupt_manager::jump_to_enclosing_context ();
-          }
-        else
-          {
-            // If we are already cleaning up from a previous interrupt,
-            // take note of the fact that another interrupt signal has
-            // arrived.
-
-            if (octave_interrupt_state < 0)
-              octave_interrupt_state = 0;
-
-            octave_signal_caught = 1;
-            octave_interrupt_state++;
-
-            if (application::interactive ()
-                && ! application::forced_interactive ()
-                && octave_interrupt_state == 2)
-              std::cerr << "Press Control-C again to abort." << std::endl;
-
-            if (octave_interrupt_state >= 3)
-              my_friendly_exit (sig_number, true);
-          }
+        octave_signal_caught = 1;
+        octave_interrupt_state++;
       }
-  }
-
-  static void
-  sigterm_handler (int sig)
-  {
-    interrupt_manager::user_terminate (sig);
-  }
-
-  static void
-  sigint_handler (int sig)
-  {
-    interrupt_manager::user_abort (sig);
-  }
-
-  static void
-  sigpipe_handler (int sig)
-  {
-    octave_signal_caught = 1;
-
-    signals_caught[sig] = true;
-
-    // Don't loop forever on account of this.
-
-    if (pipe_handler_error_count++ > 100 && octave_interrupt_state >= 0)
-      octave_interrupt_state++;
   }
 
   interrupt_handler
   catch_interrupts (void)
   {
     interrupt_handler retval;
-
-    interrupt_manager::init ();
 
     retval.int_handler = set_signal_handler ("SIGINT", sigint_handler);
     retval.brk_handler = set_signal_handler ("SIGBREAK", sigint_handler);
@@ -573,8 +336,6 @@ namespace octave
   {
     interrupt_handler retval;
 
-    interrupt_manager::init ();
-
     retval.int_handler = set_signal_handler ("SIGINT", SIG_IGN);
     retval.brk_handler = set_signal_handler ("SIGBREAK", SIG_IGN);
 
@@ -586,8 +347,6 @@ namespace octave
                          bool restart_syscalls)
   {
     interrupt_handler retval;
-
-    interrupt_manager::init ();
 
     retval.int_handler = set_signal_handler ("SIGINT", h.int_handler,
                                              restart_syscalls);
@@ -609,63 +368,68 @@ namespace octave
     for (int i = 0; i < octave_num_signals (); i++)
       signals_caught[i] = false;
 
+    // Interrupt signals.
+
     catch_interrupts ();
 
-    set_signal_handler ("SIGABRT", generic_sig_handler);
-    set_signal_handler ("SIGALRM", generic_sig_handler);
-    set_signal_handler ("SIGBUS", generic_sig_handler);
-    set_signal_handler ("SIGCHLD", generic_sig_handler);
+    // Program Error signals.  These are most likely unrecoverable for
+    // us.
 
-    // SIGCLD
-    // SIGCONT
+    set_signal_handler ("SIGABRT", deadly_sig_handler);
+    set_signal_handler ("SIGBUS", deadly_sig_handler);
+    set_signal_handler ("SIGEMT", deadly_sig_handler);
+    set_signal_handler ("SIGILL", deadly_sig_handler);
+    // SIGIOT is normally another name for SIGABRT.
+    set_signal_handler ("SIGIOT", deadly_sig_handler);
+    set_signal_handler ("SIGSEGV", deadly_sig_handler);
+    set_signal_handler ("SIGSYS", deadly_sig_handler);
+    set_signal_handler ("SIGTRAP", deadly_sig_handler);
 
-    set_signal_handler ("SIGEMT", generic_sig_handler);
+    // Handle SIGFPE separately.
 
-#if defined (__alpha__)
-    set_signal_handler ("SIGFPE", sigfpe_handler);
-#else
-    set_signal_handler ("SIGFPE", generic_sig_handler);
-#endif
+    set_signal_handler ("SIGFPE", fpe_sig_handler);
 
-    set_signal_handler ("SIGHUP", sigterm_handler);
-    set_signal_handler ("SIGILL", generic_sig_handler);
+    // Handle other signals for which the default action is to terminate
+    // the program.
 
-    // SIGINFO
-    // SIGINT
+    // Termination signals.
 
-    set_signal_handler ("SIGIOT", generic_sig_handler);
-    set_signal_handler ("SIGLOST", generic_sig_handler);
-    set_signal_handler ("SIGPIPE", sigpipe_handler);
-    set_signal_handler ("SIGPOLL", SIG_IGN);
-
-    // SIGPROF
-    // SIGPWR
-
+    set_signal_handler ("SIGHUP", generic_sig_handler);
     set_signal_handler ("SIGQUIT", generic_sig_handler);
-    set_signal_handler ("SIGSEGV", generic_sig_handler);
+    set_signal_handler ("SIGTERM", generic_sig_handler);
 
-    // SIGSTOP
+    // Alarm signals.
 
-    set_signal_handler ("SIGSYS", generic_sig_handler);
-    set_signal_handler ("SIGTERM", sigterm_handler);
-    set_signal_handler ("SIGTRAP", generic_sig_handler);
-
-    // SIGTSTP
-    // SIGTTIN
-    // SIGTTOU
-    // SIGURG
-
-    set_signal_handler ("SIGUSR1", generic_sig_handler);
-    set_signal_handler ("SIGUSR2", generic_sig_handler);
+    set_signal_handler ("SIGALRM", generic_sig_handler);
     set_signal_handler ("SIGVTALRM", generic_sig_handler);
-    set_signal_handler ("SIGIO", SIG_IGN);
+    set_signal_handler ("SIGPROF", generic_sig_handler);
 
-#if 0
-    set_signal_handler ("SIGWINCH", sigwinch_handler);
-#endif
+    // I/O signals.
+
+    set_signal_handler ("SIGLOST", generic_sig_handler);
+    set_signal_handler ("SIGPIPE", generic_sig_handler);
+
+    // Job control signals.  We only recognize signals about child
+    // processes.
+
+    set_signal_handler ("SIGCHLD", generic_sig_handler);
+    set_signal_handler ("SIGCLD", generic_sig_handler);
+
+    // Resource limit signals.
+
+    // FIXME: does it really make sense to try to handle the CPU limit
+    // signal?
 
     set_signal_handler ("SIGXCPU", generic_sig_handler);
     set_signal_handler ("SIGXFSZ", generic_sig_handler);
+
+    // User signals.
+
+    set_signal_handler ("SIGUSR1", generic_sig_handler);
+    set_signal_handler ("SIGUSR2", generic_sig_handler);
+
+    // This does nothing on Windows systems.
+    octave_create_interrupt_watcher_thread (generic_sig_handler);
   }
 
   static void
@@ -811,6 +575,37 @@ The original variable value is restored when exiting the function.
 %! assert (sighup_dumps_octave_core (), orig_val);
 
 %!error (sighup_dumps_octave_core (1, 2))
+*/
+
+DEFUN (sigquit_dumps_octave_core, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} sigquit_dumps_octave_core ()
+@deftypefnx {} {@var{old_val} =} sigquit_dumps_octave_core (@var{new_val})
+@deftypefnx {} {} sigquit_dumps_octave_core (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave tries
+to save all current variables to the file @file{octave-workspace} if it
+receives a quit signal.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
+{
+  return set_internal_variable (octave::Vsigquit_dumps_octave_core,
+                                args, nargout,
+                                "sigquit_dumps_octave_core");
+}
+
+/*
+%!test
+%! orig_val = sigquit_dumps_octave_core ();
+%! old_val = sigquit_dumps_octave_core (! orig_val);
+%! assert (orig_val, old_val);
+%! assert (sigquit_dumps_octave_core (), ! orig_val);
+%! sigquit_dumps_octave_core (orig_val);
+%! assert (sigquit_dumps_octave_core (), orig_val);
+
+%!error (sigquit_dumps_octave_core (1, 2))
 */
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,

@@ -29,38 +29,21 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 
-octave_jmp_buf current_context;
-
-void
-octave_save_current_context (void *save_buf)
-{
-  memcpy (save_buf, current_context, sizeof (octave_jmp_buf));
-}
-
-void
-octave_restore_current_context (void *save_buf)
-{
-  memcpy (current_context, save_buf, sizeof (octave_jmp_buf));
-}
-
-void
-octave_jump_to_enclosing_context (void)
-{
-#if defined (OCTAVE_HAVE_SIG_JUMP)
-  siglongjmp (current_context, 1);
-#else
-  longjmp (current_context, 1);
-#endif
-}
-
-sig_atomic_t octave_interrupt_immediately = 0;
-
 sig_atomic_t octave_interrupt_state = 0;
 
 sig_atomic_t octave_exception_state = 0;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 sig_atomic_t octave_exit_exception_status = 0;
 
 sig_atomic_t octave_exit_exception_safe_to_return = 0;
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic pop
+#endif
 
 volatile sig_atomic_t octave_signal_caught = 0;

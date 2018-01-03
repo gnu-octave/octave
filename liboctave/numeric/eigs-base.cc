@@ -149,9 +149,6 @@ vector_product (const Matrix& m, const double *x, double *y)
                            x, 1, 0.0, y, 1
                            F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("eigs: unrecoverable error in dgemv");
-
   return true;
 }
 
@@ -183,9 +180,6 @@ vector_product (const ComplexMatrix& m, const Complex *x, Complex *y)
                            F77_CONST_DBLE_CMPLX_ARG (x), 1, 0.0,
                            F77_DBLE_CMPLX_ARG (y), 1
                            F77_CHAR_ARG_LEN (1)));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("eigs: unrecoverable error in zgemv");
 
   return true;
 }
@@ -769,10 +763,6 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in dsaupd");
-
       if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
@@ -854,10 +844,6 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
      ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
      F77_CHAR_ARG_LEN(2));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in dseupd");
 
   if (info2 == 0)
     {
@@ -1049,10 +1035,6 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in dsaupd");
-
       if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
@@ -1171,10 +1153,6 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
      k, tol, presid, p, v, n, iparam, ipntr, workd, workl, lwork, info2
      F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in dseupd");
 
   if (info2 == 0)
     {
@@ -1342,10 +1320,6 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in dsaupd");
-
       if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
@@ -1427,10 +1401,6 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
      k, tol, presid, p, v, n, iparam, ipntr, workd, workl, lwork, info2
      F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in dseupd");
 
   if (info2 == 0)
     {
@@ -1640,10 +1610,6 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in dnaupd");
-
       if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
@@ -1739,10 +1705,6 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
      F77_CHAR_ARG_LEN(2));
   // on exit, if (and only if) rvec == true, k may have been increased by one
   // and be equal to ip(4), see dngets.
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in dneupd");
 
   if (! rvec && ip(4) > k)
     k = ip(4);
@@ -1984,10 +1946,6 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in dnaupd");
-
       if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
@@ -2120,10 +2078,6 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
      F77_CHAR_ARG_LEN(2));
   // On exit, if (and only if) rvec == true, k may have been increased by one
   // and be equal to ip(4), see dngets.
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in dneupd");
 
   if (! rvec && ip(4) > k)
     k = ip(4);
@@ -2347,10 +2301,6 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in dnaupd");
-
       if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
@@ -2446,10 +2396,6 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
      F77_CHAR_ARG_LEN(2));
   // On exit, if (and only if) rvec == true, k may have been increased by one
   // and be equal to ip(4), see dngets.
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in dneupd");
 
   if (! rvec && ip(4) > k)
     k = ip(4);
@@ -2709,10 +2655,6 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in znaupd");
-
       if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
@@ -2799,10 +2741,6 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
      iparam, ipntr,
      F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
      info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in zneupd");
 
   if (info2 == 0)
     {
@@ -3002,10 +2940,6 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in znaupd");
-
       if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
@@ -3130,10 +3064,6 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
      iparam, ipntr,
      F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
      info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in zneupd");
 
   if (info2 == 0)
     {
@@ -3314,10 +3244,6 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
 
       info = tmp_info;
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler)
-          ("eigs: unrecoverable exception encountered in znaupd");
-
       if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
@@ -3405,10 +3331,6 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
      iparam, ipntr,
      F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
      info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler)
-      ("eigs: unrecoverable exception encountered in zneupd");
 
   if (info2 == 0)
     {

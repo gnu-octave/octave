@@ -25,8 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <setjmp.h>
-
 /* The signal header is just needed for the sig_atomic_t type.  */
 #if defined (__cplusplus)
 #  include <csignal>
@@ -35,28 +33,6 @@ extern "C" {
 #else
 #  include <signal.h>
 #endif
-
-#if defined (OCTAVE_HAVE_SIG_JUMP)
-
-typedef sigjmp_buf octave_jmp_buf;
-
-#define octave_set_current_context sigsetjmp (current_context, 1)
-
-#else
-
-typedef jmp_buf octave_jmp_buf;
-
-#define octave_set_current_context setjmp (current_context)
-
-#endif
-
-OCTAVE_API extern octave_jmp_buf current_context;
-
-OCTAVE_API extern void octave_save_current_context (void *);
-
-OCTAVE_API extern void octave_restore_current_context (void *);
-
-OCTAVE_NORETURN OCTAVE_API extern void octave_jump_to_enclosing_context (void);
 
 #if defined (__cplusplus)
 
@@ -164,8 +140,6 @@ enum octave_exception
   octave_quit_exception = 4
 };
 
-OCTAVE_API extern sig_atomic_t octave_interrupt_immediately;
-
 /*
   > 0: interrupt pending
     0: no interrupt pending
@@ -175,8 +149,10 @@ OCTAVE_API extern sig_atomic_t octave_interrupt_state;
 
 OCTAVE_API extern sig_atomic_t octave_exception_state;
 
+OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
 OCTAVE_API extern sig_atomic_t octave_exit_exception_status;
 
+OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
 OCTAVE_API extern sig_atomic_t octave_exit_exception_safe_to_return;
 
 OCTAVE_API extern volatile sig_atomic_t octave_signal_caught;
@@ -226,90 +202,34 @@ inline void octave_quit (void)
   while (0)
 #endif
 
-/* Normally, you just want to use
-
-     BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-     ... some code that calls a "foreign" function ...
-     END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-   but sometimes it is useful to do something like
-
-     BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1;
-     ... custom code here, normally ending in a call to
-         octave_rethrow_exception ...
-     BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2;
-
-   so that you can perform extra clean up operations before throwing
-   the interrupt exception.  */
+/* The following macros are obsolete.  Interrupting immediately by
+   calling siglongjmp or similar from a signal handler is asking for
+   trouble.  We need another way to handle that situation.  Rather
+   than remove them, however, please leave them in place until we can
+   either find a replacement or determine that a given block of code
+   does not need special treatment.  They are defined to create a
+   dummy do-while block to match the previous definitions.  */
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE     \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1;        \
-  octave_rethrow_exception ();                          \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
+  do                                                    \
+    {
 
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1           \
-  do                                                            \
-    {                                                           \
-      octave_jmp_buf saved_context;                             \
-                                                                \
-      octave_save_current_context (saved_context);              \
-                                                                \
-      if (octave_set_current_context)                           \
-        {                                                       \
-          octave_restore_current_context (saved_context)
-
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2   \
-        }                                               \
-      else                                              \
-        {                                               \
-          octave_interrupt_immediately++
-
-#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE               \
-          octave_interrupt_immediately--;                       \
-          octave_restore_current_context (saved_context);       \
-          octave_quit ();                                       \
-        }                                                       \
-    }                                                           \
+#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE       \
+    }                                                   \
   while (0)
 
 #if defined (__cplusplus)
 
-#define BEGIN_INTERRUPT_WITH_EXCEPTIONS                                 \
-  sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
-                                                                        \
-  try                                                                   \
-    {                                                                   \
-      octave_interrupt_immediately = 0;
+/* Likewise, these are obsolete.  They are defined to create a
+   dummy scope to match the previous versions that created a try-catch
+   block.  */
 
-#define END_INTERRUPT_WITH_EXCEPTIONS                                   \
-    }                                                                   \
-  catch (const octave::interrupt_exception&)                            \
-    {                                                                   \
-      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_jump_to_enclosing_context ();                              \
-    }                                                                   \
-  catch (const octave::execution_exception&)                            \
-    {                                                                   \
-      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_exec_exception;                   \
-      octave_jump_to_enclosing_context ();                              \
-    }                                                                   \
-  catch (const std::bad_alloc&)                                         \
-    {                                                                   \
-      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_alloc_exception;                  \
-      octave_jump_to_enclosing_context ();                              \
-    }                                                                   \
-  catch (const octave::exit_exception& ex)                              \
-    {                                                                   \
-      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_quit_exception;                   \
-      octave_exit_exception_status = ex.exit_status ();                 \
-      octave_exit_exception_safe_to_return = ex.safe_to_return ();      \
-      octave_jump_to_enclosing_context ();                              \
-    }                                                                   \
-                                                                        \
-  octave_interrupt_immediately = saved_octave_interrupt_immediately
+#define BEGIN_INTERRUPT_WITH_EXCEPTIONS         \
+  {
+
+#define END_INTERRUPT_WITH_EXCEPTIONS           \
+  }
+
 #endif
 
 #if defined (__cplusplus)

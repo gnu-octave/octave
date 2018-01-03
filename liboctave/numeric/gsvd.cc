@@ -282,9 +282,6 @@ namespace octave
                       tmp_dataA, m, tmp_dataB, p, alpha, beta, u,
                       nrow_u, v, nrow_v, q, nrow_q, work, iwork.data (), info);
 
-      if (f77_exception_encountered)
-        (*current_liboctave_error_handler) ("unrecoverable error in *ggsvd");
-
       if (info < 0)
         (*current_liboctave_error_handler) ("*ggsvd.f: argument %d illegal",
                                             -info);

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "liboctinterp-build-info.h"
 
 #include "oct-env.h"
+#include "signal-wrappers.h"
 
 #include "defaults.h"
 #include "octave.h"
@@ -82,6 +83,8 @@ int
 main (int argc, char **argv)
 {
   check_hg_versions ();
+
+  octave_block_async_signals ();
 
   octave::sys::env::set_program_name (argv[0]);
 

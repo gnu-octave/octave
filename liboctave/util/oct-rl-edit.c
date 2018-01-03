@@ -471,4 +471,12 @@ octave_rl_meta (char c)
   return META (c);
 }
 
+void
+octave_rl_recover_from_interrupt (void)
+{
+  rl_free_line_state ();
+  rl_cleanup_after_signal ();
+  rl_reset_after_signal ();
+}
+
 #endif

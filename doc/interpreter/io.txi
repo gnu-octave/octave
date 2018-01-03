@@ -252,6 +252,8 @@ functions.
 
 @DOCSTRING(sighup_dumps_octave_core)
 
+@DOCSTRING(sigquit_dumps_octave_core)
+
 @DOCSTRING(sigterm_dumps_octave_core)
 
 @DOCSTRING(octave_core_file_options)

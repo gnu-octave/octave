@@ -66,7 +66,7 @@ namespace octave
 
   extern OCTINTERP_API void install_signal_handlers (void);
 
-  extern OCTINTERP_API void signal_handler (void);
+  extern OCTINTERP_API void respond_to_pending_signals (void);
 
   extern OCTINTERP_API interrupt_handler catch_interrupts (void);
 

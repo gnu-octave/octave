@@ -195,6 +195,8 @@ namespace octave
 
     void do_interrupt (bool);
 
+    void do_handle_interrupt_signal (void);
+
     static int operate_and_get_next (int, int);
 
     static int history_search_backward (int, int);
@@ -287,20 +289,31 @@ namespace octave
 
     const char *p = prompt.c_str ();
 
-    BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-    char *line = ::octave_rl_readline (p);
-
-    if (line)
+    while (true)
       {
-        retval = line;
+        try
+          {
+            char *line = ::octave_rl_readline (p);
 
-        free (line);
+            if (line)
+              {
+                retval = line;
+
+                free (line);
+              }
+            else
+              eof = true;
+
+            break;
+          }
+        catch (command_editor::interrupt_exception&)
+          {
+            // Is this right?
+            std::cout << "\n";
+
+            // Try again...
+          }
       }
-    else
-      eof = true;
-
-    END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
     return retval;
   }
@@ -782,6 +795,17 @@ namespace octave
     ::octave_rl_done (arg);
   }
 
+  void
+  gnu_readline::do_handle_interrupt_signal (void)
+  {
+    octave_signal_caught = 0;
+    octave_interrupt_state = 0;
+
+    ::octave_rl_recover_from_interrupt ();
+
+    throw command_editor::interrupt_exception ();
+  }
+
   int
   gnu_readline::operate_and_get_next (int /* count */, int /* c */)
   {
@@ -1064,7 +1088,11 @@ namespace octave
         make_command_editor ();
 
         if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+          {
+            instance->set_event_hook (event_handler);
+
+            singleton_cleanup_list::add (cleanup_instance);
+          }
       }
 
     if (! instance)
@@ -1131,6 +1159,9 @@ namespace octave
   int
   command_editor::event_handler (void)
   {
+    if (octave_interrupt_state)
+      handle_interrupt_signal ();
+
     event_hook_lock.lock ();
 
     std::set<event_hook_fcn> hook_set (event_hook_set);
@@ -1539,12 +1570,7 @@ namespace octave
   {
     autolock guard (event_hook_lock);
 
-    if (instance_ok ())
-      {
-        event_hook_set.insert (f);
-
-        instance->set_event_hook (event_handler);
-      }
+    event_hook_set.insert (f);
   }
 
   void
@@ -1552,16 +1578,11 @@ namespace octave
   {
     autolock guard (event_hook_lock);
 
-    if (instance_ok ())
-      {
-        auto p = event_hook_set.find (f);
+    auto p = event_hook_set.find (f);
 
-        if (p != event_hook_set.end ())
-          event_hook_set.erase (p);
+    if (p != event_hook_set.end ())
+      event_hook_set.erase (p);
 
-        if (event_hook_set.empty ())
-          instance->restore_event_hook ();
-      }
   }
 
   void
@@ -1627,6 +1648,13 @@ namespace octave
       retval = false;
 
     return retval;
+  }
+
+  void
+  command_editor::handle_interrupt_signal (void)
+  {
+    if (instance_ok ())
+      instance->do_handle_interrupt_signal ();
   }
 
   // Return a string which will be printed as a prompt.  The string may

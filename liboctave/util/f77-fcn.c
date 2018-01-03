@@ -58,13 +58,14 @@ F77_FUNC (xstopx, XSTOPX) (const char *s, F77_CHAR_ARG_LEN_TYPE slen)
   unsigned long slen = desc.mask.len;
 #endif
 
-  f77_exception_encountered = 1;
-
   /* Skip printing message if it is just a single blank character.  */
-  if (s && slen > 0 && ! (slen == 1 && *s == ' '))
-    (*current_liboctave_error_handler) ("%.*s", slen, s);
+  if (! (s && slen > 0 && ! (slen == 1 && *s == ' ')))
+    {
+      s = "unknown error in fortran subroutine";
+      slen = strlen (s);
+    }
 
-  octave_jump_to_enclosing_context ();
+  (*current_liboctave_error_handler) ("%.*s", slen, s);
 
   F77_NORETURN (0)
 }

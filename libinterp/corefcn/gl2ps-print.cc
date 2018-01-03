@@ -440,7 +440,8 @@ namespace octave
                     nwrite = std::fwrite (fcn, 1, strlen (fcn), fp);
                     if (nwrite != strlen (fcn))
                       {
-                        octave::signal_handler ();
+                        // FIXME: is this the best thing to do here?
+                        respond_to_pending_signals ();
                         error ("gl2ps_renderer::draw: internal pipe error");
                       }
                   }
@@ -448,7 +449,8 @@ namespace octave
                 nwrite = std::fwrite (str, 1, nread, fp);
                 if (nwrite != nread)
                   {
-                    signal_handler ();   // Clear SIGPIPE signal
+                    // FIXME: is this the best thing to do here?
+                    respond_to_pending_signals ();   // Clear SIGPIPE signal
                     error ("gl2ps_renderer::draw: internal pipe error");
                   }
               }

@@ -76,7 +76,6 @@ UTIL_SRC = \
   %reldir%/lo-ieee.cc \
   %reldir%/lo-regexp.cc \
   %reldir%/lo-utils.cc \
-  %reldir%/f77-extern.cc \
   %reldir%/quit.cc \
   %reldir%/oct-base64.cc \
   %reldir%/oct-glob.cc \

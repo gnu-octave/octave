@@ -839,7 +839,7 @@ namespace octave
 
     can_interrupt = true;
 
-    octave_signal_hook = signal_handler;
+    octave_signal_hook = respond_to_pending_signals;
     octave_interrupt_hook = nullptr;
     octave_bad_alloc_hook = nullptr;
 
@@ -883,7 +883,7 @@ namespace octave
 
     can_interrupt = true;
 
-    octave_signal_hook = signal_handler;
+    octave_signal_hook = respond_to_pending_signals;
     octave_interrupt_hook = nullptr;
     octave_bad_alloc_hook = nullptr;
 
@@ -937,7 +937,7 @@ namespace octave
 
     can_interrupt = true;
 
-    octave_signal_hook = signal_handler;
+    octave_signal_hook = respond_to_pending_signals;
     octave_interrupt_hook = nullptr;
     octave_bad_alloc_hook = nullptr;
 
@@ -1249,7 +1249,6 @@ namespace octave
   void interpreter::recover_from_exception (void)
   {
     can_interrupt = true;
-    octave_interrupt_immediately = 0;
     octave_interrupt_state = 0;
     octave_signal_caught = 0;
     octave_exception_state = octave_no_exception;

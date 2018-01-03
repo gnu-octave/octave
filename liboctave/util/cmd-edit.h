@@ -40,6 +40,8 @@ namespace octave
   {
   protected:
 
+    class interrupt_exception { };
+
     command_editor (void)
       : command_number (0), interrupted (false), initial_input () { }
 
@@ -220,6 +222,8 @@ namespace octave
 
     static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
+    static void handle_interrupt_signal (void);
+
   protected:
 
     // To use something other than the GNU readline library, derive a new
@@ -349,6 +353,8 @@ namespace octave
     virtual bool do_prefer_env_winsize (bool) { return false; }
 
     virtual void do_interrupt (bool) { }
+
+    virtual void do_handle_interrupt_signal (void) { }
 
     int do_insert_initial_input (void);
 

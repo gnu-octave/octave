@@ -36,55 +36,13 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-/* Hack to stringize macro results. */
-#define xSTRINGIZE(x) #x
-#define STRINGIZE(x) xSTRINGIZE(x)
+/* This macro is obsolete.  */
 
-/* How to print an error for the F77_XFCN macro. */
-
-#define F77_XFCN_ERROR(f, F)                            \
-  (*current_liboctave_error_handler)                    \
-    ("exception encountered in Fortran subroutine %s",  \
-     STRINGIZE (F77_FUNC (f, F)))
-
-/* This can be used to call a Fortran subroutine that might call
-   XSTOPX.  XSTOPX will call lonjmp with current_context.  Once back
-   here, we'll restore the previous context and return.  We may also
-   end up here if an interrupt is processed when the Fortran
-   subroutine is called.  In that case, we resotre the context and go
-   to the top level. */
-
-#define F77_XFCN(f, F, args)                                            \
-  do                                                                    \
-    {                                                                   \
-      octave_jmp_buf saved_context;                                     \
-      sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
-      f77_exception_encountered = 0;                                    \
-      octave_save_current_context (saved_context);                      \
-      if (octave_set_current_context)                                   \
-        {                                                               \
-          octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-          octave_restore_current_context (saved_context);               \
-          if (f77_exception_encountered)                                \
-            F77_XFCN_ERROR (f, F);                                      \
-          else                                                          \
-            octave_rethrow_exception ();                                \
-        }                                                               \
-      else                                                              \
-        {                                                               \
-          octave_interrupt_immediately++;                               \
-          F77_FUNC (f, F) args;                                         \
-          octave_interrupt_immediately--;                               \
-          octave_restore_current_context (saved_context);               \
-        }                                                               \
-    }                                                                   \
-  while (0)
-
-/* So we can check to see if an exception has occurred. */
-OCTAVE_API extern int f77_exception_encountered;
+#define F77_XFCN(f, F, args)                    \
+  F77_FUNC (f, F) args
 
 #if ! defined (F77_FCN)
-#define F77_FCN(f, F) F77_FUNC (f, F)
+#  define F77_FCN(f, F) F77_FUNC (f, F)
 #endif
 
 /*

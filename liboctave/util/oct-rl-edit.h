@@ -182,6 +182,8 @@ extern int octave_rl_ctrl (char);
 
 extern int octave_rl_meta (char);
 
+extern void octave_rl_recover_from_interrupt (void);
+
 #if defined (__cplusplus)
 }
 #endif

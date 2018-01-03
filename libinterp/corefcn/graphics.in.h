@@ -3709,7 +3709,7 @@ public:
       radio_property ztickmode u , "{auto}|manual"
 
       // Octave-specific properties
-      array_property __colormap__ h , Matrix ()
+      array_property __colormap__ hu , Matrix ()
       double_property mousewheelzoom , 0.5
 
       // hidden properties for alignment of subplots
@@ -4115,6 +4115,11 @@ public:
     void set_colormap (const octave_value& val)
     {
       set___colormap__ (val);
+    }
+
+    void update___colormap__ (void)
+    {
+      colormap.run_listeners (POSTSET);
     }
 
     octave_value get_colormap (void) const;

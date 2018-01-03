@@ -133,9 +133,9 @@
 ## @code{FontSize} to which it is attached.  Use @code{set} to override this
 ## if necessary.
 ##
-## A legend is implemented as an additional axes object of the current figure
-## with the @code{tag} property set to @qcode{"legend"}.  Properties of the
-## legend object may be manipulated directly by using @code{set}.
+## A legend is implemented as an additional axes object with the @code{tag}
+## property set to @qcode{"legend"}.  Properties of the legend object may be
+## manipulated directly by using @code{set}.
 ## @end deftypefn
 
 function [hleg, hleg_obj, hplot, labels] = legend (varargin)
@@ -148,11 +148,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (isempty (ca))
       ca = gca ();
     endif
-    fig = ancestor (ca, "figure");
+    hfig = ancestor (ca, "figure");
   else
-    fig = get (0, "currentfigure");
-    if (isempty (fig))
-      fig = gcf ();
+    hfig = get (0, "currentfigure");
+    if (isempty (hfig))
+      hfig = gcf ();
     endif
     ca = gca ();
   endif
@@ -160,9 +160,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   ## Special handling for plotyy which has two axes objects
   if (isprop (ca, "__plotyy_axes__"))
     plty = get (ca, "__plotyy_axes__");
-    if (! all (ishghandle (plty)))
-      error ("legend.m: This should not happen.  File a bug report.");
-    endif
     ca = [ca, plty.'];
     ## Remove duplicates while preserving order
     [~, n] = unique (ca, "first");
@@ -170,9 +167,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   endif
 
   if (nargin > 0 && all (ishghandle (varargin{1})))
+    ## List of plot objects to label given as first argument
     kids = flipud (varargin{1}(:));
     varargin(1) = [];
   else
+    ## Find list of plot objects from axes "children"
     kids = ca;
     kids(strcmp (get (ca, "tag"), "legend")) = [];
     if (isscalar (kids))
@@ -184,17 +183,15 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   nargs = numel (varargin);
   nkids = numel (kids);
 
-  ## Find any existing legend object on figure
+  ## Find any existing legend object associated with axes
   hlegend = [];
-  fkids = get (fig, "children");
-  for i = 1 : numel (fkids)
-    if (strcmp (get (fkids(i), {"type", "tag"}), {"axes", "legend"}))
-      handle = getappdata (fkids(i), "handle");
-      if (any (ismember (handle, ca)))
-        hlegend = fkids(i);
+  for hax = ca
+    try
+      hlegend = get (hax, "__legend_handle__");
+      if (! isempty (hlegend))
         break;
       endif
-    endif
+    end_try_catch
   endfor
 
   orientation = "default";
@@ -397,9 +394,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     endif
   else
     ## Create or modify legend object
-    hobjects = [];
-    hplots = [];
-    text_strings = {};
 
     if (! isempty (hlegend))
       ## Disable callbacks while modifying an existing legend
@@ -503,8 +497,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (isempty (hplots))
       ## Nothing to label
       if (! isempty (hlegend))
-        fkids = get (fig, "children");
-        delete (fkids(fkids == hlegend));
+        delete (hlegend);
         hlegend = [];
         hobjects = [];
         hplots = [];
@@ -582,28 +575,36 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
       linelength = 15;
 
-      ## Create the axes object first
-      oldfig = get (0, "currentfigure");
-      if (oldfig != fig)
-        set (0, "currentfigure", fig);
+      ## Preamble code to restore figure and axes after legend creation
+      origfig = get (0, "currentfigure");
+      if (origfig != hfig)
+        set (0, "currentfigure", hfig);
       else
-        oldfig = [];
+        origfig = [];
       endif
-      curaxes = get (fig, "currentaxes");
+      origaxes = get (hfig, "currentaxes");
       unwind_protect
         ud = ancestor (hplots, "axes");
         if (! isscalar (ud))
           ud = unique ([ud{:}]);
         endif
+        hpar = get (ud(1), "parent");
+
         if (isempty (hlegend))
           ## Create a legend object (axes + new properties)
           addprops = true;
-          hlegend = axes ("tag", "legend",
+          hlegend = axes ("parent", hpar, "tag", "legend",
                           "box", box,
                           "xtick", [], "ytick", [],
                           "xlim", [0, 1], "ylim", [0, 1],
                           "activepositionproperty", "position");
-          setappdata (hlegend, "handle", ud);
+          setappdata (hlegend, "__axes_handle__", ud);
+          try
+            addproperty ("__legend_handle__", ud(1), "handle", hlegend);
+          catch
+            set (ud(1), "__legend_handle__", hlegend);
+          end_try_catch
+
           ## Inherit fontsize from current axis
           ## "fontunits" should be first because it affects interpretation
           ## of "fontsize" property.
@@ -618,11 +619,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           axes (hlegend);
           delete (get (hlegend, "children"));
           ## Hack: get list of hplots for which addlistener has been called.
-          old_hplots = [ get(hlegend, "deletefcn"){6:end} ];
+          old_hplots = get (hlegend, "deletefcn"){6};
         endif
 
         if (addprops)
           ## Only required for a newly created legend object
+          ## FIXME: "autoupdate" is not implemented.
           addproperty ("autoupdate", hlegend, "radio", "{on}|off");
           addproperty ("edgecolor", hlegend, "color", [0.15, 0.15, 0.15]);
           addproperty ("textcolor", hlegend, "color", [0, 0, 0]);
@@ -720,7 +722,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           lpos = [0, 0, num1 * xstep, num2 * ystep];
         endif
 
-        gnuplot = strcmp (get (fig, "__graphics_toolkit__"), "gnuplot");
+        gnuplot = strcmp (get (hfig, "__graphics_toolkit__"), "gnuplot");
         if (gnuplot)
           ## gnuplot places the key (legend) at edge of the figure window.
           ## OpenGL places the legend box at edge of the unmodified axes
@@ -984,13 +986,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
         ## Add an invisible text object to original axis
         ## that, when it is destroyed, will remove the legend.
-        props = {"parent", ca(1), "tag", "deletelegend", ...
-                 "visible", "off", "handlevisibility", "off", ...
-                 "xliminclude", "off", "yliminclude", "off", ...
-                 "zliminclude", "off"};
-        htdel = findall (ca(1), "tag", "deletelegend", "type", "text");
+        htdel = findall (ca(1), "-depth", 1, "tag", "deletelegend",
+                                "type", "text");
         if (isempty (htdel))
-          htdel = text (0, 0, "", props{:});
+          htdel = text (0, 0, "", "parent", ca(1), "tag", "deletelegend", 
+                        "visible", "off", "handlevisibility", "off",
+                        "xliminclude", "off", "yliminclude", "off",
+                        "zliminclude", "off");
           set (htdel, "deletefcn", {@cb_axes_deleted, ca, hlegend});
         endif
         if (isprop (hlegend, "unmodified_axes_position"))
@@ -1094,10 +1096,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           addlistener (hlegend, "string", @cb_legend_update);
           addlistener (hlegend, "textposition", @cb_legend_update);
         endif
+
       unwind_protect_cleanup
-        set (fig, "currentaxes", curaxes);
-        if (! isempty (oldfig))
-          set (0, "currentfigure", oldfig);
+        set (hfig, "currentaxes", origaxes);
+        if (! isempty (origfig))
+          set (0, "currentfigure", origfig);
         endif
       end_unwind_protect
     endif
@@ -1122,9 +1125,9 @@ function cb_legend_update (hleg, ~)
   if (! recursive)
     recursive = true;
     unwind_protect
-      hax = getappdata (hleg, "handle");
+      hax = getappdata (hleg, "__axes_handle__");
       ## Hack.  Maybe store this somewhere else such as appdata.
-      hplots = [ get(hleg, "deletefcn"){6:end} ];
+      hplots = get (hleg, "deletefcn"){6};
       text_strings = get (hleg, "string");
       position = get (hleg, "unmodified_axes_position");
       outerposition = get (hleg, "unmodified_axes_outerposition");
@@ -1200,6 +1203,7 @@ function cb_legend_location (hleg, d)
   endif
 
 endfunction
+
 ## Axes to which legend was attached is being deleted/reset.  Delete legend.
 function cb_axes_deleted (~, ~, ca, hlegend)
   if (isaxes (hlegend))
@@ -1256,6 +1260,9 @@ function cb_restore_axes (~, ~, ca, pos, outpos, htdel, hplots)
       dellistener (hplots(i), "displayname");
     endif
   endfor
+
+  ## Nullify legend link (can't delete properties yet)
+  set (ca(1), "__legend_handle__", []);
 
 endfunction
 
@@ -1748,10 +1755,10 @@ endfunction
 %!   hax2 = subplot (1,2,2);
 %!   plot (1:10);
 %!   hleg1 = legend (hax1, "foo");
-%!   assert (getappdata (hleg1, "handle"), hax1);
+%!   assert (getappdata (hleg1, "__axes_handle__"), hax1);
 %!   assert (gca (), hax2);
 %!   hleg2 = legend ("bar");
-%!   assert (getappdata (hleg2, "handle"), gca ());
+%!   assert (getappdata (hleg2, "__axes_handle__"), gca ());
 %! unwind_protect_cleanup
 %!   close (h);
 %! end_unwind_protect

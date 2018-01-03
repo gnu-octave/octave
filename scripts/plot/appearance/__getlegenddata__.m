@@ -25,7 +25,7 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
 
   hplots = [];
   text_strings = {};
-  ca = getappdata (hlegend, "handle");
+  ca = getappdata (hlegend, "__axes_handle__");
   if (numel (ca) == 1)
     kids = get (ca, "children");
   else

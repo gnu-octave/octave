@@ -242,7 +242,6 @@ function h = __do_errplot__ (fstr, hax, varargin)
     addlistener (hg, "xudata", fcn);
     addlistener (hg, "format", fcn);
 
-    hax = ancestor (hg, "axes");
     addlistener (hax, "xscale", fcn);
     addlistener (hax, "yscale", fcn);
 
@@ -252,17 +251,11 @@ function h = __do_errplot__ (fstr, hax, varargin)
 
   ## Process legend key
   if (! isempty (fmt.key) && nplots > 0)
-    hlegend = [];
-    fkids = get (gcf (), "children");
-    for i = 1 : numel (fkids)
-      if (strcmp (get (fkids(i), {"type", "tag"}), {"axes", "legend"}))
-        leghandle = getappdata (fkids(i), "handle");
-        if (! isempty (intersect (leghandle, gca ())))
-          hlegend = fkids(i);
-          break;
-        endif
-      endif
-    endfor
+    try
+      hlegend = get (hax, "__legend_handle__");
+    catch
+      hlegend = [];
+    end_try_catch
 
     if (isempty (hlegend))
       hlgnd = [];

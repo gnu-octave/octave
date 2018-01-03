@@ -49,11 +49,11 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
         type = get (kids(i), "type");
         switch (type)
           case "axes"
-            if (strcmpi (get (kids (i), "tag"), "legend"))
+            if (strcmp (get (kids(i), "tag"), "legend"))
               ## This is so ugly.  If there was a way of getting
               ## gnuplot to give us the text extents of strings
               ## then we could get rid of this mess.
-              lh = getappdata (kids(i), "handle");
+              lh = getappdata (kids(i), "__axes_handle__");
               if (isscalar (lh))
                 ## We have a legend with a single parent.  It'll be handled
                 ## below as a gnuplot key to the axis it corresponds to.
@@ -155,19 +155,12 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                 endif
                 ## Find if this axes has an associated legend axes and pass it
                 ## to __gnuplot_draw_axes__
-                hlegend = [];
-                fkids = get (h, "children");
-                for j = 1 : numel (fkids)
-                  if (ishghandle (fkids (j))
-                      && strcmp (get (fkids(j), {"type", "tag"}),
-                                 {"axes", "legend"}))
-                    leghandle = getappdata (fkids(j), "handle");
-                    if (! isempty (intersect (leghandle, kids(i))))
-                      hlegend = get (fkids(j));
-                      break;
-                    endif
-                  endif
-                endfor
+                try
+                  hlegend = get (kids(i), "__legend_handle__");
+                  hlegend = get (hlegend);
+                catch
+                  hlegend = [];
+                end_try_catch
                 __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced,
                                        bg_is_set, fg_is_set, hlegend);
               unwind_protect_cleanup

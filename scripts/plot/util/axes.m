@@ -108,9 +108,9 @@ function restack_axes (h, cf)
     if (any (hleg))
       ## Get axes handles associated with legend
       if (isscalar (hleg))
-        hlegaxes = getappdata (hleg, "handle");
+        hlegaxes = getappdata (hleg, "__axes_handle__");
       else
-        hlegaxes = [getappdata(hleg, "handle"){:}](:);
+        hlegaxes = [getappdata(hleg, "__axes_handle__"){:}](:);
       endif
       hleg = hleg(hlegaxes == h);
       h = [hleg; h];

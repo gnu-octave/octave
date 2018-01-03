@@ -79,33 +79,31 @@ function s = hdl2struct (h)
     if (strcmp (s.type, "axes") && isempty (get (h, "tag")))
       ## look for legends and colorbars among axes brothers and add them
       ## to the children list
-
-      par = get (h, "parent");
-      lg = findobj (par, "-depth", 1, "tag", "legend");
-      if (! isempty (lg))
-        ## identify legends which are attached to this axes.
-        idx = ([[get(lg).userdata].handle] == h);
-        lg = lg(idx);
-      endif
+      try
+        lg = get (h, "__legend_handle__");
+      catch
+        lg = [];
+      end_try_catch
       nlg = length (lg);
       if (nlg == 1)
         ii += 1;
         s.children(ii) = hdl2struct (lg);
       elseif (nlg > 1)
+        ## FIXME: Unreachable code now.  Delete?
         error ("hdl2struct: more than one legend found");
       endif
 
-      cb = findobj (par, "-depth", 1, "tag", "colorbar");
-      if (! isempty (cb))
-        ## identify colorbars which are attached to this axes.
-        idx = ([get(cb).axes] == h);
-        cb = cb(idx);
-      endif
+      try
+        cb = get (h, "__colorbar_handle__");
+      catch
+        cb = [];
+      end_try_catch
       ncb = length (cb);
       if (ncb == 1)
         ii += 1;
         s.children(ii) = hdl2struct (cb);
       elseif (ncb > 1)
+        ## FIXME: Unreachable code now.  Delete?
         error ("hdl2struct: more than one colorbar found");
       endif
     endif

@@ -354,9 +354,7 @@ function [h, fontsize] = get_figure_text_objs (opts)
   ## Do not change the text objects fontsizes for the children of a
   ## legend axes.  These will be handled by the fontsize listener.
   is_legend_key_string = strcmp (get (hp, "tag"), "legend") ...
-                       & isprop (hp, "string") ...
-                       & isprop (hp, "location") ...
-                       & strcmp (get (hp, "type"), "axes");
+                         & strcmp (get (hp, "type"), "axes");
   h(is_legend_key_string) = [];
   fontsize = get (h, "fontsize");
   switch (numel (fontsize))

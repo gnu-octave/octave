@@ -617,6 +617,7 @@ namespace QtHandles
       {
         graphics_object figObj (obj.get_ancestor ("figure"));
 
+        // Any click in a figure canvas makes it current
         if (figObj)
           {
             graphics_object root = gh_manager::get_object (0);
@@ -626,7 +627,15 @@ namespace QtHandles
 
         graphics_object currentObj, axesObj;
 
+        // Retrieve selected object.   
         select_object (obj, event, currentObj, axesObj);
+
+        // currentObj may be invalid if, e.g., all objects under the mouse
+        // click had "hittest" -> "off" or "pickableparts" -> "none".  In that
+        // case, replace with underlying figObj which always accepts mouse
+        // clicks.
+        if (! currentObj.valid_object ())
+          currentObj = figObj;
 
         if (axesObj)
           {
@@ -635,19 +644,7 @@ namespace QtHandles
                 && axesObj.get_properties ().get_tag () != "colorbar")
               Utils::properties<figure> (figObj)
               .set_currentaxes (axesObj.get_handle ().as_octave_value ());
-            if (! currentObj)
-              currentObj = axesObj;
           }
-
-        if (! currentObj)
-          currentObj = obj;
-
-        if (currentObj.get_properties ().handlevisibility_is ("on"))
-          Utils::properties<figure> (figObj)
-          .set_currentobject (currentObj.get_handle ().as_octave_value ());
-        else
-          Utils::properties<figure> (figObj).set_currentobject (
-            octave::numeric_limits<double>::NaN ());
 
         Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
@@ -659,33 +656,38 @@ namespace QtHandles
         switch (newMouseMode)
           {
           case NoMode:
-            gh_manager::post_set (figObj.get_handle (), "selectiontype",
-                                  Utils::figureSelectionType (event, isdblclick), false);
+            {
+              // Update the figure "currentobject"
+              auto& fprop = Utils::properties<figure> (figObj);
+            
+              if (currentObj.get_properties ().handlevisibility_is ("on"))
+                fprop.set_currentobject (currentObj.get_handle ()
+                                         .as_octave_value ());
+              else
+                fprop.set_currentobject (Matrix ());
+            
+              // Update figure "selectiontype" and "currentpoint" 
+              gh_manager::post_set (
+                                    figObj.get_handle (), "selectiontype",
+                                    Utils::figureSelectionType (event, isdblclick), false);
 
-            updateCurrentPoint (figObj, obj, event);
+              updateCurrentPoint (figObj, obj, event);
 
-            gh_manager::post_callback (figObj.get_handle (),
-                                       "windowbuttondownfcn",
-                                       button_number (event));
-
-            if (currentObj.get ("buttondownfcn").isempty ())
-              {
-                graphics_object parentObj =
-                  gh_manager::get_object (currentObj.get_parent ());
-
-                if (parentObj.valid_object () && parentObj.isa ("hggroup"))
-                  gh_manager::post_callback (parentObj.get_handle (),
-                                             "buttondownfcn",
-                                             button_number (event));
-              }
-            else
-              gh_manager::post_callback (currentObj.get_handle (),
-                                         "buttondownfcn",
+              gh_manager::post_callback (figObj.get_handle (),
+                                         "windowbuttondownfcn",
                                          button_number (event));
 
-            if (event->button () == Qt::RightButton)
-              ContextMenu::executeAt (currentObj.get_properties (),
-                                      event->globalPos ());
+              // Execute the "buttondownfcn" of the selected object
+              if (! currentObj.get ("buttondownfcn").isempty ())
+                gh_manager::post_callback (currentObj.get_handle (),
+                                           "buttondownfcn",
+                                           button_number (event));
+
+              // Show context menu of the selected object
+              if (event->button () == Qt::RightButton)
+                ContextMenu::executeAt (currentObj.get_properties (),
+                                        event->globalPos ());
+            }
             break;
 
           case TextMode:

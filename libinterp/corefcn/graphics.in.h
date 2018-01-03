@@ -2366,7 +2366,7 @@ protected:
     bool_property hittest , "on"
     bool_property interruptible , "on"
     handle_property parent fs , p
-    radio_property pickableparts , "{visible}|none"
+    radio_property pickableparts , "{visible}|all|none"
     bool_property selected , "off"
     bool_property selectionhighlight , "on"
     string_property tag s , ""
@@ -3158,9 +3158,6 @@ public:
       callback_property windowscrollwheelfcn , Matrix ()
       radio_property windowstyle , "{normal}|modal|docked"
 
-      // Base properties which don't exist on object
-      // radio_property pickableparts h , "{visible}|none"
-
       // Octave-specific properties
       mutable string_property __gl_extensions__ hr , ""
       mutable string_property __gl_renderer__ hr , ""
@@ -3639,7 +3636,6 @@ public:
       radio_property minorgridlinestyle , "{:}|-|--|-.|none"
       radio_property nextplot , "{replace}|add|replacechildren"
       array_property outerposition u , default_axes_outerposition ()
-      radio_property pickableparts , "{visible}|all|none"
       row_vector_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       array_property position u , default_axes_position ()
@@ -4313,7 +4309,6 @@ public:
       color_property markeredgecolor , color_property (radio_values ("{auto}|none"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("auto|{none}"), color_values (0, 0, 0))
       double_property markersize , 6
-      radio_property pickableparts , "{visible}|all|none"
       row_vector_property xdata u , default_data ()
       string_property xdatasource , ""
       row_vector_property ydata u , default_data ()
@@ -4429,7 +4424,6 @@ public:
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       double_property margin , 2
-      radio_property pickableparts , "{visible}|all|none"
       array_property position smu , Matrix (1, 3, 0.0)
       double_property rotation mu , 0
       text_label_property string u , ""
@@ -4595,7 +4589,6 @@ public:
       array_property cdata u , default_image_cdata ()
       radio_property cdatamapping al , "scaled|{direct}"
       radio_property erasemode h , "{normal}|none|xor|background"
-      radio_property pickableparts , "{visible}|all|none"
       row_vector_property xdata mu , Matrix ()
       row_vector_property ydata mu , Matrix ()
       // hidden properties for limit computation
@@ -4883,7 +4876,6 @@ public:
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
       radio_property normalmode hsg , "{auto}|manual"
-      radio_property pickableparts , "{visible}|all|none"
       double_property specularcolorreflectance , 1.0
       double_property specularexponent , 10.0
       double_property specularstrength , 0.9
@@ -5096,7 +5088,6 @@ public:
       double_property markersize , 6
       radio_property meshstyle , "{both}|row|column"
       radio_property normalmode hsg , "{auto}|manual"
-      radio_property pickableparts , "{visible}|all|none"
       double_property specularcolorreflectance , 1
       double_property specularexponent , 10
       double_property specularstrength , 0.9

@@ -625,7 +625,8 @@ namespace octave
   opengl_renderer::opengl_renderer (void)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
       zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-      camera_pos (), camera_dir (), interpreter ("none"), txt_renderer ()
+      camera_pos (), camera_dir (), interpreter ("none"), txt_renderer (), 
+      selecting (false)
   {
     // This constructor will fail if we don't have OpenGL or if the data
     // types we assumed in our public interface aren't compatible with the
@@ -1389,7 +1390,9 @@ namespace octave
 
     int xstate = props.get_xstate ();
 
-    if (props.is_visible () && xstate != AXE_DEPTH_DIR)
+    if (xstate != AXE_DEPTH_DIR
+        && (props.is_visible () 
+            || (selecting && props.pickableparts_is ("all"))))
       {
         int zstate = props.get_zstate ();
         bool x2Dtop = props.get_x2Dtop ();
@@ -1570,7 +1573,9 @@ namespace octave
 
     int ystate = props.get_ystate ();
 
-    if (ystate != AXE_DEPTH_DIR && props.is_visible ())
+    if (ystate != AXE_DEPTH_DIR && props.is_visible ()
+        && (props.is_visible () 
+            || (selecting && props.pickableparts_is ("all"))))
       {
         int zstate = props.get_zstate ();
         bool y2Dright = props.get_y2Dright ();
@@ -1750,7 +1755,9 @@ namespace octave
   {
     int zstate = props.get_zstate ();
 
-    if (zstate != AXE_DEPTH_DIR && props.is_visible ())
+    if (zstate != AXE_DEPTH_DIR && props.is_visible ()
+        && (props.is_visible () 
+            || (selecting && props.pickableparts_is ("all"))))
       {
         bool xySym = props.get_xySym ();
         bool zSign = props.get_zSign ();
@@ -1960,14 +1967,17 @@ namespace octave
       {
         graphics_object go = gh_manager::get_object (children(i));
 
-        if (go.get_properties ().is_visible ())
+        base_properties p = go.get_properties ();
+
+        if (p.is_visible ()
+            || (selecting && p.pickableparts_is ("all")))
           {
-            if (go.isa ("light"))
+            if (go.isa ("light") && ! selecting)
               {
                 if (num_lights < max_lights)
                   {
                     current_light = GL_LIGHT0 + num_lights;
-                    set_clipping (go.get_properties ().is_clipping ());
+                    set_clipping (p.is_clipping ());
                     draw (go);
                     num_lights++;
                   }
@@ -1976,9 +1986,10 @@ namespace octave
                                    "light: Maximum number of lights (%d) in these axes is "
                                    "exceeded.", max_lights);
               }
-            else if (go.isa ("hggroup"))
+            else if (go.isa ("hggroup")
+                     && ! (selecting && p.pickableparts_is ("none")))
               draw_all_lights (go.get_properties (), obj_list);
-            else
+            else if (! (selecting && p.pickableparts_is ("none")))
               obj_list.push_back (go);
           }
       }
@@ -2090,6 +2101,11 @@ namespace octave
     if (! props.is_visible () && props.get_tag () == "legend")
       return;
 
+    // Don't draw the axes and its children if we are in selection and
+    // pickable parts is "none".
+    if (selecting && props.pickableparts_is ("none"))
+      return;
+
     static double floatmax = std::numeric_limits<float>::max ();
 
     double x_min = props.get_x_min ();
@@ -2154,6 +2170,8 @@ namespace octave
   opengl_renderer::draw_line (const line::properties& props)
   {
 #if defined (HAVE_OPENGL)
+
+    bool draw_all = selecting && props.pickableparts_is ("all");
 
     Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
     Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
@@ -2251,11 +2269,15 @@ namespace octave
       {
         Matrix lc, fc;
 
-        if (props.markeredgecolor_is ("auto"))
+        if (draw_all)
+          lc = Matrix (1, 3, 0.0);
+        else if (props.markeredgecolor_is ("auto"))
           lc = props.get_color_rgb ();
         else if (! props.markeredgecolor_is ("none"))
           lc = props.get_markeredgecolor_rgb ();
 
+        if (draw_all)
+          fc = Matrix (1, 3, 0.0);
         if (props.markerfacecolor_is ("auto"))
           fc = props.get_color_rgb ();
         else if (! props.markerfacecolor_is ("none"))
@@ -2293,6 +2315,8 @@ namespace octave
   opengl_renderer::draw_surface (const surface::properties& props)
   {
 #if defined (HAVE_OPENGL)
+
+    bool draw_all = selecting && props.pickableparts_is ("all");
 
     const Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
     const Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
@@ -2378,7 +2402,7 @@ namespace octave
     if (fc_mode == TEXTURE)
       tex = opengl_texture::create (props.get_color_data ());
 
-    if (! props.facecolor_is ("none"))
+    if (draw_all || ! props.facecolor_is ("none"))
       {
         if (fa_mode == 0)
           {
@@ -2835,11 +2859,13 @@ namespace octave
         // FIXME: check what to do with marker facecolor set to auto
         //        and facecolor set to none.
 
-        bool do_edge = ! props.markeredgecolor_is ("none");
-        bool do_face = ! props.markerfacecolor_is ("none");
+        bool do_edge = draw_all || ! props.markeredgecolor_is ("none");
+        bool do_face = draw_all || ! props.markerfacecolor_is ("none");
 
-        Matrix mecolor = props.get_markeredgecolor_rgb ();
-        Matrix mfcolor = props.get_markerfacecolor_rgb ();
+        Matrix mecolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markeredgecolor_rgb ());
+        Matrix mfcolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markerfacecolor_rgb ());
         Matrix cc (1, 3, 0.0);
 
         if (mecolor.isempty () && props.markeredgecolor_is ("auto"))
@@ -2922,6 +2948,7 @@ namespace octave
         return;
       }
 
+    bool draw_all = selecting && props.pickableparts_is ("all");
     const Matrix f = props.get_faces ().matrix_value ();
     const Matrix v = xform.scale (props.get_vertices ().matrix_value ());
     Matrix c;
@@ -2940,7 +2967,7 @@ namespace octave
     bool has_normals = (n.rows () == nv);
 
     int fc_mode = ((props.facecolor_is ("none")
-                    || props.facecolor_is_rgb ()) ? 0 :
+                    || props.facecolor_is_rgb () || draw_all) ? 0 :
                    (props.facecolor_is ("flat") ? 1 : 2));
     int fl_mode = (props.facelighting_is ("none") ? 0 :
                    (props.facelighting_is ("flat") ? 1 : 2));
@@ -2989,21 +3016,24 @@ namespace octave
         count_f(i) = count;
       }
 
-    if (fc_mode > 0 || ec_mode > 0)
+    if (draw_all || fc_mode > 0 || ec_mode > 0)
       {
-        c = props.get_color_data ().matrix_value ();
+        if (draw_all)
+          c = Matrix (1, 3, 0.0);
+        else
+          c = props.get_color_data ().matrix_value ();
 
         if (c.rows () == 1)
           {
             // Single color specifications, we can simplify a little bit
 
-            if (fc_mode > 0)
+            if (draw_all || fc_mode > 0)
               {
                 fcolor = c;
                 fc_mode = UNIFORM;
               }
 
-            if (ec_mode > 0)
+            if (draw_all || ec_mode > 0)
               {
                 ecolor = c;
                 ec_mode = UNIFORM;
@@ -3077,7 +3107,7 @@ namespace octave
     if (fl_mode > 0 || el_mode > 0)
       glMaterialf (LIGHT_MODE, GL_SHININESS, se);
 
-    if (! props.facecolor_is ("none"))
+    if (draw_all || ! props.facecolor_is ("none"))
       {
         // FIXME: adapt to double-radio property
         if (fa_mode == 0)
@@ -3176,7 +3206,8 @@ namespace octave
           }
       }
 
-    if (! props.edgecolor_is ("none") && ! props.linestyle_is ("none"))
+    if (draw_all
+        || (! props.edgecolor_is ("none") && ! props.linestyle_is ("none")))
       {
         // FIXME: adapt to double-radio property
         if (props.get_edgealpha_double () == 1)
@@ -3310,13 +3341,15 @@ namespace octave
         && ! (props.markeredgecolor_is ("none")
               && props.markerfacecolor_is ("none")))
       {
-        bool do_edge = ! props.markeredgecolor_is ("none");
-        bool do_face = ! props.markerfacecolor_is ("none");
+        bool do_edge = draw_all || ! props.markeredgecolor_is ("none");
+        bool do_face = draw_all || ! props.markerfacecolor_is ("none");
 
-        Matrix mecolor = props.get_markeredgecolor_rgb ();
-        Matrix mfcolor = props.get_markerfacecolor_rgb ();
+        Matrix mecolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markeredgecolor_rgb ());
+        Matrix mfcolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markerfacecolor_rgb ());
 
-        bool has_markerfacecolor = false;
+        bool has_markerfacecolor = draw_all || false;
 
         if ((mecolor.isempty () && ! props.markeredgecolor_is ("none"))
             || (mfcolor.isempty () && ! props.markerfacecolor_is ("none")))

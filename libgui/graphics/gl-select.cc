@@ -140,7 +140,9 @@ namespace octave
 
     object_map[name] = go;
     glPushName (name);
+    set_selecting (true);
     opengl_renderer::draw (go, toplevel);
+    set_selecting (false);
     glPopName ();
   }
 

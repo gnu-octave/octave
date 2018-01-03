@@ -86,20 +86,24 @@ namespace octave
     virtual void init_gl_context (bool enhanced, const Matrix& backgroundColor);
     virtual void setup_opengl_transformation (const axes::properties& props);
 
+    virtual void set_clipbox (double x1, double x2, double y1, double y2,
+                              double z1, double z2);
+    virtual void set_clipping (bool on);
+    virtual void set_font (const base_properties& props);
     virtual void set_color (const Matrix& c);
-    virtual void set_polygon_offset (bool on, float offset = 0.0f);
+    virtual void set_interpreter (const caseless_str& interp)
+    {
+      interpreter = interp;
+    }
     virtual void set_linewidth (float w);
     virtual void set_linestyle (const std::string& s, bool stipple = false,
                                 double linewidth = 0.5);
     virtual void set_linecap (const std::string&) { };
     virtual void set_linejoin (const std::string&) { };
-    virtual void set_clipbox (double x1, double x2, double y1, double y2,
-                              double z1, double z2);
-    virtual void set_clipping (bool on);
-    virtual void set_font (const base_properties& props);
-    virtual void set_interpreter (const caseless_str& interp)
+    virtual void set_polygon_offset (bool on, float offset = 0.0f);
+    virtual void set_selecting (bool on)
     {
-      interpreter = interp;
+      selecting = on;
     }
 
     virtual void init_marker (const std::string& m, double size, float width);
@@ -216,6 +220,8 @@ namespace octave
     unsigned int current_light;
     int max_lights;
 
+    // Indicate we are drawing for selection purpose
+    bool selecting;
   private:
     class patch_tesselator;
   };

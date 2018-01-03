@@ -165,11 +165,30 @@ is deleted.\n\n__fcnmsg__";
 handle is not visible in its parent's \"children\" property.";
 
       case "hittest"
+        s.doc = "Specify whether __objname__ processes mouse events \
+or passes them to ancestors of the object.  When enabled, the object may \
+respond to mouse clicks by evaluating the @qcode{\"buttondownfcn\"}, showing \
+the uicontextmenu, and eventually becoming the root \
+@qcode{\"currentobject\"}.  This property is only relevant when the object \
+can accept mouse clicks which is determined by the @qcode{\"pickableparts\"} \
+property.  @xref{XREF__objname__pickableparts, , @w{pickableparts property}}.";
+
       case "interruptible"
       case "parent"
         s.doc = "Handle of the parent graphics object.";
         s.valid = valid_handle;
 
+      case "pickableparts"
+        s.doc = "Specify whether __objname__ will accept mouse clicks.  \
+By default, __prop__ is @qcode{\"visible\"} and only visible parts of the \
+__objname__ or its children may react to mouse clicks.  When __prop__ is \
+@qcode{\"all\"} both visible and invisible parts (or children) may react to \
+mouse clicks.  When __prop__ is @qcode{\"none\"} mouse clicks on the object \
+are ignored and transmitted to any objects underneath this one.  When an \
+object is configured to accept mouse clicks the @qcode{\"hittest\"} property \
+will determine how they are processed.  \
+@xref{XREF__objname__hittest, , @w{hittest property}}.";
+        
       case "selected"
       case "selectionhighlight"
       case "tag"
@@ -209,6 +228,12 @@ not rendered on screen.";
       case "parent"
         s.doc = "Root figure has no parent graphics object.  __prop__ \
 is always empty.";
+
+      case "hittest"
+        s.doc = doc_unused;
+        
+      case "pickableparts"
+        s.doc = doc_unused;
 
       ## Specific properties
       case "callbackobject"
@@ -294,6 +319,9 @@ are visible in their parents' children list, regardless of the value of their \
     switch (field)
       ## Overridden shared properties
       case "clipping"
+        s.doc = doc_unused;
+
+      case "pickableparts"
         s.doc = doc_unused;
 
       ## Specific properties
@@ -720,9 +748,6 @@ left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesposition, , @w{position property}}.";
         s.valid = valid_4elvec;
-
-      case "pickableparts"
-        s.doc = doc_unused;
 
       case "plotboxaspectratio"
         s.doc = "@xref{XREFpbaspect, , pbaspect function}.  \

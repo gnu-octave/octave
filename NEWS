@@ -63,6 +63,9 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     explicitly instructed to perform an economy factorization by using a
     final argument of 0.
 
+ ** The graphic object property "PickableParts" has been implemented which
+    controls whether an object can accept mouse clicks.
+
  ** Text objects now implement the properties "BackgroundColor",
     "EdgeColor", "LineStyle", "LineWidth", and "Margin".
 

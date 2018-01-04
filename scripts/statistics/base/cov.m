@@ -31,13 +31,15 @@
 ## $$
 ## \sigma_{ij} = {1 \over N-1} \sum_{i=1}^N (x_i - \bar{x})(y_i - \bar{y})
 ## $$
-## where $\bar{x}$ and $\bar{y}$ are the mean values of $x$ and $y$.
+## where $\bar{x}$ and $\bar{y}$ are the mean values of @var{x} and @var{y}.
 ## @end tex
 ## @ifnottex
 ##
 ## @example
-## cov (x) = 1/N-1 * SUM_i (x(i) - mean(x)) * (y(i) - mean(y))
+## cov (@var{x}) = 1/(N-1) * SUM_i (@var{x}(i) - mean(@var{x})) * (@var{y}(i) - mean(@var{y}))
 ## @end example
+##
+## where @math{N} is the length of the @var{x} and @var{y} vectors.
 ##
 ## @end ifnottex
 ##

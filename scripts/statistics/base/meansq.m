@@ -27,18 +27,21 @@
 ## $$
 ## {\rm meansq} (x) = {\sum_{i=1}^N {x_i}^2 \over N}
 ## $$
-## where $\bar{x}$ is the mean value of $x$.
+## where $N$ is the number of elements of @var{x}.
+##
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-## meansq (x) = 1/N SUM_i x(i)^2
+## meansq (@var{x}) = 1/N SUM_i @var{x}(i)^2
 ## @end group
 ## @end example
 ##
+## where @math{N} is the length of the @var{x} vector.
+##
 ## @end ifnottex
-## For matrix arguments, return a row vector containing the mean square
+## If @var{x} is a matrix, return a row vector containing the mean square
 ## of each column.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.

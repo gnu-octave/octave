@@ -26,8 +26,20 @@
 ## When @var{x} is a vector, the function counts the number of elements of
 ## @var{x} that fall in the histogram bins defined by @var{edges}.  This
 ## must be a vector of monotonically increasing values that define the edges
-## of the histogram bins.  @code{@var{n}(k)} contains the number of elements
-## in @var{x} for which @code{@var{edges}(k) <= @var{x} < @var{edges}(k+1)}.
+## of the histogram bins.
+## @tex
+## $n(k)$
+## @end tex
+## @ifnottex
+## @code{@var{n}(k)}
+## @end ifnottex
+## contains the number of elements in @var{x} for which
+## @tex
+## $@var{edges}(k) <= @var{x} < @var{edges}(k+1)$.
+## @end tex
+## @ifnottex
+## @code{@var{edges}(k) <= @var{x} < @var{edges}(k+1)}.
+## @end ifnottex
 ## The final element of @var{n} contains the number of elements of @var{x}
 ## exactly equal to the last element of @var{edges}.
 ##

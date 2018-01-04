@@ -20,14 +20,39 @@
 ## @deftypefn  {} {} spearman (@var{x})
 ## @deftypefnx {} {} spearman (@var{x}, @var{y})
 ## @cindex Spearman's Rho
-## Compute Spearman's rank correlation coefficient @var{rho}.
+## Compute Spearman's rank correlation coefficient
+## @tex
+## $\rho$.
+## @end tex
+## @ifnottex
+## @var{rho}.
+## @end ifnottex
 ##
-## For two data vectors @var{x} and @var{y}, Spearman's @var{rho} is the
-## correlation coefficient of the ranks of @var{x} and @var{y}.
+## For two data vectors @var{x} and @var{y}, Spearman's
+## @tex
+## $\rho$
+## @end tex
+## @ifnottex
+## @var{rho}
+## @end ifnottex
+## is the correlation coefficient of the ranks of @var{x} and @var{y}.
 ##
-## If @var{x} and @var{y} are drawn from independent distributions, @var{rho}
-## has zero mean and variance @code{1 / (n - 1)}, and is asymptotically
-## normally distributed.
+## If @var{x} and @var{y} are drawn from independent distributions,
+## @tex
+## $\rho$
+## @end tex
+## @ifnottex
+## @var{rho}
+## @end ifnottex
+## has zero mean and variance
+## @tex
+## $1 / (N - 1)$,
+## @end tex
+## @ifnottex
+## @code{1 / (N - 1)},
+## @end ifnottex
+## where @math{N} is the length of the @var{x} and @var{y} vectors, and is
+## asymptotically normally distributed.
 ##
 ## @code{spearman (@var{x})} is equivalent to
 ## @code{spearman (@var{x}, @var{x})}.

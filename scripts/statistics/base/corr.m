@@ -27,13 +27,13 @@
 ## @var{i}-th variable in @var{x} and the @var{j}-th variable in @var{y}.
 ## @tex
 ## $$
-## {\rm corr}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) {\rm std}(y)}
+## {\rm corr}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) \, {\rm std}(y)}
 ## $$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
-## corr (x,y) = cov (x,y) / (std (x) * std (y))
+## corr (@var{x},@var{y}) = cov (@var{x},@var{y}) / (std (@var{x}) * std (@var{y}))
 ## @end example
 ##
 ## @end ifnottex

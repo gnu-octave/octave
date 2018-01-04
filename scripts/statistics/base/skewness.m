@@ -27,9 +27,9 @@
 ## @tex
 ## $$
 ## {\rm skewness} (@var{x}) = {{{1\over N}\,
-##          \sum_{i=1}^N (@var{x}_i - \bar{@var{x}})^3} \over \sigma^3},
+##          \sum_{i=1}^N (x_i - \bar{x})^3} \over \sigma^3},
 ## $$
-## where $N$ is the length of @var{x}, $\bar{@var{x}}$ its mean and $\sigma$
+## where $N$ is the length of @var{x}, $\bar{x}$ its mean and $\sigma$
 ## its (uncorrected) standard deviation.
 ## @end tex
 ## @ifnottex
@@ -52,7 +52,7 @@
 ## @tex
 ## $$
 ## {\rm skewness} (@var{x}) = {\sqrt{N (N - 1)} \over N - 2} \times \,
-##   {{{1 \over N} \sum_{i=1}^N (@var{x}_i - \bar{@var{x}})^3} \over \sigma^3}
+##   {{{1 \over N} \sum_{i=1}^N (x_i - \bar{x})^3} \over \sigma^3}
 ## $$
 ## @end tex
 ## @ifnottex
@@ -64,6 +64,8 @@
 ##                       (N - 2)             std (@var{x}).^3
 ## @end group
 ## @end example
+##
+## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex
 ## The adjusted skewness coefficient is obtained by replacing the sample second

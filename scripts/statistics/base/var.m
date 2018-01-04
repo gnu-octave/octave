@@ -27,15 +27,19 @@
 ## $$
 ## {\rm var} (x) = \sigma^2 = {\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}
 ## $$
-## where $\bar{x}$ is the mean value of $x$.
+## where $\bar{x}$ is the mean value of @var{x} and $N$ is the number of
+## elements of @var{x}.
+##
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-## var (x) = 1/(N-1) SUM_i (x(i) - mean(x))^2
+## var (@var{x}) = 1/(N-1) SUM_i (@var{x}(i) - mean(@var{x}))^2
 ## @end group
 ## @end example
+##
+## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex
 ## If @var{x} is a matrix, compute the variance for each column and return
@@ -53,8 +57,8 @@
 ##   normalizes with @math{N}, this provides the second moment around the mean
 ## @end table
 ##
-## If @math{N==1} the value of @var{opt} is ignored and normalization by
-## @math{N} is used.
+## If @math{N} is equal to 1 the value of @var{opt} is ignored and
+## normalization by @math{N} is used.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ## @seealso{cov, std, skewness, kurtosis, moment}

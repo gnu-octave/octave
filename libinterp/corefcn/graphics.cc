@@ -10223,6 +10223,20 @@ void
 gh_manager::do_execute_listener (const graphics_handle& h,
                                  const octave_value& l)
 {
+  if (! callback_objects.empty ())
+    {        
+      const graphics_object& current = callback_objects.front ();
+
+      if (current.valid_object () 
+          && ! current.get_properties ().is_interruptible ())
+        {
+          if (get_object (h).get_properties ().busyaction_is ("queue"))
+            do_post_event (graphics_event::create_callback_event (h, l));
+
+          return;
+        }
+    }
+
   if (octave::thread::is_thread ())
     gh_manager::execute_callback (h, l, octave_value ());
   else

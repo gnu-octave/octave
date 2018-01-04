@@ -83,7 +83,7 @@ function.
 @noindent
 Breakpoints in class methods are also supported (e.g.,
 @code{dbstop ("@@class/method")}).  However, breakpoints cannot be set in
-built-in functions (e.g., @code{sin}, etc.) or dynamically loaded functions
+built-in functions (e.g., @code{sin}, etc.@:) or dynamically loaded functions
 (i.e., oct-files).
 
 To set a breakpoint immediately upon entering a function use line number 1, or

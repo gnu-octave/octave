@@ -1176,7 +1176,6 @@ DEFUN (cumsum, args, ,
 @deftypefnx {} {} cumsum (@var{x}, @var{dim})
 @deftypefnx {} {} cumsum (@dots{}, "native")
 @deftypefnx {} {} cumsum (@dots{}, "double")
-@deftypefnx {} {} cumsum (@dots{}, "extra")
 Cumulative sum of elements along dimension @var{dim}.
 
 If @var{dim} is omitted, it defaults to the first non-singleton dimension.
@@ -1191,8 +1190,8 @@ cumsum ([1, 2; 3, 4; 5, 6])
 @end group
 @end example
 
-See @code{sum} for an explanation of the optional parameters
-@qcode{"native"}, @qcode{"double"}, and @qcode{"extra"}.
+See @code{sum} for an explanation of the optional parameters @qcode{"native"}
+and @qcode{"double"}.
 @seealso{sum, cumprod}
 @end deftypefn */)
 {

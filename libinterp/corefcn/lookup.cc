@@ -219,7 +219,7 @@ additional options.
 
 @table @code
 @item m
-@code{table(idx(i)) == val(i)} if @code{val(i)}
+@code{table(idx(i)) == y(i)} if @code{y(i)}
 occurs in table; otherwise, @code{idx(i)} is zero.
 
 @item b

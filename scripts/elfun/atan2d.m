@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} atan2d (@var{y}, @var{x})
-## Compute atan2 (@var{y} / @var{x}) in degrees for corresponding elements
+## Compute atan (@var{y} / @var{x}) in degrees for corresponding elements
 ## from @var{y} and @var{x}.
 ## @seealso{tand, atan2}
 ## @end deftypefn

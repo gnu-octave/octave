@@ -4595,7 +4595,8 @@ namespace octave
                       data = mval.fortran_vec ();                       \
                     }                                                   \
                                                                         \
-                  data[data_index++] = tmp[i++];                        \
+                  data[data_index++] = static_cast<unsigned char>       \
+                                                  (tmp[i++]);           \
                 }                                                       \
             }                                                           \
         }                                                               \

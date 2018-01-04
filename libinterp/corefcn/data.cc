@@ -5064,25 +5064,25 @@ do_linspace (const octave_value& base, const octave_value& limit,
 
 DEFUN (linspace, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} linspace (@var{base}, @var{limit})
-@deftypefnx {} {} linspace (@var{base}, @var{limit}, @var{n})
-Return a row vector with @var{n} linearly spaced elements between
-@var{base} and @var{limit}.
+@deftypefn  {} {} linspace (@var{start}, @var{end})
+@deftypefnx {} {} linspace (@var{start}, @var{end}, @var{n})
+Return a row vector with @var{n} linearly spaced elements between @var{start}
+and @var{end}.
 
-If the number of elements is greater than one, then the endpoints @var{base}
-and @var{limit} are always included in the range.  If @var{base} is greater
-than @var{limit}, the elements are stored in decreasing order.  If the
-number of points is not specified, a value of 100 is used.
+If the number of elements is greater than one, then the endpoints @var{start}
+and @var{end} are always included in the range.  If @var{start} is greater than
+@var{end}, the elements are stored in decreasing order.  If the number of
+points is not specified, a value of 100 is used.
 
-The @code{linspace} function returns a row vector when both @var{base}
-and @var{limit} are scalars.  If one, or both, inputs are vectors, then
+The @code{linspace} function returns a row vector when both @var{start} and
+@var{end} are scalars.  If one, or both, inputs are vectors, then
 @code{linspace} transforms them to column vectors and returns a matrix where
 each row is an independent sequence between
-@w{@code{@var{base}(@var{row_n}), @var{limit}(@var{row_n})}}.
+@w{@code{@var{start}(@var{row_n}), @var{end}(@var{row_n})}}.
 
-For compatibility with @sc{matlab}, return the second argument (@var{limit})
-if fewer than two values are requested.
-@seealso{logspace}
+For compatibility with @sc{matlab}, return the second argument (@var{end}) when
+only a single value (@var{n} = 1) is requested.
+@seealso{colon, logspace}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -6164,6 +6164,7 @@ Return the result of the colon expression corresponding to @var{base},
 
 This function is equivalent to the operator syntax @w{@code{base : limit}}
 or @w{@code{base : increment : limit}}.
+@seealso{linspace}
 @end deftypefn */)
 {
   int nargin = args.length ();

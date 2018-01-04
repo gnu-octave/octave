@@ -218,7 +218,7 @@ additional options.
 
 @table @code
 @item m
-Match.  @code{table(idx(i)) == val(i)} if @code{val(i)} occurs in table;
+Match.  @code{table(idx(i)) == y(i)} if @code{y(i)} occurs in table;
 otherwise, @code{idx(i)} is zero.
 
 @item b

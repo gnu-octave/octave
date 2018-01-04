@@ -53,8 +53,15 @@
 ## @end ifnottex
 ## in order to be compatible with the corresponding @sc{matlab} function.
 ##
-## Also for compatibility with @sc{matlab}, return the second argument @var{b}
-## if fewer than two values are requested.
+## Also for compatibility with @sc{matlab}, return the right-hand side of
+## the range
+## @tex
+## ($10^{b}$)
+## @end tex
+## @ifnottex
+## (10^@var{b})
+## @end ifnottex
+## when just a single value is requested.
 ## @seealso{linspace}
 ## @end deftypefn
 

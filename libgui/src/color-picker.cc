@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "color-picker.h"
 
-// constuctor with initial color as parameter
+// Constructor with initial color as parameter
 color_picker::color_picker (QColor old_color, QWidget *p)
   : QPushButton (p)
 {
@@ -42,7 +42,7 @@ color_picker::color_picker (QColor old_color, QWidget *p)
   connect (this, SIGNAL (clicked (void)), SLOT (select_color (void)));
 }
 
-// slot for bitton clicked: selct a new color using QColorDialog
+// Slot for button clicked: select a new color using QColorDialog
 void
 color_picker::select_color (void)
 {
@@ -55,7 +55,7 @@ color_picker::select_color (void)
     }
 }
 
-// draw the button with the actual color (using a stylesheet)
+// Draw the button with the actual color (using a stylesheet)
 void
 color_picker::update_button (void)
 {

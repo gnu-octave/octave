@@ -249,7 +249,8 @@ function h = colorbar (varargin)
     props.__axes_handle__ = hax;
     position = props.position;
 
-    clen = rows (get (hax, "colormap"));
+    cmap = get (hax, "colormap");
+    clen = rows (cmap);
     cext = get (hax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
     cmin = cext(1) + cdiff;
@@ -269,6 +270,7 @@ function h = colorbar (varargin)
     if (new_colorbar)
       hcb = axes ("parent", hpar, "tag", "colorbar",
                   "activepositionproperty", "position", "position", cbpos,
+                  "colormap", cmap,
                   "box", "on", "xdir", "normal", "ydir", "normal");
 
       addproperty ("axislocation", hcb, "radio", "{out}|in");
@@ -353,10 +355,9 @@ function h = colorbar (varargin)
 
       if (strcmp (get (hpar, "type"), "figure"))
         addlistener (hpar, "colormap", {@cb_colormap, ...
-                                        hcb, hi, clen});
+                                        hax, hcb, hi, clen});
       endif
-      ## FIXME: listener on axes colormap does not work yet.
-      addlistener (hax, "colormap", {@cb_colormap, hcb, hi, clen});
+      addlistener (hax, "colormap", {@cb_colormap, hax, hcb, hi, clen});
       addlistener (hax, "clim", {@cb_clim, hcb, hi});
       addlistener (hax, "dataaspectratio", {@cb_colorbar_axis, hcb, props});
       addlistener (hax, "dataaspectratiomode", {@cb_colorbar_axis, ...
@@ -461,11 +462,13 @@ function cb_clim (hax, ~, hcb, hi)
 endfunction
 
 ## Update colorbar when changes to axes or figure colormap have occurred.
-function cb_colormap (h, d, hcb, hi, init_sz)
+function cb_colormap (h, d, hax, hcb, hi, init_sz)
   persistent sz = init_sz;
 
   if (ishghandle (h))
-    clen = rows (get (h, "colormap"));
+    cmap = get (h, "colormap");
+    set (hcb, "colormap", cmap);
+    clen = rows (cmap);
     if (clen != sz)
       if (strcmp (get (hcb, "__vertical__"), "on"))
         set (hi, "cdata", [1:clen]');
@@ -474,7 +477,7 @@ function cb_colormap (h, d, hcb, hi, init_sz)
       endif
       sz = clen;
       ## Also update limits on colorbar axes or there will be white gaps
-      cb_clim (hcb, d, hcb, hi);
+      cb_clim (hax, d, hcb, hi);
     endif
   endif
 

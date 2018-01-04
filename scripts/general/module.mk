@@ -17,7 +17,6 @@ FCN_FILE_DIRS += \
   %reldir%/cart2sph.m \
   %reldir%/cell2mat.m \
   %reldir%/celldisp.m \
-  %reldir%/chop.m \
   %reldir%/circshift.m \
   %reldir%/common_size.m \
   %reldir%/cplxpair.m \

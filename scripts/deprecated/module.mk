@@ -2,6 +2,7 @@ FCN_FILE_DIRS += scripts/deprecated
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/bitmax.m \
+  %reldir%/chop.m \
   %reldir%/comma.m \
   %reldir%/isstr.m \
   %reldir%/mahalanobis.m \

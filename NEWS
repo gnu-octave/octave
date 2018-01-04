@@ -122,6 +122,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
       Function             | Replacement
       ---------------------|------------------
+      chop                 | sprintf for visual results
 
  ** The following functions were deprecated in Octave 4.0 and have been
     removed from Octave 4.4.

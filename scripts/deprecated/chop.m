@@ -18,6 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} chop (@var{x}, @var{ndigits}, @var{base})
+##
+## @code{chop} is deprecated and will be removed in Octave version 4.8.
+##
 ## Truncate elements of @var{x} to a length of @var{ndigits} such that the
 ## resulting numbers are exactly divisible by @var{base}.
 ##
@@ -34,7 +37,16 @@
 ## @end example
 ## @end deftypefn
 
+## Deprecated in version 4.4
+
 function retval = chop (x, ndigits, base = 10)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "chop is obsolete and will be removed from a future version of Octave");
+  endif
 
   if (nargin == 2 || nargin == 3)
     tmp = abs (x);

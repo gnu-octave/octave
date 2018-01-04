@@ -554,7 +554,15 @@ namespace octave
 
     octave_value
     find (context_id context,
-          const octave_value_list& args = octave_value_list ()) const;
+          const octave_value_list& args = octave_value_list ()) const
+    {
+      octave_value retval = varval (context);
+
+      if (retval.is_undefined ())
+        return find_function (name (), args);
+
+      return retval;
+    }
 
     void assign (const octave_value& value, context_id context)
     {
@@ -658,12 +666,15 @@ namespace octave
 
   private:
 
-    static octave_value dummy_octave_value;
-
     std::shared_ptr<symbol_record_rep> m_rep;
 
     // NEW_REP must be dynamically allocated or nullptr.
     symbol_record (symbol_record_rep *new_rep) : m_rep (new_rep) { }
+
+    octave_value find_function (const std::string& name,
+                                const octave_value_list& args) const;
+
+    static octave_value dummy_octave_value;
   };
 }
 

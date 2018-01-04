@@ -102,26 +102,17 @@ namespace octave
   }
 
   octave_value
-  symbol_record::find (context_id context,
-                       const octave_value_list& args) const
+  symbol_record::find_function (const std::string& name,
+                                const octave_value_list& args) const
   {
-    octave_value retval;
+    // FIXME: it would be better if the symbol_record object did not
+    // look back to the symbol_table when the value is undefined.  More
+    // refactoring is needed...
 
     symbol_table& symtab
-      = __get_symbol_table__ ("symbol_record::find");
+      = __get_symbol_table__ ("symbol_record::find_function");
 
-    retval = varval (context);
-
-    if (retval.is_undefined ())
-      {
-        // FIXME
-        retval = symtab.find_function (name (), args);
-
-        if (retval.is_defined ())
-          return retval;
-      }
-
-    return retval;
+    return symtab.find_function (name, args);
   }
 
   octave_value symbol_record::dummy_octave_value;

@@ -2178,8 +2178,13 @@ DEFUN (genpath, args, ,
 @deftypefnx {} {} genpath (@var{dir}, @var{skip}, @dots{})
 Return a path constructed from @var{dir} and all its subdirectories.
 
+The path does not include package directories (beginning with @samp{+}),
+old-style class directories (beginning with @samp{@@}), @file{private}
+directories, or any subdirectories of these types.
+
 If additional string parameters are given, the resulting path will exclude
 directories with those names.
+@seealso{path, addpath}
 @end deftypefn */)
 {
   int nargin = args.length ();

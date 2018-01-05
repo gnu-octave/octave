@@ -222,7 +222,7 @@ Match.  @code{table(idx(i)) == y(i)} if @code{y(i)} occurs in table;
 otherwise, @code{idx(i)} is zero.
 
 @item b
-Boolean.  @code{idx(i)} is a logical 1 or 0, indicating whether @code{val(i)}
+Boolean.  @code{idx(i)} is a logical 1 or 0, indicating whether @code{y(i)}
 is contained in table or not.
 
 @item l

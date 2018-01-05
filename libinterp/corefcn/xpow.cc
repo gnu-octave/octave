@@ -2298,7 +2298,7 @@ elem_xpow (const FloatComplexMatrix& a, float b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result(i, j) = std::pow (a(i, j), b);
+            result(i, j) = std::pow (a(i, j), bint);
           }
     }
   else

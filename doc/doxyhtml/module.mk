@@ -13,7 +13,7 @@ doxyhtml: %reldir%/Doxyfile $(DOXYGEN_PAGES) | %reldir%/$(octave_dirstamp)
 
 doxyhtml-maintainer-clean:
 	rm -f doc/doxygen_sqlite3.db
-	rm -rf `ls -d %reldir%/* 2>/dev/null | $(GREP) -v 'Doxyfile\.in\|README\|pages$'`
+	rm -rf `ls -d %reldir%/* 2>/dev/null | $(GREP) -v 'module\.mk\|Doxyfile\.in\|README\|pages$$'`
 
 doc_EXTRA_DIST += \
   $(DOXYGEN_PAGES) \

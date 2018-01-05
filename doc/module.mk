@@ -67,6 +67,6 @@ doc-clean: doc-interpreter-clean doc-liboctave-clean
 doc-distclean: doc-clean
 	rm -f $(%canon_reldir%_DISTCLEANFILES)
 
-doc-maintainer-clean: doc-distclean
+doc-maintainer-clean: doc-distclean doxyhtml-maintainer-clean
 	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)
 	rm -rf $(DVIS) $(HTMLS) $(PDFS) $(PSS)

@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-save.h"
 #include "ls-ascii-helper.h"
 #include "ls-oct-text.h"
@@ -278,7 +279,12 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
     tc = charMatrix ();
   else
-    tc = octave_value_typeinfo::lookup_type (typ);
+    {
+      octave::type_info& type_info
+        = octave::__get_type_info__ ("read_text_data");
+
+      tc = type_info.lookup_type (typ);
+    }
 
   if (! tc.load_ascii (is))
     error ("load: trouble reading ascii file '%s'", filename.c_str ());

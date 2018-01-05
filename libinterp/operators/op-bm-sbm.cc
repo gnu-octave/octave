@@ -84,25 +84,25 @@ DEFCONV (sparse_bool_matrix_conv, bool_matrix, sparse_bool_matrix)
 DEFNDASSIGNOP_FN (assign, bool_matrix, sparse_bool_matrix, bool_array, assign)
 
 void
-install_bm_sbm_ops (void)
+install_bm_sbm_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_eq, octave_bool_matrix, octave_sparse_bool_matrix, eq);
-  INSTALL_BINOP (op_ne, octave_bool_matrix, octave_sparse_bool_matrix, ne);
+  INSTALL_BINOP_TI (ti, op_eq, octave_bool_matrix, octave_sparse_bool_matrix, eq);
+  INSTALL_BINOP_TI (ti, op_ne, octave_bool_matrix, octave_sparse_bool_matrix, ne);
 
-  INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_el_and, octave_bool_matrix, octave_sparse_bool_matrix,
                  el_and);
-  INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_el_or, octave_bool_matrix, octave_sparse_bool_matrix,
                  el_or);
 
-  INSTALL_CATOP (octave_bool_matrix, octave_sparse_bool_matrix, bm_sbm);
-  INSTALL_CATOP (octave_bool_matrix, octave_sparse_matrix, bm_sm);
-  INSTALL_CATOP (octave_matrix, octave_sparse_bool_matrix, m_sbm);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix, bm_sbm);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_sparse_matrix, bm_sm);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_sparse_bool_matrix, m_sbm);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_sparse_bool_matrix,
                     assign)
-  INSTALL_ASSIGNCONV (octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix,
                       octave_bool_matrix);
 
-  INSTALL_WIDENOP (octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_WIDENOP_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix,
                    sparse_bool_matrix_conv);
 }

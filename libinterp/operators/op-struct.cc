@@ -89,19 +89,19 @@ oct_catop_matrix_struct (octave_base_value& a1, const octave_base_value& a2,
 }
 
 void
-install_struct_ops (void)
+install_struct_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_transpose, octave_struct, transpose);
-  INSTALL_UNOP (op_hermitian, octave_struct, transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_struct, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_struct, transpose);
 
-  INSTALL_UNOP (op_transpose, octave_scalar_struct, scalar_transpose);
-  INSTALL_UNOP (op_hermitian, octave_scalar_struct, scalar_transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_scalar_struct, scalar_transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_scalar_struct, scalar_transpose);
 
-  INSTALL_CATOP (octave_struct, octave_struct, s_s_concat);
-  INSTALL_CATOP (octave_struct, octave_scalar_struct, s_ss_concat)
-  INSTALL_CATOP (octave_scalar_struct, octave_struct, ss_s_concat)
-  INSTALL_CATOP (octave_scalar_struct, octave_scalar_struct, ss_ss_concat)
+  INSTALL_CATOP_TI (ti, octave_struct, octave_struct, s_s_concat);
+  INSTALL_CATOP_TI (ti, octave_struct, octave_scalar_struct, s_ss_concat)
+  INSTALL_CATOP_TI (ti, octave_scalar_struct, octave_struct, ss_s_concat)
+  INSTALL_CATOP_TI (ti, octave_scalar_struct, octave_scalar_struct, ss_ss_concat)
 
-  INSTALL_CATOP (octave_struct, octave_matrix, struct_matrix);
-  INSTALL_CATOP (octave_matrix, octave_struct, matrix_struct);
+  INSTALL_CATOP_TI (ti, octave_struct, octave_matrix, struct_matrix);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_struct, matrix_struct);
 }

@@ -120,7 +120,7 @@ OCTAVE_MIXED_INT_CMP_OPS (int8, int64)
 OCTAVE_MIXED_INT_CMP_OPS (int8, uint64)
 
 void
-install_i8_i8_ops (void)
+install_i8_i8_ops (octave::type_info& ti)
 {
   OCTAVE_INSTALL_INT_OPS (int8);
 

@@ -59,7 +59,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-mutex.h"
-#include "ops.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-classdef.h"
@@ -352,6 +351,7 @@ namespace octave
       m_help_system (*this),
       m_dynamic_loader (*this),
       m_load_path (),
+      m_type_info (),
       m_symbol_table (),
       m_evaluator (*this),
       m_stream_list (*this),
@@ -417,13 +417,7 @@ namespace octave
     else
       quit_allowed = false;
 
-    install_types ();
-
-    install_ops ();
-
     install_builtins ();
-
-    m_cdef_manager.initialize ();
 
     bool line_editing = false;
     bool traditional = false;

@@ -1927,8 +1927,9 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           // an empty matrix and copy all data.
           //
           // We might also start with a empty octave_value using
-          //   tmp = octave_value_typeinfo::lookup_type
-          //                                (args(1).type_name());
+          //
+          //   tmp = octave::type_info::lookup_type (args(1).type_name());
+          //
           // and then directly resize.  However, for some types there might
           // be some additional setup needed, and so this should be avoided.
 

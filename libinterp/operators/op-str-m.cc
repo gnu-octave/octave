@@ -51,15 +51,15 @@ DEFNDCHARCATOP_FN (str_m, char_matrix_str, matrix, concat)
 DEFNDCHARCATOP_FN (m_str, matrix, char_matrix_str, concat)
 
 void
-install_str_m_ops (void)
+install_str_m_ops (octave::type_info& ti)
 {
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_matrix, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_matrix,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str, octave_matrix, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str, octave_matrix,
                     assign);
 
-  INSTALL_CATOP (octave_char_matrix_str, octave_matrix, str_m);
-  INSTALL_CATOP (octave_char_matrix_sq_str, octave_matrix, str_m);
+  INSTALL_CATOP_TI (ti, octave_char_matrix_str, octave_matrix, str_m);
+  INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_matrix, str_m);
 
-  INSTALL_CATOP (octave_matrix, octave_char_matrix_str, m_str);
-  INSTALL_CATOP (octave_matrix, octave_char_matrix_sq_str, m_str);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_char_matrix_str, m_str);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_char_matrix_sq_str, m_str);
 }

@@ -126,39 +126,37 @@ DEF_CLASS_BINOP (ldivide)
 DEF_CLASS_BINOP (and)
 DEF_CLASS_BINOP (or)
 
-#define INSTALL_CLASS_UNOP(op, f)                       \
-  octave_value_typeinfo::register_unary_class_op        \
-    (octave_value::op, oct_unop_ ## f)
+#define INSTALL_CLASS_UNOP_TI(ti, op, f)                        \
+  ti.install_unary_class_op (octave_value::op, oct_unop_ ## f)
 
-#define INSTALL_CLASS_BINOP(op, f)                      \
-  octave_value_typeinfo::register_binary_class_op       \
-    (octave_value::op, oct_binop_ ## f)
+#define INSTALL_CLASS_BINOP_TI(ti, op, f)                       \
+  ti.install_binary_class_op (octave_value::op, oct_binop_ ## f)
 
 void
-install_class_ops (void)
+install_class_ops (octave::type_info& ti)
 {
-  INSTALL_CLASS_UNOP (op_not, not);
-  INSTALL_CLASS_UNOP (op_uplus, uplus);
-  INSTALL_CLASS_UNOP (op_uminus, uminus);
-  INSTALL_CLASS_UNOP (op_transpose, transpose);
-  INSTALL_CLASS_UNOP (op_hermitian, ctranspose);
+  INSTALL_CLASS_UNOP_TI (ti, op_not, not);
+  INSTALL_CLASS_UNOP_TI (ti, op_uplus, uplus);
+  INSTALL_CLASS_UNOP_TI (ti, op_uminus, uminus);
+  INSTALL_CLASS_UNOP_TI (ti, op_transpose, transpose);
+  INSTALL_CLASS_UNOP_TI (ti, op_hermitian, ctranspose);
 
-  INSTALL_CLASS_BINOP (op_add, plus);
-  INSTALL_CLASS_BINOP (op_sub, minus);
-  INSTALL_CLASS_BINOP (op_mul, mtimes);
-  INSTALL_CLASS_BINOP (op_div, mrdivide);
-  INSTALL_CLASS_BINOP (op_pow, mpower);
-  INSTALL_CLASS_BINOP (op_ldiv, mldivide);
-  INSTALL_CLASS_BINOP (op_lt, lt);
-  INSTALL_CLASS_BINOP (op_le, le);
-  INSTALL_CLASS_BINOP (op_eq, eq);
-  INSTALL_CLASS_BINOP (op_ge, ge);
-  INSTALL_CLASS_BINOP (op_gt, gt);
-  INSTALL_CLASS_BINOP (op_ne, ne);
-  INSTALL_CLASS_BINOP (op_el_mul, times);
-  INSTALL_CLASS_BINOP (op_el_div, rdivide);
-  INSTALL_CLASS_BINOP (op_el_pow, power);
-  INSTALL_CLASS_BINOP (op_el_ldiv, ldivide);
-  INSTALL_CLASS_BINOP (op_el_and, and);
-  INSTALL_CLASS_BINOP (op_el_or, or);
+  INSTALL_CLASS_BINOP_TI (ti, op_add, plus);
+  INSTALL_CLASS_BINOP_TI (ti, op_sub, minus);
+  INSTALL_CLASS_BINOP_TI (ti, op_mul, mtimes);
+  INSTALL_CLASS_BINOP_TI (ti, op_div, mrdivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_pow, mpower);
+  INSTALL_CLASS_BINOP_TI (ti, op_ldiv, mldivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_lt, lt);
+  INSTALL_CLASS_BINOP_TI (ti, op_le, le);
+  INSTALL_CLASS_BINOP_TI (ti, op_eq, eq);
+  INSTALL_CLASS_BINOP_TI (ti, op_ge, ge);
+  INSTALL_CLASS_BINOP_TI (ti, op_gt, gt);
+  INSTALL_CLASS_BINOP_TI (ti, op_ne, ne);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_mul, times);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_div, rdivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_pow, power);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_ldiv, ldivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_and, and);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_or, or);
 }

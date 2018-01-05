@@ -96,14 +96,14 @@ DEFCATOP (m_chm, matrix, char_matrix)
 }
 
 void
-install_chm_ops (void)
+install_chm_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_transpose, octave_char_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_char_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_char_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_char_matrix, transpose);
 
-  INSTALL_CATOP (octave_char_matrix, octave_char_matrix, chm_chm);
-  INSTALL_CATOP (octave_char_matrix, octave_scalar, chm_s);
-  INSTALL_CATOP (octave_char_matrix, octave_matrix, chm_m);
-  INSTALL_CATOP (octave_scalar, octave_char_matrix, s_chm);
-  INSTALL_CATOP (octave_matrix, octave_char_matrix, m_chm);
+  INSTALL_CATOP_TI (ti, octave_char_matrix, octave_char_matrix, chm_chm);
+  INSTALL_CATOP_TI (ti, octave_char_matrix, octave_scalar, chm_s);
+  INSTALL_CATOP_TI (ti, octave_char_matrix, octave_matrix, chm_m);
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_char_matrix, s_chm);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_char_matrix, m_chm);
 }

@@ -1521,7 +1521,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
     operator = (rhs.storable_value ());
   else if (is_defined ())
     {
-      octave_value_typeinfo::assign_op_fcn f = nullptr;
+      octave::type_info::assign_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
       if (rep->count == 1)
@@ -1529,7 +1529,10 @@ octave_value::assign (assign_op op, const octave_value& rhs)
           int tthis = this->type_id ();
           int trhs = rhs.type_id ();
 
-          f = octave_value_typeinfo::lookup_assign_op (op, tthis, trhs);
+          octave::type_info& ti
+            = octave::__get_type_info__ ("octave_value::assign");
+
+          f = ti.lookup_assign_op (op, tthis, trhs);
         }
 
       if (f)
@@ -2160,13 +2163,15 @@ do_binary_op (octave_value::binary_op op,
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
 
+  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
+
   if (t1 == octave_class::static_type_id ()
       || t2 == octave_class::static_type_id ()
       || t1 == octave_classdef::static_type_id ()
       || t2 == octave_classdef::static_type_id ())
     {
-      octave_value_typeinfo::binary_class_op_fcn f
-        = octave_value_typeinfo::lookup_binary_class_op (op);
+      octave::type_info::binary_class_op_fcn f
+        = ti.lookup_binary_class_op (op);
 
       if (! f)
         err_binary_op (octave_value::binary_op_as_string (op),
@@ -2179,8 +2184,8 @@ do_binary_op (octave_value::binary_op op,
       // FIXME: we need to handle overloading operators for built-in
       // classes (double, char, int8, etc.)
 
-      octave_value_typeinfo::binary_op_fcn f
-        = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+      octave::type_info::binary_op_fcn f
+        = ti.lookup_binary_op (op, t1, t2);
 
       if (f)
         retval = f (*v1.rep, *v2.rep);
@@ -2196,13 +2201,10 @@ do_binary_op (octave_value::binary_op op,
 
           // Try biased (one-sided) conversions first.
           if (cf2.type_id () >= 0
-              && octave_value_typeinfo::lookup_binary_op (op, t1,
-                                                          cf2.type_id ()))
+              && ti.lookup_binary_op (op, t1, cf2.type_id ()))
             cf1 = nullptr;
           else if (cf1.type_id () >= 0
-                   && octave_value_typeinfo::lookup_binary_op (op,
-                                                               cf1.type_id (),
-                                                               t2))
+                   && ti.lookup_binary_op (op, cf1.type_id (), t2))
             cf2 = nullptr;
 
           if (cf1)
@@ -2244,13 +2246,10 @@ do_binary_op (octave_value::binary_op op,
 
               // Try biased (one-sided) conversions first.
               if (cf2.type_id () >= 0
-                  && octave_value_typeinfo::lookup_binary_op (op, t1,
-                                                              cf2.type_id ()))
+                  && ti.lookup_binary_op (op, t1, cf2.type_id ()))
                 cf1 = nullptr;
               else if (cf1.type_id () >= 0
-                       && octave_value_typeinfo::lookup_binary_op (op,
-                                                                   cf1.type_id (),
-                                                                   t2))
+                       && ti.lookup_binary_op (op, cf1.type_id (), t2))
                 cf2 = nullptr;
 
               if (cf1)
@@ -2279,7 +2278,7 @@ do_binary_op (octave_value::binary_op op,
                 err_binary_op (octave_value::binary_op_as_string (op),
                                v1.type_name (), v2.type_name ());
 
-              f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+              f = ti.lookup_binary_op (op, t1, t2);
 
               if (! f)
                 err_binary_op (octave_value::binary_op_as_string (op),
@@ -2353,13 +2352,14 @@ do_binary_op (octave_value::compound_binary_op op,
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
 
+  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
+
   if (t1 == octave_class::static_type_id ()
       || t2 == octave_class::static_type_id ()
       || t1 == octave_classdef::static_type_id ()
       || t2 == octave_classdef::static_type_id ())
     {
-      octave_value_typeinfo::binary_class_op_fcn f
-        = octave_value_typeinfo::lookup_binary_class_op (op);
+      octave::type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
 
       if (f)
         retval = f (v1, v2);
@@ -2368,8 +2368,7 @@ do_binary_op (octave_value::compound_binary_op op,
     }
   else
     {
-      octave_value_typeinfo::binary_op_fcn f
-        = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+      octave::type_info::binary_op_fcn f = ti.lookup_binary_op (op, t1, t2);
 
       if (f)
         retval = f (*v1.rep, *v2.rep);
@@ -2405,8 +2404,9 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
 
-  octave_value_typeinfo::cat_op_fcn f
-    = octave_value_typeinfo::lookup_cat_op (t1, t2);
+  octave::type_info& ti = octave::__get_type_info__ ("do_cat_op");
+
+  octave::type_info::cat_op_fcn f = ti.lookup_cat_op (t1, t2);
 
   if (f)
     retval = f (*v1.rep, *v2.rep, ra_idx);
@@ -2419,11 +2419,9 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
       octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
 
       // Try biased (one-sided) conversions first.
-      if (cf2.type_id () >= 0
-          && octave_value_typeinfo::lookup_cat_op (t1, cf2.type_id ()))
+      if (cf2.type_id () >= 0 && ti.lookup_cat_op (t1, cf2.type_id ()))
         cf1 = nullptr;
-      else if (cf1.type_id () >= 0
-               && octave_value_typeinfo::lookup_cat_op (cf1.type_id (), t2))
+      else if (cf1.type_id () >= 0 && ti.lookup_cat_op (cf1.type_id (), t2))
         cf2 = nullptr;
 
       if (cf1)
@@ -2591,11 +2589,12 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 
   int t = v.type_id ();
 
+  octave::type_info& ti = octave::__get_type_info__ ("do_unary_op");
+
   if (t == octave_class::static_type_id ()
       || t == octave_classdef::static_type_id ())
     {
-      octave_value_typeinfo::unary_class_op_fcn f
-        = octave_value_typeinfo::lookup_unary_class_op (op);
+      octave::type_info::unary_class_op_fcn f = ti.lookup_unary_class_op (op);
 
       if (! f)
         err_unary_op (octave_value::unary_op_as_string (op), v.class_name ());
@@ -2607,8 +2606,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
       // FIXME: we need to handle overloading operators for built-in
       // classes (double, char, int8, etc.)
 
-      octave_value_typeinfo::unary_op_fcn f
-        = octave_value_typeinfo::lookup_unary_op (op, t);
+      octave::type_info::unary_op_fcn f = ti.lookup_unary_op (op, t);
 
       if (f)
         retval = f (*v.rep);
@@ -2662,8 +2660,11 @@ octave_value::do_non_const_unary_op (unary_op op)
       // Genuine.
       int t = type_id ();
 
-      octave_value_typeinfo::non_const_unary_op_fcn f
-        = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+      octave::type_info& ti
+        = octave::__get_type_info__ ("do_non_const_unary_op");
+
+      octave::type_info::non_const_unary_op_fcn f
+        = ti.lookup_non_const_unary_op (op, t);
 
       if (f)
         {
@@ -2689,7 +2690,7 @@ octave_value::do_non_const_unary_op (unary_op op)
 
           t = type_id ();
 
-          f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+          f = ti.lookup_non_const_unary_op (op, t);
 
           if (f)
             {
@@ -2718,11 +2719,16 @@ octave_value::do_non_const_unary_op (unary_op op)
       // Non-genuine.
       int t = type_id ();
 
-      octave_value_typeinfo::non_const_unary_op_fcn f = nullptr;
+      octave::type_info::non_const_unary_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
       if (rep->count == 1)
-        f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+        {
+          octave::type_info& ti
+            = octave::__get_type_info__ ("do_non_const_unary_op");
+
+          f = ti.lookup_non_const_unary_op (op, t);
+        }
 
       if (f)
         f (*rep);
@@ -2849,63 +2855,63 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
 }
 
 void
-install_types (void)
+install_types (octave::type_info& ti)
 {
-  octave_base_value::register_type ();
-  octave_cell::register_type ();
-  octave_scalar::register_type ();
-  octave_complex::register_type ();
-  octave_matrix::register_type ();
-  octave_diag_matrix::register_type ();
-  octave_complex_matrix::register_type ();
-  octave_complex_diag_matrix::register_type ();
-  octave_range::register_type ();
-  octave_bool::register_type ();
-  octave_bool_matrix::register_type ();
-  octave_char_matrix_str::register_type ();
-  octave_char_matrix_sq_str::register_type ();
-  octave_int8_scalar::register_type ();
-  octave_int16_scalar::register_type ();
-  octave_int32_scalar::register_type ();
-  octave_int64_scalar::register_type ();
-  octave_uint8_scalar::register_type ();
-  octave_uint16_scalar::register_type ();
-  octave_uint32_scalar::register_type ();
-  octave_uint64_scalar::register_type ();
-  octave_int8_matrix::register_type ();
-  octave_int16_matrix::register_type ();
-  octave_int32_matrix::register_type ();
-  octave_int64_matrix::register_type ();
-  octave_uint8_matrix::register_type ();
-  octave_uint16_matrix::register_type ();
-  octave_uint32_matrix::register_type ();
-  octave_uint64_matrix::register_type ();
-  octave_sparse_bool_matrix::register_type ();
-  octave_sparse_matrix::register_type ();
-  octave_sparse_complex_matrix::register_type ();
-  octave_struct::register_type ();
-  octave_scalar_struct::register_type ();
-  octave_class::register_type ();
-  octave_cs_list::register_type ();
-  octave_magic_colon::register_type ();
-  octave_builtin::register_type ();
-  octave_user_function::register_type ();
-  octave_dld_function::register_type ();
-  octave_fcn_handle::register_type ();
-  octave_fcn_inline::register_type ();
-  octave_float_scalar::register_type ();
-  octave_float_complex::register_type ();
-  octave_float_matrix::register_type ();
-  octave_float_diag_matrix::register_type ();
-  octave_float_complex_matrix::register_type ();
-  octave_float_complex_diag_matrix::register_type ();
-  octave_perm_matrix::register_type ();
-  octave_null_matrix::register_type ();
-  octave_null_str::register_type ();
-  octave_null_sq_str::register_type ();
-  octave_lazy_index::register_type ();
-  octave_oncleanup::register_type ();
-  octave_java::register_type ();
+  octave_base_value::register_type (ti);
+  octave_cell::register_type (ti);
+  octave_scalar::register_type (ti);
+  octave_complex::register_type (ti);
+  octave_matrix::register_type (ti);
+  octave_diag_matrix::register_type (ti);
+  octave_complex_matrix::register_type (ti);
+  octave_complex_diag_matrix::register_type (ti);
+  octave_range::register_type (ti);
+  octave_bool::register_type (ti);
+  octave_bool_matrix::register_type (ti);
+  octave_char_matrix_str::register_type (ti);
+  octave_char_matrix_sq_str::register_type (ti);
+  octave_int8_scalar::register_type (ti);
+  octave_int16_scalar::register_type (ti);
+  octave_int32_scalar::register_type (ti);
+  octave_int64_scalar::register_type (ti);
+  octave_uint8_scalar::register_type (ti);
+  octave_uint16_scalar::register_type (ti);
+  octave_uint32_scalar::register_type (ti);
+  octave_uint64_scalar::register_type (ti);
+  octave_int8_matrix::register_type (ti);
+  octave_int16_matrix::register_type (ti);
+  octave_int32_matrix::register_type (ti);
+  octave_int64_matrix::register_type (ti);
+  octave_uint8_matrix::register_type (ti);
+  octave_uint16_matrix::register_type (ti);
+  octave_uint32_matrix::register_type (ti);
+  octave_uint64_matrix::register_type (ti);
+  octave_sparse_bool_matrix::register_type (ti);
+  octave_sparse_matrix::register_type (ti);
+  octave_sparse_complex_matrix::register_type (ti);
+  octave_struct::register_type (ti);
+  octave_scalar_struct::register_type (ti);
+  octave_class::register_type (ti);
+  octave_cs_list::register_type (ti);
+  octave_magic_colon::register_type (ti);
+  octave_builtin::register_type (ti);
+  octave_user_function::register_type (ti);
+  octave_dld_function::register_type (ti);
+  octave_fcn_handle::register_type (ti);
+  octave_fcn_inline::register_type (ti);
+  octave_float_scalar::register_type (ti);
+  octave_float_complex::register_type (ti);
+  octave_float_matrix::register_type (ti);
+  octave_float_diag_matrix::register_type (ti);
+  octave_float_complex_matrix::register_type (ti);
+  octave_float_complex_diag_matrix::register_type (ti);
+  octave_perm_matrix::register_type (ti);
+  octave_null_matrix::register_type (ti);
+  octave_null_str::register_type (ti);
+  octave_null_sq_str::register_type (ti);
+  octave_lazy_index::register_type (ti);
+  octave_oncleanup::register_type (ti);
+  octave_java::register_type (ti);
 }
 
 DEFUN (sizeof, args, ,

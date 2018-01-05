@@ -2065,12 +2065,12 @@ int octave_java::t_id (-1);
 const std::string octave_java::t_name ("octave_java");
 
 void
-octave_java::register_type (void)
+octave_java::register_type (octave::type_info& ti)
 {
 #if defined (HAVE_JAVA)
 
-  t_id = octave_value_typeinfo::register_type
-         (octave_java::t_name, "<unknown>", octave_value (new octave_java ()));
+  t_id = ti.register_type (octave_java::t_name, "<unknown>",
+                           octave_value (new octave_java ()));
 
 #endif
 }

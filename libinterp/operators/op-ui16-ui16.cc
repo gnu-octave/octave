@@ -120,7 +120,7 @@ OCTAVE_MIXED_INT_CMP_OPS (uint16, int64)
 OCTAVE_MIXED_INT_CMP_OPS (uint16, uint64)
 
 void
-install_ui16_ui16_ops (void)
+install_ui16_ui16_ops (octave::type_info& ti)
 {
   OCTAVE_INSTALL_INT_OPS (uint16);
 

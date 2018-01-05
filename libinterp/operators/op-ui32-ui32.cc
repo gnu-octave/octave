@@ -119,7 +119,7 @@ OCTAVE_MIXED_INT_CMP_OPS (uint32, int32)
 OCTAVE_MIXED_INT_CMP_OPS (uint32, int64)
 OCTAVE_MIXED_INT_CMP_OPS (uint32, uint64)
 void
-install_ui32_ui32_ops (void)
+install_ui32_ui32_ops (octave::type_info& ti)
 {
   OCTAVE_INSTALL_INT_OPS (uint32);
 

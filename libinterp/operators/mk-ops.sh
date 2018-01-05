@@ -27,27 +27,29 @@ cat << \EOF
 #  include "config.h"
 #endif
 
-extern void install_base_type_conversions (void);
+#include "ov-typeinfo.h"
+
+extern void install_base_type_conversions (octave::type_info&);
 
 EOF
 
 for file in "$@"; do
   f=`echo $file | $SED 's,^\./,,; s%^libinterp/operators/op-%%; s%\.cc%%; s%-%_%g'`
-  echo "extern void install_${f}_ops (void);"
+  echo "extern void install_${f}_ops (octave::type_info&);"
 done
 
 cat << \EOF
 
 void
-install_ops (void)
+install_ops (octave::type_info& ti)
 {
-  install_base_type_conversions ();
+  install_base_type_conversions (ti);
 
 EOF
 
 for file in "$@"; do
   f=`echo $file | $SED 's,^\./,,; s%^libinterp/operators/op-%%; s%\.cc%%; s%-%_%g'`
-  echo "  install_${f}_ops ();"
+  echo "  install_${f}_ops (ti);"
 done
 
 cat << \EOF

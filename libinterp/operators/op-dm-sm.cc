@@ -186,19 +186,19 @@ DEFBINOP (sub_sm_dm, sparse_matrix, diag_matrix)
 }
 
 void
-install_dm_sm_ops (void)
+install_dm_sm_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_mul, octave_diag_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_mul, octave_diag_matrix, octave_sparse_matrix,
                  mul_dm_sm);
 
-  INSTALL_BINOP (op_add, octave_diag_matrix, octave_sparse_matrix, add_dm_sm);
-  INSTALL_BINOP (op_sub, octave_diag_matrix, octave_sparse_matrix, sub_dm_sm);
-  INSTALL_BINOP (op_ldiv, octave_diag_matrix, octave_sparse_matrix, ldiv_dm_sm);
+  INSTALL_BINOP_TI (ti, op_add, octave_diag_matrix, octave_sparse_matrix, add_dm_sm);
+  INSTALL_BINOP_TI (ti, op_sub, octave_diag_matrix, octave_sparse_matrix, sub_dm_sm);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_diag_matrix, octave_sparse_matrix, ldiv_dm_sm);
 
-  INSTALL_BINOP (op_mul, octave_sparse_matrix, octave_diag_matrix,
+  INSTALL_BINOP_TI (ti, op_mul, octave_sparse_matrix, octave_diag_matrix,
                  mul_sm_dm);
 
-  INSTALL_BINOP (op_add, octave_sparse_matrix, octave_diag_matrix, add_sm_dm);
-  INSTALL_BINOP (op_sub, octave_sparse_matrix, octave_diag_matrix, sub_sm_dm);
-  INSTALL_BINOP (op_div, octave_sparse_matrix, octave_diag_matrix, div_sm_dm);
+  INSTALL_BINOP_TI (ti, op_add, octave_sparse_matrix, octave_diag_matrix, add_sm_dm);
+  INSTALL_BINOP_TI (ti, op_sub, octave_sparse_matrix, octave_diag_matrix, sub_sm_dm);
+  INSTALL_BINOP_TI (ti, op_div, octave_sparse_matrix, octave_diag_matrix, div_sm_dm);
 }

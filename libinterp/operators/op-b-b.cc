@@ -75,28 +75,28 @@ DEFNDCATOP_FN (b_f, bool, float_scalar, float_array, float_array, concat)
 DEFNDCATOP_FN (f_b, float_scalar, bool, float_array, float_array, concat)
 
 void
-install_b_b_ops (void)
+install_b_b_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_not, octave_bool, not);
-  INSTALL_UNOP (op_uplus, octave_bool, uplus);
-  INSTALL_UNOP (op_uminus, octave_bool, uminus);
-  INSTALL_UNOP (op_transpose, octave_bool, transpose);
-  INSTALL_UNOP (op_hermitian, octave_bool, hermitian);
+  INSTALL_UNOP_TI (ti, op_not, octave_bool, not);
+  INSTALL_UNOP_TI (ti, op_uplus, octave_bool, uplus);
+  INSTALL_UNOP_TI (ti, op_uminus, octave_bool, uminus);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_bool, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_bool, hermitian);
 
-  INSTALL_BINOP (op_eq, octave_bool, octave_bool, eq);
-  INSTALL_BINOP (op_ne, octave_bool, octave_bool, ne);
-  INSTALL_BINOP (op_el_and, octave_bool, octave_bool, el_and);
-  INSTALL_BINOP (op_el_or, octave_bool, octave_bool, el_or);
+  INSTALL_BINOP_TI (ti, op_eq, octave_bool, octave_bool, eq);
+  INSTALL_BINOP_TI (ti, op_ne, octave_bool, octave_bool, ne);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_bool, octave_bool, el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_bool, octave_bool, el_or);
 
-  INSTALL_CATOP (octave_bool, octave_bool, b_b);
-  INSTALL_CATOP (octave_bool, octave_scalar, b_s);
-  INSTALL_CATOP (octave_scalar, octave_bool, s_b);
-  INSTALL_CATOP (octave_bool, octave_float_scalar, b_f);
-  INSTALL_CATOP (octave_float_scalar, octave_bool, f_b);
+  INSTALL_CATOP_TI (ti, octave_bool, octave_bool, b_b);
+  INSTALL_CATOP_TI (ti, octave_bool, octave_scalar, b_s);
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_bool, s_b);
+  INSTALL_CATOP_TI (ti, octave_bool, octave_float_scalar, b_f);
+  INSTALL_CATOP_TI (ti, octave_float_scalar, octave_bool, f_b);
 
-  INSTALL_ASSIGNCONV (octave_bool, octave_bool, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_bool, octave_bool_matrix);
 
-  INSTALL_ASSIGNCONV (octave_bool, octave_null_matrix, octave_bool_matrix);
-  INSTALL_ASSIGNCONV (octave_bool, octave_null_str, octave_bool_matrix);
-  INSTALL_ASSIGNCONV (octave_bool, octave_null_sq_str, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_null_matrix, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_null_str, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_null_sq_str, octave_bool_matrix);
 }

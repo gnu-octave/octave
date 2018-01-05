@@ -833,11 +833,10 @@ int octave_classdef::t_id (-1);
 const std::string octave_classdef::t_name ("object");
 
 void
-octave_classdef::register_type (void)
+octave_classdef::register_type (octave::type_info& ti)
 {
-  t_id = octave_value_typeinfo::register_type
-         (octave_classdef::t_name, "<unknown>",
-          octave_value (new octave_classdef ()));
+  t_id = ti.register_type (octave_classdef::t_name, "<unknown>",
+                           octave_value (new octave_classdef ()));
 }
 
 octave_value_list
@@ -3344,10 +3343,14 @@ cdef_package::cdef_package_rep::meta_release (void)
 
 //----------------------------------------------------------------------------
 
-void
-cdef_manager::initialize (void)
+cdef_manager::cdef_manager (octave::interpreter& interp)
+  : m_interpreter (interp), m_all_classes (), m_all_packages (),
+    m_meta_class (), m_meta_property (), m_meta_method (),
+    m_meta_package (), m_meta ()
 {
-  octave_classdef::register_type ();
+  octave::type_info& ti = m_interpreter.get_type_info ();
+
+  octave_classdef::register_type (ti);
 
   // bootstrap
   cdef_class tmp_handle = make_class ("handle");

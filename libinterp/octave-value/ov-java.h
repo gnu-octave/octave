@@ -28,6 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ovl.h"
 
+namespace octave
+{
+  class type_info;
+}
+
 typedef void *voidptr;
 
 class OCTINTERP_API octave_java : public octave_base_value
@@ -173,7 +178,7 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (void);
+  static void register_type (octave::type_info&);
 
 private:
 

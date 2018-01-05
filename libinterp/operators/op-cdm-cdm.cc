@@ -91,26 +91,26 @@ CONVDECL (complex_diag_matrix_to_complex_matrix)
 }
 
 void
-install_cdm_cdm_ops (void)
+install_cdm_cdm_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_uplus, octave_complex_diag_matrix, uplus);
-  INSTALL_UNOP (op_uminus, octave_complex_diag_matrix, uminus);
-  INSTALL_UNOP (op_transpose, octave_complex_diag_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_complex_diag_matrix, hermitian);
+  INSTALL_UNOP_TI (ti, op_uplus, octave_complex_diag_matrix, uplus);
+  INSTALL_UNOP_TI (ti, op_uminus, octave_complex_diag_matrix, uminus);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_complex_diag_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_complex_diag_matrix, hermitian);
 
-  INSTALL_BINOP (op_add, octave_complex_diag_matrix, octave_complex_diag_matrix,
+  INSTALL_BINOP_TI (ti, op_add, octave_complex_diag_matrix, octave_complex_diag_matrix,
                  add);
-  INSTALL_BINOP (op_sub, octave_complex_diag_matrix, octave_complex_diag_matrix,
+  INSTALL_BINOP_TI (ti, op_sub, octave_complex_diag_matrix, octave_complex_diag_matrix,
                  sub);
-  INSTALL_BINOP (op_mul, octave_complex_diag_matrix, octave_complex_diag_matrix,
+  INSTALL_BINOP_TI (ti, op_mul, octave_complex_diag_matrix, octave_complex_diag_matrix,
                  mul);
-  INSTALL_BINOP (op_div, octave_complex_diag_matrix, octave_complex_diag_matrix,
+  INSTALL_BINOP_TI (ti, op_div, octave_complex_diag_matrix, octave_complex_diag_matrix,
                  div);
-  INSTALL_BINOP (op_ldiv, octave_complex_diag_matrix,
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_complex_diag_matrix,
                  octave_complex_diag_matrix, ldiv);
 
-  INSTALL_ASSIGNCONV (octave_complex_diag_matrix, octave_complex_matrix,
+  INSTALL_ASSIGNCONV_TI (ti, octave_complex_diag_matrix, octave_complex_matrix,
                       octave_complex_matrix);
-  INSTALL_WIDENOP (octave_complex_diag_matrix, octave_complex_matrix,
+  INSTALL_WIDENOP_TI (ti, octave_complex_diag_matrix, octave_complex_matrix,
                    complex_diag_matrix_to_complex_matrix);
 }

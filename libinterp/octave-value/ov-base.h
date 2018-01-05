@@ -41,6 +41,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hdf5-types.h"
 #include "oct-stream.h"
 
+namespace octave
+{
+  class type_info;
+
+  // FIXME: This is not ideal, but it avoids including
+  // interpreter-private.h here and bringing in a lot of unnecessary
+  // symbols that require even more header files.
+
+  extern type_info& __get_type_info__ (const std::string&);
+}
+
 class Cell;
 class mxArray;
 class octave_map;
@@ -159,20 +170,28 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
     static std::string static_type_name (void) { return t_name; }       \
     static std::string static_class_name (void) { return c_name; }      \
     static void register_type (void);                                   \
+    static void register_type (octave::type_info&);                     \
                                                                         \
   private:                                                              \
     static int t_id;                                                    \
     static const std::string t_name;                                    \
     static const std::string c_name;
 
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)                    \
-  int t::t_id (-1);                                                     \
-  const std::string t::t_name (n);                                      \
-  const std::string t::c_name (c);                                      \
-  void t::register_type (void)                                          \
-  {                                                                     \
-    octave_value v (new t ());                                          \
-    t_id = octave_value_typeinfo::register_type (t::t_name, t::c_name, v); \
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)            \
+  int t::t_id (-1);                                             \
+  const std::string t::t_name (n);                              \
+  const std::string t::c_name (c);                              \
+  void t::register_type (void)                                  \
+  {                                                             \
+    octave::type_info& type_info                                \
+      = octave::__get_type_info__ (#t "::register_type");       \
+                                                                \
+    register_type (type_info);                                  \
+  }                                                             \
+  void t::register_type (octave::type_info& ti)                 \
+  {                                                             \
+    octave_value v (new t ());                                  \
+    t_id = ti.register_type (t::t_name, t::c_name, v);          \
   }
 
 // A base value type, so that derived types only have to redefine what

@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-save.h"
 #include "oct-hdf5.h"
 #include "ovl.h"
@@ -366,6 +367,9 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
   std::string vname = name;
 
+  octave::type_info& type_info
+    = octave::__get_type_info__ ("hdf5_read_next_data_internal");
+
   // Allow identifiers as all digits so we can load lists saved by
   // earlier versions of Octave.
 
@@ -438,7 +442,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           H5Tclose (st_id);
           H5Dclose (data_id);
 
-          d->tc = octave_value_typeinfo::lookup_type (typ);
+          d->tc = type_info.lookup_type (typ);
 
           retval = (d->tc.load_hdf5 (subgroup_id, "value") ? 1 : -1);
 
@@ -454,9 +458,9 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           // octave list otherwise.
 
           if (hdf5_check_attr (subgroup_id, "OCTAVE_LIST"))
-            d->tc = octave_value_typeinfo::lookup_type ("list");
+            d->tc = type_info.lookup_type ("list");
           else
-            d->tc = octave_value_typeinfo::lookup_type ("struct");
+            d->tc = type_info.lookup_type ("struct");
 
           // check for OCTAVE_GLOBAL attribute:
           d->global = hdf5_check_attr (subgroup_id, "OCTAVE_GLOBAL");
@@ -493,9 +497,9 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           hsize_t rank = H5Sget_simple_extent_ndims (space_id);
 
           if (rank == 0)
-            d->tc = octave_value_typeinfo::lookup_type ("scalar");
+            d->tc = type_info.lookup_type ("scalar");
           else
-            d->tc = octave_value_typeinfo::lookup_type ("matrix");
+            d->tc = type_info.lookup_type ("matrix");
 
           H5Sclose (space_id);
         }
@@ -600,12 +604,12 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
               else
                 int_typ.append ("matrix");
 
-              d->tc = octave_value_typeinfo::lookup_type (int_typ);
+              d->tc = type_info.lookup_type (int_typ);
               H5Sclose (space_id);
             }
         }
       else if (type_class_id == H5T_STRING)
-        d->tc = octave_value_typeinfo::lookup_type ("string");
+        d->tc = type_info.lookup_type ("string");
       else if (type_class_id == H5T_COMPOUND)
         {
           hid_t complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
@@ -617,16 +621,16 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
               hsize_t rank = H5Sget_simple_extent_ndims (space_id);
 
               if (rank == 0)
-                d->tc = octave_value_typeinfo::lookup_type ("complex scalar");
+                d->tc = type_info.lookup_type ("complex scalar");
               else
-                d->tc = octave_value_typeinfo::lookup_type ("complex matrix");
+                d->tc = type_info.lookup_type ("complex matrix");
 
               H5Sclose (space_id);
             }
           else
             // Assume that if its not complex its a range.
             // If its not, it'll be rejected later in the range code.
-            d->tc = octave_value_typeinfo::lookup_type ("range");
+            d->tc = type_info.lookup_type ("range");
 
           H5Tclose (complex_type);
         }

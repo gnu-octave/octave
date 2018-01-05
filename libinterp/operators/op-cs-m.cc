@@ -106,28 +106,28 @@ DEFNDBINOP_FN (el_or,  complex, matrix, complex, array, mx_el_or)
 DEFNDCATOP_FN (cs_m, complex, matrix, complex_array, array, concat)
 
 void
-install_cs_m_ops (void)
+install_cs_m_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_add, octave_complex, octave_matrix, add);
-  INSTALL_BINOP (op_sub, octave_complex, octave_matrix, sub);
-  INSTALL_BINOP (op_mul, octave_complex, octave_matrix, mul);
-  INSTALL_BINOP (op_div, octave_complex, octave_matrix, div);
-  INSTALL_BINOP (op_pow, octave_complex, octave_matrix, pow);
-  INSTALL_BINOP (op_ldiv, octave_complex, octave_matrix, ldiv);
-  INSTALL_BINOP (op_lt, octave_complex, octave_matrix, lt);
-  INSTALL_BINOP (op_le, octave_complex, octave_matrix, le);
-  INSTALL_BINOP (op_eq, octave_complex, octave_matrix, eq);
-  INSTALL_BINOP (op_ge, octave_complex, octave_matrix, ge);
-  INSTALL_BINOP (op_gt, octave_complex, octave_matrix, gt);
-  INSTALL_BINOP (op_ne, octave_complex, octave_matrix, ne);
-  INSTALL_BINOP (op_el_mul, octave_complex, octave_matrix, el_mul);
-  INSTALL_BINOP (op_el_div, octave_complex, octave_matrix, el_div);
-  INSTALL_BINOP (op_el_pow, octave_complex, octave_matrix, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_complex, octave_matrix, el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_complex, octave_matrix, el_and);
-  INSTALL_BINOP (op_el_or, octave_complex, octave_matrix, el_or);
+  INSTALL_BINOP_TI (ti, op_add, octave_complex, octave_matrix, add);
+  INSTALL_BINOP_TI (ti, op_sub, octave_complex, octave_matrix, sub);
+  INSTALL_BINOP_TI (ti, op_mul, octave_complex, octave_matrix, mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_complex, octave_matrix, div);
+  INSTALL_BINOP_TI (ti, op_pow, octave_complex, octave_matrix, pow);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_complex, octave_matrix, ldiv);
+  INSTALL_BINOP_TI (ti, op_lt, octave_complex, octave_matrix, lt);
+  INSTALL_BINOP_TI (ti, op_le, octave_complex, octave_matrix, le);
+  INSTALL_BINOP_TI (ti, op_eq, octave_complex, octave_matrix, eq);
+  INSTALL_BINOP_TI (ti, op_ge, octave_complex, octave_matrix, ge);
+  INSTALL_BINOP_TI (ti, op_gt, octave_complex, octave_matrix, gt);
+  INSTALL_BINOP_TI (ti, op_ne, octave_complex, octave_matrix, ne);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_complex, octave_matrix, el_mul);
+  INSTALL_BINOP_TI (ti, op_el_div, octave_complex, octave_matrix, el_div);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_complex, octave_matrix, el_pow);
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_complex, octave_matrix, el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_complex, octave_matrix, el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_complex, octave_matrix, el_or);
 
-  INSTALL_CATOP (octave_complex, octave_matrix, cs_m);
+  INSTALL_CATOP_TI (ti, octave_complex, octave_matrix, cs_m);
 
-  INSTALL_ASSIGNCONV (octave_complex, octave_matrix, octave_complex_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_matrix, octave_complex_matrix);
 }

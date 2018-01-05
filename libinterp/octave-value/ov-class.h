@@ -37,7 +37,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-map.h"
 #include "ov-base.h"
-#include "ov-typeinfo.h"
+
+namespace octave
+{
+  class type_info;
+}
 
 class octave_value_list;
 
@@ -207,7 +211,7 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (void);
+  static void register_type (octave::type_info&);
 
 private:
   static int t_id;

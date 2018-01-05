@@ -45,6 +45,7 @@ namespace octave
 {
   class interpreter;
   class tree_classdef;
+  class type_info;
 }
 
 // This is mainly a boostrap class to declare the expected interface.
@@ -1547,7 +1548,7 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (void);
+  static void register_type (octave::type_info&);
 
 private:
 
@@ -1600,11 +1601,7 @@ cdef_manager
 {
 public:
 
-  cdef_manager (octave::interpreter& interp)
-    : m_interpreter (interp), m_all_classes (), m_all_packages (),
-      m_meta_class (), m_meta_property (), m_meta_method (),
-      m_meta_package (), m_meta ()
-  { }
+  cdef_manager (octave::interpreter& interp);
 
   // No copying!
 
@@ -1613,8 +1610,6 @@ public:
   cdef_manager& operator = (const cdef_manager&) = delete;
 
   ~cdef_manager (void) = default;
-
-  void initialize (void);
 
   cdef_class find_class (const std::string& name, bool error_if_not_found = true,
                          bool load_if_not_found = true);

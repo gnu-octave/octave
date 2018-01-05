@@ -131,41 +131,41 @@ DEFNDASSIGNOP_OP (assign_mul, float_matrix, float_scalar, float_scalar, *=)
 DEFNDASSIGNOP_OP (assign_div, float_matrix, float_scalar, float_scalar, /=)
 
 void
-install_fm_fs_ops (void)
+install_fm_fs_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_add, octave_float_matrix, octave_float_scalar, add);
-  INSTALL_BINOP (op_sub, octave_float_matrix, octave_float_scalar, sub);
-  INSTALL_BINOP (op_mul, octave_float_matrix, octave_float_scalar, mul);
-  INSTALL_BINOP (op_div, octave_float_matrix, octave_float_scalar, div);
-  INSTALL_BINOP (op_pow, octave_float_matrix, octave_float_scalar, pow);
-  INSTALL_BINOP (op_ldiv, octave_float_matrix, octave_float_scalar, ldiv);
-  INSTALL_BINOP (op_lt, octave_float_matrix, octave_float_scalar, lt);
-  INSTALL_BINOP (op_le, octave_float_matrix, octave_float_scalar, le);
-  INSTALL_BINOP (op_eq, octave_float_matrix, octave_float_scalar, eq);
-  INSTALL_BINOP (op_ge, octave_float_matrix, octave_float_scalar, ge);
-  INSTALL_BINOP (op_gt, octave_float_matrix, octave_float_scalar, gt);
-  INSTALL_BINOP (op_ne, octave_float_matrix, octave_float_scalar, ne);
-  INSTALL_BINOP (op_el_mul, octave_float_matrix, octave_float_scalar, el_mul);
-  INSTALL_BINOP (op_el_div, octave_float_matrix, octave_float_scalar, el_div);
-  INSTALL_BINOP (op_el_pow, octave_float_matrix, octave_float_scalar, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_float_matrix, octave_float_scalar, el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_float_matrix, octave_float_scalar, el_and);
-  INSTALL_BINOP (op_el_or, octave_float_matrix, octave_float_scalar, el_or);
+  INSTALL_BINOP_TI (ti, op_add, octave_float_matrix, octave_float_scalar, add);
+  INSTALL_BINOP_TI (ti, op_sub, octave_float_matrix, octave_float_scalar, sub);
+  INSTALL_BINOP_TI (ti, op_mul, octave_float_matrix, octave_float_scalar, mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_float_matrix, octave_float_scalar, div);
+  INSTALL_BINOP_TI (ti, op_pow, octave_float_matrix, octave_float_scalar, pow);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_float_matrix, octave_float_scalar, ldiv);
+  INSTALL_BINOP_TI (ti, op_lt, octave_float_matrix, octave_float_scalar, lt);
+  INSTALL_BINOP_TI (ti, op_le, octave_float_matrix, octave_float_scalar, le);
+  INSTALL_BINOP_TI (ti, op_eq, octave_float_matrix, octave_float_scalar, eq);
+  INSTALL_BINOP_TI (ti, op_ge, octave_float_matrix, octave_float_scalar, ge);
+  INSTALL_BINOP_TI (ti, op_gt, octave_float_matrix, octave_float_scalar, gt);
+  INSTALL_BINOP_TI (ti, op_ne, octave_float_matrix, octave_float_scalar, ne);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_float_matrix, octave_float_scalar, el_mul);
+  INSTALL_BINOP_TI (ti, op_el_div, octave_float_matrix, octave_float_scalar, el_div);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_float_matrix, octave_float_scalar, el_pow);
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_float_matrix, octave_float_scalar, el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_float_matrix, octave_float_scalar, el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_float_matrix, octave_float_scalar, el_or);
 
-  INSTALL_CATOP (octave_float_matrix, octave_float_scalar, fm_fs);
-  INSTALL_CATOP (octave_matrix, octave_float_scalar, m_fs);
-  INSTALL_CATOP (octave_float_matrix, octave_scalar, fm_s);
+  INSTALL_CATOP_TI (ti, octave_float_matrix, octave_float_scalar, fm_fs);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_float_scalar, m_fs);
+  INSTALL_CATOP_TI (ti, octave_float_matrix, octave_scalar, fm_s);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_float_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_float_scalar,
                     assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_float_scalar, dbl_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_float_scalar, dbl_assign);
 
-  INSTALL_ASSIGNOP (op_add_eq, octave_float_matrix, octave_float_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_add_eq, octave_float_matrix, octave_float_scalar,
                     assign_add);
-  INSTALL_ASSIGNOP (op_sub_eq, octave_float_matrix, octave_float_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_sub_eq, octave_float_matrix, octave_float_scalar,
                     assign_sub);
-  INSTALL_ASSIGNOP (op_mul_eq, octave_float_matrix, octave_float_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_mul_eq, octave_float_matrix, octave_float_scalar,
                     assign_mul);
-  INSTALL_ASSIGNOP (op_div_eq, octave_float_matrix, octave_float_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_div_eq, octave_float_matrix, octave_float_scalar,
                     assign_div);
 }

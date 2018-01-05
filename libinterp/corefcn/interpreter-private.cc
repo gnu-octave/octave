@@ -72,6 +72,13 @@ namespace octave
     return interp.get_load_path ();
   }
 
+  type_info& __get_type_info__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_type_info ();
+  }
+
   symbol_table& __get_symbol_table__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);

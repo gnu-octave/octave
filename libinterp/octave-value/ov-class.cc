@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hdf5.h"
 #include "ov-class.h"
 #include "ov-fcn.h"
+#include "ov-typeinfo.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
@@ -63,11 +64,10 @@ int octave_class::t_id (-1);
 const std::string octave_class::t_name ("class");
 
 void
-octave_class::register_type (void)
+octave_class::register_type (octave::type_info& ti)
 {
-  t_id = octave_value_typeinfo::register_type
-         (octave_class::t_name, "<unknown>",
-          octave_value (new octave_class ()));
+  t_id = ti.register_type (octave_class::t_name, "<unknown>",
+                           octave_value (new octave_class ()));
 }
 
 octave_class::octave_class (const octave_map& m, const std::string& id,

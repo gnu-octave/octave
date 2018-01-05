@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "oct-stream.h"
 #include "ov-classdef.h"
+#include "ov-typeinfo.h"
 #include "pt-eval.h"
 #include "symtab.h"
 #include "url-handle-manager.h"
@@ -167,6 +168,11 @@ namespace octave
       return m_symbol_table;
     }
 
+    type_info& get_type_info (void)
+    {
+      return m_type_info;
+    }
+
     symbol_scope get_current_scope (void);
     symbol_scope require_current_scope (const std::string& who);
 
@@ -239,6 +245,8 @@ namespace octave
     dynamic_loader m_dynamic_loader;
 
     load_path m_load_path;
+
+    type_info m_type_info;
 
     symbol_table m_symbol_table;
 

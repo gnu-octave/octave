@@ -62,20 +62,20 @@ DEFCONV (bool_matrix_conv, bool, bool_matrix)
 }
 
 void
-install_b_bm_ops (void)
+install_b_bm_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_el_and, octave_bool, octave_bool_matrix, el_and);
-  INSTALL_BINOP (op_el_or, octave_bool, octave_bool_matrix, el_or);
-  INSTALL_BINOP (op_el_and_not, octave_bool, octave_bool_matrix, el_and_not);
-  INSTALL_BINOP (op_el_or_not, octave_bool, octave_bool_matrix, el_or_not);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_bool, octave_bool_matrix, el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_bool, octave_bool_matrix, el_or);
+  INSTALL_BINOP_TI (ti, op_el_and_not, octave_bool, octave_bool_matrix, el_and_not);
+  INSTALL_BINOP_TI (ti, op_el_or_not, octave_bool, octave_bool_matrix, el_or_not);
 
-  INSTALL_CATOP (octave_bool, octave_bool_matrix, b_bm);
-  INSTALL_CATOP (octave_bool, octave_matrix, b_m);
-  INSTALL_CATOP (octave_scalar, octave_bool_matrix, s_bm);
-  INSTALL_CATOP (octave_bool, octave_float_matrix, b_fm);
-  INSTALL_CATOP (octave_float_scalar, octave_bool_matrix, f_bm);
+  INSTALL_CATOP_TI (ti, octave_bool, octave_bool_matrix, b_bm);
+  INSTALL_CATOP_TI (ti, octave_bool, octave_matrix, b_m);
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_bool_matrix, s_bm);
+  INSTALL_CATOP_TI (ti, octave_bool, octave_float_matrix, b_fm);
+  INSTALL_CATOP_TI (ti, octave_float_scalar, octave_bool_matrix, f_bm);
 
-  INSTALL_ASSIGNCONV (octave_bool, octave_bool_matrix, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_bool_matrix, octave_bool_matrix);
 
-  INSTALL_WIDENOP (octave_bool, octave_bool_matrix, bool_matrix_conv);
+  INSTALL_WIDENOP_TI (ti, octave_bool, octave_bool_matrix, bool_matrix_conv);
 }

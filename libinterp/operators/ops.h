@@ -28,6 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 
+namespace octave
+{
+  class type_info;
+}
+
 // Concatenation macros that enforce argument prescan
 #define CONCAT2X(x, y) x ## y
 #define CONCAT2(x, y) CONCAT2X (x, y)
@@ -35,7 +40,43 @@ along with Octave; see the file COPYING.  If not, see
 #define CONCAT3X(x, y, z) x ## y ## z
 #define CONCAT3(x, y, z) CONCAT3X (x, y, z)
 
-extern void install_ops (void);
+extern void install_ops (octave::type_info&);
+
+#define INSTALL_UNOP_TI(ti, op, t, f)                                   \
+  ti.install_unary_op                                                   \
+  (octave_value::op, t::static_type_id (), CONCAT2 (oct_unop_, f));
+
+#define INSTALL_NCUNOP_TI(ti, op, t, f)                                 \
+  ti.install_non_const_unary_op                                         \
+  (octave_value::op, t::static_type_id (), CONCAT2 (oct_unop_, f));
+
+#define INSTALL_BINOP_TI(ti, op, t1, t2, f)                             \
+  ti.install_binary_op                                                  \
+  (octave_value::op, t1::static_type_id (), t2::static_type_id (),      \
+   CONCAT2 (oct_binop_, f));
+
+#define INSTALL_CATOP_TI(ti, t1, t2, f)                                 \
+  ti.install_cat_op                                                     \
+  (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_catop_, f));
+
+#define INSTALL_ASSIGNOP_TI(ti, op, t1, t2, f)                          \
+  ti.install_assign_op                                                  \
+  (octave_value::op, t1::static_type_id (), t2::static_type_id (),      \
+   CONCAT2 (oct_assignop_, f));
+
+#define INSTALL_ASSIGNANYOP_TI(ti, op, t1, f)                           \
+  ti.install_assignany_op                                               \
+  (octave_value::op, t1::static_type_id (), CONCAT2 (oct_assignop_, f));
+
+#define INSTALL_ASSIGNCONV_TI(ti, t1, t2, tr)                           \
+  ti.install_pref_assign_conv                                           \
+  (t1::static_type_id (), t2::static_type_id (), tr::static_type_id ());
+
+#define INSTALL_WIDENOP_TI(ti, t1, t2, f)                               \
+  ti.install_widening_op                                                \
+  (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_conv_, f));
+
+// The following INSTALL_* macros are obsolete.
 
 #define INSTALL_UNOP(op, t, f)                                          \
   octave_value_typeinfo::register_unary_op                              \

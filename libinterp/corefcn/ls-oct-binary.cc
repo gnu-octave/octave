@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-save.h"
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
@@ -95,7 +96,7 @@ along with Octave; see the file COPYING.  If not, see
 //
 //   type                 string    type_length
 //
-// The string "type" is then used with octave_value_typeinfo::lookup_type
+// The string "type" is then used with octave::type_info::lookup_type
 // to create an octave_value of the correct type.  The specific load/save
 // function is then called.
 //
@@ -170,23 +171,26 @@ read_binary_data (std::istream& is, bool swap,
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     error ("load: trouble reading binary file '%s'", filename.c_str ());
 
+  octave::type_info& type_info
+    = octave::__get_type_info__ ("read_binary_data");
+
   // All cases except 255 kept for backwards compatibility
   switch (tmp)
     {
     case 1:
-      tc = octave_value_typeinfo::lookup_type ("scalar");
+      tc = type_info.lookup_type ("scalar");
       break;
 
     case 2:
-      tc = octave_value_typeinfo::lookup_type ("matrix");
+      tc = type_info.lookup_type ("matrix");
       break;
 
     case 3:
-      tc = octave_value_typeinfo::lookup_type ("complex scalar");
+      tc = type_info.lookup_type ("complex scalar");
       break;
 
     case 4:
-      tc = octave_value_typeinfo::lookup_type ("complex matrix");
+      tc = type_info.lookup_type ("complex matrix");
       break;
 
     case 5:
@@ -211,11 +215,11 @@ read_binary_data (std::istream& is, bool swap,
       break;
 
     case 6:
-      tc = octave_value_typeinfo::lookup_type ("range");
+      tc = type_info.lookup_type ("range");
       break;
 
     case 7:
-      tc = octave_value_typeinfo::lookup_type ("string");
+      tc = type_info.lookup_type ("string");
       break;
 
     case 255:
@@ -231,7 +235,7 @@ read_binary_data (std::istream& is, bool swap,
           error ("load: trouble reading binary file '%s'", filename.c_str ());
         s[len] = '\0';
         std::string typ = s;
-        tc = octave_value_typeinfo::lookup_type (typ);
+        tc = type_info.lookup_type (typ);
       }
       break;
     default:

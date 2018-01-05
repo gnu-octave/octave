@@ -79,29 +79,29 @@ DEFASSIGNOP_FN (assign, sparse_bool_matrix, sparse_bool_matrix,
                 assign)
 
 void
-install_sbm_sbm_ops (void)
+install_sbm_sbm_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_not, octave_sparse_bool_matrix, not);
-  INSTALL_UNOP (op_uplus, octave_sparse_bool_matrix, uplus);
-  INSTALL_UNOP (op_uminus, octave_sparse_bool_matrix, uminus);
-  INSTALL_UNOP (op_transpose, octave_sparse_bool_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_sparse_bool_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_not, octave_sparse_bool_matrix, not);
+  INSTALL_UNOP_TI (ti, op_uplus, octave_sparse_bool_matrix, uplus);
+  INSTALL_UNOP_TI (ti, op_uminus, octave_sparse_bool_matrix, uminus);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_sparse_bool_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_sparse_bool_matrix, transpose);
 
-  INSTALL_BINOP (op_eq, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_eq, octave_sparse_bool_matrix,
                  octave_sparse_bool_matrix, eq);
-  INSTALL_BINOP (op_ne, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_ne, octave_sparse_bool_matrix,
                  octave_sparse_bool_matrix, ne);
 
-  INSTALL_BINOP (op_el_and, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_el_and, octave_sparse_bool_matrix,
                  octave_sparse_bool_matrix, el_and);
-  INSTALL_BINOP (op_el_or, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_el_or, octave_sparse_bool_matrix,
                  octave_sparse_bool_matrix, el_or);
 
-  INSTALL_CATOP (octave_sparse_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_CATOP_TI (ti, octave_sparse_bool_matrix, octave_sparse_bool_matrix,
                  sbm_sbm);
-  INSTALL_CATOP (octave_sparse_bool_matrix, octave_sparse_matrix, sbm_sm);
-  INSTALL_CATOP (octave_sparse_matrix, octave_sparse_bool_matrix, sm_sbm);
+  INSTALL_CATOP_TI (ti, octave_sparse_bool_matrix, octave_sparse_matrix, sbm_sm);
+  INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_sparse_bool_matrix, sm_sbm);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
                     octave_sparse_bool_matrix, assign);
 }

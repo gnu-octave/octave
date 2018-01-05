@@ -182,7 +182,7 @@ OCTAVE_CHAR_INT_CONCAT_FN (uint32)
 OCTAVE_CHAR_INT_CONCAT_FN (uint64)
 
 void
-install_int_concat_ops (void)
+install_int_concat_ops (octave::type_info& ti)
 {
   OCTAVE_INSTALL_CONCAT_FN2 (int8, int16);
   OCTAVE_INSTALL_CONCAT_FN2 (int8, int32);

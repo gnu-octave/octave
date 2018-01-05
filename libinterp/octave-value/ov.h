@@ -42,6 +42,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "str-vec.h"
 
+namespace octave
+{
+  class type_info;
+}
+
 class Cell;
 class mxArray;
 class octave_map;
@@ -1604,7 +1609,7 @@ OV_COMP_BINOP_FN (op_mul_trans)
 OV_COMP_BINOP_FN (op_herm_mul)
 OV_COMP_BINOP_FN (op_mul_herm)
 
-extern OCTINTERP_API void install_types (void);
+extern OCTINTERP_API void install_types (octave::type_info&);
 
 // Templated value extractors.
 template <typename Value>

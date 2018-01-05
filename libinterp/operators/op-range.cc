@@ -94,49 +94,49 @@ CONVDECL (range_to_matrix)
 }
 
 void
-install_range_ops (void)
+install_range_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_not, octave_range, not);
-  INSTALL_UNOP (op_uplus, octave_range, uplus);
-  INSTALL_UNOP (op_uminus, octave_range, uminus);
-  INSTALL_UNOP (op_transpose, octave_range, transpose);
-  INSTALL_UNOP (op_hermitian, octave_range, transpose);
+  INSTALL_UNOP_TI (ti, op_not, octave_range, not);
+  INSTALL_UNOP_TI (ti, op_uplus, octave_range, uplus);
+  INSTALL_UNOP_TI (ti, op_uminus, octave_range, uminus);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_range, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_range, transpose);
 
-  INSTALL_BINOP (op_add, octave_range, octave_scalar, addrs);
-  INSTALL_BINOP (op_add, octave_scalar, octave_range, addsr);
-  INSTALL_BINOP (op_sub, octave_range, octave_scalar, subrs);
-  INSTALL_BINOP (op_sub, octave_scalar, octave_range, subsr);
-  INSTALL_BINOP (op_mul, octave_range, octave_scalar, mulrs);
-  INSTALL_BINOP (op_mul, octave_scalar, octave_range, mulsr);
+  INSTALL_BINOP_TI (ti, op_add, octave_range, octave_scalar, addrs);
+  INSTALL_BINOP_TI (ti, op_add, octave_scalar, octave_range, addsr);
+  INSTALL_BINOP_TI (ti, op_sub, octave_range, octave_scalar, subrs);
+  INSTALL_BINOP_TI (ti, op_sub, octave_scalar, octave_range, subsr);
+  INSTALL_BINOP_TI (ti, op_mul, octave_range, octave_scalar, mulrs);
+  INSTALL_BINOP_TI (ti, op_mul, octave_scalar, octave_range, mulsr);
 
-  INSTALL_BINOP (op_el_pow, octave_scalar, octave_range, el_powsr);
-  INSTALL_BINOP (op_el_pow, octave_complex, octave_range, el_powcsr);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_scalar, octave_range, el_powsr);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_complex, octave_range, el_powcsr);
 
-  INSTALL_CATOP (octave_range, octave_range, r_r);
-  INSTALL_CATOP (octave_range, octave_scalar, r_s);
-  INSTALL_CATOP (octave_range, octave_matrix, r_m);
-  INSTALL_CATOP (octave_range, octave_complex, r_cs);
-  INSTALL_CATOP (octave_range, octave_complex_matrix, r_cm);
-  INSTALL_CATOP (octave_range, octave_bool, r_b);
-  INSTALL_CATOP (octave_range, octave_bool_matrix, r_bm);
-  INSTALL_CATOP (octave_range, octave_char_matrix, r_chm);
-  INSTALL_CATOP (octave_scalar, octave_range, s_r);
-  INSTALL_CATOP (octave_matrix, octave_range, m_r);
-  INSTALL_CATOP (octave_complex, octave_range, cs_r);
-  INSTALL_CATOP (octave_complex_matrix, octave_range, cm_r);
-  INSTALL_CATOP (octave_bool, octave_range, b_r);
-  INSTALL_CATOP (octave_bool_matrix, octave_range, bm_r);
-  INSTALL_CATOP (octave_char_matrix, octave_range, chm_r);
+  INSTALL_CATOP_TI (ti, octave_range, octave_range, r_r);
+  INSTALL_CATOP_TI (ti, octave_range, octave_scalar, r_s);
+  INSTALL_CATOP_TI (ti, octave_range, octave_matrix, r_m);
+  INSTALL_CATOP_TI (ti, octave_range, octave_complex, r_cs);
+  INSTALL_CATOP_TI (ti, octave_range, octave_complex_matrix, r_cm);
+  INSTALL_CATOP_TI (ti, octave_range, octave_bool, r_b);
+  INSTALL_CATOP_TI (ti, octave_range, octave_bool_matrix, r_bm);
+  INSTALL_CATOP_TI (ti, octave_range, octave_char_matrix, r_chm);
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_range, s_r);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_range, m_r);
+  INSTALL_CATOP_TI (ti, octave_complex, octave_range, cs_r);
+  INSTALL_CATOP_TI (ti, octave_complex_matrix, octave_range, cm_r);
+  INSTALL_CATOP_TI (ti, octave_bool, octave_range, b_r);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_range, bm_r);
+  INSTALL_CATOP_TI (ti, octave_char_matrix, octave_range, chm_r);
 
   // FIXME: this would be unneccessary if
   // octave_base_value::numeric_assign always tried converting lhs
   // before rhs.
 
-  INSTALL_ASSIGNCONV (octave_range, octave_null_matrix, octave_matrix);
-  INSTALL_ASSIGNCONV (octave_range, octave_null_str, octave_matrix);
-  INSTALL_ASSIGNCONV (octave_range, octave_null_sq_str, octave_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_range, octave_null_matrix, octave_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_range, octave_null_str, octave_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_range, octave_null_sq_str, octave_matrix);
 
   // However, this should probably be here just in case we need it.
 
-  INSTALL_WIDENOP (octave_range, octave_matrix, range_to_matrix);
+  INSTALL_WIDENOP_TI (ti, octave_range, octave_matrix, range_to_matrix);
 }

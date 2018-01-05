@@ -88,14 +88,14 @@ DEFBINOP (div_sm_pm, sparse_matrix, perm_matrix)
 }
 
 void
-install_pm_sm_ops (void)
+install_pm_sm_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_mul, octave_perm_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_mul, octave_perm_matrix, octave_sparse_matrix,
                  mul_pm_sm);
-  INSTALL_BINOP (op_ldiv, octave_perm_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_perm_matrix, octave_sparse_matrix,
                  ldiv_pm_sm);
-  INSTALL_BINOP (op_mul, octave_sparse_matrix, octave_perm_matrix,
+  INSTALL_BINOP_TI (ti, op_mul, octave_sparse_matrix, octave_perm_matrix,
                  mul_sm_pm);
-  INSTALL_BINOP (op_div, octave_sparse_matrix, octave_perm_matrix,
+  INSTALL_BINOP_TI (ti, op_div, octave_sparse_matrix, octave_perm_matrix,
                  div_sm_pm);
 }

@@ -53,16 +53,16 @@ DEFASSIGNANYOP_FN (assign, cell, assign);
 DEFNULLASSIGNOP_FN (null_assign, cell, delete_elements)
 
 void
-install_cell_ops (void)
+install_cell_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_transpose, octave_cell, transpose);
-  INSTALL_UNOP (op_hermitian, octave_cell, transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_cell, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_cell, transpose);
 
-  INSTALL_CATOP (octave_cell, octave_cell, c_c);
+  INSTALL_CATOP_TI (ti, octave_cell, octave_cell, c_c);
 
-  INSTALL_ASSIGNANYOP (op_asn_eq, octave_cell, assign);
+  INSTALL_ASSIGNANYOP_TI (ti, op_asn_eq, octave_cell, assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
 }

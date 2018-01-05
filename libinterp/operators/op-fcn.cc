@@ -49,8 +49,8 @@ DEFBINOP (ne, fcn_handle, fcn_handle)
 }
 
 void
-install_fcn_ops (void)
+install_fcn_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_eq, octave_fcn_handle, octave_fcn_handle, eq);
-  INSTALL_BINOP (op_ne, octave_fcn_handle, octave_fcn_handle, ne);
+  INSTALL_BINOP_TI (ti, op_eq, octave_fcn_handle, octave_fcn_handle, eq);
+  INSTALL_BINOP_TI (ti, op_ne, octave_fcn_handle, octave_fcn_handle, ne);
 }

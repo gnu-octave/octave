@@ -1178,9 +1178,11 @@ octave_base_value::numeric_assign (const std::string& type,
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
 
-  octave_value_typeinfo::assign_op_fcn f
-    = octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
-                                               t_lhs, t_rhs);
+  octave::type_info& ti
+    = octave::__get_type_info__ ("octave_base_value::numeric_assign");
+
+  octave::type_info::assign_op_fcn f
+    = ti.lookup_assign_op (octave_value::op_asn_eq, t_lhs, t_rhs);
 
   bool done = false;
 
@@ -1198,13 +1200,12 @@ octave_base_value::numeric_assign (const std::string& type,
     }
   else
     {
-      int t_result
-        = octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
+      int t_result = ti.lookup_pref_assign_conv (t_lhs, t_rhs);
 
       if (t_result >= 0)
         {
           octave_base_value::type_conv_fcn cf
-            = octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
+            = ti.lookup_widening_op (t_lhs, t_result);
 
           if (! cf)
             err_indexed_assignment (type_name (), rhs.type_name ());
@@ -1233,17 +1234,16 @@ octave_base_value::numeric_assign (const std::string& type,
 
           // Try biased (one-sided) conversions first.
           if (cf_rhs.type_id () >= 0
-              && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
-                                                           t_lhs,
-                                                           cf_rhs.type_id ())
-                  || octave_value_typeinfo::lookup_pref_assign_conv (t_lhs,
-                                                                     cf_rhs.type_id ()) >= 0))
+              && (ti.lookup_assign_op (octave_value::op_asn_eq,
+                                       t_lhs, cf_rhs.type_id ())
+                  || ti.lookup_pref_assign_conv (t_lhs,
+                                                 cf_rhs.type_id ()) >= 0))
             cf_this = nullptr;
           else if (cf_this.type_id () >= 0
-                   && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
-                                                                cf_this.type_id (), t_rhs)
-                       || octave_value_typeinfo::lookup_pref_assign_conv (cf_this.type_id (),
-                                                                          t_rhs) >= 0))
+                   && (ti.lookup_assign_op (octave_value::op_asn_eq,
+                                            cf_this.type_id (), t_rhs)
+                       || ti.lookup_pref_assign_conv (cf_this.type_id (),
+                                                      t_rhs) >= 0))
             cf_rhs = nullptr;
 
           if (cf_rhs)
@@ -1471,23 +1471,23 @@ called_from_builtin (void)
 }
 
 void
-install_base_type_conversions (void)
+install_base_type_conversions (octave::type_info& ti)
 {
-  INSTALL_ASSIGNCONV (octave_base_value, octave_scalar, octave_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_matrix, octave_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_complex, octave_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_complex_matrix,
-                      octave_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_range, octave_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_char_matrix_str,
-                      octave_char_matrix_str);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_cell, octave_cell);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_scalar, octave_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_matrix, octave_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_complex, octave_complex_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_complex_matrix,
+                         octave_complex_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_range, octave_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_char_matrix_str,
+                         octave_char_matrix_str);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_cell, octave_cell);
 
-  INSTALL_WIDENOP (octave_base_value, octave_matrix, matrix_conv);
-  INSTALL_WIDENOP (octave_base_value, octave_complex_matrix,
-                   complex_matrix_conv);
-  INSTALL_WIDENOP (octave_base_value, octave_char_matrix_str, string_conv);
-  INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
+  INSTALL_WIDENOP_TI (ti, octave_base_value, octave_matrix, matrix_conv);
+  INSTALL_WIDENOP_TI (ti, octave_base_value, octave_complex_matrix,
+                      complex_matrix_conv);
+  INSTALL_WIDENOP_TI (ti, octave_base_value, octave_char_matrix_str, string_conv);
+  INSTALL_WIDENOP_TI (ti, octave_base_value, octave_cell, cell_conv);
 }
 
 DEFUN (sparse_auto_mutate, args, nargout,

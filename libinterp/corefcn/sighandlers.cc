@@ -137,6 +137,10 @@ namespace octave
     static const bool have_sigalrm
       = octave_get_sig_number ("SIGALRM", &sigalrm);
 
+    static int sigvtalrm;
+    static const bool have_sigvtalrm
+      = octave_get_sig_number ("SIGVTALRM", &sigvtalrm);
+
     // I/O signals.
 
     static int sigio;
@@ -223,6 +227,7 @@ namespace octave
             else if (have_sigterm && sig == sigterm)
               my_friendly_exit (sigterm, Vsigterm_dumps_octave_core);
             else if ((have_sigalrm && sig == sigalrm)
+                     || (have_sigvtalrm && sig == sigvtalrm)
                      || (have_sigio && sig == sigio)
                      || (have_siglost && sig == siglost)
                      || (have_sigxcpu && sig == sigxcpu)
@@ -402,7 +407,6 @@ namespace octave
 
     set_signal_handler ("SIGALRM", generic_sig_handler);
     set_signal_handler ("SIGVTALRM", generic_sig_handler);
-    set_signal_handler ("SIGPROF", generic_sig_handler);
 
     // I/O signals.
 

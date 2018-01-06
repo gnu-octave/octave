@@ -205,6 +205,10 @@ typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 
 #define OCTAVE_HAVE_F77_INT_TYPE 1
 
+#if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
+#  define OCTAVE_THREAD_LOCAL
+#endif
+
 /* Tag indicating Octave's autoconf-generated config.h has been
    included.  This symbol is provided because autoconf-generated
    config.h files do not define a multiple-inclusion guard.  See also

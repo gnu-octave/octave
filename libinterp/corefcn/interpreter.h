@@ -207,8 +207,14 @@ namespace octave
   private:
 
     // The interpreter instance;  Currently it is only possible to
-    // have one.
-    static interpreter *instance;
+    // have one, so OCTAVE_THREAD_LOCAL will normally be defined to be
+    // empty.  Eventually we would like to allow multiple interpreters
+    // to be active at once, but they will still be limited to one per
+    // thread.  When that is possible, OCTAVE_THREAD_LOCAL can be
+    // replaced by the C++ thread_local keyword.  For now, use a macro
+    // to allow experimenting with thread_local storage.
+
+    OCTAVE_THREAD_LOCAL static interpreter *instance;
 
     static std::list<std::string> atexit_functions;
 

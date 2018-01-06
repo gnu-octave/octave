@@ -367,9 +367,14 @@ namespace octave
       m_history_initialized (false),
       m_initialized (false)
   {
+    // FIXME: When thread_local storage is used by default, this message
+    // should change to say something like
+    //
+    //   only one Octave interpreter may be active in any given thread
+
     if (instance)
       throw std::runtime_error
-        ("only one Octave interpreter object may be active");
+        ("only one Octave interpreter may be active");
 
     instance = this;
 
@@ -529,7 +534,7 @@ namespace octave
     octave_interpreter_ready = true;
   }
 
-  interpreter *interpreter::instance = nullptr;
+  OCTAVE_THREAD_LOCAL interpreter *interpreter::instance = nullptr;
 
   interpreter::~interpreter (void)
   {

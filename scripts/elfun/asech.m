@@ -35,7 +35,15 @@ function y = asech (x)
 endfunction
 
 
-%!test
+%!testif ; ! ismac ()
+%! v = [0, pi*i];
+%! x = [1, -1];
+%! assert (asech (x), v, sqrt (eps));
+
+%!xtest <52627>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! ## Mac trig/hyperbolic functions have huge tolerances.
+%! if (! ismac ()), return; endif
 %! v = [0, pi*i];
 %! x = [1, -1];
 %! assert (asech (x), v, sqrt (eps));

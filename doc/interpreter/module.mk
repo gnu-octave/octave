@@ -170,6 +170,7 @@ info_TEXINFOS += \
   %reldir%/octave.texi
 
 octave_TEXINFOS = \
+  %reldir%/macros.texi \
   $(BUILT_OCTAVE_TEXI_SRC)
 
 INFO_DEPS += $(srcdir)/%reldir%/octave.info
@@ -314,7 +315,7 @@ BUGS: %reldir%/bugs.texi | %reldir%/$(octave_dirstamp)
 	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
-INSTALL.OCTAVE: %reldir%/install.texi | %reldir%/$(octave_dirstamp)
+INSTALL.OCTAVE: %reldir%/install.texi %reldir%/macros.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	$(MAKEINFO) -D INSTALLONLY -I $(srcdir)/doc/interpreter \
 	  --no-validate --no-headers --no-split --output $@-t $< && \

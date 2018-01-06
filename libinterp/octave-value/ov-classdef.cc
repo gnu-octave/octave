@@ -640,15 +640,13 @@ handle_delete (const octave_value_list& /* args */, int /* nargout */)
   return retval;
 }
 
-static cdef_class
-make_class (const std::string& name,
-            const std::list<cdef_class>& super_list = std::list<cdef_class> ())
+cdef_class
+cdef_manager::make_class (const std::string& name,
+                          const std::list<cdef_class>& super_list)
 {
   cdef_class cls (name, super_list);
 
-  cdef_manager& cdm = octave::__get_cdef_manager__ ("make_class");
-
-  cls.set_class (cdm.meta_class ());
+  cls.set_class (meta_class ());
 
   cls.put ("Abstract", false);
   cls.put ("ConstructOnLoad", false);
@@ -693,19 +691,21 @@ make_class (const std::string& name,
     }
 
   if (! name.empty ())
-    cdm.register_class (cls);
+    register_class (cls);
 
   return cls;
 }
 
-static cdef_class
-make_class (const std::string& name, const cdef_class& super)
+cdef_class
+cdef_manager::make_class (const std::string& name,
+                          const cdef_class& super)
 {
   return make_class (name, std::list<cdef_class> (1, super));
 }
 
-static cdef_class
-make_meta_class (const std::string& name, const cdef_class& super)
+cdef_class
+cdef_manager::make_meta_class (const std::string& name,
+                               const cdef_class& super)
 {
   cdef_class cls = make_class (name, super);
 
@@ -715,18 +715,16 @@ make_meta_class (const std::string& name, const cdef_class& super)
   return cls;
 }
 
-static cdef_property
-make_property (const cdef_class& cls, const std::string& name,
-               const octave_value& get_method = Matrix (),
-               const std::string& get_access = "public",
-               const octave_value& set_method = Matrix (),
-               const std::string& set_access = "public")
+cdef_property
+cdef_manager::make_property (const cdef_class& cls, const std::string& name,
+                             const octave_value& get_method,
+                             const std::string& get_access,
+                             const octave_value& set_method,
+                             const std::string& set_access)
 {
   cdef_property prop (name);
 
-  cdef_manager& cdm = octave::__get_cdef_manager__ ("make_property");
-
-  prop.set_class (cdm.meta_property ());
+  prop.set_class (meta_property ());
 
   prop.put ("Description", "");
   prop.put ("DetailedDescription", "");
@@ -755,22 +753,20 @@ make_property (const cdef_class& cls, const std::string& name,
   return prop;
 }
 
-inline cdef_property
-make_attribute (const cdef_class& cls, const std::string& name)
+cdef_property
+cdef_manager::make_attribute (const cdef_class& cls, const std::string& name)
 {
   return make_property (cls, name, Matrix (), "public", Matrix (), "private");
 }
 
-static cdef_method
-make_method (const cdef_class& cls, const std::string& name,
-             const octave_value& fcn,const std::string& m_access = "public",
-             bool is_static = false)
+cdef_method
+cdef_manager::make_method (const cdef_class& cls, const std::string& name,
+                           const octave_value& fcn,
+                           const std::string& m_access, bool is_static)
 {
   cdef_method meth (name);
 
-  cdef_manager& cdm = octave::__get_cdef_manager__ ("make_method");
-
-  meth.set_class (cdm.meta_method ());
+  meth.set_class (meta_method ());
 
   meth.put ("Abstract", false);
   meth.put ("Access", m_access);
@@ -792,43 +788,40 @@ make_method (const cdef_class& cls, const std::string& name,
   return meth;
 }
 
-inline cdef_method
-make_method (const cdef_class& cls, const std::string& name,
-             octave_builtin::fcn ff, const std::string& m_access = "public",
-             bool is_static = false)
+cdef_method
+cdef_manager::make_method (const cdef_class& cls, const std::string& name,
+                           octave_builtin::fcn ff,
+                           const std::string& m_access, bool is_static)
 {
   octave_value fcn (new octave_builtin (ff, name));
 
   return make_method (cls, name, fcn, m_access, is_static);
 }
 
-inline cdef_method
-make_method (const cdef_class& cls, const std::string& name,
-             octave_builtin::meth mm, const std::string& m_access = "public",
-             bool is_static = false)
+cdef_method
+cdef_manager::make_method (const cdef_class& cls, const std::string& name,
+                           octave_builtin::meth mm,
+                           const std::string& m_access, bool is_static)
 {
   octave_value fcn (new octave_builtin (mm, name));
 
   return make_method (cls, name, fcn, m_access, is_static);
 }
 
-static cdef_package
-make_package (const std::string& nm,
-              const std::string& parent = "")
+cdef_package
+cdef_manager::make_package (const std::string& nm, const std::string& parent)
 {
   cdef_package pack (nm);
 
-  cdef_manager& cdm = octave::__get_cdef_manager__ ("make_package");
-
-  pack.set_class (cdm.meta_package ());
+  pack.set_class (meta_package ());
 
   if (parent.empty ())
     pack.put ("ContainingPackage", Matrix ());
   else
-    pack.put ("ContainingPackage", to_ov (cdm.find_package (parent)));
+    pack.put ("ContainingPackage", to_ov (find_package (parent)));
 
   if (! nm.empty ())
-    cdm.register_package (pack);
+    register_package (pack);
 
   return pack;
 }
@@ -2437,7 +2430,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
       if (this_cls == cdm.meta_class ())
         {
           if (! empty_class.ok ())
-            empty_class = make_class ("", std::list<cdef_class> ());
+            empty_class = cdm.make_class ("", std::list<cdef_class> ());
           obj = empty_class;
         }
       else if (this_cls == cdm.meta_property ())
@@ -2445,9 +2438,9 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
           static cdef_property empty_property;
 
           if (! empty_class.ok ())
-            empty_class = make_class ("", std::list<cdef_class> ());
+            empty_class = cdm.make_class ("", std::list<cdef_class> ());
           if (! empty_property.ok ())
-            empty_property = make_property (empty_class, "");
+            empty_property = cdm.make_property (empty_class, "");
           obj = empty_property;
         }
       else if (this_cls == cdm.meta_method ())
@@ -2455,9 +2448,9 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
           static cdef_method empty_method;
 
           if (! empty_class.ok ())
-            empty_class = make_class ("", std::list<cdef_class> ());
+            empty_class = cdm.make_class ("", std::list<cdef_class> ());
           if (! empty_method.ok ())
-            empty_method = make_method (empty_class, "", octave_value ());
+            empty_method = cdm.make_method (empty_class, "", octave_value ());
           obj = empty_method;
         }
       else if (this_cls == cdm.meta_package ())
@@ -2465,7 +2458,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
           static cdef_package empty_package;
 
           if (! empty_package.ok ())
-            empty_package = make_package ("");
+            empty_package = cdm.make_package ("");
           obj = empty_package;
         }
       else
@@ -2568,15 +2561,15 @@ cdef_class::make_meta_class (octave::interpreter& interp,
         }
     }
 
-  retval = ::make_class (full_class_name, slist);
+  cdef_manager& cdm
+    = octave::__get_cdef_manager__ ("cdef_class::make_meta_class");
+
+  retval = cdm.make_class (full_class_name, slist);
 
   // Package owning this class
 
   if (! t->package_name ().empty ())
     {
-      cdef_manager& cdm
-        = octave::__get_cdef_manager__ ("cdef_class::make_meta_class");
-
       cdef_package pack = cdm.find_package (t->package_name ());
 
       if (pack.ok ())
@@ -2663,7 +2656,7 @@ cdef_class::make_meta_class (octave::interpreter& interp,
                       make_fcn_handle (mtd, full_class_name + '>' + mname);
                   else
                     {
-                      cdef_method meth = make_method (retval, mname, mtd);
+                      cdef_method meth = cdm.make_method (retval, mname, mtd);
 
 #if DEBUG_TRACE
                       std::cerr << (mname == class_name ? "constructor"
@@ -2706,8 +2699,8 @@ cdef_class::make_meta_class (octave::interpreter& interp,
 
                   fcn->stash_function_name (mtdnm);
 
-                  cdef_method meth = make_method (retval, mtdnm,
-                                                  octave_value (fcn));
+                  cdef_method meth
+                    = cdm.make_method (retval, mtdnm, octave_value (fcn));
 
                   retval.install_method (meth);
                 }
@@ -2765,7 +2758,7 @@ cdef_class::make_meta_class (octave::interpreter& interp,
                 {
                   std::string prop_name = prop_p->ident ()->name ();
 
-                  cdef_property prop = ::make_property (retval, prop_name);
+                  cdef_property prop = cdm.make_property (retval, prop_name);
 
 #if DEBUG_TRACE
                   std::cerr << "property: " << prop_p->ident ()->name ()
@@ -3359,25 +3352,17 @@ cdef_manager::initialize (void)
   // bootstrap
   cdef_class tmp_handle = make_class ("handle");
 
-  cdef_class tmp_meta_class
-    = m_meta_class
-    = make_meta_class ("meta.class", tmp_handle);
+  m_meta_class = make_meta_class ("meta.class", tmp_handle);
 
-  tmp_handle.set_class (tmp_meta_class);
-  tmp_meta_class.set_class (tmp_meta_class);
+  tmp_handle.set_class (m_meta_class);
+  m_meta_class.set_class (m_meta_class);
 
   // meta classes
-  cdef_class tmp_meta_property
-    = m_meta_property
-    = make_meta_class ("meta.property", tmp_handle);
+  m_meta_property = make_meta_class ("meta.property", tmp_handle);
 
-  cdef_class tmp_meta_method
-    = m_meta_method
-    = make_meta_class ("meta.method", tmp_handle);
+  m_meta_method = make_meta_class ("meta.method", tmp_handle);
 
-  cdef_class tmp_meta_package
-    = m_meta_package
-    = make_meta_class ("meta.package", tmp_handle);
+  m_meta_package = make_meta_class ("meta.package", tmp_handle);
 
   cdef_class tmp_meta_event
     = make_meta_class ("meta.event", tmp_handle);
@@ -3386,177 +3371,177 @@ cdef_manager::initialize (void)
     = make_meta_class ("meta.dynamicproperty", tmp_handle);
 
   // meta.class properties
-  tmp_meta_class.install_property
-    (make_attribute (tmp_meta_class, "Abstract"));
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "Abstract"));
 
-  tmp_meta_class.install_property
-    (make_attribute (tmp_meta_class, "ConstructOnLoad"));
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "ConstructOnLoad"));
 
-  tmp_meta_class.install_property
-    (make_property  (tmp_meta_class, "ContainingPackage"));
+  m_meta_class.install_property
+    (make_property (m_meta_class, "ContainingPackage"));
 
-  tmp_meta_class.install_property
-    (make_property  (tmp_meta_class, "Description"));
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Description"));
 
-  tmp_meta_class.install_property
-    (make_property  (tmp_meta_class, "DetailedDescription"));
+  m_meta_class.install_property
+    (make_property (m_meta_class, "DetailedDescription"));
 
-  tmp_meta_class.install_property
-    (make_property  (tmp_meta_class, "Events"));
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Events"));
 
-  tmp_meta_class.install_property
-    (make_attribute (tmp_meta_class, "HandleCompatible"));
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "HandleCompatible"));
 
-  tmp_meta_class.install_property
-    (make_attribute (tmp_meta_class, "Hidden"));
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "Hidden"));
 
-  tmp_meta_class.install_property
-    (make_property (tmp_meta_class, "InferiorClasses",
+  m_meta_class.install_property
+    (make_property (m_meta_class, "InferiorClasses",
                     make_fcn_handle (class_get_inferiorclasses,
                                      "meta.class>get.InferiorClasses"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_class.install_property
-    (make_property (tmp_meta_class, "Methods",
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Methods",
                     make_fcn_handle (class_get_methods,
                                      "meta.class>get.Methods"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_class.install_property
-    (make_property (tmp_meta_class, "MethodList",
+  m_meta_class.install_property
+    (make_property (m_meta_class, "MethodList",
                      make_fcn_handle (class_get_methods,
                                       "meta.class>get.MethodList"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_class.install_property (make_attribute (tmp_meta_class, "Name"));
+  m_meta_class.install_property (make_attribute (m_meta_class, "Name"));
 
-  tmp_meta_class.install_property
-    (make_property (tmp_meta_class, "Properties",
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Properties",
                     make_fcn_handle (class_get_properties,
                                      "meta.class>get.Properties"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_class.install_property
-    (make_property (tmp_meta_class, "PropertyList",
+  m_meta_class.install_property
+    (make_property (m_meta_class, "PropertyList",
                     make_fcn_handle (class_get_properties,
                                      "meta.class>get.PropertyList"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_class.install_property (make_attribute (tmp_meta_class, "Sealed"));
+  m_meta_class.install_property (make_attribute (m_meta_class, "Sealed"));
 
-  tmp_meta_class.install_property
-    (make_property (tmp_meta_class, "SuperClasses",
+  m_meta_class.install_property
+    (make_property (m_meta_class, "SuperClasses",
                     make_fcn_handle (class_get_superclasses,
                                      "meta.class>get.SuperClasses"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_class.install_property
-    (make_property (tmp_meta_class, "SuperClassList",
+  m_meta_class.install_property
+    (make_property (m_meta_class, "SuperClassList",
                     make_fcn_handle (class_get_superclasses,
                                      "meta.class>get.SuperClassList"),
                     "public", Matrix (), "private"));
 
   // meta.class methods
-  tmp_meta_class.install_method
-    (make_method (tmp_meta_class, "fromName", class_fromName, "public", true));
+  m_meta_class.install_method
+    (make_method (m_meta_class, "fromName", class_fromName, "public", true));
 
-  tmp_meta_class.install_method
-    (make_method (tmp_meta_class, "fevalStatic", class_fevalStatic, "public",
+  m_meta_class.install_method
+    (make_method (m_meta_class, "fevalStatic", class_fevalStatic, "public",
                   false));
 
-  tmp_meta_class.install_method
-    (make_method (tmp_meta_class, "getConstant", class_getConstant, "public",
+  m_meta_class.install_method
+    (make_method (m_meta_class, "getConstant", class_getConstant, "public",
                   false));
 
-  tmp_meta_class.install_method (make_method (tmp_meta_class, "eq", class_eq));
-  tmp_meta_class.install_method (make_method (tmp_meta_class, "ne", class_ne));
-  tmp_meta_class.install_method (make_method (tmp_meta_class, "lt", class_lt));
-  tmp_meta_class.install_method (make_method (tmp_meta_class, "le", class_le));
-  tmp_meta_class.install_method (make_method (tmp_meta_class, "gt", class_gt));
-  tmp_meta_class.install_method (make_method (tmp_meta_class, "ge", class_ge));
+  m_meta_class.install_method (make_method (m_meta_class, "eq", class_eq));
+  m_meta_class.install_method (make_method (m_meta_class, "ne", class_ne));
+  m_meta_class.install_method (make_method (m_meta_class, "lt", class_lt));
+  m_meta_class.install_method (make_method (m_meta_class, "le", class_le));
+  m_meta_class.install_method (make_method (m_meta_class, "gt", class_gt));
+  m_meta_class.install_method (make_method (m_meta_class, "ge", class_ge));
 
   // meta.method properties
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "Abstract"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Abstract"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "Access"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Access"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "DefiningClass"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "DefiningClass"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "Description"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Description"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "DetailedDescription"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "DetailedDescription"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "Hidden"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Hidden"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "Name"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Name"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "Sealed"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Sealed"));
 
-  tmp_meta_method.install_property
-    (make_attribute (tmp_meta_method, "Static"));
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Static"));
 
   // meta.property properties
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "Name"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Name"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "Description"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Description"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "DetailedDescription"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "DetailedDescription"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "Abstract"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Abstract"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "Constant"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Constant"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "GetAccess"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "GetAccess"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "SetAccess"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "SetAccess"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "Dependent"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Dependent"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "Transient"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Transient"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "Hidden"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Hidden"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "GetObservable"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "GetObservable"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "SetObservable"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "SetObservable"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "GetMethod"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "GetMethod"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "SetMethod"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "SetMethod"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "DefiningClass"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "DefiningClass"));
 
-  tmp_meta_property.install_property
-    (make_property (tmp_meta_property, "DefaultValue",
+  m_meta_property.install_property
+    (make_property (m_meta_property, "DefaultValue",
                     make_fcn_handle (property_get_defaultvalue,
                                      "meta.property>get.DefaultValue"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_property.install_property
-    (make_attribute (tmp_meta_property, "HasDefault"));
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "HasDefault"));
 
   // meta.property events
   // FIXME: add events
@@ -3568,54 +3553,54 @@ cdef_manager::initialize (void)
 
   // meta.package properties
 
-  tmp_meta_package.install_property
-    (make_attribute (tmp_meta_package, "Name"));
+  m_meta_package.install_property
+    (make_attribute (m_meta_package, "Name"));
 
-  tmp_meta_package.install_property
-    (make_property  (tmp_meta_package, "ContainingPackage"));
+  m_meta_package.install_property
+    (make_property (m_meta_package, "ContainingPackage"));
 
-  tmp_meta_package.install_property
-    (make_property (tmp_meta_package, "ClassList",
+  m_meta_package.install_property
+    (make_property (m_meta_package, "ClassList",
                     make_fcn_handle (package_get_classes,
                                      "meta.package>get.ClassList"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_package.install_property
-    (make_property (tmp_meta_package, "Classes",
+  m_meta_package.install_property
+    (make_property (m_meta_package, "Classes",
                     make_fcn_handle (package_get_classes,
                                      "meta.package>get.Classes"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_package.install_property
-    (make_property (tmp_meta_package, "FunctionList",
+  m_meta_package.install_property
+    (make_property (m_meta_package, "FunctionList",
                     make_fcn_handle (package_get_functions,
                                      "meta.package>get.FunctionList"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_package.install_property
-    (make_property (tmp_meta_package, "Functions",
+  m_meta_package.install_property
+    (make_property (m_meta_package, "Functions",
                     make_fcn_handle (package_get_functions,
                                      "meta.package>get.Functions"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_package.install_property
-    (make_property (tmp_meta_package, "PackageList",
+  m_meta_package.install_property
+    (make_property (m_meta_package, "PackageList",
                       make_fcn_handle (package_get_packages,
                                        "meta.package>get.PackageList"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_package.install_property
-    (make_property (tmp_meta_package, "Packages",
+  m_meta_package.install_property
+    (make_property (m_meta_package, "Packages",
                     make_fcn_handle (package_get_packages,
                                      "meta.package>get.Packages"),
                     "public", Matrix (), "private"));
 
-  tmp_meta_package.install_method
-    (make_method (tmp_meta_package, "fromName", package_fromName,
+  m_meta_package.install_method
+    (make_method (m_meta_package, "fromName", package_fromName,
                   "public", true));
 
-  tmp_meta_package.install_method
-    (make_method (tmp_meta_package, "getAllPackages", package_getAllPackages,
+  m_meta_package.install_method
+    (make_method (m_meta_package, "getAllPackages", package_getAllPackages,
                   "public", true));
 
   // create "meta" package
@@ -3623,10 +3608,10 @@ cdef_manager::initialize (void)
     = m_meta
     = make_package ("meta");
 
-  package_meta.install_class (tmp_meta_class, "class");
-  package_meta.install_class (tmp_meta_property, "property");
-  package_meta.install_class (tmp_meta_method, "method");
-  package_meta.install_class (tmp_meta_package, "package");
+  package_meta.install_class (m_meta_class, "class");
+  package_meta.install_class (m_meta_property, "property");
+  package_meta.install_class (m_meta_method, "method");
+  package_meta.install_class (m_meta_package, "package");
   package_meta.install_class (tmp_meta_event, "event");
   package_meta.install_class (tmp_meta_dynproperty, "dynproperty");
 
@@ -3635,19 +3620,19 @@ cdef_manager::initialize (void)
   // install built-in classes into the symbol table
   symtab.install_built_in_function
     ("meta.class",
-     octave_value (tmp_meta_class.get_constructor_function ()));
+     octave_value (m_meta_class.get_constructor_function ()));
 
   symtab.install_built_in_function
     ("meta.method",
-     octave_value (tmp_meta_method.get_constructor_function ()));
+     octave_value (m_meta_method.get_constructor_function ()));
 
   symtab.install_built_in_function
     ("meta.property",
-     octave_value (tmp_meta_property.get_constructor_function ()));
+     octave_value (m_meta_property.get_constructor_function ()));
 
   symtab.install_built_in_function
     ("meta.package",
-     octave_value (tmp_meta_package.get_constructor_function ()));
+     octave_value (m_meta_package.get_constructor_function ()));
 
   symtab.install_built_in_function
     ("meta.event",

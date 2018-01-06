@@ -48,41 +48,6 @@ contains_char (const std::string& str, char c)
           || str.find (std::toupper (c)) != std::string::npos);
 }
 
-// case-insensitive character comparison functors
-struct icmp_char_lt : public std::binary_function<char, char, bool>
-{
-  bool operator () (char x, char y) const
-  { return std::toupper (x) < std::toupper (y); }
-};
-
-struct icmp_char_gt : public std::binary_function<char, char, bool>
-{
-  bool operator () (char x, char y) const
-  { return std::toupper (x) > std::toupper (y); }
-};
-
-// FIXME: maybe these should go elsewhere?
-// FIXME: are they even needed now?
-// case-insensitive ascending comparator
-#if 0
-static bool
-stri_comp_lt (const std::string& a, const std::string& b)
-{
-  return std::lexicographical_compare (a.begin (), a.end (),
-                                       b.begin (), b.end (),
-                                       icmp_char_lt ());
-}
-
-// case-insensitive descending comparator
-static bool
-stri_comp_gt (const std::string& a, const std::string& b)
-{
-  return std::lexicographical_compare (a.begin (), a.end (),
-                                       b.begin (), b.end (),
-                                       icmp_char_gt ());
-}
-#endif
-
 template <typename T>
 inline sortmode
 get_sort_mode (const Array<T>& array,
@@ -195,19 +160,18 @@ Lookup values in a @strong{sorted} table.
 
 This function is usually used as a prelude to interpolation.
 
-If table is increasing and @code{idx = lookup (table, y)}, then
+If table is increasing, of length N and @code{idx = lookup (table, y)}, then
 @code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within the
 table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If
-@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is
-@code{n}.
+@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is N.
 
 If the table is decreasing, then the tests are reversed.  For non-strictly
 monotonic tables, empty intervals are always skipped.  The result is undefined
 if @var{table} is not monotonic, or if @var{table} contains a NaN.
 
-The complexity of the lookup is O(M*log(N)) where N is the size of @var{table}
-and M is the size of @var{y}.  In the special case when @var{y} is also sorted,
-the complexity is O(min (M*log(N), M+N)).
+The complexity of the lookup is O(M*log(N)) where M is the size of @var{y}.
+In the special case when @var{y} is also sorted, the complexity is
+O(min (M*log(N), M+N)).
 
 @var{table} and @var{y} can also be cell arrays of strings (or @var{y} can be a
 single string).  In this case, string lookup is performed using lexicographical
@@ -227,11 +191,11 @@ is contained in table or not.
 
 @item l
 Left.  For numeric lookups the leftmost subinterval shall be extended to
-infinity (i.e., all indices at least 1).
+minus infinity (i.e., all indices at least 1).
 
 @item r
 Right.  For numeric lookups the rightmost subinterval shall be extended to
-infinity (i.e., all indices at most n-1).
+infinity (i.e., all indices at most N-1).
 @end table
 
 @strong{Note}: If @var{table} is not sorted the results from @code{lookup}
@@ -342,14 +306,10 @@ will be unpredictable.
       else if (match_idx)
         {
           NDArray ridx (idx.dims ());
-          if (match_idx)
+          for (octave_idx_type i = 0; i < nval; i++)
             {
-              for (octave_idx_type i = 0; i < nval; i++)
-                {
-                  octave_idx_type j = idx.xelem (i);
-                  ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1) ? j
-                                                                         : 0);
-                }
+              octave_idx_type j = idx.xelem (i);
+              ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1) ? j : 0);
             }
 
           retval = ridx;

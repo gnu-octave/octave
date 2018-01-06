@@ -120,7 +120,7 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! rval = pi;
 %! obs = acos ([-2, -2-i*eps, -2+i*eps]);
 %! exp = [rval - ival*i, rval + ival*i, rval - ival*i];
-%! assert (obs, exp, 3*eps);
+%! assert (obs, exp, 5*eps);
 %! assert (acos ([2 0]),  [ival*i, pi/2], 3*eps);
 %! assert (acos ([2 0i]), [ival*i, pi/2], 3*eps);
 

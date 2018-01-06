@@ -4,9 +4,9 @@ c Author: Jaroslav Hajek <highegg@gmail.com>
 c
 c This file is part of Octave.
 c
-c Octave is free software; you can redistribute it and/or modify it
+c Octave is free software: you can redistribute it and/or modify it
 c under the terms of the GNU General Public License as published by
-c the Free Software Foundation; either version 3 of the License, or
+c the Free Software Foundation, either version 3 of the License, or
 c (at your option) any later version.
 c
 c Octave is distributed in the hope that it will be useful, but
@@ -16,7 +16,7 @@ c GNU General Public License for more details.
 c
 c You should have received a copy of the GNU General Public License
 c along with Octave; see the file COPYING.  If not, see
-c <http://www.gnu.org/licenses/>.
+c <https://www.gnu.org/licenses/>.
 c
       subroutine dconv2o(ma,na,a,mb,nb,b,c)
 c purpose:      a 2-dimensional outer additive convolution.

@@ -2,9 +2,9 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
@@ -14,7 +14,7 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{retval} =} genpropdoc (@var{OBJNAME}, @var{FILENAME})
@@ -1815,23 +1815,23 @@ endfunction
 function str = warn_autogen ()
   str = "@c DO NOT EDIT!  Generated automatically by genpropdoc.m.\n\
 \n\
-@c Copyright (C) 2014-2016 Pantxo Diribarne\n\
+@c Copyright (C) 2014-2018 Pantxo Diribarne\n\
 @c\n\
 @c This file is part of Octave.\n\
 @c\n\
-@c Octave is free software; you can redistribute it and/or modify it\n\
-@c under the terms of the GNU General Public License as published by the\n\
-@c Free Software Foundation; either version 3 of the License, or (at\n\
-@c your option) any later version.\n\
+@c Octave is free software: you can redistribute it and/or modify it\n\
+@c under the terms of the GNU General Public License as published by\n\
+@c the Free Software Foundation, either version 3 of the License, or\n\
+@c (at your option) any later version.\n\
 @c\n\
-@c Octave is distributed in the hope that it will be useful, but WITHOUT\n\
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\
-@c for more details.\n\
+@c Octave is distributed in the hope that it will be useful, but\n\
+@c WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+@c GNU General Public License for more details.\n\
 @c\n\
 @c You should have received a copy of the GNU General Public License\n\
 @c along with Octave; see the file COPYING.  If not, see\n\
-@c <http://www.gnu.org/licenses/>.";
+@c <https://www.gnu.org/licenses/>.";
 endfunction
 
 function str = print_options (val, default)

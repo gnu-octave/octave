@@ -4,9 +4,9 @@ Copyright (C) 1995-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
+Octave is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
+the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
 Octave is distributed in the hope that it will be useful, but
@@ -16,7 +16,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -76,9 +76,9 @@ Describe the conditions for copying and distributing Octave.
 {
   octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
 \n\
-GNU Octave is free software; you can redistribute it and/or modify it\n\
+GNU Octave is free software: you can redistribute it and/or modify it\n\
 under the terms of the GNU General Public License as published by\n\
-the Free Software Foundation; either version 3 of the License, or\n\
+the Free Software Foundation, either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
 GNU Octave is distributed in the hope that it will be useful,\n\
@@ -88,7 +88,7 @@ GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
 along with GNU Octave; see the file COPYING.  If not, see\n\
-<http://www.gnu.org/licenses/>.\n\
+<https://www.gnu.org/licenses/>.\n\
 \n";
 
   return ovl ();

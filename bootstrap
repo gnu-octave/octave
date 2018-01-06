@@ -17,7 +17,7 @@ scriptversion=2014-12-08.12; # UTC
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Originally written by Paul Eggert.  The canonical version of this
 # script is maintained as build-aux/bootstrap in gnulib, however, to

@@ -4,9 +4,9 @@ dnl Copyright (C) 1995-2017 John W. Eaton
 dnl
 dnl This file is part of Octave.
 dnl
-dnl Octave is free software; you can redistribute it and/or modify it
+dnl Octave is free software: you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by
-dnl the Free Software Foundation; either version 3 of the License, or
+dnl the Free Software Foundation, either version 3 of the License, or
 dnl (at your option) any later version.
 dnl
 dnl Octave is distributed in the hope that it will be useful, but
@@ -16,7 +16,7 @@ dnl GNU General Public License for more details.
 dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, see
-dnl <http://www.gnu.org/licenses/>.
+dnl <https://www.gnu.org/licenses/>.
 
 dnl
 dnl Alphabetical list of macros in the OCTAVE_ namespace
@@ -119,7 +119,7 @@ AC_DEFUN([OCTAVE_CHECK_BROKEN_STL_ALGO_H], [
 
 // You should have received a copy of the GNU General Public License along
 // with this library; see the file COPYING3. If not see
-// <http://www.gnu.org/licenses/>.
+// <https://www.gnu.org/licenses/>.
 
 // 25.3.2 [lib.alg.nth.element]
 

@@ -5114,7 +5114,7 @@ only a single value (@var{n} = 1) is requested.
   bool isvector2 = sz2.ndims () == 2 && (sz2(0) == 1 || sz2(1) == 1);
 
   if (! isvector1 || ! isvector2)
-    error ("linspace: A, B must be scalars or vectors");
+    error ("linspace: START, END must be scalars or vectors");
 
   octave_value retval;
 
@@ -5142,8 +5142,11 @@ only a single value (@var{n} = 1) is requested.
 %! x2 = linspace (1, 2, 10);
 %! x3 = linspace (1, -2, 10);
 %! assert (size (x1) == [1, 100] && x1(1) == 1 && x1(100) == 2);
+%! assert (x(2) - x(1), (2 - 1)/ (100 - 1));
 %! assert (size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2);
+%! assert (x(2) - x(1), (2 - 1)/ (10 - 1));
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
+%! assert (x(2) - x(1), (1 - -2)/ (10 - 1));
 
 ## Test complex values
 %!test
@@ -5151,7 +5154,7 @@ only a single value (@var{n} = 1) is requested.
 %! obs = linspace (1, 5-5i, 5);
 %! assert (obs, exp);
 
-## Test support for vectors in BASE and LIMIT
+## Test support for vectors in START and END
 %!assert (linspace ([1 2 3], [7 8 9]),
 %!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)], 10*eps)
 %!assert (linspace ([1 2 3]', [7 8 9]'),
@@ -5180,13 +5183,14 @@ only a single value (@var{n} = 1) is requested.
 %!assert (numel (linspace (0, 1, 2-eps)), 1)
 %!assert (linspace (10, 20, 2.1), [10 20])
 %!assert (linspace (10, 20, 2.9), [10 20])
+%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf]) 
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)
 %!error <N must be a scalar> linspace (1, 2, [3, 4])
-%!error <must be scalars or vectors> linspace (ones (2,2), 2, 3)
-%!error <must be scalars or vectors> linspace (2, ones (2,2), 3)
-%!error <must be scalars or vectors> linspace (1, [], 3)
+%!error <START, END must be scalars or vectors> linspace (ones (2,2), 2, 3)
+%!error <START, END must be scalars or vectors> linspace (2, ones (2,2), 3)
+%!error <START, END must be scalars or vectors> linspace (1, [], 3)
 */
 
 // FIXME: should accept dimensions as separate args for N-D

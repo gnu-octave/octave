@@ -1503,7 +1503,7 @@ or both limits may be infinite.  @code{quadcc} handles an inifinite limit
 by substituting the variable of integration with @code{x = tan (pi/2*u)}.
 
 The optional argument @var{tol} defines the relative tolerance used to stop
-the integration procedure.  The default value is @math{1e^{-6}}.
+the integration procedure.  The default value is 1e-6.
 
 The optional argument @var{sing} contains a list of points where the
 integrand has known singularities, or discontinuities

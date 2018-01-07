@@ -75,7 +75,7 @@ algorithms.
 @item @tab quad   @tab Low accuracy with nonsmooth integrands
 @item @tab quadv  @tab Medium accuracy with smooth integrands
 @item @tab quadl  @tab Medium accuracy with smooth integrands.  Slower than quadgk.
-@item @tab quadgk @tab Medium accuracy (@math{1e^{-6}}--@math{1e^{-9}}) with smooth integrands.
+@item @tab quadgk @tab Medium accuracy (1e-6 -- 1e-9) with smooth integrands.
 @item @tab        @tab Handles oscillatory functions and infinite bounds
 @item @tab quadcc @tab Low to High accuracy with nonsmooth/smooth integrands
 @item @tab        @tab Handles oscillatory functions, singularities, and infinite bounds

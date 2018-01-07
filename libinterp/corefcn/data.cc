@@ -5147,7 +5147,7 @@ only a single value (@var{n} = 1) is requested.
 %! assert (size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2);
 %! assert (x2(2) - x2(1), (2 - 1)/ (10 - 1), eps);
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
-%! assert (x3(2) - x3(1), (1 - -2)/ (10 - 1), eps);
+%! assert (x3(2) - x3(1), (-2 - 1)/ (10 - 1), eps);
 
 ## Test complex values
 %!test

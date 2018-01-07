@@ -1513,8 +1513,8 @@ desired accuracy of the result.  The first element of the vector is the desired
 absolute tolerance, and the second element is the desired relative tolerance.
 To choose a relative test only, set the absolute tolerance to zero.  To choose
 an absolute test only, set the relative tolerance to zero.  The default
-absolute tolerance is @math{1e^{-10}} (@math{1e^{-5}} for single), and the
-default relative tolerance is @math{1e^{-6}} (@math{1e^{-4}} for single).
+absolute tolerance is 1e-10 (1e-5 for single), and the default relative
+tolerance is 1e-6 (1e-4 for single).
 
 The optional argument @var{sing} contains a list of points where the integrand
 has known singularities, or discontinuities in any of its derivatives, inside

@@ -152,7 +152,7 @@ absolute tolerance, and the second element is the desired relative
 tolerance.  To choose a relative test only, set the absolute
 tolerance to zero.  To choose an absolute test only, set the relative
 tolerance to zero.  Both tolerances default to @code{sqrt (eps)} or
-approximately @math{1.5e^{-8}}.
+approximately 1.5e-8.
 
 The optional argument @var{sing} is a vector of values at which the
 integrand is known to be singular.

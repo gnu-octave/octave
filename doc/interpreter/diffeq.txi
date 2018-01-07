@@ -72,7 +72,7 @@ function xdot = f (x, t)
 
   xdot = zeros (3,1);
 
-  xdot(1) = 77.27 * (x(2) - x(1)*x(2) + x(1) \
+  xdot(1) = 77.27 * (x(2) - x(1)*x(2) + x(1) ...
             - 8.375e-06*x(1)^2);
   xdot(2) = (x(3) - x(1)*x(2) - x(2)) / 77.27;
   xdot(3) = 0.161*(x(1) - x(3));
@@ -99,7 +99,7 @@ A more efficient set of output points might be
 
 @example
 @group
-t = [0, logspace(-1, log10(303), 150), \
+t = [0, logspace(-1, log10(303), 150), ...
         logspace(log10(304), log10(500), 150)];
 @end group
 @end example

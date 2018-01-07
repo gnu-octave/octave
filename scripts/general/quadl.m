@@ -34,7 +34,7 @@
 ## limits must be finite.
 ##
 ## The optional argument @var{tol} defines the absolute tolerance with which
-## to perform the integration.  The default value is @math{1e-6}.
+## to perform the integration.  The default value is 1e-6.
 ##
 ## The algorithm used by @code{quadl} involves recursively subdividing the
 ## integration interval.  If @var{trace} is defined then for each subinterval

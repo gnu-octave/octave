@@ -1978,6 +1978,9 @@ if test "$have_x" = yes; then
   AC_SUBST(X11_LIBS)
 fi
 
+## FIXME: This check should probably be for Windows only.
+AC_CHECK_LIB([psapi], [EnumProcessModules])
+
 ### Check for the Carbon framework on macOS systems
 
 OCTAVE_HAVE_FRAMEWORK([Carbon],

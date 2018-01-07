@@ -37,6 +37,176 @@ along with Octave; see the file COPYING.  If not, see
 #include "gsvd.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
+#include "oct-shlib.h"
+
+static octave::dynamic_library dyn_libs;
+
+static bool have_DGGSVD3 = false;
+static bool gsvd_initialized = false;
+
+/* Hack to stringize macro results. */
+#define xSTRINGIZE(x) #x
+#define STRINGIZE(x) xSTRINGIZE(x)
+
+void initialize_gsvd (void)
+{
+  if (! dyn_libs)
+    {
+      dyn_libs = octave::dynamic_library ("");
+      if (! dyn_libs)
+        {
+          // FIXME: Should we throw an error if we cannot check the libraries?
+          have_DGGSVD3 = false;
+          return;
+        }
+    }
+  have_DGGSVD3 = (dyn_libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)))
+                  != nullptr);
+
+  gsvd_initialized = true;
+}
+
+template<class T1>
+struct real_ggsvd_ptr
+{
+  typedef F77_RET_T (*type)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     T1*,                       // A(LDA,N)
+     const F77_INT&,            // LDA
+     T1*,                       // B(LDB,N)
+     const F77_INT&,            // LDB
+     T1*,                       // ALPHA(N)
+     T1*,                       // BETA(N)
+     T1*,                       // U(LDU,M)
+     const F77_INT&,            // LDU
+     T1*,                       // V(LDV,P)
+     const F77_INT&,            // LDV
+     T1*,                       // Q(LDQ,N)
+     const F77_INT&,            // LDQ
+     T1*,                       // WORK
+     F77_INT*,                  // IWORK(N)
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+};
+
+template<class T1>
+struct real_ggsvd3_ptr
+{
+  typedef F77_RET_T (*type)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     T1*,                       // A(LDA,N)
+     const F77_INT&,            // LDA
+     T1*,                       // B(LDB,N)
+     const F77_INT&,            // LDB
+     T1*,                       // ALPHA(N)
+     T1*,                       // BETA(N)
+     T1*,                       // U(LDU,M)
+     const F77_INT&,            // LDU
+     T1*,                       // V(LDV,P)
+     const F77_INT&,            // LDV
+     T1*,                       // Q(LDQ,N)
+     const F77_INT&,            // LDQ
+     T1*,                       // WORK
+     const F77_INT&,            // LWORK
+     F77_INT*,                  // IWORK(N)
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+};
+
+template<class T1, class T2>
+struct comp_ggsvd_ptr
+{
+  typedef F77_RET_T (*type)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     T1*,                       // A(LDA,N)
+     const F77_INT&,            // LDA
+     T1*,                       // B(LDB,N)
+     const F77_INT&,            // LDB
+     T2*,                       // ALPHA(N)
+     T2*,                       // BETA(N)
+     T1*,                       // U(LDU,M)
+     const F77_INT&,            // LDU
+     T1*,                       // V(LDV,P)
+     const F77_INT&,            // LDV
+     T1*,                       // Q(LDQ,N)
+     const F77_INT&,            // LDQ
+     T1*,                       // WORK
+     T2*,                       // RWORK
+     F77_INT*,                  // IWORK(N)
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+};
+
+template<class T1, class T2>
+struct comp_ggsvd3_ptr
+{
+  typedef F77_RET_T (*type)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     T1*,                       // A(LDA,N)
+     const F77_INT&,            // LDA
+     T1*,                       // B(LDB,N)
+     const F77_INT&,            // LDB
+     T2*,                       // ALPHA(N)
+     T2*,                       // BETA(N)
+     T1*,                       // U(LDU,M)
+     const F77_INT&,            // LDU
+     T1*,                       // V(LDV,P)
+     const F77_INT&,            // LDV
+     T1*,                       // Q(LDQ,N)
+     const F77_INT&,            // LDQ
+     T1*,                       // WORK
+     const F77_INT&,            // LWORK
+     T2*,                       // RWORK
+     F77_INT*,                  // IWORK(N)
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+};
+
+// template specializations
+typedef real_ggsvd3_ptr<F77_DBLE>::type dggsvd3_type;
+typedef real_ggsvd_ptr<F77_DBLE>::type dggsvd_type;
+typedef real_ggsvd3_ptr<F77_REAL>::type sggsvd3_type;
+typedef real_ggsvd_ptr<F77_REAL>::type sggsvd_type;
+typedef comp_ggsvd3_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd3_type;
+typedef comp_ggsvd_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd_type;
+typedef comp_ggsvd3_ptr<F77_CMPLX, F77_REAL>::type cggsvd3_type;
+typedef comp_ggsvd_ptr<F77_CMPLX, F77_REAL>::type cggsvd_type;
 
 namespace octave
 {
@@ -49,20 +219,42 @@ namespace octave
                          double *tmp_dataA, F77_INT m1, double *tmp_dataB,
                          F77_INT p1, Matrix& alpha, Matrix& beta, double *u,
                          F77_INT nrow_u, double *v, F77_INT nrow_v, double *q,
-                         F77_INT nrow_q, Matrix& work, F77_INT *iwork,
-                         F77_INT& info)
+                         F77_INT nrow_q, Matrix& work, F77_INT lwork,
+                         F77_INT *iwork, F77_INT& info)
     {
-      F77_XFCN (dggsvd, DGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobq, 1),
-                                 m, n, p, k, l, tmp_dataA, m1,
-                                 tmp_dataB, p1, alpha.fortran_vec (),
-                                 beta.fortran_vec (), u, nrow_u,
-                                 v, nrow_v, q, nrow_q, work.fortran_vec (),
-                                 iwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
+      if (! gsvd_initialized)
+        initialize_gsvd ();
+
+      if (have_DGGSVD3)
+        {
+          dggsvd3_type f_ptr = reinterpret_cast<dggsvd3_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 u, nrow_u, v, nrow_v, q, nrow_q,
+                 work.fortran_vec (), lwork, iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
+      else
+        {
+          dggsvd_type f_ptr = reinterpret_cast<dggsvd_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (dggsvd, DGGSVD))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 u, nrow_u, v, nrow_v, q, nrow_q,
+                 work.fortran_vec (), iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
     }
 
     template <>
@@ -74,19 +266,41 @@ namespace octave
                               FloatMatrix& beta, float *u, F77_INT nrow_u,
                               float *v, F77_INT nrow_v, float *q,
                               F77_INT nrow_q, FloatMatrix& work,
-                              F77_INT *iwork, F77_INT& info)
+                              F77_INT lwork, F77_INT *iwork, F77_INT& info)
     {
-      F77_XFCN (sggsvd, SGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobq, 1),
-                                 m, n, p, k, l, tmp_dataA, m1,
-                                 tmp_dataB, p1, alpha.fortran_vec (),
-                                 beta.fortran_vec (), u, nrow_u,
-                                 v, nrow_v, q, nrow_q, work.fortran_vec (),
-                                 iwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
+      if (! gsvd_initialized)
+        initialize_gsvd ();
+
+      if (have_DGGSVD3)
+        {
+          sggsvd3_type f_ptr = reinterpret_cast<sggsvd3_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (sggsvd3, SGGSVD3))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 u, nrow_u, v, nrow_v, q, nrow_q,
+                 work.fortran_vec (), lwork, iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
+      else
+        {
+          sggsvd_type f_ptr = reinterpret_cast<sggsvd_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (sggsvd, SGGSVD))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 u, nrow_u, v, nrow_v, q, nrow_q,
+                 work.fortran_vec (), iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
     }
 
     template <>
@@ -98,23 +312,52 @@ namespace octave
                                 Matrix& beta, Complex *u, F77_INT nrow_u,
                                 Complex *v, F77_INT nrow_v, Complex *q,
                                 F77_INT nrow_q, ComplexMatrix& work,
-                                F77_INT *iwork, F77_INT& info)
+                                F77_INT lwork, F77_INT *iwork, F77_INT& info)
     {
+      if (! gsvd_initialized)
+        initialize_gsvd ();
+
       Matrix rwork(2*n, 1);
-      F77_XFCN (zggsvd, ZGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobq, 1),
-                                 m, n, p, k, l, F77_DBLE_CMPLX_ARG (tmp_dataA),
-                                 m1, F77_DBLE_CMPLX_ARG (tmp_dataB), p1,
-                                 alpha.fortran_vec (), beta.fortran_vec (),
-                                 F77_DBLE_CMPLX_ARG (u), nrow_u,
-                                 F77_DBLE_CMPLX_ARG (v), nrow_v,
-                                 F77_DBLE_CMPLX_ARG (q), nrow_q,
-                                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
-                                 rwork.fortran_vec (), iwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
+      if (have_DGGSVD3)
+        {
+          zggsvd3_type f_ptr = reinterpret_cast<zggsvd3_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (zggsvd3, ZGGSVD3))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l,
+                 F77_DBLE_CMPLX_ARG (tmp_dataA), m1,
+                 F77_DBLE_CMPLX_ARG (tmp_dataB), p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 F77_DBLE_CMPLX_ARG (u), nrow_u,
+                 F77_DBLE_CMPLX_ARG (v), nrow_v,
+                 F77_DBLE_CMPLX_ARG (q), nrow_q,
+                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
+                 lwork, rwork.fortran_vec (), iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
+      else
+        {
+          zggsvd_type f_ptr = reinterpret_cast<zggsvd_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (zggsvd, ZGGSVD))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l,
+                 F77_DBLE_CMPLX_ARG (tmp_dataA), m1,
+                 F77_DBLE_CMPLX_ARG (tmp_dataB), p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 F77_DBLE_CMPLX_ARG (u), nrow_u,
+                 F77_DBLE_CMPLX_ARG (v), nrow_v,
+                 F77_DBLE_CMPLX_ARG (q), nrow_q,
+                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
+                 rwork.fortran_vec (), iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
     }
 
     template <>
@@ -128,24 +371,53 @@ namespace octave
                                      FloatComplex *u, F77_INT nrow_u,
                                      FloatComplex *v, F77_INT nrow_v,
                                      FloatComplex *q, F77_INT nrow_q,
-                                     FloatComplexMatrix& work,
+                                     FloatComplexMatrix& work, F77_INT lwork,
                                      F77_INT *iwork, F77_INT& info)
     {
+      if (! gsvd_initialized)
+        initialize_gsvd ();
+
       FloatMatrix rwork(2*n, 1);
-      F77_XFCN (cggsvd, CGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobq, 1),
-                                 m, n, p, k, l, F77_CMPLX_ARG (tmp_dataA), m1,
-                                 F77_CMPLX_ARG (tmp_dataB), p1,
-                                 alpha.fortran_vec (), beta.fortran_vec (),
-                                 F77_CMPLX_ARG (u), nrow_u,
-                                 F77_CMPLX_ARG (v), nrow_v,
-                                 F77_CMPLX_ARG (q), nrow_q,
-                                 F77_CMPLX_ARG (work.fortran_vec ()),
-                                 rwork.fortran_vec (), iwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
+      if (have_DGGSVD3)
+        {
+          cggsvd3_type f_ptr = reinterpret_cast<cggsvd3_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (cggsvd3, CGGSVD3))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l,
+                 F77_CMPLX_ARG (tmp_dataA), m1,
+                 F77_CMPLX_ARG (tmp_dataB), p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 F77_CMPLX_ARG (u), nrow_u,
+                 F77_CMPLX_ARG (v), nrow_v,
+                 F77_CMPLX_ARG (q), nrow_q,
+                 F77_CMPLX_ARG (work.fortran_vec ()), lwork,
+                 rwork.fortran_vec (), iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
+      else
+        {
+          cggsvd_type f_ptr = reinterpret_cast<cggsvd_type>
+            (dyn_libs.search (STRINGIZE (F77_FUNC (cggsvd, CGGSVD))));
+          f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                 F77_CONST_CHAR_ARG2 (&jobq, 1),
+                 m, n, p, k, l,
+                 F77_CMPLX_ARG (tmp_dataA), m1,
+                 F77_CMPLX_ARG (tmp_dataB), p1,
+                 alpha.fortran_vec (), beta.fortran_vec (),
+                 F77_CMPLX_ARG (u), nrow_u,
+                 F77_CMPLX_ARG (v), nrow_v,
+                 F77_CMPLX_ARG (q), nrow_q,
+                 F77_CMPLX_ARG (work.fortran_vec ()),
+                 rwork.fortran_vec (), iwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1));
+        }
     }
 
     template <typename T>
@@ -268,19 +540,41 @@ namespace octave
 
       P *q = right_sm.fortran_vec ();
 
-      F77_INT lwork = 3*n;
-      lwork = (lwork > m ? lwork : m);
-      lwork = (lwork > p ? lwork : p) + n;
-
-      T work (lwork, 1);
       real_matrix alpha (n, 1);
       real_matrix beta (n, 1);
 
       std::vector<F77_INT> iwork (n);
 
+      if (! gsvd_initialized)
+        initialize_gsvd ();
+
+      F77_INT lwork;
+      if (have_DGGSVD3)
+        {
+          lwork = -1;
+          T work_tmp (1, 1);
+
+          gsvd<T>::ggsvd (jobu, jobv, jobq, m, n, p, k, l,
+                          tmp_dataA, m, tmp_dataB, p, alpha, beta, u,
+                          nrow_u, v, nrow_v, q, nrow_q, work_tmp, lwork,
+                          iwork.data (), info);
+
+          lwork = static_cast<F77_INT> (std::abs (work_tmp(0, 0)));
+        }
+      else
+        {
+          lwork = 3*n;
+          lwork = (lwork > m ? lwork : m);
+          lwork = (lwork > p ? lwork : p) + n;
+        }
+      info = 0;
+
+      T work (lwork, 1);
+
       gsvd<T>::ggsvd (jobu, jobv, jobq, m, n, p, k, l,
                       tmp_dataA, m, tmp_dataB, p, alpha, beta, u,
-                      nrow_u, v, nrow_v, q, nrow_q, work, iwork.data (), info);
+                      nrow_u, v, nrow_v, q, nrow_q, work, lwork, iwork.data (),
+                      info);
 
       if (info < 0)
         (*current_liboctave_error_handler) ("*ggsvd.f: argument %d illegal",

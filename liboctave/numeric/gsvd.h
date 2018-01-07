@@ -104,7 +104,8 @@ namespace octave
                   P *u, octave_f77_int_type nrow_u,
                   P *v, octave_f77_int_type nrow_v,
                   P *q, octave_f77_int_type nrow_q,
-                  T& work, octave_f77_int_type *iwork,
+                  T& work, octave_f77_int_type lwork,
+                  octave_f77_int_type *iwork,
                   octave_f77_int_type& info);
     };
   }

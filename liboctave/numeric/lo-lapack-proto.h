@@ -839,7 +839,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (sggsvd, SGGSVD)
-   (F77_CONST_CHAR_ARG_DECL,    // JOBU
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
      F77_CONST_CHAR_ARG_DECL,   // JOBV
      F77_CONST_CHAR_ARG_DECL,   // JOBQ
      const F77_INT&,            // M
@@ -898,7 +898,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (cggsvd, CGGSVD)
-   (F77_CONST_CHAR_ARG_DECL,    // JOBU
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
      F77_CONST_CHAR_ARG_DECL,   // JOBV
      F77_CONST_CHAR_ARG_DECL,   // JOBQ
      const F77_INT&,            // M
@@ -919,6 +919,130 @@ extern "C"
      F77_CMPLX*,                // Q
      const F77_INT&,            // LDQ
      F77_CMPLX*,                // WORK
+     F77_REAL*,                 // RWORK
+     F77_INT*,                  // IWORK
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+
+  // GGSVD3
+
+  F77_RET_T
+  F77_FUNC (dggsvd3, DGGSVD3)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     F77_DBLE*,                 // A(LDA,N)
+     const F77_INT&,            // LDA
+     F77_DBLE*,                 // B(LDB,N)
+     const F77_INT&,            // LDB
+     F77_DBLE*,                 // ALPHA(N)
+     F77_DBLE*,                 // BETA(N)
+     F77_DBLE*,                 // U(LDU,M)
+     const F77_INT&,            // LDU
+     F77_DBLE*,                 // V(LDV,P)
+     const F77_INT&,            // LDV
+     F77_DBLE*,                 // Q(LDQ,N)
+     const F77_INT&,            // LDQ
+     F77_DBLE*,                 // WORK
+     const F77_INT&,            // LWORK
+     F77_INT*,                  // IWORK(N)
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (sggsvd3, SGGSVD3)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     F77_REAL*,                 // A
+     const F77_INT&,            // LDA
+     F77_REAL*,                 // B
+     const F77_INT&,            // LDB
+     F77_REAL*,                 // ALPHA
+     F77_REAL*,                 // BETA
+     F77_REAL*,                 // U
+     const F77_INT&,            // LDU
+     F77_REAL*,                 // V
+     const F77_INT&,            // LDV
+     F77_REAL*,                 // Q
+     const F77_INT&,            // LDQ
+     F77_REAL*,                 // WORK
+     const F77_INT&,            // LWORK
+     F77_INT*,                  // IWORK
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (zggsvd3, ZGGSVD3)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     F77_DBLE_CMPLX*,           // A(LDA,N)
+     const F77_INT&,            // LDA
+     F77_DBLE_CMPLX*,           // B(LDB,N)
+     const F77_INT&,            // LDB
+     F77_DBLE*,                 // ALPHA(N)
+     F77_DBLE*,                 // BETA(N)
+     F77_DBLE_CMPLX*,           // U(LDU,M)
+     const F77_INT&,            // LDU
+     F77_DBLE_CMPLX*,           // V(LDV,P)
+     const F77_INT&,            // LDV
+     F77_DBLE_CMPLX*,           // Q(LDQ,N)
+     const F77_INT&,            // LDQ
+     F77_DBLE_CMPLX*,           // WORK
+     const F77_INT&,            // LWORK
+     F77_DBLE*,                 // RWORK
+     F77_INT*,                  // IWORK(N)
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (cggsvd3, CGGSVD3)
+    (F77_CONST_CHAR_ARG_DECL,   // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     F77_CMPLX*,                // A
+     const F77_INT&,            // LDA
+     F77_CMPLX*,                // B
+     const F77_INT&,            // LDB
+     F77_REAL*,                 // ALPHA
+     F77_REAL*,                 // BETA
+     F77_CMPLX*,                // U
+     const F77_INT&,            // LDU
+     F77_CMPLX*,                // V
+     const F77_INT&,            // LDV
+     F77_CMPLX*,                // Q
+     const F77_INT&,            // LDQ
+     F77_CMPLX*,                // WORK
+     const F77_INT&,            // LWORK
      F77_REAL*,                 // RWORK
      F77_INT*,                  // IWORK
      F77_INT&                   // INFO

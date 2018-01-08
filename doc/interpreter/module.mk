@@ -147,6 +147,7 @@ MUNGED_TEXI_SRC = \
   %reldir%/plot.texi \
   %reldir%/poly.texi \
   %reldir%/preface.texi \
+  %reldir%/pr-idx.texi \
   %reldir%/quad.texi \
   %reldir%/set.texi \
   %reldir%/signal.texi \

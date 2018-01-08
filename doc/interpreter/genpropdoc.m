@@ -1781,7 +1781,7 @@ function str = printdoc (objname, obj)
 
     ## @anchor: cross reference using XREFobjnamefield label
     ## Concept index: call info from octave with 'doc ("objname field")'
-    str = sprintf ("%s@anchor{XREF%s%s}\n@cindex %s %s\n",
+    str = sprintf ("%s@anchor{XREF%s%s}\n@prindex %s %s\n",
                    str, objname, field, objname, field);
 
     ## Item

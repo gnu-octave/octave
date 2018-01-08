@@ -1519,7 +1519,7 @@ In the following documentation, default values are enclosed in @{ @}.
 
 @node Root Figure Properties
 @subsubsection Root Figure Properties
-@cindex root figure properties
+@prindex @sortas{@ Root Figure Properties} Root Figure Properties
 
 The @code{root figure} properties are:
 
@@ -1528,7 +1528,7 @@ The @code{root figure} properties are:
 
 @node Figure Properties
 @subsubsection Figure Properties
-@cindex figure properties
+@prindex @sortas{@ Figure Properties} Figure Properties
 
 The @code{figure} properties are:
 
@@ -1537,7 +1537,7 @@ The @code{figure} properties are:
 
 @node Axes Properties
 @subsubsection Axes Properties
-@cindex axes properties
+@prindex @sortas{@ Axes Properties} Axes Properties
 
 The @code{axes} properties are:
 
@@ -1546,7 +1546,7 @@ The @code{axes} properties are:
 
 @node Line Properties
 @subsubsection Line Properties
-@cindex line properties
+@prindex @sortas{@ Line Properties} Line Properties
 
 The @code{line} properties are:
 
@@ -1555,7 +1555,7 @@ The @code{line} properties are:
 
 @node Text Properties
 @subsubsection Text Properties
-@cindex text properties
+@prindex @sortas{@ Text Properties} Text Properties
 
 The @code{text} properties are:
 
@@ -1564,7 +1564,7 @@ The @code{text} properties are:
 
 @node Image Properties
 @subsubsection Image Properties
-@cindex image properties
+@prindex @sortas{@ Image Properties} Image Properties
 
 The @code{image} properties are:
 
@@ -1573,7 +1573,7 @@ The @code{image} properties are:
 
 @node Patch Properties
 @subsubsection Patch Properties
-@cindex patch properties
+@prindex @sortas{@ Patch Properties} Patch Properties
 
 The @code{patch} properties are:
 
@@ -1582,7 +1582,7 @@ The @code{patch} properties are:
 
 @node Surface Properties
 @subsubsection Surface Properties
-@cindex surface properties
+@prindex @sortas{@ Surface Properties} Surface Properties
 
 The @code{surface} properties are:
 
@@ -1591,7 +1591,7 @@ The @code{surface} properties are:
 
 @node Light Properties
 @subsubsection Light Properties
-@cindex light properties
+@prindex @sortas{@ Light Properties} Light Properties
 
 The @code{light} properties are:
 
@@ -1599,7 +1599,7 @@ The @code{light} properties are:
 
 @node Uimenu Properties
 @subsubsection Uimenu Properties
-@cindex uimenu properties
+@prindex @sortas{@ Uimenu Properties} Uimenu Properties
 
 The @code{uimenu} properties are:
 
@@ -1607,7 +1607,7 @@ The @code{uimenu} properties are:
 
 @node Uibuttongroup Properties
 @subsubsection Uibuttongroup Properties
-@cindex uibuttongroup properties
+@prindex @sortas{@ Uibuttongroup Properties} Uibuttongroup Properties
 
 The @code{uibuttongroup} properties are:
 
@@ -1615,7 +1615,7 @@ The @code{uibuttongroup} properties are:
 
 @node Uicontextmenu Properties
 @subsubsection Uicontextmenu Properties
-@cindex uicontextmenu properties
+@prindex @sortas{@ Uicontextmenu Properties} Uicontextmenu Properties
 
 The @code{uicontextmenu} properties are:
 
@@ -1623,7 +1623,7 @@ The @code{uicontextmenu} properties are:
 
 @node Uipanel Properties
 @subsubsection Uipanel Properties
-@cindex uipanel properties
+@prindex @sortas{@ Uipanel Properties} Uipanel Properties
 
 The @code{uipanel} properties are:
 
@@ -1631,7 +1631,7 @@ The @code{uipanel} properties are:
 
 @node Uicontrol Properties
 @subsubsection Uicontrol Properties
-@cindex uicontrol properties
+@prindex @sortas{@ Uicontrol Properties} Uicontrol Properties
 
 The @code{uicontrol} properties are:
 
@@ -1639,7 +1639,7 @@ The @code{uicontrol} properties are:
 
 @node Uitoolbar Properties
 @subsubsection Uitoolbar Properties
-@cindex uitoolbar properties
+@prindex @sortas{@ Uitoolbar Properties} Uitoolbar Properties
 
 The @code{uitoolbar} properties are:
 
@@ -1647,7 +1647,7 @@ The @code{uitoolbar} properties are:
 
 @node Uipushtool Properties
 @subsubsection Uipushtool Properties
-@cindex uipushtool properties
+@prindex @sortas{@ Uipushtool Properties} Uipushtool Properties
 
 The @code{uipushtool} properties are:
 
@@ -1655,7 +1655,7 @@ The @code{uipushtool} properties are:
 
 @node Uitoggletool Properties
 @subsubsection Uitoggletool Properties
-@cindex uitoggletool properties
+@prindex @sortas{@ Uitoggletool Properties} Uitoggletool Properties
 
 The @code{uitoggletool} properties are:
 

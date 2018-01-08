@@ -55,6 +55,7 @@ END-INFO-DIR-ENTRY
 @end ignore
 
 @defindex op
+@defindex pr
 
 @c The version.texi file doesn't include a chapter, so it must not be
 @c included if you want to run the Emacs function
@@ -196,6 +197,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Concept Index::               An item for each concept.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
+* Graphics Properties Index::   An item for each graphics object property.
 
 @detailmenu
  --- The Detailed Node Listing ---
@@ -980,5 +982,6 @@ Grammar and Parser
 @include cp-idx.texi
 @include fn-idx.texi
 @include op-idx.texi
+@include pr-idx.texi
 
 @bye

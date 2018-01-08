@@ -593,7 +593,27 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!test <*50589>
+%!testif ; ! ismac ()   <*50589>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1;2;3\n");
+%!   fwrite (fid, "1i;2I;3j;4J\n");
+%!   fwrite (fid, "4;5;6\n");
+%!   fwrite (fid, "-4i;+5I;-6j;+7J\n");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3, 0; 1i, 2i, 3i, 4i;
+%!                            4, 5, 6, 0; -4i, 5i, -6i, 7i]);
+%!   assert (dlmread (file, "", [0 0 0 3]), [1, 2, 3]);
+%!   assert (dlmread (file, "", [1 0 1 3]), [1i, 2i, 3i, 4i]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");

@@ -276,9 +276,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
       return;
     }
 
-  // restore last geometry
-  restoreGeometry (settings->value ("settings/geometry").toByteArray ());
-
   // look for available language files and the actual settings
   QString qm_dir_name = resource_manager::get_gui_translation_dir ();
   QDir qm_dir (qm_dir_name);
@@ -652,6 +649,12 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   // connect button box signal
   connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
            this, SLOT (button_clicked (QAbstractButton *)));
+
+  // restore last geometry
+  if (settings->contains ("settings/geometry"))
+    restoreGeometry (settings->value ("settings/geometry").toByteArray ());
+  else
+    setGeometry (QRect (10,50,1000,600));
 }
 
 settings_dialog::~settings_dialog (void)

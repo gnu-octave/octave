@@ -45,7 +45,7 @@
 ## subject to
 ## @tex
 ## $$
-##  Ax = b \qquad lb \leq x \leq ub \qquad A_{lb} \leq A_{in} \leq A_{ub}
+##  A x = b \qquad lb \leq x \leq ub \qquad A_{lb} \leq A_{in} x \leq A_{ub}
 ## $$
 ## @end tex
 ## @ifnottex
@@ -62,9 +62,12 @@
 ## @noindent
 ## using a null-space active-set method.
 ##
-## Any bound (@var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb}, @var{A_ub})
-## may be set to the empty matrix (@code{[]}) if not present.  If the initial
-## guess is feasible the algorithm is faster.
+## Any bound (@var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_in}, @var{A_lb},
+## @var{A_ub}) may be set to the empty matrix (@code{[]}) if not present.  The
+## constraints @var{A} and @var{A_in} are matrices with each row representing
+## a single constraint.  The other bounds are scalars or vectors depending on
+## the number of constraints.  The algorithm is faster if the initial guess is
+## feasible.
 ##
 ## @table @var
 ## @item options

@@ -27,7 +27,7 @@
 ## intervals is given by @code{@var{ni} = length (@var{breaks}) - 1}.
 ##
 ## When @var{m} is the polynomial order @var{coefs} must be of size:
-## @var{ni} x @var{m} + 1.
+## @w{@var{ni}-by-(@var{m} + 1)}.
 ##
 ## The i-th row of @var{coefs}, @code{@var{coefs} (@var{i},:)}, contains the
 ## coefficients for the polynomial over the @var{i}-th interval, ordered from
@@ -35,10 +35,10 @@
 ##
 ## @var{coefs} may also be a multi-dimensional array, specifying a
 ## vector-valued or array-valued polynomial.  In that case the polynomial
-## order is defined by the length of the last dimension of @var{coefs}.  The
-## size of first dimension(s) are given by the scalar or vector @var{d}.  If
-## @var{d} is not given it is set to @code{1}.  In any case @var{coefs} is
-## reshaped to a 2-D matrix of size @code{[@var{ni}*prod(@var{d} @var{m})]}.
+## order @var{m} is defined by the length of the last dimension of @var{coefs}.
+## The size of first dimension(s) are given by the scalar or vector @var{d}.
+## If @var{d} is not given it is set to @code{1}.  In any case @var{coefs} is
+## reshaped to a 2-D matrix of size @code{[@var{ni}*prod(@var{d}) @var{m}]}.
 ##
 ## @seealso{unmkpp, ppval, spline, pchip, ppder, ppint, ppjumps}
 ## @end deftypefn

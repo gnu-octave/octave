@@ -62,13 +62,13 @@ endfunction
 
 function Beta = cart2bary (T, P)
   ## Conversion of Cartesian to Barycentric coordinates.
-  ## Given a reference simplex in N dimensions represented by a
-  ## (N+1)-by-(N) matrix, and arbitrary point P in cartesion coordinates,
-  ## represented by a N-by-1 row vector can be written as
+  ## Given a reference simplex in N dimensions represented by an
+  ## N+1-by-N matrix, an arbitrary point P in Cartesian coordinates,
+  ## represented by an N-by-1 column vector can be written as
   ##
   ## P = Beta * T
   ##
-  ## Where Beta is a N+1 vector of the barycentric coordinates.  A criteria
+  ## Where Beta is an N+1 vector of the barycentric coordinates.  A criteria
   ## on Beta is that
   ##
   ## sum (Beta) == 1
@@ -82,7 +82,7 @@ function Beta = cart2bary (T, P)
   ## Beta(1:end-1) = (P - T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:))
   ## Beta(end) = sum (Beta)
   ##
-  ## Note below is generalize for multiple values of P, one per row.
+  ## Note code below is generalized for multiple values of P, one per row.
   [M, N] = size (P);
   Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:));
   Beta (:,end+1) = 1 - sum (Beta, 2);

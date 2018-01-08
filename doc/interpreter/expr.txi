@@ -666,7 +666,7 @@ Negation.
 Unary plus.  This operator has no effect on the operand.
 
 @item @var{x}'
-@opindex '
+@opindex @code{'}
 Complex conjugate transpose.  For real arguments, this operator is the
 same as the transpose operator.  For complex arguments, this operator is
 equivalent to the expression
@@ -676,7 +676,7 @@ conj (x.')
 @end example
 
 @item @var{x}.'
-@opindex .'
+@opindex @code{.'}
 Transpose.
 @end table
 
@@ -709,7 +709,7 @@ lexer, which usually prefers to break the input into tokens by
 preferring the longest possible match at any given point, it is more
 useful in this case.
 
-@opindex '
+@opindex @code{'}
 @DOCSTRING(ctranspose)
 
 @opindex .\
@@ -744,7 +744,7 @@ useful in this case.
 @opindex .*
 @DOCSTRING(times)
 
-@opindex .'
+@opindex @code{.'}
 @DOCSTRING(transpose)
 
 @opindex -

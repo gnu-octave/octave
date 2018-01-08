@@ -500,8 +500,8 @@ user class.
 @opindex &
 @opindex |
 @opindex !
-@opindex '
-@opindex .'
+@opindex @code{'}
+@opindex @code{.'}
 @opindex :
 @opindex <
 

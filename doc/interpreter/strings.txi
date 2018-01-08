@@ -21,7 +21,7 @@
 @cindex strings
 @cindex character strings
 @opindex "
-@opindex '
+@opindex @code{'}
 
 A @dfn{string constant} consists of a sequence of characters enclosed in
 either double-quote or single-quote marks.  For example, both of the

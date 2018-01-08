@@ -127,7 +127,7 @@ of @code{NaN}.
 @cindex strings
 @cindex character strings
 @opindex "
-@opindex '
+@opindex @code{'}
 
 A character string in Octave consists of a sequence of characters
 enclosed in either double-quote or single-quote marks.  Internally,

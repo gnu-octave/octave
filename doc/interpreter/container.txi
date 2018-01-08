@@ -67,7 +67,7 @@ x.c = "string";
 @end group
 @end example
 
-@opindex .
+@opindex . @ @ @ 
 @noindent
 create a structure with three elements.  The @samp{.} character separates
 the structure name from the field name and indicates to Octave that this

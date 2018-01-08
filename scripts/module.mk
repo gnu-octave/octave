@@ -33,10 +33,7 @@ include %reldir%/sparse/module.mk
 include %reldir%/specfun/module.mk
 include %reldir%/special-matrix/module.mk
 include %reldir%/startup/module.mk
-include %reldir%/statistics/base/module.mk
-include %reldir%/statistics/distributions/module.mk
-include %reldir%/statistics/models/module.mk
-include %reldir%/statistics/tests/module.mk
+include %reldir%/statistics/module.mk
 include %reldir%/strings/module.mk
 include %reldir%/testfun/module.mk
 include %reldir%/time/module.mk

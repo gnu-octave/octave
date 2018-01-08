@@ -59,7 +59,7 @@
 ##
 ## @end table
 ##
-## @seealso{corr, cov, cor_test}
+## @seealso{corr, cov}
 ## @end deftypefn
 
 ## FIXME: It would be good to add a definition of the calculation method
@@ -163,8 +163,10 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
       endif
       r(i,j) = r(j,i) = corr (xi, xj);
       if (calc_pval)
-        T = cor_test (xi, xj, "!=", "pearson");
-        p(i,j) = p(j,i) = T.pval;
+        df = m - 2;  
+        stat = sqrt (df) * r(i,j) / sqrt (1 - r(i,j)^2);
+        cdf = tcdf (stat, df);
+        p(i,j) = p(j,i) = 2 * min (cdf, 1 - cdf);
       endif
     endfor
   endfor
@@ -177,6 +179,46 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
     lci = tanh (atanh (r) - CI);
     hci = tanh (atanh (r) + CI);
   endif
+
+endfunction
+
+
+## Compute cumulative distribution function for T distribution.
+function cdf = tcdf (x, n)
+
+  if (iscomplex (x))
+    error ("tcdf: X must not be complex");
+  endif
+
+  if (isa (x, "single"))
+    cdf = zeros (size (x), "single");
+  else
+    cdf = zeros (size (x));
+  endif
+
+  k = ! isinf (x) & (n > 0);
+
+  xx = x .^ 2;
+  x_big_abs = (xx > n);
+
+  ## deal with the case "abs(x) big"
+  kk = k & x_big_abs;
+  cdf(kk) = betainc (n ./ (n + xx(kk)), n/2, 1/2) / 2;
+
+  ## deal with the case "abs(x) small"
+  kk = k & ! x_big_abs;
+  cdf(kk) = 0.5 * (1 - betainc (xx(kk) ./ (n + xx(kk)), 1/2, n/2));
+
+  k &= (x > 0);
+  if (any (k(:)))
+    cdf(k) = 1 - cdf(k);
+  endif
+
+  k = isnan (x) | !(n > 0);
+  cdf(k) = NaN;
+
+  k = (x == Inf) & (n > 0);
+  cdf(k) = 1;
 
 endfunction
 

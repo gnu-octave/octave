@@ -89,7 +89,7 @@ min 0.5 x'*H*x + x'*q
 subject to
 @tex
 $$
- Ax = b \qquad lb \leq x \leq ub \qquad A_{lb} \leq A_{in} \leq A_{ub}
+ A x = b \qquad lb \leq x \leq ub \qquad A_{lb} \leq A_{in} x \leq A_{ub}
 $$
 @end tex
 @ifnottex

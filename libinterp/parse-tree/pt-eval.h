@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "call-stack.h"
+#include "ov.h"
 #include "ovl.h"
 #include "profiler.h"
 #include "pt-exp.h"
@@ -44,6 +45,13 @@ namespace octave
 
   class interpreter;
   class unwind_protect;
+
+  enum result_type
+  {
+    RT_UNDEFINED = 0,
+    RT_VALUE = 1,
+    RT_VALUE_LIST = 2
+  };
 
   // How to evaluate the code that the parse trees represent.
 
@@ -115,8 +123,10 @@ namespace octave
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
     tree_evaluator (interpreter& interp)
-      : m_interpreter (interp), m_value_stack (), m_lvalue_list_stack (),
-        m_nargout_stack (), m_call_stack (interp), m_profiler (),
+      : m_interpreter (interp), m_result_type (RT_UNDEFINED),
+        m_expr_result_value (), m_expr_result_value_list (),
+        m_lvalue_list_stack (), m_nargout_stack (),
+        m_call_stack (interp), m_profiler (),
         m_max_recursion_depth (256), m_silent_functions (false),
         m_string_fill_char (' '), m_PS4 ("+ "), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
@@ -269,28 +279,73 @@ namespace octave
               ? nullptr : m_lvalue_list_stack.top ());
     }
 
+    void push_result (const octave_value& val)
+    {
+      m_result_type = RT_VALUE;
+      m_expr_result_value = val;
+    }
+
+    void push_result (const octave_value_list& vals)
+    {
+      m_result_type = RT_VALUE_LIST;
+      m_expr_result_value_list = vals;
+    }
+
     octave_value evaluate (tree_expression *expr, int nargout = 1)
     {
+      octave_value retval;
+
       m_nargout_stack.push (nargout);
 
       expr->accept (*this);
 
       m_nargout_stack.pop ();
 
-      octave_value_list tmp = m_value_stack.val_pop ();
+      switch (m_result_type)
+        {
+        case RT_UNDEFINED:
+          panic_impossible ();
+          break;
 
-      return tmp.empty () ? octave_value () : tmp(0);
+        case RT_VALUE:
+          retval = m_expr_result_value;
+          break;
+
+        case RT_VALUE_LIST:
+          retval = (m_expr_result_value_list.empty ()
+                    ? octave_value () : m_expr_result_value_list(0));
+          break;
+        }
+
+      return retval;
     }
 
     octave_value_list evaluate_n (tree_expression *expr, int nargout = 1)
     {
+      octave_value_list retval;
+
       m_nargout_stack.push (nargout);
 
       expr->accept (*this);
 
       m_nargout_stack.pop ();
 
-      return m_value_stack.val_pop ();
+      switch (m_result_type)
+        {
+        case RT_UNDEFINED:
+          panic_impossible ();
+          break;
+
+        case RT_VALUE:
+          retval = ovl (m_expr_result_value);
+          break;
+
+        case RT_VALUE_LIST:
+          retval = m_expr_result_value_list;
+          break;
+        }
+
+      return retval;
     }
 
     octave_value evaluate (tree_decl_elt *);
@@ -424,7 +479,9 @@ namespace octave
 
     interpreter& m_interpreter;
 
-    value_stack<octave_value_list> m_value_stack;
+    result_type m_result_type;
+    octave_value m_expr_result_value;
+    octave_value_list m_expr_result_value_list;
 
     value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
 

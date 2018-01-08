@@ -78,7 +78,9 @@ namespace octave
   void
   tree_evaluator::reset (void)
   {
-    m_value_stack.clear ();
+    m_result_type = RT_UNDEFINED;
+    m_expr_result_value = octave_value ();
+    m_expr_result_value_list = octave_value_list ();
     m_lvalue_list_stack.clear ();
     m_nargout_stack.clear ();
   }
@@ -151,7 +153,7 @@ namespace octave
 
     octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, this));
 
-    m_value_stack.push (ovl (fh));
+    push_result (fh);
   }
 
   void
@@ -186,7 +188,7 @@ namespace octave
                     if (etype == octave_value::op_el_or)
                       {
                         expr.matlab_style_short_circuit_warning ("|");
-                        m_value_stack.push (ovl (octave_value (true)));
+                        push_result (octave_value (true));
                         return;
                       }
                   }
@@ -195,7 +197,7 @@ namespace octave
                     if (etype == octave_value::op_el_and)
                       {
                         expr.matlab_style_short_circuit_warning ("&");
-                        m_value_stack.push (ovl (octave_value (false)));
+                        push_result (octave_value (false));
                         return;
                       }
                   }
@@ -207,7 +209,7 @@ namespace octave
                     result = b.is_true ();
                   }
 
-                m_value_stack.push (ovl (octave_value (result)));
+                push_result (octave_value (result));
                 return;
               }
           }
@@ -237,7 +239,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (ovl (val));
+    push_result (val);
   }
 
   void
@@ -266,7 +268,7 @@ namespace octave
           {
             if (etype == tree_boolean_expression::bool_or)
               {
-                m_value_stack.push (ovl (octave_value (true)));
+                push_result (octave_value (true));
                 return;
               }
           }
@@ -274,7 +276,7 @@ namespace octave
           {
             if (etype == tree_boolean_expression::bool_and)
               {
-                m_value_stack.push (ovl (octave_value (false)));
+                push_result (octave_value (false));
                 return;
               }
           }
@@ -291,7 +293,7 @@ namespace octave
         val = octave_value (result);
       }
 
-    m_value_stack.push (ovl (val));
+    push_result (val);
   }
 
   void
@@ -320,7 +322,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (ovl (val));
+    push_result (val);
   }
 
   void
@@ -352,7 +354,7 @@ namespace octave
 
     if (! op_base || ! op_limit)
       {
-        m_value_stack.push (ovl (octave_value (val)));
+        push_result (octave_value (val));
         return;
       }
 
@@ -402,7 +404,7 @@ namespace octave
                            expr.is_for_cmd_expr ());
       }
 
-    m_value_stack.push (ovl (val));
+    push_result (val);
   }
 
   void
@@ -1087,7 +1089,8 @@ namespace octave
                 feval ("display", args);
               }
 
-            retval = val;
+            push_result (val);
+            return;
           }
       }
     else if (sym.is_added_static ())
@@ -1095,7 +1098,7 @@ namespace octave
     else
       expr.eval_undefined_error ();
 
-    m_value_stack.push (retval);
+    push_result (retval);
   }
 
   void
@@ -1355,7 +1358,7 @@ namespace octave
                   {
                     // No more indices, so we are done.
 
-                    m_value_stack.push (retval);
+                    push_result (retval);
                     return;
                   }
               }
@@ -1542,7 +1545,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (retval);
+    push_result (retval);
   }
 
   void
@@ -1739,7 +1742,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (retval);
+    push_result (retval);
   }
 
   void
@@ -1801,7 +1804,7 @@ namespace octave
 
     retval = val;
 
-    m_value_stack.push (retval);
+    push_result (retval);
   }
 
   void
@@ -1966,7 +1969,7 @@ namespace octave
         val = retval_list;
       }
 
-    m_value_stack.push (val);
+    push_result (val);
   }
 
   void
@@ -1991,7 +1994,7 @@ namespace octave
     if (nargout > 1)
       error ("invalid number of output arguments for constant expression");
 
-    m_value_stack.push (ovl (expr.value ()));
+    push_result (expr.value ());
   }
 
   void
@@ -2001,7 +2004,7 @@ namespace octave
 
     octave_value fh = make_fcn_handle (nm);
 
-    m_value_stack.push (ovl (fh));
+    push_result (fh);
   }
 
   void
@@ -2033,7 +2036,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (retval);
+    push_result (retval);
   }
 
   void
@@ -2077,7 +2080,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (ovl (val));
+    push_result (val);
   }
 
   void
@@ -2120,7 +2123,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (ovl (val));
+    push_result (val);
   }
 
   void
@@ -2232,7 +2235,7 @@ namespace octave
           }
       }
 
-    m_value_stack.push (ovl (val));
+    push_result (val);
   }
 
   void

@@ -2155,15 +2155,13 @@ err_binary_op_conv (const std::string& on)
 }
 
 octave_value
-do_binary_op (octave_value::binary_op op,
+do_binary_op (octave::type_info& ti, octave_value::binary_op op,
               const octave_value& v1, const octave_value& v2)
 {
   octave_value retval;
 
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
-
-  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
 
   if (t1 == octave_class::static_type_id ()
       || t2 == octave_class::static_type_id ()
@@ -2292,8 +2290,18 @@ do_binary_op (octave_value::binary_op op,
   return retval;
 }
 
+octave_value
+do_binary_op (octave_value::binary_op op,
+              const octave_value& v1, const octave_value& v2)
+{
+  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
+
+  return do_binary_op (ti, op, v1, v2);
+}
+
 static octave_value
-decompose_binary_op (octave_value::compound_binary_op op,
+decompose_binary_op (octave::type_info& ti,
+                     octave_value::compound_binary_op op,
                      const octave_value& v1, const octave_value& v2)
 {
   switch (op)
@@ -2303,39 +2311,39 @@ decompose_binary_op (octave_value::compound_binary_op op,
                            do_unary_op (octave_value::op_transpose, v1), v2);
 
     case octave_value::op_mul_trans:
-      return do_binary_op (octave_value::op_mul,
+      return do_binary_op (ti, octave_value::op_mul,
                            v1, do_unary_op (octave_value::op_transpose, v2));
 
     case octave_value::op_herm_mul:
-      return do_binary_op (octave_value::op_mul,
+      return do_binary_op (ti, octave_value::op_mul,
                            do_unary_op (octave_value::op_hermitian, v1), v2);
 
     case octave_value::op_mul_herm:
-      return do_binary_op (octave_value::op_mul,
+      return do_binary_op (ti, octave_value::op_mul,
                            v1, do_unary_op (octave_value::op_hermitian, v2));
 
     case octave_value::op_trans_ldiv:
-      return do_binary_op (octave_value::op_ldiv,
+      return do_binary_op (ti, octave_value::op_ldiv,
                            do_unary_op (octave_value::op_transpose, v1), v2);
 
     case octave_value::op_herm_ldiv:
-      return do_binary_op (octave_value::op_ldiv,
+      return do_binary_op (ti, octave_value::op_ldiv,
                            do_unary_op (octave_value::op_hermitian, v1), v2);
 
     case octave_value::op_el_not_and:
-      return do_binary_op (octave_value::op_el_and,
+      return do_binary_op (ti, octave_value::op_el_and,
                            do_unary_op (octave_value::op_not, v1), v2);
 
     case octave_value::op_el_not_or:
-      return do_binary_op (octave_value::op_el_or,
+      return do_binary_op (ti, octave_value::op_el_or,
                            do_unary_op (octave_value::op_not, v1), v2);
 
     case octave_value::op_el_and_not:
-      return do_binary_op (octave_value::op_el_and,
+      return do_binary_op (ti, octave_value::op_el_and,
                            v1, do_unary_op (octave_value::op_not, v2));
 
     case octave_value::op_el_or_not:
-      return do_binary_op (octave_value::op_el_or,
+      return do_binary_op (ti, octave_value::op_el_or,
                            v1, do_unary_op (octave_value::op_not, v2));
 
     default:
@@ -2344,15 +2352,13 @@ decompose_binary_op (octave_value::compound_binary_op op,
 }
 
 octave_value
-do_binary_op (octave_value::compound_binary_op op,
+do_binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
               const octave_value& v1, const octave_value& v2)
 {
   octave_value retval;
 
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
-
-  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
 
   if (t1 == octave_class::static_type_id ()
       || t2 == octave_class::static_type_id ()
@@ -2364,7 +2370,7 @@ do_binary_op (octave_value::compound_binary_op op,
       if (f)
         retval = f (v1, v2);
       else
-        retval = decompose_binary_op (op, v1, v2);
+        retval = decompose_binary_op (ti, op, v1, v2);
     }
   else
     {
@@ -2373,10 +2379,19 @@ do_binary_op (octave_value::compound_binary_op op,
       if (f)
         retval = f (*v1.rep, *v2.rep);
       else
-        retval = decompose_binary_op (op, v1, v2);
+        retval = decompose_binary_op (ti, op, v1, v2);
     }
 
   return retval;
+}
+
+octave_value
+do_binary_op (octave_value::compound_binary_op op,
+              const octave_value& v1, const octave_value& v2)
+{
+  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
+
+  return do_binary_op (ti, op, v1, v2);
 }
 
 OCTAVE_NORETURN static void
@@ -2393,8 +2408,8 @@ err_cat_op_conv (void)
 }
 
 octave_value
-do_cat_op (const octave_value& v1, const octave_value& v2,
-           const Array<octave_idx_type>& ra_idx)
+do_cat_op (octave::type_info& ti, const octave_value& v1,
+           const octave_value& v2, const Array<octave_idx_type>& ra_idx)
 {
   octave_value retval;
 
@@ -2403,8 +2418,6 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
-
-  octave::type_info& ti = octave::__get_type_info__ ("do_cat_op");
 
   octave::type_info::cat_op_fcn f = ti.lookup_cat_op (t1, t2);
 
@@ -2453,10 +2466,19 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
       if (! cf1 && ! cf2)
         err_cat_op (v1.type_name (), v2.type_name ());
 
-      retval = do_cat_op (tv1, tv2, ra_idx);
+      retval = do_cat_op (ti, tv1, tv2, ra_idx);
     }
 
   return retval;
+}
+
+octave_value
+do_cat_op (const octave_value& v1, const octave_value& v2,
+           const Array<octave_idx_type>& ra_idx)
+{
+  octave::type_info& ti = octave::__get_type_info__ ("do_cat_op");
+
+  return do_cat_op (ti, v1, v2, ra_idx);
 }
 
 octave_value
@@ -2583,13 +2605,12 @@ err_unary_op_conv (const std::string& on)
 }
 
 octave_value
-do_unary_op (octave_value::unary_op op, const octave_value& v)
+do_unary_op (octave::type_info& ti, octave_value::unary_op op,
+             const octave_value& v)
 {
   octave_value retval;
 
   int t = v.type_id ();
-
-  octave::type_info& ti = octave::__get_type_info__ ("do_unary_op");
 
   if (t == octave_class::static_type_id ()
       || t == octave_classdef::static_type_id ())
@@ -2631,6 +2652,14 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
     }
 
   return retval;
+}
+
+octave_value
+do_unary_op (octave_value::unary_op op, const octave_value& v)
+{
+  octave::type_info& ti = octave::__get_type_info__ ("do_unary_op");
+
+  return do_unary_op (ti, op, v);
 }
 
 OCTAVE_NORETURN static void

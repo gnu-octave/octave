@@ -234,7 +234,9 @@ namespace octave
                 // is entangled and it's not clear where to start/stop
                 // timing the operator to make it reasonable.
 
-                val = ::do_binary_op (etype, a, b);
+                type_info& ti = m_interpreter.get_type_info ();
+
+                val = ::do_binary_op (ti, etype, a, b);
               }
           }
       }
@@ -317,7 +319,9 @@ namespace octave
               {
                 octave_value::compound_binary_op etype = expr.cop_type ();
 
-                val = ::do_binary_op (etype, a, b);
+                type_info& ti = m_interpreter.get_type_info ();
+
+                val = ::do_binary_op (ti, etype, a, b);
               }
           }
       }
@@ -1711,6 +1715,8 @@ namespace octave
             // Now, extract the values from the individual elements and
             // insert them in the result matrix.
 
+            type_info& ti = m_interpreter.get_type_info ();
+
             int dv_len = dv.ndims ();
             octave_idx_type ntmp = (dv_len > 1 ? dv_len : 2);
             Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
@@ -1726,7 +1732,7 @@ namespace octave
                     if (elt.isempty ())
                       continue;
 
-                    ctmp = do_cat_op (ctmp, elt, ra_idx);
+                    ctmp = do_cat_op (ti, ctmp, elt, ra_idx);
 
                     ra_idx (1) += elt.columns ();
                   }
@@ -2075,7 +2081,9 @@ namespace octave
                 profiler::enter<tree_postfix_expression>
                   block (m_profiler, expr);
 
-                val = ::do_unary_op (etype, op_val);
+                type_info& ti = m_interpreter.get_type_info ();
+
+                val = ::do_unary_op (ti, etype, op_val);
               }
           }
       }
@@ -2118,7 +2126,11 @@ namespace octave
                 if (op_val.get_count () == 1)
                   val = op_val.do_non_const_unary_op (etype);
                 else
-                  val = ::do_unary_op (etype, op_val);
+                  {
+                    type_info& ti = m_interpreter.get_type_info ();
+
+                    val = ::do_unary_op (ti, etype, op_val);
+                  }
               }
           }
       }

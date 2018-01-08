@@ -1283,25 +1283,25 @@ public:
 
   // Unary and binary operations.
 
-  friend OCTINTERP_API octave_value do_unary_op (unary_op op,
-                                                 const octave_value& a);
+  friend OCTINTERP_API octave_value
+  do_unary_op (octave::type_info& ti, unary_op op, const octave_value& a);
 
   octave_value& do_non_const_unary_op (unary_op op);
 
   octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
                                        const std::list<octave_value_list>& idx);
 
-  friend OCTINTERP_API octave_value do_binary_op (binary_op op,
-                                                  const octave_value& a,
-                                                  const octave_value& b);
+  friend OCTINTERP_API octave_value
+  do_binary_op (octave::type_info& ti, binary_op op,
+                const octave_value& a, const octave_value& b);
 
-  friend OCTINTERP_API octave_value do_binary_op (compound_binary_op op,
-                                                  const octave_value& a,
-                                                  const octave_value& b);
+  friend OCTINTERP_API octave_value
+  do_binary_op (octave::type_info& ti, compound_binary_op op,
+                const octave_value& a, const octave_value& b);
 
-  friend OCTINTERP_API octave_value do_cat_op (const octave_value& a,
-                                               const octave_value& b,
-                                               const Array<octave_idx_type>& ra_idx);
+  friend OCTINTERP_API octave_value
+  do_cat_op (octave::type_info& ti, const octave_value& a,
+             const octave_value& b, const Array<octave_idx_type>& ra_idx);
 
   friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
                                                  const octave_value& limit,
@@ -1512,18 +1512,39 @@ private:
 
 };
 
-// Publish externally used friend functions.
+// Publish externally used friend functions.  Which compiler requires
+// these extra declarations?
+
+extern OCTINTERP_API octave_value
+do_unary_op (octave::type_info& ti, octave_value::unary_op op,
+             const octave_value& a);
 
 extern OCTINTERP_API octave_value
 do_unary_op (octave_value::unary_op op, const octave_value& a);
 
 extern OCTINTERP_API octave_value
-do_binary_op (octave_value::binary_op op,
+do_binary_op (octave::type_info& ti, octave_value::binary_op op,
               const octave_value& a, const octave_value& b);
 
 extern OCTINTERP_API octave_value
-do_binary_op (octave_value::compound_binary_op op,
+do_binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
               const octave_value& a, const octave_value& b);
+
+extern OCTINTERP_API octave_value
+do_binary_op (octave_value::binary_op op, const octave_value& a,
+              const octave_value& b);
+
+extern OCTINTERP_API octave_value
+do_binary_op (octave_value::compound_binary_op op, const octave_value& a,
+              const octave_value& b);
+
+extern OCTINTERP_API octave_value
+do_cat_op (octave::type_info& ti, const octave_value& a,
+           const octave_value& b, const Array<octave_idx_type>& ra_idx);
+
+extern OCTINTERP_API octave_value
+do_cat_op (const octave_value& a, const octave_value& b,
+           const Array<octave_idx_type>& ra_idx);
 
 #define OV_UNOP_FN(name)                        \
   inline octave_value                           \

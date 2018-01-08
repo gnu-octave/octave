@@ -275,7 +275,7 @@ i.e., trailing @code{n-m} rows of @var{M} are ignored.  If @code{m > n},
 then @code{D*M} is equivalent to
 
 @example
-[D(1:n,n) * M; zeros(m-n, columns (M))],
+[D(1:n,:) * M; zeros(m-n, columns (M))],
 @end example
 
 @noindent
@@ -447,7 +447,7 @@ using the pivoted LU@tie{}factorization:
 @example
 @group
   [L, U, P] = lu (A); ## now L*U = P*A
-  x = U \ L \ P*b;
+  x = U \ (L \ P) * b;
 @end group
 @end example
 
@@ -526,7 +526,7 @@ implied by the underlying data structure.
 
 The primary distinction is that an assumed zero, when multiplied
 by any number, or divided by any nonzero number,
-yields *always* a zero, even when, e.g., multiplied by @code{Inf}
+yields @strong{always} a zero, even when, e.g., multiplied by @code{Inf}
 or divided by @code{NaN}.
 The reason for this behavior is that the numerical multiplication is not
 actually performed anywhere by the underlying algorithm; the result is

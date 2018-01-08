@@ -2280,29 +2280,31 @@ namespace octave
                 // evaluate the expression and that should take care of
                 // everything, binding ans as necessary?
 
-                bool do_bind_ans = false;
-
-                if (expr->is_identifier ())
-                  {
-                    symbol_scope scope = get_current_scope ();
-
-                    symbol_record::context_id context = scope.current_context ();
-
-                    tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
-
-                    do_bind_ans = (! id->is_variable (context));
-                  }
-                else
-                  do_bind_ans = (! expr->is_assignment_expression ());
-
                 octave_value tmp_result = evaluate (expr, 0);
 
-                if (do_bind_ans && tmp_result.is_defined ())
-                  bind_ans (tmp_result, expr->print_result ()
-                            && statement_printing_enabled ());
+                if (tmp_result.is_defined ())
+                  {
+                    bool do_bind_ans = false;
 
-                //              if (tmp_result.is_defined ())
-                //                result_values(0) = tmp_result;
+                    if (expr->is_identifier ())
+                      {
+                        symbol_scope scope = get_current_scope ();
+
+                        symbol_record::context_id context
+                          = scope.current_context ();
+
+                        tree_identifier *id
+                          = dynamic_cast<tree_identifier *> (expr);
+
+                        do_bind_ans = (! id->is_variable (context));
+                      }
+                    else
+                      do_bind_ans = (! expr->is_assignment_expression ());
+
+                    if (do_bind_ans)
+                      bind_ans (tmp_result, expr->print_result ()
+                                && statement_printing_enabled ());
+                  }
               }
           }
         catch (const std::bad_alloc&)

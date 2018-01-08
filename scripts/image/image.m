@@ -53,6 +53,9 @@
 ## and axes.  When the only inputs to @code{image} are property/value pairs
 ## the Low-Level form is used which creates a new instance of an image object
 ## and inserts it in the current axes.
+##
+## Graphic Properties: The full list of properties is documented at
+## @ref{Image Properties,,Image Properties}.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 

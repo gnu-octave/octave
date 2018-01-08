@@ -33,6 +33,9 @@
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## created text objects.
+##
+## Programming Note: The full list of properties is documented at
+## @ref{Text Properties,,Text Properties}.
 ## @seealso{gtext, title, xlabel, ylabel, zlabel}
 ## @end deftypefn
 

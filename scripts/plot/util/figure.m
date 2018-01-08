@@ -36,6 +36,9 @@
 ##
 ## The optional return value @var{h} is a graphics handle to the created figure
 ## object.
+##
+## Programming Note: The full list of properties is documented at
+## @ref{Figure Properties,,Figure Properties}.
 ## @seealso{axes, gcf, clf, close}
 ## @end deftypefn
 

@@ -37,6 +37,8 @@
 ## The optional return value @var{h} is a graphics handle (or vector of
 ## handles) to the line objects created.
 ##
+## Programming Note: The full list of properties is documented at
+## @ref{Line Properties,,Line Properties}.
 ## @seealso{image, patch, rectangle, surface, text}
 ## @end deftypefn
 

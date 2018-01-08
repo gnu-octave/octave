@@ -59,6 +59,8 @@
 ## The optional return value @var{h} is a graphics handle to the created light
 ## object.
 ##
+## Programming Note: The full list of properties is documented at
+## @ref{Light Properties,,Light Properties}.
 ## @seealso{lighting, material, patch, surface}
 ## @end deftypefn
 

@@ -25,8 +25,7 @@
 ## axes to @var{hax}.
 ##
 ## Called without any arguments, or with @var{property}/@var{value} pairs,
-## construct a new axes.  For accepted properties and corresponding values,
-## @pxref{XREFset,,set}.
+## construct a new axes.
 ##
 ## Called with a single axes handle argument @var{hax}, the function makes
 ## @var{hax} the current axes (as returned by @code{gca}).  It also makes
@@ -37,6 +36,8 @@
 ## objects (Z-order stacking).  In addition it restacks any legend or colorbar
 ## objects associated with @var{hax} so that they are also visible.
 ##
+## Programming Note: The full list of properties is documented at
+## @ref{Axes Properties,,Axes Properties}.
 ## @seealso{gca, set, get}
 ## @end deftypefn
 

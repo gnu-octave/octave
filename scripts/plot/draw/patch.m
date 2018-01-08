@@ -64,11 +64,10 @@
 ## The optional return value @var{h} is a graphics handle to the created patch
 ## object.
 ##
-## Implementation Note: Patches are highly configurable objects.  To truly
-## customize them requires setting patch properties directly
-## (@pxref{Patch Properties}).  Useful patch properties include: @qcode{"cdata"},
-## @qcode{"edgecolor"}, @qcode{"facecolor"}, @qcode{"faces"},
-## @qcode{"facevertexcdata"}.
+## Programming Note: The full list of properties is documented at
+## @ref{Patch Properties,,Patch Properties}.  Useful patch properties include:
+## @qcode{"cdata"}, @qcode{"edgecolor"}, @qcode{"facecolor"}, @qcode{"faces"},
+## and @qcode{"facevertexcdata"}.
 ## @seealso{fill, get, set}
 ## @end deftypefn
 

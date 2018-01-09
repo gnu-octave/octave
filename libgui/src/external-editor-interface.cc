@@ -41,6 +41,8 @@ external_editor_interface::call_custom_editor (const QString& file, int line)
 {
   if (line > -1)  // check for a specific line (debugging)
     return true;  // yes: do not open a file in external editor
+  else
+    line = 0;     // no: start external editor at beginning of file
 
   QString editor = external_editor ();
   if (editor.isEmpty ())

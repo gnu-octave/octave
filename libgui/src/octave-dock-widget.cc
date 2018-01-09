@@ -137,7 +137,13 @@ octave_dock_widget::make_window (void)
   settings->sync ();
 
   // remove parent and adjust the (un)dock icon
-  setParent (0, Qt::Window);
+  setTitleBarWidget (0);
+  setParent (0, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint |
+                Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+  setTitleBarWidget (m_title_widget);
+  setParent (0, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint |
+                Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+
   m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock"
                                 + m_icon_color + ".png"));
   m_dock_action->setToolTip (tr ("Dock widget"));

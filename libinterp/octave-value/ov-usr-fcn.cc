@@ -252,8 +252,7 @@ octave_user_function::octave_user_function
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
-    class_constructor (none), class_method (false),
-    parent_scope ()
+    class_constructor (none), class_method (false)
 #if defined (HAVE_LLVM)
     , jit_info (0)
 #endif
@@ -362,7 +361,7 @@ octave_user_function::maybe_relocate_end (void)
 void
 octave_user_function::stash_parent_fcn_scope (const octave::symbol_scope& ps)
 {
-  parent_scope = ps;
+  m_scope.set_parent (ps);
 }
 
 std::string
@@ -760,7 +759,6 @@ octave_user_function::dump (void) const
        { "nested_function", nested_function },
        { "ctor_type", ctor_type_str () },
        { "class_method", class_method },
-       { "parent_scope", parent_scope ? parent_scope.name () : "0x0" },
        { "scope_info", m_scope ? m_scope.dump () : "0x0" }};
 
   return octave_value (m);

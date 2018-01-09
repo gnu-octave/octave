@@ -280,9 +280,6 @@ public:
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
-  octave::symbol_scope
-  parent_fcn_scope (void) const { return parent_scope; }
-
   octave::sys::time time_parsed (void) const { return t_parsed; }
 
   octave::sys::time time_checked (void) const { return t_checked; }
@@ -479,9 +476,6 @@ private:
 
   // TRUE means this function is a method for a class.
   bool class_method;
-
-  // The scope of the parent function, if any.
-  octave::symbol_scope parent_scope;
 
 #if defined (HAVE_LLVM)
   octave::jit_function_info *jit_info;

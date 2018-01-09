@@ -2072,6 +2072,10 @@ octave_java::register_type (octave::type_info& ti)
   t_id = ti.register_type (octave_java::t_name, "<unknown>",
                            octave_value (new octave_java ()));
 
+#else
+
+  octave_unused_parameter (ti);
+
 #endif
 }
 

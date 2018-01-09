@@ -1023,7 +1023,6 @@ function [x, y] = arrowcoordinates (h, nar = [])
 endfunction
 
 function update_arrow (h, dummy, prop, hpa = [])
-  persistent recursive = false;
 
   nar = [];
   for ii = 1:numel (hpa)

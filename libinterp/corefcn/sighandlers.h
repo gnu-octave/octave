@@ -113,8 +113,14 @@ octave_set_signal_handler (const char *signame, octave::sig_handler *handler,
 OCTAVE_DEPRECATED (4.2, "use 'octave::set_signal_handler' instead")
 const auto install_signal_handlers = octave::install_signal_handlers;
 
-OCTAVE_DEPRECATED (4.2, "use 'octave::signal_handler' instead")
-const auto octave_signal_handler = octave::signal_handler;
+OCTAVE_DEPRECATED (4.2, "use 'octave::respond_to_pending_signals' instead")
+const auto octave_signal_handler = octave::respond_to_pending_signals;
+
+namespace octave
+{
+  OCTAVE_DEPRECATED (4.4, "use 'octave::respond_to_pending_signals' instead")
+  const auto signal_handler = respond_to_pending_signals;
+}
 
 OCTAVE_DEPRECATED (4.2, "use 'octave::interrupt_handler' instead")
 const auto octave_catch_interrupts = octave::catch_interrupts;

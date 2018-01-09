@@ -289,31 +289,16 @@ namespace octave
 
     const char *p = prompt.c_str ();
 
-    while (true)
+    char *line = ::octave_rl_readline (p);
+
+    if (line)
       {
-        try
-          {
-            char *line = ::octave_rl_readline (p);
+        retval = line;
 
-            if (line)
-              {
-                retval = line;
-
-                free (line);
-              }
-            else
-              eof = true;
-
-            break;
-          }
-        catch (command_editor::interrupt_exception&)
-          {
-            // Is this right?
-            std::cout << "\n";
-
-            // Try again...
-          }
+        free (line);
       }
+    else
+      eof = true;
 
     return retval;
   }
@@ -803,7 +788,7 @@ namespace octave
 
     ::octave_rl_recover_from_interrupt ();
 
-    throw command_editor::interrupt_exception ();
+    throw octave::interrupt_exception ();
   }
 
   int

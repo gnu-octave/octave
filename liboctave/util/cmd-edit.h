@@ -40,8 +40,6 @@ namespace octave
   {
   protected:
 
-    class interrupt_exception { };
-
     command_editor (void)
       : command_number (0), interrupted (false), initial_input () { }
 

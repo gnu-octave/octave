@@ -81,7 +81,6 @@ LIBINTERP_BUILT_NODISTFILES = \
 %canon_reldir%_EXTRA_DIST += \
   %reldir%/DOCSTRINGS \
   %reldir%/build-env.in.cc \
-  %reldir%/deprecated-config.h \
   %reldir%/liboctinterp-build-info.in.cc \
   %reldir%/mk-build-env-features.sh \
   %reldir%/mk-builtins.pl \
@@ -285,9 +284,9 @@ OCTAVE_INTERPRETER_TARGETS += \
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
-install-data-hook: install-oct install-built-in-docstrings install-deprecated-config-h
+install-data-hook: install-oct install-built-in-docstrings
 
-uninstall-local: uninstall-oct uninstall-built-in-docstrings uninstall-deprecated-config-h
+uninstall-local: uninstall-oct uninstall-built-in-docstrings
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
@@ -327,15 +326,6 @@ install-built-in-docstrings: %reldir%/DOCSTRINGS
 uninstall-built-in-docstrings:
 	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: uninstall-built-in-docstrings
-
-install-deprecated-config-h: %reldir%/deprecated-config.h
-	$(MKDIR_P) $(DESTDIR)$(octincludedir)
-	$(INSTALL_DATA) $< $(DESTDIR)$(octincludedir)/config.h
-.PHONY: install-deprecated-config-h
-
-uninstall-deprecated-config-h:
-	rm -f $(DESTDIR)$(octincludedir)/config.h
-.PHONY: uninstall-deprecated-config-h
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 

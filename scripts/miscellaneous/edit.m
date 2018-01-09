@@ -330,7 +330,7 @@ function retval = edit (varargin)
       endif
     endif
 
-    ## If editing a new file, prompt for creation if gui is running
+    ## If editing a new file, prompt for creation if GUI is running
     if (isguirunning ())
       if (! __octave_link_edit_file__ (file, "prompt"));
         return;
@@ -358,6 +358,9 @@ function retval = edit (varargin)
         ## Write the initial file (if there is anything to write)
         ## Give user the opportunity to change the file extension
         fileandpath = uiputfile (fileandpath);
+        if (! ischar (fileandpath))
+          return;  # Cancel Button pressed
+        endif
         fid = fopen (fileandpath, "wt");
         if (fid < 0)
           error ("edit: could not create %s", fileandpath);

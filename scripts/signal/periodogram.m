@@ -54,8 +54,8 @@
 ##
 ## @item range
 ## range of spectrum.  @qcode{"@nospell{onesided}"} computes spectrum from
-## [0..nfft/2+1].  @qcode{"@nospell{twosided}"} computes spectrum from
-## [0..nfft-1].
+## [0:nfft/2+1].  @qcode{"@nospell{twosided}"} computes spectrum from
+## [0:nfft-1].
 ## @end table
 ##
 ## The optional second output @var{w} are the normalized angular frequencies.

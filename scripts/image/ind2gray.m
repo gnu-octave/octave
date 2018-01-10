@@ -21,7 +21,7 @@
 ## Convert a color indexed image to a grayscale intensity image.
 ##
 ## The image @var{x} must be an indexed image which will be converted using the
-## colormap @var{cmap}.  If @var{cmap} does not contain enough colors for the
+## colormap @var{map}.  If @var{map} does not contain enough colors for the
 ## image, pixels in @var{x} outside the range are mapped to the last color in
 ## the map before conversion to grayscale.
 ##

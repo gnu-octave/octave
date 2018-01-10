@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} lin2mu (@var{x}, @var{n})
+## @deftypefn {} {@var{y} =} lin2mu (@var{x}, @var{n})
 ## Convert audio data from linear to mu-law.
 ##
 ## Mu-law values use 8-bit unsigned integers.  Linear values use @var{n}-bit

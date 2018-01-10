@@ -154,7 +154,7 @@ pkg prefix new_installation_directory
 The current installation directory can be retrieved by typing
 
 @example
-current_installation_directory = pkg prefix
+current_installation_directory = pkg ("prefix")
 @end example
 
 To function properly the package manager needs to keep some
@@ -411,13 +411,12 @@ distribution packager.  They follow the same conventions as the
 @code{Depends} keyword.
 
 @item BuildRequires
-These are the external build dependencies of the package and are not
-checked by the package manager.  This is here as a hint to the
-distribution packager.  They follow the same conventions as the
-@code{Depends} keyword.  Note that in general, packaging systems such
-as @code{rpm} or @code{deb} and autoprobe the install dependencies
-from the build dependencies, and therefore the often a
-@code{BuildRequires} dependency removes the need for a
+These are the external build dependencies of the package and are not checked by
+the package manager.  This is here as a hint to the distribution packager.
+They follow the same conventions as the @code{Depends} keyword.  Note that in
+general, packaging systems such as @code{rpm} or @code{deb} autoprobe the
+install dependencies from the build dependencies, and therefore a
+@code{BuildRequires} dependency usually removes the need for a
 @code{SystemRequirements} dependency.
 
 @end table

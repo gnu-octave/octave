@@ -171,7 +171,7 @@ rows and columns of @var{A} to use.  If either of these is larger than the
 size of @var{A}, @var{A} is resized and padded with zeros.
 
 If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix
-of @var{A} is treated separately
+of @var{A} is treated separately.
 @seealso{fft2, ifft, ifftn, fftw}
 @end deftypefn */)
 {

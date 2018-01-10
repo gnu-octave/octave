@@ -85,9 +85,15 @@ function [s, l] = bounds (x, dim, nanflag = false)
 endfunction
 
 
-%!assert (bounds (1:10), [1, 10])
-%!assert (bounds ([10:-1:1]'), [1, 10])
-%!assert (bounds (single (1:10)), single ([1, 10]))
+%!test
+%! [s,l] = bounds (1:10);
+%! assert ([s,l], [1, 10]);
+%!test
+%! [s,l] = bounds ([10:-1:1]');
+%! assert ([s,l], [1, 10]);
+%!test
+%! [s,l] = bounds (single (1:10));
+%! assert ([s,l], single ([1, 10]));
 %!assert (bounds (magic (3)), [3, 1, 2])
 %!assert (bounds (magic (3), 2), [1; 3; 2])
 %!test

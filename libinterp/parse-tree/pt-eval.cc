@@ -2329,6 +2329,16 @@ namespace octave
             error_with_id ("Octave:bad-alloc",
                            "out of memory or dimension too large for Octave's index type");
           }
+        catch (const octave::interrupt_exception&)
+          {
+            // If we are debugging, then continue with next statement.
+            // Otherwise, jump out of here.
+
+            if (debug_mode)
+              interpreter::recover_from_exception ();
+            else
+              throw;
+          }
       }
   }
 

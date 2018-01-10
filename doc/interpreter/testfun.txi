@@ -211,7 +211,7 @@ The following is nearly identical to the example above, but does nothing.
 %!function @var{a} = fn (@var{b})
 %!  @var{a} = 2*@var{b};
 %!endfunction
-%!assert (fn(2), 4)
+%! assert (fn(2), 4)
 @end group
 @end example
 
@@ -295,11 +295,11 @@ fail, assert, error, and xtest:
 
 @example
 @group
-function output = must_be_zero (@var{input})
+function @var{output} = must_be_zero (@var{input})
   if (@var{input} != 0)
     error ("Nonzero input!")
   endif
-  output = input;
+  @var{output} = @var{input};
 endfunction
 
 %!fail ("must_be_zero (1)")

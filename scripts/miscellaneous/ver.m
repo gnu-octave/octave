@@ -40,11 +40,11 @@
 ## @item Version
 ## Version of the package.
 ##
-## @item Revision
-## Revision of the package.
+## @item Release
+## Release of the package.
 ##
 ## @item Date
-## Date of the version/revision.
+## Date of the version/release.
 ## @end table
 ##
 ## @seealso{version, usejava, pkg}

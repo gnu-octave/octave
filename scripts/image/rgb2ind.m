@@ -31,7 +31,7 @@
 ## quantization is performed.  The output class of the indexed image @var{x}
 ## can be uint8, uint16 or double, whichever is required to specify the
 ## number of unique colors in the image (which will be equal to the number
-## of rows in @var{map}) in order
+## of rows in @var{map}) in order.
 ##
 ## Multi-dimensional indexed images (of size @nospell{MxNx3xK}) are also
 ## supported, both via a single input (@var{rgb}) or its three color channels

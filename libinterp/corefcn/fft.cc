@@ -186,7 +186,7 @@ DEFUN (fft, args, ,
 @deftypefn  {} {} fft (@var{x})
 @deftypefnx {} {} fft (@var{x}, @var{n})
 @deftypefnx {} {} fft (@var{x}, @var{n}, @var{dim})
-Compute the discrete Fourier transform of @var{A} using
+Compute the discrete Fourier transform of @var{x} using
 a Fast Fourier Transform (FFT) algorithm.
 
 The FFT is calculated along the first non-singleton dimension of the
@@ -202,7 +202,7 @@ smaller than the dimension along which the FFT is calculated, then
 @var{x} is truncated.
 
 If called with three arguments, @var{dim} is an integer specifying the
-dimension of the matrix along which the FFT is performed
+dimension of the matrix along which the FFT is performed.
 @seealso{ifft, fft2, fftn, fftw}
 @end deftypefn */)
 {
@@ -215,7 +215,7 @@ DEFUN (ifft, args, ,
 @deftypefn  {} {} ifft (@var{x})
 @deftypefnx {} {} ifft (@var{x}, @var{n})
 @deftypefnx {} {} ifft (@var{x}, @var{n}, @var{dim})
-Compute the inverse discrete Fourier transform of @var{A}
+Compute the inverse discrete Fourier transform of @var{x}
 using a Fast Fourier Transform (FFT) algorithm.
 
 The inverse FFT is calculated along the first non-singleton dimension
@@ -231,7 +231,7 @@ smaller than the dimension along which the inverse FFT is calculated,
 then @var{x} is truncated.
 
 If called with three arguments, @var{dim} is an integer specifying the
-dimension of the matrix along which the inverse FFT is performed
+dimension of the matrix along which the inverse FFT is performed.
 @seealso{fft, ifft2, ifftn, fftw}
 @end deftypefn */)
 {

@@ -429,7 +429,7 @@ roots of the polynomial.
 
 Functions that are of particular interest for overloading are the class
 conversion functions such as @code{double}.  Overloading these functions allows
-the @code{cast} function to work with a user class.  It can also can aid in the
+the @code{cast} function to work with a user class.  It can also aid in the
 use of a class object with methods and functions from other classes since the
 object can be transformed to the requisite input form for the new function.
 An example @code{double} function for the polynomial class might look like

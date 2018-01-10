@@ -31,7 +31,7 @@
 ##
 ## The range is a quickly computed measure of the dispersion of a data set, but
 ## is less accurate than @code{iqr} if there are outlying data points.
-## @seealso{iqr, std}
+## @seealso{bounds, iqr, std}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

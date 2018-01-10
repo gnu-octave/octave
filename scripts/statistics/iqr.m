@@ -29,7 +29,7 @@
 ##
 ## As a measure of dispersion, the interquartile range is less affected by
 ## outliers than either @code{range} or @code{std}.
-## @seealso{range, std}
+## @seealso{bounds, range, std}
 ## @end deftypefn
 
 ## Author KH <Kurt.Hornik@wu-wien.ac.at>

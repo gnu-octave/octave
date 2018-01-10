@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += scripts/statistics
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/bounds.m \
   %reldir%/center.m \
   %reldir%/corrcoef.m \
   %reldir%/corr.m \

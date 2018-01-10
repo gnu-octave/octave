@@ -72,6 +72,8 @@ not give an accurate picture of the data.  One way to characterize the fit is
 to measure the dispersion of the data.  Octave provides several functions for
 measuring dispersion.
 
+@DOCSTRING(bounds)
+
 @DOCSTRING(range)
 
 @DOCSTRING(iqr)

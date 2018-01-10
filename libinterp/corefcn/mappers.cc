@@ -2176,6 +2176,11 @@ DEFALIAS (lower, tolower);
 %!assert (tolower ({["ABC"; "DEF"]}), {["abc";"def"]})
 %!assert (tolower (68), 68)
 %!assert (tolower ({[68, 68; 68, 68]}), {[68, 68; 68, 68]})
+%!assert (tolower (68i), 68i)
+%!assert (tolower ({[68i, 68; 68, 68i]}), {[68i, 68; 68, 68i]})
+%!assert (tolower (single (68i)), single (68i))
+%!assert (tolower ({single([68i, 68; 68, 68i])}), {single([68i, 68; 68, 68i])})
+
 %!test
 %! classes = {@char, @double, @single, ...
 %!            @int8, @int16, @int32, @int64, ...
@@ -2235,6 +2240,12 @@ DEFALIAS (upper, toupper);
 %!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})
 %!assert (toupper (100), 100)
 %!assert (toupper ({[100, 100; 100, 100]}), {[100, 100; 100, 100]})
+%!assert (toupper (100i), 100i)
+%!assert (toupper ({[100i, 100; 100, 100i]}), {[100i, 100; 100, 100i]})
+%!assert (toupper (single (100i)), single (100i))
+%!assert (toupper ({single([100i, 100; 100, 100i])}),
+%!                 {single([100i, 100; 100, 100i])})
+
 %!test
 %! classes = {@char, @double, @single, ...
 %!            @int8, @int16, @int32, @int64, ...

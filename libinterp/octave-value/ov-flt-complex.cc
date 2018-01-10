@@ -474,6 +474,11 @@ octave_float_complex::map (unary_mapper_t umap) const
     SCALAR_MAPPER (isna, octave::math::isna);
     SCALAR_MAPPER (isnan, octave::math::isnan);
 
+    // Special cases for Matlab compatibility
+    case umap_xtolower:
+    case umap_xtoupper:
+      return scalar;
+
     default:
       return octave_base_value::map (umap);
     }

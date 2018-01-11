@@ -57,15 +57,31 @@ QUIWidgetCreator::~QUIWidgetCreator (void)
   delete m_path_name;
 }
 
+QString
+QUIWidgetCreator::rm_amp (const QString& text)
+{
+  QString text_wo_amp = text;
+  text_wo_amp.replace (QRegExp ("&(\\w)"), "\\1");
+  return text_wo_amp;
+}
+
 void
 QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
 {
   // Wait for link thread to go to sleep state.
   lock ();
 
-  // Store the value so that builtin functions can retrieve.
-  if (button)
-    m_dialog_button = button->text ();
+  // Check for a matching button text while ignoring accelerators because
+  // the window manager may have added one in the passed button
+  QString text_clean = rm_amp (button->text ());
+  for (int i = 0; i < m_button_list.count (); i++)
+    {
+      if (rm_amp (m_button_list.at (i)) == text_clean)
+        {
+          m_dialog_button = m_button_list.at (i); // text w/o extra accelerator
+          break;
+        }
+    }
 
   // The value should always be 1 for the Octave functions.
   m_dialog_result = 1;

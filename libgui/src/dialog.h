@@ -53,10 +53,14 @@ public:
 
 public:
 
+  QString rm_amp (const QString& text);
+
   void signal_dialog (const QString& message, const QString& title,
                       const QString& icon, const QStringList& button,
                       const QString& defbutton, const QStringList& role)
   {
+    // Store button text before a window-manager adds accelerators
+    m_button_list = button;
 
     // Use the last button in the list as the reject result, i.e., when no
     // button is pressed such as in the case of the upper right close tab.
@@ -150,6 +154,9 @@ private:
 
   int m_dialog_result;
   QString m_dialog_button;
+
+  // A copy of the dialogs button texts
+  QStringList m_button_list;
 
   // The list could conceivably be big.  Not sure how things are
   // stored internally, so keep off of the stack.

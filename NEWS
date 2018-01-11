@@ -235,6 +235,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       integral3
       isgraphics
       isstring
+      mad
       openvar
       quad2d
       repelem

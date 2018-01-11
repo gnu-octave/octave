@@ -18,6 +18,7 @@ FCN_FILE_DIRS += scripts/statistics
   %reldir%/iqr.m \
   %reldir%/kendall.m \
   %reldir%/kurtosis.m \
+  %reldir%/mad.m \
   %reldir%/mean.m \
   %reldir%/meansq.m \
   %reldir%/median.m \

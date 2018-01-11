@@ -78,6 +78,8 @@ measuring dispersion.
 
 @DOCSTRING(iqr)
 
+@DOCSTRING(mad)
+
 @DOCSTRING(meansq)
 
 @DOCSTRING(std)

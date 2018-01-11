@@ -58,7 +58,7 @@
 ## @end table
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
-## @seealso{var, bounds, range, iqr, mean, median}
+## @seealso{var, bounds, mad, range, iqr, mean, median}
 ## @end deftypefn
 
 ## Author: jwe

@@ -36,7 +36,7 @@
 ##
 ## The bounds are a quickly computed measure of the dispersion of a data set,
 ## but are less accurate than @code{iqr} if there are outlying data points.
-## @seealso{range, iqr, std}
+## @seealso{range, iqr, mad, std}
 ## @end deftypefn
 
 function [s, l] = bounds (x, dim, nanflag = false)

@@ -39,7 +39,7 @@ function __add_default_menu__ (fig)
                        "tag", "__default_menu__");
       uimenu (__f, "label", "&Save", "callback", @save_cb);
       uimenu (__f, "label", "Save &As", "callback", @save_cb);
-      uimenu (__f, "label", "&Close", "callback", "close (gcf)");
+      uimenu (__f, "label", "&Close", "callback", @close_cb);
 
     __e = uimenu (fig, "label", "&Edit", "handlevisibility", "off",
                        "tag", "__default_menu__");
@@ -94,6 +94,11 @@ function __save_as__ (caller)
       saveas (caller, fname);
     endif
   endif
+endfunction
+
+
+function close_cb (h, e)
+  close (gcbf);
 endfunction
 
 

@@ -24,26 +24,26 @@
 ##
 ## Compute a generalized linear least squares fit.
 ##
-## Estimate @var{x} under the model @var{b} = @var{A}@var{x} + @var{w},
-## where the noise @var{w} is assumed to follow a normal distribution
-## with covariance matrix @math{{\sigma^2} V}.
+## Estimate @var{x} under the model @var{b} = @var{A}@var{x} + @var{w}, where
+## the noise @var{w} is assumed to follow a normal distribution with covariance
+## matrix @math{{\sigma^2} V}.
 ##
-## If the size of the coefficient matrix @var{A} is n-by-p, the
-## size of the vector/array of constant terms @var{b} must be n-by-k.
+## If the size of the coefficient matrix @var{A} is n-by-p, the size of the
+## vector/array of constant terms @var{b} must be n-by-k.
 ##
-## The optional input argument @var{V} may be a n-by-1 vector of positive
-## weights (inverse variances), or a n-by-n symmetric positive semidefinite
-## matrix representing the covariance of @var{b}.  If @var{V} is not
-## supplied, the ordinary least squares solution is returned.
+## The optional input argument @var{V} may be an n-element vector of positive
+## weights (inverse variances), or an n-by-n symmetric positive semi-definite
+## matrix representing the covariance of @var{b}.  If @var{V} is not supplied,
+## the ordinary least squares solution is returned.
 ##
 ## The @var{alg} input argument, a guidance on solution method to use, is
 ## currently ignored.
 ##
 ## Besides the least-squares estimate matrix @var{x} (p-by-k), the function
-## also returns @var{stdx} (p-by-k), the error standard deviation of
-## estimated @var{x}; @var{mse} (k-by-1), the estimated data error covariance
-## scale factors (@math{\sigma^2}); and @var{S} (p-by-p, or p-by-p-by-k if k
-## > 1), the error covariance of @var{x}.
+## also returns @var{stdx} (p-by-k), the error standard deviation of estimated
+## @var{x}; @var{mse} (k-by-1), the estimated data error covariance scale
+## factors (@math{\sigma^2}); and @var{S} (p-by-p, or p-by-p-by-k if k > 1),
+## the error covariance of @var{x}.
 ##
 ## Reference: @nospell{Golub and Van Loan} (1996),
 ## @cite{Matrix Computations (3rd Ed.)}, Johns Hopkins, Section 5.6.3
@@ -55,8 +55,17 @@
 
 function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
 
-  if (nargin < 2 || (rows (A) != rows (b)))
+  if (nargin < 2 || nargin > 4)
     print_usage ();
+  endif
+
+  if (rows (A) != rows (b))
+    error ("lscov: A and B must have the same number of rows");
+  endif
+
+
+  if (nargin == 4)
+    warning ("lscov: algorithm selection input ALG is not yet implemented, using default");
   endif
 
   n = rows (A);
@@ -64,22 +73,27 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
   k = columns (b);
 
   if (! isempty (V))
-    if (rows (V) != n || ! any (columns (V) == [1 n]))
-      error ("lscov: V should be a square matrix or a vector with the same number of rows as A");
-    endif
 
     if (isvector (V))
-      ## n-by-1 vector of inverse variances
+      ## n-element vector of inverse variances
+      if (numel (V) != n)
+        error ("lscov: vector V must have n (number of row in A) elements ");
+      endif
+
       v = diag (sqrt (V));
       A = v * A;
       b = v * b;
     else
       ## n-by-n covariance matrix
+      if (size (V) != [n, n])
+        error ("lscov: matrix V must be square with the same number of rows as A");
+      endif
+
       try
         ## Ordinarily V will be positive definite
         B = chol (V)';
       catch
-        ## If V is only positive semidefinite, use its
+        ## If V is only positive semi-definite, use its
         ## eigendecomposition to find a factor B such that V = B*B'
         [B, lambda] = eig (V);
         image_dims = (diag (lambda) > 0);
@@ -182,7 +196,7 @@ endfunction
 %! assert(S2(:, :, 2), 4*S, eps);
 
 %!test
-%! ## Artificial example with positive semidefinite weight matrix
+%! ## Artificial example with positive semi-definite weight matrix
 %! x = (0:0.2:2)';
 %! y = round(100*sin(x) + 200*cos(x));
 %! X = [ones(size(x)) sin(x) cos(x)];
@@ -190,3 +204,12 @@ endfunction
 %! V(end, end-1) = V(end-1, end) = 1;
 %! [b, seb, mseb, S] = lscov (X, y, V);
 %! assert(b, [0 100 200]', 0.2);
+
+%!error lscov ()
+%!error lscov (1)
+%!error lscov (1,2,3,4,5)
+%!error <A and B must have the same number of rows> lscov (ones (2,2),1)
+%!warning <algorithm selection input ALG is not yet implemented>
+%! lscov (1,1, [], "chol");
+%!error <vector V must have n .* elements> lscov (1,2, [1, 2])
+%!error <matrix V must be square> lscov (1,2, [1 2 3; 4 5 6])

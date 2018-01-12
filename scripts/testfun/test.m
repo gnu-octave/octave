@@ -644,17 +644,9 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
       ## evaluate code for test, shared, and assert.
       if (! isempty(__code))
         try
-          ## FIXME: Must check for embedded test functions, which cause
-          ## segfaults, until issues with subfunctions in functions are fixed.
-          embed_func = regexp (__code, '^\s*function ', 'once', 'lineanchors');
-          if (isempty (embed_func))
-            eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
-                           __shared_r, __shared, __code));
-            eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
-          else
-            error (["Functions embedded in %!test blocks are not allowed.\n", ...
-                    "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
-          endif
+          eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
+                         __shared_r, __shared, __code));
+          eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
         catch
           if (isempty (lasterr ()))
             error ("test: empty error text, probably Ctrl-C --- aborting");

@@ -2720,17 +2720,11 @@ do
   ## Java and JVM found.  Set up flags.
   case $host_os in
     darwin*)
-      ## Sneak the -framework flag into mkoctfile via LDFLAGS
-      LDFLAGS="$LDFLAGS -framework JavaVM"
-      ## According to: http://developer.apple.com/unix/crossplatform.html
-      ## one must explicitly set the include path.
-      ## Unfortunately, the include path keeps moving around.
       if test -n "$JAVA_CPPFLAGS"; then
-        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}"
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/darwin"
       else
-        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I/System/Library/Frameworks/JavaVM.framework/Home/include -I/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Headers -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin"
       fi
-      JAVA_LIBS="-framework JavaVM"
     ;;
     *)
       if test -n "$JAVA_CPPFLAGS"; then

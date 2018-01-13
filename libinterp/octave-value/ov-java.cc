@@ -641,8 +641,6 @@ initialize_jvm (void)
   //! The number of created jvm's.
   jsize nVMs = 0;
 
-#if ! defined (__APPLE__) && ! defined (__MACH__)
-
   octave::dynamic_library lib (jvm_lib_path);
 
   if (! lib)
@@ -662,16 +660,6 @@ initialize_jvm (void)
     error ("unable to find JNI_GetCreatedJavaVMs in %s", jvm_lib_path.c_str ());
 
   if (get_vm (&jvm, 1, &nVMs) == 0 && nVMs > 0)
-
-#else
-
-  // FIXME: There exists a problem on the Mac platform that
-  //   octave::dynamic_library lib (jvm_lib_path)
-  // doesn't work with 'not-bundled' *.oct files.
-
-  if (JNI_GetCreatedJavaVMs (&jvm, 1, &nVMs) == 0 && nVMs > 0)
-
-#endif
 
     {
       // At least one JVM exists, try to attach the current thread to it.
@@ -717,23 +705,11 @@ initialize_jvm (void)
                               octave::sys::file_ops::dir_sep_str () +
                               "java.opts");
 
-#if ! defined (__APPLE__) && ! defined (__MACH__)
-
       if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
         error ("unable to start Java VM in %s", jvm_lib_path.c_str ());
     }
 
   jvm_lib = lib;
-
-#else
-
-      if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **> (&current_env),
-                            vm_args.to_args ()) != JNI_OK)
-        error ("unable to start Java VM in %s", jvm_lib_path.c_str ());
-
-    }
-
-#endif
 
   setlocale (LC_ALL, locale.c_str ());
 }

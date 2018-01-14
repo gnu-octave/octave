@@ -666,7 +666,10 @@ octave_qscintilla::set_word_selection (const QString& word)
       QToolTip::hideText ();
     }
   else
-    getCursorPosition (&m_selection_line, &m_selection_col);
+    {
+      int pos;
+      get_current_position (&pos, &m_selection_line, &m_selection_col);
+    }
 }
 
 void
@@ -767,7 +770,8 @@ void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
 void
 octave_qscintilla::show_replace_action_tooltip (void)
 {
-  getCursorPosition (&m_selection_line, &m_selection_col);
+  int pos;
+  get_current_position (&pos, &m_selection_line, &m_selection_col);
 
   // Offer to replace other instances.
 
@@ -807,8 +811,8 @@ octave_qscintilla::keyPressEvent (QKeyEvent *key_event)
         {
           // get the resulting cursor position
           // (required if click was beyond a line ending)
-          int line, col;
-          getCursorPosition (&line, &col);
+          int pos, line, col;
+          get_current_position (&pos, &line, &col);
 
           // remember first visible line for restoring the view afterwards
           int first_line = firstVisibleLine ();
@@ -837,7 +841,7 @@ octave_qscintilla::keyPressEvent (QKeyEvent *key_event)
               // different from the original.
 
               int new_line, new_col;
-              getCursorPosition (&new_line, &new_col);
+              get_current_position (&pos, &new_line, &new_col);
 
               find_result_available
                 = findFirst (m_selection,

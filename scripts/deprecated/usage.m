@@ -39,7 +39,7 @@
 ## @example
 ## @group
 ## if (nargin != 2)
-##   usage (\"foo (a, b)\");
+##   usage ("foo (a, b)");
 ## endif
 ## @end group
 ## @end example

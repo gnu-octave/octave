@@ -28,7 +28,7 @@
 ##
 ## @example
 ## @group
-## fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})
+## fnmatch ("a*b", @{"ab"; "axyzb"; "xyzab"@})
 ##      @result{} [ 1; 1; 0 ]
 ## @end group
 ## @end example

@@ -1347,28 +1347,63 @@ octave_asprintf (const char *fmt, ...)
   return retval;
 }
 
+// FIXME: sleep is complicated because we want it to be interruptible.
+// With the way this program handles signals, the sleep system call
+// won't respond to SIGINT.  Maybe there is a better way than
+// breaking this up into multiple shorter intervals?
+
 void
 octave_sleep (double seconds)
 {
   if (seconds <= 0)
     return;
 
+  // Split delay into whole seconds and the remainder as a decimal
+  // fraction.
+
   double fraction = std::modf (seconds, &seconds);
-  fraction = std::floor (fraction * 1000000000); // nanoseconds
+
+  // Further split the fractional seconds into whole tenths and the
+  // nearest number of nanoseconds remaining.
+
+  double tenths = 0;
+  fraction = std::modf (fraction * 10, &tenths) / 10;
+  fraction = std::round (fraction * 1000000000);
+
+  // Sleep for the hundredths portion.
+
+  struct timespec hundredths_delay = { 0, static_cast<long> (fraction) };
+
+  nanosleep (&hundredths_delay, nullptr);
+
+  // Sleep for the whole tenths portion, allowing interrupts every
+  // tenth.
+
+  struct timespec one_tenth = { 0, 100000000 };
+
+  for (int i = 0; i < static_cast<int> (tenths); i++)
+    {
+      nanosleep (&one_tenth, nullptr);
+
+      octave_quit ();
+    }
+
+  // Sleep for the whole seconds portion, allowing interrupts every
+  // tenth.
 
   time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
                 ? std::numeric_limits<time_t>::max ()
                 : static_cast<time_t> (seconds));
 
-  struct timespec delay = { sec, static_cast<long> (fraction) };
-  int status;
-
-  do
+  for (time_t s = 0; s < sec; s++)
     {
-      status = octave_nanosleep_wrapper (&delay, &delay);
-      octave_quit ();
+      for (int i = 0; i < 10; i++)
+        {
+          nanosleep (&one_tenth, nullptr);
+
+          octave_quit ();
+        }
     }
-  while (status == -1 && errno == EINTR);
 }
 
 DEFUN (isindex, args, ,

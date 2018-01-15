@@ -1370,7 +1370,7 @@ Query or set the primary prompt string.
 When executing interactively, Octave displays the primary prompt when it is
 ready to read a command.
 
-The default value of the primary prompt string is @qcode{"octave:\#> "}.
+The default value of the primary prompt string is @qcode{'octave:\#> '}.
 To change it, use a command like
 
 @example

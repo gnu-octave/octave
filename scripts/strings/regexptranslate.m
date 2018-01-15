@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## regexptranslate ("wildcard", "*.m")
-##      @result{} ".*\.m"
+##      @result{} '.*\.m'
 ## @end group
 ## @end example
 ##
@@ -44,7 +44,7 @@
 ## @example
 ## @group
 ## regexptranslate ("escape", "12.5")
-##      @result{} "12\.5"
+##      @result{} '12\.5'
 ## @end group
 ## @end example
 ##

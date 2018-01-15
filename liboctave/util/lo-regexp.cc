@@ -230,7 +230,8 @@ namespace octave
          | (options.lineanchors () ? PCRE_MULTILINE : 0)
          | (options.freespacing () ? PCRE_EXTENDED : 0));
 
-    data = pcre_compile (buf_str.c_str (), pcre_options, &err, &erroffset, nullptr);
+    data = pcre_compile (buf_str.c_str (), pcre_options,
+                         &err, &erroffset, nullptr);
 
     if (! data)
       (*current_liboctave_error_handler)
@@ -521,10 +522,11 @@ namespace octave
             for (int j = 0; j < num_tokens; j++)
               {
                 if (tokens[j].num == 0)
-                  pairlen += static_cast<size_t> (end - start) + 1;
+                  pairlen += static_cast<size_t> (end - start + 1);
                 else if (tokens[j].num <= pairs.rows ())
                   pairlen += static_cast<size_t> (pairs(tokens[j].num-1,1)
-                                                  - pairs(tokens[j].num-1,0)) + 1;
+                                                  - pairs(tokens[j].num-1,0)
+                                                  + 1);
               }
             delta += (static_cast<int> (replen + pairlen)
                       - static_cast<int> (end - start + 1));
@@ -543,7 +545,7 @@ namespace octave
             double end = p->end ();
 
             const Matrix pairs (p->token_extents ());
-            rep.append (&buffer[from], static_cast<size_t> (start - 1) - from);
+            rep.append (&buffer[from], static_cast<size_t> (start - 1 - from));
             from = static_cast<size_t> (end);
 
             size_t cur_pos = 0;
@@ -558,14 +560,14 @@ namespace octave
                   {
                     // replace with entire match
                     rep.append (&buffer[static_cast<size_t> (end - 1)],
-                                static_cast<size_t> (end - start) + 1);
+                                static_cast<size_t> (end - start + 1));
                   }
                 else if (k <= pairs.rows ())
                   {
                     // replace with group capture
                     rep.append (&buffer[static_cast<size_t> (pairs(k-1,0)-1)],
                                 static_cast<size_t> (pairs(k-1,1)
-                                                     - pairs(k-1,0)) + 1);
+                                                     - pairs(k-1,0) + 1));
                   }
                 else
                   {
@@ -603,7 +605,7 @@ namespace octave
             octave_quit ();
 
             rep.append (&buffer[from],
-                        static_cast<size_t> (p->start () - 1) - from);
+                        static_cast<size_t> (p->start () - 1 - from));
             from = static_cast<size_t> (p->end ());
             rep.append (repstr);
             p++;

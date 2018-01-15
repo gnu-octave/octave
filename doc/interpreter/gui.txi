@@ -126,8 +126,6 @@ These functions do not implement a GUI element but are useful when developing
 programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 @code{waitfor} are only available with the @code{qt} or @code{fltk} toolkits.
 
-@DOCSTRING(desktop)
-
 @DOCSTRING(guidata)
 
 @DOCSTRING(guihandles)

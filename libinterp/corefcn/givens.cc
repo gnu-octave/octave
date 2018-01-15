@@ -48,19 +48,28 @@ $$
 with $x$ and $y$ scalars.
 @end tex
 @ifnottex
-The Givens matrix is a 2 by 2 orthogonal matrix
+The Givens matrix is a 2-by-2 orthogonal matrix
 
-@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]}
+@example
+@group
+@var{G} = [ @var{c} , @var{s}
+     -@var{s}', @var{c}]
+@end group
+@end example
 
+@noindent
 such that
 
-@code{@var{g} [@var{x}; @var{y}] = [*; 0]}
+@example
+@var{G} * [@var{x}; @var{y}] = [*; 0]
+@end example
 
+@noindent
 with @var{x} and @var{y} scalars.
 @end ifnottex
 
-If two output arguments are requested, return the factors @var{c} and
-@var{s} rather than the Givens rotation matrix.
+If two output arguments are requested, return the factors @var{c} and @var{s}
+rather than the Givens rotation matrix.
 
 For example:
 
@@ -71,7 +80,11 @@ givens (1, 1)
        -0.70711   0.70711
 @end group
 @end example
-@seealso{planerot}
+
+Note: The Givens matrix represents a counterclockwise rotation of a 2-D
+plane and can be used to introduce zeros into a matrix prior to complete
+factorization.
+@seealso{planerot, qr}
 @end deftypefn */)
 {
   if (args.length () != 2)

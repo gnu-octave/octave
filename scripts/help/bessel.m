@@ -17,11 +17,11 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
+## @deftypefn  {} {[@var{J}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{Y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{I}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{K}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{H}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
 ## Compute Bessel or Hankel functions of various kinds:
 ##
 ## @table @code
@@ -48,14 +48,15 @@
 ## for @var{k} = 2.
 ## @end table
 ##
-## If @var{alpha} is a scalar, the result is the same size as @var{x}.
-## If @var{x} is a scalar, the result is the same size as @var{alpha}.
-## If @var{alpha} is a row vector and @var{x} is a column vector, the
-## result is a matrix with @code{length (@var{x})} rows and
-## @code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and
-## @var{x} must conform and the result will be the same size.
+## If @var{alpha} is a scalar, the result is the same size as @var{x}.  If
+## @var{x} is a scalar, the result is the same size as @var{alpha}.  If
+## @var{alpha} is a row vector and @var{x} is a column vector, the result is
+## a matrix with @code{length (@var{x})} rows and @code{length
+## (@var{alpha})} columns.  Otherwise, @var{alpha} and @var{x} must conform
+## and the result will be the same size.
 ##
-## The value of @var{alpha} must be real.  The value of @var{x} may be complex.
+## The order of the Bessel function @var{alpha} must be real.  The points for
+## evaluation @var{x} may be complex.
 ##
 ## If requested, @var{ierr} contains the following status information and is
 ## the same size as the result.
@@ -78,9 +79,11 @@
 ## Complete loss of significance by argument reduction, return @code{NaN}.
 ##
 ## @item
-## Error---no computation, algorithm termination condition not met,
-## return @code{NaN}.
+## Error---no computation, algorithm termination condition not met, return
+## @code{NaN}.
 ## @end enumerate
+##
+## @seealso{besselj, bessely, besseli, besselk, besselh}
 ## @end deftypefn
 
 function bessel ()

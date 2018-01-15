@@ -275,6 +275,14 @@ cos (pi/2)
 
 @DOCSTRING(besselj)
 
+@DOCSTRING(bessely)
+
+@DOCSTRING(besseli)
+
+@DOCSTRING(besselk)
+
+@DOCSTRING(besselh)
+
 @DOCSTRING(beta)
 
 @DOCSTRING(betainc)

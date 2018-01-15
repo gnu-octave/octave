@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += scripts/specfun
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/bessel.m \
   %reldir%/beta.m \
   %reldir%/betaln.m \
   %reldir%/ellipke.m \

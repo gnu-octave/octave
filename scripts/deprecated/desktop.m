@@ -18,11 +18,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{used} =} desktop ("-inuse")
+##
+## @code{desktop} is deprecated and will be removed in Octave version 4.8.
+## Use @code{isguirunning} for the equivalent functionality.
+##
 ## Return true if the desktop (GUI) is currently in use.
 ## @seealso{isguirunning}
 ## @end deftypefn
 
+## Deprecated in version 4.4
+
 function retval = desktop (arg)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "desktop is obsolete and will be removed from a future version of Octave, please use isguirunning instead");
+  endif
 
   if (nargin == 0)
     if (isguirunning ())

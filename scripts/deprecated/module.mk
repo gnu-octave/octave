@@ -4,6 +4,7 @@ FCN_FILE_DIRS += scripts/deprecated
   %reldir%/bitmax.m \
   %reldir%/chop.m \
   %reldir%/comma.m \
+  %reldir%/desktop.m \
   %reldir%/isstr.m \
   %reldir%/mahalanobis.m \
   %reldir%/md5sum.m \

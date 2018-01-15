@@ -17,7 +17,6 @@ FCN_FILE_DIRS += \
   %reldir%/computer.m \
   %reldir%/copyfile.m \
   %reldir%/delete.m \
-  %reldir%/desktop.m \
   %reldir%/dir.m \
   %reldir%/dos.m \
   %reldir%/edit.m \

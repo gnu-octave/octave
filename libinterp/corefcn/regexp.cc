@@ -1502,4 +1502,8 @@ function.
 
 %!assert (regexprep ("\n", '\n', "X"), "X")
 %!assert (regexprep ("\n", "\n", "X"), "X")
+
+## Empty matches were broken on ARM architecture
+%!test <*52810>
+%! assert (strcmp (regexprep ("\nabc", "^(\t*)(abc)$", "$1$2", "lineanchors"), "\nabc"))
 */

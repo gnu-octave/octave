@@ -10426,13 +10426,23 @@ make_graphics_object (const std::string& go_name,
     }
   catch (octave::execution_exception& e)
     {
-      error (e, "__go%s__: unable to create graphics handle",
+      error (e, "__go_%s__: unable to create graphics handle",
              go_name.c_str ());
     }
 
   adopt (parent, h);
 
-  xset (h, xargs);
+  try
+    {
+      xset (h, xargs);
+    }
+  catch (octave::execution_exception& e)
+    {
+      delete_graphics_object (h);
+      error (e, "__go_%s__: unable to create graphics handle",
+             go_name.c_str ());
+    }
+
   xcreatefcn (h);
   xinitialize (h);
 

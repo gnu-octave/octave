@@ -1374,7 +1374,7 @@ octave_sleep (double seconds)
 
   struct timespec hundredths_delay = { 0, static_cast<long> (fraction) };
 
-  nanosleep (&hundredths_delay, nullptr);
+  octave_nanosleep_wrapper (&hundredths_delay, nullptr);
 
   // Sleep for the whole tenths portion, allowing interrupts every
   // tenth.
@@ -1383,7 +1383,7 @@ octave_sleep (double seconds)
 
   for (int i = 0; i < static_cast<int> (tenths); i++)
     {
-      nanosleep (&one_tenth, nullptr);
+      octave_nanosleep_wrapper (&one_tenth, nullptr);
 
       octave_quit ();
     }
@@ -1399,7 +1399,7 @@ octave_sleep (double seconds)
     {
       for (int i = 0; i < 10; i++)
         {
-          nanosleep (&one_tenth, nullptr);
+          octave_nanosleep_wrapper (&one_tenth, nullptr);
 
           octave_quit ();
         }

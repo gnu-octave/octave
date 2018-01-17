@@ -22,15 +22,15 @@
 ## Transform an image or colormap from red-green-blue (RGB) color space to
 ## a grayscale intensity image.
 ## 
-## The input may be of class uint8, uint16, single, or double.  The output is
-## of the same class as the input.
+## The input may be of class uint8, int8, uint16, int16, single, or double.
+## The output is of the same class as the input.
 ##
 ## Implementation Note:
 ## The grayscale intensity is calculated as 
 ##
 ## @example
 ## @group
-## @var{I} = 0.2989*@var{R} + 0.5870*@var{G} + 0.1140*@var{B}
+## @var{I} = 0.298936*@var{R} + 0.587043*@var{G} + 0.114021*@var{B}
 ## @end group
 ## @end example
 ##
@@ -46,13 +46,16 @@ function I = rgb2gray (rgb)
     print_usage ();
   endif
 
+  is_int = isinteger (rgb);
+  if (is_int)
+    cls = class (rgb);
+  endif
   [rgb, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("rgb2gray", "RGB", rgb);
 
-  ## Reference matrix for transform from http://en.wikipedia.org/wiki/YIQ and
-  ## truncated to 4 significant figures.  Matlab uses this matrix for their
-  ## conversion.
-  xform = [0.2989; 0.5870; 0.1140];
+  ## Reference matrix for transform from http://en.wikipedia.org/wiki/YIQ.
+  ## Matlab uses this matrix for their conversion with oddly more precision.
+  xform = [0.298936; 0.587043; 0.114021];
 
   ## Note that if the input is of class single, we also return an image
   ## of class single.  This is Matlab incompatible by design, since
@@ -68,16 +71,32 @@ function I = rgb2gray (rgb)
     endif
   endif
 
+  ## Restore integer class if necessary
+  if (is_int)
+    if (cls(end) == "8")  # uint8 or int8
+      I *= 255; 
+      if (cls(1) == "i")  # int8
+        I -= 128;
+      endif
+    else                  # uint16 or int16
+      I *= 65535; 
+      if (cls(1) == "i")  # int16
+        I -= 32768;
+      endif
+    endif
+    I = feval (cls, I);
+  endif
+
 endfunction
 
 
 ## Test pure RED, GREEN, BLUE colors
-%!assert (rgb2gray ([1 0 0]), 0.2989)
-%!assert (rgb2gray ([0 1 0]), 0.5870)
-%!assert (rgb2gray ([0 0 1]), 0.1140)
+%!assert (rgb2gray ([1 0 0]), 0.298936)
+%!assert (rgb2gray ([0 1 0]), 0.587043)
+%!assert (rgb2gray ([0 0 1]), 0.114021)
 
 ## test tolerance input checking on floats
-%! assert (rgb2gray ([1.5 1 1]), 1.149, 1e-3);
+%! assert (rgb2gray ([1.5 1 1]), 1.149468, -1.6e-3);
 
 ## Test ND input
 %!test
@@ -115,17 +134,22 @@ endfunction
 
 %!test
 %! I = rgb2gray (randi ([0 255], 10, 10, 3, "uint8"));
-%! assert (class (I), "double");
+%! assert (class (I), "uint8");
 %! assert (size (I), [10 10]);
 
 %!test
 %! I = rgb2gray (randi ([0 65535], 10, 10, 3, "uint16"));
-%! assert (class (I), "double");
+%! assert (class (I), "uint16");
 %! assert (size (I), [10 10]);
 
 %!test
 %! I = rgb2gray (randi ([-128 127], 10, 10, 3, "int8"));
-%! assert (class (I), "double");
+%! assert (class (I), "int8");
+%! assert (size (I), [10 10]);
+
+%!test
+%! I = rgb2gray (randi ([-32768 32767], 10, 10, 3, "int16"));
+%! assert (class (I), "int16");
 %! assert (size (I), [10 10]);
 
 %!test
@@ -133,10 +157,10 @@ endfunction
 %! rgb_uint8  = reshape (uint8 ([255 0 0 0 0 255 0 0 0 0 255 0]),
 %!                       [2 2 3]);
 %! rgb_int16 = int16 (double (rgb_double * uint16 (65535)) - 32768);
-%! expected = [.2989, .1140; .5870, 0.0];
+%! expected = [0.298936, 0.114021; 0.587043, 0.0];
 %!
 %! assert (rgb2gray (rgb_double), expected);
-%! assert (rgb2gray (rgb_uint8), expected);
+%! assert (rgb2gray (rgb_uint8), uint8 (expected*255));
 %! assert (rgb2gray (single (rgb_double)), single (expected));
 
 ## Test input validation

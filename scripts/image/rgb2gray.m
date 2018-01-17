@@ -21,12 +21,12 @@
 ## @deftypefnx {} {@var{gray_map} =} rgb2gray (@var{rgb_map})
 ## Transform an image or colormap from red-green-blue (RGB) color space to
 ## a grayscale intensity image.
-## 
+##
 ## The input may be of class uint8, int8, uint16, int16, single, or double.
 ## The output is of the same class as the input.
 ##
 ## Implementation Note:
-## The grayscale intensity is calculated as 
+## The grayscale intensity is calculated as
 ##
 ## @example
 ## @group
@@ -56,30 +56,20 @@ function I = rgb2gray (rgb)
   ## Reference matrix for transform from http://en.wikipedia.org/wiki/YIQ.
   ## Matlab uses this matrix for their conversion with oddly more precision.
   xform = [0.298936; 0.587043; 0.114021];
-
-  ## Note that if the input is of class single, we also return an image
-  ## of class single.  This is Matlab incompatible by design, since
-  ## Matlab always returning class double, is a Matlab bug (see patch #8709)
   I = rgb * xform;
 
-  ## Restore size if necessary
-  if (is_im)
-    if (is_nd)
-      I = reshape (I, [sz(1), sz(2), sz(4)]);
-    else
-      I = reshape (I, sz(1:2));
-    endif
-  endif
+  sz(3) = 1; # grayscale images have 3rd dimension of length 1
+  I = colorspace_conversion_revert (I, sz, is_im, is_nd);
 
   ## Restore integer class if necessary
   if (is_int)
     if (cls(end) == "8")  # uint8 or int8
-      I *= 255; 
+      I *= 255;
       if (cls(1) == "i")  # int8
         I -= 128;
       endif
     else                  # uint16 or int16
-      I *= 65535; 
+      I *= 65535;
       if (cls(1) == "i")  # int16
         I -= 32768;
       endif
@@ -101,9 +91,9 @@ endfunction
 ## Test ND input
 %!test
 %! rgb = rand (16, 16, 3, 5);
-%! I = zeros (16, 16, 5);
+%! I = zeros (16, 16, 1, 5);
 %! for i = 1:5
-%!   I(:,:,i) = rgb2gray (rgb(:,:,:,i));
+%!   I(:,:,1,i) = rgb2gray (rgb(:,:,:,i));
 %! endfor
 %! assert (rgb2gray (rgb), I);
 

@@ -34,7 +34,7 @@
 ## Multi-dimensional indexed images (of size @nospell{MxNx1xK}) are also
 ## supported.
 ##
-## @seealso{rgb2ind, ind2gray, hsv2rgb, ntsc2rgb}
+## @seealso{rgb2ind, ind2gray, hsv2rgb}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -46,14 +46,12 @@ FCN_FILE_DIRS += \
   %reldir%/iscolormap.m \
   %reldir%/jet.m \
   %reldir%/lines.m \
-  %reldir%/ntsc2rgb.m \
   %reldir%/ocean.m \
   %reldir%/pink.m \
   %reldir%/prism.m \
   %reldir%/rainbow.m \
   %reldir%/rgb2hsv.m \
   %reldir%/rgb2ind.m \
-  %reldir%/rgb2ntsc.m \
   %reldir%/rgb2gray.m \
   %reldir%/rgbplot.m \
   %reldir%/spinmap.m \

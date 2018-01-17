@@ -251,15 +251,12 @@ hold ("off");
 @node Color Conversion
 @section Color Conversion
 
-Octave supports conversion from the RGB color system to NTSC and HSV
-and vice versa.
+Octave supports conversion from the RGB color system to the HSV color system
+and vice versa.  It is also possible to convert from a color RGB image to a
+grayscale image. 
 
 @DOCSTRING(rgb2hsv)
 
 @DOCSTRING(hsv2rgb)
 
 @DOCSTRING(rgb2gray)
-
-@DOCSTRING(rgb2ntsc)
-
-@DOCSTRING(ntsc2rgb)

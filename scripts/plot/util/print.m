@@ -41,7 +41,7 @@
 ## by the figure's @code{paperorientation} property.
 ##
 ## The width and height of images are specified by the figure's
-## @code{paperpositon(3:4)} property values.
+## @code{paperposition(3:4)} property values.
 ##
 ## The @code{print} command supports many @var{options}:
 ##

@@ -54,6 +54,7 @@ FCN_FILE_DIRS += \
   %reldir%/rgb2hsv.m \
   %reldir%/rgb2ind.m \
   %reldir%/rgb2ntsc.m \
+  %reldir%/rgb2gray.m \
   %reldir%/rgbplot.m \
   %reldir%/spinmap.m \
   %reldir%/spring.m \

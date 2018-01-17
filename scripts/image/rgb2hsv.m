@@ -31,7 +31,7 @@
 ##
 ## Output class and size will be the same as input.
 ##
-## @seealso{hsv2rgb, rgb2ind, rgb2ntsc}
+## @seealso{hsv2rgb, rgb2ind, rgb2gray}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

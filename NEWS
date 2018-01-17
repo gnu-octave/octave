@@ -239,6 +239,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       openvar
       quad2d
       repelem
+      rgb2gray
       rticks
       thetaticks
       vecnorm

@@ -258,6 +258,8 @@ and vice versa.
 
 @DOCSTRING(hsv2rgb)
 
+@DOCSTRING(rgb2gray)
+
 @DOCSTRING(rgb2ntsc)
 
 @DOCSTRING(ntsc2rgb)

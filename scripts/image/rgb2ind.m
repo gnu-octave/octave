@@ -37,7 +37,7 @@
 ## supported, both via a single input (@var{rgb}) or its three color channels
 ## as separate variables.
 ##
-## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
+## @seealso{ind2rgb, rgb2hsv, rgb2gray}
 ## @end deftypefn
 
 ## FIXME: This function has a very different syntax than the Matlab

@@ -634,6 +634,16 @@ main (int argc, char **argv)
         {
           // Pass through any unrecognized options
           pass_on_options += (' ' + arg);
+          // Check for an additional argument following the option 
+          if (i < argc-1)
+            {
+              arg = argv[i+1];
+              if (arg[0] != '-')
+                {
+                  pass_on_options += (' ' + arg);
+                  i++;
+                }
+            }
         }
       else
         {

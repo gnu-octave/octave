@@ -74,9 +74,9 @@ is not a special character.  Here is an example showing the difference:
 
 @example
 @group
-toascii ("\n")
+double ("\n")
     @result{} 10
-toascii ('\n')
+double ('\n')
     @result{} [ 92 110 ]
 @end group
 @end example
@@ -503,8 +503,6 @@ hex2dec ("FF")
 @DOCSTRING(strjust)
 
 @DOCSTRING(str2num)
-
-@DOCSTRING(toascii)
 
 @DOCSTRING(tolower)
 

@@ -1429,7 +1429,6 @@ octave_cell::map (unary_mapper_t umap) const
     FORWARD_MAPPER (xisspace);
     FORWARD_MAPPER (xisupper);
     FORWARD_MAPPER (xisxdigit);
-    FORWARD_MAPPER (xtoascii);
     FORWARD_MAPPER (xtolower);
     FORWARD_MAPPER (xtoupper);
 

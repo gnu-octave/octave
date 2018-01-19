@@ -419,7 +419,6 @@ octave_float_scalar::map (unary_mapper_t umap) const
     case umap_xisspace:
     case umap_xisupper:
     case umap_xisxdigit:
-    case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
         return str_conv.map (umap);

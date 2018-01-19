@@ -778,7 +778,6 @@ public:
     umap_xisupper,
     umap_xisxdigit,
     umap_xsignbit,
-    umap_xtoascii,
     umap_xtolower,
     umap_xtoupper,
     umap_unknown,

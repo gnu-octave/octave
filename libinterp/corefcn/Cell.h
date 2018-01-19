@@ -149,7 +149,6 @@ public:
   Cell xisspace (void) const { return map (&octave_value::xisspace); }
   Cell xisupper (void) const { return map (&octave_value::xisupper); }
   Cell xisxdigit (void) const { return map (&octave_value::xisxdigit); }
-  Cell xtoascii (void) const { return map (&octave_value::xtoascii); }
   Cell xtolower (void) const { return map (&octave_value::xtolower); }
   Cell xtoupper (void) const { return map (&octave_value::xtoupper); }
 

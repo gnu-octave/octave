@@ -1210,9 +1210,9 @@ This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"Z") + 1) = true;
-%! result(toascii ("0":"9") + 1) = true;
-%! result(toascii ("a":"z") + 1) = true;
+%! result(double ("A":"Z") + 1) = true;
+%! result(double ("0":"9") + 1) = true;
+%! result(double ("a":"z") + 1) = true;
 %! assert (isalnum (charset), result);
 
 %!error isalnum ()
@@ -1239,8 +1239,8 @@ This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"Z") + 1) = true;
-%! result(toascii ("a":"z") + 1) = true;
+%! result(double ("A":"Z") + 1) = true;
+%! result(double ("a":"z") + 1) = true;
 %! assert (isalpha (charset), result);
 
 %!error isalpha ()
@@ -1315,7 +1315,7 @@ decimal digits (0-9) and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("0":"9") + 1) = true;
+%! result(double ("0":"9") + 1) = true;
 %! assert (isdigit (charset), result);
 
 %!error isdigit ()
@@ -1406,7 +1406,7 @@ lowercase letters and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("a":"z") + 1) = true;
+%! result(double ("a":"z") + 1) = true;
 %! assert (islower (charset), result);
 
 %!error islower ()
@@ -1566,7 +1566,7 @@ vertical tab) and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii (" \f\n\r\t\v") + 1) = true;
+%! result(double (" \f\n\r\t\v") + 1) = true;
 %! assert (isspace (charset), result);
 
 %!error isspace ()
@@ -1591,7 +1591,7 @@ uppercase letters and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"Z") + 1) = true;
+%! result(double ("A":"Z") + 1) = true;
 %! assert (isupper (charset), result);
 
 %!error isupper ()
@@ -1616,9 +1616,9 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"F") + 1) = true;
-%! result(toascii ("0":"9") + 1) = true;
-%! result(toascii ("a":"f") + 1) = true;
+%! result(double ("A":"F") + 1) = true;
+%! result(double ("0":"9") + 1) = true;
+%! result(double ("a":"f") + 1) = true;
 %! assert (isxdigit (charset), result);
 
 %!error isxdigit ()
@@ -2106,41 +2106,6 @@ Compute hyperbolic tangent for each element of @var{x}.
 %!error tanh (1, 2)
 */
 
-DEFUNX ("toascii", Ftoascii, args, ,
-        doc: /* -*- texinfo -*-
-@deftypefn {} {} toascii (@var{s})
-Return ASCII representation of @var{s} in a matrix.
-
-For example:
-
-@example
-@group
-toascii ("ASCII")
-     @result{} [ 65, 83, 67, 73, 73 ]
-@end group
-
-@end example
-@seealso{char}
-@end deftypefn */)
-{
-  if (args.length () != 1)
-    print_usage ();
-
-  return ovl (args(0).xtoascii ());
-}
-
-/*
-%!assert (toascii (char (0:127)), 0:127)
-%!assert (toascii (" ":"@"), 32:64)
-%!assert (toascii ("A":"Z"), 65:90)
-%!assert (toascii ("[":"`"), 91:96)
-%!assert (toascii ("a":"z"), 97:122)
-%!assert (toascii ("{":"~"), 123:126)
-
-%!error toascii ()
-%!error toascii (1, 2)
-*/
-
 DEFUNX ("tolower", Ftolower, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn  {} {} tolower (@var{s})
@@ -2197,7 +2162,7 @@ DEFALIAS (lower, tolower);
 %!test
 %! charset = char (0:127);
 %! result = charset;
-%! result (toascii ("A":"Z") + 1) = result (toascii ("a":"z") + 1);
+%! result (double ("A":"Z") + 1) = result (double ("a":"z") + 1);
 %! assert (tolower (charset), result);
 
 %!error <Invalid call to tolower> lower ()
@@ -2261,7 +2226,7 @@ DEFALIAS (upper, toupper);
 %!test
 %! charset = char (0:127);
 %! result = charset;
-%! result (toascii  ("a":"z") + 1) = result (toascii  ("A":"Z") + 1);
+%! result (double  ("a":"z") + 1) = result (double  ("A":"Z") + 1);
 %! assert (toupper (charset), result);
 
 %!error <Invalid call to toupper> toupper ()

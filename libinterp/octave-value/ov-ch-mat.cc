@@ -247,15 +247,6 @@ static inline int xisascii (int c)
 #endif
 }
 
-static inline int xtoascii (int c)
-{
-#if defined (HAVE_TOASCII)
-  return toascii (c);
-#else
-  return (c & 0x7F);
-#endif
-}
-
 octave_value
 octave_char_matrix::map (unary_mapper_t umap) const
 {
@@ -279,7 +270,6 @@ octave_char_matrix::map (unary_mapper_t umap) const
     STRING_MAPPER (xisspace, std::isspace, bool);
     STRING_MAPPER (xisupper, std::isupper, bool);
     STRING_MAPPER (xisxdigit, std::isxdigit, bool);
-    STRING_MAPPER (xtoascii, xtoascii, double);
     STRING_MAPPER (xtolower, std::tolower, char);
     STRING_MAPPER (xtoupper, std::toupper, char);
 

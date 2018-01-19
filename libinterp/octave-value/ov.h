@@ -1456,7 +1456,6 @@ public:
   MAPPER_FORWARD (xisupper)
   MAPPER_FORWARD (xisxdigit)
   MAPPER_FORWARD (xsignbit)
-  MAPPER_FORWARD (xtoascii)
   MAPPER_FORWARD (xtolower)
   MAPPER_FORWARD (xtoupper)
 

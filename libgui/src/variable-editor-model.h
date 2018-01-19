@@ -51,6 +51,12 @@ public:
 
   ~variable_editor_model (void);
 
+  // No copying!
+
+  variable_editor_model (const variable_editor_model&) = delete;
+
+  variable_editor_model& operator = (const variable_editor_model&) = delete;
+
   int rowCount (const QModelIndex& = QModelIndex ()) const;
 
   int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -135,15 +141,13 @@ private:
 
   sub_editor_types editor_type (const QModelIndex& idx) const;
 
-  Q_DISABLE_COPY (variable_editor_model)
-
   // Change the display if the variable does not exist (Yet)
   void display_invalid (void);
 
   // Change the display now that the variable exists
   void display_valid (void);
 
-  QObject *m_p;
+  QObject *m_parent;
 
   struct impl;
 

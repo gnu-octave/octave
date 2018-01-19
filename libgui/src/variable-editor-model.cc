@@ -213,7 +213,7 @@ struct variable_editor_model::impl
 variable_editor_model::variable_editor_model (const QString& expr,
                                               QLabel *label,
                                               QObject *parent)
-  : QAbstractTableModel (parent), m_p (parent), m_d (new impl (expr, label))
+  : QAbstractTableModel (parent), m_parent (parent), m_d (new impl (expr, label))
 {
   connect (this, SIGNAL (data_ready (int, int, const QString&,
                                      const QString&,
@@ -237,46 +237,14 @@ variable_editor_model::variable_editor_model (const QString& expr,
                                                  const QString&,
                                                  int, int)));
 
-  clear_data_cache ();  // initializes everything
+  // Initializes everything.
+
+  clear_data_cache ();
 }
 
 variable_editor_model::~variable_editor_model (void)
 {
   delete m_d;
-}
-
-void
-variable_editor_model::clear_data_cache (void)
-{
-  octave_link::post_event
-    (this, &variable_editor_model::init_from_oct, m_d->m_name);
-}
-
-bool
-variable_editor_model::requires_sub_editor (const QModelIndex& idx) const
-{
-  return m_d->requires_sub_editor (idx);
-}
-
-bool variable_editor_model::editor_type_matrix (const QModelIndex& idx) const
-{
-  return m_d->sub_editor_type (idx) == sub_matrix;
-}
-
-bool variable_editor_model::editor_type_string (const QModelIndex& idx) const
-{
-  return m_d->sub_editor_type (idx) == sub_string;
-}
-
-sub_editor_types variable_editor_model::editor_type (const QModelIndex& idx) const
-{
-  return m_d->sub_editor_type (idx);
-}
-
-QString
-variable_editor_model::parens (void) const
-{
-  return m_d->m_type == "{" ? "{%1, %2}" : "(%1, %2)";
 }
 
 int
@@ -358,6 +326,26 @@ variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
     return false;
 }
 
+Qt::ItemFlags
+variable_editor_model::flags (const QModelIndex& idx) const
+{
+  if (m_d->m_validity)
+    {
+      if (requires_sub_editor (idx))
+        {
+          if (editor_type (idx) != sub_string)
+            return QAbstractTableModel::flags (idx);
+        }
+
+      return QAbstractTableModel::flags (idx) | Qt::ItemIsEditable;
+
+      // FIXME: ???
+      // return requires_sub_editor(idx) ?  QAbstractTableModel::flags (idx) : QAbstractTableModel::flags (idx) | Qt::ItemIsEditable;
+    }
+
+  return Qt::NoItemFlags;
+}
+
 bool
 variable_editor_model::insertRows (int row, int count, const QModelIndex&)
 {
@@ -429,24 +417,33 @@ variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
   return true;
 }
 
-Qt::ItemFlags
-variable_editor_model::flags (const QModelIndex& idx) const
+void
+variable_editor_model::clear_data_cache (void)
 {
-  if (m_d->m_validity)
-    {
-      if (requires_sub_editor (idx))
-        {
-          if (editor_type (idx) != sub_string)
-            return QAbstractTableModel::flags (idx);
-        }
+  octave_link::post_event
+    (this, &variable_editor_model::init_from_oct, m_d->m_name);
+}
 
-      return QAbstractTableModel::flags (idx) | Qt::ItemIsEditable;
+bool
+variable_editor_model::requires_sub_editor (const QModelIndex& idx) const
+{
+  return m_d->requires_sub_editor (idx);
+}
 
-      // FIXME: ???
-      // return requires_sub_editor(idx) ?  QAbstractTableModel::flags (idx) : QAbstractTableModel::flags (idx) | Qt::ItemIsEditable;
-    }
+bool variable_editor_model::editor_type_matrix (const QModelIndex& idx) const
+{
+  return m_d->sub_editor_type (idx) == sub_matrix;
+}
 
-  return Qt::NoItemFlags;
+bool variable_editor_model::editor_type_string (const QModelIndex& idx) const
+{
+  return m_d->sub_editor_type (idx) == sub_string;
+}
+
+QString
+variable_editor_model::parens (void) const
+{
+  return m_d->m_type == "{" ? "{%1, %2}" : "(%1, %2)";
 }
 
 // Private slots.
@@ -575,9 +572,11 @@ variable_editor_model::get_data_oct (const int& row, const int& col,
 
   octave_value v = retrieve_variable (x, parse_status);
 
-  // FIXME: ???
-  // eval_string (x, true, parse_status);//retrieve_variable(x, parse_status);
-  // symbol_exist(x,"var") > 0 ? eval_string (x, true, parse_status) : octave_value();
+  // FIXME: What was the intent here?
+  // eval_string (x, true, parse_status);
+  // retrieve_variable (x, parse_status);
+  // (symbol_exist (x, "var") > 0
+  //  ? eval_string (x, true, parse_status) : octave_value ());
 
   if (parse_status != 0 || ! v.is_defined ())
     {
@@ -596,6 +595,7 @@ variable_editor_model::get_data_oct (const int& row, const int& col,
       const QString cname = QString::fromStdString (elem.class_name ());
 
       // FIXME: This should not be necessary.
+
       if (dat == QString ("inf"))
         dat = "Inf";
       if (dat == QString ("nan"))
@@ -661,27 +661,6 @@ variable_editor_model::set_data_oct (const std::string& x,
   emit dataChanged (idx, idx);
 }
 
-// If the variable exists, load it into the data model.  If it doesn't
-// exist, flag the data model as referring to a nonexistent variable.
-// This allows the variable to be opened before it is created.
-octave_value
-variable_editor_model::retrieve_variable (const std::string& x,
-                                          int& parse_status)
-{
-  std::string name = x;
-
-  if (x.back () == ')' || x.back () == '}')
-    name = x.substr (0, x.find (x.back () == ')' ? "(" : "{"));
-
-  if (symbol_exist (name, "var") > 0)
-    return octave::eval_string (x, true, parse_status);
-
-  parse_status = -1;
-
-  return octave_value ();
-}
-
-
 void
 variable_editor_model::init_from_oct (const std::string& x)
 {
@@ -689,7 +668,7 @@ variable_editor_model::init_from_oct (const std::string& x)
 
   const octave_value ov = retrieve_variable (x, parse_status);
 
-  // FIXME: ???
+  // FIXME: What was the intent here?
   // eval_string (x, true, parse_status);
 
   m_d->m_validity = true;
@@ -701,8 +680,10 @@ variable_editor_model::init_from_oct (const std::string& x)
       return;
     }
 
+  // FIXME: Cell arrays?
+
   const QString class_name = QString::fromStdString (ov.class_name ());
-  const QString paren = ov.iscell () ? "{" : "("; // FIXME: cells?
+  const QString paren = ov.iscell () ? "{" : "(";
   const octave_idx_type rows = ov.rows ();
   const octave_idx_type cols = ov.columns ();
 
@@ -726,6 +707,31 @@ variable_editor_model::eval_oct (const std::string& name, const std::string& x)
   init_from_oct (name);
 }
 
+// If the variable exists, load it into the data model.  If it doesn't
+// exist, flag the data model as referring to a nonexistent variable.
+// This allows the variable to be opened before it is created.
+octave_value
+variable_editor_model::retrieve_variable (const std::string& x,
+                                          int& parse_status)
+{
+  std::string name = x;
+
+  if (x.back () == ')' || x.back () == '}')
+    name = x.substr (0, x.find (x.back () == ')' ? "(" : "{"));
+
+  if (symbol_exist (name, "var") > 0)
+    return octave::eval_string (x, true, parse_status);
+
+  parse_status = -1;
+
+  return octave_value ();
+}
+
+sub_editor_types variable_editor_model::editor_type (const QModelIndex& idx) const
+{
+  return m_d->sub_editor_type (idx);
+}
+
 void
 variable_editor_model::display_invalid (void)
 {
@@ -736,7 +742,7 @@ variable_editor_model::display_invalid (void)
 
   m_d->m_label->setText (description);
 
-  dynamic_cast<QWidget *> (m_p)->setVisible (false);
+  dynamic_cast<QWidget *> (m_parent)->setVisible (false);
 }
 
 void
@@ -746,6 +752,6 @@ variable_editor_model::display_valid (void)
 
   m_d->m_label->setText (m_d->m_validtext);
 
-  dynamic_cast<QWidget *> (m_p)->setVisible (true);
+  dynamic_cast<QWidget *> (m_parent)->setVisible (true);
 }
 

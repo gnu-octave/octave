@@ -26,12 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <algorithm>
 #include <limits>
 
 #include <QApplication>
 #include <QClipboard>
-#include <QDebug>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
@@ -45,17 +43,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QVBoxLayout>
 
-#include "octave-qt-link.h"
 #include "resource-manager.h"
 #include "variable-editor.h"
 #include "variable-editor-model.h"
 
-#include "operators/ops.h"
-#include "ov.h"
-
 namespace
 {
   // Helper struct to store widget pointers in "data" Tab property.
+
   struct table_data
   {
     table_data (QTableView *t = nullptr)
@@ -96,12 +91,14 @@ variable_editor::variable_editor (QWidget *p)
     m_table_colors ()
 {
   // Use a MainWindow.
+
   setObjectName ("variable_editor");
   set_title (tr ("Variable Editor"));
   setStatusTip (tr ("Edit variables."));
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
   // Tool Bar.
+
   construct_tool_bar ();
   m_main->addToolBar (m_tool_bar);
 
@@ -109,6 +106,7 @@ variable_editor::variable_editor (QWidget *p)
     m_table_colors.append (QColor (Qt::white));
 
   // Tab Widget.
+
   m_tab_widget->setTabsClosable (true);
   m_tab_widget->setMovable (true);
   connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
@@ -116,6 +114,7 @@ variable_editor::variable_editor (QWidget *p)
   m_main->setCentralWidget (m_tab_widget);
 
   // Main.
+
   m_main->setParent (this);
   setWidget (m_main);
 
@@ -126,18 +125,8 @@ variable_editor::variable_editor (QWidget *p)
 variable_editor::~variable_editor (void)
 {
   // m_tool_bar and m_tab_widget are contained within m_main.
+
   delete m_main;
-}
-
-// Return the real variable name from the tab addressed by 'index',
-// cleaned of any '&' possibly inserted by KDE.
-
-QString
-variable_editor::real_var_name (int index)
-{
-  QString var_name = m_tab_widget->tabText (index);
-  var_name.remove (QChar ('&'));
-  return var_name;
 }
 
 void
@@ -154,12 +143,16 @@ variable_editor::edit_variable (const QString& name)
     {
       if (real_var_name (i) == name)
         {
+          // Already open.
+
           m_tab_widget->setCurrentIndex (i);
-          return;  // Already open.
+          return;
         }
     }
 
-  QWidget *page = new QWidget;  // Do not set parent.
+  // Do not set parent.
+
+  QWidget *page = new QWidget;
 
   QVBoxLayout *vbox = new QVBoxLayout (page);
   page->setLayout (vbox);
@@ -205,8 +198,10 @@ variable_editor::edit_variable (const QString& name)
   int tab_idx = m_tab_widget->addTab (page, name);
   m_tab_widget->setCurrentIndex (tab_idx);
 
+  // Enable tool bar for when opening first tab.
+
   if (m_tab_widget->count () == 1)
-    m_tool_bar->setEnabled (true);  // This is the first tab -> enable tool bar.
+    m_tool_bar->setEnabled (true);
 
   if (m_autofit)
     {
@@ -255,7 +250,7 @@ bool
 variable_editor::has_focus (void)
 {
   // FIXME: This only generates exceptions in certain circumstances.
-  //        Get a definitive list and eliminate the need to handle exceptions.
+  // Get a definitive list and eliminate the need to handle exceptions?
 
   if (m_tab_widget->currentIndex () == -1)
     return false;  // No tabs.
@@ -332,6 +327,7 @@ void
 variable_editor::notice_settings (const QSettings *settings)
 {
   // FIXME: Why use object->tostring->toint?  Why not just 100?
+
   m_default_width = settings->value ("variable_editor/column_width",
                                      QVariant ("100")).toString ().toInt ();
 
@@ -339,6 +335,7 @@ variable_editor::notice_settings (const QSettings *settings)
                                QVariant (false)).toBool ();
 
   // FIXME: Magic Number 1 here, why not use enum?
+
   if (m_autofit)
     {
       if (settings->value ("variable_editor/autofit_type", 0).toInt () == 1)
@@ -396,11 +393,13 @@ variable_editor::notice_settings (const QSettings *settings)
   update_colors ();
 
   // Icon size in the toolbar.
+
   int icon_size_settings = settings->value ("toolbar_icon_size", 0).toInt ();
   QStyle *st = style ();
   int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
 
   // FIXME: Magic numbers.  Use enum?
+
   if (icon_size_settings == 1)
     icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
   else if (icon_size_settings == -1)
@@ -427,8 +426,10 @@ variable_editor::closeTab (int idx)
   m_tab_widget->removeTab (idx);
   delete wdgt;
 
+  // Disable tool bar when closing last tab.
+
   if (m_tab_widget->count () == 0)
-    m_tool_bar->setEnabled (false);  // Last tab, disable tool bar.
+    m_tool_bar->setEnabled (false);
 }
 
 void
@@ -450,7 +451,8 @@ variable_editor::contextmenu_requested (const QPoint& qpos)
       menu->addAction (resource_manager::icon ("edit-paste"),
                        tr ("Paste"), this, SLOT (pasteClipboard ()));
 
-      // FIXME: need different icon for paste table separate from paste?
+      // FIXME: Need different icon for paste table separate from paste?
+
       menu->addAction (resource_manager::icon ("edit-paste"),
                        tr ("Paste Table"), this,
                        SLOT (pasteTableClipboard ()));
@@ -465,9 +467,9 @@ variable_editor::contextmenu_requested (const QPoint& qpos)
                        SLOT (createVariable ()));
 
       // FIXME: addAction for sort?
-      menu->addAction ( //QIcon (), FIXME: Add icon for transpose
-                       tr ("Transpose"), this,
-                       SLOT (transposeContent ()));
+      // FIXME: Add icon for transpose.
+
+      menu->addAction (tr ("Transpose"), this, SLOT (transposeContent ()));
 
       QItemSelectionModel *sel = view->selectionModel ();
 
@@ -522,8 +524,9 @@ variable_editor::columnmenu_requested (const QPoint& pt)
 
   int index = view->horizontalHeader ()->logicalIndexAt (pt);
 
-  // FIXME: what was the intent here?
-  // emit command_requested (QString ("disp ('") + QString::number (index) + "');");
+  // FIXME: What was the intent here?
+  // emit command_requested (QString ("disp ('")
+  //                         + QString::number (index) + "');");
 
   if (index < 0 || index > view->model ()->columnCount ())
     return;
@@ -570,7 +573,8 @@ variable_editor::columnmenu_requested (const QPoint& pt)
                    tr ("Paste"),
                    this, SLOT (pasteClipboard ()));
 
-  // FIXME: different icon for Paste Table?
+  // FIXME: Different icon for Paste Table?
+
   menu->addAction (resource_manager::icon ("edit-paste"),
                    tr ("Paste Table"),
                    this, SLOT (pasteTableClipboard ()));
@@ -637,8 +641,9 @@ variable_editor::rowmenu_requested (const QPoint& pt)
 
   int index = view->verticalHeader ()->logicalIndexAt (pt);
 
-  // FIXME: what was the intent here?
-  //emit command_requested (QString ("disp ('") + QString::number (index) + "');");
+  // FIXME: What was the intent here?
+  // emit command_requested (QString ("disp ('")
+  //                         + QString::number (index) + "');");
 
   if (index < 0 || index > view->model ()->columnCount ())
     return;
@@ -683,7 +688,8 @@ variable_editor::rowmenu_requested (const QPoint& pt)
                    tr ("Paste"),
                    this, SLOT (pasteClipboard ()));
 
-  // FIXME: better icon for Paste Table?
+  // FIXME: Better icon for Paste Table?
+
   menu->addAction (resource_manager::icon ("edit-paste"),
                    tr ("Paste Table"),
                    this, SLOT (pasteTableClipboard ()));
@@ -739,7 +745,9 @@ variable_editor::rowmenu_requested (const QPoint& pt)
 
   QPoint menupos = pt;
   menupos.setX (view->verticalHeader ()->width ());
-  //setY (view->verticalHeader ()->sectionPosition (index+1) +
+
+  // FIXME: What was the intent here?
+  // setY (view->verticalHeader ()->sectionPosition (index+1) +
   //             view->verticalHeader ()->sectionSize (index));
 
   menu->exec (view->mapToGlobal (menupos));
@@ -761,12 +769,12 @@ variable_editor::double_click (const QModelIndex& idx)
         edit_variable (name + model->parens () .arg (idx.row () + 1)
                        .arg (idx.column () + 1));
 
-      /*        emit command_requested ("openvar ('" + name +
-                model->parens ()
-                .arg (idx.row () + 1)
-                .arg (idx.column () + 1)
-                + "');");
-      */
+      // FIXME: What was the intent here?
+      // emit command_requested ("openvar ('" + name +
+      //                         model->parens ()
+      //                         .arg (idx.row () + 1)
+      //                         .arg (idx.column () + 1)
+      //                         + "');");
 
     }
 }
@@ -782,8 +790,9 @@ variable_editor::save (void)
                                     QFileDialog::DontUseNativeDialog);
 
   // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
+  // FIXME: Call octave_value::save_* directly?
+
   if (! file.isEmpty ())
-    // FIXME: Call octave_value::save_* directly?
     emit command_requested (QString ("save (\"%1\", \"%2\");")
                             .arg (file)
                             .arg (name));
@@ -792,14 +801,17 @@ variable_editor::save (void)
 void
 variable_editor::clearContent (void)
 {
-  // FIXME: shift?
+  // FIXME: Shift?
+
   QTableView *view = get_table_data (m_tab_widget).m_table;
   QAbstractItemModel *model = view->model ();
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
 
+  // FIXME: Use [] for empty cells?
+
   for (const auto& idx : indices)
-    model->setData (idx, QVariant ("0"));  // FIXME: Use [] for empty cells
+    model->setData (idx, QVariant ("0"));
 }
 
 void
@@ -829,6 +841,7 @@ variable_editor::copyClipboard (void)
 
   // Convert selected items into TSV format and copy that.
   // Spreadsheet tools should understand that.
+
   QModelIndex previous = indices.first ();
   QString copy = model->data (previous).toString ();
   indices.removeFirst ();
@@ -954,7 +967,11 @@ void variable_editor::pasteTableClipboard (void)
                                         colnum + start.y ()),
                           QVariant (col));
 
-          // relay_command ("disp ('" + QString::number (colnum+start.y ()) + "," + QString::number (rownum+start.x ()) +"');");
+          // FIXME: What was the intent here?
+          // relay_command ("disp ('" + QString::number (colnum+start.y ())
+          //                + "," + QString::number (rownum+start.x ())
+          //                + "');");
+
           colnum++;
         }
 
@@ -969,6 +986,7 @@ void
 variable_editor::createVariable (void)
 {
   // FIXME: Create unnamed1..n if exist ('unnamed', 'var') is true.
+
   relay_command ("unnamed = %1");
 }
 
@@ -987,13 +1005,15 @@ variable_editor::up (void)
 {
   QString name = real_var_name (m_tab_widget->currentIndex ());
 
-  // FIXME: is there a better way?
+  // FIXME: Is there a better way?
+
   if (name.endsWith (')') || name.endsWith ('}'))
     {
-      qDebug () << "up";
       name.remove (QRegExp ("(\\(|\\{)[^({]*(\\)|\\})$"));
       edit_variable (name);
-      //emit command_requested (QString ("openvar ('%1');").arg (name));
+
+      // FIXME: What was the intent here?
+      // emit command_requested (QString ("openvar ('%1');").arg (name));
     }
 }
 
@@ -1020,6 +1040,7 @@ variable_editor::delete_selected (void)
                           + QString::number (coords[3]) + "');");
 
   // Must be deleting whole columns or whole rows, and not the whole thing.
+
   if (whole_columns_selected == whole_rows_selected)
     return;
 
@@ -1042,16 +1063,20 @@ QList<int>
 variable_editor::octave_to_coords (QString& selection)
 {
   // FIXME: Is this necessary or would it be quicker to clone the function
-  //        that gives us the QString?
+  // that gives us the QString?
 
   // Sanity check.
+
   if (selection.count (",") != 1)
     return QList<int> ();
 
+  // FIXME: Why clear if object has just been created?
+
   QList<int> output;
-  output.clear ();  // FIXME: Why clear if object has just been created?
+  output.clear ();
 
   // Remove braces.
+
   int firstbracket = std::max (selection.indexOf ("("),
                                selection.indexOf ("{"));
 
@@ -1062,6 +1087,7 @@ variable_editor::octave_to_coords (QString& selection)
   if (! rows.contains (":"))
     {
       // Only one row.
+
       output.push_back (rows.toInt ());
       output.push_back (output.last ());
     }
@@ -1080,6 +1106,7 @@ variable_editor::octave_to_coords (QString& selection)
   if (! cols.contains (":"))
     {
       // Only one row.
+
       output.push_back (cols.toInt ());
       output.push_back (output.last ());
     }
@@ -1093,6 +1120,17 @@ variable_editor::octave_to_coords (QString& selection)
   return output;
 }
 
+// Return the real variable name from the tab addressed by 'index',
+// cleaned of any '&' possibly inserted by KDE.
+
+QString
+variable_editor::real_var_name (int index)
+{
+  QString var_name = m_tab_widget->tabText (index);
+  var_name.remove (QChar ('&'));
+  return var_name;
+}
+
 QString
 variable_editor::selected_to_octave (void)
 {
@@ -1100,14 +1138,15 @@ variable_editor::selected_to_octave (void)
   QTableView *view = get_table_data (m_tab_widget).m_table;
   QItemSelectionModel *sel = view->selectionModel ();
 
+  // Return early if nothing selected.
+
   if (! sel->hasSelection ())
-    return name;  // Nothing selected
+    return name;
 
   QList<QModelIndex> indices = sel->selectedIndexes ();
 
   // FIXME: Shouldn't this be keyed to octave_idx_type?
-  // If octave_idx_type is 64-bit then one could have 2^64,1 vector which
-  // overflows int32_t type.
+
   int32_t from_row = std::numeric_limits<int32_t>::max ();
   int32_t to_row = 0;
   int32_t from_col = std::numeric_limits<int32_t>::max ();
@@ -1125,10 +1164,12 @@ variable_editor::selected_to_octave (void)
   QString cols = idx_to_expr (from_col, to_col);
 
   // FIXME: Does cell need separate handling?  Maybe use '{.,.}'?
+
   return QString ("%1(%2, %3)").arg (name).arg (rows).arg (cols);
 }
 
-/// Also updates the font.
+// Also updates the font.
+
 void variable_editor::update_colors (void)
 {
   m_stylesheet = "";
@@ -1191,6 +1232,7 @@ variable_editor::construct_tool_bar (void)
                          tr ("Paste"), this, SLOT (pasteClipboard ()));
 
   // FIXME: Different icon for Paste Table?
+
   m_tool_bar->addAction (resource_manager::icon ("edit-paste"),
                          tr ("Paste Table"),
                          this, SLOT (pasteTableClipboard ()));
@@ -1198,8 +1240,8 @@ variable_editor::construct_tool_bar (void)
   m_tool_bar->addSeparator ();
 
   // FIXME: Add a print item?
-  //QAction *print_action; /icons/fileprint.png
-  //m_tool_bar->addSeparator ();
+  // QAction *print_action; /icons/fileprint.png
+  // m_tool_bar->addSeparator ();
 
   QToolButton *plot_tool_button = new QToolButton (m_tool_bar);
   plot_tool_button->setText (tr ("Plot"));
@@ -1254,5 +1296,6 @@ variable_editor::construct_tool_bar (void)
                          this, SLOT (up ()));
 
   // Disabled when no tab is present.
+
   m_tool_bar->setEnabled (false);
 }

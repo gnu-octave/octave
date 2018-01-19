@@ -46,6 +46,12 @@ public:
 
   ~variable_editor (void);
 
+  // No copying!
+
+  variable_editor (const variable_editor&) = delete;
+
+  variable_editor& operator = (const variable_editor&) = delete;
+
   void edit_variable (const QString& name);
 
   // Clear all the models' data cache.

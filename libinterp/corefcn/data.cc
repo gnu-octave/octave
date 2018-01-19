@@ -5770,7 +5770,7 @@ DEFUN (not, args, ,
 @deftypefn {} {@var{z} =} not (@var{x})
 Return the logical NOT of @var{x}.
 
-This function is equivalent to the operator syntax @w{@code{! x}}.
+This function is equivalent to the operator syntax @w{@code{! @var{x}}}.
 @seealso{and, or, xor}
 @end deftypefn */)
 {
@@ -5780,7 +5780,7 @@ This function is equivalent to the operator syntax @w{@code{! x}}.
 DEFUN (uplus, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} uplus (@var{x})
-This function and @w{@tcode{+ x}} are equivalent.
+This function and @w{@tcode{+ @var{x}}} are equivalent.
 @seealso{uminus, plus, minus}
 @end deftypefn */)
 {
@@ -5790,7 +5790,7 @@ This function and @w{@tcode{+ x}} are equivalent.
 DEFUN (uminus, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} uminus (@var{x})
-This function and @w{@tcode{- x}} are equivalent.
+This function and @w{@tcode{- @var{x}}} are equivalent.
 @seealso{uplus, minus}
 @end deftypefn */)
 {
@@ -5802,7 +5802,7 @@ DEFUN (transpose, args, ,
 @deftypefn {} {} transpose (@var{x})
 Return the transpose of @var{x}.
 
-This function and @tcode{x.'} are equivalent.
+This function and @tcode{@var{x}.'} are equivalent.
 @seealso{ctranspose}
 @end deftypefn */)
 {
@@ -5834,7 +5834,7 @@ DEFUN (ctranspose, args, ,
 @deftypefn {} {} ctranspose (@var{x})
 Return the complex conjugate transpose of @var{x}.
 
-This function and @tcode{x'} are equivalent.
+This function and @tcode{@var{x}'} are equivalent.
 @seealso{transpose}
 @end deftypefn */)
 {
@@ -5902,13 +5902,13 @@ DEFUN (plus, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} plus (@var{x}, @var{y})
 @deftypefnx {} {} plus (@var{x1}, @var{x2}, @dots{})
-This function and @w{@tcode{x + y}} are equivalent.
+This function and @w{@tcode{@var{x} + @var{y}}} are equivalent.
 
 If more arguments are given, the summation is applied
 cumulatively from left to right:
 
 @example
-(@dots{}((x1 + x2) + x3) + @dots{})
+(@dots{}((@var{x1} + @var{x2}) + @var{x3}) + @dots{})
 @end example
 
 At least one argument is required.
@@ -5922,7 +5922,7 @@ At least one argument is required.
 DEFUN (minus, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} minus (@var{x}, @var{y})
-This function and @w{@tcode{x - y}} are equivalent.
+This function and @w{@tcode{@var{x} - @var{y}}} are equivalent.
 @seealso{plus, uminus}
 @end deftypefn */)
 {
@@ -5935,12 +5935,12 @@ DEFUN (mtimes, args, ,
 @deftypefnx {} {} mtimes (@var{x1}, @var{x2}, @dots{})
 Return the matrix multiplication product of inputs.
 
-This function and @w{@tcode{x * y}} are equivalent.
+This function and @w{@tcode{@var{x} * @var{y}}} are equivalent.
 If more arguments are given, the multiplication is applied
 cumulatively from left to right:
 
 @example
-(@dots{}((x1 * x2) * x3) * @dots{})
+(@dots{}((@var{x1} * @var{x2}) * @var{x3}) * @dots{})
 @end example
 
 At least one argument is required.
@@ -5956,7 +5956,7 @@ DEFUN (mrdivide, args, ,
 @deftypefn {} {} mrdivide (@var{x}, @var{y})
 Return the matrix right division of @var{x} and @var{y}.
 
-This function and @w{@tcode{x / y}} are equivalent.
+This function and @w{@tcode{@var{x} / @var{y}}} are equivalent.
 @seealso{mldivide, rdivide, plus, minus}
 @end deftypefn */)
 {
@@ -5968,7 +5968,7 @@ DEFUN (mpower, args, ,
 @deftypefn {} {} mpower (@var{x}, @var{y})
 Return the matrix power operation of @var{x} raised to the @var{y} power.
 
-This function and @w{@tcode{x ^ y}} are equivalent.
+This function and @w{@tcode{@var{x} ^ @var{y}}} are equivalent.
 @seealso{power, mtimes, plus, minus}
 @end deftypefn */)
 {
@@ -5980,7 +5980,7 @@ DEFUN (mldivide, args, ,
 @deftypefn {} {} mldivide (@var{x}, @var{y})
 Return the matrix left division of @var{x} and @var{y}.
 
-This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.
+This function and @w{@tcode{@var{x} @xbackslashchar{} @var{y}}} are equivalent.
 @seealso{mrdivide, ldivide, rdivide}
 @end deftypefn */)
 {
@@ -5990,7 +5990,7 @@ This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.
 DEFUN (lt, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} lt (@var{x}, @var{y})
-This function is equivalent to @w{@code{x < y}}.
+This function is equivalent to @w{@code{@var{x} < @var{y}}}.
 @seealso{le, eq, ge, gt, ne}
 @end deftypefn */)
 {
@@ -6000,7 +6000,7 @@ This function is equivalent to @w{@code{x < y}}.
 DEFUN (le, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} le (@var{x}, @var{y})
-This function is equivalent to @w{@code{x <= y}}.
+This function is equivalent to @w{@code{@var{x} <= @var{y}}}.
 @seealso{eq, ge, gt, ne, lt}
 @end deftypefn */)
 {
@@ -6012,7 +6012,7 @@ DEFUN (eq, args, ,
 @deftypefn {} {} eq (@var{x}, @var{y})
 Return true if the two inputs are equal.
 
-This function is equivalent to @w{@code{x == y}}.
+This function is equivalent to @w{@code{@var{x} == @var{y}}}.
 @seealso{ne, isequal, le, ge, gt, ne, lt}
 @end deftypefn */)
 {
@@ -6022,7 +6022,7 @@ This function is equivalent to @w{@code{x == y}}.
 DEFUN (ge, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} ge (@var{x}, @var{y})
-This function is equivalent to @w{@code{x >= y}}.
+This function is equivalent to @w{@code{@var{x} >= @var{y}}}.
 @seealso{le, eq, gt, ne, lt}
 @end deftypefn */)
 {
@@ -6032,7 +6032,7 @@ This function is equivalent to @w{@code{x >= y}}.
 DEFUN (gt, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} gt (@var{x}, @var{y})
-This function is equivalent to @w{@code{x > y}}.
+This function is equivalent to @w{@code{@var{x} > @var{y}}}.
 @seealso{le, eq, ge, ne, lt}
 @end deftypefn */)
 {
@@ -6044,7 +6044,7 @@ DEFUN (ne, args, ,
 @deftypefn {} {} ne (@var{x}, @var{y})
 Return true if the two inputs are not equal.
 
-This function is equivalent to @w{@code{x != y}}.
+This function is equivalent to @w{@code{@var{x} != @var{y}}}.
 @seealso{eq, isequal, le, ge, lt}
 @end deftypefn */)
 {
@@ -6057,12 +6057,12 @@ DEFUN (times, args, ,
 @deftypefnx {} {} times (@var{x1}, @var{x2}, @dots{})
 Return the element-by-element multiplication product of inputs.
 
-This function and @w{@tcode{x .* y}} are equivalent.
+This function and @w{@tcode{@var{x} .* @var{y}}} are equivalent.
 If more arguments are given, the multiplication is applied
 cumulatively from left to right:
 
 @example
-(@dots{}((x1 .* x2) .* x3) .* @dots{})
+(@dots{}((@var{x1} .* @var{x2}) .* @var{x3}) .* @dots{})
 @end example
 
 At least one argument is required.
@@ -6078,7 +6078,7 @@ DEFUN (rdivide, args, ,
 @deftypefn {} {} rdivide (@var{x}, @var{y})
 Return the element-by-element right division of @var{x} and @var{y}.
 
-This function and @w{@tcode{x ./ y}} are equivalent.
+This function and @w{@tcode{@var{x} ./ @var{y}}} are equivalent.
 @seealso{ldivide, mrdivide, times, plus}
 @end deftypefn */)
 {
@@ -6091,7 +6091,7 @@ DEFUN (power, args, ,
 Return the element-by-element operation of @var{x} raised to the
 @var{y} power.
 
-This function and @w{@tcode{x .^ y}} are equivalent.
+This function and @w{@tcode{@var{x} .^ @var{y}}} are equivalent.
 
 If several complex results are possible, returns the one with smallest
 non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},
@@ -6108,7 +6108,8 @@ DEFUN (ldivide, args, ,
 @deftypefn {} {} ldivide (@var{x}, @var{y})
 Return the element-by-element left division of @var{x} and @var{y}.
 
-This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.
+This function and @w{@tcode{@var{x} .@xbackslashchar{} @var{y}}} are
+equivalent.
 @seealso{rdivide, mldivide, times, plus}
 @end deftypefn */)
 {
@@ -6121,12 +6122,12 @@ DEFUN (and, args, ,
 @deftypefnx {} {@var{z} =} and (@var{x1}, @var{x2}, @dots{})
 Return the logical AND of @var{x} and @var{y}.
 
-This function is equivalent to the operator syntax @w{@code{x & y}}.  If
-more than two arguments are given, the logical AND is applied cumulatively
-from left to right:
+This function is equivalent to the operator syntax
+@w{@code{@var{x} & @var{y}}}.  If more than two arguments are given, the
+logical AND is applied cumulatively from left to right:
 
 @example
-(@dots{}((x1 & x2) & x3) & @dots{})
+(@dots{}((@var{x1} & @var{x2}) & @var{x3}) & @dots{})
 @end example
 
 At least one argument is required.
@@ -6143,12 +6144,12 @@ DEFUN (or, args, ,
 @deftypefnx {} {@var{z} =} or (@var{x1}, @var{x2}, @dots{})
 Return the logical OR of @var{x} and @var{y}.
 
-This function is equivalent to the operator syntax @w{@code{x | y}}.  If
-more than two arguments are given, the logical OR is applied cumulatively
-from left to right:
+This function is equivalent to the operator syntax
+@w{@code{@var{x} | @var{y}}}.  If more than two arguments are given, the
+logical OR is applied cumulatively from left to right:
 
 @example
-(@dots{}((x1 | x2) | x3) | @dots{})
+(@dots{}((@var{x1} | @var{x2}) | @var{x3}) | @dots{})
 @end example
 
 At least one argument is required.
@@ -6166,8 +6167,9 @@ DEFUN (colon, args, ,
 Return the result of the colon expression corresponding to @var{base},
 @var{limit}, and optionally, @var{increment}.
 
-This function is equivalent to the operator syntax @w{@code{base : limit}}
-or @w{@code{base : increment : limit}}.
+This function is equivalent to the operator syntax
+@w{@code{@var{base} : @var{limit}}} or
+@w{@code{@var{base} : @var{increment} : @var{limit}}}.
 @seealso{linspace}
 @end deftypefn */)
 {

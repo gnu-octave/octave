@@ -2777,20 +2777,20 @@ AC_ARG_ENABLE([docs],
   [AS_HELP_STRING([--disable-docs], [don't build documentation files])],
   [if test "$enableval" = no; then
      ENABLE_DOCS=no
-     warn_docs="building documentation disabled; make dist will fail"
+     warn_docs="building documentation disabled; make dist will fail."
      OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi], [])
 if test $ENABLE_DOCS = yes; then
   if test $opengl_graphics = no || test -n "$warn_OSMesa"; then
     if test -n "$warn_gnuplot"; then
       ENABLE_DOCS=no
-      warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail"
+      warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail."
         OCTAVE_CONFIGURE_WARNING([warn_docs_graphics])
     fi
   fi
   if test -n "$warn_makeinfo"; then
     ENABLE_DOCS=no
-    warn_docs_makeinfo="building documentation disabled because makeinfo was not found; make dist will fail"
+    warn_docs_makeinfo="building documentation disabled because makeinfo was not found or does not support @sortas; make dist will fail."
     OCTAVE_CONFIGURE_WARNING([warn_docs_makeinfo])
   fi
 fi

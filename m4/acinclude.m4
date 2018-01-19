@@ -2633,6 +2633,44 @@ You may install a copy later for Octave to use.
 "
     OCTAVE_CONFIGURE_WARNING([warn_makeinfo])
   fi
+  dnl If we have a GNU makeinfo program, see if it supports the @sortas command
+  dnl for defining a custom sort key for an index entry.
+  if test -n "$MKINFO"; then
+    AC_CACHE_CHECK([for makeinfo support for @sortas command],
+      [octave_cv_makeinfo_sortas_command],
+      [cat << EOF > conftest.texi
+\input texinfo
+@node Top
+@top Document
+@menu
+* Chapter::
+* Index::
+@end menu
+@node Chapter
+@chapter Chapter
+@cindex @sortas{a} foo
+@node Index
+@unnumbered Index
+@printindex cp
+@bye
+EOF
+        if $MKINFO --no-warn conftest.texi 2>/dev/null; then
+          octave_cv_makeinfo_sortas_command=yes
+        else
+          octave_cv_makeinfo_sortas_command=no
+        fi
+        rm -f conftest.info conftest.texi
+    ])
+    if test $octave_cv_makeinfo_sortas_command = no; then
+      warn_makeinfo="
+
+I wasn't able to find a version of GNU makeinfo that supports the
+@sortas command, but it's only a problem if you need to build the
+manual, which is the case if you're building from VCS sources.
+"
+      OCTAVE_CONFIGURE_WARNING([warn_makeinfo])
+    fi
+  fi
 ])
 dnl
 dnl What pager should we use?

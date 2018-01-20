@@ -20,30 +20,29 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+//! @file gzip.cc
 //! Octave interface to the compression and uncompression libraries.
-/*!
-  This was originally implemented as an m file which directly called
-  bzip2 and gzip applications.  This may look simpler but causes some
-  issues (see bug #43431) because we have no control over the output
-  file:
-
-    - created file is always in the same directory as the original file;
-    - automatically skip files that already have gz/bz2/etc extension;
-    - some older versions lack the --keep option.
-
-  In addition, because system() does not have a method that allows
-  passing a list of arguments, there is the issue of having to escape
-  filenames.
-
-  A solution is to pipe file contents into the applications instead of
-  filenames.  However, that solution causes:
-
-    # missing file header with original file information;
-    # implementing ourselves the recursive transversion of directories;
-    # do the above in a m file which will be slow;
-    # popen2 is frail on windows.
-
-*/
+//!
+//! This was originally implemented as an m file which directly called
+//! bzip2 and gzip applications.  This may look simpler but causes some
+//! issues (see bug #43431) because we have no control over the output
+//! file:
+//!
+//!   - created file is always in the same directory as the original file;
+//!   - automatically skip files that already have gz/bz2/etc extension;
+//!   - some older versions lack the --keep option.
+//!
+//! In addition, because system() does not have a method that allows
+//! passing a list of arguments, there is the issue of having to escape
+//! filenames.
+//!
+//! A solution is to pipe file contents into the applications instead of
+//! filenames.  However, that solution causes:
+//!
+//!   # missing file header with original file information;
+//!   # implementing ourselves the recursive transversion of directories;
+//!   # do the above in a m file which will be slow;
+//!   # popen2 is frail on windows.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -82,14 +81,14 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  //! RIIA wrapper for std::FILE*
-  /*! If error handling is available for failing to close the file, use
-    the close method which throws.
-
-    If the file has been closed, fp is set to nullptr.  Remember that
-    behavior is undefined if the value of the pointer stream is used
-    after fclose.
-  */
+  //! RIIA wrapper for std::FILE*.
+  //!
+  //! If error handling is available for failing to close the file, use
+  //! the close method which throws.
+  //!
+  //! If the file has been closed, fp is set to nullptr.  Remember that
+  //! behavior is undefined if the value of the pointer stream is used
+  //! after fclose.
 
   class CFile
   {

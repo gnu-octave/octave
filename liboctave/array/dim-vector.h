@@ -37,53 +37,52 @@ along with Octave; see the file COPYING.  If not, see
 template <typename T> class Array;
 
 //! Vector representing the dimensions (size) of an Array.
-/*!
-  A dim_vector is used to represent dimensions of an Array.  It is used
-  on its constructor to specify its size, or when reshaping it.
-
-  @code{.cc}
-  // Matrix with 10 rows and 20 columns.
-  Matrix m Matrix (dim_vector (10, 20));
-
-  // Change its size to 5 rows and 40 columns.
-  Matrix m2 = m.reshape (dim_vector (5, 40));
-
-  // Five dimensional Array of length 10, 20, 3, 8, 7 on each dimension.
-  NDArray a (dim_vector (10, 20, 3, 8, 7));
-
-  // Uninitialized array of same size as other.
-  NDArray b (a.dims ());
-  @endcode
-
-  The main thing to understand about this class, is that methods such as
-  ndims() and numel(), return the value for an Array of these dimensions,
-  not the actual number of elements in the dim_vector.
-
-  @code{.cc}
-  dim_vector d (10, 5, 3);
-  octave_idx_type n = d.numel (); // returns 150
-  octave_idx_type nd = d.ndims (); // returns 3
-  @endcode
-
-  ## Implementation details ##
-
-  This implementation is more tricky than Array, but the big plus is that
-  dim_vector requires only one allocation instead of two.  It is (slightly)
-  patterned after GCC's basic_string implementation.  rep is a pointer to an
-  array of memory, comprising count, length, and the data:
-
-  @verbatim
-          <count>
-          <ndims>
-  rep --> <dims[0]>
-          <dims[1]>
-          ...
-  @endverbatim
-
-  The inlines count(), ndims() recover this data from the rep.  Note
-  that rep points to the beginning of dims to grant faster access
-  (reinterpret_cast is assumed to be an inexpensive operation).
-*/
+//!
+//! A dim_vector is used to represent dimensions of an Array.  It is used
+//! on its constructor to specify its size, or when reshaping it.
+//!
+//! @code{.cc}
+//! // Matrix with 10 rows and 20 columns.
+//! Matrix m Matrix (dim_vector (10, 20));
+//!
+//! // Change its size to 5 rows and 40 columns.
+//! Matrix m2 = m.reshape (dim_vector (5, 40));
+//!
+//! // Five dimensional Array of length 10, 20, 3, 8, 7 on each dimension.
+//! NDArray a (dim_vector (10, 20, 3, 8, 7));
+//!
+//! // Uninitialized array of same size as other.
+//! NDArray b (a.dims ());
+//! @endcode
+//!
+//! The main thing to understand about this class, is that methods such as
+//! ndims() and numel(), return the value for an Array of these dimensions,
+//! not the actual number of elements in the dim_vector.
+//!
+//! @code{.cc}
+//! dim_vector d (10, 5, 3);
+//! octave_idx_type n = d.numel (); // returns 150
+//! octave_idx_type nd = d.ndims (); // returns 3
+//! @endcode
+//!
+//! ## Implementation details ##
+//!
+//! This implementation is more tricky than Array, but the big plus is that
+//! dim_vector requires only one allocation instead of two.  It is (slightly)
+//! patterned after GCC's basic_string implementation.  rep is a pointer to an
+//! array of memory, comprising count, length, and the data:
+//!
+//! @verbatim
+//!        <count>
+//!        <ndims>
+//! rep --> <dims[0]>
+//!        <dims[1]>
+//!        ...
+//! @endverbatim
+//!
+//! The inlines count(), ndims() recover this data from the rep.  Note
+//! that rep points to the beginning of dims to grant faster access
+//! (reinterpret_cast is assumed to be an inexpensive operation).
 
 class
 OCTAVE_API
@@ -164,41 +163,40 @@ private:
 public:
 
   //! Construct dim_vector for a N dimensional array.
-  /*!
+  //!
+  //! Each argument to constructor defines the length of an additional
+  //! dimension.  A dim_vector always represents a minimum of 2 dimensions
+  //! (just like an Array has at least 2 dimensions) and there is no
+  //! upper limit on the number of dimensions.
+  //!
+  //! @code{.cc}
+  //! dim_vector dv (7, 5);
+  //! Matrix mat (dv);
+  //! @endcode
+  //!
+  //! The constructed dim_vector @c dv will have two elements, @f$[7, 5]@f$,
+  //! one for each dimension.  It can then be used to construct a Matrix
+  //! with such dimensions, i.e., 7 rows and 5 columns.
+  //!
+  //! @code{.cc}
+  //! NDArray x (dim_vector (7, 5, 10));
+  //! @endcode
+  //!
+  //! This will construct a 3 dimensional NDArray of lengths 7, 5, and 10,
+  //! on the first, second, and third dimension (rows, columns, and pages)
+  //! respectively.
+  //!
+  //! Note that that there is no constructor that accepts only one
+  //! dimension length to avoid confusion.  The source for such confusion
+  //! is that constructor could mean:
+  //!   - a column vector, i.e., assume @f$[N, 1]@f$;
+  //!   - a square matrix, i.e., as is common in Octave interpreter;
+  //!   - support for a 1 dimensional Array (does not exist);
+  //!
+  //! Using r, c, and lengths... as arguments, allow us to check at compile
+  //! time that there's at least 2 dimensions specified, while maintaining
+  //! type safety.
 
-    Each argument to constructor defines the length of an additional
-    dimension.  A dim_vector always represents a minimum of 2 dimensions
-    (just like an Array has at least 2 dimensions) and there is no
-    upper limit on the number of dimensions.
-
-    @code{.cc}
-    dim_vector dv (7, 5);
-    Matrix mat (dv);
-    @endcode
-
-    The constructed dim_vector @c dv will have two elements, @f$[7, 5]@f$,
-    one for each dimension.  It can then be used to construct a Matrix
-    with such dimensions, i.e., 7 rows and 5 columns.
-
-    @code{.cc}
-    NDArray x (dim_vector (7, 5, 10));
-    @endcode
-
-    This will construct a 3 dimensional NDArray of lengths 7, 5, and 10,
-    on the first, second, and third dimension (rows, columns, and pages)
-    respectively.
-
-    Note that that there is no constructor that accepts only one
-    dimension length to avoid confusion.  The source for such confusion
-    is that constructor could mean:
-      - a column vector, i.e., assume @f$[N, 1]@f$;
-      - a square matrix, i.e., as is common in Octave interpreter;
-      - support for a 1 dimensional Array (does not exist);
-
-    Using r, c, and lengths... as arguments, allow us to check at compile
-    time that there's at least 2 dimensions specified, while maintaining
-    type safety.
-  */
   template <typename... Ints>
   dim_vector (const octave_idx_type r, const octave_idx_type c,
               Ints... lengths) : rep (newrep (2 + sizeof... (Ints)))
@@ -289,20 +287,20 @@ public:
   }
 
   //! Number of dimensions.
-  /*!
-      Returns the number of dimensions of the dim_vector.  This is number of
-      elements in the dim_vector including trailing singletons.  It is also
-      the number of dimensions an Array with this dim_vector would have.
-  */
+  //!
+  //! Returns the number of dimensions of the dim_vector.  This is number of
+  //! elements in the dim_vector including trailing singletons.  It is also
+  //! the number of dimensions an Array with this dim_vector would have.
+
   octave_idx_type ndims (void) const { return rep[-1]; }
 
   //! Number of dimensions.
   //! Synonymous with ndims().
-  /*!
-    While this method is not officially deprecated, consider using ndims()
-    instead to avoid confusion.  Array does not have length because of its
-    odd definition as length of the longest dimension.
-  */
+  //!
+  //! While this method is not officially deprecated, consider using ndims()
+  //! instead to avoid confusion.  Array does not have length because of its
+  //! odd definition as length of the longest dimension.
+
   int length (void) const { return ndims (); }
 
   octave_idx_type& operator () (int i) { return elem (i); }
@@ -356,11 +354,10 @@ public:
   }
 
   //! Number of elements that a matrix with this dimensions would have.
-  /*!
-     Return the number of elements that a matrix with this dimension
-     vector would have, NOT the number of dimensions (elements in the
-     dimension vector).
-  */
+  //!
+  //! Return the number of elements that a matrix with this dimension
+  //! vector would have, NOT the number of dimensions (elements in the
+  //! dimension vector).
 
   octave_idx_type numel (int n = 0) const
   {
@@ -374,15 +371,13 @@ public:
     return retval;
   }
 
-  /*!
-     The following function will throw a std::bad_alloc ()
-     exception if the requested size is larger than can be indexed by
-     octave_idx_type.  This may be smaller than the actual amount of
-     memory that can be safely allocated on a system.  However, if we
-     don't fail here, we can end up with a mysterious crash inside a
-     function that is iterating over an array using octave_idx_type
-     indices.
-  */
+  //! The following function will throw a std::bad_alloc ()
+  //! exception if the requested size is larger than can be indexed by
+  //! octave_idx_type.  This may be smaller than the actual amount of
+  //! memory that can be safely allocated on a system.  However, if we
+  //! don't fail here, we can end up with a mysterious crash inside a
+  //! function that is iterating over an array using octave_idx_type
+  //! indices.
 
   octave_idx_type safe_numel (void) const;
 
@@ -401,12 +396,11 @@ public:
   // The rules are more relaxed here.
   bool hvcat (const dim_vector& dvb, int dim);
 
-  /*!
-      Force certain dimensionality, preserving numel ().  Missing
-      dimensions are set to 1, redundant are folded into the trailing
-      one.  If n = 1, the result is 2d and the second dim is 1
-      (dim_vectors are always at least 2D).
-  */
+  //! Force certain dimensionality, preserving numel ().  Missing
+  //! dimensions are set to 1, redundant are folded into the trailing
+  //! one.  If n = 1, the result is 2d and the second dim is 1
+  //! (dim_vectors are always at least 2D).
+
   dim_vector redim (int n) const;
 
   dim_vector as_column (void) const
@@ -503,11 +497,9 @@ public:
     return k;
   }
 
-  /*/!
-      Increment a multi-dimensional index tuple, optionally starting
-      from an offset position and return the index of the last index
-      position that was changed, or length () if just cycled over.
-  */
+  //! Increment a multi-dimensional index tuple, optionally starting
+  //! from an offset position and return the index of the last index
+  //! position that was changed, or length () if just cycled over.
 
   int increment_index (octave_idx_type *idx, int start = 0) const
   {

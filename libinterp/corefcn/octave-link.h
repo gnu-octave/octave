@@ -37,13 +37,12 @@ along with Octave; see the file COPYING.  If not, see
 class string_vector;
 class workspace_element;
 
-// \class OctaveLink
-// \brief Provides threadsafe access to octave.
-// \author Jacob Dawid
-//
-// This class is a wrapper around octave and provides thread safety by
-// buffering access operations to octave and executing them in the
-// readline event hook, which lives in the octave thread.
+//! Provides threadsafe access to octave.
+//! @author Jacob Dawid
+//!
+//! This class is a wrapper around octave and provides thread safety by
+//! buffering access operations to octave and executing them in the
+//! readline event hook, which lives in the octave thread.
 
 class
 OCTINTERP_API

@@ -174,17 +174,17 @@ private:
 
 
 //! Construct an octave_value_list with less typing.
-/*!
-  Historically, this made it easier to create an octave_value_list
-  from multiple octave_value arguments.  It is no longer useful since
-  octave_value_list has now a constructor accepting an initializer_list
-  so all it does is save some typing.  The following are equivalent:
+//!
+//! Historically, this made it easier to create an octave_value_list
+//! from multiple octave_value arguments.  It is no longer useful since
+//! octave_value_list has now a constructor accepting an initializer_list
+//! so all it does is save some typing.  The following are equivalent:
+//!
+//! @code{.cc}
+//! return octave_value_list ({ov0, ov1, ov2});
+//! return ovl (ov0, ov1, ov2);
+//! @endcode
 
-  @code{.cc}
-  return octave_value_list ({ov0, ov1, ov2});
-  return ovl (ov0, ov1, ov2);
-  @endcode
-*/
 template<typename... OV_Args>
 inline octave_value_list
 ovl (const OV_Args&... args)

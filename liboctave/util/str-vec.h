@@ -50,12 +50,12 @@ public:
 
   string_vector (const string_vector& s) : Array<std::string> (s) { }
 
-  //! Constructor for STL containers of std::string
-  /*!
-    Templated constructor for any template class with std::string as the
-    first parameter, and begin, end, and size methods, i.e., a class with
-    similar interface as the STL containers.
-  */
+  //! Constructor for STL containers of std::string.
+  //!
+  //! Templated constructor for any template class with std::string as the
+  //! first parameter, and begin, end, and size methods, i.e., a class with
+  //! similar interface as the STL containers.
+
   template<template <typename...> class String_Container, typename... Other>
   string_vector (const String_Container<std::string, Other...>& lst);
 

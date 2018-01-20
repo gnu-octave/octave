@@ -5177,17 +5177,15 @@ context of the function that called the present function
 
 namespace octave
 {
-  /*!
-    Evaluate an Octave function (built-in or interpreted) and return
-    the list of result values.
+  //! Evaluate an Octave function (built-in or interpreted) and return
+  //! the list of result values.
+  //!
+  //! @param name The name of the function to call.
+  //! @param args The arguments to the function.
+  //! @param nargout The number of output arguments expected.
+  //! @return A list of output values.  The length of the list is not
+  //!         necessarily the same as @c nargout.
 
-    @param name The name of the function to call.
-    @param args The arguments to the function.
-    @param nargout The number of output arguments expected.
-    @return A list of output values.  The length of the list is not
-    necessarily the same as @c nargout.
-
-  */
   octave_value_list
   feval (const std::string& name, const octave_value_list& args, int nargout)
   {
@@ -5262,18 +5260,17 @@ get_feval_args (const octave_value_list& args)
 
 namespace octave
 {
-  /*!
-    Evaluate an Octave function (built-in or interpreted) and return
-    the list of result values.
+  //! Evaluate an Octave function (built-in or interpreted) and return
+  //! the list of result values.
+  //!
+  //! @param args The first element of @c args is the function to call.
+  //!             It may be the name of the function as a string, a function
+  //!             handle, or an inline function.  The remaining arguments are
+  //!             passed to the function.
+  //! @param nargout The number of output arguments expected.
+  //! @return A list of output values.  The length of the list is not
+  //!         necessarily the same as @c nargout.
 
-    @param args The first element of @c args is the function to call.
-    It may be the name of the function as a string, a function
-    handle, or an inline function.  The remaining arguments are
-    passed to the function.
-    @param nargout The number of output arguments expected.
-    @return A list of output values.  The length of the list is not
-    necessarily the same as @c nargout.
-  */
   octave_value_list
   feval (const octave_value_list& args, int nargout)
   {

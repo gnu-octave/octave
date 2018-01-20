@@ -1666,20 +1666,17 @@ main_window::set_screen_size (int ht, int wd)
 }
 
 void
-main_window::clipboard_has_changed (QClipboard::Mode cp_mode)
+main_window::clipboard_has_changed (void)
 {
-  if (cp_mode == QClipboard::Clipboard)
+  if (m_clipboard->text ().isEmpty ())
     {
-      if (m_clipboard->text ().isEmpty ())
-        {
-          m_paste_action->setEnabled (false);
-          m_clear_clipboard_action->setEnabled (false);
-        }
-      else
-        {
-          m_paste_action->setEnabled (true);
-          m_clear_clipboard_action->setEnabled (true);
-        }
+      m_paste_action->setEnabled (false);
+      m_clear_clipboard_action->setEnabled (false);
+    }
+  else
+    {
+      m_paste_action->setEnabled (true);
+      m_clear_clipboard_action->setEnabled (true);
     }
 }
 
@@ -2265,9 +2262,16 @@ main_window::construct_edit_menu (QMenuBar *p)
   connect (m_clear_workspace_action, SIGNAL (triggered (void)),
            this, SLOT (handle_clear_workspace_request (void)));
 
-  connect (m_clipboard, SIGNAL (changed (QClipboard::Mode)),
-           this, SLOT (clipboard_has_changed (QClipboard::Mode)));
-  clipboard_has_changed (QClipboard::Clipboard);
+  connect (m_clipboard, SIGNAL (dataChanged (void)),
+           this, SLOT (clipboard_has_changed (void)));
+  clipboard_has_changed ();
+#if defined (Q_OS_WIN32)
+  // Always enable paste action (unreliable clipboard signals in windows)
+  // FIXME: This has to be removed, when the clipboards signals in windows
+  //        are working again
+  m_paste_action->setEnabled (true);
+  m_clear_clipboard_action->setEnabled (true);
+#endif
 
   connect (m_preferences_action, SIGNAL (triggered (void)),
            this, SLOT (process_settings_dialog_request (void)));

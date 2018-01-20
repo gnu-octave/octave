@@ -260,7 +260,7 @@ public slots:
 
   //! Handling the clipboard.
   //!@{
-  void clipboard_has_changed (QClipboard::Mode);
+  void clipboard_has_changed (void);
   void clear_clipboard ();
   //!@}
 

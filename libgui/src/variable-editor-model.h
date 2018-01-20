@@ -90,9 +90,10 @@ public:
 
   bool editor_type_string (const QModelIndex& idx) const;
 
-  // Return the proper parens to access the data structure.
-  // {%1,%2} for cell and (%1,%2) for matrices.
-  QString parens (void) const;
+  // Return a subscript expression as a string that can be used to
+  // access a sub-element of a data structure.  For example "{1,3}"
+  // for cell array element {1,3} or "(2,4)" for array element (2,4).
+  QString subscript_expression (const QModelIndex& idx) const;
 
 signals: // private
 

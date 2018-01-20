@@ -441,9 +441,11 @@ bool variable_editor_model::editor_type_string (const QModelIndex& idx) const
 }
 
 QString
-variable_editor_model::parens (void) const
+variable_editor_model::subscript_expression (const QModelIndex& idx) const
 {
-  return m_d->m_type == "{" ? "{%1, %2}" : "(%1, %2)";
+  return (QString (m_d->m_type == "{" ? "{%1, %2}" : "(%1, %2)")
+          .arg (idx.row () + 1)
+          .arg (idx.column () + 1));
 }
 
 // Private slots.

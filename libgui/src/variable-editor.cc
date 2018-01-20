@@ -764,19 +764,7 @@ variable_editor::double_click (const QModelIndex& idx)
     = qobject_cast<variable_editor_model *> (table->model ());
 
   if (model->requires_sub_editor (idx))
-    {
-      if (model ->editor_type_matrix (idx))
-        edit_variable (name + model->parens () .arg (idx.row () + 1)
-                       .arg (idx.column () + 1));
-
-      // FIXME: What was the intent here?
-      // emit command_requested ("openvar ('" + name +
-      //                         model->parens ()
-      //                         .arg (idx.row () + 1)
-      //                         .arg (idx.column () + 1)
-      //                         + "');");
-
-    }
+    edit_variable (name + model->subscript_expression (idx));
 }
 
 void

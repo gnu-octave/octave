@@ -2622,8 +2622,9 @@ main_window::new_figure_callback (void)
 void
 main_window::change_directory_callback (const std::string& directory)
 {
+  // INTERPRETER THREAD
+
   Fcd (ovl (directory));
-  m_octave_qt_link->update_directory ();
 }
 
 void

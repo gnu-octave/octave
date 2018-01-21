@@ -107,8 +107,6 @@ public:
 
   void do_change_directory (const std::string& dir);
 
-  void update_directory (void);
-
   void do_execute_command_in_terminal (const std::string& command);
 
   void do_set_workspace (bool top_level, bool debug,
@@ -157,9 +155,6 @@ private:
   octave::gui_application *m_app_context;
 
   bool m_shutdown_confirm_result;
-
-  QString m_current_directory;
-  bool m_new_dir;
 
   QMutex m_mutex;
   QWaitCondition m_waitcondition;

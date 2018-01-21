@@ -49,10 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 octave_qt_link::octave_qt_link (QWidget *,
                                 octave::gui_application *app_context)
   : octave_link (), m_app_context (app_context)
-{
-  m_current_directory = "";
-  m_new_dir = true;
-}
+{ }
 
 bool
 octave_qt_link::do_confirm_shutdown (void)
@@ -410,15 +407,7 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 void
 octave_qt_link::do_change_directory (const std::string& dir)
 {
-  m_current_directory = QString::fromStdString (dir);
-  m_new_dir = true;
-}
-
-void
-octave_qt_link::update_directory ()
-{
-  emit change_directory_signal (m_current_directory);
-  m_new_dir = false;
+  emit change_directory_signal (QString::fromStdString (dir));
 }
 
 void
@@ -434,9 +423,6 @@ octave_qt_link::do_set_workspace (bool top_level, bool debug,
 {
   if (! top_level && ! debug)
     return;
-
-  if (m_new_dir)
-    update_directory ();
 
   QString scopes;
   QStringList symbols;

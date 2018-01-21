@@ -1751,7 +1751,7 @@ main_window::edit_variable (const QString &expr)
 void
 main_window::refresh_variable_editor (void)
 {
-  m_variable_editor_window->clear_data_cache ();
+  m_variable_editor_window->refresh ();
 }
 
 void

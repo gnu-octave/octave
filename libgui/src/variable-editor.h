@@ -57,6 +57,8 @@ public:
   // Clear all the models' data cache.
   void clear_data_cache (void);
 
+  void refresh (void);
+
   bool has_focus (void);
 
   static QList<QColor> default_colors (void);

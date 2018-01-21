@@ -246,6 +246,16 @@ variable_editor::clear_data_cache (void)
     }
 }
 
+void
+variable_editor::refresh (void)
+{
+  // FIXME: this preserves existing behavior, but what we really want to
+  // do is refresh the variable tabs that are displayed only if
+  // something has actually changed.
+
+  clear_data_cache ();
+}
+
 bool
 variable_editor::has_focus (void)
 {

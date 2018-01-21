@@ -136,6 +136,15 @@ text rendering.";
     switch (field)
       case "beingdeleted"
       case "busyaction"
+        s.doc = "Define how Octave handles the execution of this object's \
+callback properties when it is unable to interrupt another object's \
+executing callback.  This is only relevant when the currently executing \
+callback object has its @code{interruptible} property set to \
+\@qcode{\"off\"}.  The __prop__ property of the interrupting callback object \
+indicates whether the interrupting callback is queued (@qcode{\"queue\"} \
+(default)) or discarded (@qcode{\"cancel\"}).\n\
+@xref{Callbacks, , @w{Callbacks section}}.";
+        
       case "buttondownfcn"
         s.doc = "__fcnmsg__";
         s.valid = valid_fcn;
@@ -174,6 +183,12 @@ can accept mouse clicks which is determined by the @qcode{\"pickableparts\"} \
 property.  @xref{XREF__objname__pickableparts, , @w{pickableparts property}}.";
 
       case "interruptible"
+        s.doc = "Specify whether this object's callback functions may be \
+interrupted by other callbacks.  By default __prop__ is @qcode{\"on\"} \
+and callbacks that make use of @code{drawnow}, @code{figure}, @code{waitfor}, \
+@code{getframe} or @code{pause} functions are eventually interrupted.\n\
+@xref{Callbacks, , @w{Callbacks section}}.";
+        
       case "parent"
         s.doc = "Handle of the parent graphics object.";
         s.valid = valid_handle;

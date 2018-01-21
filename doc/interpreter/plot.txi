@@ -1184,12 +1184,12 @@ the root object.
 
 Graphics handles may be distinguished from function handles
 (@pxref{Function Handles}) by means of the function @code{ishghandle}.
-@code{ishghandle} returns true if its argument is a handle of a graphics object.
-In addition, a figure or axes object may be tested using @code{isfigure} or
-@code{isaxes} respectively.  To test for a specific type of graphics handle,
-such as a patch or line object, use @code{isgraphics}.  The more specific test
-functions return true only if the argument is both a graphics handle and of the
-correct type (figure, axes, specified object type).
+@code{ishghandle} returns true if its argument is a handle of a graphics
+object.  In addition, a figure or axes object may be tested using
+@code{isfigure} or @code{isaxes} respectively.  To test for a specific type of
+graphics handle, such as a patch or line object, use @code{isgraphics}.  The
+more specific test functions return true only if the argument is both a
+graphics handle and of the correct type (figure, axes, specified object type).
 
 The @code{whos} function can be used to show the object type of each currently
 defined graphics handle.  (Note: this is not true today, but it is, I hope,
@@ -1870,7 +1870,7 @@ is
 @example
 @group
 function mycallback (hsrc, evt)
-@dots{}
+  @dots{}
 endfunction
 @end group
 @end example
@@ -1880,38 +1880,52 @@ where @code{hsrc} is a handle to the source of the callback, and @code{evt}
 gives some event specific data.
 
 The function can be provided as a function handle to a plain Octave function,
-as an anonymous function or as a string representing an Octave command.  The
+as an anonymous function, or as a string representing an Octave command.  The
 latter syntax is not recommended since syntax errors will only occur when the
 string is evaluated.
 @xref{Function Handles Anonymous Functions Inline Functions, , Function Handles section}.
 
-This can then be associated
-with an object either at the objects creation or later with the
-@code{set} function.  For example,
+This can then be associated with an object either at the object's creation, or
+later with the @code{set} function.  For example,
 
 @example
 plot (x, "DeleteFcn", @@(h, e) disp ("Window Deleted"))
 @end example
 
 @noindent
-where at the moment that the plot is deleted, the message "Window
-Deleted" will be displayed.
+where at the moment that the plot is deleted, the message "Window Deleted" will
+be displayed.
 
-Additional user arguments can be passed to callback functions, and will
-be passed after the 2 default arguments.  For example:
+Additional user arguments can be passed to callback functions, and will be
+passed after the two default arguments.  For example:
 
 @example
 @group
 plot (x, "DeleteFcn", @{@@mycallback, "1"@})
 @dots{}
-function mycallback (h, e, a1)
-  fprintf ("Closing plot %d\n", a1);
+function mycallback (h, evt, arg1)
+  fprintf ("Closing plot %d\n", arg1);
 endfunction
 @end group
 @end example
 
-The basic callback functions that are available for all graphics objects
-are
+@strong{Caution:} The second argument in callback functions---@code{evt}---is
+only partially implemented in the Qt graphics toolkit:
+
+@itemize @bullet
+@item Mouse click events:
+@code{evt} is a class @code{double} value: 1 for left, 2 for middle, and 3 for
+right click.
+
+@item Key press events:
+@code{evt} is a structure with fields @code{Key} (string), @code{Character}
+(string), and @code{Modifier} (cell array of strings).
+
+@item Other events:
+@code{evt} is a class @code{double} empty matrix.
+@end itemize
+
+The basic callback functions that are available for all graphics objects are
 
 @itemize @bullet
 @item CreateFcn:
@@ -1926,30 +1940,37 @@ called at the moment an object is deleted.
 
 @item ButtonDownFcn:
 called if a mouse button is pressed while the pointer is over this
-object.  Note, that the gnuplot interface does not respect this
+object.  Note, that the gnuplot interface does not implement this
 callback.
 @end itemize
 
-@strong{Caution:} the second @code{evt} argument in callback functions is only
-loosely implemented in the Qt graphics toolkit:
+By default callback functions are queued (they are executed one after the other
+in the event queue) unless the @code{drawnow}, @code{figure}, @code{waitfor},
+@code{getframe}, or @code{pause} functions are used.  If an executing callback
+invokes one of those functions, it causes Octave to flush the event queue,
+which results in the executing callback being interrupted.
 
-@itemize @bullet
-@item Mouse click events:
-@code{evt} is a class @code{double} value, 1 for left, 2 for middle and 3
-for right click.
+It is possible to specify that an object's callbacks should not be interrupted
+by setting the object's @code{interruptible} property to @qcode{"off"}.  In
+this case, Octave decides what to do based on the @code{busyaction} property of
+the @strong{interrupting} callback object:
 
-@item Key press events:
-@code{evt} is a structure with fields @code{Key} (string), @code{Character}
-(string) and @code{Modifier} (cell array of strings).
+@table @asis
+@item @code{queue} (the default)
+The interrupting callback is executed after the executing callback has
+returned.
 
-@item Other events:
-@code{evt} is a class @code{double} empty matrix.
-@end itemize
+@item @code{cancel}
+The interrupting callback is discarded.
+@end table
 
+The @code{interruptible} property has no effect when the interrupting callback
+is a @code{deletefcn}, or a figure @code{resizefcn} or @code{closerequestfcn}.
+Those callbacks always interrupt the executing callback.
 
-The object and figure that the event occurred in that resulted in the
-callback being called can be found with the @code{gcbo} and @code{gcbf}
-functions.
+The handle to the object that holds the callback being executed can be
+obtained with the @code{gcbo} function.  The handle to the ancestor figure
+of this object may be obtained using the @code{gcbf} function.
 
 @DOCSTRING(gcbo)
 

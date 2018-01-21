@@ -10223,20 +10223,6 @@ void
 gh_manager::do_execute_listener (const graphics_handle& h,
                                  const octave_value& l)
 {
-  if (! callback_objects.empty ())
-    {        
-      const graphics_object& current = callback_objects.front ();
-
-      if (current.valid_object () 
-          && ! current.get_properties ().is_interruptible ())
-        {
-          if (get_object (h).get_properties ().busyaction_is ("queue"))
-            do_post_event (graphics_event::create_callback_event (h, l));
-
-          return;
-        }
-    }
-
   if (octave::thread::is_thread ())
     gh_manager::execute_callback (h, l, octave_value ());
   else
@@ -10266,11 +10252,16 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       octave::unwind_protect_safe frame;
       frame.add_fcn (gh_manager::restore_gcbo);
 
-      gh_manager::auto_lock guard;
       graphics_object go (get_object (h));
-      callback_objects.push_front (go);
-      if (go.get ("handlevisibility").string_value () != "off")
-        xset_gcbo (h);
+      if (go)
+        {
+          // FIXME: Is the lock necessary when we're only calling a
+          //        const "get" method?
+          gh_manager::auto_lock guard;
+          callback_objects.push_front (go);
+          if (go.get ("handlevisibility").string_value () != "off")
+            xset_gcbo (h);
+        }
 
       // Copy CB because "function_value" method is non-const.
 
@@ -12459,6 +12450,9 @@ uint8 array.
   graphics_object go = gh_manager::get_object (h);
   if (! go || ! go.isa ("figure"))
     error ("__get_frame__: HFIG is not a figure");
+
+  // For Matlab compatibility, getframe must flush the event queue.
+  gh_manager::process_events ();
 
   return ovl (go.get_toolkit ().get_pixels (go));
 }

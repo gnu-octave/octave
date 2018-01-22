@@ -1749,16 +1749,20 @@ main_window::edit_variable (const QString &expr)
 }
 
 void
-main_window::clear_variable_editor_cache (void)
+main_window::refresh_variable_editor (void)
 {
   m_variable_editor_window->clear_data_cache ();
 }
 
 void
-main_window::variable_editor_callback (void)
+main_window::handle_variable_editor_update (void)
 {
-  // Called when the variable editor makes changes.
-  octave_link::post_event(this, &main_window::force_refresh_workspace);
+  // Called when the variable editor emits the updated signal.  The size
+  // of a variable may have changed, so we refresh the workspace in the
+  // interpreter.  That will eventually cause the workspace view in the
+  // GUI to be updated.
+
+  octave_link::post_event (this, &main_window::refresh_workspace_callback);
 }
 
 void
@@ -1800,11 +1804,11 @@ main_window::construct (void)
       connect (m_workspace_model, SIGNAL (model_changed (void)),
                m_workspace_window, SLOT (handle_model_changed (void)));
 
-      connect (m_octave_qt_link, SIGNAL (open_variable (const QString&)),
+      connect (m_octave_qt_link, SIGNAL (open_variable_signal (const QString&)),
                this, SLOT (edit_variable (const QString&)));
 
-      connect (m_octave_qt_link, SIGNAL (refresh_variable_editor (void)),
-               this, SLOT (clear_variable_editor_cache (void)));
+      connect (m_octave_qt_link, SIGNAL (refresh_variable_editor_signal (void)),
+               this, SLOT (refresh_variable_editor (void)));
 
       connect (m_workspace_model,
                SIGNAL (rename_variable (const QString&, const QString&)),
@@ -1813,7 +1817,7 @@ main_window::construct (void)
                                                      const QString&)));
 
       connect (m_variable_editor_window, SIGNAL (updated (void)),
-               this, SLOT (variable_editor_callback (void)));
+               this, SLOT (handle_variable_editor_update (void)));
 
       connect (m_command_window, SIGNAL (interrupt_signal (void)),
                this, SLOT (interrupt_interpreter (void)));
@@ -2618,6 +2622,18 @@ main_window::clear_history_callback (void)
   Fhistory (ovl ("-c"));
 }
 
+void
+main_window::refresh_workspace_callback (void)
+{
+  // INTERPRETER THREAD
+
+  octave::symbol_scope scope
+   = octave::__get_current_scope__ ("main_window::force_refresh_workspace");
+
+  if (scope)
+    octave_link::set_workspace (true, scope.workspace_info (), false);
+}
+
 bool
 main_window::focus_console_after_command (void)
 {
@@ -2720,18 +2736,6 @@ main_window::configure_shortcuts (void)
                                   "main_news:release_notes");
   shortcut_manager::set_shortcut (m_current_news_action,
                                   "main_news:community_news");
-}
-
-void
-main_window::force_refresh_workspace (void)
-{
-  // INTERPRETER THREAD
-
-  octave::symbol_scope scope
-   = octave::__get_current_scope__ ("main_window::load_workspace_callback");
-
-  if (scope)
-    octave_link::set_workspace (true, scope.workspace_info (), false);
 }
 
 QList<octave_dock_widget *>

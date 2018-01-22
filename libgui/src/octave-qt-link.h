@@ -197,9 +197,9 @@ signals:
 
   void show_doc_signal (const QString& file);
 
-  void open_variable (const QString &name);
+  void open_variable_signal (const QString &name);
 
-  void refresh_variable_editor();
+  void refresh_variable_editor_signal (void);
 
   void confirm_shutdown_signal (void);
 };

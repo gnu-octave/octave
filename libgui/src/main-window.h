@@ -284,9 +284,9 @@ private slots:
 
   void edit_variable (const QString &name);
 
-  void clear_variable_editor_cache (void);
+  void refresh_variable_editor (void);
 
-  void variable_editor_callback (void);
+  void handle_variable_editor_update (void);
 
 protected:
 
@@ -337,6 +337,8 @@ private:
 
   void clear_history_callback (void);
 
+  void refresh_workspace_callback (void);
+
   bool focus_console_after_command (void);
 
   void new_figure_callback (void);
@@ -344,8 +346,6 @@ private:
   void change_directory_callback (const std::string& directory);
 
   void configure_shortcuts (void);
-
-  void force_refresh_workspace (void);
 
   QList<octave_dock_widget *> dock_widget_list (void);
 

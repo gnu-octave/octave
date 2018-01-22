@@ -446,7 +446,7 @@ octave_qt_link::do_set_workspace (bool top_level, bool debug,
                              dimensions, values, complex_flags);
 
   if (update_variable_editor)
-    emit refresh_variable_editor ();
+    emit refresh_variable_editor_signal ();
 }
 
 void
@@ -618,7 +618,7 @@ octave_qt_link::do_show_doc (const std::string& file)
 void
 octave_qt_link::do_openvar (const std::string &expr)
 {
-  emit open_variable (QString::fromStdString (expr));
+  emit open_variable_signal (QString::fromStdString (expr));
 }
 
 void

@@ -159,7 +159,7 @@ function t = isequal (x, varargin)
         t = (x == y);
 
       else
-        error ("isequal: Impossible to reach code.  File a bug report."); 
+        error ("isequal: Impossible to reach code.  File a bug report.");
 
       endif
 
@@ -246,7 +246,7 @@ function t = isequal (x, varargin)
         ## Convert to char (space) for faster processing with strcmp (time).
         idx = 1;
         x = char (x);
-        while (t && idx <= nvarargin) 
+        while (t && idx <= nvarargin)
           t = strcmp (x, char (varargin{idx}));
           idx += 1;
         endwhile
@@ -270,7 +270,7 @@ function t = isequal (x, varargin)
         t = all (cellfun ("eq", {x}, varargin));
 
       else
-        error ("isequal: Impossible to reach code.  File a bug report."); 
+        error ("isequal: Impossible to reach code.  File a bug report.");
 
       endif
 
@@ -375,7 +375,7 @@ endfunction
 %!assert (isequal (struct ("a",1,"b",2), struct ("a",1,"b",2),
 %!                 struct ("b",2,"a",1)), true)
 %!assert (isequal (struct ("a","abc","b",2), struct ("a","abc","b",2)), true)
-%!assert (isequal (struct ("a","abc","b",2), struct ("a","abc","b",2), 
+%!assert (isequal (struct ("a","abc","b",2), struct ("a","abc","b",2),
 %!                 struct ("a","abc","b",2)), true)
 
 ## recursive structure

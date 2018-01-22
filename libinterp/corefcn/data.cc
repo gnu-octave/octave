@@ -5184,7 +5184,7 @@ only a single value (@var{n} = 1) is requested.
 %!assert (numel (linspace (0, 1, 2-eps)), 1)
 %!assert (linspace (10, 20, 2.1), [10 20])
 %!assert (linspace (10, 20, 2.9), [10 20])
-%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf]) 
+%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)

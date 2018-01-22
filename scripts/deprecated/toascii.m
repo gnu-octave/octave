@@ -23,15 +23,15 @@
 ## Use @code{double} instead.
 ##
 ## Return ASCII representation of @var{s} in a matrix.
-## 
+##
 ## For example:
-## 
+##
 ## @example
 ## @group
 ## toascii ("ASCII"
 ##      @result{} [ 65, 83, 67, 73, 73 ]
 ## @end group
-## 
+##
 ## @end example
 ## @seealso{double, char}
 ## @end deftypefn

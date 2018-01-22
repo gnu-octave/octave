@@ -144,7 +144,7 @@ callback object has its @code{interruptible} property set to \
 indicates whether the interrupting callback is queued (@qcode{\"queue\"} \
 (default)) or discarded (@qcode{\"cancel\"}).\n\
 @xref{Callbacks, , @w{Callbacks section}}.";
-        
+
       case "buttondownfcn"
         s.doc = "__fcnmsg__";
         s.valid = valid_fcn;
@@ -188,7 +188,7 @@ interrupted by other callbacks.  By default __prop__ is @qcode{\"on\"} \
 and callbacks that make use of @code{drawnow}, @code{figure}, @code{waitfor}, \
 @code{getframe} or @code{pause} functions are eventually interrupted.\n\
 @xref{Callbacks, , @w{Callbacks section}}.";
-        
+
       case "parent"
         s.doc = "Handle of the parent graphics object.";
         s.valid = valid_handle;
@@ -203,7 +203,7 @@ are ignored and transmitted to any objects underneath this one.  When an \
 object is configured to accept mouse clicks the @qcode{\"hittest\"} property \
 will determine how they are processed.  \
 @xref{XREF__objname__hittest, , @w{hittest property}}.";
-        
+
       case "selected"
       case "selectionhighlight"
       case "tag"
@@ -246,7 +246,7 @@ is always empty.";
 
       case "hittest"
         s.doc = doc_unused;
-        
+
       case "pickableparts"
         s.doc = doc_unused;
 

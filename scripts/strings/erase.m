@@ -53,8 +53,8 @@
 ##     @result{} "b"
 ## @end example
 ##
-## See @code{strrep} for processing overlaps.  
-## 
+## See @code{strrep} for processing overlaps.
+##
 ## @seealso{strrep, regexprep}
 ## @end deftypefn
 
@@ -66,9 +66,9 @@ function newstr = erase (str, ptn)
   if (nargin != 2)
     print_usage ();
   endif
-    
+
   ischarmatrix = false;
-  if (ischar (str)) 
+  if (ischar (str))
     if (rows (str) > 1)
       ## Convert to cell.  Can't use cellstr which trims spaces.
       str = mat2cell (str, ones (1, rows (str)));
@@ -78,7 +78,7 @@ function newstr = erase (str, ptn)
     error ("erase: STR must be a string or cell array of strings");
   endif
 
-  if (ischar (ptn)) 
+  if (ischar (ptn))
     if (rows (ptn) > 1)
       warning ("Octave:erase:chararray",
                "erase: using character array for PTN is not recommended, consider cell array of strings instead");
@@ -137,7 +137,7 @@ endfunction
 %!error erase ()
 %!error erase ("a")
 %!error erase ("a", "b", "c")
-%!error <STR must be a string> erase ([1], "foo") 
-%!error <PTN must be a string> erase ("foo", [1]) 
+%!error <STR must be a string> erase ([1], "foo")
+%!error <PTN must be a string> erase ("foo", [1])
 %!warning <using character array for PTN is not recommended>
 %! erase ("a", ["a";"b"]);

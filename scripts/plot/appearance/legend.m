@@ -200,7 +200,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   textpos = "default";
   box = "default";
   delete_leg = false;
-  find_leg_hdl = (nargs == 0);  # possibly overridden 
+  find_leg_hdl = (nargs == 0);  # possibly overridden
   propvals = {};
 
   ## Process old way of specifying location with a number rather than a string.
@@ -656,7 +656,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                      "fontsize", [], "fontweight", [] "interpreter", [], ...
                      "color", [] };
         propvals = get (hlegend, legprops);
-        txtprops(2:2:end) = propvals; 
+        txtprops(2:2:end) = propvals;
 
         ## Add text labels to the axes first and check their extents
         nentries = numel (hplots);
@@ -989,7 +989,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         htdel = findall (ca(1), "-depth", 1, "tag", "deletelegend",
                                 "type", "text");
         if (isempty (htdel))
-          htdel = text (0, 0, "", "parent", ca(1), "tag", "deletelegend", 
+          htdel = text (0, 0, "", "parent", ca(1), "tag", "deletelegend",
                         "visible", "off", "handlevisibility", "off",
                         "xliminclude", "off", "yliminclude", "off",
                         "zliminclude", "off");
@@ -1775,7 +1775,7 @@ endfunction
 %!   text (4.5, 80, "Right Axis", "parent", hax(2));
 %!   hleg = legend ("show");
 %!   assert (get (hleg, "string"), {"data1", "data2"});
-%!   fail ("legend ('foo', 'bar', 'baz')", "warning", "ignoring extra labels"); 
+%!   fail ("legend ('foo', 'bar', 'baz')", "warning", "ignoring extra labels");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -1785,17 +1785,17 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = gca ();
-%!   fail ("legend ('foobar')", "warning", "plot data is empty"); 
+%!   fail ("legend ('foobar')", "warning", "plot data is empty");
 %!   ht = text (0.5, 0.5, "Hello World");
-%!   fail ("legend ('foobar')", "warning", "plot data is empty"); 
+%!   fail ("legend ('foobar')", "warning", "plot data is empty");
 %!   lastwarn ("");   # clear warning
 %!   hleg = legend ();
 %!   assert (isempty (hleg) && isempty (lastwarn ()));
-%!   fail ("legend ('foobar')", "warning", "plot data is empty"); 
+%!   fail ("legend ('foobar')", "warning", "plot data is empty");
 %!   hln = line ([0 1], [0 1]);
-%!   fail ("legend ('foo', 'bar')", "warning", "ignoring extra labels"); 
+%!   fail ("legend ('foo', 'bar')", "warning", "ignoring extra labels");
 %!   plot (rand (2, 21));
-%!   fail ("legend ()", "warning", "labeling only first 20 data objects"); 
+%!   fail ("legend ()", "warning", "labeling only first 20 data objects");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -1805,8 +1805,8 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot (1:10);
-%!   fail ("legend ('location','best')", "warning", "'best' not yet implemented"); 
-%!   fail ("legend ('location','bestoutside')", "warning", "'best' not yet implemented"); 
+%!   fail ("legend ('location','best')", "warning", "'best' not yet implemented");
+%!   fail ("legend ('location','bestoutside')", "warning", "'best' not yet implemented");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

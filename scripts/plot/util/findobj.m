@@ -72,7 +72,7 @@
 ## property values, where property values that match
 ## @code{regexp (@var{prop_value}, @var{pattern})} are returned.
 ##
-## Finally, objects which have a property name can be found with the 
+## Finally, objects which have a property name can be found with the
 ## @qcode{"-property"} option.  For example, code to locate objects with a
 ## @qcode{"meshstyle"} property is
 ##

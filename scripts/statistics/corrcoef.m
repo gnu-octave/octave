@@ -163,7 +163,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
       endif
       r(i,j) = r(j,i) = corr (xi, xj);
       if (calc_pval)
-        df = m - 2;  
+        df = m - 2;
         stat = sqrt (df) * r(i,j) / sqrt (1 - r(i,j)^2);
         cdf = tcdf (stat, df);
         p(i,j) = p(j,i) = 2 * min (cdf, 1 - cdf);

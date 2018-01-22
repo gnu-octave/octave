@@ -632,9 +632,9 @@ main (int argc, char **argv)
         }
       else if (starts_with (arg, "-"))
         {
-          // Pass through any unrecognized options
+          // Pass through any unrecognized options.
           pass_on_options += (' ' + arg);
-          // Check for an additional argument following the option 
+          // Check for an additional argument following the option.
           if (i < argc-1)
             {
               arg = argv[i+1];

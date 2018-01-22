@@ -165,7 +165,7 @@ function t = isequaln (x, varargin)
         t = (x == y);
 
       else
-        error ("isequaln: Impossible to reach code.  File a bug report."); 
+        error ("isequaln: Impossible to reach code.  File a bug report.");
 
       endif
 
@@ -256,7 +256,7 @@ function t = isequaln (x, varargin)
         ## Convert to char (space) for faster processing with strcmp (time).
         idx = 1;
         x = char (x);
-        while (t && idx <= nvarargin) 
+        while (t && idx <= nvarargin)
           t = strcmp (x, char (varargin{idx}));
           idx += 1;
         endwhile
@@ -280,7 +280,7 @@ function t = isequaln (x, varargin)
         t = all (cellfun ("eq", {x}, varargin));
 
       else
-        error ("isequaln: Impossible to reach code.  File a bug report."); 
+        error ("isequaln: Impossible to reach code.  File a bug report.");
 
       endif
 

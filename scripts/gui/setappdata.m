@@ -67,7 +67,7 @@ function setappdata (h, varargin)
     varargin = cell (1, 2*numel (names));
     varargin(1:2:end) = names;
     varargin(2:2:end) = values;
-   
+
   elseif (! all (cellfun ("isclass", varargin(1:2:end), "char")))
     error ("setappdata: NAME must be a string or cellstr");
   endif

@@ -710,7 +710,7 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
     case umap_xtolower:
     case umap_xtoupper:
       return matrix;
-               
+
 #define ARRAY_METHOD_MAPPER(UMAP, FCN)        \
     case umap_ ## UMAP:                       \
       return octave_value (matrix.FCN ())

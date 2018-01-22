@@ -533,7 +533,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!testif ; ! ismac () 
+%!testif ; ! ismac ()
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");

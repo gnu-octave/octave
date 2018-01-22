@@ -310,13 +310,13 @@ function h = colorbar (varargin)
       set (hi, "xdata", [0,1], "ydata", [cmin, cmax], "cdata", [1 : clen]');
       if (mirror)
         set (hcb, "xtick", [], "xlim", [-0.5, 1.5],
-                  "ytickmode", "auto", "ylim", cext, 
+                  "ytickmode", "auto", "ylim", cext,
                   "yaxislocation", "right", "label", get (hcb, "ylabel"),
                   "__vertical__", vertical,
                   "layer", "top", args{:});
       else
         set (hcb, "xtick", [], "xlim", [-0.5, 1.5],
-                  "ytickmode", "auto", "ylim", cext, 
+                  "ytickmode", "auto", "ylim", cext,
                   "yaxislocation", "left", "label", get (hcb, "ylabel"),
                   "__vertical__", vertical,
                   "layer", "top", args{:});
@@ -325,13 +325,13 @@ function h = colorbar (varargin)
       set (hi, "xdata", [cmin, cmax], "ydata", [0,1], "cdata", [1 : clen]);
       if (mirror)
         set (hcb, "ytick", [], "ylim", [-0.5, 1.5],
-                  "xtickmode", "auto", "xlim", cext, 
+                  "xtickmode", "auto", "xlim", cext,
                   "xaxislocation", "top", "label", get (hcb, "xlabel"),
                   "__vertical__", vertical,
                   "layer", "top", args{:});
       else
         set (hcb, "ytick", [], "ylim", [-0.5, 1.5],
-                  "xtickmode", "auto", "xlim", cext, 
+                  "xtickmode", "auto", "xlim", cext,
                   "xaxislocation", "bottom", "label", get (hcb, "xlabel"),
                   "__vertical__", vertical,
                   "layer", "top", args{:});

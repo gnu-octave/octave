@@ -627,7 +627,7 @@ namespace QtHandles
 
         graphics_object currentObj, axesObj;
 
-        // Retrieve selected object.   
+        // Retrieve selected object.
         select_object (obj, event, currentObj, axesObj);
 
         // currentObj may be invalid if, e.g., all objects under the mouse
@@ -659,14 +659,14 @@ namespace QtHandles
             {
               // Update the figure "currentobject"
               auto& fprop = Utils::properties<figure> (figObj);
-            
+
               if (currentObj.get_properties ().handlevisibility_is ("on"))
                 fprop.set_currentobject (currentObj.get_handle ()
                                          .as_octave_value ());
               else
                 fprop.set_currentobject (Matrix ());
-            
-              // Update figure "selectiontype" and "currentpoint" 
+
+              // Update figure "selectiontype" and "currentpoint"
               gh_manager::post_set (
                                     figObj.get_handle (), "selectiontype",
                                     Utils::figureSelectionType (event, isdblclick), false);
@@ -987,10 +987,10 @@ namespace QtHandles
 
                   double factor = (event->delta () > 0 ? 0.1 : -0.1);
 
-                  if (event->modifiers () == Qt::NoModifier 
+                  if (event->modifiers () == Qt::NoModifier
                       && mode != "horizontal")
                     ap.pan ("vertical", factor);
-                  else if (event->modifiers () == Qt::ShiftModifier 
+                  else if (event->modifiers () == Qt::ShiftModifier
                       && mode != "vertical")
                     ap.pan ("horizontal", factor);
                 }

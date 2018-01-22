@@ -3733,7 +3733,7 @@ namespace octave
       {
         std::string delim = delim_list(j).string_value ();
         if (delim.length () == 1)
-          whitespace.erase (std::remove (whitespace.begin (), 
+          whitespace.erase (std::remove (whitespace.begin (),
                                          whitespace.end (),
                                          delim[0]),
                             whitespace.end ());

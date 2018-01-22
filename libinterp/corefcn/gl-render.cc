@@ -625,7 +625,7 @@ namespace octave
   opengl_renderer::opengl_renderer (void)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
       zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-      camera_pos (), camera_dir (), interpreter ("none"), txt_renderer (), 
+      camera_pos (), camera_dir (), interpreter ("none"), txt_renderer (),
       selecting (false)
   {
     // This constructor will fail if we don't have OpenGL or if the data
@@ -1391,7 +1391,7 @@ namespace octave
     int xstate = props.get_xstate ();
 
     if (xstate != AXE_DEPTH_DIR
-        && (props.is_visible () 
+        && (props.is_visible ()
             || (selecting && props.pickableparts_is ("all"))))
       {
         int zstate = props.get_zstate ();
@@ -1574,7 +1574,7 @@ namespace octave
     int ystate = props.get_ystate ();
 
     if (ystate != AXE_DEPTH_DIR && props.is_visible ()
-        && (props.is_visible () 
+        && (props.is_visible ()
             || (selecting && props.pickableparts_is ("all"))))
       {
         int zstate = props.get_zstate ();
@@ -1756,7 +1756,7 @@ namespace octave
     int zstate = props.get_zstate ();
 
     if (zstate != AXE_DEPTH_DIR && props.is_visible ()
-        && (props.is_visible () 
+        && (props.is_visible ()
             || (selecting && props.pickableparts_is ("all"))))
       {
         bool xySym = props.get_xySym ();

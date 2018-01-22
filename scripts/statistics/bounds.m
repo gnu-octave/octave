@@ -73,13 +73,13 @@ function [s, l] = bounds (x, dim, nanflag = false)
   if (nanflag)
     nanflag = strcmp (nanflag, "includenan");
   endif
-  
+
   s = min (x, [], dim);
   l = max (x, [], dim);
   if (nanflag)
-    nanidx = any (isnan (x), dim); 
-    s(nanidx) = NaN; 
-    l(nanidx) = NaN; 
+    nanidx = any (isnan (x), dim);
+    s(nanidx) = NaN;
+    l(nanidx) = NaN;
   endif
 
 endfunction

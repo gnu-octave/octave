@@ -176,13 +176,13 @@ endfunction
 %!  set (gca, "xminorgrid", "on");
 %!  set (gca, "yminorgrid", "on");
 %!  title ({"major grid disabled",
-%!          "minor grid displayed at major ticks"}); 
+%!          "minor grid displayed at major ticks"});
 %! subplot (1,2,2)
 %!  semilogy (1:100);
 %!  set (gca, "xminorgrid", "on");
 %!  set (gca, "yminorgrid", "on");
 %!  title ({"major grid disabled",
-%!          "minor grid displayed at major ticks"}); 
+%!          "minor grid displayed at major ticks"});
 
 %!demo
 %! clf;

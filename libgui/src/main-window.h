@@ -337,8 +337,6 @@ private:
 
   void clear_history_callback (void);
 
-  void run_file_callback (const QFileInfo& info);
-
   bool focus_console_after_command (void);
 
   void new_figure_callback (void);

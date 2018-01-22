@@ -902,7 +902,9 @@ void
 main_window::execute_command_in_terminal (const QString& command)
 {
   octave_cmd_exec *cmd = new octave_cmd_exec (command);
+
   m_cmd_queue.add_cmd (cmd);
+
   if (focus_console_after_command ())
     focus_command_window ();
 }
@@ -910,7 +912,10 @@ main_window::execute_command_in_terminal (const QString& command)
 void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
-  octave_link::post_event (this, &main_window::run_file_callback, info);
+  octave_cmd_eval *cmd = new octave_cmd_eval (info);
+
+  m_cmd_queue.add_cmd (cmd);
+
   if (focus_console_after_command ())
     focus_command_window ();
 }
@@ -2593,13 +2598,6 @@ void
 main_window::clear_history_callback (void)
 {
   Fhistory (ovl ("-c"));
-}
-
-void
-main_window::run_file_callback (const QFileInfo& info)
-{
-  octave_cmd_eval *cmd = new octave_cmd_eval (info);
-  m_cmd_queue.add_cmd (cmd);
 }
 
 bool

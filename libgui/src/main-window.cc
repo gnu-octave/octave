@@ -2527,12 +2527,16 @@ main_window::construct_tool_bar (void)
 void
 main_window::save_workspace_callback (const std::string& file)
 {
+  // INTERPRETER THREAD
+
   Fsave (ovl (file));
 }
 
 void
 main_window::load_workspace_callback (const std::string& file)
 {
+  // INTERPRETER THREAD
+
   Fload (ovl (file));
 
   octave::symbol_scope scope
@@ -2545,6 +2549,8 @@ main_window::load_workspace_callback (const std::string& file)
 void
 main_window::rename_variable_callback (const main_window::name_pair& names)
 {
+  // INTERPRETER THREAD
+
   octave::symbol_scope scope
     = octave::__get_current_scope__ ("main_window::rename_variable_callback");
 
@@ -2562,6 +2568,8 @@ main_window::rename_variable_callback (const main_window::name_pair& names)
 void
 main_window::command_window_undo_callback (void)
 {
+  // INTERPRETER THREAD
+
   octave::command_editor::undo ();
   octave::command_editor::redisplay ();
 }
@@ -2569,6 +2577,8 @@ main_window::command_window_undo_callback (void)
 void
 main_window::clear_command_window_callback (void)
 {
+  // INTERPRETER THREAD
+
   octave::command_editor::kill_full_line ();
   octave::command_editor::clear_screen ();
 }
@@ -2576,18 +2586,24 @@ main_window::clear_command_window_callback (void)
 void
 main_window::resize_command_window_callback (void)
 {
+  // INTERPRETER THREAD
+
   octave::command_editor::resize_terminal ();
 }
 
 void
 main_window::set_screen_size_callback (const int_pair& sz)
 {
+  // INTERPRETER THREAD
+
   octave::command_editor::set_screen_size (sz.first, sz.second);
 }
 
 void
 main_window::clear_workspace_callback (void)
 {
+  // INTERPRETER THREAD
+
   octave::interpreter& interp
     = octave::__get_interpreter__ ("main_window::clear_workspace_callback");
 
@@ -2597,6 +2613,8 @@ main_window::clear_workspace_callback (void)
 void
 main_window::clear_history_callback (void)
 {
+  // INTERPRETER THREAD
+
   Fhistory (ovl ("-c"));
 }
 
@@ -2610,6 +2628,8 @@ main_window::focus_console_after_command (void)
 void
 main_window::new_figure_callback (void)
 {
+  // INTERPRETER THREAD
+
   octave::interpreter& interp
     = octave::__get_interpreter__ ("main_window::new_figure_callback");
 
@@ -2705,6 +2725,8 @@ main_window::configure_shortcuts (void)
 void
 main_window::force_refresh_workspace (void)
 {
+  // INTERPRETER THREAD
+
   octave::symbol_scope scope
    = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 

@@ -111,7 +111,7 @@ public:
 
   void do_set_workspace (bool top_level, bool debug,
                          const std::list<workspace_element>& ws,
-                         const bool& variable_editor_too = true);
+                         bool update_variable_editor);
 
   void do_clear_workspace (void);
 

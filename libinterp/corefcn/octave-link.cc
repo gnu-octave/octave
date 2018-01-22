@@ -76,7 +76,7 @@ octave_link::set_workspace (void)
         workspace_info = scope.workspace_info ();
 
       instance->do_set_workspace (symtab.at_top_level (),
-                                  instance->debugging, workspace_info);
+                                  instance->debugging, workspace_info, true);
     }
 }
 

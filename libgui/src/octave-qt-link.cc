@@ -419,7 +419,7 @@ octave_qt_link::do_execute_command_in_terminal (const std::string& command)
 void
 octave_qt_link::do_set_workspace (bool top_level, bool debug,
                                   const std::list<workspace_element>& ws,
-                                  const bool& update_variable_editor)
+                                  bool update_variable_editor)
 {
   if (! top_level && ! debug)
     return;

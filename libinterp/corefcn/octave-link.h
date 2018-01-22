@@ -260,10 +260,12 @@ public:
   static void set_workspace (void);
 
   static void set_workspace (bool top_level,
-                             const std::list<workspace_element>& ws, const bool& update_variable_editor = true)
+                             const std::list<workspace_element>& ws,
+                             bool update_variable_editor = true)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, instance->debugging, ws, update_variable_editor);
+      instance->do_set_workspace (top_level, instance->debugging, ws,
+                                  update_variable_editor);
   }
 
   static void clear_workspace (void)
@@ -546,7 +548,7 @@ protected:
   virtual void
   do_set_workspace (bool top_level, bool debug,
                     const std::list<workspace_element>& ws,
-                    const bool& variable_editor_too = true) = 0;
+                    bool update_variable_editor) = 0;
 
   virtual void do_clear_workspace (void) = 0;
 

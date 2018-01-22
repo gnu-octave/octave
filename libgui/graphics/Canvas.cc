@@ -636,6 +636,20 @@ namespace QtHandles
         // clicks.
         if (! currentObj.valid_object ())
           currentObj = figObj;
+        else if (! currentObj.get_properties ().is_hittest ())
+          {
+            // Objects with "hittest"->"off" pass the mouse event to their 
+            // parent and so on.
+            graphics_object tmpgo;
+            tmpgo = gh_manager::get_object (currentObj.get_parent ());
+            while (tmpgo && ! tmpgo.get_properties ().is_hittest ())
+              tmpgo = gh_manager::get_object (tmpgo.get_parent ());
+
+            if (tmpgo && tmpgo.get_handle () != 0.0)
+              currentObj = tmpgo;
+            else
+              currentObj = graphics_object ();
+          }
 
         if (axesObj)
           {
@@ -660,7 +674,8 @@ namespace QtHandles
               // Update the figure "currentobject"
               auto& fprop = Utils::properties<figure> (figObj);
 
-              if (currentObj.get_properties ().handlevisibility_is ("on"))
+              if (currentObj 
+                  && currentObj.get_properties ().handlevisibility_is ("on"))
                 fprop.set_currentobject (currentObj.get_handle ()
                                          .as_octave_value ());
               else
@@ -678,13 +693,13 @@ namespace QtHandles
                                          button_number (event));
 
               // Execute the "buttondownfcn" of the selected object
-              if (! currentObj.get ("buttondownfcn").isempty ())
+              if (currentObj && ! currentObj.get ("buttondownfcn").isempty ())
                 gh_manager::post_callback (currentObj.get_handle (),
                                            "buttondownfcn",
                                            button_number (event));
 
               // Show context menu of the selected object
-              if (event->button () == Qt::RightButton)
+              if (currentObj && event->button () == Qt::RightButton)
                 ContextMenu::executeAt (currentObj.get_properties (),
                                         event->globalPos ());
             }

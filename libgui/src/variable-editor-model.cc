@@ -81,107 +81,6 @@ struct variable_editor_model::impl
     // FIXME: Other variables needed?
   };
 
-  void set (const QModelIndex& idx, const cell& dat)
-  {
-    if (idx.isValid ())
-      m_table[model_to_index (idx)] = dat;
-  }
-
-  void set (int r, int c, const cell& dat)
-  {
-    if (0 <= r && r < m_rows && 0 <= c && c <= columns ())
-      m_table[c * m_rows + r] = dat;
-  }
-
-  bool is_set (const QModelIndex& idx) const
-  {
-    return (idx.isValid ()
-            && m_table[model_to_index (idx)].m_state == cell::avail);
-  }
-
-  bool is_notavail (const QModelIndex& idx) const
-  {
-    return (idx.isValid ()
-            && m_table[model_to_index (idx)].m_state == cell::notavail);
-  }
-
-  bool is_pending (const QModelIndex& idx) const
-  {
-    return (idx.isValid ()
-            && m_table[model_to_index (idx)].m_state == cell::pending);
-  }
-
-  void pending (const QModelIndex& idx)
-  {
-    if (idx.isValid ())
-      m_table[model_to_index (idx)].m_state = cell::pending;
-  }
-
-  void notavail (int r, int c)
-  {
-    if (0 <= r && r < m_rows && 0 <= c && c <= columns ())
-      m_table[c * m_rows + r].m_state = cell::notavail;
-  }
-
-  bool requires_sub_editor (const QModelIndex& idx)
-  {
-    return (idx.isValid ()
-            && m_table[model_to_index (idx)].m_requires_sub_editor);
-  }
-
-  sub_editor_types sub_editor_type (const QModelIndex& idx)
-  {
-    return (idx.isValid ()
-            ? m_table[model_to_index (idx)].m_editor_type : sub_none);
-  }
-
-  void unset (int r, int c)
-  {
-    if (0 <= r && r < m_rows && 0 <= c && c <= columns ())
-      m_table[c * m_rows + r].m_state = cell::unset;
-  }
-
-  void clear (void)
-  {
-    for (int i = 0; i < m_table.size (); ++i)
-      m_table[i].m_state = cell::unset;
-  }
-
-  QVariant data (const QModelIndex& idx, int role) const
-  {
-    if (idx.isValid ())
-      {
-        const int i = model_to_index (idx);
-
-        switch (role)
-          {
-          case Qt::DisplayRole:
-          case Qt::EditRole:
-            return m_table[i].m_data;
-
-          case Qt::StatusTipRole:
-            return m_table[i].m_status_tip;
-
-          case Qt::ToolTipRole:
-            return m_table[i].m_tool_tip;
-
-          case Qt::BackgroundRole:
-            return m_table[i].m_background;
-          }
-      }
-
-    return QVariant ();
-  }
-
-  octave_idx_type rows (void) const { return m_rows; }
-
-  octave_idx_type columns (void) const { return m_cols; }
-
-  int model_to_index (const QModelIndex& idx) const
-  {
-    return idx.column () * m_rows + idx.row ();
-  }
-
   impl (void) = delete;
 
   impl (const QString& n, QLabel *l)
@@ -194,13 +93,116 @@ struct variable_editor_model::impl
 
   impl& operator = (const impl&) = delete;
 
+  int size (void) const { return m_table.size (); }
+  int rows (void) const { return m_rows; }
+  int columns (void) const { return m_cols; }
+
+  int index (int r, int c) const { return c * m_rows + r; }
+  int index (const QModelIndex& idx) const
+  {
+    return index (idx.row (), idx.column ());
+  }
+
+  cell& elem (int i) { return m_table[i]; }
+  cell& elem (int r, int c) { return elem (index (r, c)); }
+  cell& elem (const QModelIndex& idx) { return elem (index (idx)); }
+
+  const cell& elem (int i) const { return m_table[i]; }
+  const cell& elem (int r, int c) const { return elem (index (r, c)); }
+  const cell& elem (const QModelIndex& idx) const { return elem (index (idx)); }
+
+  void set (const QModelIndex& idx, const cell& dat)
+  {
+    if (idx.isValid ())
+      elem (idx) = dat;
+  }
+
+  void set (int r, int c, const cell& dat)
+  {
+    if (0 <= r && r < rows () && 0 <= c && c <= columns ())
+      elem (r, c) = dat;
+  }
+
+  bool is_set (const QModelIndex& idx) const
+  {
+    return (idx.isValid () && elem (idx).m_state == cell::avail);
+  }
+
+  bool is_notavail (const QModelIndex& idx) const
+  {
+    return (idx.isValid () && elem (idx).m_state == cell::notavail);
+  }
+
+  bool is_pending (const QModelIndex& idx) const
+  {
+    return (idx.isValid () && elem (idx).m_state == cell::pending);
+  }
+
+  void pending (const QModelIndex& idx)
+  {
+    if (idx.isValid ())
+      elem (idx).m_state = cell::pending;
+  }
+
+  void notavail (int r, int c)
+  {
+    if (0 <= r && r < rows () && 0 <= c && c <= columns ())
+      elem (r, c).m_state = cell::notavail;
+  }
+
+  bool requires_sub_editor (const QModelIndex& idx)
+  {
+    return (idx.isValid () && elem (idx).m_requires_sub_editor);
+  }
+
+  sub_editor_types sub_editor_type (const QModelIndex& idx)
+  {
+    return (idx.isValid () ? elem (idx).m_editor_type : sub_none);
+  }
+
+  void unset (int r, int c)
+  {
+    if (0 <= r && r < rows () && 0 <= c && c <= columns ())
+      elem (r, c).m_state = cell::unset;
+  }
+
+  void clear (void)
+  {
+    for (int i = 0; i < size (); ++i)
+      elem (i).m_state = cell::unset;
+  }
+
+  QVariant data (const QModelIndex& idx, int role) const
+  {
+    if (idx.isValid ())
+      {
+        switch (role)
+          {
+          case Qt::DisplayRole:
+          case Qt::EditRole:
+            return elem (idx).m_data;
+
+          case Qt::StatusTipRole:
+            return elem (idx).m_status_tip;
+
+          case Qt::ToolTipRole:
+            return elem (idx).m_tool_tip;
+
+          case Qt::BackgroundRole:
+            return elem (idx).m_background;
+          }
+      }
+
+    return QVariant ();
+  }
+
   const std::string m_name;
 
   std::string m_type;
 
-  octave_idx_type m_rows;
-
-  octave_idx_type m_cols;
+  // Using QVector limits the size to int.
+  int m_rows;
+  int m_cols;
 
   QVector<cell> m_table;
 
@@ -376,9 +378,9 @@ variable_editor_model::insertRows (int row, int count, const QModelIndex&)
 bool
 variable_editor_model::removeRows (int row, int count, const QModelIndex&)
 {
-  if (row + count > m_d->m_rows)
+  if (row + count > m_d->rows ())
     {
-      qDebug () << "Tried to remove too many rows " << m_d->m_rows << " "
+      qDebug () << "Tried to remove too many rows " << m_d->rows () << " "
                 << count << " (" << row << ")";
       return false;
     }
@@ -411,9 +413,9 @@ variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
 bool
 variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
 {
-  if (col + count > m_d->m_cols)
+  if (col + count > m_d->columns ())
     {
-      qDebug () << "Tried to remove too many cols " << m_d->m_cols << " "
+      qDebug () << "Tried to remove too many cols " << m_d->columns () << " "
                 << count << " (" << col << ")";
       return false;
     }
@@ -531,17 +533,17 @@ variable_editor_model::received_initialize_data (const QString& class_name,
 
   m_d->m_type = paren.toStdString ();
 
-  const int r = m_d->m_rows - rows;
+  const int r = m_d->rows () - rows;
   if (r > 0)
-    emit beginRemoveRows (QModelIndex (), rows, m_d->m_rows - 1);
+    emit beginRemoveRows (QModelIndex (), rows, m_d->rows () - 1);
   else if (r < 0)
-    emit beginInsertRows (QModelIndex (), m_d->m_rows, rows - 1);
+    emit beginInsertRows (QModelIndex (), m_d->rows (), rows - 1);
 
-  const int c = m_d->m_cols - cols;
+  const int c = m_d->columns () - cols;
   if (c > 0)
-    emit beginRemoveColumns (QModelIndex (), cols, m_d->m_cols - 1);
+    emit beginRemoveColumns (QModelIndex (), cols, m_d->columns () - 1);
   else if (c < 0)
-    emit beginInsertColumns (QModelIndex (), m_d->m_cols, cols - 1);
+    emit beginInsertColumns (QModelIndex (), m_d->columns (), cols - 1);
 
   m_d->m_rows = rows;
   m_d->m_cols = cols;
@@ -559,8 +561,8 @@ variable_editor_model::received_initialize_data (const QString& class_name,
     emit endInsertRows ();
 
   emit dataChanged (QAbstractTableModel::index (0, 0),
-                    QAbstractTableModel::index (m_d->m_rows - 1,
-                                                m_d->m_cols - 1));
+                    QAbstractTableModel::index (m_d->rows () - 1,
+                                                m_d->columns () - 1));
 
   m_d->m_label->setTextFormat (Qt::PlainText);
 
@@ -705,8 +707,8 @@ variable_editor_model::init_from_oct (const std::string& x)
 
   const QString class_name = QString::fromStdString (ov.class_name ());
   const QString paren = ov.iscell () ? "{" : "(";
-  const octave_idx_type rows = ov.rows ();
-  const octave_idx_type cols = ov.columns ();
+  const int rows = ov.rows ();
+  const int cols = ov.columns ();
 
   display_valid ();
 

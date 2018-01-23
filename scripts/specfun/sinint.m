@@ -61,14 +61,14 @@ function [y] = sinint (x)
 
   i_miss = true (length (x), 1);
 
-  # Trivial values
+  ## Trivial values
   y(x == 0) = 0;
   y(x == Inf) = pi / 2;
   y(x == - Inf) = - pi / 2;
 
   i_miss = ((i_miss) & (x != 0) & (x != Inf) & (x != - Inf));
 
-  # For values large in module we use the relation with expint
+  ## For values large in modulus we use the relation with expint
 
   flag_large = abs (x) > 2;
   xx = x(flag_large & i_miss);
@@ -81,7 +81,7 @@ function [y] = sinint (x)
   yy(ii_conj) = conj (yy(ii_conj));
   y(i_miss & flag_large) = yy;
 
-  # For values small in module we use the series expansion
+  ## For values small in modulus we use the series expansion
 
   i_miss = ((i_miss) & (!flag_large));
   xx = x(i_miss);
@@ -102,6 +102,7 @@ function [y] = sinint (x)
   y = reshape (y, sz);
 
 endfunction
+
 
 %!test
 %! x = 1.1;
@@ -124,7 +125,7 @@ endfunction
 %!assert (sinint (inf), pi/2)
 %!assert (sinint (-inf), -pi/2)
 
-%%tests against maple
+##tests against maple
 %!assert (sinint (1), 0.9460830703671830149414, -2*eps)
 %!assert (sinint (-1), -0.9460830703671830149414, -2*eps)
 %!assert (sinint (pi), 1.851937051982466170361, -2*eps)
@@ -134,7 +135,7 @@ endfunction
 %!assert (sinint (20i), 1.2807826332028294459e7*1i, -2*eps)
 
 %!test
-%! x = (0:4) ';
+%! x = (0:4)';
 %! y_ex = [0
 %!         0.946083070367183015
 %!         1.60541297680269485
@@ -143,7 +144,7 @@ endfunction
 %! assert (sinint (x), y_ex, -4*eps);
 
 %!test
-%! x = -(0:4) ';
+%! x = -(0:4)';
 %! y_ex = - [0
 %!           0.946083070367183015
 %!           1.60541297680269485

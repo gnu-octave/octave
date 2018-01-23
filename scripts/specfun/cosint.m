@@ -82,20 +82,20 @@ function [y] = cosint (x)
 
   i_miss = true (length (x), 1);
 
-  # Trivial values
+  ## special values
   y(x == 0) = - Inf;
   y(x == Inf) = 0;
   y(x == - Inf) = 1i * pi;
 
   i_miss = ((i_miss) & (x != 0) & (x != Inf) & (x != - Inf));
 
-  # For values large in module and not in (-oo,0),we use the relation
-  # with expint
+  ## For values large in modulus and not in (-oo,0), we use the relation
+  ## with expint
 
   flag_large = (abs (x) > 2 & ((abs (imag (x)) > 1e-15) | real (x) > 0));
   xx = x(flag_large);
 
-  # Abramowitz, relation 5.2.20
+  ## Abramowitz, relation 5.2.20
   ii_sw = (real (xx) <= 0 & imag (xx) <= 0);
   xx(ii_sw) = conj (xx(ii_sw));
   ii_nw = (real (xx) < 0);
@@ -105,8 +105,7 @@ function [y] = cosint (x)
   yy(ii_sw) = conj (yy(ii_sw));
   y(i_miss & flag_large) = yy;
 
-  # For values small in module we use the series expansion
-
+  ## For values small in modulus, use the series expansion (also near (-oo, 0])
   i_miss = ((i_miss) & (!flag_large));
   xx = x(i_miss);
   ssum = - xx .^ 2 / 4; # First term of the series expansion
@@ -128,8 +127,8 @@ function [y] = cosint (x)
 
 endfunction
 
-%!assert (cosint (1.1), 0.38487337742465081550, 2 * eps);
 
+%!assert (cosint (1.1), 0.38487337742465081550, 2 * eps);
 
 %!test
 %! x = [2, 3, pi; exp(1), 5, 6];
@@ -142,7 +141,7 @@ endfunction
 %!assert (cosint (inf), 0)
 %!assert (cosint (-inf), 1i * pi)
 
-%%tests against maple
+##tests against maple
 %!assert (cosint (1), 0.337403922900968135, -2*eps)
 %!assert (cosint (-1), 0.337403922900968135 + 3.14159265358979324*I, -2*eps)
 %!assert (cosint (pi), 0.0736679120464254860, -2*eps)

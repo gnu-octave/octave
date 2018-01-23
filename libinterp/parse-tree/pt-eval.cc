@@ -2211,7 +2211,7 @@ namespace octave
                               &value_stack<const std::list<octave_lvalue>*>::pop);
 
             if (ult.numel () != 1)
-              err_nonbraced_cs_list_assignment ();
+              err_invalid_structure_assignment ();
 
             octave_value::assign_op etype = expr.op_type ();
 

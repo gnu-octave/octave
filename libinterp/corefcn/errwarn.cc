@@ -77,6 +77,12 @@ err_invalid_inquiry_subscript (void)
 }
 
 void
+err_invalid_structure_assignment (void)
+{
+  error ("invalid dot name structure assignment because the structure array is empty.  Specify a subscript on the structure array to resolve.");
+}
+
+void
 err_nonbraced_cs_list_assignment (void)
 {
   error ("invalid assignment to cs-list outside multiple assignment");

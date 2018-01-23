@@ -164,7 +164,7 @@
 %! a = struct ("value", {1, 2, 3, 4, 5});
 %! [a(2:4).value] = 1;
 
-%!error <invalid assignment to cs-list outside multiple assignment>
+%!error <invalid dot name structure assignment>
 %! c(4, 4, 4, 4).name  = "a";
 %! c(3, 3, 3, 3).value = 1;
 %! c([1, 3], 2, :, [3, 4]).value = 1;

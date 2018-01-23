@@ -59,6 +59,9 @@ OCTAVE_NORETURN OCTINTERP_API extern void
 err_invalid_inquiry_subscript (void);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
+err_invalid_structure_assignment (void);
+
+OCTAVE_NORETURN OCTINTERP_API extern void
 err_nonbraced_cs_list_assignment (void);
 
 OCTAVE_NORETURN OCTINTERP_API extern void

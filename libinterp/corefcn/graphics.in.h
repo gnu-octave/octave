@@ -1589,7 +1589,8 @@ public:
 
   bool_property (const std::string& nm, const graphics_handle& h,
                  const char *val)
-    : radio_property (nm, h, radio_values ("on|off"), val)
+    : radio_property (nm, h, radio_values (std::string (val) == "on" ? 
+                                           "{on}|off" : "on|{off}"), val)
   { }
 
   bool_property (const bool_property& p)

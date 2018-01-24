@@ -3159,6 +3159,11 @@ public:
       callback_property windowscrollwheelfcn , Matrix ()
       radio_property windowstyle , "{normal}|modal|docked"
 
+      // Overridden base property  
+      // Property is not implemented for figures.
+      // Hide it and set it to a default value that works.
+      radio_property pickableparts h , "{visible}"
+
       // Octave-specific properties
       mutable string_property __gl_extensions__ hr , ""
       mutable string_property __gl_renderer__ hr , ""

@@ -63,7 +63,7 @@ function [y] = sinint (x)
   i_miss = true (length (x), 1);
 
   ## Trivial values
-  y(x == 0) = 0;
+  y(x == 0) = x(x == 0);  # correctly signed zero
   y(x == Inf) = pi / 2;
   y(x == - Inf) = - pi / 2;
 
@@ -123,6 +123,7 @@ endfunction
 %! assert (A, B, -5e-15);
 
 %!assert (sinint (0), 0)
+%!assert (signbit (sinint (-0)))
 %!assert (sinint (inf), pi/2)
 %!assert (sinint (-inf), -pi/2)
 %!assert (isnan (sinint (nan)))

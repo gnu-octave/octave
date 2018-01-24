@@ -77,18 +77,25 @@ function [y] = cosint (x)
   endif
 
   sz = size (x);
-  x = x(:);
+  #x = reshape (x, numel (x), 1);
+  if (iscomplex (x))
+    ## workaround reshape narrowing to real (#52953)
+    x = complex (real (x)(:), imag (x)(:));
+  else
+    x = x(:);
+  end
+
   y = zeros (size (x), class (x));
   tol = eps (class (x));
 
   i_miss = true (length (x), 1);
 
   ## special values
-  y(x == 0) = - Inf;
   y(x == Inf) = 0;
-  y(x == - Inf) = 1i * pi;
+  y((x == -Inf) & !signbit (imag(x))) = 1i * pi;
+  y((x == -Inf) &  signbit (imag(x))) = -1i * pi;
 
-  i_miss = ((i_miss) & (x != 0) & (x != Inf) & (x != - Inf));
+  i_miss = ((i_miss) & (x != Inf) & (x != -Inf));
 
   ## For values large in modulus and not in (-oo,0), we use the relation
   ## with expint
@@ -108,10 +115,16 @@ function [y] = cosint (x)
 
   ## For values small in modulus, use the series expansion (also near (-oo, 0])
   i_miss = ((i_miss) & (!flag_large));
-  xx = x(i_miss);
+  if (iscomplex (x))
+    ## indexing can lose imag part: if it was -0, we could end up on the
+    ## wrong right side of the branch cut along the negative real axis.
+    xx = complex (real (x)(i_miss), imag (x)(i_miss));
+  else
+    xx = x(i_miss);
+  end
   ssum = - xx .^ 2 / 4; # First term of the series expansion
   gma = 0.57721566490153286060651209008; # Euler gamma constant
-  yy = gma + log (xx) + ssum;
+  yy = gma + log (complex (xx)) + ssum; # log(complex(...) handles signed zero
   flag_sum = true (nnz (i_miss), 1);
   it = 1;
   maxit = 300;
@@ -139,8 +152,12 @@ endfunction
 %! assert (A, B, -5e-15);
 
 %!assert (cosint (0), - Inf)
+%!assert (cosint (-0), -inf + 1i*pi)
+%!assert (cosint (complex (-0, 0)), -inf + 1i*pi)
+%!assert (cosint (complex (-0, -0)), -inf - 1i*pi)
 %!assert (cosint (inf), 0)
 %!assert (cosint (-inf), 1i * pi)
+%!assert (cosint (complex (-inf, -0)), -1i * pi)
 %!assert (isnan (cosint (nan)))
 
 %!assert (class (cosint (single (1))), "single")
@@ -164,12 +181,19 @@ endfunction
 %! assert (cosint(x), y_ex, -3e-15);
 
 %!test
-%! x = -(0:4) ';
-%! y_ex = [-Inf
-%!         0.337403922900968135 + 3.14159265358979324*I
-%!         0.422980828774864996 + 3.14159265358979324*I
-%!         0.119629786008000328 + 3.14159265358979324*I
-%!         -0.140981697886930412 + 3.14159265358979324*I];
+%! x = -(1:4).';
+%! y_ex = [0.337403922900968135 + pi*1i
+%!         0.422980828774864996 + pi*1i
+%!         0.119629786008000328 + pi*1i
+%!         -0.140981697886930412 + pi*1i];
+%! assert (cosint (x), y_ex, -4*eps);
+
+%!test
+%! x = complex (-(1:4).', -0);
+%! y_ex = [0.337403922900968135 - pi*1i
+%!         0.422980828774864996 - pi*1i
+%!         0.119629786008000328 - pi*1i
+%!         -0.140981697886930412 - pi*1i];
 %! assert (cosint (x), y_ex, -4*eps);
 
 %!test
@@ -182,9 +206,8 @@ endfunction
 %! assert (cosint (x), y_ex, -4*eps);
 
 %!test
-%! x = - 1i * (0:4).';
-%! y_ex = [- Inf
-%!         0.837866940980208241 - 1.57079632679489662*I
+%! x = -1i * (1:4).';
+%! y_ex = [0.837866940980208241 - 1.57079632679489662*I
 %!         2.45266692264691452 - 1.57079632679489662*I
 %!         4.96039209476560976 - 1.57079632679489662*I
 %!         9.81354755882318556 - 1.57079632679489662*I];

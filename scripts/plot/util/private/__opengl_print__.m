@@ -25,9 +25,6 @@ function opts = __opengl_print__ (opts)
 
   dos_shell = (ispc () && ! isunix ());
 
-  set (0, "currentfigure", opts.figure);
-  drawnow ("expose");
-
   if (! isempty (opts.fig2dev_binary))
     ## fig2dev is prefered for conversion to emf
     fig2dev_devices = {"pstex", "mf", "emf"};

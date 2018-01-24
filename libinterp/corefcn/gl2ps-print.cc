@@ -1085,6 +1085,8 @@ namespace octave
 
     gl2ps_renderer rend (fp, term);
 
+    Matrix pos = fig.get ("position").matrix_value ();
+    rend.set_viewport (pos(2), pos(3));
     rend.draw (fig, stream);
 
     // Make sure buffered commands are finished!!!

@@ -1349,7 +1349,6 @@ function rlist = missing_functions ()
   "whatsnew",
   "width",
   "winopen",
-  "winqueryreg",
   "withtol",
   "wordcloud",
   "workspace",

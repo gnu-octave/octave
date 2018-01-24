@@ -252,6 +252,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       rticks
       thetaticks
       vecnorm
+      winqueryreg
       xticklabels
       xticks
       yticklabels

@@ -532,6 +532,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(getrusage)
 
+@DOCSTRING(winqueryreg)
+
 @node Hashing Functions
 @section Hashing Functions
 

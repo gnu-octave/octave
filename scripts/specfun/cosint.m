@@ -78,7 +78,8 @@ function [y] = cosint (x)
 
   sz = size (x);
   x = x(:);
-  y = zeros (size (x));
+  y = zeros (size (x), class (x));
+  tol = eps (class (x));
 
   i_miss = true (length (x), 1);
 
@@ -117,7 +118,7 @@ function [y] = cosint (x)
   while ((any (flag_sum)) && (it < maxit));
     ssum .*= - xx .^ 2 * (2 * it) / ((2 * it + 2) ^ 2 * (2 * it + 1));
     yy(flag_sum) += ssum (flag_sum);
-    flag_sum = (abs (ssum) >= eps);
+    flag_sum = (abs (ssum) >= tol);
     it++;
   endwhile
 
@@ -140,6 +141,9 @@ endfunction
 %!assert (cosint (0), - Inf)
 %!assert (cosint (inf), 0)
 %!assert (cosint (-inf), 1i * pi)
+%!assert (isnan (cosint (nan)))
+
+%!assert (class (cosint (single (1))), "single")
 
 ##tests against maple
 %!assert (cosint (1), 0.337403922900968135, -2*eps)
@@ -196,4 +200,6 @@ endfunction
 %!      -8.63307471207423322 + 3.13159298695312800*I
 %!      0.0698222284673061493 - 3.11847446254772946*I ];
 %! B = cosint (x);
-%! assert (A, B, -6e-16)
+%! assert (A, B, -3*eps)
+%! B = cosint (single (x));
+%! assert (A, B, -3*eps ("single"))

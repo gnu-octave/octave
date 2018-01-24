@@ -57,7 +57,8 @@ function [y] = sinint (x)
 
   sz = size (x);
   x = x(:);
-  y = zeros (size (x));
+  y = zeros (size (x), class (x));
+  tol = eps (class (x));
 
   i_miss = true (length (x), 1);
 
@@ -93,7 +94,7 @@ function [y] = sinint (x)
   while ((any (flag_sum)) && (it < maxit));
     ssum .*= - xx .^ 2 * (2 * it + 1) / ((2 * it + 3) ^ 2 * (2 * it + 2));
     yy(flag_sum) += ssum (flag_sum);
-    flag_sum = (abs (ssum) >= eps);
+    flag_sum = (abs (ssum) >= tol);
     it++;
   endwhile
 
@@ -124,6 +125,9 @@ endfunction
 %!assert (sinint (0), 0)
 %!assert (sinint (inf), pi/2)
 %!assert (sinint (-inf), -pi/2)
+%!assert (isnan (sinint (nan)))
+
+%!assert (class (sinint (single (1))), "single")
 
 ##tests against maple
 %!assert (sinint (1), 0.9460830703671830149414, -2*eps)
@@ -182,4 +186,6 @@ endfunction
 %!      -0.000099999999944461111128 + 0.99999999833338888972e-6*1i
 %!      -1.5386156269726011209 - 0.053969388020443786229*1i ];
 %! B = sinint (x);
-%! assert (A, B, -6e-16)
+%! assert (A, B, -3*eps)
+%! B = sinint (single (x));
+%! assert (A, B, -3*eps ("single"))

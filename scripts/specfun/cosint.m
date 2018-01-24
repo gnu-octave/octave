@@ -226,3 +226,12 @@ endfunction
 %! assert (A, B, -3*eps)
 %! B = cosint (single (x));
 %! assert (A, B, -3*eps ("single"))
+
+## fails along negative real axis
+%!xtest
+%! x = [-25 -100 -1000];
+%! yex = [-0.0068485971797025909189 + pi*1i
+%!        -0.0051488251426104921444 + pi*1i
+%!        0.000826315511090682282 + pi*1i];
+%! y = cosint (x);
+%! assert (y, yex, -5*eps)

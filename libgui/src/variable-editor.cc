@@ -238,24 +238,17 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
 }
 
 void
-variable_editor::clear_data_cache (void)
+variable_editor::refresh (void)
 {
+  // FIXME: it would be nice to only refresh the variable tabs that are
+  // displayed, and then only if something has actually changed.
+
   for (int i = 0; i < m_tab_widget->count (); ++i)
     {
       QTableView *const table = get_table_data (m_tab_widget, i).m_table;
       QAbstractItemModel *const model = table->model ();
-      qobject_cast<variable_editor_model *> (model)->clear_data_cache ();
+      qobject_cast<variable_editor_model *> (model)->update_data_cache ();
     }
-}
-
-void
-variable_editor::refresh (void)
-{
-  // FIXME: this preserves existing behavior, but what we really want to
-  // do is refresh the variable tabs that are displayed only if
-  // something has actually changed.
-
-  clear_data_cache ();
 }
 
 bool
@@ -780,7 +773,8 @@ variable_editor::double_click (const QModelIndex& idx)
     = qobject_cast<variable_editor_model *> (table->model ());
 
   if (model->requires_sub_editor (idx))
-    edit_variable (name + model->subscript_expression (idx), octave_value ());
+    edit_variable (name + model->subscript_expression (idx),
+                   model->value_at (idx));
 }
 
 void

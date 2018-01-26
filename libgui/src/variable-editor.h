@@ -56,9 +56,6 @@ public:
 
   void edit_variable (const QString& name, const octave_value& val);
 
-  // Clear all the models' data cache.
-  void clear_data_cache (void);
-
   void refresh (void);
 
   bool has_focus (void);

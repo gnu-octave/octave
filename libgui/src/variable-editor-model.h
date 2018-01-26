@@ -57,6 +57,8 @@ public:
 
   variable_editor_model& operator = (const variable_editor_model&) = delete;
 
+  octave_value value_at (const QModelIndex& idx) const;
+
   int rowCount (const QModelIndex& = QModelIndex ()) const;
 
   int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -80,7 +82,7 @@ public:
   bool removeColumns (int column, int count,
                       const QModelIndex& parent = QModelIndex());
 
-  void clear_data_cache (void);
+  void update_data_cache (void);
 
   // Is cell at idx complex enough to require a sub editor?
   bool requires_sub_editor (const QModelIndex& idx) const;
@@ -97,39 +99,26 @@ public:
 
 signals: // private
 
-  void data_ready (int r, int c, const QString& data,
-                   const QString& class_info, int rows, int cols);
+  void update_data_signal (const octave_value& val);
 
-  void no_data (int r, int c);
+  void clear_data_cell_signal (int r, int c);
 
-  void unset_data (int r, int c);
+  void data_error_signal (const QString& name) const;
 
-  void user_error (const QString& title, const QString& msg);
-
-  void initialize_data (const QString& class_name, const QString& paren,
-                        int rows, int cols);
-
-  void updated (void);
+  void user_error_signal (const QString& title, const QString& msg) const;
 
 private slots:
 
-  void received_data (int r, int c, const QString& dat,
-                      const QString& class_info, int rows, int cols);
+  void update_data (const octave_value& val);
 
-  void received_no_data (int r, int c);
+  void clear_data_cell (int r, int c);
 
-  void received_unset_data (int r, int c);
+  // Change the display if the variable does not exist.
+  void data_error (const QString& msg);
 
-  void received_user_error (const QString& title, const QString& msg);
-
-  void received_initialize_data (const QString& class_name,
-                                 const QString& paren, int rows, int cols);
+  void user_error (const QString& title, const QString& msg);
 
 private:
-
-  // Get data for ov(row, col).  This must be executed in the octave thread!
-  void get_data_oct (const int& row, const int& col,
-                     const std::string& v) /*const*/;
 
   void set_data_oct (const std::string& v, const int& row, const int& col,
                      const std::string& val);
@@ -138,15 +127,19 @@ private:
 
   void eval_oct (const std::string& name, const std::string& expr);
 
-  octave_value retrieve_variable (const std::string& x, int& parse_status);
+  octave_value retrieve_variable (const std::string& x);
 
   sub_editor_types editor_type (const QModelIndex& idx) const;
 
-  // Change the display if the variable does not exist (Yet)
-  void display_invalid (void);
+  void invalidate (void);
 
   // Change the display now that the variable exists
   void display_valid (void);
+
+  bool type_is_editable (const octave_value& val,
+                         bool display_error = true) const;
+
+  void evaluation_error (const std::string& expr) const;
 
   QObject *m_parent;
 

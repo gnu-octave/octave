@@ -339,10 +339,10 @@ variable_editor::notice_settings (const QSettings *settings)
   // FIXME: Why use object->tostring->toint?  Why not just 100?
 
   m_default_width = settings->value ("variable_editor/column_width",
-                                     QVariant ("100")).toString ().toInt ();
+                                     100).toInt ();
 
   m_autofit = settings->value ("variable_editor/autofit_column_width",
-                               QVariant (false)).toBool ();
+                               false).toBool ();
 
   // FIXME: Magic Number 1 here, why not use enum?
 
@@ -353,10 +353,10 @@ variable_editor::notice_settings (const QSettings *settings)
     }
 
   m_default_height = settings->value ("variable_editor/row_height",
-                                      QVariant ("10")).toString ().toInt ();
+                                      10).toInt ();
 
   m_alternate_rows = settings->value ("variable_editor/alternate_rows",
-                                      QVariant (false)).toBool ();
+                                      false).toBool ();
 
   QList<QColor> _default_colors = resource_manager::varedit_default_colors ();
 
@@ -375,7 +375,10 @@ variable_editor::notice_settings (const QSettings *settings)
     }
   else
     {
-      font_name = settings->value ("variable_editor/font_name", settings->value ("terminal/fontName", "Courier New")).toString ();
+      font_name = settings->value ("variable_editor/font_name",
+                                   settings->value ("terminal/fontName",
+                                                    "Courier New")).toString ();
+
       font_size = settings->value ("variable_editor/font_size", 10).toInt ();
     }
 
@@ -393,6 +396,7 @@ variable_editor::notice_settings (const QSettings *settings)
   for (int i = 0; i < class_chars.length (); i++)
     {
       QVariant default_var = _default_colors.at (i);
+
       QColor setting_color = settings->value ("variable_editor/color_"
                                               + class_chars.mid (i, 1),
                                               default_var).value<QColor> ();

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "event-queue.h"
 
+class octave_value;
 class string_vector;
 class workspace_element;
 
@@ -418,11 +419,11 @@ public:
   }
 
   static bool
-  openvar (const std::string &name)
+  edit_variable (const std::string &name, const octave_value& val)
   {
     if (enabled ())
       {
-        instance->do_openvar (name);
+        instance->do_edit_variable (name, val);
         return true;
       }
     else
@@ -578,7 +579,8 @@ protected:
 
   virtual void do_show_doc (const std::string& file) = 0;
 
-  virtual void do_openvar (const std::string& name) = 0;
+  virtual void
+  do_edit_variable (const std::string& name, const octave_value& val) = 0;
 };
 
 #endif

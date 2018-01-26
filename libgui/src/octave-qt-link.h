@@ -40,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
+class octave_value;
+
 //! Provides threadsafe access to octave.
 //! @author Jacob Dawid
 //!
@@ -138,7 +140,7 @@ public:
 
   void do_show_doc (const std::string& file);
 
-  void do_openvar (const std::string &name);
+  void do_edit_variable (const std::string& name, const octave_value& val);
 
   void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
 
@@ -197,7 +199,7 @@ signals:
 
   void show_doc_signal (const QString& file);
 
-  void open_variable_signal (const QString &name);
+  void edit_variable_signal (const QString& name, const octave_value& val);
 
   void refresh_variable_editor_signal (void);
 

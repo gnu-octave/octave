@@ -46,8 +46,8 @@ variable_editor_model : public QAbstractTableModel
 
 public:
 
-  variable_editor_model (const QString &expr, QLabel *label,
-                         QObject *p = nullptr);
+  variable_editor_model (const QString &expr, const octave_value& val,
+                         QLabel *label, QObject *p = nullptr);
 
   ~variable_editor_model (void);
 

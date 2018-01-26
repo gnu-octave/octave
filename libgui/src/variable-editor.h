@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-dock-widget.h"
 
+class octave_value;
+
 class QTabWidget;
 class QToolBar;
 class QMainWindow;
@@ -52,7 +54,7 @@ public:
 
   variable_editor& operator = (const variable_editor&) = delete;
 
-  void edit_variable (const QString& name);
+  void edit_variable (const QString& name, const octave_value& val);
 
   // Clear all the models' data cache.
   void clear_data_cache (void);

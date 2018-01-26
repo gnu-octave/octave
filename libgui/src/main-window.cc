@@ -1736,9 +1736,9 @@ main_window::request_open_files (const QStringList& open_file_names)
 }
 
 void
-main_window::edit_variable (const QString &expr)
+main_window::edit_variable (const QString &expr, const octave_value& val)
 {
-  m_variable_editor_window->edit_variable (expr);
+  m_variable_editor_window->edit_variable (expr, val);
 
   if (! m_variable_editor_window->isVisible ())
     {
@@ -1804,8 +1804,11 @@ main_window::construct (void)
       connect (m_workspace_model, SIGNAL (model_changed (void)),
                m_workspace_window, SLOT (handle_model_changed (void)));
 
-      connect (m_octave_qt_link, SIGNAL (open_variable_signal (const QString&)),
-               this, SLOT (edit_variable (const QString&)));
+      connect (m_octave_qt_link,
+               SIGNAL (edit_variable_signal (const QString&,
+                                             const octave_value&)),
+               this,
+               SLOT (edit_variable (const QString&, const octave_value&)));
 
       connect (m_octave_qt_link, SIGNAL (refresh_variable_editor_signal (void)),
                this, SLOT (refresh_variable_editor (void)));

@@ -214,6 +214,7 @@ struct variable_editor_model::impl
 };
 
 variable_editor_model::variable_editor_model (const QString& expr,
+                                              const octave_value&,
                                               QLabel *label,
                                               QObject *parent)
   : QAbstractTableModel (parent), m_parent (parent), m_d (new impl (expr, label))

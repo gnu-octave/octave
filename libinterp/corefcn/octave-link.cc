@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "ovl.h"
 #include "pager.h"
+#include "symscope.h"
 
 static int
 octave_readline_hook (void)
@@ -384,8 +385,8 @@ Undocumented internal function.
   return ovl (octave_link::show_preferences ());
 }
 
-DEFUN (openvar, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (openvar, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} openvar (@var{name})
 Open the variable @var{name} in the graphical Variable Editor.
 @end deftypefn */)
@@ -401,7 +402,16 @@ Open the variable @var{name} in the graphical Variable Editor.
   if (! (Fisguirunning ())(0).is_true ())
     warning ("openvar: GUI is not running, can't start Variable Editor");
   else
-    octave_link::openvar (name);
+    {
+      octave::symbol_scope scope = interp.require_current_scope ("openvar");
+
+      octave_value val = scope.varval (name);
+
+      if (val.is_undefined ())
+        error ("openvar: '%s' is not a variable", name.c_str ());
+
+      octave_link::edit_variable (name, val);
+    }
 
   return ovl ();
 }

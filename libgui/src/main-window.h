@@ -64,6 +64,8 @@ along with Octave; see the file COPYING.  If not, see
 
 class settings_dialog;
 
+class octave_value;
+
 //! QObject to manage the Octave interpreter.
 
 class octave_interpreter : public QObject
@@ -282,7 +284,7 @@ private slots:
 
   //! Opens the variable editor for @p name.
 
-  void edit_variable (const QString &name);
+  void edit_variable (const QString &name, const octave_value&);
 
   void refresh_variable_editor (void);
 

@@ -26,10 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QStringList>
 #include <QDialog>
 #include <QDir>
+#include <QMetaType>
 #include <QPushButton>
+#include <QStringList>
 
 #include "oct-env.h"
 #include "str-vec.h"
@@ -39,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "interpreter-private.h"
 #include "load-path.h"
+#include "ov.h"
 #include "utils.h"
 
 #include "octave-gui.h"
@@ -49,7 +51,9 @@ along with Octave; see the file COPYING.  If not, see
 octave_qt_link::octave_qt_link (QWidget *,
                                 octave::gui_application *app_context)
   : octave_link (), m_app_context (app_context)
-{ }
+{
+  qRegisterMetaType<octave_value> ("octave_value");
+}
 
 bool
 octave_qt_link::do_confirm_shutdown (void)
@@ -616,9 +620,9 @@ octave_qt_link::do_show_doc (const std::string& file)
 }
 
 void
-octave_qt_link::do_openvar (const std::string &expr)
+octave_qt_link::do_edit_variable (const std::string& expr, const octave_value& val)
 {
-  emit open_variable_signal (QString::fromStdString (expr));
+  emit edit_variable_signal (QString::fromStdString (expr), val);
 }
 
 void

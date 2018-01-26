@@ -109,8 +109,10 @@ variable_editor::variable_editor (QWidget *p)
 
   m_tab_widget->setTabsClosable (true);
   m_tab_widget->setMovable (true);
+
   connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
            this, SLOT (closeTab (int)));
+
   m_main->setCentralWidget (m_tab_widget);
 
   // Main.
@@ -130,7 +132,7 @@ variable_editor::~variable_editor (void)
 }
 
 void
-variable_editor::edit_variable (const QString& name)
+variable_editor::edit_variable (const QString& name, const octave_value& val)
 {
   if (m_stylesheet.isEmpty ())
     {
@@ -160,11 +162,11 @@ variable_editor::edit_variable (const QString& name)
   QLabel *label = new QLabel (page);
   label->setTextFormat (Qt::PlainText);
   label->setText (name);
-  vbox->addWidget (label);
+  vbox->addWidget (label, 0, Qt::AlignTop);
 
   QTableView *table = new QTableView (page);
   variable_editor_model *model =
-    new variable_editor_model (name, label, table);
+    new variable_editor_model (name, val, label, table);
 
   table->setModel (model);
   table->setWordWrap (false);
@@ -778,7 +780,7 @@ variable_editor::double_click (const QModelIndex& idx)
     = qobject_cast<variable_editor_model *> (table->model ());
 
   if (model->requires_sub_editor (idx))
-    edit_variable (name + model->subscript_expression (idx));
+    edit_variable (name + model->subscript_expression (idx), octave_value ());
 }
 
 void
@@ -1012,7 +1014,7 @@ variable_editor::up (void)
   if (name.endsWith (')') || name.endsWith ('}'))
     {
       name.remove (QRegExp ("(\\(|\\{)[^({]*(\\)|\\})$"));
-      edit_variable (name);
+      edit_variable (name, octave_value ());
 
       // FIXME: What was the intent here?
       // emit command_requested (QString ("openvar ('%1');").arg (name));

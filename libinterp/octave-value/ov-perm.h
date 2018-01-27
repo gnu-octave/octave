@@ -230,6 +230,10 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
+  void short_disp (std::ostream& os) const;
+
+  std::string edit_display (octave_idx_type i, octave_idx_type j) const;
+
   octave_value map (unary_mapper_t umap) const
   { return to_dense ().map (umap); }
 

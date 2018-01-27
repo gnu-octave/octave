@@ -98,6 +98,10 @@ public:
 
   dim_vector dims (void) const { return dim_vector (d1, d2); }
 
+  bool isempty (void) const { return numel () == 0; }
+
+  int ndims (void) const { return 2; }
+
   Array<T> extract_diag (octave_idx_type k = 0) const;
 
   DiagArray2<T> build_diag_matrix () const

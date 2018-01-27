@@ -477,6 +477,61 @@ octave_perm_matrix::numeric_conversion_function (void) const
                                             octave_matrix::static_type_id ());
 }
 
+// FIXME: This is duplicated from octave_base_matrix<T>.  Could
+// octave_perm_matrix be derived from octave_base_matrix<T>?
+
+void
+octave_perm_matrix::short_disp (std::ostream& os) const
+{
+  if (matrix.isempty ())
+    os << "[]";
+  else if (matrix.ndims () == 2)
+    {
+      // FIXME: should this be configurable?
+      octave_idx_type max_elts = 10;
+      octave_idx_type elts = 0;
+
+      octave_idx_type nel = matrix.numel ();
+
+      octave_idx_type nr = matrix.rows ();
+      octave_idx_type nc = matrix.columns ();
+
+      os << '[';
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              std::ostringstream buf;
+              octave_int<octave_idx_type> tval (matrix(i,j));
+              octave_print_internal (buf, tval);
+              std::string tmp = buf.str ();
+              size_t pos = tmp.find_first_not_of (' ');
+              if (pos != std::string::npos)
+                os << tmp.substr (pos);
+              else if (! tmp.empty ())
+                os << tmp[0];
+
+              if (++elts >= max_elts)
+                goto done;
+
+              if (j < nc - 1)
+                os << ", ";
+            }
+
+          if (i < nr - 1 && elts < max_elts)
+            os << "; ";
+        }
+
+    done:
+
+      if (nel <= max_elts)
+        os << ']';
+    }
+  else
+    os << "...";
+}
+
 octave_base_value *
 octave_perm_matrix::try_narrowing_conversion (void)
 {
@@ -486,6 +541,17 @@ octave_perm_matrix::try_narrowing_conversion (void)
     retval = new octave_scalar (matrix (0, 0));
 
   return retval;
+}
+
+std::string
+octave_perm_matrix::edit_display (octave_idx_type i, octave_idx_type j) const
+{
+  // FIXME: maybe we should have octave_print_internal functions for
+  // standard int types, not just octave_int<T> types.
+
+  std::ostringstream buf;
+  octave_print_internal (buf, octave_int<octave_idx_type> (matrix(i,j)));
+  return buf.str ();
 }
 
 octave_value

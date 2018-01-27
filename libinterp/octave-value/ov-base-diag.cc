@@ -558,6 +558,71 @@ octave_base_diag<DMT, MT>::print_info (std::ostream& os,
   matrix.print_info (os, prefix);
 }
 
+// FIXME: this function is duplicated in octave_base_matrix<T>.  Could
+// it somehow be shared instead?
+
+template <typename DMT, typename MT>
+void
+octave_base_diag<DMT, MT>::short_disp (std::ostream& os) const
+{
+  if (matrix.isempty ())
+    os << "[]";
+  else if (matrix.ndims () == 2)
+    {
+      // FIXME: should this be configurable?
+      octave_idx_type max_elts = 10;
+      octave_idx_type elts = 0;
+
+      octave_idx_type nel = matrix.numel ();
+
+      octave_idx_type nr = matrix.rows ();
+      octave_idx_type nc = matrix.columns ();
+
+      os << '[';
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              std::ostringstream buf;
+              octave_print_internal (buf, matrix(i,j));
+              std::string tmp = buf.str ();
+              size_t pos = tmp.find_first_not_of (' ');
+              if (pos != std::string::npos)
+                os << tmp.substr (pos);
+              else if (! tmp.empty ())
+                os << tmp[0];
+
+              if (++elts >= max_elts)
+                goto done;
+
+              if (j < nc - 1)
+                os << ", ";
+            }
+
+          if (i < nr - 1 && elts < max_elts)
+            os << "; ";
+        }
+
+    done:
+
+      if (nel <= max_elts)
+        os << ']';
+    }
+  else
+    os << "...";
+}
+
+template <typename DMT, typename MT>
+std::string
+octave_base_diag<DMT, MT>::edit_display (octave_idx_type i,
+                                         octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, matrix(i,j));
+  return buf.str ();
+}
+
 template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const

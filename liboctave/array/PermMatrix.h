@@ -70,6 +70,10 @@ public:
 
   dim_vector dims (void) const { return dim_vector (dim1 (), dim2 ()); }
 
+  bool isempty (void) const { return numel () == 0; }
+
+  int ndims (void) const { return 2; }
+
   const Array<octave_idx_type>& col_perm_vec (void) const
   { return *this; }
 

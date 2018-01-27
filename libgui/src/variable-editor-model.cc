@@ -757,7 +757,7 @@ bool
 variable_editor_model::type_is_editable (const octave_value& val,
                                          bool display_error) const
 {
-  if ((val.isnumeric () || val.islogical () || val.iscell ()
+  if ((val.isnumeric () || val.islogical () || val.iscell ())
       && val.ndims () == 2)
     return true;
 

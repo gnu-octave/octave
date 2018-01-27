@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCheckBox>
 #include <QSignalMapper>
 
+#include "ov.h"
+
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
 
@@ -61,7 +63,7 @@ signals:
 
   //! Signal that user wants to edit a variable.
 
-  void edit_variable_signal (const QString&);
+  void edit_variable_signal (const QString&, const octave_value&);
 
 protected:
 

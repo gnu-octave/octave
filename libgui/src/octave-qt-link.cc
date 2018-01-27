@@ -41,18 +41,22 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "load-path.h"
 #include "ov.h"
+#include "symscope.h"
 #include "utils.h"
 
 #include "octave-gui.h"
 #include "octave-qt-link.h"
 #include "resource-manager.h"
-#include "workspace-element.h"
+
+Q_DECLARE_METATYPE (octave_value)
+Q_DECLARE_METATYPE (octave::symbol_scope)
 
 octave_qt_link::octave_qt_link (QWidget *,
                                 octave::gui_application *app_context)
   : octave_link (), m_app_context (app_context)
 {
   qRegisterMetaType<octave_value> ("octave_value");
+  qRegisterMetaType<octave::symbol_scope> ("symbol_scope");
 }
 
 bool
@@ -422,32 +426,13 @@ octave_qt_link::do_execute_command_in_terminal (const std::string& command)
 
 void
 octave_qt_link::do_set_workspace (bool top_level, bool debug,
-                                  const std::list<workspace_element>& ws,
+                                  const octave::symbol_scope& scope,
                                   bool update_variable_editor)
 {
   if (! top_level && ! debug)
     return;
 
-  QString scopes;
-  QStringList symbols;
-  QStringList class_names;
-  QStringList dimensions;
-  QStringList values;
-  QIntList complex_flags;
-
-  for (std::list<workspace_element>::const_iterator it = ws.begin ();
-       it != ws.end (); it++)
-    {
-      scopes.append (it->scope ());
-      symbols.append (QString::fromStdString (it->symbol ()));
-      class_names.append (QString::fromStdString (it->class_name ()));
-      dimensions.append (QString::fromStdString (it->dimension ()));
-      values.append (QString::fromStdString (it->value ()));
-      complex_flags.append (it->complex_flag ());
-    }
-
-  emit set_workspace_signal (top_level, debug, scopes, symbols, class_names,
-                             dimensions, values, complex_flags);
+  emit set_workspace_signal (top_level, debug, scope);
 
   if (update_variable_editor)
     emit refresh_variable_editor_signal ();

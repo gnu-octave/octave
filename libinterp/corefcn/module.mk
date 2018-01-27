@@ -91,7 +91,6 @@ COREFCN_INC = \
   %reldir%/url-handle-manager.h \
   %reldir%/utils.h \
   %reldir%/variables.h \
-  %reldir%/workspace-element.h \
   %reldir%/xdiv.h \
   %reldir%/xnorm.h \
   %reldir%/xpow.h \

@@ -28,7 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTreeWidget>
 #include <QSettings>
 
+#include "symscope.h"
 #include "utils.h"
+
 #include "resource-manager.h"
 #include "workspace-model.h"
 
@@ -225,22 +227,13 @@ workspace_model::setData (const QModelIndex& idx, const QVariant& value,
 }
 
 void
-workspace_model::set_workspace (bool top_level,
-                                bool /* debug */,
-                                const QString& scopes,
-                                const QStringList& symbols,
-                                const QStringList& class_names,
-                                const QStringList& dimensions,
-                                const QStringList& values,
-                                const QIntList& complex_flags)
+workspace_model::set_workspace (bool top_level, bool /* debug */,
+                                const octave::symbol_scope& scope)
 {
+  clear_data ();
+
   m_top_level = top_level;
-  m_scopes = scopes;
-  m_symbols = symbols;
-  m_class_names = class_names;
-  m_dimensions = dimensions;
-  m_values = values;
-  m_complex_flags = complex_flags;
+  m_scope = scope;
 
   update_table ();
 }
@@ -273,6 +266,7 @@ void
 workspace_model::clear_data (void)
 {
   m_top_level = false;
+  m_scope = octave::symbol_scope ();
   m_scopes = QString ();
   m_symbols = QStringList ();
   m_class_names = QStringList ();
@@ -286,7 +280,49 @@ workspace_model::update_table (void)
 {
   beginResetModel ();
 
-  // Nothing to do except tell the world to recalc.
+  std::list<octave::symbol_record> sr_list = m_scope.all_variables ();
+
+  octave::symbol_record::context_id context = m_scope.current_context ();
+
+  for (const auto& sr : sr_list)
+    {
+      std::string nm = sr.name ();
+
+      octave_value val = sr.varval (context);
+
+      // FIXME: fix size for objects, see kluge in variables.cc
+      //dim_vector dv = val.dims ();
+      octave_value tmp = val;
+      Matrix sz = tmp.size ();
+      dim_vector dv = dim_vector::alloc (sz.numel ());
+      for (octave_idx_type i = 0; i < dv.ndims (); i++)
+        dv(i) = sz(i);
+
+      char storage = ' ';
+      if (sr.is_global ())
+        storage = 'g';
+      else if (sr.is_persistent ())
+        storage = 'p';
+      else if (sr.is_automatic ())
+        storage = 'a';
+      else if (sr.is_formal ())
+        storage = 'f';
+      else if (sr.is_hidden ())
+        storage = 'h';
+      else if (sr.is_inherited ())
+        storage = 'i';
+
+      std::ostringstream buf;
+      val.short_disp (buf);
+      std::string short_disp_str = buf.str ();
+
+      m_scopes.append (storage);
+      m_symbols.append (QString::fromStdString (nm));
+      m_class_names.append (QString::fromStdString (val.class_name ()));
+      m_dimensions.append (QString::fromStdString (dv.str ()));
+      m_values.append (QString::fromStdString (short_disp_str));
+      m_complex_flags.append (val.iscomplex ());
+    }
 
   endResetModel ();
 

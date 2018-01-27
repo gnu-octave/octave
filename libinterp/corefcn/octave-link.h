@@ -36,7 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 class string_vector;
-class workspace_element;
+
+namespace octave
+{
+  class symbol_scope;
+}
 
 //! Provides threadsafe access to octave.
 //! @author Jacob Dawid
@@ -261,11 +265,11 @@ public:
   static void set_workspace (void);
 
   static void set_workspace (bool top_level,
-                             const std::list<workspace_element>& ws,
+                             const octave::symbol_scope& scope,
                              bool update_variable_editor = true)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, instance->debugging, ws,
+      instance->do_set_workspace (top_level, instance->debugging, scope,
                                   update_variable_editor);
   }
 
@@ -548,7 +552,7 @@ protected:
 
   virtual void
   do_set_workspace (bool top_level, bool debug,
-                    const std::list<workspace_element>& ws,
+                    const octave::symbol_scope& scope,
                     bool update_variable_editor) = 0;
 
   virtual void do_clear_workspace (void) = 0;

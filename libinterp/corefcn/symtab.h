@@ -44,7 +44,6 @@ class octave_user_function;
 #include "ov.h"
 #include "ovl.h"
 #include "symscope.h"
-#include "workspace-element.h"
 
 namespace octave
 {

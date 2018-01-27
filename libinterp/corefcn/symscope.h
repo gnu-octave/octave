@@ -44,7 +44,6 @@ class octave_user_function;
 #include "ov.h"
 #include "ovl.h"
 #include "symrec.h"
-#include "workspace-element.h"
 
 namespace octave
 {
@@ -499,8 +498,6 @@ namespace octave
       return m_subfunction_names;
     }
 
-    std::list<workspace_element> workspace_info (void) const;
-
     octave_value dump (void) const;
 
     std::string name (void) const { return m_name; }
@@ -869,13 +866,6 @@ namespace octave
     std::list<std::string> subfunction_names (void) const
     {
       return m_rep ? m_rep->subfunction_names () : std::list<std::string> ();
-    }
-
-    std::list<workspace_element> workspace_info (void) const
-    {
-      return (m_rep
-              ? m_rep->workspace_info ()
-              : std::list<workspace_element> ());
     }
 
     octave_value dump (void) const

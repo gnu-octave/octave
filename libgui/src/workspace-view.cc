@@ -155,8 +155,9 @@ workspace_view::workspace_view (QWidget *p)
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
 
-  connect (this, SIGNAL (edit_variable_signal (const QString&)),
-           p, SLOT (edit_variable (const QString&)));
+  connect (this,
+           SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
+           p, SLOT (edit_variable (const QString&, const octave_value&)));
 }
 
 void workspace_view::setModel (workspace_model *model)
@@ -459,13 +460,17 @@ workspace_view::handle_contextmenu_edit (void)
     {
       index = index.sibling (index.row (), 0);
 
-      QAbstractItemModel *m = m_view->model ();
-
-      QMap<int, QVariant> item_data = m->itemData (index);
+      QMap<int, QVariant> item_data = m_model->itemData (index);
 
       QString var_name = item_data[0].toString ();
 
-      emit edit_variable_signal (var_name);
+      octave::symbol_scope scope = m_model->scope ();
+
+      octave_value val;
+      if (scope)
+        val = scope.varval (var_name.toStdString ());
+
+      emit edit_variable_signal (var_name, val);
     }
 }
 

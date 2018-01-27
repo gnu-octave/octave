@@ -107,60 +107,6 @@ namespace octave
       return p->second;
   }
 
-  std::list<workspace_element>
-  symbol_scope_rep::workspace_info (void) const
-  {
-    std::list<workspace_element> retval;
-
-    for (const auto& nm_sr : m_symbols)
-      {
-        std::string nm = nm_sr.first;
-        symbol_record sr = nm_sr.second;
-
-        if (! sr.is_hidden ())
-          {
-            octave_value val = sr.varval (m_context);
-
-            if (val.is_defined ())
-              {
-                // FIXME: fix size for objects, see kluge in variables.cc
-                //dim_vector dv = val.dims ();
-                octave_value tmp = val;
-                Matrix sz = tmp.size ();
-                dim_vector dv = dim_vector::alloc (sz.numel ());
-                for (octave_idx_type i = 0; i < dv.ndims (); i++)
-                  dv(i) = sz(i);
-
-                char storage = ' ';
-                if (sr.is_global ())
-                  storage = 'g';
-                else if (sr.is_persistent ())
-                  storage = 'p';
-                else if (sr.is_automatic ())
-                  storage = 'a';
-                else if (sr.is_formal ())
-                  storage = 'f';
-                else if (sr.is_hidden ())
-                  storage = 'h';
-                else if (sr.is_inherited ())
-                  storage = 'i';
-
-                std::ostringstream buf;
-                val.short_disp (buf);
-                std::string short_disp_str = buf.str ();
-
-                workspace_element elt (storage, nm, val.class_name (),
-                                       short_disp_str, dv.str (),
-                                       val.iscomplex ());
-
-                retval.push_back (elt);
-              }
-          }
-      }
-
-    return retval;
-  }
-
   octave_value
   symbol_scope_rep::dump (void) const
   {

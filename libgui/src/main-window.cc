@@ -1977,15 +1977,10 @@ main_window::construct_octave_qt_link (void)
   if (m_start_gui)
     {
       connect (m_octave_qt_link,
-               SIGNAL (set_workspace_signal
-                       (bool, bool, const QString&, const QStringList&,
-                        const QStringList&, const QStringList&,
-                        const QStringList&, const QIntList&)),
+               SIGNAL (set_workspace_signal (bool, bool,
+                                             const octave::symbol_scope&)),
                m_workspace_model,
-               SLOT (set_workspace
-                     (bool, bool, const QString&, const QStringList&,
-                      const QStringList&, const QStringList&,
-                      const QStringList&, const QIntList&)));
+               SLOT (set_workspace (bool, bool, const octave::symbol_scope&)));
 
       connect (m_octave_qt_link, SIGNAL (clear_workspace_signal (void)),
                m_workspace_model, SLOT (clear_workspace (void)));
@@ -2550,7 +2545,7 @@ main_window::load_workspace_callback (const std::string& file)
    = octave::__get_current_scope__ ("main_window::load_workspace_callback");
 
   if (scope)
-    octave_link::set_workspace (true, scope.workspace_info ());
+    octave_link::set_workspace (true, scope);
 }
 
 void
@@ -2565,7 +2560,7 @@ main_window::rename_variable_callback (const main_window::name_pair& names)
     {
       scope.rename (names.first, names.second);
 
-      octave_link::set_workspace (true, scope.workspace_info ());
+      octave_link::set_workspace (true, scope);
     }
 
   // FIXME: if this action fails, do we need a way to display that info
@@ -2634,7 +2629,7 @@ main_window::refresh_workspace_callback (void)
    = octave::__get_current_scope__ ("main_window::force_refresh_workspace");
 
   if (scope)
-    octave_link::set_workspace (true, scope.workspace_info (), false);
+    octave_link::set_workspace (true, scope, false);
 }
 
 bool

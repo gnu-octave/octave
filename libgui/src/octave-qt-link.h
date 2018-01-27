@@ -42,6 +42,11 @@ typedef QList<int> QIntList;
 
 class octave_value;
 
+namespace octave
+{
+  class symbol_scope;
+}
+
 //! Provides threadsafe access to octave.
 //! @author Jacob Dawid
 //!
@@ -112,7 +117,7 @@ public:
   void do_execute_command_in_terminal (const std::string& command);
 
   void do_set_workspace (bool top_level, bool debug,
-                         const std::list<workspace_element>& ws,
+                         const octave::symbol_scope& scope,
                          bool update_variable_editor);
 
   void do_clear_workspace (void);
@@ -171,14 +176,8 @@ signals:
 
   void execute_command_in_terminal_signal (const QString& command);
 
-  void set_workspace_signal (bool top_level,
-                             bool debug,
-                             const QString& scopes,
-                             const QStringList& symbols,
-                             const QStringList& class_names,
-                             const QStringList& dimensions,
-                             const QStringList& values,
-                             const QIntList& complex_flags);
+  void set_workspace_signal (bool top_level, bool debug,
+                             const octave::symbol_scope& scope);
 
   void clear_workspace_signal (void);
 

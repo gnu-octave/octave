@@ -33,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QColor>
 #include <QSettings>
 
+#include "symscope.h"
+
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
@@ -72,16 +74,12 @@ public:
     return m_storage_class_colors.at (s_class);
   }
 
+  octave::symbol_scope scope (void) const { return m_scope; }
+
 public slots:
 
-  void set_workspace (bool top_level,
-                      bool debug,
-                      const QString& scopes,
-                      const QStringList& symbols,
-                      const QStringList& class_names,
-                      const QStringList& dimensions,
-                      const QStringList& values,
-                      const QIntList& complex_flags);
+  void set_workspace (bool top_level, bool debug,
+                      const octave::symbol_scope& scope);
 
   void clear_workspace (void);
 
@@ -100,6 +98,7 @@ private:
   void update_table (void);
 
   bool m_top_level;
+  octave::symbol_scope m_scope;
   QString m_scopes;
   QStringList m_symbols;
   QStringList m_class_names;

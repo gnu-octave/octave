@@ -138,6 +138,8 @@ public:
 
   void short_disp (std::ostream& os) const;
 
+  std::string edit_display (octave_idx_type i, octave_idx_type j) const;
+
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void * mex_get_data (void) const { return const_cast<ST *> (&scalar); }

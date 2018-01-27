@@ -1275,6 +1275,11 @@ public:
 
   void short_disp (std::ostream& os) const { rep->short_disp (os); }
 
+  std::string edit_display (octave_idx_type i, octave_idx_type j) const
+  {
+    return rep->edit_display (i, j);
+  }
+
   int type_id (void) const { return rep->type_id (); }
 
   std::string type_name (void) const { return rep->type_name (); }

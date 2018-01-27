@@ -107,6 +107,8 @@ signals: // private
 
   void user_error_signal (const QString& title, const QString& msg) const;
 
+  void resize_columns_signal (void);
+
 private slots:
 
   void update_data (const octave_value& val);

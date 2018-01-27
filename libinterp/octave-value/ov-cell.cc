@@ -100,6 +100,19 @@ octave_base_matrix<Cell>::delete_elements (const octave_value_list& idx)
 // really ask whether octave_cell should inherit from octave_base_matrix at all.
 
 template <>
+std::string
+octave_base_matrix<Cell>::edit_display (octave_idx_type i,
+                                        octave_idx_type j) const
+{
+  octave_value val = matrix(i,j);
+
+  if (val.numel () == 1)
+    return edit_display(0,0);
+  else
+    return "type + dims";
+}
+
+template <>
 octave_value
 octave_base_matrix<Cell>::fast_elem_extract (octave_idx_type n) const
 {

@@ -44,11 +44,64 @@ along with Octave; see the file COPYING.  If not, see
 
 // Pimpl/Dpointer for variable_editor_model.
 
+static QString
+make_label (const std::string& name, const octave_value& val)
+{
+  QString lbl_txt = QString::fromStdString (name);
+
+  if (val.is_defined ())
+    {
+      if (! lbl_txt.isEmpty ())
+        lbl_txt += " ";
+
+      dim_vector dv = val.dims ();
+
+      lbl_txt += ("["
+                  + QString::fromStdString (dv.str ())
+                  + " "
+                  + QString::fromStdString (val.class_name ())
+                  + "]");
+    }
+  else
+    lbl_txt += " [undefined]";
+
+  return lbl_txt;
+}
+
+static void
+get_rows_and_columns (const octave_value& val, int& rows, int& cols)
+{
+  rows = val.rows ();
+  cols = val.columns ();
+}
+
 struct variable_editor_model::impl
 {
   struct cell
   {
     cell (void) : m_defined (false) { }
+
+    cell (const octave_value& val, int r, int c)
+      : m_defined (true), m_data ("no display"), m_status_tip ("status"),
+        m_tool_tip ("tip"), m_requires_sub_editor (false),
+        m_editor_type (sub_none)
+    {
+      if (val.iscell ())
+        {
+          Cell cval = val.cell_value ();
+
+          octave_value ov = cval(r,c);
+          dim_vector dv = ov.dims ();
+
+          m_requires_sub_editor = true;
+
+          m_data = make_label ("", ov);
+        }
+      else
+        {
+          m_data = QString::fromStdString (val.edit_display (r, c));
+        }
+    }
 
     cell (const QString& d, const QString& s, const QString& t,
           bool rse, sub_editor_types edtype)
@@ -111,35 +164,12 @@ struct variable_editor_model::impl
 
     if (idx.isValid ())
       {
-        QString dat;
-        bool requires_sub_editor = false;
-
         int r = idx.row ();
         int c = idx.column ();
 
-        if (m_value.iscell ())
-          {
-            requires_sub_editor = true;
+        cell edit_cell (m_value, r, c);
 
-            Cell cval = m_value.cell_value ();
-
-            octave_value ov = cval(r,c);
-            dim_vector dv = ov.dims ();
-
-            dat = make_label ("", ov);
-          }
-        else
-          {
-            // XXX
-            Matrix mval = m_value.matrix_value ();
-
-            double dval = mval(r,c);
-
-            dat.setNum (dval);
-          }
-
-        set (r, c, cell (dat, "status", "tip", requires_sub_editor,
-                         sub_matrix));
+        set (r, c, edit_cell);
       }
   }
 
@@ -207,8 +237,7 @@ struct variable_editor_model::impl
       {
         m_validity = true;
 
-        r = m_value.rows ();
-        c = m_value.columns ();
+        get_rows_and_columns (m_value, r, c);
       }
 
     m_rows = r;
@@ -219,31 +248,6 @@ struct variable_editor_model::impl
     m_label->setTextFormat (Qt::PlainText);
 
     m_validtext = make_label (m_name, m_value);
-  }
-
-  QString make_label (const std::string& name, const octave_value& val)
-  {
-    QString lbl_txt = QString::fromStdString (name);
-
-    if (val.is_defined ())
-      {
-        if (! lbl_txt.isEmpty ())
-          lbl_txt += " ";
-
-        lbl_txt += "[";
-
-        if (! val.is_scalar_type ())
-          {
-            dim_vector dv = val.dims ();
-            lbl_txt += QString::fromStdString (dv.str ());
-          }
-
-        lbl_txt += " " + QString::fromStdString (val.class_name ()) + "]";
-      }
-    else
-      lbl_txt += " [undefined]";
-
-    return lbl_txt;
   }
 
   void invalidate (void)
@@ -313,21 +317,26 @@ variable_editor_model::variable_editor_model (const QString& expr,
   connect (this, SIGNAL (clear_data_cell_signal (int, int)),
            this, SLOT (clear_data_cell (int, int)));
 
+  connect (this, SIGNAL (resize_columns_signal (void)),
+           parent, SLOT (resizeColumnsToContents (void)));
+
   if (! type_is_editable (val))
     return;
 
   // Initializes everything.
 
-  int rows = val.rows ();
-  int cols = val.columns ();
+  int rows = 0;
+  int cols = 0;
 
-  beginInsertRows (QModelIndex (), 0, rows-1);
-  beginInsertColumns (QModelIndex (), 0, cols-1);
+  get_rows_and_columns (val, rows, cols);
 
   m_d->reset (val);
 
-  endInsertColumns ();
+  beginInsertRows (QModelIndex (), 0, rows-1);
   endInsertRows ();
+
+  beginInsertColumns (QModelIndex (), 0, cols-1);
+  endInsertColumns ();
 }
 
 variable_editor_model::~variable_editor_model (void)
@@ -556,8 +565,10 @@ variable_editor_model::update_data (const octave_value& val)
   int old_rows = m_d->rows ();
   int old_cols = m_d->columns ();
 
-  int new_rows = val.rows ();
-  int new_cols = val.columns ();
+  int new_rows = 0;
+  int new_cols = 0;
+
+  get_rows_and_columns (val, new_rows, new_cols);
 
   m_d->reset (val);
 
@@ -587,6 +598,8 @@ variable_editor_model::update_data (const octave_value& val)
 
   emit dataChanged (QAbstractTableModel::index (0, 0),
                     QAbstractTableModel::index (new_rows-1, new_cols-1));
+
+  emit resize_columns_signal ();
 }
 
 // Private.
@@ -744,12 +757,21 @@ bool
 variable_editor_model::type_is_editable (const octave_value& val,
                                          bool display_error) const
 {
-  if (val.is_matrix_type () || val.iscell ())
+  if ((val.isnumeric () || val.islogical () || val.iscell ()
+      && val.ndims () == 2)
     return true;
 
   if (display_error)
-    emit data_error_signal (QString ("unable to edit '%1' objects")
-                            .arg (QString::fromStdString (val.type_name ())));
+    {
+      QString tname = QString::fromStdString (val.type_name ());
+
+      dim_vector dv = val.dims ();
+      QString dimstr = QString::fromStdString (dv.str ());
+
+      emit data_error_signal (QString ("unable to edit [%1] '%2' objects")
+                              .arg (dimstr)
+                              .arg (tname));
+    }
 
   return false;
 }

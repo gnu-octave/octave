@@ -507,6 +507,16 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
 }
 
 template <typename MT>
+std::string
+octave_base_matrix<MT>::edit_display (octave_idx_type i,
+                                      octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, matrix(i,j));
+  return buf.str ();
+}
+
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 {

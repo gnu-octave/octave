@@ -85,7 +85,7 @@ variable_editor::variable_editor (QWidget *p)
   : octave_dock_widget (p), m_main (new QMainWindow ()),
     m_tool_bar (new QToolBar (m_main)),
     m_tab_widget (new QTabWidget (m_main)),
-    m_default_width (20), m_default_height (100), m_add_font_height (0),
+    m_default_width (30), m_default_height (100), m_add_font_height (0),
     m_autofit (false), m_autofit_max (false), m_use_terminal_font (true),
     m_alternate_rows (true), m_stylesheet (""), m_font (), m_sel_font (),
     m_table_colors ()

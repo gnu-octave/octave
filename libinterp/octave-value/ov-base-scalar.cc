@@ -189,6 +189,15 @@ octave_base_scalar<ST>::short_disp (std::ostream& os) const
 }
 
 template <typename ST>
+std::string
+octave_base_scalar<ST>::edit_display (octave_idx_type, octave_idx_type) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, scalar);
+  return buf.str ();
+}
+
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::fast_elem_extract (octave_idx_type n) const
 {

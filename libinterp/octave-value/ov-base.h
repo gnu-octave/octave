@@ -661,6 +661,9 @@ public:
 
   virtual void short_disp (std::ostream& os) const { os << "..."; }
 
+  virtual std::string edit_display (octave_idx_type, octave_idx_type) const
+  { return "#VAL"; }
+
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 
   virtual bool save_ascii (std::ostream& os);

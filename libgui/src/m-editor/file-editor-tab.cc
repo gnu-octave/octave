@@ -2292,6 +2292,17 @@ file_editor_tab::check_valid_identifier (QString file_name)
 bool
 file_editor_tab::check_valid_codec (QTextCodec *codec)
 {
+  if (! codec)
+    {
+      int ans = QMessageBox::critical (nullptr,
+            tr ("Octave Editor"),
+            tr ("The current codec %1\n"
+                "can not be applied.\n\n"
+                "Please select another one or cancel saving!").arg (_encoding));
+
+      return true;
+    }
+
   if (! codec->canEncode (_edit_area->text ()))
     {
       int ans = QMessageBox::warning (nullptr,

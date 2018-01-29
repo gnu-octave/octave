@@ -205,25 +205,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   if (m_tab_widget->count () == 1)
     m_tool_bar->setEnabled (true);
 
-  if (m_autofit)
-    {
-      table->resizeColumnsToContents ();
-
-      if (m_autofit_max)
-        {
-          int mx = 0;
-
-          for (int i = 0; i < table->model ()->columnCount (); i++)
-            {
-              if (table->columnWidth (i) > mx)
-                mx = table->columnWidth (i);
-            }
-
-          table->horizontalHeader ()->setDefaultSectionSize (mx);
-        }
-    }
-  else
-    table->horizontalHeader ()->setDefaultSectionSize (m_default_width);
+  maybe_resize_columns ();
 
   table->setFont (m_font);
   table->setStyleSheet (m_stylesheet);
@@ -305,25 +287,7 @@ variable_editor::color_names (void)
 void
 variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
 {
-  if (m_autofit)
-    {
-      QTableView *view = get_table_data (m_tab_widget).m_table;
-
-      view->resizeColumnsToContents ();
-
-      if (m_autofit_max)
-        {
-          int mx = 0;
-
-          for (int i = 0; i < view->model ()->columnCount (); i++)
-            {
-              if (view->columnWidth (i) > mx)
-                mx = view->columnWidth (i);
-            }
-
-          view->horizontalHeader ()->setDefaultSectionSize (mx);
-        }
-    }
+  maybe_resize_columns ();
 
   emit updated ();
 }
@@ -439,6 +403,32 @@ variable_editor::closeTab (int idx)
 
   if (m_tab_widget->count () == 0)
     m_tool_bar->setEnabled (false);
+}
+
+void
+variable_editor::maybe_resize_columns (void)
+{
+  QTableView *table = get_table_data (m_tab_widget).m_table;
+
+  if (m_autofit)
+    {
+      table->resizeColumnsToContents ();
+
+      if (m_autofit_max)
+        {
+          int mx = 0;
+
+          for (int i = 0; i < table->model ()->columnCount (); i++)
+            {
+              if (table->columnWidth (i) > mx)
+                mx = table->columnWidth (i);
+            }
+
+          table->horizontalHeader ()->setDefaultSectionSize (mx);
+        }
+    }
+  else
+    table->horizontalHeader ()->setDefaultSectionSize (m_default_width);
 }
 
 void

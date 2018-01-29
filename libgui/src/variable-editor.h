@@ -70,6 +70,8 @@ public slots:
 
   void notice_settings (const QSettings *);
 
+  void maybe_resize_columns (void);
+
 protected slots:
 
   void closeEvent (QCloseEvent *);

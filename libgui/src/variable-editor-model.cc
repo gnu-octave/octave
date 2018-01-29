@@ -317,8 +317,8 @@ variable_editor_model::variable_editor_model (const QString& expr,
   connect (this, SIGNAL (clear_data_cell_signal (int, int)),
            this, SLOT (clear_data_cell (int, int)));
 
-  connect (this, SIGNAL (resize_columns_signal (void)),
-           parent, SLOT (resizeColumnsToContents (void)));
+  connect (this, SIGNAL (maybe_resize_columns_signal (void)),
+           parent, SLOT (maybe_resize_columns (void)));
 
   if (! type_is_editable (val))
     return;
@@ -599,7 +599,7 @@ variable_editor_model::update_data (const octave_value& val)
   emit dataChanged (QAbstractTableModel::index (0, 0),
                     QAbstractTableModel::index (new_rows-1, new_cols-1));
 
-  emit resize_columns_signal ();
+  emit maybe_resize_columns_signal ();
 }
 
 // Private.

@@ -107,7 +107,7 @@ signals: // private
 
   void user_error_signal (const QString& title, const QString& msg) const;
 
-  void resize_columns_signal (void);
+  void maybe_resize_columns_signal (void);
 
 private slots:
 

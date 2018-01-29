@@ -427,8 +427,6 @@ variable_editor::maybe_resize_columns (void)
           table->horizontalHeader ()->setDefaultSectionSize (mx);
         }
     }
-  else
-    table->horizontalHeader ()->setDefaultSectionSize (m_default_width);
 }
 
 void

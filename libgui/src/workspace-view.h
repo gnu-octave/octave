@@ -99,10 +99,14 @@ private:
 
   void relay_contextmenu_command (const QString& cmdname);
 
-  QString get_var_name (QModelIndex index);
+  QString get_var_name (const QModelIndex& index);
 
   QTableView *m_view;
   int m_view_previous_row_count;
+
+  // We are using a sort model proxy so m_model won't provide the
+  // correct ordering.  It is still OK to use this pointer to access
+  // other info attached to the model, for example the scope or colors.
   workspace_model *m_model;
 
   QSortFilterProxyModel m_filter_model;

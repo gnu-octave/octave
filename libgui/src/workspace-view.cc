@@ -458,11 +458,7 @@ workspace_view::handle_contextmenu_edit (void)
 
   if (index.isValid ())
     {
-      index = index.sibling (index.row (), 0);
-
-      QMap<int, QVariant> item_data = m_model->itemData (index);
-
-      QString var_name = item_data[0].toString ();
+      QString var_name = get_var_name (index);
 
       octave::symbol_scope scope = m_model->scope ();
 
@@ -541,11 +537,15 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 }
 
 QString
-workspace_view::get_var_name (QModelIndex index)
+workspace_view::get_var_name (const QModelIndex& index)
 {
-  index = index.sibling (index.row (), 0);
+  // We are using a sort model proxy so m_model won't provide the
+  // correct ordering.
+
   QAbstractItemModel *m = m_view->model ();
-  QMap<int, QVariant> item_data = m->itemData (index);
+
+  QMap<int, QVariant> item_data
+    = m->itemData (index.sibling (index.row (), 0));
 
   return item_data[0].toString ();
 }

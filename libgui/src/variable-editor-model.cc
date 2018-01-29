@@ -91,16 +91,12 @@ struct variable_editor_model::impl
           Cell cval = val.cell_value ();
 
           octave_value ov = cval(r,c);
-          dim_vector dv = ov.dims ();
 
-          m_requires_sub_editor = true;
+          if (! (ov.numel () == 1 && (ov.isnumeric () || ov.islogical ())))
+            m_requires_sub_editor = true;
+        }
 
-          m_data = make_label ("", ov);
-        }
-      else
-        {
-          m_data = QString::fromStdString (val.edit_display (r, c));
-        }
+      m_data = QString::fromStdString (val.edit_display (r, c));
     }
 
     cell (const QString& d, const QString& s, const QString& t,
@@ -133,6 +129,7 @@ struct variable_editor_model::impl
       m_rows (0), m_cols (0), m_table (), m_label (label),
       m_validity (true), m_validtext (make_label (m_name, m_value))
   {
+    m_label->setText (m_validtext);
   }
 
   impl (const impl&) = delete;

@@ -110,8 +110,15 @@ namespace QtHandles
     if (obj.valid_object ())
       {
         graphics_object figObj (obj.get_ancestor ("figure"));
-
-        octave::gl2ps_print (figObj, file_cmd.toStdString (), term.toStdString ());
+        try
+          {
+            octave::gl2ps_print (figObj, file_cmd.toStdString (),
+                                 term.toStdString ());
+          }
+        catch (octave::execution_exception e)
+          {
+            octave_link::post_exception (std::current_exception ());
+          }
       }
   }
 
@@ -638,7 +645,7 @@ namespace QtHandles
           currentObj = figObj;
         else if (! currentObj.get_properties ().is_hittest ())
           {
-            // Objects with "hittest"->"off" pass the mouse event to their 
+            // Objects with "hittest"->"off" pass the mouse event to their
             // parent and so on.
             graphics_object tmpgo;
             tmpgo = gh_manager::get_object (currentObj.get_parent ());
@@ -674,7 +681,7 @@ namespace QtHandles
               // Update the figure "currentobject"
               auto& fprop = Utils::properties<figure> (figObj);
 
-              if (currentObj 
+              if (currentObj
                   && currentObj.get_properties ().handlevisibility_is ("on"))
                 fprop.set_currentobject (currentObj.get_handle ()
                                          .as_octave_value ());

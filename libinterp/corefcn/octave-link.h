@@ -152,6 +152,13 @@ public:
         (obj, method, arg_a, arg_b, arg_c, arg_d);
   }
 
+  static void
+  post_exception (const std::exception_ptr &p)
+  {
+    if (enabled ())
+      instance->do_post_exception (p);
+  }
+
   static void entered_readline_hook (void)
   {
     if (enabled ())
@@ -498,6 +505,18 @@ protected:
   {
     gui_event_queue.add_method<T, A, B, C, D>
       (obj, method, arg_a, arg_b, arg_c, arg_d);
+  }
+
+  void
+  rethrow_exception_callback (const std::exception_ptr &p)
+  {
+    std::rethrow_exception (p);
+  }
+
+  void
+  do_post_exception (const std::exception_ptr &p)
+  {
+    do_post_event (this, &octave_link::rethrow_exception_callback, p);
   }
 
   void do_entered_readline_hook (void) { }

@@ -30,10 +30,23 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-scalar.h"
-#include "ov-float.h"
 #include "ov-re-mat.h"
-#include "ov-typeinfo.h"
+#include "ov-complex.h"
+#include "ov-cx-mat.h"
+#include "ov-float.h"
+#include "ov-flt-re-mat.h"
+#include "ov-flt-complex.h"
+#include "ov-flt-cx-mat.h"
+#include "ov-int8.h"
+#include "ov-int16.h"
+#include "ov-int32.h"
+#include "ov-int64.h"
+#include "ov-uint8.h"
+#include "ov-uint16.h"
+#include "ov-uint32.h"
+#include "ov-uint64.h"
 #include "ov-null-mat.h"
+#include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -74,6 +87,10 @@ DEFNDCATOP_FN (s_b, scalar, bool, array, array, concat)
 DEFNDCATOP_FN (b_f, bool, float_scalar, float_array, float_array, concat)
 DEFNDCATOP_FN (f_b, float_scalar, bool, float_array, float_array, concat)
 
+#define OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(TRHS)                    \
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_ ## TRHS ## _scalar, octave_bool_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_ ## TRHS ## _matrix, octave_bool_matrix)
+
 void
 install_b_b_ops (octave::type_info& ti)
 {
@@ -93,6 +110,28 @@ install_b_b_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_scalar, octave_bool, s_b);
   INSTALL_CATOP_TI (ti, octave_bool, octave_float_scalar, b_f);
   INSTALL_CATOP_TI (ti, octave_float_scalar, octave_bool, f_b);
+
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(int8);
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(int16);
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(int32);
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(int64);
+
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(uint8);
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(uint16);
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(uint32);
+  OCTAVE_INSTALL_BOOL_INT_ASSIGNCONV(uint64);
+
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_scalar, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_matrix, octave_bool_matrix);
+
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_complex, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_complex_matrix, octave_bool_matrix);
+
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_float_scalar, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_float_matrix, octave_bool_matrix);
+
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_float_complex_scalar, octave_bool_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_float_complex_matrix, octave_bool_matrix);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_bool, octave_bool_matrix);
 

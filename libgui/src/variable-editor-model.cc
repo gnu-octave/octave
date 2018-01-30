@@ -68,11 +68,23 @@ make_label (const std::string& name, const octave_value& val)
   return lbl_txt;
 }
 
+static char
+get_quote_char (const octave_value& val)
+{
+  if (val.is_sq_string ())
+    return '\'';
+
+  if (val.is_dq_string ())
+    return '"';
+
+  return 0;
+}
+
 static void
 get_rows_and_columns (const octave_value& val, int& rows, int& cols)
 {
   rows = val.rows ();
-  cols = val.columns ();
+  cols = (val.is_string () ? 1 : val.columns ());
 }
 
 struct variable_editor_model::impl
@@ -92,7 +104,14 @@ struct variable_editor_model::impl
 
           octave_value ov = cval(r,c);
 
-          if (! (ov.numel () == 1 && (ov.isnumeric () || ov.islogical ())))
+          if ((ov.numel () == 1 && (ov.isnumeric () || ov.islogical ()))
+              || (ov.rows () == 1 && ov.is_string ()))
+            {
+              m_data = QString::fromStdString (ov.edit_display (r, c));
+
+              return;
+            }
+          else
             m_requires_sub_editor = true;
         }
 
@@ -154,6 +173,37 @@ struct variable_editor_model::impl
   const cell& elem (int r, int c) const { return elem (index (r, c)); }
   const cell& elem (const QModelIndex& idx) const { return elem (index (idx)); }
 
+  char quote_char (int r, int c) const
+  {
+    if (m_value.is_string ())
+      return get_quote_char (m_value);
+    else if (m_value.iscell ())
+      {
+        Cell cval = m_value.cell_value ();
+
+        octave_value ov = cval(r,c);
+
+        if (ov.rows () == 1)
+          return get_quote_char (ov);
+      }
+
+    return 0;
+  }
+
+  QString subscript_expression (int r, int c) const
+  {
+    if (m_value.is_string ())
+      return "";
+    else if (m_value.iscell ())
+      return (QString ("{%1, %2}")
+              .arg (r + 1)
+              .arg (c + 1));
+    else
+      return (QString ("(%1, %2)")
+              .arg (r + 1)
+              .arg (c + 1));
+  }
+
   void update (const QModelIndex& idx)
   {
     if (is_defined (idx))
@@ -170,14 +220,19 @@ struct variable_editor_model::impl
       }
   }
 
-  octave_value value_at (const QModelIndex& idx) const
+  octave_value value_at (int r, int c) const
   {
     if (! m_value.iscell ())
       return octave_value ();
 
     Cell cval = m_value.cell_value ();
 
-    return cval.elem (idx.row (), idx.column ());
+    return cval.elem (r, c);
+  }
+
+  octave_value value_at (const QModelIndex& idx) const
+  {
+    return value_at (idx.row (), idx.column ());
   }
 
   void set (const QModelIndex& idx, const cell& dat)
@@ -240,7 +295,7 @@ struct variable_editor_model::impl
     m_rows = r;
     m_cols = c;
 
-    m_table.resize (r * c);
+    m_table.resize (m_rows * m_cols);
 
     m_label->setTextFormat (Qt::PlainText);
 
@@ -401,10 +456,8 @@ variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
   // Evaluate the string that the user entered.  If that fails, we
   // will restore previous value.
 
-  octave_link::post_event<variable_editor_model,
-                          std::string, int, int, std::string>
-    (this, &variable_editor_model::set_data_oct,
-     m_d->m_name, r, c, vstr.toStdString ());
+  octave_link::post_event<variable_editor_model, int, int, std::string>
+    (this, &variable_editor_model::set_data_oct, r, c, vstr.toStdString ());
 
   // This is success so far...
 
@@ -523,12 +576,22 @@ bool variable_editor_model::editor_type_string (const QModelIndex& idx) const
   return m_d->sub_editor_type (idx) == sub_string;
 }
 
+char
+variable_editor_model::quote_char (int r, int c) const
+{
+  return m_d->quote_char (r, c);
+}
+
+QString
+variable_editor_model::subscript_expression (int r, int c) const
+{
+  return m_d->subscript_expression (r, c);
+}
+
 QString
 variable_editor_model::subscript_expression (const QModelIndex& idx) const
 {
-  return (QString (m_d->m_value.iscell () ? "{%1, %2}" : "(%1, %2)")
-          .arg (idx.row () + 1)
-          .arg (idx.column () + 1));
+  return subscript_expression (idx.row (), idx.column ());
 }
 
 // Private slots.
@@ -604,8 +667,7 @@ variable_editor_model::update_data (const octave_value& val)
 // val has to be copied!
 
 void
-variable_editor_model::set_data_oct (const std::string& name,
-                                     const int& row, const int& col,
+variable_editor_model::set_data_oct (const int& row, const int& col,
                                      const std::string& rhs)
 {
   // INTERPRETER THREAD
@@ -617,7 +679,21 @@ variable_editor_model::set_data_oct (const std::string& name,
       int parse_status = 0;
 
       std::ostringstream os;
-      os << name << "(" << row+1 << "," << col+1 << ") = " << rhs;
+
+      std::string name = m_d->m_name;
+      os << name;
+
+      QString tmp = subscript_expression (row, col);
+      os << tmp.toStdString () << " = ";
+
+      char qc = quote_char (row, col);
+      if (qc)
+        os << qc;
+
+      os << rhs;
+
+      if (qc)
+        os << qc;
 
       expr = os.str ();
 
@@ -754,8 +830,9 @@ bool
 variable_editor_model::type_is_editable (const octave_value& val,
                                          bool display_error) const
 {
-  if ((val.isnumeric () || val.islogical () || val.iscell ())
-      && val.ndims () == 2)
+  if (((val.isnumeric () || val.islogical () || val.iscell ())
+       && val.ndims () == 2)
+      || (val.is_string () && val.rows () == 1))
     return true;
 
   if (display_error)

@@ -106,15 +106,10 @@ octave_base_matrix<Cell>::edit_display (octave_idx_type i,
 {
   octave_value val = matrix(i,j);
 
-  if (val.numel () == 1 && (val.isnumeric () || val.islogical ()))
-    return val.edit_display (0, 0);
-  else
-    {
-      std::string tname = val.type_name ();
-      dim_vector dv = val.dims ();
-      std::string dimstr = dv.str ();
-      return "[" + dimstr + " " + tname + "]";
-    }
+  std::string tname = val.type_name ();
+  dim_vector dv = val.dims ();
+  std::string dimstr = dv.str ();
+  return "[" + dimstr + " " + tname + "]";
 }
 
 template <>

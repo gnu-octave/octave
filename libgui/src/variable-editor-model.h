@@ -92,9 +92,14 @@ public:
 
   bool editor_type_string (const QModelIndex& idx) const;
 
+  char quote_char (int r, int c) const;
+
   // Return a subscript expression as a string that can be used to
   // access a sub-element of a data structure.  For example "{1,3}"
   // for cell array element {1,3} or "(2,4)" for array element (2,4).
+
+  QString subscript_expression (int r, int c) const;
+
   QString subscript_expression (const QModelIndex& idx) const;
 
 signals: // private
@@ -122,8 +127,7 @@ private slots:
 
 private:
 
-  void set_data_oct (const std::string& v, const int& row, const int& col,
-                     const std::string& val);
+  void set_data_oct (const int& row, const int& col, const std::string& val);
 
   void init_from_oct (const std::string& x);
 

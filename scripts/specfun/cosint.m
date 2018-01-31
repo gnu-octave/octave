@@ -136,7 +136,9 @@ function [y] = cosint (x)
   endwhile
 
   y(i_miss) = yy;
-
+  flag_neg_zero_imag = ((real(x) < 0) & (imag(x) == 0) & ...
+    (signbit (imag (x))));
+  y(flag_neg_zero_imag) = complex (real (y(flag_neg_zero_imag)), - pi);
   y = reshape (y, sz);
 
 endfunction
@@ -188,7 +190,15 @@ endfunction
 %!         -0.140981697886930412 + pi*1i];
 %! assert (cosint (x), y_ex, -4*eps);
 
-%!xtest
+%!test
+%! x = complex(-(1:4).', 0);
+%! y_ex = [0.337403922900968135 + pi*1i
+%!         0.422980828774864996 + pi*1i
+%!         0.119629786008000328 + pi*1i
+%!         -0.140981697886930412 + pi*1i];
+%! assert (cosint (x), y_ex, -4*eps);
+
+%!test
 %! x = complex (-(1:4).', -0);
 %! y_ex = [0.337403922900968135 - pi*1i
 %!         0.422980828774864996 - pi*1i

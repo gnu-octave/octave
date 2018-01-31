@@ -91,6 +91,32 @@ get_rows_and_columns (const octave_value& val, int& rows, int& cols)
       rows = 1;
       cols = 1;
     }
+  else if (val.isstruct ())
+    {
+      if (val.numel () == 1)
+        {
+          // Scalar struct.  Rows are fields, single column for
+          // values.
+
+          rows = val.nfields ();
+          cols = 1;
+        }
+      else if (val.rows () == 1 || val.columns () == 1)
+        {
+          // Vector struct.  Columns are fields, rows are values.
+
+          rows = val.numel ();
+          cols = val.nfields ();
+        }
+      else
+        {
+          // 2-d struct array.  Rows and columns index individual
+          // scalar structs.
+
+          rows = val.rows ();
+          cols = val.columns ();
+        }
+    }
   else
     {
       rows = val.rows ();
@@ -115,18 +141,41 @@ struct variable_editor_model::impl
 
           octave_value ov = cval(r,c);
 
-          if ((ov.numel () == 1 && (ov.isnumeric () || ov.islogical ()))
-              || (ov.is_string () && (ov.rows () == 1 || ov.isempty ())))
+          init_data_and_sub_editor (val, cval(r,c), r, c);
+        }
+      else if (val.isstruct ())
+        {
+          if (val.numel () == 1)
             {
-              m_data = QString::fromStdString (ov.edit_display (r, c));
+              // Scalar struct.  Rows are fields, single column for
+              // values.
 
-              return;
+              octave_scalar_map m = val.scalar_map_value ();
+
+              init_data_and_sub_editor (val, m.contents (r), r, c);
+            }
+          else if (val.rows () == 1 || val.columns () == 1)
+            {
+              // Vector struct.  Columns are fields, rows are values.
+
+              octave_map m = val.map_value ();
+
+              Cell cval = m.contents (c);
+
+              init_data_and_sub_editor (val, cval(r), r, c);
             }
           else
-            m_requires_sub_editor = true;
-        }
+            {
+              // 2-d struct array.  Rows and columns index individual
+              // scalar structs.
 
-      m_data = QString::fromStdString (val.edit_display (r, c));
+              octave_map m = val.map_value ();
+
+              init_data_and_sub_editor (val, m(r,c), r, c);
+            }
+        }
+      else
+        m_data = QString::fromStdString (val.edit_display (r, c));
     }
 
     cell (const QString& d, const QString& s, const QString& t,
@@ -134,6 +183,23 @@ struct variable_editor_model::impl
       : m_defined (true), m_data (d), m_status_tip (s), m_tool_tip (t),
         m_requires_sub_editor (rse), m_editor_type (edtype)
     { }
+
+    void init_data_and_sub_editor (const octave_value& val,
+                                   const octave_value& elt,
+                                   int r, int c)
+    {
+      if ((elt.numel () == 1 && (elt.isnumeric () || elt.islogical ()))
+          || (elt.is_string () && (elt.rows () == 1 || elt.isempty ())))
+        {
+          m_requires_sub_editor = false;
+          m_data = QString::fromStdString (elt.edit_display (0, 0));
+        }
+      else
+        {
+          m_requires_sub_editor = true;
+          m_data = QString::fromStdString (val.edit_display (r, c));
+        }
+    }
 
     bool m_defined;
 
@@ -190,15 +256,71 @@ struct variable_editor_model::impl
       return get_quote_char (m_value);
     else if (m_value.iscell ())
       {
-        Cell cval = m_value.cell_value ();
+        octave_value ov = value_at (r, c);
 
-        octave_value ov = cval(r,c);
+        if (ov.is_string ())
+          return get_quote_char (ov);
+      }
+    else if (m_value.isstruct ())
+      {
+        octave_value ov = value_at (r, c);
 
-        if (ov.rows () == 1 || ov.is_zero_by_zero ())
+        if (ov.is_string ())
           return get_quote_char (ov);
       }
 
     return 0;
+  }
+
+  QVariant header_data (int section, Qt::Orientation orientation,
+                        int role) const
+  {
+    if (role != Qt::DisplayRole)
+      return QVariant ();
+
+    if (m_value.isstruct ())
+      {
+        if (m_value.numel () == 1)
+          {
+            // Scalar struct.  Rows are fields, single column for
+            // values.
+
+            if (orientation == Qt::Horizontal)
+              return QString ("Values");
+            else
+              {
+                octave_scalar_map m = m_value.scalar_map_value ();
+
+                string_vector fields = m.fieldnames ();
+
+                return QString::fromStdString (fields(section));
+              }
+          }
+        else if (m_value.rows () == 1 || m_value.columns () == 1)
+          {
+            // Vector struct.  Columns are fields, rows are values.
+
+            if (orientation == Qt::Horizontal)
+              {
+                octave_map m = m_value.map_value ();
+
+                string_vector fields = m.fieldnames ();
+
+                return QString::fromStdString (fields(section));
+              }
+            else
+              return QString::number (section+1);
+          }
+        else
+          {
+            // 2-d struct array.  Rows and columns index individual
+            // scalar structs.
+
+            return QString::number (section+1);
+          }
+      }
+
+    return QString::number (section+1);
   }
 
   QString subscript_expression (int r, int c) const
@@ -209,6 +331,43 @@ struct variable_editor_model::impl
       return (QString ("{%1, %2}")
               .arg (r + 1)
               .arg (c + 1));
+    else if (m_value.isstruct ())
+      {
+        if (m_value.numel () == 1)
+          {
+            // Scalar struct.  Rows are fields, single column for
+            // values.
+
+            octave_scalar_map m = m_value.scalar_map_value ();
+
+            string_vector fields = m.fieldnames ();
+
+            return QString (".%1").arg (QString::fromStdString (fields(r)));
+          }
+        else if (m_value.rows () == 1 || m_value.columns () == 1)
+          {
+            // Vector struct.  Columns are fields, rows are values.
+
+            octave_map m = m_value.map_value ();
+
+            string_vector fields = m.fieldnames ();
+
+            return (QString ("(%1).%2")
+                    .arg (r + 1)
+                    .arg (QString::fromStdString (fields(c))));
+          }
+        else
+          {
+            // 2-d struct array.  Rows and columns index individual
+            // scalar structs.
+
+            octave_map m = m_value.map_value ();
+
+            return (QString ("(%1,%2)")
+                    .arg (r + 1)
+                    .arg (c + 1));
+          }
+      }
     else
       return (QString ("(%1, %2)")
               .arg (r + 1)
@@ -233,12 +392,45 @@ struct variable_editor_model::impl
 
   octave_value value_at (int r, int c) const
   {
-    if (! m_value.iscell ())
+    if (m_value.iscell ())
+      {
+        Cell cval = m_value.cell_value ();
+
+        return cval(r,c);
+      }
+    else if (m_value.isstruct ())
+      {
+        if (m_value.numel () == 1)
+          {
+            // Scalar struct.  Rows are fields, single column for
+            // values.
+
+            octave_scalar_map m = m_value.scalar_map_value ();
+
+            return m.contents (r);
+          }
+        else if (m_value.rows () == 1 || m_value.columns () == 1)
+          {
+            // Vector struct.  Columns are fields, rows are values.
+
+            octave_map m = m_value.map_value ();
+
+            Cell cval = m.contents (c);
+
+            return cval(r);
+          }
+        else
+          {
+            // 2-d struct array.  Rows and columns index individual
+            // scalar structs.
+
+            octave_map m = m_value.map_value ();
+
+            return m(r,c);
+          }
+      }
+    else
       return octave_value ();
-
-    Cell cval = m_value.cell_value ();
-
-    return cval.elem (r, c);
   }
 
   octave_value value_at (const QModelIndex& idx) const
@@ -593,6 +785,13 @@ variable_editor_model::quote_char (int r, int c) const
   return m_d->quote_char (r, c);
 }
 
+QVariant
+variable_editor_model::headerData (int section, Qt::Orientation orientation,
+                                   int role) const
+{
+  return m_d->header_data (section, orientation, role);
+}
+
 QString
 variable_editor_model::subscript_expression (int r, int c) const
 {
@@ -841,9 +1040,11 @@ bool
 variable_editor_model::type_is_editable (const octave_value& val,
                                          bool display_error) const
 {
-  if (((val.isnumeric () || val.islogical () || val.iscell ())
-       && val.ndims () == 2)
-      || (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ())))
+  if ((val.isnumeric () || val.islogical () || val.iscell ()
+       || val.isstruct ()) && val.ndims () == 2)
+    return true;
+
+  if (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ()))
     return true;
 
   if (display_error)

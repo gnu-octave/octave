@@ -131,6 +131,8 @@ public:
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
+  std::string edit_display (octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -251,6 +253,8 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
+
+  std::string edit_display (octave_idx_type i, octave_idx_type j) const;
 
   bool save_ascii (std::ostream& os);
 

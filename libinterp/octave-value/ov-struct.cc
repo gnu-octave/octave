@@ -656,6 +656,33 @@ scalar (const dim_vector& dims)
   return dims.ndims () == 2 && dims(0) == 1 && dims(1) == 1;
 }
 
+std::string
+octave_struct::edit_display (octave_idx_type r, octave_idx_type c) const
+{
+  octave_value val;
+  if (map.rows () == 1 || map.columns () == 1)
+    {
+      // Vector struct.  Columns are fields, rows are values.
+
+      Cell cval = map.contents (c);
+
+      val = cval(r);
+    }
+  else
+    {
+      // 2-d struct array.  Rows and columns index individual
+      // scalar structs.
+
+      val = map(r,c);
+    }
+
+  std::string tname = val.type_name ();
+  dim_vector dv = val.dims ();
+  std::string dimstr = dv.str ();
+  return "[" + dimstr + " " + tname + "]";
+}
+
+
 bool
 octave_struct::save_ascii (std::ostream& os)
 {
@@ -1329,6 +1356,19 @@ octave_scalar_struct::print_name_tag (std::ostream& os,
     }
 
   return retval;
+}
+
+std::string
+octave_scalar_struct::edit_display (octave_idx_type r, octave_idx_type) const
+{
+  // Scalar struct.  Rows are fields, single column for values.
+
+  octave_value val = map.contents (r);
+
+  std::string tname = val.type_name ();
+  dim_vector dv = val.dims ();
+  std::string dimstr = dv.str ();
+  return "[" + dimstr + " " + tname + "]";
 }
 
 bool

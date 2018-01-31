@@ -94,6 +94,9 @@ public:
 
   char quote_char (int r, int c) const;
 
+  QVariant
+  headerData (int section, Qt::Orientation orientation, int role) const;
+
   // Return a subscript expression as a string that can be used to
   // access a sub-element of a data structure.  For example "{1,3}"
   // for cell array element {1,3} or "(2,4)" for array element (2,4).

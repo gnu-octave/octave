@@ -1589,7 +1589,7 @@ public:
 
   bool_property (const std::string& nm, const graphics_handle& h,
                  const char *val)
-    : radio_property (nm, h, radio_values (std::string (val) == "on" ? 
+    : radio_property (nm, h, radio_values (std::string (val) == "on" ?
                                            "{on}|off" : "on|{off}"), val)
   { }
 
@@ -3159,7 +3159,7 @@ public:
       callback_property windowscrollwheelfcn , Matrix ()
       radio_property windowstyle , "{normal}|modal|docked"
 
-      // Overridden base property  
+      // Overridden base property
       // Property is not implemented for figures.
       // Hide it and set it to a default value that works.
       radio_property pickableparts h , "{visible}"
@@ -3169,9 +3169,11 @@ public:
       mutable string_property __gl_renderer__ hr , ""
       mutable string_property __gl_vendor__ hr , ""
       mutable string_property __gl_version__ hr , ""
+      bool_property __gl_window__ h , "off"
       string_property __graphics_toolkit__ hs , default_graphics_toolkit ()
       any_property __guidata__ h , Matrix ()
       radio_property __mouse_mode__ hS , "{none}|pan|rotate|select|text|zoom"
+      bool_property __printing__ h , "off"
       any_property __pan_mode__ h , Matrix ()
       any_property __plot_stream__ h , Matrix ()
       any_property __rotate_mode__ h , Matrix ()

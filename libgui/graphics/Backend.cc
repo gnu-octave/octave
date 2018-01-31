@@ -185,14 +185,11 @@ namespace QtHandles
                          const std::string& file_cmd,
                          const std::string& /*debug_file*/) const
   {
-    if (go.get_properties ().is_visible ())
-      {
-        ObjectProxy *proxy = toolkitObjectProxy (go);
+    ObjectProxy *proxy = toolkitObjectProxy (go);
 
-        if (proxy)
-          proxy->print (QString::fromStdString (file_cmd),
-                        QString::fromStdString (term));
-      }
+    if (proxy)
+      proxy->print (QString::fromStdString (file_cmd),
+                    QString::fromStdString (term));
   }
 
   uint8NDArray

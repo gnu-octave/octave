@@ -150,7 +150,9 @@ function opts = __opengl_print__ (opts)
       fprintf ("opengl-pipeline: '%s'\n", pipeline{n});
     endif
 
-    if (strcmp (get (opts.figure, "visible"), "on"))
+    if (strcmp (get (opts.figure, "visible"), "on")
+        || (strcmp (get (opts.figure, "__graphics_toolkit__"), "qt")
+            && strcmp (get (opts.figure, "__gl_window__"), "on")))
       ## Use toolkits "print_figure" method
       drawnow (gl2ps_device{n}, ['|' pipeline{n}]);
     else

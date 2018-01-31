@@ -427,10 +427,13 @@ function print (varargin)
     ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
     props(end+1).h = opts.figure;
+    props(end).name = "__printing__";
+    props(end).value = {"off"};
+    props(end+1).h = opts.figure;
     props(end).name = "position";
     props(end).value = {fpos};
     fpos(3:4) = opts.canvas_size;
-    set (opts.figure, "position", fpos);
+    set (opts.figure, "__printing__", "on", "position", fpos);
     nfig += 1;
 
     ## Implement InvertHardCopy option

@@ -432,10 +432,14 @@ namespace QtHandles
       return;
 
     figure::properties& fp = properties<figure> ();
+
+    if (fp.is___printing__ ())
+      return;
+    
     QMainWindow *win = qWidget<QMainWindow> ();
 
     m_blockUpdates = true;
-
+    
     switch (pId)
       {
       case figure::properties::ID_POSITION:
@@ -465,7 +469,14 @@ namespace QtHandles
 
       case figure::properties::ID_VISIBLE:
         if (fp.is_visible ())
-          QTimer::singleShot (0, win, SLOT (show ()));
+          {
+            QTimer::singleShot (0, win, SLOT (show ()));
+            if (! fp.is___gl_window__ ())
+              {
+                gh_manager::auto_lock lock;
+                fp.set ("__gl_window__", "on");
+              }
+          }                
         else
           win->hide ();
         break;

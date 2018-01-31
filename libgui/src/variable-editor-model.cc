@@ -853,9 +853,28 @@ variable_editor_model::type_is_editable (const octave_value& val,
       dim_vector dv = val.dims ();
       QString dimstr = QString::fromStdString (dv.str ());
 
-      emit data_error_signal (QString ("unable to edit [%1] '%2' objects")
+      // FIXME: we will probably want to impose a limit on the size of
+      // the output here...
+
+      // FIXME: shouldn't octave_value::print be a constant method?
+      QString sep;
+      QString output;
+
+      if (val.is_defined ())
+        {
+          std::ostringstream buf;
+          octave_value tval = val;
+          tval.print (buf);
+          output = QString::fromStdString (buf.str ());
+          if (! output.isEmpty ())
+            sep = "\n\n";
+        }
+
+      emit data_error_signal (QString ("unable to edit [%1] '%2' objects%3%4")
                               .arg (dimstr)
-                              .arg (tname));
+                              .arg (tname)
+                              .arg (sep)
+                              .arg (output));
     }
 
   return false;

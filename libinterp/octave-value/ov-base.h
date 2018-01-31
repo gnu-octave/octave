@@ -357,6 +357,8 @@ public:
 
   bool isempty (void) const { return (dims ().any_zero ()); }
 
+  bool is_zero_by_zero (void) const { return dims().zero_by_zero (); }
+
   virtual bool iscell (void) const { return false; }
 
   virtual bool iscellstr (void) const { return false; }

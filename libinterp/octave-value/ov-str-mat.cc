@@ -278,24 +278,28 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
 }
 
 std::string
-octave_char_matrix_str::edit_display (octave_idx_type i, octave_idx_type) const
+octave_char_matrix_str::edit_display (octave_idx_type i,
+                                      octave_idx_type) const
 {
-  if (matrix.rows () == 1 && i == 0)
+  if (i == 0)
     {
-      std::string retval = string_value ();
+      if (rows () == 1)
+        {
+          std::string retval = string_value ();
 
-      if (! is_sq_string ())
-        retval = undo_string_escapes (retval);
+          if (! is_sq_string ())
+            retval = undo_string_escapes (retval);
 
-      return retval;
+          return retval;
+        }
+      else if (is_zero_by_zero ())
+        return "";
     }
-  else
-    {
-      std::string tname = type_name ();
-      dim_vector dv = matrix.dims ();
-      std::string dimstr = dv.str ();
-      return "[" + dimstr + " " + tname + "]";
-    }
+
+  std::string tname = type_name ();
+  dim_vector dv = matrix.dims ();
+  std::string dimstr = dv.str ();
+  return "[" + dimstr + " " + tname + "]";
 }
 
 bool

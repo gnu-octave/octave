@@ -83,8 +83,19 @@ get_quote_char (const octave_value& val)
 static void
 get_rows_and_columns (const octave_value& val, int& rows, int& cols)
 {
-  rows = val.rows ();
-  cols = (val.is_string () ? 1 : val.columns ());
+  if (val.is_string ())
+    {
+      // VAL will either be "" or a char array with a single row.
+      // Either way, edit it as a single string.
+
+      rows = 1;
+      cols = 1;
+    }
+  else
+    {
+      rows = val.rows ();
+      cols = val.columns ();
+    }
 }
 
 struct variable_editor_model::impl
@@ -105,7 +116,7 @@ struct variable_editor_model::impl
           octave_value ov = cval(r,c);
 
           if ((ov.numel () == 1 && (ov.isnumeric () || ov.islogical ()))
-              || (ov.rows () == 1 && ov.is_string ()))
+              || (ov.is_string () && (ov.rows () == 1 || ov.isempty ())))
             {
               m_data = QString::fromStdString (ov.edit_display (r, c));
 
@@ -183,7 +194,7 @@ struct variable_editor_model::impl
 
         octave_value ov = cval(r,c);
 
-        if (ov.rows () == 1)
+        if (ov.rows () == 1 || ov.is_zero_by_zero ())
           return get_quote_char (ov);
       }
 
@@ -832,7 +843,7 @@ variable_editor_model::type_is_editable (const octave_value& val,
 {
   if (((val.isnumeric () || val.islogical () || val.iscell ())
        && val.ndims () == 2)
-      || (val.is_string () && val.rows () == 1))
+      || (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ())))
     return true;
 
   if (display_error)

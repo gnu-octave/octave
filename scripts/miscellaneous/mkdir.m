@@ -48,7 +48,7 @@ function [status, msg, msgid] = mkdir (parent, dirname)
   if (nargin == 1)
     dirname = parent;
 
-    if (is_absolute_filename (dirname))
+    if (is_absolute_filename (tilde_expand (dirname)))
       parent = "";
     else
       parent = [pwd(), filesep];
@@ -92,6 +92,25 @@ endfunction
 %! unwind_protect_cleanup
 %!   confirm_recursive_rmdir (false, "local");
 %!   rmdir (dir1, "s");
+%! end_unwind_protect
+
+%!test <*53031>
+%! HOME = getenv ("HOME");
+%! tmp_dir = tempname ();
+%! unwind_protect
+%!   mkdir (tmp_dir);
+%!   setenv ("HOME", tmp_dir);
+%!   status = mkdir ("~/subdir");
+%!   assert (status);
+%!   assert (isdir (fullfile (tmp_dir, "subdir")));
+%! unwind_protect_cleanup
+%!   rmdir (fullfile (tmp_dir, "subdir"));
+%!   rmdir (tmp_dir);
+%!   if (isempty (HOME))
+%!     unsetenv ("HOME");
+%!   else
+%!     setenv ("HOME", HOME);
+%!   endif
 %! end_unwind_protect
 
 ## Test input validation

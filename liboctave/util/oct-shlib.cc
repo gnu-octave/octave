@@ -182,7 +182,10 @@ namespace octave
     // normally throw an exception, avoiding the construction of an invalid
     // library.  Leave it here for possible future use.
 
-    bool is_open (void) const { return (library != nullptr); }
+    bool is_open (void) const
+    {
+      return (search_all_loaded || library != nullptr);
+    }
 
   private:
 
@@ -244,7 +247,7 @@ namespace octave
   {
     void *function = nullptr;
 
-    if (! search_all_loaded && ! is_open ())
+    if (! is_open ())
       (*current_liboctave_error_handler)
         ("shared library %s is not open", file.c_str ());
 
@@ -281,7 +284,7 @@ namespace octave
     void * search (const std::string& name,
                    dynamic_library::name_mangler mangler = 0);
 
-    bool is_open (void) const { return (library != 0); }
+    bool is_open (void) const { return (search_all_loaded || library != 0); }
 
   private:
 
@@ -322,7 +325,7 @@ namespace octave
   {
     void *function = nullptr;
 
-    if (! search_all_loaded && ! is_open ())
+    if (! is_open ())
       (*current_liboctave_error_handler)
         ("shared library %s is not open", file.c_str ());
 
@@ -363,7 +366,7 @@ namespace octave
 
     void * global_search (const std::string& sym_name);
 
-    bool is_open (void) const { return (handle != 0); }
+    bool is_open (void) const { return (search_all_loaded || handle != 0); }
 
   private:
 
@@ -484,7 +487,7 @@ namespace octave
   {
     void *function = nullptr;
 
-    if (! search_all_loaded && ! is_open ())
+    if (! is_open ())
       (*current_liboctave_error_handler)
         ("shared library %s is not open", file.c_str ());
 
@@ -526,7 +529,7 @@ namespace octave
 
     void close (void);
 
-    bool is_open (void) const {return (handle != 0); }
+    bool is_open (void) const { return (search_all_loaded || handle != 0); }
 
   private:
 
@@ -539,7 +542,7 @@ namespace octave
   octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
     : dynamic_library::dynlib_rep (f), handle (0)
   {
-    if (f.empty())
+    if (f.empty ())
       (*current_liboctave_error_handler)
         ("global search is not implemented for DYLD_API");
 

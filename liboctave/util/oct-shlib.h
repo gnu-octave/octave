@@ -123,7 +123,8 @@ namespace octave
 
     ~dynamic_library (void)
     {
-      rep->count--;
+      if (--rep->count == 0 && ! file_name ().empty ())
+        delete rep;
     }
 
     dynamic_library (const dynamic_library& sl)
@@ -136,7 +137,7 @@ namespace octave
     {
       if (rep != sl.rep)
         {
-          if (--rep->count == 0)
+          if (--rep->count == 0 && ! file_name ().empty ())
             delete rep;
 
           rep = sl.rep;

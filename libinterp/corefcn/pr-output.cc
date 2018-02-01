@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-preserve-stream-state.h"
 #include "pager.h"
 #include "parse.h"
+#include "pr-flt-fmt.h"
 #include "pr-output.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -61,14 +62,6 @@ along with Octave; see the file COPYING.  If not, see
 // TRUE means use a scaled fixed point format for 'format long' and
 // 'format short'.
 static bool Vfixed_point_format = false;
-
-// The maximum field width for a number printed by the default output
-// routines.
-static int Voutput_max_field_width = 10;
-
-// The precision of the numbers printed by the default output
-// routines.
-static int Voutput_precision = 5;
 
 // TRUE means that the dimensions of empty objects should be printed
 // like this: x = [](2x0).
@@ -117,99 +110,6 @@ static bool print_big_e = false;
 // TRUE means use an engineering format.
 static bool print_eng = false;
 
-class pr_engineering_float;
-class pr_formatted_float;
-class pr_rational_float;
-
-static int
-current_output_max_field_width (void)
-{
-  return Voutput_max_field_width;
-}
-
-static int
-current_output_precision (void)
-{
-  return Voutput_precision;
-}
-
-class
-float_format
-{
-public:
-
-  float_format (int w = current_output_max_field_width (),
-                int p = current_output_precision (), int f = 0)
-    : fw (w), ex (0), prec (p), fmt (f), up (0), sp (0) { }
-
-  float_format (int w, int e, int p, int f)
-    : fw (w), ex (e), prec (p), fmt (f), up (0), sp (0) { }
-
-  float_format (const float_format& ff)
-    : fw (ff.fw), ex (ff.ex), prec (ff.prec), fmt (ff.fmt), up (ff.up),
-      sp (ff.sp) { }
-
-  float_format& operator = (const float_format& ff)
-  {
-    if (&ff != this)
-      {
-        fw = ff.fw;
-        ex = ff.ex;
-        prec = ff.prec;
-        fmt = ff.fmt;
-        up = ff.up;
-        sp = ff.sp;
-      }
-
-    return *this;
-  }
-
-  ~float_format (void) = default;
-
-  float_format& scientific (void) { fmt = std::ios::scientific; return *this; }
-  float_format& fixed (void) { fmt = std::ios::fixed; return *this; }
-  float_format& general (void) { fmt = 0; return *this; }
-
-  float_format& uppercase (void) { up = std::ios::uppercase; return *this; }
-  float_format& lowercase (void) { up = 0; return *this; }
-
-  float_format& precision (int p) { prec = p; return *this; }
-
-  float_format& width (int w) { fw = w; return *this; }
-
-  float_format& trailing_zeros (bool tz = true)
-  { sp = (tz ? std::ios::showpoint : 0); return *this; }
-
-  friend std::ostream& operator << (std::ostream& os,
-                                    const pr_engineering_float& pef);
-
-  friend std::ostream& operator << (std::ostream& os,
-                                    const pr_formatted_float& pff);
-
-  friend std::ostream& operator << (std::ostream& os,
-                                    const pr_rational_float& prf);
-
-private:
-
-  // Field width.  Zero means as wide as necessary.
-  int fw;
-
-  // Exponent Field width.  Zero means as wide as necessary.
-  int ex;
-
-  // Precision.
-  int prec;
-
-  // Format.
-  int fmt;
-
-  // E or e.
-  int up;
-
-  // Show trailing zeros.
-  int sp;
-};
-
 static int
 calc_scale_exp (const int& x)
 {
@@ -235,20 +135,24 @@ calc_scale_exp (const int& x)
 }
 
 static int
-engineering_exponent (const double& x)
+engineering_exponent (double x)
 {
   int ex = 0;
+
   if (x != 0)
     {
       double absval = (x < 0.0 ? -x : x);
       int logabsval = static_cast<int> (std::floor (log10 (absval)));
+
       // Avoid using modulo function with negative arguments for
       // portability.  See extended comment at calc_scale_exp
+
       if (logabsval < 0.0)
         ex = logabsval - 2 + ((-logabsval + 2) % 3);
       else
         ex = logabsval - (logabsval % 3);
     }
+
   return ex;
 }
 
@@ -260,42 +164,33 @@ num_digits (const double& x)
               : static_cast<int> (std::floor (log10 (x))));
 }
 
-class
-pr_engineering_float
+int
+pr_engineering_float::exponent (void) const
 {
-public:
+  return engineering_exponent (m_val);
+}
 
-  const float_format& f;
-
-  double val;
-
-  int exponent (void) const
-  {
-    return engineering_exponent (val);
-  }
-
-  double mantissa (void) const
-  {
-    return val / std::pow (10.0, exponent ());
-  }
-
-  pr_engineering_float (const float_format& f_arg, double val_arg)
-    : f (f_arg), val (val_arg) { }
-};
+double
+pr_engineering_float::mantissa (void) const
+{
+  return m_val / std::pow (10.0, exponent ());
+}
 
 std::ostream&
 operator << (std::ostream& os, const pr_engineering_float& pef)
 {
   octave::preserve_stream_state stream_state (os);
 
-  if (pef.f.fw >= 0)
-    os << std::setw (pef.f.fw - pef.f.ex);
+  float_format real_fmt = pef.m_ff;
 
-  if (pef.f.prec >= 0)
-    os << std::setprecision (pef.f.prec);
+  if (real_fmt.fw >= 0)
+    os << std::setw (real_fmt.fw - real_fmt.ex);
+
+  if (real_fmt.prec >= 0)
+    os << std::setprecision (real_fmt.prec);
 
   os.flags (static_cast<std::ios::fmtflags>
-            (pef.f.fmt | pef.f.up | pef.f.sp));
+            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
 
   os << pef.mantissa ();
 
@@ -308,39 +203,28 @@ operator << (std::ostream& os, const pr_engineering_float& pef)
   else
     os << std::setw (0) << "e+";
 
-  os << std::setw (pef.f.ex - 2) << std::setfill ('0') << ex;
+  os << std::setw (real_fmt.ex - 2) << std::setfill ('0') << ex;
 
   return os;
 }
-
-class
-pr_formatted_float
-{
-public:
-
-  const float_format& f;
-
-  double val;
-
-  pr_formatted_float (const float_format& f_arg, double val_arg)
-    : f (f_arg), val (val_arg) { }
-};
 
 std::ostream&
 operator << (std::ostream& os, const pr_formatted_float& pff)
 {
   octave::preserve_stream_state stream_state (os);
 
-  if (pff.f.fw >= 0)
-    os << std::setw (pff.f.fw);
+  float_format real_fmt = pff.m_ff;
 
-  if (pff.f.prec >= 0)
-    os << std::setprecision (pff.f.prec);
+  if (real_fmt.fw >= 0)
+    os << std::setw (real_fmt.fw);
+
+  if (real_fmt.prec >= 0)
+    os << std::setprecision (real_fmt.prec);
 
   os.flags (static_cast<std::ios::fmtflags>
-            (pff.f.fmt | pff.f.up | pff.f.sp));
+            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
 
-  os << pff.val;
+  os << pff.m_val;
 
   return os;
 }
@@ -377,7 +261,7 @@ rational_approx (double val, int len)
 
       std::ostringstream buf2;
       buf2.flags (std::ios::fixed);
-      buf2 << std::setprecision (0) << static_cast<int>(n);
+      buf2 << std::setprecision (0) << static_cast<int> (n);
       s = buf2.str ();
 
       while (1)
@@ -403,17 +287,17 @@ rational_approx (double val, int len)
 
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
-          buf << std::setprecision (0) << static_cast<int>(n)
-              << '/' << static_cast<int>(d);
+          buf << std::setprecision (0) << static_cast<int> (n)
+              << '/' << static_cast<int> (d);
           m++;
 
           if (n < 0 && d < 0)
             {
               // Double negative, string can be two characters longer..
-              if (buf.str ().length () > static_cast<unsigned int>(len + 2))
+              if (buf.str ().length () > static_cast<unsigned int> (len + 2))
                 break;
             }
-          else if (buf.str ().length () > static_cast<unsigned int>(len))
+          else if (buf.str ().length () > static_cast<unsigned int> (len))
             break;
 
           if (std::abs (n) > std::numeric_limits<int>::max ()
@@ -430,8 +314,8 @@ rational_approx (double val, int len)
           lastn = - lastn;
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
-          buf << std::setprecision (0) << static_cast<int>(lastn)
-              << '/' << static_cast<int>(lastd);
+          buf << std::setprecision (0) << static_cast<int> (lastn)
+              << '/' << static_cast<int> (lastd);
           s = buf.str ();
         }
     }
@@ -453,34 +337,23 @@ rational_approx (double val, int len)
 %! assert (err, 0, 4 * eps);
 */
 
-class
-pr_rational_float
-{
-public:
-
-  const float_format& f;
-
-  double val;
-
-  pr_rational_float (const float_format& f_arg, double val_arg)
-    : f (f_arg), val (val_arg) { }
-};
-
 std::ostream&
 operator << (std::ostream& os, const pr_rational_float& prf)
 {
   octave::preserve_stream_state stream_state (os);
 
-  int fw = (rat_string_len > 0 ? rat_string_len : prf.f.fw);
-  std::string s = rational_approx (prf.val, fw);
+  float_format real_fmt = prf.m_ff;
+
+  int fw = (rat_string_len > 0 ? rat_string_len : real_fmt.fw);
+  std::string s = rational_approx (prf.m_val, fw);
 
   if (fw >= 0)
     os << std::setw (fw);
 
   os.flags (static_cast<std::ios::fmtflags>
-            (prf.f.fmt | prf.f.up | prf.f.sp));
+            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
 
-  if (fw > 0 && s.length () > static_cast<unsigned int>(fw))
+  if (fw > 0 && s.length () > static_cast<unsigned int> (fw))
     os << '*';
   else
     os << s;
@@ -488,12 +361,8 @@ operator << (std::ostream& os, const pr_rational_float& prf)
   return os;
 }
 
-// Current format for real numbers and the real part of complex
-// numbers.
-static float_format *curr_real_fmt = nullptr;
-
-// Current format for the imaginary part of complex numbers.
-static float_format *curr_imag_fmt = nullptr;
+// Current format for floating point numbers.
+static float_display_format curr_float_display_fmt;
 
 static double
 pr_max_internal (const Matrix& m)
@@ -555,12 +424,12 @@ pr_min_internal (const Matrix& m)
 
 // FIXME: it would be nice to share more code among these functions,..
 
-static void
-set_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
+static float_display_format
+make_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
 {
-  static float_format fmt;
+  float_format fmt;
 
-  int prec = Voutput_precision;
+  int prec = output_precision ();
 
   int ld, rd;
 
@@ -612,7 +481,7 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (fw > Voutput_max_field_width || print_e || print_g || print_eng))
+      && (fw > output_max_field_width () || print_e || print_g || print_eng))
     {
       if (print_g)
         fmt = float_format ();
@@ -647,17 +516,14 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
-  curr_real_fmt = &fmt;
+  return float_display_format (fmt);
 }
 
-static void
-set_format (double d, int& fw)
+float_display_format
+make_format (double d, int& fw)
 {
-  curr_real_fmt = nullptr;
-  curr_imag_fmt = nullptr;
-
   if (free_format)
-    return;
+    return float_display_format ();
 
   bool inf_or_nan = (octave::math::isinf (d) || octave::math::isnan (d));
 
@@ -667,7 +533,13 @@ set_format (double d, int& fw)
 
   int digits = (inf_or_nan || d_abs == 0.0) ? 0 : num_digits (d_abs);
 
-  set_real_format (digits, inf_or_nan, int_only, fw);
+  return make_real_format (digits, inf_or_nan, int_only, fw);
+}
+
+static void
+set_format (double d, int& fw)
+{
+  curr_float_display_fmt = make_format (d, fw);
 }
 
 static inline void
@@ -677,13 +549,13 @@ set_format (double d)
   set_format (d, fw);
 }
 
-static void
-set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
-                        int int_or_inf_or_nan, int& fw)
+static float_display_format
+make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
+                         int int_or_inf_or_nan, int& fw)
 {
-  static float_format fmt;
+  float_format fmt;
 
-  int prec = Voutput_precision;
+  int prec = output_precision ();
 
   int ld, rd;
 
@@ -766,7 +638,7 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
           || print_eng || print_g
-          || (! Vfixed_point_format && fw > Voutput_max_field_width)))
+          || (! Vfixed_point_format && fw > output_max_field_width ())))
     {
       if (print_g)
         fmt = float_format ();
@@ -800,17 +672,14 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
-  curr_real_fmt = &fmt;
+  return float_display_format (fmt);
 }
 
-static void
-set_format (const Matrix& m, int& fw, double& scale)
+float_display_format
+make_format (const Matrix& m, int& fw, double& scale)
 {
-  curr_real_fmt = nullptr;
-  curr_imag_fmt = nullptr;
-
   if (free_format)
-    return;
+    return float_display_format ();
 
   bool inf_or_nan = m.any_element_is_inf_or_nan ();
 
@@ -827,17 +696,24 @@ set_format (const Matrix& m, int& fw, double& scale)
   scale = (x_max == 0 || int_or_inf_or_nan)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
-  set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
+  return make_real_matrix_format (x_max, x_min, inf_or_nan,
+                                  int_or_inf_or_nan, fw);
 }
 
 static void
-set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
-                    int int_only, int& r_fw, int& i_fw)
+set_format (const Matrix& m, int& fw, double& scale)
 {
-  static float_format r_fmt;
-  static float_format i_fmt;
+  curr_float_display_fmt = make_format (m, fw, scale);
+}
 
-  int prec = Voutput_precision;
+static float_display_format
+make_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
+                     int int_only, int& r_fw, int& i_fw)
+{
+  float_format r_fmt;
+  float_format i_fmt;
+
+  int prec = output_precision ();
 
   int ld, rd;
 
@@ -923,7 +799,7 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (r_fw > Voutput_max_field_width || print_e || print_eng || print_g))
+      && (r_fw > output_max_field_width () || print_e || print_eng || print_g))
     {
       if (print_g)
         {
@@ -979,18 +855,14 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
       i_fmt = float_format (i_fw, rd, std::ios::fixed);
     }
 
-  curr_real_fmt = &r_fmt;
-  curr_imag_fmt = &i_fmt;
+  return float_display_format (r_fmt, i_fmt);
 }
 
-static void
-set_format (const Complex& c, int& r_fw, int& i_fw)
+float_display_format
+make_format (const Complex& c, int& r_fw, int& i_fw)
 {
-  curr_real_fmt = nullptr;
-  curr_imag_fmt = nullptr;
-
   if (free_format)
-    return;
+    return float_display_format ();
 
   double rp = c.real ();
   double ip = c.imag ();
@@ -1022,7 +894,17 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       x_min = r_x;
     }
 
-  set_complex_format (x_max, x_min, r_x, inf_or_nan, int_only, r_fw, i_fw);
+  return make_complex_format (x_max, x_min, r_x, inf_or_nan, int_only,
+                              r_fw, i_fw);
+}
+
+static void
+set_format (const Complex& c, int& r_fw, int& i_fw)
+{
+  if (free_format)
+    curr_float_display_fmt = float_display_format ();
+  else
+    curr_float_display_fmt = make_format (c, r_fw, i_fw);
 }
 
 static inline void
@@ -1032,15 +914,15 @@ set_format (const Complex& c)
   set_format (c, r_fw, i_fw);
 }
 
-static void
-set_complex_matrix_format (int x_max, int x_min, int r_x_max,
-                           int r_x_min, bool inf_or_nan,
-                           int int_or_inf_or_nan, int& r_fw, int& i_fw)
+static float_display_format
+make_complex_matrix_format (int x_max, int x_min, int r_x_max,
+                            int r_x_min, bool inf_or_nan,
+                            int int_or_inf_or_nan, int& r_fw, int& i_fw)
 {
-  static float_format r_fmt;
-  static float_format i_fmt;
+  float_format r_fmt;
+  float_format i_fmt;
 
-  int prec = Voutput_precision;
+  int prec = output_precision ();
 
   int ld, rd;
 
@@ -1139,7 +1021,7 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
           || print_eng || print_g
-          || (! Vfixed_point_format && r_fw > Voutput_max_field_width)))
+          || (! Vfixed_point_format && r_fw > output_max_field_width ())))
     {
       if (print_g)
         {
@@ -1195,18 +1077,14 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
       i_fmt = float_format (i_fw, rd, std::ios::fixed);
     }
 
-  curr_real_fmt = &r_fmt;
-  curr_imag_fmt = &i_fmt;
+  return float_display_format (r_fmt, i_fmt);
 }
 
-static void
-set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
+float_display_format
+make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
 {
-  curr_real_fmt = nullptr;
-  curr_imag_fmt = nullptr;
-
   if (free_format)
-    return;
+    return float_display_format ();
 
   Matrix rp = real (cm);
   Matrix ip = imag (cm);
@@ -1238,16 +1116,26 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   scale = (x_max == 0 || int_or_inf_or_nan)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
-  set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
-                             int_or_inf_or_nan, r_fw, i_fw);
+  return make_complex_matrix_format (x_max, x_min, r_x_max, r_x_min,
+                                     inf_or_nan, int_or_inf_or_nan,
+                                     r_fw, i_fw);
 }
 
 static void
-set_range_format (int x_max, int x_min, int all_ints, int& fw)
+set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
 {
-  static float_format fmt;
+  if (free_format)
+    curr_float_display_fmt = float_display_format ();
+  else
+    curr_float_display_fmt = make_format (cm, r_fw, i_fw, scale);
+}
 
-  int prec = Voutput_precision;
+static float_display_format
+make_range_format (int x_max, int x_min, int all_ints, int& fw)
+{
+  float_format fmt;
+
+  int prec = output_precision ();
 
   int ld, rd;
 
@@ -1322,7 +1210,7 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
           || print_eng || print_g
-          || (! Vfixed_point_format && fw > Voutput_max_field_width)))
+          || (! Vfixed_point_format && fw > output_max_field_width ())))
     {
       if (print_g)
         fmt = float_format ();
@@ -1352,17 +1240,14 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
-  curr_real_fmt = &fmt;
+  return float_display_format (fmt);
 }
 
-static void
-set_format (const Range& r, int& fw, double& scale)
+float_display_format
+make_format (const Range& r, int& fw, double& scale)
 {
-  curr_real_fmt = nullptr;
-  curr_imag_fmt = nullptr;
-
   if (free_format)
-    return;
+    return float_display_format ();
 
   double r_min = r.base ();
   double r_max = r.limit ();
@@ -1386,7 +1271,13 @@ set_format (const Range& r, int& fw, double& scale)
   scale = (x_max == 0 || all_ints)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
-  set_range_format (x_max, x_min, all_ints, fw);
+  return make_range_format (x_max, x_min, all_ints, fw);
+}
+
+static void
+set_format (const Range& r, int& fw, double& scale)
+{
+  curr_float_display_fmt = make_format (r, fw, scale);
 }
 
 union equiv
@@ -1432,116 +1323,111 @@ union equiv
   while (0)
 
 static void
-pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
+pr_any_float (const float_format& fmt, std::ostream& os, double d, int fw = 0)
 {
-  if (fmt)
+  // Unless explicitly asked for, always print in big-endian format
+  // for hex and bit formats.
+  //
+  //   {bit,hex}_format == 1: print big-endian
+  //   {bit,hex}_format == 2: print native
+
+  if (hex_format)
     {
-      // Unless explicitly asked for, always print in big-endian format
-      // for hex and bit formats.
-      //
-      //   {bit,hex}_format == 1: print big-endian
-      //   {bit,hex}_format == 2: print native
+      octave::preserve_stream_state stream_state (os);
 
-      if (hex_format)
+      equiv tmp;
+      tmp.d = d;
+
+      // Unless explicitly asked for, always print in big-endian format.
+
+      // FIXME: will bad things happen if we are
+      // interrupted before resetting the format flags and fill
+      // character?
+
+      octave::mach_info::float_format flt_fmt =
+        octave::mach_info::native_float_format ();
+
+      os.fill ('0');
+      os.flags (std::ios::right | std::ios::hex);
+
+      if (hex_format > 1
+          || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
         {
-          octave::preserve_stream_state stream_state (os);
+          for (size_t i = 0; i < sizeof (double); i++)
+            os << std::setw (2) << static_cast<int> (tmp.i[i]);
+        }
+      else
+        {
+          for (int i = sizeof (double) - 1; i >= 0; i--)
+            os << std::setw (2) << static_cast<int> (tmp.i[i]);
+        }
+    }
+  else if (bit_format)
+    {
+      equiv tmp;
+      tmp.d = d;
 
-          equiv tmp;
-          tmp.d = d;
+      octave::mach_info::float_format flt_fmt =
+        octave::mach_info::native_float_format ();
 
-          // Unless explicitly asked for, always print in big-endian format.
-
-          // FIXME: will bad things happen if we are
-          // interrupted before resetting the format flags and fill
-          // character?
-
-          octave::mach_info::float_format flt_fmt =
-            octave::mach_info::native_float_format ();
-
-          os.fill ('0');
-          os.flags (std::ios::right | std::ios::hex);
-
-          if (hex_format > 1
-              || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
+      if (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
+        {
+          for (size_t i = 0; i < sizeof (double); i++)
+            PRINT_CHAR_BITS (os, tmp.i[i]);
+        }
+      else
+        {
+          if (bit_format > 1)
             {
               for (size_t i = 0; i < sizeof (double); i++)
-                os << std::setw (2) << static_cast<int> (tmp.i[i]);
+                PRINT_CHAR_BITS_SWAPPED (os, tmp.i[i]);
             }
           else
             {
               for (int i = sizeof (double) - 1; i >= 0; i--)
-                os << std::setw (2) << static_cast<int> (tmp.i[i]);
-            }
-        }
-      else if (bit_format)
-        {
-          equiv tmp;
-          tmp.d = d;
-
-          octave::mach_info::float_format flt_fmt =
-            octave::mach_info::native_float_format ();
-
-          if (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
-            {
-              for (size_t i = 0; i < sizeof (double); i++)
                 PRINT_CHAR_BITS (os, tmp.i[i]);
             }
-          else
-            {
-              if (bit_format > 1)
-                {
-                  for (size_t i = 0; i < sizeof (double); i++)
-                    PRINT_CHAR_BITS_SWAPPED (os, tmp.i[i]);
-                }
-              else
-                {
-                  for (int i = sizeof (double) - 1; i >= 0; i--)
-                    PRINT_CHAR_BITS (os, tmp.i[i]);
-                }
-            }
         }
-      else if (octave::math::isna (d))
-        {
-          octave::preserve_stream_state stream_state (os);
-
-          if (fw > 0)
-            os << std::setw (fw) << "NA";
-          else
-            os << "NA";
-        }
-      else if (rat_format)
-        os << pr_rational_float (*fmt, d);
-      else if (octave::math::isinf (d))
-        {
-          octave::preserve_stream_state stream_state (os);
-
-          const char *s;
-          if (d < 0.0)
-            s = "-Inf";
-          else
-            s = "Inf";
-
-          if (fw > 0)
-            os << std::setw (fw) << s;
-          else
-            os << s;
-        }
-      else if (octave::math::isnan (d))
-        {
-          octave::preserve_stream_state stream_state (os);
-
-          if (fw > 0)
-            os << std::setw (fw) << "NaN";
-          else
-            os << "NaN";
-        }
-      else if (print_eng)
-        os << pr_engineering_float (*fmt, d);
-      else
-        os << pr_formatted_float (*fmt, d);
     }
+  else if (octave::math::isna (d))
+    {
+      octave::preserve_stream_state stream_state (os);
+
+      if (fw > 0)
+        os << std::setw (fw) << "NA";
+      else
+        os << "NA";
+    }
+  else if (rat_format)
+    os << pr_rational_float (fmt, d);
+  else if (octave::math::isinf (d))
+    {
+      octave::preserve_stream_state stream_state (os);
+
+      const char *s;
+      if (d < 0.0)
+        s = "-Inf";
+      else
+        s = "Inf";
+
+      if (fw > 0)
+        os << std::setw (fw) << s;
+      else
+        os << s;
+    }
+  else if (octave::math::isnan (d))
+    {
+      octave::preserve_stream_state stream_state (os);
+
+      if (fw > 0)
+        os << std::setw (fw) << "NaN";
+      else
+        os << "NaN";
+    }
+  else if (print_eng)
+    os << pr_engineering_float (fmt, d);
   else
-    os << d;
+    os << pr_formatted_float (fmt, d);
 }
 
 static inline void
@@ -1550,13 +1436,13 @@ pr_float (std::ostream& os, double d, int fw = 0, double scale = 1.0)
   if (Vfixed_point_format && ! print_g && scale != 1.0)
     d /= scale;
 
-  pr_any_float (curr_real_fmt, os, d, fw);
+  pr_any_float (curr_float_display_fmt.real_format (), os, d, fw);
 }
 
 static inline void
 pr_imag_float (std::ostream& os, double d, int fw = 0)
 {
-  pr_any_float (curr_imag_fmt, os, d, fw);
+  pr_any_float (curr_float_display_fmt.imag_format (), os, d, fw);
 }
 
 static void
@@ -3683,13 +3569,6 @@ init_format_state (void)
   print_eng = false;
 }
 
-static void
-set_output_prec_and_fw (int prec, int fw)
-{
-  Voutput_precision = prec;
-  Voutput_max_field_width = fw;
-}
-
 static std::string format_string ("short");
 
 static void
@@ -4253,40 +4132,4 @@ The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (split_long_rows);
-}
-
-DEFUN (output_max_field_width, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} output_max_field_width ()
-@deftypefnx {} {@var{old_val} =} output_max_field_width (@var{new_val})
-@deftypefnx {} {} output_max_field_width (@var{new_val}, "local")
-Query or set the internal variable that specifies the maximum width
-of a numeric output field.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@seealso{format, fixed_point_format, output_precision}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_max_field_width, 0,
-                                            std::numeric_limits<int>::max ());
-}
-
-DEFUN (output_precision, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} output_precision ()
-@deftypefnx {} {@var{old_val} =} output_precision (@var{new_val})
-@deftypefnx {} {} output_precision (@var{new_val}, "local")
-Query or set the internal variable that specifies the minimum number of
-significant figures to display for numeric output.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@seealso{format, fixed_point_format, output_max_field_width}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1,
-                                            std::numeric_limits<int>::max ());
 }

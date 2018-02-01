@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"
 
+#include "pr-flt-fmt.h"
+
 template <typename T> class Array;
 class ComplexMatrix;
 class FloatComplexMatrix;
@@ -261,6 +263,82 @@ octave_print_internal (std::ostream& os, const Cell& cell,
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_value& ov,
                        bool pr_as_read_syntax = false);
+
+extern float_display_format
+make_format (double d, int& fw);
+
+extern float_display_format
+make_format (const Matrix& m, int& fw, double& scale);
+
+extern float_display_format
+make_format (const Complex& c, int& r_fw, int& i_fw);
+
+extern float_display_format
+make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
+
+extern float_display_format
+make_format (const Range& r, int& fw, double& scale);
+
+class
+pr_engineering_float
+{
+public:
+
+  const float_format m_ff;
+
+  double m_val;
+
+  int exponent (void) const;
+
+  double mantissa (void) const;
+
+  pr_engineering_float (const float_format& ff, double val)
+    : m_ff (ff), m_val (val) { }
+
+  pr_engineering_float (const float_display_format& fdf, double val)
+    : m_ff (fdf.real_format ()), m_val (val) { }
+};
+
+class
+pr_formatted_float
+{
+public:
+
+  const float_format m_ff;
+
+  double m_val;
+
+  pr_formatted_float (const float_format& ff, double val)
+    : m_ff (ff), m_val (val) { }
+
+  pr_formatted_float (const float_display_format& fdf, double val)
+    : m_ff (fdf.real_format ()), m_val (val) { }
+};
+
+class
+pr_rational_float
+{
+public:
+
+  const float_format m_ff;
+
+  double m_val;
+
+  pr_rational_float (const float_format& ff, double val)
+    : m_ff (ff), m_val (val) { }
+
+  pr_rational_float (const float_display_format& fdf, double val)
+    : m_ff (fdf.real_format ()), m_val (val) { }
+};
+
+extern std::ostream&
+operator << (std::ostream& os, const pr_engineering_float& pef);
+
+extern std::ostream&
+operator << (std::ostream& os, const pr_formatted_float& pff);
+
+extern std::ostream&
+operator << (std::ostream& os, const pr_rational_float& prf);
 
 // TRUE means that the dimensions of empty objects should be printed
 // like this: x = [](2x0).

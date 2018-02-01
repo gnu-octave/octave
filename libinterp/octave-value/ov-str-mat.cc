@@ -278,7 +278,8 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
 }
 
 std::string
-octave_char_matrix_str::edit_display (octave_idx_type i,
+octave_char_matrix_str::edit_display (const float_display_format& fmt,
+                                      octave_idx_type i,
                                       octave_idx_type) const
 {
   if (i == 0)

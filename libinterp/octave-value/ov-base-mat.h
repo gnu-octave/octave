@@ -163,7 +163,10 @@ public:
 
   void short_disp (std::ostream& os) const;
 
-  std::string edit_display (octave_idx_type i, octave_idx_type j) const;
+  float_display_format get_edit_display_format (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
 
   MT& matrix_ref (void)
   {

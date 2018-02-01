@@ -85,6 +85,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "pager.h"
 #include "parse.h"
+#include "pr-flt-fmt.h"
 #include "pr-output.h"
 #include "symtab.h"
 #include "utils.h"
@@ -2130,6 +2131,12 @@ octave_value::make_storable_value (void)
     }
   else
     maybe_economize ();
+}
+
+float_display_format
+octave_value::get_edit_display_format (void) const
+{
+  return rep->get_edit_display_format ();
 }
 
 int

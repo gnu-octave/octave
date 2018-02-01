@@ -507,12 +507,20 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
 }
 
 template <typename MT>
+float_display_format
+octave_base_matrix<MT>::get_edit_display_format (void) const
+{
+  return make_format (matrix);
+}
+
+template <typename MT>
 std::string
-octave_base_matrix<MT>::edit_display (octave_idx_type i,
+octave_base_matrix<MT>::edit_display (const float_display_format& fmt,
+                                      octave_idx_type i,
                                       octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, matrix(i,j));
+  octave_print_internal (buf, fmt, matrix(i,j));
   return buf.str ();
 }
 

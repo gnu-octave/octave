@@ -56,21 +56,48 @@ class octave_value;
 
 template <typename T> class intNDArray;
 
+// FIXME: templates plus specializations might help here.
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, bool d,
                        bool pr_as_read_syntax = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       bool d, bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, d, pr_as_read_syntax);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, char c,
                        bool pr_as_read_syntax = false);
 
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       char c, bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, c, pr_as_read_syntax);
+}
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, double d,
                        bool pr_as_read_syntax = false);
 
+extern void
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       double d, bool pr_as_read_syntax = false);
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, float d,
                        bool pr_as_read_syntax = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       float d, bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, d, pr_as_read_syntax);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Matrix& m,
@@ -106,9 +133,20 @@ extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Complex& c,
                        bool pr_as_read_syntax = false);
 
+extern void
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       const Complex& c, bool pr_as_read_syntax = false);
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const FloatComplex& c,
                        bool pr_as_read_syntax = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const FloatComplex& c, bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, c, pr_as_read_syntax);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
@@ -226,39 +264,112 @@ extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int8_t>& sa,
                        bool pr_as_read_syntax = false);
 
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<int8_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint8_t>& sa,
                        bool pr_as_read_syntax = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<uint8_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int16_t>& sa,
                        bool pr_as_read_syntax = false);
 
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<int16_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint16_t>& sa,
                        bool pr_as_read_syntax = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<uint16_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int32_t>& sa,
                        bool pr_as_read_syntax = false);
 
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<int32_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint32_t>& sa,
                        bool pr_as_read_syntax = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<uint32_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int64_t>& sa,
                        bool pr_as_read_syntax = false);
 
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<int64_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint64_t>& sa,
                        bool pr_as_read_syntax = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const octave_int<uint64_t>& sa,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, sa, pr_as_read_syntax);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Cell& cell,
                        bool pr_as_read_syntax = false,
                        int extra_indent = 0,
                        bool pr_as_string = false);
+
+inline void
+octave_print_internal (std::ostream& os, const float_display_format&,
+                       const Cell& cell, bool pr_as_read_syntax = false,
+                       int extra_indent = 0, bool pr_as_string = false)
+{
+  octave_print_internal (os, cell, pr_as_read_syntax, extra_indent,
+                         pr_as_string);
+}
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_value& ov,
@@ -278,6 +389,13 @@ make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
 
 extern float_display_format
 make_format (const Range& r, int& fw, double& scale);
+
+template <typename MT>
+float_display_format
+make_format (const MT&)
+{
+  return float_display_format ();
+}
 
 class
 pr_engineering_float

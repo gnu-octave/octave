@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-str-mat.h"
 #include "ovl.h"
 #include "parse.h"
+#include "pr-flt-fmt.h"
 #include "pr-output.h"
 #include "utils.h"
 #include "variables.h"
@@ -440,6 +441,12 @@ octave_base_value::print_with_name (std::ostream& output_buf,
 
   if (print_padding && pad_after && ! Vcompact_format)
     newline (output_buf);
+}
+
+float_display_format
+octave_base_value::get_edit_display_format (void) const
+{
+  return float_display_format ();
 }
 
 void

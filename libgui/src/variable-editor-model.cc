@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov.h"
 #include "parse.h"
+#include "pr-flt-fmt.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -124,13 +125,23 @@ get_rows_and_columns (const octave_value& val, int& rows, int& cols)
     }
 }
 
+static float_display_format
+get_edit_display_format (const octave_value& val)
+{
+  // FIXME: make this limit configurable.
+
+  return (val.numel () > 250000
+          ? float_display_format () : val.get_edit_display_format ());
+}
+
 struct variable_editor_model::impl
 {
   struct cell
   {
     cell (void) : m_defined (false) { }
 
-    cell (const octave_value& val, int r, int c)
+    cell (const float_display_format& fmt, const octave_value& val,
+          int r, int c)
       : m_defined (true), m_data ("no display"), m_status_tip ("status"),
         m_tool_tip ("tip"), m_requires_sub_editor (false),
         m_editor_type (sub_none)
@@ -141,7 +152,7 @@ struct variable_editor_model::impl
 
           octave_value ov = cval(r,c);
 
-          init_data_and_sub_editor (val, cval(r,c), r, c);
+          init_data_and_sub_editor (fmt, val, cval(r,c), r, c);
         }
       else if (val.isstruct ())
         {
@@ -152,7 +163,7 @@ struct variable_editor_model::impl
 
               octave_scalar_map m = val.scalar_map_value ();
 
-              init_data_and_sub_editor (val, m.contents (r), r, c);
+              init_data_and_sub_editor (fmt, val, m.contents (r), r, c);
             }
           else if (val.rows () == 1 || val.columns () == 1)
             {
@@ -162,7 +173,7 @@ struct variable_editor_model::impl
 
               Cell cval = m.contents (c);
 
-              init_data_and_sub_editor (val, cval(r), r, c);
+              init_data_and_sub_editor (fmt, val, cval(r), r, c);
             }
           else
             {
@@ -171,11 +182,11 @@ struct variable_editor_model::impl
 
               octave_map m = val.map_value ();
 
-              init_data_and_sub_editor (val, m(r,c), r, c);
+              init_data_and_sub_editor (fmt, val, m(r,c), r, c);
             }
         }
       else
-        m_data = QString::fromStdString (val.edit_display (r, c));
+        m_data = QString::fromStdString (val.edit_display (fmt, r, c));
     }
 
     cell (const QString& d, const QString& s, const QString& t,
@@ -184,7 +195,8 @@ struct variable_editor_model::impl
         m_requires_sub_editor (rse), m_editor_type (edtype)
     { }
 
-    void init_data_and_sub_editor (const octave_value& val,
+    void init_data_and_sub_editor (const float_display_format& fmt,
+                                   const octave_value& val,
                                    const octave_value& elt,
                                    int r, int c)
     {
@@ -192,12 +204,12 @@ struct variable_editor_model::impl
           || (elt.is_string () && (elt.rows () == 1 || elt.isempty ())))
         {
           m_requires_sub_editor = false;
-          m_data = QString::fromStdString (elt.edit_display (0, 0));
+          m_data = QString::fromStdString (elt.edit_display (fmt, 0, 0));
         }
       else
         {
           m_requires_sub_editor = true;
-          m_data = QString::fromStdString (val.edit_display (r, c));
+          m_data = QString::fromStdString (val.edit_display (fmt, r, c));
         }
     }
 
@@ -223,6 +235,7 @@ struct variable_editor_model::impl
   impl (const QString& name, const octave_value& val, QLabel *label)
     : m_name (name.toStdString ()), m_value (val),
       m_rows (0), m_cols (0), m_table (), m_label (label),
+      m_display_fmt (get_edit_display_format (m_value)),
       m_validity (true), m_validtext (make_label (m_name, m_value))
   {
     m_label->setText (m_validtext);
@@ -384,7 +397,7 @@ struct variable_editor_model::impl
         int r = idx.row ();
         int c = idx.column ();
 
-        cell edit_cell (m_value, r, c);
+        cell edit_cell (m_display_fmt, m_value, r, c);
 
         set (r, c, edit_cell);
       }
@@ -488,6 +501,8 @@ struct variable_editor_model::impl
 
     m_value = val;
 
+    m_display_fmt = get_edit_display_format (m_value);
+
     if (m_value.is_defined ())
       {
         m_validity = true;
@@ -547,6 +562,8 @@ struct variable_editor_model::impl
   QVector<cell> m_table;
 
   QLabel *m_label;
+
+  float_display_format m_display_fmt;
 
   bool m_validity;
 

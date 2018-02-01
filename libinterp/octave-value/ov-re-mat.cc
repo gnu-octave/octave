@@ -71,6 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-diag.h"
 #include "ov-lazy-idx.h"
 #include "ov-perm.h"
+#include "pr-flt-fmt.h"
 #include "pr-output.h"
 #include "variables.h"
 

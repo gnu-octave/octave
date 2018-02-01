@@ -53,6 +53,7 @@ namespace octave
 }
 
 class Cell;
+class float_display_format;
 class mxArray;
 class octave_map;
 class octave_scalar_map;
@@ -663,7 +664,10 @@ public:
 
   virtual void short_disp (std::ostream& os) const { os << "..."; }
 
-  virtual std::string edit_display (octave_idx_type, octave_idx_type) const
+  virtual float_display_format get_edit_display_format (void) const;
+
+  virtual std::string edit_display (const float_display_format&,
+                                    octave_idx_type, octave_idx_type) const
   { return "#VAL"; }
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;

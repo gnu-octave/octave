@@ -101,7 +101,8 @@ octave_base_matrix<Cell>::delete_elements (const octave_value_list& idx)
 
 template <>
 std::string
-octave_base_matrix<Cell>::edit_display (octave_idx_type i,
+octave_base_matrix<Cell>::edit_display (const float_display_format& fmt,
+                                        octave_idx_type i,
                                         octave_idx_type j) const
 {
   octave_value val = matrix(i,j);

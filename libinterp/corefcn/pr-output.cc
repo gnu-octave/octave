@@ -1323,7 +1323,7 @@ union equiv
   while (0)
 
 static void
-pr_any_float (const float_format& fmt, std::ostream& os, double d, int fw = 0)
+pr_any_float (std::ostream& os, const float_format& fmt, double d, int fw = 0)
 {
   // Unless explicitly asked for, always print in big-endian format
   // for hex and bit formats.
@@ -1431,30 +1431,44 @@ pr_any_float (const float_format& fmt, std::ostream& os, double d, int fw = 0)
 }
 
 static inline void
-pr_float (std::ostream& os, double d, int fw = 0, double scale = 1.0)
+pr_float (std::ostream& os, const float_display_format& fmt, double d,
+          int fw = 0, double scale = 1.0)
 {
   if (Vfixed_point_format && ! print_g && scale != 1.0)
     d /= scale;
 
-  pr_any_float (curr_float_display_fmt.real_format (), os, d, fw);
+  pr_any_float (os, fmt.real_format (), d, fw);
+}
+
+static inline void
+pr_float (std::ostream& os, double d, int fw = 0, double scale = 1.0)
+{
+  pr_float (os, curr_float_display_fmt, d, fw, scale);
+}
+
+static inline void
+pr_imag_float (std::ostream& os, const float_display_format& fmt,
+               double d, int fw = 0)
+{
+  pr_any_float (os, fmt.imag_format (), d, fw);
 }
 
 static inline void
 pr_imag_float (std::ostream& os, double d, int fw = 0)
 {
-  pr_any_float (curr_float_display_fmt.imag_format (), os, d, fw);
+  pr_imag_float (os, curr_float_display_fmt, d, fw);
 }
 
 static void
-pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
-            int i_fw = 0, double scale = 1.0)
+pr_complex (std::ostream& os, const float_display_format& fmt,
+            const Complex& c, int r_fw = 0, int i_fw = 0, double scale = 1.0)
 {
   Complex tmp
     = (Vfixed_point_format && ! print_g && scale != 1.0) ? c / scale : c;
 
   double r = tmp.real ();
 
-  pr_float (os, r, r_fw);
+  pr_float (os, fmt, r, r_fw);
 
   if (! bank_format)
     {
@@ -1463,7 +1477,7 @@ pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
         {
           os << " - ";
           i = -i;
-          pr_imag_float (os, i, i_fw);
+          pr_imag_float (os, fmt, i, i_fw);
         }
       else
         {
@@ -1472,10 +1486,17 @@ pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
           else
             os << " + ";
 
-          pr_imag_float (os, i, i_fw);
+          pr_imag_float (os, fmt, i, i_fw);
         }
       os << 'i';
     }
+}
+
+static void
+pr_complex (std::ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0,
+            double scale = 1.0)
+{
+  pr_complex (os, curr_float_display_fmt, c, r_fw, i_fw, scale);
 }
 
 static void
@@ -1579,6 +1600,25 @@ pr_plus_format (std::ostream& os, const T& val)
     os << plus_format_chars[2];
 }
 
+template <>
+float_display_format
+make_format (const NDArray& nda)
+{
+  int fw = 0;
+  double scale = 0;
+  return make_format (Matrix (nda), fw, scale);
+}
+
+template <>
+float_display_format
+make_format (const ComplexNDArray& nda)
+{
+  int r_fw = 0;
+  int i_fw = 0;
+  double scale = 0;
+  return make_format (ComplexMatrix (nda), r_fw, i_fw, scale);
+}
+
 void
 octave_print_internal (std::ostream&, char, bool)
 {
@@ -1589,17 +1629,23 @@ void
 octave_print_internal (std::ostream& os, double d,
                        bool pr_as_read_syntax)
 {
+  octave_print_internal (os, curr_float_display_fmt, d, pr_as_read_syntax);
+}
+
+void
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       double d, bool pr_as_read_syntax)
+{
   if (pr_as_read_syntax)
     os << d;
   else if (plus_format)
     pr_plus_format (os, d);
   else
     {
-      set_format (d);
       if (free_format)
         os << d;
       else
-        pr_float (os, d);
+        pr_float (os, fmt, d);
     }
 }
 
@@ -2005,17 +2051,23 @@ void
 octave_print_internal (std::ostream& os, const Complex& c,
                        bool pr_as_read_syntax)
 {
+  octave_print_internal (os, curr_float_display_fmt, c, pr_as_read_syntax);
+}
+
+extern void
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       const Complex& c, bool pr_as_read_syntax)
+{
   if (pr_as_read_syntax)
     os << c;
   else if (plus_format)
     pr_plus_format (os, c);
   else
     {
-      set_format (c);
       if (free_format)
         os << c;
       else
-        pr_complex (os, c);
+        pr_complex (os, fmt, c);
     }
 }
 

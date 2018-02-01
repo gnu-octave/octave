@@ -190,7 +190,8 @@ octave_base_scalar<ST>::short_disp (std::ostream& os) const
 
 template <typename ST>
 std::string
-octave_base_scalar<ST>::edit_display (octave_idx_type, octave_idx_type) const
+octave_base_scalar<ST>::edit_display (const float_display_format& fmt,
+                                      octave_idx_type, octave_idx_type) const
 {
   std::ostringstream buf;
   octave_print_internal (buf, scalar);

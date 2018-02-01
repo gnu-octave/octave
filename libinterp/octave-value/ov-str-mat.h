@@ -146,7 +146,8 @@ public:
 
   void short_disp (std::ostream& os) const;
 
-  std::string edit_display (octave_idx_type i, octave_idx_type j) const;
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
 
   bool save_ascii (std::ostream& os);
 

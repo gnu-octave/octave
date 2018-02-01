@@ -2815,19 +2815,17 @@ see @code{tmpfile}.
 
 /*
 %!test
-%! if (ispc ())
-%!   envname = "TMP";
-%! else
-%!   envname = "TMPDIR";
-%! endif
-%! envdir = getenv (envname);
-%! unsetenv (envname);
-%! ## Strip trailing file separators from P_tmpdir
-%! def_tmpdir = P_tmpdir;
-%! while (length (def_tmpdir) > 2 && strfind (filesep ("all"), def_tmpdir(end)))
-%!   def_tmpdir(end) = [];
-%! endwhile
+%! envvar = {"TMPDIR", "TMP"};
+%! envdir = cellfun (@(x) getenv (x), envvar, "uniformoutput", false);
 %! unwind_protect
+%!   cellfun (@(x) unsetenv (x), envvar);
+%!   envname = "TMPDIR";
+%!   def_tmpdir = P_tmpdir;
+%!   ## Strip trailing file separators from P_tmpdir
+%!   while (length (def_tmpdir) > 2 && any (def_tmpdir(end) == filesep ("all")))
+%!     def_tmpdir(end) = [];
+%!   endwhile
+%!
 %!   ## Test 0-argument form
 %!   fname = tempname ();
 %!   [tmpdir, tmpfname] = fileparts (fname);
@@ -2858,11 +2856,13 @@ see @code{tmpfile}.
 %!   assert (tmpfname (1:4), "file");
 %! unwind_protect_cleanup
 %!   rmdir (tmp_tmpdir);
-%!   if (isempty (envdir))
-%!     unsetenv (envname);
-%!   else
-%!     setenv (envname, envdir);
-%!   endif
+%!   for i = 1:numel (envvar)
+%!     if (isempty (envdir{i}))
+%!       unsetenv (envvar{i});
+%!     else
+%!       setenv (envvar{i}, envdir{i});
+%!     endif
+%!   endfor
 %! end_unwind_protect
 */
 

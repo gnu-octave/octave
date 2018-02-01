@@ -311,37 +311,52 @@ endfunction
 
 
 %!testif HAVE_ZLIB
-%! ## Create temporary directory and file for packing and unpacking
-%! dirname = tempname ();
-%! assert (mkdir (dirname));
-%! filename = tempname ();
-%! fid = fopen (filename, "wt");
-%! assert (fid >= 0);
-%! fprintf (fid, "Hello World\n");
-%! fprintf (fid, "123 456 789\n");
-%! fclose (fid);
+%! envvar = {"TMPDIR", "TMP"};
+%! envdir = cellfun (@(x) getenv (x), envvar, "uniformoutput", false);
 %! unwind_protect
-%!   copyfile (filename, [filename ".orig"]);
-%!   gzip (filename, dirname);
-%!   [~, f] = fileparts (filename);
-%!   filelist = unpack (fullfile (dirname, [f ".gz"]), tempdir);
-%!   assert (filelist{1}, filename);
-%!   fid = fopen ([filename ".orig"], "rb");
+%!   cellfun (@(x) unsetenv (x), envvar);
+%!   ## Create temporary directory and file for packing and unpacking
+%!   dirname = tempname ();
+%!   assert (mkdir (dirname));
+%!   filename = tempname ();
+%!   fid = fopen (filename, "wt");
 %!   assert (fid >= 0);
-%!   orig_data = fread (fid);
+%!   fprintf (fid, "Hello World\n");
+%!   fprintf (fid, "123 456 789\n");
 %!   fclose (fid);
-%!   fid = fopen (filename, "rb");
-%!   assert (fid >= 0);
-%!   new_data = fread (fid);
-%!   fclose (fid);
-%!   if (orig_data != new_data)
-%!     error ("unpack: Unpacked file does not equal original");
-%!   endif
+%!
+%!   unwind_protect
+%!     copyfile (filename, [filename ".orig"]);
+%!     gzip (filename, dirname);
+%!     [~, f] = fileparts (filename);
+%!     filelist = unpack (fullfile (dirname, [f ".gz"]), tempdir);
+%!     assert (filelist{1}, filename);
+%!     fid = fopen ([filename ".orig"], "rb");
+%!     assert (fid >= 0);
+%!     orig_data = fread (fid);
+%!     fclose (fid);
+%!     fid = fopen (filename, "rb");
+%!     assert (fid >= 0);
+%!     new_data = fread (fid);
+%!     fclose (fid);
+%!     if (orig_data != new_data)
+%!       error ("unpack: Unpacked file does not equal original");
+%!     endif
+%!   unwind_protect_cleanup
+%!     unlink (filename);
+%!     unlink ([filename ".orig"]);
+%!     confirm_recursive_rmdir (false, "local");
+%!     rmdir (dirname, "s");
+%!   end_unwind_protect
 %! unwind_protect_cleanup
-%!   unlink (filename);
-%!   unlink ([filename ".orig"]);
-%!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (dirname, "s");
+%!   ## Restore environment variables TMPDIR, TMP
+%!   for i = 1:numel (envvar)
+%!     if (isempty (envdir{i}))
+%!       unsetenv (envvar{i});
+%!     else
+%!       setenv (envvar{i}, envdir{i});
+%!     endif
+%!   endfor
 %! end_unwind_protect
 
 ## Test input validation

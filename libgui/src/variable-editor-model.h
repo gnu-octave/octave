@@ -31,14 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class QLabel;
 
-enum sub_editor_types
-{
-  sub_none,
-  sub_matrix,
-  sub_string,
-  sub_struct
-};
-
 class
 variable_editor_model : public QAbstractTableModel
 {
@@ -94,6 +86,14 @@ public:
 
   bool editor_type_string (const QModelIndex& idx) const;
 
+  void set_update_pending (const QModelIndex& idx, const QString& str);
+
+  bool update_pending (const QModelIndex& idx) const;
+
+  QString update_pending_data (const QModelIndex& idx) const;
+
+  void clear_update_pending (void);
+
   char quote_char (int r, int c) const;
 
   QVariant
@@ -111,8 +111,6 @@ signals: // private
 
   void update_data_signal (const octave_value& val);
 
-  void clear_data_cell_signal (int r, int c);
-
   void data_error_signal (const QString& name) const;
 
   void user_error_signal (const QString& title, const QString& msg) const;
@@ -122,8 +120,6 @@ signals: // private
 private slots:
 
   void update_data (const octave_value& val);
-
-  void clear_data_cell (int r, int c);
 
   // Change the display if the variable does not exist.
   void data_error (const QString& msg);
@@ -139,8 +135,6 @@ private:
   void eval_oct (const std::string& name, const std::string& expr);
 
   octave_value retrieve_variable (const std::string& x);
-
-  sub_editor_types editor_type (const QModelIndex& idx) const;
 
   void invalidate (void);
 

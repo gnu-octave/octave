@@ -48,7 +48,9 @@ namespace octave
     public:
 
       dynlib_rep (void)
-        : count (1), file (), tm_loaded (time_t ()), fcn_names () { }
+        : count (1), search_all_loaded (false), file (), tm_loaded (time_t ()),
+          fcn_names ()
+      { }
 
     protected:
 
@@ -93,6 +95,7 @@ namespace octave
     public:
 
       refcount<int> count;
+      bool search_all_loaded;
 
     protected:
 

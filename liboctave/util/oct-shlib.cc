@@ -190,13 +190,10 @@ namespace octave
   private:
 
     void *library;
-
-    bool search_all_loaded;
   };
 
   octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), library (nullptr),
-      search_all_loaded (false)
+    : dynamic_library::dynlib_rep (f), library (nullptr)
   {
     int flags = 0;
 
@@ -289,8 +286,6 @@ namespace octave
   private:
 
     shl_t library;
-
-    bool search_all_loaded;
   };
 
   octave_shl_load_shlib::octave_shl_load_shlib (const std::string& f)
@@ -382,7 +377,7 @@ namespace octave
   }
 
   octave_w32_shlib::octave_w32_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), handle (0), search_all_loaded (false)
+    : dynamic_library::dynlib_rep (f), handle (0)
   {
     if (f.empty())
       {
@@ -464,7 +459,7 @@ namespace octave
 
      if (got_libs)
       {
-        for (int i = 0; i < (bytes_all_libs / size_lib); i++)
+        for (size_t i = 0; i < (bytes_all_libs / size_lib); i++)
           {
               // Check for function in library.
               function = reinterpret_cast<void *>
@@ -487,7 +482,7 @@ namespace octave
   {
     void *function = nullptr;
 
-    if (! is_open ())
+    if (! search_all_loaded && ! is_open ())
       (*current_liboctave_error_handler)
         ("shared library %s is not open", file.c_str ());
 
@@ -535,8 +530,6 @@ namespace octave
 
     NSObjectFileImage img;
     NSModule handle;
-
-    bool search_all_loaded;
   };
 
   octave_dyld_shlib::octave_dyld_shlib (const std::string& f)

@@ -84,9 +84,8 @@ idx_to_expr (int32_t from, int32_t to)
 variable_editor::variable_editor (QWidget *p)
   : octave_dock_widget (p), m_main (new QMainWindow ()),
     m_tool_bar (new QToolBar (m_main)),
-    m_tab_widget (new QTabWidget (m_main)),
-    m_default_width (30), m_default_height (100), m_add_font_height (0),
-    m_autofit (false), m_autofit_max (false), m_use_terminal_font (true),
+    m_tab_widget (new QTabWidget (m_main)), m_default_width (30),
+    m_default_height (100), m_add_font_height (0), m_use_terminal_font (true),
     m_alternate_rows (true), m_stylesheet (""), m_font (), m_sel_font (),
     m_table_colors ()
 {
@@ -205,8 +204,6 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   if (m_tab_widget->count () == 1)
     m_tool_bar->setEnabled (true);
 
-  maybe_resize_columns ();
-
   table->setFont (m_font);
   table->setStyleSheet (m_stylesheet);
   table->setAlternatingRowColors (m_alternate_rows);
@@ -217,6 +214,24 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
 #endif
   table->verticalHeader ()->setDefaultSectionSize (m_default_height
                                                    + m_add_font_height);
+
+  int col_width = model->column_width ();
+
+  if (col_width > 0)
+    {
+#if defined (HAVE_QT4)
+      table->horizontalHeader ()->setResizeMode (QHeaderView::Interactive);
+#else
+      table->horizontalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
+#endif
+
+      // col_width is in characters.  The font should be a fixed-width
+      // font, so any character will do.  If not, you lose!
+
+      QFontMetrics fm (m_font);
+      int w = col_width * fm.width ('0');
+      table->horizontalHeader ()->setDefaultSectionSize (w);
+    }
 }
 
 void
@@ -287,8 +302,6 @@ variable_editor::color_names (void)
 void
 variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
 {
-  maybe_resize_columns ();
-
   emit updated ();
 }
 
@@ -299,17 +312,6 @@ variable_editor::notice_settings (const QSettings *settings)
 
   m_default_width = settings->value ("variable_editor/column_width",
                                      100).toInt ();
-
-  m_autofit = settings->value ("variable_editor/autofit_column_width",
-                               false).toBool ();
-
-  // FIXME: Magic Number 1 here, why not use enum?
-
-  if (m_autofit)
-    {
-      if (settings->value ("variable_editor/autofit_type", 0).toInt () == 1)
-        m_autofit_max = true;
-    }
 
   m_default_height = settings->value ("variable_editor/row_height",
                                       10).toInt ();
@@ -343,14 +345,9 @@ variable_editor::notice_settings (const QSettings *settings)
 
   m_font = QFont (font_name, font_size);
 
-  if (settings->value ("variable_editor/autofit_row_height", true).toBool ())
-    {
-      QFontMetrics fm (m_font);
+  QFontMetrics fm (m_font);
 
-      m_add_font_height = fm.height ();
-    }
-  else
-    m_add_font_height = 0;
+  m_add_font_height = fm.height ();
 
   for (int i = 0; i < class_chars.length (); i++)
     {
@@ -403,30 +400,6 @@ variable_editor::closeTab (int idx)
 
   if (m_tab_widget->count () == 0)
     m_tool_bar->setEnabled (false);
-}
-
-void
-variable_editor::maybe_resize_columns (void)
-{
-  QTableView *table = get_table_data (m_tab_widget).m_table;
-
-  if (m_autofit)
-    {
-      table->resizeColumnsToContents ();
-
-      if (m_autofit_max)
-        {
-          int mx = 0;
-
-          for (int i = 0; i < table->model ()->columnCount (); i++)
-            {
-              if (table->columnWidth (i) > mx)
-                mx = table->columnWidth (i);
-            }
-
-          table->horizontalHeader ()->setDefaultSectionSize (mx);
-        }
-    }
 }
 
 void

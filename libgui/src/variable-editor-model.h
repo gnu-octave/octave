@@ -59,6 +59,8 @@ public:
 
   octave_value value_at (const QModelIndex& idx) const;
 
+  int column_width (void) const;
+
   int rowCount (const QModelIndex& = QModelIndex ()) const;
 
   int columnCount (const QModelIndex& = QModelIndex ()) const;

@@ -263,6 +263,30 @@ struct variable_editor_model::impl
   const cell& elem (int r, int c) const { return elem (index (r, c)); }
   const cell& elem (const QModelIndex& idx) const { return elem (index (idx)); }
 
+  int column_width (void) const
+  {
+    int width = 0;
+
+    float_format r_fmt = m_display_fmt.real_format ();
+    float_format i_fmt = m_display_fmt.imag_format ();
+
+    int rw = r_fmt.fw;
+    int iw = i_fmt.fw;
+
+    if (rw > 0)
+      {
+        if (m_value.iscomplex ())
+          {
+            if (iw > 0)
+              width = rw + iw + 5;
+          }
+        else
+          width = rw + 2;
+      }
+
+    return width;
+  }
+
   char quote_char (int r, int c) const
   {
     if (m_value.is_string ())
@@ -620,6 +644,12 @@ octave_value
 variable_editor_model::value_at (const QModelIndex& idx) const
 {
   return m_d->value_at (idx);
+}
+
+int
+variable_editor_model::column_width (void) const
+{
+  return m_d->column_width  ();
 }
 
 int

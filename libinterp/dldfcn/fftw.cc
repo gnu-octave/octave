@@ -232,6 +232,9 @@ used per default.
           std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftw_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
 
@@ -245,6 +248,9 @@ used per default.
       else //dwisdom getter
         {
           char *str = fftw_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
           retval = octave_value (wisdom_str);
@@ -262,6 +268,9 @@ used per default.
           std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftwf_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
 
@@ -275,6 +284,9 @@ used per default.
       else //swisdom getter
         {
           char *str = fftwf_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
           retval = octave_value (wisdom_str);

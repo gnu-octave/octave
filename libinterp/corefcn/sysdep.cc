@@ -731,11 +731,9 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
                              RRF_RT_ANY, &type, static_cast<void *> (data),
                              &length);
       if (result == ERROR_SUCCESS)
-        {
-          value = octave_int32 (*data);
-        }
+        value = octave_int32 (*data);
     }
-  else if ((type == REG_SZ) || (type == REG_EXPAND_SZ))
+  else if (type == REG_SZ || type == REG_EXPAND_SZ)
     {
       OCTAVE_LOCAL_BUFFER (char, data, length);
       result = RegGetValueA (h_rootkey, subkey.c_str (), name.c_str (),
@@ -767,7 +765,7 @@ get_regkey_names (HKEY h_rootkey, const std::string subkey,
     return retval;
 
   DWORD idx = 0;
-  #define MAX_VALUE_NAME_SIZE 32767
+  const int MAX_VALUE_NAME_SIZE = 32767;
   char value_name[MAX_VALUE_NAME_SIZE+1];
   DWORD value_name_size = MAX_VALUE_NAME_SIZE;
 
@@ -799,50 +797,68 @@ DEFUN (winqueryreg, args, ,
 
 Query names or value from the Windows registry.
 
-On Windows, return the value of a registry key @var{subkey} at the root key
-@var{rootkey}.
-You can specify the name of the queried registry value with the optional
-argument @var{valuename}.  Otherwise, if called with two arguments or if
-@var{valuename} is empty, the default value of that key is returned.
-If the value is of the type "REG_DWORD", @var{value} is of the class int32.  If
-the value is of the type "REG_SZ" or "REG_EXPAND_SZ" a string is returned.
+On Windows, return the value of the registry key @var{subkey} from the root key
+@var{rootkey}.  You can specify the name of the queried registry value with the
+optional argument @var{valuename}.  Otherwise, if called with only two
+arguments or @var{valuename} is empty, then the default value of @var{subkey}
+is returned.  If the registry value is of type @qcode{"REG_DWORD"} then
+@var{value} is of class int32.  If the value is of the type @qcode{"REG_SZ"} or
+@qcode{"REG_EXPAND_SZ"} a string is returned.
 
-If the first argument is @code{"name"}, a cell array of strings with the names
+If the first argument is @qcode{"name"}, a cell array of strings with the names
 of the values at that key is returned.
 
 The variable @var{rootkey} must be a string with a valid root key identifier:
+
 @table @asis
-@item HKCR
-HKEY_CLASSES_ROOT
+@item  HKCR
+@itemx HKEY_CLASSES_ROOT
+
+
 @item HKEY_CURRENT_CONFIG
-@item HKCU
-HKEY_CURRENT_USER
-@item HKLM
-HKEY_LOCAL_MACHINE
-@item HKU
-HKEY_USERS
+
+
+@item  HKCU
+@itemx HKEY_CURRENT_USER
+
+
+@item  HKLM
+@itemx HKEY_LOCAL_MACHINE
+
+
+@item  HKU
+@itemx HKEY_USERS
+
+
 @item HKEY_PERFORMANCE_DATA
+
 @end table
 
 Examples:
 
-Get a list of value names at the key @code{"HKCU\Environment"}:
+Get a list of value names at the key @qcode{'HKCU\Environment'}:
+
 @example
+@group
 @var{valuenames} = winqueryreg ("name", "HKEY_CURRENT_USER", ...
                           "Environment");
+@end group
 @end example
 
 For each @var{valuenames}, display the value:
+
 @example
-for @var{k} = 1:length (@var{valuenames})
+@group
+for @var{k} = 1:numel (@var{valuenames})
   @var{val} = winqueryreg ("HKEY_CURRENT_USER", "Environment", ...
                      @var{valuenames}@{@var{k}@});
-  @var{str} = sprintf ("%s = %s", @var{valuenames}@{@var{k}@}, num2str(@var{val}));
+  @var{str} = sprintf ("%s = %s", @var{valuenames}@{@var{k}@}, num2str (@var{val}));
   disp (@var{str});
 endfor
+@end group
 @end example
 
-On non-Windows platforms, this function fails with an error.
+On non-Windows platforms this function fails with an error.
 @end deftypefn */)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -851,47 +867,47 @@ On non-Windows platforms, this function fails with an error.
 
   // Input check
   std::string rootkey_name =
-      args(0).xstring_value ("winqueryreg: The first argument must be 'name' "
-                             "or a valid ROOTKEY identifier.");
+    args(0).xstring_value ("winqueryreg: the first argument must be 'name' "
+                           "or a valid ROOTKEY identifier");
   std::string subkey_name = "";
   std::string value_name = "";
   bool get_names = false;
   if (rootkey_name.compare ("name") == 0)
     {
       if (args.length () < 3)
-        error ("winqueryreg: If the first argument is 'name', ROOTKEY and "
-               "SUBKEY must be given.");
+        error ("winqueryreg: if the first argument is 'name', "
+                            "ROOTKEY and SUBKEY must be given");
       get_names = true;
       rootkey_name =
-          args(1).xstring_value ("winqueryreg: ROOTKEY must be a string.");
+        args(1).xstring_value ("winqueryreg: ROOTKEY must be a string");
       subkey_name =
-          args(2).xstring_value ("winqueryreg: SUBKEY must be a string.");
+        args(2).xstring_value ("winqueryreg: SUBKEY must be a string");
     }
   else
     {
       subkey_name =
-          args(1).xstring_value ("winqueryreg: SUBKEY must be a string.");
+        args(1).xstring_value ("winqueryreg: SUBKEY must be a string");
       if (args.length () == 3)
         value_name =
-            args(2).xstring_value ("winqueryreg: VALUENAME must be a string.");
+          args(2).xstring_value ("winqueryreg: VALUENAME must be a string");
     }
 
   // Get rootkey handle
   HKEY h_rootkey;
-  if ((rootkey_name == "HKEY_CLASSES_ROOT") || (rootkey_name == "HKCR"))
+  if (rootkey_name == "HKEY_CLASSES_ROOT" || rootkey_name == "HKCR")
     h_rootkey = HKEY_CLASSES_ROOT;
   else if (rootkey_name == "HKEY_CURRENT_CONFIG")
     h_rootkey = HKEY_CURRENT_CONFIG;
-  else if ((rootkey_name == "HKEY_CURRENT_USER") || (rootkey_name == "HKCU"))
+  else if (rootkey_name == "HKEY_CURRENT_USER" || rootkey_name == "HKCU")
     h_rootkey = HKEY_CURRENT_USER;
-  else if ((rootkey_name == "HKEY_LOCAL_MACHINE") || (rootkey_name == "HKLM"))
+  else if (rootkey_name == "HKEY_LOCAL_MACHINE" || rootkey_name == "HKLM")
     h_rootkey = HKEY_LOCAL_MACHINE;
   else if (rootkey_name == "HKEY_PERFORMANCE_DATA")
     h_rootkey = HKEY_PERFORMANCE_DATA;
-  else if ((rootkey_name == "HKEY_USERS") || (rootkey_name == "HKU"))
+  else if (rootkey_name == "HKEY_USERS" || rootkey_name == "HKU")
     h_rootkey = HKEY_USERS;
   else
-    error ("winqueryreg: ROOTKEY is no valid root key identifier.");
+    error ("winqueryreg: ROOTKEY is not a valid root key identifier");
 
   if (get_names)
     {
@@ -899,16 +915,14 @@ On non-Windows platforms, this function fails with an error.
 
       LONG retval = get_regkey_names (h_rootkey, subkey_name, fields);
       if (retval != ERROR_SUCCESS)
-          error ("winqueryreg: Error %d reading names from registry.", retval);
+        error ("winqueryreg: error %d reading names from registry", retval);
 
       Cell fieldnames (dim_vector (1, fields.size ()));
       size_t i;
       std::list<std::string>::const_iterator it;
-      for (i = 0, it = fields.begin ();
-           it != fields.end (); ++it, ++i)
-        {
-          fieldnames(i) = *it;
-        }
+      for (i = 0, it = fields.begin (); it != fields.end (); ++it, ++i)
+        fieldnames(i) = *it;
+
       return ovl (fieldnames);
     }
   else
@@ -917,57 +931,61 @@ On non-Windows platforms, this function fails with an error.
       LONG retval = get_regkey_value (h_rootkey, subkey_name, value_name,
                                       key_val);
       if (retval != ERROR_SUCCESS)
-        error ("winqueryreg: Error %d reading the specified key.", retval);
+        error ("winqueryreg: error %d reading the specified key", retval);
+
       return ovl (key_val);
     }
 #else
+
   octave_unused_parameter (args);
-  error ("winqueryreg: Function is only supported on Windows platforms.");
+
+  error ("winqueryreg: function is only supported on Windows platforms");
+
 #endif
 }
 
 /*
 %!testif ; ispc ()
-%! assert (ischar (winqueryreg ("HKEY_LOCAL_MACHINE", ...
-%!                              'SOFTWARE\Microsoft\Windows\CurrentVersion', ...
+%! assert (ischar (winqueryreg ("HKEY_LOCAL_MACHINE",
+%!                              'SOFTWARE\Microsoft\Windows\CurrentVersion',
 %!                              "ProgramFilesDir")));
 %!testif ; ispc ()
-%! assert (isa (winqueryreg ("HKEY_LOCAL_MACHINE", ...
-%!                           'SYSTEM\CurrentControlSet\Control\FileSystem', ...
+%! assert (isa (winqueryreg ("HKEY_LOCAL_MACHINE",
+%!                           'SYSTEM\CurrentControlSet\Control\FileSystem',
 %!                           "Win31FileSystem"), "int32"));
 %!testif ; ispc ()
-%! assert (iscellstr (winqueryreg ("name", "HKEY_LOCAL_MACHINE", ...
-%!                              'SOFTWARE\Microsoft\Windows\CurrentVersion')));
+%! assert (iscellstr (winqueryreg ("name", "HKEY_LOCAL_MACHINE",
+%!                                 'SOFTWARE\Microsoft\Windows\CurrentVersion')));
 %!testif ; ispc ()
 %! fail ('winqueryreg (1, ''SOFTWARE\Microsoft\Windows\CurrentVersion'')',
 %!       "first argument must be 'name' or a valid ROOTKEY identifier");
 %!testif ; ispc ()
-%! fail ('winqueryreg ("HKEY_LOCAL_MACHINE", 1)', "SUBKEY must be a string.");
+%! fail ('winqueryreg ("HKEY_LOCAL_MACHINE", 1)', "SUBKEY must be a string");
 %!testif ; ispc ()
 %! fail (['winqueryreg ("HKEY_LOCAL_MACHINE", ', ...
-%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'', 1)'], ...
-%!       "VALUENAME must be a string.");
+%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'', 1)'],
+%!       "VALUENAME must be a string");
 %!testif ; ispc ()
 %! fail (['winqueryreg ("FOO", ', ...
-%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'')'], ...
-%!       "ROOTKEY is no valid root key identifier");
+%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'')'],
+%!       "ROOTKEY is not a valid root key identifier");
 %!testif ; ispc ()
-%! fail ('winqueryreg ("HKEY_LOCAL_MACHINE", ''FOO\bar'')', ...
-%!       "Error .* reading the specified key.");
+%! fail ('winqueryreg ("HKEY_LOCAL_MACHINE", ''FOO\bar'')',
+%!       "error .* reading the specified key");
 %!testif ; ispc ()
 %! fail (['winqueryreg ("HKEY_LOCAL_MACHINE", ', ...
-%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'', "foo")'], ...
-%!       "Error .* reading the specified key.");
+%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'', "foo")'],
+%!       "error .* reading the specified key");
 %!testif ; ispc ()
-%! fail ('winqueryreg ("name", "HKEY_LOCAL_MACHINE")', ...
-%!       "If the first argument is 'name', ROOTKEY and SUBKEY must be given.");
+%! fail ('winqueryreg ("name", "HKEY_LOCAL_MACHINE")',
+%!       "if the first argument is 'name', ROOTKEY and SUBKEY must be given");
 %!testif ; ispc ()
 %! fail (['winqueryreg ("name", 1, ', ...
-%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'')'], ...
-%!       "ROOTKEY must be a string.");
+%!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'')'],
+%!       "ROOTKEY must be a string");
 %!testif ; ispc ()
-%! fail ('winqueryreg ("name", "HKEY_LOCAL_MACHINE", 1)', ...
-%!       "SUBKEY must be a string.");
+%! fail ('winqueryreg ("name", "HKEY_LOCAL_MACHINE", 1)',
+%!       "SUBKEY must be a string");
 */
 
 // FIXME: perhaps kbhit should also be able to print a prompt?

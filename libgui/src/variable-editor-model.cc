@@ -665,7 +665,7 @@ variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
                                 int role)
 {
   if (role != Qt::EditRole || v.type () != QVariant::String
-      || ! idx.isValid ())
+      || ! idx.isValid () || requires_sub_editor (idx))
     return false;
 
   // Initially, set value to whatever the user entered.

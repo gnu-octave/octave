@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-lapack-proto.h"
 #include "oct-shlib.h"
 
-static octave::dynamic_library dyn_libs;
+static std::map<std::string, void *> gsvd_fcn;
 
 static bool have_DGGSVD3 = false;
 static bool gsvd_initialized = false;
@@ -50,19 +50,34 @@ static bool gsvd_initialized = false;
 
 void initialize_gsvd (void)
 {
-  if (! dyn_libs)
+  if (gsvd_initialized)
+    return;
+
+  octave::dynamic_library libs ("");
+  if (! libs)
     {
-      dyn_libs = octave::dynamic_library ("");
-      if (! dyn_libs)
-        {
-          // FIXME: Should we throw an error if we cannot check the libraries?
-          have_DGGSVD3 = false;
-          return;
-        }
+      // FIXME: Should we throw an error if we cannot check the libraries?
+      have_DGGSVD3 = false;
+      return;
     }
-  have_DGGSVD3 = (dyn_libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)))
+
+  have_DGGSVD3 = (libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)))
                   != nullptr);
 
+  if (have_DGGSVD3)
+    {
+      gsvd_fcn["dg"] = libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)));
+      gsvd_fcn["sg"] = libs.search (STRINGIZE (F77_FUNC (sggsvd3, SGGSVD3)));
+      gsvd_fcn["zg"] = libs.search (STRINGIZE (F77_FUNC (zggsvd3, ZGGSVD3)));
+      gsvd_fcn["cg"] = libs.search (STRINGIZE (F77_FUNC (cggsvd3, CGGSVD3)));
+    }
+  else
+    {
+      gsvd_fcn["dg"] = libs.search (STRINGIZE (F77_FUNC (dggsvd, DGGSVD)));
+      gsvd_fcn["sg"] = libs.search (STRINGIZE (F77_FUNC (sggsvd, SGGSVD)));
+      gsvd_fcn["zg"] = libs.search (STRINGIZE (F77_FUNC (zggsvd, ZGGSVD)));
+      gsvd_fcn["cg"] = libs.search (STRINGIZE (F77_FUNC (cggsvd, CGGSVD)));
+    }
   gsvd_initialized = true;
 }
 
@@ -227,8 +242,7 @@ namespace octave
 
       if (have_DGGSVD3)
         {
-          dggsvd3_type f_ptr = reinterpret_cast<dggsvd3_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3))));
+          dggsvd3_type f_ptr = reinterpret_cast<dggsvd3_type> (gsvd_fcn["dg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),
@@ -242,8 +256,7 @@ namespace octave
         }
       else
         {
-          dggsvd_type f_ptr = reinterpret_cast<dggsvd_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (dggsvd, DGGSVD))));
+          dggsvd_type f_ptr = reinterpret_cast<dggsvd_type> (gsvd_fcn["dg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),
@@ -273,8 +286,7 @@ namespace octave
 
       if (have_DGGSVD3)
         {
-          sggsvd3_type f_ptr = reinterpret_cast<sggsvd3_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (sggsvd3, SGGSVD3))));
+          sggsvd3_type f_ptr = reinterpret_cast<sggsvd3_type> (gsvd_fcn["sg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),
@@ -288,8 +300,7 @@ namespace octave
         }
       else
         {
-          sggsvd_type f_ptr = reinterpret_cast<sggsvd_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (sggsvd, SGGSVD))));
+          sggsvd_type f_ptr = reinterpret_cast<sggsvd_type> (gsvd_fcn["sg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),
@@ -320,8 +331,7 @@ namespace octave
       Matrix rwork(2*n, 1);
       if (have_DGGSVD3)
         {
-          zggsvd3_type f_ptr = reinterpret_cast<zggsvd3_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (zggsvd3, ZGGSVD3))));
+          zggsvd3_type f_ptr = reinterpret_cast<zggsvd3_type> (gsvd_fcn["zg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),
@@ -340,8 +350,7 @@ namespace octave
         }
       else
         {
-          zggsvd_type f_ptr = reinterpret_cast<zggsvd_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (zggsvd, ZGGSVD))));
+          zggsvd_type f_ptr = reinterpret_cast<zggsvd_type> (gsvd_fcn["zg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),
@@ -380,8 +389,7 @@ namespace octave
       FloatMatrix rwork(2*n, 1);
       if (have_DGGSVD3)
         {
-          cggsvd3_type f_ptr = reinterpret_cast<cggsvd3_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (cggsvd3, CGGSVD3))));
+          cggsvd3_type f_ptr = reinterpret_cast<cggsvd3_type> (gsvd_fcn["cg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),
@@ -400,8 +408,7 @@ namespace octave
         }
       else
         {
-          cggsvd_type f_ptr = reinterpret_cast<cggsvd_type>
-            (dyn_libs.search (STRINGIZE (F77_FUNC (cggsvd, CGGSVD))));
+          cggsvd_type f_ptr = reinterpret_cast<cggsvd_type> (gsvd_fcn["cg"]);
           f_ptr (F77_CONST_CHAR_ARG2 (&jobu, 1),
                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                  F77_CONST_CHAR_ARG2 (&jobq, 1),

@@ -48,8 +48,8 @@ namespace octave
     public:
 
       dynlib_rep (void)
-        : count (1), search_all_loaded (false), file (), tm_loaded (time_t ()),
-          fcn_names ()
+        : count (1), file (), tm_loaded (time_t ()), fcn_names (),
+          search_all_loaded (false)
       { }
 
     protected:
@@ -95,7 +95,6 @@ namespace octave
     public:
 
       refcount<int> count;
-      bool search_all_loaded;
 
     protected:
 
@@ -111,6 +110,7 @@ namespace octave
       std::map<std::string, size_t> fcn_names;
 
       static std::map<std::string, dynlib_rep *> instances;
+      bool search_all_loaded;
     };
 
   private:
@@ -126,7 +126,7 @@ namespace octave
 
     ~dynamic_library (void)
     {
-      if (--rep->count == 0 && ! file_name ().empty ())
+      if (--rep->count == 0)
         delete rep;
     }
 
@@ -140,7 +140,7 @@ namespace octave
     {
       if (rep != sl.rep)
         {
-          if (--rep->count == 0 && ! file_name ().empty ())
+          if (--rep->count == 0)
             delete rep;
 
           rep = sl.rep;

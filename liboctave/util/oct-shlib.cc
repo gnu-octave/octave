@@ -65,7 +65,7 @@ extern int dlclose (void *);
 namespace octave
 {
   dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
-    : count (1), file (f), tm_loaded (), fcn_names ()
+    : count (1), file (f), tm_loaded (), fcn_names (), search_all_loaded (false)
   {
     instances[f] = this;
 
@@ -211,7 +211,7 @@ namespace octave
     flags |= RTLD_GLOBAL;
 #  endif
 
-    if (file.empty())
+    if (file.empty ())
       {
         search_all_loaded = true;
         return;
@@ -289,7 +289,7 @@ namespace octave
   };
 
   octave_shl_load_shlib::octave_shl_load_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), library (0), search_all_loaded (false)
+    : dynamic_library::dynlib_rep (f), library (0)
   {
     file = f;
 
@@ -357,27 +357,25 @@ namespace octave
     ~octave_w32_shlib (void);
 
     void * search (const std::string& name,
-                   dynamic_library::name_mangler mangler = 0);
+                   dynamic_library::name_mangler mangler = nullptr);
 
     void * global_search (const std::string& sym_name);
 
-    bool is_open (void) const { return (search_all_loaded || handle != 0); }
+    bool is_open (void) const { return (search_all_loaded || handle != nullptr); }
 
   private:
 
     HINSTANCE handle;
-
-    bool search_all_loaded;
   };
 
   static void
   set_dll_directory (const std::string& dir = "")
   {
-    SetDllDirectory (dir.empty () ? 0 : dir.c_str ());
+    SetDllDirectory (dir.empty () ? nullptr : dir.c_str ());
   }
 
   octave_w32_shlib::octave_w32_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), handle (0)
+    : dynamic_library::dynlib_rep (f), handle (nullptr)
   {
     if (f.empty())
       {

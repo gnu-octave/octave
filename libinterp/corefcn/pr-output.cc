@@ -1629,6 +1629,7 @@ void
 octave_print_internal (std::ostream& os, double d,
                        bool pr_as_read_syntax)
 {
+  set_format (d);
   octave_print_internal (os, curr_float_display_fmt, d, pr_as_read_syntax);
 }
 
@@ -2051,6 +2052,7 @@ void
 octave_print_internal (std::ostream& os, const Complex& c,
                        bool pr_as_read_syntax)
 {
+  set_format (c);
   octave_print_internal (os, curr_float_display_fmt, c, pr_as_read_syntax);
 }
 

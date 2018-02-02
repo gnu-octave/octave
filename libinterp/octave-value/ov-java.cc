@@ -3097,9 +3097,14 @@ equivalent
 
 /*
 %!testif HAVE_JAVA; usejava ("jvm")
-%! ## Check for valid first two Java version numbers
-%! jver = strsplit (javaMethod ("getProperty", "java.lang.System", "java.version"), ".");
-%! assert (isfinite (str2double (jver{1})) && isfinite (str2double (jver{2})));
+%! jver = javaMethod ("getProperty", "java.lang.System", "java.version");
+%! jver = strsplit (jver, ".");
+%! if (numel (jver) > 1)
+%!   assert (isfinite (str2double (jver{1})));
+%!   assert (isfinite (str2double (jver{2})));
+%! else
+%!   assert (isfinite (str2double (jver{1})));
+%! endif
 */
 
 DEFUN (__java_get__, args, ,
@@ -3412,7 +3417,7 @@ Return true if @var{x} is a Java object.
 %! assert (n.compareTo (int64 (2)), -1);
 %! assert (n.toString (), "1");
 
-%!testif HAVE_JAVA; usejava ("jvm")
+%!testif HAVE_JAVA; usejava ("jvm") <51804>
 %! n = javaObject ("java.lang.Integer", 1.35);
 %! assert (n.compareTo (0), 1);
 %! assert (n.compareTo (1), 0);

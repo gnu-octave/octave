@@ -689,19 +689,15 @@ variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
 Qt::ItemFlags
 variable_editor_model::flags (const QModelIndex& idx) const
 {
-  if (m_d->m_validity)
-    {
-#if 0
-      if (requires_sub_editor (idx))
-        {
-          if (editor_type (idx) != sub_string)
-            return QAbstractTableModel::flags (idx);
-        }
-#endif
-      return QAbstractTableModel::flags (idx) | Qt::ItemIsEditable;
-    }
+  if (! m_d->m_validity)
+    return Qt::NoItemFlags;
 
-  return Qt::NoItemFlags;
+  Qt::ItemFlags retval = QAbstractTableModel::flags (idx);
+
+  if (! requires_sub_editor (idx))
+    retval |= Qt::ItemIsEditable;
+
+  return retval;
 }
 
 bool

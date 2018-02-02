@@ -1527,6 +1527,13 @@ case $host_os in
   ;;
 esac
 
+## Windows-specific module used for winqueryreg function
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_CHECK_LIB([psapi], [EnumProcessModules])
+  ;;
+esac
+
 ## Cygwin kluge for getrusage.
 AC_CHECK_FUNCS([getrusage])
 case $host_os in
@@ -1977,9 +1984,6 @@ if test "$have_x" = yes; then
   fi
   AC_SUBST(X11_LIBS)
 fi
-
-## FIXME: This check should probably be for Windows only.
-AC_CHECK_LIB([psapi], [EnumProcessModules])
 
 ### Check for the Carbon framework on macOS systems
 

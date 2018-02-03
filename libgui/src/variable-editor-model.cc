@@ -359,7 +359,7 @@ struct variable_editor_model::impl
                 return QString::fromStdString (fields(section));
               }
           }
-        else if (m_rows == 1 || m_cols == 1)
+        else if (m_value.rows () == 1 || m_value.columns () == 1)
           {
             // Vector struct.  Columns are fields, rows are values.
 
@@ -407,7 +407,7 @@ struct variable_editor_model::impl
 
             return QString (".%1").arg (QString::fromStdString (fields(r)));
           }
-        else if (m_rows == 1 || m_cols == 1)
+        else if (m_value.rows () == 1 || m_value.columns () == 1)
           {
             // Vector struct.  Columns are fields, rows are values.
 
@@ -456,7 +456,7 @@ struct variable_editor_model::impl
 
             return m.contents (r);
           }
-        else if (m_rows == 1 || m_cols == 1)
+        else if (m_value.rows () == 1 || m_value.columns () == 1)
           {
             // Vector struct.  Columns are fields, rows are values.
 

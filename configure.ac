@@ -1530,7 +1530,10 @@ esac
 ## Windows-specific module used for winqueryreg function
 case $host_os in
   msdosmsvc | mingw*)
-    AC_CHECK_LIB([psapi], [EnumProcessModules])
+    AC_CHECK_HEADERS([psapi.h],
+      [LIBS="-lpsapi $LIBS"],
+      [AC_MSG_ERROR([Missing PSAPI required to build for Windows target.])],
+      [#include <windows.h>])
   ;;
 esac
 

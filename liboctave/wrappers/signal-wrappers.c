@@ -546,6 +546,7 @@ octave_restore_signal_mask (void)
   sigprocmask (SIG_SETMASK, &octave_signal_mask, 0);
 }
 
+#if ! defined (__WIN32__)
 static const sigset_t *
 octave_async_signals (void)
 {
@@ -628,6 +629,7 @@ octave_async_signals (void)
 
   return &sigmask;
 }
+#endif
 
 void
 octave_block_async_signals (void)
@@ -651,6 +653,7 @@ octave_raise_wrapper (int signum)
   return raise (signum);
 }
 
+#if ! defined (__WIN32__)
 static void *
 signal_watcher (void *arg)
 {
@@ -674,6 +677,7 @@ signal_watcher (void *arg)
       (*handler) (sig_caught);
     }
 }
+#endif
 
 void
 octave_create_interrupt_watcher_thread (octave_sig_handler *handler)

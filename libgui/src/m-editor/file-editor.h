@@ -40,33 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-tab.h"
 
 
-// subclassed QTabBar for usable tab-bar and reimplemented mouse event
-
-class file_editor_tab_bar : public QTabBar
-{
-  Q_OBJECT
-
-public:
-
-  file_editor_tab_bar (QWidget *p);
-
-  ~file_editor_tab_bar (void);
-
-  void create_context_menu (QList<QAction*> *actions);
-
-signals:
-
-  void close_current_tab_signal (bool);
-
-protected:
-
-  void mousePressEvent(QMouseEvent *event);
-
-private:
-
-  QMenu *m_context_menu;
-};
-
 // subclassed QTabWidget for using custom tabbar
 
 class file_editor_tab_widget : public QTabWidget

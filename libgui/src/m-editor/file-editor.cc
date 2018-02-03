@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
+#include "tab-bar.h"
 
 #include <QApplication>
 #include <QFile>
@@ -48,112 +49,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 #include "utils.h"
 
-// Functions of the the reimplemented tab bar
-
-file_editor_tab_bar::file_editor_tab_bar (QWidget *p)
-  : QTabBar (p), m_context_menu (new QMenu (this))
-{ }
-
-file_editor_tab_bar::~file_editor_tab_bar (void)
-{
-  delete m_context_menu;
-}
-
-// Create the context menu and fill it with actions from the editor
-void
-file_editor_tab_bar::create_context_menu (QList<QAction*> *actions)
-{
-  for (int i = 0; i < actions->count (); i++)
-    m_context_menu->addAction (actions->at (i));
-}
-
-// Reimplement mouse event for filtering out the desired mouse clicks
-void
-file_editor_tab_bar::mousePressEvent (QMouseEvent *me)
-{
-  QPoint click_pos;
-  int clicked_idx = -1;
-
-  // detect the tab where the click occured
-  for (int i = 0; i < count (); i++)
-    {
-      click_pos = mapToGlobal (me->pos ());
-      if (tabRect (i).contains (mapFromGlobal (click_pos)))
-        {
-          clicked_idx = i;
-          break;
-        }
-    }
-
-  // If a tab was clicked
-  if (clicked_idx >= 0)
-    {
-      int current_idx = currentIndex ();
-      // detect the mouse click
-      if ((me->type () == QEvent::MouseButtonDblClick &&
-           me->button() == Qt::LeftButton) ||
-          (me->type () != QEvent::MouseButtonDblClick &&
-           me->button() == Qt::MidButton))
-        {
-          // Middle click or double click -> close the tab
-          // Make the clicked tab the current one and close it
-          setCurrentIndex (clicked_idx);
-          emit close_current_tab_signal (true);
-          // Was the closed tab before or after the previously current tab?
-          // According to the result, use previous index or reduce it by one
-          if (current_idx - clicked_idx > 0)
-            setCurrentIndex (current_idx - 1);
-          else if (current_idx - clicked_idx < 0)
-            setCurrentIndex (current_idx);
-        }
-      else if (me->type () != QEvent::MouseButtonDblClick &&
-               me->button() == Qt::RightButton)
-        {
-          // Right click, show context menu
-          setCurrentIndex (clicked_idx);
-          if (! m_context_menu->exec (click_pos))
-            {
-              // No action selected, back to previous tab
-              setCurrentIndex (current_idx);
-            }
-          else
-            {
-              // Was the possibly only closed tab before or after the
-              // previously current tab? According to the result, use previous
-              // index or reduce it by one. Also prevent using a too large
-              // if other or all files were closed.
-              int new_idx = count () - 1;
-              if (new_idx > 0)
-                {
-                  if (current_idx - clicked_idx > 0)
-                    new_idx = current_idx - 1;
-                  else if (current_idx - clicked_idx < 0)
-                    new_idx = current_idx;
-                }
-              if (new_idx >= 0)
-                setCurrentIndex (new_idx);
-            }
-        }
-      else
-        {
-          // regular handling of the mouse event
-          QTabBar::mousePressEvent (me);
-        }
-    }
-  else
-    {
-      // regular handling of the mouse event
-      QTabBar::mousePressEvent (me);
-    }
-}
 
 // Functions of the the reimplemented tab widget
 
 file_editor_tab_widget::file_editor_tab_widget (QWidget *p)
   : QTabWidget (p)
 {
-  file_editor_tab_bar *bar;
-  bar = new file_editor_tab_bar (this);
+  tab_bar *bar;
+  bar = new tab_bar (this);
 
   connect (bar, SIGNAL (close_current_tab_signal (bool)),
            p->parent (), SLOT (request_close_file (bool)));
@@ -2055,13 +1958,12 @@ file_editor::construct (void)
   setWidget (editor_widget);
 
   // create the context menu of the tab bar
-  file_editor_tab_bar *bar
-      = static_cast<file_editor_tab_bar *>(m_tab_widget->tabBar ());
-  QList<QAction *> tab_bar_actions;
-  tab_bar_actions.append (m_close_action);
-  tab_bar_actions.append (m_close_all_action);
-  tab_bar_actions.append (m_close_others_action);
-  bar->create_context_menu (&tab_bar_actions);
+  tab_bar *bar
+      = static_cast<tab_bar *>(m_tab_widget->tabBar ());
+  QMenu *ctx_men = bar->get_context_menu ();
+  ctx_men->addAction (m_close_action);
+  ctx_men->addAction (m_close_all_action);
+  ctx_men->addAction (m_close_others_action);
 
   // signals
   connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),

@@ -110,6 +110,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-settings-dialog.cc \
   %reldir%/moc-terminal-dock-widget.cc \
   %reldir%/moc-color-picker.cc \
+  %reldir%/moc-tab-bar.cc \
   %reldir%/moc-resource-manager.cc \
   %reldir%/moc-shortcut-manager.cc \
   %reldir%/moc-welcome-wizard.cc \
@@ -167,6 +168,7 @@ noinst_HEADERS += \
   %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \
+  %reldir%/tab-bar.h \
   %reldir%/thread-manager.h \
   %reldir%/terminal-dock-widget.h \
   %reldir%/color-picker.h \
@@ -200,6 +202,7 @@ noinst_HEADERS += \
   %reldir%/resource-manager.cc \
   %reldir%/settings-dialog.cc \
   %reldir%/shortcut-manager.cc \
+  %reldir%/tab-bar.cc \
   %reldir%/thread-manager.cc \
   %reldir%/terminal-dock-widget.cc \
   %reldir%/color-picker.cc \

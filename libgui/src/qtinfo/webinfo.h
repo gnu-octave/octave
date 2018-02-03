@@ -40,29 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMouseEvent>
 #include <QSettings>
 
-// subclassed QTabWidget for usable tab-bar and reimplemented mouse event
-class webinfo_tab_bar : public QTabBar
-{
-  Q_OBJECT
-
-public:
-
-  webinfo_tab_bar (QWidget *p);
-  ~webinfo_tab_bar ();
-  QMenu * get_context_menu () { return _context_menu; }
-
-public slots:
-
-protected:
-
-  void mousePressEvent(QMouseEvent *event);
-
-private:
-
-  QMenu *_context_menu;
-
-};
-
+#include "tab-bar.h"
 
 // The webinfo class
 class webinfo : public QWidget
@@ -103,7 +81,7 @@ private:
   void tab_state_changed (void);
 
   QTextBrowser        *_text_browser;
-  webinfo_tab_bar     *_tab_bar;
+  tab_bar             *_tab_bar;
   QStackedWidget      *_stacked_widget;
   QLineEdit           *_search_line_edit;
   QCheckBox           *_search_check_box;

@@ -742,7 +742,8 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
       if (result == ERROR_SUCCESS)
         {
           charNDArray name_array (dim_vector (1, length));
-          for (octave_idx_type i = 0; i < length; i++)
+          for (octave_idx_type i = 0;
+               i < static_cast<octave_idx_type> (length); i++)
             name_array.xelem(i) = data[i];
           value = name_array;
         }

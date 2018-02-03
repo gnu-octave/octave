@@ -494,10 +494,6 @@ variable_editor::columnmenu_requested (const QPoint& pt)
 
   int index = view->horizontalHeader ()->logicalIndexAt (pt);
 
-  // FIXME: What was the intent here?
-  // emit command_requested (QString ("disp ('")
-  //                         + QString::number (index) + "');");
-
   if (index < 0 || index > view->model ()->columnCount ())
     return;
 
@@ -610,10 +606,6 @@ variable_editor::rowmenu_requested (const QPoint& pt)
   QTableView *view = get_table_data (m_tab_widget).m_table;
 
   int index = view->verticalHeader ()->logicalIndexAt (pt);
-
-  // FIXME: What was the intent here?
-  // emit command_requested (QString ("disp ('")
-  //                         + QString::number (index) + "');");
 
   if (index < 0 || index > view->model ()->columnCount ())
     return;
@@ -770,7 +762,7 @@ variable_editor::clearContent (void)
   // FIXME: Use [] for empty cells?
 
   for (const auto& idx : indices)
-    model->setData (idx, QVariant ("0"));
+    qobject_cast<variable_editor_model *> (model)->clear_content (idx);
 }
 
 void
@@ -926,11 +918,6 @@ void variable_editor::pasteTableClipboard (void)
                                         colnum + start.y ()),
                           QVariant (col));
 
-          // FIXME: What was the intent here?
-          // relay_command ("disp ('" + QString::number (colnum+start.y ())
-          //                + "," + QString::number (rownum+start.x ())
-          //                + "');");
-
           colnum++;
         }
 
@@ -970,9 +957,6 @@ variable_editor::up (void)
     {
       name.remove (QRegExp ("(\\(|\\{)[^({]*(\\)|\\})$"));
       edit_variable (name, octave_value ());
-
-      // FIXME: What was the intent here?
-      // emit command_requested (QString ("openvar ('%1');").arg (name));
     }
 }
 
@@ -991,12 +975,6 @@ variable_editor::delete_selected (void)
 
   bool whole_rows_selected
     = coords[2] == 1 && coords[3] == view->model ()->columnCount ();
-
-  emit command_requested (QString ("disp ('")
-                          + QString::number (coords[0]) + ","
-                          + QString::number (coords[1]) + ","
-                          + QString::number (coords[2]) + ","
-                          + QString::number (coords[3]) + "');");
 
   // Must be deleting whole columns or whole rows, and not the whole thing.
 

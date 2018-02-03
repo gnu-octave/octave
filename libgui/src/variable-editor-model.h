@@ -53,6 +53,7 @@ public:
 
   int column_width (void) const;
 
+  // Display rows and columns, different from data rows and columns.
   int rowCount (const QModelIndex& = QModelIndex ()) const;
 
   int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -61,6 +62,8 @@ public:
 
   bool setData (const QModelIndex& idx, const QVariant& v,
                 int role = Qt::EditRole);
+
+  bool clear_content (const QModelIndex& idx);
 
   Qt::ItemFlags flags (const QModelIndex& idx) const;
 

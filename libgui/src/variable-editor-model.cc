@@ -82,7 +82,8 @@ get_quote_char (const octave_value& val)
 }
 
 static void
-get_rows_and_columns (const octave_value& val, int& rows, int& cols)
+get_data_rows_and_columns (const octave_value& val,
+                           octave_idx_type& rows, octave_idx_type& cols)
 {
   if (val.is_string ())
     {
@@ -125,30 +126,40 @@ get_rows_and_columns (const octave_value& val, int& rows, int& cols)
     }
 }
 
-static QString
+static QVariant
+checkelem_edit_display (const float_display_format& fmt,
+                        const octave_value& val, int row, int col)
+{
+  if (row >= val.rows () || col >= val.columns ())
+    return QVariant ();
+
+  return QString::fromStdString (val.edit_display (fmt, row, col));
+}
+
+static QVariant
 do_edit_display_sub (const float_display_format& fmt, const octave_value& val,
-                     const octave_value& elt, int r, int c)
+                     const octave_value& elt, int row, int col)
 {
   if ((elt.numel () == 1 && (elt.isnumeric () || elt.islogical ()))
       || (elt.is_string () && (elt.rows () == 1 || elt.isempty ())))
-    return QString::fromStdString (elt.edit_display (fmt, 0, 0));
+    return checkelem_edit_display (fmt, elt, 0, 0);
   else
-    return QString::fromStdString (val.edit_display (fmt, r, c));
+    return checkelem_edit_display (fmt, val, row, col);
 }
 
-static QString
+static QVariant
 do_edit_display (const float_display_format& fmt, octave_value& val,
-                 int r, int c)
+                 int row, int col)
 {
-  QString data;
+  QVariant data;
 
   if (val.iscell ())
     {
       Cell cval = val.cell_value ();
 
-      octave_value ov = cval(r,c);
+      octave_value ov = cval(row,col);
 
-      data = do_edit_display_sub (fmt, val, cval(r,c), r, c);
+      data = do_edit_display_sub (fmt, val, cval(row,col), row, col);
     }
   else if (val.isstruct ())
     {
@@ -159,7 +170,7 @@ do_edit_display (const float_display_format& fmt, octave_value& val,
 
           octave_scalar_map m = val.scalar_map_value ();
 
-          data = do_edit_display_sub (fmt, val, m.contents (r), r, c);
+          data = do_edit_display_sub (fmt, val, m.contents (row), row, col);
         }
       else if (val.rows () == 1 || val.columns () == 1)
         {
@@ -167,9 +178,9 @@ do_edit_display (const float_display_format& fmt, octave_value& val,
 
           octave_map m = val.map_value ();
 
-          Cell cval = m.contents (c);
+          Cell cval = m.contents (col);
 
-          data = do_edit_display_sub (fmt, val, cval(r), r, c);
+          data = do_edit_display_sub (fmt, val, cval(row), row, col);
         }
       else
         {
@@ -178,11 +189,11 @@ do_edit_display (const float_display_format& fmt, octave_value& val,
 
           octave_map m = val.map_value ();
 
-          data = do_edit_display_sub (fmt, val, m(r,c), r, c);
+          data = do_edit_display_sub (fmt, val, m(row,col), row, col);
         }
     }
   else
-    data = QString::fromStdString (val.edit_display (fmt, r, c));
+    data = checkelem_edit_display (fmt, val, row, col);
 
   return data;
 }
@@ -204,15 +215,15 @@ do_requires_sub_editor_sub (const octave_value& elt)
 }
 
 static bool
-do_requires_sub_editor (octave_value& val, int r, int c)
+do_requires_sub_editor (octave_value& val, int row, int col)
 {
   if (val.iscell ())
     {
       Cell cval = val.cell_value ();
 
-      octave_value ov = cval(r,c);
+      octave_value ov = cval(row,col);
 
-      return do_requires_sub_editor_sub (cval(r,c));
+      return do_requires_sub_editor_sub (cval(row,col));
     }
   else if (val.isstruct ())
     {
@@ -223,7 +234,7 @@ do_requires_sub_editor (octave_value& val, int r, int c)
 
           octave_scalar_map m = val.scalar_map_value ();
 
-          return do_requires_sub_editor_sub (m.contents (r));
+          return do_requires_sub_editor_sub (m.contents (row));
         }
       else if (val.rows () == 1 || val.columns () == 1)
         {
@@ -231,9 +242,9 @@ do_requires_sub_editor (octave_value& val, int r, int c)
 
           octave_map m = val.map_value ();
 
-          Cell cval = m.contents (c);
+          Cell cval = m.contents (col);
 
-          return do_requires_sub_editor_sub (cval(r));
+          return do_requires_sub_editor_sub (cval(row));
         }
       else
         {
@@ -242,7 +253,7 @@ do_requires_sub_editor (octave_value& val, int r, int c)
 
           octave_map m = val.map_value ();
 
-          return do_requires_sub_editor_sub (m(r,c));
+          return do_requires_sub_editor_sub (m(row,col));
         }
     }
   else
@@ -255,9 +266,12 @@ struct variable_editor_model::impl
 
   impl (const QString& name, const octave_value& val, QLabel *label)
     : m_name (name.toStdString ()), m_value (val),
-      m_rows (0), m_cols (0), m_update_pending (),
-      m_validity (true), m_validtext (make_label (m_name, m_value)),
-      m_label (label), m_display_fmt (get_edit_display_format (m_value))
+      m_data_rows (0), m_data_cols (0),
+      m_display_rows (32), m_display_cols (16),
+      m_update_pending (), m_validity (true),
+      m_validtext (make_label (m_name, m_value)),
+      m_label (label),
+      m_display_fmt (get_edit_display_format (m_value))
   {
     m_label->setText (m_validtext);
   }
@@ -266,8 +280,11 @@ struct variable_editor_model::impl
 
   impl& operator = (const impl&) = delete;
 
-  int rows (void) const { return m_rows; }
-  int columns (void) const { return m_cols; }
+  octave_idx_type data_rows (void) const { return m_data_rows; }
+  octave_idx_type data_columns (void) const { return m_data_cols; }
+
+  int display_rows (void) const { return m_display_rows; }
+  int display_columns (void) const { return m_display_cols; }
 
   void set_update_pending (const QModelIndex& idx, const QString& str)
   {
@@ -313,20 +330,20 @@ struct variable_editor_model::impl
     return width;
   }
 
-  char quote_char (int r, int c) const
+  char quote_char (int row, int col) const
   {
     if (m_value.is_string ())
       return get_quote_char (m_value);
     else if (m_value.iscell ())
       {
-        octave_value ov = value_at (r, c);
+        octave_value ov = value_at (row, col);
 
         if (ov.is_string ())
           return get_quote_char (ov);
       }
     else if (m_value.isstruct ())
       {
-        octave_value ov = value_at (r, c);
+        octave_value ov = value_at (row, col);
 
         if (ov.is_string ())
           return get_quote_char (ov);
@@ -386,14 +403,14 @@ struct variable_editor_model::impl
     return QString::number (section+1);
   }
 
-  QString subscript_expression (int r, int c) const
+  QString subscript_expression (int row, int col) const
   {
     if (m_value.is_string ())
       return "";
     else if (m_value.iscell ())
       return (QString ("{%1, %2}")
-              .arg (r + 1)
-              .arg (c + 1));
+              .arg (row + 1)
+              .arg (col + 1));
     else if (m_value.isstruct ())
       {
         if (m_value.numel () == 1)
@@ -405,7 +422,7 @@ struct variable_editor_model::impl
 
             string_vector fields = m.fieldnames ();
 
-            return QString (".%1").arg (QString::fromStdString (fields(r)));
+            return QString (".%1").arg (QString::fromStdString (fields(row)));
           }
         else if (m_value.rows () == 1 || m_value.columns () == 1)
           {
@@ -416,8 +433,8 @@ struct variable_editor_model::impl
             string_vector fields = m.fieldnames ();
 
             return (QString ("(%1).%2")
-                    .arg (r + 1)
-                    .arg (QString::fromStdString (fields(c))));
+                    .arg (row + 1)
+                    .arg (QString::fromStdString (fields(col))));
           }
         else
           {
@@ -427,23 +444,23 @@ struct variable_editor_model::impl
             octave_map m = m_value.map_value ();
 
             return (QString ("(%1,%2)")
-                    .arg (r + 1)
-                    .arg (c + 1));
+                    .arg (row + 1)
+                    .arg (col + 1));
           }
       }
     else
       return (QString ("(%1, %2)")
-              .arg (r + 1)
-              .arg (c + 1));
+              .arg (row + 1)
+              .arg (col + 1));
   }
 
-  octave_value value_at (int r, int c) const
+  octave_value value_at (int row, int col) const
   {
     if (m_value.iscell ())
       {
         Cell cval = m_value.cell_value ();
 
-        return cval(r,c);
+        return cval(row,col);
       }
     else if (m_value.isstruct ())
       {
@@ -454,7 +471,7 @@ struct variable_editor_model::impl
 
             octave_scalar_map m = m_value.scalar_map_value ();
 
-            return m.contents (r);
+            return m.contents (row);
           }
         else if (m_value.rows () == 1 || m_value.columns () == 1)
           {
@@ -462,9 +479,9 @@ struct variable_editor_model::impl
 
             octave_map m = m_value.map_value ();
 
-            Cell cval = m.contents (c);
+            Cell cval = m.contents (col);
 
-            return cval(r);
+            return cval(row);
           }
         else
           {
@@ -473,7 +490,7 @@ struct variable_editor_model::impl
 
             octave_map m = m_value.map_value ();
 
-            return m(r,c);
+            return m(row,col);
           }
       }
     else
@@ -495,9 +512,6 @@ struct variable_editor_model::impl
   {
     m_validity = false;
 
-    int r = 0;
-    int c = 0;
-
     m_value = val;
 
     m_display_fmt = get_edit_display_format (m_value);
@@ -506,11 +520,19 @@ struct variable_editor_model::impl
       {
         m_validity = true;
 
-        get_rows_and_columns (m_value, r, c);
-      }
+        get_data_rows_and_columns (m_value, m_data_rows, m_data_cols);
 
-    m_rows = r;
-    m_cols = c;
+        m_display_rows = (m_data_rows > (m_display_rows - 8)
+                          ? m_data_rows + 16 : m_display_rows);
+
+        m_display_cols = (m_data_cols > (m_display_cols - 8)
+                          ? m_data_cols + 16 : m_display_cols);
+      }
+    else
+      {
+        m_data_rows = 0;
+        m_data_cols = 0;
+      }
 
     m_label->setTextFormat (Qt::PlainText);
 
@@ -553,9 +575,12 @@ struct variable_editor_model::impl
 
   octave_value m_value;
 
+  octave_idx_type m_data_rows;
+  octave_idx_type m_data_cols;
+
   // Qt table widget limits the size to int.
-  int m_rows;
-  int m_cols;
+  int m_display_rows;
+  int m_display_cols;
 
   QMap<QModelIndex, QString> m_update_pending;
 
@@ -592,17 +617,12 @@ variable_editor_model::variable_editor_model (const QString& expr,
 
   // Initializes everything.
 
-  int rows = 0;
-  int cols = 0;
-
-  get_rows_and_columns (val, rows, cols);
-
   m_d->reset (val);
 
-  beginInsertRows (QModelIndex (), 0, rows-1);
+  beginInsertRows (QModelIndex (), 0, m_d->display_rows () - 1);
   endInsertRows ();
 
-  beginInsertColumns (QModelIndex (), 0, cols-1);
+  beginInsertColumns (QModelIndex (), 0, m_d->display_columns () - 1);
   endInsertColumns ();
 }
 
@@ -626,13 +646,13 @@ variable_editor_model::column_width (void) const
 int
 variable_editor_model::rowCount (const QModelIndex&) const
 {
-  return m_d->m_validity ? m_d->rows () : 1;
+  return m_d->m_validity ? m_d->display_rows () : 1;
 }
 
 int
 variable_editor_model::columnCount (const QModelIndex&) const
 {
-  return m_d->m_validity ? m_d->columns () : 1;
+  return m_d->m_validity ? m_d->display_columns () : 1;
 }
 
 QVariant
@@ -670,8 +690,8 @@ variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
 
   // Initially, set value to whatever the user entered.
 
-  int r = idx.row ();
-  int c = idx.column ();
+  int row = idx.row ();
+  int col = idx.column ();
 
   QString vstr = v.toString ();
 
@@ -681,9 +701,24 @@ variable_editor_model::setData (const QModelIndex& idx, const QVariant& v,
   // will restore previous value.
 
   octave_link::post_event<variable_editor_model, int, int, std::string>
-    (this, &variable_editor_model::set_data_oct, r, c, vstr.toStdString ());
+    (this, &variable_editor_model::set_data_oct, row, col, vstr.toStdString ());
 
   return true;
+}
+
+bool
+variable_editor_model::clear_content (const QModelIndex& idx)
+{
+  octave_idx_type data_rows = m_d->data_rows ();
+  octave_idx_type data_cols = m_d->data_columns ();
+
+  int row = idx.row ();
+  int col = idx.column ();
+
+  if (row < data_rows && col < data_cols)
+    return setData (idx, QVariant ("0"));
+
+  return false;
 }
 
 Qt::ItemFlags
@@ -719,9 +754,10 @@ variable_editor_model::insertRows (int row, int count, const QModelIndex&)
 bool
 variable_editor_model::removeRows (int row, int count, const QModelIndex&)
 {
-  if (row + count > m_d->rows ())
+  if (row + count > m_d->data_rows ())
     {
-      qDebug () << "Tried to remove too many rows " << m_d->rows () << " "
+      qDebug () << "Tried to remove too many rows "
+                << m_d->data_rows () << " "
                 << count << " (" << row << ")";
       return false;
     }
@@ -754,9 +790,10 @@ variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
 bool
 variable_editor_model::removeColumns (int col, int count, const QModelIndex&)
 {
-  if (col + count > m_d->columns ())
+  if (col + count > m_d->data_columns ())
     {
-      qDebug () << "Tried to remove too many cols " << m_d->columns () << " "
+      qDebug () << "Tried to remove too many cols "
+                << m_d->data_columns () << " "
                 << count << " (" << col << ")";
       return false;
     }
@@ -811,9 +848,9 @@ variable_editor_model::clear_update_pending (void)
 }
 
 char
-variable_editor_model::quote_char (int r, int c) const
+variable_editor_model::quote_char (int row, int col) const
 {
-  return m_d->quote_char (r, c);
+  return m_d->quote_char (row, col);
 }
 
 QVariant
@@ -824,9 +861,9 @@ variable_editor_model::headerData (int section, Qt::Orientation orientation,
 }
 
 QString
-variable_editor_model::subscript_expression (int r, int c) const
+variable_editor_model::subscript_expression (int row, int col) const
 {
-  return m_d->subscript_expression (r, c);
+  return m_d->subscript_expression (row, col);
 }
 
 QString
@@ -861,35 +898,33 @@ variable_editor_model::update_data (const octave_value& val)
 
   // Add or remove rows and columns when the size changes.
 
-  int old_rows = m_d->rows ();
-  int old_cols = m_d->columns ();
-
-  int new_rows = 0;
-  int new_cols = 0;
-
-  get_rows_and_columns (val, new_rows, new_cols);
+  int old_display_rows = m_d->display_rows ();
+  int old_display_cols = m_d->display_columns ();
 
   m_d->reset (val);
 
-  if (new_rows < old_rows)
+  int new_display_rows = m_d->display_rows ();
+  int new_display_cols = m_d->display_columns ();
+
+  if (new_display_rows < old_display_rows)
     {
-      beginRemoveRows (QModelIndex (), new_rows, old_rows-1);
+      beginRemoveRows (QModelIndex (), new_display_rows, old_display_rows-1);
       endRemoveRows ();
     }
-  else if (new_rows > old_rows)
+  else if (new_display_rows > old_display_rows)
     {
-      beginInsertRows (QModelIndex (), old_rows, new_rows-1);
+      beginInsertRows (QModelIndex (), old_display_rows, new_display_rows-1);
       endInsertRows ();
     }
 
-  if (new_cols < old_cols)
+  if (new_display_cols < old_display_cols)
     {
-      beginRemoveColumns (QModelIndex (), new_cols, old_cols-1);
+      beginRemoveColumns (QModelIndex (), new_display_cols, old_display_cols-1);
       endRemoveColumns ();
     }
-  else if (new_cols > old_cols)
+  else if (new_display_cols > old_display_cols)
     {
-      beginInsertColumns (QModelIndex (), old_cols, new_cols-1);
+      beginInsertColumns (QModelIndex (), old_display_cols, new_display_cols-1);
       endInsertColumns ();
     }
 
@@ -898,7 +933,7 @@ variable_editor_model::update_data (const octave_value& val)
   display_valid ();
 
   emit dataChanged (QAbstractTableModel::index (0, 0),
-                    QAbstractTableModel::index (new_rows-1, new_cols-1));
+                    QAbstractTableModel::index (new_display_rows-1, new_display_cols-1));
 
   emit maybe_resize_columns_signal ();
 }

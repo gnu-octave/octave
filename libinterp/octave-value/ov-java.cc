@@ -302,61 +302,6 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_WINDOWS_API)
-
-static std::string
-read_registry_string (const std::string& key, const std::string& value)
-{
-  HKEY hkey;
-  DWORD len;
-
-  std::string retval;
-
-  if (! RegOpenKeyEx (HKEY_LOCAL_MACHINE, key.c_str (), 0, KEY_READ, &hkey))
-    {
-      if (! RegQueryValueEx (hkey, value.c_str (), 0, 0, 0, &len))
-        {
-          retval.resize (len);
-          if (RegQueryValueEx (hkey, value.c_str (), 0, 0,
-                               (LPBYTE)&retval[0], &len))
-            retval = "";
-          else if (retval[len-1] == '\0')
-            retval.resize (--len);
-        }
-      RegCloseKey (hkey);
-    }
-
-  return retval;
-}
-
-static std::string
-get_module_filename (HMODULE hMod)
-{
-  int n = 1024;
-  std::string retval (n, '\0');
-  bool found = false;
-
-  while (n < 65536)
-    {
-      int status = GetModuleFileName (hMod, &retval[0], n);
-
-      if (status < n)
-        {
-          retval.resize (n);
-          found = true;
-          break;
-        }
-      else
-        {
-          n *= 2;
-          retval.resize (n);
-        }
-    }
-
-  return (found ? retval : "");
-}
-
-#endif
 
 //! The java initialization directory is given by the environment variable
 //! @c OCTAVE_JAVA_DIR if defined; otherwise it is the directory of Octave's
@@ -546,6 +491,13 @@ initial_class_path (void)
   return retval;
 }
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+// Declare function defined in sysdep.cc
+extern LONG
+get_regkey_value (HKEY h_rootkey, const std::string subkey,
+                  const std::string name, octave_value& value);
+#endif
+
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
 //!
 //! If the jvm exists and is initialized, #jvm points to it, i.e. is not 0
@@ -583,22 +535,18 @@ initialize_jvm (void)
   const char *static_locale = setlocale (LC_ALL, nullptr);
   const std::string locale (static_locale);
 
+  octave::dynamic_library lib ("");
+  std::string jvm_lib_path = "linked in or loaded libraries";
+
+  // Check whether the Java VM library is already loaded or linked in.
+  JNI_CreateJavaVM_t create_vm = reinterpret_cast<JNI_CreateJavaVM_t>
+                                 (lib.search ("JNI_CreateJavaVM"));
+  JNI_GetCreatedJavaVMs_t get_vm = reinterpret_cast<JNI_GetCreatedJavaVMs_t>
+                                   (lib.search ("JNI_GetCreatedJavaVMs"));
+
+  if (! create_vm || ! get_vm)
+   {
 #if defined (OCTAVE_USE_WINDOWS_API)
-
-  HMODULE hMod = GetModuleHandle ("jvm.dll");
-  std::string jvm_lib_path;
-
-  if (hMod)
-    {
-      // JVM seems to be already loaded, better to use that DLL instead of
-      // looking in the registry, to avoid opening a different JVM.
-      jvm_lib_path = get_module_filename (hMod);
-
-      if (jvm_lib_path.empty ())
-        error ("unable to find Java Runtime Environment");
-    }
-  else
-    {
       // In windows, find the location of the JRE from the registry
       // and load the symbol from the dll.
       std::string key, value;
@@ -606,61 +554,67 @@ initialize_jvm (void)
       key = R"(software\javasoft\java runtime environment)";
 
       value = octave::sys::env::getenv ("JAVA_VERSION");
+      octave_value regval;
+      LONG retval;
       if (value.empty ())
         {
-          value = "Currentversion";
-          std::string regval = read_registry_string (key,value);
+          value = "CurrentVersion";
+          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
 
-          if (regval.empty ())
+          if (retval != ERROR_SUCCESS)
             error ("unable to find Java Runtime Environment: %s::%s",
                    key.c_str (), value.c_str ());
 
-          value = regval;
+          value = regval.xstring_value (
+            "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+            value.c_str (), key.c_str ());
         }
 
       key = key + '\\' + value;
       value = "RuntimeLib";
-      jvm_lib_path = read_registry_string (key, value);
+      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      if (retval != ERROR_SUCCESS)
+        error ("unable to find Java Runtime Environment: %s::%s",
+               key.c_str (), value.c_str ());
+
+      jvm_lib_path = regval.xstring_value (
+            "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+            value.c_str (), key.c_str ());
 
       if (jvm_lib_path.empty ())
         error ("unable to find Java Runtime Environment: %s::%s",
                key.c_str (), value.c_str ());
-    }
-
 #else
-
-  // JAVA_LDPATH determined by configure and set in config.h
+      // JAVA_LDPATH determined by configure and set in config.h
 #  if defined (__APPLE__)
-  std::string jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.dylib");
+      jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.dylib");
 #  else
-  std::string jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.so");
+      jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.so");
 #  endif
-
 #endif
+      lib = octave::dynamic_library (jvm_lib_path);
+
+      if (! lib)
+        error ("unable to load Java Runtime Environment from %s",
+               jvm_lib_path.c_str ());
+
+      create_vm = reinterpret_cast<JNI_CreateJavaVM_t>
+                  (lib.search ("JNI_CreateJavaVM"));
+      get_vm = reinterpret_cast<JNI_GetCreatedJavaVMs_t>
+               (lib.search ("JNI_GetCreatedJavaVMs"));
+
+      if (! create_vm)
+        error ("unable to find JNI_CreateJavaVM in %s", jvm_lib_path.c_str ());
+
+      if (! get_vm)
+        error ("unable to find JNI_GetCreatedJavaVMs in %s",
+               jvm_lib_path.c_str ());
+    }
 
   //! The number of created jvm's.
   jsize nVMs = 0;
 
-  octave::dynamic_library lib (jvm_lib_path);
-
-  if (! lib)
-    error ("unable to load Java Runtime Environment from %s",
-           jvm_lib_path.c_str ());
-
-  JNI_CreateJavaVM_t create_vm =
-    reinterpret_cast<JNI_CreateJavaVM_t> (lib.search ("JNI_CreateJavaVM"));
-  JNI_GetCreatedJavaVMs_t get_vm =
-    reinterpret_cast<JNI_GetCreatedJavaVMs_t>
-      (lib.search ("JNI_GetCreatedJavaVMs"));
-
-  if (! create_vm)
-    error ("unable to find JNI_CreateJavaVM in %s", jvm_lib_path.c_str ());
-
-  if (! get_vm)
-    error ("unable to find JNI_GetCreatedJavaVMs in %s", jvm_lib_path.c_str ());
-
   if (get_vm (&jvm, 1, &nVMs) == 0 && nVMs > 0)
-
     {
       // At least one JVM exists, try to attach the current thread to it.
 

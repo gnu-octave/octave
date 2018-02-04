@@ -384,6 +384,13 @@ namespace octave
             else
               include_graph = "foobar-inc";
 
+            // FIXME: workaround gl2ps drawing 2 background planes, the first
+            //        eventually being black and producing visual artifacts
+            const figure::properties& fprop
+              = dynamic_cast<const figure::properties&> (go.get_properties ());
+            Matrix c = fprop.get_color_rgb ();
+            glClearColor (c(0), c(1), c(2), 1);
+
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
             GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave",
                                         nullptr, gl2ps_term, gl2ps_sort,

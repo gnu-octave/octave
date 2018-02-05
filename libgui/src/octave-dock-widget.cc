@@ -408,7 +408,7 @@ octave_dock_widget::set_style (bool active)
     }
 
   m_title_widget->setStyleSheet (css);
-  css_button = QString ("background: transparent; border: 0px;");
+  css_button = QString ("QToolButton {background: transparent; border: 0px;}");
   m_dock_button->setStyleSheet (css_button);
   m_close_button->setStyleSheet (css_button);
   m_dock_action->setIcon (QIcon (":/actions/icons/" + dock_icon + icon_col +

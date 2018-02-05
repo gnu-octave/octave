@@ -177,6 +177,25 @@ namespace octave
     void draw_pixels (int w, int h, const uint8_t *data);
     void draw_pixels (int w, int h, const uint16_t *data);
 
+    void init_marker (const std::string& m, double size, float width)
+    {
+      opengl_renderer::init_marker (m, size, width);
+
+      // FIXME: gl2ps can't handle closed contours and we set linecap/linejoin
+      //        round to obtain a better looking result for some markers.
+      if (m == "o" || m == "v" || m == "^" || m == ">" || m == "<" || m == "h"
+          || m == "hexagram" || m == "p" || m == "pentagram")
+        {
+          set_linejoin ("round");
+          set_linecap ("round");
+        }
+      else
+        {
+          set_linejoin ("miter");
+          set_linecap ("square");
+        }
+    }
+
     void set_linestyle (const std::string& s, bool use_stipple = false,
                         double linewidth = 0.5)
     {

@@ -100,7 +100,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       prctile.m
       probit.m
       qqplot.m
-    
+
     DISTRIBUTIONS
       betacdf.m
       betainv.m

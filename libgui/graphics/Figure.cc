@@ -435,11 +435,11 @@ namespace QtHandles
 
     if (fp.is___printing__ ())
       return;
-    
+
     QMainWindow *win = qWidget<QMainWindow> ();
 
     m_blockUpdates = true;
-    
+
     switch (pId)
       {
       case figure::properties::ID_POSITION:
@@ -476,7 +476,7 @@ namespace QtHandles
                 gh_manager::auto_lock lock;
                 fp.set ("__gl_window__", "on");
               }
-          }                
+          }
         else
           win->hide ();
         break;

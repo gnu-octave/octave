@@ -117,7 +117,7 @@ namespace QtHandles
         octave::opengl_selector s;
 
         s.set_viewport (width (), height ());
-        return s.select (ax, pt.x (), height () - pt.y (), 
+        return s.select (ax, pt.x (), height () - pt.y (),
                          octave::select_ignore_hittest);
       }
 

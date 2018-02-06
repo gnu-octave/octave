@@ -176,7 +176,7 @@ Solving for @var{beta} we can then write
 
 @example
 @group
-@var{beta}(1:end-1) = (@var{p} - @var{t}(end, :)) / 
+@var{beta}(1:end-1) = (@var{p} - @var{t}(end, :)) /
                 (@var{t}(1:end-1, :) - ones (@var{N}, 1) * @var{t}(end, :))
 @var{beta}(end) = sum (@var{beta}(1:end-1))
 @end group

@@ -41,7 +41,7 @@ function res = isprop (obj, prop)
   oldwarn = warning ("error", "Octave:abbreviated-property-match");
   [olderr, oldid] = lasterr ();
   restore_lasterr = false;
-  
+
   res = false (size (obj));
   for i = 1:numel (res)
     if (ishghandle (obj(i)))
@@ -53,11 +53,11 @@ function res = isprop (obj, prop)
       end_try_catch
     endif
   endfor
-  
+
   if (restore_lasterr)
     lasterr (olderr, oldid);
   endif
-  
+
   warning (oldwarn);
 
 endfunction

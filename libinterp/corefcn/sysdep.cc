@@ -723,7 +723,7 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
                               RRF_RT_ANY, &type, nullptr, &length);
   if (result != ERROR_SUCCESS)
     return result;
-  
+
   if (type == REG_DWORD)
     {
       OCTAVE_LOCAL_BUFFER (DWORD, data, length);

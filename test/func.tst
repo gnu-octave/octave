@@ -191,16 +191,16 @@
 %!test
 %! __fntestfunc__ ("rotdim", m3, 1, [1, 2]);
 
-## Check for error if function parameter is made persistent 
+## Check for error if function parameter is made persistent
 %!function retval = __fnpersist1__ (in1)
 %!  persistent retval;
-%!  
+%!
 %!  retval = 1;
 %!endfunction
 
 %!function retval = __fnpersist2__ (in1)
 %!  persistent in1;
-%!  
+%!
 %!  retval = in1;
 %!endfunction
 

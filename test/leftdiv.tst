@@ -19,7 +19,7 @@
 ## There are many corner cases for left division operator
 %!assert (0 \ 1, Inf)
 %!assert (0 \ single (1), single (Inf))
-## FIXME: Should return Inf, but not coded correctly yet. 
+## FIXME: Should return Inf, but not coded correctly yet.
 %#!assert (0 \ i, Inf)
 %#!assert (0 \ single (i), single (Inf))
 

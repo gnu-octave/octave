@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 #include "variable-editor.h"
 #include "variable-editor-model.h"
 
@@ -81,6 +82,36 @@ idx_to_expr (int32_t from, int32_t to)
           : QString ("%1:%2").arg (from + 1).arg (to + 1));
 }
 
+
+
+//
+// Functions for reimplemented tab widget
+//
+
+var_editor_tab_widget::var_editor_tab_widget (QWidget *p)
+  : QTabWidget (p)
+{
+  tab_bar *bar;
+  bar = new tab_bar (this);
+
+  connect (bar, SIGNAL (close_current_tab_signal (bool)),
+           p->parent (), SLOT (request_close_tab (bool)));
+
+  this->setTabBar (bar);
+}
+
+QTabBar*
+var_editor_tab_widget::tabBar (void) const
+{
+  return (QTabWidget::tabBar ());
+}
+
+
+
+//
+// Variable editor
+//
+
 variable_editor::variable_editor (QWidget *p)
   : octave_dock_widget (p),
     m_default_width (30), m_default_height (100), m_add_font_height (0),
@@ -112,12 +143,28 @@ variable_editor::variable_editor (QWidget *p)
 
   // Tab Widget.
 
-  m_tab_widget = new QTabWidget (container);
+  m_tab_widget = new var_editor_tab_widget (container);
   m_tab_widget->setTabsClosable (true);
   m_tab_widget->setMovable (true);
 
   connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
            this, SLOT (closeTab (int)));
+
+   // Tab bar
+  m_tab_bar
+      = static_cast<tab_bar *>(m_tab_widget->tabBar ());
+
+  m_close_action = add_action (m_tab_bar->get_context_menu (),
+        resource_manager::icon ("window-close",false), tr ("&Close"),
+        SLOT (request_close_tab (bool)));
+  m_close_others_action = add_action (m_tab_bar->get_context_menu (),
+        resource_manager::icon ("window-close",false), tr ("Close &Other Tabs"),
+        SLOT (request_close_other_tabs (bool)));
+  m_close_all_action = add_action (m_tab_bar->get_context_menu (),
+        resource_manager::icon ("window-close",false), tr ("Close &All Tabs"),
+        SLOT (request_close_all_tabs (bool)));
+
+  enable_actions ();
 
   // Layout the widgets vertically with the toolbar on top
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
@@ -133,6 +180,68 @@ variable_editor::variable_editor (QWidget *p)
            p, SLOT (execute_command_in_terminal (const QString&)));
 }
 
+
+
+// Add an action to a menu or the widget itself
+QAction*
+variable_editor::add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                         const char *member)
+{
+  QAction *a;
+
+  if (menu)
+    a = menu->addAction (icon, text, this, member);
+  else
+    {
+      a = new QAction (this);
+      connect (a, SIGNAL (triggered ()), this, member);
+    }
+
+  addAction (a);  // important for shortcut context
+  a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+
+  return a;
+}
+
+// Slot for the close tab action
+void
+variable_editor::request_close_tab (bool)
+{
+  closeTab (m_tab_bar->currentIndex ());
+}
+
+// Slot for the close other tabs action
+void
+variable_editor::request_close_other_tabs (bool)
+{
+  int current = m_tab_bar->currentIndex ();
+
+  for (int index = m_tab_bar->count ()-1; index >= 0; index--)
+  {
+    if (current != index)
+      closeTab (index);
+  }
+}
+
+// Slot for closing all tabs
+void
+variable_editor::request_close_all_tabs (bool)
+{
+  for (int index = m_tab_bar->count ()-1; index >= 0; index--)
+    closeTab (index);
+}
+
+
+void
+variable_editor::enable_actions (void)
+{
+  const int count = m_tab_widget->count ();
+
+  m_tool_bar->setEnabled (count > 0);
+  m_close_action->setEnabled (count > 0);
+  m_close_all_action->setEnabled (count > 0);
+  m_close_others_action->setEnabled (count > 1);
+}
 
 void
 variable_editor::edit_variable (const QString& name, const octave_value& val)
@@ -203,10 +312,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   int tab_idx = m_tab_widget->addTab (page, name);
   m_tab_widget->setCurrentIndex (tab_idx);
 
-  // Enable tool bar for when opening first tab.
-
-  if (m_tab_widget->count () == 1)
-    m_tool_bar->setEnabled (true);
+  enable_actions ();
 
   table->setFont (m_font);
   table->setStyleSheet (m_stylesheet);
@@ -380,6 +486,11 @@ variable_editor::notice_settings (const QSettings *settings)
     icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
 
   m_tool_bar->setIconSize (QSize (icon_size, icon_size));
+
+  // Shortcuts
+  shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
+  shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
+  shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
 }
 
 void
@@ -400,10 +511,7 @@ variable_editor::closeTab (int idx)
   m_tab_widget->removeTab (idx);
   delete wdgt;
 
-  // Disable tool bar when closing last tab.
-
-  if (m_tab_widget->count () == 0)
-    m_tool_bar->setEnabled (false);
+  enable_actions ();
 }
 
 void

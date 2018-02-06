@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 
 #include "octave-dock-widget.h"
+#include "tab-bar.h"
 
 class octave_value;
 
@@ -37,6 +38,25 @@ class QToolBar;
 class QMainWindow;
 class QTableView;
 class QModelIndex;
+
+
+// Subclassed QTabWidget for using custom tabbar
+
+class var_editor_tab_widget : public QTabWidget
+{
+  Q_OBJECT
+
+public:
+
+  var_editor_tab_widget (QWidget *p);
+
+  ~var_editor_tab_widget (void) = default;
+
+  QTabBar * tabBar (void) const;
+};
+
+
+// The variable editor class
 
 class variable_editor : public octave_dock_widget
 {
@@ -71,6 +91,10 @@ public slots:
   void notice_settings (const QSettings *);
 
 protected slots:
+
+  void request_close_tab (bool);
+  void request_close_other_tabs (bool);
+  void request_close_all_tabs (bool);
 
   void closeEvent (QCloseEvent *);
 
@@ -118,6 +142,13 @@ signals:
 
 private:
 
+  QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                        const char *member);
+
+  void enable_actions (void);
+
+  tab_bar *m_tab_bar;
+
   QToolBar *m_tool_bar;
 
   QTabWidget *m_tab_widget;
@@ -153,6 +184,10 @@ private:
   void update_colors (void);
 
   void construct_tool_bar (void);
+
+  QAction *m_close_action;
+  QAction *m_close_others_action;
+  QAction *m_close_all_action;
 };
 
 #endif

@@ -82,11 +82,10 @@ idx_to_expr (int32_t from, int32_t to)
 }
 
 variable_editor::variable_editor (QWidget *p)
-  : octave_dock_widget (p), m_main (new QMainWindow ()),
-    m_tool_bar (new QToolBar (m_main)),
-    m_tab_widget (new QTabWidget (m_main)), m_default_width (30),
-    m_default_height (100), m_add_font_height (0), m_use_terminal_font (true),
-    m_alternate_rows (true), m_stylesheet (""), m_font (), m_sel_font (),
+  : octave_dock_widget (p),
+    m_default_width (30), m_default_height (100), m_add_font_height (0),
+    m_use_terminal_font (true), m_alternate_rows (true),
+    m_stylesheet (""), m_font (), m_sel_font (),
     m_table_colors ()
 {
   // Use a MainWindow.
@@ -96,39 +95,44 @@ variable_editor::variable_editor (QWidget *p)
   setStatusTip (tr ("Edit variables."));
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
+  // The dock widget's widget
+
+  QWidget *container = new QWidget (this);
+
   // Tool Bar.
 
+  m_tool_bar = new QToolBar ("", container);
+  m_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
+  m_tool_bar->setMovable (false);
+
   construct_tool_bar ();
-  m_main->addToolBar (m_tool_bar);
 
   for (int i = 0; i < resource_manager::varedit_color_chars ().length (); i++)
     m_table_colors.append (QColor (Qt::white));
 
   // Tab Widget.
 
+  m_tab_widget = new QTabWidget (container);
   m_tab_widget->setTabsClosable (true);
   m_tab_widget->setMovable (true);
 
   connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
            this, SLOT (closeTab (int)));
 
-  m_main->setCentralWidget (m_tab_widget);
+  // Layout the widgets vertically with the toolbar on top
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  vbox_layout->setSpacing (0);
+  vbox_layout->addWidget (m_tool_bar);
+  vbox_layout->addWidget (m_tab_widget);
+  vbox_layout->setMargin (1);
 
-  // Main.
-
-  m_main->setParent (this);
-  setWidget (m_main);
+  container->setLayout (vbox_layout);
+  setWidget (container);
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
 }
 
-variable_editor::~variable_editor (void)
-{
-  // m_tool_bar and m_tab_widget are contained within m_main.
-
-  delete m_main;
-}
 
 void
 variable_editor::edit_variable (const QString& name, const octave_value& val)

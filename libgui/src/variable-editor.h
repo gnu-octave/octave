@@ -46,7 +46,7 @@ public:
 
   variable_editor (QWidget *parent = nullptr);
 
-  ~variable_editor (void);
+  ~variable_editor (void) = default;
 
   // No copying!
 
@@ -117,8 +117,6 @@ signals:
   void command_requested (const QString& cmd);
 
 private:
-
-  QMainWindow *m_main;
 
   QToolBar *m_tool_bar;
 

@@ -37,7 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 #include <QPalette>
 #include <QSignalMapper>
+#include <QStackedWidget>
 #include <QTableView>
+#include <QTextEdit>
 #include <QTabWidget>
 #include <QToolBar>
 #include <QToolButton>
@@ -48,32 +50,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variable-editor.h"
 #include "variable-editor-model.h"
 
-namespace
-{
-  // Helper struct to store widget pointers in "data" Tab property.
-
-  struct table_data
-  {
-    table_data (QTableView *t = nullptr)
-      : m_table (t)
-    { }
-
-    QTableView *m_table;
-  };
-
-  table_data get_table_data (QTabWidget *w, int tidx)
-  {
-    return w->widget (tidx)->property ("data").value<table_data> ();
-  }
-
-  table_data get_table_data (QTabWidget *w)
-  {
-    return get_table_data (w, w->currentIndex ());
-  }
-}
-
-Q_DECLARE_METATYPE (table_data)
-
 static QString
 idx_to_expr (int32_t from, int32_t to)
 {
@@ -82,7 +58,63 @@ idx_to_expr (int32_t from, int32_t to)
           : QString ("%1:%2").arg (from + 1).arg (to + 1));
 }
 
+QTableView *
+var_editor_tab::get_edit_view (void) const
+{
+  return (m_edit_view_idx == m_widget_stack->currentIndex ()
+          ? qobject_cast<QTableView *> (m_widget_stack->widget (m_edit_view_idx))
+          : nullptr);
+}
 
+QTextEdit *
+var_editor_tab::get_disp_view (void) const
+{
+  return (m_disp_view_idx == m_widget_stack->currentIndex ()
+          ? qobject_cast<QTextEdit *> (m_widget_stack->widget (m_disp_view_idx))
+          : nullptr);
+}
+
+void
+var_editor_tab::set_edit_view (QTableView *edit_view)
+{
+  m_edit_view_idx = m_widget_stack->addWidget (edit_view);
+}
+
+void
+var_editor_tab::set_disp_view (QTextEdit *disp_view)
+{
+  m_disp_view_idx = m_widget_stack->addWidget (disp_view);
+}
+
+
+bool
+var_editor_tab::has_focus (void) const
+{
+  QTableView *edit_view = get_edit_view ();
+  QTextEdit *disp_view = get_disp_view ();
+
+  return ((disp_view && disp_view->hasFocus ())
+          || (edit_view && edit_view->hasFocus ()));
+}
+
+void
+var_editor_tab::set_editable (bool editable)
+{
+  int idx = (editable ? m_edit_view_idx : m_disp_view_idx);
+
+  m_widget_stack->setCurrentIndex (idx);
+
+  if (! editable)
+    {
+      QTextEdit *viewer = get_disp_view ();
+
+      QVariant v_data = m_model->data ();
+
+      QString str = v_data.toString ();
+
+      viewer->setPlainText (str);
+    }
+}
 
 //
 // Functions for reimplemented tab widget
@@ -91,8 +123,7 @@ idx_to_expr (int32_t from, int32_t to)
 var_editor_tab_widget::var_editor_tab_widget (QWidget *p)
   : QTabWidget (p)
 {
-  tab_bar *bar;
-  bar = new tab_bar (this);
+  tab_bar *bar = new tab_bar (this);
 
   connect (bar, SIGNAL (close_current_tab_signal (bool)),
            p->parent (), SLOT (request_close_tab (bool)));
@@ -106,7 +137,32 @@ var_editor_tab_widget::tabBar (void) const
   return (QTabWidget::tabBar ());
 }
 
+bool
+var_editor_tab_widget::current_tab_has_focus (void) const
+{
+  var_editor_tab *tab
+    = qobject_cast<var_editor_tab *> (widget (currentIndex ()));
 
+  return tab->has_focus ();
+}
+
+QTableView *
+var_editor_tab_widget::get_edit_view (void) const
+{
+  var_editor_tab *tab
+    = qobject_cast<var_editor_tab *> (widget (currentIndex ()));
+
+  return tab->get_edit_view ();
+}
+
+QTextEdit *
+var_editor_tab_widget::get_disp_view (void) const
+{
+  var_editor_tab *tab
+    = qobject_cast<var_editor_tab *> (widget (currentIndex ()));
+
+  return tab->get_disp_view ();
+}
 
 //
 // Variable editor
@@ -266,7 +322,9 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
 
   // Do not set parent.
 
-  QWidget *page = new QWidget;
+  QStackedWidget *widget_stack = new QStackedWidget ();
+
+  var_editor_tab *page = new var_editor_tab (widget_stack);
 
   QVBoxLayout *vbox = new QVBoxLayout (page);
   page->setLayout (vbox);
@@ -276,9 +334,43 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   label->setText (name);
   vbox->addWidget (label, 0, Qt::AlignTop);
 
+  variable_editor_model *model
+    = new variable_editor_model (name, val, label);
+
+  QTableView *edit_view = make_edit_view (page, model);
+
+  QTextEdit *disp_view = make_disp_view (page, model);
+
+  page->set_model (model);
+
+  page->set_edit_view (edit_view);
+  page->set_disp_view (disp_view);
+
+  vbox->addWidget (widget_stack);
+
+  int tab_idx = m_tab_widget->addTab (page, name);
+
+  m_tab_widget->setCurrentIndex (tab_idx);
+
+  connect (model, SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+           this, SLOT (callUpdate (const QModelIndex&, const QModelIndex&)));
+
+  connect (this, SIGNAL (refresh_signal (void)),
+           model, SLOT (update_data_cache (void)));
+
+  connect (model, SIGNAL (set_editable_signal (bool)),
+           page, SLOT (set_editable (bool)));
+
+  enable_actions ();
+}
+
+QTableView *
+variable_editor::make_edit_view (var_editor_tab *page,
+                                  variable_editor_model *model)
+{
   QTableView *table = new QTableView (page);
-  variable_editor_model *model =
-    new variable_editor_model (name, val, label, table);
+
+  model->setParent (table);
 
   table->setModel (model);
   table->setWordWrap (false);
@@ -302,17 +394,6 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
 
   connect (table, SIGNAL (doubleClicked (const QModelIndex&)),
            this, SLOT (double_click (const QModelIndex&)));
-
-  connect (model, SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-           this, SLOT (callUpdate (const QModelIndex&, const QModelIndex&)));
-
-  vbox->addWidget (table);
-
-  page->setProperty ("data", QVariant::fromValue (table_data (table)));
-  int tab_idx = m_tab_widget->addTab (page, name);
-  m_tab_widget->setCurrentIndex (tab_idx);
-
-  enable_actions ();
 
   table->setFont (m_font);
   table->setStyleSheet (m_stylesheet);
@@ -342,20 +423,31 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
       int w = col_width * fm.width ('0');
       table->horizontalHeader ()->setDefaultSectionSize (w);
     }
+
+  return table;
+}
+
+QTextEdit *
+variable_editor::make_disp_view (var_editor_tab *page,
+                                 variable_editor_model *model)
+{
+  QTextEdit *viewer = new QTextEdit (page);
+
+  model->setParent (viewer);
+
+  QVariant v_data = model->data ();
+
+  QString str = v_data.toString ();
+
+  viewer->setPlainText (str);
+
+  return viewer;
 }
 
 void
 variable_editor::refresh (void)
 {
-  // FIXME: it would be nice to only refresh the variable tabs that are
-  // displayed, and then only if something has actually changed.
-
-  for (int i = 0; i < m_tab_widget->count (); ++i)
-    {
-      QTableView *const table = get_table_data (m_tab_widget, i).m_table;
-      QAbstractItemModel *const model = table->model ();
-      qobject_cast<variable_editor_model *> (model)->update_data_cache ();
-    }
+  emit refresh_signal ();
 }
 
 bool
@@ -369,9 +461,7 @@ variable_editor::has_focus (void)
 
   try
     {
-      QTableView *view = get_table_data (m_tab_widget).m_table;
-
-      return view ? view->hasFocus () : false;
+      return m_tab_widget->current_tab_has_focus ();
     }
   catch (...)
     {
@@ -507,8 +597,10 @@ variable_editor::closeTab (int idx)
   if (idx < 0 || idx > m_tab_widget->count ())
     return;
 
-  QWidget *const wdgt = m_tab_widget->widget (idx);
+  QWidget *wdgt = m_tab_widget->widget (idx);
+
   m_tab_widget->removeTab (idx);
+
   delete wdgt;
 
   enable_actions ();
@@ -517,7 +609,11 @@ variable_editor::closeTab (int idx)
 void
 variable_editor::contextmenu_requested (const QPoint& qpos)
 {
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
+
   QModelIndex index = view->indexAt (qpos);
 
   if (index.isValid ())
@@ -602,7 +698,10 @@ variable_editor::contextmenu_requested (const QPoint& qpos)
 void
 variable_editor::columnmenu_requested (const QPoint& pt)
 {
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
 
   int index = view->horizontalHeader ()->logicalIndexAt (pt);
 
@@ -715,7 +814,10 @@ variable_editor::columnmenu_requested (const QPoint& pt)
 void
 variable_editor::rowmenu_requested (const QPoint& pt)
 {
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
 
   int index = view->verticalHeader ()->logicalIndexAt (pt);
 
@@ -832,9 +934,12 @@ variable_editor::double_click (const QModelIndex& idx)
 {
   QString name = real_var_name (m_tab_widget->currentIndex ());
 
-  QTableView *const table = get_table_data (m_tab_widget).m_table;
+  QTableView *table = m_tab_widget->get_edit_view ();
 
-  variable_editor_model *const model
+  if (! table)
+    return;
+
+  variable_editor_model *model
     = qobject_cast<variable_editor_model *> (table->model ());
 
   if (model->requires_sub_editor (idx))
@@ -866,7 +971,11 @@ variable_editor::clearContent (void)
 {
   // FIXME: Shift?
 
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
+
   QAbstractItemModel *model = view->model ();
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
@@ -894,7 +1003,11 @@ variable_editor::copyClipboard (void)
   if (! has_focus ())
     return;
 
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
+
   QAbstractItemModel *model = view->model ();
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
@@ -929,7 +1042,11 @@ variable_editor::pasteClipboard (void)
   QClipboard *clipboard = QApplication::clipboard ();
   QString text = clipboard->text ();
 
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
+
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
 
@@ -964,7 +1081,11 @@ void variable_editor::pasteTableClipboard (void)
   QClipboard *clipboard = QApplication::clipboard ();
   QString text = clipboard->text ();
 
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
+
   QItemSelectionModel *sel = view->selectionModel ();
   QList<QModelIndex> indices = sel->selectedIndexes ();
 
@@ -1075,7 +1196,11 @@ variable_editor::up (void)
 void
 variable_editor::delete_selected (void)
 {
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return;
+
   QString selection = selected_to_octave ();
   QList<int> coords = octave_to_coords (selection);
 
@@ -1184,7 +1309,12 @@ QString
 variable_editor::selected_to_octave (void)
 {
   QString name = real_var_name (m_tab_widget->currentIndex ());
-  QTableView *view = get_table_data (m_tab_widget).m_table;
+
+  QTableView *view = m_tab_widget->get_edit_view ();
+
+  if (! view)
+    return name;
+
   QItemSelectionModel *sel = view->selectionModel ();
 
   // Return early if nothing selected.
@@ -1251,7 +1381,11 @@ void variable_editor::update_colors (void)
 
   for (int i = 0; i < m_tab_widget->count (); i++)
     {
-      QTableView *view = get_table_data (m_tab_widget).m_table;
+      QTableView *view = m_tab_widget->get_edit_view ();
+
+      if (! view)
+        continue;
+
       view->setAlternatingRowColors (m_alternate_rows);
       view->setStyleSheet (m_stylesheet);
       view->setFont (m_font);

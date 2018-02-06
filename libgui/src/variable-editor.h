@@ -33,12 +33,53 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
-class QTabWidget;
-class QToolBar;
-class QMainWindow;
-class QTableView;
 class QModelIndex;
+class QStackedWidget;
+class QTabWidget;
+class QTableView;
+class QTextEdit;
+class QToolBar;
 
+class variable_editor_model;
+
+class var_editor_tab : public QWidget
+{
+  Q_OBJECT
+
+public:
+
+  var_editor_tab (QStackedWidget *widget_stack, QWidget *p = nullptr)
+    : QWidget (p), m_widget_stack (widget_stack)
+  { }
+
+  ~var_editor_tab (void) = default;
+
+  QTableView * get_edit_view (void) const;
+  QTextEdit * get_disp_view (void) const;
+
+  void set_edit_view (QTableView *);
+  void set_disp_view (QTextEdit *);
+
+  void set_model (variable_editor_model *model)
+  {
+    m_model = model;
+  }
+
+  bool has_focus (void) const;
+
+public slots:
+
+  void set_editable (bool);
+
+private:
+
+  variable_editor_model *m_model;
+
+  QStackedWidget *m_widget_stack;
+
+  int m_edit_view_idx;
+  int m_disp_view_idx;
+};
 
 // Subclassed QTabWidget for using custom tabbar
 
@@ -53,6 +94,11 @@ public:
   ~var_editor_tab_widget (void) = default;
 
   QTabBar * tabBar (void) const;
+
+  bool current_tab_has_focus (void) const;
+
+  QTextEdit *get_disp_view (void) const;
+  QTableView *get_edit_view (void) const;
 };
 
 
@@ -75,6 +121,12 @@ public:
   variable_editor& operator = (const variable_editor&) = delete;
 
   void edit_variable (const QString& name, const octave_value& val);
+
+  QTableView *make_edit_view (var_editor_tab *page,
+                              variable_editor_model *model);
+
+  QTextEdit *make_disp_view (var_editor_tab *page,
+                             variable_editor_model *model);
 
   void refresh (void);
 
@@ -140,6 +192,8 @@ signals:
 
   void command_requested (const QString& cmd);
 
+  void refresh_signal (void);
+
 private:
 
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
@@ -151,7 +205,7 @@ private:
 
   QToolBar *m_tool_bar;
 
-  QTabWidget *m_tab_widget;
+  var_editor_tab_widget *m_tab_widget;
 
   int m_default_width;
 

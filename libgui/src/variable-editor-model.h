@@ -26,22 +26,122 @@ along with Octave; see the file COPYING.  If not, see
 #define variable_editor_model_h 1
 
 #include <QAbstractTableModel>
+#include <QMap>
+#include <QString>
 
 #include "ov.h"
+#include "pr-flt-fmt.h"
 
 class QLabel;
+
+class
+base_ve_model
+{
+public:
+
+  base_ve_model (const QString &expr, const octave_value& val);
+
+  virtual ~base_ve_model (void) = default;
+
+  // No copying!
+
+  base_ve_model (const base_ve_model&) = delete;
+
+  base_ve_model& operator = (const base_ve_model&) = delete;
+
+  std::string name (void) const;
+
+  bool index_ok (const QModelIndex& idx, int& row, int& col) const;
+
+  virtual bool is_editable (void) const { return true; }
+
+  virtual octave_value value_at (const QModelIndex& idx) const;
+
+  int column_width (void) const;
+
+  int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+  int columnCount (const QModelIndex& = QModelIndex ()) const;
+
+  QString edit_display_sub (const octave_value& elt) const;
+
+  virtual QVariant edit_display (const QModelIndex& idx) const;
+
+  QVariant data (const QModelIndex& idx, int role = Qt::DisplayRole) const;
+
+  virtual bool requires_sub_editor (const QModelIndex& idx) const;
+
+  void set_update_pending (const QModelIndex& idx, const QString& str);
+
+  bool update_pending (const QModelIndex& idx) const;
+
+  QString update_pending_data (const QModelIndex& idx) const;
+
+  void clear_update_pending (void);
+
+  virtual char quote_char (const QModelIndex& idx) const;
+
+  virtual QVariant
+  header_data (int section, Qt::Orientation orientation, int role) const;
+
+  // Return a subscript expression as a string that can be used to
+  // access a sub-element of a data structure.  For example "{1,3}"
+  // for cell array element {1,3} or "(2,4)" for array element (2,4).
+
+  virtual QString subscript_expression (const QModelIndex& idx) const;
+
+  bool is_valid (void) const { return m_valid; }
+
+  octave_idx_type data_rows (void) const { return m_data_rows; }
+
+  octave_idx_type data_columns (void) const { return m_data_cols; }
+
+  int display_rows (void) const { return m_display_rows; }
+
+  int display_columns (void) const { return m_display_cols; }
+
+  virtual QString make_label_text (void) const;
+
+  void reset (const octave_value& val);
+
+protected:
+
+  std::string m_name;
+
+  octave_value m_value;
+
+  octave_idx_type m_data_rows;
+  octave_idx_type m_data_cols;
+
+  // Qt table widget limits the size to int.
+  int m_display_rows;
+  int m_display_cols;
+
+  QMap<QModelIndex, QString> m_update_pending;
+
+  bool m_valid;
+
+  float_display_format m_display_fmt;
+};
 
 class
 variable_editor_model : public QAbstractTableModel
 {
   Q_OBJECT
 
+private:
+
+  static base_ve_model * create (const QString &expr, const octave_value& val);
+
 public:
 
   variable_editor_model (const QString &expr, const octave_value& val,
-                         QLabel *label, QObject *p = nullptr);
+                         QLabel *label, QObject *parent = nullptr);
 
-  ~variable_editor_model (void);
+  ~variable_editor_model (void)
+  {
+    delete rep;
+  }
 
   // No copying!
 
@@ -49,16 +149,41 @@ public:
 
   variable_editor_model& operator = (const variable_editor_model&) = delete;
 
-  octave_value value_at (const QModelIndex& idx) const;
+  std::string name (void) const
+  {
+    return rep->name ();
+  }
 
-  int column_width (void) const;
+  bool is_editable (void) const
+  {
+    return rep->is_editable ();
+  }
 
-  // Display rows and columns, different from data rows and columns.
-  int rowCount (const QModelIndex& = QModelIndex ()) const;
+  octave_value value_at (const QModelIndex& idx) const
+  {
+    return rep->value_at (idx);
+  }
 
-  int columnCount (const QModelIndex& = QModelIndex ()) const;
+  int column_width (void) const
+  {
+    return rep->column_width ();
+  }
 
-  QVariant data (const QModelIndex& idx, int role = Qt::DisplayRole) const;
+  int rowCount (const QModelIndex& idx = QModelIndex ()) const
+  {
+    return rep->rowCount (idx);
+  }
+
+  int columnCount (const QModelIndex& idx = QModelIndex ()) const
+  {
+    return rep->columnCount (idx);
+  }
+
+  QVariant data (const QModelIndex& idx = QModelIndex (),
+                 int role = Qt::DisplayRole) const
+  {
+    return rep->data (idx, role);
+  }
 
   bool setData (const QModelIndex& idx, const QVariant& v,
                 int role = Qt::EditRole);
@@ -79,36 +204,56 @@ public:
   bool removeColumns (int column, int count,
                       const QModelIndex& parent = QModelIndex());
 
-  void update_data_cache (void);
-
   // Is cell at idx complex enough to require a sub editor?
-  bool requires_sub_editor (const QModelIndex& idx) const;
 
-  // If a sub editor is required, is it a standard type?
-  bool editor_type_matrix (const QModelIndex& idx) const;
+  bool requires_sub_editor (const QModelIndex& idx) const
+  {
+    return rep->requires_sub_editor (idx);
+  }
 
-  bool editor_type_string (const QModelIndex& idx) const;
+  void set_update_pending (const QModelIndex& idx, const QString& str)
+  {
+    rep->set_update_pending (idx, str);
+  }
 
-  void set_update_pending (const QModelIndex& idx, const QString& str);
+  bool update_pending (const QModelIndex& idx) const
+  {
+    return rep->update_pending (idx);
+  }
 
-  bool update_pending (const QModelIndex& idx) const;
+  QString update_pending_data (const QModelIndex& idx) const
+  {
+    return rep->update_pending_data (idx);
+  }
 
-  QString update_pending_data (const QModelIndex& idx) const;
+  void clear_update_pending (void)
+  {
+    rep->clear_update_pending ();
+  }
 
-  void clear_update_pending (void);
-
-  char quote_char (int r, int c) const;
+  char quote_char (const QModelIndex& idx) const
+  {
+    return rep->quote_char (idx);
+  }
 
   QVariant
-  headerData (int section, Qt::Orientation orientation, int role) const;
+  headerData (int section, Qt::Orientation orientation, int role) const
+  {
+    if ((orientation == Qt::Vertical && section < data_rows ())
+        || (orientation == Qt::Horizontal && section < data_columns ()))
+      return rep->header_data (section, orientation, role);
+
+    return QVariant ();
+  }
 
   // Return a subscript expression as a string that can be used to
   // access a sub-element of a data structure.  For example "{1,3}"
   // for cell array element {1,3} or "(2,4)" for array element (2,4).
 
-  QString subscript_expression (int r, int c) const;
-
-  QString subscript_expression (const QModelIndex& idx) const;
+  QString subscript_expression (const QModelIndex& idx) const
+  {
+    return rep->subscript_expression (idx);
+  }
 
 signals: // private
 
@@ -120,40 +265,71 @@ signals: // private
 
   void maybe_resize_columns_signal (void);
 
+  void set_editable_signal (bool);
+
 private slots:
 
-  void update_data (const octave_value& val);
-
-  // Change the display if the variable does not exist.
   void data_error (const QString& msg);
 
   void user_error (const QString& title, const QString& msg);
 
+  void update_data_cache (void);
+
+  void update_data (const octave_value& val);
+
 private:
 
-  void set_data_oct (const int& row, const int& col, const std::string& val);
+  // Owned by parent, stored here for convenience.
+  QLabel *m_label;
 
-  void init_from_oct (const std::string& x);
+  base_ve_model *rep;
+
+  void set_data_oct (const std::string& name, const std::string& expr,
+                     const QModelIndex&);
+
+  void init_from_oct (const std::string& str);
 
   void eval_oct (const std::string& name, const std::string& expr);
 
-  octave_value retrieve_variable (const std::string& x);
+  octave_value retrieve_variable (const std::string& name);
+
+  bool is_valid (void) const
+  {
+    return rep->is_valid ();
+  }
+
+  octave_idx_type data_rows (void) const
+  {
+    return rep->data_rows ();
+  }
+
+  octave_idx_type data_columns (void) const
+  {
+    return rep->data_columns ();
+  }
+
+  int display_rows (void) const
+  {
+    return rep->display_rows ();
+  }
+
+  int display_columns (void) const
+  {
+    return rep->display_columns ();
+  }
+
+  QString make_label_text (void) const
+  {
+    return rep->make_label_text ();
+  }
+
+  void reset (const octave_value& val);
 
   void invalidate (void);
 
-  // Change the display now that the variable exists
-  void display_valid (void);
-
-  bool type_is_editable (const octave_value& val,
-                         bool display_error = true) const;
+  void update_label (void);
 
   void evaluation_error (const std::string& expr) const;
-
-  QObject *m_parent;
-
-  struct impl;
-
-  impl *m_d;
 };
 
 #endif

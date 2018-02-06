@@ -149,7 +149,7 @@ workspace_view::workspace_view (QWidget *p)
   connect (m_view, SIGNAL (customContextMenuRequested (const QPoint&)),
            this, SLOT (contextmenu_requested (const QPoint&)));
 
-  connect (m_view, SIGNAL (doubleClicked (QModelIndex)),
+  connect (m_view, SIGNAL (activated (QModelIndex)),
            this, SLOT (handle_contextmenu_edit (void)));
 
   connect (this, SIGNAL (command_requested (const QString&)),

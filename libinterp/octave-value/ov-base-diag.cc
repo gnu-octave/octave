@@ -615,7 +615,7 @@ octave_base_diag<DMT, MT>::short_disp (std::ostream& os) const
 
 template <typename DMT, typename MT>
 std::string
-octave_base_diag<DMT, MT>::edit_display (const float_display_format& fmt,
+octave_base_diag<DMT, MT>::edit_display (const float_display_format&,
                                          octave_idx_type i,
                                          octave_idx_type j) const
 {

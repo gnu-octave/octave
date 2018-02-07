@@ -544,7 +544,7 @@ octave_perm_matrix::try_narrowing_conversion (void)
 }
 
 std::string
-octave_perm_matrix::edit_display (const float_display_format& fmt,
+octave_perm_matrix::edit_display (const float_display_format&,
                                   octave_idx_type i, octave_idx_type j) const
 {
   // FIXME: maybe we should have octave_print_internal functions for

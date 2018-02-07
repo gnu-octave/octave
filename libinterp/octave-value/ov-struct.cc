@@ -657,7 +657,7 @@ scalar (const dim_vector& dims)
 }
 
 std::string
-octave_struct::edit_display (const float_display_format& fmt,
+octave_struct::edit_display (const float_display_format&,
                              octave_idx_type r, octave_idx_type c) const
 {
   octave_value val;
@@ -1360,7 +1360,7 @@ octave_scalar_struct::print_name_tag (std::ostream& os,
 }
 
 std::string
-octave_scalar_struct::edit_display (const float_display_format& fmt,
+octave_scalar_struct::edit_display (const float_display_format&,
                                     octave_idx_type r, octave_idx_type) const
 {
   // Scalar struct.  Rows are fields, single column for values.

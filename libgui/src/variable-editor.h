@@ -93,7 +93,7 @@ public:
 
   ~var_editor_tab_widget (void) = default;
 
-  QTabBar * tabBar (void) const;
+  tab_bar * get_tab_bar (void) const;
 
   bool current_tab_has_focus (void) const;
 
@@ -201,11 +201,13 @@ private:
 
   void enable_actions (void);
 
-  tab_bar *m_tab_bar;
+  QWidget *m_container;
 
   QToolBar *m_tool_bar;
 
   var_editor_tab_widget *m_tab_widget;
+
+  tab_bar *m_tab_bar;
 
   int m_default_width;
 

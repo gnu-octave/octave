@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
-#include <QMainWindow>
 #include <QMenu>
 #include <QPalette>
 #include <QSignalMapper>
@@ -116,14 +115,15 @@ var_editor_tab::set_editable (bool editable)
     }
 }
 
-//
-// Functions for reimplemented tab widget
-//
+// Functions for reimplemented tab widget.
 
 var_editor_tab_widget::var_editor_tab_widget (QWidget *p)
   : QTabWidget (p)
 {
   tab_bar *bar = new tab_bar (this);
+
+  m_tab_widget->setTabsClosable (true);
+  m_tab_widget->setMovable (true);
 
   connect (bar, SIGNAL (close_current_tab_signal (bool)),
            p->parent (), SLOT (request_close_tab (bool)));
@@ -131,10 +131,10 @@ var_editor_tab_widget::var_editor_tab_widget (QWidget *p)
   this->setTabBar (bar);
 }
 
-QTabBar*
-var_editor_tab_widget::tabBar (void) const
+tab_bar *
+var_editor_tab_widget::get_tab_bar (void) const
 {
-  return (QTabWidget::tabBar ());
+  return qobject_cast<tab_bar *> (tabBar ());
 }
 
 bool
@@ -164,84 +164,85 @@ var_editor_tab_widget::get_disp_view (void) const
   return tab->get_disp_view ();
 }
 
-//
-// Variable editor
-//
+// Variable editor.
 
 variable_editor::variable_editor (QWidget *p)
   : octave_dock_widget (p),
-    m_default_width (30), m_default_height (100), m_add_font_height (0),
-    m_use_terminal_font (true), m_alternate_rows (true),
-    m_stylesheet (""), m_font (), m_sel_font (),
+    m_container (new QWidget (this)),
+    m_tool_bar (new QToolBar ("", m_container)),
+    m_tab_widget (new var_editor_tab_widget (m_container)),
+    m_tab_bar (m_tab_widget->get_tab_bar ()),
+    m_default_width (30),
+    m_default_height (100),
+    m_add_font_height (0),
+    m_use_terminal_font (true),
+    m_alternate_rows (true),
+    m_stylesheet (""),
+    m_font (),
+    m_sel_font (),
     m_table_colors ()
 {
-  // Use a MainWindow.
-
   setObjectName ("variable_editor");
   set_title (tr ("Variable Editor"));
   setStatusTip (tr ("Edit variables."));
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
-  // The dock widget's widget
-
-  QWidget *container = new QWidget (this);
-
-  // Tool Bar.
-
-  m_tool_bar = new QToolBar ("", container);
-  m_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
-  m_tool_bar->setMovable (false);
-
   construct_tool_bar ();
+
+  // Colors.
 
   for (int i = 0; i < resource_manager::varedit_color_chars ().length (); i++)
     m_table_colors.append (QColor (Qt::white));
 
   // Tab Widget.
 
-  m_tab_widget = new var_editor_tab_widget (container);
-  m_tab_widget->setTabsClosable (true);
-  m_tab_widget->setMovable (true);
-
   connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
            this, SLOT (closeTab (int)));
 
-   // Tab bar
-  m_tab_bar
-      = static_cast<tab_bar *>(m_tab_widget->tabBar ());
+  // Tab bar.
 
-  m_close_action = add_action (m_tab_bar->get_context_menu (),
-        resource_manager::icon ("window-close",false), tr ("&Close"),
-        SLOT (request_close_tab (bool)));
-  m_close_others_action = add_action (m_tab_bar->get_context_menu (),
-        resource_manager::icon ("window-close",false), tr ("Close &Other Tabs"),
-        SLOT (request_close_other_tabs (bool)));
-  m_close_all_action = add_action (m_tab_bar->get_context_menu (),
-        resource_manager::icon ("window-close",false), tr ("Close &All Tabs"),
-        SLOT (request_close_all_tabs (bool)));
+  m_close_action
+    = add_action (m_tab_bar->get_context_menu (),
+                  resource_manager::icon ("window-close",false),
+                  tr ("&Close"),
+                  SLOT (request_close_tab (bool)));
+
+  m_close_others_action
+    = add_action (m_tab_bar->get_context_menu (),
+                  resource_manager::icon ("window-close",false),
+                  tr ("Close &Other Tabs"),
+                  SLOT (request_close_other_tabs (bool)));
+
+  m_close_all_action
+    = add_action (m_tab_bar->get_context_menu (),
+                  resource_manager::icon ("window-close",false),
+                  tr ("Close &All Tabs"),
+                  SLOT (request_close_all_tabs (bool)));
 
   enable_actions ();
 
-  // Layout the widgets vertically with the toolbar on top
+  // Layout the widgets vertically with the toolbar on top.
+
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
+
   vbox_layout->setSpacing (0);
   vbox_layout->addWidget (m_tool_bar);
   vbox_layout->addWidget (m_tab_widget);
   vbox_layout->setMargin (1);
 
-  container->setLayout (vbox_layout);
-  setWidget (container);
+  m_container->setLayout (vbox_layout);
+
+  setWidget (m_container);
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
 }
 
+// Add an action to a menu or the widget itself.
 
-
-// Add an action to a menu or the widget itself
 QAction*
 variable_editor::add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                         const char *member)
+                             const char *member)
 {
   QAction *a;
 
@@ -259,34 +260,36 @@ variable_editor::add_action (QMenu *menu, const QIcon& icon, const QString& text
   return a;
 }
 
-// Slot for the close tab action
+// Slot for the close tab action.
+
 void
 variable_editor::request_close_tab (bool)
 {
   closeTab (m_tab_bar->currentIndex ());
 }
 
-// Slot for the close other tabs action
+// Slot for the close other tabs action.
+
 void
 variable_editor::request_close_other_tabs (bool)
 {
   int current = m_tab_bar->currentIndex ();
 
   for (int index = m_tab_bar->count ()-1; index >= 0; index--)
-  {
-    if (current != index)
-      closeTab (index);
-  }
+    {
+      if (current != index)
+        closeTab (index);
+    }
 }
 
-// Slot for closing all tabs
+// Slot for closing all tabs.
+
 void
 variable_editor::request_close_all_tabs (bool)
 {
   for (int index = m_tab_bar->count ()-1; index >= 0; index--)
     closeTab (index);
 }
-
 
 void
 variable_editor::enable_actions (void)
@@ -377,7 +380,6 @@ variable_editor::make_edit_view (var_editor_tab *page,
   table->setWordWrap (false);
   table->setContextMenuPolicy (Qt::CustomContextMenu);
   table->setSelectionMode (QAbstractItemView::ContiguousSelection);
-
 
   table->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
   table->verticalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -578,7 +580,8 @@ variable_editor::notice_settings (const QSettings *settings)
 
   m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-  // Shortcuts
+  // Shortcuts.
+
   shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
   shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
   shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
@@ -1397,6 +1400,10 @@ void variable_editor::update_colors (void)
 void
 variable_editor::construct_tool_bar (void)
 {
+  m_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
+
+  m_tool_bar->setMovable (false);
+
   m_tool_bar->setObjectName ("VariableEditorToolBar");
 
   m_tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
@@ -1428,6 +1435,7 @@ variable_editor::construct_tool_bar (void)
   // m_tool_bar->addSeparator ();
 
   QToolButton *plot_tool_button = new QToolButton (m_tool_bar);
+
   plot_tool_button->setText (tr ("Plot"));
   plot_tool_button->setToolTip (tr ("Plot Selected Data"));
   plot_tool_button->setIcon (resource_manager::icon ("plot-xy-curve"));

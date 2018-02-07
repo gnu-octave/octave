@@ -272,7 +272,7 @@ base_ve_model::subscript_expression (const QModelIndex&) const
 }
 
 QString
-base_ve_model::make_label_text (void) const
+base_ve_model::make_description_text (void) const
 {
   QString lbl_txt = QString::fromStdString (m_name);
 
@@ -626,10 +626,10 @@ public:
     return QString::fromStdString (buf.str ());
   }
 
-  QString make_label_text (void) const
+  QString make_description_text (void) const
   {
     return (QString ("unable to edit %1")
-            .arg (base_ve_model::make_label_text ()));
+            .arg (base_ve_model::make_description_text ()));
   }
 };
 
@@ -873,12 +873,10 @@ variable_editor_model::create (const QString& expr, const octave_value& val)
 
 variable_editor_model::variable_editor_model (const QString& expr,
                                               const octave_value& val,
-                                              QLabel *label,
                                               QObject *parent)
-  : QAbstractTableModel (parent), m_label (label),
-    rep (create (expr, val))
+  : QAbstractTableModel (parent), rep (create (expr, val))
 {
-  update_label ();
+  update_description ();
 
   if (is_editable ())
     {
@@ -1217,11 +1215,7 @@ variable_editor_model::data_error (const QString& msg)
 {
   invalidate ();
 
-  m_label->setTextFormat (Qt::PlainText);
-
-  m_label->setText (msg);
-
-  dynamic_cast<QWidget *> (parent ())->setVisible (false);
+  update_description (msg);
 }
 
 void
@@ -1233,7 +1227,7 @@ variable_editor_model::reset (const octave_value& val)
 
   delete old_rep;
 
-  update_label ();
+  update_description ();
 
   emit set_editable_signal (is_editable ());
 }
@@ -1249,9 +1243,8 @@ variable_editor_model::invalidate (void)
 }
 
 void
-variable_editor_model::update_label (void)
+variable_editor_model::update_description (const QString& description)
 {
-  m_label->setTextFormat (Qt::PlainText);
-
-  m_label->setText (make_label_text ());
+  emit description_changed (description.isEmpty ()
+                            ? make_description_text () : description);
 }

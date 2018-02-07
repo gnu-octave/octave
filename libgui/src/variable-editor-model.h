@@ -32,8 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "pr-flt-fmt.h"
 
-class QLabel;
-
 class
 base_ve_model
 {
@@ -100,7 +98,7 @@ public:
 
   int display_columns (void) const { return m_display_cols; }
 
-  virtual QString make_label_text (void) const;
+  virtual QString make_description_text (void) const;
 
   void reset (const octave_value& val);
 
@@ -136,7 +134,7 @@ private:
 public:
 
   variable_editor_model (const QString &expr, const octave_value& val,
-                         QLabel *label, QObject *parent = nullptr);
+                         QObject *parent = nullptr);
 
   ~variable_editor_model (void)
   {
@@ -267,6 +265,8 @@ signals: // private
 
   void set_editable_signal (bool);
 
+  void description_changed (const QString& description);
+
 private slots:
 
   void data_error (const QString& msg);
@@ -278,9 +278,6 @@ private slots:
   void update_data (const octave_value& val);
 
 private:
-
-  // Owned by parent, stored here for convenience.
-  QLabel *m_label;
 
   base_ve_model *rep;
 
@@ -318,16 +315,16 @@ private:
     return rep->display_columns ();
   }
 
-  QString make_label_text (void) const
+  QString make_description_text (void) const
   {
-    return rep->make_label_text ();
+    return rep->make_description_text ();
   }
 
   void reset (const octave_value& val);
 
   void invalidate (void);
 
-  void update_label (void);
+  void update_description (const QString& description = QString ());
 
   void evaluation_error (const std::string& expr) const;
 };

@@ -331,11 +331,9 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
 
   QLabel *label = new QLabel (page);
   label->setTextFormat (Qt::PlainText);
-  label->setText (name);
   vbox->addWidget (label, 0, Qt::AlignTop);
 
-  variable_editor_model *model
-    = new variable_editor_model (name, val, label);
+  variable_editor_model *model = new variable_editor_model (name, val);
 
   QTableView *edit_view = make_edit_view (page, model);
 
@@ -351,6 +349,9 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   int tab_idx = m_tab_widget->addTab (page, name);
 
   m_tab_widget->setCurrentIndex (tab_idx);
+
+  connect (model, SIGNAL (description_changed (const QString&)),
+           label, SLOT (setText (const QString&)));
 
   connect (model, SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
            this, SLOT (callUpdate (const QModelIndex&, const QModelIndex&)));

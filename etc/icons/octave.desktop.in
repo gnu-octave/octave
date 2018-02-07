@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=GNU Octave
-Comment=Scientific Computing using GNU Octave
+Comment=Scientific Computing
+Comment[de]=Wissenschaftliches Rechnen
 TryExec=%OCTAVE_PREFIX%/bin/octave
 Exec=%OCTAVE_PREFIX%/bin/octave --force-gui %f
 Icon=octave

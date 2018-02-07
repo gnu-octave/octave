@@ -717,37 +717,30 @@ LONG
 get_regkey_value (HKEY h_rootkey, const std::string subkey,
                   const std::string name, octave_value& value)
 {
-  DWORD type = 0;
+  LONG result;
+  HKEY h_subkey;
+
+  result = RegOpenKeyExA (h_rootkey, subkey.c_str (), 0, KEY_READ, &h_subkey);
+  if (result != ERROR_SUCCESS)
+    return result;
+
   DWORD length = 0;
-  LONG result = RegGetValueA (h_rootkey, subkey.c_str (), name.c_str (),
-                              RRF_RT_ANY, &type, nullptr, &length);
+  result = RegQueryValueExA (h_subkey, name.c_str (), nullptr, nullptr, nullptr,
+                            &length);
+  if (result != ERROR_SUCCESS)
+    return result;
+
+  DWORD type = 0;
+  OCTAVE_LOCAL_BUFFER (BYTE, data, length);
+  result = RegQueryValueExA (h_subkey, name.c_str (), nullptr, &type, data,
+                            &length);
   if (result != ERROR_SUCCESS)
     return result;
 
   if (type == REG_DWORD)
-    {
-      OCTAVE_LOCAL_BUFFER (DWORD, data, length);
-      result = RegGetValueA (h_rootkey, subkey.c_str (), name.c_str (),
-                             RRF_RT_ANY, &type, static_cast<void *> (data),
-                             &length);
-      if (result == ERROR_SUCCESS)
-        value = octave_int32 (*data);
-    }
+    value = octave_int32 (*data);
   else if (type == REG_SZ || type == REG_EXPAND_SZ)
-    {
-      OCTAVE_LOCAL_BUFFER (char, data, length);
-      result = RegGetValueA (h_rootkey, subkey.c_str (), name.c_str (),
-                             RRF_RT_ANY, &type, static_cast<void *> (data),
-                             &length);
-      if (result == ERROR_SUCCESS)
-        {
-          charNDArray name_array (dim_vector (1, length));
-          for (octave_idx_type i = 0;
-               i < static_cast<octave_idx_type> (length); i++)
-            name_array.xelem(i) = data[i];
-          value = name_array;
-        }
-    }
+    value = string_vector (reinterpret_cast<char *> (data));
 
   return result;
 }

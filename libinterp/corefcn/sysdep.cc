@@ -720,9 +720,15 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
   LONG result;
   HKEY h_subkey;
 
+  octave::unwind_protect frame;
+
   result = RegOpenKeyExA (h_rootkey, subkey.c_str (), 0, KEY_READ, &h_subkey);
   if (result != ERROR_SUCCESS)
     return result;
+
+  // Cast return value to void
+  typedef void (*f_ptr)(HKEY);
+  frame.add_fcn (reinterpret_cast<f_ptr> (RegCloseKey), h_subkey);
 
   DWORD length = 0;
   result = RegQueryValueExA (h_subkey, name.c_str (), nullptr, nullptr, nullptr,

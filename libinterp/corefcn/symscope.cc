@@ -133,31 +133,6 @@ namespace octave
     return octave_value (info_map);
   }
 
-  void
-  symbol_scope_rep::install_subfunction (const std::string& name,
-                                         const octave_value& fval,
-                                         bool is_nested)
-  {
-    m_subfunctions[name] = fval;
-
-    // This can be simpler once the scope object is stored in the function
-    // object...
-    octave_user_function *fcn = fval.user_function_value ();
-
-    symbol_scope fcn_scope = fcn->scope ();
-
-    fcn_scope.set_parent (this);
-
-    if (is_nested)
-      {
-        m_children.push_back (fcn_scope);
-
-        fcn->mark_as_nested_function ();
-
-        fcn_scope.mark_nested ();
-      }
-  }
-
   octave_value
   symbol_scope_rep::find_subfunction (const std::string& name) const
   {

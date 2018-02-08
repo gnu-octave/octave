@@ -3499,17 +3499,20 @@ namespace octave
 
             if (m_endfunction_found && m_function_scopes.size () > 1)
               {
-                symbol_scope pscope = m_function_scopes.parent_scope ();
+                fcn->mark_as_nested_function ();
+                fcn_scope.mark_nested ();
 
-                pscope.install_nestfunction (nm, ov_fcn);
+                symbol_scope pscope = m_function_scopes.parent_scope ();
+                fcn_scope.set_parent (pscope);
+                pscope.install_nestfunction (nm, ov_fcn, fcn_scope);
               }
             else
               {
                 fcn->mark_as_subfunction ();
                 m_subfunction_names.push_back (nm);
-
+                fcn_scope.set_parent (m_primary_fcn_scope);
                 m_primary_fcn_scope.install_subfunction (nm, ov_fcn);
-               }
+              }
           }
 
         if (m_curr_fcn_depth == 1)

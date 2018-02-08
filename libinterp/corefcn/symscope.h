@@ -448,13 +448,18 @@ namespace octave
     }
 
     void install_subfunction (const std::string& name,
-                              const octave_value& fval,
-                              bool is_nested = false);
+                              const octave_value& fval)
+    {
+      m_subfunctions[name] = fval;
+    }
 
     void install_nestfunction (const std::string& name,
-                               const octave_value& fval)
+                               const octave_value& fval,
+                               const symbol_scope& fcn_scope)
     {
-      install_subfunction (name, fval, true);
+      m_subfunctions[name] = fval;
+
+      m_children.push_back (fcn_scope);
     }
 
     octave_value find_subfunction (const std::string& name) const;
@@ -802,18 +807,18 @@ namespace octave
     }
 
     void install_subfunction (const std::string& name,
-                              const octave_value& fval,
-                              bool is_nested = false)
+                              const octave_value& fval)
     {
       if (m_rep)
-        m_rep->install_subfunction (name, fval, is_nested);
+        m_rep->install_subfunction (name, fval);
     }
 
     void install_nestfunction (const std::string& name,
-                               const octave_value& fval)
+                               const octave_value& fval,
+                               const symbol_scope& fcn_scope)
     {
       if (m_rep)
-        m_rep->install_nestfunction (name, fval);
+        m_rep->install_nestfunction (name, fval, fcn_scope);
     }
 
     octave_value find_subfunction (const std::string& name) const

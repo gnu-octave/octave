@@ -54,6 +54,12 @@ public:
 
   ~var_editor_tab (void) = default;
 
+  // No copying!
+
+  var_editor_tab (const var_editor_tab&) = delete;
+
+  var_editor_tab& operator = (const var_editor_tab&) = delete;
+
   QTableView * get_edit_view (void) const;
   QTextEdit * get_disp_view (void) const;
 
@@ -92,6 +98,12 @@ public:
   var_editor_tab_widget (QWidget *p);
 
   ~var_editor_tab_widget (void) = default;
+
+  // No copying!
+
+  var_editor_tab_widget (const var_editor_tab_widget&) = delete;
+
+  var_editor_tab_widget& operator = (const var_editor_tab_widget&) = delete;
 
   tab_bar * get_tab_bar (void) const;
 
@@ -229,6 +241,10 @@ private:
 
   QList<QColor> m_table_colors;
 
+  QAction *m_close_action;
+  QAction *m_close_others_action;
+  QAction *m_close_all_action;
+
   QList<int> octave_to_coords (QString&);
 
   // Get the real variable name from the tab text
@@ -240,10 +256,6 @@ private:
   void update_colors (void);
 
   void construct_tool_bar (void);
-
-  QAction *m_close_action;
-  QAction *m_close_others_action;
-  QAction *m_close_all_action;
 };
 
 #endif

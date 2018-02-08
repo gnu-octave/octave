@@ -180,7 +180,10 @@ variable_editor::variable_editor (QWidget *p)
     m_stylesheet (""),
     m_font (),
     m_sel_font (),
-    m_table_colors ()
+    m_table_colors (),
+    m_close_action (nullptr),
+    m_close_others_action (nullptr),
+    m_close_all_action (nullptr)
 {
   setObjectName ("variable_editor");
   set_title (tr ("Variable Editor"));

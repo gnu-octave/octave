@@ -122,13 +122,13 @@ var_editor_tab_widget::var_editor_tab_widget (QWidget *p)
 {
   tab_bar *bar = new tab_bar (this);
 
-  setTabsClosable (true);
-  setMovable (true);
-
   connect (bar, SIGNAL (close_current_tab_signal (bool)),
            p->parent (), SLOT (request_close_tab (bool)));
 
   this->setTabBar (bar);
+
+  setTabsClosable (true);
+  setMovable (true);
 }
 
 tab_bar *

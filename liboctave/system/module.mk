@@ -4,6 +4,7 @@ SYSTEM_INC = \
   %reldir%/file-ops.h \
   %reldir%/file-stat.h \
   %reldir%/lo-sysdep.h \
+  %reldir%/lo-sysinfo.h \
   %reldir%/mach-info.h \
   %reldir%/oct-env.h \
   %reldir%/oct-group.h \
@@ -19,6 +20,7 @@ SYSTEM_SRC = \
   %reldir%/file-ops.cc \
   %reldir%/file-stat.cc \
   %reldir%/lo-sysdep.cc \
+  %reldir%/lo-sysinfo.cc \
   %reldir%/mach-info.cc \
   %reldir%/oct-env.cc \
   %reldir%/oct-group.cc \

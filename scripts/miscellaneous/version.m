@@ -45,10 +45,10 @@
 ## for version information for the linked @sc{fftw},
 ##
 ## @item @qcode{"-blas"}
-## for version information for the linked @sc{blas} (not implemented),
+## for version information for the linked @sc{blas},
 ##
 ## @item @qcode{"-lapack"}
-## for version information for the linked @sc{lapack} (not implemented).
+## for version information for the linked @sc{lapack}.
 ## @end table
 ##
 ## The variant with no input and output argument is an alias for the function
@@ -71,7 +71,7 @@ function [v, d] = version (feature)
       d = __octave_config_info__ ("release_date");
     end
   else
-    switch (feature)
+    switch (lower (feature))
       case "-date"
         v = __octave_config_info__ ("release_date");
       case "-description"
@@ -90,16 +90,14 @@ function [v, d] = version (feature)
                                  "java.vm.info");
           v = ["Java " jversion " with " jvendor " " jname " " jjitmode];
         catch
-          v = "no java available";
+          v = "no Java available";
         end_try_catch
       case "-fftw"
         v = __octave_config_info__ ("fftw_version");
       case "-blas"
-        v = "";
-        warning ("version: option '-blas' not implemented");
+        v = __blas_version__ ();
       case "-lapack"
-        v = "";
-        warning ("version: option '-lapack' not implemented");
+        v = __lapack_version__ ();
       otherwise
         error ("version: invalid FEATURE");
     endswitch
@@ -119,11 +117,11 @@ endfunction
 
 %!assert (version ("-description"), "")
 %!assert (version ("-release"), "")
+%!assert (ischar (version ("-blas")))
+%!assert (ischar (version ("-LAPACK")))
 
 ## Test input validation
 %!error version ("-date", "-release")
 %!error [v, d] = version ("-date")
 %!error version (1)
-%!warning <option '-blas' not implemented> version ("-blas");
-%!warning <option '-lapack' not implemented> version ("-lapack");
 %!error <invalid FEATURE> version ("-foobar")

@@ -61,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "lo-mappers.h"
+#include "lo-sysinfo.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "unistd-wrappers.h"
@@ -1229,3 +1230,21 @@ equivalent to
 %!   assert (get_home_directory (), getenv ("HOME"));
 %! endif
 */
+
+DEFUN (__blas_version__, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __blas_version__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  return ovl (octave::sys::blas_version ());
+}
+
+DEFUN (__lapack_version__, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __lapack_version__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  return ovl (octave::sys::lapack_version ());
+}

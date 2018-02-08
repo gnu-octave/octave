@@ -50,6 +50,7 @@ namespace octave
   class symbol_scope;
 
   class symbol_scope_rep
+    : public std::enable_shared_from_this<symbol_scope_rep>
   {
   public:
 
@@ -64,9 +65,8 @@ namespace octave
     subfunctions_iterator;
 
     symbol_scope_rep (const std::string& name = "")
-      : m_name (name), m_symbols (), m_subfunctions (),
-        m_fcn (nullptr), m_parent (nullptr), m_parent_fcn (),
-        m_children (), m_is_nested (false),
+      : m_name (name), m_symbols (), m_subfunctions (), m_fcn (nullptr),
+        m_parent (), m_children (), m_is_nested (false),
         m_is_static (false), m_context (0)
     { }
 
@@ -91,19 +91,20 @@ namespace octave
 
     void mark_static (void) { m_is_static = true; }
 
-    symbol_scope_rep * parent_scope_rep (void) const { return m_parent; }
-
-    octave_value parent_fcn (void) const { return m_parent_fcn; }
-
-    symbol_scope_rep * dup (void) const
+    std::shared_ptr<symbol_scope_rep> parent_scope_rep (void) const
     {
-      symbol_scope_rep *new_sid = new symbol_scope_rep (m_name);
+      return m_parent.lock ();
+    }
+
+    std::shared_ptr<symbol_scope_rep> dup (void) const
+    {
+      std::shared_ptr<symbol_scope_rep> new_sid
+        = std::shared_ptr<symbol_scope_rep> (new symbol_scope_rep (m_name));
 
       for (const auto& nm_sr : m_symbols)
         new_sid->insert_symbol_record (nm_sr.second.dup (new_sid));
 
       new_sid->m_parent = m_parent;
-      new_sid->m_parent_fcn = m_parent_fcn;
 
       return new_sid;
     }
@@ -128,7 +129,8 @@ namespace octave
         return p->second;
     }
 
-    void inherit_internal (symbol_scope_rep& donor_scope_rep)
+    void inherit_internal
+      (const std::shared_ptr<symbol_scope_rep>& donor_scope_rep)
     {
       for (auto& nm_sr : m_symbols)
         {
@@ -140,7 +142,7 @@ namespace octave
 
               if (nm != "__retval__")
                 {
-                  octave_value val = donor_scope_rep.varval (nm);
+                  octave_value val = donor_scope_rep->varval (nm);
 
                   if (val.is_defined ())
                     {
@@ -153,14 +155,16 @@ namespace octave
         }
     }
 
-    void inherit (symbol_scope_rep *donor_scope_rep)
+    void inherit (const std::shared_ptr<symbol_scope_rep>& donor_scope_rep)
     {
-      while (donor_scope_rep)
-        {
-          inherit_internal (*donor_scope_rep);
+      std::shared_ptr<symbol_scope_rep> dsr = donor_scope_rep;
 
-          if (donor_scope_rep->is_nested ())
-            donor_scope_rep = parent_scope_rep ();
+      while (dsr)
+        {
+          inherit_internal (dsr);
+
+          if (dsr->is_nested ())
+            dsr = parent_scope_rep ();
           else
             break;
         }
@@ -513,13 +517,13 @@ namespace octave
 
     void set_function (octave_user_function *fcn) { m_fcn = fcn; }
 
-    void set_parent (symbol_scope_rep *p);
+    void set_parent (const std::shared_ptr<symbol_scope_rep>& parent);
 
     void update_nest (void);
 
     bool look_nonlocal (const std::string& name, symbol_record& result);
 
-    void bind_script_symbols (symbol_scope_rep *curr_scope);
+    void bind_script_symbols (const std::shared_ptr<symbol_scope_rep>& curr_scope);
 
     void unbind_script_symbols (void);
 
@@ -545,8 +549,7 @@ namespace octave
     octave_user_function *m_fcn;
 
     // Parent of nested function (may be null).
-    symbol_scope_rep *m_parent;
-    octave_value m_parent_fcn;
+    std::weak_ptr<symbol_scope_rep> m_parent;
 
     // Child nested functions.
     std::vector<symbol_scope> m_children;
@@ -571,7 +574,9 @@ namespace octave
 
     // NEW_REP must be dynamically allocated or nullptr.  If it is
     // nullptr, the scope is invalid.
-    symbol_scope (symbol_scope_rep *new_rep = nullptr) : m_rep (new_rep) { }
+    symbol_scope (const std::shared_ptr<symbol_scope_rep> new_rep = nullptr)
+      : m_rep (new_rep)
+    { }
 
     symbol_scope (const symbol_scope&) = default;
 
@@ -611,14 +616,9 @@ namespace octave
         m_rep->mark_static ();
     }
 
-    symbol_scope_rep * parent_scope (void) const
+    std::shared_ptr<symbol_scope_rep> parent_scope (void) const
     {
       return m_rep ? m_rep->parent_scope_rep () : nullptr;
-    }
-
-    octave_value parent_fcn (void) const
-    {
-      return m_rep ? m_rep->parent_fcn () : octave_value ();
     }
 
     symbol_scope dup (void) const
@@ -906,12 +906,6 @@ namespace octave
         m_rep->set_parent (p.get_rep ());
     }
 
-    void set_parent (symbol_scope_rep *p)
-    {
-      if (m_rep)
-        m_rep->set_parent (p);
-    }
-
     void update_nest (void)
     {
       if (m_rep)
@@ -935,9 +929,9 @@ namespace octave
         m_rep->unbind_script_symbols ();
     }
 
-    symbol_scope_rep * get_rep (void) const
+    std::shared_ptr<symbol_scope_rep> get_rep (void) const
     {
-      return m_rep.get ();
+      return m_rep;
     }
 
     friend bool operator == (const symbol_scope& a, const symbol_scope& b)
@@ -950,28 +944,6 @@ namespace octave
       return a.m_rep != b.m_rep;
     }
 
-    friend bool operator < (const symbol_scope& a, const symbol_scope& b)
-    {
-      return a.m_rep < b.m_rep;
-    }
-
-    friend bool operator <= (const symbol_scope& a, const symbol_scope& b)
-    {
-      return a.m_rep <= b.m_rep;
-    }
-
-    friend bool operator >= (const symbol_scope& a, const symbol_scope& b)
-    {
-      return a.m_rep >= b.m_rep;
-    }
-
-    friend bool operator > (const symbol_scope& a, const symbol_scope& b)
-    {
-      return a.m_rep > b.m_rep;
-    }
-
-    symbol_scope_rep * get_rep_ptr (void) const { return m_rep.get (); }
-
   private:
 
     std::shared_ptr<symbol_scope_rep> m_rep;
@@ -979,11 +951,6 @@ namespace octave
     octave_value dump_symbols_map (void) const
     {
       return m_rep ? m_rep->dump_symbols_map () : octave_value ();
-    }
-
-    symbol_scope_rep * parent_scope_rep (void) const
-    {
-      return m_rep ? m_rep->parent_scope_rep () : nullptr;
     }
   };
 }

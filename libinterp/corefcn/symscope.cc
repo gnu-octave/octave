@@ -93,7 +93,9 @@ namespace octave
       {
         symbol_record ret (name);
 
-        if (m_is_nested && m_parent && m_parent->look_nonlocal (name, ret))
+        auto t_parent = m_parent.lock ();
+
+        if (m_is_nested && t_parent && t_parent->look_nonlocal (name, ret))
           return m_symbols[name] = ret;
         else
           {
@@ -141,8 +143,10 @@ namespace octave
     if (p != m_subfunctions.end ())
       return p->second;
 
-    if (m_parent)
-      return m_parent->find_subfunction (name);
+    auto t_parent = m_parent.lock ();
+
+    if (t_parent)
+      return t_parent->find_subfunction (name);
 
     return octave_value ();
   }
@@ -160,31 +164,17 @@ namespace octave
   }
 
   void
-  symbol_scope_rep::set_parent (symbol_scope_rep *p)
+  symbol_scope_rep::set_parent (const std::shared_ptr<symbol_scope_rep>& parent)
   {
-    m_parent = p;
-
-    if (m_parent)
-      {
-        // If m_parent is the top-level scope, there will be no parent
-        // function.
-
-        octave_function *current_fcn = function ();
-
-        if (current_fcn && current_fcn->is_anonymous_function ())
-          {
-            octave_function *parent_fcn = m_parent->function ();
-
-            if (parent_fcn)
-              m_parent_fcn = octave_value (parent_fcn, true);
-          }
-      }
+    m_parent = std::weak_ptr<symbol_scope_rep> (parent);
   }
 
   void
   symbol_scope_rep::update_nest (void)
   {
-    if (m_parent)
+    auto t_parent = m_parent.lock ();
+
+    if (t_parent)
       {
         // fix bad symbol_records
         for (auto& nm_sr : m_symbols)
@@ -192,7 +182,7 @@ namespace octave
             symbol_record& ours = nm_sr.second;
 
             if (! ours.is_formal ()
-                && m_is_nested && m_parent->look_nonlocal (nm_sr.first, ours))
+                && m_is_nested && t_parent->look_nonlocal (nm_sr.first, ours))
               {
                 if (ours.is_global () || ours.is_persistent ())
                   error ("global and persistent may only be used in the topmost level in which a nested variable is used");
@@ -219,12 +209,14 @@ namespace octave
     table_iterator p = m_symbols.find (name);
     if (p == m_symbols.end ())
       {
-        if (m_is_nested && m_parent)
-          return m_parent->look_nonlocal (name, result);
+        auto t_parent = m_parent.lock ();
+
+        if (m_is_nested && t_parent)
+          return t_parent->look_nonlocal (name, result);
       }
     else if (! p->second.is_automatic ())
       {
-        result.bind_fwd_rep (this, p->second);
+        result.bind_fwd_rep (shared_from_this (), p->second);
         return true;
       }
 
@@ -232,7 +224,8 @@ namespace octave
   }
 
   void
-  symbol_scope_rep::bind_script_symbols (symbol_scope_rep *curr_scope)
+  symbol_scope_rep::bind_script_symbols
+    (const std::shared_ptr<symbol_scope_rep>& curr_scope)
   {
     for (auto& nm_sr : m_symbols)
       nm_sr.second.bind_fwd_rep (curr_scope,

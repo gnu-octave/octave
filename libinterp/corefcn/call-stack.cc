@@ -394,7 +394,6 @@ namespace octave
                         << " at line " << elt.m_line
                         << " column " << elt.m_column
                         << " [" << elt.fcn_file_name () << "] "
-                        << " (scope = " << elt.m_scope.get_rep_ptr ()
                         << "[context = " << elt.m_context << "])"
                         << std::endl;
       }
@@ -578,14 +577,12 @@ namespace octave
     Cell& name = retval.contents (1);
     Cell& line = retval.contents (2);
     Cell& column = retval.contents (3);
-    Cell& scope = retval.contents (4);
     Cell& context = retval.contents (5);
 
     octave_idx_type k = 0;
 
     for (const auto& frm : frames)
       {
-        scope(k)   = frm.m_scope.get_rep_ptr ();
         context(k) = frm.m_context;
         file(k)    = frm.fcn_file_name ();
         name(k)    = frm.fcn_name (print_subfn);

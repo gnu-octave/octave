@@ -80,7 +80,7 @@ namespace octave
 
       symbol_record_rep (const std::string& nm, const octave_value& v,
                          unsigned int sc)
-        : m_storage_class (sc), m_name (nm), m_fwd_scope (nullptr),
+        : m_storage_class (sc), m_name (nm), m_fwd_scope (),
           m_fwd_rep (), m_value_stack ()
       {
         m_value_stack.push_back (v);
@@ -478,7 +478,7 @@ namespace octave
 
       void init_persistent (void);
 
-      void bind_fwd_rep (symbol_scope_rep *fwd_scope,
+      void bind_fwd_rep (const std::shared_ptr<symbol_scope_rep>& fwd_scope,
                          const std::shared_ptr<symbol_record_rep>& fwd_rep)
       {
         // If this object is already bound to another scope (for
@@ -504,11 +504,12 @@ namespace octave
         // global in a script remain linked as globals in the
         // enclosing scope.
 
-        m_fwd_scope = nullptr;
+        m_fwd_scope = std::weak_ptr<symbol_scope_rep> ();
         m_fwd_rep.reset ();
       }
 
-      symbol_record_rep * dup (symbol_scope_rep *new_scope) const;
+      std::shared_ptr<symbol_record_rep>
+      dup (const std::shared_ptr<symbol_scope_rep>& new_scope) const;
 
       octave_value dump (context_id context) const;
 
@@ -522,7 +523,7 @@ namespace octave
 
       std::string m_name;
 
-      symbol_scope_rep *m_fwd_scope;
+      std::weak_ptr<symbol_scope_rep> m_fwd_scope;
 
       std::weak_ptr<symbol_record_rep> m_fwd_rep;
 
@@ -543,7 +544,7 @@ namespace octave
 
     ~symbol_record (void) = default;
 
-    symbol_record dup (symbol_scope_rep *sid) const
+    symbol_record dup (const std::shared_ptr<symbol_scope_rep>& sid) const
     {
       return symbol_record (m_rep->dup (sid));
     }
@@ -652,7 +653,8 @@ namespace octave
 
     unsigned int storage_class (void) const { return m_rep->storage_class (); }
 
-    void bind_fwd_rep (symbol_scope_rep *fwd_scope, const symbol_record& sr)
+    void bind_fwd_rep (const std::shared_ptr<symbol_scope_rep>& fwd_scope,
+                       const symbol_record& sr)
     {
       m_rep->bind_fwd_rep (fwd_scope, sr.m_rep);
     }
@@ -669,7 +671,9 @@ namespace octave
     std::shared_ptr<symbol_record_rep> m_rep;
 
     // NEW_REP must be dynamically allocated or nullptr.
-    symbol_record (symbol_record_rep *new_rep) : m_rep (new_rep) { }
+    symbol_record (const std::shared_ptr<symbol_record_rep>& new_rep)
+      : m_rep (new_rep)
+    { }
 
     octave_value find_function (const std::string& name,
                                 const octave_value_list& args) const;

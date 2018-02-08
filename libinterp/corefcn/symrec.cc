@@ -49,7 +49,8 @@ namespace octave
     // only in symbol_record::symbol_record_rep::varref and
     // symbol_record::symbol_record_rep::varval.
 
-    return m_fwd_scope ? m_fwd_scope->current_context () : 0;
+    auto t_fwd_scope = m_fwd_scope.lock ();
+    return t_fwd_scope ? t_fwd_scope->current_context () : 0;
   }
 
   void
@@ -64,8 +65,8 @@ namespace octave
     mark_persistent ();
   }
 
-  symbol_record::symbol_record_rep *
-  symbol_record::symbol_record_rep::dup (symbol_scope_rep *new_scope) const
+  std::shared_ptr<symbol_record::symbol_record_rep>
+  symbol_record::symbol_record_rep::dup (const std::shared_ptr<symbol_scope_rep>& new_scope) const
   {
     // FIXME: is this the right thing do to?
     if (auto t_fwd_rep = m_fwd_rep.lock ())
@@ -73,8 +74,9 @@ namespace octave
 
     static const context_id FIXME_CONTEXT = 0;
 
-    return new symbol_record_rep (m_name, varval (FIXME_CONTEXT),
-                                  m_storage_class);
+    return std::shared_ptr<symbol_record_rep>
+      (new symbol_record_rep (m_name, varval (FIXME_CONTEXT),
+                              m_storage_class));
   }
 
   octave_value

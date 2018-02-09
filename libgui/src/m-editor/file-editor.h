@@ -331,6 +331,7 @@ namespace octave
     bool editor_tab_has_focus (void);
 
     QWidget * find_tab_widget (const QString& openFileName);
+    QAction * add_action (QMenu *menu, const QString& text, const char *member);
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                           const char *member);
 

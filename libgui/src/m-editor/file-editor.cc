@@ -1570,155 +1570,265 @@ namespace octave
 
     m_fileMenu->addSeparator ();
 
-    m_edit_function_action = add_action (m_fileMenu, QIcon (),
-                                         tr ("&Edit Function"), SLOT (request_context_edit (bool)));
+    m_edit_function_action
+      = add_action (m_fileMenu,
+                    tr ("&Edit Function"),
+                    SLOT (request_context_edit (bool)));
 
     m_fileMenu->addSeparator ();
 
-    m_save_action = add_action (m_fileMenu, resource_manager::icon ("document-save"),
-                                tr ("&Save File"), SLOT (request_save_file (bool)));
-    m_save_as_action = add_action (m_fileMenu, resource_manager::icon ("document-save-as"),
-                                   tr ("Save File &As..."), SLOT (request_save_file_as (bool)));
+    m_save_action
+      = add_action (m_fileMenu,
+                    resource_manager::icon ("document-save"),
+                    tr ("&Save File"),
+                    SLOT (request_save_file (bool)));
+
+    m_save_as_action
+      = add_action (m_fileMenu,
+                    resource_manager::icon ("document-save-as"),
+                    tr ("Save File &As..."),
+                    SLOT (request_save_file_as (bool)));
 
     m_fileMenu->addSeparator ();
 
-    m_close_action = add_action (m_fileMenu, resource_manager::icon ("window-close",false),
-                                 tr ("&Close"), SLOT (request_close_file (bool)));
-    m_close_all_action = add_action (m_fileMenu, resource_manager::icon ("window-close",false),
-                                     tr ("Close All"), SLOT (request_close_all_files (bool)));
-    m_close_others_action = add_action (m_fileMenu, resource_manager::icon ("window-close",false),
-                                        tr ("Close Other Files"), SLOT (request_close_other_files (bool)));
+    m_close_action
+      = add_action (m_fileMenu,
+                    resource_manager::icon ("window-close",false),
+                    tr ("&Close"),
+                    SLOT (request_close_file (bool)));
+
+    m_close_all_action
+      = add_action (m_fileMenu,
+                    resource_manager::icon ("window-close",false),
+                    tr ("Close All"),
+                    SLOT (request_close_all_files (bool)));
+
+    m_close_others_action
+      = add_action (m_fileMenu,
+                    resource_manager::icon ("window-close",false),
+                    tr ("Close Other Files"),
+                    SLOT (request_close_other_files (bool)));
 
     m_fileMenu->addSeparator ();
 
-    m_print_action = add_action (m_fileMenu, resource_manager::icon ("document-print"),
-                                 tr ("Print..."), SLOT (request_print_file (bool)));
+    m_print_action
+      = add_action (m_fileMenu,
+                    resource_manager::icon ("document-print"),
+                    tr ("Print..."),
+                    SLOT (request_print_file (bool)));
 
     // edit menu (undo, copy, paste and select all later via main window)
 
     m_edit_menu = add_menu (m_menu_bar, tr ("&Edit"));
 
-    m_redo_action = add_action (m_edit_menu, resource_manager::icon ("edit-redo"),
-                                tr ("&Redo"), SLOT (request_redo (bool)));
+    m_redo_action
+      = add_action (m_edit_menu,
+                    resource_manager::icon ("edit-redo"),
+                    tr ("&Redo"),
+                    SLOT (request_redo (bool)));
     m_redo_action->setEnabled (false);
 
     m_edit_menu->addSeparator ();
 
-    m_cut_action = add_action (m_edit_menu, resource_manager::icon ("edit-cut"),
-                               tr ("Cu&t"), SLOT (request_cut (bool)));
+    m_cut_action
+      = add_action (m_edit_menu,
+                    resource_manager::icon ("edit-cut"),
+                    tr ("Cu&t"),
+                    SLOT (request_cut (bool)));
     m_cut_action->setEnabled (false);
 
-    m_find_action = add_action (m_edit_menu, resource_manager::icon ("edit-find-replace"),
-                                tr ("&Find and Replace..."), SLOT (request_find (bool)));
+    m_find_action
+      = add_action (m_edit_menu,
+                    resource_manager::icon ("edit-find-replace"),
+                    tr ("&Find and Replace..."),
+                    SLOT (request_find (bool)));
 
-    m_find_next_action = add_action (m_edit_menu, QIcon (),
-                                     tr ("Find &Next..."), SLOT (request_find_next (bool)));
+    m_find_next_action
+      = add_action (m_edit_menu,
+                    tr ("Find &Next..."),
+                    SLOT (request_find_next (bool)));
 
-    m_find_previous_action = add_action (m_edit_menu, QIcon (),
-                                         tr ("Find &Previous..."), SLOT (request_find_previous (bool)));
+    m_find_previous_action
+      = add_action (m_edit_menu,
+                    tr ("Find &Previous..."),
+                    SLOT (request_find_previous (bool)));
 
     m_edit_menu->addSeparator ();
 
     m_edit_cmd_menu = m_edit_menu->addMenu (tr ("&Commands"));
 
-    m_delete_line_action = add_action (m_edit_cmd_menu, QIcon (),
-                                       tr ("Delete Line"), SLOT (request_delete_line (bool)));
-    m_copy_line_action = add_action (m_edit_cmd_menu, QIcon (),
-                                     tr ("Copy Line"), SLOT (request_copy_line (bool)));
-    m_cut_line_action = add_action (m_edit_cmd_menu, QIcon (),
-                                    tr ("Cut Line"), SLOT (request_cut_line (bool)));
+    m_delete_line_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Delete Line"),
+                    SLOT (request_delete_line (bool)));
+
+    m_copy_line_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Copy Line"),
+                    SLOT (request_copy_line (bool)));
+
+    m_cut_line_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Cut Line"),
+                    SLOT (request_cut_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
-    m_delete_start_word_action = add_action (m_edit_cmd_menu, QIcon (),
-                                             tr ("Delete to Start of Word"), SLOT (request_delete_start_word (bool)));
-    m_delete_end_word_action = add_action (m_edit_cmd_menu, QIcon (),
-                                           tr ("Delete to End of Word"), SLOT (request_delete_end_word (bool)));
-    m_delete_start_line_action = add_action (m_edit_cmd_menu, QIcon (),
-                                             tr ("Delete to Start of Line"), SLOT (request_delete_start_line (bool)));
-    m_delete_end_line_action = add_action (m_edit_cmd_menu, QIcon (),
-                                           tr ("Delete to End of Line"), SLOT (request_delete_end_line (bool)));
+    m_delete_start_word_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Delete to Start of Word"),
+                    SLOT (request_delete_start_word (bool)));
+
+    m_delete_end_word_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Delete to End of Word"),
+                    SLOT (request_delete_end_word (bool)));
+
+    m_delete_start_line_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Delete to Start of Line"),
+                    SLOT (request_delete_start_line (bool)));
+
+    m_delete_end_line_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Delete to End of Line"),
+                    SLOT (request_delete_end_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
-    m_duplicate_selection_action = add_action (m_edit_cmd_menu, QIcon (),
-                                               tr ("Duplicate Selection/Line"), SLOT (request_duplicate_selection (bool)));
-    m_transpose_line_action = add_action (m_edit_cmd_menu, QIcon (),
-                                          tr ("Transpose Line"), SLOT (request_transpose_line (bool)));
+    m_duplicate_selection_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Duplicate Selection/Line"),
+                    SLOT (request_duplicate_selection (bool)));
+
+    m_transpose_line_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("Transpose Line"),
+                    SLOT (request_transpose_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
-    m_completion_action = add_action (m_edit_cmd_menu, QIcon (),
-                                      tr ("&Show Completion List"), SLOT (request_completion (bool)));
+    m_completion_action
+      = add_action (m_edit_cmd_menu,
+                    tr ("&Show Completion List"),
+                    SLOT (request_completion (bool)));
 
     m_edit_fmt_menu = m_edit_menu->addMenu (tr ("&Format"));
 
-    m_upper_case_action = add_action (m_edit_fmt_menu, QIcon (),
-                                      tr ("&Uppercase Selection"), SLOT (request_upper_case (bool)));
-    m_lower_case_action = add_action (m_edit_fmt_menu, QIcon (),
-                                      tr ("&Lowercase Selection"), SLOT (request_lower_case (bool)));
+    m_upper_case_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("&Uppercase Selection"),
+                    SLOT (request_upper_case (bool)));
+
+    m_lower_case_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("&Lowercase Selection"),
+                    SLOT (request_lower_case (bool)));
 
     m_edit_fmt_menu->addSeparator ();
 
-    m_comment_selection_action = add_action (m_edit_fmt_menu, QIcon (),
-                                             tr ("&Comment"), SLOT (request_comment_selected_text (bool)));
-    m_uncomment_selection_action = add_action (m_edit_fmt_menu, QIcon (),
-                                               tr ("&Uncomment"), SLOT (request_uncomment_selected_text (bool)));
-    m_comment_var_selection_action = add_action (m_edit_fmt_menu, QIcon (),
-                                                 tr ("Comment (Choosing String)"), SLOT (request_comment_var_selected_text (bool)));
+    m_comment_selection_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("&Comment"),
+                    SLOT (request_comment_selected_text (bool)));
+
+    m_uncomment_selection_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("&Uncomment"),
+                    SLOT (request_uncomment_selected_text (bool)));
+
+    m_comment_var_selection_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("Comment (Choosing String)"),
+                    SLOT (request_comment_var_selected_text (bool)));
 
     m_edit_fmt_menu->addSeparator ();
 
-    m_indent_selection_action = add_action (m_edit_fmt_menu, QIcon (),
-                                            tr ("&Indent Selection Rigidly"), SLOT (request_indent_selected_text (bool)));
-    m_unindent_selection_action = add_action (m_edit_fmt_menu, QIcon (),
-                                              tr ("&Unindent Selection Rigidly"), SLOT (request_unindent_selected_text (bool)));
+    m_indent_selection_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("&Indent Selection Rigidly"),
+                    SLOT (request_indent_selected_text (bool)));
+
+    m_unindent_selection_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("&Unindent Selection Rigidly"),
+                    SLOT (request_unindent_selected_text (bool)));
 
     m_smart_indent_line_or_selection_action
-      = add_action (m_edit_fmt_menu, QIcon (),
-                    tr ("Indent Code"), SLOT (request_smart_indent_line_or_selected_text (void)));
+      = add_action (m_edit_fmt_menu,
+                    tr ("Indent Code"),
+                    SLOT (request_smart_indent_line_or_selected_text (void)));
 
     m_edit_fmt_menu->addSeparator ();
 
-    m_conv_eol_windows_action = add_action (m_edit_fmt_menu, QIcon (),
-                                            tr ("Convert Line Endings to &Windows (CRLF)"),
-                                            SLOT (request_conv_eol_windows (bool)));
-    m_conv_eol_unix_action = add_action (m_edit_fmt_menu, QIcon (),
-                                         tr ("Convert Line Endings to &Unix (LF)"),
-                                         SLOT (request_conv_eol_unix (bool)));
-    m_conv_eol_mac_action = add_action (m_edit_fmt_menu, QIcon (),
-                                        tr ("Convert Line Endings to &Mac (CR)"),
-                                        SLOT (request_conv_eol_mac (bool)));
+    m_conv_eol_windows_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("convert line endings to &windows (crlf)"),
+                    SLOT (request_conv_eol_windows (bool)));
+
+    m_conv_eol_unix_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("Convert Line Endings to &Unix (LF)"),
+                    SLOT (request_conv_eol_unix (bool)));
+
+    m_conv_eol_mac_action
+      = add_action (m_edit_fmt_menu,
+                    tr ("Convert Line Endings to &Mac (CR)"),
+                    SLOT (request_conv_eol_mac (bool)));
 
     m_edit_nav_menu = m_edit_menu->addMenu (tr ("Navi&gation"));
 
-    m_goto_line_action = add_action (m_edit_nav_menu, QIcon (),
-                                     tr ("Go &to Line..."), SLOT (request_goto_line (bool)));
+    m_goto_line_action
+      = add_action (m_edit_nav_menu,
+                    tr ("Go &to Line..."),
+                    SLOT (request_goto_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
-    m_move_to_matching_brace = add_action (m_edit_nav_menu, QIcon (),
-                                           tr ("Move to Matching Brace"), SLOT (request_move_match_brace (bool)));
-    m_sel_to_matching_brace = add_action (m_edit_nav_menu, QIcon (),
-                                          tr ("Select to Matching Brace"), SLOT (request_sel_match_brace (bool)));
+    m_move_to_matching_brace
+      = add_action (m_edit_nav_menu,
+                    tr ("Move to Matching Brace"),
+                    SLOT (request_move_match_brace (bool)));
+
+    m_sel_to_matching_brace
+      = add_action (m_edit_nav_menu,
+                    tr ("Select to Matching Brace"),
+                    SLOT (request_sel_match_brace (bool)));
 
     m_edit_nav_menu->addSeparator ();
 
-    m_next_bookmark_action = add_action (m_edit_nav_menu, QIcon (),
-                                         tr ("&Next Bookmark"), SLOT (request_next_bookmark (bool)));
-    m_previous_bookmark_action = add_action (m_edit_nav_menu, QIcon (),
-                                             tr ("Pre&vious Bookmark"), SLOT (request_previous_bookmark (bool)));
-    m_toggle_bookmark_action = add_action (m_edit_nav_menu, QIcon (),
-                                           tr ("Toggle &Bookmark"), SLOT (request_toggle_bookmark (bool)));
-    m_remove_bookmark_action = add_action (m_edit_nav_menu, QIcon (),
-                                           tr ("&Remove All Bookmarks"), SLOT (request_remove_bookmark (bool)));
+    m_next_bookmark_action
+      = add_action (m_edit_nav_menu,
+                    tr ("&Next Bookmark"),
+                    SLOT (request_next_bookmark (bool)));
+
+    m_previous_bookmark_action
+      = add_action (m_edit_nav_menu,
+                    tr ("Pre&vious Bookmark"),
+                    SLOT (request_previous_bookmark (bool)));
+
+    m_toggle_bookmark_action
+      = add_action (m_edit_nav_menu,
+                    tr ("Toggle &Bookmark"),
+                    SLOT (request_toggle_bookmark (bool)));
+
+    m_remove_bookmark_action
+      = add_action (m_edit_nav_menu,
+                    tr ("&Remove All Bookmarks"),
+                    SLOT (request_remove_bookmark (bool)));
 
     m_edit_menu->addSeparator ();
 
-    m_preferences_action = add_action (m_edit_menu, resource_manager::icon ("preferences-system"),
-                                       tr ("&Preferences..."), SLOT (request_preferences (bool)));
-    m_styles_preferences_action = add_action (m_edit_menu,  resource_manager::icon ("preferences-system"),
-                                              tr ("&Styles Preferences..."), SLOT (request_styles_preferences (bool)));
+    m_preferences_action
+      = add_action (m_edit_menu,
+                    resource_manager::icon ("preferences-system"),
+                    tr ("&Preferences..."),
+                    SLOT (request_preferences (bool)));
+
+    m_styles_preferences_action
+      = add_action (m_edit_menu,  resource_manager::icon ("preferences-system"),
+                    tr ("&Styles Preferences..."),
+                    SLOT (request_styles_preferences (bool)));
 
     // view menu
 
@@ -1726,48 +1836,72 @@ namespace octave
 
     m_view_editor_menu = view_menu->addMenu (tr ("&Editor"));
 
-    m_show_linenum_action = add_action (m_view_editor_menu, QIcon (),
-                                        tr ("Show &Line Numbers"), SLOT (show_line_numbers (bool)));
+    m_show_linenum_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show &Line Numbers"),
+                    SLOT (show_line_numbers (bool)));
     m_show_linenum_action->setCheckable (true);
 
-    m_show_whitespace_action = add_action (m_view_editor_menu, QIcon (),
-                                           tr ("Show &Whitespace Characters"), SLOT (show_white_space (bool)));
+    m_show_whitespace_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show &Whitespace Characters"),
+                    SLOT (show_white_space (bool)));
     m_show_whitespace_action->setCheckable (true);
 
-    m_show_eol_action = add_action (m_view_editor_menu, QIcon (),
-                                    tr ("Show Line &Endings"), SLOT (show_eol_chars (bool)));
+    m_show_eol_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show Line &Endings"),
+                    SLOT (show_eol_chars (bool)));
     m_show_eol_action->setCheckable (true);
 
-    m_show_indguide_action = add_action (m_view_editor_menu, QIcon (),
-                                         tr ("Show &Indentation Guides"), SLOT (show_indent_guides (bool)));
+    m_show_indguide_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show &Indentation Guides"),
+                    SLOT (show_indent_guides (bool)));
     m_show_indguide_action->setCheckable (true);
 
-    m_show_longline_action = add_action (m_view_editor_menu, QIcon (),
-                                         tr ("Show Long Line &Marker"), SLOT (show_long_line (bool)));
+    m_show_longline_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show Long Line &Marker"),
+                    SLOT (show_long_line (bool)));
     m_show_longline_action->setCheckable (true);
 
     m_view_editor_menu->addSeparator ();
 
-    m_show_toolbar_action = add_action (m_view_editor_menu, QIcon (),
-                                        tr ("Show &Toolbar"), SLOT (show_toolbar (bool)));
+    m_show_toolbar_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show &Toolbar"),
+                    SLOT (show_toolbar (bool)));
     m_show_toolbar_action->setCheckable (true);
 
-    m_show_statusbar_action = add_action (m_view_editor_menu, QIcon (),
-                                          tr ("Show &Statusbar"), SLOT (show_statusbar (bool)));
+    m_show_statusbar_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show &Statusbar"),
+                    SLOT (show_statusbar (bool)));
     m_show_statusbar_action->setCheckable (true);
 
-    m_show_hscrollbar_action = add_action (m_view_editor_menu, QIcon (),
-                                           tr ("Show &Horizontal Scrollbar"), SLOT (show_hscrollbar (bool)));
+    m_show_hscrollbar_action
+      = add_action (m_view_editor_menu,
+                    tr ("Show &Horizontal Scrollbar"),
+                    SLOT (show_hscrollbar (bool)));
     m_show_hscrollbar_action->setCheckable (true);
 
     view_menu->addSeparator ();
 
-    m_zoom_in_action = add_action (view_menu, resource_manager::icon ("zoom-in"),
-                                   tr ("Zoom &In"), SLOT (zoom_in (bool)));
-    m_zoom_out_action = add_action (view_menu, resource_manager::icon ("zoom-out"),
-                                    tr ("Zoom &Out"), SLOT (zoom_out (bool)));
-    m_zoom_normal_action = add_action (view_menu,  QIcon (),
-                                       tr ("&Normal Size"), SLOT (zoom_normal (bool)));
+    m_zoom_in_action
+      = add_action (view_menu, resource_manager::icon ("zoom-in"),
+                    tr ("Zoom &In"),
+                    SLOT (zoom_in (bool)));
+
+    m_zoom_out_action
+      = add_action (view_menu, resource_manager::icon ("zoom-out"),
+                    tr ("Zoom &Out"),
+                    SLOT (zoom_out (bool)));
+
+    m_zoom_normal_action
+      = add_action (view_menu,
+                    tr ("&Normal Size"),
+                    SLOT (zoom_normal (bool)));
 
     m_menu_bar->addMenu (view_menu);
 
@@ -1775,18 +1909,29 @@ namespace octave
 
     m_debug_menu = add_menu (m_menu_bar, tr ("&Debug"));
 
-    m_toggle_breakpoint_action = add_action (m_debug_menu,
-                                             resource_manager::icon ("bp-toggle"), tr ("Toggle &Breakpoint"),
-                                             SLOT (request_toggle_breakpoint (bool)));
-    m_next_breakpoint_action = add_action (m_debug_menu,
-                                           resource_manager::icon ("bp-next"), tr ("&Next Breakpoint"),
-                                           SLOT (request_next_breakpoint (bool)));
-    m_previous_breakpoint_action = add_action (m_debug_menu,
-                                               resource_manager::icon ("bp-prev"), tr ("Pre&vious Breakpoint"),
-                                               SLOT (request_previous_breakpoint (bool)));
-    m_remove_all_breakpoints_action = add_action (m_debug_menu,
-                                                  resource_manager::icon ("bp-rm-all"), tr ("&Remove All Breakpoints"),
-                                                  SLOT (request_remove_breakpoint (bool)));
+    m_toggle_breakpoint_action
+      = add_action (m_debug_menu,
+                    resource_manager::icon ("bp-toggle"),
+                    tr ("Toggle &Breakpoint"),
+                    SLOT (request_toggle_breakpoint (bool)));
+
+    m_next_breakpoint_action
+      = add_action (m_debug_menu,
+                    resource_manager::icon ("bp-next"),
+                    tr ("&Next Breakpoint"),
+                    SLOT (request_next_breakpoint (bool)));
+
+    m_previous_breakpoint_action
+      = add_action (m_debug_menu,
+                    resource_manager::icon ("bp-prev"),
+                    tr ("Pre&vious Breakpoint"),
+                    SLOT (request_previous_breakpoint (bool)));
+
+    m_remove_all_breakpoints_action
+      = add_action (m_debug_menu,
+                    resource_manager::icon ("bp-rm-all"),
+                    tr ("&Remove All Breakpoints"),
+                    SLOT (request_remove_breakpoint (bool)));
 
     m_debug_menu->addSeparator ();
 
@@ -1796,31 +1941,45 @@ namespace octave
 
     QMenu *_run_menu = add_menu (m_menu_bar, tr ("&Run"));
 
-    m_run_action = add_action (_run_menu,  resource_manager::icon ("system-run"),
-                               tr ("Save File and Run"), SLOT (request_run_file (bool)));
-    m_run_selection_action = add_action (_run_menu, QIcon (),
-                                         tr ("Run &Selection"), SLOT (request_context_run (bool)));
+    m_run_action
+      = add_action (_run_menu,
+                    resource_manager::icon ("system-run"),
+                    tr ("Save File and Run"),
+                    SLOT (request_run_file (bool)));
+
+    m_run_selection_action
+      = add_action (_run_menu,
+                    tr ("Run &Selection"),
+                    SLOT (request_context_run (bool)));
     m_run_selection_action->setEnabled (false);
 
     // help menu
 
     QMenu *_help_menu = add_menu (m_menu_bar, tr ("&Help"));
 
-    m_context_help_action = add_action (_help_menu, QIcon (),
-                                        tr ("&Help on Keyword"), SLOT (request_context_help (bool)));
-    m_context_doc_action = add_action (_help_menu, QIcon (),
-                                       tr ("&Documentation on Keyword"), SLOT (request_context_doc (bool)));
+    m_context_help_action
+      = add_action (_help_menu,
+                    tr ("&Help on Keyword"),
+                    SLOT (request_context_help (bool)));
+
+    m_context_doc_action
+      = add_action (_help_menu,
+                    tr ("&Documentation on Keyword"),
+                    SLOT (request_context_doc (bool)));
 
     // tab navigation (no menu, only actions)
 
-    m_switch_left_tab_action = add_action (nullptr, QIcon (), "",
-                                           SLOT (switch_left_tab (void)));
-    m_switch_right_tab_action = add_action (nullptr, QIcon (), "",
-                                            SLOT (switch_right_tab (void)));
-    m_move_tab_left_action = add_action (nullptr, QIcon (), "",
-                                         SLOT (move_tab_left (void)));
-    m_move_tab_right_action = add_action (nullptr, QIcon (), "",
-                                          SLOT (move_tab_right (void)));
+    m_switch_left_tab_action
+      = add_action (nullptr, "", SLOT (switch_left_tab (void)));
+
+    m_switch_right_tab_action
+      = add_action (nullptr, "", SLOT (switch_right_tab (void)));
+
+    m_move_tab_left_action
+      = add_action (nullptr, "", SLOT (move_tab_left (void)));
+
+    m_move_tab_right_action
+      = add_action (nullptr, "", SLOT (move_tab_right (void)));
 
     // toolbar
 
@@ -1870,7 +2029,8 @@ namespace octave
     ctx_men->addAction (m_close_others_action);
 
     // signals
-    connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+    connect (this,
+             SIGNAL (execute_command_in_terminal_signal (const QString&)),
              main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
     connect (this, SIGNAL (request_settings_dialog (const QString&)),
@@ -2258,7 +2418,13 @@ namespace octave
     return retval;
   }
 
-  QAction* file_editor::add_action (QMenu *menu, const QIcon& icon,
+  QAction * file_editor::add_action (QMenu *menu, const QString& text,
+                                     const char *member)
+  {
+    return add_action (menu, QIcon (), text, member);
+  }
+
+  QAction * file_editor::add_action (QMenu *menu, const QIcon& icon,
                                     const QString& text, const char *member)
   {
     QAction *a;

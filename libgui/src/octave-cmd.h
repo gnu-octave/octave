@@ -32,96 +32,90 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-qt-link.h"
 
-class octave_cmd
+namespace octave
 {
-public:
+  class octave_cmd
+  {
+  public:
 
-  octave_cmd (void) = default;
+    octave_cmd (void) = default;
 
-  virtual ~octave_cmd (void) = default;
+    virtual ~octave_cmd (void) = default;
 
-  virtual void execute (void) { }
-};
+    virtual void execute (void) { }
+  };
 
-// ---------------------------------------------------------------------
-//  class octave_cmd_exec
+  class octave_cmd_exec : public octave_cmd
+  {
+  public:
 
-class octave_cmd_exec : public octave_cmd
-{
-public:
+    octave_cmd_exec (const QString& cmd) : octave_cmd () { m_cmd = cmd; }
 
-  octave_cmd_exec (const QString& cmd) : octave_cmd () { m_cmd = cmd; }
+    void execute (void);
 
-  void execute (void);
+  protected:
 
-protected:
+    QString m_cmd;
+  };
 
-  QString m_cmd;
-};
+  class octave_cmd_eval : public octave_cmd
+  {
+  public:
 
-// ---------------------------------------------------------------------
-//  class octave_cmd_eval
+    octave_cmd_eval (const QFileInfo& info) : octave_cmd () { m_info = info; }
 
-class octave_cmd_eval : public octave_cmd
-{
-public:
+    void execute (void);
 
-  octave_cmd_eval (const QFileInfo& info) : octave_cmd () { m_info = info; }
+  protected:
 
-  void execute (void);
+    QFileInfo m_info;
+  };
 
-protected:
+  class octave_cmd_debug : public octave_cmd_exec
+  {
+  public:
 
-  QFileInfo m_info;
-};
+    octave_cmd_debug (const QString& cmd, bool suppress_location)
+      : octave_cmd_exec (cmd), m_suppress_dbg_location (suppress_location) { }
 
-// ---------------------------------------------------------------------
-//  class octave_cmd_debug
+    void execute (void);
 
-class octave_cmd_debug : public octave_cmd_exec
-{
-public:
+  protected:
 
-  octave_cmd_debug (const QString& cmd, bool suppress_location)
-    : octave_cmd_exec (cmd), m_suppress_dbg_location (suppress_location) { }
+    bool m_suppress_dbg_location;
+  };
 
-  void execute (void);
+  //! Queuing octave commands from the GUI for the worker thread.
 
-protected:
+  class octave_command_queue : QObject
+  {
+    Q_OBJECT;
 
-  bool m_suppress_dbg_location;
-};
+  public:
 
-//! Queuing octave commands from the GUI for the worker thread.
+    octave_command_queue (void)
+      : QObject (), m_queue (QList<octave_cmd *> ()), m_processing (1),
+        m_queue_mutex ()
+    { }
 
-class octave_command_queue : QObject
-{
-  Q_OBJECT;
+    ~octave_command_queue (void) = default;
 
-public:
+    //! Adds a new octave command to the command queue.
+    //!
+    //! @param cmd The octave command to be queued.
 
-  octave_command_queue (void)
-    : QObject (), m_queue (QList<octave_cmd *> ()), m_processing (1),
-      m_queue_mutex ()
-  { }
+    void add_cmd (octave_cmd *cmd);
 
-  ~octave_command_queue (void) = default;
+    //! Callback routine for executing the command by the worker thread.
 
-  //! Adds a new octave command to the command queue.
-  //!
-  //! @param cmd The octave command to be queued.
+    void execute_command_callback (void);
 
-  void add_cmd (octave_cmd *cmd);
+  private:
 
-  //! Callback routine for executing the command by the worker thread.
-
-  void execute_command_callback (void);
-
-private:
-
-  QList<octave_cmd *> m_queue;
-  QSemaphore m_processing;
-  QMutex m_queue_mutex;
-};
+    QList<octave_cmd *> m_queue;
+    QSemaphore m_processing;
+    QMutex m_queue_mutex;
+  };
+}
 
 #endif

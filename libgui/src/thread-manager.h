@@ -27,48 +27,51 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <memory>
 
-class octave_base_thread_manager
+namespace octave
 {
-public:
+  class base_thread_manager
+  {
+  public:
 
-  friend class octave_thread_manager;
+    friend class thread_manager;
 
-  octave_base_thread_manager (void) = default;
+    base_thread_manager (void) = default;
 
-  octave_base_thread_manager (const octave_base_thread_manager&) = default;
+    base_thread_manager (const base_thread_manager&) = default;
 
-  virtual ~octave_base_thread_manager (void) = default;
+    virtual ~base_thread_manager (void) = default;
 
-  virtual void register_current_thread (void) = 0;
+    virtual void register_current_thread (void) = 0;
 
-  virtual void interrupt (void) = 0;
-};
+    virtual void interrupt (void) = 0;
+  };
 
-class octave_thread_manager
-{
-public:
+  class thread_manager
+  {
+  public:
 
-  octave_thread_manager (void);
+    thread_manager (void);
 
-  ~octave_thread_manager (void) = default;
+    ~thread_manager (void) = default;
 
-  octave_thread_manager (const octave_thread_manager& tm) = default;
+    thread_manager (const thread_manager& tm) = default;
 
-  octave_thread_manager& operator = (const octave_thread_manager& tm) = default;
+    thread_manager& operator = (const thread_manager& tm) = default;
 
-  void register_current_thread (void) { m_rep->register_current_thread (); }
+    void register_current_thread (void) { m_rep->register_current_thread (); }
 
-  void interrupt (void) { m_rep->interrupt (); }
+    void interrupt (void) { m_rep->interrupt (); }
 
-  static void block_interrupt_signal (void);
+    static void block_interrupt_signal (void);
 
-  static void unblock_interrupt_signal (void);
+    static void unblock_interrupt_signal (void);
 
-private:
+  private:
 
-  std::shared_ptr<octave_base_thread_manager> m_rep;
+    std::shared_ptr<base_thread_manager> m_rep;
 
-  static octave_base_thread_manager * create_rep (void);
-};
+    static base_thread_manager * create_rep (void);
+  };
+}
 
 #endif

@@ -37,7 +37,7 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
   set_title (tr ("Documentation"));
   setStatusTip (tr ("See the documentation for help."));
 
-  m_webinfo = new webinfo (this);
+  m_webinfo = new octave::webinfo (this);
   setWidget (m_webinfo);
   setFocusProxy (m_webinfo);
 

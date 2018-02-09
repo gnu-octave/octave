@@ -74,7 +74,7 @@ namespace octave
 
   public:
 
-    octave_interpreter (octave::application *app_context);
+    octave_interpreter (application *app_context);
 
     ~octave_interpreter (void) = default;
 
@@ -93,9 +93,9 @@ namespace octave
 
   private:
 
-    octave_thread_manager m_thread_manager;
+    thread_manager m_thread_manager;
 
-    octave::application *m_app_context;
+    application *m_app_context;
   };
 
   //! Represents the main window.
@@ -109,7 +109,7 @@ namespace octave
     typedef std::pair <std::string, std::string> name_pair;
     typedef std::pair <int, int> int_pair;
 
-    main_window (QWidget *parent, octave::gui_application *app_context);
+    main_window (QWidget *parent, gui_application *app_context);
 
     ~main_window (void);
 
@@ -353,7 +353,7 @@ namespace octave
 
     QList<octave_dock_widget *> dock_widget_list (void);
 
-    octave::gui_application *m_app_context;
+    gui_application *m_app_context;
 
     octave_interpreter *m_interpreter;
 

@@ -51,7 +51,7 @@ protected slots:
 
 private:
 
-  webinfo *m_webinfo;
+  octave::webinfo *m_webinfo;
 };
 
 #endif

@@ -130,7 +130,7 @@ namespace octave
 
   int gui_application::execute (void)
   {
-    octave_thread_manager::block_interrupt_signal ();
+    thread_manager::block_interrupt_signal ();
 
     set_application_id ();
 

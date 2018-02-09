@@ -32,25 +32,32 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPushButton>
 #include <QColorDialog>
 
-class color_picker : public QPushButton
+namespace octave
 {
-  Q_OBJECT
+  class color_picker : public QPushButton
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  color_picker (QColor color = QColor (0, 0, 0), QWidget *parent = nullptr);
+    color_picker (QColor color = QColor (0, 0, 0), QWidget *parent = nullptr);
 
-  QColor color (void) const { return m_color; }
+    QColor color (void) const { return m_color; }
 
-private slots:
+  private slots:
 
-  void select_color (void);
+    void select_color (void);
 
-private:
+  private:
 
-  virtual void update_button (void);
+    virtual void update_button (void);
 
-  QColor m_color;
-};
+    QColor m_color;
+  };
+}
+
+// FIXME: This is temporary and should be removed when all classes that
+// use the color_picker class are also inside the octave namespace.
+using octave::color_picker;
 
 #endif

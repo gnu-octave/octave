@@ -34,90 +34,90 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "thread-manager.h"
 
+namespace octave
+{
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-class windows_thread_manager : public octave_base_thread_manager
-{
-public:
-
-  windows_thread_manager (void) : octave_base_thread_manager () { }
-
-  void register_current_thread (void) { }
-
-  void interrupt (void)
+  class windows_thread_manager : public base_thread_manager
   {
-    GenerateConsoleCtrlEvent (CTRL_C_EVENT, 0);
-  }
-};
+  public:
+
+    windows_thread_manager (void) : base_thread_manager () { }
+
+    void register_current_thread (void) { }
+
+    void interrupt (void)
+    {
+      GenerateConsoleCtrlEvent (CTRL_C_EVENT, 0);
+    }
+  };
 
 #else
 
-class pthread_thread_manager : public octave_base_thread_manager
-{
-public:
+  class pthread_thread_manager : public base_thread_manager
+  {
+  public:
 
-  pthread_thread_manager (void)
-    : octave_base_thread_manager (), m_my_thread (), m_initialized (false)
+    pthread_thread_manager (void)
+      : base_thread_manager (), m_my_thread (), m_initialized (false)
+    { }
+
+    void register_current_thread (void)
+    {
+      m_my_thread = pthread_self ();
+      m_initialized = true;
+    }
+
+    void interrupt (void)
+    {
+      if (m_initialized)
+        {
+          // Send SIGINT to all other processes in our process group.
+          // This is needed to interrupt calls to system (), for example.
+
+          // FIXME: What happens if some code inside a
+          // {BEGIN,END}_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE block starts
+          // additional threads and one of those happens to catch this signal?
+          // Would the interrupt handler and the subsequent longjmp and exception
+          // all be executed in the wrong thread?  If so, is there any way to
+          // prevent that from happening?
+
+          int sigint;
+          octave_get_sig_number ("SIGINT", &sigint);
+
+          octave_kill_wrapper (0, sigint);
+        }
+    }
+
+  private:
+
+    pthread_t m_my_thread;
+
+    bool m_initialized;
+  };
+
+#endif
+
+  thread_manager::thread_manager (void)
+    : m_rep (thread_manager::create_rep ())
   { }
 
-  void register_current_thread (void)
+  void thread_manager::block_interrupt_signal (void)
   {
-    m_my_thread = pthread_self ();
-    m_initialized = true;
+    octave_block_interrupt_signal ();
   }
 
-  void interrupt (void)
+  void thread_manager::unblock_interrupt_signal (void)
   {
-    if (m_initialized)
-      {
-        // Send SIGINT to all other processes in our process group.
-        // This is needed to interrupt calls to system (), for example.
-
-        // FIXME: What happens if some code inside a
-        // {BEGIN,END}_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE block starts
-        // additional threads and one of those happens to catch this signal?
-        // Would the interrupt handler and the subsequent longjmp and exception
-        // all be executed in the wrong thread?  If so, is there any way to
-        // prevent that from happening?
-
-        int sigint;
-        octave_get_sig_number ("SIGINT", &sigint);
-
-        octave_kill_wrapper (0, sigint);
-      }
+    octave_unblock_interrupt_signal ();
   }
 
-private:
-
-  pthread_t m_my_thread;
-
-  bool m_initialized;
-};
-
-#endif
-
-octave_thread_manager::octave_thread_manager (void)
-  : m_rep (octave_thread_manager::create_rep ())
-{ }
-
-void
-octave_thread_manager::block_interrupt_signal (void)
-{
-  octave_block_interrupt_signal ();
-}
-
-void
-octave_thread_manager::unblock_interrupt_signal (void)
-{
-  octave_unblock_interrupt_signal ();
-}
-
-octave_base_thread_manager *
-octave_thread_manager::create_rep (void)
-{
+  base_thread_manager * thread_manager::create_rep (void)
+  {
 #if defined (OCTAVE_USE_WINDOWS_API)
-  return new windows_thread_manager ();
+    return new windows_thread_manager ();
 #else
-  return new pthread_thread_manager ();
+    return new pthread_thread_manager ();
 #endif
+  }
 }

@@ -30,31 +30,38 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTabBar>
 #include <QMouseEvent>
 
-// Subclassed QTabBar for usable tab-bar and reimplemented mouse event
-
-class tab_bar : public QTabBar
+namespace octave
 {
-  Q_OBJECT
+  // Subclassed QTabBar for usable tab-bar and reimplemented mouse event
 
-public:
+  class tab_bar : public QTabBar
+  {
+    Q_OBJECT
 
-  tab_bar (QWidget *p);
+  public:
 
-  ~tab_bar (void);
+    tab_bar (QWidget *p);
 
-  QMenu *get_context_menu (void) { return m_context_menu; };
+    ~tab_bar (void);
 
-signals:
+    QMenu *get_context_menu (void) { return m_context_menu; };
 
-  void close_current_tab_signal (bool);
+  signals:
 
-protected:
+    void close_current_tab_signal (bool);
 
-  void mousePressEvent(QMouseEvent *event);
+  protected:
 
-private:
+    void mousePressEvent(QMouseEvent *event);
 
-  QMenu *m_context_menu;
-};
+  private:
+
+    QMenu *m_context_menu;
+  };
+}
+
+// FIXME: This is temporary and should be removed when all classes that
+// use the tab_bar class are also inside the octave namespace.
+using octave::tab_bar;
 
 #endif

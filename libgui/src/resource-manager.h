@@ -30,138 +30,146 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QTranslator>
 
-class resource_manager : public QObject
+namespace octave
 {
-  Q_OBJECT
-
-protected:
-
-public:
-
-  resource_manager (void);
-
-  // No copying!
-
-  resource_manager (const resource_manager&) = delete;
-
-  resource_manager& operator = (const resource_manager&) = delete;
-
-  ~resource_manager ();
-
-  static QSettings * get_settings (void)
+  class resource_manager : public QObject
   {
-    return instance_ok () ? instance->do_get_settings () : nullptr;
-  }
+    Q_OBJECT
 
-  static QIcon icon (const QString& icon_name, bool fallback = true)
-  {
-    if (instance_ok ())
-      return instance->do_icon (icon_name, fallback);
+  protected:
 
-    return QIcon ();
-  }
+    public:
 
-  static QSettings * get_default_settings (void)
-  {
-    return instance_ok () ? instance->do_get_default_settings () : nullptr;
-  }
+    resource_manager (void);
 
-  static QString get_settings_file (void)
-  {
-    return instance_ok () ? instance->do_get_settings_file () : QString ();
-  }
+    // No copying!
 
-  static void reload_settings (void)
-  {
-    if (instance_ok ())
-      instance->do_reload_settings ();
-  }
+    resource_manager (const resource_manager&) = delete;
 
-  static void set_settings (const QString& file)
-  {
-    if (instance_ok ())
-      instance->do_set_settings (file);
-  }
+    resource_manager& operator = (const resource_manager&) = delete;
 
-  static bool update_settings_key (const QString& new_key,
-                                   const QString& old_key)
-  {
-    return instance_ok () ? instance->do_update_settings_key (new_key, old_key)
-                          : false;
-  }
+    ~resource_manager ();
 
-  static void combo_encoding (QComboBox *combo, QString current = QString ())
-  {
-    if (instance_ok ())
-      instance->do_combo_encoding (combo, current);
-  }
+    static QSettings * get_settings (void)
+    {
+      return instance_ok () ? instance->do_get_settings () : nullptr;
+    }
 
-  static QString get_gui_translation_dir (void);
+    static QIcon icon (const QString& icon_name, bool fallback = true)
+    {
+      if (instance_ok ())
+        return instance->do_icon (icon_name, fallback);
 
-  static void config_translators (QTranslator*, QTranslator*, QTranslator*);
+      return QIcon ();
+    }
 
-  static void update_network_settings (void)
-  {
-    if (instance_ok ())
-      instance->do_update_network_settings ();
-  }
+    static QSettings * get_default_settings (void)
+    {
+      return instance_ok () ? instance->do_get_default_settings () : nullptr;
+    }
 
-  static bool is_first_run (void)
-  {
-    return instance_ok () ? instance->do_is_first_run () : true;
-  }
+    static QString get_settings_file (void)
+    {
+      return instance_ok () ? instance->do_get_settings_file () : QString ();
+    }
 
-  static QString storage_class_chars (void) { return "afghip"; }
-  static QStringList storage_class_names (void);
-  static QList<QColor> storage_class_default_colors (void);
+    static void reload_settings (void)
+    {
+      if (instance_ok ())
+        instance->do_reload_settings ();
+    }
 
-  static QString terminal_color_chars (void) { return "fbsc"; }
-  static QStringList terminal_color_names (void);
-  static QList<QColor> terminal_default_colors (void);
+    static void set_settings (const QString& file)
+    {
+      if (instance_ok ())
+        instance->do_set_settings (file);
+    }
 
-  static resource_manager *instance;
+    static bool update_settings_key (const QString& new_key,
+                                     const QString& old_key)
+    {
+      return (instance_ok ()
+              ? instance->do_update_settings_key (new_key, old_key)
+              : false);
+    }
 
-public slots:
+    static void combo_encoding (QComboBox *combo, QString current = QString ())
+    {
+      if (instance_ok ())
+        instance->do_combo_encoding (combo, current);
+    }
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static QString get_gui_translation_dir (void);
 
-  static QString varedit_color_chars (void) {return "fbsha"; }
-  static QStringList varedit_color_names (void);
-  static QList<QColor> varedit_default_colors (void);
+    static void config_translators (QTranslator*, QTranslator*, QTranslator*);
 
-private:
+    static void update_network_settings (void)
+    {
+      if (instance_ok ())
+        instance->do_update_network_settings ();
+    }
 
-  static bool instance_ok (void);
+    static bool is_first_run (void)
+    {
+      return instance_ok () ? instance->do_is_first_run () : true;
+    }
 
-  QSettings * do_get_settings (void) const;
+    static QString storage_class_chars (void) { return "afghip"; }
+    static QStringList storage_class_names (void);
+    static QList<QColor> storage_class_default_colors (void);
 
-  QSettings * do_get_default_settings (void) const;
+    static QString terminal_color_chars (void) { return "fbsc"; }
+    static QStringList terminal_color_names (void);
+    static QList<QColor> terminal_default_colors (void);
 
-  QString do_get_settings_directory (void);
+    static resource_manager *instance;
 
-  QString do_get_settings_file (void);
+  public slots:
 
-  void do_reload_settings (void);
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
-  void do_set_settings (const QString& file);
+    static QString varedit_color_chars (void) {return "fbsha"; }
+    static QStringList varedit_color_names (void);
+    static QList<QColor> varedit_default_colors (void);
 
-  bool do_update_settings_key (const QString& new_key, const QString& old_key);
+  private:
 
-  bool do_is_first_run (void) const;
+    static bool instance_ok (void);
 
-  void do_update_network_settings (void);
+    QSettings * do_get_settings (void) const;
 
-  QIcon do_icon (const QString& icon, bool fallback);
+    QSettings * do_get_default_settings (void) const;
 
-  void do_combo_encoding (QComboBox *combo, QString current);
+    QString do_get_settings_directory (void);
 
-  QString m_settings_directory;
+    QString do_get_settings_file (void);
 
-  QString m_settings_file;
+    void do_reload_settings (void);
 
-  QSettings *m_settings;
+    void do_set_settings (const QString& file);
 
-  QSettings *m_default_settings;
-};
+    bool do_update_settings_key (const QString& new_key, const QString& old_key);
+
+    bool do_is_first_run (void) const;
+
+    void do_update_network_settings (void);
+
+    QIcon do_icon (const QString& icon, bool fallback);
+
+    void do_combo_encoding (QComboBox *combo, QString current);
+
+    QString m_settings_directory;
+
+    QString m_settings_file;
+
+    QSettings *m_settings;
+
+    QSettings *m_default_settings;
+  };
+}
+
+// FIXME: This is temporary and should be removed when all classes that
+// use the resource_manager class are also inside the octave namespace.
+using octave::resource_manager;
 
 #endif

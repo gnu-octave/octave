@@ -28,108 +28,111 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCheckBox>
 #include <QLabel>
 
-class welcome_wizard : public QDialog
+namespace octave
 {
-  Q_OBJECT
+  class welcome_wizard : public QDialog
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  typedef QWidget *(*page_creator_fptr) (welcome_wizard *wizard);
+    typedef QWidget *(*page_creator_fptr) (welcome_wizard *wizard);
 
-  welcome_wizard (QWidget *parent = nullptr);
+    welcome_wizard (QWidget *parent = nullptr);
 
-  ~welcome_wizard (void) = default;
+    ~welcome_wizard (void) = default;
 
-private:
+  private:
 
-  QList<page_creator_fptr> m_page_ctor_list;
-  QList<page_creator_fptr>::iterator m_page_list_iterator;
-  QWidget *m_current_page;
-  bool m_allow_web_connect_state;
+    QList<page_creator_fptr> m_page_ctor_list;
+    QList<page_creator_fptr>::iterator m_page_list_iterator;
+    QWidget *m_current_page;
+    bool m_allow_web_connect_state;
 
-private slots:
+  private slots:
 
-  void handle_web_connect_option (int state);
+    void handle_web_connect_option (int state);
 
-  void show_page (void);
-  void previous_page (void);
-  void next_page (void);
+    void show_page (void);
+    void previous_page (void);
+    void next_page (void);
 
-  void accept (void);
-};
-
-
-class initial_page : public QWidget
-{
-  Q_OBJECT
-
-public:
-
-  initial_page (welcome_wizard *wizard);
-
-  ~initial_page (void) = default;
-
-  static QWidget *
-  create (welcome_wizard *wizard) { return new initial_page (wizard); }
-
-private:
-
-  QLabel *m_title;
-  QLabel *m_message;
-  QLabel *m_logo;
-  QPushButton *m_next;
-  QPushButton *m_cancel;
-};
+    void accept (void);
+  };
 
 
-class setup_community_news : public QWidget
-{
-  Q_OBJECT
+  class initial_page : public QWidget
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  setup_community_news (welcome_wizard *wizard);
+    initial_page (welcome_wizard *wizard);
 
-  ~setup_community_news (void) = default;
+    ~initial_page (void) = default;
 
-  static QWidget *
-  create (welcome_wizard *wizard) { return new setup_community_news (wizard); }
+    static QWidget *
+    create (welcome_wizard *wizard) { return new initial_page (wizard); }
 
-private:
+  private:
 
-  QLabel *m_title;
-  QLabel *m_message;
-  QCheckBox *m_checkbox;
-  QLabel *m_checkbox_message;
-  QLabel *m_logo;
-  QPushButton *m_previous;
-  QPushButton *m_next;
-  QPushButton *m_cancel;
-};
+    QLabel *m_title;
+    QLabel *m_message;
+    QLabel *m_logo;
+    QPushButton *m_next;
+    QPushButton *m_cancel;
+  };
 
 
-class final_page : public QWidget
-{
-  Q_OBJECT
+  class setup_community_news : public QWidget
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  final_page (welcome_wizard *wizard);
+    setup_community_news (welcome_wizard *wizard);
 
-  ~final_page (void) = default;
+    ~setup_community_news (void) = default;
 
-  static QWidget *
-  create (welcome_wizard *wizard) { return new final_page (wizard); }
+    static QWidget *
+    create (welcome_wizard *wizard) { return new setup_community_news (wizard); }
 
-private:
+  private:
 
-  QLabel *m_title;
-  QLabel *m_message;
-  QLabel *m_logo;
-  QLabel *m_links;
-  QPushButton *m_previous;
-  QPushButton *m_finish;
-  QPushButton *m_cancel;
-};
+    QLabel *m_title;
+    QLabel *m_message;
+    QCheckBox *m_checkbox;
+    QLabel *m_checkbox_message;
+    QLabel *m_logo;
+    QPushButton *m_previous;
+    QPushButton *m_next;
+    QPushButton *m_cancel;
+  };
+
+
+  class final_page : public QWidget
+  {
+    Q_OBJECT
+
+  public:
+
+    final_page (welcome_wizard *wizard);
+
+    ~final_page (void) = default;
+
+    static QWidget *
+    create (welcome_wizard *wizard) { return new final_page (wizard); }
+
+  private:
+
+    QLabel *m_title;
+    QLabel *m_message;
+    QLabel *m_logo;
+    QLabel *m_links;
+    QPushButton *m_previous;
+    QPushButton *m_finish;
+    QPushButton *m_cancel;
+  };
+}
 
 #endif

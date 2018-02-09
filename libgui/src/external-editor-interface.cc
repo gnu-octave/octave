@@ -31,93 +31,93 @@ along with Octave; see the file COPYING.  If not, see
 #include "external-editor-interface.h"
 #include "resource-manager.h"
 
-external_editor_interface::external_editor_interface (QWidget *p)
-  : QWidget (p)
-{ }
-
-// Calling the external editor
-bool
-external_editor_interface::call_custom_editor (const QString& file, int line)
+namespace octave
 {
-  if (line > -1)  // check for a specific line (debugging)
-    return true;  // yes: do not open a file in external editor
-  else
-    line = 0;     // no: start external editor at beginning of file
+  external_editor_interface::external_editor_interface (QWidget *p)
+    : QWidget (p)
+  { }
 
-  QString editor = external_editor ();
-  if (editor.isEmpty ())
-    return true;
+  // Calling the external editor
+  bool
+  external_editor_interface::call_custom_editor (const QString& file, int line)
+  {
+    if (line > -1)  // check for a specific line (debugging)
+      return true;  // yes: do not open a file in external editor
+    else
+      line = 0;     // no: start external editor at beginning of file
 
-  // replace macros
-  editor.replace ("%f", file);
-  editor.replace ("%l", QString::number (line));
+    QString editor = external_editor ();
+    if (editor.isEmpty ())
+      return true;
 
-  // start the process and check for success
-  bool started_ok = QProcess::startDetached (editor);
+    // replace macros
+    editor.replace ("%f", file);
+    editor.replace ("%l", QString::number (line));
 
-  if (started_ok != true)
-    {
-      QMessageBox *msgBox = new QMessageBox (QMessageBox::Critical,
-                               tr ("Octave Editor"),
-                               tr ("Could not start custom file editor\n%1").
-                               arg (editor),
-                               QMessageBox::Ok);
+    // start the process and check for success
+    bool started_ok = QProcess::startDetached (editor);
 
-      msgBox->setWindowModality (Qt::NonModal);
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      msgBox->show ();
-    }
+    if (started_ok != true)
+      {
+        QMessageBox *msgBox = new QMessageBox (QMessageBox::Critical,
+                                               tr ("Octave Editor"),
+                                               tr ("Could not start custom file editor\n%1").
+                                               arg (editor),
+                                               QMessageBox::Ok);
 
-  return started_ok;
-}
+        msgBox->setWindowModality (Qt::NonModal);
+        msgBox->setAttribute (Qt::WA_DeleteOnClose);
+        msgBox->show ();
+      }
+
+    return started_ok;
+  }
 
 
-// Slots for the several signals for invoking the editor
+  // Slots for the several signals for invoking the editor
 
-void
-external_editor_interface::request_new_file (const QString&)
-{
-  call_custom_editor ();
-}
+  void external_editor_interface::request_new_file (const QString&)
+  {
+    call_custom_editor ();
+  }
 
-void
-external_editor_interface::request_open_file (const QString& file_name,
-                                              const QString&, int line,
-                                              bool, bool, bool, const QString&)
-{
-  call_custom_editor (file_name, line);
-}
+  void external_editor_interface::request_open_file (const QString& file_name,
+                                                     const QString&, int line,
+                                                     bool, bool, bool,
+                                                     const QString&)
+  {
+    call_custom_editor (file_name, line);
+  }
 
-void
-external_editor_interface::handle_edit_file_request (const QString& file)
-{
-  call_custom_editor (file);
-}
+  void external_editor_interface::handle_edit_file_request (const QString& file)
+  {
+    call_custom_editor (file);
+  }
 
-// Get and verify the settings of the external editor program
-QString
-external_editor_interface::external_editor (void)
-{
-  QSettings *settings = resource_manager::get_settings ();
-  QString editor = settings->value ("customFileEditor").toString ();
+  // Get and verify the settings of the external editor program
+  QString external_editor_interface::external_editor (void)
+  {
+    QSettings *settings = resource_manager::get_settings ();
+    QString editor = settings->value ("customFileEditor").toString ();
 
-  // check the settings (avoid an empty string)
-  if (editor.trimmed ().isEmpty ())
-    {
-      QMessageBox *msgBox
-        = new QMessageBox (QMessageBox::Warning,
-                           tr ("Octave Editor"),
-                           tr ("There is no custom editor configured yet.\n"
-                               "Do you want to open the preferences?"),
-                           QMessageBox::No | QMessageBox::Yes);
-      msgBox->setDefaultButton (QMessageBox::Yes);
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
+    // check the settings (avoid an empty string)
+    if (editor.trimmed ().isEmpty ())
+      {
+        QMessageBox *msgBox
+          = new QMessageBox (QMessageBox::Warning,
+                             tr ("Octave Editor"),
+                             tr ("There is no custom editor configured yet.\n"
+                                 "Do you want to open the preferences?"),
+                             QMessageBox::No | QMessageBox::Yes);
+        msgBox->setDefaultButton (QMessageBox::Yes);
+        msgBox->setAttribute (Qt::WA_DeleteOnClose);
 
-      int button = msgBox->exec ();
+        int button = msgBox->exec ();
 
-      if (button == QMessageBox::Yes)
-        emit request_settings_dialog ("editor");
-    }
+        if (button == QMessageBox::Yes)
+          emit request_settings_dialog ("editor");
+      }
 
-  return editor;
+    return editor;
+  }
 }

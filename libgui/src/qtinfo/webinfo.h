@@ -42,59 +42,62 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "tab-bar.h"
 
-// The webinfo class
-class webinfo : public QWidget
+namespace octave
 {
-  Q_OBJECT
+  // The webinfo class
+  class webinfo : public QWidget
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  webinfo (QWidget *parent = nullptr);
+    webinfo (QWidget *parent = nullptr);
 
-  bool set_info_path (const QString& info_path);
-  void load_node (const QString& node_name);
-  void load_ref (const QString& ref_name);
-  void notice_settings (const QSettings *settings);
+    bool set_info_path (const QString& info_path);
+    void load_node (const QString& node_name);
+    void load_ref (const QString& ref_name);
+    void notice_settings (const QSettings *settings);
 
-  void load_info_file (const QString& info_file);
+    void load_info_file (const QString& info_file);
 
-public slots:
+  public slots:
 
-  void link_clicked (const QUrl& link);
-  void current_tab_changed (int index);
-  void close_tab (int index);
-  void search ();
-  void zoom_in ();
-  void zoom_out ();
+    void link_clicked (const QUrl& link);
+    void current_tab_changed (int index);
+    void close_tab (int index);
+    void search (void);
+    void zoom_in (void);
+    void zoom_out (void);
 
-  void copyClipboard ();
-  void pasteClipboard ();
-  void selectAll ();
+    void copyClipboard (void);
+    void pasteClipboard (void);
+    void selectAll (void);
 
-  void request_close_tab (bool);
-  void request_close_other_tabs (bool);
+    void request_close_tab (bool);
+    void request_close_other_tabs (bool);
 
-private:
+  private:
 
-  QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                        const char *member);
-  void tab_state_changed (void);
+    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                          const char *member);
+    void tab_state_changed (void);
 
-  QTextBrowser        *_text_browser;
-  tab_bar             *_tab_bar;
-  QStackedWidget      *_stacked_widget;
-  QLineEdit           *_search_line_edit;
-  QCheckBox           *_search_check_box;
-  QToolButton         *_zoom_in_button;
-  QToolButton         *_zoom_out_button;
+    QTextBrowser *_text_browser;
+    tab_bar *_tab_bar;
+    QStackedWidget *_stacked_widget;
+    QLineEdit *_search_line_edit;
+    QCheckBox *_search_check_box;
+    QToolButton *_zoom_in_button;
+    QToolButton *_zoom_out_button;
 
-  texinfo_parser      _parser;
-  QFont               _font_web;
+    texinfo_parser _parser;
+    QFont _font_web;
 
-  QTextBrowser * addNewTab (const QString& name);
-  QAction *_close_action;
-  QAction *_close_others_action;
+    QTextBrowser * addNewTab (const QString& name);
+    QAction *_close_action;
+    QAction *_close_others_action;
 
-};
+  };
+}
 
 #endif

@@ -771,7 +771,7 @@ get_regkey_names (HKEY h_rootkey, const std::string subkey,
     return retval;
 
   DWORD idx = 0;
-  const int MAX_VALUE_NAME_SIZE = 32767;
+  const int MAX_VALUE_NAME_SIZE = 32766;
   char value_name[MAX_VALUE_NAME_SIZE+1];
   DWORD value_name_size = MAX_VALUE_NAME_SIZE;
 
@@ -936,6 +936,10 @@ On non-Windows platforms this function fails with an error.
       octave_value key_val;
       LONG retval = get_regkey_value (h_rootkey, subkey_name, value_name,
                                       key_val);
+      if (retval == ERROR_FILE_NOT_FOUND)
+        error ("winqueryreg: no value found for '%s' at %s\\%s.",
+               value_name.c_str (), rootkey_name.c_str (),
+               subkey_name.c_str ());
       if (retval != ERROR_SUCCESS)
         error ("winqueryreg: error %d reading the specified key", retval);
 
@@ -977,11 +981,11 @@ On non-Windows platforms this function fails with an error.
 %!       "ROOTKEY is not a valid root key identifier");
 %!testif ; ispc ()
 %! fail ('winqueryreg ("HKEY_LOCAL_MACHINE", ''FOO\bar'')',
-%!       "error .* reading the specified key");
+%!       "no value found for");
 %!testif ; ispc ()
 %! fail (['winqueryreg ("HKEY_LOCAL_MACHINE", ', ...
 %!        '''SOFTWARE\Microsoft\Windows\CurrentVersion'', "foo")'],
-%!       "error .* reading the specified key");
+%!       "no value found for");
 %!testif ; ispc ()
 %! fail ('winqueryreg ("name", "HKEY_LOCAL_MACHINE")',
 %!       "if the first argument is 'name', ROOTKEY and SUBKEY must be given");

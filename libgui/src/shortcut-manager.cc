@@ -320,6 +320,13 @@ shortcut_manager::do_init_data (void)
   init (tr ("Release Notes"), "main_news:release_notes", QKeySequence ());
   init (tr ("Community News"), "main_news:community_news", QKeySequence ());
 
+  // Tab handling
+  // The following shortcuts are moved into a separate tab. The key names
+  // are not change for preserving compatibility with older versions
+  init (tr ("Close Tab"), "editor_file:close", QKeySequence::Close);
+  init (tr ("Close All Tabs"), "editor_file:close_all", QKeySequence ());
+  init (tr ("Close Other Tabs"), "editor_file:close_other", QKeySequence ());
+
   // actions of the editor
 
   // file
@@ -327,9 +334,6 @@ shortcut_manager::do_init_data (void)
         QKeySequence (ctrl + Qt::Key_E));
   init (tr ("Save File"), "editor_file:save", QKeySequence::Save);
   init (tr ("Save File As"), "editor_file:save_as", QKeySequence::SaveAs);
-  init (tr ("Close"), "editor_file:close", QKeySequence::Close);
-  init (tr ("Close All"), "editor_file:close_all", QKeySequence ());
-  init (tr ("Close Other Files"), "editor_file:close_other", QKeySequence ());
   init (tr ("Print"), "editor_file:print", QKeySequence::Print);
 
   // edit
@@ -531,17 +535,19 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   main->setText (0, tr ("Global"));
   main->setExpanded (true);
   QTreeWidgetItem *main_file = new QTreeWidgetItem (main);
-  main_file->setText (0, tr ("File"));
+  main_file->setText (0, tr ("File Menu"));
   QTreeWidgetItem *main_edit = new QTreeWidgetItem (main);
-  main_edit->setText (0, tr ("Edit"));
+  main_edit->setText (0, tr ("Edit Menu"));
   QTreeWidgetItem *main_debug = new QTreeWidgetItem (main);
-  main_debug->setText (0, tr ("Debug"));
+  main_debug->setText (0, tr ("Debug Menu"));
   QTreeWidgetItem *main_window = new QTreeWidgetItem (main);
-  main_window->setText (0, tr ("Window"));
+  main_window->setText (0, tr ("Window Menu"));
   QTreeWidgetItem *main_help = new QTreeWidgetItem (main);
-  main_help->setText (0, tr ("Help"));
+  main_help->setText (0, tr ("Help Menu"));
   QTreeWidgetItem *main_news = new QTreeWidgetItem (main);
-  main_news->setText (0, tr ("News"));
+  main_news->setText (0, tr ("News Menu"));
+  QTreeWidgetItem *main_tabs = new QTreeWidgetItem (main);
+  main_tabs->setText (0, tr ("Tab Handling in Dock Widgets"));
 
   m_level_hash["main_file"]   = main_file;
   m_level_hash["main_edit"]   = main_edit;
@@ -549,24 +555,25 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   m_level_hash["main_window"]   = main_window;
   m_level_hash["main_help"]   = main_help;
   m_level_hash["main_news"]   = main_news;
+  m_level_hash["main_tabs"]   = main_tabs;
 
   QTreeWidgetItem *editor = new QTreeWidgetItem (tree_view);
   editor->setText (0, tr ("Editor"));
   editor->setExpanded (true);
   QTreeWidgetItem *editor_file = new QTreeWidgetItem (editor);
-  editor_file->setText (0, tr ("File"));
+  editor_file->setText (0, tr ("File Menu"));
   QTreeWidgetItem *editor_edit = new QTreeWidgetItem (editor);
-  editor_edit->setText (0, tr ("Edit"));
+  editor_edit->setText (0, tr ("Edit Menu"));
   QTreeWidgetItem *editor_view = new QTreeWidgetItem (editor);
-  editor_view->setText (0, tr ("View"));
+  editor_view->setText (0, tr ("View Menu"));
   QTreeWidgetItem *editor_debug = new QTreeWidgetItem (editor);
-  editor_debug->setText (0, tr ("Debug"));
+  editor_debug->setText (0, tr ("Debug Menu"));
   QTreeWidgetItem *editor_run = new QTreeWidgetItem (editor);
-  editor_run->setText (0, tr ("Run"));
+  editor_run->setText (0, tr ("Run Menu"));
   QTreeWidgetItem *editor_help = new QTreeWidgetItem (editor);
-  editor_help->setText (0, tr ("Help"));
+  editor_help->setText (0, tr ("Help Menu"));
   QTreeWidgetItem *editor_tabs = new QTreeWidgetItem (editor);
-  editor_tabs->setText (0, tr ("Tabs"));
+  editor_tabs->setText (0, tr ("Tab Handling"));
 
   m_level_hash["editor_file"] = editor_file;
   m_level_hash["editor_edit"] = editor_edit;
@@ -584,6 +591,16 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
       shortcut_t sc = m_sc.at (i);
 
       QTreeWidgetItem *section = m_level_hash[sc.m_settings_key.section (':',0,0)];
+
+      // handle sections which have changed and do not correspond to the
+      // previously defined keyname
+      if (section == editor_file)
+        {
+          // Closing tabs now in global tab handling section
+          if (sc.m_description.mid (0,6) == "Close ")
+            section = main_tabs;
+        }
+
       QTreeWidgetItem *tree_item = new QTreeWidgetItem (section);
 
       // set a slightly transparent foreground for default columns

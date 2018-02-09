@@ -72,54 +72,57 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 
-class find_dialog : public QDialog
+namespace octave
 {
-  Q_OBJECT
-public:
-  find_dialog (QsciScintilla *edit_area, QList<QAction *> find_actions,
-               QWidget *parent = nullptr);
-  void init_search_text ();
+  class find_dialog : public QDialog
+  {
+    Q_OBJECT
+  public:
+    find_dialog (QsciScintilla *edit_area, QList<QAction *> find_actions,
+                 QWidget *parent = nullptr);
+    void init_search_text (void);
 
-private slots:
-  void handle_sel_search_changed (int);
-  void handle_selection_changed (bool has_selected);
+  private slots:
+    void handle_sel_search_changed (int);
+    void handle_selection_changed (bool has_selected);
 
-  void handle_backward_search_changed (int);
-  void handle_search_text_changed (QString new_search_text);
+    void handle_backward_search_changed (int);
+    void handle_search_text_changed (QString new_search_text);
 
-  void find (bool forward = true);
-  void find_next ();
-  void find_prev ();
-  void replace ();
-  void replace_all ();
+    void find (bool forward = true);
+    void find_next (void);
+    void find_prev (void);
+    void replace (void);
+    void replace_all (void);
 
-private:
+  private:
 
-  void no_matches_message ();
-  void do_replace ();
+    void no_matches_message (void);
+    void do_replace (void);
 
-  QLabel            *_search_label;
-  QLineEdit         *_search_line_edit;
-  QLabel            *_replace_label;
-  QLineEdit         *_replace_line_edit;
-  QCheckBox         *_case_check_box;
-  QCheckBox         *_from_start_check_box;
-  QCheckBox         *_wrap_check_box;
-  QCheckBox         *_whole_words_check_box;
-  QCheckBox         *_regex_check_box;
-  QCheckBox         *_search_selection_check_box;
-  QCheckBox         *_backward_check_box;
-  QDialogButtonBox  *_button_box;
-  QPushButton       *_find_next_button;
-  QPushButton       *_find_prev_button;
-  QPushButton       *_replace_button;
-  QPushButton       *_replace_all_button;
-  QPushButton       *_more_button;
-  QWidget           *_extension;
-  QsciScintilla     *_edit_area;
-  bool               _find_result_available;
-  int                _rep_all;
-  bool               _rep_active;
-};
+    QLabel            *_search_label;
+    QLineEdit         *_search_line_edit;
+    QLabel            *_replace_label;
+    QLineEdit         *_replace_line_edit;
+    QCheckBox         *_case_check_box;
+    QCheckBox         *_from_start_check_box;
+    QCheckBox         *_wrap_check_box;
+    QCheckBox         *_whole_words_check_box;
+    QCheckBox         *_regex_check_box;
+    QCheckBox         *_search_selection_check_box;
+    QCheckBox         *_backward_check_box;
+    QDialogButtonBox  *_button_box;
+    QPushButton       *_find_next_button;
+    QPushButton       *_find_prev_button;
+    QPushButton       *_replace_button;
+    QPushButton       *_replace_all_button;
+    QPushButton       *_more_button;
+    QWidget           *_extension;
+    QsciScintilla     *_edit_area;
+    bool               _find_result_available;
+    int                _rep_all;
+    bool               _rep_active;
+  };
+}
 
 #endif

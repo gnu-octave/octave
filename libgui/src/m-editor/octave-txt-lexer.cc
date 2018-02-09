@@ -32,25 +32,25 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-txt-lexer.h"
 
-QString
-octave_txt_lexer::description (int style) const
+namespace octave
 {
-  if (style == 0)
-    return tr ("Default");
-  else
-    return QString ();
-};
+  QString octave_txt_lexer::description (int style) const
+  {
+    if (style == 0)
+      return tr ("Default");
+    else
+      return QString ();
+  };
 
-const char*
-octave_txt_lexer::language (void) const
-{
-  return "Text";
-}
+  const char * octave_txt_lexer::language (void) const
+  {
+    return "Text";
+  }
 
-const char*
-octave_txt_lexer::lexer (void) const
-{
-  return "text";
+  const char * octave_txt_lexer::lexer (void) const
+  {
+    return "text";
+  }
 }
 
 #endif

@@ -72,11 +72,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "version.h"
 
-static file_editor_interface *
+static octave::file_editor_interface *
 create_default_editor (QWidget *p)
 {
 #if defined (HAVE_QSCINTILLA)
-  return new file_editor (p);
+  return new octave::file_editor (p);
 #else
   octave_unused_parameter (p);
 

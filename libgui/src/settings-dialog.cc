@@ -637,7 +637,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   read_lexer_settings (ui, lexer, settings);
   delete lexer;
 
-  lexer = new octave_txt_lexer ();
+  lexer = new octave::octave_txt_lexer ();
   read_lexer_settings (ui, lexer, settings);
   delete lexer;
 
@@ -936,7 +936,7 @@ settings_dialog::write_changed_settings (bool closing)
   write_lexer_settings (ui, lexer, settings);
   delete lexer;
 
-  lexer = new octave_txt_lexer ();
+  lexer = new octave::octave_txt_lexer ();
   write_lexer_settings (ui, lexer, settings);
   delete lexer;
 

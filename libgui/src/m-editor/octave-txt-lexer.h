@@ -28,18 +28,20 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
 
-
-class octave_txt_lexer : public QsciLexer
+namespace octave
 {
-  Q_OBJECT
+  class octave_txt_lexer : public QsciLexer
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  virtual const char * language (void) const;
+    virtual const char * language (void) const;
 
-  virtual const char * lexer (void) const;
+    virtual const char * lexer (void) const;
 
-  virtual QString description (int style) const;
-};
+    virtual QString description (int style) const;
+  };
+}
 
 #endif

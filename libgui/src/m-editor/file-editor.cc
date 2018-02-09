@@ -1600,7 +1600,7 @@ file_editor::dropEvent (QDropEvent *e)
 bool
 file_editor::is_editor_console_tabbed (void)
 {
-  main_window *w = static_cast<main_window *>(main_win ());
+  octave::main_window *w = static_cast<octave::main_window *>(main_win ());
   QList<QDockWidget *> w_list = w->tabifiedDockWidgets (this);
   QDockWidget *console =
     static_cast<QDockWidget *> (w->get_dock_widget_list ().at (0));

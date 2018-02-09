@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
+#include "tab-bar.h"
 
 
 // subclassed QTabWidget for using custom tabbar
@@ -52,7 +53,7 @@ public:
 
   ~file_editor_tab_widget (void) = default;
 
-  QTabBar * tabBar (void) const;
+  tab_bar * get_tab_bar (void) const;
 };
 
 // the class for the file editor

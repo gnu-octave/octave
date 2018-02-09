@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
-#include "tab-bar.h"
 
 #include <QApplication>
 #include <QFile>
@@ -55,20 +54,27 @@ along with Octave; see the file COPYING.  If not, see
 file_editor_tab_widget::file_editor_tab_widget (QWidget *p)
   : QTabWidget (p)
 {
-  tab_bar *bar;
-  bar = new tab_bar (this);
+  tab_bar *bar = new tab_bar (this);
 
   connect (bar, SIGNAL (close_current_tab_signal (bool)),
            p->parent (), SLOT (request_close_file (bool)));
 
   this->setTabBar (bar);
+
+  setTabsClosable (true);
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
+  setMovable (true);
+#endif
 }
 
-QTabBar*
-file_editor_tab_widget::tabBar (void) const
+tab_bar *
+file_editor_tab_widget::get_tab_bar (void) const
 {
-  return (QTabWidget::tabBar ());
+  return qobject_cast<tab_bar *> (tabBar ());
 }
+
+
+// File editor
 
 file_editor::file_editor (QWidget *p)
   : file_editor_interface (p)
@@ -1626,10 +1632,6 @@ file_editor::construct (void)
   m_tool_bar->setMovable (true);
 
   m_tab_widget = new file_editor_tab_widget (editor_widget);
-  m_tab_widget->setTabsClosable (true);
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
-  m_tab_widget->setMovable (true);
-#endif
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
@@ -1958,8 +1960,7 @@ file_editor::construct (void)
   setWidget (editor_widget);
 
   // create the context menu of the tab bar
-  tab_bar *bar
-      = static_cast<tab_bar *>(m_tab_widget->tabBar ());
+  tab_bar *bar = m_tab_widget->get_tab_bar ();
   QMenu *ctx_men = bar->get_context_menu ();
   ctx_men->addAction (m_close_action);
   ctx_men->addAction (m_close_all_action);

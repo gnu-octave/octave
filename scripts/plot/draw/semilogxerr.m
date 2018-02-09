@@ -87,6 +87,7 @@ endfunction
 %!demo
 %! clf;
 %! x = exp (log (0.01):0.2:log (10));
+%! wblpdf = @(x, scl, shp) shp*(scl^-shp) .* x.^(shp-1) .* exp (-(x/scl).^shp);
 %! y = wblpdf (x, 2, 2);
 %! ey = 0.5*rand (size (y)) .* y;
 %! semilogxerr (x, y, ey, "#~x-");

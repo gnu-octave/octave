@@ -87,6 +87,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0.25:0.25:10;
+%! wblpdf = @(x, scl, shp) shp*(scl^-shp) .* x.^(shp-1) .* exp (-(x/scl).^shp);
 %! y = wblpdf (x, 4, 2);
 %! eyu = rand (size (y));
 %! eyl = 1.0 - 1./(1+eyu);

@@ -176,15 +176,10 @@ elsif ($make_source)
     $fcn =~ s/-/_/g;
     $fcn = "install_${fcn}_fcns";
 
-    push (@installer_functions, $fcn);
-
-    print "
-static void
+    $fcn_header = "\nstatic void
 $fcn (void)
 {
-  std::string file = \"$arg\";
-
-";
+  std::string file = \"$arg\";";
 
     open($fh, "<", $file) || die "mk-builtins.pl: failed to open file $file\n";
 
@@ -196,6 +191,7 @@ $fcn (void)
     $fname = "";
     $name = "";
     $alias = "";
+    $fcn_body = "";
 
     %dispatch_map = ();
 
@@ -258,11 +254,11 @@ $fcn (void)
 
         if ($const)
         {
-          print "  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\", true);\n"
+          $fcn_body .= "\n  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\", true);"
         }
         else
         {
-          print "  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\");\n"
+          $fcn_body .= "\n  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\");"
         }
 
         $type = "";
@@ -272,7 +268,7 @@ $fcn (void)
       }
       elsif ($type eq "alias")
       {
-        print "  alias_builtin (\"$alias\", \"$name\");\n";
+        $fcn_body .= "\n  alias_builtin (\"$alias\", \"$name\");";
 
         ## Preserve dispatch info (if any) that we have for the
         ## original function.
@@ -295,17 +291,27 @@ $fcn (void)
 
     foreach $fcn (sort (keys (%dispatch_map)))
     {
-      print "\n";
+      $dispatch_code = "";
 
       @classes =  @{$dispatch_map{$fcn}};
 
       foreach $class (@classes)
       {
-        print "  install_builtin_dispatch (\"$fcn\", \"$class\");\n";
+        $dispatch_code .= "\n  install_builtin_dispatch (\"$fcn\", \"$class\");";
       }
+
+      if ($dispatch_code)
+        {
+          $fcn_body .= "\n$dispatch_code";
+        }
     }
 
-    print "}\n";
+    if ($fcn_body)
+      {
+        push (@installer_functions, $fcn);
+
+        print "$fcn_header\n$fcn_body\n}\n";
+      }
   }
 
   print "

@@ -95,7 +95,6 @@ GEN_CONFIG_SHELL += \
   %reldir%/mk-version-h.sh
 
 octinclude_HEADERS += \
-  %reldir%/builtins.h \
   %reldir%/build-env.h \
   %reldir%/liboctinterp-build-info.h \
   %reldir%/octave.h \

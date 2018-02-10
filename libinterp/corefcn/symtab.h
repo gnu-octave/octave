@@ -59,7 +59,9 @@ namespace octave
       : m_fcn_table (), m_class_precedence_table (),
         m_parent_map (), m_global_scope ("global scope"),
         m_top_scope ("top scope"), m_current_scope (m_top_scope)
-      { }
+      {
+        install_builtins ();
+      }
 
     // No copying!
 
@@ -710,6 +712,9 @@ namespace octave
     symbol_scope m_current_scope;
 
     octave_value dump_fcn_table_map (void) const;
+
+    // This function is generated automatically by mk-builtins.pl.
+    void install_builtins (void);
   };
 
   extern bool out_of_date_check (octave_value& function,

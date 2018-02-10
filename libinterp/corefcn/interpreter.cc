@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "unistd-wrappers.h"
 
 #include "builtin-defun-decls.h"
-#include "builtins.h"
 #include "defaults.h"
 #include "Cell.h"
 #include "call-stack.h"
@@ -416,8 +415,6 @@ namespace octave
       install_signal_handlers ();
     else
       quit_allowed = false;
-
-    install_builtins ();
 
     bool line_editing = false;
     bool traditional = false;

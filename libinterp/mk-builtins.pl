@@ -148,17 +148,18 @@ elsif ($make_source)
 #  include \"config.h\"
 #endif
 
-#include \"defun.h\"
+#include \"builtin-defun-decls.h\"
 #include \"help.h\"
 #include \"ovl.h\"
+#include \"symtab.h\"
 #include \"variables.h\"
-#include \"builtin-defun-decls.h\"
-#include \"builtins.h\"
 
 #if defined (quad)
 #  undef quad
 #endif
-";
+
+namespace octave
+{";
 
   @installer_functions = ();
 
@@ -176,10 +177,10 @@ elsif ($make_source)
     $fcn =~ s/-/_/g;
     $fcn = "install_${fcn}_fcns";
 
-    $fcn_header = "\nstatic void
-$fcn (void)
-{
-  std::string file = \"$arg\";";
+    $fcn_header = "\n  static void
+  $fcn (symbol_table& symtab)
+  {
+    std::string file = \"$arg\";";
 
     open($fh, "<", $file) || die "mk-builtins.pl: failed to open file $file\n";
 
@@ -187,7 +188,7 @@ $fcn (void)
     ## install the built-in functions or function aliases.
 
     $type = "";
-    $const = 0;
+    $const_param = "";
     $fname = "";
     $name = "";
     $alias = "";
@@ -214,7 +215,7 @@ $fcn (void)
         $type = "fun";
         $fname = "F$2";
         $name = "$2";
-        $const = 1;
+        $const_param = ", true";
       }
       elsif ($line =~ /^ *DEFALIAS *\( *([^ ,]*) *, *([^ )]*) *\).*$/)
       {
@@ -252,23 +253,16 @@ $fcn (void)
         ## We use the name appended to the "external-doc" tag to find
         ## the docstring for aliases to this function.
 
-        if ($const)
-        {
-          $fcn_body .= "\n  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\", true);"
-        }
-        else
-        {
-          $fcn_body .= "\n  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\");"
-        }
+        $fcn_body .= "\n    symtab.install_built_in_function (\"$name\", octave_value (new octave_builtin ($fname, \"$name\", file, \"external-doc:$name\")));";
 
         $type = "";
         $fname = "";
         $name = "";
-        $const = 0;
+        $const_param = "";
       }
       elsif ($type eq "alias")
       {
-        $fcn_body .= "\n  alias_builtin (\"$alias\", \"$name\");";
+        $fcn_body .= "\n    symtab.alias_built_in_function (\"$alias\", \"$name\");";
 
         ## Preserve dispatch info (if any) that we have for the
         ## original function.
@@ -297,33 +291,33 @@ $fcn (void)
 
       foreach $class (@classes)
       {
-        $dispatch_code .= "\n  install_builtin_dispatch (\"$fcn\", \"$class\");";
+        $dispatch_code .= "\n    symtab.install_built_in_dispatch (\"$fcn\", \"$class\");";
       }
 
-      if ($dispatch_code)
-        {
-          $fcn_body .= "\n$dispatch_code";
-        }
+    if ($dispatch_code)
+      {
+        $fcn_body .= "\n$dispatch_code";
+      }
     }
 
     if ($fcn_body)
       {
         push (@installer_functions, $fcn);
 
-        print "$fcn_header\n$fcn_body\n}\n";
+        print "$fcn_header\n$fcn_body\n  }\n";
       }
   }
 
   print "
-void
-install_builtins (void)
-{
+  void
+  symbol_table::install_builtins (void)
+  {
 ";
 
   foreach $fcn (@installer_functions)
   {
-    print "  $fcn ();\n"
+    print "    $fcn (*this);\n"
   }
 
-  print "}\n";
+  print "  }\n}\n";
 }

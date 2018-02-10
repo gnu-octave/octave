@@ -90,11 +90,11 @@ namespace octave
     hbox_layout->addWidget (_search_check_box);
 
     _close_action = add_action (_tab_bar->get_context_menu (),
-                                resource_manager::icon ("window-close",false), tr ("&Close"),
-                                SLOT (request_close_tab (bool)));
+          resource_manager::icon ("window-close",false), tr ("&Close"),
+          this, SLOT (request_close_tab (bool)));
     _close_others_action = add_action (_tab_bar->get_context_menu (),
-                                       resource_manager::icon ("window-close",false), tr ("Close &Other Tabs"),
-                                       SLOT (request_close_other_tabs (bool)));
+          resource_manager::icon ("window-close",false), tr ("Close &Other Tabs"),
+          this, SLOT (request_close_other_tabs (bool)));
     _close_action->setEnabled (false);
     _close_others_action->setEnabled (false);
 
@@ -108,28 +108,43 @@ namespace octave
     connect (_zoom_out_button, SIGNAL (clicked ()), this, SLOT (zoom_out ()));
     connect (_search_line_edit, SIGNAL (returnPressed ()), this, SLOT (search ()));
 
+    // Actions for tab navigation
+    m_switch_left_tab_action
+      = add_action (nullptr, QIcon (), "",
+                    _tab_bar, SLOT (switch_left_tab (void)));
+    m_switch_right_tab_action
+      = add_action (nullptr, QIcon (), "",
+                    _tab_bar, SLOT (switch_right_tab (void)));
+    m_move_tab_left_action
+      = add_action (nullptr, QIcon (), "",
+                    _tab_bar, SLOT (move_tab_left (void)));
+    m_move_tab_right_action
+      = add_action (nullptr, QIcon (), "",
+                    _tab_bar, SLOT (move_tab_right (void)));
+
     resize (500, 300);
   }
 
   // Add an action to a menu or the widget itself
-  QAction * webinfo::add_action (QMenu *menu, const QIcon& icon,
-                                 const QString& text, const char *member)
+  QAction* webinfo::add_action (QMenu *menu, const QIcon& icon,
+                                const QString& text,
+                                QWidget* receiver, const char *member)
   {
     QAction *a;
 
     if (menu)
-      a = menu->addAction (icon, text, this, member);
+      a = menu->addAction (icon, text, receiver, member);
     else
       {
         a = new QAction (this);
-        connect (a, SIGNAL (triggered ()), this, member);
+        connect (a, SIGNAL (triggered ()), receiver, member);
       }
 
-    addAction (a);  // important for shortcut context
-    a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+      addAction (a);  // important for shortcut context
+      a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 
-    return a;
-  }
+      return a;
+    }
 
   // Slot for the close tab action
   void webinfo::request_close_tab (bool)
@@ -352,6 +367,10 @@ namespace octave
   {
     shortcut_manager::set_shortcut (_close_action, "editor_file:close");
     shortcut_manager::set_shortcut (_close_others_action, "editor_file:close_other");
+    shortcut_manager::set_shortcut (m_switch_left_tab_action, "editor_tabs:switch_left_tab");
+    shortcut_manager::set_shortcut (m_switch_right_tab_action, "editor_tabs:switch_right_tab");
+    shortcut_manager::set_shortcut (m_move_tab_left_action, "editor_tabs:move_tab_left");
+    shortcut_manager::set_shortcut (m_move_tab_right_action, "editor_tabs:move_tab_right");
   }
 }
 

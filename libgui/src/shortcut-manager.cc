@@ -320,6 +320,14 @@ namespace octave
     init (tr ("Close Tab"), "editor_file:close", QKeySequence::Close);
     init (tr ("Close All Tabs"), "editor_file:close_all", QKeySequence ());
     init (tr ("Close Other Tabs"), "editor_file:close_other", QKeySequence ());
+    init (tr ("Switch to Left Tab"), "editor_tabs:switch_left_tab",
+          QKeySequence (ctrl + Qt::Key_PageUp));
+    init (tr ("Switch to Right Tab"), "editor_tabs:switch_right_tab",
+          QKeySequence (ctrl + Qt::Key_PageDown));
+    init (tr ("Move Tab Left"), "editor_tabs:move_tab_left",
+          QKeySequence (Qt::AltModifier + Qt::Key_PageUp));
+    init (tr ("Move Tab Right"), "editor_tabs:move_tab_right",
+          QKeySequence (Qt::AltModifier + Qt::Key_PageDown));
 
     // actions of the editor
 
@@ -459,16 +467,6 @@ namespace octave
     init (tr ("Document on Keyword"), "editor_help:doc_keyword",
           QKeySequence (Qt::SHIFT + Qt::Key_F1));
 
-    // tab navigation
-    init (tr ("Switch to Left Tab"), "editor_tabs:switch_left_tab",
-          QKeySequence (ctrl + Qt::Key_PageUp));
-    init (tr ("Switch to Right Tab"), "editor_tabs:switch_right_tab",
-          QKeySequence (ctrl + Qt::Key_PageDown));
-    init (tr ("Move Tab Left"), "editor_tabs:move_tab_left",
-          QKeySequence (Qt::AltModifier + Qt::Key_PageUp));
-    init (tr ("Move Tab Right"), "editor_tabs:move_tab_right",
-          QKeySequence (Qt::AltModifier + Qt::Key_PageDown));
-
   }
 
   // write one or all actual shortcut set(s) into a settings file
@@ -547,6 +545,7 @@ namespace octave
     m_level_hash["main_help"]   = main_help;
     m_level_hash["main_news"]   = main_news;
     m_level_hash["main_tabs"]   = main_tabs;
+    m_level_hash["editor_tabs"]   = main_tabs;
 
     QTreeWidgetItem *editor = new QTreeWidgetItem (tree_view);
     editor->setText (0, tr ("Editor"));
@@ -563,8 +562,6 @@ namespace octave
     editor_run->setText (0, tr ("Run Menu"));
     QTreeWidgetItem *editor_help = new QTreeWidgetItem (editor);
     editor_help->setText (0, tr ("Help Menu"));
-    QTreeWidgetItem *editor_tabs = new QTreeWidgetItem (editor);
-    editor_tabs->setText (0, tr ("Tab Handling"));
 
     m_level_hash["editor_file"] = editor_file;
     m_level_hash["editor_edit"] = editor_edit;
@@ -572,7 +569,6 @@ namespace octave
     m_level_hash["editor_debug"] = editor_debug;
     m_level_hash["editor_run"] = editor_run;
     m_level_hash["editor_help"] = editor_help;
-    m_level_hash["editor_tabs"] = editor_tabs;
 
     connect (tree_view, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
              this, SLOT (handle_double_clicked (QTreeWidgetItem*, int)));

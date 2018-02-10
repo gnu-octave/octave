@@ -78,9 +78,12 @@ namespace octave
 
   private:
 
-    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                          const char *member);
-    void tab_state_changed (void);
+    QAction *_close_action;
+    QAction *_close_others_action;
+    QAction *m_switch_left_tab_action;
+    QAction *m_switch_right_tab_action;
+    QAction *m_move_tab_left_action;
+    QAction *m_move_tab_right_action;
 
     QTextBrowser *_text_browser;
     tab_bar *_tab_bar;
@@ -94,8 +97,11 @@ namespace octave
     QFont _font_web;
 
     QTextBrowser * addNewTab (const QString& name);
-    QAction *_close_action;
-    QAction *_close_others_action;
+
+    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                          QWidget *receiver, const char *member);
+
+    void tab_state_changed (void);
 
   };
 }

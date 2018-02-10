@@ -23,6 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 // This file implements a tab bar derived from QTabBar with a contextmenu
 // and possibility to close a tab via double-left and middle mouse click.
 
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
+
 #include "tab-bar.h"
 
 namespace octave
@@ -34,6 +38,56 @@ namespace octave
   tab_bar::~tab_bar (void)
   {
     delete m_context_menu;
+  }
+
+  // slots for tab navigation
+  void tab_bar::switch_left_tab (void)
+  {
+    switch_tab (-1);
+  }
+
+  void tab_bar::switch_right_tab (void)
+  {
+    switch_tab (1);
+  }
+
+  void tab_bar::move_tab_left (void)
+  {
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
+    switch_tab (-1, true);
+#endif
+  }
+
+  void tab_bar::move_tab_right (void)
+  {
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
+    switch_tab (1, true);
+#endif
+  }
+
+  void tab_bar::switch_tab (int direction, bool movetab)
+  {
+    int tabs = count ();
+
+    if (tabs < 2)
+      return;
+
+    int old_pos = currentIndex ();
+    int new_pos = currentIndex () + direction;
+
+    if (new_pos < 0 || new_pos >= tabs)
+      new_pos = new_pos - direction*tabs;
+
+    if (movetab)
+      {
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
+        moveTab (old_pos, new_pos);
+        setCurrentIndex (old_pos);
+        setCurrentIndex (new_pos);
+#endif
+      }
+    else
+      setCurrentIndex (new_pos);
   }
 
   // Reimplement mouse event for filtering out the desired mouse clicks

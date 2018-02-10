@@ -50,6 +50,13 @@ namespace octave
 
     void close_current_tab_signal (bool);
 
+  public slots:
+
+    void switch_left_tab (void);
+    void switch_right_tab (void);
+    void move_tab_left (void);
+    void move_tab_right (void);
+
   protected:
 
     void mousePressEvent(QMouseEvent *event);
@@ -57,6 +64,8 @@ namespace octave
   private:
 
     QMenu *m_context_menu;
+
+    void switch_tab (int direction, bool movetab = false);
   };
 }
 

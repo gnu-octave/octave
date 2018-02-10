@@ -45,16 +45,6 @@ extern OCTINTERP_API void check_version (const std::string& version,
                                          const std::string& fcn);
 
 extern OCTINTERP_API void
-install_builtin_function (octave_builtin::fcn f, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool can_hide_function = true);
-
-extern OCTINTERP_API void
-install_builtin_function (octave_builtin::meth m, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool can_hide_function = true);
-
-extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
                       const octave::dynamic_library& shl, const std::string& doc,
                       bool relative = false);
@@ -67,13 +57,6 @@ install_dld_function (octave_dld_function::meth m, const std::string& name,
 extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
                       const octave::dynamic_library& shl, bool relative = false);
-
-extern OCTINTERP_API void
-alias_builtin (const std::string& alias, const std::string& name);
-
-extern OCTINTERP_API void
-install_builtin_dispatch (const std::string& name, const std::string& klass);
-
 // Gets the shlib of the currently executing DLD function, if any.
 extern OCTINTERP_API octave::dynamic_library
 get_current_shlib (void);
@@ -109,6 +92,26 @@ defun_isargout (int, int);
 OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::isargout' instead")
 extern OCTINTERP_API void
 defun_isargout (int, int, bool *);
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_function' instead")
+extern OCTINTERP_API void
+install_builtin_function (octave_builtin::fcn f, const std::string& name,
+                          const std::string& file, const std::string& doc,
+                          bool can_hide_function = true);
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_function' instead")
+extern OCTINTERP_API void
+install_builtin_function (octave_builtin::meth m, const std::string& name,
+                          const std::string& file, const std::string& doc,
+                          bool can_hide_function = true);
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::alias_built_in_function' instead")
+extern OCTINTERP_API void
+alias_builtin (const std::string& alias, const std::string& name);
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_dispatch' instead")
+extern OCTINTERP_API void
+install_builtin_dispatch (const std::string& name, const std::string& klass);
 
 #endif
 

@@ -31,10 +31,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPalette>
 #include <QRegExp>
 
+#include "defun.h"
 #include "graphics.h"
 #include "gtk-manager.h"
 #include "interpreter.h"
-#include "defun.h"
+#include "symtab.h"
 
 #include "Backend.h"
 #include "QtHandlesUtils.h"
@@ -141,13 +142,17 @@ DEFUN (__shutdown_qt__, , , "")
 }
 
 void
-install___init_qt___functions (void)
+install___init_qt___functions (octave::symbol_table& symtab)
 {
-  install_builtin_function (F__init_qt__, "__init_qt__",
-                            "__init_qt__.cc", "");
+  symtab.install_built_in_function
+    ("__init_qt__", octave_value (new octave_builtin
+                                  (F__init_qt__, "__init_qt__",
+                                   "__init_qt__.cc", "")));
 
-  install_builtin_function (F__shutdown_qt__, "__shutdown_qt__",
-                            "__init_qt__.cc", "");
+  symtab.install_built_in_function
+    ("__shutdown_qt__", octave_value (new octave_builtin
+                                      (F__shutdown_qt__, "__shutdown_qt__",
+                                       "__init_qt__.cc", "")));
 }
 
 #if 0

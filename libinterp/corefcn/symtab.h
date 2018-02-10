@@ -342,6 +342,8 @@ namespace octave
         }
     }
 
+    // FIXME: should we ensure that FCN really is a built-in function
+    // object?
     void install_built_in_function (const std::string& name,
                                     const octave_value& fcn)
     {

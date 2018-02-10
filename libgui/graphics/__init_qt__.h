@@ -30,6 +30,11 @@ namespace QtHandles
 
 }
 
-extern void install___init_qt___functions (void);
+namespace octave
+{
+  class symbol_table;
+}
+
+extern void install___init_qt___functions (octave::symbol_table&);
 
 #endif

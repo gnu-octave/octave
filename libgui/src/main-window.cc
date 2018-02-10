@@ -119,7 +119,9 @@ namespace octave
             // The qt graphics toolkit must be initialized before startup
             // files are executed.
 
-            install___init_qt___functions ();
+            symbol_table& symtab = interp.get_symbol_table ();
+
+            install___init_qt___functions (symtab);
 
             Fregister_graphics_toolkit (interp, ovl ("qt"));
 #endif

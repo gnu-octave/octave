@@ -40,10 +40,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-opengl.h"
 #include "text-renderer.h"
 
-#if defined (HAVE_OPENGL)
-
 namespace octave
 {
+#if defined (HAVE_OPENGL)
+
   static int
   next_power_of_2 (int n)
   {
@@ -586,29 +586,6 @@ namespace octave
   {
     // Dummy class.
   };
-
-#endif
-
-#if defined (HAVE_OPENGL)
-
-  static int
-  get_maxlights (void)
-  {
-    static int max_lights = 0;
-
-    // Check actual maximum number of lights possible
-    if (max_lights == 0)
-      {
-        for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
-          {
-            glDisable (GL_LIGHT0 + max_lights);
-            if (glGetError ())
-              break;
-          }
-      }
-
-    return max_lights;
-  }
 
 #endif
 
@@ -1995,6 +1972,29 @@ namespace octave
 
 #endif
   }
+
+#if defined (HAVE_OPENGL)
+
+  static int
+  get_maxlights (void)
+  {
+    static int max_lights = 0;
+
+    // Check actual maximum number of lights possible
+    if (max_lights == 0)
+      {
+        for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
+          {
+            glDisable (GL_LIGHT0 + max_lights);
+            if (glGetError ())
+              break;
+          }
+      }
+
+    return max_lights;
+  }
+
+#endif
 
   void
   opengl_renderer::draw_axes_children (const axes::properties& props)

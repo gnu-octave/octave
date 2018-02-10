@@ -45,10 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Quad-opts.cc"
 
-#if defined (quad)
-#  undef quad
-#endif
-
 // Global pointer for user defined function required by quadrature functions.
 static octave_function *quad_fcn;
 
@@ -130,8 +126,8 @@ quad_float_user_function (float x)
   return retval;
 }
 
-DEFMETHOD (quad, interp, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHODX ("quad", Fquad, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})

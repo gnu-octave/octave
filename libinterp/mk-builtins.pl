@@ -154,10 +154,6 @@ elsif ($make_source)
 #include \"symtab.h\"
 #include \"variables.h\"
 
-#if defined (quad)
-#  undef quad
-#endif
-
 namespace octave
 {";
 

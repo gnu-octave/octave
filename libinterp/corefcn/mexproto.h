@@ -302,14 +302,16 @@ extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
     {                                                                   \
       if (! (expr))                                                     \
         {                                                               \
-          if (msg != NULL && msg[0] != '\0')                            \
-            mexErrMsgIdAndTxt ("Octave:MEX",                            \
-                               "Assertion failed: %s, at line %d of file \"%s\".\n%s\n", \
-                               #expr, __LINE__, __FILE__, msg);         \
+          if (msg && msg[0])                                            \
+            mexErrMsgIdAndTxt                                           \
+              ("Octave:MEX",                                            \
+               "Assertion failed: %s, at line %d of file \"%s\".\n%s\n", \
+               #expr, __LINE__, __FILE__, msg);                         \
           else                                                          \
-            mexErrMsgIdAndTxt ("Octave:MEX",                            \
-                               "Assertion failed: %s, at line %d of file \"%s\".\n", \
-                               #expr, __LINE__, __FILE__);              \
+            mexErrMsgIdAndTxt                                           \
+              ("Octave:MEX",                                            \
+               "Assertion failed: %s, at line %d of file \"%s\".\n",    \
+               #expr, __LINE__, __FILE__);                              \
         }                                                               \
     }                                                                   \
   while (0)
@@ -319,14 +321,16 @@ extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
     {                                                                   \
       if (! (expr))                                                     \
         {                                                               \
-          if (msg != NULL && msg[0] != '\0')                            \
-            mexErrMsgIdAndTxt ("Octave:MEX",                            \
-                               "Assertion failed at line %d of file \"%s\".\n%s\n", \
-                               __LINE__, __FILE__, msg);                \
+          if (msg && msg[0])                                            \
+            mexErrMsgIdAndTxt                                           \
+              ("Octave:MEX",                                            \
+               "Assertion failed at line %d of file \"%s\".\n%s\n",     \
+               __LINE__, __FILE__, msg);                                \
           else                                                          \
-            mexErrMsgIdAndTxt ("Octave:MEX",                            \
-                               "Assertion failed at line %d of file \"%s\".\n", \
-                               __LINE__, __FILE__);                     \
+            mexErrMsgIdAndTxt                                           \
+              ("Octave:MEX",                                            \
+               "Assertion failed at line %d of file \"%s\".\n",         \
+               __LINE__, __FILE__);                                     \
         }                                                               \
     }                                                                   \
   while (0)

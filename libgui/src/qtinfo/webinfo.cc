@@ -100,6 +100,8 @@ namespace octave
 
     connect (_tab_bar, SIGNAL (close_current_tab_signal (bool)),
              this, SLOT (request_close_tab (bool)));
+    connect (_tab_bar, SIGNAL (tabCloseRequested (int)),
+              this, SLOT (close_tab (int)));
     connect (_tab_bar, SIGNAL (currentChanged (int)), this,
              SLOT (current_tab_changed (int)));
     connect (_zoom_in_button, SIGNAL (clicked ()), this, SLOT (zoom_in ()));

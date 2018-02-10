@@ -753,31 +753,28 @@ namespace octave
           }
       }
   }
-}
 
-// Decide if it's time to quit a for or while loop.
-static inline bool
-quit_loop_now (void)
-{
-  octave_quit ();
+  // Decide if it's time to quit a for or while loop.
+  static inline bool
+  quit_loop_now (void)
+  {
+    octave_quit ();
 
-  // Maybe handle 'continue N' someday...
+    // Maybe handle 'continue N' someday...
 
-  if (octave::tree_continue_command::continuing)
-    octave::tree_continue_command::continuing--;
+    if (octave::tree_continue_command::continuing)
+      octave::tree_continue_command::continuing--;
 
-  bool quit = (octave::tree_return_command::returning
-               || octave::tree_break_command::breaking
-               || octave::tree_continue_command::continuing);
+    bool quit = (octave::tree_return_command::returning
+                 || octave::tree_break_command::breaking
+                 || octave::tree_continue_command::continuing);
 
-  if (octave::tree_break_command::breaking)
-    octave::tree_break_command::breaking--;
+    if (octave::tree_break_command::breaking)
+      octave::tree_break_command::breaking--;
 
-  return quit;
-}
+    return quit;
+  }
 
-namespace octave
-{
   void
   tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   {
@@ -1151,53 +1148,50 @@ namespace octave
           }
       }
   }
-}
 
-// Final step of processing an indexing error.  Add the name of the
-// variable being indexed, if any, then issue an error.  (Will this also
-// be needed by pt-lvalue, which calls subsref?)
+  // Final step of processing an indexing error.  Add the name of the
+  // variable being indexed, if any, then issue an error.  (Will this also
+  // be needed by pt-lvalue, which calls subsref?)
 
-static void
-final_index_error (octave::index_exception& e,
-                   const octave::tree_expression *expr)
-{
-  std::string extra_message;
+  static void
+  final_index_error (octave::index_exception& e,
+                     const octave::tree_expression *expr)
+  {
+    std::string extra_message;
 
-  // FIXME: make this a member function for direct access to symbol
-  // table and scope?
+    // FIXME: make this a member function for direct access to symbol
+    // table and scope?
 
-  octave::symbol_scope scope
-    = octave::__require_current_scope__ ("final_index_error");
+    octave::symbol_scope scope
+      = octave::__require_current_scope__ ("final_index_error");
 
-  octave::symbol_record::context_id context = scope.current_context ();
+    octave::symbol_record::context_id context = scope.current_context ();
 
-  if (expr->is_identifier ()
-      && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
-    {
-      std::string var = expr->name ();
+    if (expr->is_identifier ()
+        && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
+      {
+        std::string var = expr->name ();
 
-      e.set_var (var);
+        e.set_var (var);
 
-      octave::symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
+        octave::symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
 
-      octave_value fcn = symtab.find_function (var);
+        octave_value fcn = symtab.find_function (var);
 
-      if (fcn.is_function ())
-        {
-          octave_function *fp = fcn.function_value ();
+        if (fcn.is_function ())
+          {
+            octave_function *fp = fcn.function_value ();
 
-          if (fp && fp->name () == var)
-            extra_message = " (note: variable '" + var + "' shadows function)";
-        }
-    }
+            if (fp && fp->name () == var)
+              extra_message = " (note: variable '" + var + "' shadows function)";
+          }
+      }
 
-  std::string msg = e.message () + extra_message;
+    std::string msg = e.message () + extra_message;
 
-  error_with_id (e.err_id (), msg.c_str ());
-}
+    error_with_id (e.err_id (), msg.c_str ());
+  }
 
-namespace octave
-{
   // Unlike Matlab, which does not allow the result of a function call
   // or array indexing expression to be further indexed, Octave attempts
   // to handle arbitrary index expressions.  For example, Octave allows

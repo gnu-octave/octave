@@ -55,63 +55,63 @@ along with Octave; see the file COPYING.  If not, see
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
 
-static void
-split_name_with_package (const std::string& name, std::string& fname,
-                         std::string& pname)
-{
-  size_t pos = name.rfind ('.');
-
-  fname.clear ();
-  pname.clear ();
-
-  if (pos != std::string::npos)
-    {
-      fname = name.substr (pos + 1);
-      pname = name.substr (0, pos);
-    }
-  else
-    fname = name;
-}
-
-// Check the load path to see if file that defined this is still
-// visible.  If the file is no longer visible, then erase the
-// definition and move on.  If the file is visible, then we also
-// need to check to see whether the file has changed since the
-// function was loaded/parsed.  However, this check should only
-// happen once per prompt (for files found from relative path
-// elements, we also check if the working directory has changed
-// since the last time the function was loaded/parsed).
-//
-// FIXME: perhaps this should be done for all loaded functions when
-// the prompt is printed or the directory has changed, and then we
-// would not check for it when finding symbol definitions.
-
-static inline bool
-load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
-                      octave_value& function,
-                      const std::string& dispatch_type = "",
-                      const std::string& package_name = "")
-{
-  bool retval = false;
-
-  octave_value ov_fcn
-    = octave::load_fcn_from_file (ff, dir_name, dispatch_type,
-                                  package_name);
-
-  if (ov_fcn.is_defined ())
-    {
-      retval = true;
-
-      function = ov_fcn;
-    }
-  else
-    function = octave_value ();
-
-  return retval;
-}
-
 namespace octave
 {
+  static void
+  split_name_with_package (const std::string& name, std::string& fname,
+                           std::string& pname)
+  {
+    size_t pos = name.rfind ('.');
+
+    fname.clear ();
+    pname.clear ();
+
+    if (pos != std::string::npos)
+      {
+        fname = name.substr (pos + 1);
+        pname = name.substr (0, pos);
+      }
+    else
+      fname = name;
+  }
+
+  // Check the load path to see if file that defined this is still
+  // visible.  If the file is no longer visible, then erase the
+  // definition and move on.  If the file is visible, then we also
+  // need to check to see whether the file has changed since the
+  // function was loaded/parsed.  However, this check should only
+  // happen once per prompt (for files found from relative path
+  // elements, we also check if the working directory has changed
+  // since the last time the function was loaded/parsed).
+  //
+  // FIXME: perhaps this should be done for all loaded functions when
+  // the prompt is printed or the directory has changed, and then we
+  // would not check for it when finding symbol definitions.
+
+  static inline bool
+  load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
+                        octave_value& function,
+                        const std::string& dispatch_type = "",
+                        const std::string& package_name = "")
+  {
+    bool retval = false;
+
+    octave_value ov_fcn
+      = octave::load_fcn_from_file (ff, dir_name, dispatch_type,
+                                    package_name);
+
+    if (ov_fcn.is_defined ())
+      {
+        retval = true;
+
+        function = ov_fcn;
+      }
+    else
+      function = octave_value ();
+
+    return retval;
+  }
+
   bool
   out_of_date_check (octave_value& function,
                      const std::string& dispatch_type,
@@ -493,30 +493,27 @@ namespace octave
 
     return fcn;
   }
-}
 
-template <template <typename, typename...> class C, typename V,
-          typename... A>
-static octave_value
-dump_container_map (const std::map<std::string, C<V, A...>>& container_map)
-{
-  if (container_map.empty ())
-    return octave_value (Matrix ());
+  template <template <typename, typename...> class C, typename V,
+            typename... A>
+  static octave_value
+  dump_container_map (const std::map<std::string, C<V, A...>>& container_map)
+  {
+    if (container_map.empty ())
+      return octave_value (Matrix ());
 
-  std::map<std::string, octave_value> info_map;
+    std::map<std::string, octave_value> info_map;
 
-  for (const auto& nm_container : container_map)
-    {
-      std::string nm = nm_container.first;
-      const C<V, A...>& container = nm_container.second;
-      info_map[nm] = Cell (container);
-    }
+    for (const auto& nm_container : container_map)
+      {
+        std::string nm = nm_container.first;
+        const C<V, A...>& container = nm_container.second;
+        info_map[nm] = Cell (container);
+      }
 
-  return octave_value (info_map);
-}
+    return octave_value (info_map);
+  }
 
-namespace octave
-{
   octave_value
   symbol_table::dump (void) const
   {

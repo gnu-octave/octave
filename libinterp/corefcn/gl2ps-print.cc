@@ -48,22 +48,22 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 #include "text-renderer.h"
 
-static void
-safe_pclose (FILE *f)
-{
-  if (f)
-    octave_pclose (f);
-}
-
-static void
-safe_fclose (FILE *f)
-{
-  if (f)
-    std::fclose (f);
-}
-
 namespace octave
 {
+  static void
+  safe_pclose (FILE *f)
+  {
+    if (f)
+      octave_pclose (f);
+  }
+
+  static void
+  safe_fclose (FILE *f)
+  {
+    if (f)
+      std::fclose (f);
+  }
+
   class
   OCTINTERP_API
   gl2ps_renderer : public opengl_renderer
@@ -547,220 +547,217 @@ namespace octave
         txtobj.set_z (coord_pix(2));
       }
   }
-}
 
-static std::string
-code_to_symbol (uint32_t code)
-{
-  std::string retval;
+  static std::string
+  code_to_symbol (uint32_t code)
+  {
+    std::string retval;
 
-  uint32_t idx = code - 945;
-  if (idx < 25)
-    {
-      std::string characters ("abgdezhqiklmnxoprVstufcyw");
-      retval = characters[idx];
-      return retval;
-    }
+    uint32_t idx = code - 945;
+    if (idx < 25)
+      {
+        std::string characters ("abgdezhqiklmnxoprVstufcyw");
+        retval = characters[idx];
+        return retval;
+      }
 
-  idx = code - 913;
-  if (idx < 25)
-    {
-      std::string characters ("ABGDEZHQIKLMNXOPRVSTUFCYW");
-      retval = characters[idx];
-    }
-  else if (code == 978)
-    retval = "U";
-  else if (code == 215)
-    retval = "\xb4";
-  else if (code == 177)
-    retval = "\xb1";
-  else if (code == 8501)
-    retval = "\xc0";
-  else if (code == 8465)
-    retval = "\xc1";
-  else if (code == 8242)
-    retval = "\xa2";
-  else if (code == 8736)
-    retval = "\xd0";
-  else if (code == 172)
-    retval = "\xd8";
-  else if (code == 9829)
-    retval = "\xa9";
-  else if (code == 8472)
-    retval = "\xc3";
-  else if (code == 8706)
-    retval = "\xb6";
-  else if (code == 8704)
-    retval = "\x22";
-  else if (code == 9827)
-    retval = "\xa7";
-  else if (code == 9824)
-    retval = "\xaa";
-  else if (code == 8476)
-    retval = "\xc2";
-  else if (code == 8734)
-    retval = "\xa5";
-  else if (code == 8730)
-    retval = "\xd6";
-  else if (code == 8707)
-    retval = "\x24";
-  else if (code == 9830)
-    retval = "\xa8";
-  else if (code == 8747)
-    retval = "\xf2";
-  else if (code == 8727)
-    retval = "\x2a";
-  else if (code == 8744)
-    retval = "\xda";
-  else if (code == 8855)
-    retval = "\xc4";
-  else if (code == 8901)
-    retval = "\xd7";
-  else if (code == 8728)
-    retval = "\xb0";
-  else if (code == 8745)
-    retval = "\xc7";
-  else if (code == 8743)
-    retval = "\xd9";
-  else if (code == 8856)
-    retval = "\xc6";
-  else if (code == 8729)
-    retval = "\xb7";
-  else if (code == 8746)
-    retval = "\xc8";
-  else if (code == 8853)
-    retval = "\xc5";
-  else if (code == 8804)
-    retval = "\xa3";
-  else if (code == 8712)
-    retval = "\xce";
-  else if (code == 8839)
-    retval = "\xca";
-  else if (code == 8801)
-    retval = "\xba";
-  else if (code == 8773)
-    retval = "\x40";
-  else if (code == 8834)
-    retval = "\xcc";
-  else if (code == 8805)
-    retval = "\xb3";
-  else if (code == 8715)
-    retval = "\x27";
-  else if (code == 8764)
-    retval = "\x7e";
-  else if (code == 8733)
-    retval = "\xb5";
-  else if (code == 8838)
-    retval = "\xcd";
-  else if (code == 8835)
-    retval = "\xc9";
-  else if (code == 8739)
-    retval = "\xbd";
-  else if (code == 8776)
-    retval = "\xbb";
-  else if (code == 8869)
-    retval = "\x5e";
-  else if (code == 8656)
-    retval = "\xdc";
-  else if (code == 8592)
-    retval = "\xac";
-  else if (code == 8658)
-    retval = "\xde";
-  else if (code == 8594)
-    retval = "\xae";
-  else if (code == 8596)
-    retval = "\xab";
-  else if (code == 8593)
-    retval = "\xad";
-  else if (code == 8595)
-    retval = "\xaf";
-  else if (code == 8970)
-    retval = "\xeb";
-  else if (code == 8971)
-    retval = "\xfb";
-  else if (code == 10216)
-    retval = "\xe1";
-  else if (code == 10217)
-    retval = "\xf1";
-  else if (code == 8968)
-    retval = "\xe9";
-  else if (code == 8969)
-    retval = "\xf9";
-  else if (code == 8800)
-    retval = "\xb9";
-  else if (code == 8230)
-    retval = "\xbc";
-  else if (code == 176)
-    retval = "\xb0";
-  else if (code == 8709)
-    retval = "\xc6";
-  else if (code == 169)
-    retval = "\xd3";
+    idx = code - 913;
+    if (idx < 25)
+      {
+        std::string characters ("ABGDEZHQIKLMNXOPRVSTUFCYW");
+        retval = characters[idx];
+      }
+    else if (code == 978)
+      retval = "U";
+    else if (code == 215)
+      retval = "\xb4";
+    else if (code == 177)
+      retval = "\xb1";
+    else if (code == 8501)
+      retval = "\xc0";
+    else if (code == 8465)
+      retval = "\xc1";
+    else if (code == 8242)
+      retval = "\xa2";
+    else if (code == 8736)
+      retval = "\xd0";
+    else if (code == 172)
+      retval = "\xd8";
+    else if (code == 9829)
+      retval = "\xa9";
+    else if (code == 8472)
+      retval = "\xc3";
+    else if (code == 8706)
+      retval = "\xb6";
+    else if (code == 8704)
+      retval = "\x22";
+    else if (code == 9827)
+      retval = "\xa7";
+    else if (code == 9824)
+      retval = "\xaa";
+    else if (code == 8476)
+      retval = "\xc2";
+    else if (code == 8734)
+      retval = "\xa5";
+    else if (code == 8730)
+      retval = "\xd6";
+    else if (code == 8707)
+      retval = "\x24";
+    else if (code == 9830)
+      retval = "\xa8";
+    else if (code == 8747)
+      retval = "\xf2";
+    else if (code == 8727)
+      retval = "\x2a";
+    else if (code == 8744)
+      retval = "\xda";
+    else if (code == 8855)
+      retval = "\xc4";
+    else if (code == 8901)
+      retval = "\xd7";
+    else if (code == 8728)
+      retval = "\xb0";
+    else if (code == 8745)
+      retval = "\xc7";
+    else if (code == 8743)
+      retval = "\xd9";
+    else if (code == 8856)
+      retval = "\xc6";
+    else if (code == 8729)
+      retval = "\xb7";
+    else if (code == 8746)
+      retval = "\xc8";
+    else if (code == 8853)
+      retval = "\xc5";
+    else if (code == 8804)
+      retval = "\xa3";
+    else if (code == 8712)
+      retval = "\xce";
+    else if (code == 8839)
+      retval = "\xca";
+    else if (code == 8801)
+      retval = "\xba";
+    else if (code == 8773)
+      retval = "\x40";
+    else if (code == 8834)
+      retval = "\xcc";
+    else if (code == 8805)
+      retval = "\xb3";
+    else if (code == 8715)
+      retval = "\x27";
+    else if (code == 8764)
+      retval = "\x7e";
+    else if (code == 8733)
+      retval = "\xb5";
+    else if (code == 8838)
+      retval = "\xcd";
+    else if (code == 8835)
+      retval = "\xc9";
+    else if (code == 8739)
+      retval = "\xbd";
+    else if (code == 8776)
+      retval = "\xbb";
+    else if (code == 8869)
+      retval = "\x5e";
+    else if (code == 8656)
+      retval = "\xdc";
+    else if (code == 8592)
+      retval = "\xac";
+    else if (code == 8658)
+      retval = "\xde";
+    else if (code == 8594)
+      retval = "\xae";
+    else if (code == 8596)
+      retval = "\xab";
+    else if (code == 8593)
+      retval = "\xad";
+    else if (code == 8595)
+      retval = "\xaf";
+    else if (code == 8970)
+      retval = "\xeb";
+    else if (code == 8971)
+      retval = "\xfb";
+    else if (code == 10216)
+      retval = "\xe1";
+    else if (code == 10217)
+      retval = "\xf1";
+    else if (code == 8968)
+      retval = "\xe9";
+    else if (code == 8969)
+      retval = "\xf9";
+    else if (code == 8800)
+      retval = "\xb9";
+    else if (code == 8230)
+      retval = "\xbc";
+    else if (code == 176)
+      retval = "\xb0";
+    else if (code == 8709)
+      retval = "\xc6";
+    else if (code == 169)
+      retval = "\xd3";
 
-  if (retval.empty ())
-    warning ("print: unhandled symbol %d", code);
+    if (retval.empty ())
+      warning ("print: unhandled symbol %d", code);
 
-  return retval;
-}
+    return retval;
+  }
 
-static std::string
-select_font (caseless_str fn, bool isbold, bool isitalic)
-{
-  std::transform (fn.begin (), fn.end (), fn.begin (), ::tolower);
-  std::string fontname;
-  if (fn == "times" || fn == "times-roman")
-    {
-      if (isitalic && isbold)
-        fontname = "Times-BoldItalic";
-      else if (isitalic)
-        fontname = "Times-Italic";
-      else if (isbold)
-        fontname = "Times-Bold";
-      else
-        fontname = "Times-Roman";
-    }
-  else if (fn == "courier")
-    {
-      if (isitalic && isbold)
-        fontname = "Courier-BoldOblique";
-      else if (isitalic)
-        fontname = "Courier-Oblique";
-      else if (isbold)
-        fontname = "Courier-Bold";
-      else
-        fontname = "Courier";
-    }
-  else if (fn == "symbol")
-    fontname = "Symbol";
-  else if (fn == "zapfdingbats")
-    fontname = "ZapfDingbats";
-  else
-    {
-      if (isitalic && isbold)
-        fontname = "Helvetica-BoldOblique";
-      else if (isitalic)
-        fontname = "Helvetica-Oblique";
-      else if (isbold)
-        fontname = "Helvetica-Bold";
-      else
-        fontname = "Helvetica";
-    }
-  return fontname;
-}
+  static std::string
+  select_font (caseless_str fn, bool isbold, bool isitalic)
+  {
+    std::transform (fn.begin (), fn.end (), fn.begin (), ::tolower);
+    std::string fontname;
+    if (fn == "times" || fn == "times-roman")
+      {
+        if (isitalic && isbold)
+          fontname = "Times-BoldItalic";
+        else if (isitalic)
+          fontname = "Times-Italic";
+        else if (isbold)
+          fontname = "Times-Bold";
+        else
+          fontname = "Times-Roman";
+      }
+    else if (fn == "courier")
+      {
+        if (isitalic && isbold)
+          fontname = "Courier-BoldOblique";
+        else if (isitalic)
+          fontname = "Courier-Oblique";
+        else if (isbold)
+          fontname = "Courier-Bold";
+        else
+          fontname = "Courier";
+      }
+    else if (fn == "symbol")
+      fontname = "Symbol";
+    else if (fn == "zapfdingbats")
+      fontname = "ZapfDingbats";
+    else
+      {
+        if (isitalic && isbold)
+          fontname = "Helvetica-BoldOblique";
+        else if (isitalic)
+          fontname = "Helvetica-Oblique";
+        else if (isbold)
+          fontname = "Helvetica-Bold";
+        else
+          fontname = "Helvetica";
+      }
+    return fontname;
+  }
 
-static void
-escape_character (const std::string chr, std::string& str)
-{
-  std::size_t idx = str.find (chr);
-  while (idx != std::string::npos)
-    {
-      str.insert (idx, 1, '\\');
-      idx = str.find (chr, idx + 2);
-    }
-}
+  static void
+  escape_character (const std::string chr, std::string& str)
+  {
+    std::size_t idx = str.find (chr);
+    while (idx != std::string::npos)
+      {
+        str.insert (idx, 1, '\\');
+        idx = str.find (chr, idx + 2);
+      }
+  }
 
-namespace octave
-{
   std::string
   gl2ps_renderer::strlist_to_svg (double x, double y, double z,
                                   Matrix box, double rotation,
@@ -1058,14 +1055,12 @@ namespace octave
     render_text (str, pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0,
                  halign, valign, props.get_rotation ());
   }
-
 }
 
 #endif
 
 namespace octave
 {
-
   // If the name of the stream begins with '|', open a pipe to the command
   // named by the rest of the string.  Otherwise, write to the named file.
 

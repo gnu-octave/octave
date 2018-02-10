@@ -31,139 +31,136 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   typedef tree_expression* tree_expression_ptr_t;
-}
 
-// If a tree expression is a transpose or hermitian transpose, return
-// the argument and corresponding operator.
+  // If a tree expression is a transpose or hermitian transpose, return
+  // the argument and corresponding operator.
 
-static octave_value::unary_op
-strip_trans_herm (octave::tree_expression_ptr_t& exp)
-{
-  if (exp->is_unary_expression ())
-    {
-      octave::tree_unary_expression *uexp =
-        dynamic_cast<octave::tree_unary_expression *> (exp);
+  static octave_value::unary_op
+  strip_trans_herm (octave::tree_expression_ptr_t& exp)
+  {
+    if (exp->is_unary_expression ())
+      {
+        octave::tree_unary_expression *uexp =
+          dynamic_cast<octave::tree_unary_expression *> (exp);
 
-      octave_value::unary_op op = uexp->op_type ();
+        octave_value::unary_op op = uexp->op_type ();
 
-      if (op == octave_value::op_transpose
-          || op == octave_value::op_hermitian)
-        exp = uexp->operand ();
-      else
-        op = octave_value::unknown_unary_op;
+        if (op == octave_value::op_transpose
+            || op == octave_value::op_hermitian)
+          exp = uexp->operand ();
+        else
+          op = octave_value::unknown_unary_op;
 
-      return op;
-    }
-  else
-    return octave_value::unknown_unary_op;
-}
+        return op;
+      }
+    else
+      return octave_value::unknown_unary_op;
+  }
 
-static octave_value::unary_op
-strip_not (octave::tree_expression_ptr_t& exp)
-{
-  if (exp->is_unary_expression ())
-    {
-      octave::tree_unary_expression *uexp =
-        dynamic_cast<octave::tree_unary_expression *> (exp);
+  static octave_value::unary_op
+  strip_not (octave::tree_expression_ptr_t& exp)
+  {
+    if (exp->is_unary_expression ())
+      {
+        octave::tree_unary_expression *uexp =
+          dynamic_cast<octave::tree_unary_expression *> (exp);
 
-      octave_value::unary_op op = uexp->op_type ();
+        octave_value::unary_op op = uexp->op_type ();
 
-      if (op == octave_value::op_not)
-        exp = uexp->operand ();
-      else
-        op = octave_value::unknown_unary_op;
+        if (op == octave_value::op_not)
+          exp = uexp->operand ();
+        else
+          op = octave_value::unknown_unary_op;
 
-      return op;
-    }
-  else
-    return octave_value::unknown_unary_op;
-}
+        return op;
+      }
+    else
+      return octave_value::unknown_unary_op;
+  }
 
-// Possibly convert multiplication to trans_mul, mul_trans, herm_mul,
-// or mul_herm.
+  // Possibly convert multiplication to trans_mul, mul_trans, herm_mul,
+  // or mul_herm.
 
-static octave_value::compound_binary_op
-simplify_mul_op (octave::tree_expression_ptr_t& a,
-                 octave::tree_expression_ptr_t& b)
-{
-  octave_value::compound_binary_op retop
-    = octave_value::unknown_compound_binary_op;
+  static octave_value::compound_binary_op
+  simplify_mul_op (octave::tree_expression_ptr_t& a,
+                   octave::tree_expression_ptr_t& b)
+  {
+    octave_value::compound_binary_op retop
+      = octave_value::unknown_compound_binary_op;
 
-  octave_value::unary_op opa = strip_trans_herm (a);
+    octave_value::unary_op opa = strip_trans_herm (a);
 
-  if (opa == octave_value::op_hermitian)
-    retop = octave_value::op_herm_mul;
-  else if (opa == octave_value::op_transpose)
-    retop = octave_value::op_trans_mul;
-  else
-    {
-      octave_value::unary_op opb = strip_trans_herm (b);
+    if (opa == octave_value::op_hermitian)
+      retop = octave_value::op_herm_mul;
+    else if (opa == octave_value::op_transpose)
+      retop = octave_value::op_trans_mul;
+    else
+      {
+        octave_value::unary_op opb = strip_trans_herm (b);
 
-      if (opb == octave_value::op_hermitian)
-        retop = octave_value::op_mul_herm;
-      else if (opb == octave_value::op_transpose)
-        retop = octave_value::op_mul_trans;
-    }
+        if (opb == octave_value::op_hermitian)
+          retop = octave_value::op_mul_herm;
+        else if (opb == octave_value::op_transpose)
+          retop = octave_value::op_mul_trans;
+      }
 
-  return retop;
-}
+    return retop;
+  }
 
-// Possibly convert left division to trans_ldiv or herm_ldiv.
+  // Possibly convert left division to trans_ldiv or herm_ldiv.
 
-static octave_value::compound_binary_op
-simplify_ldiv_op (octave::tree_expression_ptr_t& a,
-                  octave::tree_expression_ptr_t&)
-{
-  octave_value::compound_binary_op retop
-    = octave_value::unknown_compound_binary_op;
+  static octave_value::compound_binary_op
+  simplify_ldiv_op (octave::tree_expression_ptr_t& a,
+                    octave::tree_expression_ptr_t&)
+  {
+    octave_value::compound_binary_op retop
+      = octave_value::unknown_compound_binary_op;
 
-  octave_value::unary_op opa = strip_trans_herm (a);
+    octave_value::unary_op opa = strip_trans_herm (a);
 
-  if (opa == octave_value::op_hermitian)
-    retop = octave_value::op_herm_ldiv;
-  else if (opa == octave_value::op_transpose)
-    retop = octave_value::op_trans_ldiv;
+    if (opa == octave_value::op_hermitian)
+      retop = octave_value::op_herm_ldiv;
+    else if (opa == octave_value::op_transpose)
+      retop = octave_value::op_trans_ldiv;
 
-  return retop;
-}
+    return retop;
+  }
 
-// Possibly contract and/or with negation.
+  // Possibly contract and/or with negation.
 
-static octave_value::compound_binary_op
-simplify_and_or_op (octave::tree_expression_ptr_t& a,
-                    octave::tree_expression_ptr_t& b,
-                    octave_value::binary_op op)
-{
-  octave_value::compound_binary_op retop
-    = octave_value::unknown_compound_binary_op;
+  static octave_value::compound_binary_op
+  simplify_and_or_op (octave::tree_expression_ptr_t& a,
+                      octave::tree_expression_ptr_t& b,
+                      octave_value::binary_op op)
+  {
+    octave_value::compound_binary_op retop
+      = octave_value::unknown_compound_binary_op;
 
-  octave_value::unary_op opa = strip_not (a);
+    octave_value::unary_op opa = strip_not (a);
 
-  if (opa == octave_value::op_not)
-    {
-      if (op == octave_value::op_el_and)
-        retop = octave_value::op_el_not_and;
-      else if (op == octave_value::op_el_or)
-        retop = octave_value::op_el_not_or;
-    }
-  else
-    {
-      octave_value::unary_op opb = strip_not (b);
+    if (opa == octave_value::op_not)
+      {
+        if (op == octave_value::op_el_and)
+          retop = octave_value::op_el_not_and;
+        else if (op == octave_value::op_el_or)
+          retop = octave_value::op_el_not_or;
+      }
+    else
+      {
+        octave_value::unary_op opb = strip_not (b);
 
-      if (opb == octave_value::op_not)
-        {
-          if (op == octave_value::op_el_and)
-            retop = octave_value::op_el_and_not;
-          else if (op == octave_value::op_el_or)
-            retop = octave_value::op_el_or_not;
-        }
-    }
+        if (opb == octave_value::op_not)
+          {
+            if (op == octave_value::op_el_and)
+              retop = octave_value::op_el_and_not;
+            else if (op == octave_value::op_el_or)
+              retop = octave_value::op_el_or_not;
+          }
+      }
 
-  return retop;
-}
+    return retop;
+  }
 
-namespace octave
-{
   tree_binary_expression *
   maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
                                     int l, int c, octave_value::binary_op t)

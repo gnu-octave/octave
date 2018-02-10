@@ -42,22 +42,18 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_OPENGL)
 
-static int
-next_power_of_2 (int n)
-{
-  int m = 1;
-
-  while (m < n && m < std::numeric_limits<int>::max ())
-    m <<= 1;
-
-  return m;
-}
-
-#endif
-
 namespace octave
 {
-#if defined (HAVE_OPENGL)
+  static int
+  next_power_of_2 (int n)
+  {
+    int m = 1;
+
+    while (m < n && m < std::numeric_limits<int>::max ())
+      m <<= 1;
+
+    return m;
+  }
 
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
@@ -593,35 +589,29 @@ namespace octave
 
 #endif
 
-}
-
 #if defined (HAVE_OPENGL)
 
-static int
-get_maxlights (void)
-{
+  static int
+  get_maxlights (void)
+  {
+    static int max_lights = 0;
 
-  static int max_lights = 0;
+    // Check actual maximum number of lights possible
+    if (max_lights == 0)
+      {
+        for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
+          {
+            glDisable (GL_LIGHT0 + max_lights);
+            if (glGetError ())
+              break;
+          }
+      }
 
-  // Check actual maximum number of lights possible
-  if (max_lights == 0)
-    {
-      for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
-        {
-          glDisable (GL_LIGHT0 + max_lights);
-          if (glGetError ())
-            break;
-        }
-    }
-
-  return max_lights;
-
-}
+    return max_lights;
+  }
 
 #endif
 
-namespace octave
-{
   opengl_renderer::opengl_renderer (void)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
       zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),

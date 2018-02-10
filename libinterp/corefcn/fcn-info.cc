@@ -234,39 +234,36 @@ namespace octave
 
     return retval;
   }
-}
 
-// :-) JWE, can you parse this? Returns a 2D array with second dimension equal
-// to btyp_num_types (static constant).  Only the leftmost dimension can be
-// variable in C/C++.  Typedefs are boring.
+  // :-) JWE, can you parse this? Returns a 2D array with second dimension equal
+  // to btyp_num_types (static constant).  Only the leftmost dimension can be
+  // variable in C/C++.  Typedefs are boring.
 
-static builtin_type_t (*build_sup_table (void))[btyp_num_types]
-{
-  static builtin_type_t sup_table[btyp_num_types][btyp_num_types];
-  for (int i = 0; i < btyp_num_types; i++)
-    for (int j = 0; j < btyp_num_types; j++)
-      {
-        builtin_type_t ityp = static_cast<builtin_type_t> (i);
-        builtin_type_t jtyp = static_cast<builtin_type_t> (j);
-        // FIXME: Is this really right?
-        bool use_j =
-          (jtyp == btyp_func_handle || ityp == btyp_bool
-           || (btyp_isarray (ityp)
-               && (! btyp_isarray (jtyp)
-                   || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
-                   || ((ityp == btyp_double || ityp == btyp_complex
-                        || ityp == btyp_char)
-                       && (jtyp == btyp_float
-                           || jtyp == btyp_float_complex)))));
+  static builtin_type_t (*build_sup_table (void))[btyp_num_types]
+  {
+    static builtin_type_t sup_table[btyp_num_types][btyp_num_types];
+    for (int i = 0; i < btyp_num_types; i++)
+      for (int j = 0; j < btyp_num_types; j++)
+        {
+          builtin_type_t ityp = static_cast<builtin_type_t> (i);
+          builtin_type_t jtyp = static_cast<builtin_type_t> (j);
+          // FIXME: Is this really right?
+          bool use_j =
+            (jtyp == btyp_func_handle || ityp == btyp_bool
+             || (btyp_isarray (ityp)
+                 && (! btyp_isarray (jtyp)
+                     || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
+                     || ((ityp == btyp_double || ityp == btyp_complex
+                          || ityp == btyp_char)
+                         && (jtyp == btyp_float
+                             || jtyp == btyp_float_complex)))));
 
-        sup_table[i][j] = (use_j ? jtyp : ityp);
-      }
+          sup_table[i][j] = (use_j ? jtyp : ityp);
+        }
 
-  return sup_table;
-}
+    return sup_table;
+  }
 
-namespace octave
-{
   std::string
   get_dispatch_type (const octave_value_list& args,
                      builtin_type_t& builtin_type)

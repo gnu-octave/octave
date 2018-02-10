@@ -61,38 +61,38 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 #include "text-renderer.h"
 
-// FIXME: maybe issue at most one warning per glyph/font/size/weight
-//        combination.
-
-static void
-warn_missing_glyph (FT_ULong c)
+namespace octave
 {
-  warning_with_id ("Octave:missing-glyph",
-                   "text_renderer: skipping missing glyph for character '%x'", c);
-}
+  // FIXME: maybe issue at most one warning per glyph/font/size/weight
+  //        combination.
 
-static void
-warn_glyph_render (FT_ULong c)
-{
-  warning_with_id ("Octave:glyph-render",
-                   "text_renderer: unable to render glyph for character '%x'", c);
-}
+  static void
+  warn_missing_glyph (FT_ULong c)
+  {
+    warning_with_id ("Octave:missing-glyph",
+                     "text_renderer: skipping missing glyph for character '%x'", c);
+  }
+
+  static void
+  warn_glyph_render (FT_ULong c)
+  {
+    warning_with_id ("Octave:glyph-render",
+                     "text_renderer: unable to render glyph for character '%x'", c);
+  }
 
 #if defined (_MSC_VER)
-// FIXME: is this really needed?
-//
-// This is just a trick to avoid multiple symbol definitions.
-// PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
-// that will cause MSVC not to generate a new instantiation and
-// use the imported one instead.
+  // FIXME: is this really needed?
+  //
+  // This is just a trick to avoid multiple symbol definitions.
+  // PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
+  // that will cause MSVC not to generate a new instantiation and
+  // use the imported one instead.
 #  include "PermMatrix.h"
 #endif
 
-// Forward declaration
-static void ft_face_destroyed (void *object);
+  // Forward declaration
+  static void ft_face_destroyed (void *object);
 
-namespace octave
-{
   class
   ft_manager
   {
@@ -341,16 +341,12 @@ namespace octave
 
   ft_manager *ft_manager::instance = nullptr;
 
-}
+  static void
+  ft_face_destroyed (void *object)
+  {
+    octave::ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
+  }
 
-static void
-ft_face_destroyed (void *object)
-{
-  octave::ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
-}
-
-namespace octave
-{
   class
   OCTINTERP_API
   ft_text_renderer : public base_text_renderer

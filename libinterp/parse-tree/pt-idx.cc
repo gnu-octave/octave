@@ -143,33 +143,32 @@ namespace octave
   {
     return expr->name ();
   }
-}
 
-static inline octave_value_list
-make_value_list (octave::tree_evaluator *tw, octave::tree_argument_list *args,
-                 const string_vector& arg_nm, const octave_value *object,
-                 bool rvalue = true)
-{
-  octave_value_list retval;
+  static inline octave_value_list
+  make_value_list (octave::tree_evaluator *tw,
+                   octave::tree_argument_list *args,
+                   const string_vector& arg_nm, const octave_value *object,
+                   bool rvalue = true)
+  {
+    octave_value_list retval;
 
-  if (args)
-    {
-      if (rvalue && object && args->has_magic_end () && object->is_undefined ())
-        err_invalid_inquiry_subscript ();
+    if (args)
+      {
+        if (rvalue && object && args->has_magic_end ()
+            && object->is_undefined ())
+          err_invalid_inquiry_subscript ();
 
-      retval = args->convert_to_const_vector (tw, object);
-    }
+        retval = args->convert_to_const_vector (tw, object);
+      }
 
-  octave_idx_type n = retval.length ();
+    octave_idx_type n = retval.length ();
 
-  if (n > 0)
-    retval.stash_name_tags (arg_nm);
+    if (n > 0)
+      retval.stash_name_tags (arg_nm);
 
-  return retval;
-}
+    return retval;
+  }
 
-namespace octave
-{
   std::string
   tree_index_expression::get_struct_index
   (tree_evaluator *tw,
@@ -194,47 +193,45 @@ namespace octave
 
     return fn;
   }
-}
 
-// Final step of processing an indexing error.  Add the name of the
-// variable being indexed, if any, then issue an error.  (Will this also
-// be needed by pt-lvalue, which calls subsref?)
+  // Final step of processing an indexing error.  Add the name of the
+  // variable being indexed, if any, then issue an error.  (Will this also
+  // be needed by pt-lvalue, which calls subsref?)
 
-static void
-final_index_error (octave::index_exception& e,
-                   const octave::tree_expression *expr)
-{
-  std::string extra_message;
+  static void
+  final_index_error (octave::index_exception& e,
+                     const octave::tree_expression *expr)
+  {
+    std::string extra_message;
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
+    octave::symbol_table& symtab
+      = octave::__get_symbol_table__ ("final_index_error");
 
-  octave::symbol_record::context_id context = symtab.current_context ();
+    octave::symbol_record::context_id context = symtab.current_context ();
 
-  if (expr->is_identifier ()
-      && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
-    {
-      std::string var = expr->name ();
+    if (expr->is_identifier ()
+        && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
+      {
+        std::string var = expr->name ();
 
-      e.set_var (var);
+        e.set_var (var);
 
-      octave_value fcn = symtab.find_function (var);
+        octave_value fcn = symtab.find_function (var);
 
-      if (fcn.is_function ())
-        {
-          octave_function *fp = fcn.function_value ();
+        if (fcn.is_function ())
+          {
+            octave_function *fp = fcn.function_value ();
 
-          if (fp && fp->name () == var)
-            extra_message = " (note: variable '" + var + "' shadows function)";
-        }
-    }
+            if (fp && fp->name () == var)
+              extra_message = " (note: variable '" + var + "' shadows function)";
+          }
+      }
 
-  std::string msg = e.message () + extra_message;
+    std::string msg = e.message () + extra_message;
 
-  error_with_id (e.err_id (), msg.c_str ());
-}
+    error_with_id (e.err_id (), msg.c_str ());
+  }
 
-namespace octave
-{
   octave_lvalue
   tree_index_expression::lvalue (tree_evaluator *tw)
   {

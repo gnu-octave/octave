@@ -61,165 +61,165 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "utils.h"
 
-// Programming Note: There are two very different error functions used
-// in the stream code.  When invoked with "error (...)" the member
-// function from octave::stream or octave::base_stream is called.  This
-// function sets the error state on the stream AND returns control to
-// the caller.  The caller must then return a value at the end of the
-// function.  When invoked with "::error (...)" the exception-based
-// error function from error.h is used.  This function will throw an
-// exception and not return control to the caller.  BE CAREFUL and
-// invoke the correct error function!
-
-// Possible values for conv_err:
-//
-//   1 : not a real scalar
-//   2 : value is NaN
-//   3 : value is not an integer
-
-static int
-convert_to_valid_int (const octave_value& tc, int& conv_err)
-{
-  conv_err = 0;
-
-  int retval = 0;
-
-  double dval = 0.0;
-
-  try
-    {
-      dval = tc.double_value ();
-    }
-  catch (const octave::execution_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-
-      conv_err = 1;
-    }
-
-  if (! conv_err)
-    {
-      if (! lo_ieee_isnan (dval))
-        {
-          int ival = octave::math::nint (dval);
-
-          if (ival == dval)
-            retval = ival;
-          else
-            conv_err = 3;
-        }
-      else
-        conv_err = 2;
-    }
-
-  return retval;
-}
-
-static octave_idx_type
-get_size (double d, const std::string& who)
-{
-  octave_idx_type retval = -1;
-
-  if (lo_ieee_isnan (d))
-    ::error ("%s: NaN is invalid as size specification", who.c_str ());
-
-  if (octave::math::isinf (d))
-    retval = -1;
-  else
-    {
-      if (d < 0.0)
-        ::error ("%s: negative value invalid as size specification",
-                 who.c_str ());
-
-      if (d > std::numeric_limits<octave_idx_type>::max ())
-        ::error ("%s: dimension too large for Octave's index type",
-                 who.c_str ());
-
-      retval = octave::math::nint_big (d);
-    }
-
-  return retval;
-}
-
-static void
-get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc,
-          bool& one_elt_size_spec, const std::string& who)
-{
-  nr = -1;
-  nc = -1;
-
-  one_elt_size_spec = false;
-
-  double dnr = -1.0;
-  double dnc = -1.0;
-
-  octave_idx_type sz_len = size.numel ();
-
-  if (sz_len == 1)
-    {
-      one_elt_size_spec = true;
-
-      dnr = size(0);
-
-      dnc = (dnr == 0.0) ? 0.0 : 1.0;
-    }
-  else if (sz_len == 2)
-    {
-      dnr = size(0);
-
-      if (octave::math::isinf (dnr))
-        ::error ("%s: invalid size specification", who.c_str ());
-
-      dnc = size(1);
-    }
-  else
-    ::error ("%s: invalid size specification", who.c_str ());
-
-  nr = get_size (dnr, who);
-
-  if (dnc >= 0.0)
-    nc = get_size (dnc, who);
-}
-
-
-static std::string
-expand_char_class (const std::string& s)
-{
-  std::string retval;
-
-  size_t len = s.length ();
-
-  size_t i = 0;
-
-  while (i < len)
-    {
-      unsigned char c = s[i++];
-
-      if (c == '-' && i > 1 && i < len
-          && (   static_cast<unsigned char> (s[i-2])
-              <= static_cast<unsigned char> (s[i])))
-        {
-          // Add all characters from the range except the first (we
-          // already added it below).
-
-          for (c = s[i-2]+1; c < s[i]; c++)
-            retval += c;
-        }
-      else
-        {
-          // Add the character to the class.  Only add '-' if it is
-          // the last character in the class.
-
-          if (c != '-' || i == len)
-            retval += c;
-        }
-    }
-
-  return retval;
-}
-
 namespace octave
 {
+  // Programming Note: There are two very different error functions used
+  // in the stream code.  When invoked with "error (...)" the member
+  // function from octave::stream or octave::base_stream is called.  This
+  // function sets the error state on the stream AND returns control to
+  // the caller.  The caller must then return a value at the end of the
+  // function.  When invoked with "::error (...)" the exception-based
+  // error function from error.h is used.  This function will throw an
+  // exception and not return control to the caller.  BE CAREFUL and
+  // invoke the correct error function!
+
+  // Possible values for conv_err:
+  //
+  //   1 : not a real scalar
+  //   2 : value is NaN
+  //   3 : value is not an integer
+
+  static int
+  convert_to_valid_int (const octave_value& tc, int& conv_err)
+  {
+    conv_err = 0;
+
+    int retval = 0;
+
+    double dval = 0.0;
+
+    try
+      {
+        dval = tc.double_value ();
+      }
+    catch (const octave::execution_exception&)
+      {
+        octave::interpreter::recover_from_exception ();
+
+        conv_err = 1;
+      }
+
+    if (! conv_err)
+      {
+        if (! lo_ieee_isnan (dval))
+          {
+            int ival = octave::math::nint (dval);
+
+            if (ival == dval)
+              retval = ival;
+            else
+              conv_err = 3;
+          }
+        else
+          conv_err = 2;
+      }
+
+    return retval;
+  }
+
+  static octave_idx_type
+  get_size (double d, const std::string& who)
+  {
+    octave_idx_type retval = -1;
+
+    if (lo_ieee_isnan (d))
+      ::error ("%s: NaN is invalid as size specification", who.c_str ());
+
+    if (octave::math::isinf (d))
+      retval = -1;
+    else
+      {
+        if (d < 0.0)
+          ::error ("%s: negative value invalid as size specification",
+                   who.c_str ());
+
+        if (d > std::numeric_limits<octave_idx_type>::max ())
+          ::error ("%s: dimension too large for Octave's index type",
+                   who.c_str ());
+
+        retval = octave::math::nint_big (d);
+      }
+
+    return retval;
+  }
+
+  static void
+  get_size (const Array<double>& size,
+            octave_idx_type& nr, octave_idx_type& nc,
+            bool& one_elt_size_spec, const std::string& who)
+  {
+    nr = -1;
+    nc = -1;
+
+    one_elt_size_spec = false;
+
+    double dnr = -1.0;
+    double dnc = -1.0;
+
+    octave_idx_type sz_len = size.numel ();
+
+    if (sz_len == 1)
+      {
+        one_elt_size_spec = true;
+
+        dnr = size(0);
+
+        dnc = (dnr == 0.0) ? 0.0 : 1.0;
+      }
+    else if (sz_len == 2)
+      {
+        dnr = size(0);
+
+        if (octave::math::isinf (dnr))
+          ::error ("%s: invalid size specification", who.c_str ());
+
+        dnc = size(1);
+      }
+    else
+      ::error ("%s: invalid size specification", who.c_str ());
+
+    nr = get_size (dnr, who);
+
+    if (dnc >= 0.0)
+      nc = get_size (dnc, who);
+  }
+
+  static std::string
+  expand_char_class (const std::string& s)
+  {
+    std::string retval;
+
+    size_t len = s.length ();
+
+    size_t i = 0;
+
+    while (i < len)
+      {
+        unsigned char c = s[i++];
+
+        if (c == '-' && i > 1 && i < len
+            && (   static_cast<unsigned char> (s[i-2])
+                   <= static_cast<unsigned char> (s[i])))
+          {
+            // Add all characters from the range except the first (we
+            // already added it below).
+
+            for (c = s[i-2]+1; c < s[i]; c++)
+              retval += c;
+          }
+        else
+          {
+            // Add the character to the class.  Only add '-' if it is
+            // the last character in the class.
+
+            if (c != '-' || i == len)
+              retval += c;
+          }
+      }
+
+    return retval;
+  }
+
   class
   scanf_format_elt
   {
@@ -1180,39 +1180,36 @@ namespace octave
           << "text:     '" << undo_string_escapes (elt->text) << "'\n\n";
       }
   }
-}
 
-// Calculate x^n.  Used for ...e+nn so that, for example, 1e2 is
-// exactly 100 and 5e-1 is 1/2
+  // Calculate x^n.  Used for ...e+nn so that, for example, 1e2 is
+  // exactly 100 and 5e-1 is 1/2
 
-static double
-pown (double x, unsigned int n)
-{
-  double retval = 1;
+  static double
+  pown (double x, unsigned int n)
+  {
+    double retval = 1;
 
-  for (unsigned int d = n; d; d >>= 1)
-    {
-      if (d & 1)
-        retval *= x;
-      x *= x;
-    }
+    for (unsigned int d = n; d; d >>= 1)
+      {
+        if (d & 1)
+          retval *= x;
+        x *= x;
+      }
 
-  return retval;
-}
+    return retval;
+  }
 
-static Cell
-init_inf_nan (void)
-{
-  Cell retval (dim_vector (1, 2));
+  static Cell
+  init_inf_nan (void)
+  {
+    Cell retval (dim_vector (1, 2));
 
-  retval(0) = Cell (octave_value ("inf"));
-  retval(1) = Cell (octave_value ("nan"));
+    retval(0) = Cell (octave_value ("inf"));
+    retval(1) = Cell (octave_value ("nan"));
 
-  return retval;
-}
+    return retval;
+  }
 
-namespace octave
-{
   // Delimited stream, optimized to read strings of characters separated
   // by single-character delimiters.
   //
@@ -5587,110 +5584,107 @@ namespace octave
 
     return retval;
   }
-}
 
-static size_t
-do_printf_string (std::ostream& os, const octave::printf_format_elt *elt,
-                  int nsa, int sa_1, int sa_2, const std::string& arg,
-                  const std::string& who)
-{
-  if (nsa > 2)
-    ::error ("%s: internal error handling format", who.c_str ());
+  static size_t
+  do_printf_string (std::ostream& os, const octave::printf_format_elt *elt,
+                    int nsa, int sa_1, int sa_2, const std::string& arg,
+                    const std::string& who)
+  {
+    if (nsa > 2)
+      ::error ("%s: internal error handling format", who.c_str ());
 
-  std::string flags = elt->flags;
+    std::string flags = elt->flags;
 
-  bool left = flags.find ('-') != std::string::npos;
+    bool left = flags.find ('-') != std::string::npos;
 
-  size_t len = arg.length ();
+    size_t len = arg.length ();
 
-  size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
-  size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
+    size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
+    size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
 
-  os << std::setw (fw)
-     << (left ? std::left : std::right)
-     << (prec < len ? arg.substr (0, prec) : arg);
+    os << std::setw (fw)
+       << (left ? std::left : std::right)
+       << (prec < len ? arg.substr (0, prec) : arg);
 
-  return len > fw ? len : fw;
-}
+    return len > fw ? len : fw;
+  }
 
-static bool
-is_nan_or_inf (const octave_value& val)
-{
-  octave_value ov_isnan = val.isnan ();
-  octave_value ov_isinf = val.isinf ();
+  static bool
+  is_nan_or_inf (const octave_value& val)
+  {
+    octave_value ov_isnan = val.isnan ();
+    octave_value ov_isinf = val.isinf ();
 
-  return (ov_isnan.is_true () || ov_isinf.is_true ());
-}
+    return (ov_isnan.is_true () || ov_isinf.is_true ());
+  }
 
-static bool
-ok_for_signed_int_conv (const octave_value& val)
-{
-  uint64_t limit = std::numeric_limits<int64_t>::max ();
+  static bool
+  ok_for_signed_int_conv (const octave_value& val)
+  {
+    uint64_t limit = std::numeric_limits<int64_t>::max ();
 
-  if (val.is_string ())
-    return true;
-  else if (val.isinteger ())
-    {
-      if (val.is_uint64_type ())
-        {
-          octave_uint64 ival = val.uint64_scalar_value ();
+    if (val.is_string ())
+      return true;
+    else if (val.isinteger ())
+      {
+        if (val.is_uint64_type ())
+          {
+            octave_uint64 ival = val.uint64_scalar_value ();
 
-          if (ival.value () <= limit)
-            return true;
-        }
-      else
-        return true;
-    }
-  else
-    {
-      double dval = val.double_value (true);
+            if (ival.value () <= limit)
+              return true;
+          }
+        else
+          return true;
+      }
+    else
+      {
+        double dval = val.double_value (true);
 
-      if (dval == octave::math::round (dval) && dval <= limit)
-        return true;
-    }
+        if (dval == octave::math::round (dval) && dval <= limit)
+          return true;
+      }
 
-  return false;
-}
+    return false;
+  }
 
-static bool
-ok_for_unsigned_int_conv (const octave_value& val)
-{
-  if (val.is_string ())
-    return true;
-  else if (val.isinteger ())
-    {
-      // Easier than dispatching here...
+  static bool
+  ok_for_unsigned_int_conv (const octave_value& val)
+  {
+    if (val.is_string ())
+      return true;
+    else if (val.isinteger ())
+      {
+        // Easier than dispatching here...
 
-      octave_value ov_is_ge_zero
-        = do_binary_op (octave_value::op_ge, val, octave_value (0.0));
+        octave_value ov_is_ge_zero
+          = do_binary_op (octave_value::op_ge, val, octave_value (0.0));
 
-      return ov_is_ge_zero.is_true ();
-    }
-  else
-    {
-      double dval = val.double_value (true);
+        return ov_is_ge_zero.is_true ();
+      }
+    else
+      {
+        double dval = val.double_value (true);
 
-      uint64_t limit = std::numeric_limits<uint64_t>::max ();
+        uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
-      if (dval == octave::math::round (dval) && dval >= 0 && dval <= limit)
-        return true;
-    }
+        if (dval == octave::math::round (dval) && dval >= 0 && dval <= limit)
+          return true;
+      }
 
-  return false;
-}
+    return false;
+  }
 
-static std::string
-switch_to_g_format (const octave::printf_format_elt *elt)
-{
-  std::string tfmt = elt->text;
+  static std::string
+  switch_to_g_format (const octave::printf_format_elt *elt)
+  {
+    std::string tfmt = elt->text;
 
-  tfmt.replace (tfmt.rfind (elt->type), 1, "g");
+    tfmt.replace (tfmt.rfind (elt->type), 1, "g");
 
-  return tfmt;
-}
+    return tfmt;
+  }
 
-namespace octave
-{
   int
   base_stream::do_numeric_printf_conv (std::ostream& os,
                                        const printf_format_elt *elt,
@@ -6306,137 +6300,136 @@ namespace octave
     if (stream_ok ())
       rep->close ();
   }
-}
 
-// FIXME: maybe these should be defined in lo-ieee.h?
+  // FIXME: maybe these should be defined in lo-ieee.h?
 
-template <typename T>
-static inline bool
-is_old_NA (T)
-{
-  return false;
-}
+  template <typename T>
+  static inline bool
+  is_old_NA (T)
+  {
+    return false;
+  }
 
-template <>
-inline bool
-is_old_NA<double> (double val)
-{
-  return __lo_ieee_is_old_NA (val);
-}
+  template <>
+  inline bool
+  is_old_NA<double> (double val)
+  {
+    return __lo_ieee_is_old_NA (val);
+  }
 
-template <typename T>
-static inline T
-replace_old_NA (T val)
-{
-  return val;
-}
+  template <typename T>
+  static inline T
+  replace_old_NA (T val)
+  {
+    return val;
+  }
 
-template <>
-inline double
-replace_old_NA<double> (double val)
-{
-  return __lo_ieee_replace_old_NA (val);
-}
+  template <>
+  inline double
+  replace_old_NA<double> (double val)
+  {
+    return __lo_ieee_replace_old_NA (val);
+  }
 
-template <typename SRC_T, typename DST_T>
-static octave_value
-convert_and_copy (std::list<void *>& input_buf_list,
-                  octave_idx_type input_buf_elts,
-                  octave_idx_type elts_read,
-                  octave_idx_type nr, octave_idx_type nc, bool swap,
-                  bool do_float_fmt_conv, bool do_NA_conv,
-                  octave::mach_info::float_format from_flt_fmt)
-{
-  typedef typename DST_T::element_type dst_elt_type;
+  template <typename SRC_T, typename DST_T>
+  static octave_value
+  convert_and_copy (std::list<void *>& input_buf_list,
+                    octave_idx_type input_buf_elts,
+                    octave_idx_type elts_read,
+                    octave_idx_type nr, octave_idx_type nc, bool swap,
+                    bool do_float_fmt_conv, bool do_NA_conv,
+                    octave::mach_info::float_format from_flt_fmt)
+  {
+    typedef typename DST_T::element_type dst_elt_type;
 
-  DST_T conv (dim_vector (nr, nc));
+    DST_T conv (dim_vector (nr, nc));
 
-  dst_elt_type *conv_data = conv.fortran_vec ();
+    dst_elt_type *conv_data = conv.fortran_vec ();
 
-  octave_idx_type j = 0;
+    octave_idx_type j = 0;
 
-  for (std::list<void *>::const_iterator it = input_buf_list.begin ();
-       it != input_buf_list.end (); it++)
-    {
-      SRC_T *data = static_cast<SRC_T *> (*it);
+    for (std::list<void *>::const_iterator it = input_buf_list.begin ();
+         it != input_buf_list.end (); it++)
+      {
+        SRC_T *data = static_cast<SRC_T *> (*it);
 
-      if (swap || do_float_fmt_conv)
-        {
-          if (do_NA_conv)
-            {
-              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
-                   i++, j++)
-                {
-                  if (swap)
-                    swap_bytes<sizeof (SRC_T)> (&data[i]);
-                  else if (do_float_fmt_conv)
-                    do_float_format_conversion (&data[i], sizeof (SRC_T),
-                                                1, from_flt_fmt,
-                                                octave::mach_info::native_float_format ());
+        if (swap || do_float_fmt_conv)
+          {
+            if (do_NA_conv)
+              {
+                for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                     i++, j++)
+                  {
+                    if (swap)
+                      swap_bytes<sizeof (SRC_T)> (&data[i]);
+                    else if (do_float_fmt_conv)
+                      do_float_format_conversion (&data[i], sizeof (SRC_T),
+                                                  1, from_flt_fmt,
+                                                  octave::mach_info::native_float_format ());
 
-                  dst_elt_type tmp (data[i]);
+                    dst_elt_type tmp (data[i]);
 
-                  if (is_old_NA (tmp))
-                    tmp = replace_old_NA (tmp);
+                    if (is_old_NA (tmp))
+                      tmp = replace_old_NA (tmp);
 
-                  conv_data[j] = tmp;
-                }
-            }
-          else
-            {
-              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
-                   i++, j++)
-                {
-                  if (swap)
-                    swap_bytes<sizeof (SRC_T)> (&data[i]);
-                  else if (do_float_fmt_conv)
-                    do_float_format_conversion (&data[i], sizeof (SRC_T),
-                                                1, from_flt_fmt,
-                                                octave::mach_info::native_float_format ());
+                    conv_data[j] = tmp;
+                  }
+              }
+            else
+              {
+                for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                     i++, j++)
+                  {
+                    if (swap)
+                      swap_bytes<sizeof (SRC_T)> (&data[i]);
+                    else if (do_float_fmt_conv)
+                      do_float_format_conversion (&data[i], sizeof (SRC_T),
+                                                  1, from_flt_fmt,
+                                                  octave::mach_info::native_float_format ());
 
+                    conv_data[j] = data[i];
+                  }
+              }
+          }
+        else
+          {
+            if (do_NA_conv)
+              {
+                for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                     i++, j++)
+                  {
+                    dst_elt_type tmp (data[i]);
+
+                    if (is_old_NA (tmp))
+                      tmp = replace_old_NA (tmp);
+
+                    conv_data[j] = tmp;
+                  }
+              }
+            else
+              {
+                for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                     i++, j++)
                   conv_data[j] = data[i];
-                }
-            }
-        }
-      else
-        {
-          if (do_NA_conv)
-            {
-              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
-                   i++, j++)
-                {
-                  dst_elt_type tmp (data[i]);
+              }
+          }
 
-                  if (is_old_NA (tmp))
-                    tmp = replace_old_NA (tmp);
+        delete [] data;
+      }
 
-                  conv_data[j] = tmp;
-                }
-            }
-          else
-            {
-              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
-                   i++, j++)
-                conv_data[j] = data[i];
-            }
-        }
+    input_buf_list.clear ();
 
-      delete [] data;
-    }
+    for (octave_idx_type i = elts_read; i < nr * nc; i++)
+      conv_data[i] = dst_elt_type (0);
 
-  input_buf_list.clear ();
+    return conv;
+  }
 
-  for (octave_idx_type i = elts_read; i < nr * nc; i++)
-    conv_data[i] = dst_elt_type (0);
-
-  return conv;
-}
-
-typedef octave_value (*conv_fptr)
-  (std::list<void *>& input_buf_list, octave_idx_type input_buf_elts,
-   octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
-   bool swap, bool do_float_fmt_conv, bool do_NA_conv,
-   octave::mach_info::float_format from_flt_fmt);
+  typedef octave_value (*conv_fptr)
+    (std::list<void *>& input_buf_list, octave_idx_type input_buf_elts,
+     octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
+     bool swap, bool do_float_fmt_conv, bool do_NA_conv,
+     octave::mach_info::float_format from_flt_fmt);
 
 #define TABLE_ELT(T, U, V, W)                                           \
   conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
@@ -6457,8 +6450,6 @@ typedef octave_value (*conv_fptr)
   TABLE_ELT (T, dt_uchar, V, charNDArray);      \
   TABLE_ELT (T, dt_logical, V, boolNDArray);
 
-namespace octave
-{
   octave_value
   stream::finalize_read (std::list<void *>& input_buf_list,
                          octave_idx_type input_buf_elts,
@@ -6769,157 +6760,154 @@ namespace octave
 
     return retval;
   }
-}
 
-template <typename T, typename V>
-static void
-convert_chars (const void *data, void *conv_data, octave_idx_type n_elts)
-{
-  const T *tt_data = static_cast<const T *> (data);
+  template <typename T, typename V>
+  static void
+  convert_chars (const void *data, void *conv_data, octave_idx_type n_elts)
+  {
+    const T *tt_data = static_cast<const T *> (data);
 
-  V *vt_data = static_cast<V *> (conv_data);
+    V *vt_data = static_cast<V *> (conv_data);
 
-  for (octave_idx_type i = 0; i < n_elts; i++)
-    vt_data[i] = tt_data[i];
-}
+    for (octave_idx_type i = 0; i < n_elts; i++)
+      vt_data[i] = tt_data[i];
+  }
 
-template <typename T, typename V>
-static void
-convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
-              bool swap)
-{
-  typedef typename V::val_type val_type;
+  template <typename T, typename V>
+  static void
+  convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
+                bool swap)
+  {
+    typedef typename V::val_type val_type;
 
-  val_type *vt_data = static_cast<val_type *> (conv_data);
+    val_type *vt_data = static_cast<val_type *> (conv_data);
 
-  for (octave_idx_type i = 0; i < n_elts; i++)
-    {
-      // Yes, we want saturation semantics when converting to an integer type.
-      V val (data[i]);
-
-      vt_data[i] = val.value ();
-
-      if (swap)
-        swap_bytes<sizeof (val_type)> (&vt_data[i]);
-    }
-}
-
-template <typename T>
-class ultimate_element_type
-{
-public:
-  typedef T type;
-};
-
-template <typename T>
-class ultimate_element_type<octave_int<T>>
-{
-public:
-  typedef T type;
-};
-
-template <typename T>
-static bool
-convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
-              oct_data_conv::data_type output_type,
-              octave::mach_info::float_format flt_fmt)
-{
-  bool retval = true;
-
-  bool swap = false;
-
-  if (octave::mach_info::words_big_endian ())
-    swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian);
-  else
-    swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
-
-  bool do_float_conversion = flt_fmt != octave::mach_info::float_format ();
-
-  typedef typename ultimate_element_type<T>::type ult_elt_type;
-
-  switch (output_type)
-    {
-    case oct_data_conv::dt_char:
-      convert_chars<ult_elt_type, char> (data, conv_data, n_elts);
-      break;
-
-    case oct_data_conv::dt_schar:
-      convert_chars<ult_elt_type, signed char> (data, conv_data, n_elts);
-      break;
-
-    case oct_data_conv::dt_uchar:
-      convert_chars<ult_elt_type, unsigned char> (data, conv_data, n_elts);
-      break;
-
-    case oct_data_conv::dt_int8:
-      convert_ints<T, octave_int8> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_uint8:
-      convert_ints<T, octave_uint8> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_int16:
-      convert_ints<T, octave_int16> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_uint16:
-      convert_ints<T, octave_uint16> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_int32:
-      convert_ints<T, octave_int32> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_uint32:
-      convert_ints<T, octave_uint32> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_int64:
-      convert_ints<T, octave_int64> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_uint64:
-      convert_ints<T, octave_uint64> (data, conv_data, n_elts, swap);
-      break;
-
-    case oct_data_conv::dt_single:
+    for (octave_idx_type i = 0; i < n_elts; i++)
       {
-        float *vt_data = static_cast<float *> (conv_data);
+        // Yes, we want saturation semantics when converting to an integer type.
+        V val (data[i]);
 
-        for (octave_idx_type i = 0; i < n_elts; i++)
-          {
-            vt_data[i] = data[i];
+        vt_data[i] = val.value ();
 
-            if (do_float_conversion)
-              do_float_format_conversion (&vt_data[i], 1, flt_fmt);
-          }
+        if (swap)
+          swap_bytes<sizeof (val_type)> (&vt_data[i]);
       }
-      break;
+  }
 
-    case oct_data_conv::dt_double:
+  template <typename T>
+  class ultimate_element_type
+  {
+  public:
+    typedef T type;
+  };
+
+  template <typename T>
+  class ultimate_element_type<octave_int<T>>
+  {
+  public:
+    typedef T type;
+  };
+
+  template <typename T>
+  static bool
+  convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
+                oct_data_conv::data_type output_type,
+                octave::mach_info::float_format flt_fmt)
+  {
+    bool retval = true;
+
+    bool swap = false;
+
+    if (octave::mach_info::words_big_endian ())
+      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian);
+    else
+      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
+
+    bool do_float_conversion = flt_fmt != octave::mach_info::float_format ();
+
+    typedef typename ultimate_element_type<T>::type ult_elt_type;
+
+    switch (output_type)
       {
-        double *vt_data = static_cast<double *> (conv_data);
+      case oct_data_conv::dt_char:
+        convert_chars<ult_elt_type, char> (data, conv_data, n_elts);
+        break;
 
-        for (octave_idx_type i = 0; i < n_elts; i++)
-          {
-            vt_data[i] = data[i];
+      case oct_data_conv::dt_schar:
+        convert_chars<ult_elt_type, signed char> (data, conv_data, n_elts);
+        break;
 
-            if (do_float_conversion)
-              do_double_format_conversion (&vt_data[i], 1, flt_fmt);
-          }
+      case oct_data_conv::dt_uchar:
+        convert_chars<ult_elt_type, unsigned char> (data, conv_data, n_elts);
+        break;
+
+      case oct_data_conv::dt_int8:
+        convert_ints<T, octave_int8> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_uint8:
+        convert_ints<T, octave_uint8> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_int16:
+        convert_ints<T, octave_int16> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_uint16:
+        convert_ints<T, octave_uint16> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_int32:
+        convert_ints<T, octave_int32> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_uint32:
+        convert_ints<T, octave_uint32> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_int64:
+        convert_ints<T, octave_int64> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_uint64:
+        convert_ints<T, octave_uint64> (data, conv_data, n_elts, swap);
+        break;
+
+      case oct_data_conv::dt_single:
+        {
+          float *vt_data = static_cast<float *> (conv_data);
+
+          for (octave_idx_type i = 0; i < n_elts; i++)
+            {
+              vt_data[i] = data[i];
+
+              if (do_float_conversion)
+                do_float_format_conversion (&vt_data[i], 1, flt_fmt);
+            }
+        }
+        break;
+
+      case oct_data_conv::dt_double:
+        {
+          double *vt_data = static_cast<double *> (conv_data);
+
+          for (octave_idx_type i = 0; i < n_elts; i++)
+            {
+              vt_data[i] = data[i];
+
+              if (do_float_conversion)
+                do_double_format_conversion (&vt_data[i], 1, flt_fmt);
+            }
+        }
+        break;
+
+      default:
+        ::error ("write: invalid type specification");
       }
-      break;
 
-    default:
-      ::error ("write: invalid type specification");
-    }
+    return retval;
+  }
 
-  return retval;
-}
-
-namespace octave
-{
   bool
   stream::write_bytes (const void *data, size_t nbytes)
   {
@@ -7384,20 +7372,17 @@ namespace octave
 
     return stream_number;
   }
-}
 
-OCTAVE_NORETURN static
-void
-err_invalid_file_id (int fid, const std::string& who)
-{
-  if (who.empty ())
-    ::error ("invalid stream number = %d", fid);
-  else
-    ::error ("%s: invalid stream number = %d", who.c_str (), fid);
-}
+  OCTAVE_NORETURN static
+  void
+  err_invalid_file_id (int fid, const std::string& who)
+  {
+    if (who.empty ())
+      ::error ("invalid stream number = %d", fid);
+    else
+      ::error ("%s: invalid stream number = %d", who.c_str (), fid);
+  }
 
-namespace octave
-{
   stream stream_list::lookup (int fid, const std::string& who) const
   {
     stream retval;

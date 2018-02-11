@@ -187,8 +187,7 @@ interactive_input (const std::string& s, bool& eof)
 
 namespace octave
 {
-  std::string
-  base_reader::octave_gets (bool& eof)
+  std::string base_reader::octave_gets (bool& eof)
   {
     octave_quit ();
 
@@ -271,23 +270,95 @@ namespace octave
     return retval;
   }
 
-  bool
-  base_reader::reading_fcn_file (void) const
+  bool base_reader::reading_fcn_file (void) const
   {
     return lexer ? lexer->reading_fcn_file : false;
   }
 
-  bool
-  base_reader::reading_classdef_file (void) const
+  bool base_reader::reading_classdef_file (void) const
   {
     return lexer ? lexer->reading_classdef_file : false;
   }
 
-  bool
-  base_reader::reading_script_file (void) const
+  bool base_reader::reading_script_file (void) const
   {
     return lexer ? lexer->reading_script_file : false;
   }
+
+  class
+  terminal_reader : public base_reader
+  {
+  public:
+
+    terminal_reader (base_lexer *lxr = nullptr)
+      : base_reader (lxr)
+    { }
+
+    std::string get_input (bool& eof);
+
+    std::string input_source (void) const { return in_src; }
+
+    bool input_from_terminal (void) const { return true; }
+
+  private:
+
+    static const std::string in_src;
+  };
+
+  class
+  file_reader : public base_reader
+  {
+  public:
+
+    file_reader (FILE *f_arg, base_lexer *lxr = nullptr)
+      : base_reader (lxr), file (f_arg) { }
+
+    std::string get_input (bool& eof);
+
+    std::string input_source (void) const { return in_src; }
+
+    bool input_from_file (void) const { return true; }
+
+  private:
+
+    FILE *file;
+
+    static const std::string in_src;
+  };
+
+  class
+  eval_string_reader : public base_reader
+  {
+  public:
+
+    eval_string_reader (const std::string& str, base_lexer *lxr = nullptr)
+      : base_reader (lxr), eval_string (str)
+    { }
+
+    std::string get_input (bool& eof);
+
+    std::string input_source (void) const { return in_src; }
+
+    bool input_from_eval_string (void) const { return true; }
+
+  private:
+
+    std::string eval_string;
+
+    static const std::string in_src;
+  };
+
+  input_reader::input_reader (base_lexer *lxr)
+    : rep (new terminal_reader (lxr))
+  { }
+
+  input_reader::input_reader (FILE *file, base_lexer *lxr)
+    : rep (new file_reader (file, lxr))
+  { }
+
+  input_reader::input_reader (const std::string& str, base_lexer *lxr)
+    : rep (new eval_string_reader (str, lxr))
+  { }
 }
 
 // Fix things up so that input can come from the standard input.  This

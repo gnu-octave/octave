@@ -136,84 +136,15 @@ namespace octave
   };
 
   class
-  terminal_reader : public base_reader
-  {
-  public:
-
-    terminal_reader (base_lexer *lxr = nullptr)
-      : base_reader (lxr)
-    { }
-
-    std::string get_input (bool& eof);
-
-    std::string input_source (void) const { return in_src; }
-
-    bool input_from_terminal (void) const { return true; }
-
-  private:
-
-    static const std::string in_src;
-  };
-
-  class
-  file_reader : public base_reader
-  {
-  public:
-
-    file_reader (FILE *f_arg, base_lexer *lxr = nullptr)
-      : base_reader (lxr), file (f_arg) { }
-
-    std::string get_input (bool& eof);
-
-    std::string input_source (void) const { return in_src; }
-
-    bool input_from_file (void) const { return true; }
-
-  private:
-
-    FILE *file;
-
-    static const std::string in_src;
-  };
-
-  class
-  eval_string_reader : public base_reader
-  {
-  public:
-
-    eval_string_reader (const std::string& str,
-                               base_lexer *lxr = nullptr)
-      : base_reader (lxr), eval_string (str)
-    { }
-
-    std::string get_input (bool& eof);
-
-    std::string input_source (void) const { return in_src; }
-
-    bool input_from_eval_string (void) const { return true; }
-
-  private:
-
-    std::string eval_string;
-
-    static const std::string in_src;
-  };
-
-  class
   input_reader
   {
   public:
-    input_reader (base_lexer *lxr = nullptr)
-      : rep (new terminal_reader (lxr))
-    { }
 
-    input_reader (FILE *file, base_lexer *lxr = nullptr)
-      : rep (new file_reader (file, lxr))
-    { }
+    input_reader (base_lexer *lxr = nullptr);
 
-    input_reader (const std::string& str, base_lexer *lxr = nullptr)
-      : rep (new eval_string_reader (str, lxr))
-    { }
+    input_reader (FILE *file, base_lexer *lxr = nullptr);
+
+    input_reader (const std::string& str, base_lexer *lxr = nullptr);
 
     input_reader (const input_reader& ir)
     {

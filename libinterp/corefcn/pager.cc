@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "child-list.h"
 #include "cmd-edit.h"
 #include "oct-env.h"
 #include "oct-syscalls.h"
@@ -38,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "octave.h"
 #include "ovl.h"
 #include "pager.h"
@@ -94,7 +96,10 @@ clear_external_pager (void)
 {
   if (external_pager)
     {
-      octave::child_list::remove (external_pager->pid ());
+      octave::child_list& kids
+        = octave::__get_child_list__ ("clear_external_pager");
+
+      kids.remove (external_pager->pid ());
 
       delete external_pager;
       external_pager = nullptr;
@@ -160,8 +165,13 @@ do_sync (const char *msg, int len, bool bypass_pager)
                   external_pager = new oprocstream (pgr.c_str ());
 
                   if (external_pager)
-                    octave::child_list::insert (external_pager->pid (),
-                                                pager_event_handler);
+                    {
+                      octave::child_list& kids
+                        = octave::__get_child_list__ ("do_sync");
+
+                      kids.insert (external_pager->pid (),
+                                   pager_event_handler);
+                    }
                 }
             }
 

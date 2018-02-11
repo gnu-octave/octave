@@ -33,9 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class
-  OCTAVE_API
-  child
+  class OCTAVE_API child
   {
   public:
 
@@ -48,23 +46,12 @@ namespace octave
     typedef bool (*child_event_handler) (pid_t, int);
 
     child (pid_t id = -1, child_event_handler f = nullptr)
-      : pid (id), handler (f), have_status (0), status (0) { }
+      : pid (id), handler (f), have_status (0), status (0)
+    { }
 
-    child (const child& oc)
-      : pid (oc.pid), handler (oc.handler),
-        have_status (oc.have_status), status (oc.status) { }
+    child (const child& oc) = default;
 
-    child& operator = (const child& oc)
-    {
-      if (&oc != this)
-        {
-          pid = oc.pid;
-          handler = oc.handler;
-          have_status = oc.have_status;
-          status = oc.status;
-        }
-      return *this;
-    }
+    child& operator = (const child& oc) = default;
 
     ~child (void) = default;
 
@@ -86,51 +73,25 @@ namespace octave
   OCTAVE_API
   child_list
   {
-  protected:
+  public:
+
+    typedef base_list<child>::iterator iterator;
+    typedef base_list<child>::const_iterator const_iterator;
 
     child_list (void) { }
 
-    class child_list_rep : public base_list<child>
-    {
-    public:
+    void insert (pid_t pid, child::child_event_handler f);
 
-      void insert (pid_t pid, child::child_event_handler f);
+    void remove (pid_t pid);
 
-      void reap (void);
+    void reap (void);
 
-      bool wait (void);
-    };
-
-  public:
-
-    ~child_list (void) = default;
-
-    static void insert (pid_t pid, child::child_event_handler f);
-
-    static void reap (void);
-
-    static bool wait (void);
-
-    static void remove (pid_t pid);
+    bool wait (void);
 
   private:
 
-    static bool instance_ok (void);
-
-    static child_list_rep *instance;
-
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    base_list<child> m_list;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::child' instead")
-typedef octave::child octave_child;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::child_list' instead")
-typedef octave::child_list octave_child_list;
-
-#endif
 
 #endif

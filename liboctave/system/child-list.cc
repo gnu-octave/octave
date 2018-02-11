@@ -25,55 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "child-list.h"
-#include "lo-error.h"
 #include "oct-syscalls.h"
-#include "signal-wrappers.h"
-#include "singleton-cleanup.h"
 
 namespace octave
 {
-  child_list::child_list_rep *child_list::instance = nullptr;
-
-  bool
-  child_list::instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      {
-        instance = new child_list_rep ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create child list object!");
-
-    return retval;
-  }
-
-  void
-  child_list::insert (pid_t pid, child::child_event_handler f)
-  {
-    if (instance_ok ())
-      instance->insert (pid, f);
-  }
-
-  void
-  child_list::reap (void)
-  {
-    if (instance_ok ())
-      instance->reap ();
-  }
-
-  bool
-  child_list::wait (void)
-  {
-    return (instance_ok ()) ? instance->wait () : false;
-  }
-
   class pid_equal
   {
   public:
@@ -87,25 +42,21 @@ namespace octave
     pid_t val;
   };
 
-  void
-  child_list::remove (pid_t pid)
+  void child_list::remove (pid_t pid)
   {
-    if (instance_ok ())
-      instance->remove_if (pid_equal (pid));
+    m_list.remove_if (pid_equal (pid));
   }
 
-  void
-  child_list::child_list_rep::insert (pid_t pid, child::child_event_handler f)
+  void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
   {
-    append (child (pid, f));
+    m_list.append (child (pid, f));
   }
 
-  void
-  child_list::child_list_rep::reap (void)
+  void child_list::reap (void)
   {
     // Mark the record for PID invalid.
 
-    for (iterator p = begin (); p != end (); p++)
+    for (iterator p = m_list.begin (); p != m_list.end (); p++)
       {
         // The call to the child::child_event_handler might
         // invalidate the iterator (for example, by calling
@@ -125,17 +76,17 @@ namespace octave
           }
       }
 
-    remove_if (pid_equal (-1));
+    // ??
+    remove (-1);
   }
 
   // Wait on our children and record any changes in their status.
 
-  bool
-  child_list::child_list_rep::wait (void)
+  bool child_list::wait (void)
   {
     bool retval = false;
 
-    for (iterator p = begin (); p != end (); p++)
+    for (iterator p = m_list.begin (); p != m_list.end (); p++)
       {
         child& oc = *p;
 

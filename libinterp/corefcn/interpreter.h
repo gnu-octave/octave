@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "child-list.h"
 #include "quit.h"
 #include "str-vec.h"
 
@@ -55,6 +56,7 @@ namespace octave
 {
   class profiler;
   class call_stack;
+  class child_list;
   class tree_evaluator;
 
   // The application object contains a pointer to the current
@@ -184,6 +186,11 @@ namespace octave
 
     stream_list& get_stream_list (void);
 
+    child_list& get_child_list (void)
+    {
+      return m_child_list;
+    }
+
     url_handle_manager& get_url_handle_manager (void);
 
     cdef_manager& get_cdef_manager (void)
@@ -253,6 +260,8 @@ namespace octave
     tree_evaluator m_evaluator;
 
     stream_list m_stream_list;
+
+    child_list m_child_list;
 
     url_handle_manager m_url_handle_manager;
 

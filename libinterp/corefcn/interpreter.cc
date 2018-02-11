@@ -354,6 +354,7 @@ namespace octave
       m_symbol_table (),
       m_evaluator (*this),
       m_stream_list (*this),
+      m_child_list (),
       m_url_handle_manager (),
       m_cdef_manager (*this),
       m_gtk_manager (),

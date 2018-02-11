@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "call-stack.h"
+#include "child-list.h"
 #include "error.h"
 #include "gtk-manager.h"
 #include "help.h"
@@ -115,6 +116,13 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_call_stack ();
+  }
+
+  child_list& __get_child_list__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_child_list ();
   }
 
   cdef_manager& __get_cdef_manager__ (const std::string& who)

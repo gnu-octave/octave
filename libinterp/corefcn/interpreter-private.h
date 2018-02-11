@@ -34,6 +34,7 @@ class cdef_manager;
 namespace octave
 {
   class call_stack;
+  class child_list;
   class dynamic_loader;
   class gtk_manager;
   class help_system;
@@ -61,6 +62,8 @@ namespace octave
   extern tree_evaluator& __get_evaluator__ (const std::string& who);
 
   extern call_stack& __get_call_stack__ (const std::string& who);
+
+  extern child_list& __get_child_list__ (const std::string& who);
 
   extern cdef_manager& __get_cdef_manager__ (const std::string& who);
 

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <windows.h>
 #endif
 
+#include "child-list.h"
 #include "cmd-edit.h"
 #include "oct-syscalls.h"
 #include "quit.h"
@@ -45,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-save.h"
 #include "octave.h"
@@ -185,6 +187,9 @@ namespace octave
     static const bool have_sigusr2
       = octave_get_sig_number ("SIGUSR2", &sigusr2);
 
+    octave::child_list& kids
+      = octave::__get_child_list__ ("respond_to_pending_signals");
+
     for (int sig = 0; sig < octave_num_signals (); sig++)
       {
         if (signals_caught[sig])
@@ -200,13 +205,13 @@ namespace octave
 
                 void *context = octave_block_child ();
 
-                child_list::wait ();
+                kids.wait ();
 
                 set_interrupt_handler (saved_interrupt_handler);
 
                 octave_unblock_child (context);
 
-                child_list::reap ();
+                kids.reap ();
               }
             else if (have_sigpipe && sig == sigpipe)
               {

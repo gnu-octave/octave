@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "file-io.h"
 #include "help.h"
+#include "interpreter-private.h"
 #include "octave.h"
 #include "oct-map.h"
 #include "ovl.h"
@@ -103,9 +104,11 @@ run_command_and_return_output (const std::string& cmd_str)
   octave::unwind_protect frame;
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
-
   frame.add_delete (cmd);
-  frame.add_fcn (octave::child_list::remove, cmd->pid ());
+
+  octave::child_list& kids
+    = octave::__get_child_list__ ("run_command_and_return_output");
+  frame.add_method (kids, &octave::child_list::remove, cmd->pid ());
 
   if (! *cmd)
     error ("system: unable to start subprocess for '%s'", cmd_str.c_str ());

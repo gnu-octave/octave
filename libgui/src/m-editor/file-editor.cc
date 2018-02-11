@@ -2388,7 +2388,7 @@ namespace octave
   bool file_editor::editor_tab_has_focus (void)
   {
     QWidget *foc_w = focusWidget ();
-    if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    if (foc_w && foc_w->inherits ("octave::octave_qscintilla"))
       return true;
     return false;
   }

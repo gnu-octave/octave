@@ -29,65 +29,62 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "interpreter-private.h"
 
-documentation_dock_widget::documentation_dock_widget (QWidget *p)
-  : octave_dock_widget (p)
+namespace octave
 {
-  setObjectName ("DocumentationDockWidget");
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  set_title (tr ("Documentation"));
-  setStatusTip (tr ("See the documentation for help."));
+  documentation_dock_widget::documentation_dock_widget (QWidget *p)
+    : octave_dock_widget (p)
+  {
+    setObjectName ("DocumentationDockWidget");
+    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    set_title (tr ("Documentation"));
+    setStatusTip (tr ("See the documentation for help."));
 
-  m_webinfo = new octave::webinfo (this);
-  setWidget (m_webinfo);
-  setFocusProxy (m_webinfo);
+    m_webinfo = new octave::webinfo (this);
+    setWidget (m_webinfo);
+    setFocusProxy (m_webinfo);
 
-  connect (p, SIGNAL (show_doc_signal (const QString&)),
-           this, SLOT (showDoc (const QString&)));
-}
+    connect (p, SIGNAL (show_doc_signal (const QString&)),
+             this, SLOT (showDoc (const QString&)));
+  }
 
-void
-documentation_dock_widget::notice_settings (const QSettings *settings)
-{
-  m_webinfo->notice_settings (settings);
-}
+  void documentation_dock_widget::notice_settings (const QSettings *settings)
+  {
+    m_webinfo->notice_settings (settings);
+  }
 
-void
-documentation_dock_widget::load_info_file (void)
-{
-  octave::help_system& help_sys
-    = octave::__get_help_system__ ("doc widget: load_info_file");
+  void documentation_dock_widget::load_info_file (void)
+  {
+    octave::help_system& help_sys
+      = octave::__get_help_system__ ("doc widget: load_info_file");
 
-  QString info_file = QString::fromStdString (help_sys.info_file ());
+    QString info_file = QString::fromStdString (help_sys.info_file ());
 
-  m_webinfo->load_info_file (info_file);
-}
+    m_webinfo->load_info_file (info_file);
+  }
 
-void
-documentation_dock_widget::copyClipboard (void)
-{
-  m_webinfo->copyClipboard ();
-}
+  void documentation_dock_widget::copyClipboard (void)
+  {
+    m_webinfo->copyClipboard ();
+  }
 
-void
-documentation_dock_widget::pasteClipboard (void)
-{
-  m_webinfo->pasteClipboard ();
-}
+  void documentation_dock_widget::pasteClipboard (void)
+  {
+    m_webinfo->pasteClipboard ();
+  }
 
-void
-documentation_dock_widget::selectAll (void)
-{
-  m_webinfo->selectAll ();
-}
+  void documentation_dock_widget::selectAll (void)
+  {
+    m_webinfo->selectAll ();
+  }
 
-void
-documentation_dock_widget::showDoc (const QString& name)
-{
-  // show the doc pane without focus for carrying on typing in the console
-  if (! isVisible ())
-    setVisible (true);
+  void documentation_dock_widget::showDoc (const QString& name)
+  {
+    // show the doc pane without focus for carrying on typing in the console
+    if (! isVisible ())
+      setVisible (true);
 
-  raise ();
+    raise ();
 
-  m_webinfo->load_ref (name);
+    m_webinfo->load_ref (name);
+  }
 }

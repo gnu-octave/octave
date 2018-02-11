@@ -27,31 +27,34 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "webinfo.h"
 
-class documentation_dock_widget : public octave_dock_widget
+namespace octave
 {
-  Q_OBJECT
+  class documentation_dock_widget : public octave_dock_widget
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  documentation_dock_widget (QWidget *parent = nullptr);
+    documentation_dock_widget (QWidget *parent = nullptr);
 
-public slots:
+  public slots:
 
-  void notice_settings (const QSettings *settings);
+    void notice_settings (const QSettings *settings);
 
-  void load_info_file (void);
+    void load_info_file (void);
 
-protected slots:
+  protected slots:
 
-  void copyClipboard (void);
-  void pasteClipboard (void);
-  void selectAll (void);
+    void copyClipboard (void);
+    void pasteClipboard (void);
+    void selectAll (void);
 
-  void showDoc (const QString & name);
+    void showDoc (const QString & name);
 
-private:
+  private:
 
-  octave::webinfo *m_webinfo;
-};
+    octave::webinfo *m_webinfo;
+  };
+}
 
 #endif

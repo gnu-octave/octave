@@ -29,31 +29,34 @@ along with Octave; see the file COPYING.  If not, see
 #include "QTerminal.h"
 #include "octave-dock-widget.h"
 
-class terminal_dock_widget : public octave_dock_widget
+namespace octave
 {
-  Q_OBJECT
+  class terminal_dock_widget : public octave_dock_widget
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  terminal_dock_widget (QWidget *parent = nullptr);
+    terminal_dock_widget (QWidget *parent = nullptr);
 
-  ~terminal_dock_widget (void);
+    ~terminal_dock_widget (void);
 
-  bool has_focus (void) const;
+    bool has_focus (void) const;
 
-  void focus (void);
+    void focus (void);
 
-signals:
+  signals:
 
-  void interrupt_signal (void);
+    void interrupt_signal (void);
 
-protected slots:
+  protected slots:
 
-  void terminal_interrupt (void);
+    void terminal_interrupt (void);
 
-private:
+  private:
 
-  QTerminal *terminal;
-};
+    QTerminal *terminal;
+  };
+}
 
 #endif

@@ -27,54 +27,54 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "terminal-dock-widget.h"
 
-terminal_dock_widget::terminal_dock_widget (QWidget *p)
-  : octave_dock_widget (p), terminal (QTerminal::create (p))
+namespace octave
 {
-  terminal->setObjectName ("OctaveTerminal");
-  terminal->setFocusPolicy (Qt::StrongFocus);
+  terminal_dock_widget::terminal_dock_widget (QWidget *p)
+    : octave_dock_widget (p), terminal (QTerminal::create (p))
+  {
+    terminal->setObjectName ("OctaveTerminal");
+    terminal->setFocusPolicy (Qt::StrongFocus);
 
-  setObjectName ("TerminalDockWidget");
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  set_title (tr ("Command Window"));
+    setObjectName ("TerminalDockWidget");
+    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    set_title (tr ("Command Window"));
 
-  setWidget (terminal);
-  setFocusProxy (terminal);
+    setWidget (terminal);
+    setFocusProxy (terminal);
 
-  connect (terminal, SIGNAL (interrupt_signal (void)),
-           this, SLOT (terminal_interrupt (void)));
+    connect (terminal, SIGNAL (interrupt_signal (void)),
+             this, SLOT (terminal_interrupt (void)));
 
-  // Connect the visibility signal to the terminal for dis-/enabling timers
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           terminal, SLOT (handle_visibility_changed (bool)));
-}
+    // Connect the visibility signal to the terminal for dis-/enabling timers
+    connect (this, SIGNAL (visibilityChanged (bool)),
+             terminal, SLOT (handle_visibility_changed (bool)));
+  }
 
-terminal_dock_widget::~terminal_dock_widget (void)
-{
-  delete terminal;
-}
+  terminal_dock_widget::~terminal_dock_widget (void)
+  {
+    delete terminal;
+  }
 
-bool
-terminal_dock_widget::has_focus (void) const
-{
-  QWidget *w = widget ();
+  bool terminal_dock_widget::has_focus (void) const
+  {
+    QWidget *w = widget ();
 
-  return w->hasFocus ();
-}
+    return w->hasFocus ();
+  }
 
-void
-terminal_dock_widget::focus (void)
-{
-  octave_dock_widget::focus ();
+  void terminal_dock_widget::focus (void)
+  {
+    octave_dock_widget::focus ();
 
-  QWidget *w = widget ();
+    QWidget *w = widget ();
 
-  w->setFocus ();
-  w->activateWindow ();
-  w->raise ();
-}
+    w->setFocus ();
+    w->activateWindow ();
+    w->raise ();
+  }
 
-void
-terminal_dock_widget::terminal_interrupt (void)
-{
-  emit interrupt_signal ();
+  void terminal_dock_widget::terminal_interrupt (void)
+  {
+    emit interrupt_signal ();
+  }
 }

@@ -777,6 +777,7 @@ namespace octave
   void file_editor::active_tab_changed (int index)
   {
     emit fetab_change_request (m_tab_widget->widget (index));
+    focus ();
   }
 
   void file_editor::handle_editor_state_changed (bool copy_available,
@@ -1411,31 +1412,6 @@ namespace octave
     emit fetab_zoom_normal (m_tab_widget->currentWidget ());
   }
 
-  // slots for tab navigation
-  void file_editor::switch_left_tab (void)
-  {
-    switch_tab (-1);
-  }
-
-  void file_editor::switch_right_tab (void)
-  {
-    switch_tab (1);
-  }
-
-  void file_editor::move_tab_left (void)
-  {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
-    switch_tab (-1, true);
-#endif
-  }
-
-  void file_editor::move_tab_right (void)
-  {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
-    switch_tab (1, true);
-#endif
-  }
-
   void file_editor::create_context_menu (QMenu *menu)
   {
     // remove all standard actions from scintilla
@@ -1967,19 +1943,23 @@ namespace octave
                     tr ("&Documentation on Keyword"),
                     SLOT (request_context_doc (bool)));
 
-    // tab navigation (no menu, only actions)
+    // tab navigation (no menu, only actions; slots in tab_bar)
 
     m_switch_left_tab_action
-      = add_action (nullptr, "", SLOT (switch_left_tab (void)));
+      = add_action (nullptr, "", SLOT (switch_left_tab (void)),
+                    m_tab_widget->get_tab_bar ());
 
     m_switch_right_tab_action
-      = add_action (nullptr, "", SLOT (switch_right_tab (void)));
+      = add_action (nullptr, "", SLOT (switch_right_tab (void)),
+                    m_tab_widget->get_tab_bar ());
 
     m_move_tab_left_action
-      = add_action (nullptr, "", SLOT (move_tab_left (void)));
+      = add_action (nullptr, "", SLOT (move_tab_left (void)),
+                    m_tab_widget->get_tab_bar ());
 
     m_move_tab_right_action
-      = add_action (nullptr, "", SLOT (move_tab_right (void)));
+      = add_action (nullptr, "", SLOT (move_tab_right (void)),
+                    m_tab_widget->get_tab_bar ());
 
     // toolbar
 
@@ -2315,32 +2295,6 @@ namespace octave
     notice_settings (settings);
   }
 
-  void file_editor::switch_tab (int direction, bool movetab)
-  {
-    int tabs = m_tab_widget->count ();
-
-    if (tabs < 2)
-      return;
-
-    int old_pos = m_tab_widget->currentIndex ();
-    int new_pos = m_tab_widget->currentIndex () + direction;
-
-    if (new_pos < 0 || new_pos >= tabs)
-      new_pos = new_pos - direction*tabs;
-
-    if (movetab)
-      {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
-        m_tab_widget->tabBar ()->moveTab (old_pos, new_pos);
-        m_tab_widget->setCurrentIndex (old_pos);
-        m_tab_widget->setCurrentIndex (new_pos);
-        focus ();
-#endif
-      }
-    else
-      m_tab_widget->setCurrentIndex (new_pos);
-  }
-
   // Function for closing the files in a removed directory
   void file_editor::handle_dir_remove (const QString& old_name,
                                        const QString& new_name)
@@ -2419,22 +2373,28 @@ namespace octave
   }
 
   QAction * file_editor::add_action (QMenu *menu, const QString& text,
-                                     const char *member)
+                                     const char *member,
+                                     QWidget *receiver)
   {
-    return add_action (menu, QIcon (), text, member);
+    return add_action (menu, QIcon (), text, member, receiver);
   }
 
   QAction * file_editor::add_action (QMenu *menu, const QIcon& icon,
-                                    const QString& text, const char *member)
+                                     const QString& text, const char *member,
+                                     QWidget *receiver)
   {
     QAction *a;
+    QWidget *r = this;
+
+    if (receiver != nullptr)
+      r = receiver;
 
     if (menu)
-      a = menu->addAction (icon, text, this, member);
+      a = menu->addAction (icon, text, r, member);
     else
       {
         a = new QAction (this);
-        connect (a, SIGNAL (triggered ()), this, member);
+        connect (a, SIGNAL (triggered ()), r, member);
       }
 
     addAction (a);  // important for shortcut context

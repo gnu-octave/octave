@@ -300,11 +300,6 @@ namespace octave
     void zoom_out (bool);
     void zoom_normal (bool);
 
-    void switch_left_tab (void);
-    void switch_right_tab (void);
-    void move_tab_left (void);
-    void move_tab_right (void);
-
     void create_context_menu (QMenu *);
     void edit_status_update (bool, bool);
 
@@ -324,16 +319,15 @@ namespace octave
 
     void toggle_preference (const QString& preference, bool def);
 
-    void switch_tab (int direction, bool movetab = false);
-
     void handle_dir_remove (const QString& old_name, const QString& new_name);
 
     bool editor_tab_has_focus (void);
 
     QWidget * find_tab_widget (const QString& openFileName);
-    QAction * add_action (QMenu *menu, const QString& text, const char *member);
+    QAction * add_action (QMenu *menu, const QString& text,
+                          const char *member, QWidget *receiver = nullptr);
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                          const char *member);
+                          const char *member, QWidget *receiver = nullptr);
 
     QMenu * add_menu (QMenuBar *p, QString text);
 

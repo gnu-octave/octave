@@ -56,14 +56,12 @@ namespace octave
   {
     // Mark the record for PID invalid.
 
-    for (iterator p = m_list.begin (); p != m_list.end (); p++)
+    for (auto& oc : m_list)
       {
         // The call to the child::child_event_handler might
         // invalidate the iterator (for example, by calling
         // child_list::remove), so we increment the iterator
         // here.
-
-        child& oc = *p;
 
         if (oc.have_status)
           {
@@ -86,10 +84,8 @@ namespace octave
   {
     bool retval = false;
 
-    for (iterator p = m_list.begin (); p != m_list.end (); p++)
+    for (auto& oc : m_list)
       {
-        child& oc = *p;
-
         pid_t pid = oc.pid;
 
         if (pid > 0)

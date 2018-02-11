@@ -69,14 +69,9 @@ namespace octave
     int status;
   };
 
-  class
-  OCTAVE_API
-  child_list
+  class OCTAVE_API child_list
   {
   public:
-
-    typedef base_list<child>::iterator iterator;
-    typedef base_list<child>::const_iterator const_iterator;
 
     child_list (void) { }
 

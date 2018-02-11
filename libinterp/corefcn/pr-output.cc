@@ -585,7 +585,7 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
   else if (Vfixed_point_format && ! print_g)
     {
       rd = prec;
-      fw = rd + 2;
+      fw = rd + 3;
       if (inf_or_nan && fw < 4)
         fw = 4;
     }
@@ -1549,7 +1549,7 @@ pr_scale_header (std::ostream& os, double scale)
          << std::setw (8) << std::setprecision (1)
          << std::setiosflags (std::ios::scientific | std::ios::left)
          << scale
-         << " *\n";
+         << "*\n";
 
       if (! Vcompact_format)
         os << "\n";
@@ -1760,7 +1760,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -1855,7 +1855,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
           octave_idx_type col = 0;
           while (col < nc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
@@ -1895,7 +1895,6 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
           // kluge.  Get the true width of a number.
           int zero_fw;
-
           {
             std::ostringstream tmp_oss;
             pr_float (tmp_oss, 0.0, fw, scale);
@@ -1904,7 +1903,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2144,7 +2143,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
               octave_idx_type col = 0;
               while (col < nc)
                 {
-                  octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+                  octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
                   for (octave_idx_type j = col; j < lim; j++)
                     {
@@ -2185,7 +2184,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2282,7 +2281,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
           octave_idx_type col = 0;
           while (col < nc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
@@ -2322,7 +2321,6 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
           // kluge.  Get the true width of a number.
           int zero_fw;
-
           {
             std::ostringstream tmp_oss;
             pr_complex (tmp_oss, Complex (0.0), r_fw, i_fw, scale);
@@ -2331,7 +2329,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2430,7 +2428,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
           octave_idx_type col = 0;
           while (col < nc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
@@ -2468,7 +2466,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
+              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2658,7 +2656,7 @@ octave_print_internal (std::ostream& os, const Range& r,
           octave_idx_type col = 0;
           while (col < num_elem)
             {
-              octave_idx_type lim = (col +inc < num_elem ? col + inc : num_elem);
+              octave_idx_type lim = (col + inc < num_elem ? col + inc : num_elem);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -3266,8 +3264,8 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
               for (octave_idx_type col = 0; col < n_cols; col += inc)
                 {
-                  octave_idx_type lim = (col +inc < n_cols ? col + inc
-                                                           : n_cols);
+                  octave_idx_type lim = (col + inc < n_cols ? col + inc
+                                                            : n_cols);
 
                   pr_col_num_header (os, total_width, max_width, lim, col,
                                      extra_indent);

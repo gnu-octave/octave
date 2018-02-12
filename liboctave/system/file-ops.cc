@@ -46,7 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-passwd.h"
 #include "quit.h"
-#include "singleton-cleanup.h"
 #include "stat-wrappers.h"
 #include "str-vec.h"
 #include "unistd-wrappers.h"

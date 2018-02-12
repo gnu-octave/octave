@@ -39,7 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "oct-syscalls.h"
 #include "quit.h"
-#include "singleton-cleanup.h"
 #include "signal-wrappers.h"
 
 #include "bp-table.h"

@@ -45,7 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-locbuf.h"
 #include "quit.h"
-#include "singleton-cleanup.h"
 #include "str-vec.h"
 
 #include "error.h"

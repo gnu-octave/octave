@@ -282,8 +282,13 @@ namespace octave
                     // If the function has been replaced then clear any
                     // breakpoints associated with it
                     if (clear_breakpoints)
-                      bp_table::remove_all_breakpoints_in_file (canonical_nm,
-                                                                true);
+                      {
+                        octave::bp_table& bptab
+                          = octave::__get_bp_table__ ("out_of_date_check");
+
+                        bptab.remove_all_breakpoints_in_file (canonical_nm,
+                                                              true);
+                      }
                   }
               }
           }

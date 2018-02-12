@@ -34,170 +34,122 @@ class octave_map;
 class octave_user_code;
 class octave_value_list;
 
-struct
-bp_type
+namespace octave
 {
-  int line;
-  std::string cond;
-
-  bp_type (int l, const std::string& c) : line (l), cond (c) { }
-};
-
-// Interface to breakpoints.
-class
-OCTINTERP_API
-bp_table
-{
-private:
-
-  bp_table (void) : bp_set () { }
-
-  ~bp_table (void) = default;
-
-public:
-
-  // mapping from (FIXME: arbitrary index??) to line number of breakpoint
-  typedef std::map<int, int> intmap;
-
-  typedef intmap::const_iterator const_intmap_iterator;
-  typedef intmap::iterator intmap_iterator;
-
-  typedef std::map <std::string, intmap> fname_line_map;
-
-  typedef fname_line_map::const_iterator const_fname_line_map_iterator;
-  typedef fname_line_map::iterator fname_line_map_iterator;
-
-  typedef std::map <std::string, std::list<bp_type>> fname_bp_map;
-  typedef fname_bp_map::const_iterator const_fname_bp_map_iterator;
-  typedef fname_bp_map::iterator fname_bp_map_iterator;
-
-  static bool instance_ok (void);
-
-  // Add a breakpoint at the nearest executable line.
-  static intmap add_breakpoint (const std::string& fname = "",
-                                const intmap& lines = intmap (),
-                                const std::string& condition = "")
+  struct bp_type
   {
-    return instance_ok ()
-           ? instance->do_add_breakpoint (fname, lines, condition) : intmap ();
-  }
+    int line;
+    std::string cond;
 
-  // Remove a breakpoint from a line in file.
-  static int remove_breakpoint (const std::string& fname = "",
-                                const intmap& lines = intmap ())
+    bp_type (int l, const std::string& c) : line (l), cond (c) { }
+  };
+
+  // Interface to breakpoints.
+  class OCTINTERP_API bp_table
   {
-    return instance_ok ()
-           ? instance->do_remove_breakpoint (fname, lines) : 0;
-  }
+  public:
 
-  // Remove all the breakpoints in a specified file.
-  static intmap remove_all_breakpoints_in_file (const std::string& fname,
-                                                bool silent = false)
-  {
-    return instance_ok ()
-           ? instance->do_remove_all_breakpoints_in_file (fname, silent)
-           : intmap ();
-  }
+    bp_table (void)
+      : m_bp_set (), m_errors_that_stop (), m_caught_that_stop (),
+        m_warnings_that_stop ()
+    { }
 
-  // Remove all the breakpoints registered with octave.
-  static void remove_all_breakpoints (void)
-  {
-    if (instance_ok ())
-      instance->do_remove_all_breakpoints ();
-  }
+    ~bp_table (void) = default;
 
-  // Return all breakpoints.  Each element of the map is a vector
-  // containing the breakpoints corresponding to a given function name.
-  static fname_bp_map
-  get_breakpoint_list (const octave_value_list& fname_list)
-  {
-    return instance_ok ()
-           ? instance->do_get_breakpoint_list (fname_list) : fname_bp_map ();
-  }
+    // mapping from (FIXME: arbitrary index??) to line number of breakpoint
+    typedef std::map<int, int> intmap;
 
-  static bool
-  have_breakpoints (void)
-  {
-    return instance_ok () ? instance->do_have_breakpoints () : 0;
-  }
+    typedef intmap::const_iterator const_intmap_iterator;
+    typedef intmap::iterator intmap_iterator;
 
-  // Should we enter debugging for this particular error identifier?
-  static bool
-  debug_on_err (const std::string& ID)
-  {
-    return (errors_that_stop.empty () || errors_that_stop.count (ID));
-  }
+    typedef std::map <std::string, intmap> fname_line_map;
 
-  // Should we enter debugging for this particular identifier in a try/catch?
-  static bool
-  debug_on_caught (const std::string& ID)
-  {
-    return (caught_that_stop.empty () || caught_that_stop.count (ID));
-  }
+    typedef fname_line_map::const_iterator const_fname_line_map_iterator;
+    typedef fname_line_map::iterator fname_line_map_iterator;
 
-  // Should we enter debugging for this particular warning identifier?
-  static bool
-  debug_on_warn (const std::string& ID)
-  {
-    return (warnings_that_stop.empty () || warnings_that_stop.count (ID));
-  }
+    typedef std::map <std::string, std::list<bp_type>> fname_bp_map;
+    typedef fname_bp_map::const_iterator const_fname_bp_map_iterator;
+    typedef fname_bp_map::iterator fname_bp_map_iterator;
 
-  static octave_map stop_on_err_warn_status (bool toScreen);
+    // Add a breakpoint at the nearest executable line.
+    intmap add_breakpoint (const std::string& fname = "",
+                           const intmap& lines = intmap (),
+                           const std::string& condition = "");
 
-  static void dbstop_process_map_args (const octave_map& mv);
+    // Remove a breakpoint from a line in file.
+    int remove_breakpoint (const std::string& fname = "",
+                           const intmap& lines = intmap ());
 
-  static void dbclear_all_signals (void);
+    // Remove all the breakpoints in a specified file.
+    intmap remove_all_breakpoints_in_file (const std::string& fname,
+                                           bool silent = false);
 
-  static bool condition_valid (const std::string& cond);
+    // Remove all the breakpoints registered with octave.
+    void remove_all_breakpoints (void);
 
-  static void parse_dbfunction_params (const char *, const octave_value_list&,
-                                       std::string&, bp_table::intmap&,
-                                       std::string&);
+    // Return all breakpoints.  Each element of the map is a vector
+    // containing the breakpoints corresponding to a given function name.
+    fname_bp_map get_breakpoint_list (const octave_value_list& fname_list);
 
-private:
+    bool have_breakpoints (void) { return (! m_bp_set.empty ()); }
 
-  typedef std::set<std::string>::const_iterator const_bp_set_iterator;
-  typedef std::set<std::string>::iterator bp_set_iterator;
+    // Should we enter debugging for this particular error identifier?
+    bool debug_on_err (const std::string& id)
+    {
+      return (m_errors_that_stop.empty () || m_errors_that_stop.count (id));
+    }
 
-  // Set of function (.m file) names containing at least one breakpoint.
-  std::set<std::string> bp_set;
+    // Should we enter debugging for this particular identifier in a try/catch?
+    bool debug_on_caught (const std::string& id)
+    {
+      return (m_caught_that_stop.empty () || m_caught_that_stop.count (id));
+    }
 
-  // Set of error and warning message IDs that cause us to stop
-  // *if* Vdebug_on_error / Vdebug_on_caught / Vdebug_on_warning is set.
-  // Empty means stop on any error / caught error / warning.
-  static std::set<std::string> errors_that_stop;
-  static std::set<std::string> caught_that_stop;
-  static std::set<std::string> warnings_that_stop;
+    // Should we enter debugging for this particular warning identifier?
+    bool debug_on_warn (const std::string& id)
+    {
+      return (m_warnings_that_stop.empty () || m_warnings_that_stop.count (id));
+    }
 
-  static bp_table *instance;
+    octave_map stop_on_err_warn_status (bool to_screen);
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    void dbstop_process_map_args (const octave_map& mv);
 
-  bool do_add_breakpoint_1 (octave_user_code *fcn, const std::string& fname,
-                            const intmap& line, const std::string& condition,
-                            intmap& retval);
+    void dbclear_all_signals (void);
 
-  intmap do_add_breakpoint (const std::string& fname, const intmap& lines,
-                            const std::string& condition);
+    bool condition_valid (const std::string& cond);
 
-  int do_remove_breakpoint_1 (octave_user_code *fcn, const std::string&,
-                              const intmap& lines);
+    void parse_dbfunction_params (const char *, const octave_value_list&,
+                                  std::string&, bp_table::intmap&,
+                                  std::string&);
 
-  int do_remove_breakpoint (const std::string&, const intmap& lines);
+  private:
 
-  intmap do_remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
-                                              const std::string& fname);
+    typedef std::set<std::string>::const_iterator const_bp_set_iterator;
+    typedef std::set<std::string>::iterator bp_set_iterator;
 
-  intmap do_remove_all_breakpoints_in_file (const std::string& fname,
-                                            bool silent);
+    // Set of function (.m file) names containing at least one breakpoint.
+    std::set<std::string> m_bp_set;
 
-  void do_remove_all_breakpoints (void);
+    // Set of error and warning message IDs that cause us to stop
+    // *if* Vdebug_on_error / Vdebug_on_caught / Vdebug_on_warning is set.
+    // Empty means stop on any error / caught error / warning.
+    std::set<std::string> m_errors_that_stop;
+    std::set<std::string> m_caught_that_stop;
+    std::set<std::string> m_warnings_that_stop;
 
-  fname_bp_map do_get_breakpoint_list (const octave_value_list& fname_list);
+    bool add_breakpoint_1 (octave_user_code *fcn, const std::string& fname,
+                           const intmap& line, const std::string& condition,
+                           intmap& retval);
 
-  bool do_have_breakpoints (void) { return (! bp_set.empty ()); }
-};
+    int remove_breakpoint_1 (octave_user_code *fcn, const std::string&,
+                             const intmap& lines);
 
-extern octave_user_code * get_user_code (const std::string& fname = "");
+    intmap remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
+                                             const std::string& fname);
+  };
+
+  extern octave_user_code * get_user_code (const std::string& fname = "");
+}
 
 #endif

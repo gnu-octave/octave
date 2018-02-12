@@ -353,6 +353,7 @@ namespace octave
       m_type_info (),
       m_symbol_table (),
       m_evaluator (*this),
+      m_bp_table (),
       m_stream_list (*this),
       m_child_list (),
       m_url_handle_manager (),

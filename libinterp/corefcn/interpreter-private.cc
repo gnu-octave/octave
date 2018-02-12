@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "bp-table.h"
 #include "call-stack.h"
 #include "child-list.h"
 #include "error.h"
@@ -109,6 +110,13 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_evaluator ();
+  }
+
+  bp_table& __get_bp_table__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_bp_table ();
   }
 
   call_stack& __get_call_stack__ (const std::string& who)

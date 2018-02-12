@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "bp-table.h"
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "gtk-manager.h"
@@ -178,6 +179,11 @@ namespace octave
     symbol_scope get_current_scope (void);
     symbol_scope require_current_scope (const std::string& who);
 
+    bp_table& get_bp_table (void)
+    {
+      return m_bp_table;
+    }
+
     call_stack& get_call_stack (void);
 
     profiler& get_profiler (void);
@@ -258,6 +264,8 @@ namespace octave
     symbol_table m_symbol_table;
 
     tree_evaluator m_evaluator;
+
+    bp_table m_bp_table;
 
     stream_list m_stream_list;
 

@@ -2291,10 +2291,13 @@ void
   bool
   tree_jit::enabled (void)
   {
+    octave::bp_table& bptab
+      = octave::__get_bp_table__ ("tree_jit::enabled");
+
     // Ideally, we should only disable JIT if there is a breakpoint in the code
     // we are about to run. However, we can't figure this out in O(1) time, so
     // we conservatively check for the existence of any breakpoints.
-    return (Vjit_enable && ! bp_table::have_breakpoints ()
+    return (Vjit_enable && ! bptab.have_breakpoints ()
             && ! Vdebug_on_interrupt && ! Vdebug_on_error);
   }
 

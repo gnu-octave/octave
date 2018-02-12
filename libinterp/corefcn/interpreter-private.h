@@ -33,6 +33,7 @@ class cdef_manager;
 
 namespace octave
 {
+  class bp_table;
   class call_stack;
   class child_list;
   class dynamic_loader;
@@ -60,6 +61,8 @@ namespace octave
   extern symbol_scope __require_current_scope__ (const std::string& who);
 
   extern tree_evaluator& __get_evaluator__ (const std::string& who);
+
+  extern bp_table& __get_bp_table__ (const std::string& who);
 
   extern call_stack& __get_call_stack__ (const std::string& who);
 

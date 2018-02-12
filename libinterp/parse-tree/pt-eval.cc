@@ -438,7 +438,9 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    debug_mode = bp_table::have_breakpoints () || Vdebugging;
+    bp_table& bptab = __get_bp_table__ ("tree_evaluator::reset_debug_state");
+
+    debug_mode = bptab.have_breakpoints () || Vdebugging;
 
     dbstep_flag = 0;
   }

@@ -58,7 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 static octave_value
-intmap_to_ov (const bp_table::intmap& line)
+intmap_to_ov (const octave::bp_table::intmap& line)
 {
   int idx = 0;
 
@@ -66,7 +66,7 @@ intmap_to_ov (const bp_table::intmap& line)
 
   for (size_t i = 0; i < line.size (); i++)
     {
-      bp_table::const_intmap_iterator p = line.find (i);
+      octave::bp_table::const_intmap_iterator p = line.find (i);
 
       if (p != line.end ())
         {
@@ -170,24 +170,26 @@ all breakpoints within the file are cleared.
 @seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}
 @end deftypefn */)
 {
-  bp_table::intmap retmap;
+  octave::bp_table::intmap retmap;
   std::string symbol_name = "";  // stays empty for "dbstop if error" etc
-  bp_table::intmap lines;
+  octave::bp_table::intmap lines;
   std::string condition = "";
   octave_value retval;
+
+  octave::bp_table& bptab = octave::__get_bp_table__ ("Fdbstop");
 
   if (args.length() >= 1 && ! args(0).isstruct ())
     {
       // explicit function / line / condition
-      bp_table::parse_dbfunction_params ("dbstop", args, symbol_name,
-                                         lines, condition);
+      bptab.parse_dbfunction_params ("dbstop", args, symbol_name,
+                                     lines, condition);
 
       if (lines.size () == 0)
         lines[0] = 1;
 
       if (symbol_name != "")
         {
-          retmap = bp_table::add_breakpoint (symbol_name, lines, condition);
+          retmap = bptab.add_breakpoint (symbol_name, lines, condition);
           retval = intmap_to_ov (retmap);
         }
     }
@@ -201,7 +203,7 @@ all breakpoints within the file are cleared.
       if (mv.isfield ("bkpt") || mv.isfield ("errs") || mv.isfield ("warn")
           || mv.isfield ("intr"))
         {
-          bp_table::dbstop_process_map_args (mv);
+          bptab.dbstop_process_map_args (mv);
 
           // Replace mv by "bkpt", to use the processing below.
           octave_value bkpt = mv.getfield ("bkpt");
@@ -238,9 +240,10 @@ all breakpoints within the file are cleared.
           for (octave_idx_type i = 0; i < line.numel (); i++)
             {
               lines [0] = line(i).double_value ();
-              bp_table::add_breakpoint (name(i).string_value (), lines,
-                                        use_cond ? cond(i).string_value ()
-                                                 : unconditional );
+              bptab.add_breakpoint (name(i).string_value (), lines,
+                                    (use_cond
+                                     ? cond(i).string_value ()
+                                     : unconditional));
             }
           retval = octave_value (line.numel ());
         }
@@ -294,23 +297,24 @@ files.
 @end deftypefn */)
 {
   std::string symbol_name = "";  // stays empty for "dbclear if error" etc
-  bp_table::intmap lines;
+  octave::bp_table::intmap lines;
   std::string dummy;             // "if" condition -- only used for dbstop
 
   int nargin = args.length ();
 
-  bp_table::parse_dbfunction_params ("dbclear", args, symbol_name,
-                                     lines, dummy);
+  octave::bp_table& bptab = octave::__get_bp_table__ ("Fdbclear");
+
+  bptab.parse_dbfunction_params ("dbclear", args, symbol_name, lines, dummy);
 
   if (nargin == 1 && symbol_name == "all")
     {
-      bp_table::remove_all_breakpoints ();
-      bp_table::dbclear_all_signals ();
+      bptab.remove_all_breakpoints ();
+      bptab.dbclear_all_signals ();
     }
   else
     {
       if (symbol_name != "")
-        bp_table::remove_breakpoint (symbol_name, lines);
+        bptab.remove_breakpoint (symbol_name, lines);
     }
 
   return ovl ();
@@ -367,8 +371,10 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
     error ("dbstatus: only zero or one arguments accepted\n");
 
   octave_value_list fcn_list;
-  bp_table::fname_bp_map bp_list;
+  octave::bp_table::fname_bp_map bp_list;
   std::string symbol_name;
+
+  octave::bp_table& bptab = octave::__get_bp_table__ ("Fdbstatus");
 
   if (nargin == 1)
     {
@@ -377,7 +383,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 
       symbol_name = args(0).string_value ();
       fcn_list(0) = symbol_name;
-      bp_list = bp_table::get_breakpoint_list (fcn_list);
+      bp_list = bptab.get_breakpoint_list (fcn_list);
     }
   else
     {
@@ -393,7 +399,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
         }
 */
 
-      bp_list = bp_table::get_breakpoint_list (fcn_list);
+      bp_list = bptab.get_breakpoint_list (fcn_list);
     }
 
   if (nargout == 0)
@@ -402,7 +408,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 
       for (auto& fnm_bp_p: bp_list)
         {
-          std::list<bp_type> m = fnm_bp_p.second;
+          std::list<octave::bp_type> m = fnm_bp_p.second;
 
           // print unconditional breakpoints, if any, on a single line
 
@@ -441,7 +447,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
             }
         }
 
-      bp_table::stop_on_err_warn_status (true);
+      bptab.stop_on_err_warn_status (true);
 
       return ovl ();
     }
@@ -489,7 +495,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
       retmap.assign ("line", line);
       retmap.assign ("cond", cond);
 
-      octave_map ew = bp_table::stop_on_err_warn_status (false);
+      octave_map ew = bptab.stop_on_err_warn_status (false);
       if (ew.isempty ())
         {
           retval = octave_value (retmap);
@@ -532,7 +538,7 @@ is stopped.
 @seealso{dbstack, dblist, dbstatus, dbcont, dbstep, dbup, dbdown}
 @end deftypefn */)
 {
-  octave_user_code *dbg_fcn = get_user_code ();
+  octave_user_code *dbg_fcn = octave::get_user_code ();
 
   if (! dbg_fcn)
     {
@@ -632,7 +638,7 @@ numbers.
   switch (args.length ())
     {
     case 0:  // dbtype
-      dbg_fcn = get_user_code ();
+      dbg_fcn = octave::get_user_code ();
 
       if (! dbg_fcn)
         error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
@@ -650,7 +656,7 @@ numbers.
 
         if (ind != std::string::npos)  // (dbtype start:end)
           {
-            dbg_fcn = get_user_code ();
+            dbg_fcn = octave::get_user_code ();
 
             if (dbg_fcn)
               {
@@ -680,7 +686,7 @@ numbers.
 
             if (line == 0)  // (dbtype func)
               {
-                dbg_fcn = get_user_code (arg);
+                dbg_fcn = octave::get_user_code (arg);
 
                 if (! dbg_fcn)
                   error ("dbtype: function <%s> not found\n", arg.c_str ());
@@ -693,7 +699,7 @@ numbers.
                 if (line <= 0)
                   error ("dbtype: start and end lines must be >= 1\n");
 
-                dbg_fcn = get_user_code ();
+                dbg_fcn = octave::get_user_code ();
 
                 if (dbg_fcn)
                   do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
@@ -705,7 +711,7 @@ numbers.
 
     case 2:  // (dbtype func start:end) || (dbtype func start)
       {
-        dbg_fcn = get_user_code (argv[1]);
+        dbg_fcn = octave::get_user_code (argv[1]);
 
         if (! dbg_fcn)
           error ("dbtype: function <%s> not found\n", argv[1].c_str ());
@@ -778,7 +784,7 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
         error ("dblist: N must be a non-negative integer");
     }
 
-  octave_user_code *dbg_fcn = get_user_code ();
+  octave_user_code *dbg_fcn = octave::get_user_code ();
 
   if (! dbg_fcn)
     error ("dblist: must be inside a user function to use dblist\n");

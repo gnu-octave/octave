@@ -397,7 +397,10 @@ namespace octave
                 frame.protect_var (buffer_error_messages);
                 buffer_error_messages++;
 
-                bp_table::condition_valid (new_condition.toStdString ());
+                octave::bp_table& bptab
+                  = octave::__get_bp_table__ ("handle_context_menu_break_condition");
+
+                bptab.condition_valid (new_condition.toStdString ());
                 valid = true;
               }
             catch (const index_exception& e) { }
@@ -991,7 +994,12 @@ namespace octave
     line_info[0] = info.line;
 
     if (octave_qt_link::file_in_path (info.file, info.dir))
-      bp_table::add_breakpoint (info.function_name, line_info, info.condition);
+      {
+        octave::bp_table& bptab
+          = octave::__get_bp_table__ ("octave_qt_link::file_in_path");
+
+        bptab.add_breakpoint (info.function_name, line_info, info.condition);
+      }
   }
 
   void file_editor_tab::remove_breakpoint_callback (const bp_info& info)
@@ -1000,13 +1008,23 @@ namespace octave
     line_info[0] = info.line;
 
     if (octave_qt_link::file_in_path (info.file, info.dir))
-      bp_table::remove_breakpoint (info.function_name, line_info);
+      {
+        octave::bp_table& bptab
+          = octave::__get_bp_table__ ("remove_breakpoint_callback");
+
+        bptab.remove_breakpoint (info.function_name, line_info);
+      }
   }
 
   void file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
   {
     if (octave_qt_link::file_in_path (info.file, info.dir))
-      bp_table::remove_all_breakpoints_in_file (info.function_name, true);
+      {
+        octave::bp_table& bptab
+          = octave::__get_bp_table__ ("remove_all_breakpoints_callback");
+
+        bptab.remove_all_breakpoints_in_file (info.function_name, true);
+      }
   }
 
   file_editor_tab::bp_info::bp_info (const QString& fname, int l,

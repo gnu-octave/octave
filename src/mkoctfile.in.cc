@@ -630,12 +630,17 @@ main (int argc, char **argv)
         {
           pass_on_options += (' ' + arg);
         }
+      else if (starts_with (arg, "-O"))
+        {
+          pass_on_options += (' ' + arg);
+        }
       else if (starts_with (arg, "-"))
         {
           // Pass through any unrecognized options.
           pass_on_options += (' ' + arg);
           // Check for an additional argument following the option.
-          if (i < argc-1)
+          // However, don't check the final position which is typically a file
+          if (i < argc-2)
             {
               arg = argv[i+1];
               if (arg[0] != '-')

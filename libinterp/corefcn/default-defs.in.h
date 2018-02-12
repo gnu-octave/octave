@@ -120,6 +120,10 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_OCTDATADIR %OCTAVE_OCTDATADIR%
 #endif
 
+#if ! defined (OCTAVE_OCTDOCDIR)
+#  define OCTAVE_OCTDOCDIR %OCTAVE_OCTDOCDIR%
+#endif
+
 #if ! defined (OCTAVE_OCTETCDIR)
 #  define OCTAVE_OCTETCDIR %OCTAVE_OCTETCDIR%
 #endif

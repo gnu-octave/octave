@@ -192,10 +192,19 @@ OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.octave-html-stamp
 OCTAVE_CSS = %reldir%/octave.css
 HTMLDIR_CSS = $(OCTAVE_HTML_DIR)/octave.css
 
+OCTAVE_QTHELP_STAMP = %reldir%/.octave-qthelp-stamp
+OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interpreter.qch
+
 $(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 %reldir%/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
 %reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
 $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
+$(OCTAVE_QTHELP_FILES): $(OCTAVE_QTHELP_STAMP)
+$(OCTAVE_QTHELP_STAMP): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/prepare_qhelp.py
+	$(AM_V_GEN) rm -f $(OCTAVE_QTHELP_FILES) && \
+	$(PYTHON) $(srcdir)/%reldir%/prepare_qhelp.py %reldir%/octave_interpreter octave.html && \
+	$(QCOLLECTIONGENERATOR) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
+	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
 
 $(srcdir)/%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
@@ -257,7 +266,8 @@ DOC_TARGETS += \
   %reldir%/octave.pdf \
   $(OCTAVE_HTML_STAMP) \
   $(HTMLDIR_IMAGES) \
-  $(HTMLDIR_CSS)
+  $(HTMLDIR_CSS) \
+  $(OCTAVE_QTHELP_FILES)
 
 ## Distribute both OCTAVE_CSS and HTMLDIR_CSS so that the rules for
 ## building HTMLDIR_CSS work properly.
@@ -273,7 +283,8 @@ doc_EXTRA_DIST += \
   %reldir%/octave.html \
   $(HTMLDIR_IMAGES) \
   $(OCTAVE_CSS) \
-  $(HTMLDIR_CSS)
+  $(HTMLDIR_CSS) \
+  $(OCTAVE_QTHELP_FILES)
 
 # Prevent packaging of distribution unless all libraries
 # necessary to create documentation are present
@@ -284,6 +295,10 @@ doc-interpreter-dist-hook:
 	@$(GREP) '#define HAVE_QHULL 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing QHULL library.  Cannot package distribution!" ; exit 1; }
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
+
+doc-interpreter-install-doc-local:
+	$(MKDIR_P) $(octdocdir)
+	cp $(OCTAVE_QTHELP_FILES) $(octdocdir)
 
 ## These two texi files have an additional dependency through the
 ## @EXAMPLEFILE macro.

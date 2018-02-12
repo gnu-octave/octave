@@ -399,7 +399,7 @@ DIRS_TO_MAKE = \
 installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
-install-data-local: installdirs-local
+install-data-local: installdirs-local doc-interpreter-install-doc-local
 
 clean-local: doc-clean
 

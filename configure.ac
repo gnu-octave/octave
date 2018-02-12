@@ -166,6 +166,9 @@ OCTAVE_SET_DEFAULT([imagedir], '${datadir}/octave/${version}/imagelib')
 ## Where Octave will search for example data files shipped with distribution.
 OCTAVE_SET_DEFAULT([octdatadir], '${datadir}/octave/${version}/data')
 
+## Where Octave will search for Qt help files shipped with distribution.
+OCTAVE_SET_DEFAULT([octdocdir], '${datadir}/octave/${version}/doc')
+
 ## Where Octave will look for startup files.
 OCTAVE_SET_DEFAULT([startupfiledir], '${fcnfiledir}/startup')
 OCTAVE_SET_DEFAULT([localstartupfiledir], '${localfcnfiledir}/startup')
@@ -3194,6 +3197,7 @@ AC_CONFIG_COMMANDS_PRE([
   eval texi_macros_file="\"$texi_macros_file\""
   eval imagedir="\"$imagedir\""
   eval octdatadir="\"$octdatadir\""
+  eval octdocdir="\"$octdocdir\""
   eval startupfiledir="\"$startupfiledir\""
   eval localstartupfiledir="\"$localstartupfiledir\""
   eval man1dir="\"$man1dir\""
@@ -3341,6 +3345,7 @@ Octave is now configured for $canonical_host_type
   Qt uic:                        $UIC $UICFLAGS
   Qt rcc:                        $RCC $RCCFLAGS
   Qt lrelease:                   $LRELEASE $LRELEASEFLAGS
+  Qt qcollectiongenerator:       $QCOLLECTIONGENERATOR $QCOLLECTIONGENERATORFLAGS
   Qt qhelpgenerator:             $QHELPGENERATOR $QHELPGENERATORFLAGS
   READLINE libraries:            $READLINE_LIBS
   Sndfile CPPFLAGS:              $SNDFILE_CPPFLAGS

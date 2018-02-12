@@ -1921,6 +1921,16 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     else
       LRELEASE="$LRELEASE_QTVER"
     fi
+    
+    AC_CHECK_TOOLS(QCOLLECTIONGENERATOR_QTVER, [qcollectiongenerator-qt$qt_version])
+    if test -z "$QCOLLECTIONGENERATOR_QTVER"; then
+      AC_CHECK_TOOLS(QCOLLECTIONGENERATOR, [qcollectiongenerator])
+      if test -n "$QCOLLECTIONGENERATOR" && test -n "$QTCHOOSER"; then
+        QCOLLECTIONGENERATORFLAGS="-qt$qt_version"
+      fi
+    else
+      QCOLLECTIONGENERATOR="$QCOLLECTIONGENERATOR_QTVER"
+    fi
 
     AC_CHECK_TOOLS(QHELPGENERATOR_QTVER, [qhelpgenerator-qt$qt_version])
     if test -z "$QHELPGENERATOR_QTVER"; then
@@ -1932,19 +1942,21 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       QHELPGENERATOR="$QHELPGENERATOR_QTVER"
     fi
 
-    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE" || test -z "$QHELPGENERATOR"; then
+    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE" || test -z "$QCOLLECTIONGENERATOR" || test -z "$QHELPGENERATOR"; then
       warn_qt_tools="one or more of the Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
       build_qt_gui=no
       MOC_QTVER=
       UIC_QTVER=
       RCC_QTVER=
       LRELEASE_QTVER=
+      QCOLLECTIONGENERATOR_QTVER=
       QHELPGENERATOR_QTVER=
       MOCFLAGS=
       UICFLAGS=
       RCCFLAGS=
       LRELEASEFLAGS=
       QHELPGENERATORFLAGS=
+      QCOLLECTIONGENERATORFLAGS=
       $as_unset ac_cv_prog_MOC_QTVER
       $as_unset ac_cv_prog_ac_ct_MOC_QTVER
       $as_unset ac_cv_prog_UIC_QTVER

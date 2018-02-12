@@ -77,12 +77,12 @@ static std::string help_msg =
 "                          IMAGEDIR               OCTAVE_EXEC_HOME\n"
 "                          INCLUDEDIR             OCTAVE_HOME\n"
 "                          INFODIR                OCTDATADIR\n"
-"                          INFOFILE               OCTFILEDIR\n"
-"                          LIBDIR                 OCTINCLUDEDIR\n"
-"                          LIBEXECDIR             OCTLIBDIR\n"
-"                          LOCALAPIARCHLIBDIR     STARTUPFILEDIR\n"
-"                          LOCALAPIFCNFILEDIR     VERSION\n"
-"                          LOCALAPIOCTFILEDIR\n"
+"                          INFOFILE               OCTDOCDIR\n"
+"                          LIBDIR                 OCTFILEDIR\n"
+"                          LIBEXECDIR             OCTINCLUDEDIR\n"
+"                          LOCALAPIARCHLIBDIR     OCTLIBDIR\n"
+"                          LOCALAPIFCNFILEDIR     STARTUPFILEDIR\n"
+"                          LOCALAPIOCTFILEDIR     VERSION\n"
 "\n"
 "  -v, --version         Print the Octave version number.\n"
 "\n";
@@ -126,6 +126,7 @@ initialize (void)
   vars["MAN1DIR"] = prepend_octave_home (%OCTAVE_MAN1DIR%);
   vars["MANDIR"] = prepend_octave_home (%OCTAVE_MANDIR%);
   vars["OCTDATADIR"] = prepend_octave_home (%OCTAVE_OCTDATADIR%);
+  vars["OCTDOCDIR"] = prepend_octave_home (%OCTAVE_OCTDOCDIR%);
   vars["OCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_OCTFILEDIR%);
   vars["OCTINCLUDEDIR"] = prepend_octave_home (%OCTAVE_OCTINCLUDEDIR%);
   vars["OCTLIBDIR"] = prepend_octave_exec_home (%OCTAVE_OCTLIBDIR%);

@@ -61,6 +61,7 @@ localverfcnfiledir=`echo "@localverfcnfiledir@" | sed "s|^${prefix}/||"`
 man1dir=`echo "@man1dir@" | sed "s|^${prefix}/||"`
 mandir=`echo "@mandir@" | sed "s|^${prefix}/||"`
 octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/||"`
+octdatadir=`echo "@octdocdir@" | sed "s|^${prefix}/||"`
 octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/||"`
 octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
 octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/||"`
@@ -100,6 +101,7 @@ $SED \
   -e "s|%OCTAVE_MAN1EXT%|\"${man1ext}\"|" \
   -e "s|%OCTAVE_MANDIR%|\"${mandir}\"|" \
   -e "s|%OCTAVE_OCTDATADIR%|\"${octdatadir}\"|" \
+  -e "s|%OCTAVE_OCTDOCDIR%|\"${octdocdir}\"|" \
   -e "s|%OCTAVE_OCTFILEDIR%|\"${octfiledir}\"|" \
   -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \

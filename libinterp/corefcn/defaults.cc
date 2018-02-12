@@ -73,6 +73,7 @@ static std::string Vlocal_fcn_file_dir;
 static std::string Vfcn_file_dir;
 
 static std::string Voct_data_dir;
+static std::string Voct_doc_dir;
 static std::string Voct_etc_dir;
 static std::string Voct_include_dir;
 static std::string Voct_lib_dir;
@@ -210,6 +211,7 @@ init_defaults (void)
   Vfcn_file_dir = octave::config::prepend_octave_home (OCTAVE_FCNFILEDIR);
 
   Voct_data_dir = octave::config::prepend_octave_home (OCTAVE_OCTDATADIR);
+  Voct_doc_dir = octave::config::prepend_octave_home (OCTAVE_OCTDOCDIR);
   Voct_etc_dir = octave::config::prepend_octave_home (OCTAVE_OCTETCDIR);
   Voct_include_dir = octave::config::prepend_octave_home (OCTAVE_OCTINCLUDEDIR);
   Voct_lib_dir = octave::config::prepend_octave_exec_home (OCTAVE_OCTLIBDIR);
@@ -290,6 +292,7 @@ namespace octave
     std::string fcn_file_dir (void) { RETURN (Vfcn_file_dir); }
 
     std::string oct_data_dir (void) { RETURN (Voct_data_dir); }
+    std::string oct_doc_dir (void) { RETURN (Voct_doc_dir); }
     std::string oct_etc_dir (void) { RETURN (Voct_etc_dir); }
     std::string oct_include_dir (void) { RETURN (Voct_include_dir); }
     std::string oct_lib_dir (void) { RETURN (Voct_lib_dir); }

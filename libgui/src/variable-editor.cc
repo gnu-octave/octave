@@ -624,7 +624,7 @@ variable_editor::notice_settings (const QSettings *settings)
   m_alternate_rows = settings->value ("variable_editor/alternate_rows",
                                       false).toBool ();
 
-  QList<QColor> _default_colors = resource_manager::varedit_default_colors ();
+  QList<QColor> default_colors = resource_manager::varedit_default_colors ();
 
   QString class_chars = resource_manager::varedit_color_chars ();
 
@@ -656,13 +656,18 @@ variable_editor::notice_settings (const QSettings *settings)
 
   for (int i = 0; i < class_chars.length (); i++)
     {
-      QVariant default_var = _default_colors.at (i);
+      QVariant default_var;
+      if (i < default_colors.length ())
+        default_var = default_colors.at (i);
+      else
+        default_var = QColor ();
 
       QColor setting_color = settings->value ("variable_editor/color_"
                                               + class_chars.mid (i, 1),
                                               default_var).value<QColor> ();
 
-      m_table_colors.replace (i, setting_color);
+      if (i < m_table_colors.length ())
+        m_table_colors.replace (i, setting_color);
     }
 
   update_colors ();
@@ -1459,17 +1464,21 @@ void variable_editor::update_colors (void)
 {
   m_stylesheet = "";
 
-  m_stylesheet += "QTableView::item{ foreground-color: "
-    + m_table_colors[0].name () +" }";
+  if (m_table_colors.length () > 0)
+    m_stylesheet += "QTableView::item{ foreground-color: "
+      + m_table_colors[0].name () +" }";
 
-  m_stylesheet += "QTableView::item{ background-color: "
-    + m_table_colors[1].name () +" }";
+  if (m_table_colors.length () > 1)
+    m_stylesheet += "QTableView::item{ background-color: "
+      + m_table_colors[1].name () +" }";
 
-  m_stylesheet += "QTableView::item{ selection-color: "
-    + m_table_colors[2].name () +" }";
+  if (m_table_colors.length () > 2)
+    m_stylesheet += "QTableView::item{ selection-color: "
+      + m_table_colors[2].name () +" }";
 
-  m_stylesheet += "QTableView::item:selected{ background-color: "
-    + m_table_colors[3].name () +" }";
+  if (m_table_colors.length () > 3)
+    m_stylesheet += "QTableView::item:selected{ background-color: "
+      + m_table_colors[3].name () +" }";
 
   if (m_table_colors.length () > 4 && m_alternate_rows)
     {

@@ -985,10 +985,36 @@ size) with successive @code{regexp} searches.
 %! assert (nm(2).first, "James");
 %! assert (nm(2).last, "Rogers");
 
+## Tests for nulls in strings properly matching
+%!test
+%! str = "A\0B\0\0C";
+%! ptn = '(\0+)';  # also test null in single-quote pattern
+%! M = regexp (str, ptn, "match");
+%! assert (size (M), [1, 2]);
+%! assert (double (M{1}), [0]);
+%! assert (double (M{2}), [0, 0]);
+
+%!test
+%! str = "A\0B\0\0C";
+%! ptn = "(\0+)";  # also test null in double-quote pattern
+%! T = regexp (str, ptn, "tokens");
+%! assert (size (T), [1, 2]);
+%! assert (double (T{1}{1}), [0]);
+%! assert (double (T{2}{1}), [0, 0]);
+
+%!test
+%! str = "A\0B\0\0C";
+%! ptn = '(?<namedtoken>\0+)';
+%! NT = regexp (str, ptn, "names");
+%! assert (size (NT), [1, 2]);
+%! assert (double (NT(1).namedtoken), [0]);
+%! assert (double (NT(2).namedtoken), [0, 0]);
+
 ## Tests for named tokens
 %!test
 %! ## Parenthesis in named token (ie (int)) causes a problem
-%! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
+%! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'),
+%!         struct ('typestr', 'int'));
 
 %!test <*35683>
 %! ## Mix of named and unnamed tokens can cause segfault

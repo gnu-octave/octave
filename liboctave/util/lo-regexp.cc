@@ -220,9 +220,14 @@ namespace octave
 
     buf << pattern.substr (pos);
 
+    // Replace NULLs with escape sequence because conversion function c_str() 
+    // will terminate string early at embedded NULLs.
+    std::string buf_str = buf.str ();
+    while ((pos = buf_str.find ('\0')) != std::string::npos)
+      buf_str.replace (pos, 1, "\\000");
+
     const char *err;
     int erroffset;
-    std::string buf_str = buf.str ();
 
     int pcre_options
       = (  (options.case_insensitive () ? PCRE_CASELESS : 0)
@@ -353,6 +358,9 @@ namespace octave
                 ("%s: cannot allocate memory in pcre_get_substring_list",
                  who.c_str ());
 
+            // Must use explicit length constructor as match can contain '\0'.
+            std::string match_string = std::string (*listptr, end - start + 1);
+
             string_vector tokens (pos_match);
             string_vector named_tokens (nnames);
             int pos_offset = 0;
@@ -375,21 +383,22 @@ namespace octave
                               {
                                 if (nidx[j] == i)
                                   {
+                                    size_t len = ovector[2*i+1] - ovector[2*i];
                                     named_tokens(named_idx(j)) =
-                                      std::string (*(listptr+i-pos_offset));
+                                      std::string (*(listptr+i-pos_offset),
+                                                   len);
                                     break;
                                   }
                               }
                           }
 
-                        tokens(pos_match++) = std::string (*(listptr+i));
+                        size_t len = ovector[2*i+1] - ovector[2*i];
+                        tokens(pos_match++) = std::string (*(listptr+i), len);
                       }
                     else
                       pos_offset++;
                   }
               }
-
-            std::string match_string = std::string (*listptr);
 
             pcre_free_substring_list (listptr);
 

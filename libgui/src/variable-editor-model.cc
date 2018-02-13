@@ -154,12 +154,21 @@ base_ve_model::columnCount (const QModelIndex&) const
 }
 
 QString
-base_ve_model::edit_display_sub (const octave_value& elt) const
+base_ve_model::edit_display_sub (const octave_value& elt, int role) const
 {
   std::string str;
 
   if (cell_is_editable (elt))
-    str = elt.edit_display (m_display_fmt, 0, 0);
+    {
+      float_display_format fmt;
+
+      if (role == Qt::DisplayRole)
+        fmt = get_edit_display_format (elt);
+      else
+        fmt.set_precision (elt.is_single_type () ? 8 : 16);
+
+      str = elt.edit_display (fmt, 0, 0);
+    }
   else
     {
       dim_vector dv = elt.dims ();
@@ -170,7 +179,7 @@ base_ve_model::edit_display_sub (const octave_value& elt) const
 }
 
 QVariant
-base_ve_model::edit_display (const QModelIndex& idx) const
+base_ve_model::edit_display (const QModelIndex& idx, int role) const
 {
   int row;
   int col;
@@ -178,7 +187,14 @@ base_ve_model::edit_display (const QModelIndex& idx) const
   if (! index_ok (idx, row, col))
     return QVariant ();
 
-  std::string str = m_value.edit_display (m_display_fmt, row, col);
+  float_display_format fmt;
+  if (role == Qt::DisplayRole)
+    fmt = m_display_fmt;
+  else
+    fmt.set_precision (m_value.is_single_type () ? 8 : 16);
+
+  std::string str = m_value.edit_display (fmt, row, col);
+
   return QString::fromStdString (str);
 }
 
@@ -201,7 +217,8 @@ base_ve_model::data (const QModelIndex& idx, int role) const
     {
     case Qt::DisplayRole:
     case Qt::EditRole:
-      return edit_display (idx);
+      return edit_display (idx, role);
+      return edit_display (idx, role);
 
 #if 0
     case Qt::StatusTipRole:
@@ -325,7 +342,7 @@ public:
 
   numeric_model& operator = (const numeric_model&) = delete;
 
-  QVariant edit_display (const QModelIndex& idx) const
+  QVariant edit_display (const QModelIndex& idx, int role) const
   {
     int row;
     int col;
@@ -333,7 +350,14 @@ public:
     if (! index_ok (idx, row, col))
       return QVariant ();
 
-    std::string str = m_value.edit_display (m_display_fmt, row, col);
+  float_display_format fmt;
+  if (role == Qt::DisplayRole)
+    fmt = m_display_fmt;
+  else
+    fmt.set_precision (m_value.is_single_type () ? 8 : 16);
+
+  std::string str = m_value.edit_display (fmt, row, col);
+
     return QString::fromStdString (str);
   }
 
@@ -370,9 +394,12 @@ public:
 
   string_model& operator = (const string_model&) = delete;
 
-  QVariant edit_display (const QModelIndex&) const
+  QVariant edit_display (const QModelIndex&, int) const
   {
-    std::string str = m_value.edit_display (m_display_fmt, 0, 0);
+    // There isn't really a format for strings...
+
+    std::string str = m_value.edit_display (float_display_format (), 0, 0);
+
     return QString::fromStdString (str);
   }
 
@@ -404,7 +431,7 @@ public:
 
   cell_model& operator = (const cell_model&) = delete;
 
-  QVariant edit_display (const QModelIndex& idx) const
+  QVariant edit_display (const QModelIndex& idx, int role) const
   {
     int row;
     int col;
@@ -414,7 +441,7 @@ public:
 
     Cell cval = m_value.cell_value ();
 
-    return edit_display_sub (cval(row,col));
+    return edit_display_sub (cval(row,col), role);
   }
 
   bool requires_sub_editor (const QModelIndex& idx) const
@@ -493,7 +520,7 @@ public:
 
   scalar_struct_model& operator = (const scalar_struct_model&) = delete;
 
-  QVariant edit_display (const QModelIndex& idx) const
+  QVariant edit_display (const QModelIndex& idx, int role) const
   {
     int row;
     int col;
@@ -503,7 +530,7 @@ public:
 
     octave_scalar_map m = m_value.scalar_map_value ();
 
-    return edit_display_sub (m.contents (row));
+    return edit_display_sub (m.contents (row), role);
   }
 
   bool requires_sub_editor (const QModelIndex& idx) const
@@ -612,7 +639,7 @@ public:
 
   bool is_editable (void) const { return false; }
 
-  QVariant edit_display (const QModelIndex&) const
+  QVariant edit_display (const QModelIndex&, int) const
   {
     if (m_value.is_undefined ())
       return QVariant ();
@@ -661,7 +688,7 @@ public:
 
   vector_struct_model& operator = (const vector_struct_model&) = delete;
 
-  QVariant edit_display (const QModelIndex& idx) const
+  QVariant edit_display (const QModelIndex& idx, int role) const
   {
     int row;
     int col;
@@ -673,7 +700,7 @@ public:
 
     Cell cval = m.contents (col);
 
-    return edit_display_sub (cval(row));
+    return edit_display_sub (cval(row), role);
   }
 
   bool requires_sub_editor (const QModelIndex& idx) const
@@ -782,7 +809,7 @@ public:
 
   struct_model& operator = (const struct_model&) = delete;
 
-  QVariant edit_display (const QModelIndex& idx) const
+  QVariant edit_display (const QModelIndex& idx, int) const
   {
     int row;
     int col;

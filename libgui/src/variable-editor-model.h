@@ -61,9 +61,9 @@ public:
 
   int columnCount (const QModelIndex& = QModelIndex ()) const;
 
-  QString edit_display_sub (const octave_value& elt) const;
+  QString edit_display_sub (const octave_value& elt, int role) const;
 
-  virtual QVariant edit_display (const QModelIndex& idx) const;
+  virtual QVariant edit_display (const QModelIndex& idx, int role) const;
 
   QVariant data (const QModelIndex& idx, int role = Qt::DisplayRole) const;
 

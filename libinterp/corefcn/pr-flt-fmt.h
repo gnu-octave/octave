@@ -155,6 +155,12 @@ public:
 
   float_format imag_format (void) const { return m_imag_fmt; }
 
+  void set_precision (int prec)
+  {
+    m_real_fmt.prec = prec;
+    m_imag_fmt.prec = prec;
+  }
+
 private:
 
   float_format m_real_fmt;

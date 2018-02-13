@@ -979,6 +979,9 @@ namespace octave
 
     if (! text.empty ())
       {
+        // FIXME: The call to c_str() creates a NULL terminated character
+        //        array.  If there are NULLs already in the format text
+        //        then the text is truncated early.  See bug #53148.
         printf_format_elt *elt
           = new printf_format_elt (text.c_str (), args, fw, prec, flags,
                                    type, modifier);

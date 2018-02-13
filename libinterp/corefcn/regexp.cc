@@ -181,6 +181,30 @@ do_regexp_rep_string_escapes (const std::string& s)
               retval[i] = '\v';
               break;
 
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7': // octal input
+            {
+              size_t k;
+              int tmpi = s[j] - '0';
+              for (k = j+1; k < std::min (j+3, len); k++)
+                {
+                  int digit = s[k] - '0';
+                  if (digit < 0 || digit > 7)
+                    break;
+                  tmpi <<= 3;
+                  tmpi += digit;
+                }
+              retval[i] = tmpi;
+              j = k - 1;
+              break;
+            }
+
             case 'o': // octal input
             {
               bool bad_esc_seq = (j+1 >= len);
@@ -1025,6 +1049,7 @@ size) with successive @code{regexp} searches.
 %! assert (tokens.T1, "a");
 %! assert (tokens.T2, "de");
 
+## Test options to regexp
 %!assert (regexp ("abc\nabc", '.'), [1:7])
 %!assert (regexp ("abc\nabc", '.', 'dotall'), [1:7])
 %!test
@@ -1093,9 +1118,6 @@ size) with successive @code{regexp} searches.
 %! assert (isempty (fieldnames (nm)));
 %! assert (sp, { "", "", "A", "", "E", "" });
 
-%!error regexp ('string', 'tri', 'BadArg')
-%!error regexp ('string')
-
 %!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1,0)})
 %!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
 %!assert (regexp ('Strings', {'t','s'}), {2, 7})
@@ -1149,6 +1171,7 @@ size) with successive @code{regexp} searches.
 %! assert (a, {"oo"});
 %! assert (b, {"f", " bar"});
 
+## Test escape sequences are expanded even in single-quoted strings
 %!assert (regexp ("\n", '\n'), 1)
 %!assert (regexp ("\n", "\n"), 1)
 
@@ -1157,6 +1180,10 @@ size) with successive @code{regexp} searches.
 %! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
 %! assert (regexprep ('s', '(s)', 'x\$1y'), 'x$1y');
 %! assert (regexprep ('s', '(s)', 'x\\$1y'), 'x\sy');
+
+## Test input validation
+%!error regexp ('string', 'tri', 'BadArg')
+%!error regexp ('string')
 
 */
 
@@ -1492,23 +1519,26 @@ function.
 ## Return the original if no match
 %!assert (regexprep ('hello', 'world', 'earth'), 'hello')
 
-## Test emptymatch
+## Test emptymatch option
 %!assert (regexprep ('World', '^', 'Hello '), 'World')
 %!assert (regexprep ('World', '^', 'Hello ', 'emptymatch'), 'Hello World')
 
 ## Test a general replacement
 %!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_"), "a_b_c_d_e_f_g")
 
-## Make sure it works at the beginning and end
+## Make sure replacements work at the beginning and end of string
 %!assert (regexprep ("a[b]c{d}e-f=g", "a", "_"), "_[b]c{d}e-f=g")
 %!assert (regexprep ("a[b]c{d}e-f=g", "g", "_"), "a[b]c{d}e-f=_")
 
-## Options
-%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_", "once"), "a_b]c{d}e-f=g")
-%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "ignorecase"), "a_b_c_d_e_f_g")
+## Test options "once" and "ignorecase"
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_", "once"),
+%!        "a_b]c{d}e-f=g")
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "ignorecase"),
+%!        "a_b_c_d_e_f_g")
 
 ## Option combinations
-%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "once", "ignorecase"), "a_b]c{d}e-f=g")
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "once", "ignorecase"),
+%!        "a_b]c{d}e-f=g")
 
 ## End conditions on replacement
 %!assert (regexprep ("abc", "(b)", ".$1"), "a.bc")
@@ -1521,13 +1551,21 @@ function.
 %!assert (regexprep ({"abc","cba"}, "b", "?"), {"a?c","c?a"})
 %!assert (regexprep ({"abc","cba"}, {"b","a"}, {"?","!"}), {"!?c","c?!"})
 
-# Nasty lookbehind expression
+## Nasty lookbehind expression
 %!test
 %! warning ("off", "Octave:regexp-lookbehind-limit", "local");
-%! assert (regexprep ('x^(-1)+y(-1)+z(-1)=0', '(?<=[a-z]+)\(\-[1-9]*\)', '_minus1'),'x^(-1)+y_minus1+z_minus1=0');
+%! assert (regexprep ('x^(-1)+y(-1)+z(-1)=0', '(?<=[a-z]+)\(\-[1-9]*\)',
+%!         '_minus1'),'x^(-1)+y_minus1+z_minus1=0');
 
+## Verify escape sequences in pattern
 %!assert (regexprep ("\n", '\n', "X"), "X")
 %!assert (regexprep ("\n", "\n", "X"), "X")
+
+## Verify NULLs in pattern and replacement string
+%!assert (regexprep ("A\0A", "\0", ","), "A,A")
+%!assert (regexprep ("A\0A", '\0', ","), "A,A")
+%!assert (regexprep ("A,A", "A", "B\0B"), "B\0B,B\0B")
+%!assert (regexprep ("A,A", "A", 'B\0B'), "B\0B,B\0B")
 
 ## Empty matches were broken on ARM architecture
 %!test <*52810>

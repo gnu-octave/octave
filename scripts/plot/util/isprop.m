@@ -38,9 +38,7 @@ function res = isprop (obj, prop)
     error ("isprop: PROP name must be a string");
   endif
 
-  oldwarn = warning ("error", "Octave:abbreviated-property-match");
-  [olderr, oldid] = lasterr ();
-  restore_lasterr = false;
+  warning ("error", "Octave:abbreviated-property-match", "local");
 
   res = false (size (obj));
   for i = 1:numel (res)
@@ -48,17 +46,9 @@ function res = isprop (obj, prop)
       try
         v = get (obj(i), prop);
         res(i) = true;
-      catch
-        restore_lasterr = true;
       end_try_catch
     endif
   endfor
-
-  if (restore_lasterr)
-    lasterr (olderr, oldid);
-  endif
-
-  warning (oldwarn);
 
 endfunction
 

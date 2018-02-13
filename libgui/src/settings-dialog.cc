@@ -573,9 +573,17 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->varedit_autofitType->setCurrentIndex (settings->value ("autofit_type", 0).toInt ());
   ui->varedit_rowHeight->setText (settings->value ("variable_editor/row_height", "2").toString ());
   ui->varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
-  ui->varedit_font->setFont (QFont (settings->value ("variable_editor/font_name", settings->value ("terminal/fontName", "Courier New")).toString ()));
+
+  ui->varedit_font->setCurrentFont (QFont (settings->value ("variable_editor/font_name", settings->value ("terminal/fontName", "Courier New")).toString ()));
   ui->varedit_fontSize->setValue (settings->value ("variable_editor/font_size", QVariant (10)).toInt ());
+  connect (ui->varedit_useTerminalFont, SIGNAL (toggled (bool)),
+           ui->varedit_font, SLOT (setDisabled (bool)));
+  connect (ui->varedit_useTerminalFont, SIGNAL (toggled (bool)),
+           ui->varedit_fontSize, SLOT (setDisabled (bool)));
   ui->varedit_useTerminalFont->setChecked (settings->value ("variable_editor/use_terminal_font", false).toBool ());
+  ui->varedit_font->setDisabled (ui->varedit_useTerminalFont->isChecked ());
+  ui->varedit_fontSize->setDisabled (ui->varedit_useTerminalFont->isChecked ());
+
   ui->varedit_alternate->setChecked (settings->value ("variable_editor/alternate_rows", QVariant (false)).toBool ());
 
   // variable editor colors

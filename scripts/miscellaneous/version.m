@@ -49,6 +49,9 @@
 ##
 ## @item @qcode{"-lapack"}
 ## for version information for the linked @sc{lapack}.
+##
+## @item @qcode{"-hgid"}
+## the mercurial ID of the sources used to build Octave.
 ## @end table
 ##
 ## The variant with no input and output argument is an alias for the function
@@ -98,6 +101,8 @@ function [v, d] = version (feature)
         v = __blas_version__ ();
       case "-lapack"
         v = __lapack_version__ ();
+      case "-hgid"
+        v = __octave_config_info__ ("hg_id");
       otherwise
         error ("version: invalid FEATURE");
     endswitch

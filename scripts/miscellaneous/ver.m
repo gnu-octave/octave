@@ -59,6 +59,8 @@ function retval = ver (package = "")
   endif
 
   if (nargout == 0)
+    hg_id = __octave_config_info__ ("hg_id");
+
     [unm, err] = uname ();
 
     if (err)
@@ -70,7 +72,7 @@ function retval = ver (package = "")
 
     hbar(1:70) = "-";
     desc = {hbar
-            ["GNU Octave Version: " OCTAVE_VERSION]
+            ["GNU Octave Version: " OCTAVE_VERSION " (hg id: " hg_id ")"]
             ["GNU Octave License: " license]
             ["Operating System: " os_string]
             hbar};
@@ -90,7 +92,8 @@ function retval = ver (package = "")
       lst = pkg ("list");
       ## Start with the version info for Octave
       retval = struct ("Name", "Octave", "Version", version,
-                       "Release", [], "Date", []);
+                       "Release", [],
+                       "Date", __octave_config_info__ ("release_date"));
       for i = 1:numel (lst)
         retval(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
                                 "Release", [], "Date", lst{i}.date);

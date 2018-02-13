@@ -310,6 +310,22 @@ octave_perm_matrix::as_uint64 (void) const
   return uint64_array_value ();
 }
 
+float_display_format
+octave_perm_matrix::get_edit_display_format (void) const
+{
+  return float_display_format (float_format (1, 0, 0));
+}
+
+std::string
+octave_perm_matrix::edit_display (const float_display_format& fmt,
+                                  octave_idx_type i,
+                                  octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, octave_int<octave_idx_type> (matrix(i,j)));
+  return buf.str ();
+}
+
 bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
@@ -541,18 +557,6 @@ octave_perm_matrix::try_narrowing_conversion (void)
     retval = new octave_scalar (matrix (0, 0));
 
   return retval;
-}
-
-std::string
-octave_perm_matrix::edit_display (const float_display_format&,
-                                  octave_idx_type i, octave_idx_type j) const
-{
-  // FIXME: maybe we should have octave_print_internal functions for
-  // standard int types, not just octave_int<T> types.
-
-  std::ostringstream buf;
-  octave_print_internal (buf, octave_int<octave_idx_type> (matrix(i,j)));
-  return buf.str ();
 }
 
 octave_value

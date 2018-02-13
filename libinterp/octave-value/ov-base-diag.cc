@@ -466,6 +466,25 @@ octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force,
 }
 
 template <typename DMT, typename MT>
+float_display_format
+octave_base_diag<DMT, MT>::get_edit_display_format (void) const
+{
+  // FIXME
+  return float_display_format ();
+}
+
+template <typename DMT, typename MT>
+std::string
+octave_base_diag<DMT, MT>::edit_display (const float_display_format& fmt,
+                                         octave_idx_type i,
+                                         octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, matrix(i,j));
+  return buf.str ();
+}
+
+template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 {
@@ -611,17 +630,6 @@ octave_base_diag<DMT, MT>::short_disp (std::ostream& os) const
     }
   else
     os << "...";
-}
-
-template <typename DMT, typename MT>
-std::string
-octave_base_diag<DMT, MT>::edit_display (const float_display_format&,
-                                         octave_idx_type i,
-                                         octave_idx_type j) const
-{
-  std::ostringstream buf;
-  octave_print_internal (buf, matrix(i,j));
-  return buf.str ();
 }
 
 template <typename DMT, typename MT>

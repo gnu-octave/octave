@@ -501,6 +501,21 @@ skip_comments (std::istream& is)
   skip_until_newline (is, false);
 }
 
+float_display_format
+octave_range::get_edit_display_format (void) const
+{
+  return make_format (range_value ());
+}
+
+std::string
+octave_range::edit_display (const float_display_format& fmt,
+                            octave_idx_type, octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, range.elem (j));
+  return buf.str ();
+}
+
 bool
 octave_range::save_ascii (std::ostream& os)
 {

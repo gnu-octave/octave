@@ -84,6 +84,9 @@ public:
   octave_value as_uint32 (void) const;
   octave_value as_uint64 (void) const;
 
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -145,6 +148,9 @@ public:
   octave_value as_uint16 (void) const;
   octave_value as_uint32 (void) const;
   octave_value as_uint64 (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
 
   bool save_ascii (std::ostream& os);
 

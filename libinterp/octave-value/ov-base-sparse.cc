@@ -427,6 +427,25 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
     }
 }
 
+template <typename MT>
+float_display_format
+octave_base_sparse<MT>::get_edit_display_format (void) const
+{
+  return float_display_format ();
+  //  return make_format (this->matrix);
+}
+
+template <typename MT>
+std::string
+octave_base_sparse<MT>::edit_display (const float_display_format& fmt,
+                                      octave_idx_type i,
+                                      octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, this->matrix(i,j));
+  return buf.str ();
+}
+
 template <typename T>
 bool
 octave_base_sparse<T>::save_ascii (std::ostream& os)

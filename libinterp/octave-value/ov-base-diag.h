@@ -198,6 +198,11 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  float_display_format get_edit_display_format (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -215,9 +220,6 @@ public:
   void print_info (std::ostream& os, const std::string& prefix) const;
 
   void short_disp (std::ostream& os) const;
-
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
 
   octave_value fast_elem_extract (octave_idx_type n) const;
 

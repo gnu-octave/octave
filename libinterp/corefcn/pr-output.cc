@@ -1602,11 +1602,29 @@ pr_plus_format (std::ostream& os, const T& val)
 
 template <>
 float_display_format
+make_format (const Range& rng)
+{
+  int fw = 0;
+  double scale = 0;
+  return make_format (rng, fw, scale);
+}
+
+template <>
+float_display_format
 make_format (const NDArray& nda)
 {
   int fw = 0;
   double scale = 0;
   return make_format (Matrix (nda), fw, scale);
+}
+
+template <>
+float_display_format
+make_format (const FloatNDArray& nda)
+{
+  int fw = 0;
+  double scale = 0;
+  return make_format (FloatMatrix (nda), fw, scale);
 }
 
 template <>
@@ -1618,6 +1636,107 @@ make_format (const ComplexNDArray& nda)
   double scale = 0;
   return make_format (ComplexMatrix (nda), r_fw, i_fw, scale);
 }
+
+template <>
+float_display_format
+make_format (const FloatComplexNDArray& nda)
+{
+  int r_fw = 0;
+  int i_fw = 0;
+  double scale = 0;
+  return make_format (FloatComplexMatrix (nda), r_fw, i_fw, scale);
+}
+
+#define MAKE_INT_MATRIX_FORMAT(TYPE)                                    \
+  template <>                                                           \
+  float_display_format                                                  \
+  make_format (const intNDArray<TYPE>& nda)                             \
+  {                                                                     \
+    bool isneg = false;                                                 \
+    int digits = 0;                                                     \
+                                                                        \
+    for (octave_idx_type i = 0; i < nda.numel (); i++)                  \
+      {                                                                 \
+        int new_digits                                                  \
+          = static_cast<int>                                            \
+          (std::floor (log10 (double (abs (nda(i).value ()))) + 1.0));  \
+                                                                        \
+        if (new_digits > digits)                                        \
+          digits = new_digits;                                          \
+                                                                        \
+        if (! isneg)                                                    \
+          isneg = (abs (nda(i).value ()) != nda(i).value ());           \
+      }                                                                 \
+                                                                        \
+    return float_display_format (float_format (digits + isneg, 0, 0));  \
+  }
+
+MAKE_INT_MATRIX_FORMAT (octave_int8)
+MAKE_INT_MATRIX_FORMAT (octave_uint8)
+MAKE_INT_MATRIX_FORMAT (octave_int16)
+MAKE_INT_MATRIX_FORMAT (octave_uint16)
+MAKE_INT_MATRIX_FORMAT (octave_int32)
+MAKE_INT_MATRIX_FORMAT (octave_uint32)
+MAKE_INT_MATRIX_FORMAT (octave_int64)
+MAKE_INT_MATRIX_FORMAT (octave_uint64)
+
+template <>
+float_display_format
+make_format (const double& d)
+{
+  int fw = 0;
+  return make_format (d, fw);
+}
+
+template <>
+float_display_format
+make_format (const float& f)
+{
+  int fw = 0;
+  return make_format (f, fw);
+}
+
+template <>
+float_display_format
+make_format (const Complex& c)
+{
+  int r_fw = 0;
+  int i_fw = 0;
+  return make_format (c, r_fw, i_fw);
+}
+
+template <>
+float_display_format
+make_format (const FloatComplex& c)
+{
+  int r_fw = 0;
+  int i_fw = 0;
+  return make_format (c, r_fw, i_fw);
+}
+
+#define MAKE_INT_SCALAR_FORMAT(TYPE)                                    \
+  template <>                                                           \
+  float_display_format                                                  \
+  make_format (const octave_int<TYPE>& val)                             \
+  {                                                                     \
+    bool isneg = false;                                                 \
+    int digits                                                          \
+      = static_cast<int>                                                \
+      (std::floor (log10 (double (abs (val.value ()))) + 1.0));         \
+                                                                        \
+    isneg = (abs (val.value ()) != val.value ());                       \
+                                                                        \
+    return float_display_format (float_format (digits + isneg, 0, 0));  \
+  }
+
+MAKE_INT_SCALAR_FORMAT (int8_t)
+MAKE_INT_SCALAR_FORMAT (uint8_t)
+MAKE_INT_SCALAR_FORMAT (int16_t)
+MAKE_INT_SCALAR_FORMAT (uint16_t)
+MAKE_INT_SCALAR_FORMAT (int32_t)
+MAKE_INT_SCALAR_FORMAT (uint32_t)
+MAKE_INT_SCALAR_FORMAT (int64_t)
+MAKE_INT_SCALAR_FORMAT (uint64_t)
 
 void
 octave_print_internal (std::ostream&, char, bool)
@@ -3033,8 +3152,9 @@ pr_int (std::ostream&, const octave_uint64&, int);
 
 template <typename T>
 void
-octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
-                                bool)
+octave_print_internal_template (std::ostream& os,
+                                const float_display_format& fmt,
+                                const octave_int<T>& val, bool)
 {
   if (plus_format)
     {
@@ -3045,15 +3165,21 @@ octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
       if (free_format)
         os << typename octave_print_conv<octave_int<T>>::print_conv_type (val);
       else
-        pr_int (os, val);
+        {
+          float_format r_fmt = fmt.real_format ();
+
+          pr_int (os, val, r_fmt.fw);
+        }
     }
 }
 
 #define PRINT_INT_SCALAR_INTERNAL(TYPE)                                 \
   OCTINTERP_API void                                                    \
-  octave_print_internal (std::ostream& os, const octave_int<TYPE>& val, bool dummy) \
+  octave_print_internal (std::ostream& os,                              \
+                         const float_display_format& fmt,               \
+                         const octave_int<TYPE>& val, bool dummy)       \
   {                                                                     \
-    octave_print_internal_template (os, val, dummy);                    \
+    octave_print_internal_template (os, fmt, val, dummy);               \
   }
 
 PRINT_INT_SCALAR_INTERNAL (int8_t)
@@ -3076,7 +3202,8 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
   if (nda.isempty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
   else if (nda.numel () == 1)
-    octave_print_internal_template (os, nda(0), pr_as_read_syntax);
+    octave_print_internal_template (os, float_display_format (), nda(0),
+                                    pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
       int ndims = nda.ndims ();

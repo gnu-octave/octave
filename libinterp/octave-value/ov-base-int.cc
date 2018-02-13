@@ -265,6 +265,17 @@ octave_base_int_matrix<MT>::as_uint64 (void) const
 }
 
 template <typename T>
+std::string
+octave_base_int_matrix<T>::edit_display (const float_display_format& fmt,
+                                         octave_idx_type i,
+                                         octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, this->matrix(i,j));
+  return buf.str ();
+}
+
+template <typename T>
 bool
 octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 {
@@ -644,6 +655,17 @@ octave_value
 octave_base_int_scalar<T>::as_uint64 (void) const
 {
   return octave_uint64 (this->scalar);
+}
+
+template <typename ST>
+std::string
+octave_base_int_scalar<ST>::edit_display (const float_display_format& fmt,
+                                          octave_idx_type,
+                                          octave_idx_type) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, this->scalar);
+  return buf.str ();
 }
 
 template <typename T>

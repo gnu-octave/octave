@@ -165,6 +165,11 @@ public:
 
   bool load_ascii (std::istream& is);
 
+  float_display_format get_edit_display_format (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   // Unsafe.  These functions exists to support the MEX interface.
   // You should not use them anywhere else.
   void * mex_get_data (void) const { return matrix.mex_get_data (); }

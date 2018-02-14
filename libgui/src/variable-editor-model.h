@@ -237,11 +237,7 @@ public:
   QVariant
   headerData (int section, Qt::Orientation orientation, int role) const
   {
-    if ((orientation == Qt::Vertical && section < data_rows ())
-        || (orientation == Qt::Horizontal && section < data_columns ()))
-      return rep->header_data (section, orientation, role);
-
-    return QVariant ();
+    return rep->header_data (section, orientation, role);
   }
 
   // Return a subscript expression as a string that can be used to

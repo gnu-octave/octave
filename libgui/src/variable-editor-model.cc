@@ -565,16 +565,22 @@ public:
     switch (orientation)
       {
       case Qt::Horizontal:
-        return QString ("Values");
+        if (section < data_columns ())
+          return QString ("Values");
+        else
+          break;
 
       case Qt::Vertical:
-        {
-          octave_scalar_map m = m_value.scalar_map_value ();
+        if (section < data_rows ())
+          {
+            octave_scalar_map m = m_value.scalar_map_value ();
 
-          string_vector fields = m.fieldnames ();
+            string_vector fields = m.fieldnames ();
 
-          return QString::fromStdString (fields(section));
-        }
+            return QString::fromStdString (fields(section));
+          }
+        else
+          break;
 
       default:
         break;
@@ -737,16 +743,22 @@ public:
     switch (orientation)
       {
       case Qt::Horizontal:
-        {
-          octave_map m = m_value.map_value ();
+        if (section < data_columns ())
+          {
+            octave_map m = m_value.map_value ();
 
-          string_vector fields = m.fieldnames ();
+            string_vector fields = m.fieldnames ();
 
-          return QString::fromStdString (fields(section));
-        }
+            return QString::fromStdString (fields(section));
+          }
+        else
+          break;
 
       case Qt::Vertical:
-        return QString::number (section+1);
+        if (section < data_rows ())
+          return QString::number (section+1);
+        else
+          break;
 
       default:
         break;

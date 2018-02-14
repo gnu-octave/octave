@@ -229,7 +229,6 @@ namespace octave
     _close_action->setEnabled (_tab_bar->count () > 1);
     _close_others_action->setEnabled (_tab_bar->count () > 1);
     setFocusProxy (_stacked_widget->currentWidget ());
-    setFocus ();
   }
 
   void webinfo::current_tab_changed (int index)

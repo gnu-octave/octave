@@ -261,8 +261,6 @@ signals: // private
 
   void user_error_signal (const QString& title, const QString& msg) const;
 
-  void maybe_resize_columns_signal (void);
-
   void set_editable_signal (bool);
 
   void description_changed (const QString& description);

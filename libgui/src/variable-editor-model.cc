@@ -905,17 +905,17 @@ variable_editor_model::variable_editor_model (const QString& expr,
 {
   update_description ();
 
+  connect (this, SIGNAL (user_error_signal (const QString&, const QString&)),
+           this, SLOT (user_error (const QString&, const QString&)));
+
+  connect (this, SIGNAL (update_data_signal (const octave_value&)),
+           this, SLOT (update_data (const octave_value&)));
+
+  connect (this, SIGNAL (data_error_signal (const QString&)),
+           this, SLOT (data_error (const QString&)));
+
   if (is_editable ())
     {
-      connect (this, SIGNAL (user_error_signal (const QString&, const QString&)),
-               this, SLOT (user_error (const QString&, const QString&)));
-
-      connect (this, SIGNAL (update_data_signal (const octave_value&)),
-               this, SLOT (update_data (const octave_value&)));
-
-      connect (this, SIGNAL (data_error_signal (const QString&)),
-               this, SLOT (data_error (const QString&)));
-
       beginInsertRows (QModelIndex (), 0, display_rows () - 1);
       endInsertRows ();
 
@@ -1233,8 +1233,6 @@ variable_editor_model::update_data (const octave_value& val)
 
   emit dataChanged (QAbstractTableModel::index (0, 0),
                     QAbstractTableModel::index (new_display_rows-1, new_display_cols-1));
-
-  emit maybe_resize_columns_signal ();
 }
 
 void

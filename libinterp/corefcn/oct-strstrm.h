@@ -86,7 +86,7 @@ public:
                      std::ios::openmode arg_md = std::ios::out,
                      octave::mach_info::float_format ff
                        = octave::mach_info::native_float_format ())
-    : octave_base_strstream (arg_md, ff), is (data.c_str ()) { }
+    : octave_base_strstream (arg_md, ff), is (data) { }
 
   // No copying!
 

@@ -801,3 +801,6 @@
 %!assert (sprintf ("a %s b", []), "a  b")
 %!assert (sprintf ("a %s b", ''), "a  b")
 %!assert (sprintf ("a %s b", ' '), "a   b")
+
+%!assert <*53148> (double (sprintf ("B\0B")), [66, 0, 66])
+%!assert <*53148> (sscanf ("B\0B 13", "B\0B %d"), 13)

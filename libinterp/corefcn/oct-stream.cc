@@ -231,37 +231,21 @@ namespace octave
         null = 3
       };
 
-    scanf_format_elt (const char *txt = nullptr, int w = 0, bool d = false,
+    scanf_format_elt (const std::string& txt = "", int w = 0, bool d = false,
                       char typ = '\0', char mod = '\0',
                       const std::string& ch_class = "")
-      : text (strsave (txt)), width (w), discard (d), type (typ),
+      : text (txt), width (w), discard (d), type (typ),
         modifier (mod), char_class (ch_class)
     { }
 
-    scanf_format_elt (const scanf_format_elt& e)
-      : text (strsave (e.text)), width (e.width), discard (e.discard),
-        type (e.type), modifier (e.modifier), char_class (e.char_class)
-    { }
+    scanf_format_elt (const scanf_format_elt& e) = default;
 
-    scanf_format_elt& operator = (const scanf_format_elt& e)
-    {
-      if (this != &e)
-        {
-          text = strsave (e.text);
-          width = e.width;
-          discard = e.discard;
-          type = e.type;
-          modifier = e.modifier;
-          char_class = e.char_class;
-        }
+    scanf_format_elt& operator = (const scanf_format_elt& e) = default;
 
-      return *this;
-    }
-
-    ~scanf_format_elt (void) { delete [] text; }
+    ~scanf_format_elt (void) = default;
 
     // The C-style format string.
-    const char *text;
+    std::string text;
 
     // The maximum field width.
     int width;
@@ -318,7 +302,7 @@ namespace octave
     const scanf_format_elt * next (bool cycle = true)
     {
       static scanf_format_elt dummy
-        (nullptr, 0, false, scanf_format_elt::null, '\0', "");
+        ("", 0, false, scanf_format_elt::null, '\0', "");
 
       curr_idx++;
 
@@ -463,7 +447,7 @@ namespace octave
     if (! text.empty ())
       {
         scanf_format_elt *elt
-          = new scanf_format_elt (text.c_str (), width, discard, type,
+          = new scanf_format_elt (text, width, discard, type,
                                   modifier, char_class);
 
         fmt_elts.push_back (elt);
@@ -743,38 +727,21 @@ namespace octave
   {
   public:
 
-    printf_format_elt (const char *txt = nullptr, int n = 0, int w = -1,
+    printf_format_elt (const std::string& txt = "", int n = 0, int w = -1,
                        int p = -1, const std::string& f = "",
                        char typ = '\0', char mod = '\0')
-      : text (strsave (txt)), args (n), fw (w), prec (p), flags (f),
+      : text (txt), args (n), fw (w), prec (p), flags (f),
         type (typ), modifier (mod)
     { }
 
-    printf_format_elt (const printf_format_elt& e)
-      : text (strsave (e.text)), args (e.args), fw (e.fw), prec (e.prec),
-        flags (e.flags), type (e.type), modifier (e.modifier)
-    { }
+    printf_format_elt (const printf_format_elt& e) = default;
 
-    printf_format_elt& operator = (const printf_format_elt& e)
-    {
-      if (this != &e)
-        {
-          text = strsave (e.text);
-          args = e.args;
-          fw = e.fw;
-          prec = e.prec;
-          flags = e.flags;
-          type = e.type;
-          modifier = e.modifier;
-        }
+    printf_format_elt& operator = (const printf_format_elt& e) = default;
 
-      return *this;
-    }
-
-    ~printf_format_elt (void) { delete [] text; }
+    ~printf_format_elt (void) = default;
 
     // The C-style format string.
-    const char *text;
+    std::string text;
 
     // How many args do we expect to consume?
     int args;
@@ -979,11 +946,8 @@ namespace octave
 
     if (! text.empty ())
       {
-        // FIXME: The call to c_str() creates a NULL terminated character
-        //        array.  If there are NULLs already in the format text
-        //        then the text is truncated early.  See bug #53148.
         printf_format_elt *elt
-          = new printf_format_elt (text.c_str (), args, fw, prec, flags,
+          = new printf_format_elt (text, args, fw, prec, flags,
                                    type, modifier);
 
         fmt_elts.push_back (elt);
@@ -4401,7 +4365,7 @@ namespace octave
     {                                                                   \
       int c = std::istream::traits_type::eof ();                        \
                                                                         \
-      int n = strlen (fmt);                                             \
+      int n = fmt.length ();                                            \
       int i = 0;                                                        \
                                                                         \
       while (i < n && is && (c = is.get ()) != std::istream::traits_type::eof ()) \
@@ -4757,7 +4721,7 @@ namespace octave
                     data = mval.fortran_vec ();
                   }
 
-                const char *fmt = elt->text;
+                std::string fmt = elt->text;
 
                 bool discard = elt->discard;
 
@@ -5049,7 +5013,7 @@ namespace octave
 
     if (elt)
       {
-        const char *fmt = elt->text;
+        std::string fmt = elt->text;
 
         bool discard = elt->discard;
 
@@ -5696,13 +5660,12 @@ namespace octave
   {
     int retval = 0;
 
-    const char *fmt = elt->text;
+    std::string tfmt = elt->text;
 
     if (is_nan_or_inf (val))
       {
         double dval = val.double_value ();
 
-        std::string tfmt = fmt;
         std::string::size_type i1, i2;
 
         tfmt.replace ((i1 = tfmt.rfind (elt->type)), 1, 1, 's');
@@ -5747,7 +5710,6 @@ namespace octave
                 octave_int64 tval = val.int64_scalar_value ();
 
                 // Insert "long" modifier.
-                std::string tfmt = fmt;
                 tfmt.replace (tfmt.rfind (type), 1, llmod + type);
 
                 retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
@@ -5755,7 +5717,7 @@ namespace octave
               }
             else
               {
-                std::string tfmt = switch_to_g_format (elt);
+                tfmt = switch_to_g_format (elt);
 
                 double dval = val.double_value (true);
 
@@ -5770,7 +5732,6 @@ namespace octave
                 octave_uint64 tval = val.uint64_scalar_value ();
 
                 // Insert "long" modifier.
-                std::string tfmt = fmt;
                 tfmt.replace (tfmt.rfind (type), 1, llmod + type);
 
                 retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
@@ -5778,7 +5739,7 @@ namespace octave
               }
             else
               {
-                std::string tfmt = switch_to_g_format (elt);
+                tfmt = switch_to_g_format (elt);
 
                 double dval = val.double_value (true);
 
@@ -5792,7 +5753,8 @@ namespace octave
             {
               double dval = val.double_value (true);
 
-              retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, dval, who);
+              retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                        dval, who);
             }
             break;
 
@@ -5865,10 +5827,10 @@ namespace octave
                 os << '%';
                 retval++;
               }
-            else if (elt->args == 0 && elt->text)
+            else if (elt->args == 0 && ! elt->text.empty ())
               {
                 os << elt->text;
-                retval += strlen (elt->text);
+                retval += (elt->text.length ());
               }
             else if (elt->type == 's' || elt->type == 'c')
               {

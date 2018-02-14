@@ -948,6 +948,14 @@ variable_editor_model::setData (const QModelIndex& idx,
 
   QString user_input = v_user_input.toString ();
 
+  char qc = quote_char (idx);
+
+  // FIXME: maybe we need a better way to ask whether empty input is
+  // valid than to rely on whether there is a quote character (meaning
+  // we are editing a character string)?
+  if (user_input.isEmpty () && ! qc)
+    return false;
+
   set_update_pending (idx, user_input);
 
   std::ostringstream os;
@@ -958,7 +966,6 @@ variable_editor_model::setData (const QModelIndex& idx,
   QString tmp = subscript_expression (idx);
   os << tmp.toStdString () << "=";
 
-  char qc = quote_char (idx);
   if (qc)
     os << qc;
 

@@ -38,7 +38,9 @@ do
     ## Compute and print the autoloads.
 
     base=`basename "$src_file" | $SED 's/\.cc$//'`
-    fcns=`$SED -n -e 's/^ *DEFUN_DLD *( *\([^, ]*\) *,.*$/\1/p' \
+    fcns=`$SED -n -e 's/^ *DEFMETHOD_DLD *( *\([^, ]*\) *,.*$/\1/p' \
+                  -e 's/^ *DEFMETHODX_DLD *( *"\([^"]*\)".*$/\1/p' \
+                  -e 's/^ *DEFUN_DLD *( *\([^, ]*\) *,.*$/\1/p' \
                   -e 's/^ *DEFUNX_DLD *( *"\([^"]*\)".*$/\1/p' "$src_file" | \
           sort -u`
     if [ -n "$fcns" ]; then

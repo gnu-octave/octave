@@ -361,9 +361,6 @@ operator << (std::ostream& os, const pr_rational_float& prf)
   return os;
 }
 
-// Current format for floating point numbers.
-static float_display_format curr_float_display_fmt;
-
 static double
 pr_max_internal (const Matrix& m)
 {
@@ -536,19 +533,6 @@ make_format (double d, int& fw)
   return make_real_format (digits, inf_or_nan, int_only, fw);
 }
 
-static void
-set_format (double d, int& fw)
-{
-  curr_float_display_fmt = make_format (d, fw);
-}
-
-static inline void
-set_format (double d)
-{
-  int fw;
-  set_format (d, fw);
-}
-
 static float_display_format
 make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
                          int int_or_inf_or_nan, int& fw)
@@ -698,12 +682,6 @@ make_format (const Matrix& m, int& fw, double& scale)
 
   return make_real_matrix_format (x_max, x_min, inf_or_nan,
                                   int_or_inf_or_nan, fw);
-}
-
-static void
-set_format (const Matrix& m, int& fw, double& scale)
-{
-  curr_float_display_fmt = make_format (m, fw, scale);
 }
 
 static float_display_format
@@ -896,22 +874,6 @@ make_format (const Complex& c, int& r_fw, int& i_fw)
 
   return make_complex_format (x_max, x_min, r_x, inf_or_nan, int_only,
                               r_fw, i_fw);
-}
-
-static void
-set_format (const Complex& c, int& r_fw, int& i_fw)
-{
-  if (free_format)
-    curr_float_display_fmt = float_display_format ();
-  else
-    curr_float_display_fmt = make_format (c, r_fw, i_fw);
-}
-
-static inline void
-set_format (const Complex& c)
-{
-  int r_fw, i_fw;
-  set_format (c, r_fw, i_fw);
 }
 
 static float_display_format
@@ -1121,15 +1083,6 @@ make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
                                      r_fw, i_fw);
 }
 
-static void
-set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
-{
-  if (free_format)
-    curr_float_display_fmt = float_display_format ();
-  else
-    curr_float_display_fmt = make_format (cm, r_fw, i_fw, scale);
-}
-
 static float_display_format
 make_range_format (int x_max, int x_min, int all_ints, int& fw)
 {
@@ -1272,12 +1225,6 @@ make_format (const Range& r, int& fw, double& scale)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   return make_range_format (x_max, x_min, all_ints, fw);
-}
-
-static void
-set_format (const Range& r, int& fw, double& scale)
-{
-  curr_float_display_fmt = make_format (r, fw, scale);
 }
 
 union equiv
@@ -1441,22 +1388,10 @@ pr_float (std::ostream& os, const float_display_format& fmt, double d,
 }
 
 static inline void
-pr_float (std::ostream& os, double d, int fw = 0, double scale = 1.0)
-{
-  pr_float (os, curr_float_display_fmt, d, fw, scale);
-}
-
-static inline void
 pr_imag_float (std::ostream& os, const float_display_format& fmt,
                double d, int fw = 0)
 {
   pr_any_float (os, fmt.imag_format (), d, fw);
-}
-
-static inline void
-pr_imag_float (std::ostream& os, double d, int fw = 0)
-{
-  pr_imag_float (os, curr_float_display_fmt, d, fw);
 }
 
 static void
@@ -1490,13 +1425,6 @@ pr_complex (std::ostream& os, const float_display_format& fmt,
         }
       os << 'i';
     }
-}
-
-static void
-pr_complex (std::ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0,
-            double scale = 1.0)
-{
-  pr_complex (os, curr_float_display_fmt, c, r_fw, i_fw, scale);
 }
 
 static void
@@ -1846,7 +1774,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
     {
       int fw = 0;
       double scale = 1.0;
-      set_format (m, fw, scale);
+      float_display_format fmt = make_format (m, fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = octave::command_editor::terminal_cols ();
@@ -1903,7 +1831,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
                             os << "  ";
                         }
 
-                      pr_float (os, m(i,j));
+                      pr_float (os, fmt, m(i,j));
                     }
 
                   col += inc;
@@ -1943,7 +1871,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
                       os << "  ";
 
-                      pr_float (os, m(i,j), fw, scale);
+                      pr_float (os, fmt, m(i,j), fw, scale);
                     }
 
                   if (i < nr - 1)
@@ -1982,7 +1910,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
     {
       int fw;
       double scale = 1.0;
-      set_format (Matrix (m.diag ()), fw, scale);
+      float_display_format fmt = make_format (Matrix (m.diag ()), fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = octave::command_editor::terminal_cols ();
@@ -2039,7 +1967,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
                         os << "  ";
                     }
 
-                  pr_float (os, m(j,j));
+                  pr_float (os, fmt, m(j,j));
                 }
 
               col += inc;
@@ -2065,7 +1993,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
           int zero_fw;
           {
             std::ostringstream tmp_oss;
-            pr_float (tmp_oss, 0.0, fw, scale);
+            pr_float (tmp_oss, fmt, 0.0, fw, scale);
             zero_fw = tmp_oss.str ().length ();
           }
 
@@ -2087,7 +2015,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
                       os << "  ";
 
                       if (i == j)
-                        pr_float (os, m(i,j), fw, scale);
+                        pr_float (os, fmt, m(i,j), fw, scale);
                       else
                         os << std::setw (zero_fw) << '0';
 
@@ -2260,7 +2188,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
     {
       int r_fw, i_fw;
       double scale = 1.0;
-      set_format (cm, r_fw, i_fw, scale);
+      float_display_format fmt = make_format (cm, r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
       column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
@@ -2319,7 +2247,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
                             os << "  ";
                         }
 
-                      pr_complex (os, cm(i,j));
+                      pr_complex (os, fmt, cm(i,j));
                     }
 
                   col += inc;
@@ -2359,7 +2287,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
                       os << "  ";
 
-                      pr_complex (os, cm(i,j), r_fw, i_fw, scale);
+                      pr_complex (os, fmt, cm(i,j), r_fw, i_fw, scale);
                     }
 
                   if (i < nr - 1)
@@ -2398,7 +2326,8 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
     {
       int r_fw, i_fw;
       double scale = 1.0;
-      set_format (ComplexMatrix (cm.diag ()), r_fw, i_fw, scale);
+      float_display_format fmt
+        = make_format (ComplexMatrix (cm.diag ()), r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
       column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
@@ -2457,7 +2386,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
                         os << "  ";
                     }
 
-                  pr_complex (os, cm(j,j));
+                  pr_complex (os, fmt, cm(j,j));
                 }
 
               col += inc;
@@ -2483,7 +2412,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
           int zero_fw;
           {
             std::ostringstream tmp_oss;
-            pr_complex (tmp_oss, Complex (0.0), r_fw, i_fw, scale);
+            pr_complex (tmp_oss, fmt, Complex (0.0), r_fw, i_fw, scale);
             zero_fw = tmp_oss.str ().length ();
           }
 
@@ -2505,7 +2434,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
                       os << "  ";
 
                       if (i == j)
-                        pr_complex (os, cm(i,j), r_fw, i_fw, scale);
+                        pr_complex (os, fmt, cm(i,j), r_fw, i_fw, scale);
                       else
                         os << std::setw (zero_fw) << '0';
                     }
@@ -2742,7 +2671,7 @@ octave_print_internal (std::ostream& os, const Range& r,
     {
       int fw = 0;
       double scale = 1.0;
-      set_format (r, fw, scale);
+      float_display_format fmt = make_format (r, fw, scale);
 
       if (pr_as_read_syntax)
         {
@@ -2755,14 +2684,14 @@ octave_print_internal (std::ostream& os, const Range& r,
             }
           else
             {
-              pr_float (os, base, fw);
+              pr_float (os, fmt, base, fw);
               os << " : ";
               if (increment != 1.0)
                 {
-                  pr_float (os, increment, fw);
+                  pr_float (os, fmt, increment, fw);
                   os << " : ";
                 }
-              pr_float (os, limit, fw);
+              pr_float (os, fmt, limit, fw);
             }
         }
       else
@@ -2824,7 +2753,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 
                   os << "  ";
 
-                  pr_float (os, val, fw, scale);
+                  pr_float (os, fmt, val, fw, scale);
                 }
 
               col += inc;

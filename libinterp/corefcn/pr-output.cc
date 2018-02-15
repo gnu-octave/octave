@@ -3484,7 +3484,8 @@ If the length of the smallest possible rational approximation exceeds
 
 DEFUN (disp, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} disp (@var{x})
+@deftypefn  {} {} disp (@var{x})
+@deftypefnx {} {@var{str} =} disp (@var{x})
 Display the value of @var{x}.
 
 For example:

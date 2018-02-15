@@ -80,6 +80,10 @@ public slots:
 
   void set_editable (bool);
 
+  void handle_horizontal_scroll_action (int action);
+
+  void handle_vertical_scroll_action (int action);
+
 private:
 
   variable_editor_model *m_model;

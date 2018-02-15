@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QMenu>
 #include <QPalette>
+#include <QScrollBar>
 #include <QSignalMapper>
 #include <QStackedWidget>
 #include <QTableView>
@@ -151,6 +152,54 @@ var_editor_tab::set_editable (bool editable)
       QString str = v_data.toString ();
 
       viewer->setPlainText (str);
+    }
+}
+
+void
+var_editor_tab::handle_horizontal_scroll_action (int action)
+{
+  if (action == QAbstractSlider::SliderSingleStepAdd
+      || action == QAbstractSlider::SliderPageStepAdd
+      || action == QAbstractSlider::SliderToMaximum
+      || action == QAbstractSlider::SliderMove)
+    {
+      QTableView *edit_view = get_edit_view ();
+
+      if (edit_view)
+        {
+          QScrollBar *sb = edit_view->horizontalScrollBar ();
+
+          if (sb && sb->value () == sb->maximum ())
+            {
+              int new_cols = m_model->display_columns () + 16;
+
+              m_model->maybe_resize_columns (new_cols);
+            }
+        }
+    }
+}
+
+void
+var_editor_tab::handle_vertical_scroll_action (int action)
+{
+  if (action == QAbstractSlider::SliderSingleStepAdd
+      || action == QAbstractSlider::SliderPageStepAdd
+      || action == QAbstractSlider::SliderToMaximum
+      || action == QAbstractSlider::SliderMove)
+    {
+      QTableView *edit_view = get_edit_view ();
+
+      if (edit_view)
+        {
+          QScrollBar *sb = edit_view->verticalScrollBar ();
+
+          if (sb && sb->value () == sb->maximum ())
+            {
+              int new_rows = m_model->display_rows () + 16;
+
+              m_model->maybe_resize_rows (new_rows);
+            }
+        }
     }
 }
 
@@ -439,6 +488,15 @@ variable_editor::make_edit_view (var_editor_tab *page,
 
   connect (table, SIGNAL (doubleClicked (const QModelIndex&)),
            this, SLOT (double_click (const QModelIndex&)));
+
+  table->setHorizontalScrollMode (QAbstractItemView::ScrollPerPixel);
+  table->setVerticalScrollMode (QAbstractItemView::ScrollPerPixel);
+
+  connect (table->horizontalScrollBar (), SIGNAL (actionTriggered (int)),
+           page, SLOT (handle_horizontal_scroll_action (int)));
+
+  connect (table->verticalScrollBar (), SIGNAL (actionTriggered (int)),
+           page, SLOT (handle_vertical_scroll_action (int)));
 
   table->setFont (m_font);
   table->setStyleSheet (m_stylesheet);

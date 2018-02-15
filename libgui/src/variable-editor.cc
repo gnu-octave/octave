@@ -542,7 +542,9 @@ variable_editor::make_disp_view (var_editor_tab *page,
 
   QString str = v_data.toString ();
 
+  viewer->setLineWrapMode (QTextEdit::NoWrap);
   viewer->setPlainText (str);
+  viewer->setReadOnly (true);
 
   return viewer;
 }

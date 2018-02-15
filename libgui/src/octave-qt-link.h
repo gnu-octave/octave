@@ -58,7 +58,7 @@ namespace octave
 
   public:
 
-    octave_qt_link (QWidget *p, octave::gui_application *app_context);
+    octave_qt_link (QWidget *p, gui_application *app_context);
 
     // No copying!
 
@@ -115,7 +115,7 @@ namespace octave
     void do_execute_command_in_terminal (const std::string& command);
 
     void do_set_workspace (bool top_level, bool debug,
-                           const octave::symbol_scope& scope,
+                           const symbol_scope& scope,
                            bool update_variable_editor);
 
     void do_clear_workspace (void);
@@ -157,7 +157,7 @@ namespace octave
     void do_insert_debugger_pointer (const std::string& file, int line);
     void do_delete_debugger_pointer (const std::string& file, int line);
 
-    octave::gui_application *m_app_context;
+    gui_application *m_app_context;
 
     bool m_shutdown_confirm_result;
 
@@ -175,7 +175,7 @@ namespace octave
     void execute_command_in_terminal_signal (const QString& command);
 
     void set_workspace_signal (bool top_level, bool debug,
-                               const octave::symbol_scope& scope);
+                               const symbol_scope& scope);
 
     void clear_workspace_signal (void);
 

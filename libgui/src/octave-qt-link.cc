@@ -53,12 +53,11 @@ Q_DECLARE_METATYPE (octave::symbol_scope)
 
 namespace octave
 {
-  octave_qt_link::octave_qt_link (QWidget *,
-                                  octave::gui_application *app_context)
+  octave_qt_link::octave_qt_link (QWidget *, gui_application *app_context)
     : octave_link (), m_app_context (app_context)
   {
     qRegisterMetaType<octave_value> ("octave_value");
-    qRegisterMetaType<octave::symbol_scope> ("symbol_scope");
+    qRegisterMetaType<symbol_scope> ("symbol_scope");
   }
 
   bool octave_qt_link::do_confirm_shutdown (void)
@@ -419,7 +418,7 @@ namespace octave
   }
 
   void octave_qt_link::do_set_workspace (bool top_level, bool debug,
-                                         const octave::symbol_scope& scope,
+                                         const symbol_scope& scope,
                                          bool update_variable_editor)
   {
     if (! top_level && ! debug)
@@ -511,20 +510,20 @@ namespace octave
     bool ok = false;
     bool addpath_option = true;
 
-    std::string curr_dir = octave::sys::env::get_current_directory ();
+    std::string curr_dir = sys::env::get_current_directory ();
 
     if (same_file (curr_dir, dir))
       ok = true;
     else
       {
-        octave::load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
+        load_path& lp = __get_load_path__ ("octave_qt_link::file_in_path");
 
         bool dir_in_load_path = lp.contains_canonical (dir);
 
         // get base name, allowing "@class/method.m" (bug #41514)
         std::string base_file = (file.length () > dir.length ())
           ? file.substr (dir.length () + 1)
-          : octave::sys::env::base_pathname (file);
+          : sys::env::base_pathname (file);
 
         std::string lp_file = lp.find_file (base_file);
 
@@ -563,7 +562,7 @@ namespace octave
 
           case 2:
             {
-              octave::load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
+              load_path& lp = __get_load_path__ ("octave_qt_link::file_in_path");
 
               lp.prepend (dir);
               ok = true;

@@ -37,89 +37,92 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
 
-class workspace_view : public octave_dock_widget
+namespace octave
 {
-  Q_OBJECT
+  class workspace_view : public octave_dock_widget
+  {
+    Q_OBJECT
 
-public:
+  public:
 
-  workspace_view (QWidget *parent = nullptr);
+    workspace_view (QWidget *parent = nullptr);
 
-  ~workspace_view (void) = default;
+    ~workspace_view (void) = default;
 
-public slots:
+  public slots:
 
-  void setModel (workspace_model *model);
+    void setModel (workspace_model *model);
 
-  void notice_settings (const QSettings *);
+    void notice_settings (const QSettings *);
 
-  void save_settings (void);
+    void save_settings (void);
 
-signals:
+  signals:
 
-  //! Signal that user had requested a command on a variable.
+    //! Signal that user had requested a command on a variable.
 
-  void command_requested (const QString& cmd);
+    void command_requested (const QString& cmd);
 
-  //! Signal that user wants to edit a variable.
+    //! Signal that user wants to edit a variable.
 
-  void edit_variable_signal (const QString&, const octave_value&);
+    void edit_variable_signal (const QString&, const octave_value&);
 
-protected:
+  protected:
 
-  void closeEvent (QCloseEvent *event);
+    void closeEvent (QCloseEvent *event);
 
-protected slots:
+  protected slots:
 
-  void filter_update (const QString& expression);
-  void filter_activate (bool enable);
-  void update_filter_history (void);
+    void filter_update (const QString& expression);
+    void filter_activate (bool enable);
+    void update_filter_history (void);
 
-  void header_contextmenu_requested (const QPoint& mpos);
+    void header_contextmenu_requested (const QPoint& mpos);
 
-  void toggle_header (int column);
+    void toggle_header (int column);
 
-  void contextmenu_requested (const QPoint& pos);
+    void contextmenu_requested (const QPoint& pos);
 
-  void handle_contextmenu_copy (void);
-  void handle_contextmenu_copy_value (void);
-  void handle_contextmenu_rename (void);
-  void handle_contextmenu_edit (void);
-  void handle_contextmenu_disp (void);
-  void handle_contextmenu_plot (void);
-  void handle_contextmenu_stem (void);
-  void handle_contextmenu_filter (void);
+    void handle_contextmenu_copy (void);
+    void handle_contextmenu_copy_value (void);
+    void handle_contextmenu_rename (void);
+    void handle_contextmenu_edit (void);
+    void handle_contextmenu_disp (void);
+    void handle_contextmenu_plot (void);
+    void handle_contextmenu_stem (void);
+    void handle_contextmenu_filter (void);
 
-  void handle_model_changed (void);
+    void handle_model_changed (void);
 
-  void copyClipboard (void);
-  void selectAll (void);
+    void copyClipboard (void);
+    void selectAll (void);
 
-private:
+  private:
 
-  void relay_contextmenu_command (const QString& cmdname);
+    void relay_contextmenu_command (const QString& cmdname);
 
-  QString get_var_name (const QModelIndex& index);
+    QString get_var_name (const QModelIndex& index);
 
-  QTableView *m_view;
-  int m_view_previous_row_count;
+    QTableView *m_view;
+    int m_view_previous_row_count;
 
-  // We are using a sort model proxy so m_model won't provide the
-  // correct ordering.  It is still OK to use this pointer to access
-  // other info attached to the model, for example the scope or colors.
-  workspace_model *m_model;
+    // We are using a sort model proxy so m_model won't provide the
+    // correct ordering.  It is still OK to use this pointer to access
+    // other info attached to the model, for example the scope or colors.
+    workspace_model *m_model;
 
-  QSortFilterProxyModel m_filter_model;
-  QCheckBox *m_filter_checkbox;
-  QComboBox *m_filter;
-  QWidget *m_filter_widget;
-  bool m_filter_shown;
+    QSortFilterProxyModel m_filter_model;
+    QCheckBox *m_filter_checkbox;
+    QComboBox *m_filter;
+    QWidget *m_filter_widget;
+    bool m_filter_shown;
 
-  enum { MaxFilterHistory = 10 };
+    enum { MaxFilterHistory = 10 };
 
-  QStringList m_columns_shown;
-  QStringList m_columns_shown_keys;
-  QSignalMapper *m_sig_mapper;
-};
+    QStringList m_columns_shown;
+    QStringList m_columns_shown_keys;
+    QSignalMapper *m_sig_mapper;
+  };
+}
 
 #endif

@@ -38,78 +38,81 @@ along with Octave; see the file COPYING.  If not, see
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
-class workspace_model
-  : public QAbstractTableModel
+namespace octave
 {
-  Q_OBJECT
-
-public:
-
-  workspace_model (QObject *parent = nullptr);
-
-  ~workspace_model (void) = default;
-
-  static QList<QColor> storage_class_default_colors (void);
-
-  static QStringList storage_class_names (void);
-
-  int rowCount (const QModelIndex& parent = QModelIndex ()) const;
-
-  int columnCount (const QModelIndex& parent = QModelIndex ()) const;
-
-  Qt::ItemFlags flags (const QModelIndex& index) const;
-
-  QVariant headerData (int section, Qt::Orientation orientation,
-                       int role = Qt::DisplayRole) const;
-
-  QVariant data (const QModelIndex& index, int role) const;
-
-  bool setData (const QModelIndex& index, const QVariant& value,
-                int role = Qt::EditRole);
-
-  bool is_top_level (void) const { return m_top_level; }
-
-  QColor storage_class_color (int s_class)
+  class workspace_model
+    : public QAbstractTableModel
   {
-    return m_storage_class_colors.at (s_class);
-  }
+    Q_OBJECT
 
-  octave::symbol_scope scope (void) const { return m_scope; }
+  public:
 
-public slots:
+    workspace_model (QObject *parent = nullptr);
 
-  void set_workspace (bool top_level, bool debug,
-                      const octave::symbol_scope& scope);
+    ~workspace_model (void) = default;
 
-  void clear_workspace (void);
+    static QList<QColor> storage_class_default_colors (void);
 
-  void notice_settings (const QSettings *);
+    static QStringList storage_class_names (void);
 
-signals:
+    int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
-  void model_changed (void);
-  void prompt_variable_editor(void);
+    int columnCount (const QModelIndex& parent = QModelIndex ()) const;
 
-  void rename_variable (const QString& old_name, const QString& new_name);
+    Qt::ItemFlags flags (const QModelIndex& index) const;
 
-private:
+    QVariant headerData (int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole) const;
 
-  void clear_data (void);
-  void update_table (void);
+    QVariant data (const QModelIndex& index, int role) const;
 
-  bool m_top_level;
-  octave::symbol_scope m_scope;
-  QString m_scopes;
-  QStringList m_symbols;
-  QStringList m_class_names;
-  QStringList m_dimensions;
-  QStringList m_values;
-  QIntList m_complex_flags;
+    bool setData (const QModelIndex& index, const QVariant& value,
+                  int role = Qt::EditRole);
 
-  QStringList m_columnNames;
+    bool is_top_level (void) const { return m_top_level; }
 
-  QList<QColor>  m_storage_class_colors;
+    QColor storage_class_color (int s_class)
+    {
+      return m_storage_class_colors.at (s_class);
+    }
 
-};
+    symbol_scope scope (void) const { return m_scope; }
+
+  public slots:
+
+    void set_workspace (bool top_level, bool debug,
+                        const symbol_scope& scope);
+
+    void clear_workspace (void);
+
+    void notice_settings (const QSettings *);
+
+  signals:
+
+    void model_changed (void);
+    void prompt_variable_editor(void);
+
+    void rename_variable (const QString& old_name, const QString& new_name);
+
+  private:
+
+    void clear_data (void);
+    void update_table (void);
+
+    bool m_top_level;
+    symbol_scope m_scope;
+    QString m_scopes;
+    QStringList m_symbols;
+    QStringList m_class_names;
+    QStringList m_dimensions;
+    QStringList m_values;
+    QIntList m_complex_flags;
+
+    QStringList m_columnNames;
+
+    QList<QColor>  m_storage_class_colors;
+
+  };
+}
 
 #endif

@@ -330,8 +330,8 @@ public:
     // FIXME: should fill the window and expand on scrolling or
     // resizing.
 
-    m_display_rows = m_data_rows + 16;
-    m_display_cols = m_data_cols + 16;
+    maybe_resize_rows (m_data_rows + 16);
+    maybe_resize_columns (m_data_cols + 16);
   }
 
   ~numeric_model (void) = default;
@@ -341,6 +341,18 @@ public:
   numeric_model (const numeric_model&) = delete;
 
   numeric_model& operator = (const numeric_model&) = delete;
+
+  void maybe_resize_rows (int rows)
+  {
+    if (rows > m_display_rows)
+      m_display_rows = rows;
+  }
+
+  void maybe_resize_columns (int cols)
+  {
+    if (cols > m_display_cols)
+      m_display_cols = cols;
+  }
 
   QVariant edit_display (const QModelIndex& idx, int role) const
   {
@@ -419,8 +431,8 @@ public:
     // FIXME: should fill the window and expand on scrolling or
     // resizing.
 
-    m_display_rows = m_data_rows + 16;
-    m_display_cols = m_data_cols + 16;
+    maybe_resize_rows (m_data_rows + 16);
+    maybe_resize_columns (m_data_cols + 16);
   }
 
   ~cell_model (void) = default;
@@ -430,6 +442,18 @@ public:
   cell_model (const cell_model&) = delete;
 
   cell_model& operator = (const cell_model&) = delete;
+
+  void maybe_resize_rows (int rows)
+  {
+    if (rows > m_display_rows)
+      m_display_rows = rows;
+  }
+
+  void maybe_resize_columns (int cols)
+  {
+    if (cols > m_display_cols)
+      m_display_cols = cols;
+  }
 
   QVariant edit_display (const QModelIndex& idx, int role) const
   {
@@ -682,8 +706,7 @@ public:
     m_data_rows = val.numel ();
     m_data_cols = val.nfields ();
 
-    m_display_rows = m_data_rows + 16;
-    m_display_cols = m_data_cols;
+    maybe_resize_rows (m_data_rows + 16);
   }
 
   ~vector_struct_model (void) = default;
@@ -693,6 +716,12 @@ public:
   vector_struct_model (const vector_struct_model&) = delete;
 
   vector_struct_model& operator = (const vector_struct_model&) = delete;
+
+  void maybe_resize_rows (int rows)
+  {
+    if (rows > m_display_rows)
+      m_display_rows = rows;
+  }
 
   QVariant edit_display (const QModelIndex& idx, int role) const
   {
@@ -809,8 +838,8 @@ public:
     // FIXME: should fill the window and expand on scrolling or
     // resizing.
 
-    m_display_rows = m_data_rows + 16;
-    m_display_cols = m_data_cols + 16;
+    maybe_resize_rows (m_data_rows + 16);
+    maybe_resize_columns (m_data_cols + 16);
   }
 
   ~struct_model (void) = default;
@@ -820,6 +849,18 @@ public:
   struct_model (const struct_model&) = delete;
 
   struct_model& operator = (const struct_model&) = delete;
+
+  void maybe_resize_rows (int rows)
+  {
+    if (rows > m_display_rows)
+      m_display_rows = rows;
+  }
+
+  void maybe_resize_columns (int cols)
+  {
+    if (cols > m_display_cols)
+      m_display_cols = cols;
+  }
 
   QVariant edit_display (const QModelIndex& idx, int) const
   {
@@ -1218,40 +1259,81 @@ variable_editor_model::update_data (const octave_value& val)
 
   // Add or remove rows and columns when the size changes.
 
-  int old_display_rows = display_rows ();
-  int old_display_cols = display_columns ();
+  int old_rows = display_rows ();
+  int old_cols = display_columns ();
 
   reset (val);
 
-  int new_display_rows = display_rows ();
-  int new_display_cols = display_columns ();
+  int new_rows = display_rows ();
+  int new_cols = display_columns ();
 
-  if (new_display_rows < old_display_rows)
+  if (new_rows != old_rows || new_cols != old_cols)
+    change_display_size (old_rows, old_cols, new_rows, new_cols);
+
+  // Even if the size doesn't change, we still need to update here
+  // because the data may have changed.
+
+  emit dataChanged (QAbstractTableModel::index (0, 0),
+                    QAbstractTableModel::index (new_rows-1, new_cols-1));
+
+  clear_update_pending ();
+}
+
+void
+variable_editor_model::change_display_size (int old_rows, int old_cols,
+                                            int new_rows, int new_cols)
+{
+  if (new_rows < old_rows)
     {
-      beginRemoveRows (QModelIndex (), new_display_rows, old_display_rows-1);
+      beginRemoveRows (QModelIndex (), new_rows, old_rows-1);
       endRemoveRows ();
     }
-  else if (new_display_rows > old_display_rows)
+  else if (new_rows > old_rows)
     {
-      beginInsertRows (QModelIndex (), old_display_rows, new_display_rows-1);
+      beginInsertRows (QModelIndex (), old_rows, new_rows-1);
       endInsertRows ();
     }
 
-  if (new_display_cols < old_display_cols)
+  if (new_cols < old_cols)
     {
-      beginRemoveColumns (QModelIndex (), new_display_cols, old_display_cols-1);
+      beginRemoveColumns (QModelIndex (), new_cols, old_cols-1);
       endRemoveColumns ();
     }
-  else if (new_display_cols > old_display_cols)
+  else if (new_cols > old_cols)
     {
-      beginInsertColumns (QModelIndex (), old_display_cols, new_display_cols-1);
+      beginInsertColumns (QModelIndex (), old_cols, new_cols-1);
       endInsertColumns ();
     }
+}
 
-  clear_update_pending ();
+void
+variable_editor_model::maybe_resize_rows (int rows)
+{
+  int old_rows = display_rows ();
+  int old_cols = display_columns ();
 
-  emit dataChanged (QAbstractTableModel::index (0, 0),
-                    QAbstractTableModel::index (new_display_rows-1, new_display_cols-1));
+  rep->maybe_resize_rows (rows);
+
+  int new_rows = display_rows ();
+  int new_cols = display_columns ();
+
+  if (new_rows != old_rows)
+    change_display_size (old_rows, old_cols, new_rows, new_cols);
+}
+
+void
+variable_editor_model::maybe_resize_columns (int cols)
+{
+  int old_rows = display_rows ();
+  int old_cols = display_columns ();
+
+  rep->maybe_resize_columns (cols);
+
+  int new_rows = display_rows ();
+  int new_cols = display_columns ();
+
+  if (new_cols != old_cols)
+    change_display_size (old_rows, old_cols, new_rows, new_cols);
 }
 
 void

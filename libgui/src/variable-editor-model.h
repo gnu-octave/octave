@@ -47,6 +47,10 @@ public:
 
   base_ve_model& operator = (const base_ve_model&) = delete;
 
+  virtual void maybe_resize_rows (int) { }
+
+  virtual void maybe_resize_columns (int) { }
+
   std::string name (void) const;
 
   bool index_ok (const QModelIndex& idx, int& row, int& col) const;
@@ -249,7 +253,21 @@ public:
     return rep->subscript_expression (idx);
   }
 
-signals: // private
+  int display_rows (void) const
+  {
+    return rep->display_rows ();
+  }
+
+  int display_columns (void) const
+  {
+    return rep->display_columns ();
+  }
+
+  void maybe_resize_rows (int rows);
+
+  void maybe_resize_columns (int cols);
+
+signals:
 
   void update_data_signal (const octave_value& val);
 
@@ -299,15 +317,8 @@ private:
     return rep->data_columns ();
   }
 
-  int display_rows (void) const
-  {
-    return rep->display_rows ();
-  }
-
-  int display_columns (void) const
-  {
-    return rep->display_columns ();
-  }
+  void change_display_size (int old_rows, int old_cols,
+                            int new_rows, int new_cols);
 
   QString make_description_text (void) const
   {

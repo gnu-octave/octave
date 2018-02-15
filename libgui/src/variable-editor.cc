@@ -85,7 +85,6 @@ var_editor_tab::set_disp_view (QTextEdit *disp_view)
   m_disp_view_idx = m_widget_stack->addWidget (disp_view);
 }
 
-
 bool
 var_editor_tab::has_focus (void) const
 {
@@ -94,6 +93,46 @@ var_editor_tab::has_focus (void) const
 
   return ((disp_view && disp_view->hasFocus ())
           || (edit_view && edit_view->hasFocus ()));
+}
+
+void
+var_editor_tab::keyPressEvent (QKeyEvent *event)
+{
+  QTableView *edit_view = get_edit_view ();
+
+  if (edit_view)
+    {
+      int key = event->key ();
+
+      if (key == Qt::Key_Right || key == Qt::Key_Tab)
+        {
+          QModelIndex idx = edit_view->currentIndex ();
+
+          int curr_row = idx.row ();
+          int next_col = idx.column () + 1;
+
+          if (next_col == m_model->display_columns ())
+            {
+              m_model->maybe_resize_columns (next_col + 16);
+
+              edit_view->setCurrentIndex (m_model->index (curr_row, next_col));
+            }
+        }
+      else if (key == Qt::Key_Down || key == Qt::Key_PageDown)
+        {
+          QModelIndex idx = edit_view->currentIndex ();
+
+          int next_row = idx.row () + 1;
+          int curr_col = idx.column ();
+
+          if (next_row == m_model->display_rows ())
+            {
+              m_model->maybe_resize_rows (next_row + 16);
+
+              edit_view->setCurrentIndex (m_model->index (next_row, curr_col));
+            }
+        }
+    }
 }
 
 void

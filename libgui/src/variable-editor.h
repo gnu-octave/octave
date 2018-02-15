@@ -49,7 +49,8 @@ class var_editor_tab : public QWidget
 public:
 
   var_editor_tab (QStackedWidget *widget_stack, QWidget *p = nullptr)
-    : QWidget (p), m_widget_stack (widget_stack)
+    : QWidget (p), m_model (nullptr), m_widget_stack (widget_stack),
+      m_edit_view_idx (-1), m_disp_view_idx (-1)
   { }
 
   ~var_editor_tab (void) = default;
@@ -72,6 +73,8 @@ public:
   }
 
   bool has_focus (void) const;
+
+  void keyPressEvent (QKeyEvent *event);
 
 public slots:
 

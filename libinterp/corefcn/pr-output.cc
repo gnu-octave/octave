@@ -1647,6 +1647,13 @@ make_format (const FloatComplexNDArray& nda)
   return make_format (FloatComplexMatrix (nda), r_fw, i_fw, scale);
 }
 
+template <>
+float_display_format
+make_format (const boolNDArray&)
+{
+  return float_display_format (float_format (1, 1));
+}
+
 // FIXME: all this mess with abs is an attempt to avoid seeing
 //
 //   warning: comparison of unsigned expression < 0 is always false
@@ -1775,17 +1782,23 @@ MAKE_INT_SCALAR_FORMAT (int64_t)
 MAKE_INT_SCALAR_FORMAT (uint64_t)
 
 void
-octave_print_internal (std::ostream&, char, bool)
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       bool d, bool pr_as_read_syntax)
 {
-  panic_impossible ();
+  octave_print_internal (os, fmt, octave_uint8 (d), pr_as_read_syntax);
 }
 
 void
-octave_print_internal (std::ostream& os, double d,
-                       bool pr_as_read_syntax)
+octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
 {
-  set_format (d);
-  octave_print_internal (os, curr_float_display_fmt, d, pr_as_read_syntax);
+  octave_print_internal (os, octave_uint8 (d), pr_as_read_syntax);
+}
+
+void
+octave_print_internal (std::ostream&, const float_display_format&,
+                       char, bool)
+{
+  panic_impossible ();
 }
 
 void
@@ -2200,14 +2213,6 @@ pr_plus_format<> (std::ostream& os, const Complex& c)
     pr_plus_format (os, rp);
   else
     os << 'c';
-}
-
-void
-octave_print_internal (std::ostream& os, const Complex& c,
-                       bool pr_as_read_syntax)
-{
-  set_format (c);
-  octave_print_internal (os, curr_float_display_fmt, c, pr_as_read_syntax);
 }
 
 extern void
@@ -2666,19 +2671,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
     }
 }
 
-void
-octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
-{
-  octave_print_internal (os, octave_uint8 (d), pr_as_read_syntax);
-}
-
 // FIXME: write single precision versions of the printing functions.
-
-void
-octave_print_internal (std::ostream& os, float d, bool pr_as_read_syntax)
-{
-  octave_print_internal (os, double (d), pr_as_read_syntax);
-}
 
 void
 octave_print_internal (std::ostream& os, const FloatMatrix& m,
@@ -2699,13 +2692,6 @@ octave_print_internal (std::ostream& os, const FloatNDArray& nda,
                        bool pr_as_read_syntax, int extra_indent)
 {
   octave_print_internal (os, NDArray (nda), pr_as_read_syntax, extra_indent);
-}
-
-void
-octave_print_internal (std::ostream& os, const FloatComplex& c,
-                       bool pr_as_read_syntax)
-{
-  octave_print_internal (os, Complex (c), pr_as_read_syntax);
 }
 
 void

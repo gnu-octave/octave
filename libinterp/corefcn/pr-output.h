@@ -56,47 +56,177 @@ class octave_value;
 
 template <typename T> class intNDArray;
 
+extern float_display_format
+make_format (double d, int& fw);
+
+extern float_display_format
+make_format (const Matrix& m, int& fw, double& scale);
+
+extern float_display_format
+make_format (const Complex& c, int& r_fw, int& i_fw);
+
+extern float_display_format
+make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
+
+extern float_display_format
+make_format (const Range& r, int& fw, double& scale);
+
+template <typename MT>
+float_display_format
+make_format (const MT&)
+{
+  return float_display_format ();
+}
+
+template <>
+float_display_format
+make_format (const Range& r);
+
+template <>
+float_display_format
+make_format (const NDArray& nda);
+
+template <>
+float_display_format
+make_format (const FloatNDArray& nda);
+
+template <>
+float_display_format
+make_format (const ComplexNDArray& nda);
+
+template <>
+float_display_format
+make_format (const FloatComplexNDArray& nda);
+
+template <>
+float_display_format
+make_format (const boolNDArray& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_int8>& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_int16>& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_int32>& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_int64>& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_uint8>& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_uint16>& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_uint32>& nda);
+
+template <>
+float_display_format
+make_format (const intNDArray<octave_uint64>& nda);
+
+template <>
+float_display_format
+make_format (const double& d);
+
+template <>
+float_display_format
+make_format (const float& f);
+
+template <>
+float_display_format
+make_format (const Complex& c);
+
+template <>
+float_display_format
+make_format (const FloatComplex& c);
+
+template <>
+float_display_format
+make_format (const octave_int8& nda);
+
+template <>
+float_display_format
+make_format (const octave_int16& nda);
+
+template <>
+float_display_format
+make_format (const octave_int32& nda);
+
+template <>
+float_display_format
+make_format (const octave_int64& nda);
+
+template <>
+float_display_format
+make_format (const octave_uint8& nda);
+
+template <>
+float_display_format
+make_format (const octave_uint16& nda);
+
+template <>
+float_display_format
+make_format (const octave_uint32& nda);
+
+template <>
+float_display_format
+make_format (const octave_uint64& nda);
+
 // FIXME: templates plus specializations might help here.
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       bool d, bool pr_as_read_syntax = false);
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, bool d,
                        bool pr_as_read_syntax = false);
 
-inline void
-octave_print_internal (std::ostream& os, const float_display_format&,
-                       bool d, bool pr_as_read_syntax = false)
-{
-  octave_print_internal (os, d, pr_as_read_syntax);
-}
-
 extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, char c,
-                       bool pr_as_read_syntax = false);
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       char c, bool pr_as_read_syntax = false);
 
 inline void
-octave_print_internal (std::ostream& os, const float_display_format&,
-                       char c, bool pr_as_read_syntax = false)
+octave_print_internal (std::ostream& os, char c,
+                       bool pr_as_read_syntax = false)
 {
+  float_display_format fmt (float_format (0, 0));
   octave_print_internal (os, c, pr_as_read_syntax);
 }
 
 extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, double d,
-                       bool pr_as_read_syntax = false);
-
-extern void
 octave_print_internal (std::ostream& os, const float_display_format& fmt,
                        double d, bool pr_as_read_syntax = false);
 
-extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, float d,
-                       bool pr_as_read_syntax = false);
+inline void
+octave_print_internal (std::ostream& os, double d,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, make_format (d), d, pr_as_read_syntax);
+}
 
 inline void
-octave_print_internal (std::ostream& os, const float_display_format&,
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
                        float d, bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, d, pr_as_read_syntax);
+  octave_print_internal (os, fmt, double (d), pr_as_read_syntax);
+}
+
+inline void
+octave_print_internal (std::ostream& os, float d,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, double (d), pr_as_read_syntax);
 }
 
 extern OCTINTERP_API void
@@ -130,22 +260,28 @@ octave_print_internal (std::ostream& os, const FloatNDArray& nda,
                        int extra_indent = 0);
 
 extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, const Complex& c,
-                       bool pr_as_read_syntax = false);
-
-extern void
 octave_print_internal (std::ostream& os, const float_display_format& fmt,
                        const Complex& c, bool pr_as_read_syntax = false);
 
-extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, const FloatComplex& c,
-                       bool pr_as_read_syntax = false);
+inline void
+octave_print_internal (std::ostream& os, const Complex& c,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, make_format (c), c, pr_as_read_syntax);
+}
 
 inline void
-octave_print_internal (std::ostream& os, const float_display_format&,
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
                        const FloatComplex& c, bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, c, pr_as_read_syntax);
+  octave_print_internal (os, fmt, Complex (c), pr_as_read_syntax);
+}
+
+inline void
+octave_print_internal (std::ostream& os, const FloatComplex& c,
+                       bool pr_as_read_syntax = false)
+{
+  octave_print_internal (os, Complex (c), pr_as_read_syntax);
 }
 
 extern OCTINTERP_API void
@@ -264,11 +400,13 @@ extern void
 octave_print_internal (std::ostream& os, const float_display_format&,
                        const octave_int<int8_t>& sa,
                        bool pr_as_read_syntax = false);
+
 inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int8_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern void
@@ -280,7 +418,8 @@ inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint8_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern void
@@ -292,7 +431,8 @@ inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int16_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern void
@@ -304,7 +444,8 @@ inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint16_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern void
@@ -316,7 +457,8 @@ inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int32_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern void
@@ -328,7 +470,8 @@ inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint32_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern void
@@ -340,7 +483,8 @@ inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<int64_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern void
@@ -352,7 +496,8 @@ inline OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_int<uint64_t>& sa,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, float_display_format (), sa, pr_as_read_syntax);
+  float_display_format fmt (float_format (0, 0));
+  octave_print_internal (os, fmt, sa, pr_as_read_syntax);
 }
 
 extern OCTINTERP_API void
@@ -373,128 +518,6 @@ octave_print_internal (std::ostream& os, const float_display_format&,
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_value& ov,
                        bool pr_as_read_syntax = false);
-
-extern float_display_format
-make_format (double d, int& fw);
-
-extern float_display_format
-make_format (const Matrix& m, int& fw, double& scale);
-
-extern float_display_format
-make_format (const Complex& c, int& r_fw, int& i_fw);
-
-extern float_display_format
-make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
-
-extern float_display_format
-make_format (const Range& r, int& fw, double& scale);
-
-template <typename MT>
-float_display_format
-make_format (const MT&)
-{
-  return float_display_format ();
-}
-
-template <>
-float_display_format
-make_format (const Range& r);
-
-template <>
-float_display_format
-make_format (const NDArray& nda);
-
-template <>
-float_display_format
-make_format (const FloatNDArray& nda);
-
-template <>
-float_display_format
-make_format (const ComplexNDArray& nda);
-
-template <>
-float_display_format
-make_format (const FloatComplexNDArray& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_int8>& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_int16>& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_int32>& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_int64>& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_uint8>& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_uint16>& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_uint32>& nda);
-
-template <>
-float_display_format
-make_format (const intNDArray<octave_uint64>& nda);
-
-template <>
-float_display_format
-make_format (const double& d);
-
-template <>
-float_display_format
-make_format (const float& f);
-
-template <>
-float_display_format
-make_format (const Complex& c);
-
-template <>
-float_display_format
-make_format (const FloatComplex& c);
-
-template <>
-float_display_format
-make_format (const octave_int8& nda);
-
-template <>
-float_display_format
-make_format (const octave_int16& nda);
-
-template <>
-float_display_format
-make_format (const octave_int32& nda);
-
-template <>
-float_display_format
-make_format (const octave_int64& nda);
-
-template <>
-float_display_format
-make_format (const octave_uint8& nda);
-
-template <>
-float_display_format
-make_format (const octave_uint16& nda);
-
-template <>
-float_display_format
-make_format (const octave_uint32& nda);
-
-template <>
-float_display_format
-make_format (const octave_uint64& nda);
 
 class
 pr_engineering_float

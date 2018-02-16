@@ -3441,7 +3441,8 @@ If the length of the smallest possible rational approximation exceeds
 DEFUN (disp, args, nargout,
        classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
-@deftypefn {} {} disp (@var{x})
+@deftypefn  {} {} disp (@var{x})
+@deftypefnx {} {@var{str} =} disp (@var{x})
 Display the value of @var{x}.
 
 For example:

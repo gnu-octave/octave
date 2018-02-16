@@ -3993,27 +3993,32 @@ to indicate the exponent.
 @item  free
 @itemx none
 Print output in free format, without trying to line up columns of matrices on
-the decimal point.  This also causes complex numbers to be formatted as numeric
-pairs like this @samp{(0.60419, 0.60709)} instead of like this
+the decimal point.  This is a raw format equivalent to the C++ code
+@code{std::cout << @var{variable}}.  In general, the result is a presentation
+with 6 significant digits where unnecessary precision (such as trailing zeros
+for integers) is suppressed.  Complex numbers are formatted as numeric pairs
+like this @samp{(0.60419, 0.60709)} instead of like this
 @samp{0.60419 + 0.60709i}.
 @end table
 
 The following formats affect all numeric output (floating point and integer
 types).
 
-@table @code
-@item  "+"
-@itemx "+" @var{chars}
-@itemx plus
-@itemx plus @var{chars}
+@table @asis
+@item  @qcode{"+"}
+@itemx @qcode{"+"} @qcode{"@var{chars}"}
+@itemx @code{plus}
+@itemx @code{plus @var{chars}}
 Print a @samp{+} symbol for matrix elements greater than zero, a @samp{-}
-symbol for elements less than zero and a space for zero matrix elements.  This
-format can be very useful for examining the structure of a large sparse matrix.
+symbol for elements less than zero, and a space for zero matrix elements.  This
+format can be useful for examining the sparsity structure of a large matrix.
+For very large matrices the function @code{spy} which plots the sparsity
+pattern will be clearer.
 
 The optional argument @var{chars} specifies a list of 3 characters to use for
-printing values greater than zero, less than zero and equal to zero.  For
-example, with the @samp{"+" "+-."} format, @code{[1, 0, -1; -1, 0, 1]} is
-displayed as
+printing values greater than zero, less than zero, and equal to zero.  For
+example, with the format @qcode{"+" "+-."}, the matrix
+@code{[1, 0, -1; -1, 0, 1]} is displayed as
 
 @example
 @group
@@ -4025,7 +4030,9 @@ ans =
 @end example
 
 @item bank
-Print in a fixed format with two digits to the right of the decimal point.
+Print variable in a format appropriate for a currency (fixed format with two
+digits to the right of the decimal point).  Only the real part of a variable is
+displayed, as the imaginary part makes no sense for a currency.
 
 @item native-hex
 Print the hexadecimal representation of numbers as they are stored in memory.

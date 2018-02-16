@@ -519,6 +519,7 @@ extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const octave_value& ov,
                        bool pr_as_read_syntax = false);
 
+template <typename T>
 class
 pr_engineering_float
 {
@@ -526,19 +527,20 @@ public:
 
   const float_format m_ff;
 
-  double m_val;
+  T m_val;
 
   int exponent (void) const;
 
-  double mantissa (void) const;
+  T mantissa (void) const;
 
-  pr_engineering_float (const float_format& ff, double val)
+  pr_engineering_float (const float_format& ff, T val)
     : m_ff (ff), m_val (val) { }
 
-  pr_engineering_float (const float_display_format& fdf, double val)
+  pr_engineering_float (const float_display_format& fdf, T val)
     : m_ff (fdf.real_format ()), m_val (val) { }
 };
 
+template <typename T>
 class
 pr_formatted_float
 {
@@ -546,15 +548,16 @@ public:
 
   const float_format m_ff;
 
-  double m_val;
+  T m_val;
 
-  pr_formatted_float (const float_format& ff, double val)
+  pr_formatted_float (const float_format& ff, T val)
     : m_ff (ff), m_val (val) { }
 
-  pr_formatted_float (const float_display_format& fdf, double val)
+  pr_formatted_float (const float_display_format& fdf, T val)
     : m_ff (fdf.real_format ()), m_val (val) { }
 };
 
+template <typename T>
 class
 pr_rational_float
 {
@@ -562,23 +565,26 @@ public:
 
   const float_format m_ff;
 
-  double m_val;
+  T m_val;
 
-  pr_rational_float (const float_format& ff, double val)
+  pr_rational_float (const float_format& ff, T val)
     : m_ff (ff), m_val (val) { }
 
-  pr_rational_float (const float_display_format& fdf, double val)
+  pr_rational_float (const float_display_format& fdf, T val)
     : m_ff (fdf.real_format ()), m_val (val) { }
 };
 
+template <typename T>
 extern std::ostream&
-operator << (std::ostream& os, const pr_engineering_float& pef);
+operator << (std::ostream& os, const pr_engineering_float<T>& pef);
 
+template <typename T>
 extern std::ostream&
-operator << (std::ostream& os, const pr_formatted_float& pff);
+operator << (std::ostream& os, const pr_formatted_float<T>& pff);
 
+template <typename T>
 extern std::ostream&
-operator << (std::ostream& os, const pr_rational_float& prf);
+operator << (std::ostream& os, const pr_rational_float<T>& prf);
 
 // TRUE means that the dimensions of empty objects should be printed
 // like this: x = [](2x0).

@@ -28,8 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <iomanip>
 #include <iosfwd>
 
+template <typename T>
 class pr_engineering_float;
+
+template <typename T>
 class pr_formatted_float;
+
+template <typename T>
 class pr_rational_float;
 
 extern int output_max_field_width (void);
@@ -105,14 +110,17 @@ public:
     return *this;
   }
 
+  template <typename T>
   friend std::ostream&
-  operator << (std::ostream& os, const pr_engineering_float& pef);
+  operator << (std::ostream& os, const pr_engineering_float<T>& pef);
 
+  template <typename T>
   friend std::ostream&
-  operator << (std::ostream& os, const pr_formatted_float& pff);
+  operator << (std::ostream& os, const pr_formatted_float<T>& pff);
 
+  template <typename T>
   friend std::ostream&
-  operator << (std::ostream& os, const pr_rational_float& prf);
+  operator << (std::ostream& os, const pr_rational_float<T>& prf);
 
   // Field width.  Zero means as wide as necessary.
   int fw;

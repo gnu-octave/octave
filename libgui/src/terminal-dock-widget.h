@@ -55,7 +55,7 @@ namespace octave
 
   private:
 
-    QTerminal *terminal;
+    QTerminal *m_terminal;
   };
 }
 

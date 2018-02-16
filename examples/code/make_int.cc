@@ -1,10 +1,10 @@
-#include <octave/config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
 #include <cstdlib>
-
-#include <string>
-
 #include <ostream>
+#include <string>
 
 #include <octave/lo-mappers.h>
 #include <octave/lo-utils.h>
@@ -12,21 +12,18 @@
 #include <octave/str-vec.h>
 
 #include <octave/defun-dld.h>
-#include <octave/error.h>
-#include <octave/gripes.h>
-#include <octave/oct-obj.h>
+#include <octave/errwarn.h>
+#include <octave/interpreter.h>
 #include <octave/ops.h>
 #include <octave/ov-base.h>
+#include <octave/ov-scalar.h>
 #include <octave/ov-typeinfo.h>
 #include <octave/ov.h>
-#include <octave/ov-scalar.h>
+#include <octave/ovl.h>
 #include <octave/pager.h>
 #include <octave/pr-output.h>
 #include <octave/variables.h>
 
-class octave_value_list;
-
-class tree_walker;
 
 // Integer values.
 
@@ -167,7 +164,7 @@ DEFBINOP (div, integer, integer)
   int d = v2.integer_value ();
 
   if (d == 0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return new octave_integer (v1.integer_value () / d);
 }
@@ -181,7 +178,7 @@ DEFBINOP (i_s_div, integer, scalar)
   double d = v2.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return new octave_scalar (v1.double_value () / d);
 }
@@ -194,7 +191,7 @@ DEFBINOP (ldiv, integer, integer)
   int d = v1.integer_value ();
 
   if (d == 0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return new octave_integer (v2.integer_value () / d);
 }
@@ -216,7 +213,7 @@ DEFBINOP (el_div, integer, integer)
   int d = v2.integer_value ();
 
   if (d == 0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return new octave_integer (v1.integer_value () / d);
 }
@@ -229,7 +226,7 @@ DEFBINOP (el_ldiv, integer, integer)
   int d = v1.integer_value ();
 
   if (d == 0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return new octave_integer (v2.integer_value () / d);
 }
@@ -252,32 +249,36 @@ Creates an integer variable from VAL.")
       octave_stdout << "installing integer type at type-id = "
                     << octave_integer::static_type_id () << "\n";
 
-      INSTALL_UNOP (op_not, octave_integer, gnot);
-      INSTALL_UNOP (op_uminus, octave_integer, uminus);
-      INSTALL_UNOP (op_transpose, octave_integer, transpose);
-      INSTALL_UNOP (op_hermitian, octave_integer, hermitian);
+      octave::type_info& ti = interp.get_type_info ();
 
-      INSTALL_NCUNOP (op_incr, octave_integer, incr);
-      INSTALL_NCUNOP (op_decr, octave_integer, decr);
+      INSTALL_UNOP_TI (ti, op_not, octave_integer, gnot);
+      INSTALL_UNOP_TI (ti, op_uminus, octave_integer, uminus);
+      INSTALL_UNOP_TI (ti, op_transpose, octave_integer, transpose);
+      INSTALL_UNOP_TI (ti, op_hermitian, octave_integer, hermitian);
 
-      INSTALL_BINOP (op_add, octave_integer, octave_integer, add);
-      INSTALL_BINOP (op_sub, octave_integer, octave_integer, sub);
-      INSTALL_BINOP (op_mul, octave_integer, octave_integer, mul);
-      INSTALL_BINOP (op_div, octave_integer, octave_integer, div);
-      INSTALL_BINOP (op_ldiv, octave_integer, octave_integer, ldiv);
-      INSTALL_BINOP (op_lt, octave_integer, octave_integer, lt);
-      INSTALL_BINOP (op_le, octave_integer, octave_integer, le);
-      INSTALL_BINOP (op_eq, octave_integer, octave_integer, eq);
-      INSTALL_BINOP (op_ge, octave_integer, octave_integer, ge);
-      INSTALL_BINOP (op_gt, octave_integer, octave_integer, gt);
-      INSTALL_BINOP (op_ne, octave_integer, octave_integer, ne);
-      INSTALL_BINOP (op_el_mul, octave_integer, octave_integer, el_mul);
-      INSTALL_BINOP (op_el_div, octave_integer, octave_integer, el_div);
-      INSTALL_BINOP (op_el_ldiv, octave_integer, octave_integer, el_ldiv);
-      INSTALL_BINOP (op_el_and, octave_integer, octave_integer, el_and);
-      INSTALL_BINOP (op_el_or, octave_integer, octave_integer, el_or);
+      INSTALL_NCUNOP_TI (ti, op_incr, octave_integer, incr);
+      INSTALL_NCUNOP_TI (ti, op_decr, octave_integer, decr);
 
-      INSTALL_BINOP (op_div, octave_integer, octave_scalar, i_s_div);
+      INSTALL_BINOP_TI (ti, op_add, octave_integer, octave_integer, add);
+      INSTALL_BINOP_TI (ti, op_sub, octave_integer, octave_integer, sub);
+      INSTALL_BINOP_TI (ti, op_mul, octave_integer, octave_integer, mul);
+      INSTALL_BINOP_TI (ti, op_div, octave_integer, octave_integer, div);
+      INSTALL_BINOP_TI (ti, op_ldiv, octave_integer, octave_integer, ldiv);
+      INSTALL_BINOP_TI (ti, op_lt, octave_integer, octave_integer, lt);
+      INSTALL_BINOP_TI (ti, op_le, octave_integer, octave_integer, le);
+      INSTALL_BINOP_TI (ti, op_eq, octave_integer, octave_integer, eq);
+      INSTALL_BINOP_TI (ti, op_ge, octave_integer, octave_integer, ge);
+      INSTALL_BINOP_TI (ti, op_gt, octave_integer, octave_integer, gt);
+      INSTALL_BINOP_TI (ti, op_ne, octave_integer, octave_integer, ne);
+      INSTALL_BINOP_TI (ti, op_el_mul, octave_integer, octave_integer, el_mul);
+      INSTALL_BINOP_TI (ti, op_el_div, octave_integer, octave_integer, el_div);
+      INSTALL_BINOP_TI (ti, op_el_ldiv, octave_integer, octave_integer, el_ldiv);
+      INSTALL_BINOP_TI (ti, op_el_and, octave_integer, octave_integer, el_and);
+      INSTALL_BINOP_TI (ti, op_el_or, octave_integer, octave_integer, el_or);
+
+      INSTALL_BINOP_TI (ti, op_div, octave_integer, octave_scalar, i_s_div);
+
+      type_loaded = true;
     }
 
   octave_value retval;
@@ -312,7 +313,7 @@ DEFUN_DLD (doit, args, ,
       message ("doit", "your lucky number is: %d", my_value);
     }
   else
-    gripe_wrong_type_arg ("doit", args(0));
+    err_wrong_type_arg ("doit", args(0));
 
   return retval;
 }

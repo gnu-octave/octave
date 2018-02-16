@@ -1746,6 +1746,29 @@ octave_print_internal (std::ostream& os, const float_display_format& fmt,
     }
 }
 
+template <typename MT>
+static void
+octave_print_free (std::ostream& os, const MT& m, bool pr_as_read_syntax)
+{
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (pr_as_read_syntax)
+    os << "[\n";
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    {
+      for (octave_idx_type j = 0; j < nc; j++)
+        os << ' ' << m.elem(i,j);
+
+      if (i < nr - 1)
+        os << "\n";
+    }
+
+  if (pr_as_read_syntax)
+    os << ']';
+}
+
 void
 octave_print_internal (std::ostream& os, const Matrix& m,
                        bool pr_as_read_syntax, int extra_indent)
@@ -1789,14 +1812,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
       if (free_format)
         {
-          if (pr_as_read_syntax)
-            os << "[\n";
-
-          os << m;
-
-          if (pr_as_read_syntax)
-            os << ']';
-
+          octave_print_free (os, m, pr_as_read_syntax);
           return;
         }
 
@@ -1925,14 +1941,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
       if (free_format)
         {
-          if (pr_as_read_syntax)
-            os << "[\n";
-
-          os << Matrix (m);
-
-          if (pr_as_read_syntax)
-            os << ']';
-
+          octave_print_free (os, m, pr_as_read_syntax);
           return;
         }
 
@@ -2205,14 +2214,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
       if (free_format)
         {
-          if (pr_as_read_syntax)
-            os << "[\n";
-
-          os << cm;
-
-          if (pr_as_read_syntax)
-            os << ']';
-
+          octave_print_free (os, cm, pr_as_read_syntax);
           return;
         }
 
@@ -2344,14 +2346,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
       if (free_format)
         {
-          if (pr_as_read_syntax)
-            os << "[\n";
-
-          os << ComplexMatrix (cm);
-
-          if (pr_as_read_syntax)
-            os << ']';
-
+          octave_print_free (os, cm, pr_as_read_syntax);
           return;
         }
 
@@ -2488,14 +2483,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
       if (free_format)
         {
-          if (pr_as_read_syntax)
-            os << "[\n";
-
-          os << Matrix (m);
-
-          if (pr_as_read_syntax)
-            os << ']';
-
+          octave_print_free (os, m, pr_as_read_syntax);
           return;
         }
 
@@ -2704,7 +2692,9 @@ octave_print_internal (std::ostream& os, const Range& r,
 
           if (free_format)
             {
-              os << r;
+              os << ' ';
+              for (octave_idx_type i = 0; i < num_elem; i++)
+                os << ' ' << r.elem(i);
               return;
             }
 

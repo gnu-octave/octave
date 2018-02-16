@@ -284,30 +284,39 @@ namespace octave
   // catch focus changes and determine the active dock widget
   void main_window::focus_changed (QWidget *, QWidget *new_widget)
   {
+    // If there is no new widget (e.g., when pressing <alt> and the global
+    // menu gets active, we can return immediately
+    if (! new_widget)
+      return;
+
     octave_dock_widget *dock = nullptr;
     QWidget *w_new = new_widget;  // get a copy of new focus widget
     QWidget *start = w_new;       // Save it as start of our search
     int count = 0;                // fallback to prevent endless loop
 
+    QList<octave_dock_widget *> w_list = dock_widget_list ();
+
     while (w_new && w_new != m_main_tool_bar && count < 100)
       {
-        dock = qobject_cast<octave_dock_widget *> (w_new);
-        if (dock)
-          break; // it is a QDockWidget ==> exit loop
-
-#if defined (HAVE_QSCINTILLA)
-        if (qobject_cast<octave_qscintilla *> (w_new))
+        // Go through all dock widgets and check whether the current widget
+        // widget with focus is a child of one of it
+        foreach (octave_dock_widget *w, w_list)
           {
-            dock = static_cast<octave_dock_widget *> (m_editor_window);
-            break; // it is the editor window ==> exit loop
+            if (w->isAncestorOf (w_new))
+              dock = w;
           }
-#endif
 
+        if (dock)
+          break;
+
+        // If not yet found (in case w_new is not a childs of its dock widget),
+        // test next widget in the focus chain
         w_new = qobject_cast<QWidget *> (w_new->previousInFocusChain ());
-        if (w_new == start)
-          break; // we have arrived where we began ==> exit loop
 
-        count++;
+        // Measures preventing an endless loop
+        if (w_new == start)
+          break;  // We have arrived where we began ==> exit loop
+        count++;  // Limited number of trials
       }
 
     // editor needs extra handling

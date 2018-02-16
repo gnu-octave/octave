@@ -288,6 +288,8 @@ namespace octave
       }
 
     tab_state_changed ();
+
+    setFocus ();
   }
 
   void webinfo::load_ref (const QString& ref_name)

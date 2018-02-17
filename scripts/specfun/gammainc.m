@@ -1,6 +1,7 @@
 ## Copyright (C) 2016 Marco Caliari
 ## Copyright (C) 2016 Nir Krakauer
 ## Copyright (C) 2017 Michele Ginesi
+## Copyright (C) 2018 Stefan Schlögl
 ##
 ## This file is part of Octave.
 ##
@@ -357,11 +358,8 @@ endfunction
 ## Lentz's algorithm
 ## __gammainc_lentz__ in libinterp/corefcn/__gammainc_lentz__.cc
 function y = gammainc_l (x, a, tail)
-    n = numel (x);
-    y = zeros (size (x), class (x));
-    for i = 1:n
-      y(i) = __gammainc_lentz__ (x(i), a(i));
-    endfor
+  % calling vectorizied version of c++ code
+  y = __gammainc_lentz__ (x, a);
     if (strcmpi (tail, "upper"))
       y .*= D (x, a);
     elseif (strcmpi (tail,  "lower"))

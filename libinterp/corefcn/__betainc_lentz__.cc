@@ -22,7 +22,7 @@
 
 #include "defun.h"
 
-DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete gamma function")
+DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta function")
 {
   int nargin = args.length ();
 

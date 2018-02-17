@@ -1,5 +1,6 @@
 // Copyright (C) 2017 Nir Krakauer
-// Copyright (C) 2017 Michele Ginesi
+// Copyright (C) 2018 Stefan Schlögl
+// Copyright (C) 2018 Michele Ginesi
 //
 // This file is part of Octave.
 //
@@ -20,73 +21,80 @@
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
-
 #include "defun.h"
 
 DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma function")
 {
   int nargin = args.length ();
-
+  octave_value_list outargs;
   if (nargin != 2)
     print_usage ();
   else
     {
-      octave_value x_arg = args(0);
-      octave_value a_arg = args(1);
-      if (x_arg.is_single_type () || a_arg.is_single_type ())
-        {
-          const float x = args(0).float_value ();
-          const float a = args(1).float_value ();
-          static const float tiny = pow (2, -50);
-          static const float eps = std::numeric_limits<float>::epsilon();
-          float y = tiny;
-          float Cj = y;
-          float Dj = 0;
-          float bj = x - a + 1;
-          float aj = a;
-          float Deltaj = 0;
-          int j = 1;
-          int maxit = 200;
-          while((std::abs((Deltaj - 1) / y)  > eps) & (j < maxit))
-            {
-               Cj = bj + aj/Cj;
-               Dj = 1 / (bj + aj*Dj);
-               Deltaj = Cj * Dj;
-               y *= Deltaj;
-               bj += 2;
-               aj = j * (a - j);
-               j++;
-             }
-           if (! error_state)
-            return octave_value (y);
-        }
+      NDArray x_arg = args(0).array_value ();
+      NDArray a_arg = args(1).array_value ();
+
+      // total number of scenarios: get maximum of length of all vectors
+      int len_x = x_arg.rows ();
+      int len_a = a_arg.rows ();
+      int len = std::max(len_x,len_a);
+
+      // input checks
+      if (len_x > 1 && len_x != len)
+        error("gammainc_lentz_vec: expecting x to be of length 1 or %d",len);
+      if (len_a > 1 && len_a != len)
+        error("gammainc_lentz_vec: expecting a to be of length 1 or %d",len);
+
+      // initialize scenario dependent output:
+      dim_vector dim_scen (len, 1);
+      ColumnVector f (dim_scen);
+
+      NDArray x (dim_scen);
+      NDArray a (dim_scen);
+
+      // initialize scenario dependent input values (idx either 0 or ii)
+      if ( len_x == 1 )
+        x.fill(x_arg(0));
       else
-        {
-          const double x = args(0).double_value ();
-          const double a = args(1).double_value ();
-          static const double tiny = pow (2, -100);
-          static const double eps = std::numeric_limits<double>::epsilon();
-          double y = tiny;
-          double Cj = y;
-          double Dj = 0;
-          double bj = x - a + 1;
-          double aj = a;
-          double Deltaj = 0;
-          int j = 1;
-          int maxit = 200;
-          while((std::abs((Deltaj - 1) / y)  > eps) & (j < maxit))
-            {
-              Cj = bj + aj/Cj;
-              Dj = 1 / (bj + aj*Dj);
-              Deltaj = Cj * Dj;
-              y *= Deltaj;
-              bj += 2;
-              aj = j * (a - j);
-              j++;
-            }
-          if (! error_state)
-            return octave_value (y);
+      x = x_arg;
+      //
+      if ( len_a == 1 )
+        a.fill(a_arg(0));
+      else
+        a = a_arg;
+
+      static const double tiny = pow (2, -100);
+      static const double eps = std::numeric_limits<double>::epsilon();
+      double y, Cj, Dj, bj, aj, Deltaj;
+      int j, maxit;
+      maxit = 200;
+      // loop via all scenarios
+    for (octave_idx_type ii = 0; ii < len; ++ii)
+      {
+        // catch ctrl + c
+        OCTAVE_QUIT;
+        y = tiny;
+        Cj = y;
+        Dj = 0;
+        bj = x(ii) - a(ii) + 1;
+        aj = a(ii);
+        Deltaj = 0;
+        j = 1;
+
+        while((std::abs((Deltaj - 1) / y)  > eps) & (j < maxit))
+          {
+            Cj = bj + aj/Cj;
+            Dj = 1 / (bj + aj*Dj);
+            Deltaj = Cj * Dj;
+            y *= Deltaj;
+            bj += 2;
+            aj = j * (a(ii) - j);
+            j++;
+          }
+        if (! error_state)
+            f(ii) = y;
+        outargs(0) = f;
         }
-      }
-  return octave_value_list ();
+    }
+  return octave_value (outargs);
 }

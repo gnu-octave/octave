@@ -56,17 +56,25 @@ class octave_value;
 
 template <typename T> class intNDArray;
 
+template <typename T>
 extern float_display_format
-make_format (double d, int& fw);
+make_format (T val, int& fw);
 
 extern float_display_format
 make_format (const Matrix& m, int& fw, double& scale);
 
 extern float_display_format
-make_format (const Complex& c, int& r_fw, int& i_fw);
+make_format (const FloatMatrix& m, int& fw, float& scale);
+
+template <typename T>
+extern float_display_format
+make_format (const std::complex<T>& c, int& r_fw, int& i_fw);
 
 extern float_display_format
 make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
+
+extern float_display_format
+make_format (const FloatComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
 
 extern float_display_format
 make_format (const Range& r, int& fw, double& scale);
@@ -215,18 +223,15 @@ octave_print_internal (std::ostream& os, double d,
   octave_print_internal (os, make_format (d), d, pr_as_read_syntax);
 }
 
-inline void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const float_display_format& fmt,
-                       float d, bool pr_as_read_syntax = false)
-{
-  octave_print_internal (os, fmt, double (d), pr_as_read_syntax);
-}
+                       float d, bool pr_as_read_syntax = false);
 
 inline void
 octave_print_internal (std::ostream& os, float d,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, double (d), pr_as_read_syntax);
+  octave_print_internal (os, make_format (d), d, pr_as_read_syntax);
 }
 
 extern OCTINTERP_API void
@@ -270,18 +275,15 @@ octave_print_internal (std::ostream& os, const Complex& c,
   octave_print_internal (os, make_format (c), c, pr_as_read_syntax);
 }
 
-inline void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const float_display_format& fmt,
-                       const FloatComplex& c, bool pr_as_read_syntax = false)
-{
-  octave_print_internal (os, fmt, Complex (c), pr_as_read_syntax);
-}
+                       const FloatComplex& c, bool pr_as_read_syntax = false);
 
 inline void
 octave_print_internal (std::ostream& os, const FloatComplex& c,
                        bool pr_as_read_syntax = false)
 {
-  octave_print_internal (os, Complex (c), pr_as_read_syntax);
+  octave_print_internal (os, make_format (c), c, pr_as_read_syntax);
 }
 
 extern OCTINTERP_API void

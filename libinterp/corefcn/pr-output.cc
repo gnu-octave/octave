@@ -135,7 +135,7 @@ calc_scale_exp (const int& x)
 }
 
 template <typename T>
-static int
+static inline int
 engineering_exponent (T x)
 {
   int ex = 0;
@@ -158,7 +158,7 @@ engineering_exponent (T x)
 }
 
 template <typename T>
-static int
+static inline int
 num_digits (T x)
 {
   return 1 + (print_eng
@@ -369,20 +369,24 @@ operator << (std::ostream& os, const pr_rational_float<T>& prf)
   return os;
 }
 
-static double
-pr_max_internal (const Matrix& m)
+template <typename T>
+static inline T
+pr_max_internal (const MArray<T>& m)
 {
+  // We expect a 2-d array.
+  assert (m.ndims () == 2);
+
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  double result = -std::numeric_limits<double>::max ();
+  T result = std::numeric_limits<T>::lowest ();
 
   bool all_inf_or_nan = true;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        double val = m(i,j);
+        T val = m(i,j);
         if (! octave::math::isfinite (val))
           continue;
 
@@ -398,20 +402,21 @@ pr_max_internal (const Matrix& m)
   return result;
 }
 
-static double
-pr_min_internal (const Matrix& m)
+template <typename T>
+static inline T
+pr_min_internal (const MArray<T>& m)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  double result = std::numeric_limits<double>::max ();
+  T result = std::numeric_limits<T>::max ();
 
   bool all_inf_or_nan = true;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        double val = m(i,j);
+        T val = m(i,j);
         if (! octave::math::isfinite (val))
           continue;
 
@@ -429,8 +434,10 @@ pr_min_internal (const Matrix& m)
 
 // FIXME: it would be nice to share more code among these functions,..
 
-static float_display_format
-make_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
+template <typename T>
+static inline float_display_format
+make_real_format (int digits, bool inf_or_nan,
+                  bool int_only, int& fw)
 {
   float_format fmt;
 
@@ -452,12 +459,12 @@ make_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
     }
   else if (hex_format)
     {
-      fw = 2 * sizeof (double);
+      fw = 2 * sizeof (T);
       rd = 0;
     }
   else if (bit_format)
     {
-      fw = 8 * sizeof (double);
+      fw = 8 * sizeof (T);
       rd = 0;
     }
   else if (inf_or_nan || int_only)
@@ -524,24 +531,26 @@ make_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
   return float_display_format (fmt);
 }
 
+template <typename T>
 float_display_format
-make_format (double d, int& fw)
+make_format (T val, int& fw)
 {
   if (free_format)
     return float_display_format ();
 
-  bool inf_or_nan = (octave::math::isinf (d) || octave::math::isnan (d));
+  bool inf_or_nan = (octave::math::isinf (val) || octave::math::isnan (val));
 
-  bool int_only = (! inf_or_nan && octave::math::x_nint (d) == d);
+  bool int_only = (! inf_or_nan && octave::math::x_nint (val) == val);
 
-  double d_abs = (d < 0 ? -d : d);
+  T val_abs = (val < 0 ? -val : val);
 
-  int digits = (inf_or_nan || d_abs == 0) ? 0 : num_digits (d_abs);
+  int digits = (inf_or_nan || val_abs == 0) ? 0 : num_digits (val_abs);
 
-  return make_real_format (digits, inf_or_nan, int_only, fw);
+  return make_real_format<T> (digits, inf_or_nan, int_only, fw);
 }
 
-static float_display_format
+template <typename T>
+static inline float_display_format
 make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
                          int int_or_inf_or_nan, int& fw)
 {
@@ -566,12 +575,12 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     }
   else if (hex_format)
     {
-      fw = 2 * sizeof (double);
+      fw = 2 * sizeof (T);
       rd = 0;
     }
   else if (bit_format)
     {
-      fw = 8 * sizeof (double);
+      fw = 8 * sizeof (T);
       rd = 0;
     }
   else if (Vfixed_point_format && ! print_g)
@@ -667,9 +676,12 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
   return float_display_format (fmt);
 }
 
-float_display_format
-make_format (const Matrix& m, int& fw, double& scale)
+template <typename MT, typename ELT_T>
+static inline float_display_format
+make_format_internal (const MT& m, int& fw, ELT_T& scale)
 {
+  assert (m.ndims () == 2);
+
   if (free_format)
     return float_display_format ();
 
@@ -677,9 +689,9 @@ make_format (const Matrix& m, int& fw, double& scale)
 
   bool int_or_inf_or_nan = m.all_elements_are_int_or_inf_or_nan ();
 
-  Matrix m_abs = m.abs ();
-  double max_abs = pr_max_internal (m_abs);
-  double min_abs = pr_min_internal (m_abs);
+  MT m_abs = m.abs ();
+  ELT_T max_abs = pr_max_internal (m_abs);
+  ELT_T min_abs = pr_min_internal (m_abs);
 
   int x_max = (max_abs == 0 ? 0 : num_digits (max_abs));
 
@@ -688,13 +700,26 @@ make_format (const Matrix& m, int& fw, double& scale)
   scale = ((x_max == 0 || int_or_inf_or_nan)
            ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
 
-  return make_real_matrix_format (x_max, x_min, inf_or_nan,
-                                  int_or_inf_or_nan, fw);
+  return make_real_matrix_format<ELT_T> (x_max, x_min, inf_or_nan,
+                                         int_or_inf_or_nan, fw);
 }
 
-static float_display_format
-make_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
-                     int int_only, int& r_fw, int& i_fw)
+float_display_format
+make_format (const Matrix& m, int& fw, double& scale)
+{
+  return make_format_internal<Matrix, double> (m, fw, scale);
+}
+
+float_display_format
+make_format (const FloatMatrix& m, int& fw, float& scale)
+{
+  return make_format_internal<FloatMatrix, float> (m, fw, scale);
+}
+
+template <typename T>
+static inline float_display_format
+make_complex_format (int x_max, int x_min, int r_x,
+                     bool inf_or_nan, int int_only, int& r_fw, int& i_fw)
 {
   float_format r_fmt;
   float_format i_fmt;
@@ -720,14 +745,14 @@ make_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
     }
   else if (hex_format)
     {
-      r_fw = 2 * sizeof (double);
-      i_fw = 2 * sizeof (double);
+      r_fw = 2 * sizeof (T);
+      i_fw = 2 * sizeof (T);
       rd = 0;
     }
   else if (bit_format)
     {
-      r_fw = 8 * sizeof (double);
-      i_fw = 8 * sizeof (double);
+      r_fw = 8 * sizeof (T);
+      i_fw = 8 * sizeof (T);
       rd = 0;
     }
   else if (inf_or_nan || int_only)
@@ -844,22 +869,23 @@ make_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
   return float_display_format (r_fmt, i_fmt);
 }
 
+template <typename T>
 float_display_format
-make_format (const Complex& c, int& r_fw, int& i_fw)
+make_format (const std::complex<T>& c, int& r_fw, int& i_fw)
 {
   if (free_format)
     return float_display_format ();
 
-  double rp = c.real ();
-  double ip = c.imag ();
+  T rp = c.real ();
+  T ip = c.imag ();
 
   bool inf_or_nan = (octave::math::isinf (c) || octave::math::isnan (c));
 
   bool int_only = (octave::math::x_nint (rp) == rp
                    && octave::math::x_nint (ip) == ip);
 
-  double r_abs = (rp < 0 ? -rp : rp);
-  double i_abs = (ip < 0 ? -ip : ip);
+  T r_abs = (rp < 0 ? -rp : rp);
+  T i_abs = (ip < 0 ? -ip : ip);
 
   int r_x = (! octave::math::isfinite (rp)
              || r_abs == 0) ? 0 : num_digits (r_abs);
@@ -880,11 +906,12 @@ make_format (const Complex& c, int& r_fw, int& i_fw)
       x_min = r_x;
     }
 
-  return make_complex_format (x_max, x_min, r_x, inf_or_nan, int_only,
-                              r_fw, i_fw);
+  return make_complex_format<T> (x_max, x_min, r_x, inf_or_nan, int_only,
+                                 r_fw, i_fw);
 }
 
-static float_display_format
+template <typename T>
+static inline float_display_format
 make_complex_matrix_format (int x_max, int x_min, int r_x_max,
                             int r_x_min, bool inf_or_nan,
                             int int_or_inf_or_nan, int& r_fw, int& i_fw)
@@ -913,14 +940,14 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
     }
   else if (hex_format)
     {
-      r_fw = 2 * sizeof (double);
-      i_fw = 2 * sizeof (double);
+      r_fw = 2 * sizeof (T);
+      i_fw = 2 * sizeof (T);
       rd = 0;
     }
   else if (bit_format)
     {
-      r_fw = 8 * sizeof (double);
-      i_fw = 8 * sizeof (double);
+      r_fw = 8 * sizeof (T);
+      i_fw = 8 * sizeof (T);
       rd = 0;
     }
   else if (Vfixed_point_format && ! print_g)
@@ -1050,27 +1077,28 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
   return float_display_format (r_fmt, i_fmt);
 }
 
-float_display_format
-make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
+template <typename CMT, typename RMT, typename ELT_T>
+static inline float_display_format
+make_format_internal (const CMT& cm, int& r_fw, int& i_fw, ELT_T& scale)
 {
   if (free_format)
     return float_display_format ();
 
-  Matrix rp = real (cm);
-  Matrix ip = imag (cm);
+  RMT rp = real (cm);
+  RMT ip = imag (cm);
 
   bool inf_or_nan = cm.any_element_is_inf_or_nan ();
 
   bool int_or_inf_or_nan = (rp.all_elements_are_int_or_inf_or_nan ()
                             && ip.all_elements_are_int_or_inf_or_nan ());
 
-  Matrix r_m_abs = rp.abs ();
-  double r_max_abs = pr_max_internal (r_m_abs);
-  double r_min_abs = pr_min_internal (r_m_abs);
+  RMT r_m_abs = rp.abs ();
+  ELT_T r_max_abs = pr_max_internal (r_m_abs);
+  ELT_T r_min_abs = pr_min_internal (r_m_abs);
 
-  Matrix i_m_abs = ip.abs ();
-  double i_max_abs = pr_max_internal (i_m_abs);
-  double i_min_abs = pr_min_internal (i_m_abs);
+  RMT i_m_abs = ip.abs ();
+  ELT_T i_max_abs = pr_max_internal (i_m_abs);
+  ELT_T i_min_abs = pr_min_internal (i_m_abs);
 
   int r_x_max = (r_max_abs == 0 ? 0 : num_digits (r_max_abs));
 
@@ -1086,12 +1114,25 @@ make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   scale = ((x_max == 0 || int_or_inf_or_nan)
            ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
 
-  return make_complex_matrix_format (x_max, x_min, r_x_max, r_x_min,
-                                     inf_or_nan, int_or_inf_or_nan,
-                                     r_fw, i_fw);
+  return make_complex_matrix_format<ELT_T> (x_max, x_min, r_x_max, r_x_min,
+                                            inf_or_nan, int_or_inf_or_nan,
+                                            r_fw, i_fw);
 }
 
-static float_display_format
+float_display_format
+make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
+{
+  return make_format_internal<ComplexMatrix, Matrix, double> (cm, r_fw, i_fw, scale);
+}
+
+float_display_format
+make_format (const FloatComplexMatrix& cm, int& r_fw, int& i_fw, float& scale)
+{
+  return make_format_internal<FloatComplexMatrix, FloatMatrix, float> (cm, r_fw, i_fw, scale);
+}
+
+template <typename T>
+static inline float_display_format
 make_range_format (int x_max, int x_min, int all_ints, int& fw)
 {
   float_format fmt;
@@ -1113,12 +1154,12 @@ make_range_format (int x_max, int x_min, int all_ints, int& fw)
     }
   else if (hex_format)
     {
-      fw = 2 * sizeof (double);
+      fw = 2 * sizeof (T);
       rd = 0;
     }
   else if (bit_format)
     {
-      fw = 8 * sizeof (double);
+      fw = 8 * sizeof (T);
       rd = 0;
     }
   else if (all_ints)
@@ -1232,7 +1273,7 @@ make_format (const Range& r, int& fw, double& scale)
   scale = ((x_max == 0 || all_ints)
            ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
 
-  return make_range_format (x_max, x_min, all_ints, fw);
+  return make_range_format<double> (x_max, x_min, all_ints, fw);
 }
 
 template <typename T>
@@ -1279,7 +1320,7 @@ union equiv
   while (0)
 
 template <typename T>
-static void
+static inline void
 pr_any_float (std::ostream& os, const float_format& fmt, T val, int fw = 0)
 {
   // Unless explicitly asked for, always print in big-endian format
@@ -1407,7 +1448,7 @@ pr_imag_float (std::ostream& os, const float_display_format& fmt,
 }
 
 template <typename T>
-static void
+static inline void
 pr_complex (std::ostream& os, const float_display_format& fmt,
             const std::complex<T>& cval, int r_fw = 0, int i_fw = 0,
             T scale = 1)
@@ -1442,7 +1483,7 @@ pr_complex (std::ostream& os, const float_display_format& fmt,
     }
 }
 
-static void
+static inline void
 print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc,
                     bool pr_as_read_syntax)
 {
@@ -1464,7 +1505,7 @@ print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc,
     }
 }
 
-static void
+static inline void
 print_empty_nd_array (std::ostream& os, const dim_vector& dims,
                       bool pr_as_read_syntax)
 {
@@ -1482,7 +1523,7 @@ print_empty_nd_array (std::ostream& os, const dim_vector& dims,
 }
 
 template <typename T>
-static void
+static inline void
 pr_scale_header (std::ostream& os, T scale)
 {
   if (Vfixed_point_format && ! print_g && scale != 1)
@@ -1500,7 +1541,7 @@ pr_scale_header (std::ostream& os, T scale)
     }
 }
 
-static void
+static inline void
 pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
                    octave_idx_type lim, octave_idx_type col, int extra_indent)
 {
@@ -1533,7 +1574,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
 }
 
 template <typename T>
-/* static */ inline void
+static inline void
 pr_plus_format (std::ostream& os, const T& val)
 {
   if (val > T (0))
@@ -1567,7 +1608,7 @@ float_display_format
 make_format (const FloatNDArray& nda)
 {
   int fw = 0;
-  double scale = 0;
+  float scale = 0;
   return make_format (FloatMatrix (nda), fw, scale);
 }
 
@@ -1587,7 +1628,7 @@ make_format (const FloatComplexNDArray& nda)
 {
   int r_fw = 0;
   int i_fw = 0;
-  double scale = 0;
+  float scale = 0;
   return make_format (FloatComplexMatrix (nda), r_fw, i_fw, scale);
 }
 
@@ -1605,14 +1646,14 @@ make_format (const boolNDArray&)
 // from GCC.  Isn't there a better way?
 
 template <typename T>
-/* static */ inline T
+static inline T
 abs (T x)
 {
   return x < 0 ? -x : x;
 }
 
 #define INSTANTIATE_ABS(T)                      \
-  template /* static */ T abs (T)
+  template T abs (T)
 
 INSTANTIATE_ABS(signed char);
 INSTANTIATE_ABS(short);
@@ -1622,7 +1663,7 @@ INSTANTIATE_ABS(long long);
 
 #define SPECIALIZE_UABS(T)                      \
   template <>                                   \
-  /* static */ inline unsigned T                \
+  inline unsigned T                             \
   abs (unsigned T x)                            \
   {                                             \
     return x;                                   \
@@ -1762,8 +1803,25 @@ octave_print_internal (std::ostream& os, const float_display_format& fmt,
     }
 }
 
+void
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       float d, bool pr_as_read_syntax)
+{
+  if (pr_as_read_syntax)
+    os << d;
+  else if (plus_format)
+    pr_plus_format (os, d);
+  else
+    {
+      if (free_format)
+        os << d;
+      else
+        pr_float (os, fmt, d);
+    }
+}
+
 template <typename MT>
-static void
+static inline void
 octave_print_free (std::ostream& os, const MT& m, bool pr_as_read_syntax)
 {
   octave_idx_type nr = m.rows ();
@@ -2143,12 +2201,12 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
     }
 }
 
-template <>
-/* static */ inline void
-pr_plus_format<> (std::ostream& os, const Complex& c)
+template <typename T>
+static inline void
+pr_plus_format (std::ostream& os, const std::complex<T>& c)
 {
-  double rp = c.real ();
-  double ip = c.imag ();
+  T rp = c.real ();
+  T ip = c.imag ();
 
   if (rp == 0)
     {
@@ -2166,6 +2224,23 @@ pr_plus_format<> (std::ostream& os, const Complex& c)
 extern void
 octave_print_internal (std::ostream& os, const float_display_format& fmt,
                        const Complex& c, bool pr_as_read_syntax)
+{
+  if (pr_as_read_syntax)
+    os << c;
+  else if (plus_format)
+    pr_plus_format (os, c);
+  else
+    {
+      if (free_format)
+        os << c;
+      else
+        pr_complex (os, fmt, c);
+    }
+}
+
+void
+octave_print_internal (std::ostream& os, const float_display_format& fmt,
+                       const FloatComplex& c, bool pr_as_read_syntax)
 {
   if (pr_as_read_syntax)
     os << c;
@@ -2932,7 +3007,7 @@ PRINT_CONV (octave_uint8, octave_uint16);
 #undef PRINT_CONV
 
 template <typename T>
-/* static */ inline void
+static inline void
 pr_int (std::ostream& os, const T& d, int fw = 0)
 {
   size_t sz = d.byte_size ();
@@ -3058,7 +3133,7 @@ PRINT_INT_SCALAR_INTERNAL (int64_t)
 PRINT_INT_SCALAR_INTERNAL (uint64_t)
 
 template <typename T>
-/* static */ inline void
+static inline void
 octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                                 bool pr_as_read_syntax, int extra_indent)
 {
@@ -3599,7 +3674,7 @@ of properly displaying the object's name.  This can be done by using the
 %!error display (1,2)
 */
 
-static void
+static inline void
 init_format_state (void)
 {
   free_format = false;
@@ -3615,9 +3690,9 @@ init_format_state (void)
   print_eng = false;
 }
 
-static std::string format_string ("short");
+static inline std::string format_string ("short");
 
-static void
+static inline void
 set_format_style (int argc, const string_vector& argv)
 {
   int idx = 1;

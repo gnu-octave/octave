@@ -365,6 +365,9 @@ namespace octave
             rename->setToolTip (tr ("Only top-level symbols may be renamed"));
           }
 
+        menu.addAction ("Clear " + var_name, this,
+                        SLOT (handle_contextmenu_clear ()));
+
         menu.addSeparator ();
 
         menu.addAction ("disp (" + var_name + ')', this,
@@ -473,6 +476,12 @@ namespace octave
   }
 
   void
+  workspace_view::handle_contextmenu_clear (void)
+  {
+    relay_contextmenu_command ("clear", true);
+  }
+
+  void
   workspace_view::handle_contextmenu_disp (void)
   {
     relay_contextmenu_command ("disp");
@@ -526,13 +535,18 @@ namespace octave
   }
 
   void
-  workspace_view::relay_contextmenu_command (const QString& cmdname)
+  workspace_view::relay_contextmenu_command (const QString& cmdname, bool str)
   {
     QModelIndex index = m_view->currentIndex ();
 
     if (index.isValid ())
       {
-        QString var_name = get_var_name (index);
+        QString var_name;
+
+        if (str)
+          var_name = "\'" + get_var_name (index) + "\'";
+        else
+          var_name = get_var_name (index);
 
         emit command_requested (cmdname + " (" + var_name + ");");
       }

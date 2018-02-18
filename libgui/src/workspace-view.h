@@ -87,6 +87,7 @@ namespace octave
     void handle_contextmenu_copy_value (void);
     void handle_contextmenu_rename (void);
     void handle_contextmenu_edit (void);
+    void handle_contextmenu_clear (void);
     void handle_contextmenu_disp (void);
     void handle_contextmenu_plot (void);
     void handle_contextmenu_stem (void);
@@ -99,7 +100,7 @@ namespace octave
 
   private:
 
-    void relay_contextmenu_command (const QString& cmdname);
+    void relay_contextmenu_command (const QString& cmdname, bool str = false);
 
     QString get_var_name (const QModelIndex& index);
 

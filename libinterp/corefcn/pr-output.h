@@ -201,7 +201,7 @@ octave_print_internal (std::ostream& os, char c,
                        bool pr_as_read_syntax = false)
 {
   float_display_format fmt (float_format (0, 0));
-  octave_print_internal (os, c, pr_as_read_syntax);
+  octave_print_internal (os, fmt, c, pr_as_read_syntax);
 }
 
 extern OCTINTERP_API void

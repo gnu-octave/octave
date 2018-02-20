@@ -118,8 +118,9 @@ function y = gammainc (x, a, tail = "lower")
     x = double (x);
   endif
 
-  if (strcmpi (class (a), "single"))
+  if (strcmpi (class (a), "single") || strcmpi (class (x), "single"))
     x = single (x);
+    a = single (a);
   endif
 
   y = zeros (size (x), class (x));
@@ -358,8 +359,7 @@ endfunction
 ## Lentz's algorithm
 ## __gammainc_lentz__ in libinterp/corefcn/__gammainc_lentz__.cc
 function y = gammainc_l (x, a, tail)
-  % calling vectorizied version of c++ code
-  y = __gammainc_lentz__ (x, a);
+  y = __gammainc_lentz__ (x, a, strcmpi (class (x), "single"));
     if (strcmpi (tail, "upper"))
       y .*= D (x, a);
     elseif (strcmpi (tail,  "lower"))

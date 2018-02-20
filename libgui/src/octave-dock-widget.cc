@@ -37,37 +37,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-dock-widget.h"
 
 
-octave_dock_widget::octave_dock_widget (QWidget *p)
+label_dock_widget::label_dock_widget (QWidget *p)
   : QDockWidget (p)
 {
-  m_parent = static_cast<QMainWindow *> (p);     // store main window
-  m_floating = false;
-  m_predecessor_widget = nullptr;
-
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility_changed (bool)));
-
-  connect (p, SIGNAL (settings_changed (const QSettings*)),
-           this, SLOT (handle_settings (const QSettings*)));
-
-  connect (p, SIGNAL (active_dock_changed (octave_dock_widget*,
-                                           octave_dock_widget*)),
-           this, SLOT (handle_active_dock_changed (octave_dock_widget*,
-                                                   octave_dock_widget*)));
-
   QStyle *st = style ();
   m_icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
-
-  // add an extra title bar that persists when floating
-
-  setFeatures (QDockWidget::DockWidgetMovable); // not floatable or closeable
 
   // the custom (extra) title bar of the widget
   m_dock_action = new QAction
                    (QIcon (":/actions/icons/widget-undock.png"), "", this);
-  m_dock_action-> setToolTip (tr ("Undock widget"));
-  connect (m_dock_action, SIGNAL (triggered (bool)),
-           this, SLOT (change_floating (bool)));
+  m_dock_action->setToolTip (tr ("Undock widget"));
   m_dock_button = new QToolButton (this);
   m_dock_button->setDefaultAction (m_dock_action);
   m_dock_button->setFocusPolicy (Qt::NoFocus);
@@ -75,16 +54,15 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 
   m_close_action = new QAction
                    (QIcon (":/actions/icons/widget-close.png"), "", this);
-  m_close_action-> setToolTip (tr ("Hide widget"));
-  connect (m_close_action, SIGNAL (triggered (bool)),
-           this, SLOT (change_visibility (bool)));
+  m_close_action->setToolTip (tr ("Close widget"));
   m_close_button = new QToolButton (this);
   m_close_button->setDefaultAction (m_close_action);
   m_close_button->setFocusPolicy (Qt::NoFocus);
   m_close_button->setIconSize (QSize (m_icon_size,m_icon_size));
 
-  m_icon_color = "";
-  m_title_3d = 50;
+  QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
+  m_dock_button->setStyleSheet (css_button);
+  m_close_button->setStyleSheet (css_button);
 
   QHBoxLayout *h_layout = new QHBoxLayout ();
   h_layout->addStretch (100);
@@ -106,6 +84,50 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
            this, SLOT (selectAll ()));
   // undo handling
   connect (p, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
+}
+
+// set the title in the dockwidgets title bar
+void
+label_dock_widget::set_title (const QString& title)
+{
+  QHBoxLayout *h_layout
+    = static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
+  QLabel *label = new QLabel (title);
+  label->setStyleSheet ("background: transparent;");
+  h_layout->insertWidget (0,label);
+  setWindowTitle (title);
+}
+
+
+octave_dock_widget::octave_dock_widget (QWidget *p)
+  : label_dock_widget (p)
+{
+  m_parent = static_cast<QMainWindow *> (p);     // store main window
+  m_floating = false;
+  m_predecessor_widget = nullptr;
+
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility_changed (bool)));
+
+  connect (p, SIGNAL (settings_changed (const QSettings*)),
+           this, SLOT (handle_settings (const QSettings*)));
+
+  connect (p, SIGNAL (active_dock_changed (octave_dock_widget*,
+                                           octave_dock_widget*)),
+           this, SLOT (handle_active_dock_changed (octave_dock_widget*,
+                                                   octave_dock_widget*)));
+
+  setFeatures (QDockWidget::DockWidgetMovable); // not floatable or closeable
+
+  connect (m_dock_action, SIGNAL (triggered (bool)),
+           this, SLOT (change_floating (bool)));
+  connect (m_close_action, SIGNAL (triggered (bool)),
+           this, SLOT (change_visibility (bool)));
+
+  m_close_action->setToolTip (tr ("Hide widget"));
+
+  m_icon_color = "";
+  m_title_3d = 50;
 
   installEventFilter (this);
 
@@ -190,18 +212,6 @@ octave_dock_widget::make_widget (bool dock)
   m_dock_action->setToolTip (tr ("Undock widget"));
 
   m_floating = false;
-}
-
-// set the title in the dockwidgets title bar
-void
-octave_dock_widget::set_title (const QString& title)
-{
-  QHBoxLayout *h_layout
-    = static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
-  QLabel *label = new QLabel (title);
-  label->setStyleSheet ("background: transparent;");
-  h_layout->insertWidget (0,label);
-  setWindowTitle (title);
 }
 
 // set the widget which previously had focus when tabified

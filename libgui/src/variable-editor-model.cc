@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMap>
 #include <QMessageBox>
 #include <QString>
+#include <QTableView>
 
 #include "octave-qt-link.h"
 #include "variable-editor-model.h"
@@ -981,7 +982,7 @@ bool
 variable_editor_model::setData (const QModelIndex& idx,
                                 const QVariant& v_user_input, int role)
 {
-  if (role != Qt::EditRole || v_user_input.type () != QVariant::String
+  if (role != Qt::EditRole || ! v_user_input.canConvert (QVariant::String)
       || ! idx.isValid ())
     return false;
 
@@ -1373,4 +1374,15 @@ variable_editor_model::update_description (const QString& description)
 {
   emit description_changed (description.isEmpty ()
                             ? make_description_text () : description);
+}
+
+void
+variable_editor_model::double_click (const QModelIndex& idx)
+{
+  if (requires_sub_editor (idx))
+    {
+      QString name = QString::fromStdString(rep->name ());
+      emit edit_variable_signal (name + subscript_expression (idx),
+                                 value_at (idx));
+    }
 }

@@ -33,8 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
+#include <QMdiArea>
 #include <QMenu>
 #include <QPalette>
+#include <QScreen>
 #include <QScrollBar>
 #include <QSignalMapper>
 #include <QStackedWidget>
@@ -50,216 +52,841 @@ along with Octave; see the file COPYING.  If not, see
 #include "variable-editor.h"
 #include "variable-editor-model.h"
 
+// Code reuse functions
+
 static QString
 idx_to_expr (int32_t from, int32_t to)
 {
   return (from == to
-          ? QString ("%1").arg (from + 1)
-          : QString ("%1:%2").arg (from + 1).arg (to + 1));
+          ? QString ("%1").arg (from)
+          : QString ("%1:%2").arg (from).arg (to));
 }
 
-QTableView *
-var_editor_tab::get_edit_view (void) const
+QSignalMapper *
+make_plot_mapper (QMenu *menu)
 {
-  return (m_edit_view_idx == m_widget_stack->currentIndex ()
-          ? qobject_cast<QTableView *> (m_widget_stack->widget (m_edit_view_idx))
-          : nullptr);
+  QList<QString> list;
+  list << "plot" << "bar" << "stem" << "stairs" << "area" << "pie" << "hist";
+
+  QSignalMapper *plot_mapper = new QSignalMapper (menu);
+
+  for (int i = 0; i < list.size(); ++i)
+    {
+      plot_mapper->setMapping
+        (menu->addAction (list.at (i), plot_mapper, SLOT (map ())),
+         "figure (); " + list.at (i) + " (%1); title (\"%1\");");
+    }
+
+  return plot_mapper;
+}
+
+
+// Variable dock widget
+
+variable_dock_widget::variable_dock_widget (QWidget *p)
+  : label_dock_widget (p), m_initial_float (true)
+{
+  setFocusPolicy (Qt::StrongFocus);
+  // This controls whether the variable_dock_widgets are deleted
+  // or hidden when clicking the upper right X icon.  (Look for
+  // the checkmark of the variable_editor's context menu.)
+  // Could make this an option, or perhaps add a drop-down menu
+  // in place of X "close" icon.
+#if 0
+  setAttribute (Qt::WA_DeleteOnClose);
+#endif
+
+  connect (m_dock_action, SIGNAL (triggered (bool)),
+           this, SLOT (change_floating (bool)));
+  connect (m_close_action, SIGNAL (triggered (bool)),
+           this, SLOT (change_existence (bool)));
+  connect (this, SIGNAL (topLevelChanged(bool)),
+           this, SLOT (toplevel_change (bool)));
+}
+
+// slot for (un)dock action
+void
+variable_dock_widget::change_floating (bool)
+{
+  setFloating (! isFloating ());
+}
+
+// slot for hiding the widget
+void
+variable_dock_widget::change_existence (bool)
+{
+  close ();
+}
+
+void
+variable_dock_widget::toplevel_change (bool toplevel)
+{
+  if (toplevel)
+    {
+      m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
+      m_dock_action->setToolTip (tr ("Dock widget"));
+
+      // Make initial size expanded very large for "magnified" viewing
+      if (m_initial_float)
+        {
+          QScreen *pscreen = QGuiApplication::primaryScreen ();
+          QRect rect (0, 0, 0, 0);
+          rect = pscreen->availableGeometry ();
+          rect = QRect (rect.x () + 5, rect.y () + 5,
+                        rect.width () - 10, rect.height () - 10);
+          setGeometry (rect);
+          m_initial_float = false;
+        }
+
+      setFocus (Qt::OtherFocusReason);
+      activateWindow();
+    }
+  else
+    {
+      m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
+      m_dock_action->setToolTip (tr ("Undock widget"));
+
+      setFocus (Qt::OtherFocusReason);
+    }
+}
+
+void
+variable_dock_widget::closeEvent (QCloseEvent *e)
+{
+  QDockWidget::closeEvent (e);
+}
+
+void
+variable_dock_widget::handle_focus_change (QWidget *old, QWidget *now)
+{
+  octave_unused_parameter (now);
+
+  // The is a proxied test
+  if (hasFocus ())
+    {
+      QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
+      if (label != nullptr)
+        label->setStyleSheet ("QLabel {background: skyblue;}");
+
+      emit variable_focused_signal (objectName ());
+    }
+  else if (old == focusWidget())
+    {
+      QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
+      if (label != NULL)
+        label->setStyleSheet ("QLabel {background: transparent;}");
+    }
+}
+
+
+// Variable editor stack
+
+variable_editor_stack::variable_editor_stack (QWidget *p)
+  : QStackedWidget (p), m_edit_view (new variable_editor_view (this))
+{
+  setFocusPolicy (Qt::StrongFocus);
+
+  m_disp_view = make_disp_view (this);
+
+  addWidget (m_edit_view);
+  addWidget (m_disp_view);
 }
 
 QTextEdit *
-var_editor_tab::get_disp_view (void) const
+variable_editor_stack::make_disp_view (QWidget *parent)
 {
-  return (m_disp_view_idx == m_widget_stack->currentIndex ()
-          ? qobject_cast<QTextEdit *> (m_widget_stack->widget (m_disp_view_idx))
-          : nullptr);
+  QTextEdit *viewer = new QTextEdit (parent);
+
+  viewer->setLineWrapMode (QTextEdit::NoWrap);
+  viewer->setReadOnly (true);
+
+  return viewer;
 }
 
 void
-var_editor_tab::set_edit_view (QTableView *edit_view)
+variable_editor_stack::set_editable (bool editable)
 {
-  m_edit_view_idx = m_widget_stack->addWidget (edit_view);
-}
+  // The QTableView is for editable data models
+  // and the QTextEdit is for non-editable models.
 
-void
-var_editor_tab::set_disp_view (QTextEdit *disp_view)
-{
-  m_disp_view_idx = m_widget_stack->addWidget (disp_view);
-}
-
-bool
-var_editor_tab::has_focus (void) const
-{
-  QTableView *edit_view = get_edit_view ();
-  QTextEdit *disp_view = get_disp_view ();
-
-  return ((disp_view && disp_view->hasFocus ())
-          || (edit_view && edit_view->hasFocus ()));
-}
-
-void
-var_editor_tab::keyPressEvent (QKeyEvent *event)
-{
-  QTableView *edit_view = get_edit_view ();
-
-  if (edit_view)
+  if (editable)
     {
-      int key = event->key ();
-
-      if (key == Qt::Key_Right || key == Qt::Key_Tab)
+      if (m_edit_view != nullptr)
         {
-          QModelIndex idx = edit_view->currentIndex ();
-
-          int curr_row = idx.row ();
-          int next_col = idx.column () + 1;
-
-          if (next_col == m_model->display_columns ())
-            {
-              m_model->maybe_resize_columns (next_col + 16);
-
-              edit_view->setCurrentIndex (m_model->index (curr_row, next_col));
-            }
+          setCurrentWidget (m_edit_view);
+          setFocusProxy (m_edit_view);
+          m_edit_view->setFocusPolicy (Qt::StrongFocus);
         }
-      else if (key == Qt::Key_Down || key == Qt::Key_PageDown)
+
+      if (m_disp_view != nullptr)
+        m_disp_view->setFocusPolicy (Qt::NoFocus);
+    }
+  else
+    {
+      if (m_disp_view != nullptr)
         {
-          QModelIndex idx = edit_view->currentIndex ();
+          setCurrentWidget (m_disp_view);
+          setFocusProxy (m_disp_view);
 
-          int next_row = idx.row () + 1;
-          int curr_col = idx.column ();
-
-          if (next_row == m_model->display_rows ())
-            {
-              m_model->maybe_resize_rows (next_row + 16);
-
-              edit_view->setCurrentIndex (m_model->index (next_row, curr_col));
-            }
+          QAbstractTableModel *model = findChild<QAbstractTableModel *> ();
+          if (model != nullptr)
+            m_disp_view->setPlainText (model->data (QModelIndex ()).toString ());
+          else
+            m_disp_view->setPlainText ("");
         }
+
+      if (m_edit_view != nullptr)
+        m_edit_view->setFocusPolicy (Qt::NoFocus);
     }
 }
 
 void
-var_editor_tab::set_editable (bool editable)
+variable_editor_stack::levelUp (void)
 {
-  int idx = (editable ? m_edit_view_idx : m_disp_view_idx);
+  if (! hasFocus ())
+    return;
 
-  m_widget_stack->setCurrentIndex (idx);
+  QString name = objectName ();
 
-  if (! editable)
+  // FIXME: Is there a better way?
+
+  if (name.endsWith (')') || name.endsWith ('}'))
     {
-      QTextEdit *viewer = get_disp_view ();
-
-      QVariant v_data = m_model->data ();
-
-      QString str = v_data.toString ();
-
-      viewer->setPlainText (str);
+      name.remove (QRegExp ("(\\(|\\{)[^({]*(\\)|\\})$"));
+      emit edit_variable_signal (name, octave_value ());
     }
 }
 
 void
-var_editor_tab::handle_horizontal_scroll_action (int action)
+variable_editor_stack::save (void)
+{
+  if (! hasFocus ())
+    return;
+
+  QString name = objectName ();
+  QString file
+    = QFileDialog::getSaveFileName (this,
+                                    tr ("Save Variable %1 As").arg (name),
+                                     /* Should determine extension from save_default_options */
+                                    tr ("./%1.txt").arg (name),
+                                    0, 0,
+                                    QFileDialog::DontUseNativeDialog);
+
+  // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
+  // FIXME: Call octave_value::save_* directly?
+
+  if (! file.isEmpty ())
+    emit command_signal (QString ("save (\"%1\", \"%2\");")
+                         .arg (file)
+                         .arg (name));
+}
+
+
+// Custom editable variable table view
+
+variable_editor_view::variable_editor_view (QWidget *p)
+  : QTableView (p), m_var_model (nullptr)
+{
+  setWordWrap (false);
+  setContextMenuPolicy (Qt::CustomContextMenu);
+  setSelectionMode (QAbstractItemView::ContiguousSelection);
+
+  horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
+  verticalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
+
+  setHorizontalScrollMode (QAbstractItemView::ScrollPerPixel);
+  setVerticalScrollMode (QAbstractItemView::ScrollPerPixel);
+
+#if defined (HAVE_QT4)
+  verticalHeader ()->setResizeMode (QHeaderView::Interactive);
+#else
+  verticalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
+#endif
+}
+
+void
+variable_editor_view::setModel (QAbstractItemModel *model)
+{
+  QTableView::setModel (model);
+
+#if defined (HAVE_QT4)
+  horizontalHeader ()->setResizeMode (QHeaderView::Interactive);
+#else
+  horizontalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
+#endif
+
+  m_var_model = parent ()->findChild<variable_editor_model *> ();
+
+  if (m_var_model != nullptr && m_var_model->column_width () > 0)
+    {
+      // col_width is in characters.  The font should be a fixed-width
+      // font, so any character will do.  If not, you lose!
+
+      QFontMetrics fm (font ());
+      int w = m_var_model->column_width () * fm.width ('0');
+      horizontalHeader ()->setDefaultSectionSize (w);
+    }
+}
+
+QList<int>
+variable_editor_view::range_selected (void)
+{
+  QItemSelectionModel *sel = selectionModel ();
+
+  // Return early if nothing selected.
+  if (! sel->hasSelection ())
+    return QList<int> ();
+
+  QList<QModelIndex> indices = sel->selectedIndexes ();
+
+  // FIXME: Shouldn't this be keyed to octave_idx_type?
+
+  int32_t from_row = std::numeric_limits<int32_t>::max ();
+  int32_t to_row = 0;
+  int32_t from_col = std::numeric_limits<int32_t>::max ();
+  int32_t to_col = 0;
+
+  for (const auto& idx : indices)
+    {
+      from_row = std::min (from_row, idx.row ());
+      to_row = std::max (to_row, idx.row ());
+      from_col = std::min (from_col, idx.column ());
+      to_col = std::max (to_col, idx.column ());
+    }
+
+  QVector<int> vect;
+  vect << from_row + 1 << to_row + 1 << from_col + 1 << to_col + 1;
+  QList<int> range = QList<int>::fromVector(vect);
+
+  return range;
+}
+
+QString
+variable_editor_view::selected_to_octave (void)
+{
+  QList<int> range = range_selected ();
+  if (range.isEmpty ())
+    return objectName ();
+
+  QString rows = idx_to_expr (range.at (0), range.at (1));
+  QString cols = idx_to_expr (range.at (2), range.at (3));
+
+  // FIXME: Does cell need separate handling?  Maybe use '{.,.}'?
+
+  return QString ("%1(%2, %3)").arg (objectName ()).arg (rows).arg (cols);
+}
+
+void
+variable_editor_view::selected_command_requested (const QString& cmd)
+{
+  if (! hasFocus ())
+    return;
+
+  QString selarg = selected_to_octave ();
+  if (! selarg.isEmpty ())
+    emit command_signal (cmd.arg (selarg));
+}
+
+void
+variable_editor_view::add_edit_actions (QMenu *menu, const QString& qualifier_string)
+{
+  menu->addAction (resource_manager::icon ("edit-cut"),
+                   tr ("Cut") + qualifier_string,
+                   this, SLOT (cutClipboard ()));
+
+  menu->addAction (resource_manager::icon ("edit-copy"),
+                   tr ("Copy") + qualifier_string,
+                   this, SLOT (copyClipboard ()));
+
+  menu->addAction (resource_manager::icon ("edit-paste"),
+                   tr ("Paste"),
+                   this, SLOT (pasteClipboard ()));
+
+  // FIXME: Different icon for Paste Table?
+
+  menu->addAction (resource_manager::icon ("edit-paste"),
+                   tr ("Paste Table"),
+                   this, SLOT (pasteTableClipboard ()));
+
+  menu->addSeparator ();
+
+  menu->addAction (resource_manager::icon ("edit-delete"),
+                   tr ("Clear") + qualifier_string,
+                   this, SLOT (clearContent ()));
+
+  menu->addAction (resource_manager::icon ("edit-delete"),
+                   tr ("Delete") + qualifier_string,
+                   this, SLOT (delete_selected ()));
+
+  menu->addAction (resource_manager::icon ("document-new"),
+                   tr ("Variable from Selection"),
+                   this, SLOT (createVariable ()));
+}
+
+void
+variable_editor_view::createContextMenu (const QPoint& qpos)
+{
+  QModelIndex index = indexAt (qpos);
+
+  if (index.isValid ())
+    {
+      QMenu *menu = new QMenu (this);
+
+      add_edit_actions (menu, tr (""));
+
+      // FIXME: addAction for sort?
+      // FIXME: Add icon for transpose.
+
+      menu->addAction (tr ("Transpose"), this, SLOT (transposeContent ()));
+
+      QItemSelectionModel *sel = selectionModel ();
+
+      QList<QModelIndex> indices = sel->selectedIndexes ();
+
+      if (! indices.isEmpty ())
+        {
+          menu->addSeparator ();
+
+          QSignalMapper *plot_mapper = make_plot_mapper (menu);
+
+          connect (plot_mapper, SIGNAL (mapped (const QString&)),
+                   this, SLOT (selected_command_requested (const QString&)));
+        }
+
+      menu->exec (mapToGlobal (qpos));
+    }
+}
+
+void
+variable_editor_view::createColumnMenu (const QPoint& pt)
+{
+  int index = horizontalHeader ()->logicalIndexAt (pt);
+
+  if (index < 0 || index > model ()->columnCount ())
+    return;
+
+  QList<int> coords = range_selected ();
+
+  bool nothingSelected = coords.isEmpty ();
+
+  bool whole_columns_selected
+    =  (nothingSelected
+        ? false
+        : (coords[0] == 1 && coords[1] == model ()->rowCount ()));
+
+  bool current_column_selected
+    = nothingSelected ? false : (coords[2] <= index+1 && coords[3] > index);
+
+  int column_selection_count
+    = nothingSelected ? 0 : (coords[3] - coords[2] + 1);
+
+  if (! whole_columns_selected || ! current_column_selected)
+    {
+      selectColumn (index);
+      column_selection_count = 1;
+      current_column_selected = true;
+      whole_columns_selected = true;
+    }
+
+  QString column_string
+    = tr (column_selection_count > 1 ? " columns" : " column");
+
+  QMenu *menu = new QMenu (this);
+
+  add_edit_actions (menu, column_string);
+
+  menu->addSeparator ();
+
+  QSignalMapper *plot_mapper = make_plot_mapper (menu);
+
+  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+           this, SLOT (selected_command_requested (const QString&)));
+
+  QPoint menupos = pt;
+  menupos.setY (horizontalHeader ()->height ());
+
+  menu->exec (mapToGlobal (menupos));
+}
+
+void
+variable_editor_view::createRowMenu (const QPoint& pt)
+{
+  int index = verticalHeader ()->logicalIndexAt (pt);
+
+  if (index < 0 || index > model ()->columnCount ())
+    return;
+
+  QList<int> coords = range_selected ();
+
+  bool nothingSelected = coords.isEmpty ();
+
+  bool whole_rows_selected
+    = (nothingSelected
+       ? false
+       : (coords[2] == 1 && coords[3] == model ()->columnCount ()));
+
+  bool current_row_selected
+    = (nothingSelected ? false : (coords[0] <= index+1 && coords[1] > index));
+
+  int rowselection_count = nothingSelected ? 0 : (coords[3] - coords[2] + 1);
+
+  if (! whole_rows_selected || ! current_row_selected)
+    {
+      selectRow (index);
+      rowselection_count = 1;
+      current_row_selected = true;
+      whole_rows_selected = true;
+    }
+
+  QString row_string = tr (rowselection_count > 1 ? " rows" : " row");
+
+  QMenu *menu = new QMenu (this);
+
+  add_edit_actions (menu, row_string);
+
+  menu->addSeparator ();
+
+  QSignalMapper *plot_mapper = make_plot_mapper (menu);
+
+  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+           this, SLOT (selected_command_requested (const QString&)));
+
+  QPoint menupos = pt;
+  menupos.setX (verticalHeader ()->width ());
+
+  // FIXME: What was the intent here?
+  // setY (verticalHeader ()->sectionPosition (index+1) +
+  //       verticalHeader ()->sectionSize (index));
+
+  menu->exec (mapToGlobal (menupos));
+}
+
+void
+variable_editor_view::createVariable (void)
+{
+  // FIXME: Create unnamed1..n if exist ('unnamed', 'var') is true.
+
+  selected_command_requested ("unnamed = %1");
+}
+
+void
+variable_editor_view::transposeContent (void)
+{
+  if (! hasFocus ())
+    return;
+
+  emit command_signal (QString ("%1 = %1';").arg (objectName ()));
+}
+
+void
+variable_editor_view::delete_selected (void)
+{
+  if (! hasFocus ())
+    return;
+
+  QAbstractItemModel *mod = model ();
+  QList<int> coords = range_selected ();
+
+  if (coords.isEmpty ())
+    return;
+
+  bool whole_columns_selected
+    = coords[0] == 1 && coords[1] == mod->rowCount ();
+
+  bool whole_rows_selected
+    = coords[2] == 1 && coords[3] == mod->columnCount ();
+
+  // Must be deleting whole columns or whole rows, and not the whole thing.
+
+  if (whole_columns_selected == whole_rows_selected)
+    return;
+
+  if (whole_rows_selected)
+    mod->removeRows (coords[0], coords[1] - coords[0]);
+
+  if (whole_columns_selected)
+    mod->removeColumns (coords[2], coords[3] - coords[2]);
+}
+
+void
+variable_editor_view::clearContent (void)
+{
+  if (! hasFocus ())
+    return;
+
+  if (m_var_model == nullptr)
+    return;
+
+  QItemSelectionModel *sel = selectionModel ();
+  QList<QModelIndex> indices = sel->selectedIndexes ();
+
+  // FIXME: Use [] for empty cells?
+
+  for (const auto& idx : indices)
+    m_var_model->clear_content (idx);
+}
+
+void
+variable_editor_view::cutClipboard (void)
+{
+  copyClipboard ();
+
+  clearContent ();
+}
+
+void
+variable_editor_view::copyClipboard (void)
+{
+  if (! hasFocus ())
+    return;
+
+  QItemSelectionModel *sel = selectionModel ();
+  QList<QModelIndex> indices = sel->selectedIndexes ();
+  qSort (indices);
+
+  if (indices.isEmpty ())
+    return;
+
+  // Convert selected items into TSV format and copy that.
+  // Spreadsheet tools should understand that.
+
+  QAbstractItemModel *mod = model ();
+  QModelIndex previous = indices.first ();
+  QString copy = mod->data (previous).toString ();
+  indices.removeFirst ();
+  foreach (QModelIndex idx, indices)
+    {
+      copy.push_back (previous.row () != idx.row () ? '\n' : '\t');
+      copy.append (mod->data (idx).toString ());
+      previous = idx;
+    }
+
+  QClipboard *clipboard = QApplication::clipboard ();
+  clipboard->setText (copy);
+}
+
+void
+variable_editor_view::pasteClipboard (void)
+{
+  if (! hasFocus ())
+    return;
+
+  QAbstractItemModel *mod = model ();
+  QItemSelectionModel *sel = selectionModel ();
+  QList<QModelIndex> indices = sel->selectedIndexes ();
+
+  QClipboard *clipboard = QApplication::clipboard ();
+  QString text = clipboard->text ();
+
+  if (indices.isEmpty ())
+    {
+      if (size () == QSize (1,1))
+        mod->setData (mod->index (0,0), text.toDouble ());
+      else if (size () == QSize (0,0))
+        {
+          mod->insertColumn (0);
+          mod->insertRow (0);
+          mod->setData (mod->index (0,0), text.toDouble ());
+        }
+    }
+  else
+    {
+      QStringList cells = text.split(QRegExp("\n|\r\n|\r"));
+      int clen = cells.size ();
+      for (int i = 0; i < indices.size (); i++)
+        mod->setData (indices[i], cells.at (i % clen).toDouble ());
+    }
+}
+
+void variable_editor_view::pasteTableClipboard (void)
+{
+  if (! hasFocus ())
+    return;
+
+  QAbstractItemModel *mod = model ();
+  QItemSelectionModel *sel = selectionModel ();
+  QList<QModelIndex> indices = sel->selectedIndexes ();
+
+  QClipboard *clipboard = QApplication::clipboard ();
+  QString text = clipboard->text ();
+
+  QPoint start, end;
+
+  QPoint tabsize = QPoint (mod->rowCount (), mod->columnCount ());
+
+  if (indices.isEmpty ())
+    {
+      start = QPoint (0,0);
+      end = tabsize;
+    }
+  else if (indices.size () == 1)
+    {
+      start = QPoint (indices[0].row (), indices[0].column ());
+      end = tabsize;
+    }
+  else
+    {
+      end = QPoint (0,0);
+      start = tabsize;
+
+      for (int i = 0; i < indices.size (); i++)
+        {
+          if (indices[i].column () < start.y ())
+            start.setY (indices[i].column ());
+
+          if (indices[i].column () > end.y ())
+            end.setY (indices[i].column ());
+
+          if (indices[i].row () < start.x ())
+            start.setX (indices[i].column ());
+
+          if (indices[i].row () > end.x ())
+            end.setX (indices[i].column ());
+        }
+    }
+
+  int rownum = 0;
+  int colnum = 0;
+
+  QStringList rows = text.split ('\n');
+  for (const auto& row : rows)
+    {
+      if (rownum > end.x () - start.x ())
+        continue;
+
+      QStringList cols = row.split ('\t');
+      if (cols.isEmpty ())
+        continue;
+
+      for (const auto& col : cols)
+        {
+          if (col.isEmpty ())
+            continue;
+          if (colnum > end.y () - start.y () )
+            continue;
+
+          mod->setData (mod->index (rownum + start.x (),
+                                    colnum + start.y ()),
+                        QVariant (col));
+
+          colnum++;
+        }
+
+      colnum = 0;
+      rownum++;
+    }
+}
+
+void
+variable_editor_view::handle_horizontal_scroll_action (int action)
 {
   if (action == QAbstractSlider::SliderSingleStepAdd
       || action == QAbstractSlider::SliderPageStepAdd
       || action == QAbstractSlider::SliderToMaximum
       || action == QAbstractSlider::SliderMove)
     {
-      QTableView *edit_view = get_edit_view ();
-
-      if (edit_view)
+      if (m_var_model != nullptr)
         {
-          QScrollBar *sb = edit_view->horizontalScrollBar ();
+          QScrollBar *sb = horizontalScrollBar ();
 
           if (sb && sb->value () == sb->maximum ())
             {
-              int new_cols = m_model->display_columns () + 16;
+              int new_cols = m_var_model->display_columns () + 16;
 
-              m_model->maybe_resize_columns (new_cols);
+              m_var_model->maybe_resize_columns (new_cols);
             }
         }
     }
 }
 
 void
-var_editor_tab::handle_vertical_scroll_action (int action)
+variable_editor_view::handle_vertical_scroll_action (int action)
 {
   if (action == QAbstractSlider::SliderSingleStepAdd
       || action == QAbstractSlider::SliderPageStepAdd
       || action == QAbstractSlider::SliderToMaximum
       || action == QAbstractSlider::SliderMove)
     {
-      QTableView *edit_view = get_edit_view ();
-
-      if (edit_view)
+      if (m_var_model != nullptr)
         {
-          QScrollBar *sb = edit_view->verticalScrollBar ();
+          QScrollBar *sb = verticalScrollBar ();
 
           if (sb && sb->value () == sb->maximum ())
             {
-              int new_rows = m_model->display_rows () + 16;
+              int new_rows = m_var_model->display_rows () + 16;
 
-              m_model->maybe_resize_rows (new_rows);
+              m_var_model->maybe_resize_rows (new_rows);
             }
         }
     }
 }
 
-// Functions for reimplemented tab widget.
 
-var_editor_tab_widget::var_editor_tab_widget (QWidget *p)
-  : QTabWidget (p)
+// Gadgets for focus restoration
+
+HoverToolButton::HoverToolButton (QWidget *parent)
+  : QToolButton (parent)
 {
-  tab_bar *bar = new tab_bar (this);
-
-  connect (bar, SIGNAL (close_current_tab_signal (bool)),
-           p->parent (), SLOT (request_close_tab (bool)));
-
-  this->setTabBar (bar);
-
-  setTabsClosable (true);
-  setMovable (true);
+  installEventFilter (this);
 }
 
-tab_bar *
-var_editor_tab_widget::get_tab_bar (void) const
+bool HoverToolButton::eventFilter (QObject *obj, QEvent *ev)
 {
-  return qobject_cast<tab_bar *> (tabBar ());
+  if (ev->type () == QEvent::HoverEnter)
+    emit hovered_signal ();
+  else if (ev->type () == QEvent::MouseButtonPress ||
+           ev->type () == QEvent::MouseButtonPress)
+    emit popup_shown_signal ();
+
+  return QToolButton::eventFilter (obj, ev);
 }
 
-bool
-var_editor_tab_widget::current_tab_has_focus (void) const
+ReturnFocusToolButton::ReturnFocusToolButton (QWidget *parent)
+  : HoverToolButton (parent)
 {
-  var_editor_tab *tab
-    = qobject_cast<var_editor_tab *> (widget (currentIndex ()));
-
-  return tab->has_focus ();
+  installEventFilter (this);
 }
 
-QTableView *
-var_editor_tab_widget::get_edit_view (void) const
+bool ReturnFocusToolButton::eventFilter (QObject *obj, QEvent *ev)
 {
-  var_editor_tab *tab
-    = qobject_cast<var_editor_tab *> (widget (currentIndex ()));
 
-  return tab->get_edit_view ();
+  if (ev->type () == QEvent::MouseButtonRelease && isDown ())
+    {
+      emit about_to_activate ();
+
+      setDown (false);
+      QAction *action = defaultAction ();
+      if (action != nullptr)
+        action->activate (QAction::Trigger);
+
+      return true;
+    }
+
+  return HoverToolButton::eventFilter (obj, ev);
 }
 
-QTextEdit *
-var_editor_tab_widget::get_disp_view (void) const
+ReturnFocusMenu::ReturnFocusMenu (QWidget *parent)
+  : QMenu (parent)
 {
-  var_editor_tab *tab
-    = qobject_cast<var_editor_tab *> (widget (currentIndex ()));
+  installEventFilter (this);
+}
 
-  return tab->get_disp_view ();
+bool ReturnFocusMenu::eventFilter (QObject *obj, QEvent *ev)
+{
+  if (ev->type () == QEvent::MouseButtonRelease && underMouse ())
+    {
+      emit about_to_activate ();
+    }
+
+  return QMenu::eventFilter (obj, ev);
 }
 
 // Variable editor.
 
 variable_editor::variable_editor (QWidget *p)
   : octave_dock_widget (p),
-    m_container (new QWidget (this)),
-    m_tool_bar (new QToolBar ("", m_container)),
-    m_tab_widget (new var_editor_tab_widget (m_container)),
-    m_tab_bar (m_tab_widget->get_tab_bar ()),
+    m_main (new QMainWindow ()),
+    m_tool_bar (new QToolBar (m_main)),
     m_default_width (30),
     m_default_height (100),
     m_add_font_height (0),
@@ -269,63 +896,44 @@ variable_editor::variable_editor (QWidget *p)
     m_font (),
     m_sel_font (),
     m_table_colors (),
-    m_close_action (nullptr),
-    m_close_others_action (nullptr),
-    m_close_all_action (nullptr)
+    m_current_focus_vname (""),
+    m_hovered_focus_vname ("")
 {
   setObjectName ("variable_editor");
   set_title (tr ("Variable Editor"));
   setStatusTip (tr ("Edit variables."));
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
+  setFocusPolicy (Qt::NoFocus);
+  setAttribute (Qt::WA_AlwaysShowToolTips);
+
+  // Tool Bar.
 
   construct_tool_bar ();
+  m_main->addToolBar (m_tool_bar);
+  m_main->setFocusPolicy (Qt::NoFocus);
+  setFocusPolicy (Qt::NoFocus);
 
   // Colors.
 
   for (int i = 0; i < resource_manager::varedit_color_chars ().length (); i++)
     m_table_colors.append (QColor (Qt::white));
 
-  // Tab Widget.
+  // Use an MDI area that is shrunk to nothing as the central widget.
+  // Future feature might be to switch to MDI mode in which the dock
+  // area is shrunk to nothing and the widgets live in the MDI window.
 
-  connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
-           this, SLOT (closeTab (int)));
+  QMdiArea *central_mdiarea = new QMdiArea (m_main);
+  central_mdiarea->setMinimumSize (QSize (0, 0));
+  central_mdiarea->setMaximumSize (QSize (0, 0));
+  central_mdiarea->resize (QSize (0, 0));
+  m_main->setCentralWidget (central_mdiarea);
 
-  // Tab bar.
+  m_main->setParent (this);
+  m_main->setDockOptions (QMainWindow::AllowNestedDocks |
+                          QMainWindow::VerticalTabs);
+  setWidget (m_main);
 
-  m_close_action
-    = add_action (m_tab_bar->get_context_menu (),
-                  resource_manager::icon ("window-close",false),
-                  tr ("&Close"),
-                  SLOT (request_close_tab (bool)));
-
-  m_close_others_action
-    = add_action (m_tab_bar->get_context_menu (),
-                  resource_manager::icon ("window-close",false),
-                  tr ("Close &Other Tabs"),
-                  SLOT (request_close_other_tabs (bool)));
-
-  m_close_all_action
-    = add_action (m_tab_bar->get_context_menu (),
-                  resource_manager::icon ("window-close",false),
-                  tr ("Close &All Tabs"),
-                  SLOT (request_close_all_tabs (bool)));
-
-  enable_actions ();
-
-  // Layout the widgets vertically with the toolbar on top.
-
-  QVBoxLayout *vbox_layout = new QVBoxLayout ();
-
-  vbox_layout->setSpacing (0);
-  vbox_layout->addWidget (m_tool_bar);
-  vbox_layout->addWidget (m_tab_widget);
-  vbox_layout->setMargin (1);
-
-  m_container->setLayout (vbox_layout);
-
-  setWidget (m_container);
-
-  connect (this, SIGNAL (command_requested (const QString&)),
+  connect (this, SIGNAL (command_signal (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
 }
 
@@ -351,48 +959,6 @@ variable_editor::add_action (QMenu *menu, const QIcon& icon, const QString& text
   return a;
 }
 
-// Slot for the close tab action.
-
-void
-variable_editor::request_close_tab (bool)
-{
-  closeTab (m_tab_bar->currentIndex ());
-}
-
-// Slot for the close other tabs action.
-
-void
-variable_editor::request_close_other_tabs (bool)
-{
-  int current = m_tab_bar->currentIndex ();
-
-  for (int index = m_tab_bar->count ()-1; index >= 0; index--)
-    {
-      if (current != index)
-        closeTab (index);
-    }
-}
-
-// Slot for closing all tabs.
-
-void
-variable_editor::request_close_all_tabs (bool)
-{
-  for (int index = m_tab_bar->count ()-1; index >= 0; index--)
-    closeTab (index);
-}
-
-void
-variable_editor::enable_actions (void)
-{
-  const int count = m_tab_widget->count ();
-
-  m_tool_bar->setEnabled (count > 0);
-  m_close_action->setEnabled (count > 0);
-  m_close_all_action->setEnabled (count > 0);
-  m_close_others_action->setEnabled (count > 1);
-}
-
 void
 variable_editor::edit_variable (const QString& name, const octave_value& val)
 {
@@ -402,178 +968,124 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
       notice_settings (settings);
     }
 
-  const int tab_count = m_tab_widget->count ();
-  for (int i = 0; i < tab_count; ++i)
+  QDockWidget *existing_qdw = m_main->findChild<QDockWidget *> (name);
+  if (existing_qdw != NULL)
     {
-      if (real_var_name (i) == name)
-        {
-          // Already open.
+      // Already open.
 
-          m_tab_widget->setCurrentIndex (i);
-          return;
-        }
+      // Put current focused variable out of focus
+      QFocusEvent event (QEvent::FocusOut, Qt::OtherFocusReason);
+      QApplication::sendEvent (m_main->focusWidget (), &event);
+
+      // Put existing variable in focus and raise
+      event = QFocusEvent (QEvent::FocusIn, Qt::OtherFocusReason);
+      QApplication::sendEvent (existing_qdw, &event);
+      existing_qdw->show ();
+      existing_qdw->raise ();
+      existing_qdw->setFocus ();
+
+      return;
     }
 
-  // Do not set parent.
+  variable_dock_widget *page = new variable_dock_widget (this);
+  page->setObjectName (name);
+  page->setAllowedAreas(Qt::LeftDockWidgetArea |
+                        Qt::RightDockWidgetArea);
+  m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
 
-  QStackedWidget *widget_stack = new QStackedWidget ();
+  connect (QApplication::instance(), SIGNAL (focusChanged (QWidget *, QWidget *)),
+           page, SLOT (handle_focus_change (QWidget *, QWidget *)));
+  connect (page, SIGNAL (destroyed (QObject *)),
+           this, SLOT (variable_destroyed (QObject *)));
+  connect (page, SIGNAL (variable_focused_signal (const QString&)),
+           this, SLOT (variable_focused (const QString&)));
 
-  var_editor_tab *page = new var_editor_tab (widget_stack);
+  variable_editor_stack *stack = new variable_editor_stack (page);
+  stack->setObjectName (name);
+  page->setWidget (stack);
+  page->setFocusProxy (stack);
 
-  QVBoxLayout *vbox = new QVBoxLayout (page);
-  page->setLayout (vbox);
+  connect (stack, SIGNAL (command_signal (const QString&)),
+           this, SIGNAL (command_signal (const QString&)));
+  connect (stack, SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
+           this, SLOT (edit_variable (const QString&, const octave_value&)));
+  connect (this, SIGNAL (level_up_signal ()),
+           stack, SLOT (levelUp ()));
+  connect (this, SIGNAL (save_signal ()),
+           stack, SLOT (save ()));
 
-  QLabel *label = new QLabel (page);
-  label->setTextFormat (Qt::PlainText);
-  vbox->addWidget (label, 0, Qt::AlignTop);
+  variable_editor_view *edit_view = stack->edit_view ();
 
-  variable_editor_model *model = new variable_editor_model (name, val);
+  edit_view->setObjectName (name);
+  edit_view->setFont (m_font);
+  edit_view->setStyleSheet (m_stylesheet);
+  edit_view->setAlternatingRowColors (m_alternate_rows);
+  edit_view->verticalHeader ()->setDefaultSectionSize (m_default_height
+                                                       + m_add_font_height);
 
-  QTableView *edit_view = make_edit_view (page, model);
+  connect (edit_view, SIGNAL (command_signal (const QString&)),
+           this, SIGNAL (command_signal (const QString&)));
+  connect (this, SIGNAL (delete_selected_signal ()),
+           edit_view, SLOT (delete_selected ()));
+  connect (this, SIGNAL (clear_content_signal ()),
+           edit_view, SLOT (clearContent ()));
+  connect (this, SIGNAL (copy_clipboard_signal ()),
+           edit_view, SLOT (copyClipboard ()));
+  connect (this, SIGNAL (paste_clipboard_signal ()),
+           edit_view, SLOT (pasteClipboard ()));
+  connect (this, SIGNAL (paste_table_clipboard_signal ()),
+           edit_view, SLOT (pasteTableClipboard ()));
+  connect (this, SIGNAL (selected_command_signal (const QString&)),
+           edit_view, SLOT (selected_command_requested (const QString&)));
+  connect (edit_view->horizontalHeader (),
+           SIGNAL (customContextMenuRequested (const QPoint&)),
+           edit_view, SLOT (createColumnMenu (const QPoint&)));
+  connect (edit_view->verticalHeader (),
+           SIGNAL (customContextMenuRequested (const QPoint&)),
+           edit_view, SLOT (createRowMenu (const QPoint&)));
+  connect (edit_view, SIGNAL (customContextMenuRequested (const QPoint&)),
+           edit_view, SLOT (createContextMenu (const QPoint&)));
+  connect (edit_view->horizontalScrollBar (), SIGNAL (actionTriggered (int)),
+           edit_view, SLOT (handle_horizontal_scroll_action (int)));
+  connect (edit_view->verticalScrollBar (), SIGNAL (actionTriggered (int)),
+           edit_view, SLOT (handle_vertical_scroll_action (int)));
 
-  QTextEdit *disp_view = make_disp_view (page, model);
+  variable_editor_model *model =
+    new variable_editor_model (name, val, stack);
 
-  page->set_model (model);
-
-  page->set_edit_view (edit_view);
-  page->set_disp_view (disp_view);
-
-  vbox->addWidget (widget_stack);
-
-  int tab_idx = m_tab_widget->addTab (page, name);
-
-  m_tab_widget->setCurrentIndex (tab_idx);
-
-  connect (model, SIGNAL (description_changed (const QString&)),
-           label, SLOT (setText (const QString&)));
-
+  connect (model, SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
+           this, SLOT (edit_variable (const QString&, const octave_value&)));
   connect (model, SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
            this, SLOT (callUpdate (const QModelIndex&, const QModelIndex&)));
-
-  connect (this, SIGNAL (refresh_signal (void)),
-           model, SLOT (update_data_cache (void)));
-
+  connect (this, SIGNAL (refresh_signal ()),
+           model, SLOT (update_data_cache ()));
   connect (model, SIGNAL (set_editable_signal (bool)),
-           page, SLOT (set_editable (bool)));
+           stack, SLOT (set_editable (bool)));
 
-  enable_actions ();
-}
+  edit_view->setModel (model);
+  connect (edit_view, SIGNAL (doubleClicked (const QModelIndex&)),
+           model, SLOT (double_click (const QModelIndex&)));
 
-QTableView *
-variable_editor::make_edit_view (var_editor_tab *page,
-                                  variable_editor_model *model)
-{
-  QTableView *table = new QTableView (page);
+  // Must supply a title for a QLabel to be created.  Calling set_title()
+  // more than once will add more QLabels.  Could change octave_dock_widget
+  // to always supply a QLabl (initially empty) and then simply update its
+  // contents.
+  page->set_title (name);
+  QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
+  connect (model, SIGNAL (update_label_signal (const QString&)),
+           existing_ql, SLOT (setText (const QString&)));
 
-  model->setParent (table);
+  model->update_data (val);
 
-  table->setModel (model);
-  table->setWordWrap (false);
-  table->setContextMenuPolicy (Qt::CustomContextMenu);
-  table->setSelectionMode (QAbstractItemView::ContiguousSelection);
-
-  table->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
-  table->verticalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
-
-  connect (table->horizontalHeader (),
-           SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT (columnmenu_requested (const QPoint&)));
-
-  connect (table->verticalHeader (),
-           SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT (rowmenu_requested (const QPoint&)));
-
-  connect (table, SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT (contextmenu_requested (const QPoint&)));
-
-  connect (table, SIGNAL (doubleClicked (const QModelIndex&)),
-           this, SLOT (double_click (const QModelIndex&)));
-
-  table->setHorizontalScrollMode (QAbstractItemView::ScrollPerPixel);
-  table->setVerticalScrollMode (QAbstractItemView::ScrollPerPixel);
-
-  connect (table->horizontalScrollBar (), SIGNAL (actionTriggered (int)),
-           page, SLOT (handle_horizontal_scroll_action (int)));
-
-  connect (table->verticalScrollBar (), SIGNAL (actionTriggered (int)),
-           page, SLOT (handle_vertical_scroll_action (int)));
-
-  table->setFont (m_font);
-  table->setStyleSheet (m_stylesheet);
-  table->setAlternatingRowColors (m_alternate_rows);
-#if defined (HAVE_QT4)
-  table->verticalHeader ()->setResizeMode (QHeaderView::Interactive);
-#else
-  table->verticalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
-#endif
-  table->verticalHeader ()->setDefaultSectionSize (m_default_height
-                                                   + m_add_font_height);
-
-  int col_width = model->column_width ();
-
-  if (col_width > 0)
-    {
-#if defined (HAVE_QT4)
-      table->horizontalHeader ()->setResizeMode (QHeaderView::Interactive);
-#else
-      table->horizontalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
-#endif
-
-      // col_width is in characters.  The font should be a fixed-width
-      // font, so any character will do.  If not, you lose!
-
-      QFontMetrics fm (m_font);
-      int w = col_width * fm.width ('0');
-      table->horizontalHeader ()->setDefaultSectionSize (w);
-    }
-
-  return table;
-}
-
-QTextEdit *
-variable_editor::make_disp_view (var_editor_tab *page,
-                                 variable_editor_model *model)
-{
-  QTextEdit *viewer = new QTextEdit (page);
-
-  model->setParent (viewer);
-
-  QVariant v_data = model->data ();
-
-  QString str = v_data.toString ();
-
-  viewer->setLineWrapMode (QTextEdit::NoWrap);
-  viewer->setPlainText (str);
-  viewer->setReadOnly (true);
-
-  return viewer;
+  QList<QTableView *> viewlist = findChildren<QTableView *> ();
+  if (viewlist.size () == 1)
+    m_tool_bar->setEnabled (true);
 }
 
 void
 variable_editor::refresh (void)
 {
   emit refresh_signal ();
-}
-
-bool
-variable_editor::has_focus (void)
-{
-  // FIXME: This only generates exceptions in certain circumstances.
-  // Get a definitive list and eliminate the need to handle exceptions?
-
-  if (m_tab_widget->currentIndex () == -1)
-    return false;  // No tabs.
-
-  try
-    {
-      return m_tab_widget->current_tab_has_focus ();
-    }
-  catch (...)
-    {
-      return false;
-    }
-
-  return false;
 }
 
 QList<QColor>
@@ -686,12 +1198,6 @@ variable_editor::notice_settings (const QSettings *settings)
     icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
 
   m_tool_bar->setIconSize (QSize (icon_size, icon_size));
-
-  // Shortcuts.
-
-  shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
-  shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
-  shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
 }
 
 void
@@ -703,759 +1209,88 @@ variable_editor::closeEvent (QCloseEvent *e)
 }
 
 void
-variable_editor::closeTab (int idx)
+variable_editor::variable_destroyed (QObject *)
 {
-  if (idx < 0 || idx > m_tab_widget->count ())
-    return;
-
-  QWidget *wdgt = m_tab_widget->widget (idx);
-
-  m_tab_widget->removeTab (idx);
-
-  delete wdgt;
-
-  enable_actions ();
+  QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
+  if (vdwlist.isEmpty ())
+    m_tool_bar->setEnabled (false);
 }
 
 void
-variable_editor::contextmenu_requested (const QPoint& qpos)
+variable_editor::variable_focused (const QString &name)
 {
-  QTableView *view = m_tab_widget->get_edit_view ();
+  m_current_focus_vname = name;
+}
 
-  if (! view)
-    return;
+void
+variable_editor::record_hovered_focus_variable (void)
+{
+  m_hovered_focus_vname = m_current_focus_vname;
+}
 
-  QModelIndex index = view->indexAt (qpos);
-
-  if (index.isValid ())
+void
+variable_editor::restore_hovered_focus_variable (void)
+{
+  variable_dock_widget *tofocus = findChild<variable_dock_widget *> (m_hovered_focus_vname);
+  if (tofocus != nullptr)
     {
-      QMenu *menu = new QMenu (this);
-
-      menu->addAction (resource_manager::icon ("edit-cut"),
-                       tr ("Cut"), this, SLOT (cutClipboard ()));
-
-      menu->addAction (resource_manager::icon ("edit-copy"),
-                       tr ("Copy"), this, SLOT (copyClipboard ()));
-
-      menu->addAction (resource_manager::icon ("edit-paste"),
-                       tr ("Paste"), this, SLOT (pasteClipboard ()));
-
-      // FIXME: Need different icon for paste table separate from paste?
-
-      menu->addAction (resource_manager::icon ("edit-paste"),
-                       tr ("Paste Table"), this,
-                       SLOT (pasteTableClipboard ()));
-
-      menu->addSeparator ();
-
-      menu->addAction (resource_manager::icon ("edit-delete"),
-                       tr ("Clear"), this, SLOT (clearContent ()));
-
-      menu->addAction (resource_manager::icon ("document-new"),
-                       tr ("Variable from Selection"), this,
-                       SLOT (createVariable ()));
-
-      // FIXME: addAction for sort?
-      // FIXME: Add icon for transpose.
-
-      menu->addAction (tr ("Transpose"), this, SLOT (transposeContent ()));
-
-      QItemSelectionModel *sel = view->selectionModel ();
-
-      QList<QModelIndex> indices = sel->selectedIndexes ();
-
-      if (! indices.isEmpty ())
-        {
-          menu->addSeparator ();
-
-          QSignalMapper *plot_mapper = new QSignalMapper (menu);
-
-          plot_mapper->setMapping
-            (menu->addAction ("plot", plot_mapper, SLOT (map ())),
-             "figure (); plot (%1);");
-
-          plot_mapper->setMapping
-            (menu->addAction ("bar", plot_mapper, SLOT (map ())),
-             "figure (); bar (%1);");
-
-          plot_mapper->setMapping
-            (menu->addAction ("stem", plot_mapper, SLOT (map ())),
-             "figure (); stem (%1);");
-
-          plot_mapper->setMapping
-            (menu->addAction ("stairs", plot_mapper, SLOT (map ())),
-             "figure (); stairs (%1);");
-
-          plot_mapper->setMapping
-            (menu->addAction ("area", plot_mapper, SLOT (map ())),
-             "figure (); area (%1);");
-
-          plot_mapper->setMapping
-            (menu->addAction ("pie", plot_mapper, SLOT (map ())),
-             "figure (); pie (%1);");
-
-          plot_mapper->setMapping
-            (menu->addAction ("hist", plot_mapper, SLOT (map ())),
-             "figure (); hist (%1);");
-
-          connect (plot_mapper, SIGNAL (mapped (const QString&)),
-                   this, SLOT (relay_command (const QString&)));
-        }
-
-      menu->exec (view->mapToGlobal (qpos));
+      // Note that this may be platform and window system dependent.
+      // On a particular Linux system, activateWindow() alone didn't
+      // immediately set the active window and there was a race
+      // between the window focus and action signal.  Setting the
+      // active window via the QApplication route did work.
+      QApplication::setActiveWindow(tofocus->window());
+      tofocus->activateWindow ();
+      tofocus->setFocus (Qt::OtherFocusReason);
     }
-}
-
-void
-variable_editor::columnmenu_requested (const QPoint& pt)
-{
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return;
-
-  int index = view->horizontalHeader ()->logicalIndexAt (pt);
-
-  if (index < 0 || index > view->model ()->columnCount ())
-    return;
-
-  QString selection = selected_to_octave ();
-
-  QList<int> coords = octave_to_coords (selection);
-
-  bool nothingSelected = coords.isEmpty ();
-
-  bool whole_columns_selected
-    =  (nothingSelected
-        ? false
-        : (coords[0] == 1 && coords[1] == view->model ()->rowCount ()));
-
-  bool current_column_selected
-    = nothingSelected ? false : (coords[2] <= index+1 && coords[3] > index);
-
-  int column_selection_count
-    = nothingSelected ? 0 : (coords[3] - coords[2] + 1);
-
-  if (! whole_columns_selected || ! current_column_selected)
-    {
-      view->selectColumn (index);
-      column_selection_count = 1;
-      current_column_selected = true;
-      whole_columns_selected = true;
-    }
-
-  QString column_string
-    = tr (column_selection_count > 1 ? " columns" : " column");
-
-  QMenu *menu = new QMenu (this);
-
-  menu->addAction (resource_manager::icon ("edit-cut"),
-                   tr ("Cut") + column_string,
-                   this, SLOT (cutClipboard ()));
-
-  menu->addAction (resource_manager::icon ("edit-copy"),
-                   tr ("Copy") + column_string,
-                   this, SLOT (copyClipboard ()));
-
-  menu->addAction (resource_manager::icon ("edit-paste"),
-                   tr ("Paste"),
-                   this, SLOT (pasteClipboard ()));
-
-  // FIXME: Different icon for Paste Table?
-
-  menu->addAction (resource_manager::icon ("edit-paste"),
-                   tr ("Paste Table"),
-                   this, SLOT (pasteTableClipboard ()));
-
-  menu->addSeparator ();
-
-  menu->addAction (resource_manager::icon ("edit-delete"),
-                   tr ("Clear") + column_string,
-                   this, SLOT (clearContent ()));
-
-  menu->addAction (resource_manager::icon ("edit-delete"),
-                   tr ("Delete") + column_string,
-                   this, SLOT (delete_selected ()));
-
-  menu->addAction (resource_manager::icon ("document-new"),
-                   tr ("Variable from Selection"),
-                   this, SLOT (createVariable ()));
-
-  menu->addSeparator ();
-
-  QSignalMapper *plot_mapper = new QSignalMapper (menu);
-
-  plot_mapper->setMapping
-    (menu->addAction ("plot", plot_mapper, SLOT (map ())),
-     "figure (); plot (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("bar", plot_mapper, SLOT (map ())),
-     "figure (); bar (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("stem", plot_mapper, SLOT (map ())),
-     "figure (); stem (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("stairs", plot_mapper, SLOT (map ())),
-     "figure (); stairs (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("area", plot_mapper, SLOT (map ())),
-     "figure (); area (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("pie", plot_mapper, SLOT (map ())),
-     "figure (); pie (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("hist", plot_mapper, SLOT (map ())),
-     "figure (); hist (%1);");
-
-  connect (plot_mapper, SIGNAL (mapped (const QString&)),
-           this, SLOT (relay_command (const QString&)));
-
-  QPoint menupos = pt;
-  menupos.setY (view->horizontalHeader ()->height ());
-
-  menu->exec (view->mapToGlobal (menupos));
-}
-
-void
-variable_editor::rowmenu_requested (const QPoint& pt)
-{
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return;
-
-  int index = view->verticalHeader ()->logicalIndexAt (pt);
-
-  if (index < 0 || index > view->model ()->columnCount ())
-    return;
-
-  QString selection = selected_to_octave ();
-
-  QList<int> coords = octave_to_coords (selection);
-
-  bool nothingSelected = coords.isEmpty ();
-
-  bool whole_rows_selected
-    = (nothingSelected
-       ? false
-       : (coords[2] == 1 && coords[3] == view->model ()->columnCount ()));
-
-  bool current_row_selected
-    = (nothingSelected ? false : (coords[0] <= index+1 && coords[1] > index));
-
-  int rowselection_count = nothingSelected ? 0 : (coords[3] - coords[2] + 1);
-
-  if (! whole_rows_selected || ! current_row_selected)
-    {
-      view->selectRow (index);
-      rowselection_count = 1;
-      current_row_selected = true;
-      whole_rows_selected = true;
-    }
-
-  QString row_string = tr (rowselection_count > 1 ? " rows" : " row");
-
-  QMenu *menu = new QMenu (this);
-
-  menu->addAction (resource_manager::icon ("edit-cut"),
-                   tr ("Cut") + row_string,
-                   this, SLOT (cutClipboard ()));
-
-  menu->addAction (resource_manager::icon ("edit-copy"),
-                   tr ("Copy") + row_string,
-                   this, SLOT (copyClipboard ()));
-
-  menu->addAction (resource_manager::icon ("edit-paste"),
-                   tr ("Paste"),
-                   this, SLOT (pasteClipboard ()));
-
-  // FIXME: Better icon for Paste Table?
-
-  menu->addAction (resource_manager::icon ("edit-paste"),
-                   tr ("Paste Table"),
-                   this, SLOT (pasteTableClipboard ()));
-
-  menu->addSeparator ();
-
-  menu->addAction (resource_manager::icon ("edit-delete"),
-                   tr ("Clear") + row_string,
-                   this, SLOT (clearContent ()));
-
-  menu->addAction (resource_manager::icon ("edit-delete"),
-                   tr ("Delete") + row_string,
-                   this, SLOT (delete_selected ()));
-
-  menu->addAction (resource_manager::icon ("document-new"),
-                   tr ("Variable from Selection"),
-                   this, SLOT (createVariable ()));
-
-  menu->addSeparator ();
-
-  QSignalMapper *plot_mapper = new QSignalMapper (menu);
-
-  plot_mapper->setMapping
-    (menu->addAction ("plot", plot_mapper, SLOT (map ())),
-     "figure (); plot (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("bar", plot_mapper, SLOT (map ())),
-     "figure (); bar (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("stem", plot_mapper, SLOT (map ())),
-     "figure (); stem (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("stairs", plot_mapper, SLOT (map ())),
-     "figure (); stairs (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("area", plot_mapper, SLOT (map ())),
-     "figure (); area (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("pie", plot_mapper, SLOT (map ())),
-     "figure (); pie (%1);");
-
-  plot_mapper->setMapping
-    (menu->addAction ("hist", plot_mapper, SLOT (map ())),
-     "figure (); hist (%1);");
-
-  connect (plot_mapper, SIGNAL (mapped (const QString&)),
-           this, SLOT (relay_command (const QString&)));
-
-  QPoint menupos = pt;
-  menupos.setX (view->verticalHeader ()->width ());
-
-  // FIXME: What was the intent here?
-  // setY (view->verticalHeader ()->sectionPosition (index+1) +
-  //             view->verticalHeader ()->sectionSize (index));
-
-  menu->exec (view->mapToGlobal (menupos));
-}
-
-void
-variable_editor::double_click (const QModelIndex& idx)
-{
-  QString name = real_var_name (m_tab_widget->currentIndex ());
-
-  QTableView *table = m_tab_widget->get_edit_view ();
-
-  if (! table)
-    return;
-
-  variable_editor_model *model
-    = qobject_cast<variable_editor_model *> (table->model ());
-
-  if (model->requires_sub_editor (idx))
-    edit_variable (name + model->subscript_expression (idx),
-                   model->value_at (idx));
 }
 
 void
 variable_editor::save (void)
 {
-  QString name = real_var_name (m_tab_widget->currentIndex ());
-  QString file
-    = QFileDialog::getSaveFileName (this,
-                                    tr ("Save Variable %1 As").arg (name),
-                                    ".", 0, 0,
-                                    QFileDialog::DontUseNativeDialog);
-
-  // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
-  // FIXME: Call octave_value::save_* directly?
-
-  if (! file.isEmpty ())
-    emit command_requested (QString ("save (\"%1\", \"%2\");")
-                            .arg (file)
-                            .arg (name));
-}
-
-void
-variable_editor::clearContent (void)
-{
-  // FIXME: Shift?
-
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return;
-
-  QAbstractItemModel *model = view->model ();
-  QItemSelectionModel *sel = view->selectionModel ();
-  QList<QModelIndex> indices = sel->selectedIndexes ();
-
-  // FIXME: Use [] for empty cells?
-
-  for (const auto& idx : indices)
-    qobject_cast<variable_editor_model *> (model)->clear_content (idx);
+  emit save_signal ();
 }
 
 void
 variable_editor::cutClipboard (void)
 {
-  if (! has_focus ())
-    return;
-
   copyClipboard ();
 
-  clearContent ();
+  emit clear_content_signal ();
 }
 
 void
 variable_editor::copyClipboard (void)
 {
-  if (! has_focus ())
-    return;
-
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return;
-
-  QAbstractItemModel *model = view->model ();
-  QItemSelectionModel *sel = view->selectionModel ();
-  QList<QModelIndex> indices = sel->selectedIndexes ();
-  qSort (indices);
-  if (indices.isEmpty ())
-    return;
-
-  // Convert selected items into TSV format and copy that.
-  // Spreadsheet tools should understand that.
-
-  QModelIndex previous = indices.first ();
-  QString copy = model->data (previous).toString ();
-  indices.removeFirst ();
-  foreach (QModelIndex idx, indices)
-    {
-      copy.push_back (previous.row () != idx.row () ? '\n' : '\t');
-      copy.append (model->data (idx).toString ());
-      previous = idx;
-    }
-  copy.push_back ('\n');
-
-  QClipboard *clipboard = QApplication::clipboard ();
-  clipboard->setText (copy);
+  emit copy_clipboard_signal ();
 }
 
 void
 variable_editor::pasteClipboard (void)
 {
-  if (! has_focus ())
-    return;
-
-  QClipboard *clipboard = QApplication::clipboard ();
-  QString text = clipboard->text ();
-
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return;
-
-  QItemSelectionModel *sel = view->selectionModel ();
-  QList<QModelIndex> indices = sel->selectedIndexes ();
-
-  variable_editor_model *model
-    = static_cast<variable_editor_model *> (view->model ());
-
-  if (indices.isEmpty ())
-    {
-      if (view->size () == QSize (1,1))
-        model->setData (view->model ()->index (0,0), text.toDouble ());
-      else if (view->size () == QSize (0,0))
-        {
-          model->insertColumn (0);
-          model->insertRow (0);
-          model->setData (view->model ()->index (0,0), text.toDouble ());
-        }
-    }
-  else
-    {
-      for (int i = 0; i < indices.size (); i++)
-        view->model ()->setData (indices[i], text.toDouble ());
-    }
-
-  emit updated ();
-}
-
-void variable_editor::pasteTableClipboard (void)
-{
-  if (! has_focus ())
-    return;
-
-  QClipboard *clipboard = QApplication::clipboard ();
-  QString text = clipboard->text ();
-
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return;
-
-  QItemSelectionModel *sel = view->selectionModel ();
-  QList<QModelIndex> indices = sel->selectedIndexes ();
-
-  variable_editor_model *model
-    = static_cast<variable_editor_model *> (view->model ());
-
-  QPoint start, end;
-
-  QPoint tabsize = QPoint (model->rowCount (), model->columnCount ());
-
-  if (indices.isEmpty ())
-    {
-      start = QPoint (0,0);
-      end = tabsize;
-    }
-  else if (indices.size () == 1)
-    {
-      start = QPoint (indices[0].row (), indices[0].column ());
-      end = tabsize;
-    }
-  else
-    {
-      end = QPoint (0,0);
-      start = tabsize;
-
-      for (int i = 0; i < indices.size (); i++)
-        {
-          if (indices[i].column () < start.y ())
-            start.setY (indices[i].column ());
-
-          if (indices[i].column () > end.y ())
-            end.setY (indices[i].column ());
-
-          if (indices[i].row () < start.x ())
-            start.setX (indices[i].column ());
-
-          if (indices[i].row () > end.x ())
-            end.setX (indices[i].column ());
-        }
-    }
-
-  int rownum = 0;
-  int colnum = 0;
-
-  QStringList rows = text.split ('\n');
-  for (const auto& row : rows)
-    {
-      if (rownum > end.x () - start.x ())
-        continue;
-
-      QStringList cols = row.split ('\t');
-      if (cols.isEmpty ())
-        continue;
-
-      for (const auto& col : cols)
-        {
-          if (col.isEmpty ())
-            continue;
-          if (colnum > end.y () - start.y () )
-            continue;
-
-          model->setData (model->index (rownum + start.x (),
-                                        colnum + start.y ()),
-                          QVariant (col));
-
-          colnum++;
-        }
-
-      colnum = 0;
-      rownum++;
-    }
+  emit paste_clipboard_signal ();
 
   emit updated ();
 }
 
 void
-variable_editor::createVariable (void)
+variable_editor::pasteTableClipboard (void)
 {
-  // FIXME: Create unnamed1..n if exist ('unnamed', 'var') is true.
-
-  relay_command ("unnamed = %1");
-}
-
-void
-variable_editor::transposeContent (void)
-{
-  QString name = real_var_name (m_tab_widget->currentIndex ());
-
-  emit command_requested (QString ("%1 = %1';").arg (name));
+  emit paste_table_clipboard_signal ();
 
   emit updated ();
 }
 
 void
-variable_editor::up (void)
+variable_editor::levelUp (void)
 {
-  QString name = real_var_name (m_tab_widget->currentIndex ());
-
-  // FIXME: Is there a better way?
-
-  if (name.endsWith (')') || name.endsWith ('}'))
-    {
-      name.remove (QRegExp ("(\\(|\\{)[^({]*(\\)|\\})$"));
-      edit_variable (name, octave_value ());
-    }
+  emit level_up_signal ();
 }
 
 void
-variable_editor::delete_selected (void)
+variable_editor::relay_selected_command (const QString& cmd)
 {
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return;
-
-  QString selection = selected_to_octave ();
-  QList<int> coords = octave_to_coords (selection);
-
-  if (coords.isEmpty ())
-    return;
-
-  bool whole_columns_selected
-    = coords[0] == 1 && coords[1] == view->model ()->rowCount ();
-
-  bool whole_rows_selected
-    = coords[2] == 1 && coords[3] == view->model ()->columnCount ();
-
-  // Must be deleting whole columns or whole rows, and not the whole thing.
-
-  if (whole_columns_selected == whole_rows_selected)
-    return;
-
-  if (whole_rows_selected)
-    view->model ()->removeRows (coords[0], coords[1] - coords[0]);
-
-  if (whole_columns_selected)
-    view->model ()->removeColumns (coords[2], coords[3] - coords[2]);
-
-  emit updated ();
-}
-
-void
-variable_editor::relay_command (const QString& cmd)
-{
-  emit command_requested (cmd.arg (selected_to_octave ()));
-}
-
-QList<int>
-variable_editor::octave_to_coords (QString& selection)
-{
-  // FIXME: Is this necessary or would it be quicker to clone the function
-  // that gives us the QString?
-
-  // Sanity check.
-
-  if (selection.count (",") != 1)
-    return QList<int> ();
-
-  // FIXME: Why clear if object has just been created?
-
-  QList<int> output;
-  output.clear ();
-
-  // Remove braces.
-
-  int firstbracket = std::max (selection.indexOf ("("),
-                               selection.indexOf ("{"));
-
-  selection = selection.mid (firstbracket + 1,
-                             selection.length () - (firstbracket + 2));
-
-  QString rows = selection.left (selection.indexOf (","));
-  if (! rows.contains (":"))
-    {
-      // Only one row.
-
-      output.push_back (rows.toInt ());
-      output.push_back (output.last ());
-    }
-  else
-    {
-      output.push_back (rows.left (rows.indexOf (":")).toInt ());
-      output.push_back (rows.right (rows.length () - (rows.indexOf (":") + 1))
-                        .toInt ());
-    }
-
-  QString cols;
-  cols = selection.right (selection.length () - (selection.indexOf (",") + 1));
-  if (cols.left (1) == " ")
-    cols = cols.right (cols.length () - 1);
-
-  if (! cols.contains (":"))
-    {
-      // Only one row.
-
-      output.push_back (cols.toInt ());
-      output.push_back (output.last ());
-    }
-  else
-    {
-      output.push_back (cols.left (cols.indexOf (":")).toInt ());
-      output.push_back (cols.right (cols.length () - (cols.indexOf (":") + 1))
-                        .toInt ());
-    }
-
-  return output;
-}
-
-// Return the real variable name from the tab addressed by 'index',
-// cleaned of any '&' possibly inserted by KDE.
-
-QString
-variable_editor::real_var_name (int index)
-{
-  QString var_name = m_tab_widget->tabText (index);
-  var_name.remove (QChar ('&'));
-  return var_name;
-}
-
-QString
-variable_editor::selected_to_octave (void)
-{
-  QString name = real_var_name (m_tab_widget->currentIndex ());
-
-  QTableView *view = m_tab_widget->get_edit_view ();
-
-  if (! view)
-    return name;
-
-  QItemSelectionModel *sel = view->selectionModel ();
-
-  // Return early if nothing selected.
-
-  if (! sel->hasSelection ())
-    return name;
-
-  QList<QModelIndex> indices = sel->selectedIndexes ();
-
-  // FIXME: Shouldn't this be keyed to octave_idx_type?
-
-  int32_t from_row = std::numeric_limits<int32_t>::max ();
-  int32_t to_row = 0;
-  int32_t from_col = std::numeric_limits<int32_t>::max ();
-  int32_t to_col = 0;
-
-  for (const auto& idx : indices)
-    {
-      from_row = std::min (from_row, idx.row ());
-      to_row = std::max (to_row, idx.row ());
-      from_col = std::min (from_col, idx.column ());
-      to_col = std::max (to_col, idx.column ());
-    }
-
-  QString rows = idx_to_expr (from_row, to_row);
-  QString cols = idx_to_expr (from_col, to_col);
-
-  // FIXME: Does cell need separate handling?  Maybe use '{.,.}'?
-
-  return QString ("%1(%2, %3)").arg (name).arg (rows).arg (cols);
+  emit selected_command_signal (cmd);
 }
 
 // Also updates the font.
@@ -1491,12 +1326,10 @@ void variable_editor::update_colors (void)
         + m_table_colors[3].name () +" }";
     }
 
-  if (m_tab_widget->count () < 1)
-    return;
-
-  for (int i = 0; i < m_tab_widget->count (); i++)
+  QList<QTableView *> viewlist = findChildren<QTableView *> ();
+  for (int i = 0; i < viewlist.size (); i++)
     {
-      QTableView *view = m_tab_widget->get_edit_view ();
+      QTableView *view = viewlist.at (i);
 
       if (! view)
         continue;
@@ -1508,36 +1341,59 @@ void variable_editor::update_colors (void)
 
 }
 
+QAction *
+variable_editor::add_tool_bar_button (const QIcon &icon,
+                                      const QString &text,
+                                      const QObject *receiver,
+                                      const char *member)
+{
+  QAction *action = new QAction (icon, text, this);
+  connect(action, SIGNAL (triggered ()), receiver, member);
+  QToolButton *button = new ReturnFocusToolButton (m_tool_bar);
+  button->setDefaultAction (action);
+  button->setText (text);
+  button->setToolTip (text);
+  button->setIcon (icon);
+  m_tool_bar->addWidget (button);
+
+  return action;
+}
+
 void
 variable_editor::construct_tool_bar (void)
 {
   m_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
 
-  m_tool_bar->setMovable (false);
-
   m_tool_bar->setObjectName ("VariableEditorToolBar");
 
   m_tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
 
-  m_tool_bar->addAction (resource_manager::icon ("document-save"),
-                         tr ("Save"), this, SLOT (save ()));
+  QAction *action;
+  action = add_tool_bar_button (resource_manager::icon ("document-save"),
+                                tr ("Save"), this, SLOT (save ()));
+  action->setShortcuts (QKeySequence::Save);
+  action->setStatusTip(tr("Save variable to a file"));
 
   m_tool_bar->addSeparator ();
 
-  m_tool_bar->addAction (resource_manager::icon ("edit-cut"),
-                         tr ("Cut"), this, SLOT (cutClipboard ()));
+  action = add_tool_bar_button (resource_manager::icon ("edit-cut"),
+                                tr ("Cut"), this, SLOT (cutClipboard ()));
+  action->setStatusTip(tr("Cut data to clipboard"));
 
-  m_tool_bar->addAction (resource_manager::icon ("edit-copy"),
-                         tr ("Copy"), this, SLOT (copyClipboard ()));
+  action = add_tool_bar_button (resource_manager::icon ("edit-copy"),
+                                tr ("Copy"), this, SLOT (copyClipboard ()));
+  action->setStatusTip(tr("Copy data to clipboard"));
 
-  m_tool_bar->addAction (resource_manager::icon ("edit-paste"),
-                         tr ("Paste"), this, SLOT (pasteClipboard ()));
+  action = add_tool_bar_button (resource_manager::icon ("edit-paste"),
+                                tr ("Paste"), this, SLOT (pasteClipboard ()));
+  action->setStatusTip(tr("Paste clipboard into variable data"));
 
   // FIXME: Different icon for Paste Table?
 
-  m_tool_bar->addAction (resource_manager::icon ("edit-paste"),
-                         tr ("Paste Table"),
-                         this, SLOT (pasteTableClipboard ()));
+  action = add_tool_bar_button (resource_manager::icon ("edit-paste"),
+                                tr ("Paste Table"),
+                                this, SLOT (pasteTableClipboard ()));
+  action->setStatusTip(tr("Another paste clipboard into variable data"));
 
   m_tool_bar->addSeparator ();
 
@@ -1545,50 +1401,26 @@ variable_editor::construct_tool_bar (void)
   // QAction *print_action; /icons/fileprint.png
   // m_tool_bar->addSeparator ();
 
-  QToolButton *plot_tool_button = new QToolButton (m_tool_bar);
+  action = new QAction (resource_manager::icon ("plot-xy-curve"),
+                        tr ("Plot"), m_tool_bar);
+  action->setToolTip (tr ("Plot Selected Data"));
+  QToolButton *plot_tool_button = new HoverToolButton (m_tool_bar);
+  plot_tool_button->setDefaultAction (action);
 
   plot_tool_button->setText (tr ("Plot"));
-  plot_tool_button->setToolTip (tr ("Plot Selected Data"));
+  plot_tool_button->setToolTip (tr ("Plot selected data"));
   plot_tool_button->setIcon (resource_manager::icon ("plot-xy-curve"));
 
   plot_tool_button->setPopupMode (QToolButton::InstantPopup);
 
-  QMenu *plot_menu = new QMenu (tr ("Plot"), plot_tool_button);
-
+  QMenu *plot_menu = new ReturnFocusMenu (plot_tool_button);
+  plot_menu->setTitle (tr ("Plot"));
   plot_menu->setSeparatorsCollapsible (false);
 
-  QSignalMapper *plot_mapper = new QSignalMapper (plot_menu);
-
-  plot_mapper->setMapping
-    (plot_menu->addAction ("plot", plot_mapper, SLOT (map ())),
-     "figure (); plot (%1);");
-
-  plot_mapper->setMapping
-    (plot_menu->addAction ("bar", plot_mapper, SLOT (map ())),
-     "figure (); bar (%1);");
-
-  plot_mapper->setMapping
-    (plot_menu->addAction ("stem", plot_mapper, SLOT (map ())),
-     "figure (); stem (%1);");
-
-  plot_mapper->setMapping
-    (plot_menu->addAction ("stairs", plot_mapper, SLOT (map ())),
-     "figure (); stairs (%1);");
-
-  plot_mapper->setMapping
-    (plot_menu->addAction ("area", plot_mapper, SLOT (map ())),
-     "figure (); area (%1);");
-
-  plot_mapper->setMapping
-    (plot_menu->addAction ("pie", plot_mapper, SLOT (map ())),
-     "figure (); pie (%1);");
-
-  plot_mapper->setMapping
-    (plot_menu->addAction ("hist", plot_mapper, SLOT (map ())),
-     "figure (); hist (%1);");
+  QSignalMapper *plot_mapper = make_plot_mapper (plot_menu);
 
   connect (plot_mapper, SIGNAL (mapped (const QString&)),
-           this, SLOT (relay_command (const QString&)));
+           this, SLOT (relay_selected_command (const QString&)));
 
   plot_tool_button->setMenu (plot_menu);
 
@@ -1596,8 +1428,41 @@ variable_editor::construct_tool_bar (void)
 
   m_tool_bar->addSeparator ();
 
-  m_tool_bar->addAction (QIcon (resource_manager::icon ("go-up")), tr ("Up"),
-                         this, SLOT (up ()));
+  action = add_tool_bar_button (resource_manager::icon ("go-up"),
+                                tr ("Up"), this, SLOT (levelUp ()));
+  action->setStatusTip(tr("Go one level up in variable hierarchy"));
+
+  // The QToolButton mouse-clicks change active window, so connect all
+  // HoverToolButton and RuternFocusToolButton objects to the mechanism
+  // that restores active window and focus before acting.
+  QList<HoverToolButton *> hbuttonlist = m_tool_bar->
+      findChildren<HoverToolButton *> (QString (), Qt::FindDirectChildrenOnly);
+  for (int i = 0; i < hbuttonlist.size (); i++)
+    {
+      connect (hbuttonlist.at (i), SIGNAL (hovered_signal ()),
+               this, SLOT (record_hovered_focus_variable ()));
+      connect (hbuttonlist.at (i), SIGNAL (popup_shown_signal ()),
+               this, SLOT (restore_hovered_focus_variable ()));
+    }
+  QList<ReturnFocusToolButton *> rfbuttonlist = m_tool_bar->
+      findChildren<ReturnFocusToolButton *> (QString (), Qt::FindDirectChildrenOnly);
+  for (int i = 0; i < rfbuttonlist.size (); i++)
+    {
+      connect (rfbuttonlist.at (i), SIGNAL (about_to_activate ()),
+               this, SLOT (restore_hovered_focus_variable ()));
+    }
+
+  // Same for QMenu
+  QList<ReturnFocusMenu *> menulist = m_tool_bar->
+      findChildren<ReturnFocusMenu *> (QString ());
+  for (int i = 0; i < menulist.size (); i++)
+    {
+      connect (menulist.at (i), SIGNAL (about_to_activate ()),
+               this, SLOT (restore_hovered_focus_variable ()));
+    }
+
+  m_tool_bar->setAttribute(Qt::WA_ShowWithoutActivating);
+  m_tool_bar->setFocusPolicy (Qt::NoFocus);
 
   // Disabled when no tab is present.
 

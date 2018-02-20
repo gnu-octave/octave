@@ -30,7 +30,41 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QMouseEvent>
 
-class octave_dock_widget : public QDockWidget
+// The few decoration items common to both main window and variable editor.
+class label_dock_widget : public QDockWidget
+{
+  Q_OBJECT
+
+public:
+
+  label_dock_widget (QWidget *p = nullptr);
+
+  void set_title (const QString&);
+
+protected slots:
+
+  //! Slots to handle copy & paste.
+  //!@{
+  virtual void copyClipboard (void) {  }
+  virtual void pasteClipboard (void) {  }
+  virtual void selectAll (void) {  }
+  //!@}
+
+  //! Slot to handle undo.
+
+  virtual void do_undo (void) {  }
+
+protected:
+
+  int m_icon_size;
+  QWidget *m_title_widget;
+  QToolButton *m_dock_button;
+  QToolButton *m_close_button;
+  QAction *m_dock_action;
+  QAction *m_close_action;
+};
+
+class octave_dock_widget : public label_dock_widget
 {
   Q_OBJECT
 
@@ -44,7 +78,6 @@ public:
 
   void make_window (void);
   void make_widget (bool dock=true);
-  void set_title (const QString&);
   void set_predecessor_widget (octave_dock_widget *prev_widget);
 
 signals:
@@ -98,17 +131,6 @@ protected slots:
       emit active_changed (true);
   }
 
-  //! Slots to handle copy & paste.
-  //!@{
-  virtual void copyClipboard (void) {  }
-  virtual void pasteClipboard (void) {  }
-  virtual void selectAll (void) {  }
-  //!@}
-
-  //! Slot to handle undo.
-
-  virtual void do_undo (void) {  }
-
   //! Event filter for double clicks into the window decoration elements.
 
   bool eventFilter (QObject *obj, QEvent *e);
@@ -130,7 +152,6 @@ private:
   bool m_floating;
   bool m_custom_style;
   int m_title_3d;
-  int m_icon_size;
   QColor m_bg_color;
   QColor m_bg_color_active;
   QColor m_fg_color;
@@ -139,11 +160,6 @@ private:
   QString m_icon_color_active;
   octave_dock_widget *m_predecessor_widget;
 
-  QWidget *m_title_widget;
-  QToolButton *m_dock_button;
-  QToolButton *m_close_button;
-  QAction *m_dock_action;
-  QAction *m_close_action;
 };
 
 #endif

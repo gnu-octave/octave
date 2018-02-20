@@ -28,11 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMainWindow>
 #include <QThread>
 #include <QTabWidget>
-#include <QMdiArea>
 #include <QStatusBar>
 #include <QToolBar>
 #include <QQueue>
-#include <QMdiSubWindow>
 #include <QCloseEvent>
 #include <QToolButton>
 #include <QComboBox>

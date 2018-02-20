@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QHeaderView>
 #include <QSettings>
+#include <QStackedWidget>
+#include <QTableView>
 
 #include "octave-dock-widget.h"
 #include "tab-bar.h"
@@ -34,92 +36,197 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 
 class QModelIndex;
-class QStackedWidget;
-class QTabWidget;
-class QTableView;
 class QTextEdit;
 class QToolBar;
 
 class variable_editor_model;
+class variable_editor_view;
 
-class var_editor_tab : public QWidget
+// The individual variable subwindow class
+
+class variable_dock_widget : public label_dock_widget
 {
   Q_OBJECT
 
 public:
 
-  var_editor_tab (QStackedWidget *widget_stack, QWidget *p = nullptr)
-    : QWidget (p), m_model (nullptr), m_widget_stack (widget_stack),
-      m_edit_view_idx (-1), m_disp_view_idx (-1)
-  { }
+  variable_dock_widget (QWidget *p = nullptr);
 
-  ~var_editor_tab (void) = default;
+signals:
 
-  // No copying!
+  void variable_focused_signal (const QString& name);
 
-  var_editor_tab (const var_editor_tab&) = delete;
+protected:
 
-  var_editor_tab& operator = (const var_editor_tab&) = delete;
-
-  QTableView * get_edit_view (void) const;
-  QTextEdit * get_disp_view (void) const;
-
-  void set_edit_view (QTableView *);
-  void set_disp_view (QTextEdit *);
-
-  void set_model (variable_editor_model *model)
-  {
-    m_model = model;
-  }
-
-  bool has_focus (void) const;
-
-  void keyPressEvent (QKeyEvent *event);
+  virtual void closeEvent (QCloseEvent *e);
 
 public slots:
 
-  void set_editable (bool);
+  void handle_focus_change (QWidget *old, QWidget *now);
+
+private slots:
+
+  void change_floating (bool);
+
+  void change_existence (bool);
+
+  void toplevel_change (bool);
+
+protected:
+
+  bool m_initial_float;
+};
+
+class variable_editor_stack : public QStackedWidget
+{
+  Q_OBJECT
+
+public:
+
+  variable_editor_stack (QWidget *p = nullptr);
+
+  variable_editor_view *edit_view (void) {return m_edit_view;};
+
+  QTextEdit *disp_view (void) {return m_disp_view;};
+
+signals:
+
+  void command_signal (const QString& cmd);
+
+  void edit_variable_signal (const QString& name, const octave_value& val);
+
+public slots:
+
+  void set_editable (bool editable);
+
+  void levelUp (void);
+
+  void save (void);
+
+private:
+
+  QTextEdit *make_disp_view (QWidget *parent);
+
+  variable_editor_view *m_edit_view;
+
+  QTextEdit *m_disp_view;
+};
+
+
+class variable_editor_view : public QTableView
+{
+  Q_OBJECT
+
+public:
+
+  variable_editor_view (QWidget *p = nullptr);
+
+  void setModel (QAbstractItemModel *model);
+
+signals:
+
+  void command_signal (const QString& cmd);
+
+  void add_edit_actions_signal (QMenu *menu, const QString& qualifier_string);
+
+public slots:
+
+  void createVariable (void);
+
+  void transposeContent (void);
+
+  QList<int> range_selected (void);
+
+  void delete_selected (void);
+
+  void clearContent (void);
+
+  void cutClipboard (void);
+
+  void copyClipboard (void);
+
+  void pasteClipboard (void);
+
+  void pasteTableClipboard (void);
 
   void handle_horizontal_scroll_action (int action);
 
   void handle_vertical_scroll_action (int action);
 
+  void createContextMenu (const QPoint& pt);
+
+  void createColumnMenu (const QPoint& pt);
+
+  void createRowMenu (const QPoint& pt);
+
+  // Convert selection to an Octave expression.
+  QString selected_to_octave (void);
+
+  void selected_command_requested (const QString& cmd);
+
 private:
 
-  variable_editor_model *m_model;
+  void add_edit_actions (QMenu *menu, const QString& qualifier_string);
 
-  QStackedWidget *m_widget_stack;
-
-  int m_edit_view_idx;
-  int m_disp_view_idx;
+  variable_editor_model *m_var_model;
 };
 
-// Subclassed QTabWidget for using custom tabbar
+// Gadgets to keep track and restore what variable window
+// was in focus just prior to selecting something on the
+// menu bar
 
-class var_editor_tab_widget : public QTabWidget
+class HoverToolButton : public QToolButton
 {
   Q_OBJECT
 
 public:
 
-  var_editor_tab_widget (QWidget *p);
+  HoverToolButton (QWidget *parent = nullptr);
 
-  ~var_editor_tab_widget (void) = default;
+signals:
 
-  // No copying!
+  void hovered_signal (void);
 
-  var_editor_tab_widget (const var_editor_tab_widget&) = delete;
+  void popup_shown_signal (void);
 
-  var_editor_tab_widget& operator = (const var_editor_tab_widget&) = delete;
+protected:
 
-  tab_bar * get_tab_bar (void) const;
-
-  bool current_tab_has_focus (void) const;
-
-  QTextEdit *get_disp_view (void) const;
-  QTableView *get_edit_view (void) const;
+  bool eventFilter (QObject *obj, QEvent *ev);
 };
 
+class ReturnFocusToolButton : public HoverToolButton
+{
+  Q_OBJECT
+
+public:
+
+  ReturnFocusToolButton (QWidget *parent = nullptr);
+
+signals:
+
+  void about_to_activate (void);
+
+protected:
+
+  bool eventFilter (QObject *obj, QEvent *ev);
+};
+
+class ReturnFocusMenu : public QMenu
+{
+  Q_OBJECT
+
+public:
+
+  ReturnFocusMenu (QWidget *parent = nullptr);
+
+signals:
+
+  void about_to_activate (void);
+
+protected:
+
+  bool eventFilter (QObject *obj, QEvent *ev);
+};
 
 // The variable editor class
 
@@ -139,17 +246,7 @@ public:
 
   variable_editor& operator = (const variable_editor&) = delete;
 
-  void edit_variable (const QString& name, const octave_value& val);
-
-  QTableView *make_edit_view (var_editor_tab *page,
-                              variable_editor_model *model);
-
-  QTextEdit *make_disp_view (var_editor_tab *page,
-                             variable_editor_model *model);
-
   void refresh (void);
-
-  bool has_focus (void);
 
   static QList<QColor> default_colors (void);
 
@@ -157,31 +254,25 @@ public:
 
 public slots:
 
-  void callUpdate (const QModelIndex&,const QModelIndex&);
+  void callUpdate (const QModelIndex&, const QModelIndex&);
 
   void notice_settings (const QSettings *);
 
-protected slots:
+  void edit_variable (const QString& name, const octave_value& val);
 
-  void request_close_tab (bool);
-  void request_close_other_tabs (bool);
-  void request_close_all_tabs (bool);
+  void variable_destroyed (QObject *obj);
+
+  void variable_focused (const QString& name);
+
+  void record_hovered_focus_variable (void);
+
+  void restore_hovered_focus_variable (void);
+
+protected slots:
 
   void closeEvent (QCloseEvent *);
 
-  void closeTab (int idx);
-
-  void contextmenu_requested (const QPoint& pt);
-
-  void columnmenu_requested (const QPoint& pt);
-
-  void rowmenu_requested (const QPoint& pt);
-
-  void double_click (const QModelIndex& idx);
-
   void save (void);
-
-  void clearContent (void);
 
   void cutClipboard (void);
 
@@ -191,17 +282,11 @@ protected slots:
 
   void pasteTableClipboard (void);
 
-  void createVariable (void);
-
-  void transposeContent (void);
-
-  void up (void);
-
-  void delete_selected (void);
+  void levelUp (void);
 
   // Send command to Octave interpreter.
   // %1 in CMD is replaced with the value of selected_to_octave.
-  void relay_command (const QString& cmd);
+  void relay_selected_command (const QString& cmd);
 
 signals:
 
@@ -209,24 +294,34 @@ signals:
 
   void finished (void);
 
-  void command_requested (const QString& cmd);
+  void command_signal (const QString& cmd);
 
   void refresh_signal (void);
+
+  void clear_content_signal (void);
+
+  void copy_clipboard_signal (void);
+
+  void paste_clipboard_signal (void);
+
+  void paste_table_clipboard_signal (void);
+
+  void level_up_signal (void);
+
+  void save_signal (void);
+
+  void delete_selected_signal (void);
+
+  void selected_command_signal (const QString& cmd);
 
 private:
 
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                         const char *member);
 
-  void enable_actions (void);
-
-  QWidget *m_container;
+  QMainWindow *m_main;
 
   QToolBar *m_tool_bar;
-
-  var_editor_tab_widget *m_tab_widget;
-
-  tab_bar *m_tab_bar;
 
   int m_default_width;
 
@@ -248,21 +343,16 @@ private:
 
   QList<QColor> m_table_colors;
 
-  QAction *m_close_action;
-  QAction *m_close_others_action;
-  QAction *m_close_all_action;
-
-  QList<int> octave_to_coords (QString&);
-
-  // Get the real variable name from the tab text
-  QString real_var_name (int index);
-
-  // Convert selection to an Octave expression.
-  QString selected_to_octave (void);
-
   void update_colors (void);
 
+  QAction *add_tool_bar_button (const QIcon &icon, const QString &text,
+                                const QObject *receiver, const char *member);
+
   void construct_tool_bar (void);
+
+  QString m_current_focus_vname;
+
+  QString m_hovered_focus_vname;
 };
 
 #endif

@@ -279,15 +279,21 @@ signals:
 
   void description_changed (const QString& description);
 
+  void edit_variable_signal (const QString& name, const octave_value& val);
+
+public slots:
+
+  void update_data (const octave_value& val);
+
+  void update_data_cache (void);
+
+  void double_click (const QModelIndex& idx);
+
 private slots:
 
   void data_error (const QString& msg);
 
   void user_error (const QString& title, const QString& msg);
-
-  void update_data_cache (void);
-
-  void update_data (const octave_value& val);
 
 private:
 

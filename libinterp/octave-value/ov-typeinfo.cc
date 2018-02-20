@@ -113,7 +113,7 @@ namespace octave
 
         types.resize (dim_vector (len, 1), "");
 
-        vals.resize (dim_vector (len, 1), octave_value ());
+        vals.resize (dim_vector (len, 1), nullptr);
 
         unary_ops.resize
           (dim_vector (octave_value::num_unary_ops, len), nullptr);
@@ -143,7 +143,13 @@ namespace octave
 
     types (i) = t_name;
 
-    vals (i) = val;
+    // Yes, this object is intentionally not deleted in the destructor
+    // so that we avoid a crash on exit for user-defined data types.
+    // See bug #53156.  If that problem is properly fixed, then this
+    // could be stored as an object instead of a pointer to an object
+    // allocated with new.
+
+    vals(i) = new octave_value (val);
 
     num_types++;
 
@@ -475,7 +481,7 @@ namespace octave
       {
         if (nm == types(i))
           {
-            retval = vals(i);
+            retval = *vals(i);
             retval.make_unique ();
             break;
           }

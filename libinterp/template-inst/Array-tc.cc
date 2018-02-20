@@ -50,5 +50,8 @@ extern template class OCTAVE_API Array<std::string>;
 NO_INSTANTIATE_ARRAY_SORT (octave_value);
 INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
 
+NO_INSTANTIATE_ARRAY_SORT (octave_value *);
+INSTANTIATE_ARRAY (octave_value *, OCTINTERP_API);
+
 NO_INSTANTIATE_ARRAY_SORT (cdef_object);
 INSTANTIATE_ARRAY (cdef_object, OCTINTERP_API);

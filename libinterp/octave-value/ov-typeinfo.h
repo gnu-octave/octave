@@ -236,7 +236,7 @@ namespace octave
 
     Array<std::string> types;
 
-    Array<octave_value> vals;
+    Array<octave_value *> vals;
 
     Array<void *> unary_class_ops;
 

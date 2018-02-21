@@ -1785,6 +1785,27 @@ octave_print_free (std::ostream& os, const MT& m, bool pr_as_read_syntax)
     os << ']';
 }
 
+template <typename MT>
+static inline void
+pr_plus_format_matrix (std::ostream& os, const MT& m)
+{
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    {
+      for (octave_idx_type j = 0; j < nc; j++)
+        {
+          octave_quit ();
+
+          pr_plus_format (os, m(i,j));
+        }
+
+      if (i < nr - 1)
+        os << "\n";
+    }
+}
+
 void
 octave_print_internal (std::ostream& os, const Matrix& m,
                        bool pr_as_read_syntax, int extra_indent)
@@ -1795,20 +1816,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
   if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
-    {
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          for (octave_idx_type j = 0; j < nc; j++)
-            {
-              octave_quit ();
-
-              pr_plus_format (os, m(i,j));
-            }
-
-          if (i < nr - 1)
-            os << "\n";
-        }
-    }
+    pr_plus_format_matrix (os, m);
   else
     {
       int fw = 0;
@@ -1924,20 +1932,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
   if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
-    {
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          for (octave_idx_type j = 0; j < nc; j++)
-            {
-              octave_quit ();
-
-              pr_plus_format (os, m(i,j));
-            }
-
-          if (i < nr - 1)
-            os << "\n";
-        }
-    }
+    pr_plus_format_matrix (os, m);
   else
     {
       int fw;
@@ -2195,20 +2190,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
   if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
-    {
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          for (octave_idx_type j = 0; j < nc; j++)
-            {
-              octave_quit ();
-
-              pr_plus_format (os, cm(i,j));
-            }
-
-          if (i < nr - 1)
-            os << "\n";
-        }
-    }
+    pr_plus_format_matrix (os, cm);
   else
     {
       int r_fw, i_fw;
@@ -2326,20 +2308,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
   if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
-    {
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          for (octave_idx_type j = 0; j < nc; j++)
-            {
-              octave_quit ();
-
-              pr_plus_format (os, cm(i,j));
-            }
-
-          if (i < nr - 1)
-            os << "\n";
-        }
-    }
+    pr_plus_format_matrix (os, cm);
   else
     {
       int r_fw, i_fw;
@@ -2468,20 +2437,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
   if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
-    {
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          for (octave_idx_type j = 0; j < nc; j++)
-            {
-              octave_quit ();
-
-              pr_plus_format (os, m(i,j));
-            }
-
-          if (i < nr - 1)
-            os << "\n";
-        }
-    }
+    pr_plus_format_matrix (os, m);
   else
     {
       int fw = 2;
@@ -2661,16 +2617,7 @@ octave_print_internal (std::ostream& os, const Range& r,
   octave_idx_type num_elem = r.numel ();
 
   if (plus_format && ! pr_as_read_syntax)
-    {
-      for (octave_idx_type i = 0; i < num_elem; i++)
-        {
-          octave_quit ();
-
-          double val = base + i * increment;
-
-          pr_plus_format (os, val);
-        }
-    }
+    pr_plus_format_matrix (os, r);
   else
     {
       int fw = 0;
@@ -3078,9 +3025,7 @@ octave_print_internal_template (std::ostream& os,
                                 const octave_int<T>& val, bool)
 {
   if (plus_format)
-    {
-      pr_plus_format (os, val);
-    }
+    pr_plus_format (os, val);
   else
     {
       if (free_format)

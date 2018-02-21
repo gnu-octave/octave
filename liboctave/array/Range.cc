@@ -72,8 +72,10 @@ Range::matrix_value (void) const
 double
 Range::checkelem (octave_idx_type i) const
 {
+  // Ranges are row vectors.
+
   if (i < 0 || i >= rng_numel)
-    octave::err_index_out_of_range (1, 1, i+1, rng_numel);
+    octave::err_index_out_of_range (2, 2, i+1, rng_numel);
 
   if (i == 0)
     return rng_base;
@@ -81,6 +83,15 @@ Range::checkelem (octave_idx_type i) const
     return rng_base + i * rng_inc;
   else
     return rng_limit;
+}
+
+double
+Range::checkelem (octave_idx_type i, octave_idx_type j) const
+{
+  if (i != 0)
+    octave::err_index_out_of_range (1, 1, i+1, rng_numel);
+
+  return checkelem (j);
 }
 
 double
@@ -92,6 +103,12 @@ Range::elem (octave_idx_type i) const
     return rng_base + i * rng_inc;
   else
     return rng_limit;
+}
+
+double
+Range::elem (octave_idx_type i, octave_idx_type j) const
+{
+  return elem (j);
 }
 
 // Helper class used solely for idx_vector.loop () function call

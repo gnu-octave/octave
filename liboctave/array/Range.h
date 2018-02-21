@@ -84,6 +84,11 @@ public:
 
   octave_idx_type numel (void) const { return rng_numel; }
 
+  octave_idx_type rows (void) const { return 1; }
+
+  octave_idx_type cols (void) const { return numel (); }
+  octave_idx_type columns (void) const { return numel (); }
+
   bool isempty (void) const { return numel () == 0; }
 
   OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
@@ -116,10 +121,14 @@ public:
   // Support for single-index subscripting, without generating matrix cache.
 
   double checkelem (octave_idx_type i) const;
+  double checkelem (octave_idx_type i, octave_idx_type j) const;
 
   double elem (octave_idx_type i) const;
+  double elem (octave_idx_type i, octave_idx_type j) const;
 
   double operator () (octave_idx_type i) const { return elem (i); }
+  double operator () (octave_idx_type i, octave_idx_type j) const
+  { return elem (i, j); }
 
   Array<double> index (const idx_vector& i) const;
 

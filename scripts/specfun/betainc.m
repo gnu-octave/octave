@@ -108,6 +108,10 @@ function [y] = betainc (x, a, b, tail = "lower")
     b = double (b);
   endif
 
+  sz = size (x);
+  x = x(:);
+  a = a(:);
+  b = b(:);
   y = zeros (size (x));
 
   # If any of the argument is single, also the output should be
@@ -143,15 +147,15 @@ function [y] = betainc (x, a, b, tail = "lower")
   ## implemented in a separate .cc file. This particular continued fraction
   ## gives (B(a,b) * I_x(a,b)) / (x^a * (1-x)^b).
 
-  for i = 1 : numel (x)
-    f(i) = __betainc_lentz__ (x(i), a(i), b(i));
-  endfor
+  f = __betainc_lentz__ (x, a, b, strcmpi (class (x), "single"));
+
   # We divide the continued fraction by B(a,b) / (x^a * (1-x)^b)
   # to obtain I_x(a,b).
   y = a .* log (x) + b .* log1p (-x) + gammaln (a + b) - ...
     gammaln (a) - gammaln (b) + log (f);
   y = real (exp (y));
   y(flag) = 1 - y(flag);
+  y = reshape (y, sz);
 
 endfunction
 

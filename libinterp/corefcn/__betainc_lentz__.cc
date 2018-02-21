@@ -1,4 +1,6 @@
-// Copyright (C) 2017 Michele Ginesi
+// Copyright (C) 2017 Nir Krakauer
+// Copyright (C) 2018 Stefan Schlögl
+// Copyright (C) 2018 Michele Ginesi
 //
 // This file is part of Octave.
 //
@@ -19,88 +21,164 @@
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
-
 #include "defun.h"
+#include "fNDArray.h"
 
 DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta function")
 {
   int nargin = args.length ();
-
-  if (nargin != 3)
+  octave_value_list outargs;
+  if (nargin != 4)
     print_usage ();
   else
     {
-      octave_value x_arg = args(0);
-      octave_value a_arg = args(1);
-      octave_value b_arg = args(2);
-      if (x_arg.is_single_type () || a_arg.is_single_type () || b_arg.is_single_type ())
+      FloatNDArray x_arg_s = args(0).array_value ();
+      FloatNDArray a_arg_s = args(1).array_value ();
+      FloatNDArray b_arg_s = args(2).array_value ();
+      bool is_single = args(3).bool_value ();
+
+      // total number of scenarios: get maximum of length of all vectors
+      int len_x = x_arg_s.rows ();
+      int len_a = a_arg_s.rows ();
+      int len_b = b_arg_s.rows ();
+      int len = std::max(len_x, len_a);
+      len = std::max(len, len_b);
+
+      // input checks
+      if ((len_x != len) || (len_a != len) || (len_b != len))
+        error("__betainc_lentz__: expecting arguments of same dimension");
+
+      // initialize scenario dependent output:
+      dim_vector dim_scen (len, 1);
+      ColumnVector f (dim_scen);
+
+      if (! is_single)
         {
-          const float x = args(0).float_value ();
-          const float a = args(1).float_value ();
-          const float b = args(2).float_value ();
-          static const float tiny = pow (2, -50);
-          static const float eps = std::numeric_limits<float>::epsilon();
-          float f = tiny;
-          float C = f;
-          float D = 0;
-          float alpha_m = 1;
-          float beta_m = a - (a * (a+b)) / (a + 1) * x;
-          float x2 = x * x;
-          float Delta = 0;
-          int m = 1;
-          int maxit = 100;
-          while((std::abs(Delta - 1) > eps) & (m < maxit))
+          NDArray x_arg = args(0).array_value ();
+          NDArray a_arg = args(1).array_value ();
+          NDArray b_arg = args(2).array_value ();
+          NDArray x (dim_scen);
+          NDArray a (dim_scen);
+          NDArray b (dim_scen);
+
+          // initialize scenario dependent input values (idx either 0 or ii)
+          if (len_x == 1)
+            x.fill (x_arg(0));
+          else
+            x = x_arg;
+          //
+          if (len_a == 1)
+            a.fill (a_arg(0));
+          else
+            a = a_arg;
+          if (len_b == 1)
+            b.fill (b_arg(0));
+          else
+            b = b_arg;
+          static const double tiny = pow (2, -100);
+          static const double eps = std::numeric_limits<double>::epsilon();
+          double xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
+          int j, maxit;
+          maxit = 200;
+          // loop via all scenarios
+          for (octave_idx_type ii = 0; ii < len; ++ii)
             {
-               D = beta_m + alpha_m * D;
-               if (D == 0)
-                 D = tiny;
-               C = beta_m + alpha_m / C;
-               if (C == 0)
-                 C = tiny;
-               D = 1 / D;
-               Delta = C * D;
-               f *= Delta;
-               alpha_m = ((a + m - 1) * (a + b + m - 1) * (b - m) * m) / ((a + 2 * m - 1) * (a + 2 * m - 1)) * x2;
-               beta_m = a + 2 * m + ((m * (b - m)) / (a + 2 * m - 1) - ((a + m) * (a + b + m)) / (a + 2 * m + 1)) * x;
-               m++;
-             }
-           if (! error_state)
-            return octave_value (f);
+              // catch ctrl + c
+              OCTAVE_QUIT;
+              xj = x(ii);
+              y = tiny;
+              Cj = y;
+              Dj = 0;
+              aj = a(ii);
+              bj = b(ii);
+              Deltaj = 0;
+              alpha_j = 1;
+              beta_j = aj - (aj * (aj + bj)) / (aj + 1) * xj;
+              x2 = xj * xj;
+              j = 1;
+
+              while((std::abs ((Deltaj - 1))  > eps) & (j < maxit))
+                {
+                  Dj = beta_j + alpha_j * Dj;
+                  if (Dj == 0)
+                    Dj = tiny;
+                  Cj = beta_j + alpha_j / Cj;
+                  if (Cj == 0)
+                    Cj = tiny;
+                  Dj = 1 / Dj;
+                  Deltaj = Cj * Dj;
+                  y *= Deltaj;
+                  alpha_j = ((aj + j - 1) * (aj + bj + j - 1) * (bj - j) * j) / ((aj + 2 * j - 1) * (aj + 2 * j - 1)) * x2;
+                  beta_j = aj + 2 * j + ((j * (bj - j)) / (aj + 2 * j - 1) - ((aj + j) * (aj + bj + j)) / (aj + 2 * j + 1)) * xj;
+                  j++;
+                }
+              if (! error_state)
+                  f(ii) = y;
+            }
+          outargs(0) = f;
         }
       else
         {
-          const double x = args(0).double_value ();
-          const double a = args(1).double_value ();
-          const double b = args(2).double_value ();
-          static const double tiny = pow (2, -100);
-          static const double eps = std::numeric_limits<double>::epsilon();
-          double f = tiny;
-          double C = f;
-          double D = 0;
-          double alpha_m = 1;
-          double beta_m = a - (a * (a+b)) / (a + 1) * x;
-          double x2 = x * x;
-          double Delta = 0;
-          int m = 1;
-          int maxit = 200;
-          while((std::abs(Delta - 1) > eps) & (m < maxit))
+          FloatNDArray x_s (dim_scen);
+          FloatNDArray a_s (dim_scen);
+          FloatNDArray b_s (dim_scen);
+
+          // initialize scenario dependent input values (idx either 0 or ii)
+          if (len_x == 1)
+            x_s.fill (x_arg_s(0));
+          else
+            x_s = x_arg_s;
+          //
+          if (len_a == 1)
+            a_s.fill (a_arg_s(0));
+          else
+            a_s = a_arg_s;
+          if (len_b == 1)
+            b_s.fill (b_arg_s(0));
+          else
+            b_s = b_arg_s;
+          static const float tiny = pow (2, -50);
+          static const float eps = std::numeric_limits<float>::epsilon();
+          float xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
+          int j, maxit;
+          maxit = 200;
+          // loop via all scenarios
+          for (octave_idx_type ii = 0; ii < len; ++ii)
             {
-               D = beta_m + alpha_m * D;
-               if (D == 0)
-                 D = tiny;
-               C = beta_m + alpha_m / C;
-               if (C == 0)
-                 C = tiny;
-               D = 1 / D;
-               Delta = C * D;
-               f *= Delta;
-               alpha_m = ((a + m - 1) * (a + b + m - 1) * (b - m) * m) / ((a + 2 * m - 1) * (a + 2 * m - 1)) * x2;
-               beta_m = a + 2 * m + ((m * (b - m)) / (a + 2 * m - 1) - ((a + m) * (a + b + m)) / (a + 2 * m + 1)) * x;
-               m++;
-             }
-           if (! error_state)
-            return octave_value (f);
+              // catch ctrl + c
+              OCTAVE_QUIT;
+              xj = x_s(ii);
+              y = tiny;
+              Cj = y;
+              Dj = 0;
+              aj = a_s(ii);
+              bj = b_s(ii);
+              Deltaj = 0;
+              alpha_j = 1;
+              beta_j = aj - (aj * (aj + bj)) / (aj + 1) * xj;
+              x2 = xj * xj;
+              j = 1;
+
+              while((std::abs ((Deltaj - 1))  > eps) & (j < maxit))
+                {
+                  Dj = beta_j + alpha_j * Dj;
+                  if (Dj == 0)
+                    Dj = tiny;
+                  Cj = beta_j + alpha_j / Cj;
+                  if (Cj == 0)
+                    Cj = tiny;
+                  Dj = 1 / Dj;
+                  Deltaj = Cj * Dj;
+                  y *= Deltaj;
+                  alpha_j = ((aj + j - 1) * (aj + bj + j -1) * (bj - j) * j) / ((aj + 2 * j - 1) * (aj + 2 * j - 1)) * x2;
+                  beta_j = aj + 2 * j + ((j * (bj - j)) / (aj + 2 * j - 1) - ((aj + j) * (aj + bj + j)) / (aj + 2 * j + 1)) * xj;
+                  j++;
+                }
+              if (! error_state)
+                  f(ii) = y;
+            }
+          outargs(0) = f;
         }
-      }
-  return octave_value_list ();
+    }
+  return octave_value (outargs);
 }

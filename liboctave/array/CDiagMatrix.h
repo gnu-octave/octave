@@ -39,6 +39,10 @@ ComplexDiagMatrix : public MDiagArray2<Complex>
 {
 public:
 
+  typedef double real_elt_type;
+  typedef Complex complex_elt_type;
+  typedef Complex element_type;
+
   ComplexDiagMatrix (void) : MDiagArray2<Complex> () { }
 
   ComplexDiagMatrix (octave_idx_type r, octave_idx_type c)

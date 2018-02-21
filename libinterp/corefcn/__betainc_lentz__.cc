@@ -1,4 +1,3 @@
-// Copyright (C) 2017 Nir Krakauer
 // Copyright (C) 2018 Stefan Schlögl
 // Copyright (C) 2018 Michele Ginesi
 //

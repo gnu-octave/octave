@@ -62,8 +62,7 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
           if (len_x == 1)
             x.fill (x_arg(0));
           else
-          x = x_arg;
-          //
+            x = x_arg;
           if (len_a == 1)
             a.fill (a_arg(0));
           else
@@ -98,8 +97,8 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
                 }
               if (! error_state)
                   f(ii) = y;
-              outargs(0) = f;
             }
+          outargs(0) = f;
         }
       else
         {
@@ -111,7 +110,6 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
             x_s.fill (x_arg_s(0));
           else
           x_s = x_arg_s;
-          //
           if (len_a == 1)
             a_s.fill (a_arg_s(0));
           else
@@ -146,8 +144,8 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
                 }
               if (! error_state)
                   f(ii) = y;
-              outargs(0) = f;
             }
+          outargs(0) = f;
         }
     }
   return octave_value (outargs);

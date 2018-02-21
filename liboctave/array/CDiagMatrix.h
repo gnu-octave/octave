@@ -39,6 +39,8 @@ ComplexDiagMatrix : public MDiagArray2<Complex>
 {
 public:
 
+  typedef ComplexMatrix full_matrix_type;
+
   typedef double real_elt_type;
   typedef Complex complex_elt_type;
   typedef Complex element_type;

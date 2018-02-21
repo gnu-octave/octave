@@ -57,30 +57,46 @@ class octave_value;
 template <typename T> class intNDArray;
 
 extern float_display_format
-make_format (const Matrix& m, int& fw, double& scale);
+make_format (const Matrix& m, double& scale);
 
 extern float_display_format
-make_format (const FloatMatrix& m, int& fw, float& scale);
+make_format (const FloatMatrix& m, float& scale);
 
 template <typename T>
-extern float_display_format
-make_format (const std::complex<T>& c, int& r_fw, int& i_fw);
-
-extern float_display_format
-make_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
-
-extern float_display_format
-make_format (const FloatComplexMatrix& cm, int& r_fw, int& i_fw, double& scale);
-
-extern float_display_format
-make_format (const Range& r, int& fw, double& scale);
-
-template <typename MT>
 float_display_format
-make_format (const MT&)
+make_format (const std::complex<T>& c);
+
+extern float_display_format
+make_format (const ComplexMatrix& cm, double& scale);
+
+extern float_display_format
+make_format (const FloatComplexMatrix& cm, double& scale);
+
+extern float_display_format
+make_format (const Range& r, double& scale);
+
+template <typename T>
+float_display_format
+make_format (const T&)
 {
   return float_display_format ();
 }
+
+template <>
+float_display_format
+make_format (const double& d);
+
+template <>
+float_display_format
+make_format (const float& f);
+
+template <>
+float_display_format
+make_format (const std::complex<double>& c);
+
+template <>
+float_display_format
+make_format (const std::complex<float>& fc);
 
 template <>
 float_display_format
@@ -137,22 +153,6 @@ make_format (const intNDArray<octave_uint32>& nda);
 template <>
 float_display_format
 make_format (const intNDArray<octave_uint64>& nda);
-
-template <>
-float_display_format
-make_format (const double& d);
-
-template <>
-float_display_format
-make_format (const float& f);
-
-template <>
-float_display_format
-make_format (const Complex& c);
-
-template <>
-float_display_format
-make_format (const FloatComplex& c);
 
 template <>
 float_display_format

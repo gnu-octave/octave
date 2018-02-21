@@ -37,6 +37,8 @@ FloatDiagMatrix : public MDiagArray2<float>
 {
 public:
 
+  typedef FloatMatrix full_matrix_type;
+
   FloatDiagMatrix (void) : MDiagArray2<float> () { }
 
   FloatDiagMatrix (octave_idx_type r, octave_idx_type c)

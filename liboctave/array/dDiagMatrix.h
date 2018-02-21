@@ -37,6 +37,8 @@ DiagMatrix : public MDiagArray2<double>
 {
 public:
 
+  typedef Matrix full_matrix_type;
+
   DiagMatrix (void) : MDiagArray2<double> () { }
 
   DiagMatrix (octave_idx_type r, octave_idx_type c)

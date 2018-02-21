@@ -436,23 +436,28 @@ template <typename>
 struct pr_output_traits
 {
   static const int digits10;
+  static const int max_field_width;
 };
 
 template <>
 struct pr_output_traits<double>
 {
   static const int digits10;
+  static const int max_field_width;
 };
 
 const int pr_output_traits<double>::digits10 = 16;
+const int pr_output_traits<double>::max_field_width = 21;
 
 template <>
 struct pr_output_traits<float>
 {
   static const int digits10;
+  static const int max_field_width;
 };
 
 const int pr_output_traits<float>::digits10 = 8;
+const int pr_output_traits<float>::max_field_width = 13;
 
 // FIXME: it would be nice to share more code among these functions,..
 
@@ -517,7 +522,8 @@ make_real_format (int digits, bool inf_or_nan,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e || print_g || print_eng))
+      && (print_e || print_g || print_eng
+          || fw > pr_output_traits<T>::max_field_width))
     {
       if (print_g)
         fmt = float_format ();
@@ -663,7 +669,10 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e || print_eng || print_g))
+      && (print_e || print_eng || print_g
+          || (! Vfixed_point_format
+              && (ld + rd > pr_output_traits<T>::digits10
+                  || fw > pr_output_traits<T>::max_field_width))))
     {
       if (print_g)
         fmt = float_format ();
@@ -834,7 +843,11 @@ make_complex_format (int x_max, int x_min, int r_x,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e || print_eng || print_g))
+      && (print_e || print_eng || print_g
+          || (! Vfixed_point_format
+              && (ld + rd > pr_output_traits<T>::digits10
+                  || r_fw > pr_output_traits<T>::max_field_width
+                  || i_fw > pr_output_traits<T>::max_field_width))))
     {
       if (print_g)
         {
@@ -1040,7 +1053,11 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e || print_eng || print_g))
+      && (print_e || print_eng || print_g
+          || (! Vfixed_point_format
+              && (ld + rd > pr_output_traits<T>::digits10
+                  || r_fw > pr_output_traits<T>::max_field_width
+                  || i_fw > pr_output_traits<T>::max_field_width))))
     {
       if (print_g)
         {
@@ -1232,7 +1249,10 @@ make_range_format (int x_max, int x_min, int all_ints, int& fw)
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e || print_eng || print_g))
+      && (print_e || print_eng || print_g
+          || (! Vfixed_point_format
+              && (ld + rd > pr_output_traits<T>::digits10
+                  || fw > pr_output_traits<T>::max_field_width))))
     {
       if (print_g)
         fmt = float_format ();

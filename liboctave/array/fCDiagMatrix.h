@@ -39,6 +39,10 @@ FloatComplexDiagMatrix : public MDiagArray2<FloatComplex>
 {
 public:
 
+  typedef float real_elt_type;
+  typedef FloatComplex complex_elt_type;
+  typedef FloatComplex element_type;
+
   FloatComplexDiagMatrix (void) : MDiagArray2<FloatComplex> () { }
 
   FloatComplexDiagMatrix (octave_idx_type r,

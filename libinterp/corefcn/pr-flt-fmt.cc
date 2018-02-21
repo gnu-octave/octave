@@ -29,19 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-flt-fmt.h"
 #include "variables.h"
 
-// The maximum field width for a number printed by the default output
-// routines.
-static int Voutput_max_field_width = 10;
-
 // The precision of the numbers printed by the default output
 // routines.
 static int Voutput_precision = 5;
-
-int
-output_max_field_width (void)
-{
-  return Voutput_max_field_width;
-}
 
 int
 output_precision (void)
@@ -50,28 +40,19 @@ output_precision (void)
 }
 
 void
-set_output_prec_and_fw (int prec, int fw)
+set_output_prec (int prec)
 {
   Voutput_precision = prec;
-  Voutput_max_field_width = fw;
 }
 
-DEFUN (output_max_field_width, args, nargout,
+DEFUN (output_max_field_width, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} output_max_field_width ()
-@deftypefnx {} {@var{old_val} =} output_max_field_width (@var{new_val})
-@deftypefnx {} {} output_max_field_width (@var{new_val}, "local")
-Query or set the internal variable that specifies the maximum width
-of a numeric output field.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@seealso{format, fixed_point_format, output_precision}
+@deftypefn  {} {} output_max_field_width
+This function is obsolete and will be removed from a future version
+of Octave.
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_max_field_width, 0,
-                                            std::numeric_limits<int>::max ());
+  return octave_value (20);
 }
 
 DEFUN (output_precision, args, nargout,
@@ -82,12 +63,16 @@ DEFUN (output_precision, args, nargout,
 Query or set the internal variable that specifies the minimum number of
 significant figures to display for numeric output.
 
+Note that regardless of the value set for @code{output_precision}, the
+number of digits of precision displayed is limited to 16 for double
+precision values and 7 for single precision values.
+
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{format, fixed_point_format, output_max_field_width}
+
+@seealso{format, fixed_point_format}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1,
-                                            std::numeric_limits<int>::max ());
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, 0, 16);
 }

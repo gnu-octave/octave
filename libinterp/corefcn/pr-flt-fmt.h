@@ -37,19 +37,16 @@ class pr_formatted_float;
 template <typename T>
 class pr_rational_float;
 
-extern int output_max_field_width (void);
-
 extern int output_precision (void);
 
-extern void set_output_prec_and_fw (int prec, int fw);
+extern void set_output_prec (int prec);
 
 class
 float_format
 {
 public:
 
-  float_format (int w = output_max_field_width (),
-                int p = output_precision (), int f = 0)
+  float_format (int w = 0, int p = output_precision (), int f = 0)
     : fw (w), ex (0), prec (p), fmt (f), up (0), sp (0) { }
 
   float_format (int w, int e, int p, int f)

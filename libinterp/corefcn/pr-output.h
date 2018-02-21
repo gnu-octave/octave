@@ -56,10 +56,6 @@ class octave_value;
 
 template <typename T> class intNDArray;
 
-template <typename T>
-extern float_display_format
-make_format (T val, int& fw);
-
 extern float_display_format
 make_format (const Matrix& m, int& fw, double& scale);
 
@@ -240,12 +236,12 @@ octave_print_internal (std::ostream& os, const Matrix& m,
                        int extra_indent = 0);
 
 extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, const DiagMatrix& m,
+octave_print_internal (std::ostream& os, const FloatMatrix& m,
                        bool pr_as_read_syntax = false,
                        int extra_indent = 0);
 
 extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, const FloatMatrix& m,
+octave_print_internal (std::ostream& os, const DiagMatrix& m,
                        bool pr_as_read_syntax = false,
                        int extra_indent = 0);
 

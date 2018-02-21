@@ -432,7 +432,31 @@ pr_min_internal (const MArray<T>& m)
   return result;
 }
 
+template <typename>
+struct pr_output_traits
+{
+  static const int digits10;
+};
+
+template <>
+struct pr_output_traits<double>
+{
+  static const int digits10;
+};
+
+const int pr_output_traits<double>::digits10 = 16;
+
+template <>
+struct pr_output_traits<float>
+{
+  static const int digits10;
+};
+
+const int pr_output_traits<float>::digits10 = 8;
+
 // FIXME: it would be nice to share more code among these functions,..
+
+// Works for double and float.
 
 template <typename T>
 static inline float_display_format
@@ -441,7 +465,7 @@ make_real_format (int digits, bool inf_or_nan,
 {
   float_format fmt;
 
-  int prec = output_precision ();
+  int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
   int ld, rd;
 
@@ -493,7 +517,7 @@ make_real_format (int digits, bool inf_or_nan,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (fw > output_max_field_width () || print_e || print_g || print_eng))
+      && (print_e || print_g || print_eng))
     {
       if (print_g)
         fmt = float_format ();
@@ -531,6 +555,8 @@ make_real_format (int digits, bool inf_or_nan,
   return float_display_format (fmt);
 }
 
+// Works for double and float.
+
 template <typename T>
 float_display_format
 make_format (T val, int& fw)
@@ -556,7 +582,7 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
 {
   float_format fmt;
 
-  int prec = output_precision ();
+  int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
   int ld, rd;
 
@@ -637,9 +663,7 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e
-          || print_eng || print_g
-          || (! Vfixed_point_format && fw > output_max_field_width ())))
+      && (print_e || print_eng || print_g))
     {
       if (print_g)
         fmt = float_format ();
@@ -724,7 +748,7 @@ make_complex_format (int x_max, int x_min, int r_x,
   float_format r_fmt;
   float_format i_fmt;
 
-  int prec = output_precision ();
+  int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
   int ld, rd;
 
@@ -810,7 +834,7 @@ make_complex_format (int x_max, int x_min, int r_x,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (r_fw > output_max_field_width () || print_e || print_eng || print_g))
+      && (print_e || print_eng || print_g))
     {
       if (print_g)
         {
@@ -919,7 +943,7 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
   float_format r_fmt;
   float_format i_fmt;
 
-  int prec = output_precision ();
+  int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
   int ld, rd;
 
@@ -1016,9 +1040,7 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e
-          || print_eng || print_g
-          || (! Vfixed_point_format && r_fw > output_max_field_width ())))
+      && (print_e || print_eng || print_g))
     {
       if (print_g)
         {
@@ -1137,7 +1159,7 @@ make_range_format (int x_max, int x_min, int all_ints, int& fw)
 {
   float_format fmt;
 
-  int prec = output_precision ();
+  int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
   int ld, rd;
 
@@ -1210,9 +1232,7 @@ make_range_format (int x_max, int x_min, int all_ints, int& fw)
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (print_e
-          || print_eng || print_g
-          || (! Vfixed_point_format && fw > output_max_field_width ())))
+      && (print_e || print_eng || print_g))
     {
       if (print_g)
         fmt = float_format ();
@@ -1864,9 +1884,10 @@ pr_plus_format_matrix (std::ostream& os, const MT& m)
     }
 }
 
-void
-octave_print_internal (std::ostream& os, const Matrix& m,
-                       bool pr_as_read_syntax, int extra_indent)
+template <typename MT>
+static void
+octave_print_real_matrix_internal (std::ostream& os, const MT& m,
+                                   bool pr_as_read_syntax, int extra_indent)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -1878,7 +1899,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
   else
     {
       int fw = 0;
-      double scale = 1;
+      typename MT::element_type scale = 1;
       float_display_format fmt = make_format (m, fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
@@ -1980,9 +2001,10 @@ octave_print_internal (std::ostream& os, const Matrix& m,
     }
 }
 
-void
-octave_print_internal (std::ostream& os, const DiagMatrix& m,
-                       bool pr_as_read_syntax, int extra_indent)
+template <typename DMT>
+static void
+octave_print_real_diag_matrix_internal (std::ostream& os, const DMT& m,
+                                        bool pr_as_read_syntax, int extra_indent)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -1994,7 +2016,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
   else
     {
       int fw;
-      double scale = 1;
+      typename DMT::element_type scale = 1;
       float_display_format fmt = make_format (Matrix (m.diag ()), fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
@@ -2071,7 +2093,8 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
           int zero_fw;
           {
             std::ostringstream tmp_oss;
-            pr_float (tmp_oss, fmt, 0.0, fw, scale);
+            typename DMT::element_type zero = 0;
+            pr_float (tmp_oss, fmt, zero, fw, scale);
             zero_fw = tmp_oss.str ().length ();
           }
 
@@ -2201,6 +2224,24 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
     }
 }
 
+void
+octave_print_internal (std::ostream& os, const FloatNDArray& nda,
+                       bool pr_as_read_syntax, int extra_indent)
+{
+  switch (nda.ndims ())
+    {
+    case 1:
+    case 2:
+      octave_print_internal (os, FloatMatrix (nda),
+                             pr_as_read_syntax, extra_indent);
+      break;
+
+    default:
+      print_nd_array <FloatNDArray, float, FloatMatrix> (os, nda, pr_as_read_syntax);
+      break;
+    }
+}
+
 template <typename T>
 static inline void
 pr_plus_format (std::ostream& os, const std::complex<T>& c)
@@ -2255,9 +2296,10 @@ octave_print_internal (std::ostream& os, const float_display_format& fmt,
     }
 }
 
-void
-octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
-                       bool pr_as_read_syntax, int extra_indent)
+template <typename MT>
+static void
+octave_print_complex_matrix_internal (std::ostream& os, const MT& cm,
+                                      bool pr_as_read_syntax, int extra_indent)
 {
   octave_idx_type nr = cm.rows ();
   octave_idx_type nc = cm.columns ();
@@ -2269,7 +2311,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
   else
     {
       int r_fw, i_fw;
-      double scale = 1;
+      typename MT::real_elt_type scale = 1;
       float_display_format fmt = make_format (cm, r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
       column_width += (rat_format || bank_format || hex_format
@@ -2373,9 +2415,10 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
     }
 }
 
-void
-octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
-                       bool pr_as_read_syntax, int extra_indent)
+template <typename DMT>
+static void
+octave_print_complex_diag_matrix_internal (std::ostream& os, const DMT& cm,
+                                           bool pr_as_read_syntax, int extra_indent)
 {
   octave_idx_type nr = cm.rows ();
   octave_idx_type nc = cm.columns ();
@@ -2387,7 +2430,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
   else
     {
       int r_fw, i_fw;
-      double scale = 1;
+      typename DMT::real_elt_type scale = 1;
       float_display_format fmt
         = make_format (ComplexMatrix (cm.diag ()), r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
@@ -2467,7 +2510,8 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
           int zero_fw;
           {
             std::ostringstream tmp_oss;
-            pr_complex (tmp_oss, fmt, Complex (0), r_fw, i_fw, scale);
+            typename DMT::element_type zero = 0;
+            pr_complex (tmp_oss, fmt, zero, r_fw, i_fw, scale);
             zero_fw = tmp_oss.str ().length ();
           }
 
@@ -2635,51 +2679,81 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
     }
 }
 
+void
+octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
+                       bool pr_as_read_syntax, int extra_indent)
+{
+  switch (nda.ndims ())
+    {
+    case 1:
+    case 2:
+      octave_print_internal (os, FloatComplexMatrix (nda),
+                             pr_as_read_syntax, extra_indent);
+      break;
+
+    default:
+      print_nd_array <FloatComplexNDArray, FloatComplex, FloatComplexMatrix>
+                     (os, nda, pr_as_read_syntax);
+      break;
+    }
+}
+
 // FIXME: write single precision versions of the printing functions.
+
+void
+octave_print_internal (std::ostream& os, const Matrix& m,
+                       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_print_real_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
+}
 
 void
 octave_print_internal (std::ostream& os, const FloatMatrix& m,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, Matrix (m), pr_as_read_syntax, extra_indent);
+  octave_print_real_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
+}
+
+void
+octave_print_internal (std::ostream& os, const DiagMatrix& m,
+                       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_print_real_diag_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatDiagMatrix& m,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, DiagMatrix (m), pr_as_read_syntax, extra_indent);
+  octave_print_real_diag_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
 }
 
 void
-octave_print_internal (std::ostream& os, const FloatNDArray& nda,
+octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, NDArray (nda), pr_as_read_syntax, extra_indent);
+  octave_print_complex_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatComplexMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, ComplexMatrix (cm), pr_as_read_syntax,
-                         extra_indent);
+  octave_print_complex_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
+}
+
+void
+octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
+                       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_print_complex_diag_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatComplexDiagMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, ComplexDiagMatrix (cm), pr_as_read_syntax,
-                         extra_indent);
-}
-
-void
-octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
-                       bool pr_as_read_syntax, int extra_indent)
-{
-  octave_print_internal (os, ComplexNDArray (nda), pr_as_read_syntax,
-                         extra_indent);
+  octave_print_complex_diag_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
 }
 
 void
@@ -3690,7 +3764,7 @@ init_format_state (void)
   print_eng = false;
 }
 
-static inline std::string format_string ("short");
+static std::string format_string ("short");
 
 static inline void
 set_format_style (int argc, const string_vector& argv)
@@ -3743,39 +3817,39 @@ set_format_style (int argc, const string_vector& argv)
           else
             init_format_state ();
 
-          set_output_prec_and_fw (5, 10);
+          set_output_prec (5);
         }
       else if (arg == "shorte")
         {
           init_format_state ();
           print_e = true;
-          set_output_prec_and_fw (5, 10);
+          set_output_prec (5);
         }
       else if (arg == "shortE")
         {
           init_format_state ();
           print_e = true;
           print_big_e = true;
-          set_output_prec_and_fw (5, 10);
+          set_output_prec (5);
         }
       else if (arg == "shortg")
         {
           init_format_state ();
           print_g = true;
-          set_output_prec_and_fw (5, 10);
+          set_output_prec (5);
         }
       else if (arg == "shortG")
         {
           init_format_state ();
           print_g = true;
           print_big_e = true;
-          set_output_prec_and_fw (5, 10);
+          set_output_prec (5);
         }
       else if (arg == "shortEng")
         {
           init_format_state ();
           print_eng = true;
-          set_output_prec_and_fw (5, 10);
+          set_output_prec (5);
         }
       else if (arg == "long")
         {
@@ -3817,39 +3891,39 @@ set_format_style (int argc, const string_vector& argv)
           else
             init_format_state ();
 
-          set_output_prec_and_fw (15, 20);
+          set_output_prec (16);
         }
       else if (arg == "longe")
         {
           init_format_state ();
           print_e = true;
-          set_output_prec_and_fw (15, 20);
+          set_output_prec (16);
         }
       else if (arg == "longE")
         {
           init_format_state ();
           print_e = true;
           print_big_e = true;
-          set_output_prec_and_fw (15, 20);
+          set_output_prec (16);
         }
       else if (arg == "longg")
         {
           init_format_state ();
           print_g = true;
-          set_output_prec_and_fw (15, 20);
+          set_output_prec (16);
         }
       else if (arg == "longG")
         {
           init_format_state ();
           print_g = true;
           print_big_e = true;
-          set_output_prec_and_fw (15, 20);
+          set_output_prec (16);
         }
       else if (arg == "longEng")
         {
           init_format_state ();
           print_eng = true;
-          set_output_prec_and_fw (15, 20);
+          set_output_prec (16);
         }
       else if (arg == "hex")
         {
@@ -3925,7 +3999,7 @@ set_format_style (int argc, const string_vector& argv)
   else
     {
       init_format_state ();
-      set_output_prec_and_fw (5, 10);
+      set_output_prec (5);
       format = "short";
     }
 
@@ -3954,16 +4028,10 @@ table.
 
 @table @code
 @item short
-Fixed point format with 5 significant figures in a field that is a maximum of
-10 characters wide.  (default).
-
-If Octave is unable to format a matrix so that columns line up on the decimal
-point and all numbers fit within the maximum field width then it switches to an
-exponential @samp{e} format.
+Fixed point format with 5 significant figures (default).
 
 @item long
-Fixed point format with 15 significant figures in a field that is a maximum of
-20 characters wide.
+Fixed point format with 16 significant figures.
 
 As with the @samp{short} format, Octave will switch to an exponential @samp{e}
 format if it is unable to format a matrix properly using the current format.
@@ -3972,14 +4040,15 @@ format if it is unable to format a matrix properly using the current format.
 @itemx long e
 Exponential format.  The number to be represented is split between a mantissa
 and an exponent (power of 10).  The mantissa has 5 significant digits in the
-short format and 15 digits in the long format.  For example, with the
-@samp{short e} format, @code{pi} is displayed as @code{3.1416e+00}.
+short format.  In the long format, double values are displayed with 16
+significant digits and single values are displayed with 8.  For example,
+with the @samp{short e} format, @code{pi} is displayed as @code{3.1416e+00}.
 
 @item  short E
 @itemx long E
 Identical to @samp{short e} or @samp{long e} but displays an uppercase @samp{E}
 to indicate the exponent.  For example, with the @samp{long E} format,
-@code{pi} is displayed as @code{3.14159265358979E+00}.
+@code{pi} is displayed as @code{3.141592653589793E+00}.
 
 @item  short g
 @itemx long g
@@ -4003,7 +4072,7 @@ ans =
 @itemx long eng
 Identical to @samp{short e} or @samp{long e} but displays the value using an
 engineering format, where the exponent is divisible by 3.  For example, with
-the @samp{short eng} format, @code{10 * pi} is displayed as @code{31.4159e+00}.
+the @samp{short eng} format, @code{10 * pi} is displayed as @code{31.416e+00}.
 
 @item  long G
 @itemx short G
@@ -4104,7 +4173,7 @@ produce a more readable output with less data per page.  (default).
 If called with one or two output arguments, and no inputs, return the current
 format and format spacing.
 
-@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}
+@seealso{fixed_point_format, output_precision, split_long_rows, print_empty_dimensions, rats}
 @end deftypefn */)
 {
   octave_value_list retval (std::min (nargout, 2));
@@ -4135,7 +4204,9 @@ format and format spacing.
 %!   ## Test one of the formats
 %!   format long;
 %!   str = disp (pi);
-%!   assert (str, " 3.14159265358979\n");
+%!   assert (str, " 3.141592653589793\n");
+%!   str = disp (single (pi));
+%!   assert (str, " 3.1415927\n");
 %!   new_fmt = format ();
 %!   assert (new_fmt, "long");
 %!   ## Test resetting format
@@ -4187,7 +4258,7 @@ of the possibility for confusion you should be careful about enabling
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{format, output_max_field_width, output_precision}
+@seealso{format, output_precision}
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (fixed_point_format);

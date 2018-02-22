@@ -471,7 +471,7 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
 
   int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
-  int fw, ld, rd;
+  int fw = 0, ld = 0, rd = 0;
 
   if (rat_format)
     {
@@ -500,7 +500,12 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
       fw = 1 + digits;
       if (inf_or_nan && fw < 4)
         fw = 4;
-      rd = fw;
+
+      if (int_only)
+        {
+          ld = digits;
+          rd = 0;
+        }
     }
   else
     {
@@ -522,6 +527,7 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
 
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e || print_g || print_eng
+          || ld + rd > pr_output_traits<T>::digits10
           || fw > pr_output_traits<T>::max_field_width))
     {
       if (print_g)
@@ -553,7 +559,7 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
         fmt.uppercase ();
     }
   else if (! bank_format && (inf_or_nan || int_only))
-    fmt = float_format (fw, rd);
+    fmt = float_format (fw, ld);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
@@ -606,7 +612,7 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
 
   int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
-  int fw, ld, rd;
+  int fw = 0, ld = 0, rd = 0;
 
   if (rat_format)
     {
@@ -777,7 +783,7 @@ make_complex_format (int x_max, int x_min, int r_x,
 
   int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
-  int i_fw, r_fw, ld, rd;
+  int i_fw = 0, r_fw = 0, ld = 0, rd = 0;
 
   if (rat_format)
     {
@@ -816,7 +822,12 @@ make_complex_format (int x_max, int x_min, int r_x,
           i_fw = 3;
           r_fw = 4;
         }
-      rd = r_fw;
+
+      if (int_only)
+        {
+          ld = digits;
+          rd = 0;
+        }
     }
   else
     {
@@ -862,10 +873,9 @@ make_complex_format (int x_max, int x_min, int r_x,
 
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e || print_eng || print_g
-          || (! Vfixed_point_format
-              && (ld + rd > pr_output_traits<T>::digits10
-                  || r_fw > pr_output_traits<T>::max_field_width
-                  || i_fw > pr_output_traits<T>::max_field_width))))
+          || ld + rd > pr_output_traits<T>::digits10
+          || r_fw > pr_output_traits<T>::max_field_width
+          || i_fw > pr_output_traits<T>::max_field_width))
     {
       if (print_g)
         {
@@ -912,8 +922,8 @@ make_complex_format (int x_max, int x_min, int r_x,
     }
   else if (! bank_format && (inf_or_nan || int_only))
     {
-      r_fmt = float_format (r_fw, rd);
-      i_fmt = float_format (i_fw, rd);
+      r_fmt = float_format (r_fw, ld);
+      i_fmt = float_format (i_fw, ld);
     }
   else
     {
@@ -992,7 +1002,7 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
 
   int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
-  int i_fw, r_fw, ld, rd;
+  int i_fw = 0, r_fw = 0, ld = 0, rd = 0;
 
   if (rat_format)
     {
@@ -1223,7 +1233,7 @@ make_range_format (int x_max, int x_min, int all_ints)
 
   int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
 
-  int fw, ld, rd;
+  int fw = 0, ld = 0, rd = 0;
 
   if (rat_format)
     {

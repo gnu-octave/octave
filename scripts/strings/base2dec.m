@@ -105,9 +105,9 @@ function out = base2dec (s, base)
   ## Lookup value of symbols in symbol table, with invalid symbols
   ## evaluating to NaN and space evaluating to 0.
   table = NaN (1, 256);
-  table(toascii (symbols(1:base))) = 0 : base-1;
-  table(toascii (" ")) = 0;
-  s = reshape (table(toascii (s)), size (s));
+  table(double (symbols(1:base))) = 0 : base-1;
+  table(double (" ")) = 0;
+  s = reshape (table(double (s)), size (s));
 
   ## Multiply the resulting digits by the appropriate power
   ## and sum the rows.

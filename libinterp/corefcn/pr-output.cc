@@ -465,8 +465,7 @@ const int pr_output_traits<float>::max_field_width = 13;
 
 template <typename T>
 static inline float_display_format
-make_real_format (int digits, bool inf_or_nan,
-                  bool int_only)
+make_real_format (int digits, bool inf_or_nan, bool int_only)
 {
   float_format fmt;
 
@@ -600,6 +599,9 @@ static inline float_display_format
 make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
                          int int_or_inf_or_nan)
 {
+  T scale = ((x_max == 0 || int_or_inf_or_nan)
+             ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
+
   float_format fmt;
 
   int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
@@ -720,12 +722,12 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
-  return float_display_format (fmt);
+  return float_display_format (scale, fmt);
 }
 
-template <typename MT, typename ELT_T>
+template <typename MT>
 static inline float_display_format
-make_format_internal (const MT& m, ELT_T& scale)
+make_matrix_format (const MT& m)
 {
   assert (m.ndims () == 2);
 
@@ -737,6 +739,9 @@ make_format_internal (const MT& m, ELT_T& scale)
   bool int_or_inf_or_nan = m.all_elements_are_int_or_inf_or_nan ();
 
   MT m_abs = m.abs ();
+
+  typedef typename MT::element_type ELT_T;
+
   ELT_T max_abs = pr_max_internal (m_abs);
   ELT_T min_abs = pr_min_internal (m_abs);
 
@@ -744,23 +749,22 @@ make_format_internal (const MT& m, ELT_T& scale)
 
   int x_min = (min_abs == 0 ? 0 : num_digits (min_abs));
 
-  scale = ((x_max == 0 || int_or_inf_or_nan)
-           ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
-
   return make_real_matrix_format<ELT_T> (x_max, x_min, inf_or_nan,
                                          int_or_inf_or_nan);
 }
 
+template <>
 float_display_format
-make_format (const Matrix& m, double& scale)
+make_format (const Matrix& m)
 {
-  return make_format_internal<Matrix, double> (m, scale);
+  return make_matrix_format (m);
 }
 
+template <>
 float_display_format
-make_format (const FloatMatrix& m, float& scale)
+make_format (const FloatMatrix& m)
 {
-  return make_format_internal<FloatMatrix, float> (m, scale);
+  return make_matrix_format (m);
 }
 
 template <typename T>
@@ -980,6 +984,9 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
                             int r_x_min, bool inf_or_nan,
                             int int_or_inf_or_nan)
 {
+  T scale = ((x_max == 0 || int_or_inf_or_nan)
+             ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
+
   float_format r_fmt;
   float_format i_fmt;
 
@@ -1140,15 +1147,18 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
       i_fmt = float_format (i_fw, rd, std::ios::fixed);
     }
 
-  return float_display_format (r_fmt, i_fmt);
+  return float_display_format (scale, r_fmt, i_fmt);
 }
 
-template <typename CMT, typename RMT, typename ELT_T>
+template <typename CMT>
 static inline float_display_format
-make_format_internal (const CMT& cm, ELT_T& scale)
+make_complex_matrix_format (const CMT& cm)
 {
   if (free_format)
     return float_display_format ();
+
+  typedef typename CMT::real_matrix_type RMT;
+  typedef typename CMT::real_elt_type ELT_T;
 
   RMT rp = real (cm);
   RMT ip = imag (cm);
@@ -1177,29 +1187,38 @@ make_format_internal (const CMT& cm, ELT_T& scale)
   int x_max = (r_x_max > i_x_max ? r_x_max : i_x_max);
   int x_min = (r_x_min > i_x_min ? r_x_min : i_x_min);
 
-  scale = ((x_max == 0 || int_or_inf_or_nan)
-           ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
-
   return make_complex_matrix_format<ELT_T> (x_max, x_min, r_x_max, r_x_min,
                                             inf_or_nan, int_or_inf_or_nan);
 }
 
+template <>
 float_display_format
-make_format (const ComplexMatrix& cm, double& scale)
+make_format (const ComplexMatrix& cm)
 {
-  return make_format_internal<ComplexMatrix, Matrix, double> (cm, scale);
+  return make_complex_matrix_format (cm);
 }
 
+template <>
 float_display_format
-make_format (const FloatComplexMatrix& cm, float& scale)
+make_format (const FloatComplexMatrix& cm)
 {
-  return make_format_internal<FloatComplexMatrix, FloatMatrix, float> (cm, scale);
+  return make_complex_matrix_format (cm);
+}
+
+template <>
+float_display_format
+make_format (const boolNDArray&)
+{
+  return float_display_format (float_format (1, 1));
 }
 
 template <typename T>
 static inline float_display_format
 make_range_format (int x_max, int x_min, int all_ints)
 {
+  double scale = ((x_max == 0 || all_ints)
+                  ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
+
   float_format fmt;
 
   int prec = std::min (output_precision (), pr_output_traits<T>::digits10);
@@ -1308,11 +1327,12 @@ make_range_format (int x_max, int x_min, int all_ints)
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
-  return float_display_format (fmt);
+  return float_display_format (scale, fmt);
 }
 
+template <>
 float_display_format
-make_format (const Range& r, double& scale)
+make_format (const Range& r)
 {
   if (free_format)
     return float_display_format ();
@@ -1335,9 +1355,6 @@ make_format (const Range& r, double& scale)
   int x_max = (max_abs == 0 ? 0 : num_digits (max_abs));
 
   int x_min = (min_abs == 0 ? 0 : num_digits (min_abs));
-
-  scale = ((x_max == 0 || all_ints)
-           ? 1 : std::pow (10.0, calc_scale_exp (x_max - 1)));
 
   return make_range_format<double> (x_max, x_min, all_ints);
 }
@@ -1498,9 +1515,10 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
 
 template <typename T>
 static inline void
-pr_float (std::ostream& os, const float_display_format& fmt, T val,
-          T scale = 1)
+pr_float (std::ostream& os, const float_display_format& fmt, T val)
 {
+  double scale = fmt.scale_factor ();
+
   if (Vfixed_point_format && ! print_g && scale != 1)
     val /= scale;
 
@@ -1517,8 +1535,15 @@ pr_imag_float (std::ostream& os, const float_display_format& fmt, T val)
 template <typename T>
 static inline void
 pr_complex (std::ostream& os, const float_display_format& fmt,
-            const std::complex<T>& cval, T scale = 1)
+            const std::complex<T>& cval)
 {
+  // FIXME: should we range check this value?  It is stored as a double
+  // to simplify the implementation, but should always correspond to the
+  // type of value we are displaying.
+
+  double dscale = fmt.scale_factor ();
+  T scale = static_cast<T> (dscale);
+
   std::complex<T> tmp
     = ((Vfixed_point_format && ! print_g && scale != 1)
        ? cval / scale : cval);
@@ -1588,9 +1613,8 @@ print_empty_nd_array (std::ostream& os, const dim_vector& dims,
     }
 }
 
-template <typename T>
 static inline void
-pr_scale_header (std::ostream& os, T scale)
+pr_scale_header (std::ostream& os, double scale)
 {
   if (Vfixed_point_format && ! print_g && scale != 1)
     {
@@ -1649,53 +1673,6 @@ pr_plus_format (std::ostream& os, const T& val)
     os << plus_format_chars[1];
   else
     os << plus_format_chars[2];
-}
-
-template <>
-float_display_format
-make_format (const Range& rng)
-{
-  double scale = 0;
-  return make_format (rng, scale);
-}
-
-template <>
-float_display_format
-make_format (const NDArray& nda)
-{
-  double scale = 0;
-  return make_format (Matrix (nda), scale);
-}
-
-template <>
-float_display_format
-make_format (const FloatNDArray& nda)
-{
-  float scale = 0;
-  return make_format (FloatMatrix (nda), scale);
-}
-
-template <>
-float_display_format
-make_format (const ComplexNDArray& nda)
-{
-  double scale = 0;
-  return make_format (ComplexMatrix (nda), scale);
-}
-
-template <>
-float_display_format
-make_format (const FloatComplexNDArray& nda)
-{
-  float scale = 0;
-  return make_format (FloatComplexMatrix (nda), scale);
-}
-
-template <>
-float_display_format
-make_format (const boolNDArray&)
-{
-  return float_display_format (float_format (1, 1));
 }
 
 // FIXME: all this mess with abs is an attempt to avoid seeing
@@ -1903,8 +1880,7 @@ octave_print_real_matrix_internal (std::ostream& os, const MT& m,
     pr_plus_format_matrix (os, m);
   else
     {
-      typename MT::element_type scale = 1;
-      float_display_format fmt = make_format (m, scale);
+      float_display_format fmt = make_format (m);
       int fw = fmt.real_format().fw;
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
@@ -1976,7 +1952,7 @@ octave_print_real_matrix_internal (std::ostream& os, const MT& m,
         {
           octave::preserve_stream_state stream_state (os);
 
-          pr_scale_header (os, scale);
+          pr_scale_header (os, fmt.scale_factor ());
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
@@ -1995,7 +1971,7 @@ octave_print_real_matrix_internal (std::ostream& os, const MT& m,
 
                       os << "  ";
 
-                      pr_float (os, fmt, m(i,j), scale);
+                      pr_float (os, fmt, m(i,j));
                     }
 
                   if (i < nr - 1)
@@ -2020,9 +1996,8 @@ octave_print_real_diag_matrix_internal (std::ostream& os, const DMT& m,
     pr_plus_format_matrix (os, m);
   else
     {
-      typename DMT::element_type scale = 1;
       float_display_format fmt
-        = make_format (typename DMT::full_matrix_type (m.diag ()), scale);
+        = make_format (typename DMT::full_matrix_type (m.diag ()));
       int fw = fmt.real_format().fw;
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
@@ -2093,14 +2068,14 @@ octave_print_real_diag_matrix_internal (std::ostream& os, const DMT& m,
           if (! Vcompact_format)
             os << "\n";
 
-          pr_scale_header (os, scale);
+          pr_scale_header (os, fmt.scale_factor ());
 
           // kluge.  Get the true width of a number.
           int zero_fw;
           {
             std::ostringstream tmp_oss;
             typename DMT::element_type zero = 0;
-            pr_float (tmp_oss, fmt, zero, scale);
+            pr_float (tmp_oss, fmt, zero);
             zero_fw = tmp_oss.str ().length ();
           }
 
@@ -2122,7 +2097,7 @@ octave_print_real_diag_matrix_internal (std::ostream& os, const DMT& m,
                       os << "  ";
 
                       if (i == j)
-                        pr_float (os, fmt, m(i,j), scale);
+                        pr_float (os, fmt, m(i,j));
                       else
                         os << std::setw (zero_fw) << '0';
 
@@ -2316,8 +2291,7 @@ octave_print_complex_matrix_internal (std::ostream& os, const MT& cm,
     pr_plus_format_matrix (os, cm);
   else
     {
-      typename MT::real_elt_type scale = 1;
-      float_display_format fmt = make_format (cm, scale);
+      float_display_format fmt = make_format (cm);
       int r_fw = fmt.real_format().fw;
       int i_fw = fmt.imag_format().fw;
       int column_width = i_fw + r_fw;
@@ -2392,7 +2366,7 @@ octave_print_complex_matrix_internal (std::ostream& os, const MT& cm,
         {
           octave::preserve_stream_state stream_state (os);
 
-          pr_scale_header (os, scale);
+          pr_scale_header (os, fmt.scale_factor ());
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
@@ -2411,7 +2385,7 @@ octave_print_complex_matrix_internal (std::ostream& os, const MT& cm,
 
                       os << "  ";
 
-                      pr_complex (os, fmt, cm(i,j), scale);
+                      pr_complex (os, fmt, cm(i,j));
                     }
 
                   if (i < nr - 1)
@@ -2436,9 +2410,8 @@ octave_print_complex_diag_matrix_internal (std::ostream& os, const DMT& cm,
     pr_plus_format_matrix (os, cm);
   else
     {
-      typename DMT::real_elt_type scale = 1;
       float_display_format fmt
-        = make_format (typename DMT::full_matrix_type (cm.diag ()), scale);
+        = make_format (typename DMT::full_matrix_type (cm.diag ()));
       int r_fw = fmt.real_format().fw;
       int i_fw = fmt.imag_format().fw;
       int column_width = i_fw + r_fw;
@@ -2512,14 +2485,14 @@ octave_print_complex_diag_matrix_internal (std::ostream& os, const DMT& cm,
           if (! Vcompact_format)
             os << "\n";
 
-          pr_scale_header (os, scale);
+          pr_scale_header (os, fmt.scale_factor ());
 
           // kluge.  Get the true width of a number.
           int zero_fw;
           {
             std::ostringstream tmp_oss;
             typename DMT::element_type zero = 0;
-            pr_complex (tmp_oss, fmt, zero, scale);
+            pr_complex (tmp_oss, fmt, zero);
             zero_fw = tmp_oss.str ().length ();
           }
 
@@ -2541,7 +2514,7 @@ octave_print_complex_diag_matrix_internal (std::ostream& os, const DMT& cm,
                       os << "  ";
 
                       if (i == j)
-                        pr_complex (os, fmt, cm(i,j), scale);
+                        pr_complex (os, fmt, cm(i,j));
                       else
                         os << std::setw (zero_fw) << '0';
                     }
@@ -2777,8 +2750,7 @@ octave_print_internal (std::ostream& os, const Range& r,
     pr_plus_format_matrix (os, r);
   else
     {
-      double scale = 1;
-      float_display_format fmt = make_format (r, scale);
+      float_display_format fmt = make_format (r);
 
       if (pr_as_read_syntax)
         {
@@ -2830,7 +2802,7 @@ octave_print_internal (std::ostream& os, const Range& r,
           if (max_width < 0)
             max_width = 0;
 
-          pr_scale_header (os, scale);
+          pr_scale_header (os, fmt.scale_factor ());
 
           octave_idx_type col = 0;
           while (col < num_elem)
@@ -2862,7 +2834,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 
                   os << "  ";
 
-                  pr_float (os, fmt, val, scale);
+                  pr_float (os, fmt, val);
                 }
 
               col += inc;

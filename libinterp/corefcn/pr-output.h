@@ -56,24 +56,20 @@ class octave_value;
 
 template <typename T> class intNDArray;
 
-extern float_display_format
-make_format (const Matrix& m, double& scale);
-
-extern float_display_format
-make_format (const FloatMatrix& m, float& scale);
-
 template <typename T>
 float_display_format
-make_format (const std::complex<T>& c);
+make_format (const std::complex<T>& c)
+{
+  return float_display_format ();
+}
 
-extern float_display_format
-make_format (const ComplexMatrix& cm, double& scale);
+template <>
+float_display_format
+make_format (const std::complex<double>& c);
 
-extern float_display_format
-make_format (const FloatComplexMatrix& cm, double& scale);
-
-extern float_display_format
-make_format (const Range& r, double& scale);
+template <>
+float_display_format
+make_format (const std::complex<float>& fc);
 
 template <typename T>
 float_display_format
@@ -92,31 +88,23 @@ make_format (const float& f);
 
 template <>
 float_display_format
-make_format (const std::complex<double>& c);
-
-template <>
-float_display_format
-make_format (const std::complex<float>& fc);
-
-template <>
-float_display_format
 make_format (const Range& r);
 
 template <>
 float_display_format
-make_format (const NDArray& nda);
+make_format (const Matrix& m);
 
 template <>
 float_display_format
-make_format (const FloatNDArray& nda);
+make_format (const FloatMatrix& m);
 
 template <>
 float_display_format
-make_format (const ComplexNDArray& nda);
+make_format (const ComplexMatrix& m);
 
 template <>
 float_display_format
-make_format (const FloatComplexNDArray& nda);
+make_format (const FloatComplexMatrix& m);
 
 template <>
 float_display_format

@@ -145,9 +145,14 @@ public:
 
   float_display_format (void) = default;
 
+  float_display_format (double scale, const float_format& real_fmt,
+                        const float_format& imag_fmt = float_format ())
+    : m_scale (scale), m_real_fmt (real_fmt), m_imag_fmt (imag_fmt)
+  { }
+
   explicit float_display_format (const float_format& real_fmt,
                                  const float_format& imag_fmt = float_format ())
-    : m_real_fmt (real_fmt), m_imag_fmt (imag_fmt)
+    : m_scale (1.0), m_real_fmt (real_fmt), m_imag_fmt (imag_fmt)
   { }
 
   float_display_format (const float_display_format&) = default;
@@ -155,6 +160,8 @@ public:
   float_display_format& operator = (const float_display_format&) = default;
 
   ~float_display_format (void) = default;
+
+  double scale_factor (void) const { return m_scale; }
 
   float_format real_format (void) const { return m_real_fmt; }
 
@@ -167,6 +174,8 @@ public:
   }
 
 private:
+
+  double m_scale;
 
   float_format m_real_fmt;
 

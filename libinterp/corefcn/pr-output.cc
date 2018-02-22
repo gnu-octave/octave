@@ -1534,8 +1534,8 @@ pr_imag_float (std::ostream& os, const float_display_format& fmt, T val)
 
 template <typename T>
 static inline void
-pr_complex (std::ostream& os, const float_display_format& fmt,
-            const std::complex<T>& cval)
+pr_float (std::ostream& os, const float_display_format& fmt,
+          const std::complex<T>& cval)
 {
   // FIXME: should we range check this value?  It is stored as a double
   // to simplify the implementation, but should always correspond to the
@@ -1866,10 +1866,24 @@ pr_plus_format_matrix (std::ostream& os, const MT& m)
     }
 }
 
+static inline int
+get_column_width (const float_display_format& fmt)
+{
+  int r_fw = fmt.real_format().fw;
+  int i_fw = fmt.imag_format().fw;
+
+  int retval = r_fw + i_fw + 2;
+
+  if (i_fw && ! (rat_format || bank_format || hex_format || bit_format))
+    retval += 5;
+
+  return retval;
+}
+
 template <typename MT>
 static void
-octave_print_real_matrix_internal (std::ostream& os, const MT& m,
-                                   bool pr_as_read_syntax, int extra_indent)
+octave_print_matrix_internal (std::ostream& os, const MT& m,
+                              bool pr_as_read_syntax, int extra_indent)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -1881,8 +1895,7 @@ octave_print_real_matrix_internal (std::ostream& os, const MT& m,
   else
     {
       float_display_format fmt = make_format (m);
-      int fw = fmt.real_format().fw;
-      int column_width = fw + 2;
+      int column_width = get_column_width (fmt);
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
@@ -1984,8 +1997,8 @@ octave_print_real_matrix_internal (std::ostream& os, const MT& m,
 
 template <typename DMT>
 static void
-octave_print_real_diag_matrix_internal (std::ostream& os, const DMT& m,
-                                        bool pr_as_read_syntax, int extra_indent)
+octave_print_diag_matrix_internal (std::ostream& os, const DMT& m,
+                                   bool pr_as_read_syntax, int extra_indent)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -1998,8 +2011,7 @@ octave_print_real_diag_matrix_internal (std::ostream& os, const DMT& m,
     {
       float_display_format fmt
         = make_format (typename DMT::full_matrix_type (m.diag ()));
-      int fw = fmt.real_format().fw;
-      int column_width = fw + 2;
+      int column_width = get_column_width (fmt);
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
@@ -2100,7 +2112,6 @@ octave_print_real_diag_matrix_internal (std::ostream& os, const DMT& m,
                         pr_float (os, fmt, m(i,j));
                       else
                         os << std::setw (zero_fw) << '0';
-
                     }
 
                   if (i < nr - 1)
@@ -2256,7 +2267,7 @@ octave_print_internal (std::ostream& os, const float_display_format& fmt,
       if (free_format)
         os << c;
       else
-        pr_complex (os, fmt, c);
+        pr_float (os, fmt, c);
     }
 }
 
@@ -2273,257 +2284,7 @@ octave_print_internal (std::ostream& os, const float_display_format& fmt,
       if (free_format)
         os << c;
       else
-        pr_complex (os, fmt, c);
-    }
-}
-
-template <typename MT>
-static void
-octave_print_complex_matrix_internal (std::ostream& os, const MT& cm,
-                                      bool pr_as_read_syntax, int extra_indent)
-{
-  octave_idx_type nr = cm.rows ();
-  octave_idx_type nc = cm.columns ();
-
-  if (nr == 0 || nc == 0)
-    print_empty_matrix (os, nr, nc, pr_as_read_syntax);
-  else if (plus_format && ! pr_as_read_syntax)
-    pr_plus_format_matrix (os, cm);
-  else
-    {
-      float_display_format fmt = make_format (cm);
-      int r_fw = fmt.real_format().fw;
-      int i_fw = fmt.imag_format().fw;
-      int column_width = i_fw + r_fw;
-      column_width += (rat_format || bank_format || hex_format
-                       || bit_format) ? 2 : 7;
-      octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = octave::command_editor::terminal_cols ();
-
-      if (pr_as_read_syntax)
-        max_width -= 4;
-      else
-        max_width -= extra_indent;
-
-      if (max_width < 0)
-        max_width = 0;
-
-      if (free_format)
-        {
-          octave_print_free (os, cm, pr_as_read_syntax);
-          return;
-        }
-
-      octave_idx_type inc = nc;
-      if (total_width > max_width && Vsplit_long_rows)
-        {
-          inc = max_width / column_width;
-          if (inc == 0)
-            inc++;
-        }
-
-      if (pr_as_read_syntax)
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              octave_idx_type col = 0;
-              while (col < nc)
-                {
-                  octave_idx_type lim = (col + inc < nc ? col + inc : nc);
-
-                  for (octave_idx_type j = col; j < lim; j++)
-                    {
-                      octave_quit ();
-
-                      if (i == 0 && j == 0)
-                        os << "[ ";
-                      else
-                        {
-                          if (j > col && j < lim)
-                            os << ", ";
-                          else
-                            os << "  ";
-                        }
-
-                      pr_complex (os, fmt, cm(i,j));
-                    }
-
-                  col += inc;
-
-                  if (col >= nc)
-                    {
-                      if (i == nr - 1)
-                        os << " ]";
-                      else
-                        os << ";\n";
-                    }
-                  else
-                    os << " ...\n";
-                }
-            }
-        }
-      else
-        {
-          octave::preserve_stream_state stream_state (os);
-
-          pr_scale_header (os, fmt.scale_factor ());
-
-          for (octave_idx_type col = 0; col < nc; col += inc)
-            {
-              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
-
-              pr_col_num_header (os, total_width, max_width, lim, col,
-                                 extra_indent);
-
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  os << std::setw (extra_indent) << "";
-
-                  for (octave_idx_type j = col; j < lim; j++)
-                    {
-                      octave_quit ();
-
-                      os << "  ";
-
-                      pr_complex (os, fmt, cm(i,j));
-                    }
-
-                  if (i < nr - 1)
-                    os << "\n";
-                }
-            }
-        }
-    }
-}
-
-template <typename DMT>
-static void
-octave_print_complex_diag_matrix_internal (std::ostream& os, const DMT& cm,
-                                           bool pr_as_read_syntax, int extra_indent)
-{
-  octave_idx_type nr = cm.rows ();
-  octave_idx_type nc = cm.columns ();
-
-  if (nr == 0 || nc == 0)
-    print_empty_matrix (os, nr, nc, pr_as_read_syntax);
-  else if (plus_format && ! pr_as_read_syntax)
-    pr_plus_format_matrix (os, cm);
-  else
-    {
-      float_display_format fmt
-        = make_format (typename DMT::full_matrix_type (cm.diag ()));
-      int r_fw = fmt.real_format().fw;
-      int i_fw = fmt.imag_format().fw;
-      int column_width = i_fw + r_fw;
-      column_width += (rat_format || bank_format || hex_format
-                       || bit_format) ? 2 : 7;
-      octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = octave::command_editor::terminal_cols ();
-
-      if (pr_as_read_syntax)
-        max_width -= 4;
-      else
-        max_width -= extra_indent;
-
-      if (max_width < 0)
-        max_width = 0;
-
-      if (free_format)
-        {
-          octave_print_free (os, cm, pr_as_read_syntax);
-          return;
-        }
-
-      octave_idx_type inc = nc;
-      if (total_width > max_width && Vsplit_long_rows)
-        {
-          inc = max_width / column_width;
-          if (inc == 0)
-            inc++;
-        }
-
-      if (pr_as_read_syntax)
-        {
-          os << "diag (";
-
-          octave_idx_type col = 0;
-          while (col < nc)
-            {
-              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
-
-              for (octave_idx_type j = col; j < lim; j++)
-                {
-                  octave_quit ();
-
-                  if (j == 0)
-                    os << "[ ";
-                  else
-                    {
-                      if (j > col && j < lim)
-                        os << ", ";
-                      else
-                        os << "  ";
-                    }
-
-                  pr_complex (os, fmt, cm(j,j));
-                }
-
-              col += inc;
-
-              if (col >= nc)
-                os << " ]";
-              else
-                os << " ...\n";
-            }
-          os << ')';
-        }
-      else
-        {
-          octave::preserve_stream_state stream_state (os);
-
-          os << "Diagonal Matrix\n";
-          if (! Vcompact_format)
-            os << "\n";
-
-          pr_scale_header (os, fmt.scale_factor ());
-
-          // kluge.  Get the true width of a number.
-          int zero_fw;
-          {
-            std::ostringstream tmp_oss;
-            typename DMT::element_type zero = 0;
-            pr_complex (tmp_oss, fmt, zero);
-            zero_fw = tmp_oss.str ().length ();
-          }
-
-          for (octave_idx_type col = 0; col < nc; col += inc)
-            {
-              octave_idx_type lim = (col + inc < nc ? col + inc : nc);
-
-              pr_col_num_header (os, total_width, max_width, lim, col,
-                                 extra_indent);
-
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  os << std::setw (extra_indent) << "";
-
-                  for (octave_idx_type j = col; j < lim; j++)
-                    {
-                      octave_quit ();
-
-                      os << "  ";
-
-                      if (i == j)
-                        pr_complex (os, fmt, cm(i,j));
-                      else
-                        os << std::setw (zero_fw) << '0';
-                    }
-
-                  if (i < nr - 1)
-                    os << "\n";
-                }
-            }
-        }
+        pr_float (os, fmt, c);
     }
 }
 
@@ -2685,56 +2446,56 @@ void
 octave_print_internal (std::ostream& os, const Matrix& m,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_real_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
+  octave_print_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatMatrix& m,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_real_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
+  octave_print_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const DiagMatrix& m,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_real_diag_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
+  octave_print_diag_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatDiagMatrix& m,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_real_diag_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
+  octave_print_diag_matrix_internal (os, m, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_complex_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
+  octave_print_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatComplexMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_complex_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
+  octave_print_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_complex_diag_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
+  octave_print_diag_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatComplexDiagMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_complex_diag_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
+  octave_print_diag_matrix_internal (os, cm, pr_as_read_syntax, extra_indent);
 }
 
 void
@@ -2777,7 +2538,7 @@ octave_print_internal (std::ostream& os, const Range& r,
         {
           octave::preserve_stream_state stream_state (os);
 
-          int column_width = fmt.real_format().fw + 2;
+          int column_width = get_column_width (fmt);
           octave_idx_type total_width = num_elem * column_width;
           octave_idx_type max_width = octave::command_editor::terminal_cols ();
 

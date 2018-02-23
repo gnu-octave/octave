@@ -158,10 +158,7 @@ function E1 = expint (x)
   ## modified Lentz's algorithm, from "Numerical recipes in Fortran 77" p.165.
 
   e1_cf = exp(- x_cf);
-
-  for ii = 1:length(x_cf)
-    e1_cf (ii) *= __expint_lentz__ (x_cf(ii));
-  endfor
+  e1_cf .*= __expint_lentz__ (x_cf, strcmpi (class (x_cf), "single"));
 
   # Remove spurious imaginary part if needed
 

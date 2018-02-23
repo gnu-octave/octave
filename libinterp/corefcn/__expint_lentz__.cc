@@ -1,4 +1,4 @@
-// Copyright (C) 2017 Michele Ginesi
+// Copyright (C) 2018 Michele Ginesi
 //
 // This file is part of Octave.
 //
@@ -19,91 +19,149 @@
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
-
 #include "defun.h"
+#include "fNDArray.h"
+#include "CNDArray.h"
+#include "fCNDArray.h"
 #include <complex>
 
-DEFUN (__expint_lentz__, args, , "Continued fraction for exponential integral function")
+DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integral")
 {
   int nargin = args.length ();
-
-  if (nargin != 1)
+  octave_value_list outargs;
+  if (nargin != 2)
     print_usage ();
   else
     {
-      octave_value x_arg = args(0);
-      if (x_arg.is_single_type ())
+      FloatComplexNDArray x_arg_s = args(0).complex_array_value ();
+      bool is_single = args(1).bool_value ();
+
+      int len_x = x_arg_s.rows ();
+
+      // initialize scenario dependent output:
+      dim_vector dim_scen (len_x, 1);
+
+      if (! is_single)
         {
-          const std::complex<float> x = args(0).float_complex_value ();
-          static const std::complex<float> tiny = pow (2, -100);
-          static const float eps = std::numeric_limits<float>::epsilon();
-          std::complex<float> cone(1.0, 0.0);
-          std::complex<float> czero(0.0, 0.0);
-          std::complex<float> f = tiny;
-          std::complex<float> C = f;
-          std::complex<float> D = czero;
-          std::complex<float> alpha_m = cone;
-          std::complex<float> beta_m = x;
-          std::complex<float> Delta = czero;
-          int m = 1;
-          int maxit = 100;
-          while((std::abs(Delta - cone) > eps) & (m < maxit))
-            {
-               D = beta_m + alpha_m * D;
-               if (D == czero)
-                 D = tiny;
-               C = beta_m + alpha_m / C;
-               if (C == czero)
-                 C = tiny;
-               D = cone / D;
-               Delta = C * D;
-               f *= Delta;
-               alpha_m = floor ((m + 1) / 2);
-               if ((m % 2) == 0)
-                 beta_m = x;
-               else
-                 beta_m = cone;
-               m++;
-             }
-           if (! error_state)
-            return octave_value (f);
-        }
-      else
-        {
-          const std::complex<double> x = args(0).complex_value ();
+          ComplexNDArray x_arg = args(0).complex_array_value ();
+          ComplexNDArray x (dim_scen);
+
+          ComplexColumnVector f (dim_scen);
+
+          // initialize scenario dependent input values (idx either 0 or ii)
+          if (len_x == 1)
+            x.fill (x_arg(0));
+          else
+            x = x_arg;
           static const std::complex<double> tiny = pow (2, -100);
           static const double eps = std::numeric_limits<double>::epsilon();
           std::complex<double> cone(1.0, 0.0);
           std::complex<double> czero(0.0, 0.0);
-          std::complex<double> f = tiny;
-          std::complex<double> C = f;
-          std::complex<double> D = czero;
-          std::complex<double> alpha_m = cone;
-          std::complex<double> beta_m = x;
-          std::complex<double> Delta = czero;
-          int m = 1;
+          std::complex<double> xj = x(0);
+          std::complex<double> y = tiny;
+          std::complex<double> Cj = y;
+          std::complex<double> Dj = czero;
+          std::complex<double> alpha_j = cone;
+          std::complex<double> beta_j = xj;
+          std::complex<double> Deltaj = czero;
+          int j = 1;
           int maxit = 200;
-          while((std::abs(Delta - cone) > eps) & (m < maxit))
+          // loop via all scenarios
+          for (octave_idx_type ii = 0; ii < len_x; ++ii)
             {
-               D = beta_m + alpha_m * D;
-               if (D == czero)
-                 D = tiny;
-               C = beta_m + alpha_m / C;
-               if (C == czero)
-                 C = tiny;
-               D = cone / D;
-               Delta = C * D;
-               f *= Delta;
-               alpha_m = floor ((m + 1) / 2);
-               if ((m % 2) == 0)
-                 beta_m = x;
-               else
-                 beta_m = cone;
-               m++;
-             }
-           if (! error_state)
-            return octave_value (f);
+              // catch ctrl + c
+              OCTAVE_QUIT;
+              xj = x(ii);
+              y = tiny;
+              Cj = y;
+              Dj = czero;
+              alpha_j = cone;
+              beta_j = xj;
+              Deltaj = czero;
+              j = 1;
+              while((std::abs (Deltaj - cone)  > eps) & (j < maxit))
+                {
+                  Dj = beta_j + alpha_j * Dj;
+                  if (Dj == czero)
+                    Dj = tiny;
+                  Cj = beta_j + alpha_j / Cj;
+                  if (Cj == czero)
+                    Cj = tiny;
+                  Dj = cone / Dj;
+                  Deltaj = Cj * Dj;
+                  y *= Deltaj;
+                  alpha_j = floor ((j + 1) / 2);
+                  if ((j % 2) == 0)
+                    beta_j = xj;
+                  else
+                    beta_j = cone;
+                  j++;
+                }
+              if (! error_state)
+                f(ii) = y;
+            }
+          outargs(0) = f;
         }
-      }
-  return octave_value_list ();
+      else
+        {
+          FloatComplexNDArray x_s (dim_scen);
+
+          FloatComplexColumnVector f (dim_scen);
+
+          // initialize scenario dependent input values (idx either 0 or ii)
+          if (len_x == 1)
+            x_s.fill (x_arg_s(0));
+          else
+            x_s = x_arg_s;
+          static const std::complex<float> tiny = pow (2, -50);
+          static const float eps = std::numeric_limits<float>::epsilon();
+          std::complex<float> cone(1.0, 0.0);
+          std::complex<float> czero(0.0, 0.0);
+          std::complex<float> xj = x_s(0);
+          std::complex<float> y = tiny;
+          std::complex<float> Cj = y;
+          std::complex<float> Dj = czero;
+          std::complex<float> alpha_j = cone;
+          std::complex<float> beta_j = czero;
+          std::complex<float> Deltaj = czero;
+          int j = 1;
+          int maxit = 100;
+          // loop via all scenarios
+          for (octave_idx_type ii = 0; ii < len_x; ++ii)
+            {
+              // catch ctrl + c
+              OCTAVE_QUIT;
+              xj = x_s(ii);
+              y = tiny;
+              Cj = y;
+              Dj = czero;
+              alpha_j = cone;
+              beta_j = xj;
+              Deltaj = czero;
+              j = 1;
+              while((std::abs (Deltaj - cone)  > eps) & (j < maxit))
+                {
+                  Dj = beta_j + alpha_j * Dj;
+                  if (Dj == czero)
+                    Dj = tiny;
+                  Cj = beta_j + alpha_j / Cj;
+                  if (Cj == czero)
+                    Cj = tiny;
+                  Dj = cone / Dj;
+                  Deltaj = Cj * Dj;
+                  y *= Deltaj;
+                  alpha_j = floor ((j + 1) / 2);
+                  if ((j % 2) == 0)
+                    beta_j = xj;
+                  else
+                    beta_j = cone;
+                  j++;
+                }
+              if (! error_state)
+                f(ii) = y;
+            }
+          outargs(0) = f;
+        }
+    }
+  return octave_value (outargs);
 }

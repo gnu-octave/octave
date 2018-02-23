@@ -25,7 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "gl-render.h"
+#include "gl2ps-print.h"
 #include "graphics.h"
+#include "octave-link.h"
 
 #include "GLCanvas.h"
 #include "gl-select.h"
@@ -76,17 +78,72 @@ namespace QtHandles
   {
     uint8NDArray retval;
     graphics_object go = gh_manager::get_object (gh);
-
-    if (go)
+    
+    if (go && go.isa ("figure"))
       {
-        octave::opengl_renderer r;
+        Matrix pos = go.get ("position").matrix_value ();
 
-        r.set_viewport (width (), height ());
-        r.draw (go);
-        retval = r.get_pixels (width (), height ());
+        // Make sure we have a valid current context
+        if (! begin_rendering ())
+          return retval;
+
+        // When the figure is not visible or its size is frozen for printing,
+        // we use a framebuffer object to make sure we are rendering on a
+        // suitably large frame.
+        if (go.get ("visible").string_value () == "off"
+            || go.get ("__printing__").string_value () == "on")
+          {
+            OCTAVE_QT_OPENGL_FBO
+              fbo (pos(2), pos(3),OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
+            
+            fbo.bind ();
+            
+            octave::opengl_renderer r;
+            r.set_viewport (pos(2), pos(3));
+            r.draw (go);
+            retval = r.get_pixels (pos(2), pos(3));
+            
+            fbo.release ();
+          }
+        else
+          {
+            octave::opengl_renderer r;
+            r.set_viewport (pos(2), pos(3));
+            r.draw (go);
+            retval = r.get_pixels (pos(2), pos(3));            
+          }
+
+        end_rendering ();
       }
 
     return retval;
+  }
+  
+  void
+  GLCanvas::do_print (const QString& file_cmd, const QString& term,
+                      const graphics_handle& handle)
+  {
+    gh_manager::auto_lock lock;
+    graphics_object obj = gh_manager::get_object (handle);
+
+    if (obj.valid_object ())
+      {
+        graphics_object figObj (obj.get_ancestor ("figure"));
+        try
+          {
+            // Make sure we have a valid current context
+            if (! begin_rendering ())
+              error ("print: no valid OpenGL offscreen context");
+            
+            octave::gl2ps_print (figObj, file_cmd.toStdString (),
+                                 term.toStdString ());
+          }
+        catch (octave::execution_exception e)
+          {
+            octave_link::post_exception (std::current_exception ());
+            end_rendering ();
+          }
+      }
   }
 
   void
@@ -219,4 +276,40 @@ namespace QtHandles
       OCTAVE_QT_OPENGL_WIDGET::keyReleaseEvent (xevent);
   }
 
+  bool
+  GLCanvas::begin_rendering (void)
+  {
+    bool retval = true;
+    
+    if (! isValid ())
+      {
+#  if defined (HAVE_QOFFSCREENSURFACE)
+        static bool os_ctx_ok = true;
+        if (os_ctx_ok && ! m_os_context.isValid ())
+          {
+            // Try to initialize offscreen context
+            m_os_surface.create ();
+            if (! m_os_context.create ())
+              {
+                os_ctx_ok = false;
+                return false;
+              }
+          }
+       
+        retval = m_os_context.makeCurrent (&m_os_surface);
+#  else   
+        retval = false;
+#  endif
+      }
+    else
+      makeCurrent ();
+    
+    return retval;
+  }
+  
+  void
+  GLCanvas::end_rendering (void)
+  {        
+    doneCurrent ();
+  }
 }

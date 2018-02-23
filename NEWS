@@ -63,6 +63,9 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     explicitly instructed to perform an economy factorization by using a
     final argument of 0.
 
+ ** The Qt graphics toolkit now supports offscreen printing without osmesa
+    if Octave was built with Qt >= 5.1.
+
  ** The FLTK toolkit is no longer prioritized for development.  The
     number of Octave Maintainers is too small to support three different
     graphic toolkits.  New development will target the Qt toolkit.

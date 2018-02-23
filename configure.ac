@@ -2791,7 +2791,7 @@ AC_ARG_ENABLE([docs],
      OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi], [])
 if test $ENABLE_DOCS = yes; then
-  if test $opengl_graphics = no || test -n "$warn_OSMesa"; then
+  if test $opengl_graphics = no || test -n "$warn_OSMesa" || test -n "$have_qt_opengl_offscreen"; then
     if test -n "$warn_gnuplot"; then
       ENABLE_DOCS=no
       warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail."

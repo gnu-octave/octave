@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "annotation-dialog.h"
 
-#include "gl2ps-print.h"
 #include "oct-opengl.h"
 #include "octave-qt-link.h"
 
@@ -97,27 +96,6 @@ namespace QtHandles
           default:
             w->setCursor (origCursor);
             break;
-          }
-      }
-  }
-
-  void
-  Canvas::print (const QString& file_cmd, const QString& term)
-  {
-    gh_manager::auto_lock lock;
-    graphics_object obj = gh_manager::get_object (m_handle);
-
-    if (obj.valid_object ())
-      {
-        graphics_object figObj (obj.get_ancestor ("figure"));
-        try
-          {
-            octave::gl2ps_print (figObj, file_cmd.toStdString (),
-                                 term.toStdString ());
-          }
-        catch (octave::execution_exception e)
-          {
-            octave_link::post_exception (std::current_exception ());
           }
       }
   }

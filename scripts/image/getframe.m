@@ -95,7 +95,10 @@ function frame = getframe (h = [], rect = [])
     pos = rect;
   endif
 
-  if (strcmp (get (hf, "visible"), "on"))
+  if (strcmp (get (hf, "visible"), "on")
+      || (strcmp (get (hf, "__graphics_toolkit__"), "qt")
+          && (strcmp (get (hf, "__gl_window__"), "on")
+              || __have_feature__ ("QOFFSCREENSURFACE"))))
     cdata = __get_frame__ (hf);
   else
     ## Use OpenGL offscreen rendering with OSMesa for non-visible figures

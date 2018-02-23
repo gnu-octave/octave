@@ -54,7 +54,10 @@ namespace QtHandles
     void redraw (bool sync = false);
     void blockRedraw (bool block = true);
 
-    void print (const QString& file_cmd, const QString& term);
+    void print (const QString& file_cmd, const QString& term)
+    {
+      do_print (file_cmd, term, m_handle);
+    }
 
     void addEventMask (int m) { m_eventMask |= m; }
     void clearEventMask (int m) { m_eventMask &= (~m); }
@@ -80,6 +83,8 @@ namespace QtHandles
     virtual graphics_object selectFromAxes (const graphics_object& ax,
                                             const QPoint& pt) = 0;
     virtual uint8NDArray do_getPixels (const graphics_handle& handle) = 0;
+    virtual void do_print (const QString& file_cmd, const QString& term,
+                           const graphics_handle& handle) = 0;
 
   protected:
     Canvas (const graphics_handle& handle)

@@ -1470,6 +1470,60 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
   AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 ])
 dnl
+dnl Check whether QOffscreenSurface is present.
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK], [
+  dnl Normally the language and compiler flags would be set and restored
+  dnl inside of the AC_CACHE_CHECK body.  Because we also need to check for
+  dnl Qt header files associated with the compilation test, set and restore
+  dnl these values outside of the AC_CACHE_CHECK for this macro only.
+  AC_LANG_PUSH(C++)
+  ac_octave_save_CPPFLAGS="$CPPFLAGS"
+  ac_octave_save_CXXFLAGS="$CXXFLAGS"
+  CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+  CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+  AC_CHECK_HEADERS([QOffscreenSurface])
+  AC_CACHE_CHECK([whether Qt supports full offscreen OpenGL rendering],
+    [octave_cv_qt_opengl_os_ok],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+         #if HAVE_WINDOWS_H
+         #  include <windows.h>
+         #endif
+         #if defined (HAVE_GL_GL_H)
+         #  include <GL/gl.h>
+         #elif defined (HAVE_OPENGL_GL_H)
+         #  include <OpenGL/gl.h>
+         #endif
+         #if defined (HAVE_GL_GLU_H)
+         #  include <GL/glu.h>
+         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
+         #  include <OpenGL/glu.h>
+         #endif
+         #if defined (HAVE_QOPENGLWIDGET)
+         #  include <QOpenGLWidget>
+         #  include <QOpenGLContext>
+         #endif
+         #if defined (HAVE_QOFFSCREENSURFACE)
+         #  include <QOffscreenSurface>
+         #endif
+         QOpenGLContext ctx;    
+         QOffscreenSurface surf;
+       ]])],
+       octave_cv_qt_opengl_os_ok=yes,
+       octave_cv_qt_opengl_os_ok=no)
+  ])
+  CPPFLAGS="$ac_octave_save_CPPFLAGS"
+  CXXFLAGS="$ac_octave_save_CXXFLAGS"
+  AC_LANG_POP(C++)
+  if test $octave_cv_qt_opengl_os_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
 dnl Check whether Qt works with full OpenGL support
 dnl
 AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
@@ -1532,7 +1586,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
 ])
 dnl
 dnl Check whether Qt VERSION is present, supports QtOpenGL and
-dnl QScintilla and will work for Octave.
+dnl QScintilla, and will work for Octave.
 dnl
 dnl OCTAVE_CHECK_QT_VERSION(VERSION)
 dnl
@@ -1545,6 +1599,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
   build_qt_gui=yes
   build_qt_graphics=no
+  have_qt_opengl_offscreen=no
   win32_terminal=no
 
   warn_qt_libraries=""
@@ -1725,6 +1780,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         [warn_qt_opengl="Qt does not work with the OpenGL libs (GL and GLU); disabling OpenGL graphics with Qt GUI"])
 
       if test $build_qt_graphics = yes; then
+        OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK([have_qt_opengl_offscreen=yes])
         AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
       fi
     fi

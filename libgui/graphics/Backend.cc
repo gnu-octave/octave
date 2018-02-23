@@ -197,7 +197,7 @@ namespace QtHandles
   {
     uint8NDArray retval;
 
-    if (go.get_properties ().is_visible () && go.isa ("figure"))
+    if (go.isa ("figure"))
       {
         ObjectProxy *proxy = toolkitObjectProxy (go);
 

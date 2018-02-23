@@ -26,9 +26,17 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_QOPENGLWIDGET)
 #  include <QOpenGLWidget>
 #  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
+#  include <QOpenGLFramebufferObject>
+#  define OCTAVE_QT_OPENGL_FBO QOpenGLFramebufferObject
+#  if defined (HAVE_QOFFSCREENSURFACE)
+#    include <QOpenGLContext>
+#    include <QOffscreenSurface>
+#  endif  
 #elif defined (HAVE_QGLWIDGET)
 #  include <QGLWidget>
 #  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
+#  include <QGLFramebufferObject>
+#  define OCTAVE_QT_OPENGL_FBO QGLFramebufferObject
 #else
 #  error "configuration error: must have <QOpenGLWidget> or <QGLWidget>."
 #endif
@@ -45,6 +53,8 @@ namespace QtHandles
 
     void draw (const graphics_handle& handle);
     uint8NDArray  do_getPixels (const graphics_handle& handle);
+    void do_print (const QString& file_cmd, const QString& term,
+                   const graphics_handle& handle);
     void toggleAxes (const graphics_handle& handle);
     void toggleGrid (const graphics_handle& handle);
     void autoAxes (const graphics_handle& handle);
@@ -64,6 +74,16 @@ namespace QtHandles
     void wheelEvent (QWheelEvent *event);
     void keyPressEvent (QKeyEvent *event);
     void keyReleaseEvent (QKeyEvent *event);
+    
+  private:
+    
+    bool begin_rendering (void);
+    void end_rendering (void);
+
+# if defined (HAVE_QOFFSCREENSURFACE)
+    QOpenGLContext m_os_context;    
+    QOffscreenSurface m_os_surface;
+# endif
   };
 
 }

@@ -359,7 +359,7 @@ namespace octave
                             const QStringList& defaults)
     : QDialog ()
   {
-    // FIXME: Why define and then immediately test value?
+
 #define LINE_EDIT_FOLLOWS_PROMPT 0
 
 #if LINE_EDIT_FOLLOWS_PROMPT
@@ -373,13 +373,15 @@ namespace octave
     for (int i = 0; i < N_gridrows; i++)
       {
         QLabel *label = new QLabel (prompt.at (i));
-        QLineEdit *line_edit = new QLineEdit (defaults.at (i));
-        if (nr.at (i) > 0)
+        QLineEdit *line_edit = new QLineEdit ();
+        if (i < defaults.size ())
+          line_edit->setText (defaults.at (i));
+        if (i < nr.size () && nr.at (i) > 0)
           {
             QSize qsize = line_edit->sizeHint ();
             int intval = qsize.height () * nr.at (i);
             line_edit->setFixedHeight (intval);
-            if (nc.at (i) > 0)
+            if (i < nc.size () && nc.at (i) > 0)
               {
                 intval = qsize.height () * nc.at (i) / 2;
                 line_edit->setFixedWidth (intval);

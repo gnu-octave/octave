@@ -97,6 +97,9 @@ function cstr = inputdlg (prompt, varargin)
 
   defaults = cellstr (cell (size (prompt)));
   if (nargin > 3)
+    if (numel (varargin{3}) != numel (prompt))
+      error ("inputdlg: number of DEFAULT items must match number of PROMPT items");
+    endif
     defaults = varargin{3};
   endif
 

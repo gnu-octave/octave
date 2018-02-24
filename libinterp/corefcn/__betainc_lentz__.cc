@@ -31,6 +31,7 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
     print_usage ();
   else
     {
+      // Values initialized in single precision
       FloatNDArray x_arg_s = args(0).array_value ();
       FloatNDArray a_arg_s = args(1).array_value ();
       FloatNDArray b_arg_s = args(2).array_value ();
@@ -51,6 +52,7 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
       dim_vector dim_scen (len, 1);
       ColumnVector f (dim_scen);
 
+      // Lentz's algorithm in two cases: double and single precision
       if (! is_single)
         {
           NDArray x_arg = args(0).array_value ();
@@ -70,10 +72,12 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
             a.fill (a_arg(0));
           else
             a = a_arg;
+          //
           if (len_b == 1)
             b.fill (b_arg(0));
           else
             b = b_arg;
+          // Variables initialization
           static const double tiny = pow (2, -100);
           static const double eps = std::numeric_limits<double>::epsilon();
           double xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
@@ -84,6 +88,7 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
             {
               // catch ctrl + c
               OCTAVE_QUIT;
+              // Variable initialization for the current element
               xj = x(ii);
               y = tiny;
               Cj = y;
@@ -95,7 +100,7 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
               beta_j = aj - (aj * (aj + bj)) / (aj + 1) * xj;
               x2 = xj * xj;
               j = 1;
-
+              //Lentz's algorithm
               while((std::abs ((Deltaj - 1))  > eps) & (j < maxit))
                 {
                   Dj = beta_j + alpha_j * Dj;
@@ -132,10 +137,12 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
             a_s.fill (a_arg_s(0));
           else
             a_s = a_arg_s;
+          //
           if (len_b == 1)
             b_s.fill (b_arg_s(0));
           else
             b_s = b_arg_s;
+          // Variables initialization
           static const float tiny = pow (2, -50);
           static const float eps = std::numeric_limits<float>::epsilon();
           float xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
@@ -146,6 +153,7 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
             {
               // catch ctrl + c
               OCTAVE_QUIT;
+              // Variable initialization for the current element
               xj = x_s(ii);
               y = tiny;
               Cj = y;
@@ -157,7 +165,7 @@ DEFUN (__betainc_lentz__, args, , "Continued fraction for incomplete beta functi
               beta_j = aj - (aj * (aj + bj)) / (aj + 1) * xj;
               x2 = xj * xj;
               j = 1;
-
+              //Lentz's algorithm
               while((std::abs ((Deltaj - 1))  > eps) & (j < maxit))
                 {
                   Dj = beta_j + alpha_j * Dj;

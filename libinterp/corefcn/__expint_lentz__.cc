@@ -33,6 +33,7 @@ DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integra
     print_usage ();
   else
     {
+      // Value initialized in single precision
       FloatComplexNDArray x_arg_s = args(0).complex_array_value ();
       bool is_single = args(1).bool_value ();
 
@@ -40,19 +41,21 @@ DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integra
 
       // initialize scenario dependent output:
       dim_vector dim_scen (len_x, 1);
+      ComplexColumnVector f (dim_scen);
+
+      // Lentz's algorithm in two cases: double and single precision
 
       if (! is_single)
         {
           ComplexNDArray x_arg = args(0).complex_array_value ();
           ComplexNDArray x (dim_scen);
 
-          ComplexColumnVector f (dim_scen);
-
           // initialize scenario dependent input values (idx either 0 or ii)
           if (len_x == 1)
             x.fill (x_arg(0));
           else
             x = x_arg;
+          // Variables initialization
           static const std::complex<double> tiny = pow (2, -100);
           static const double eps = std::numeric_limits<double>::epsilon();
           std::complex<double> cone(1.0, 0.0);
@@ -71,6 +74,7 @@ DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integra
             {
               // catch ctrl + c
               OCTAVE_QUIT;
+              // Variable initialization for the current element
               xj = x(ii);
               y = tiny;
               Cj = y;
@@ -79,6 +83,7 @@ DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integra
               beta_j = xj;
               Deltaj = czero;
               j = 1;
+              //Lentz's algorithm
               while((std::abs (Deltaj - cone)  > eps) & (j < maxit))
                 {
                   Dj = beta_j + alpha_j * Dj;
@@ -113,6 +118,7 @@ DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integra
             x_s.fill (x_arg_s(0));
           else
             x_s = x_arg_s;
+          // Variables initialization
           static const std::complex<float> tiny = pow (2, -50);
           static const float eps = std::numeric_limits<float>::epsilon();
           std::complex<float> cone(1.0, 0.0);
@@ -131,6 +137,7 @@ DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integra
             {
               // catch ctrl + c
               OCTAVE_QUIT;
+              // Variable initialization for the current element
               xj = x_s(ii);
               y = tiny;
               Cj = y;
@@ -139,6 +146,7 @@ DEFUN (__expint_lentz__, args, , "Continued fraction for the exponential integra
               beta_j = xj;
               Deltaj = czero;
               j = 1;
+              //Lentz's algorithm
               while((std::abs (Deltaj - cone)  > eps) & (j < maxit))
                 {
                   Dj = beta_j + alpha_j * Dj;

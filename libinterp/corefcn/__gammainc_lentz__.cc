@@ -32,6 +32,7 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
     print_usage ();
   else
     {
+      // Values initialized in single precision
       FloatNDArray x_arg_s = args(0).array_value ();
       FloatNDArray a_arg_s = args(1).array_value ();
       bool is_single = args(2).bool_value ();
@@ -51,6 +52,8 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
       dim_vector dim_scen (len, 1);
       ColumnVector f (dim_scen);
 
+      // Lentz's algorithm in two cases: double and single precision
+
       if (! is_single)
         {
           NDArray x_arg = args(0).array_value ();
@@ -63,10 +66,12 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
             x.fill (x_arg(0));
           else
             x = x_arg;
+          //
           if (len_a == 1)
             a.fill (a_arg(0));
           else
             a = a_arg;
+          // Variables initialization
           static const double tiny = pow (2, -100);
           static const double eps = std::numeric_limits<double>::epsilon();
           double y, Cj, Dj, bj, aj, Deltaj;
@@ -77,6 +82,7 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
             {
               // catch ctrl + c
               OCTAVE_QUIT;
+              // Variable initialization for the current element
               y = tiny;
               Cj = y;
               Dj = 0;
@@ -84,7 +90,7 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
               aj = a(ii);
               Deltaj = 0;
               j = 1;
-
+              //Lentz's algorithm
               while((std::abs ((Deltaj - 1) / y)  > eps) & (j < maxit))
                 {
                   Cj = bj + aj/Cj;
@@ -110,10 +116,12 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
             x_s.fill (x_arg_s(0));
           else
           x_s = x_arg_s;
+          //
           if (len_a == 1)
             a_s.fill (a_arg_s(0));
           else
             a_s = a_arg_s;
+          // Variables initialization
           static const float tiny = pow (2, -50);
           static const float eps = std::numeric_limits<float>::epsilon();
           float y, Cj, Dj, bj, aj, Deltaj;
@@ -124,6 +132,7 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
             {
               // catch ctrl + c
               OCTAVE_QUIT;
+              // Variable initialization for the current element
               y = tiny;
               Cj = y;
               Dj = 0;
@@ -131,7 +140,7 @@ DEFUN (__gammainc_lentz__, args, , "Continued fraction for incomplete gamma func
               aj = a_s(ii);
               Deltaj = 0;
               j = 1;
-
+              //Lentz's algorithm
               while((std::abs ((Deltaj - 1) / y)  > eps) & (j < maxit))
                 {
                   Cj = bj + aj/Cj;

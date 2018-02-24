@@ -339,7 +339,7 @@ function y = gammainc_s (x, a, tail)
     term = y .* x ./ (a + 1);
   endif
   n = 1;
-  while ((any (abs (term(:))) > (abs (y(:)) * eps)))
+  while (any (abs (term(:)) > (abs (y(:)) * eps)))
     ## y can be zero from the beginning (gammainc (1,1000))
     jj = abs (term) > abs (y) * eps;
     n += 1;

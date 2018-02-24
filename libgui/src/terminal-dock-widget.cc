@@ -25,7 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <QDesktopWidget>
+
 #include "terminal-dock-widget.h"
+#include "resource-manager.h"
 
 namespace octave
 {
@@ -48,6 +51,31 @@ namespace octave
     // Connect the visibility signal to the terminal for dis-/enabling timers
     connect (this, SIGNAL (visibilityChanged (bool)),
              m_terminal, SLOT (handle_visibility_changed (bool)));
+
+    // Chose a reasonable size at startup in order to avoid truncated
+    // startup messages
+    QSettings *settings = resource_manager::get_settings ();
+
+    QFont font = QFont ();
+    font.setStyleHint (QFont::TypeWriter);
+    font.setFamily
+      (settings->value ("terminal/fontName", "Courier New").toString ());
+    font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
+
+    QFontMetrics metrics(font);
+
+    int win_x =  metrics.maxWidth()*80;
+    int win_y =  metrics.height()*25;
+
+    int max_x = QApplication::desktop ()->screenGeometry (this).width ();
+    int max_y = QApplication::desktop ()->screenGeometry (this).height ();
+
+    if (win_x > max_x)
+      win_x = max_x;
+    if (win_y > max_y)
+      win_y = max_y;
+
+    setGeometry (0, 0, win_x, win_y);
   }
 
   terminal_dock_widget::~terminal_dock_widget (void)

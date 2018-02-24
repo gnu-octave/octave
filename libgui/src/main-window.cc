@@ -807,6 +807,7 @@ namespace octave
 
     set_window_layout (settings);
     showNormal ();  // make sure main window is not minimized
+    focus_command_window ();
   }
 
   void main_window::change_directory (const QString& dir)

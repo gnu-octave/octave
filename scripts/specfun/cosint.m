@@ -114,7 +114,7 @@ function [y] = cosint (x)
   y(i_miss & flag_large) = yy;
 
   ## For values small in modulus, use the series expansion (also near (-oo, 0])
-  i_miss = ((i_miss) & (!flag_large));
+  i_miss = ((i_miss) & (! flag_large));
   if (iscomplex (x))
     ## indexing can lose imag part: if it was -0, we could end up on the
     ## wrong right side of the branch cut along the negative real axis.

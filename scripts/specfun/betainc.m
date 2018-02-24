@@ -70,18 +70,18 @@
 
 function [y] = betainc (x, a, b, tail = "lower")
 
-  if (nargin > 4 || nargin < 3)
+  if ((nargin > 4) || (nargin < 3))
     print_usage ();
   endif
 
-  if (! isscalar (x) || ! isscalar (a) || ! isscalar (b))
+  if ((! isscalar (x)) || (! isscalar (a)) || (! isscalar (b)))
     [err, x, a, b] = common_size (x, a, b);
     if (err > 0)
       error ("betainc: x, a and b must be of common size or scalars");
     endif
   endif
 
-  if (iscomplex (x) || iscomplex (a) || iscomplex (b))
+  if ((iscomplex (x)) || (iscomplex (a)) || (iscomplex (b)))
     error ("betainc: inputs must be real or integer");
   endif
 
@@ -93,7 +93,7 @@ function [y] = betainc (x, a, b, tail = "lower")
     error ("betainc: b must be strictly positive");
   endif
 
-  if (any (x > 1 | x < 0))
+  if (any ((x > 1) | (x < 0)))
     error ("betainc: x must be between 0 and 1");
   endif
 
@@ -117,7 +117,7 @@ function [y] = betainc (x, a, b, tail = "lower")
 
   # If any of the argument is single, also the output should be
 
-  if (strcmpi (class (y), "single") || strcmpi (class (a), "single") || strcmpi (class (b), "single"))
+  if ((strcmpi (class (y), "single")) || (strcmpi (class (a), "single")) || (strcmpi (class (b), "single")))
     a = single (a);
     b = single (b);
     x = single (x);
@@ -125,21 +125,21 @@ function [y] = betainc (x, a, b, tail = "lower")
   endif
 
   # In the following, we use the fact that the continued fraction we will
-  # use is more efficient when x <= a / (a+b).
+  # use is more efficient when x <= a / (a + b).
   # Moreover, to compute the upper version, which is defined as
   # I_x(a,b,"upper") = 1 - I_x(a,b) we used the property
   # I_x(a,b) + I_(1-x) (b,a) = 1.
 
   if (strcmpi (tail, "upper"))
-    flag = (x < a./(a+b));
-    x(!flag) = 1 - x(!flag);
-    [a(!flag), b(!flag)] = deal (b(!flag), a(!flag));
+    fflag = (x < (a ./ (a + b)));
+    x(! fflag) = 1 - x(! fflag);
+    [a(! fflag), b(! fflag)] = deal (b(! fflag), a(! fflag));
   elseif (strcmpi (tail, "lower"))
-    flag = (x > a./(a+b));
-    x (flag) = 1 - x(flag);
-    [a(flag), b(flag)] = deal (b(flag), a(flag));
+    fflag = (x > a./(a+b));
+    x (fflag) = 1 - x(fflag);
+    [a(fflag), b(fflag)] = deal (b(fflag), a(fflag));
   else
-    error ("betainc: invalid value for flag")
+    error ("betainc: invalid value for fflag")
   endif
 
   f = zeros (size (x), class (x));
@@ -155,7 +155,7 @@ function [y] = betainc (x, a, b, tail = "lower")
   y = a .* log (x) + b .* log1p (-x) + gammaln (a + b) - ...
     gammaln (a) - gammaln (b) + log (f);
   y = real (exp (y));
-  y(flag) = 1 - y(flag);
+  y(fflag) = 1 - y(fflag);
   y = reshape (y, sz);
 
 endfunction

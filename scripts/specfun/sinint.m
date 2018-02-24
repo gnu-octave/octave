@@ -84,7 +84,7 @@ function [y] = sinint (x)
 
   ## For values small in modulus we use the series expansion
 
-  i_miss = ((i_miss) & (!flag_large));
+  i_miss = ((i_miss) & (! flag_large));
   xx = x(i_miss);
   ssum = xx; # First term of the series expansion
   yy = ssum;

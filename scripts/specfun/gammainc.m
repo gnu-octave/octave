@@ -1,7 +1,7 @@
 ## Copyright (C) 2016 Marco Caliari
 ## Copyright (C) 2016 Nir Krakauer
-## Copyright (C) 2017 Michele Ginesi
 ## Copyright (C) 2018 Stefan Schlögl
+## Copyright (C) 2018 Michele Ginesi
 ##
 ## This file is part of Octave.
 ##
@@ -94,7 +94,7 @@
 
 function y = gammainc (x, a, tail = "lower")
 
-  if (nargin >= 4 || nargin <= 1)
+  if ((nargin >= 4) || (nargin <= 1))
     print_usage ();
   endif
 
@@ -105,7 +105,7 @@ function y = gammainc (x, a, tail = "lower")
     endif
   endif
 
-  if (any (a < 0) || any (imag (a) != 0))
+  if ((any (a < 0)) || (any (imag (a) != 0)))
     error ("gammainc: a must be real and non negative");
   endif
 
@@ -118,7 +118,7 @@ function y = gammainc (x, a, tail = "lower")
     x = double (x);
   endif
 
-  if (strcmpi (class (a), "single") || strcmpi (class (x), "single"))
+  if ((strcmpi (class (a), "single")) || (strcmpi (class (x), "single")))
     x = single (x);
     a = single (a);
   endif
@@ -194,7 +194,7 @@ function y = gammainc (x, a, tail = "lower")
   flag_a_small = ((abs (a) < 2) & (abs(a) > 0) & (! i_done) & (x < 0));
   a(flag_a_small) += 2;
 
-  flag_s = (((x + 0.25 < a | x < 0 | a < 5) & (x > -20)) | (abs (x) < 1));
+  flag_s = ((((x + 0.25 < a) | (x < 0) | (a < 5)) & (x > -20)) | (abs (x) < 1));
 
   ## Case 8: x, a relatively small.
   ii = ((! i_done) & flag_s);
@@ -234,7 +234,7 @@ endfunction
 
 ## x == 0, a == 0.
 function y = gammainc_00 (tail)
-  if (strcmpi (tail, "upper") || strcmpi (tail, "scaledupper"))
+  if ((strcmpi (tail, "upper")) || (strcmpi (tail, "scaledupper")))
     y = 0;
   else
     y = 1;
@@ -243,7 +243,7 @@ endfunction
 
 ## x == 0.
 function y = gammainc_x0 (tail)
-  if (strcmpi (tail, "upper") || strcmpi (tail, "scaledlower"))
+  if ((strcmpi (tail, "upper")) || (strcmpi (tail, "scaledlower")))
     y = 1;
   elseif (strcmpi (tail, "lower"))
     y = 0;
@@ -256,7 +256,7 @@ endfunction
 function y = gammainc_x_inf (tail)
   if (strcmpi (tail, "lower"))
     y = 1;
-  elseif (strcmpi (tail, "upper") || strcmpi (tail, "scaledupper"))
+  elseif ((strcmpi (tail, "upper")) || (strcmpi (tail, "scaledupper")))
     y = 0;
   else
     y = Inf;
@@ -267,7 +267,7 @@ endfunction
 function y = gammainc_a_inf (tail)
   if (strcmpi (tail, "lower"))
     y = 0;
-  elseif (strcmpi (tail, "upper") || strcmpi (tail, "scaledlower"))
+  elseif ((strcmpi (tail, "upper")) || (strcmpi (tail, "scaledlower")))
     y = 1;
   else
     y = Inf;
@@ -329,7 +329,7 @@ endfunction
 ## Numerical Recipes in Fortran 77 (6.2.5)
 ## series
 function y = gammainc_s (x, a, tail)
-  if (strcmpi (tail, "scaledlower") || strcmpi (tail, "scaledupper"))
+  if ((strcmpi (tail, "scaledlower")) || (strcmpi (tail, "scaledupper")))
     y = ones (size (x), class (x));
     term = x ./ (a + 1);
   else
@@ -339,7 +339,7 @@ function y = gammainc_s (x, a, tail)
     term = y .* x ./ (a + 1);
   endif
   n = 1;
-  while (any (abs (term(:)) > abs (y(:)) * eps))
+  while ((any (abs (term(:))) > (abs (y(:)) * eps)))
     ## y can be zero from the beginning (gammainc (1,1000))
     jj = abs (term) > abs (y) * eps;
     n += 1;

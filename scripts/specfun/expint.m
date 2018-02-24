@@ -1,5 +1,5 @@
 ## Copyright (C) 2006-2017 Sylvain Pelissier
-## Copyright (C) 2017 Michele Ginesi
+## Copyright (C) 2018 Michele Ginesi
 ##
 ## This file is part of Octave.
 ##
@@ -107,7 +107,7 @@ function E1 = expint (x)
   x = x(:);  # convert to column vector
 
   ## Initialize the result
-  if (isreal (x) && x >= 0)
+  if ((isreal (x)) && (x >= 0))
     E1 = zeros (size (x), class (x));
   else
     E1 = complex (zeros (size (x), class (x)));
@@ -115,11 +115,13 @@ function E1 = expint (x)
   tol = eps (class (x));
 
   ## Divide the input into 3 regions and apply a different algorithm for each.
-  s_idx = (((real (x) + 19.5).^2 ./ (20.5^2) + imag (x).^2 ./ (10^2)) <= 1) ...
-          | (real (x) < 0 & abs (imag (x)) <= 1e-8);
-  cf_idx = ((((real (x) + 1).^2 ./ (38^2) + imag (x).^2 ./ (40^2)) <= 1) ...
+  s_idx = (((real (x) + 19.5) .^ 2 ./ (20.5 ^ 2) + ...
+          imag (x) .^ 2 ./ (10 ^ 2)) <= 1) ...
+          | (real (x) < 0 & abs (imag (x)) <= 1e-08);
+  cf_idx = ((((real (x) + 1) .^ 2 ./ (38 ^ 2) + ...
+            imag (x) .^ 2 ./ (40 ^ 2)) <= 1) ...
             & (! s_idx)) & (real (x) <= 35);
-  a_idx = ! s_idx & ! cf_idx;
+  a_idx = ((! s_idx) & (! cf_idx));
   x_s  = x(s_idx);
   x_cf = x(cf_idx);
   x_a  = x(a_idx);
@@ -133,22 +135,22 @@ function E1 = expint (x)
   ## formula 5.1.11, p 229.
   ## FIXME: Why so long?  IEEE double doesn't have this much precision.
   gm = 0.577215664901532860606512090082402431042159335;
-  e1_s = -gm - log (x_s);
-  res = -x_s;
+  e1_s = - gm - log (x_s);
+  res = - x_s;
   ssum = res;
   k = 1;
   fflag = true (size (res));
-  while (k < 1e3 && any (fflag))
+  while ((k < 1e03) && (any (fflag)))
     res_tmp = res(fflag);
     x_s_tmp = x_s(fflag);
     ssum_tmp = ssum(fflag);
-    res_tmp .*= (k * -x_s_tmp/((k + 1)^2));
+    res_tmp .*= (k * (- x_s_tmp) / ((k + 1) ^ 2));
     ssum_tmp += res_tmp;
     k += 1;
     res(fflag) = res_tmp;
     ssum(fflag) = ssum_tmp;
     x_s(fflag) = x_s_tmp;
-    fflag = abs (res) > tol*abs (ssum);
+    fflag = (abs (res) > (tol * abs (ssum)));
   endwhile
   e1_s -= ssum;
 
@@ -160,7 +162,8 @@ function E1 = expint (x)
   e1_cf = exp(- x_cf);
   e1_cf .*= __expint_lentz__ (x_cf, strcmpi (class (x_cf), "single"));
 
-  # Remove spurious imaginary part if needed
+  # Remove spurious imaginary part if needed (__expint_lentz__ works
+  # automathically with complex values)
 
   if (isreal (x_cf) && x_cf >= 0)
     e1_cf = real (e1_cf);
@@ -177,7 +180,7 @@ function E1 = expint (x)
     res_tmp = res(fflag);
     oldres_tmp = res_tmp;
     x_a_tmp = x_a(fflag);
-    res_tmp ./= (-x_a_tmp / (k+1));
+    res_tmp ./= (- x_a_tmp / (k + 1));
     ssum(fflag) += res_tmp;
     k += 1;
     res(fflag) = res_tmp;

@@ -1239,6 +1239,7 @@ namespace octave
 
     // Axes box
 
+    set_linecap ("square");
     set_linestyle ("-", true, linewidth);
 
     glBegin (GL_LINES);
@@ -1900,7 +1901,7 @@ namespace octave
     if (antialias == GL_TRUE)
       glDisable (GL_LINE_SMOOTH);
 
-    set_linecap ("square");
+    set_linecap ("butt");
     set_linewidth (props.get_linewidth ());
     set_font (props);
     set_interpreter (props.get_ticklabelinterpreter ());

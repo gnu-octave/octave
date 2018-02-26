@@ -3720,12 +3720,6 @@ public:
       radio_property __autopos_tag__ h , "{none}|subplot"
       // hidden properties for inset
       array_property looseinset hu , Matrix (1, 4, 0.0)
-      // hidden properties for transformation computation
-      array_property x_viewtransform h , Matrix (4, 4, 0.0)
-      array_property x_projectiontransform h , Matrix (4, 4, 0.0)
-      array_property x_viewporttransform h , Matrix (4, 4, 0.0)
-      array_property x_normrendertransform h , Matrix (4, 4, 0.0)
-      array_property x_rendertransform h , Matrix (4, 4, 0.0)
       // hidden properties for minor ticks
       row_vector_property xminortickvalues h , Matrix ()
       row_vector_property yminortickvalues h , Matrix ()

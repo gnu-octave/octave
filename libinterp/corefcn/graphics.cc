@@ -5743,12 +5743,6 @@ axes::properties::update_camera (void)
          zd/(zlimits(1)-zlimits(0)));
   translate (x_render, -xo, -yo, -zo);
 
-  x_viewtransform = x_view;
-  x_projectiontransform = x_projection;
-  x_viewporttransform = x_viewport;
-  x_normrendertransform = x_normrender;
-  x_rendertransform = x_render;
-
   x_render_inv = x_render.inverse ();
 
   // Note: these matrices are a slight modified version of the regular matrices,

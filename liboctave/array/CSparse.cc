@@ -4627,9 +4627,10 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                               if (ii == x_nz)
                                 {
                                   // Resize the sparse matrix
-                                  octave_idx_type sz = x_nz *
-                                                       (b_nc - j) / b_nc;
-                                  sz = (sz > 10 ? sz : 10) + x_nz;
+                                  octave_idx_type sz;
+                                  sz = (static_cast<double> (b_nc) - j) / b_nc
+                                       * x_nz;
+                                  sz = x_nz + (sz > 100 ? sz : 100);
                                   retval.change_capacity (sz);
                                   x_nz = sz;
                                 }
@@ -5999,8 +6000,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                           if (ii == x_nz)
                             {
                               // Resize the sparse matrix
-                              octave_idx_type sz = x_nz * (b_nc - j) / b_nc;
-                              sz = (sz > 10 ? sz : 10) + x_nz;
+                              octave_idx_type sz;
+                              sz = (static_cast<double> (b_nc) - j) / b_nc
+                                   * x_nz;
+                              sz = x_nz + (sz > 100 ? sz : 100);
                               retval.change_capacity (sz);
                               x_nz = sz;
                             }
@@ -6500,8 +6503,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                           if (ii == x_nz)
                             {
                               // Resize the sparse matrix
-                              octave_idx_type sz = x_nz * (b_nc - j) / b_nc;
-                              sz = (sz > 10 ? sz : 10) + x_nz;
+                              octave_idx_type sz;
+                              sz = (static_cast<double> (b_nc) - j) / b_nc
+                                   * x_nz;
+                              sz = x_nz + (sz > 100 ? sz : 100);
                               retval.change_capacity (sz);
                               x_nz = sz;
                             }

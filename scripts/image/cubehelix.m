@@ -43,16 +43,24 @@
 
 ## Author: Carnë Draug <carandraug@octave.org>
 
-function map = cubehelix (n = rows (colormap ()), start = 0.5,
-                          rots = -1.5, hue = 1, gamma = 1)
+function map = cubehelix (n, start = 0.5, rots = -1.5, hue = 1, gamma = 1)
 
   if (nargin > 5)
     print_usage ();
-  elseif (! isscalar (n))
-    error ("cubehelix: N must be a scalar");
+  elseif (nargin > 0)
+    if (! isscalar (n))
+      error ("cubehelix: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
   endif
 
-  n = double (n);
   if (n > 1)
     coeff = [ -0.14861  -0.29227   1.97294
                1.78277  -0.90649   0.00000];

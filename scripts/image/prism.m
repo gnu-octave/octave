@@ -29,14 +29,23 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-function map = prism (n = rows (colormap ()))
+function map = prism (n)
 
   if (nargin > 1)
     print_usage ();
-  elseif (! isscalar (n))
-    error ("prism: N must be a scalar");
+  elseif (nargin == 1)
+    if (! isscalar (n))
+      error ("prism: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
   endif
-
   if (n == 1)
     map = [1 0 0];
   elseif (n > 1)

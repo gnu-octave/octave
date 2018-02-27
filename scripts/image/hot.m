@@ -29,14 +29,23 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-function map = hot (n = rows (colormap ()))
+function map = hot (n)
 
   if (nargin > 1)
     print_usage ();
-  elseif (! isscalar (n))
-    error ("hot: N must be a scalar");
+  elseif (nargin == 1)
+    if (! isscalar (n))
+      error ("hot: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
   endif
-
   if (n == 1)
     map = [1, 1, 1];
   elseif (n == 2)

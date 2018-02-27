@@ -29,14 +29,23 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-function map = bone (n = rows (colormap ()))
+function map = bone (n)
 
   if (nargin > 1)
     print_usage ();
-  elseif (! isscalar (n))
-    error ("bone: N must be a scalar");
+  elseif (nargin == 1)
+    if (! isscalar (n))
+      error ("bone: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
   endif
-  n = double (n);
 
   if (n == 1)
     map = [1/8 1/8 1/8];

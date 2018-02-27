@@ -28,14 +28,23 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-function map = lines (n = rows (colormap ()))
+function map = lines (n)
 
   if (nargin > 1)
     print_usage ();
-  elseif (! isscalar (n))
-    error ("lines: N must be a scalar");
+  elseif (nargin == 1)
+    if (! isscalar (n))
+      error ("lines: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
   endif
-
   if (n == 1)
     map = [0, 0, 1];
   elseif (n > 1)

@@ -28,14 +28,20 @@
 
 function cmap = contrast (x, n)
 
-  if (nargin == 1)
-    n = rows (colormap ());
-  elseif (nargin == 2)
+  if (nargin > 2)
+    print_usage ();
+  elseif (nargin == 1)
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
+  else
     if (! isscalar (n))
       error ("contrast: N must be a scalar");
     endif
-  else
-    print_usage ();
+    n = double (n);
   endif
 
   x = x(:);

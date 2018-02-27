@@ -36,14 +36,23 @@
 ## by Eric Firing.  The original file is distributed under CC0:
 ## http://creativecommons.org/publicdomain/zero/1.0
 
-function map = viridis (n = rows (colormap ()))
+function map = viridis (n)
 
   if (nargin > 1)
     print_usage ();
-  elseif (! isscalar (n))
-    error ("viridis: N must be a scalar");
+  elseif (nargin == 1)
+    if (! isscalar (n))
+      error ("viridis: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
   endif
-
   ## FIXME: Is there no algorithmic definition of the viridis colormap?
   persistent viridi = [0.26700401  0.00487433  0.32941519
                        0.26851048  0.00960483  0.33542652

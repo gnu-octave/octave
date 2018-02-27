@@ -956,6 +956,42 @@ octave_classdef::undef_subsasgn (const std::string& type,
   return octave_value ();
 }
 
+octave_idx_type
+octave_classdef::numel (const octave_value_list& idx)
+{
+  octave_idx_type retval = -1;
+
+  cdef_class cls = object.get_class ();
+
+  if (! in_class_method (cls) && ! called_from_builtin ())
+    {
+      cdef_method meth = cls.find_method ("numel");
+
+      if (meth.ok ())
+        {
+          octave_value_list args (idx.length () + 1, octave_value ());
+
+          count++;
+          args(0) = octave_value (this);
+
+          for (octave_idx_type i = 0; i < idx.length (); i++)
+            args(i+1) = idx(i);
+
+          octave_value_list lv = meth.execute (args, 1, true, "numel");
+          if (lv.length () != 1 || ! lv(0).is_scalar_type ())
+            error ("@%s/numel: invalid return value", cls.get_name ().c_str ());
+
+          retval = lv(0).idx_type_value (true);
+
+          return retval;
+        }
+    }
+
+  retval = octave_base_value::numel (idx);
+
+  return retval;
+}
+
 void
 octave_classdef::print (std::ostream& os, bool)
 {

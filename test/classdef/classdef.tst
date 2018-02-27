@@ -76,6 +76,14 @@
 %!assert (class (plist_t2), "plist_t2")
 %!assert (class (plist_t3), "plist_t3")
 
+%!test
+%! obj = struct_wrapper ();
+%! obj{'a'} = 1;
+%! assert (obj{'a'}, 1);
+%! obj{'bc'} = 2;
+%! assert (obj{'bc'}, 2);
+%! assert (obj{'a', 'bc'}, [ 1 2 ]);
+
 %% Test for meta.class.fromName
 %!test <*51935>
 %! meta.class.fromName ("inputParser");

@@ -175,6 +175,7 @@ to the standard output.  To send the output of a command executed with
 @example
 @group
 [~, text] = system ("cmd");
+more on;
 disp (text);
 @end group
 @end example
@@ -183,7 +184,10 @@ disp (text);
 or
 
 @example
+@group
+more on;
 printf ("%s\n", nthargout (2, "system", "cmd"));
+@end group
 @end example
 
 The @code{system} function can return two values.  The first is the

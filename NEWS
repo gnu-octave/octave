@@ -43,7 +43,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
  ** The quadcc function now uses both absolute tolerance and relative
     tolerance to determine the stopping criteria for an integration.
-    To be compatible with other quadXXX functions such as quadgk the
+    To be compatible with other quadXXX functions, such as quadgk, the
     calling syntax has changed to
 
       quadcc (f, a, b, [AbsTol, [RelTol]])
@@ -65,6 +65,12 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
  ** The Qt graphics toolkit now supports offscreen printing without osmesa
     if Octave was built with Qt >= 5.1.
+
+ ** The built-in pager for display of large data is now disabled by
+    default.  To re-enable it for every Octave session add the following
+    to your .octaverc file:
+
+      more on;
 
  ** The FLTK toolkit is no longer prioritized for development.  The
     number of Octave Maintainers is too small to support three different

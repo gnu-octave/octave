@@ -79,25 +79,24 @@ values with @code{disp} and through the normal echoing mechanism.
 @node Paging Screen Output
 @subsubsection Paging Screen Output
 
-When running interactively, Octave normally sends any output intended
-for your terminal that is more than one screen long to a paging program,
-such as @code{less} or @code{more}.  This avoids the problem of having a
-large volume of output stream by before you can read it.  With
-@code{less} (and some versions of @code{more}) you can also scan forward
-and backward, and search for specific items.
+When running interactively, Octave normally sends all output directly to the
+Command Window.  However, when using the CLI version of Octave this can create
+a problem because large volumes of data will stream by before you can read
+them.  In such cases, it is better to use a paging program such as @code{less}
+or @code{more} which displays just one screenful at a time.  With @code{less}
+(and some versions of @code{more}) you can also scan forward and backward, and
+search for specific items.  The pager is enabled by the command @code{more on}.
 
-Normally, no output is displayed by the pager until just before Octave
-is ready to print the top level prompt, or read from the standard input
-(for example, by using the @code{fscanf} or @code{scanf} functions).
-This means that there may be some delay before any output appears on
-your screen if you have asked Octave to perform a significant amount of
-work with a single command statement.  The function @code{fflush} may be
-used to force output to be sent to the pager (or any other stream)
-immediately.
+Normally, no output is displayed by the pager until just before Octave is ready
+to print the top level prompt, or read from the standard input (for example, by
+using the @code{fscanf} or @code{scanf} functions).  This means that there may
+be some delay before any output appears on your screen if you have asked Octave
+to perform a significant amount of work with a single command statement.  The
+function @code{fflush} may be used to force output to be sent to the pager (or
+any other stream) immediately.
 
-You can select the program to run as the pager using the @env{PAGER}
-function, and you can turn paging off by using the function
-@code{more}.
+You can select the program to run as the pager with the @code{PAGER} function,
+and configure the pager itself with the @code{PAGER_FLAGS} function.
 
 @DOCSTRING(more)
 

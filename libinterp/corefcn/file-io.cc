@@ -3162,8 +3162,8 @@ DEFMETHODX ("stdout", Fstdout, interp, args, ,
 @deftypefn {} {} stdout ()
 Return the numeric value corresponding to the standard output stream.
 
-Data written to the standard output is normally filtered through the pager.
-@seealso{stdin, stderr}
+Data written to the standard output may be filtered through the pager.
+@seealso{stdin, stderr, page_screen_output}
 @end deftypefn */)
 {
   octave::stream_list& streams = interp.get_stream_list ();

@@ -85,7 +85,7 @@ static bool Vpage_output_immediately = false;
 
 // TRUE means all output intended for the screen should be passed
 // through the pager.
-static bool Vpage_screen_output = true;
+static bool Vpage_screen_output = false;
 
 static bool really_flush_to_pager = false;
 

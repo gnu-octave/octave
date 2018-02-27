@@ -105,12 +105,6 @@ Range::elem (octave_idx_type i) const
     return rng_limit;
 }
 
-double
-Range::elem (octave_idx_type i, octave_idx_type j) const
-{
-  return elem (j);
-}
-
 // Helper class used solely for idx_vector.loop () function call
 class __rangeidx_helper
 {

@@ -124,7 +124,8 @@ public:
   double checkelem (octave_idx_type i, octave_idx_type j) const;
 
   double elem (octave_idx_type i) const;
-  double elem (octave_idx_type i, octave_idx_type j) const;
+  double elem (octave_idx_type /* i */, octave_idx_type j) const
+  { return elem (j); }
 
   double operator () (octave_idx_type i) const { return elem (i); }
   double operator () (octave_idx_type i, octave_idx_type j) const

@@ -449,7 +449,8 @@ namespace octave
         // In EPS terminal read the header line by line and insert a
         // new procedure
         const char* fcn = "/SRX  { gsave FCT moveto rotate xshow grestore } BD\n";
-        bool header_found = ! (term.find ("eps") != std::string::npos);
+        bool header_found = ! (term.find ("eps") != std::string::npos
+                               || term.find ("svg") != std::string::npos);
 
         while (! feof (tmpf) && nread)
           {
@@ -469,6 +470,25 @@ namespace octave
                         // FIXME: is this the best thing to do here?
                         respond_to_pending_signals ();
                         error ("gl2ps_renderer::draw: internal pipe error");
+                      }
+                  }
+                else if (! header_found
+                         && term.find ("svg") != std::string::npos)
+                  {
+                    // FIXME: gl2ps uses pixel units for SVG format.
+                    //        Modify resulting svg to use points instead.
+                    //        Remove this "else if" block, and
+                    //        make header_found true for SVG if gl2ps is fixed.
+                    std::string srchstr (str);
+                    size_t pos = srchstr.find ("px");
+                    if (pos != std::string::npos)
+                      {
+                        header_found = true;
+                        srchstr[pos+1] = 't';  // "px" -> "pt"
+                        // Assume the second occurrence is at the same line
+                        pos = srchstr.find ("px", pos);
+                        srchstr[pos+1] = 't';  // "px" -> "pt"
+                        std::strcpy (str, srchstr.c_str ());
                       }
                   }
 

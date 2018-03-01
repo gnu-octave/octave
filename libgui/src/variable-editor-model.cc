@@ -208,7 +208,7 @@ base_ve_model::data (const QModelIndex& idx, int role) const
   if (! m_valid)
     {
       if (role == Qt::DisplayRole)
-        return QVariant (QString ("Variable %d not found")
+        return QVariant (QString ("Variable %1 not found")
                          .arg (QString::fromStdString (m_name)));
 
       return QVariant (QString ("x"));

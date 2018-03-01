@@ -45,7 +45,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.epscrop = true;
   arg_st.ghostscript.level = 2;
   arg_st.ghostscript.output = "";
-  arg_st.ghostscript.papersize = "";
+  arg_st.ghostscript.papersize = "letter";
   arg_st.ghostscript.pageoffset = [];
   arg_st.ghostscript.resolution = 150;
   arg_st.ghostscript.antialiasing = false;
@@ -58,6 +58,8 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.pstoedit_binary = __quote_path__ (__find_binary__ ("pstoedit"));
   arg_st.preview = "";
   arg_st.printer = "";
+  arg_st.renderer = "auto";
+  arg_st.rgb_output = false;
   arg_st.send_to_printer = false;
   arg_st.special_flag = "textnormal";
   arg_st.tight_flag = false;
@@ -90,6 +92,11 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.force_solid = 1;
       elseif (strcmp (arg, "-dashed"))
         arg_st.force_solid = -1;
+      elseif (any (strcmp (arg, {"-opengl", "-painters"})))
+        arg_st.renderer = arg(2:end);
+      elseif (strcmp (arg, "-RGBImage"))
+        arg_st.rgb_output = true;
+        arg_st.renderer = "opengl";
       elseif (strncmp (arg, "-portrait", length (arg)))
         arg_st.orientation = "portrait";
       elseif (strncmp (arg, "-landscape", length (arg)))
@@ -154,8 +161,6 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.ghostscript.resolution = str2double (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2double (arg(3:end));
-      elseif (any (strcmp (arg, {"-painters", "-opengl"})))
-        warning ("print: '%s' accepted for Matlab compatibility, but is ignored", arg);
       elseif (strcmp (arg, "-noui"))
         warning ("print: option '-noui' not yet implemented");
       elseif (length (arg) >= 1 && arg(1) == "-")
@@ -186,11 +191,37 @@ function arg_st = __print_parse_opts__ (varargin)
 
   dot = rindex (arg_st.name, ".");
   if (isempty (arg_st.devopt))
-    if (dot == 0)
+    if (arg_st.rgb_output)
+      arg_st.devopt = "png";
+    elseif (dot == 0)
       arg_st.devopt = "psc";
     else
       arg_st.devopt = tolower (arg_st.name(dot+1:end));
     endif
+  endif
+
+  ## The opengl renderer is only available for raster outputs
+  fmts = imformats ();
+  persistent gl_devlist = [fmts(! cellfun (@isempty, {fmts.write})).ext, ...
+                           "tiffn"];
+
+  opengl_ok = any (strcmp (gl_devlist, arg_st.devopt));
+
+  if (strcmp (arg_st.renderer, "auto")
+      && strcmp (get (arg_st.figure, "renderermode"), "manual"))
+    arg_st.renderer = get (arg_st.figure, "renderer");
+  endif
+
+  if (strcmp (arg_st.renderer, "auto"))
+    if (opengl_ok && strcmp (graphics_toolkit (arg_st.figure), "qt"))
+      arg_st.renderer = "opengl";
+    else
+      arg_st.renderer = "painters";
+    endif
+  elseif (strcmp (arg_st.renderer, "opengl") && ! opengl_ok)
+    arg_st.renderer = "painters";
+    warning (["print: unsupported output format \"%s\" for renderer ", ...
+              "\"opengl\"."], arg_st.devopt);
   endif
 
   if (arg_st.use_color == 0)
@@ -215,7 +246,7 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.devopt = "tiff";
   endif
 
-  persistent dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
+  persistent dev_list = [{"aifm", "corel", "fig", "png", "jpeg", ...
               "gif", "pbm", "pbmraw", "dxf", "mf", ...
               "svg", "hpgl", "ps", "ps2", "psc", ...
               "psc2", "eps", "eps2", "epsc", "epsc2", ...
@@ -228,9 +259,9 @@ function arg_st = __print_parse_opts__ (varargin)
               "pdfcairolatex", "pdfcairolatexstandalone", ...
               "epscairolatex", "epscairolatexstandalone", "pstricks", ...
               "epswrite", "eps2write", "pswrite", "ps2write", "pdfwrite", ...
-              "canvas", "cgm", "latex", "eepic"};
+              "canvas", "cgm", "latex", "eepic"}, gl_devlist];
 
-  persistent suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
+  persistent suffixes = [{"ai", "cdr", "fig", "png", "jpg", ...
               "gif", "pbm", "pbm", "dxf", "mf", ...
               "svg", "hpgl", "ps", "ps", "ps", ...
               "ps", "eps", "eps", "eps", "eps", ...
@@ -243,7 +274,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "tex", "tex", ...
               "tex", "tex", "tex", ...
               "eps", "eps", "ps", "ps", "pdf", ...
-              "js", "cgm", "tex", "tex"};
+              "js", "cgm", "tex", "tex"}, gl_devlist];
 
   if (isfigure (arg_st.figure))
     __graphics_toolkit__ = get (arg_st.figure, "__graphics_toolkit__");
@@ -291,7 +322,13 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  if (! isempty (arg_st.printer) || isempty (arg_st.name))
+  if (arg_st.rgb_output)
+    if (! isempty (arg_st.printer) || ! isempty (arg_st.name))
+      warning ("octave:print:ignored_argument", ...
+               ["print: ignoring file name and printer argument when using", ...
+                "-RGBImage option"])
+    endif
+  elseif (! isempty (arg_st.printer) || isempty (arg_st.name))
     arg_st.send_to_printer = true;
   endif
 
@@ -300,7 +337,8 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   aliases = gs_aliases ();
-  if (any (strcmp (arg_st.devopt, fieldnames (aliases))))
+  if (any (strcmp (arg_st.devopt, fieldnames (aliases)))
+      && ! strcmp (arg_st.renderer, "opengl"))
     arg_st.devopt = aliases.(arg_st.devopt);
     unknown_device = false;
   endif
@@ -343,7 +381,7 @@ function arg_st = __print_parse_opts__ (varargin)
       ## Only supported ghostscript devices
       error ("print: format must be a valid Ghostscript format for spooling to a printer");
     endif
-  elseif (isempty (arg_st.name))
+  elseif (isempty (arg_st.name) && ! arg_st.rgb_output)
     error ("print: an output filename must be specified");
   endif
 
@@ -384,7 +422,8 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (warn_on_missing_ghostscript)
     if (isempty (arg_st.ghostscript.binary))
-      warning ("print:missing_gs", "print.m: Ghostscript binary is not available.  Only eps output is possible");
+      warning ("octave:print:missing_gs", ...
+               "print.m: Ghostscript binary is not available.  Only eps output is possible");
     endif
     warn_on_missing_ghostscript = false;
   endif

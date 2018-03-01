@@ -2116,11 +2116,7 @@ update_text_pos (graphics_handle h)
           axes::properties& ap
             = dynamic_cast<axes::properties&> (go.get_properties ());
           ap.update_font ();
-          ap.update_xlabel_position ();
-          ap.update_ylabel_position ();
-          ap.update_zlabel_position ();
-          ap.update_title_position ();
-          ap.update_axes_layout ();
+          ap.sync_positions ();
         }
     }
 }
@@ -6813,6 +6809,13 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
           else
             {
               Matrix text_ext = text_props.get_extent_matrix ();
+
+              // The text extent is returned in device pixels. Unscale and
+              // work with logical pixels
+              double dpr = device_pixel_ratio (get___myhandle__ ());
+              if (dpr != 1.0)
+                for (int j = 0; j < 4; j++)
+                  text_ext(j) /= dpr;
 
               bool ignore_horizontal = false;
               bool ignore_vertical = false;

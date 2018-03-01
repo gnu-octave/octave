@@ -64,6 +64,14 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
  ** "FaceNormals" and "EdgeNormals" for patch and surface graphic
     objects are now calculated automatically if necessary.
 
+ ** Printing to raster formats now uses an opengl based method by default.
+    The print options "-opengl" and "-painters" have been added (for "qt"
+    toolkit only) and the corresponding figure properties "renderer" and 
+    "renderermode" are now also used when printing.
+
+ ** The print option "-RGBImage" has been added. It allows for retrieving
+    image pixels of a formated figure instead of printing to raster format.
+
  ** Printing using the -dtiff output device will now create compressed
     images using lzw compression.  This change was made for Matlab
     compatibility.  To produce uncompressed images use the -dtiffn

@@ -1147,8 +1147,9 @@ namespace octave
 
     m_glfcns.glPixelStorei (GL_PACK_ALIGNMENT, 1);
     uint8NDArray pix(dim_vector (3, width, height), 0);
+
     m_glfcns.glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
-                 pix.fortran_vec ());
+                          pix.fortran_vec ());
 
     // Permute and flip data
     Array<octave_idx_type> perm (dim_vector (3, 1));

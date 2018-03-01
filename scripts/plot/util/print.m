@@ -21,20 +21,32 @@
 ## @deftypefnx {} {} print (@var{options})
 ## @deftypefnx {} {} print (@var{filename}, @var{options})
 ## @deftypefnx {} {} print (@var{h}, @var{filename}, @var{options})
-## Print a plot, or save it to a file.
-##
-## Both output formatted for printing (PDF and PostScript), and many bitmapped
-## and vector image formats are supported.
+## @deftypefnx {} {@var{rgb} = } print (@var{-RGBImage}, @dots{})
+## Format a figure and send it to a printer, save it to a file or
+## return an RGB image.
 ##
 ## @var{filename} defines the name of the output file.  If the filename has
 ## no suffix, one is inferred from the specified device and appended to the
-## filename.  If no filename is specified, the output is sent to the
-## printer.
+## filename.  In absence of a filename or "-RGBImage" option, the output is
+## sent to the printer.
+## The filename and options can be given in any order.
 ##
-## @var{h} specifies the handle of the figure to print.  If no handle is
-## specified the current figure is used.
+## Example: Print to a file using the pdf and jpeg formats.
 ##
-## For output to a printer, PostScript file, or PDF file, the paper size is
+## @example
+## @group
+## figure (1);
+## clf ();
+## surf (peaks);
+## print figure1.pdf   # The extension specifies the format
+## print -djpg figure1 # Will produce "figure1.jpg" file
+## @end group
+## @end example
+##
+## If the first argument @var{h} is a handle to a figure object, it specifies
+## the figure to print.  By default the current figure is printed.
+##
+## For outputs to paged formats, PostScript and PDF, the paper size is
 ## specified by the figure's @code{papersize} property.  The location and
 ## size of the image on the page are specified by the figure's
 ## @code{paperposition} property.  The orientation of the page is specified
@@ -50,21 +62,47 @@
 ##   Specify the handle, @var{h}, of the figure to be printed.  The default
 ## is the current figure.
 ##
+## Example: Print figure 1.
+##
+## @example
+## @group
+## figure (1);
+## clf ();
+## surf (peaks);
+## figure (2);
+## print -f1 figure1.pdf
+## ## Equivalent functional form:
+## print (1, "figure1.pdf")
+## @end group
+## @end example
+##
 ## @item -P@var{printer}
 ##   Set the @var{printer} name to which the plot is sent if no
 ## @var{filename} is specified.
 ##
-## @item -G@var{ghostscript_command}
-##   Specify the command for calling Ghostscript.  For Unix and Windows the
-## defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
+## Example: Print to printer named PS_printer using ps format.
 ##
-## @item  -color
-## @itemx -mono
-##   Color or monochrome output.
+## @example
+## @group
+## clf ();
+## surf (peaks);
+## print -dpswrite -PPS_printer
+## @end group
+## @end example
 ##
-## @item  -solid
-## @itemx -dashed
-##   Force all lines to be solid or dashed, respectively.
+## @item -RGBImage
+##   Return an M-by-N-by-3 RGB image of the figure. The size of the image
+## depends on the formating options.
+##
+## Example: Get the pixels of a figure image.
+##
+## @example
+## @group
+## clf ();
+## surf (peaks);
+## rgb = print ("-RGBImage");
+## @end group
+## @end example
 ##
 ## @item  -portrait
 ## @itemx -landscape
@@ -74,13 +112,74 @@
 ## orientation specified.  This option is equivalent to changing the figure's
 ## @qcode{"paperorientation"} property.
 ##
-## @item  -TextAlphaBits=@var{n}
-## @itemx -GraphicsAlphaBits=@var{n}
-##   Octave is able to produce output for various printers, bitmaps, and
-## vector formats by using Ghostscript.  For bitmap and printer output
-## anti-aliasing is applied using Ghostscript's TextAlphaBits and
-## GraphicsAlphaBits options.  The default number of bits are 4 and 1
-## respectively.  Allowed values for @var{N} are 1, 2, or 4.
+## @item -append
+##   Append PostScript or PDF output to a pre-existing file of the same type.
+##
+## @item -r@var{NUM}
+##   Resolution of bitmaps in pixels per inch.  For both metafiles and SVG
+## the default is the screen resolution; for other formats it is 150 dpi.  To
+## specify screen resolution, use @qcode{"-r0"}.
+##
+## Example: Get high resolution raster output.
+##
+## @example
+## @group
+## clf ();
+## surf (peaks (), "facelighting", "gouraud");
+## light ();
+## print ("-r600", "lit_peaks.png");
+## @end group
+## @end example
+##
+## @item -S@var{xsize},@var{ysize}
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.
+## For PS, EPS, PDF, and other vector formats the plot size is in points.
+## This option is equivalent to changing the size of the plot box associated
+## with the @qcode{"paperposition"} property.  When using the command form of
+## the print function you must quote the @var{xsize},@var{ysize} option.  For
+## example, by writing @w{"-S640,480"}.
+##
+## @item  -painters
+## @itemx -opengl
+##   For raster formats, specifies which of the opengl (pixel based) or painters
+## (vector based) renderers is used.  This is equivalent to changing the
+#  figure's "renderer" property.  By default the renderer is "opengl" for
+## raster formats and "painters" for vector formats.
+##
+## @item  -loose
+## @itemx -tight
+##   Force a tight or loose bounding box for eps files.  The default is loose.
+##
+## @item -@var{preview}
+##   Add a preview to eps files.  Supported formats are:
+##
+##   @table @code
+##   @item -interchange
+##     Provide an interchange preview.
+##
+##   @item -metafile
+##     Provide a metafile preview.
+##
+##   @item -pict
+##     Provide pict preview.
+##
+##   @item -tiff
+##     Provide a tiff preview.
+##   @end table
+##
+## @item  -F@var{fontname}
+## @itemx -F@var{fontname}:@var{size}
+## @itemx -F:@var{size}
+##   Use @var{fontname} and/or @var{fontsize} for all text.
+## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
+##
+## @item  -color
+## @itemx -mono
+##   Color or monochrome output.
+##
+## @item  -solid
+## @itemx -dashed
+##   Force all lines to be solid or dashed, respectively.
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
@@ -241,104 +340,42 @@
 ## file the size is determined by the plot box defined by the figure's
 ## @qcode{"paperposition"} property.
 ##
-## @item -append
-##   Append PostScript or PDF output to a pre-existing file of the same type.
+## @item -G@var{ghostscript_command}
+##   Specify the command for calling Ghostscript.  For Unix and Windows the
+## defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
 ##
-## @item -r@var{NUM}
-##   Resolution of bitmaps in pixels per inch.  For both metafiles and SVG
-## the default is the screen resolution; for other formats it is 150 dpi.  To
-## specify screen resolution, use @qcode{"-r0"}.
-##
-## @item  -loose
-## @itemx -tight
-##   Force a tight or loose bounding box for eps files.  The default is loose.
-##
-## @item -@var{preview}
-##   Add a preview to eps files.  Supported formats are:
-##
-##   @table @code
-##   @item -interchange
-##     Provide an interchange preview.
-##
-##   @item -metafile
-##     Provide a metafile preview.
-##
-##   @item -pict
-##     Provide pict preview.
-##
-##   @item -tiff
-##     Provide a tiff preview.
-##   @end table
-##
-## @item -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.
-## For PS, EPS, PDF, and other vector formats the plot size is in points.
-## This option is equivalent to changing the size of the plot box associated
-## with the @qcode{"paperposition"} property.  When using the command form of
-## the print function you must quote the @var{xsize},@var{ysize} option.  For
-## example, by writing @w{"-S640,480"}.
-##
-## @item  -F@var{fontname}
-## @itemx -F@var{fontname}:@var{size}
-## @itemx -F:@var{size}
-##   Use @var{fontname} and/or @var{fontsize} for all text.
-## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
+## @item  -TextAlphaBits=@var{n}
+## @itemx -GraphicsAlphaBits=@var{n}
+##   Octave is able to produce output for various printers, bitmaps, and
+## vector formats by using Ghostscript.  For bitmap and printer output
+## anti-aliasing is applied using Ghostscript's TextAlphaBits and
+## GraphicsAlphaBits options.  The default number of bits are 4 and 1
+## respectively.  Allowed values for @var{N} are 1, 2, or 4.
 ## @end table
 ##
-## The filename and options can be given in any order.
-##
-## Example: Print to a file using the pdf device.
-##
-## @example
-## @group
-## figure (1);
-## clf ();
-## surf (peaks);
-## print figure1.pdf
-## @end group
-## @end example
-##
-## Example: Print to a file using jpg device.
-##
-## @example
-## @group
-## clf ();
-## surf (peaks);
-## print -djpg figure2.jpg
-## @end group
-## @end example
-##
-## Example: Print to printer named PS_printer using ps format.
-##
-## @example
-## @group
-## clf ();
-## surf (peaks);
-## print -dpswrite -PPS_printer
-## @end group
-## @end example
-##
-## @seealso{saveas, hgsave, orient, figure}
+## @seealso{saveas, hgsave, getframe, orient, figure}
 ## @end deftypefn
 
-function print (varargin)
+function rgbout = print (varargin)
 
   opts = __print_parse_opts__ (varargin{:});
 
-  folder = fileparts (opts.name);
-  if (! isempty (folder) && ! isfolder (folder))
-    error ("print: directory %s does not exist", folder);
-  endif
-
   ## Check the requested file is writable
-  do_unlink = (exist (opts.name, "file") != 2);
-  fid = fopen (opts.name, "a");
-  if (fid == -1)
-    error ("print: cannot open file %s for writing", opts.name);
-  endif
-  fclose (fid);
-  if (do_unlink)
-    unlink (opts.name);
+  if (! opts.rgb_output)
+    folder = fileparts (opts.name);
+    if (! isempty (folder) && ! isfolder (folder))
+      error ("print: directory %s does not exist", folder);
+    endif
+
+    do_unlink = (exist (opts.name, "file") != 2);
+    fid = fopen (opts.name, "a");
+    if (fid == -1)
+      error ("print: cannot open file %s for writing", opts.name);
+    endif
+    fclose (fid);
+    if (do_unlink)
+      unlink (opts.name);
+    endif
   endif
 
   opts.pstoedit_cmd = @pstoedit;
@@ -386,8 +423,18 @@ function print (varargin)
       nfig += 1;
     endfor
 
-    ## Don't account for the actual pixel density
-    if (strcmp (tk, "qt"))
+    if (strcmp (opts.renderer, "opengl"))
+      ## Scale the figure to reach the required resolution
+      scale = opts.ghostscript.resolution / 72;
+      if (scale != 1)
+        props(end+1).h = opts.figure;
+        props(end).name = "__device_pixel_ratio__";
+        props(end).value{1} = get (opts.figure, "__device_pixel_ratio__");
+        set (opts.figure, "__device_pixel_ratio__", scale);
+        nfig += 1;
+      endif
+    elseif (strcmp (tk, "qt"))
+      ## Don't account for the actual pixel density
       props(end+1).h = opts.figure;
       props(end).name = "__device_pixel_ratio__";
       props(end).value = {get(opts.figure, "__device_pixel_ratio__")};
@@ -410,7 +457,8 @@ function print (varargin)
     ## using gl2ps. For other formats, switch grid lines to light gray
     ## so that the image output approximately matches on-screen experience.
     hax = findall (opts.figure, "type", "axes");
-    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.devopt, "svg"))
+    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.devopt, "svg")
+        && ! strcmp (opts.renderer, "opengl"))
       for n = 1:numel (hax)
         if (strcmp (get (hax(n), "gridcolormode"), "auto"))
           props(end+1).h = hax(n);
@@ -571,7 +619,24 @@ function print (varargin)
       case "gnuplot"
         opts = __gnuplot_print__ (opts);
       otherwise
-        opts = __opengl_print__ (opts);
+        if (strcmp (opts.renderer, "opengl"))
+          if (opts.rgb_output)
+            rgbout = __get_frame__ (opts.figure);
+          else
+            compression = "none";
+
+            if (strcmp (opts.devopt, "tiff"))
+              compression = "lzw";
+            elseif (strcmp (opts.devopt, "tiffn"))
+              opts.devopt = "tiff";
+            endif
+
+            imwrite (__get_frame__ (opts.figure), opts.name, ...
+                     opts.devopt, "Compression", compression);
+          endif
+        else
+          opts = __opengl_print__ (opts);
+        endif
     endswitch
 
   unwind_protect_cleanup

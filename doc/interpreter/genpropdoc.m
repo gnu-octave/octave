@@ -516,10 +516,13 @@ and width and height of the figure.  \
         s.valid = valid_4elvec;
 
       case "renderer"
-        s.doc = doc_unused;
+        s.doc = "Renderering engine used for printing when @code{renderermode} \
+is \"manual\".  __modemsg__.";
 
       case "renderermode"
-        s.doc = doc_unused;
+        s.doc = "Control whether the renderering engine used for printing is \
+chosen automatically or specified by the @code{renderer} property.  \
+@xref{XREFprint, , @w{print function}}.";
 
       case "resize"
         s.doc = "Control whether the figure can be resized by dragging the \

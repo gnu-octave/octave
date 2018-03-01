@@ -89,6 +89,9 @@ namespace QtHandles
     if (go && go.isa ("figure"))
       {
         Matrix pos = go.get ("position").matrix_value ();
+        double dpr = go.get ("__device_pixel_ratio__").double_value ();
+        pos(2) *= dpr;
+        pos(3) *= dpr;
 
         // Make sure we have a valid current context
         if (! begin_rendering ())
@@ -101,11 +104,13 @@ namespace QtHandles
             || go.get ("__printing__").string_value () == "on")
           {
             OCTAVE_QT_OPENGL_FBO
-            fbo (pos(2), pos(3),OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
+            fbo (pos(2), pos(3),
+                 OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
 
             fbo.bind ();
 
             m_renderer.set_viewport (pos(2), pos(3));
+            m_renderer.set_device_pixel_ratio (dpr);
             m_renderer.draw (go);
             retval = m_renderer.get_pixels (pos(2), pos(3));
 
@@ -114,6 +119,7 @@ namespace QtHandles
         else
           {
             m_renderer.set_viewport (pos(2), pos(3));
+            m_renderer.set_device_pixel_ratio (dpr);
             m_renderer.draw (go);
             retval = m_renderer.get_pixels (pos(2), pos(3));
           }

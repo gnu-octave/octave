@@ -61,16 +61,16 @@ function ang = subspace (A, B)
 endfunction
 
 
-%!test
-%! ## For random vectors
-%! a = rand (2,1);
-%! b = rand (2,1);
-%! a1 = norm (a,2);
-%! b1 = norm (b,2);
-%! theta = acos (dot (a,b)/(a1*b1));
-%! assert (theta, subspace (a, b), 100*eps);
+%!assert (subspace (1, 1), 0)
+%!assert (subspace ([1, 0]', [1, 1; 0, 1]'), 0, 3*eps)
+%!assert (subspace ([1, 0, 1]', [1, 1, 0; 1, -1, 0]'), pi/4, 3*eps)
+%!assert (subspace ([1 5 0 0; -3 2 0 0]', [0 0 4 2; 0 0 4 3]'), pi/2)
+%!assert (subspace ([1 1 1 1; 1 2 3 4]', [1 -1 -1 1]'), pi/2)
 
 %!test
-%! ## For random matrices
-%! M = rand (3, 3);
-%! assert (0, subspace (M, M'), 100*eps);
+%! ## For small angle between subspaces
+%! theta = pi/200;
+%! Ry = [cos(theta), 0, sin(theta);0, 1, 0;-sin(theta), 0, cos(theta)];
+%! a = Ry*[3*e, 0, 0]';
+%! b = [1, 1, 0; 1, -1, 0]';
+%! assert (theta, subspace (a, b), eps);

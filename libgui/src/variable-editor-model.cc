@@ -653,8 +653,8 @@ public:
   display_only_model (const QString& expr, const octave_value& val)
     : base_ve_model (expr, val)
   {
-    m_data_rows = 0;
-    m_data_cols = 0;
+    m_data_rows = 1;
+    m_data_cols = 1;
 
     m_display_rows = m_data_rows;
     m_display_cols = m_data_cols;

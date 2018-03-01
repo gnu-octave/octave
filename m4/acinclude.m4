@@ -1429,10 +1429,10 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
 
   if test $build_qt_gui = yes; then
     if test x"$have_qt_version" = x4; then
-      AC_DEFINE(HAVE_QT4, 1, [Define if you are using Qt version 4.])
+      AC_DEFINE(HAVE_QT4, 1, [Define to 1 if using Qt version 4.])
     fi
     if test x"$have_qt_version" = x5; then
-      AC_DEFINE(HAVE_QT5, 1, [Define if you are using Qt version 5.])
+      AC_DEFINE(HAVE_QT5, 1, [Define to 1 if using Qt version 5.])
     fi
   else
     if test -n "$warn_qt_libraries"; then
@@ -1739,7 +1739,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       *)
         AC_CHECK_HEADERS([pty.h libutil.h util.h])
         AC_SEARCH_LIBS([openpty], [util],
-          [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
+          [AC_DEFINE(HAVE_OPENPTY, 1, [Define to 1 if openpty exists])])
         AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
           [build_qt_gui=no
            warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])

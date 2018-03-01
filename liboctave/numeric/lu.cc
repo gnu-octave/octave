@@ -46,9 +46,15 @@ namespace octave
 {
   namespace math
   {
+    // FIXME: PermMatrix::col_perm_vec returns Array<octave_idx_type>
+    // but ipvt is an Array<octave_f77_int_type>.  This could cause
+    // trouble for large arrays if octave_f77_int_type is 32-bits but
+    // octave_idx_type is 64.  Since this constructor is called from
+    // Fluupdate, it could be given values that are out of range.  We
+    // should ensure that the values are within range here.
+
     template <typename T>
-    lu<T>::lu (const T& l, const T& u,
-               const PermMatrix& p)
+    lu<T>::lu (const T& l, const T& u, const PermMatrix& p)
       : a_fact (u), l_fact (l), ipvt (p.transpose ().col_perm_vec ())
     {
       if (l.columns () != u.rows ())
@@ -70,6 +76,15 @@ namespace octave
         {
           l_fact = L ();
           a_fact = U (); // FIXME: sub-optimal
+
+          // FIXME: getp returns Array<octave_idx_type> but ipvt is
+          // Array<octave_f77_int_type>.  However, getp produces its
+          // result from a valid ipvt array so validation should not be
+          // necessary.  OTOH, it might be better to have a version of
+          // getp that doesn't cause us to convert from
+          // Array<octave_f77_int_type> to Array<octave_idx_type> and
+          // back again.
+
           ipvt = getp ();
         }
     }

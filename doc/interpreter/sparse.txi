@@ -788,8 +788,8 @@ or backward substitution, and goto 8
 sparse Cholesky@tie{}factorization using @sc{cholmod}.
 
 @item If the sparse Cholesky@tie{}factorization failed or the matrix is not
-Hermitian with a real positive diagonal, and the matrix is square, factorize
-using @sc{umfpack}.
+Hermitian with a real positive diagonal, and the matrix is square, factorize,
+solve, and perform one refinement iteration using @sc{umfpack}.
 
 @item If the matrix is not square, or any of the previous solvers flags
 a singular or near singular matrix, find a minimum norm solution using

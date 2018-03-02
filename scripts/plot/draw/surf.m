@@ -58,7 +58,7 @@
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function retval = surf (varargin)
+function h = surf (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("surf", varargin{:});
 
@@ -83,7 +83,7 @@ function retval = surf (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    retval = htmp;
+    h = htmp;
   endif
 
 endfunction

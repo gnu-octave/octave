@@ -65,7 +65,7 @@
 ## @seealso{scatter, patch, plot}
 ## @end deftypefn
 
-function retval = scatter3 (varargin)
+function h = scatter3 (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("scatter3", varargin{:});
 
@@ -93,7 +93,7 @@ function retval = scatter3 (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    retval = htmp;
+    h = htmp;
   endif
 
 endfunction

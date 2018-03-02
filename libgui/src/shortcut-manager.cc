@@ -514,10 +514,10 @@ namespace octave
     m_dialog = nullptr;
     m_level_hash.clear ();
 
-#if defined (HAVE_QT4)
-    tree_view->header ()->setResizeMode (QHeaderView::ResizeToContents);
-#else
+#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
     tree_view->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
+#else
+    tree_view->header ()->setResizeMode (QHeaderView::ResizeToContents);
 #endif
 
     QTreeWidgetItem *main = new QTreeWidgetItem (tree_view);

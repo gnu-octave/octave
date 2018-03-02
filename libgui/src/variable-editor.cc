@@ -303,10 +303,10 @@ variable_editor_view::variable_editor_view (QWidget *p)
   setHorizontalScrollMode (QAbstractItemView::ScrollPerPixel);
   setVerticalScrollMode (QAbstractItemView::ScrollPerPixel);
 
-#if defined (HAVE_QT4)
-  verticalHeader ()->setResizeMode (QHeaderView::Interactive);
-#else
+#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
   verticalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
+#else
+  verticalHeader ()->setResizeMode (QHeaderView::Interactive);
 #endif
 }
 
@@ -315,10 +315,10 @@ variable_editor_view::setModel (QAbstractItemModel *model)
 {
   QTableView::setModel (model);
 
-#if defined (HAVE_QT4)
-  horizontalHeader ()->setResizeMode (QHeaderView::Interactive);
-#else
+#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
   horizontalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
+#else
+  horizontalHeader ()->setResizeMode (QHeaderView::Interactive);
 #endif
 
   m_var_model = parent ()->findChild<variable_editor_model *> ();

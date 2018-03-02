@@ -60,10 +60,10 @@ along with Octave; see the file COPYING.  If not, see
 // Disable all Qt messages by default.
 
 static void
-#if defined (HAVE_QT4)
-message_handler (QtMsgType, const char *)
-#else
+#if defined (QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT)
 message_handler (QtMsgType, const QMessageLogContext &, const QString &)
+#else
+message_handler (QtMsgType, const char *)
 #endif
 { }
 
@@ -141,10 +141,10 @@ namespace octave
 
     if (show_gui_msgs.empty ())
       {
-#if defined (HAVE_QT4)
-        qInstallMsgHandler (message_handler);
-#else
+#if defined (HAVE_QINSTALLMESSAGEHANDLER)
         qInstallMessageHandler (message_handler);
+#else
+        qInstallMsgHandler (message_handler);
 #endif
       }
 

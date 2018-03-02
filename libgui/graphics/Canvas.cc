@@ -389,10 +389,10 @@ namespace QtHandles
 
             r.adjust (-5, -5, 5, 5);
 
-#if (HAVE_QT4)
-            bool rect_contains_pos = r.contains (event->posF ());
-#else
+#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
             bool rect_contains_pos = r.contains (event->localPos ());
+#else
+            bool rect_contains_pos = r.contains (event->posF ());
 #endif
             if (rect_contains_pos)
               {
@@ -443,10 +443,10 @@ namespace QtHandles
                 Matrix bb = it->get_properties ().get_boundingbox (true);
                 QRectF r (bb(0), bb(1), bb(2), bb(3));
 
-#if defined (HAVE_QT4)
-                bool rect_contains_pos = r.contains (event->posF ());
-#else
+#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
                 bool rect_contains_pos = r.contains (event->localPos ());
+#else
+                bool rect_contains_pos = r.contains (event->posF ());
 #endif
                 if (rect_contains_pos)
                   axesObj = *it;

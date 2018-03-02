@@ -113,12 +113,15 @@ namespace octave
         m_view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
 
         // Set header properties for sorting
-#if defined (HAVE_QT4)
-        m_view->horizontalHeader ()->setClickable (true);
-        m_view->horizontalHeader ()->setMovable (true);
-#else
+#if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
         m_view->horizontalHeader ()->setSectionsClickable (true);
+#else
+        m_view->horizontalHeader ()->setClickable (true);
+#endif
+#if defined (HAVE_QHEADERVIEW_SETSECTIONSMOVABLE)
         m_view->horizontalHeader ()->setSectionsMovable (true);
+#else
+        m_view->horizontalHeader ()->setMovable (true);
 #endif
         m_view->horizontalHeader ()->setSortIndicator (settings->value ("workspaceview/sort_by_column",0).toInt (),
                                                        static_cast<Qt::SortOrder>

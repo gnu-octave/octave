@@ -344,6 +344,129 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
+dnl Check whether the Qt QHeaderView class has the setSectionResizeMode
+dnl function.  This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE], [
+  AC_CACHE_CHECK([for QHeaderView::setSectionResizeMode],
+    [octave_cv_func_qheaderview_setsectionresizemode],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHeaderView>
+        ]], [[
+        QHeaderView header_view (Qt::Horizontal);
+        header_view.setSectionResizeMode (QHeaderView::Interactive);
+        ]])],
+      octave_cv_func_qheaderview_setsectionresizemode=yes,
+      octave_cv_func_qheaderview_setsectionresizemode=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qheaderview_setsectionresizemode = yes; then
+    AC_DEFINE(HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE, 1,
+      [Define to 1 if you have the `QHeaderView::setSectionResizeMode' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt QHeaderView class has the setSectionsClickable
+dnl function.  This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE], [
+  AC_CACHE_CHECK([for QHeaderView::setSectionsClickable],
+    [octave_cv_func_qheaderview_setsectionsclickable],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHeaderView>
+        ]], [[
+        QHeaderView header_view (Qt::Horizontal);
+        header_view.setSectionsClickable (true);
+        ]])],
+      octave_cv_func_qheaderview_setsectionsclickable=yes,
+      octave_cv_func_qheaderview_setsectionsclickable=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qheaderview_setsectionsclickable = yes; then
+    AC_DEFINE(HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE, 1,
+      [Define to 1 if you have the `QHeaderView::setSectionsClickable' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt QHeaderView class has the setSectionsMovable
+dnl function.  This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE], [
+  AC_CACHE_CHECK([for QHeaderView::setSectionsMovable],
+    [octave_cv_func_qheaderview_setsectionsmovable],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHeaderView>
+        ]], [[
+        QHeaderView header_view (Qt::Horizontal);
+        header_view.setSectionsMovable (true);
+        ]])],
+      octave_cv_func_qheaderview_setsectionsmovable=yes,
+      octave_cv_func_qheaderview_setsectionsmovable=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qheaderview_setsectionsmovable = yes; then
+    AC_DEFINE(HAVE_QHEADERVIEW_SETSECTIONSMOVABLE, 1,
+      [Define to 1 if you have the `QHeaderView::setSectionsMovable' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt function qInstallMessageHandler is available.
+dnl This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QINSTALLMESSAGEHANDLER], [
+  AC_CACHE_CHECK([for qInstallMessageHandler],
+    [octave_cv_func_qinstallmessagehandler],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QtGlobal>
+        ]], [[
+        qInstallMessageHandler (nullptr);
+        ]])],
+      octave_cv_func_qinstallmessagehandler=yes,
+      octave_cv_func_qinstallmessagehandler=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qinstallmessagehandler = yes; then
+    AC_DEFINE(HAVE_QINSTALLMESSAGEHANDLER, 1,
+      [Define to 1 if you have the `qInstallMessageHandler' function.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QLineEdit has the setPlaceholderText member
 dnl function.  This member function was introduced in Qt 4.7.
 dnl
@@ -373,6 +496,37 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT], [
   if test $octave_cv_func_qlineedit_setplaceholdertext = yes; then
     AC_DEFINE(HAVE_QLINEEDIT_SETPLACEHOLDERTEXT, 1,
       [Define to 1 if you have the `QLineEdit::setPlaceholderText' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt QMouseEvent class has the localPos function.
+dnl This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS], [
+  AC_CACHE_CHECK([for QMouseEvent::localPos],
+    [octave_cv_func_qmouseevent_localpos],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QMouseEvent>
+        ]], [[
+        QMouseEvent *event;
+        event->localPos ();
+        ]])],
+      octave_cv_func_qmouseevent_localpos=yes,
+      octave_cv_func_qmouseevent_localpos=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qmouseevent_localpos = yes; then
+    AC_DEFINE(HAVE_QMOUSEEVENT_LOCALPOS, 1,
+      [Define to 1 if you have the `QMouseEvent::localPos' member function.])
   fi
 ])
 dnl
@@ -484,6 +638,39 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
   if test $octave_cv_func_qtabwidget_setmovable = yes; then
     AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
       [Define to 1 if you have the `QTabWidget::setMovable' member function.])
+  fi
+])
+dnl
+dnl Check whether Qt message handler function accepts QMessageLogContext
+dnl argument.  This change was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT], [
+  AC_CACHE_CHECK([whether Qt message handler accepts QMessageLogContext],
+    [octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QtGlobal>
+        static void
+        msg_handler (QtMsgType, const QMessageLogContext &, const QString &)
+        { }
+        ]], [[
+        QtMessageHandler fptr = msg_handler;
+        ]])],
+      octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext=yes,
+      octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext = yes; then
+    AC_DEFINE(QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT, 1,
+      [Define to 1 if Qt message handler accepts 'QMessageLogContext' argument.])
   fi
 ])
 dnl
@@ -1800,16 +1987,29 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     AC_DEFINE(HAVE_QT, 1,
       [Define to 1 if Qt is available, with all required functions, libraries, developer header files, and utility programs (moc, uic, rcc, and lrelease).])
 
+    AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    AC_CHECK_HEADERS([QStandardPaths])
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+
     ## We don't need to unset cache variables for any of the remaining
     ## tests if they fail because we have already decided that the Qt
     ## version that we are testing now will be the one used.
 
+    OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE
+    OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE
+    OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE
+    OCTAVE_CHECK_FUNC_QINSTALLMESSAGEHANDLER
     OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT
+    OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS
+    OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
+    OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT
     OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS
     OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE
     OCTAVE_HAVE_QGUIAPPLICATION
-    OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],

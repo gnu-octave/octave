@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QNetworkProxy>
 #include <QLibraryInfo>
 #include <QMessageBox>
-#if defined (HAVE_QT5)
+#if defined (HAVE_QSTANDARDPATHS)
 #  include <QStandardPaths>
 #endif
 #include <QTextCodec>
@@ -69,12 +69,12 @@ namespace octave
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
       m_default_settings (nullptr)
   {
-#if defined (HAVE_QT4)
-    QString home_path
-      = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
-#else
+#if defined (HAVE_QSTANDARDPATHS)
     QString home_path
       = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
+#else
+    QString home_path
+      = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
 #endif
 
     m_settings_directory = home_path + "/.config/octave";

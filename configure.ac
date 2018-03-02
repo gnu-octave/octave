@@ -2071,17 +2071,6 @@ else
   AC_SUBST(FT2_CPPFLAGS)
 fi
 
-## Check for Xft library (when using X11)
-
-dnl FIXME: We don't use this library directly, so there's no need to
-dnl check for the header file.  Do we even need to check for the library?
-
-OCTAVE_CHECK_LIB(Xft, Xft,
-  [Xft library not found.  OpenGL graphics will not be fully functional.],
-  [], [XftFontOpen],
-  [], [don't use Xft library, OpenGL graphics will not be fully functional],
-  [], [xft])
-
 ## Check for fontconfig library
 
 OCTAVE_CHECK_LIB(fontconfig, fontconfig,

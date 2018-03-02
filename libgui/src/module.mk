@@ -35,6 +35,7 @@ octave_gui_ICONS = \
   %reldir%/icons/graphic_logo_TerminalDockWidget.png \
   %reldir%/icons/graphic_logo_WorkspaceView.png \
   %reldir%/icons/graphic_logo_ReleaseWidget.png \
+  %reldir%/icons/graphic_logo_VariableEditor.png \
   %reldir%/icons/graphic_logo_DocumentationDockWidget.svg \
   %reldir%/icons/graphic_logo_FileEditor.svg \
   %reldir%/icons/graphic_logo_FilesDockWidget.svg \
@@ -43,6 +44,7 @@ octave_gui_ICONS = \
   %reldir%/icons/graphic_logo_TerminalDockWidget.svg \
   %reldir%/icons/graphic_logo_WorkspaceView.svg \
   %reldir%/icons/graphic_logo_ReleaseWidget.svg \
+  %reldir%/icons/graphic_logo_VariableEditor.svg \
   %reldir%/icons/icons_license \
   %reldir%/icons/letter_logo_DocumentationDockWidget.png \
   %reldir%/icons/letter_logo_FileEditor.png \
@@ -52,6 +54,7 @@ octave_gui_ICONS = \
   %reldir%/icons/letter_logo_TerminalDockWidget.png \
   %reldir%/icons/letter_logo_WorkspaceView.png \
   %reldir%/icons/letter_logo_ReleaseWidget.png \
+  %reldir%/icons/letter_logo_VariableEditor.png \
   %reldir%/icons/letter_logo_DocumentationDockWidget.svg \
   %reldir%/icons/letter_logo_FileEditor.svg \
   %reldir%/icons/letter_logo_FilesDockWidget.svg \
@@ -60,6 +63,7 @@ octave_gui_ICONS = \
   %reldir%/icons/letter_logo_TerminalDockWidget.svg \
   %reldir%/icons/letter_logo_WorkspaceView.svg \
   %reldir%/icons/letter_logo_ReleaseWidget.svg \
+  %reldir%/icons/letter_logo_VariableEditor.svg \
   %reldir%/icons/logo.png \
   %reldir%/icons/plot-xy-curve.png \
   %reldir%/icons/preferences-system.png \

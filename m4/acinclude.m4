@@ -416,6 +416,40 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
   fi
 ])
 dnl
+dnl Check whether QObject::findChildren accepts Qt::FindChildOptions
+dnl argument.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS], [
+  AC_CACHE_CHECK([whether QObject::findChildren accepts Qt::FindChildOptions],
+    [octave_cv_func_qobject_findchildren_accepts_findchildoptions],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QList>
+        #include <QObject>
+        #include <QWidget>
+        ]], [[
+        QObject obj;
+        QList<QWidget *> widgets
+          = obj.findChildren<QWidget *> ("name", Qt::FindDirectChildrenOnly);
+        ]])],
+      octave_cv_func_qobject_findchildren_accepts_findchildoptions=yes,
+      octave_cv_func_qobject_findchildren_accepts_findchildoptions=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_findchildren_accepts_findchildoptions = yes; then
+    AC_DEFINE(QOBJECT_FINDCHILDREN_ACCEPTS_QFINDCHILDOPTIONS, 1,
+      [Define to 1 if 'QObject::findChildren' accepts 'Qt::FindChildOptions' argument.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QTabWidget has the setMovable member function.
 dnl This member function was introduced in Qt 4.5.
 dnl
@@ -1254,70 +1288,6 @@ AC_DEFUN([OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE], [
   fi
 ])
 dnl
-dnl Check whether the Qt class QGuiApplication exists.  This class
-dnl was introduced in Qt 5.0.
-dnl
-dnl FIXME: Delete this entirely when we drop support for Qt 4.
-dnl
-AC_DEFUN([OCTAVE_HAVE_QGUIAPPLICATION], [
-  AC_CACHE_CHECK([for QGuiApplication],
-    [octave_cv_decl_qguiapplication],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QGuiApplication>
-        ]], [[
-        QScreen *pscreen = QGuiApplication::primaryScreen ();
-        ]])],
-      octave_cv_decl_qguiapplication=yes,
-      octave_cv_decl_qguiapplication=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_decl_qguiapplication = yes; then
-    AC_DEFINE(HAVE_QGUIAPPLICATION, 1,
-      [Define to 1 if `QGuiApplication' class is available.])
-  fi
-])
-dnl
-dnl Check whether QObject::findChildren accepts Qt::FindChildOptions
-dnl argument.
-dnl
-dnl FIXME: Delete this entirely when we drop support for Qt 4.
-dnl
-AC_DEFUN([OCTAVE_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS], [
-  AC_CACHE_CHECK([whether QObject::findChildren accepts Qt::FindChildOptions],
-    [octave_cv_qobject_findchildren_accepts_findchildoptions],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QList>
-        #include <QObject>
-        #include <QWidget>
-        ]], [[
-        QObject obj;
-        QList<QWidget *> widgets
-          = obj.findChildren<QWidget *> ("name", Qt::FindDirectChildrenOnly);
-        ]])],
-      octave_cv_qobject_findchildren_accepts_findchildoptions=yes,
-      octave_cv_qobject_findchildren_accepts_findchildoptions=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_qobject_findchildren_accepts_findchildoptions = yes; then
-    AC_DEFINE(QOBJECT_FINDCHILDREN_ACCEPTS_QFINDCHILDOPTIONS, 1,
-      [Define to 1 if `QObject::findChildren' accepts 'Qt::FindChildOptions' argument.])
-  fi
-])
-dnl
 dnl Check for the Qhull version.
 dnl
 AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
@@ -1839,7 +1809,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS
     OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE
     OCTAVE_HAVE_QGUIAPPLICATION
-    OCTAVE_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS
+    OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],
@@ -2270,6 +2240,36 @@ AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
   else
     AC_MSG_RESULT([no])
     [$5]
+  fi
+])
+dnl
+dnl Check whether the Qt class QGuiApplication exists.
+dnl This class  was introduced in Qt 5.0.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_HAVE_QGUIAPPLICATION], [
+  AC_CACHE_CHECK([for QGuiApplication],
+    [octave_cv_decl_qguiapplication],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QGuiApplication>
+        ]], [[
+        QScreen *pscreen = QGuiApplication::primaryScreen ();
+        ]])],
+      octave_cv_decl_qguiapplication=yes,
+      octave_cv_decl_qguiapplication=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qguiapplication = yes; then
+    AC_DEFINE(HAVE_QGUIAPPLICATION, 1,
+      [Define to 1 if `QGuiApplication' class is available.])
   fi
 ])
 dnl

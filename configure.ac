@@ -2165,15 +2165,22 @@ fi
 if test $use_osmesa = yes; then
   dnl Pre-declare warning message, and unset if library is found
   if test $octave_cv_qt_opengl_os_ok = no; then
-    warn_osmesa = "OSMesa library not found and Qt < 5.1.  Offscreen rendering with OpenGL will be disabled."
+    warn_osmesa="OSMesa library not found and Qt < 5.1.  Offscreen rendering with OpenGL will be disabled."
   else
-    warn_osmesa = "OSMesa library not found.  Offscreen rendering with FLTK will be disabled."
+    warn_osmesa="OSMesa library not found.  Offscreen rendering with FLTK will be disabled."
   fi
-  
-  dnl FIXME: Should we AC_LANG_PUSH(C++)/AC_LANG_POP around these tests?
+
+  OSMESA_LIBS="-lOSMesa"
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  CPPFLAGS="$OSMESA_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$OSMESA_LDFLAGS $LDFLAGS"
+  LIBS="$OSMESA_LIBS $LIBS"
+  AC_LANG_PUSH(C++)
+  ac_octave_osmesa_check_for_lib=no
   AC_CHECK_HEADERS([osmesa.h GL/osmesa.h],
-                   [ac_octave_osmesa_check_for_lib=yes; break]
-                   [ac_octave_osmesa_check_for_lib=no])
+                   [ac_octave_osmesa_check_for_lib=yes; break])
   if test $ac_octave_osmesa_check_for_lib = yes; then
     AC_CACHE_CHECK([for OSMesaCreateContext in OSMesa],
       octave_cv_lib_osmesa,
@@ -2184,14 +2191,21 @@ if test $use_osmesa = yes; then
       warn_osmesa=
       AC_DEFINE(HAVE_OSMESA, 1, [Define to 1 if OSMesa is available.])
     fi
-  else
-    octave_cv_lib_osmesa=no
   fi
+  AC_LANG_POP(C++)
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
 
   if test -n "$warn_osmesa"; then
     OCTAVE_CONFIGURE_WARNING([warn_osmesa])
+    OSMESA_LIBS=
   fi
 fi
+
+AC_SUBST(OSMESA_CPPFLAGS)
+AC_SUBST(OSMESA_LDFLAGS)
+AC_SUBST(OSMESA_LIBS)
 
 ### Check for FLTK library
 

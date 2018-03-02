@@ -373,7 +373,7 @@ endfunction
 #### SPARSE MATRIX VERSIONS ####
 
 ## Real positive definite tests, n must be even
-%!shared n, k, A, d0, d2
+%!shared n, k, A, d0, d2, old_state, restore_state
 %! n = 20;
 %! k = 4;
 %! A = sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),4*ones(1,n),ones(1,n-2)]);
@@ -381,6 +381,8 @@ endfunction
 %! d2 = sort (d0);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -490,13 +492,15 @@ endfunction
 %! endfor
 
 ## Real unsymmetric tests
-%!shared n, k, A, d0
+%!shared n, k, A, d0, old_state, restore_state
 %! n = 20;
 %! k = 4;
 %! A = sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -617,13 +621,15 @@ endfunction
 
 
 ## Complex hermitian tests
-%!shared n, k, A, d0
+%!shared n, k, A, d0, old_state, restore_state
 %! n = 20;
 %! k = 4;
 %! A = sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[1i*ones(1,n-2),4*ones(1,n),-1i*ones(1,n-2)]);
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -865,7 +871,7 @@ endfunction
 #### FULL MATRIX VERSIONS ####
 
 ## Real positive definite tests, n must be even
-%!shared n, k, A, d0, d2
+%!shared n, k, A, d0, d2, old_state, restore_state
 %! n = 20;
 %! k = 4;
 %! A = full (sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),4*ones(1,n),ones(1,n-2)]));
@@ -873,6 +879,8 @@ endfunction
 %! d2 = sort (d0);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -977,13 +985,15 @@ endfunction
 %! endfor
 
 ## Real unsymmetric tests
-%!shared n, k, A, d0
+%!shared n, k, A, d0, old_state, restore_state
 %! n = 20;
 %! k = 4;
 %! A = full (sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]));
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -1103,13 +1113,15 @@ endfunction
 %! endfor
 
 ## Complex hermitian tests
-%!shared n, k, A, d0
+%!shared n, k, A, d0, old_state, restore_state
 %! n = 20;
 %! k = 4;
 %! A = full (sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[1i*ones(1,n-2),4*ones(1,n),-1i*ones(1,n-2)]));
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);

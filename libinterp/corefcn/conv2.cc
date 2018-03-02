@@ -264,7 +264,23 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "valid"),
 %!                [4 7 10 13; 4 7 10 13]')
 
+%% Restore the rand "seed" and "state" values in order, so that the
+%% new "state" algorithm remains active after these tests complete.
+%!function restore_rand_state (seed, state)
+%!  rand ("seed", seed);
+%!  rand ("state", state);
+%!endfunction
+
+%% FIXME: This test only passes when using the "old" random number
+%%        generator by setting the "seed" parameter to any value.  If
+%%        the "state" parameter is used, the test fails.  This probably
+%%        indicates that this test is particularly fragile.  This might
+%%        need further investigation or a rewrite, for example using
+%%        random integer values to avoid precision overflow.
 %!test
+%! old_seed = rand ("seed");
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() restore_rand_state (old_seed, old_state));
 %! rand ("seed", 42);
 %! x = rand (100);
 %! y = ones (5);

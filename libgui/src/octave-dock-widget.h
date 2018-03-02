@@ -30,136 +30,141 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QMouseEvent>
 
-// The few decoration items common to both main window and variable editor.
-class label_dock_widget : public QDockWidget
+namespace octave
 {
-  Q_OBJECT
 
-public:
+  // The few decoration items common to both main window and variable editor.
 
-  label_dock_widget (QWidget *p = nullptr);
-
-  void set_title (const QString&);
-
-protected slots:
-
-  //! Slots to handle copy & paste.
-  //!@{
-  virtual void copyClipboard (void) {  }
-  virtual void pasteClipboard (void) {  }
-  virtual void selectAll (void) {  }
-  //!@}
-
-  //! Slot to handle undo.
-
-  virtual void do_undo (void) {  }
-
-protected:
-
-  int m_icon_size;
-  QWidget *m_title_widget;
-  QToolButton *m_dock_button;
-  QToolButton *m_close_button;
-  QAction *m_dock_action;
-  QAction *m_close_action;
-};
-
-class octave_dock_widget : public label_dock_widget
-{
-  Q_OBJECT
-
-public:
-
-  octave_dock_widget (QWidget *p = nullptr);
-
-  virtual ~octave_dock_widget (void) = default;
-
-  virtual void connect_visibility_changed (void);
-
-  void make_window (void);
-  void make_widget (bool dock=true);
-  void set_predecessor_widget (octave_dock_widget *prev_widget);
-
-signals:
-
-  //! Custom signal that tells whether a user has clicked away that dock
-  //! widget, i.e the active dock widget has changed.
-
-  void active_changed (bool active);
-
-protected:
-
-  virtual void closeEvent (QCloseEvent *e);
-
-  QWidget * focusWidget (void);
-
-public slots:
-
-  virtual void focus (void)
+  class label_dock_widget : public QDockWidget
   {
-    if (! isVisible ())
-      setVisible (true);
+    Q_OBJECT
 
-    setFocus ();
-    activateWindow ();
-    raise ();
-  }
+  public:
 
-  virtual void handle_visibility (bool visible)
+    label_dock_widget (QWidget *p = nullptr);
+
+    void set_title (const QString&);
+
+  protected slots:
+
+    //! Slots to handle copy & paste.
+    //!@{
+    virtual void copyClipboard (void) { }
+    virtual void pasteClipboard (void) { }
+    virtual void selectAll (void) { }
+    //!@}
+
+    //! Slot to handle undo.
+
+    virtual void do_undo (void) { }
+
+  protected:
+
+    int m_icon_size;
+    QWidget *m_title_widget;
+    QToolButton *m_dock_button;
+    QToolButton *m_close_button;
+    QAction *m_dock_action;
+    QAction *m_close_action;
+  };
+
+  class octave_dock_widget : public label_dock_widget
   {
-    if (visible && ! isFloating ())
-      focus ();
-  }
+    Q_OBJECT
 
-  virtual void notice_settings (const QSettings*) { }
+  public:
 
-  void handle_settings (const QSettings*);
+    octave_dock_widget (QWidget *p = nullptr);
 
-  void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
+    virtual ~octave_dock_widget (void) = default;
 
-  QMainWindow * main_win (void) { return m_parent; }
+    virtual void connect_visibility_changed (void);
 
-  void save_settings (void);
+    void make_window (void);
+    void make_widget (bool dock=true);
+    void set_predecessor_widget (octave_dock_widget *prev_widget);
 
-protected slots:
+  signals:
 
-  //! Slot to steer changing visibility from outside.
+    //! Custom signal that tells whether a user has clicked away that dock
+    //! widget, i.e the active dock widget has changed.
 
-  virtual void handle_visibility_changed (bool visible)
-  {
-    if (visible)
-      emit active_changed (true);
-  }
+    void active_changed (bool active);
 
-  //! Event filter for double clicks into the window decoration elements.
+  protected:
 
-  bool eventFilter (QObject *obj, QEvent *e);
+    virtual void closeEvent (QCloseEvent *e);
 
-private slots:
+    QWidget * focusWidget (void);
 
-  void change_floating (bool);
-  void change_visibility (bool);
+  public slots:
 
-private:
+    virtual void focus (void)
+    {
+      if (! isVisible ())
+        setVisible (true);
 
-  void set_style (bool active);
-  void set_focus_predecessor (void);
+      setFocus ();
+      activateWindow ();
+      raise ();
+    }
 
-  //! Stores the parent, since we are reparenting to 0.
+    virtual void handle_visibility (bool visible)
+    {
+      if (visible && ! isFloating ())
+        focus ();
+    }
 
-  QMainWindow *m_parent;
+    virtual void notice_settings (const QSettings*) { }
 
-  bool m_floating;
-  bool m_custom_style;
-  int m_title_3d;
-  QColor m_bg_color;
-  QColor m_bg_color_active;
-  QColor m_fg_color;
-  QColor m_fg_color_active;
-  QString m_icon_color;
-  QString m_icon_color_active;
-  octave_dock_widget *m_predecessor_widget;
+    void handle_settings (const QSettings*);
 
-};
+    void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
+
+    QMainWindow * main_win (void) { return m_parent; }
+
+    void save_settings (void);
+
+  protected slots:
+
+    //! Slot to steer changing visibility from outside.
+
+    virtual void handle_visibility_changed (bool visible)
+    {
+      if (visible)
+        emit active_changed (true);
+    }
+
+    //! Event filter for double clicks into the window decoration elements.
+
+    bool eventFilter (QObject *obj, QEvent *e);
+
+  private slots:
+
+    void change_floating (bool);
+    void change_visibility (bool);
+
+  private:
+
+    void set_style (bool active);
+    void set_focus_predecessor (void);
+
+    //! Stores the parent, since we are reparenting to 0.
+
+    QMainWindow *m_parent;
+
+    bool m_floating;
+    bool m_custom_style;
+    int m_title_3d;
+    QColor m_bg_color;
+    QColor m_bg_color_active;
+    QColor m_fg_color;
+    QColor m_fg_color_active;
+    QString m_icon_color;
+    QString m_icon_color_active;
+    octave_dock_widget *m_predecessor_widget;
+
+  };
+}
 
 #endif

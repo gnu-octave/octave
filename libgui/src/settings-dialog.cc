@@ -1093,8 +1093,8 @@ settings_dialog::write_terminal_colors (QSettings *settings)
 void
 settings_dialog::read_varedit_colors (QSettings *settings)
 {
-  QList<QColor> default_colors = variable_editor::default_colors ();
-  QStringList class_names = variable_editor::color_names ();
+  QList<QColor> default_colors = octave::variable_editor::default_colors ();
+  QStringList class_names = octave::variable_editor::color_names ();
   QString class_chars = resource_manager::varedit_color_chars ();
   int nr_of_classes = class_chars.length ();
 

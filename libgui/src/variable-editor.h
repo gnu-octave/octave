@@ -39,320 +39,323 @@ class QModelIndex;
 class QTextEdit;
 class QToolBar;
 
-class variable_editor_model;
-class variable_editor_view;
-
-// The individual variable subwindow class
-
-class variable_dock_widget : public label_dock_widget
+namespace octave
 {
-  Q_OBJECT
+  class variable_editor_model;
+  class variable_editor_view;
 
-public:
+  // The individual variable subwindow class
 
-  variable_dock_widget (QWidget *p = nullptr);
+  class variable_dock_widget : public label_dock_widget
+  {
+    Q_OBJECT
 
-signals:
+  public:
 
-  void variable_focused_signal (const QString& name);
+    variable_dock_widget (QWidget *p = nullptr);
 
-protected:
+  signals:
 
-  virtual void closeEvent (QCloseEvent *e);
+    void variable_focused_signal (const QString& name);
 
-public slots:
+  protected:
 
-  void handle_focus_change (QWidget *old, QWidget *now);
+    virtual void closeEvent (QCloseEvent *e);
 
-private slots:
+  public slots:
 
-  void change_floating (bool);
+    void handle_focus_change (QWidget *old, QWidget *now);
 
-  void change_existence (bool);
+  private slots:
 
-  void toplevel_change (bool);
+    void change_floating (bool);
 
-protected:
+    void change_existence (bool);
 
-  bool m_initial_float;
-};
+    void toplevel_change (bool);
 
-class variable_editor_stack : public QStackedWidget
-{
-  Q_OBJECT
+  protected:
 
-public:
+    bool m_initial_float;
+  };
 
-  variable_editor_stack (QWidget *p = nullptr);
+  class variable_editor_stack : public QStackedWidget
+  {
+    Q_OBJECT
 
-  variable_editor_view *edit_view (void) {return m_edit_view;};
+  public:
 
-  QTextEdit *disp_view (void) {return m_disp_view;};
+    variable_editor_stack (QWidget *p = nullptr);
 
-signals:
+    variable_editor_view *edit_view (void) {return m_edit_view;};
 
-  void command_signal (const QString& cmd);
+    QTextEdit *disp_view (void) {return m_disp_view;};
 
-  void edit_variable_signal (const QString& name, const octave_value& val);
+  signals:
 
-public slots:
+    void command_signal (const QString& cmd);
 
-  void set_editable (bool editable);
+    void edit_variable_signal (const QString& name, const octave_value& val);
 
-  void levelUp (void);
+  public slots:
 
-  void save (void);
+    void set_editable (bool editable);
 
-private:
+    void levelUp (void);
 
-  QTextEdit *make_disp_view (QWidget *parent);
+    void save (void);
 
-  variable_editor_view *m_edit_view;
+  private:
 
-  QTextEdit *m_disp_view;
-};
+    QTextEdit *make_disp_view (QWidget *parent);
 
+    variable_editor_view *m_edit_view;
 
-class variable_editor_view : public QTableView
-{
-  Q_OBJECT
+    QTextEdit *m_disp_view;
+  };
 
-public:
 
-  variable_editor_view (QWidget *p = nullptr);
+  class variable_editor_view : public QTableView
+  {
+    Q_OBJECT
 
-  void setModel (QAbstractItemModel *model);
+  public:
 
-signals:
+    variable_editor_view (QWidget *p = nullptr);
 
-  void command_signal (const QString& cmd);
+    void setModel (QAbstractItemModel *model);
 
-  void add_edit_actions_signal (QMenu *menu, const QString& qualifier_string);
+  signals:
 
-public slots:
+    void command_signal (const QString& cmd);
 
-  void createVariable (void);
+    void add_edit_actions_signal (QMenu *menu, const QString& qualifier_string);
 
-  void transposeContent (void);
+  public slots:
 
-  QList<int> range_selected (void);
+    void createVariable (void);
 
-  void delete_selected (void);
+    void transposeContent (void);
 
-  void clearContent (void);
+    QList<int> range_selected (void);
 
-  void cutClipboard (void);
+    void delete_selected (void);
 
-  void copyClipboard (void);
+    void clearContent (void);
 
-  void pasteClipboard (void);
+    void cutClipboard (void);
 
-  void pasteTableClipboard (void);
+    void copyClipboard (void);
 
-  void handle_horizontal_scroll_action (int action);
+    void pasteClipboard (void);
 
-  void handle_vertical_scroll_action (int action);
+    void pasteTableClipboard (void);
 
-  void createContextMenu (const QPoint& pt);
+    void handle_horizontal_scroll_action (int action);
 
-  void createColumnMenu (const QPoint& pt);
+    void handle_vertical_scroll_action (int action);
 
-  void createRowMenu (const QPoint& pt);
+    void createContextMenu (const QPoint& pt);
 
-  // Convert selection to an Octave expression.
-  QString selected_to_octave (void);
+    void createColumnMenu (const QPoint& pt);
 
-  void selected_command_requested (const QString& cmd);
+    void createRowMenu (const QPoint& pt);
 
-private:
+    // Convert selection to an Octave expression.
+    QString selected_to_octave (void);
 
-  void add_edit_actions (QMenu *menu, const QString& qualifier_string);
+    void selected_command_requested (const QString& cmd);
 
-  variable_editor_model *m_var_model;
-};
+  private:
 
-// Gadgets to keep track and restore what variable window
-// was in focus just prior to selecting something on the
-// menu bar
+    void add_edit_actions (QMenu *menu, const QString& qualifier_string);
 
-class HoverToolButton : public QToolButton
-{
-  Q_OBJECT
+    variable_editor_model *m_var_model;
+  };
 
-public:
+  // Gadgets to keep track and restore what variable window
+  // was in focus just prior to selecting something on the
+  // menu bar
 
-  HoverToolButton (QWidget *parent = nullptr);
+  class HoverToolButton : public QToolButton
+  {
+    Q_OBJECT
 
-signals:
+  public:
 
-  void hovered_signal (void);
+    HoverToolButton (QWidget *parent = nullptr);
 
-  void popup_shown_signal (void);
+  signals:
 
-protected:
+    void hovered_signal (void);
 
-  bool eventFilter (QObject *obj, QEvent *ev);
-};
+    void popup_shown_signal (void);
 
-class ReturnFocusToolButton : public HoverToolButton
-{
-  Q_OBJECT
+  protected:
 
-public:
+    bool eventFilter (QObject *obj, QEvent *ev);
+  };
 
-  ReturnFocusToolButton (QWidget *parent = nullptr);
+  class ReturnFocusToolButton : public HoverToolButton
+  {
+    Q_OBJECT
 
-signals:
+  public:
 
-  void about_to_activate (void);
+    ReturnFocusToolButton (QWidget *parent = nullptr);
 
-protected:
+  signals:
 
-  bool eventFilter (QObject *obj, QEvent *ev);
-};
+    void about_to_activate (void);
 
-class ReturnFocusMenu : public QMenu
-{
-  Q_OBJECT
+  protected:
 
-public:
+    bool eventFilter (QObject *obj, QEvent *ev);
+  };
 
-  ReturnFocusMenu (QWidget *parent = nullptr);
+  class ReturnFocusMenu : public QMenu
+  {
+    Q_OBJECT
 
-signals:
+  public:
 
-  void about_to_activate (void);
+    ReturnFocusMenu (QWidget *parent = nullptr);
 
-protected:
+  signals:
 
-  bool eventFilter (QObject *obj, QEvent *ev);
-};
+    void about_to_activate (void);
 
-// The variable editor class
+  protected:
 
-class variable_editor : public octave_dock_widget
-{
-  Q_OBJECT
+    bool eventFilter (QObject *obj, QEvent *ev);
+  };
 
-public:
+  // The variable editor class
 
-  variable_editor (QWidget *parent = nullptr);
+  class variable_editor : public octave_dock_widget
+  {
+    Q_OBJECT
 
-  ~variable_editor (void) = default;
+  public:
 
-  // No copying!
+    variable_editor (QWidget *parent = nullptr);
 
-  variable_editor (const variable_editor&) = delete;
+    ~variable_editor (void) = default;
 
-  variable_editor& operator = (const variable_editor&) = delete;
+    // No copying!
 
-  void refresh (void);
+    variable_editor (const variable_editor&) = delete;
 
-  static QList<QColor> default_colors (void);
+    variable_editor& operator = (const variable_editor&) = delete;
 
-  static QStringList color_names (void);
+    void refresh (void);
 
-public slots:
+    static QList<QColor> default_colors (void);
 
-  void callUpdate (const QModelIndex&, const QModelIndex&);
+    static QStringList color_names (void);
 
-  void notice_settings (const QSettings *);
+  public slots:
 
-  void edit_variable (const QString& name, const octave_value& val);
+    void callUpdate (const QModelIndex&, const QModelIndex&);
 
-  void variable_destroyed (QObject *obj);
+    void notice_settings (const QSettings *);
 
-  void variable_focused (const QString& name);
+    void edit_variable (const QString& name, const octave_value& val);
 
-  void record_hovered_focus_variable (void);
+    void variable_destroyed (QObject *obj);
 
-  void restore_hovered_focus_variable (void);
+    void variable_focused (const QString& name);
 
-protected slots:
+    void record_hovered_focus_variable (void);
 
-  void closeEvent (QCloseEvent *);
+    void restore_hovered_focus_variable (void);
 
-  void save (void);
+  protected slots:
 
-  void cutClipboard (void);
+    void closeEvent (QCloseEvent *);
 
-  void copyClipboard (void);
+    void save (void);
 
-  void pasteClipboard (void);
+    void cutClipboard (void);
 
-  void pasteTableClipboard (void);
+    void copyClipboard (void);
 
-  void levelUp (void);
+    void pasteClipboard (void);
 
-  // Send command to Octave interpreter.
-  // %1 in CMD is replaced with the value of selected_to_octave.
-  void relay_selected_command (const QString& cmd);
+    void pasteTableClipboard (void);
 
-signals:
+    void levelUp (void);
 
-  void updated (void);
+    // Send command to Octave interpreter.
+    // %1 in CMD is replaced with the value of selected_to_octave.
+    void relay_selected_command (const QString& cmd);
 
-  void finished (void);
+  signals:
 
-  void command_signal (const QString& cmd);
+    void updated (void);
 
-  void refresh_signal (void);
+    void finished (void);
 
-  void clear_content_signal (void);
+    void command_signal (const QString& cmd);
 
-  void copy_clipboard_signal (void);
+    void refresh_signal (void);
 
-  void paste_clipboard_signal (void);
+    void clear_content_signal (void);
 
-  void paste_table_clipboard_signal (void);
+    void copy_clipboard_signal (void);
 
-  void level_up_signal (void);
+    void paste_clipboard_signal (void);
 
-  void save_signal (void);
+    void paste_table_clipboard_signal (void);
 
-  void delete_selected_signal (void);
+    void level_up_signal (void);
 
-  void selected_command_signal (const QString& cmd);
+    void save_signal (void);
 
-private:
+    void delete_selected_signal (void);
 
-  QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                        const char *member);
+    void selected_command_signal (const QString& cmd);
 
-  QMainWindow *m_main;
+  private:
 
-  QToolBar *m_tool_bar;
+    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                          const char *member);
 
-  int m_default_width;
+    QMainWindow *m_main;
 
-  int m_default_height;
+    QToolBar *m_tool_bar;
 
-  int m_add_font_height;
+    int m_default_width;
 
-  bool m_use_terminal_font;
+    int m_default_height;
 
-  bool m_alternate_rows;
+    int m_add_font_height;
 
-  QString m_stylesheet;
+    bool m_use_terminal_font;
 
-  QFont m_font;
+    bool m_alternate_rows;
 
-  // If use_terminal_font is true then this will be different since
-  // "font" will contain the terminal font.
-  QFont m_sel_font;
+    QString m_stylesheet;
 
-  QList<QColor> m_table_colors;
+    QFont m_font;
 
-  void update_colors (void);
+    // If use_terminal_font is true then this will be different since
+    // "font" will contain the terminal font.
+    QFont m_sel_font;
 
-  QAction *add_tool_bar_button (const QIcon &icon, const QString &text,
-                                const QObject *receiver, const char *member);
+    QList<QColor> m_table_colors;
 
-  void construct_tool_bar (void);
+    void update_colors (void);
 
-  QString m_current_focus_vname;
+    QAction *add_tool_bar_button (const QIcon &icon, const QString &text,
+                                  const QObject *receiver, const char *member);
 
-  QString m_hovered_focus_vname;
-};
+    void construct_tool_bar (void);
+
+    QString m_current_focus_vname;
+
+    QString m_hovered_focus_vname;
+  };
+}
 
 #endif

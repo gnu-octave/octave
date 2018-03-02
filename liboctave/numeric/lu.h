@@ -52,7 +52,6 @@ namespace octave
       lu (const lu& a)
         : a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
 
-      OCTAVE_DEPRECATED (4.4, "foobar")
       lu (const T& l, const T& u, const PermMatrix& p);
 
       lu& operator = (const lu& a)

@@ -101,7 +101,7 @@
 ## Author: Paul Kienzle
 ##         (modified from __plt__.m)
 
-function retval = plot3 (varargin)
+function h = plot3 (varargin)
 
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("plot3", varargin{:});
 
@@ -331,6 +331,7 @@ function retval = plot3 (varargin)
 
       options = __default_plot_options__ ();
 
+      htmp = [];
       for i = 1 : columns (x)
         linestyle = options.linestyle;
         marker = options.marker;
@@ -367,8 +368,8 @@ function retval = plot3 (varargin)
     endif
   end_unwind_protect
 
-  if (nargout > 0 && idx > 0)
-    retval = htmp;
+  if (nargout > 0)
+    h = htmp;
   endif
 
 endfunction

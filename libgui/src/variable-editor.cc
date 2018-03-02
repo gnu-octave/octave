@@ -129,6 +129,11 @@ variable_dock_widget::toplevel_change (bool toplevel)
       // Make initial size expanded very large for "magnified" viewing
       if (m_initial_float)
         {
+          // This will be resolved based on user feedback and preference
+          // and will eventually work without QGuiApplication.  Perhaps
+          // a maximize button added to the label_dock_widget windows
+          // along with the dock/undock and close buttons is best.
+#if defined (HAVE_QGUIAPPLICATION)
           QScreen *pscreen = QGuiApplication::primaryScreen ();
           QRect rect (0, 0, 0, 0);
           rect = pscreen->availableGeometry ();
@@ -136,6 +141,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
                         rect.width () - 10, rect.height () - 10);
           setGeometry (rect);
           m_initial_float = false;
+#endif
         }
 
       setFocus (Qt::OtherFocusReason);
@@ -1435,8 +1441,12 @@ variable_editor::construct_tool_bar (void)
   // The QToolButton mouse-clicks change active window, so connect all
   // HoverToolButton and RuternFocusToolButton objects to the mechanism
   // that restores active window and focus before acting.
-  QList<HoverToolButton *> hbuttonlist = m_tool_bar->
-      findChildren<HoverToolButton *> (QString (), Qt::FindDirectChildrenOnly);
+  QList<HoverToolButton *> hbuttonlist
+    = m_tool_bar->findChildren<HoverToolButton *> (""
+#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
+                                                   , Qt::FindDirectChildrenOnly
+#endif
+                                                   );
   for (int i = 0; i < hbuttonlist.size (); i++)
     {
       connect (hbuttonlist.at (i), SIGNAL (hovered_signal ()),
@@ -1444,8 +1454,13 @@ variable_editor::construct_tool_bar (void)
       connect (hbuttonlist.at (i), SIGNAL (popup_shown_signal ()),
                this, SLOT (restore_hovered_focus_variable ()));
     }
-  QList<ReturnFocusToolButton *> rfbuttonlist = m_tool_bar->
-      findChildren<ReturnFocusToolButton *> (QString (), Qt::FindDirectChildrenOnly);
+
+  QList<ReturnFocusToolButton *> rfbuttonlist
+    = m_tool_bar->findChildren<ReturnFocusToolButton *> (""
+#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
+                                                         , Qt::FindDirectChildrenOnly
+#endif
+                                                         );
   for (int i = 0; i < rfbuttonlist.size (); i++)
     {
       connect (rfbuttonlist.at (i), SIGNAL (about_to_activate ()),
@@ -1453,8 +1468,8 @@ variable_editor::construct_tool_bar (void)
     }
 
   // Same for QMenu
-  QList<ReturnFocusMenu *> menulist = m_tool_bar->
-      findChildren<ReturnFocusMenu *> (QString ());
+  QList<ReturnFocusMenu *> menulist
+    = m_tool_bar->findChildren<ReturnFocusMenu *> ();
   for (int i = 0; i < menulist.size (); i++)
     {
       connect (menulist.at (i), SIGNAL (about_to_activate ()),

@@ -444,7 +444,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS], [
     CXXFLAGS="$ac_octave_save_CXXFLAGS"
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_findchildren_accepts_findchildoptions = yes; then
+  if test $octave_cv_func_qobject_findchildren_accepts_findchildoptions = yes; then
     AC_DEFINE(QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS, 1,
       [Define to 1 if 'QObject::findChildren' accepts 'Qt::FindChildOptions' argument.])
   fi

@@ -579,7 +579,9 @@ texinfo_parser::global_search (const QString& text, int max_results)
           int founds = 0;
 
           for (; founds < words.size ()
-                 && node_text.indexOf (words.at (founds)) >= 0; founds++)
+                 && node_text.indexOf (words.at (founds), 0,Qt::CaseInsensitive)
+                    >= 0;
+               founds++)
             { }
 
           if (founds < words.size ())

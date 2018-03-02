@@ -44,9 +44,37 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 
 /*
-%!shared __random_statistical_tests__
+%% Restore all rand* "seed" and "state" values in order, so that the
+%% new "state" algorithm remains active after these tests complete.
+%!function restore_rand_states (seed, state)
+%!  rand ("seed", seed.rand);
+%!  rande ("seed", seed.rande);
+%!  randg ("seed", seed.randg);
+%!  randn ("seed", seed.randn);
+%!  randp ("seed", seed.randp);
+%!  rand ("state", state.rand);
+%!  rande ("state", state.rande);
+%!  randg ("state", state.randg);
+%!  randn ("state", state.randn);
+%!  randp ("state", state.randp);
+%!endfunction
+
+%!shared __random_statistical_tests__, old_seed, old_state, restore_state
 %! ## Flag whether the statistical tests should be run in "make check" or not
 %! __random_statistical_tests__ = 0;
+%! ## Save and restore the states of each of the random number generators
+%! ## that are tested by the unit tests in this file.
+%! old_seed.rand = rand ("seed");
+%! old_seed.rande = rande ("seed");
+%! old_seed.randg = randg ("seed");
+%! old_seed.randn = randn ("seed");
+%! old_seed.randp = randp ("seed");
+%! old_state.rand = rand ("state");
+%! old_state.rande = rande ("state");
+%! old_state.randg = randg ("state");
+%! old_state.randn = randn ("state");
+%! old_state.randp = randp ("state");
+%! restore_state = onCleanup (@() restore_rand_states (old_seed, old_state));
 */
 
 static octave_value
@@ -433,7 +461,7 @@ classes.
 %! rand ("state", 12);  rand (1,2);
 %! s = rand ("state");  y = rand (1,2);
 %! assert (x, y);
-%! rand ("state", s);  z = rand (1,2);
+%! rand ("state", s);   z = rand (1,2);
 %! assert (x, z);
 %!test  # "seed" must be a scalar
 %! rand ("seed", 12);  x = rand (1,4);
@@ -442,7 +470,7 @@ classes.
 %!error <seed must be a real scalar> rand ("seed", [12,13])
 %!test  # querying "seed" returns a value which can be used later
 %! s = rand ("seed");  x = rand (1,2);
-%! rand ("seed", s);  y = rand (1,2);
+%! rand ("seed", s);   y = rand (1,2);
 %! assert (x, y);
 %!test  # querying "seed" doesn't disturb sequence
 %! rand ("seed", 12);  rand (1,2);  x = rand (1,2);

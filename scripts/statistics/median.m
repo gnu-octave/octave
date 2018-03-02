@@ -116,7 +116,9 @@ endfunction
 
 ## Test multidimensional arrays
 %!shared a, b, x, y
-%! rand ("seed", 2);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 2);
 %! a = rand (2,3,4,5);
 %! b = rand (3,4,6,5);
 %! x = sort (a, 4);

@@ -49,27 +49,28 @@ namespace octave
     private:
 
       profiler& m_profiler;
-      std::string fcn;
-      bool is_active;
+      std::string m_fcn;
+      bool m_enabled;
 
     public:
 
       enter (profiler& p, const T& t) : m_profiler (p)
       {
         // A profiling block cannot be active if the profiler is not
-        is_active = m_profiler.is_active ();
+        m_enabled = m_profiler.enabled ();
 
-        if (is_active)
+        if (m_enabled)
           {
-            fcn = t.profiler_name ();
+            m_fcn = t.profiler_name ();
 
-            // NOTE: The test f != "" must be kept to prevent a blank line showing
-            //  up in profiler statistics.  See bug #39524.  The root cause is that
-            //  the function name is not set for the recurring readline hook function.
-            if (fcn == "")
-              is_active = false;  // Inactive profiling block
+            // NOTE: The test f != "" must be kept to prevent a blank
+            // line showing up in profiler statistics.  See bug
+            // #39524.  The root cause is that the function name is
+            // not set for the recurring readline hook function.
+            if (m_fcn == "")
+              m_enabled = false;  // Inactive profiling block
             else
-              m_profiler.enter_function (fcn);
+              m_profiler.enter_function (m_fcn);
           }
       }
 
@@ -81,8 +82,8 @@ namespace octave
 
       ~enter (void)
       {
-        if (is_active)
-          m_profiler.exit_function (fcn);
+        if (m_enabled)
+          m_profiler.exit_function (m_fcn);
       }
     };
 
@@ -96,7 +97,7 @@ namespace octave
 
     virtual ~profiler (void);
 
-    bool is_active (void) const { return enabled; }
+    bool enabled (void) const { return m_enabled; }
     void set_active (bool);
 
     void reset (void);
@@ -113,14 +114,14 @@ namespace octave
     {
       stats (void);
 
-      double time;
-      unsigned calls;
+      double m_time;
+      size_t m_calls;
 
-      bool recursive;
+      bool m_recursive;
 
       typedef std::set<octave_idx_type> function_set;
-      function_set parents;
-      function_set children;
+      function_set m_parents;
+      function_set m_children;
 
       // Convert a function_set list to an Octave array of indices.
       static octave_value function_set_value (const function_set&);
@@ -135,6 +136,7 @@ namespace octave
     public:
 
       tree_node (tree_node*, octave_idx_type);
+
       virtual ~tree_node (void);
 
       // No copying!
@@ -143,7 +145,7 @@ namespace octave
 
       tree_node& operator = (const tree_node&) = delete;
 
-      void add_time (double dt) { time += dt; }
+      void add_time (double dt) { m_time += dt; }
 
       // Enter a child function.  It is created in the list of children if it
       // wasn't already there.  The now-active child node is returned.
@@ -163,16 +165,16 @@ namespace octave
 
     private:
 
-      tree_node *parent;
-      octave_idx_type fcn_id;
+      tree_node *m_parent;
+      octave_idx_type m_fcn_id;
 
       typedef std::map<octave_idx_type, tree_node*> child_map;
-      child_map children;
+      child_map m_children;
 
       // This is only time spent *directly* on this level, excluding children!
-      double time;
+      double m_time;
 
-      unsigned calls;
+      size_t m_calls;
     };
 
     // Each function we see in the profiler is given a unique index (which
@@ -182,16 +184,16 @@ namespace octave
     typedef std::vector<std::string> function_set;
     typedef std::map<std::string, octave_idx_type> fcn_index_map;
 
-    function_set known_functions;
-    fcn_index_map fcn_index;
+    function_set m_known_functions;
+    fcn_index_map m_fcn_index;
 
-    bool enabled;
+    bool m_enabled;
 
-    tree_node *call_tree;
-    tree_node *active_fcn;
+    tree_node *m_call_tree;
+    tree_node *m_active_fcn;
 
     // Store last timestamp we had, when the currently active function was called.
-    double last_time;
+    double m_last_time;
 
     // These are private as only the unwind-protecting inner class enter
     // should be allowed to call them.

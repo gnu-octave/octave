@@ -210,7 +210,7 @@ namespace octave
 
     bool history_skip_auto_repeated_debugging_command = false;
 
-    std::string ps = (pflag > 0) ? VPS1 : VPS2;
+    std::string ps = (m_pflag > 0) ? VPS1 : VPS2;
 
     std::string prompt = command_editor::decode_prompt_string (ps);
 
@@ -272,17 +272,17 @@ namespace octave
 
   bool base_reader::reading_fcn_file (void) const
   {
-    return lexer ? lexer->reading_fcn_file : false;
+    return m_lexer ? m_lexer->m_reading_fcn_file : false;
   }
 
   bool base_reader::reading_classdef_file (void) const
   {
-    return lexer ? lexer->reading_classdef_file : false;
+    return m_lexer ? m_lexer->m_reading_classdef_file : false;
   }
 
   bool base_reader::reading_script_file (void) const
   {
-    return lexer ? lexer->reading_script_file : false;
+    return m_lexer ? m_lexer->m_reading_script_file : false;
   }
 
   class
@@ -296,13 +296,13 @@ namespace octave
 
     std::string get_input (bool& eof);
 
-    std::string input_source (void) const { return in_src; }
+    std::string input_source (void) const { return s_in_src; }
 
     bool input_from_terminal (void) const { return true; }
 
   private:
 
-    static const std::string in_src;
+    static const std::string s_in_src;
   };
 
   class
@@ -311,19 +311,19 @@ namespace octave
   public:
 
     file_reader (FILE *f_arg, base_lexer *lxr = nullptr)
-      : base_reader (lxr), file (f_arg) { }
+      : base_reader (lxr), m_file (f_arg) { }
 
     std::string get_input (bool& eof);
 
-    std::string input_source (void) const { return in_src; }
+    std::string input_source (void) const { return s_in_src; }
 
     bool input_from_file (void) const { return true; }
 
   private:
 
-    FILE *file;
+    FILE *m_file;
 
-    static const std::string in_src;
+    static const std::string s_in_src;
   };
 
   class
@@ -332,32 +332,32 @@ namespace octave
   public:
 
     eval_string_reader (const std::string& str, base_lexer *lxr = nullptr)
-      : base_reader (lxr), eval_string (str)
+      : base_reader (lxr), m_eval_string (str)
     { }
 
     std::string get_input (bool& eof);
 
-    std::string input_source (void) const { return in_src; }
+    std::string input_source (void) const { return s_in_src; }
 
     bool input_from_eval_string (void) const { return true; }
 
   private:
 
-    std::string eval_string;
+    std::string m_eval_string;
 
-    static const std::string in_src;
+    static const std::string s_in_src;
   };
 
   input_reader::input_reader (base_lexer *lxr)
-    : rep (new terminal_reader (lxr))
+    : m_rep (new terminal_reader (lxr))
   { }
 
   input_reader::input_reader (FILE *file, base_lexer *lxr)
-    : rep (new file_reader (file, lxr))
+    : m_rep (new file_reader (file, lxr))
   { }
 
   input_reader::input_reader (const std::string& str, base_lexer *lxr)
-    : rep (new eval_string_reader (str, lxr))
+    : m_rep (new eval_string_reader (str, lxr))
   { }
 }
 
@@ -761,9 +761,9 @@ get_debug_input (octave::interpreter& interp, const std::string& prompt)
 
 namespace octave
 {
-  const std::string base_reader::in_src ("invalid");
+  const std::string base_reader::s_in_src ("invalid");
 
-  const std::string terminal_reader::in_src ("terminal");
+  const std::string terminal_reader::s_in_src ("terminal");
 
   std::string
   terminal_reader::get_input (bool& eof)
@@ -775,7 +775,7 @@ namespace octave
     return octave_gets (eof);
   }
 
-  const std::string file_reader::in_src ("file");
+  const std::string file_reader::s_in_src ("file");
 
   std::string
   file_reader::get_input (bool& eof)
@@ -784,10 +784,10 @@ namespace octave
 
     eof = false;
 
-    return octave_fgets (file, eof);
+    return octave_fgets (m_file, eof);
   }
 
-  const std::string eval_string_reader::in_src ("eval_string");
+  const std::string eval_string_reader::s_in_src ("eval_string");
 
   std::string
   eval_string_reader::get_input (bool& eof)
@@ -798,11 +798,11 @@ namespace octave
 
     std::string retval;
 
-    retval = eval_string;
+    retval = m_eval_string;
 
     // Clear the eval string so that the next call will return
     // an empty character string with EOF = true.
-    eval_string = "";
+    m_eval_string = "";
 
     if (retval.empty ())
       eof = true;

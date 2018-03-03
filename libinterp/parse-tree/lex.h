@@ -57,21 +57,21 @@ namespace octave
     public:
 
       symbol_table_context (void)
-        : frame_stack () { }
+        : m_frame_stack () { }
 
       ~symbol_table_context (void) { clear (); }
 
       void clear (void);
 
-      bool empty (void) const { return frame_stack.empty (); }
+      bool empty (void) const { return m_frame_stack.empty (); }
 
-      size_t size (void) const { return frame_stack.size (); }
+      size_t size (void) const { return m_frame_stack.size (); }
 
       void pop (void);
 
       void push (const symbol_scope& scope)
       {
-        frame_stack.push_front (scope);
+        m_frame_stack.push_front (scope);
       }
 
       symbol_scope curr_scope (void) const;
@@ -79,7 +79,7 @@ namespace octave
 
     private:
 
-      std::deque<symbol_scope> frame_stack;
+      std::deque<symbol_scope> m_frame_stack;
     };
 
     // Track nesting of square brackets, curly braces, and parentheses.
@@ -98,14 +98,16 @@ namespace octave
 
     public:
 
-      bbp_nesting_level (void) : context () { }
+      bbp_nesting_level (void) : m_context () { }
 
-      bbp_nesting_level (const bbp_nesting_level& nl) : context (nl.context) { }
+      bbp_nesting_level (const bbp_nesting_level& nl)
+        : m_context (nl.m_context)
+      { }
 
       bbp_nesting_level& operator = (const bbp_nesting_level& nl)
       {
         if (&nl != this)
-          context = nl.context;
+          m_context = nl.m_context;
 
         return *this;
       }
@@ -114,61 +116,61 @@ namespace octave
 
       void reset (void)
       {
-        while (! context.empty ())
-          context.pop ();
+        while (! m_context.empty ())
+          m_context.pop ();
       }
 
-      void bracket (void) { context.push (BRACKET); }
+      void bracket (void) { m_context.push (BRACKET); }
 
       bool is_bracket (void)
       {
-        return ! context.empty () && context.top () == BRACKET;
+        return ! m_context.empty () && m_context.top () == BRACKET;
       }
 
-      void brace (void) { context.push (BRACE); }
+      void brace (void) { m_context.push (BRACE); }
 
       bool is_brace (void)
       {
-        return ! context.empty () && context.top () == BRACE;
+        return ! m_context.empty () && m_context.top () == BRACE;
       }
 
-      void paren (void) { context.push (PAREN); }
+      void paren (void) { m_context.push (PAREN); }
 
       bool is_paren (void)
       {
-        return ! context.empty () && context.top () == PAREN;
+        return ! m_context.empty () && m_context.top () == PAREN;
       }
 
-      void anon_fcn_body (void) { context.push (ANON_FCN_BODY); }
+      void anon_fcn_body (void) { m_context.push (ANON_FCN_BODY); }
 
       bool is_anon_fcn_body (void)
       {
-        return ! context.empty () && context.top () == ANON_FCN_BODY;
+        return ! m_context.empty () && m_context.top () == ANON_FCN_BODY;
       }
 
       bool is_bracket_or_brace (void)
       {
-        return (! context.empty ()
-                && (context.top () == BRACKET || context.top () == BRACE));
+        return (! m_context.empty ()
+                && (m_context.top () == BRACKET || m_context.top () == BRACE));
       }
 
-      bool none (void) { return context.empty (); }
+      bool none (void) { return m_context.empty (); }
 
       void remove (void)
       {
-        if (! context.empty ())
-          context.pop ();
+        if (! m_context.empty ())
+          m_context.pop ();
       }
 
       void clear (void)
       {
-        while (! context.empty ())
-          context.pop ();
+        while (! m_context.empty ())
+          m_context.pop ();
       }
 
     private:
 
-      std::stack<int> context;
+      std::stack<int> m_context;
     };
 
     class token_cache
@@ -187,7 +189,7 @@ namespace octave
       // elements that it stores.  Another reason is that it makes it
       // easier to change the implementation later if needed.
 
-      token_cache (void) : buffer () { }
+      token_cache (void) : m_buffer () { }
 
       // No copying!
 
@@ -199,54 +201,54 @@ namespace octave
 
       void push (token *tok)
       {
-        buffer.push_front (tok);
+        m_buffer.push_front (tok);
       }
 
       void pop (void)
       {
         if (! empty ())
           {
-            delete buffer.back ();
-            buffer.pop_back ();
+            delete m_buffer.back ();
+            m_buffer.pop_back ();
           }
       }
 
       // Direct access.
       token * at (size_t n)
       {
-        return empty () ? nullptr : buffer.at (n);
+        return empty () ? nullptr : m_buffer.at (n);
       }
 
       const token * at (size_t n) const
       {
-        return empty () ? nullptr : buffer.at (n);
+        return empty () ? nullptr : m_buffer.at (n);
       }
 
       // Most recently pushed.
       token * front (void)
       {
-        return empty () ? nullptr : buffer.front ();
+        return empty () ? nullptr : m_buffer.front ();
       }
 
       const token * front (void) const
       {
-        return empty () ? nullptr : buffer.front ();
+        return empty () ? nullptr : m_buffer.front ();
       }
 
       token * back (void)
       {
-        return empty () ? nullptr : buffer.back ();
+        return empty () ? nullptr : m_buffer.back ();
       }
 
       const token * back (void) const
       {
-        return empty () ? nullptr : buffer.back ();
+        return empty () ? nullptr : m_buffer.back ();
       }
 
       // Number of elements currently in the buffer.
-      size_t size (void) const { return buffer.size (); }
+      size_t size (void) const { return m_buffer.size (); }
 
-      bool empty (void) const { return buffer.empty (); }
+      bool empty (void) const { return m_buffer.empty (); }
 
       void clear (void)
       {
@@ -256,34 +258,58 @@ namespace octave
 
     private:
 
-      std::deque<token *> buffer;
+      std::deque<token *> m_buffer;
     };
 
     lexical_feedback (void)
-      : end_of_input (false), at_beginning_of_statement (true),
-        looking_at_anon_fcn_args (false), looking_at_return_list (false),
-        looking_at_parameter_list (false), looking_at_decl_list (false),
-        looking_at_initializer_expression (false),
-        looking_at_matrix_or_assign_lhs (false),
-        looking_for_object_index (false),
-        looking_at_indirect_ref (false), parsing_class_method (false),
-        parsing_classdef (false), maybe_classdef_get_set_method (false),
-        parsing_classdef_get_method (false),
-        parsing_classdef_set_method (false),
-        quote_is_transpose (false), force_script (false),
-        reading_fcn_file (false), reading_script_file (false),
-        reading_classdef_file (false), buffer_function_text (false),
-        input_line_number (1), current_input_column (1),
-        bracketflag (0), braceflag (0),
-        looping (0), defining_func (0), looking_at_function_handle (0),
-        block_comment_nesting_level (0), command_arg_paren_count (0),
-        token_count (0), current_input_line (), comment_text (),
-        help_text (), function_text (), string_text (),
-        string_line (0), string_column (0),
-        fcn_file_name (), fcn_file_full_name (), dir_name (),
-        package_name (), looking_at_object_index (), parsed_function_name (),
-        pending_local_variables (), symtab_context (), nesting_level (),
-        tokens ()
+      : m_end_of_input (false),
+        m_at_beginning_of_statement (true),
+        m_looking_at_anon_fcn_args (false),
+        m_looking_at_return_list (false),
+        m_looking_at_parameter_list (false),
+        m_looking_at_decl_list (false),
+        m_looking_at_initializer_expression (false),
+        m_looking_at_matrix_or_assign_lhs (false),
+        m_looking_for_object_index (false),
+        m_looking_at_indirect_ref (false),
+        m_parsing_class_method (false),
+        m_parsing_classdef (false),
+        m_maybe_classdef_get_set_method (false),
+        m_parsing_classdef_get_method (false),
+        m_parsing_classdef_set_method (false),
+        m_quote_is_transpose (false),
+        m_force_script (false),
+        m_reading_fcn_file (false),
+        m_reading_script_file (false),
+        m_reading_classdef_file (false),
+        m_buffer_function_text (false),
+        m_input_line_number (1),
+        m_current_input_column (1),
+        m_bracketflag (0),
+        m_braceflag (0),
+        m_looping (0),
+        m_defining_func (0),
+        m_looking_at_function_handle (0),
+        m_block_comment_nesting_level (0),
+        m_command_arg_paren_count (0),
+        m_token_count (0),
+        m_current_input_line (),
+        m_comment_text (),
+        m_help_text (),
+        m_function_text (),
+        m_string_text (),
+        m_string_line (0),
+        m_string_column (0),
+        m_fcn_file_name (),
+        m_fcn_file_full_name (),
+        m_dir_name (),
+        m_package_name (),
+        m_looking_at_object_index (),
+        m_parsed_function_name (),
+        m_pending_local_variables (),
+        m_symtab_context (),
+        m_nesting_level (),
+        m_tokens ()
     {
       init ();
     }
@@ -320,160 +346,160 @@ namespace octave
     void mark_as_variables (const std::list<std::string>& lst);
 
     // true means that we have encountered eof on the input stream.
-    bool end_of_input;
+    bool m_end_of_input;
 
     // true means we are at the beginning of a statement, where a
     // command name is possible.
-    bool at_beginning_of_statement;
+    bool m_at_beginning_of_statement;
 
     // true means we are parsing an anonymous function argument list.
-    bool looking_at_anon_fcn_args;
+    bool m_looking_at_anon_fcn_args;
 
     // true means we're parsing the return list for a function.
-    bool looking_at_return_list;
+    bool m_looking_at_return_list;
 
     // true means we're parsing the parameter list for a function.
-    bool looking_at_parameter_list;
+    bool m_looking_at_parameter_list;
 
     // true means we're parsing a declaration list (global or
     // persistent).
-    bool looking_at_decl_list;
+    bool m_looking_at_decl_list;
 
     // true means we are looking at the initializer expression for a
     // parameter list element.
-    bool looking_at_initializer_expression;
+    bool m_looking_at_initializer_expression;
 
     // true means we're parsing a matrix or the left hand side of
     // multi-value assignment statement.
-    bool looking_at_matrix_or_assign_lhs;
+    bool m_looking_at_matrix_or_assign_lhs;
 
     // object index not possible until we've seen something.
-    bool looking_for_object_index;
+    bool m_looking_for_object_index;
 
     // true means we're looking at an indirect reference to a
     // structure element.
-    bool looking_at_indirect_ref;
+    bool m_looking_at_indirect_ref;
 
     // true means we are parsing a class method in function or classdef file.
-    bool parsing_class_method;
+    bool m_parsing_class_method;
 
     // true means we are parsing a classdef file
-    bool parsing_classdef;
+    bool m_parsing_classdef;
 
     // true means we are parsing a class method declaration line in a
     // classdef file and can accept a property get or set method name.
     // for example, "get.propertyname" is recognized as a function name.
-    bool maybe_classdef_get_set_method;
+    bool m_maybe_classdef_get_set_method;
 
     // TRUE means we are parsing a classdef get.method.
-    bool parsing_classdef_get_method;
+    bool m_parsing_classdef_get_method;
 
     // TRUE means we are parsing a classdef set.method.
-    bool parsing_classdef_set_method;
+    bool m_parsing_classdef_set_method;
 
     // return transpose or start a string?
-    bool quote_is_transpose;
+    bool m_quote_is_transpose;
 
     // TRUE means treat the current file as a script even if the first
     // token is "function" or "classdef".
-    bool force_script;
+    bool m_force_script;
 
     // TRUE means we're parsing a function file.
-    bool reading_fcn_file;
+    bool m_reading_fcn_file;
 
     // TRUE means we're parsing a script file.
-    bool reading_script_file;
+    bool m_reading_script_file;
 
     // TRUE means we're parsing a classdef file.
-    bool reading_classdef_file;
+    bool m_reading_classdef_file;
 
     // TRUE means we should store the text of the function we are
     // parsing.
-    bool buffer_function_text;
+    bool m_buffer_function_text;
 
     // the current input line number.
-    int input_line_number;
+    int m_input_line_number;
 
     // the column of the current token.
-    int current_input_column;
+    int m_current_input_column;
 
     // square bracket level count.
-    int bracketflag;
+    int m_bracketflag;
 
     // curly brace level count.
-    int braceflag;
+    int m_braceflag;
 
     // true means we're in the middle of defining a loop.
-    int looping;
+    int m_looping;
 
     // nonzero means we're in the middle of defining a function.
-    int defining_func;
+    int m_defining_func;
 
     // nonzero means we are parsing a function handle.
-    int looking_at_function_handle;
+    int m_looking_at_function_handle;
 
-    // nestng level for blcok comments.
-    int block_comment_nesting_level;
+    // nestng level for block comments.
+    int m_block_comment_nesting_level;
 
     // Parenthesis count for command argument parsing.
-    int command_arg_paren_count;
+    int m_command_arg_paren_count;
 
     // Count of tokens recognized by this lexer since initialized or
     // since the last reset.
-    size_t token_count;
+    size_t m_token_count;
 
     // The current line of input.
-    std::string current_input_line;
+    std::string m_current_input_line;
 
     // The current comment text.
-    std::string comment_text;
+    std::string m_comment_text;
 
     // The current help text.
-    std::string help_text;
+    std::string m_help_text;
 
     // The text of functions entered on the command line.
-    std::string function_text;
+    std::string m_function_text;
 
     // The current character string text.
-    std::string string_text;
+    std::string m_string_text;
 
     // The position of the beginning of the current character string.
-    int string_line;
-    int string_column;
+    int m_string_line;
+    int m_string_column;
 
     // Simple name of function file we are reading.
-    std::string fcn_file_name;
+    std::string m_fcn_file_name;
 
     // Full name of file we are reading.
-    std::string fcn_file_full_name;
+    std::string m_fcn_file_full_name;
 
     // Directory name where this file was found.  May be relative.
-    std::string dir_name;
+    std::string m_dir_name;
 
     // Name of +package containing this file, if any.
-    std::string package_name;
+    std::string m_package_name;
 
     // if the front of the list is true, the closest paren, brace, or
     // bracket nesting is an index for an object.
-    std::list<bool> looking_at_object_index;
+    std::list<bool> m_looking_at_object_index;
 
     // if the top of the stack is true, then we've already seen the name
     // of the current function.  should only matter if
     // current_function_level > 0
-    std::stack<bool> parsed_function_name;
+    std::stack<bool> m_parsed_function_name;
 
     // set of identifiers that might be local variable names.
-    std::set<std::string> pending_local_variables;
+    std::set<std::string> m_pending_local_variables;
 
     // Track current symbol table scope and context.
-    symbol_table_context symtab_context;
+    symbol_table_context m_symtab_context;
 
     // is the closest nesting level a square bracket, squiggly brace,
     // a paren, or an anonymous function body?
-    bbp_nesting_level nesting_level;
+    bbp_nesting_level m_nesting_level;
 
     // Tokens generated by the lexer.
-    token_cache tokens;
+    token_cache m_tokens;
   };
 
   // base_lexer inherits from lexical_feedback because we will
@@ -493,7 +519,7 @@ namespace octave
     public:
 
       input_buffer (void)
-        : buffer (), pos (nullptr), chars_left (0), eof (false)
+        : m_buffer (), m_pos (nullptr), m_chars_left (0), m_eof (false)
       { }
 
       void fill (const std::string& input, bool eof_arg);
@@ -501,16 +527,16 @@ namespace octave
       // Copy at most max_size characters to buf.
       int copy_chunk (char *buf, size_t max_size);
 
-      bool empty (void) const { return chars_left == 0; }
+      bool empty (void) const { return m_chars_left == 0; }
 
-      bool at_eof (void) const { return eof; }
+      bool at_eof (void) const { return m_eof; }
 
     private:
 
-      std::string buffer;
-      const char *pos;
-      size_t chars_left;
-      bool eof;
+      std::string m_buffer;
+      const char *m_pos;
+      size_t m_chars_left;
+      bool m_eof;
     };
 
     // Collect comment text.
@@ -556,8 +582,8 @@ namespace octave
     };
 
     base_lexer (interpreter *interp = nullptr)
-      : lexical_feedback (), scanner (nullptr), input_buf (), comment_buf (),
-        m_interpreter (interp)
+      : lexical_feedback (), m_scanner (nullptr), m_input_buf (),
+        m_comment_buf (), m_interpreter (interp)
     {
       init ();
     }
@@ -582,9 +608,9 @@ namespace octave
 
     virtual int fill_flex_buffer (char *buf, unsigned int max_size) = 0;
 
-    bool at_end_of_buffer (void) const { return input_buf.empty (); }
+    bool at_end_of_buffer (void) const { return m_input_buf.empty (); }
 
-    bool at_end_of_file (void) const { return input_buf.at_eof (); }
+    bool at_end_of_file (void) const { return m_input_buf.at_eof (); }
 
     int handle_end_of_input (void);
 
@@ -616,7 +642,7 @@ namespace octave
 
     void finish_comment (comment_elt::comment_type typ);
 
-    comment_list * get_comment (void) { return comment_buf.get_comment (); }
+    comment_list * get_comment (void) { return m_comment_buf.get_comment (); }
 
     int handle_close_bracket (int bracket_type);
 
@@ -653,13 +679,13 @@ namespace octave
     void lexer_debug (const char *pattern);
 
     // Internal state of the flex-generated lexer.
-    void *scanner;
+    void *m_scanner;
 
     // Object that reads and buffers input.
-    input_buffer input_buf;
+    input_buffer m_input_buf;
 
     // Object that collects comment text.
-    comment_buffer comment_buf;
+    comment_buffer m_comment_buf;
 
     // Interpreter that contains us, if any.
     interpreter *m_interpreter;
@@ -730,15 +756,15 @@ namespace octave
   public:
 
     lexer (interpreter *interp = nullptr)
-      : base_lexer (interp), reader (this)
+      : base_lexer (interp), m_reader (this)
     { }
 
     lexer (FILE *file, interpreter *interp = nullptr)
-      : base_lexer (interp), reader (file, this)
+      : base_lexer (interp), m_reader (file, this)
     { }
 
     lexer (const std::string& eval_string, interpreter *interp = nullptr)
-      : base_lexer (interp), reader (eval_string, this)
+      : base_lexer (interp), m_reader (eval_string, this)
     { }
 
     // No copying!
@@ -749,42 +775,42 @@ namespace octave
 
     void reset (void)
     {
-      reader.reset ();
+      m_reader.reset ();
 
       base_lexer::reset ();
     }
 
-    void increment_promptflag (void) { reader.increment_promptflag (); }
+    void increment_promptflag (void) { m_reader.increment_promptflag (); }
 
-    void decrement_promptflag (void) { reader.decrement_promptflag (); }
+    void decrement_promptflag (void) { m_reader.decrement_promptflag (); }
 
-    int promptflag (void) const { return reader.promptflag (); }
+    int promptflag (void) const { return m_reader.promptflag (); }
 
-    int promptflag (int n) { return reader.promptflag (n); }
+    int promptflag (int n) { return m_reader.promptflag (n); }
 
     std::string input_source (void) const
     {
-      return reader.input_source ();
+      return m_reader.input_source ();
     }
 
     bool input_from_terminal (void) const
     {
-      return reader.input_from_terminal ();
+      return m_reader.input_from_terminal ();
     }
 
     bool input_from_file (void) const
     {
-      return reader.input_from_file ();
+      return m_reader.input_from_file ();
     }
 
     bool input_from_eval_string (void) const
     {
-      return reader.input_from_eval_string ();
+      return m_reader.input_from_eval_string ();
     }
 
     int fill_flex_buffer (char *buf, unsigned int max_size);
 
-    input_reader reader;
+    input_reader m_reader;
   };
 
   class
@@ -793,26 +819,26 @@ namespace octave
   public:
 
     push_lexer (interpreter *interp = nullptr)
-      : base_lexer (interp), pflag (1)
+      : base_lexer (interp), m_pflag (1)
     {
       append_input ("", false);
     }
 
     push_lexer (const std::string& input, interpreter *interp = nullptr)
-      : base_lexer (interp), pflag (1)
+      : base_lexer (interp), m_pflag (1)
     {
       append_input (input, false);
     }
 
     push_lexer (bool eof, interpreter *interp = nullptr)
-      : base_lexer (interp), pflag (1)
+      : base_lexer (interp), m_pflag (1)
     {
       append_input ("", eof);
     }
 
     push_lexer (const std::string& input, bool eof,
                 interpreter *interp = nullptr)
-      : base_lexer (interp), pflag (1)
+      : base_lexer (interp), m_pflag (1)
     {
       append_input (input, eof);
     }
@@ -834,16 +860,16 @@ namespace octave
 
     void append_input (const std::string& input, bool eof);
 
-    void increment_promptflag (void) { pflag++; }
+    void increment_promptflag (void) { m_pflag++; }
 
-    void decrement_promptflag (void) { pflag--; }
+    void decrement_promptflag (void) { m_pflag--; }
 
-    int promptflag (void) const { return pflag; }
+    int promptflag (void) const { return m_pflag; }
 
     int promptflag (int n)
     {
-      int retval = pflag;
-      pflag = n;
+      int retval = m_pflag;
+      m_pflag = n;
       return retval;
     }
 
@@ -853,7 +879,7 @@ namespace octave
 
   protected:
 
-    int pflag;
+    int m_pflag;
   };
 }
 

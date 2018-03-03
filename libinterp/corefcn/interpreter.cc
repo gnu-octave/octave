@@ -993,7 +993,7 @@ namespace octave
                     else
                       command_editor::increment_current_command_number ();
                   }
-                else if (parser.m_lexer.end_of_input)
+                else if (parser.m_lexer.m_end_of_input)
                   {
                     retval = EOF;
                     break;

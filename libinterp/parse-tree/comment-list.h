@@ -52,37 +52,36 @@ namespace octave
         copyright
       };
 
-    comment_elt (const std::string& s = "",
-                        comment_type t = unknown)
-      : txt (s), typ (t) { }
+    comment_elt (const std::string& s = "", comment_type t = unknown)
+      : m_text (s), m_type (t) { }
 
     comment_elt (const comment_elt& oc)
-      : txt (oc.txt), typ (oc.typ) { }
+      : m_text (oc.m_text), m_type (oc.m_type) { }
 
     comment_elt& operator = (const comment_elt& oc)
     {
       if (this != &oc)
         {
-          txt = oc.txt;
-          typ = oc.typ;
+          m_text = oc.m_text;
+          m_type = oc.m_type;
         }
 
       return *this;
     }
 
-    std::string text (void) const { return txt; }
+    std::string text (void) const { return m_text; }
 
-    comment_type type (void) const { return typ; }
+    comment_type type (void) const { return m_type; }
 
     ~comment_elt (void) = default;
 
   private:
 
     // The text of the comment.
-    std::string txt;
+    std::string m_text;
 
     // The type of comment.
-    comment_type typ;
+    comment_type m_type;
   };
 
   class

@@ -82,31 +82,31 @@ namespace octave
     friend class input_reader;
 
     base_reader (base_lexer *lxr)
-      : count (1), pflag (0), lexer (lxr)
+      : m_count (1), m_pflag (0), m_lexer (lxr)
     { }
 
     base_reader (const base_reader& x)
-      : count (1), pflag (x.pflag), lexer (x.lexer)
+      : m_count (1), m_pflag (x.m_pflag), m_lexer (x.m_lexer)
     { }
 
     virtual ~base_reader (void) = default;
 
     virtual std::string get_input (bool& eof) = 0;
 
-    virtual std::string input_source (void) const { return in_src; }
+    virtual std::string input_source (void) const { return s_in_src; }
 
     void reset (void) { promptflag (1); }
 
-    void increment_promptflag (void) { pflag++; }
+    void increment_promptflag (void) { m_pflag++; }
 
-    void decrement_promptflag (void) { pflag--; }
+    void decrement_promptflag (void) { m_pflag--; }
 
-    int promptflag (void) const { return pflag; }
+    int promptflag (void) const { return m_pflag; }
 
     int promptflag (int n)
     {
-      int retval = pflag;
-      pflag = n;
+      int retval = m_pflag;
+      m_pflag = n;
       return retval;
     }
 
@@ -126,13 +126,13 @@ namespace octave
 
   private:
 
-    refcount<int> count;
+    refcount<int> m_count;
 
-    int pflag;
+    int m_pflag;
 
-    base_lexer *lexer;
+    base_lexer *m_lexer;
 
-    static const std::string in_src;
+    static const std::string s_in_src;
   };
 
   class
@@ -148,16 +148,16 @@ namespace octave
 
     input_reader (const input_reader& ir)
     {
-      rep = ir.rep;
-      rep->count++;
+      m_rep = ir.m_rep;
+      m_rep->m_count++;
     }
 
     input_reader& operator = (const input_reader& ir)
     {
       if (&ir != this)
         {
-          rep = ir.rep;
-          rep->count++;
+          m_rep = ir.m_rep;
+          m_rep->m_count++;
         }
 
       return *this;
@@ -165,48 +165,48 @@ namespace octave
 
     ~input_reader (void)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (--m_rep->m_count == 0)
+        delete m_rep;
     }
 
-    void reset (void) { return rep->reset (); }
+    void reset (void) { return m_rep->reset (); }
 
-    void increment_promptflag (void) { rep->increment_promptflag (); }
+    void increment_promptflag (void) { m_rep->increment_promptflag (); }
 
-    void decrement_promptflag (void) { rep->decrement_promptflag (); }
+    void decrement_promptflag (void) { m_rep->decrement_promptflag (); }
 
-    int promptflag (void) const { return rep->promptflag (); }
+    int promptflag (void) const { return m_rep->promptflag (); }
 
-    int promptflag (int n) { return rep->promptflag (n); }
+    int promptflag (int n) { return m_rep->promptflag (n); }
 
     std::string get_input (bool& eof)
     {
-      return rep->get_input (eof);
+      return m_rep->get_input (eof);
     }
 
     std::string input_source (void) const
     {
-      return rep->input_source ();
+      return m_rep->input_source ();
     }
 
     bool input_from_terminal (void) const
     {
-      return rep->input_from_terminal ();
+      return m_rep->input_from_terminal ();
     }
 
     bool input_from_file (void) const
     {
-      return rep->input_from_file ();
+      return m_rep->input_from_file ();
     }
 
     bool input_from_eval_string (void) const
     {
-      return rep->input_from_eval_string ();
+      return m_rep->input_from_eval_string ();
     }
 
   private:
 
-    base_reader *rep;
+    base_reader *m_rep;
   };
 }
 

@@ -906,7 +906,7 @@ namespace octave
       m_current_focus_vname (""),
       m_hovered_focus_vname ("")
   {
-    setObjectName ("variable_editor");
+    setObjectName ("VariableEditor");
     set_title (tr ("Variable Editor"));
     setStatusTip (tr ("Edit variables."));
     setWindowIcon (QIcon (":/actions/icons/logo.png"));

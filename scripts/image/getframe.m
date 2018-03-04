@@ -98,7 +98,7 @@ function frame = getframe (h = [], rect = [])
   if (strcmp (get (hf, "visible"), "on")
       || (strcmp (get (hf, "__graphics_toolkit__"), "qt")
           && (strcmp (get (hf, "__gl_window__"), "on")
-              || __have_feature__ ("QOFFSCREENSURFACE"))))
+              || __have_feature__ ("QT_OFFSCREEN"))))
     cdata = __get_frame__ (hf);
   else
     ## Use OpenGL offscreen rendering with OSMesa for non-visible figures
@@ -162,7 +162,7 @@ endfunction
 %! image (frame.cdata);
 %! title ("Lower left hand corner");
 
-%!testif HAVE_QOFFSCREENSURFACE
+%!testif HAVE_QT_OFFSCREEN
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   pos = get (hf, "position");
@@ -171,7 +171,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_QOFFSCREENSURFACE
+%!testif HAVE_QT_OFFSCREEN
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("visible", "off", "position", [0 0 1 1]);

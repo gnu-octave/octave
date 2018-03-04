@@ -283,7 +283,7 @@ namespace QtHandles
     
     if (! isValid ())
       {
-#  if defined (HAVE_QOFFSCREENSURFACE)
+#  if defined (HAVE_QT_OFFSCREEN)
         static bool os_ctx_ok = true;
         if (os_ctx_ok && ! m_os_context.isValid ())
           {

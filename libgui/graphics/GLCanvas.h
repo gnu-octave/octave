@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
 #  include <QOpenGLFramebufferObject>
 #  define OCTAVE_QT_OPENGL_FBO QOpenGLFramebufferObject
-#  if defined (HAVE_QOFFSCREENSURFACE)
+#  if defined (HAVE_QT_OFFSCREEN)
 #    include <QOpenGLContext>
 #    include <QOffscreenSurface>
 #  endif  
@@ -80,7 +80,7 @@ namespace QtHandles
     bool begin_rendering (void);
     void end_rendering (void);
 
-# if defined (HAVE_QOFFSCREENSURFACE)
+# if defined (HAVE_QT_OFFSCREEN)
     QOpenGLContext m_os_context;    
     QOffscreenSurface m_os_surface;
 # endif

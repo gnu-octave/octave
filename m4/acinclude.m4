@@ -2016,8 +2016,11 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         [warn_qt_opengl="Qt does not work with the OpenGL libs (GL and GLU); disabling OpenGL graphics with Qt GUI"])
 
       if test $build_qt_graphics = yes; then
-        OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK([have_qt_opengl_offscreen=yes])
         AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
+        OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK([have_qt_opengl_offscreen=yes])
+        if test $have_qt_opengl_offscreen = yes; then
+          AC_DEFINE(HAVE_QT_OFFSCREEN, 1, [Define to 1 if Qt handles offscreen OpenGL rendering])
+        fi
       fi
     fi
 

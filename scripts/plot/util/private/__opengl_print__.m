@@ -153,7 +153,7 @@ function opts = __opengl_print__ (opts)
     if (strcmp (get (opts.figure, "visible"), "on")
         || (strcmp (get (opts.figure, "__graphics_toolkit__"), "qt")
             && (strcmp (get (opts.figure, "__gl_window__"), "on")
-                || __have_feature__ ("QOFFSCREENSURFACE"))))
+                || __have_feature__ ("QT_OFFSCREEN"))))
       ## Use toolkits "print_figure" method
       drawnow (gl2ps_device{n}, ['|' pipeline{n}]);
     else

@@ -175,7 +175,10 @@ namespace octave
       {
         QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
         if (label != nullptr)
-          label->setStyleSheet ("QLabel {background: skyblue;}");
+          {
+            label->setBackgroundRole (QPalette::Highlight);
+            label->setAutoFillBackground (true);
+          }
 
         emit variable_focused_signal (objectName ());
       }
@@ -183,7 +186,7 @@ namespace octave
       {
         QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
         if (label != NULL)
-          label->setStyleSheet ("QLabel {background: transparent;}");
+          label->setBackgroundRole (QPalette::NoRole);
       }
   }
 
@@ -1083,6 +1086,7 @@ namespace octave
     QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
     connect (model, SIGNAL (update_label_signal (const QString&)),
              existing_ql, SLOT (setText (const QString&)));
+    existing_ql->setMargin (2);
 
     model->update_data (val);
 

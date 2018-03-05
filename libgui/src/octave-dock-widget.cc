@@ -167,6 +167,11 @@ namespace octave
     setParent (0, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint |
                Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
 
+#if defined (Q_OS_UNIX)
+    m_title_widget->setToolTip (
+      tr ("Use <Alt> + <Left Mouse Button> for moving the window"));
+#endif
+
     m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock"
                                    + m_icon_color + ".png"));
     m_dock_action->setToolTip (tr ("Dock widget"));
@@ -203,6 +208,7 @@ namespace octave
         m_parent->restoreState (settings->value ("MainWindow/windowState").toByteArray ());
         focus ();
         QApplication::setActiveWindow (this);
+        m_title_widget->setToolTip ("");
       }
     else  // only reparent, no docking
       setParent (m_parent);

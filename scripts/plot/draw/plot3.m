@@ -124,6 +124,7 @@ function h = plot3 (varargin)
     properties = {};
     tlgnd = {};
     hlgnd = [];
+    htmp = [];
     idx = 0;
 
     ## Gather arguments, decode format, and plot lines.
@@ -331,7 +332,6 @@ function h = plot3 (varargin)
 
       options = __default_plot_options__ ();
 
-      htmp = [];
       for i = 1 : columns (x)
         linestyle = options.linestyle;
         marker = options.marker;

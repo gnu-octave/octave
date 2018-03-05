@@ -103,6 +103,8 @@ namespace octave
              this, SLOT (change_existence (bool)));
     connect (this, SIGNAL (topLevelChanged(bool)),
              this, SLOT (toplevel_change (bool)));
+    connect (p, SIGNAL (visibilityChanged (bool)),
+             this, SLOT (setVisible (bool)));
   }
 
   // slot for (un)dock action

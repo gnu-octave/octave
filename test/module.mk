@@ -74,11 +74,6 @@ include %reldir%/fcn-handle-derived-resolution/module.mk
 include %reldir%/nest/module.mk
 include %reldir%/publish/module.mk
 
-ALL_LOCAL_TARGETS += %reldir%/.gdbinit
-
-%reldir%/.gdbinit: etc/gdbinit
-	@$(gdbinit_install_rule)
-
 define run-octave-tests
   ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ); \
   if $(AM_V_P); then \
@@ -199,7 +194,6 @@ EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
   $(GENERATED_TEST_FILES)
 
 %canon_reldir%_DISTCLEANFILES += \
-  %reldir%/.gdbinit \
   %reldir%/fntests.log
 
 CLEANFILES += $(%canon_reldir%_CLEANFILES)

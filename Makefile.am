@@ -344,7 +344,7 @@ nonexistent-file:
 .PHONY: nonexistent-file
 
 .gdbinit: etc/gdbinit
-	@$(gdbinit_install_rule)
+	$(AM_V_GEN)$(gdbinit-install-rule)
 
 define changelog-from-hg-log
   rm -f $@-t && \
@@ -481,11 +481,10 @@ define subst-bison-api-decls
   mv $@-t $@
 endef
 
-define gdbinit_install_rule
-  if [ -f $@ ]; then \
+define gdbinit-install-rule
+  if [ -f $@ ] && ! cmp -s $< $@; then \
     echo "refusing to overwrite $@ with newer version from $<" 1>&2; \
   else \
-    echo "Installing $@ from version at $<" ; \
     cp $< $@; \
   fi
 endef

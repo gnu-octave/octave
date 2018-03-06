@@ -269,14 +269,23 @@ namespace octave
     m_bg_color_active = settings->value ("DockWidgets/title_bg_color_active",
                                          default_var).value<QColor> ();
 
+    QColor bcol (m_bg_color);
+    QColor bcola (m_bg_color_active);
+
+    if (! m_custom_style)
+      {
+        bcol = QWidget::palette ().color (m_title_widget->backgroundRole());
+        bcola = bcol;
+      }
+
     int r, g, b;
-    m_bg_color.getRgb (&r, &g, &b);
+    bcol.getRgb (&r, &g, &b);
     if (r+g+b < 400)
       m_icon_color = "-light";
     else
       m_icon_color = "";
 
-    m_bg_color_active.getRgb (&r, &g, &b);
+    bcola.getRgb (&r, &g, &b);
     if (r+g+b < 400)
       m_icon_color_active = "-light";
     else

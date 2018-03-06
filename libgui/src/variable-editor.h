@@ -74,9 +74,16 @@ namespace octave
 
     void toplevel_change (bool);
 
+    void change_fullscreen (void);
+
+#if defined (HAVE_QGUIAPPLICATION)
   protected:
 
-    bool m_initial_float;
+    QAction *m_fullscreen_action;
+    bool m_full_screen;
+    bool m_prev_floating;
+    QRect m_prev_geom;
+#endif
   };
 
   class variable_editor_stack : public QStackedWidget

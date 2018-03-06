@@ -85,7 +85,7 @@ namespace octave
   // Variable dock widget
 
   variable_dock_widget::variable_dock_widget (QWidget *p)
-    : label_dock_widget (p), m_initial_float (true)
+    : label_dock_widget (p)
   {
     setFocusPolicy (Qt::StrongFocus);
     // This controls whether the variable_dock_widgets are deleted
@@ -105,12 +105,59 @@ namespace octave
              this, SLOT (toplevel_change (bool)));
     connect (p, SIGNAL (visibilityChanged (bool)),
              this, SLOT (setVisible (bool)));
+
+#if defined (HAVE_QGUIAPPLICATION)
+    // Add a fullscreen button
+
+    m_fullscreen_action = nullptr;
+    m_full_screen = false;
+    m_prev_floating = false;
+    m_prev_geom = QRect (0, 0, 0, 0);
+
+    QHBoxLayout *h_layout = findChild<QHBoxLayout *> ();
+    if (h_layout != nullptr && titleBarWidget () != nullptr)
+      {
+        m_fullscreen_action = new QAction
+          (QIcon::fromTheme ("view-fullscreen"), "", this);
+        m_fullscreen_action->setToolTip (tr ("Fullscreen undock"));
+        QToolButton *fullscreen_button = new QToolButton (titleBarWidget ());
+        fullscreen_button->setDefaultAction (m_fullscreen_action);
+        fullscreen_button->setFocusPolicy (Qt::NoFocus);
+        fullscreen_button->setIconSize (QSize (m_icon_size,m_icon_size));
+        QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
+        fullscreen_button->setStyleSheet (css_button);
+
+        connect (m_fullscreen_action, SIGNAL (triggered ()),
+                 this, SLOT (change_fullscreen ()));
+
+        int index = -1;
+        QToolButton *first = titleBarWidget ()->findChild<QToolButton *> ();
+        if (first != nullptr)
+          index = h_layout->indexOf (first);
+        h_layout->insertWidget (index, fullscreen_button);
+      }
+#endif
   }
 
   // slot for (un)dock action
   void
   variable_dock_widget::change_floating (bool)
   {
+#if defined (HAVE_QGUIAPPLICATION)
+    if (isFloating ())
+      {
+        if (m_full_screen)
+          {
+            setGeometry (m_prev_geom);
+            m_fullscreen_action->setIcon (QIcon::fromTheme ("view-fullscreen"));
+            m_full_screen = false;
+          }
+        m_fullscreen_action->setToolTip (tr ("Fullscreen undock"));
+      }
+    else
+      m_fullscreen_action->setToolTip (tr ("Fullscreen"));
+#endif
+
     setFloating (! isFloating ());
   }
 
@@ -129,24 +176,6 @@ namespace octave
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
 
-        // Make initial size expanded very large for "magnified" viewing
-        if (m_initial_float)
-          {
-            // This will be resolved based on user feedback and preference
-            // and will eventually work without QGuiApplication.  Perhaps
-            // a maximize button added to the label_dock_widget windows
-            // along with the dock/undock and close buttons is best.
-#if defined (HAVE_QGUIAPPLICATION)
-            QScreen *pscreen = QGuiApplication::primaryScreen ();
-            QRect rect (0, 0, 0, 0);
-            rect = pscreen->availableGeometry ();
-            rect = QRect (rect.x () + 5, rect.y () + 5,
-                          rect.width () - 10, rect.height () - 10);
-            setGeometry (rect);
-            m_initial_float = false;
-#endif
-          }
-
         setFocus (Qt::OtherFocusReason);
         activateWindow();
       }
@@ -157,6 +186,43 @@ namespace octave
 
         setFocus (Qt::OtherFocusReason);
       }
+  }
+
+  void
+  variable_dock_widget::change_fullscreen (void)
+  {
+#if defined (HAVE_QGUIAPPLICATION)
+    if (! m_full_screen)
+      {
+        m_prev_floating = isFloating ();
+        m_prev_geom = geometry ();
+
+        m_fullscreen_action->setIcon (QIcon::fromTheme ("view-restore"));
+        if (m_prev_floating)
+          m_fullscreen_action->setToolTip (tr ("Restore geometry"));
+        else
+          setFloating (true);
+
+        // showFullscreen() and setWindowState() only work for QWindow objects.
+        QScreen *pscreen = QGuiApplication::primaryScreen ();
+        QRect rect (0, 0, 0, 0);
+        rect = pscreen->availableGeometry ();
+        setGeometry (rect);
+
+        m_full_screen = true;
+      }
+    else
+      {
+        m_fullscreen_action->setIcon (QIcon::fromTheme ("view-fullscreen"));
+        setGeometry (m_prev_geom);
+        if (m_prev_floating)
+            m_fullscreen_action->setToolTip (tr ("Fullscreen"));
+        else
+          setFloating (false);
+
+        m_full_screen = false;
+      }
+#endif
   }
 
   void

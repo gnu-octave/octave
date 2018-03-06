@@ -45,10 +45,12 @@ namespace octave
     m_icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
 
     // the custom (extra) title bar of the widget
+    m_title_widget = new QWidget ();
+
     m_dock_action = new QAction
       (QIcon (":/actions/icons/widget-undock.png"), "", this);
     m_dock_action->setToolTip (tr ("Undock widget"));
-    m_dock_button = new QToolButton (this);
+    m_dock_button = new QToolButton (m_title_widget);
     m_dock_button->setDefaultAction (m_dock_action);
     m_dock_button->setFocusPolicy (Qt::NoFocus);
     m_dock_button->setIconSize (QSize (m_icon_size,m_icon_size));
@@ -56,7 +58,7 @@ namespace octave
     m_close_action = new QAction
       (QIcon (":/actions/icons/widget-close.png"), "", this);
     m_close_action->setToolTip (tr ("Close widget"));
-    m_close_button = new QToolButton (this);
+    m_close_button = new QToolButton (m_title_widget);
     m_close_button->setDefaultAction (m_close_action);
     m_close_button->setFocusPolicy (Qt::NoFocus);
     m_close_button->setIconSize (QSize (m_icon_size,m_icon_size));
@@ -72,7 +74,6 @@ namespace octave
     h_layout->setSpacing (0);
     h_layout->setContentsMargins (5,2,2,2);
 
-    m_title_widget = new QWidget ();
     m_title_widget->setLayout (h_layout);
     setTitleBarWidget (m_title_widget);
 
@@ -93,7 +94,7 @@ namespace octave
   {
     QHBoxLayout *h_layout
       = static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
-    QLabel *label = new QLabel (title);
+    QLabel *label = new QLabel (title, titleBarWidget ());
     label->setStyleSheet ("background: transparent;");
     h_layout->insertWidget (0,label);
     setWindowTitle (title);

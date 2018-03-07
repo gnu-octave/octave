@@ -44,14 +44,14 @@ namespace octave
   // Index expressions.
 
   tree_index_expression::tree_index_expression (int l, int c)
-    : tree_expression (l, c), expr (nullptr), args (0), type (),
-      arg_nm (), dyn_field () { }
+    : tree_expression (l, c), m_expr (nullptr), m_args (0), m_type (),
+      m_arg_nm (), m_dyn_field () { }
 
   tree_index_expression::tree_index_expression (tree_expression *e,
                                                 tree_argument_list *lst,
                                                 int l, int c, char t)
-    : tree_expression (l, c), expr (e), args (0), type (),
-      arg_nm (), dyn_field ()
+    : tree_expression (l, c), m_expr (e), m_args (0), m_type (),
+      m_arg_nm (), m_dyn_field ()
   {
     append (lst, t);
   }
@@ -59,8 +59,8 @@ namespace octave
   tree_index_expression::tree_index_expression (tree_expression *e,
                                                 const std::string& n,
                                                 int l, int c)
-    : tree_expression (l, c), expr (e), args (0), type (),
-      arg_nm (), dyn_field ()
+    : tree_expression (l, c), m_expr (e), m_args (0), m_type (),
+      m_arg_nm (), m_dyn_field ()
   {
     append (n);
   }
@@ -68,8 +68,8 @@ namespace octave
   tree_index_expression::tree_index_expression (tree_expression *e,
                                                 tree_expression *df,
                                                 int l, int c)
-    : tree_expression (l, c), expr (e), args (0), type (),
-      arg_nm (), dyn_field ()
+    : tree_expression (l, c), m_expr (e), m_args (0), m_type (),
+      m_arg_nm (), m_dyn_field ()
   {
     append (df);
   }
@@ -77,10 +77,10 @@ namespace octave
   void
   tree_index_expression::append (tree_argument_list *lst, char t)
   {
-    args.push_back (lst);
-    type.append (1, t);
-    arg_nm.push_back (lst ? lst->get_arg_names () : string_vector ());
-    dyn_field.push_back (static_cast<tree_expression *> (nullptr));
+    m_args.push_back (lst);
+    m_type.append (1, t);
+    m_arg_nm.push_back (lst ? lst->get_arg_names () : string_vector ());
+    m_dyn_field.push_back (static_cast<tree_expression *> (nullptr));
 
     if (lst && lst->has_magic_tilde ())
       error ("invalid use of empty argument (~) in index expression");
@@ -89,44 +89,44 @@ namespace octave
   void
   tree_index_expression::append (const std::string& n)
   {
-    args.push_back (static_cast<tree_argument_list *> (nullptr));
-    type += '.';
-    arg_nm.push_back (n);
-    dyn_field.push_back (static_cast<tree_expression *> (nullptr));
+    m_args.push_back (static_cast<tree_argument_list *> (nullptr));
+    m_type += '.';
+    m_arg_nm.push_back (n);
+    m_dyn_field.push_back (static_cast<tree_expression *> (nullptr));
   }
 
   void
   tree_index_expression::append (tree_expression *df)
   {
-    args.push_back (static_cast<tree_argument_list *> (nullptr));
-    type += '.';
-    arg_nm.push_back ("");
-    dyn_field.push_back (df);
+    m_args.push_back (static_cast<tree_argument_list *> (nullptr));
+    m_type += '.';
+    m_arg_nm.push_back ("");
+    m_dyn_field.push_back (df);
   }
 
   tree_index_expression::~tree_index_expression (void)
   {
-    delete expr;
+    delete m_expr;
 
-    while (! args.empty ())
+    while (! m_args.empty ())
       {
-        std::list<tree_argument_list *>::iterator p = args.begin ();
+        std::list<tree_argument_list *>::iterator p = m_args.begin ();
         delete *p;
-        args.erase (p);
+        m_args.erase (p);
       }
 
-    while (! dyn_field.empty ())
+    while (! m_dyn_field.empty ())
       {
-        std::list<tree_expression *>::iterator p = dyn_field.begin ();
+        std::list<tree_expression *>::iterator p = m_dyn_field.begin ();
         delete *p;
-        dyn_field.erase (p);
+        m_dyn_field.erase (p);
       }
   }
 
   bool
   tree_index_expression::has_magic_end (void) const
   {
-    for (const tree_argument_list *elt : args)
+    for (const tree_argument_list *elt : m_args)
       {
         if (elt && elt->has_magic_end ())
           return true;
@@ -141,30 +141,30 @@ namespace octave
   std::string
   tree_index_expression::name (void) const
   {
-    return expr->name ();
+    return m_expr->name ();
   }
 
   static inline octave_value_list
   make_value_list (octave::tree_evaluator *tw,
-                   octave::tree_argument_list *args,
-                   const string_vector& arg_nm, const octave_value *object,
+                   octave::tree_argument_list *m_args,
+                   const string_vector& m_arg_nm, const octave_value *object,
                    bool rvalue = true)
   {
     octave_value_list retval;
 
-    if (args)
+    if (m_args)
       {
-        if (rvalue && object && args->has_magic_end ()
+        if (rvalue && object && m_args->has_magic_end ()
             && object->is_undefined ())
           err_invalid_inquiry_subscript ();
 
-        retval = args->convert_to_const_vector (tw, object);
+        retval = m_args->convert_to_const_vector (tw, object);
       }
 
     octave_idx_type n = retval.length ();
 
     if (n > 0)
-      retval.stash_name_tags (arg_nm);
+      retval.stash_name_tags (m_arg_nm);
 
     return retval;
   }
@@ -240,13 +240,13 @@ namespace octave
     std::list<octave_value_list> idx;
     std::string tmp_type;
 
-    int n = args.size ();
+    int n = m_args.size ();
 
-    std::list<tree_argument_list *>::iterator p_args = args.begin ();
-    std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
-    std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
+    std::list<tree_argument_list *>::iterator p_args = m_args.begin ();
+    std::list<string_vector>::iterator p_arg_nm = m_arg_nm.begin ();
+    std::list<tree_expression *>::iterator p_dyn_field = m_dyn_field.begin ();
 
-    retval = expr->lvalue (tw);
+    retval = m_expr->lvalue (tw);
 
     octave_value tmp = retval.value ();
 
@@ -262,17 +262,17 @@ namespace octave
           {
             try
               {
-                tmp = tmp.subsref (type.substr (tmpi, i-tmpi), tmpidx, true);
+                tmp = tmp.subsref (m_type.substr (tmpi, i-tmpi), tmpidx, true);
               }
             catch (index_exception& e)  // problems with range, invalid type etc.
               {
-                final_index_error (e, expr);
+                final_index_error (e, m_expr);
               }
 
             tmpidx.clear ();
           }
 
-        switch (type[i])
+        switch (m_type[i])
           {
           case '(':
             {
@@ -283,7 +283,7 @@ namespace octave
 
               if (i < n - 1)
                 {
-                  if (type[i+1] != '.')
+                  if (m_type[i+1] != '.')
                     error ("() must be followed by . or close the index chain");
 
                   tmpidx.push_back (tidx);
@@ -326,7 +326,7 @@ namespace octave
                                && (tmp.is_matrix_type () || tmp.is_string ()
                                    || tmp.iscell ()));
 
-              if (i > 0 && type[i-1] == '(')
+              if (i > 0 && m_type[i-1] == '(')
                 {
                   octave_value_list pidx = idx.back ();
 
@@ -379,7 +379,7 @@ namespace octave
         p_dyn_field++;
       }
 
-    retval.set_index (type, idx);
+    retval.set_index (m_type, idx);
 
     return retval;
   }
@@ -390,25 +390,25 @@ namespace octave
     tree_index_expression *new_idx_expr
       = new tree_index_expression (line (), column ());
 
-    new_idx_expr->expr = (expr ? expr->dup (scope) : nullptr);
+    new_idx_expr->m_expr = (m_expr ? m_expr->dup (scope) : nullptr);
 
     std::list<tree_argument_list *> new_args;
 
-    for (const tree_argument_list *elt : args)
+    for (const tree_argument_list *elt : m_args)
       new_args.push_back (elt ? elt->dup (scope) : nullptr);
 
-    new_idx_expr->args = new_args;
+    new_idx_expr->m_args = new_args;
 
-    new_idx_expr->type = type;
+    new_idx_expr->m_type = m_type;
 
-    new_idx_expr->arg_nm = arg_nm;
+    new_idx_expr->m_arg_nm = m_arg_nm;
 
     std::list<tree_expression *> new_dyn_field;
 
-    for (const tree_expression *elt : dyn_field)
+    for (const tree_expression *elt : m_dyn_field)
       new_dyn_field.push_back (elt ? elt->dup (scope) : nullptr);
 
-    new_idx_expr->dyn_field = new_dyn_field;
+    new_idx_expr->m_dyn_field = new_dyn_field;
 
     new_idx_expr->copy_base (*this);
 

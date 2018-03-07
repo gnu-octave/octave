@@ -44,9 +44,9 @@ namespace octave
 
     tree_funcall (const octave_value& f, const octave_value_list& a,
                   int l = -1, int c = -1)
-      : tree_expression (l, c), fcn (f), args (a)
+      : tree_expression (l, c), m_fcn (f), m_args (a)
     {
-      if (! fcn.is_function ())
+      if (! m_fcn.is_function ())
         error ("tree_funcall: invalid function");
     }
 
@@ -68,9 +68,9 @@ namespace octave
 
     tree_funcall * dup (symbol_scope& scope) const;
 
-    octave_value function (void) const { return fcn; }
+    octave_value function (void) const { return m_fcn; }
 
-    octave_value_list arguments (void) const { return args; }
+    octave_value_list arguments (void) const { return m_args; }
 
     void accept (tree_walker& tw)
     {
@@ -81,10 +81,10 @@ namespace octave
 
     // Function to call.  Error if not a valid function at time of
     // construction.
-    octave_value fcn;
+    octave_value m_fcn;
 
     // Argument list.
-    octave_value_list args;
+    octave_value_list m_args;
   };
 }
 

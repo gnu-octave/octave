@@ -41,9 +41,10 @@ namespace octave
   public:
 
     tree_try_catch_command (int l = -1, int c = -1)
-      : tree_command (l, c),
-        try_code (nullptr), catch_code (nullptr), expr_id (nullptr),
-        lead_comm (nullptr), mid_comm (nullptr), trail_comm (nullptr) { }
+      : tree_command (l, c), m_try_code (nullptr), m_catch_code (nullptr),
+        m_expr_id (nullptr), m_lead_comm (nullptr), m_mid_comm (nullptr),
+        m_trail_comm (nullptr)
+    { }
 
     tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
                             tree_identifier *id,
@@ -51,8 +52,9 @@ namespace octave
                             comment_list *cm = nullptr,
                             comment_list *ct = nullptr,
                             int l = -1, int c = -1)
-      : tree_command (l, c), try_code (tc), catch_code (cc), expr_id (id),
-        lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
+      : tree_command (l, c), m_try_code (tc), m_catch_code (cc),
+        m_expr_id (id), m_lead_comm (cl), m_mid_comm (cm), m_trail_comm (ct)
+    { }
 
     // No copying!
 
@@ -62,17 +64,17 @@ namespace octave
 
     ~tree_try_catch_command (void);
 
-    tree_identifier * identifier (void) { return expr_id; }
+    tree_identifier * identifier (void) { return m_expr_id; }
 
-    tree_statement_list * body (void) { return try_code; }
+    tree_statement_list * body (void) { return m_try_code; }
 
-    tree_statement_list * cleanup (void) { return catch_code; }
+    tree_statement_list * cleanup (void) { return m_catch_code; }
 
-    comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return m_lead_comm; }
 
-    comment_list * middle_comment (void) { return mid_comm; }
+    comment_list * middle_comment (void) { return m_mid_comm; }
 
-    comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return m_trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -82,22 +84,22 @@ namespace octave
   private:
 
     // The first block of code to attempt to execute.
-    tree_statement_list *try_code;
+    tree_statement_list *m_try_code;
 
     // The code to execute if an error occurs in the first block.
-    tree_statement_list *catch_code;
+    tree_statement_list *m_catch_code;
 
     // Identifier to modify.
-    tree_identifier *expr_id;
+    tree_identifier *m_expr_id;
 
     // Comment preceding TRY token.
-    comment_list *lead_comm;
+    comment_list *m_lead_comm;
 
     // Comment preceding CATCH token.
-    comment_list *mid_comm;
+    comment_list *m_mid_comm;
 
     // Comment preceding END_TRY_CATCH token.
-    comment_list *trail_comm;
+    comment_list *m_trail_comm;
   };
 
   // Simple exception handling.
@@ -108,8 +110,9 @@ namespace octave
 
     tree_unwind_protect_command (int l = -1, int c = -1)
       : tree_command (l, c),
-        unwind_protect_code (nullptr), cleanup_code (nullptr),
-        lead_comm (nullptr), mid_comm (nullptr), trail_comm (nullptr) { }
+        m_unwind_protect_code (nullptr), m_cleanup_code (nullptr),
+        m_lead_comm (nullptr), m_mid_comm (nullptr), m_trail_comm (nullptr)
+    { }
 
     tree_unwind_protect_command (tree_statement_list *tc,
                                  tree_statement_list *cc,
@@ -117,8 +120,9 @@ namespace octave
                                  comment_list *cm = nullptr,
                                  comment_list *ct = nullptr,
                                  int l = -1, int c = -1)
-      : tree_command (l, c), unwind_protect_code (tc), cleanup_code (cc),
-        lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
+      : tree_command (l, c), m_unwind_protect_code (tc), m_cleanup_code (cc),
+        m_lead_comm (cl), m_mid_comm (cm), m_trail_comm (ct)
+    { }
 
     // No copying!
 
@@ -129,15 +133,15 @@ namespace octave
 
     ~tree_unwind_protect_command (void);
 
-    tree_statement_list * body (void) { return unwind_protect_code; }
+    tree_statement_list * body (void) { return m_unwind_protect_code; }
 
-    tree_statement_list * cleanup (void) { return cleanup_code; }
+    tree_statement_list * cleanup (void) { return m_cleanup_code; }
 
-    comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return m_lead_comm; }
 
-    comment_list * middle_comment (void) { return mid_comm; }
+    comment_list * middle_comment (void) { return m_mid_comm; }
 
-    comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return m_trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -147,20 +151,20 @@ namespace octave
   private:
 
     // The first body of code to attempt to execute.
-    tree_statement_list *unwind_protect_code;
+    tree_statement_list *m_unwind_protect_code;
 
     // The body of code to execute no matter what happens in the first
     // body of code.
-    tree_statement_list *cleanup_code;
+    tree_statement_list *m_cleanup_code;
 
     // Comment preceding UNWIND_PROTECT token.
-    comment_list *lead_comm;
+    comment_list *m_lead_comm;
 
     // Comment preceding UNWIND_PROTECT_CLEANUP token.
-    comment_list *mid_comm;
+    comment_list *m_mid_comm;
 
     // Comment preceding END_UNWIND_PROTECT token.
-    comment_list *trail_comm;
+    comment_list *m_trail_comm;
   };
 }
 

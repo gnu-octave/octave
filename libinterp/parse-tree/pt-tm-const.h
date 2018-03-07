@@ -60,44 +60,44 @@ namespace octave
     public:
 
       tm_row_const_rep (void)
-        : count (1), dv (0, 0), all_str (false),
-          all_sq_str (false), all_dq_str (false),
-          some_str (false), all_real (false), all_cmplx (false),
-          all_mt (true), any_cell (false), any_sparse (false),
-          any_class (false), all_1x1 (false),
-          first_elem_is_struct (false), class_nm (), ok (false)
+        : m_count (1), m_dv (0, 0), m_all_str (false),
+          m_all_sq_str (false), m_all_dq_str (false),
+          m_some_str (false), m_all_real (false), m_all_cmplx (false),
+          m_all_mt (true), m_any_cell (false), m_any_sparse (false),
+          m_any_class (false), m_all_1x1 (false),
+          m_first_elem_is_struct (false), m_class_nm (), m_ok (false)
       { }
 
       tm_row_const_rep (const tree_argument_list& row, tree_evaluator *tw)
-        : count (1), dv (0, 0), all_str (false), all_sq_str (false),
-          some_str (false), all_real (false), all_cmplx (false),
-          all_mt (true), any_cell (false), any_sparse (false),
-          any_class (false), all_1x1 (! row.empty ()),
-          first_elem_is_struct (false), class_nm (), ok (false)
+        : m_count (1), m_dv (0, 0), m_all_str (false), m_all_sq_str (false),
+          m_some_str (false), m_all_real (false), m_all_cmplx (false),
+          m_all_mt (true), m_any_cell (false), m_any_sparse (false),
+          m_any_class (false), m_all_1x1 (! row.empty ()),
+          m_first_elem_is_struct (false), m_class_nm (), m_ok (false)
       { init (row, tw); }
 
       ~tm_row_const_rep (void) = default;
 
-      refcount<int> count;
+      refcount<int> m_count;
 
-      dim_vector dv;
+      dim_vector m_dv;
 
-      bool all_str;
-      bool all_sq_str;
-      bool all_dq_str;
-      bool some_str;
-      bool all_real;
-      bool all_cmplx;
-      bool all_mt;
-      bool any_cell;
-      bool any_sparse;
-      bool any_class;
-      bool all_1x1;
-      bool first_elem_is_struct;
+      bool m_all_str;
+      bool m_all_sq_str;
+      bool m_all_dq_str;
+      bool m_some_str;
+      bool m_all_real;
+      bool m_all_cmplx;
+      bool m_all_mt;
+      bool m_any_cell;
+      bool m_any_sparse;
+      bool m_any_class;
+      bool m_all_1x1;
+      bool m_first_elem_is_struct;
 
-      std::string class_nm;
+      std::string m_class_nm;
 
-      bool ok;
+      bool m_ok;
 
       void do_init_element (const octave_value&, bool&);
 
@@ -119,29 +119,29 @@ namespace octave
     typedef tm_row_const_rep::const_iterator const_iterator;
 
     tm_row_const (void)
-      : rep (nullptr) { }
+      : m_rep (nullptr) { }
 
     tm_row_const (const tree_argument_list& row, tree_evaluator *tw)
-      : rep (new tm_row_const_rep (row, tw)) { }
+      : m_rep (new tm_row_const_rep (row, tw)) { }
 
     tm_row_const (const tm_row_const& x)
-      : rep (x.rep)
+      : m_rep (x.m_rep)
     {
-      if (rep)
-        rep->count++;
+      if (m_rep)
+        m_rep->m_count++;
     }
 
     tm_row_const& operator = (const tm_row_const& x)
     {
-      if (this != &x && rep != x.rep)
+      if (this != &x && m_rep != x.m_rep)
         {
-          if (rep && --rep->count == 0)
-            delete rep;
+          if (m_rep && --m_rep->m_count == 0)
+            delete m_rep;
 
-          rep = x.rep;
+          m_rep = x.m_rep;
 
-          if (rep)
-            rep->count++;
+          if (m_rep)
+            m_rep->m_count++;
         }
 
       return *this;
@@ -149,47 +149,47 @@ namespace octave
 
     ~tm_row_const (void)
     {
-      if (rep && --rep->count == 0)
-        delete rep;
+      if (m_rep && --m_rep->m_count == 0)
+        delete m_rep;
     }
 
-    octave_idx_type rows (void) { return rep->dv(0); }
-    octave_idx_type cols (void) { return rep->dv(1); }
+    octave_idx_type rows (void) { return m_rep->m_dv(0); }
+    octave_idx_type cols (void) { return m_rep->m_dv(1); }
 
-    bool empty (void) const { return rep->empty (); }
+    bool empty (void) const { return m_rep->empty (); }
 
-    size_t length (void) const { return rep->length (); }
+    size_t length (void) const { return m_rep->length (); }
 
-    dim_vector dims (void) { return rep->dv; }
+    dim_vector dims (void) { return m_rep->m_dv; }
 
-    bool all_strings_p (void) const { return rep->all_str; }
-    bool all_sq_strings_p (void) const { return rep->all_sq_str; }
-    bool all_dq_strings_p (void) const { return rep->all_dq_str; }
-    bool some_strings_p (void) const { return rep->some_str; }
-    bool all_real_p (void) const { return rep->all_real; }
-    bool all_complex_p (void) const { return rep->all_cmplx; }
-    bool all_empty_p (void) const { return rep->all_mt; }
-    bool any_cell_p (void) const { return rep->any_cell; }
-    bool any_sparse_p (void) const { return rep->any_sparse; }
-    bool any_class_p (void) const { return rep->any_class; }
-    bool all_1x1_p (void) const { return rep->all_1x1; }
-    bool first_elem_struct_p (void) const { return rep->first_elem_is_struct; }
+    bool all_strings_p (void) const { return m_rep->m_all_str; }
+    bool all_sq_strings_p (void) const { return m_rep->m_all_sq_str; }
+    bool all_dq_strings_p (void) const { return m_rep->m_all_dq_str; }
+    bool some_strings_p (void) const { return m_rep->m_some_str; }
+    bool all_real_p (void) const { return m_rep->m_all_real; }
+    bool all_complex_p (void) const { return m_rep->m_all_cmplx; }
+    bool all_empty_p (void) const { return m_rep->m_all_mt; }
+    bool any_cell_p (void) const { return m_rep->m_any_cell; }
+    bool any_sparse_p (void) const { return m_rep->m_any_sparse; }
+    bool any_class_p (void) const { return m_rep->m_any_class; }
+    bool all_1x1_p (void) const { return m_rep->m_all_1x1; }
+    bool first_elem_struct_p (void) const { return m_rep->m_first_elem_is_struct; }
 
-    std::string class_name (void) const { return rep->class_nm; }
+    std::string class_name (void) const { return m_rep->m_class_nm; }
 
-    void cellify (void) { rep->cellify (); }
+    void cellify (void) { m_rep->cellify (); }
 
-    operator bool () const { return (rep && rep->ok); }
+    operator bool () const { return (m_rep && m_rep->m_ok); }
 
-    iterator begin (void) { return rep->begin (); }
-    const_iterator begin (void) const { return rep->begin (); }
+    iterator begin (void) { return m_rep->begin (); }
+    const_iterator begin (void) const { return m_rep->begin (); }
 
-    iterator end (void) { return rep->end (); }
-    const_iterator end (void) const { return rep->end (); }
+    iterator end (void) { return m_rep->end (); }
+    const_iterator end (void) const { return m_rep->end (); }
 
   private:
 
-    tm_row_const_rep *rep;
+    tm_row_const_rep *m_rep;
   };
 
   class
@@ -198,55 +198,55 @@ namespace octave
   public:
 
     tm_const (const tree_matrix& tm, tree_evaluator *tw = nullptr)
-      : dv (0, 0), all_str (false), all_sq_str (false),
-        all_dq_str (false),
-        some_str (false), all_real (false), all_cmplx (false),
-        all_mt (true), any_cell (false), any_sparse (false),
-        any_class (false), class_nm (), ok (false)
+      : m_dv (0, 0), m_all_str (false), m_all_sq_str (false),
+        m_all_dq_str (false),
+        m_some_str (false), m_all_real (false), m_all_cmplx (false),
+        m_all_mt (true), m_any_cell (false), m_any_sparse (false),
+        m_any_class (false), m_class_nm (), m_ok (false)
     { init (tm, tw); }
 
     ~tm_const (void) = default;
 
-    octave_idx_type rows (void) const { return dv.elem (0); }
-    octave_idx_type cols (void) const { return dv.elem (1); }
+    octave_idx_type rows (void) const { return m_dv.elem (0); }
+    octave_idx_type cols (void) const { return m_dv.elem (1); }
 
-    dim_vector dims (void) const { return dv; }
+    dim_vector dims (void) const { return m_dv; }
 
-    bool all_strings_p (void) const { return all_str; }
-    bool all_sq_strings_p (void) const { return all_sq_str; }
-    bool all_dq_strings_p (void) const { return all_dq_str; }
-    bool some_strings_p (void) const { return some_str; }
-    bool all_real_p (void) const { return all_real; }
-    bool all_complex_p (void) const { return all_cmplx; }
-    bool all_empty_p (void) const { return all_mt; }
-    bool any_cell_p (void) const { return any_cell; }
-    bool any_sparse_p (void) const { return any_sparse; }
-    bool any_class_p (void) const { return any_class; }
-    bool all_1x1_p (void) const { return all_1x1; }
+    bool all_strings_p (void) const { return m_all_str; }
+    bool all_sq_strings_p (void) const { return m_all_sq_str; }
+    bool all_dq_strings_p (void) const { return m_all_dq_str; }
+    bool some_strings_p (void) const { return m_some_str; }
+    bool all_real_p (void) const { return m_all_real; }
+    bool all_complex_p (void) const { return m_all_cmplx; }
+    bool all_empty_p (void) const { return m_all_mt; }
+    bool any_cell_p (void) const { return m_any_cell; }
+    bool any_sparse_p (void) const { return m_any_sparse; }
+    bool any_class_p (void) const { return m_any_class; }
+    bool all_1x1_p (void) const { return m_all_1x1; }
 
-    std::string class_name (void) const { return class_nm; }
+    std::string class_name (void) const { return m_class_nm; }
 
-    operator bool () const { return ok; }
+    operator bool () const { return m_ok; }
 
   private:
 
-    dim_vector dv;
+    dim_vector m_dv;
 
-    bool all_str;
-    bool all_sq_str;
-    bool all_dq_str;
-    bool some_str;
-    bool all_real;
-    bool all_cmplx;
-    bool all_mt;
-    bool any_cell;
-    bool any_sparse;
-    bool any_class;
-    bool all_1x1;
+    bool m_all_str;
+    bool m_all_sq_str;
+    bool m_all_dq_str;
+    bool m_some_str;
+    bool m_all_real;
+    bool m_all_cmplx;
+    bool m_all_mt;
+    bool m_any_cell;
+    bool m_any_sparse;
+    bool m_any_class;
+    bool m_all_1x1;
 
-    std::string class_nm;
+    std::string m_class_nm;
 
-    bool ok;
+    bool m_ok;
 
     tm_const (void);
 

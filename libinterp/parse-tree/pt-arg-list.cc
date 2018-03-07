@@ -76,13 +76,13 @@ namespace octave
   {
     base_list<tree_expression *>::append (s);
 
-    if (! list_includes_magic_end && s && s->has_magic_end ())
-      list_includes_magic_end = true;
+    if (! m_list_includes_magic_end && s && s->has_magic_end ())
+      m_list_includes_magic_end = true;
 
-    if (! list_includes_magic_tilde && s && s->is_identifier ())
+    if (! m_list_includes_magic_tilde && s && s->is_identifier ())
       {
         tree_identifier *id = dynamic_cast<tree_identifier *> (s);
-        list_includes_magic_tilde = id && id->is_black_hole ();
+        m_list_includes_magic_tilde = id && id->is_black_hole ();
       }
   }
 
@@ -118,6 +118,8 @@ namespace octave
     return retval;
   }
 }
+
+// FIXME: Is there a way to do this job without global data?
 
 static const octave_value *indexed_object = nullptr;
 static int index_position = 0;
@@ -211,7 +213,7 @@ namespace octave
     // END doesn't make sense for functions.  Maybe we need a different
     // way of asking an octave_value object this question?
 
-    bool stash_object = (list_includes_magic_end
+    bool stash_object = (m_list_includes_magic_end
                          && object
                          && ! (object->is_function ()
                                || object->is_function_handle ()));
@@ -307,8 +309,8 @@ namespace octave
   {
     tree_argument_list *new_list = new tree_argument_list ();
 
-    new_list->list_includes_magic_end = list_includes_magic_end;
-    new_list->simple_assign_lhs = simple_assign_lhs;
+    new_list->m_list_includes_magic_end = m_list_includes_magic_end;
+    new_list->m_simple_assign_lhs = m_simple_assign_lhs;
 
     for (const tree_expression *elt : *this)
       new_list->append (elt ? elt->dup (scope) : nullptr);

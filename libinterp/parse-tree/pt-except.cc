@@ -46,22 +46,22 @@ namespace octave
 
   tree_try_catch_command::~tree_try_catch_command (void)
   {
-    delete expr_id;
-    delete try_code;
-    delete catch_code;
-    delete lead_comm;
-    delete mid_comm;
-    delete trail_comm;
+    delete m_expr_id;
+    delete m_try_code;
+    delete m_catch_code;
+    delete m_lead_comm;
+    delete m_mid_comm;
+    delete m_trail_comm;
   }
 
   // Simple exception handling.
 
   tree_unwind_protect_command::~tree_unwind_protect_command (void)
   {
-    delete unwind_protect_code;
-    delete cleanup_code;
-    delete lead_comm;
-    delete mid_comm;
-    delete trail_comm;
+    delete m_unwind_protect_code;
+    delete m_cleanup_code;
+    delete m_lead_comm;
+    delete m_mid_comm;
+    delete m_trail_comm;
   }
 }

@@ -44,18 +44,18 @@ namespace octave
   public:
 
     tree_colon_expression (int l = -1, int c = -1)
-      : tree_expression (l, c), op_base (nullptr), op_limit (nullptr),
-        op_increment (nullptr), save_base (false) { }
+      : tree_expression (l, c), m_base (nullptr), m_limit (nullptr),
+        m_increment (nullptr), m_save_base (false) { }
 
     tree_colon_expression (tree_expression *bas, tree_expression *lim,
                            int l = -1, int c = -1)
-      : tree_expression (l, c), op_base (bas), op_limit (lim),
-        op_increment (nullptr), save_base (false) { }
+      : tree_expression (l, c), m_base (bas), m_limit (lim),
+        m_increment (nullptr), m_save_base (false) { }
 
     tree_colon_expression (tree_expression *bas, tree_expression *lim,
                            tree_expression *inc, int l = -1, int c = -1)
-      : tree_expression (l, c), op_base (bas), op_limit (lim),
-        op_increment (inc), save_base (false) { }
+      : tree_expression (l, c), m_base (bas), m_limit (lim),
+        m_increment (inc), m_save_base (false) { }
 
     // No copying!
 
@@ -65,31 +65,31 @@ namespace octave
 
     ~tree_colon_expression (void)
     {
-      if (! save_base)
-        delete op_base;
+      if (! m_save_base)
+        delete m_base;
 
-      delete op_limit;
-      delete op_increment;
+      delete m_limit;
+      delete m_increment;
     }
 
     bool has_magic_end (void) const
     {
-      return ((op_base && op_base->has_magic_end ())
-              || (op_limit && op_limit->has_magic_end ())
-              || (op_increment && op_increment->has_magic_end ()));
+      return ((m_base && m_base->has_magic_end ())
+              || (m_limit && m_limit->has_magic_end ())
+              || (m_increment && m_increment->has_magic_end ()));
     }
 
-    void preserve_base (void) { save_base = true; }
+    void preserve_base (void) { m_save_base = true; }
 
     bool rvalue_ok (void) const { return true; }
 
     void eval_error (const std::string& s) const;
 
-    tree_expression * base (void) { return op_base; }
+    tree_expression * base (void) { return m_base; }
 
-    tree_expression * limit (void) { return op_limit; }
+    tree_expression * limit (void) { return m_limit; }
 
-    tree_expression * increment (void) { return op_increment; }
+    tree_expression * increment (void) { return m_increment; }
 
     tree_expression * dup (symbol_scope& scope) const;
 
@@ -101,11 +101,11 @@ namespace octave
   private:
 
     // The components of the expression.
-    tree_expression *op_base;
-    tree_expression *op_limit;
-    tree_expression *op_increment;
+    tree_expression *m_base;
+    tree_expression *m_limit;
+    tree_expression *m_increment;
 
-    bool save_base;
+    bool m_save_base;
   };
 }
 

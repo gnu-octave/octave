@@ -51,12 +51,12 @@ namespace octave
     typedef tree_expression* element_type;
 
     tree_argument_list (void)
-      : list_includes_magic_end (false), list_includes_magic_tilde (false),
-        simple_assign_lhs (false) { }
+      : m_list_includes_magic_end (false), m_list_includes_magic_tilde (false),
+        m_simple_assign_lhs (false) { }
 
     tree_argument_list (tree_expression *t)
-      : list_includes_magic_end (false), list_includes_magic_tilde (false),
-        simple_assign_lhs (false)
+      : m_list_includes_magic_end (false), m_list_includes_magic_tilde (false),
+        m_simple_assign_lhs (false)
     { append (t); }
 
     // No copying!
@@ -70,7 +70,7 @@ namespace octave
     bool has_magic_end (void) const;
 
     bool has_magic_tilde (void) const
-    { return list_includes_magic_tilde; }
+    { return m_list_includes_magic_tilde; }
 
     tree_expression * remove_front (void)
     {
@@ -82,9 +82,9 @@ namespace octave
 
     void append (const element_type& s);
 
-    void mark_as_simple_assign_lhs (void) { simple_assign_lhs = true; }
+    void mark_as_simple_assign_lhs (void) { m_simple_assign_lhs = true; }
 
-    bool is_simple_assign_lhs (void) { return simple_assign_lhs; }
+    bool is_simple_assign_lhs (void) { return m_simple_assign_lhs; }
 
     bool all_elements_are_constant (void) const;
 
@@ -107,11 +107,11 @@ namespace octave
 
   private:
 
-    bool list_includes_magic_end;
+    bool m_list_includes_magic_end;
 
-    bool list_includes_magic_tilde;
+    bool m_list_includes_magic_tilde;
 
-    bool simple_assign_lhs;
+    bool m_simple_assign_lhs;
   };
 }
 

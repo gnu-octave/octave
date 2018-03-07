@@ -49,7 +49,8 @@ namespace octave
   {
   public:
 
-    tree_index_expression (tree_expression *e = nullptr, tree_argument_list *lst = nullptr,
+    tree_index_expression (tree_expression *e = nullptr,
+                           tree_argument_list *lst = nullptr,
                            int l = -1, int c = -1, char t = '(');
 
     tree_index_expression (tree_expression *e, const std::string& n,
@@ -78,17 +79,17 @@ namespace octave
 
     std::string name (void) const;
 
-    tree_expression * expression (void) { return expr; }
+    tree_expression * expression (void) { return m_expr; }
 
-    std::list<tree_argument_list *> arg_lists (void) { return args; }
+    std::list<tree_argument_list *> arg_lists (void) { return m_args; }
 
-    std::string type_tags (void) { return type; }
+    std::string type_tags (void) { return m_type; }
 
-    std::list<string_vector> arg_names (void) { return arg_nm; }
+    std::list<string_vector> arg_names (void) { return m_arg_nm; }
 
-    std::list<tree_expression *> dyn_fields (void) { return dyn_field; }
+    std::list<tree_expression *> dyn_fields (void) { return m_dyn_field; }
 
-    bool lvalue_ok (void) const { return expr->lvalue_ok (); }
+    bool lvalue_ok (void) const { return m_expr->lvalue_ok (); }
 
     bool rvalue_ok (void) const { return true; }
 
@@ -109,20 +110,20 @@ namespace octave
   private:
 
     // The LHS of this index expression.
-    tree_expression *expr;
+    tree_expression *m_expr;
 
     // The indices (only valid if type == paren || type == brace).
-    std::list<tree_argument_list *> args;
+    std::list<tree_argument_list *> m_args;
 
     // The type of this index expression.
-    std::string type;
+    std::string m_type;
 
     // The names of the arguments.  Used for constant struct element
     // references.
-    std::list<string_vector> arg_nm;
+    std::list<string_vector> m_arg_nm;
 
     // The list of dynamic field names, if any.
-    std::list<tree_expression *> dyn_field;
+    std::list<tree_expression *> m_dyn_field;
 
     tree_index_expression (int l, int c);
 

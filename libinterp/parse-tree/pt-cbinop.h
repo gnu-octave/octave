@@ -47,15 +47,16 @@ namespace octave
                                      octave_value::binary_op t,
                                      tree_expression *ca, tree_expression *cb,
                                      octave_value::compound_binary_op ct)
-      : tree_binary_expression (a, b, l, c, t), cop_lhs (ca), cop_rhs (cb),
-        etype (ct) { }
+      : tree_binary_expression (a, b, l, c, t), m_lhs (ca), m_rhs (cb),
+        m_etype (ct)
+    { }
 
-    octave_value::compound_binary_op cop_type (void) const { return etype; }
+    octave_value::compound_binary_op cop_type (void) const { return m_etype; }
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression * clhs (void) { return cop_lhs; }
-    tree_expression * crhs (void) { return cop_rhs; }
+    tree_expression * clhs (void) { return m_lhs; }
+    tree_expression * crhs (void) { return m_rhs; }
 
     void accept (tree_walker& tw)
     {
@@ -64,10 +65,10 @@ namespace octave
 
   private:
 
-    tree_expression *cop_lhs;
-    tree_expression *cop_rhs;
+    tree_expression *m_lhs;
+    tree_expression *m_rhs;
 
-    octave_value::compound_binary_op etype;
+    octave_value::compound_binary_op m_etype;
 
     // No copying!
 

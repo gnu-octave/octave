@@ -66,18 +66,18 @@ namespace octave
     std::string this_elt_class_nm = val.isobject () ? "class"
                                                     : val.class_name ();
 
-    class_nm = get_concat_class (class_nm, this_elt_class_nm);
+    m_class_nm = get_concat_class (m_class_nm, this_elt_class_nm);
 
     dim_vector this_elt_dv = val.dims ();
 
     if (! this_elt_dv.zero_by_zero ())
       {
-        all_mt = false;
+        m_all_mt = false;
 
         if (first_elem)
           {
             if (val.isstruct ())
-              first_elem_is_struct = true;
+              m_first_elem_is_struct = true;
 
             first_elem = false;
           }
@@ -87,49 +87,49 @@ namespace octave
 
     append (val);
 
-    if (all_str && ! val.is_string ())
-      all_str = false;
+    if (m_all_str && ! val.is_string ())
+      m_all_str = false;
 
-    if (all_sq_str && ! val.is_sq_string ())
-      all_sq_str = false;
+    if (m_all_sq_str && ! val.is_sq_string ())
+      m_all_sq_str = false;
 
-    if (all_dq_str && ! val.is_dq_string ())
-      all_dq_str = false;
+    if (m_all_dq_str && ! val.is_dq_string ())
+      m_all_dq_str = false;
 
-    if (! some_str && val.is_string ())
-      some_str = true;
+    if (! m_some_str && val.is_string ())
+      m_some_str = true;
 
-    if (all_real && ! val.isreal ())
-      all_real = false;
+    if (m_all_real && ! val.isreal ())
+      m_all_real = false;
 
-    if (all_cmplx && ! (val.iscomplex () || val.isreal ()))
-      all_cmplx = false;
+    if (m_all_cmplx && ! (val.iscomplex () || val.isreal ()))
+      m_all_cmplx = false;
 
-    if (! any_cell && val.iscell ())
-      any_cell = true;
+    if (! m_any_cell && val.iscell ())
+      m_any_cell = true;
 
-    if (! any_sparse && val.issparse ())
-      any_sparse = true;
+    if (! m_any_sparse && val.issparse ())
+      m_any_sparse = true;
 
-    if (! any_class && val.isobject ())
-      any_class = true;
+    if (! m_any_class && val.isobject ())
+      m_any_class = true;
 
     // Special treatment of sparse matrices to avoid out-of-memory error
-    all_1x1 = all_1x1 && ! val.issparse () && val.numel () == 1;
+    m_all_1x1 = m_all_1x1 && ! val.issparse () && val.numel () == 1;
   }
 
   void
   tm_row_const::tm_row_const_rep::init (const tree_argument_list& row,
                                         tree_evaluator *tw)
   {
-    all_str = true;
-    all_sq_str = true;
-    all_dq_str = true;
-    all_real = true;
-    all_cmplx = true;
-    any_cell = false;
-    any_sparse = false;
-    any_class = false;
+    m_all_str = true;
+    m_all_sq_str = true;
+    m_all_dq_str = true;
+    m_all_real = true;
+    m_all_cmplx = true;
+    m_any_cell = false;
+    m_any_sparse = false;
+    m_any_class = false;
 
     bool first_elem = true;
 
@@ -141,7 +141,7 @@ namespace octave
 
         if (tmp.is_undefined ())
           {
-            ok = true;
+            m_ok = true;
             return;
           }
         else
@@ -162,7 +162,7 @@ namespace octave
           }
       }
 
-    if (any_cell && ! any_class && ! first_elem_is_struct)
+    if (m_any_cell && ! m_any_class && ! m_first_elem_is_struct)
       cellify ();
 
     first_elem = true;
@@ -175,19 +175,19 @@ namespace octave
 
         if (! this_elt_dv.zero_by_zero ())
           {
-            all_mt = false;
+            m_all_mt = false;
 
             if (first_elem)
               {
                 first_elem = false;
-                dv = this_elt_dv;
+                m_dv = this_elt_dv;
               }
-            else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
-              eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
+            else if ((! m_any_class) && (! m_dv.hvcat (this_elt_dv, 1)))
+              eval_error ("horizontal dimensions mismatch", m_dv, this_elt_dv);
           }
       }
 
-    ok = true;
+    m_ok = true;
   }
 
   void
@@ -225,10 +225,10 @@ namespace octave
                 if (first_elem)
                   {
                     first_elem = false;
-                    dv = this_elt_dv;
+                    m_dv = this_elt_dv;
                   }
-                else if (! dv.hvcat (this_elt_dv, 1))
-                  eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
+                else if (! m_dv.hvcat (this_elt_dv, 1))
+                  eval_error ("horizontal dimensions mismatch", m_dv, this_elt_dv);
               }
           }
       }
@@ -237,15 +237,15 @@ namespace octave
   void
   tm_const::init (const tree_matrix& tm, tree_evaluator *tw)
   {
-    all_str = true;
-    all_sq_str = true;
-    all_dq_str = true;
-    all_real = true;
-    all_cmplx = true;
-    any_cell = false;
-    any_sparse = false;
-    any_class = false;
-    all_1x1 = ! tm.empty ();
+    m_all_str = true;
+    m_all_sq_str = true;
+    m_all_dq_str = true;
+    m_all_real = true;
+    m_all_cmplx = true;
+    m_any_cell = false;
+    m_any_sparse = false;
+    m_any_class = false;
+    m_all_1x1 = ! tm.empty ();
 
     bool first_elem = true;
     bool first_elem_is_struct = false;
@@ -268,37 +268,37 @@ namespace octave
 
         if (tmp && ! tmp.empty ())
           {
-            if (all_str && ! tmp.all_strings_p ())
-              all_str = false;
+            if (m_all_str && ! tmp.all_strings_p ())
+              m_all_str = false;
 
-            if (all_sq_str && ! tmp.all_sq_strings_p ())
-              all_sq_str = false;
+            if (m_all_sq_str && ! tmp.all_sq_strings_p ())
+              m_all_sq_str = false;
 
-            if (all_dq_str && ! tmp.all_dq_strings_p ())
-              all_dq_str = false;
+            if (m_all_dq_str && ! tmp.all_dq_strings_p ())
+              m_all_dq_str = false;
 
-            if (! some_str && tmp.some_strings_p ())
-              some_str = true;
+            if (! m_some_str && tmp.some_strings_p ())
+              m_some_str = true;
 
-            if (all_real && ! tmp.all_real_p ())
-              all_real = false;
+            if (m_all_real && ! tmp.all_real_p ())
+              m_all_real = false;
 
-            if (all_cmplx && ! tmp.all_complex_p ())
-              all_cmplx = false;
+            if (m_all_cmplx && ! tmp.all_complex_p ())
+              m_all_cmplx = false;
 
-            if (all_mt && ! tmp.all_empty_p ())
-              all_mt = false;
+            if (m_all_mt && ! tmp.all_empty_p ())
+              m_all_mt = false;
 
-            if (! any_cell && tmp.any_cell_p ())
-              any_cell = true;
+            if (! m_any_cell && tmp.any_cell_p ())
+              m_any_cell = true;
 
-            if (! any_sparse && tmp.any_sparse_p ())
-              any_sparse = true;
+            if (! m_any_sparse && tmp.any_sparse_p ())
+              m_any_sparse = true;
 
-            if (! any_class && tmp.any_class_p ())
-              any_class = true;
+            if (! m_any_class && tmp.any_class_p ())
+              m_any_class = true;
 
-            all_1x1 = all_1x1 && tmp.all_1x1_p ();
+            m_all_1x1 = m_all_1x1 && tmp.all_1x1_p ();
 
             append (tmp);
           }
@@ -306,7 +306,7 @@ namespace octave
           break;
       }
 
-    if (any_cell && ! any_class && ! first_elem_is_struct)
+    if (m_any_cell && ! m_any_class && ! first_elem_is_struct)
       {
         for (auto& elt : *this)
           {
@@ -326,41 +326,41 @@ namespace octave
         octave_idx_type this_elt_nc = elt.cols ();
 
         std::string this_elt_class_nm = elt.class_name ();
-        class_nm = get_concat_class (class_nm, this_elt_class_nm);
+        m_class_nm = get_concat_class (m_class_nm, this_elt_class_nm);
 
         dim_vector this_elt_dv = elt.dims ();
 
-        all_mt = false;
+        m_all_mt = false;
 
         if (first_elem)
           {
             first_elem = false;
 
-            dv = this_elt_dv;
+            m_dv = this_elt_dv;
           }
-        else if (all_str && dv.ndims () == 2
+        else if (m_all_str && m_dv.ndims () == 2
                  && this_elt_dv.ndims () == 2)
           {
             // This is Octave's specialty.
             // Character matrices support rows of unequal length.
-            if (dv.any_zero ())
+            if (m_dv.any_zero ())
               {
                 // Empty existing element (bug #52542).
                 // Replace empty element with non-empty one.
-                dv = this_elt_dv;
+                m_dv = this_elt_dv;
               }
             else
               {
                 if (this_elt_nc > cols ())
-                  dv(1) = this_elt_nc;
-                dv(0) += this_elt_nr;
+                  m_dv(1) = this_elt_nc;
+                m_dv(0) += this_elt_nr;
               }
           }
-        else if ((! any_class) && (! dv.hvcat (this_elt_dv, 0)))
-          eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
+        else if ((! m_any_class) && (! m_dv.hvcat (this_elt_dv, 0)))
+          eval_error ("vertical dimensions mismatch", m_dv, this_elt_dv);
       }
 
-    ok = true;
+    m_ok = true;
   }
 
   template <>

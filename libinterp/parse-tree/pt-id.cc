@@ -43,8 +43,8 @@ namespace octave
   void tree_identifier::link_to_global (const symbol_scope& global_scope,
                                         const symbol_record& global_sym)
   {
-    if (! sym.is_global ())
-      sym.bind_fwd_rep (global_scope.get_rep (), global_sym);
+    if (! m_sym.is_global ())
+      m_sym.bind_fwd_rep (global_scope.get_rep (), global_sym);
   }
 
   void
@@ -67,12 +67,12 @@ namespace octave
   octave_lvalue
   tree_identifier::lvalue (tree_evaluator *tw)
   {
-    if (sym.is_added_static ())
+    if (m_sym.is_added_static ())
       static_workspace_error ();
 
     symbol_scope scope = tw->get_current_scope ();
 
-    return octave_lvalue (sym, scope.current_context ());
+    return octave_lvalue (m_sym, scope.current_context ());
   }
 
   tree_identifier *

@@ -43,14 +43,14 @@ namespace octave
 
     print_parens (afh, "(");
 
-    os << "@(";
+    m_os << "@(";
 
     tree_parameter_list *param_list = afh.parameter_list ();
 
     if (param_list)
       param_list->accept (*this);
 
-    os << ") ";
+    m_os << ") ";
 
     print_fcn_handle_body (afh.expression ());
 
@@ -71,7 +71,7 @@ namespace octave
             elt->accept (*this);
 
             if (p != lst.end ())
-              os << ", ";
+              m_os << ", ";
           }
       }
   }
@@ -88,7 +88,7 @@ namespace octave
     if (op1)
       op1->accept (*this);
 
-    os << ' ' << expr.oper () << ' ';
+    m_os << ' ' << expr.oper () << ' ';
 
     tree_expression *op2 = expr.rhs ();
 
@@ -103,7 +103,7 @@ namespace octave
   {
     indent ();
 
-    os << "break";
+    m_os << "break";
   }
 
   void
@@ -124,7 +124,7 @@ namespace octave
 
     if (op3)
       {
-        os << ':';
+        m_os << ':';
         op3->accept (*this);
       }
 
@@ -132,7 +132,7 @@ namespace octave
 
     if (op2)
       {
-        os << ':';
+        m_os << ':';
         op2->accept (*this);
       }
 
@@ -144,7 +144,7 @@ namespace octave
   {
     indent ();
 
-    os << "continue";
+    m_os << "continue";
   }
 
   void
@@ -152,7 +152,7 @@ namespace octave
   {
     indent ();
 
-    os << cmd.name () << ' ';
+    m_os << cmd.name () << ' ';
 
     tree_decl_init_list *init_list = cmd.initializer_list ();
 
@@ -174,7 +174,7 @@ namespace octave
             elt->accept (*this);
 
             if (p != lst.end ())
-              os << ", ";
+              m_os << ", ";
           }
       }
   }
@@ -191,7 +191,7 @@ namespace octave
 
     if (expr)
       {
-        os << " = ";
+        m_os << " = ";
 
         expr->accept (*this);
       }
@@ -204,19 +204,19 @@ namespace octave
 
     indent ();
 
-    os << (cmd.in_parallel () ? "parfor " : "for ");
+    m_os << (cmd.in_parallel () ? "parfor " : "for ");
 
     tree_expression *lhs = cmd.left_hand_side ();
 
     tree_expression *maxproc = cmd.maxproc_expr ();
 
     if (maxproc)
-      os << '(';
+      m_os << '(';
 
     if (lhs)
       lhs->accept (*this);
 
-    os << " = ";
+    m_os << " = ";
 
     tree_expression *expr = cmd.control_expr ();
 
@@ -225,9 +225,9 @@ namespace octave
 
     if (maxproc)
       {
-        os << ", ";
+        m_os << ", ";
         maxproc->accept (*this);
-        os << ')';
+        m_os << ')';
       }
 
     newline ();
@@ -247,7 +247,7 @@ namespace octave
 
     indent ();
 
-    os << (cmd.in_parallel () ? "endparfor" : "endfor");
+    m_os << (cmd.in_parallel () ? "endparfor" : "endfor");
   }
 
   void
@@ -257,16 +257,16 @@ namespace octave
 
     indent ();
 
-    os << "for [";
-    nesting.push ('[');
+    m_os << "for [";
+    m_nesting.push ('[');
 
     tree_argument_list *lhs = cmd.left_hand_side ();
 
     if (lhs)
       lhs->accept (*this);
 
-    nesting.pop ();
-    os << "] = ";
+    m_nesting.pop ();
+    m_os << "] = ";
 
     tree_expression *expr = cmd.control_expr ();
 
@@ -290,7 +290,7 @@ namespace octave
 
     indent ();
 
-    os << "endfor";
+    m_os << "endfor";
   }
 
   void
@@ -338,7 +338,7 @@ namespace octave
 
     indent ();
 
-    os << "function ";
+    m_os << "function ";
 
     tree_parameter_list *ret_list = fcn.return_list ();
 
@@ -350,8 +350,8 @@ namespace octave
 
         if (len > 1 || takes_var_return)
           {
-            os << '[';
-            nesting.push ('[');
+            m_os << '[';
+            m_nesting.push ('[');
           }
 
         ret_list->accept (*this);
@@ -359,23 +359,23 @@ namespace octave
         if (takes_var_return)
           {
             if (len > 0)
-              os << ", ";
+              m_os << ", ";
 
-            os << "varargout";
+            m_os << "varargout";
           }
 
         if (len > 1 || takes_var_return)
           {
-            nesting.pop ();
-            os << ']';
+            m_nesting.pop ();
+            m_os << ']';
           }
 
-        os << " = ";
+        m_os << " = ";
       }
 
     std::string fcn_name = fcn.name ();
 
-    os << (fcn_name.empty () ? "(empty)" : fcn_name) << ' ';
+    m_os << (fcn_name.empty () ? "(empty)" : fcn_name) << ' ';
 
     tree_parameter_list *param_list = fcn.parameter_list ();
 
@@ -387,8 +387,8 @@ namespace octave
 
         if (len > 0 || takes_varargs)
           {
-            os << '(';
-            nesting.push ('(');
+            m_os << '(';
+            m_nesting.push ('(');
           }
 
         param_list->accept (*this);
@@ -396,21 +396,21 @@ namespace octave
         if (takes_varargs)
           {
             if (len > 0)
-              os << ", ";
+              m_os << ", ";
 
-            os << "varargin";
+            m_os << "varargin";
           }
 
         if (len > 0 || takes_varargs)
           {
-            nesting.pop ();
-            os << ')';
+            m_nesting.pop ();
+            m_os << ')';
             newline ();
           }
       }
     else
       {
-        os << "()";
+        m_os << "()";
         newline ();
       }
   }
@@ -444,7 +444,7 @@ namespace octave
     print_parens (id, "(");
 
     std::string nm = id.name ();
-    os << (nm.empty () ? "(empty)" : nm);
+    m_os << (nm.empty () ? "(empty)" : nm);
 
     print_parens (id, ")");
   }
@@ -478,7 +478,7 @@ namespace octave
 
     indent ();
 
-    os << "if ";
+    m_os << "if ";
 
     tree_if_command_list *list = cmd.cmd_list ();
 
@@ -489,7 +489,7 @@ namespace octave
 
     indent ();
 
-    os << "endif";
+    m_os << "endif";
   }
 
   void
@@ -512,9 +512,9 @@ namespace octave
                 indent ();
 
                 if (elt->is_else_clause ())
-                  os << "else";
+                  m_os << "else";
                 else
-                  os << "elseif ";
+                  m_os << "elseif ";
               }
 
             elt->accept (*this);
@@ -551,39 +551,39 @@ namespace octave
           {
           case '(':
             {
-              char nc = nesting.top ();
+              char nc = m_nesting.top ();
               if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
-                os << '(';
+                m_os << '(';
               else
-                os << " (";
-              nesting.push ('(');
+                m_os << " (";
+              m_nesting.push ('(');
 
               tree_argument_list *l = *p_arg_lists;
               if (l)
                 l->accept (*this);
 
-              nesting.pop ();
-              os << ')';
+              m_nesting.pop ();
+              m_os << ')';
             }
             break;
 
           case '{':
             {
-              char nc = nesting.top ();
+              char nc = m_nesting.top ();
               if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
-                os << '{';
+                m_os << '{';
               else
-                os << " {";
+                m_os << " {";
               // We only care about whitespace inside [] and {} when we
               // are defining matrix and cell objects, not when indexing.
-              nesting.push ('(');
+              m_nesting.push ('(');
 
               tree_argument_list *l = *p_arg_lists;
               if (l)
                 l->accept (*this);
 
-              nesting.pop ();
-              os << '}';
+              m_nesting.pop ();
+              m_os << '}';
             }
             break;
 
@@ -591,7 +591,7 @@ namespace octave
             {
               string_vector nm = *p_arg_names;
               assert (nm.numel () == 1);
-              os << '.' << nm(0);
+              m_os << '.' << nm(0);
             }
             break;
 
@@ -613,8 +613,8 @@ namespace octave
 
     print_parens (lst, "(");
 
-    os << '[';
-    nesting.push ('[');
+    m_os << '[';
+    m_nesting.push ('[');
 
     tree_matrix::iterator p = lst.begin ();
 
@@ -627,12 +627,12 @@ namespace octave
             elt->accept (*this);
 
             if (p != lst.end ())
-              os << "; ";
+              m_os << "; ";
           }
       }
 
-    nesting.pop ();
-    os << ']';
+    m_nesting.pop ();
+    m_os << ']';
 
     print_parens (lst, ")");
   }
@@ -644,8 +644,8 @@ namespace octave
 
     print_parens (lst, "(");
 
-    os << '{';
-    nesting.push ('{');
+    m_os << '{';
+    m_nesting.push ('{');
 
     tree_cell::iterator p = lst.begin ();
 
@@ -658,12 +658,12 @@ namespace octave
             elt->accept (*this);
 
             if (p != lst.end ())
-              os << "; ";
+              m_os << "; ";
           }
       }
 
-    nesting.pop ();
-    os << '}';
+    m_nesting.pop ();
+    m_os << '}';
 
     print_parens (lst, ")");
   }
@@ -683,20 +683,20 @@ namespace octave
 
         if (len > 1)
           {
-            os << '[';
-            nesting.push ('[');
+            m_os << '[';
+            m_nesting.push ('[');
           }
 
         lhs->accept (*this);
 
         if (len > 1)
           {
-            nesting.pop ();
-            os << ']';
+            m_nesting.pop ();
+            m_os << ']';
           }
       }
 
-    os << ' ' << expr.oper () << ' ';
+    m_os << ' ' << expr.oper () << ' ';
 
     tree_expression *rhs = expr.right_hand_side ();
 
@@ -709,12 +709,12 @@ namespace octave
   void
   tree_print_code::visit_no_op_command (tree_no_op_command& cmd)
   {
-    if (cmd.is_end_of_fcn_or_script () && curr_print_indent_level > 1)
+    if (cmd.is_end_of_fcn_or_script () && m_curr_print_indent_level > 1)
       decrement_indent_level ();
 
     indent ();
 
-    os << cmd.original_command ();
+    m_os << cmd.original_command ();
   }
 
   void
@@ -724,7 +724,7 @@ namespace octave
 
     print_parens (val, "(");
 
-    val.print_raw (os, true, print_original_text);
+    val.print_raw (m_os, true, m_print_original_text);
 
     print_parens (val, ")");
   }
@@ -736,7 +736,7 @@ namespace octave
 
     print_parens (fh, "(");
 
-    fh.print_raw (os, true, print_original_text);
+    fh.print_raw (m_os, true, m_print_original_text);
 
     print_parens (fh, ")");
   }
@@ -748,7 +748,7 @@ namespace octave
 
     print_parens (fc, "(");
 
-    fc.print_raw (os, true, print_original_text);
+    fc.print_raw (m_os, true, m_print_original_text);
 
     print_parens (fc, ")");
   }
@@ -767,7 +767,7 @@ namespace octave
             elt->accept (*this);
 
             if (p != lst.end ())
-              os << ", ";
+              m_os << ", ";
           }
       }
   }
@@ -784,7 +784,7 @@ namespace octave
     if (e)
       e->accept (*this);
 
-    os << expr.oper ();
+    m_os << expr.oper ();
 
     print_parens (expr, ")");
   }
@@ -796,7 +796,7 @@ namespace octave
 
     print_parens (expr, "(");
 
-    os << expr.oper ();
+    m_os << expr.oper ();
 
     tree_expression *e = expr.operand ();
 
@@ -811,7 +811,7 @@ namespace octave
   {
     indent ();
 
-    os << "return";
+    m_os << "return";
   }
 
   void
@@ -828,7 +828,7 @@ namespace octave
             elt->accept (*this);
 
             if (p != lst.end ())
-              os << ", ";
+              m_os << ", ";
           }
       }
   }
@@ -845,7 +845,7 @@ namespace octave
     if (lhs)
       lhs->accept (*this);
 
-    os << ' ' << expr.oper () << ' ';
+    m_os << ' ' << expr.oper () << ' ';
 
     tree_expression *rhs = expr.right_hand_side ();
 
@@ -878,7 +878,7 @@ namespace octave
 
             if (! stmt.print_result ())
               {
-                os << ';';
+                m_os << ';';
                 newline (" ");
               }
             else
@@ -905,9 +905,9 @@ namespace octave
     indent ();
 
     if (cs.is_default_case ())
-      os << "otherwise";
+      m_os << "otherwise";
     else
-      os << "case ";
+      m_os << "case ";
 
     tree_expression *label = cs.case_label ();
 
@@ -951,7 +951,7 @@ namespace octave
 
     indent ();
 
-    os << "switch ";
+    m_os << "switch ";
 
     tree_expression *expr = cmd.switch_value ();
 
@@ -975,7 +975,7 @@ namespace octave
 
     indent ();
 
-    os << "endswitch";
+    m_os << "endswitch";
   }
 
   void
@@ -985,7 +985,7 @@ namespace octave
 
     indent ();
 
-    os << "try";
+    m_os << "try";
 
     newline ();
 
@@ -1005,11 +1005,11 @@ namespace octave
 
     indent ();
 
-    os << "catch";
+    m_os << "catch";
 
     if (expr_id)
       {
-        os << ' ';
+        m_os << ' ';
         expr_id->accept (*this);
       }
 
@@ -1030,7 +1030,7 @@ namespace octave
 
     indent ();
 
-    os << "end_try_catch";
+    m_os << "end_try_catch";
   }
 
   void
@@ -1040,7 +1040,7 @@ namespace octave
 
     indent ();
 
-    os << "unwind_protect";
+    m_os << "unwind_protect";
 
     newline ();
 
@@ -1059,7 +1059,7 @@ namespace octave
 
     indent ();
 
-    os << "unwind_protect_cleanup";
+    m_os << "unwind_protect_cleanup";
 
     newline ();
 
@@ -1078,7 +1078,7 @@ namespace octave
 
     indent ();
 
-    os << "end_unwind_protect";
+    m_os << "end_unwind_protect";
   }
 
   void
@@ -1088,7 +1088,7 @@ namespace octave
 
     indent ();
 
-    os << "while ";
+    m_os << "while ";
 
     tree_expression *expr = cmd.condition ();
 
@@ -1112,7 +1112,7 @@ namespace octave
 
     indent ();
 
-    os << "endwhile";
+    m_os << "endwhile";
   }
 
   void
@@ -1122,7 +1122,7 @@ namespace octave
 
     indent ();
 
-    os << "do";
+    m_os << "do";
 
     newline ();
 
@@ -1141,7 +1141,7 @@ namespace octave
 
     indent ();
 
-    os << "until ";
+    m_os << "until ";
 
     tree_expression *expr = cmd.condition ();
 
@@ -1156,9 +1156,9 @@ namespace octave
   {
     if (e)
       {
-        suppress_newlines++;
+        m_suppress_newlines++;
         e->accept (*this);
-        suppress_newlines--;
+        m_suppress_newlines--;
       }
   }
 
@@ -1167,15 +1167,15 @@ namespace octave
   void
   tree_print_code::indent (void)
   {
-    assert (curr_print_indent_level >= 0);
+    assert (m_curr_print_indent_level >= 0);
 
-    if (beginning_of_line)
+    if (m_beginning_of_line)
       {
-        os << prefix;
+        m_os << m_prefix;
 
-        os << std::string (curr_print_indent_level, ' ');
+        m_os << std::string (m_curr_print_indent_level, ' ');
 
-        beginning_of_line = false;
+        m_beginning_of_line = false;
       }
   }
 
@@ -1184,16 +1184,16 @@ namespace octave
   void
   tree_print_code::newline (const char *alt_txt)
   {
-    if (suppress_newlines)
-      os << alt_txt;
+    if (m_suppress_newlines)
+      m_os << alt_txt;
     else
       {
         // Print prefix for blank lines.
         indent ();
 
-        os << "\n";
+        m_os << "\n";
 
-        beginning_of_line = true;
+        m_beginning_of_line = true;
       }
   }
 
@@ -1202,10 +1202,10 @@ namespace octave
   void
   tree_print_code::reset (void)
   {
-    beginning_of_line = true;
-    curr_print_indent_level = 0;
-    while (nesting.top () != 'n')
-      nesting.pop ();
+    m_beginning_of_line = true;
+    m_curr_print_indent_level = 0;
+    while (m_nesting.top () != 'n')
+      m_nesting.pop ();
   }
 
   void
@@ -1214,7 +1214,7 @@ namespace octave
     int n = expr.paren_count ();
 
     for (int i = 0; i < n; i++)
-      os << txt;
+      m_os << txt;
   }
 
   void
@@ -1246,7 +1246,7 @@ namespace octave
 
                 indent ();
 
-                os << "##";
+                m_os << "##";
               }
 
             newline ();
@@ -1255,25 +1255,25 @@ namespace octave
           }
         else
           {
-            if (beginning_of_line)
+            if (m_beginning_of_line)
               {
                 printed_something = true;
 
                 indent ();
 
-                os << "##";
+                m_os << "##";
 
                 if (! (isspace (c) || c == '!'))
-                  os << ' ';
+                  m_os << ' ';
               }
 
-            os << static_cast<char> (c);
+            m_os << static_cast<char> (c);
 
             prev_char_was_newline = false;
           }
       }
 
-    if (printed_something && ! beginning_of_line)
+    if (printed_something && ! m_beginning_of_line)
       newline ();
   }
 

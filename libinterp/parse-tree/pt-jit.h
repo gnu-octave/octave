@@ -41,7 +41,6 @@ namespace octave
 {
   namespace jit
   {
-
 #if defined (LEGACY_PASSMANAGER)
     typedef llvm::legacy::PassManager PassManager;
     typedef llvm::legacy::FunctionPassManager FunctionPassManager;
@@ -52,7 +51,6 @@ namespace octave
 
     typedef std::unique_ptr<llvm::Module> ModuleOwner;
     typedef std::unique_ptr<llvm::ExecutionEngine> EngineOwner;
-
   }
 
   // Convert from the parse tree (AST) to the low level Octave IR.
@@ -60,6 +58,7 @@ namespace octave
   jit_convert : public tree_walker
   {
   public:
+
     typedef std::pair<jit_type *, std::string> type_bound;
     typedef std::vector<type_bound> type_bound_vector;
     typedef std::map<std::string, jit_variable *> variable_map;
@@ -71,19 +70,19 @@ namespace octave
     template <typename ...Args>
     jit_call * create_checked (const Args&... args)
     {
-      jit_call *ret = factory.create<jit_call> (args...);
+      jit_call *ret = m_factory.create<jit_call> (args...);
       return create_checked_impl (ret);
     }
 
-    jit_block_list& get_blocks (void) { return blocks; }
+    jit_block_list& get_blocks (void) { return m_blocks; }
 
-    const type_bound_vector& get_bounds (void) const { return bounds; }
+    const type_bound_vector& get_bounds (void) const { return m_bounds; }
 
-    jit_factory& get_factory (void) { return factory; }
+    jit_factory& get_factory (void) { return m_factory; }
 
-    llvm::Function *get_function (void) const { return function; }
+    llvm::Function *get_function (void) const { return m_function; }
 
-    const variable_map& get_variable_map (void) const { return vmap; }
+    const variable_map& get_variable_map (void) const { return m_vmap; }
 
     void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
@@ -172,37 +171,39 @@ namespace octave
     void visit_while_command (tree_while_command&);
 
     void visit_do_until_command (tree_do_until_command&);
-  private:
-    std::vector<std::pair<std::string, bool>> arguments;
-    type_bound_vector bounds;
 
-    bool converting_function;
+  private:
+
+    std::vector<std::pair<std::string, bool>> m_arguments;
+    type_bound_vector m_bounds;
+
+    bool m_converting_function;
 
     // the scope of the function we are converting, or the current scope
-    symbol_scope scope;
+    symbol_scope m_scope;
 
-    jit_factory factory;
+    jit_factory m_factory;
 
     // used instead of return values from visit_* functions
-    jit_value *result;
+    jit_value *m_result;
 
-    jit_block *entry_block;
+    jit_block *m_entry_block;
 
-    jit_block *final_block;
+    jit_block *m_final_block;
 
-    jit_block *block;
+    jit_block *m_block;
 
-    llvm::Function *function;
+    llvm::Function *m_function;
 
-    jit_block_list blocks;
+    jit_block_list m_blocks;
 
-    std::vector<jit_magic_end::context> end_context;
+    std::vector<jit_magic_end::context> m_end_context;
 
-    size_t iterator_count;
-    size_t for_bounds_count;
-    size_t short_count;
+    size_t m_iterator_count;
+    size_t m_for_bounds_count;
+    size_t m_short_count;
 
-    variable_map vmap;
+    variable_map m_vmap;
 
     void initialize (const symbol_scope& s);
 
@@ -224,13 +225,13 @@ namespace octave
     // The name of the next for loop iterator.  If inc is false, then the
     // iterator counter will not be incremented.
     std::string next_iterator (bool inc = true)
-    { return next_name ("#iter", iterator_count, inc); }
+    { return next_name ("#iter", m_iterator_count, inc); }
 
     std::string next_for_bounds (bool inc = true)
-    { return next_name ("#for_bounds", for_bounds_count, inc); }
+    { return next_name ("#for_bounds", m_for_bounds_count, inc); }
 
     std::string next_shortcircut_result (bool inc = true)
-    { return next_name ("#shortcircut_result", short_count, inc); }
+    { return next_name ("#shortcircut_result", m_short_count, inc); }
 
     std::string next_name (const char *prefix, size_t& count, bool inc);
 
@@ -248,8 +249,8 @@ namespace octave
     jit_value * visit (tree& tee);
 
     typedef std::list<jit_block *> block_list;
-    block_list breaks;
-    block_list continues;
+    block_list m_breaks;
+    block_list m_continues;
 
     void finish_breaks (jit_block *dest, const block_list& lst);
   };
@@ -259,6 +260,7 @@ namespace octave
   jit_convert_llvm : public jit_ir_walker
   {
   public:
+
     llvm::Function * convert_loop (const jit_module& module,
                                    const jit_block_list& blocks,
                                    const std::list<jit_value *>& constants,
@@ -272,7 +274,7 @@ namespace octave
 
     // arguments to the llvm::Function for loops
     const std::vector<std::pair<std::string, bool>>& get_arguments(void) const
-    { return argument_vec; }
+    { return m_argument_vec; }
 
 #define JIT_METH(clname)                        \
     virtual void visit (jit_ ## clname&);
@@ -280,22 +282,24 @@ namespace octave
     JIT_VISIT_IR_CLASSES;
 
 #undef JIT_METH
-  private:
-    // name -> argument index (used for compiling functions)
-    std::map<std::string, int> argument_index;
 
-    std::vector<std::pair<std::string, bool>> argument_vec;
+  private:
+
+    // name -> argument index (used for compiling functions)
+    std::map<std::string, int> m_argument_index;
+
+    std::vector<std::pair<std::string, bool>> m_argument_vec;
 
     // name -> llvm argument (used for compiling loops)
-    std::map<std::string, llvm::Value *> arguments;
+    std::map<std::string, llvm::Value *> m_arguments;
 
-    bool converting_function;
+    bool m_converting_function;
 
     // only used if we are converting a function
-    jit_function creating;
+    jit_function m_creating;
 
-    llvm::Function *function;
-    llvm::BasicBlock *prelude;
+    llvm::Function *m_function;
+    llvm::BasicBlock *m_prelude;
 
     void convert (const jit_block_list& blocks,
                   const std::list<jit_value *>& constants);
@@ -318,21 +322,24 @@ namespace octave
   jit_infer
   {
   public:
+
     typedef jit_convert::variable_map variable_map;
 
     jit_infer (jit_factory& afactory, jit_block_list& ablocks,
                const variable_map& avmap);
 
-    jit_block_list& get_blocks (void) const { return blocks; }
+    jit_block_list& get_blocks (void) const { return m_blocks; }
 
-    jit_factory& get_factory (void) const { return factory; }
+    jit_factory& get_factory (void) const { return m_factory; }
 
     void infer (void);
+
   private:
-    jit_block_list& blocks;
-    jit_factory& factory;
-    const variable_map& vmap;
-    std::list<jit_instruction *> worklist;
+
+    jit_block_list& m_blocks;
+    jit_factory& m_factory;
+    const variable_map& m_vmap;
+    std::list<jit_instruction *> m_worklist;
 
     void append_users (jit_value *v);
 
@@ -342,9 +349,9 @@ namespace octave
 
     void do_construct_ssa (jit_block& block, size_t avisit_count);
 
-    jit_block& entry_block (void) { return *blocks.front (); }
+    jit_block& entry_block (void) { return *m_blocks.front (); }
 
-    jit_block& final_block (void) { return *blocks.back (); }
+    jit_block& final_block (void) { return *m_blocks.back (); }
 
     void place_releases (void);
 
@@ -370,30 +377,36 @@ namespace octave
     // ----- Constructor/destructor (singleton pattern) -----
 
   public:
+
     ~tree_jit (void);
 
   private:
+
     tree_jit (void);
     static tree_jit& instance (void);
 
     // ----- Initialization -----
 
   private:
+
     static bool initialized;
     bool do_initialize (void);
 
     // ----- Target machine ----
 
   public:
+
     static const llvm::TargetMachine* get_target_machine (void)
     { return instance ().target_machine; }
 
   private:
+
     llvm::TargetMachine *target_machine;
 
     // ----- Create LLVM modules and engines -----
 
   public:
+
     static jit::ModuleOwner
     open_new_module (const std::string& module_name = generate_unique_module_name ());
 
@@ -401,17 +414,22 @@ namespace octave
     create_new_engine (jit::ModuleOwner module_owner);
 
   private:
+
     jit::ModuleOwner
     do_open_new_module (const std::string& module_name) const;
 
     // ----- Registering JIT modules (module+engine pairs) -----
 
   public:
+
     static void register_jit_module (jit_module* jm)
     { instance ().do_register_jit_module (jm); }
+
     static void unregister_jit_module (jit_module* jm)
     { instance ().do_unregister_jit_module (jm); }
+
   private:
+
     // List of all currently registered jit modules
     std::list<jit_module*> jm_list;
     void do_register_jit_module (jit_module* jm);
@@ -421,18 +439,23 @@ namespace octave
     // ----- Symbol resolution -----
 
   public:
+
     static void* getPointerToNamedFunction (const std::string &name)
     { return instance ().do_getPointerToNamedFunction (name); }
+
     static uint64_t getSymbolAddress (const std::string &name)
     { return instance ().do_getSymbolAddress (name); }
 
   private:
+
     void* do_getPointerToNamedFunction (const std::string &Name) const;
+
     uint64_t do_getSymbolAddress (const std::string &name) const;
 
     // ----- Generate unique identifiers -----
 
   public:
+
     static std::string generate_unique_forloop_name (void)
     { return std::string ("jittedForLoop")
         + std::to_string (next_forloop_number ++); }
@@ -449,6 +472,7 @@ namespace octave
     // FIXME: Check that the identifier does not exist
 
   private:
+
     static int next_forloop_number;
     static int next_function_number;
     static int next_module_number;
@@ -456,6 +480,7 @@ namespace octave
     // ----- JIT and execute ASTs -----
 
   public:
+
     static bool execute (tree_simple_for_command& cmd,
                          const octave_value& bounds)
     { return instance ().do_execute (cmd, bounds); }
@@ -469,6 +494,7 @@ namespace octave
     { return instance ().do_execute (fcn, args, retval); }
 
   private:
+
     bool do_execute (tree_simple_for_command& cmd,
                      const octave_value& bounds);
 
@@ -483,7 +509,6 @@ namespace octave
     bool enabled (void);
 
     size_t trip_count (const octave_value& bounds) const;
-
   };
 
 
@@ -543,10 +568,11 @@ namespace octave
     void finalizeObject (void);
 
   private:
+
     void do_add_global_mapping (const llvm::GlobalValue* gv, void* p) const;
 
-    llvm::Module *module;
-    llvm::ExecutionEngine *engine;
+    llvm::Module *m_module;
+    llvm::ExecutionEngine *m_engine;
   };
 
 
@@ -554,6 +580,7 @@ namespace octave
   jit_info : public jit_module
   {
   public:
+
     // we use a pointer here so we don't have to include ov.h
     typedef std::map<std::string, const octave_value *> vmap;
 
@@ -568,6 +595,7 @@ namespace octave
     bool match (const vmap& extra_vars = vmap ()) const;
 
   private:
+
     typedef jit_convert::type_bound type_bound;
     typedef jit_convert::type_bound_vector type_bound_vector;
     typedef void (*jited_function)(octave_base_value**);
@@ -577,11 +605,11 @@ namespace octave
     octave_value find (const vmap& extra_vars, const std::string& vname) const;
 
     // LLVM function associated to this jit_info object
-    std::string llvm_function_name;
-    jited_function function;
+    std::string m_llvm_function_name;
+    jited_function m_function;
 
-    std::vector<std::pair<std::string, bool>> arguments;
-    type_bound_vector bounds;
+    std::vector<std::pair<std::string, bool>> m_arguments;
+    type_bound_vector m_bounds;
   };
 
 
@@ -589,6 +617,7 @@ namespace octave
   jit_function_info : public jit_module
   {
   public:
+
     jit_function_info (octave_user_function& fcn,
                        const octave_value_list& ov_args);
 
@@ -596,17 +625,19 @@ namespace octave
                   octave_value_list& retval) const;
 
     bool match (const octave_value_list& ov_args) const;
+
   private:
+
     typedef octave_base_value *(*jited_function)(octave_base_value**);
 
     // LLVM function associated to this jit_info object
-    std::string llvm_function_name;
-    jited_function function;
+    std::string m_llvm_function_name;
+    jited_function m_function;
 
-    std::vector<jit_type *> argument_types;
+    std::vector<jit_type *> m_argument_types;
   };
-
 }
 
 #endif
+
 #endif

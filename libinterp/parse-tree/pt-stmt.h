@@ -48,13 +48,14 @@ namespace octave
   public:
 
     tree_statement (void)
-      : cmd (nullptr), expr (nullptr), comm (nullptr) { }
+      : m_command (nullptr), m_expression (nullptr),
+        m_comment_list (nullptr) { }
 
     tree_statement (tree_command *c, comment_list *cl)
-      : cmd (c), expr (nullptr), comm (cl) { }
+      : m_command (c), m_expression (nullptr), m_comment_list (cl) { }
 
     tree_statement (tree_expression *e, comment_list *cl)
-      : cmd (nullptr), expr (e), comm (cl) { }
+      : m_command (nullptr), m_expression (e), m_comment_list (cl) { }
 
     // No copying!
 
@@ -68,9 +69,9 @@ namespace octave
 
     bool print_result (void);
 
-    bool is_command (void) const { return cmd != nullptr; }
+    bool is_command (void) const { return m_command != nullptr; }
 
-    bool is_expression (void) const { return expr != nullptr; }
+    bool is_expression (void) const { return m_expression != nullptr; }
 
     void set_breakpoint (const std::string& condition);
 
@@ -86,13 +87,16 @@ namespace octave
 
     void echo_code (const std::string& prefix);
 
-    tree_command * command (void) { return cmd; }
+    tree_command * command (void) { return m_command; }
 
-    tree_expression * expression (void) { return expr; }
+    tree_expression * expression (void) { return m_expression; }
 
-    comment_list * comment_text (void) { return comm; }
+    comment_list * comment_text (void) { return m_comment_list; }
 
-    bool is_null_statement (void) const { return ! (cmd || expr || comm); }
+    bool is_null_statement (void) const
+    {
+      return ! (m_command || m_expression || m_comment_list);
+    }
 
     bool is_end_of_fcn_or_script (void) const;
 
@@ -102,9 +106,9 @@ namespace octave
     // checking.  If you use these, are you sure you knwo what you are
     // doing?
 
-    void set_command (tree_command *c) { cmd = c; }
+    void set_command (tree_command *c) { m_command = c; }
 
-    void set_expression (tree_expression *e) { expr = e; }
+    void set_expression (tree_expression *e) { m_expression = e; }
 
     void accept (tree_walker& tw)
     {
@@ -116,13 +120,13 @@ namespace octave
     // Only one of cmd or expr can be valid at once.
 
     // Command to execute.
-    tree_command *cmd;
+    tree_command *m_command;
 
     // Expression to evaluate.
-    tree_expression *expr;
+    tree_expression *m_expression;
 
     // Comment associated with this statement.
-    comment_list *comm;
+    comment_list *m_comment_list;
   };
 
   // A list of statements to evaluate.
@@ -132,12 +136,12 @@ namespace octave
   public:
 
     tree_statement_list (void)
-      : function_body (false), anon_function_body (false),
-        script_body (false) { }
+      : m_function_body (false), m_anon_function_body (false),
+        m_script_body (false) { }
 
     tree_statement_list (tree_statement *s)
-      : function_body (false), anon_function_body (false),
-        script_body (false) { append (s); }
+      : m_function_body (false), m_anon_function_body (false),
+        m_script_body (false) { append (s); }
 
     // No copying!
 
@@ -155,17 +159,17 @@ namespace octave
         }
     }
 
-    void mark_as_function_body (void) { function_body = true; }
+    void mark_as_function_body (void) { m_function_body = true; }
 
-    void mark_as_anon_function_body (void) { anon_function_body = true; }
+    void mark_as_anon_function_body (void) { m_anon_function_body = true; }
 
-    void mark_as_script_body (void) { script_body = true; }
+    void mark_as_script_body (void) { m_script_body = true; }
 
-    bool is_function_body (void) const { return function_body; }
+    bool is_function_body (void) const { return m_function_body; }
 
-    bool is_anon_function_body (void) const { return anon_function_body; }
+    bool is_anon_function_body (void) const { return m_anon_function_body; }
 
-    bool is_script_body (void) const { return script_body; }
+    bool is_script_body (void) const { return m_script_body; }
 
     int set_breakpoint (int line, const std::string& condition);
 
@@ -189,13 +193,13 @@ namespace octave
   private:
 
     // Does this list of statements make up the body of a function?
-    bool function_body;
+    bool m_function_body;
 
     // Does this list of statements make up the body of a function?
-    bool anon_function_body;
+    bool m_anon_function_body;
 
     // Does this list of statements make up the body of a script?
-    bool script_body;
+    bool m_script_body;
   };
 }
 

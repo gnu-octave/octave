@@ -60,7 +60,7 @@ namespace octave
 
     tree_no_op_command (const std::string& cmd = "no_op", bool e = false,
                         int l = -1, int c = -1)
-      : tree_command (l, c), eof (e), orig_cmd (cmd) { }
+      : tree_command (l, c), m_eof (e), m_orig_cmd (cmd) { }
 
     // No copying!
 
@@ -77,18 +77,18 @@ namespace octave
 
     bool is_end_of_fcn_or_script (void) const
     {
-      return (orig_cmd == "endfunction" || orig_cmd == "endscript");
+      return (m_orig_cmd == "endfunction" || m_orig_cmd == "endscript");
     }
 
-    bool is_end_of_file (void) const { return eof; }
+    bool is_end_of_file (void) const { return m_eof; }
 
-    std::string original_command (void) { return orig_cmd; }
+    std::string original_command (void) { return m_orig_cmd; }
 
   private:
 
-    bool eof;
+    bool m_eof;
 
-    std::string orig_cmd;
+    std::string m_orig_cmd;
   };
 
   // Function definition.
@@ -98,7 +98,7 @@ namespace octave
   public:
 
     tree_function_def (octave_function *f, int l = -1, int c = -1)
-      : tree_command (l, c), fcn (f) { }
+      : tree_command (l, c), m_fcn (f) { }
 
     // No copying!
 
@@ -113,14 +113,14 @@ namespace octave
       tw.visit_function_def (*this);
     }
 
-    octave_value function (void) { return fcn; }
+    octave_value function (void) { return m_fcn; }
 
   private:
 
-    octave_value fcn;
+    octave_value m_fcn;
 
     tree_function_def (const octave_value& v, int l = -1, int c = -1)
-      : tree_command (l, c), fcn (v) { }
+      : tree_command (l, c), m_fcn (v) { }
   };
 }
 

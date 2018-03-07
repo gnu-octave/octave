@@ -47,10 +47,10 @@ namespace octave
   public:
 
     tree_fcn_handle (int l = -1, int c = -1)
-      : tree_expression (l, c), nm () { }
+      : tree_expression (l, c), m_name () { }
 
     tree_fcn_handle (const std::string& n, int l = -1, int c = -1)
-      : tree_expression (l, c), nm (n) { }
+      : tree_expression (l, c), m_name (n) { }
 
     // No copying!
 
@@ -68,7 +68,7 @@ namespace octave
     void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
                     bool pr_orig_txt = true);
 
-    std::string name (void) const { return nm; }
+    std::string name (void) const { return m_name; }
 
     bool rvalue_ok (void) const { return true; }
 
@@ -82,7 +82,7 @@ namespace octave
   private:
 
     // The name of this function handle.
-    std::string nm;
+    std::string m_name;
   };
 
   class tree_anon_fcn_handle : public tree_expression

@@ -52,74 +52,80 @@ namespace octave
 
   tree_statement::~tree_statement (void)
   {
-    delete cmd;
-    delete expr;
-    delete comm;
+    delete m_command;
+    delete m_expression;
+    delete m_comment_list;
   }
 
   void
   tree_statement::set_print_flag (bool print_flag)
   {
-    if (expr)
-      expr->set_print_flag (print_flag);
+    if (m_expression)
+      m_expression->set_print_flag (print_flag);
   }
 
   bool
   tree_statement::print_result (void)
   {
-    return expr && expr->print_result ();
+    return m_expression && m_expression->print_result ();
   }
 
   void
   tree_statement::set_breakpoint (const std::string& condition)
   {
-    if (cmd)
-      cmd->set_breakpoint (condition);
-    else if (expr)
-      expr->set_breakpoint (condition);
+    if (m_command)
+      m_command->set_breakpoint (condition);
+    else if (m_expression)
+      m_expression->set_breakpoint (condition);
   }
 
   void
   tree_statement::delete_breakpoint (void)
   {
-    if (cmd)
-      cmd->delete_breakpoint ();
-    else if (expr)
-      expr->delete_breakpoint ();
+    if (m_command)
+      m_command->delete_breakpoint ();
+    else if (m_expression)
+      m_expression->delete_breakpoint ();
   }
 
   bool
   tree_statement::is_breakpoint (bool check_active) const
   {
-    return cmd ? cmd->is_breakpoint (check_active)
-      : (expr ? expr->is_breakpoint (check_active) : false);
+    return m_command ? m_command->is_breakpoint (check_active)
+      : (m_expression ? m_expression->is_breakpoint (check_active) : false);
   }
 
   std::string
   tree_statement::bp_cond () const
   {
-    return cmd ? cmd->bp_cond () : (expr ? expr->bp_cond () : "0");
+    return (m_command
+            ? m_command->bp_cond ()
+            : (m_expression ? m_expression->bp_cond () : "0"));
   }
 
   int
   tree_statement::line (void) const
   {
-    return cmd ? cmd->line () : (expr ? expr->line () : -1);
+    return (m_command
+            ? m_command->line ()
+            : (m_expression ? m_expression->line () : -1));
   }
 
   int
   tree_statement::column (void) const
   {
-    return cmd ? cmd->column () : (expr ? expr->column () : -1);
+    return (m_command
+            ? m_command->column ()
+            : (m_expression ? m_expression->column () : -1));
   }
 
   void
   tree_statement::set_location (int l, int c)
   {
-    if (cmd)
-      cmd->set_location (l, c);
-    else if (expr)
-      expr->set_location (l, c);
+    if (m_command)
+      m_command->set_location (l, c);
+    else if (m_expression)
+      m_expression->set_location (l, c);
   }
 
   void
@@ -135,10 +141,10 @@ namespace octave
   {
     bool retval = false;
 
-    if (cmd)
+    if (m_command)
       {
         tree_no_op_command *no_op_cmd
-          = dynamic_cast<tree_no_op_command *> (cmd);
+          = dynamic_cast<tree_no_op_command *> (m_command);
 
         if (no_op_cmd)
           retval = no_op_cmd->is_end_of_fcn_or_script ();
@@ -152,10 +158,10 @@ namespace octave
   {
     bool retval = false;
 
-    if (cmd)
+    if (m_command)
       {
         tree_no_op_command *no_op_cmd
-          = dynamic_cast<tree_no_op_command *> (cmd);
+          = dynamic_cast<tree_no_op_command *> (m_command);
 
         if (no_op_cmd)
           retval = no_op_cmd->is_end_of_file ();
@@ -164,8 +170,10 @@ namespace octave
     return retval;
   }
 
-  // Create a "breakpoint" tree-walker, and get it to "walk" this statement list
+  // Create a "breakpoint" tree-walker, and get it to "walk" this
+  // statement list
   // (FIXME: What does that do???)
+
   int
   tree_statement_list::set_breakpoint (int line, const std::string& condition)
   {
@@ -226,10 +234,11 @@ namespace octave
     return retval;
   }
 
-  // Add breakpoints to  file  at multiple lines (the second arguments of  line),
-  // to stop only if  condition  is true.
+  // Add breakpoints to  file  at multiple lines (the second arguments
+  // of  line), to stop only if  condition  is true.
   // Updates GUI via  octave_link::update_breakpoint.
   // FIXME: COME BACK TO ME.
+
   bp_table::intmap
   tree_statement_list::add_breakpoint (const std::string& file,
                                        const bp_table::intmap& line,

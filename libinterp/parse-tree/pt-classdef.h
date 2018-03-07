@@ -47,10 +47,12 @@ namespace octave
 
     tree_classdef_attribute (tree_identifier *i = nullptr,
                              tree_expression *e = nullptr)
-      : id (i), expr (e), neg (false) { }
+      : m_id (i), m_expr (e), m_neg (false)
+    { }
 
     tree_classdef_attribute (tree_identifier *i, bool b)
-      : id (i), expr (nullptr), neg (b) { }
+      : m_id (i), m_expr (nullptr), m_neg (b)
+    { }
 
     // No copying!
 
@@ -60,15 +62,15 @@ namespace octave
 
     ~tree_classdef_attribute (void)
     {
-      delete id;
-      delete expr;
+      delete m_id;
+      delete m_expr;
     }
 
-    tree_identifier * ident (void) { return id; }
+    tree_identifier * ident (void) { return m_id; }
 
-    tree_expression * expression (void) { return expr; }
+    tree_expression * expression (void) { return m_expr; }
 
-    bool negate (void) { return neg; }
+    bool negate (void) { return m_neg; }
 
     void accept (tree_walker& tw)
     {
@@ -77,9 +79,9 @@ namespace octave
 
   private:
 
-    tree_identifier *id;
-    tree_expression *expr;
-    bool neg;
+    tree_identifier *m_id;
+    tree_expression *m_expr;
+    bool m_neg;
   };
 
   class tree_classdef_attribute_list : public base_list<tree_classdef_attribute *>
@@ -91,7 +93,8 @@ namespace octave
     tree_classdef_attribute_list (tree_classdef_attribute *a) { append (a); }
 
     tree_classdef_attribute_list (const base_list<tree_classdef_attribute *>& a)
-      : base_list<tree_classdef_attribute *> (a) { }
+      : base_list<tree_classdef_attribute *> (a)
+    { }
 
     // No copying!
 
@@ -113,7 +116,8 @@ namespace octave
   public:
 
     tree_classdef_superclass (const std::string& cname)
-      : cls_name (cname) { }
+      : m_cls_name (cname)
+    { }
 
     // No copying!
 
@@ -124,7 +128,7 @@ namespace octave
 
     ~tree_classdef_superclass (void) = default;
 
-    std::string class_name (void) { return cls_name; }
+    std::string class_name (void) { return m_cls_name; }
 
     void accept (tree_walker& tw)
     {
@@ -133,7 +137,7 @@ namespace octave
 
   private:
 
-    std::string cls_name;
+    std::string m_cls_name;
   };
 
   class tree_classdef_superclass_list : public base_list<tree_classdef_superclass *>
@@ -142,10 +146,14 @@ namespace octave
 
     tree_classdef_superclass_list (void) { }
 
-    tree_classdef_superclass_list (tree_classdef_superclass *sc) { append (sc); }
+    tree_classdef_superclass_list (tree_classdef_superclass *sc)
+    {
+      append (sc);
+    }
 
     tree_classdef_superclass_list (const base_list<tree_classdef_superclass *>& a)
-      : base_list<tree_classdef_superclass *> (a) { }
+      : base_list<tree_classdef_superclass *> (a)
+    { }
 
     // No copying!
 
@@ -171,8 +179,8 @@ namespace octave
                            base_list<T> *elist,
                            comment_list *lc, comment_list *tc,
                            int l = -1, int c = -1)
-      : tree (l, c), attr_list (a), elt_list (elist),
-        lead_comm (lc), trail_comm (tc)
+      : tree (l, c), m_attr_list (a), m_elt_list (elist),
+        m_lead_comm (lc), m_trail_comm (tc)
     { }
 
     // No copying!
@@ -183,43 +191,45 @@ namespace octave
 
     ~tree_classdef_element (void)
     {
-      delete attr_list;
-      delete elt_list;
-      delete lead_comm;
-      delete trail_comm;
+      delete m_attr_list;
+      delete m_elt_list;
+      delete m_lead_comm;
+      delete m_trail_comm;
     }
 
-    tree_classdef_attribute_list * attribute_list (void) { return attr_list; }
+    tree_classdef_attribute_list * attribute_list (void) { return m_attr_list; }
 
-    base_list<T> * element_list (void) { return elt_list; }
+    base_list<T> * element_list (void) { return m_elt_list; }
 
-    comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return m_lead_comm; }
 
-    comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return m_trail_comm; }
 
     void accept (tree_walker&) { }
 
   private:
 
     // List of attributes that apply to this class.
-    tree_classdef_attribute_list *attr_list;
+    tree_classdef_attribute_list *m_attr_list;
 
     // The list of objects contained in this block.
-    base_list<T> *elt_list;
+    base_list<T> *m_elt_list;
 
     // Comment preceding the token marking the beginning of the block.
-    comment_list *lead_comm;
+    comment_list *m_lead_comm;
 
     // Comment preceding END token.
-    comment_list *trail_comm;
+    comment_list *m_trail_comm;
   };
 
   class tree_classdef_property
   {
   public:
 
-    tree_classdef_property (tree_identifier *i = nullptr, tree_expression *e = nullptr)
-      : id (i), expr (e) { }
+    tree_classdef_property (tree_identifier *i = nullptr,
+                            tree_expression *e = nullptr)
+      : m_id (i), m_expr (e)
+    { }
 
     // No copying!
 
@@ -229,13 +239,13 @@ namespace octave
 
     ~tree_classdef_property (void)
     {
-      delete id;
-      delete expr;
+      delete m_id;
+      delete m_expr;
     }
 
-    tree_identifier * ident (void) { return id; }
+    tree_identifier * ident (void) { return m_id; }
 
-    tree_expression * expression (void) { return expr; }
+    tree_expression * expression (void) { return m_expr; }
 
     void accept (tree_walker& tw)
     {
@@ -244,8 +254,8 @@ namespace octave
 
   private:
 
-    tree_identifier *id;
-    tree_expression *expr;
+    tree_identifier *m_id;
+    tree_expression *m_expr;
   };
 
   class tree_classdef_property_list : public base_list<tree_classdef_property *>
@@ -284,7 +294,8 @@ namespace octave
                                     comment_list *lc,
                                     comment_list *tc,
                                     int l = -1, int c = -1)
-      : tree_classdef_element<tree_classdef_property *> (a, plist, lc, tc, l, c) { }
+      : tree_classdef_element<tree_classdef_property *> (a, plist, lc, tc, l, c)
+    { }
 
     // No copying!
 
@@ -335,7 +346,8 @@ namespace octave
                                  tree_classdef_methods_list *mlist,
                                  comment_list *lc,
                                  comment_list *tc, int l = -1, int c = -1)
-      : tree_classdef_element<octave_value> (a, mlist, lc, tc, l, c) { }
+      : tree_classdef_element<octave_value> (a, mlist, lc, tc, l, c)
+    { }
 
     // No copying!
 
@@ -356,7 +368,7 @@ namespace octave
   {
   public:
 
-    tree_classdef_event (tree_identifier *i = nullptr) : id (i) { }
+    tree_classdef_event (tree_identifier *i = nullptr) : m_id (i) { }
 
     // No copying!
 
@@ -366,10 +378,10 @@ namespace octave
 
     ~tree_classdef_event (void)
     {
-      delete id;
+      delete m_id;
     }
 
-    tree_identifier * ident (void) { return id; }
+    tree_identifier * ident (void) { return m_id; }
 
     void accept (tree_walker& tw)
     {
@@ -378,7 +390,7 @@ namespace octave
 
   private:
 
-    tree_identifier *id;
+    tree_identifier *m_id;
   };
 
   class tree_classdef_events_list : public base_list<tree_classdef_event *>
@@ -390,7 +402,8 @@ namespace octave
     tree_classdef_events_list (tree_classdef_event *e) { append (e); }
 
     tree_classdef_events_list (const base_list<tree_classdef_event *>& a)
-      : base_list<tree_classdef_event *> (a) { }
+      : base_list<tree_classdef_event *> (a)
+    { }
 
     // No copying!
 
@@ -416,7 +429,8 @@ namespace octave
                                 tree_classdef_events_list *elist,
                                 comment_list *lc,
                                 comment_list *tc, int l = -1, int c = -1)
-      : tree_classdef_element<tree_classdef_event *> (a, elist, lc, tc, l, c) { }
+      : tree_classdef_element<tree_classdef_event *> (a, elist, lc, tc, l, c)
+    { }
 
     // No copying!
 
@@ -437,10 +451,11 @@ namespace octave
   {
   public:
 
-    tree_classdef_enum (void) : id (nullptr), expr (nullptr) { }
+    tree_classdef_enum (void) : m_id (nullptr), m_expr (nullptr) { }
 
     tree_classdef_enum (tree_identifier *i, tree_expression *e)
-      : id (i), expr (e) { }
+      : m_id (i), m_expr (e)
+    { }
 
     // No copying!
 
@@ -450,13 +465,13 @@ namespace octave
 
     ~tree_classdef_enum (void)
     {
-      delete id;
-      delete expr;
+      delete m_id;
+      delete m_expr;
     }
 
-    tree_identifier * ident (void) { return id; }
+    tree_identifier * ident (void) { return m_id; }
 
-    tree_expression * expression (void) { return expr; }
+    tree_expression * expression (void) { return m_expr; }
 
     void accept (tree_walker& tw)
     {
@@ -465,8 +480,8 @@ namespace octave
 
   private:
 
-    tree_identifier *id;
-    tree_expression *expr;
+    tree_identifier *m_id;
+    tree_expression *m_expr;
   };
 
   class tree_classdef_enum_list : public base_list<tree_classdef_enum *>
@@ -478,7 +493,8 @@ namespace octave
     tree_classdef_enum_list (tree_classdef_enum *e) { append (e); }
 
     tree_classdef_enum_list (const base_list<tree_classdef_enum *>& a)
-      : base_list<tree_classdef_enum *> (a) { }
+      : base_list<tree_classdef_enum *> (a)
+    { }
 
     // No copying!
 
@@ -503,7 +519,8 @@ namespace octave
                               tree_classdef_enum_list *elist,
                               comment_list *lc,
                               comment_list *tc, int l = -1, int c = -1)
-      : tree_classdef_element<tree_classdef_enum *> (a, elist, lc, tc, l, c) { }
+      : tree_classdef_element<tree_classdef_enum *> (a, elist, lc, tc, l, c)
+    { }
 
     // No copying!
 
@@ -537,28 +554,29 @@ namespace octave
     typedef std::list<tree_classdef_enum_block *>::const_iterator enum_list_const_iterator;
 
     tree_classdef_body (void)
-      : properties_lst (), methods_lst (), events_lst (), enum_lst () { }
+      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
+    { }
 
     tree_classdef_body (tree_classdef_properties_block *pb)
-      : properties_lst (), methods_lst (), events_lst (), enum_lst ()
+      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
     {
       append (pb);
     }
 
     tree_classdef_body (tree_classdef_methods_block *mb)
-      : properties_lst (), methods_lst (), events_lst (), enum_lst ()
+      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
     {
       append (mb);
     }
 
     tree_classdef_body (tree_classdef_events_block *evb)
-      : properties_lst (), methods_lst (), events_lst (), enum_lst ()
+      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
     {
       append (evb);
     }
 
     tree_classdef_body (tree_classdef_enum_block *enb)
-      : properties_lst (), methods_lst (), events_lst (), enum_lst ()
+      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
     {
       append (enb);
     }
@@ -573,42 +591,42 @@ namespace octave
 
     void append (tree_classdef_properties_block *pb)
     {
-      properties_lst.push_back (pb);
+      m_properties_lst.push_back (pb);
     }
 
     void append (tree_classdef_methods_block *mb)
     {
-      methods_lst.push_back (mb);
+      m_methods_lst.push_back (mb);
     }
 
     void append (tree_classdef_events_block *evb)
     {
-      events_lst.push_back (evb);
+      m_events_lst.push_back (evb);
     }
 
     void append (tree_classdef_enum_block *enb)
     {
-      enum_lst.push_back (enb);
+      m_enum_lst.push_back (enb);
     }
 
     std::list<tree_classdef_properties_block *> properties_list (void)
     {
-      return properties_lst;
+      return m_properties_lst;
     }
 
     std::list<tree_classdef_methods_block *> methods_list (void)
     {
-      return methods_lst;
+      return m_methods_lst;
     }
 
     std::list<tree_classdef_events_block *> events_list (void)
     {
-      return events_lst;
+      return m_events_lst;
     }
 
     std::list<tree_classdef_enum_block *> enum_list (void)
     {
-      return enum_lst;
+      return m_enum_lst;
     }
 
     void accept (tree_walker& tw)
@@ -618,13 +636,13 @@ namespace octave
 
   private:
 
-    std::list<tree_classdef_properties_block *> properties_lst;
+    std::list<tree_classdef_properties_block *> m_properties_lst;
 
-    std::list<tree_classdef_methods_block *> methods_lst;
+    std::list<tree_classdef_methods_block *> m_methods_lst;
 
-    std::list<tree_classdef_events_block *> events_lst;
+    std::list<tree_classdef_events_block *> m_events_lst;
 
-    std::list<tree_classdef_enum_block *> enum_lst;
+    std::list<tree_classdef_enum_block *> m_enum_lst;
   };
 
   // Classdef definition.
@@ -639,9 +657,10 @@ namespace octave
                    comment_list *tc,
                    const std::string& pn = "", int l = -1,
                    int c = -1)
-      : tree_command (l, c), attr_list (a), id (i),
-        supclass_list (sc), element_list (b), lead_comm (lc), trail_comm (tc),
-        pack_name (pn) { }
+      : tree_command (l, c), m_attr_list (a), m_id (i),
+        m_supclass_list (sc), m_element_list (b), m_lead_comm (lc),
+        m_trail_comm (tc), m_pack_name (pn)
+    { }
 
     // No copying!
 
@@ -651,26 +670,28 @@ namespace octave
 
     ~tree_classdef (void)
     {
-      delete attr_list;
-      delete id;
-      delete supclass_list;
-      delete element_list;
-      delete lead_comm;
-      delete trail_comm;
+      delete m_attr_list;
+      delete m_id;
+      delete m_supclass_list;
+      delete m_element_list;
+      delete m_lead_comm;
+      delete m_trail_comm;
     }
 
-    tree_classdef_attribute_list * attribute_list (void) { return attr_list; }
+    tree_classdef_attribute_list *
+    attribute_list (void) { return m_attr_list; }
 
-    tree_identifier * ident (void) { return id; }
+    tree_identifier * ident (void) { return m_id; }
 
-    tree_classdef_superclass_list * superclass_list (void) { return supclass_list; }
+    tree_classdef_superclass_list *
+    superclass_list (void) { return m_supclass_list; }
 
-    tree_classdef_body * body (void) { return element_list; }
+    tree_classdef_body * body (void) { return m_element_list; }
 
-    comment_list * leading_comment (void) { return lead_comm; }
-    comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * leading_comment (void) { return m_lead_comm; }
+    comment_list * trailing_comment (void) { return m_trail_comm; }
 
-    const std::string& package_name (void) const { return pack_name; }
+    const std::string& package_name (void) const { return m_pack_name; }
 
     octave_function * make_meta_class (interpreter& interp,
                                        bool is_at_folder = false);
@@ -682,18 +703,18 @@ namespace octave
 
   private:
 
-    tree_classdef_attribute_list *attr_list;
+    tree_classdef_attribute_list *m_attr_list;
 
-    tree_identifier *id;
+    tree_identifier *m_id;
 
-    tree_classdef_superclass_list *supclass_list;
+    tree_classdef_superclass_list *m_supclass_list;
 
-    tree_classdef_body *element_list;
+    tree_classdef_body *m_element_list;
 
-    comment_list *lead_comm;
-    comment_list *trail_comm;
+    comment_list *m_lead_comm;
+    comment_list *m_trail_comm;
 
-    std::string pack_name;
+    std::string m_pack_name;
   };
 }
 

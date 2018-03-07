@@ -34,12 +34,12 @@ namespace octave
 
   tree_while_command::~tree_while_command (void)
   {
-    delete expr;
-    delete list;
-    delete lead_comm;
-    delete trail_comm;
+    delete m_expr;
+    delete m_list;
+    delete m_lead_comm;
+    delete m_trail_comm;
 #if defined (HAVE_LLVM)
-    delete compiled;
+    delete m_compiled;
 #endif
   }
 
@@ -47,23 +47,23 @@ namespace octave
 
   tree_simple_for_command::~tree_simple_for_command (void)
   {
-    delete lhs;
-    delete expr;
-    delete maxproc;
-    delete list;
-    delete lead_comm;
-    delete trail_comm;
+    delete m_lhs;
+    delete m_expr;
+    delete m_maxproc;
+    delete m_list;
+    delete m_lead_comm;
+    delete m_trail_comm;
 #if defined (HAVE_LLVM)
-    delete compiled;
+    delete m_compiled;
 #endif
   }
 
   tree_complex_for_command::~tree_complex_for_command (void)
   {
-    delete lhs;
-    delete expr;
-    delete list;
-    delete lead_comm;
-    delete trail_comm;
+    delete m_lhs;
+    delete m_expr;
+    delete m_list;
+    delete m_lead_comm;
+    delete m_trail_comm;
   }
 }

@@ -49,15 +49,15 @@ namespace octave
       }
     else
       {
-        octave_function *fp = fcn.function_value ();
+        octave_function *fp = m_fcn.function_value ();
         std::string nm = (fp ? fp->name () : "<invalid-function>");
 
         os << nm << " (";
 
-        octave_idx_type n = args.length ();
+        octave_idx_type n = m_args.length ();
         for (octave_idx_type i = 0; i < n; i++)
           {
-            args(i).print_raw (os, pr_as_read_syntax);
+            m_args(i).print_raw (os, pr_as_read_syntax);
 
             if (i < n - 1)
               os << ", ";
@@ -70,7 +70,8 @@ namespace octave
   tree_funcall *
   tree_funcall::dup (symbol_scope&) const
   {
-    tree_funcall *new_fc = new tree_funcall (fcn, args, line (), column ());
+    tree_funcall *new_fc
+      = new tree_funcall (m_fcn, m_args, line (), column ());
 
     new_fc->copy_base (*new_fc);
 

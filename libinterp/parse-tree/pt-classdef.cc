@@ -113,32 +113,32 @@ namespace octave
 
   tree_classdef_body::~tree_classdef_body (void)
   {
-    while (! properties_lst.empty ())
+    while (! m_properties_lst.empty ())
       {
-        properties_list_iterator p = properties_lst.begin ();
+        properties_list_iterator p = m_properties_lst.begin ();
         delete *p;
-        properties_lst.erase (p);
+        m_properties_lst.erase (p);
       }
 
-    while (! methods_lst.empty ())
+    while (! m_methods_lst.empty ())
       {
-        methods_list_iterator p = methods_lst.begin ();
+        methods_list_iterator p = m_methods_lst.begin ();
         delete *p;
-        methods_lst.erase (p);
+        m_methods_lst.erase (p);
       }
 
-    while (! events_lst.empty ())
+    while (! m_events_lst.empty ())
       {
-        events_list_iterator p = events_lst.begin ();
+        events_list_iterator p = m_events_lst.begin ();
         delete *p;
-        events_lst.erase (p);
+        m_events_lst.erase (p);
       }
 
-    while (! enum_lst.empty ())
+    while (! m_enum_lst.empty ())
       {
-        enum_list_iterator p = enum_lst.begin ();
+        enum_list_iterator p = m_enum_lst.begin ();
         delete *p;
-        enum_lst.erase (p);
+        m_enum_lst.erase (p);
       }
   }
 

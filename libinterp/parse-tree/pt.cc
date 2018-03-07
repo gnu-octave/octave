@@ -59,9 +59,9 @@ namespace octave
   tree::meets_bp_condition () const
   {
     bool retval;
-    if (bp == nullptr)
+    if (m_bp_cond == nullptr)
       retval = false;
-    else if (bp->empty ())     // empty condition always met
+    else if (m_bp_cond->empty ())     // empty condition always met
       retval = true;
     else
       {
@@ -79,7 +79,9 @@ namespace octave
         retval = true;                // default to stopping if any error
         try
           {
-            octave_value_list val = eval_string (*bp, 1, parse_status, 1);
+            octave_value_list val
+              = eval_string (*m_bp_cond, 1, parse_status, 1);
+
             if (parse_status == 0)
               {
                 if (! val(0).is_scalar_type ())

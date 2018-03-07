@@ -43,7 +43,9 @@ namespace octave
     enum action { set = 1, clear = 2, list = 3 };
 
     tree_breakpoint (int l, action a, const std::string& c = "")
-      : line (l), act (a), condition (c), found (false), bp_list () { }
+      : m_line (l), m_action (a), m_condition (c), m_found (false),
+        m_bp_list (), m_bp_cond_list ()
+    { }
 
     // No copying!
 
@@ -53,7 +55,7 @@ namespace octave
 
     ~tree_breakpoint (void) = default;
 
-    bool success (void) const { return found; }
+    bool success (void) const { return m_found; }
 
     void visit_argument_list (tree_argument_list&);
 
@@ -141,10 +143,11 @@ namespace octave
 
     void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-    octave_value_list get_list (void) { return bp_list; }
-    octave_value_list get_cond_list (void) { return bp_cond_list; }
+    octave_value_list get_list (void) { return m_bp_list; }
 
-    int get_line (void) { return found ? line : 0; }
+    octave_value_list get_cond_list (void) { return m_bp_cond_list; }
+
+    int get_line (void) { return m_found ? m_line : 0; }
 
   private:
 
@@ -153,22 +156,22 @@ namespace octave
     void take_action (tree_statement& stmt);
 
     // Statement line number we are looking for.
-    int line;
+    int m_line;
 
     // What to do.
-    action act;
+    action m_action;
 
     // Expression which must be true to break
-    std::string condition;
+    std::string m_condition;
 
     // Have we already found the line?
-    bool found;
+    bool m_found;
 
     // List of breakpoint line numbers.
-    octave_value_list bp_list;
+    octave_value_list m_bp_list;
 
     // List of breakpoint conditions.
-    octave_value_list bp_cond_list;
+    octave_value_list m_bp_cond_list;
   };
 
   // TRUE means SIGINT should put us in the debugger at the next

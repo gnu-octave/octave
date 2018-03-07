@@ -43,15 +43,15 @@ namespace octave
 
   tree_decl_elt::~tree_decl_elt (void)
   {
-    delete id;
-    delete expr;
+    delete m_id;
+    delete m_expr;
   }
 
   tree_decl_elt *
   tree_decl_elt::dup (symbol_scope& scope) const
   {
-    return new tree_decl_elt (id ? id->dup (scope) : nullptr,
-                              expr ? expr->dup (scope) : nullptr);
+    return new tree_decl_elt (m_id ? m_id->dup (scope) : nullptr,
+                              m_expr ? m_expr->dup (scope) : nullptr);
   }
 
   // Initializer lists for declaration statements.
@@ -60,22 +60,22 @@ namespace octave
 
   tree_decl_command::tree_decl_command (const std::string& n,
                                         tree_decl_init_list *t, int l, int c)
-    : tree_command (l, c), cmd_name (n), init_list (t)
+    : tree_command (l, c), m_cmd_name (n), m_init_list (t)
   {
     if (t)
       {
-        if (cmd_name == "global")
+        if (m_cmd_name == "global")
           mark_global ();
-        else if (cmd_name == "persistent")
+        else if (m_cmd_name == "persistent")
           mark_persistent ();
         else
           error ("tree_decl_command: unknown decl type: %s",
-                 cmd_name.c_str ());
+                 m_cmd_name.c_str ());
       }
   }
 
   tree_decl_command::~tree_decl_command (void)
   {
-    delete init_list;
+    delete m_init_list;
   }
 }

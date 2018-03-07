@@ -56,7 +56,7 @@ namespace octave
       };
 
     tree_decl_elt (tree_identifier *i = nullptr, tree_expression *e = nullptr)
-      : type (unknown), id (i), expr (e) { }
+      : type (unknown), m_id (i), m_expr (e) { }
 
     // No copying!
 
@@ -68,25 +68,25 @@ namespace octave
 
     bool is_defined (symbol_record::context_id context)
     {
-      return id ? id->is_defined (context) : false;
+      return m_id ? m_id->is_defined (context) : false;
     }
 
     bool is_variable (symbol_record::context_id context)
     {
-      return id ? id->is_variable (context) : false;
+      return m_id ? m_id->is_variable (context) : false;
     }
 
     void mark_as_formal_parameter (void)
     {
-      if (id)
-        id->mark_as_formal_parameter ();
+      if (m_id)
+        m_id->mark_as_formal_parameter ();
     }
 
-    bool lvalue_ok (void) { return id ? id->lvalue_ok () : false; }
+    bool lvalue_ok (void) { return m_id ? m_id->lvalue_ok () : false; }
 
     octave_lvalue lvalue (tree_evaluator *tw)
     {
-      return id ? id->lvalue (tw) : octave_lvalue ();
+      return m_id ? m_id->lvalue (tw) : octave_lvalue ();
     }
 
     void mark_global (void) { type = global; }
@@ -95,11 +95,11 @@ namespace octave
     void mark_persistent (void) { type = persistent; }
     bool is_persistent (void) const { return type == persistent; }
 
-    tree_identifier * ident (void) { return id; }
+    tree_identifier * ident (void) { return m_id; }
 
-    std::string name (void) const { return id ? id->name () : ""; }
+    std::string name (void) const { return m_id ? m_id->name () : ""; }
 
-    tree_expression * expression (void) { return expr; }
+    tree_expression * expression (void) { return m_expr; }
 
     tree_decl_elt * dup (symbol_scope& scope) const;
 
@@ -113,10 +113,10 @@ namespace octave
     decl_type type;
 
     // An identifier to tag with the declared property.
-    tree_identifier *id;
+    tree_identifier *m_id;
 
     // An initializer expression (may be zero);
-    tree_expression *expr;
+    tree_expression *m_expr;
   };
 
   class tree_decl_init_list : public base_list<tree_decl_elt *>
@@ -183,7 +183,7 @@ namespace octave
   public:
 
     tree_decl_command (const std::string& n, int l = -1, int c = -1)
-      : tree_command (l, c), cmd_name (n), init_list (nullptr) { }
+      : tree_command (l, c), m_cmd_name (n), m_init_list (nullptr) { }
 
     tree_decl_command (const std::string& n, tree_decl_init_list *t,
                        int l = -1, int c = -1);
@@ -198,19 +198,19 @@ namespace octave
 
     void mark_global (void)
     {
-      if (init_list)
-        init_list->mark_global ();
+      if (m_init_list)
+        m_init_list->mark_global ();
     }
 
     void mark_persistent (void)
     {
-      if (init_list)
-        init_list->mark_persistent ();
+      if (m_init_list)
+        m_init_list->mark_persistent ();
     }
 
-    tree_decl_init_list * initializer_list (void) { return init_list; }
+    tree_decl_init_list * initializer_list (void) { return m_init_list; }
 
-    std::string name (void) const { return cmd_name; }
+    std::string name (void) const { return m_cmd_name; }
 
     void accept (tree_walker& tw)
     {
@@ -220,10 +220,10 @@ namespace octave
   private:
 
     // The name of this command -- global, static, etc.
-    std::string cmd_name;
+    std::string m_cmd_name;
 
     // The list of variables or initializers in this declaration command.
-    tree_decl_init_list *init_list;
+    tree_decl_init_list *m_init_list;
   };
 }
 

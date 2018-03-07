@@ -42,13 +42,13 @@ namespace octave
   tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
                               bool pr_orig_text)
   {
-    os << ((pr_as_read_syntax || pr_orig_text) ? "@" : "") << nm;
+    os << ((pr_as_read_syntax || pr_orig_text) ? "@" : "") << m_name;
   }
 
   tree_expression *
   tree_fcn_handle::dup (symbol_scope&) const
   {
-    tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
+    tree_fcn_handle *new_fh = new tree_fcn_handle (m_name, line (), column ());
 
     new_fh->copy_base (*this);
 

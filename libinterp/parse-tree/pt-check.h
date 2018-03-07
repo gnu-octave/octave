@@ -40,7 +40,7 @@ namespace octave
   public:
 
     tree_checker (void)
-      : do_lvalue_check (false), file_name () { }
+      : m_do_lvalue_check (false), m_file_name () { }
 
     // No copying!
 
@@ -134,9 +134,9 @@ namespace octave
 
   private:
 
-    bool do_lvalue_check;
+    bool m_do_lvalue_check;
 
-    std::string file_name;
+    std::string m_file_name;
 
     OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
   };

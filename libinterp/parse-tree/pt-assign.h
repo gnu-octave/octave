@@ -49,8 +49,9 @@ namespace octave
 
     tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
                             octave_value::assign_op t = octave_value::op_asn_eq)
-      : tree_expression (l, c), lhs (nullptr), rhs (nullptr), preserve (plhs),
-        ans_ass (), etype (t) { }
+      : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr),
+        m_preserve (plhs), m_ans_assign (), m_etype (t)
+    { }
 
     tree_simple_assignment (tree_expression *le, tree_expression *re,
                             bool plhs = false, int l = -1, int c = -1,
@@ -64,7 +65,7 @@ namespace octave
 
     ~tree_simple_assignment (void);
 
-    bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
+    bool has_magic_end (void) const { return (m_rhs && m_rhs->has_magic_end ()); }
 
     bool rvalue_ok (void) const { return true; }
 
@@ -72,9 +73,9 @@ namespace octave
 
     std::string oper (void) const;
 
-    tree_expression * left_hand_side (void) { return lhs; }
+    tree_expression * left_hand_side (void) { return m_lhs; }
 
-    tree_expression * right_hand_side (void) { return rhs; }
+    tree_expression * right_hand_side (void) { return m_rhs; }
 
     tree_expression * dup (symbol_scope& scope) const;
 
@@ -83,7 +84,7 @@ namespace octave
       tw.visit_simple_assignment (*this);
     }
 
-    octave_value::assign_op op_type (void) const { return etype; }
+    octave_value::assign_op op_type (void) const { return m_etype; }
 
   private:
 
@@ -93,19 +94,19 @@ namespace octave
     void do_assign (octave_lvalue& ult, const octave_value& rhs_val);
 
     // The left hand side of the assignment.
-    tree_expression *lhs;
+    tree_expression *m_lhs;
 
     // The right hand side of the assignment.
-    tree_expression *rhs;
+    tree_expression *m_rhs;
 
     // True if we should not delete the lhs.
-    bool preserve;
+    bool m_preserve;
 
     // True if this is an assignment to the automatic variable ans.
-    bool ans_ass;
+    bool m_ans_assign;
 
     // The type of the expression.
-    octave_value::assign_op etype;
+    octave_value::assign_op m_etype;
   };
 
   // Multi-valued assignment expressions.
@@ -115,8 +116,9 @@ namespace octave
   public:
 
     tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
-      : tree_expression (l, c), lhs (nullptr), rhs (nullptr), preserve (plhs)
-      { }
+      : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr),
+        m_preserve (plhs)
+    { }
 
     tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
                            bool plhs = false, int l = -1, int c = -1);
@@ -129,7 +131,10 @@ namespace octave
 
     ~tree_multi_assignment (void);
 
-    bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
+    bool has_magic_end (void) const
+    {
+      return (m_rhs && m_rhs->has_magic_end ());
+    }
 
     bool is_assignment_expression (void) const { return true; }
 
@@ -137,9 +142,9 @@ namespace octave
 
     std::string oper (void) const;
 
-    tree_argument_list * left_hand_side (void) { return lhs; }
+    tree_argument_list * left_hand_side (void) { return m_lhs; }
 
-    tree_expression * right_hand_side (void) { return rhs; }
+    tree_expression * right_hand_side (void) { return m_rhs; }
 
     tree_expression * dup (symbol_scope& scope) const;
 
@@ -149,18 +154,20 @@ namespace octave
     }
 
     octave_value::assign_op op_type (void) const
-    { return octave_value::op_asn_eq; }
+    {
+      return octave_value::op_asn_eq;
+    }
 
   private:
 
     // The left hand side of the assignment.
-    tree_argument_list *lhs;
+    tree_argument_list *m_lhs;
 
     // The right hand side of the assignment.
-    tree_expression *rhs;
+    tree_expression *m_rhs;
 
     // True if we should not delete the lhs.
-    bool preserve;
+    bool m_preserve;
   };
 }
 

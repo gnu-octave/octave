@@ -51,11 +51,11 @@ namespace octave
   public:
 
     tree_identifier (int l = -1, int c = -1)
-      : tree_expression (l, c) { }
+      : tree_expression (l, c), m_sym () { }
 
     tree_identifier (const symbol_record& s,
                      int l = -1, int c = -1)
-      : tree_expression (l, c), sym (s) { }
+      : tree_expression (l, c), m_sym (s) { }
 
     // No copying!
 
@@ -69,16 +69,16 @@ namespace octave
 
     bool is_identifier (void) const { return true; }
 
-    std::string name (void) const { return sym.name (); }
+    std::string name (void) const { return m_sym.name (); }
 
     bool is_defined (symbol_record::context_id context)
     {
-      return sym.is_defined (context);
+      return m_sym.is_defined (context);
     }
 
     virtual bool is_variable (symbol_record::context_id context) const
     {
-      return sym.is_variable (context);
+      return m_sym.is_variable (context);
     }
 
     virtual bool is_black_hole (void) { return false; }
@@ -102,15 +102,15 @@ namespace octave
     do_lookup (symbol_record::context_id context,
                const octave_value_list& args = octave_value_list ())
     {
-      return sym.find (context, args);
+      return m_sym.find (context, args);
     }
 
     void link_to_global (const symbol_scope& global_scope,
                          const symbol_record& global_sym);
 
-    void mark_persistent (void) { sym.init_persistent (); }
+    void mark_persistent (void) { m_sym.init_persistent (); }
 
-    void mark_as_formal_parameter (void) { sym.mark_formal (); }
+    void mark_as_formal_parameter (void) { m_sym.mark_formal (); }
 
     // We really need to know whether this symbol referst to a variable
     // or a function, but we may not know that yet.
@@ -134,15 +134,12 @@ namespace octave
       tw.visit_identifier (*this);
     }
 
-    symbol_record symbol (void) const
-    {
-      return sym;
-    }
+    symbol_record symbol (void) const { return m_sym; }
 
   private:
 
     // The symbol record that this identifier references.
-    symbol_record sym;
+    symbol_record m_sym;
   };
 
   class tree_black_hole : public tree_identifier

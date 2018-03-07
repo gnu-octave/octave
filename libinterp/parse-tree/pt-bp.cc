@@ -37,10 +37,10 @@ namespace octave
   void
   tree_breakpoint::visit_while_command (tree_while_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
 
-    if (! found)
+    if (! m_found)
       {
         tree_statement_list *lst = cmd.body ();
 
@@ -52,16 +52,16 @@ namespace octave
   void
   tree_breakpoint::visit_do_until_command (tree_do_until_command& cmd)
   {
-    if (! found)
+    if (! m_found)
       {
         tree_statement_list *lst = cmd.body ();
 
         if (lst)
           lst->accept (*this);
 
-        if (! found)
+        if (! m_found)
           {
-            if (cmd.line () >= line)
+            if (cmd.line () >= m_line)
               take_action (cmd);
           }
       }
@@ -82,7 +82,7 @@ namespace octave
   void
   tree_breakpoint::visit_break_command (tree_break_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
   }
 
@@ -95,14 +95,14 @@ namespace octave
   void
   tree_breakpoint::visit_continue_command (tree_continue_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
   }
 
   void
   tree_breakpoint::visit_decl_command (tree_decl_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
   }
 
@@ -121,10 +121,10 @@ namespace octave
   void
   tree_breakpoint::visit_simple_for_command (tree_simple_for_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
 
-    if (! found)
+    if (! m_found)
       {
         tree_statement_list *lst = cmd.body ();
 
@@ -136,10 +136,10 @@ namespace octave
   void
   tree_breakpoint::visit_complex_for_command (tree_complex_for_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
 
-    if (! found)
+    if (! m_found)
       {
         tree_statement_list *lst = cmd.body ();
 
@@ -215,10 +215,10 @@ namespace octave
   {
     for (tree_if_clause *t : lst)
       {
-        if (t->line () >= line)
+        if (t->line () >= m_line)
           take_action (*t);
 
-        if (! found)
+        if (! m_found)
           {
             tree_statement_list *stmt_lst = t->commands ();
 
@@ -226,7 +226,7 @@ namespace octave
               stmt_lst->accept (*this);
           }
 
-        if (found)
+        if (m_found)
           break;
       }
   }
@@ -258,7 +258,7 @@ namespace octave
   void
   tree_breakpoint::visit_no_op_command (tree_no_op_command& cmd)
   {
-    if (cmd.is_end_of_fcn_or_script () && cmd.line () >= line)
+    if (cmd.is_end_of_fcn_or_script () && cmd.line () >= m_line)
       take_action (cmd);
   }
 
@@ -307,7 +307,7 @@ namespace octave
   void
   tree_breakpoint::visit_return_command (tree_return_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
   }
 
@@ -334,7 +334,7 @@ namespace octave
       }
     else
       {
-        if (stmt.line () >= line)
+        if (stmt.line () >= m_line)
           take_action (stmt);
       }
   }
@@ -351,7 +351,7 @@ namespace octave
           {
             elt->accept (*this);
 
-            if (found)
+            if (m_found)
               break;
           }
       }
@@ -368,10 +368,10 @@ namespace octave
   {
     for (tree_switch_case *t : lst)
       {
-        if (t->line () >= line)
+        if (t->line () >= m_line)
           take_action (*t);
 
-        if (! found)
+        if (! m_found)
           {
             tree_statement_list *stmt_lst = t->commands ();
 
@@ -379,7 +379,7 @@ namespace octave
               stmt_lst->accept (*this);
           }
 
-        if (found)
+        if (m_found)
           break;
       }
   }
@@ -387,10 +387,10 @@ namespace octave
   void
   tree_breakpoint::visit_switch_command (tree_switch_command& cmd)
   {
-    if (cmd.line () >= line)
+    if (cmd.line () >= m_line)
       take_action (cmd);
 
-    if (! found)
+    if (! m_found)
       {
         tree_switch_case_list *lst = cmd.case_list ();
 
@@ -407,7 +407,7 @@ namespace octave
     if (try_code)
       try_code->accept (*this);
 
-    if (! found)
+    if (! m_found)
       {
         tree_statement_list *catch_code = cmd.cleanup ();
 
@@ -424,7 +424,7 @@ namespace octave
     if (body)
       body->accept (*this);
 
-    if (! found)
+    if (! m_found)
       {
         tree_statement_list *cleanup = cmd.cleanup ();
 
@@ -436,26 +436,26 @@ namespace octave
   void
   tree_breakpoint::take_action (tree& tr)
   {
-    if (act == set)
+    if (m_action == set)
       {
-        tr.set_breakpoint (condition);
-        line = tr.line ();
-        found = true;
+        tr.set_breakpoint (m_condition);
+        m_line = tr.line ();
+        m_found = true;
       }
-    else if (act == clear)
+    else if (m_action == clear)
       {
         if (tr.is_breakpoint ())
           {
             tr.delete_breakpoint ();
-            found = true;
+            m_found = true;
           }
       }
-    else if (act == list)
+    else if (m_action == list)
       {
         if (tr.is_breakpoint ())
           {
-            bp_list.append (octave_value (tr.line ()));
-            bp_cond_list.append (octave_value (tr.bp_cond ()));
+            m_bp_list.append (octave_value (tr.line ()));
+            m_bp_cond_list.append (octave_value (tr.bp_cond ()));
           }
       }
     else
@@ -467,26 +467,26 @@ namespace octave
   {
     int lineno = stmt.line ();
 
-    if (act == set)
+    if (m_action == set)
       {
-        stmt.set_breakpoint (condition);
-        line = lineno;
-        found = true;
+        stmt.set_breakpoint (m_condition);
+        m_line = lineno;
+        m_found = true;
       }
-    else if (act == clear)
+    else if (m_action == clear)
       {
         if (stmt.is_breakpoint ())
           {
             stmt.delete_breakpoint ();
-            found = true;
+            m_found = true;
           }
       }
-    else if (act == list)
+    else if (m_action == list)
       {
         if (stmt.is_breakpoint ())
           {
-            bp_list.append (octave_value (lineno));
-            bp_cond_list.append (octave_value (stmt.bp_cond ()));
+            m_bp_list.append (octave_value (lineno));
+            m_bp_cond_list.append (octave_value (stmt.bp_cond ()));
           }
       }
     else

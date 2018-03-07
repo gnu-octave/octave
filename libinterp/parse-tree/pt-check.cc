@@ -42,7 +42,7 @@ namespace octave
 
         if (elt)
           {
-            if (do_lvalue_check && ! elt->lvalue_ok ())
+            if (m_do_lvalue_check && ! elt->lvalue_ok ())
               errmsg ("invalid lvalue in multiple assignment", elt->line ());
           }
       }
@@ -166,11 +166,11 @@ namespace octave
           errmsg ("invalid number of output arguments in for command",
                   cmd.line ());
 
-        do_lvalue_check = true;
+        m_do_lvalue_check = true;
 
         lhs->accept (*this);
 
-        do_lvalue_check = false;
+        m_do_lvalue_check = false;
       }
 
     tree_expression *expr = cmd.control_expr ();
@@ -310,11 +310,11 @@ namespace octave
 
     if (lhs)
       {
-        do_lvalue_check = true;
+        m_do_lvalue_check = true;
 
         lhs->accept (*this);
 
-        do_lvalue_check = false;
+        m_do_lvalue_check = false;
       }
 
     tree_expression *rhs = expr.right_hand_side ();
@@ -546,9 +546,9 @@ namespace octave
   void
   tree_checker::errmsg (const std::string& msg, int line)
   {
-    if (file_name.empty ())
+    if (m_file_name.empty ())
       error ("%s", msg.c_str ());
     else
-      error ("%s: %d: %s", file_name.c_str (), line, msg.c_str ());
+      error ("%s: %d: %s", m_file_name.c_str (), line, msg.c_str ());
   }
 }

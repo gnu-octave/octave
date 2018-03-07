@@ -40,22 +40,22 @@ namespace octave
                      "Matlab-style short-circuit operation performed for operator %s",
                      op);
 
-    braindead_shortcircuit_warning_issued = true;
+    m_braindead_shortcircuit_warning_issued = true;
   }
 
   std::string
   tree_binary_expression::oper (void) const
   {
-    return octave_value::binary_op_as_string (etype);
+    return octave_value::binary_op_as_string (m_etype);
   }
 
   tree_expression *
   tree_binary_expression::dup (symbol_scope& scope) const
   {
     tree_binary_expression *new_be
-      = new tree_binary_expression (op_lhs ? op_lhs->dup (scope) : nullptr,
-                                    op_rhs ? op_rhs->dup (scope) : nullptr,
-                                    line (), column (), etype);
+      = new tree_binary_expression (m_lhs ? m_lhs->dup (scope) : nullptr,
+                                    m_rhs ? m_rhs->dup (scope) : nullptr,
+                                    line (), column (), m_etype);
 
     new_be->copy_base (*this);
 
@@ -69,7 +69,7 @@ namespace octave
   {
     std::string retval = "<unknown>";
 
-    switch (etype)
+    switch (m_etype)
       {
       case bool_and:
         retval = "&&";
@@ -90,9 +90,9 @@ namespace octave
   tree_boolean_expression::dup (symbol_scope& scope) const
   {
     tree_boolean_expression *new_be
-      = new tree_boolean_expression (op_lhs ? op_lhs->dup (scope) : nullptr,
-                                     op_rhs ? op_rhs->dup (scope) : nullptr,
-                                     line (), column (), etype);
+      = new tree_boolean_expression (m_lhs ? m_lhs->dup (scope) : nullptr,
+                                     m_rhs ? m_rhs->dup (scope) : nullptr,
+                                     line (), column (), m_etype);
 
     new_be->copy_base (*this);
 

@@ -45,10 +45,10 @@ namespace octave
   public:
 
     tree_while_command (int l = -1, int c = -1)
-      : tree_command (l, c), expr (nullptr), list (nullptr),
-        lead_comm (nullptr), trail_comm (nullptr)
+      : tree_command (l, c), m_expr (nullptr), m_list (nullptr),
+        m_lead_comm (nullptr), m_trail_comm (nullptr)
 #if defined (HAVE_LLVM)
-      , compiled (nullptr)
+      , m_compiled (nullptr)
 #endif
     { }
 
@@ -56,10 +56,10 @@ namespace octave
                         comment_list *lc = nullptr,
                         comment_list *tc = nullptr,
                         int l = -1, int c = -1)
-      : tree_command (l, c), expr (e), list (nullptr),
-        lead_comm (lc), trail_comm (tc)
+      : tree_command (l, c), m_expr (e), m_list (nullptr),
+        m_lead_comm (lc), m_trail_comm (tc)
 #if defined (HAVE_LLVM)
-      , compiled (nullptr)
+      , m_compiled (nullptr)
 #endif
     { }
 
@@ -67,10 +67,10 @@ namespace octave
                         comment_list *lc = nullptr,
                         comment_list *tc = nullptr,
                         int l = -1, int c = -1)
-      : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
-        trail_comm (tc)
+      : tree_command (l, c), m_expr (e), m_list (lst), m_lead_comm (lc),
+        m_trail_comm (tc)
 #if defined (HAVE_LLVM)
-      , compiled (nullptr)
+      , m_compiled (nullptr)
 #endif
     { }
 
@@ -82,13 +82,13 @@ namespace octave
 
     ~tree_while_command (void);
 
-    tree_expression * condition (void) { return expr; }
+    tree_expression * condition (void) { return m_expr; }
 
-    tree_statement_list * body (void) { return list; }
+    tree_statement_list * body (void) { return m_list; }
 
-    comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return m_lead_comm; }
 
-    comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return m_trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -97,36 +97,30 @@ namespace octave
 
 #if defined (HAVE_LLVM)
     // some functions use by tree_jit
-    jit_info * get_info (void) const
-    {
-      return compiled;
-    }
+    jit_info * get_info (void) const { return m_compiled; }
 
-    void stash_info (jit_info *jinfo)
-    {
-      compiled = jinfo;
-    }
+    void stash_info (jit_info *jinfo) { m_compiled = jinfo; }
 #endif
 
   protected:
 
     // Expression to test.
-    tree_expression *expr;
+    tree_expression *m_expr;
 
     // List of commands to execute.
-    tree_statement_list *list;
+    tree_statement_list *m_list;
 
     // Comment preceding WHILE token.
-    comment_list *lead_comm;
+    comment_list *m_lead_comm;
 
     // Comment preceding ENDWHILE token.
-    comment_list *trail_comm;
+    comment_list *m_trail_comm;
 
   private:
 
 #if defined (HAVE_LLVM)
     // compiled version of the loop
-    jit_info *compiled;
+    jit_info *m_compiled;
 #endif
   };
 
@@ -137,19 +131,22 @@ namespace octave
   public:
 
     tree_do_until_command (int l = -1, int c = -1)
-      : tree_while_command (l, c) { }
+      : tree_while_command (l, c)
+    { }
 
     tree_do_until_command (tree_expression *e,
                            comment_list *lc = nullptr,
                            comment_list *tc = nullptr,
                            int l = -1, int c = -1)
-      : tree_while_command (e, lc, tc, l, c) { }
+      : tree_while_command (e, lc, tc, l, c)
+    { }
 
     tree_do_until_command (tree_expression *e, tree_statement_list *lst,
                            comment_list *lc = nullptr,
                            comment_list *tc = nullptr,
                            int l = -1, int c = -1)
-      : tree_while_command (e, lst, lc, tc, l, c) { }
+      : tree_while_command (e, lst, lc, tc, l, c)
+    { }
 
     // No copying!
 
@@ -172,11 +169,11 @@ namespace octave
   public:
 
     tree_simple_for_command (int l = -1, int c = -1)
-      : tree_command (l, c), parallel (false), lhs (nullptr), expr (nullptr),
-        maxproc (nullptr), list (nullptr), lead_comm (nullptr),
-        trail_comm (nullptr)
+      : tree_command (l, c), m_parallel (false), m_lhs (nullptr),
+        m_expr (nullptr), m_maxproc (nullptr), m_list (nullptr),
+        m_lead_comm (nullptr), m_trail_comm (nullptr)
 #if defined (HAVE_LLVM)
-      , compiled (nullptr)
+      , m_compiled (nullptr)
 #endif
     { }
 
@@ -187,11 +184,11 @@ namespace octave
                              comment_list *lc = nullptr,
                              comment_list *tc = nullptr,
                              int l = -1, int c = -1)
-      : tree_command (l, c), parallel (parallel_arg), lhs (le),
-        expr (re), maxproc (maxproc_arg), list (lst),
-        lead_comm (lc), trail_comm (tc)
+      : tree_command (l, c), m_parallel (parallel_arg), m_lhs (le),
+        m_expr (re), m_maxproc (maxproc_arg), m_list (lst),
+        m_lead_comm (lc), m_trail_comm (tc)
 #if defined (HAVE_LLVM)
-      , compiled (0)
+      , m_compiled (0)
 #endif
     { }
 
@@ -203,19 +200,19 @@ namespace octave
 
     ~tree_simple_for_command (void);
 
-    bool in_parallel (void) { return parallel; }
+    bool in_parallel (void) { return m_parallel; }
 
-    tree_expression * left_hand_side (void) { return lhs; }
+    tree_expression * left_hand_side (void) { return m_lhs; }
 
-    tree_expression * control_expr (void) { return expr; }
+    tree_expression * control_expr (void) { return m_expr; }
 
-    tree_expression * maxproc_expr (void) { return maxproc; }
+    tree_expression * maxproc_expr (void) { return m_maxproc; }
 
-    tree_statement_list * body (void) { return list; }
+    tree_statement_list * body (void) { return m_list; }
 
-    comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return m_lead_comm; }
 
-    comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return m_trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -226,42 +223,42 @@ namespace octave
     // some functions use by tree_jit
     jit_info * get_info (void) const
     {
-      return compiled;
+      return m_compiled;
     }
 
     void stash_info (jit_info *jinfo)
     {
-      compiled = jinfo;
+      m_compiled = jinfo;
     }
 #endif
 
   private:
     // TRUE means operate in parallel (subject to the value of the
     // maxproc expression).
-    bool parallel;
+    bool m_parallel;
 
     // Expression to modify.
-    tree_expression *lhs;
+    tree_expression *m_lhs;
 
     // Expression to evaluate.
-    tree_expression *expr;
+    tree_expression *m_expr;
 
     // Expression to tell how many processors should be used (only valid
     // if parallel is TRUE).
-    tree_expression *maxproc;
+    tree_expression *m_maxproc;
 
     // List of commands to execute.
-    tree_statement_list *list;
+    tree_statement_list *m_list;
 
     // Comment preceding FOR token.
-    comment_list *lead_comm;
+    comment_list *m_lead_comm;
 
     // Comment preceding ENDFOR token.
-    comment_list *trail_comm;
+    comment_list *m_trail_comm;
 
 #if defined (HAVE_LLVM)
     // compiled version of the loop
-    jit_info *compiled;
+    jit_info *m_compiled;
 #endif
   };
 
@@ -270,16 +267,18 @@ namespace octave
   public:
 
     tree_complex_for_command (int l = -1, int c = -1)
-      : tree_command (l, c), lhs (nullptr), expr (nullptr), list (nullptr),
-        lead_comm (nullptr), trail_comm (nullptr) { }
+      : tree_command (l, c), m_lhs (nullptr), m_expr (nullptr),
+        m_list (nullptr), m_lead_comm (nullptr), m_trail_comm (nullptr)
+    { }
 
     tree_complex_for_command (tree_argument_list *le, tree_expression *re,
                               tree_statement_list *lst,
                               comment_list *lc = nullptr,
                               comment_list *tc = nullptr,
                               int l = -1, int c = -1)
-      : tree_command (l, c), lhs (le), expr (re), list (lst),
-        lead_comm (lc), trail_comm (tc) { }
+      : tree_command (l, c), m_lhs (le), m_expr (re), m_list (lst),
+        m_lead_comm (lc), m_trail_comm (tc)
+    { }
 
     // No copying!
 
@@ -289,15 +288,15 @@ namespace octave
 
     ~tree_complex_for_command (void);
 
-    tree_argument_list * left_hand_side (void) { return lhs; }
+    tree_argument_list * left_hand_side (void) { return m_lhs; }
 
-    tree_expression * control_expr (void) { return expr; }
+    tree_expression * control_expr (void) { return m_expr; }
 
-    tree_statement_list * body (void) { return list; }
+    tree_statement_list * body (void) { return m_list; }
 
-    comment_list * leading_comment (void) { return lead_comm; }
+    comment_list * leading_comment (void) { return m_lead_comm; }
 
-    comment_list * trailing_comment (void) { return trail_comm; }
+    comment_list * trailing_comment (void) { return m_trail_comm; }
 
     void accept (tree_walker& tw)
     {
@@ -307,19 +306,19 @@ namespace octave
   private:
 
     // Expression to modify.
-    tree_argument_list *lhs;
+    tree_argument_list *m_lhs;
 
     // Expression to evaluate.
-    tree_expression *expr;
+    tree_expression *m_expr;
 
     // List of commands to execute.
-    tree_statement_list *list;
+    tree_statement_list *m_list;
 
     // Comment preceding FOR token.
-    comment_list *lead_comm;
+    comment_list *m_lead_comm;
 
     // Comment preceding ENDFOR token.
-    comment_list *trail_comm;
+    comment_list *m_trail_comm;
   };
 }
 

@@ -34,9 +34,9 @@ namespace octave
   tree_colon_expression::dup (symbol_scope& scope) const
   {
     tree_colon_expression *new_ce
-      = new tree_colon_expression (op_base ? op_base->dup (scope) : nullptr,
-                                   op_limit ? op_limit->dup (scope) : nullptr,
-                                   op_increment ? op_increment->dup (scope) : nullptr,
+      = new tree_colon_expression (m_base ? m_base->dup (scope) : nullptr,
+                                   m_limit ? m_limit->dup (scope) : nullptr,
+                                   m_increment ? m_increment->dup (scope) : nullptr,
                                    line (), column ());
 
     new_ce->copy_base (*new_ce);

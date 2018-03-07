@@ -51,13 +51,13 @@ namespace octave
       };
 
     tree_parameter_list (void)
-      : marked_for_varargs (0) { }
+      : m_marked_for_varargs (0) { }
 
     tree_parameter_list (tree_decl_elt *t)
-      : marked_for_varargs (0) { append (t); }
+      : m_marked_for_varargs (0) { append (t); }
 
     tree_parameter_list (tree_identifier *id)
-      : marked_for_varargs (0) { append (new tree_decl_elt (id)); }
+      : m_marked_for_varargs (0) { append (new tree_decl_elt (id)); }
 
     // No copying!
 
@@ -69,13 +69,13 @@ namespace octave
 
     void mark_as_formal_parameters (void);
 
-    void mark_varargs (void) { marked_for_varargs = 1; }
+    void mark_varargs (void) { m_marked_for_varargs = 1; }
 
-    void mark_varargs_only (void) { marked_for_varargs = -1; }
+    void mark_varargs_only (void) { m_marked_for_varargs = -1; }
 
-    bool takes_varargs (void) const { return marked_for_varargs != 0; }
+    bool takes_varargs (void) const { return m_marked_for_varargs != 0; }
 
-    bool varargs_only (void) { return (marked_for_varargs < 0); }
+    bool varargs_only (void) { return (m_marked_for_varargs < 0); }
 
     bool is_defined (symbol_record::context_id context);
 
@@ -90,7 +90,7 @@ namespace octave
 
   private:
 
-    int marked_for_varargs;
+    int m_marked_for_varargs;
   };
 
   // Return lists.  Used to hold the right hand sides of multiple

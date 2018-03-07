@@ -42,7 +42,8 @@ namespace octave
   public:
 
     tree (int l = -1, int c = -1)
-      : line_num (l), column_num (c), bp (nullptr) { }
+      : m_line_num (l), m_column_num (c), m_bp_cond (nullptr)
+    { }
 
     // No copying!
 
@@ -52,39 +53,51 @@ namespace octave
 
     virtual ~tree (void) = default;
 
-    virtual int line (void) const { return line_num; }
+    virtual int line (void) const { return m_line_num; }
 
-    virtual int column (void) const { return column_num; }
+    virtual int column (void) const { return m_column_num; }
 
-    void line (int l) { line_num = l; }
+    void line (int l) { m_line_num = l; }
 
-    void column (int c) { column_num = c; }
+    void column (int c) { m_column_num = c; }
 
     void set_location (int l, int c)
     {
-      line_num = l;
-      column_num = c;
+      m_line_num = l;
+      m_column_num = c;
     }
 
     virtual void set_breakpoint (const std::string& condition)
     {
-      if (bp)
-        *bp = condition;
+      if (m_bp_cond)
+        *m_bp_cond = condition;
       else
-        bp = new std::string(condition);
+        m_bp_cond = new std::string (condition);
     }
 
-    virtual void delete_breakpoint (void) { if (bp) delete bp; bp = nullptr; }
+    virtual void delete_breakpoint (void)
+    {
+      if (m_bp_cond)
+        {
+          delete m_bp_cond;
+
+          m_bp_cond = nullptr;
+        }
+    }
 
     bool meets_bp_condition (void) const;
 
     bool is_breakpoint (bool check_active = false) const
-    { return bp && (! check_active || meets_bp_condition ()); }
+    {
+      return m_bp_cond && (! check_active || meets_bp_condition ());
+    }
 
     // breakpoint condition, or "0" (i.e., "false") if no breakpoint.
     // To distinguish "0" from a disabled breakpoint, test "is_breakpoint" too.
     const std::string bp_cond (void) const
-    { return bp ? *bp : "0"; }
+    {
+      return m_bp_cond ? *m_bp_cond : "0";
+    }
 
     std::string str_print_code (void);
 
@@ -94,11 +107,11 @@ namespace octave
 
     // The input line and column where we found the text that was
     // eventually converted to this tree node.
-    int line_num;
-    int column_num;
+    int m_line_num;
+    int m_column_num;
 
-    // Breakpoint flag: NULL if no breakpoint, or the condition if there is one
-    std::string *bp;
+    // NULL if no breakpoint, or a breakpoint condition if there is one.
+    std::string *m_bp_cond;
   };
 }
 

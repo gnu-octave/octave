@@ -44,6 +44,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "interpreter-private.h"
 
+// Programming Note: As of hg id 2b2c8ac44cd2, this file builds with
+// LLVM 3.8 but not with 3.9 (or probably any later version).
+
 #if defined (HAVE_LLVM)
 
 #include <llvm/Analysis/CallGraph.h>
@@ -130,7 +133,7 @@ namespace octave
 
   // -------------------- jit_convert --------------------
   jit_convert::jit_convert (tree& tee, jit_type *for_bounds)
-    : converting_function (false)
+    : m_converting_function (false)
   {
     initialize (__get_current_scope__ ("jit_convert::jit_convert"));
 
@@ -145,26 +148,26 @@ namespace octave
       { }
 
     // breaks must have been handled by the top level loop
-    assert (breaks.empty ());
-    assert (continues.empty ());
+    assert (m_breaks.empty ());
+    assert (m_continues.empty ());
 
-    block->append (factory.create<jit_branch> (final_block));
-    blocks.push_back (final_block);
+    m_block->append (m_factory.create<jit_branch> (m_final_block));
+    m_blocks.push_back (m_final_block);
 
-    for (variable_map::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
+    for (variable_map::iterator iter = m_vmap.begin (); iter != m_vmap.end (); ++iter)
       {
         jit_variable *var = iter->second;
         const std::string& name = var->name ();
         if (name.size () && name[0] != '#')
-          final_block->append (factory.create<jit_store_argument> (var));
+          m_final_block->append (m_factory.create<jit_store_argument> (var));
       }
 
-    final_block->append (factory.create<jit_return> ());
+    m_final_block->append (m_factory.create<jit_return> ());
   }
 
   jit_convert::jit_convert (octave_user_function& fcn,
                             const std::vector<jit_type *>& args)
-    : converting_function (true)
+    : m_converting_function (true)
   {
     initialize (fcn.scope ());
 
@@ -206,11 +209,11 @@ namespace octave
             catch (const jit_break_exception&)
               { }
 
-            if (breaks.size () || continues.size ())
+            if (m_breaks.size () || m_continues.size ())
               throw jit_fail_exception ("break/continue not supported in "
                                         "anonymous functions");
 
-            block->append (factory.create<jit_assign> (retvar, retval));
+            m_block->append (m_factory.create<jit_assign> (retvar, retval));
             return_value = retvar;
           }
       }
@@ -226,15 +229,15 @@ namespace octave
           }
 
         // the user may use break or continue to exit the function
-        finish_breaks (final_block, continues);
-        finish_breaks (final_block, breaks);
+        finish_breaks (m_final_block, m_continues);
+        finish_breaks (m_final_block, m_breaks);
       }
 
     if (! all_breaking)
-      block->append (factory.create<jit_branch> (final_block));
+      m_block->append (m_factory.create<jit_branch> (m_final_block));
 
-    blocks.push_back (final_block);
-    block = final_block;
+    m_blocks.push_back (m_final_block);
+    m_block = m_final_block;
 
     if (! return_value && rlist && rlist->size () == 1)
       {
@@ -244,21 +247,21 @@ namespace octave
 
     // FIXME: We should use live range analysis to delete variables where needed.
     // For now we just delete everything at the end of the function.
-    for (variable_map::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
+    for (variable_map::iterator iter = m_vmap.begin (); iter != m_vmap.end (); ++iter)
       {
         if (iter->second != return_value)
           {
             jit_call *call;
-            call = factory.create<jit_call> (&jit_typeinfo::destroy,
+            call = m_factory.create<jit_call> (&jit_typeinfo::destroy,
                                              iter->second);
-            final_block->append (call);
+            m_final_block->append (call);
           }
       }
 
     if (return_value)
-      final_block->append (factory.create<jit_return> (return_value));
+      m_final_block->append (m_factory.create<jit_return> (return_value));
     else
-      final_block->append (factory.create<jit_return> ());
+      m_final_block->append (m_factory.create<jit_return> ());
   }
 
   void
@@ -283,7 +286,7 @@ namespace octave
     jit_value *rhsv = visit (rhs);
 
     const jit_operation& fn = jit_typeinfo::binary_op (be.op_type ());
-    result = create_checked (fn, lhsv, rhsv);
+    m_result = create_checked (fn, lhsv, rhsv);
   }
 
   void
@@ -292,50 +295,50 @@ namespace octave
     bool is_and = be.op_type () == tree_boolean_expression::bool_and;
 
     std::string short_name = next_shortcircut_result ();
-    jit_variable *short_result = factory.create<jit_variable> (short_name);
-    vmap[short_name] = short_result;
+    jit_variable *short_result = m_factory.create<jit_variable> (short_name);
+    m_vmap[short_name] = short_result;
 
-    jit_block *done = factory.create<jit_block> (block->name ());
+    jit_block *done = m_factory.create<jit_block> (m_block->name ());
     tree_expression *lhs = be.lhs ();
     jit_value *lhsv = visit (lhs);
     lhsv = create_checked (&jit_typeinfo::logically_true, lhsv);
 
-    jit_block *short_early = factory.create<jit_block> ("short_early");
-    blocks.push_back (short_early);
+    jit_block *short_early = m_factory.create<jit_block> ("short_early");
+    m_blocks.push_back (short_early);
 
-    jit_block *short_cont = factory.create<jit_block> ("short_cont");
+    jit_block *short_cont = m_factory.create<jit_block> ("short_cont");
 
     if (is_and)
-      block->append (factory.create<jit_cond_branch> (lhsv, short_cont,
+      m_block->append (m_factory.create<jit_cond_branch> (lhsv, short_cont,
                                                       short_early));
     else
-      block->append (factory.create<jit_cond_branch> (lhsv, short_early,
+      m_block->append (m_factory.create<jit_cond_branch> (lhsv, short_early,
                                                       short_cont));
 
-    block = short_early;
+    m_block = short_early;
 
-    jit_value *early_result = factory.create<jit_const_bool> (! is_and);
-    block->append (factory.create<jit_assign> (short_result, early_result));
-    block->append (factory.create<jit_branch> (done));
+    jit_value *early_result = m_factory.create<jit_const_bool> (! is_and);
+    m_block->append (m_factory.create<jit_assign> (short_result, early_result));
+    m_block->append (m_factory.create<jit_branch> (done));
 
-    blocks.push_back (short_cont);
-    block = short_cont;
+    m_blocks.push_back (short_cont);
+    m_block = short_cont;
 
     tree_expression *rhs = be.rhs ();
     jit_value *rhsv = visit (rhs);
     rhsv = create_checked (&jit_typeinfo::logically_true, rhsv);
-    block->append (factory.create<jit_assign> (short_result, rhsv));
-    block->append (factory.create<jit_branch> (done));
+    m_block->append (m_factory.create<jit_assign> (short_result, rhsv));
+    m_block->append (m_factory.create<jit_branch> (done));
 
-    blocks.push_back (done);
-    block = done;
-    result = short_result;
+    m_blocks.push_back (done);
+    m_block = done;
+    m_result = short_result;
   }
 
   void
   jit_convert::visit_break_command (tree_break_command&)
   {
-    breaks.push_back (block);
+    m_breaks.push_back (m_block);
     throw jit_break_exception ();
   }
 
@@ -351,16 +354,16 @@ namespace octave
     if (tinc)
       increment = visit (tinc);
     else
-      increment = factory.create<jit_const_scalar> (1);
+      increment = m_factory.create<jit_const_scalar> (1);
 
-    result = block->append (factory.create<jit_call> (jit_typeinfo::make_range,
+    m_result = m_block->append (m_factory.create<jit_call> (jit_typeinfo::make_range,
                                                       base, limit, increment));
   }
 
   void
   jit_convert::visit_continue_command (tree_continue_command&)
   {
-    continues.push_back (block);
+    m_continues.push_back (m_block);
     throw jit_break_exception ();
   }
 
@@ -391,42 +394,42 @@ void
 
     // If we are a nested for loop we need to store the previous breaks
     unwind_protect frame;
-    frame.protect_var (breaks);
-    frame.protect_var (continues);
-    breaks.clear ();
-    continues.clear ();
+    frame.protect_var (m_breaks);
+    frame.protect_var (m_continues);
+    m_breaks.clear ();
+    m_continues.clear ();
 
     // we need a variable for our iterator, because it is used in multiple blocks
     std::string iter_name = next_iterator ();
-    jit_variable *iterator = factory.create<jit_variable> (iter_name);
-    factory.create<jit_variable> (iter_name);
-    vmap[iter_name] = iterator;
+    jit_variable *iterator = m_factory.create<jit_variable> (iter_name);
+    m_factory.create<jit_variable> (iter_name);
+    m_vmap[iter_name] = iterator;
 
-    jit_block *body = factory.create<jit_block> ("for_body");
-    jit_block *tail = factory.create<jit_block> ("for_tail");
+    jit_block *body = m_factory.create<jit_block> ("for_body");
+    jit_block *tail = m_factory.create<jit_block> ("for_tail");
 
     // do control expression, iter init, and condition check in prev_block (block)
     // if we are the top level for loop, the bounds is an input argument.
     jit_value *control = find_variable (next_for_bounds ());
     if (! control)
       control = visit (cmd.control_expr ());
-    jit_call *init_iter = factory.create<jit_call> (jit_typeinfo::for_init,
+    jit_call *init_iter = m_factory.create<jit_call> (jit_typeinfo::for_init,
                                                     control);
-    block->append (init_iter);
-    block->append (factory.create<jit_assign> (iterator, init_iter));
+    m_block->append (init_iter);
+    m_block->append (m_factory.create<jit_assign> (iterator, init_iter));
 
-    jit_call *check = factory.create<jit_call> (jit_typeinfo::for_check, control,
+    jit_call *check = m_factory.create<jit_call> (jit_typeinfo::for_check, control,
                                                 iterator);
-    block->append (check);
-    block->append (factory.create<jit_cond_branch> (check, body, tail));
+    m_block->append (check);
+    m_block->append (m_factory.create<jit_cond_branch> (check, body, tail));
 
-    blocks.push_back (body);
-    block = body;
+    m_blocks.push_back (body);
+    m_block = body;
 
     // compute the syntactical iterator
-    jit_call *idx_rhs = factory.create<jit_call> (jit_typeinfo::for_index,
+    jit_call *idx_rhs = m_factory.create<jit_call> (jit_typeinfo::for_index,
                                                   control, iterator);
-    block->append (idx_rhs);
+    m_block->append (idx_rhs);
     do_assign (cmd.left_hand_side (), idx_rhs);
 
     // do loop
@@ -438,13 +441,13 @@ void
       }
     catch (const jit_break_exception&)
       {
-        if (continues.empty ())
+        if (m_continues.empty ())
           {
             // WTF are you doing user? Every branch was a break, why did you have
             // a loop??? Users are silly people...
-            finish_breaks (tail, breaks);
-            blocks.push_back (tail);
-            block = tail;
+            finish_breaks (tail, m_breaks);
+            m_blocks.push_back (tail);
+            m_block = tail;
             return;
           }
 
@@ -452,37 +455,37 @@ void
       }
 
     // check our condition, continues jump to this block
-    jit_block *check_block = factory.create<jit_block> ("for_check");
-    blocks.push_back (check_block);
+    jit_block *check_block = m_factory.create<jit_block> ("for_check");
+    m_blocks.push_back (check_block);
 
-    jit_block *interrupt_check = factory.create<jit_block> ("for_interrupt");
-    blocks.push_back (interrupt_check);
+    jit_block *interrupt_check = m_factory.create<jit_block> ("for_interrupt");
+    m_blocks.push_back (interrupt_check);
 
     if (! all_breaking)
-      block->append (factory.create<jit_branch> (check_block));
-    finish_breaks (check_block, continues);
+      m_block->append (m_factory.create<jit_branch> (check_block));
+    finish_breaks (check_block, m_continues);
 
-    block = check_block;
+    m_block = check_block;
     const jit_operation& add_fn = jit_typeinfo::binary_op (octave_value::op_add);
-    jit_value *one = factory.create<jit_const_index> (1);
-    jit_call *iter_inc = factory.create<jit_call> (add_fn, iterator, one);
-    block->append (iter_inc);
-    block->append (factory.create<jit_assign> (iterator, iter_inc));
-    check = block->append (factory.create<jit_call> (jit_typeinfo::for_check,
+    jit_value *one = m_factory.create<jit_const_index> (1);
+    jit_call *iter_inc = m_factory.create<jit_call> (add_fn, iterator, one);
+    m_block->append (iter_inc);
+    m_block->append (m_factory.create<jit_assign> (iterator, iter_inc));
+    check = m_block->append (m_factory.create<jit_call> (jit_typeinfo::for_check,
                                                      control, iterator));
-    block->append (factory.create<jit_cond_branch> (check, interrupt_check,
+    m_block->append (m_factory.create<jit_cond_branch> (check, interrupt_check,
                                                     tail));
 
-    block = interrupt_check;
+    m_block = interrupt_check;
     jit_error_check *ec
-      = factory.create<jit_error_check> (jit_error_check::var_interrupt,
-                                         body, final_block);
-    block->append (ec);
+      = m_factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                         body, m_final_block);
+    m_block->append (ec);
 
     // breaks will go to our tail
-    blocks.push_back (tail);
-    finish_breaks (tail, breaks);
-    block = tail;
+    m_blocks.push_back (tail);
+    finish_breaks (tail, m_breaks);
+    m_block = tail;
   }
 
   void
@@ -526,16 +529,16 @@ void
   {
     if (ti.has_magic_end ())
       {
-        if (! end_context.size ())
+        if (! m_end_context.size ())
           throw jit_fail_exception ("Illegal end");
-        result = block->append (factory.create<jit_magic_end> (end_context));
+        m_result = m_block->append (m_factory.create<jit_magic_end> (m_end_context));
       }
     else
       {
         jit_variable *var = get_variable (ti.name ());
         jit_instruction *instr;
-        instr = factory.create<jit_call> (&jit_typeinfo::grab, var);
-        result = block->append (instr);
+        instr = m_factory.create<jit_call> (&jit_typeinfo::grab, var);
+        m_result = m_block->append (instr);
       }
   }
 
@@ -563,7 +566,7 @@ void
     // the condition check for the ith clause.  For the else, it is simple the
     // else body.  If there is no else body, then it is padded with the tail.
     std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
-    entry_blocks[0] = block;
+    entry_blocks[0] = m_block;
 
     // we need to construct blocks first, because they have jumps to each other.
     tree_if_command_list::iterator iter = lst.begin ();
@@ -572,31 +575,31 @@ void
       {
         tree_if_clause *tic = *iter;
         if (tic->is_else_clause ())
-          entry_blocks[i] = factory.create<jit_block> ("else");
+          entry_blocks[i] = m_factory.create<jit_block> ("else");
         else
-          entry_blocks[i] = factory.create<jit_block> ("ifelse_cond");
+          entry_blocks[i] = m_factory.create<jit_block> ("ifelse_cond");
       }
 
-    jit_block *tail = factory.create<jit_block> ("if_tail");
+    jit_block *tail = m_factory.create<jit_block> ("if_tail");
     if (! last_else)
       entry_blocks[entry_blocks.size () - 1] = tail;
 
     // each branch in the if statement will have different breaks/continues
-    block_list current_breaks = breaks;
-    block_list current_continues = continues;
-    breaks.clear ();
-    continues.clear ();
+    block_list current_breaks = m_breaks;
+    block_list current_continues = m_continues;
+    m_breaks.clear ();
+    m_continues.clear ();
 
     size_t num_incomming = 0; // number of incomming blocks to our tail
     iter = lst.begin ();
     for (size_t i = 0; iter != lst.end (); ++iter, ++i)
       {
         tree_if_clause *tic = *iter;
-        block = entry_blocks[i];
-        assert (block);
+        m_block = entry_blocks[i];
+        assert (m_block);
 
         if (i) // the first block is prev_block, so it has already been added
-          blocks.push_back (entry_blocks[i]);
+          m_blocks.push_back (entry_blocks[i]);
 
         if (! tic->is_else_clause ())
           {
@@ -604,14 +607,14 @@ void
             jit_value *cond = visit (expr);
             jit_call *check = create_checked (&jit_typeinfo::logically_true,
                                               cond);
-            jit_block *body = factory.create<jit_block> (i == 0 ? "if_body"
+            jit_block *body = m_factory.create<jit_block> (i == 0 ? "if_body"
                                                          : "ifelse_body");
-            blocks.push_back (body);
+            m_blocks.push_back (body);
 
-            jit_instruction *br = factory.create<jit_cond_branch> (check, body,
+            jit_instruction *br = m_factory.create<jit_cond_branch> (check, body,
                                                                    entry_blocks[i + 1]);
-            block->append (br);
-            block = body;
+            m_block->append (br);
+            m_block = body;
           }
 
         tree_statement_list *stmt_lst = tic->commands ();
@@ -621,22 +624,22 @@ void
           {
             stmt_lst->accept (*this);
             ++num_incomming;
-            block->append (factory.create<jit_branch> (tail));
+            m_block->append (m_factory.create<jit_branch> (tail));
           }
         catch (const jit_break_exception&)
           { }
 
-        current_breaks.splice (current_breaks.end (), breaks);
-        current_continues.splice (current_continues.end (), continues);
+        current_breaks.splice (current_breaks.end (), m_breaks);
+        current_continues.splice (current_continues.end (), m_continues);
       }
 
-    breaks.splice (breaks.end (), current_breaks);
-    continues.splice (continues.end (), current_continues);
+    m_breaks.splice (m_breaks.end (), current_breaks);
+    m_continues.splice (m_continues.end (), current_continues);
 
     if (num_incomming || ! last_else)
       {
-        blocks.push_back (tail);
-        block = tail;
+        m_blocks.push_back (tail);
+        m_block = tail;
       }
     else
       // every branch broke, so we don't have a tail
@@ -646,7 +649,7 @@ void
   void
   jit_convert::visit_index_expression (tree_index_expression& exp)
   {
-    result = resolve (exp);
+    m_result = resolve (exp);
   }
 
   void
@@ -683,17 +686,17 @@ void
     if (ty == jit_typeinfo::get_scalar ())
       {
         double dv = v.double_value ();
-        result = factory.create<jit_const_scalar> (dv);
+        m_result = m_factory.create<jit_const_scalar> (dv);
       }
     else if (ty == jit_typeinfo::get_range ())
       {
         Range rv = v.range_value ();
-        result = factory.create<jit_const_range> (rv);
+        m_result = m_factory.create<jit_const_range> (rv);
       }
     else if (ty == jit_typeinfo::get_complex ())
       {
         Complex cv = v.complex_value ();
-        result = factory.create<jit_const_complex> (cv);
+        m_result = m_factory.create<jit_const_complex> (cv);
       }
     else
       throw jit_fail_exception ("Unknown constant");
@@ -725,13 +728,13 @@ void
     jit_value *operandv = visit (operand);
 
     const jit_operation& fn = jit_typeinfo::unary_op (etype);
-    result = create_checked (fn, operandv);
+    m_result = create_checked (fn, operandv);
 
     if (etype == octave_value::op_incr || etype == octave_value::op_decr)
       {
         jit_value *ret = create_checked (&jit_typeinfo::grab, operandv);
-        do_assign (operand, result);
-        result = ret;
+        do_assign (operand, m_result);
+        m_result = ret;
       }
   }
 
@@ -741,10 +744,10 @@ void
     octave_value::unary_op etype = tpe.op_type ();
     tree_expression *operand = tpe.operand ();
     const jit_operation& fn = jit_typeinfo::unary_op (etype);
-    result = create_checked (fn, visit (operand));
+    m_result = create_checked (fn, visit (operand));
 
     if (etype == octave_value::op_incr || etype == octave_value::op_decr)
-      do_assign (operand, result);
+      do_assign (operand, m_result);
   }
 
   void
@@ -777,7 +780,7 @@ void
         rhsv = create_checked (fn, lhsv, rhsv);
       }
 
-    result = do_assign (tsa.left_hand_side (), rhsv);
+    m_result = do_assign (tsa.left_hand_side (), rhsv);
   }
 
   void
@@ -797,7 +800,7 @@ void
           {
             tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-            do_bind_ans = (! id->is_variable (scope.current_context ()));
+            do_bind_ans = (! id->is_variable (m_scope.current_context ()));
           }
         else
           do_bind_ans = (! expr->is_assignment_expression ());
@@ -811,9 +814,9 @@ void
             // FIXME: ugly hack, we need to come up with a way to pass
             // nargout to visit_identifier
             const jit_operation& fn = jit_typeinfo::print_value ();
-            jit_const_string *name = factory.create<jit_const_string>
+            jit_const_string *name = m_factory.create<jit_const_string>
               (expr->name ());
-            block->append (factory.create<jit_call> (fn, name, expr_result));
+            m_block->append (m_factory.create<jit_call> (fn, name, expr_result));
           }
       }
   }
@@ -869,11 +872,11 @@ void
 
     // the first entry point is always the actual block.  Afterward, new blocks
     // are created for every case and the otherwise branch
-    entry_blocks[0] = block;
+    entry_blocks[0] = m_block;
     for (size_t i = 1; i < case_blocks_num; ++i)
-      entry_blocks[i] = factory.create<jit_block> ("case_cond");
+      entry_blocks[i] = m_factory.create<jit_block> ("case_cond");
 
-    jit_block *tail = factory.create<jit_block> ("switch_tail");
+    jit_block *tail = m_factory.create<jit_block> ("switch_tail");
 
     // if there's no otherwise branch, the 'else' of the last branch
     // has to point to the tail
@@ -881,10 +884,10 @@ void
       entry_blocks[entry_blocks.size()-1] = tail;
 
     // each branch in the case statement will have different breaks/continues
-    block_list current_breaks = breaks;
-    block_list current_continues = continues;
-    breaks.clear ();
-    continues.clear ();
+    block_list current_breaks = m_breaks;
+    block_list current_continues = m_continues;
+    m_breaks.clear ();
+    m_continues.clear ();
 
     size_t num_incomming = 0; // number of incomming blocks to our tail
 
@@ -892,11 +895,11 @@ void
     for (size_t i = 0; i < case_blocks_num; ++iter, ++i)
       {
         tree_switch_case *twc = *iter;
-        block = entry_blocks[i]; // case_cond
-        assert (block);
+        m_block = entry_blocks[i]; // case_cond
+        assert (m_block);
 
         if (i)
-          blocks.push_back (entry_blocks[i]);  // first block already pushed
+          m_blocks.push_back (entry_blocks[i]);  // first block already pushed
 
         if (! twc->is_default_case ())
           {
@@ -912,12 +915,12 @@ void
             jit_call *check = create_checked (&jit_typeinfo::logically_true,
                                               cond);
 
-            jit_block *body = factory.create<jit_block> ("case_body");
-            blocks.push_back (body);
+            jit_block *body = m_factory.create<jit_block> ("case_body");
+            m_blocks.push_back (body);
 
-            block->append (factory.create<jit_cond_branch> (check, body,
+            m_block->append (m_factory.create<jit_cond_branch> (check, body,
                                                             entry_blocks[i+1]));
-            block = body; // case_body
+            m_block = body; // case_body
           }
 
         tree_statement_list *stmt_lst = twc->commands ();
@@ -927,24 +930,24 @@ void
           {
             stmt_lst->accept (*this);
             num_incomming++;
-            block->append (factory.create<jit_branch> (tail));
+            m_block->append (m_factory.create<jit_branch> (tail));
           }
         catch (const jit_break_exception&)
           { }
 
         // each branch in the case statement will have different breaks/continues
-        current_breaks.splice (current_breaks.end (), breaks);
-        current_continues.splice (current_continues.end (), continues);
+        current_breaks.splice (current_breaks.end (), m_breaks);
+        current_continues.splice (current_continues.end (), m_continues);
       }
 
     // each branch in the case statement will have different breaks/continues
-    breaks.splice (breaks.end (), current_breaks);
-    continues.splice (continues.end (), current_continues);
+    m_breaks.splice (m_breaks.end (), current_breaks);
+    m_continues.splice (m_continues.end (), current_continues);
 
     if (num_incomming || ! has_otherwise)
       {
-        blocks.push_back (tail);
-        block = tail; // switch_tail
+        m_blocks.push_back (tail);
+        m_block = tail; // switch_tail
       }
     else
       throw jit_break_exception ();   // every branch broke
@@ -966,27 +969,27 @@ void
   jit_convert::visit_while_command (tree_while_command& wc)
   {
     unwind_protect frame;
-    frame.protect_var (breaks);
-    frame.protect_var (continues);
-    breaks.clear ();
-    continues.clear ();
+    frame.protect_var (m_breaks);
+    frame.protect_var (m_continues);
+    m_breaks.clear ();
+    m_continues.clear ();
 
-    jit_block *cond_check = factory.create<jit_block> ("while_cond_check");
-    block->append (factory.create<jit_branch> (cond_check));
-    blocks.push_back (cond_check);
-    block = cond_check;
+    jit_block *cond_check = m_factory.create<jit_block> ("while_cond_check");
+    m_block->append (m_factory.create<jit_branch> (cond_check));
+    m_blocks.push_back (cond_check);
+    m_block = cond_check;
 
     tree_expression *expr = wc.condition ();
     assert (expr && "While expression can not be null");
     jit_value *check = visit (expr);
     check = create_checked (&jit_typeinfo::logically_true, check);
 
-    jit_block *body = factory.create<jit_block> ("while_body");
-    blocks.push_back (body);
+    jit_block *body = m_factory.create<jit_block> ("while_body");
+    m_blocks.push_back (body);
 
-    jit_block *tail = factory.create<jit_block> ("while_tail");
-    block->append (factory.create<jit_cond_branch> (check, body, tail));
-    block = body;
+    jit_block *tail = m_factory.create<jit_block> ("while_tail");
+    m_block->append (m_factory.create<jit_cond_branch> (check, body, tail));
+    m_block = body;
 
     tree_statement_list *loop_body = wc.body ();
     bool all_breaking = false;
@@ -1002,44 +1005,44 @@ void
           }
       }
 
-    finish_breaks (tail, breaks);
+    finish_breaks (tail, m_breaks);
 
-    if (! all_breaking || continues.size ())
+    if (! all_breaking || m_continues.size ())
       {
         jit_block *interrupt_check
-          = factory.create<jit_block> ("interrupt_check");
-        blocks.push_back (interrupt_check);
-        finish_breaks (interrupt_check, continues);
+          = m_factory.create<jit_block> ("interrupt_check");
+        m_blocks.push_back (interrupt_check);
+        finish_breaks (interrupt_check, m_continues);
         if (! all_breaking)
-          block->append (factory.create<jit_branch> (interrupt_check));
+          m_block->append (m_factory.create<jit_branch> (interrupt_check));
 
-        block = interrupt_check;
+        m_block = interrupt_check;
         jit_error_check *ec
-          = factory.create<jit_error_check> (jit_error_check::var_interrupt,
-                                             cond_check, final_block);
-        block->append (ec);
+          = m_factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                             cond_check, m_final_block);
+        m_block->append (ec);
       }
 
-    blocks.push_back (tail);
-    block = tail;
+    m_blocks.push_back (tail);
+    m_block = tail;
   }
 
   void
   jit_convert::visit_do_until_command (tree_do_until_command& duc)
   {
     unwind_protect frame;
-    frame.protect_var (breaks);
-    frame.protect_var (continues);
-    breaks.clear ();
-    continues.clear ();
+    frame.protect_var (m_breaks);
+    frame.protect_var (m_continues);
+    m_breaks.clear ();
+    m_continues.clear ();
 
-    jit_block *body = factory.create<jit_block> ("do_until_body");
-    jit_block *cond_check = factory.create<jit_block> ("do_until_cond_check");
-    jit_block *tail = factory.create<jit_block> ("do_until_tail");
+    jit_block *body = m_factory.create<jit_block> ("do_until_body");
+    jit_block *cond_check = m_factory.create<jit_block> ("do_until_cond_check");
+    jit_block *tail = m_factory.create<jit_block> ("do_until_tail");
 
-    block->append (factory.create<jit_branch> (body));
-    blocks.push_back (body);
-    block = body;
+    m_block->append (m_factory.create<jit_branch> (body));
+    m_blocks.push_back (body);
+    m_block = body;
 
     tree_statement_list *loop_body = duc.body ();
     bool all_breaking = false;
@@ -1055,66 +1058,66 @@ void
           }
       }
 
-    finish_breaks (tail, breaks);
+    finish_breaks (tail, m_breaks);
 
-    if (! all_breaking || continues.size ())
+    if (! all_breaking || m_continues.size ())
       {
         jit_block *interrupt_check
-          = factory.create<jit_block> ("interrupt_check");
-        blocks.push_back (interrupt_check);
-        finish_breaks (interrupt_check, continues);
+          = m_factory.create<jit_block> ("interrupt_check");
+        m_blocks.push_back (interrupt_check);
+        finish_breaks (interrupt_check, m_continues);
         if (! all_breaking)
-          block->append (factory.create<jit_branch> (interrupt_check));
+          m_block->append (m_factory.create<jit_branch> (interrupt_check));
 
-        block = interrupt_check;
+        m_block = interrupt_check;
         jit_error_check *ec
-          = factory.create<jit_error_check> (jit_error_check::var_interrupt,
-                                             cond_check, final_block);
-        block->append (ec);
+          = m_factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                             cond_check, m_final_block);
+        m_block->append (ec);
 
-        blocks.push_back (cond_check);
-        block = cond_check;
+        m_blocks.push_back (cond_check);
+        m_block = cond_check;
 
         tree_expression *expr = duc.condition ();
         assert (expr && "Do-Until expression can not be null");
         jit_value *check = visit (expr);
         check = create_checked (&jit_typeinfo::logically_true, check);
 
-        block->append (factory.create<jit_cond_branch> (check, tail, body));
+        m_block->append (m_factory.create<jit_cond_branch> (check, tail, body));
       }
 
-    blocks.push_back (tail);
-    block = tail;
+    m_blocks.push_back (tail);
+    m_block = tail;
   }
 
   void
   jit_convert::initialize (const symbol_scope& s)
   {
-    scope = s;
-    iterator_count = 0;
-    for_bounds_count = 0;
-    short_count = 0;
+    m_scope = s;
+    m_iterator_count = 0;
+    m_for_bounds_count = 0;
+    m_short_count = 0;
     jit_instruction::reset_ids ();
 
-    entry_block = factory.create<jit_block> ("body");
-    final_block = factory.create<jit_block> ("final");
-    blocks.push_back (entry_block);
-    entry_block->mark_alive ();
-    block = entry_block;
+    m_entry_block = m_factory.create<jit_block> ("body");
+    m_final_block = m_factory.create<jit_block> ("final");
+    m_blocks.push_back (m_entry_block);
+    m_entry_block->mark_alive ();
+    m_block = m_entry_block;
   }
 
   jit_call *
   jit_convert::create_checked_impl (jit_call *ret)
   {
-    block->append (ret);
+    m_block->append (ret);
 
-    jit_block *normal = factory.create<jit_block> (block->name ());
+    jit_block *normal = m_factory.create<jit_block> (m_block->name ());
     jit_error_check *check
-      = factory.create<jit_error_check> (jit_error_check::var_error_state, ret,
-                                         normal, final_block);
-    block->append (check);
-    blocks.push_back (normal);
-    block = normal;
+      = m_factory.create<jit_error_check> (jit_error_check::var_error_state, ret,
+                                         normal, m_final_block);
+    m_block->append (check);
+    m_blocks.push_back (normal);
+    m_block = normal;
 
     return ret;
   }
@@ -1123,8 +1126,8 @@ void
   jit_convert::find_variable (const std::string& vname) const
   {
     variable_map::const_iterator iter;
-    iter = vmap.find (vname);
-    return iter != vmap.end () ? iter->second : nullptr;
+    iter = m_vmap.find (vname);
+    return iter != m_vmap.end () ? iter->second : nullptr;
   }
 
   jit_variable *
@@ -1136,20 +1139,20 @@ void
 
     symbol_table& symtab = __get_symbol_table__ ("jit_convert::find_variable");
 
-    symbol_record record = symtab.find_symbol (vname, scope);
+    symbol_record record = symtab.find_symbol (vname, m_scope);
     if (record.is_persistent () || record.is_global ())
       throw jit_fail_exception ("Persistent and global not yet supported");
 
-    if (converting_function)
+    if (m_converting_function)
       return create_variable (vname, jit_typeinfo::get_any (), false);
     else
       {
-        octave_value val = record.varval (scope.current_context ());
+        octave_value val = record.varval (m_scope.current_context ());
         if (val.is_undefined ())
           val = symtab.find_function (vname);
 
         jit_type *type = jit_typeinfo::type_of (val);
-        bounds.push_back (type_bound (type, vname));
+        m_bounds.push_back (type_bound (type, vname));
 
         return create_variable (vname, type);
       }
@@ -1159,23 +1162,23 @@ void
   jit_convert::create_variable (const std::string& vname, jit_type *type,
                                 bool isarg)
   {
-    jit_variable *var = factory.create<jit_variable> (vname);
+    jit_variable *var = m_factory.create<jit_variable> (vname);
 
     if (isarg)
       {
         jit_extract_argument *extract;
-        extract = factory.create<jit_extract_argument> (type, var);
-        entry_block->prepend (extract);
+        extract = m_factory.create<jit_extract_argument> (type, var);
+        m_entry_block->prepend (extract);
       }
     else
       {
-        jit_call *init = factory.create<jit_call> (&jit_typeinfo::create_undef);
-        jit_assign *assign = factory.create<jit_assign> (var, init);
-        entry_block->prepend (assign);
-        entry_block->prepend (init);
+        jit_call *init = m_factory.create<jit_call> (&jit_typeinfo::create_undef);
+        jit_assign *assign = m_factory.create<jit_assign> (var, init);
+        m_entry_block->prepend (assign);
+        m_entry_block->prepend (init);
       }
 
-    return vmap[vname] = var;
+    return m_vmap[vname] = var;
   }
 
   std::string
@@ -1229,11 +1232,11 @@ void
     for (size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
       {
         unwind_protect frame;
-        frame.add_method (&end_context,
+        frame.add_method (&m_end_context,
                           &std::vector<jit_magic_end::context>::pop_back);
 
-        jit_magic_end::context ctx (factory, object, idx, narg);
-        end_context.push_back (ctx);
+        jit_magic_end::context ctx (m_factory, object, idx, narg);
+        m_end_context.push_back (ctx);
         call_args[idx + 1] = visit (*iter);
       }
 
@@ -1272,7 +1275,7 @@ void
                           bool print, bool artificial)
   {
     jit_variable *var = get_variable (lhs);
-    jit_assign *assign = block->append (factory.create<jit_assign> (var, rhs));
+    jit_assign *assign = m_block->append (m_factory.create<jit_assign> (var, rhs));
 
     if (artificial)
       assign->mark_artificial ();
@@ -1280,8 +1283,8 @@ void
     if (print)
       {
         const jit_operation& print_fn = jit_typeinfo::print_value ();
-        jit_const_string *name = factory.create<jit_const_string> (lhs);
-        block->append (factory.create<jit_call> (print_fn, name, var));
+        jit_const_string *name = m_factory.create<jit_const_string> (lhs);
+        m_block->append (m_factory.create<jit_call> (print_fn, name, var));
       }
 
     return var;
@@ -1291,10 +1294,10 @@ void
   jit_convert::visit (tree& tee)
   {
     unwind_protect frame;
-    frame.protect_var (result);
+    frame.protect_var (m_result);
 
     tee.accept (*this);
-    return result;
+    return m_result;
   }
 
   void
@@ -1304,7 +1307,7 @@ void
          ++iter)
       {
         jit_block *b = *iter;
-        b->append (factory.create<jit_branch> (dest));
+        b->append (m_factory.create<jit_branch> (dest));
       }
   }
 
@@ -1315,16 +1318,16 @@ void
                                   const std::list<jit_value *>& constants,
                                   const std::string& llvm_function_name)
   {
-    converting_function = false;
+    m_converting_function = false;
 
     // for now just init arguments from entry, later we will have to do something
     // more interesting
-    jit_block *entry_block = blocks.front ();
-    for (jit_block::iterator iter = entry_block->begin ();
-         iter != entry_block->end (); ++iter)
+    jit_block *m_entry_block = blocks.front ();
+    for (jit_block::iterator iter = m_entry_block->begin ();
+         iter != m_entry_block->end (); ++iter)
       if (jit_extract_argument *extract
           = dynamic_cast<jit_extract_argument *> (*iter))
-        argument_vec.push_back (std::make_pair (extract->name (), true));
+        m_argument_vec.push_back (std::make_pair (extract->name (), true));
 
     jit_type *any = jit_typeinfo::get_any ();
 
@@ -1334,32 +1337,32 @@ void
     ft = llvm::FunctionType::get (llvm::Type::getVoidTy (context),
                                   arg_type->getPointerTo (), false);
 
-    function = module.create_llvm_function (ft, llvm_function_name);
+    m_function = module.create_llvm_function (ft, llvm_function_name);
     try
       {
-        prelude = llvm::BasicBlock::Create (context, "prelude", function);
-        builder.SetInsertPoint (prelude);
+        m_prelude = llvm::BasicBlock::Create (context, "prelude", m_function);
+        builder.SetInsertPoint (m_prelude);
 
         // The jitted function will have only one function argument, of octave_base_value** type
-        llvm::Value *arg = &*(function->arg_begin ());
+        llvm::Value *arg = &*(m_function->arg_begin ());
 
-        for (size_t i = 0; i < argument_vec.size (); ++i)
+        for (size_t i = 0; i < m_argument_vec.size (); ++i)
           {
             // llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);         // LLVM <= 3.6
             llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg_type, arg, i);  // LLVM >= 3.7
 
-            arguments[argument_vec[i].first] = loaded_arg;
+            m_arguments[m_argument_vec[i].first] = loaded_arg;
           }
 
         convert (blocks, constants);
       }
     catch (const jit_fail_exception& e)
       {
-        function->eraseFromParent ();
+        m_function->eraseFromParent ();
         throw;
       }
 
-    return function;
+    return m_function;
   }
 
   jit_function
@@ -1369,20 +1372,20 @@ void
                                       octave_user_function& fcn,
                                       const std::vector<jit_type *>& args)
   {
-    converting_function = true;
+    m_converting_function = true;
 
-    jit_block *final_block = blocks.back ();
-    jit_return *ret = dynamic_cast<jit_return *> (final_block->back ());
+    jit_block *m_final_block = blocks.back ();
+    jit_return *ret = dynamic_cast<jit_return *> (m_final_block->back ());
     assert (ret);
 
-    creating = jit_function (&module, jit_convention::internal,
+    m_creating = jit_function (&module, jit_convention::internal,
                              "foobar", ret->result_type (), args);
-    function = creating.to_llvm ();
+    m_function = m_creating.to_llvm ();
 
     try
       {
-        prelude = creating.new_block ("prelude");
-        builder.SetInsertPoint (prelude);
+        m_prelude = m_creating.new_block ("prelude");
+        builder.SetInsertPoint (m_prelude);
 
         tree_parameter_list *plist = fcn.parameter_list ();
         if (plist)
@@ -1393,7 +1396,7 @@ void
               {
                 tree_decl_elt *elt = *piter;
                 std::string arg_name = elt->name ();
-                arguments[arg_name] = creating.argument (builder, i);
+                m_arguments[arg_name] = m_creating.argument (builder, i);
               }
           }
 
@@ -1401,11 +1404,11 @@ void
       }
     catch (const jit_fail_exception& e)
       {
-        function->eraseFromParent ();
+        m_function->eraseFromParent ();
         throw;
       }
 
-    return creating;
+    return m_creating;
   }
 
   void
@@ -1416,10 +1419,10 @@ void
     for (biter = blocks.begin (); biter != blocks.end (); ++biter)
       {
         jit_block *jblock = *biter;
-        llvm::BasicBlock *block = llvm::BasicBlock::Create (context,
+        llvm::BasicBlock *m_block = llvm::BasicBlock::Create (context,
                                                             jblock->name (),
-                                                            function);
-        jblock->stash_llvm (block);
+                                                            m_function);
+        jblock->stash_llvm (m_block);
       }
 
     jit_block *first = *blocks.begin ();
@@ -1438,9 +1441,9 @@ void
     // now finish phi nodes
     for (biter = blocks.begin (); biter != blocks.end (); ++biter)
       {
-        jit_block& block = **biter;
-        for (jit_block::iterator piter = block.begin ();
-             piter != block.end () && isa<jit_phi> (*piter); ++piter)
+        jit_block& m_block = **biter;
+        for (jit_block::iterator piter = m_block.begin ();
+             piter != m_block.end () && isa<jit_phi> (*piter); ++piter)
           {
             jit_instruction *phi = *piter;
             finish_phi (static_cast<jit_phi *> (phi));
@@ -1515,8 +1518,8 @@ void
   void
   jit_convert_llvm::visit (jit_block& b)
   {
-    llvm::BasicBlock *block = b.to_llvm ();
-    builder.SetInsertPoint (block);
+    llvm::BasicBlock *m_block = b.to_llvm ();
+    builder.SetInsertPoint (m_block);
     for (jit_block::iterator iter = b.begin (); iter != b.end (); ++iter)
       visit (*iter);
   }
@@ -1553,10 +1556,10 @@ void
   void
   jit_convert_llvm::visit (jit_extract_argument& extract)
   {
-    llvm::Value *arg = arguments[extract.name ()];
+    llvm::Value *arg = m_arguments[extract.name ()];
     assert (arg);
 
-    if (converting_function)
+    if (m_converting_function)
       extract.stash_llvm (arg);
     else
       {
@@ -1572,7 +1575,7 @@ void
   {
     const jit_function& ol = store.overload ();
     llvm::Value *arg_value = ol.call (builder, store.result ());
-    llvm::Value *arg = arguments[store.name ()];
+    llvm::Value *arg = m_arguments[store.name ()];
     store.stash_llvm (builder.CreateStore (arg_value, arg));
   }
 
@@ -1581,8 +1584,8 @@ void
   {
     jit_value *res = ret.result ();
 
-    if (converting_function)
-      creating.do_return (builder, res->to_llvm (), false);
+    if (m_converting_function)
+      m_creating.do_return (builder, res->to_llvm (), false);
     else
       {
         if (res)
@@ -1666,7 +1669,7 @@ void
   // -------------------- jit_infer --------------------
   jit_infer::jit_infer (jit_factory& afactory, jit_block_list& ablocks,
                         const variable_map& avmap)
-    : blocks (ablocks), factory (afactory), vmap (avmap) { }
+    : m_blocks (ablocks), m_factory (afactory), m_vmap (avmap) { }
 
   void
   jit_infer::infer (void)
@@ -1674,7 +1677,7 @@ void
     construct_ssa ();
 
     // initialize the worklist to instructions derived from constants
-    const std::list<jit_value *>& constants = factory.constants ();
+    const std::list<jit_value *>& constants = m_factory.constants ();
     for (std::list<jit_value *>::const_iterator iter = constants.begin ();
          iter != constants.end (); ++iter)
       append_users (*iter);
@@ -1684,10 +1687,10 @@ void
       push_worklist (entry_block ().terminator ());
 
     // FIXME: Describe algorithm here
-    while (worklist.size ())
+    while (m_worklist.size ())
       {
-        jit_instruction *next = worklist.front ();
-        worklist.pop_front ();
+        jit_instruction *next = m_worklist.front ();
+        m_worklist.pop_front ();
         next->stash_in_worklist (false);
 
         if (next->infer ())
@@ -1701,7 +1704,7 @@ void
       }
 
     remove_dead ();
-    blocks.label ();
+    m_blocks.label ();
     place_releases ();
     simplify_phi ();
   }
@@ -1735,13 +1738,13 @@ void
   void
   jit_infer::construct_ssa (void)
   {
-    blocks.label ();
+    m_blocks.label ();
     final_block ().compute_idom (entry_block ());
     entry_block ().compute_df ();
     entry_block ().create_dom_tree ();
 
     // insert phi nodes where needed, this is done on a per variable basis
-    for (variable_map::const_iterator iter = vmap.begin (); iter != vmap.end ();
+    for (variable_map::const_iterator iter = m_vmap.begin (); iter != m_vmap.end ();
          ++iter)
       {
         jit_block::df_set visited, added_phi;
@@ -1761,7 +1764,7 @@ void
                 jit_block *dblock = *diter;
                 if (! added_phi.count (dblock))
                   {
-                    jit_phi *phi = factory.create<jit_phi> (iter->second,
+                    jit_phi *phi = m_factory.create<jit_phi> (iter->second,
                                                             dblock->use_count ());
                     dblock->prepend (phi);
                     added_phi.insert (dblock);
@@ -1828,7 +1831,7 @@ void
   jit_infer::place_releases (void)
   {
     std::set<jit_value *> temporaries;
-    for (jit_block_list::iterator iter = blocks.begin (); iter != blocks.end ();
+    for (jit_block_list::iterator iter = m_blocks.begin (); iter != m_blocks.end ();
          ++iter)
       {
         jit_block& ablock = **iter;
@@ -1846,7 +1849,7 @@ void
     if (! instr->in_worklist ())
       {
         instr->stash_in_worklist (true);
-        worklist.push_back (instr);
+        m_worklist.push_back (instr);
       }
   }
 
@@ -1854,7 +1857,7 @@ void
   jit_infer::remove_dead ()
   {
     jit_block_list::iterator biter;
-    for (biter = blocks.begin (); biter != blocks.end (); ++biter)
+    for (biter = m_blocks.begin (); biter != m_blocks.end (); ++biter)
       {
         jit_block *b = *biter;
         if (b->alive ())
@@ -1871,7 +1874,7 @@ void
           }
       }
 
-    for (biter = blocks.begin (); biter != blocks.end ();)
+    for (biter = m_blocks.begin (); biter != m_blocks.end ();)
       {
         jit_block *b = *biter;
         if (b->alive ())
@@ -1883,7 +1886,7 @@ void
               {
                 jit_block *succ = term->successor (1);
                 term->remove ();
-                jit_branch *abreak = factory.create<jit_branch> (succ);
+                jit_branch *abreak = m_factory.create<jit_branch> (succ);
                 b->append (abreak);
                 abreak->infer ();
               }
@@ -1895,7 +1898,7 @@ void
             jit_terminator *term = b->terminator ();
             if (term)
               term->remove ();
-            biter = blocks.erase (biter);
+            biter = m_blocks.erase (biter);
           }
       }
   }
@@ -1921,10 +1924,10 @@ void
                   continue;
 
                 jit_block *inc = phi->incomming (i);
-                jit_block *split = inc->maybe_split (factory, blocks, ablock);
+                jit_block *split = inc->maybe_split (m_factory, m_blocks, ablock);
                 jit_terminator *term = split->terminator ();
                 jit_call *release
-                  = factory.create<jit_call> (jit_typeinfo::release, arg);
+                  = m_factory.create<jit_call> (jit_typeinfo::release, arg);
                 release->infer ();
                 split->insert_before (term, release);
               }
@@ -1962,7 +1965,7 @@ void
                   continue;
 
                 jit_call *release
-                  = factory.create<jit_call> (&jit_typeinfo::release, arg);
+                  = m_factory.create<jit_call> (&jit_typeinfo::release, arg);
                 release->infer ();
                 ablock.insert_after (iter, release);
                 ++iter;
@@ -1976,14 +1979,14 @@ void
 
     // FIXME: If we support try/catch or unwind_protect final_block
     //        may not be the destination
-    jit_block *split = ablock.maybe_split (factory, blocks, final_block ());
+    jit_block *split = ablock.maybe_split (m_factory, m_blocks, final_block ());
     jit_terminator *term = split->terminator ();
     for (std::set<jit_value *>::const_iterator iter = temp.begin ();
          iter != temp.end (); ++iter)
       {
         jit_value *value = *iter;
         jit_call *release
-          = factory.create<jit_call> (&jit_typeinfo::release, value);
+          = m_factory.create<jit_call> (&jit_typeinfo::release, value);
         split->insert_before (term, release);
         release->infer ();
       }
@@ -1992,7 +1995,7 @@ void
   void
   jit_infer::simplify_phi (void)
   {
-    for (jit_block_list::iterator biter = blocks.begin (); biter != blocks.end ();
+    for (jit_block_list::iterator biter = m_blocks.begin (); biter != m_blocks.end ();
          ++biter)
       {
         jit_block &ablock = **biter;
@@ -2014,10 +2017,10 @@ void
         if (arg->type () != phi.type ())
           {
             jit_block *pred = phi.incomming (i);
-            jit_block *split = pred->maybe_split (factory, blocks, pblock);
+            jit_block *split = pred->maybe_split (m_factory, m_blocks, pblock);
             jit_terminator *term = split->terminator ();
-            jit_instruction *cast = factory.create<jit_call> (cast_fn, arg);
-            jit_assign *assign = factory.create<jit_assign> (dest, cast);
+            jit_instruction *cast = m_factory.create<jit_call> (cast_fn, arg);
+            jit_assign *assign = m_factory.create<jit_assign> (dest, cast);
 
             split->insert_before (term, cast);
             split->insert_before (term, assign);
@@ -2318,13 +2321,13 @@ void
   // -------------------- jit_module --------------------
 
   jit_module::jit_module (const std::string& module_name)
-    : module (nullptr), engine (nullptr)
+    : m_module (nullptr), m_engine (nullptr)
   {
     jit::ModuleOwner module_owner = tree_jit::open_new_module (module_name);
     // FIXME: what if this fails? exception?
 
     // Get a pointer to the module before ownership is transfered to engine
-    module = module_owner.get ();
+    m_module = module_owner.get ();
 
     jit::EngineOwner engine_owner = std::move
       (tree_jit::create_new_engine (std::move (module_owner)));
@@ -2333,7 +2336,7 @@ void
     // TODO?: Consider creating the engine just before jitting
 
     // We take responsibility for deleting the engine
-    engine = engine_owner.get ();
+    m_engine = engine_owner.get ();
     engine_owner.release ();
 
     tree_jit::register_jit_module (this);
@@ -2343,7 +2346,7 @@ void
   {
     tree_jit::unregister_jit_module (this);
 
-    delete engine;
+    delete m_engine;
   }
 
   // Create an LLVM function in the module, with external linkage
@@ -2355,7 +2358,7 @@ void
     // llvm from getting rid of always inline functions
 
     return llvm::Function::Create (ftype, llvm::Function::ExternalLinkage,
-                                   name, module);
+                                   name, m_module);
   }
 
   // Create or insert an LLVM Function declaration for an intrinsic and return it
@@ -2364,7 +2367,7 @@ void
                                          std::vector<llvm::Type*> types) const
   {
     return llvm::Intrinsic::getDeclaration
-      (module, static_cast<llvm::Intrinsic::ID> (id), types);
+      (m_module, static_cast<llvm::Intrinsic::ID> (id), types);
   }
 
   // Create a global in the module
@@ -2372,7 +2375,7 @@ void
   jit_module::create_global_variable (llvm::Type *type, bool is_constant,
                                       const llvm::Twine& name) const
   {
-    return new llvm::GlobalVariable (*module, type, is_constant,
+    return new llvm::GlobalVariable (*m_module, type, is_constant,
                                      llvm::GlobalValue::ExternalLinkage,
                                      nullptr, name);
   }
@@ -2381,26 +2384,26 @@ void
   jit_module::do_add_global_mapping (const llvm::GlobalValue* gv, void* p) const
   {
     assert (gv);
-    engine->addGlobalMapping (gv, p);
+    m_engine->addGlobalMapping (gv, p);
   }
 
   // Return the address of the specified function.
   uint64_t
   jit_module::getFunctionAddress (const std::string &name) const
   {
-    return engine->getFunctionAddress (name);
+    return m_engine->getFunctionAddress (name);
   }
 
   void
   jit_module::optimize (llvm::Function *fn) const
   {
     if (Vdebug_jit)
-      llvm::verifyModule (*module);
+      llvm::verifyModule (*m_module);
 
     // DOCUMENT-ME: Why do we need two separate pass managers?
 
     jit::PassManager *module_pass_manager = new jit::PassManager ();
-    jit::FunctionPassManager *pass_manager = new jit::FunctionPassManager (module);
+    jit::FunctionPassManager *pass_manager = new jit::FunctionPassManager (m_module);
 
     module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 
@@ -2412,10 +2415,10 @@ void
     // FIXME: autoconf to support <= 3.6
     //
     // #if defined (HAVE_LLVM_DATALAYOUT)
-    //   pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
+    //   pass_manager->add (new llvm::DataLayout (*m_engine->getDataLayout ()));
     // #else
     //   // For very old LLVM releases ???
-    //   pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));
+    //   pass_manager->add (new llvm::TargetData (*m_engine->getTargetData ()));
     // #endif
 
     // DOCUMENT-ME: What does each of these passes actually do?
@@ -2435,7 +2438,7 @@ void
     pass_manager->add (llvm::createCFGSimplificationPass ());
     pass_manager->doInitialization ();
 
-    module_pass_manager->run (*module);
+    module_pass_manager->run (*m_module);
     pass_manager->run (*fn);
 
     delete module_pass_manager;
@@ -2454,34 +2457,34 @@ void
         //      llvm::raw_fd_ostream fout ("test.bc", error, llvm::raw_fd_ostream::F_Binary);
         //#endif
 
-        llvm::WriteBitcodeToFile (module, fout);
+        llvm::WriteBitcodeToFile (m_module, fout);
       }
   }
 
   void
   jit_module::finalizeObject (void)
   {
-    engine->finalizeObject ();
+    m_engine->finalizeObject ();
   }
 
 
   // -------------------- jit_function_info --------------------
   jit_function_info::jit_function_info (octave_user_function& fcn,
                                         const octave_value_list& ov_args)
-    : llvm_function_name (""),
-      function (nullptr),
-      argument_types (ov_args.length ())
+    : m_llvm_function_name (""),
+      m_function (nullptr),
+      m_argument_types (ov_args.length ())
   {
     size_t nargs = ov_args.length ();
     for (size_t i = 0; i < nargs; ++i)
-      argument_types[i] = jit_typeinfo::type_of (ov_args(i));
+      m_argument_types[i] = jit_typeinfo::type_of (ov_args(i));
 
     jit_function raw_fn;
     jit_function wrapper;
 
     try
       {
-        jit_convert conv (fcn, argument_types);
+        jit_convert conv (fcn, m_argument_types);
         jit_infer infer (conv.get_factory (), conv.get_blocks (),
                          conv.get_variable_map ());
         infer.infer ();
@@ -2504,7 +2507,7 @@ void
         jit_convert_llvm to_llvm;
         raw_fn = to_llvm.convert_function (*this, infer.get_blocks (),
                                            factory.constants (), fcn,
-                                           argument_types);
+                                           m_argument_types);
 
         if (Vdebug_jit)
           {
@@ -2514,11 +2517,11 @@ void
             llvm::verifyFunction (*raw_fn.to_llvm ());
           }
 
-        llvm_function_name = fcn.name () + "_wrapper";
+        m_llvm_function_name = fcn.name () + "_wrapper";
         jit_type *any_t = jit_typeinfo::get_any ();
         std::vector<jit_type *> wrapper_args (1, jit_typeinfo::get_any_ptr ());
         wrapper = jit_function (this, jit_convention::internal,
-                                llvm_function_name, any_t, wrapper_args);
+                                m_llvm_function_name, any_t, wrapper_args);
 
         llvm::BasicBlock *wrapper_body = wrapper.new_block ();
         builder.SetInsertPoint (wrapper_body);
@@ -2532,7 +2535,7 @@ void
             arg = builder.CreateConstInBoundsGEP1_32 (any_t->to_llvm (), wrapper_arg, i);  // LLVM >= 3.7
             arg = builder.CreateLoad (arg);
 
-            jit_type *arg_type = argument_types[i];
+            jit_type *arg_type = m_argument_types[i];
             const jit_function& cast = jit_typeinfo::cast (arg_type, any_t);
             raw_args[i] = cast.call (builder, arg);
           }
@@ -2565,22 +2568,22 @@ void
 
         finalizeObject ();
 
-        uint64_t void_fn = getFunctionAddress (llvm_function_name);
+        uint64_t void_fn = getFunctionAddress (m_llvm_function_name);
 
         if (void_fn == 0)
           {
             llvm_function->eraseFromParent ();
             llvm_function = nullptr;
-            function = nullptr;
+            m_function = nullptr;
           }
         else
           {
-            function = reinterpret_cast<jited_function> (void_fn);
+            m_function = reinterpret_cast<jited_function> (void_fn);
           }
       }
     catch (const jit_fail_exception& e)
       {
-        argument_types.clear ();
+        m_argument_types.clear ();
 
         if (Vdebug_jit)
           {
@@ -2599,7 +2602,7 @@ void
   jit_function_info::execute (const octave_value_list& ov_args,
                               octave_value_list& retval) const
   {
-    if (! function)
+    if (! m_function)
       return false;
 
     // FIXME: figure out a way to delete ov_args so we avoid duplicating refcount
@@ -2612,7 +2615,7 @@ void
         args[i] = obv;
       }
 
-    octave_base_value *ret = function (&args[0]);
+    octave_base_value *ret = m_function (&args[0]);
     if (ret)
       retval(0) = octave_value (ret);
 
@@ -2624,15 +2627,15 @@ void
   bool
   jit_function_info::match (const octave_value_list& ov_args) const
   {
-    if (! function)
+    if (! m_function)
       return true;
 
     size_t nargs = ov_args.length ();
-    if (nargs != argument_types.size ())
+    if (nargs != m_argument_types.size ())
       return false;
 
     for (size_t i = 0; i < nargs; ++i)
-      if (jit_typeinfo::type_of (ov_args(i)) != argument_types[i])
+      if (jit_typeinfo::type_of (ov_args(i)) != m_argument_types[i])
         return false;
 
     return true;
@@ -2641,22 +2644,22 @@ void
 
   // -------------------- jit_info --------------------
   jit_info::jit_info (tree& tee)
-    : llvm_function_name (tree_jit::generate_unique_function_name ()),
-      function (nullptr)
+    : m_llvm_function_name (tree_jit::generate_unique_function_name ()),
+      m_function (nullptr)
   {
     compile (tee);
   }
 
   jit_info::jit_info (tree& tee, const octave_value& for_bounds)
-    : llvm_function_name (tree_jit::generate_unique_function_name ()),
-      function (nullptr)
+    : m_llvm_function_name (tree_jit::generate_unique_function_name ()),
+      m_function (nullptr)
   {
     compile (tee, jit_typeinfo::type_of (for_bounds));
   }
 
   jit_info::jit_info (tree_simple_for_command& tee, const octave_value& for_bounds)
-    : llvm_function_name (tree_jit::generate_unique_forloop_name ()),
-      function (nullptr)
+    : m_llvm_function_name (tree_jit::generate_unique_forloop_name ()),
+      m_function (nullptr)
   {
     compile (tee, jit_typeinfo::type_of (for_bounds));
   }
@@ -2664,15 +2667,15 @@ void
   bool
   jit_info::execute (const vmap& extra_vars) const
   {
-    if (! function)
+    if (! m_function)
       return false;
 
-    std::vector<octave_base_value *> real_arguments (arguments.size ());
-    for (size_t i = 0; i < arguments.size (); ++i)
+    std::vector<octave_base_value *> real_arguments (m_arguments.size ());
+    for (size_t i = 0; i < m_arguments.size (); ++i)
       {
-        if (arguments[i].second)
+        if (m_arguments[i].second)
           {
-            octave_value current = find (extra_vars, arguments[i].first);
+            octave_value current = find (extra_vars, m_arguments[i].first);
             octave_base_value *obv = current.internal_rep ();
 
             obv->grab ();
@@ -2681,17 +2684,17 @@ void
           }
       }
 
-    function (&real_arguments[0]);
+    m_function (&real_arguments[0]);
 
     symbol_scope scope = __require_current_scope__ ("jit_info::execute");
 
-    for (size_t i = 0; i < arguments.size (); ++i)
+    for (size_t i = 0; i < m_arguments.size (); ++i)
       {
-        const std::string& name = arguments[i].first;
+        const std::string& name = m_arguments[i].first;
 
         // do not store for loop bounds temporary
         if (name.size () && name[0] != '#')
-          scope.assign (arguments[i].first, real_arguments[i]);
+          scope.assign (m_arguments[i].first, real_arguments[i]);
       }
 
     octave_quit ();
@@ -2702,17 +2705,17 @@ void
   bool
   jit_info::match (const vmap& extra_vars) const
   {
-    if (! function)
+    if (! m_function)
       return true;
 
-    for (size_t i = 0; i < bounds.size (); ++i)
+    for (size_t i = 0; i < m_bounds.size (); ++i)
       {
-        const std::string& arg_name = bounds[i].second;
+        const std::string& arg_name = m_bounds[i].second;
         octave_value value = find (extra_vars, arg_name);
         jit_type *type = jit_typeinfo::type_of (value);
 
         // FIXME: Check for a parent relationship
-        if (type != bounds[i].first)
+        if (type != m_bounds[i].first)
           return false;
       }
 
@@ -2746,11 +2749,11 @@ void
 
         llvm_function = to_llvm.convert_loop (*this, infer.get_blocks (),
                                               factory.constants (),
-                                              llvm_function_name);
+                                              m_llvm_function_name);
 
-        arguments = to_llvm.get_arguments ();
+        m_arguments = to_llvm.get_arguments ();
 
-        bounds = conv.get_bounds ();
+        m_bounds = conv.get_bounds ();
       }
     catch (const jit_fail_exception& e)
       {
@@ -2784,17 +2787,17 @@ void
 
         finalizeObject ();
 
-        uint64_t void_fn = getFunctionAddress (llvm_function_name);
+        uint64_t void_fn = getFunctionAddress (m_llvm_function_name);
 
         if (void_fn == 0)
           {
             llvm_function->eraseFromParent ();
             llvm_function = nullptr;
-            function = nullptr;
+            m_function = nullptr;
           }
         else
           {
-            function = reinterpret_cast<jited_function> (void_fn);
+            m_function = reinterpret_cast<jited_function> (void_fn);
           }
       }
   }

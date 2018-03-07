@@ -46,13 +46,13 @@ namespace octave
     tree_print_code (std::ostream& os_arg,
                      const std::string& pfx = "",
                      bool pr_orig_txt = true)
-      : os (os_arg), prefix (pfx), nesting (),
-        print_original_text (pr_orig_txt),
-        curr_print_indent_level (0), beginning_of_line (true),
-        suppress_newlines (0)
+      : m_os (os_arg), m_prefix (pfx), m_nesting (),
+        m_print_original_text (pr_orig_txt),
+        m_curr_print_indent_level (0), m_beginning_of_line (true),
+        m_suppress_newlines (0)
     {
       // For "none".
-      nesting.push ('n');
+      m_nesting.push ('n');
     }
 
     // No copying!
@@ -153,28 +153,28 @@ namespace octave
 
   private:
 
-    std::ostream& os;
+    std::ostream& m_os;
 
-    std::string prefix;
+    std::string m_prefix;
 
-    std::stack<char> nesting;
+    std::stack<char> m_nesting;
 
-    bool print_original_text;
+    bool m_print_original_text;
 
     // Current indentation.
-    int curr_print_indent_level;
+    int m_curr_print_indent_level;
 
     // TRUE means we are at the beginning of a line.
-    bool beginning_of_line;
+    bool m_beginning_of_line;
 
     // Nonzero means we are not printing newlines and indenting.
-    int suppress_newlines;
+    int m_suppress_newlines;
 
-    void reset_indent_level (void) { curr_print_indent_level = 0; }
+    void reset_indent_level (void) { m_curr_print_indent_level = 0; }
 
-    void increment_indent_level (void) { curr_print_indent_level += 2; }
+    void increment_indent_level (void) { m_curr_print_indent_level += 2; }
 
-    void decrement_indent_level (void) { curr_print_indent_level -= 2; }
+    void decrement_indent_level (void) { m_curr_print_indent_level -= 2; }
 
     void newline (const char *alt_txt = ", ");
 

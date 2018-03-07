@@ -189,11 +189,10 @@ namespace octave
         break;
       }
 
-    tree_binary_expression *ret = (ct == octave_value::unknown_compound_binary_op)
-      ? new tree_binary_expression (a, b, l, c, t)
-      : new tree_compound_binary_expression (a, b, l,
-                                             c, t, ca,
-                                             cb, ct);
+    tree_binary_expression *ret
+      = (ct == octave_value::unknown_compound_binary_op
+         ? new tree_binary_expression (a, b, l, c, t)
+         : new tree_compound_binary_expression (a, b, l, c, t, ca, cb, ct));
 
     return ret;
   }

@@ -36,33 +36,35 @@ namespace octave
 {
   // Simple assignment expressions.
 
-  tree_simple_assignment::tree_simple_assignment
-  (tree_expression *le, tree_expression *re,
-   bool plhs, int l, int c, octave_value::assign_op t)
-    : tree_expression (l, c), lhs (le), rhs (re), preserve (plhs), etype (t)
+  tree_simple_assignment::tree_simple_assignment (tree_expression *le,
+                                                  tree_expression *re,
+                                                  bool plhs, int l, int c,
+                                                  octave_value::assign_op t)
+    : tree_expression (l, c), m_lhs (le), m_rhs (re), m_preserve (plhs),
+      m_etype (t)
   { }
 
   tree_simple_assignment::~tree_simple_assignment (void)
   {
-    if (! preserve)
-      delete lhs;
+    if (! m_preserve)
+      delete m_lhs;
 
-    delete rhs;
+    delete m_rhs;
   }
 
   std::string
   tree_simple_assignment::oper (void) const
   {
-    return octave_value::assign_op_as_string (etype);
+    return octave_value::assign_op_as_string (m_etype);
   }
 
   tree_expression *
   tree_simple_assignment::dup (symbol_scope& scope) const
   {
     tree_simple_assignment *new_sa
-      = new tree_simple_assignment (lhs ? lhs->dup (scope) : nullptr,
-                                    rhs ? rhs->dup (scope) : nullptr,
-                                    preserve, etype);
+      = new tree_simple_assignment (m_lhs ? m_lhs->dup (scope) : nullptr,
+                                    m_rhs ? m_rhs->dup (scope) : nullptr,
+                                    m_preserve, m_etype);
 
     new_sa->copy_base (*this);
 
@@ -71,18 +73,18 @@ namespace octave
 
   // Multi-valued assignment expressions.
 
-  tree_multi_assignment::tree_multi_assignment
-  (tree_argument_list *lst, tree_expression *r,
-   bool plhs, int l, int c)
-    : tree_expression (l, c), lhs (lst), rhs (r), preserve (plhs)
+  tree_multi_assignment::tree_multi_assignment (tree_argument_list *lst,
+                                                tree_expression *r,
+                                                bool plhs, int l, int c)
+    : tree_expression (l, c), m_lhs (lst), m_rhs (r), m_preserve (plhs)
   { }
 
   tree_multi_assignment::~tree_multi_assignment (void)
   {
-    if (! preserve)
-      delete lhs;
+    if (! m_preserve)
+      delete m_lhs;
 
-    delete rhs;
+    delete m_rhs;
   }
 
   std::string

@@ -47,17 +47,17 @@ namespace octave
     tree_binary_expression (int l = -1, int c = -1,
                             octave_value::binary_op t
                             = octave_value::unknown_binary_op)
-      : tree_expression (l, c), op_lhs (nullptr), op_rhs (nullptr), etype (t),
-        eligible_for_braindead_shortcircuit (false),
-        braindead_shortcircuit_warning_issued (false) { }
+      : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr), m_etype (t),
+        m_eligible_for_braindead_shortcircuit (false),
+        m_braindead_shortcircuit_warning_issued (false) { }
 
     tree_binary_expression (tree_expression *a, tree_expression *b,
                             int l = -1, int c = -1,
                             octave_value::binary_op t
                             = octave_value::unknown_binary_op)
-      : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t),
-        eligible_for_braindead_shortcircuit (false),
-        braindead_shortcircuit_warning_issued (false) { }
+      : tree_expression (l, c), m_lhs (a), m_rhs (b), m_etype (t),
+        m_eligible_for_braindead_shortcircuit (false),
+        m_braindead_shortcircuit_warning_issued (false) { }
 
     // No copying!
 
@@ -67,25 +67,25 @@ namespace octave
 
     ~tree_binary_expression (void)
     {
-      delete op_lhs;
-      delete op_rhs;
+      delete m_lhs;
+      delete m_rhs;
     }
 
     void mark_braindead_shortcircuit (void)
     {
-      if (etype == octave_value::op_el_and || etype == octave_value::op_el_or)
+      if (m_etype == octave_value::op_el_and || m_etype == octave_value::op_el_or)
         {
-          eligible_for_braindead_shortcircuit = true;
+          m_eligible_for_braindead_shortcircuit = true;
 
-          op_lhs->mark_braindead_shortcircuit ();
-          op_rhs->mark_braindead_shortcircuit ();
+          m_lhs->mark_braindead_shortcircuit ();
+          m_rhs->mark_braindead_shortcircuit ();
         }
     }
 
     bool has_magic_end (void) const
     {
-      return ((op_lhs && op_lhs->has_magic_end ())
-              || (op_rhs && op_rhs->has_magic_end ()));
+      return ((m_lhs && m_lhs->has_magic_end ())
+              || (m_rhs && m_rhs->has_magic_end ()));
     }
 
     bool is_binary_expression (void) const { return true; }
@@ -94,14 +94,14 @@ namespace octave
 
     std::string oper (void) const;
 
-    octave_value::binary_op op_type (void) const { return etype; }
+    octave_value::binary_op op_type (void) const { return m_etype; }
 
-    tree_expression * lhs (void) { return op_lhs; }
-    tree_expression * rhs (void) { return op_rhs; }
+    tree_expression * lhs (void) { return m_lhs; }
+    tree_expression * rhs (void) { return m_rhs; }
 
     bool is_eligible_for_braindead_shortcircuit (void) const
     {
-      return eligible_for_braindead_shortcircuit;
+      return m_eligible_for_braindead_shortcircuit;
     }
 
     tree_expression * dup (symbol_scope& scope) const;
@@ -118,21 +118,21 @@ namespace octave
   protected:
 
     // The operands for the expression.
-    tree_expression *op_lhs;
-    tree_expression *op_rhs;
+    tree_expression *m_lhs;
+    tree_expression *m_rhs;
 
   private:
 
     // The type of the expression.
-    octave_value::binary_op etype;
+    octave_value::binary_op m_etype;
 
     // TRUE if this is an | or & expression in the condition of an IF
     // or WHILE statement.
-    bool eligible_for_braindead_shortcircuit;
+    bool m_eligible_for_braindead_shortcircuit;
 
     // TRUE if we have already issued a warning about short circuiting
     // for this operator.
-    bool braindead_shortcircuit_warning_issued;
+    bool m_braindead_shortcircuit_warning_issued;
   };
 
   // Boolean expressions.
@@ -149,11 +149,11 @@ namespace octave
       };
 
     tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
-      : tree_binary_expression (l, c), etype (t) { }
+      : tree_binary_expression (l, c), m_etype (t) { }
 
     tree_boolean_expression (tree_expression *a, tree_expression *b,
                              int l = -1, int c = -1, type t = unknown)
-      : tree_binary_expression (a, b, l, c), etype (t) { }
+      : tree_binary_expression (a, b, l, c), m_etype (t) { }
 
     // No copying!
 
@@ -169,7 +169,7 @@ namespace octave
 
     std::string oper (void) const;
 
-    type op_type (void) const { return etype; }
+    type op_type (void) const { return m_etype; }
 
     tree_expression * dup (symbol_scope& scope) const;
 
@@ -181,7 +181,7 @@ namespace octave
   private:
 
     // The type of the expression.
-    type etype;
+    type m_etype;
   };
 }
 

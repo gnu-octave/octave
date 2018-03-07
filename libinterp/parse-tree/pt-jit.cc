@@ -590,7 +590,7 @@ void
     m_breaks.clear ();
     m_continues.clear ();
 
-    size_t num_incomming = 0; // number of incomming blocks to our tail
+    size_t num_incoming = 0; // number of incoming blocks to our tail
     iter = lst.begin ();
     for (size_t i = 0; iter != lst.end (); ++iter, ++i)
       {
@@ -623,7 +623,7 @@ void
         try
           {
             stmt_lst->accept (*this);
-            ++num_incomming;
+            ++num_incoming;
             m_block->append (m_factory.create<jit_branch> (tail));
           }
         catch (const jit_break_exception&)
@@ -636,7 +636,7 @@ void
     m_breaks.splice (m_breaks.end (), current_breaks);
     m_continues.splice (m_continues.end (), current_continues);
 
-    if (num_incomming || ! last_else)
+    if (num_incoming || ! last_else)
       {
         m_blocks.push_back (tail);
         m_block = tail;
@@ -889,7 +889,7 @@ void
     m_breaks.clear ();
     m_continues.clear ();
 
-    size_t num_incomming = 0; // number of incomming blocks to our tail
+    size_t num_incoming = 0; // number of incoming blocks to our tail
 
     tree_switch_case_list::iterator iter = lst->begin ();
     for (size_t i = 0; i < case_blocks_num; ++iter, ++i)
@@ -929,7 +929,7 @@ void
         try
           {
             stmt_lst->accept (*this);
-            num_incomming++;
+            num_incoming++;
             m_block->append (m_factory.create<jit_branch> (tail));
           }
         catch (const jit_break_exception&)
@@ -944,7 +944,7 @@ void
     m_breaks.splice (m_breaks.end (), current_breaks);
     m_continues.splice (m_continues.end (), current_continues);
 
-    if (num_incomming || ! has_otherwise)
+    if (num_incoming || ! has_otherwise)
       {
         m_blocks.push_back (tail);
         m_block = tail; // switch_tail
@@ -1457,7 +1457,7 @@ void
     llvm::PHINode *llvm_phi = phi->to_llvm ();
     for (size_t i = 0; i < phi->argument_count (); ++i)
       {
-        llvm::BasicBlock *pred = phi->incomming_llvm (i);
+        llvm::BasicBlock *pred = phi->incoming_llvm (i);
         llvm_phi->addIncoming (phi->argument_llvm (i), pred);
       }
   }
@@ -1504,10 +1504,10 @@ void
     const jit_range& rng = cr.value ();
 
     llvm::Constant *constants[4];
-    constants[0] = llvm::ConstantFP::get (scalar_t, rng.base);
-    constants[1] = llvm::ConstantFP::get (scalar_t, rng.limit);
-    constants[2] = llvm::ConstantFP::get (scalar_t, rng.inc);
-    constants[3] = llvm::ConstantInt::get (idx, rng.nelem);
+    constants[0] = llvm::ConstantFP::get (scalar_t, rng.m_base);
+    constants[1] = llvm::ConstantFP::get (scalar_t, rng.m_limit);
+    constants[2] = llvm::ConstantFP::get (scalar_t, rng.m_inc);
+    constants[3] = llvm::ConstantInt::get (idx, rng.m_nelem);
 
     llvm::Value *as_llvm;
     as_llvm = llvm::ConstantStruct::get (stype,
@@ -1599,7 +1599,7 @@ void
   jit_convert_llvm::visit (jit_phi& phi)
   {
     // we might not have converted all incoming branches, so we don't
-    // set incomming branches now
+    // set incoming branches now
     llvm::PHINode *node = llvm::PHINode::Create (phi.type_llvm (),
                                                  phi.argument_count ());
     builder.Insert (node);
@@ -1662,7 +1662,7 @@ void
     const jit_function& ol = me.overload ();
 
     jit_magic_end::context ctx = me.resolve_context ();
-    llvm::Value *ret = ol.call (builder, ctx.value, ctx.index, ctx.count);
+    llvm::Value *ret = ol.call (builder, ctx.m_value, ctx.m_index, ctx.m_count);
     me.stash_llvm (ret);
   }
 
@@ -1810,7 +1810,7 @@ void
             ++iter;
 
             if (var->has_top ())
-              phi->add_incomming (&ablock, var->top ());
+              phi->add_incoming (&ablock, var->top ());
             else
               {
                 // temporaries may have extranious phi nodes which can be removed
@@ -1915,7 +1915,7 @@ void
         jit_use *use = phi->first_use ();
         if (phi->use_count () == 1 && isa<jit_assign> (use->user ()))
           {
-            // instead of releasing on assign, release on all incomming branches,
+            // instead of releasing on assign, release on all incoming branches,
             // this can get rid of casts inside loops
             for (size_t i = 0; i < phi->argument_count (); ++i)
               {
@@ -1923,7 +1923,7 @@ void
                 if (! arg->needs_release ())
                   continue;
 
-                jit_block *inc = phi->incomming (i);
+                jit_block *inc = phi->incoming (i);
                 jit_block *split = inc->maybe_split (m_factory, m_blocks, ablock);
                 jit_terminator *term = split->terminator ();
                 jit_call *release
@@ -2016,7 +2016,7 @@ void
         jit_value *arg = phi.argument (i);
         if (arg->type () != phi.type ())
           {
-            jit_block *pred = phi.incomming (i);
+            jit_block *pred = phi.incoming (i);
             jit_block *split = pred->maybe_split (m_factory, m_blocks, pblock);
             jit_terminator *term = split->terminator ();
             jit_instruction *cast = m_factory.create<jit_call> (cast_fn, arg);

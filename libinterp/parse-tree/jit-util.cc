@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-
   std::ostream&
   operator<< (std::ostream& os, const llvm::Value& v)
   {
@@ -50,7 +49,6 @@ namespace octave
     v.print (llvm_out);
     return os;
   }
-
 }
 
 #endif

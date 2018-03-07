@@ -38,32 +38,32 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
 
-  // The low level octave jit ir
-  // this ir is close to llvm, but contains information for doing type inference.
-  // We convert the octave parse tree to this IR directly.
+  // The low level octave JIT IR.  This ir is close to llvm, but
+  // contains information for doing type inference.  We convert the
+  // octave parse tree to this IR directly.
 
 #define JIT_VISIT_IR_NOTEMPLATE                 \
-  JIT_METH(block);                              \
-  JIT_METH(branch);                             \
-  JIT_METH(cond_branch);                        \
-  JIT_METH(call);                               \
-  JIT_METH(extract_argument);                   \
-  JIT_METH(store_argument);                     \
-  JIT_METH(return);                             \
-  JIT_METH(phi);                                \
-  JIT_METH(variable);                           \
-  JIT_METH(error_check);                        \
-  JIT_METH(assign)                              \
-  JIT_METH(argument)                            \
-  JIT_METH(magic_end)
+  JIT_METH (block);                             \
+  JIT_METH (branch);                            \
+  JIT_METH (cond_branch);                       \
+  JIT_METH (call);                              \
+  JIT_METH (extract_argument);                  \
+  JIT_METH (store_argument);                    \
+  JIT_METH (return);                            \
+  JIT_METH (phi);                               \
+  JIT_METH (variable);                          \
+  JIT_METH (error_check);                       \
+  JIT_METH (assign)                             \
+  JIT_METH (argument)                           \
+  JIT_METH (magic_end)
 
 #define JIT_VISIT_IR_CONST                      \
-  JIT_METH(const_bool);                         \
-  JIT_METH(const_scalar);                       \
-  JIT_METH(const_complex);                      \
-  JIT_METH(const_index);                        \
-  JIT_METH(const_string);                       \
-  JIT_METH(const_range)
+  JIT_METH (const_bool);                        \
+  JIT_METH (const_scalar);                      \
+  JIT_METH (const_complex);                     \
+  JIT_METH (const_index);                       \
+  JIT_METH (const_string);                      \
+  JIT_METH (const_range)
 
 #define JIT_VISIT_IR_CLASSES                    \
   JIT_VISIT_IR_NOTEMPLATE                       \
@@ -110,7 +110,7 @@ namespace octave
 
     ~jit_factory (void);
 
-    const value_list& constants (void) const { return mconstants; }
+    const value_list& constants (void) const { return m_constants; }
 
     template <typename T, typename ...Args>
     T * create (const Args&... args)
@@ -124,9 +124,9 @@ namespace octave
 
     void track_value (jit_value *v);
 
-    value_list all_values;
+    value_list m_all_values;
 
-    value_list mconstants;
+    value_list m_constants;
   };
 
   // A list of basic blocks (jit_block) which form some body of code.
@@ -137,22 +137,23 @@ namespace octave
   jit_block_list
   {
   public:
+
     typedef std::list<jit_block *>::iterator iterator;
     typedef std::list<jit_block *>::const_iterator const_iterator;
 
-    jit_block * back (void) const { return mlist.back (); }
+    jit_block * back (void) const { return m_list.back (); }
 
-    iterator begin (void) { return mlist.begin (); }
+    iterator begin (void) { return m_list.begin (); }
 
-    const_iterator begin (void) const { return mlist.begin (); }
+    const_iterator begin (void) const { return m_list.begin (); }
 
-    iterator end (void)  { return mlist.end (); }
+    iterator end (void)  { return m_list.end (); }
 
-    const_iterator end (void) const  { return mlist.end (); }
+    const_iterator end (void) const  { return m_list.end (); }
 
-    iterator erase (iterator iter) { return mlist.erase (iter); }
+    iterator erase (iterator iter) { return m_list.erase (iter); }
 
-    jit_block * front (void) const { return mlist.front (); }
+    jit_block * front (void) const { return m_list.front (); }
 
     void insert_after (iterator iter, jit_block *ablock);
 
@@ -169,8 +170,10 @@ namespace octave
     std::ostream& print_dom (std::ostream& os) const;
 
     void push_back (jit_block *b);
+
   private:
-    std::list<jit_block *> mlist;
+
+    std::list<jit_block *> m_list;
   };
 
   std::ostream& operator<<(std::ostream& os, const jit_block_list& blocks);
@@ -179,19 +182,21 @@ namespace octave
   jit_value : public jit_internal_list<jit_value, jit_use>
   {
   public:
-    jit_value (void) : llvm_value (0), ty (0), mlast_use (0),
-                       min_worklist (false) { }
+
+    jit_value (void)
+      : m_llvm_value (0), m_type (0), m_last_use (0), m_in_worklist (false)
+    { }
 
     virtual ~jit_value (void);
 
     bool in_worklist (void) const
     {
-      return min_worklist;
+      return m_in_worklist;
     }
 
     void stash_in_worklist (bool ain_worklist)
     {
-      min_worklist = ain_worklist;
+      m_in_worklist = ain_worklist;
     }
 
     // The block of the first use which is not a jit_error_check
@@ -199,21 +204,21 @@ namespace octave
     jit_block * first_use_block (void);
 
     // replace all uses with
-    virtual void replace_with (jit_value *value);
+    virtual void replace_with (jit_value *m_value);
 
-    jit_type * type (void) const { return ty; }
+    jit_type * type (void) const { return m_type; }
 
     llvm::Type * type_llvm (void) const
     {
-      return ty ? ty->to_llvm () : nullptr;
+      return m_type ? m_type->to_llvm () : nullptr;
     }
 
     const std::string& type_name (void) const
     {
-      return ty->name ();
+      return m_type->name ();
     }
 
-    void stash_type (jit_type *new_ty) { ty = new_ty; }
+    void stash_type (jit_type *new_type) { m_type = new_type; }
 
     std::string print_string (void)
     {
@@ -222,11 +227,11 @@ namespace octave
       return ss.str ();
     }
 
-    jit_instruction * last_use (void) const { return mlast_use; }
+    jit_instruction * last_use (void) const { return m_last_use; }
 
     void stash_last_use (jit_instruction *alast_use)
     {
-      mlast_use = alast_use;
+      m_last_use = alast_use;
     }
 
     virtual bool needs_release (void) const { return false; }
@@ -240,21 +245,22 @@ namespace octave
 
     bool has_llvm (void) const
     {
-      return llvm_value;
+      return m_llvm_value;
     }
 
     llvm::Value * to_llvm (void) const
     {
-      assert (llvm_value);
-      return llvm_value;
+      assert (m_llvm_value);
+      return m_llvm_value;
     }
 
     void stash_llvm (llvm::Value *compiled)
     {
-      llvm_value = compiled;
+      m_llvm_value = compiled;
     }
 
   protected:
+
     std::ostream& print_indent (std::ostream& os, size_t indent = 0) const
     {
       for (size_t i = 0; i < indent * 8; ++i)
@@ -262,11 +268,13 @@ namespace octave
       return os;
     }
 
-    llvm::Value *llvm_value;
+    llvm::Value *m_llvm_value;
+
   private:
-    jit_type *ty;
-    jit_instruction *mlast_use;
-    bool min_worklist;
+
+    jit_type *m_type;
+    jit_instruction *m_last_use;
+    bool m_in_worklist;
   };
 
   std::ostream& operator<< (std::ostream& os, const jit_value& value);
@@ -276,14 +284,15 @@ namespace octave
   jit_use : public jit_internal_node<jit_value, jit_use>
   {
   public:
+
     // some compilers don't allow us to use jit_internal_node without template
     // paremeters
     typedef jit_internal_node<jit_value, jit_use> PARENT_T;
 
-    jit_use (void) : muser (0), mindex (0) { }
+    jit_use (void) : m_user (0), m_index (0) { }
 
     // we should really have a move operator, but not until c++11 :(
-    jit_use (const jit_use& use) : muser (0), mindex (0)
+    jit_use (const jit_use& use) : m_user (0), m_index (0)
     {
       *this = use;
     }
@@ -294,9 +303,9 @@ namespace octave
       return *this;
     }
 
-    size_t index (void) const { return mindex; }
+    size_t index (void) const { return m_index; }
 
-    jit_instruction * user (void) const { return muser; }
+    jit_instruction * user (void) const { return m_user; }
 
     jit_block * user_parent (void) const;
 
@@ -306,40 +315,45 @@ namespace octave
                       size_t aindex = -1)
     {
       PARENT_T::stash_value (avalue);
-      mindex = aindex;
-      muser = auser;
+      m_index = aindex;
+      m_user = auser;
     }
+
   private:
-    jit_instruction *muser;
-    size_t mindex;
+
+    jit_instruction *m_user;
+    size_t m_index;
   };
 
   class
   jit_instruction : public jit_value
   {
   public:
+
     // FIXME: this code could be so much pretier with varadic templates...
-    jit_instruction (void) : mid (next_id ()), mparent (0)
+    jit_instruction (void)
+      : m_id (next_id ()), m_parent (0)
     { }
 
-    jit_instruction (size_t nargs) : mid (next_id ()), mparent (0)
+    jit_instruction (size_t nargs)
+      : m_id (next_id ()), m_parent (0)
     {
-      already_infered.reserve (nargs);
-      marguments.reserve (nargs);
+      m_already_infered.reserve (nargs);
+      m_arguments.reserve (nargs);
     }
 
     template <typename ...Args>
     jit_instruction (jit_value * arg1, Args... other_args)
-      : already_infered (1 + sizeof... (other_args)),
-        marguments (1 + sizeof... (other_args)),
-        mid (next_id ()), mparent (nullptr)
+      : m_already_infered (1 + sizeof... (other_args)),
+        m_arguments (1 + sizeof... (other_args)),
+        m_id (next_id ()), m_parent (nullptr)
     {
       stash_argument (0, arg1, other_args...);
     }
 
     jit_instruction (const std::vector<jit_value *>& aarguments)
-      : already_infered (aarguments.size ()), marguments (aarguments.size ()),
-        mid (next_id ()), mparent (0)
+      : m_already_infered (aarguments.size ()), m_arguments (aarguments.size ()),
+        m_id (next_id ()), m_parent (0)
     {
       for (size_t i = 0; i < aarguments.size (); ++i)
         stash_argument (i, aarguments[i]);
@@ -352,7 +366,7 @@ namespace octave
 
     jit_value * argument (size_t i) const
     {
-      return marguments[i].value ();
+      return m_arguments[i].value ();
     }
 
     llvm::Value * argument_llvm (size_t i) const
@@ -382,44 +396,44 @@ namespace octave
 
     void stash_argument (size_t i, jit_value * arg)
     {
-      marguments[i].stash_value (arg, this, i);
+      m_arguments[i].stash_value (arg, this, i);
     }
 
     template <typename ...Args>
     void stash_argument (size_t i, jit_value * arg1, Args... aargs)
     {
-      marguments[i].stash_value (arg1, this, i);
+      m_arguments[i].stash_value (arg1, this, i);
       stash_argument (++i, aargs...);
     }
 
     void push_argument (jit_value *arg)
     {
-      marguments.push_back (jit_use ());
-      stash_argument (marguments.size () - 1, arg);
-      already_infered.push_back (0);
+      m_arguments.push_back (jit_use ());
+      stash_argument (m_arguments.size () - 1, arg);
+      m_already_infered.push_back (0);
     }
 
     size_t argument_count (void) const
     {
-      return marguments.size ();
+      return m_arguments.size ();
     }
 
     void resize_arguments (size_t acount, jit_value *adefault = nullptr)
     {
-      size_t old = marguments.size ();
-      marguments.resize (acount);
-      already_infered.resize (acount);
+      size_t old = m_arguments.size ();
+      m_arguments.resize (acount);
+      m_already_infered.resize (acount);
 
       if (adefault)
         for (size_t i = old; i < acount; ++i)
           stash_argument (i, adefault);
     }
 
-    const std::vector<jit_use>& arguments (void) const { return marguments; }
+    const std::vector<jit_use>& arguments (void) const { return m_arguments; }
 
     // argument types which have been infered already
     const std::vector<jit_type *>& argument_types (void) const
-    { return already_infered; }
+    { return m_already_infered; }
 
     virtual void push_variable (void) { }
 
@@ -436,11 +450,11 @@ namespace octave
 
     virtual std::ostream& short_print (std::ostream& os) const;
 
-    jit_block * parent (void) const { return mparent; }
+    jit_block * parent (void) const { return m_parent; }
 
     std::list<jit_instruction *>::iterator location (void) const
     {
-      return mlocation;
+      return m_location;
     }
 
     llvm::BasicBlock * parent_llvm (void) const;
@@ -448,18 +462,21 @@ namespace octave
     void stash_parent (jit_block *aparent,
                        std::list<jit_instruction *>::iterator alocation)
     {
-      mparent = aparent;
-      mlocation = alocation;
+      m_parent = aparent;
+      m_location = alocation;
     }
 
-    size_t id (void) const { return mid; }
+    size_t id (void) const { return m_id; }
+
   protected:
 
     // Do SSA replacement on arguments in [start, end)
     void do_construct_ssa (size_t start, size_t end);
 
-    std::vector<jit_type *> already_infered;
+    std::vector<jit_type *> m_already_infered;
+
   private:
+
     static size_t next_id (bool reset = false)
     {
       static size_t ret = 0;
@@ -469,11 +486,11 @@ namespace octave
       return ret++;
     }
 
-    std::vector<jit_use> marguments;
+    std::vector<jit_use> m_arguments;
 
-    size_t mid;
-    jit_block *mparent;
-    std::list<jit_instruction *>::iterator mlocation;
+    size_t m_id;
+    jit_block *m_parent;
+    std::list<jit_instruction *>::iterator m_location;
   };
 
   // defnie accept methods for subclasses
@@ -485,6 +502,7 @@ namespace octave
   jit_argument : public jit_value
   {
   public:
+
     jit_argument (jit_type *atype, llvm::Value *avalue)
     {
       stash_type (atype);
@@ -505,14 +523,15 @@ namespace octave
   jit_const : public jit_value
   {
   public:
+
     typedef PASS_T pass_t;
 
-    jit_const (PASS_T avalue) : mvalue (avalue)
+    jit_const (PASS_T avalue) : m_value (avalue)
     {
       stash_type (EXTRACT_T ());
     }
 
-    PASS_T value (void) const { return mvalue; }
+    PASS_T value (void) const { return m_value; }
 
     virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
     {
@@ -520,25 +539,29 @@ namespace octave
       jit_print (os, type ()) << ": ";
       if (QUOTE)
         os << '"';
-      os << mvalue;
+      os << m_value;
       if (QUOTE)
         os << '"';
       return os;
     }
 
     JIT_VALUE_ACCEPT;
+
   private:
-    T mvalue;
+
+    T m_value;
   };
 
-  class jit_phi_incomming;
+  class jit_phi_incoming;
 
   class
   jit_block : public jit_value, public jit_internal_list<jit_block,
-                                                         jit_phi_incomming>
+                                                         jit_phi_incoming>
   {
-    typedef jit_internal_list<jit_block, jit_phi_incomming> ILIST_T;
+    typedef jit_internal_list<jit_block, jit_phi_incoming> ILIST_T;
+
   public:
+
     typedef std::list<jit_instruction *> instruction_list;
     typedef instruction_list::iterator iterator;
     typedef instruction_list::const_iterator const_iterator;
@@ -549,8 +572,8 @@ namespace octave
     static const size_t NO_ID = static_cast<size_t> (-1);
 
     jit_block (const std::string& aname, size_t avisit_count = 0)
-      : mvisit_count (avisit_count), mid (NO_ID), idom (0), mname (aname),
-        malive (false)
+      : m_visit_count (avisit_count), m_id (NO_ID), m_idom (0), m_name (aname),
+        m_alive (false)
     { }
 
     virtual void replace_with (jit_value *value);
@@ -563,9 +586,9 @@ namespace octave
     size_t use_count (void) const { return jit_value::use_count (); }
 
     // if a block is alive, then it might be visited during execution
-    bool alive (void) const { return malive; }
+    bool alive (void) const { return m_alive; }
 
-    void mark_alive (void) { malive = true; }
+    void mark_alive (void) { m_alive = true; }
 
     // If we can merge with a successor, do so and return the now empty block
     jit_block * maybe_merge ();
@@ -573,7 +596,7 @@ namespace octave
     // merge another block into this block, leaving the merge block empty
     void merge (jit_block& merge);
 
-    const std::string& name (void) const { return mname; }
+    const std::string& name (void) const { return m_name; }
 
     jit_instruction * prepend (jit_instruction *instr);
 
@@ -603,8 +626,8 @@ namespace octave
     iterator remove (iterator iter)
     {
       jit_instruction *instr = *iter;
-      iter = instructions.erase (iter);
-      instr->stash_parent (0, instructions.end ());
+      iter = m_instructions.erase (iter);
+      instr->stash_parent (0, m_instructions.end ());
       return iter;
     }
 
@@ -617,13 +640,13 @@ namespace octave
 
     size_t successor_count (void) const;
 
-    iterator begin (void) { return instructions.begin (); }
+    iterator begin (void) { return m_instructions.begin (); }
 
-    const_iterator begin (void) const { return instructions.begin (); }
+    const_iterator begin (void) const { return m_instructions.begin (); }
 
-    iterator end (void) { return instructions.end (); }
+    iterator end (void) { return m_instructions.end (); }
 
-    const_iterator end (void) const { return instructions.end (); }
+    const_iterator end (void) const { return m_instructions.end (); }
 
     iterator phi_begin (void);
 
@@ -632,20 +655,20 @@ namespace octave
     iterator nonphi_begin (void);
 
     // must label before id is valid
-    size_t id (void) const { return mid; }
+    size_t id (void) const { return m_id; }
 
     // dominance frontier
-    const df_set& df (void) const { return mdf; }
+    const df_set& df (void) const { return m_df; }
 
-    df_iterator df_begin (void) const { return mdf.begin (); }
+    df_iterator df_begin (void) const { return m_df.begin (); }
 
-    df_iterator df_end (void) const { return mdf.end (); }
+    df_iterator df_end (void) const { return m_df.end (); }
 
     // label with a RPO walk
     void label (void)
     {
       size_t number = 0;
-      label (mvisit_count, number);
+      label (m_visit_count, number);
     }
 
     void label (size_t avisit_count, size_t& number);
@@ -656,31 +679,31 @@ namespace octave
     void compute_idom (jit_block& entry_block)
     {
       bool changed;
-      entry_block.idom = &entry_block;
+      entry_block.m_idom = &entry_block;
       do
-        changed = update_idom (mvisit_count);
+        changed = update_idom (m_visit_count);
       while (changed);
     }
 
     // compute dominance frontier
     void compute_df (void)
     {
-      compute_df (mvisit_count);
+      compute_df (m_visit_count);
     }
 
     void create_dom_tree (void)
     {
-      create_dom_tree (mvisit_count);
+      create_dom_tree (m_visit_count);
     }
 
     jit_block * dom_successor (size_t idx) const
     {
-      return dom_succ[idx];
+      return m_dom_succ[idx];
     }
 
     size_t dom_successor_count (void) const
     {
-      return dom_succ.size ();
+      return m_dom_succ.size ();
     }
 
     // call pop_variable on all instructions
@@ -702,9 +725,9 @@ namespace octave
 
     virtual std::ostream& short_print (std::ostream& os) const
     {
-      os << mname;
-      if (mid != NO_ID)
-        os << mid;
+      os << m_name;
+      if (m_id != NO_ID)
+        os << m_id;
       else
         os << '!';
       return os;
@@ -713,33 +736,35 @@ namespace octave
     llvm::BasicBlock * to_llvm (void) const;
 
     std::list<jit_block *>::iterator location (void) const
-    { return mlocation; }
+    { return m_location; }
 
     void stash_location (std::list<jit_block *>::iterator alocation)
-    { mlocation = alocation; }
+    { m_location = alocation; }
 
     // used to prevent visiting the same node twice in the graph
-    size_t visit_count (void) const { return mvisit_count; }
+    size_t visit_count (void) const { return m_visit_count; }
 
     // check if this node has been visited yet at the given visit count.
     // If we have not been visited yet, mark us as visited.
     bool visited (size_t avisit_count)
     {
-      if (mvisit_count <= avisit_count)
+      if (m_visit_count <= avisit_count)
         {
-          mvisit_count = avisit_count + 1;
+          m_visit_count = avisit_count + 1;
           return false;
         }
 
       return true;
     }
 
-    jit_instruction * front (void) { return instructions.front (); }
+    jit_instruction * front (void) { return m_instructions.front (); }
 
-    jit_instruction * back (void) { return instructions.back (); }
+    jit_instruction * back (void) { return m_instructions.back (); }
 
     JIT_VALUE_ACCEPT;
+
   private:
+
     void internal_append (jit_instruction *instr);
 
     void compute_df (size_t avisit_count);
@@ -750,43 +775,46 @@ namespace octave
 
     static jit_block * idom_intersect (jit_block *i, jit_block *j);
 
-    size_t mvisit_count;
-    size_t mid;
-    jit_block *idom;
-    df_set mdf;
-    std::vector<jit_block *> dom_succ;
-    std::string mname;
-    instruction_list instructions;
-    bool malive;
-    std::list<jit_block *>::iterator mlocation;
+    size_t m_visit_count;
+    size_t m_id;
+    jit_block *m_idom;
+    df_set m_df;
+    std::vector<jit_block *> m_dom_succ;
+    std::string m_name;
+    instruction_list m_instructions;
+    bool m_alive;
+    std::list<jit_block *>::iterator m_location;
   };
 
-  // keeps track of phi functions that use a block on incomming edges
+  // keeps track of phi functions that use a block on incoming edges
   class
-  jit_phi_incomming : public jit_internal_node<jit_block, jit_phi_incomming>
+  jit_phi_incoming : public jit_internal_node<jit_block, jit_phi_incoming>
   {
   public:
-    jit_phi_incomming (void) : muser (0) { }
 
-    jit_phi_incomming (jit_phi *auser) : muser (auser) { }
+    jit_phi_incoming (void) : m_user (0) { }
 
-    jit_phi_incomming (const jit_phi_incomming& use)
+    jit_phi_incoming (jit_phi *auser) : m_user (auser) { }
+
+    jit_phi_incoming (const jit_phi_incoming& use)
     {
       *this = use;
     }
 
-    jit_phi_incomming& operator= (const jit_phi_incomming& use)
+    jit_phi_incoming& operator= (const jit_phi_incoming& use)
     {
       stash_value (use.value ());
-      muser = use.muser;
+      m_user = use.m_user;
       return *this;
     }
 
-    jit_phi * user (void) const { return muser; }
+    jit_phi * user (void) const { return m_user; }
 
     jit_block * user_parent (void) const;
+
   private:
-    jit_phi *muser;
+
+    jit_phi *m_user;
   };
 
   // A non-ssa variable
@@ -794,9 +822,10 @@ namespace octave
   jit_variable : public jit_value
   {
   public:
-    jit_variable (const std::string& aname) : mname (aname), mlast_use (0) { }
 
-    const std::string& name (void) const { return mname; }
+    jit_variable (const std::string& aname) : m_name (aname), m_last_use (0) { }
+
+    const std::string& name (void) const { return m_name; }
 
     // manipulate the value_stack, for use during SSA construction.  The top of
     // the value stack represents the current value for this variable
@@ -813,7 +842,7 @@ namespace octave
     void push (jit_instruction *v)
     {
       value_stack.push (v);
-      mlast_use = v;
+      m_last_use = v;
     }
 
     void pop (void)
@@ -823,12 +852,12 @@ namespace octave
 
     jit_instruction * last_use (void) const
     {
-      return mlast_use;
+      return m_last_use;
     }
 
     void stash_last_use (jit_instruction *instr)
     {
-      mlast_use = instr;
+      m_last_use = instr;
     }
 
     // blocks in which we are used
@@ -844,38 +873,45 @@ namespace octave
 
     virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
     {
-      return print_indent (os, indent) << mname;
+      return print_indent (os, indent) << m_name;
     }
 
     JIT_VALUE_ACCEPT;
+
   private:
-    std::string mname;
+
+    std::string m_name;
     std::stack<jit_value *> value_stack;
-    jit_instruction *mlast_use;
+    jit_instruction *m_last_use;
   };
 
   class
   jit_assign_base : public jit_instruction
   {
   public:
-    jit_assign_base (jit_variable *adest) : jit_instruction (), mdest (adest) { }
 
-    jit_assign_base (jit_variable *adest, size_t npred) : jit_instruction (npred),
-                                                          mdest (adest) { }
+    jit_assign_base (jit_variable *adest)
+      : jit_instruction (), m_dest (adest)
+    { }
+
+    jit_assign_base (jit_variable *adest, size_t npred)
+      : jit_instruction (npred), m_dest (adest)
+    { }
 
     jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
-      : jit_instruction (arg0, arg1), mdest (adest) { }
+      : jit_instruction (arg0, arg1), m_dest (adest)
+    { }
 
-    jit_variable * dest (void) const { return mdest; }
+    jit_variable * dest (void) const { return m_dest; }
 
     virtual void push_variable (void)
     {
-      mdest->push (this);
+      m_dest->push (this);
     }
 
     virtual void pop_variable (void)
     {
-      mdest->pop ();
+      m_dest->pop ();
     }
 
     virtual std::ostream& short_print (std::ostream& os) const
@@ -886,16 +922,20 @@ namespace octave
       dest ()->short_print (os);
       return os << '#' << id ();
     }
+
   private:
-    jit_variable *mdest;
+
+    jit_variable *m_dest;
   };
 
   class
   jit_assign : public jit_assign_base
   {
   public:
+
     jit_assign (jit_variable *adest, jit_value *asrc)
-      : jit_assign_base (adest, adest, asrc), martificial (false) { }
+      : jit_assign_base (adest, adest, asrc), m_artificial (false)
+    { }
 
     jit_value * overwrite (void) const
     {
@@ -907,12 +947,14 @@ namespace octave
       return argument (1);
     }
 
-    // variables don't get modified in an SSA, but COW requires we modify
-    // variables.  An artificial assign is for when a variable gets modified.  We
-    // need an assign in the SSA, but the reference counts shouldn't be updated.
-    bool artificial (void) const { return martificial; }
+    // Variables don't get modified in an SSA, but COW requires we
+    // modify variables.  An artificial assign is for when a variable
+    // gets modified.  We need an assign in the SSA, but the reference
+    // counts shouldn't be updated.
 
-    void mark_artificial (void) { martificial = true; }
+    bool artificial (void) const { return m_artificial; }
+
+    void mark_artificial (void) { m_artificial = true; }
 
     virtual bool infer (void)
     {
@@ -937,38 +979,41 @@ namespace octave
     }
 
     JIT_VALUE_ACCEPT;
+
   private:
-    bool martificial;
+
+    bool m_artificial;
   };
 
   class
   jit_phi : public jit_assign_base
   {
   public:
+
     jit_phi (jit_variable *adest, size_t npred)
       : jit_assign_base (adest, npred)
     {
-      mincomming.reserve (npred);
+      m_incoming.reserve (npred);
     }
 
-    // removes arguments form dead incomming jumps
+    // removes arguments form dead incoming jumps
     bool prune (void);
 
-    void add_incomming (jit_block *from, jit_value *value)
+    void add_incoming (jit_block *from, jit_value *value)
     {
       push_argument (value);
-      mincomming.push_back (jit_phi_incomming (this));
-      mincomming[mincomming.size () - 1].stash_value (from);
+      m_incoming.push_back (jit_phi_incoming (this));
+      m_incoming[m_incoming.size () - 1].stash_value (from);
     }
 
-    jit_block * incomming (size_t i) const
+    jit_block * incoming (size_t i) const
     {
-      return mincomming[i].value ();
+      return m_incoming[i].value ();
     }
 
-    llvm::BasicBlock * incomming_llvm (size_t i) const
+    llvm::BasicBlock * incoming_llvm (size_t i) const
     {
-      return incomming (i)->to_llvm ();
+      return incoming (i)->to_llvm ();
     }
 
     virtual void construct_ssa (void) { }
@@ -990,7 +1035,7 @@ namespace octave
             os << indent_str;
           os << "| ";
 
-          os << *incomming (i) << " -> ";
+          os << *incoming (i) << " -> ";
           os << *argument (i);
 
           if (i + 1 < argument_count ())
@@ -1003,8 +1048,10 @@ namespace octave
     llvm::PHINode * to_llvm (void) const;
 
     JIT_VALUE_ACCEPT;
+
   private:
-    std::vector<jit_phi_incomming> mincomming;
+
+    std::vector<jit_phi_incoming> m_incoming;
   };
 
   class
@@ -1015,7 +1062,7 @@ namespace octave
     template <typename ...Args>
     jit_terminator (size_t asuccessor_count, Args... args)
       : jit_instruction (args...),
-        malive (asuccessor_count, false) { }
+        m_alive (asuccessor_count, false) { }
 
     jit_block * successor (size_t idx = 0) const
     {
@@ -1045,25 +1092,30 @@ namespace octave
       return alive (successor_index (asuccessor));
     }
 
-    bool alive (size_t idx) const { return malive[idx]; }
+    bool alive (size_t idx) const { return m_alive[idx]; }
 
-    bool alive (int idx) const { return malive[idx]; }
+    bool alive (int idx) const { return m_alive[idx]; }
 
-    size_t successor_count (void) const { return malive.size (); }
+    size_t successor_count (void) const { return m_alive.size (); }
 
     virtual bool infer (void);
 
     llvm::TerminatorInst * to_llvm (void) const;
+
   protected:
+
     virtual bool check_alive (size_t) const { return true; }
+
   private:
-    std::vector<bool> malive;
+
+    std::vector<bool> m_alive;
   };
 
   class
   jit_branch : public jit_terminator
   {
   public:
+
     jit_branch (jit_block *succ) : jit_terminator (1, succ) { }
 
     virtual size_t successor_count (void) const { return 1; }
@@ -1081,6 +1133,7 @@ namespace octave
   jit_cond_branch : public jit_terminator
   {
   public:
+
     jit_cond_branch (jit_value *c, jit_block *ctrue, jit_block *cfalse)
       : jit_terminator (2, ctrue, cfalse, c) { }
 
@@ -1113,15 +1166,16 @@ namespace octave
   jit_call : public jit_instruction
   {
   public:
+
     jit_call (const jit_operation& (*aoperation) (void))
-      : moperation (aoperation ())
+      : m_operation (aoperation ())
     {
       const jit_function& ol = overload ();
       if (ol.valid ())
         stash_type (ol.result ());
     }
 
-    jit_call (const jit_operation& aoperation) : moperation (aoperation)
+    jit_call (const jit_operation& aoperation) : m_operation (aoperation)
     {
       const jit_function& ol = overload ();
       if (ol.valid ())
@@ -1131,21 +1185,21 @@ namespace octave
     template <typename ...Args>
     jit_call (const jit_operation& aoperation,
               jit_value * arg1, Args... other_args)
-      : jit_instruction (arg1, other_args...), moperation (aoperation)
+      : jit_instruction (arg1, other_args...), m_operation (aoperation)
   { }
 
     template <typename ...Args>
     jit_call (const jit_operation& (*aoperation) (void),
               jit_value * arg1, Args... other_args)
-      : jit_instruction (arg1, other_args...), moperation (aoperation ())
+      : jit_instruction (arg1, other_args...), m_operation (aoperation ())
     { }
 
     jit_call (const jit_operation& aoperation,
               const std::vector<jit_value *>& args)
-      : jit_instruction (args), moperation (aoperation)
+      : jit_instruction (args), m_operation (aoperation)
     { }
 
-    const jit_operation& operation (void) const { return moperation; }
+    const jit_operation& operation (void) const { return m_operation; }
 
     bool can_error (void) const
     {
@@ -1154,7 +1208,7 @@ namespace octave
 
     const jit_function& overload (void) const
     {
-      return moperation.overload (argument_types ());
+      return m_operation.overload (argument_types ());
     }
 
     virtual bool needs_release (void) const;
@@ -1165,7 +1219,7 @@ namespace octave
 
       if (use_count ())
         short_print (os) << " = ";
-      os << "call " << moperation.name () << " (";
+      os << "call " << m_operation.name () << " (";
 
       for (size_t i = 0; i < argument_count (); ++i)
         {
@@ -1179,8 +1233,10 @@ namespace octave
     virtual bool infer (void);
 
     JIT_VALUE_ACCEPT;
+
   private:
-    const jit_operation& moperation;
+
+    const jit_operation& m_operation;
   };
 
   // FIXME: This is just ugly...
@@ -1190,6 +1246,7 @@ namespace octave
   jit_error_check : public jit_terminator
   {
   public:
+
     // Which variable is the error check for?
     enum variable
       {
@@ -1201,12 +1258,12 @@ namespace octave
 
     jit_error_check (variable var, jit_call *acheck_for, jit_block *normal,
                      jit_block *error)
-      : jit_terminator (2, error, normal, acheck_for), mvariable (var) { }
+      : jit_terminator (2, error, normal, acheck_for), m_variable (var) { }
 
     jit_error_check (variable var, jit_block *normal, jit_block *error)
-      : jit_terminator (2, error, normal), mvariable (var) { }
+      : jit_terminator (2, error, normal), m_variable (var) { }
 
-    variable check_variable (void) const { return mvariable; }
+    variable check_variable (void) const { return m_variable; }
 
     bool has_check_for (void) const
     {
@@ -1222,15 +1279,19 @@ namespace octave
     virtual std::ostream& print (std::ostream& os, size_t indent = 0) const;
 
     JIT_VALUE_ACCEPT;
+
   protected:
+
     virtual bool check_alive (size_t idx) const
     {
       if (! has_check_for ())
         return true;
       return idx == 1 ? true : check_for ()->can_error ();
     }
+
   private:
-    variable mvariable;
+
+    variable m_variable;
   };
 
   // for now only handles the 1D case
@@ -1238,19 +1299,20 @@ namespace octave
   jit_magic_end : public jit_instruction
   {
   public:
+
     class
     context
     {
     public:
-      context (void) : value (0), index (0), count (0)
-      { }
+
+      context (void) : m_value (0), m_index (0), m_count (0) { }
 
       context (jit_factory& factory, jit_value *avalue, size_t aindex,
                size_t acount);
 
-      jit_value *value;
-      jit_const_index *index;
-      jit_const_index *count;
+      jit_value *m_value;
+      jit_const_index *m_index;
+      jit_const_index *m_count;
     };
 
     jit_magic_end (const std::vector<context>& full_context);
@@ -1269,14 +1331,17 @@ namespace octave
     }
 
     JIT_VALUE_ACCEPT;
+
   private:
-    std::vector<context> contexts;
+
+    std::vector<context> m_contexts;
   };
 
   class
   jit_extract_argument : public jit_assign_base
   {
   public:
+
     jit_extract_argument (jit_type *atype, jit_variable *adest)
       : jit_assign_base (adest)
     {
@@ -1307,13 +1372,14 @@ namespace octave
   jit_store_argument : public jit_instruction
   {
   public:
+
     jit_store_argument (jit_variable *var)
-      : jit_instruction (var), dest (var)
+      : jit_instruction (var), m_dest (var)
     { }
 
     const std::string& name (void) const
     {
-      return dest->name ();
+      return m_dest->name ();
     }
 
     const jit_function& overload (void) const
@@ -1340,7 +1406,7 @@ namespace octave
     {
       jit_value *res = result ();
       print_indent (os, indent) << "store ";
-      dest->short_print (os);
+      m_dest->short_print (os);
 
       if (! isa<jit_variable> (res))
         {
@@ -1352,14 +1418,17 @@ namespace octave
     }
 
     JIT_VALUE_ACCEPT;
+
   private:
-    jit_variable *dest;
+
+    jit_variable *m_dest;
   };
 
   class
   jit_return : public jit_instruction
   {
   public:
+
     jit_return (void) { }
 
     jit_return (jit_value *retval) : jit_instruction (retval) { }
@@ -1392,7 +1461,8 @@ namespace octave
   jit_ir_walker
   {
   public:
-    virtual ~jit_ir_walker () { }
+
+    virtual ~jit_ir_walker (void) { }
 
 #define JIT_METH(clname)                        \
     virtual void visit (jit_ ## clname&) = 0;
@@ -1410,8 +1480,8 @@ namespace octave
   }
 
 #undef JIT_VALUE_ACCEPT
-
 }
 
 #endif
+
 #endif

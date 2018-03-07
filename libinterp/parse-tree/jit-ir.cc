@@ -50,8 +50,8 @@ namespace octave
   // -------------------- jit_factory --------------------
   jit_factory::~jit_factory (void)
   {
-    for (value_list::iterator iter = all_values.begin ();
-         iter != all_values.end (); ++iter)
+    for (value_list::iterator iter = m_all_values.begin ();
+         iter != m_all_values.end (); ++iter)
       delete *iter;
   }
 
@@ -59,8 +59,8 @@ namespace octave
   jit_factory::track_value (jit_value *value)
   {
     if (value->type ())
-      mconstants.push_back (value);
-    all_values.push_back (value);
+      m_constants.push_back (value);
+    m_all_values.push_back (value);
   }
 
   // -------------------- jit_block_list --------------------
@@ -80,7 +80,7 @@ namespace octave
   void
   jit_block_list::insert_before (iterator iter, jit_block *ablock)
   {
-    iter = mlist.insert (iter, ablock);
+    iter = m_list.insert (iter, ablock);
     ablock->stash_location (iter);
   }
 
@@ -93,9 +93,9 @@ namespace octave
   void
   jit_block_list::label (void)
   {
-    if (mlist.size ())
+    if (m_list.size ())
       {
-        jit_block *block = mlist.back ();
+        jit_block *block = m_list.back ();
         block->label ();
       }
   }
@@ -124,8 +124,8 @@ namespace octave
   void
   jit_block_list::push_back (jit_block *b)
   {
-    mlist.push_back (b);
-    iterator iter = mlist.end ();
+    m_list.push_back (b);
+    iterator iter = m_list.end ();
     b->stash_location (--iter);
   }
 
@@ -145,7 +145,7 @@ namespace octave
   jit_block *
   jit_use::user_parent (void) const
   {
-    return muser->parent ();
+    return m_user->parent ();
   }
 
   // -------------------- jit_value --------------------
@@ -206,15 +206,15 @@ namespace octave
   void
   jit_instruction::remove (void)
   {
-    if (mparent)
-      mparent->remove (mlocation);
+    if (m_parent)
+      m_parent->remove (m_location);
     resize_arguments (0);
   }
 
   llvm::BasicBlock *
   jit_instruction::parent_llvm (void) const
   {
-    return mparent->to_llvm ();
+    return m_parent->to_llvm ();
   }
 
   std::ostream&
@@ -222,7 +222,7 @@ namespace octave
   {
     if (type ())
       jit_print (os, type ()) << ": ";
-    return os << '#' << mid;
+    return os << '#' << m_id;
   }
 
   void
@@ -248,18 +248,18 @@ namespace octave
 
     while (ILIST_T::first_use ())
       {
-        jit_phi_incomming *incomming = ILIST_T::first_use ();
-        incomming->stash_value (block);
+        jit_phi_incoming *incoming = ILIST_T::first_use ();
+        incoming->stash_value (block);
       }
   }
 
   void
   jit_block::replace_in_phi (jit_block *ablock, jit_block *with)
   {
-    jit_phi_incomming *node = ILIST_T::first_use ();
+    jit_phi_incoming *node = ILIST_T::first_use ();
     while (node)
       {
-        jit_phi_incomming *prev = node;
+        jit_phi_incoming *prev = node;
         node = node->next ();
 
         if (prev->user_parent () == ablock)
@@ -268,10 +268,10 @@ namespace octave
   }
 
   jit_block *
-  jit_block::maybe_merge ()
+  jit_block::maybe_merge (void)
   {
     if (successor_count () == 1 && successor (0) != this
-        && (successor (0)->use_count () == 1 || instructions.size () == 1))
+        && (successor (0)->use_count () == 1 || m_instructions.size () == 1))
       {
         jit_block *to_merge = successor (0);
         merge (*to_merge);
@@ -294,7 +294,7 @@ namespace octave
     if (! was_empty)
       --merge_begin;
 
-    instructions.splice (end (), block.instructions);
+    m_instructions.splice (end (), block.m_instructions);
     if (was_empty)
       merge_begin = begin ();
     else
@@ -314,8 +314,8 @@ namespace octave
   jit_instruction *
   jit_block::prepend (jit_instruction *instr)
   {
-    instructions.push_front (instr);
-    instr->stash_parent (this, instructions.begin ());
+    m_instructions.push_front (instr);
+    instr->stash_parent (this, m_instructions.begin ());
     return instr;
   }
 
@@ -339,14 +339,14 @@ namespace octave
   void
   jit_block::internal_append (jit_instruction *instr)
   {
-    instructions.push_back (instr);
-    instr->stash_parent (this, --instructions.end ());
+    m_instructions.push_back (instr);
+    instr->stash_parent (this, --m_instructions.end ());
   }
 
   jit_instruction *
   jit_block::insert_before (iterator loc, jit_instruction *instr)
   {
-    iterator iloc = instructions.insert (loc, instr);
+    iterator iloc = m_instructions.insert (loc, instr);
     instr->stash_parent (this, iloc);
     return instr;
   }
@@ -355,7 +355,7 @@ namespace octave
   jit_block::insert_after (iterator loc, jit_instruction *instr)
   {
     ++loc;
-    iterator iloc = instructions.insert (loc, instr);
+    iterator iloc = m_instructions.insert (loc, instr);
     instr->stash_parent (this, iloc);
     return instr;
   }
@@ -363,10 +363,10 @@ namespace octave
   jit_terminator *
   jit_block::terminator (void) const
   {
-    if (instructions.empty ())
+    if (m_instructions.empty ())
       return nullptr;
 
-    jit_instruction *last = instructions.back ();
+    jit_instruction *last = m_instructions.back ();
     return dynamic_cast<jit_terminator *> (last);
   }
 
@@ -393,7 +393,7 @@ namespace octave
   llvm::BasicBlock *
   jit_block::to_llvm (void) const
   {
-    return llvm::cast<llvm::BasicBlock> (llvm_value);
+    return llvm::cast<llvm::BasicBlock> (m_llvm_value);
   }
 
   std::ostream&
@@ -401,7 +401,7 @@ namespace octave
   {
     short_print (os);
     os << ":\n";
-    os << "  mid: " << mid << std::endl;
+    os << "  m_id: " << m_id << std::endl;
     os << "  predecessors: ";
     for (jit_use *use = first_use (); use; use = use->next ())
       os << *use->user_parent () << ' ';
@@ -412,9 +412,9 @@ namespace octave
       os << *successor (i) << ' ';
     os << std::endl;
 
-    os << "  idom: ";
-    if (idom)
-      os << *idom;
+    os << "  m_idom: ";
+    if (m_idom)
+      os << *m_idom;
     else
       os << "NULL";
     os << std::endl;
@@ -423,9 +423,9 @@ namespace octave
       os << **iter << ' ';
     os << std::endl;
 
-    os << "  dom_succ: ";
-    for (size_t i = 0; i < dom_succ.size (); ++i)
-      os << *dom_succ[i] << ' ';
+    os << "  m_dom_succ: ";
+    for (size_t i = 0; i < m_dom_succ.size (); ++i)
+      os << *m_dom_succ[i] << ' ';
 
     return os << std::endl;
   }
@@ -441,10 +441,10 @@ namespace octave
         for (jit_use *use = first_use (); use; use = use->next ())
           {
             jit_block *runner = use->user_parent ();
-            while (runner != idom)
+            while (runner != m_idom)
               {
-                runner->mdf.insert (this);
-                runner = runner->idom;
+                runner->m_df.insert (this);
+                runner = runner->m_idom;
               }
           }
       }
@@ -473,14 +473,14 @@ namespace octave
     for (; use; use = use->next ())
       {
         jit_block *pred = use->user_parent ();
-        jit_block *pidom = pred->idom;
+        jit_block *pidom = pred->m_idom;
         if (pidom)
           new_idom = idom_intersect (pidom, new_idom);
       }
 
-    if (idom != new_idom)
+    if (m_idom != new_idom)
       {
-        idom = new_idom;
+        m_idom = new_idom;
         return true;
       }
 
@@ -499,7 +499,7 @@ namespace octave
         pred->label (avisit_count, number);
       }
 
-    mid = number++;
+    m_id = number++;
   }
 
   void
@@ -542,7 +542,7 @@ namespace octave
       {
         jit_terminator *term = terminator ();
         size_t idx = term->successor_index (asuccessor);
-        jit_block *split = factory.create<jit_block> ("phi_split", mvisit_count);
+        jit_block *split = factory.create<jit_block> ("phi_split", m_visit_count);
 
         // place after this to ensure define before use in the blocks list
         blocks.insert_after (this, split);
@@ -569,8 +569,8 @@ namespace octave
     if (visited (avisit_count))
       return;
 
-    if (idom != this)
-      idom->dom_succ.push_back (this);
+    if (m_idom != this)
+      m_idom->m_dom_succ.push_back (this);
 
     for (size_t i = 0; i < successor_count (); ++i)
       successor (i)->create_dom_tree (avisit_count);
@@ -582,20 +582,20 @@ namespace octave
     while (i && j && i != j)
       {
         while (i && i->id () > j->id ())
-          i = i->idom;
+          i = i->m_idom;
 
         while (i && j && j->id () > i->id ())
-          j = j->idom;
+          j = j->m_idom;
       }
 
     return i ? i : j;
   }
 
-  // -------------------- jit_phi_incomming --------------------
+  // -------------------- jit_phi_incoming --------------------
 
   jit_block *
-  jit_phi_incomming::user_parent (void) const
-  { return muser->parent (); }
+  jit_phi_incoming::user_parent (void) const
+  { return m_user->parent (); }
 
   // -------------------- jit_phi --------------------
   bool
@@ -607,7 +607,7 @@ namespace octave
 
     for (size_t i = 0; i < argument_count (); ++i)
       {
-        jit_block *inc = incomming (i);
+        jit_block *inc = incoming (i);
         if (inc->branch_alive (p))
           {
             if (unique != argument (i))
@@ -616,7 +616,7 @@ namespace octave
             if (new_idx != i)
               {
                 stash_argument (new_idx, argument (i));
-                mincomming[new_idx].stash_value (inc);
+                m_incoming[new_idx].stash_value (inc);
               }
 
             ++new_idx;
@@ -626,7 +626,7 @@ namespace octave
     if (new_idx != argument_count ())
       {
         resize_arguments (new_idx);
-        mincomming.resize (new_idx);
+        m_incoming.resize (new_idx);
       }
 
     assert (argument_count () > 0);
@@ -649,7 +649,7 @@ namespace octave
     jit_type *infered = nullptr;
     for (size_t i = 0; i < argument_count (); ++i)
       {
-        jit_block *inc = incomming (i);
+        jit_block *inc = incoming (i);
         if (inc->branch_alive (p))
           infered = jit_type_join (infered, argument_type (i));
       }
@@ -688,11 +688,11 @@ namespace octave
       return false;
 
     bool changed = false;
-    for (size_t i = 0; i < malive.size (); ++i)
-      if (! malive[i] && check_alive (i))
+    for (size_t i = 0; i < m_alive.size (); ++i)
+      if (! m_alive[i] && check_alive (i))
         {
           changed = true;
-          malive[i] = true;
+          m_alive[i] = true;
           successor (i)->mark_alive ();
         }
 
@@ -729,12 +729,12 @@ namespace octave
     // FIXME: explain algorithm
     for (size_t i = 0; i < argument_count (); ++i)
       {
-        already_infered[i] = argument_type (i);
-        if (! already_infered[i])
+        m_already_infered[i] = argument_type (i);
+        if (! m_already_infered[i])
           return false;
       }
 
-    jit_type *infered = moperation.result (already_infered);
+    jit_type *infered = m_operation.result (m_already_infered);
     if (! infered && use_count ())
       {
         std::stringstream ss;
@@ -770,7 +770,7 @@ namespace octave
   std::ostream&
   jit_error_check::print (std::ostream& os, size_t indent) const
   {
-    print_indent (os, indent) << "error_check " << variable_to_string (mvariable)
+    print_indent (os, indent) << "error_check " << variable_to_string (m_variable)
                               << ", ";
 
     if (has_check_for ())
@@ -782,37 +782,37 @@ namespace octave
   // -------------------- jit_magic_end --------------------
   jit_magic_end::context::context (jit_factory& factory, jit_value *avalue,
                                    size_t aindex, size_t acount)
-    : value (avalue), index (factory.create<jit_const_index> (aindex)),
-      count (factory.create<jit_const_index> (acount))
+    : m_value (avalue), m_index (factory.create<jit_const_index> (aindex)),
+      m_count (factory.create<jit_const_index> (acount))
   { }
 
   jit_magic_end::jit_magic_end (const std::vector<context>& full_context)
-    : contexts (full_context)
+    : m_contexts (full_context)
   {
-    resize_arguments (contexts.size ());
+    resize_arguments (m_contexts.size ());
 
     size_t i;
     std::vector<context>::const_iterator iter;
-    for (iter = contexts.begin (), i = 0; iter != contexts.end (); ++iter, ++i)
-      stash_argument (i, iter->value);
+    for (iter = m_contexts.begin (), i = 0; iter != m_contexts.end (); ++iter, ++i)
+      stash_argument (i, iter->m_value);
   }
 
   jit_magic_end::context
   jit_magic_end::resolve_context (void) const
   {
     size_t idx;
-    for (idx = 0; idx < contexts.size (); ++idx)
+    for (idx = 0; idx < m_contexts.size (); ++idx)
       {
-        jit_type *ctx_type = contexts[idx].value->type ();
+        jit_type *ctx_type = m_contexts[idx].m_value->type ();
         if (! ctx_type || ctx_type->skip_paren ())
           break;
       }
 
-    if (idx >= contexts.size ())
+    if (idx >= m_contexts.size ())
       idx = 0;
 
-    context ret = contexts[idx];
-    ret.value = argument (idx);
+    context ret = m_contexts[idx];
+    ret.m_value = argument (idx);
     return ret;
   }
 
@@ -833,15 +833,15 @@ namespace octave
   jit_magic_end::print (std::ostream& os, size_t indent) const
   {
     context ctx = resolve_context ();
-    short_print (print_indent (os, indent)) << " (" << *ctx.value << ", ";
-    return os << *ctx.index << ", " << *ctx.count << ')';
+    short_print (print_indent (os, indent)) << " (" << *ctx.m_value << ", ";
+    return os << *ctx.m_index << ", " << *ctx.m_count << ')';
   }
 
   const jit_function&
-  jit_magic_end::overload () const
+  jit_magic_end::overload (void) const
   {
     const context& ctx = resolve_context ();
-    return jit_typeinfo::end (ctx.value, ctx.index, ctx.count);
+    return jit_typeinfo::end (ctx.m_value, ctx.m_index, ctx.m_count);
   }
 
 }

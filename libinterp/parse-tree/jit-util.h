@@ -93,14 +93,20 @@ namespace octave
   class jit_fail_exception : public std::runtime_error
   {
   public:
-    jit_fail_exception (void) : std::runtime_error ("unknown"), mknown (false) { }
-    jit_fail_exception (const std::string& reason) : std::runtime_error (reason),
-                                                     mknown (true)
+
+    jit_fail_exception (void)
+      : std::runtime_error ("unknown"), m_known (false)
     { }
 
-    bool known (void) const { return mknown; }
+    jit_fail_exception (const std::string& reason)
+      : std::runtime_error (reason), m_known (true)
+    { }
+
+    bool known (void) const { return m_known; }
+
   private:
-    bool mknown;
+
+    bool m_known;
   };
 
   // llvm doesn't provide this, and it's really useful for debugging
@@ -112,27 +118,34 @@ namespace octave
   // jit_internal_list and jit_internal_node implement generic embedded doubly
   // linked lists.  List items extend from jit_internal_list, and can be placed
   // in nodes of type jit_internal_node.  We use CRTP twice.
+
   template <typename LIST_T, typename NODE_T>
   class
   jit_internal_list
   {
     friend class jit_internal_node<LIST_T, NODE_T>;
+
   public:
-    jit_internal_list (void) : use_head (0), use_tail (0), muse_count (0) { }
+
+    jit_internal_list (void)
+      : m_use_head (0), m_use_tail (0), m_use_count (0)
+    { }
 
     virtual ~jit_internal_list (void)
     {
-      while (use_head)
-        use_head->stash_value (0);
+      while (m_use_head)
+        m_use_head->stash_value (0);
     }
 
-    NODE_T * first_use (void) const { return use_head; }
+    NODE_T * first_use (void) const { return m_use_head; }
 
-    size_t use_count (void) const { return muse_count; }
+    size_t use_count (void) const { return m_use_count; }
+
   private:
-    NODE_T *use_head;
-    NODE_T *use_tail;
-    size_t muse_count;
+
+    NODE_T *m_use_head;
+    NODE_T *m_use_tail;
+    size_t m_use_count;
   };
 
   // a node for internal linked lists
@@ -141,69 +154,72 @@ namespace octave
   jit_internal_node
   {
   public:
+
     typedef jit_internal_list<LIST_T, NODE_T> jit_ilist;
 
     jit_internal_node (void)
-      : mvalue (nullptr), mnext (nullptr), mprev (nullptr)
+      : m_value (nullptr), m_next (nullptr), m_prev (nullptr)
     { }
 
     ~jit_internal_node (void) { remove (); }
 
-    LIST_T * value (void) const { return mvalue; }
+    LIST_T * value (void) const { return m_value; }
 
     void stash_value (LIST_T *avalue)
     {
       remove ();
 
-      mvalue = avalue;
+      m_value = avalue;
 
-      if (mvalue)
+      if (m_value)
         {
-          jit_ilist *ilist = mvalue;
+          jit_ilist *ilist = m_value;
           NODE_T *sthis = static_cast<NODE_T *> (this);
-          if (ilist->use_head)
+          if (ilist->m_use_head)
             {
-              ilist->use_tail->mnext = sthis;
-              mprev = ilist->use_tail;
+              ilist->m_use_tail->m_next = sthis;
+              m_prev = ilist->m_use_tail;
             }
           else
-            ilist->use_head = sthis;
+            ilist->m_use_head = sthis;
 
-          ilist->use_tail = sthis;
-          ++ilist->muse_count;
+          ilist->m_use_tail = sthis;
+          ++ilist->m_use_count;
         }
     }
 
-    NODE_T * next (void) const { return mnext; }
+    NODE_T * next (void) const { return m_next; }
 
-    NODE_T * prev (void) const { return mprev; }
+    NODE_T * prev (void) const { return m_prev; }
+
   private:
-    void remove ()
+
+    void remove (void)
     {
-      if (mvalue)
+      if (m_value)
         {
-          jit_ilist *ilist = mvalue;
-          if (mprev)
-            mprev->mnext = mnext;
+          jit_ilist *ilist = m_value;
+          if (m_prev)
+            m_prev->m_next = m_next;
           else
             // we are the use_head
-            ilist->use_head = mnext;
+            ilist->m_use_head = m_next;
 
-          if (mnext)
-            mnext->mprev = mprev;
+          if (m_next)
+            m_next->m_prev = m_prev;
           else
             // we are the use tail
-            ilist->use_tail = mprev;
+            ilist->m_use_tail = m_prev;
 
-          mnext = mprev = 0;
-          --ilist->muse_count;
-          mvalue = 0;
+          m_next = m_prev = 0;
+          --ilist->m_use_count;
+          m_value = 0;
         }
     }
 
-    LIST_T *mvalue;
-    NODE_T *mnext;
-    NODE_T *mprev;
+    LIST_T *m_value;
+    NODE_T *m_next;
+    NODE_T *m_prev;
   };
 
   // Use like: isa<jit_phi> (value)

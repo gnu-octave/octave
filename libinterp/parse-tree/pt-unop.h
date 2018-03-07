@@ -46,12 +46,12 @@ namespace octave
     tree_unary_expression (int l = -1, int c = -1,
                            octave_value::unary_op t
                            = octave_value::unknown_unary_op)
-      : tree_expression (l, c), op (nullptr), etype (t)  { }
+      : tree_expression (l, c), m_op (nullptr), m_etype (t)  { }
 
     tree_unary_expression (tree_expression *e, int l = -1, int c = -1,
                            octave_value::unary_op t
                            = octave_value::unknown_unary_op)
-      : tree_expression (l, c), op (e), etype (t) { }
+      : tree_expression (l, c), m_op (e), m_etype (t) { }
 
   public:
 
@@ -61,25 +61,25 @@ namespace octave
 
     tree_unary_expression& operator = (const tree_unary_expression&) = delete;
 
-    ~tree_unary_expression (void) { delete op; }
+    ~tree_unary_expression (void) { delete m_op; }
 
     bool is_unary_expression (void) const { return true; }
 
-    bool has_magic_end (void) const { return (op && op->has_magic_end ()); }
+    bool has_magic_end (void) const { return (m_op && m_op->has_magic_end ()); }
 
-    tree_expression * operand (void) { return op; }
+    tree_expression * operand (void) { return m_op; }
 
     std::string oper (void) const;
 
-    octave_value::unary_op op_type (void) const { return etype; }
+    octave_value::unary_op op_type (void) const { return m_etype; }
 
   protected:
 
     // The operand for the expression.
-    tree_expression *op;
+    tree_expression *m_op;
 
     // The type of the expression.
-    octave_value::unary_op etype;
+    octave_value::unary_op m_etype;
   };
 
   // Prefix expressions.

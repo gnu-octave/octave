@@ -34,7 +34,7 @@ namespace octave
   std::string
   tree_unary_expression::oper (void) const
   {
-    return octave_value::unary_op_as_string (etype);
+    return octave_value::unary_op_as_string (m_etype);
   }
 
   // Prefix expressions.
@@ -43,8 +43,8 @@ namespace octave
   tree_prefix_expression::dup (symbol_scope& scope) const
   {
     tree_prefix_expression *new_pe
-      = new tree_prefix_expression (op ? op->dup (scope) : nullptr,
-                                    line (), column (), etype);
+      = new tree_prefix_expression (m_op ? m_op->dup (scope) : nullptr,
+                                    line (), column (), m_etype);
 
     new_pe->copy_base (*this);
 
@@ -57,8 +57,8 @@ namespace octave
   tree_postfix_expression::dup (symbol_scope& scope) const
   {
     tree_postfix_expression *new_pe
-      = new tree_postfix_expression (op ? op->dup (scope) : nullptr,
-                                     line (), column (), etype);
+      = new tree_postfix_expression (m_op ? m_op->dup (scope) : nullptr,
+                                     line (), column (), m_etype);
 
     new_pe->copy_base (*this);
 

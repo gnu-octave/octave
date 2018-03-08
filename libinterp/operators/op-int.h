@@ -350,7 +350,7 @@ along with Octave; see the file COPYING.  If not, see
    if (! v1.TS ## scalar_value ())                                      \
      warn_divide_by_zero ();                                            \
                                                                         \
-   octave_value retval = octave_value (v2.TS ## scalar_value () / v1.TS ## scalar_value ()); \
+   octave_value retval = octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
    return retval;                                                       \
    }                                                                    \
                                                                         \

@@ -3432,7 +3432,10 @@ Return true if @var{x} is a Java object.
 %! assert (a(1).s.startsWith ("Oct"))
 
 ## Check for basic usability of the java awt library
-%!testif HAVE_JAVA; usejava ("jvm") && usejava ("awt") && have_window_system ()
+## Skip the test on OS X where we currently have Java 9 and attempting
+## to use awt causes Octave to exit with a message about Java not being
+## installed (it is) instead of returning false.
+%!testif HAVE_JAVA; ! ismac () && usejava ("jvm") && usejava ("awt") && have_window_system ()
 %! frame = javaObject ("java.awt.Frame");
 %! frame.setResizable (true);
 %! assert (frame.isResizable ());

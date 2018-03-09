@@ -3242,6 +3242,8 @@ the top level.
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
+
+@seealso{max_stack_depth}
 @end deftypefn */)
 {
   octave::tree_evaluator& tw = interp.get_evaluator ();

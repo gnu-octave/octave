@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "call-stack.h"
+#include "defun.h"
 #include "interpreter.h"
 #include "oct-map.h"
 #include "ov.h"
@@ -32,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
+#include "variables.h"
 
 // Use static fields for the best efficiency.
 // NOTE: C++0x will allow these two to be merged into one.
@@ -86,7 +88,7 @@ namespace octave
   }
 
   call_stack::call_stack (interpreter& interp)
-    : cs (), curr_frame (0), m_interpreter (interp)
+    : cs (), curr_frame (0), m_max_stack_depth (1024), m_interpreter (interp)
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
@@ -365,6 +367,11 @@ namespace octave
   {
     size_t prev_frame = curr_frame;
     curr_frame = cs.size ();
+
+    // m_max_stack_depth should never be less than zero.
+    if (curr_frame > static_cast<size_t> (m_max_stack_depth))
+      error ("max_stack_depth exceeded");
+
     cs.push_back (stack_frame (fcn, scope, context, prev_frame));
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
@@ -624,4 +631,47 @@ namespace octave
         symtab.set_scope_and_context (new_elt.m_scope, new_elt.m_context);
       }
   }
+
+  octave_value
+  call_stack::max_stack_depth (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_max_stack_depth, args, nargout,
+                                  "max_stack_depth", 0);
+  }
 }
+
+DEFMETHOD (max_stack_depth, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} max_stack_depth ()
+@deftypefnx {} {@var{old_val} =} max_stack_depth (@var{new_val})
+@deftypefnx {} {} max_stack_depth (@var{new_val}, "local")
+Query or set the internal limit on the number of times a function may
+be called recursively.
+
+If the limit is exceeded, an error message is printed and control returns to
+the top level.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+@seealso{max_recursion_depth}
+@end deftypefn */)
+{
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  return cs.max_stack_depth (args, nargout);
+}
+
+/*
+%!test
+%! orig_val = max_stack_depth ();
+%! old_val = max_stack_depth (2*orig_val);
+%! assert (orig_val, old_val);
+%! assert (max_stack_depth (), 2*orig_val);
+%! max_stack_depth (orig_val);
+%! assert (max_stack_depth (), orig_val);
+
+%!error (max_stack_depth (1, 2))
+*/
+

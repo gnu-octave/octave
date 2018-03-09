@@ -32,6 +32,8 @@ class octave_function;
 class octave_map;
 class octave_user_code;
 class octave_user_script;
+class octave_value;
+class octave_value_list;
 
 #include "symscope.h"
 
@@ -252,12 +254,16 @@ namespace octave
 
     void clear (void) { cs.clear (); }
 
+    octave_value max_stack_depth (const octave_value_list& args, int nargout);
+
   private:
 
     // The current call stack.
     std::deque<stack_frame> cs;
 
     size_t curr_frame;
+
+    int m_max_stack_depth;
 
     interpreter& m_interpreter;
   };

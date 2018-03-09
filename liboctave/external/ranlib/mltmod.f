@@ -1,7 +1,7 @@
-      INTEGER FUNCTION mltmod(a,s,m)
+      INTEGER*4 FUNCTION mltmod(a,s,m)
 C**********************************************************************
 C
-C     INTEGER FUNCTION MLTMOD(A,S,M)
+C     INTEGER*4 FUNCTION MLTMOD(A,S,M)
 C
 C                    Returns (A*S) MOD M
 C
@@ -21,14 +21,14 @@ C                         INTEGER A,S,M
 C
 C**********************************************************************
 C     .. Parameters ..
-      INTEGER h
+      INTEGER*4 h
       PARAMETER (h=32768)
 C     ..
 C     .. Scalar Arguments ..
-      INTEGER a,m,s
+      INTEGER*4 a,m,s
 C     ..
 C     .. Local Scalars ..
-      INTEGER a0,a1,k,p,q,qh,rh
+      INTEGER*4 a0,a1,k,p,q,qh,rh
 C     ..
 C     .. Executable Statements ..
 C

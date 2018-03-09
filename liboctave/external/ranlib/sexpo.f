@@ -30,7 +30,7 @@ C
 C     JJV added a Save statement for q (in Data statement)
 C     .. Local Scalars ..
       REAL a,q1,u,umin,ustar
-      INTEGER i
+      INTEGER*4 i
 C     ..
 C     .. Local Arrays ..
       REAL q(8)

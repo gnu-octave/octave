@@ -1,7 +1,7 @@
-      INTEGER FUNCTION ignbin(n,pp)
+      INTEGER*4 FUNCTION ignbin(n,pp)
 C**********************************************************************
 C
-C     INTEGER FUNCTION IGNBIN( N, PP )
+C     INTEGER*4 FUNCTION IGNBIN( N, PP )
 C
 C                    GENerate BINomial random deviate
 C
@@ -151,12 +151,12 @@ C
 C     ..
 C     .. Scalar Arguments ..
       REAL pp
-      INTEGER n
+      INTEGER*4 n
 C     ..
 C     .. Local Scalars ..
       REAL al,alv,amaxp,c,f,f1,f2,ffm,fm,g,p,p1,p2,p3,p4,psave,q,qn,r,u,
      +     v,w,w2,x,x1,x2,xl,xll,xlr,xm,xnp,xnpq,xr,ynorm,z,z2
-      INTEGER i,ix,ix1,k,m,mp,nsave
+      INTEGER*4 i,ix,ix1,k,m,mp,nsave
 C     ..
 C     .. External Functions ..
       REAL ranf

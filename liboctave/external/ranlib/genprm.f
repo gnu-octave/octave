@@ -17,16 +17,16 @@ C                         INTEGER LARRAY
 C
 C**********************************************************************
 C     .. Scalar Arguments ..
-      INTEGER larray
+      INTEGER*4 larray
 C     ..
 C     .. Array Arguments ..
-      INTEGER iarray(larray)
+      INTEGER*4 iarray(larray)
 C     ..
 C     .. Local Scalars ..
-      INTEGER i,itmp,iwhich
+      INTEGER*4 i,itmp,iwhich
 C     ..
 C     .. External Functions ..
-      INTEGER ignuin
+      INTEGER*4 ignuin
       EXTERNAL ignuin
 C     ..
 C     .. Executable Statements ..

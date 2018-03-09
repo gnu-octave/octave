@@ -1,7 +1,7 @@
-      INTEGER FUNCTION ignpoi(mu)
+      INTEGER*4 FUNCTION ignpoi(mu)
 C**********************************************************************
 C
-C     INTEGER FUNCTION IGNPOI( MU )
+C     INTEGER*4 FUNCTION IGNPOI( MU )
 C
 C                    GENerate POIsson random deviate
 C
@@ -61,7 +61,7 @@ C     (SLIGHTLY MODIFIED VERSION OF THE PROGRAM IN THE ABOVE ARTICLE)  C
 C                                                                      C
 C**********************************************************************C
 C
-C      INTEGER FUNCTION IGNPOI(IR,MU)
+C      INTEGER*4 FUNCTION IGNPOI(IR,MU)
 C
 C     INPUT:  IR=CURRENT STATE OF BASIC RANDOM NUMBER GENERATOR
 C             MU=MEAN MU OF THE POISSON DISTRIBUTION
@@ -84,7 +84,7 @@ C     .. Local Scalars ..
       REAL a0,a1,a2,a3,a4,a5,a6,a7,b1,b2,c,c0,c1,c2,c3,d,del,difmuk,e,
      +     fk,fx,fy,g,muold,muprev,omega,p,p0,px,py,q,s,t,u,v,x,xx
 C     JJV I added a variable 'll' here - it is the 'l' for CASE A
-      INTEGER j,k,kflag,l,ll,m
+      INTEGER*4 j,k,kflag,l,ll,m
 C     ..
 C     .. Local Arrays ..
       REAL fact(10),pp(35)

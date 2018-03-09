@@ -17,7 +17,7 @@ C     Software, 17:98-111 (1991)
 C
 C**********************************************************************
 C     .. External Functions ..
-      INTEGER ignlgi
+      INTEGER*4 ignlgi
       EXTERNAL ignlgi
 C     ..
 C     .. Executable Statements ..

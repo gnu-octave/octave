@@ -29,22 +29,22 @@ C                                   LOGICAL QVALUE
 C
 C**********************************************************************
 C     .. Parameters ..
-      INTEGER numg
+      INTEGER*4 numg
       PARAMETER (numg=32)
 C     ..
 C     .. Scalar Arguments ..
       LOGICAL qvalue
 C     ..
 C     .. Scalars in Common ..
-      INTEGER a1,a1vw,a1w,a2,a2vw,a2w,m1,m2
+      INTEGER*4 a1,a1vw,a1w,a2,a2vw,a2w,m1,m2
 C     ..
 C     .. Arrays in Common ..
-      INTEGER cg1(numg),cg2(numg),ig1(numg),ig2(numg),lg1(numg),
+      INTEGER*4 cg1(numg),cg2(numg),ig1(numg),ig2(numg),lg1(numg),
      +        lg2(numg)
       LOGICAL qanti(numg)
 C     ..
 C     .. Local Scalars ..
-      INTEGER g
+      INTEGER*4 g
 C     ..
 C     .. External Functions ..
       LOGICAL qrgnin

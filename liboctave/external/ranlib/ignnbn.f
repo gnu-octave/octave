@@ -1,7 +1,7 @@
-      INTEGER FUNCTION ignnbn(n,p)
+      INTEGER*4 FUNCTION ignnbn(n,p)
 C**********************************************************************
 C
-C     INTEGER FUNCTION IGNNBN( N, P )
+C     INTEGER*4 FUNCTION IGNNBN( N, P )
 C
 C                GENerate Negative BiNomial random deviate
 C
@@ -40,7 +40,7 @@ C**********************************************************************
 C     ..
 C     .. Scalar Arguments ..
       REAL p
-      INTEGER n
+      INTEGER*4 n
 C     ..
 C     .. Local Scalars ..
       REAL y,a,r
@@ -49,7 +49,7 @@ C     .. External Functions ..
 C     JJV changed to call SGAMMA directly
 C     REAL gengam
       REAL sgamma
-      INTEGER ignpoi
+      INTEGER*4 ignpoi
 C      EXTERNAL gengam,ignpoi
       EXTERNAL sgamma,ignpoi
 C     ..

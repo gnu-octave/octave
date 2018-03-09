@@ -39,7 +39,7 @@ C     .. Array Arguments ..
 C     ..
 C     .. Local Scalars ..
       REAL ae
-      INTEGER i,icount,j,p
+      INTEGER*4 i,icount,j,p
 C     ..
 C     .. External Functions ..
       REAL snorm

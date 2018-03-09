@@ -39,18 +39,18 @@ C     New York, 1986.
 C
 C**********************************************************************
 C     .. Scalar Arguments ..
-      INTEGER n,ncat
+      INTEGER*4 n,ncat
 C     ..
 C     .. Array Arguments ..
       REAL p(*)
-      INTEGER ix(*)
+      INTEGER*4 ix(*)
 C     ..
 C     .. Local Scalars ..
       REAL prob,ptot,sum
-      INTEGER i,icat,ntot
+      INTEGER*4 i,icat,ntot
 C     ..
 C     .. External Functions ..
-      INTEGER ignbin
+      INTEGER*4 ignbin
       EXTERNAL ignbin
 C     ..
 C     .. Intrinsic Functions ..

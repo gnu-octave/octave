@@ -1,7 +1,7 @@
-      INTEGER FUNCTION ignlgi()
+      INTEGER*4 FUNCTION ignlgi()
 C**********************************************************************
 C
-C     INTEGER FUNCTION IGNLGI()
+C     INTEGER*4 FUNCTION IGNLGI()
 C               GeNerate LarGe Integer
 C
 C     Returns a random integer following a uniform distribution over
@@ -16,19 +16,19 @@ C     Software, 17:98-111 (1991)
 C
 C**********************************************************************
 C     .. Parameters ..
-      INTEGER numg
+      INTEGER*4 numg
       PARAMETER (numg=32)
 C     ..
 C     .. Scalars in Common ..
-      INTEGER a1,a1vw,a1w,a2,a2vw,a2w,m1,m2
+      INTEGER*4 a1,a1vw,a1w,a2,a2vw,a2w,m1,m2
 C     ..
 C     .. Arrays in Common ..
-      INTEGER cg1(numg),cg2(numg),ig1(numg),ig2(numg),lg1(numg),
+      INTEGER*4 cg1(numg),cg2(numg),ig1(numg),ig2(numg),lg1(numg),
      +        lg2(numg)
       LOGICAL qanti(numg)
 C     ..
 C     .. Local Scalars ..
-      INTEGER curntg,k,s1,s2,z
+      INTEGER*4 curntg,k,s1,s2,z
       LOGICAL qqssd
 C     ..
 C     .. External Functions ..

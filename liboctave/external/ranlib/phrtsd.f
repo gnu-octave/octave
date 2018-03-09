@@ -39,23 +39,23 @@ C     .. Parameters ..
       PARAMETER (table='abcdefghijklmnopqrstuvwxyz'//
      +          'ABCDEFGHIJKLMNOPQRSTUVWXYZ'//'0123456789'//
      +          '!@#$%^&*()_+[];:''"<>?,./')
-      INTEGER twop30
+      INTEGER*4 twop30
       PARAMETER (twop30=1073741824)
-      INTEGER sixty4
+      INTEGER*4 sixty4
       PARAMETER (sixty4=64)
 C     ..
 C     .. Scalar Arguments ..
-      INTEGER seed1,seed2
+      INTEGER*4 seed1,seed2
       CHARACTER phrase* (*)
 C     ..
 C     .. Local Scalars ..
-      INTEGER i,ichr,j,lphr,idxval
+      INTEGER*4 i,ichr,j,lphr,idxval
 C     ..
 C     .. Local Arrays ..
-      INTEGER shift(0:4),values(5)
+      INTEGER*4 shift(0:4),values(5)
 C     ..
 C     .. External Functions ..
-      INTEGER lennob
+      INTEGER*4 lennob
       EXTERNAL lennob
 C     ..
 C     .. Intrinsic Functions ..

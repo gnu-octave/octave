@@ -1,5 +1,5 @@
       SUBROUTINE getcgn(g)
-      INTEGER g
+      INTEGER*4 g
 C**********************************************************************
 C
 C      SUBROUTINE GETCGN(G)
@@ -16,7 +16,7 @@ C                    INTEGER G
 C
 C**********************************************************************
 C
-      INTEGER curntg,numg
+      INTEGER*4 curntg,numg
       SAVE curntg
       PARAMETER (numg=32)
       DATA curntg/1/

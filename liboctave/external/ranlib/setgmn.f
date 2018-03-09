@@ -48,14 +48,14 @@ C
 C**********************************************************************
 C     .. Scalar Arguments ..
 C      INTEGER p
-      INTEGER p, ldcovm
+      INTEGER*4 p, ldcovm
 C     ..
 C     .. Array Arguments ..
 C      REAL covm(p,p),meanv(p),parm(p* (p+3)/2+1)
       REAL covm(ldcovm,p),meanv(p),parm(p* (p+3)/2+1)
 C     ..
 C     .. Local Scalars ..
-      INTEGER i,icount,info,j
+      INTEGER*4 i,icount,info,j
 C     ..
 C     .. External Subroutines ..
       EXTERNAL spotrf

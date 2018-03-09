@@ -1,8 +1,8 @@
-      INTEGER FUNCTION lennob(string)
-      IMPLICIT INTEGER (a-p,r-z),LOGICAL (q)
+      INTEGER*4 FUNCTION lennob(string)
+      IMPLICIT INTEGER*4 (a-p,r-z),LOGICAL (q)
 C**********************************************************************
 C
-C     INTEGER FUNCTION LENNOB( STRING )
+C     INTEGER*4 FUNCTION LENNOB( STRING )
 C                LENgth NOt counting trailing Blanks
 C
 C

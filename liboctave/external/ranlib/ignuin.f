@@ -1,7 +1,7 @@
-      INTEGER FUNCTION ignuin(low,high)
+      INTEGER*4 FUNCTION ignuin(low,high)
 C**********************************************************************
 C
-C     INTEGER FUNCTION IGNUIN( LOW, HIGH )
+C     INTEGER*4 FUNCTION IGNUIN( LOW, HIGH )
 C
 C               GeNerate Uniform INteger
 C
@@ -33,20 +33,20 @@ C**********************************************************************
 C     IGNLGI generates integers between 1 and 2147483562
 C     MAXNUM is 1 less than maximum generable value
 C     .. Parameters ..
-      INTEGER maxnum
+      INTEGER*4 maxnum
       PARAMETER (maxnum=2147483561)
       CHARACTER*(*) err1,err2
       PARAMETER (err1='LOW > HIGH in IGNUIN',
      +          err2=' ( HIGH - LOW ) > 2,147,483,561 in IGNUIN')
 C     ..
 C     .. Scalar Arguments ..
-      INTEGER high,low
+      INTEGER*4 high,low
 C     ..
 C     .. Local Scalars ..
-      INTEGER err,ign,maxnow,range,ranp1
+      INTEGER*4 err,ign,maxnow,range,ranp1
 C     ..
 C     .. External Functions ..
-      INTEGER ignlgi
+      INTEGER*4 ignlgi
       EXTERNAL ignlgi
 C     ..
 C     .. Intrinsic Functions ..

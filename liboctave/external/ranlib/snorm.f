@@ -29,7 +29,7 @@ C     H(K) ARE ACCORDING TO THE ABOVEMENTIONED ARTICLE
 C
 C     .. Local Scalars ..
       REAL aa,s,tt,u,ustar,w,y
-      INTEGER i
+      INTEGER*4 i
 C     ..
 C     .. Local Arrays ..
       REAL a(32),d(31),h(31),t(31)

@@ -562,10 +562,10 @@ octave_rand::initialize_ranlib_generators (void)
 void
 octave_rand::initialize_mersenne_twister (void)
 {
+  ColumnVector s;
+
   oct_init_by_entropy ();
-
-  ColumnVector s = get_internal_state ();
-
+  s = get_internal_state ();
   rand_states[uniform_dist] = s;
 
   oct_init_by_entropy ();
@@ -583,6 +583,10 @@ octave_rand::initialize_mersenne_twister (void)
   oct_init_by_entropy ();
   s = get_internal_state ();
   rand_states[gamma_dist] = s;
+
+  // All of the initializations above have messed with the internal state.
+  // Restore the state of the currently selected distribution.
+  set_internal_state (rand_states[current_distribution]);
 }
 
 ColumnVector

@@ -47,6 +47,39 @@ Range::all_elements_are_ints (void) const
           && (octave::math::nint_big (rng_inc) == rng_inc || rng_numel <= 1));
 }
 
+octave_idx_type
+Range::nnz (void) const
+{
+  octave_idx_type retval = 0;
+
+  if (! isempty ())
+    {
+      if ((rng_base > 0.0 && rng_limit > 0.0)
+          || (rng_base < 0.0 && rng_limit < 0.0))
+        {
+          // All elements have the same sign, hence there are no zeros.
+          retval = rng_numel;
+        }
+      else if (rng_inc != 0.0)
+        {
+          if (rng_base == 0.0 || rng_limit == 0.0)
+            retval = rng_numel - 1;
+          else if ((rng_base / rng_inc) != std::floor (rng_base / rng_inc))
+            retval = rng_numel;
+          else
+            retval = rng_numel - 1;
+        }
+      else
+        {
+          // All elements are equal (rng_inc = 0) but not positive or negative,
+          // therefore all elements are zero.
+          retval = 0;
+        }
+    }
+
+  return retval;
+}
+
 Matrix
 Range::matrix_value (void) const
 {

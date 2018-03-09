@@ -2759,6 +2759,22 @@ Return the number of nonzero elements in @var{a}.
   return ovl (args(0).nnz ());
 }
 
+/*
+%!assert (nnz (1:5), 5)
+%!assert (nnz (-5:-1), 5)
+%!assert (nnz (0:5), 5)
+%!assert (nnz (-5:0), 5)
+%!assert (nnz (-5:5), 10)
+%!assert (nnz (-2:1:2), 4)
+%!assert (nnz (-2+eps(2):1:2), 5)
+%!assert (nnz (-2-eps(2):1:2), 5)
+%!assert (nnz (-2:1+eps(1):2), 5)
+%!assert (nnz (-2:1-eps(1):2), 5)
+%!assert (nnz ([1:5] * 0), 0)
+%!assert (nnz ([-5:-1] * 0), 0)
+%!assert (nnz ([-1:1] * 0), 0)
+*/
+
 DEFUN (nzmax, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} nzmax (@var{SM})

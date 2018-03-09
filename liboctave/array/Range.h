@@ -118,6 +118,8 @@ public:
   sortmode is_sorted (sortmode mode = ASCENDING) const
   { return issorted (mode); }
 
+  octave_idx_type nnz (void) const;
+
   // Support for single-index subscripting, without generating matrix cache.
 
   double checkelem (octave_idx_type i) const;

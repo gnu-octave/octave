@@ -111,6 +111,8 @@ public:
     return dim_vector (n > 0, n);
   }
 
+  octave_idx_type nnz (void) const { return range.nnz (); }
+
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   size_t byte_size (void) const { return 3 * sizeof (double); }

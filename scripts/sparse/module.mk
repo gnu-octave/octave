@@ -3,9 +3,9 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__sprand__.m \
   %reldir%/private/__alltohandles__.m \
-  %reldir%/private/__default__input__.m
+  %reldir%/private/__default__input__.m \
+  %reldir%/private/__sprand__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/bicg.m \

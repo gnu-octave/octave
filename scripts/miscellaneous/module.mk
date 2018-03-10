@@ -30,8 +30,8 @@ FCN_FILE_DIRS += \
   %reldir%/grabcode.m \
   %reldir%/gunzip.m \
   %reldir%/info.m \
-  %reldir%/inputname.m \
   %reldir%/inputParser.m \
+  %reldir%/inputname.m \
   %reldir%/isdeployed.m \
   %reldir%/isdir.m \
   %reldir%/ismac.m \
@@ -76,10 +76,10 @@ FCN_FILE_DIRS += \
   %reldir%/unpack.m \
   %reldir%/untar.m \
   %reldir%/unzip.m \
+  %reldir%/validateattributes.m \
   %reldir%/ver.m \
   %reldir%/version.m \
   %reldir%/what.m \
-  %reldir%/validateattributes.m \
   %reldir%/zip.m
 
 %canon_reldir%dir = $(fcnfiledir)/miscellaneous

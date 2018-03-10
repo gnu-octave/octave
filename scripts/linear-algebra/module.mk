@@ -20,8 +20,8 @@ scripts_linear_algebra_FCN_FILES = \
   %reldir%/istriu.m \
   %reldir%/krylov.m \
   %reldir%/linsolve.m \
-  %reldir%/lscov.m \
   %reldir%/logm.m \
+  %reldir%/lscov.m \
   %reldir%/normest.m \
   %reldir%/normest1.m \
   %reldir%/null.m \

@@ -3,8 +3,8 @@ FCN_FILE_DIRS += scripts/statistics
 %canon_reldir%_FCN_FILES = \
   %reldir%/bounds.m \
   %reldir%/center.m \
-  %reldir%/corrcoef.m \
   %reldir%/corr.m \
+  %reldir%/corrcoef.m \
   %reldir%/cov.m \
   %reldir%/discrete_cdf.m \
   %reldir%/discrete_inv.m \

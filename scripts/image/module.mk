@@ -50,9 +50,9 @@ FCN_FILE_DIRS += \
   %reldir%/pink.m \
   %reldir%/prism.m \
   %reldir%/rainbow.m \
+  %reldir%/rgb2gray.m \
   %reldir%/rgb2hsv.m \
   %reldir%/rgb2ind.m \
-  %reldir%/rgb2gray.m \
   %reldir%/rgbplot.m \
   %reldir%/spinmap.m \
   %reldir%/spring.m \

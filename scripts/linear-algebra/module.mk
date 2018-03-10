@@ -1,6 +1,6 @@
 FCN_FILE_DIRS += scripts/linear-algebra
 
-scripts_linear_algebra_FCN_FILES = \
+%canon_reldir%_FCN_FILES = \
   %reldir%/bandwidth.m \
   %reldir%/commutation_matrix.m \
   %reldir%/cond.m \
@@ -38,9 +38,9 @@ scripts_linear_algebra_FCN_FILES = \
 
 %canon_reldir%dir = $(fcnfiledir)/linear-algebra
 
-scripts_linear_algebra_DATA = $(scripts_linear_algebra_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_linear_algebra_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
 PKG_ADD_FILES += %reldir%/PKG_ADD
 

@@ -140,9 +140,6 @@ along with Octave; see the file COPYING.  If not, see
    float oct_float_rande (void)       returns N-bit standard exponential
 
    === Array generators ===
-   void oct_fill_randi32 (octave_idx_type, uint32_t [])
-   void oct_fill_randi64 (octave_idx_type, uint64_t [])
-
    void oct_fill_randu (octave_idx_type, double [])
    void oct_fill_randn (octave_idx_type, double [])
    void oct_fill_rande (octave_idx_type, double [])
@@ -818,47 +815,35 @@ oct_float_rande (void)
 void
 oct_fill_randu (octave_idx_type n, double *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_randu ();
+  std::generate_n (p, n, oct_randu);
 }
 
 void
 oct_fill_randn (octave_idx_type n, double *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_randn ();
+  std::generate_n (p, n, oct_randn);
 }
 
 void
 oct_fill_rande (octave_idx_type n, double *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_rande ();
+  std::generate_n (p, n, oct_rande);
 }
 
 void
 oct_fill_float_randu (octave_idx_type n, float *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_float_randu ();
+  std::generate_n (p, n, oct_float_randu);
 }
 
 void
 oct_fill_float_randn (octave_idx_type n, float *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_float_randn ();
+  std::generate_n (p, n, oct_float_randn);
 }
 
 void
 oct_fill_float_rande (octave_idx_type n, float *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_float_rande ();
+  std::generate_n (p, n, oct_float_rande);
 }

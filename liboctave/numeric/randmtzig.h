@@ -69,10 +69,11 @@ along with Octave; see the file COPYING.  If not, see
 #define MT_N 624
 
 // Mersenne Twister.
-extern OCTAVE_API void oct_init_by_int (uint32_t s);
-extern OCTAVE_API void oct_init_by_array (uint32_t *init_key, int key_length);
+extern OCTAVE_API void oct_init_by_int (const uint32_t s);
+extern OCTAVE_API void oct_init_by_array (const uint32_t *init_key,
+                                          const int key_length);
 extern OCTAVE_API void oct_init_by_entropy (void);
-extern OCTAVE_API void oct_set_state (uint32_t *save);
+extern OCTAVE_API void oct_set_state (const uint32_t *save);
 extern OCTAVE_API void oct_get_state (uint32_t *save);
 
 // Array generators.

@@ -159,6 +159,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cmath>
 #include <cstdio>
 
+#include <algorithm>
+
 #include "oct-time.h"
 #include "randmtzig.h"
 
@@ -189,7 +191,7 @@ static int inittf = 1;
 
 /* initializes state[MT_N] with a seed */
 void
-oct_init_by_int (uint32_t s)
+oct_init_by_int (const uint32_t s)
 {
   int j;
   state[0] = s & 0xffffffffUL;
@@ -210,7 +212,7 @@ oct_init_by_int (uint32_t s)
 /* init_key is the array for initializing keys */
 /* key_length is its length */
 void
-oct_init_by_array (uint32_t *init_key, int key_length)
+oct_init_by_array (const uint32_t *init_key, const int key_length)
 {
   int i, j, k;
   oct_init_by_int (19650218UL);
@@ -289,11 +291,9 @@ oct_init_by_entropy (void)
 }
 
 void
-oct_set_state (uint32_t *save)
+oct_set_state (const uint32_t *save)
 {
-  int i;
-  for (i = 0; i < MT_N; i++)
-    state[i] = save[i];
+  std::copy_n (save, MT_N, state);
   left = save[MT_N];
   next = state + (MT_N - left + 1);
 }
@@ -301,9 +301,7 @@ oct_set_state (uint32_t *save)
 void
 oct_get_state (uint32_t *save)
 {
-  int i;
-  for (i = 0; i < MT_N; i++)
-    save[i] = state[i];
+  std::copy_n (state, MT_N, save);
   save[MT_N] = left;
 }
 

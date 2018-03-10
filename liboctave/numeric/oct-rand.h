@@ -29,10 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "Array.h"
-#include "dColVector.h"
 #include "dNDArray.h"
 #include "fNDArray.h"
 #include "lo-ieee.h"
+#include "uint32NDArray.h"
 
 //class dim_vector;
 
@@ -72,13 +72,13 @@ public:
   }
 
   // Return the current state.
-  static ColumnVector state (const std::string& d = "")
+  static uint32NDArray state (const std::string& d = "")
   {
-    return instance_ok () ? instance->do_state (d) : ColumnVector ();
+    return instance_ok () ? instance->do_state (d) : uint32NDArray ();
   }
 
   // Set the current state/
-  static void state (const ColumnVector& s,
+  static void state (const uint32NDArray& s,
                      const std::string& d = "")
   {
     if (instance_ok ())
@@ -201,7 +201,7 @@ private:
   bool use_old_generators;
 
   // Saved MT states.
-  std::map<int, ColumnVector> rand_states;
+  std::map<int, uint32NDArray> rand_states;
 
   // Return the current seed.
   double do_seed (void);
@@ -213,10 +213,10 @@ private:
   void do_reset ();
 
   // Return the current state.
-  ColumnVector do_state (const std::string& d);
+  uint32NDArray do_state (const std::string& d);
 
   // Set the current state/
-  void do_state (const ColumnVector& s, const std::string& d);
+  void do_state (const uint32NDArray& s, const std::string& d);
 
   // Reset the current state/
   void do_reset (const std::string& d);
@@ -264,13 +264,13 @@ private:
 
   void initialize_mersenne_twister (void);
 
-  ColumnVector get_internal_state (void);
+  uint32NDArray get_internal_state (void);
 
   void save_state (void);
 
   int get_dist_id (const std::string& d);
 
-  void set_internal_state (const ColumnVector& s);
+  void set_internal_state (const uint32NDArray& s);
 
   void switch_to_generator (int dist);
 

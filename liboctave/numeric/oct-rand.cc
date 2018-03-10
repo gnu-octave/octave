@@ -144,14 +144,14 @@ octave_rand::do_reset (void)
   initialize_ranlib_generators ();
 }
 
-ColumnVector
+uint32NDArray
 octave_rand::do_state (const std::string& d)
 {
   return rand_states[d.empty () ? current_distribution : get_dist_id (d)];
 }
 
 void
-octave_rand::do_state (const ColumnVector& s, const std::string& d)
+octave_rand::do_state (const uint32NDArray& s, const std::string& d)
 {
   use_old_generators = false;
 
@@ -159,7 +159,7 @@ octave_rand::do_state (const ColumnVector& s, const std::string& d)
 
   int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
 
-  ColumnVector saved_state;
+  uint32NDArray saved_state;
 
   if (old_dist != new_dist)
     saved_state = get_internal_state ();
@@ -181,7 +181,7 @@ octave_rand::do_reset (const std::string& d)
 
   int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
 
-  ColumnVector saved_state;
+  uint32NDArray saved_state;
 
   if (old_dist != new_dist)
     saved_state = get_internal_state ();
@@ -562,7 +562,7 @@ octave_rand::initialize_ranlib_generators (void)
 void
 octave_rand::initialize_mersenne_twister (void)
 {
-  ColumnVector s;
+  uint32NDArray s;
 
   oct_init_by_entropy ();
   s = get_internal_state ();
@@ -589,17 +589,12 @@ octave_rand::initialize_mersenne_twister (void)
   set_internal_state (rand_states[current_distribution]);
 }
 
-ColumnVector
+uint32NDArray
 octave_rand::get_internal_state (void)
 {
-  ColumnVector s (MT_N + 1);
+  uint32NDArray s (dim_vector (MT_N + 1, 1));
 
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
-
-  oct_get_state (tmp);
-
-  for (octave_idx_type i = 0; i <= MT_N; i++)
-    s.elem (i) = static_cast<double> (tmp[i]);
+  oct_get_state (reinterpret_cast<uint32_t *> (s.fortran_vec ()));
 
   return s;
 }
@@ -632,45 +627,17 @@ octave_rand::get_dist_id (const std::string& d)
   return retval;
 }
 
-// Guarantee reproducible conversion of negative initialization values to
-// random number algorithm.  Note that Matlab employs slightly different rules.
-// 1) Seed saturates at 2^32-1 for any value larger than that.
-// 2) NaN, Inf are translated to 2^32-1.
-// 3) -Inf is translated to 0.
-static uint32_t
-double2uint32 (double d)
-{
-  uint32_t u;
-  static const double TWOUP32 = std::numeric_limits<uint32_t>::max() + 1.0;
-
-  if (! octave::math::isfinite (d))
-    u = 0;
-  else
-    {
-      d = fmod (d, TWOUP32);
-      if (d < 0)
-        d += TWOUP32;
-      u = static_cast<uint32_t> (d);
-    }
-
-  return u;
-}
-
 void
-octave_rand::set_internal_state (const ColumnVector& s)
+octave_rand::set_internal_state (const uint32NDArray& s)
 {
   octave_idx_type len = s.numel ();
-  octave_idx_type n = (len < MT_N + 1 ? len : MT_N + 1);
 
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
+  const uint32_t *sdata = reinterpret_cast <const uint32_t *> (s.data ());
 
-  for (octave_idx_type i = 0; i < n; i++)
-    tmp[i] = double2uint32 (s.elem (i));
-
-  if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
-    oct_set_state (tmp);
+  if (len == MT_N + 1 && sdata[MT_N] <= MT_N && sdata[MT_N] > 0)
+    oct_set_state (sdata);
   else
-    oct_init_by_array (tmp, len);
+    oct_init_by_array (sdata, len);
 }
 
 void

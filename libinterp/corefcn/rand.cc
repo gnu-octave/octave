@@ -456,10 +456,13 @@ classes.
 %! rand ("state", [12,13]);  x = rand (1,4);
 %! rand ("state", [12;13]);  y = rand (1,4);
 %! assert (x, y);
+%!test  # querying "state" returns a value which can be used later
+%! s = rand ("state");  x = rand (1,2);
+%! rand ("state", s);   y = rand (1,2);
+%! assert (x, y);
 %!test  # querying "state" doesn't disturb sequence
 %! rand ("state", 12);  rand (1,2);  x = rand (1,2);
-%! rand ("state", 12);  rand (1,2);
-%! s = rand ("state");  y = rand (1,2);
+%! rand ("state", 12);  rand (1,2);  s = rand ("state");  y = rand (1,2);
 %! assert (x, y);
 %! rand ("state", s);   z = rand (1,2);
 %! assert (x, z);
@@ -474,8 +477,7 @@ classes.
 %! assert (x, y);
 %!test  # querying "seed" doesn't disturb sequence
 %! rand ("seed", 12);  rand (1,2);  x = rand (1,2);
-%! rand ("seed", 12);  rand (1,2);
-%! s = rand ("seed");  y = rand (1,2);
+%! rand ("seed", 12);  rand (1,2);  s = rand ("seed");  y = rand (1,2);
 %! assert (x, y);
 %! rand ("seed", s);  z = rand (1,2);
 %! assert (x, z);
@@ -483,20 +485,20 @@ classes.
 
 /*
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! rand ("state", 1);
-%! assert (rand (1,6), [0.1343642441124013 0.8474337369372327 0.763774618976614 0.2550690257394218 0.495435087091941 0.4494910647887382], 1e-6);
+%! assert (rand (1,6), [0.1343642441124013 0.8474337369372327 0.763774618976614 0.2550690257394218 0.495435087091941 0.4494910647887382], eps);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! rand ("seed", 1);
 %! assert (rand (1,6), [0.8668024251237512 0.9126510815694928 0.09366085007786751 0.1664607301354408 0.7408077004365623 0.7615650338120759], 1e-6);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
 %!   rand ("state", 12);
-%!   x = rand (100000, 1);
-%!   assert (max (x) < 1);   #*** Please report this!!! ***
+%!   x = rand (100_000, 1);
 %!   assert (min (x) > 0);   #*** Please report this!!! ***
+%!   assert (max (x) < 1);   #*** Please report this!!! ***
 %!   assert (mean (x), 0.5, 0.0024);
 %!   assert (var (x), 1/48, 0.0632);
 %!   assert (skewness (x), 0, 0.012);
@@ -506,7 +508,7 @@ classes.
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
 %!   rand ("seed", 12);
-%!   x = rand (100000, 1);
+%!   x = rand (100_000, 1);
 %!   assert (max (x) < 1);   #*** Please report this!!! ***
 %!   assert (min (x) > 0);   #*** Please report this!!! ***
 %!   assert (mean (x), 0.5, 0.0024);
@@ -517,16 +519,17 @@ classes.
 */
 
 /*
-%!# Test out-of-range values as rand() seeds.  See oct-rand.cc: double2uint32().
+## Test out-of-range values as rand() seeds.
 %!function v = __rand_sample__ (initval)
 %!  rand ("state", initval);
 %!  v = rand (1, 6);
 %!endfunction
 %!
-%!assert (__rand_sample__ (0), __rand_sample__ (2^32))
-%!assert (__rand_sample__ (-2), __rand_sample__ (2^32-2))
-%!assert (__rand_sample__ (Inf), __rand_sample__ (NaN))
-%!assert (! isequal (__rand_sample__ (-1), __rand_sample__ (-2)))
+%!assert (__rand_sample__ (-1), __rand_sample__ (0))
+%!assert (__rand_sample__ (-Inf), __rand_sample__ (0))
+%!assert (__rand_sample__ (2^33), __rand_sample__ (intmax ("uint32")))
+%!assert (__rand_sample__ (Inf), __rand_sample__ (intmax ("uint32")))
+%!assert (__rand_sample__ (NaN), __rand_sample__ (0))
 */
 
 static std::string current_distribution = octave_rand::distribution ();
@@ -569,18 +572,18 @@ J. Statistical Software, vol 5, 2000,
 
 /*
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randn ("state", 1);
-%! assert (randn (1, 6), [-2.666521678978671 -0.7381719971724564 1.507903992673601 0.6019427189162239 -0.450661261143348 -0.7054431351574116], 1e-6);
+%! assert (randn (1, 6), [-2.666521678978671 -0.7381719971724564 1.507903992673601 0.6019427189162239 -0.450661261143348 -0.7054431351574116], eps);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! randn ("seed", 1);
 %! assert (randn (1, 6), [-1.039402365684509 -1.25938892364502 0.1968704611063004 0.3874166905879974 -0.5976632833480835 -0.6615074276924133], 1e-6);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
 %!   randn ("state", 12);
-%!   x = randn (100000, 1);
+%!   x = randn (100_000, 1);
 %!   assert (mean (x), 0, 0.01);
 %!   assert (var (x), 1, 0.02);
 %!   assert (skewness (x), 0, 0.02);
@@ -590,7 +593,7 @@ J. Statistical Software, vol 5, 2000,
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
 %!   randn ("seed", 12);
-%!   x = randn (100000, 1);
+%!   x = randn (100_000, 1);
 %!   assert (mean (x), 0, 0.01);
 %!   assert (var (x), 1, 0.02);
 %!   assert (skewness (x), 0, 0.02);
@@ -636,18 +639,18 @@ J. Statistical Software, vol 5, 2000,
 
 /*
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! rande ("state", 1);
-%! assert (rande (1, 6), [3.602973885835625 0.1386190677555021 0.6743112889616958 0.4512830847258422 0.7255744741233175 0.3415969205292291], 1e-6);
+%! assert (rande (1, 6), [3.602973885835625 0.1386190677555021 0.6743112889616958 0.4512830847258422 0.7255744741233175 0.3415969205292291], 2*eps);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! rande ("seed", 1);
 %! assert (rande (1, 6), [0.06492075175653866 1.717980206012726 0.4816154008731246 0.5231300676241517 0.103910739364359 1.668931916356087], 1e-6);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally
 %!   rande ("state", 1);
-%!   x = rande (100000, 1);
+%!   x = rande (100_000, 1);
 %!   assert (min (x) > 0);   # *** Please report this!!! ***
 %!   assert (mean (x), 1, 0.01);
 %!   assert (var (x), 1, 0.03);
@@ -658,7 +661,7 @@ J. Statistical Software, vol 5, 2000,
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally
 %!   rande ("seed", 1);
-%!   x = rande (100000, 1);
+%!   x = rande (100_000, 1);
 %!   assert (min (x)>0);   # *** Please report this!!! ***
 %!   assert (mean (x), 1, 0.01);
 %!   assert (var (x), 1, 0.03);
@@ -782,43 +785,43 @@ classes.
 %! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]); # *** Please report
 
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randg ("state", 1);
-%! assert (randg (0.1, 1, 6), [0.0103951513331241 8.335671459898252e-05 0.00138691397249762 0.000587308416993855 0.495590518784736 2.3921917414795e-12], 1e-6);
+%! assert (randg (0.1, 1, 6), [0.0103951513331241 8.335671459898252e-05 0.00138691397249762 0.000587308416993855 0.495590518784736 2.3921917414795e-12], eps);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randg ("state", 1);
-%! assert (randg (0.95, 1, 6), [3.099382433255327 0.3974529788871218 0.644367450750855 1.143261091802246 1.964111762696822 0.04011915547957939], 1e-6);
+%! assert (randg (0.95, 1, 6), [3.099382433255327 0.3974529788871218 0.644367450750855 1.143261091802246 1.964111762696822 0.04011915547957939], 2*eps);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randg ("state", 1);
-%! assert (randg (1, 1, 6), [0.2273389379645993 1.288822625058359 0.2406335209340746 1.218869553370733 1.024649860162554 0.09631230343599533], 1e-6);
+%! assert (randg (1, 1, 6), [0.2273389379645993 1.288822625058359 0.2406335209340746 1.218869553370733 1.024649860162554 0.09631230343599533], 4*eps);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randg ("state", 1);
-%! assert (randg (10, 1, 6), [3.520369644331133 15.15369864472106 8.332112081991205 8.406211067432674 11.81193475187611 10.88792728177059], 1e-5);
+%! assert (randg (10, 1, 6), [3.520369644331133 15.15369864472106 8.332112081991205 8.406211067432674 11.81193475187611 10.88792728177059], 16*eps);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randg ("state", 1);
-%! assert (randg (100, 1, 6), [75.34570255262264 115.4911985594699 95.23493031356388 95.48926019250911 106.2397448229803 103.4813150404118], 1e-4);
+%! assert (randg (100, 1, 6), [75.34570255262264 115.4911985594699 95.23493031356388 95.48926019250911 106.2397448229803 103.4813150404118], 132*eps);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! randg ("seed", 1);
 %! assert (randg (0.1, 1, 6), [0.07144210487604141 0.460641473531723 0.4749028384685516 0.06823389977216721 0.000293838675133884 1.802567535340305e-12], 1e-6);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! randg ("seed", 1);
 %! assert (randg (0.95, 1, 6), [1.664905071258545 1.879976987838745 1.905677795410156 0.9948706030845642 0.5606933236122131 0.0766092911362648], 1e-6);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! randg ("seed", 1);
 %! assert (randg (1, 1, 6), [0.03512085229158401 0.6488978862762451 0.8114678859710693 0.1666885763406754 1.60791552066803 1.90356981754303], 1e-6);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! randg ("seed", 1);
 %! assert (randg (10, 1, 6), [6.566435813903809 10.11648464202881 10.73162078857422 7.747178077697754 6.278522491455078 6.240195751190186], 1e-5);
 %!test
-%! ## Test fixed seed
+%! ## Test a known fixed seed
 %! randg ("seed", 1);
 %! assert (randg (100, 1, 6), [89.40208435058594 101.4734725952148 103.4020004272461 93.62763214111328 88.33104705810547 88.1871337890625], 1e-4);
 %!test
@@ -832,7 +835,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("state", 12);
 %!   a = 0.1;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.01);
 %!   assert (var (x),      a,          0.01);
 %!   assert (skewness (x), 2/sqrt (a), 1);
@@ -843,7 +846,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("state", 12);
 %!   a = 0.95;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.01);
 %!   assert (var (x),      a,          0.04);
 %!   assert (skewness (x), 2/sqrt (a), 0.2);
@@ -854,7 +857,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("state", 12);
 %!   a = 1;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.01);
 %!   assert (var (x),      a,          0.04);
 %!   assert (skewness (x), 2/sqrt (a), 0.2);
@@ -865,7 +868,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("state", 12);
 %!   a = 10;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.1);
 %!   assert (var (x),      a,          0.5);
 %!   assert (skewness (x), 2/sqrt (a), 0.1);
@@ -876,7 +879,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("state", 12);
 %!   a = 100;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.2);
 %!   assert (var (x),      a,          2);
 %!   assert (skewness (x), 2/sqrt (a), 0.05);
@@ -890,7 +893,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("seed", 12);
 %!   a = 0.1;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.01);
 %!   assert (var (x),      a,          0.01);
 %!   assert (skewness (x), 2/sqrt (a), 1);
@@ -901,7 +904,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("seed", 12);
 %!   a = 0.95;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.01);
 %!   assert (var (x),      a,          0.04);
 %!   assert (skewness (x), 2/sqrt (a), 0.2);
@@ -912,7 +915,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("seed", 12);
 %!   a = 1;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.01);
 %!   assert (var (x),      a,          0.04);
 %!   assert (skewness (x), 2/sqrt (a), 0.2);
@@ -923,7 +926,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("seed", 12);
 %!   a = 10;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.1);
 %!   assert (var (x),      a,          0.5);
 %!   assert (skewness (x), 2/sqrt (a), 0.1);
@@ -934,7 +937,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randg ("seed", 12);
 %!   a = 100;
-%!   x = randg (a, 100000, 1);
+%!   x = randg (a, 100_000, 1);
 %!   assert (mean (x),     a,          0.2);
 %!   assert (var (x),      a,          2);
 %!   assert (skewness (x), 2/sqrt (a), 0.05);
@@ -1006,28 +1009,28 @@ classes.
 %! randp ("state", 12);
 %! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);   # *** Please report
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randp ("state", 1);
 %! assert (randp (5, 1, 6), [5 5 3 7 7 3]);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randp ("state", 1);
 %! assert (randp (15, 1, 6), [13 15 8 18 18 15]);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed state
 %! randp ("state", 1);
 %! assert (randp (1e9, 1, 6), [999915677 999976657 1000047684 1000019035 999985749 999977692], -1e-6);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed seed
 %! randp ("seed", 1);
 %! %%assert (randp (5, 1, 6), [8 2 3 6 6 8])
 %! assert (randp (5, 1, 5), [8 2 3 6 6]);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed seed
 %! randp ("seed", 1);
 %! assert (randp (15, 1, 6), [15 16 12 10 10 12]);
 %!test
-%! ## Test fixed state
+%! ## Test a known fixed seed
 %! randp ("seed", 1);
 %! assert (randp (1e9, 1, 6), [1000006208 1000012224 999981120 999963520 999963072 999981440], -1e-6);
 %!test
@@ -1035,7 +1038,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randp ("state", 12);
 %!   for a = [5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!     x = randp (a (1), 100000, 1);
+%!     x = randp (a (1), 100_000, 1);
 %!     assert (min (x) >= 0);   # *** Please report this!!! ***
 %!     assert (mean (x), a(1), a(2));
 %!     assert (var (x), a(1), 0.02*a(1));
@@ -1048,7 +1051,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randp ("state", 12);
 %!   for a = [5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!     x = randp (a(1)*ones (100000, 1), 100000, 1);
+%!     x = randp (a(1)*ones (100_000, 1), 100_000, 1);
 %!     assert (min (x) >= 0);   # *** Please report this!!! ***
 %!     assert (mean (x), a(1), a(2));
 %!     assert (var (x), a(1), 0.02*a(1));
@@ -1064,7 +1067,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randp ("seed", 12);
 %!   for a = [5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!     x = randp (a(1), 100000, 1);
+%!     x = randp (a(1), 100_000, 1);
 %!     assert (min (x) >= 0);   # *** Please report this!!! ***
 %!     assert (mean (x), a(1), a(2));
 %!     assert (var (x), a(1), 0.02*a(1));
@@ -1077,7 +1080,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randp ("seed", 12);
 %!   for a = [5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!     x = randp (a(1)*ones (100000, 1), 100000, 1);
+%!     x = randp (a(1)*ones (100_000, 1), 100_000, 1);
 %!     assert (min (x) >= 0);   # *** Please report this!!! ***
 %!     assert (mean (x), a(1), a(2));
 %!     assert (var (x), a(1), 0.02*a(1));
@@ -1195,7 +1198,7 @@ likely.
 %!assert (length (randperm (20,10)), 10)
 
 ## Test biggish N
-%!assert <*39378> (length (randperm (30000^2, 100000)), 100000)
+%!assert <*39378> (length (randperm (30_000^2, 100_000)), 100_000)
 
 %!test
 %! rand ("seed", 0);

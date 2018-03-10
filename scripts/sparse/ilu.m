@@ -167,11 +167,11 @@ function [L, U, P] = ilu (A, opts = struct ())
   endif
 
   if (! (issparse (A) && issquare (A)))
-    error ("ichol: A must be a sparse square matrix");
+    error ("ilu: A must be a sparse square matrix");
   endif
 
   if (! isstruct (opts))
-    error ("ichol: OPTS must be a structure.");
+    error ("ilu: OPTS must be a structure.");
   endif
 
   ## If A is empty then return empty L, U and P for Matlab compatibility

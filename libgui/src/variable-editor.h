@@ -62,6 +62,8 @@ namespace octave
 
     virtual void closeEvent (QCloseEvent *e);
 
+    void resizeEvent (QResizeEvent *event);
+
   public slots:
 
     void handle_focus_change (QWidget *old, QWidget *now);
@@ -76,13 +78,20 @@ namespace octave
 
     void change_fullscreen (void);
 
-#if defined (HAVE_QGUIAPPLICATION)
   protected:
 
+    QFrame *m_frame;
+
+#if defined (HAVE_QGUIAPPLICATION)
+
     QAction *m_fullscreen_action;
+
     bool m_full_screen;
+
     bool m_prev_floating;
+
     QRect m_prev_geom;
+
 #endif
   };
 

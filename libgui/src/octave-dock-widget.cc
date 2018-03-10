@@ -154,7 +154,6 @@ namespace octave
     QSettings *settings = resource_manager::get_settings ();
 
     // save the docking area and geometry for later redocking
-    // FIXME: dockWidgetArea always returns 2
     settings->setValue ("DockWidgets/" + objectName () + "_dock_area",
                         m_parent->dockWidgetArea (this));
     settings->setValue ("DockWidgets/" + objectName (), saveGeometry ());
@@ -163,10 +162,10 @@ namespace octave
     // remove parent and adjust the (un)dock icon
     setTitleBarWidget (0);
     setParent (0, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint |
-               Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+               Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
     setTitleBarWidget (m_title_widget);
     setParent (0, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint |
-               Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+               Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
 
 #if defined (Q_OS_UNIX)
     m_title_widget->setToolTip (

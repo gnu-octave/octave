@@ -107,6 +107,8 @@ namespace octave
              this, SLOT (setVisible (bool)));
 
 #if defined (HAVE_QGUIAPPLICATION)
+#define DOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen undock"
+#define UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen"
     // Add a fullscreen button
 
     m_fullscreen_action = nullptr;
@@ -118,8 +120,8 @@ namespace octave
     if (h_layout != nullptr && titleBarWidget () != nullptr)
       {
         m_fullscreen_action = new QAction
-          (QIcon::fromTheme ("view-fullscreen"), "", this);
-        m_fullscreen_action->setToolTip (tr ("Fullscreen undock"));
+          (resource_manager::icon ("view-fullscreen", false), "", this);
+        m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
         QToolButton *fullscreen_button = new QToolButton (titleBarWidget ());
         fullscreen_button->setDefaultAction (m_fullscreen_action);
         fullscreen_button->setFocusPolicy (Qt::NoFocus);
@@ -137,6 +139,11 @@ namespace octave
         h_layout->insertWidget (index, fullscreen_button);
       }
 #endif
+
+    // Custom title bars cause loss of decorations, add a frame
+    m_frame = new QFrame (this);
+    m_frame->setFrameStyle (QFrame::Box | QFrame::Sunken);
+    m_frame->setAttribute (Qt::WA_TransparentForMouseEvents);
   }
 
   // slot for (un)dock action
@@ -149,13 +156,13 @@ namespace octave
         if (m_full_screen)
           {
             setGeometry (m_prev_geom);
-            m_fullscreen_action->setIcon (QIcon::fromTheme ("view-fullscreen"));
+            m_fullscreen_action->setIcon (resource_manager::icon ("view-fullscreen", false));
             m_full_screen = false;
           }
-        m_fullscreen_action->setToolTip (tr ("Fullscreen undock"));
+        m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
       }
     else
-      m_fullscreen_action->setToolTip (tr ("Fullscreen"));
+      m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
 #endif
 
     setFloating (! isFloating ());
@@ -197,11 +204,14 @@ namespace octave
         m_prev_floating = isFloating ();
         m_prev_geom = geometry ();
 
-        m_fullscreen_action->setIcon (QIcon::fromTheme ("view-restore"));
+        m_fullscreen_action->setIcon (resource_manager::icon ("view-restore", false));
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr ("Restore geometry"));
         else
-          setFloating (true);
+          {
+            m_fullscreen_action->setToolTip (tr ("Redock"));
+            setFloating (true);
+          }
 
         // showFullscreen() and setWindowState() only work for QWindow objects.
         QScreen *pscreen = QGuiApplication::primaryScreen ();
@@ -213,15 +223,20 @@ namespace octave
       }
     else
       {
-        m_fullscreen_action->setIcon (QIcon::fromTheme ("view-fullscreen"));
+        m_fullscreen_action->setIcon (resource_manager::icon ("view-fullscreen", false));
         setGeometry (m_prev_geom);
         if (m_prev_floating)
-            m_fullscreen_action->setToolTip (tr ("Fullscreen"));
+          m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
         else
-          setFloating (false);
+          {
+            setFloating (false);
+            m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
+          }
 
         m_full_screen = false;
       }
+#undef DOCKED_FULLSCREEN_BUTTON_TOOLTIP
+#undef UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP
 #endif
   }
 
@@ -254,6 +269,12 @@ namespace octave
         if (label != NULL)
           label->setBackgroundRole (QPalette::NoRole);
       }
+  }
+
+  void variable_dock_widget::resizeEvent (QResizeEvent *)
+  {
+    if (m_frame)
+      m_frame->resize (size ());
   }
 
 

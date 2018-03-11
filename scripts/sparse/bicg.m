@@ -506,7 +506,8 @@ endfunction
 %! Afun = @(x, string, p) Ap (A, x, string, p);
 %! x = bicg (Afun, b, [], 2*n, [], [], [], 2); # solution of A^2 * x = b
 
-%!test # preconditioned technique
+## Preconditioned technique
+%!testif HAVE_UMFPACK
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! [M1, M2] = lu (A + eye (5));

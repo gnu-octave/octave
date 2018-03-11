@@ -566,7 +566,7 @@ endfunction
 %! assert (flag, 0)
 %! assert (x, ones (N, 1), -1e-4)
 
-%!test
+%!testif HAVE_CHOLMOD
 %! ## pcg solves preconditioned linear system with A HPD
 %! N = 20;
 %! A = toeplitz (sparse ([4, 1, zeros(1, 18)])) + ...

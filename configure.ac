@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl Copyright (C) 1993-2017 John W. Eaton
+dnl Copyright (C) 1993-2018 John W. Eaton
 ###
 ### This file is part of Octave.
 ###
@@ -19,21 +19,21 @@ dnl Copyright (C) 1993-2017 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.63])
-AC_INIT([GNU Octave], [4.2.2-rc1], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [4.2.2], [http://octave.org/bugs.html], [octave])
 
 dnl Note that the version number is duplicated here and in AC_INIT
 dnl because AC_INIT requires it to be static, not computed from
 dnl shell variables.
 OCTAVE_MAJOR_VERSION=4
 OCTAVE_MINOR_VERSION=2
-OCTAVE_PATCH_VERSION=2-rc1
+OCTAVE_PATCH_VERSION=2
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 2017 John W. Eaton and others."
+OCTAVE_COPYRIGHT="Copyright (C) 2018 John W. Eaton and others."
 
-OCTAVE_RELEASE_DATE="2018-03-08"
+OCTAVE_RELEASE_DATE="2018-03-13"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly

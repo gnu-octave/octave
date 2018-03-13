@@ -33,3 +33,38 @@
       result = ignpoi (real (mu))
       return
       end
+      subroutine fgennor (av, sd, result)
+      real av, sd, result
+      real gennor
+      external gennor
+      result = gennor (av, sd)
+      return
+      end
+      subroutine fgenunf (low, high, result)
+      real low, high, result
+      real genunf
+      external genunf
+      result = genunf (low, high)
+      return
+      end
+      subroutine fgenexp (av, result)
+      real av, result
+      real genexp
+      external genexp
+      result = genexp (av)
+      return
+      end
+      subroutine fgengam (a, r, result)
+      real a, r, result
+      real gengam
+      external gengam
+      result = gengam (a, r)
+      return
+      end
+      subroutine fignpoi (mu, result)
+      real mu, result
+      integer*4 ignpoi
+      external ignpoi
+      result = ignpoi (mu)
+      return
+      end

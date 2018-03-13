@@ -87,6 +87,7 @@ octave_rand::do_seed (void)
     case octave::mach_info::flt_fmt_ieee_big_endian:
       F77_FUNC (getsd, GETSD) (u.i[1], u.i[0]);
       break;
+
     default:
       F77_FUNC (getsd, GETSD) (u.i[0], u.i[1]);
       break;
@@ -128,6 +129,7 @@ octave_rand::do_seed (double s)
       i1 = force_to_fit_range (u.i[0], 1, 2147483563);
       i0 = force_to_fit_range (u.i[1], 1, 2147483399);
       break;
+
     default:
       i0 = force_to_fit_range (u.i[0], 1, 2147483563);
       i1 = force_to_fit_range (u.i[1], 1, 2147483399);
@@ -391,38 +393,36 @@ octave_rand::do_float_scalar (float a)
 
   if (use_old_generators)
     {
-      double da = a;
-      double dretval = 0.0;
       switch (current_distribution)
         {
         case uniform_dist:
-          F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, dretval);
+          F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, retval);
           break;
 
         case normal_dist:
-          F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, dretval);
+          F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, retval);
           break;
 
         case expon_dist:
-          F77_FUNC (dgenexp, DGENEXP) (1.0, dretval);
+          F77_FUNC (fgenexp, FGENEXP) (1.0f, retval);
           break;
 
         case poisson_dist:
-          if (da < 0.0 || ! octave::math::isfinite (a))
-            dretval = octave::numeric_limits<double>::NaN ();
+          if (a < 0.0f || ! octave::math::isfinite (a))
+            retval = octave::numeric_limits<float>::NaN ();
           else
             {
               // workaround bug in ignpoi, by calling with different Mu
-              F77_FUNC (dignpoi, DIGNPOI) (da + 1, dretval);
-              F77_FUNC (dignpoi, DIGNPOI) (da, dretval);
+              F77_FUNC (fignpoi, FIGNPOI) (a + 1, retval);
+              F77_FUNC (fignpoi, FIGNPOI) (a, retval);
             }
           break;
 
         case gamma_dist:
-          if (da <= 0.0 || ! octave::math::isfinite (a))
-            dretval = octave::numeric_limits<double>::NaN ();
+          if (a <= 0.0f || ! octave::math::isfinite (a))
+            retval = octave::numeric_limits<float>::NaN ();
           else
-            F77_FUNC (dgengam, DGENGAM) (1.0, da, dretval);
+            F77_FUNC (fgengam, FGENGAM) (1.0, a, retval);
           break;
 
         default:
@@ -430,7 +430,6 @@ octave_rand::do_float_scalar (float a)
             ("rand: invalid distribution ID = %d", current_distribution);
           break;
         }
-      retval = dretval;
     }
   else
     {
@@ -651,19 +650,6 @@ octave_rand::switch_to_generator (int dist)
     }
 }
 
-#define MAKE_RAND(len)                                          \
-  do                                                            \
-    {                                                           \
-      double val;                                               \
-      for (volatile octave_idx_type i = 0; i < len; i++)        \
-        {                                                       \
-          octave_quit ();                                       \
-          RAND_FUNC (val);                                      \
-          v[i] = val;                                           \
-        }                                                       \
-    }                                                           \
-  while (0)
-
 void
 octave_rand::fill (octave_idx_type len, double *v, double a)
 {
@@ -674,33 +660,21 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     {
     case uniform_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x); return x; });
       else
         oct_fill_randu (len, v);
       break;
 
     case normal_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x); return x; });
       else
         oct_fill_randn (len, v);
       break;
 
     case expon_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenexp, DGENEXP) (1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenexp, DGENEXP) (1.0, x); return x; });
       else
         oct_fill_rande (len, v);
       break;
@@ -709,17 +683,13 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
       if (use_old_generators)
         {
           if (a < 0.0 || ! octave::math::isfinite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+            std::fill_n (v, len, octave::numeric_limits<double>::NaN ());
           else
             {
               // workaround bug in ignpoi, by calling with different Mu
               double tmp;
               F77_FUNC (dignpoi, DIGNPOI) (a + 1, tmp);
-#define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (a, x)
-              MAKE_RAND (len);
-#undef RAND_FUNC
+              std::generate_n (v, len, [a](void) { double x; F77_FUNC (dignpoi, DIGNPOI) (a, x); return x; });
             }
         }
       else
@@ -730,13 +700,9 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
       if (use_old_generators)
         {
           if (a <= 0.0 || ! octave::math::isfinite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+            std::fill_n (v, len, octave::numeric_limits<double>::NaN ());
           else
-#define RAND_FUNC(x) F77_FUNC (dgengam, DGENGAM) (1.0, a, x)
-            MAKE_RAND (len);
-#undef RAND_FUNC
+            std::generate_n (v, len, [a](void) { double x; F77_FUNC (dgengam, DGENGAM) (1.0, a, x); return x; });
         }
       else
         oct_fill_randg (a, len, v);
@@ -763,33 +729,21 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
     {
     case uniform_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, x); return x; });
       else
         oct_fill_float_randu (len, v);
       break;
 
     case normal_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, x); return x; });
       else
         oct_fill_float_randn (len, v);
       break;
 
     case expon_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenexp, DGENEXP) (1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenexp, FGENEXP) (1.0f, x); return x; });
       else
         oct_fill_float_rande (len, v);
       break;
@@ -797,19 +751,14 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
     case poisson_dist:
       if (use_old_generators)
         {
-          double da = a;
-          if (da < 0.0 || ! octave::math::isfinite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+          if (a < 0.0f || ! octave::math::isfinite (a))
+            std::fill_n (v, len, octave::numeric_limits<float>::NaN ());
           else
             {
               // workaround bug in ignpoi, by calling with different Mu
-              double tmp;
-              F77_FUNC (dignpoi, DIGNPOI) (da + 1, tmp);
-#define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (da, x)
-              MAKE_RAND (len);
-#undef RAND_FUNC
+              float tmp;
+              F77_FUNC (fignpoi, FIGNPOI) (a + 1, tmp);
+              std::generate_n (v, len, [a](void) { float x; F77_FUNC (fignpoi, FIGNPOI) (a, x); return x; });
             }
         }
       else
@@ -819,15 +768,10 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
     case gamma_dist:
       if (use_old_generators)
         {
-          double da = a;
-          if (da <= 0.0 || ! octave::math::isfinite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+          if (a <= 0.0f || ! octave::math::isfinite (a))
+            std::fill_n (v, len, octave::numeric_limits<float>::NaN ());
           else
-#define RAND_FUNC(x) F77_FUNC (dgengam, DGENGAM) (1.0, da, x)
-            MAKE_RAND (len);
-#undef RAND_FUNC
+            std::generate_n (v, len, [a](void) { float x; F77_FUNC (fgengam, FGENGAM) (1.0f, a, x); return x; });
         }
       else
         oct_fill_float_randg (a, len, v);

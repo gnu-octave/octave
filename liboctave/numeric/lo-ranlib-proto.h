@@ -45,6 +45,21 @@ extern "C"
   F77_FUNC (dignpoi, DIGNPOI) (const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
+  F77_FUNC (fgenexp, FGENEXP) (const F77_REAL&, F77_REAL&);
+
+  F77_RET_T
+  F77_FUNC (fgengam, FGENGAM) (const F77_REAL&, const F77_REAL&, F77_REAL&);
+
+  F77_RET_T
+  F77_FUNC (fgennor, FGENNOR) (const F77_REAL&, const F77_REAL&, F77_REAL&);
+
+  F77_RET_T
+  F77_FUNC (fgenunf, FGENUNF) (const F77_REAL&, const F77_REAL&, F77_REAL&);
+
+  F77_RET_T
+  F77_FUNC (fignpoi, FIGNPOI) (const F77_REAL&, F77_REAL&);
+
+  F77_RET_T
   F77_FUNC (getsd, GETSD) (F77_INT4&, F77_INT4&);
 
   F77_RET_T

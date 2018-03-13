@@ -292,3 +292,4 @@ endfunction
 %!error <"alpha" must be a number between 0 and 1> corrcoef (1,2, "alpha", 2)
 %!error <"rows" must be "all"...> corrcoef (1,2, "rows", "foobar")
 %!error <Unknown option "foobar"> corrcoef (1,2, "foobar", 1)
+%!error <Unknown option "foobar"> corrcoef (1,2, "foobar", 1)

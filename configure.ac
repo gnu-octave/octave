@@ -172,11 +172,9 @@ OCTAVE_SET_DEFAULT([octdocdir], '${datadir}/octave/${version}/doc')
 
 ## Where Octave will search for fallback font files shipped with distribution.
 OCTAVE_SET_DEFAULT([octfontsdir], '${datadir}/octave/${version}/fonts')
-
 ## Where Octave will look for startup files.
 OCTAVE_SET_DEFAULT([startupfiledir], '${fcnfiledir}/startup')
 OCTAVE_SET_DEFAULT([localstartupfiledir], '${localfcnfiledir}/startup')
-
 ## Where Octave will look for man and info files.
 OCTAVE_SET_DEFAULT([man1dir], '${mandir}/man1')
 OCTAVE_SET_DEFAULT([man1ext], '.1')
@@ -300,10 +298,8 @@ if test -n "$SYSTEM_FREEFONT_DIR"; then
   AC_MSG_NOTICE([configuring Octave to use system fonts in $SYSTEM_FREEFONT_DIR])
   AC_DEFINE_UNQUOTED([SYSTEM_FREEFONT_DIR], ["$SYSTEM_FREEFONT_DIR"],
     [Define this to be the system directory containing the GNU FreeFont fonts.])
-fi
 AM_CONDITIONAL([AMCOND_INSTALL_INTERNAL_FONT_FILES],
   [test -z "$SYSTEM_FREEFONT_DIR"])
-
 ### Determine which C++ compiler to use (we expect to find g++).
 
 AC_PROG_CXX
@@ -2908,6 +2904,25 @@ fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
 ### Determine whether Mercurial ID should be embedded in library binaries.
+ENABLE_HG_ID=yes
+AC_ARG_ENABLE([hg-id],
+  [AS_HELP_STRING([--disable-hg-id],
+    [disable embedding of hg id in libraries])],
+  [if test "$enableval" = no; then ENABLE_HG_ID=no; fi], [])
+AM_CONDITIONAL([AMCOND_ENABLE_HG_ID], [test $ENABLE_HG_ID = yes])
+
+### Determine whether to install build logs with Octave.
+
+install_build_logs=no
+AC_ARG_ENABLE([install-build-logs],
+  [AS_HELP_STRING([--enable-install-build-logs],
+    [install build logs (i.e. config.log) with Octave])],
+  [if test "$enableval" = yes; then install_build_logs=yes; fi])
+AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
+
+### Add extra compiler flags now that feature testing is complete.
+
+## Add warning flags
 
 ENABLE_HG_ID=yes
 AC_ARG_ENABLE([hg-id],

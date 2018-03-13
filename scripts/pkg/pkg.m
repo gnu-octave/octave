@@ -389,8 +389,28 @@ function [local_packages, global_packages] = pkg (varargin)
             error ("pkg: could not download file %s from url %s",
                    local_files{i}, urls{i});
           endif
-        endif
+        else
+          ## If files do not exist, maybe they are not local files.
+          ## Try to download them.
+          external_files_mask = ! cellfun (@exist, files, {"file"});
+          if (any (external_files_mask))
+            [success, msg] = mkdir (tmp_dir = tempname ());
+            if (success != 1)
+              error ("pkg: failed to create temporary directory: %s", msg);
+            endif
+            for file_idx = find (external_files_mask)
+              [~, fname, fext] = fileparts (files{file_idx});
+              local_files{end+1} = fullfile (tmp_dir, [fname fext]);
 
+              [~, success, msg] = urlwrite (files{file_idx}, local_files{end});
+              if (success != 1)
+                error ("pkg: failed to read package '%s': %s",
+                       files{file_idx}, msg);
+              endif
+              files{file_idx} = local_files{end};
+            endfor
+          endif
+        endif
         install (files, deps, prefix, archprefix, verbose, local_list,
                  global_list, global_install);
 

@@ -352,6 +352,263 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     and DEFINE_OCTAVE_ALLOCATOR2).
 
 
+Summary of bugs fixed for version 4.2.2 (2018-03-13):
+----------------------------------------------------
+
+Using the bug numbers listed below, find bug reports on the web using
+the URL https://savannah.gnu.org/bugs/?NNNNN
+
+ ** make leftdiv work for scalar \ int-matrix (bug #51682)
+
+ ** inputdlg.m: Avoid crash when prompt and defaults sizes differ (bug #53209)
+
+ ** tie octave_classdef::numel method to "numel" user override method
+    (bug #46571)
+
+ ** fix performance of Sparse fsolve for complex sparse matrices (bug #53140)
+
+ ** fix performance of Sparse fsolve (bug #53140)
+
+ ** octave.desktop.in: No repetition of Name in Comment field and start I10n
+    (bug #53078)
+
+ ** don't create partially invalid graphic objects (bug #52904)
+
+ ** test for incorrect regexprep on ARM platforms (bug #52810)
+
+ ** fix incorrect regexprep on ARM platforms (bug #52810)
+
+ ** correctly handle reading of characters >127 in scanf family (bug #52681)
+
+ ** fix addpath for UNC paths on Windows (bug #51268)
+
+ ** protect being-deleted objects on figure list from second deletion
+    (bug #52666)
+
+ ** dlmwrite.m: Close fid if filename is only one char long (bug #52679)
+
+ ** set gnuplot color data to half output range when autoscaling zero input
+    range (bug #52624)
+
+ ** add polarplot() to the list of unimplemented functions (bug #52643)
+
+ ** configure.ac: Fix test for Java version (bug #52617)
+
+ ** for gnuplot toolkit, do not map TrueColor data to colormap size (bug #52599)
+
+ ** make wheel scroll behave more consistently in pan mode (bug #52588)
+
+ ** make gnuplot color have three components for interpolated edge color
+    (bug #52595)
+
+ ** simplify gnuplot toolkit scripts for image/non-image data plots (bug #52589)
+
+ ** fix concatenation of empty char matrices with other strings (bug #52542)
+
+ ** build: Fix compiling OCTAVE_ARPACK_OK_2 Fortran code (bug #52425)
+
+ ** trisurf.m, trimesh.m: Fix input validation (bug #48109)
+
+ ** allow uncommenting in editor when line begins with whitespace (bug #52406)
+
+ ** do not extend selection when indenting/commenting in editor (bug #45610)
+
+ ** remove all delimiters from whitespace list in textscan function (bug #52479)
+
+ ** calculate 1-norm of matrices to assess whether NaN or Inf are present
+    (bug #39000)
+
+ ** prevent extra ampersand under KDE in cd-or-add-to-path dialog (bug #52423)
+
+ ** plotyy.m: Fix error when using FUN2 argument (bug #48115)
+
+ ** check ARPACK library for buggy behavior in configure (bug #52425)
+
+ ** fix printing integer type images (bug #51558)
+
+ ** fix segfault in delaunayn when Qhull memory is not properly cleared
+    (bug #52410)
+
+ ** fix segfault with CHOLMOD library and empty matrices (bug #52365)
+
+ ** tag global and persistent symbols as variables when parsing (bug #52363)
+
+ ** properly restore the input stream pointer at end of textscan (bug #52116 et
+    al.)
+
+ ** fix building with Qt4 for Windows (bug #52237)
+
+ ** ensure numeric values are passed for the axes "clim" property (bug #52053)
+
+ ** avoid abort on exit from GUI (bug #50664)
+
+ ** correct auto limits on log axes with negative and zero values (bug #51861)
+
+ ** fix warning in quadgk with zero size interval (bug #51867)
+
+ ** sparse: correctly handle scalar column index (bug #51880)
+
+ ** fix segfault in ichol under certain conditions (bug #51736)
+
+ ** configure: ensure empty pkg-config results are actually empty (bug #51680)
+
+ ** fix 'legend hide' for gnuplot (bug #50483)
+
+ ** qqplot.m: Fix typo in input validation (bug #51458)
+
+ ** add possible '\r' to smartindent regex exprepression (Bug #51279)
+
+ ** make strncmp case sensitive again (bug #51384)
+
+ ** fix possible infinite loop in normest1.m (bug #51241)
+
+ ** also run unwind protect cleanup code on interrupt exceptions (bug #51209)
+
+ ** fix crash when inverting complex matrices with NaNs (bug #51198)
+
+ ** improve accuracy of residue for inputs with very different magnitudes
+    (bug #51148)
+
+ ** publish.m: Fix corruption of results for some code inputs (bug #51178)
+
+ ** residue.m: Remove code that filters out small return values (bug #34266, bug
+    #49291)
+
+ ** avoid possible double free at interpreter exit (bug #51088)
+
+ ** show stack trace for errors in command line and startup files (bug #49346)
+
+ ** interp1.m: Return NA for all columns which are out of bounds (bug #51030)
+
+ ** use idx_type for dimensions instead of int (bug #50934)
+
+ ** show stack trace for wrong type arg errors (bug #50894)
+
+ ** let mouse selection of Qt figures update "currentfigure" (bug #50666)
+
+ ** disable qscintilla editor drag and drop so parent will handle it (Bug
+    #50559)
+
+ ** quadgk.m: Correct error messages which point to quadv (bug #50604)
+
+ ** set version on AppUserModelId (Bug #50428)
+
+ ** version-rcfile: Don't try to execute startup directory, only startup.m
+    (bug #50593)
+
+ ** dlmread: Return empty matrix when requested range is outside data
+    (bug #50102)
+
+ ** fix eigs for generalized nonsymmetric and shift-invert problems (bug #39573)
+
+ ** fix eigs for the generalized eigenvalue problem (bug #50546)
+
+ ** datetick.m: Fix uneven range bugs (bug #50493)
+
+ ** datenum.m: Correct calculation for fractional leap years (bug #50508)
+
+ ** datenum.m: Allow horizontal vectors of dates with fractional months
+    (bug #50508)
+
+ ** datenum.m: Accept legal input of vectors with fractional months (bug #50508)
+
+ ** fix the anchor position in the info text of the doc browser (bug #50422)
+
+ ** fix order of legend labels with plotyy axes (bug #50497)
+
+ ** correct hggroup plot legends for gnuplot toolkit, add legend demo 17 items
+    (bug #49341)
+
+ ** for gnuplot graphics toolkit, show only one key entry for errorbars
+    (bug #49260)
+
+ ** fix compilation of jit caused by cset d0562b3159c7 (bug #50398)
+
+ ** remove inline keyword on file_stat destructor which breaks MacOS compilation
+    (bug #50234)
+
+Documentation bugs fixed:
+
+ ** playblocking.m: Correct documentation about start and limits inputs
+    (bug #51217)
+
+ ** fix eig output argument description (bug #50524)
+
+ ** remove backslashes before double quotes in m-file docstrings (bug #52870)
+
+ ** tweaks to use single quotes instead of double quotes (bug #52870)
+
+ ** correct fieldname of returned struct in ver (bug #52845)
+
+ ** cleanup @code example in Appendix on test functions (bug #52852)
+
+ ** fixes for signal, image, audio, and OOP chapters (bug #52844)
+
+ ** fix issues in geometry, polynomial, and interpolation chapters (bug #52835)
+
+ ** fix TeX documentation for qp and clarify size of inputs (bug #52829)
+
+ ** correct errors in Diagonal matrix chapter of manual (bug #52814)
+
+ ** replace @math{1e^{XXX}} sequences with raw 1eXXX (bug #52827)
+
+ ** use '...' rather than deprecated '\' for line continuation (bug #52828)
+
+ ** make documentation Sec 26.1 more consistent and Sec 25.4 clearer
+    (bug #52685)
+
+ ** documentation fixes for linspace, logspace, lookup (bug #52785)
+
+ ** atan2d.m: Correct documentation to match atan docstring (bug #52786)
+
+ ** small tweaks to fplot and surfnorm docstrings (bug #52761)
+
+ ** rewrite documentation for Advanced Indexing (bug #52723)
+
+ ** delete extra ']' in scanf docstring (bug #52742)
+
+ ** fix mistaken use of space between function and '(' in documentation
+    (bug #52723)
+
+ ** fix various inconsistencies in manual (bug #52712)
+
+ ** fix typo in cset 8354b505ad6b (bug #52702)
+
+ ** fix inconsistencies with char, strvcat, strread docstrings (bug #52702.
+
+ ** explain Matlab compatibility of fopen modes (bug #52644)
+
+ ** update documentation for keywords to include classdef statements
+    (bug #52591)
+
+ ** fix documentation of third input to lsode() (bug #52664)
+
+ ** clarify quiver/quiver3 documentation when a linestyle is given (bug #52608)
+
+ ** new section about classdef classes with example (bug #44590)
+
+ ** correct surface plot explanation of  meshgridded results of 1 input
+    (bug #52536)
+
+ ** fix definition of Delaunay triangulation in docstrings (bug #52416)
+
+ ** accumarray.m: Add '@' to function handles in docstring (bug #52418)
+
+ ** update manual to explain \deg and \circ symbols (bug #52287)
+
+ ** correct documentation for randg (bug #52118)
+
+ ** add documentation about PCRE library regexp stack overflow (bug #51589)
+
+ ** play.m: Correct documentation about start and limits inputs (bug #51217)
+
+ ** redo docstring for qz (bug #50846)
+
+ ** describe optional install dependencies PortAudio and SUNDIALS (bug #50513)
+
+ ** update CITATION date, version, and permalink to manual (bug #47058)
+
+
 Summary of bugs fixed for version 4.2.1 (2017-02-22):
 ----------------------------------------------------
 
@@ -476,6 +733,10 @@ Other bugs fixed:
 
  ** add missing classdef test files (bug #49819)
 
+<<<<<<< working copy
+=======
+
+>>>>>>> merge rev
 Summary of important user-visible changes for version 4.2 (2016-11-13):
 ----------------------------------------------------------------------
 

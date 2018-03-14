@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
-### Copyright (C) 1993-2017 John W. Eaton
+dnl Copyright (C) 1993-2018 John W. Eaton
 ###
 ### This file is part of Octave.
 ###
@@ -26,6 +26,7 @@ AC_INIT([GNU Octave], [4.3.0+], [http://octave.org/bugs.html], [octave])
 
 dnl Note that the version number is duplicated here and in AC_INIT because
 dnl AC_INIT requires it to be static, not computed from shell variables.
+
 OCTAVE_MAJOR_VERSION=4
 OCTAVE_MINOR_VERSION=3
 OCTAVE_PATCH_VERSION=0+

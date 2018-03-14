@@ -1,22 +1,22 @@
 FCN_FILE_DIRS += scripts/io
 
-scripts_io_FCN_FILES = \
-  scripts/io/beep.m \
-  scripts/io/csvread.m \
-  scripts/io/csvwrite.m \
-  scripts/io/dlmwrite.m \
-  scripts/io/fileread.m \
-  scripts/io/importdata.m \
-  scripts/io/is_valid_file_id.m \
-  scripts/io/strread.m \
-  scripts/io/textread.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/beep.m \
+  %reldir%/csvread.m \
+  %reldir%/csvwrite.m \
+  %reldir%/dlmwrite.m \
+  %reldir%/fileread.m \
+  %reldir%/importdata.m \
+  %reldir%/is_valid_file_id.m \
+  %reldir%/strread.m \
+  %reldir%/textread.m
 
-scripts_iodir = $(fcnfiledir)/io
+%canon_reldir%dir = $(fcnfiledir)/io
 
-scripts_io_DATA = $(scripts_io_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_io_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/io/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/io/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

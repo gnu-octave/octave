@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_Quad_h 1
 
 #include "octave-config.h"
-
-#include <cfloat>
 
 #include "dColVector.h"
 #include "fColVector.h"
@@ -52,7 +50,7 @@ public:
   Quad (float_integrand_fcn fcn)
     : Quad_options (), f (), ff (fcn) { }
 
-  virtual ~Quad (void) { }
+  virtual ~Quad (void) = default;
 
   virtual double integrate (void)
   {
@@ -139,7 +137,7 @@ public:
     : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
       singularities (sing) { }
 
-  ~DefQuad (void) { }
+  ~DefQuad (void) = default;
 
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
@@ -169,7 +167,7 @@ public:
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
     : Quad (fcn), bound (b), type (t) { }
 
-  ~IndefQuad (void) { }
+  ~IndefQuad (void) = default;
 
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
@@ -204,7 +202,7 @@ public:
     : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
       singularities (sing) { }
 
-  ~FloatDefQuad (void) { }
+  ~FloatDefQuad (void) = default;
 
   OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
                                        octave_idx_type& neval, double& abserr);
@@ -234,7 +232,7 @@ public:
   FloatIndefQuad (float_integrand_fcn fcn, double b, IntegralType t)
     : Quad (fcn), bound (b), type (t) { }
 
-  ~FloatIndefQuad (void) { }
+  ~FloatIndefQuad (void) = default;
 
   OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
                                        octave_idx_type& neval, double& abserr);

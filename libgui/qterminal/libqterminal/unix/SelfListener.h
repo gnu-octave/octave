@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef SELFLISTENER_H
@@ -25,7 +25,7 @@ class SelfListener : public QThread
 {
     Q_OBJECT
 public:
-    explicit SelfListener(int a, QObject *parent = 0);
+    explicit SelfListener(int a, QObject *parent = nullptr);
 
 signals:
     void recvData(const char* stdOutBuffer, int stdOutlen);

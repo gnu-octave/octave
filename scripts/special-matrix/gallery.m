@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} gallery (@var{name})
@@ -555,8 +555,7 @@ function C = cauchy (x, y)
     error ("gallery: X and Y must be vectors of same length for cauchy matrix.");
   endif
 
-  C = x * ones (1, n) + ones (n, 1) * y.';
-  C = ones (n) ./ C;
+  C = 1 ./ (x .+ y.');
 endfunction
 
 function C = chebspec (n, k = 0)
@@ -1097,8 +1096,7 @@ function A = fiedler (c)
   endif
   c = c(:).';           # Ensure c is a row vector.
 
-  A = ones (n, 1) * c;
-  A = abs (A - A.');    # NB. array transpose.
+  A = abs (c - c.');
 endfunction
 
 function A = forsythe (n, alpha = sqrt (eps), lambda = 0)
@@ -2918,8 +2916,43 @@ endfunction
 %!assert (gallery ("minij", 0), [])
 %!assert (gallery ("minij", -1), [])
 
-%!assert (size (gallery ("cauchy", 5)), [5 5])
-%!assert (size (gallery ("cauchy", 2:5, 5:8)), [4 4])
+%!test
+%! exp = 1 ./ [
+%!   2  3  4  5  6
+%!   3  4  5  6  7
+%!   4  5  6  7  8
+%!   5  6  7  8  9
+%!   6  7  8  9  10];
+%! assert (gallery ("cauchy", 5), exp)
+%! assert (gallery ("cauchy", 1:5), exp)
+%! assert (gallery ("cauchy", 1:5, 1:5), exp)
+%!
+%! exp = 1 ./ [
+%!   1  2  3  4  5
+%!   2  3  4  5  6
+%!   3  4  5  6  7
+%!   4  5  6  7  8
+%!   5  6  7  8  9];
+%! assert (gallery ("cauchy", 0:4, 1:5), exp)
+%! assert (gallery ("cauchy", 1:5, 0:4), exp)
+%! assert (gallery ("cauchy", 1:5, 4:-1:0), fliplr (exp))
+%!
+%! exp = 1 ./ [
+%!  -1  0  1  2  3
+%!   0  1  2  3  4
+%!   1  2  3  4  5
+%!   2  3  4  5  6
+%!   3  4  5  6  7];
+%! assert (gallery ("cauchy", 1:5, -2:2), exp)
+%!
+%! exp = 1 ./ [
+%!    8  18  -4  2
+%!   13  23   1  7
+%!    9  19  -3  3
+%!   15  25   3  9];
+%! assert (gallery ("cauchy", [-2 3 -1 5], [10 20 -2 4]), exp)
+%! assert (gallery ("cauchy", [-2 3 -1 5], [10 20 -2 4]'), exp)
+%! assert (gallery ("cauchy", [-2 3 -1 5]', [10 20 -2 4]), exp)
 
 %!assert (size (gallery ("chebspec", 5)), [5 5])
 %!assert (size (gallery ("chebspec", 5, 1)), [5 5])
@@ -2959,8 +2992,17 @@ endfunction
 %!assert (size (gallery ("dramadah", 5)), [5 5])
 %!assert (size (gallery ("dramadah", 5, 2)), [5 5])
 
-%!assert (size (gallery ("fiedler", 5)), [5 5])
-%!assert (size (gallery ("fiedler", 2:5)), [4 4])
+%!test
+%! exp = [
+%!   0   1   2   3   4
+%!   1   0   1   2   3
+%!   2   1   0   1   2
+%!   3   2   1   0   1
+%!   4   3   2   1   0];
+%! assert (gallery ("fiedler", 5), exp)
+%! assert (gallery ("fiedler", 1:5), exp)
+%! assert (gallery ("fiedler", -2:2), exp)
+%! assert (gallery ("fiedler", 2:5), exp(1:4,1:4))
 
 %!assert (size (gallery ("forsythe", 5)), [5 5])
 %!assert (size (gallery ("forsythe", 5, 1, 0.5)), [5 5])

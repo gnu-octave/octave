@@ -5,19 +5,19 @@ Copyright (C) 2005-2016 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,9 +25,17 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "CMatrix.h"
+#include "CSparse.h"
+#include "MArray.h"
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dSparse.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
+#include "oct-refcount.h"
 #include "oct-sparse.h"
+#include "quit.h"
 #include "sparse-qr.h"
 
 namespace octave
@@ -75,6 +83,12 @@ namespace octave
 
       sparse_qr_rep (const SPARSE_T& a, int order);
 
+      // No copying!
+
+      sparse_qr_rep (const sparse_qr_rep&) = delete;
+
+      sparse_qr_rep& operator = (const sparse_qr_rep&) = delete;
+
       ~sparse_qr_rep (void);
 
       bool ok (void) const
@@ -100,7 +114,7 @@ namespace octave
       typename SPARSE_T::dense_matrix_type
       Q (void) const;
 
-      octave_refcount<int> count;
+      refcount<int> count;
 
       octave_idx_type nrows;
       octave_idx_type ncols;
@@ -115,14 +129,6 @@ namespace octave
       template <typename RHS_T, typename RET_T>
       RET_T
       wide_solve (const RHS_T& b, octave_idx_type& info) const;
-
-    private:
-
-      // No copying!
-
-      sparse_qr_rep (const sparse_qr_rep&);
-
-      sparse_qr_rep& operator = (const sparse_qr_rep&);
     };
 
     template <typename SPARSE_T>
@@ -174,7 +180,7 @@ namespace octave
     (const SparseMatrix& a, int order)
       : count (1), nrows (a.rows ()), ncols (a.columns ())
 #if defined (HAVE_CXSPARSE)
-      , S (0), N (0)
+      , S (nullptr), N (nullptr)
 #endif
     {
 #if defined (HAVE_CXSPARSE)
@@ -186,9 +192,11 @@ namespace octave
       A.n = ncols;
       // Cast away const on A, with full knowledge that CSparse won't touch it
       // Prevents the methods below making a copy of the data.
-      A.p = const_cast<octave_idx_type *>(a.cidx ());
-      A.i = const_cast<octave_idx_type *>(a.ridx ());
-      A.x = const_cast<double *>(a.data ());
+      A.p = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.cidx ()));
+      A.i = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.ridx ()));
+      A.x = const_cast<double *> (a.data ());
       A.nz = -1;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -328,7 +336,9 @@ namespace octave
         {
           OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
 
-          for (volatile octave_idx_type j = 0, idx = 0; j < b_nc; j++, idx+=b_nr)
+          for (volatile octave_idx_type j = 0, idx = 0;
+               j < b_nc;
+               j++, idx += b_nr)
             {
               octave_quit ();
 
@@ -940,7 +950,7 @@ namespace octave
     (const SparseComplexMatrix& a, int order)
       : count (1), nrows (a.rows ()), ncols (a.columns ())
 #if defined (HAVE_CXSPARSE)
-      , S (0), N (0)
+      , S (nullptr), N (nullptr)
 #endif
     {
 #if defined (HAVE_CXSPARSE)
@@ -952,10 +962,12 @@ namespace octave
       A.n = ncols;
       // Cast away const on A, with full knowledge that CSparse won't touch it
       // Prevents the methods below making a copy of the data.
-      A.p = const_cast<octave_idx_type *>(a.cidx ());
-      A.i = const_cast<octave_idx_type *>(a.ridx ());
-      A.x = const_cast<cs_complex_t *> (
-              reinterpret_cast<const cs_complex_t *> (a.data ()));
+      A.p = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.cidx ()));
+      A.i = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.ridx ()));
+      A.x = const_cast<cs_complex_t *>
+              (reinterpret_cast<const cs_complex_t *> (a.data ()));
       A.nz = -1;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -1077,7 +1089,8 @@ namespace octave
       octave_idx_type b_nc = b.cols ();
       octave_idx_type nc = N->L->n;
       octave_idx_type nr = nrows;
-      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *> (b.fortran_vec ());
+      const cs_complex_t *bvec
+        = reinterpret_cast<const cs_complex_t *> (b.fortran_vec ());
       ComplexMatrix ret (b_nr, b_nc);
       Complex *vec = ret.fortran_vec ();
 

@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -38,7 +38,13 @@ namespace octave
 
     opengl_renderer (void);
 
-    virtual ~opengl_renderer (void) { }
+    // No copying!
+
+    opengl_renderer (const opengl_renderer&) = delete;
+
+    opengl_renderer& operator = (const opengl_renderer&) = delete;
+
+    virtual ~opengl_renderer (void) = default;
 
     virtual void draw (const graphics_object& go, bool toplevel = true);
 
@@ -57,6 +63,7 @@ namespace octave
 
     virtual void set_viewport (int w, int h);
     virtual graphics_xform get_transform (void) const { return xform; }
+    virtual uint8NDArray get_pixels (int width, int height);
 
     virtual void finish (void);
 
@@ -69,6 +76,8 @@ namespace octave
     virtual void draw_light (const light::properties& props);
     virtual void draw_hggroup (const hggroup::properties& props);
     virtual void draw_text (const text::properties& props);
+    virtual void draw_text_background (const text::properties& props,
+                                       bool do_rotate = false);
     virtual void draw_image (const image::properties& props);
     virtual void draw_uipanel (const uipanel::properties& props,
                                const graphics_object& go);
@@ -77,18 +86,24 @@ namespace octave
     virtual void init_gl_context (bool enhanced, const Matrix& backgroundColor);
     virtual void setup_opengl_transformation (const axes::properties& props);
 
-    virtual void set_color (const Matrix& c);
-    virtual void set_polygon_offset (bool on, float offset = 0.0f);
-    virtual void set_linewidth (float w);
-    virtual void set_linestyle (const std::string& s, bool stipple = false,
-                                double linewidth = 0.5);
     virtual void set_clipbox (double x1, double x2, double y1, double y2,
                               double z1, double z2);
     virtual void set_clipping (bool on);
     virtual void set_font (const base_properties& props);
+    virtual void set_color (const Matrix& c);
     virtual void set_interpreter (const caseless_str& interp)
     {
       interpreter = interp;
+    }
+    virtual void set_linewidth (float w);
+    virtual void set_linestyle (const std::string& s, bool stipple = false,
+                                double linewidth = 0.5);
+    virtual void set_linecap (const std::string&) { };
+    virtual void set_linejoin (const std::string&) { };
+    virtual void set_polygon_offset (bool on, float offset = 0.0f);
+    virtual void set_selecting (bool on)
+    {
+      selecting = on;
     }
 
     virtual void init_marker (const std::string& m, double size, float width);
@@ -137,18 +152,12 @@ namespace octave
 
   private:
 
-    // No copying!
-
-    opengl_renderer (const opengl_renderer&);
-
-    opengl_renderer& operator = (const opengl_renderer&);
-
     bool is_nan_or_inf (double x, double y, double z) const
     {
-      return (octave::math::isnan (x) || octave::math::isnan (y)
-              || octave::math::isnan (z)
-              || octave::math::isinf (x) || octave::math::isinf (y)
-              || octave::math::isinf (z));
+      return (math::isnan (x) || math::isnan (y)
+              || math::isnan (z)
+              || math::isinf (x) || math::isinf (y)
+              || math::isinf (z));
     }
 
     octave_uint8 clip_code (double x, double y, double z) const
@@ -170,6 +179,7 @@ namespace octave
     void draw_axes_planes (const axes::properties& props);
     void draw_axes_boxes (const axes::properties& props);
 
+    void draw_axes_grids (const axes::properties& props);
     void draw_axes_x_grid (const axes::properties& props);
     void draw_axes_y_grid (const axes::properties& props);
     void draw_axes_z_grid (const axes::properties& props);
@@ -210,6 +220,8 @@ namespace octave
     unsigned int current_light;
     int max_lights;
 
+    // Indicate we are drawing for selection purpose
+    bool selecting;
   private:
     class patch_tesselator;
   };

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{fvc} =} isocaps (@var{v}, @var{isoval})
@@ -165,7 +165,7 @@ function varargout = isocaps (varargin)
                        vertices(:,1), vertices(:,2), vertices(:,3))';
   endif
 
-  switch nargout
+  switch (nargout)
     case 0
       hp = patch ("Faces", faces, "Vertices", vertices, ...
                   "FaceVertexCData", fvcdata, ...
@@ -269,7 +269,7 @@ function [x, y, z, v, isoval, which_caps, which_plane, verbose] = ...
 
   ## check x
   if (isvector (x) && length (x) == v_sz(2))
-    x = repmat (x(:)', [v_sz(1) 1 v_sz(3)]);
+    x = repmat (x(:).', [v_sz(1) 1 v_sz(3)]);
   elseif (! size_equal (v, x))
     error ("isocaps: X must match the size of V");
   endif
@@ -366,6 +366,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! isoval = .4;
 %! lin = linspace (0, 1.2, 15);
 %! [x, y, z] = meshgrid (lin, lin, lin);
@@ -395,6 +396,7 @@ endfunction
 %! title ({"isocaps()", "sphere with 6 end-caps"});
 
 %!demo
+%! clf;
 %! v = smooth3 (rand (6, 8, 4));
 %! isoval = .5;
 %! x = 1:3:22;  y = -14:5:11;  z = linspace (16, 18, 4);
@@ -417,7 +419,11 @@ endfunction
 %!  isocaps (x, yy, z, v, isoval);
 %!  view (3);
 %!
-%! annotation ("textbox", [0.1 0.9 0.9 0.1], ...
+%! annotation ("textbox", [0.41 0.9 0.9 0.1], ...
+%!     "String", "isocaps() called 4 ways", ...
+%!     "HorizontalAlignment", "center", ...
+%!     "FontSize", 12);
+%! annotation ("textbox", [0.1 0.47 0.9 0.1], ...
 %!     "String", ["Apart from the first plot having a different scale, " ...
 %!     "all four plots must look the same."], ...
 %!     "HorizontalAlignment", "left", ...

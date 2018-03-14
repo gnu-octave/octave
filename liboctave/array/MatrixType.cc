@@ -6,19 +6,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -65,12 +65,12 @@ MatrixType::MatrixType (void)
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0),
-    lower_band (0), dense (false), full (false), nperm (0), perm (0) { }
+    lower_band (0), dense (false), full (false), nperm (0), perm (nullptr) { }
 
-MatrixType::MatrixType (const MatrixType &a)
+MatrixType::MatrixType (const MatrixType& a)
   : typ (a.typ), sp_bandden (a.sp_bandden), bandden (a.bandden),
     upper_band (a.upper_band), lower_band (a.lower_band),
-    dense (a.dense), full (a.full), nperm (a.nperm), perm (0)
+    dense (a.dense), full (a.full), nperm (a.nperm), perm (nullptr)
 {
   if (nperm != 0)
     {
@@ -140,7 +140,7 @@ matrix_real_probe (const MArray<T>& a)
 
 template <typename T>
 MatrixType::matrix_type
-matrix_complex_probe (const MArray<std::complex<T> >& a)
+matrix_complex_probe (const MArray<std::complex<T>>& a)
 {
   MatrixType::matrix_type typ = MatrixType::Unknown;
   octave_idx_type nrows = a.rows ();
@@ -197,34 +197,34 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
   return typ;
 }
 
-MatrixType::MatrixType (const Matrix &a)
+MatrixType::MatrixType (const Matrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_real_probe (a);
 }
 
-MatrixType::MatrixType (const ComplexMatrix &a)
+MatrixType::MatrixType (const ComplexMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_complex_probe (a);
 }
 
-MatrixType::MatrixType (const FloatMatrix &a)
+MatrixType::MatrixType (const FloatMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_real_probe (a);
 }
 
-MatrixType::MatrixType (const FloatComplexMatrix &a)
+MatrixType::MatrixType (const FloatComplexMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+    dense (false), full (true), nperm (0), perm (nullptr)
 {
   typ = matrix_complex_probe (a);
 }
@@ -234,7 +234,7 @@ template <typename T>
 MatrixType::MatrixType (const MSparse<T>& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (false), nperm (0), perm (0)
+    dense (false), full (false), nperm (0), perm (nullptr)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
@@ -507,9 +507,9 @@ MatrixType::MatrixType (const MSparse<T>& a)
                   if (a.ridx (i) == j)
                     {
                       T d = a.data (i);
-                      is_herm = (octave::math::real (d) > 0.0
-                                 && octave::math::imag (d) == 0.0);
-                      diag(j) = octave::math::real (d);
+                      is_herm = (std::real (d) > 0.0
+                                 && std::imag (d) == 0.0);
+                      diag(j) = std::real (d);
                       break;
                     }
                 }
@@ -558,7 +558,7 @@ MatrixType::MatrixType (const matrix_type t, bool _full)
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (_full), nperm (0), perm (0)
+    dense (false), full (_full), nperm (0), perm (nullptr)
 {
   if (t == MatrixType::Unknown || t == MatrixType::Full
       || t == MatrixType::Diagonal || t == MatrixType::Permuted_Diagonal
@@ -575,10 +575,10 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (_full), nperm (0), perm (0)
+    dense (false), full (_full), nperm (0), perm (nullptr)
 {
   if ((t == MatrixType::Permuted_Upper || t == MatrixType::Permuted_Lower)
-      && np > 0 && p != 0)
+      && np > 0 && p != nullptr)
     {
       typ = t;
       nperm = np;
@@ -595,7 +595,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
   : typ (MatrixType::Unknown),
     sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (_full), nperm (0), perm (0)
+    dense (false), full (_full), nperm (0), perm (nullptr)
 {
   if (t == MatrixType::Banded || t == MatrixType::Banded_Hermitian)
     {
@@ -669,7 +669,7 @@ MatrixType::type (bool quiet)
 }
 
 int
-MatrixType::type (const SparseMatrix &a)
+MatrixType::type (const SparseMatrix& a)
 {
   if (typ != MatrixType::Unknown
       && (full || sp_bandden == octave_sparse_params::get_bandden ()))
@@ -701,7 +701,7 @@ MatrixType::type (const SparseMatrix &a)
 }
 
 int
-MatrixType::type (const SparseComplexMatrix &a)
+MatrixType::type (const SparseComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown
       && (full || sp_bandden == octave_sparse_params::get_bandden ()))
@@ -733,7 +733,7 @@ MatrixType::type (const SparseComplexMatrix &a)
 }
 
 int
-MatrixType::type (const Matrix &a)
+MatrixType::type (const Matrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
@@ -759,7 +759,7 @@ MatrixType::type (const Matrix &a)
 }
 
 int
-MatrixType::type (const ComplexMatrix &a)
+MatrixType::type (const ComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
@@ -785,7 +785,7 @@ MatrixType::type (const ComplexMatrix &a)
 }
 
 int
-MatrixType::type (const FloatMatrix &a)
+MatrixType::type (const FloatMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
@@ -811,7 +811,7 @@ MatrixType::type (const FloatMatrix &a)
 }
 
 int
-MatrixType::type (const FloatComplexMatrix &a)
+MatrixType::type (const FloatComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {

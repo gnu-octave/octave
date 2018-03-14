@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -63,7 +63,13 @@ namespace octave
 
     typedef void (*user_accept_line_fcn) (const std::string&);
 
-    virtual ~command_editor (void) { }
+    // No copying!
+
+    command_editor (const command_editor&) = delete;
+
+    command_editor& operator = (const command_editor&) = delete;
+
+    virtual ~command_editor (void) = default;
 
     static void set_name (const std::string& n);
 
@@ -73,11 +79,11 @@ namespace octave
 
     static void set_input_stream (FILE *f);
 
-    static FILE *get_input_stream (void);
+    static FILE * get_input_stream (void);
 
     static void set_output_stream (FILE *f);
 
-    static FILE *get_output_stream (void);
+    static FILE * get_output_stream (void);
 
     static void redisplay (void);
 
@@ -193,12 +199,6 @@ namespace octave
 
   private:
 
-    // No copying!
-
-    command_editor (const command_editor&);
-
-    command_editor& operator = (const command_editor&);
-
     static bool instance_ok (void);
 
     static void make_command_editor (void);
@@ -218,7 +218,9 @@ namespace octave
     // The real thing.
     static command_editor *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+
+    static void handle_interrupt_signal (void);
 
   protected:
 
@@ -239,11 +241,11 @@ namespace octave
 
     virtual void do_set_input_stream (FILE *) = 0;
 
-    virtual FILE *do_get_input_stream (void) = 0;
+    virtual FILE * do_get_input_stream (void) = 0;
 
     virtual void do_set_output_stream (FILE *) = 0;
 
-    virtual FILE *do_get_output_stream (void) = 0;
+    virtual FILE * do_get_output_stream (void) = 0;
 
     virtual void do_redisplay (void) { }
 
@@ -291,17 +293,17 @@ namespace octave
 
     virtual void do_set_user_accept_line_function (user_accept_line_fcn) { }
 
-    virtual completion_fcn do_get_completion_function (void) const { return 0; }
+    virtual completion_fcn do_get_completion_function (void) const { return nullptr; }
 
-    virtual quoting_fcn do_get_quoting_function (void) const { return 0; }
+    virtual quoting_fcn do_get_quoting_function (void) const { return nullptr; }
 
-    virtual dequoting_fcn do_get_dequoting_function (void) const { return 0; }
+    virtual dequoting_fcn do_get_dequoting_function (void) const { return nullptr; }
 
     virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const
-    { return 0; }
+    { return nullptr; }
 
     virtual user_accept_line_fcn do_get_user_accept_line_function (void) const
-    { return 0; }
+    { return nullptr; }
 
     virtual string_vector
     do_generate_filename_completions (const std::string& text) = 0;
@@ -350,6 +352,8 @@ namespace octave
 
     virtual void do_interrupt (bool) { }
 
+    virtual void do_handle_interrupt_signal (void) { }
+
     int do_insert_initial_input (void);
 
     int read_octal (const std::string& s);
@@ -369,7 +373,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::command_editor' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::command_editor' instead")
 typedef octave::command_editor command_editor;
 
 #endif

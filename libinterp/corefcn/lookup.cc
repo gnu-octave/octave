@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 VZLU Prague a.s., Czech Republic
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
+Octave is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or (at
-your option) any later version.
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
 Octave is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -47,41 +47,6 @@ contains_char (const std::string& str, char c)
   return (str.find (c) != std::string::npos
           || str.find (std::toupper (c)) != std::string::npos);
 }
-
-// case-insensitive character comparison functors
-struct icmp_char_lt : public std::binary_function<char, char, bool>
-{
-  bool operator () (char x, char y) const
-  { return std::toupper (x) < std::toupper (y); }
-};
-
-struct icmp_char_gt : public std::binary_function<char, char, bool>
-{
-  bool operator () (char x, char y) const
-  { return std::toupper (x) > std::toupper (y); }
-};
-
-// FIXME: maybe these should go elsewhere?
-// FIXME: are they even needed now?
-// case-insensitive ascending comparator
-#if 0
-static bool
-stri_comp_lt (const std::string& a, const std::string& b)
-{
-  return std::lexicographical_compare (a.begin (), a.end (),
-                                       b.begin (), b.end (),
-                                       icmp_char_lt ());
-}
-
-// case-insensitive descending comparator
-static bool
-stri_comp_gt (const std::string& a, const std::string& b)
-{
-  return std::lexicographical_compare (a.begin (), a.end (),
-                                       b.begin (), b.end (),
-                                       icmp_char_gt ());
-}
-#endif
 
 template <typename T>
 inline sortmode
@@ -191,51 +156,50 @@ DEFUN (lookup, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{idx} =} lookup (@var{table}, @var{y})
 @deftypefnx {} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})
-Lookup values in a sorted table.
+Lookup values in a @strong{sorted} table.
 
 This function is usually used as a prelude to interpolation.
 
-If table is increasing and @code{idx = lookup (table, y)}, then
-@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within
-the table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If
-@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is
-@code{n}.
+If table is increasing, of length N and @code{idx = lookup (table, y)}, then
+@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within the
+table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If
+@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is N.
 
-If the table is decreasing, then the tests are reversed.
-For non-strictly monotonic tables, empty intervals are always skipped.
-The result is undefined if @var{table} is not monotonic, or if
-@var{table} contains a NaN.
+If the table is decreasing, then the tests are reversed.  For non-strictly
+monotonic tables, empty intervals are always skipped.  The result is undefined
+if @var{table} is not monotonic, or if @var{table} contains a NaN.
 
-The complexity of the lookup is O(M*log(N)) where N is the size of
-@var{table} and M is the size of @var{y}.  In the special case when @var{y}
-is also sorted, the complexity is O(min(M*log(N),M+N)).
+The complexity of the lookup is O(M*log(N)) where M is the size of @var{y}.
+In the special case when @var{y} is also sorted, the complexity is
+O(min (M*log(N), M+N)).
 
-@var{table} and @var{y} can also be cell arrays of strings
-(or @var{y} can be a single string).  In this case, string lookup
-is performed using lexicographical comparison.
+@var{table} and @var{y} can also be cell arrays of strings (or @var{y} can be a
+single string).  In this case, string lookup is performed using lexicographical
+comparison.
 
 If @var{opts} is specified, it must be a string with letters indicating
 additional options.
 
 @table @code
 @item m
-@code{table(idx(i)) == y(i)} if @code{y(i)}
-occurs in table; otherwise, @code{idx(i)} is zero.
+Match.  @code{table(idx(i)) == y(i)} if @code{y(i)} occurs in table;
+otherwise, @code{idx(i)} is zero.
 
 @item b
-@code{idx(i)} is a logical 1 or 0, indicating whether
-@code{val(i)} is contained in table or not.
+Boolean.  @code{idx(i)} is a logical 1 or 0, indicating whether @code{y(i)}
+is contained in table or not.
 
 @item l
-For numeric lookups
-the leftmost subinterval shall be extended to infinity (i.e., all indices
-at least 1)
+Left.  For numeric lookups the leftmost subinterval shall be extended to
+minus infinity (i.e., all indices at least 1).
 
 @item r
-For numeric lookups
-the rightmost subinterval shall be extended to infinity (i.e., all indices
-at most n-1).
+Right.  For numeric lookups the rightmost subinterval shall be extended to
+infinity (i.e., all indices at most N-1).
 @end table
+
+@strong{Note}: If @var{table} is not sorted the results from @code{lookup}
+will be unpredictable.
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -250,9 +214,9 @@ at most n-1).
 
   octave_value retval;
 
-  bool num_case = ((table.is_numeric_type () && y.is_numeric_type ())
+  bool num_case = ((table.isnumeric () && y.isnumeric ())
                    || (table.is_char_matrix () && y.is_char_matrix ()));
-  bool str_case = table.is_cellstr () && (y.is_string () || y.is_cellstr ());
+  bool str_case = table.iscellstr () && (y.is_string () || y.iscellstr ());
   bool left_inf = false;
   bool right_inf = false;
   bool match_idx = false;
@@ -281,10 +245,10 @@ at most n-1).
     {
       // In the case of a complex array, absolute values will be used for
       // compatibility (though it's not too meaningful).
-      if (table.is_complex_type ())
+      if (table.iscomplex ())
         table = table.abs ();
 
-      if (y.is_complex_type ())
+      if (y.iscomplex ())
         y = y.abs ();
 
       Array<octave_idx_type> idx;
@@ -319,7 +283,7 @@ at most n-1).
       Array<std::string> str_table = table.cellstr_value ();
       Array<std::string> str_y (dim_vector (1, 1));
 
-      if (y.is_cellstr ())
+      if (y.iscellstr ())
         str_y = y.cellstr_value ();
       else
         str_y(0) = y.string_value ();
@@ -342,14 +306,10 @@ at most n-1).
       else if (match_idx)
         {
           NDArray ridx (idx.dims ());
-          if (match_idx)
+          for (octave_idx_type i = 0; i < nval; i++)
             {
-              for (octave_idx_type i = 0; i < nval; i++)
-                {
-                  octave_idx_type j = idx.xelem (i);
-                  ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1)) ? j
-                                                                          : 0;
-                }
+              octave_idx_type j = idx.xelem (i);
+              ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1) ? j : 0);
             }
 
           retval = ridx;

@@ -5,19 +5,19 @@ Copyright (C) 2010 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 
 #include "defun.h"
+#include "interpreter.h"
 #include "oct-stream.h"
 #include "error.h"
 #include "ovl.h"
@@ -158,8 +159,8 @@ parse_range_spec (const octave_value& range_spec,
   return stat;
 }
 
-DEFUN (dlmread, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dlmread, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{data} =} dlmread (@var{file})
 @deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep})
 @deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})
@@ -207,7 +208,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   if (nargin < 1 || nargin > 4)
     print_usage ();
 
-  std::istream *input = 0;
+  std::istream *input = nullptr;
   std::ifstream input_file;
 
   if (args(0).is_string ())
@@ -228,7 +229,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
     }
   else if (args(0).is_scalar_type ())
     {
-      octave_stream is = octave_stream_list::lookup (args(0), "dlmread");
+      octave::stream_list& streams = interp.get_stream_list ();
+
+      octave::stream is = streams.lookup (args(0), "dlmread");
 
       input = is.input_stream ();
 
@@ -278,14 +281,16 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   octave_idx_type j = 0;
   octave_idx_type r = 1;
   octave_idx_type c = 1;
-  octave_idx_type rmax = 0;
+  // Start with a reasonable size to avoid constant resizing of matrix.
+  octave_idx_type rmax = 32;
   octave_idx_type cmax = 0;
 
-  Matrix rdata;
+  Matrix rdata (rmax, cmax, empty_value);
   ComplexMatrix cdata;
 
   bool iscmplx = false;
-  bool sepflag = false;
+  bool sep_is_wspace = (sep.find_first_of (" \t") != std::string::npos);
+  bool auto_sep_is_wspace = false;
 
   std::string line;
 
@@ -301,24 +306,27 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
   std::istringstream tmp_stream;
 
-  // Read in the data one field at a time, growing the data matrix
-  // as needed.
+  // Read the data one field at a time, growing the data matrix as needed.
   while (getline (*input, line))
     {
       // Skip blank lines for compatibility.
-      if (line.find_first_not_of (" \t") == std::string::npos)
+      if ((! sep_is_wspace || auto_sep_is_wspace)
+          && line.find_first_not_of (" \t") == std::string::npos)
         continue;
 
-      // To be compatible with matlab, blank separator should
-      // correspond to whitespace as delimter.
-      if (! sep.length ())
+      // Infer separator from file if delimiter is blank.
+      if (sep.empty ())
         {
-          size_t n = line.find_first_of (",:; \t",
-                                         line.find_first_of ("0123456789"));
+          // Skip leading whitespace.
+          size_t pos1 = line.find_first_not_of (" \t");
+
+          // For Matlab compatibility, blank delimiter should
+          // correspond to whitespace (space and tab).
+          size_t n = line.find_first_of (",:; \t", pos1);
           if (n == std::string::npos)
             {
               sep = " \t";
-              sepflag = true;
+              auto_sep_is_wspace = true;
             }
           else
             {
@@ -328,8 +336,8 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                 {
                 case ' ':
                 case '\t':
-                  sepflag = true;
                   sep = " \t";
+                  auto_sep_is_wspace = true;
                   break;
 
                 default:
@@ -339,67 +347,84 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
             }
         }
 
+      // Estimate the number of columns from first line of data.
       if (cmax == 0)
         {
-          // Try to estimate the number of columns.  Skip leading
-          // whitespace.
-          size_t pos1 = line.find_first_not_of (" \t");
+          size_t pos1, pos2;
+          if (auto_sep_is_wspace)
+            pos1 = line.find_first_not_of (" \t");
+          else
+            pos1 = 0;
+
           do
             {
-              size_t pos2 = line.find_first_of (sep, pos1);
+              pos2 = line.find_first_of (sep, pos1);
 
-              if (sepflag && pos2 != std::string::npos)
-                // Treat consecutive separators as one.
+              if (auto_sep_is_wspace && pos2 != std::string::npos)
                 {
+                  // Treat consecutive separators as one.
                   pos2 = line.find_first_not_of (sep, pos2);
                   if (pos2 != std::string::npos)
                     pos2 -= 1;
-                  else
-                    pos2 = line.length () - 1;
                 }
 
-              cmax++;
-
+              // Separator followed by EOL doesn't generate extra column
               if (pos2 != std::string::npos)
-                pos1 = pos2 + 1;
-              else
-                pos1 = std::string::npos;
+                cmax++;
 
+              pos1 = pos2 + 1;
             }
-          while (pos1 != std::string::npos);
+          while (pos2 != std::string::npos);
 
+          // FIXME: Should always be the case that iscmplx == false.
+          //        Flag is initialized that way and no data has been read.
           if (iscmplx)
-            cdata.resize (rmax, cmax);
+            cdata.resize (rmax, cmax, empty_value);
           else
-            rdata.resize (rmax, cmax);
+            rdata.resize (rmax, cmax, empty_value);
         }
 
       r = (r > i + 1 ? r : i + 1);
       j = 0;
-      // Skip leading whitespace.
-      size_t pos1 = line.find_first_not_of (" \t");
+
+      size_t pos1, pos2;
+      if (auto_sep_is_wspace)
+        pos1 = line.find_first_not_of (" \t");  // Skip leading whitespace.
+      else
+        pos1 = 0;
+
       do
         {
           octave_quit ();
 
-          size_t pos2 = line.find_first_of (sep, pos1);
+          pos2 = line.find_first_of (sep, pos1);
           std::string str = line.substr (pos1, pos2 - pos1);
 
-          if (sepflag && pos2 != std::string::npos)
-            // Treat consecutive separators as one.
-            pos2 = line.find_first_not_of (sep, pos2) - 1;
+          if (auto_sep_is_wspace && pos2 != std::string::npos)
+            {
+              // Treat consecutive separators as one.
+              pos2 = line.find_first_not_of (sep, pos2);
+              if (pos2 != std::string::npos)
+                pos2 -= 1;
+              else
+                pos2 = line.length () - 1;
+            }
+
+          // Separator followed by EOL doesn't generate extra column
+          if (pos2 == std::string::npos && str.empty ())
+            break;
 
           c = (c > j + 1 ? c : j + 1);
           if (r > rmax || c > cmax)
             {
-              // Use resize_and_fill for the case of not-equal
-              // length rows.
-              rmax = 2*r;
-              cmax = c;
+              // Use resize_and_fill for the case of unequal length rows.
+              // Keep rmax a power of 2.
+              rmax = std::max (2*(r-1), rmax);
+              cmax = std::max (c, cmax);
               if (iscmplx)
-                cdata.resize (rmax, cmax);
+                cdata.resize (rmax, cmax, empty_value);
               else
-                rdata.resize (rmax, cmax);
+                rdata.resize (rmax, cmax, empty_value);
             }
 
           tmp_stream.str (str);
@@ -415,28 +440,35 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                   else
                     rdata(i,j++) = x;
                 }
-              else if (std::toupper (tmp_stream.peek ()) == 'I')
-                {
-                  // This is to allow pure imaginary numbers.
-                  if (iscmplx)
-                    cdata(i,j++) = x;
-                  else
-                    rdata(i,j++) = x;
-                }
               else
                 {
-                  double y = octave_read_double (tmp_stream);
-
-                  if (! iscmplx && y != 0.)
+                  int next_char = std::tolower (tmp_stream.peek ());
+                  if (next_char == 'i' || next_char == 'j')
                     {
-                      iscmplx = true;
-                      cdata = ComplexMatrix (rdata);
-                    }
+                      // Process pure imaginary numbers.
+                      if (! iscmplx)
+                        {
+                          iscmplx = true;
+                          cdata = ComplexMatrix (rdata);
+                        }
 
-                  if (iscmplx)
-                    cdata(i,j++) = Complex (x, y);
+                      cdata(i,j++) = Complex (0, x);
+                    }
                   else
-                    rdata(i,j++) = x;
+                    {
+                      double y = octave_read_double (tmp_stream);
+
+                      if (! iscmplx && y != 0.)
+                        {
+                          iscmplx = true;
+                          cdata = ComplexMatrix (rdata);
+                        }
+
+                      if (iscmplx)
+                        cdata(i,j++) = Complex (x, y);
+                      else
+                        rdata(i,j++) = x;
+                    }
                 }
             }
           else if (iscmplx)
@@ -444,13 +476,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
           else
             rdata(i,j++) = empty_value;
 
-          if (pos2 != std::string::npos)
-            pos1 = pos2 + 1;
-          else
-            pos1 = std::string::npos;
-
+          pos1 = pos2 + 1;
         }
-      while (pos1 != std::string::npos);
+      while (pos2 != std::string::npos);
 
       if (i == r1)
         break;  // Stop early if the desired range has been read.
@@ -485,10 +513,11 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 /*
 %!test
 %! file = tempname ();
-%! fid = fopen (file, "wt");
-%! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
-%! fclose (fid);
 %! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
+%!   fclose (fid);
+%!
 %!   assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12]);
 %!   assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12]);
 %!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8]);
@@ -504,14 +533,15 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!test
+%!testif ; ! ismac ()
 %! file = tempname ();
-%! fid = fopen (file, "wt");
-%! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
-%! fclose (fid);
 %! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
+%!   fclose (fid);
+%!
 %!   assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
-%!   assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ","), [1,2,3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
 %!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
 %!   assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
 %!   assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
@@ -520,7 +550,83 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
 %!   assert (dlmread (file, ",", 10, 0), []);
 %!   assert (dlmread (file, ",", 0, 10), []);
-%!   assert (dlmread (file, ",", [0, 4, 0, Inf]), []);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ","), [1,2,3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", 10, 0), []);
+%!   assert (dlmread (file, ",", 0, 10), []);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+%!test <*42025>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "    \n 1 2\n11 22\n ");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2; 11, 22]);
+%!   assert (dlmread (file, " "), [ 0,  0, 0, 0
+%!                                  0,  1, 2, 0
+%!                                 11, 22, 0, 0
+%!                                  0,  0, 0, 0]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+%!testif ; ! ismac ()   <*50589>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1;2;3\n");
+%!   fwrite (fid, "1i;2I;3j;4J\n");
+%!   fwrite (fid, "4;5;6\n");
+%!   fwrite (fid, "-4i;+5I;-6j;+7J\n");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3, 0; 1i, 2i, 3i, 4i;
+%!                            4, 5, 6, 0; -4i, 5i, -6i, 7i]);
+%!   assert (dlmread (file, "", [0 0 0 3]), [1, 2, 3]);
+%!   assert (dlmread (file, "", [1 0 1 3]), [1i, 2i, 3i, 4i]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1;2;3\n");
+%!   fwrite (fid, "1i;2I;3j;4J\n");
+%!   fwrite (fid, "4;5;6\n");
+%!   fwrite (fid, "-4i;+5I;-6j;+7J\n");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3, 0; 1i, 2i, 3i, 4i;
+%!                            4, 5, 6, 0; -4i, 5i, -6i, 7i]);
+%!   assert (dlmread (file, "", [0 0 0 3]), [1, 2, 3]);
+%!   assert (dlmread (file, "", [1 0 1 3]), [1i, 2i, 3i, 4i]);
 %! unwind_protect_cleanup
 %!   unlink (file);
 %! end_unwind_protect

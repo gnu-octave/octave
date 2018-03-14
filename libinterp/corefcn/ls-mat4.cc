@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,36 +24,32 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <cstring>
-#include <cctype>
-
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
+#include "dSparse.h"
 #include "data-conv.h"
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 #include "quit.h"
-#include "str-vec.h"
-#include "oct-locbuf.h"
 
+#include "ls-mat4.h"
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "load-save.h"
-#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ovl.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
@@ -61,10 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
-#include "dSparse.h"
 
-#include "ls-mat4.h"
 
 // Read LEN elements of data from IS in the format specified by
 // PRECISION, placing the result in DATA.  If SWAP is TRUE, swap
@@ -139,9 +132,8 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
 // If mopt is nonzero and the byte order is swapped, mopt will be
 // bigger than we expect, so we swap bytes.
 //
-// If mopt is zero, it means the file was written on a little endian
-// machine, and we only need to swap if we are running on a big endian
-// machine.
+// If mopt is zero, it means the file was written on a little endian machine,
+// and we only need to swap if we are running on a big endian machine.
 //
 // Gag me.
 
@@ -328,7 +320,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             SparseComplexMatrix smc = SparseComplexMatrix (data, r, c,
                                                            nr_new, nc_new);
 
-            tc = order ? smc.transpose () : smc;
+            tc = (order ? smc.transpose () : smc);
           }
         else
           {
@@ -352,7 +344,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
             SparseMatrix sm = SparseMatrix (data, r, c, nr_new, nc_new);
 
-            tc = order ? sm.transpose () : sm;
+            tc = (order ? sm.transpose () : sm);
           }
       }
     else
@@ -380,10 +372,10 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
               for (octave_idx_type i = 0; i < nr; i++)
                 ctmp (i,j) = Complex (re(i,j), im(i,j));
 
-            tc = order ? ctmp.transpose () : ctmp;
+            tc = (order ? ctmp.transpose () : ctmp);
           }
         else
-          tc = order ? re.transpose () : re;
+          tc = (order ? re.transpose () : re);
 
         if (type == 1)
           tc = tc.convert_to_str (false, true, '\'');
@@ -402,7 +394,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 {
   int32_t mopt = 0;
 
-  mopt += tc.is_sparse_type () ? 2 : tc.is_string () ? 1 : 0;
+  mopt += tc.issparse () ? 2 : tc.is_string () ? 1 : 0;
 
   octave::mach_info::float_format flt_fmt =
     octave::mach_info::native_float_format ();;
@@ -416,13 +408,13 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   int32_t nc = tc.columns ();
 
-  if (tc.is_sparse_type ())
+  if (tc.issparse ())
     {
       len = tc.nnz ();
       uint32_t nnz = len + 1;
       os.write (reinterpret_cast<char *> (&nnz), 4);
 
-      uint32_t iscmplx = tc.is_complex_type () ? 4 : 3;
+      uint32_t iscmplx = (tc.iscomplex () ? 4 : 3);
       os.write (reinterpret_cast<char *> (&iscmplx), 4);
 
       uint32_t tmp = 0;
@@ -433,7 +425,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       os.write (reinterpret_cast<char *> (&nr), 4);
       os.write (reinterpret_cast<char *> (&nc), 4);
 
-      int32_t imag = tc.is_complex_type () ? 1 : 0;
+      int32_t imag = (tc.iscomplex () ? 1 : 0);
       os.write (reinterpret_cast<char *> (&imag), 4);
 
       len = nr * nc;
@@ -488,7 +480,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       double tmp = tc.double_value ();
       os.write (reinterpret_cast<char *> (&tmp), 8);
     }
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     {
       double ds;
       OCTAVE_LOCAL_BUFFER (double, dtmp, len);
@@ -512,13 +504,13 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
           for (octave_idx_type i = 0; i < len; i++)
-            dtmp[i] = octave::math::real (m.data (i));
+            dtmp[i] = std::real (m.data (i));
           os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           ds = 0.;
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
           for (octave_idx_type i = 0; i < len; i++)
-            dtmp[i] = octave::math::imag (m.data (i));
+            dtmp[i] = std::imag (m.data (i));
           os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           os.write (reinterpret_cast<const char *> (&ds), 8);
         }

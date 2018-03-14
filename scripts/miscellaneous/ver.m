@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} ver
@@ -59,6 +59,8 @@ function retval = ver (package = "")
   endif
 
   if (nargout == 0)
+    hg_id = __octave_config_info__ ("hg_id");
+
     [unm, err] = uname ();
 
     if (err)
@@ -70,7 +72,7 @@ function retval = ver (package = "")
 
     hbar(1:70) = "-";
     desc = {hbar
-            ["GNU Octave Version: " OCTAVE_VERSION]
+            ["GNU Octave Version: " OCTAVE_VERSION " (hg id: " hg_id ")"]
             ["GNU Octave License: " license]
             ["Operating System: " os_string]
             hbar};
@@ -90,7 +92,8 @@ function retval = ver (package = "")
       lst = pkg ("list");
       ## Start with the version info for Octave
       retval = struct ("Name", "Octave", "Version", version,
-                       "Release", [], "Date", []);
+                       "Release", [],
+                       "Date", __octave_config_info__ ("release_date"));
       for i = 1:numel (lst)
         retval(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
                                 "Release", [], "Date", lst{i}.date);

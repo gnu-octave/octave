@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{hlink} =} linkprop (@var{h}, "@var{prop}")
@@ -30,10 +30,10 @@
 ## the first object in the list @var{h}.
 ##
 ## The function returns @var{hlink} which is a special object describing the
-## link.  As long as the reference @var{hlink} exists the link between graphic
+## link.  As long as the reference @var{hlink} exists, the link between graphic
 ## objects will be active.  This means that @var{hlink} must be preserved in
 ## a workspace variable, a global variable, or otherwise stored using a
-## function such as @code{setappdata}, @code{guidata}.  To unlink properties,
+## function such as @code{setappdata} or @code{guidata}.  To unlink properties,
 ## execute @code{clear @var{hlink}}.
 ##
 ## An example of the use of @code{linkprop} is
@@ -51,7 +51,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{linkaxes}
+## @seealso{linkaxes, addlistener}
 ## @end deftypefn
 
 function hlink = linkprop (h, prop)
@@ -62,7 +62,7 @@ function hlink = linkprop (h, prop)
 
   if (numel (h) < 2)
     error ("linkprop: H must contain at least 2 handles");
-  elseif (! all (ishandle (h(:))))
+  elseif (! all (ishghandle (h(:))))
     error ("linkprop: invalid graphic handle in input H");
   endif
 
@@ -72,7 +72,7 @@ function hlink = linkprop (h, prop)
     error ("linkprop: PROP must be a string or cell string array");
   endif
 
-  h = h(:)';  # set() prefers column vectors
+  h = h(:);
   ## Match all objects to the first one in the list before linking
   for j = 1 : numel (prop)
     set (h(2:end), prop{j}, get (h(1), prop{j}));
@@ -82,22 +82,22 @@ function hlink = linkprop (h, prop)
   for i = 1 : numel (h)
     for j = 1 : numel (prop)
       addlistener (h(i), prop{j},
-                   {@update_prop, [h(1:i-1),h(i+1:end)], prop{j}});
+                   {@cb_sync_prop, [h(1:i-1), h(i+1:end)], prop{j}});
     endfor
   endfor
 
-  hlink = onCleanup (@() delete_linkprop (h, prop));
+  hlink = onCleanup (@() unlink_linkprop (h, prop));
 
 endfunction
 
-function update_prop (h, ~, hlist, prop)
+function cb_sync_prop (h, ~, hlist, prop)
   persistent recursion = false;
 
   ## Don't allow recursion
   if (! recursion)
     unwind_protect
       recursion = true;
-      set (hlist(ishandle (hlist)), prop, get (h, prop));
+      set (hlist(ishghandle (hlist)), prop, get (h, prop));
     unwind_protect_cleanup
       recursion = false;
     end_unwind_protect
@@ -105,14 +105,13 @@ function update_prop (h, ~, hlist, prop)
 
 endfunction
 
-function delete_linkprop (hlist, prop)
+function unlink_linkprop (hlist, prop)
 
+  hlist = hlist(ishghandle (hlist));
   for i = 1 : numel (hlist)
-    if (ishandle (hlist(i)))
-      for j = 1 : numel (prop)
-        dellistener (hlist(i), prop{j});
-      endfor
-    endif
+    for j = 1 : numel (prop)
+      dellistener (hlist(i), prop{j});
+    endfor
   endfor
 
 endfunction

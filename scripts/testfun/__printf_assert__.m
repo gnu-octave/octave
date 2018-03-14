@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __printf_assert__ (@dots{})
@@ -22,9 +22,9 @@
 ## @end deftypefn
 
 function __printf_assert__ (varargin)
-  global _assert_printf = "";
+  global __assert_printf__ = "";
 
-  _assert_printf = cat (2, _assert_printf, sprintf (varargin{:}));
+  __assert_printf__ = cat (2, __assert_printf__, sprintf (varargin{:}));
 
 endfunction
 

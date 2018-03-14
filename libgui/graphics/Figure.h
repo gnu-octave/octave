@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -67,22 +67,22 @@ namespace QtHandles
     friend class ToolBar;
 
   public:
-    Figure (const graphics_object& go, FigureWindow* win);
+    Figure (const graphics_object& go, FigureWindow *win);
     ~Figure (void);
 
-    static Figure* create (const graphics_object& go);
+    static Figure * create (const graphics_object& go);
 
     QString fileName (void);
     void setFileName (const QString& name);
 
     MouseMode mouseMode (void);
 
-    Container* innerContainer (void);
-    QWidget* menu (void);
+    Container * innerContainer (void);
+    QWidget * menu (void);
     void updateStatusBar (ColumnVector pt);
 
-    bool eventNotifyBefore (QObject* watched, QEvent* event);
-    void eventNotifyAfter (QObject* watched, QEvent* event);
+    bool eventNotifyBefore (QObject *watched, QEvent *event);
+    void eventNotifyAfter (QObject *watched, QEvent *event);
 
   protected:
     enum UpdateBoundingBoxFlag
@@ -102,16 +102,17 @@ namespace QtHandles
   private:
     void createFigureToolBarAndMenuBar (void);
     void showFigureToolBar (bool visible);
-    void showMenuBar (bool visible);
-    void addCustomToolBar (QToolBar* bar, bool visible);
-    void showCustomToolBar (QToolBar* bar, bool visible);
+    void showMenuBar (bool visible, int height = -1);
+    void addCustomToolBar (QToolBar *bar, bool visible);
+    void showCustomToolBar (QToolBar *bar, bool visible);
 
     void updateFigureToolBarAndMenuBar (void);
 
     static void updateBoundingBoxHelper (void*);
 
-    void save_figure_callback (const std::string& file);
+    void close_figure_callback (void);
     void copy_figure_callback (const std::string& format);
+    void save_figure_callback (const std::string& file);
 
     void enableMouseTracking (void);
 
@@ -122,24 +123,28 @@ namespace QtHandles
     void fileCloseFigure (void);
     void editCopy (bool choose_format = false);
     void helpAboutOctave (void);
-    void updateMenuBar (void);
+    void updateMenuBar (int height = -1);
     void updateContainer (void);
     void toggleAxes (void);
     void toggleGrid (void);
     void autoAxes (void);
 
+  public slots:
+    uint8NDArray slotGetPixels (void);
+
   signals:
     void asyncUpdate (void);
 
   private:
-    Container* m_container;
+    Container *m_container;
     bool m_blockUpdates;
-    QToolBar* m_figureToolBar;
-    MenuBar* m_menuBar;
-    QStatusBar* m_statusBar;
+    QToolBar *m_figureToolBar;
+    MenuBar *m_menuBar;
+    QStatusBar *m_statusBar;
     QRect m_innerRect;
     QRect m_outerRect;
-    MouseModeActionGroup* m_mouseModeGroup;
+    MouseModeActionGroup *m_mouseModeGroup;
+    int m_previousHeight;
   };
 
 }

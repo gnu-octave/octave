@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} print ()
@@ -189,7 +189,6 @@
 ##
 ##   @item pdf
 ##     Portable document format
-##   @end table
 ##
 ##   @item svg
 ##     Scalable vector graphics
@@ -201,6 +200,7 @@
 ## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
 ## TikZ file (@samp{tikzstandalone} and is only available for the Gnuplot
 ## graphics toolkit).
+##   @end table
 ##
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as PostScript.
@@ -357,59 +357,95 @@ function print (varargin)
   unwind_protect
 
     ## Modify properties as specified by options
+    tk = get (opts.figure, "__graphics_toolkit__");
     props = [];
+    nfig = 0;
 
     drawnow ();
 
     ## print() requires children of axes to have units = "normalized", or "data"
     hobj = findall (opts.figure, "-not", "type", "figure", ...
-      "-not", "type", "axes", "-property", "units", ...
-      "-not", "units", "normalized", "-not", "units", "data");
+                    "-not", "type", "axes", "-property", "units", ...
+                    "-not", "units", "normalized", "-not", "units", "data");
+    hobj(strncmp (get (hobj, "type"), "ui", 2)) = [];
     for n = 1:numel(hobj)
       props(n).h = hobj(n);
       props(n).name = "units";
       props(n).value = {get(hobj(n), "units")};
       set (hobj(n), "units", "data");
+      nfig += 1;
     endfor
 
     ## print() requires axes units = "normalized"
     hax = findall (opts.figure, "-depth", 1, "type", "axes", ...
       "-not", "units", "normalized");
-    m = numel (props);
-    for n = 1:numel(hax)
-      props(m+n).h = hax(n);
-      props(m+n).name = "units";
-      props(m+n).value = {get(hax(n), "units")};
+    for n = 1:numel (hax)
+      props(end+1).h = hax(n);
+      props(end).name = "units";
+      props(end).value = {get(hax(n), "units")};
       set (hax(n), "units", "normalized");
+      nfig += 1;
     endfor
 
+    ## FIXME: line transparency is only handled for svg output when
+    ## using gl2ps. For other formats, switch grid lines to light gray
+    ## so that the image output approximately matches on-screen experience.
+    hax = findall (opts.figure, "type", "axes");
+    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.devopt, "svg"))
+      for n = 1:numel (hax)
+        if (strcmp (get (hax(n), "gridcolormode"), "auto"))
+          props(end+1).h = hax(n);
+          props(end).name = "gridcolormode";
+          props(end).value = {"auto"};
+          props(end+1).h = hax(n);
+          props(end).name = "gridcolor";
+          props(end).value = {get(hax(n), "gridcolor")};
+          set (hax(n), "gridcolor", [0.85 0.85 0.85]);
+          nfig += 2;
+        endif
+
+        if (strcmp (get (hax(n), "minorgridcolormode"), "auto"))
+          props(end+1).h = hax(n);
+          props(end).name = "minorgridcolormode";
+          props(end).value = {"auto"};
+          props(end+1).h = hax(n);
+          props(end).name = "minorgridcolor";
+          props(end).value = {get(hax(n), "minorgridcolor")};
+          set (hax(n), "minorgridcolor", [0.75 0.75 0.75]);
+          nfig += 2;
+        endif
+      endfor
+    endif
+
     ## print() requires figure units to be "pixels"
-    m = numel (props);
-    props(m+1).h = opts.figure;
-    props(m+1).name = "units";
-    props(m+1).value = {get(opts.figure, "units")};
+    props(end+1).h = opts.figure;
+    props(end).name = "units";
+    props(end).value = {get(opts.figure, "units")};
     set (opts.figure, "units", "pixels");
+    nfig += 1;
 
     ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
-    props(m+2).h = opts.figure;
-    props(m+2).name = "position";
-    props(m+2).value = {fpos};
+    props(end+1).h = opts.figure;
+    props(end).name = "__printing__";
+    props(end).value = {"off"};
+    props(end+1).h = opts.figure;
+    props(end).name = "position";
+    props(end).value = {fpos};
     fpos(3:4) = opts.canvas_size;
-    set (opts.figure, "position", fpos);
+    set (opts.figure, "__printing__", "on", "position", fpos);
+    nfig += 1;
 
     ## Implement InvertHardCopy option
     do_hardcopy = strcmp (get (opts.figure, "inverthardcopy"), "on");
 
     if (do_hardcopy)
       ## Set figure background to white.
-      props(m+3).h = opts.figure;
-      props(m+3).name = "color";
-      props(m+3).value{1} = get (props(m+3).h, props(m+3).name);
-      set (props(m+3).h, "color", "white");
-      nfig = m + 3;
-    else
-      nfig = m + 2;
+      props(end+1).h = opts.figure;
+      props(end).name = "color";
+      props(end).value{1} = get (opts.figure, "color");
+      set (opts.figure, "color", "white");
+      nfig += 1;
     endif
 
     if (do_hardcopy)
@@ -418,14 +454,13 @@ function print (varargin)
                                   "-not", "tag", "legend",
                                   "-not", "color", "none");
       if (! isempty (hax))
-        m = numel (props);
         for n = 1:numel (hax)
-          props(m+n).h = hax(n);
-          props(m+n).name = "color";
-          props(m+n).value{1} = get(hax(n), "color");
+          props(end+1).h = hax(n);
+          props(end).name = "color";
+          props(end).value{1} = get(hax(n), "color");
           set (hax(n), "color", "white");
+          nfig += 1;
         endfor
-        nfig += n;
       endif
     endif
 
@@ -453,7 +488,7 @@ function print (varargin)
         h = setdiff (h, hnone);
         m = numel (props);
         for n = 1:numel (h)
-          if (ishandle (h(n)))
+          if (ishghandle (h(n)))
             ## Need to verify objects exist since callbacks may delete objects
             ## as the colors for others are modified.
             rgb = get (h(n), color_props{c});
@@ -475,14 +510,14 @@ function print (varargin)
       h = findall (opts.figure, "-property", "fontname");
       m = numel (props);
       for n = 1:numel (h)
-        if (ishandle (h(n)))
+        if (ishghandle (h(n)))
           if (! isempty (opts.font))
             props(end+1).h = h(n);
             props(end).name = "fontname";
             props(end).value = {get(h(n), "fontname")};
           endif
         endif
-        if (ishandle (h(n)))
+        if (ishghandle (h(n)))
           if (! isempty (opts.fontsize))
             props(end+1).h = h(n);
             props(end).name = "fontsize";
@@ -491,7 +526,7 @@ function print (varargin)
         endif
       endfor
       if (! isempty (opts.font))
-        set (h(ishandle (h)), "fontname", opts.font);
+        set (h(ishghandle (h)), "fontname", opts.font);
       endif
       if (! isempty (opts.fontsize))
         if (ischar (opts.fontsize))
@@ -505,7 +540,7 @@ function print (varargin)
         endif
         ## FIXME: legend child objects need to be acted on first.
         ##        or legend fontsize callback will destroy them.
-        hlist = h(ishandle (h));
+        hlist = h(ishghandle (h));
         haxes = strcmp (get (hlist, "type"), "axes");
         set (hlist(! haxes), "fontsize", fontsize);
         set (hlist(haxes), "fontsize", fontsize);
@@ -513,7 +548,7 @@ function print (varargin)
     endif
 
     ## call the graphics toolkit print script
-    switch (get (opts.figure, "__graphics_toolkit__"))
+    switch (tk)
       case "gnuplot"
         opts = __gnuplot_print__ (opts);
       otherwise
@@ -525,12 +560,12 @@ function print (varargin)
     if (isstruct (props))
       ## Restore figure position and units first
       for n = nfig:-1:1
-        if (ishandle (props(n).h))
+        if (ishghandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
       endfor
       for n = numel (props):-1:(nfig + 1)
-        if (ishandle (props(n).h))
+        if (ishghandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
       endfor
@@ -612,65 +647,66 @@ function cmd = epstool (opts, filein, fileout)
              "print.m: eps preview may not be combined with -tight");
   endif
   if (! isempty (opts.preview) || opts.tight_flag)
-    if (! isempty (opts.epstool_binary))
-      if (opts.tight_flag)
-        cmd = "--copy --bbox";
-      elseif (! isempty (opts.preview))
-        switch (opts.preview)
-          case "tiff"
-            cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
-          case {"tiff6u", "tiff6p", "metafile"}
-            cmd = sprintf ("--add-%s-preview --device bmpgray", opts.preview);
-          case {"tiff4", "interchange"}
-            cmd = sprintf ("--add-%s-preview", opts.preview);
-          case "pict"
-            cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
-          otherwise
-            error ("print:invalidpreview",
-                   "print.m: epstool cannot include preview for format '%s'",
-                   opts.preview);
-        endswitch
-        if (! isempty (opts.ghostscript.resolution))
-          cmd = sprintf ("%s --dpi %d", cmd, fix (opts.ghostscript.resolution));
-        endif
+
+    if (isempty (opts.epstool_binary))
+      error ("print:noepstool", "print.m: 'epstool' is required for specified output format, but binary is not available in PATH");
+    endif
+
+    if (opts.tight_flag)
+      cmd = "--copy --bbox";
+    elseif (! isempty (opts.preview))
+      switch (opts.preview)
+        case "tiff"
+          cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
+        case {"tiff6u", "tiff6p", "metafile"}
+          cmd = sprintf ("--add-%s-preview --device bmpgray", opts.preview);
+        case {"tiff4", "interchange"}
+          cmd = sprintf ("--add-%s-preview", opts.preview);
+        case "pict"
+          cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
+        otherwise
+          error ("print:invalidpreview",
+                 "print.m: epstool cannot include preview for format '%s'",
+                 opts.preview);
+      endswitch
+      if (! isempty (opts.ghostscript.resolution))
+        cmd = sprintf ("%s --dpi %d", cmd, fix (opts.ghostscript.resolution));
+      endif
+    else
+      cmd = "";
+    endif
+    if (! isempty (cmd))
+      cmd = sprintf ("%s --quiet %s %s %s ", opts.epstool_binary,
+                     cmd, filein, fileout);
+    endif
+    if (pipein)
+      if (dos_shell)
+        filein(filein=="'") = '"';
+        gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
+                                  "device", epsdevice,
+                                  "source", "-",
+                                  "output", filein);
+        cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
       else
-        cmd = "";
+        cmd = sprintf ("cat > %s ; %s", filein, cmd);
       endif
-      if (! isempty (cmd))
-        cmd = sprintf ("%s --quiet %s %s %s ", opts.epstool_binary,
-                       cmd, filein, fileout);
+    endif
+    if (pipeout)
+      if (dos_shell)
+        cmd = sprintf ("%s & type %s", cmd, fileout);
+      else
+        cmd = sprintf ("%s ; cat %s", cmd, fileout);
       endif
-      if (pipein)
-        if (dos_shell)
-          filein(filein=="'") = "\"";
-          gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                                    "device", epsdevice,
-                                    "source", "-",
-                                    "output", filein);
-          cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
-        else
-          cmd = sprintf ("cat > %s ; %s", filein, cmd);
-        endif
+    endif
+    if (! isempty (cleanup))
+      if (pipeout && dos_shell)
+        error ("print:epstoolpipe",
+               "print.m: cannot pipe output of 'epstool' for DOS shell");
+      elseif (pipeout)
+        cmd = sprintf ("( %s %s )", cmd, cleanup);
+      else
+        cmd = sprintf ("%s %s", cmd, cleanup);
       endif
-      if (pipeout)
-        if (dos_shell)
-          cmd = sprintf ("%s & type %s", cmd, fileout);
-        else
-          cmd = sprintf ("%s ; cat %s", cmd, fileout);
-        endif
-      endif
-      if (! isempty (cleanup))
-        if (pipeout && dos_shell)
-          error ("print:epstoolpipe",
-                 "print.m: cannot pipe output of 'epstool' for DOS shell");
-        elseif (pipeout)
-          cmd = sprintf ("( %s %s )", cmd, cleanup);
-        else
-          cmd = sprintf ("%s %s", cmd, cleanup);
-        endif
-      endif
-    elseif (isempty (opts.epstool_binary))
-      error ("print:noepstool", "print.m: 'epstool' not found in PATH");
     endif
   else
     if (pipein && pipeout)
@@ -685,7 +721,7 @@ function cmd = epstool (opts, filein, fileout)
     elseif (pipein && ! pipeout)
       if (dos_shell)
         ## ghostscript expects double, not single, quotes
-        fileout(fileout=="'") = "\"";
+        fileout(fileout=="'") = '"';
         cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
                                "device", epsdevice,
                                "source", "-",
@@ -719,17 +755,18 @@ function cmd = fig2dev (opts, devopt)
     devopt = opts.devopt;
   endif
 
-  dos_shell = (ispc () && ! isunix ());
-  if (! isempty (opts.fig2dev_binary))
-    if (dos_shell)
-      ## FIXME: Is this the right thing to do for DOS?
-      cmd = sprintf ("%s -L %s 2> NUL", opts.fig2dev_binary, devopt);
-    else
-      cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
-    endif
-  elseif (isempty (opts.fig2dev_binary))
-    error ("print:nofig2dev", "print.m: 'fig2dev' not found in PATH");
+  if (isempty (opts.fig2dev_binary))
+    error ("print:nofig2dev", "print.m: 'fig2dev' is required for specified output format, but binary is not available in PATH");
   endif
+
+  dos_shell = (ispc () && ! isunix ());
+  if (dos_shell)
+    ## FIXME: Is this the right thing to do for DOS?
+    cmd = sprintf ("%s -L %s 2> NUL", opts.fig2dev_binary, devopt);
+  else
+    cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
+  endif
+
   if (opts.debug)
     fprintf ("fig2dev command: '%s'\n", cmd);
   endif
@@ -826,17 +863,18 @@ function cmd = pstoedit (opts, devopt)
     devopt = opts.devopt;
   endif
 
-  dos_shell = (ispc () && ! isunix ());
-  if (! isempty (opts.pstoedit_binary))
-    if (dos_shell)
-      cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
-    else
-      ## FIXME: Is this the right thing to do for DOS?
-      cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
-    endif
-  elseif (isempty (opts.pstoedit_binary))
-    error ("print:nopstoedit", "print.m: 'pstoedit' not found in PATH");
+  if (isempty (opts.pstoedit_binary))
+    error ("print:nopstoedit", "print.m: 'pstoedit' is required for specified output format, but binary is not available in PATH");
   endif
+
+  dos_shell = (ispc () && ! isunix ());
+  if (dos_shell)
+    cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
+  else
+    ## FIXME: Is this the right thing to do for DOS?
+    cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
+  endif
+
   if (opts.debug)
     fprintf ("pstoedit command: '%s'\n", cmd);
   endif

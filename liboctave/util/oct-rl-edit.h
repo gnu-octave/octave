@@ -4,19 +4,19 @@ Copyright (C) 2000-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,6 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_oct_rl_edit_h 1
 
 #include "octave-config.h"
+
+#if defined (__cplusplus)
+#  include <cstdio>
+#else
+#  include <stdio.h>
+#endif
 
 typedef int (*rl_startup_hook_fcn_ptr) (void);
 
@@ -62,8 +68,6 @@ extern void octave_rl_enable_paren_matching (int);
 
 extern int octave_rl_erase_empty_line (int);
 
-extern void octave_rl_init (void);
-
 extern void octave_rl_clear_screen (int skip_redisplay);
 
 extern void octave_rl_resize_terminal (void);
@@ -74,7 +78,7 @@ extern void octave_rl_set_screen_size (int ht, int wd);
 
 extern void octave_rl_restore_terminal_state (void);
 
-extern char *octave_rl_copy_line (void);
+extern char * octave_rl_copy_line (void);
 
 extern void octave_rl_replace_line (const char *s, int clear_undo);
 
@@ -84,7 +88,7 @@ extern void octave_rl_insert_text (const char *);
 
 extern int octave_rl_newline (int, int);
 
-extern const char *octave_rl_line_buffer (void);
+extern const char * octave_rl_line_buffer (void);
 
 extern int octave_rl_point (void);
 
@@ -94,15 +98,15 @@ extern void octave_rl_clear_undo_list (void);
 
 extern void octave_rl_set_name (const char *);
 
-extern char *octave_rl_readline (const char *);
+extern char * octave_rl_readline (const char *);
 
 extern void octave_rl_set_input_stream (FILE *);
 
-extern FILE *octave_rl_get_input_stream (void);
+extern FILE * octave_rl_get_input_stream (void);
 
 extern void octave_rl_set_output_stream (FILE *);
 
-extern FILE *octave_rl_get_output_stream (void);
+extern FILE * octave_rl_get_output_stream (void);
 
 extern void octave_rl_read_init_file (const char *);
 
@@ -116,13 +120,13 @@ extern int octave_rl_prefer_env_winsize (int);
 
 extern void octave_rl_done (int);
 
-extern char *octave_rl_filename_completion_function (const char *, int);
+extern char * octave_rl_filename_completion_function (const char *, int);
 
 extern void octave_rl_set_basic_word_break_characters (const char *);
 
 extern void octave_rl_set_completer_word_break_characters (const char *);
 
-extern char *octave_rl_get_completer_word_break_characters (void);
+extern char * octave_rl_get_completer_word_break_characters (void);
 
 extern void octave_rl_set_completion_word_break_hook (rl_completion_hook_fcn_ptr);
 
@@ -177,6 +181,8 @@ extern int octave_rl_history_search_backward (int, int);
 extern int octave_rl_ctrl (char);
 
 extern int octave_rl_meta (char);
+
+extern void octave_rl_recover_from_interrupt (void);
 
 #if defined (__cplusplus)
 }

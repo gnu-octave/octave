@@ -1,18 +1,20 @@
 ## Copyright (C) 2016-2017 Pantxo Diribarne
 ##
-##   This program is free software; you can redistribute it and/or modify
-##   it under the terms of the GNU General Public License as published by
-##   the Free Software Foundation; either version 3 of the License, or
-##   (at your option) any later version.
+## This file is part of Octave.
 ##
-##   This program is distributed in the hope that it will be useful,
-##   but WITHOUT ANY WARRANTY; without even the implied warranty of
-##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##   GNU General Public License for more details.
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-##   You should have received a copy of the GNU General Public License
-##   along with Octave; see the file COPYING.  If not, see
-##   <http://www.gnu.org/licenses/>.
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} annotation (@var{type})
@@ -206,7 +208,7 @@ function varargout = annotation (varargin)
         endif
       endif
     otherwise
-      error ("annotation: unknown annotation type %s", objtype);
+      error ("annotation: unknown annotation TYPE %s", objtype);
   endswitch
 
   ## options
@@ -268,7 +270,7 @@ function hax = buildoverlay (hf)
 
   ## hidden property to store figure size in absolute (points)
   ## coordinates
-  addproperty ("figsize_points", hax, "axesxmtick", []);
+  addproperty ("figsize_points", hax, "axesxminortickvalues", []);
   update_figsize_points (hf, {}, hax);
 
 
@@ -478,10 +480,13 @@ function h = buildannot (hax, objtype, pos)
 
       hr = patch (x, y, "parent", h);
 
+      ## FIXME: Remove warn state switching in Octave 4.8
+      old_warn_state = warning ("off", "Octave:deprecated-property");
       propnames = rectprops ("names");
       for ii = 1:numel (propnames)
         update_rect (h, {}, propnames{ii}, hr, objtype);
       endfor
+      warning (old_warn_state);
 
       rectmenu (hui, h);
       set (hr, "uicontextmenu", hui);
@@ -725,9 +730,9 @@ function props = textboxprops (varargin)
            "linestyle",  "linelinestyle", "-", ...
            "linewidth", "linelinewidth", 0.5, ...
            "string", "textstring", "", ...
-           "fitboxtotext", "radio","{on}|off", ...
+           "fitboxtotext", "radio", "{on}|off", ...
            "margin", "data", 5, ...
-           "verticalalignment", "textverticalalignment",  "middle"};
+           "verticalalignment", "textverticalalignment", "middle"};
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
@@ -795,7 +800,9 @@ endfunction
 
 function props = rectprops (varargin)
 
-  props = {"edgecolor", "patchedgecolor", "k", ...
+  ## FIXME: Remove "edgecolor" in Octave 4.8
+  props = {"color", "patchedgecolor", "k", ...
+           "edgecolor", "patchedgecolor", "k", ...
            "facealpha", "patchfacealpha", 1, ...
            "facecolor", "patchfacecolor", "none", ...
            "linestyle", "patchlinestyle", "-", ...
@@ -811,7 +818,7 @@ function rectmenu (hui, hpar)
   prop = "facecolor";
   vals = basecolors ();
   addbasemenu (hui, hpar, prop, vals, "Face Color");
-  prop = "edgecolor";
+  prop = "color";
   vals = basecolors ();
   addbasemenu (hui, hpar, prop, vals, "Edge Color");
   prop = "linestyle";
@@ -1001,7 +1008,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
       x = [0 0 0];
       y = [0 0 0];
     otherwise
-      error ("annotation: \"%s\" headstyle not implemented", headstyle);
+      error ('annotation: "%s" headstyle not implemented', headstyle);
   endswitch
 
   R = [cos(ang) -sin(ang);
@@ -1016,7 +1023,6 @@ function [x, y] = arrowcoordinates (h, nar = [])
 endfunction
 
 function update_arrow (h, dummy, prop, hpa = [])
-  persistent recursive = false;
 
   nar = [];
   for ii = 1:numel (hpa)
@@ -1255,7 +1261,7 @@ function [x, y] = pos2ell (pos)
 
 endfunction
 
-function update_rect (h, dummy, prop, hre, typ)
+function update_rect (h, ~, prop, hre, typ)
   persistent recursive = false;
 
   if (! recursive)
@@ -1267,10 +1273,22 @@ function update_rect (h, dummy, prop, hre, typ)
         else
           [x, y] = pos2ell (pos);
         endif
-
         set (hre, "xdata", x, "ydata", y);
+
+      case "color"
+        set (hre, "edgecolor", get (h, prop));
+
+      case "edgecolor"
+        ## FIXME: Remove "edgecolor" in Octave 4.8
+        warning ("Octave:deprecated-property",
+                 ['annotation: Property "edgecolor" for ' typ ' annotations'...
+                  ' is deprecated and will be removed from a future version'...
+                  ' of Octave.  Use "color" instead.']);
+        set (hre, "edgecolor", get (h, prop));
+
       otherwise
         set (hre, prop, get (h, prop));
+
     endswitch
   endif
 
@@ -1441,6 +1459,7 @@ endfunction
 %!                   "linestyle", "--", "headstyle", "none");
 %! endfor
 %! set (h, "string", "Extrema", "fontsize", 15);
+%! title ("annotation() demo of TextArrows");
 
 ## test line properties
 %!test
@@ -1492,6 +1511,29 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## test rectangle properties
+%!test
+%! hf = figure ("visible", "off");
+%! hax = axes ();
+%! unwind_protect
+%!   h = annotation ("rectangle", [0.2 0.7 0.2 0.2], "linewidth", 2,
+%!                   "linestyle", "--", "color", "r", "facecolor", "b",
+%!                   "facealpha", .6, "units", "normalized");
+%!   hpa = get (h, "children");
+%!   assert (get (hpa, "xdata"), [0.2; 0.4; 0.4; 0.2], eps);
+%!   assert (get (hpa, "ydata"), [0.7; 0.7; 0.9; 0.9], eps);
+%!   assert (get (hpa, "linewidth"), 2);
+%!   assert (get (hpa, "linestyle"), "--");
+%!   assert (get (hpa, "edgecolor"), [1 0 0]);
+%!   assert (get (hpa, "edgecolor"), get (h, "color"));
+%!   assert (get (hpa, "facecolor"), [0 0 1]);
+%!   assert (get (hpa, "facealpha"), .6);
+%!
+%!   assert (gca (), hax);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## test units conversion
 %!test
 %! hf = figure ("visible", "off");
@@ -1523,7 +1565,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error <unknown annotation type foo> annotation ("foo")
+%!error <unknown annotation TYPE foo> annotation ("foo")
 %!error annotation ([], "foo")
 %!error annotation ({})
 %!error annotation ("line", [.5 .6])

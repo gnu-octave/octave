@@ -1,4 +1,3 @@
-// Template sparse array class
 /*
 
 Copyright (C) 2004-2017 David Bateman
@@ -7,19 +6,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -58,24 +57,6 @@ Sparse<T>::nil_rep (void)
 {
   static typename Sparse<T>::SparseRep nr;
   return &nr;
-}
-
-template <typename T>
-Sparse<T>::Sparse (const PermMatrix& a)
-  : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
-    dimensions (dim_vector (a.rows (), a.cols ()))
-{
-  octave_idx_type n = a.rows ();
-  for (octave_idx_type i = 0; i <= n; i++)
-    cidx (i) = i;
-
-  const Array<octave_idx_type> pv = a.col_perm_vec ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    ridx (i) = pv(i);
-
-  for (octave_idx_type i = 0; i < n; i++)
-    data (i) = 1.0;
 }
 
 template <typename T>
@@ -161,22 +142,21 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
   for (octave_idx_type j = ncols; j > 0 && c[j] > nz; j--)
     c[j] = nz;
 
-  // We shall skip reallocation if we have less than 1/frac extra elements to
-  // discard.
+  // Skip reallocation if we have less than 1/frac extra elements to discard.
   static const int frac = 5;
   if (nz > nzmx || nz < nzmx - nzmx/frac)
     {
       // Reallocate.
       octave_idx_type min_nzmx = std::min (nz, nzmx);
 
-      octave_idx_type * new_ridx = new octave_idx_type [nz];
-      std::copy (r, r + min_nzmx, new_ridx);
+      octave_idx_type *new_ridx = new octave_idx_type [nz];
+      std::copy_n (r, min_nzmx, new_ridx);
 
       delete [] r;
       r = new_ridx;
 
-      T * new_data = new T [nz];
-      std::copy (d, d + min_nzmx, new_data);
+      T *new_data = new T [nz];
+      std::copy_n (d, min_nzmx, new_data);
 
       delete [] d;
       d = new_data;
@@ -207,7 +187,7 @@ Sparse<T>::SparseRep::any_element_is_nan (void) const
 
 template <typename T>
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
-  : rep (0), dimensions (dim_vector (nr, nc))
+  : rep (nullptr), dimensions (dim_vector (nr, nc))
 {
   if (val != T ())
     {
@@ -234,8 +214,26 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
 }
 
 template <typename T>
+Sparse<T>::Sparse (const PermMatrix& a)
+  : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
+    dimensions (dim_vector (a.rows (), a.cols ()))
+{
+  octave_idx_type n = a.rows ();
+  for (octave_idx_type i = 0; i <= n; i++)
+    cidx (i) = i;
+
+  const Array<octave_idx_type> pv = a.col_perm_vec ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    ridx (i) = pv(i);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    data (i) = 1.0;
+}
+
+template <typename T>
 Sparse<T>::Sparse (const dim_vector& dv)
-  : rep (0), dimensions (dv)
+  : rep (nullptr), dimensions (dv)
 {
   if (dv.ndims () != 2)
     (*current_liboctave_error_handler)
@@ -246,7 +244,7 @@ Sparse<T>::Sparse (const dim_vector& dv)
 
 template <typename T>
 Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
-  : rep (0), dimensions (dv)
+  : rep (nullptr), dimensions (dv)
 {
 
   // Work in unsigned long long to avoid overflow issues with numel
@@ -291,7 +289,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                    const idx_vector& c, octave_idx_type nr,
                    octave_idx_type nc, bool sum_terms,
                    octave_idx_type nzm)
-  : rep (0), dimensions ()
+  : rep (nullptr), dimensions ()
 {
   if (nr < 0)
     nr = r.extent (0);
@@ -330,12 +328,9 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       if (n == 1 && a(0) != T ())
         {
           change_capacity (nzm > 1 ? nzm : 1);
-          xcidx (0) = 0;
           xridx (0) = r(0);
           xdata (0) = a(0);
-
-          for (octave_idx_type j = 0; j < nc; j++)
-            xcidx (j+1) = j >= c(0);
+          std::fill_n (xcidx () + c(0) + 1, nc - c(0), 1);
         }
     }
   else if (a_scalar)
@@ -358,11 +353,11 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           octave_idx_type new_nz = 1;
           for (octave_idx_type i = 1; i < n; i++)
             new_nz += rd[i-1] != rd[i];
+
           // Allocate result.
           change_capacity (nzm > new_nz ? nzm : new_nz);
-          xcidx (0) = 0;
-          for (octave_idx_type j = 0; j < nc; j++)
-            xcidx (j+1) = j >= c(0) ? new_nz : 0;
+          std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
+
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
 
@@ -507,11 +502,11 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       octave_idx_type new_nz = 1;
       for (octave_idx_type i = 1; i < n; i++)
         new_nz += rd[i-1] != rd[i];
+
       // Allocate result.
       change_capacity (nzm > new_nz ? nzm : new_nz);
-      xcidx (0) = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        xcidx (j+1) = j >= c(0) ? new_nz : 0;
+      std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
+
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 
@@ -656,7 +651,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
 
 template <typename T>
 Sparse<T>::Sparse (const Array<T>& a)
-  : rep (0), dimensions (a.dims ())
+  : rep (nullptr), dimensions (a.dims ())
 {
   if (dimensions.ndims () > 2)
     (*current_liboctave_error_handler)
@@ -865,7 +860,6 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
                   // Original calculation subject to overflow
                   // ii = (i*old_nr + ridx (j)) % new_nr
                   // jj = (i*old_nr + ridx (j)) / new_nr
-
                   for (octave_idx_type k = kk; k < jj; k++)
                     retval.xcidx (k+1) = j;
                   kk = jj;
@@ -987,7 +981,7 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
   if (c != rep->ncols)
     {
       octave_idx_type *new_cidx = new octave_idx_type [c+1];
-      std::copy (rep->c, rep->c + std::min (c, rep->ncols) + 1, new_cidx);
+      std::copy_n (rep->c, std::min (c, rep->ncols) + 1, new_cidx);
       delete [] rep->c;
       rep->c = new_cidx;
 
@@ -1184,8 +1178,8 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           // Copy data and adjust indices.
           octave_idx_type nz_new = nz - (ui - li);
           *this = Sparse<T> (nr - (ub - lb), 1, nz_new);
-          std::copy (tmp.data (), tmp.data () + li, data ());
-          std::copy (tmp.ridx (), tmp.ridx () + li, xridx ());
+          std::copy_n (tmp.data (), li, data ());
+          std::copy_n (tmp.ridx (), li, xridx ());
           std::copy (tmp.data () + ui, tmp.data () + nz, xdata () + li);
           mx_inline_sub (nz - ui, xridx () + li, tmp.ridx () + ui, ub - lb);
           xcidx (1) = nz_new;
@@ -1211,8 +1205,8 @@ Sparse<T>::delete_elements (const idx_vector& idx)
             }
 
           *this = Sparse<T> (nr - sl, 1, nz_new);
-          std::copy (ridx_new, ridx_new + nz_new, ridx ());
-          std::copy (data_new, data_new + nz_new, xdata ());
+          std::copy_n (ridx_new, nz_new, ridx ());
+          std::copy_n (data_new, nz_new, xdata ());
           xcidx (1) = nz_new;
         }
     }
@@ -1227,10 +1221,10 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           octave_idx_type ubi = tmp.cidx (ub);
           octave_idx_type new_nz = nz - (ubi - lbi);
           *this = Sparse<T> (1, nc - (ub - lb), new_nz);
-          std::copy (tmp.data (), tmp.data () + lbi, data ());
+          std::copy_n (tmp.data (), lbi, data ());
           std::copy (tmp.data () + ubi, tmp.data () + nz , xdata () + lbi);
           std::fill_n (ridx (), new_nz, static_cast<octave_idx_type> (0));
-          std::copy (tmp.cidx () + 1, tmp.cidx () + 1 + lb, cidx () + 1);
+          std::copy_n (tmp.cidx () + 1, lb, cidx () + 1);
           mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1,
                          ubi - lbi);
         }
@@ -1286,11 +1280,11 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
               octave_idx_type new_nz = nz - (ubi - lbi);
 
               *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
-              std::copy (tmp.data (), tmp.data () + lbi, data ());
-              std::copy (tmp.ridx (), tmp.ridx () + lbi, ridx ());
+              std::copy_n (tmp.data (), lbi, data ());
+              std::copy_n (tmp.ridx (), lbi, ridx ());
               std::copy (tmp.data () + ubi, tmp.data () + nz, xdata () + lbi);
               std::copy (tmp.ridx () + ubi, tmp.ridx () + nz, xridx () + lbi);
-              std::copy (tmp.cidx () + 1, tmp.cidx () + 1 + lb, cidx () + 1);
+              std::copy_n (tmp.cidx () + 1, lb, cidx () + 1);
               mx_inline_sub (nc - ub, xcidx () + lb + 1,
                              tmp.cidx () + ub + 1, ubi - lbi);
             }
@@ -1436,7 +1430,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
       // since you have a scalar stored as a sparse matrix, and
       // then want to make a dense matrix with sparse representation.
       // Ok, we'll do it, but you deserve what you get!!
-      retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ());
+      retval = (Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ()));
     }
   else if (nc == 1)
     {
@@ -1461,11 +1455,11 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           // Copy data and adjust indices.
           octave_idx_type nz_new = ui - li;
           retval = Sparse<T> (ub - lb, 1, nz_new);
-          std::copy (data () + li, data () + li + nz_new, retval.data ());
+          std::copy_n (data () + li, nz_new, retval.data ());
           mx_inline_sub (nz_new, retval.xridx (), ridx () + li, lb);
           retval.xcidx (1) = nz_new;
         }
-      else if (idx.is_permutation (nel) && idx.is_vector ())
+      else if (idx.is_permutation (nel) && idx.isvector ())
         {
           if (idx.is_range () && idx.increment () == -1)
             {
@@ -1474,7 +1468,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
               for (octave_idx_type j = 0; j < nz; j++)
                 retval.ridx (j) = nr - ridx (nz - j - 1) - 1;
 
-              std::copy (cidx (), cidx () + 2, retval.cidx ());
+              std::copy_n (cidx (), 2, retval.cidx ());
               std::reverse_copy (data (), data () + nz, retval.data ());
             }
           else
@@ -1501,7 +1495,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 
           // Lookup.
           // FIXME: Could specialize for sorted idx?
-          NoAlias< Array<octave_idx_type> > lidx (dim_vector (new_nr, new_nc));
+          NoAlias< Array<octave_idx_type>> lidx (dim_vector (new_nr, new_nc));
           for (octave_idx_type i = 0; i < new_nr*new_nc; i++)
             lidx(i) = lblookup (ridx (), nz, idxa(i));
 
@@ -1549,7 +1543,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           octave_idx_type ubi = cidx (ub);
           octave_idx_type new_nz = ubi - lbi;
           retval = Sparse<T> (1, ub - lb, new_nz);
-          std::copy (data () + lbi, data () + lbi + new_nz, retval.data ());
+          std::copy_n (data () + lbi, new_nz, retval.data ());
           std::fill_n (retval.ridx (), new_nz, static_cast<octave_idx_type> (0));
           mx_inline_sub (ub - lb + 1, retval.cidx (), cidx () + lb, lbi);
         }
@@ -1635,8 +1629,8 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
           octave_idx_type ubi = cidx (ub);
           octave_idx_type new_nz = ubi - lbi;
           retval = Sparse<T> (nr, ub - lb, new_nz);
-          std::copy (data () + lbi, data () + lbi + new_nz, retval.data ());
-          std::copy (ridx () + lbi, ridx () + lbi + new_nz, retval.ridx ());
+          std::copy_n (data () + lbi, new_nz, retval.data ());
+          std::copy_n (ridx () + lbi, new_nz, retval.ridx ());
           mx_inline_sub (ub - lb + 1, retval.cidx (), cidx () + lb, lbi);
         }
       else
@@ -1658,12 +1652,12 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
               octave_idx_type lj = retval.xcidx (j);
               octave_idx_type nzj = retval.xcidx (j+1) - lj;
 
-              std::copy (data () + ljj, data () + ljj + nzj, retval.data () + lj);
-              std::copy (ridx () + ljj, ridx () + ljj + nzj, retval.ridx () + lj);
+              std::copy_n (data () + ljj, nzj, retval.data () + lj);
+              std::copy_n (ridx () + ljj, nzj, retval.ridx () + lj);
             }
         }
     }
-  else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
+  else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.isvector ())
     {
       // It's actually vector indexing.  The 1D index is specialized for that.
       retval = index (idx_i);
@@ -1889,7 +1883,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                     }
 
                   // Copy data and adjust indices from rhs.
-                  std::copy (rhs.data (), rhs.data () + rnz, data () + li);
+                  std::copy_n (rhs.data (), rnz, data () + li);
                   mx_inline_add (rnz, ridx () + li, rhs.ridx (), lb);
                 }
               else
@@ -1900,11 +1894,11 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   *this = Sparse<T> (nr, 1, new_nz);
 
                   // Head ...
-                  std::copy (tmp.data (), tmp.data () + li, data ());
-                  std::copy (tmp.ridx (), tmp.ridx () + li, ridx ());
+                  std::copy_n (tmp.data (), li, data ());
+                  std::copy_n (tmp.ridx (), li, ridx ());
 
                   // new stuff ...
-                  std::copy (rhs.data (), rhs.data () + rnz, data () + li);
+                  std::copy_n (rhs.data (), rnz, data () + li);
                   mx_inline_add (rnz, ridx () + li, rhs.ridx (), lb);
 
                   // ...tail
@@ -1946,8 +1940,8 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
               // Disassembly our matrix...
               Array<octave_idx_type> new_ri (dim_vector (new_nz, 1));
               Array<T> new_data (dim_vector (new_nz, 1));
-              std::copy (tmp.ridx (), tmp.ridx () + nz, new_ri.fortran_vec ());
-              std::copy (tmp.data (), tmp.data () + nz, new_data.fortran_vec ());
+              std::copy_n (tmp.ridx (), nz, new_ri.fortran_vec ());
+              std::copy_n (tmp.data (), nz, new_data.fortran_vec ());
               // ... insert new data (densified) ...
               idx.copy_data (new_ri.fortran_vec () + nz);
               new_data.assign (idx_vector (nz, new_nz), rhs.array_value ());
@@ -2073,8 +2067,8 @@ Sparse<T>::assign (const idx_vector& idx_i,
                     }
 
                   // Copy data and indices from rhs.
-                  std::copy (rhs.data (), rhs.data () + rnz, data () + li);
-                  std::copy (rhs.ridx (), rhs.ridx () + rnz, ridx () + li);
+                  std::copy_n (rhs.data (), rnz, data () + li);
+                  std::copy_n (rhs.ridx (), rnz, ridx () + li);
                   mx_inline_add (ub - lb, cidx () + lb + 1, rhs.cidx () + 1,
                                  li);
 
@@ -2088,13 +2082,13 @@ Sparse<T>::assign (const idx_vector& idx_i,
                   *this = Sparse<T> (nr, nc, new_nz);
 
                   // Head...
-                  std::copy (tmp.data (), tmp.data () + li, data ());
-                  std::copy (tmp.ridx (), tmp.ridx () + li, ridx ());
-                  std::copy (tmp.cidx () + 1, tmp.cidx () + 1 + lb, cidx () + 1);
+                  std::copy_n (tmp.data (), li, data ());
+                  std::copy_n (tmp.ridx (), li, ridx ());
+                  std::copy_n (tmp.cidx () + 1, lb, cidx () + 1);
 
                   // new stuff...
-                  std::copy (rhs.data (), rhs.data () + rnz, data () + li);
-                  std::copy (rhs.ridx (), rhs.ridx () + rnz, ridx () + li);
+                  std::copy_n (rhs.data (), rnz, data () + li);
+                  std::copy_n (rhs.ridx (), rnz, ridx () + li);
                   mx_inline_add (ub - lb, cidx () + lb + 1, rhs.cidx () + 1,
                                  li);
 
@@ -2152,25 +2146,21 @@ Sparse<T>::assign (const idx_vector& idx_i,
                     {
                       // from rhs
                       octave_idx_type k = rhs.cidx (j);
-                      std::copy (rhs.data () + k, rhs.data () + k + u - l,
-                                 xdata () + l);
-                      std::copy (rhs.ridx () + k, rhs.ridx () + k + u - l,
-                                 xridx () + l);
+                      std::copy_n (rhs.data () + k, u - l, xdata () + l);
+                      std::copy_n (rhs.ridx () + k, u - l, xridx () + l);
                     }
                   else
                     {
                       // original
                       octave_idx_type k = tmp.cidx (i);
-                      std::copy (tmp.data () + k, tmp.data () + k + u - l,
-                                 xdata () + l);
-                      std::copy (tmp.ridx () + k, tmp.ridx () + k + u - l,
-                                 xridx () + l);
+                      std::copy_n (tmp.data () + k, u - l, xdata () + l);
+                      std::copy_n (tmp.ridx () + k, u - l, xridx () + l);
                     }
                 }
 
             }
         }
-      else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
+      else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.isvector ())
         {
           // It's just vector indexing.  The 1D assign is specialized for that.
           assign (idx_i, rhs);
@@ -2262,7 +2252,8 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   else if (mode == DESCENDING)
     lsort.set_compare (sparse_descending_compare<T>);
   else
-    abort ();
+    (*current_liboctave_error_handler)
+      ("Sparse<T>::sort: invalid MODE");
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();
@@ -2331,7 +2322,8 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   else if (mode == DESCENDING)
     indexed_sort.set_compare (sparse_descending_compare<T>);
   else
-    abort ();
+    (*current_liboctave_error_handler)
+      ("Sparse<T>::sort: invalid MODE");
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();
@@ -2614,7 +2606,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
 
   Sparse<T> retval (dv, total_nz);
 
-  if (retval.is_empty ())
+  if (retval.isempty ())
     return retval;
 
   switch (dim)
@@ -2633,7 +2625,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
               {
                 const Sparse<T>& spi = sparse_list[i];
                 // Skipping empty matrices.  See the comment in Array.cc.
-                if (spi.is_empty ())
+                if (spi.isempty ())
                   continue;
 
                 octave_idx_type kl = spi.cidx (j);
@@ -2660,7 +2652,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
             octave_quit ();
 
             // Skipping empty matrices.  See the comment in Array.cc.
-            if (sparse_list[i].is_empty ())
+            if (sparse_list[i].isempty ())
               continue;
 
             octave_idx_type u = l + sparse_list[i].columns ();
@@ -2682,7 +2674,7 @@ template <typename T>
 Array<T>
 Sparse<T>::array_value () const
 {
-  NoAlias< Array<T> > retval (dims (), T ());
+  NoAlias< Array<T>> retval (dims (), T ());
   if (rows () == 1)
     {
       octave_idx_type i = 0;

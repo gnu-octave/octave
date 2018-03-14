@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -65,7 +65,7 @@ IEEE Transactions on Automatic Control, 1979).
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return octave_value_list (2, Matrix ());
 
   if (arg.rows () != arg.columns ())
@@ -75,7 +75,7 @@ IEEE Transactions on Automatic Control, 1979).
 
   if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
@@ -87,7 +87,7 @@ IEEE Transactions on Automatic Control, 1979).
             retval = ovl (result.unitary_hess_matrix (),
                           result.hess_matrix ());
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
@@ -102,7 +102,7 @@ IEEE Transactions on Automatic Control, 1979).
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           Matrix tmp = arg.matrix_value ();
 
@@ -114,7 +114,7 @@ IEEE Transactions on Automatic Control, 1979).
             retval = ovl (result.unitary_hess_matrix (),
                           result.hess_matrix ());
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 

@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -31,27 +31,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #include <string>
-#include <vector>
 
-#include "ov.h"
-#include "defun-dld.h"
-#include "errwarn.h"
-#include "pager.h"
-#include "ov-re-mat.h"
-
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
-
-#include "oct-sparse.h"
+#include "CSparse.h"
+#include "dNDArray.h"
+#include "dSparse.h"
 #include "oct-locbuf.h"
+#include "oct-sparse.h"
 
-#if defined (OCTAVE_ENABLE_64)
-#  define COLAMD_NAME(name) colamd_l ## name
-#  define SYMAMD_NAME(name) symamd_l ## name
-#else
-#  define COLAMD_NAME(name) colamd ## name
-#  define SYMAMD_NAME(name) symamd ## name
-#endif
+#include "defun-dld.h"
+#include "error.h"
+#include "errwarn.h"
+#include "ovl.h"
+#include "pager.h"
 
 // The symmetric column elimination tree code take from the Davis LDL code.
 // Copyright given elsewhere in this file.
@@ -71,8 +62,8 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
       Parent[k] = n ;                // parent of k is not yet known
       Flag[k] = k ;                  // mark node k as visited
-      octave_idx_type kk = (P) ? P[k]  // kth original, or permuted, column
-                               : (k);
+      octave_idx_type kk = (P ? P[k]  // kth original, or permuted, column
+                              : (k));
       octave_idx_type p2 = cidx[kk+1];
       for (octave_idx_type p = cidx[kk] ; p < p2 ; p++)
         {
@@ -289,7 +280,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
+  static_assert (COLAMD_KNOBS <= 40, "colamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[COLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   COLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -310,7 +303,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
         {
 
           octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION
-                        << "." <<  COLAMD_SUB_VERSION
+                        << '.' <<  COLAMD_SUB_VERSION
                         << ", " << COLAMD_DATE << ":\n";
 
           if (knobs[COLAMD_DENSE_ROW] >= 0)
@@ -342,9 +335,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   SparseComplexMatrix scm;
   SparseMatrix sm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
@@ -366,7 +359,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
         sm = SparseMatrix (args(0).matrix_value ());
@@ -379,17 +372,19 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
     }
 
   // Allocate workspace for colamd
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, p, n_col+1);
   for (octave_idx_type i = 0; i < n_col+1; i++)
     p[i] = cidx[i];
 
   octave_idx_type Alen = COLAMD_NAME (_recommended) (nnz, n_row, n_col);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, A, Alen);
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
   // Order the columns (destroys A)
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
+  static_assert (COLAMD_STATS <= 40, "colamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[COLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
     {
       COLAMD_NAME (_report)(stats);
@@ -527,7 +522,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
+  static_assert (COLAMD_KNOBS <= 40, "symamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[COLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   COLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -552,9 +549,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   SparseMatrix sm;
   SparseComplexMatrix scm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
@@ -573,7 +570,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
         sm = SparseMatrix (args(0).matrix_value ());
@@ -589,8 +586,12 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
-  if (! SYMAMD_NAME () (n_col, ridx, cidx, perm,
+  static_assert (COLAMD_STATS <= 40, "symamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[COLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
+  if (! SYMAMD_NAME () (n_col, octave::to_suitesparse_intptr (ridx),
+                        octave::to_suitesparse_intptr (cidx),
+                        octave::to_suitesparse_intptr (perm),
                         knobs, stats, &calloc, &free))
     {
       SYMAMD_NAME (_report)(stats);
@@ -671,13 +672,13 @@ permutations on the tree.
 
   octave_idx_type n_row = 0;
   octave_idx_type n_col = 0;
-  octave_idx_type *ridx = 0;
-  octave_idx_type *cidx = 0;
+  octave_idx_type *ridx = nullptr;
+  octave_idx_type *cidx = nullptr;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     error ("etree: S must be a sparse matrix");
 
-  if (args(0).is_complex_type ())
+  if (args(0).iscomplex ())
     {
       SparseComplexMatrix scm = args(0).sparse_complex_matrix_value ();
 
@@ -701,7 +702,7 @@ permutations on the tree.
   if (nargin == 2)
     {
       std::string str = args(1).xstring_value ("etree: TYP must be a string");
-      if (str.find ("C") == 0 || str.find ("c") == 0)
+      if (str.find ('C') == 0 || str.find ('c') == 0)
         is_sym = false;
     }
 
@@ -713,7 +714,7 @@ permutations on the tree.
       if (n_row != n_col)
         error ("etree: S is marked as symmetric, but is not square");
 
-      symetree (ridx, cidx, etree, 0, n_col);
+      symetree (ridx, cidx, etree, nullptr, n_col);
     }
   else
     {

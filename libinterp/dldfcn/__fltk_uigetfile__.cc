@@ -4,19 +4,19 @@ Copyright (C) 2010-2017 Kai Habel
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #  define WIN32_LEAN_AND_MEAN
 #endif
 
+#include <string>
+
 #include <FL/Fl.H>
 #include <FL/Fl_File_Chooser.H>
 
@@ -41,9 +43,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #endif
 
+#include "dMatrix.h"
+#include "file-ops.h"
+
+#include "Cell.h"
 #include "defun-dld.h"
 #include "errwarn.h"
-#include "file-ops.h"
+#include "ov.h"
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,
            doc: /* -*- texinfo -*-
@@ -102,7 +108,7 @@ Undocumented internal function.
       int file_count = fc.count ();
       std::string fname;
 
-      //fltk uses forward slash even for windows
+      // FLTK uses forward slash even for Windows
       std::string sep = "/";
       size_t idx;
 

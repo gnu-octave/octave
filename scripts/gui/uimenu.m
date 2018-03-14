@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
@@ -62,6 +62,9 @@
 ##
 ## @end table
 ##
+## The full list of properties is documented at
+## @ref{Uimenu Properties,,Uimenu Properties}.
+##
 ## Examples:
 ##
 ## @example
@@ -103,10 +106,7 @@ endfunction
 %! uimenu (f, 'label', 'Close', 'accelerator', 'q', 'callback', 'close (gcf)');
 %! uimenu (e, 'label', 'Toggle &Grid', 'accelerator', 'g', 'callback', 'grid (gca)');
 
-%!testif HAVE_OPENGL, HAVE_FLTK
-%! if (! have_window_system)
-%!  return;
-%! endif
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system ()
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -123,10 +123,7 @@ endfunction
 %! end_unwind_protect
 
 ## check for top level menus file and edit
-%!testif HAVE_OPENGL, HAVE_FLTK
-%! if (! have_window_system)
-%!  return;
-%! endif
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system ()
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -139,10 +136,7 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!testif HAVE_OPENGL, HAVE_FLTK
-%! if (! have_window_system)
-%!  return;
-%! endif
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system ()
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect

@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -61,7 +61,7 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
     return idx_vector (array_value ());
   else
     {
-      std::string nm = "<" + type_name () + ">";
+      std::string nm = '<' + type_name () + '>';
       octave::err_invalid_index (nm.c_str ());
     }
 }
@@ -69,7 +69,7 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
 octave_base_value *
 octave_sparse_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (Vsparse_auto_mutate)
     {
@@ -95,7 +95,7 @@ octave_sparse_matrix::try_narrowing_conversion (void)
 double
 octave_sparse_matrix::double_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("real sparse matrix", "real scalar");
 
   if (numel () > 1)
@@ -410,7 +410,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   octave_idx_type tmp;
   hsize_t hdims[2];
 
-  space_hid = H5Screate_simple (0, hdims, 0);
+  space_hid = H5Screate_simple (0, hdims, nullptr);
   if (space_hid < 0)
     {
       H5Gclose (group_hid);
@@ -495,7 +495,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hdims[0] = m.cols () + 1;
   hdims[1] = 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
 
   if (space_hid < 0)
     {
@@ -517,7 +517,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  octave_idx_type * itmp = m.xcidx ();
+  octave_idx_type *itmp = m.xcidx ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
                      octave_H5P_DEFAULT, itmp) >= 0;
   H5Dclose (data_hid);
@@ -533,7 +533,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hdims[0] = m.nnz ();
   hdims[1] = 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
 
   if (space_hid < 0)
     {
@@ -603,7 +603,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  double * dtmp = m.xdata ();
+  double *dtmp = m.xdata ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL, octave_H5S_ALL,
                      octave_H5P_DEFAULT, dtmp) >= 0;
   H5Dclose (data_hid);
@@ -905,8 +905,8 @@ octave_sparse_matrix::map (unary_mapper_t umap) const
 
     ARRAY_MAPPER (acos, Complex, octave::math::rc_acos);
     ARRAY_MAPPER (acosh, Complex, octave::math::rc_acosh);
-    ARRAY_MAPPER (angle, double, octave::math::arg);
-    ARRAY_MAPPER (arg, double,octave::math ::arg);
+    ARRAY_MAPPER (angle, double, std::arg);
+    ARRAY_MAPPER (arg, double,std::arg);
     ARRAY_MAPPER (asin, Complex, octave::math::rc_asin);
     ARRAY_MAPPER (asinh, double, octave::math::asinh);
     ARRAY_MAPPER (atan, double, ::atan);
@@ -941,9 +941,9 @@ octave_sparse_matrix::map (unary_mapper_t umap) const
     ARRAY_MAPPER (tan, double, ::tan);
     ARRAY_MAPPER (tanh, double, ::tanh);
     ARRAY_MAPPER (isnan, bool, octave::math::isnan);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
     ARRAY_MAPPER (isinf, bool, octave::math::isinf);
-    ARRAY_MAPPER (isfinite, bool, octave::math::finite);
+    ARRAY_MAPPER (isfinite, bool, octave::math::isfinite);
 
     default: // Attempt to go via dense matrix.
       return octave_base_sparse<SparseMatrix>::map (umap);

@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -148,7 +148,7 @@ octave_perm_matrix::is_true (void) const
 double
 octave_perm_matrix::double_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -160,7 +160,7 @@ octave_perm_matrix::double_value (bool) const
 float
 octave_perm_matrix::float_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -310,6 +310,22 @@ octave_perm_matrix::as_uint64 (void) const
   return uint64_array_value ();
 }
 
+float_display_format
+octave_perm_matrix::get_edit_display_format (void) const
+{
+  return float_display_format (float_format (1, 0, 0));
+}
+
+std::string
+octave_perm_matrix::edit_display (const float_display_format& fmt,
+                                  octave_idx_type i,
+                                  octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, octave_int<octave_idx_type> (matrix(i,j)));
+  return buf.str ();
+}
+
 bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
@@ -436,7 +452,7 @@ octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax)
 }
 
 int
-octave_perm_matrix::write (octave_stream& os, int block_size,
+octave_perm_matrix::write (octave::stream& os, int block_size,
                            oct_data_conv::data_type output_type, int skip,
                            octave::mach_info::float_format flt_fmt) const
 {
@@ -477,10 +493,65 @@ octave_perm_matrix::numeric_conversion_function (void) const
                                             octave_matrix::static_type_id ());
 }
 
+// FIXME: This is duplicated from octave_base_matrix<T>.  Could
+// octave_perm_matrix be derived from octave_base_matrix<T>?
+
+void
+octave_perm_matrix::short_disp (std::ostream& os) const
+{
+  if (matrix.isempty ())
+    os << "[]";
+  else if (matrix.ndims () == 2)
+    {
+      // FIXME: should this be configurable?
+      octave_idx_type max_elts = 10;
+      octave_idx_type elts = 0;
+
+      octave_idx_type nel = matrix.numel ();
+
+      octave_idx_type nr = matrix.rows ();
+      octave_idx_type nc = matrix.columns ();
+
+      os << '[';
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              std::ostringstream buf;
+              octave_int<octave_idx_type> tval (matrix(i,j));
+              octave_print_internal (buf, tval);
+              std::string tmp = buf.str ();
+              size_t pos = tmp.find_first_not_of (' ');
+              if (pos != std::string::npos)
+                os << tmp.substr (pos);
+              else if (! tmp.empty ())
+                os << tmp[0];
+
+              if (++elts >= max_elts)
+                goto done;
+
+              if (j < nc - 1)
+                os << ", ";
+            }
+
+          if (i < nr - 1 && elts < max_elts)
+            os << "; ";
+        }
+
+    done:
+
+      if (nel <= max_elts)
+        os << ']';
+    }
+  else
+    os << "...";
+}
+
 octave_base_value *
 octave_perm_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.numel () == 1)
     retval = new octave_scalar (matrix (0, 0));

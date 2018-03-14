@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{A} =} importdata (@var{fname})
@@ -97,8 +97,8 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
   ext = lower (ext);
 
   switch (ext)
-    case {".au", ".snd", ".flac", ".ogg"}
-      error ("importdata: not implemented for file format %s", ext);
+    case {".au", ".snd", ".flac", ".ogg", ".wav", ".wave"}
+      [output.data, output.fs] = audioread (fname);
     case {".avi", ".mj2", ".mpg", ".asf", ".asx", ".wmv", ".mp4", ".m4v", ...
           ".mov"}
       error ("importdata: not implemented for file format %s", ext);
@@ -123,10 +123,6 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
         ## Fall back to unimplemented.m.
         output = xlsread (fname);
       end_try_catch
-    case {".wav", ".wave"}
-      delimiter = NaN;
-      header_rows = 0;
-      [output.data, output.fs] = wavread (fname);
     otherwise
       ## Assume the file is in ASCII format.
       [output, delimiter, header_rows] = ...
@@ -176,9 +172,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     if (isempty (delimiter))
       ## This pattern can be fooled, but mostly does the job just fine.
       delim = regexpi (row, '[-+\d.e*ij ]+([^-+\de.ij])[-+\de*.ij ]',
-                      'tokens', 'once');
-      #delim = regexp (row, '[+-\d.eE\*ij ]+([^+-\d.ij])[+-\d.ij]',
-      #                     'tokens', 'once');
+                       'tokens', 'once');
       if (! isempty (delim))
         delimiter = delim{1};
       endif
@@ -190,9 +184,16 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
       row_entries = ostrsplit (row, delimiter);
     endif
     row_data = str2double (row_entries);
-    if (all (isnan (row_data)) || header_rows < num_header_rows)
+    if (header_rows < num_header_rows)
       header_rows += 1;
       output.textdata{end+1, 1} = row;
+    elseif (all (isnan (row_data)) && header_rows < 25)
+      header_rows += 1;
+      output.textdata{end+1, 1} = row;
+    elseif (all (isnan (row_data)))
+      ## Failed to find any numeric input in first 25 lines
+      row = -1;
+      break;
     else
       if (! isempty (output.textdata))
         if (delimiter == " ")
@@ -232,9 +233,9 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     delimiter = "";
     header_rows = numel (output);
     return;
-  else
-    fclose (fid);
   endif
+
+  fclose (fid);
 
   if (num_header_rows >= 0)
     header_rows = num_header_rows;
@@ -267,11 +268,20 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
         fields = ostrsplit (row, delimiter);
       endif
 
-      text = fields(na_idx(ridx,:));
+      missing_idx = na_idx(ridx,:);
+      if (! size_equal (missing_idx, fields))
+        ## Fields completely missing at end of line.  Replace with NA.
+        col = columns (fields);
+        output.data(ridx, (col+1):end) = NA;
+        missing_idx = missing_idx(1:col);
+      endif
+      text = fields(missing_idx);
+
       text = text(! strcmpi (text, "NA"));  #  Remove valid "NA" entries
       if (! isempty (text))
-        output.textdata(end+1:end+numel (text), 1) = text;
+        output.textdata = [output.textdata; text(:)];
       endif
+
       if (header_cols)
         output.rowheaders(end+1, :) = fields(1:header_cols);
       endif
@@ -452,7 +462,22 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!test
+%!testif ; ! ismac ()
+%! ## Complex numbers
+%! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\t-7.2\t0-3.4i\n0.012\t-6.5+7.2i\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, '\t');
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
 %! ## Complex numbers
 %! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
 %! fn  = tempname ();
@@ -519,7 +544,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!test <43393>
+%!test <*43393>
 %! ## Distinguish double from complex when no delimiter is supplied
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
@@ -563,5 +588,4 @@ endfunction
 %!error <DELIMITER must be a single character> importdata ("foo", "ab")
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", "1")
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", 1.5)
-%!error <not implemented for file format .au> importdata ("foo.au")
 %!error <not implemented for file format .avi> importdata ("foo.avi")

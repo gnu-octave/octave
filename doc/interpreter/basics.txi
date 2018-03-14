@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Getting Started
 @chapter Getting Started
@@ -69,25 +69,25 @@ accepts.
 @table @code
 
 @item --built-in-docstrings-file @var{filename}
-@cindex @code{--built-in-docstrings-file @var{filename}}
+@cindex @sortas{options, Octave command --built-in-docstrings-file} @ @ @code{--built-in-docstrings-file @var{filename}}
 Specify the name of the file containing documentation strings for the
 built-in functions of Octave.  This value is normally correct and should
 only need to specified in extraordinary situations.
 
 @item  --debug
 @itemx -d
-@cindex @code{--debug}
-@cindex @code{-d}
+@cindex @sortas{options, Octave command --debug} @ @ @code{--debug}
+@cindex @sortas{options, Octave command -d} @ @ @code{-d}
 Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
 
 @item --debug-jit
-@cindex @code{--debug-jit}
+@cindex @sortas{options, Octave command --debug-jit} @ @ @code{--debug-jit}
 Enable JIT compiler debugging and tracing.
 
 @item --doc-cache-file @var{filename}
-@cindex @code{--doc-cache-file @var{filename}}
+@cindex @sortas{options, Octave command --doc-cache-file} @ @ @code{--doc-cache-file @var{filename}}
 Specify the name of the doc cache file to use.  The value of @var{filename}
 specified on the command line will override any value of
 @w{@env{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
@@ -96,16 +96,17 @@ function.
 
 @item  --echo-commands
 @itemx -x
-@cindex @code{--echo-commands}
-@cindex @code{-x}
+@cindex @sortas{options, Octave command --echo-commands} @ @ @code{--echo-commands}
+@cindex @sortas{options, Octave command -x} @ @ @code{-x}
 Echo commands as they are executed.
 
 @item --eval @var{code}
+@cindex @sortas{options, Octave command --eval} @ @ @code{--eval @var{code}}
 Evaluate @var{code} and exit when finished unless @option{--persist} is also
 specified.
 
 @item --exec-path @var{path}
-@cindex @code{--exec-path @var{path}}
+@cindex @sortas{options, Octave command --exec-path} @ @ @code{--exec-path @var{path}}
 Specify the path to search for programs to run.  The value of @var{path}
 specified on the command line will override any value of
 @w{@env{OCTAVE_EXEC_PATH}} found in the environment, but not any commands
@@ -113,19 +114,17 @@ in the system or user startup files that set the built-in variable
 @w{@env{EXEC_PATH}}.
 
 @item --force-gui
-@cindex @code{--force-gui}
+@cindex @sortas{options, Octave command --force-gui} @ @ @code{--force-gui}
 Force the graphical user interface (GUI) to start.
 
 @item  --help
 @itemx -h
-@itemx -?
-@cindex @code{--help}
-@cindex @code{-h}
-@cindex @code{-?}
+@cindex @sortas{options, Octave command --help} @ @ @code{--help}
+@cindex @sortas{options, Octave command -h} @ @ @code{-h}
 Print short help message and exit.
 
 @item --image-path @var{path}
-@cindex @code{--image-path @var{path}}
+@cindex @sortas{options, Octave command --image-path} @ @ @code{--image-path @var{path}}
 Add path to the head of the search path for images.  The value of
 @var{path} specified on the command line will override any value of
 @w{@env{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands
@@ -133,7 +132,7 @@ in the system or user startup files that set the built-in variable
 @w{@env{IMAGE_PATH}}.
 
 @item --info-file @var{filename}
-@cindex @code{--info-file @var{filename}}
+@cindex @sortas{options, Octave command --info-file} @ @ @code{--info-file @var{filename}}
 Specify the name of the info file to use.  The value of @var{filename}
 specified on the command line will override any value of
 @w{@env{OCTAVE_INFO_FILE}} found in the environment, but not any commands
@@ -141,7 +140,7 @@ in the system or user startup files that use the @code{info_file}
 function.
 
 @item --info-program @var{program}
-@cindex @code{--info-program @var{program}}
+@cindex @sortas{options, Octave command --info-program} @ @ @code{--info-program @var{program}}
 Specify the name of the info program to use.  The value of @var{program}
 specified on the command line will override any value of
 @w{@env{OCTAVE_INFO_PROGRAM}} found in the environment, but not any
@@ -150,65 +149,69 @@ commands in the system or user startup files that use the
 
 @item  --interactive
 @itemx -i
-@cindex @code{--interactive}
-@cindex @code{-i}
+@cindex @sortas{options, Octave command --interactive} @ @ @code{--interactive}
+@cindex @sortas{options, Octave command -i} @ @ @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.
 
 @item --jit-compiler
-@cindex @code{--jit-compiler}
+@cindex @sortas{options, Octave command --jit-compiler} @ @ @code{--jit-compiler}
 Enable the JIT compiler used for accelerating loops.
 
 @item --line-editing
-@cindex @code{--line-editing}
+@cindex @sortas{options, Octave command --line-editing} @ @ @code{--line-editing}
 Force readline use for command-line editing.
 
 @item --no-gui
-@cindex @code{--no-gui}
+@cindex @sortas{options, Octave command --no-gui} @ @ @code{--no-gui}
 Disable the graphical user interface (GUI) and use the command line
 interface (CLI) instead.
 
 @item  --no-history
 @itemx -H
-@cindex @code{--no-history}
-@cindex @code{-H}
+@cindex @sortas{options, Octave command --no-history} @ @ @code{--no-history}
+@cindex @sortas{options, Octave command -H} @ @ @code{-H}
 Disable recording of command-line history.
 
 @item --no-init-file
-@cindex @code{--no-init-file}
+@cindex @sortas{options, Octave command --no-init-file} @ @ @code{--no-init-file}
+@cindex @sortas{octaverc ~/.octaverc} @code{~/.octaverc}
+@cindex @sortas{octaverc .octaverc} @code{.octaverc}
 Don't read the initialization files @file{~/.octaverc} and @file{.octaverc}.
 
 @item --no-init-path
-@cindex @code{--no-init-path}
+@cindex @sortas{options, Octave command --no-init-path} @ @ @code{--no-init-path}
 Don't initialize the search path for function files to include default
 locations.
 
 @item --no-line-editing
-@cindex @code{--no-line-editing}
+@cindex @sortas{options, Octave command --no-line-editing} @ @ @code{--no-line-editing}
 Disable command-line editing.
 
 @item --no-site-file
-@cindex @code{--no-site-file}
+@cindex @sortas{options, Octave command --no-site-file} @ @ @code{--no-site-file}
+@cindex site startup file
 Don't read the site-wide @file{octaverc} initialization files.
 
 @item  --no-window-system
 @itemx -W
-@cindex @code{--no-window-system}
+@cindex @sortas{options, Octave command --no-window-system} @ @ @code{--no-window-system}
+@cindex @sortas{options, Octave command -W} @ @ @code{-W}
 Disable use of a windowing system including graphics.  This forces a
 strictly terminal-only environment.
 
 @item  --norc
 @itemx -f
-@cindex @code{--norc}
-@cindex @code{-f}
+@cindex @sortas{options, Octave command --norc} @ @ @code{--norc}
+@cindex @sortas{options, Octave command -f} @ @ @code{-f}
 Don't read any of the system or user initialization files at startup.
 This is equivalent to using both of the options @option{--no-init-file}
 and @option{--no-site-file}.
 
 @item  --path @var{path}
 @itemx -p @var{path}
-@cindex @code{--path @var{path}}
-@cindex @code{-p @var{path}}
+@cindex @sortas{options, Octave command --path} @ @ @code{--path @var{path}}
+@cindex @sortas{options, Octave command -p} @ @ @code{-p @var{path}}
 Add path to the head of the search path for function files.  The
 value of @var{path} specified on the command line will override any value
 of @w{@env{OCTAVE_PATH}} found in the environment, but not any commands in the
@@ -216,26 +219,26 @@ system or user startup files that set the internal load path through one
 of the path functions.
 
 @item --persist
-@cindex @code{--persist}
+@cindex @sortas{options, Octave command --persist} @ @ @code{--persist}
 Go to interactive mode after @option{--eval} or reading from a file
 named on the command line.
 
 @item  --silent
 @itemx --quiet
 @itemx -q
-@cindex @code{--silent}
-@cindex @code{--quiet}
-@cindex @code{-q}
+@cindex @sortas{options, Octave command --silent} @ @ @code{--silent}
+@cindex @sortas{options, Octave command --quie} @ @ @code{--quiet}
+@cindex @sortas{options, Octave command -q} @ @ @code{-q}
 Don't print the usual greeting and version message at startup.
 
 @item --texi-macros-file @var{filename}
-@cindex @code{--texi-macros-file @var{filename}}
+@cindex @sortas{options, Octave command --texi-macros-file} @ @ @code{--texi-macros-file @var{filename}}
 Specify the name of the file containing Texinfo macros for use by makeinfo.
 
 @item  --traditional
 @itemx --braindead
-@cindex @code{--traditional}
-@cindex @code{--braindead}
+@cindex @sortas{options, Octave command --traditional} @ @ @code{--traditional}
+@cindex @sortas{options, Octave command --braindead} @ @ @code{--braindead}
 For compatibility with @sc{matlab}, set initial values for
 user preferences to the following values
 
@@ -279,14 +282,14 @@ that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
 
 @item  --verbose
 @itemx -V
-@cindex @code{--verbose}
-@cindex @code{-V}
+@cindex @sortas{options, Octave command --verbose} @ @ @code{--verbose}
+@cindex @sortas{options, Octave command -V} @ @ @code{-V}
 Turn on verbose output.
 
 @item  --version
 @itemx -v
-@cindex @code{--version}
-@cindex @code{-v}
+@cindex @sortas{options, Octave command --version} @ @ @code{--version}
+@cindex @sortas{options, Octave command -v} @ @ @code{-v}
 Print the program version number and exit.
 
 @item @var{file}
@@ -358,13 +361,13 @@ affected.  The default file may be overridden by the environment variable
 
 @item ~/.octaverc
 @cindex personal startup file
-@cindex @code{~/.octaverc}
+@cindex @sortas{octaverc ~/.octaverc} @code{~/.octaverc}
 This file is used to make personal changes to the default
 Octave environment.
 
 @item .octaverc
 @cindex project startup file
-@cindex @code{.octaverc}
+@cindex @sortas{octaverc .octaverc} @code{.octaverc}
 This file can be used to make changes to the default Octave environment
 for a particular project.  Octave searches for this file in the current
 directory after it reads @file{~/.octaverc}.  Any use of the @code{cd}
@@ -375,6 +378,7 @@ If you start Octave in your home directory, commands from the file
 @file{~/.octaverc} will only be executed once.
 
 @item startup.m
+@cindex @code{startup.m}
 This file is used to make personal changes to the default
 Octave environment.  It is executed for @sc{matlab} compatibility, but
 @file{~/.octaverc} is the preferred location for configuration changes.
@@ -747,7 +751,7 @@ is saved.
 
 @node Customizing readline
 @subsection Customizing @code{readline}
-@cindex @code{~/.inputrc}
+@cindex @sortas{inputrc ~/.inputrc} @code{~/.inputrc}
 @cindex customizing @code{readline}
 @cindex @code{readline} customization
 
@@ -846,8 +850,6 @@ some kinds of problems.
 
 @DOCSTRING(echo)
 
-@DOCSTRING(echo_executing_commands)
-
 @node Errors
 @section How Octave Reports Errors
 @cindex error messages
@@ -939,8 +941,8 @@ error before trying again.
 @cindex batch processing
 @cindex self contained programs
 @cindex program, self contained
-@cindex @samp{#!}
 
+@opindex @code{#!} self-contained script
 Once you have learned Octave, you may want to write self-contained
 Octave scripts, using the @samp{#!} script mechanism.  You can do this
 on GNU systems and on many Unix systems @footnote{The @samp{#!}
@@ -1063,9 +1065,9 @@ typically hard to understand without them.
 
 @node Single Line Comments
 @subsection Single Line Comments
-@cindex @samp{#}
-@cindex @samp{%}
 
+@opindex @code{#} comment marker
+@opindex @code{%} comment marker
 In the Octave language, a comment starts with either the sharp sign
 character, @samp{#}, or the percent symbol @samp{%} and continues to the
 end of the line.  Any text following the sharp sign or percent symbol is
@@ -1088,9 +1090,9 @@ endfunction
 @subsection Block Comments
 @cindex block comments
 @cindex multi-line comments
-@cindex @samp{#@{}
-@cindex @samp{%@{}
 
+@opindex @code{#@{} block comment marker
+@opindex @code{%@{} block comment marker
 Entire blocks of code can be commented by enclosing the code between
 matching @samp{#@{} and @samp{#@}} or @samp{%@{} and @samp{%@}} markers.
 For example,

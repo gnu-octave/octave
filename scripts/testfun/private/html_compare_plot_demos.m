@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} html_compare (@var{toolkits})
@@ -101,14 +101,14 @@ function html_compare_plot_demos (toolkits, varargin)
 
       ## Create page previous/next
       if (page > 1)
-        prev_page_link = sprintf ("<p><a href=\"%s\">%s</a></p>\n", ...
+        prev_page_link = sprintf (['<p><a href="%s">%s</a></p>' "\n"], ...
                                   in.output_fmt (page - 1), "previous page");
       else
         prev_page_link = "";
       endif
 
       if (! last_page)
-        next_page_link = sprintf ("<p><a href=\"%s\">%s</a></p>\n", ...
+        next_page_link = sprintf (['<p><a href="%s">%s</a></p>' "\n"], ...
                                   in.output_fmt (page + 1), "next page");
       else
         next_page_link = "";
@@ -124,20 +124,20 @@ function html_compare_plot_demos (toolkits, varargin)
         if (isfield (in, toolkits{t}))
           column_header = [column_header, in.(toolkits{t})];
         endif
-        fprintf (fid, "<th>%s <a href=\"%s/diary.log\">diary</a></th>\n", ...
+        fprintf (fid, ['<th>%s <a href="%s/diary.log">diary</a></th>' "\n"],
                  column_header, toolkits{t});
       endfor
       fprintf (fid, "</tr>\n");
       for m = start_fig:stop_fig
         [~, file] = fileparts (in.figfiles{m});
         fn = [file "." in.fmt];
-        fprintf (fid, "<tr id=\"%s\">\n", file);
+        fprintf (fid, ['<tr id="%s">' "\n"], file);
         for k = toolkits
           ffn = fullfile (k{:}, fn);
           fprintf (fid, "<td><span>%s</span><br>", ffn);
           if (exist (ffn, "file"))
             fprintf (fid, ...
-                     "<img alt=\"%s\" src=\"%s\" style=\"width:%dpx\">", ...
+                     '<img alt="%s" src="%s" style="width:%dpx">', ...
                      file, ffn, in.column_width);
           else
             err_fn = strrep (ffn, ".png", ".err");

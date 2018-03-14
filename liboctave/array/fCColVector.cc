@@ -1,4 +1,3 @@
-// ColumnVector manipulations.
 /*
 
 Copyright (C) 1994-2017 John W. Eaton
@@ -6,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -217,7 +216,7 @@ FloatComplexColumnVector::abs (void) const
 FloatComplexColumnVector
 conj (const FloatComplexColumnVector& a)
 {
-  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float> > (a);
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float>> (a);
 }
 
 // resize is the destructive equivalent for this one
@@ -303,10 +302,10 @@ operator * (const FloatComplexMatrix& m, const FloatComplexColumnVector& a)
 {
   FloatComplexColumnVector retval;
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -345,10 +344,10 @@ operator * (const FloatMatrix& m, const FloatComplexColumnVector& a)
 FloatComplexColumnVector
 operator * (const FloatDiagMatrix& m, const FloatComplexColumnVector& a)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -370,10 +369,10 @@ operator * (const FloatDiagMatrix& m, const FloatComplexColumnVector& a)
 FloatComplexColumnVector
 operator * (const FloatComplexDiagMatrix& m, const FloatColumnVector& a)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -395,10 +394,10 @@ operator * (const FloatComplexDiagMatrix& m, const FloatColumnVector& a)
 FloatComplexColumnVector
 operator * (const FloatComplexDiagMatrix& m, const FloatComplexColumnVector& a)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);

@@ -27128,7 +27128,7 @@
 	(<MATRIX_START>{S}*\,{S}*, <MATRIX_START>{S}+,
 	(<MATRIX_START>{S}*{COMMENT}{SNLCMT}*,
 	<MATRIX_START>{S}*{NL}{SNLCMT}*, maybe_unput_comma): Behave as though
-	old Vwhitespace_in_literal_matrix varaible is always 1.
+	old Vwhitespace_in_literal_matrix variable is always 1.
 
 	* octave.cc (maximum_braindamage): Don't set
 	whitespace_in_literal_matrix.
@@ -28125,7 +28125,7 @@
 	* symtab.cc (symbol_table::lookup, symbol_table::rename): Print
 	debugging info if Vdebug_symtab_lookups is nonzero.
 	(debug_symtab_lookups): New function.
-	(Vdebug_symtab_lookups): New static varaible.
+	(Vdebug_symtab_lookups): New static variable.
 	(symbols_of_symtab): DEFVAR it.
 	* symtab.h (symbol_table::table_name): New member variable.
 	(symtab_count): New static member variable.
@@ -30448,7 +30448,7 @@
 	(tree::break_function): Make const.
 	* pt.cc (tree::break_statement): Initialize here.
 	(tree::break_function): Make const.
-	* pb-bp.h (break_statement): Delete global varaible declaration.
+	* pb-bp.h (break_statement): Delete global variable declaration.
 	* pt-bp.cc (break_statement): Delete global variable definition.
 
 	* pt-bp.h (tree_breakpoint::bp_list): Rename from lst.
@@ -33816,7 +33816,7 @@ Tue Jun  3 16:47:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	(feval): Likewise.
 	(Feval): Likewise.
 	(symbols_of_parse): Define default_eval_print_flag here instead of
-	in varaibles.cc.
+	in variables.cc.
 	(looks_like_octave_copyright): Move here from variables.cc
 	(gobble_leading_whitespace): Likeiwse.
 	(is_function_file): Likewise.
@@ -34229,7 +34229,7 @@ Fri May  9 07:40:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	(octave_variable_reference::assign): Handle indexing here.
 	Delete version of this function htat takes index arg.
 
-	* variables.h (struct builtin_varaible): Delete.
+	* variables.h (struct builtin_variable): Delete.
 	* variables.cc (install_builtin_variable): Take all elts of
 	builtin_variable struct directly.
 	* defun.h (DEFVAR_INT): Call install_builtin_variable directly.
@@ -36162,7 +36162,7 @@ Mon Jun 24 02:13:27 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 Sat Jun 22 22:43:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* input.h, input.cc (octave_completion_matches_called): New varaible.
+	* input.h, input.cc (octave_completion_matches_called): New variable.
 	(Fcompletion_matches): Set it to true on a successful call.
 	* toplev.cc (main_loop): If octave_completion_matches_called is
 	true, don't increment current_command_number.

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} which name @dots{}
@@ -54,8 +54,13 @@ function varargout = which (varargin)
         endif
       else
         if (isempty (m(i).type))
-          printf ("'%s' is the file %s\n",
-                  m(i).name, m(i).file);
+          if (isdir (m(i).file))
+            printf ("'%s' is the directory %s\n",
+                    m(i).name, m(i).file);
+          else
+            printf ("'%s' is the file %s\n",
+                    m(i).name, m(i).file);
+          endif
         else
           printf ("'%s' is a %s from the file %s\n",
                   m(i).name, m(i).type, m(i).file);
@@ -64,6 +69,12 @@ function varargout = which (varargin)
     endfor
   else
     varargout = {m.file};
+    ## Return type, instead of "", for built-in classes (bug #50541).
+    ## FIXME: remove code if __which__ is updated to return path for classes
+    idx = find (cellfun ("isempty", varargout));
+    if (idx)
+      varargout(idx) = m(idx).type;
+    endif
   endif
 
 endfunction
@@ -71,17 +82,19 @@ endfunction
 
 %!test
 %! str = which ("ls");
-%! assert (str(end-17:end), strcat ("miscellaneous", filesep (), "ls.m"));
+%! assert (str(end-17:end), fullfile ("miscellaneous", "ls.m"));
 %!test
 %! str = which ("amd");
 %! assert (str(end-6:end), "amd.oct");
-
-%!assert (which ("_NO_SUCH_NAME_"), "")
-
+%!test
+%! str = which ("inputParser");
+%! assert (str, "built-in function");
 %!test
 %! x = 3;
 %! str = which ("x");
 %! assert (str, "variable");
+
+%!assert (which ("__NO_SUCH_NAME__"), "")
 
 %!test
 %! str = which ("amd");
@@ -92,3 +105,7 @@ endfunction
 %! clear amd;
 %! str = which ("amd");
 %! assert (str(end-6:end), "amd.oct");
+
+%!error which ()
+%!error which (1)
+

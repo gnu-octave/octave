@@ -4,19 +4,19 @@ Copyright (C) 2004-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -137,7 +137,7 @@ template <typename T>
 octave_base_value *
 octave_base_int_matrix<T>::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (this->matrix.numel () == 1)
     retval = new typename octave_value_int_traits<T>::scalar_type
@@ -265,6 +265,17 @@ octave_base_int_matrix<MT>::as_uint64 (void) const
 }
 
 template <typename T>
+std::string
+octave_base_int_matrix<T>::edit_display (const float_display_format& fmt,
+                                         octave_idx_type i,
+                                         octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, this->matrix(i,j));
+  return buf.str ();
+}
+
+template <typename T>
 bool
 octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 {
@@ -273,7 +284,7 @@ octave_base_int_matrix<T>::save_ascii (std::ostream& os)
   os << "# ndims: " << dv.ndims () << "\n";
 
   for (int i = 0; i < dv.ndims (); i++)
-    os << " " << dv(i);
+    os << ' ' << dv(i);
 
   os << "\n" << this->matrix;
 
@@ -405,14 +416,15 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
 
 template <typename T>
 bool
-octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                      bool)
+octave_base_int_matrix<T>::save_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name, bool)
 {
   bool retval = false;
 
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
   dim_vector dv = this->dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
@@ -427,7 +439,7 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, 0);
+  space_hid = H5Screate_simple (rank, hdims, nullptr);
 
   if (space_hid < 0) return false;
 #if defined (HAVE_HDF5_18)
@@ -451,6 +463,7 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #else
   octave_unused_parameter (loc_id);
+  octave_unused_parameter (save_type);
   octave_unused_parameter (name);
 
   this->warn_save ("hdf5");
@@ -461,13 +474,15 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 template <typename T>
 bool
-octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+octave_base_int_matrix<T>::load_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name)
 {
   bool retval = false;
 
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
@@ -523,6 +538,7 @@ octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
 #else
   octave_unused_parameter (loc_id);
+  octave_unused_parameter (save_type);
   octave_unused_parameter (name);
 
   this->warn_load ("hdf5");
@@ -641,6 +657,17 @@ octave_base_int_scalar<T>::as_uint64 (void) const
   return octave_uint64 (this->scalar);
 }
 
+template <typename ST>
+std::string
+octave_base_int_scalar<ST>::edit_display (const float_display_format& fmt,
+                                          octave_idx_type,
+                                          octave_idx_type) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, this->scalar);
+  return buf.str ();
+}
+
 template <typename T>
 bool
 octave_base_int_scalar<T>::save_ascii (std::ostream& os)
@@ -699,19 +726,20 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
 
 template <typename T>
 bool
-octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                      bool)
+octave_base_int_scalar<T>::save_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name, bool)
 {
   bool retval = false;
 
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
   hsize_t dimens[3];
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
 
-  space_hid = H5Screate_simple (0, dimens, 0);
+  space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0) return false;
 
 #if defined (HAVE_HDF5_18)
@@ -735,6 +763,7 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #else
   octave_unused_parameter (loc_id);
+  octave_unused_parameter (save_type);
   octave_unused_parameter (name);
 
   this->warn_save ("hdf5");
@@ -745,11 +774,13 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 template <typename T>
 bool
-octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+octave_base_int_scalar<T>::load_hdf5_internal (octave_hdf5_id loc_id,
+                                               octave_hdf5_id save_type,
+                                               const char *name)
 {
 #if defined (HAVE_HDF5)
 
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
+  hid_t save_type_hid = save_type;
 #if defined (HAVE_HDF5_18)
   hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
@@ -781,6 +812,7 @@ octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
 #else
   octave_unused_parameter (loc_id);
+  octave_unused_parameter (save_type);
   octave_unused_parameter (name);
 
   this->warn_load ("hdf5");

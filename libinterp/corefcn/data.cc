@@ -7,19 +7,19 @@ Copyright (C) 2012 Carlo de Falco
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,47 +27,44 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <sys/types.h>
-
-#include <cfloat>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
 #include <ctime>
 
+#include <algorithm>
+#include <limits>
 #include <string>
 
 #include "lo-ieee.h"
-#include "lo-math.h"
-#include "oct-base64.h"
-#include "oct-time.h"
-#include "str-vec.h"
-#include "quit.h"
 #include "mx-base.h"
+#include "oct-base64.h"
 #include "oct-binmap.h"
+#include "oct-time.h"
+#include "quit.h"
 
 #include "Cell.h"
+#include "data.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "oct-map.h"
-#include "ovl.h"
-#include "ov.h"
 #include "ov-class.h"
-#include "ov-float.h"
 #include "ov-complex.h"
-#include "ov-flt-complex.h"
 #include "ov-cx-mat.h"
-#include "ov-flt-cx-mat.h"
 #include "ov-cx-sparse.h"
+#include "ov-float.h"
+#include "ov-flt-complex.h"
+#include "ov-flt-cx-mat.h"
+#include "ov.h"
+#include "ovl.h"
+#include "pager.h"
 #include "parse.h"
 #include "pt-mat.h"
 #include "utils.h"
 #include "variables.h"
-#include "pager.h"
 #include "xnorm.h"
-
-#if ! defined (HAVE_HYPOTF) && defined (HAVE__HYPOTF)
-#  define hypotf _hypotf
-#  define HAVE_HYPOTF 1
-#endif
 
 static void
 index_error (const char *fmt, const std::string& idx, const std::string& msg)
@@ -219,13 +216,13 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
 
   octave_value retval;
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("atan2", args(0));
 
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("atan2", args(1));
 
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("atan2: not defined for complex numbers");
 
   if (args(0).is_single_type () || args(1).is_single_type ())
@@ -236,24 +233,24 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, ::atan2f, "atan2");
+          retval = binmap<float> (a0, a1, std::atan2, "atan2");
         }
     }
   else
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         retval = atan2 (args(0).scalar_value (), args(1).scalar_value ());
-      else if (args(0).is_sparse_type ())
+      else if (args(0).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, ::atan2, "atan2");
+          retval = binmap<double> (m0, m1, std::atan2, "atan2");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, ::atan2, "atan2");
+          retval = binmap<double> (a0, a1, std::atan2, "atan2");
         }
     }
 
@@ -328,14 +325,14 @@ do_hypot (const octave_value& x, const octave_value& y)
 
   octave_value arg0 = x;
   octave_value arg1 = y;
-  if (! arg0.is_numeric_type ())
+  if (! arg0.isnumeric ())
     err_wrong_type_arg ("hypot", arg0);
-  if (! arg1.is_numeric_type ())
+  if (! arg1.isnumeric ())
     err_wrong_type_arg ("hypot", arg1);
 
-  if (arg0.is_complex_type ())
+  if (arg0.iscomplex ())
     arg0 = arg0.abs ();
-  if (arg1.is_complex_type ())
+  if (arg1.iscomplex ())
     arg1 = arg1.abs ();
 
   if (arg0.is_single_type () || arg1.is_single_type ())
@@ -346,24 +343,24 @@ do_hypot (const octave_value& x, const octave_value& y)
         {
           FloatNDArray a0 = arg0.float_array_value ();
           FloatNDArray a1 = arg1.float_array_value ();
-          retval = binmap<float> (a0, a1, ::hypotf, "hypot");
+          retval = binmap<float> (a0, a1, std::hypot, "hypot");
         }
     }
   else
     {
       if (arg0.is_scalar_type () && arg1.is_scalar_type ())
         retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
-      else if (arg0.is_sparse_type () || arg1.is_sparse_type ())
+      else if (arg0.issparse () || arg1.issparse ())
         {
           SparseMatrix m0 = arg0.sparse_matrix_value ();
           SparseMatrix m1 = arg1.sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, ::hypot, "hypot");
+          retval = binmap<double> (m0, m1, std::hypot, "hypot");
         }
       else
         {
           NDArray a0 = arg0.array_value ();
           NDArray a1 = arg1.array_value ();
-          retval = binmap<double> (a0, a1, ::hypot, "hypot");
+          retval = binmap<double> (a0, a1, std::hypot, "hypot");
         }
     }
 
@@ -498,7 +495,7 @@ $x = 0$, $f = e = 0$.
     retval = ovl (args(0).log2 ());
   else if (args(0).is_single_type ())
     {
-      if (args(0).is_real_type ())
+      if (args(0).isreal ())
         {
           FloatNDArray f;
           FloatNDArray x = args(0).float_array_value ();
@@ -507,7 +504,7 @@ $x = 0$, $f = e = 0$.
           map_2_xlog2 (x, f, e);
           retval = ovl (f, e);
         }
-      else if (args(0).is_complex_type ())
+      else if (args(0).iscomplex ())
         {
           FloatComplexNDArray f;
           FloatComplexNDArray x = args(0).float_complex_array_value ();
@@ -517,7 +514,7 @@ $x = 0$, $f = e = 0$.
           retval = ovl (f, e);
         }
     }
-  else if (args(0).is_real_type ())
+  else if (args(0).isreal ())
     {
       NDArray f;
       NDArray x = args(0).array_value ();
@@ -526,7 +523,7 @@ $x = 0$, $f = e = 0$.
       map_2_xlog2 (x, f, e);
       retval = ovl (f, e);
     }
-  else if (args(0).is_complex_type ())
+  else if (args(0).iscomplex ())
     {
       ComplexNDArray f;
       ComplexNDArray x = args(0).complex_array_value ();
@@ -558,7 +555,7 @@ $x = 0$, $f = e = 0$.
 %! assert (f, complex (zeros (3, 2), [0,-0.5; 0.5,-0.5; Inf,-Inf]));
 %! assert (e(1:2,:), [0,1; 2,3]);
 
-%!assert <42583> (all (log2 (pow2 (-1074:1023)) == -1074:1023))
+%!assert <*42583> (all (log2 (pow2 (-1074:1023)) == -1074:1023))
 */
 
 DEFUN (rem, args, ,
@@ -601,16 +598,16 @@ periodic, @code{mod} is a better choice.
 
   octave_value retval;
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("rem", args(0));
 
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("rem", args(1));
 
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("rem: not defined for complex numbers");
 
-  if (args(0).is_integer_type () || args(1).is_integer_type ())
+  if (args(0).isinteger () || args(1).isinteger ())
     {
       builtin_type_t btyp0 = args(0).builtin_type ();
       builtin_type_t btyp1 = args(1).builtin_type ();
@@ -665,7 +662,7 @@ periodic, @code{mod} is a better choice.
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         retval = octave::math::rem (args(0).scalar_value (), args(1).scalar_value ());
-      else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
+      else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
@@ -724,10 +721,10 @@ periodic, @code{mod} is a better choice.
 %! assert (nnz (y), 1);
 %! assert (y, sparse ([NaN 0 0 0]));
 
-%!assert <45587> (signbit (rem (-0, 1)))
-%!assert <45587> (! signbit (rem (0, 1)))
+%!assert <*45587> (signbit (rem (-0, 1)))
+%!assert <*45587> (! signbit (rem (0, 1)))
 
-%!assert <42627> (rem (0.94, 0.01), 0.0)
+%!assert <*42627> (rem (0.94, 0.01), 0.0)
 
 %!error rem (uint (8), int8 (5))
 %!error rem (uint8 ([1, 2]), uint8 ([3, 4, 5]))
@@ -780,16 +777,16 @@ negative numbers or when the values are periodic.
 
   octave_value retval;
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("mod", args(0));
 
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("mod", args(1));
 
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("mod: not defined for complex numbers");
 
-  if (args(0).is_integer_type () || args(1).is_integer_type ())
+  if (args(0).isinteger () || args(1).isinteger ())
     {
       builtin_type_t btyp0 = args(0).builtin_type ();
       builtin_type_t btyp1 = args(1).builtin_type ();
@@ -844,7 +841,7 @@ negative numbers or when the values are periodic.
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         retval = octave::math::mod (args(0).scalar_value (), args(1).scalar_value ());
-      else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
+      else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
@@ -903,165 +900,11 @@ negative numbers or when the values are periodic.
 %!assert (mod (2.1, 0.1), 0)
 %!assert (mod (2.1, 0.2), 0.1, eps)
 
-%!assert <45587> (signbit (mod (-0, 0)))
-%!assert <45587> (! signbit (mod (0, -0)))
+%!assert <*45587> (signbit (mod (-0, 0)))
+%!assert <*45587> (! signbit (mod (0, -0)))
 
-%!assert <42627> (mod (0.94, 0.01), 0.0)
+%!assert <*42627> (mod (0.94, 0.01), 0.0)
 */
-
-// FIXME: Macros NATIVE_REDUCTION_1 and NATIVE_REDUCTION seem to be unused.
-//        Checked 1/23/2016.  They should probably be removed for clarity.
-// FIXME: Need to convert reduction functions of this file for single precision
-
-#define NATIVE_REDUCTION_1(FCN, TYPE, DIM)              \
-  (arg.is_ ## TYPE ## _type ())                         \
-  {                                                     \
-    TYPE ## NDArray tmp = arg. TYPE ##_array_value ();  \
-                                                        \
-    retval = tmp.FCN (DIM);                             \
-  }
-
-#define NATIVE_REDUCTION(FCN, BOOL_FCN)                                 \
-                                                                        \
-  int nargin = args.length ();                                          \
-                                                                        \
-  bool isnative = false;                                                \
-  bool isdouble = false;                                                \
-                                                                        \
-  if (nargin > 1 && args(nargin - 1).is_string ())                      \
-    {                                                                   \
-      std::string str = args(nargin - 1).string_value ();               \
-                                                                        \
-      if (str == "native")                                              \
-        isnative = true;                                                \
-      else if (str == "double")                                         \
-        isdouble = true;                                                \
-      else                                                              \
-        error ("sum: unrecognized string argument");                    \
-                                                                        \
-      nargin--;                                                         \
-    }                                                                   \
-                                                                        \
-  if (nargin < 1 || nargin > 2)                                         \
-    print_usage ();                                                     \
-                                                                        \
-  octave_value retval;                                                  \
-                                                                        \
-  octave_value arg = args(0);                                           \
-                                                                        \
-  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1);          \
-                                                                        \
-  if (dim < -1)                                                         \
-    error (#FCN ": invalid dimension argument = %d", dim + 1);          \
-                                                                        \
-  if (arg.is_sparse_type ())                                            \
-    {                                                                   \
-      if (arg.is_real_type ())                                          \
-        {                                                               \
-          SparseMatrix tmp = arg.sparse_matrix_value ();                \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else                                                              \
-        {                                                               \
-          SparseComplexMatrix tmp                                       \
-            = arg.sparse_complex_matrix_value ();                       \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-    }                                                                   \
-  else                                                                  \
-    {                                                                   \
-      if (isnative)                                                     \
-        {                                                               \
-          if NATIVE_REDUCTION_1 (FCN, uint8, dim)                       \
-            else if NATIVE_REDUCTION_1 (FCN, uint16, dim)               \
-              else if NATIVE_REDUCTION_1 (FCN, uint32, dim)             \
-                else if NATIVE_REDUCTION_1 (FCN, uint64, dim)           \
-                  else if NATIVE_REDUCTION_1 (FCN, int8, dim)           \
-                    else if NATIVE_REDUCTION_1 (FCN, int16, dim)        \
-                      else if NATIVE_REDUCTION_1 (FCN, int32, dim)      \
-                        else if NATIVE_REDUCTION_1 (FCN, int64, dim)    \
-                          else if (arg.is_bool_type ())                 \
-                            {                                           \
-                              boolNDArray tmp = arg.bool_array_value (); \
-                                                                        \
-                              retval = boolNDArray (tmp.BOOL_FCN (dim)); \
-                            }                                           \
-                          else if (arg.is_char_matrix ())               \
-                            {                                           \
-                              error (#FCN, ": invalid char type");      \
-                            }                                           \
-                          else if (! isdouble && arg.is_single_type ()) \
-                            {                                           \
-                              if (arg.is_complex_type ())               \
-                                {                                       \
-                                  FloatComplexNDArray tmp =             \
-                                    arg.float_complex_array_value ();   \
-                                                                        \
-                                  retval = tmp.FCN (dim);               \
-                                }                                       \
-                              else if (arg.is_real_type ())             \
-                                {                                       \
-                                  FloatNDArray tmp = arg.float_array_value (); \
-                                                                        \
-                                  retval = tmp.FCN (dim);               \
-                                }                                       \
-                            }                                           \
-                          else if (arg.is_complex_type ())              \
-                            {                                           \
-                              ComplexNDArray tmp = arg.complex_array_value (); \
-                                                                        \
-                              retval = tmp.FCN (dim);                   \
-                            }                                           \
-                          else if (arg.is_real_type ())                 \
-                            {                                           \
-                              NDArray tmp = arg.array_value ();         \
-                                                                        \
-                              retval = tmp.FCN (dim);                   \
-                            }                                           \
-                          else                                          \
-                            err_wrong_type_arg (#FCN, arg);             \
-        }                                                               \
-      else if (arg.is_bool_type ())                                     \
-        {                                                               \
-          boolNDArray tmp = arg.bool_array_value ();                    \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else if (! isdouble && arg.is_single_type ())                     \
-        {                                                               \
-          if (arg.is_real_type ())                                      \
-            {                                                           \
-              FloatNDArray tmp = arg.float_array_value ();              \
-                                                                        \
-              retval = tmp.FCN (dim);                                   \
-            }                                                           \
-          else if (arg.is_complex_type ())                              \
-            {                                                           \
-              FloatComplexNDArray tmp =                                 \
-                arg.float_complex_array_value ();                       \
-                                                                        \
-              retval = tmp.FCN (dim);                                   \
-            }                                                           \
-        }                                                               \
-      else if (arg.is_real_type ())                                     \
-        {                                                               \
-          NDArray tmp = arg.array_value ();                             \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else if (arg.is_complex_type ())                                  \
-        {                                                               \
-          ComplexNDArray tmp = arg.complex_array_value ();              \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else                                                              \
-        err_wrong_type_arg (#FCN, arg);                                 \
-    }                                                                   \
-                                                                        \
-  return retval
 
 #define DATA_REDUCTION(FCN)                                             \
                                                                         \
@@ -1079,9 +922,9 @@ negative numbers or when the values are periodic.
   if (dim < -1)                                                         \
     error (#FCN ": invalid dimension argument = %d", dim + 1);          \
                                                                         \
-  if (arg.is_real_type ())                                              \
+  if (arg.isreal ())                                              \
     {                                                                   \
-      if (arg.is_sparse_type ())                                        \
+      if (arg.issparse ())                                        \
         {                                                               \
           SparseMatrix tmp = arg.sparse_matrix_value ();                \
                                                                         \
@@ -1100,9 +943,9 @@ negative numbers or when the values are periodic.
           retval = tmp.FCN (dim);                                       \
         }                                                               \
     }                                                                   \
-  else if (arg.is_complex_type ())                                      \
+  else if (arg.iscomplex ())                                      \
     {                                                                   \
-      if (arg.is_sparse_type ())                                        \
+      if (arg.issparse ())                                        \
         {                                                               \
           SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
                                                                         \
@@ -1231,13 +1074,13 @@ and @qcode{"double"}.
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_matrix_value ().cumsum (dim);
       else
         retval = arg.array_value ().cumsum (dim);
       break;
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_complex_matrix_value ().cumsum (dim);
       else
         retval = arg.complex_array_value ().cumsum (dim);
@@ -1275,7 +1118,7 @@ and @qcode{"double"}.
 #undef MAKE_INT_BRANCH
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           SparseMatrix cs = arg.sparse_matrix_value ().cumsum (dim);
           if (isnative)
@@ -1285,7 +1128,7 @@ and @qcode{"double"}.
         }
       else
         {
-          NDArray cs = arg.bool_array_value ().cumsum (dim);
+          NDArray cs = arg.array_value ().cumsum (dim);
           if (isnative)
             retval = cs != 0.0;
           else
@@ -1418,9 +1261,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8 ([1; 2; 3]))
 %!assert (diag (int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8 ([1; 2; 3]))
 
-%!assert <37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
-%!assert <37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
-%!assert <37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
+%!assert <*37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
+%!assert <*37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
+%!assert <*37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
 
 ## Test non-square size
 %!assert (diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
@@ -1433,7 +1276,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (cell (3,3), 4), cell (0, 1))
 %!assert (diag (sparse (ones (3,3)), 4), sparse (zeros (0, 1)))
 
-%% Test input validation
+## Test input validation
 %!error <Invalid call to diag> diag ()
 %!error <Invalid call to diag> diag (1,2,3,4)
 %!error diag (ones (2), 3, 3)
@@ -1517,13 +1360,13 @@ in double precision even for single precision inputs.
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_matrix_value ().prod (dim);
       else
         retval = arg.array_value ().prod (dim);
       break;
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_complex_matrix_value ().prod (dim);
       else
         retval = arg.complex_array_value ().prod (dim);
@@ -1566,7 +1409,7 @@ in double precision even for single precision inputs.
       break;
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isnative)
             retval = arg.sparse_bool_matrix_value ().all (dim);
@@ -1597,7 +1440,7 @@ in double precision even for single precision inputs.
 %!assert (prod (single ([i, 2+i, -3+2i, 4])), single (-4 - 32i))
 %!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single ([-1+i, -8+8i, -27+27i]))
 
-%% Test sparse
+## Test sparse
 %!assert (prod (sparse ([1, 2, 3])), sparse (6))
 %!assert (prod (sparse ([-1; -2; -3])), sparse (-6))
 ## Commented out until bug #42290 is fixed
@@ -1634,13 +1477,13 @@ in double precision even for single precision inputs.
 %!assert (prod (zeros (0, 2, "single"), 1), single ([1, 1]))
 %!assert (prod (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
 
-%% Test "double" type argument
+## Test "double" type argument
 %!assert (prod (single ([1, 2, 3]), "double"), 6)
 %!assert (prod (single ([-1; -2; -3]), "double"), -6)
 %!assert (prod (single ([i, 2+i, -3+2i, 4]), "double"), -4 - 32i)
 %!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), "double"), [-1+i, -8+8i, -27+27i])
 
-%% Test "native" type argument
+## Test "native" type argument
 %!assert (prod (uint8 ([1, 2, 3]), "native"), uint8 (6))
 %!assert (prod (uint8 ([-1; -2; -3]), "native"), uint8 (0))
 %!assert (prod (int8 ([1, 2, 3]), "native"), int8 (6))
@@ -1648,7 +1491,7 @@ in double precision even for single precision inputs.
 %!assert (prod ([true false; true true], "native"), [true false])
 %!assert (prod ([true false; true true], 2, "native"), [false; true])
 
-%% Test input validation
+## Test input validation
 %!error prod ()
 %!error prod (1,2,3)
 %!error <unrecognized type argument 'foobar'> prod (1, "foobar")
@@ -1782,7 +1625,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  octave_value fcn = symbol_table::find_method (dtype, cname);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("attempt_type_conversion");
+
+  octave_value fcn = symtab.find_method (dtype, cname);
 
   if (fcn.is_defined ())
     {
@@ -1790,7 +1635,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+          result = octave::feval (fcn, ovl (ov), 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -1809,7 +1654,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
       // No conversion function available.  Try the constructor for the
       // dispatch type.
 
-      fcn = symbol_table::find_method (dtype, dtype);
+      fcn = symtab.find_method (dtype, dtype);
 
       if (! fcn.is_defined ())
         error ("no constructor for %s!", dtype.c_str ());
@@ -1818,7 +1663,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+          result = octave::feval (fcn, ovl (ov), 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -1843,9 +1688,11 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
   // Get dominant type for list
 
-  std::string dtype = get_dispatch_type (ovl);
+  std::string dtype = octave::get_dispatch_type (ovl);
 
-  octave_value fcn = symbol_table::find_method (cattype, dtype);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("do_class_concat");
+
+  octave_value fcn = symtab.find_method (cattype, dtype);
 
   if (fcn.is_defined ())
     {
@@ -1855,7 +1702,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
       try
         {
-          tmp2 = fcn.do_multi_index_op (1, ovl);
+          tmp2 = octave::feval (fcn, ovl, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -1885,7 +1732,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
           if (t1_type == dtype)
             tmp(j++) = elt;
-          else if (elt.is_object () || ! elt.is_empty ())
+          else if (elt.isobject () || ! elt.isempty ())
             tmp(j++) = attempt_type_conversion (elt, dtype);
         }
 
@@ -1939,10 +1786,10 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             {
               result_type = args(i).class_name ();
 
-              first_elem_is_struct = args(i).is_map ();
+              first_elem_is_struct = args(i).isstruct ();
             }
           else
-            result_type = get_concat_class (result_type, args(i).class_name ());
+            result_type = octave::get_concat_class (result_type, args(i).class_name ());
 
           if (all_strings_p && ! args(i).is_string ())
             all_strings_p = false;
@@ -1950,26 +1797,36 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             all_sq_strings_p = false;
           if (all_dq_strings_p && ! args(i).is_dq_string ())
             all_dq_strings_p = false;
-          if (all_real_p && ! args(i).is_real_type ())
+          if (all_real_p && ! args(i).isreal ())
             all_real_p = false;
-          if (all_cmplx_p && ! (args(i).is_complex_type ()
-                                || args(i).is_real_type ()))
+          if (all_cmplx_p && ! (args(i).iscomplex ()
+                                || args(i).isreal ()))
             all_cmplx_p = false;
-          if (! any_sparse_p && args(i).is_sparse_type ())
+          if (! any_sparse_p && args(i).issparse ())
             any_sparse_p = true;
-          if (! any_cell_p && args(i).is_cell ())
+          if (! any_cell_p && args(i).iscell ())
             any_cell_p = true;
-          if (! any_class_p && args(i).is_object ())
+          if (! any_class_p && args(i).isobject ())
             any_class_p = true;
         }
 
       if (any_cell_p && ! any_class_p && ! first_elem_is_struct)
         {
+          int j = 0;
           for (int i = 0; i < n_args; i++)
             {
-              if (! args(i).is_cell ())
-                args(i) = Cell (args(i));
+              if (args(i).iscell ())
+                args(j++) = args(i);
+              else
+                {
+                  if (args(i).isempty ())
+                    continue;  // Delete empty non-cell arg
+                  else
+                    args(j++) = Cell (args(i));
+                }
             }
+          n_args = j;
+          args.resize (n_args);
         }
 
       if (any_class_p)
@@ -2002,13 +1859,13 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
         }
       else if (result_type == "char")
         {
-          char type = all_dq_strings_p ? '"' : '\'';
+          char type = (all_dq_strings_p ? '"' : '\'');
 
           if (! all_strings_p)
             warn_implicit_conversion ("Octave:num-to-str",
                                       "numeric", result_type);
           else
-            maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+            octave::maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
           charNDArray result = do_single_type_concat<charNDArray> (args, dim);
 
@@ -2070,8 +1927,9 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           // an empty matrix and copy all data.
           //
           // We might also start with a empty octave_value using
-          //   tmp = octave_value_typeinfo::lookup_type
-          //                                (args(1).type_name());
+          //
+          //   tmp = octave::type_info::lookup_type (args(1).type_name());
+          //
           // and then directly resize.  However, for some types there might
           // be some additional setup needed, and so this should be avoided.
 
@@ -2343,6 +2201,9 @@ new matrices.  For example:
 %!assert (class (horzcat (cell (1), struct ("foo", "bar"))), "cell")
 
 %!error horzcat (struct ("foo", "bar"), cell (1))
+
+%!test <*39041> assert (class (horzcat (cell(0), struct())), "cell")
+%!test <51086> assert (class (horzcat (struct(), cell(0))), "struct")
 */
 
 DEFUN (vertcat, args, ,
@@ -2564,6 +2425,12 @@ cat (4, ones (2, 2), zeros (2, 2))
 
 %!assert ([zeros(3,2,2); ones(1,2,2)], repmat ([0;0;0;1],[1,2,2]))
 %!assert ([zeros(3,2,2); ones(1,2,2)], vertcat (zeros (3,2,2), ones (1,2,2)))
+
+%!test <*49759>
+%! A = [];
+%! B = {1; 2};
+%! assert (cat (1, A, B), {1; 2});
+%! assert (cat (2, A, B), {1; 2});
 
 %!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4])
 %!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4])
@@ -2892,6 +2759,22 @@ Return the number of nonzero elements in @var{a}.
   return ovl (args(0).nnz ());
 }
 
+/*
+%!assert (nnz (1:5), 5)
+%!assert (nnz (-5:-1), 5)
+%!assert (nnz (0:5), 5)
+%!assert (nnz (-5:0), 5)
+%!assert (nnz (-5:5), 10)
+%!assert (nnz (-2:1:2), 4)
+%!assert (nnz (-2+eps(2):1:2), 5)
+%!assert (nnz (-2-eps(2):1:2), 5)
+%!assert (nnz (-2:1+eps(1):2), 5)
+%!assert (nnz (-2:1-eps(1):2), 5)
+%!assert (nnz ([1:5] * 0), 0)
+%!assert (nnz ([-5:-1] * 0), 0)
+%!assert (nnz ([-1:1] * 0), 0)
+*/
+
 DEFUN (nzmax, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} nzmax (@var{SM})
@@ -3038,7 +2921,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isextra)
             warning ("sum: 'extra' not yet implemented for sparse matrices");
@@ -3051,7 +2934,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
       break;
 
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isextra)
             warning ("sum: 'extra' not yet implemented for sparse matrices");
@@ -3105,7 +2988,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
       break;
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           if (isnative)
             retval = arg.sparse_bool_matrix_value ().any (dim);
@@ -3115,7 +2998,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
       else if (isnative)
         retval = arg.bool_array_value ().any (dim);
       else
-        retval = arg.bool_array_value ().sum (dim);
+        retval = arg.array_value ().sum (dim);
       break;
 
     default:
@@ -3235,13 +3118,13 @@ DEFUN (islogical, args, ,
 @deftypefn  {} {} islogical (@var{x})
 @deftypefnx {} {} isbool (@var{x})
 Return true if @var{x} is a logical object.
-@seealso{isfloat, isinteger, ischar, isnumeric, isa}
+@seealso{ischar, isfloat, isinteger, isstring, isnumeric, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_bool_type ());
+  return ovl (args(0).islogical ());
 }
 
 DEFALIAS (isbool, islogical);
@@ -3267,13 +3150,13 @@ Return true if @var{x} is an integer object (int8, uint8, int16, etc.).
 
 Note that @w{@code{isinteger (14)}} is false because numeric constants in
 Octave are double precision floating point values.
-@seealso{isfloat, ischar, islogical, isnumeric, isa}
+@seealso{isfloat, ischar, islogical, isstring, isnumeric, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_integer_type ());
+  return ovl (args(0).isinteger ());
 }
 
 /*
@@ -3322,13 +3205,13 @@ DEFUN (iscomplex, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} iscomplex (@var{x})
 Return true if @var{x} is a complex-valued numeric object.
-@seealso{isreal, isnumeric, islogical, ischar, isfloat, isa}
+@seealso{isreal, isnumeric, ischar, isfloat, islogical, isstring, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_complex_type ());
+  return ovl (args(0).iscomplex ());
 }
 
 DEFUN (isfloat, args, ,
@@ -3337,13 +3220,13 @@ DEFUN (isfloat, args, ,
 Return true if @var{x} is a floating-point numeric object.
 
 Objects of class double or single are floating-point objects.
-@seealso{isinteger, ischar, islogical, isnumeric, isa}
+@seealso{isinteger, ischar, islogical, isnumeric, isstring, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_float_type ());
+  return ovl (args(0).isfloat ());
 }
 
 // FIXME: perhaps this should be implemented with an
@@ -3384,11 +3267,11 @@ complex ([1, 2], [3, 4])
     {
       octave_value arg = args(0);
 
-      if (arg.is_complex_type ())
+      if (arg.iscomplex ())
         retval = arg;
       else
         {
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseComplexMatrix val = arg.xsparse_complex_matrix_value ("complex: invalid conversion");
 
@@ -3431,7 +3314,7 @@ complex ([1, 2], [3, 4])
       octave_value re = args(0);
       octave_value im = args(1);
 
-      if (re.is_sparse_type () && im.is_sparse_type ())
+      if (re.issparse () && im.issparse ())
         {
           const SparseMatrix re_val = re.sparse_matrix_value ();
           const SparseMatrix im_val = im.sparse_matrix_value ();
@@ -3613,6 +3496,49 @@ complex ([1, 2], [3, 4])
   return retval;
 }
 
+/*
+%!error <undefined> 1+Infj
+%!error <undefined> 1+Infi
+
+%!test <31974>
+%! assert (Inf + Inf*i, complex (Inf, Inf))
+%!
+%! assert (1 + Inf*i, complex (1, Inf))
+%! assert (1 + Inf*j, complex (1, Inf))
+%!
+%! ## whitespace should not affect parsing
+%! assert (1+Inf*i, complex (1, Inf))
+%! assert (1+Inf*j, complex (1, Inf))
+%!
+%! assert (NaN*j, complex (0, NaN))
+%!
+%! assert (Inf * 4j, complex (0, Inf))
+
+%!test <31974>
+%! x = Inf;
+%! assert (x * j, complex (0, Inf))
+%! j = complex (0, 1);
+%! assert (Inf * j, complex (0, Inf))
+
+%!test <31974>
+%! exp = complex (zeros (2, 2), Inf (2, 2));
+%! assert (Inf (2, 2) * j, exp)
+%! assert (Inf (2, 2) .* j, exp)
+%! assert (Inf * (ones (2, 2) * j), exp)
+%! assert (Inf (2, 2) .* (ones (2, 2) * j), exp)
+
+%!test <31974>
+%! assert ([Inf; 0] * [i, 0], complex ([NaN NaN; 0 0], [Inf NaN; 0 0]))
+%! assert ([Inf, 0] * [i; 0], complex (NaN, Inf))
+%! assert ([Inf, 0] .* [i, 0], complex ([0 0], [Inf 0]))
+
+%!test <31974>
+%! m = @(x, y) x * y;
+%! d = @(x, y) x / y;
+%! assert (m (Inf, i), complex (0, +Inf))
+%! assert (d (Inf, i), complex (0, -Inf))
+*/
+
 DEFUN (isreal, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isreal (@var{x})
@@ -3626,7 +3552,7 @@ matrices.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_real_type ());
+  return ovl (args(0).isreal ());
 }
 
 DEFUN (isempty, args, ,
@@ -3640,11 +3566,11 @@ zero).
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_empty ());
+  return ovl (args(0).isempty ());
 }
 
 /*
-%% Debian bug #706376
+## Debian bug #706376
 %!assert (isempty (speye(2^16)), false)
 */
 
@@ -3655,13 +3581,13 @@ Return true if @var{x} is a numeric object, i.e., an integer, real, or
 complex array.
 
 Logical and character arrays are not considered to be numeric.
-@seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct, isa}
+@seealso{isinteger, isfloat, isreal, iscomplex, ischar, islogical, isstring, iscell, isstruct, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_numeric_type ());
+  return ovl (args(0).isnumeric ());
 }
 
 /*
@@ -3707,7 +3633,7 @@ Return true if @var{x} is a scalar.
 %! s.a = 1;
 %! assert (isscalar (s));
 
-%% Test input validation
+## Test input validation
 %!error isscalar ()
 %!error isscalar (1, 2)
 */
@@ -3745,7 +3671,7 @@ consequence a 1x1 array, or scalar, is also a vector.
 %! s.a = 1;
 %! assert (isvector (s), true);
 
-%% Test input validation
+## Test input validation
 %!error isvector ()
 %!error isvector ([1, 2], 2)
 */
@@ -3789,7 +3715,7 @@ Return true if @var{x} is a row vector 1xN with non-negative N.
 %! s.a = 1;
 %! assert (isrow (s), true);
 
-%% Test input validation
+## Test input validation
 %!error isrow ()
 %!error isrow ([1, 2], 2)
 */
@@ -3833,7 +3759,7 @@ Return true if @var{x} is a column vector Nx1 with non-negative N.
 %! s.a = 1;
 %! assert (iscolumn (s));
 
-%% Test input validation
+## Test input validation
 %!error iscolumn ()
 %!error iscolumn ([1, 2], 2)
 */
@@ -3912,7 +3838,7 @@ Return true if @var{x} is a square matrix.
 %!assert (issquare ({1, 2; 3, 4}))
 %!assert (sparse (([1, 2; 3, 4])))
 
-%% Test input validation
+## Test input validation
 %!error issquare ()
 %!error issquare ([1, 2; 3, 4], 2)
 */
@@ -3950,7 +3876,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4060,7 +3986,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4124,7 +4050,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4189,7 +4115,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4244,7 +4170,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).is_empty ()
+          dims(i) = (args(i).isempty ()
                      ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
@@ -4318,7 +4244,7 @@ val = ones (m,n, "uint8")
 ## Matlab requires the size to be a row vector.  In that logic, it supports
 ## n to be a 1x0 vector (returns 0x0) but not a 0x1 vector.  Octave supports
 ## any vector and therefore must support 0x1, 1x0, and 0x0x1 (but not 0x1x1).
-%!test <47298>
+%!test <*47298>
 %! funcs = {@zeros, @ones, @inf, @nan, @NA, @i, @pi, @e};
 %! for idx = 1:numel (funcs)
 %!   func = funcs{idx};
@@ -4541,6 +4467,31 @@ either @qcode{"double"} or @qcode{"single"}.
   return fill_matrix (args, e_val, "e");
 }
 
+template <typename T>
+T
+eps (const T& x)
+{
+  T epsval = x.abs ();
+  typedef typename T::value_type P;
+  for (octave_idx_type i = 0; i < x.numel (); i++)
+    {
+      P val = epsval.xelem (i);
+      if (octave::math::isnan (val) || octave::math::isinf (val))
+        epsval(i) = octave::numeric_limits<P>::NaN ();
+      else if (val < std::numeric_limits<P>::min ())
+        epsval(i) = std::numeric_limits<P>::denorm_min ();
+      else
+        {
+          int exponent;
+          octave::math::frexp (val, &exponent);
+          const P digits = std::numeric_limits<P>::digits;
+          epsval(i) = std::pow (static_cast<P> (2.0),
+                                static_cast<P> (exponent - digits));
+        }
+    }
+  return epsval;
+}
+
 DEFUN (eps, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} eps
@@ -4580,54 +4531,19 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 
   if (args.length () == 1 && ! args(0).is_string ())
     {
-      if (args(0).is_single_type ())
+      octave_value arg0 = args(0);
+      if (arg0.is_single_type ())
         {
-          Array<float> x = args(0).float_array_value ();
-
-          Array<float> epsval (x.dims ());
-
-          for (octave_idx_type i = 0; i < x.numel (); i++)
-            {
-              float val = ::fabsf (x(i));
-              if (octave::math::isnan (val) || octave::math::isinf (val))
-                epsval(i) = lo_ieee_nan_value ();
-              else if (val < std::numeric_limits<float>::min ())
-                epsval(i) = powf (2.0, -149e0);
-              else
-                {
-                  int expon;
-                  octave::math::frexp (val, &expon);
-                  epsval(i) = std::pow (2.0f,
-                                        static_cast<float> (expon - 24));
-                }
-            }
-
+          FloatNDArray epsval = eps (arg0.float_array_value ());
+          retval = epsval;
+        }
+      else if (arg0.is_double_type ())
+        {
+          NDArray epsval = eps (arg0.array_value ());
           retval = epsval;
         }
       else
-        {
-          Array<double> x = args(0).array_value ();
-
-          Array<double> epsval (x.dims ());
-
-          for (octave_idx_type i = 0; i < x.numel (); i++)
-            {
-              double val = ::fabs (x(i));
-              if (octave::math::isnan (val) || octave::math::isinf (val))
-                epsval(i) = lo_ieee_nan_value ();
-              else if (val < std::numeric_limits<double>::min ())
-                epsval(i) = pow (2.0, -1074e0);
-              else
-                {
-                  int expon;
-                  octave::math::frexp (val, &expon);
-                  epsval(i) = std::pow (2.0,
-                                        static_cast<double> (expon - 53));
-                }
-
-              retval = epsval;
-            }
-        }
+        error ("eps: X must be of a floating point type");
     }
   else
     retval = fill_matrix (args, std::numeric_limits<double>::epsilon (),
@@ -4659,7 +4575,7 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 %!assert (eps (single (NaN)), single (NaN))
 %!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])),
 %!             single ([2^(-24) 2^(-23) 2^(-22) 2^104 2^(-149) 2^(-149) 2^(-149) NaN NaN]))
-
+%!error <X must be of a floating point type> eps (uint8 ([0 1 2]))
 */
 
 DEFUN (pi, args, ,
@@ -5197,7 +5113,7 @@ only a single value (@var{n} = 1) is requested.
       // numeric value, the number of points defaults to 1.
       octave_value arg_3 = args(2);
 
-      if (arg_3.is_numeric_type () && arg_3.is_empty ())
+      if (arg_3.isnumeric () && arg_3.isempty ())
         npoints = 1;
       else if (! arg_3.is_scalar_type ())
         error ("linspace: N must be a scalar");
@@ -5215,20 +5131,20 @@ only a single value (@var{n} = 1) is requested.
   bool isvector2 = sz2.ndims () == 2 && (sz2(0) == 1 || sz2(1) == 1);
 
   if (! isvector1 || ! isvector2)
-    error ("linspace: A, B must be scalars or vectors");
+    error ("linspace: START, END must be scalars or vectors");
 
   octave_value retval;
 
   if (arg_1.is_single_type () || arg_2.is_single_type ())
     {
-      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+      if (arg_1.iscomplex () || arg_2.iscomplex ())
         retval = do_linspace<FloatComplexMatrix> (arg_1, arg_2, npoints);
       else
         retval = do_linspace<FloatMatrix> (arg_1, arg_2, npoints);
     }
   else
     {
-      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+      if (arg_1.iscomplex () || arg_2.iscomplex ())
         retval = do_linspace<ComplexMatrix> (arg_1, arg_2, npoints);
       else
         retval = do_linspace<Matrix> (arg_1, arg_2, npoints);
@@ -5243,8 +5159,11 @@ only a single value (@var{n} = 1) is requested.
 %! x2 = linspace (1, 2, 10);
 %! x3 = linspace (1, -2, 10);
 %! assert (size (x1) == [1, 100] && x1(1) == 1 && x1(100) == 2);
+%! assert (x1(2) - x1(1), (2 - 1)/ (100 - 1), eps);
 %! assert (size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2);
+%! assert (x2(2) - x2(1), (2 - 1)/ (10 - 1), eps);
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
+%! assert (x3(2) - x3(1), (-2 - 1)/ (10 - 1), eps);
 
 ## Test complex values
 %!test
@@ -5252,7 +5171,7 @@ only a single value (@var{n} = 1) is requested.
 %! obs = linspace (1, 5-5i, 5);
 %! assert (obs, exp);
 
-## Test support for vectors in BASE and LIMIT
+## Test support for vectors in START and END
 %!assert (linspace ([1 2 3], [7 8 9]),
 %!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)], 10*eps)
 %!assert (linspace ([1 2 3]', [7 8 9]'),
@@ -5281,13 +5200,14 @@ only a single value (@var{n} = 1) is requested.
 %!assert (numel (linspace (0, 1, 2-eps)), 1)
 %!assert (linspace (10, 20, 2.1), [10 20])
 %!assert (linspace (10, 20, 2.9), [10 20])
+%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)
 %!error <N must be a scalar> linspace (1, 2, [3, 4])
-%!error <must be scalars or vectors> linspace (ones (2,2), 2, 3)
-%!error <must be scalars or vectors> linspace (2, ones (2,2), 3)
-%!error <must be scalars or vectors> linspace (1, [], 3)
+%!error <START, END must be scalars or vectors> linspace (ones (2,2), 2, 3)
+%!error <START, END must be scalars or vectors> linspace (2, ones (2,2), 3)
+%!error <START, END must be scalars or vectors> linspace (1, [], 3)
 */
 
 // FIXME: should accept dimensions as separate args for N-D
@@ -5450,7 +5370,7 @@ the unspecified dimension.
 
       for (int i = 1; i < nargin; i++)
         {
-          if (args(i).is_empty ())
+          if (args(i).isempty ())
             {
               if (empty_dim > 0)
                 error ("reshape: only a single dimension can be unknown");
@@ -5669,7 +5589,7 @@ If @var{opt} is the value @qcode{"rows"}, treat each row as a vector and
 compute its norm.  The result is returned as a column vector.
 Similarly, if @var{opt} is @qcode{"columns"} or @qcode{"cols"} then
 compute the norms of each column and return a row vector.
-@seealso{normest, normest1, cond, svd}
+@seealso{normest, normest1, vecnorm, cond, svd}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -5682,10 +5602,11 @@ compute the norms of each column and return a row vector.
   if (x_arg.ndims () != 2)
     error ("norm: only valid for 2-D objects");
 
-  enum { sfmatrix, sfcols, sfrows, sffrob, sfinf } strflag = sfmatrix;
+  enum {sfmatrix, sfcols, sfrows, sffrob, sfinf, sfneginf} strflag = sfmatrix;
   if (nargin > 1 && args(nargin-1).is_string ())
     {
       std::string str = args(nargin-1).string_value ();
+      std::transform (str.begin (), str.end (), str.begin (), tolower);
       if (str == "cols" || str == "columns")
         strflag = sfcols;
       else if (str == "rows")
@@ -5694,6 +5615,8 @@ compute the norms of each column and return a row vector.
         strflag = sffrob;
       else if (str == "inf")
         strflag = sfinf;
+      else if (str == "-inf")
+        strflag = sfneginf;
       else
         error ("norm: unrecognized option: %s", str.c_str ());
 
@@ -5703,11 +5626,12 @@ compute the norms of each column and return a row vector.
 
   octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);
 
-  if (p_arg.is_empty ())
+  if (p_arg.isempty ())
     p_arg = octave_value (2);
   else if (p_arg.is_string ())
     {
       std::string str = p_arg.string_value ();
+      std::transform (str.begin (), str.end (), str.begin (), tolower);
       if (strflag != sfcols && strflag != sfrows)
         error ("norm: invalid combination of options");
 
@@ -5718,6 +5642,8 @@ compute the norms of each column and return a row vector.
         p_arg = octave_value (2);
       else if (str == "inf")
         p_arg = octave::numeric_limits<double>::Inf ();
+      else if (str == "-inf")
+        p_arg = -octave::numeric_limits<double>::Inf ();
       else
         error ("norm: unrecognized option: %s", str.c_str ());
     }
@@ -5747,6 +5673,10 @@ compute the norms of each column and return a row vector.
     case sfinf:
       retval = xnorm (x_arg, octave::numeric_limits<double>::Inf ());
       break;
+
+    case sfneginf:
+      retval = xnorm (x_arg, -octave::numeric_limits<double>::Inf ());
+      break;
     }
 
   return retval;
@@ -5755,12 +5685,14 @@ compute the norms of each column and return a row vector.
 /*
 %!shared x
 %! x = [1, -3, 4, 5, -7];
+%!assert (norm (x,0), 5)
 %!assert (norm (x,1), 20)
 %!assert (norm (x,2), 10)
 %!assert (norm (x,3), 8.24257059961711, -4*eps)
 %!assert (norm (x,Inf), 7)
 %!assert (norm (x,-Inf), 1)
 %!assert (norm (x,"inf"), 7)
+%!assert (norm (x,"-Inf"), 1)
 %!assert (norm (x,"fro"), 10, -eps)
 %!assert (norm (x), 10)
 %!assert (norm ([1e200, 1]), 1e200)
@@ -5769,6 +5701,7 @@ compute the norms of each column and return a row vector.
 %! m = magic (4);
 %!assert (norm (m,1), 34)
 %!assert (norm (m,2), 34, -eps)
+%!assert (norm (m,3), 34, -sqrt (eps))
 %!assert (norm (m,Inf), 34)
 %!assert (norm (m,"inf"), 34)
 %!shared m2, flo, fhi
@@ -5780,12 +5713,14 @@ compute the norms of each column and return a row vector.
 
 %!shared x
 %! x = single ([1, -3, 4, 5, -7]);
+%!assert (norm (x,0), single (5))
 %!assert (norm (x,1), single (20))
 %!assert (norm (x,2), single (10))
 %!assert (norm (x,3), single (8.24257059961711), -4*eps ("single"))
 %!assert (norm (x,Inf), single (7))
 %!assert (norm (x,-Inf), single (1))
 %!assert (norm (x,"inf"), single (7))
+%!assert (norm (x,"-Inf"), single (1))
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
 %!assert (norm (single ([1e38, 1])), single (1e38))
@@ -5794,6 +5729,7 @@ compute the norms of each column and return a row vector.
 %! m = single (magic (4));
 %!assert (norm (m,1), single (34))
 %!assert (norm (m,2), single (34), -eps ("single"))
+%!assert (norm (m,3), single (34), -sqrt (eps ("single")))
 %!assert (norm (m,Inf), single (34))
 %!assert (norm (m,"inf"), single (34))
 %!shared m2, flo, fhi
@@ -5802,6 +5738,9 @@ compute the norms of each column and return a row vector.
 %! fhi = single (1e+300);
 %!assert (norm (flo*m2,"fro"), single (sqrt (30)*flo), -eps ("single"))
 %!assert (norm (fhi*m2,"fro"), single (sqrt (30)*fhi), -eps ("single"))
+
+## Hamming norm (p == 0)
+%!assert (norm ([1, 0, 0, 0, 1], 0), 2)
 
 %!shared q
 %! q = rand (1e3, 3);
@@ -5829,6 +5768,7 @@ compute the norms of each column and return a row vector.
 %!error <unrecognized option> norm (1, "invalid", "rows")
 %!error <invalid combination of options> norm (1, "cols", "rows")
 %!error <invalid combination of options> norm (1, "rows", "rows")
+%!error <p must be .= 1> norm (ones (2,2), -Inf)
 */
 
 static octave_value
@@ -6254,8 +6194,8 @@ This function is equivalent to the operator syntax
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  return (nargin == 2) ? do_colon_op (args(0), args(1))
-                       : do_colon_op (args(0), args(1), args(2));
+  return (nargin == 2 ? do_colon_op (args(0), args(1))
+                      : do_colon_op (args(0), args(1), args(2)));
 }
 
 static double tic_toc_timestamp = -1.0;
@@ -6316,7 +6256,7 @@ doing nothing at all.
   if (nargout > 0)
     {
       double ip = 0.0;
-      double frac = modf (tmp, &ip);
+      double frac = std::modf (tmp, &ip);
       uint64_t microsecs = static_cast<uint64_t> (CLOCKS_PER_SEC * frac);
       microsecs += CLOCKS_PER_SEC * static_cast<uint64_t> (ip);
       retval = octave_uint64 (microsecs);
@@ -6501,7 +6441,7 @@ ordered lists.
           else if (mode == "descend")
             smode = DESCENDING;
           else
-            error ("sort: MODE must be either \"ascend\" or \"descend\"");
+            error (R"(sort: MODE must be either "ascend" or "descend")");
         }
       else
         dim = args(1).nint_value () - 1;
@@ -6519,7 +6459,7 @@ ordered lists.
       else if (mode == "descend")
         smode = DESCENDING;
       else
-        error ("sort: MODE must be either \"ascend\" or \"descend\"");
+        error (R"(sort: MODE must be either "ascend" or "descend")");
     }
 
   const dim_vector dv = arg.dims ();
@@ -6755,12 +6695,12 @@ Undocumented internal function.
       else if (mode == "descend")
         smode = DESCENDING;
       else
-        error ("__sort_rows_idx__: MODE must be either \"ascend\" or \"descend\"");
+        error (R"(__sort_rows_idx__: MODE must be either "ascend" or "descend")");
     }
 
   octave_value arg = args(0);
 
-  if (arg.is_sparse_type ())
+  if (arg.issparse ())
     error ("__sort_rows_idx__: sparse matrices not yet supported");
 
   if (arg.ndims () != 2)
@@ -6789,7 +6729,7 @@ get_sort_mode_option (const octave_value& arg)
   else if (mode == "either")
     smode = UNSORTED;
   else
-    error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
+    error (R"(issorted: MODE must be "ascending", "descending", or "either")");
 
   return smode;
 }
@@ -6841,7 +6781,7 @@ This function does not support sparse matrices.
 
   if (by_rows)
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         error ("issorted: sparse matrices not yet supported");
 
       if (arg.ndims () != 2)
@@ -6851,10 +6791,10 @@ This function does not support sparse matrices.
     }
   else
     {
-      if (! arg.dims ().is_vector ())
+      if (! arg.dims ().isvector ())
         error ("issorted: needs a vector");
 
-      retval = args(0).is_sorted (smode) != UNSORTED;
+      retval = args(0).issorted (smode) != UNSORTED;
     }
 
   return retval;
@@ -6986,7 +6926,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 #undef MAKE_INT_BRANCH
 
         default:
-          if (argx.is_cellstr ())
+          if (argx.iscellstr ())
             retval = argx.cellstr_value ().nth_element (n, dim);
           else
             err_wrong_type_arg ("nth_element", argx);
@@ -7000,6 +6940,21 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 
   return retval;
 }
+
+/*
+%!assert (nth_element ([1:10], 1), 1)
+%!assert (nth_element ([1:10], 10), 10)
+%!assert (nth_element ([1:10], 1:3), [1 2 3])
+%!assert (nth_element ([1:10], 1:10), [1:10])
+
+%!assert <*51329> (nth_element ([1:10], [1:10]), [1:10])
+
+%!error nth_element ()
+%!error nth_element (1)
+%!error nth_element (1, 1.5)
+%!error nth_element (1, 2, 3, 4)
+%!error nth_element ("abcd", 3)
+*/
 
 template <typename NDT>
 static NDT
@@ -7035,7 +6990,7 @@ Undocumented internal function.
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("__accumarray_sum__: first argument must be numeric");
 
   octave_value retval;
@@ -7058,16 +7013,16 @@ Undocumented internal function.
 
       if (vals.is_single_type ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumarray_sum (idx,
                                         vals.float_complex_array_value (),
                                         n);
           else
             retval = do_accumarray_sum (idx, vals.float_array_value (), n);
         }
-      else if (vals.is_numeric_type () || vals.is_bool_type ())
+      else if (vals.isnumeric () || vals.islogical ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumarray_sum (idx,
                                         vals.complex_array_value (),
                                         n);
@@ -7124,7 +7079,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
   if (nargin < 3 || nargin > 4)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("accumarray: first argument must be numeric");
 
   octave_value retval;
@@ -7258,7 +7213,7 @@ Undocumented internal function.
   if (nargin < 2 || nargin > 4)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("__accumdim_sum__: first argument must be numeric");
 
   octave_value retval;
@@ -7278,7 +7233,7 @@ Undocumented internal function.
 
       if (vals.is_single_type ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumdim_sum (idx,
                                       vals.float_complex_array_value (),
                                       dim, n);
@@ -7286,9 +7241,9 @@ Undocumented internal function.
             retval = do_accumdim_sum (idx, vals.float_array_value (),
                                       dim, n);
         }
-      else if (vals.is_numeric_type () || vals.is_bool_type ())
+      else if (vals.isnumeric () || vals.islogical ())
         {
-          if (vals.is_complex_type ())
+          if (vals.iscomplex ())
             retval = do_accumdim_sum (idx, vals.complex_array_value (),
                                       dim, n);
           else
@@ -7335,13 +7290,13 @@ do_merge (const Array<bool>& mask,
           T ts = tv[0];
           T fs = fv[0];
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? ts : fs;
+            rv[i] = (mv[i] ? ts : fs);
         }
       else
         {
           T ts = tv[0];
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? ts : fv[i];
+            rv[i] = (mv[i] ? ts : fv[i]);
         }
     }
   else
@@ -7350,12 +7305,12 @@ do_merge (const Array<bool>& mask,
         {
           T fs = fv[0];
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? tv[i] : fs;
+            rv[i] = (mv[i] ? tv[i] : fs);
         }
       else
         {
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? tv[i] : fv[i];
+            rv[i] = (mv[i] ? tv[i] : fv[i]);
         }
     }
 
@@ -7402,7 +7357,7 @@ converted to logical.
   if (args.length () != 3)
     print_usage ();
 
-  if (! (args(0).is_bool_type () || args(0).is_numeric_type ()))
+  if (! (args(0).islogical () || args(0).isnumeric ()))
     error ("merge: first argument must be logical or numeric");
 
   octave_value retval;
@@ -7410,7 +7365,7 @@ converted to logical.
   octave_value mask_val = args(0);
 
   if (mask_val.is_scalar_type ())
-    retval = mask_val.is_true () ? args(1) : args(2);
+    retval = (mask_val.is_true () ? args(1) : args(2));
   else
     {
       boolNDArray mask = mask_val.bool_array_value ();
@@ -7420,7 +7375,7 @@ converted to logical.
 
       if (tval.is_double_type () && fval.is_double_type ())
         {
-          if (tval.is_complex_type () || fval.is_complex_type ())
+          if (tval.iscomplex () || fval.iscomplex ())
             retval = do_merge (mask,
                                tval.complex_array_value (),
                                fval.complex_array_value ());
@@ -7431,7 +7386,7 @@ converted to logical.
         }
       else if (tval.is_single_type () && fval.is_single_type ())
         {
-          if (tval.is_complex_type () || fval.is_complex_type ())
+          if (tval.iscomplex () || fval.iscomplex ())
             retval = do_merge (mask,
                                tval.float_complex_array_value (),
                                fval.float_complex_array_value ());
@@ -7448,7 +7403,7 @@ converted to logical.
                                            fval.char_array_value ()),
                                  sq_string ? '\'' : '"');
         }
-      else if (tval.is_cell () && fval.is_cell ())
+      else if (tval.iscell () && fval.iscell ())
         {
           retval = do_merge (mask,
                              tval.cell_value (),
@@ -7554,7 +7509,7 @@ do_diff (const octave_value& array, octave_idx_type order,
         }
     }
 
-  if (array.is_integer_type ())
+  if (array.isinteger ())
     {
       if (array.is_int8_type ())
         retval = array.int8_array_value ().diff (order, dim);
@@ -7575,9 +7530,9 @@ do_diff (const octave_value& array, octave_idx_type order,
       else
         panic_impossible ();
     }
-  else if (array.is_sparse_type ())
+  else if (array.issparse ())
     {
-      if (array.is_complex_type ())
+      if (array.iscomplex ())
         retval = do_sparse_diff (array.sparse_complex_matrix_value (),
                                  order, dim);
       else
@@ -7585,14 +7540,14 @@ do_diff (const octave_value& array, octave_idx_type order,
     }
   else if (array.is_single_type ())
     {
-      if (array.is_complex_type ())
+      if (array.iscomplex ())
         retval = array.float_complex_array_value ().diff (order, dim);
       else
         retval = array.float_array_value ().diff (order, dim);
     }
   else
     {
-      if (array.is_complex_type ())
+      if (array.iscomplex ())
         retval = array.complex_array_value ().diff (order, dim);
       else
         retval = array.array_value ().diff (order, dim);
@@ -7638,7 +7593,7 @@ an empty matrix is returned.
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  if (! (args(0).is_numeric_type () || args(0).is_bool_type ()))
+  if (! (args(0).isnumeric () || args(0).islogical ()))
     error ("diff: X must be numeric or logical");
 
   int dim = -1;
@@ -7748,7 +7703,7 @@ endfor
 
   octave_value x = args(0);
 
-  NoAlias< Array<octave_idx_type> > r (rm.dims ());
+  NoAlias< Array<octave_idx_type>> r (rm.dims ());
 
   for (octave_idx_type i = 0; i < rm.numel (); i++)
     {
@@ -7806,28 +7761,28 @@ Encode a double matrix or array @var{x} into the base64 format string
   if (args.length () != 1)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     error ("base64_encode: encoding is supported only for numeric arrays");
 
-  if (args(0).is_complex_type () || args(0).is_sparse_type ())
+  if (args(0).iscomplex () || args(0).issparse ())
     error ("base64_encode: encoding complex or sparse data is not supported");
 
   octave_value_list retval;
 
-  if (args(0).is_integer_type ())
+  if (args(0).isinteger ())
     {
-#define MAKE_INT_BRANCH(X)                                              \
-      if (args(0).is_ ## X ## _type ())                                 \
-        {                                                               \
-          const X##NDArray in = args(0).  X## _array_value ();          \
-          size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char); \
-          const char* inc = reinterpret_cast<const char*> (in.data ()); \
-          char* out;                                                    \
-          if (octave_base64_encode (inc, inlen, &out))                  \
-            {                                                           \
-              retval(0) = octave_value (out);                           \
-              ::free (out);                                             \
-            }                                                           \
+#define MAKE_INT_BRANCH(X)                                               \
+      if (args(0).is_ ## X ## _type ())                                  \
+        {                                                                \
+          const X##NDArray in = args(0).  X## _array_value ();           \
+          size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char);  \
+          const char *inc = reinterpret_cast<const char *> (in.data ()); \
+          char *out;                                                     \
+          if (octave::base64_encode (inc, inlen, &out))                  \
+            {                                                            \
+              retval(0) = octave_value (out);                            \
+              ::free (out);                                              \
+            }                                                            \
         }
 
       MAKE_INT_BRANCH(int8)
@@ -7850,9 +7805,9 @@ Encode a double matrix or array @var{x} into the base64 format string
       size_t inlen;
       inlen = in.numel () * sizeof (float) / sizeof (char);
       const char*  inc;
-      inc = reinterpret_cast<const char*> (in.data ());
-      char* out;
-      if (octave_base64_encode (inc, inlen, &out))
+      inc = reinterpret_cast<const char *> (in.data ());
+      char *out;
+      if (octave::base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -7864,9 +7819,9 @@ Encode a double matrix or array @var{x} into the base64 format string
       size_t inlen;
       inlen = in.numel () * sizeof (double) / sizeof (char);
       const char*  inc;
-      inc = reinterpret_cast<const char*> (in.data ());
-      char* out;
-      if (octave_base64_encode (inc, inlen, &out))
+      inc = reinterpret_cast<const char *> (in.data ());
+      char *out;
+      if (octave::base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -7918,7 +7873,7 @@ dimensions of the decoded array.
 
   std::string str = args(0).string_value ();
 
-  Array<double> retval = octave_base64_decode (str);
+  Array<double> retval = octave::base64_decode (str);
 
   if (nargin == 2)
     {

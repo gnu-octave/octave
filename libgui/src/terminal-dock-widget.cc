@@ -5,19 +5,19 @@ Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,52 +25,84 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <QDesktopWidget>
+
 #include "terminal-dock-widget.h"
+#include "resource-manager.h"
 
-terminal_dock_widget::terminal_dock_widget (QWidget *p)
-  : octave_dock_widget (p), terminal (QTerminal::create (p))
+namespace octave
 {
-  terminal->setObjectName ("OctaveTerminal");
-  terminal->setFocusPolicy (Qt::StrongFocus);
+  terminal_dock_widget::terminal_dock_widget (QWidget *p)
+    : octave_dock_widget (p), m_terminal (QTerminal::create (p))
+  {
+    m_terminal->setObjectName ("OctaveTerminal");
+    m_terminal->setFocusPolicy (Qt::StrongFocus);
 
-  setObjectName ("TerminalDockWidget");
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  set_title (tr ("Command Window"));
+    setObjectName ("TerminalDockWidget");
+    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    set_title (tr ("Command Window"));
 
-  setWidget (terminal);
-  setFocusProxy (terminal);
+    setWidget (m_terminal);
+    setFocusProxy (m_terminal);
 
-  connect (terminal, SIGNAL (interrupt_signal (void)),
-           this, SLOT (terminal_interrupt ()));
-}
+    connect (m_terminal, SIGNAL (interrupt_signal (void)),
+             this, SLOT (terminal_interrupt (void)));
 
-bool
-terminal_dock_widget::has_focus (void) const
-{
-  QWidget *w = widget ();
+    // Connect the visibility signal to the terminal for dis-/enabling timers
+    connect (this, SIGNAL (visibilityChanged (bool)),
+             m_terminal, SLOT (handle_visibility_changed (bool)));
 
-  return w->hasFocus ();
-}
+    // Chose a reasonable size at startup in order to avoid truncated
+    // startup messages
+    QSettings *settings = resource_manager::get_settings ();
 
-void
-terminal_dock_widget::focus (void)
-{
-  octave_dock_widget::focus ();
+    QFont font = QFont ();
+    font.setStyleHint (QFont::TypeWriter);
+    font.setFamily
+      (settings->value ("terminal/fontName", "Courier New").toString ());
+    font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
 
-  QWidget *w = widget ();
+    QFontMetrics metrics(font);
 
-  w->setFocus ();
-  w->activateWindow ();
-  w->raise ();
-}
+    int win_x =  metrics.maxWidth()*80;
+    int win_y =  metrics.height()*25;
 
-void
-terminal_dock_widget::terminal_interrupt (void)
-{
-  emit interrupt_signal ();
-}
+    int max_x = QApplication::desktop ()->screenGeometry (this).width ();
+    int max_y = QApplication::desktop ()->screenGeometry (this).height ();
 
-terminal_dock_widget::~terminal_dock_widget (void)
-{
-  delete terminal;
+    if (win_x > max_x)
+      win_x = max_x;
+    if (win_y > max_y)
+      win_y = max_y;
+
+    setGeometry (0, 0, win_x, win_y);
+  }
+
+  terminal_dock_widget::~terminal_dock_widget (void)
+  {
+    delete m_terminal;
+  }
+
+  bool terminal_dock_widget::has_focus (void) const
+  {
+    QWidget *w = widget ();
+
+    return w->hasFocus ();
+  }
+
+  void terminal_dock_widget::focus (void)
+  {
+    octave_dock_widget::focus ();
+
+    QWidget *w = widget ();
+
+    w->setFocus ();
+    w->activateWindow ();
+    w->raise ();
+  }
+
+  void terminal_dock_widget::terminal_interrupt (void)
+  {
+    emit interrupt_signal ();
+  }
 }

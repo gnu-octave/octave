@@ -4,19 +4,19 @@ Copyright (C) 2007-2017 Michael Weitzel
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -54,17 +54,20 @@ Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
 #  include "config.h"
 #endif
 
-#include "ov.h"
-#include "defun-dld.h"
-#include "error.h"
-#include "errwarn.h"
-#include "utils.h"
-#include "oct-locbuf.h"
+#include <algorithm>
 
-#include "ov-re-mat.h"
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
+#include "CSparse.h"
+#include "boolNDArray.h"
+#include "dNDArray.h"
+#include "dSparse.h"
+#include "oct-locbuf.h"
 #include "oct-sparse.h"
+#include "quit.h"
+
+#include "defun-dld.h"
+#include "errwarn.h"
+#include "ov.h"
+#include "ovl.h"
 
 // A node struct for the Cuthill-McKee algorithm
 struct CMK_Node
@@ -230,7 +233,7 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
           octave_idx_type j2 = cidx2[i];
           while (j1 < cidx[i+1] || j2 < cidx2[i+1])
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               if (j1 == cidx[i+1])
                 {
@@ -339,7 +342,8 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
     {
       for (octave_idx_type i = cidx[j]; i < cidx[j+1]; i++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           octave_idx_type k = ridx[i];
           // there is a nonzero element (k,j)
           D[k]++;
@@ -352,7 +356,7 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
               bool found = false;
               for (octave_idx_type l = cidx[k]; l < cidx[k + 1]; l++)
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   if (ridx[l] == j)
                     {
@@ -393,7 +397,8 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
   nz = 0;
   for (octave_idx_type i = 0; i < N; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       cidx2[i] = nz;
       nz += w[i];
       w[i] = cidx2[i];
@@ -404,7 +409,8 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
   for (octave_idx_type j = 0; j < N; j++)
     for (octave_idx_type k = cidx[j]; k < cidx[j + 1]; k++)
       {
-        OCTAVE_QUIT;
+        octave_quit ();
+
         octave_idx_type q = w[ridx[k]]++;
         ridx2[q] = j;
       }
@@ -449,7 +455,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   SparseMatrix Ar;
   SparseComplexMatrix Ac;
 
-  if (arg.is_real_type ())
+  if (arg.isreal ())
     {
       Ar = arg.sparse_matrix_value ();
       // Note cidx/ridx are const, so use xridx and xcidx...
@@ -575,10 +581,12 @@ Mathematics, ISBN 0-13-165274-5, 1981.
           octave_idx_type j1 = cidx[i];
           octave_idx_type j2 = cidx2[i];
 
-          OCTAVE_QUIT;
+          octave_quit ();
+
           while (j1 < cidx[i+1] || j2 < cidx2[i+1])
             {
-              OCTAVE_QUIT;
+              octave_quit ();
+
               if (j1 == cidx[i+1])
                 {
                   octave_idx_type r2 = ridx2[j2++];
@@ -640,7 +648,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.
           // add the neighbors to the queue (sorted by node degree)
           while (! H_empty (S, s))
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               // locate a neighbor of i with minimal degree in O(log(N))
               v = H_remove_min (S, s, 1);

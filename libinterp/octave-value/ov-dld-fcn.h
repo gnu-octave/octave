@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -52,6 +52,16 @@ public:
                        const std::string& nm = "",
                        const std::string& ds = "");
 
+  octave_dld_function (octave_builtin::meth mm, const octave::dynamic_library& shl,
+                       const std::string& nm = "",
+                       const std::string& ds = "");
+
+  // No copying!
+
+  octave_dld_function (const octave_dld_function& fn) = delete;
+
+  octave_dld_function& operator = (const octave_dld_function& fn) = delete;
+
   ~octave_dld_function (void);
 
   void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
@@ -68,10 +78,15 @@ public:
 
   bool is_dld_function (void) const { return true; }
 
-  static octave_dld_function* create (octave_builtin::fcn ff,
-                                      const octave::dynamic_library& shl,
-                                      const std::string& nm = "",
-                                      const std::string& ds = "");
+  static octave_dld_function * create (octave_builtin::fcn ff,
+                                       const octave::dynamic_library& shl,
+                                       const std::string& nm = "",
+                                       const std::string& ds = "");
+
+  static octave_dld_function * create (octave_builtin::meth mm,
+                                       const octave::dynamic_library& shl,
+                                       const std::string& nm = "",
+                                       const std::string& ds = "");
 
   octave::dynamic_library get_shlib (void) const
   { return sh_lib; }
@@ -88,12 +103,6 @@ private:
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
   bool system_fcn_file;
-
-  // No copying!
-
-  octave_dld_function (const octave_dld_function& fn);
-
-  octave_dld_function& operator = (const octave_dld_function& fn);
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

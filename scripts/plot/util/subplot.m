@@ -2,22 +2,23 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} subplot (@var{rows}, @var{cols}, @var{index})
+## @deftypefnx {} {} subplot (@var{rows}, @var{cols}, @var{index}, @var{hax})
 ## @deftypefnx {} {} subplot (@var{rcn})
 ## @deftypefnx {} {} subplot (@var{hax})
 ## @deftypefnx {} {} subplot (@dots{}, "align")
@@ -27,6 +28,10 @@
 ## @deftypefnx {} {@var{hax} =} subplot (@dots{})
 ## Set up a plot grid with @var{rows} by @var{cols} subwindows and set the
 ## current axes for plotting (@code{gca}) to the location given by @var{index}.
+##
+## If an axes handle @var{hax} is provided after the (@var{rows}, @var{cols},
+## @var{index}) arguments, the corresponding axes is turned into a
+## subplot.
 ##
 ## If only one numeric argument is supplied, then it must be a three digit
 ## value specifying the number of rows in digit 1, the number of columns in
@@ -98,6 +103,8 @@ function h = subplot (varargin)
   replace_axes = false;
   have_position = false;
   initial_args_decoded = false;
+  make_subplot = false;
+  hsubplot = [];
 
   if (nargin >= 3)
     ## R, C, N?
@@ -110,7 +117,13 @@ function h = subplot (varargin)
       rows = arg1;
       cols = arg2;
       index = arg3;
-      varargin(1:3) = [];
+      if (nargin > 3 && isaxes (varargin{4}))
+        make_subplot = true;
+        hsubplot = varargin{4};
+        varargin(1:4) = [];
+      else
+        varargin(1:3) = [];
+      endif
       initial_args_decoded = true;
     endif
   endif
@@ -211,69 +224,77 @@ function h = subplot (varargin)
 
     set (cf, "nextplot", "add");
 
-    found = false;
-    kids = get (cf, "children");
-    for child = kids(:)'
-      ## Check whether this child is still valid; this might not be the
-      ## case anymore due to the deletion of previous children (due to
-      ## "deletefcn" callback or for legends/colorbars that are deleted
-      ## with their corresponding axes).
-      if (! ishandle (child))
-        continue;
-      endif
-      if (strcmp (get (child, "type"), "axes"))
-        ## Skip legend and colorbar objects.
-        if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
+    if (! make_subplot)
+      found = false;
+      kids = get (cf, "children");
+      for child = kids(:)'
+        ## Check whether this child is still valid; this might not be the
+        ## case anymore due to the deletion of previous children (due to
+        ## "deletefcn" callback or for legends/colorbars that are deleted
+        ## with their corresponding axes).
+        if (! ishghandle (child))
           continue;
         endif
+        if (strcmp (get (child, "type"), "axes"))
+          ## Skip legend and colorbar objects.
+          if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
+            continue;
+          endif
 
-        if (isappdata (child, "__subplotposition__"))
-          objpos = getappdata (child, "__subplotposition__");
-        else
-          objpos = get (child, "position");
-        endif
-        if (all (abs (objpos - pos) < eps) && ! replace_axes)
-          ## If the new axes are in exactly the same position
-          ## as an existing axes object, or if they share the same
-          ## appdata "__subplotposition__", use the existing axes.
-          found = true;
-          hsubplot = child;
-        else
-          ## If the new axes overlap an old axes object, delete the old axes.
-          objpos = get (child, "position");
+          if (isappdata (child, "__subplotposition__"))
+            objpos = getappdata (child, "__subplotposition__");
+          else
+            objpos = get (child, "position");
+          endif
+          if (all (abs (objpos - pos) < eps) && ! replace_axes)
+            ## If the new axes are in exactly the same position
+            ## as an existing axes object, or if they share the same
+            ## appdata "__subplotposition__", use the existing axes.
+            found = true;
+            hsubplot = child;
+          else
+            ## If the new axes overlap an old axes object, delete the old axes.
+            objpos = get (child, "position");
 
-          x0 = pos(1);
-          x1 = x0 + pos(3);
-          y0 = pos(2);
-          y1 = y0 + pos(4);
-          objx0 = objpos(1);
-          objx1 = objx0 + objpos(3);
-          objy0 = objpos(2);
-          objy1 = objy0 + objpos(4);
-          if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
-            delete (child);
+            x0 = pos(1);
+            x1 = x0 + pos(3);
+            y0 = pos(2);
+            y1 = y0 + pos(4);
+            objx0 = objpos(1);
+            objx1 = objx0 + objpos(3);
+            objy0 = objpos(2);
+            objy1 = objy0 + objpos(4);
+            if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
+              delete (child);
+            endif
           endif
         endif
-      endif
-    endfor
+      endfor
+    else
+      found = true;
+    endif
 
-    if (found)
+    if (found && ! make_subplot)
       ## Switch to existing subplot and set requested properties
       set (cf, "currentaxes", hsubplot);
       if (! isempty (varargin))
         set (hsubplot, varargin{:});
       endif
     else
-      hsubplot = axes ("box", "off",
-                       "activepositionproperty", "position",
-                       "position", pos, "looseinset", li,
-                       varargin{:});
+      pval = [{"activepositionproperty", "position", ...
+               "position", pos, "looseinset", li} varargin];
+      if (! make_subplot)
+        hsubplot = axes (pval{:});
+      else
+        set (hsubplot, pval{:})
+      endif
 
       if (! align_axes)
         ## base position (no ticks, no annotation, no cumbersome neighbor)
         setappdata (hsubplot, "__subplotposition__", pos);
         ## max outerposition
         setappdata (hsubplot, "__subplotouterposition__", opos);
+        setappdata (hsubplot, "__subplotrcn__", {rows, cols, index});
         addlistener (hsubplot, "outerposition", @subplot_align);
         addlistener (hsubplot, "xaxislocation", @subplot_align);
         addlistener (hsubplot, "yaxislocation", @subplot_align);
@@ -514,6 +535,7 @@ endfunction
 %! ylabel ylabel;
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! subplot (221);
 %!  plot (x, rand (3, 11));
@@ -557,7 +579,7 @@ endfunction
 %!   subplot (3,3,1);
 %!   assert (gca (), hax(1));
 %!   subplot (2,1,1);
-%!   assert (ishandle (hax),[false(1,6), true(1,3)]);
+%!   assert (ishghandle (hax),[false(1,6), true(1,3)]);
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect
@@ -573,7 +595,7 @@ endfunction
 %!   subplot ("position", [0.5 0.5 0.3 0.3]);
 %!   assert (gca (), h2);
 %!   subplot ("position", [0.5 0.5 0.3 0.2]);
-%!   assert (! ishandle (h2));
+%!   assert (! ishghandle (h2));
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect
@@ -587,8 +609,8 @@ endfunction
 %!   subplot (3,5,1, "align");
 %!   assert (gca (), h1);
 %!   subplot (3,2,1, "align");
-%!   assert (! ishandle (h1));
-%!   assert (! ishandle (h2));
+%!   assert (! ishghandle (h1));
+%!   assert (! ishghandle (h2));
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect

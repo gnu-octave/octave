@@ -4,19 +4,19 @@ Copyright (C) 2006-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -35,11 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
+#include <cstddef>
+
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-math.h"
-#include "lo-slatec-proto.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
 
@@ -52,20 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 static double
 xlgamma (double x)
 {
-  double result;
-#if defined (HAVE_LGAMMA)
-  result = lgamma (x);
-#else
-  double sgngam;
-
-  if (lo_ieee_isnan (x))
-    result = x;
-  else if (x <= 0 || lo_ieee_isinf (x))
-    result = octave_Inf;
-  else
-    F77_XFCN (dlgams, DLGAMS, (&x, &result, &sgngam));
-#endif
-  return result;
+  return std::lgamma (x);
 }
 
 /* ---- pprsc.c from Stadloeber's winrand --- */
@@ -100,7 +88,8 @@ flogfak (double k)
     {
       r  = 1.0 / k;
       rr = r * r;
-      return ((k + 0.5)*std::log (k) - k + C0 + r*(C1 + rr*(C3 + rr*(C5 + rr*C7))));
+      return ((k + 0.5)*std::log (k) - k + C0
+              + r*(C1 + rr*(C3 + rr*(C5 + rr*C7))));
     }
   else
     return (logfak[static_cast<int> (k)]);
@@ -157,7 +146,7 @@ pprsc (double my)
     {                               /* set-up           */
       my_last = my;
       /* approximate deviation of reflection points k2, k4 from my - 1/2 */
-      Ds = sqrt (my + 0.25);
+      Ds = std::sqrt (my + 0.25);
 
       /* mode m, reflection points k2 and k4, and points k1 and k5,      */
       /* which delimit the centre region of h(x)                         */
@@ -414,7 +403,7 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
 static void
 poisson_rejection (double lambda, double *p, size_t n)
 {
-  double sq = sqrt (2.0*lambda);
+  double sq = std::sqrt (2.0*lambda);
   double alxm = std::log (lambda);
   double g = lambda*alxm - LGAMMA(lambda+1.0);
   size_t i;
@@ -440,7 +429,7 @@ poisson_rejection (double lambda, double *p, size_t n)
 static void
 poisson_rejection_float (double lambda, float *p, size_t n)
 {
-  double sq = sqrt (2.0*lambda);
+  double sq = std::sqrt (2.0*lambda);
   double alxm = std::log (lambda);
   double g = lambda*alxm - LGAMMA(lambda+1.0);
   size_t i;
@@ -493,7 +482,7 @@ oct_fill_randp (double L, octave_idx_type n, double *p)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      const double sqrtL = sqrt (L);
+      const double sqrtL = std::sqrt (L);
       for (i = 0; i < n; i++)
         {
           p[i] = std::floor (RNOR*sqrtL + L + 0.5);
@@ -536,7 +525,7 @@ oct_randp (double L)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      ret = std::floor (RNOR*sqrt (L) + L + 0.5);
+      ret = std::floor (RNOR*std::sqrt (L) + L + 0.5);
       if (ret < 0.0) ret = 0.0; /* will probably never happen */
     }
   return ret;
@@ -565,7 +554,7 @@ oct_fill_float_randp (float FL, octave_idx_type n, float *p)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      const double sqrtL = sqrt (L);
+      const double sqrtL = std::sqrt (L);
       for (i = 0; i < n; i++)
         {
           p[i] = std::floor (RNOR*sqrtL + L + 0.5);
@@ -609,7 +598,7 @@ oct_float_randp (float FL)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      ret = std::floor (RNOR*sqrt (L) + L + 0.5);
+      ret = std::floor (RNOR*std::sqrt (L) + L + 0.5);
       if (ret < 0.0) ret = 0.0; /* will probably never happen */
     }
   return ret;

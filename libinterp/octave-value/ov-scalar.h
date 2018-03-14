@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -44,8 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
-class tree_walker;
-
 // Real scalar values.
 
 class
@@ -63,14 +61,14 @@ public:
   octave_scalar (const octave_scalar& s)
     : octave_base_scalar<double> (s) { }
 
-  ~octave_scalar (void) { }
+  ~octave_scalar (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_scalar (*this); }
+  octave_base_value * clone (void) const { return new octave_scalar (*this); }
 
   // We return an octave_matrix here instead of an octave_scalar so
   // that in expressions like A(2,2,2) = 2 (for A previously
   // undefined), A will be empty instead of a 1x1 object.
-  octave_base_value *empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value * empty_clone (void) const { return new octave_matrix (); }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -86,11 +84,11 @@ public:
 
   bool is_real_scalar (void) const { return true; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_double_type (void) const { return true; }
 
-  bool is_float_type (void) const { return true; }
+  bool isfloat (void) const { return true; }
 
   int8NDArray
   int8_array_value (void) const
@@ -150,19 +148,19 @@ public:
   double scalar_value (bool = false) const { return scalar; }
 
   float float_scalar_value (bool = false) const
-  { return static_cast<float> (scalar); }
+  { return float_value (); }
 
   Matrix matrix_value (bool = false) const
   { return Matrix (1, 1, scalar); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return FloatMatrix (1, 1, scalar); }
+  { return FloatMatrix (1, 1, float_value ()); }
 
   NDArray array_value (bool = false) const
   { return NDArray (dim_vector (1, 1), scalar); }
 
   FloatNDArray float_array_value (bool = false) const
-  { return FloatNDArray (dim_vector (1, 1), scalar); }
+  { return FloatNDArray (dim_vector (1, 1), float_value ()); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
   { return SparseMatrix (Matrix (1, 1, scalar)); }
@@ -175,19 +173,23 @@ public:
 
   Complex complex_value (bool = false) const { return scalar; }
 
-  FloatComplex float_complex_value (bool = false) const { return scalar; }
+  FloatComplex float_complex_value (bool = false) const
+  { return FloatComplex (float_value ()); }
 
   ComplexMatrix complex_matrix_value (bool = false) const
   { return ComplexMatrix (1, 1, Complex (scalar)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
+  { return FloatComplexMatrix (1, 1, FloatComplex (float_value ())); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-  { return FloatComplexNDArray (dim_vector (1, 1), FloatComplex (scalar)); }
+  {
+    return FloatComplexNDArray (dim_vector (1, 1),
+                                FloatComplex (float_value ()));
+  }
 
   charNDArray
   char_array_value (bool = false) const
@@ -251,7 +253,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   {
@@ -259,7 +261,7 @@ public:
                      skip, flt_fmt);
   }
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const;
 

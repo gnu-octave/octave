@@ -1,23 +1,23 @@
 /*
 
 Copyright (C) 2014-2017 Eduardo Ramos Fernández <eduradical951@gmail.com>
-Copyright (C) 2013-2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
+Copyright (C) 2013-2017 Kai T. Ohlhus <k.ohlhus@gmail.com>
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,10 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "oct-locbuf.h"
+#include "oct-norm.h"
 
 #include "defun.h"
 #include "error.h"
-#include "parse.h"
+
+#include "builtin-defun-decls.h"
 
 // Secondary functions for complex and real case used in ichol algorithms.
 Complex ichol_mult_complex (Complex a, Complex b)
@@ -83,8 +85,8 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
     opt = OFF;
 
   // Input matrix pointers
-  octave_idx_type* cidx = sm.cidx ();
-  octave_idx_type* ridx = sm.ridx ();
+  octave_idx_type *cidx = sm.cidx ();
+  octave_idx_type *ridx = sm.ridx ();
   T* data = sm.data ();
 
   // Working arrays
@@ -181,37 +183,31 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
 
 DEFUN (__ichol0__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{L} =} __ichol0__ (@var{A})
-@deftypefnx {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})
+@deftypefn {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})
 Undocumented internal function.
 @end deftypefn */)
 {
-  std::string michol = "off";
-  if (args.length ())
-    michol = args(1).string_value ();
+  if (args.length () != 2)
+    print_usage ();
+
+  std::string michol = args(1).string_value ();
 
   // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved
   // so its structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
-  octave_value_list arg_list;
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
-      SparseMatrix sm = args(0).sparse_matrix_value ();
-      arg_list.append (sm);
-      sm = feval ("tril", arg_list)(0).sparse_matrix_value ();
+      SparseMatrix sm = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
                ichol_checkpivot_real> (sm, michol);
-
       return ovl (sm);
     }
   else
     {
-      SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
-      arg_list.append (sm);
-      sm = feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix sm =
+        Ftril (args(0))(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
-
       return ovl (sm);
     }
 }
@@ -233,8 +229,8 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
     opt = OFF;
 
   // Input matrix pointers
-  octave_idx_type* cidx = sm.cidx ();
-  octave_idx_type* ridx = sm.ridx ();
+  octave_idx_type *cidx = sm.cidx ();
+  octave_idx_type *ridx = sm.ridx ();
   T* data = sm.data ();
 
   // Output matrix data structures.  Because the final zero pattern pattern of
@@ -247,9 +243,9 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
   max_len = sm.nnz ();
   max_len += (0.1 * max_len) > n ? 0.1 * max_len : n;
   Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
-  octave_idx_type* cidx_l = cidx_out_l.fortran_vec ();
+  octave_idx_type *cidx_l = cidx_out_l.fortran_vec ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len ,1));
-  octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len, 1));
   T* data_l = data_out_l.fortran_vec ();
 
@@ -421,55 +417,32 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
 
 DEFUN (__icholt__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{L} =} __icholt__ (@var{A})
-@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol})
-@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})
+@deftypefn {} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})
 Undocumented internal function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-  // Default values of parameters
-  std::string michol = "off";
-  double droptol = 0;
+  if (args.length () != 3)
+    print_usage ();
 
-  // Don't repeat input validation of arguments done in ichol.m
-  if (nargin >= 2)
-    droptol = args(1).double_value ();
+  double droptol = args(1).double_value ();
+  std::string michol = args(2).string_value ();
 
-  if (nargin == 3)
-    michol = args(2).string_value ();
-
-  octave_value_list arg_list;
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
-      Array <double> cols_norm;
       SparseMatrix L;
-      arg_list.append (args(0).sparse_matrix_value ());
-      SparseMatrix sm_l =
-        feval ("tril", arg_list)(0).sparse_matrix_value ();
-      arg_list(0) = sm_l;
-      arg_list(1) = 1;
-      arg_list(2) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).vector_value ();
-      arg_list.clear ();
+      SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
-               (sm_l, L, cols_norm.fortran_vec (), droptol, michol);
+               (sm_l, L, xcolnorms (sm_l, 1).fortran_vec (), droptol, michol);
 
       return ovl (L);
     }
   else
     {
-      Array <Complex> cols_norm;
       SparseComplexMatrix L;
-      arg_list.append (args(0).sparse_complex_matrix_value ());
       SparseComplexMatrix sm_l =
-        feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
-      arg_list(0) = sm_l;
-      arg_list(1) = 1;
-      arg_list(2) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).complex_vector_value ();
-      arg_list.clear ();
+        Ftril (args(0))(0).sparse_complex_matrix_value ();
+      Array <Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
                Complex, ichol_mult_complex, ichol_checkpivot_complex>
                (sm_l, L, cols_norm.fortran_vec (),
@@ -480,6 +453,14 @@ Undocumented internal function.
 }
 
 /*
-## No test needed for internal helper function.
-%!assert (1)
+%!test <51736>
+%! k = 4;
+%! n = 2^k;
+%! Afull = diag (ones (n,1)) / ...
+%!          2+triu ([zeros(n,2), [n.^-[1;1;2]*ones(1,n-2);zeros(n-3,n-2)]], 1);
+%! A = sparse (Afull + Afull.');
+%! opts.type = "ict";
+%! opts.droptol = 0;
+%! L = ichol (A, opts);
+%! assert (norm (A - L*L.'), 0, 2*eps);
 */

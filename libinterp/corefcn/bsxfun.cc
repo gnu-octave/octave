@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-map.h"
 #include "defun.h"
+#include "interpreter.h"
 #include "parse.h"
 #include "variables.h"
 #include "ov-colon.h"
@@ -230,7 +231,7 @@ maybe_optimized_builtin (const std::string& name,
 static bool
 maybe_update_column (octave_value& Ac, const octave_value& A,
                      const dim_vector& dva, const dim_vector& dvc,
-                     octave_idx_type i, octave_value_list &idx)
+                     octave_idx_type i, octave_value_list& idx)
 {
   octave_idx_type nd = dva.ndims ();
 
@@ -316,8 +317,8 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
     }
 }
 
-DEFUN (bsxfun, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (bsxfun, interp,args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
 The binary singleton expansion function performs broadcasting,
 that is, it applies a binary function @var{f} element-by-element to two
@@ -342,7 +343,11 @@ dimensionality as the other array.
   if (func.is_string ())
     {
       std::string name = func.string_value ();
-      func = symbol_table::find_function (name);
+
+      octave::symbol_table& symtab = interp.get_symbol_table ();
+
+      func = symtab.find_function (name);
+
       if (func.is_undefined ())
         error ("bsxfun: invalid function name: %s", name.c_str ());
     }
@@ -355,7 +360,7 @@ dimensionality as the other array.
   const octave_value B = args(2);
 
   if (func.is_builtin_function ()
-      || (func.is_function_handle () && ! A.is_object () && ! B.is_object ()))
+      || (func.is_function_handle () && ! A.isobject () && ! B.isobject ()))
     {
       // This may break if the default behavior is overridden.  But if you
       // override arithmetic operators for builtin classes, you should expect
@@ -396,23 +401,23 @@ dimensionality as the other array.
 
       for (octave_idx_type i = 0; i < nd; i++)
         dvc(i) = (dva(i) < 1 ? dva(i)
-                  : (dvb(i) < 1 ? dvb(i)
-                     : (dva(i) > dvb(i)
-                        ? dva(i) : dvb(i))));
+                             : (dvb(i) < 1 ? dvb(i)
+                                           : (dva(i) > dvb(i) ? dva(i)
+                                                              : dvb(i))));
 
       if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
         {
           octave_value_list inputs (2);
           inputs(0) = A;
           inputs(1) = B;
-          retval = func.do_multi_index_op (1, inputs);
+          retval = octave::feval (func, inputs, 1);
         }
       else if (dvc.numel () < 1)
         {
           octave_value_list inputs (2);
           inputs(0) = A.resize (dvc);
           inputs(1) = B.resize (dvc);
-          retval = func.do_multi_index_op (1, inputs);
+          retval = octave::feval (func, inputs, 1);
         }
       else
         {
@@ -454,7 +459,7 @@ dimensionality as the other array.
               if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                 inputs(1) = Bc;
 
-              octave_value_list tmp = func.do_multi_index_op (1, inputs);
+              octave_value_list tmp = octave::feval (func, inputs, 1);
 
 #define BSXINIT(T, CLS, EXTRACTOR)                                      \
               (result_type == CLS)                                      \
@@ -466,12 +471,12 @@ dimensionality as the other array.
 
               if (i == 0)
                 {
-                  if (! tmp(0).is_sparse_type ())
+                  if (! tmp(0).issparse ())
                     {
                       std::string result_type = tmp(0).class_name ();
                       if (result_type == "double")
                         {
-                          if (tmp(0).is_real_type ())
+                          if (tmp(0).isreal ())
                             {
                               have_NDArray = true;
                               result_NDArray = tmp(0).array_value ();
@@ -487,7 +492,7 @@ dimensionality as the other array.
                         }
                       else if (result_type == "single")
                         {
-                          if (tmp(0).is_real_type ())
+                          if (tmp(0).isreal ())
                             {
                               have_FloatNDArray = true;
                               result_FloatNDArray
@@ -530,7 +535,7 @@ dimensionality as the other array.
                   if (have_FloatNDArray
                       || have_FloatComplexNDArray)
                     {
-                      if (! tmp(0).is_float_type ())
+                      if (! tmp(0).isfloat ())
                         {
                           if (have_FloatNDArray)
                             {
@@ -546,7 +551,7 @@ dimensionality as the other array.
                         }
                       else if (tmp(0).is_double_type ())
                         {
-                          if (tmp(0).is_complex_type ()
+                          if (tmp(0).iscomplex ()
                               && have_FloatNDArray)
                             {
                               result_ComplexNDArray =
@@ -566,7 +571,7 @@ dimensionality as the other array.
                               have_NDArray = true;
                             }
                         }
-                      else if (tmp(0).is_real_type ())
+                      else if (tmp(0).isreal ())
                         result_FloatNDArray.insert
                           (tmp(0).float_array_value (), ra_idx);
                       else
@@ -582,13 +587,13 @@ dimensionality as the other array.
                     }
                   else if (have_NDArray)
                     {
-                      if (! tmp(0).is_float_type ())
+                      if (! tmp(0).isfloat ())
                         {
                           have_NDArray = false;
                           C = result_NDArray;
                           C = do_cat_op (C, tmp(0), ra_idx);
                         }
-                      else if (tmp(0).is_real_type ())
+                      else if (tmp(0).isreal ())
                         result_NDArray.insert (tmp(0).array_value (),
                                                ra_idx);
                       else
@@ -744,7 +749,7 @@ dimensionality as the other array.
 %!assert (bsxfun (f, a, d), a - repmat (d, [1, 1, 4]))
 %!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
 
-%% The test below is a very hard case to treat
+## The test below is a very hard case to treat
 %!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]))
 
 %!shared a, b, aa, bb
@@ -770,7 +775,7 @@ dimensionality as the other array.
 %!assert (bsxfun (@and, a > 0, b > 0), (aa > 0) & (bb > 0))
 %!assert (bsxfun (@or, a > 0, b > 0), (aa > 0) | (bb > 0))
 
-%% Test automatic bsxfun
+## Test automatic bsxfun
 %
 %!test
 %! funs = {@plus, @minus, @times, @rdivide, @ldivide, @power, @max, @min, ...
@@ -811,11 +816,11 @@ dimensionality as the other array.
 %! endfor
 
 ## Automatic broadcasting with zero length dimensions
-%!assert <47085> ([1 2 3] .+ zeros (0, 3), zeros (0, 3))
-%!assert <47085> (rand (3, 3, 1) .+ rand (3, 3, 0), zeros (3, 3, 0))
+%!assert <*47085> ([1 2 3] .+ zeros (0, 3), zeros (0, 3))
+%!assert <*47085> (rand (3, 3, 1) .+ rand (3, 3, 0), zeros (3, 3, 0))
 
 ## In-place broadcasting with zero length dimensions
-%!test <47085>
+%!test <*47085>
 %! a = zeros (0, 3);
 %! a .+= [1 2 3];
 %! assert (a, zeros (0, 3));

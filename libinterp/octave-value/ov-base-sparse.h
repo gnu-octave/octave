@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,8 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "boolSparse.h"
 #include "MatrixType.h"
-
-class tree_walker;
 
 class octave_sparse_bool_matrix;
 
@@ -72,7 +70,7 @@ public:
   octave_base_sparse (const octave_base_sparse& a)
     : octave_base_value (), matrix (a.matrix), typ (a.typ) { }
 
-  ~octave_base_sparse (void) { }
+  ~octave_base_sparse (void) = default;
 
   octave_idx_type numel (void) const { return dims ().safe_numel (); }
 
@@ -133,8 +131,8 @@ public:
                      sortmode mode = ASCENDING) const
   { return octave_value (matrix.sort (sidx, dim, mode)); }
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return full_value ().is_sorted (mode); }
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return full_value ().issorted (mode); }
 
   MatrixType matrix_type (void) const { return typ; }
   MatrixType matrix_type (const MatrixType& _typ) const
@@ -142,9 +140,9 @@ public:
 
   bool is_matrix_type (void) const { return true; }
 
-  bool is_numeric_type (void) const { return true; }
+  bool isnumeric (void) const { return true; }
 
-  bool is_sparse_type (void) const { return true; }
+  bool issparse (void) const { return true; }
 
   bool is_defined (void) const { return true; }
 
@@ -152,7 +150,7 @@ public:
 
   bool is_true (void) const;
 
-  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
   octave_idx_type capacity (void) const { return nzmax (); }
 
   bool print_as_scalar (void) const;
@@ -167,13 +165,18 @@ public:
 
   bool load_ascii (std::istream& is);
 
+  float_display_format get_edit_display_format (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   // Unsafe.  These functions exists to support the MEX interface.
   // You should not use them anywhere else.
-  void *mex_get_data (void) const { return matrix.mex_get_data (); }
+  void * mex_get_data (void) const { return matrix.mex_get_data (); }
 
-  octave_idx_type *mex_get_ir (void) const { return matrix.mex_get_ir (); }
+  octave_idx_type * mex_get_ir (void) const { return matrix.mex_get_ir (); }
 
-  octave_idx_type *mex_get_jc (void) const { return matrix.mex_get_jc (); }
+  octave_idx_type * mex_get_jc (void) const { return matrix.mex_get_jc (); }
 
   octave_value fast_elem_extract (octave_idx_type n) const;
 

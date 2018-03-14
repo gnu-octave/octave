@@ -20,7 +20,7 @@
 // You should have received a copy of the GNU General Public License and
 // a copy of the GCC Runtime Library Exception along with this program;
 // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
-// <http://www.gnu.org/licenses/>.
+// <https://www.gnu.org/licenses/>.
 
 /*
  *
@@ -5261,8 +5261,6 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
       return std::__partition(__first, __last, __pred,
 			      std::__iterator_category(__first));
     }
-
-
 
   /**
    *  @brief Sort the smallest elements of a sequence.

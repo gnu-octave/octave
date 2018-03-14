@@ -1,3 +1,357 @@
+Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
+----------------------------------------------------------------------
+
+ ** A graphical Variable Editor has been added to the GUI interface.
+    It uses a spreadsheet-like interface for quick, intuitive editing
+    of variables.  The Variable Editor is launched by double-clicking
+    on a variable name in the Workspace Window or by typing
+    "openvar VARIABLE_NAME" in the Command Window.
+
+ ** On systems with 64-bit pointers, --enable-64 is now the default and
+    Octave always uses 64-bit indexing.  However, if the configure
+    script determines that the BLAS library uses 32-bit integers, then
+    operations using the following libraries are limited to arrays with
+    dimensions that are smaller than 2^31 elements:
+
+      BLAS  LAPACK  QRUPDATE  SuiteSparse  ARPACK
+
+    Additionally, the following libraries use "int" internally, so
+    maximum problem sizes are always limited:
+
+      glpk  Qhull
+
+ ** The octave command no longer starts the GUI by default.  Most users
+    starting Octave from command line were expecting the command line
+    interface and Desktop launchers required the `--force-gui' option
+    anyway.  With this change, desktop launchers should change to use
+    the new option `--gui'.  The previous `--force-gui' will continue to
+    work and maps to `--gui' but will be removed in Octave 4.8.
+
+ ** A new container data type--containers.Map--is available.  Map is a
+    key/value storage container (a.k.a, a hash) that efficiently allows
+    storing and retrieving values by name, rather than by position which
+    is how arrays work.
+
+ ** The bareword "import" is now recognized in scripts and functions.
+    However, the functionality to import functions and classes from
+    other namespaces into the local scope has not yet been implemented.
+    Attempting to use "import" will provoke an error message.
+
+ ** hex2num and num2hex now work for integer and char types and num2hex
+    may optionally return a cell array of strings instead of a character
+    array.  If given a cell array of strings, hex2num now returns a
+    numeric array of the same size as the input cell array.  Previously,
+    hex2num would accept a cell array of strings of arbitrary dimension
+    but would always return a column vector.
+
+ ** The "names" option used in regular expressions now returns a struct
+    array, rather than a struct with a cell array for each field.  This
+    change was made for Matlab compatibility.
+
+ ** The quadcc function now uses both absolute tolerance and relative
+    tolerance to determine the stopping criteria for an integration.
+    To be compatible with other quadXXX functions, such as quadgk, the
+    calling syntax has changed to
+
+      quadcc (f, a, b, [AbsTol, [RelTol]])
+
+    To update existing code, change instances of RelTol to [0, RelTol].
+
+      quadcc (f, a, b, tol) => quadcc (f, a, b, [0, tol])
+
+    A warning that a single tolerance input is now interpreted as an
+    absolute tolerance will be issued in Octave versions 4.4 and 4.6,
+    after which it will be removed.  The warning has ID
+    "Octave:quadcc:RelTol-conversion" and can be disabled with
+
+      warning ("off", "Octave:quadcc:RelTol-conversion")
+
+ ** The qr function now returns a standard factorization unless
+    explicitly instructed to perform an economy factorization by using a
+    final argument of 0.
+
+ ** The Qt graphics toolkit now supports offscreen printing without osmesa
+    if Octave was built with Qt >= 5.1.
+
+ ** The built-in pager for display of large data is now disabled by
+    default.  To re-enable it for every Octave session add the following
+    to your .octaverc file:
+
+      more on;
+
+ ** The FLTK toolkit is no longer prioritized for development.  The
+    number of Octave Maintainers is too small to support three different
+    graphic toolkits.  New development will target the Qt toolkit.
+    While no longer prioritized, the FLTK toolkit is not deprecated and
+    there is no schedule for its removal.
+
+ ** The graphic object property "PickableParts" has been implemented
+    which controls whether an object can accept mouse clicks.
+
+ ** The graphic object property "Interruptible" has been fully
+    implemented which controls whether a running callback function can
+    be interrupted by another callback function.
+
+ ** The graphic object property "HitTest" has been updated to be fully
+    compatible with Matlab.
+
+ ** Text objects now implement the properties "BackgroundColor",
+    "EdgeColor", "LineStyle", "LineWidth", and "Margin".
+
+ ** An initial implementation of alpha transparency has been made for
+    patch and surface objects.  Printing to svg and pdf is supported.
+
+ ** ishandle now returns true for both graphics handle objects and
+    Java objects.  The latter change was made for Matlab compatibility.
+    Use ishghandle or isgraphics if it is important not to include Java
+    objects.
+
+ ** Octave packages can be installed by providing an external URI to the
+    pkg function, like so `pkg install https://some-url.tar.gz'
+
+ ** The following statistical functions have been moved from core
+    Octave to the statistics package available from Octave Forge.
+
+    BASE
+      cloglog.m
+      table.m --renamed to --> crosstab.m
+      logit.m
+      prctile.m
+      probit.m
+      qqplot.m
+
+    DISTRIBUTIONS
+      betacdf.m
+      betainv.m
+      betapdf.m
+      betarnd.m
+      binocdf.m
+      binoinv.m
+      binopdf.m
+      binornd.m
+      cauchy_cdf.m
+      cauchy_inv.m
+      cauchy_pdf.m
+      cauchy_rnd.m
+      chi2cdf.m
+      chi2inv.m
+      chi2pdf.m
+      chi2rnd.m
+      expcdf.m
+      expinv.m
+      exppdf.m
+      exprnd.m
+      fcdf.m
+      finv.m
+      fpdf.m
+      frnd.m
+      gamcdf.m
+      gaminv.m
+      gampdf.m
+      gamrnd.m
+      geocdf.m
+      geoinv.m
+      geopdf.m
+      geornd.m
+      hygecdf.m
+      hygeinv.m
+      hygepdf.m
+      hygernd.m
+      kolmogorov_smirnov_cdf.m
+      laplace_cdf.m
+      laplace_inv.m
+      laplace_pdf.m
+      laplace_rnd.m
+      logistic_cdf.m
+      logistic_inv.m
+      logistic_pdf.m
+      logistic_rnd.m
+      logncdf.m
+      logninv.m
+      lognpdf.m
+      lognrnd.m
+      nbincdf.m
+      nbininv.m
+      nbinpdf.m
+      nbinrnd.m
+      normcdf.m
+      norminv.m
+      normpdf.m
+      normrnd.m
+      poisscdf.m
+      poissinv.m
+      poisspdf.m
+      poissrnd.m
+      stdnormal_cdf.m
+      stdnormal_inv.m
+      stdnormal_pdf.m
+      stdnormal_rnd.m
+      tcdf.m
+      tinv.m
+      tpdf.m
+      trnd.m
+      unidcdf.m
+      unidinv.m
+      unidpdf.m
+      unidrnd.m
+      unifcdf.m
+      unifinv.m
+      unifpdf.m
+      unifrnd.m
+      wblcdf.m
+      wblinv.m
+      wblpdf.m
+      wblrnd.m
+      wienrnd.m
+
+    MODELS
+      logistic_regression.m
+
+    TESTS
+      anova.m
+      bartlett_test.m
+      chisquare_test_homogeneity.m
+      chisquare_test_independence.m
+      cor_test.m
+      f_test_regression.m
+      hotelling_test.m
+      hotelling_test_2.m
+      kolmogorov_smirnov_test.m
+      kolmogorov_smirnov_test_2.m
+      kruskal_wallis_test.m
+      manova.m
+      mcnemar_test.m
+      prop_test_2.m
+      run_test.m
+      sign_test.m
+      t_test.m
+      t_test_2.m
+      t_test_regression.m
+      u_test.m
+      var_test.m
+      welch_test.m
+      wilcoxon_test.m
+      z_test.m
+      z_test_2.m
+
+ ** The following image functions have been moved from core Octave to
+    the image package available from Octave Forge.
+
+    ntsc2rgb
+    rgb2ntsc
+
+ ** Other new functions added in 4.4:
+
+      bounds
+      camlookat
+      camorbit
+      campos
+      camroll
+      camtarget
+      camup
+      camva
+      camzoom
+      corrcoef
+      erase
+      getframe
+      groot
+      gsvd
+      hgtransform
+      humps
+      integral
+      integral2
+      integral3
+      isgraphics
+      isstring
+      mad
+      openvar
+      quad2d
+      repelem
+      rgb2gray
+      rticks
+      tfqmr
+      thetaticks
+      vecnorm
+      winqueryreg
+      xticklabels
+      xticks
+      yticklabels
+      yticks
+      zticklabels
+      zticks
+
+ ** Deprecated functions.
+
+    The following functions have been deprecated in Octave 4.4 and will
+    be removed from Octave 4.8 (or whatever version is the second major
+    release after 4.4):
+
+      Function             | Replacement
+      ---------------------|------------------
+      chop                 | sprintf for visual results
+      desktop              | isguirunning
+      toascii              | double
+
+ ** The following functions were deprecated in Octave 4.0 and have been
+    removed from Octave 4.4.
+
+      allow_noninteger_range_as_index
+      bicubic
+      delaunay3
+      do_braindead_shortcircuit_evaluation
+      dump_prefs
+      find_dir_in_path
+      finite
+      fmod
+      fnmatch
+      gmap40
+      loadaudio
+      luinc
+      mouse_wheel_zoom
+      nfields
+      octave_tmp_file_name
+      playaudio
+      saveaudio
+      setaudio
+      syl
+      usage
+
+ ** The "Octave:undefined-return-values" warning ID is obsolete.  Octave
+    now throws an error for any attempts to assign undefined values that
+    might be returned from functions.
+
+ ** Deprecated graphics properties.
+
+    The following properties or allowed corresponding values have been
+    deprecated in Octave 4.4 and will be removed from Octave 4.8 (or whatever
+    version is the second major release after 4.4):
+
+      Object               | Property                | Value
+      ---------------------|-------------------------|-------------------
+      figure               | doublebuffer            |
+                           | mincolormap             |
+                           | wvisual                 |
+                           | wvisualmode             |
+                           | xdisplay                |
+                           | xvisual                 |
+                           | xvisualmode             |
+      axes                 | drawmode                |
+      annotation           | edgecolor ("rectangle") |
+      text                 | fontweight              | "demi" and "light"
+      uicontrol            | fontweight              | "demi" and "light"
+      uipanel              | fontweight              | "demi" and "light"
+      uibuttongroup        | fontweight              | "demi" and "light"
+
+ ** The rectangle and ellipse annotation property "edgecolor" has been
+    deprecated and will be removed from Octave 4.8 (or whatever version
+    is the second major release after 4.4).  Use the property "color"
+    instead.
+
+ ** The header file oct-alloc.h has been removed along with the macros
+    that it defined (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
+    and DEFINE_OCTAVE_ALLOCATOR2).
+
+
 Summary of bugs fixed for version 4.2.2 (2018-03-13):
 ----------------------------------------------------
 
@@ -379,7 +733,10 @@ Other bugs fixed:
 
  ** add missing classdef test files (bug #49819)
 
+<<<<<<< working copy
+=======
 
+>>>>>>> merge rev
 Summary of important user-visible changes for version 4.2 (2016-11-13):
 ----------------------------------------------------------------------
 
@@ -626,8 +983,8 @@ Summary of important user-visible changes for version 4.2 (2016-11-13):
     Octave with memory allocator checks (similar to those in valgrind)
     built in.
 
-Summary of important user-visible changes for version 4.0:
----------------------------------------------------------
+Summary of important user-visible changes for version 4.0 (2015-05-23):
+----------------------------------------------------------------------
 
  ** A graphical user interface is now the default when running Octave
     interactively.  The start-up option --no-gui will run the familiar
@@ -946,13 +1303,6 @@ Summary of important user-visible changes for version 4.0:
  ** The internal class Octave_map was deprecated in Octave 3.8 and has
     been removed from Octave 4.0.  Replacement classes are octave_map
     (struct array) or octave_scalar_map for a single structure.
-
- ** The configure option --enable-octave-allocator has been removed.
-    The internal class octave_allocator declared in oct-alloc.h has been
-    removed.  The header remains, but is deprecated.  The macros to
-    access the class (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
-    and DEFINE_OCTAVE_ALLOCATOR2) are now unconditionally defined to be
-    empty.
 
  ** Octave now has OpenMP enabled by default if the system provides a
     working OpenMP implementation.  This allows oct-file modules to take

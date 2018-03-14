@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 static const char *usage_string =
   "octave [-HVWdfhiqvx] [--debug] [--debug-jit] [--doc-cache-file file]\n\
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
-       [--force-gui] [--help] [--image-path path]\n\
+       [--gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
        [--jit-compiler] [--line-editing] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-line-editing]\n\
@@ -46,13 +46,21 @@ static const char *usage_string =
 // to prevent getopt from permuting arguments!
 static const char *short_opts = "+HWVdfhip:qvx";
 
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+   // Disable warning temporarily.
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
 #define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
 #define DOC_CACHE_FILE_OPTION 2
 #define EVAL_OPTION 3
 #define EXEC_PATH_OPTION 4
-#define FORCE_GUI_OPTION 5
+#define FORCE_GUI_OPTION 5 // ignored since Octave 4.4, remove for 4.8
+#define GUI_OPTION 5
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7
 #define INFO_PROG_OPTION 8
@@ -78,6 +86,7 @@ struct octave_getopt_options long_opts[] =
   { "eval",                     octave_required_arg, 0, EVAL_OPTION },
   { "exec-path",                octave_required_arg, 0, EXEC_PATH_OPTION },
   { "force-gui",                octave_no_arg,       0, FORCE_GUI_OPTION },
+  { "gui",                      octave_no_arg,       0, GUI_OPTION },
   { "help",                     octave_no_arg,       0, 'h' },
   { "image-path",               octave_required_arg, 0, IMAGE_PATH_OPTION },
   { "info-file",                octave_required_arg, 0, INFO_FILE_OPTION },
@@ -104,6 +113,11 @@ struct octave_getopt_options long_opts[] =
   { 0,                          0,                   0, 0 }
 };
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+   // Restore prevailing warning state for remainder of the file.
+#  pragma GCC diagnostic pop
+#endif
+
 // Usage message with extra help.
 
 static void
@@ -123,7 +137,7 @@ Options:\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
-  --force-gui             Force graphical user interface to start.\n\
+  --gui                   Start the graphical user interface.\n\
   --help, -h,             Print short help message and exit.\n\
   --image-path PATH       Add PATH to head of image search path.\n\
   --info-file FILE        Use top-level info file FILE.\n\

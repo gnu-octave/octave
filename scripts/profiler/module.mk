@@ -1,30 +1,32 @@
 FCN_FILE_DIRS += \
   scripts/profiler
 
-scripts_profiler_FCN_FILES = \
-  scripts/profiler/profexplore.m \
-  scripts/profiler/profexport.m \
-  scripts/profiler/profile.m \
-  scripts/profiler/profshow.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/profexplore.m \
+  %reldir%/profexport.m \
+  %reldir%/profile.m \
+  %reldir%/profshow.m
 
-scripts_profilerdir = $(fcnfiledir)/profiler
-scripts_profiler_DATA = $(scripts_profiler_FCN_FILES)
+%canon_reldir%dir = $(fcnfiledir)/profiler
 
-scripts_profiler_htmldir = $(octetcdir)/profiler
-scripts_profiler_html_DATA = \
-  scripts/profiler/html/flat.html \
-  scripts/profiler/html/flat_entry.html \
-  scripts/profiler/html/function.html \
-  scripts/profiler/html/hierarchical.html \
-  scripts/profiler/html/hierarchical_entry.html \
-  scripts/profiler/html/style.css
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
+
+%canon_reldir%_htmldir = $(octetcdir)/profiler
+
+%canon_reldir%_html_DATA = \
+  %reldir%/html/flat.html \
+  %reldir%/html/flat_entry.html \
+  %reldir%/html/function.html \
+  %reldir%/html/hierarchical.html \
+  %reldir%/html/hierarchical_entry.html \
+  %reldir%/html/style.css
 
 FCN_FILES += \
-  $(scripts_profiler_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/profiler/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/profiler/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 scripts_EXTRA_DIST += \
-  $(scripts_profiler_html_DATA)
+  $(%canon_reldir%_html_DATA)

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 function splineimages (d, nm, typ)
   set_graphics_toolkit ();
@@ -22,7 +22,7 @@ function splineimages (d, nm, typ)
   hide_output ();
   outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
-    set (0, "defaulttextfontname", "*");
+    set (groot, "defaulttextfontname", "*");
   endif
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
@@ -33,6 +33,8 @@ function splineimages (d, nm, typ)
   if (strcmp (typ, "txt"))
     image_as_txt (d, nm);
   elseif (strcmp (nm, "splinefit1")) ## Breaks and Pieces
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * rand (1, 200);
     y = sin (x) + sin (2 * x) + 0.2 * randn (size (x));
     ## Uniform breaks
@@ -51,6 +53,8 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit2")) ## Spline orders
     ## Data (200 points)
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * rand (1, 200);
     y = sin (x) + sin (2 * x) + 0.1 * randn (size (x));
     ## Splines
@@ -73,6 +77,8 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit3"))
     ## Data (100 points)
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * [0, (rand (1, 98)), 1];
     y = sin (x) - cos (2 * x) + 0.2 * randn (size (x));
     ## No constraints
@@ -90,6 +96,8 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit4"))
     ## Data (200 points)
+    rand ("state", 1);
+    randn ("state", 1);
     x = 2 * pi * rand (1, 200);
     y = sin (2 * x) + 0.1 * randn (size (x));
     ## Breaks
@@ -134,6 +142,7 @@ function splineimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit6"))
     ## Data
+    randn ("state", 1);
     x = linspace (0, 2*pi, 200);
     y = sin (x) + sin (2 * x) + 0.05 * randn (size (x));
     ## Add outliers
@@ -166,6 +175,9 @@ endfunction
 function set_graphics_toolkit ()
   if (isempty (available_graphics_toolkits ()))
     error ("no graphics toolkit available for plotting");
+  elseif (strcmp ("qt", graphics_toolkit ())
+          && __have_feature__ ("QOFFSCREENSURFACE"))
+    ## Use qt with QOffscreenSurface for plot
   elseif (! strcmp ("gnuplot", graphics_toolkit ())
           && ! __have_feature__ ("OSMESA"))
     if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))
@@ -179,12 +191,12 @@ endfunction
 function set_print_size ()
   image_size = [8.0, 6.0]; # in inches, 4:3 format
   border = 0;              # For postscript use 50/72
-  set (0, "defaultfigurepapertype", "<custom>");
-  set (0, "defaultfigurepaperorientation", "landscape");
-  set (0, "defaultfigurepapersize", image_size + 2*border);
-  set (0, "defaultfigurepaperposition", [border, border, image_size]);
+  set (groot, "defaultfigurepapertype", "<custom>");
+  set (groot, "defaultfigurepaperorientation", "landscape");
+  set (groot, "defaultfigurepapersize", image_size + 2*border);
+  set (groot, "defaultfigurepaperposition", [border, border, image_size]);
   ## FIXME: Required until listener for legend exists (bug #39697)
-  set (0, "defaultfigureposition", [ 72*[border, border, image_size] ]);
+  set (groot, "defaultfigureposition", [ 72*[border, border, image_size] ]);
 endfunction
 
 ## Use this function before plotting commands and after every call to print

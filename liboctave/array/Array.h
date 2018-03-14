@@ -1,4 +1,3 @@
-// Template array classes
 /*
 
 Copyright (C) 1993-2017 John W. Eaton
@@ -7,19 +6,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,95 +32,95 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <iosfwd>
+#include <string>
 
 #include "dim-vector.h"
 #include "idx-vector.h"
 #include "lo-error.h"
 #include "lo-traits.h"
 #include "lo-utils.h"
+#include "oct-refcount.h"
 #include "oct-sort.h"
 #include "quit.h"
-#include "oct-refcount.h"
 
 //! N Dimensional Array with copy-on-write semantics.
-/*!
-    The Array class is at the root of Octave.  It provides a container
-    with an arbitrary number of dimensions.  The operator () provides
-    access to individual elements via subscript and linear indexing.
-    Indexing starts at 0.  Arrays are column-major order as in Fortran.
+//!
+//! The Array class is at the root of Octave.  It provides a container
+//! with an arbitrary number of dimensions.  The operator () provides
+//! access to individual elements via subscript and linear indexing.
+//! Indexing starts at 0.  Arrays are column-major order as in Fortran.
+//!
+//! @code{.cc}
+//! // 3 D Array with 10 rows, 20 columns, and 5 pages, filled with 7.0
+//! Array<double> A Array<double (dim_vector (10, 20, 5), 7.0);
+//!
+//! // set value for row 0, column 10, and page 3
+//! A(0, 10, 3) = 2.5;
+//!
+//! // get value for row 1, column 2, and page 0
+//! double v = A(1, 2, 0);
+//!
+//! // get value for 25th element (row 4, column 3, page 1)
+//! double v = A(24);
+//! @endcode
+//!
+//! ## Notes on STL compatibility
+//!
+//! ### size() and length()
+//!
+//! To access the total number of elements in an Array, use numel()
+//! which is short for number of elements and is equivalent to the
+//! Octave function with same name.
+//!
+//! @code{.cc}
+//! Array<int> A (dim_vector (10, 20, 4), 1);
+//!
+//! octave_idx_type n = A.numel (); // returns 800 (10x20x4)
+//!
+//! octave_idx_type nr = A.size (0); // returns 10 (number of rows/dimension 0)
+//! octave_idx_type nc = A.size (1); // returns 20 (number of columns)
+//! octave_idx_type nc = A.size (2); // returns 4 (size of dimension 3)
+//! octave_idx_type l6 = A.size (6); // returns 1 (implicit singleton dimension)
+//!
+//! // Alternatively, get a dim_vector which represents the dimensions.
+//! dim_vector dims = A.dims ();
+//! @endcode
+//!
+//! The methods size() and length() as they exist in the STL cause
+//! confusion in the context of a N dimensional array.
+//!
+//! The size() of an array is the length of all dimensions.  In Octave,
+//! the size() function returns a row vector with the length of each
+//! dimension, or the size of a specific dimension.  Only the latter is
+//! present in liboctave.
+//!
+//! Since there is more than 1 dimension, length() would not make sense
+//! without expliciting which dimension.  If the function existed, which
+//! length should it return?  Octave length() function returns the length
+//! of the longest dimension which is an odd definition, only useful for
+//! vectors and square matrices.  The alternatives numel(), rows(),
+//! columns(), and size(d) are more explict and recommended.
+//!
+//! ### size_type
+//!
+//! Array::size_type is `octave_idx_type` which is a typedef for `int`
+//! or `long int`, depending whether Octave was configured for 64-bit
+//! indexing.
+//!
+//! This is a signed integer which may cause problems when mixed with
+//! STL containers.  The reason is that Octave interacts with Fortran
+//! routines, providing an interface many Fortran numeric libraries.
+//!
+//! ## Subclasses
+//!
+//! The following subclasses specializations, will be of most use:
+//!   - Matrix: Array<double> with only 2 dimensions
+//!   - ComplexMatrix: Array<std::complex<double>> with only 2 dimensions
+//!   - boolNDArray: N dimensional Array<bool>
+//!   - ColumnVector: Array<double> with 1 column
+//!   - string_vector: Array<std::string> with 1 column
+//!   - Cell: Array<octave_value>, equivalent to an Octave cell.
 
-    @code{.cc}
-    // 3 D Array with 10 rows, 20 columns, and 5 pages, filled with 7.0
-    Array<double> A Array<double (dim_vector (10, 20, 5), 7.0);
-
-    // set value for row 0, column 10, and page 3
-    A(0, 10, 3) = 2.5;
-
-    // get value for row 1, column 2, and page 0
-    double v = A(1, 2, 0);
-
-    // get value for 25th element (row 4, column 3, page 1)
-    double v = A(24);
-    @endcode
-
-    ## Notes on STL compatibility
-
-    ### size() and length()
-
-    To access the total number of elements in an Array, use numel()
-    which is short for number of elements and is equivalent to the
-    Octave function with same name.
-
-    @code{.cc}
-    Array<int> A (dim_vector (10, 20, 4), 1);
-
-    octave_idx_type n = A.numel (); // returns 800 (10x20x4)
-
-    octave_idx_type nr = A.size (0); // returns 10 (number of rows/dimension 0)
-    octave_idx_type nc = A.size (1); // returns 20 (number of columns)
-    octave_idx_type nc = A.size (2); // returns 4 (size of dimension 3)
-    octave_idx_type l6 = A.size (6); // returns 1 (implicit singleton dimension)
-
-    // Alternatively, get a dim_vector which represents the dimensions.
-    dim_vector dims = A.dims ();
-    @endcode
-
-    The methods size() and length() as they exist in the STL cause
-    confusion in the context of a N dimensional array.
-
-    The size() of an array is the length of all dimensions.  In Octave,
-    the size() function returns a row vector with the length of each
-    dimension, or the size of a specific dimension.  Only the latter is
-    present in liboctave.
-
-    Since there is more than 1 dimension, length() would not make sense
-    without expliciting which dimension.  If the function existed, which
-    length should it return?  Octave length() function returns the length
-    of the longest dimension which is an odd definition, only useful for
-    vectors and square matrices.  The alternatives numel(), rows(),
-    columns(), and size(d) are more explict and recommended.
-
-    ### size_type
-
-    Array::size_type is `octave_idx_type` which is a typedef for `int`
-    or `long int`, depending whether Octave was configured for 64-bit
-    indexing.
-
-    This is a signed integer which may cause problems when mixed with
-    STL containers.  The reason is that Octave interacts with Fortran
-    routines, providing an interface many Fortran numeric libraries.
-
-    ## Subclasses
-
-    The following subclasses specializations, will be of most use:
-      - Matrix: Array<double> with only 2 dimensions
-      - ComplexMatrix: Array<std::complex<double>> with only 2 dimensions
-      - boolNDArray: N dimensional Array<bool>
-      - ColumnVector: Array<double> with 1 column
-      - string_vector: Array<std::string> with 1 column
-      - Cell: Array<octave_value>, equivalent to an Octave cell.
-
-*/
 template <typename T>
 class
 Array
@@ -135,22 +134,25 @@ protected:
 
     T *data;
     octave_idx_type len;
-    octave_refcount<int> count;
+    octave::refcount<int> count;
 
     ArrayRep (T *d, octave_idx_type l)
       : data (new T [l]), len (l), count (1)
     {
-      std::copy (d, d+l, data);
+      std::copy_n (d, l, data);
     }
 
     template <typename U>
     ArrayRep (U *d, octave_idx_type l)
       : data (new T [l]), len (l), count (1)
     {
-      std::copy (d, d+l, data);
+      std::copy_n (d, l, data);
     }
 
-    ArrayRep (void) : data (0), len (0), count (1) { }
+    // Use new instead of setting data to 0 so that fortran_vec and
+    // data always return valid addresses, even for zero-size arrays.
+
+    ArrayRep (void) : data (new T [0]), len (0), count (1) { }
 
     explicit ArrayRep (octave_idx_type n)
       : data (new T [n]), len (n), count (1) { }
@@ -164,7 +166,7 @@ protected:
     ArrayRep (const ArrayRep& a)
       : data (new T [a.len]), len (a.len), count (1)
     {
-      std::copy (a.data, a.data + a.len, data);
+      std::copy_n (a.data, a.len, data);
     }
 
     ~ArrayRep (void) { delete [] data; }
@@ -222,7 +224,7 @@ protected:
   // contiguous subranges.  Every time rep is directly manipulated, slice_data
   // and slice_len need to be properly updated.
 
-  T* slice_data;
+  T *slice_data;
   octave_idx_type slice_len;
 
   //! slice constructor
@@ -337,26 +339,27 @@ public:
   //! Number of elements in the array.
   //! Synonymous with numel().
   //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type capacity (void) const { return numel (); }
 
   //! Number of elements in the array.
-  /*! Synonymous with numel().
-      @note This method is deprecated in favour of numel().
+  //!
+  //! Synonymous with numel().
+  //! @note This method is deprecated in favour of numel().
+  //!
+  //! @note
+  //! This is @em not the same as @c %length() at the Octave interpreter.
+  //! At the Octave interpreter, the function @c %length() returns the
+  //! length of the greatest dimension.  This method returns the total
+  //! number of elements.
 
-      @note
-      This is @em not the same as @c %length() at the Octave interpreter.
-      At the Octave interpreter, the function @c %length() returns the
-      length of the greatest dimension.  This method returns the total
-      number of elements.
-   */
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type length (void) const { return numel (); }
 
   //! Number of elements in the array.
   //! Synonymous with numel().
   //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type nelem (void) const { return numel (); }
 
   //! Number of elements in the array.
@@ -419,12 +422,12 @@ public:
   //@}
 
   //! Size of the specified dimension.
-  /*!
-      Dimensions beyond the Array number of dimensions return 1 as
-      those are implicit singleton dimensions.
+  //!
+  //! Dimensions beyond the Array number of dimensions return 1 as
+  //! those are implicit singleton dimensions.
+  //!
+  //! Equivalent to Octave's `size (A, DIM)`
 
-      Equivalent to Octave's `size (A, DIM)`
-  */
   size_type size (const size_type d) const
   {
     // Should we throw for negative values?
@@ -475,8 +478,11 @@ public:
   //        a copy, but that is not so easy, and I see no clean way to do it.
 
   T& checkelem (octave_idx_type n);
+
   T& checkelem (octave_idx_type i, octave_idx_type j);
+
   T& checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k);
+
   T& checkelem (const Array<octave_idx_type>& ra_idx);
 
   T& elem (octave_idx_type n)
@@ -493,27 +499,20 @@ public:
   T& elem (const Array<octave_idx_type>& ra_idx)
   { return Array<T>::elem (compute_index_unchecked (ra_idx)); }
 
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  T& operator () (octave_idx_type n) { return checkelem (n); }
-  T& operator () (octave_idx_type i, octave_idx_type j)
-  { return checkelem (i, j); }
-  T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k)
-  { return checkelem (i, j, k); }
-  T& operator () (const Array<octave_idx_type>& ra_idx)
-  { return checkelem (ra_idx); }
-#else
   T& operator () (octave_idx_type n) { return elem (n); }
   T& operator () (octave_idx_type i, octave_idx_type j) { return elem (i, j); }
   T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k)
   { return elem (i, j, k); }
   T& operator () (const Array<octave_idx_type>& ra_idx)
   { return elem (ra_idx); }
-#endif
 
   crefT checkelem (octave_idx_type n) const;
+
   crefT checkelem (octave_idx_type i, octave_idx_type j) const;
+
   crefT checkelem (octave_idx_type i, octave_idx_type j,
                    octave_idx_type k) const;
+
   crefT checkelem (const Array<octave_idx_type>& ra_idx) const;
 
   crefT elem (octave_idx_type n) const { return xelem (n); }
@@ -527,16 +526,6 @@ public:
   crefT elem (const Array<octave_idx_type>& ra_idx) const
   { return Array<T>::xelem (compute_index_unchecked (ra_idx)); }
 
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  crefT operator () (octave_idx_type n) const { return checkelem (n); }
-  crefT operator () (octave_idx_type i, octave_idx_type j) const
-  { return checkelem (i, j); }
-  crefT operator () (octave_idx_type i, octave_idx_type j,
-                     octave_idx_type k) const
-  { return checkelem (i, j, k); }
-  crefT operator () (const Array<octave_idx_type>& ra_idx) const
-  { return checkelem (ra_idx); }
-#else
   crefT operator () (octave_idx_type n) const { return elem (n); }
   crefT operator () (octave_idx_type i, octave_idx_type j) const
   { return elem (i, j); }
@@ -545,11 +534,8 @@ public:
   { return elem (i, j, k); }
   crefT operator () (const Array<octave_idx_type>& ra_idx) const
   { return elem (ra_idx); }
-#endif
 
   // Fast extractors.  All of these produce shallow copies.
-  // Warning: none of these do check bounds, unless
-  // OCTAVE_ENABLE_BOUNDS_CHECK is defined!
 
   //! Extract column: A(:,k+1).
   Array<T> column (octave_idx_type k) const;
@@ -570,20 +556,34 @@ public:
   Array<T> ipermute (const Array<octave_idx_type>& vec) const
   { return permute (vec, true); }
 
-  bool is_square (void) const { return (dim1 () == dim2 ()); }
+  bool issquare (void) const { return (dim1 () == dim2 ()); }
 
-  bool is_empty (void) const { return numel () == 0; }
+  OCTAVE_DEPRECATED (4.4, "use 'issquare' instead")
+  bool is_square (void) const
+  { return issquare (); }
 
-  bool is_vector (void) const { return dimensions.is_vector (); }
+  bool isempty (void) const { return numel () == 0; }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
+  bool is_empty (void) const
+  { return isempty (); }
+
+  bool isvector (void) const { return dimensions.isvector (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
+  bool is_vector (void) const
+  { return isvector (); }
+
+  bool is_nd_vector (void) const { return dimensions.is_nd_vector (); }
 
   Array<T> transpose (void) const;
-  Array<T> hermitian (T (*fcn) (const T&) = 0) const;
+  Array<T> hermitian (T (*fcn) (const T&) = nullptr) const;
 
-  const T *data (void) const { return slice_data; }
+  const T * data (void) const { return slice_data; }
 
-  const T *fortran_vec (void) const { return data (); }
+  const T * fortran_vec (void) const { return data (); }
 
-  T *fortran_vec (void);
+  T * fortran_vec (void);
 
   bool is_shared (void) { return rep->count > 1; }
 
@@ -703,14 +703,18 @@ public:
   //! Give a pointer to the data in mex format.  Unsafe.  This function
   //! exists to support the MEX interface.  You should not use it
   //! anywhere else.
-  void *mex_get_data (void) const { return const_cast<T *> (data ()); }
+  void * mex_get_data (void) const { return const_cast<T *> (data ()); }
 
   Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
   Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
                  sortmode mode = ASCENDING) const;
 
   //! Ordering is auto-detected or can be specified.
-  sortmode is_sorted (sortmode mode = UNSORTED) const;
+  sortmode issorted (sortmode mode = UNSORTED) const;
+
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
+  sortmode is_sorted (sortmode mode = UNSORTED) const
+  { return issorted (mode); }
 
   //! Sort by rows returns only indices.
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
@@ -718,7 +722,7 @@ public:
   //! Ordering is auto-detected or can be specified.
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
-  //! @brief Do a binary lookup in a sorted array.  Must not contain NaNs.
+  //! Do a binary lookup in a sorted array.  Must not contain NaNs.
   //! Mode can be specified or is auto-detected by comparing 1st and last element.
   octave_idx_type lookup (const T& value, sortmode mode = UNSORTED) const;
 
@@ -841,13 +845,13 @@ public:
   //@{
   //! WARNING: Only call these functions from jit
 
-  int *jit_ref_count (void) { return rep->count.get (); }
+  int * jit_ref_count (void) { return rep->count.get (); }
 
-  T *jit_slice_data (void) const { return slice_data; }
+  T * jit_slice_data (void) const { return slice_data; }
 
-  octave_idx_type *jit_dimensions (void) const { return dimensions.to_jit (); }
+  octave_idx_type * jit_dimensions (void) const { return dimensions.to_jit (); }
 
-  void *jit_array_rep (void) const { return rep; }
+  void * jit_array_rep (void) const { return rep; }
   //@}
 
 private:

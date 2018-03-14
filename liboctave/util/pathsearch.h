@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -36,37 +36,13 @@ namespace octave
   {
   public:
 
-    directory_path (const std::string& s = "", const std::string& d = "")
-      : m_orig_path (s), m_default_path (d), m_initialized (false),
-        m_expanded_path (), m_path_elements ()
-    {
-      if (! m_orig_path.empty ())
-        init ();
-    }
+    directory_path (const std::string& s = "", const std::string& d = "");
 
-    directory_path (const directory_path& dp)
-      : m_orig_path (dp.m_orig_path),
-        m_default_path (dp.m_default_path),
-        m_initialized (dp.m_initialized),
-        m_expanded_path (dp.m_expanded_path),
-        m_path_elements (dp.m_path_elements)
-    { }
+    directory_path (const directory_path& dp) = default;
 
-    directory_path& operator = (const directory_path& dp)
-    {
-      if (this != &dp)
-        {
-          m_orig_path = dp.m_orig_path;
-          m_default_path = dp.m_default_path;
-          m_initialized = dp.m_initialized;
-          m_expanded_path = dp.m_expanded_path;
-          m_path_elements = dp.m_path_elements;
-        }
+    directory_path& operator = (const directory_path& dp) = default;
 
-      return *this;
-    }
-
-    ~directory_path (void) { }
+    ~directory_path (void) = default;
 
     void set (const std::string& s)
     {
@@ -96,20 +72,11 @@ namespace octave
       init ();
     }
 
-    static char path_sep_char (void)
-    {
-      return static_members::path_sep_char ();
-    }
+    static char path_sep_char (void);
 
-    static void path_sep_char (char c)
-    {
-      static_members::path_sep_char (c);
-    }
+    // static void path_sep_char (char c);
 
-    static std::string path_sep_str (void)
-    {
-      return static_members::path_sep_str ();
-    }
+    static std::string path_sep_str (void);
 
     static bool is_path_sep (char c) { return c == path_sep_char (); }
 
@@ -133,60 +100,12 @@ namespace octave
     std::list<std::string> m_path_elements;
 
     void init (void);
-
-    // Use a singleton class for these data members instead of just
-    // making them static members of the directory_path class so that
-    // we can ensure proper initialization.
-
-    class OCTAVE_API static_members
-    {
-    public:
-
-      static_members (void);
-
-      static char path_sep_char (void)
-      {
-        return instance_ok () ? instance->xpath_sep_char : 0;
-      }
-
-      static void path_sep_char (char c)
-      {
-        if (instance_ok ())
-          {
-            instance->xpath_sep_char = c;
-            instance->xpath_sep_str = std::string (1, c);
-          }
-      }
-
-      static std::string path_sep_str (void)
-      {
-        return instance_ok () ? instance->xpath_sep_str : "";
-      }
-
-    private:
-
-      static static_members *instance;
-
-      static void cleanup_instance (void) { delete instance; instance = 0; }
-
-      static bool instance_ok (void);
-
-      // No copying!
-
-      static_members (const static_members&);
-
-      static_members& operator = (const static_members&);
-
-      char xpath_sep_char;
-
-      std::string xpath_sep_str;
-    };
   };
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::directory_path' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::directory_path' instead")
 typedef octave::directory_path dir_path;
 
 #endif

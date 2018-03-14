@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -43,7 +43,13 @@ namespace octave
 
   public:
 
-    virtual ~command_history (void) { }
+    // No copying!
+
+    command_history (const command_history&) = delete;
+
+    command_history& operator = (const command_history&) = delete;
+
+    virtual ~command_history (void) = default;
 
     static void initialize (bool, const std::string&, int, const std::string&);
 
@@ -119,12 +125,6 @@ namespace octave
 
   private:
 
-    // No copying!
-
-    command_history (const command_history&);
-
-    command_history& operator = (const command_history&);
-
     static bool instance_ok (void);
 
     static void make_command_history (void);
@@ -132,7 +132,7 @@ namespace octave
     // The real thing.
     static command_history *instance;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   protected:
 
@@ -235,7 +235,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::command_history' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::command_history' instead")
 typedef octave::command_history command_history;
 
 #endif

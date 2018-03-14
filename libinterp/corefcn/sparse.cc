@@ -6,19 +6,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -51,7 +51,7 @@ Return true if @var{x} is a sparse matrix.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_sparse_type ());
+  return ovl (args(0).issparse ());
 }
 
 DEFUN (sparse, args, ,
@@ -137,11 +137,11 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
   if (nargin == 1)
     {
       octave_value arg = args(0);
-      if (arg.is_bool_type ())
+      if (arg.islogical ())
         retval = arg.sparse_bool_matrix_value ();
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         retval = arg.sparse_complex_matrix_value ();
-      else if (arg.is_numeric_type ())
+      else if (arg.isnumeric ())
         retval = arg.sparse_matrix_value ();
       else
         err_wrong_type_arg ("sparse", arg);
@@ -197,13 +197,13 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
           k = 1;
           idx_vector j = args(1).index_vector ();
 
-          if (args(2).is_bool_type ())
+          if (args(2).islogical ())
             retval = SparseBoolMatrix (args(2).bool_array_value (), i,j,
                                        m, n, summation, nzmax);
-          else if (args(2).is_complex_type ())
+          else if (args(2).iscomplex ())
             retval = SparseComplexMatrix (args(2).complex_array_value(),
                                           i, j, m, n, summation, nzmax);
-          else if (args(2).is_numeric_type ())
+          else if (args(2).isnumeric ())
             retval = SparseMatrix (args(2).array_value (), i, j,
                                    m, n, summation, nzmax);
           else

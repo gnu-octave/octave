@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 function plotimages (d, nm, typ)
   set_graphics_toolkit ();
@@ -22,7 +22,7 @@ function plotimages (d, nm, typ)
   hide_output ();
   outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
-    set (0, "defaulttextfontname", "*");
+    set (groot, "defaulttextfontname", "*");
   endif
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
@@ -94,7 +94,8 @@ function plotimages (d, nm, typ)
     title ("erf (x) with text annotation");
     if (strcmp (typ, "pdf") && ! strcmp (graphics_toolkit, "gnuplot"))
       text (0.65, 0.6175, ['$\displaystyle\leftarrow x = {2\over\sqrt{\pi}}'...
-                           '\int_{0}^{x}e^{-t^2} dt = 0.6175$']);
+                           '\int_{0}^{x}e^{-t^2} dt = 0.6175$'],
+            "interpreter", "latex");
       ## Be very careful about modifying this.  pdflatex expects to be in
       ## the same directory as the file it is operating on.
       cd (make_absolute_filename (d));
@@ -122,6 +123,9 @@ endfunction
 function set_graphics_toolkit ()
   if (isempty (available_graphics_toolkits ()))
     error ("no graphics toolkit available for plotting");
+  elseif (strcmp ("qt", graphics_toolkit ())
+          && __have_feature__ ("QOFFSCREENSURFACE"))
+    ## Use qt with QOffscreenSurface for plot
   elseif (! strcmp ("gnuplot", graphics_toolkit ()) ...
           && ! __have_feature__ ("OSMESA"))
     if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))
@@ -135,10 +139,10 @@ endfunction
 function set_print_size ()
   image_size = [5.0, 3.5]; # in inches, 16:9 format
   border = 0;              # For postscript use 50/72
-  set (0, "defaultfigurepapertype", "<custom>");
-  set (0, "defaultfigurepaperorientation", "landscape");
-  set (0, "defaultfigurepapersize", image_size + 2*border);
-  set (0, "defaultfigurepaperposition", [border, border, image_size]);
+  set (groot, "defaultfigurepapertype", "<custom>");
+  set (groot, "defaultfigurepaperorientation", "landscape");
+  set (groot, "defaultfigurepapersize", image_size + 2*border);
+  set (groot, "defaultfigurepaperposition", [border, border, image_size]);
 endfunction
 
 ## Use this function before plotting commands and after every call to print

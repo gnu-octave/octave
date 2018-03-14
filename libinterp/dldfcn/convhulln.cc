@@ -4,19 +4,19 @@ Copyright (C) 2000-2017 Kai Habel
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,15 +33,19 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "oct-locbuf.h"
+#include <iostream>
+#include <limits>
+#include <string>
 
-#include "Cell.h"
+#include "Array.h"
+#include "dMatrix.h"
+#include "oct-locbuf.h"
+#include "unwind-prot.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ovl.h"
-#include "parse.h"
-#include "unwind-prot.h"
+#include "ov.h"
 
 #if defined (HAVE_QHULL)
 
@@ -149,17 +153,17 @@ convex hull is calculated.
   if (nargin == 2)
     {
       if (args(1).is_string ())
-        options = " " + args(1).string_value ();
-      else if (args(1).is_empty ())
+        options = ' ' + args(1).string_value ();
+      else if (args(1).isempty ())
         ; // Use default options.
-      else if (args(1).is_cellstr ())
+      else if (args(1).iscellstr ())
         {
           options = "";
 
           Array<std::string> tmp = args(1).cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += " " + tmp(i);
+            options += ' ' + tmp(i);
         }
       else
         error ("convhulln: OPTIONS must be a string, cell array of strings, or empty");
@@ -316,7 +320,7 @@ convex hull is calculated.
 %! h = sortrows (sort (h, 2), [1:3]);
 %! assert (h, [1 2 4; 1 2 6; 1 4 8; 1 5 6; 1 5 8; 2 3 4; 2 3 7; 2 6 7; 3 4 7; 4 7 8; 5 6 7; 5 7 8]);
 %! assert (v, 1, 10*eps);
-%! [h2, v2] = convhulln (cube); % Test defaut option = "Qt"
+%! [h2, v2] = convhulln (cube);  # Test default option = "Qt"
 %! assert (size (h2), size (h));
 %! h2 = sortrows (sort (h2, 2), [1:3]);
 %! assert (h2, h);
@@ -337,7 +341,7 @@ convex hull is calculated.
 %! assert (v, 8/3, 10*eps);
 
 %!testif HAVE_QHULL
-%! triangle=[0 0; 1 1; 1 0; 1 2];
+%! triangle = [0 0; 1 1; 1 0; 1 2];
 %! h = convhulln (triangle);
 %! assert (size (h), [3 2]);
 */

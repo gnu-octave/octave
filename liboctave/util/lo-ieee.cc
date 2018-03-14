@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,11 +24,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <cmath>
 #include <cstdlib>
 
 #include <limits>
+
+#include "lo-error.h"
+#include "lo-ieee.h"
+#include "mach-info.h"
 
 static double lo_inf;
 static double lo_nan;
@@ -40,44 +43,6 @@ static float lo_float_na;
 
 static int lo_ieee_hw;
 static int lo_ieee_lw;
-
-#include "lo-error.h"
-#include "lo-ieee.h"
-#include "lo-math.h"
-#include "mach-info.h"
-
-int
-__lo_ieee_isnan (double x)
-{
-#if defined (HAVE_CMATH_ISNAN)
-  return std::isnan (x);
-#else
-  // Gnulib provides.
-  return isnan (x);
-#endif
-}
-
-int
-__lo_ieee_finite (double x)
-{
-#if defined (HAVE_CMATH_ISFINITE)
-  return std::isfinite (x);
-#else
-  // Gnulib provides.
-  return finite (x);
-#endif
-}
-
-int
-__lo_ieee_isinf (double x)
-{
-#if defined (HAVE_CMATH_ISINF)
-  return std::isinf (x);
-#else
-  // Gnulib provides.
-  return isinf (x);
-#endif
-}
 
 int
 __lo_ieee_is_NA (double x)
@@ -131,50 +96,6 @@ lo_ieee_nan_value (void)
 }
 
 int
-__lo_ieee_signbit (double x)
-{
-#if defined (HAVE_CMATH_SIGNBIT)
-  return std::signbit (x);
-#else
-  // Gnulib provides.
-  return signbit (x);
-#endif
-}
-
-int
-__lo_ieee_float_isnan (float x)
-{
-#if defined (HAVE_CMATH_ISNAN)
-  return std::isnan (x);
-#else
-  // Gnulib provides.
-  return isnan (x);
-#endif
-}
-
-int
-__lo_ieee_float_finite (float x)
-{
-#if defined (HAVE_CMATH_ISFINITE)
-  return std::isfinite (x) != 0 && ! __lo_ieee_float_isnan (x);
-#else
-  // Gnulib provides.
-  return finite (x);
-#endif
-}
-
-int
-__lo_ieee_float_isinf (float x)
-{
-#if defined (HAVE_CMATH_ISINF)
-  return std::isinf (x);
-#else
-  // Gnulib provides.
-  return isinf (x);
-#endif
-}
-
-int
 __lo_ieee_float_is_NA (float x)
 {
   lo_ieee_float t;
@@ -204,17 +125,6 @@ lo_ieee_float_nan_value (void)
   octave_ieee_init ();
 
   return lo_float_nan;
-}
-
-int
-__lo_ieee_float_signbit (float x)
-{
-#if defined (HAVE_CMATH_SIGNBIT)
-  return std::signbit (x);
-#else
-  // Gnulib provides.
-  return signbit (x);
-#endif
 }
 
 void
@@ -269,9 +179,12 @@ octave_ieee_init (void)
           // experiment with building Octave on a system without IEEE
           // floating point should be capable of removing this check and
           // the configure test.
-          // FIXME: Should this be a warning so that abort is reached?
+          //
+          // If the the error handler returns, then we'll abort.
+
           (*current_liboctave_error_handler)
             ("lo_ieee_init: floating point format is not IEEE!  Maybe DLAMCH is miscompiled, or you are using some strange system without IEEE floating point math?");
+
           abort ();
         }
 

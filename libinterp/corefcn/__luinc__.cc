@@ -4,19 +4,19 @@ Copyright (C) 2005-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -53,7 +53,7 @@ See documentation for @code{luinc}.
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  if (! args(0).is_sparse_type ())
+  if (! args(0).issparse ())
     error ("luinc: matrix A must be sparse");
 
   bool zero_level = false;
@@ -70,7 +70,7 @@ See documentation for @code{luinc}.
       else
         error ("luinc: unrecognized string argument");
     }
-  else if (args(1).is_map ())
+  else if (args(1).isstruct ())
     {
       octave_scalar_map map
         = args(1).xscalar_map_value ("luinc: OPTS must be a scalar structure");
@@ -130,7 +130,7 @@ See documentation for @code{luinc}.
 
   octave_value_list retval;
 
-  if (args(0).is_real_type ())
+  if (args(0).isreal ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       octave_idx_type sm_nr = sm.rows ();

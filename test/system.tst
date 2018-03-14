@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 %!test
 %! [t1, u1, s1] = cputime ();
@@ -216,7 +216,6 @@
 
 %!testif HAVE_GETPWUID
 %! x = getpwuid (getuid ());
-%! assert (x.dir, tilde_expand ("~"));
 %! assert (x.dir, tilde_expand (sprintf ("~%s", x.name)));
 %! assert ("foobar", tilde_expand ("foobar"));
 
@@ -233,7 +232,7 @@
 %!error <... getpid> getpid (1)
 
 %!testif HAVE_GETPPID
-%! assert (getppid () > 0);
+%! assert (getppid () >= 0);
 
 %!error <... getppid> getppid (1)
 
@@ -297,6 +296,7 @@
 %!assert (ischar (pwd ()))
 
 %!testif HAVE_GETPWENT
+%! endpwent ();
 %! s = getpwent ();
 %! endpwent ();
 %! assert (isstruct (s)
@@ -311,6 +311,7 @@
 %!error <Invalid call to getpwent> getpwent (1)
 
 %!testif HAVE_GETPWUID
+%! endpwent ();
 %! x = getpwent ();
 %! y = getpwuid (x.uid);
 %! endpwent ();
@@ -320,6 +321,7 @@
 %!error <Invalid call to getpwuid> getpwuid (1, 2)
 
 %!testif HAVE_GETPWNAM
+%! endpwent ();
 %! x = getpwent ();
 %! y = getpwnam (x.name);
 %! endpwent ();
@@ -329,6 +331,7 @@
 %!error <Invalid call to getpwnam> getpwnam ("foo", 1)
 
 %!testif HAVE_SETPWENT
+%! endpwent ();
 %! x = getpwent ();
 %! setpwent ();
 %! y = getpwent ();
@@ -339,6 +342,7 @@
 %!error <Invalid call to endpwent> endpwent (1)
 
 %!testif HAVE_GETGRENT
+%! endgrent ();
 %! x = getgrent ();
 %! endgrent ();
 %! assert (isstruct (x)
@@ -350,6 +354,7 @@
 %!error <Invalid call to getgrent> getgrent (1)
 
 %!testif HAVE_GETGRGID
+%! endgrent ();
 %! x = getgrent ();
 %! y = getgrgid (x.gid);
 %! endgrent ();
@@ -359,6 +364,7 @@
 %!error <Invalid call to getgrgid> getgrgid (1, 2)
 
 %!testif HAVE_GETGRNAM
+%! endgrent ();
 %! x = getgrent ();
 %! y = getgrnam (x.name);
 %! endgrent ();
@@ -368,6 +374,7 @@
 %!error <Invalid call to getgrnam> getgrnam ("foo", 1)
 
 %!testif HAVE_SETGRENT
+%! endgrent ();
 %! x = getgrent ();
 %! setgrent ();
 %! y = getgrent ();

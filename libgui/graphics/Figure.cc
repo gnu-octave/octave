@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -93,7 +93,8 @@ namespace QtHandles
       {
         graphics_object go (gh_manager::get_object (kids(i)));
 
-        if (go && go.isa ("uimenu"))
+        if (go && go.isa ("uimenu") &&
+            go.get ("visible").string_value () == "on")
           return true;
       }
 
@@ -122,9 +123,10 @@ namespace QtHandles
     return new Figure (go, new FigureWindow ());
   }
 
-  Figure::Figure (const graphics_object& go, FigureWindow* win)
-    : Object (go, win), m_blockUpdates (false), m_figureToolBar (0),
-      m_menuBar (0), m_innerRect (), m_outerRect (), m_mouseModeGroup (0)
+  Figure::Figure (const graphics_object& go, FigureWindow *win)
+    : Object (go, win), m_blockUpdates (false), m_figureToolBar (nullptr),
+      m_menuBar (nullptr), m_innerRect (), m_outerRect (),
+      m_mouseModeGroup (nullptr)
   {
     m_container = new Container (win);
     win->setCentralWidget (m_container);
@@ -283,7 +285,7 @@ namespace QtHandles
 
         std::string direction = zm.getfield ("Direction").string_value ();
 
-        mode += " " + direction;
+        mode += ' ' + direction;
       }
 
     return mouse_mode_from_string (mode);
@@ -292,7 +294,7 @@ namespace QtHandles
   void
   Figure::createFigureToolBarAndMenuBar (void)
   {
-    QMainWindow* win = qWidget<QMainWindow> ();
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     m_figureToolBar = win->addToolBar (tr ("Figure ToolBar"));
     m_figureToolBar->setMovable (false);
@@ -318,7 +320,7 @@ namespace QtHandles
     m_menuBar = new MenuBar (win);
     win->setMenuBar (m_menuBar);
 
-    QMenu* fileMenu = m_menuBar->addMenu (tr ("&File"));
+    QMenu *fileMenu = m_menuBar->addMenu (tr ("&File"));
     fileMenu->menuAction ()->setObjectName ("builtinMenu");
     fileMenu->addAction (tr ("&Save"), this, SLOT (fileSaveFigure (bool)));
     fileMenu->addAction (tr ("Save &As"), this, SLOT (fileSaveFigureAs (void)));
@@ -326,14 +328,14 @@ namespace QtHandles
     fileMenu->addAction (tr ("&Close Figure"), this,
                          SLOT (fileCloseFigure (void)), Qt::CTRL | Qt::Key_W);
 
-    QMenu* editMenu = m_menuBar->addMenu (tr ("&Edit"));
+    QMenu *editMenu = m_menuBar->addMenu (tr ("&Edit"));
     editMenu->menuAction ()->setObjectName ("builtinMenu");
     editMenu->addAction (tr ("Cop&y"), this, SLOT (editCopy (bool)),
                          Qt::CTRL | Qt::Key_C);
     editMenu->addSeparator ();
     editMenu->addActions (m_mouseModeGroup->actions ());
 
-    QMenu* helpMenu = m_menuBar->addMenu (tr ("&Help"));
+    QMenu *helpMenu = m_menuBar->addMenu (tr ("&Help"));
     helpMenu->menuAction ()->setObjectName ("builtinMenu");
     helpMenu->addAction (tr ("About Octave"), this,
                          SLOT (helpAboutOctave (void)));
@@ -361,7 +363,7 @@ namespace QtHandles
   void
   Figure::redraw (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       {
@@ -369,18 +371,18 @@ namespace QtHandles
         //canvas->setMouseMode (RotateMode);
       }
 
-    foreach (QFrame* frame,
+    foreach (QFrame *frame,
              qWidget<QWidget> ()->findChildren<QFrame*> ())
-    {
-      if (frame->objectName () == "UIPanel"
-          || frame->objectName () == "UIButtonGroup")
-        {
-          Object* obj = Object::fromQObject (frame);
+      {
+        if (frame->objectName () == "UIPanel"
+            || frame->objectName () == "UIButtonGroup")
+          {
+            Object *obj = Object::fromQObject (frame);
 
-          if (obj)
-            obj->slotRedraw ();
-        }
-    }
+            if (obj)
+              obj->slotRedraw ();
+          }
+      }
 
     updateFigureToolBarAndMenuBar ();
   }
@@ -388,16 +390,32 @@ namespace QtHandles
   void
   Figure::print (const QString& file_cmd, const QString& term)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->print (file_cmd, term);
   }
 
+  uint8NDArray
+  Figure::slotGetPixels (void)
+  {
+    uint8NDArray retval;
+    Canvas *canvas = m_container->canvas (m_handle);
+
+    if (canvas)
+      {
+        gh_manager::process_events ();
+        gh_manager::auto_lock lock;
+        retval = canvas->getPixels ();
+      }
+
+    return retval;
+  }
+
   void
   Figure::beingDeleted (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle.value (), false);
+    Canvas *canvas = m_container->canvas (m_handle.value (), false);
 
     if (canvas)
       canvas->blockRedraw (true);
@@ -414,7 +432,11 @@ namespace QtHandles
       return;
 
     figure::properties& fp = properties<figure> ();
-    QMainWindow* win = qWidget<QMainWindow> ();
+
+    if (fp.is___printing__ ())
+      return;
+
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     m_blockUpdates = true;
 
@@ -426,9 +448,9 @@ namespace QtHandles
           int toffset = 0;
           int boffset = 0;
 
-          foreach (QToolBar* tb, win->findChildren<QToolBar*> ())
-          if (! tb->isHidden ())
-            toffset += tb->sizeHint ().height ();
+          foreach (QToolBar *tb, win->findChildren<QToolBar*> ())
+            if (! tb->isHidden ())
+              toffset += tb->sizeHint ().height ();
 
           if (! m_menuBar->isHidden ())
             toffset += m_menuBar->sizeHint ().height ();
@@ -447,7 +469,14 @@ namespace QtHandles
 
       case figure::properties::ID_VISIBLE:
         if (fp.is_visible ())
-          QTimer::singleShot (0, win, SLOT (show ()));
+          {
+            QTimer::singleShot (0, win, SLOT (show ()));
+            if (! fp.is___gl_window__ ())
+              {
+                gh_manager::auto_lock lock;
+                fp.set ("__gl_window__", "on");
+              }
+          }
         else
           win->hide ();
         break;
@@ -469,14 +498,14 @@ namespace QtHandles
         break;
 
       case figure::properties::ID_KEYPRESSFCN:
-        if (fp.get_keypressfcn ().is_empty ())
+        if (fp.get_keypressfcn ().isempty ())
           m_container->canvas (m_handle)->clearEventMask (Canvas::KeyPress);
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
         break;
 
       case figure::properties::ID_KEYRELEASEFCN:
-        if (fp.get_keyreleasefcn ().is_empty ())
+        if (fp.get_keyreleasefcn ().isempty ())
           m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
@@ -532,48 +561,50 @@ namespace QtHandles
   }
 
   void
-  Figure::showMenuBar (bool visible)
+  Figure::showMenuBar (bool visible, int h1)
   {
-    int h1 = m_menuBar->sizeHint ().height ();
+    // Get the height before and after toggling the visibility of builtin menus
+    if (h1 <= 0)
+      h1 = m_menuBar->sizeHint ().height ();
 
-    foreach (QAction* a, m_menuBar->actions ())
-    if (a->objectName () == "builtinMenu")
-      a->setVisible (visible);
+    foreach (QAction *a, m_menuBar->actions ())
+      if (a->objectName () == "builtinMenu")
+        a->setVisible (visible);
 
     int h2 = m_menuBar->sizeHint ().height ();
 
+    // Keep the menubar visible if it contains custom menus
     if (! visible)
       visible = hasUiMenuChildren (properties<figure> ());
 
-    if (! m_menuBar->isHidden ())
+    if ((m_menuBar->isVisible () && ! visible)
+        || (! m_menuBar->isVisible () && visible))
       {
         int dy = qMax (h1, h2);
         QRect r = qWidget<QWidget> ()->geometry ();
 
-        //qDebug () << "Figure::showMenuBar:" << r;
         if (! visible)
           r.adjust (0, dy, 0, 0);
         else
           r.adjust (0, -dy, 0, 0);
-        //qDebug () << "Figure::showMenuBar(adjusted):" << r;
 
         m_blockUpdates = true;
         qWidget<QWidget> ()->setGeometry (r);
         m_menuBar->setVisible (visible);
         m_blockUpdates = false;
-
-        updateBoundingBox (false);
       }
+    updateBoundingBox (false);
   }
 
   void
-  Figure::updateMenuBar (void)
+  Figure::updateMenuBar (int height)
   {
     gh_manager::auto_lock lock;
     graphics_object go = object ();
 
     if (go.valid_object ())
-      showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"));
+      showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"),
+                   height);
   }
 
   void
@@ -596,15 +627,15 @@ namespace QtHandles
     Matrix m_bbox;
     bool m_internal;
     graphics_handle m_handle;
-    Figure* m_figure;
+    Figure *m_figure;
   };
 
   void
-  Figure::updateBoundingBoxHelper (void* data)
+  Figure::updateBoundingBoxHelper (void *data)
   {
     gh_manager::auto_lock lock;
 
-    UpdateBoundingBoxData* d = reinterpret_cast<UpdateBoundingBoxData*> (data);
+    UpdateBoundingBoxData *d = reinterpret_cast<UpdateBoundingBoxData *> (data);
     graphics_object go = gh_manager::get_object (d->m_handle);
 
     if (go.valid_object ())
@@ -620,7 +651,7 @@ namespace QtHandles
   void
   Figure::updateBoundingBox (bool internal, int flags)
   {
-    QWidget* win = qWidget<QWidget> ();
+    QWidget *win = qWidget<QWidget> ();
     Matrix bb (1, 4);
 
     if (internal)
@@ -666,7 +697,7 @@ namespace QtHandles
           return;
       }
 
-    UpdateBoundingBoxData* d = new UpdateBoundingBoxData ();
+    UpdateBoundingBoxData *d = new UpdateBoundingBoxData ();
 
     d->m_bbox = bb;
     d->m_internal = internal;
@@ -676,11 +707,30 @@ namespace QtHandles
     gh_manager::post_function (Figure::updateBoundingBoxHelper, d);
   }
 
+  void
+  Figure::close_figure_callback (void)
+  {
+    figure::properties& fp = properties<figure> ();
+    octave_value fnum = fp.get___myhandle__ ().as_octave_value ();
+
+    Ffeval (ovl ("close", fnum));
+  }
+
   bool
-  Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
+  Figure::eventNotifyBefore (QObject *obj, QEvent *xevent)
   {
     if (! m_blockUpdates)
       {
+        // Clicking the toolbar or the menubar makes this figure current
+        if (xevent->type () == QEvent::MouseButtonPress)
+          {
+            figure::properties& fp = properties<figure> ();
+            graphics_object root = gh_manager::get_object (0);
+            if (fp.get_handlevisibility () == "on")
+              root.set ("currentfigure",
+                        fp.get___myhandle__ ().as_octave_value ());
+          }
+
         if (obj == m_container)
           {
             // Do nothing...
@@ -689,9 +739,12 @@ namespace QtHandles
           {
             switch (xevent->type ())
               {
+              case QEvent::ActionChanged:
+                m_previousHeight = m_menuBar->sizeHint ().height ();
+                break;
               case QEvent::ActionRemoved:
                 {
-                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
+                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
 
                   if (! a->isSeparator ()
                       && a->objectName () != "builtinMenu")
@@ -709,7 +762,7 @@ namespace QtHandles
               {
               case QEvent::Close:
                 xevent->ignore ();
-                gh_manager::post_callback (m_handle, "closerequestfcn");
+                octave_link::post_event (this, &Figure::close_figure_callback);
                 return true;
 
               default:
@@ -722,7 +775,7 @@ namespace QtHandles
   }
 
   void
-  Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
+  Figure::eventNotifyAfter (QObject *watched, QEvent *xevent)
   {
     if (! m_blockUpdates)
       {
@@ -735,7 +788,7 @@ namespace QtHandles
                 break;
 
               case QEvent::ChildAdded:
-                if (dynamic_cast<QChildEvent*> (xevent)->child
+                if (dynamic_cast<QChildEvent *> (xevent)->child
                     ()->isWidgetType())
                   {
                     gh_manager::auto_lock lock;
@@ -743,14 +796,16 @@ namespace QtHandles
 
                     enableMouseTracking ();
                   }
+                break;
 
               case QEvent::ChildRemoved:
-                if (dynamic_cast<QChildEvent*> (xevent)->child
+                if (dynamic_cast<QChildEvent *> (xevent)->child
                     ()->isWidgetType())
                   {
                     gh_manager::auto_lock lock;
                     update (figure::properties::ID_TOOLBAR);
                   }
+                break;
 
               default:
                 break;
@@ -760,12 +815,23 @@ namespace QtHandles
           {
             switch (xevent->type ())
               {
+              case QEvent::ActionChanged:
+                // The menubar may have been resized if no action is visible
+                {
+                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
+                  if (m_menuBar->sizeHint ().height () != m_previousHeight
+                      && a->objectName () != "builtinMenu"
+                      && ! a->isSeparator ())
+                    updateMenuBar (m_previousHeight);
+                }
+                break;
               case QEvent::ActionAdded:
                 {
-                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
+                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
 
                   if (! a->isSeparator ()
-                      && a->objectName () != "builtinMenu")
+                      && a->objectName () != "builtinMenu"
+                      && a->isVisible ())
                     updateMenuBar ();
                 }
                 break;
@@ -816,7 +882,7 @@ namespace QtHandles
 
     fp.set___mouse_mode__ (mouse_mode_to_string (mode));
 
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->setCursor (mode);
@@ -831,7 +897,7 @@ namespace QtHandles
       {
         prompt = true;
 
-        file = "untitled.pdf";
+        file = "untitled.ofig";
       }
 
     if (prompt || file.isEmpty ())
@@ -840,9 +906,11 @@ namespace QtHandles
 
         file = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
                                              tr ("Save Figure As"),
-                                             finfo.absoluteFilePath (), 0, 0,
+                                             finfo.absoluteFilePath (),
+                                             tr ("Octave Figure File (*.ofig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)"),
+                                             nullptr,
                                              QFileDialog::DontUseNativeDialog);
-      }
+    }
 
     if (! file.isEmpty ())
       {
@@ -861,7 +929,12 @@ namespace QtHandles
     figure::properties& fp = properties<figure> ();
     octave_value fnum = fp.get___myhandle__ ().as_octave_value ();
 
-    Ffeval (ovl ("print", fnum, file));
+    size_t flen = file.length ();
+
+    if (flen > 5 && file.substr (flen-5) == ".ofig")
+      Ffeval (ovl ("hgsave", fnum, file));
+    else
+      Ffeval (ovl ("print", fnum, file));
   }
 
   void
@@ -869,7 +942,7 @@ namespace QtHandles
   {
     std::string msg;
 
-    std::string file = octave::sys::tempnam ("", "oct-", msg) + "." + format;
+    std::string file = octave::sys::tempnam ("", "oct-", msg) + '.' + format;
 
     if (file.empty ())
       {
@@ -919,9 +992,9 @@ namespace QtHandles
   }
 
   void
-  Figure::addCustomToolBar (QToolBar* bar, bool visible)
+  Figure::addCustomToolBar (QToolBar *bar, bool visible)
   {
-    QMainWindow* win = qWidget<QMainWindow> ();
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     if (! visible)
       win->addToolBar (bar);
@@ -945,9 +1018,9 @@ namespace QtHandles
   }
 
   void
-  Figure::showCustomToolBar (QToolBar* bar, bool visible)
+  Figure::showCustomToolBar (QToolBar *bar, bool visible)
   {
-    QMainWindow* win = qWidget<QMainWindow> ();
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     if ((! bar->isHidden ()) != visible)
       {
@@ -977,7 +1050,7 @@ namespace QtHandles
   void
   Figure::toggleAxes (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->toggleAxes (m_handle);
@@ -986,7 +1059,7 @@ namespace QtHandles
   void
   Figure::toggleGrid (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->toggleGrid (m_handle);
@@ -995,7 +1068,7 @@ namespace QtHandles
   void
   Figure::autoAxes (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->autoAxes (m_handle);
@@ -1007,8 +1080,8 @@ namespace QtHandles
     // Enable mouse tracking on every widgets
     m_container->setMouseTracking (true);
     m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
-    foreach (QWidget* w, m_container->findChildren<QWidget*> ())
-    { w->setMouseTracking (true); }
+    foreach (QWidget *w, m_container->findChildren<QWidget*> ())
+      w->setMouseTracking (true);
   }
 
 }

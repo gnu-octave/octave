@@ -4,19 +4,19 @@ Copyright (C) 2000-2017 Kai Habel
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -36,17 +36,22 @@ qhull command
 
 #include <cstdio>
 
-#include <list>
+#include <limits>
+#include <string>
 
+#include "Array.h"
+#include "boolMatrix.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "oct-locbuf.h"
-#include "lo-ieee.h"
+#include "unwind-prot.h"
 
 #include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "ov.h"
 #include "ovl.h"
-#include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
 
@@ -131,17 +136,17 @@ Undocumented internal function.
       octave_value opt_arg = args(2);
 
       if (opt_arg.is_string ())
-        options = " " + opt_arg.string_value ();
-      else if (opt_arg.is_empty ())
+        options = ' ' + opt_arg.string_value ();
+      else if (opt_arg.isempty ())
         ; // Use default options.
-      else if (opt_arg.is_cellstr ())
+      else if (opt_arg.iscellstr ())
         {
           options = "";
 
           Array<std::string> tmp = opt_arg.cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += " " + tmp(i);
+            options += ' ' + tmp(i);
         }
       else
         error ("%s: OPTIONS must be a string, cell array of strings, or empty",
@@ -344,7 +349,7 @@ Undocumented internal function.
   std::string caller
     = (args.length () > 0
        ? args(0).xstring_value ("__voronoi__: CALLER must be a string")
-       : std::string ("__voronoi__"));
+       : "__voronoi__");
 
   err_disabled_feature (caller, "Qhull");
 

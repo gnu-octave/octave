@@ -5,19 +5,19 @@ Copyright (C) 1996-1997 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 static octave_value
-do_fft2 (const octave_value_list &args, const char *fcn, int type)
+do_fft2 (const octave_value_list& args, const char *fcn, int type)
 {
   int nargin = args.length ();
 
@@ -101,7 +101,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
 
   if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatNDArray nda = arg.float_array_value ();
 
@@ -118,14 +118,14 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           NDArray nda = arg.array_value ();
 
           nda.resize (dims, 0.0);
           retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexNDArray cnda = arg.complex_array_value ();
 
@@ -179,9 +179,9 @@ of @var{A} is treated separately.
 }
 
 /*
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 16;
 %! N = 8;
@@ -198,9 +198,9 @@ of @var{A} is treated separately.
 %! answer = kron (fft (sx)', fft (sy));
 %! assert (S, answer, 4*M*N*eps);
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 12;
 %! N = 7;
@@ -220,9 +220,9 @@ of @var{A} is treated separately.
 %!
 %! assert (s, answer, 30*eps);
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 16;
 %! N = 8;
@@ -239,9 +239,9 @@ of @var{A} is treated separately.
 %! answer = kron (fft (sx)', fft (sy));
 %! assert (S, answer, 4*M*N*eps ("single"));
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 12;
 %! N = 7;

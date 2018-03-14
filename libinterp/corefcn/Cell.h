@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -63,7 +63,25 @@ public:
 
   Cell (const string_vector& sv, bool trim = false);
 
-  Cell (const std::list<std::string>& lst);
+  // Constructor for standard containers.  V must be convertible to an
+  // octave_value object.
+  template <typename V, template <typename...> class C>
+  explicit
+  Cell (const C<V>& container)
+    : Array<octave_value> ()
+  {
+    size_t n = container.size ();
+
+    if (n > 0)
+      {
+        resize (dim_vector (n, 1));
+
+        octave_idx_type i = 0;
+
+        for (const auto& val : container)
+          elem(i++,0) = val;
+      }
+  }
 
   Cell (const Array<std::string>& sa);
 
@@ -72,9 +90,11 @@ public:
   Cell (const Cell& c)
     : Array<octave_value> (c) { }
 
-  bool is_cellstr (void) const;
+  bool iscellstr (void) const;
 
   Array<std::string> cellstr_value (void) const;
+
+  string_vector string_vector_value (void) const;
 
   using Array<octave_value>::index;
 
@@ -129,7 +149,6 @@ public:
   Cell xisspace (void) const { return map (&octave_value::xisspace); }
   Cell xisupper (void) const { return map (&octave_value::xisupper); }
   Cell xisxdigit (void) const { return map (&octave_value::xisxdigit); }
-  Cell xtoascii (void) const { return map (&octave_value::xtoascii); }
   Cell xtolower (void) const { return map (&octave_value::xtolower); }
   Cell xtoupper (void) const { return map (&octave_value::xtoupper); }
 

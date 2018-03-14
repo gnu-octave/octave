@@ -6,19 +6,19 @@ Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,13 +26,20 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "sparse-chol.h"
-#include "sparse-util.h"
+#include <cstddef>
+
+#include "CSparse.h"
+#include "MatrixType.h"
+#include "dRowVector.h"
+#include "dSparse.h"
 #include "lo-error.h"
+#include "oct-cmplx.h"
+#include "oct-refcount.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "quit.h"
-#include "MatrixType.h"
+#include "sparse-chol.h"
+#include "sparse-util.h"
 
 namespace octave
 {
@@ -46,14 +53,14 @@ namespace octave
       sparse_chol_rep (void)
         : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (0), Common ()
+        , Lsparse (nullptr), Common ()
 #endif
       { }
 
       sparse_chol_rep (const chol_type& a, bool natural, bool force)
         : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (0), Common ()
+        , Lsparse (nullptr), Common ()
 #endif
       {
         init (a, natural, force);
@@ -63,11 +70,17 @@ namespace octave
                        bool natural, bool force)
         : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (0), Common ()
+        , Lsparse (nullptr), Common ()
 #endif
       {
         info = init (a, natural, force);
       }
+
+      // No copying!
+
+      sparse_chol_rep (const sparse_chol_rep&) = delete;
+
+      sparse_chol_rep& operator = (const sparse_chol_rep&) = delete;
 
       ~sparse_chol_rep (void)
       {
@@ -80,7 +93,7 @@ namespace octave
       }
 
 #if defined (HAVE_CHOLMOD)
-      cholmod_sparse *L (void) const
+      cholmod_sparse * L (void) const
       {
         return Lsparse;
       }
@@ -104,7 +117,7 @@ namespace octave
 
       double rcond (void) const { return cond; }
 
-      octave_refcount<int> count;
+      refcount<int> count;
 
     private:
 
@@ -125,12 +138,6 @@ namespace octave
 #endif
 
       octave_idx_type init (const chol_type& a, bool natural, bool force);
-
-      // No copying!
-
-      sparse_chol_rep (const sparse_chol_rep&);
-
-      sparse_chol_rep& operator = (const sparse_chol_rep&);
     };
 
 #if defined (HAVE_CHOLMOD)
@@ -212,7 +219,8 @@ namespace octave
       octave_idx_type a_nc = a.cols ();
 
       if (a_nr != a_nc)
-        (*current_liboctave_error_handler) ("sparse_chol requires square matrix");
+        (*current_liboctave_error_handler)
+          ("sparse_chol requires square matrix");
 
       cholmod_common *cm = &Common;
 
@@ -226,17 +234,20 @@ namespace octave
       if (spu == 0.)
         {
           cm->print = -1;
-          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
         }
       else
         {
           cm->print = static_cast<int> (spu) + 2;
-          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
+          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function,
+                                   &SparseCholPrint);
         }
 
       cm->error_handler = &SparseCholError;
 
-      SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+      SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide,
+                                divcomplex);
+
       SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
       cm->final_asis = false;
@@ -258,7 +269,7 @@ namespace octave
       ac->nzmax = a.nnz ();
       ac->packed = true;
       ac->sorted = true;
-      ac->nz = 0;
+      ac->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
       ac->itype = CHOLMOD_LONG;
 #else
@@ -310,7 +321,8 @@ namespace octave
                                                   Lsparse->p, &n1, cm);
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(reallocate_sparse)
-                (static_cast<octave_idx_type *>(Lsparse->p)[minor_p], Lsparse, cm);
+                (static_cast<octave_idx_type *>(Lsparse->p)[minor_p],
+                 Lsparse, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               Lsparse->ncol = minor_p;
@@ -390,21 +402,24 @@ namespace octave
     { }
 
     template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const chol_type& a, octave_idx_type& info,
+    sparse_chol<chol_type>::sparse_chol (const chol_type& a,
+                                         octave_idx_type& info,
                                          bool natural, bool force)
       : rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force))
     { }
 
     template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const chol_type& a, octave_idx_type& info,
+    sparse_chol<chol_type>::sparse_chol (const chol_type& a,
+                                         octave_idx_type& info,
                                          bool natural)
       : rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, false))
     { }
 
     template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const chol_type& a, octave_idx_type& info)
+    sparse_chol<chol_type>::sparse_chol (const chol_type& a,
+                                         octave_idx_type& info)
       : rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
     { }

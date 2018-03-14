@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 VZLU Prague, a.s.
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,19 +26,18 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cassert>
-#include <cfloat>
 #include <cmath>
 
-#include <iostream>
+#include <algorithm>
+#include <limits>
 #include <vector>
 
-#include "Array-util.h"
 #include "Array.h"
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "CRowVector.h"
 #include "CSparse.h"
+#include "MArray.h"
 #include "dColVector.h"
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
@@ -53,11 +52,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "fRowVector.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "mx-cm-s.h"
 #include "mx-fcm-fs.h"
 #include "mx-fs-fcm.h"
 #include "mx-s-cm.h"
 #include "oct-cmplx.h"
+#include "quit.h"
 #include "svd.h"
 
 // Theory: norm accumulator is an object that has an accum method able
@@ -471,7 +472,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
 
 // derive column vector and SVD types
 
-static const char *p_less1_gripe = "xnorm: p must be at least 1";
+static const char *p_less1_gripe = "xnorm: p must be >= 1";
 
 // Static constant to control the maximum number of iterations.  100 seems to
 // be a good value.  Eventually, we can provide a means to change this
@@ -491,7 +492,7 @@ R svd_matrix_norm (const MatrixT& m, R p, VectorT)
     }
   else if (p == 1)
     res = xcolnorms (m, 1).max ();
-  else if (lo_ieee_isinf (p))
+  else if (lo_ieee_isinf (p) && p > 1)
     res = xrownorms (m, 1).max ();
   else if (p > 1)
     {
@@ -512,7 +513,7 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
   R res = 0;
   if (p == 1)
     res = xcolnorms (m, 1).max ();
-  else if (lo_ieee_isinf (p))
+  else if (lo_ieee_isinf (p) && p > 1)
     res = xrownorms (m, 1).max ();
   else if (p > 1)
     {
@@ -553,7 +554,7 @@ DEFINE_XNORM_FUNCS(FloatComplex, float)
 
 // this is needed to avoid copying the sparse matrix for xfrobnorm
 template <typename T, typename R>
-inline void array_norm_2 (const T* v, octave_idx_type n, R& res)
+inline void array_norm_2 (const T *v, octave_idx_type n, R& res)
 {
   norm_accumulator_2<R> acc;
   for (octave_idx_type i = 0; i < n; i++)

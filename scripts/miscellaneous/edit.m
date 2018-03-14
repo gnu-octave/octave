@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} edit @var{name}
@@ -330,7 +330,7 @@ function retval = edit (varargin)
       endif
     endif
 
-    ## If editing a new file, prompt for creation if gui is running
+    ## If editing a new file, prompt for creation if GUI is running
     if (isguirunning ())
       if (! __octave_link_edit_file__ (file, "prompt"));
         return;
@@ -358,6 +358,9 @@ function retval = edit (varargin)
         ## Write the initial file (if there is anything to write)
         ## Give user the opportunity to change the file extension
         fileandpath = uiputfile (fileandpath);
+        if (! ischar (fileandpath))
+          return;  # Cancel Button pressed
+        endif
         fid = fopen (fileandpath, "wt");
         if (fid < 0)
           error ("edit: could not create %s", fileandpath);
@@ -406,18 +409,19 @@ function retval = edit (varargin)
     switch (uclicense)
       case "GPL"
         head = cstrcat (copyright, "\n\n", "\
-This program is free software; you can redistribute it and/or modify it\n\
+This program is free software: you can redistribute it and/or modify it\n\
 under the terms of the GNU General Public License as published by\n\
-the Free Software Foundation; either version 3 of the License, or\n\
+the Free Software Foundation, either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
-This program is distributed in the hope that it will be useful,\n\
-but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+This program is distributed in the hope that it will be useful, but\n\
+WITHOUT ANY WARRANTY; without even the implied warranty of\n\
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
-along with this program.  If not, see <http://www.gnu.org/licenses/>.\
+along with this program.  If not, see\n\
+<https://www.gnu.org/licenses/>.\
 ");
         tail = [author, "\n", revs];
 
@@ -458,6 +462,7 @@ SUCH DAMAGE.\
     endswitch
 
     ## Generate the function template.
+    [~, basename] = fileparts (name);
     exists = exist (name);
     switch (ext)
       case {"cc", "C", "cpp"}
@@ -473,9 +478,9 @@ SUCH DAMAGE.\
           code = " ";
         endif
         body = ["#include <octave/oct.h>\n\n"             ...
-                "DEFUN_DLD(" name ", args, nargout,\n"    ...
+                "DEFUN_DLD(" basename ", args, nargout,\n"...
                 "          \"-*- texinfo -*-\\n\\\n"      ...
-                "@deftypefn {} {@var{retval} =} " name    ...
+                "@deftypefn {} {@var{retval} =} " basename...
                 " (@var{input1}, @var{input2})\\n\\\n"    ...
                 "@seealso{}\\n\\\n@end deftypefn\")\n{\n" ...
                 "  octave_value_list retval;\n"           ...
@@ -488,19 +493,19 @@ SUCH DAMAGE.\
         if (any (exists == [2, 103]))
           body = type (name){1};
         else
-          body = ["function [retval] = " name " (input1, input2)\n\n" ...
+          body = ["function [retval] = " basename " (input1, input2)\n\n" ...
                   "endfunction\n"];
         endif
         if (isempty (head))
-          comment = ["## -*- texinfo -*- \n## @deftypefn {} " ...
-                     "{@var{retval} =} " name                              ...
+          comment = ["## -*- texinfo -*-\n## @deftypefn {} " ...
+                     "{@var{retval} =} " basename                          ...
                      " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         else
           comment = ["## " strrep(head,"\n","\n## ") "\n\n"                ...
                      "## -*- texinfo -*- \n## @deftypefn {} " ...
-                     "{@var{retval} =} " name                              ...
+                     "{@var{retval} =} " basename                          ...
                      " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} imformats ()
@@ -142,7 +142,7 @@ function varargout = imformats (arg1, arg2, arg3)
 
 endfunction
 
-function formats = default_formats ()
+function rformats = default_formats ()
 
   ## The available formats are dependent on what the user has installed at
   ## a given time, and how GraphicsMagick was built.  Checking for
@@ -178,6 +178,7 @@ function formats = default_formats ()
   ## there's no need to go and calculate it all over again if we are
   ## requested to reset back to factory.
   if (! isempty (formats))
+    rformats = formats;
     return;
   endif
 
@@ -256,6 +257,8 @@ function formats = default_formats ()
 
   ## fills rest of format information by checking with GraphicsMagick
   formats = __magick_formats__ (formats);
+
+  rformats = formats;
 
 endfunction
 

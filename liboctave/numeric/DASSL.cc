@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,47 +24,41 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
 #include <sstream>
 
 #include "DASSL.h"
+#include "dMatrix.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-math.h"
 #include "quit.h"
 
-typedef octave_idx_type (*dassl_fcn_ptr) (const double&, const double*,
-                                          const double*, double*,
-                                          octave_idx_type&, double*,
-                                          octave_idx_type*);
+typedef F77_INT (*dassl_fcn_ptr) (const double&, const double*,
+                                  const double*, double*, F77_INT&,
+                                  double*, F77_INT*);
 
-typedef octave_idx_type (*dassl_jac_ptr) (const double&, const double*,
-                                          const double*, double*,
-                                          const double&, double*,
-                                          octave_idx_type*);
+typedef F77_INT (*dassl_jac_ptr) (const double&, const double*,
+                                  const double*, double*, const double&,
+                                  double*, F77_INT*);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const F77_INT&,
-                             F77_DBLE&, F77_DBLE*, F77_DBLE*, F77_DBLE&,
-                             const F77_INT*, const F77_DBLE*,
-                             const F77_DBLE*, F77_INT&,
-                             F77_DBLE*, const F77_INT&,
-                             F77_INT*, const F77_INT&,
-                             const F77_DBLE*, const F77_INT*,
+  F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const F77_INT&, F77_DBLE&,
+                             F77_DBLE*, F77_DBLE*, F77_DBLE&, const F77_INT*,
+                             const F77_DBLE*, const F77_DBLE*, F77_INT&,
+                             F77_DBLE*, const F77_INT&, F77_INT*,
+                             const F77_INT&, const F77_DBLE*, const F77_INT*,
                              dassl_jac_ptr);
 }
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;
 
-static octave_idx_type nn;
+static F77_INT nn;
 
-static octave_idx_type
+static F77_INT
 ddassl_f (const double& time, const double *state, const double *deriv,
-          double *delta, octave_idx_type& ires, double *, octave_idx_type *)
+          double *delta, F77_INT& ires, double *, F77_INT *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -74,21 +68,25 @@ ddassl_f (const double& time, const double *state, const double *deriv,
   ColumnVector tmp_state (nn);
   ColumnVector tmp_delta (nn);
 
-  for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT i = 0; i < nn; i++)
     {
       tmp_deriv.elem (i) = deriv[i];
       tmp_state.elem (i) = state[i];
     }
 
-  tmp_delta = user_fun (tmp_state, tmp_deriv, time, ires);
+  octave_idx_type tmp_ires = ires;
+
+  tmp_delta = user_fun (tmp_state, tmp_deriv, time, tmp_ires);
+
+  ires = octave::to_f77_int (tmp_ires);
 
   if (ires >= 0)
     {
-      if (tmp_delta.is_empty ())
+      if (tmp_delta.isempty ())
         ires = -2;
       else
         {
-          for (octave_idx_type i = 0; i < nn; i++)
+          for (F77_INT i = 0; i < nn; i++)
             delta[i] = tmp_delta.elem (i);
         }
     }
@@ -98,9 +96,9 @@ ddassl_f (const double& time, const double *state, const double *deriv,
   return 0;
 }
 
-static octave_idx_type
+static F77_INT
 ddassl_j (const double& time, const double *state, const double *deriv,
-          double *pd, const double& cj, double *, octave_idx_type *)
+          double *pd, const double& cj, double *, F77_INT *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -109,7 +107,7 @@ ddassl_j (const double& time, const double *state, const double *deriv,
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
-  for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT i = 0; i < nn; i++)
     {
       tmp_deriv.elem (i) = deriv[i];
       tmp_state.elem (i) = state[i];
@@ -117,8 +115,8 @@ ddassl_j (const double& time, const double *state, const double *deriv,
 
   Matrix tmp_pd = user_jac (tmp_state, tmp_deriv, time, cj);
 
-  for (octave_idx_type j = 0; j < nn; j++)
-    for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT j = 0; j < nn; j++)
+    for (F77_INT i = 0; i < nn; i++)
       pd[nn * j + i] = tmp_pd.elem (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -139,10 +137,10 @@ DASSL::do_integrate (double tout)
 
       info.resize (dim_vector (15, 1));
 
-      for (octave_idx_type i = 0; i < 15; i++)
+      for (F77_INT i = 0; i < 15; i++)
         info(i) = 0;
 
-      octave_idx_type n = size ();
+      F77_INT n = octave::to_f77_int (size ());
 
       liw = 21 + n;
       lrw = 40 + 9*n + n*n;
@@ -193,7 +191,7 @@ DASSL::do_integrate (double tout)
           return retval;
         }
 
-      info(4) = user_jac ? 1 : 0;
+      info(4) = (user_jac ? 1 : 0);
 
       DAEFunc::reset = false;
 
@@ -217,15 +215,17 @@ DASSL::do_integrate (double tout)
       else
         info(7) = 0;
 
-      if (step_limit () >= 0)
+      F77_INT sl = octave::to_f77_int (step_limit ());
+
+      if (sl >= 0)
         {
           info(11) = 1;
-          iwork(20) = step_limit ();
+          iwork(20) = sl;
         }
       else
         info(11) = 0;
 
-      octave_idx_type maxord = maximum_order ();
+      F77_INT maxord = octave::to_f77_int (maximum_order ());
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
@@ -242,17 +242,17 @@ DASSL::do_integrate (double tout)
             }
         }
 
-      octave_idx_type enc = enforce_nonnegativity_constraints ();
-      info(9) = enc ? 1 : 0;
+      F77_INT enc = octave::to_f77_int (enforce_nonnegativity_constraints ());
+      info(9) = (enc ? 1 : 0);
 
-      octave_idx_type ccic = compute_consistent_initial_condition ();
-      info(10) = ccic ? 1 : 0;
+      F77_INT ccic = octave::to_f77_int (compute_consistent_initial_condition ());
+      info(10) = (ccic ? 1 : 0);
 
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.numel ();
-      octave_idx_type rel_tol_len = rel_tol.numel ();
+      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -277,20 +277,24 @@ DASSL::do_integrate (double tout)
   double *px = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
 
-  octave_idx_type *pinfo = info.fortran_vec ();
+  F77_INT *pinfo = info.fortran_vec ();
 
   double *prel_tol = rel_tol.fortran_vec ();
   double *pabs_tol = abs_tol.fortran_vec ();
 
   double *prwork = rwork.fortran_vec ();
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.fortran_vec ();
 
-  double *dummy = 0;
-  octave_idx_type *idummy = 0;
+  double *dummy = nullptr;
+  F77_INT *idummy = nullptr;
+
+  F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddassl, DDASSL, (ddassl_f, nn, t, px, pxdot, tout, pinfo,
-                             prel_tol, pabs_tol, istate, prwork, lrw,
+                             prel_tol, pabs_tol, tmp_istate, prwork, lrw,
                              piwork, liw, dummy, idummy, ddassl_j));
+
+  istate = tmp_istate;
 
   switch (istate)
     {
@@ -354,14 +358,14 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           retval.elem (0, i) = x.elem (i);
           xdot_out.elem (0, i) = xdot.elem (i);
@@ -374,7 +378,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
           if (integration_error)
             return retval;
 
-          for (octave_idx_type i = 0; i < n; i++)
+          for (F77_INT i = 0; i < n; i++)
             {
               retval.elem (j, i) = x_next.elem (i);
               xdot_out.elem (j, i) = xdot.elem (i);
@@ -399,14 +403,14 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           retval.elem (0, i) = x.elem (i);
           xdot_out.elem (0, i) = xdot.elem (i);
@@ -473,7 +477,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 
               if (save_output)
                 {
-                  for (octave_idx_type i = 0; i < n; i++)
+                  for (F77_INT i = 0; i < n; i++)
                     {
                       retval.elem (i_out-1, i) = x_next.elem (i);
                       xdot_out.elem (i_out-1, i) = xdot.elem (i);
@@ -520,8 +524,7 @@ DASSL::error_message (void) const
       break;
 
     case -1:
-      retval = std::string ("a large amount of work has been expended (t =")
-               + t_curr + ")";
+      retval = "a large amount of work has been expended (t =" + t_curr + ')';
       break;
 
     case -2:
@@ -529,39 +532,37 @@ DASSL::error_message (void) const
       break;
 
     case -3:
-      retval = std::string ("error weight became zero during problem. (t = ")
-               + t_curr
-               + "; solution component i vanished, and atol or atol(i) == 0)";
+      retval = "error weight became zero during problem. (t = " + t_curr +
+               "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -6:
-      retval = std::string ("repeated error test failures on the last attempted step (t = ")
-               + t_curr + ")";
+      retval = "repeated error test failures on the last attempted step (t = "
+               + t_curr + ')';
       break;
 
     case -7:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + ")";
+      retval = "the corrector could not converge (t = " + t_curr + ')';
       break;
 
     case -8:
-      retval = std::string ("the matrix of partial derivatives is singular (t = ")
-               + t_curr + ")";
+      retval = "the matrix of partial derivatives is singular (t = " + t_curr +
+               ')';
       break;
 
     case -9:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + "; repeated test failures)";
+      retval = "the corrector could not converge (t = " + t_curr +
+               "; repeated test failures)";
       break;
 
     case -10:
-      retval = std::string ("corrector could not converge because IRES was -1 (t = ")
-               + t_curr + ")";
+      retval = "corrector could not converge because IRES was -1 (t = "
+               + t_curr + ')';
       break;
 
     case -11:
-      retval = std::string ("return requested in user-supplied function (t = ")
-               + t_curr + ")";
+      retval = "return requested in user-supplied function (t = " + t_curr +
+               ')';
       break;
 
     case -12:

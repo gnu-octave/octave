@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,13 +27,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 
+#include <algorithm>
+
+#include "Array.h"
 #include "CMatrix.h"
+#include "MArray.h"
 #include "dMatrix.h"
 #include "dRowVector.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
-#include "lo-error.h"
 #include "lo-lapack-proto.h"
 #include "oct-locbuf.h"
 #include "qrp.h"
@@ -50,19 +53,19 @@ namespace octave
     {
       assert (qr_type != qr<Matrix>::raw);
 
-      octave_idx_type m = a.rows ();
-      octave_idx_type n = a.cols ();
+      F77_INT m = to_f77_int (a.rows ());
+      F77_INT n = to_f77_int (a.cols ());
 
-      octave_idx_type min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (double, tau, min_mn);
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       Matrix afact = a;
       if (m > n && qr_type == qr<Matrix>::std)
         afact.resize (m, m);
 
-      MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);
+      MArray<F77_INT> jpvt (dim_vector (n, 1), 0);
 
       if (m > 0)
         {
@@ -73,20 +76,24 @@ namespace octave
                                      &rlwork, -1, info));
 
           // allocate buffer and do the job.
-          octave_idx_type lwork = rlwork;
-          lwork = std::max (lwork, static_cast<octave_idx_type> (1));
+          F77_INT lwork = static_cast<F77_INT> (rlwork);
+          lwork = std::max (lwork, static_cast<F77_INT> (1));
           OCTAVE_LOCAL_BUFFER (double, work, lwork);
+
           F77_XFCN (dgeqp3, DGEQP3, (m, n, afact.fortran_vec (),
                                      m, jpvt.fortran_vec (), tau,
                                      work, lwork, info));
         }
       else
-        for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;
+        {
+          for (F77_INT i = 0; i < n; i++)
+            jpvt(i) = i+1;
+        }
 
       // Form Permutation matrix (if economy is requested, return the
       // indices only!)
 
-      jpvt -= static_cast<octave_idx_type> (1);
+      jpvt -= static_cast<F77_INT> (1);
       p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);
@@ -114,19 +121,19 @@ namespace octave
     {
       assert (qr_type != qr<FloatMatrix>::raw);
 
-      octave_idx_type m = a.rows ();
-      octave_idx_type n = a.cols ();
+      F77_INT m = to_f77_int (a.rows ());
+      F77_INT n = to_f77_int (a.cols ());
 
-      octave_idx_type min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (float, tau, min_mn);
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       FloatMatrix afact = a;
       if (m > n && qr_type == qr<FloatMatrix>::std)
         afact.resize (m, m);
 
-      MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);
+      MArray<F77_INT> jpvt (dim_vector (n, 1), 0);
 
       if (m > 0)
         {
@@ -137,20 +144,24 @@ namespace octave
                                      &rlwork, -1, info));
 
           // allocate buffer and do the job.
-          octave_idx_type lwork = rlwork;
-          lwork = std::max (lwork, static_cast<octave_idx_type> (1));
+          F77_INT lwork = static_cast<F77_INT> (rlwork);
+          lwork = std::max (lwork, static_cast<F77_INT> (1));
           OCTAVE_LOCAL_BUFFER (float, work, lwork);
+
           F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.fortran_vec (),
                                      m, jpvt.fortran_vec (), tau,
                                      work, lwork, info));
         }
       else
-        for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;
+        {
+          for (F77_INT i = 0; i < n; i++)
+            jpvt(i) = i+1;
+        }
 
       // Form Permutation matrix (if economy is requested, return the
       // indices only!)
 
-      jpvt -= static_cast<octave_idx_type> (1);
+      jpvt -= static_cast<F77_INT> (1);
       p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);
@@ -178,19 +189,19 @@ namespace octave
     {
       assert (qr_type != qr<ComplexMatrix>::raw);
 
-      octave_idx_type m = a.rows ();
-      octave_idx_type n = a.cols ();
+      F77_INT m = to_f77_int (a.rows ());
+      F77_INT n = to_f77_int (a.cols ());
 
-      octave_idx_type min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (Complex, tau, min_mn);
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       ComplexMatrix afact = a;
       if (m > n && qr_type == qr<ComplexMatrix>::std)
         afact.resize (m, m);
 
-      MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);
+      MArray<F77_INT> jpvt (dim_vector (n, 1), 0);
 
       if (m > 0)
         {
@@ -198,25 +209,35 @@ namespace octave
 
           // workspace query.
           Complex clwork;
-          F77_XFCN (zgeqp3, ZGEQP3, (m, n, F77_DBLE_CMPLX_ARG (afact.fortran_vec ()),
-                                     m, jpvt.fortran_vec (), F77_DBLE_CMPLX_ARG (tau),
-                                     F77_DBLE_CMPLX_ARG (&clwork), -1, rwork, info));
+          F77_XFCN (zgeqp3, ZGEQP3, (m, n,
+                                     F77_DBLE_CMPLX_ARG (afact.fortran_vec ()),
+                                     m, jpvt.fortran_vec (),
+                                     F77_DBLE_CMPLX_ARG (tau),
+                                     F77_DBLE_CMPLX_ARG (&clwork),
+                                     -1, rwork, info));
 
           // allocate buffer and do the job.
-          octave_idx_type lwork = clwork.real ();
-          lwork = std::max (lwork, static_cast<octave_idx_type> (1));
+          F77_INT lwork = static_cast<F77_INT> (clwork.real ());
+          lwork = std::max (lwork, static_cast<F77_INT> (1));
           OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
-          F77_XFCN (zgeqp3, ZGEQP3, (m, n, F77_DBLE_CMPLX_ARG (afact.fortran_vec ()),
-                                     m, jpvt.fortran_vec (), F77_DBLE_CMPLX_ARG (tau),
-                                     F77_DBLE_CMPLX_ARG (work), lwork, rwork, info));
+
+          F77_XFCN (zgeqp3, ZGEQP3, (m, n,
+                                     F77_DBLE_CMPLX_ARG (afact.fortran_vec ()),
+                                     m, jpvt.fortran_vec (),
+                                     F77_DBLE_CMPLX_ARG (tau),
+                                     F77_DBLE_CMPLX_ARG (work),
+                                     lwork, rwork, info));
         }
       else
-        for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;
+        {
+          for (F77_INT i = 0; i < n; i++)
+            jpvt(i) = i+1;
+        }
 
       // Form Permutation matrix (if economy is requested, return the
       // indices only!)
 
-      jpvt -= static_cast<octave_idx_type> (1);
+      jpvt -= static_cast<F77_INT> (1);
       p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);
@@ -244,19 +265,19 @@ namespace octave
     {
       assert (qr_type != qr<FloatComplexMatrix>::raw);
 
-      octave_idx_type m = a.rows ();
-      octave_idx_type n = a.cols ();
+      F77_INT m = to_f77_int (a.rows ());
+      F77_INT n = to_f77_int (a.cols ());
 
-      octave_idx_type min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (FloatComplex, tau, min_mn);
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       FloatComplexMatrix afact = a;
       if (m > n && qr_type == qr<FloatComplexMatrix>::std)
         afact.resize (m, m);
 
-      MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);
+      MArray<F77_INT> jpvt (dim_vector (n, 1), 0);
 
       if (m > 0)
         {
@@ -264,25 +285,35 @@ namespace octave
 
           // workspace query.
           FloatComplex clwork;
-          F77_XFCN (cgeqp3, CGEQP3, (m, n, F77_CMPLX_ARG (afact.fortran_vec ()),
-                                     m, jpvt.fortran_vec (), F77_CMPLX_ARG (tau),
-                                     F77_CMPLX_ARG (&clwork), -1, rwork, info));
+          F77_XFCN (cgeqp3, CGEQP3, (m, n,
+                                     F77_CMPLX_ARG (afact.fortran_vec ()),
+                                     m, jpvt.fortran_vec (),
+                                     F77_CMPLX_ARG (tau),
+                                     F77_CMPLX_ARG (&clwork),
+                                     -1, rwork, info));
 
           // allocate buffer and do the job.
-          octave_idx_type lwork = clwork.real ();
-          lwork = std::max (lwork, static_cast<octave_idx_type> (1));
+          F77_INT lwork = static_cast<F77_INT> (clwork.real ());
+          lwork = std::max (lwork, static_cast<F77_INT> (1));
           OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
-          F77_XFCN (cgeqp3, CGEQP3, (m, n, F77_CMPLX_ARG (afact.fortran_vec ()),
-                                     m, jpvt.fortran_vec (), F77_CMPLX_ARG (tau),
-                                     F77_CMPLX_ARG (work), lwork, rwork, info));
+
+          F77_XFCN (cgeqp3, CGEQP3, (m, n,
+                                     F77_CMPLX_ARG (afact.fortran_vec ()),
+                                     m, jpvt.fortran_vec (),
+                                     F77_CMPLX_ARG (tau),
+                                     F77_CMPLX_ARG (work),
+                                     lwork, rwork, info));
         }
       else
-        for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;
+        {
+          for (F77_INT i = 0; i < n; i++)
+            jpvt(i) = i+1;
+        }
 
       // Form Permutation matrix (if economy is requested, return the
       // indices only!)
 
-      jpvt -= static_cast<octave_idx_type> (1);
+      jpvt -= static_cast<F77_INT> (1);
       p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);

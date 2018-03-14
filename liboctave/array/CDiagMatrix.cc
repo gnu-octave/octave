@@ -1,4 +1,3 @@
-// DiagMatrix manipulations.
 /*
 
 Copyright (C) 1994-2017 John W. Eaton
@@ -6,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -396,7 +395,7 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
   ComplexDiagMatrix c (a_nr, b_nc);
 
   octave_idx_type len = c.length ();
-  octave_idx_type lenm = len < a_nc ? len : a_nc;
+  octave_idx_type lenm = (len < a_nc ? len : a_nc);
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -423,7 +422,7 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = (a_nr < b_nc ? a_nr : b_nc);
 
   for (octave_idx_type i = 0; i < len; i++)
     {
@@ -453,7 +452,7 @@ operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = (a_nr < b_nc ? a_nr : b_nc);
 
   for (octave_idx_type i = 0; i < len; i++)
     {
@@ -503,9 +502,9 @@ operator << (std::ostream& os, const ComplexDiagMatrix& a)
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
           if (i == j)
-            os << " " /* setw (field_width) */ << a.elem (i, i);
+            os << ' ' /* setw (field_width) */ << a.elem (i, i);
           else
-            os << " " /* setw (field_width) */ << ZERO;
+            os << ' ' /* setw (field_width) */ << ZERO;
         }
       os << "\n";
     }

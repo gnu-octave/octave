@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} imshow (@var{im})
@@ -85,18 +85,18 @@ function h = imshow (im, varargin)
   if (ischar (im))
     [im, map] = imread (im);
     indexed = true;
-    colormap (map);
+    colormap (gca, map);
   endif
 
   nd = ndims (im);
 
   if (! ((isnumeric (im) || islogical (im)) && (nd == 2 || nd == 3)))
-    error ("imshow: IM must be an image or the filename of an image");
+    error ("imshow: IM must be an image or the FILENAME of an image");
   endif
 
   if (nd == 2)
     if (! indexed)
-      colormap (gray ());
+      colormap (gca, gray ());
     endif
   elseif (size (im, 3) == 3)
     if (ismember (class (im), {"uint8", "uint16", "double", "single"}))
@@ -117,7 +117,7 @@ function h = imshow (im, varargin)
       elseif (columns (arg) == 3)
         indexed = true;
         if (iscolormap (arg) && min (arg) >= 0 || max (arg) <= 1)
-          colormap (arg);
+          colormap (gca,  arg);
         else
           error ("imshow: invalid colormap MAP");
         endif
@@ -132,7 +132,7 @@ function h = imshow (im, varargin)
         case "colormap"
           map = varargin{narg++};
           if (iscolormap (map) && min (map) >= 0 || max (map) <= 1)
-            colormap (map);
+            colormap (gca, map);
           else
             error ("imshow: invalid colormap");
           endif
@@ -224,7 +224,7 @@ endfunction
 %!demo
 %! clf;
 %! imshow ("default.img");
-%! colormap (autumn (64));
+%! colormap (gca, autumn (64));
 
 %!demo
 %! clf;
@@ -245,7 +245,7 @@ endfunction
 %!demo
 %! clf;
 %! imshow (rand (100, 100));
-%! colormap (jet (64));
+%! colormap (gca, jet (64));
 %! title ({"imshow with random 100x100 matrix", "colormap() makes color image"});
 
 %!demo

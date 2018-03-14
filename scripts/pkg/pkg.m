@@ -4,19 +4,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} pkg @var{command} @var{pkg_name}
@@ -39,7 +39,27 @@
 ## @end example
 ##
 ## @noindent
-## installs the package found in the file @file{image-1.0.0.tar.gz}.
+## installs the package found in the file @file{image-1.0.0.tar.gz}.  The 
+## file containing the package can be an url, e.g.
+##
+## @example
+## pkg install 'http://somewebsite.org/image-1.0.0.tar.gz'
+## @end example
+##
+## @noindent
+## installs the package found in the given url.  This
+## requires an internet connection and the cURL library.  
+##
+## @noindent
+## @emph{Security risk}: no verification of the package is performed
+## before the installation.  It has the same security issues as manually
+## downloading the package from the given url and installing it.
+##
+## @noindent
+## @emph{No support}: the GNU Octave community is not responsible for
+## packages installed from foreign sites.  For support or for 
+## reporting bugs you need to contact the maintainers of the installed 
+## package directly (see the @file{DESCRIPTION} file of the package)
 ##
 ## The @var{option} variable can contain options that affect the manner
 ## in which a package is installed.  These options can be one or more of
@@ -389,8 +409,43 @@ function [local_packages, global_packages] = pkg (varargin)
             error ("pkg: could not download file %s from url %s",
                    local_files{i}, urls{i});
           endif
-        endif
+        else
+          ## If files do not exist, maybe they are not local files.
+          ## Try to download them.
+          external_files_mask = ! cellfun (@exist, files, {"file"});
+          if (any (external_files_mask))
+            [success, msg] = mkdir (tmp_dir = tempname ());
+            if (success != 1)
+              error ("pkg: failed to create temporary directory: %s", msg);
+            endif
 
+            for file_idx = find (external_files_mask)
+
+              warning ('Octave:security', 
+              ['You are installing from an unofficial source.\n' ...
+               'The GNU Octave community is not responsible' ...
+               ' for the content of this package.\n' ...
+               '%s will be downloaded and installed.\n'],
+               files{file_idx});
+              _yes = yes_or_no ('Are you sure you want to do this? ');
+
+              if (_yes)
+                [~, fname, fext] = fileparts (files{file_idx});
+                local_files{end+1} = fullfile (tmp_dir, [fname fext]);
+
+                [~, success, msg] = urlwrite (files{file_idx}, local_files{end});
+                if (success != 1)
+                  error ("pkg: failed to read package '%s': %s",
+                         files{file_idx}, msg);
+                endif
+                files{file_idx} = local_files{end};
+              else
+                files(file_idx) = [];
+              endif # do remote install
+
+            endfor
+          endif
+        endif
         install (files, deps, prefix, archprefix, verbose, local_list,
                  global_list, global_install);
 
@@ -527,7 +582,7 @@ function [local_packages, global_packages] = pkg (varargin)
       installed_pkgs_lst = installed_packages (local_list, global_list);
       if (numel (files) > 0)
          update_lst = {};
-         installed_names = {installed_pkgs_list.name}';
+         installed_names = {installed_pkgs_lst.name}';
          for i = 1:numel (files)
            idx = find (strcmp (files{i}, installed_names), 1);
            if (isempty (idx))

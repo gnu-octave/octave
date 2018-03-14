@@ -4,19 +4,19 @@ Copyright (C) 2001-2017 Ben Sapp
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -31,152 +31,159 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-pr-code.h"
 #include "interpreter.h"
 
-class tree;
-class tree_decl_command;
-
-static std::string pt_bp_empty_string ("");
-class
-tree_breakpoint : public tree_walker
+namespace octave
 {
-public:
+  class tree;
+  class tree_decl_command;
 
-  enum action { set = 1, clear = 2, list = 3 };
+  class tree_breakpoint : public tree_walker
+  {
+  public:
 
-  tree_breakpoint (int l, action a, const std::string& c = pt_bp_empty_string)
-    : line (l), act (a), condition (c), found (false), bp_list () { }
+    enum action { set = 1, clear = 2, list = 3 };
 
-  ~tree_breakpoint (void) { }
+    tree_breakpoint (int l, action a, const std::string& c = "")
+      : m_line (l), m_action (a), m_condition (c), m_found (false),
+        m_bp_list (), m_bp_cond_list ()
+    { }
 
-  bool success (void) const { return found; }
+    // No copying!
 
-  void visit_argument_list (tree_argument_list&);
+    tree_breakpoint (const tree_breakpoint&) = delete;
 
-  void visit_binary_expression (tree_binary_expression&);
+    tree_breakpoint& operator = (const tree_breakpoint&) = delete;
 
-  void visit_break_command (tree_break_command&);
+    ~tree_breakpoint (void) = default;
 
-  void visit_colon_expression (tree_colon_expression&);
+    bool success (void) const { return m_found; }
 
-  void visit_continue_command (tree_continue_command&);
+    void visit_argument_list (tree_argument_list&);
 
-  void visit_global_command (tree_global_command&);
+    void visit_binary_expression (tree_binary_expression&);
 
-  void visit_persistent_command (tree_persistent_command&);
+    void visit_break_command (tree_break_command&);
 
-  void visit_decl_elt (tree_decl_elt&);
+    void visit_colon_expression (tree_colon_expression&);
 
-  void visit_decl_init_list (tree_decl_init_list&);
+    void visit_continue_command (tree_continue_command&);
 
-  void visit_while_command (tree_while_command&);
+    void visit_decl_command (tree_decl_command&);
 
-  void visit_do_until_command (tree_do_until_command&);
+    void visit_decl_init_list (tree_decl_init_list&);
 
-  void visit_simple_for_command (tree_simple_for_command&);
+    void visit_decl_elt (tree_decl_elt&);
 
-  void visit_complex_for_command (tree_complex_for_command&);
+    void visit_while_command (tree_while_command&);
 
-  void visit_octave_user_script (octave_user_script&);
+    void visit_do_until_command (tree_do_until_command&);
 
-  void visit_octave_user_function (octave_user_function&);
+    void visit_simple_for_command (tree_simple_for_command&);
 
-  void visit_octave_user_function_header (octave_user_function&);
+    void visit_complex_for_command (tree_complex_for_command&);
 
-  void visit_octave_user_function_trailer (octave_user_function&);
+    void visit_octave_user_script (octave_user_script&);
 
-  void visit_function_def (tree_function_def&);
+    void visit_octave_user_function (octave_user_function&);
 
-  void visit_identifier (tree_identifier&);
+    void visit_octave_user_function_header (octave_user_function&);
 
-  void visit_if_clause (tree_if_clause&);
+    void visit_octave_user_function_trailer (octave_user_function&);
 
-  void visit_if_command (tree_if_command&);
+    void visit_function_def (tree_function_def&);
 
-  void visit_if_command_list (tree_if_command_list&);
+    void visit_identifier (tree_identifier&);
 
-  void visit_index_expression (tree_index_expression&);
+    void visit_if_clause (tree_if_clause&);
 
-  void visit_matrix (tree_matrix&);
+    void visit_if_command (tree_if_command&);
 
-  void visit_cell (tree_cell&);
+    void visit_if_command_list (tree_if_command_list&);
 
-  void visit_multi_assignment (tree_multi_assignment&);
+    void visit_index_expression (tree_index_expression&);
 
-  void visit_no_op_command (tree_no_op_command&);
+    void visit_matrix (tree_matrix&);
 
-  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
+    void visit_cell (tree_cell&);
 
-  void visit_constant (tree_constant&);
+    void visit_multi_assignment (tree_multi_assignment&);
 
-  void visit_fcn_handle (tree_fcn_handle&);
+    void visit_no_op_command (tree_no_op_command&);
 
-  void visit_funcall (tree_funcall&);
+    void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
-  void visit_parameter_list (tree_parameter_list&);
+    void visit_constant (tree_constant&);
 
-  void visit_postfix_expression (tree_postfix_expression&);
+    void visit_fcn_handle (tree_fcn_handle&);
 
-  void visit_prefix_expression (tree_prefix_expression&);
+    void visit_funcall (tree_funcall&);
 
-  void visit_return_command (tree_return_command&);
+    void visit_parameter_list (tree_parameter_list&);
 
-  void visit_return_list (tree_return_list&);
+    void visit_postfix_expression (tree_postfix_expression&);
 
-  void visit_simple_assignment (tree_simple_assignment&);
+    void visit_prefix_expression (tree_prefix_expression&);
 
-  void visit_statement (tree_statement&);
+    void visit_return_command (tree_return_command&);
 
-  void visit_statement_list (tree_statement_list&);
+    void visit_return_list (tree_return_list&);
 
-  void visit_switch_case (tree_switch_case&);
+    void visit_simple_assignment (tree_simple_assignment&);
 
-  void visit_switch_case_list (tree_switch_case_list&);
+    void visit_statement (tree_statement&);
 
-  void visit_switch_command (tree_switch_command&);
+    void visit_statement_list (tree_statement_list&);
 
-  void visit_try_catch_command (tree_try_catch_command&);
+    void visit_switch_case (tree_switch_case&);
 
-  void visit_unwind_protect_command (tree_unwind_protect_command&);
+    void visit_switch_case_list (tree_switch_case_list&);
 
-  octave_value_list get_list (void) { return bp_list; }
-  octave_value_list get_cond_list (void) { return bp_cond_list; }
+    void visit_switch_command (tree_switch_command&);
 
-  int get_line (void) { return found ? line : 0; }
+    void visit_try_catch_command (tree_try_catch_command&);
 
-private:
+    void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-  void do_decl_command (tree_decl_command&);
+    octave_value_list get_list (void) { return m_bp_list; }
 
-  void take_action (tree& tr);
+    octave_value_list get_cond_list (void) { return m_bp_cond_list; }
 
-  void take_action (tree_statement& stmt);
+    int get_line (void) { return m_found ? m_line : 0; }
 
-  // Statement line number we are looking for.
-  int line;
+  private:
 
-  // What to do.
-  action act;
+    void take_action (tree& tr);
 
-  // Expression which must be true to break
-  std::string condition;
+    void take_action (tree_statement& stmt);
 
-  // Have we already found the line?
-  bool found;
+    // Statement line number we are looking for.
+    int m_line;
 
-  // List of breakpoint line numbers.
-  octave_value_list bp_list;
+    // What to do.
+    action m_action;
 
-  // List of breakpoint conditions.
-  octave_value_list bp_cond_list;
+    // Expression which must be true to break
+    std::string m_condition;
 
-  // No copying!
+    // Have we already found the line?
+    bool m_found;
 
-  tree_breakpoint (const tree_breakpoint&);
+    // List of breakpoint line numbers.
+    octave_value_list m_bp_list;
 
-  tree_breakpoint& operator = (const tree_breakpoint&);
-};
+    // List of breakpoint conditions.
+    octave_value_list m_bp_cond_list;
+  };
 
-// TRUE means SIGINT should put us in the debugger at the next
-// available breakpoint.
-extern bool octave_debug_on_interrupt_state;
+  // TRUE means SIGINT should put us in the debugger at the next
+  // available breakpoint.
+  extern bool octave_debug_on_interrupt_state;
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_breakpoint' instead")
+typedef octave::tree_breakpoint tree_breakpoint;
+
+#endif
 
 #endif

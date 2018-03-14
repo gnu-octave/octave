@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{sout} =} orderfields (@var{s1})
@@ -106,104 +106,91 @@ function [sout, p] = orderfields (s1, s2)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (! isstruct (s1))
+  endif
+
+  if (! isstruct (s1))
     error ("orderfields: S1 must be a struct");
   endif
 
+  names = fieldnames (s1);
+
   if (nargin == 1)
     ## One structure: return the fields in alphabetical order.
-    if (isstruct (s1))
-      names = sort (fieldnames (s1));
-    endif
+    [~, p] = sort (names);
   elseif (nargin == 2)
+
     if (isstruct (s2))
       ## Two structures: return the fields in the order of s2.
-      names = fieldnames (s2);
-      if (! isequal (sort (fieldnames (s1)), sort (names)))
+      names2 = fieldnames (s2);
+      [ns1, idx1] = sort (names);
+      [ns2, idx2] = sort (names2);
+      if (! isequal (ns1, ns2))
         error ("orderfields: structures S1 and S2 do not have the same fields");
       endif
+      p = eye (numel (idx2))(idx2,:).' * idx1;
+
     elseif (iscellstr (s2))
       ## A structure and a list of fields: order by the list of fields.
-      t1 = sort (fieldnames (s1));
-      t2 = sort (s2(:));
-      if (! isequal (t1, t2))
+      names2 = s2(:);
+      [ns1, idx1] = sort (names);
+      [ns2, idx2] = sort (names2);
+      if (! isequal (ns1, ns2))
         error ("orderfields: CELLSTR list does not match structure fields");
       endif
-      names = s2;
-    elseif (isvector (s2))
+      p = eye (numel (idx2))(idx2,:).' * idx1;
+
+    elseif (isnumeric (s2))
       ## A structure and a permutation vector: permute the order of s1.
-      names = fieldnames (s1);
-      t1 = 1:numel (names);
-      t2 = sort (s2);
-      t2 = t2(:)';
-      if (! isequal (t1, t2))
+      p = s2(:);
+      if (! isequal (sort (p), (1:numel (names)).'))
         error ("orderfields: invalid permutation vector P");
       endif
-      names = names(s2);
+
     else
       error ("orderfields: second argument must be structure, cellstr, or permutation vector");
     endif
   endif
 
-  ## Corner case of empty struct
-  if (isempty (names))
-    sout = struct ();
-    p = [];
-  endif
-
-  ## Find permutation vector which converts the original name order
-  ## into the new name order.  Note: could save a couple of sorts
-  ## in some cases, but performance isn't critical.
-
-  if (nargout == 2)
-    [~, oldidx] = sort (fieldnames (s1));
-    [~, newidx] = sort (names);
-    p = oldidx(newidx);
-  endif
-
   ## Permute the names in the structure.
-  if (isempty (s1))
-    ## Corner case of empty structure.  Still need to re-order fields.
-    args = cell (1, 2 * numel (names));
-    args(1:2:end) = names;
-    args(2:2:end) = {[]};
-    sout = struct (args{:});
-    ## inherit dimensions
-    sout = resize (sout, size (s1));
-  else
-    n = numel (s1);
-    for i = 1:numel (names)
-      el = names{i};
-      [sout(1:n).(el)] = s1(:).(el);
-    endfor
-    ## inherit dimensions
-    sout = reshape (sout, size (s1));
-  endif
+  names = names(p);
+  C = struct2cell (s1);
+  C = C(p,:);
+  sout = cell2struct (C, names);
+  ## Inherit dimensions.
+  sout = reshape (sout, size (s1));
 
 endfunction
 
 
 %!shared a, b, c
-%! a = struct ("foo", {1, 2}, "bar", {3, 4});
-%! b = struct ("bar", 6, "foo", 5);
-%! c = struct ("bar", {7, 8}, "foo", 9);
+%! a = struct ("C", {1, 2}, "A", {3, 4}, "B", {5, 6});
+%! b = struct ("A", 1, "B", 2, "C", 3);
+%! c = struct ("B", {7, 8}, "C", 9, "A", 10);
 %!test
-%! a(2) = orderfields (b, a);
-%! assert (a(2).foo, 5);
-%! assert (a(2).bar, 6);
+%! x = orderfields (b, a);
+%! assert (fieldnames (x), {"C"; "A"; "B"});
+%! assert (x.A, 1);
+%! assert (x.B, 2);
+%! assert (x.C, 3);
 %!test
-%! [a(2), p] = orderfields (b, [2 1]);
-%! assert (a(2).foo, 5);
-%! assert (a(2).bar, 6);
-%! assert (p, [2; 1]);
+%! [x, p] = orderfields (b, [3 2 1]);
+%! assert (fieldnames (x), {"C"; "B"; "A"});
+%! assert (p, [3; 2; 1]);
+%! assert (x.A, 1);
+%! assert (x.B, 2);
+%! assert (x.C, 3);
 %!test
-%! a(2) = orderfields (b, fieldnames (a));
-%! assert (a(2).foo, 5);
-%! assert (a(2).bar, 6);
+%! x = orderfields (b, {"B", "C", "A"});
+%! assert (fieldnames (x), {"B"; "C"; "A"});
+%! assert (x.A, 1);
+%! assert (x.B, 2);
+%! assert (x.C, 3);
 %!test
-%! a(1:2) = orderfields (c, fieldnames (a));
-%! assert (a(2).foo, 9);
-%! assert (a(2).bar, 8);
+%! x(1:2) = orderfields (c, {"C", "A", "B"});
+%! assert (fieldnames (x), {"C"; "A"; "B"});
+%! assert (x(2).A, 10);
+%! assert (x(2).B, 8);
+%! assert (x(2).C, 9);
 
 %!test
 %! aa.x = {1, 2};
@@ -216,7 +203,7 @@ endfunction
 %! assert (aa(2).y{1}, 6);
 
 ## Corner case of empty struct
-%!assert <40224> (orderfields (struct ()), struct ())
+%!assert <*40224> (orderfields (struct ()), struct ())
 %!test
 %! s(2,2).a = 1;
 %! s(1,1).b = 2;
@@ -239,6 +226,9 @@ endfunction
 %!error <invalid permutation vector P>
 %! s1.a = 1;
 %! orderfields (s1, [2 1]);
-%!error <second argument must be structure, cellstr, or permutation vector>
+%!error <invalid permutation vector P>
 %! s1.a = 1;
 %! orderfields (s1, ones (2,2));
+%!error <second argument must be structure, cellstr, or permutation vector>
+%! s1.a = 1;
+%! orderfields (s1, "foobar");

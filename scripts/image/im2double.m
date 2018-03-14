@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} im2double (@var{img})
@@ -67,12 +67,12 @@ function img = im2double (img, im_type)
       case "single",  img = double (img);
       case "logical", img = double (img);
       case "double",  # do nothing
-      otherwise, error ("im2double: IMG is of unsupported class \"%s\"", class (img));
+      otherwise, error ('im2double: IMG is of unsupported class "%s"', class (img));
     endswitch
   else
     ## indexed images
     if (! strcmpi (im_type, "indexed"))
-      error ("im2double: second input argument must be the string \"indexed\"");
+      error ('im2double: second input argument must be the string "indexed"');
     elseif (any (isa (img, {"uint8", "uint16"})))
       img = double (img) + 1;
     elseif (isfloat (img) || isbool (img))

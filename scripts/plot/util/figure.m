@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} figure
@@ -36,6 +36,9 @@
 ##
 ## The optional return value @var{h} is a graphics handle to the created figure
 ## object.
+##
+## Programming Note: The full list of properties is documented at
+## @ref{Figure Properties,,Figure Properties}.
 ## @seealso{axes, gcf, clf, close}
 ## @end deftypefn
 
@@ -85,14 +88,17 @@ function h = figure (varargin)
   if (init_new_figure)
     f = __go_figure__ (f, varargin{:});
     __add_default_menu__ (f);
-    __add_default_mouse_modes__ (f);
+    __set_default_mouse_modes__ (f);
   elseif (nargs > 0)
     set (f, varargin{:});
   endif
 
-  set (0, "currentfigure", f);
+  if (strcmp (get (f, "handlevisibility"), "on"))
+    set (0, "currentfigure", f);
+  endif
+
   ## When switching to figure N, make figure visible and on top of stack,
-  ## unless visibility is explicitly switched off
+  ## unless visibility is explicitly switched off.
   if (! init_new_figure && ! any (strcmpi (varargin(1:2:end), "visible")
                                   && strcmpi (varargin(2:2:end), "off")))
     set (f, "visible", "on");
@@ -101,23 +107,6 @@ function h = figure (varargin)
   if (nargout > 0)
     h = f;
   endif
-
-endfunction
-
-function __add_default_mouse_modes__ (fig)
-
-  set (fig, "__pan_mode__", struct ("Enable", "off",
-                                    "Motion", "both",
-                                    "FigureHandle", fig));
-
-  set (fig, "__rotate_mode__", struct ("Enable", "off",
-                                       "RotateStyle", "box",
-                                       "FigureHandle", fig));
-
-  set (fig, "__zoom_mode__", struct ("Enable", "off",
-                                     "Motion", "both",
-                                     "Direction", "in",
-                                     "FigureHandle", fig));
 
 endfunction
 

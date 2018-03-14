@@ -1,28 +1,28 @@
 FCN_FILE_DIRS += scripts/startup
 
-scripts_startup_FCN_FILES = \
-  scripts/startup/__finish__.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/__finish__.m
 
-SITE_STARTUP_FILE_SRC  = scripts/startup/site-rcfile
+SITE_STARTUP_FILE_SRC  = %reldir%/site-rcfile
 
-VERSION_STARTUP_FILE_SRC = scripts/startup/version-rcfile
+VERSION_STARTUP_FILE_SRC = %reldir%/version-rcfile
 
-SYSTEM_INPUTRC_FILE_SRC = scripts/startup/inputrc
+SYSTEM_INPUTRC_FILE_SRC = %reldir%/inputrc
 
 STARTUP_FILE_SRC = \
   $(SITE_STARTUP_FILE_SRC) \
   $(VERSION_STARTUP_FILE_SRC) \
   $(SYSTEM_INPUTRC_FILE_SRC)
 
-scripts_startupdir = $(fcnfiledir)/startup
+%canon_reldir%dir = $(fcnfiledir)/startup
 
-scripts_startup_DATA = $(scripts_startup_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_startup_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/startup/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/startup/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 scripts_EXTRA_DIST += $(STARTUP_FILE_SRC)
 

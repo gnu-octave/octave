@@ -6,19 +6,19 @@ Copyright (C) 2010 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -35,31 +35,35 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "call-stack.h"
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "file-stat.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
+#include "load-path.h"
+#include "oct-env.h"
 #include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
-#include "pr-output.h"
-#include "pt-pr-code.h"
-#include "pt-misc.h"
-#include "pt-stmt.h"
-#include "pt-cmd.h"
-#include "pt-exp.h"
-#include "pt-assign.h"
-#include "pt-arg-list.h"
-#include "variables.h"
 #include "parse.h"
+#include "pr-output.h"
+#include "pt-arg-list.h"
+#include "pt-assign.h"
+#include "pt-cmd.h"
+#include "pt-eval.h"
+#include "pt-exp.h"
+#include "pt-idx.h"
+#include "pt-misc.h"
+#include "pt-pr-code.h"
+#include "pt-stmt.h"
+#include "symscope.h"
 #include "unwind-prot.h"
-#include "defaults.h"
-#include "file-stat.h"
-#include "load-path.h"
-#include "oct-env.h"
+#include "variables.h"
 
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"
@@ -82,9 +86,14 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
   octave_user_function *uf = fcn.user_function_value (true);
 
   if (uf && nm != anonymous)
-    symbol_table::cache_name (uf->scope (), nm);
+    {
+      octave::symbol_scope uf_scope = uf->scope ();
 
-  if (uf && uf->is_nested_function ())
+      if (uf_scope)
+        uf_scope.cache_name (nm);
+    }
+
+  if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
     error ("handles to nested functions are not yet supported");
 }
 
@@ -92,15 +101,6 @@ octave_value_list
 octave_fcn_handle::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
                             int nargout)
-{
-  return octave_fcn_handle::subsref (type, idx, nargout, 0);
-}
-
-octave_value_list
-octave_fcn_handle::subsref (const std::string& type,
-                            const std::list<octave_value_list>& idx,
-                            int nargout,
-                            const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -110,8 +110,7 @@ octave_fcn_handle::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front (),
-                                    idx.size () == 1 ? lvalue_list : 0);
+        retval = call (tmp_nargout, idx.front ());
       }
       break;
 
@@ -138,20 +137,11 @@ octave_fcn_handle::subsref (const std::string& type,
 }
 
 octave_value_list
-octave_fcn_handle::do_multi_index_op (int nargout,
-                                      const octave_value_list& args)
-{
-  return do_multi_index_op (nargout, args, 0);
-}
-
-octave_value_list
-octave_fcn_handle::do_multi_index_op (int nargout,
-                                      const octave_value_list& args,
-                                      const std::list<octave_lvalue>* lvalue_list)
+octave_fcn_handle::call (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;
 
-  out_of_date_check (fcn, "", false);
+  octave::out_of_date_check (fcn, "", false);
 
   if (has_overloads)
     {
@@ -160,12 +150,12 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 
       // Compute dispatch type.
       builtin_type_t btyp;
-      std::string dispatch_type = get_dispatch_type (args, btyp);
+      std::string dispatch_type = octave::get_dispatch_type (args, btyp);
 
       // Retrieve overload.
       if (btyp != btyp_unknown)
         {
-          out_of_date_check (builtin_overloads[btyp], dispatch_type, false);
+          octave::out_of_date_check (builtin_overloads[btyp], dispatch_type, false);
           ov_fcn = builtin_overloads[btyp];
         }
       else
@@ -176,8 +166,11 @@ octave_fcn_handle::do_multi_index_op (int nargout,
             {
               // Try parent classes too.
 
+              octave::symbol_table& symtab
+                = octave::__get_symbol_table__ ("octave_fcn_handle::call");
+
               std::list<std::string> plist
-                = symbol_table::parent_classes (dispatch_type);
+                = symtab.parent_classes (dispatch_type);
 
               std::list<std::string>::const_iterator pit = plist.begin ();
 
@@ -187,13 +180,13 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 
                   std::string fnm = fcn_name ();
 
-                  octave_value ftmp = symbol_table::find_method (fnm, pname);
+                  octave_value ftmp = symtab.find_method (fnm, pname);
 
                   if (ftmp.is_defined ())
                     {
                       set_overload (pname, ftmp);
 
-                      out_of_date_check (ftmp, pname, false);
+                      octave::out_of_date_check (ftmp, pname, false);
                       ov_fcn = ftmp;
 
                       break;
@@ -204,15 +197,15 @@ octave_fcn_handle::do_multi_index_op (int nargout,
             }
           else
             {
-              out_of_date_check (it->second, dispatch_type, false);
+              octave::out_of_date_check (it->second, dispatch_type, false);
               ov_fcn = it->second;
             }
         }
 
       if (ov_fcn.is_defined ())
-        retval = ov_fcn.do_multi_index_op (nargout, args, lvalue_list);
+        retval = octave::feval (ov_fcn, args, nargout);
       else if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args, lvalue_list);
+        retval = octave::feval (fcn, args, nargout);
       else
         error ("%s: no method for class %s",
                nm.c_str (), dispatch_type.c_str ());
@@ -221,7 +214,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
     {
       // Non-overloaded function (anonymous, subfunction, private function).
       if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args, lvalue_list);
+        retval = octave::feval (fcn, args, nargout);
       else
         error ("%s: no longer valid function handle", nm.c_str ());
     }
@@ -258,17 +251,18 @@ octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
 }
 
 bool
-octave_fcn_handle::set_fcn (const std::string &octaveroot,
+octave_fcn_handle::set_fcn (const std::string& octaveroot,
                             const std::string& fpath)
 {
   if (octaveroot.length () != 0
       && fpath.length () >= octaveroot.length ()
       && fpath.substr (0, octaveroot.length ()) == octaveroot
-      && OCTAVE_EXEC_PREFIX != octaveroot)
+      && octave::config::octave_exec_home () != octaveroot)
     {
       // First check if just replacing matlabroot is enough
-      std::string str = OCTAVE_EXEC_PREFIX +
-                        fpath.substr (octaveroot.length ());
+      std::string str
+        = (octave::config::octave_exec_home ()
+           + fpath.substr (octaveroot.length ()));
       octave::sys::file_stat fs (str);
 
       if (fs.exists ())
@@ -277,15 +271,13 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = str.substr (0, xpos);
 
-          octave_function *xfcn
-            = load_fcn_from_file (str, dir_name, "", "", nm);
+          octave_value ov_fcn
+            = octave::load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (! xfcn)
+          if (ov_fcn.is_undefined ())
             error ("function handle points to non-existent function");
 
-          octave_value tmp (xfcn);
-
-          fcn = octave_value (new octave_fcn_handle (tmp, nm));
+          fcn = octave_value (new octave_fcn_handle (ov_fcn, nm));
         }
       else
         {
@@ -295,7 +287,9 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
           names.push_back (nm + ".mex");
           names.push_back (nm + ".m");
 
-          octave::directory_path p (load_path::system_path ());
+          octave::load_path& lp = octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
+
+          octave::directory_path p (lp.system_path ());
 
           str = octave::sys::env::make_absolute (p.find_first_of (names));
 
@@ -303,14 +297,13 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = str.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (str, dir_name, "", "", nm);
+          octave_value ov_fcn
+            = octave::load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (! xfcn)
+          if (ov_fcn.is_undefined ())
             error ("function handle points to non-existent function");
 
-          octave_value tmp (xfcn);
-
-          fcn = octave_value (new octave_fcn_handle (tmp, nm));
+          fcn = octave_value (new octave_fcn_handle (ov_fcn, nm));
         }
     }
   else
@@ -321,18 +314,20 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = fpath.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", "", nm);
+          octave_value ov_fcn
+            = octave::load_fcn_from_file (fpath, dir_name, "", "", nm);
 
-          if (! xfcn)
+          if (ov_fcn.is_undefined ())
             error ("function handle points to non-existent function");
 
-          octave_value tmp (xfcn);
-
-          fcn = octave_value (new octave_fcn_handle (tmp, nm));
+          fcn = octave_value (new octave_fcn_handle (ov_fcn, nm));
         }
       else
         {
-          fcn = symbol_table::find_function (nm);
+          octave::symbol_table& symtab
+            = octave::__get_symbol_table__ ("octave_fcn_handle::set_fcn");
+
+          fcn = symtab.find_function (nm);
 
           if (! fcn.is_function ())
             error ("function handle points to non-existent function");
@@ -355,10 +350,16 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       if (fcn.is_undefined ())
         return false;
 
-      octave_user_function *f = fcn.user_function_value ();
+      std::list<octave::symbol_record> vars;
 
-      std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (f->scope (), 0);
+      octave_user_function *f = fcn.user_function_value ();
+      octave::symbol_record::context_id context = 0;
+      octave::symbol_scope f_scope = f->scope ();
+      if (f_scope)
+        {
+          vars = f_scope.all_variables ();
+          context = f_scope.current_context ();
+        }
 
       size_t varlen = vars.size ();
 
@@ -366,10 +367,10 @@ octave_fcn_handle::save_ascii (std::ostream& os)
         {
           os << "# length: " << varlen << "\n";
 
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
+          for (const auto& symrec : vars)
             {
-              if (! save_text_data (os, p->varval (0), p->name (), false, 0))
+              if (! save_text_data (os, symrec.varval (context),
+                                    symrec.name (), false, 0))
                 return ! os.fail ();
             }
         }
@@ -377,15 +378,52 @@ octave_fcn_handle::save_ascii (std::ostream& os)
   else
     {
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : "";
+      std::string fnm = (f ? f->fcn_file_name () : "");
 
-      os << "# octaveroot: " << OCTAVE_EXEC_PREFIX << "\n";
+      os << "# octaveroot: " << octave::config::octave_exec_home () << "\n";
       if (! fnm.empty ())
         os << "# path: " << fnm << "\n";
       os << nm << "\n";
     }
 
   return true;
+}
+
+bool
+octave_fcn_handle::parse_anon_fcn_handle (const std::string& fcn_text)
+{
+  bool success = true;
+
+  int parse_status;
+
+  octave_value anon_fcn_handle =
+    octave::eval_string (fcn_text, true, parse_status);
+
+  if (parse_status == 0)
+    {
+      octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+
+      if (fh)
+        {
+          fcn = fh->fcn;
+
+          octave_user_function *uf = fcn.user_function_value (true);
+
+          if (uf)
+            {
+              octave::symbol_scope uf_scope = uf->scope ();
+
+              if (uf_scope)
+                uf_scope.cache_name (nm);
+            }
+        }
+      else
+        success = false;
+    }
+  else
+    success = false;
+
+  return success;
 }
 
 bool
@@ -432,13 +470,18 @@ octave_fcn_handle::load_ascii (std::istream& is)
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::load_ascii");
 
-      symbol_table::set_scope (local_scope);
+      octave::symbol_scope local_scope (buf);
 
-      octave_call_stack::push (local_scope, 0);
-      frame.add_fcn (octave_call_stack::pop);
+      symtab.set_scope (local_scope);
+
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_fcn_handle::load_ascii");
+
+      cs.push (local_scope, 0);
+      frame.add_method (cs, &octave::call_stack::pop);
 
       octave_idx_type len = 0;
 
@@ -457,7 +500,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   if (! is)
                     error ("load: failed to load anonymous function handle");
 
-                  symbol_table::assign (name, t2, local_scope, 0);
+                  local_scope.assign (name, t2, 0);
                 }
             }
         }
@@ -468,31 +511,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
         }
 
       if (is && success)
-        {
-          int parse_status;
-          octave_value anon_fcn_handle =
-            eval_string (buf, true, parse_status);
-
-          if (parse_status == 0)
-            {
-              octave_fcn_handle *fh =
-                anon_fcn_handle.fcn_handle_value ();
-
-              if (fh)
-                {
-                  fcn = fh->fcn;
-
-                  octave_user_function *uf = fcn.user_function_value (true);
-
-                  if (uf)
-                    symbol_table::cache_name (uf->scope (), nm);
-                }
-              else
-                success = false;
-            }
-          else
-            success = false;
-        }
+        success = parse_anon_fcn_handle (buf);
       else
         success = false;
     }
@@ -512,15 +531,21 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       if (fcn.is_undefined ())
         return false;
 
-      octave_user_function *f = fcn.user_function_value ();
+      std::list<octave::symbol_record> vars;
 
-      std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (f->scope (), 0);
+      octave_user_function *f = fcn.user_function_value ();
+      octave::symbol_scope f_scope = f->scope ();
+      octave::symbol_record::context_id context = 0;
+      if (f_scope)
+        {
+          vars = f_scope.all_variables ();
+          context = f_scope.current_context ();
+        }
 
       size_t varlen = vars.size ();
 
       if (varlen > 0)
-        nmbuf << nm << " " << varlen;
+        nmbuf << nm << ' ' << varlen;
       else
         nmbuf << nm;
 
@@ -538,11 +563,10 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
       if (varlen > 0)
         {
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
+          for (const auto& symrec : vars)
             {
-              if (! save_binary_data (os, p->varval (0), p->name (),
-                                      "", 0, save_as_floats))
+              if (! save_binary_data (os, symrec.varval (context),
+                                      symrec.name (), "", 0, save_as_floats))
                 return ! os.fail ();
             }
         }
@@ -552,9 +576,9 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       std::ostringstream nmbuf;
 
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : "";
+      std::string fnm = (f ? f->fcn_file_name () : "");
 
-      nmbuf << nm << "\n" << OCTAVE_EXEC_PREFIX << "\n" << fnm;
+      nmbuf << nm << "\n" << octave::config::octave_exec_home () << "\n" << fnm;
 
       std::string buf_str = nmbuf.str ();
       int32_t tmp = buf_str.length ();
@@ -616,13 +640,18 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::load_binary");
 
-      symbol_table::set_scope (local_scope);
+      octave::symbol_scope local_scope (ctmp2);
 
-      octave_call_stack::push (local_scope, 0);
-      frame.add_fcn (octave_call_stack::pop);
+      symtab.set_scope (local_scope);
+
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_fcn_handle::load_binary");
+
+      cs.push (local_scope, 0);
+      frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0)
         {
@@ -639,45 +668,24 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               if (! is)
                 error ("load: failed to load anonymous function handle");
 
-              symbol_table::assign (name, t2, local_scope);
+              local_scope.force_assign (name, t2);
             }
         }
 
       if (is && success)
-        {
-          int parse_status;
-          octave_value anon_fcn_handle =
-            eval_string (ctmp2, true, parse_status);
-
-          if (parse_status == 0)
-            {
-              octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
-
-              if (fh)
-                {
-                  fcn = fh->fcn;
-
-                  octave_user_function *uf = fcn.user_function_value (true);
-
-                  if (uf)
-                    symbol_table::cache_name (uf->scope (), nm);
-                }
-              else
-                success = false;
-            }
-          else
-            success = false;
-        }
+        success = parse_anon_fcn_handle (ctmp2);
+      else
+        success = false;
     }
   else
     {
       std::string octaveroot;
       std::string fpath;
 
-      if (nm.find_first_of ("\n") != std::string::npos)
+      if (nm.find_first_of ('\n') != std::string::npos)
         {
-          size_t pos1 = nm.find_first_of ("\n");
-          size_t pos2 = nm.find_first_of ("\n", pos1 + 1);
+          size_t pos1 = nm.find_first_of ('\n');
+          size_t pos2 = nm.find_first_of ('\n', pos1 + 1);
           octaveroot = nm.substr (pos1 + 1, pos2 - pos1 - 1);
           fpath = nm.substr (pos2 + 1);
           nm = nm.substr (0, pos1);
@@ -722,7 +730,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
   hdims[0] = 0;
   hdims[1] = 0;
-  space_hid = H5Screate_simple (0 , hdims, 0);
+  space_hid = H5Screate_simple (0 , hdims, nullptr);
   if (space_hid < 0)
     {
       H5Tclose (type_hid);
@@ -783,10 +791,16 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       H5Dclose (data_hid);
 
-      octave_user_function *f = fcn.user_function_value ();
+      std::list<octave::symbol_record> vars;
 
-      std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (f->scope (), 0);
+      octave_user_function *f = fcn.user_function_value ();
+      octave::symbol_scope f_scope = f->scope ();
+      octave::symbol_record::context_id context = 0;
+      if (f_scope)
+        {
+          vars = f_scope.all_variables ();
+          context = f_scope.current_context ();
+        }
 
       size_t varlen = vars.size ();
 
@@ -833,11 +847,10 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
               return false;
             }
 
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
+          for (const auto& symrec : vars)
             {
-              if (! add_hdf5_data (data_hid, p->varval (0), p->name (),
-                                   "", false, save_as_floats))
+              if (! add_hdf5_data (data_hid, symrec.varval (context),
+                                   symrec.name (), "", false, save_as_floats))
                 break;
             }
           H5Gclose (data_hid);
@@ -845,15 +858,15 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
   else
     {
-      std::string octaveroot = OCTAVE_EXEC_PREFIX;
+      std::string octaveroot = octave::config::octave_exec_home ();
 
       octave_function *f = function_value ();
-      std::string fpath = f ? f->fcn_file_name () : "";
+      std::string fpath = (f ? f->fcn_file_name () : "");
 
       H5Sclose (space_hid);
       hdims[0] = 1;
       hdims[1] = octaveroot.length ();
-      space_hid = H5Screate_simple (0 , hdims, 0);
+      space_hid = H5Screate_simple (0 , hdims, nullptr);
       if (space_hid < 0)
         {
           H5Tclose (type_hid);
@@ -889,7 +902,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Sclose (space_hid);
       hdims[0] = 1;
       hdims[1] = fpath.length ();
-      space_hid = H5Screate_simple (0 , hdims, 0);
+      space_hid = H5Screate_simple (0 , hdims, nullptr);
       if (space_hid < 0)
         {
           H5Tclose (type_hid);
@@ -1105,10 +1118,10 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // reporting function:
 #if defined (HAVE_HDF5_18)
       H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+      H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
       H5Eget_auto (&err_func, &err_func_data);
-      H5Eset_auto (0, 0);
+      H5Eset_auto (nullptr, nullptr);
 #endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "SYMBOL_TABLE");
@@ -1133,13 +1146,18 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
 
-      symbol_table::set_scope (local_scope);
+      octave::symbol_scope local_scope (fcn_tmp);
 
-      octave_call_stack::push (local_scope, 0);
-      frame.add_fcn (octave_call_stack::pop);
+      symtab.set_scope (local_scope);
+
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_fcn_handle::load_hdf5");
+
+      cs.push (local_scope, 0);
+      frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0 && success)
         {
@@ -1163,35 +1181,12 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                                     &dsub) <= 0)
                 error ("load: failed to load anonymous function handle");
 
-              symbol_table::assign (dsub.name, dsub.tc, local_scope);
+              local_scope.force_assign (dsub.name, dsub.tc);
             }
         }
 
       if (success)
-        {
-          int parse_status;
-          octave_value anon_fcn_handle =
-            eval_string (fcn_tmp, true, parse_status);
-
-          if (parse_status == 0)
-            {
-              octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
-
-              if (fh)
-                {
-                  fcn = fh->fcn;
-
-                  octave_user_function *uf = fcn.user_function_value (true);
-
-                  if (uf)
-                    symbol_table::cache_name (uf->scope (), nm);
-                }
-              else
-                success = false;
-            }
-          else
-            success = false;
-        }
+        success = parse_anon_fcn_handle (fcn_tmp);
 
       frame.run ();
     }
@@ -1211,10 +1206,10 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // reporting function:
 #if defined (HAVE_HDF5_18)
       H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+      H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
       H5Eget_auto (&err_func, &err_func_data);
-      H5Eset_auto (0, 0);
+      H5Eset_auto (nullptr, nullptr);
 #endif
 
       hid_t attr_id = H5Aopen_name (group_hid, "OCTAVEROOT");
@@ -1301,7 +1296,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 /*
-%!test <33857>
+%!test <*33857>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
@@ -1353,7 +1348,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!  endif
 %!endfunction
 
-%!test <35876>
+%!test <*35876>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
@@ -1403,7 +1398,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
   if (nm == anonymous)
     {
-      tree_print_code tpc (os);
+      octave::tree_print_code tpc (os);
 
       // FCN is const because this member function is, so we can't
       // use it to call user_function_value, so we make a copy first.
@@ -1414,7 +1409,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
       if (f)
         {
-          tree_parameter_list *p = f->parameter_list ();
+          octave::tree_parameter_list *p = f->parameter_list ();
 
           os << "@(";
 
@@ -1423,14 +1418,28 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
           os << ") ";
 
-          tpc.print_fcn_handle_body (f->body ());
+          octave::tree_statement_list *b = f->body ();
+
+          assert (b->length () == 1);
+
+          octave::tree_statement *s = b->front ();
+
+          if (s)
+            {
+              assert (s->is_expression ());
+
+              octave::tree_expression *e = s->expression ();
+
+              if (e)
+                tpc.print_fcn_handle_body (e);
+            }
 
           printed = true;
         }
     }
 
   if (! printed)
-    octave_print_internal (os, "@" + nm, pr_as_read_syntax,
+    octave_print_internal (os, '@' + nm, pr_as_read_syntax,
                            current_print_indent_level ());
 }
 
@@ -1567,8 +1576,10 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
         }
     }
 
-  octave_value f = symbol_table::find_function (tnm, octave_value_list (),
-                                                local_funcs);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("make_fcn_handle");
+
+  octave_value f = symtab.find_function (tnm, octave_value_list (),
+                                         local_funcs);
 
   octave_function *fptr = f.function_value (true);
 
@@ -1584,14 +1595,16 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
     }
   else
     {
+      octave::load_path& lp = octave::__get_load_path__ ("make_fcn_handle");
+
       // Globally visible (or no match yet).  Query overloads.
-      std::list<std::string> classes = load_path::overloads (tnm);
-      bool any_match = fptr != 0 || classes.size () > 0;
+      std::list<std::string> classes = lp.overloads (tnm);
+      bool any_match = fptr != nullptr || classes.size () > 0;
       if (! any_match)
         {
           // No match found, try updating load_path and query classes again.
-          load_path::update ();
-          classes = load_path::overloads (tnm);
+          lp.update ();
+          classes = lp.overloads (tnm);
           any_match = classes.size () > 0;
         }
 
@@ -1601,11 +1614,10 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
       octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
       retval = fh;
 
-      for (std::list<std::string>::iterator iter = classes.begin ();
-           iter != classes.end (); iter++)
+      for (auto& cls : classes)
         {
-          std::string class_name = *iter;
-          octave_value fmeth = symbol_table::find_method (tnm, class_name);
+          std::string class_name = cls;
+          octave_value fmeth = symtab.find_method (tnm, class_name);
 
           bool is_builtin = false;
           for (int i = 0; i < btyp_num_types; i++)
@@ -1713,7 +1725,7 @@ particular output format.
 
   octave_fcn_handle *fh = args(0).fcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
 
-  octave_function *fcn = fh ? fh->function_value () : 0;
+  octave_function *fcn = (fh ? fh->function_value () : nullptr);
 
   if (! fcn)
     error ("functions: FCN_HANDLE is not a valid function handle object");
@@ -1756,21 +1768,24 @@ particular output format.
     {
       m.setfield ("file", nm);
 
-      octave_user_function *fu = fh->user_function_value ();
+      std::list<octave::symbol_record> vars;
 
-      std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (fu->scope (), 0);
+      octave_user_function *fu = fh->user_function_value ();
+      octave::symbol_scope fu_scope = fu->scope ();
+      octave::symbol_record::context_id context = 0;
+      if (fu_scope)
+        {
+          vars = fu_scope.all_variables ();
+          context = fu_scope.current_context ();
+        }
 
       size_t varlen = vars.size ();
 
       if (varlen > 0)
         {
           octave_scalar_map ws;
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
-            {
-              ws.assign (p->name (), p->varval (0));
-            }
+          for (const auto& symrec : vars)
+            ws.assign (symrec.name (), symrec.varval (context));
 
           m.setfield ("workspace", ws);
         }
@@ -1843,8 +1858,8 @@ functions are ignored in the lookup.
   if (nm[0] == '@')
     {
       int parse_status;
-      octave_value anon_fcn_handle =
-        eval_string (nm, true, parse_status);
+      octave_value anon_fcn_handle
+        = octave::eval_string (nm, true, parse_status);
 
       if (parse_status == 0)
         retval = anon_fcn_handle;
@@ -1922,15 +1937,17 @@ octave_fcn_binder::octave_fcn_binder (const octave_value& f,
 { }
 
 octave_fcn_handle *
-octave_fcn_binder::maybe_binder (const octave_value& f)
+octave_fcn_binder::maybe_binder (const octave_value& f,
+                                 octave::tree_evaluator *tw)
 {
-  octave_fcn_handle *retval = 0;
+  octave_fcn_handle *retval = nullptr;
 
   octave_user_function *usr_fcn = f.user_function_value (false);
-  tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
+  octave::tree_parameter_list *param_list = (usr_fcn ? usr_fcn->parameter_list ()
+                                                     : nullptr);
 
-  tree_statement_list *cmd_list = 0;
-  tree_expression *body_expr = 0;
+  octave::tree_statement_list *cmd_list = nullptr;
+  octave::tree_expression *body_expr = nullptr;
 
   if (usr_fcn)
     {
@@ -1939,7 +1956,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
         {
           // Verify that body is a single expression (always true in theory).
           body_expr = (cmd_list->length () == 1
-                       ? cmd_list->front ()->expression () : 0);
+                       ? cmd_list->front ()->expression () : nullptr);
         }
     }
 
@@ -1947,10 +1964,10 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
       && ! (param_list && param_list->takes_varargs ()))
     {
       // It's an index expression.
-      tree_index_expression *idx_expr = dynamic_cast<tree_index_expression *>
+      octave::tree_index_expression *idx_expr = dynamic_cast<octave::tree_index_expression *>
                                         (body_expr);
-      tree_expression *head_expr = idx_expr->expression ();
-      std::list<tree_argument_list *> arg_lists = idx_expr->arg_lists ();
+      octave::tree_expression *head_expr = idx_expr->expression ();
+      std::list<octave::tree_argument_list *> arg_lists = idx_expr->arg_lists ();
       std::string type_tags = idx_expr->type_tags ();
 
       if (type_tags.length () == 1 && type_tags[0] == '('
@@ -1959,9 +1976,9 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
           assert (arg_lists.size () == 1);
 
           // It's a single index expression: a(x,y,....)
-          tree_identifier *head_id =
-            dynamic_cast<tree_identifier *> (head_expr);
-          tree_argument_list *arg_list = arg_lists.front ();
+          octave::tree_identifier *head_id =
+            dynamic_cast<octave::tree_identifier *> (head_expr);
+          octave::tree_argument_list *arg_list = arg_lists.front ();
 
           // Build a map of input params to their position.
           std::map<std::string, int> arginmap;
@@ -1969,11 +1986,10 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
           if (param_list)
             {
-              for (tree_parameter_list::iterator it = param_list->begin ();
-                   it != param_list->end (); ++it, ++npar)
+              for (auto& param_p : *param_list)
                 {
-                  tree_decl_elt *elt = *it;
-                  tree_identifier *id = elt ? elt->ident () : 0;
+                  octave::tree_decl_elt *elt = param_p;
+                  octave::tree_identifier *id = (elt ? elt->ident () : nullptr);
                   if (id && ! id->is_black_hole ())
                     arginmap[id->name ()] = npar;
                 }
@@ -1981,6 +1997,11 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
           if (arg_list && arg_list->length () > 0)
             {
+              octave::symbol_scope scope = tw->get_current_scope ();
+
+              octave::symbol_record::context_id context
+                = scope.current_context ();
+
               bool bad = false;
               int nargs = arg_list->length ();
               octave_value_list arg_template (nargs);
@@ -1989,26 +2010,26 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
               // Verify that each argument is either a named param, a constant,
               // or a defined identifier.
               int iarg = 0;
-              for (tree_argument_list::iterator it = arg_list->begin ();
+              for (octave::tree_argument_list::iterator it = arg_list->begin ();
                    it != arg_list->end (); ++it, ++iarg)
                 {
-                  tree_expression *elt = *it;
+                  octave::tree_expression *elt = *it;
                   if (elt && elt->is_constant ())
                     {
-                      arg_template(iarg) = elt->rvalue1 ();
+                      arg_template(iarg) = tw->evaluate (elt);
                       arg_mask[iarg] = -1;
                     }
                   else if (elt && elt->is_identifier ())
                     {
-                      tree_identifier *elt_id =
-                        dynamic_cast<tree_identifier *> (elt);
+                      octave::tree_identifier *elt_id =
+                        dynamic_cast<octave::tree_identifier *> (elt);
                       if (arginmap.find (elt_id->name ()) != arginmap.end ())
                         {
                           arg_mask[iarg] = arginmap[elt_id->name ()];
                         }
-                      else if (elt_id->is_defined ())
+                      else if (elt_id->is_defined (context))
                         {
-                          arg_template(iarg) = elt_id->rvalue1 ();
+                          arg_template(iarg) = tw->evaluate (elt_id);
                           arg_mask[iarg] = -1;
                         }
                       else
@@ -2029,8 +2050,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
               if (! bad)
                 {
                   // If the head is a value, use it as root.
-                  if (head_id->is_defined ())
-                    root_val = head_id->rvalue1 ();
+                  if (head_id->is_defined (context))
+                    root_val = tw->evaluate (head_id);
                   else
                     {
                       // It's a name.
@@ -2040,28 +2061,19 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                         bad = true;
                       else
                         {
-                          // Function handles can't handle legacy
-                          // dispatch, so we make sure it's not
-                          // defined.
+                          // Simulate try/catch.
+                          octave::unwind_protect frame;
+                          interpreter_try (frame);
 
-                          if (symbol_table::get_dispatch (head_name).size () > 0)
-                            bad = true;
-                          else
+                          try
                             {
-                              // Simulate try/catch.
-                              octave::unwind_protect frame;
-                              interpreter_try (frame);
+                              root_val = make_fcn_handle (head_name);
+                            }
+                          catch (const octave::execution_exception&)
+                            {
+                              octave::interpreter::recover_from_exception ();
 
-                              try
-                                {
-                                  root_val = make_fcn_handle (head_name);
-                                }
-                              catch (const octave::execution_exception&)
-                                {
-                                  recover_from_exception ();
-
-                                  bad = true;
-                                }
+                              bad = true;
                             }
                         }
                     }
@@ -2094,16 +2106,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 */
 
 octave_value_list
-octave_fcn_binder::do_multi_index_op (int nargout,
-                                      const octave_value_list& args)
-{
-  return do_multi_index_op (nargout, args, 0);
-}
-
-octave_value_list
-octave_fcn_binder::do_multi_index_op (int nargout,
-                                      const octave_value_list& args,
-                                      const std::list<octave_lvalue>* lvalue_list)
+octave_fcn_binder::call (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -2119,10 +2122,10 @@ octave_fcn_binder::do_multi_index_op (int nargout,
       // Make a shallow copy of arg_template, to ensure consistency throughout
       // the following call even if we happen to get back here.
       octave_value_list tmp (arg_template);
-      retval = root_handle.do_multi_index_op (nargout, tmp, lvalue_list);
+      retval = octave::feval (root_handle, tmp, nargout);
     }
   else
-    retval = octave_fcn_handle::do_multi_index_op (nargout, args, lvalue_list);
+    retval = octave_fcn_handle::call (nargout, args);
 
   return retval;
 }

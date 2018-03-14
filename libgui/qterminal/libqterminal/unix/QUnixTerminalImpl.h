@@ -1,7 +1,7 @@
 /*  Copyright (C) 2008 e_k (e_k@users.sourceforge.net)
     Copyright (C) 2012-2016 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
-    This library is free software; you can redistribute it and/or
+    This library is free software: you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
     License as published by the Free Software Foundation; either
     version 2 of the License, or (at your option) any later version.
@@ -34,7 +34,7 @@ class QUnixTerminalImpl : public QTerminal
     int fdstderr;
 
 public:
-    QUnixTerminalImpl(QWidget *parent = 0);
+    QUnixTerminalImpl(QWidget *parent = nullptr);
     virtual ~QUnixTerminalImpl();
 
     void setTerminalFont(const QFont &font);
@@ -50,11 +50,13 @@ public:
     void setScrollBufferSize(int value);
     QString selectedText();
     void has_extra_interrupt (bool extra_interrupt);
+    QList<QAction*> get_hotspot_actions (const QPoint& at);
 
 public slots:
     void copyClipboard();
     void pasteClipboard();
     void selectAll();
+    virtual void handle_visibility_changed (bool visible);
 
 protected:
     void showEvent(QShowEvent *);
@@ -68,6 +70,7 @@ private:
     TerminalModel *m_terminalModel;
     KPty *m_kpty;
     bool _extra_interrupt;
+    QWidget *_parent;
 };
 
 #endif // Q_UNIXTERMINALIMPL

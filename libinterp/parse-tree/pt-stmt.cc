@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,13 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 
-#include "defun.h"
-#include "error.h"
-#include "errwarn.h"
-#include "ov.h"
-#include "octave-link.h"
-#include "oct-lvalue.h"
+#include "bp-table.h"
+#include "comment-list.h"
 #include "input.h"
+#include "oct-lvalue.h"
+#include "octave-link.h"
+#include "ov.h"
 #include "pager.h"
 #include "pt-bp.h"
 #include "pt-cmd.h"
@@ -44,284 +43,248 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
-#include "debug.h"
-
-// A list of commands to be executed.
-
-tree_statement::~tree_statement (void)
+namespace octave
 {
-  delete cmd;
-  delete expr;
-  delete comm;
-}
+  // A list of commands to be executed.
 
-void
-tree_statement::set_print_flag (bool print_flag)
-{
-  if (expr)
-    expr->set_print_flag (print_flag);
-}
+  tree_statement::~tree_statement (void)
+  {
+    delete m_command;
+    delete m_expression;
+    delete m_comment_list;
+  }
 
-bool
-tree_statement::print_result (void)
-{
-  return expr && expr->print_result ();
-}
+  void
+  tree_statement::set_print_flag (bool print_flag)
+  {
+    if (m_expression)
+      m_expression->set_print_flag (print_flag);
+  }
 
-void
-tree_statement::set_breakpoint (const std::string& condition)
-{
-  if (cmd)
-    cmd->set_breakpoint (condition);
-  else if (expr)
-    expr->set_breakpoint (condition);
-}
+  bool
+  tree_statement::print_result (void)
+  {
+    return m_expression && m_expression->print_result ();
+  }
 
-void
-tree_statement::delete_breakpoint (void)
-{
-  if (cmd)
-    cmd->delete_breakpoint ();
-  else if (expr)
-    expr->delete_breakpoint ();
-}
+  void
+  tree_statement::set_breakpoint (const std::string& condition)
+  {
+    if (m_command)
+      m_command->set_breakpoint (condition);
+    else if (m_expression)
+      m_expression->set_breakpoint (condition);
+  }
 
-bool
-tree_statement::is_breakpoint (bool check_active) const
-{
-  return cmd ? cmd->is_breakpoint (check_active)
-             : (expr ? expr->is_breakpoint (check_active) : false);
-}
+  void
+  tree_statement::delete_breakpoint (void)
+  {
+    if (m_command)
+      m_command->delete_breakpoint ();
+    else if (m_expression)
+      m_expression->delete_breakpoint ();
+  }
 
-std::string
-tree_statement::bp_cond () const
-{
-  return cmd ? cmd->bp_cond () : (expr ? expr->bp_cond () : "0");
-}
+  bool
+  tree_statement::is_breakpoint (bool check_active) const
+  {
+    return m_command ? m_command->is_breakpoint (check_active)
+      : (m_expression ? m_expression->is_breakpoint (check_active) : false);
+  }
 
-int
-tree_statement::line (void) const
-{
-  return cmd ? cmd->line () : (expr ? expr->line () : -1);
-}
+  std::string
+  tree_statement::bp_cond () const
+  {
+    return (m_command
+            ? m_command->bp_cond ()
+            : (m_expression ? m_expression->bp_cond () : "0"));
+  }
 
-int
-tree_statement::column (void) const
-{
-  return cmd ? cmd->column () : (expr ? expr->column () : -1);
-}
+  int
+  tree_statement::line (void) const
+  {
+    return (m_command
+            ? m_command->line ()
+            : (m_expression ? m_expression->line () : -1));
+  }
 
-void
-tree_statement::set_location (int l, int c)
-{
-  if (cmd)
-    cmd->set_location (l, c);
-  else if (expr)
-    expr->set_location (l, c);
-}
+  int
+  tree_statement::column (void) const
+  {
+    return (m_command
+            ? m_command->column ()
+            : (m_expression ? m_expression->column () : -1));
+  }
 
-void
-tree_statement::echo_code (void)
-{
-  tree_print_code tpc (octave_stdout, VPS4);
+  void
+  tree_statement::set_location (int l, int c)
+  {
+    if (m_command)
+      m_command->set_location (l, c);
+    else if (m_expression)
+      m_expression->set_location (l, c);
+  }
 
-  accept (tpc);
-}
+  void
+  tree_statement::echo_code (const std::string& prefix)
+  {
+    tree_print_code tpc (octave_stdout, prefix);
 
-bool
-tree_statement::is_end_of_fcn_or_script (void) const
-{
-  bool retval = false;
+    accept (tpc);
+  }
 
-  if (cmd)
-    {
-      tree_no_op_command *no_op_cmd
-        = dynamic_cast<tree_no_op_command *> (cmd);
+  bool
+  tree_statement::is_end_of_fcn_or_script (void) const
+  {
+    bool retval = false;
 
-      if (no_op_cmd)
-        retval = no_op_cmd->is_end_of_fcn_or_script ();
-    }
+    if (m_command)
+      {
+        tree_no_op_command *no_op_cmd
+          = dynamic_cast<tree_no_op_command *> (m_command);
 
-  return retval;
-}
+        if (no_op_cmd)
+          retval = no_op_cmd->is_end_of_fcn_or_script ();
+      }
 
-bool
-tree_statement::is_end_of_file (void) const
-{
-  bool retval = false;
+    return retval;
+  }
 
-  if (cmd)
-    {
-      tree_no_op_command *no_op_cmd
-        = dynamic_cast<tree_no_op_command *> (cmd);
+  bool
+  tree_statement::is_end_of_file (void) const
+  {
+    bool retval = false;
 
-      if (no_op_cmd)
-        retval = no_op_cmd->is_end_of_file ();
-    }
+    if (m_command)
+      {
+        tree_no_op_command *no_op_cmd
+          = dynamic_cast<tree_no_op_command *> (m_command);
 
-  return retval;
-}
+        if (no_op_cmd)
+          retval = no_op_cmd->is_end_of_file ();
+      }
 
-tree_statement *
-tree_statement::dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const
-{
-  tree_statement *new_stmt = new tree_statement ();
+    return retval;
+  }
 
-  new_stmt->cmd = cmd ? cmd->dup (scope, context) : 0;
+  // Create a "breakpoint" tree-walker, and get it to "walk" this
+  // statement list
+  // (FIXME: What does that do???)
 
-  new_stmt->expr = expr ? expr->dup (scope, context) : 0;
+  int
+  tree_statement_list::set_breakpoint (int line, const std::string& condition)
+  {
+    tree_breakpoint tbp (line, tree_breakpoint::set, condition);
+    accept (tbp);
 
-  new_stmt->comm = comm ? comm->dup () : 0;
+    return tbp.get_line ();
+  }
 
-  return new_stmt;
-}
+  void
+  tree_statement_list::delete_breakpoint (int line)
+  {
+    if (line < 0)
+      {
+        octave_value_list bp_lst = list_breakpoints ();
 
-void
-tree_statement::accept (tree_walker& tw)
-{
-  tw.visit_statement (*this);
-}
+        int len = bp_lst.length ();
 
-// Create a "breakpoint" tree-walker, and get it to "walk" this statement list
-// (FIXME: What does that do???)
-int
-tree_statement_list::set_breakpoint (int line, const std::string& condition)
-{
-  tree_breakpoint tbp (line, tree_breakpoint::set, condition);
-  accept (tbp);
+        for (int i = 0; i < len; i++)
+          {
+            tree_breakpoint tbp (i, tree_breakpoint::clear);
+            accept (tbp);
+          }
+      }
+    else
+      {
+        tree_breakpoint tbp (line, tree_breakpoint::clear);
+        accept (tbp);
+      }
+  }
 
-  return tbp.get_line ();
-}
+  octave_value_list
+  tree_statement_list::list_breakpoints (void)
+  {
+    tree_breakpoint tbp (0, tree_breakpoint::list);
+    accept (tbp);
 
-void
-tree_statement_list::delete_breakpoint (int line)
-{
-  if (line < 0)
-    {
-      octave_value_list bp_lst = list_breakpoints ();
+    return tbp.get_list ();
+  }
 
-      int len = bp_lst.length ();
+  // Get list of pairs (breakpoint line, breakpoint condition)
+  std::list<bp_type>
+  tree_statement_list::breakpoints_and_conds (void)
+  {
+    tree_breakpoint tbp (0, tree_breakpoint::list);
+    accept (tbp);
 
-      for (int i = 0; i < len; i++)
-        {
-          tree_breakpoint tbp (i, tree_breakpoint::clear);
-          accept (tbp);
-        }
-    }
-  else
-    {
-      tree_breakpoint tbp (line, tree_breakpoint::clear);
-      accept (tbp);
-    }
-}
+    std::list<bp_type> retval;
+    octave_value_list lines = tbp.get_list ();
+    octave_value_list conds = tbp.get_cond_list ();
 
-octave_value_list
-tree_statement_list::list_breakpoints (void)
-{
-  tree_breakpoint tbp (0, tree_breakpoint::list);
-  accept (tbp);
+    for (int i = 0; i < lines.length (); i++)
+      {
+        retval.push_back (bp_type (lines(i).double_value (),
+                                   conds(i).string_value ()));
+      }
 
-  return tbp.get_list ();
-}
+    return retval;
+  }
 
-// Get list of pairs (breakpoint line, breakpoint condition)
-std::list<bp_type>
-tree_statement_list::breakpoints_and_conds (void)
-{
-  tree_breakpoint tbp (0, tree_breakpoint::list);
-  accept (tbp);
+  // Add breakpoints to  file  at multiple lines (the second arguments
+  // of  line), to stop only if  condition  is true.
+  // Updates GUI via  octave_link::update_breakpoint.
+  // FIXME: COME BACK TO ME.
 
-  std::list<bp_type> retval;
-  octave_value_list lines = tbp.get_list ();
-  octave_value_list conds = tbp.get_cond_list ();
+  bp_table::intmap
+  tree_statement_list::add_breakpoint (const std::string& file,
+                                       const bp_table::intmap& line,
+                                       const std::string& condition)
+  {
+    bp_table::intmap retval;
 
-  for (int i = 0; i < lines.length (); i++)
-    {
-      retval.push_back (bp_type (lines(i).double_value (),
-                                 conds(i).string_value ()));
-    }
+    octave_idx_type len = line.size ();
 
-  return retval;
-}
+    for (int i = 0; i < len; i++)
+      {
+        bp_table::const_intmap_iterator p = line.find (i);
 
-// Add breakpoints to  file  at multiple lines (the second arguments of  line),
-// to stop only if  condition  is true.
-// Updates GUI via  octave_link::update_breakpoint.
-// FIXME: COME BACK TO ME.
-bp_table::intmap
-tree_statement_list::add_breakpoint (const std::string& file,
-                                     const bp_table::intmap& line,
-                                     const std::string& condition)
-{
-  bp_table::intmap retval;
+        if (p != line.end ())
+          {
+            int lineno = p->second;
 
-  octave_idx_type len = line.size ();
+            retval[i] = set_breakpoint (lineno, condition);
 
-  for (int i = 0; i < len; i++)
-    {
-      bp_table::const_intmap_iterator p = line.find (i);
+            if (retval[i] != 0 && ! file.empty ())
+              octave_link::update_breakpoint (true, file, retval[i], condition);
+          }
+      }
 
-      if (p != line.end ())
-        {
-          int lineno = p->second;
+    return retval;
+  }
 
-          retval[i] = set_breakpoint (lineno, condition);
+  bp_table::intmap
+  tree_statement_list::remove_all_breakpoints (const std::string& file)
+  {
+    bp_table::intmap retval;
 
-          if (retval[i] != 0 && ! file.empty ())
-            octave_link::update_breakpoint (true, file, retval[i], condition);
-        }
-    }
+    octave_value_list bkpts = list_breakpoints ();
 
-  return retval;
-}
+    for (int i = 0; i < bkpts.length (); i++)
+      {
+        int lineno = static_cast<int> (bkpts(i).int_value ());
 
-bp_table::intmap
-tree_statement_list::remove_all_breakpoints (const std::string& file)
-{
-  bp_table::intmap retval;
+        delete_breakpoint (lineno);
 
-  octave_value_list bkpts = list_breakpoints ();
+        retval[i] = lineno;
 
-  for (int i = 0; i < bkpts.length (); i++)
-    {
-      int lineno = static_cast<int> (bkpts(i).int_value ());
+        if (! file.empty ())
+          octave_link::update_breakpoint (false, file, lineno);
+      }
 
-      delete_breakpoint (lineno);
-
-      retval[i] = lineno;
-
-      if (! file.empty ())
-        octave_link::update_breakpoint (false, file, lineno);
-    }
-
-  return retval;
-}
-
-tree_statement_list *
-tree_statement_list::dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const
-{
-  tree_statement_list *new_list = new tree_statement_list ();
-
-  new_list->function_body = function_body;
-
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_statement *elt = *p;
-
-      new_list->append (elt ? elt->dup (scope, context) : 0);
-    }
-
-  return new_list;
-}
-
-void
-tree_statement_list::accept (tree_walker& tw)
-{
-  tw.visit_statement_list (*this);
+    return retval;
+  }
 }

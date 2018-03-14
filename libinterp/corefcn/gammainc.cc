@@ -4,19 +4,19 @@ Copyright (C) 1997-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -86,7 +86,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
   bool lower = true;
   if (nargin == 3)
     {
-      std::string s = args(2).xstring_value ("gammainc: third argument must be \"lower\" or \"upper\"");
+      std::string s = args(2).xstring_value (R"(gammainc: third argument must be "lower" or "upper")");
 
       std::transform (s.begin (), s.end (), s.begin (), tolower);
 
@@ -95,7 +95,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
       else if (s == "lower")
         lower = true;
       else
-        error ("gammainc: third argument must be \"lower\" or \"upper\"");
+        error (R"(gammainc: third argument must be "lower" or "upper")");
     }
 
   octave_value retval;
@@ -114,15 +114,15 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
             {
               float a = a_arg.float_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0f - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0f - octave::math::gammainc (x, a));
             }
           else
             {
               FloatNDArray a = a_arg.float_array_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0f - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0f - octave::math::gammainc (x, a));
             }
         }
       else
@@ -133,15 +133,15 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
             {
               float a = a_arg.float_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0f - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0f - octave::math::gammainc (x, a));
             }
           else
             {
               FloatNDArray a = a_arg.float_array_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0f - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0f - octave::math::gammainc (x, a));
             }
         }
     }
@@ -155,15 +155,15 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
             {
               double a = a_arg.double_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0 - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0 - octave::math::gammainc (x, a));
             }
           else
             {
               NDArray a = a_arg.array_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0 - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0 - octave::math::gammainc (x, a));
             }
         }
       else
@@ -174,15 +174,15 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
             {
               double a = a_arg.double_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0 - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0 - octave::math::gammainc (x, a));
             }
           else
             {
               NDArray a = a_arg.array_value ();
 
-              retval = lower ? octave::math::gammainc (x, a)
-                             : 1.0 - octave::math::gammainc (x, a);
+              retval = (lower ? octave::math::gammainc (x, a)
+                              : 1.0 - octave::math::gammainc (x, a));
             }
         }
     }

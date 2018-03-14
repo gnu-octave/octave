@@ -4,19 +4,19 @@
 #
 # This file is part of Octave.
 #
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at
-# your option) any later version.
+# Octave is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
+# Octave is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
-# <http://www.gnu.org/licenses/>.
+# <https://www.gnu.org/licenses/>.
 
 # This Makefile requires GNU Make features.
 
@@ -26,6 +26,7 @@ export FIND
 export SED
 export SHELL
 export PERL
+export TAR_OPTIONS
 
 version := ${OCTAVE_VERSION}
 api_version := ${OCTAVE_API_VERSION}
@@ -80,6 +81,13 @@ LIBOCTGUI_LINK_OPTS = @LIBOCTGUI_LINK_OPTS@
 OCTAVE_GUI_LINK_DEPS = @OCTAVE_GUI_LINK_DEPS@
 OCTAVE_GUI_LINK_OPTS = @OCTAVE_GUI_LINK_OPTS@
 
+# Options used for creating the source distribution.
+
+GZIP_ENV = '--best --no-name'
+SOURCE_MTIME := \
+  $(shell $(SHELL) $(top_srcdir)/build-aux/get-source-mtime.sh "$(srcdir)")
+TAR_OPTIONS = $(REPRODUCIBLE_TAR_FLAGS) --mtime=@$(SOURCE_MTIME)
+
 # The arguments passed to configure.
 
 CONFIG_SUBDIRS = @subdirs@
@@ -92,13 +100,13 @@ octdata_DATA =
 octetc_DATA =
 octlocale_DATA =
 
-ACLOCAL_AMFLAGS = -I m4
-
 DOC_TARGETS =
 
 BUILT_DISTFILES =
 BUILT_NODISTFILES =
 EXTRA_DIST =
+
+GEN_CONFIG_SHELL =
 
 BUILT_DISTFILES += \
   AUTHORS \
@@ -113,49 +121,8 @@ EXTRA_DIST += \
   INSTALL \
   NEWS \
   README \
-  build-aux/OctJavaQry.class \
-  build-aux/OctJavaQry.java \
-  build-aux/changelog.tmpl \
-  build-aux/check-subst-vars.in.sh \
-  build-aux/find-defun-files.sh \
-  build-aux/find-files-with-tests.sh \
-  build-aux/mk-builtins.sh \
-  build-aux/mk-default-qt-settings.in.sh \
-  build-aux/mk-f77-def.in.sh \
-  build-aux/mk-hg-id.sh \
-  build-aux/mk-mxarray-h.in.sh \
-  build-aux/mk-octave-config-h.sh \
-  build-aux/mk-opts.pl \
-  build-aux/mk-version-h.in.sh \
-  build-aux/move-if-change \
-  build-aux/stl_algo.h-fixed \
-  build-aux/subst-config-vals.in.sh \
-  build-aux/subst-cross-config-vals.in.sh \
-  build-aux/subst-default-vals.in.sh \
-  build-aux/subst-f77-isnan-macro.in.sh \
-  build-aux/subst-script-vals.in.sh \
   run-octave.in \
   $(BUILT_DISTFILES)
-
-GEN_CONFIG_SHELL = \
-  build-aux/mk-default-qt-settings.sh \
-  build-aux/mk-f77-def.sh \
-  build-aux/mk-mxarray-h.sh \
-  build-aux/mk-version-h.sh \
-  build-aux/subst-config-vals.sh \
-  build-aux/subst-cross-config-vals.sh \
-  build-aux/subst-default-vals.sh \
-  build-aux/subst-f77-isnan-macro.sh \
-  build-aux/subst-script-vals.sh
-
-$(GEN_CONFIG_SHELL) : %.sh : %.in.sh config.status
-	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
-
-GEN_CONFIG_INC = \
-  oct-conf-post.h
-
-$(GEN_CONFIG_INC) : %.h : %.in.h config.status
-	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
 
 AUTOCONF_SUBST_VARS = @AUTOCONF_SUBST_VARS@
 ALL_SUBST_VARS = \
@@ -244,10 +211,12 @@ include etc/module.mk
 include examples/module.mk
 include m4/module.mk
 include test/module.mk
+include build-aux/module.mk
 
 DIST_HOOKS := \
   doc-interpreter-dist-hook \
   docs-dist-hook \
+  fix-file-perms-dist-hook \
   hg-id-dist-hook \
   icons-dist-hook \
   scripts-dist-hook
@@ -260,6 +229,16 @@ else
 docs-dist-hook:
 	@echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
 endif
+
+## Ensure file permissions are consistent on all files included in the
+## distribution.  Automake takes care of normalizing some permissions of
+## normal files and directories.  Automake does not ensure that files don't
+## have unnecessarily lax write permissions.  It also does not ensure that
+## executable permissions are set for group and other users.
+fix-file-perms-dist-hook:
+	-chmod -R go-w "$(distdir)"
+	-find "$(distdir)" -type f -perm -100 -exec chmod a+rx {} \;
+.PHONY: fix-file-perms-dist-hook
 
 if AMCOND_ENABLE_HG_ID
 hg-id-dist-hook:
@@ -365,7 +344,7 @@ nonexistent-file:
 .PHONY: nonexistent-file
 
 .gdbinit: etc/gdbinit
-	@$(gdbinit_install_rule)
+	$(AM_V_GEN)$(gdbinit-install-rule)
 
 define changelog-from-hg-log
   rm -f $@-t && \
@@ -420,7 +399,7 @@ DIRS_TO_MAKE = \
 installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
-install-data-local: installdirs-local
+install-data-local: installdirs-local doc-interpreter-install-doc-local
 
 clean-local: doc-clean
 
@@ -454,6 +433,14 @@ define cp_update_rule
     cp ${srcdir}/$@ $@; \
     touch -r ${srcdir}/$@ $@; \
   fi
+endef
+
+define build-info-commands
+  rm -f $@-t && \
+  $(SED) \
+    -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
+    -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
+  $(simple_move_if_change_rule)
 endef
 
 define simple-filter-rule
@@ -494,11 +481,10 @@ define subst-bison-api-decls
   mv $@-t $@
 endef
 
-define gdbinit_install_rule
-  if [ -f $@ ]; then \
+define gdbinit-install-rule
+  if [ -f $@ ] && ! cmp -s $< $@; then \
     echo "refusing to overwrite $@ with newer version from $<" 1>&2; \
   else \
-    echo "Installing $@ from version at $<" ; \
     cp $< $@; \
   fi
 endef

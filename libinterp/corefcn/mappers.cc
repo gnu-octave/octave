@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
-#include <cfloat>
 
 #include "lo-ieee.h"
 #include "lo-specfun.h"
@@ -114,21 +113,28 @@ Compute the inverse cosine in radians for each element of @var{x}.
 ## Test values on either side of branch cut
 %!test
 %! rval = 0;
-%! ival = 1.31695789692481635;
+%! ival = 1.31695789692481671;
 %! obs = acos ([2, 2-i*eps, 2+i*eps]);
 %! exp = [rval + ival*i, rval + ival*i, rval - ival*i];
-%! assert (obs, exp, 2*eps);
+%! assert (obs, exp, 3*eps);
 %! rval = pi;
 %! obs = acos ([-2, -2-i*eps, -2+i*eps]);
 %! exp = [rval - ival*i, rval + ival*i, rval - ival*i];
-%! assert (obs, exp, 2*eps);
-%! assert (acos ([2 0]),  [ival*i, pi/2], 2*eps);
-%! assert (acos ([2 0i]), [ival*i, pi/2], 2*eps);
+%! assert (obs, exp, 5*eps);
+%! assert (acos ([2 0]),  [ival*i, pi/2], 3*eps);
+%! assert (acos ([2 0i]), [ival*i, pi/2], 3*eps);
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!testif ; ! ismac ()   <*45507>
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [0, pi, pi/2, pi/2];
+%! assert (real (acos (x)), v);
+
+%!xtest <52627>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! ## Mac trig/hyperbolic functions have huge tolerances.
+%! if (! ismac ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
@@ -151,7 +157,15 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 }
 
 /*
-%!test
+%!testif ; ! ismac ()
+%! x = [1, 0, -1, 0];
+%! v = [0, pi/2*i, pi*i, pi/2*i];
+%! assert (acosh (x), v, sqrt (eps));
+
+%!xtest <52627>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! ## Mac trig/hyperbolic functions have huge tolerances.
+%! if (! ismac ()), return; endif
 %! x = [1, 0, -1, 0];
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
@@ -166,7 +180,15 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! im = pi/2;
 %! assert (acosh (-10i), re - i*im);
 
-%!test
+%!testif ; ! ismac ()
+%! x = single ([1, 0, -1, 0]);
+%! v = single ([0, pi/2*i, pi*i, pi/2*i]);
+%! assert (acosh (x), v, sqrt (eps ("single")));
+
+%!xtest <52627>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! ## Mac trig/hyperbolic functions have huge tolerances.
+%! if (! ismac ()), return; endif
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
@@ -178,9 +200,16 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! assert (acosh (single (-10i)), re - i*im, 5*eps ("single"));
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!testif ; ! ismac ()   <*45507>
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [0, pi, pi/2, -pi/2];
+%! assert (imag (acosh (x)), v);
+
+%!xtest <52627>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! ## Mac trig/hyperbolic functions have huge tolerances.
+%! if (! ismac ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
@@ -299,9 +328,16 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! assert (asin ([2 0i]), [rval - ival*i, 0], 2*eps);
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!testif ; ! ismac ()   <*45507>
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [pi/2, -pi/2, 0, -0];
+%! assert (real (asin (x)), v);
+
+%!xtest <52627>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! ## Mac trig/hyperbolic functions have huge tolerances.
+%! if (! ismac ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
@@ -335,9 +371,16 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! assert (asinh (x), v,  sqrt (eps ("single")));
 
 ## Test large magnitude arguments (bug #45507)
-## FIXME: Test fails with older versions of libm. Try to detect and work
-##        around this, or wait until working version of libm is widespread?
-%!xtest <45507>
+## Test fails with older versions of libm, solution is to upgrade.
+%!testif ; ! ismac ()   <*45507>
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [0, 0, pi/2, -pi/2];
+%! assert (imag (asinh (x)), v);
+
+%!xtest <52627>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! ## Mac trig/hyperbolic functions have huge tolerances.
+%! if (! ismac ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
@@ -375,7 +418,7 @@ Compute the inverse tangent in radians for each element of @var{x}.
 %! assert (atan (x), v, sqrt (eps ("single")));
 
 ## Test large magnitude arguments (bug #44310, bug #45507)
-%!test <44310>
+%!test <*44310>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, -pi/2, pi/2, -pi/2];
 %! assert (real (atan (x)), v);
@@ -410,7 +453,7 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.
 %! assert (atanh (x), v, sqrt (eps ("single")));
 
 ## Test large magnitude arguments (bug #44310, bug #45507)
-%!test <44310>
+%!test <*44310>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, pi/2, pi/2, -pi/2];
 %! assert (imag (atanh (x)), v);
@@ -1167,9 +1210,9 @@ This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"Z") + 1) = true;
-%! result(toascii ("0":"9") + 1) = true;
-%! result(toascii ("a":"z") + 1) = true;
+%! result(double ("A":"Z") + 1) = true;
+%! result(double ("0":"9") + 1) = true;
+%! result(double ("a":"z") + 1) = true;
 %! assert (isalnum (charset), result);
 
 %!error isalnum ()
@@ -1196,8 +1239,8 @@ This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"Z") + 1) = true;
-%! result(toascii ("a":"z") + 1) = true;
+%! result(double ("A":"Z") + 1) = true;
+%! result(double ("a":"z") + 1) = true;
 %! assert (isalpha (charset), result);
 
 %!error isalpha ()
@@ -1272,7 +1315,7 @@ decimal digits (0-9) and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("0":"9") + 1) = true;
+%! result(double ("0":"9") + 1) = true;
 %! assert (isdigit (charset), result);
 
 %!error isdigit ()
@@ -1363,7 +1406,7 @@ lowercase letters and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("a":"z") + 1) = true;
+%! result(double ("a":"z") + 1) = true;
 %! assert (islower (charset), result);
 
 %!error islower ()
@@ -1523,7 +1566,7 @@ vertical tab) and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii (" \f\n\r\t\v") + 1) = true;
+%! result(double (" \f\n\r\t\v") + 1) = true;
 %! assert (isspace (charset), result);
 
 %!error isspace ()
@@ -1548,7 +1591,7 @@ uppercase letters and false where they are not.
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"Z") + 1) = true;
+%! result(double ("A":"Z") + 1) = true;
 %! assert (isupper (charset), result);
 
 %!error isupper ()
@@ -1573,9 +1616,9 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).
 %!test
 %! charset = char (0:127);
 %! result = false (1, 128);
-%! result(toascii ("A":"F") + 1) = true;
-%! result(toascii ("0":"9") + 1) = true;
-%! result(toascii ("a":"f") + 1) = true;
+%! result(double ("A":"F") + 1) = true;
+%! result(double ("0":"9") + 1) = true;
+%! result(double ("a":"f") + 1) = true;
 %! assert (isxdigit (charset), result);
 
 %!error isxdigit ()
@@ -2063,41 +2106,6 @@ Compute hyperbolic tangent for each element of @var{x}.
 %!error tanh (1, 2)
 */
 
-DEFUNX ("toascii", Ftoascii, args, ,
-        doc: /* -*- texinfo -*-
-@deftypefn {} {} toascii (@var{s})
-Return ASCII representation of @var{s} in a matrix.
-
-For example:
-
-@example
-@group
-toascii ("ASCII")
-     @result{} [ 65, 83, 67, 73, 73 ]
-@end group
-
-@end example
-@seealso{char}
-@end deftypefn */)
-{
-  if (args.length () != 1)
-    print_usage ();
-
-  return ovl (args(0).xtoascii ());
-}
-
-/*
-%!assert (toascii (char (0:127)), 0:127)
-%!assert (toascii (" ":"@"), 32:64)
-%!assert (toascii ("A":"Z"), 65:90)
-%!assert (toascii ("[":"`"), 91:96)
-%!assert (toascii ("a":"z"), 97:122)
-%!assert (toascii ("{":"~"), 123:126)
-
-%!error toascii ()
-%!error toascii (1, 2)
-*/
-
 DEFUNX ("tolower", Ftolower, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn  {} {} tolower (@var{s})
@@ -2133,6 +2141,11 @@ DEFALIAS (lower, tolower);
 %!assert (tolower ({["ABC"; "DEF"]}), {["abc";"def"]})
 %!assert (tolower (68), 68)
 %!assert (tolower ({[68, 68; 68, 68]}), {[68, 68; 68, 68]})
+%!assert (tolower (68i), 68i)
+%!assert (tolower ({[68i, 68; 68, 68i]}), {[68i, 68; 68, 68i]})
+%!assert (tolower (single (68i)), single (68i))
+%!assert (tolower ({single([68i, 68; 68, 68i])}), {single([68i, 68; 68, 68i])})
+
 %!test
 %! classes = {@char, @double, @single, ...
 %!            @int8, @int16, @int32, @int64, ...
@@ -2149,7 +2162,7 @@ DEFALIAS (lower, tolower);
 %!test
 %! charset = char (0:127);
 %! result = charset;
-%! result (toascii ("A":"Z") + 1) = result (toascii ("a":"z") + 1);
+%! result (double ("A":"Z") + 1) = result (double ("a":"z") + 1);
 %! assert (tolower (charset), result);
 
 %!error <Invalid call to tolower> lower ()
@@ -2192,6 +2205,12 @@ DEFALIAS (upper, toupper);
 %!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})
 %!assert (toupper (100), 100)
 %!assert (toupper ({[100, 100; 100, 100]}), {[100, 100; 100, 100]})
+%!assert (toupper (100i), 100i)
+%!assert (toupper ({[100i, 100; 100, 100i]}), {[100i, 100; 100, 100i]})
+%!assert (toupper (single (100i)), single (100i))
+%!assert (toupper ({single([100i, 100; 100, 100i])}),
+%!                 {single([100i, 100; 100, 100i])})
+
 %!test
 %! classes = {@char, @double, @single, ...
 %!            @int8, @int16, @int32, @int64, ...
@@ -2207,7 +2226,7 @@ DEFALIAS (upper, toupper);
 %!test
 %! charset = char (0:127);
 %! result = charset;
-%! result (toascii  ("a":"z") + 1) = result (toascii  ("A":"Z") + 1);
+%! result (double  ("a":"z") + 1) = result (double  ("A":"Z") + 1);
 %! assert (toupper (charset), result);
 
 %!error <Invalid call to toupper> toupper ()

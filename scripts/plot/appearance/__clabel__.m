@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{h} =} __clabel__ (@var{c}, @var{v}, @var{hparent}, @var{label_spacing}, @var{z}, @var{varargin})
@@ -32,8 +32,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   xspacing = axpos(3) / (lims(2) - lims (1));
   yspacing = axpos(4) / (lims(4) - lims (3));
 
-  if (isscalar (hparent) && ishandle (hparent)
-      && strcmp (get (hparent, "type"), "hggroup"))
+  if (isscalar (hparent) && isgraphics (hparent, "hggroup"))
     x = get (hparent, "xdata");
     xmin = min (x(:));
     xmax = max (x(:));

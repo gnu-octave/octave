@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -73,7 +73,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_matrix,
 octave_base_value *
 octave_float_complex_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.numel () == 1)
     {
@@ -103,7 +103,7 @@ octave_float_complex_matrix::double_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "complex matrix", "real scalar");
 
-  return octave::math::real (matrix(0, 0));
+  return std::real (matrix(0, 0));
 }
 
 float
@@ -119,7 +119,7 @@ octave_float_complex_matrix::float_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "complex matrix", "real scalar");
 
-  return octave::math::real (matrix(0, 0));
+  return std::real (matrix(0, 0));
 }
 
 Matrix
@@ -218,7 +218,7 @@ octave_float_complex_matrix::char_array_value (bool frc_str_conv) const
       octave_idx_type nel = numel ();
 
       for (octave_idx_type i = 0; i < nel; i++)
-        retval.elem (i) = static_cast<char>(octave::math::real (matrix.elem (i)));
+        retval.elem (i) = static_cast<char>(std::real (matrix.elem (i)));
     }
 
   return retval;
@@ -298,7 +298,7 @@ octave_float_complex_matrix::save_ascii (std::ostream& os)
       os << "# ndims: " << dv.ndims () << "\n";
 
       for (int i = 0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
 
       os << "\n" << tmp;
     }
@@ -513,7 +513,7 @@ octave_float_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, 0);
+  space_hid = H5Screate_simple (rank, hdims, nullptr);
   if (space_hid < 0) return false;
 
   hid_t save_type_hid = H5T_NATIVE_FLOAT;
@@ -686,8 +686,8 @@ octave_float_complex_matrix::as_mxArray (void) const
 
   for (mwIndex i = 0; i < nel; i++)
     {
-      pr[i] = octave::math::real (p[i]);
-      pi[i] = octave::math::imag (p[i]);
+      pr[i] = std::real (p[i]);
+      pi[i] = std::imag (p[i]);
     }
 
   return retval;
@@ -705,6 +705,11 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
       return ::imag (matrix);
     case umap_conj:
       return ::conj (matrix);
+
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return matrix;
 
 #define ARRAY_METHOD_MAPPER(UMAP, FCN)        \
     case umap_ ## UMAP:                       \
@@ -751,7 +756,7 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
     ARRAY_MAPPER (sqrt, FloatComplex, std::sqrt);
     ARRAY_MAPPER (tan, FloatComplex, std::tan);
     ARRAY_MAPPER (tanh, FloatComplex, std::tanh);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
 
     default:
       return octave_base_value::map (umap);

@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -31,29 +31,34 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 #include <list>
+#include <map>
 
 #include "Range.h"
 #include "data-conv.h"
 #include "idx-vector.h"
 #include "mach-info.h"
 #include "mx-base.h"
+#include "oct-sort.h"
 #include "oct-time.h"
 #include "str-vec.h"
 
-#include "oct-sort.h"
+namespace octave
+{
+  class type_info;
+}
 
 class Cell;
+class float_format;
 class mxArray;
 class octave_map;
 class octave_scalar_map;
-class octave_stream;
 class octave_function;
 class octave_user_function;
 class octave_fcn_handle;
 class octave_fcn_inline;
 class octave_value_list;
-class octave_lvalue;
 
+#include "oct-stream.h"
 #include "ov-base.h"
 
 // Forward declarations of friend functions that have default arguments.
@@ -240,15 +245,6 @@ public:
   octave_value (const charNDArray& chnda, char type = '\'');
   octave_value (const Array<char>& chnda, char type = '\'');
 
-  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
-  octave_value (const charMatrix& chm, bool is_string, char type = '\'');
-
-  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
-  octave_value (const charNDArray& chnda, bool is_string, char type = '\'');
-
-  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
-  octave_value (const Array<char>& chnda, bool is_string, char type = '\'');
-
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m,
@@ -289,17 +285,22 @@ public:
   octave_value (const Range& r, bool force_range = false);
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
+  octave_value (const std::map<std::string, octave_value>&);
   octave_value (const octave_map& m, const std::string& id,
                 const std::list<std::string>& plist);
   octave_value (const octave_scalar_map& m, const std::string& id,
                 const std::list<std::string>& plist);
-  octave_value (const octave_value_list& m, bool = false);
+
+  OCTAVE_DEPRECATED (4.4, "note: second argument is always ignored; use octave_value (const octave_value_list&) instead")
+  octave_value (const octave_value_list& m, bool);
+
+  // This one is explicit because it can cause some trouble to
+  // accidentally create a cs-list when one was not intended.
+  explicit octave_value (const octave_value_list& m);
+
   octave_value (octave_value::magic_colon);
 
   octave_value (octave_base_value *new_rep, bool borrow = false);
-
-  OCTAVE_DEPRECATED ("note: in the future there will be no way to directly set reference count")
-  octave_value (octave_base_value *new_rep, int xcount);
 
   // Copy constructor.
 
@@ -311,9 +312,9 @@ public:
 
   // This should only be called for derived types.
 
-  octave_base_value *clone (void) const;
+  octave_base_value * clone (void) const;
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return rep->empty_clone (); }
 
   // Delete the representation of this constant if the count drops to zero.
@@ -401,7 +402,7 @@ public:
   octave_value as_uint32 (void) const { return rep->as_uint32 (); }
   octave_value as_uint64 (void) const { return rep->as_uint64 (); }
 
-  octave_base_value *try_narrowing_conversion (void)
+  octave_base_value * try_narrowing_conversion (void)
   { return rep->try_narrowing_conversion (); }
 
   // Close to dims (), but can be overloaded for classes.
@@ -427,11 +428,6 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout,
-                             const std::list<octave_lvalue> *lvalue_list);
-
   octave_value next_subsref (const std::string& type, const
                              std::list<octave_value_list>& idx,
                              size_t skip = 1);
@@ -441,12 +437,6 @@ public:
                                   std::list<octave_value_list>& idx,
                                   size_t skip = 1);
 
-  octave_value_list next_subsref (int nargout,
-                                  const std::string& type, const
-                                  std::list<octave_value_list>& idx,
-                                  const std::list<octave_lvalue> *lvalue_list,
-                                  size_t skip = 1);
-
   octave_value next_subsref (bool auto_add, const std::string& type, const
                              std::list<octave_value_list>& idx,
                              size_t skip = 1);
@@ -454,13 +444,6 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
   { return rep->do_index_op (idx, resize_ok); }
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx,
-                     const std::list<octave_lvalue> *lvalue_list);
 
   octave_value subsasgn (const std::string& type,
                          const std::list<octave_value_list>& idx,
@@ -496,10 +479,14 @@ public:
 
   bool all_zero_dims (void) const { return dims ().all_zero (); }
 
+  // Are the dimensions of this constant zero by zero?
+  bool is_zero_by_zero (void) const
+  { return (ndims () == 2 && rows () == 0 && columns () == 0); }
+
   octave_idx_type numel (void) const
   { return rep->numel (); }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type capacity (void) const
   { return rep->numel (); }
 
@@ -539,14 +526,26 @@ public:
   bool is_undefined (void) const
   { return ! is_defined (); }
 
+  bool isempty (void) const
+  { return rep->isempty (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
   bool is_empty (void) const
-  { return rep->is_empty (); }
+  { return rep->isempty (); }
 
+  bool iscell (void) const
+  { return rep->iscell (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'iscell' instead")
   bool is_cell (void) const
-  { return rep->is_cell (); }
+  { return rep->iscell (); }
 
+  bool iscellstr (void) const
+  { return rep->iscellstr (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'iscellstr' instead")
   bool is_cellstr (void) const
-  { return rep->is_cellstr (); }
+  { return rep->iscellstr (); }
 
   bool is_real_scalar (void) const
   { return rep->is_real_scalar (); }
@@ -587,17 +586,38 @@ public:
   bool is_range (void) const
   { return rep->is_range (); }
 
-  bool is_map (void) const
-  { return rep->is_map (); }
+  bool isstruct (void) const
+  { return rep->isstruct (); }
 
-  bool is_object (void) const
-  { return rep->is_object (); }
+  OCTAVE_DEPRECATED (4.4, "use 'isstruct' instead")
+  bool is_map (void) const
+  { return rep->isstruct (); }
+
+  bool is_classdef_meta (void) const
+  { return rep->is_classdef_meta (); }
 
   bool is_classdef_object (void) const
   { return rep->is_classdef_object (); }
 
+  bool is_classdef_superclass_ref (void) const
+  { return rep->is_classdef_superclass_ref (); }
+
+  bool is_package (void) const
+  { return rep->is_package (); }
+
+  bool isobject (void) const
+  { return rep->isobject (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isobject' instead")
+  bool is_object (void) const
+  { return rep->isobject (); }
+
+  bool isjava (void) const
+  { return rep->isjava (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isjava' instead")
   bool is_java (void) const
-  { return rep->is_java (); }
+  { return rep->isjava (); }
 
   bool is_cs_list (void) const
   { return rep->is_cs_list (); }
@@ -605,8 +625,12 @@ public:
   bool is_magic_colon (void) const
   { return rep->is_magic_colon (); }
 
+  bool isnull (void) const
+  { return rep->isnull (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isnull' instead")
   bool is_null_value (void) const
-  { return rep->is_null_value (); }
+  { return rep->isnull (); }
 
   // Are any or all of the elements in this constant nonzero?
 
@@ -627,8 +651,12 @@ public:
   bool is_single_type (void) const
   { return rep->is_single_type (); }
 
+  bool isfloat (void) const
+  { return rep->isfloat (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isfloat' instead")
   bool is_float_type (void) const
-  { return rep->is_float_type (); }
+  { return rep->isfloat (); }
 
   // Integer types.
 
@@ -656,19 +684,35 @@ public:
   bool is_uint64_type (void) const
   { return rep->is_uint64_type (); }
 
+  bool isinteger (void) const
+  { return rep->isinteger (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isinteger' instead")
+  bool is_integer_type (void) const
+  { return rep->isinteger (); }
+
   // Other type stuff.
 
+  bool islogical (void) const
+  { return rep->islogical (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'islogical' instead")
   bool is_bool_type (void) const
-  { return rep->is_bool_type (); }
+  { return rep->islogical (); }
 
-  bool is_integer_type (void) const
-  { return rep->is_integer_type (); }
+  bool isreal (void) const
+  { return rep->isreal (); }
 
+  OCTAVE_DEPRECATED (4.4, "use 'isreal' instead")
   bool is_real_type (void) const
-  { return rep->is_real_type (); }
+  { return rep->isreal (); }
 
+  bool iscomplex (void) const
+  { return rep->iscomplex (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'iscomplex' instead")
   bool is_complex_type (void) const
-  { return rep->is_complex_type (); }
+  { return rep->iscomplex (); }
 
   bool is_scalar_type (void) const
   { return rep->is_scalar_type (); }
@@ -676,11 +720,19 @@ public:
   bool is_matrix_type (void) const
   { return rep->is_matrix_type (); }
 
-  bool is_numeric_type (void) const
-  { return rep->is_numeric_type (); }
+  bool isnumeric (void) const
+  { return rep->isnumeric (); }
 
+  OCTAVE_DEPRECATED (4.4, "use 'isnumeric' instead")
+  bool is_numeric_type (void) const
+  { return rep->isnumeric (); }
+
+  bool issparse (void) const
+  { return rep->issparse (); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'issparse' instead")
   bool is_sparse_type (void) const
-  { return rep->is_sparse_type (); }
+  { return rep->issparse (); }
 
   // Does this constant correspond to a truth value?
 
@@ -690,11 +742,6 @@ public:
   // Do two constants match (in a switch statement)?
 
   bool is_equal (const octave_value&) const;
-
-  // Are the dimensions of this constant zero by zero?
-
-  bool is_zero_by_zero (void) const
-  { return (ndims () == 2 && rows () == 0 && columns () == 0); }
 
   bool is_constant (void) const
   { return rep->is_constant (); }
@@ -911,7 +958,7 @@ public:
   string_vector string_vector_value (bool pad = false) const
   { return rep->string_vector_value (pad); }
 
-  OCTAVE_DEPRECATED ("use 'string_vector_value' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'string_vector_value' instead")
   string_vector all_strings (bool pad = false) const
   { return string_vector_value (pad); }
 
@@ -946,17 +993,19 @@ public:
   bool is_instance_of (const std::string& cls_name) const
   { return rep->is_instance_of (cls_name); }
 
-  octave_function *function_value (bool silent = false) const;
+  octave_classdef * classdef_object_value (bool silent = false) const;
 
-  octave_user_function *user_function_value (bool silent = false) const;
+  octave_function * function_value (bool silent = false) const;
 
-  octave_user_script *user_script_value (bool silent = false) const;
+  octave_user_function * user_function_value (bool silent = false) const;
 
-  octave_user_code *user_code_value (bool silent = false) const;
+  octave_user_script * user_script_value (bool silent = false) const;
 
-  octave_fcn_handle *fcn_handle_value (bool silent = false) const;
+  octave_user_code * user_code_value (bool silent = false) const;
 
-  octave_fcn_inline *fcn_inline_value (bool silent = false) const;
+  octave_fcn_handle * fcn_handle_value (bool silent = false) const;
+
+  octave_fcn_inline * fcn_inline_value (bool silent = false) const;
 
   octave_value_list list_value (void) const;
 
@@ -1170,12 +1219,12 @@ public:
 
   Array<FloatComplex> xfloat_complex_vector_value (const char *fmt, ...) const;
 
-  octave_function *xfunction_value (const char *fmt, ...) const;
-  octave_user_function *xuser_function_value (const char *fmt, ...) const;
-  octave_user_script *xuser_script_value (const char *fmt, ...) const;
-  octave_user_code *xuser_code_value (const char *fmt, ...) const;
-  octave_fcn_handle *xfcn_handle_value (const char *fmt, ...) const;
-  octave_fcn_inline *xfcn_inline_value (const char *fmt, ...) const;
+  octave_function * xfunction_value (const char *fmt, ...) const;
+  octave_user_function * xuser_function_value (const char *fmt, ...) const;
+  octave_user_script * xuser_script_value (const char *fmt, ...) const;
+  octave_user_code * xuser_code_value (const char *fmt, ...) const;
+  octave_fcn_handle * xfcn_handle_value (const char *fmt, ...) const;
+  octave_fcn_inline * xfcn_inline_value (const char *fmt, ...) const;
 
   octave_value_list xlist_value (const char *fmt, ...) const;
 
@@ -1227,6 +1276,14 @@ public:
 
   void short_disp (std::ostream& os) const { rep->short_disp (os); }
 
+  float_display_format get_edit_display_format (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const
+  {
+    return rep->edit_display (fmt, i, j);
+  }
+
   int type_id (void) const { return rep->type_id (); }
 
   std::string type_name (void) const { return rep->type_name (); }
@@ -1235,25 +1292,25 @@ public:
 
   // Unary and binary operations.
 
-  friend OCTINTERP_API octave_value do_unary_op (unary_op op,
-                                                 const octave_value& a);
+  friend OCTINTERP_API octave_value
+  do_unary_op (octave::type_info& ti, unary_op op, const octave_value& a);
 
   octave_value& do_non_const_unary_op (unary_op op);
 
   octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
                                        const std::list<octave_value_list>& idx);
 
-  friend OCTINTERP_API octave_value do_binary_op (binary_op op,
-                                                  const octave_value& a,
-                                                  const octave_value& b);
+  friend OCTINTERP_API octave_value
+  do_binary_op (octave::type_info& ti, binary_op op,
+                const octave_value& a, const octave_value& b);
 
-  friend OCTINTERP_API octave_value do_binary_op (compound_binary_op op,
-                                                  const octave_value& a,
-                                                  const octave_value& b);
+  friend OCTINTERP_API octave_value
+  do_binary_op (octave::type_info& ti, compound_binary_op op,
+                const octave_value& a, const octave_value& b);
 
-  friend OCTINTERP_API octave_value do_cat_op (const octave_value& a,
-                                               const octave_value& b,
-                                               const Array<octave_idx_type>& ra_idx);
+  friend OCTINTERP_API octave_value
+  do_cat_op (octave::type_info& ti, const octave_value& a,
+             const octave_value& b, const Array<octave_idx_type>& ra_idx);
 
   friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
                                                  const octave_value& limit,
@@ -1269,7 +1326,7 @@ public:
 
   const octave_base_value& get_rep (void) const { return *rep; }
 
-  bool is_copy_of (const octave_value &val) const { return rep == val.rep; }
+  bool is_copy_of (const octave_value& val) const { return rep == val.rep; }
 
   void print_info (std::ostream& os,
                    const std::string& prefix = "") const;
@@ -1292,21 +1349,21 @@ public:
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
   { return rep->load_hdf5 (loc_id, name); }
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const;
 
-  octave_base_value *internal_rep (void) const { return rep; }
+  octave_base_value * internal_rep (void) const { return rep; }
 
   // Unsafe.  These functions exist to support the MEX interface.
   // You should not use them anywhere else.
-  void *mex_get_data (void) const { return rep->mex_get_data (); }
+  void * mex_get_data (void) const { return rep->mex_get_data (); }
 
-  octave_idx_type *mex_get_ir (void) const { return rep->mex_get_ir (); }
+  octave_idx_type * mex_get_ir (void) const { return rep->mex_get_ir (); }
 
-  octave_idx_type *mex_get_jc (void) const { return rep->mex_get_jc (); }
+  octave_idx_type * mex_get_jc (void) const { return rep->mex_get_jc (); }
 
-  mxArray *as_mxArray (void) const { return rep->as_mxArray (); }
+  mxArray * as_mxArray (void) const { return rep->as_mxArray (); }
 
   octave_value diag (octave_idx_type k = 0) const
   { return rep->diag (k); }
@@ -1320,8 +1377,12 @@ public:
                      sortmode mode = ASCENDING) const
   { return rep->sort (sidx, dim, mode); }
 
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return rep->issorted (mode); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
   sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return rep->is_sorted (mode); }
+  { return rep->issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
   { return rep->sort_rows_idx (mode); }
@@ -1335,7 +1396,7 @@ public:
 
   bool islocked (void) const { return rep->islocked (); }
 
-  void dump (std::ostream& os) const { rep->dump (os); }
+  octave_value dump (void) const { return rep->dump (); }
 
 #define MAPPER_FORWARD(F) \
   octave_value F (void) const                           \
@@ -1404,7 +1465,6 @@ public:
   MAPPER_FORWARD (xisupper)
   MAPPER_FORWARD (xisxdigit)
   MAPPER_FORWARD (xsignbit)
-  MAPPER_FORWARD (xtoascii)
   MAPPER_FORWARD (xtolower)
   MAPPER_FORWARD (xtoupper)
 
@@ -1413,18 +1473,26 @@ public:
   octave_value map (octave_base_value::unary_mapper_t umap) const
   { return rep->map (umap); }
 
-  // Extract the n-th element, aka val(n).
-  // Result is undefined if val is not an array type or n is out of range.
-  // Never error.
+  //! Extract the n-th element, aka `val(n)`.
+  //!
+  //! @return Result is undefined if `val` is not an array type
+  //!         or @p n is out of range.
+  //!
+  //! @warning Function calls should never error.
+
   octave_value
   fast_elem_extract (octave_idx_type n) const
   { return rep->fast_elem_extract (n); }
 
-  // Assign the n-th element, aka val(n) = x.
-  // Return false if val is not an array type, x is not a matching scalar type,
-  // or n is out of range.
-  // Never error.
-  virtual bool
+  //! Assign the n-th element, aka `val(n) = x`.
+  //!
+  //! @returns false if `val` is not an array type,
+  //!          @p x is not a matching scalar type,
+  //!          or @p n is out of range.
+  //!
+  //! @warning Function calls should never error.
+
+  bool
   fast_elem_insert (octave_idx_type n, const octave_value& x)
   {
     make_unique ();
@@ -1433,7 +1501,7 @@ public:
 
 protected:
 
-  // The real representation.
+  //! The real representation.
   octave_base_value *rep;
 
 private:
@@ -1450,18 +1518,39 @@ private:
 
 };
 
-// Publish externally used friend functions.
+// Publish externally used friend functions.  Which compiler requires
+// these extra declarations?
+
+extern OCTINTERP_API octave_value
+do_unary_op (octave::type_info& ti, octave_value::unary_op op,
+             const octave_value& a);
 
 extern OCTINTERP_API octave_value
 do_unary_op (octave_value::unary_op op, const octave_value& a);
 
 extern OCTINTERP_API octave_value
-do_binary_op (octave_value::binary_op op,
+do_binary_op (octave::type_info& ti, octave_value::binary_op op,
               const octave_value& a, const octave_value& b);
 
 extern OCTINTERP_API octave_value
-do_binary_op (octave_value::compound_binary_op op,
+do_binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
               const octave_value& a, const octave_value& b);
+
+extern OCTINTERP_API octave_value
+do_binary_op (octave_value::binary_op op, const octave_value& a,
+              const octave_value& b);
+
+extern OCTINTERP_API octave_value
+do_binary_op (octave_value::compound_binary_op op, const octave_value& a,
+              const octave_value& b);
+
+extern OCTINTERP_API octave_value
+do_cat_op (octave::type_info& ti, const octave_value& a,
+           const octave_value& b, const Array<octave_idx_type>& ra_idx);
+
+extern OCTINTERP_API octave_value
+do_cat_op (const octave_value& a, const octave_value& b,
+           const Array<octave_idx_type>& ra_idx);
 
 #define OV_UNOP_FN(name)                        \
   inline octave_value                           \
@@ -1547,7 +1636,7 @@ OV_COMP_BINOP_FN (op_mul_trans)
 OV_COMP_BINOP_FN (op_herm_mul)
 OV_COMP_BINOP_FN (op_mul_herm)
 
-extern OCTINTERP_API void install_types (void);
+extern OCTINTERP_API void install_types (octave::type_info&);
 
 // Templated value extractors.
 template <typename Value>

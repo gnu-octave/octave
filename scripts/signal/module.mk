@@ -1,59 +1,59 @@
 FCN_FILE_DIRS += \
   scripts/signal \
-  scripts/signal/private
+  %reldir%/private
 
-scripts_signal_PRIVATE_FCN_FILES = \
-  scripts/signal/private/rectangle_lw.m  \
-  scripts/signal/private/rectangle_sw.m  \
-  scripts/signal/private/triangle_lw.m  \
-  scripts/signal/private/triangle_sw.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/rectangle_lw.m  \
+  %reldir%/private/rectangle_sw.m  \
+  %reldir%/private/triangle_lw.m  \
+  %reldir%/private/triangle_sw.m
 
-scripts_signal_FCN_FILES = \
-  scripts/signal/arch_fit.m \
-  scripts/signal/arch_rnd.m \
-  scripts/signal/arch_test.m \
-  scripts/signal/arma_rnd.m \
-  scripts/signal/autoreg_matrix.m \
-  scripts/signal/bartlett.m \
-  scripts/signal/blackman.m \
-  scripts/signal/detrend.m \
-  scripts/signal/diffpara.m \
-  scripts/signal/durbinlevinson.m \
-  scripts/signal/fftconv.m \
-  scripts/signal/fftfilt.m \
-  scripts/signal/fftshift.m \
-  scripts/signal/filter2.m \
-  scripts/signal/fractdiff.m \
-  scripts/signal/freqz.m \
-  scripts/signal/freqz_plot.m \
-  scripts/signal/hamming.m \
-  scripts/signal/hanning.m \
-  scripts/signal/hurst.m \
-  scripts/signal/ifftshift.m \
-  scripts/signal/periodogram.m \
-  scripts/signal/sinc.m \
-  scripts/signal/sinetone.m \
-  scripts/signal/sinewave.m \
-  scripts/signal/spectral_adf.m \
-  scripts/signal/spectral_xdf.m \
-  scripts/signal/spencer.m \
-  scripts/signal/stft.m \
-  scripts/signal/synthesis.m \
-  scripts/signal/unwrap.m \
-  scripts/signal/yulewalker.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/arch_fit.m \
+  %reldir%/arch_rnd.m \
+  %reldir%/arch_test.m \
+  %reldir%/arma_rnd.m \
+  %reldir%/autoreg_matrix.m \
+  %reldir%/bartlett.m \
+  %reldir%/blackman.m \
+  %reldir%/detrend.m \
+  %reldir%/diffpara.m \
+  %reldir%/durbinlevinson.m \
+  %reldir%/fftconv.m \
+  %reldir%/fftfilt.m \
+  %reldir%/fftshift.m \
+  %reldir%/filter2.m \
+  %reldir%/fractdiff.m \
+  %reldir%/freqz.m \
+  %reldir%/freqz_plot.m \
+  %reldir%/hamming.m \
+  %reldir%/hanning.m \
+  %reldir%/hurst.m \
+  %reldir%/ifftshift.m \
+  %reldir%/periodogram.m \
+  %reldir%/sinc.m \
+  %reldir%/sinetone.m \
+  %reldir%/sinewave.m \
+  %reldir%/spectral_adf.m \
+  %reldir%/spectral_xdf.m \
+  %reldir%/spencer.m \
+  %reldir%/stft.m \
+  %reldir%/synthesis.m \
+  %reldir%/unwrap.m \
+  %reldir%/yulewalker.m
 
-scripts_signaldir = $(fcnfiledir)/signal
+%canon_reldir%dir = $(fcnfiledir)/signal
 
-scripts_signal_DATA = $(scripts_signal_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_signal_privatedir = $(fcnfiledir)/signal/private
+%canon_reldir%_privatedir = $(fcnfiledir)/signal/private
 
-scripts_signal_private_DATA = $(scripts_signal_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_signal_FCN_FILES) \
-  $(scripts_signal_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/signal/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/signal/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

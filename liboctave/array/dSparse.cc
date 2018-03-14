@@ -6,19 +6,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,11 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
 #include <iostream>
-#include <vector>
-#include <functional>
 
 #include "quit.h"
 #include "lo-ieee.h"
@@ -65,7 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "sparse-dmsolve.h"
 #endif
 
-SparseMatrix::SparseMatrix (const SparseBoolMatrix &a)
+SparseMatrix::SparseMatrix (const SparseBoolMatrix& a)
   : MSparse<double> (a.rows (), a.cols (), a.nnz ())
 {
   octave_idx_type nc = cols ();
@@ -131,7 +127,7 @@ SparseMatrix::operator != (const SparseMatrix& a) const
 }
 
 bool
-SparseMatrix::is_symmetric (void) const
+SparseMatrix::issymmetric (void) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -246,7 +242,7 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 
             }
 
-          idx_arg.elem (j) = octave::math::isnan (tmp_max) ? 0 : idx_j;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
           if (tmp_max != 0.)
             nel++;
         }
@@ -397,7 +393,7 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 
             }
 
-          idx_arg.elem (j) = octave::math::isnan (tmp_min) ? 0 : idx_j;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
           if (tmp_min != 0.)
             nel++;
         }
@@ -566,7 +562,7 @@ real (const SparseComplexMatrix& a)
 
   for (octave_idx_type i = 0; i < nz; i++)
     {
-      r.data (i) = octave::math::real (a.data (i));
+      r.data (i) = std::real (a.data (i));
       r.ridx (i) = a.ridx (i);
     }
 
@@ -587,7 +583,7 @@ imag (const SparseComplexMatrix& a)
 
   for (octave_idx_type i = 0; i < nz; i++)
     {
-      r.data (i) = octave::math::imag (a.data (i));
+      r.data (i) = std::imag (a.data (i));
       r.ridx (i) = a.ridx (i);
     }
 
@@ -601,141 +597,6 @@ imag (const SparseComplexMatrix& a)
 %!assert (nnz (real (sparse ([1i,1]))), 1)
 
 */
-
-SparseMatrix
-atan2 (const double& x, const SparseMatrix& y)
-{
-  octave_idx_type nr = y.rows ();
-  octave_idx_type nc = y.cols ();
-
-  if (x == 0.)
-    return SparseMatrix (nr, nc);
-  else
-    {
-      // Its going to be basically full, so this is probably the
-      // best way to handle it.
-      Matrix tmp (nr, nc, atan2 (x, 0.));
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = y.cidx (j); i < y.cidx (j+1); i++)
-          tmp.elem (y.ridx (i), j) = atan2 (x, y.data (i));
-
-      return SparseMatrix (tmp);
-    }
-}
-
-SparseMatrix
-atan2 (const SparseMatrix& x, const double& y)
-{
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-  octave_idx_type nz = x.nnz ();
-
-  SparseMatrix retval (nr, nc, nz);
-
-  octave_idx_type ii = 0;
-  retval.xcidx (0) = 0;
-  for (octave_idx_type i = 0; i < nc; i++)
-    {
-      for (octave_idx_type j = x.cidx (i); j < x.cidx (i+1); j++)
-        {
-          double tmp = atan2 (x.data (j), y);
-          if (tmp != 0.)
-            {
-              retval.xdata (ii) = tmp;
-              retval.xridx (ii++) = x.ridx (j);
-            }
-        }
-      retval.xcidx (i+1) = ii;
-    }
-
-  if (ii != nz)
-    {
-      SparseMatrix retval2 (nr, nc, ii);
-      for (octave_idx_type i = 0; i < nc+1; i++)
-        retval2.xcidx (i) = retval.cidx (i);
-      for (octave_idx_type i = 0; i < ii; i++)
-        {
-          retval2.xdata (i) = retval.data (i);
-          retval2.xridx (i) = retval.ridx (i);
-        }
-      return retval2;
-    }
-  else
-    return retval;
-}
-
-SparseMatrix
-atan2 (const SparseMatrix& x, const SparseMatrix& y)
-{
-  if ((x.rows () != y.rows ()) || (x.cols () != y.cols ()))
-    (*current_liboctave_error_handler) ("matrix size mismatch");
-
-  octave_idx_type x_nr = x.rows ();
-  octave_idx_type x_nc = x.cols ();
-
-  octave_idx_type y_nr = y.rows ();
-  octave_idx_type y_nc = y.cols ();
-
-  if (x_nr != y_nr || x_nc != y_nc)
-    octave::err_nonconformant ("atan2", x_nr, x_nc, y_nr, y_nc);
-
-  SparseMatrix r;
-
-  r = SparseMatrix (x_nr, x_nc, (x.nnz () + y.nnz ()));
-
-  octave_idx_type jx = 0;
-  r.cidx (0) = 0;
-  for (octave_idx_type i = 0 ; i < x_nc ; i++)
-    {
-      octave_idx_type ja = x.cidx (i);
-      octave_idx_type ja_max = x.cidx (i+1);
-      bool ja_lt_max = ja < ja_max;
-
-      octave_idx_type jb = y.cidx (i);
-      octave_idx_type jb_max = y.cidx (i+1);
-      bool jb_lt_max = jb < jb_max;
-
-      while (ja_lt_max || jb_lt_max)
-        {
-          octave_quit ();
-          if ((! jb_lt_max)
-              || (ja_lt_max && (x.ridx (ja) < y.ridx (jb))))
-            {
-              r.ridx (jx) = x.ridx (ja);
-              r.data (jx) = atan2 (x.data (ja), 0.);
-              jx++;
-              ja++;
-              ja_lt_max= ja < ja_max;
-            }
-          else if ((! ja_lt_max)
-                   || (jb_lt_max && (y.ridx (jb) < x.ridx (ja))))
-            {
-              jb++;
-              jb_lt_max= jb < jb_max;
-            }
-          else
-            {
-              double tmp = atan2 (x.data (ja), y.data (jb));
-              if (tmp != 0.)
-                {
-                  r.data (jx) = tmp;
-                  r.ridx (jx) = x.ridx (ja);
-                  jx++;
-                }
-              ja++;
-              ja_lt_max= ja < ja_max;
-              jb++;
-              jb_lt_max= jb < jb_max;
-            }
-        }
-      r.cidx (i+1) = jx;
-    }
-
-  r.maybe_compress ();
-
-  return r;
-}
 
 SparseMatrix
 SparseMatrix::inverse (void) const
@@ -762,7 +623,7 @@ SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 }
 
 SparseMatrix
-SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
+SparseMatrix::dinverse (MatrixType& mattype, octave_idx_type& info,
                         double& rcond, const bool,
                         const bool calccond) const
 {
@@ -776,8 +637,8 @@ SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
     (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   // Print spparms("spumoni") info if requested
-  int typ = mattyp.type ();
-  mattyp.info ();
+  int typ = mattype.type ();
+  mattype.info ();
 
   if (typ != MatrixType::Diagonal && typ != MatrixType::Permuted_Diagonal)
     (*current_liboctave_error_handler) ("incorrect matrix type");
@@ -812,7 +673,7 @@ SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
 }
 
 SparseMatrix
-SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
+SparseMatrix::tinverse (MatrixType& mattype, octave_idx_type& info,
                         double& rcond, const bool,
                         const bool calccond) const
 {
@@ -826,8 +687,8 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
     (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   // Print spparms("spumoni") info if requested
-  int typ = mattyp.type ();
-  mattyp.info ();
+  int typ = mattype.type ();
+  mattype.info ();
 
   if (typ != MatrixType::Upper && typ != MatrixType::Permuted_Upper
       && typ != MatrixType::Lower && typ != MatrixType::Permuted_Lower)
@@ -954,7 +815,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
       OCTAVE_LOCAL_BUFFER (double, work, nr);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
 
-      octave_idx_type *perm = mattyp.triangular_perm ();
+      octave_idx_type *perm = mattype.triangular_perm ();
       if (typ == MatrixType::Permuted_Upper)
         {
           for (octave_idx_type i = 0; i < nr; i++)
@@ -1063,7 +924,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 }
 
 SparseMatrix
-SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
+SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
                        double& rcond, bool, bool calc_cond) const
 {
   int typ = mattype.type (false);
@@ -1083,7 +944,7 @@ SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     }
   else
     {
-      if (mattype.is_hermitian ())
+      if (mattype.ishermitian ())
         {
           MatrixType tmp_typ (MatrixType::Upper);
           octave::math::sparse_chol<SparseMatrix> fact (*this, info, false);
@@ -1103,7 +964,7 @@ SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
             }
         }
 
-      if (! mattype.is_hermitian ())
+      if (! mattype.ishermitian ())
         {
           octave_idx_type n = rows ();
           ColumnVector Qinit(n);
@@ -1190,13 +1051,18 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, bool) const
       const octave_idx_type *Ai = ridx ();
       const double *Ax = data ();
 
-      UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, control);
+      UMFPACK_DNAME (report_matrix) (nr, nc,
+                                     octave::to_suitesparse_intptr (Ap),
+                                     octave::to_suitesparse_intptr (Ai),
+                                     Ax, 1, control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
-      int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai,
-                                              Ax, 0, &Symbolic, control, info);
+      int status = UMFPACK_DNAME (qsymbolic) (nr, nc,
+                                              octave::to_suitesparse_intptr (Ap),
+                                              octave::to_suitesparse_intptr (Ai),
+                                              Ax, nullptr, &Symbolic, control, info);
 
       if (status < 0)
         {
@@ -1213,7 +1079,9 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, bool) const
           UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
           void *Numeric;
-          status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
+          status = UMFPACK_DNAME (numeric) (octave::to_suitesparse_intptr (Ap),
+                                            octave::to_suitesparse_intptr (Ai),
+                                            Ax, Symbolic,
                                             &Numeric, control, info);
           UMFPACK_DNAME (free_symbolic) (&Symbolic);
 
@@ -1268,7 +1136,7 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, bool) const
 }
 
 Matrix
-SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& err,
                       double& rcond, solve_singularity_handler,
                       bool calc_cond) const
@@ -1328,7 +1196,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const SparseMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler, bool calc_cond) const
 {
@@ -1417,7 +1285,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler, bool calc_cond) const
 {
@@ -1476,7 +1344,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler, bool calc_cond) const
 {
@@ -1565,7 +1433,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -1794,7 +1662,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const SparseMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2075,7 +1943,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2307,7 +2175,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2591,7 +2459,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2844,7 +2712,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -3144,7 +3012,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -3398,7 +3266,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -3700,7 +3568,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const Matrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -3762,12 +3630,20 @@ SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   }
             }
 
-          octave_idx_type b_nc = b.cols ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
+
           retval = b;
           double *result = retval.fortran_vec ();
 
-          F77_XFCN (dptsv, DPTSV, (nr, b_nc, D, DL, result,
-                                   b.rows (), err));
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dptsv, DPTSV, (tmp_nr, b_nc, D, DL, result,
+                                   b_nr, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -3819,12 +3695,20 @@ SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   }
             }
 
-          octave_idx_type b_nc = b.cols ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
+
           retval = b;
           double *result = retval.fortran_vec ();
 
-          F77_XFCN (dgtsv, DGTSV, (nr, b_nc, DL, D, DU, result,
-                                   b.rows (), err));
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dgtsv, DGTSV, (tmp_nr, b_nc, DL, D, DU, result,
+                                   b_nr, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -3850,7 +3734,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const SparseMatrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -3884,8 +3768,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
           OCTAVE_LOCAL_BUFFER (double, DU, nr - 1);
           OCTAVE_LOCAL_BUFFER (double, D, nr);
           OCTAVE_LOCAL_BUFFER (double, DL, nr - 1);
-          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-          octave_idx_type *pipvt = ipvt.fortran_vec ();
+          Array<F77_INT> ipvt (dim_vector (nr, 1));
+          F77_INT *pipvt = ipvt.fortran_vec ();
 
           if (mattype.is_dense ())
             {
@@ -3921,7 +3805,11 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
                   }
             }
 
-          F77_XFCN (dgttrf, DGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dgttrf, DGTTRF, (tmp_nr, DL, D, DU, DU2, pipvt, tmp_err));
 
           if (err != 0)
             {
@@ -3955,11 +3843,15 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
                   for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
                     work[b.ridx (i)] = b.data (i);
 
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
+
                   F77_XFCN (dgttrs, DGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, 1, DL, D, DU, DU2, pipvt,
-                             work, b.rows (), err
+                             tmp_nr, 1, DL, D, DU, DU2, pipvt,
+                             work, b_nr, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   // Count nonzeros in work vector and adjust
                   // space in retval if needed
@@ -3996,7 +3888,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const ComplexMatrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -4058,16 +3950,23 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                   }
             }
 
-          octave_idx_type b_nr = b.rows ();
-          octave_idx_type b_nc = b.cols ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
+
           rcond = 1.;
 
           retval = b;
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL),
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (zptsv, ZPTSV, (tmp_nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL),
                                    F77_DBLE_CMPLX_ARG (result),
-                                   b_nr, err));
+                                   b_nr, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -4117,16 +4016,25 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                   }
             }
 
-          octave_idx_type b_nr = b.rows ();
-          octave_idx_type b_nc = b.cols ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
+
           rcond = 1.;
 
           retval = b;
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL),
-                                   F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
-                                   b_nr, err));
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (zgtsv, ZGTSV, (tmp_nr, b_nc, F77_DBLE_CMPLX_ARG (DL),
+                                   F77_DBLE_CMPLX_ARG (D),
+                                   F77_DBLE_CMPLX_ARG (DU),
+                                   F77_DBLE_CMPLX_ARG (result),
+                                   b_nr, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -4150,7 +4058,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const SparseComplexMatrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -4184,8 +4092,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
           OCTAVE_LOCAL_BUFFER (double, DU, nr - 1);
           OCTAVE_LOCAL_BUFFER (double, D, nr);
           OCTAVE_LOCAL_BUFFER (double, DL, nr - 1);
-          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-          octave_idx_type *pipvt = ipvt.fortran_vec ();
+          Array<F77_INT> ipvt (dim_vector (nr, 1));
+          F77_INT *pipvt = ipvt.fortran_vec ();
 
           if (mattype.is_dense ())
             {
@@ -4221,7 +4129,13 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   }
             }
 
-          F77_XFCN (dgttrf, DGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dgttrf, DGTTRF, (tmp_nr, DL, D, DU, DU2, pipvt, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -4240,7 +4154,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
             {
               rcond = 1.;
               char job = 'N';
-              octave_idx_type b_nr = b.rows ();
+              F77_INT b_nr = octave::to_f77_int (b.rows ());
               octave_idx_type b_nc = b.cols ();
               OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
               OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
@@ -4255,7 +4169,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
               for (volatile octave_idx_type j = 0; j < b_nc; j++)
                 {
 
-                  for (octave_idx_type i = 0; i < b_nr; i++)
+                  for (F77_INT i = 0; i < b_nr; i++)
                     {
                       Complex c = b(i,j);
                       Bx[i] = c.real ();
@@ -4264,9 +4178,11 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   F77_XFCN (dgttrs, DGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, 1, DL, D, DU, DU2, pipvt,
-                             Bx, b_nr, err
+                             tmp_nr, 1, DL, D, DU, DU2, pipvt,
+                             Bx, b_nr, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     {
@@ -4280,9 +4196,11 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   F77_XFCN (dgttrs, DGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, 1, DL, D, DU, DU2, pipvt,
-                             Bz, b_nr, err
+                             tmp_nr, 1, DL, D, DU, DU2, pipvt,
+                             Bz, b_nr, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     {
@@ -4331,7 +4249,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -4356,8 +4274,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_lower + 1;
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = n_lower + 1;
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
 
@@ -4383,10 +4301,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT tmp_err = 0;
+
           char job = 'L';
           F77_XFCN (dpbtrf, DPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nr, n_lower, tmp_data, ldm, err
+                                     tmp_nr, n_lower, tmp_data, ldm, tmp_err
                                      F77_CHAR_ARG_LEN (1)));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -4403,14 +4327,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                 {
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, n_lower, tmp_data, ldm,
-                             anorm, rcond, pz, piz, err
+                             tmp_nr, n_lower, tmp_data, ldm,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -4438,13 +4364,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   retval = b;
                   double *result = retval.fortran_vec ();
 
-                  octave_idx_type b_nc = b.cols ();
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
+                  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
                   F77_XFCN (dpbtrs, DPBTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, n_lower, b_nc, tmp_data,
-                             ldm, result, b.rows (), err
+                             tmp_nr, n_lower, b_nc, tmp_data,
+                             ldm, result, b_nr, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     {
@@ -4460,9 +4389,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          octave_idx_type n_upper = mattype.nupper ();
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = n_upper + 2 * n_lower + 1;
 
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
@@ -4471,7 +4400,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
             {
               octave_idx_type ii = 0;
 
-              for (octave_idx_type j = 0; j < ldm; j++)
+              for (F77_INT j = 0; j < ldm; j++)
                 for (octave_idx_type i = 0; i < nc; i++)
                   tmp_data[ii++] = 0.;
             }
@@ -4494,13 +4423,19 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-          octave_idx_type *pipvt = ipvt.fortran_vec ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
-          F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data,
-                                     ldm, pipvt, err));
+          Array<F77_INT> ipvt (dim_vector (nr, 1));
+          F77_INT *pipvt = ipvt.fortran_vec ();
 
-          // Throw-away extra info LAPACK gives so as to not
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dgbtrf, DGBTRF, (tmp_nr, tmp_nr, n_lower, n_upper,
+                                     tmp_data, ldm, pipvt, tmp_err));
+
+          err = tmp_err;
+
+          // Throw away extra info LAPACK gives so as to not
           // change output.
           if (err != 0)
             {
@@ -4522,14 +4457,18 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   char job = '1';
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
+
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (dgbcon, DGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-                             anorm, rcond, pz, piz, err
+                             tmp_nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -4557,14 +4496,17 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   retval = b;
                   double *result = retval.fortran_vec ();
 
-                  octave_idx_type b_nc = b.cols ();
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
+                  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
                   char job = 'N';
                   F77_XFCN (dgbtrs, DGBTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, n_lower, n_upper, b_nc, tmp_data,
-                             ldm, pipvt, result, b.rows (), err
+                             tmp_nr, n_lower, n_upper, b_nc, tmp_data,
+                             ldm, pipvt, result, b_nr, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
                 }
             }
         }
@@ -4576,7 +4518,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -4601,8 +4543,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_lower + 1;
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = octave::to_f77_int (n_lower + 1);
 
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
@@ -4611,7 +4553,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
             {
               octave_idx_type ii = 0;
 
-              for (octave_idx_type j = 0; j < ldm; j++)
+              for (F77_INT j = 0; j < ldm; j++)
                 for (octave_idx_type i = 0; i < nc; i++)
                   tmp_data[ii++] = 0.;
             }
@@ -4629,10 +4571,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT tmp_err = 0;
+
           char job = 'L';
           F77_XFCN (dpbtrf, DPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nr, n_lower, tmp_data, ldm, err
+                                     tmp_nr, n_lower, tmp_data, ldm, tmp_err
                                      F77_CHAR_ARG_LEN (1)));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -4647,14 +4595,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                 {
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, n_lower, tmp_data, ldm,
-                             anorm, rcond, pz, piz, err
+                             tmp_nr, n_lower, tmp_data, ldm,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -4679,7 +4629,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
               if (err == 0)
                 {
-                  octave_idx_type b_nr = b.rows ();
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
 
@@ -4692,14 +4642,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                   retval.xcidx (0) = 0;
                   for (volatile octave_idx_type j = 0; j < b_nc; j++)
                     {
-                      for (octave_idx_type i = 0; i < b_nr; i++)
+                      for (F77_INT i = 0; i < b_nr; i++)
                         Bx[i] = b.elem (i, j);
 
                       F77_XFCN (dpbtrs, DPBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, 1, tmp_data,
-                                 ldm, Bx, b_nr, err
+                                 tmp_nr, n_lower, 1, tmp_data,
+                                 ldm, Bx, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       if (err != 0)
                         {
@@ -4710,7 +4662,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                           break;
                         }
 
-                      for (octave_idx_type i = 0; i < b_nr; i++)
+                      for (F77_INT i = 0; i < b_nr; i++)
                         {
                           double tmp = Bx[i];
                           if (tmp != 0.0)
@@ -4740,9 +4692,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          octave_idx_type n_upper = mattype.nupper ();
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = octave::to_f77_int (n_upper + 2 * n_lower + 1);
 
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
@@ -4774,11 +4726,17 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-          octave_idx_type *pipvt = ipvt.fortran_vec ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
-          F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data,
-                                     ldm, pipvt, err));
+          Array<F77_INT> ipvt (dim_vector (nr, 1));
+          F77_INT *pipvt = ipvt.fortran_vec ();
+
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dgbtrf, DGBTRF, (tmp_nr, tmp_nr, n_lower, n_upper,
+                                     tmp_data, ldm, pipvt, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -4800,14 +4758,18 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                   char job = '1';
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
+
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (dgbcon, DGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-                             anorm, rcond, pz, piz, err
+                             tmp_nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -4849,11 +4811,15 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                            i < b.cidx (j+1); i++)
                         work[b.ridx (i)] = b.data (i);
 
+                      F77_INT b_nr = octave::to_f77_int (b.rows ());
+
                       F77_XFCN (dgbtrs, DGBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, n_upper, 1, tmp_data,
-                                 ldm, pipvt, work, b.rows (), err
+                                 tmp_nr, n_lower, n_upper, 1, tmp_data,
+                                 ldm, pipvt, work, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       // Count nonzeros in work vector and adjust
                       // space in retval if needed
@@ -4891,7 +4857,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -4916,8 +4882,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_lower + 1;
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = n_lower + 1;
 
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
@@ -4926,7 +4892,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
             {
               octave_idx_type ii = 0;
 
-              for (octave_idx_type j = 0; j < ldm; j++)
+              for (F77_INT j = 0; j < ldm; j++)
                 for (octave_idx_type i = 0; i < nc; i++)
                   tmp_data[ii++] = 0.;
             }
@@ -4944,10 +4910,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT tmp_err = 0;
+
           char job = 'L';
           F77_XFCN (dpbtrf, DPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nr, n_lower, tmp_data, ldm, err
+                                     tmp_nr, n_lower, tmp_data, ldm, tmp_err
                                      F77_CHAR_ARG_LEN (1)));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -4964,14 +4936,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                 {
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, n_lower, tmp_data, ldm,
-                             anorm, rcond, pz, piz, err
+                             tmp_nr, n_lower, tmp_data, ldm,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -4996,7 +4970,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
               if (err == 0)
                 {
-                  octave_idx_type b_nr = b.rows ();
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
 
                   OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
@@ -5006,7 +4980,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   for (volatile octave_idx_type j = 0; j < b_nc; j++)
                     {
-                      for (octave_idx_type i = 0; i < b_nr; i++)
+                      for (F77_INT i = 0; i < b_nr; i++)
                         {
                           Complex c = b(i,j);
                           Bx[i] = c.real ();
@@ -5015,9 +4989,11 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                       F77_XFCN (dpbtrs, DPBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, 1, tmp_data,
-                                 ldm, Bx, b_nr, err
+                                 tmp_nr, n_lower, 1, tmp_data,
+                                 ldm, Bx, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       if (err != 0)
                         {
@@ -5030,9 +5006,11 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                       F77_XFCN (dpbtrs, DPBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, 1, tmp_data,
-                                 ldm, Bz, b.rows (), err
+                                 tmp_nr, n_lower, 1, tmp_data,
+                                 ldm, Bz, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       if (err != 0)
                         {
@@ -5053,9 +5031,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          octave_idx_type n_upper = mattype.nupper ();
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = n_upper + 2 * n_lower + 1;
 
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
@@ -5064,7 +5042,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
             {
               octave_idx_type ii = 0;
 
-              for (octave_idx_type j = 0; j < ldm; j++)
+              for (F77_INT j = 0; j < ldm; j++)
                 for (octave_idx_type i = 0; i < nc; i++)
                   tmp_data[ii++] = 0.;
             }
@@ -5087,11 +5065,17 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-          octave_idx_type *pipvt = ipvt.fortran_vec ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
-          F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data,
-                                     ldm, pipvt, err));
+          Array<F77_INT> ipvt (dim_vector (nr, 1));
+          F77_INT *pipvt = ipvt.fortran_vec ();
+
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dgbtrf, DGBTRF, (tmp_nr, tmp_nr, n_lower, n_upper,
+                                     tmp_data, ldm, pipvt, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -5113,14 +5097,18 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                   char job = '1';
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
+
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (dgbcon, DGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-                             anorm, rcond, pz, piz, err
+                             tmp_nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -5146,6 +5134,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
               if (err == 0)
                 {
                   char job = 'N';
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   retval.resize (nr,b_nc);
 
@@ -5163,15 +5152,19 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                       F77_XFCN (dgbtrs, DGBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, n_upper, 1, tmp_data,
-                                 ldm, pipvt, Bx, b.rows (), err
+                                 tmp_nr, n_lower, n_upper, 1, tmp_data,
+                                 ldm, pipvt, Bx, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       F77_XFCN (dgbtrs, DGBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, n_upper, 1, tmp_data,
-                                 ldm, pipvt, Bz, b.rows (), err
+                                 tmp_nr, n_lower, n_upper, 1, tmp_data,
+                                 ldm, pipvt, Bz, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       for (octave_idx_type i = 0; i < nr; i++)
                         retval(i, j) = Complex (Bx[i], Bz[i]);
@@ -5187,7 +5180,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -5212,8 +5205,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_lower + 1;
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = n_lower + 1;
 
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
@@ -5222,7 +5215,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
             {
               octave_idx_type ii = 0;
 
-              for (octave_idx_type j = 0; j < ldm; j++)
+              for (F77_INT j = 0; j < ldm; j++)
                 for (octave_idx_type i = 0; i < nc; i++)
                   tmp_data[ii++] = 0.;
             }
@@ -5240,10 +5233,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
+          F77_INT tmp_nr = octave::to_f77_int (nr);
+
+          F77_INT tmp_err = 0;
+
           char job = 'L';
           F77_XFCN (dpbtrf, DPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nr, n_lower, tmp_data, ldm, err
+                                     tmp_nr, n_lower, tmp_data, ldm, tmp_err
                                      F77_CHAR_ARG_LEN (1)));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -5261,14 +5260,16 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                 {
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpbcon, DPBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, n_lower, tmp_data, ldm,
-                             anorm, rcond, pz, piz, err
+                             tmp_nr, n_lower, tmp_data, ldm,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -5293,7 +5294,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
               if (err == 0)
                 {
-                  octave_idx_type b_nr = b.rows ();
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
                   OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
@@ -5308,7 +5309,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   for (volatile octave_idx_type j = 0; j < b_nc; j++)
                     {
 
-                      for (octave_idx_type i = 0; i < b_nr; i++)
+                      for (F77_INT i = 0; i < b_nr; i++)
                         {
                           Complex c = b(i,j);
                           Bx[i] = c.real ();
@@ -5317,9 +5318,11 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                       F77_XFCN (dpbtrs, DPBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, 1, tmp_data,
-                                 ldm, Bx, b_nr, err
+                                 tmp_nr, n_lower, 1, tmp_data,
+                                 ldm, Bx, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       if (err != 0)
                         {
@@ -5332,9 +5335,11 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                       F77_XFCN (dpbtrs, DPBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, 1, tmp_data,
-                                 ldm, Bz, b_nr, err
+                                 tmp_nr, n_lower, 1, tmp_data,
+                                 ldm, Bz, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       if (err != 0)
                         {
@@ -5380,9 +5385,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          octave_idx_type n_upper = mattype.nupper ();
-          octave_idx_type n_lower = mattype.nlower ();
-          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
+          F77_INT ldm = n_upper + 2 * n_lower + 1;
 
           Matrix m_band (ldm, nc);
           double *tmp_data = m_band.fortran_vec ();
@@ -5391,7 +5396,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
             {
               octave_idx_type ii = 0;
 
-              for (octave_idx_type j = 0; j < ldm; j++)
+              for (F77_INT j = 0; j < ldm; j++)
                 for (octave_idx_type i = 0; i < nc; i++)
                   tmp_data[ii++] = 0.;
             }
@@ -5414,11 +5419,17 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                 }
             }
 
-          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-          octave_idx_type *pipvt = ipvt.fortran_vec ();
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
-          F77_XFCN (dgbtrf, DGBTRF, (nr, nr, n_lower, n_upper, tmp_data,
-                                     ldm, pipvt, err));
+          Array<F77_INT> ipvt (dim_vector (nr, 1));
+          F77_INT *pipvt = ipvt.fortran_vec ();
+
+          F77_INT tmp_err = 0;
+
+          F77_XFCN (dgbtrf, DGBTRF, (tmp_nr, tmp_nr, n_lower, n_upper,
+                                     tmp_data, ldm, pipvt, tmp_err));
+
+          err = tmp_err;
 
           if (err != 0)
             {
@@ -5440,14 +5451,18 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   char job = '1';
                   Array<double> z (dim_vector (3 * nr, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nr, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nr, 1));
+                  F77_INT *piz = iz.fortran_vec ();
+
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (dgbcon, DGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-                             anorm, rcond, pz, piz, err
+                             tmp_nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                             anorm, rcond, pz, piz, tmp_err
                              F77_CHAR_ARG_LEN (1)));
+
+                  err = tmp_err;
 
                   if (err != 0)
                     err = -2;
@@ -5474,6 +5489,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                 {
                   char job = 'N';
                   volatile octave_idx_type x_nz = b.nnz ();
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   retval = SparseComplexMatrix (nr, b_nc, x_nz);
                   retval.xcidx (0) = 0;
@@ -5499,15 +5515,19 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                       F77_XFCN (dgbtrs, DGBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, n_upper, 1, tmp_data,
-                                 ldm, pipvt, Bx, b.rows (), err
+                                 tmp_nr, n_lower, n_upper, 1, tmp_data,
+                                 ldm, pipvt, Bx, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       F77_XFCN (dgbtrs, DGBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nr, n_lower, n_upper, 1, tmp_data,
-                                 ldm, pipvt, Bz, b.rows (), err
+                                 tmp_nr, n_lower, n_upper, 1, tmp_data,
+                                 ldm, pipvt, Bz, b_nr, tmp_err
                                  F77_CHAR_ARG_LEN (1)));
+
+                      err = tmp_err;
 
                       // Count nonzeros in work vector and adjust
                       // space in retval if needed
@@ -5546,12 +5566,12 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 void *
-SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
-                         Matrix &Info, solve_singularity_handler sing_handler,
+SparseMatrix::factorize (octave_idx_type& err, double& rcond, Matrix& Control,
+                         Matrix& Info, solve_singularity_handler sing_handler,
                          bool calc_cond) const
 {
   // The return values
-  void *Numeric = 0;
+  void *Numeric = nullptr;
   err = 0;
 
 #if defined (HAVE_UMFPACK)
@@ -5584,13 +5604,18 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, control);
+  UMFPACK_DNAME (report_matrix) (nr, nc,
+                                 octave::to_suitesparse_intptr (Ap),
+                                 octave::to_suitesparse_intptr (Ai),
+                                 Ax, 1, control);
 
   void *Symbolic;
   Info = Matrix (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, 0,
-                                          &Symbolic, control, info);
+  int status = UMFPACK_DNAME (qsymbolic) (nr, nc,
+                                          octave::to_suitesparse_intptr (Ap),
+                                          octave::to_suitesparse_intptr (Ai),
+                                          Ax, nullptr, &Symbolic, control, info);
 
   if (status < 0)
     {
@@ -5608,8 +5633,9 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
     {
       UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
-      status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
-                                        &Numeric, control, info);
+      status = UMFPACK_DNAME (numeric) (octave::to_suitesparse_intptr (Ap),
+                                        octave::to_suitesparse_intptr (Ai),
+                                        Ax, Symbolic, &Numeric, control, info);
       UMFPACK_DNAME (free_symbolic) (&Symbolic);
 
       if (calc_cond)
@@ -5668,7 +5694,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
 }
 
 Matrix
-SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -5705,7 +5731,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {
@@ -5730,7 +5756,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
-          A->nz = 0;
+          A->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
@@ -5741,7 +5767,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           A->xtype = CHOLMOD_REAL;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_dense Bstore;
@@ -5754,7 +5780,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           B->xtype = CHOLMOD_REAL;
 
           B->x = const_cast<double *>(b.fortran_vec ());
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;
@@ -5810,8 +5836,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -5848,10 +5874,11 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 
               for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
                 {
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, &result[iidx],
-                                                  &Bx[iidx], Numeric, control,
-                                                  info);
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, &result[iidx], &Bx[iidx],
+                                                  Numeric, control, info);
                   if (status < 0)
                     {
                       UMFPACK_DNAME (report_status) (control, status);
@@ -5890,7 +5917,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -5927,7 +5954,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {
@@ -5952,7 +5979,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
-          A->nz = 0;
+          A->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
@@ -5963,7 +5990,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           A->xtype = CHOLMOD_REAL;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_sparse Bstore;
@@ -5975,7 +6002,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           B->nzmax = b.nnz ();
           B->packed = true;
           B->sorted = true;
-          B->nz = 0;
+          B->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
           B->itype = CHOLMOD_LONG;
 #else
@@ -5986,7 +6013,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           B->xtype = CHOLMOD_REAL;
 
           B->x = b.data ();
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;
@@ -6046,8 +6073,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -6095,8 +6122,10 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     Bx[i] = b.elem (i, j);
 
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, Xx, Bx, Numeric,
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, Xx, Bx, Numeric,
                                                   control, info);
                   if (status < 0)
                     {
@@ -6159,7 +6188,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -6196,7 +6225,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {
@@ -6221,7 +6250,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
-          A->nz = 0;
+          A->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
@@ -6232,7 +6261,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           A->xtype = CHOLMOD_REAL;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_dense Bstore;
@@ -6245,7 +6274,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           B->xtype = CHOLMOD_COMPLEX;
 
           B->x = const_cast<Complex *>(b.fortran_vec ());
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;
@@ -6300,8 +6329,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -6350,11 +6379,15 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       Bz[i] = c.imag ();
                     }
 
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, Xx, Bx, Numeric,
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, Xx, Bx, Numeric,
                                                   control, info);
                   int status2 = UMFPACK_DNAME (solve) (UMFPACK_A,
-                                                       Ap, Ai, Ax, Xz, Bz,
+                                                       octave::to_suitesparse_intptr (Ap),
+                                                       octave::to_suitesparse_intptr (Ai),
+                                                       Ax, Xz, Bz,
                                                        Numeric, control, info);
 
                   if (status < 0 || status2 < 0)
@@ -6398,7 +6431,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -6435,7 +6468,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);
             }
           else
             {
@@ -6460,7 +6493,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
-          A->nz = 0;
+          A->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
@@ -6471,7 +6504,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           A->xtype = CHOLMOD_REAL;
 
           A->x = data ();
-          if (A->x == 0)
+          if (A->x == nullptr)
             A->x = &dummy;
 
           cholmod_sparse Bstore;
@@ -6483,7 +6516,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           B->nzmax = b.nnz ();
           B->packed = true;
           B->sorted = true;
-          B->nz = 0;
+          B->nz = nullptr;
 #if defined (OCTAVE_ENABLE_64)
           B->itype = CHOLMOD_LONG;
 #else
@@ -6494,7 +6527,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           B->xtype = CHOLMOD_COMPLEX;
 
           B->x = b.data ();
-          if (B->x == 0)
+          if (B->x == nullptr)
             B->x = &dummy;
 
           cholmod_factor *L;
@@ -6555,8 +6588,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
-              static char tmp[] = " ";
-              CHOLMOD_NAME(print_common) (tmp, cm);
+              static char blank_name[] = " ";
+              CHOLMOD_NAME(print_common) (blank_name, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
@@ -6610,11 +6643,15 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                       Bz[i] = c.imag ();
                     }
 
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, Xx, Bx, Numeric,
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, Xx, Bx, Numeric,
                                                   control, info);
                   int status2 = UMFPACK_DNAME (solve) (UMFPACK_A,
-                                                       Ap, Ai, Ax, Xz, Bz,
+                                                       octave::to_suitesparse_intptr (Ap),
+                                                       octave::to_suitesparse_intptr (Ai),
+                                                       Ax, Xz, Bz,
                                                        Numeric, control, info);
 
                   if (status < 0 || status2 < 0)
@@ -6677,30 +6714,30 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b,
                      octave_idx_type& info, double& rcond) const
 {
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& err,
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b, octave_idx_type& err,
                      double& rcond, solve_singularity_handler sing_handler,
                      bool singular_fallback) const
 {
@@ -6742,30 +6779,30 @@ SparseMatrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& err,
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
                      octave_idx_type& info, double& rcond) const
 {
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
                      octave_idx_type& err, double& rcond,
                      solve_singularity_handler sing_handler,
                      bool singular_fallback) const
@@ -6807,30 +6844,30 @@ SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                      octave_idx_type& info, double& rcond) const
 {
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                      octave_idx_type& err, double& rcond,
                      solve_singularity_handler sing_handler,
                      bool singular_fallback) const
@@ -6872,30 +6909,30 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
                      octave_idx_type& info, double& rcond) const
 {
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
                      octave_idx_type& err, double& rcond,
                      solve_singularity_handler sing_handler,
                      bool singular_fallback) const
@@ -6937,14 +6974,14 @@ SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b) const
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b) const
 {
   octave_idx_type info; double rcond;
   return solve (mattype, b, info, rcond);
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                      octave_idx_type& info) const
 {
   double rcond;
@@ -6952,14 +6989,14 @@ SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                      octave_idx_type& info, double& rcond) const
 {
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                      octave_idx_type& info, double& rcond,
                      solve_singularity_handler sing_handler) const
 {
@@ -6969,31 +7006,31 @@ SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b) const
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                      octave_idx_type& info) const
 {
   double rcond;
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                      octave_idx_type& info,
                      double& rcond) const
 {
-  return solve (mattype, b, info, rcond, 0);
+  return solve (mattype, b, info, rcond, nullptr);
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                      octave_idx_type& info, double& rcond,
                      solve_singularity_handler sing_handler) const
 {
@@ -7007,21 +7044,21 @@ SparseMatrix::solve (const Matrix& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 Matrix
 SparseMatrix::solve (const Matrix& b, octave_idx_type& info) const
 {
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 Matrix
 SparseMatrix::solve (const Matrix& b, octave_idx_type& info,
                      double& rcond) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 Matrix
@@ -7037,7 +7074,7 @@ SparseMatrix::solve (const SparseMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 SparseMatrix
@@ -7045,14 +7082,14 @@ SparseMatrix::solve (const SparseMatrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 SparseMatrix
 SparseMatrix::solve (const SparseMatrix& b,
                      octave_idx_type& info, double& rcond) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 SparseMatrix
@@ -7067,14 +7104,14 @@ ComplexMatrix
 SparseMatrix::solve (const ComplexMatrix& b, octave_idx_type& info) const
 {
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 ComplexMatrix
 SparseMatrix::solve (const ComplexMatrix& b, octave_idx_type& info,
                      double& rcond) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 ComplexMatrix
@@ -7091,21 +7128,21 @@ SparseMatrix::solve (const SparseComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 SparseComplexMatrix
 SparseMatrix::solve (const SparseComplexMatrix& b, octave_idx_type& info) const
 {
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 SparseComplexMatrix
 SparseMatrix::solve (const SparseComplexMatrix& b, octave_idx_type& info,
                      double& rcond) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 SparseComplexMatrix
@@ -7135,7 +7172,7 @@ ColumnVector
 SparseMatrix::solve (const ColumnVector& b, octave_idx_type& info,
                      double& rcond) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 ColumnVector
@@ -7153,21 +7190,21 @@ SparseMatrix::solve (const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 ComplexColumnVector
 SparseMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
   double rcond;
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 ComplexColumnVector
 SparseMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
                      double& rcond) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcond, nullptr);
 }
 
 ComplexColumnVector
@@ -7447,7 +7484,7 @@ operator << (std::ostream& os, const SparseMatrix& a)
       octave_quit ();
       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
-          os << a.ridx (i) + 1 << " "  << j + 1 << " ";
+          os << a.ridx (i) + 1 << ' '  << j + 1 << ' ';
           octave_write_double (os, a.data (i));
           os << "\n";
         }

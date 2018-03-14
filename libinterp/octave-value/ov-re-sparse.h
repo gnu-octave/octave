@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -45,8 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-sparse.h"
 
 class octave_value_list;
-
-class tree_walker;
 
 class
 OCTINTERP_API
@@ -84,14 +82,14 @@ public:
   octave_sparse_matrix (const octave_sparse_matrix& m)
     : octave_base_sparse<SparseMatrix> (m) { }
 
-  ~octave_sparse_matrix (void) { }
+  ~octave_sparse_matrix (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_sparse_matrix (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_sparse_matrix (); }
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   idx_vector index_vector (bool require_integers = false) const;
 
@@ -99,11 +97,11 @@ public:
 
   bool is_real_matrix (void) const { return true; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_double_type (void) const { return true; }
 
-  bool is_float_type (void) const { return true; }
+  bool isfloat (void) const { return true; }
 
   double double_value (bool = false) const;
 
@@ -137,7 +135,7 @@ public:
   octave_value as_double (void) const;
 
 #if 0
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
@@ -152,7 +150,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const;
 

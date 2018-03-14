@@ -4,19 +4,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} strmatch (@var{s}, @var{A})
@@ -67,7 +67,9 @@ function idx = strmatch (s, A, exact)
   endif
 
   ## Trim blanks and nulls from search string
-  s = regexprep (s, "[ \\0]+$", '');
+  if (any (s != " " & s != "\0"))
+    s = regexprep (s, "[ \\0]+$", '');
+  endif
   len = length (s);
 
   exact = nargin == 3 && ischar (exact) && strcmp (exact, "exact");
@@ -109,7 +111,14 @@ endfunction
 %!assert (strmatch ("a", "a \0", "exact"), 1)
 %!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1)
 %!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
-%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4])
+%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, "exact"), [1,4])
+
+## Weird Matlab corner cases
+%!test <*49601>
+%! assert (strmatch (" ", " "), 1);
+%! assert (strmatch (" ", "   "), 1);
+%! assert (strmatch ("  ", " "), []);
+%! assert (strmatch ("  ", "  "), 1);
 
 ## Test input validation
 %!error <Invalid call to strmatch> strmatch ()

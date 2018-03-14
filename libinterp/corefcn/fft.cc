@@ -5,19 +5,19 @@ Copyright (C) 1996-1997 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 static octave_value
-do_fft (const octave_value_list &args, const char *fcn, int type)
+do_fft (const octave_value_list& args, const char *fcn, int type)
 {
   int nargin = args.length ();
 
@@ -56,7 +56,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
   if (nargin > 1)
     {
-      if (! args(1).is_empty ())
+      if (! args(1).isempty ())
         {
           double dval = args(1).double_value ();
           if (octave::math::isnan (dval))
@@ -122,7 +122,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
   if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatNDArray nda = arg.float_array_value ();
 
@@ -139,14 +139,14 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           NDArray nda = arg.array_value ();
 
           nda.resize (dims, 0.0);
           retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexNDArray cnda = arg.complex_array_value ();
 

@@ -1663,7 +1663,7 @@
 
 	* interpreter/oop.txi: New file.
 	* interpreter/Makefile.in (SUB_SOURCES): Add it here.
-	(POLYNOMIAL_FILES_NODIR): New varaible for polynomial example class
+	(POLYNOMIAL_FILES_NODIR): New variable for polynomial example class
 	methods.
 	(EXAMPLE_FILES_NODIR): Add POLYNOMIAL_FILES_NODIR here.
 	* interpreter/octave.texi: Reference new OOP chapter here.

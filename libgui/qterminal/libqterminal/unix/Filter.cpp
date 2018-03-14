@@ -2,8 +2,9 @@
     Copyright (C) 2007, 2013 by Robert Knight <robertknight@gmail.com>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Adoption to octave by Torsten <mttl@mailbox.org>, Copyright (c) 2017
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -26,6 +27,7 @@
 #include <iostream>
 
 // Qt
+#include <QDesktopServices>
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -90,13 +92,13 @@ Filter::HotSpot* FilterChain::hotSpotAt(int line , int column) const
     {
         Filter* filter = iter.next();
         Filter::HotSpot* spot = filter->hotSpotAt(line,column);
-        if ( spot != 0 )
+        if ( spot != nullptr )
         {
             return spot;
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 QList<Filter::HotSpot*> FilterChain::hotSpots() const
@@ -112,8 +114,8 @@ QList<Filter::HotSpot*> FilterChain::hotSpots() const
 }
 
 TerminalImageFilterChain::TerminalImageFilterChain()
-: _buffer(0)
-, _linePositions(0)
+: _buffer(nullptr)
+, _linePositions(nullptr)
 {
 }
 
@@ -176,8 +178,8 @@ void TerminalImageFilterChain::setImage(const Character* const image , int lines
 }
 
 Filter::Filter() :
-_linePositions(0),
-_buffer(0)
+_linePositions(nullptr),
+_buffer(nullptr)
 {
 }
 
@@ -281,7 +283,7 @@ Filter::HotSpot* Filter::hotSpotAt(int line , int column) const
         return spot;
     }
 
-    return 0;
+    return nullptr;
 }
 
 Filter::HotSpot::HotSpot(int startLine , int startColumn , int endLine , int endColumn)
@@ -316,23 +318,25 @@ int Filter::HotSpot::endColumn() const
 {
     return _endColumn;
 }
-Filter::HotSpot::Type Filter::HotSpot::type() const
+Filter::Type Filter::HotSpot::type() const
 {
     return _type;
 }
-void Filter::HotSpot::setType(Type type)
+void Filter::HotSpot::setType(Filter::Type type)
 {
     _type = type;
 }
 
-RegExpFilter::RegExpFilter()
+RegExpFilter::RegExpFilter(Type t)
+    : _type (t)
 {
 }
 
-RegExpFilter::HotSpot::HotSpot(int startLine,int startColumn,int endLine,int endColumn)
+RegExpFilter::HotSpot::HotSpot(int startLine,int startColumn,
+                               int endLine,int endColumn, Filter::Type t)
     : Filter::HotSpot(startLine,startColumn,endLine,endColumn)
 {
-    setType(Marker);
+    setType(t);
 }
 
 void RegExpFilter::HotSpot::activate(QObject*)
@@ -391,11 +395,8 @@ void RegExpFilter::process()
             getLineColumn(pos,startLine,startColumn);
             getLineColumn(pos + _searchText.matchedLength(),endLine,endColumn);
 
-            //kDebug() << "start " << startLine << " / " << startColumn;
-            //kDebug() << "end " << endLine << " / " << endColumn;
-
             RegExpFilter::HotSpot* spot = newHotSpot(startLine,startColumn,
-                                           endLine,endColumn);
+                                           endLine,endColumn,_type);
             spot->setCapturedTexts(_searchText.capturedTexts());
 
             addHotSpot( spot );
@@ -408,23 +409,76 @@ void RegExpFilter::process()
 }
 
 RegExpFilter::HotSpot* RegExpFilter::newHotSpot(int startLine,int startColumn,
-                                                int endLine,int endColumn)
+                                                int endLine,int endColumn,
+                                                Filter::Type t)
 {
     return new RegExpFilter::HotSpot(startLine,startColumn,
-                                                  endLine,endColumn);
+                                     endLine,endColumn, t);
 }
-RegExpFilter::HotSpot* UrlFilter::newHotSpot(int startLine,int startColumn,int endLine,
-                                                    int endColumn)
+UrlFilter::HotSpot* UrlFilter::newHotSpot(int startLine,int startColumn,int endLine,
+                                                    int endColumn, Filter::Type t)
 {
     return new UrlFilter::HotSpot(startLine,startColumn,
-                                               endLine,endColumn);
+                                               endLine,endColumn,t);
 }
-UrlFilter::HotSpot::HotSpot(int startLine,int startColumn,int endLine,int endColumn)
-: RegExpFilter::HotSpot(startLine,startColumn,endLine,endColumn)
+
+void UrlFilter::process()
+{
+    int pos = 0;
+    const QString* text = buffer();
+
+    Q_ASSERT( text );
+
+    // ignore any regular expressions which match an empty string.
+    // otherwise the while loop below will run indefinitely
+    static const QString emptyString("");
+    if ( _searchText.exactMatch(emptyString) )
+        return;
+
+    while(pos >= 0)
+    {
+        pos = _searchText.indexIn(*text,pos);
+
+        if ( pos >= 0 )
+        {
+
+            int startLine = 0;
+            int endLine = 0;
+            int startColumn = 0;
+            int endColumn = 0;
+
+
+            //kDebug() << "pos from " << pos << " to " << pos + _searchText.matchedLength();
+
+            getLineColumn(pos,startLine,startColumn);
+            getLineColumn(pos + _searchText.matchedLength(),endLine,endColumn);
+
+            UrlFilter::HotSpot* spot = newHotSpot(startLine,startColumn,
+                                           endLine,endColumn,_type);
+            spot->setCapturedTexts(_searchText.capturedTexts());
+
+            // Connect the signal of the urlobject to the slot of the filter;
+            // the filter is then signaling to the main window
+            connect (spot->get_urlObject (),
+                     SIGNAL (request_open_file_signal (const QString&, int)),
+                     this, SLOT (request_open_file (const QString&, int)));
+
+            addHotSpot( spot );
+            pos += _searchText.matchedLength();
+
+            // if matchedLength == 0, the program will get stuck in an infinite loop
+            Q_ASSERT( _searchText.matchedLength() > 0 );
+        }
+    }
+}
+
+UrlFilter::HotSpot::HotSpot(int startLine,int startColumn,
+                            int endLine,int endColumn,Type t)
+: RegExpFilter::HotSpot(startLine,startColumn,endLine,endColumn,t)
 , _urlObject(new FilterObject(this))
 {
-    setType(Link);
 }
+
 QString UrlFilter::HotSpot::tooltip() const
 {
     QString url = capturedTexts().first();
@@ -446,6 +500,10 @@ UrlFilter::HotSpot::UrlType UrlFilter::HotSpot::urlType() const
         return StandardUrl;
     else if ( EmailAddressRegExp.exactMatch(url) )
         return Email;
+    else if ( ErrorLinkRegExp.exactMatch(url) )
+        return ErrorLink;
+    else if ( ParseErrorLinkRegExp.exactMatch(url) )
+        return ParseErrorLink;
     else
         return Unknown;
 }
@@ -467,23 +525,48 @@ void UrlFilter::HotSpot::activate(QObject* object)
     }
 
     if ( !object || actionName == "open-action" )
-    {
+      {
         if ( kind == StandardUrl )
-        {
+          {
             // if the URL path does not include the protocol ( eg. "www.kde.org" ) then
             // prepend http:// ( eg. "www.kde.org" --> "http://www.kde.org" )
             if (!url.contains("://"))
-            {
-                url.prepend("http://");
-            }
-        }
+              url.prepend("http://");
+            QDesktopServices::openUrl (QUrl (url));
+          }
         else if ( kind == Email )
-        {
+          {
             url.prepend("mailto:");
-        }
+            QDesktopServices::openUrl (QUrl (url));
+          }
+        else if (kind == ErrorLink)
+          {
+            int pos = ErrorLinkRegExp.indexIn (url);
+            if (pos > -1)
+              {
+                QString file_name = ErrorLinkRegExp.cap (1);
+                QString line = ErrorLinkRegExp.cap (2);
+                // call the urlobject's method for opening a file; this
+                // method then signals to the filter
+                _urlObject->request_open_file (file_name, line.toInt ());
+              }
+          }
+        else if (kind == ParseErrorLink)
+          {
+            int pos = ParseErrorLinkRegExp.indexIn (url);
+            if (pos > -1)
+              {
+                QString line = ParseErrorLinkRegExp.cap (1);
+                QString file_name = ParseErrorLinkRegExp.cap (2);
+                // call the urlobject's method for opening a file; this
+                // method then signals to the filter
+                _urlObject->request_open_file (file_name, line.toInt ());
+              }
+          }
 
-//        new KRun(url,QApplication::activeWindow());
-    }
+
+      }
+
 }
 
 // Note:  Altering these regular expressions can have a major effect on the performance of the filters
@@ -498,14 +581,26 @@ const QRegExp UrlFilter::FullUrlRegExp("(www\\.(?!\\.)|[a-z][a-z0-9+.-]*://)[^\\
 // email address:
 // [word chars, dots or dashes]@[word chars, dots or dashes].[word chars]
 const QRegExp UrlFilter::EmailAddressRegExp("\\b(\\w|\\.|-)+@(\\w|\\.|-)+\\.\\w+\\b");
-
 // matches full url or email address
 const QRegExp UrlFilter::CompleteUrlRegExp('('+FullUrlRegExp.pattern()+'|'+
                                             EmailAddressRegExp.pattern()+')');
+// error link:
+//   normal error
+const QRegExp UrlFilter::ErrorLinkRegExp ("(\\S+) at line (\\d+) column (?:\\d+)");
+//   parse error
+const QRegExp UrlFilter::ParseErrorLinkRegExp ("parse error near line (\\d+) of file (\\S+)");
+//   complete regexp
+const QRegExp UrlFilter::CompleteErrorLinkRegExp ('('+ErrorLinkRegExp.pattern ()+'|'+
+                                                     ParseErrorLinkRegExp.pattern ()+')');
 
-UrlFilter::UrlFilter()
+
+UrlFilter::UrlFilter (Type t)
+    : RegExpFilter (t)
 {
-    setRegExp( CompleteUrlRegExp );
+    if (_type == ErrorLink)
+      setRegExp (CompleteErrorLinkRegExp);
+    else
+      setRegExp (CompleteUrlRegExp);
 }
 UrlFilter::HotSpot::~HotSpot()
 {
@@ -524,17 +619,43 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     QAction* openAction = new QAction(_urlObject);
     QAction* copyAction = new QAction(_urlObject);;
 
-    Q_ASSERT( kind == StandardUrl || kind == Email );
+    Q_ASSERT (kind == StandardUrl || kind == Email
+                                  || kind == ErrorLink
+                                  || kind == ParseErrorLink);
 
     if ( kind == StandardUrl )
     {
-        openAction->setText(("Open Link"));
-        copyAction->setText(("Copy Link Address"));
+        openAction->setText(tr ("Open Link"));
+        copyAction->setText(tr ("Copy Link Address"));
     }
     else if ( kind == Email )
     {
-        openAction->setText(("Send Email To..."));
-        copyAction->setText(("Copy Email Address"));
+        openAction->setText(tr ("Send Email To..."));
+        copyAction->setText(tr ("Copy Email Address"));
+    }
+    else if ( kind == ErrorLink )
+    {
+      QString url = capturedTexts().first();
+      int pos = ErrorLinkRegExp.indexIn (url);
+      if (pos >= 0)
+        {
+          QString file_name = ErrorLinkRegExp.cap (1);
+          QString line = ErrorLinkRegExp.cap (2);
+          openAction->setText(tr ("Edit %1 at line %2")
+                              .arg (file_name).arg (line));
+        }
+    }
+    else if ( kind == ParseErrorLink )
+    {
+      QString url = capturedTexts().first();
+      int pos = ParseErrorLinkRegExp.indexIn (url);
+      if (pos >= 0)
+        {
+          QString line = ParseErrorLinkRegExp.cap (1);
+          QString file_name = ParseErrorLinkRegExp.cap (2);
+          openAction->setText(tr ("Edit %1 at line %2")
+                              .arg (file_name).arg (line));
+        }
     }
 
     // object names are set here so that the hotspot performs the
@@ -544,12 +665,30 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     copyAction->setObjectName("copy-action");
 
     QObject::connect( openAction , SIGNAL(triggered()) , _urlObject , SLOT(activated()) );
-    QObject::connect( copyAction , SIGNAL(triggered()) , _urlObject , SLOT(activated()) );
-
     list << openAction;
-    list << copyAction;
 
+    if (kind != ErrorLink && kind != ParseErrorLink)
+      {
+        QObject::connect ( copyAction , SIGNAL(triggered()) ,
+                           _urlObject , SLOT(activated()) );
+        list << copyAction;
+      }
     return list;
+}
+
+void
+UrlFilter::request_open_file (const QString& file, int line)
+{
+  QFileInfo file_info = QFileInfo (file);
+
+  // We have to distinguish between a parse error, where we get the full
+  // path of the file or a general error in a script, where we only get
+  // the function name. depending on this we have to invoke different
+  // slots in main_window
+  if (file_info.isAbsolute () && file_info.exists ())
+    emit request_open_file_signal (file, line);
+  else
+    emit request_edit_mfile_signal (file, line);
 }
 
 //#include "moc_Filter.cpp"

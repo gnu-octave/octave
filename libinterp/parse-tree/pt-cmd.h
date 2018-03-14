@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,108 +27,114 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class tree_walker;
-
 #include "ov-fcn.h"
 #include "pt.h"
 #include "pt-bp.h"
-#include "symtab.h"
+#include "pt-walk.h"
 
-// A base class for commands.
-
-class
-tree_command : public tree
+namespace octave
 {
-public:
+  // A base class for commands.
 
-  tree_command (int l = -1, int c = -1)
-    : tree (l, c) { }
-
-  virtual ~tree_command (void) { }
-
-  virtual tree_command *dup (symbol_table::scope_id,
-                             symbol_table::context_id context) const = 0;
-
-private:
-
-  // No copying!
-
-  tree_command (const tree_command&);
-
-  tree_command& operator = (const tree_command&);
-};
-
-// No-op.
-
-class
-tree_no_op_command : public tree_command
-{
-public:
-
-  tree_no_op_command (const std::string& cmd = "no_op", bool e = false,
-                      int l = -1, int c = -1)
-    : tree_command (l, c), eof (e), orig_cmd (cmd) { }
-
-  ~tree_no_op_command (void) { }
-
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-
-  bool is_end_of_fcn_or_script (void) const
+  class tree_command : public tree
   {
-    return (orig_cmd == "endfunction" || orig_cmd == "endscript");
-  }
+  public:
 
-  bool is_end_of_file (void) const { return eof; }
+    tree_command (int l = -1, int c = -1)
+      : tree (l, c) { }
 
-  std::string original_command (void) { return orig_cmd; }
+    // No copying!
 
-private:
+    tree_command (const tree_command&) = delete;
 
-  bool eof;
+    tree_command& operator = (const tree_command&) = delete;
 
-  std::string orig_cmd;
+    virtual ~tree_command (void) = default;
+  };
 
-  // No copying!
+  // No-op.
 
-  tree_no_op_command (const tree_no_op_command&);
+  class tree_no_op_command : public tree_command
+  {
+  public:
 
-  tree_no_op_command& operator = (const tree_no_op_command&);
-};
+    tree_no_op_command (const std::string& cmd = "no_op", bool e = false,
+                        int l = -1, int c = -1)
+      : tree_command (l, c), m_eof (e), m_orig_cmd (cmd) { }
 
-// Function definition.
+    // No copying!
 
-class
-tree_function_def : public tree_command
-{
-public:
+    tree_no_op_command (const tree_no_op_command&) = delete;
 
-  tree_function_def (octave_function *f, int l = -1, int c = -1)
-    : tree_command (l, c), fcn (f) { }
+    tree_no_op_command& operator = (const tree_no_op_command&) = delete;
 
-  ~tree_function_def (void) { }
+    ~tree_no_op_command (void) = default;
 
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
+    void accept (tree_walker& tw)
+    {
+      tw.visit_no_op_command (*this);
+    }
 
-  void accept (tree_walker& tw);
+    bool is_end_of_fcn_or_script (void) const
+    {
+      return (m_orig_cmd == "endfunction" || m_orig_cmd == "endscript");
+    }
 
-  octave_value function (void) { return fcn; }
+    bool is_end_of_file (void) const { return m_eof; }
 
-private:
+    std::string original_command (void) { return m_orig_cmd; }
 
-  octave_value fcn;
+  private:
 
-  tree_function_def (const octave_value& v, int l = -1, int c = -1)
-    : tree_command (l, c), fcn (v) { }
+    bool m_eof;
 
-  // No copying!
+    std::string m_orig_cmd;
+  };
 
-  tree_function_def (const tree_function_def&);
+  // Function definition.
 
-  tree_function_def& operator = (const tree_function_def&);
-};
+  class tree_function_def : public tree_command
+  {
+  public:
+
+    tree_function_def (octave_function *f, int l = -1, int c = -1)
+      : tree_command (l, c), m_fcn (f) { }
+
+    // No copying!
+
+    tree_function_def (const tree_function_def&) = delete;
+
+    tree_function_def& operator = (const tree_function_def&) = delete;
+
+    ~tree_function_def (void) = default;
+
+    void accept (tree_walker& tw)
+    {
+      tw.visit_function_def (*this);
+    }
+
+    octave_value function (void) { return m_fcn; }
+
+  private:
+
+    octave_value m_fcn;
+
+    tree_function_def (const octave_value& v, int l = -1, int c = -1)
+      : tree_command (l, c), m_fcn (v) { }
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_command' instead")
+typedef octave::tree_command tree_command;
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_no_op_command' instead")
+typedef octave::tree_no_op_command tree_no_op_command;
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_function_def' instead")
+typedef octave::tree_function_def tree_function_def;
+
+#endif
 
 #endif

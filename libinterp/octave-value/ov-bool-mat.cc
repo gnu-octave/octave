@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -85,7 +85,7 @@ octave_bool_matrix::numeric_conversion_function (void) const
 octave_base_value *
 octave_bool_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.ndims () == 2)
     {
@@ -241,7 +241,7 @@ octave_bool_matrix::save_ascii (std::ostream& os)
       os << "# ndims: " << dv.ndims () << "\n";
 
       for (int i = 0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
 
       os << "\n" << tmp;
     }
@@ -292,7 +292,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
 
       boolNDArray btmp (dv);
 
-      if (btmp.is_empty ())
+      if (btmp.isempty ())
         matrix = btmp;
       else
         {
@@ -449,7 +449,7 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, 0);
+  space_hid = H5Screate_simple (rank, hdims, nullptr);
   if (space_hid < 0) return false;
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid,
@@ -600,11 +600,11 @@ Compatibility Note: Octave accepts complex values as input, whereas
 
   octave_value arg = args(0);
 
-  if (arg.is_bool_type ())
+  if (arg.islogical ())
     retval = arg;
-  else if (arg.is_numeric_type ())
+  else if (arg.isnumeric ())
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = arg.sparse_bool_matrix_value ();
       else if (arg.is_scalar_type ())
         retval = arg.bool_value ();

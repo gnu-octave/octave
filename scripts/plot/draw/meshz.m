@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} meshz (@var{x}, @var{y}, @var{z})
@@ -30,7 +30,7 @@
 ## over a 2-D rectangular region in the x-y plane.  @var{z} determines the
 ## height above the plane of each vertex.  If only a single @var{z} matrix is
 ## given, then it is plotted over the meshgrid
-## @code{@var{x} = 0:(columns (@var{z}) - 1), @var{y} = 0:(rows (@var{z}) - 1}).
+## @code{@var{x} = 1:columns (@var{z}), @var{y} = 1:rows (@var{z})}.
 ## Thus, columns of @var{z} correspond to different @var{x} values and rows
 ## of @var{z} correspond to different @var{y} values.
 ##
@@ -71,14 +71,14 @@ function h = meshz (varargin)
   if (nargin == 1)
     z = varargin{1};
     [m, n] = size (z);
-    x = 0:(n-1);
-    y = (0:(m-1)).';
+    x = 1:n;
+    y = (1:m).';
     c = z;
   elseif (nargin == 2)
     z = varargin{1};
     [m, n] = size (z);
-    x = 0:(n-1);
-    y = (0:(m-1)).';
+    x = 1:n;
+    y = (1:m).';
     c = varargin{2};
   elseif (charidx == 4)
     x = varargin{1};

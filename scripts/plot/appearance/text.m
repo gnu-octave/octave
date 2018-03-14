@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} text (@var{x}, @var{y}, @var{string})
@@ -33,6 +33,9 @@
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## created text objects.
+##
+## Programming Note: The full list of properties is documented at
+## @ref{Text Properties,,Text Properties}.
 ## @seealso{gtext, title, xlabel, ylabel, zlabel}
 ## @end deftypefn
 
@@ -141,7 +144,7 @@ function h = text (varargin)
     hax = hax(1);
   endif
 
-  ## Position argument may alse be in PROP/VAL pair
+  ## Position argument may also be in PROP/VAL pair
   idx = find (strcmpi (varargin, "position"), 1);
   if (idx)
     pos = varargin{idx+1};
@@ -153,15 +156,13 @@ function h = text (varargin)
   ## Call __go_text__ to do the work
   htmp = zeros (nt, 1);
   if (nx == 1)
-    htmp = __go_text__ (hax, "string", string{1},
-                             ## varargin first, in case "Units" set for pos.
-                             varargin{:},
-                             "position", pos);
+    ## Set varargin first, in case it changes units or interpreter properties.
+    htmp = __go_text__ (hax, varargin{:}, "position", pos,
+                             "string", string{1});
   else
     for n = 1:nt
-      htmp(n) = __go_text__ (hax, "string", string{n},
-                                  varargin{:},
-                                  "position", pos(n,:));
+      htmp(n) = __go_text__ (hax, varargin{:}, "position", pos(n,:),
+                                  "string", string{n});
     endfor
     __request_drawnow__ ();
   endif
@@ -203,10 +204,15 @@ endfunction
 %! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
 %!                  "facecolor", "none", ...
 %!                  "facealpha", 0);
+%! colors = jet (9);
+%! ii = 1;
 %! for t = 0:45:359;
+%!   ii = ii +1;
 %!   text (25, 25, 0, "Vertical Alignment = Bottom", ...
 %!                    "rotation", t, ...
 %!                    "horizontalalignment", "left", ...
+%!                    "backgroundcolor", colors(ii,:), ...
+%!                    "edgecolor", "k", ...
 %!                    "verticalalignment", "bottom");
 %! endfor
 %! caxis ([-100 100]);

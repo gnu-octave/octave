@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Container::Container (QWidget* xparent)
-    : ContainerBase (xparent), m_canvas (0)
+  Container::Container (QWidget *xparent)
+    : ContainerBase (xparent), m_canvas (nullptr)
   {
     setFocusPolicy (Qt::ClickFocus);
   }
@@ -58,10 +58,10 @@ namespace QtHandles
           {
             graphics_object fig = go.get_ancestor ("figure");
 
-            m_canvas = Canvas::create (fig.get("renderer").string_value (),
+            m_canvas = Canvas::create (fig.get ("renderer").string_value (),
                                        this, gh);
 
-            QWidget* canvasWidget = m_canvas->qWidget ();
+            QWidget *canvasWidget = m_canvas->qWidget ();
 
             canvasWidget->lower ();
             canvasWidget->show ();
@@ -80,35 +80,47 @@ namespace QtHandles
 
     gh_manager::auto_lock lock;
 
-    foreach (QObject* qObj, children ())
-    {
-      if (qObj->isWidgetType ())
-        {
-          Object* obj = Object::fromQObject (qObj);
+    foreach (QObject *qObj, children ())
+      {
+        if (qObj->isWidgetType ())
+          {
+            Object *obj = Object::fromQObject (qObj);
 
-          if (obj)
-            {
-              graphics_object go = obj->object ();
+            if (obj)
+              {
+                graphics_object go = obj->object ();
 
-              if (go.valid_object ())
-                {
-                  Matrix bb = go.get_properties ().get_boundingbox (false);
+                if (go.valid_object ())
+                  {
+                    Matrix bb = go.get_properties ().get_boundingbox (false);
 
-                  obj->qWidget<QWidget> ()
-                  ->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
-                                 octave::math::round (bb(2)), octave::math::round (bb(3)));
-                }
-            }
-        }
-    }
+                    obj->qWidget<QWidget> ()->setGeometry (
+                      octave::math::round (bb(0)), octave::math::round (bb(1)),
+                      octave::math::round (bb(2)), octave::math::round (bb(3)));
+                  }
+              }
+          }
+      }
   }
 
   void
-  Container::childEvent (QChildEvent* xevent)
+  Container::childEvent (QChildEvent *xevent)
   {
-    if (xevent->child ()->isWidgetType ())
-      qobject_cast<QWidget*> (xevent->child ())->setMouseTracking (
-        hasMouseTracking ());
-  }
+    // Enable mouse tracking in child widgets as they are added if the
+    // container also has mouse tracking enabled.  There is no need to
+    // do this when child objects are removed.
 
+    if (xevent->added ())
+      {
+        QObject *obj = xevent->child ();
+
+        if (obj && obj->isWidgetType ())
+          {
+            QWidget *widget = qobject_cast<QWidget *> (obj);
+
+            if (widget)
+              widget->setMouseTracking (hasMouseTracking ());
+          }
+      }
+  }
 }

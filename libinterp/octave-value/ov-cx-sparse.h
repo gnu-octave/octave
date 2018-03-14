@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -45,8 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
-class tree_walker;
-
 class
 OCTINTERP_API
 octave_sparse_complex_matrix : public octave_base_sparse<SparseComplexMatrix>
@@ -66,18 +64,18 @@ public:
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
   octave_sparse_complex_matrix (const SparseComplexMatrix& m,
-                                const MatrixType &t)
+                                const MatrixType& t)
     : octave_base_sparse<SparseComplexMatrix> (m, t) { }
 
   octave_sparse_complex_matrix (const MSparse<Complex>& m)
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
   octave_sparse_complex_matrix (const MSparse<Complex>& m,
-                                const MatrixType &t)
+                                const MatrixType& t)
     : octave_base_sparse<SparseComplexMatrix> (m, t) { }
 
   octave_sparse_complex_matrix (const Sparse<Complex>& m,
-                                const MatrixType &t)
+                                const MatrixType& t)
     : octave_base_sparse<SparseComplexMatrix> (SparseComplexMatrix (m), t) { }
 
   octave_sparse_complex_matrix (const Sparse<Complex>& m)
@@ -86,24 +84,24 @@ public:
   octave_sparse_complex_matrix (const octave_sparse_complex_matrix& cm)
     : octave_base_sparse<SparseComplexMatrix> (cm) { }
 
-  ~octave_sparse_complex_matrix (void) { }
+  ~octave_sparse_complex_matrix (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_sparse_complex_matrix (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_sparse_complex_matrix (); }
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   builtin_type_t builtin_type (void) const { return btyp_complex; }
 
   bool is_complex_matrix (void) const { return true; }
 
-  bool is_complex_type (void) const { return true; }
+  bool iscomplex (void) const { return true; }
 
   bool is_double_type (void) const { return true; }
 
-  bool is_float_type (void) const { return true; }
+  bool isfloat (void) const { return true; }
 
   double double_value (bool = false) const;
 
@@ -130,7 +128,7 @@ public:
   octave_value as_double (void) const;
 
 #if 0
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   {
@@ -149,7 +147,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const;
 

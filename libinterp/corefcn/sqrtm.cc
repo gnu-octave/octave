@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -94,7 +94,7 @@ do_sqrtm (const octave_value& arg)
 
   MatrixType mt = arg.matrix_type ();
 
-  bool iscomplex = arg.is_complex_type ();
+  bool iscomplex = arg.iscomplex ();
 
   typedef typename Matrix::element_type real_type;
 
@@ -234,10 +234,10 @@ Mathematics, Manchester, England, January 1999.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
     retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix,
-                         octave::math::schur<FloatComplexMatrix> > (arg);
-  else if (arg.is_numeric_type ())
+                         octave::math::schur<FloatComplexMatrix>> (arg);
+  else if (arg.isnumeric ())
     retval(0) = do_sqrtm<Matrix, ComplexMatrix,
-                         octave::math::schur<ComplexMatrix> > (arg);
+                         octave::math::schur<ComplexMatrix>> (arg);
 
   if (nargout > 1)
     {

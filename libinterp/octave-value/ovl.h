@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -70,7 +70,7 @@ public:
   // Concatenation constructor.
   octave_value_list (const std::list<octave_value_list>&);
 
-  ~octave_value_list (void) { }
+  ~octave_value_list (void) = default;
 
   octave_value_list& operator = (const octave_value_list& obj)
   {
@@ -174,17 +174,17 @@ private:
 
 
 //! Construct an octave_value_list with less typing.
-/*!
-  Historically, this made it easier to create an octave_value_list
-  from multiple octave_value arguments.  It is no longer useful since
-  octave_value_list has now a constructor accepting an initializer_list
-  so all it does is save some typing.  The following are equivalent:
+//!
+//! Historically, this made it easier to create an octave_value_list
+//! from multiple octave_value arguments.  It is no longer useful since
+//! octave_value_list has now a constructor accepting an initializer_list
+//! so all it does is save some typing.  The following are equivalent:
+//!
+//! @code{.cc}
+//! return octave_value_list ({ov0, ov1, ov2});
+//! return ovl (ov0, ov1, ov2);
+//! @endcode
 
-  @code{.cc}
-  return octave_value_list ({ov0, ov1, ov2});
-  return ovl (ov0, ov1, ov2);
-  @endcode
-*/
 template<typename... OV_Args>
 inline octave_value_list
 ovl (const OV_Args&... args)

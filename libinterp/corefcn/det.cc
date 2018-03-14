@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #define MAYBE_CAST(VAR, CLASS)                                          \
   const CLASS *VAR = (arg.type_id () == CLASS::static_type_id ()        \
                       ? dynamic_cast<const CLASS *> (&arg.get_rep ())   \
-                      : 0)
+                      : nullptr)
 
 DEFUN (det, args, nargout,
        doc: /* -*- texinfo -*-
@@ -69,7 +69,7 @@ For that, use any of the condition number functions: @code{cond},
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (1.0);
 
   if (arg.rows () != arg.columns ())
@@ -84,7 +84,7 @@ For that, use any of the condition number functions: @code{cond},
       if (nargout <= 1)
         retval.resize (1);
 
-      if (arg.is_complex_type ())
+      if (arg.iscomplex ())
         {
           if (isfloat)
             {
@@ -129,7 +129,7 @@ For that, use any of the condition number functions: @code{cond},
     }
   else if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           octave_idx_type info;
           float rcond = 0.0;
@@ -137,14 +137,14 @@ For that, use any of the condition number functions: @code{cond},
           FloatMatrix m = arg.float_matrix_value ();
 
           MAYBE_CAST (rep, octave_float_matrix);
-          MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+          MatrixType mtype = (rep ? rep -> matrix_type () : MatrixType ());
           FloatDET det = m.determinant (mtype, info, rcond);
-          retval(0) = info == -1 ? 0.0f : det.value ();
+          retval(0) = (info == -1 ? 0.0f : det.value ());
           retval(1) = rcond;
           if (rep)
             rep->matrix_type (mtype);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           octave_idx_type info;
           float rcond = 0.0;
@@ -152,9 +152,9 @@ For that, use any of the condition number functions: @code{cond},
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
           MAYBE_CAST (rep, octave_float_complex_matrix);
-          MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+          MatrixType mtype = (rep ? rep -> matrix_type () : MatrixType ());
           FloatComplexDET det = m.determinant (mtype, info, rcond);
-          retval(0) = info == -1 ? FloatComplex (0.0) : det.value ();
+          retval(0) = (info == -1 ? FloatComplex (0.0) : det.value ());
           retval(1) = rcond;
           if (rep)
             rep->matrix_type (mtype);
@@ -162,17 +162,17 @@ For that, use any of the condition number functions: @code{cond},
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           octave_idx_type info;
           double rcond = 0.0;
           // Always compute rcond, so we can detect singular matrices.
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
               DET det = m.determinant (info, rcond);
-              retval(0) = info == -1 ? 0.0 : det.value ();
+              retval(0) = (info == -1 ? 0.0 : det.value ());
               retval(1) = rcond;
             }
           else
@@ -180,26 +180,26 @@ For that, use any of the condition number functions: @code{cond},
               Matrix m = arg.matrix_value ();
 
               MAYBE_CAST (rep, octave_matrix);
-              MatrixType mtype = rep ? rep -> matrix_type ()
-                                     : MatrixType ();
+              MatrixType mtype = (rep ? rep -> matrix_type ()
+                                      : MatrixType ());
               DET det = m.determinant (mtype, info, rcond);
-              retval(0) = info == -1 ? 0.0 : det.value ();
+              retval(0) = (info == -1 ? 0.0 : det.value ());
               retval(1) = rcond;
               if (rep)
                 rep->matrix_type (mtype);
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           octave_idx_type info;
           double rcond = 0.0;
           // Always compute rcond, so we can detect singular matrices.
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
               ComplexDET det = m.determinant (info, rcond);
-              retval(0) = info == -1 ? Complex (0.0) : det.value ();
+              retval(0) = (info == -1 ? Complex (0.0) : det.value ());
               retval(1) = rcond;
             }
           else
@@ -207,10 +207,10 @@ For that, use any of the condition number functions: @code{cond},
               ComplexMatrix m = arg.complex_matrix_value ();
 
               MAYBE_CAST (rep, octave_complex_matrix);
-              MatrixType mtype = rep ? rep -> matrix_type ()
-                                     : MatrixType ();
+              MatrixType mtype = (rep ? rep -> matrix_type ()
+                                      : MatrixType ());
               ComplexDET det = m.determinant (mtype, info, rcond);
-              retval(0) = info == -1 ? Complex (0.0) : det.value ();
+              retval(0) = (info == -1 ? Complex (0.0) : det.value ());
               retval(1) = rcond;
               if (rep)
                 rep->matrix_type (mtype);
@@ -226,6 +226,7 @@ For that, use any of the condition number functions: @code{cond},
 /*
 %!assert (det ([1, 2; 3, 4]), -2, 10*eps)
 %!assert (det (single ([1, 2; 3, 4])), single (-2), 10*eps ("single"))
+%!assert (det (eye (2000)), 1)
 %!error det ()
 %!error det (1, 2)
 %!error <must be a square matrix> det ([1, 2; 3, 4; 5, 6])

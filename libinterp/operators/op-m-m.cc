@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -159,58 +159,58 @@ DEFNDASSIGNOP_FNOP (assign_el_mul, matrix, matrix, array, product_eq)
 DEFNDASSIGNOP_FNOP (assign_el_div, matrix, matrix, array, quotient_eq)
 
 void
-install_m_m_ops (void)
+install_m_m_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_not, octave_matrix, not);
-  INSTALL_UNOP (op_uplus, octave_matrix, uplus);
-  INSTALL_UNOP (op_uminus, octave_matrix, uminus);
-  INSTALL_UNOP (op_transpose, octave_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_not, octave_matrix, not);
+  INSTALL_UNOP_TI (ti, op_uplus, octave_matrix, uplus);
+  INSTALL_UNOP_TI (ti, op_uminus, octave_matrix, uminus);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_matrix, transpose);
 
-  INSTALL_NCUNOP (op_incr, octave_matrix, incr);
-  INSTALL_NCUNOP (op_decr, octave_matrix, decr);
-  INSTALL_NCUNOP (op_uminus, octave_matrix, changesign);
+  INSTALL_NCUNOP_TI (ti, op_incr, octave_matrix, incr);
+  INSTALL_NCUNOP_TI (ti, op_decr, octave_matrix, decr);
+  INSTALL_NCUNOP_TI (ti, op_uminus, octave_matrix, changesign);
 
-  INSTALL_BINOP (op_add, octave_matrix, octave_matrix, add);
-  INSTALL_BINOP (op_sub, octave_matrix, octave_matrix, sub);
-  INSTALL_BINOP (op_mul, octave_matrix, octave_matrix, mul);
-  INSTALL_BINOP (op_div, octave_matrix, octave_matrix, div);
-  INSTALL_BINOP (op_pow, octave_matrix, octave_matrix, pow);
-  INSTALL_BINOP (op_ldiv, octave_matrix, octave_matrix, ldiv);
-  INSTALL_BINOP (op_lt, octave_matrix, octave_matrix, lt);
-  INSTALL_BINOP (op_le, octave_matrix, octave_matrix, le);
-  INSTALL_BINOP (op_eq, octave_matrix, octave_matrix, eq);
-  INSTALL_BINOP (op_ge, octave_matrix, octave_matrix, ge);
-  INSTALL_BINOP (op_gt, octave_matrix, octave_matrix, gt);
-  INSTALL_BINOP (op_ne, octave_matrix, octave_matrix, ne);
-  INSTALL_BINOP (op_el_mul, octave_matrix, octave_matrix, el_mul);
-  INSTALL_BINOP (op_el_div, octave_matrix, octave_matrix, el_div);
-  INSTALL_BINOP (op_el_pow, octave_matrix, octave_matrix, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_matrix, octave_matrix, el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_matrix, octave_matrix, el_and);
-  INSTALL_BINOP (op_el_or, octave_matrix, octave_matrix, el_or);
-  INSTALL_BINOP (op_el_and_not, octave_matrix, octave_matrix, el_and_not);
-  INSTALL_BINOP (op_el_or_not, octave_matrix, octave_matrix, el_or_not);
-  INSTALL_BINOP (op_el_not_and, octave_matrix, octave_matrix, el_not_and);
-  INSTALL_BINOP (op_el_not_or, octave_matrix, octave_matrix, el_not_or);
-  INSTALL_BINOP (op_trans_mul, octave_matrix, octave_matrix, trans_mul);
-  INSTALL_BINOP (op_mul_trans, octave_matrix, octave_matrix, mul_trans);
-  INSTALL_BINOP (op_herm_mul, octave_matrix, octave_matrix, trans_mul);
-  INSTALL_BINOP (op_mul_herm, octave_matrix, octave_matrix, mul_trans);
-  INSTALL_BINOP (op_trans_ldiv, octave_matrix, octave_matrix, trans_ldiv);
-  INSTALL_BINOP (op_herm_ldiv, octave_matrix, octave_matrix, trans_ldiv);
+  INSTALL_BINOP_TI (ti, op_add, octave_matrix, octave_matrix, add);
+  INSTALL_BINOP_TI (ti, op_sub, octave_matrix, octave_matrix, sub);
+  INSTALL_BINOP_TI (ti, op_mul, octave_matrix, octave_matrix, mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_matrix, octave_matrix, div);
+  INSTALL_BINOP_TI (ti, op_pow, octave_matrix, octave_matrix, pow);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_matrix, octave_matrix, ldiv);
+  INSTALL_BINOP_TI (ti, op_lt, octave_matrix, octave_matrix, lt);
+  INSTALL_BINOP_TI (ti, op_le, octave_matrix, octave_matrix, le);
+  INSTALL_BINOP_TI (ti, op_eq, octave_matrix, octave_matrix, eq);
+  INSTALL_BINOP_TI (ti, op_ge, octave_matrix, octave_matrix, ge);
+  INSTALL_BINOP_TI (ti, op_gt, octave_matrix, octave_matrix, gt);
+  INSTALL_BINOP_TI (ti, op_ne, octave_matrix, octave_matrix, ne);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_matrix, octave_matrix, el_mul);
+  INSTALL_BINOP_TI (ti, op_el_div, octave_matrix, octave_matrix, el_div);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_matrix, octave_matrix, el_pow);
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_matrix, octave_matrix, el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_matrix, octave_matrix, el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_matrix, octave_matrix, el_or);
+  INSTALL_BINOP_TI (ti, op_el_and_not, octave_matrix, octave_matrix, el_and_not);
+  INSTALL_BINOP_TI (ti, op_el_or_not, octave_matrix, octave_matrix, el_or_not);
+  INSTALL_BINOP_TI (ti, op_el_not_and, octave_matrix, octave_matrix, el_not_and);
+  INSTALL_BINOP_TI (ti, op_el_not_or, octave_matrix, octave_matrix, el_not_or);
+  INSTALL_BINOP_TI (ti, op_trans_mul, octave_matrix, octave_matrix, trans_mul);
+  INSTALL_BINOP_TI (ti, op_mul_trans, octave_matrix, octave_matrix, mul_trans);
+  INSTALL_BINOP_TI (ti, op_herm_mul, octave_matrix, octave_matrix, trans_mul);
+  INSTALL_BINOP_TI (ti, op_mul_herm, octave_matrix, octave_matrix, mul_trans);
+  INSTALL_BINOP_TI (ti, op_trans_ldiv, octave_matrix, octave_matrix, trans_ldiv);
+  INSTALL_BINOP_TI (ti, op_herm_ldiv, octave_matrix, octave_matrix, trans_ldiv);
 
-  INSTALL_CATOP (octave_matrix, octave_matrix, m_m);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_matrix, m_m);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_matrix, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_matrix, sgl_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_matrix, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_matrix, sgl_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_sq_str, null_assign);
 
-  INSTALL_ASSIGNOP (op_add_eq, octave_matrix, octave_matrix, assign_add);
-  INSTALL_ASSIGNOP (op_sub_eq, octave_matrix, octave_matrix, assign_sub);
-  INSTALL_ASSIGNOP (op_el_mul_eq, octave_matrix, octave_matrix, assign_el_mul);
-  INSTALL_ASSIGNOP (op_el_div_eq, octave_matrix, octave_matrix, assign_el_div);
+  INSTALL_ASSIGNOP_TI (ti, op_add_eq, octave_matrix, octave_matrix, assign_add);
+  INSTALL_ASSIGNOP_TI (ti, op_sub_eq, octave_matrix, octave_matrix, assign_sub);
+  INSTALL_ASSIGNOP_TI (ti, op_el_mul_eq, octave_matrix, octave_matrix, assign_el_mul);
+  INSTALL_ASSIGNOP_TI (ti, op_el_div_eq, octave_matrix, octave_matrix, assign_el_div);
 }

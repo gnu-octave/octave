@@ -10,19 +10,19 @@ Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -263,10 +263,10 @@ log_search (const std::list<std::string>& filenames)
 {
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      for (const auto &filename : filenames)
+      for (const auto& filename : filenames)
         {
           octave::sys::time now;
-          std::cerr << now.unix_time () << " " << filename << std::endl;
+          std::cerr << now.unix_time () << ' ' << filename << std::endl;
         }
     }
 }
@@ -562,10 +562,10 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
             std::cerr << ", " << *p;
         }
 
-      std::cerr << "), path=" << path << "." << std::endl;
+      std::cerr << "), path=" << path << '.' << std::endl;
     }
 
-  for (const auto &name : names)
+  for (const auto& name : names)
     {
       if (kpse_absolute_p (name, true))
         {
@@ -601,7 +601,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
           for (auto p = names.cbegin (); p != names.cend (); p++)
             {
               if (p == names.cbegin ())
-                std:: cerr << *p;
+                std::cerr << *p;
               else
                 std::cerr << ", " << *p;
             }
@@ -714,7 +714,7 @@ kpse_tilde_expand (const std::string& name)
       octave::sys::password p = octave::sys::password::getpwnam (user);
 
       /* If no such user, just use '.'.  */
-      std::string home = p ? p.dir () : std::string (".");
+      std::string home = (p ? p.dir () : ".");
 
       if (home.empty ())
         home = ".";
@@ -724,10 +724,10 @@ kpse_tilde_expand (const std::string& name)
         home = home.substr (1);
 
       /* If HOME ends in /, omit the / after ~user. */
-      if (name.length () > c && IS_DIR_SEP (home[home.length () - 1]))
+      if (name.length () > c && IS_DIR_SEP (home.back ()))
         c++;
 
-      expansion = name.length () > c ? home : home + name.substr (c);
+      expansion = (name.length () > c ? home : home + name.substr (c));
     }
 #else /* not HAVE_PWD_H */
   expansion = name;
@@ -782,9 +782,8 @@ kpse_expand_kpse_dot (const std::string& path)
         ret += kpse_dot + DIR_SEP_STRING + elt + ENV_SEP_STRING;
     }
 
-  int len = ret.length ();
-  if (len > 0)
-    ret.resize (len-1);
+  if (! ret.empty ())
+    ret.pop_back ();
 
   return ret;
 }
@@ -801,7 +800,7 @@ kpse_brace_expand_element (const std::string& elt)
 
   std::list<std::string> expansions = brace_expand (elt);
 
-  for (const auto &expanded_elt : expansions)
+  for (const auto& expanded_elt : expansions)
     {
       /* Do $ and ~ expansion on each element.  */
       std::string x = kpse_expand (expanded_elt);
@@ -818,7 +817,7 @@ kpse_brace_expand_element (const std::string& elt)
       ret += x + ENV_SEP_STRING;
     }
 
-  ret.resize (ret.length () - 1);
+  ret.pop_back ();
 
   return ret;
 }
@@ -849,9 +848,8 @@ kpse_brace_expand (const std::string& path)
       ret += expansion + ENV_SEP_STRING;
     }
 
-  size_t len = ret.length ();
-  if (len > 0)
-    ret.resize (len-1);
+  if (! ret.empty ())
+    ret.pop_back ();
 
   return kpse_expand_kpse_dot (ret);
 }
@@ -924,8 +922,8 @@ kpse_path_expand (const std::string& path)
         }
     }
 
-  if (len > 0)
-    ret.resize (len-1);
+  if (! ret.empty ())
+    ret.pop_back ();
 
   return ret;
 }
@@ -963,8 +961,8 @@ array_concat (const std::list<std::string>& arr1,
     result = arr1;
   else
     {
-      for (const auto &elt_2 : arr2)
-        for (const auto &elt_1 : arr1)
+      for (const auto& elt_2 : arr2)
+        for (const auto& elt_1 : arr1)
           result.push_back (elt_1 + elt_2);
     }
 
@@ -1147,7 +1145,7 @@ kpse_expand_default (const std::string& path, const std::string& fallback)
   /* Solitary or leading :?  */
   else if (IS_ENV_SEP (path[0]))
     {
-      expansion = path_len == 1 ? fallback : fallback + path;
+      expansion = (path_len == 1 ? fallback : fallback + path);
     }
 
   /* Sorry about the assignment in the middle of the expression, but
@@ -1214,7 +1212,7 @@ kpse_element_dir (const std::string& elt)
     {
       ret = elt;
 
-      char last_char = ret[ret.length () - 1];
+      char last_char = ret.back ();
 
       if (! (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)))
         ret += DIR_SEP_STRING;
@@ -1252,7 +1250,7 @@ expanding_p (const std::string& var)
    This is a subroutine for the more complicated expansion function.  */
 
 static void
-expand (std::string &expansion, const std::string& var)
+expand (std::string& expansion, const std::string& var)
 {
   if (expanding_p (var))
     {

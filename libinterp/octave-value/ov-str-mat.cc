@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -62,7 +62,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string",
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   const octave_char_matrix_str& v
     = dynamic_cast<const octave_char_matrix_str&> (a);
@@ -277,6 +277,32 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
     }
 }
 
+std::string
+octave_char_matrix_str::edit_display (const float_display_format&,
+                                      octave_idx_type i,
+                                      octave_idx_type) const
+{
+  if (i == 0)
+    {
+      if (rows () == 1)
+        {
+          std::string retval = string_value ();
+
+          if (! is_sq_string ())
+            retval = undo_string_escapes (retval);
+
+          return retval;
+        }
+      else if (is_zero_by_zero ())
+        return "";
+    }
+
+  std::string tname = type_name ();
+  dim_vector dv = matrix.dims ();
+  std::string dimstr = dv.str ();
+  return "[" + dimstr + " " + tname + "]";
+}
+
 bool
 octave_char_matrix_str::save_ascii (std::ostream& os)
 {
@@ -286,7 +312,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
       charNDArray tmp = char_array_value ();
       os << "# ndims: " << dv.ndims () << "\n";
       for (int i=0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
       os << "\n";
       os.write (tmp.fortran_vec (), dv.numel ());
       os << "\n";
@@ -347,7 +373,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
       charNDArray tmp(dv);
 
-      if (tmp.is_empty ())
+      if (tmp.isempty ())
         matrix = tmp;
       else
         {
@@ -548,7 +574,7 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, 0);
+  space_hid = H5Screate_simple (rank, hdims, nullptr);
   if (space_hid < 0)
     return false;
 #if defined (HAVE_HDF5_18)

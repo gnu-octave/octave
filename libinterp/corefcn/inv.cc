@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -62,7 +62,7 @@ sparse matrix if possible.
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (Matrix ());
 
   if (arg.rows () != arg.columns ())
@@ -78,7 +78,7 @@ sparse matrix if possible.
     {
       rcond = 1.0;
       frcond = 1.0f;
-      if (arg.is_complex_type ())
+      if (arg.iscomplex ())
         {
           if (isfloat)
             {
@@ -117,7 +117,7 @@ sparse matrix if possible.
     }
   else if (isfloat)
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix m = arg.float_matrix_value ();
 
@@ -125,7 +125,7 @@ sparse matrix if possible.
           result = m.inverse (mattyp, info, frcond, 1);
           args(0).matrix_type (mattyp);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -136,9 +136,9 @@ sparse matrix if possible.
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -155,9 +155,9 @@ sparse matrix if possible.
               args(0).matrix_type (mattyp);
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
-          if (arg.is_sparse_type ())
+          if (arg.issparse ())
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
@@ -182,7 +182,7 @@ sparse matrix if possible.
 
   retval(0) = result;
   if (nargout > 1)
-    retval(1) = isfloat ? octave_value (frcond) : octave_value (rcond);
+    retval(1) = (isfloat ? octave_value (frcond) : octave_value (rcond));
 
   bool rcond_plus_one_eq_one = false;
 
@@ -207,34 +207,28 @@ sparse matrix if possible.
 %!assert (inv ([1, 2; 3, 4]), [-2, 1; 1.5, -0.5], sqrt (eps))
 %!assert (inv (single ([1, 2; 3, 4])), single ([-2, 1; 1.5, -0.5]), sqrt (eps ("single")))
 
+## Test special inputs
+%!assert (inv (zeros (2,0)), [])
+%!warning <matrix singular> assert (inv (Inf), 0)
+%!warning <matrix singular> assert (inv (-Inf), -0)
+%!warning <matrix singular> assert (inv (single (Inf)), single (0))
+%!warning <matrix singular> assert (inv (complex (1, Inf)), 0)
+%!warning <matrix singular> assert (inv (single (complex (1,Inf))), single (0))
+
+%!test
+%! [xinv, rcond] = inv (single ([1,2;3,4]));
+%! assert (isa (xinv, "single"));
+%! assert (isa (rcond, "single"));
+
+%!test
+%! [xinv, rcond] = inv ([1,2;3,4]);
+%! assert (isa (xinv, "double"));
+%! assert (isa (rcond, "double"));
+
 %!error inv ()
 %!error inv ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 
-%!test
-%! [xinv, rcond] = inv (single ([1,2;3,4]));
-%! assert (isa (xinv, 'single'));
-%! assert (isa (rcond, 'single'));
-
-%!test
-%! [xinv, rcond] = inv ([1,2;3,4]);
-%! assert (isa (xinv, 'double'));
-%! assert (isa (rcond, 'double'));
 */
 
-// FIXME: this should really be done with an alias, but
-// alias_builtin() won't do the right thing if we are actually using
-// dynamic linking.
-
-DEFUN (inverse, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} inverse (@var{A})
-@deftypefnx {} {[@var{x}, @var{rcond}] =} inverse (@var{A})
-Compute the inverse of the square matrix @var{A}.
-
-This is an alias for @code{inv}.
-@seealso{inv}
-@end deftypefn */)
-{
-  return Finv (args, nargout);
-}
+DEFALIAS (inverse, inv);

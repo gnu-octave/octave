@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -108,7 +108,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
     }
   else
     {
-      NoAlias<Array<T> > r (a.dims ());
+      NoAlias<Array<T>> r (a.dims ());
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -131,7 +131,7 @@ static Sparse<T>
 do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
-    error ("tril: \"pack\" not implemented for sparse matrices");
+    error (R"(tril: "pack" not implemented for sparse matrices)");
 
   Sparse<T> m = a;
   octave_idx_type nc = m.cols ();
@@ -151,7 +151,7 @@ static Sparse<T>
 do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
-    error ("triu: \"pack\" not implemented for sparse matrices");
+    error (R"(triu: "pack" not implemented for sparse matrices)");
 
   Sparse<T> m = a;
   octave_idx_type nc = m.cols ();
@@ -215,14 +215,14 @@ do_trilu (const std::string& name,
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = do_trilu (arg.sparse_matrix_value (), k, lower, pack);
       else
         retval = do_trilu (arg.array_value (), k, lower, pack);
       break;
 
     case btyp_complex:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
                            pack);
       else
@@ -230,7 +230,7 @@ do_trilu (const std::string& name,
       break;
 
     case btyp_bool:
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
                            pack);
       else
@@ -261,11 +261,11 @@ do_trilu (const std::string& name,
         // Generic code that works on octave-values, that is slow
         // but will also work on arbitrary user types
         if (pack) // FIXME
-          error ("%s: \"pack\" not implemented for class %s",
+          error (R"(%s: "pack" not implemented for class %s)",
                  name.c_str (), arg.class_name ().c_str ());
 
         octave_value tmp = arg;
-        if (arg.is_empty ())
+        if (arg.isempty ())
           return arg;
 
         octave_idx_type nr = dims(0);
@@ -286,16 +286,16 @@ do_trilu (const std::string& name,
         idx_tmp.push_back (ov_idx);
         ov_idx(1) = static_cast<double> (nc);
         tmp = tmp.resize (dim_vector (0,0));
-        tmp = tmp.subsasgn ("(",idx_tmp, arg.do_index_op (ov_idx));
+        tmp = tmp.subsasgn ("(", idx_tmp, arg.do_index_op (ov_idx));
         tmp = tmp.resize (dims);
 
         if (lower)
           {
-            octave_idx_type st = nc < nr + k ? nc : nr + k;
+            octave_idx_type st = (nc < nr + k ? nc : nr + k);
 
             for (octave_idx_type j = 1; j <= st; j++)
               {
-                octave_idx_type nr_limit = 1 > j - k ? 1 : j - k;
+                octave_idx_type nr_limit = (1 > j - k ? 1 : j - k);
                 ov_idx(1) = static_cast<double> (j);
                 ov_idx(0) = Range (nr_limit, nr);
                 std::list<octave_value_list> idx;
@@ -306,11 +306,11 @@ do_trilu (const std::string& name,
           }
         else
           {
-            octave_idx_type st = k + 1 > 1 ? k + 1 : 1;
+            octave_idx_type st = (k + 1 > 1 ? k + 1 : 1);
 
             for (octave_idx_type j = st; j <= nc; j++)
               {
-                octave_idx_type nr_limit = nr < j - k ? nr : j - k;
+                octave_idx_type nr_limit = (nr < j - k ? nr : j - k);
                 ov_idx(1) = static_cast<double> (j);
                 ov_idx(0) = Range (1, nr_limit);
                 std::list<octave_value_list> idx;

@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Plotting
 @chapter Plotting
@@ -221,8 +221,10 @@ polar coordinates.  However, the display coordinates remain rectangular
 and linear.  For example,
 
 @example
+@group
 polar (0:0.1:10*pi, 0:0.1:10*pi);
 title ("Example polar plot from 0 to 10*pi");
+@end group
 @end example
 
 @noindent
@@ -280,6 +282,36 @@ get or set individual axis limits.  Each has the same form.
 @findex ylim
 @findex zlim
 @DOCSTRING(xlim)
+
+The @code{xticks}, @code{yticks}, @code{zticks}, @code{rticks}, and
+@code{thetaticks} functions may be used to get or set the tick mark locations
+and modes on the respective axis.  Each has the same form, although mode
+options are not currently avaliable for @code{rticks}, and @code{thetaticks}.
+
+@c FIXME: Update this section if polarplot and polar axes changes change the
+@c        associated axis properties.
+@anchor{XREFyticks}
+@anchor{XREFzticks}
+@anchor{XREFrticks}
+@anchor{XREFthetaticks}
+@findex yticks
+@findex zticks
+@findex rticks
+@findex thetaticks
+@DOCSTRING(xticks)
+
+The @code{xticklabels}, @code{yticklabels}, and @code{zticklabels} functions
+may be used to get or set the label assigned to each tick location and the
+labeling mode on the respective axis.  Each has the same form.
+
+@c FIXME: Update this section if polarplot and polar axes changes change the
+@c        associated axis properties.
+@c        Matlab also implements rticklabels and thetaticklabels.
+@anchor{XREFyticklabels}
+@anchor{XREFzticklabels}
+@findex yticklabels
+@findex zticklabels
+@DOCSTRING(xticklabels)
 
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
@@ -432,6 +464,22 @@ three-dimensional plots.
 
 @DOCSTRING(view)
 
+@DOCSTRING(camlookat)
+
+@DOCSTRING(campos)
+
+@DOCSTRING(camorbit)
+
+@DOCSTRING(camroll)
+
+@DOCSTRING(camtarget)
+
+@DOCSTRING(camup)
+
+@DOCSTRING(camva)
+
+@DOCSTRING(camzoom)
+
 @DOCSTRING(slice)
 
 @DOCSTRING(ribbon)
@@ -516,8 +564,11 @@ are drawn in an invisible axes, on top of every other axes.
 
 See @ref{Text Properties} for the properties that you can set.
 
+@c Add cross-references and function index entries for other label functions.
 @anchor{XREFylabel}
 @anchor{XREFzlabel}
+@findex ylabel
+@findex zlabel
 @DOCSTRING(xlabel)
 
 @DOCSTRING(clabel)
@@ -664,8 +715,11 @@ which special control sequences in the text are rendered.
 The interpreter property can take three values: @qcode{"none"}, @qcode{"tex"},
 @qcode{"latex"}.  If the interpreter is set to @qcode{"none"} then no special
 rendering occurs---the displayed text is a verbatim copy of the specified text.
-Currently, the @qcode{"latex"} interpreter is not implemented and is equivalent
-to @qcode{"none"}.
+Currently, the @qcode{"latex"} interpreter is not implemented for on-screen
+display and is equivalent to @qcode{"none"}.  Note that Octave does not parse
+or validate the text strings when in @qcode{"latex"} mode---it is the
+responsibility of the programmer to generate valid strings which may include
+wrapping sections that should appear in Math mode with '$' characters.
 
 The @qcode{"tex"} option implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
@@ -703,7 +757,7 @@ use @tab
 @end multitable
 
 The color of the text may also be changed inline using either a string (e.g.,
-"red") or numerically with a Red-Green-Blue (RGB) specification (.e.g.,
+"red") or numerically with a Red-Green-Blue (RGB) specification (e.g.,
 [1 0 0], also red).
 
 @multitable @columnfractions .1 .4 .6 .1
@@ -714,8 +768,8 @@ numerically @tab
 
 Finally, superscripting and subscripting can be controlled with the @qcode{'^'}
 and @qcode{'_'} characters.  If the @qcode{'^'} or @qcode{'_'} is followed by a
-@{ character, then all of the block surrounded by the @{ @} pair is
-superscripted or subscripted.  Without the @{ @} pair, only the character
+@{ character, then all of the block surrounded by the @w{@{ @}} pair is
+superscripted or subscripted.  Without the @w{@{ @}} pair, only the character
 immediately following the @qcode{'^'} or @qcode{'_'} is changed.
 
 @float Table,tab:extended
@@ -991,15 +1045,14 @@ print -deps foo.eps
 saves the current figure to an encapsulated PostScript file called
 @file{foo.eps}.
 
-The current graphic toolkits produce very similar graphic displays but differ
-in their capability to display text and in print capabilities.  In particular,
-the OpenGL based toolkits such as @code{fltk} and @code{qt} do not support the
-@qcode{"interpreter"} property of text objects.  This means that when using
-OpenGL toolkits special symbols drawn with the @qcode{"tex"} interpreter will
-appear correctly on-screen but will be rendered with interpreter @qcode{"none"}
-when printing unless one of the @code{standalone} (see below) modes is used.
-These modes provide access to the pdflatex processor and therefore allow full
-use of @LaTeX{} commands.
+The current graphic toolkits produce very similar graphic displays, but differ
+in their capability to display unusual text and in their ability to print
+such text.  In general, the @qcode{"tex"} interpreter (default) is the best
+all-around performer for both on-screen display and printing.  However, for the
+reproduction of complicated text formulas the @qcode{"latex"} interpreter is
+preferred.  The @qcode{"latex"} interpreter will not display symbols on-screen,
+but the printed output will be correct.  When printing, use one of the
+@code{standalone} options which provide full access to @LaTeX{} commands.
 
 A complete example showing the capabilities of text printing using the
 @option{-dpdflatexstandalone} option is:
@@ -1012,16 +1065,15 @@ plot (x, erf (x));
 hold on;
 plot (x, x, "r");
 axis ([0, 3, 0, 1]);
-text (0.65, 0.6175, ['$\displaystyle\leftarrow x = @{2\over\sqrt@{\pi@}@}'...
-                     '\int_@{0@}^@{x@}e^@{-t^2@} dt = 0.6175$']);
+text (0.65, 0.6175, ['$\displaystyle\leftarrow x = @{2 \over \sqrt@{\pi@}@}'...
+                     '\int_@{0@}^@{x@} e^@{-t^2@} dt = 0.6175$'],
+      "interpreter", "latex");
 xlabel ("x");
 ylabel ("erf (x)");
 title ("erf (x) with text annotation");
-set (hf, "visible", "off");
 print (hf, "plot15_7.pdf", "-dpdflatexstandalone");
-set (hf, "visible", "on");
 system ("pdflatex plot15_7");
-open ("plot15_7.pdf");
+open plot15_7.pdf
 @end group
 @end example
 
@@ -1119,22 +1171,25 @@ to a complex data structure as documented in
 
 The graphics objects are arranged in a hierarchy:
 
-1. The root is at 0.  In other words, @code{get (0)} returns the properties of
+1. The root object is returned by @code{groot} (historically, equivalent to
+the handle 0).  In other words, @code{get (groot)} returns the properties of
 the root object.
 
 2. Below the root are @code{figure} objects.
 
-3. Below the @code{figure} objects are @code{axes} objects.
+3. Below the @code{figure} objects are @code{axes} or @code{hggroup} objects.
 
 4. Below the @code{axes} objects are @code{line}, @code{text}, @code{patch},
 @code{surface}, @code{image}, and @code{light} objects.
 
 Graphics handles may be distinguished from function handles
-(@pxref{Function Handles}) by means of the function @code{ishandle}.
-@code{ishandle} returns true if its argument is a handle of a graphics object.
-In addition, a figure or axes object may be tested using @code{isfigure} or
-@code{isaxes} respectively.  The test functions return true only if the
-argument is both a handle and of the correct type (figure or axes).
+(@pxref{Function Handles}) by means of the function @code{ishghandle}.
+@code{ishghandle} returns true if its argument is a handle of a graphics
+object.  In addition, a figure or axes object may be tested using
+@code{isfigure} or @code{isaxes} respectively.  To test for a specific type of
+graphics handle, such as a patch or line object, use @code{isgraphics}.  The
+more specific test functions return true only if the argument is both a
+graphics handle and of the correct type (figure, axes, specified object type).
 
 The @code{whos} function can be used to show the object type of each currently
 defined graphics handle.  (Note: this is not true today, but it is, I hope,
@@ -1168,35 +1223,38 @@ ans = figure
 get (h, "");
 error: get: ambiguous figure property name ; possible matches:
 
-__enhanced__           hittest                resize
-__graphics_toolkit__   integerhandle          resizefcn
-__guidata__            interruptible          selected
-__modified__           inverthardcopy         selectionhighlight
-__myhandle__           keypressfcn            selectiontype
-__plot_stream__        keyreleasefcn          tag
-alphamap               menubar                toolbar
-beingdeleted           mincolormap            type
-busyaction             name                   uicontextmenu
-buttondownfcn          nextplot               units
-children               numbertitle            userdata
-clipping               outerposition          visible
-closerequestfcn        paperorientation       windowbuttondownfcn
-color                  paperposition          windowbuttonmotionfcn
-colormap               paperpositionmode      windowbuttonupfcn
-createfcn              papersize              windowkeypressfcn
-currentaxes            papertype              windowkeyreleasefcn
-currentcharacter       paperunits             windowscrollwheelfcn
-currentobject          parent                 windowstyle
-currentpoint           pointer                wvisual
-deletefcn              pointershapecdata      wvisualmode
-dockcontrols           pointershapehotspot    xdisplay
-doublebuffer           position               xvisual
-filename               renderer               xvisualmode
-handlevisibility       renderermode
+__gl_extensions__      dockcontrols           renderer
+__gl_renderer__        doublebuffer           renderermode
+__gl_vendor__          filename               resize
+__gl_version__         graphicssmoothing      resizefcn
+__graphics_toolkit__   handlevisibility       selected
+__guidata__            hittest                selectionhighlight
+__modified__           integerhandle          selectiontype
+__mouse_mode__         interruptible          sizechangedfcn
+__myhandle__           inverthardcopy         tag
+__pan_mode__           keypressfcn            toolbar
+__plot_stream__        keyreleasefcn          type
+__rotate_mode__        menubar                uicontextmenu
+__zoom_mode__          mincolormap            units
+alphamap               name                   userdata
+beingdeleted           nextplot               visible
+busyaction             numbertitle            windowbuttondownfcn
+buttondownfcn          outerposition          windowbuttonmotionfcn
+children               paperorientation       windowbuttonupfcn
+clipping               paperposition          windowkeypressfcn
+closerequestfcn        paperpositionmode      windowkeyreleasefcn
+color                  papersize              windowscrollwheelfcn
+colormap               papertype              windowstyle
+createfcn              paperunits             wvisual
+currentaxes            parent                 wvisualmode
+currentcharacter       pointer                xdisplay
+currentobject          pointershapecdata      xvisual
+currentpoint           pointershapehotspot    xvisualmode
+deletefcn              position
 @end smallexample
 
-The root figure has index 0.  Its properties may be displayed by:
-@code{get (0, "")}.
+The properties of the root figure may be displayed by:
+@code{get (groot, "")}.
 
 The uses of @code{get} and @code{set} are further explained in
 @ref{XREFget,,get}, @ref{XREFset,,set}.
@@ -1219,8 +1277,8 @@ graphics objects are always referenced by @dfn{handle}.
 @item root figure
 @cindex root figure graphics object
 @cindex graphics object, root figure
-the top level of the hierarchy and the parent of all figure objects.
-The handle index of the root figure is 0.
+The top level of the hierarchy and the parent of all figure objects.
+Use @code{groot} to obtain the handle of the root graphics object.
 
 @item figure
 @cindex figure graphics object
@@ -1274,7 +1332,7 @@ same name as the object; In other words, @code{figure}, @code{axes},
 @code{light} functions.  These fundamental graphic objects automatically become
 children of the current axes object as if @code{hold on} was in place.
 Separately, axes will automatically become children of the current figure
-object and figures will become children of the root object 0.
+object and figures will become children of the root object.
 
 If this auto-joining feature is not desired then it is important to call
 @code{newplot} first to prepare a new figure and axes for plotting.
@@ -1297,12 +1355,14 @@ Instead of calling @code{line}, use @code{plot}.  Or use @code{surf} instead of
 @cindex handle functions
 
 To determine whether a variable is a graphics object index, or an index
-to an axes or figure, use the functions @code{ishandle}, @code{isaxes}, and
-@code{isfigure}.
-
-@DOCSTRING(ishandle)
+to an axes or figure, use the functions @code{ishghandle}, @code{isgraphics},
+@code{isaxes}, and @code{isfigure}.
 
 @DOCSTRING(ishghandle)
+
+@DOCSTRING(isgraphics)
+
+@DOCSTRING(ishandle)
 
 @DOCSTRING(isaxes)
 
@@ -1312,6 +1372,8 @@ The function @code{gcf} returns an index to the current figure object,
 or creates one if none exists.  Similarly, @code{gca} returns the
 current axes object, or creates one (and its parent figure object) if
 none exists.
+
+@DOCSTRING(groot)
 
 @DOCSTRING(gcf)
 
@@ -1324,7 +1386,7 @@ properties for graphics objects.  For example,
 
 @example
 @group
-get (0)
+get (groot)
     @result{} ans =
        @{
          type = root
@@ -1457,7 +1519,7 @@ In the following documentation, default values are enclosed in @{ @}.
 
 @node Root Figure Properties
 @subsubsection Root Figure Properties
-@cindex root figure properties
+@prindex @sortas{@ Root Figure Properties} Root Figure Properties
 
 The @code{root figure} properties are:
 
@@ -1466,7 +1528,7 @@ The @code{root figure} properties are:
 
 @node Figure Properties
 @subsubsection Figure Properties
-@cindex figure properties
+@prindex @sortas{@ Figure Properties} Figure Properties
 
 The @code{figure} properties are:
 
@@ -1475,7 +1537,7 @@ The @code{figure} properties are:
 
 @node Axes Properties
 @subsubsection Axes Properties
-@cindex axes properties
+@prindex @sortas{@ Axes Properties} Axes Properties
 
 The @code{axes} properties are:
 
@@ -1484,7 +1546,7 @@ The @code{axes} properties are:
 
 @node Line Properties
 @subsubsection Line Properties
-@cindex line properties
+@prindex @sortas{@ Line Properties} Line Properties
 
 The @code{line} properties are:
 
@@ -1493,7 +1555,7 @@ The @code{line} properties are:
 
 @node Text Properties
 @subsubsection Text Properties
-@cindex text properties
+@prindex @sortas{@ Text Properties} Text Properties
 
 The @code{text} properties are:
 
@@ -1502,7 +1564,7 @@ The @code{text} properties are:
 
 @node Image Properties
 @subsubsection Image Properties
-@cindex image properties
+@prindex @sortas{@ Image Properties} Image Properties
 
 The @code{image} properties are:
 
@@ -1511,7 +1573,7 @@ The @code{image} properties are:
 
 @node Patch Properties
 @subsubsection Patch Properties
-@cindex patch properties
+@prindex @sortas{@ Patch Properties} Patch Properties
 
 The @code{patch} properties are:
 
@@ -1520,7 +1582,7 @@ The @code{patch} properties are:
 
 @node Surface Properties
 @subsubsection Surface Properties
-@cindex surface properties
+@prindex @sortas{@ Surface Properties} Surface Properties
 
 The @code{surface} properties are:
 
@@ -1529,7 +1591,7 @@ The @code{surface} properties are:
 
 @node Light Properties
 @subsubsection Light Properties
-@cindex light properties
+@prindex @sortas{@ Light Properties} Light Properties
 
 The @code{light} properties are:
 
@@ -1537,7 +1599,7 @@ The @code{light} properties are:
 
 @node Uimenu Properties
 @subsubsection Uimenu Properties
-@cindex uimenu properties
+@prindex @sortas{@ Uimenu Properties} Uimenu Properties
 
 The @code{uimenu} properties are:
 
@@ -1545,7 +1607,7 @@ The @code{uimenu} properties are:
 
 @node Uibuttongroup Properties
 @subsubsection Uibuttongroup Properties
-@cindex uibuttongroup properties
+@prindex @sortas{@ Uibuttongroup Properties} Uibuttongroup Properties
 
 The @code{uibuttongroup} properties are:
 
@@ -1553,7 +1615,7 @@ The @code{uibuttongroup} properties are:
 
 @node Uicontextmenu Properties
 @subsubsection Uicontextmenu Properties
-@cindex uicontextmenu properties
+@prindex @sortas{@ Uicontextmenu Properties} Uicontextmenu Properties
 
 The @code{uicontextmenu} properties are:
 
@@ -1561,7 +1623,7 @@ The @code{uicontextmenu} properties are:
 
 @node Uipanel Properties
 @subsubsection Uipanel Properties
-@cindex uipanel properties
+@prindex @sortas{@ Uipanel Properties} Uipanel Properties
 
 The @code{uipanel} properties are:
 
@@ -1569,7 +1631,7 @@ The @code{uipanel} properties are:
 
 @node Uicontrol Properties
 @subsubsection Uicontrol Properties
-@cindex uicontrol properties
+@prindex @sortas{@ Uicontrol Properties} Uicontrol Properties
 
 The @code{uicontrol} properties are:
 
@@ -1577,7 +1639,7 @@ The @code{uicontrol} properties are:
 
 @node Uitoolbar Properties
 @subsubsection Uitoolbar Properties
-@cindex uitoolbar properties
+@prindex @sortas{@ Uitoolbar Properties} Uitoolbar Properties
 
 The @code{uitoolbar} properties are:
 
@@ -1585,7 +1647,7 @@ The @code{uitoolbar} properties are:
 
 @node Uipushtool Properties
 @subsubsection Uipushtool Properties
-@cindex uipushtool properties
+@prindex @sortas{@ Uipushtool Properties} Uipushtool Properties
 
 The @code{uipushtool} properties are:
 
@@ -1593,7 +1655,7 @@ The @code{uipushtool} properties are:
 
 @node Uitoggletool Properties
 @subsubsection Uitoggletool Properties
-@cindex uitoggletool properties
+@prindex @sortas{@ Uitoggletool Properties} Uitoggletool Properties
 
 The @code{uitoggletool} properties are:
 
@@ -1622,7 +1684,7 @@ objects to @qcode{"green"}, for the @code{root} object, will result in all
 value.
 
 @example
-set (0, "defaultlinecolor", "green");
+set (groot, "defaultlinecolor", "green");
 @end example
 
 @noindent
@@ -1637,7 +1699,7 @@ This rule can lead to some strange looking names, for example
 @code{defaultlinelinewidth"} specifies the default @code{linewidth}
 property for @code{line} objects.
 
-The example above used the root figure object, 0, so the default
+The example above used the root figure object so the default
 property value will apply to all line objects.  However, default values
 are hierarchical, so defaults set in a figure objects override those
 set in the root figure object.  Likewise, defaults set in axes objects
@@ -1646,7 +1708,7 @@ override those set in figure or root figure objects.  For example,
 @example
 @group
 subplot (2, 1, 1);
-set (0, "defaultlinecolor", "red");
+set (groot, "defaultlinecolor", "red");
 set (1, "defaultlinecolor", "green");
 set (gca (), "defaultlinecolor", "blue");
 line (1:10, rand (1, 10));
@@ -1694,7 +1756,7 @@ Factory default values are stored in the root figure object.  The
 command
 
 @example
-get (0, "factory");
+get (groot, "factory");
 @end example
 
 @noindent
@@ -1711,6 +1773,7 @@ returns a list of factory defaults.
 * Callbacks::
 * Application-defined Data::
 * Object Groups::
+* Transform Groups::
 * Graphics Toolkits::
 @end menu
 
@@ -1807,80 +1870,107 @@ is
 @example
 @group
 function mycallback (hsrc, evt)
-@dots{}
+  @dots{}
 endfunction
 @end group
 @end example
 
 @noindent
-where @code{hsrc} is a handle to the source of the callback, and @code{evt} 
-gives some event specific data.  
+where @code{hsrc} is a handle to the source of the callback, and @code{evt}
+gives some event specific data.
 
-The function can be provided as a function handle to a plain Octave function, 
-as an anonymous function or as a string representing an Octvae command. The 
-latter syntax is not recommended since syntax errors will only occur when the 
-string is evaluated.  
+The function can be provided as a function handle to a plain Octave function,
+as an anonymous function, or as a string representing an Octave command.  The
+latter syntax is not recommended since syntax errors will only occur when the
+string is evaluated.
 @xref{Function Handles Anonymous Functions Inline Functions, , Function Handles section}.
 
-This can then be associated
-with an object either at the objects creation or later with the
-@code{set} function.  For example,
+This can then be associated with an object either at the object's creation, or
+later with the @code{set} function.  For example,
 
 @example
 plot (x, "DeleteFcn", @@(h, e) disp ("Window Deleted"))
 @end example
 
 @noindent
-where at the moment that the plot is deleted, the message "Window
-Deleted" will be displayed.
+where at the moment that the plot is deleted, the message "Window Deleted" will
+be displayed.
 
-Additional user arguments can be passed to callback functions, and will
-be passed after the 2 default arguments.  For example:
+Additional user arguments can be passed to callback functions, and will be
+passed after the two default arguments.  For example:
 
 @example
 @group
 plot (x, "DeleteFcn", @{@@mycallback, "1"@})
 @dots{}
-function mycallback (h, e, a1)
-  fprintf ("Closing plot %d\n", a1);
+function mycallback (h, evt, arg1)
+  fprintf ("Closing plot %d\n", arg1);
 endfunction
 @end group
 @end example
 
-The basic callback functions that are available for all graphics objects
-are
-
-@itemize @bullet
-@item CreateFcn: 
-called at the moment of the objects creation.  It is not called if the object is altered in any way, and so it only makes sense to define this callback in the function call that defines the object.  Callbacks that are added to @code{CreateFcn} later with the @code{set} function will never be executed.
-
-@item DeleteFcn: 
-called at the moment an object is deleted.
-
-@item ButtonDownFcn: 
-called if a mouse button is pressed while the pointer is over this object.  Note, that the gnuplot interface does not respect this callback.
-@end itemize
-
-@strong{Caution:} the second @code{evt} argument in callback functions is only 
-loosely implemented in the Qt graphics toolkit:
+@strong{Caution:} The second argument in callback functions---@code{evt}---is
+only partially implemented in the Qt graphics toolkit:
 
 @itemize @bullet
 @item Mouse click events:
-@code{evt} is a class @code{double} value, 1 for left, 2 for middle and 3 
-for right click.
+@code{evt} is a class @code{double} value: 1 for left, 2 for middle, and 3 for
+right click.
 
 @item Key press events:
-@code{evt} is a structure with fields @code{Key} (string), @code{Character} 
-(string) and @code{Modifier} (cell array of strings).
+@code{evt} is a structure with fields @code{Key} (string), @code{Character}
+(string), and @code{Modifier} (cell array of strings).
 
 @item Other events:
 @code{evt} is a class @code{double} empty matrix.
 @end itemize
 
+The basic callback functions that are available for all graphics objects are
 
-The object and figure that the event occurred in that resulted in the
-callback being called can be found with the @code{gcbo} and @code{gcbf}
-functions.
+@itemize @bullet
+@item CreateFcn:
+called at the moment of the objects creation.  It is not called if the
+object is altered in any way, and so it only makes sense to define this
+callback in the function call that defines the object.  Callbacks that
+are added to @code{CreateFcn} later with the @code{set} function will
+never be executed.
+
+@item DeleteFcn:
+called at the moment an object is deleted.
+
+@item ButtonDownFcn:
+called if a mouse button is pressed while the pointer is over this
+object.  Note, that the gnuplot interface does not implement this
+callback.
+@end itemize
+
+By default callback functions are queued (they are executed one after the other
+in the event queue) unless the @code{drawnow}, @code{figure}, @code{waitfor},
+@code{getframe}, or @code{pause} functions are used.  If an executing callback
+invokes one of those functions, it causes Octave to flush the event queue,
+which results in the executing callback being interrupted.
+
+It is possible to specify that an object's callbacks should not be interrupted
+by setting the object's @code{interruptible} property to @qcode{"off"}.  In
+this case, Octave decides what to do based on the @code{busyaction} property of
+the @strong{interrupting} callback object:
+
+@table @asis
+@item @code{queue} (the default)
+The interrupting callback is executed after the executing callback has
+returned.
+
+@item @code{cancel}
+The interrupting callback is discarded.
+@end table
+
+The @code{interruptible} property has no effect when the interrupting callback
+is a @code{deletefcn}, or a figure @code{resizefcn} or @code{closerequestfcn}.
+Those callbacks always interrupt the executing callback.
+
+The handle to the object that holds the callback being executed can be
+obtained with the @code{gcbo} function.  The handle to the ancestor figure
+of this object may be obtained using the @code{gcbf} function.
 
 @DOCSTRING(gcbo)
 
@@ -2530,6 +2620,16 @@ The original x, y, z and c data.
 @itemx cdatasource
 Data source variables.
 @end table
+
+@node Transform Groups
+@subsection Transform Groups
+@cindex transform groups
+
+@c FIXME: Need to add documentation on transforms.
+
+@DOCSTRING(hgtransform)
+
+@c @DOCSTRING(makehgtform)
 
 @node Graphics Toolkits
 @subsection Graphics Toolkits

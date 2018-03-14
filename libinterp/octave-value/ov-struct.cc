@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "Cell.h"
+#include "builtin-defun-decls.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -61,7 +62,7 @@ static bool Vprint_struct_array_contents = false;
 octave_base_value *
 octave_struct::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (numel () == 1)
     retval = new octave_scalar_struct (map.checkelem (0));
@@ -83,7 +84,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   if (p != map.end ())
     retval = map.contents (p);
   else if (auto_add)
-    retval = (is_empty ()) ? Cell (dim_vector (1, 1)) : Cell (dims ());
+    retval = (isempty ()) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
     error_with_id ("Octave:invalid-indexing",
                    "structure has no member '%s'", nm.c_str ());
@@ -260,7 +261,7 @@ octave_struct::numeric_conv (const octave_value& val,
 {
   octave_value retval;
 
-  if (type.length () > 0 && type[0] == '.' && ! val.is_map ())
+  if (type.length () > 0 && type[0] == '.' && ! val.isstruct ())
     retval = octave_map ();
   else
     retval = val;
@@ -462,7 +463,7 @@ octave_struct::subsasgn (const std::string& type,
           }
         else
           {
-            if (t_rhs.is_map () || t_rhs.is_object ())
+            if (t_rhs.isstruct () || t_rhs.isobject ())
               {
                 octave_map rhs_map = t_rhs.xmap_value ("invalid structure assignment");
 
@@ -473,7 +474,7 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                if (! t_rhs.is_null_value ())
+                if (! t_rhs.isnull ())
                   error ("invalid structure assignment");
 
                 map.delete_elements (idx.front ());
@@ -536,8 +537,10 @@ octave_struct::subsasgn (const std::string& type,
 octave_value
 octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // octave_map handles indexing itself.
-  return map.index (idx, resize_ok);
+  if (idx.length () == 0)
+    return map;
+  else  // octave_map handles indexing itself.
+    return map.index (idx, resize_ok);
 }
 
 size_t
@@ -581,7 +584,6 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      newline (os);
       indent (os);
       dim_vector dv = dims ();
       os << dv.str () << " struct array containing the fields:";
@@ -597,7 +599,8 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
           Cell val = map.contents (key);
 
-          newline (os);
+          if (i > 0 || ! Vcompact_format)
+            newline (os);
 
           if (print_fieldnames_only)
             {
@@ -638,6 +641,9 @@ octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
     {
       os << name << " =";
       newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 
@@ -649,6 +655,34 @@ scalar (const dim_vector& dims)
 {
   return dims.ndims () == 2 && dims(0) == 1 && dims(1) == 1;
 }
+
+std::string
+octave_struct::edit_display (const float_display_format&,
+                             octave_idx_type r, octave_idx_type c) const
+{
+  octave_value val;
+  if (map.rows () == 1 || map.columns () == 1)
+    {
+      // Vector struct.  Columns are fields, rows are values.
+
+      Cell cval = map.contents (c);
+
+      val = cval(r);
+    }
+  else
+    {
+      // 2-d struct array.  Rows and columns index individual
+      // scalar structs.
+
+      val = map(r,c);
+    }
+
+  std::string tname = val.type_name ();
+  dim_vector dv = val.dims ();
+  std::string dimstr = dv.str ();
+  return "[" + dimstr + " " + tname + "]";
+}
+
 
 bool
 octave_struct::save_ascii (std::ostream& os)
@@ -662,7 +696,7 @@ octave_struct::save_ascii (std::ostream& os)
   os << "# ndims: " << dv.ndims () << "\n";
 
   for (int i = 0; i < dv.ndims (); i++)
-    os << " " << dv(i);
+    os << ' ' << dv(i);
   os << "\n";
 
   os << "# length: " << nf << "\n";
@@ -737,7 +771,7 @@ octave_struct::load_ascii (std::istream& is)
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
           m.setfield (nm, tcell);
         }
@@ -850,7 +884,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
           m.setfield (nm, tcell);
         }
@@ -951,7 +985,7 @@ octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
+      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
       m.setfield (dsub.name, tcell);
 
@@ -1137,7 +1171,7 @@ octave_scalar_struct::numeric_conv (const octave_value& val,
 {
   octave_value retval;
 
-  if (type.length () > 0 && type[0] == '.' && ! val.is_map ())
+  if (type.length () > 0 && type[0] == '.' && ! val.isstruct ())
     retval = octave_map ();
   else
     retval = val;
@@ -1263,9 +1297,6 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      if (! Vcompact_format)
-        newline (os);
-
       indent (os);
       os << "scalar structure containing the fields:";
       newline (os);
@@ -1287,7 +1318,7 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
               indent (os);
               os << key;
               dim_vector dv = val.dims ();
-              os << ": " << dv.str () << " " << val.type_name ();
+              os << ": " << dv.str () << ' ' << val.type_name ();
               newline (os);
             }
           else
@@ -1319,10 +1350,27 @@ octave_scalar_struct::print_name_tag (std::ostream& os,
     {
       os << name << " =";
       newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 
   return retval;
+}
+
+std::string
+octave_scalar_struct::edit_display (const float_display_format&,
+                                    octave_idx_type r, octave_idx_type) const
+{
+  // Scalar struct.  Rows are fields, single column for values.
+
+  octave_value val = map.contents (r);
+
+  std::string tname = val.type_name ();
+  dim_vector dv = val.dims ();
+  std::string dimstr = dv.str ();
+  return "[" + dimstr + " " + tname + "]";
 }
 
 bool
@@ -1337,7 +1385,7 @@ octave_scalar_struct::save_ascii (std::ostream& os)
   os << "# ndims: " << dv.ndims () << "\n";
 
   for (int i = 0; i < dv.ndims (); i++)
-    os << " " << dv(i);
+    os << ' ' << dv(i);
   os << "\n";
 
   os << "# length: " << nf << "\n";
@@ -1697,14 +1745,14 @@ produces a struct @strong{array}.
   // Note that struct () creates a 1x1 struct with no fields for
   // compatibility with Matlab.
 
-  if (nargin == 1 && args(0).is_map ())
+  if (nargin == 1 && args(0).isstruct ())
     return ovl (args(0));
 
-  if (nargin == 1 && args(0).is_object ())
+  if (nargin == 1 && args(0).isobject ())
     return ovl (args(0).map_value ());
 
   if ((nargin == 1 || nargin == 2)
-      && args(0).is_empty () && args(0).is_real_matrix ())
+      && args(0).isempty () && args(0).is_real_matrix ())
     {
       if (nargin == 2)
         {
@@ -1721,7 +1769,7 @@ produces a struct @strong{array}.
   for (int i = 0; i < nargin; i += 2)
     {
       if (! args(i).is_string () || i + 1 >= nargin)
-        error ("struct: additional arguments must occur as \"field\", VALUE pairs");
+        error (R"(struct: additional arguments must occur as "field", VALUE pairs)");
     }
 
   // Check that the dimensions of the values correspond.
@@ -1732,7 +1780,7 @@ produces a struct @strong{array}.
 
   for (int i = 1; i < nargin; i += 2)
     {
-      if (args(i).is_cell ())
+      if (args(i).iscell ())
         {
           dim_vector argdims (args(i).dims ());
 
@@ -1771,7 +1819,7 @@ produces a struct @strong{array}.
       // the cell array has already been determined to be of the
       // correct dimensions.
 
-      if (args(i+1).is_cell ())
+      if (args(i+1).iscell ())
         {
           const Cell c (args(i+1).cell_value ());
 
@@ -1817,7 +1865,7 @@ Return true if @var{x} is a structure or a structure array.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_map ());
+  return ovl (args(0).isstruct ());
 }
 
 DEFUN (__fieldnames__, args, ,
@@ -1839,7 +1887,7 @@ Implements @code{fieldnames()} for structures and Octave objects.
 
   string_vector keys = m.fieldnames ();
 
-  if (keys.is_empty ())
+  if (keys.isempty ())
     retval = Cell (0, 1);
   else
     retval = Cell (keys);
@@ -1864,7 +1912,7 @@ dimension is returned.
 
   octave_value retval = false;
 
-  if (args(0).is_map ())
+  if (args(0).isstruct ())
     {
       octave_map m = args(0).map_value ();
 
@@ -1876,7 +1924,7 @@ dimension is returned.
 
           retval = m.isfield (key);
         }
-      else if (args(1).is_cell ())
+      else if (args(1).iscell ())
         {
           Cell c = args(1).cell_value ();
           boolNDArray bm (c.dims ());
@@ -1911,7 +1959,7 @@ Return the number of fields of the structure @var{s}.
   if (args.length () != 1)
     print_usage ();
 
-  if (! args(0).is_map ())
+  if (! args(0).isstruct ())
     error ("numfields: argument must be a struct");
 
   return ovl (static_cast<double> (args(0).nfields ()));
@@ -1962,10 +2010,10 @@ A(1)
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  if (! args(0).is_cell ())
+  if (! args(0).iscell ())
     error ("cell2struct: argument CELL must be of type cell");
 
-  if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
+  if (! (args(1).iscellstr () || args(1).is_char_matrix ()))
     error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
 
   int dim = 0;
@@ -1975,7 +2023,7 @@ A(1)
       if (! args(2).is_real_scalar ())
         error ("cell2struct: DIM must be a real scalar");
 
-      dim = nargin == 2 ? 0 : args(2).int_value () - 1;
+      dim = (nargin == 2 ? 0 : args(2).int_value () - 1);
     }
 
   if (dim < 0)
@@ -1984,7 +2032,7 @@ A(1)
   const Cell vals = args(0).cell_value ();
   const Array<std::string> fields = args(1).cellstr_value ();
 
-  octave_idx_type ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
+  octave_idx_type ext = (vals.ndims () > dim ? vals.dims ()(dim) : 1);
 
   if (ext != fields.numel ())
     error ("cell2struct: number of FIELDS does not match dimension");
@@ -2034,11 +2082,6 @@ A(1)
 
 %!assert (cell2struct ({}, {"f"}, 3), struct ("f", {}))
 */
-
-// FIXME: we should be including builtin-defun-decls.h but doing that
-// currently exposes a problem with dependencies in the the build system.
-extern OCTINTERP_API octave_value_list
-Fcellstr (const octave_value_list& = octave_value_list (), int = 0);
 
 DEFUN (rmfield, args, ,
        doc: /* -*- texinfo -*-

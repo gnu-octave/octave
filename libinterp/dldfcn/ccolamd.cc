@@ -4,19 +4,19 @@ Copyright (C) 2005-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,28 +29,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#include <string>
-#include <vector>
-
-#include "ov.h"
-#include "defun-dld.h"
-#include "errwarn.h"
-#include "pager.h"
-#include "ov-re-mat.h"
-
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
-
-#include "oct-sparse.h"
+#include "CSparse.h"
+#include "Sparse.h"
+#include "dNDArray.h"
 #include "oct-locbuf.h"
+#include "oct-sparse.h"
 
-#if defined (OCTAVE_ENABLE_64)
-#  define CCOLAMD_NAME(name) ccolamd_l ## name
-#  define CSYMAMD_NAME(name) csymamd_l ## name
-#else
-#  define CCOLAMD_NAME(name) ccolamd ## name
-#  define CSYMAMD_NAME(name) csymamd ## name
-#endif
+#include "defun-dld.h"
+#include "error.h"
+#include "errwarn.h"
+#include "ov.h"
+#include "pager.h"
 
 DEFUN_DLD (ccolamd, args, nargout,
            doc: /* -*- texinfo -*-
@@ -155,7 +144,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
+  static_assert (CCOLAMD_KNOBS <= 40, "ccolamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[CCOLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   CCOLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -178,7 +169,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
       // print knob settings if spumoni is set
       if (spumoni)
         {
-          octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << "."
+          octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << '.'
                         <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE
                         << ":\nknobs(1): " << User_knobs(0) << ", order for ";
           if (knobs[CCOLAMD_LU] != 0)
@@ -222,9 +213,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   SparseComplexMatrix scm;
   SparseMatrix sm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
@@ -246,7 +237,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
         sm = SparseMatrix (args(0).matrix_value ());
@@ -259,31 +250,33 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     }
 
   // Allocate workspace for ccolamd
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, p, n_col+1);
   for (octave_idx_type i = 0; i < n_col+1; i++)
     p[i] = cidx[i];
 
   octave_idx_type Alen = CCOLAMD_NAME (_recommended) (nnz, n_row, n_col);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, A, Alen);
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
+  static_assert (CCOLAMD_STATS <= 40, "ccolamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
 
   if (nargin > 2)
     {
       NDArray in_cmember = args(2).array_value ();
       octave_idx_type cslen = in_cmember.numel ();
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
+      OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, cmember, cslen);
       for (octave_idx_type i = 0; i < cslen; i++)
         // convert cmember from 1-based to 0-based
-        cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
+        cmember[i] = static_cast<octave::suitesparse_integer>(in_cmember(i) - 1);
 
       if (cslen != n_col)
         error ("ccolamd: CMEMBER must be of length equal to #cols of A");
 
       // Order the columns (destroys A)
-      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, cmember))
+      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats,cmember))
         {
           CCOLAMD_NAME (_report) (stats);
 
@@ -293,7 +286,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   else
     {
       // Order the columns (destroys A)
-      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, 0))
+      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, nullptr))
         {
           CCOLAMD_NAME (_report) (stats);
 
@@ -416,7 +409,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   int spumoni = 0;
 
   // Get knobs
-  OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
+  static_assert (CCOLAMD_KNOBS <= 40, "csymamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  double knob_storage[CCOLAMD_KNOBS];
+  double *knobs = &knob_storage[0];
   CCOLAMD_NAME (_set_defaults) (knobs);
 
   // Check for user-passed knobs
@@ -436,7 +431,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
       if (spumoni)
         {
           octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION
-                        << "." << CCOLAMD_SUB_VERSION
+                        << '.' << CCOLAMD_SUB_VERSION
                         << ", " << CCOLAMD_DATE << "\n";
 
           if (knobs[CCOLAMD_DENSE_ROW] >= 0)
@@ -466,9 +461,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   SparseMatrix sm;
   SparseComplexMatrix scm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
@@ -487,7 +482,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
         sm = SparseMatrix (args(0).matrix_value ());
@@ -502,14 +497,16 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     err_square_matrix_required ("csymamd", "S");
 
   // Allocate workspace for symamd
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, perm, n_col+1);
+  static_assert (CCOLAMD_STATS <= 40, "csymamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
+  octave::suitesparse_integer *stats = &stats_storage[0];
 
   if (nargin > 2)
     {
       NDArray in_cmember = args(2).array_value ();
       octave_idx_type cslen = in_cmember.numel ();
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
+      OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, cmember, cslen);
       for (octave_idx_type i = 0; i < cslen; i++)
         // convert cmember from 1-based to 0-based
         cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
@@ -517,8 +514,10 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
       if (cslen != n_col)
         error ("csymamd: CMEMBER must be of length equal to #cols of A");
 
-      if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                             &calloc, &free, cmember, -1))
+      if (! CSYMAMD_NAME () (n_col,
+                             octave::to_suitesparse_intptr (ridx),
+                             octave::to_suitesparse_intptr (cidx),
+                             perm, knobs, stats, &calloc, &free, cmember, -1))
         {
           CSYMAMD_NAME (_report)(stats);
 
@@ -527,8 +526,10 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     }
   else
     {
-      if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                             &calloc, &free, 0, -1))
+      if (! CSYMAMD_NAME () (n_col,
+                             octave::to_suitesparse_intptr (ridx),
+                             octave::to_suitesparse_intptr (cidx),
+                             perm, knobs, stats, &calloc, &free, nullptr, -1))
         {
           CSYMAMD_NAME (_report)(stats);
 

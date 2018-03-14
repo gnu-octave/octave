@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -42,7 +42,7 @@ namespace QtHandles
 {
 
   static QAction*
-  addEmptyAction (QToolBar* bar)
+  addEmptyAction (QToolBar *bar)
   {
     static QIcon _empty;
 
@@ -55,7 +55,7 @@ namespace QtHandles
         _empty = QIcon (pix);
       }
 
-    QAction* a = bar->addAction (_empty, "Empty Toolbar");
+    QAction *a = bar->addAction (_empty, "Empty Toolbar");
 
     a->setEnabled (false);
     a->setToolTip ("");
@@ -66,21 +66,21 @@ namespace QtHandles
   ToolBar*
   ToolBar::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        QWidget* parentWidget = parent->qWidget<QWidget> ();
+        QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
           return new ToolBar (go, new QToolBar (parentWidget));
       }
 
-    return 0;
+    return nullptr;
   }
 
-  ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
-    : Object (go, bar), m_empty (0), m_figure (0)
+  ToolBar::ToolBar (const graphics_object& go, QToolBar *bar)
+    : Object (go, bar), m_empty (nullptr), m_figure (nullptr)
   {
     uitoolbar::properties& tp = properties<uitoolbar> ();
 
@@ -91,7 +91,7 @@ namespace QtHandles
     m_empty = addEmptyAction (bar);
 
     m_figure =
-      dynamic_cast<Figure*> (Object::fromQObject (bar->parentWidget ()));
+      dynamic_cast<Figure *> (Object::fromQObject (bar->parentWidget ()));
 
     if (m_figure)
       m_figure->addCustomToolBar (bar, tp.is_visible ());
@@ -106,7 +106,7 @@ namespace QtHandles
   ToolBar::update (int pId)
   {
     uitoolbar::properties& tp = properties<uitoolbar> ();
-    QToolBar* bar = qWidget<QToolBar> ();
+    QToolBar *bar = qWidget<QToolBar> ();
 
     switch (pId)
       {
@@ -122,7 +122,7 @@ namespace QtHandles
   }
 
   bool
-  ToolBar::eventFilter (QObject* watched, QEvent* xevent)
+  ToolBar::eventFilter (QObject *watched, QEvent *xevent)
   {
     if (watched == qObject ())
       {
@@ -131,8 +131,8 @@ namespace QtHandles
           case QEvent::ActionAdded:
           case QEvent::ActionRemoved:
             {
-              QActionEvent* ae = dynamic_cast<QActionEvent*> (xevent);
-              QToolBar* bar = qWidget<QToolBar> ();
+              QActionEvent *ae = dynamic_cast<QActionEvent *> (xevent);
+              QToolBar *bar = qWidget<QToolBar> ();
 
               if (ae->action () != m_empty)
                 {
@@ -169,7 +169,7 @@ namespace QtHandles
   {
     if (m_figure)
       {
-        QToolBar* bar = qWidget<QToolBar> ();
+        QToolBar *bar = qWidget<QToolBar> ();
 
         if (bar)
           m_figure->showCustomToolBar (bar, false);

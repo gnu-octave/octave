@@ -4,19 +4,19 @@ Copyright (C) 2003-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,119 +26,76 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include "call-stack.h"
-#include "error.h"
-#include "ovl.h"
-#include "ov-fcn-handle.h"
+#include "interpreter-private.h"
 #include "pt-fcn-handle.h"
-#include "pager.h"
-#include "pt-const.h"
-#include "pt-walk.h"
-#include "variables.h"
 
-void
-tree_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax,
-                        bool pr_orig_text)
+namespace octave
 {
-  print_raw (os, pr_as_read_syntax, pr_orig_text);
-}
+  void
+  tree_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax,
+                          bool pr_orig_text)
+  {
+    print_raw (os, pr_as_read_syntax, pr_orig_text);
+  }
 
-void
-tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
-                            bool pr_orig_text)
-{
-  os << ((pr_as_read_syntax || pr_orig_text) ? "@" : "") << nm;
-}
+  void
+  tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
+                              bool pr_orig_text)
+  {
+    os << ((pr_as_read_syntax || pr_orig_text) ? "@" : "") << m_name;
+  }
 
-octave_value
-tree_fcn_handle::rvalue1 (int)
-{
-  return make_fcn_handle (nm);
-}
+  tree_expression *
+  tree_fcn_handle::dup (symbol_scope&) const
+  {
+    tree_fcn_handle *new_fh = new tree_fcn_handle (m_name, line (), column ());
 
-octave_value_list
-tree_fcn_handle::rvalue (int nargout)
-{
-  octave_value_list retval;
+    new_fh->copy_base (*this);
 
-  if (nargout > 1)
-    error ("invalid number of output arguments for function handle expression");
+    return new_fh;
+  }
 
-  retval = rvalue1 (nargout);
+  tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
+  {
+    delete m_parameter_list;
+    delete m_expression;
+  }
 
-  return retval;
-}
+  tree_expression *
+  tree_anon_fcn_handle::dup (symbol_scope&) const
+  {
+    tree_parameter_list *param_list = parameter_list ();
+    tree_expression *expr = expression ();
 
-tree_expression *
-tree_fcn_handle::dup (symbol_table::scope_id,
-                      symbol_table::context_id) const
-{
-  tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
+    symbol_scope af_scope = m_scope;
+    symbol_scope af_parent_scope = m_parent_scope;
 
-  new_fh->copy_base (*this);
+    symbol_table& symtab
+      = __get_symbol_table__ ("tree_anon_fcn_handle::dup");
 
-  return new_fh;
-}
+    symbol_scope new_scope;
 
-void
-tree_fcn_handle::accept (tree_walker& tw)
-{
-  tw.visit_fcn_handle (*this);
-}
+    if (af_scope)
+      new_scope = af_scope.dup ();
 
-octave_value
-tree_anon_fcn_handle::rvalue1 (int)
-{
-  // FIXME: should CMD_LIST be limited to a single expression?
-  // I think that is what Matlab does.
+    // FIXME: why should we inherit from the current scope here?  That
+    // doesn't seem right, but with the way things work now it appears
+    // to be required for bug-31371.tst to pass.
 
-  tree_parameter_list *param_list = parameter_list ();
-  tree_parameter_list *ret_list = return_list ();
-  tree_statement_list *cmd_list = body ();
-  symbol_table::scope_id this_scope = scope ();
+    if (new_scope)
+      symtab.inherit (new_scope);
 
-  symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
+    // FIXME: if new scope is nullptr, then we are in big trouble here...
 
-  if (new_scope > 0)
-    symbol_table::inherit (new_scope, symbol_table::current_scope (),
-                           symbol_table::current_context ());
+    tree_anon_fcn_handle *new_afh = new
+      tree_anon_fcn_handle (param_list ? param_list->dup (new_scope) : nullptr,
+                            expr ? expr->dup (new_scope) : nullptr,
+                            new_scope, af_parent_scope, line (), column ());
 
-  octave_user_function *uf
-    = new octave_user_function (new_scope,
-                                param_list ? param_list->dup (new_scope, 0) : 0,
-                                ret_list ? ret_list->dup (new_scope, 0) : 0,
-                                cmd_list ? cmd_list->dup (new_scope, 0) : 0);
+    new_afh->copy_base (*this);
 
-  octave_function *curr_fcn = octave_call_stack::current ();
-
-  if (curr_fcn)
-    {
-      // FIXME: maybe it would be better to just stash curr_fcn
-      // instead of individual bits of info about it?
-
-      uf->stash_parent_fcn_name (curr_fcn->name ());
-      uf->stash_dir_name (curr_fcn->dir_name ());
-
-      symbol_table::scope_id parent_scope = curr_fcn->parent_fcn_scope ();
-
-      if (parent_scope < 0)
-        parent_scope = curr_fcn->scope ();
-
-      uf->stash_parent_fcn_scope (parent_scope);
-
-      if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
-        uf->stash_dispatch_class (curr_fcn->dispatch_class ());
-    }
-
-  uf->mark_as_anonymous_function ();
-  uf->stash_fcn_file_name (file_name);
-  uf->stash_fcn_location (line (), column ());
-
-  octave_value ov_fcn (uf);
-
-  octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn));
-
-  return fh;
+    return new_afh;
+  }
 }
 
 /*
@@ -174,48 +131,3 @@ intentional, so don't change it.
 %! f = @()'foo';
 %! assert (f (), 'foo');
 */
-
-octave_value_list
-tree_anon_fcn_handle::rvalue (int nargout)
-{
-  octave_value_list retval;
-
-  if (nargout > 1)
-    error ("invalid number of output arguments for anonymous function handle expression");
-
-  retval = rvalue1 (nargout);
-
-  return retval;
-}
-
-tree_expression *
-tree_anon_fcn_handle::dup (symbol_table::scope_id,
-                           symbol_table::context_id) const
-{
-  tree_parameter_list *param_list = parameter_list ();
-  tree_parameter_list *ret_list = return_list ();
-  tree_statement_list *cmd_list = body ();
-  symbol_table::scope_id this_scope = scope ();
-
-  symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
-
-  if (new_scope > 0)
-    symbol_table::inherit (new_scope, symbol_table::current_scope (),
-                           symbol_table::current_context ());
-
-  tree_anon_fcn_handle *new_afh = new
-    tree_anon_fcn_handle (param_list ? param_list->dup (new_scope, 0) : 0,
-                          ret_list ? ret_list->dup (new_scope, 0) : 0,
-                          cmd_list ? cmd_list->dup (new_scope, 0) : 0,
-                          new_scope, line (), column ());
-
-  new_afh->copy_base (*this);
-
-  return new_afh;
-}
-
-void
-tree_anon_fcn_handle::accept (tree_walker& tw)
-{
-  tw.visit_anon_fcn_handle (*this);
-}

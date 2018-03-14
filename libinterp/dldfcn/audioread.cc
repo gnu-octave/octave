@@ -5,19 +5,19 @@ Copyright (C) 2016 Damjan Angelovski
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,18 +25,22 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <string>
+#include <algorithm>
 #include <map>
+#include <string>
 
+#include "dMatrix.h"
+#include "dRowVector.h"
+#include "file-ops.h"
+#include "file-stat.h"
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ovl.h"
 #include "ov.h"
-#include "ov-struct.h"
+#include "ovl.h"
 #include "pager.h"
 
 #if defined (HAVE_SNDFILE)
@@ -70,6 +74,7 @@ and ending frames.
 The optional argument @var{datatype} specifies the datatype to return.
 If it is @qcode{"native"}, then the type of data depends on how the data
 is stored in the audio file.
+@seealso{audiowrite, audioformats, audioinfo}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
@@ -86,7 +91,8 @@ is stored in the audio file.
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    error ("audioread: failed to open input file %s", filename.c_str ());
+    error ("audioread: failed to open input file '%s': %s",
+           filename.c_str (), sf_strerror (file));
 
   octave::unwind_protect frame;
 
@@ -106,8 +112,8 @@ is stored in the audio file.
       if (range.numel () != 2)
         error ("audioread: invalid specification for range of frames");
 
-      double dstart = octave::math::isinf (range(0)) ? info.frames : range(0);
-      double dend = octave::math::isinf (range(1)) ? info.frames : range(1);
+      double dstart = (octave::math::isinf (range(0)) ? info.frames : range(0));
+      double dend = (octave::math::isinf (range(1)) ? info.frames : range(1));
 
       if (dstart < 1 || dstart > dend || dend > info.frames
           || octave::math::x_nint (dstart) != dstart
@@ -263,6 +269,7 @@ Artist name.
 @item Comment
 Comment.
 @end table
+@seealso{audioread, audioformats, audioinfo}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
@@ -283,15 +290,17 @@ Comment.
     scale = std::pow (2.0, 15);
   else if (args(1).is_int32_type ())
     scale = std::pow (2.0, 31);
-  else if (args(1).is_integer_type ())
+  else if (args(1).isinteger ())
     err_wrong_type_arg ("audiowrite", args(1));
 
   Matrix audio = args(1).matrix_value ();
 
+  // FIXME: SampleRate is supposed to be a positive scalar greater than 0
+  //        Need check for that, and possibly convert to uint.
   int samplerate = args(2).int_value ();
 
   std::string ext;
-  size_t dotpos = filename.find_last_of (".");
+  size_t dotpos = filename.find_last_of ('.');
   if (dotpos != std::string::npos)
     ext = filename.substr (dotpos + 1);
   std::transform (ext.begin (), ext.end (), ext.begin (), ::tolower);
@@ -340,18 +349,18 @@ Comment.
   std::string title = "";
   std::string artist = "";
   std::string comment = "";
-  // Quality is currently unused?
-  //
-  // float quality = 0.75;
+  double quality = 0.75;
+
   for (int i = 3; i < nargin; i += 2)
     {
       if (i >= nargin - 1)
         error ("audiowrite: invalid number of arguments");
 
-      std::string keyword = args(i).string_value ();
+      std::string keyword_orig = args(i).string_value ();
+      std::string keyword = args(i).xtolower ().string_value ();
       octave_value value_arg = args(i+1);
 
-      if (keyword == "BitsPerSample")
+      if (keyword == "bitspersample")
         {
           info.format &= ~SF_FORMAT_SUBMASK;
           int bits = value_arg.int_value ();
@@ -365,36 +374,57 @@ Comment.
           else if (bits == 16)
             info.format |= SF_FORMAT_PCM_16;
           else if (bits == 24)
-            info.format |= SF_FORMAT_PCM_24;
-          else if (bits == 32)
             info.format |= SF_FORMAT_PCM_32;
+          else if (bits == 32)
+            {
+              if ((info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV
+                  && args(1).isfloat ())
+                info.format |= SF_FORMAT_FLOAT;
+              else
+                info.format |= SF_FORMAT_PCM_32;
+            }
+          else if (bits == 64)
+            info.format |= SF_FORMAT_DOUBLE;
           else
             error ("audiowrite: wrong number of bits specified");
         }
-      else if (keyword == "BitRate")
-        ;
-      // Quality is currently unused?
-      //
-      // else if (keyword == "Quality")
-      //   quality = value_arg.int_value () * 0.01;
-      else if (keyword == "Title")
+      else if (keyword == "bitrate")
+        warning_with_id ("Octave:audiowrite:unused-parameter",
+                         "audiowrite: 'BitRate' accepted for Matlab "
+                         "compatibility, but is ignored");
+      else if (keyword == "quality")
+        {
+          if (! value_arg.is_scalar_type ())
+            error ("audiowrite: Quality value must be a scalar");
+
+          double value = value_arg.xdouble_value ("audiowrite: Quality value must be a numeric scalar between 0 and 100");
+
+          if (octave::math::isnan (value) || value < 0 || value > 100)
+            error ("audiowrite: Quality value must be a number between 0 and 100");
+
+          quality = value / 100;
+        }
+      else if (keyword == "title")
         title = value_arg.string_value ();
-      else if (keyword == "Artist")
+      else if (keyword == "artist")
         artist = value_arg.string_value ();
-      else if (keyword == "Comment")
+      else if (keyword == "comment")
         comment = value_arg.string_value ();
       else
-        error ("audiowrite: wrong argument name");
+        error ("audiowrite: unrecognized option: '%s'", keyword_orig.c_str ());
     }
 
   SNDFILE *file = sf_open (filename.c_str (), SFM_WRITE, &info);
 
   if (! file)
-    error ("audiowrite: failed to open output file %s", filename.c_str ());
+    error ("audiowrite: failed to open output file '%s': %s",
+           filename.c_str (), sf_strerror (file));
 
   octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
+
+  sf_command (file, SFC_SET_VBR_ENCODING_QUALITY, &quality, sizeof (quality));
 
   if (title != "")
     sf_set_string (file, SF_STR_TITLE, title.c_str ());
@@ -440,10 +470,63 @@ Comment.
 #endif
 }
 
+/*
+## Test input validation
+%!testif HAVE_SNDFILE
+%! fail ("audiowrite (1, 1, 8e3)", "FILENAME must be a string");
+%! fail ("audiowrite ('foo', int64 (1), 8e3)", "wrong type argument 'int64 scalar'");
+%! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample')", "invalid number of arguments");
+%! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample', 48)", "wrong number of bits specified");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', [2 3 4])", "Quality value must be a scalar");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', NaN)", "Quality value must be .* between 0 and 100");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', -1)", "Quality value must be .* between 0 and 100");
+%! fail ("audiowrite ('foo', 1, 8e3, 'quality', 101)", "Quality value must be .* between 0 and 100");
+%! fail ("audiowrite ('foo', 1, 8e3, 'foo', 'bar')", "unrecognized option: 'foo'");
+*/
+
 DEFUN_DLD (audioinfo, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{info} =} audioinfo (@var{filename})
 Return information about an audio file specified by @var{filename}.
+
+The output @var{info} is a structure containing the following fields:
+
+@table @samp
+@item Filename
+Name of the audio file.
+
+@item CompressionMethod
+Audio compression method.  Unused, only present for compatibility with
+@sc{matlab}.
+
+@item NumChannels
+Number of audio channels.
+
+@item SampleRate
+Sample rate of the audio, in Hertz.
+
+@item TotalSamples
+Number of samples in the file.
+
+@item Duration
+Duration of the audio, in seconds.
+
+@item BitsPerSample
+Number of bits per sample.
+
+@item BitRate
+Audio bitrate.  Unused, only present for compatibility with @sc{matlab}.
+
+@item Title
+@qcode{"Title"} audio metadata value as a string, or empty if not present.
+
+@item Artist
+@qcode{"Artist"} audio metadata value as a string, or empty if not present.
+
+@item Comment
+@qcode{"Comment"} audio metadata value as a string, or empty if not present.
+@end table
+@seealso{audioread, audiowrite}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
@@ -453,12 +536,17 @@ Return information about an audio file specified by @var{filename}.
 
   std::string filename = args(0).xstring_value ("audioinfo: FILENAME must be a string");
 
+  octave::sys::file_stat fs (filename);
+  if (! fs.exists ())
+    error ("audioinfo: FILENAME '%s' not found", filename.c_str ());
+
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    error ("audioinfo: failed to open file %s", filename.c_str ());
+    error ("audioinfo: failed to open input file '%s': %s",
+           filename.c_str (), sf_strerror (file));
 
   octave::unwind_protect frame;
 
@@ -466,7 +554,9 @@ Return information about an audio file specified by @var{filename}.
 
   octave_scalar_map result;
 
-  result.assign ("Filename", filename);
+  std::string full_name = octave::sys::canonicalize_file_name (filename);
+
+  result.assign ("Filename", full_name);
   result.assign ("CompressionMethod", "");
   result.assign ("NumChannels", info.channels);
   result.assign ("SampleRate", info.samplerate);
@@ -523,13 +613,13 @@ static void
 audio_sub_formats (int format)
 {
   int count;
-  sf_command (NULL, SFC_GET_FORMAT_SUBTYPE_COUNT, &count, sizeof (int));
+  sf_command (nullptr, SFC_GET_FORMAT_SUBTYPE_COUNT, &count, sizeof (int));
 
   for (int i = 0; i < count; i++)
     {
       SF_FORMAT_INFO info;
       info.format = i;
-      sf_command (NULL, SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info));
+      sf_command (nullptr, SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info));
 
       SF_INFO sfinfo;
       memset (&sfinfo, 0, sizeof (sfinfo));
@@ -551,6 +641,7 @@ Display information about all supported audio formats.
 
 If the optional argument @var{format} is given, then display only formats
 with names that start with @var{format}.
+@seealso{audioread, audiowrite}
 @end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
@@ -566,13 +657,13 @@ with names that start with @var{format}.
     }
 
   int count;
-  sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
+  sf_command (nullptr, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
 
   for (int i = 0; i < count; i++)
     {
       SF_FORMAT_INFO info;
       info.format = i;
-      sf_command (NULL, SFC_GET_FORMAT_MAJOR, &info, sizeof (info));
+      sf_command (nullptr, SFC_GET_FORMAT_MAJOR, &info, sizeof (info));
       bool match = true;
 
       if (! search.empty ())
@@ -602,5 +693,5 @@ with names that start with @var{format}.
 
 #endif
 
-  return octave_value ();
+  return octave_value_list ();
 }

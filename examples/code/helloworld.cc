@@ -7,5 +7,10 @@ DEFUN_DLD (helloworld, args, nargout,
                 << args.length () << " input arguments and "
                 << nargout << " output arguments.\n";
 
-  return octave_value_list ();
+  // Return empty matrices for any outputs
+  octave_value_list retval (nargout);
+  for (int i = 0; i < nargout; i++)
+    retval(i) = octave_value (Matrix ());
+
+  return retval;
 }

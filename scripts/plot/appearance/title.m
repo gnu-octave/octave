@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} title (@var{string})
@@ -48,16 +48,7 @@ function h = title (varargin)
     print_usage ();
   endif
 
-  htmp = get (hax, "title");
-
-  set (htmp, "fontangle", get (hax, "fontangle"),
-             "fontname", get (hax, "fontname"),
-             "fontunits", get (hax, "fontunits"),   # must precede fontsize
-             "fontsize", get (hax, "TitleFontSizeMultiplier") *
-                         get (hax, "fontsize"),
-             "fontweight", get (hax, "titlefontweight"),
-             "string", varargin{1},
-             varargin{2:end});
+  htmp = __axis_label__ (hax, "title", varargin{:});
 
   if (nargout > 0)
     h = htmp;
@@ -118,6 +109,18 @@ endfunction
 %!   h = get (gca, "title");
 %!   assert (get (h, "string"), "Test FontSize Property");
 %!   assert (get (h, "fontsize"), 16);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*49469>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ht = title ("Test FontSize Property");
+%!   set (gca, "fontname", "Liberation Serif")
+%!   set (gca, "fontsize", 13)
+%!   assert (get (ht, "fontname"), "Liberation Serif");
+%!   assert (get (ht, "fontsize"), 13 * get (gca, "titlefontsizemultiplier"));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

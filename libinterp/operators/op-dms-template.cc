@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -86,11 +86,11 @@ DEFBINOP (dmspow, MATRIX, SCALAR)
 #define INST_NAME CONCAT3(install_, SHORT_NAME, _ops)
 
 void
-INST_NAME (void)
+INST_NAME (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_mul, OCTAVE_MATRIX, OCTAVE_SCALAR, dmsmul);
-  INSTALL_BINOP (op_div, OCTAVE_MATRIX, OCTAVE_SCALAR, dmsdiv);
-  INSTALL_BINOP (op_mul, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmmul);
-  INSTALL_BINOP (op_ldiv, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmldiv);
-  INSTALL_BINOP (op_pow, OCTAVE_MATRIX, OCTAVE_SCALAR, dmspow);
+  INSTALL_BINOP_TI (ti, op_mul, OCTAVE_MATRIX, OCTAVE_SCALAR, dmsmul);
+  INSTALL_BINOP_TI (ti, op_div, OCTAVE_MATRIX, OCTAVE_SCALAR, dmsdiv);
+  INSTALL_BINOP_TI (ti, op_mul, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmmul);
+  INSTALL_BINOP_TI (ti, op_ldiv, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmldiv);
+  INSTALL_BINOP_TI (ti, op_pow, OCTAVE_MATRIX, OCTAVE_SCALAR, dmspow);
 }

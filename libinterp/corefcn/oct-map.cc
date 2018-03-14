@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -94,10 +94,10 @@ octave_fields::rmfield (const std::string& field)
       octave_idx_type n = p->second;
       make_unique ();
       rep->erase (field);
-      for (fields_rep::iterator q = rep->begin (); q != rep->end (); q++)
+      for (auto& fld_idx : *rep)
         {
-          if (q->second >= n)
-            q->second--;
+          if (fld_idx.second >= n)
+            fld_idx.second--;
         }
 
       return n;
@@ -112,17 +112,17 @@ octave_fields::orderfields (Array<octave_idx_type>& perm)
 
   make_unique ();
   octave_idx_type i = 0;
-  for (fields_rep::iterator q = rep->begin (); q != rep->end (); q++)
+  for (auto& fld_idx : *rep)
     {
-      octave_idx_type j = q->second;
-      q->second = i;
+      octave_idx_type j = fld_idx.second;
+      fld_idx.second = i;
       perm(i++) = j;
     }
 }
 
 bool
 octave_fields::equal_up_to_order (const octave_fields& other,
-                                  octave_idx_type* perm) const
+                                  octave_idx_type *perm) const
 {
   bool retval = true;
 
@@ -161,10 +161,23 @@ octave_fields::fieldnames (void) const
   octave_idx_type n = nfields ();
   string_vector retval(n);
 
-  for (iterator p = begin (); p != end (); p++)
-    retval.xelem (p->second) = p->first;
+  for (auto& fld_idx : *this)
+    retval.xelem (fld_idx.second) = fld_idx.first;
 
   return retval;
+}
+
+octave_scalar_map::octave_scalar_map
+  (const std::map<std::string, octave_value>& m)
+{
+  size_t sz = m.size ();
+  xvals.resize (sz);
+  size_t i = 0;
+  for (const auto& k_v : m)
+    {
+      xkeys.getfield (k_v.first);
+      xvals[i++] = k_v.second;
+    }
 }
 
 octave_value
@@ -355,7 +368,7 @@ octave_map::extract_scalar (octave_scalar_map& dest,
 }
 
 octave_scalar_map
-octave_map::checkelem (octave_idx_type n) const
+octave_map::elem (octave_idx_type n) const
 {
   octave_scalar_map retval (xkeys);
 
@@ -366,7 +379,7 @@ octave_map::checkelem (octave_idx_type n) const
 }
 
 octave_scalar_map
-octave_map::checkelem (octave_idx_type i, octave_idx_type j) const
+octave_map::elem (octave_idx_type i, octave_idx_type j) const
 {
   octave_scalar_map retval (xkeys);
 
@@ -377,7 +390,7 @@ octave_map::checkelem (octave_idx_type i, octave_idx_type j) const
 }
 
 octave_scalar_map
-octave_map::checkelem (const Array<octave_idx_type>& ra_idx) const
+octave_map::elem (const Array<octave_idx_type>& ra_idx) const
 {
   octave_scalar_map retval (xkeys);
 
@@ -516,6 +529,10 @@ octave_map::reshape (const dim_vector& dv) const
   octave_map retval (xkeys);
   retval.dimensions = dv;
 
+  // When reshaping xvals the Array constructor chops trailing singletons,
+  // hence we need to do the same for the whole map.
+  retval.dimensions.chop_trailing_singletons ();
+
   octave_idx_type nf = nfields ();
   if (nf > 0)
     {
@@ -541,6 +558,19 @@ octave_map::reshape (const dim_vector& dv) const
 %!test
 %! x(1,1).d = 10;  x(4,6).a = "b";  x(2,4).f = 27;
 %! assert (fieldnames (reshape (x, 3, 8)), {"d"; "a"; "f"});
+
+## test chopping of trailing singletons
+%!test <51634>
+%! x(1,1).d = 10;  x(4,6).a = "b";  x(2,4).f = 27;
+%! reshape (x, 3, 8, 1, 1);
+
+%!test <46385>
+%! M = repmat (struct ('a', ones(100), 'b', true), 1, 2);
+%! M = repmat(M, 1, 2);
+%! assert (size (M), [1, 4]);
+
+libinterp/corefcn/oct-map.cc
+
 */
 
 void
@@ -624,7 +654,7 @@ void permute_to_correct_order1 (const octave_scalar_map& ref,
 void permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
                                 octave_map& dest, Array<octave_idx_type>& perm)
 {
-  if (src.nfields () == 0 && src.is_empty ())
+  if (src.nfields () == 0 && src.isempty ())
     dest = octave_map (src.dims (), ref.keys ());
   else
     dest = src.orderfields (ref, perm);
@@ -1164,7 +1194,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
 {
   Cell tmp;
   iterator p = seek (k);
-  Cell& ref = p != end () ? contents (p) : tmp;
+  Cell& ref = (p != end () ? contents (p) : tmp);
 
   if (&ref == &tmp)
     ref = Cell (dimensions);
@@ -1294,7 +1324,7 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
     {
       for (const_iterator pa = begin (); pa != end (); pa++)
         {
-          const_iterator pb = rb.seek (key(pa));
+          const_iterator pb = rb.seek (key (pa));
 
           if (pb == rb.end ())
             error ("field name mismatch in structure concatenation");

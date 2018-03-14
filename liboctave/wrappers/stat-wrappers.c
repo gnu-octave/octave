@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -80,12 +80,14 @@ assign_stat_fields (struct stat *buf, mode_t *mode, ino_t *ino,
 
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
   *blksize = buf->st_blksize;
+#else
   *blksize = 0;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
   *blocks = buf->st_blocks;
-  *blksize = 0;
+#else
+  *blocks = 0;
 #endif
 }
 
@@ -139,6 +141,14 @@ octave_fstat_wrapper (int fid, mode_t *mode, ino_t *ino,
 
   return status;
 }
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Disable the unused parameter warning for the following wrapper functions.
+// The <sys/stat.h> header provided by gnulib may define some of the S_IS*
+// macros to expand to a constant and ignore the parameter.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 
 bool
 octave_is_blk_wrapper (mode_t mode)
@@ -209,6 +219,11 @@ octave_is_sock_wrapper (mode_t mode)
   return false;
 #endif
 }
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Restore prevailing warning state for remainder of the file.
+#pragma GCC diagnostic pop
+#endif
 
 bool
 octave_have_struct_stat_st_rdev (void)

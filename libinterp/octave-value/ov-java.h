@@ -4,19 +4,19 @@ Copyright (C) 2007-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,8 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <ovl.h>
-#include <ov.h>
+#include "ov.h"
+#include "ovl.h"
+
+namespace octave
+{
+  class type_info;
+}
 
 typedef void *voidptr;
 
@@ -36,23 +41,23 @@ public:
 
   octave_java (void);
 
-  octave_java (const voidptr& obj, void *cls = 0);
+  octave_java (const voidptr& obj, void *cls = nullptr);
 
   octave_java (const octave_java& jobj)
-    : octave_base_value (jobj), java_object (0), java_class (0)
+    : octave_base_value (jobj), java_object (nullptr), java_class (nullptr)
   {
     init (jobj.java_object, jobj.java_class);
   }
 
   ~octave_java (void) { release (); }
 
-  void *to_java (void) const { return java_object; }
-  void *to_class (void) const { return java_class; }
+  void * to_java (void) const { return java_object; }
+  void * to_class (void) const { return java_class; }
 
   std::string java_class_name (void) const { return java_classname; }
 
-  octave_base_value* clone (void) const { return new octave_java (*this); }
-  octave_base_value* empty_clone (void) const { return new octave_java (); }
+  octave_base_value * clone (void) const { return new octave_java (*this); }
+  octave_base_value * empty_clone (void) const { return new octave_java (); }
 
   bool is_instance_of (const std::string&) const;
 
@@ -60,9 +65,9 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_map (void) const { return false; }
+  bool isstruct (void) const { return false; }
 
-  bool is_java (void) const { return true; }
+  bool isjava (void) const { return true; }
 
   string_vector map_keys (void) const;
 
@@ -173,7 +178,7 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (void);
+  static void register_type (octave::type_info&);
 
 private:
 

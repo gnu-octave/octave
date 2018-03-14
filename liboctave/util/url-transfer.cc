@@ -6,19 +6,19 @@ Copyright (C) 2009 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -50,20 +50,20 @@ namespace octave
   void
   base_url_transfer::delete_file (const std::string& file)
   {
-    octave::sys::unlink (file);
+    sys::unlink (file);
   }
 
   void
   base_url_transfer::mget_directory (const std::string& directory,
                                      const std::string& target)
   {
-    std::string sep = octave::sys::file_ops::dir_sep_str ();
-    octave::sys::file_stat fs (directory);
+    std::string sep = sys::file_ops::dir_sep_str ();
+    sys::file_stat fs (directory);
 
     if (! fs || ! fs.is_dir ())
       {
         std::string msg;
-        int status = octave::sys::mkdir (directory, 0777, msg);
+        int status = sys::mkdir (directory, 0777, msg);
 
         if (status < 0)
           {
@@ -78,7 +78,7 @@ namespace octave
 
     if (good ())
       {
-        octave::unwind_protect_safe frame;
+        unwind_protect_safe frame;
 
         frame.add_fcn (reset_path, this);
 
@@ -108,7 +108,7 @@ namespace octave
                     break;
                   }
 
-                octave::unwind_protect_safe frame2;
+                unwind_protect_safe frame2;
 
                 frame2.add_fcn (delete_file, realfile);
 
@@ -134,7 +134,7 @@ namespace octave
 
     std::string realdir
       = (base.empty ()
-         ? directory : base + octave::sys::file_ops::dir_sep_str () + directory);
+         ? directory : base + sys::file_ops::dir_sep_str () + directory);
 
     mkdir (directory);
 
@@ -145,11 +145,11 @@ namespace octave
 
     if (good ())
       {
-        octave::unwind_protect_safe frame;
+        unwind_protect_safe frame;
 
         frame.add_fcn (reset_path, this);
 
-        octave::sys::dir_entry dirlist (realdir);
+        sys::dir_entry dirlist (realdir);
 
         if (dirlist)
           {
@@ -162,8 +162,8 @@ namespace octave
                 if (file == "." || file == "..")
                   continue;
 
-                std::string realfile = realdir + octave::sys::file_ops::dir_sep_str () + file;
-                octave::sys::file_stat fs (realfile);
+                std::string realfile = realdir + sys::file_ops::dir_sep_str () + file;
+                sys::file_stat fs (realfile);
 
                 if (! fs.exists ())
                   {
@@ -221,16 +221,16 @@ namespace octave
   static int
   write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
   {
-    std::ostream& stream = *(static_cast<std::ostream*> (streamp));
-    stream.write (static_cast<const char*> (buffer), size*nmemb);
+    std::ostream& stream = *(static_cast<std::ostream *> (streamp));
+    stream.write (static_cast<const char *> (buffer), size*nmemb);
     return (stream.fail () ? 0 : size * nmemb);
   }
 
   static int
   read_data (void *buffer, size_t size, size_t nmemb, void *streamp)
   {
-    std::istream& stream = *(static_cast<std::istream*> (streamp));
-    stream.read (static_cast<char*> (buffer), size*nmemb);
+    std::istream& stream = *(static_cast<std::istream *> (streamp));
+    stream.read (static_cast<char *> (buffer), size*nmemb);
     if (stream.eof ())
       return stream.gcount ();
     else
@@ -332,6 +332,12 @@ namespace octave
       SETOPT (CURLOPT_HTTPGET, 1);
     }
 
+    // No copying!
+
+    curl_transfer (const curl_transfer&) = delete;
+
+    curl_transfer& operator = (const curl_transfer&) = delete;
+
     ~curl_transfer (void)
     {
       if (curl)
@@ -362,7 +368,7 @@ namespace octave
     {
       std::ostream& retval = *curr_ostream;
       curr_ostream = &os;
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (curr_ostream));
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (curr_ostream));
       return retval;
     }
 
@@ -370,7 +376,7 @@ namespace octave
     {
       std::istream& retval = *curr_istream;
       curr_istream = &is;
-      SETOPTR (CURLOPT_READDATA, static_cast<void*> (curr_istream));
+      SETOPTR (CURLOPT_READDATA, static_cast<void *> (curr_istream));
       return retval;
     }
 
@@ -408,9 +414,9 @@ namespace octave
 
     void rename (const std::string& oldname, const std::string& newname)
     {
-      struct curl_slist *slist = 0;
+      struct curl_slist *slist = nullptr;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
       frame.add_fcn (curl_slist_free_all, slist);
 
       std::string cmd = "rnfr " + oldname;
@@ -428,7 +434,7 @@ namespace octave
 
     void put (const std::string& file, std::istream& is)
     {
-      url = "ftp://" + host_or_url + "/" + file;
+      url = "ftp://" + host_or_url + '/' + file;
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_UPLOAD, 1);
       SETOPT (CURLOPT_NOBODY, 0);
@@ -447,7 +453,7 @@ namespace octave
 
     void get (const std::string& file, std::ostream& os)
     {
-      url = "ftp://" + host_or_url + "/" + file;
+      url = "ftp://" + host_or_url + '/' + file;
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_NOBODY, 0);
       std::ostream& old_os = set_ostream (os);
@@ -464,7 +470,7 @@ namespace octave
 
     void dir (void)
     {
-      url = "ftp://" + host_or_url + "/";
+      url = "ftp://" + host_or_url + '/';
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_NOBODY, 0);
 
@@ -482,8 +488,8 @@ namespace octave
       string_vector retval;
 
       std::ostringstream buf;
-      url = "ftp://" + host_or_url + "/";
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
+      url = "ftp://" + host_or_url + '/';
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (&buf));
       SETOPTR (CURLOPT_URL, url.c_str ());
       SETOPTR (CURLOPT_DIRLISTONLY, 1);
       SETOPTR (CURLOPT_NOBODY, 0);
@@ -494,7 +500,7 @@ namespace octave
 
       SETOPTR (CURLOPT_NOBODY, 1);
       url = "ftp://" + host_or_url;
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (curr_ostream));
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (curr_ostream));
       SETOPTR (CURLOPT_DIRLISTONLY, 0);
       SETOPTR (CURLOPT_URL, url.c_str ());
 
@@ -530,7 +536,7 @@ namespace octave
     {
       std::string path = pwd ();
 
-      url = "ftp://" + host_or_url + "/" + path + "/" + filename;
+      url = "ftp://" + host_or_url + '/' + path + '/' + filename;
       SETOPT (CURLOPT_URL, url.c_str ());
       SETOPT (CURLOPT_FILETIME, 1);
       SETOPT (CURLOPT_HEADERFUNCTION, throw_away);
@@ -569,16 +575,16 @@ namespace octave
       // servers I tested with, so cd again into the correct path.  Make
       // the path absolute so that this will work even with servers that
       // don't end up in the root after an MDTM command.
-      cwd ("/" + path);
+      cwd ('/' + path);
     }
 
     std::string pwd (void)
     {
       std::string retval;
 
-      struct curl_slist *slist = 0;
+      struct curl_slist *slist = nullptr;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
       frame.add_fcn (curl_slist_free_all, slist);
 
       slist = curl_slist_append (slist, "pwd");
@@ -613,7 +619,7 @@ namespace octave
       std::string query_string = form_query_string (param);
 
       if (! query_string.empty ())
-        url += "?" + query_string;
+        url += '?' + query_string;
 
       SETOPT (CURLOPT_URL, url.c_str ());
 
@@ -668,12 +674,6 @@ namespace octave
     std::string url;
     std::string userpwd;
 
-    // No copying!
-
-    curl_transfer (const curl_transfer&);
-
-    curl_transfer& operator = (const curl_transfer&);
-
     void init (const std::string& user, const std::string& passwd,
                std::istream& is, std::ostream& os)
     {
@@ -683,7 +683,7 @@ namespace octave
       // Set the username and password
       userpwd = user;
       if (! passwd.empty ())
-        userpwd += ":" + passwd;
+        userpwd += ':' + passwd;
       if (! userpwd.empty ())
         SETOPT (CURLOPT_USERPWD, userpwd.c_str ());
 
@@ -691,13 +691,13 @@ namespace octave
       SETOPT (CURLOPT_WRITEFUNCTION, write_data);
 
       // Set a pointer to our struct to pass to the callback.
-      SETOPT (CURLOPT_WRITEDATA, static_cast<void*> (&os));
+      SETOPT (CURLOPT_WRITEDATA, static_cast<void *> (&os));
 
       // Define our callback to get called when there's data to be read
       SETOPT (CURLOPT_READFUNCTION, read_data);
 
       // Set a pointer to our struct to pass to the callback.
-      SETOPT (CURLOPT_READDATA, static_cast<void*> (&is));
+      SETOPT (CURLOPT_READDATA, static_cast<void *> (&is));
 
       // Follow redirects.
       SETOPT (CURLOPT_FOLLOWLOCATION, true);
@@ -729,13 +729,13 @@ namespace octave
           char *enc_text = curl_easy_escape (curl, text.c_str (),
                                              text.length ());
 
-          query << enc_name << "=" << enc_text;
+          query << enc_name << '=' << enc_text;
 
           curl_free (enc_name);
           curl_free (enc_text);
 
           if (i < param.numel ()-1)
-            query << "&";
+            query << '&';
         }
 
       query.flush ();
@@ -746,13 +746,13 @@ namespace octave
     void ftp_file_or_dir_action (const std::string& file_or_dir,
                                  const std::string& action)
     {
-      struct curl_slist *slist = 0;
+      struct curl_slist *slist = nullptr;
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
 
       frame.add_fcn (curl_slist_free_all, slist);
 
-      std::string cmd = action + " " + file_or_dir;
+      std::string cmd = action + ' ' + file_or_dir;
 
       slist = curl_slist_append (slist, cmd.c_str ());
 

@@ -6,19 +6,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -157,7 +157,7 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-        if (! is_empty ())
+        if (! isempty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
@@ -350,7 +350,7 @@ void
 octave_base_sparse<T>::print_raw (std::ostream& os,
                                   bool pr_as_read_syntax) const
 {
-  octave_preserve_stream_state stream_state (os);
+  octave::preserve_stream_state stream_state (os);
 
   octave_idx_type nr = matrix.rows ();
   octave_idx_type nc = matrix.cols ();
@@ -425,6 +425,25 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
             }
         }
     }
+}
+
+template <typename MT>
+float_display_format
+octave_base_sparse<MT>::get_edit_display_format (void) const
+{
+  return float_display_format ();
+  //  return make_format (this->matrix);
+}
+
+template <typename MT>
+std::string
+octave_base_sparse<MT>::edit_display (const float_display_format& fmt,
+                                      octave_idx_type i,
+                                      octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, this->matrix(i,j));
+  return buf.str ();
 }
 
 template <typename T>
@@ -511,7 +530,6 @@ octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
     case umap_xisspace:
     case umap_xisupper:
     case umap_xisxdigit:
-    case umap_xtoascii:
       // FIXME: intentionally skip this step for string mappers.
       // Is this wanted?
       break;

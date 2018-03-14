@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} addpref ("@var{group}", "@var{pref}", @var{val})
@@ -52,7 +52,7 @@ function addpref (group, pref, val)
 
   if (ischar (pref))
     if (isfield (prefs, group) && isfield (prefs.(group), pref))
-      error ("addpref: preference %s already exists in group %s", pref, group);
+      error ("addpref: preference %s already exists in GROUP %s", pref, group);
     else
       prefs.(group).(pref) = val;
     endif
@@ -62,7 +62,7 @@ function addpref (group, pref, val)
     endif
     for i = 1:numel (pref)
       if (isfield (prefs, group) && isfield (prefs.(group), pref{i}))
-        error ("addpref: preference %s already exists in group %s",
+        error ("addpref: preference %s already exists in GROUP %s",
                pref{i}, group);
       else
         prefs.(group).(pref{i}) = val{i};
@@ -88,11 +88,11 @@ endfunction
 %!   assert (getpref ("group2", "prefB"), {"StringB"});
 %!
 %!   fail ('addpref ("group1", "pref1", 4)', ...
-%!         "preference pref1 already exists in group group1");
+%!         "preference pref1 already exists in GROUP group1");
 %!   fail ('setpref ("group1", {"p1", "p2"}, 1)', ...
 %!         "size mismatch for PREF and VAL");
 %!   fail ('addpref ("group2", {"prefC", "prefA"}, {1, 2})',
-%!         "preference prefA already exists in group group2");
+%!         "preference prefA already exists in GROUP group2");
 %!
 %! unwind_protect_cleanup
 %!   unlink (fullfile (P_tmpdir (), ".octave_prefs"));

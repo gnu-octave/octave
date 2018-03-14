@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,43 +33,23 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "pathsearch.h"
-#include "singleton-cleanup.h"
 
 namespace octave
 {
-  directory_path::static_members *directory_path::static_members::instance = 0;
-
-  directory_path::static_members::static_members (void)
-    : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }
-
-  bool
-  directory_path::static_members::instance_ok (void)
+  directory_path::directory_path (const std::string& s, const std::string& d)
+    : m_orig_path (s), m_default_path (d), m_initialized (false),
+      m_expanded_path (), m_path_elements ()
   {
-    bool retval = true;
-
-    if (! instance)
-      {
-        instance = new static_members ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create directory_path::static_members object!");
-
-    return retval;
+    if (! m_orig_path.empty ())
+      init ();
   }
 
-  std::list<std::string>
-  directory_path::elements (void)
+  std::list<std::string> directory_path::elements (void)
   {
     return m_initialized ? m_path_elements : std::list<std::string> ();
   }
 
-  std::list<std::string>
-  directory_path::all_directories (void)
+  std::list<std::string> directory_path::all_directories (void)
   {
     std::list<std::string> retval;
 
@@ -87,14 +67,12 @@ namespace octave
     return retval;
   }
 
-  std::string
-  directory_path::find_first (const std::string& nm)
+  std::string directory_path::find_first (const std::string& nm)
   {
     return m_initialized ? kpse_path_search (m_expanded_path, nm) : "";
   }
 
-  std::list<std::string>
-  directory_path::find_all (const std::string& nm)
+  std::list<std::string> directory_path::find_all (const std::string& nm)
   {
     return (m_initialized
             ? kpse_all_path_search (m_expanded_path, nm)
@@ -116,14 +94,13 @@ namespace octave
             : std::list<std::string> ());
   }
 
-  void
-  directory_path::init (void)
+  void directory_path::init (void)
   {
     static bool octave_kpse_initialized = false;
 
     if (! octave_kpse_initialized)
       {
-        std::string val = octave::sys::env::getenv ("KPATHSEA_DEBUG");
+        std::string val = sys::env::getenv ("KPATHSEA_DEBUG");
 
         if (! val.empty ())
           kpse_debug |= atoi (val.c_str ());
@@ -140,5 +117,15 @@ namespace octave
       m_path_elements.push_back (*pi);
 
     m_initialized = true;
+  }
+
+  char directory_path::path_sep_char (void)
+  {
+    return SEPCHAR;
+  }
+
+  std::string directory_path::path_sep_str (void)
+  {
+    return SEPCHAR_STR;
   }
 }

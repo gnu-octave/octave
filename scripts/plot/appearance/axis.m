@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} axis ()
@@ -74,6 +74,9 @@
 ##
 ## @item @qcode{"image"}
 ## Equivalent to @qcode{"tight"} and @qcode{"equal"}.
+##
+## @item @nospell{@qcode{"vis3d"}}
+## Set aspect ratio modes to @qcode{"manual"} for rotation without stretching.
 ## @end table
 ##
 ## @noindent
@@ -162,7 +165,7 @@ function limits = axis (varargin)
 
 endfunction
 
-function limits = __axis__ (ca, ax, varargin)
+function limits = __axis__ (ca, varargin)
 
   if (nargin == 1)
     if (nargout == 0)
@@ -178,179 +181,189 @@ function limits = __axis__ (ca, ax, varargin)
         limits = [xlim, ylim, zlim];
       endif
     endif
+    return;
+  endif
 
-  elseif (ischar (ax))
-    len = length (ax);
+  for arg = varargin
+    opt = arg{1};
 
-    ## 'matrix mode' to reverse the y-axis
-    if (strcmpi (ax, "ij"))
-      set (ca, "ydir", "reverse");
-    elseif (strcmpi (ax, "xy"))
-      set (ca, "ydir", "normal");
+    if (ischar (opt))
+      len = length (opt);
+
+      ## 'matrix mode' to reverse the y-axis
+      if (strcmpi (opt, "ij"))
+        set (ca, "ydir", "reverse");
+      elseif (strcmpi (opt, "xy"))
+        set (ca, "ydir", "normal");
 
       ## aspect ratio
-    elseif (strcmpi (ax, "image"))
-      __axis__ (ca, "equal");
-      set (ca, "plotboxaspectratiomode", "auto");
-      __do_tight_option__ (ca);
-    elseif (strcmpi (ax, "square"))
-      set (ca, "dataaspectratiomode", "auto",
-               "plotboxaspectratio", [1, 1, 1]);
-    elseif (strcmp (ax, "equal"))
-      ## Get position of axis in pixels
-      ca_units = get (ca, "units");
-      set (ca, "units", "pixels");
-      axis_pos = get (ca, "position");
-      set (ca, "units", ca_units);
+      elseif (strcmpi (opt, "image"))
+        __axis__ (ca, "equal");
+        set (ca, "plotboxaspectratiomode", "auto");
+        __do_tight_option__ (ca);
+      elseif (strcmpi (opt, "square"))
+        set (ca, "dataaspectratiomode", "auto",
+                 "plotboxaspectratio", [1, 1, 1]);
+      elseif (strcmp (opt, "equal"))
+        ## Get position of axis in pixels
+        ca_units = get (ca, "units");
+        set (ca, "units", "pixels");
+        axis_pos = get (ca, "position");
+        set (ca, "units", ca_units);
 
-      pbar = get (ca, "PlotBoxAspectRatio");
-      dx = diff (__get_tight_lims__ (ca, "x"));
-      dy = diff (__get_tight_lims__ (ca, "y"));
-      dz = diff (__get_tight_lims__ (ca, "z"));
-      new_pbar = [dx dy dz];
-      new_pbar(new_pbar == 0) = 1;
-      if (dx/pbar(1) < dy/pbar(2))
-        set (ca, "xlimmode", "auto");
-        new_pbar(1) = dy / axis_pos(4)*axis_pos(3);
-      else
-        set (ca, "ylimmode", "auto");
-        new_pbar(2) = dx / axis_pos(3)*axis_pos(4);
-      endif
-      set (ca, "dataaspectratio", [1, 1, 1],
-               "plotboxaspectratio", new_pbar);
+        pbar = get (ca, "plotboxaspectratio");
+        dx = diff (__get_tight_lims__ (ca, "x"));
+        dy = diff (__get_tight_lims__ (ca, "y"));
+        dz = diff (__get_tight_lims__ (ca, "z"));
+        new_pbar = [dx dy dz];
+        new_pbar(new_pbar == 0) = 1;
+        if (dx/pbar(1) < dy/pbar(2))
+          set (ca, "xlimmode", "auto");
+          new_pbar(1) = (dy / axis_pos(4)) * axis_pos(3);
+        else
+          set (ca, "ylimmode", "auto");
+          new_pbar(2) = (dx / axis_pos(3)) * axis_pos(4);
+        endif
+        set (ca, "dataaspectratio", [1, 1, 1],
+                 "plotboxaspectratio", new_pbar);
+      elseif (strcmpi (opt, "vis3d"))
+        ## Fix aspect ratio modes for rotation without stretching.
+        set (ca, "dataaspectratiomode", "manual",
+                 "plotboxaspectratiomode", "manual");
 
-    elseif (strcmpi (ax, "normal"))
-      ## Set plotboxaspectratio to something obtuse so that switching
-      ## back to "auto" will force a re-calculation.
-      set (ca, "plotboxaspectratio", [3 2 1]);
-      set (ca, "plotboxaspectratiomode", "auto",
-               "dataaspectratiomode", "auto");
+      elseif (strcmpi (opt, "normal"))
+        ## Set plotboxaspectratio to something obtuse so that switching
+        ## back to "auto" will force a re-calculation.
+        set (ca, "plotboxaspectratio", [3 2 1]);
+        set (ca, "plotboxaspectratiomode", "auto",
+                 "dataaspectratiomode", "auto");
 
       ## axis limits
-    elseif (len >= 4 && strcmpi (ax(1:4), "auto"))
-      if (len > 4)
-        if (any (ax == "x"))
-          set (ca, "xlimmode", "auto");
+      elseif (strncmpi (opt, "auto", 4))
+        if (len == 4)
+          set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
+        else
+          if (any (opt == "x"))
+            set (ca, "xlimmode", "auto");
+          endif
+          if (any (opt == "y"))
+            set (ca, "ylimmode", "auto");
+          endif
+          if (any (opt == "z"))
+            set (ca, "zlimmode", "auto");
+          endif
         endif
-        if (any (ax == "y"))
-          set (ca, "ylimmode", "auto");
-        endif
-        if (any (ax == "z"))
-          set (ca, "zlimmode", "auto");
-        endif
-      else
-        set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
-      endif
-    elseif (strcmpi (ax, "manual"))
-      ## fixes the axis limits, like axis(axis) should;
-      set (ca, "xlimmode", "manual", "ylimmode", "manual", "zlimmode", "manual");
-    elseif (strcmpi (ax, "tight"))
-      ## sets the axis limits to the min and max of all data.
-      __do_tight_option__ (ca);
+      elseif (strcmpi (opt, "manual"))
+        ## fixes the axis limits
+        set (ca, "xlimmode", "manual", "ylimmode", "manual",
+                 "zlimmode", "manual");
+      elseif (strcmpi (opt, "tight"))
+        ## sets the axis limits to the min and max of all data.
+        __do_tight_option__ (ca);
+
+      ## visibility
+      elseif (strcmpi (opt, "on"))
+        set (ca, "visible", "on");
+      elseif (strcmpi (opt, "off"))
+        set (ca, "visible", "off");
+
       ## tick marks
-    elseif (strcmpi (ax, "on") || strcmpi (ax, "tic"))
-      set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto");
-      if (strcmpi (ax, "on"))
+      elseif (strcmpi (opt, "tic"))
+        set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto",
+                 "visible", "on");
+      elseif (strncmpi (opt, "tic", 3))
+        if (any (opt == "x"))
+          set (ca, "xtickmode", "auto");
+        else
+          set (ca, "xtick", []);
+        endif
+        if (any (opt == "y"))
+          set (ca, "ytickmode", "auto");
+        else
+          set (ca, "ytick", []);
+        endif
+        if (any (opt == "z"))
+          set (ca, "ztickmode", "auto");
+        else
+          set (ca, "ztick", []);
+        endif
+
+      ## labels
+      elseif (strcmpi (opt, "label"))
         set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
-           "zticklabelmode", "auto");
-      endif
-      set (ca, "visible", "on");
-    elseif (strcmpi (ax, "off"))
-      set (ca, "xtick", [], "ytick", [], "ztick", []);
-      set (ca, "visible", "off");
-    elseif (len > 3 && strcmpi (ax(1:3), "tic"))
-      if (any (ax == "x"))
-        set (ca, "xtickmode", "auto");
+                 "zticklabelmode", "auto");
+      elseif (strcmpi (opt, "nolabel"))
+        set (ca, "xticklabel", {}, "yticklabel", {}, "zticklabel", {})
+      elseif (strncmpi (opt, "label", 5))
+        if (any (opt == "x"))
+          set (ca, "xticklabelmode", "auto");
+        else
+          set (ca, "xticklabel", "");
+        endif
+        if (any (opt == "y"))
+          set (ca, "yticklabelmode", "auto");
+        else
+          set (ca, "yticklabel", "");
+        endif
+        if (any (opt == "z"))
+          set (ca, "zticklabelmode", "auto");
+        else
+          set (ca, "zticklabel", "");
+        endif
+
       else
-        set (ca, "xtick", []);
+        warning ("axis: unknown option '%s'", opt);
       endif
-      if (any (ax == "y"))
-        set (ca, "ytickmode", "auto");
-      else
-        set (ca, "ytick", []);
+
+    elseif (isnumeric (opt) && isvector (opt))
+
+      len = length (opt);
+
+      if (len != 2 && len != 4 && len != 6 && len != 8)
+        error ("axis: LIMITS vector must have 2, 4, 6, or 8 elements");
       endif
-      if (any (ax == "z"))
-        set (ca, "ztickmode", "auto");
-      else
-        set (ca, "ztick", []);
+
+      for i = 1:2:len
+        if (opt(i) >= opt(i+1))
+          error ("axis: LIMITS(%d) must be less than LIMITS(%d)", i, i+1);
+        endif
+      endfor
+
+      if (len > 1)
+        xlim (ca, opt(1:2));
       endif
-    elseif (strcmpi (ax, "label"))
-      set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
-           "zticklabelmode", "auto");
-    elseif (strcmpi (ax, "nolabel"))
-      set (ca, "xticklabel", "", "yticklabel", "", "zticklabel", "");
-    elseif (len > 5 && strcmpi (ax(1:5), "label"))
-      if (any (ax == "x"))
-        set (ca, "xticklabelmode", "auto");
-      else
-        set (ca, "xticklabel", "");
+
+      if (len > 3)
+        ylim (ca, opt(3:4));
       endif
-      if (any (ax == "y"))
-        set (ca, "yticklabelmode", "auto");
-      else
-        set (ca, "yticklabel", "");
+
+      if (len > 5)
+        zlim (ca, opt(5:6));
       endif
-      if (any (ax == "z"))
-        set (ca, "zticklabelmode", "auto");
-      else
-        set (ca, "zticklabel", "");
+
+      if (len > 7)
+        caxis (ca, opt(7:8));
       endif
 
     else
-      warning ("axis: unknown option '%s'", ax);
+      error ("axis: expecting no args, or a numeric vector with 2, 4, 6, or 8 elements");
     endif
 
-  elseif (isnumeric (ax) && isvector (ax))
-
-    len = length (ax);
-
-    if (len != 2 && len != 4 && len != 6 && len != 8)
-      error ("axis: LIMITS vector must have 2, 4, 6, or 8 elements");
-    endif
-
-    for i = 1:2:len
-      if (ax(i) >= ax(i+1))
-        error ("axis: LIMITS(%d) must be less than LIMITS(%d)", i, i+1);
-      endif
-    endfor
-
-    if (len > 1)
-      xlim (ca, ax(1:2));
-    endif
-
-    if (len > 3)
-      ylim (ca, ax(3:4));
-    endif
-
-    if (len > 5)
-      zlim (ca, ax(5:6));
-    endif
-
-    if (len > 7)
-      caxis (ca, ax(7:8));
-    endif
-
-  else
-    error ("axis: expecting no args, or a numeric vector with 2, 4, 6, or 8 elements");
-  endif
-
-  if (! isempty (varargin))
-    __axis__ (ca, varargin{:});
-  endif
-
+  endfor
 endfunction
 
+## Find the limits for axis ("tight").
+## AX should be one of "x", "y", or "z".
 function lims = __get_tight_lims__ (ca, ax)
 
-  ## Get the limits for axis ("tight").
-  ## AX should be one of "x", "y", or "z".
   kids = findobj (ca, "-property", [ax "data"]);
   ## The data properties for hggroups mirror their children.
-  ## Exclude the redundant hgroup values.
+  ## Exclude the redundant hggroup values.
   hg_kids = findobj (kids, "type", "hggroup");
   kids = setdiff (kids, hg_kids);
   if (isempty (kids))
     ## Return the current limits.
+    ## FIXME: Is this the correct thing to do?
     lims = get (ca, [ax "lim"]);
   else
     data = get (kids, [ax "data"]);
@@ -395,15 +408,15 @@ function __do_tight_option__ (ca)
 
   xlim = __get_tight_lims__ (ca, "x");
   if (all (xlim == 0))
-    xlim = eps () * [-1 1];
+    xlim = [-eps, +eps];
   elseif (diff (xlim == 0))
-    xlim .*= (1 + eps () * [-1, 1]);
+    xlim .*= [1-eps, 1+eps];
   endif
   ylim = __get_tight_lims__ (ca, "y");
   if (all (ylim == 0))
-    ylim = eps () * [-1 1];
+    ylim = [-eps, +eps];
   elseif (diff (ylim == 0))
-    ylim .*= (1 + eps () * [-1, 1]);
+    ylim .*= [1-eps, 1+eps];
   endif
   set (ca, "xlim", xlim, "ylim", ylim);
   nd = __calc_dimensions__ (ca);
@@ -411,9 +424,9 @@ function __do_tight_option__ (ca)
   if (nd > 2 && is3dview)
     zlim = __get_tight_lims__ (ca, "z");
     if (all (zlim == 0))
-      zlim = eps () * [-1 1];
+      zlim = [-eps, +eps];
     elseif (diff (zlim == 0))
-      zlim .*= (1 + eps () * [-1, 1]);
+      zlim .*= [1-eps, 1+eps];
     endif
     set (ca, "zlim", zlim);
   endif
@@ -569,70 +582,13 @@ endfunction
 %! s = x1 / max (x(:));
 %! pcolor (s*x+x1, s*y+x1/2, 5*z);
 %! axis tight;
-
-%!demo
-%! clf;
-%! x = -10:10;
-%! plot (x,x, x,-x);
-%! set (gca, "yscale", "log");
-%! legend ({"x >= 1", "x <= 1"}, "location", "north");
-%! title ("ylim = [1, 10]");
+%! title ('"tight" when two axes objects exist');
 
 %!demo
 %! clf;
 %! loglog (1:20, "-s");
 %! axis tight;
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "origin");
-%! set (gca, "yaxislocation", "origin");
-%! box off;
-%! title ({"no plot box", "xaxislocation = origin, yaxislocation = origin"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "origin");
-%! set (gca, "yaxislocation", "left");
-%! box off;
-%! title ({"no plot box", "xaxislocation = origin, yaxislocation = left"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! title ("no plot box");
-%! set (gca, "xaxislocation", "origin");
-%! set (gca, "yaxislocation", "right");
-%! box off;
-%! title ({"no plot box", "xaxislocation = origin, yaxislocation = right"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "bottom");
-%! set (gca, "yaxislocation", "origin");
-%! box off;
-%! title ({"no plot box", "xaxislocation = bottom, yaxislocation = origin"});
-
-%!demo
-%! clf;
-%! x = -10:0.1:10;
-%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
-%! plot (x, y);
-%! set (gca, "xaxislocation", "top");
-%! set (gca, "yaxislocation", "origin");
-%! box off;
-%! title ({"no plot box", "xaxislocation = top, yaxislocation = origin"});
+%! title ('"tight" on loglog plot');
 
 %!test
 %! hf = figure ("visible", "off");
@@ -652,13 +608,15 @@ endfunction
 %!   a = logspace (-5, 1, 10);
 %!   loglog (a, -a);
 %!   axis tight;
-%!   assert (axis (), [1e-5, 10, -10, -1e-5]);
+%!   ## Compare to powers of 10 rather than exponential literals because of an
+%!   ## upstream bug in mingw-w64: https://sourceforge.net/p/mingw-w64/bugs/466/
+%!   assert (axis (), [10^-5, 10, -10, -10^-5]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
 ## Test 'axis tight' with differently oriented, differently numbered data vecs
-%!test <40036>
+%!test <*40036>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   Z = peaks (linspace (-3, 3, 49), linspace (-2, 2, 29));
@@ -670,11 +628,18 @@ endfunction
 %! end_unwind_protect
 
 ## Even on errors, axis can display a figure.
-
 %!error <LIMITS vector must have .* elements>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   axis (1:5)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <LIMITS\(3\) must be less than LIMITS\(4\)>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axis ([1 2 4 3])
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

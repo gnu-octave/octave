@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "file-ops.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "ls-hdf5.h"
@@ -49,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hdf5.h"
 #include "ov-class.h"
 #include "ov-fcn.h"
+#include "ov-typeinfo.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
@@ -62,11 +64,10 @@ int octave_class::t_id (-1);
 const std::string octave_class::t_name ("class");
 
 void
-octave_class::register_type (void)
+octave_class::register_type (octave::type_info& ti)
 {
-  t_id = octave_value_typeinfo::register_type
-         (octave_class::t_name, "<unknown>",
-          octave_value (new octave_class ()));
+  t_id = ti.register_type (octave_class::t_name, "<unknown>",
+                           octave_value (new octave_class ()));
 }
 
 octave_class::octave_class (const octave_map& m, const std::string& id,
@@ -79,7 +80,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
     {
       octave_value parent = parents(idx);
 
-      if (! parent.is_object ())
+      if (! parent.isobject ())
         error ("parents must be objects");
 
       std::string pcnm = parent.class_name ();
@@ -196,7 +197,9 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
         }
     }
 
-  symbol_table::add_to_parent_map (id, parent_list);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class");
+
+  symtab.add_to_parent_map (id, parent_list);
 }
 
 octave_base_value *
@@ -225,7 +228,10 @@ octave_class::get_current_method_class (void)
 
   if (nparents () > 0)
     {
-      octave_function *fcn = octave_call_stack::current ();
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_class::get_current_method_class");
+
+      octave_function *fcn = cs.current ();
 
       // Here we are just looking to see if FCN is a method or constructor
       // for any class, not specifically this one.
@@ -269,7 +275,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   octave_base_value *obvp = find_parent_class (method_class);
 
-  if (obvp == 0)
+  if (obvp == nullptr)
     error ("malformed class");
 
   octave_map my_map = (obvp != this) ? obvp->map_value () : map;
@@ -291,16 +297,19 @@ octave_class::size (void)
     return octave_base_value::size ();
 
   Matrix retval (1, 2, 1.0);
-  octave_value meth = symbol_table::find_method ("size", class_name ());
+
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::size");
+
+  octave_value meth = symtab.find_method ("size", class_name ());
 
   if (meth.is_defined ())
     {
       count++;
       octave_value_list args (1, octave_value (this));
 
-      octave_value_list lv = feval (meth.function_value (), args, 1);
+      octave_value_list lv = octave::feval (meth.function_value (), args, 1);
       if (lv.length () <= 0
-          || ! lv(0).is_matrix_type () || ! lv(0).dims ().is_vector ())
+          || ! lv(0).is_matrix_type () || ! lv(0).dims ().isvector ())
         error ("@%s/size: invalid return value", class_name ().c_str ());
 
       retval = lv(0).matrix_value ();
@@ -329,7 +338,9 @@ octave_class::numel (const octave_value_list& idx)
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
 
-  octave_value meth = symbol_table::find_method ("numel", cn);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::numel");
+
+  octave_value meth = symtab.find_method ("numel", cn);
 
   if (meth.is_defined ())
     {
@@ -341,7 +352,7 @@ octave_class::numel (const octave_value_list& idx)
       for (octave_idx_type i = 0; i < idx.length (); i++)
         args(i+1) = idx(i);
 
-      octave_value_list lv = feval (meth.function_value (), args, 1);
+      octave_value_list lv = octave::feval (meth.function_value (), args, 1);
       if (lv.length () != 1 || ! lv(0).is_scalar_type ())
         error ("@%s/numel: invalid return value", cn.c_str ());
 
@@ -381,8 +392,8 @@ octave_class::subsref (const std::string& type,
 
                 Cell t = tmp.index (idx.front ());
 
-                retval(0) = (t.numel () == 1) ? t(0)
-                                              : octave_value (t, true);
+                retval(0) = (t.numel () == 1 ? t(0)
+                                             : octave_value (t, true));
 
                 // We handled two index elements, so tell
                 // next_subsref to skip both of them.
@@ -422,7 +433,9 @@ octave_class::subsref (const std::string& type,
     }
   else
     {
-      octave_value meth = symbol_table::find_method ("subsref", class_name ());
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::subsref");
+
+      octave_value meth = symtab.find_method ("subsref", class_name ());
 
       if (meth.is_defined ())
         {
@@ -452,13 +465,13 @@ octave_class::subsref (const std::string& type,
               true_nargout = numel (tmp);
             }
 
-          retval = feval (meth.function_value (), args, true_nargout);
+          retval = octave::feval (meth.function_value (), args, true_nargout);
 
-          // Since we're handling subsref, return the list in the first value
-          // if it has more than one element, to be able to pass through
-          // rvalue1 calls.
+          // Since we're handling subsref, if the list has more than one
+          // element, return it as a comma-separated list so that we can
+          // pass it to the evaluator
           if (retval.length () > 1)
-            retval = octave_value (retval, true);
+            retval = octave_value (retval);
         }
       else
         {
@@ -483,7 +496,7 @@ octave_class::numeric_conv (const Cell& val, const std::string& type)
 
   retval = val(0);
 
-  if (type.length () > 0 && type[0] == '.' && ! retval.is_map ())
+  if (type.length () > 0 && type[0] == '.' && ! retval.isstruct ())
     retval = octave_map ();
 
   return retval;
@@ -520,7 +533,10 @@ octave_class::subsasgn_common (const octave_value& obj,
 
   if (! (in_class_method () || called_from_builtin ()))
     {
-      octave_value meth = symbol_table::find_method ("subsasgn", class_name ());
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_class::subsasgn_common");
+
+      octave_value meth = symtab.find_method ("subsasgn", class_name ());
 
       if (meth.is_defined ())
         {
@@ -561,10 +577,10 @@ octave_class::subsasgn_common (const octave_value& obj,
               frame.protect_var (obsolete_copies);
               obsolete_copies = 2;
 
-              tmp = feval (meth.function_value (), args);
+              tmp = octave::feval (meth.function_value (), args);
             }
           else
-            tmp = feval (meth.function_value (), args);
+            tmp = octave::feval (meth.function_value (), args);
 
           // FIXME: Should the subsasgn method be able to return
           //        more than one value?
@@ -725,7 +741,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           }
         else
           {
-            if (t_rhs.is_object () || t_rhs.is_map ())
+            if (t_rhs.isobject () || t_rhs.isstruct ())
               {
                 octave_map rhs_map = t_rhs.xmap_value ("invalid class assignment");
 
@@ -736,7 +752,7 @@ octave_class::subsasgn_common (const octave_value& obj,
               }
             else
               {
-                if (! t_rhs.is_empty ())
+                if (! t_rhs.isempty ())
                   error ("invalid class assignment");
 
                 map.delete_elements (idx.front ());
@@ -795,7 +811,9 @@ octave_class::subsasgn_common (const octave_value& obj,
 idx_vector
 octave_class::index_vector (bool require_integers) const
 {
-  octave_value meth = symbol_table::find_method ("subsindex", class_name ());
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::index_vector");
+
+  octave_value meth = symtab.find_method ("subsindex", class_name ());
 
   if (! meth.is_defined ())
     error ("no subsindex method defined for class %s",
@@ -804,9 +822,9 @@ octave_class::index_vector (bool require_integers) const
   octave_value_list args;
   args(0) = octave_value (new octave_class (map, c_name, parent_list));
 
-  octave_value_list tmp = feval (meth.function_value (), args, 1);
+  octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
-  if (tmp(0).is_object ())
+  if (tmp(0).isobject ())
     error ("subsindex function must return a valid index vector");
 
   // Index vector returned by subsindex is zero based
@@ -824,11 +842,11 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
     {
-      std::string key = map.key (p);
+      std::string key = map.key (it);
 
-      octave_value val = octave_value (map.contents (p));
+      octave_value val = octave_value (map.contents (it));
 
       retval += val.byte_size ();
     }
@@ -841,13 +859,15 @@ octave_class::is_true (void) const
 {
   bool retval = false;
 
-  octave_value meth = symbol_table::find_method ("logical", class_name ());
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class::is_true");
+
+  octave_value meth = symtab.find_method ("logical", class_name ());
 
   if (meth.is_defined ())
     {
       octave_value in = new octave_class (*this);
 
-      octave_value_list tmp = feval (meth.function_value (), in, 1);
+      octave_value_list tmp = octave::feval (meth.function_value (), in, 1);
       retval = tmp(0).is_true ();
     }
 
@@ -863,17 +883,15 @@ octave_class::map_keys (void) const
 octave_base_value *
 octave_class::find_parent_class (const std::string& parent_class_name)
 {
-  octave_base_value* retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (parent_class_name == class_name ())
     retval = this;
   else
     {
-      for (std::list<std::string>::iterator pit = parent_list.begin ();
-           pit != parent_list.end ();
-           pit++)
+      for (auto& par : parent_list)
         {
-          octave_map::const_iterator smap = map.seek (*pit);
+          octave_map::const_iterator smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -894,17 +912,15 @@ octave_class::find_parent_class (const std::string& parent_class_name)
 octave_base_value *
 octave_class::unique_parent_class (const std::string& parent_class_name)
 {
-  octave_base_value* retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (parent_class_name == class_name ())
     retval = this;
   else
     {
-      for (std::list<std::string>::iterator pit = parent_list.begin ();
-           pit != parent_list.end ();
-           pit++)
+      for (auto& par : parent_list)
         {
-          octave_map::iterator smap = map.seek (*pit);
+          octave_map::iterator smap = map.seek (par);
 
           Cell& tmp = map.contents (smap);
 
@@ -938,11 +954,9 @@ octave_class::is_instance_of (const std::string& cls_name) const
     retval = true;
   else
     {
-      for (std::list<std::string>::const_iterator pit = parent_list.begin ();
-           pit != parent_list.end ();
-           pit++)
+      for (auto& par : parent_list)
         {
-          octave_map::const_iterator smap = map.seek (*pit);
+          octave_map::const_iterator smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -963,7 +977,10 @@ octave_class::string_vector_value (bool pad) const
 {
   string_vector retval;
 
-  octave_value meth = symbol_table::find_method ("char", class_name ());
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::string_vector_value");
+
+  octave_value meth = symtab.find_method ("char", class_name ());
 
   if (! meth.is_defined ())
     error ("no char method defined for class %s", class_name ().c_str ());
@@ -971,7 +988,7 @@ octave_class::string_vector_value (bool pad) const
   octave_value_list args;
   args(0) = octave_value (new octave_class (map, c_name, parent_list));
 
-  octave_value_list tmp = feval (meth.function_value (), args, 1);
+  octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
   if (tmp.length () >= 1)
     {
@@ -996,51 +1013,21 @@ octave_class::print_raw (std::ostream& os, bool) const
   octave::unwind_protect frame;
 
   indent (os);
-  os << "  <class " << class_name () << ">";
+  os << "  <class " << class_name () << '>';
   newline (os);
 }
 
 bool
 octave_class::print_name_tag (std::ostream& os, const std::string& name) const
 {
-  bool retval = false;
-
-  indent (os);
-  os << name << " =";
-  newline (os);
-  if (! Vcompact_format)
-    newline (os);
-
-  return retval;
+  return octave_base_value::print_name_tag (os, name);
 }
 
 void
 octave_class::print_with_name (std::ostream& os, const std::string& name,
-                               bool)
+                               bool print_padding)
 {
-  octave_value fcn = symbol_table::find_method ("display", class_name ());
-
-  if (fcn.is_defined ())
-    {
-      octave_value_list args;
-
-      count++;
-      args(0) = octave_value (this);
-
-      string_vector arg_names (1);
-
-      arg_names[0] = name;
-
-      args.stash_name_tags (arg_names);
-
-      feval (fcn.function_value (), args);
-    }
-  else
-    {
-      indent (os);
-      os << name << " = <class " << class_name () << ">";
-      newline (os);
-    }
+  octave_base_value::print_with_name (os, name, print_padding);
 }
 
 // Loading a class properly requires an exemplar map entry for success.
@@ -1058,7 +1045,10 @@ octave_class::reconstruct_exemplar (void)
     retval = true;
   else
     {
-      octave_value ctor = symbol_table::find_method (c_name, c_name);
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_class::reconstruct_exemplar");
+
+      octave_value ctor = symtab.find_method (c_name, c_name);
 
       bool have_ctor = false;
 
@@ -1089,11 +1079,11 @@ octave_class::reconstruct_exemplar (void)
 
           try
             {
-              result = ctor.do_multi_index_op (1, octave_value_list ());
+              result = octave::feval (ctor, ovl (), 1);
             }
           catch (const octave::execution_exception&)
             {
-              recover_from_exception ();
+              octave::interpreter::recover_from_exception ();
 
               execution_error = true;
             }
@@ -1129,11 +1119,11 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
     {
-      std::string key = map.key (p);
-      Cell        val = map.contents (p);
-      if (val(0).is_object ())
+      std::string key = map.key (it);
+      Cell        val = map.contents (it);
+      if (val(0).isobject ())
         {
           dbgstr = "blork";
           if (key == val(0).class_name ())
@@ -1156,12 +1146,10 @@ octave_class::reconstruct_parents (void)
         {
           octave_class::exemplar_info exmplr = it->second;
           parent_list = exmplr.parents ();
-          for (std::list<std::string>::iterator pit = parent_list.begin ();
-               pit != parent_list.end ();
-               pit++)
+          for (auto& par : parent_list)
             {
-              dbgstr = *pit;
-              bool dbgbool = map.contains (*pit);
+              dbgstr = par;
+              bool dbgbool = map.contains (par);
               if (! dbgbool)
                 {
                   retval = false;
@@ -1179,10 +1167,13 @@ octave_class::save_ascii (std::ostream& os)
 {
   os << "# classname: " << class_name () << "\n";
   octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != "")
+
+  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_ascii");
+
+  if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = feval ("saveobj", in, 1);
+      octave_value_list tmp = octave::feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1235,7 +1226,7 @@ octave_class::load_ascii (std::istream& is)
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
           m.assign (nm, tcell);
         }
@@ -1251,11 +1242,12 @@ octave_class::load_ascii (std::istream& is)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      if (load_path::find_method (classname, "loadobj")
-          != "")
+      octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_ascii");
+
+      if (lp.find_method (classname, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
-          octave_value_list tmp = feval ("loadobj", in, 1);
+          octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
           map = tmp(0).map_value ();
         }
@@ -1280,10 +1272,13 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   os << class_name ();
 
   octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != "")
+
+  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_binary");
+
+  if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = feval ("saveobj", in, 1);
+      octave_value_list tmp = octave::feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1355,7 +1350,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
           m.assign (nm, tcell);
         }
@@ -1367,10 +1362,12 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
 
-          if (load_path::find_method (c_name, "loadobj") != "")
+          octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_binary");
+
+          if (lp.find_method (c_name, "loadobj") != "")
             {
               octave_value in = new octave_class (*this);
-              octave_value_list tmp = feval ("loadobj", in, 1);
+              octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
               map = tmp(0).map_value ();
             }
@@ -1404,6 +1401,8 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   octave_map m;
   octave_map::iterator i;
 
+  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_hdf5");
+
 #if defined (HAVE_HDF5_18)
   group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                          octave_H5P_DEFAULT);
@@ -1419,7 +1418,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     goto error_cleanup;
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, 0);
+  space_hid = H5Screate_simple (0 , hdims, nullptr);
   if (space_hid < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)
@@ -1444,10 +1443,10 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (data_hid < 0)
     goto error_cleanup;
 
-  if (load_path::find_method (class_name (), "saveobj") != "")
+  if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = feval ("saveobj", in, 1);
+      octave_value_list tmp = octave::feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1599,7 +1598,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
+      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
       m.assign (dsub.name, tcell);
 
@@ -1612,10 +1611,12 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      if (load_path::find_method (c_name, "loadobj") != "")
+      octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_hdf5");
+
+      if (lp.find_method (c_name, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
-          octave_value_list tmp = feval ("loadobj", in, 1);
+          octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
           map = tmp(0).map_value ();
           retval = true;
@@ -1648,7 +1649,10 @@ octave_class::as_mxArray (void) const
 bool
 octave_class::in_class_method (void)
 {
-  octave_function *fcn = octave_call_stack::current ();
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("octave_class::in_class_method");
+
+  octave_function *fcn = cs.current ();
 
   return (fcn
           && (fcn->is_class_method ()
@@ -1661,7 +1665,7 @@ octave_class::in_class_method (void)
 octave_class::exemplar_info::exemplar_info (const octave_value& obj)
   : field_names (), parent_class_names ()
 {
-  if (! obj.is_object ())
+  if (! obj.isobject ())
     error ("invalid call to exemplar_info constructor");
 
   octave_map m = obj.map_value ();
@@ -1677,7 +1681,7 @@ bool
 octave_class::exemplar_info::compare (const octave_value& obj) const
 {
 
-  if (! obj.is_object ())
+  if (! obj.isobject ())
     error ("invalid comparison of class exemplar to non-class object");
 
   if (nfields () != obj.nfields ())
@@ -1712,8 +1716,8 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   return true;
 }
 
-DEFUN (class, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (class, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{classname} =} class (@var{obj})
 @deftypefnx {} {} class (@var{s}, @var{id})
 @deftypefnx {} {} class (@var{s}, @var{id}, @var{p}, @dots{})
@@ -1740,7 +1744,9 @@ is derived.
       // Called as class constructor
       std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
-      octave_function *fcn = octave_call_stack::caller ();
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      octave_function *fcn = cs.caller ();
 
       if (! fcn)
         error ("class: invalid call from outside class constructor or method");
@@ -1778,14 +1784,11 @@ is derived.
 %!assert (class (1.1), "double")
 %!assert (class (single (1.1)), "single")
 %!assert (class (uint8 (1)), "uint8")
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! jobj = javaObject ("java.lang.StringBuffer");
 %! assert (class (jobj), "java.lang.StringBuffer");
 
-%% Test Input Validation
+## Test Input Validation
 %!error class ()
 */
 
@@ -1828,9 +1831,9 @@ belongs to.
     {
       std::string cls = clsnames(idx);
       if (obj_cls == cls
-          || (cls == "float"   && obj.is_float_type   ())
-          || (cls == "integer" && obj.is_integer_type ())
-          || (cls == "numeric" && obj.is_numeric_type ())
+          || (cls == "float"   && obj.isfloat   ())
+          || (cls == "integer" && obj.isinteger ())
+          || (cls == "numeric" && obj.isnumeric ())
           || obj.is_instance_of (cls))
         matches(idx) = true;
     }
@@ -1884,10 +1887,7 @@ belongs to.
 %!assert (isa ({1, 2}, "cell"))
 %!assert (isa ({1, 2}, {"numeric", "integer", "cell"}), [false false true])
 
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! ## The first and last assert() are equal on purpose.  The assert() in
 %! ## the middle with an invalid class name will cause the java code to
 %! ## throw exceptions which we then must clear properly (or all other calls
@@ -1912,7 +1912,7 @@ Undocumented internal function.
 
   octave_value arg = args(0);
 
-  if (arg.is_object ())
+  if (arg.isobject ())
     return ovl (Cell (arg.parent_class_names ()));
   else
     return ovl (Cell ());
@@ -1928,11 +1928,11 @@ Return true if @var{x} is a class object.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).is_object ());
+  return ovl (args(0).isobject ());
 }
 
-DEFUN (ismethod, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (ismethod, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} ismethod (@var{obj}, @var{method})
 @deftypefnx {} {} ismethod (@var{clsname}, @var{method})
 Return true if the string @var{method} is a valid method of the object
@@ -1947,7 +1947,7 @@ Return true if the string @var{method} is a valid method of the object
 
   std::string class_name;
 
-  if (arg.is_object ())
+  if (arg.isobject ())
     class_name = arg.class_name ();
   else if (arg.is_string ())
     class_name = arg.string_value ();
@@ -1956,14 +1956,16 @@ Return true if the string @var{method} is a valid method of the object
 
   std::string method = args(1).string_value ();
 
-  if (load_path::find_method (class_name, method) != "")
+  octave::load_path& lp = interp.get_load_path ();
+
+  if (lp.find_method (class_name, method) != "")
     return ovl (true);
   else
     return ovl (false);
 }
 
-DEFUN (__methods__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__methods__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __methods__ (@var{x})
 @deftypefnx {} {} __methods__ ("classname")
 Internal function.
@@ -1977,12 +1979,14 @@ Implements @code{methods} for Octave class objects and classnames.
 
   std::string class_name;
 
-  if (arg.is_object ())
+  if (arg.isobject ())
     class_name = arg.class_name ();
   else if (arg.is_string ())
     class_name = arg.string_value ();
 
-  string_vector sv = load_path::methods (class_name);
+  octave::load_path& lp = interp.get_load_path ();
+
+  string_vector sv = lp.methods (class_name);
 
   return ovl (Cell (sv));
 }
@@ -2014,8 +2018,8 @@ is_built_in_class (const std::string& cn)
   return built_in_class_names.find (cn) != built_in_class_names.end ();
 }
 
-DEFUN (superiorto, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (superiorto, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} superiorto (@var{class_name}, @dots{})
 When called from a class constructor, mark the object currently constructed
 as having a higher precedence than @var{class_name}.
@@ -2025,7 +2029,10 @@ may @emph{only} be called from a class constructor.
 @seealso{inferiorto}
 @end deftypefn */)
 {
-  octave_function *fcn = octave_call_stack::caller ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_function *fcn = cs.caller ();
+
   if (! fcn || ! fcn->is_class_constructor ())
     error ("superiorto: invalid call from outside class constructor");
 
@@ -2038,8 +2045,10 @@ may @emph{only} be called from a class constructor.
       if (is_built_in_class (inf_class))
         break;
 
+      octave::symbol_table& symtab = interp.get_symbol_table ();
+
       std::string sup_class = fcn->name ();
-      if (! symbol_table::set_class_relationship (sup_class, inf_class))
+      if (! symtab.set_class_relationship (sup_class, inf_class))
         error ("superiorto: opposite precedence already set for %s and %s",
                sup_class.c_str (), inf_class.c_str ());
     }
@@ -2047,8 +2056,8 @@ may @emph{only} be called from a class constructor.
   return ovl ();
 }
 
-DEFUN (inferiorto, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (inferiorto, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} inferiorto (@var{class_name}, @dots{})
 When called from a class constructor, mark the object currently constructed
 as having a lower precedence than @var{class_name}.
@@ -2058,7 +2067,10 @@ may @emph{only} be called from a class constructor.
 @seealso{superiorto}
 @end deftypefn */)
 {
-  octave_function *fcn = octave_call_stack::caller ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_function *fcn = cs.caller ();
+
   if (! fcn || ! fcn->is_class_constructor ())
     error ("inferiorto: invalid call from outside class constructor");
 
@@ -2070,8 +2082,10 @@ may @emph{only} be called from a class constructor.
         error ("inferiorto: cannot give user-defined class lower "
                "precedence than built-in class");
 
+      octave::symbol_table& symtab = interp.get_symbol_table ();
+
       std::string inf_class = fcn->name ();
-      if (! symbol_table::set_class_relationship (sup_class, inf_class))
+      if (! symtab.set_class_relationship (sup_class, inf_class))
         error ("inferiorto: opposite precedence already set for %s and %s",
                inf_class.c_str (), sup_class.c_str ());
     }

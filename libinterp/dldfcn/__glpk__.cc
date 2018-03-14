@@ -5,19 +5,19 @@ Copyright (C) 2013-2016 Sébastien Villemot <sebastien@debian.org>
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,17 +25,23 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <ctime>
 
+#include <limits>
+
+#include "Array.h"
+#include "chMatrix.h"
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dSparse.h"
 #include "lo-ieee.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
 #include "oct-map.h"
+#include "ov.h"
 #include "ovl.h"
-#include "pager.h"
 
 #if defined (HAVE_GLPK)
 
@@ -165,7 +171,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   if (save_pb)
     {
       static char tmp[] = "outpb.lp";
-      if (glp_write_lp (lp, 0, tmp) != 0)
+      if (glp_write_lp (lp, nullptr, tmp) != 0)
         error ("__glpk__: unable to write problem");
     }
 
@@ -303,7 +309,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                                                                         \
       if (tmp.is_defined ())                                            \
         {                                                               \
-          if (! tmp.is_empty ())                                        \
+          if (! tmp.isempty ())                                        \
             VAL = tmp.xscalar_value ("glpk: invalid value in PARAM" NAME); \
           else                                                          \
             error ("glpk: invalid value in PARAM" NAME);                \
@@ -318,7 +324,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                                                                         \
       if (tmp.is_defined ())                                            \
         {                                                               \
-          if (! tmp.is_empty ())                                        \
+          if (! tmp.isempty ())                                        \
             VAL = tmp.xint_value ("glpk: invalid value in PARAM" NAME); \
           else                                                          \
             error ("glpk: invalid value in PARAM" NAME);                \
@@ -352,7 +358,7 @@ Undocumented internal function.
 
   // 2nd Input.  A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
-  if (args(1).is_sparse_type ())
+  if (args(1).issparse ())
     {
       SparseMatrix A = args(1).xsparse_matrix_value ("__glpk__: invalid value of A");
 

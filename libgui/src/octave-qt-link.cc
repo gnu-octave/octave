@@ -6,19 +6,19 @@ Copyright (C) 2011-2016 John P. Swensen
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,10 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QStringList>
 #include <QDialog>
 #include <QDir>
+#include <QMetaType>
 #include <QPushButton>
+#include <QStringList>
 
 #include "oct-env.h"
 #include "str-vec.h"
@@ -37,643 +38,570 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "dialog.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "load-path.h"
+#include "ov.h"
+#include "symscope.h"
 #include "utils.h"
 
 #include "octave-gui.h"
 #include "octave-qt-link.h"
 #include "resource-manager.h"
-#include "workspace-element.h"
 
-octave_qt_link::octave_qt_link (QWidget *p,
-                                octave::gui_application *app_context)
-  : octave_link (), main_thread (new QThread ()),
-    m_app_context (app_context),
-    command_interpreter (new octave_interpreter (app_context))
+Q_DECLARE_METATYPE (octave_value)
+Q_DECLARE_METATYPE (octave::symbol_scope)
+
+namespace octave
 {
-  _current_directory = "";
-  _new_dir = true;
+  octave_qt_link::octave_qt_link (QWidget *, gui_application *app_context)
+    : octave_link (), m_app_context (app_context)
+  {
+    qRegisterMetaType<octave_value> ("octave_value");
+    qRegisterMetaType<symbol_scope> ("symbol_scope");
+  }
 
-  connect (this, SIGNAL (execute_interpreter_signal (void)),
-           command_interpreter, SLOT (execute (void)));
+  bool octave_qt_link::do_confirm_shutdown (void)
+  {
+    // Lock the mutex before emitting signal.
+    lock ();
 
-  connect (command_interpreter, SIGNAL (octave_ready_signal ()),
-           p, SLOT (handle_octave_ready ()));
+    emit confirm_shutdown_signal ();
 
-  connect (command_interpreter, SIGNAL (octave_finished_signal (int)),
-           main_thread, SLOT (quit ()));
+    // Wait while the GUI shuts down.
+    wait ();
 
-  connect (main_thread, SIGNAL (finished ()),
-           main_thread, SLOT (deleteLater ()));
+    // The GUI has sent a signal and the thread has been awakened.
 
-  command_interpreter->moveToThread (main_thread);
+    unlock ();
 
-  main_thread->start ();
-}
+    return m_shutdown_confirm_result;
+  }
 
-octave_qt_link::~octave_qt_link (void)
-{
-  // Note that we don't delete main_thread here.  That is handled by
-  // deleteLater slot that is called when the main_thread issues a
-  // finished signal.
+  bool octave_qt_link::do_copy_image_to_clipboard (const std::string& file)
+  {
+    emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);
 
-  delete command_interpreter;
-}
-
-void
-octave_qt_link::execute_interpreter (void)
-{
-  emit execute_interpreter_signal ();
-}
-
-bool
-octave_qt_link::do_confirm_shutdown (void)
-{
-  // Lock the mutex before emitting signal.
-  mutex.lock ();
-
-  emit confirm_shutdown_signal ();
-
-  // Wait while the GUI shuts down.
-  waitcondition.wait (&mutex);
-
-  // The GUI has sent a signal and the thread has been awakened.
-
-  mutex.unlock ();
-
-  return _shutdown_confirm_result;
-}
-
-bool
-octave_qt_link::do_exit (int status)
-{
-  emit exit_app_signal (status);
-
-  // Could wait for a while and then timeout, but for now just
-  // assume the GUI application exit will be without problems.
-  return true;
-}
-
-bool
-octave_qt_link::do_copy_image_to_clipboard (const std::string& file)
-{
-  emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);
-
-  return true;
-}
-
-bool
-octave_qt_link::do_edit_file (const std::string& file)
-{
-  emit edit_file_signal (QString::fromStdString (file));
-
-  return true;
-}
-
-bool
-octave_qt_link::do_prompt_new_edit_file (const std::string& file)
-{
-  QSettings *settings = resource_manager::get_settings ();
-
-  if (! settings || settings->value ("editor/create_new_file",false).toBool ())
     return true;
+  }
 
-  QFileInfo file_info (QString::fromStdString (file));
-  QStringList btn;
-  QStringList role;
-  role << "YesRole" << "RejectRole";
-  btn << tr ("Create") << tr ("Cancel");
+  bool octave_qt_link::do_edit_file (const std::string& file)
+  {
+    emit edit_file_signal (QString::fromStdString (file));
 
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+    return true;
+  }
 
-  uiwidget_creator.signal_dialog (
-    tr ("File\n%1\ndoes not exist. Do you want to create it?").
-    arg (QDir::currentPath () + QDir::separator ()
-         + QString::fromStdString (file)),
-    tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
+  bool octave_qt_link::do_prompt_new_edit_file (const std::string& file)
+  {
+    QSettings *settings = resource_manager::get_settings ();
 
-  // Wait while the user is responding to message box.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+    if (! settings || settings->value ("editor/create_new_file",false).toBool ())
+      return true;
 
-  // The GUI has sent a signal and the thread has been awakened.
+    QFileInfo file_info (QString::fromStdString (file));
+    QStringList btn;
+    QStringList role;
+    role << "YesRole" << "RejectRole";
+    btn << tr ("Create") << tr ("Cancel");
 
-  QString answer = uiwidget_creator.get_dialog_button ();
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
 
-  uiwidget_creator.mutex.unlock ();
+    uiwidget_creator.signal_dialog (
+                                    tr ("File\n%1\ndoes not exist. Do you want to create it?").
+                                    arg (QDir::currentPath () + QDir::separator ()
+                                         + QString::fromStdString (file)),
+                                    tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
 
-  return (answer == tr ("Create"));
-}
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
 
-int
-octave_qt_link::do_message_dialog (const std::string& dlg,
-                                   const std::string& msg,
-                                   const std::string& title)
-{
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+    // The GUI has sent a signal and the thread has been awakened.
 
-  uiwidget_creator.signal_dialog (QString::fromStdString (msg),
-                                  QString::fromStdString (title),
-                                  QString::fromStdString (dlg),
-                                  QStringList (), QString (),
-                                  QStringList ());
+    QString answer = uiwidget_creator.get_dialog_button ();
 
-  // Wait while the user is responding to message box.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+    uiwidget_creator.unlock ();
 
-  // The GUI has sent a signal and the thread has been awakened.
+    return (answer == tr ("Create"));
+  }
 
-  int answer = uiwidget_creator.get_dialog_result ();
+  int octave_qt_link::do_message_dialog (const std::string& dlg,
+                                         const std::string& msg,
+                                         const std::string& title)
+  {
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
 
-  uiwidget_creator.mutex.unlock ();
+    uiwidget_creator.signal_dialog (QString::fromStdString (msg),
+                                    QString::fromStdString (title),
+                                    QString::fromStdString (dlg),
+                                    QStringList (), QString (),
+                                    QStringList ());
 
-  return answer;
-}
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
 
-std::string
-octave_qt_link::do_question_dialog (const std::string& msg,
-                                    const std::string& title,
-                                    const std::string& btn1,
-                                    const std::string& btn2,
-                                    const std::string& btn3,
-                                    const std::string& btndef)
-{
-  QStringList btn;
-  QStringList role;
-  role << "AcceptRole" << "AcceptRole" << "AcceptRole";
-  btn << QString::fromStdString (btn1);
-  if (btn2 == "")
-    role.removeAt (0);
-  else
-    btn << QString::fromStdString (btn2);
-  btn << QString::fromStdString (btn3);
+    // The GUI has sent a signal and the thread has been awakened.
 
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+    int answer = uiwidget_creator.get_dialog_result ();
 
-  uiwidget_creator.signal_dialog (QString::fromStdString (msg),
-                                  QString::fromStdString (title),
-                                  "quest",
-                                  btn,
-                                  QString::fromStdString (btndef),
-                                  role);
+    uiwidget_creator.unlock ();
 
-  // Wait while the user is responding to message box.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+    return answer;
+  }
 
-  // The GUI has sent a signal and the thread has been awakened.
+  std::string octave_qt_link::do_question_dialog (const std::string& msg,
+                                                  const std::string& title,
+                                                  const std::string& btn1,
+                                                  const std::string& btn2,
+                                                  const std::string& btn3,
+                                                  const std::string& btndef)
+  {
+    QStringList btn;
+    QStringList role;
+    // Must use ResetRole which is left-aligned for all OS and WM.
+    role << "ResetRole" << "ResetRole" << "ResetRole";
+    btn << QString::fromStdString (btn1);
+    if (btn2 == "")
+      role.removeAt (0);
+    else
+      btn << QString::fromStdString (btn2);
+    btn << QString::fromStdString (btn3);
 
-  std::string answer = uiwidget_creator.get_dialog_button ().toStdString ();
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
 
-  uiwidget_creator.mutex.unlock ();
+    uiwidget_creator.signal_dialog (QString::fromStdString (msg),
+                                    QString::fromStdString (title),
+                                    "quest",
+                                    btn,
+                                    QString::fromStdString (btndef),
+                                    role);
 
-  return answer;
-}
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
 
-static QStringList
-make_qstring_list (const std::list<std::string>& lst)
-{
-  QStringList retval;
+    // The GUI has sent a signal and the thread has been awakened.
 
-  for (std::list<std::string>::const_iterator it = lst.begin ();
-       it != lst.end (); it++)
-    {
-      retval.append (QString::fromStdString (*it));
-    }
+    std::string answer = uiwidget_creator.get_dialog_button ().toStdString ();
 
-  return retval;
-}
+    uiwidget_creator.unlock ();
 
-static QStringList
-make_filter_list (const octave_link::filter_list& lst)
-{
-  QStringList retval;
+    return answer;
+  }
 
-  // We have pairs of data, first being the list of extensions
-  // exta;exb;extc etc second the name to use as filter name
-  // (optional).  Qt wants a list of filters in the format of
-  // 'FilterName (space separated exts)'.
+  static QStringList
+  make_qstring_list (const std::list<std::string>& lst)
+  {
+    QStringList retval;
 
-  for (octave_link::filter_list::const_iterator it = lst.begin ();
-       it != lst.end (); it++)
-    {
-      QString ext = QString::fromStdString (it->first);
-      QString name = QString::fromStdString (it->second);
+    for (std::list<std::string>::const_iterator it = lst.begin ();
+         it != lst.end (); it++)
+      {
+        retval.append (QString::fromStdString (*it));
+      }
 
-      // Strip out extensions from name and replace ';' with spaces in
-      // list.
+    return retval;
+  }
 
-      name.replace (QRegExp ("\\(.*\\)"), "");
-      ext.replace (";", " ");
+  static QStringList
+  make_filter_list (const octave_link::filter_list& lst)
+  {
+    QStringList retval;
 
-      if (name.isEmpty ())
-        {
-          // No name field.  Build one from the extensions.
-          name = ext.toUpper () + " Files";
-        }
+    // We have pairs of data, first being the list of extensions
+    // exta;exb;extc etc second the name to use as filter name
+    // (optional).  Qt wants a list of filters in the format of
+    // 'FilterName (space separated exts)'.
 
-      retval.append (name + " (" + ext + ")");
-    }
+    for (octave_link::filter_list::const_iterator it = lst.begin ();
+         it != lst.end (); it++)
+      {
+        QString ext = QString::fromStdString (it->first);
+        QString name = QString::fromStdString (it->second);
 
-  return retval;
-}
+        // Strip out extensions from name and replace ';' with spaces in
+        // list.
 
-std::pair<std::list<int>, int>
-octave_qt_link::do_list_dialog (const std::list<std::string>& list,
-                                const std::string& mode,
-                                int width, int height,
-                                const std::list<int>& initial,
-                                const std::string& name,
-                                const std::list<std::string>& prompt,
-                                const std::string& ok_string,
-                                const std::string& cancel_string)
-{
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+        name.replace (QRegExp ("\\(.*\\)"), "");
+        ext.replace (";", " ");
 
-  uiwidget_creator.signal_listview (make_qstring_list (list),
-                                    QString::fromStdString (mode),
-                                    width, height,
-                                    QList<int>::fromStdList (initial),
-                                    QString::fromStdString (name),
-                                    make_qstring_list (prompt),
-                                    QString::fromStdString (ok_string),
-                                    QString::fromStdString (cancel_string));
+        if (name.isEmpty ())
+          {
+            // No name field.  Build one from the extensions.
+            name = ext.toUpper () + " Files";
+          }
 
-  // Wait while the user is responding to message box.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+        retval.append (name + " (" + ext + ')');
+      }
 
-  // The GUI has sent a signal and the thread has been awakened.
+    return retval;
+  }
 
-  const QIntList *selected = uiwidget_creator.get_list_index ();
-  int ok = uiwidget_creator.get_dialog_result ();
+  std::pair<std::list<int>, int>
+  octave_qt_link::do_list_dialog (const std::list<std::string>& list,
+                                  const std::string& mode,
+                                  int width, int height,
+                                  const std::list<int>& initial,
+                                  const std::string& name,
+                                  const std::list<std::string>& prompt,
+                                  const std::string& ok_string,
+                                  const std::string& cancel_string)
+  {
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
 
-  uiwidget_creator.mutex.unlock ();
+    uiwidget_creator.signal_listview (make_qstring_list (list),
+                                      QString::fromStdString (mode),
+                                      width, height,
+                                      QList<int>::fromStdList (initial),
+                                      QString::fromStdString (name),
+                                      make_qstring_list (prompt),
+                                      QString::fromStdString (ok_string),
+                                      QString::fromStdString (cancel_string));
 
-  return std::pair<std::list<int>, int> (selected->toStdList (), ok);
-}
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
 
-std::list<std::string>
-octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
-                                 const std::string& title,
-                                 const std::list<float>& nr,
-                                 const std::list<float>& nc,
-                                 const std::list<std::string>& defaults)
-{
-  std::list<std::string> retval;
+    // The GUI has sent a signal and the thread has been awakened.
 
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+    const QIntList *selected = uiwidget_creator.get_list_index ();
+    int ok = uiwidget_creator.get_dialog_result ();
 
-  uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
-                                       QString::fromStdString (title),
-                                       QFloatList::fromStdList (nr),
-                                       QFloatList::fromStdList (nc),
-                                       make_qstring_list (defaults));
+    uiwidget_creator.unlock ();
 
-  // Wait while the user is responding to message box.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+    return std::pair<std::list<int>, int> (selected->toStdList (), ok);
+  }
 
-  // The GUI has sent a signal and the thread has been awakened.
+  std::list<std::string>
+  octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
+                                   const std::string& title,
+                                   const std::list<float>& nr,
+                                   const std::list<float>& nc,
+                                   const std::list<std::string>& defaults)
+  {
+    std::list<std::string> retval;
 
-  const QStringList *inputLine = uiwidget_creator.get_string_list ();
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
 
-  uiwidget_creator.mutex.unlock ();
+    uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
+                                         QString::fromStdString (title),
+                                         QFloatList::fromStdList (nr),
+                                         QFloatList::fromStdList (nc),
+                                         make_qstring_list (defaults));
 
-  for (QStringList::const_iterator it = inputLine->begin ();
-       it != inputLine->end (); it++)
-    {
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+
+    const QStringList *inputLine = uiwidget_creator.get_string_list ();
+
+    uiwidget_creator.unlock ();
+
+    for (QStringList::const_iterator it = inputLine->begin ();
+         it != inputLine->end (); it++)
+      {
+        retval.push_back (it->toStdString ());
+      }
+
+    return retval;
+  }
+
+  std::list<std::string>
+  octave_qt_link::do_file_dialog (const filter_list& filter,
+                                  const std::string& title,
+                                  const std::string& filename,
+                                  const std::string& dirname,
+                                  const std::string& multimode)
+  {
+    std::list<std::string> retval;
+
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
+
+    uiwidget_creator.signal_filedialog (make_filter_list (filter),
+                                        QString::fromStdString (title),
+                                        QString::fromStdString (filename),
+                                        QString::fromStdString (dirname),
+                                        QString::fromStdString (multimode));
+
+    // Wait while the user is responding to dialog.
+    uiwidget_creator.wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+
+    // Add all the file dialog results to a string list.
+    const QStringList *inputLine = uiwidget_creator.get_string_list ();
+
+    for (QStringList::const_iterator it = inputLine->begin ();
+         it != inputLine->end (); it++)
       retval.push_back (it->toStdString ());
-    }
 
-  return retval;
-}
+    retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
+    retval.push_back ((QString ("%1").arg (
+                                           uiwidget_creator.get_dialog_result ())).toStdString ());
 
-std::list<std::string>
-octave_qt_link::do_file_dialog (const filter_list& filter,
-                                const std::string& title,
-                                const std::string& filename,
-                                const std::string& dirname,
-                                const std::string& multimode)
-{
-  std::list<std::string> retval;
+    uiwidget_creator.unlock ();
 
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+    return retval;
+  }
 
-  uiwidget_creator.signal_filedialog (make_filter_list (filter),
-                                      QString::fromStdString (title),
-                                      QString::fromStdString (filename),
-                                      QString::fromStdString (dirname),
-                                      QString::fromStdString (multimode));
+  // Prompt to allow file to be run by setting cwd (or if addpath_option==true,
+  // alternatively setting the path).
+  // This uses a QMessageBox unlike other functions in this file,
+  // because uiwidget_creator.waitcondition.wait hangs when called from
+  // file_editor_tab::handle_context_menu_break_condition().  (FIXME: why hang?)
+  int octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
+                                                    const std::string& dir,
+                                                    bool addpath_option)
+  {
+    int retval = -1;
 
-  // Wait while the user is responding to dialog.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+    QString qdir = QString::fromStdString (dir);
+    QString qfile = QString::fromStdString (file);
+    QString msg
+      = (addpath_option
+         ? tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
+         : tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
 
-  // The GUI has sent a signal and the thread has been awakened.
+    QString title = tr ("Change Directory or Add Directory to Load Path");
 
-  // Add all the file dialog results to a string list.
-  const QStringList *inputLine = uiwidget_creator.get_string_list ();
+    QString cd_txt = tr ("&Change Directory");
+    QString addpath_txt = tr ("&Add Directory to Load Path");
+    QString cancel_txt = tr ("Cancel");
 
-  for (QStringList::const_iterator it = inputLine->begin ();
-       it != inputLine->end (); it++)
-    retval.push_back (it->toStdString ());
+    QStringList btn;
+    QStringList role;
+    btn << cd_txt;
+    role << "YesRole";
+    if (addpath_option)
+      {
+        btn << addpath_txt;
+        role << "AcceptRole";
+      }
+    btn << cancel_txt;
+    role << "RejectRole";
 
-  retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
-  retval.push_back ((QString ("%1").arg (
-                       uiwidget_creator.get_dialog_result ())).toStdString ());
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
 
-  uiwidget_creator.mutex.unlock ();
+    uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
 
-  return retval;
-}
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
 
-// Prompt to allow file to be run by setting cwd (or if addpath_option==true,
-// alternatively setting the path).
-// This uses a QMessageBox unlike other functions in this file,
-// because uiwidget_creator.waitcondition.wait hangs when called from
-// file_editor_tab::handle_context_menu_break_condition().  (FIXME: why hang?)
-int
-octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
-                                              const std::string& dir,
-                                              bool addpath_option)
-{
-  int retval = -1;
+    // The GUI has sent a signal and the thread has been awakened.
 
-  QString qdir = QString::fromStdString (dir);
-  QString qfile = QString::fromStdString (file);
-  QString msg
-    = (addpath_option
-       ? tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
-       : tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
+    QString result = uiwidget_creator.get_dialog_button ();
 
-  QString title = tr ("Change Directory or Add Directory to Load Path");
+    uiwidget_creator.unlock ();
 
-  QString cd_txt = tr ("&Change Directory");
-  QString addpath_txt = tr ("&Add Directory to Load Path");
-  QString cancel_txt = tr ("Cancel");
+    if (result == cd_txt)
+      retval = 1;
+    else if (result == addpath_txt)
+      retval = 2;
 
-  QStringList btn;
-  QStringList role;
-  btn << cd_txt;
-  role << "YesRole";
-  if (addpath_option)
-    {
-      btn << addpath_txt;
-      role << "AcceptRole";
-    }
-  btn << cancel_txt;
-  role << "RejectRole";
+    return retval;
+  }
 
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+  void octave_qt_link::do_change_directory (const std::string& dir)
+  {
+    emit change_directory_signal (QString::fromStdString (dir));
+  }
 
-  uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
+  void octave_qt_link::do_execute_command_in_terminal
+    (const std::string& command)
+  {
+    emit execute_command_in_terminal_signal (QString::fromStdString (command));
+  }
 
-  // Wait while the user is responding to message box.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+  void octave_qt_link::do_set_workspace (bool top_level, bool debug,
+                                         const symbol_scope& scope,
+                                         bool update_variable_editor)
+  {
+    if (! top_level && ! debug)
+      return;
 
-  // The GUI has sent a signal and the thread has been awakened.
+    emit set_workspace_signal (top_level, debug, scope);
 
-  QString result = uiwidget_creator.get_dialog_button ();
+    if (update_variable_editor)
+      emit refresh_variable_editor_signal ();
+  }
 
-  uiwidget_creator.mutex.unlock ();
+  void octave_qt_link::do_clear_workspace (void)
+  {
+    emit clear_workspace_signal ();
+  }
 
-  if (result == cd_txt)
-    retval = 1;
-  else if (result == addpath_txt)
-    retval = 2;
+  void octave_qt_link::do_set_history (const string_vector& hist)
+  {
+    QStringList qt_hist;
 
-  return retval;
-}
+    for (octave_idx_type i = 0; i < hist.numel (); i++)
+      qt_hist.append (QString::fromStdString (hist[i]));
 
-void
-octave_qt_link::do_change_directory (const std::string& dir)
-{
-  _current_directory = QString::fromStdString (dir);
-  _new_dir = true;
-}
+    emit set_history_signal (qt_hist);
+  }
 
-void
-octave_qt_link::update_directory ()
-{
-  emit change_directory_signal (_current_directory);
-  _new_dir = false;
-}
+  void octave_qt_link::do_append_history (const std::string& hist_entry)
+  {
+    emit append_history_signal (QString::fromStdString (hist_entry));
+  }
 
-void
-octave_qt_link::do_execute_command_in_terminal (const std::string& command)
-{
-  emit execute_command_in_terminal_signal (QString::fromStdString (command));
-}
+  void octave_qt_link::do_clear_history (void)
+  {
+    emit clear_history_signal ();
+  }
 
-void
-octave_qt_link::do_set_workspace (bool top_level, bool debug,
-                                  const std::list<workspace_element>& ws)
-{
-  if (! top_level && ! debug)
-    return;
+  void octave_qt_link::do_pre_input_event (void)
+  { }
 
-  if (_new_dir)
-    update_directory ();
+  void octave_qt_link::do_post_input_event (void)
+  { }
 
-  QString scopes;
-  QStringList symbols;
-  QStringList class_names;
-  QStringList dimensions;
-  QStringList values;
-  QIntList complex_flags;
+  void octave_qt_link::do_enter_debugger_event (const std::string& file,
+                                                int line)
+  {
+    do_insert_debugger_pointer (file, line);
 
-  for (std::list<workspace_element>::const_iterator it = ws.begin ();
-       it != ws.end (); it++)
-    {
-      scopes.append (it->scope ());
-      symbols.append (QString::fromStdString (it->symbol ()));
-      class_names.append (QString::fromStdString (it->class_name ()));
-      dimensions.append (QString::fromStdString (it->dimension ()));
-      values.append (QString::fromStdString (it->value ()));
-      complex_flags.append (it->complex_flag ());
-    }
+    emit enter_debugger_signal ();
+  }
 
-  emit set_workspace_signal (top_level, debug, scopes, symbols, class_names,
-                             dimensions, values, complex_flags);
-}
+  void octave_qt_link::do_execute_in_debugger_event (const std::string& file,
+                                                     int line)
+  {
+    do_delete_debugger_pointer (file, line);
+  }
 
-void
-octave_qt_link::do_clear_workspace (void)
-{
-  emit clear_workspace_signal ();
-}
+  void octave_qt_link::do_exit_debugger_event (void)
+  {
+    emit exit_debugger_signal ();
+  }
 
-void
-octave_qt_link::do_set_history (const string_vector& hist)
-{
-  QStringList qt_hist;
+  // Display (if @insert true) or remove the appropriate symbol for a breakpoint
+  // in @file at @line with condition @cond.
+  void octave_qt_link::do_update_breakpoint (bool insert,
+                                             const std::string& file,
+                                             int line,
+                                             const std::string& cond)
+  {
+    emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
+                                          line, QString::fromStdString (cond));
+  }
 
-  for (octave_idx_type i = 0; i < hist.numel (); i++)
-    qt_hist.append (QString::fromStdString (hist[i]));
+  void octave_qt_link::do_set_default_prompts (std::string& ps1,
+                                               std::string& ps2,
+                                               std::string& ps4)
+  {
+    if (m_app_context->start_gui_p ())
+      {
+        ps1 = ">> ";
+        ps2 = "";
+        ps4 = "";
+      }
+  }
 
-  emit set_history_signal (qt_hist);
-}
+  bool octave_qt_link::file_in_path (const std::string& file,
+                                     const std::string& dir)
+  {
 
-void
-octave_qt_link::do_append_history (const std::string& hist_entry)
-{
-  emit append_history_signal (QString::fromStdString (hist_entry));
-}
+    bool ok = false;
+    bool addpath_option = true;
 
-void
-octave_qt_link::do_clear_history (void)
-{
-  emit clear_history_signal ();
-}
+    std::string curr_dir = sys::env::get_current_directory ();
 
-void
-octave_qt_link::do_pre_input_event (void)
-{ }
+    if (same_file (curr_dir, dir))
+      ok = true;
+    else
+      {
+        load_path& lp = __get_load_path__ ("octave_qt_link::file_in_path");
 
-void
-octave_qt_link::do_post_input_event (void)
-{ }
+        bool dir_in_load_path = lp.contains_canonical (dir);
 
-void
-octave_qt_link::do_enter_debugger_event (const std::string& file, int line)
-{
-  do_insert_debugger_pointer (file, line);
+        // get base name, allowing "@class/method.m" (bug #41514)
+        std::string base_file = (file.length () > dir.length ())
+          ? file.substr (dir.length () + 1)
+          : sys::env::base_pathname (file);
 
-  emit enter_debugger_signal ();
-}
+        std::string lp_file = lp.find_file (base_file);
 
-void
-octave_qt_link::do_execute_in_debugger_event (const std::string& file, int line)
-{
-  do_delete_debugger_pointer (file, line);
-}
+        if (dir_in_load_path)
+          {
+            if (same_file (lp_file, file))
+              ok = true;
+          }
+        else
+          {
+            // File directory is not in path.  Is the file in the path in
+            // the current directory?  If so, then changing the current
+            // directory will be needed.  Adding directory to path is
+            // not enough because the file in the current directory would
+            // still be found.
 
-void
-octave_qt_link::do_exit_debugger_event (void)
-{
-  emit exit_debugger_signal ();
-}
+            if (same_file (lp_file, base_file))
+              {
+                if (same_file (curr_dir, dir))
+                  ok = true;
+                else
+                  addpath_option = false;
+              }
+          }
+      }
 
-// Display (if @insert true) or remove the appropriate symbol for a breakpoint
-// in @file at @line with condition @cond.
-void
-octave_qt_link::do_update_breakpoint (bool insert,
-                                      const std::string& file, int line,
-                                      const std::string& cond)
-{
-  emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
-                                        line, QString::fromStdString (cond));
-}
-
-void
-octave_qt_link::do_set_default_prompts (std::string& ps1, std::string& ps2,
-                                        std::string& ps4)
-{
-  if (m_app_context->start_gui_p ())
-    {
-      ps1 = ">> ";
-      ps2 = "";
-      ps4 = "";
-    }
-}
-
-void
-octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
-{
-  emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
-}
-
-void
-octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
-{
-  emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
-}
-
-bool
-octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
-{
-
-  bool ok = false;
-  bool addpath_option = true;
-
-  std::string curr_dir = octave::sys::env::get_current_directory ();
-
-  if (same_file (curr_dir, dir))
-    ok = true;
-  else
-    {
-      bool dir_in_load_path = load_path::contains_canonical (dir);
-
-      // get base name, allowing "@class/method.m" (bug #41514)
-      std::string base_file = (file.length () > dir.length ())
-                              ? file.substr (dir.length () + 1)
-                              : octave::sys::env::base_pathname (file);
-
-      std::string lp_file = load_path::find_file (base_file);
-
-      if (dir_in_load_path)
-        {
-          if (same_file (lp_file, file))
+    if (! ok)
+      {
+        int action = debug_cd_or_addpath_error (file, dir, addpath_option);
+        switch (action)
+          {
+          case 1:
+            Fcd (ovl (dir));
             ok = true;
-        }
-      else
-        {
-          // File directory is not in path.  Is the file in the path in
-          // the current directory?  If so, then changing the current
-          // directory will be needed.  Adding directory to path is
-          // not enough because the file in the current directory would
-          // still be found.
+            break;
 
-          if (same_file (lp_file, base_file))
+          case 2:
             {
-              if (same_file (curr_dir, dir))
-                ok = true;
-              else
-                addpath_option = false;
+              load_path& lp = __get_load_path__ ("octave_qt_link::file_in_path");
+
+              lp.prepend (dir);
+              ok = true;
             }
-        }
-    }
+            break;
 
-  if (! ok)
-    {
-      int action = debug_cd_or_addpath_error (file, dir, addpath_option);
-      switch (action)
-        {
-        case 1:
-          Fcd (ovl (dir));
-          ok = true;
-          break;
+          default:
+            break;
+          }
+      }
 
-        case 2:
-          load_path::prepend (dir);
-          ok = true;
-          break;
+    return ok;
+  }
 
-        default:
-          break;
-        }
-    }
+  void octave_qt_link::do_show_preferences (void)
+  {
+    emit show_preferences_signal ();
+  }
 
-  return ok;
-}
+  void octave_qt_link::do_show_doc (const std::string& file)
+  {
+    emit show_doc_signal (QString::fromStdString (file));
+  }
 
-void
-octave_qt_link::do_show_preferences ()
-{
-  emit show_preferences_signal ();
-}
+  void octave_qt_link::do_edit_variable (const std::string& expr,
+                                         const octave_value& val)
+  {
+    emit edit_variable_signal (QString::fromStdString (expr), val);
+  }
 
-void
-octave_qt_link::do_show_doc (const std::string& file)
-{
-  emit show_doc_signal (QString::fromStdString (file));
-}
+  void octave_qt_link::do_insert_debugger_pointer (const std::string& file,
+                                                   int line)
+  {
+    emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
+  }
 
-void
-octave_qt_link::terminal_interrupt (void)
-{
-  command_interpreter->interrupt ();
+  void octave_qt_link::do_delete_debugger_pointer (const std::string& file,
+                                                   int line)
+  {
+    emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
+  }
 }

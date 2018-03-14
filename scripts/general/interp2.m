@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{zi} =} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
@@ -177,22 +177,21 @@ function ZI = interp2 (varargin)
   if (any (strcmp (method, {"nearest", "linear", "pchip", "cubic"})))
 
     ## If Xi and Yi are vectors of different orientation build a grid
-    if ((rows (XI) == 1 && columns (YI) == 1)
-        || (columns (XI) == 1 && rows (YI) == 1))
+    if ((isrow (XI) && iscolumn (YI)) || (iscolumn (XI) && isrow (YI)))
       [XI, YI] = meshgrid (XI, YI);
     elseif (! size_equal (XI, YI))
       error ("interp2: XI and YI must be matrices of equal size");
     endif
 
     ## if XI, YI are vectors, X and Y should share their orientation.
-    if (rows (XI) == 1)
+    if (isrow (XI))
       if (rows (X) != 1)
         X = X.';
       endif
       if (rows (Y) != 1)
         Y = Y.';
       endif
-    elseif (columns (XI) == 1)
+    elseif (iscolumn (XI))
       if (columns (X) != 1)
         X = X.';
       endif
@@ -343,32 +342,7 @@ endfunction
 
 function b = isgriddata (X)
   d1 = diff (X, 1, 1);
-  b = all (d1(:) == 0);
-endfunction
-
-## Compute the bicubic interpolation coefficients
-function o = bc (x)
-  x = abs (x);
-  o = zeros (size (x));
-  idx1 = (x < 1);
-  idx2 = ! idx1 & (x < 2);
-  o(idx1) = 1 - 2.*x(idx1).^2 + x(idx1).^3;
-  o(idx2) = 4 - 8.*x(idx2) + 5.*x(idx2).^2 - x(idx2).^3;
-endfunction
-
-## This version of sub2ind behaves as if the data was symmetrically padded
-function ind = sym_sub2ind (sz, Y, X)
-  Y(Y < 1) = 1 - Y(Y < 1);
-  while (any (Y(:) > 2*sz(1)))
-    Y(Y > 2*sz(1)) = round (Y(Y > 2*sz(1)) / 2);
-  endwhile
-  Y(Y > sz(1)) = 1 + 2*sz(1) - Y(Y > sz(1));
-  X(X < 1) = 1 - X(X < 1);
-  while (any (X(:) > 2*sz(2)))
-    X(X > 2 * sz(2)) = round (X(X > 2*sz(2)) / 2);
-  endwhile
-  X(X > sz(2)) = 1 + 2*sz(2) - X(X > sz(2));
-  ind = sub2ind (sz, Y, X);
+  b = ! any (d1(:) != 0);
 endfunction
 
 
@@ -545,11 +519,11 @@ endfunction
 %! assert (interp2 (X, 2.5, 2.5, "nearest"), 3);
 
 ## re-order monotonically decreasing
-%!assert <41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
-%!assert <41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
+%!assert <*41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
+%!assert <*41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
 
 ## Linear interpretation with vector XI doesn't lead to matrix output
-%!assert <49506> (interp2 ([2 3], [2 3 4], [1 2; 3 4; 5 6], [2 3], 3, "linear"), [3 4])
+%!assert <*49506> (interp2 ([2 3], [2 3 4], [1 2; 3 4; 5 6], [2 3], 3, "linear"), [3 4])
 
 %!shared z, zout, tol
 %! z = [1 3 5; 3 5 7; 5 7 9];

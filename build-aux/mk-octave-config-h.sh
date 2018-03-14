@@ -4,19 +4,19 @@
 #
 # This file is part of Octave.
 #
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at
-# your option) any later version.
+# Octave is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
+# Octave is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
-# <http://www.gnu.org/licenses/>.
+# <https://www.gnu.org/licenses/>.
 
 # Generate a header file that provides the public symbols from Octave's
 # autoconf-generated config.h file.  See the notes at the top of the
@@ -39,9 +39,9 @@ Copyright (C) 2016 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
+Octave is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
+Free Software Foundation, either version 3 of the License, or (at your
 option) any later version.
 
 Octave is distributed in the hope that it will be useful, but WITHOUT
@@ -51,7 +51,7 @@ for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -102,9 +102,9 @@ since all of Octave's header files already include it.
 
 #  if defined (__GNUC__)
 #    if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
-#      define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))
 #    else
-#      define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__))
+#      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
 #    endif
 #    define OCTAVE_NORETURN __attribute__ ((__noreturn__))
 #    define OCTAVE_UNUSED __attribute__ ((__unused__))
@@ -113,13 +113,23 @@ since all of Octave's header files already include it.
 #    define HAVE_OCTAVE_NORETURN_ATTR 1
 #    define HAVE_OCTAVE_UNUSED_ATTR 1
 #  else
-#    define OCTAVE_DEPRECATED(msg)
+#    define OCTAVE_DEPRECATED(ver, msg)
 #    define OCTAVE_NORETURN
 #    define OCTAVE_UNUSED
 
 /* #    undef HAVE_OCTAVE_DEPRECATED_ATTR */
 /* #    undef HAVE_OCTAVE_NORETURN_ATTR */
 /* #    undef HAVE_OCTAVE_UNUSED_ATTR */
+#  endif
+
+#  if ! defined (OCTAVE_FALLTHROUGH)
+#    if defined (__cplusplus) && __cplusplus > 201402L
+#      define OCTAVE_FALLTHROUGH [[fallthrough]]
+#    elif defined (__GNUC__) && __GNUC__ < 7
+#      define OCTAVE_FALLTHROUGH ((void) 0)
+#    else
+#      define OCTAVE_FALLTHROUGH __attribute__ ((__fallthrough__))
+#    endif
 #  endif
 
 #  define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
@@ -153,9 +163,24 @@ if test -z "$octave_idx_type"; then
   exit 1
 fi
 
+octave_f77_int_type="`$SED -n 's/#define OCTAVE_F77_INT_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"
+
+if test -z "$octave_f77_int_type"; then
+  echo "mk-octave-config-h.sh: failed to find OCTAVE_F77_INT_TYPE in $config_h_file" 1>&2
+  exit 1
+fi
+
 cat << EOF
 
 typedef $octave_idx_type octave_idx_type;
+typedef $octave_f77_int_type octave_f77_int_type;
+
+#  define OCTAVE_HAVE_F77_INT_TYPE 1
+
+
+#  if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
+#    define OCTAVE_THREAD_LOCAL
+#  endif
 
 EOF
 
@@ -175,6 +200,8 @@ $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_FAST_INT_OPS.*$\)/#  \1/p' $config_h
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_IDX_TYPE.*$\)/#  \1/p' $config_h_file
 
 echo ""
 

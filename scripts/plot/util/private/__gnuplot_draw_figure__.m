@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __gnuplot_draw_figure__ (@var{h}, @var{plot_stream}, @var{enhanced})
@@ -38,7 +38,7 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
       fputs (plot_stream, "set size 1, 1\n");
       bg = get (h, "color");
       if (isnumeric (bg))
-        fprintf (plot_stream, "if (GPVAL_TERM eq \"qt\") set obj 1 rectangle from screen 0,0 to screen 1,1 behind fc rgb \"#%02x%02x%02x\" fs solid noborder;\n", round (255 * bg));
+        fprintf (plot_stream, ['if (GPVAL_TERM eq "qt") set obj 1 rectangle from screen 0,0 to screen 1,1 behind fc rgb "#%02x%02x%02x" fs solid noborder;' "\n"], round (255 * bg));
         bg_is_set = true;
       else
         bg_is_set = false;
@@ -49,14 +49,14 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
         type = get (kids(i), "type");
         switch (type)
           case "axes"
-            if (strcmpi (get (kids (i), "tag"), "legend"))
+            if (strcmp (get (kids(i), "tag"), "legend"))
               ## This is so ugly.  If there was a way of getting
               ## gnuplot to give us the text extents of strings
               ## then we could get rid of this mess.
-              lh = getfield (get (kids(i), "userdata"), "handle");
+              lh = getappdata (kids(i), "__axes_handle__");
               if (isscalar (lh))
                 ## We have a legend with a single parent.  It'll be handled
-                ## below as a gnuplot key to the axis it corresponds to
+                ## below as a gnuplot key to the axis it corresponds to.
                 continue;
               else
                 ca = lh(1);
@@ -91,8 +91,8 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                       if (! strcmp (get (hobj(k), "type"), "line"))
                         continue;
                       endif
-                      if (get (hobj(j), "userdata")
-                          != get (hobj(k), "userdata"))
+                      if (getappdata (hobj(j), "handle")
+                          != getappdata (hobj(k), "handle"))
                         continue;
                       endif
                       if (! strcmp (get (hobj(k), "linestyle"), "none"))
@@ -114,7 +114,7 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                     endif
                   endfor
                   if (bg_is_set)
-                    fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", round (255 * (1 - bg)));
+                    fprintf (plot_stream, ['set border linecolor rgb "#%02x%02x%02x"' "\n"], round (255 * (1 - bg)));
                   endif
                   __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced,
                                     bg_is_set, false, hlgnd);
@@ -140,7 +140,7 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                 set (kids(i), "units", "normalized");
                 fg = get (kids(i), "color");
                 if (isnumeric (fg) && strcmp (get (kids(i), "visible"), "on"))
-                  fprintf (plot_stream, "set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb \"#%02x%02x%02x\" fs solid noborder\n", round (255 * fg));
+                  fprintf (plot_stream, ['set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb "#%02x%02x%02x" fs solid noborder' "\n"], round (255 * fg));
                   fg_is_set = true;
                   fg_was_set = true;
                 elseif (fg_was_set)
@@ -151,26 +151,18 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                   fg_is_set = false;
                 endif
                 if (bg_is_set)
-                  fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", round (255 * (1 - bg)));
+                  fprintf (plot_stream, ['set border linecolor rgb "#%02x%02x%02x"' "\n"], round (255 * (1 - bg)));
                 endif
                 ## Find if this axes has an associated legend axes and pass it
                 ## to __gnuplot_draw_axes__
-                hlegend = [];
-                fkids = get (h, "children");
-                for j = 1 : numel (fkids)
-                  if (ishandle (fkids (j))
-                      && strcmp (get (fkids (j), "type"), "axes")
-                      && (strcmp (get (fkids (j), "tag"), "legend")))
-                    udata = get (fkids (j), "userdata");
-                    if (isscalar (udata.handle)
-                        && ! isempty (intersect (udata.handle, kids (i))))
-                      hlegend = get (fkids (j));
-                      break;
-                    endif
-                  endif
-                endfor
+                try
+                  hlegend = get (kids(i), "__legend_handle__");
+                  hlegend = get (hlegend);
+                catch
+                  hlegend = [];
+                end_try_catch
                 __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced,
-                                  bg_is_set, fg_is_set, hlegend);
+                                       bg_is_set, fg_is_set, hlegend);
               unwind_protect_cleanup
                 ## Return axes "units" and "position" back to
                 ## their original values.

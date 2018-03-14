@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,93 +25,98 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-class tree_walker;
-
 #include "pt-cmd.h"
-#include "symtab.h"
+#include "pt-walk.h"
 
-// Break.
-
-class
-tree_break_command : public tree_command
+namespace octave
 {
-public:
+  // Break.
 
-  tree_break_command (int l = -1, int c = -1)
-    : tree_command (l, c) { }
+  class tree_break_command : public tree_command
+  {
+  public:
 
-  ~tree_break_command (void) { }
+    tree_break_command (int l = -1, int c = -1)
+      : tree_command (l, c) { }
 
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
+    // No copying!
 
-  void accept (tree_walker& tw);
+    tree_break_command (const tree_break_command&) = delete;
 
-  static int breaking;
+    tree_break_command& operator = (const tree_break_command&) = delete;
 
-private:
+    ~tree_break_command (void) = default;
 
-  // No copying!
+    void accept (tree_walker& tw)
+    {
+      tw.visit_break_command (*this);
+    }
 
-  tree_break_command (const tree_break_command&);
+    static int breaking;
+  };
 
-  tree_break_command& operator = (const tree_break_command&);
-};
+  // Continue.
 
-// Continue.
+  class tree_continue_command : public tree_command
+  {
+  public:
 
-class
-tree_continue_command : public tree_command
-{
-public:
+    tree_continue_command (int l = -1, int c = -1)
+      : tree_command (l, c) { }
 
-  tree_continue_command (int l = -1, int c = -1)
-    : tree_command (l, c) { }
+    // No copying!
 
-  ~tree_continue_command (void) { }
+    tree_continue_command (const tree_continue_command&) = delete;
 
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
+    tree_continue_command& operator = (const tree_continue_command&) = delete;
 
-  void accept (tree_walker& tw);
+    ~tree_continue_command (void) = default;
 
-  static int continuing;
+    void accept (tree_walker& tw)
+    {
+      tw.visit_continue_command (*this);
+    }
 
-private:
+    static int continuing;
+  };
 
-  // No copying!
+  // Return.
 
-  tree_continue_command (const tree_continue_command&);
+  class tree_return_command : public tree_command
+  {
+  public:
 
-  tree_continue_command& operator = (const tree_continue_command&);
-};
+    tree_return_command (int l = -1, int c = -1)
+      : tree_command (l, c) { }
 
-// Return.
+    // No copying!
 
-class
-tree_return_command : public tree_command
-{
-public:
+    tree_return_command (const tree_return_command&) = delete;
 
-  tree_return_command (int l = -1, int c = -1)
-    : tree_command (l, c) { }
+    tree_return_command& operator = (const tree_return_command&) = delete;
 
-  ~tree_return_command (void) { }
+    ~tree_return_command (void) = default;
 
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
+    void accept (tree_walker& tw)
+    {
+      tw.visit_return_command (*this);
+    }
 
-  void accept (tree_walker& tw);
+    static int returning;
+  };
+}
 
-  static int returning;
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-private:
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_break_command' instead")
+typedef octave::tree_break_command tree_break_command;
 
-  // No copying!
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_continue_command' instead")
+typedef octave::tree_continue_command tree_continue_command;
 
-  tree_return_command (const tree_return_command&);
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_return_command' instead")
+typedef octave::tree_return_command tree_return_command;
 
-  tree_return_command& operator = (const tree_return_command&);
-};
+#endif
 
 #endif

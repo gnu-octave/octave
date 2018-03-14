@@ -4,19 +4,19 @@ Copyright (C) 2003-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,10 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <string>
 
-#include "dColVector.h"
+#include "Array.h"
 #include "dNDArray.h"
 #include "fNDArray.h"
 #include "lo-ieee.h"
+#include "uint32NDArray.h"
+
+//class dim_vector;
 
 class
 OCTAVE_API
@@ -43,7 +46,7 @@ protected:
 
 public:
 
-  ~octave_rand (void) { }
+  ~octave_rand (void) = default;
 
   static bool instance_ok (void);
 
@@ -69,13 +72,13 @@ public:
   }
 
   // Return the current state.
-  static ColumnVector state (const std::string& d = "")
+  static uint32NDArray state (const std::string& d = "")
   {
-    return instance_ok () ? instance->do_state (d) : ColumnVector ();
+    return instance_ok () ? instance->do_state (d) : uint32NDArray ();
   }
 
   // Set the current state/
-  static void state (const ColumnVector &s,
+  static void state (const uint32NDArray& s,
                      const std::string& d = "")
   {
     if (instance_ok ())
@@ -178,7 +181,7 @@ private:
 
   static octave_rand *instance;
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
   enum
   {
@@ -198,7 +201,7 @@ private:
   bool use_old_generators;
 
   // Saved MT states.
-  std::map<int, ColumnVector> rand_states;
+  std::map<int, uint32NDArray> rand_states;
 
   // Return the current seed.
   double do_seed (void);
@@ -210,10 +213,10 @@ private:
   void do_reset ();
 
   // Return the current state.
-  ColumnVector do_state (const std::string& d);
+  uint32NDArray do_state (const std::string& d);
 
   // Set the current state/
-  void do_state (const ColumnVector &s, const std::string& d);
+  void do_state (const uint32NDArray& s, const std::string& d);
 
   // Reset the current state/
   void do_reset (const std::string& d);
@@ -261,13 +264,13 @@ private:
 
   void initialize_mersenne_twister (void);
 
-  ColumnVector get_internal_state (void);
+  uint32NDArray get_internal_state (void);
 
   void save_state (void);
 
   int get_dist_id (const std::string& d);
 
-  void set_internal_state (const ColumnVector& s);
+  void set_internal_state (const uint32NDArray& s);
 
   void switch_to_generator (int dist);
 

@@ -4,19 +4,19 @@ Copyright (C) 2009-2017 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -76,8 +76,8 @@ be specified with subscripts for the row, column, page, etc.  The functions
 @code{ind2sub} and @code{sub2ind} interconvert between the two forms.
 
 The linear index traverses dimension 1 (rows), then dimension 2 (columns), then
-dimension 3 (pages), etc. until it has numbered all of the elements.  Consider
-the following 3-by-3 matrices:
+dimension 3 (pages), etc.@: until it has numbered all of the elements.
+Consider the following 3-by-3 matrices:
 
 @example
 @group
@@ -116,7 +116,7 @@ ind = sub2ind ([3, 3], s1, s2)
 
   for (int j = 0; j < nargin - 1; j++)
     {
-      if (! args(j+1).is_numeric_type ())
+      if (! args(j+1).isnumeric ())
         error ("sub2ind: subscripts must be numeric");
 
       try
@@ -200,8 +200,8 @@ be specified with subscripts for the row, column, page, etc.  The functions
 @code{ind2sub} and @code{sub2ind} interconvert between the two forms.
 
 The linear index traverses dimension 1 (rows), then dimension 2 (columns), then
-dimension 3 (pages), etc. until it has numbered all of the elements.  Consider
-the following 3-by-3 matrices:
+dimension 3 (pages), etc.@: until it has numbered all of the elements.
+Consider the following 3-by-3 matrices:
 
 @example
 @group

@@ -1,4 +1,3 @@
-// ColumnVector manipulations.
 /*
 
 Copyright (C) 1994-2017 John W. Eaton
@@ -6,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -215,7 +214,7 @@ ComplexColumnVector::abs (void) const
 ComplexColumnVector
 conj (const ComplexColumnVector& a)
 {
-  return do_mx_unary_map<Complex, Complex, std::conj<double> > (a);
+  return do_mx_unary_map<Complex, Complex, std::conj<double>> (a);
 }
 
 // resize is the destructive equivalent for this one
@@ -300,10 +299,10 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
 {
   ComplexColumnVector retval;
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -344,10 +343,10 @@ operator * (const Matrix& m, const ComplexColumnVector& a)
 ComplexColumnVector
 operator * (const DiagMatrix& m, const ComplexColumnVector& a)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -369,10 +368,10 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
 ComplexColumnVector
 operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -394,10 +393,10 @@ operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
 ComplexColumnVector
 operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);

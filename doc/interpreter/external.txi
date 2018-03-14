@@ -4,19 +4,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node External Code Interface
 @appendix External Code Interface
@@ -850,7 +850,7 @@ changing capacity.
 @subsubsection Using Sparse Matrices in Oct-Files
 
 Most of the same operators and functions for sparse matrices that are available
-from the Octave interpeter are also available within oct-files.  The basic
+from the Octave interpreter are also available within oct-files.  The basic
 means of extracting a sparse matrix from an @code{octave_value}, and returning
 it as an @code{octave_value}, can be seen in the following example.
 
@@ -1454,7 +1454,7 @@ The example above uses the functions @code{mxGetDimensions},
 @code{mxGetNumberOfElements}, and @code{mxGetNumberOfDimensions} to work with
 the dimensions of multi-dimensional arrays.  The functions @code{mxGetM}, and
 @code{mxGetN} are also available to find the number of rows and columns in a
-2-D matrix (MxN matrix).
+2-D matrix (@nospell{MxN} matrix).
 
 @node Character Strings in Mex-Files
 @subsection Character Strings in Mex-Files
@@ -1978,6 +1978,7 @@ class (b)
 The example above can be carried out using only Java objects:
 
 @example
+@group
 a = javaObject ("java.lang.Double", 1.001);
 b = javaObject ("java.math.BigDecimal", a);
 
@@ -1989,6 +1990,7 @@ isjava (b)
 @result{} ans = 1
 class (b)
 @result{} ans = java.math.BigDecimal
+@end group
 @end example
 
 One can see, that even a @code{java.lang.Double} is not converted to an Octave

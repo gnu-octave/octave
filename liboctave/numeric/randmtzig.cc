@@ -4,19 +4,19 @@ Copyright (C) 2006-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -140,9 +140,6 @@ along with Octave; see the file COPYING.  If not, see
    float oct_float_rande (void)       returns N-bit standard exponential
 
    === Array generators ===
-   void oct_fill_randi32 (octave_idx_type, uint32_t [])
-   void oct_fill_randi64 (octave_idx_type, uint64_t [])
-
    void oct_fill_randu (octave_idx_type, double [])
    void oct_fill_randn (octave_idx_type, double [])
    void oct_fill_rande (octave_idx_type, double [])
@@ -156,9 +153,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
 #include <cstdio>
 
-#include "lo-math.h"
+#include <algorithm>
+
 #include "oct-time.h"
 #include "randmtzig.h"
 
@@ -189,7 +188,7 @@ static int inittf = 1;
 
 /* initializes state[MT_N] with a seed */
 void
-oct_init_by_int (uint32_t s)
+oct_init_by_int (const uint32_t s)
 {
   int j;
   state[0] = s & 0xffffffffUL;
@@ -210,7 +209,7 @@ oct_init_by_int (uint32_t s)
 /* init_key is the array for initializing keys */
 /* key_length is its length */
 void
-oct_init_by_array (uint32_t *init_key, int key_length)
+oct_init_by_array (const uint32_t *init_key, const int key_length)
 {
   int i, j, k;
   oct_init_by_int (19650218UL);
@@ -257,7 +256,7 @@ oct_init_by_entropy (void)
   int n = 0;
 
   /* Look for entropy in /dev/urandom */
-  FILE* urandom = std::fopen ("/dev/urandom", "rb");
+  FILE *urandom = std::fopen ("/dev/urandom", "rb");
   if (urandom)
     {
       while (n < MT_N)
@@ -289,11 +288,9 @@ oct_init_by_entropy (void)
 }
 
 void
-oct_set_state (uint32_t *save)
+oct_set_state (const uint32_t *save)
 {
-  int i;
-  for (i = 0; i < MT_N; i++)
-    state[i] = save[i];
+  std::copy_n (save, MT_N, state);
   left = save[MT_N];
   next = state + (MT_N - left + 1);
 }
@@ -301,9 +298,7 @@ oct_set_state (uint32_t *save)
 void
 oct_get_state (uint32_t *save)
 {
-  int i;
-  for (i = 0; i < MT_N; i++)
-    save[i] = state[i];
+  std::copy_n (state, MT_N, save);
   save[MT_N] = left;
 }
 
@@ -504,7 +499,7 @@ create_ziggurat_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + fi[i+1]));
+      x = std::sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + fi[i+1]));
       ki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       wi[i] = x / NMANTISSA;
       fi[i] = exp (-0.5 * x * x);
@@ -694,7 +689,7 @@ create_ziggurat_float_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + ffi[i+1]));
+      x = std::sqrt (-2. * std::log (NOR_SECTION_AREA / x1 + ffi[i+1]));
       fki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       fwi[i] = x / NMANTISSA;
       ffi[i] = exp (-0.5 * x * x);
@@ -820,47 +815,35 @@ oct_float_rande (void)
 void
 oct_fill_randu (octave_idx_type n, double *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_randu ();
+  std::generate_n (p, n, oct_randu);
 }
 
 void
 oct_fill_randn (octave_idx_type n, double *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_randn ();
+  std::generate_n (p, n, oct_randn);
 }
 
 void
 oct_fill_rande (octave_idx_type n, double *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_rande ();
+  std::generate_n (p, n, oct_rande);
 }
 
 void
 oct_fill_float_randu (octave_idx_type n, float *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_float_randu ();
+  std::generate_n (p, n, oct_float_randu);
 }
 
 void
 oct_fill_float_randn (octave_idx_type n, float *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_float_randn ();
+  std::generate_n (p, n, oct_float_randn);
 }
 
 void
 oct_fill_float_rande (octave_idx_type n, float *p)
 {
-  octave_idx_type i;
-  for (i = 0; i < n; i++)
-    p[i] = oct_float_rande ();
+  std::generate_n (p, n, oct_float_rande);
 }

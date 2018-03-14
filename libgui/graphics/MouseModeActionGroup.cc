@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
-    : QObject (xparent), m_current (0)
+  MouseModeActionGroup::MouseModeActionGroup (QObject *xparent)
+    : QObject (xparent), m_current (nullptr)
   {
     m_actions.append (new QAction (QIcon (":/images/rotate.png"),
                                    tr ("Rotate"), this));
@@ -53,11 +53,11 @@ namespace QtHandles
     m_actions.append (new QAction (QIcon (":/images/select.png"),
                                    tr ("Select"), this));
 
-    foreach (QAction* a, m_actions)
-    {
-      a->setCheckable (true);
-      connect (a, SIGNAL (toggled (bool)), this, SLOT (actionToggled (bool)));
-    }
+    foreach (QAction *a, m_actions)
+      {
+        a->setCheckable (true);
+        connect (a, SIGNAL (toggled (bool)), this, SLOT (actionToggled (bool)));
+      }
   }
 
   MouseModeActionGroup::~MouseModeActionGroup (void)
@@ -70,13 +70,13 @@ namespace QtHandles
       {
         if (sender () == m_current)
           {
-            m_current = 0;
+            m_current = nullptr;
             emit modeChanged (NoMode);
           }
       }
     else
       {
-        int i = m_actions.indexOf (qobject_cast<QAction*> (sender ()));
+        int i = m_actions.indexOf (qobject_cast<QAction *> (sender ()));
 
         if (i >= 0)
           {

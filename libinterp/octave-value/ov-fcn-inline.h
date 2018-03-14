@@ -4,19 +4,19 @@ Copyright (C) 2004-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
-#include "symtab.h"
 #include "ov-fcn-handle.h"
 
 // Inline functions.
@@ -52,16 +51,16 @@ public:
   octave_fcn_inline (const octave_fcn_inline& fi)
     : octave_fcn_handle (fi), iftext (fi.iftext), ifargs (fi.ifargs) { }
 
-  ~octave_fcn_inline (void) { }
+  ~octave_fcn_inline (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_fcn_inline (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_fcn_inline (); }
 
   bool is_inline_function (void) const { return true; }
 
-  octave_fcn_inline *fcn_inline_value (bool = false) { return this; }
+  octave_fcn_inline * fcn_inline_value (bool = false) { return this; }
 
   std::string fcn_text (void) const { return iftext; }
 

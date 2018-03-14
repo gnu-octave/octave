@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{v} =} datevec (@var{date})
@@ -250,38 +250,52 @@ endfunction
 
 function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm, fd, fh, fmi, fs)
 
-  idx = strfind (f, "FFF");
-  if (! isempty (idx))
-    ## Kludge to handle FFF millisecond format since strptime does not.
+  ## Local time zone is irrelevant, and potentially dangerous, when using
+  ## strptime to simply convert a string into a broken down struct tm.
+  ## Set and restore TZ so time is parsed exactly as-is. See bug #36954.
+  TZ_orig = getenv ("TZ");
+  unwind_protect
+    setenv ("TZ", "UTC0");
 
-    ## Find location of FFF in ds.
-    ## Might not match idx because of things like yyyy -> %y.
-    [~, nc] = strptime (ds, f(1:idx-1));
+    idx = strfind (f, "FFF");
+    if (! isempty (idx))
+      ## Kludge to handle FFF millisecond format since strptime does not.
 
-    msec = ds(nc:min (nc+2,end)); # pull 3-digit fractional seconds.
-    msec_idx = find (! isdigit (msec), 1);
+      ## Find location of FFF in ds.
+      ## Might not match idx because of things like yyyy -> %y.
+      [~, nc] = strptime (ds, f(1:idx-1));
 
-    if (! isempty (msec_idx))  # non-digits in msec
-      msec = msec(1:msec_idx-1);
-      msec(end+1:3) = "0";     # pad msec with trailing zeros
-      ds = [ds(1:(nc-1)), msec, ds((nc-1)+msec_idx:end)];  # zero pad ds
-    elseif (numel (msec) < 3)  # less than three digits in msec
-      m_len = numel (msec);
-      msec(end+1:3) = "0";     # pad msec with trailing zeros
-      ds = [ds(1:(nc-1)), msec, ds(nc+m_len:end)];  # zero pad ds as well
-    endif
+      msec = ds(nc:min (nc+2,end)); # pull 3-digit fractional seconds.
+      msec_idx = find (! isdigit (msec), 1);
 
-    ## replace FFF with digits to guarantee match in strptime.
-    f(idx:idx+2) = msec;
+      if (! isempty (msec_idx))  # non-digits in msec
+        msec = msec(1:msec_idx-1);
+        msec(end+1:3) = "0";     # pad msec with trailing zeros
+        ds = [ds(1:(nc-1)), msec, ds((nc-1)+msec_idx:end)];  # zero pad ds
+      elseif (numel (msec) < 3)  # less than three digits in msec
+        m_len = numel (msec);
+        msec(end+1:3) = "0";     # pad msec with trailing zeros
+        ds = [ds(1:(nc-1)), msec, ds(nc+m_len:end)];  # zero pad ds as well
+      endif
 
-    if (nc > 0)
+      ## replace FFF with digits to guarantee match in strptime.
+      f(idx:idx+2) = msec;
+
+      if (nc > 0)
+        [tm, nc] = strptime (ds, f);
+        tm.usec = 1000 * str2double (msec);
+      endif
+
+    else
       [tm, nc] = strptime (ds, f);
-      tm.usec = 1000 * str2double (msec);
     endif
-
-  else
-    [tm, nc] = strptime (ds, f);
-  endif
+  unwind_protect_cleanup
+    if (isempty (TZ_orig))
+      unsetenv ("TZ");
+    else
+      setenv ("TZ", TZ_orig);
+    endif
+  end_unwind_protect
 
   if (nc == columns (ds) + 1)
     found = true;
@@ -362,7 +376,7 @@ endfunction
 %!        [2015,6,1,15,7,12.12])
 
 ## Test structure of return value
-%!test <42334>
+%!test <*42334>
 %! [~, ~, d] = datevec ([1 2; 3 4]);
 %! assert (d, [1 2; 3 4]);
 
@@ -373,6 +387,38 @@ endfunction
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));
 %!assert (double (datevec (int64 (datenum ([2014 6 1])))), datevec (datenum ([2014 6 1])))
 %!assert (double (datevec (int64 (datenum ([2014 6 18])))), datevec (datenum ([2014 6 18])))
+
+## Test parsing of date strings that fall within daylight saving transition
+%!testif ; isunix () <*36954>
+%! zones = { "UTC0"                                 ...
+%!           "EST+5EDT,M3.2.0/2,M11.1.0/2"          ... America/New_York
+%!           "CET-1CEST,M3.5.0/2,M10.5.0/2"         ... Europe/Berlin
+%!           "CLT+4CLST,M8.2.0/0,M5.2.0/0"          ... America/Santiago
+%!           "LHST-10:30LHDT-11,M10.1.0/2,M4.1.0/2" ... Australia/Lord_Howe
+%!           ":America/Caracas"                     ...
+%!         };
+%! TZ_orig = getenv ("TZ");
+%! unwind_protect
+%!   for i = 1:numel (zones)
+%!     setenv ("TZ", zones{i});
+%!     ## These specific times were chosen to test conversion during the loss
+%!     ## of some amount of local time at the start of daylight saving time in
+%!     ## each of the zones listed above.  We test all in each time zone to be
+%!     ## exhaustive, even though each is problematic for only one of the zones.
+%!     assert (datevec ("2017-03-12 02:15:00"), [2017  3 12 2 15 0]);
+%!     assert (datevec ("2017-03-26 02:15:00"), [2017  3 26 2 15 0]);
+%!     assert (datevec ("2017-08-13 00:15:00"), [2017  8 13 0 15 0]);
+%!     assert (datevec ("2017-10-01 02:15:00"), [2017 10  1 2 15 0]);
+%!     ## This tests a one-time loss of 30 minutes in Venezuela's local time
+%!     assert (datevec ("2016-05-01 02:40:00"), [2016  5  1 2 40 0]);
+%!   endfor
+%! unwind_protect_cleanup
+%!   if (isempty (TZ_orig))
+%!     unsetenv ("TZ");
+%!   else
+%!     setenv ("TZ", TZ_orig);
+%!   endif
+%! end_unwind_protect
 
 ## Test input validation
 %!error datevec ()

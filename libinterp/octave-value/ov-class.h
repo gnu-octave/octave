@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -37,11 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-map.h"
 #include "ov-base.h"
-#include "ov-typeinfo.h"
+
+namespace octave
+{
+  class type_info;
+}
 
 class octave_value_list;
-
-class tree_walker;
 
 // Data structures.
 
@@ -68,13 +70,13 @@ public:
     : octave_base_value (s), map (s.map), c_name (s.c_name),
       parent_list (s.parent_list), obsolete_copies (0)  { }
 
-  ~octave_class (void) { }
+  ~octave_class (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_class (*this); }
+  octave_base_value * clone (void) const { return new octave_class (*this); }
 
-  octave_base_value *unique_clone (void);
+  octave_base_value * unique_clone (void);
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   {
     return new octave_class (octave_map (map.keys ()), c_name, parent_list);
   }
@@ -95,12 +97,6 @@ public:
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
                              int nargout);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx)
-  {
-    return subsref ("(", std::list<octave_value_list> (1, idx), nargout);
-  }
 
   static octave_value numeric_conv (const Cell& val,
                                     const std::string& type);
@@ -150,9 +146,9 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  bool is_map (void) const { return false; }
+  bool isstruct (void) const { return false; }
 
-  bool is_object (void) const { return true; }
+  bool isobject (void) const { return true; }
 
   bool is_true (void) const;
 
@@ -166,9 +162,9 @@ public:
   string_vector parent_class_names (void) const
   { return string_vector (parent_list); }
 
-  octave_base_value *find_parent_class (const std::string&);
+  octave_base_value * find_parent_class (const std::string&);
 
-  octave_base_value *unique_parent_class (const std::string&);
+  octave_base_value * unique_parent_class (const std::string&);
 
   bool is_instance_of (const std::string&) const;
 
@@ -202,7 +198,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
 private:
   octave_map map;
@@ -215,7 +211,7 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (void);
+  static void register_type (octave::type_info&);
 
 private:
   static int t_id;

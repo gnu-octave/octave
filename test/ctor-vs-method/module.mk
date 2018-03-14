@@ -1,11 +1,11 @@
 ctor_vs_method_TEST_FILES = \
-  test/ctor-vs-method/@derived/derived.m \
-  test/ctor-vs-method/@derived/parent.m \
-  test/ctor-vs-method/@other/other.m \
-  test/ctor-vs-method/@other/parent.m \
-  test/ctor-vs-method/@parent/method.m \
-  test/ctor-vs-method/@parent/parent.m \
-  test/ctor-vs-method/__trace__.m \
-  test/ctor-vs-method/ctor-vs-method.tst
+  %reldir%/@derived/derived.m \
+  %reldir%/@derived/parent.m \
+  %reldir%/@other/other.m \
+  %reldir%/@other/parent.m \
+  %reldir%/@parent/method.m \
+  %reldir%/@parent/parent.m \
+  %reldir%/__trace__.m \
+  %reldir%/ctor-vs-method.tst
 
 TEST_FILES += $(ctor_vs_method_TEST_FILES)

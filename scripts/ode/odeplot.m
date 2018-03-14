@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## Author: Thomas Treichl <treichl@users.sourceforge.net>
 
@@ -75,16 +75,14 @@ function stop_solve = odeplot (t, y, flag)
 
   ## No input argument checking is done for better performance
   persistent hlines num_lines told yold;
-  persistent idx = 1;   # Don't remove.  Required for Octave parser.
 
   ## odeplot never stops the integration
   stop_solve = false;
 
   if (isempty (flag))
     ## Default case, plot and return a value
-    idx += 1;
-    told(idx,1) = t(1,1);
-    yold(:,idx) = y(:,1);
+    told = [told; t(:)];
+    yold = [yold, y];
     for i = 1:num_lines
       set (hlines(i), "xdata", told, "ydata", yold(i,:));
     endfor
@@ -95,17 +93,16 @@ function stop_solve = odeplot (t, y, flag)
   elseif (strcmp (flag, "init"))
     ## t is either the time slot [tstart tstop] or [t0, t1, ..., tn]
     ## y is the initial value vector for the ode solution
-    idx = 1;
     told = t(1);
-    yold = y(:,1);
+    yold = y(:);
     figure ();
-    hlines = plot (told, yold, "-", "marker", ".", "markersize", 9);
+    hlines = plot (told, yold, "o-");
     xlim ([t(1), t(end)]);  # Fix limits which also speeds up plotting
     num_lines = numel (hlines);
 
   elseif (strcmp (flag, "done"))
     ## Cleanup after ode solver has finished.
-    hlines = num_lines = told = yold = idx = [];
+    hlines = num_lines = told = yold = [];
 
   endif
 

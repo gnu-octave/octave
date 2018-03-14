@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 Rik Wehbring
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -136,7 +136,7 @@ namespace octave
       {
         if (dim < 5)
           {
-            buf << "(";
+            buf << '(';
 
             for (octave_idx_type i = 1; i < dim; i++)
               buf << "_,";
@@ -155,7 +155,7 @@ namespace octave
               buf << ",_";
 
             if (nd >= dim)
-              buf << ")";
+              buf << ')';
           }
         else
           buf << "...[x" << nd - dim << "]...)";
@@ -183,7 +183,7 @@ namespace octave
     }
 
     // ID of error to throw
-    const char *err_id (void) const
+    const char * err_id (void) const
     {
       return error_id_invalid_index;
     }
@@ -253,7 +253,7 @@ namespace octave
     }
 
     // ID of error to throw.
-    const char *err_id (void) const
+    const char * err_id (void) const
     {
       return error_id_index_out_of_bounds;
     }

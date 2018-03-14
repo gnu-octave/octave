@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __add_default_menu__ (@var{fig})
@@ -39,7 +39,7 @@ function __add_default_menu__ (fig)
                        "tag", "__default_menu__");
       uimenu (__f, "label", "&Save", "callback", @save_cb);
       uimenu (__f, "label", "Save &As", "callback", @save_cb);
-      uimenu (__f, "label", "&Close", "callback", "close (gcf)");
+      uimenu (__f, "label", "&Close", "callback", @close_cb);
 
     __e = uimenu (fig, "label", "&Edit", "handlevisibility", "off",
                        "tag", "__default_menu__");
@@ -67,26 +67,38 @@ function save_cb (h, e)
   if (strcmp (lbl, "&Save"))
     fname = get (hfig, "filename");
     if (isempty (fname))
-      __save_as__ (hcbo);
+      __save_as__ (hfig);
     else
-      saveas (hcbo, fname);
+      saveas (hfig, fname);
     endif
   elseif (strcmp (lbl, "Save &As"))
-    __save_as__ (hcbo);
+    __save_as__ (hfig);
   endif
 endfunction
 
 
 function __save_as__ (caller)
-  [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg",
-                                    "Supported Graphic Formats"},
-                                   "Save Figure",
-                                   [pwd, filesep, "untitled.pdf"]);
+  [filename, filedir] = uiputfile ...
+    ({"*.ofig", "Octave Figure File";
+      "*.eps;*.epsc;*.pdf;*.svg;*.ps;*.tikz", "Vector Image Formats";
+      "*.gif;*.jpg;*.png;*.tiff", "Bitmap Image Formats"},
+     "Save Figure", fullfile (pwd, "untitled.ofig"));
+
   if (filename != 0)
-    fname = [filedir filesep() filename];
+    fname = fullfile (filedir, filename);
     set (gcbf, "filename", fname);
-    saveas (caller, fname);
+    flen = numel (fname);
+    if (flen > 5 && strcmp (fname(flen-4:end), ".ofig"))
+      hgsave (caller, fname);
+    else
+      saveas (caller, fname);
+    endif
   endif
+endfunction
+
+
+function close_cb (h, e)
+  close (gcbf);
 endfunction
 
 

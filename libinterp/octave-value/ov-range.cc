@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -57,8 +57,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-// If TRUE, allow ranges with non-integer elements as array indices.
-static bool Vallow_noninteger_range_as_index = true;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range", "double");
 
@@ -80,7 +78,7 @@ octave_range::numeric_conversion_function (void) const
 octave_base_value *
 octave_range::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   switch (range.numel ())
     {
@@ -173,9 +171,7 @@ octave_range::index_vector (bool require_integers) const
     return *idx_cache;
   else
     {
-      if (require_integers
-          || ! Vallow_noninteger_range_as_index
-          || range.all_elements_are_ints ())
+      if (require_integers || range.all_elements_are_ints ())
         return set_idx_cache (idx_vector (range));
       else
         {
@@ -273,7 +269,7 @@ octave_range::is_true (void) const
 {
   bool retval = false;
 
-  if (! range.is_empty ())
+  if (! range.isempty ())
     {
       if (dims ().numel () > 1)
         warn_array_as_logical (dims ());
@@ -297,7 +293,7 @@ octave_range::is_true (void) const
           // FIXME: this is a waste of memory.
           Matrix m ((range.matrix_value ().all ()).all ());
 
-          retval = ! m.is_empty () && m(0, 0) != 0.0;
+          retval = ! m.isempty () && m(0, 0) != 0.0;
         }
     }
 
@@ -476,12 +472,12 @@ octave_range::short_disp (std::ostream& os) const
     os << "[]";
   else
     {
-      os << range.base () << ":";
+      os << range.base () << ':';
 
       if (len > 1)
         {
           if (range.inc () != 1)
-            os << range.inc () << ":";
+            os << range.inc () << ':';
 
           os << range.limit ();
         }
@@ -505,6 +501,21 @@ skip_comments (std::istream& is)
   skip_until_newline (is, false);
 }
 
+float_display_format
+octave_range::get_edit_display_format (void) const
+{
+  return make_format (range_value ());
+}
+
+std::string
+octave_range::edit_display (const float_display_format& fmt,
+                            octave_idx_type, octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, range.elem (j));
+  return buf.str ();
+}
+
 bool
 octave_range::save_ascii (std::ostream& os)
 {
@@ -520,12 +531,12 @@ octave_range::save_ascii (std::ostream& os)
     os << "# base, length, increment\n";
 
   octave_write_double (os, base);
-  os << " ";
+  os << ' ';
   if (inc != 0)
     octave_write_double (os, limit);
   else
     os << len;
-  os << " ";
+  os << ' ';
   octave_write_double (os, inc);
   os << "\n";
 
@@ -633,7 +644,7 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
 
-  space_hid = H5Screate_simple (0, dimens, 0);
+  space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0) return false;
 
   type_hid = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
@@ -658,7 +669,7 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   Range r = range_value ();
   double range_vals[3];
   range_vals[0] = r.base ();
-  range_vals[1] = r.inc () != 0 ? r.limit () : r.numel ();
+  range_vals[1] = (r.inc () != 0 ? r.limit () : r.numel ());
   range_vals[2] = r.inc ();
 
   if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
@@ -779,52 +790,3 @@ octave_range::fast_elem_extract (octave_idx_type n) const
   return (n < range.numel ()) ? octave_value (range.elem (n))
                               : octave_value ();
 }
-
-DEFUN (allow_noninteger_range_as_index, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} allow_noninteger_range_as_index ()
-@deftypefnx {} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})
-@deftypefnx {} {} allow_noninteger_range_as_index (@var{new_val}, "local")
-Query or set the internal variable that controls whether non-integer
-ranges are allowed as indices.
-
-This might be useful for @sc{matlab} compatibility; however, it is still not
-entirely compatible because @sc{matlab} treats the range expression
-differently in different contexts.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  static bool warned = false;
-  if (! warned)
-    {
-      warned = true;
-      warning_with_id ("Octave:deprecated-function",
-                       "allow_noninteger_range_as_index is obsolete and will be removed from a future version of Octave");
-    }
-
-  return SET_INTERNAL_VARIABLE (allow_noninteger_range_as_index);
-}
-
-/*
-%!test
-%! x = 0:10;
-%! warning ("off", "Octave:deprecated-function", "local");
-%! save = allow_noninteger_range_as_index ();
-%! warn_state = warning ("query", "Octave:noninteger-range-as-index");
-%! unwind_protect
-%!   allow_noninteger_range_as_index (false);
-%!   fail ("x(2.1:5)");
-%!   assert (x(2:5), 1:4);
-%!   allow_noninteger_range_as_index (true);
-%!   warning ("off", "Octave:noninteger-range-as-index");
-%!   assert (x(2.49:5), 1:3);
-%!   assert (x(2.5:5), 2:4);
-%!   assert (x(2.51:5), 2:4);
-%! unwind_protect_cleanup
-%!   allow_noninteger_range_as_index (save);
-%!   warning (warn_state.state, warn_state.identifier);
-%! end_unwind_protect
-*/

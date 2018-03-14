@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 John Donoghue
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 using namespace QtHandles;
 
-annotation_dialog::annotation_dialog (QWidget *p, const octave_value_list &pr):
+annotation_dialog::annotation_dialog (QWidget *p, const octave_value_list& pr):
   QDialog (p), ui (new Ui::annotation_dialog)
 {
   props = pr;
@@ -54,7 +54,7 @@ annotation_dialog::init ()
 
   // restore last geometry
   if (settings)
-    restoreGeometry (settings->value("annotation/geometry").toByteArray ());
+    restoreGeometry (settings->value ("annotation/geometry").toByteArray ());
 
   // connect signals
   connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
@@ -74,8 +74,8 @@ annotation_dialog::init ()
 
   // set gui element to default values
   ui->cb_fit_box_to_text->setChecked (true);
-  ui->cb_horz_align->setCurrentIndex (ui->cb_horz_align->findText("left"));
-  ui->cb_vert_align->setCurrentIndex (ui->cb_vert_align->findText("middle"));
+  ui->cb_horz_align->setCurrentIndex (ui->cb_horz_align->findText ("left"));
+  ui->cb_vert_align->setCurrentIndex (ui->cb_vert_align->findText ("middle"));
 
   // set gui elements to any values from input properties
   set_gui_props ();
@@ -147,7 +147,7 @@ annotation_dialog::get_gui_props ()
             (ui->cb_horz_align->currentIndex () == 1 ? "middle" : "bottom"));
   props.append (ovl ("verticalalignment", tmpstr));
 
-  tmpstr = ui->cb_font_name->currentText ().toStdString();
+  tmpstr = ui->cb_font_name->currentText ().toStdString ();
   props.append (ovl ("fontname", tmpstr));
 
   props.append (ovl ("fontsize", ui->sb_font_size->value ()));
@@ -176,7 +176,7 @@ annotation_dialog::set_gui_props ()
       if (name == "textbox")
         {
           Matrix position = props(2*i +1).matrix_value ();
-          int nels = position.numel();
+          int nels = position.numel ();
           if (nels >= 2)
             {
               ui->sb_x->setValue (position(0));
@@ -257,7 +257,7 @@ annotation_dialog::set_gui_props ()
 }
 
 void
-annotation_dialog::edit_string_changed (const QString &str)
+annotation_dialog::edit_string_changed (const QString& str)
 {
   ui->button_box->button (QDialogButtonBox::Ok)->setEnabled (str.length () > 0);
 }
@@ -265,12 +265,12 @@ annotation_dialog::edit_string_changed (const QString &str)
 void
 annotation_dialog::prompt_for_color ()
 {
-  QWidget *widg = dynamic_cast<QWidget*> (sender ());
+  QWidget *widg = dynamic_cast<QWidget *> (sender ());
   if (widg)
     {
       QColor color = widg->palette ().color (QPalette::Button);
 
-      color = QColorDialog::getColor(color, this);
+      color = QColorDialog::getColor (color, this);
 
       if (color.isValid ())
         {

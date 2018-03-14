@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,15 +27,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-shlib.h"
 
 #include "call-stack.h"
-#include <defaults.h>
+#include "defaults.h"
 #include "dynamic-ld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ovl.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "ov-mex-fcn.h"
 #include "ov.h"
+#include "ovl.h"
 #include "profiler.h"
-#include "interpreter.h"
 #include "unwind-prot.h"
 
 
@@ -45,91 +46,50 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
 octave_mex_function::octave_mex_function
   (void *fptr, bool fmex, const octave::dynamic_library& shl,
    const std::string& nm)
-  : octave_function (nm), mex_fcn_ptr (fptr), exit_fcn_ptr (0),
-    have_fmex (fmex), sh_lib (shl)
+  : octave_function (nm), m_mex_fcn_ptr (fptr), m_exit_fcn_ptr (nullptr),
+    m_is_fmex (fmex), m_sh_lib (shl)
 {
   mark_fcn_file_up_to_date (time_parsed ());
 
   std::string file_name = fcn_file_name ();
 
-  system_fcn_file
+  std::string oct_file_dir = octave::config::oct_file_dir ();
+  m_is_system_fcn_file
     = (! file_name.empty ()
-       && Voct_file_dir == file_name.substr (0, Voct_file_dir.length ()));
+       && oct_file_dir == file_name.substr (0, oct_file_dir.length ()));
 }
 
 octave_mex_function::~octave_mex_function (void)
 {
-  if (exit_fcn_ptr)
-    (*exit_fcn_ptr) ();
+  if (m_exit_fcn_ptr)
+    (*m_exit_fcn_ptr) ();
 
-  octave_dynamic_loader::remove_mex (my_name, sh_lib);
+  octave::dynamic_loader& dyn_loader
+    = octave::__get_dynamic_loader__ ("~octave_mex_function");
+
+  dyn_loader.remove_mex (my_name, m_sh_lib);
 }
 
 std::string
 octave_mex_function::fcn_file_name (void) const
 {
-  return sh_lib.file_name ();
+  return m_sh_lib.file_name ();
 }
 
 octave::sys::time
 octave_mex_function::time_parsed (void) const
 {
-  return sh_lib.time_loaded ();
-}
-
-octave_value_list
-octave_mex_function::subsref (const std::string& type,
-                              const std::list<octave_value_list>& idx,
-                              int nargout)
-{
-  octave_value_list retval;
-
-  switch (type[0])
-    {
-    case '(':
-      {
-        int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
-
-        retval = do_multi_index_op (tmp_nargout, idx.front ());
-      }
-      break;
-
-    case '{':
-    case '.':
-      {
-        std::string nm = type_name ();
-        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-      }
-      break;
-
-    default:
-      panic_impossible ();
-    }
-
-  // FIXME: perhaps there should be an
-  // octave_value_list::next_subsref member function?  See also
-  // octave_user_function::subsref.
-  //
-  // FIXME: Note that if a function call returns multiple
-  // values, and there is further indexing to perform, then we are
-  // ignoring all but the first value.  Is this really what we want to
-  // do?  If it is not, then what should happen for stat("file").size,
-  // for exmaple?
-
-  if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx);
-
-  return retval;
+  return m_sh_lib.time_loaded ();
 }
 
 // FIXME: shouldn't this declaration be a header file somewhere?
 extern octave_value_list
-call_mex (bool have_fmex, void *f, const octave_value_list& args,
-          int nargout, octave_mex_function *curr_mex_fcn);
+call_mex (octave_mex_function& curr_mex_fcn, const octave_value_list& args,
+          int nargout);
 
 octave_value_list
-octave_mex_function::do_multi_index_op (int nargout,
-                                        const octave_value_list& args)
+octave_mex_function::call (octave::tree_evaluator& tw, int nargout,
+                           const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -138,15 +98,18 @@ octave_mex_function::do_multi_index_op (int nargout,
 
   octave::unwind_protect frame;
 
-  octave_call_stack::push (this);
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("octave_mex_function::call");
 
-  frame.add_fcn (octave_call_stack::pop);
+  cs.push (this);
 
-  BEGIN_PROFILER_BLOCK (octave_mex_function)
+  frame.add_method (cs, &octave::call_stack::pop);
 
-  retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+  octave::profiler& profiler = tw.get_profiler ();
 
-  END_PROFILER_BLOCK
+  octave::profiler::enter<octave_mex_function> block (profiler, *this);
+
+  retval = call_mex (*this, args, nargout);
 
   return retval;
 }

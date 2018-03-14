@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -141,7 +141,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
         {
           // just 'i' and string is finished.  Return immediately.
           imag = true;
-          num = negative ? -1.0 : 1.0;
+          num = (negative ? -1.0 : 1.0);
           return is;
         }
       else
@@ -359,7 +359,7 @@ risk of using @code{eval} on unknown data.
           retval = sv.map<Complex> (str2double1);
         }
     }
-  else if (args(0).is_cell ())
+  else if (args(0).iscell ())
     {
       const Cell cell = args(0).cell_value ();
 
@@ -381,7 +381,12 @@ risk of using @code{eval} on unknown data.
 /*
 %!assert (str2double ("1"), 1)
 %!assert (str2double ("-.1e-5"), -1e-6)
-%!assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i])
+%!testif ; ! ismac ()
+%! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
 %!assert (str2double ("1,222.5"), 1222.5)
 %!assert (str2double ("i"), i)
 %!assert (str2double ("2j"), 2i)
@@ -389,7 +394,7 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double ("i*2 + 3"), 3+2i)
 %!assert (str2double (".5*i + 3.5"), 3.5+0.5i)
 %!assert (str2double ("1e-3 + i*.25"), 1e-3 + 0.25i)
-%!assert (str2double (["2 + j";"1.25e-3";"-05"]), [2+i; 1.25e-3; -5])
+%!assert (str2double (char ("2 + j","1.25e-3","-05")), [2+i; 1.25e-3; -5])
 %!assert (str2double ({"2 + j","1.25e-3","-05"}), [2+i, 1.25e-3, -5])
 %!assert (str2double (1), NaN)
 %!assert (str2double ("1 2 3 4"), NaN)
@@ -404,8 +409,16 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double ("NaN + Inf*i"), complex (NaN, Inf))
 %!assert (str2double ("Inf - Inf*i"), complex (Inf, -Inf))
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
-%!assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i])
-%!assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!testif ; ! ismac ()
+%! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
+%!xtest <47413>
+%! if (! ismac ()), return; endif
+%! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
+%!testif ; ! ismac ()
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!xtest <47413>
+%! if (! ismac ()), return; endif
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
 %!assert (str2double (zeros (3,1,2)), NaN)
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)

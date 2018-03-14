@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} datetick ()
@@ -92,8 +92,17 @@ endfunction
 %! datetick ("x", 2, "keepticks");
 %! set (ax, "ytick", 12:16);
 
-## Remove from test statistics.  No real tests possible.
-%!assert (1)
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   plot ([213:364 0:28], randn (1,181));
+%!   datetick ("x", 3);
+%!   xticks = get (hax, "xtick");
+%!   assert (xticks, [-30 32 92 153 214 275 336 398]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 function __datetick__ (varargin)
 

@@ -3,24 +3,24 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{d} =} del2 (@var{M})
-## @deftypefnx {} {@var{d} =} del2 (@var{M}, @var{h})
-## @deftypefnx {} {@var{d} =} del2 (@var{M}, @var{dx}, @var{dy}, @dots{})
+## @deftypefn  {} {@var{L} =} del2 (@var{M})
+## @deftypefnx {} {@var{L} =} del2 (@var{M}, @var{h})
+## @deftypefnx {} {@var{L} =} del2 (@var{M}, @var{dx}, @var{dy}, @dots{})
 ##
 ## Calculate the discrete Laplace
 ## @tex
@@ -32,14 +32,14 @@
 ##
 ## For a 2-dimensional matrix @var{M} this is defined as
 ## @tex
-## $$d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$
+## $$L = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
 ##       1    / d^2            d^2         \
-## D  = --- * | ---  M(x,y) +  ---  M(x,y) |
+## L  = --- * | ---  M(x,y) +  ---  M(x,y) |
 ##       4    \ dx^2           dy^2        /
 ## @end group
 ## @end example
@@ -56,15 +56,27 @@
 ## length of the spacing vectors must match the respective dimension of
 ## @var{M}.  The default spacing value is 1.
 ##
-## At least 3 data points are needed for each dimension.  Boundary points are
+## Dimensions with fewer than 3 data points are skipped.  Boundary points are
 ## calculated from the linear extrapolation of interior points.
+##
+## Example: Second derivative of 2*x^3
+##
+## @example
+## @group
+## f = @@(x) 2*x.^3;
+## dd = @@(x) 12*x;
+## x = 1:6;
+## L = 4*del2 (f(x));
+## assert (L, dd (x));
+## @end group
+## @end example
 ##
 ## @seealso{gradient, diff}
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-function D = del2 (M, varargin)
+function L = del2 (M, varargin)
 
   if (nargin < 1)
     print_usage ();
@@ -73,38 +85,31 @@ function D = del2 (M, varargin)
   nd = ndims (M);
   sz = size (M);
   dx = cell (1, nd);
-  if (nargin == 2 || nargin == 1)
-    if (nargin == 1)
-      h = 1;
-    else
-      h = varargin{1};
-    endif
+  if (nargin == 1)
     for i = 1 : nd
-      if (isscalar (h))
-        dx{i} = h * ones (sz (i), 1);
-      else
-        if (length (h) == sz (i))
-          dx{i} = diff (h)(:);
-        else
-          error ("del2: dimensionality mismatch in %d-th spacing vector", i);
-        endif
-      endif
+      dx(i) = ones (sz(i), 1);
     endfor
-  elseif (nargin - 1 == nd)
-    ## Reverse dx{1} and dx{2} as the X-dim is the 2nd dim of the ND array
-    tmp = varargin{1};
-    varargin{1} = varargin{2};
-    varargin{2} = tmp;
-
+  elseif (nargin == 2 && isscalar (varargin{1}))
+    h = varargin{1};
     for i = 1 : nd
-      if (isscalar (varargin{i}))
-        dx{i} = varargin{i} * ones (sz (i), 1);
-      else
-        if (length (varargin{i}) == sz (i))
-          dx{i} = diff (varargin{i})(:);
-        else
-          error ("del2: dimensionality mismatch in %d-th spacing vector", i);
+      dx(i) = h * ones (sz(i), 1);
+    endfor
+  elseif (numel (varargin) <= nd)
+    ndx = numel (varargin);
+    varargin(ndx+1:nd) = 1;   # Fill missing dims with 1.
+    ## Reverse dx{1} and dx{2} as the X-dim is the 2nd dim of a meshgrid array
+    varargin([1, 2]) = varargin([2, 1]);
+    for i = 1 : nd
+      arg = varargin{i};
+      if (isscalar (arg))
+        dx(i) = arg * ones (sz(i), 1);
+      elseif (isvector (arg))
+        if (length (arg) != sz(i))
+          error ("del2: number of elements in spacing vector %d does not match dimension %d of M", i, i);
         endif
+        dx(i) = diff (varargin{i})(:);
+      else
+        error ("del2: spacing element %d must be a scalar or vector", i);
       endif
     endfor
   else
@@ -112,12 +117,10 @@ function D = del2 (M, varargin)
   endif
 
   idx = cell (1, nd);
-  for i = 1: nd
-    idx{i} = ":";
-  endfor
+  idx(:) = ":";
 
-  D = zeros (sz);
-  for i = 1: nd
+  L = zeros (sz);
+  for i = 1 : nd
     if (sz(i) >= 3)
       DD = zeros (sz);
       idx1 = idx2 = idx3 = idx;
@@ -127,7 +130,7 @@ function D = del2 (M, varargin)
       idx2{i} = 2 : sz(i) - 1;
       idx3{i} = 3 : sz(i);
       szi = sz;
-      szi (i) = 1;
+      szi(i) = 1;
 
       h1 = repmat (shiftdim (dx{i}(1 : sz(i) - 2), 1 - i), szi);
       h2 = repmat (shiftdim (dx{i}(2 : sz(i) - 1), 1 - i), szi);
@@ -152,11 +155,11 @@ function D = del2 (M, varargin)
             dx{i}(sz(i) - 1) / dx{i}(sz(i) - 2) * DD(idx3{:});
       endif
 
-      D += DD;
+      L += DD;
     endif
   endfor
 
-  D ./= nd;
+  L ./= nd;
 
 endfunction
 
@@ -320,3 +323,16 @@ endfunction
 %! assert (b, flip (b,1));
 %! assert (b, flip (b,2));
 %! assert (b, flip (b,3));
+
+%!test <*51728>
+%! x = linspace (-2*pi, 2*pi);
+%! U = cos (x);
+%! L = 4*del2 (U, x);
+
+## Test input validation
+%!error del2 ()
+%!error del2 (1, 1, 2, 3)
+%!error <in spacing vector 1> del2 (1, 2, [1 1])
+%!error <in spacing vector 2> del2 (1, [1 1], 2)
+%!error <must be a scalar or vector> del2 (1, ones (2,2), 2)
+

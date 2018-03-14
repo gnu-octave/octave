@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{info} =} imfinfo (@var{filename})
@@ -154,7 +154,7 @@ function info = imfinfo (filename, varargin)
     print_usage ();
   elseif (! ischar (filename))
     error ("imfinfo: FILENAME must be a string");
-  elseif (nargin > 1 && ! ischar (ext))
+  elseif (nargin > 1 && ! ischar (varargin{1}))
     error ("imfinfo: EXT must be a string");
   endif
 
@@ -166,7 +166,7 @@ endfunction
 ## This test is the same as the similar one in imread.  imfinfo must check
 ## if file exists before calling __imfinfo_.  This BIST test confirms this.
 %!testif HAVE_MAGICK
-%! warning ("off", "Octave:GraphicsMagic-Quantum-Depth", "local");
+%! warning ("off", "Octave:GraphicsMagick-Quantum-Depth", "local");
 %! fmt = fmt_ori = imformats ("jpg");
 %! fmt.info = @true;
 %! error_thrown = false;
@@ -181,3 +181,9 @@ endfunction
 %!   imformats ("update", "jpg", fmt_ori);
 %! end_unwind_protect
 %! assert (error_thrown, true);
+
+## Test input validation
+%!error imfinfo ()
+%!error imfinfo (1,2,3)
+%!error <FILENAME must be a string> imfinfo (1)
+%!error <EXT must be a string> imfinfo ("foo", 1)

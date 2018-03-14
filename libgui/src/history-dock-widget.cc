@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Jacob Dawid
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,326 +40,313 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "history-dock-widget.h"
 
-history_dock_widget::history_dock_widget (QWidget *p)
-  : octave_dock_widget (p)
+namespace octave
 {
-  setObjectName ("HistoryDockWidget");
-  setStatusTip (tr ("Browse and search the command history."));
+  history_dock_widget::history_dock_widget (QWidget *p)
+    : octave_dock_widget (p)
+  {
+    setObjectName ("HistoryDockWidget");
+    setStatusTip (tr ("Browse and search the command history."));
 
-  connect (this, SIGNAL (command_create_script (const QString&)),
-           p, SLOT (new_file (const QString&)));
+    connect (this, SIGNAL (command_create_script (const QString&)),
+             p, SLOT (new_file (const QString&)));
 
-  connect (this, SIGNAL (information (const QString&)),
-           p, SLOT (report_status_message (const QString&)));
+    connect (this, SIGNAL (information (const QString&)),
+             p, SLOT (report_status_message (const QString&)));
 
-  connect (this, SIGNAL (command_double_clicked (const QString&)),
-           p, SLOT (execute_command_in_terminal (const QString&)));
+    connect (this, SIGNAL (command_double_clicked (const QString&)),
+             p, SLOT (execute_command_in_terminal (const QString&)));
 
-  construct ();
-}
+    construct ();
+  }
 
-void
-history_dock_widget::construct ()
-{
-  _history_model = new QStringListModel ();
-  _sort_filter_proxy_model.setSourceModel (_history_model);
-  _history_list_view = new QListView (this);
-  _history_list_view->setModel (&_sort_filter_proxy_model);
-  _history_list_view->setAlternatingRowColors (true);
-  _history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
-  _history_list_view->setStatusTip (
-    tr ("Double-click a command to transfer it to the terminal."));
-  _history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
-  _history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
-  connect (_history_list_view,
-           SIGNAL (customContextMenuRequested (const QPoint &)), this,
-           SLOT (ctxMenu (const QPoint &)));
+  void history_dock_widget::set_history (const QStringList& hist)
+  {
+    m_history_model->setStringList (hist);
+    m_history_list_view->scrollToBottom ();
+  }
 
-  _filter = new QComboBox (this);
-  _filter->setToolTip (tr ("Enter text to filter the command history"));
-  _filter->setEditable (true);
-  _filter->setMaxCount (MaxFilterHistory);
-  _filter->setInsertPolicy (QComboBox::NoInsert);
-  _filter->setSizeAdjustPolicy (
-            QComboBox::AdjustToMinimumContentsLengthWithIcon);
-  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
-  _filter->setSizePolicy (sizePol);
-  _filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
+  void history_dock_widget::append_history (const QString& hist_entry)
+  {
+    QStringList lst = m_history_model->stringList ();
+    lst.append (hist_entry);
 
-  QLabel *filter_label = new QLabel (tr ("Filter"));
+    QScrollBar *scroll_bar = m_history_list_view->verticalScrollBar ();
 
-  _filter_checkbox = new QCheckBox ();
+    bool at_bottom = scroll_bar->maximum () - scroll_bar->value () < 1;
 
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  set_title (tr ("Command History"));
-  setWidget (new QWidget ());
+    m_history_model->setStringList (lst);
 
-  _filter_widget = new QWidget (this);
-  QHBoxLayout *filter_layout = new QHBoxLayout ();
-  filter_layout->addWidget (filter_label);
-  filter_layout->addWidget (_filter_checkbox);
-  filter_layout->addWidget (_filter);
-  filter_layout->setMargin(0);
-  _filter_widget->setLayout (filter_layout);
+    // Scroll if slider position at bottom.
+    if (at_bottom)
+      m_history_list_view->scrollToBottom ();
+  }
 
-  QVBoxLayout *hist_layout = new QVBoxLayout ();
-  hist_layout->addWidget (_filter_widget);
-  hist_layout->addWidget (_history_list_view);
+  void history_dock_widget::clear_history (void)
+  {
+    m_history_model->setStringList (QStringList ());
+  }
 
-  hist_layout->setMargin (2);
-  widget ()->setLayout (hist_layout);
+  void history_dock_widget::save_settings (void)
+  {
+    QSettings *settings = resource_manager::get_settings ();
 
-  // Init state of the filter
-  QSettings *settings = resource_manager::get_settings ();
+    if (! settings)
+      return;
 
-  _filter_shown
-    = settings->value ("history_dock_widget/filter_shown",true).toBool();
-  _filter_widget->setVisible (_filter_shown);
+    settings->setValue ("history_dock_widget/filter_active",
+                        m_filter_checkbox->isChecked ());
+    settings->setValue ("history_dock_widget/filter_shown", m_filter_shown);
 
-  _filter->addItems (settings->value ("history_dock_widget/mru_list").toStringList ());
+    QStringList mru;
+    for (int i = 0; i < m_filter->count (); i++)
+      mru.append (m_filter->itemText (i));
+    settings->setValue ("history_dock_widget/mru_list", mru);
 
-  bool filter_state
-    = settings->value ("history_dock_widget/filter_active", false).toBool ();
-  _filter_checkbox->setChecked (filter_state);
-  filter_activate (filter_state);
+    settings->sync ();
 
-  // Connect signals and slots
-  connect (_filter, SIGNAL (editTextChanged (const QString&)),
-           &_sort_filter_proxy_model,
-           SLOT (setFilterWildcard (const QString&)));
-  connect (_filter_checkbox, SIGNAL (toggled (bool)),
-           this, SLOT (filter_activate (bool)));
-  connect (_filter->lineEdit (), SIGNAL (editingFinished ()),
-           this, SLOT (update_filter_history ()));
+    octave_dock_widget::save_settings ();
+  }
 
-  connect (_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
-           this, SLOT (handle_double_click (QModelIndex)));
+  void history_dock_widget::update_filter_history (void)
+  {
+    QString text = m_filter->currentText ();   // get current text
+    int index = m_filter->findText (text);     // and its actual index
 
-  // shrink max. displayed entry size to desktop width
-  QSize screen = QDesktopWidget ().screenGeometry ().size ();
-  int w = screen.width ();
-  QFontMetrics fm = _history_list_view->fontMetrics ();
-  int h = fm.height ();
-  _history_list_view->setGridSize (QSize (w,h));
-  _history_list_view->setTextElideMode (Qt::ElideRight);
-}
+    if (index > -1)
+      m_filter->removeItem (index);    // remove if already existing
 
-void
-history_dock_widget::save_settings (void)
-{
-  QSettings *settings = resource_manager::get_settings ();
+    m_filter->insertItem (0, text);    // (re)insert at beginning
+    m_filter->setCurrentIndex (0);
+  }
 
-  if (! settings)
-    return;
+  void history_dock_widget::filter_activate (bool state)
+  {
+    m_filter->setEnabled (state);
+    m_sort_filter_proxy_model.setDynamicSortFilter (state);
 
-  settings->setValue ("history_dock_widget/filter_active",
-                      _filter_checkbox->isChecked ());
-  settings->setValue ("history_dock_widget/filter_shown", _filter_shown);
+    if (state)
+      m_sort_filter_proxy_model.setFilterWildcard (m_filter->currentText ());
+    else
+      m_sort_filter_proxy_model.setFilterWildcard (QString ());
+  }
 
-  QStringList mru;
-  for (int i = 0; i < _filter->count (); i++)
-    mru.append (_filter->itemText (i));
-  settings->setValue ("history_dock_widget/mru_list", mru);
+  void history_dock_widget::ctxMenu (const QPoint& xpos)
+  {
+    QMenu menu (this);
 
-  settings->sync ();
+    QModelIndex index = m_history_list_view->indexAt (xpos);
 
-  octave_dock_widget::save_settings ();
-}
+    if (index.isValid () && index.column () == 0)
+      {
+        menu.addAction (resource_manager::icon ("edit-copy"),
+                        tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
+        menu.addAction (tr ("Evaluate"), this,
+                        SLOT (handle_contextmenu_evaluate (bool)));
+        menu.addAction (resource_manager::icon ("document-new"),
+                        tr ("Create script"), this,
+                        SLOT (handle_contextmenu_create_script (bool)));
+      }
+    if (m_filter_shown)
+      menu.addAction (tr ("Hide filter"), this,
+                      SLOT (handle_contextmenu_filter ()));
+    else
+      menu.addAction (tr ("Show filter"), this,
+                      SLOT (handle_contextmenu_filter ()));
 
-void
-history_dock_widget::filter_activate (bool state)
-{
-  _filter->setEnabled (state);
-  _sort_filter_proxy_model.setDynamicSortFilter (state);
+    menu.exec (m_history_list_view->mapToGlobal (xpos));
+  }
 
-  if (state)
-    _sort_filter_proxy_model.setFilterWildcard (_filter->currentText ());
-  else
-    _sort_filter_proxy_model.setFilterWildcard (QString ());
-}
+  void history_dock_widget::handle_double_click (QModelIndex modelIndex)
+  {
+    emit command_double_clicked (modelIndex.data ().toString ());
+  }
 
-void
-history_dock_widget::update_filter_history ()
-{
-  QString text = _filter->currentText ();   // get current text
-  int index = _filter->findText (text);     // and its actual index
+  void history_dock_widget::handle_contextmenu_copy (bool)
+  {
+    QString text;
+    QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
+    QModelIndexList rows = selectionModel->selectedRows ();
+    QModelIndexList::iterator it;
+    bool prev_valid_row = false;
+    for (it = rows.begin (); it != rows.end (); it++)
+      {
+        if ((*it).isValid ())
+          {
+            if (prev_valid_row)
+              text += '\n';
+            text += (*it).data ().toString ();
+            prev_valid_row = true;
+          }
+      }
+    QApplication::clipboard ()->setText (text);
+  }
 
-  if (index > -1)
-    _filter->removeItem (index);    // remove if already existing
+  void history_dock_widget::handle_contextmenu_evaluate (bool)
+  {
+    QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
+    QModelIndexList rows = selectionModel->selectedRows ();
+    QModelIndexList::iterator it;
+    for (it = rows.begin () ; it != rows.end (); it++)
+      {
+        if ((*it).isValid ())
+          emit command_double_clicked ((*it).data ().toString ());
+      }
+  }
 
-  _filter->insertItem (0, text);    // (re)insert at beginning
-  _filter->setCurrentIndex (0);
-}
+  void history_dock_widget::handle_contextmenu_create_script (bool)
+  {
+    QString text;
+    QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
+    QModelIndexList rows = selectionModel->selectedRows ();
 
-void history_dock_widget::ctxMenu (const QPoint &xpos)
-{
-  QMenu menu (this);
+    bool prev_valid_row = false;
+    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+      {
+        if ((*it).isValid ())
+          {
+            if (prev_valid_row)
+              text += '\n';
+            text += (*it).data ().toString ();
+            prev_valid_row = true;
+          }
+      }
 
-  QModelIndex index = _history_list_view->indexAt (xpos);
+    if (text.length () > 0)
+      emit command_create_script (text);
+  }
 
-  if (index.isValid () && index.column () == 0)
-    {
-      menu.addAction (resource_manager::icon ("edit-copy"),
-                      tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
-      menu.addAction (tr ("Evaluate"), this,
-                      SLOT (handle_contextmenu_evaluate (bool)));
-      menu.addAction (resource_manager::icon ("document-new"),
-                      tr ("Create script"), this,
-                      SLOT (handle_contextmenu_create_script (bool)));
-    }
-  if (_filter_shown)
-    menu.addAction (tr ("Hide filter"), this,
-                    SLOT (handle_contextmenu_filter ()));
-  else
-    menu.addAction (tr ("Show filter"), this,
-                    SLOT (handle_contextmenu_filter ()));
+  void history_dock_widget::handle_contextmenu_filter (void)
+  {
+    m_filter_shown = ! m_filter_shown;
+    m_filter_widget->setVisible (m_filter_shown);
+  }
 
-  menu.exec (_history_list_view->mapToGlobal (xpos));
-}
+  void history_dock_widget::copyClipboard (void)
+  {
+    if (m_history_list_view->hasFocus ())
+      handle_contextmenu_copy (true);
+    if (m_filter->lineEdit ()->hasFocus ()
+        && m_filter->lineEdit ()->hasSelectedText ())
+      {
+        QClipboard *clipboard = QApplication::clipboard ();
+        clipboard->setText (m_filter->lineEdit ()->selectedText ());
+      }
+  }
 
-void history_dock_widget::handle_contextmenu_copy (bool)
-{
-  QString text;
-  QItemSelectionModel *selectionModel = _history_list_view->selectionModel ();
-  QModelIndexList rows = selectionModel->selectedRows ();
-  QModelIndexList::iterator it;
-  bool prev_valid_row = false;
-  for (it = rows.begin (); it != rows.end (); it++)
-    {
-      if ((*it).isValid ())
-        {
-          if (prev_valid_row)
-            text += "\n";
-          text += (*it).data ().toString ();
-          prev_valid_row = true;
-        }
-    }
-  QApplication::clipboard ()->setText (text);
-}
+  void history_dock_widget::pasteClipboard (void)
+  {
+    if (m_filter->lineEdit ()->hasFocus ())
+      {
+        QClipboard *clipboard = QApplication::clipboard ();
+        QString str = clipboard->text ();
+        if (str.length () > 0)
+          m_filter->lineEdit ()->insert (str);
+      }
+  }
 
-void history_dock_widget::handle_contextmenu_evaluate (bool)
-{
-  QItemSelectionModel *selectionModel = _history_list_view->selectionModel ();
-  QModelIndexList rows = selectionModel->selectedRows ();
-  QModelIndexList::iterator it;
-  for (it = rows.begin () ; it != rows.end (); it++)
-    {
-      if ((*it).isValid ())
-        emit command_double_clicked ((*it).data ().toString ());
-    }
-}
+  void history_dock_widget::selectAll (void)
+  {
+    if (m_filter->lineEdit ()->hasFocus ())
+      m_filter->lineEdit ()->selectAll ();
 
-void
-history_dock_widget::handle_contextmenu_create_script (bool)
-{
-  QString text;
-  QItemSelectionModel *selectionModel = _history_list_view->selectionModel ();
-  QModelIndexList rows = selectionModel->selectedRows ();
+    if (m_history_list_view->hasFocus ())
+      m_history_list_view->selectAll ();
+  }
 
-  bool prev_valid_row = false;
-  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
-    {
-      if ((*it).isValid ())
-        {
-          if (prev_valid_row)
-            text += "\n";
-          text += (*it).data ().toString ();
-          prev_valid_row = true;
-        }
-    }
+  void history_dock_widget::handle_visibility (bool visible)
+  {
+    octave_dock_widget::handle_visibility (visible);
 
-  if (text.length () > 0)
-    emit command_create_script (text);
-}
+    if (visible)
+      {
+        int filter_state = m_filter_checkbox->isChecked ();
+        filter_activate (filter_state);
+      }
+  }
 
-void
-history_dock_widget::handle_contextmenu_filter (void)
-{
-  _filter_shown = not _filter_shown;
-  _filter_widget->setVisible (_filter_shown);
-}
+  void history_dock_widget::construct (void)
+  {
+    m_history_model = new QStringListModel ();
+    m_sort_filter_proxy_model.setSourceModel (m_history_model);
+    m_history_list_view = new QListView (this);
+    m_history_list_view->setModel (&m_sort_filter_proxy_model);
+    m_history_list_view->setAlternatingRowColors (true);
+    m_history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
+    m_history_list_view->setStatusTip (
+                                       tr ("Double-click a command to transfer it to the terminal."));
+    m_history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
+    m_history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
+    connect (m_history_list_view,
+             SIGNAL (customContextMenuRequested (const QPoint &)), this,
+             SLOT (ctxMenu (const QPoint &)));
 
-void
-history_dock_widget::handle_double_click (QModelIndex modelIndex)
-{
-  emit command_double_clicked (modelIndex.data ().toString ());
-}
+    m_filter = new QComboBox (this);
+    m_filter->setToolTip (tr ("Enter text to filter the command history"));
+    m_filter->setEditable (true);
+    m_filter->setMaxCount (MaxFilterHistory);
+    m_filter->setInsertPolicy (QComboBox::NoInsert);
+    m_filter->setSizeAdjustPolicy (
+                                   QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
+    m_filter->setSizePolicy (sizePol);
+    m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 
-void
-history_dock_widget::set_history (const QStringList& hist)
-{
-  _history_model->setStringList (hist);
-  _history_list_view->scrollToBottom ();
-}
+    QLabel *filter_label = new QLabel (tr ("Filter"));
 
-void
-history_dock_widget::append_history (const QString& hist_entry)
-{
-  QStringList lst = _history_model->stringList ();
-  lst.append (hist_entry);
+    m_filter_checkbox = new QCheckBox ();
 
-  QScrollBar *scroll_bar = _history_list_view->verticalScrollBar ();
+    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    set_title (tr ("Command History"));
+    setWidget (new QWidget ());
 
-  bool at_bottom = scroll_bar->maximum () - scroll_bar->value () < 1;
+    m_filter_widget = new QWidget (this);
+    QHBoxLayout *filter_layout = new QHBoxLayout ();
+    filter_layout->addWidget (filter_label);
+    filter_layout->addWidget (m_filter_checkbox);
+    filter_layout->addWidget (m_filter);
+    filter_layout->setMargin(0);
+    m_filter_widget->setLayout (filter_layout);
 
-  _history_model->setStringList (lst);
+    QVBoxLayout *hist_layout = new QVBoxLayout ();
+    hist_layout->addWidget (m_filter_widget);
+    hist_layout->addWidget (m_history_list_view);
 
-  // Scroll if slider position at bottom.
-  if (at_bottom)
-    _history_list_view->scrollToBottom ();
-}
+    hist_layout->setMargin (2);
+    widget ()->setLayout (hist_layout);
 
-void
-history_dock_widget::clear_history (void)
-{
-  _history_model->setStringList (QStringList ());
-}
+    // Init state of the filter
+    QSettings *settings = resource_manager::get_settings ();
 
-void
-history_dock_widget::copyClipboard ()
-{
-  if (_history_list_view->hasFocus ())
-    handle_contextmenu_copy (true);
-  if (_filter->lineEdit ()->hasFocus ()
-      && _filter->lineEdit ()->hasSelectedText ())
-    {
-      QClipboard *clipboard = QApplication::clipboard ();
-      clipboard->setText (_filter->lineEdit ()->selectedText ());
-    }
-}
+    m_filter_shown
+      = settings->value ("history_dock_widget/filter_shown",true).toBool ();
+    m_filter_widget->setVisible (m_filter_shown);
 
-void
-history_dock_widget::pasteClipboard ()
-{
-  if (_filter->lineEdit ()->hasFocus ())
-    {
-      QClipboard *clipboard = QApplication::clipboard ();
-      QString str = clipboard->text ();
-      if (str.length () > 0)
-        _filter->lineEdit ()->insert (str);
-    }
-}
+    m_filter->addItems (settings->value ("history_dock_widget/mru_list").toStringList ());
 
-void
-history_dock_widget::selectAll ()
-{
-  if (_filter->lineEdit ()->hasFocus ())
-    {
-      _filter->lineEdit ()->selectAll ();
-    }
-  if (_history_list_view->hasFocus ())
-    {
-      _history_list_view->selectAll ();
-    }
-}
+    bool filter_state
+      = settings->value ("history_dock_widget/filter_active", false).toBool ();
+    m_filter_checkbox->setChecked (filter_state);
+    filter_activate (filter_state);
 
-void history_dock_widget::handle_visibility (bool visible)
-{
-  octave_dock_widget::handle_visibility (visible);
+    // Connect signals and slots
+    connect (m_filter, SIGNAL (editTextChanged (const QString&)),
+             &m_sort_filter_proxy_model,
+             SLOT (setFilterWildcard (const QString&)));
+    connect (m_filter_checkbox, SIGNAL (toggled (bool)),
+             this, SLOT (filter_activate (bool)));
+    connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
+             this, SLOT (updatem_filter_history (void)));
 
-  if (visible)
-    {
-      int filter_state = _filter_checkbox->isChecked ();
-      filter_activate (filter_state);
-    }
+    connect (m_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
+             this, SLOT (handle_double_click (QModelIndex)));
+
+    // shrink max. displayed entry size to desktop width
+    QSize screen = QDesktopWidget ().screenGeometry ().size ();
+    int w = screen.width ();
+    QFontMetrics fm = m_history_list_view->fontMetrics ();
+    int h = fm.height ();
+    m_history_list_view->setGridSize (QSize (w,h));
+    m_history_list_view->setTextElideMode (Qt::ElideRight);
+  }
 }

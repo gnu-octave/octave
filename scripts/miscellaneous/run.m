@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} run @var{script}
@@ -89,6 +89,52 @@ function run (script)
 
 endfunction
 
+
+## Test script file execution
+%!test
+%! clear A  # the variable "A" should be set by the script
+%! assert (exist ("A"), 0);
+%! tmp_dir = tempname ();
+%! test_script = fullfile (tmp_dir, "test_script.m");
+%! unwind_protect
+%!   mkdir (tmp_dir);
+%!   fid = fopen (test_script, "w");
+%!   fprintf (fid, "A = 1337;\n");
+%!   fclose (fid);
+%!   run (test_script);
+%!   assert (exist ("A", "var"), 1);
+%!   assert (A, 1337);
+%! unwind_protect_cleanup
+%!   unlink (test_script);
+%!   rmdir (tmp_dir);
+%! end_unwind_protect
+
+## Test function file execution
+%!test
+%! path_orig = path ();
+%! tmp_dir = tempname ();
+%! test_function = fullfile (tmp_dir, "tf.m");
+%! unwind_protect
+%!   mkdir (tmp_dir);
+%!   fid = fopen (test_function, "w");
+%!   fprintf (fid, "function tf ()\n");
+%!   fprintf (fid, "  addpath ('%s');\n", tmp_dir);
+%!   fprintf (fid, "endfunction\n");
+%!   fclose (fid);
+%!   ## Check if temporary directory is on the loadpath.
+%!   ## Function 'dir_in_loadpath' is broken for this use case, so code a test.
+%!   dirs = strsplit (path (), pathsep ());
+%!   tstval1 = any (strcmp (tmp_dir, dirs));
+%!   run (test_function);
+%!   dirs = strsplit (path (), pathsep ());
+%!   tstval2 = any (strcmp (tmp_dir, dirs));
+%!   assert (tstval1, false);
+%!   assert (tstval2, true);
+%! unwind_protect_cleanup
+%!   unlink (test_function);
+%!   rmdir (tmp_dir);
+%!   path (path_orig);
+%! end_unwind_protect
 
 ## Test input validation
 %!error run ()

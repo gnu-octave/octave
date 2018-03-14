@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 #include <signal.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -48,6 +49,10 @@ octave_kill_wrapper (pid_t pid, int signum)
 #if defined (HAVE_KILL)
   return kill (pid, signum);
 #else
+
+  octave_unused_parameter (pid);
+  octave_unused_parameter (signum);
+
   return -1;
 #endif
 }
@@ -384,6 +389,18 @@ octave_set_signal_handler_by_name (const char *signame,
           : 0);
 }
 
+octave_sig_handler *
+octave_set_default_signal_handler (int sig)
+{
+  return octave_set_signal_handler_internal (sig, SIG_DFL, true);
+}
+
+octave_sig_handler *
+octave_set_default_signal_handler_by_name (const char *signame)
+{
+  return octave_set_signal_handler_by_name (signame, SIG_DFL, true);
+}
+
 int
 octave_num_signals (void)
 {
@@ -399,15 +416,20 @@ typedef struct
 void *
 octave_block_child (void)
 {
-#if defined (SIGCHLD)
+#if defined (SIGCHLD) || defined (SIGCLD)
 
   sigset_info *context = (sigset_info *) malloc (sizeof (sigset_info));
 
   if (context)
     {
-      sigemptyset (&(context->nvar));
-      sigaddset (&(context->nvar), SIGCHLD);
       sigemptyset (&(context->ovar));
+      sigemptyset (&(context->nvar));
+#if defined (SIGCHLD)
+      sigaddset (&(context->nvar), SIGCHLD);
+#endif
+#if defined (SIGCLD)
+      sigaddset (&(context->nvar), SIGCLD);
+#endif
       sigprocmask (SIG_BLOCK, &(context->nvar), &(context->ovar));
     }
 
@@ -437,6 +459,7 @@ static void
 block_or_unblock_signal (int how, int sig)
 {
 #if ! defined (__WIN32__) || defined (__CYGWIN__)
+
   // Blocking/unblocking signals at thread level is only supported
   // on platform with fully compliant POSIX threads. This is not
   // supported on Win32. Moreover, we have to make sure that SIGINT
@@ -451,6 +474,12 @@ block_or_unblock_signal (int how, int sig)
   sigaddset (&signal_mask, sig);
 
   pthread_sigmask (how, &signal_mask, 0);
+
+#else
+
+  octave_unused_parameter (how);
+  octave_unused_parameter (sig);
+
 #endif
 }
 
@@ -458,14 +487,42 @@ void
 octave_block_interrupt_signal (void)
 {
   block_or_unblock_signal (SIG_BLOCK, SIGINT);
+
+#if defined (SIGBREAK)
+  block_or_unblock_signal (SIG_BLOCK, SIGBREAK);
+#endif
 }
 
 void
 octave_unblock_interrupt_signal (void)
 {
   block_or_unblock_signal (SIG_UNBLOCK, SIGINT);
+
+#if defined (SIGBREAK)
+  block_or_unblock_signal (SIG_UNBLOCK, SIGBREAK);
+#endif
 }
 
+static void
+block_or_unblock_signal_by_name (int how, const char *signame)
+{
+  int sig;
+
+  if (octave_get_sig_number (signame, &sig))
+    block_or_unblock_signal (how, sig);
+}
+
+void
+octave_block_signal_by_name (const char *signame)
+{
+  block_or_unblock_signal_by_name (SIG_BLOCK, signame);
+}
+
+void
+octave_unblock_signal_by_name (const char *signame)
+{
+  block_or_unblock_signal_by_name (SIG_UNBLOCK, signame);
+}
 
 /* Allow us to save the signal mask and then restore it to the most
    recently saved value.  This is necessary when using the POSIX signal
@@ -489,8 +546,206 @@ octave_restore_signal_mask (void)
   sigprocmask (SIG_SETMASK, &octave_signal_mask, 0);
 }
 
+#if ! defined (__WIN32__)
+static const sigset_t *
+octave_async_signals (void)
+{
+  static bool initialized = false;
+  static sigset_t sigmask;
+
+  if (! initialized)
+    {
+      sigemptyset (&sigmask);
+
+      // The signals listed here should match the list of signals that
+      // we handle in the signal handler thread.
+
+      // Interrupt signals.
+
+#if defined (SIGINT)
+      sigaddset (&sigmask, SIGINT);
+#endif
+
+#if defined (SIGBREAK)
+      sigaddset (&sigmask, SIGBREAK);
+#endif
+
+      // Termination signals.
+
+#if defined (SIGHUP)
+      sigaddset (&sigmask, SIGHUP);
+#endif
+
+#if defined (SIGQUIT)
+      sigaddset (&sigmask, SIGQUIT);
+#endif
+
+#if defined (SIGTERM)
+      sigaddset (&sigmask, SIGTERM);
+#endif
+
+      // Alarm signals.
+
+#if defined (SIGALRM)
+      sigaddset (&sigmask, SIGALRM);
+#endif
+
+#if defined (SIGVTALRM)
+      sigaddset (&sigmask, SIGVTALRM);
+#endif
+
+      // I/O signals.
+
+#if defined (SIGLOST)
+      sigaddset (&sigmask, SIGLOST);
+#endif
+
+#if defined (SIGPIPE)
+      sigaddset (&sigmask, SIGPIPE);
+#endif
+
+      // Job control signals.
+
+#if defined (SIGCHLD)
+      sigaddset (&sigmask, SIGCHLD);
+#endif
+
+#if defined (SIGCLD)
+      sigaddset (&sigmask, SIGCLD);
+#endif
+
+      // Resource limit signals.
+
+#if defined (SIGXCPU)
+      sigaddset (&sigmask, SIGXCPU);
+#endif
+
+#if defined (SIGXFSZ)
+      sigaddset (&sigmask, SIGXFSZ);
+#endif
+
+      initialized = true;
+    }
+
+  return &sigmask;
+}
+#endif
+
+void
+octave_block_async_signals (void)
+{
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
+  pthread_sigmask (SIG_BLOCK, octave_async_signals (), 0);
+#endif
+}
+
+void
+octave_unblock_async_signals (void)
+{
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
+  pthread_sigmask (SIG_UNBLOCK, octave_async_signals (), 0);
+#endif
+}
+
 int
 octave_raise_wrapper (int signum)
 {
   return raise (signum);
+}
+
+#if ! defined (__WIN32__)
+static void *
+signal_watcher (void *arg)
+{
+  octave_sig_handler *handler = (octave_sig_handler *) arg;
+
+  octave_unblock_async_signals ();
+
+  const sigset_t *async_signals = octave_async_signals ();
+
+  while (1)
+    {
+      int sig_caught;
+
+      if (sigwait (async_signals, &sig_caught))
+        {
+          // FIXME: what else should we do?
+          abort ();
+        }
+
+      // Let handler have complete control over what to do.
+      (*handler) (sig_caught);
+    }
+}
+#endif
+
+void
+octave_create_interrupt_watcher_thread (octave_sig_handler *handler)
+{
+#if ! defined (__WIN32__)
+  pthread_t sighandler_thread_id;
+
+  if (pthread_create (&sighandler_thread_id, 0, signal_watcher, handler))
+    {
+      // FIXME: what else should we do?
+      abort ();
+    }
+#else
+  octave_unblock_async_signals ();
+
+  octave_unused_parameter (handler);
+#endif
+}
+
+#if ! defined (__WIN32__)
+static void
+print_sigset (FILE *of, const char *prefix, const sigset_t *sigset)
+{
+  int sig;
+  int cnt = 0;
+
+  for (sig = 1; sig < NSIG; sig++)
+    {
+      if (sigismember (sigset, sig))
+        {
+          cnt++;
+          fprintf (of, "%ld: %s%d (%s)\n", pthread_self (), prefix, sig,
+                   strsignal (sig));
+        }
+    }
+
+  if (cnt == 0)
+    fprintf (of, "%ld: %s<empty signal set>\n", pthread_self (), prefix);
+}
+
+static int
+print_sigmask (FILE *of, const char *msg)
+{
+  sigset_t sigmask;
+
+  if (msg)
+    fprintf (of, "%s", msg);
+
+  if (pthread_sigmask (SIG_BLOCK, NULL, &sigmask) == -1)
+    return -1;
+
+  print_sigset (of, "\t\t", &sigmask);
+
+  return 0;
+}
+#endif
+
+void
+octave_show_sigmask (const char *msg)
+{
+#if ! defined (__WIN32__)
+  if (! msg)
+    msg = "signal mask\n";
+
+  print_sigmask (stderr, msg);
+#else
+  octave_unused_parameter (msg);
+
+  fputs ("no signal mask on Windows systems\n", stderr);
+#endif
 }

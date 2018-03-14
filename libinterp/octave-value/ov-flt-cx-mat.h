@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -43,8 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "MatrixType.h"
 
 class octave_value_list;
-
-class tree_walker;
 
 // Complex matrix values.
 
@@ -81,24 +79,24 @@ public:
   octave_float_complex_matrix (const octave_float_complex_matrix& cm)
     : octave_base_matrix<FloatComplexNDArray> (cm) { }
 
-  ~octave_float_complex_matrix (void) { }
+  ~octave_float_complex_matrix (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_float_complex_matrix (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_float_complex_matrix (); }
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   builtin_type_t builtin_type (void) const { return btyp_float_complex; }
 
   bool is_complex_matrix (void) const { return true; }
 
-  bool is_complex_type (void) const { return true; }
+  bool iscomplex (void) const { return true; }
 
   bool is_single_type (void) const { return true; }
 
-  bool is_float_type (void) const { return true; }
+  bool isfloat (void) const { return true; }
 
   double double_value (bool = false) const;
 
@@ -160,7 +158,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   {
@@ -171,7 +169,7 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const;
 

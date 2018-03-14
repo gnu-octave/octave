@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,17 +28,17 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <cstring>
-#include <cctype>
 
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <list>
 #include <sstream>
 #include <string>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
 #include "data-conv.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -56,6 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-path.h"
 #include "load-save.h"
 #include "oct-hdf5.h"
@@ -70,7 +71,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
 
 #include "ls-hdf5.h"
 #include "ls-mat-ascii.h"
@@ -115,9 +115,9 @@ default_save_header_format (void)
     std::string ("# Created by Octave " OCTAVE_VERSION
                  ", %a %b %d %H:%M:%S %Y %Z <")
     + octave::sys::env::get_user_name ()
-    + std::string ("@")
+    + '@'
     + octave::sys::env::get_host_name ()
-    + std::string (">");
+    + '>';
 }
 
 // The format string for the comment line at the top of text-format
@@ -145,14 +145,20 @@ install_loaded_variable (const std::string& name,
                          const octave_value& val,
                          bool global, const std::string& /*doc*/)
 {
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_loaded_variable");
+
+  octave::symbol_scope scope
+    = symtab.require_current_scope ("install_loaded_variable");
+
   if (global)
     {
-      symbol_table::clear (name);
-      symbol_table::mark_global (name);
-      symbol_table::global_assign (name, val);
+      scope.clear_variable (name);
+      scope.mark_global (name);
+      symtab.assign (name, val);
     }
   else
-    symbol_table::assign (name, val);
+    scope.assign (name, val);
 }
 
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
@@ -216,13 +222,14 @@ check_gzip_magic (const std::string& fname)
   bool retval = false;
 
   std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
-  OCTAVE_LOCAL_BUFFER (unsigned char, magic, 2);
 
-  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f
-      && magic[1] == 0x8b)
+  unsigned char magic[2];
+  if (file.read (reinterpret_cast<char *> (&magic[0]), 2)
+      && magic[0] == 0x1f && magic[1] == 0x8b)
     retval = true;
 
   file.close ();
+
   return retval;
 }
 #endif
@@ -296,7 +303,7 @@ get_file_format (std::istream& file, const std::string& filename)
 
 static load_save_format
 get_file_format (const std::string& fname, const std::string& orig_fname,
-                 bool &use_zlib, bool quiet = false)
+                 bool& use_zlib, bool quiet = false)
 {
   load_save_format retval = LS_UNKNOWN;
 
@@ -488,12 +495,12 @@ do_load (std::istream& stream, const std::string& orig_fname,
   return retval;
 }
 
-std::string
+static std::string
 find_file_to_load (const std::string& name, const std::string& orig_name)
 {
   std::string fname = find_data_file_in_load_path ("load", name, true);
 
-  size_t dot_pos = fname.rfind (".");
+  size_t dot_pos = fname.rfind ('.');
   size_t sep_pos = fname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
   if (dot_pos == std::string::npos
@@ -894,6 +901,7 @@ glob_pattern_p (const std::string& pattern)
         case '\\':
           if (i == len - 1)
             return false;
+          continue;
 
         default:
           continue;
@@ -951,10 +959,11 @@ do_save (std::ostream& os, const octave_value& tc,
 // Save the info from SR on stream OS in the format specified by FMT.
 
 void
-do_save (std::ostream& os, const symbol_table::symbol_record& sr,
+do_save (std::ostream& os, const octave::symbol_record& sr,
+         octave::symbol_record::context_id context,
          load_save_format fmt, bool save_as_floats)
 {
-  octave_value val = sr.varval ();
+  octave_value val = sr.varval (context);
 
   if (val.is_defined ())
     {
@@ -978,13 +987,13 @@ save_fields (std::ostream& os, const octave_scalar_map& m,
 
   size_t saved = 0;
 
-  for (octave_scalar_map::const_iterator p = m.begin (); p != m.end (); p++)
+  for (octave_scalar_map::const_iterator it = m.begin (); it != m.end (); it++)
     {
       std::string empty_str;
 
-      if (pat.match (m.key (p)))
+      if (pat.match (m.key (it)))
         {
-          do_save (os, m.contents (p), m.key (p), empty_str,
+          do_save (os, m.contents (it), m.key (it), empty_str,
                    0, fmt, save_as_floats);
 
           saved++;
@@ -1001,16 +1010,17 @@ static size_t
 save_vars (std::ostream& os, const std::string& pattern,
            load_save_format fmt, bool save_as_floats)
 {
-  std::list<symbol_table::symbol_record> vars = symbol_table::glob (pattern);
+  octave::symbol_scope scope = octave::__require_current_scope__ ("save_vars");
+
+  octave::symbol_record::context_id context = scope.current_context ();
+
+  std::list<octave::symbol_record> vars = scope.glob (pattern);
 
   size_t saved = 0;
 
-  typedef std::list<symbol_table::symbol_record>::const_iterator
-    const_vars_iterator;
-
-  for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
+  for (const auto& var : vars)
     {
-      do_save (os, *p, fmt, save_as_floats);
+      do_save (os, var, context, fmt, save_as_floats);
 
       saved++;
     }
@@ -1019,9 +1029,9 @@ save_vars (std::ostream& os, const std::string& pattern,
 }
 
 static string_vector
-parse_save_options (const string_vector &argv,
-                    load_save_format &format, bool &append,
-                    bool &save_as_floats, bool &use_zlib)
+parse_save_options (const string_vector& argv,
+                    load_save_format& format, bool& append,
+                    bool& save_as_floats, bool& use_zlib)
 {
 #if ! defined (HAVE_ZLIB)
   octave_unused_parameter (use_zlib);
@@ -1122,7 +1132,7 @@ parse_save_options (const string_vector &argv,
       if (format == LS_MAT_ASCII)
         format.opts |= LS_MAT_ASCII_LONG;
       else
-        warning ("save: \"-double\" option only has an effect with \"-ascii\"");
+        warning (R"(save: "-double" option only has an effect with "-ascii")");
     }
 
   if (do_tabs)
@@ -1130,15 +1140,15 @@ parse_save_options (const string_vector &argv,
       if (format == LS_MAT_ASCII)
         format.opts |= LS_MAT_ASCII_TABS;
       else
-        warning ("save: \"-tabs\" option only has an effect with \"-ascii\"");
+        warning (R"(save: "-tabs" option only has an effect with "-ascii")");
     }
 
   return retval;
 }
 
 static string_vector
-parse_save_options (const std::string &arg, load_save_format &format,
-                    bool &append, bool &save_as_floats, bool &use_zlib)
+parse_save_options (const std::string& arg, load_save_format& format,
+                    bool& append, bool& save_as_floats, bool& use_zlib)
 {
   std::istringstream is (arg);
   std::string str;
@@ -1175,7 +1185,7 @@ write_header (std::ostream& os, load_save_format format)
     case LS_MAT5_BINARY:
     case LS_MAT7_BINARY:
       {
-        char const * versionmagic;
+        char const *versionmagic;
         int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
         char headertext[128];
         octave::sys::gmtime now;
@@ -1271,12 +1281,19 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       std::string struct_name = argv[argv_idx];
 
-      if (! symbol_table::is_variable (struct_name))
-        error ("save: no such variable: '%s'", struct_name.c_str ());
+      octave::symbol_scope scope = octave::__get_current_scope__ ("save_vars");
 
-      octave_value struct_var = symbol_table::varval (struct_name);
+      octave_value struct_var;
 
-      if (! struct_var.is_map () || struct_var.numel () != 1)
+      if (scope)
+        {
+          if (! scope.is_variable (struct_name))
+            error ("save: no such variable: '%s'", struct_name.c_str ());
+
+          struct_var = scope.varval (struct_name);
+        }
+
+      if (! struct_var.isstruct () || struct_var.numel () != 1)
         error ("save: '%s' is not a scalar structure", struct_name.c_str ());
 
       octave_scalar_map struct_var_map = struct_var.scalar_map_value ();
@@ -1316,23 +1333,25 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 {
   write_header (os, fmt);
 
-  std::list<symbol_table::symbol_record> vars
-    = symbol_table::all_variables (symbol_table::top_scope (), 0);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("dump_octave_core");
+
+  octave::symbol_scope top_scope = symtab.top_scope ();
+
+  octave::symbol_record::context_id context = top_scope.current_context ();
+
+  std::list<octave::symbol_record> vars = top_scope.all_variables ();
 
   double save_mem_size = 0;
 
-  typedef std::list<symbol_table::symbol_record>::const_iterator
-    const_vars_iterator;
-
-  for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
+  for (const auto& var : vars)
     {
-      octave_value val = p->varval ();
+      octave_value val = var.varval (context);
 
       if (val.is_defined ())
         {
-          std::string name = p->name ();
+          std::string name = var.name ();
           std::string help;
-          bool global = p->is_global ();
+          bool global = var.is_global ();
 
           double val_size = val.byte_size () / 1024;
 
@@ -1348,7 +1367,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
         }
     }
 
-  message (0, "save to '%s' complete", fname);
+  message (nullptr, "save to '%s' complete", fname);
 }
 
 void
@@ -1360,7 +1379,7 @@ dump_octave_core (void)
 
       const char *fname = Voctave_core_file_name.c_str ();
 
-      message (0, "attempting to save variables to '%s'...", fname);
+      message (nullptr, "attempting to save variables to '%s'...", fname);
 
       load_save_format format = LS_BINARY;
 
@@ -1449,21 +1468,24 @@ DEFUN (save, args, nargout,
 @deftypefn  {} {} save file
 @deftypefnx {} {} save options file
 @deftypefnx {} {} save options file @var{v1} @var{v2} @dots{}
+@deftypefnx {} {} save options file -struct @var{STRUCT}
 @deftypefnx {} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}
 @deftypefnx {} {} save - @var{v1} @var{v2} @dots{}
 @deftypefnx {} {@var{str} =} save ("-", @qcode{"@var{v1}"}, @qcode{"@var{v2}"}, @dots{})
-Save the named variables @var{v1}, @var{v2}, @dots{}, in the file
-@var{file}.
+Save the named variables @var{v1}, @var{v2}, @dots{}, in the file @var{file}.
 
-The special filename @samp{-} may be used to return the
-content of the variables as a string.  If no variable names are listed,
-Octave saves all the variables in the current scope.  Otherwise, full
-variable names or pattern syntax can be used to specify the variables to
-save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}
-@dots{} of the scalar structure @var{STRUCT} are saved as if they were
-variables with corresponding names.  Valid options for the @code{save}
-command are listed in the following table.  Options that modify the output
-format override the format specified by @code{save_default_options}.
+The special filename @samp{-} may be used to return the content of the
+variables as a string.  If no variable names are listed, Octave saves all the
+variables in the current scope.  Otherwise, full variable names or pattern
+syntax can be used to specify the variables to save.  If the @option{-struct}
+modifier is used then the fields of the @strong{scalar} struct are saved as if
+they were variables with the corresponding field names.  The @option{-struct}
+option can be combined with specific field names @var{f1}, @var{f2}, @dots{} to
+write only certain fields to the file.
+
+Valid options for the @code{save} command are listed in the following table.
+Options that modify the output format override the format specified by
+@code{save_default_options}.
 
 If save is invoked using the functional form
 
@@ -1472,38 +1494,48 @@ save ("-option1", @dots{}, "file", "v1", @dots{})
 @end example
 
 @noindent
-then the @var{options}, @var{file}, and variable name arguments
-(@var{v1}, @dots{}) must be specified as character strings.
+then the @var{options}, @var{file}, and variable name arguments (@var{v1},
+@dots{}) must be specified as character strings.
 
-If called with a filename of @qcode{"-"}, write the output to stdout
-if nargout is 0, otherwise return the output in a character string.
+If called with a filename of @qcode{"-"}, write the output to stdout if nargout
+is 0, otherwise return the output in a character string.
 
 @table @code
 @item -append
 Append to the destination instead of overwriting.
 
 @item -ascii
-Save a single matrix in a text file without header or any other information.
+Save a matrix in a text file without a header or any other information.  The
+matrix must be 2-D and only the real part of any complex value is written to
+the file.  Numbers are stored in single-precision format and separated by
+spaces.  Additional options for the @code{-ascii} format are
+
+@table @code
+@item -double
+Store numbers in double-precision format.
+
+@item -tabs
+Separate numbers with tabs.
+@end table
 
 @item -binary
 Save the data in Octave's binary data format.
 
 @item -float-binary
-Save the data in Octave's binary data format but only using single
-precision.  Only use this format if you know that all the
-values to be saved can be represented in single precision.
+Save the data in Octave's binary data format but using only single precision.
+Use this format @strong{only} if you know that all the values to be saved can
+be represented in single precision.
 
 @item -hdf5
 Save the data in @sc{hdf5} format.
-(HDF5 is a free, portable binary format developed by the National
-Center for Supercomputing Applications at the University of Illinois.)
-This format is only available if Octave was built with a link to the
-@sc{hdf5} libraries.
+(HDF5 is a free, portable, binary format developed by the National Center for
+Supercomputing Applications at the University of Illinois.) This format is only
+available if Octave was built with a link to the @sc{hdf5} libraries.
 
 @item -float-hdf5
-Save the data in @sc{hdf5} format but only using single precision.
-Only use this format if you know that all the
-values to be saved can be represented in single precision.
+Save the data in @sc{hdf5} format but using only single precision.  Use this
+format @strong{only} if you know that all the values to be saved can be
+represented in single precision.
 
 @item  -V7
 @itemx -v7
@@ -1529,15 +1561,14 @@ Save the data in Octave's text data format.  (default).
 
 @item  -zip
 @itemx -z
-Use the gzip algorithm to compress the file.  This works equally on files
-that are compressed with gzip outside of octave, and gzip can equally be
-used to convert the files for backward compatibility.
-This option is only available if Octave was built with a link to the zlib
-libraries.
+Use the gzip algorithm to compress the file.  This works on files that are
+compressed with gzip outside of Octave, and gzip can also be used to convert
+the files for backward compatibility.  This option is only available if Octave
+was built with a link to the zlib libraries.
 @end table
 
-The list of variables to save may use wildcard patterns containing
-the following special characters:
+The list of variables to save may use wildcard patterns containing the
+following special characters:
 
 @table @code
 @item ?
@@ -1547,21 +1578,20 @@ Match any single character.
 Match zero or more characters.
 
 @item [ @var{list} ]
-Match the list of characters specified by @var{list}.  If the first
-character is @code{!} or @code{^}, match all characters except those
-specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will
-match all lower and uppercase alphabetic characters.
+Match the list of characters specified by @var{list}.  If the first character
+is @code{!} or @code{^}, match all characters except those specified by
+@var{list}.  For example, the pattern @code{[a-zA-Z]} will match all lower and
+uppercase alphabetic characters.
 
-Wildcards may also be used in the field name specifications when using
-the @option{-struct} modifier (but not in the struct name itself).
+Wildcards may also be used in the field name specifications when using the
+@option{-struct} modifier (but not in the struct name itself).
 
 @end table
 
-Except when using the @sc{matlab} binary data file format or the
-@samp{-ascii} format, saving global
-variables also saves the global status of the variable.  If the variable
-is restored at a later time using @samp{load}, it will be restored as a
-global variable.
+Except when using the @sc{matlab} binary data file format or the @samp{-ascii}
+format, saving global variables also saves the global status of the variable.
+If the variable is restored at a later time using @samp{load}, it will be
+restored as a global variable.
 
 The command
 
@@ -1570,9 +1600,9 @@ save -binary data a b*
 @end example
 
 @noindent
-saves the variable @samp{a} and all variables beginning with @samp{b} to
-the file @file{data} in Octave's binary format.
-@seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}
+saves the variable @samp{a} and all variables beginning with @samp{b} to the
+file @file{data} in Octave's binary format.
+@seealso{load, save_default_options, save_header_format_string, save_precision, dlmread, csvread, fread}
 @end deftypefn */)
 {
   // Here is where we would get the default save format if it were
@@ -1643,7 +1673,7 @@ the file @file{data} in Octave's binary format.
         use_zlib = false;
 
       std::ios::openmode mode
-        = append ? (std::ios::app | std::ios::ate) : std::ios::out;
+        = (append ? (std::ios::app | std::ios::ate) : std::ios::out);
 
       if (format == LS_BINARY
 #if defined (HAVE_HDF5)
@@ -1741,13 +1771,13 @@ DEFUN (save_default_options, args, nargout,
 Query or set the internal variable that specifies the default options
 for the @code{save} command, and defines the default format.
 
-Typical values include @qcode{"-ascii"}, @qcode{"-text -zip"}.
-The default value is @option{-text}.
+The default value is @qcode{"-text"} (Octave's own text-based file format).
+See the documentation of the @code{save} command for other choices.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{save}
+@seealso{save, save_header_format_string, save_precision}
 @end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (save_default_options);
@@ -1822,11 +1852,11 @@ DEFUN (save_header_format_string, args, nargout,
 @deftypefn  {} {@var{val} =} save_header_format_string ()
 @deftypefnx {} {@var{old_val} =} save_header_format_string (@var{new_val})
 @deftypefnx {} {} save_header_format_string (@var{new_val}, "local")
-Query or set the internal variable that specifies the format
-string used for the comment line written at the beginning of
-text-format data files saved by Octave.
+Query or set the internal variable that specifies the format string used for
+the comment line written at the beginning of text-format data files saved by
+Octave.
 
-The format string is passed to @code{strftime} and should begin with the
+The format string is passed to @code{strftime} and must begin with the
 character @samp{#} and contain no newline characters.  If the value of
 @code{save_header_format_string} is the empty string, the header comment is
 omitted from text-format data files.  The default value is
@@ -1839,7 +1869,7 @@ omitted from text-format data files.  The default value is
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{strftime, save}
+@seealso{strftime, save_default_options}
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (save_header_format_string);

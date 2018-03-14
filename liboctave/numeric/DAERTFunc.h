@@ -4,19 +4,19 @@ Copyright (C) 2002-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "dMatrix.h"
+#include "DAEFunc.h"
 
 class
 DAERTFunc : public DAEFunc
@@ -35,13 +35,13 @@ public:
   typedef ColumnVector (*DAERTConstrFunc) (const ColumnVector& x, double t);
 
   DAERTFunc (void)
-    : DAEFunc (), constr (0), reset (true) { }
+    : DAEFunc (), constr (nullptr), reset (true) { }
 
   DAERTFunc (DAERHSFunc f)
-    : DAEFunc (f), constr (0), reset (true) { }
+    : DAEFunc (f), constr (nullptr), reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAEJacFunc j)
-    : DAEFunc (f, j), constr (0), reset (true) { }
+    : DAEFunc (f, j), constr (nullptr), reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAERTConstrFunc cf)
     : DAEFunc (f), constr (cf), reset (true) { }
@@ -63,7 +63,7 @@ public:
     return *this;
   }
 
-  virtual ~DAERTFunc (void) { }
+  virtual ~DAERTFunc (void) = default;
 
   DAERTConstrFunc constraint_function (void) const { return constr; }
 

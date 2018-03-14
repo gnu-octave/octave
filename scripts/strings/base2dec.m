@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} base2dec (@var{s}, @var{base})
@@ -105,9 +105,9 @@ function out = base2dec (s, base)
   ## Lookup value of symbols in symbol table, with invalid symbols
   ## evaluating to NaN and space evaluating to 0.
   table = NaN (1, 256);
-  table(toascii (symbols(1:base))) = 0 : base-1;
-  table(toascii (" ")) = 0;
-  s = reshape (table(toascii (s)), size (s));
+  table(double (symbols(1:base))) = 0 : base-1;
+  table(double (" ")) = 0;
+  s = reshape (table(double (s)), size (s));
 
   ## Multiply the resulting digits by the appropriate power
   ## and sum the rows.
@@ -121,7 +121,7 @@ endfunction
 %!assert (base2dec ("-1", 2), NaN)
 %!assert (base2dec ({"A1", "1A"}, 16), [161; 26])
 
-%!assert <35621> (base2dec (["0"; "1"], 2), [0; 1])
+%!assert <*35621> (base2dec (["0"; "1"], 2), [0; 1])
 
 ## Test input validation
 %!error base2dec ()

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} grid
@@ -82,7 +82,6 @@ function grid (varargin)
       minor_auto = false;
     elseif (strcmpi (arg1, "on"))
       grid_on = true;
-      minor_on = false;
       minor_auto = true;
     elseif (strcmpi (arg1, "minor"))
       minor_auto = false;
@@ -151,6 +150,7 @@ endfunction
 %!  title ("yminorgrid on");
 
 %!demo
+%! clf;
 %! subplot (2,2,1);
 %!  semilogy (1:100);
 %!  grid off;
@@ -175,13 +175,29 @@ endfunction
 %!  plot (1:10);
 %!  set (gca, "xminorgrid", "on");
 %!  set (gca, "yminorgrid", "on");
+%!  title ({"major grid disabled",
+%!          "minor grid displayed at major ticks"});
 %! subplot (1,2,2)
 %!  semilogy (1:100);
 %!  set (gca, "xminorgrid", "on");
 %!  set (gca, "yminorgrid", "on");
+%!  title ({"major grid disabled",
+%!          "minor grid displayed at major ticks"});
+
+%!demo
+%! clf;
+%! plot3 (1:10, 1:10, 1:10);
+%! set (gca, "xtick", [0, pi/2, 4.7, 8, 10]);
+%! set (gca, "ytick", [0, 1, pi, 7.3, 10]);
+%! set (gca, "ztick", [0, exp(1), 5, 9.1, 10]);
+%! set (gca, "xminorgrid", "on");
+%! set (gca, "yminorgrid", "on");
+%! set (gca, "zminorgrid", "on");
+%! view (3);
+%! title ("Minor grid adapts to xticks (bug #45850)")
 
 ## linear scaling
-%!test <48533>
+%!test <*48533>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ();
@@ -240,7 +256,7 @@ endfunction
 %! end_unwind_protect
 
 ## semilog scaling
-%!test <48533>
+%!test <*48533>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ();

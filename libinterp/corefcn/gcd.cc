@@ -5,19 +5,19 @@ Copyright (C) 2010 Jaroslav Hajek, Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -145,8 +145,8 @@ extended_gcd (double a, double b, double& x, double& y)
       yy = ty;
     }
 
-  x = a >= 0 ? lx : -lx;
-  y = b >= 0 ? ly : -ly;
+  x = (a >= 0 ? lx : -lx);
+  y = (b >= 0 ? ly : -ly);
 
   return aa;
 }
@@ -267,12 +267,12 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
   switch (btyp)
     {
     case btyp_double:
-      if (a.is_sparse_type () && b.is_sparse_type ())
+      if (a.issparse () && b.issparse ())
         {
           retval = do_simple_gcd<SparseMatrix> (a, b);
           break;
         }
-      // fall through!
+      OCTAVE_FALLTHROUGH;
 
     case btyp_float:
       retval = do_simple_gcd<NDArray> (a, b);
@@ -420,7 +420,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
     }
 
   // For consistency.
-  if (a.is_sparse_type () && b.is_sparse_type ())
+  if (a.issparse () && b.issparse ())
     {
       retval = retval.sparse_matrix_value ();
       x = x.sparse_matrix_value ();

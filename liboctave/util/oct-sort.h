@@ -4,19 +4,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 Code stolen in large part from Python's, listobject.c, which itself had
 no license header.  However, thanks to Tim Peters for the parts of the
@@ -117,6 +117,12 @@ public:
 
   octave_sort (compare_fcn_type);
 
+  // No copying!
+
+  octave_sort (const octave_sort&) = delete;
+
+  octave_sort& operator = (const octave_sort&) = delete;
+
   ~octave_sort (void);
 
   void set_compare (compare_fcn_type comp) { compare = comp; }
@@ -130,7 +136,11 @@ public:
   void sort (T *data, octave_idx_type *idx, octave_idx_type nel);
 
   // Check whether an array is sorted.
-  bool is_sorted (const T *data, octave_idx_type nel);
+  bool issorted (const T *data, octave_idx_type nel);
+
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
+  bool is_sorted (const T *data, octave_idx_type nel)
+  { return issorted (data, nel); }
 
   // Sort a matrix by rows, return a permutation
   // vector.
@@ -147,13 +157,13 @@ public:
 
   // Ditto, but for an array.
   void lookup (const T *data, octave_idx_type nel,
-               const T* values, octave_idx_type nvalues,
+               const T *values, octave_idx_type nvalues,
                octave_idx_type *idx);
 
   // A linear merge of two sorted tables.  rev indicates the second table is
   // in reverse order.
   void lookup_sorted (const T *data, octave_idx_type nel,
-                      const T* values, octave_idx_type nvalues,
+                      const T *values, octave_idx_type nvalues,
                       octave_idx_type *idx, bool rev = false);
 
   // Rearranges the array so that the elements with indices
@@ -185,8 +195,14 @@ private:
   struct MergeState
   {
     MergeState (void)
-      : min_gallop (), a (0), ia (0), alloced (0), n (0)
+      : min_gallop (), a (nullptr), ia (nullptr), alloced (0), n (0)
     { reset (); }
+
+    // No copying!
+
+    MergeState (const MergeState&) = delete;
+
+    MergeState& operator = (const MergeState&) = delete;
 
     ~MergeState (void)
     { delete [] a; delete [] ia; }
@@ -220,12 +236,6 @@ private:
     // and keeping all the info explicit simplifies the code.
     octave_idx_type n;
     struct s_slice pending[MAX_MERGE_PENDING];
-
-    // No copying!
-
-    MergeState (const MergeState&);
-
-    MergeState& operator = (const MergeState&);
   };
 
   compare_fcn_type compare;
@@ -299,7 +309,12 @@ private:
   void sort (T *data, octave_idx_type *idx, octave_idx_type nel, Comp comp);
 
   template <typename Comp>
-  bool is_sorted (const T *data, octave_idx_type nel, Comp comp);
+  bool issorted (const T *data, octave_idx_type nel, Comp comp);
+
+  template <typename Comp>
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
+  bool is_sorted (const T *data, octave_idx_type nel, Comp comp)
+  { return issorted (data, nel, comp); }
 
   template <typename Comp>
   void sort_rows (const T *data, octave_idx_type *idx,
@@ -316,24 +331,18 @@ private:
 
   template <typename Comp>
   void lookup (const T *data, octave_idx_type nel,
-               const T* values, octave_idx_type nvalues,
+               const T *values, octave_idx_type nvalues,
                octave_idx_type *idx, Comp comp);
 
   template <typename Comp>
   void lookup_sorted (const T *data, octave_idx_type nel,
-                      const T* values, octave_idx_type nvalues,
+                      const T *values, octave_idx_type nvalues,
                       octave_idx_type *idx, bool rev, Comp comp);
 
   template <typename Comp>
   void nth_element (T *data, octave_idx_type nel,
                     octave_idx_type lo, octave_idx_type up,
                     Comp comp);
-
-  // No copying!
-
-  octave_sort (const octave_sort&);
-
-  octave_sort& operator = (const octave_sort&);
 };
 
 template <typename T>

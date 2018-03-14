@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @cindex warning ids
@@ -22,6 +22,13 @@
 ## @table @code
 ## @item Octave:abbreviated-property-match
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
+##
+## @item Octave:addpath-pkg
+## If the @code{Octave:addpath-pkg} warning is enabled,
+## Octave will warn when a package directory (i.e., +package_name) is added
+## to the @code{path}.  Typically, only the parent directory which contains the
+## package directory should be added to the load path.
+## By default, the @code{Octave:addpath-pkg} warning is enabled.
 ##
 ## @item Octave:array-as-logical
 ## If the @code{Octave:array-as-logical} warning is enabled,
@@ -156,6 +163,20 @@
 ## warning is issued when Octave encounters a division by zero.
 ## By default, the @code{Octave:divide-by-zero} warning is enabled.
 ##
+## @item Octave:eigs:UnconvergedEigenvalues
+## If the @code{Octave:eigs:UnconvergedEigenvalues} warning is enabled then
+## the eigs function will issue a warning if the number of calculated
+## eigenvalues is less than the number of requested eigenvalues.
+## By default, the @code{Octave:eigs:UnconvergedEigenvalues} warning is
+## enabled.
+##
+## @item Octave:erase:chararray
+## If the @code{Octave:erase:chararray} warning is enabled then the erase
+## function will issue a warning if the input pattern is a character array
+## rather than a string or cell array of strings.
+## By default, the @code{Octave:eigs:UnconvergedEigenvalues} warning is
+## enabled.
+##
 ## @item Octave:fopen-file-in-path
 ## By default, the @code{Octave:fopen-file-in-path} warning is enabled.
 ##
@@ -245,22 +266,8 @@
 ## If the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled, Octave will warn about using the not short circuiting
 ## operators @code{&} and @code{|} inside @code{if} or @code{while}
-## conditions.  They normally never short circuit, but @sc{matlab} always
-## short circuits if any logical operators are used in a condition.  You
-## can turn on the option
-##
-## @example
-## @group
-## do_braindead_shortcircuit_evaluation (1)
-## @end group
-## @end example
-##
-## @noindent
-## if you would like to enable this short-circuit evaluation in
-## Octave.  Note that the @code{&&} and @code{||} operators always short
-## circuit in both Octave and @sc{matlab}, so it's only necessary to
-## enable @sc{matlab}-style short-circuiting if it's too arduous to modify
-## existing code that relies on this behavior.
+## conditions.  They normally never short circuit, but they do short
+## circuit when used in a condition.
 ## By default, the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled.
 ##
@@ -333,12 +340,6 @@
 ## @noindent
 ## elicits a warning if the @code{Octave:str-to-num} warning is enabled.
 ## By default, the @code{Octave:str-to-num} warning is disabled.
-##
-## @item Octave:undefined-return-values
-## If the @code{Octave:undefined-return-values} warning is disabled,
-## print a warning if a function does not define all the values in
-## the return list which are expected.
-## By default, the @code{Octave:undefined-return-values} warning is enabled.
 ##
 ## @item Octave:variable-switch-label
 ## If the @code{Octave:variable-switch-label} warning is enabled, Octave

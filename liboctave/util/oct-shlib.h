@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
 #include <map>
 
@@ -41,14 +42,15 @@ namespace octave
   public: // FIXME: make this class private?
 
     typedef std::string (*name_mangler) (const std::string&);
-    typedef void (*close_hook) (const std::string&);
 
     class dynlib_rep
     {
     public:
 
       dynlib_rep (void)
-        : count (1), file (), tm_loaded (time_t ()), fcn_names () { }
+        : count (1), file (), tm_loaded (time_t ()), fcn_names (),
+          search_all_loaded (false)
+      { }
 
     protected:
 
@@ -64,17 +66,17 @@ namespace octave
       virtual bool is_open (void) const
       { return false; }
 
-      virtual void *search (const std::string&, name_mangler = 0)
-      { return 0; }
+      virtual void * search (const std::string&, name_mangler = nullptr)
+      { return nullptr; }
 
       bool is_out_of_date (void) const;
 
       // This method will be overridden conditionally.
-      static dynlib_rep *new_instance (const std::string& f);
+      static dynlib_rep * new_instance (const std::string& f);
 
-      static dynlib_rep *get_instance (const std::string& f, bool fake);
+      static dynlib_rep * get_instance (const std::string& f, bool fake);
 
-      octave::sys::time time_loaded (void) const
+      sys::time time_loaded (void) const
       { return tm_loaded; }
 
       std::string file_name (void) const
@@ -82,22 +84,24 @@ namespace octave
 
       size_t num_fcn_names (void) const { return fcn_names.size (); }
 
+      std::list<std::string> function_names (void) const;
+
       void add_fcn_name (const std::string&);
 
       bool remove_fcn_name (const std::string&);
 
-      void do_close_hook (close_hook cl_hook);
+      void clear_fcn_names (void) { fcn_names.clear (); }
 
     public:
 
-      octave_refcount<int> count;
+      refcount<int> count;
 
     protected:
 
       void fake_reload (void);
 
       std::string file;
-      octave::sys::time tm_loaded;
+      sys::time tm_loaded;
 
       // Set of hooked function names.
       typedef std::map<std::string, size_t>::iterator fcn_names_iterator;
@@ -106,6 +110,7 @@ namespace octave
       std::map<std::string, size_t> fcn_names;
 
       static std::map<std::string, dynlib_rep *> instances;
+      bool search_all_loaded;
     };
 
   private:
@@ -153,15 +158,18 @@ namespace octave
     void open (const std::string& f)
     { *this = dynamic_library (f); }
 
-    void close (close_hook cl_hook = 0)
+    std::list<std::string> close (void)
     {
-      if (cl_hook)
-        rep->do_close_hook (cl_hook);
+      std::list<std::string> removed_fcns = rep->function_names ();
+
+      rep->clear_fcn_names ();
 
       *this = dynamic_library ();
+
+      return removed_fcns;
     }
 
-    void *search (const std::string& nm, name_mangler mangler = 0) const
+    void * search (const std::string& nm, name_mangler mangler = nullptr) const
     {
       void *f = rep->search (nm, mangler);
       if (f)
@@ -185,7 +193,7 @@ namespace octave
     std::string file_name (void) const
     { return rep->file_name (); }
 
-    octave::sys::time time_loaded (void) const
+    sys::time time_loaded (void) const
     { return rep->time_loaded (); }
 
   private:
@@ -196,7 +204,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::dynamic_library' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::dynamic_library' instead")
 typedef octave::dynamic_library octave_shlib;
 
 #endif

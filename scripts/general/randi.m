@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} randi (@var{imax})
@@ -105,7 +105,7 @@ function ri = randi (bounds, varargin)
       maxval = double (flintmax (rclass));
       minval = -maxval;
     else
-      error ("randi: unknown requested output class '%s'", rclass);
+      error ("randi: unknown requested output CLASS '%s'", rclass);
     endif
     if (imax > maxval)
       warning (["randi: integer IMAX exceeds requested type.  ", ...
@@ -209,4 +209,4 @@ endfunction
 %!error <require IMIN <= IMAX> randi ([10, 1])
 %!error <IMIN and IMAX must be smaller than flintmax\(\)> randi (flintmax ())
 %!error <range must be smaller than flintmax\(\)-1> randi ([-1, flintmax() - 1])
-%!error <unknown requested output class 'foo'> randi (10, "foo")
+%!error <unknown requested output CLASS 'foo'> randi (10, "foo")

@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Numerical Integration
 @chapter Numerical Integration
@@ -32,14 +32,14 @@ of a function numerically (termed quadrature).  These functions all solve
 @node Functions of One Variable
 @section Functions of One Variable
 
-Octave supports five different algorithms for computing the integral
+Octave supports five different adaptive quadrature algorithms for computing
+the integral
 @tex
 $$
  \int_a^b f(x) d x
 $$
 @end tex
-of a function @math{f} over the interval from @math{a} to @math{b}.
-These are
+of a function @math{f} over the interval from @math{a} to @math{b}.  These are
 
 @table @code
 @item quad
@@ -56,6 +56,12 @@ Numerical integration using an adaptive Gauss-Konrod rule.
 
 @item quadcc
 Numerical integration using adaptive @nospell{Clenshaw-Curtis} rules.
+
+In addition, the following functions are also provided:
+
+@item integral
+A compatibility wrapper function that will choose between @code{quadv} and
+@code{quadgk} depending on the integrand and options chosen.
 
 @item trapz, cumtrapz
 Numerical integration of data using the trapezoidal method.
@@ -165,6 +171,8 @@ quadcc (f, 0, Inf)
 
 @DOCSTRING(quadcc)
 
+@DOCSTRING(integral)
+
 Sometimes one does not have the function, but only the raw (x, y) points from
 which to perform an integration.  This can occur when collecting data in an
 experiment.  The @code{trapz} function can integrate these values as shown in
@@ -266,13 +274,12 @@ u = [ 0; (at - alpha * bt) \ rhs; 1]
 @node Functions of Multiple Variables
 @section Functions of Multiple Variables
 
-Octave does not have built-in functions for computing the integral of
-functions of multiple variables directly.  It is possible, however, to
-compute the integral of a function of multiple variables using the
-existing functions for one-dimensional integrals.
+Octave includes several functions for computing the integral of functions of
+multiple variables.  This procedure can generally be performed by creating a
+function that integrates @math{f} with respect to @math{x}, and then integrates
+that function with respect to @math{y}.  This procedure can be performed
+manually using the following example which integrates the function:
 
-To illustrate how the integration can be performed, we will integrate
-the function
 @tex
 $$
   f(x, y) = \sin(\pi x y)\sqrt{x y}
@@ -281,19 +288,16 @@ $$
 @ifnottex
 
 @example
-f(x, y) = sin(pi*x*y)*sqrt(x*y)
+f(x, y) = sin(pi*x*y) * sqrt(x*y)
 @end example
 
 @end ifnottex
 for @math{x} and @math{y} between 0 and 1.
 
-The first approach creates a function that integrates @math{f} with
-respect to @math{x}, and then integrates that function with respect to
-@math{y}.  Because @code{quad} is written in Fortran it cannot be called
-recursively.  This means that @code{quad} cannot integrate a function
-that calls @code{quad}, and hence cannot be used to perform the double
-integration.  Any of the other integrators, however, can be used which is
-what the following code demonstrates.
+Using @code{quadgk} in the example below, a double integration can be
+performed.  (Note that any of the 1-D quadrature functions can be used in this
+fashion except for @code{quad} since it is written in Fortran and cannot be
+called recursively.)
 
 @example
 @group
@@ -310,9 +314,10 @@ I = quadgk ("g", 0, 1)
 @end group
 @end example
 
-The above process can be simplified with the @code{dblquad} and
-@code{triplequad} functions for integrals over two and three
-variables.  For example:
+The algorithm above is implemented in the function @code{dblquad} for integrals
+over two variables.  The 3-D equivalent of this process is implemented in
+@code{triplequad} for integrals over three variables.  As an example, the
+result above can be replicated with a call to @code{dblquad} as shown below.
 
 @example
 @group
@@ -325,12 +330,32 @@ I = dblquad (@@(x, y) sin (pi*x.*y) .* sqrt (x.*y), 0, 1, 0, 1)
 
 @DOCSTRING(triplequad)
 
-The above mentioned approach works, but is fairly slow, and that problem
-increases exponentially with the dimensionality of the integral.  Another
-possible solution is to use Orthogonal Collocation as described in the
-previous section (@pxref{Orthogonal Collocation}).  The integral of a function
-@math{f(x,y)} for @math{x} and @math{y} between 0 and 1 can be approximated
-using @math{n} points by
+The recursive algorithm for quadrature presented above is referred to as
+@qcode{"iterated"}.  A separate 2-D integration method is implemented in the
+function @code{quad2d}.  This function performs a @qcode{"tiled"} integration
+by subdividing the integration domain into rectangular regions and performing
+separate integrations over those domains.  The domains are further subdivided
+in areas requiring refinement to reach the desired numerical accuracy.  For
+certain functions this method can be faster than the 2-D iteration used in the
+other functions above.
+
+@DOCSTRING(quad2d)
+
+Finally, the functions @code{integral2} and @code{integral3} are provided
+as general 2-D and 3-D integration functions.  They will auto-select between
+iterated and tiled integration methods and, unlike @code{dblquad} and
+@code{triplequad}, will work with non-rectangular integration domains.
+
+@DOCSTRING(integral2)
+
+@DOCSTRING(integral3)
+
+The above integrations can be fairly slow, and that problem increases
+exponentially with the dimensionality of the integral.  Another possible
+solution for 2-D integration is to use Orthogonal Collocation as described in
+the previous section (@pxref{Orthogonal Collocation}).  The integral of a
+function @math{f(x,y)} for @math{x} and @math{y} between 0 and 1 can be
+approximated using @math{n} points by
 @tex
 $$
  \int_0^1 \int_0^1 f(x,y) d x d y \approx \sum_{i=1}^n \sum_{j=1}^n q_i q_j f(r_i, r_j),

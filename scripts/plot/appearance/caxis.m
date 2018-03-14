@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} caxis ([cmin cmax])
@@ -52,6 +52,10 @@ function limits = caxis (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("caxis", varargin{:});
 
+  if (nargin > 1)
+    print_usage ();
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
@@ -61,9 +65,25 @@ function limits = caxis (varargin)
       hax = gca ();
     endif
     if (nargin == 0)
-      limits = __caxis__ (hax);
+      limits = get (hax, "clim");
     else
-      __caxis__ (hax, varargin{:});
+      arg1 = varargin{1};
+      if (ischar (arg1))
+        if (strcmpi (arg1, "auto"))
+          set (hax, "climmode", "auto");
+        elseif (strcmpi (arg1, "manual"))
+          set (hax, "climmode", "manual");
+        else
+          error ("caxis: invalid mode '%s'", arg1);
+        endif
+      elseif (isvector (arg1))
+        if (numel (arg1) != 2 || ! isnumeric (arg1) || arg1(1) >= arg1(2))
+          error ("caxis: LIMITS must be a numeric 2-element vector where LIM1 < LIM2");
+        endif
+        set (hax, "clim", arg1);
+      else
+        print_usage ();
+      endif
     endif
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -73,30 +93,31 @@ function limits = caxis (varargin)
 
 endfunction
 
-function limits = __caxis__ (ca, arg1, varargin)
 
-  if (nargin == 1)
-    limits = get (ca, "clim");
-  elseif (ischar (arg1))
-    if (strcmpi (arg1, "auto"))
-      set (ca, "climmode", "auto");
-    elseif (strcmpi (arg1, "manual"))
-      set (ca, "climmode", "manual");
-    endif
-  elseif (isvector (arg1))
-    if (numel (arg1) != 2 || ! isnumeric (arg1) || arg1(1) >= arg1(2))
-      error (["caxis: "
-              "LIMITS must be a numeric 2-element vector where LIM1 < LIM2"]);
-    endif
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   caxis ([e, pi]);
+%!   assert (caxis (), [e, pi]);
+%!   caxis (hax, [-1, 1]);
+%!   assert (caxis (hax), [-1, 1]);
+%!   assert (get (hax, "climmode"), "manual");
+%!   caxis ("auto");
+%!   assert (get (hax, "climmode"), "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
-    set (ca, "clim", arg1);
-  else
-    error ("caxis: expecting no args, a string, or a 2 element vector");
-  endif
-
-  ## FIXME: Why should it be possible to call __caxis__ recursively?
-  if (nargin > 2)
-    __caxis__ (ca, varargin{:})';
-  endif
-
-endfunction
+## Test input validation
+%!error caxis (1,2,3)
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   fail ("caxis ('foo')", "invalid mode 'foo'");
+%!   fail ("caxis ([1 2 3])", "2-element vector");
+%!   fail ("caxis ({1 2 3})", "numeric 2-element vector");
+%!   fail ("caxis ([1 0])", "LIM1 < LIM2");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

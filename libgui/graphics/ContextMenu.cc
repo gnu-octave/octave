@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -36,19 +36,19 @@ namespace QtHandles
   ContextMenu*
   ContextMenu::create (const graphics_object& go)
   {
-    Object* xparent = Object::parentObject (go);
+    Object *xparent = Object::parentObject (go);
 
     if (xparent)
       {
-        QWidget* w = xparent->qWidget<QWidget> ();
+        QWidget *w = xparent->qWidget<QWidget> ();
 
         return new ContextMenu (go, new QMenu (w));
       }
 
-    return 0;
+    return nullptr;
   }
 
-  ContextMenu::ContextMenu (const graphics_object& go, QMenu* xmenu)
+  ContextMenu::ContextMenu (const graphics_object& go, QMenu *xmenu)
     : Object (go, xmenu)
   {
     xmenu->setAutoFillBackground (true);
@@ -64,7 +64,7 @@ namespace QtHandles
   ContextMenu::update (int pId)
   {
     uicontextmenu::properties& up = properties<uicontextmenu> ();
-    QMenu* xmenu = qWidget<QMenu> ();
+    QMenu *xmenu = qWidget<QMenu> ();
 
     switch (pId)
       {
@@ -72,7 +72,7 @@ namespace QtHandles
         if (up.is_visible ())
           {
             Matrix pos = up.get_position ().matrix_value ();
-            QWidget* parentW = xmenu->parentWidget ();
+            QWidget *parentW = xmenu->parentWidget ();
             QPoint pt;
 
             pt.rx () = octave::math::round (pos(0));
@@ -121,12 +121,12 @@ namespace QtHandles
 
         if (go.valid_object ())
           {
-            ContextMenu* cMenu =
-              dynamic_cast<ContextMenu*> (Backend::toolkitObject (go));
+            ContextMenu *cMenu =
+              dynamic_cast<ContextMenu *> (Backend::toolkitObject (go));
 
             if (cMenu)
               {
-                QMenu* menu = cMenu->qWidget<QMenu> ();
+                QMenu *menu = cMenu->qWidget<QMenu> ();
 
                 if (menu)
                   menu->popup (pt);

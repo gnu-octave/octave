@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{value} =} __gnuplot_get_var__ (@var{h}, @var{name}, @var{fmt})
@@ -71,7 +71,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
     ## or Alt-F4.  Further, this abrupt close also requires the leading
     ## "\n" on the next line.
     if (use_mkfifo)
-      fprintf (ostream, "\nset print \"%s\";\n", gpin_name);
+      fprintf (ostream, ["\n" 'set print "%s";' "\n"], gpin_name);
       fflush (ostream);
       [gpin, err] = fopen (gpin_name, "r");
       if (err)
@@ -81,7 +81,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
       if (err)
         error ("__gnuplot_get_var__: can not open FIFO");
       endif
-      gp_cmd = sprintf ("\nif (exists(\"%s\")) print %s; else print NaN\n",
+      gp_cmd = sprintf (["\n" 'if (exists("%s")) print %s; else print NaN' "\n"],
                         gp_var_name(1:n), gp_var_name);
       fputs (ostream, gp_cmd);
 
@@ -103,9 +103,9 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
       fclose (gpin);
     else
       ## Direct gnuplot to print to <STDOUT>
-      fprintf (ostream, "set print \"-\";\n");
+      fprintf (ostream, ['set print "-";' "\n"]);
       fflush (ostream);
-      gp_cmd = sprintf ("\nif (exists(\"%s\")) print \"OCTAVE: \", %s; else print NaN\n",
+      gp_cmd = sprintf (["\n" 'if (exists("%s")) print "OCTAVE: ", %s; else print NaN' "\n"],
                         gp_var_name(1:n), gp_var_name);
       fputs (ostream, gp_cmd);
       fflush (ostream);

@@ -4,19 +4,19 @@ Copyright (C) 2013-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -44,7 +44,7 @@ public:
 
   base_hook_function (const base_hook_function&) : count (1) { }
 
-  virtual ~base_hook_function (void) { }
+  virtual ~base_hook_function (void) = default;
 
   virtual std::string id (void) { return ""; }
 
@@ -128,7 +128,7 @@ public:
     if (data.is_defined ())
       args.append (data);
 
-    feval (name, args, 0);
+    octave::feval (name, args, 0);
   }
 
   std::string id (void) { return name; }
@@ -158,7 +158,7 @@ public:
 
         std::ostringstream buf;
         buf << fh;
-        ident = fh->fcn_name () + ":" + buf.str ();
+        ident = fh->fcn_name () + ':' + buf.str ();
       }
   }
 
@@ -169,7 +169,7 @@ public:
     if (data.is_defined ())
       args.append (data);
 
-    fcn_handle.do_multi_index_op (0, args);
+    octave::feval (fcn_handle, args, 0);
   }
 
   std::string id (void) { return ident; }
@@ -199,7 +199,7 @@ public:
 
   hook_function_list (void) : fcn_map () { }
 
-  ~hook_function_list (void) { }
+  ~hook_function_list (void) = default;
 
   hook_function_list (const hook_function_list& lst)
     : fcn_map (lst.fcn_map)

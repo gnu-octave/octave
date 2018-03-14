@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} rank (@var{A})
@@ -34,26 +34,42 @@
 ## singular value of @var{A}.
 ##
 ## The rank of a matrix is the number of linearly independent rows or columns
-## and determines how many particular solutions exist to a system of equations.
-## Use @code{null} for finding the remaining homogenous solutions.
+## and equals the dimension of the row and column space.  The function
+## @code{orth} may be used to compute an orthonormal basis of the column space.
+##
+## For testing if a system @code{@var{A}*@var{x} = @var{b}} of linear equations
+## is solvable, one can use
+##
+## @example
+## rank (@var{A}) == rank ([@var{A} @var{b}])
+## @end example
+##
+## In this case, @code{@var{x} = @var{A} \ @var{b}} finds a particular solution
+## @var{x}.  The general solution is @var{x} plus the null space of matrix
+## @var{A}.  The function @code{null} may be used to compute a basis of the
+## null space.
 ##
 ## Example:
 ##
 ## @example
 ## @group
-## x = [1 2 3
+## A = [1 2 3
 ##      4 5 6
 ##      7 8 9];
-## rank (x)
+## rank (A)
 ##   @result{} 2
 ## @end group
 ## @end example
 ##
 ## @noindent
-## The number of linearly independent rows is only 2 because the final row is a
-## linear combination of -1*row1 + 2*row2.
+## In this example, the number of linearly independent rows is only 2 because
+## the final row is a linear combination of the first two rows:
 ##
-## @seealso{null, sprank, svd}
+## @example
+## A(3,:) == -A(1,:) + 2 * A(2,:)
+## @end example
+##
+## @seealso{null, orth, sprank, svd, eps}
 ## @end deftypefn
 
 ## Author: jwe

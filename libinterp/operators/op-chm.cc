@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -96,14 +96,14 @@ DEFCATOP (m_chm, matrix, char_matrix)
 }
 
 void
-install_chm_ops (void)
+install_chm_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_transpose, octave_char_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_char_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_char_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_char_matrix, transpose);
 
-  INSTALL_CATOP (octave_char_matrix, octave_char_matrix, chm_chm);
-  INSTALL_CATOP (octave_char_matrix, octave_scalar, chm_s);
-  INSTALL_CATOP (octave_char_matrix, octave_matrix, chm_m);
-  INSTALL_CATOP (octave_scalar, octave_char_matrix, s_chm);
-  INSTALL_CATOP (octave_matrix, octave_char_matrix, m_chm);
+  INSTALL_CATOP_TI (ti, octave_char_matrix, octave_char_matrix, chm_chm);
+  INSTALL_CATOP_TI (ti, octave_char_matrix, octave_scalar, chm_s);
+  INSTALL_CATOP_TI (ti, octave_char_matrix, octave_matrix, chm_m);
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_char_matrix, s_chm);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_char_matrix, m_chm);
 }

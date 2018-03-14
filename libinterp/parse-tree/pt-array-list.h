@@ -4,19 +4,19 @@ Copyright (C) 2013-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,57 +28,68 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-list.h"
 #include "pt-arg-list.h"
 #include "pt-exp.h"
-#include "symtab.h"
 
-// Base class for cell arrays and matrices.
-
-class
-tree_array_list : public tree_expression,
-                  public octave::base_list<tree_argument_list *>
+namespace octave
 {
-public:
+  class symbol_scope;
+  class tree_walker;
 
-  typedef octave::base_list<tree_argument_list *>::iterator iterator;
-  typedef octave::base_list<tree_argument_list *>::const_iterator const_iterator;
+  // Base class for cell arrays and matrices.
 
-  tree_array_list (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
+  class tree_array_list : public tree_expression,
+                          public base_list<tree_argument_list *>
   {
-    if (row)
-      append (row);
-  }
+  public:
 
-  ~tree_array_list (void);
+    typedef base_list<tree_argument_list *>::iterator iterator;
+    typedef base_list<tree_argument_list *>::const_iterator const_iterator;
 
-  bool all_elements_are_constant (void) const;
+  protected:
 
-  bool has_magic_end (void) const;
+    tree_array_list (tree_argument_list *row = nullptr, int l = -1, int c = -1)
+      : tree_expression (l, c), base_list<tree_argument_list *> ()
+    {
+      if (row)
+        append (row);
+    }
 
-  // FIXME: should we import the functions from the base class and
-  // overload them here, or should we use a different name so we don't
-  // have to do this?  Without the using declaration or a name change,
-  // the base class functions will be hidden.  That may be OK, but it
-  // can also cause some confusion.
-  using tree_expression::copy_base;
+  public:
 
-  void copy_base (const tree_array_list& array_list);
+    // No copying!
 
-  void copy_base (const tree_array_list& array_list,
-                  symbol_table::scope_id scope,
-                  symbol_table::context_id context);
+    tree_array_list (const tree_array_list&) = delete;
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    tree_array_list& operator = (const tree_array_list&) = delete;
 
-  void accept (tree_walker& tw);
+    ~tree_array_list (void);
 
-private:
+    bool all_elements_are_constant (void) const;
 
-  // No copying!
+    bool has_magic_end (void) const;
 
-  tree_array_list (const tree_array_list&);
+    // FIXME: should we import the functions from the base class and
+    // overload them here, or should we use a different name so we don't
+    // have to do this?  Without the using declaration or a name change,
+    // the base class functions will be hidden.  That may be OK, but it
+    // can also cause some confusion.
+    using tree_expression::copy_base;
 
-  tree_array_list& operator = (const tree_array_list&);
-};
+    void copy_base (const tree_array_list& array_list);
+
+    void copy_base (const tree_array_list& array_list,
+                    symbol_scope& scope);
+
+    tree_expression * dup (symbol_scope& scope) const;
+
+    void accept (tree_walker& tw);
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_array_list' instead")
+typedef octave::tree_array_list tree_array_list;
+
+#endif
 
 #endif

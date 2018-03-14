@@ -2,19 +2,19 @@
 %
 % This file is part of Octave.
 %
-% Octave is free software; you can redistribute it and/or modify it
-% under the terms of the GNU General Public License as published by the
-% Free Software Foundation; either version 3 of the License, or (at
-% your option) any later version.
+% Octave is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
 %
-% Octave is distributed in the hope that it will be useful, but WITHOUT
-% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-% for more details.
+% Octave is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
 %
 % You should have received a copy of the GNU General Public License
 % along with Octave; see the file COPYING.  If not, see
-% <http://www.gnu.org/licenses/>.
+% <https://www.gnu.org/licenses/>.
 
 \input texinfo
 
@@ -55,6 +55,7 @@ END-INFO-DIR-ENTRY
 @end ignore
 
 @defindex op
+@defindex pr
 
 @c The version.texi file doesn't include a chapter, so it must not be
 @c included if you want to run the Emacs function
@@ -196,6 +197,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Concept Index::               An item for each concept.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
+* Graphics Properties Index::   An item for each graphics object property.
 
 @detailmenu
  --- The Detailed Node Listing ---
@@ -309,6 +311,7 @@ Creating Strings
 Data Containers
 
 * Structures::
+* containers.Map::
 * Cell Arrays::
 * Comma Separated Lists::
 
@@ -358,6 +361,7 @@ Calling Functions
 
 * Call by Value::
 * Recursion::
+* Access via Handle::
 
 Boolean Expressions
 
@@ -579,6 +583,7 @@ Advanced Plotting
 * Callbacks::
 * Application-defined Data::
 * Object Groups::
+* Transform Groups::
 * Graphics Toolkits::
 
 Object Groups
@@ -711,10 +716,8 @@ Statistics
 
 * Descriptive Statistics::
 * Basic Statistical Functions::
-* Statistical Plots::
 * Correlation and Regression Analysis::
 * Distributions::
-* Tests::
 * Random Number Generation::
 
 Sets
@@ -979,5 +982,6 @@ Grammar and Parser
 @include cp-idx.texi
 @include fn-idx.texi
 @include op-idx.texi
+@include pr-idx.texi
 
 @bye

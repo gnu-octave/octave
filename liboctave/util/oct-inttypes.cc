@@ -5,19 +5,19 @@ Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -309,7 +309,7 @@ octave_int_cmp_op::emulate_mop (double x, int64_t y)
   return mop<rop> (y, x);
 }
 
-// Define handlers for int64 multiplication
+// Define handlers for (u)int64 multiplication.
 
 template <>
 uint64_t
@@ -329,7 +329,7 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
           uint64_t uxly = ux*ly;
           if (uxly >> 32)
             goto overflow;
-          uxly <<= 32; // never overflows
+          uxly <<= 32;  // never overflows
           uint64_t lx = static_cast<uint32_t> (x);
           uint64_t lxly = lx*ly;
           res = add (uxly, lxly);
@@ -341,7 +341,7 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
       uint64_t uylx = uy*lx;
       if (uylx >> 32)
         goto overflow;
-      uylx <<= 32; // never overflows
+      uylx <<= 32;  // never overflows
       uint64_t ly = static_cast<uint32_t> (y);
       uint64_t lylx = ly*lx;
       res = add (uylx, lylx);
@@ -363,9 +363,8 @@ template <>
 int64_t
 octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 {
-  // The signed case is far worse.  The problem is that
-  // even if neither integer fits into signed 32-bit range, the result may
-  // still be OK.  Uh oh.
+  // The signed case is far worse.  The problem is that even if neither integer
+  // fits into signed 32-bit range, the result may still be OK.  Uh oh.
 
   // Essentially, what we do is compute sign, multiply absolute values
   // (as above) and impose the sign.
@@ -389,7 +388,7 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
           uint64_t uxly = ux*ly;
           if (uxly >> 32)
             goto overflow;
-          uxly <<= 32; // never overflows
+          uxly <<= 32;  // never overflows
           uint64_t lx = static_cast<uint32_t> (usx);
           uint64_t lxly = lx*ly;
           res = uxly + lxly;
@@ -403,7 +402,7 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
       uint64_t uylx = uy*lx;
       if (uylx >> 32)
         goto overflow;
-      uylx <<= 32; // never overflows
+      uylx <<= 32;  // never overflows
       uint64_t ly = static_cast<uint32_t> (usy);
       uint64_t lylx = ly*lx;
       res = uylx + lylx;
@@ -420,18 +419,14 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
   if (positive)
     {
       if (res > static_cast<uint64_t> (max_val ()))
-        {
-          return max_val ();
-        }
+        return max_val ();
       else
         return static_cast<int64_t> (res);
     }
   else
     {
-      if (res > static_cast<uint64_t> (-min_val ()))
-        {
-          return min_val ();
-        }
+      if (res > static_cast<uint64_t> (min_val ()))
+        return min_val ();
       else
         return -static_cast<int64_t> (res);
     }
@@ -743,7 +738,7 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
 template <typename T>
 octave_int<T>
 pow (const double& a, const octave_int<T>& b)
-{ return octave_int<T> (pow (a, b.double_value ())); }
+{ return octave_int<T> (std::pow (a, b.double_value ())); }
 
 template <typename T>
 octave_int<T>
@@ -752,13 +747,13 @@ pow (const octave_int<T>& a, const double& b)
   return ((b >= 0 && b < std::numeric_limits<T>::digits
            && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
-          : octave_int<T> (pow (a.double_value (), b)));
+          : octave_int<T> (std::pow (a.double_value (), b)));
 }
 
 template <typename T>
 octave_int<T>
 pow (const float& a, const octave_int<T>& b)
-{ return octave_int<T> (pow (a, b.float_value ())); }
+{ return octave_int<T> (std::pow (a, b.float_value ())); }
 
 template <typename T>
 octave_int<T>
@@ -767,12 +762,12 @@ pow (const octave_int<T>& a, const float& b)
   return ((b >= 0 && b < std::numeric_limits<T>::digits
            && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
-          : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
+          : octave_int<T> (std::pow (a.double_value (),
+                                     static_cast<double> (b))));
 }
 
-// FIXME: Do we really need a differently named single-precision
-//        function integer power function here instead of an overloaded
-//        one?
+// FIXME: Do we really need a differently named single-precision function
+//        integer power function here instead of an overloaded one?
 template <typename T>
 octave_int<T>
 powf (const float& a, const octave_int<T>& b)
@@ -785,7 +780,8 @@ powf (const octave_int<T>& a, const float& b)
   return ((b >= 0 && b < std::numeric_limits<T>::digits
            && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
-          : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
+          : octave_int<T> (std::pow (a.double_value (),
+                                     static_cast<double> (b))));
 }
 
 #define INSTANTIATE_INTTYPE(T)                                          \

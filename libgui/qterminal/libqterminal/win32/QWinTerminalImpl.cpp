@@ -16,7 +16,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not,
-see <http://www.gnu.org/licenses/>.
+see <https://www.gnu.org/licenses/>.
 
 */
 
@@ -1842,7 +1842,7 @@ void QWinTerminalImpl::dropEvent (QDropEvent *event)
       foreach (QUrl url, event->mimeData ()->urls ())
         {
           if(dropText.length () > 0)
-            dropText += "\n";
+            dropText += '\n';
           dropText  += url.toLocalFile ();
         }
       sendText (dropText);

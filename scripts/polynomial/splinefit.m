@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
@@ -127,14 +127,14 @@ function pp = splinefit (x, y, breaks, varargin)
     if (0 < props.beta && props.beta < 1)
       args{end+1} = props.beta;
     else
-      error ("splinefit:invalidbeta", "invalid beta parameter (0 < beta < 1)");
+      error ("splinefit:invalidbeta", "invalid beta parameter (0 < BETA < 1)");
     endif
   endif
   if (isfield (props, "order"))
     if (props.order >= 0)
       args{end+1} = props.order + 1;
     else
-      error ("splinefit:invalidorder", "invalid order");
+      error ("splinefit:invalidorder", "invalid ORDER");
     endif
   endif
   if (isfield (props, "constraints"))

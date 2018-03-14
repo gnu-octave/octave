@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -64,7 +64,7 @@ nan_descending_compare (double x, double y)
 Array<double>::compare_fcn_type
 safe_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
 {
-  Array<double>::compare_fcn_type result = 0;
+  Array<double>::compare_fcn_type result = nullptr;
 
   if (allow_chk)
     {
@@ -95,7 +95,7 @@ safe_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
 template <>
 OCTAVE_API
 sortmode
-Array<double>::is_sorted (sortmode mode) const
+Array<double>::issorted (sortmode mode) const
 {
   octave_idx_type n = numel ();
 

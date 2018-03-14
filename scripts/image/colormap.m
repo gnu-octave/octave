@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{cmap} =} colormap ()
@@ -40,7 +40,7 @@
 ## is the name of a function that returns a colormap.
 ##
 ## If the first argument @var{hax} is an axes handle, then the colormap for
-## the parent figure of @var{hax} is queried or set.
+## those axes is queried or set.
 ##
 ## For convenience, it is also possible to use this function with the
 ## command form, @code{colormap @var{map_name}}.
@@ -93,7 +93,7 @@ function cmap = colormap (varargin)
   endif
 
   if (! isempty (hax))
-    cf = ancestor (hax, "figure");
+    cf = hax;
   else
     cf = get (0, "currentfigure");
   endif
@@ -101,6 +101,7 @@ function cmap = colormap (varargin)
   if (nargin == 1)
     map = varargin{1};
     if (ischar (map))
+      map = tolower (map);
       if (strcmp (map, "default"))
         map = viridis (64);
       else

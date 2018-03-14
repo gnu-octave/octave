@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,8 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
-class tree_walker;
-
 // Data structures.
 
 class
@@ -58,12 +56,12 @@ public:
   octave_struct (const octave_struct& s)
     : octave_base_value (), map (s.map) { }
 
-  ~octave_struct (void) { }
+  ~octave_struct (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_struct (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_struct (); }
+  octave_base_value * clone (void) const { return new octave_struct (*this); }
+  octave_base_value * empty_clone (void) const { return new octave_struct (); }
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   Cell dotref (const octave_value_list& idx, bool auto_add = false);
 
@@ -119,7 +117,7 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_map (void) const { return true; }
+  bool isstruct (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return btyp_struct; }
 
@@ -132,6 +130,9 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
 
   bool save_ascii (std::ostream& os);
 
@@ -146,7 +147,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value
   fast_elem_extract (octave_idx_type n) const;
@@ -175,14 +176,17 @@ public:
   octave_scalar_struct (const octave_scalar_map& m)
     : octave_base_value (), map (m) { }
 
+  octave_scalar_struct (const std::map<std::string, octave_value>& m)
+    : octave_base_value (), map (m) { }
+
   octave_scalar_struct (const octave_scalar_struct& s)
     : octave_base_value (), map (s.map) { }
 
-  ~octave_scalar_struct (void) { }
+  ~octave_scalar_struct (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_scalar_struct (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_scalar_struct (); }
 
   octave_value dotref (const octave_value_list& idx, bool auto_add = false);
@@ -235,7 +239,7 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_map (void) const { return true; }
+  bool isstruct (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return btyp_struct; }
 
@@ -251,6 +255,9 @@ public:
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -264,7 +271,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 

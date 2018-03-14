@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -110,11 +110,11 @@ When the third argument is a matrix, return the convolution of the matrix
       if (args(0).is_single_type () || args(1).is_single_type ()
           || args(2).is_single_type ())
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ()
-              || args(2).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ()
+              || args(2).iscomplex ())
             {
               FloatComplexMatrix a (args(2).float_complex_matrix_value ());
-              if (args(1).is_real_type () && args(2).is_real_type ())
+              if (args(1).isreal () && args(2).isreal ())
                 {
                   FloatColumnVector v1 (args(0).float_vector_value ());
                   FloatRowVector v2 (args(1).float_vector_value ());
@@ -137,11 +137,11 @@ When the third argument is a matrix, return the convolution of the matrix
         }
       else
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ()
-              || args(2).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ()
+              || args(2).iscomplex ())
             {
               ComplexMatrix a (args(2).complex_matrix_value ());
-              if (args(1).is_real_type () && args(2).is_real_type ())
+              if (args(1).isreal () && args(2).isreal ())
                 {
                   ColumnVector v1 (args(0).vector_value ());
                   RowVector v2 (args(1).vector_value ());
@@ -167,10 +167,10 @@ When the third argument is a matrix, return the convolution of the matrix
     {
       if (args(0).is_single_type () || args(1).is_single_type ())
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ())
             {
               FloatComplexMatrix a (args(0).float_complex_matrix_value ());
-              if (args(1).is_real_type ())
+              if (args(1).isreal ())
                 {
                   FloatMatrix b (args(1).float_matrix_value ());
                   retval = convn (a, b, ct);
@@ -190,10 +190,10 @@ When the third argument is a matrix, return the convolution of the matrix
         }
       else
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          if (args(0).iscomplex () || args(1).iscomplex ())
             {
               ComplexMatrix a (args(0).complex_matrix_value ());
-              if (args(1).is_real_type ())
+              if (args(1).isreal ())
                 {
                   Matrix b (args(1).matrix_value ());
                   retval = convn (a, b, ct);
@@ -233,7 +233,7 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6], "full"),
 %!        conv2 (1:3, 1:2, [1,2;3,4;5,6]));
 
-%% Test shapes
+## Test shapes
 %!shared A, B, C
 %! A = rand (3, 4);
 %! B = rand (4);
@@ -251,17 +251,17 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert (conv2 (A,B, "valid"), zeros (0, 0))
 %!assert (size (conv2 (B,A, "valid")), [3 2])
 
-%% Clear shared variables so they are not reported for tests below
+## Clear shared variables so they are not reported for tests below
 %!shared
 
-%% Test cases from Bug #34893
-%!assert <34893> (conv2 ([1:5;1:5], [1:2], "same"),
+## Test cases from Bug #34893
+%!assert <*34893> (conv2 ([1:5;1:5], [1:2], "same"),
 %!                [4 7 10 13 10; 4 7 10 13 10])
-%!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "same"),
+%!assert <*34893> (conv2 ([1:5;1:5]', [1:2]', "same"),
 %!                [4 7 10 13 10; 4 7 10 13 10]')
-%!assert <34893> (conv2 ([1:5;1:5], [1:2], "valid"),
+%!assert <*34893> (conv2 ([1:5;1:5], [1:2], "valid"),
 %!                [4 7 10 13; 4 7 10 13])
-%!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "valid"),
+%!assert <*34893> (conv2 ([1:5;1:5]', [1:2]', "valid"),
 %!                [4 7 10 13; 4 7 10 13]')
 
 %% Restore the rand "seed" and "state" values in order, so that the
@@ -288,12 +288,12 @@ When the third argument is a matrix, return the convolution of the matrix
 %! B = conv2 (x, y, "valid");
 %! assert (B, A);   # Yes, this test is for *exact* equivalence.
 
-%% Test input validation
+## Test input validation
 %!error conv2 ()
 %!error conv2 (1)
 %!error <must be 1-D vectors or 2-D matrices> conv2 (ones (2), ones (2,2,2))
 %!error <SHAPE type not valid> conv2 (1,2, "NOT_A_SHAPE")
-%% Test alternate calling form which should be 2 vectors and a matrix
+## Test alternate calling form which should be 2 vectors and a matrix
 %!error conv2 (ones (2), 1, 1)
 %!error conv2 (1, ones (2), 1)
 */
@@ -348,10 +348,10 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 
   if (args(0).is_single_type () || args(1).is_single_type ())
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           FloatComplexNDArray a (args(0).float_complex_array_value ());
-          if (args(1).is_real_type ())
+          if (args(1).isreal ())
             {
               FloatNDArray b (args(1).float_array_value ());
               retval = convn (a, b, ct);
@@ -371,10 +371,10 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
     }
   else
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           ComplexNDArray a (args(0).complex_array_value ());
-          if (args(1).is_real_type ())
+          if (args(1).isreal ())
             {
               NDArray b (args(1).array_value ());
               retval = convn (a, b, ct);

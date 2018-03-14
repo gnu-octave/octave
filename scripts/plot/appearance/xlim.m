@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{xlimits} =} xlim ()
@@ -28,8 +28,8 @@
 ## Called without arguments @code{xlim} returns the x-axis limits of the
 ## current plot.
 ##
-## With the input query @qcode{"mode"}, return the current x-limit
-## calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
+## With the input query @qcode{"mode"}, return the current x-limit calculation
+## mode which is either @qcode{"auto"} or @qcode{"manual"}.
 ##
 ## If passed a 2-element vector [@var{x_lo} @var{x_hi}], the limits of the
 ## x-axis are set to these values and the mode is set to @qcode{"manual"}.
@@ -44,8 +44,7 @@
 ##
 ## Programming Note: The @code{xlim} function operates by modifying the
 ## @qcode{"xlim"} and @qcode{"xlimmode"} properties of an axes object.  These
-## properties can be be directly inspected and altered with
-## @code{get}/@code{set}.
+## properties can be directly inspected and altered with @code{get}/@code{set}.
 ## @seealso{ylim, zlim, axis, set, get, gca}
 ## @end deftypefn
 

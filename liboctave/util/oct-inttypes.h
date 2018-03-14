@@ -5,19 +5,19 @@ Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,12 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <cmath>
 #include <cstdlib>
 
 #include <iosfwd>
 #include <limits>
 
-#include "lo-math.h"
 #include "lo-mappers.h"
 #include "lo-traits.h"
 
@@ -53,7 +53,7 @@ namespace octave
 {
   namespace math
   {
-    inline long double round (long double x) { return roundl (x); }
+    inline long double round (long double x) { return std::roundl (x); }
 
     inline long double isnan (long double x) { return isnan (static_cast<double> (x)); }
   }
@@ -61,10 +61,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::math::round' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::math::round' instead")
 inline long double xround (long double x) { return octave::math::round (x); }
 
-OCTAVE_DEPRECATED ("use 'octave::math::isnan' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::math::isnan' instead")
 inline bool xisnan (long double x) { return octave::math::isnan (x); }
 
 #endif
@@ -75,7 +75,7 @@ inline bool xisnan (long double x) { return octave::math::isnan (x); }
 // MSVC, do not provide std::abs (int64_t) and std::abs (uint64_t).  In
 // the future, it should go away in favor of std::abs.
 template <typename T>
-inline T octave_int_abs (T x) { return x >= 0 ? x : -x; }
+inline T octave_int_abs (T x) { return (x >= 0 ? x : -x); }
 
 // Query for an integer type of certain sizeof, and signedness.
 template <int qsize, bool qsigned>
@@ -292,8 +292,8 @@ class octave_int_base
 {
 public:
 
-  static T min_val () { return std::numeric_limits<T>:: min (); }
-  static T max_val () { return std::numeric_limits<T>:: max (); }
+  static T min_val () { return std::numeric_limits<T>::min (); }
+  static T max_val () { return std::numeric_limits<T>::max (); }
 
   // Convert integer value.
   template <typename S>
@@ -951,14 +951,14 @@ public:
 
   static int byte_size (void) { return sizeof (T); }
 
-  static const char *type_name ();
+  static const char * type_name ();
 
   // The following are provided for convenience.
   static const octave_int zero, one;
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const { return const_cast<T *> (&ival); }
+  void * mex_get_data (void) const { return const_cast<T *> (&ival); }
 
 private:
 
@@ -997,7 +997,7 @@ namespace octave
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
 template <typename T>
-OCTAVE_DEPRECATED ("use 'octave::math::isnan' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::math::isnan' instead")
 bool
 xisnan (const octave_int<T>& x)
 {

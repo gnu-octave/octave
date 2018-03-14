@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <windows.h>
 #endif
 
-#include <lo-mappers.h>
+#include "lo-mappers.h"
 #include "oct-locbuf.h"
 #include "oct-refcount.h"
 
@@ -40,24 +40,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-opengl.h"
 #include "text-renderer.h"
 
-#if defined (HAVE_OPENGL)
-
-static int
-next_power_of_2 (int n)
-{
-  int m = 1;
-
-  while (m < n && m < std::numeric_limits<int>::max ())
-    m <<= 1;
-
-  return m;
-}
-
-#endif
-
 namespace octave
 {
 #if defined (HAVE_OPENGL)
+
+  static int
+  next_power_of_2 (int n)
+  {
+    int m = 1;
+
+    while (m < n && m < std::numeric_limits<int>::max ())
+      m <<= 1;
+
+    return m;
+  }
 
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
@@ -127,7 +123,7 @@ namespace octave
       int tw, th;
       double tx, ty;
       bool valid;
-      octave_refcount<int> count;
+      refcount<int> count;
     };
 
     texture_rep *rep;
@@ -268,7 +264,13 @@ namespace octave
 
   public:
 
-    opengl_tesselator (void) : glu_tess (0), fill () { init (); }
+    opengl_tesselator (void) : glu_tess (nullptr), fill () { init (); }
+
+    // No copying!
+
+    opengl_tesselator (const opengl_tesselator&) = delete;
+
+    opengl_tesselator operator = (const opengl_tesselator&) = delete;
 
     virtual ~opengl_tesselator (void)
     { if (glu_tess) gluDeleteTess (glu_tess); }
@@ -350,12 +352,6 @@ namespace octave
 
   private:
 
-    // No copying!
-
-    opengl_tesselator (const opengl_tesselator&);
-
-    opengl_tesselator operator = (const opengl_tesselator&);
-
     GLUtesselator *glu_tess;
     bool fill;
   };
@@ -378,7 +374,7 @@ namespace octave
       float specular_color_refl;
 
       // reference counter
-      octave_refcount<int> count;
+      refcount<int> count;
 
       vertex_data_rep (void)
         : coords (), color (), normal (), alpha (),
@@ -396,7 +392,7 @@ namespace octave
   private:
     vertex_data_rep *rep;
 
-    vertex_data_rep *nil_rep (void) const
+    vertex_data_rep * nil_rep (void) const
     {
       static vertex_data_rep *nr = new vertex_data_rep ();
 
@@ -436,7 +432,7 @@ namespace octave
       return *this;
     }
 
-    vertex_data_rep *get_rep (void) const { return rep; }
+    vertex_data_rep * get_rep (void) const { return rep; }
   };
 
   class
@@ -488,7 +484,7 @@ namespace octave
 
           if (col.numel () == 3)
             {
-              glColor3dv (col.data ());
+              glColor4d (col(0), col(1), col(2), v->alpha);
               if (light_mode > 0)
                 {
                   float buf[4] = { 0, 0, 0, 1 };
@@ -571,9 +567,9 @@ namespace octave
 
     // No copying!
 
-    patch_tesselator (const patch_tesselator&);
+    patch_tesselator (const patch_tesselator&) = delete;
 
-    patch_tesselator& operator = (const patch_tesselator&);
+    patch_tesselator& operator = (const patch_tesselator&) = delete;
 
     opengl_renderer *renderer;
     int color_mode;
@@ -593,39 +589,11 @@ namespace octave
 
 #endif
 
-}
-
-#if defined (HAVE_OPENGL)
-
-static int
-get_maxlights (void)
-{
-
-  static int max_lights = 0;
-
-  // Check actual maximum number of lights possible
-  if (max_lights == 0)
-    {
-      for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
-        {
-          glDisable (GL_LIGHT0 + max_lights);
-          if (glGetError ())
-            break;
-        }
-    }
-
-  return max_lights;
-
-}
-
-#endif
-
-namespace octave
-{
   opengl_renderer::opengl_renderer (void)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
       zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-      camera_pos (), camera_dir (), interpreter ("none"), txt_renderer ()
+      camera_pos (), camera_dir (), interpreter ("none"), txt_renderer (),
+      selecting (false)
   {
     // This constructor will fail if we don't have OpenGL or if the data
     // types we assumed in our public interface aren't compatible with the
@@ -701,8 +669,8 @@ namespace octave
 
     GLenum gl_error = glGetError ();
     if (gl_error)
-      warning ("opengl_renderer: Error %d occurred drawing '%s' object",
-               gl_error, props.graphics_object_name ().c_str ());
+      warning ("opengl_renderer: Error '%s' (%d) occurred drawing '%s' object",
+               gluErrorString (gl_error), gl_error, props.graphics_object_name ().c_str ());
 
 #endif
   }
@@ -835,8 +803,8 @@ namespace octave
 
     GLenum gl_error = glGetError ();
     if (gl_error)
-      warning ("opengl_renderer: Error %d occurred in init_gl_context",
-               gl_error);
+      warning ("opengl_renderer: Error '%s' (%d) occurred in init_gl_context",
+               gluErrorString (gl_error), gl_error);
 
 #else
 
@@ -1028,8 +996,8 @@ namespace octave
             Matrix b;
 
             std::string label (ticklabels(i % nlabels));
-            label.erase (0, label.find_first_not_of (" "));
-            label = label.substr (0, label.find_last_not_of (" ")+1);
+            label.erase (0, label.find_first_not_of (' '));
+            label = label.substr (0, label.find_last_not_of (' ')+1);
 
             // FIXME: As tick text is transparent, shouldn't it be
             //        drawn after axes object, for correct rendering?
@@ -1067,6 +1035,42 @@ namespace octave
 
     // This shouldn't happen because construction of opengl_renderer
     // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  uint8NDArray
+  opengl_renderer::get_pixels (int width, int height)
+  {
+#if defined (HAVE_OPENGL)
+
+    glPixelStorei (GL_PACK_ALIGNMENT, 1);
+    uint8NDArray pix(dim_vector (3, width, height), 0);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
+                 pix.fortran_vec ());
+
+    // Permute and flip data
+    Array<octave_idx_type> perm (dim_vector (3, 1));
+    perm(0) = 2;
+    perm(1) = 1;
+    perm(2) = 0;
+
+    Array<idx_vector> idx (dim_vector (3, 1));
+    idx(0) = idx_vector::make_range (height - 1, -1, height);
+    idx(1) = idx_vector::colon;
+    idx(2) = idx_vector::colon;
+
+    return pix.permute (perm).index (idx);
+
+#else
+
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+    octave_unused_parameter (width);
+    octave_unused_parameter (height);
 
     panic_impossible ();
 
@@ -1147,7 +1151,7 @@ namespace octave
 #if defined (HAVE_OPENGL)
 
     Matrix axe_color = props.get_color_rgb ();
-    if (axe_color.is_empty () || ! props.is_visible ())
+    if (axe_color.isempty () || ! props.is_visible ())
       return;
 
     double xPlane = props.get_xPlane ();
@@ -1160,7 +1164,7 @@ namespace octave
 
     // Axes planes
     set_color (axe_color);
-    set_polygon_offset (true, 2.5);
+    set_polygon_offset (true, 9.0);
 
     glBegin (GL_QUADS);
 
@@ -1212,6 +1216,10 @@ namespace octave
     bool xySym = props.get_xySym ();
     bool layer2Dtop = props.get_layer2Dtop ();
     bool is2d = props.get_is2D ();
+    bool isXOrigin = props.xaxislocation_is ("origin")
+                       && ! props.yscale_is ("log");
+    bool isYOrigin = props.yaxislocation_is ("origin")
+                       && ! props.xscale_is ("log");
     bool boxFull = (props.get_boxstyle () == "full");
     double linewidth = props.get_linewidth ();
     double xPlane = props.get_xPlane ();
@@ -1231,6 +1239,7 @@ namespace octave
 
     // Axes box
 
+    set_linecap ("square");
     set_linestyle ("-", true, linewidth);
 
     glBegin (GL_LINES);
@@ -1240,8 +1249,12 @@ namespace octave
 
     // X box
     set_color (props.get_xcolor_rgb ());
-    glVertex3d (xPlaneN, ypTick, zpTick);
-    glVertex3d (xPlane, ypTick, zpTick);
+
+    if (! isXOrigin || props.is_box() || ! is2d)
+      {
+        glVertex3d (xPlaneN, ypTick, zpTick);
+        glVertex3d (xPlane, ypTick, zpTick);
+      }
 
     if (props.is_box ())
       {
@@ -1261,8 +1274,11 @@ namespace octave
 
     // Y box
     set_color (props.get_ycolor_rgb ());
-    glVertex3d (xpTick, yPlaneN, zpTick);
-    glVertex3d (xpTick, yPlane, zpTick);
+    if (! isYOrigin || props.is_box() || ! is2d)
+      {
+        glVertex3d (xpTick, yPlaneN, zpTick);
+        glVertex3d (xpTick, yPlane, zpTick);
+      }
 
     if (props.is_box () && ! plotyy)
       {
@@ -1338,9 +1354,13 @@ namespace octave
   void
   opengl_renderer::draw_axes_x_grid (const axes::properties& props)
   {
+#if defined (HAVE_OPENGL)
+
     int xstate = props.get_xstate ();
 
-    if (props.is_visible () && xstate != AXE_DEPTH_DIR)
+    if (xstate != AXE_DEPTH_DIR
+        && (props.is_visible ()
+            || (selecting && props.pickableparts_is ("all"))))
       {
         int zstate = props.get_zstate ();
         bool x2Dtop = props.get_x2Dtop ();
@@ -1353,6 +1373,8 @@ namespace octave
         double fz = props.get_fz ();
         double x_min = props.get_x_min ();
         double x_max = props.get_x_max ();
+        double y_min = props.get_y_min ();
+        double y_max = props.get_y_max ();
         double yPlane = props.get_yPlane ();
         double yPlaneN = props.get_yPlaneN ();
         double ypTick = props.get_ypTick ();
@@ -1375,12 +1397,15 @@ namespace octave
         bool do_xminorgrid = (props.is_xminorgrid ()
                               && (minorgridstyle != "none"));
         bool do_xminortick = props.is_xminortick ();
+        bool is_origin = props.xaxislocation_is ("origin") && props.get_is2D ()
+                         && ! props.yscale_is ("log");
+        bool is_origin_low = is_origin && (y_min + y_max) < 0;
         Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
-        Matrix xmticks = xform.xscale (props.get_xmtick ().matrix_value ());
+        Matrix xmticks = xform.xscale (props.get_xminortickvalues ().matrix_value ());
         string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;
-        bool tick_along_z = nearhoriz || octave::math::isinf (fy);
+        bool tick_along_z = nearhoriz || math::isinf (fy);
         bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
         if (props.xcolormode_is ("manual"))
@@ -1419,50 +1444,76 @@ namespace octave
 
         set_color (props.get_xcolor_rgb ());
 
+        // axis line
+        double y_axis_pos = 0.;
+        if (is_origin)
+          {
+            y_axis_pos = math::max (math::min (0., y_max),
+                                            y_min);
+            glBegin (GL_LINES);
+            set_color (props.get_ycolor_rgb ());
+            glVertex3d (x_min, y_axis_pos, zpTick);
+            glVertex3d (x_max, y_axis_pos, zpTick);
+            glEnd ();
+          }
+
         // minor tick marks
         if (do_xminortick)
           {
             if (tick_along_z)
-              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
+              render_tickmarks (xmticks, x_min, x_max,
+                                is_origin ? y_axis_pos : ypTick, ypTick,
                                 zpTick, zpTickN, 0., 0.,
-                                octave::math::signum (zpTick-zpTickN)*fz*xticklen/2,
-                                0, mirror);
+                                (is_origin_low ? -1. : 1.) *
+                                math::signum (zpTick-zpTickN)*fz*xticklen/2,
+                                0, ! is_origin && mirror);
             else
-              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
+              render_tickmarks (xmticks, x_min, x_max,
+                                is_origin ? y_axis_pos : ypTick, ypTickN,
                                 zpTick, zpTick, 0.,
-                                octave::math::signum (ypTick-ypTickN)*fy*xticklen/2,
-                                0., 0, mirror);
+                                (is_origin_low ? -1. : 1.) *
+                                math::signum (ypTick-ypTickN)*fy*xticklen/2,
+                                0., 0, ! is_origin && mirror);
           }
 
         // tick marks
         if (tick_along_z)
-          {
-            render_tickmarks (xticks, x_min, x_max, ypTick, ypTick,
-                              zpTick, zpTickN, 0., 0.,
-                              octave::math::signum (zpTick-zpTickN)*fz*xticklen,
-                              0, mirror);
-          }
+          render_tickmarks (xticks, x_min, x_max,
+                            is_origin ? y_axis_pos : ypTick, ypTick,
+                            zpTick, zpTickN, 0., 0.,
+                            (is_origin_low ? -1. : 1.) *
+                            math::signum (zpTick-zpTickN)*fz*xticklen,
+                            0, ! is_origin && mirror);
         else
-          {
-            render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN,
-                              zpTick, zpTick, 0.,
-                              octave::math::signum (ypTick-ypTickN)*fy*xticklen,
-                              0., 0, mirror);
-          }
+          render_tickmarks (xticks, x_min, x_max,
+                            is_origin ? y_axis_pos : ypTick, ypTickN,
+                            zpTick, zpTick, 0.,
+                            (is_origin_low ? -1. : 1.) *
+                            math::signum (ypTick-ypTickN)*fy*xticklen,
+                            0., 0, ! is_origin && mirror);
 
         // tick texts
         if (xticklabels.numel () > 0)
           {
-            int halign = (xstate == AXE_HORZ_DIR ? 1 : (xyzSym ? 0 : 2));
-            int valign = (xstate == AXE_VERT_DIR ? 1 : (x2Dtop ? 0 : 2));
+            int halign = (xstate == AXE_HORZ_DIR
+                          ? 1
+                          : (xyzSym || is_origin_low ? 0 : 2));
+            int valign = (xstate == AXE_VERT_DIR
+                          ? 1
+                          : (x2Dtop || is_origin_low ? 0 : 2));
 
             if (tick_along_z)
-              render_ticktexts (xticks, xticklabels, x_min, x_max, ypTick,
-                                zpTick+octave::math::signum (zpTick-zpTickN)*fz*xtickoffset,
+              render_ticktexts (xticks, xticklabels, x_min, x_max,
+                                is_origin ? y_axis_pos : ypTick,
+                                zpTick +
+                                (is_origin_low ? -1. : 1.) *
+                                math::signum (zpTick-zpTickN)*fz*xtickoffset,
                                 0, halign, valign, wmax, hmax);
             else
               render_ticktexts (xticks, xticklabels, x_min, x_max,
-                                ypTick+octave::math::signum (ypTick-ypTickN)*fy*xtickoffset,
+                                (is_origin ? y_axis_pos : ypTick) +
+                                (is_origin_low ?  -1. : 1.) *
+                                math::signum (ypTick-ypTickN)*fy*xtickoffset,
                                 zpTick, 0, halign, valign, wmax, hmax);
           }
 
@@ -1470,14 +1521,29 @@ namespace octave
       }
     else
       gh_manager::get_object (props.get_xlabel ()).set ("visible", "off");
+
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
   }
 
   void
   opengl_renderer::draw_axes_y_grid (const axes::properties& props)
   {
+#if defined (HAVE_OPENGL)
+
     int ystate = props.get_ystate ();
 
-    if (ystate != AXE_DEPTH_DIR && props.is_visible ())
+    if (ystate != AXE_DEPTH_DIR && props.is_visible ()
+        && (props.is_visible ()
+            || (selecting && props.pickableparts_is ("all"))))
       {
         int zstate = props.get_zstate ();
         bool y2Dright = props.get_y2Dright ();
@@ -1494,6 +1560,8 @@ namespace octave
         double xpTickN = props.get_xpTickN ();
         double y_min = props.get_y_min ();
         double y_max = props.get_y_max ();
+        double x_min = props.get_x_min ();
+        double x_max = props.get_x_max ();
         double zPlane = props.get_zPlane ();
         double zPlaneN = props.get_zPlaneN ();
         double zpTick = props.get_zpTick ();
@@ -1512,12 +1580,15 @@ namespace octave
         bool do_yminorgrid = (props.is_yminorgrid ()
                               && (minorgridstyle != "none"));
         bool do_yminortick = props.is_yminortick ();
+        bool is_origin = props.yaxislocation_is ("origin") && props.get_is2D ()
+                         && ! props.xscale_is ("log");
+        bool is_origin_low = is_origin && (x_min + x_max) < 0;
         Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
-        Matrix ymticks = xform.yscale (props.get_ymtick ().matrix_value ());
+        Matrix ymticks = xform.yscale (props.get_yminortickvalues ().matrix_value ());
         string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;
-        bool tick_along_z = nearhoriz || octave::math::isinf (fx);
+        bool tick_along_z = nearhoriz || math::isinf (fx);
         bool mirror = props.is_box () && ystate != AXE_ANY_DIR
                       && (! props.has_property ("__plotyy_axes__"));
 
@@ -1557,47 +1628,76 @@ namespace octave
 
         set_color (props.get_ycolor_rgb ());
 
+        // axis line
+        double x_axis_pos = 0.;
+        if (is_origin)
+          {
+            x_axis_pos = math::max (math::min (0., x_max),
+                                            x_min);
+            glBegin (GL_LINES);
+            set_color (props.get_ycolor_rgb ());
+            glVertex3d (x_axis_pos, y_min, zpTick);
+            glVertex3d (x_axis_pos, y_max, zpTick);
+            glEnd ();
+          }
+
         // minor tick marks
         if (do_yminortick)
           {
             if (tick_along_z)
-              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
+              render_tickmarks (ymticks, y_min, y_max,
+                                is_origin ? x_axis_pos : xpTick, xpTick,
                                 zpTick, zpTickN, 0., 0.,
-                                octave::math::signum (zpTick-zpTickN)*fz*yticklen/2,
-                                1, mirror);
+                                (is_origin_low ? -1. : 1.) *
+                                math::signum (zpTick-zpTickN)*fz*yticklen/2,
+                                1, ! is_origin && mirror);
             else
-              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
+              render_tickmarks (ymticks, y_min, y_max,
+                                is_origin ? x_axis_pos : xpTick, xpTickN,
                                 zpTick, zpTick,
-                                octave::math::signum (xpTick-xpTickN)*fx*yticklen/2,
-                                0., 0., 1, mirror);
+                                (is_origin_low ? -1. : 1.) *
+                                math::signum (xpTick-xpTickN)*fx*yticklen/2,
+                                0., 0., 1, ! is_origin && mirror);
           }
 
         // tick marks
         if (tick_along_z)
-          render_tickmarks (yticks, y_min, y_max, xpTick, xpTick,
+          render_tickmarks (yticks, y_min, y_max,
+                            is_origin ? x_axis_pos : xpTick, xpTick,
                             zpTick, zpTickN, 0., 0.,
-                            octave::math::signum (zpTick-zpTickN)*fz*yticklen,
-                            1, mirror);
+                            (is_origin_low ? -1. : 1.) *
+                            math::signum (zpTick-zpTickN)*fz*yticklen,
+                            1, ! is_origin && mirror);
         else
-          render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN,
+          render_tickmarks (yticks, y_min, y_max,
+                            is_origin ? x_axis_pos : xpTick, xpTickN,
                             zpTick, zpTick,
-                            octave::math::signum (xPlaneN-xPlane)*fx*yticklen,
-                            0., 0., 1, mirror);
+                            (is_origin_low ? -1. : 1.) *
+                            math::signum (xPlaneN-xPlane)*fx*yticklen,
+                            0., 0., 1, ! is_origin && mirror);
 
         // tick texts
         if (yticklabels.numel () > 0)
           {
             int halign = (ystate == AXE_HORZ_DIR
-                          ? 1 : (! xyzSym || y2Dright ? 0 : 2));
-            int valign = (ystate == AXE_VERT_DIR ? 1 : 2);
+                          ? 1
+                          : (! xyzSym || y2Dright || is_origin_low ? 0 : 2));
+            int valign = (ystate == AXE_VERT_DIR
+                          ? 1
+                          : (is_origin_low ? 0 : 2));
 
             if (tick_along_z)
-              render_ticktexts (yticks, yticklabels, y_min, y_max, xpTick,
-                                zpTick+octave::math::signum (zpTick-zpTickN)*fz*ytickoffset,
+              render_ticktexts (yticks, yticklabels, y_min, y_max,
+                                is_origin ? x_axis_pos : xpTick,
+                                zpTick +
+                                (is_origin_low ? -1. : 1.) *
+                                math::signum (zpTick-zpTickN)*fz*ytickoffset,
                                 1, halign, valign, wmax, hmax);
             else
               render_ticktexts (yticks, yticklabels, y_min, y_max,
-                                xpTick+octave::math::signum (xpTick-xpTickN)*fx*ytickoffset,
+                                (is_origin ? x_axis_pos : xpTick) +
+                                (is_origin_low ?  -1. : 1.) *
+                                math::signum (xpTick-xpTickN)*fx*ytickoffset,
                                 zpTick, 1, halign, valign, wmax, hmax);
           }
 
@@ -1605,6 +1705,17 @@ namespace octave
       }
     else
       gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
+
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
   }
 
   void
@@ -1612,7 +1723,9 @@ namespace octave
   {
     int zstate = props.get_zstate ();
 
-    if (zstate != AXE_DEPTH_DIR && props.is_visible ())
+    if (zstate != AXE_DEPTH_DIR && props.is_visible ()
+        && (props.is_visible ()
+            || (selecting && props.pickableparts_is ("all"))))
       {
         bool xySym = props.get_xySym ();
         bool zSign = props.get_zSign ();
@@ -1641,7 +1754,7 @@ namespace octave
                               && (minorgridstyle != "none"));
         bool do_zminortick = props.is_zminortick ();
         Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
-        Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
+        Matrix zmticks = xform.zscale (props.get_zminortickvalues ().matrix_value ());
         string_vector zticklabels = props.get_zticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;
@@ -1686,28 +1799,28 @@ namespace octave
           {
             if (xySym)
               {
-                if (octave::math::isinf (fy))
+                if (math::isinf (fy))
                   render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
                                     yPlane, yPlane,
-                                    octave::math::signum (xPlaneN-xPlane)*fx*zticklen/2,
+                                    math::signum (xPlaneN-xPlane)*fx*zticklen/2,
                                     0., 0., 2, mirror);
                 else
                   render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
                                     yPlane, yPlane, 0.,
-                                    octave::math::signum (yPlane-yPlaneN)*fy*zticklen/2,
+                                    math::signum (yPlane-yPlaneN)*fy*zticklen/2,
                                     0., 2, false);
               }
             else
               {
-                if (octave::math::isinf (fx))
+                if (math::isinf (fx))
                   render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                     yPlaneN, yPlane, 0.,
-                                    octave::math::signum (yPlaneN-yPlane)*fy*zticklen/2,
+                                    math::signum (yPlaneN-yPlane)*fy*zticklen/2,
                                     0., 2, mirror);
                 else
                   render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                     yPlaneN, yPlaneN,
-                                    octave::math::signum (xPlane-xPlaneN)*fx*zticklen/2,
+                                    math::signum (xPlane-xPlaneN)*fx*zticklen/2,
                                     0., 0., 2, false);
               }
           }
@@ -1715,28 +1828,28 @@ namespace octave
         // tick marks
         if (xySym)
           {
-            if (octave::math::isinf (fy))
+            if (math::isinf (fy))
               render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                                 yPlane, yPlane,
-                                octave::math::signum (xPlaneN-xPlane)*fx*zticklen,
+                                math::signum (xPlaneN-xPlane)*fx*zticklen,
                                 0., 0., 2, mirror);
             else
               render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
                                 yPlane, yPlane, 0.,
-                                octave::math::signum (yPlane-yPlaneN)*fy*zticklen,
+                                math::signum (yPlane-yPlaneN)*fy*zticklen,
                                 0., 2, false);
           }
         else
           {
-            if (octave::math::isinf (fx))
+            if (math::isinf (fx))
               render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                                 yPlaneN, yPlane, 0.,
-                                octave::math::signum (yPlaneN-yPlane)*fy*zticklen,
+                                math::signum (yPlaneN-yPlane)*fy*zticklen,
                                 0., 2, mirror);
             else
               render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
                                 yPlaneN, yPlane,
-                                octave::math::signum (xPlane-xPlaneN)*fx*zticklen,
+                                math::signum (xPlane-xPlaneN)*fx*zticklen,
                                 0., 0., 2, false);
           }
 
@@ -1748,24 +1861,24 @@ namespace octave
 
             if (xySym)
               {
-                if (octave::math::isinf (fy))
+                if (math::isinf (fy))
                   render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlaneN+octave::math::signum (xPlaneN-xPlane)*fx*ztickoffset,
+                                    xPlaneN + math::signum (xPlaneN-xPlane)*fx*ztickoffset,
                                     yPlane, 2, halign, valign, wmax, hmax);
                 else
                   render_ticktexts (zticks, zticklabels, z_min, z_max, xPlaneN,
-                                    yPlane+octave::math::signum (yPlane-yPlaneN)*fy*ztickoffset,
+                                    yPlane + math::signum (yPlane-yPlaneN)*fy*ztickoffset,
                                     2, halign, valign, wmax, hmax);
               }
             else
               {
-                if (octave::math::isinf (fx))
+                if (math::isinf (fx))
                   render_ticktexts (zticks, zticklabels, z_min, z_max, xPlane,
-                                    yPlaneN+octave::math::signum (yPlaneN-yPlane)*fy*ztickoffset,
+                                    yPlaneN + math::signum (yPlaneN-yPlane)*fy*ztickoffset,
                                     2, halign, valign, wmax, hmax);
                 else
                   render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlane+octave::math::signum (xPlane-xPlaneN)*fx*ztickoffset,
+                                    xPlane + math::signum (xPlane-xPlaneN)*fx*ztickoffset,
                                     yPlaneN, 2, halign, valign, wmax, hmax);
               }
           }
@@ -1774,6 +1887,41 @@ namespace octave
       }
     else
       gh_manager::get_object (props.get_zlabel ()).set ("visible", "off");
+  }
+
+  void
+  opengl_renderer::draw_axes_grids (const axes::properties& props)
+  {
+#if defined (HAVE_OPENGL)
+    // Disable line smoothing for axes
+    GLboolean antialias;
+
+    glGetBooleanv (GL_LINE_SMOOTH, &antialias);
+
+    if (antialias == GL_TRUE)
+      glDisable (GL_LINE_SMOOTH);
+
+    set_linecap ("butt");
+    set_linewidth (props.get_linewidth ());
+    set_font (props);
+    set_interpreter (props.get_ticklabelinterpreter ());
+
+    draw_axes_x_grid (props);
+    draw_axes_y_grid (props);
+    draw_axes_z_grid (props);
+
+    if (antialias == GL_TRUE)
+      glEnable (GL_LINE_SMOOTH);
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
   }
 
   void
@@ -1787,14 +1935,17 @@ namespace octave
       {
         graphics_object go = gh_manager::get_object (children(i));
 
-        if (go.get_properties ().is_visible ())
+        base_properties p = go.get_properties ();
+
+        if (p.is_visible ()
+            || (selecting && p.pickableparts_is ("all")))
           {
-            if (go.isa ("light"))
+            if (go.isa ("light") && ! selecting)
               {
                 if (num_lights < max_lights)
                   {
                     current_light = GL_LIGHT0 + num_lights;
-                    set_clipping (go.get_properties ().is_clipping ());
+                    set_clipping (p.is_clipping ());
                     draw (go);
                     num_lights++;
                   }
@@ -1803,9 +1954,10 @@ namespace octave
                                    "light: Maximum number of lights (%d) in these axes is "
                                    "exceeded.", max_lights);
               }
-            else if (go.isa ("hggroup"))
+            else if (go.isa ("hggroup")
+                     && ! (selecting && p.pickableparts_is ("none")))
               draw_all_lights (go.get_properties (), obj_list);
-            else
+            else if (! (selecting && p.pickableparts_is ("none")))
               obj_list.push_back (go);
           }
       }
@@ -1821,6 +1973,29 @@ namespace octave
 
 #endif
   }
+
+#if defined (HAVE_OPENGL)
+
+  static int
+  get_maxlights (void)
+  {
+    static int max_lights = 0;
+
+    // Check actual maximum number of lights possible
+    if (max_lights == 0)
+      {
+        for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
+          {
+            glDisable (GL_LIGHT0 + max_lights);
+            if (glGetError ())
+              break;
+          }
+      }
+
+    return max_lights;
+  }
+
+#endif
 
   void
   opengl_renderer::draw_axes_children (const axes::properties& props)
@@ -1891,8 +2066,6 @@ namespace octave
         draw (go);
       }
 
-    glEnable (GL_DEPTH_TEST);
-
     set_clipping (false);
 
     // FIXME: finalize rendering (transparency processing)
@@ -1919,6 +2092,11 @@ namespace octave
     if (! props.is_visible () && props.get_tag () == "legend")
       return;
 
+    // Don't draw the axes and its children if we are in selection and
+    // pickable parts is "none".
+    if (selecting && props.pickableparts_is ("none"))
+      return;
+
     static double floatmax = std::numeric_limits<float>::max ();
 
     double x_min = props.get_x_min ();
@@ -1937,35 +2115,35 @@ namespace octave
 
     setup_opengl_transformation (props);
 
-    // Disable line smoothing for axes
-    GLboolean antialias;
-    glGetBooleanv (GL_LINE_SMOOTH, &antialias);
-    if (antialias == GL_TRUE)
-      glDisable (GL_LINE_SMOOTH);
+    // For 2D axes with only 2D primitives, draw from back to front without
+    // depth sorting
+    bool is2D = props.get_is2D (true);
+    if (is2D)
+      glDisable (GL_DEPTH_TEST);
+    else
+      glEnable (GL_DEPTH_TEST);
 
-    set_font (props);
-    set_interpreter (props.get_ticklabelinterpreter ());
-    set_linewidth (props.get_linewidth ());
-
-    // draw axes object
     draw_axes_planes (props);
 
-    draw_axes_x_grid (props);
-    draw_axes_y_grid (props);
-    draw_axes_z_grid (props);
-
-    if (props.get_tag () != "legend" || props.get_box () != "off")
-      draw_axes_boxes (props);
+    if (! is2D || props.layer_is ("bottom"))
+      {
+        draw_axes_grids (props);
+        if (props.get_tag () != "legend" || props.get_box () != "off")
+          draw_axes_boxes (props);
+      }
 
     set_linestyle ("-");  // Disable LineStipple
 
     set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 
-    // Re-enable line smoothing for children
-    if (antialias == GL_TRUE)
-      glEnable (GL_LINE_SMOOTH);
-
     draw_axes_children (props);
+
+    if (is2D && props.layer_is ("top"))
+      {
+        draw_axes_grids (props);
+        if (props.get_tag () != "legend" || props.get_box () != "off")
+          draw_axes_boxes (props);
+      }
 
 #else
 
@@ -1983,6 +2161,8 @@ namespace octave
   opengl_renderer::draw_line (const line::properties& props)
   {
 #if defined (HAVE_OPENGL)
+
+    bool draw_all = selecting && props.pickableparts_is ("all");
 
     Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
     Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
@@ -2012,6 +2192,8 @@ namespace octave
         set_color (props.get_color_rgb ());
         set_linestyle (props.get_linestyle (), false, props.get_linewidth ());
         set_linewidth (props.get_linewidth ());
+        set_linecap ("butt");
+        set_linejoin (props.get_linejoin ());
 
         if (has_z)
           {
@@ -2078,11 +2260,15 @@ namespace octave
       {
         Matrix lc, fc;
 
-        if (props.markeredgecolor_is ("auto"))
+        if (draw_all)
+          lc = Matrix (1, 3, 0.0);
+        else if (props.markeredgecolor_is ("auto"))
           lc = props.get_color_rgb ();
         else if (! props.markeredgecolor_is ("none"))
           lc = props.get_markeredgecolor_rgb ();
 
+        if (draw_all)
+          fc = Matrix (1, 3, 0.0);
         if (props.markerfacecolor_is ("auto"))
           fc = props.get_color_rgb ();
         else if (! props.markerfacecolor_is ("none"))
@@ -2121,6 +2307,8 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
+    bool draw_all = selecting && props.pickableparts_is ("all");
+
     const Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
     const Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
     const Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
@@ -2153,8 +2341,9 @@ namespace octave
                     (props.backfacelighting_is ("reverselit") ? 1 : 2));
 
     Matrix fcolor = (fc_mode == TEXTURE ? Matrix (1, 3, 1.0)
-                     : props.get_facecolor_rgb ());
+                                        : props.get_facecolor_rgb ());
     Matrix ecolor = props.get_edgecolor_rgb ();
+    double fa = 1.0;
 
     float as = props.get_ambientstrength ();
     float ds = props.get_diffusestrength ();
@@ -2204,13 +2393,14 @@ namespace octave
     if (fc_mode == TEXTURE)
       tex = opengl_texture::create (props.get_color_data ());
 
-    if (! props.facecolor_is ("none"))
+    if (draw_all || ! props.facecolor_is ("none"))
       {
-        if (props.get_facealpha_double () == 1)
+        if (fa_mode == 0)
           {
+            fa = props.get_facealpha_double ();
             if (fc_mode == UNIFORM || fc_mode == TEXTURE)
               {
-                glColor3dv (fcolor.data ());
+                glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
                 if (fl_mode > 0)
                   {
                     for (int i = 0; i < 3; i++)
@@ -2229,9 +2419,9 @@ namespace octave
 
             if ((fl_mode > 0) && (num_lights > 0))
               glEnable (GL_LIGHTING);
-            glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD) ? GL_SMOOTH
-                          : GL_FLAT);
-            set_polygon_offset (true, 1);
+            glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD)
+                          ? GL_SMOOTH : GL_FLAT);
+            set_polygon_offset (true, 1.0);
             if (fc_mode == TEXTURE)
               glEnable (GL_TEXTURE_2D);
 
@@ -2253,14 +2443,14 @@ namespace octave
                     if (fc_mode == FLAT)
                       {
                         // "flat" only needs color at lower-left vertex
-                        if (! octave::math::finite (c(j-1,i-1)))
+                        if (! math::isfinite (c(j-1,i-1)))
                           continue;
                       }
                     else if (fc_mode == INTERP)
                       {
                         // "interp" needs valid color at all 4 vertices
-                        if (! (octave::math::finite (c(j-1, i-1)) && octave::math::finite (c(j, i-1))
-                               && octave::math::finite (c(j-1, i)) && octave::math::finite (c(j, i))))
+                        if (! (math::isfinite (c(j-1, i-1)) && math::isfinite (c(j, i-1))
+                               && math::isfinite (c(j-1, i)) && math::isfinite (c(j, i))))
                           continue;
                       }
 
@@ -2281,7 +2471,8 @@ namespace octave
                         // FIXME: is there a smarter way to do this?
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i-1, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2310,7 +2501,8 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2340,7 +2532,8 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2369,7 +2562,8 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i-1, k);
-                        glColor3fv (cb);
+                        cb[3] = fa;
+                        glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
@@ -2404,7 +2598,7 @@ namespace octave
           }
         else
           {
-            // FIXME: implement transparency
+            // FIXME: implement flat, interp and texturemap transparency
           }
       }
 
@@ -2433,12 +2627,14 @@ namespace octave
 
             if ((el_mode > 0) && (num_lights > 0))
               glEnable (GL_LIGHTING);
-            glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD) ? GL_SMOOTH
-                          : GL_FLAT);
+            glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
+                          ? GL_SMOOTH : GL_FLAT);
 
             set_linestyle (props.get_linestyle (), false,
                            props.get_linewidth ());
             set_linewidth (props.get_linewidth ());
+            set_linecap ("butt");
+            set_linejoin ("miter");
 
             // Mesh along Y-axis
 
@@ -2460,13 +2656,13 @@ namespace octave
                         if (ec_mode == FLAT)
                           {
                             // "flat" only needs color at lower-left vertex
-                            if (! octave::math::finite (c(j-1,i)))
+                            if (! math::isfinite (c(j-1,i)))
                               continue;
                           }
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (octave::math::finite (c(j-1, i)) && octave::math::finite (c(j, i))))
+                            if (! (math::isfinite (c(j-1, i)) && math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -2557,13 +2753,13 @@ namespace octave
                         if (ec_mode == FLAT)
                           {
                             // "flat" only needs color at lower-left vertex
-                            if (! octave::math::finite (c(j,i-1)))
+                            if (! math::isfinite (c(j,i-1)))
                               continue;
                           }
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (octave::math::finite (c(j, i-1)) && octave::math::finite (c(j, i))))
+                            if (! (math::isfinite (c(j, i-1)) && math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -2654,26 +2850,28 @@ namespace octave
         // FIXME: check what to do with marker facecolor set to auto
         //        and facecolor set to none.
 
-        bool do_edge = ! props.markeredgecolor_is ("none");
-        bool do_face = ! props.markerfacecolor_is ("none");
+        bool do_edge = draw_all || ! props.markeredgecolor_is ("none");
+        bool do_face = draw_all || ! props.markerfacecolor_is ("none");
 
-        Matrix mecolor = props.get_markeredgecolor_rgb ();
-        Matrix mfcolor = props.get_markerfacecolor_rgb ();
+        Matrix mecolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markeredgecolor_rgb ());
+        Matrix mfcolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markerfacecolor_rgb ());
         Matrix cc (1, 3, 0.0);
 
-        if (mecolor.is_empty () && props.markeredgecolor_is ("auto"))
+        if (mecolor.isempty () && props.markeredgecolor_is ("auto"))
           {
             mecolor = props.get_edgecolor_rgb ();
             do_edge = ! props.edgecolor_is ("none");
           }
 
-        if (mfcolor.is_empty () && props.markerfacecolor_is ("auto"))
+        if (mfcolor.isempty () && props.markerfacecolor_is ("auto"))
           {
             mfcolor = props.get_facecolor_rgb ();
             do_face = ! props.facecolor_is ("none");
           }
 
-        if ((mecolor.is_empty () || mfcolor.is_empty ()) && c.is_empty ())
+        if ((mecolor.isempty () || mfcolor.isempty ()) && c.isempty ())
           c = props.get_color_data ().array_value ();
 
         init_marker (props.get_marker (), props.get_markersize (),
@@ -2692,20 +2890,20 @@ namespace octave
                 if (x_mat)
                   j1 = j;
 
-                if ((do_edge && mecolor.is_empty ())
-                    || (do_face && mfcolor.is_empty ()))
+                if ((do_edge && mecolor.isempty ())
+                    || (do_face && mfcolor.isempty ()))
                   {
-                    if (! octave::math::finite (c(j,i)))
+                    if (! math::isfinite (c(j,i)))
                       continue;  // Skip NaNs in color data
 
                     for (int k = 0; k < 3; k++)
                       cc(k) = c(j,i,k);
                   }
 
-                Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
-                             : Matrix ());
-                Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
-                             : Matrix ());
+                Matrix lc = (do_edge ? (mecolor.isempty () ? cc : mecolor)
+                                     : Matrix ());
+                Matrix fc = (do_face ? (mfcolor.isempty () ? cc : mfcolor)
+                                     : Matrix ());
 
                 draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
               }
@@ -2729,7 +2927,7 @@ namespace octave
   // FIXME: global optimization (rendering, data structures...),
   // there is probably a smarter/faster/less-memory-consuming way to do this.
   void
-  opengl_renderer::draw_patch (const patch::properties &props)
+  opengl_renderer::draw_patch (const patch::properties& props)
   {
 #if defined (HAVE_OPENGL)
 
@@ -2741,11 +2939,13 @@ namespace octave
         return;
       }
 
+    bool draw_all = selecting && props.pickableparts_is ("all");
     const Matrix f = props.get_faces ().matrix_value ();
     const Matrix v = xform.scale (props.get_vertices ().matrix_value ());
     Matrix c;
     const Matrix n = props.get_vertexnormals ().matrix_value ();
     Matrix a;
+    double fa = 1.0;
 
     int nv = v.rows ();
     int nf = f.rows ();
@@ -2758,7 +2958,7 @@ namespace octave
     bool has_normals = (n.rows () == nv);
 
     int fc_mode = ((props.facecolor_is ("none")
-                    || props.facecolor_is_rgb ()) ? 0 :
+                    || props.facecolor_is_rgb () || draw_all) ? 0 :
                    (props.facecolor_is ("flat") ? 1 : 2));
     int fl_mode = (props.facelighting_is ("none") ? 0 :
                    (props.facelighting_is ("flat") ? 1 : 2));
@@ -2800,28 +3000,31 @@ namespace octave
         bool fclip = false;
         int count = 0;
 
-        for (int j = 0; j < fcmax && ! octave::math::isnan (f(i,j)); j++, count++)
+        for (int j = 0; j < fcmax && ! math::isnan (f(i,j)); j++, count++)
           fclip = (fclip || clip(int (f(i,j) - 1)));
 
         clip_f(i) = fclip;
         count_f(i) = count;
       }
 
-    if (fc_mode > 0 || ec_mode > 0)
+    if (draw_all || fc_mode > 0 || ec_mode > 0)
       {
-        c = props.get_color_data ().matrix_value ();
+        if (draw_all)
+          c = Matrix (1, 3, 0.0);
+        else
+          c = props.get_color_data ().matrix_value ();
 
         if (c.rows () == 1)
           {
             // Single color specifications, we can simplify a little bit
 
-            if (fc_mode > 0)
+            if (draw_all || fc_mode > 0)
               {
                 fcolor = c;
                 fc_mode = UNIFORM;
               }
 
-            if (ec_mode > 0)
+            if (draw_all || ec_mode > 0)
               {
                 ecolor = c;
                 ec_mode = UNIFORM;
@@ -2839,6 +3042,9 @@ namespace octave
         //a = props.get_alpha_data ();
         has_facealpha = ((a.numel () > 0) && (a.rows () == f.rows ()));
       }
+
+    if (fa_mode == 0)
+      fa = props.get_facealpha_double ();
 
     octave_idx_type fr = f.rows ();
     std::vector<vertex_data> vdata (f.numel ());
@@ -2876,7 +3082,9 @@ namespace octave
               else
                 cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
             }
-          if (a.numel () > 0)
+          if (fa_mode == 0)
+            aa = fa;
+          else if (a.numel () > 0)
             {
               if (has_facealpha)
                 aa = a(i);
@@ -2890,14 +3098,14 @@ namespace octave
     if (fl_mode > 0 || el_mode > 0)
       glMaterialf (LIGHT_MODE, GL_SHININESS, se);
 
-    if (! props.facecolor_is ("none"))
+    if (draw_all || ! props.facecolor_is ("none"))
       {
         // FIXME: adapt to double-radio property
-        if (props.get_facealpha_double () == 1)
+        if (fa_mode == 0)
           {
             if (fc_mode == UNIFORM)
               {
-                glColor3dv (fcolor.data ());
+                glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
                 if (fl_mode > 0)
                   {
                     float cb[4] = { 0, 0, 0, 1 };
@@ -2952,7 +3160,7 @@ namespace octave
 
                         if (col.numel () == 3)
                           {
-                            glColor3dv (col.data ());
+                            glColor4d (col(0), col(1), col(2), fa);
                             if (fl_mode > 0)
                               {
                                 float cb[4] = { 0, 0, 0, 1 };
@@ -2985,11 +3193,12 @@ namespace octave
           }
         else
           {
-            // FIXME: implement transparency
+            // FIXME: implement flat and interp transparency
           }
       }
 
-    if (! props.edgecolor_is ("none") && ! props.linestyle_is ("none"))
+    if (draw_all
+        || (! props.edgecolor_is ("none") && ! props.linestyle_is ("none")))
       {
         // FIXME: adapt to double-radio property
         if (props.get_edgealpha_double () == 1)
@@ -3021,6 +3230,8 @@ namespace octave
             double linewidth = props.get_linewidth ();
             set_linestyle (props.get_linestyle (), false, linewidth);
             set_linewidth (linewidth);
+            set_linecap ("butt");
+            set_linejoin ("miter");
 
             // NOTE: patch contour cannot be offset.  Offset must occur with the
             // filled portion of the patch above.  The tesselator uses
@@ -3121,31 +3332,33 @@ namespace octave
         && ! (props.markeredgecolor_is ("none")
               && props.markerfacecolor_is ("none")))
       {
-        bool do_edge = ! props.markeredgecolor_is ("none");
-        bool do_face = ! props.markerfacecolor_is ("none");
+        bool do_edge = draw_all || ! props.markeredgecolor_is ("none");
+        bool do_face = draw_all || ! props.markerfacecolor_is ("none");
 
-        Matrix mecolor = props.get_markeredgecolor_rgb ();
-        Matrix mfcolor = props.get_markerfacecolor_rgb ();
+        Matrix mecolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markeredgecolor_rgb ());
+        Matrix mfcolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markerfacecolor_rgb ());
 
-        bool has_markerfacecolor = false;
+        bool has_markerfacecolor = draw_all || false;
 
-        if ((mecolor.is_empty () && ! props.markeredgecolor_is ("none"))
-            || (mfcolor.is_empty () && ! props.markerfacecolor_is ("none")))
+        if ((mecolor.isempty () && ! props.markeredgecolor_is ("none"))
+            || (mfcolor.isempty () && ! props.markerfacecolor_is ("none")))
           {
             Matrix mc = props.get_color_data ().matrix_value ();
 
             if (mc.rows () == 1)
               {
                 // Single color specifications, we can simplify a little bit
-                if (mfcolor.is_empty () && ! props.markerfacecolor_is ("none"))
+                if (mfcolor.isempty () && ! props.markerfacecolor_is ("none"))
                   mfcolor = mc;
 
-                if (mecolor.is_empty () && ! props.markeredgecolor_is ("none"))
+                if (mecolor.isempty () && ! props.markeredgecolor_is ("none"))
                   mecolor = mc;
               }
             else
               {
-                if (c.is_empty ())
+                if (c.isempty ())
                   c = props.get_color_data ().matrix_value ();
                 has_markerfacecolor = ((c.numel () > 0)
                                        && (c.rows () == f.rows ()));
@@ -3173,10 +3386,10 @@ namespace octave
                     cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
                 }
 
-              Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
-                           : Matrix ());
-              Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
-                           : Matrix ());
+              Matrix lc = (do_edge ? (mecolor.isempty () ? cc : mecolor)
+                                   : Matrix ());
+              Matrix fc = (do_face ? (mfcolor.isempty () ? cc : mfcolor)
+                                   : Matrix ());
 
               draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);
             }
@@ -3197,7 +3410,7 @@ namespace octave
   }
 
   void
-  opengl_renderer::draw_light (const light::properties &props)
+  opengl_renderer::draw_light (const light::properties& props)
   {
 #if defined (HAVE_OPENGL)
 
@@ -3234,7 +3447,7 @@ namespace octave
   }
 
   void
-  opengl_renderer::draw_hggroup (const hggroup::properties &props)
+  opengl_renderer::draw_hggroup (const hggroup::properties& props)
   {
     draw (props.get_children ());
   }
@@ -3244,21 +3457,31 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    if (props.get_string ().is_empty ())
+    if (props.get_string ().isempty ())
       return;
+
+    Matrix pos = xform.scale (props.get_data_position ());
+
+    // Handle clipping manually when drawing text background
+    if (! props.is_clipping () ||
+        (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) ==
+         octave_uint8 (0x40)))
+      {
+        set_clipping (false);
+        draw_text_background (props);
+        set_clipping (props.is_clipping ());
+      }
 
     set_font (props);
 
-    Matrix pos = xform.scale (props.get_data_position ());
     const Matrix bbox = props.get_extent_matrix ();
 
-    // FIXME: handle margin and surrounding box
     bool blend = glIsEnabled (GL_BLEND);
 
     glEnable (GL_BLEND);
     glEnable (GL_ALPHA_TEST);
     glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
-    glBitmap (0, 0, 0, 0, bbox(0), bbox(1), 0);
+    glBitmap (0, 0, 0, 0, bbox(0), bbox(1), nullptr);
     glDrawPixels (bbox(2), bbox(3),
                   GL_RGBA, GL_UNSIGNED_BYTE, props.get_pixels ().data ());
     glDisable (GL_ALPHA_TEST);
@@ -3268,6 +3491,110 @@ namespace octave
 #else
 
     octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
+  opengl_renderer::draw_text_background (const text::properties& props,
+                                         bool do_rotate)
+  {
+#if defined (HAVE_OPENGL)
+
+    Matrix bgcol = props.get_backgroundcolor_rgb ();
+    Matrix ecol = props.get_edgecolor_rgb ();
+
+    if (bgcol.isempty () && ecol.isempty ())
+      return;
+
+    Matrix pos = xform.scale (props.get_data_position ());
+    ColumnVector pixpos = get_transform ().transform (pos(0), pos(1),
+                                                      pos(2), false);
+    const Matrix bbox = props.get_extent_matrix ();
+
+#  if defined (HAVE_FRAMEWORK_OPENGL)
+    GLint vp[4];
+#  else
+    int vp[4];
+#  endif
+
+    glGetIntegerv (GL_VIEWPORT, vp);
+
+    // Save current transform matrices and set orthogonal window coordinates
+    glMatrixMode (GL_PROJECTION);
+    glPushMatrix ();
+    glLoadIdentity ();
+    glOrtho (0, vp[2], vp[3], 0, xZ1, xZ2);
+    glMatrixMode (GL_MODELVIEW);
+    glPushMatrix ();
+    glLoadIdentity ();
+
+    // Translate coordinates so that the text anchor is (0,0)
+    glTranslated (pixpos(0), pixpos(1), -pixpos(2));
+
+    // FIXME: Only multiples of 90° are handled by the text renderer.
+    //        Handle others here.
+    double rotation = props.get_rotation ();
+
+    if (do_rotate && rotation != 0.0 && rotation != 90.0
+        && rotation != 180.0 && rotation != 270.0)
+      glRotated (-rotation, 0.0, 0.0, 1.0);
+
+    double m = props.get_margin ();
+    double x0 = bbox (0) - m;
+    double x1 = x0 + bbox(2) + 2 * m;
+    double y0 = -(bbox (1) - m);
+    double y1 = y0 - (bbox(3) + 2 * m);
+
+    if (! bgcol.isempty ())
+      {
+        glColor3f (bgcol(0), bgcol(1), bgcol(2));
+
+        bool depth_test = glIsEnabled (GL_DEPTH_TEST);
+        if (depth_test)
+          set_polygon_offset (true, 4.0);
+
+        glBegin (GL_QUADS);
+        glVertex2d (x0, y0);
+        glVertex2d (x1, y0);
+        glVertex2d (x1, y1);
+        glVertex2d (x0, y1);
+        glEnd ();
+
+        if (depth_test)
+          set_polygon_offset (false);
+      }
+
+    if (! ecol.isempty ())
+      {
+        glColor3f (ecol(0), ecol(1), ecol(2));
+
+        set_linestyle (props.get_linestyle (), false, props.get_linewidth ());
+        set_linewidth (props.get_linewidth ());
+
+        glBegin (GL_LINE_STRIP);
+        glVertex2d (x0, y0);
+        glVertex2d (x1, y0);
+        glVertex2d (x1, y1);
+        glVertex2d (x0, y1);
+        glVertex2d (x0, y0);
+        glEnd ();
+      }
+
+    // Restore previous coordinate system
+    glPopMatrix();
+    glMatrixMode (GL_PROJECTION);
+    glPopMatrix();
+
+#else
+
+    octave_unused_parameter (props);
+    octave_unused_parameter (do_rotate);
 
     // This shouldn't happen because construction of opengl_renderer
     // objects is supposed to be impossible if OpenGL is not available.
@@ -3291,7 +3618,7 @@ namespace octave
     Matrix y = props.get_ydata ().matrix_value ();
 
     // Someone wants us to draw an empty image?  No way.
-    if (x.is_empty () || y.is_empty ())
+    if (x.isempty () || y.isempty ())
       return;
 
     if (w > 1 && x(1) == x(0))
@@ -3303,8 +3630,8 @@ namespace octave
     const ColumnVector p0 = xform.transform (x(0), y(0), 0);
     const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
-    if (octave::math::isnan (p0(0)) || octave::math::isnan (p0(1))
-        || octave::math::isnan (p1(0)) || octave::math::isnan (p1(1)))
+    if (math::isnan (p0(0)) || math::isnan (p0(1))
+        || math::isnan (p1(0)) || math::isnan (p1(1)))
       {
         warning ("opengl_renderer: image X,Y data too large to draw");
         return;
@@ -3587,7 +3914,7 @@ namespace octave
     txt_renderer.set_font (props.get ("fontname").string_value (),
                            props.get ("fontweight").string_value (),
                            props.get ("fontangle").string_value (),
-                           props.get ("fontsize_points").double_value ());
+                           props.get ("__fontsize_points__").double_value ());
   }
 
   void
@@ -4129,7 +4456,7 @@ namespace octave
         glEnable (GL_BLEND);
         glEnable (GL_ALPHA_TEST);
         glRasterPos3d (x, y, z);
-        glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
+        glBitmap(0, 0, 0, 0, bbox(0), bbox(1), nullptr);
         glDrawPixels (bbox(2), bbox(3),
                       GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
         glDisable (GL_ALPHA_TEST);

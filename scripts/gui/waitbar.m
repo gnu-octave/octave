@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} waitbar (@var{frac})
@@ -65,7 +65,7 @@ function h = waitbar (varargin)
   endif
 
   ## Use existing waitbar if it still points to a valid graphics handle.
-  if (nargin == 1 && ishandle (curr_waitbar))
+  if (nargin == 1 && ishghandle (curr_waitbar))
     hf = curr_waitbar;
   else
     hf = false;
@@ -264,7 +264,7 @@ endfunction
 %!              "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
 %! for ii = 1:niter
 %!   ## Check cancel request
-%!   if (! ishandle (hf))
+%!   if (! ishghandle (hf))
 %!     break;
 %!   elseif (getappdata (hf, "interrupt"))
 %!     delete (hf);
@@ -292,7 +292,7 @@ endfunction
 %!   pause (0.5);
 %! endfor
 %!
-%! if (ishandle (hf))
+%! if (ishghandle (hf))
 %!   delete (hf);
 %! endif
 

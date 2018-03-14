@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 %!test
 %! s.a = 1;
@@ -164,7 +164,7 @@
 %! a = struct ("value", {1, 2, 3, 4, 5});
 %! [a(2:4).value] = 1;
 
-%!error <invalid assignment to cs-list outside multiple assignment>
+%!error <invalid dot name structure assignment>
 %! c(4, 4, 4, 4).name  = "a";
 %! c(3, 3, 3, 3).value = 1;
 %! c([1, 3], 2, :, [3, 4]).value = 1;
@@ -230,9 +230,19 @@
 %! s(3).foo = 42;
 %! assert (s(3), struct ("foo", 42));
 
+## empty index should return entire struct
+%!test <51633>
+%! x.a = 1:10;
+%! y = x;
+%! assert (! isempty (y));
+%! assert (y, x);
+%! z = x();
+%! assert (! isempty (z));
+%! assert (z, x);
+%! assert (z, y);
+
 ## test assigning to multi-dim struct with trailing singleton dimensions,
-## Bug #35841.
-%!test
+%!test <35841>
 %! a(1,1,1).b(1) = 1;
 %! a(1,1,1).b(1) = 2;
 %! a(1,1,:).b(1) = 3;

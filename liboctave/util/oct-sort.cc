@@ -6,19 +6,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 Code stolen in large part from Python's, listobject.c, which itself had
 no license header.  However, thanks to Tim Peters for the parts of the
@@ -118,12 +118,12 @@ The Python license is
 
 template <typename T>
 octave_sort<T>::octave_sort (void) :
-  compare (ascending_compare), ms (0)
+  compare (ascending_compare), ms (nullptr)
 { }
 
 template <typename T>
 octave_sort<T>::octave_sort (compare_fcn_type comp)
-  : compare (comp), ms (0)
+  : compare (comp), ms (nullptr)
 { }
 
 template <typename T>
@@ -141,7 +141,7 @@ octave_sort<T>::set_compare (sortmode mode)
   else if (mode == DESCENDING)
     compare = descending_compare;
   else
-    compare = 0;
+    compare = nullptr;
 }
 
 template <typename T>
@@ -1419,8 +1419,8 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
           /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
-              const octave_idx_type force = nremaining <= minrun ? nremaining
-                                                                 : minrun;
+              const octave_idx_type force = (nremaining <= minrun ? nremaining
+                                                                  : minrun);
               binarysort (data + lo, force, n, comp);
               n = force;
             }
@@ -1479,8 +1479,8 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
           /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
-              const octave_idx_type force = nremaining <= minrun ? nremaining
-                                                                 : minrun;
+              const octave_idx_type force = (nremaining <= minrun ? nremaining
+                                                                  : minrun);
               binarysort (data + lo, idx + lo, force, n, comp);
               n = force;
             }
@@ -1540,7 +1540,7 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 template <typename T>
 template <typename Comp>
 bool
-octave_sort<T>::is_sorted (const T *data, octave_idx_type nel, Comp comp)
+octave_sort<T>::issorted (const T *data, octave_idx_type nel, Comp comp)
 {
   const T *end = data + nel;
   if (data != end)
@@ -1560,21 +1560,21 @@ octave_sort<T>::is_sorted (const T *data, octave_idx_type nel, Comp comp)
 
 template <typename T>
 bool
-octave_sort<T>::is_sorted (const T *data, octave_idx_type nel)
+octave_sort<T>::issorted (const T *data, octave_idx_type nel)
 {
   bool retval = false;
 #if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
-    retval = is_sorted (data, nel, std::less<T> ());
+    retval = issorted (data, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
-      retval = is_sorted (data, nel, std::greater<T> ());
+      retval = issorted (data, nel, std::greater<T> ());
     else
 #endif
       if (compare)
-        retval = is_sorted (data, nel, compare);
+        retval = issorted (data, nel, compare);
 
   return retval;
 }
@@ -1716,7 +1716,7 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
         }
       else
         // The final column - use fast code.
-        sorted = is_sorted (lo, n, comp);
+        sorted = issorted (lo, n, comp);
     }
 
   return sorted;
@@ -1808,7 +1808,7 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
 template <typename T>
 void
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
-                        const T* values, octave_idx_type nvalues,
+                        const T *values, octave_idx_type nvalues,
                         octave_idx_type *idx)
 {
 #if defined (INLINE_ASCENDING_SORT)
@@ -1883,7 +1883,7 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
 template <typename T>
 void
 octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
-                               const T* values, octave_idx_type nvalues,
+                               const T *values, octave_idx_type nvalues,
                                octave_idx_type *idx, bool rev)
 {
 #if defined (INLINE_ASCENDING_SORT)

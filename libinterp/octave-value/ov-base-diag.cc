@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -236,7 +236,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-        if (! is_empty ())
+        if (! isempty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
@@ -306,7 +306,7 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex matrix", "real scalar");
 
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -466,6 +466,25 @@ octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force,
 }
 
 template <typename DMT, typename MT>
+float_display_format
+octave_base_diag<DMT, MT>::get_edit_display_format (void) const
+{
+  // FIXME
+  return float_display_format ();
+}
+
+template <typename DMT, typename MT>
+std::string
+octave_base_diag<DMT, MT>::edit_display (const float_display_format& fmt,
+                                         octave_idx_type i,
+                                         octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, matrix(i,j));
+  return buf.str ();
+}
+
+template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 {
@@ -488,7 +507,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
       || ! extract_keyword (is, "columns", c, true))
     error ("load: failed to extract number of rows and columns");
 
-  octave_idx_type l = r < c ? r : c;
+  octave_idx_type l = (r < c ? r : c);
   MT tmp (l, 1);
   is >> tmp;
 
@@ -542,7 +561,7 @@ octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax)
 }
 template <typename DMT, typename MT>
 int
-octave_base_diag<DMT, MT>::write (octave_stream& os, int block_size,
+octave_base_diag<DMT, MT>::write (octave::stream& os, int block_size,
                                   oct_data_conv::data_type output_type,
                                   int skip,
                                   octave::mach_info::float_format flt_fmt) const
@@ -556,6 +575,61 @@ octave_base_diag<DMT, MT>::print_info (std::ostream& os,
                                        const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
+}
+
+// FIXME: this function is duplicated in octave_base_matrix<T>.  Could
+// it somehow be shared instead?
+
+template <typename DMT, typename MT>
+void
+octave_base_diag<DMT, MT>::short_disp (std::ostream& os) const
+{
+  if (matrix.isempty ())
+    os << "[]";
+  else if (matrix.ndims () == 2)
+    {
+      // FIXME: should this be configurable?
+      octave_idx_type max_elts = 10;
+      octave_idx_type elts = 0;
+
+      octave_idx_type nel = matrix.numel ();
+
+      octave_idx_type nr = matrix.rows ();
+      octave_idx_type nc = matrix.columns ();
+
+      os << '[';
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              std::ostringstream buf;
+              octave_print_internal (buf, matrix(i,j));
+              std::string tmp = buf.str ();
+              size_t pos = tmp.find_first_not_of (' ');
+              if (pos != std::string::npos)
+                os << tmp.substr (pos);
+              else if (! tmp.empty ())
+                os << tmp[0];
+
+              if (++elts >= max_elts)
+                goto done;
+
+              if (j < nc - 1)
+                os << ", ";
+            }
+
+          if (i < nr - 1 && elts < max_elts)
+            os << "; ";
+        }
+
+    done:
+
+      if (nel <= max_elts)
+        os << ']';
+    }
+  else
+    os << "...";
 }
 
 template <typename DMT, typename MT>

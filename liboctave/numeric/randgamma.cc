@@ -4,19 +4,19 @@ Copyright (C) 2006-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -81,10 +81,11 @@ Dirichlet(a1,...,ak) for ai > 0
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include "lo-ieee.h"
-#include "lo-math.h"
-#include "randmtzig.h"
 #include "randgamma.h"
+#include "randmtzig.h"
 
 #define INFINITE lo_ieee_isinf
 #define RUNI oct_randu()
@@ -96,8 +97,8 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
 {
   octave_idx_type i;
   /* If a < 1, start by generating gamma (1+a) */
-  const double d =  (a < 1. ? 1.+a : a) - 1./3.;
-  const double c = 1./sqrt (9.*d);
+  const double d = (a < 1. ? 1.+a : a) - 1./3.;
+  const double c = 1./std::sqrt (9.*d);
 
   /* Handle invalid cases */
   if (a <= 0 || INFINITE(a))
@@ -151,8 +152,8 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
 {
   octave_idx_type i;
   /* If a < 1, start by generating gamma(1+a) */
-  const float d =  (a < 1. ? 1.+a : a) - 1./3.;
-  const float c = 1./sqrt (9.*d);
+  const float d = (a < 1. ? 1.+a : a) - 1./3.;
+  const float c = 1./std::sqrt (9.*d);
 
   /* Handle invalid cases */
   if (a <= 0 || INFINITE(a))

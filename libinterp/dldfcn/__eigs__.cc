@@ -4,19 +4,19 @@ Copyright (C) 2005-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,23 +24,27 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "defun-dld.h"
+#include <limits>
+#include <string>
+
+#include "Matrix.h"
 #include "eigs-base.h"
+#include "unwind-prot.h"
+
+#include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
 #include "oct-map.h"
-#include "ov-cx-sparse.h"
-#include "ov-re-sparse.h"
 #include "ov.h"
+#include "ovl.h"
 #include "pager.h"
-#include "quit.h"
-#include "unwind-prot.h"
+#include "parse.h"
 #include "variables.h"
 
 #if defined (HAVE_ARPACK)
 
 // Global pointer for user defined function.
-static octave_function *eigs_fcn = 0;
+static octave_function *eigs_fcn = nullptr;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_imaginary = false;
@@ -49,7 +53,7 @@ static bool warned_imaginary = false;
 static int call_depth = 0;
 
 ColumnVector
-eigs_func (const ColumnVector &x, int &eigs_error)
+eigs_func (const ColumnVector& x, int& eigs_error)
 {
   ColumnVector retval;
   octave_value_list args;
@@ -61,7 +65,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
 
       try
         {
-          tmp = eigs_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -70,7 +74,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
 
       if (tmp.length () && tmp(0).is_defined ())
         {
-          if (! warned_imaginary && tmp(0).is_complex_type ())
+          if (! warned_imaginary && tmp(0).iscomplex ())
             {
               warning ("eigs: ignoring imaginary part returned from user-supplied function");
               warned_imaginary = true;
@@ -89,7 +93,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
 }
 
 ComplexColumnVector
-eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
+eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
 {
   ComplexColumnVector retval;
   octave_value_list args;
@@ -101,7 +105,7 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 
       try
         {
-          tmp = eigs_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -124,8 +128,8 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 
 #endif
 
-DEFUN_DLD (__eigs__, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__eigs__, interp, args, nargout,
+               doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{d} =} __eigs__ (@var{A})
 @deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k})
 @deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})
@@ -226,9 +230,9 @@ Undocumented internal function.
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
-          if (args(0).is_sparse_type ())
+          if (args(0).issparse ())
             {
               ascm = (args(0).sparse_complex_matrix_value ());
               a_is_sparse = true;
@@ -241,7 +245,7 @@ Undocumented internal function.
         }
       else
         {
-          if (args(0).is_sparse_type ())
+          if (args(0).issparse ())
             {
               asmm = (args(0).sparse_matrix_value ());
               a_is_sparse = true;
@@ -258,7 +262,7 @@ Undocumented internal function.
   if (nargin > 1 + arg_offset
       && ! (args(1 + arg_offset).is_real_scalar ()))
     {
-      if (args(1+arg_offset).is_complex_type ())
+      if (args(1+arg_offset).iscomplex ())
         {
           b_arg = 1+arg_offset;
           have_b = true;
@@ -300,7 +304,7 @@ Undocumented internal function.
 
   if (nargin > (3+arg_offset))
     {
-      if (! args(3+arg_offset).is_map ())
+      if (! args(3+arg_offset).isstruct ())
         error ("eigs: OPTS argument must be a structure");
 
       octave_scalar_map map = args(3+arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
@@ -361,9 +365,9 @@ Undocumented internal function.
   if (! sym_tested && ! have_a_fun)
     {
       if (a_is_sparse)
-        symmetric = asmm.is_symmetric ();
+        symmetric = asmm.issymmetric ();
       else
-        symmetric = amm.is_symmetric ();
+        symmetric = amm.issymmetric ();
     }
 
   if (have_b)
@@ -551,18 +555,25 @@ Undocumented internal function.
     }
 
   if (nconv <= 0)
-    warning ("eigs: None of the %d requested eigenvalues converged", k);
+    warning_with_id ("Octave:eigs:UnconvergedEigenvalues",
+                     "eigs: None of the %d requested eigenvalues converged", k);
   else if (nconv < k)
-    warning ("eigs: Only %d of the %d requested eigenvalues converged",
-             nconv, k);
+    warning_with_id ("Octave:eigs:UnconvergedEigenvalues",
+                     "eigs: Only %d of the %d requested eigenvalues converged",
+                     nconv, k);
 
   if (! fcn_name.empty ())
-    clear_function (fcn_name);
+    {
+      octave::symbol_table& symtab = interp.get_symbol_table ();
+
+      symtab.clear_function (fcn_name);
+    }
 
   return retval;
 
 #else
 
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
   octave_unused_parameter (nargout);
 

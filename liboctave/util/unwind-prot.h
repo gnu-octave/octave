@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -43,6 +43,12 @@ namespace octave
 
     unwind_protect (void) : lifo () { }
 
+    // No copying!
+
+    unwind_protect (const unwind_protect&) = delete;
+
+    unwind_protect& operator = (const unwind_protect&) = delete;
+
     // Destructor should not raise an exception, so all actions
     // registered should be exception-safe.  If you're not sure, see
     // unwind_protect_safe.
@@ -54,16 +60,7 @@ namespace octave
       lifo.push (new_elem);
     }
 
-    OCTAVE_DEPRECATED ("use 'add (new fcn_arg_elem<void *> (fcn, ptr))' instead")
-    void add (void (*fcn) (void *), void *ptr = 0)
-    {
-      add (new fcn_arg_elem<void *> (fcn, ptr));
-    }
-
     operator bool (void) const { return ! empty (); }
-
-    OCTAVE_DEPRECATED ("use 'run_first' instead")
-    void run_top (void) { run_first (); }
 
     void run_first (void)
     {
@@ -76,12 +73,6 @@ namespace octave
         }
     }
 
-    OCTAVE_DEPRECATED ("use 'run' instead")
-    void run_top (int num) { run (num); }
-
-    OCTAVE_DEPRECATED ("use 'discard_first' instead")
-    void discard_top (void) { discard_first (); }
-
     void discard_first (void)
     {
       if (! empty ())
@@ -92,22 +83,11 @@ namespace octave
         }
     }
 
-    OCTAVE_DEPRECATED ("use 'discard' instead")
-    void discard_top (int num) { discard (num); }
-
     size_t size (void) const { return lifo.size (); }
 
   protected:
 
     std::stack<elem *> lifo;
-
-  private:
-
-    // No copying!
-
-    unwind_protect (const unwind_protect&);
-
-    unwind_protect& operator = (const unwind_protect&);
   };
 
   // Like unwind_protect, but this one will guard against the possibility
@@ -126,6 +106,12 @@ namespace octave
 
     unwind_protect_safe (void) : unwind_protect () { }
 
+    // No copying!
+
+    unwind_protect_safe (const unwind_protect_safe&) = delete;
+
+    unwind_protect_safe& operator = (const unwind_protect_safe&) = delete;
+
     ~unwind_protect_safe (void)
     {
       while (! empty ())
@@ -140,23 +126,15 @@ namespace octave
             }
         }
     }
-
-  private:
-
-    // No copying!
-
-    unwind_protect_safe (const unwind_protect_safe&);
-
-    unwind_protect_safe& operator = (const unwind_protect_safe&);
   };
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::unwind_protect' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::unwind_protect' instead")
 typedef octave::unwind_protect unwind_protect;
 
-OCTAVE_DEPRECATED ("use 'octave::unwind_protect_safe' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::unwind_protect_safe' instead")
 typedef octave::unwind_protect_safe unwind_protect_safe;
 
 #endif

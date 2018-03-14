@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## FIXME: we should skip (or mark as a known bug) the test for
 ## saving sparse matrices to MAT files when using 64-bit indexing since
@@ -312,21 +312,62 @@
 %!assert (sscanf ('7777777777777777777777', '%lo'), double (intmax ("uint64")))
 %!assert (sscanf ('ffffffffffffffffffffff', '%lx'), double (intmax ("uint64")))
 
-%!test
+## bug 51794
+%!assert (sscanf ('2147483647', '%d', 'C'), 2147483647)
+%!assert (sscanf ('2147483647', '%i', 'C'), 2147483647)
+%!assert (sscanf ('4294967295', '%u', 'C'), 4294967295)
+%!assert (sscanf ('37777777777', '%o', 'C'), 4294967295)
+%!assert (sscanf ('ffffffff', '%x', 'C'), 4294967295)
+## FIXME: scanf should return int64/uint64 if all conversions are %l[dioux].
+## Until then only test values that are within precision range of a double.
+%!assert (sscanf ('281474976710655', '%ld', 'C'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%li', 'C'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%lu', 'C'), 281474976710655)
+%!assert (sscanf ('7777777777777777', '%lo', 'C'), 281474976710655)
+%!assert (sscanf ('ffffffffffff', '%lx', 'C'), 281474976710655)
+
+%!testif ; ! ismac ()
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "");
 %! assert (pos, 2);
 
-%!test
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! [val, count, msg, pos] = sscanf ("3I2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!testif ; ! ismac ()
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "");
 %! assert (pos, 2);
 
-%!test
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! [val, count, msg, pos] = sscanf ("3In2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!testif ; ! ismac ()
+%! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
+%! assert (val, [3; Inf; 2]);
+%! assert (count, 3);
+%! assert (msg, "");
+%! assert (pos, 6);
+
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
 %! assert (val, [3; Inf; 2]);
 %! assert (count, 3);
@@ -462,19 +503,19 @@
 %!error <Invalid call to tempname> tempname (1, 2, 3)
 
 %!test
-%! type_list = ["char"; "char*1"; "integer*1"; "int8";
+%! type_list = {"char"; "char*1"; "integer*1"; "int8";
 %! "schar"; "signed char"; "uchar"; "unsigned char";
 %! "short"; "ushort"; "unsigned short"; "int";
 %! "uint"; "unsigned int"; "long"; "ulong"; "unsigned long";
 %! "float"; "float32"; "real*4"; "double"; "float64";
-%! "real*8"; "int16"; "integer*2"; "int32"; "integer*4"];
+%! "real*8"; "int16"; "integer*2"; "int32"; "integer*4"};
 %!
 %! n = rows (type_list);
 %! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)
 %!   for i = 1:n
-%!     fwrite (id, i, deblank (type_list(i,:)));
+%!     fwrite (id, i, type_list{i});
 %!   endfor
 %!
 %!   fclose (id);
@@ -483,7 +524,7 @@
 %!   if (id > 0)
 %!     x = zeros (1, n);
 %!     for i = 1:n
-%!       x(i) = fread (id, [1, 1], deblank (type_list(i,:)));
+%!       x(i) = fread (id, [1, 1], type_list{i});
 %!     endfor
 %!
 %!     if (x == 1:n)
@@ -494,6 +535,31 @@
 %!
 %! unlink (nm);
 %! assert (__prog_output_assert__ ("ok"));
+
+%!test
+%! classes = {"int8", "int16", "int32", "int64", ...
+%!            "uint8", "uint16", "uint32", "uint64", ...
+%!            "single", "double"};
+%! nm = tempname ();
+%! id = fopen (nm, "wb+");
+%! n = numel (classes);
+%! for i = 1:n
+%!   cls = classes{i};
+%!   s_in = ones (1, 1, cls);
+%!   m_in = ones (2, 2, cls);
+%!   m_shape = size (m_in);
+%!   frewind (id);
+%!   fwrite (id, s_in, cls);
+%!   fwrite (id, m_in, cls);
+%!   frewind (id);
+%!   s_out = fread (id, numel (s_in), sprintf ("%s=>%s", cls, cls));
+%!   m_out = fread (id, numel (m_in), sprintf ("%s=>%s", cls, cls));
+%!   m_out = reshape (m_out, m_shape);
+%!   assert (s_in, s_out);
+%!   assert (m_in, m_out);
+%! endfor
+%! fclose (id);
+%! unlink (nm);
 
 %!test
 %! x = char (128:255)';
@@ -727,3 +793,14 @@
 %!assert (sprintf ("%s", repmat ("blah", 2, 1)), "bbllaahh")
 %!assert (sprintf ("%c", repmat ("blah", 2, 1)), "bbllaahh")
 %!assert (sprintf ("%c %c %s", repmat ("blah", 2, 1)), "b b llaahh")
+
+## bug #39735
+%!assert (sprintf ("a %d b", []), "a  b")
+%!assert (sprintf ("a %d b", ''), "a  b")
+%!assert (sprintf ("a %d b", ' '), "a 32 b")
+%!assert (sprintf ("a %s b", []), "a  b")
+%!assert (sprintf ("a %s b", ''), "a  b")
+%!assert (sprintf ("a %s b", ' '), "a   b")
+
+%!assert <*53148> (double (sprintf ("B\0B")), [66, 0, 66])
+%!assert <*53148> (sscanf ("B\0B 13", "B\0B %d"), 13)

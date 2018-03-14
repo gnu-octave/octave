@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -59,7 +59,7 @@ mx_leftdiv_conform (const T1& a, const T2& b)
       octave_idx_type a_nc = a.cols ();
       octave_idx_type b_nc = b.cols ();
 
-      octave::err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
+      octave::err_nonconformant (R"(operator \)", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
@@ -130,7 +130,7 @@ INSTANTIATE_MX_DIV_CONFORM (SparseComplexMatrix, ComplexDiagMatrix);
 
 // -*- 1 -*-
 Matrix
-xdiv (const Matrix& a, const SparseMatrix& b, MatrixType &typ)
+xdiv (const Matrix& a, const SparseMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return Matrix ();
@@ -150,7 +150,7 @@ xdiv (const Matrix& a, const SparseMatrix& b, MatrixType &typ)
 
 // -*- 2 -*-
 ComplexMatrix
-xdiv (const Matrix& a, const SparseComplexMatrix& b, MatrixType &typ)
+xdiv (const Matrix& a, const SparseComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -170,7 +170,7 @@ xdiv (const Matrix& a, const SparseComplexMatrix& b, MatrixType &typ)
 
 // -*- 3 -*-
 ComplexMatrix
-xdiv (const ComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
+xdiv (const ComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -190,7 +190,7 @@ xdiv (const ComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
 
 // -*- 4 -*-
 ComplexMatrix
-xdiv (const ComplexMatrix& a, const SparseComplexMatrix& b, MatrixType &typ)
+xdiv (const ComplexMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -210,7 +210,7 @@ xdiv (const ComplexMatrix& a, const SparseComplexMatrix& b, MatrixType &typ)
 
 // -*- 5 -*-
 SparseMatrix
-xdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType &typ)
+xdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return SparseMatrix ();
@@ -230,7 +230,7 @@ xdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType &typ)
 
 // -*- 6 -*-
 SparseComplexMatrix
-xdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType &typ)
+xdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return SparseComplexMatrix ();
@@ -250,7 +250,7 @@ xdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType &typ)
 
 // -*- 7 -*-
 SparseComplexMatrix
-xdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
+xdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return SparseComplexMatrix ();
@@ -271,7 +271,7 @@ xdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
 // -*- 8 -*-
 SparseComplexMatrix
 xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
-      MatrixType &typ)
+      MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return SparseComplexMatrix ();
@@ -461,7 +461,7 @@ x_el_div (const Complex a, const SparseComplexMatrix& b)
 
 // -*- 1 -*-
 Matrix
-xleftdiv (const SparseMatrix& a, const Matrix& b, MatrixType &typ)
+xleftdiv (const SparseMatrix& a, const Matrix& b, MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return Matrix ();
@@ -473,7 +473,7 @@ xleftdiv (const SparseMatrix& a, const Matrix& b, MatrixType &typ)
 
 // -*- 2 -*-
 ComplexMatrix
-xleftdiv (const SparseMatrix& a, const ComplexMatrix& b, MatrixType &typ)
+xleftdiv (const SparseMatrix& a, const ComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
@@ -485,7 +485,7 @@ xleftdiv (const SparseMatrix& a, const ComplexMatrix& b, MatrixType &typ)
 
 // -*- 3 -*-
 SparseMatrix
-xleftdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType &typ)
+xleftdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return SparseMatrix ();
@@ -497,7 +497,7 @@ xleftdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType &typ)
 
 // -*- 4 -*-
 SparseComplexMatrix
-xleftdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType &typ)
+xleftdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return SparseComplexMatrix ();
@@ -509,7 +509,7 @@ xleftdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType &typ)
 
 // -*- 5 -*-
 ComplexMatrix
-xleftdiv (const SparseComplexMatrix& a, const Matrix& b, MatrixType &typ)
+xleftdiv (const SparseComplexMatrix& a, const Matrix& b, MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
@@ -521,7 +521,7 @@ xleftdiv (const SparseComplexMatrix& a, const Matrix& b, MatrixType &typ)
 
 // -*- 6 -*-
 ComplexMatrix
-xleftdiv (const SparseComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ)
+xleftdiv (const SparseComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
@@ -533,7 +533,7 @@ xleftdiv (const SparseComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ)
 
 // -*- 7 -*-
 SparseComplexMatrix
-xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
+xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return SparseComplexMatrix ();
@@ -546,7 +546,7 @@ xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
 // -*- 8 -*-
 SparseComplexMatrix
 xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
-          MatrixType &typ)
+          MatrixType& typ)
 {
   if (! mx_leftdiv_conform (a, b))
     return SparseComplexMatrix ();

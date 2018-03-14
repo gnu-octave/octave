@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Object::Object (const graphics_object& go, QObject* obj)
-    : QObject (), m_handle (go.get_handle ()), m_qobject (0)
+  Object::Object (const graphics_object& go, QObject *obj)
+    : QObject (), m_handle (go.get_handle ()), m_qobject (nullptr)
   {
     gh_manager::auto_lock lock (false);
 
@@ -48,7 +48,7 @@ namespace QtHandles
   }
 
   void
-  Object::init (QObject* obj, bool)
+  Object::init (QObject *obj, bool)
   {
     if (m_qobject)
       qCritical ("QtHandles::Object::init: "
@@ -138,7 +138,7 @@ namespace QtHandles
     if (m_qobject)
       {
         delete m_qobject;
-        m_qobject = 0;
+        m_qobject = nullptr;
       }
     deleteLater ();
   }
@@ -155,10 +155,10 @@ namespace QtHandles
   Object::beingDeleted (void)
   { }
 
-  void Object::objectDestroyed (QObject* obj)
+  void Object::objectDestroyed (QObject *obj)
   {
     if (obj && obj == m_qobject)
-      m_qobject = 0;
+      m_qobject = nullptr;
   }
 
   Object*
@@ -166,21 +166,21 @@ namespace QtHandles
   {
     gh_manager::auto_lock lock;
 
-    Object* parent = Backend::toolkitObject
+    Object *parent = Backend::toolkitObject
                      (gh_manager::get_object (go.get_parent ()));
 
     return parent;
   }
 
   Object*
-  Object::fromQObject (QObject* obj)
+  Object::fromQObject (QObject *obj)
   {
     QVariant v = obj->property ("QtHandles::Object");
 
     if (v.isValid ())
-      return reinterpret_cast<Object*> (qvariant_cast<void*> (v));
+      return reinterpret_cast<Object *> (qvariant_cast<void*> (v));
 
-    return 0;
+    return nullptr;
   }
 
 }

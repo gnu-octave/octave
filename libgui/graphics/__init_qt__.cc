@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -31,12 +31,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPalette>
 #include <QRegExp>
 
-#include "graphics.h"
-#include "interpreter.h"
 #include "defun.h"
+#include "graphics.h"
+#include "gtk-manager.h"
+#include "interpreter.h"
+#include "symtab.h"
 
 #include "Backend.h"
 #include "QtHandlesUtils.h"
+#include "__init_qt__.h"
 
 namespace QtHandles
 {
@@ -44,7 +47,7 @@ namespace QtHandles
   static bool qtHandlesInitialized = false;
 
   bool
-  __init__ (void)
+  __init__ (octave::interpreter& interp)
   {
     if (! qtHandlesInitialized)
       {
@@ -56,10 +59,12 @@ namespace QtHandles
 
             gh_manager::enable_event_processing (true);
 
-            graphics_toolkit tk (new Backend ());
-            gtk_manager::load_toolkit (tk);
+            octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-            octave_add_atexit_function ("__shutdown_qt__");
+            graphics_toolkit tk (new Backend ());
+            gtk_mgr.load_toolkit (tk);
+
+            octave::interpreter::add_atexit_function ("__shutdown_qt__");
 
             // Change some default settings to use Qt default colors
             QPalette p;
@@ -111,10 +116,6 @@ namespace QtHandles
       {
         gh_manager::auto_lock lock;
 
-        octave_add_atexit_function ("__shutdown_qt__");
-
-        gtk_manager::unload_toolkit ("qt");
-
         gh_manager::enable_event_processing (false);
 
         qtHandlesInitialized = false;
@@ -124,12 +125,11 @@ namespace QtHandles
 
     return false;
   }
-
 }
 
-DEFUN (__init_qt__, , , "")
+DEFMETHOD (__init_qt__, interp, , , "")
 {
-  QtHandles::__init__ ();
+  QtHandles::__init__ (interp);
 
   return octave_value ();
 }
@@ -142,13 +142,17 @@ DEFUN (__shutdown_qt__, , , "")
 }
 
 void
-install___init_qt___functions (void)
+install___init_qt___functions (octave::symbol_table& symtab)
 {
-  install_builtin_function (F__init_qt__, "__init_qt__",
-                            "__init_qt__.cc", "");
+  symtab.install_built_in_function
+    ("__init_qt__", octave_value (new octave_builtin
+                                  (F__init_qt__, "__init_qt__",
+                                   "__init_qt__.cc", "")));
 
-  install_builtin_function (F__shutdown_qt__, "__shutdown_qt__",
-                            "__init_qt__.cc", "");
+  symtab.install_built_in_function
+    ("__shutdown_qt__", octave_value (new octave_builtin
+                                      (F__shutdown_qt__, "__shutdown_qt__",
+                                       "__init_qt__.cc", "")));
 }
 
 #if 0
@@ -188,7 +192,7 @@ static QString
 appendDirSep (const QString& d)
 {
   if (! d.endsWith ("/") && ! d.endsWith (QDir::separator ()))
-    return (d + "/");
+    return (d + '/');
   return d;
 }
 
@@ -221,7 +225,7 @@ DEFUN (__uigetfile_qt__, args, , "")
   if (defaultFileName.isEmpty ())
     defaultFileName = defaultDirectory;
   else
-    defaultFileName = defaultDirectory + "/" + defaultFileName;
+    defaultFileName = defaultDirectory + '/' + defaultFileName;
 
   QStringList filterSpecs = makeFilterSpecs (args(0).cell_value ());
 
@@ -239,13 +243,13 @@ DEFUN (__uigetfile_qt__, args, , "")
           int i = 0;
 
           foreach (const QString& s, files)
-          {
-            QFileInfo fi (s);
+            {
+              QFileInfo fi (s);
 
-            if (dirName.isEmpty ())
-              dirName = appendDirSep (fi.canonicalPath ());
-            cFiles(i++) = toStdString (fi.fileName ());
-          }
+              if (dirName.isEmpty ())
+                dirName = appendDirSep (fi.canonicalPath ());
+              cFiles(i++) = toStdString (fi.fileName ());
+            }
 
           retval(0) = cFiles;
           retval(1) = toStdString (dirName);
@@ -299,7 +303,7 @@ DEFUN (__uiputfile_qt__, args, , "")
   if (defaultFileName.isEmpty ())
     defaultFileName = defaultDirectory;
   else
-    defaultFileName = defaultDirectory + "/" + defaultFileName;
+    defaultFileName = defaultDirectory + '/' + defaultFileName;
 
   QStringList filterSpecs = makeFilterSpecs (args(0).cell_value ());
 

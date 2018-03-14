@@ -5,7 +5,7 @@
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -28,7 +28,7 @@
 #include <QtCore/QTextStream>
 
 PlainTextDecoder::PlainTextDecoder()
- : _output(0)
+ : _output(nullptr)
  , _includeTrailingWhitespace(true)
 {
 
@@ -47,7 +47,7 @@ void PlainTextDecoder::begin(QTextStream* output)
 }
 void PlainTextDecoder::end()
 {
-    _output = 0;
+    _output = nullptr;
 }
 void PlainTextDecoder::decodeLine(const Character* const characters, int count, LineProperty /*properties*/
 							 )
@@ -86,8 +86,8 @@ void PlainTextDecoder::decodeLine(const Character* const characters, int count, 
 }
 
 HTMLDecoder::HTMLDecoder() :
-        _output(0)
-	   ,_colorTable(base_color_table)
+        _output(nullptr)
+       ,_colorTable(base_color_table)
        ,_innerSpanOpen(false)
        ,_lastRendition(DEFAULT_RENDITION)
 {
@@ -116,7 +116,7 @@ void HTMLDecoder::end()
 
     *_output << text;
 
-    _output = 0;
+    _output = nullptr;
 
 }
 

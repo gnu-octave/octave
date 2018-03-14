@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Expressions
 @chapter Expressions
@@ -106,7 +106,7 @@ a(1, :)       # row 1, all columns
 @end example
 
 @cindex @code{end}, indexing
-@cindex :end
+@cindex @sortas{end:} @code{end:} and @code{:end}
 
 In index expressions the keyword @code{end} automatically refers to
 the last entry for a particular dimension.  This magic index can also
@@ -151,7 +151,7 @@ padded with @w{@code{nd - nidx}} trailing singleton dimensions.  If
 size of the current array, then the last @w{@code{nd - nidx + 1}} dimensions
 are folded into a single dimension with an extent equal to the product of
 extents of the original dimensions.  This is easiest to understand with an
-example.  
+example.
 
 @example
 A = reshape (1:8, 2, 2, 2)  # Create 3-D array
@@ -322,8 +322,6 @@ result.
 
 @DOCSTRING(isindex)
 
-@DOCSTRING(allow_noninteger_range_as_index)
-
 @node Calling Functions
 @section Calling Functions
 
@@ -390,6 +388,7 @@ expressions.  See also @ref{Index Expressions}, and @ref{Assignment Ops}.
 @menu
 * Call by Value::
 * Recursion::
+* Access via Handle::
 @end menu
 
 @node Call by Value
@@ -485,6 +484,7 @@ endfunction
 @end group
 @end example
 
+@noindent
 This function is recursive because it calls itself directly.  It
 eventually terminates because each time it calls itself, it uses an
 argument that is one less than was used for the previous call.  Once the
@@ -493,8 +493,61 @@ the recursion ends.
 
 The built-in variable @code{max_recursion_depth} specifies a limit to
 the recursion depth and prevents Octave from recursing infinitely.
+Similarly, the variable @code{max_stack_depth} specifies a limit to the
+depth of function calls, whether recursive or not.  These limits help
+prevent stack overflow on the computer Octave is running on, so that
+instead of exiting with a signal, the interpreter will throw an error
+and return to the command prompt.
 
 @DOCSTRING(max_recursion_depth)
+
+@DOCSTRING(max_stack_depth)
+
+@node Access via Handle
+@subsection Access via Handle
+@cindex function handle
+@cindex indirect function call
+
+@opindex @@ function handle
+A function may be abstracted and referenced via a function handle acquired
+using the special operator @samp{@@}.  For example,
+
+@example
+@group
+f = @@plus;
+f (2, 2)
+@result{}  4
+@end group
+@end example
+
+@noindent
+is equivalent to calling @code{plus (2, 2)} directly.  Beyond abstraction for
+general programming, function handles find use in callback methods for figures
+and graphics by adding listeners to properties or assigning pre-existing
+actions, such as in the following example:
+
+@cindex figure deletefcn
+@example
+@group
+function mydeletefcn (h, ~, msg)
+  printf (msg);
+endfunction
+sombrero;
+set (gcf, "deletefcn", @{@@mydeletefcn, "Bye!\n"@});
+close;
+@end group
+@end example
+
+@noindent
+The above will print "Bye!" to the terminal upon the closing (deleting) of the
+figure.  There are many graphics property actions for which a callback function
+may be assigned, including, @code{buttondownfcn}, @code{windowscrollwheelfcn},
+@code{createfcn}, @code{deletefcn}, @code{keypressfcn}, etc.
+
+Note that the @samp{@@} character also plays a role in defining class
+functions, i.e., methods, but not as a syntactical element.  Rather it begins a
+directory name containing methods for a class that shares the directory name
+sans the @samp{@@} character.  See @ref{Object Oriented Programming}.
 
 @node Arithmetic Ops
 @section Arithmetic Operators
@@ -620,7 +673,7 @@ Negation.
 Unary plus.  This operator has no effect on the operand.
 
 @item @var{x}'
-@opindex '
+@opindex @code{'}
 Complex conjugate transpose.  For real arguments, this operator is the
 same as the transpose operator.  For complex arguments, this operator is
 equivalent to the expression
@@ -630,7 +683,7 @@ conj (x.')
 @end example
 
 @item @var{x}.'
-@opindex .'
+@opindex @code{.'}
 Transpose.
 @end table
 
@@ -663,7 +716,7 @@ lexer, which usually prefers to break the input into tokens by
 preferring the longest possible match at any given point, it is more
 useful in this case.
 
-@opindex '
+@opindex @code{'}
 @DOCSTRING(ctranspose)
 
 @opindex .\
@@ -698,7 +751,7 @@ useful in this case.
 @opindex .*
 @DOCSTRING(times)
 
-@opindex .'
+@opindex @code{.'}
 @DOCSTRING(transpose)
 
 @opindex -
@@ -1011,12 +1064,10 @@ operands for the operator @samp{&}.
 
 @sc{matlab} has special behavior that allows the operators @samp{&} and
 @samp{|} to short-circuit when used in the truth expression for @code{if} and
-@code{while} statements.  Octave also behaves the same way by default,
-though the use of the @samp{&} and @samp{|} operators in this way is
-strongly discouraged.  Instead, you should use the @samp{&&} and @samp{||}
-operators that always have short-circuit behavior.
-
-@DOCSTRING(do_braindead_shortcircuit_evaluation)
+@code{while} statements.  Octave behaves the same way for compatibility,
+however, the use of the @samp{&} and @samp{|} operators in this way is
+strongly discouraged and a warning will be issued.  Instead, you should use
+the @samp{&&} and @samp{||} operators that always have short-circuit behavior.
 
 Finally, the ternary operator (?:) is not supported in Octave.  If
 short-circuiting is not important, it can be replaced by the @code{ifelse}

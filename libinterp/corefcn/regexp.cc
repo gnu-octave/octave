@@ -5,19 +5,19 @@ Copyright (C) 2002-2005 Paul Kienzle
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -109,7 +109,7 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
                 {
                   bad_esc_seq = true;
                   tmpi = 0;
-                  warning ("malformed octal escape sequence '\\o' -- converting to '\\0'");
+                  warning (R"(malformed octal escape sequence '\o' -- converting to '\0')");
                 }
               retval[i] = tmpi;
               j = k - 1;
@@ -181,6 +181,30 @@ do_regexp_rep_string_escapes (const std::string& s)
               retval[i] = '\v';
               break;
 
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7': // octal input
+            {
+              size_t k;
+              int tmpi = s[j] - '0';
+              for (k = j+1; k < std::min (j+3, len); k++)
+                {
+                  int digit = s[k] - '0';
+                  if (digit < 0 || digit > 7)
+                    break;
+                  tmpi <<= 3;
+                  tmpi += digit;
+                }
+              retval[i] = tmpi;
+              j = k - 1;
+              break;
+            }
+
             case 'o': // octal input
             {
               bool bad_esc_seq = (j+1 >= len);
@@ -204,7 +228,7 @@ do_regexp_rep_string_escapes (const std::string& s)
                 }
               if (bad_esc_seq || (brace && s[k++] != '}'))
                 {
-                  warning ("malformed octal escape sequence '\\o' -- converting to '\\0'");
+                  warning (R"(malformed octal escape sequence '\o' -- converting to '\0')");
                   tmpi = 0;
                 }
               retval[i] = tmpi;
@@ -241,7 +265,7 @@ do_regexp_rep_string_escapes (const std::string& s)
                 }
               if (bad_esc_seq || (brace && s[k++] != '}'))
                 {
-                  warning ("malformed hex escape sequence '\\x' -- converting to '\\0'");
+                  warning (R"(malformed hex escape sequence '\x' -- converting to '\0')");
                   tmpi = 0;
                 }
               retval[i] = tmpi;
@@ -330,8 +354,8 @@ parse_options (octave::regexp::opts& options, const octave_value_list& args,
 }
 
 static octave_value_list
-octregexp (const octave_value_list &args, int nargout,
-           const std::string &who, bool case_insensitive = false)
+octregexp (const octave_value_list& args, int nargout,
+           const std::string& who, bool case_insensitive = false)
 {
   octave_value_list retval;
 
@@ -359,48 +383,36 @@ octregexp (const octave_value_list &args, int nargout,
 
   // Converted the linked list in the correct form for the return values
 
-  octave_idx_type i = 0;
-  octave_scalar_map nmap;
+  octave_map nmap (dim_vector ((sz == 0 ? 0 : 1), sz), named_pats);
 
   retval.resize (7);
 
-  if (sz == 1)
-    {
-      string_vector named_tokens = rx_lst.begin ()->named_tokens ();
-
-      for (int j = 0; j < named_pats.numel (); j++)
-        nmap.assign (named_pats(j), named_tokens(j));
-
-      retval(5) = nmap;
-    }
-  else
+  if (sz != 0)
     {
       for (int j = 0; j < named_pats.numel (); j++)
         {
-          Cell tmp (dim_vector (1, sz));
+          Cell ctmp (dim_vector (1, sz));
+          octave_idx_type i = 0;
 
-          i = 0;
-          for (octave::regexp::match_data::const_iterator p = rx_lst.begin ();
-               p != rx_lst.end (); p++)
+          for (const auto& match_data : rx_lst)
             {
-              string_vector named_tokens = p->named_tokens ();
+              string_vector named_tokens = match_data.named_tokens ();
 
-              tmp(i++) = named_tokens(j);
+              ctmp(i++) = named_tokens(j);
             }
 
-          nmap.assign (named_pats(j), octave_value (tmp));
+          nmap.assign (named_pats(j), ctmp);
         }
-
-      retval(5) = nmap;
     }
+  retval(5) = nmap;
 
   if (options.once ())
     {
       octave::regexp::match_data::const_iterator p = rx_lst.begin ();
 
-      retval(4) = sz ? p->tokens () : Cell ();
-      retval(3) = sz ? p->match_string () : "";
-      retval(2) = sz ? p->token_extents () : Matrix ();
+      retval(4) = (sz ? p->tokens () : Cell ());
+      retval(3) = (sz ? p->match_string () : "");
+      retval(2) = (sz ? p->token_extents () : Matrix ());
 
       if (sz)
         {
@@ -432,17 +444,16 @@ octregexp (const octave_value_list &args, int nargout,
       Cell split (dim_vector (1, sz+1));
       size_t sp_start = 0;
 
-      i = 0;
-      for (octave::regexp::match_data::const_iterator p = rx_lst.begin ();
-           p != rx_lst.end (); p++)
+      octave_idx_type i = 0;
+      for (const auto& match_data : rx_lst)
         {
-          double s = p->start ();
-          double e = p->end ();
+          double s = match_data.start ();
+          double e = match_data.end ();
 
-          string_vector tmp = p->tokens ();
+          string_vector tmp = match_data.tokens ();
           tokens(i) = Cell (dim_vector (1, tmp.numel ()), tmp);
-          match_string(i) = p->match_string ();
-          token_extents(i) = p->token_extents ();
+          match_string(i) = match_data.match_string ();
+          token_extents(i) = match_data.token_extents ();
           end(i) = e;
           start(i) = s;
           split(i) = buffer.substr (sp_start, s-sp_start-1);
@@ -468,7 +479,7 @@ octregexp (const octave_value_list &args, int nargout,
       octave_value_list new_retval;
       new_retval.resize (nargout);
 
-      OCTAVE_LOCAL_BUFFER_INIT (int, arg_used, 7, false);
+      int arg_used[7] {};
 
       for (int j = 2; j < nargin; j++)
         {
@@ -527,17 +538,17 @@ octregexp (const octave_value_list &args, int nargout,
 }
 
 static octave_value_list
-octcellregexp (const octave_value_list &args, int nargout,
-               const std::string &who, bool case_insensitive = false)
+octcellregexp (const octave_value_list& args, int nargout,
+               const std::string& who, bool case_insensitive = false)
 {
   octave_value_list retval;
 
-  if (args(0).is_cell ())
+  if (args(0).iscell ())
     {
       OCTAVE_LOCAL_BUFFER (Cell, newretval, nargout);
       octave_value_list new_args = args;
       Cell cellstr = args(0).cell_value ();
-      if (args(1).is_cell ())
+      if (args(1).iscell ())
         {
           Cell cellpat = args(1).cell_value ();
 
@@ -617,7 +628,7 @@ octcellregexp (const octave_value_list &args, int nargout,
       for (int j = 0; j < nargout; j++)
         retval(j) = octave_value (newretval[j]);
     }
-  else if (args(1).is_cell ())
+  else if (args(1).iscell ())
     {
       OCTAVE_LOCAL_BUFFER (Cell, newretval, nargout);
       octave_value_list new_args = args;
@@ -870,8 +881,8 @@ size) with successive @code{regexp} searches.
 
   octave_value_list retval;
 
-  if (args(0).is_cell () || args(1).is_cell ())
-    retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp");
+  if (args(0).iscell () || args(1).iscell ())
+    retval = (octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp"));
   else
     retval = octregexp (args, nargout, "regexp");
 
@@ -988,22 +999,48 @@ size) with successive @code{regexp} searches.
 %!test
 %! [t, nm] = regexp ("John Davis\nRogers, James", '(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)', 'tokens', 'names');
 %! assert (size (t), [1, 2]);
-%! assert (t{1}{1}, 'John');
-%! assert (t{1}{2}, 'Davis');
-%! assert (t{2}{1}, 'Rogers');
-%! assert (t{2}{2}, 'James');
-%! assert (size (nm), [1, 1]);
-%! assert (nm.first{1}, 'John');
-%! assert (nm.first{2}, 'James');
-%! assert (nm.last{1}, 'Davis');
-%! assert (nm.last{2}, 'Rogers');
+%! assert (t{1}{1}, "John");
+%! assert (t{1}{2}, "Davis");
+%! assert (t{2}{1}, "Rogers");
+%! assert (t{2}{2}, "James");
+%! assert (size (nm), [1, 2]);
+%! assert (nm(1).first, "John");
+%! assert (nm(1).last, "Davis");
+%! assert (nm(2).first, "James");
+%! assert (nm(2).last, "Rogers");
+
+## Tests for nulls in strings properly matching
+%!test
+%! str = "A\0B\0\0C";
+%! ptn = '(\0+)';  # also test null in single-quote pattern
+%! M = regexp (str, ptn, "match");
+%! assert (size (M), [1, 2]);
+%! assert (double (M{1}), [0]);
+%! assert (double (M{2}), [0, 0]);
+
+%!test
+%! str = "A\0B\0\0C";
+%! ptn = "(\0+)";  # also test null in double-quote pattern
+%! T = regexp (str, ptn, "tokens");
+%! assert (size (T), [1, 2]);
+%! assert (double (T{1}{1}), [0]);
+%! assert (double (T{2}{1}), [0, 0]);
+
+%!test
+%! str = "A\0B\0\0C";
+%! ptn = '(?<namedtoken>\0+)';
+%! NT = regexp (str, ptn, "names");
+%! assert (size (NT), [1, 2]);
+%! assert (double (NT(1).namedtoken), [0]);
+%! assert (double (NT(2).namedtoken), [0, 0]);
 
 ## Tests for named tokens
 %!test
 %! ## Parenthesis in named token (ie (int)) causes a problem
-%! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
+%! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'),
+%!         struct ('typestr', 'int'));
 
-%!test <35683>
+%!test <*35683>
 %! ## Mix of named and unnamed tokens can cause segfault
 %! str = "abcde";
 %! ptn = '(?<T1>a)(\w+)(?<T2>d\w+)';
@@ -1012,6 +1049,7 @@ size) with successive @code{regexp} searches.
 %! assert (tokens.T1, "a");
 %! assert (tokens.T2, "de");
 
+## Test options to regexp
 %!assert (regexp ("abc\nabc", '.'), [1:7])
 %!assert (regexp ("abc\nabc", '.', 'dotall'), [1:7])
 %!test
@@ -1080,9 +1118,6 @@ size) with successive @code{regexp} searches.
 %! assert (isempty (fieldnames (nm)));
 %! assert (sp, { "", "", "A", "", "E", "" });
 
-%!error regexp ('string', 'tri', 'BadArg')
-%!error regexp ('string')
-
 %!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1,0)})
 %!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
 %!assert (regexp ('Strings', {'t','s'}), {2, 7})
@@ -1136,14 +1171,19 @@ size) with successive @code{regexp} searches.
 %! assert (a, {"oo"});
 %! assert (b, {"f", " bar"});
 
+## Test escape sequences are expanded even in single-quoted strings
 %!assert (regexp ("\n", '\n'), 1)
 %!assert (regexp ("\n", "\n"), 1)
 
 # Test escape sequences are silently converted
-%!test <45407>
+%!test <*45407>
 %! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
 %! assert (regexprep ('s', '(s)', 'x\$1y'), 'x$1y');
 %! assert (regexprep ('s', '(s)', 'x\\$1y'), 'x\sy');
+
+## Test input validation
+%!error regexp ('string', 'tri', 'BadArg')
+%!error regexp ('string')
 
 */
 
@@ -1163,7 +1203,7 @@ for details on the syntax of the search pattern.
   if (args.length () < 2)
     print_usage ();
 
-  if (args(0).is_cell () || args(1).is_cell ())
+  if (args(0).iscell () || args(1).iscell ())
     return octcellregexp (args, (nargout > 0 ? nargout : 1), "regexpi", true);
   else
     return octregexp (args, nargout, "regexpi", true);
@@ -1304,7 +1344,7 @@ for details on the syntax of the search pattern.
 */
 
 static octave_value
-octregexprep (const octave_value_list &args, const std::string &who)
+octregexprep (const octave_value_list& args, const std::string& who)
 {
   int nargin = args.length ();
 
@@ -1391,23 +1431,23 @@ function.
 
   octave_value_list retval;
 
-  if (args(0).is_cell () || args(1).is_cell () || args(2).is_cell ())
+  if (args(0).iscell () || args(1).iscell () || args(2).iscell ())
     {
       Cell str, pat, rep;
       dim_vector dv0;
       dim_vector dv1 (1, 1);
 
-      if (args(0).is_cell ())
+      if (args(0).iscell ())
         str = args(0).cell_value ();
       else
         str = Cell (args(0));
 
-      if (args(1).is_cell ())
+      if (args(1).iscell ())
         pat = args(1).cell_value ();
       else
         pat = Cell (args(1));
 
-      if (args(2).is_cell ())
+      if (args(2).iscell ())
         rep = args(2).cell_value ();
       else
         rep = Cell (args(2));
@@ -1445,8 +1485,7 @@ function.
           ret(i) = new_args(0);
         }
 
-      retval = args(0).is_cell () ? ovl (ret)
-                                  : ovl (ret(0));
+      retval = (args(0).iscell () ? ovl (ret) : ovl (ret(0)));
     }
   else
     retval = octregexprep (args, "regexprep");
@@ -1480,23 +1519,26 @@ function.
 ## Return the original if no match
 %!assert (regexprep ('hello', 'world', 'earth'), 'hello')
 
-## Test emptymatch
+## Test emptymatch option
 %!assert (regexprep ('World', '^', 'Hello '), 'World')
 %!assert (regexprep ('World', '^', 'Hello ', 'emptymatch'), 'Hello World')
 
 ## Test a general replacement
 %!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_"), "a_b_c_d_e_f_g")
 
-## Make sure it works at the beginning and end
+## Make sure replacements work at the beginning and end of string
 %!assert (regexprep ("a[b]c{d}e-f=g", "a", "_"), "_[b]c{d}e-f=g")
 %!assert (regexprep ("a[b]c{d}e-f=g", "g", "_"), "a[b]c{d}e-f=_")
 
-## Options
-%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_", "once"), "a_b]c{d}e-f=g")
-%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "ignorecase"), "a_b_c_d_e_f_g")
+## Test options "once" and "ignorecase"
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_", "once"),
+%!        "a_b]c{d}e-f=g")
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "ignorecase"),
+%!        "a_b_c_d_e_f_g")
 
 ## Option combinations
-%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "once", "ignorecase"), "a_b]c{d}e-f=g")
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "once", "ignorecase"),
+%!        "a_b]c{d}e-f=g")
 
 ## End conditions on replacement
 %!assert (regexprep ("abc", "(b)", ".$1"), "a.bc")
@@ -1509,13 +1551,21 @@ function.
 %!assert (regexprep ({"abc","cba"}, "b", "?"), {"a?c","c?a"})
 %!assert (regexprep ({"abc","cba"}, {"b","a"}, {"?","!"}), {"!?c","c?!"})
 
-# Nasty lookbehind expression
+## Nasty lookbehind expression
 %!test
 %! warning ("off", "Octave:regexp-lookbehind-limit", "local");
-%! assert (regexprep ('x^(-1)+y(-1)+z(-1)=0', '(?<=[a-z]+)\(\-[1-9]*\)', '_minus1'),'x^(-1)+y_minus1+z_minus1=0');
+%! assert (regexprep ('x^(-1)+y(-1)+z(-1)=0', '(?<=[a-z]+)\(\-[1-9]*\)',
+%!         '_minus1'),'x^(-1)+y_minus1+z_minus1=0');
 
+## Verify escape sequences in pattern
 %!assert (regexprep ("\n", '\n', "X"), "X")
 %!assert (regexprep ("\n", "\n", "X"), "X")
+
+## Verify NULLs in pattern and replacement string
+%!assert (regexprep ("A\0A", "\0", ","), "A,A")
+%!assert (regexprep ("A\0A", '\0', ","), "A,A")
+%!assert (regexprep ("A,A", "A", "B\0B"), "B\0B,B\0B")
+%!assert (regexprep ("A,A", "A", 'B\0B'), "B\0B,B\0B")
 
 ## Empty matches were broken on ARM architecture
 %!test <*52810>

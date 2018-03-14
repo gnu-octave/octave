@@ -4,19 +4,19 @@ Copyright (C) 2002-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -77,7 +77,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = dasrt_f->do_multi_index_op (1, args);
+          tmp = octave::feval (dasrt_f, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -87,7 +87,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
       if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
-      if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+      if (! warned_fcn_imaginary && tmp(0).iscomplex ())
         {
           warning ("dasrt: ignoring imaginary part returned from user-supplied function");
           warned_fcn_imaginary = true;
@@ -95,7 +95,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 
       retval = tmp(0).vector_value ();
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("dasrt");
     }
 
@@ -118,7 +118,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
       try
         {
-          tmp = dasrt_cf->do_multi_index_op (1, args);
+          tmp = octave::feval (dasrt_cf, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -128,7 +128,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
       if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
-      if (! warned_cf_imaginary && tmp(0).is_complex_type ())
+      if (! warned_cf_imaginary && tmp(0).iscomplex ())
         {
           warning ("dasrt: ignoring imaginary part returned from user-supplied constraint function");
           warned_cf_imaginary = true;
@@ -136,7 +136,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
       retval = tmp(0).vector_value ();
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("dasrt");
     }
 
@@ -164,7 +164,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = dasrt_j->do_multi_index_op (1, args);
+          tmp = octave::feval (dasrt_j, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -175,7 +175,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen == 0 || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
-      if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+      if (! warned_jac_imaginary && tmp(0).iscomplex ())
         {
           warning ("dasrt: ignoring imaginary part returned from user-supplied jacobian function");
           warned_jac_imaginary = true;
@@ -183,15 +183,15 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
       retval = tmp(0).matrix_value ();
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("dasrt");
     }
 
   return retval;
 }
 
-DEFUN (dasrt, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dasrt, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t})
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t})
@@ -352,9 +352,11 @@ parameters for @code{dasrt}.
 
   int argp = 0;
   std::string fcn_name, fname, jac_name, jname;
-  dasrt_f = 0;
-  dasrt_j = 0;
-  dasrt_cf = 0;
+  dasrt_f = nullptr;
+  dasrt_j = nullptr;
+  dasrt_cf = nullptr;
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   // Check all the arguments.  Are they the right animals?
 
@@ -362,7 +364,7 @@ parameters for @code{dasrt}.
 
   octave_value f_arg = args(0);
 
-  if (f_arg.is_cell ())
+  if (f_arg.iscell ())
     {
       Cell c = f_arg.cell_value ();
       if (c.numel () == 1)
@@ -397,8 +399,8 @@ parameters for @code{dasrt}.
                   if (! dasrt_j)
                     {
                       if (fcn_name.length ())
-                        clear_function (fcn_name);
-                      dasrt_f = 0;
+                        symtab.clear_function (fcn_name);
+                      dasrt_f = nullptr;
                     }
                 }
             }
@@ -407,7 +409,7 @@ parameters for @code{dasrt}.
         error ("dasrt: incorrect number of elements in cell array");
     }
 
-  if (! dasrt_f && ! f_arg.is_cell ())
+  if (! dasrt_f && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         dasrt_f = f_arg.function_value ();
@@ -445,7 +447,7 @@ parameters for @code{dasrt}.
                                                 jname, "; endfunction");
 
                     if (! dasrt_j)
-                      dasrt_f = 0;
+                      dasrt_f = nullptr;
                   }
               }
               break;
@@ -463,27 +465,37 @@ parameters for @code{dasrt}.
 
   argp++;
 
-  if (args(1).is_function_handle () || args(1).is_inline_function ())
+  if (args(1).isempty () && args(1).is_double_type ())
     {
-      dasrt_cf = args(1).function_value ();
-
-      if (! dasrt_cf)
-        error ("dasrt: invalid constraint function G");
+      // Allow [] to skip constraint function.  This feature is
+      // undocumented now, but was supported by earlier versions.
 
       argp++;
-
-      func.set_constraint_function (dasrt_user_cf);
     }
-  else if (args(1).is_string ())
+  else
     {
-      dasrt_cf = is_valid_function (args(1), "dasrt", true);
-      if (! dasrt_cf)
-        error ("dasrt: invalid constraint function G");
+      if (args(1).is_function_handle () || args(1).is_inline_function ())
+        dasrt_cf = args(1).function_value ();
+      else if (args(1).is_string ())
+        {
+          fcn_name = unique_symbol_name ("__dasrt_constraint_fcn__");
+          fname = "function g_out = ";
+          fname.append (fcn_name);
+          fname.append (" (x, t) g_out = ");
+          dasrt_cf = extract_function (args(1), "dasrt", fcn_name, fname,
+                                       "; endfunction");
+        }
 
-      argp++;
+      if (dasrt_cf)
+        {
+          argp++;
 
-      func.set_constraint_function (dasrt_user_cf);
+          func.set_constraint_function (dasrt_user_cf);
+        }
     }
+
+  if (argp + 3 > nargin)
+    print_usage ();
 
   ColumnVector state = args(argp++).xvector_value ("dasrt: initial state X_0 must be a vector");
 
@@ -520,9 +532,9 @@ parameters for @code{dasrt}.
     output = dae.integrate (out_times);
 
   if (fcn_name.length ())
-    clear_function (fcn_name);
+    symtab.clear_function (fcn_name);
   if (jac_name.length ())
-    clear_function (jac_name);
+    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

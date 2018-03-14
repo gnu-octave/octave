@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} speed (@var{f}, @var{init}, @var{max_n}, @var{f2}, @var{tol})
@@ -143,6 +143,10 @@
 ## Type @kbd{example ("speed")} to see some real examples or
 ## @kbd{demo ("speed")} to run them.
 ## @end deftypefn
+
+## Programming Note: All variables for speed() must use the internal prefix "__".
+## Shared variables are eval'ed into the current workspace and therefore might
+## collide with the names used in the speed.m function itself.
 
 ## FIXME: consider two dimensional speedup surfaces for functions like kron.
 function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 100, __f2 = "", __tol = eps)

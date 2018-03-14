@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -78,7 +78,7 @@ namespace QtHandles
       int i = 0;
 
       foreach (const QString& s, l)
-      v[i++] = toStdString (s);
+        v[i++] = toStdString (s);
 
       return v;
     }
@@ -96,7 +96,7 @@ namespace QtHandles
       if (tmp.isEmpty ())
         tmp += "";
 
-      Cell v(toStringVector (tmp));
+      Cell v (toStringVector (tmp));
       return v;
     }
 
@@ -112,19 +112,19 @@ namespace QtHandles
 
       if (! mapsInitialized)
         {
-          weightMap[std::string ("normal")] = QFont::Normal;
-          weightMap[std::string ("light")] = QFont::Light;
-          weightMap[std::string ("demi")] = QFont::DemiBold;
-          weightMap[std::string ("bold")] = QFont::Normal;
+          weightMap["normal"] = QFont::Normal;
+          weightMap["light"] = QFont::Light;
+          weightMap["demi"] = QFont::DemiBold;
+          weightMap["bold"] = QFont::Bold;
 
-          angleMap[std::string ("normal")] = QFont::StyleNormal;
-          angleMap[std::string ("italic")] = QFont::StyleItalic;
-          angleMap[std::string ("oblique")] = QFont::StyleOblique;
+          angleMap["normal"] = QFont::StyleNormal;
+          angleMap["italic"] = QFont::StyleItalic;
+          angleMap["oblique"] = QFont::StyleOblique;
 
           mapsInitialized = true;
         }
 
-      f.setPointSizeF (props.get_fontsize_points (height));
+      f.setPointSizeF (props.get___fontsize_points__ (height));
       f.setWeight (weightMap[props.get_fontweight ()]);
       f.setStyle (angleMap[props.get_fontangle ()]);
 
@@ -155,7 +155,7 @@ namespace QtHandles
     toRgb (const QColor& c)
     {
       Matrix rgb (1, 3);
-      double* rgbData = rgb.fortran_vec ();
+      double *rgbData = rgb.fortran_vec ();
 
       // qreal is a typedef for double except for ARM CPU architectures
       // where it is a typedef for float (Bug #44970).
@@ -167,10 +167,10 @@ namespace QtHandles
     }
 
     std::string
-    figureSelectionType (QMouseEvent* event, bool isDoubleClick)
+    figureSelectionType (QMouseEvent *event, bool isDoubleClick)
     {
       if (isDoubleClick)
-        return std::string ("open");
+        return "open";
       else
         {
           Qt::MouseButtons buttons = event->buttons ();
@@ -179,27 +179,27 @@ namespace QtHandles
           if (mods == Qt::NoModifier)
             {
               if (buttons == Qt::LeftButton)
-                return std::string ("normal");
+                return "normal";
               else if (buttons == Qt::RightButton)
-                return std::string ("alt");
+                return "alt";
 #if defined (Q_WS_WIN)
               else if (buttons == (Qt::LeftButton | Qt::RightButton))
-                return std::string ("extend");
+                return "extend";
 #elif defined (Q_WS_X11)
               else if (buttons == Qt::MidButton)
-                return std::string ("extend");
+                return "extend";
 #endif
             }
           else if (buttons == Qt::LeftButton)
             {
               if (mods == Qt::ShiftModifier)
-                return std::string ("extend");
+                return "extend";
               else if (mods == Qt::ControlModifier)
-                return std::string ("alt");
+                return "alt";
             }
         }
 
-      return std::string ("normal");
+      return "normal";
     }
 
     /*
@@ -208,13 +208,13 @@ namespace QtHandles
        2) Used for QKeyEvents where cursor position must be determined.
     */
     Matrix
-    figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
+    figureCurrentPoint (const graphics_object& fig, QMouseEvent *event)
     {
-      Object* tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = Backend::toolkitObject (fig);
 
       if (tkFig)
         {
-          Container* c = tkFig->innerContainer ();
+          Container *c = tkFig->innerContainer ();
 
           if (c)
             {
@@ -231,16 +231,16 @@ namespace QtHandles
     Matrix
     figureCurrentPoint (const graphics_object& fig)
     {
-      Object* tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = Backend::toolkitObject (fig);
 
       if (tkFig)
         {
-          Container* c = tkFig->innerContainer ();
+          Container *c = tkFig->innerContainer ();
 
           if (c)
             {
-              // FIXME: QCursor::pos() may give inaccurate results with asynchronous
-              //        window systems like X11 over ssh.
+              // FIXME: QCursor::pos() may give inaccurate results with
+              //        asynchronous window systems like X11 over ssh.
               QPoint qp = c->mapFromGlobal (QCursor::pos ());
 
               return tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
@@ -328,7 +328,7 @@ namespace QtHandles
                                          a));
                   }
             }
-          else if (v.is_real_type ())
+          else if (v.isreal ())
             {
               NDArray d = v.array_value ();
 
@@ -356,7 +356,7 @@ namespace QtHandles
     }
 
     octave_scalar_map
-    makeKeyEventStruct (QKeyEvent* event)
+    makeKeyEventStruct (QKeyEvent *event)
     {
       octave_scalar_map retval;
 

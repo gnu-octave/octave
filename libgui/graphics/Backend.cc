@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -52,7 +52,7 @@ namespace QtHandles
   toolkitObjectProperty (const graphics_object& go)
   {
     if (go.isa ("figure"))
-      return std::string ("__plot_stream__");
+      return "__plot_stream__";
     else if (go.isa ("uicontrol")
              || go.isa ("uipanel")
              || go.isa ("uibuttongroup")
@@ -61,7 +61,7 @@ namespace QtHandles
              || go.isa ("uitoolbar")
              || go.isa ("uipushtool")
              || go.isa ("uitoggletool"))
-      return std::string ("__object__");
+      return "__object__";
     else
       qCritical ("QtHandles::Backend: no __object__ property known for object "
                  "of type %s", go.type ().c_str ());
@@ -72,7 +72,7 @@ namespace QtHandles
   Backend::Backend (void)
     : QObject (), base_graphics_toolkit ("qt")
   {
-    ObjectFactory* factory = ObjectFactory::instance ();
+    ObjectFactory *factory = ObjectFactory::instance ();
 
     connect (this, SIGNAL (createObject (double)),
              factory, SLOT (createObject (double)));
@@ -97,11 +97,11 @@ namespace QtHandles
         Logger::debug ("Backend::initialize %s from thread %08x",
                        go.type ().c_str (), QThread::currentThreadId ());
 
-        ObjectProxy* proxy = new ObjectProxy ();
+        ObjectProxy *proxy = new ObjectProxy ();
         graphics_object gObj (go);
 
         OCTAVE_PTR_TYPE tmp (reinterpret_cast<OCTAVE_INTPTR_TYPE> (proxy));
-        gObj.get_properties ().set(toolkitObjectProperty (go), tmp);
+        gObj.get_properties ().set (toolkitObjectProperty (go), tmp);
 
         emit createObject (go.get_handle ().value ());
 
@@ -130,7 +130,7 @@ namespace QtHandles
     Logger::debug ("Backend::update %s(%d) from thread %08x",
                    go.type ().c_str (), pId, QThread::currentThreadId ());
 
-    ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy *proxy = toolkitObjectProxy (go);
 
     if (proxy)
       {
@@ -154,7 +154,7 @@ namespace QtHandles
     Logger::debug ("Backend::finalize %s from thread %08x",
                    go.type ().c_str (), QThread::currentThreadId ());
 
-    ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy *proxy = toolkitObjectProxy (go);
 
     if (proxy)
       {
@@ -172,7 +172,7 @@ namespace QtHandles
   {
     if (go.get_properties ().is_visible ())
       {
-        ObjectProxy* proxy = toolkitObjectProxy (go);
+        ObjectProxy *proxy = toolkitObjectProxy (go);
 
         if (proxy)
           proxy->redraw ();
@@ -185,25 +185,38 @@ namespace QtHandles
                          const std::string& file_cmd,
                          const std::string& /*debug_file*/) const
   {
-    if (go.get_properties ().is_visible ())
+    ObjectProxy *proxy = toolkitObjectProxy (go);
+
+    if (proxy)
+      proxy->print (QString::fromStdString (file_cmd),
+                    QString::fromStdString (term));
+  }
+
+  uint8NDArray
+  Backend::get_pixels (const graphics_object& go) const
+  {
+    uint8NDArray retval;
+
+    if (go.isa ("figure"))
       {
-        ObjectProxy* proxy = toolkitObjectProxy (go);
+        ObjectProxy *proxy = toolkitObjectProxy (go);
 
         if (proxy)
-          proxy->print (QString::fromStdString (file_cmd),
-                        QString::fromStdString (term));
+          retval = proxy->get_pixels ();
       }
+
+    return retval;
   }
 
   Object*
   Backend::toolkitObject (const graphics_object& go)
   {
-    ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy *proxy = toolkitObjectProxy (go);
 
     if (proxy)
       return proxy->object ();
 
-    return 0;
+    return nullptr;
   }
 
   ObjectProxy*
@@ -213,15 +226,15 @@ namespace QtHandles
       {
         octave_value ov = go.get (toolkitObjectProperty (go));
 
-        if (ov.is_defined () && ! ov.is_empty ())
+        if (ov.is_defined () && ! ov.isempty ())
           {
             OCTAVE_INTPTR_TYPE ptr = ov.OCTAVE_PTR_SCALAR ().value ();
 
-            return reinterpret_cast<ObjectProxy*> (ptr);
+            return reinterpret_cast<ObjectProxy *> (ptr);
           }
       }
 
-    return 0;
+    return nullptr;
   }
 
 };

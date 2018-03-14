@@ -6,19 +6,19 @@ Copyright (C) 2008-2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,6 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <string>
+
+#include "MArray.h"
+#include "Matrix.h"
 #include "qr.h"
 #include "qrp.h"
 #include "sparse-qr.h"
@@ -33,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "ov.h"
 #include "ovl.h"
 
 template <typename MT>
@@ -40,7 +45,7 @@ static octave_value
 get_qr_r (const octave::math::qr<MT>& fact)
 {
   MT R = fact.R ();
-  if (R.is_square () && fact.regular ())
+  if (R.issquare () && fact.regular ())
     return octave_value (R, MatrixType (MatrixType::Upper));
   else
     return R;
@@ -48,14 +53,17 @@ get_qr_r (const octave::math::qr<MT>& fact)
 
 template <typename T>
 static typename octave::math::qr<T>::type
-qr_type (int nargin, int nargout)
+qr_type (int nargout, bool economy)
 {
-  return ((nargout == 0 || nargout == 1)
-          ? octave::math::qr<T>::raw
-          : (nargin == 2) ? octave::math::qr<T>::economy : octave::math::qr<T>::std);
+  if (nargout == 0 || nargout == 1)
+    return octave::math::qr<T>::raw;
+  else if (economy)
+    return octave::math::qr<T>::economy;
+  else
+    return octave::math::qr<T>::std;
 }
 
-// [Q, R] = qr (X):      form Q unitary and R upper triangular such
+// [Q, R] = qr (X):       form Q unitary and R upper triangular such
 //                        that Q * R = X
 //
 // [Q, R] = qr (X, 0):    form the economy decomposition such that if X is
@@ -67,7 +75,7 @@ qr_type (int nargin, int nargout)
 //                        A * P = Q * R
 //
 // [Q, R, P] = qr (X, 0): form the economy decomposition with
-//                        permutation vector P such that Q * R = X (:, P)
+//                        permutation vector P such that Q * R = X(:, P)
 //
 // qr (X) alone returns the output of the LAPACK routine dgeqrf, such
 // that R = triu (qr (X))
@@ -75,23 +83,29 @@ qr_type (int nargin, int nargout)
 DEFUN_DLD (qr, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{Q}, @var{R}] =} qr (@var{A})
-@deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}) # non-sparse A
-@deftypefnx {} {@var{X} =} qr (@var{A})
-@deftypefnx {} {@var{R} =} qr (@var{A}) # sparse A
+@deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})  # non-sparse A
+@deftypefnx {} {@var{X} =} qr (@var{A})  # non-sparse A
+@deftypefnx {} {@var{R} =} qr (@var{A})  # sparse A
 @deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, 0)
-@deftypefnx {} {[@dots{}] =} qr (@dots{}, 'vector')
-@deftypefnx {} {[@dots{}] =} qr (@dots{}, 'matrix')
+@deftypefnx {} {[@dots{}] =} qr (@dots{}, "vector")
+@deftypefnx {} {[@dots{}] =} qr (@dots{}, "matrix")
 @cindex QR factorization
 Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}
 subroutines.
+
 The QR@tie{}factorization is
 @tex
 $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.
 @end tex
 @ifnottex
-@code{@var{Q} * @var{R} = @var{A}} where @var{Q} is an orthogonal matrix and
-@var{R} is upper triangular.
+
+@example
+@var{Q} * @var{R} = @var{A}
+@end example
+
+@noindent
+where @var{Q} is an orthogonal matrix and @var{R} is upper triangular.
 @end ifnottex
 
 For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},
@@ -117,41 +131,45 @@ returns
 @end group
 @end example
 
-The @code{qr} factorization has applications in the solution of least
-squares problems
+@noindent
+which multiplied together return the original matrix
+
+@example
+@group
+@var{Q} * @var{R}
+  @result{}
+     1.0000   2.0000
+     3.0000   4.0000
+@end group
+@end example
+
+If just a single return value is requested then it is either @var{R}, if
+@var{A} is sparse, or @var{X}, such that @code{@var{R} = triu (@var{X})} if
+@var{A} is full.  (Note: unlike most commands, the single return value is not
+the first return value when multiple values are requested.)
+
+If the matrix @var{A} is full, and a third output @var{P} is requested, then
+@code{qr} calculates the permuted QR@tie{}factorization
 @tex
-$$
-\min_x \left\Vert A x - b \right\Vert_2
-$$
+$QR = AP$ where $Q$ is an orthogonal matrix, $R$ is upper triangular, and $P$
+is a permutation matrix.
 @end tex
 @ifnottex
 
 @example
-min norm(A x - b)
+@var{Q} * @var{R} = @var{A} * @var{P}
 @end example
 
+@noindent
+where @var{Q} is an orthogonal matrix, @var{R} is upper triangular, and
+@var{P} is a permutation matrix.
 @end ifnottex
-for overdetermined systems of equations (i.e.,
-@tex
-$A$
-@end tex
-@ifnottex
-@var{A}
-@end ifnottex
-is a tall, thin matrix).
 
-If only a single return value is requested, then it is either @var{R} if
-@var{A} is sparse, or @var{X} such that @code{@var{R} = triu (@var{X})} if
-@var{A} is full.
-(Note: Unlike most commands, the single return value is not
-the first return value when multiple are requested.)
+The permuted QR@tie{}factorization has the additional property that the
+diagonal entries of @var{R} are ordered by decreasing magnitude.  In other
+words, @code{abs (diag (@var{R}))} will be ordered from largest to smallest.
 
-
-If the matrix @var{A} is full, the permuted QR@tie{}factorization
-@code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} forms the
-QR@tie{}factorization such that the diagonal entries of @var{R} are
-decreasing in magnitude order.  For example, given the matrix
-@code{a = [1, 2; 3, 4]},
+For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},
 
 @example
 [@var{Q}, @var{R}, @var{P}] = qr (@var{A})
@@ -179,38 +197,68 @@ returns
 @end group
 @end example
 
-The permuted @code{qr} factorization
-@code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} factorization allows the
-construction of an orthogonal basis of @code{span (A)}.
-
-If the matrix @var{A} is sparse, then the sparse QR@tie{}factorization
-of @var{A} is computed using @sc{CSparse}.
-As the matrix @var{Q} is in general a full matrix,
-it is recommended to request only one return value,
-which is the @var{Q}-less factorization @var{R} of @var{A}, such that
-@code{@var{R} = chol (@var{A}' * @var{A})}.
+If the input matrix @var{A} is sparse then the sparse QR@tie{}factorization
+is computed using @sc{CSparse}.  Because the matrix @var{Q} is, in general, a
+full matrix, it is recommended to request only one return value @var{R}.  In
+that case, the computation avoids the construction of @var{Q} and returns
+@var{R} such that @code{@var{R} = chol (@var{A}' * @var{A})}.
 
 If an additional matrix @var{B} is supplied and two return values are
-requested, then @code{qr} returns
-@var{C}, where @code{@var{C} = @var{Q}' * @var{B}}.  This allows the
-least squares approximation of @code{@var{A} \ @var{B}} to be calculated
-as
+requested, then @code{qr} returns @var{C}, where
+@code{@var{C} = @var{Q}' * @var{B}}.  This allows the least squares
+approximation of @code{@var{A} \ @var{B}} to be calculated as
 
 @example
 @group
 [@var{C}, @var{R}] = qr (@var{A}, @var{B})
-x = @var{R} \ @var{C}
+@var{x} = @var{R} \ @var{C}
 @end group
 @end example
 
-If the final argument is the scalar 0 and the number of rows is larger
-than the number of columns, then an @qcode{"economy"} factorization is
-returned, omitting zeroes of @var{R} and the corresponding columns of @var{Q}.
-That is, @var{R} will have only @code{size (@var{A},1)} rows.  In this case,
-@var{P} is a vector rather than a matrix.
-
 If the final argument is the string @qcode{"vector"} then @var{P} is a
-permutation vector instead of a permutation matrix.
+permutation vector (of the columns of @var{A}) instead of a permutation matrix.
+In this case, the defining relationship is
+
+@example
+@var{Q} * @var{R} = @var{A}(:, @var{P})
+@end example
+
+The default, however, is to return a permutation matrix and this may be
+explicitly specified by using a final argument of @qcode{"matrix"}.
+
+If the final argument is the scalar 0 an "economy" factorization is returned.
+When the original matrix @var{A} has size MxN and M > N then the "economy"
+factorization will calculate just N rows in @var{R} and N columns in @var{Q}
+and omit the zeros in @var{R}.  If M @leq{} N there is no difference between
+the economy and standard factorizations.  When calculating an "economy"
+factorization the output @var{P} is always a vector rather than a matrix.
+
+Background: The QR factorization has applications in the solution of least
+squares problems
+@tex
+$$
+\min_x \left\Vert A x - b \right\Vert_2
+$$
+@end tex
+@ifnottex
+
+@example
+min norm (A*x - b)
+@end example
+
+@end ifnottex
+for overdetermined systems of equations (i.e.,
+@tex
+$A$
+@end tex
+@ifnottex
+@var{A}
+@end ifnottex
+is a tall, thin matrix).
+
+The permuted QR@tie{}factorization
+@code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} allows the construction of an
+orthogonal basis of @code{span (A)}.
 
 @seealso{chol, hess, lu, qz, schur, svd, qrupdate, qrinsert, qrdelete, qrshift}
 @end deftypefn */)
@@ -229,7 +277,7 @@ permutation vector instead of a permutation matrix.
   bool have_b = 0;
   bool vector_p = 0;
 
-  if (arg.is_complex_type ())
+  if (arg.iscomplex ())
     is_cmplx = true;
   if (nargin > 1)
     {
@@ -247,11 +295,12 @@ permutation vector instead of a permutation matrix.
         }
       else if (args(nargin-1).is_string ())
         {
-          if (args(nargin-1).string_value () == "vector")
+          std::string str = args(nargin-1).string_value ();
+          if (str == "vector")
             vector_p = true;
-          else if (args(nargin-1).string_value () != "matrix")
+          else if (str != "matrix")
             error ("qr: type for P must be 'matrix' or 'vector', not %s",
-                   args(nargin-1).string_value ().c_str ());
+                   str.c_str ());
           have_b = (nargin > 2);
         }
       else if (! args(nargin-1).is_matrix_type ())
@@ -259,11 +308,11 @@ permutation vector instead of a permutation matrix.
       else if (nargin == 3)   // should be caught by is_scalar_type or is_string
         print_usage ();
 
-      if (have_b && args(1).is_complex_type ())
+      if (have_b && args(1).iscomplex ())
         is_cmplx = true;
     }
 
-  if (arg.is_sparse_type ())
+  if (arg.issparse ())
     {
       if (nargout > 2)
         error ("qr: Permutation output is not supported for sparse input");
@@ -306,10 +355,10 @@ permutation vector instead of a permutation matrix.
     {
       if (arg.is_single_type ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               octave::math::qr<FloatMatrix>::type type
-                = qr_type<FloatMatrix> (nargin, nargout);
+                = qr_type<FloatMatrix> (nargout, economy);
 
               FloatMatrix m = arg.float_matrix_value ();
 
@@ -343,7 +392,7 @@ permutation vector instead of a permutation matrix.
                   {
                     octave::math::qrp<FloatMatrix> fact (m, type);
 
-                    if (type == octave::math::qr<FloatMatrix>::economy || vector_p)
+                    if (economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -351,10 +400,10 @@ permutation vector instead of a permutation matrix.
                   break;
                 }
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               octave::math::qr<FloatComplexMatrix>::type type
-                = qr_type<FloatComplexMatrix> (nargin, nargout);
+                = qr_type<FloatComplexMatrix> (nargout, economy);
 
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -381,7 +430,7 @@ permutation vector instead of a permutation matrix.
                 default:
                   {
                     octave::math::qrp<FloatComplexMatrix> fact (m, type);
-                    if (type == octave::math::qr<FloatComplexMatrix>::economy || vector_p)
+                    if (economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -392,9 +441,10 @@ permutation vector instead of a permutation matrix.
         }
       else
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
-              octave::math::qr<Matrix>::type type = qr_type<Matrix> (nargin, nargout);
+              octave::math::qr<Matrix>::type type
+                = qr_type<Matrix> (nargout, economy);
 
               Matrix m = arg.matrix_value ();
 
@@ -427,7 +477,7 @@ permutation vector instead of a permutation matrix.
                 default:
                   {
                     octave::math::qrp<Matrix> fact (m, type);
-                    if (type == octave::math::qr<Matrix>::economy || vector_p)
+                    if (economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -435,10 +485,10 @@ permutation vector instead of a permutation matrix.
                   break;
                 }
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               octave::math::qr<ComplexMatrix>::type type
-                = qr_type<ComplexMatrix> (nargin, nargout);
+                = qr_type<ComplexMatrix> (nargout, economy);
 
               ComplexMatrix m = arg.complex_matrix_value ();
 
@@ -465,7 +515,7 @@ permutation vector instead of a permutation matrix.
                 default:
                   {
                     octave::math::qrp<ComplexMatrix> fact (m, type);
-                    if (type == octave::math::qr<ComplexMatrix>::economy || vector_p)
+                    if (economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -812,7 +862,7 @@ permutation vector instead of a permutation matrix.
 %! [c,r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10);
 
-%% Test under-determined systems!!
+## Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = sprandn (n,n+1,d) + speye (n,n+1);
@@ -847,7 +897,7 @@ permutation vector instead of a permutation matrix.
 %! [c,r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10);
 
-%% Test under-determined systems!!
+## Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = 1i*sprandn (n,n+1,d) + speye (n,n+1);
@@ -871,7 +921,7 @@ bool check_qr_dims (const octave_value& q, const octave_value& r,
 static
 bool check_index (const octave_value& i, bool vector_allowed = false)
 {
-  return ((i.is_real_type () || i.is_integer_type ())
+  return ((i.isreal () || i.isinteger ())
           && (i.is_scalar_type () || vector_allowed));
 }
 
@@ -903,15 +953,15 @@ economized (R is square).
   octave_value argu = args(2);
   octave_value argv = args(3);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
-      || ! argu.is_numeric_type () || ! argv.is_numeric_type ())
+  if (! argq.isnumeric () || ! argr.isnumeric ()
+      || ! argu.isnumeric () || ! argv.isnumeric ())
     print_usage ();
 
   if (! check_qr_dims (argq, argr, true))
     error ("qrupdate: Q and R dimensions don't match");
 
-  if (argq.is_real_type () && argr.is_real_type () && argu.is_real_type ()
-      && argv.is_real_type ())
+  if (argq.isreal () && argr.isreal () && argu.isreal ()
+      && argv.isreal ())
     {
       // all real case
       if (argq.is_single_type () || argr.is_single_type ()
@@ -1073,8 +1123,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   octave_value argj = args(2);
   octave_value argx = args(3);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
-      || ! argx.is_numeric_type ()
+  if (! argq.isnumeric () || ! argr.isnumeric ()
+      || ! argx.isnumeric ()
       || (nargin > 4 && ! args(4).is_string ()))
     print_usage ();
 
@@ -1082,7 +1132,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   bool col = (orient == "col");
 
   if (! col && orient != "row")
-    error ("qrinsert: ORIENT must be \"col\" or \"row\"");
+    error (R"(qrinsert: ORIENT must be "col" or "row")");
 
   if (! check_qr_dims (argq, argr, col) || (! col && argx.rows () != 1))
     error ("qrinsert: dimension mismatch");
@@ -1096,7 +1146,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 
   octave_idx_type one = 1;
 
-  if (argq.is_real_type () && argr.is_real_type () && argx.is_real_type ())
+  if (argq.isreal () && argr.isreal () && argx.isreal ())
     {
       // real case
       if (argq.is_single_type () || argr.is_single_type ()
@@ -1268,7 +1318,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   octave_value argr = args(1);
   octave_value argj = args(2);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
+  if (! argq.isnumeric () || ! argr.isnumeric ()
       || (nargin > 3 && ! args(3).is_string ()))
     print_usage ();
 
@@ -1276,7 +1326,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
   bool col = orient == "col";
 
   if (! col && orient != "row")
-    error ("qrdelete: ORIENT must be \"col\" or \"row\"");
+    error (R"(qrdelete: ORIENT must be "col" or "row")");
 
   if (! check_qr_dims (argq, argr, col))
     error ("qrdelete: dimension mismatch");
@@ -1289,7 +1339,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 
   octave_idx_type one = 1;
 
-  if (argq.is_real_type () && argr.is_real_type ())
+  if (argq.isreal () && argr.isreal ())
     {
       // real case
       if (argq.is_single_type () || argr.is_single_type ())
@@ -1500,7 +1550,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
   octave_value argi = args(2);
   octave_value argj = args(3);
 
-  if (! argq.is_numeric_type () || ! argr.is_numeric_type ())
+  if (! argq.isnumeric () || ! argr.isnumeric ())
     print_usage ();
 
   if (! check_qr_dims (argq, argr, true))
@@ -1514,7 +1564,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 
   octave_value_list retval;
 
-  if (argq.is_real_type () && argr.is_real_type ())
+  if (argq.isreal () && argr.isreal ())
     {
       // all real case
       if (argq.is_single_type ()

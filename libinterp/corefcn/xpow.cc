@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -67,8 +67,9 @@ err_nonsquare_matrix (void)
   error ("for x^A, A must be a square matrix.  Use .^ for elementwise power.");
 }
 
-static inline int
-xisint (double x)
+template <typename T>
+static inline bool
+xisint (T x)
 {
   return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
@@ -208,10 +209,10 @@ xpow (const Matrix& a, double b)
   if (nr == 0 || nc == 0 || nr != nc)
     err_nonsquare_matrix ();
 
-  if (static_cast<int> (b) == b)
+  if (xisint (b))
     {
-      int btmp = static_cast<int> (b);
-      if (btmp == 0)
+      int bint = static_cast<int> (b);
+      if (bint == 0)
         {
           retval = DiagMatrix (nr, nr, 1.0);
         }
@@ -221,9 +222,9 @@ xpow (const Matrix& a, double b)
           // FIXME: we shouldn't do this if the exponent is large...
 
           Matrix atmp;
-          if (btmp < 0)
+          if (bint < 0)
             {
-              btmp = -btmp;
+              bint = -bint;
 
               octave_idx_type info;
               double rcond = 0.0;
@@ -239,16 +240,18 @@ xpow (const Matrix& a, double b)
 
           Matrix result (atmp);
 
-          btmp--;
+          bint--;
 
-          while (btmp > 0)
+          while (bint > 0)
             {
-              if (btmp & 1)
-                result = result * atmp;
+              if (bint & 1)
+                // Use atmp * result instead of result * atmp
+                // for ML compatibility (bug #52706).
+                result = atmp * result;
 
-              btmp >>= 1;
+              bint >>= 1;
 
-              if (btmp > 0)
+              if (bint > 0)
                 atmp = atmp * atmp;
             }
 
@@ -292,7 +295,7 @@ xpow (const DiagMatrix& a, double b)
   if (nr == 0 || nc == 0 || nr != nc)
     err_nonsquare_matrix ();
 
-  if (static_cast<int> (b) == b)
+  if (xisint (b))
     {
       DiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
@@ -314,9 +317,8 @@ xpow (const DiagMatrix& a, double b)
 octave_value
 xpow (const PermMatrix& a, double b)
 {
-  int btmp = static_cast<int> (b);
-  if (btmp == b)
-    return a.power (btmp);
+  if (xisint (b))
+    return a.power (static_cast<int> (b));
   else
     return xpow (Matrix (a), b);
 }
@@ -468,10 +470,10 @@ xpow (const ComplexMatrix& a, double b)
   if (nr == 0 || nc == 0 || nr != nc)
     err_nonsquare_matrix ();
 
-  if (static_cast<int> (b) == b)
+  if (xisint (b))
     {
-      int btmp = static_cast<int> (b);
-      if (btmp == 0)
+      int bint = static_cast<int> (b);
+      if (bint == 0)
         {
           retval = DiagMatrix (nr, nr, 1.0);
         }
@@ -481,9 +483,9 @@ xpow (const ComplexMatrix& a, double b)
           // FIXME: we shouldn't do this if the exponent is large...
 
           ComplexMatrix atmp;
-          if (btmp < 0)
+          if (bint < 0)
             {
-              btmp = -btmp;
+              bint = -bint;
 
               octave_idx_type info;
               double rcond = 0.0;
@@ -499,16 +501,18 @@ xpow (const ComplexMatrix& a, double b)
 
           ComplexMatrix result (atmp);
 
-          btmp--;
+          bint--;
 
-          while (btmp > 0)
+          while (bint > 0)
             {
-              if (btmp & 1)
-                result = result * atmp;
+              if (bint & 1)
+                // Use atmp * result instead of result * atmp
+                // for ML compatibility (bug #52706).
+                result = atmp * result;
 
-              btmp >>= 1;
+              bint >>= 1;
 
-              if (btmp > 0)
+              if (bint > 0)
                 atmp = atmp * atmp;
             }
 
@@ -655,7 +659,7 @@ elem_xpow (double a, const Matrix& b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (atmp, b (i, j));
+            result(i, j) = std::pow (atmp, b(i, j));
           }
 
       retval = result;
@@ -668,7 +672,7 @@ elem_xpow (double a, const Matrix& b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a, b (i, j));
+            result(i, j) = std::pow (a, b(i, j));
           }
 
       retval = result;
@@ -691,7 +695,7 @@ elem_xpow (double a, const ComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (atmp, b (i, j));
+        result(i, j) = std::pow (atmp, b(i, j));
       }
 
   return result;
@@ -759,9 +763,9 @@ elem_xpow (const Matrix& a, double b)
           {
             octave_quit ();
 
-            Complex atmp (a (i, j));
+            Complex atmp (a(i, j));
 
-            result (i, j) = std::pow (atmp, b);
+            result(i, j) = std::pow (atmp, b);
           }
 
       retval = result;
@@ -774,7 +778,7 @@ elem_xpow (const Matrix& a, double b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), b);
+            result(i, j) = std::pow (a(i, j), b);
           }
 
       retval = result;
@@ -798,16 +802,16 @@ elem_xpow (const Matrix& a, const Matrix& b)
   if (nr != b_nr || nc != b_nc)
     octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
-  int convert_to_complex = 0;
+  bool convert_to_complex = false;
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        double atmp = a (i, j);
-        double btmp = b (i, j);
-        if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
+        double atmp = a(i, j);
+        double btmp = b(i, j);
+        if (atmp < 0.0 && ! xisint (btmp))
           {
-            convert_to_complex = 1;
+            convert_to_complex = true;
             goto done;
           }
       }
@@ -822,9 +826,9 @@ done:
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            Complex atmp (a (i, j));
-            Complex btmp (b (i, j));
-            complex_result (i, j) = std::pow (atmp, btmp);
+            Complex atmp (a(i, j));
+            Complex btmp (b(i, j));
+            complex_result(i, j) = std::pow (atmp, btmp);
           }
 
       retval = complex_result;
@@ -837,7 +841,7 @@ done:
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), b (i, j));
+            result(i, j) = std::pow (a(i, j), b(i, j));
           }
 
       retval = result;
@@ -859,7 +863,7 @@ elem_xpow (const Matrix& a, const Complex& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (Complex (a (i, j)), b);
+        result(i, j) = std::pow (Complex (a(i, j)), b);
       }
 
   return result;
@@ -884,7 +888,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (Complex (a (i, j)), b (i, j));
+        result(i, j) = std::pow (Complex (a(i, j)), b(i, j));
       }
 
   return result;
@@ -903,11 +907,11 @@ elem_xpow (const Complex& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        double btmp = b (i, j);
+        double btmp = b(i, j);
         if (xisint (btmp))
-          result (i, j) = std::pow (a, static_cast<int> (btmp));
+          result(i, j) = std::pow (a, static_cast<int> (btmp));
         else
-          result (i, j) = std::pow (a, btmp);
+          result(i, j) = std::pow (a, btmp);
       }
 
   return result;
@@ -926,7 +930,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (a, b (i, j));
+        result(i, j) = std::pow (a, b(i, j));
       }
 
   return result;
@@ -982,11 +986,12 @@ elem_xpow (const ComplexMatrix& a, double b)
 
   if (xisint (b))
     {
+      int bint = static_cast<int> (b);
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), static_cast<int> (b));
+            result(i, j) = std::pow (a(i, j), bint);
           }
     }
   else
@@ -995,7 +1000,7 @@ elem_xpow (const ComplexMatrix& a, double b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), b);
+            result(i, j) = std::pow (a(i, j), b);
           }
     }
 
@@ -1021,11 +1026,11 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        double btmp = b (i, j);
+        double btmp = b(i, j);
         if (xisint (btmp))
-          result (i, j) = std::pow (a (i, j), static_cast<int> (btmp));
+          result(i, j) = std::pow (a(i, j), static_cast<int> (btmp));
         else
-          result (i, j) = std::pow (a (i, j), btmp);
+          result(i, j) = std::pow (a(i, j), btmp);
       }
 
   return result;
@@ -1044,7 +1049,7 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (a (i, j), b);
+        result(i, j) = std::pow (a(i, j), b);
       }
 
   return result;
@@ -1069,7 +1074,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (a (i, j), b (i, j));
+        result(i, j) = std::pow (a(i, j), b(i, j));
       }
 
   return result;
@@ -1127,7 +1132,7 @@ elem_xpow (double a, const NDArray& b)
       for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
-          result (i) = std::pow (a, b(i));
+          result(i) = std::pow (a, b(i));
         }
 
       retval = result;
@@ -1166,9 +1171,7 @@ elem_xpow (const NDArray& a, double b)
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-
-              Complex atmp (a (i));
-
+              Complex atmp (a(i));
               result(i) = std::pow (atmp, b);
             }
 
@@ -1235,7 +1238,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
       if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
-      //Potentially complex results
+      // Potentially complex results
       NDArray xa = octave_value_extract<NDArray> (a);
       NDArray xb = octave_value_extract<NDArray> (b);
       if (! xb.all_integers () && xa.any_element_is_negative ())
@@ -1253,7 +1256,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
       octave_quit ();
       double atmp = a(i);
       double btmp = b(i);
-      if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
+      if (atmp < 0.0 && ! xisint (btmp))
         {
           convert_to_complex = true;
           goto done;
@@ -1374,7 +1377,8 @@ elem_xpow (const ComplexNDArray& a, double b)
 
   if (xisint (b))
     {
-      if (b == -1)
+      int bint = static_cast<int> (b);
+      if (bint == -1)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
             result.xelem (i) = 1.0 / a(i);
@@ -1384,7 +1388,7 @@ elem_xpow (const ComplexNDArray& a, double b)
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-              result(i) = std::pow (a(i), static_cast<int> (b));
+              result(i) = std::pow (a(i), bint);
             }
         }
     }
@@ -1469,14 +1473,6 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
     }
 
   return result;
-}
-
-static inline int
-xisint (float x)
-{
-  return (octave::math::x_nint (x) == x
-          && ((x >= 0 && x < std::numeric_limits<int>::max ())
-              || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
 
 // Safer pow functions.
@@ -1613,12 +1609,12 @@ xpow (const FloatMatrix& a, float b)
   if (nr == 0 || nc == 0 || nr != nc)
     err_nonsquare_matrix ();
 
-  if (static_cast<int> (b) == b)
+  if (xisint (b))
     {
-      int btmp = static_cast<int> (b);
-      if (btmp == 0)
+      int bint = static_cast<int> (b);
+      if (bint == 0)
         {
-          retval = FloatDiagMatrix (nr, nr, 1.0);
+          retval = FloatDiagMatrix (nr, nr, 1.0f);
         }
       else
         {
@@ -1626,9 +1622,9 @@ xpow (const FloatMatrix& a, float b)
           // FIXME: we shouldn't do this if the exponent is large...
 
           FloatMatrix atmp;
-          if (btmp < 0)
+          if (bint < 0)
             {
-              btmp = -btmp;
+              bint = -bint;
 
               octave_idx_type info;
               float rcond = 0.0;
@@ -1644,16 +1640,18 @@ xpow (const FloatMatrix& a, float b)
 
           FloatMatrix result (atmp);
 
-          btmp--;
+          bint--;
 
-          while (btmp > 0)
+          while (bint > 0)
             {
-              if (btmp & 1)
-                result = result * atmp;
+              if (bint & 1)
+                // Use atmp * result instead of result * atmp
+                // for ML compatibility (bug #52706).
+                result = atmp * result;
 
-              btmp >>= 1;
+              bint >>= 1;
 
-              if (btmp > 0)
+              if (bint > 0)
                 atmp = atmp * atmp;
             }
 
@@ -1697,7 +1695,7 @@ xpow (const FloatDiagMatrix& a, float b)
   if (nr == 0 || nc == 0 || nr != nc)
     err_nonsquare_matrix ();
 
-  if (static_cast<int> (b) == b)
+  if (xisint (b))
     {
       FloatDiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
@@ -1708,8 +1706,7 @@ xpow (const FloatDiagMatrix& a, float b)
     {
       FloatComplexDiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
-        r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)),
-                                                            b);
+        r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)), b);
       retval = r;
     }
 
@@ -1863,10 +1860,10 @@ xpow (const FloatComplexMatrix& a, float b)
   if (nr == 0 || nc == 0 || nr != nc)
     err_nonsquare_matrix ();
 
-  if (static_cast<int> (b) == b)
+  if (xisint (b))
     {
-      int btmp = static_cast<int> (b);
-      if (btmp == 0)
+      int bint = static_cast<int> (b);
+      if (bint == 0)
         {
           retval = FloatDiagMatrix (nr, nr, 1.0);
         }
@@ -1876,9 +1873,9 @@ xpow (const FloatComplexMatrix& a, float b)
           // FIXME: we shouldn't do this if the exponent is large...
 
           FloatComplexMatrix atmp;
-          if (btmp < 0)
+          if (bint < 0)
             {
-              btmp = -btmp;
+              bint = -bint;
 
               octave_idx_type info;
               float rcond = 0.0;
@@ -1894,16 +1891,18 @@ xpow (const FloatComplexMatrix& a, float b)
 
           FloatComplexMatrix result (atmp);
 
-          btmp--;
+          bint--;
 
-          while (btmp > 0)
+          while (bint > 0)
             {
-              if (btmp & 1)
-                result = result * atmp;
+              if (bint & 1)
+                // Use atmp * result instead of result * atmp
+                // for ML compatibility (bug #52706).
+                result = atmp * result;
 
-              btmp >>= 1;
+              bint >>= 1;
 
-              if (btmp > 0)
+              if (bint > 0)
                 atmp = atmp * atmp;
             }
 
@@ -2050,7 +2049,7 @@ elem_xpow (float a, const FloatMatrix& b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (atmp, b (i, j));
+            result(i, j) = std::pow (atmp, b(i, j));
           }
 
       retval = result;
@@ -2063,7 +2062,7 @@ elem_xpow (float a, const FloatMatrix& b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a, b (i, j));
+            result(i, j) = std::pow (a, b(i, j));
           }
 
       retval = result;
@@ -2086,7 +2085,7 @@ elem_xpow (float a, const FloatComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (atmp, b (i, j));
+        result(i, j) = std::pow (atmp, b(i, j));
       }
 
   return result;
@@ -2110,9 +2109,9 @@ elem_xpow (const FloatMatrix& a, float b)
           {
             octave_quit ();
 
-            FloatComplex atmp (a (i, j));
+            FloatComplex atmp (a(i, j));
 
-            result (i, j) = std::pow (atmp, b);
+            result(i, j) = std::pow (atmp, b);
           }
 
       retval = result;
@@ -2125,7 +2124,7 @@ elem_xpow (const FloatMatrix& a, float b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), b);
+            result(i, j) = std::pow (a(i, j), b);
           }
 
       retval = result;
@@ -2149,16 +2148,16 @@ elem_xpow (const FloatMatrix& a, const FloatMatrix& b)
   if (nr != b_nr || nc != b_nc)
     octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
-  int convert_to_complex = 0;
+  bool convert_to_complex = false;
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        float atmp = a (i, j);
-        float btmp = b (i, j);
-        if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
+        float atmp = a(i, j);
+        float btmp = b(i, j);
+        if (atmp < 0.0 && ! xisint (btmp))
           {
-            convert_to_complex = 1;
+            convert_to_complex = true;
             goto done;
           }
       }
@@ -2173,9 +2172,9 @@ done:
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            FloatComplex atmp (a (i, j));
-            FloatComplex btmp (b (i, j));
-            complex_result (i, j) = std::pow (atmp, btmp);
+            FloatComplex atmp (a(i, j));
+            FloatComplex btmp (b(i, j));
+            complex_result(i, j) = std::pow (atmp, btmp);
           }
 
       retval = complex_result;
@@ -2188,7 +2187,7 @@ done:
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), b (i, j));
+            result(i, j) = std::pow (a(i, j), b(i, j));
           }
 
       retval = result;
@@ -2210,7 +2209,7 @@ elem_xpow (const FloatMatrix& a, const FloatComplex& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (FloatComplex (a (i, j)), b);
+        result(i, j) = std::pow (FloatComplex (a(i, j)), b);
       }
 
   return result;
@@ -2235,7 +2234,7 @@ elem_xpow (const FloatMatrix& a, const FloatComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (FloatComplex (a (i, j)), b (i, j));
+        result(i, j) = std::pow (FloatComplex (a(i, j)), b(i, j));
       }
 
   return result;
@@ -2254,11 +2253,11 @@ elem_xpow (const FloatComplex& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        float btmp = b (i, j);
+        float btmp = b(i, j);
         if (xisint (btmp))
-          result (i, j) = std::pow (a, static_cast<int> (btmp));
+          result(i, j) = std::pow (a, static_cast<int> (btmp));
         else
-          result (i, j) = std::pow (a, btmp);
+          result(i, j) = std::pow (a, btmp);
       }
 
   return result;
@@ -2277,7 +2276,7 @@ elem_xpow (const FloatComplex& a, const FloatComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (a, b (i, j));
+        result(i, j) = std::pow (a, b(i, j));
       }
 
   return result;
@@ -2294,11 +2293,12 @@ elem_xpow (const FloatComplexMatrix& a, float b)
 
   if (xisint (b))
     {
+      int bint = static_cast<int> (b);
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), static_cast<int> (b));
+            result(i, j) = std::pow (a(i, j), bint);
           }
     }
   else
@@ -2307,7 +2307,7 @@ elem_xpow (const FloatComplexMatrix& a, float b)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result (i, j) = std::pow (a (i, j), b);
+            result(i, j) = std::pow (a(i, j), b);
           }
     }
 
@@ -2333,11 +2333,11 @@ elem_xpow (const FloatComplexMatrix& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        float btmp = b (i, j);
+        float btmp = b(i, j);
         if (xisint (btmp))
-          result (i, j) = std::pow (a (i, j), static_cast<int> (btmp));
+          result(i, j) = std::pow (a(i, j), static_cast<int> (btmp));
         else
-          result (i, j) = std::pow (a (i, j), btmp);
+          result(i, j) = std::pow (a(i, j), btmp);
       }
 
   return result;
@@ -2356,7 +2356,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplex& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (a (i, j), b);
+        result(i, j) = std::pow (a(i, j), b);
       }
 
   return result;
@@ -2381,7 +2381,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = std::pow (a (i, j), b (i, j));
+        result(i, j) = std::pow (a(i, j), b(i, j));
       }
 
   return result;
@@ -2439,7 +2439,7 @@ elem_xpow (float a, const FloatNDArray& b)
       for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
-          result (i) = std::pow (a, b(i));
+          result(i) = std::pow (a, b(i));
         }
 
       retval = result;
@@ -2479,7 +2479,7 @@ elem_xpow (const FloatNDArray& a, float b)
             {
               octave_quit ();
 
-              FloatComplex atmp (a (i));
+              FloatComplex atmp (a(i));
 
               result(i) = std::pow (atmp, b);
             }
@@ -2547,7 +2547,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
       if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
-      //Potentially complex results
+      // Potentially complex results
       FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
       FloatNDArray xb = octave_value_extract<FloatNDArray> (b);
       if (! xb.all_integers () && xa.any_element_is_negative ())
@@ -2565,7 +2565,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
       octave_quit ();
       float atmp = a(i);
       float btmp = b(i);
-      if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
+      if (atmp < 0.0 && ! xisint (btmp))
         {
           convert_to_complex = true;
           goto done;
@@ -2686,7 +2686,8 @@ elem_xpow (const FloatComplexNDArray& a, float b)
 
   if (xisint (b))
     {
-      if (b == -1)
+      int bint = static_cast<int> (b);
+      if (bint == -1)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
             result.xelem (i) = 1.0f / a(i);
@@ -2696,7 +2697,7 @@ elem_xpow (const FloatComplexNDArray& a, float b)
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-              result(i) = std::pow (a(i), static_cast<int> (b));
+              result(i) = std::pow (a(i), bint);
             }
         }
     }

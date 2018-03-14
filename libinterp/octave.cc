@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "str-vec.h"
 
-#include "builtin-defun-decls.h"
 #include "Cell.h"
 #include "defaults.h"
 #include "defun.h"
@@ -83,7 +82,6 @@ namespace octave
             break;
 
           case 'H':
-            Fhistory_save (octave_value (false));
             m_read_history_file = false;
             break;
 
@@ -123,10 +121,7 @@ namespace octave
             break;
 
           case 'x':
-            {
-              int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
-              Fecho_executing_commands (octave_value (val));
-            }
+            m_echo_commands = true;
             break;
 
           case 'v':
@@ -135,12 +130,12 @@ namespace octave
 
           case BUILT_IN_DOCSTRINGS_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Fbuilt_in_docstrings_file (octave_value (octave_optarg_wrapper ()));
+              m_docstrings_file = octave_optarg_wrapper ();;
             break;
 
           case DOC_CACHE_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Fdoc_cache_file (octave_value (octave_optarg_wrapper ()));
+              m_doc_cache_file = octave_optarg_wrapper ();
             break;
 
           case EVAL_OPTION:
@@ -149,7 +144,8 @@ namespace octave
                 if (m_code_to_eval.empty ())
                   m_code_to_eval = octave_optarg_wrapper ();
                 else
-                  m_code_to_eval += std::string (" ") + octave_optarg_wrapper ();
+                  m_code_to_eval += (std::string (" ")
+                                     + octave_optarg_wrapper ());
               }
             break;
 
@@ -158,8 +154,8 @@ namespace octave
               m_exec_path = octave_optarg_wrapper ();
             break;
 
-          case FORCE_GUI_OPTION:
-            m_force_gui = true;
+          case GUI_OPTION: // same value as FORCE_GUI_OPTION
+            m_gui = true;
             break;
 
           case IMAGE_PATH_OPTION:
@@ -169,20 +165,20 @@ namespace octave
 
           case INFO_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Finfo_file (octave_value (octave_optarg_wrapper ()));
+              m_info_file = octave_optarg_wrapper ();
             break;
 
           case INFO_PROG_OPTION:
             if (octave_optarg_wrapper ())
-              Finfo_program (octave_value (octave_optarg_wrapper ()));
+              m_info_program = octave_optarg_wrapper ();
             break;
 
           case DEBUG_JIT_OPTION:
-            Fdebug_jit (octave_value (true));
+            m_debug_jit = true;
             break;
 
           case JIT_COMPILER_OPTION:
-            Fjit_enable (octave_value (true));
+            m_jit_compiler = true;
             break;
 
           case LINE_EDITING_OPTION:
@@ -190,7 +186,7 @@ namespace octave
             break;
 
           case NO_GUI_OPTION:
-            m_no_gui = true;
+            m_gui = false;
             break;
 
           case NO_INIT_FILE_OPTION:
@@ -215,7 +211,7 @@ namespace octave
 
           case TEXI_MACROS_FILE_OPTION:
             if (octave_optarg_wrapper ())
-              Ftexi_macros_file (octave_value (octave_optarg_wrapper ()));
+              m_texi_macros_file = octave_optarg_wrapper ();
             break;
 
           case TRADITIONAL_OPTION:
@@ -233,72 +229,11 @@ namespace octave
           }
       }
 
-    // Check for various incompatible argument pairs
-    if (m_force_gui && m_no_gui)
-      {
-        warning ("only one of --force-gui and --no-gui may be used");
-
-        octave_print_terse_usage_and_exit ();
-      }
-
     m_remaining_args = string_vector (argv+octave_optind_wrapper (),
                                       argc-octave_optind_wrapper ());
   }
 
-  cmdline_options::cmdline_options (const cmdline_options& opts)
-    : m_force_gui (opts.m_force_gui),
-      m_forced_interactive (opts.m_forced_interactive),
-      m_forced_line_editing (opts.m_forced_line_editing),
-      m_inhibit_startup_message (opts.m_inhibit_startup_message),
-      m_line_editing (opts.m_line_editing),
-      m_no_gui (opts.m_no_gui),
-      m_no_window_system (opts.m_no_window_system),
-      m_persist (opts.m_persist),
-      m_read_history_file (opts.m_read_history_file),
-      m_read_init_files (opts.m_read_init_files),
-      m_read_site_files (opts.m_read_site_files),
-      m_set_initial_path (opts.m_set_initial_path),
-      m_traditional (opts.m_traditional),
-      m_verbose_flag (opts.m_verbose_flag),
-      m_code_to_eval (opts.m_code_to_eval),
-      m_command_line_path (opts.m_command_line_path),
-      m_exec_path (opts.m_exec_path),
-      m_image_path (opts.m_image_path),
-      m_all_args (opts.m_all_args),
-      m_remaining_args (opts.m_remaining_args)
-  { }
-
-  cmdline_options&
-  cmdline_options::operator = (const cmdline_options& opts)
-  {
-    if (this != &opts)
-      {
-        m_force_gui = opts.m_force_gui;
-        m_forced_interactive = opts.m_forced_interactive;
-        m_forced_line_editing = opts.m_forced_line_editing;
-        m_inhibit_startup_message = opts.m_inhibit_startup_message;
-        m_line_editing = opts.m_line_editing;
-        m_no_gui = opts.m_no_gui;
-        m_no_window_system = opts.m_no_window_system;
-        m_persist = opts.m_persist;
-        m_read_history_file = opts.m_read_history_file;
-        m_read_init_files = opts.m_read_init_files;
-        m_read_site_files = opts.m_read_site_files;
-        m_set_initial_path = opts.m_set_initial_path;
-        m_traditional = opts.m_traditional;
-        m_verbose_flag = opts.m_verbose_flag;
-        m_code_to_eval = opts.m_code_to_eval;
-        m_command_line_path = opts.m_command_line_path;
-        m_exec_path = opts.m_exec_path;
-        m_image_path = opts.m_image_path;
-        m_all_args = opts.m_all_args;
-        m_remaining_args = opts.m_remaining_args;
-      }
-
-    return *this;
-  }
-
-  application *application::instance = 0;
+  application *application::instance = nullptr;
 
   application::application (int argc, char **argv)
     : m_options (argc, argv)
@@ -317,7 +252,7 @@ namespace octave
   {
     m_program_invocation_name = pname;
 
-    size_t pos = pname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+    size_t pos = pname.find_last_of (sys::file_ops::dir_sep_chars ());
 
     m_program_name = (pos != std::string::npos) ? pname.substr (pos+1) : pname;
   }
@@ -325,8 +260,6 @@ namespace octave
   void
   application::intern_argv (const string_vector& args)
   {
-    assert (symbol_table::at_top_level ());
-
     octave_idx_type nargs = args.numel ();
 
     if (nargs > 0)
@@ -339,14 +272,11 @@ namespace octave
         for (octave_idx_type i = 0; i < nargs; i++)
           m_argv[i] = args[i+1];
       }
-
-    symbol_table::assign (".nargin.", nargs);
-    symbol_table::mark_hidden (".nargin.");
   }
 
   void application::interactive (bool arg)
   {
-    interpreter *interp = instance->m_interpreter;
+    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
 
     if (interp)
       interp->interactive (arg);
@@ -354,27 +284,42 @@ namespace octave
 
   bool application::forced_interactive (void)
   {
-    return instance->m_options.forced_interactive ();
+    return instance ? instance->m_options.forced_interactive () : false;
   }
 
   bool application::interactive (void)
   {
-    interpreter *interp = instance->m_interpreter;
+    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
 
     return interp ? interp->interactive () : false;
   }
 
   application::~application (void)
   {
-    instance = 0;
+    // Delete interpreter if it still exists.
 
     delete m_interpreter;
+
+    instance = nullptr;
   }
 
-  void application::create_interpreter (void)
+  bool application::interpreter_initialized (void)
+  {
+    return m_interpreter ? m_interpreter->initialized () : false;
+  }
+
+  interpreter& application::create_interpreter (void)
   {
     if (! m_interpreter)
       m_interpreter = new interpreter (this);
+
+    return *m_interpreter;
+  }
+
+  void application::initialize_interpreter (void)
+  {
+    if (m_interpreter)
+      m_interpreter->initialize ();
   }
 
   int application::execute_interpreter (void)
@@ -382,14 +327,20 @@ namespace octave
     return m_interpreter ? m_interpreter->execute () : -1;
   }
 
+  void application::delete_interpreter (void)
+  {
+    delete m_interpreter;
+
+    m_interpreter = nullptr;
+  }
+
   void application::init (void)
   {
     if (instance)
-      {
-        // FIXME: Should this be an error?
-      }
-    else
-      instance = this;
+      throw std::runtime_error
+        ("only one Octave application object may be active");
+
+    instance = this;
 
     string_vector all_args = m_options.all_args ();
 
@@ -401,42 +352,47 @@ namespace octave
 
     m_have_script_file = ! remaining_args.empty ();
 
-    if (! code_to_eval.empty () && m_have_script_file)
+    m_have_eval_option_code = ! code_to_eval.empty ();
+
+    if (m_have_eval_option_code && m_have_script_file)
       {
-        warning ("--eval \"CODE\" and script file are mutually exclusive options");
+        std::cerr << R"(error: --eval "CODE" and script file are mutually exclusive options)" << std::endl;
 
         octave_print_terse_usage_and_exit ();
       }
 
-    m_is_octave_program = ((m_have_script_file || ! code_to_eval.empty ())
+    if (m_options.gui ())
+      {
+        if (m_options.no_window_system ())
+          {
+            std::cerr << "error: --gui and --no-window-system are mutually exclusive options" << std::endl;
+            octave_print_terse_usage_and_exit ();
+          }
+        if (! m_options.line_editing ())
+          {
+            std::cerr << "error: --gui and --no-line-editing are mutually exclusive options" << std::endl;
+            octave_print_terse_usage_and_exit ();
+          }
+      }
+
+
+    m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
                            && ! m_options.persist ()
                            && ! m_options.traditional ());
 
     // This should probably happen early.
     sysdep_init ();
-
-    // Need to have global Vfoo variables defined early.
-    install_defaults ();
   }
 
   int cli_application::execute (void)
   {
-    create_interpreter ();
+    interpreter& interp = create_interpreter ();
 
-    return execute_interpreter ();
-  }
+    int status = interp.execute ();
 
-  void embedded_application::create_interpreter (void)
-  {
-    if (! m_interpreter)
-      m_interpreter = new interpreter (this, true);
-  }
+    delete_interpreter ();
 
-  int embedded_application::execute (void)
-  {
-    create_interpreter ();
-
-    return execute_interpreter ();
+    return status;
   }
 }
 
@@ -445,16 +401,19 @@ namespace octave
 int
 octave_main (int argc, char **argv, int embedded)
 {
-  octave::sys::env::set_program_name (argv[0]);
-
   if (embedded)
     {
-      octave::embedded_application app (argc, argv);
-      return app.execute ();
+      if (argc > 0)
+        std::cerr << "warning: ignoring command line options for embedded octave\n";
+
+      static octave::interpreter embedded_interpreter;
+      return embedded_interpreter.execute ();
     }
   else
     {
-      octave::cli_application app (argc, argv);
+      std::cerr << "warning: octave_main should only be used to create an embedded interpreter";
+
+      static octave::cli_application app (argc, argv);
       return app.execute ();
     }
 }

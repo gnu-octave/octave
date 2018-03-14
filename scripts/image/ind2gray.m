@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{I} =} ind2gray (@var{x}, @var{map})
@@ -30,7 +30,7 @@
 ##
 ## Implementation Note: There are several ways of converting colors to
 ## grayscale intensities.  This functions uses the luminance value obtained
-## from @code{rgb2ntsc} which is @code{I = 0.299*R + 0.587*G + 0.114*B}.
+## from @code{rgb2gray} which is @code{I = 0.299*R + 0.587*G + 0.114*B}.
 ## Other possibilities include the value component from @code{rgb2hsv} or
 ## using a single color channel from @code{ind2rgb}.
 ## @seealso{gray2ind, ind2rgb}

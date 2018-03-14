@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -84,25 +84,25 @@ DEFCONV (sparse_bool_matrix_conv, bool_matrix, sparse_bool_matrix)
 DEFNDASSIGNOP_FN (assign, bool_matrix, sparse_bool_matrix, bool_array, assign)
 
 void
-install_bm_sbm_ops (void)
+install_bm_sbm_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_eq, octave_bool_matrix, octave_sparse_bool_matrix, eq);
-  INSTALL_BINOP (op_ne, octave_bool_matrix, octave_sparse_bool_matrix, ne);
+  INSTALL_BINOP_TI (ti, op_eq, octave_bool_matrix, octave_sparse_bool_matrix, eq);
+  INSTALL_BINOP_TI (ti, op_ne, octave_bool_matrix, octave_sparse_bool_matrix, ne);
 
-  INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_el_and, octave_bool_matrix, octave_sparse_bool_matrix,
                  el_and);
-  INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_BINOP_TI (ti, op_el_or, octave_bool_matrix, octave_sparse_bool_matrix,
                  el_or);
 
-  INSTALL_CATOP (octave_bool_matrix, octave_sparse_bool_matrix, bm_sbm);
-  INSTALL_CATOP (octave_bool_matrix, octave_sparse_matrix, bm_sm);
-  INSTALL_CATOP (octave_matrix, octave_sparse_bool_matrix, m_sbm);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix, bm_sbm);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_sparse_matrix, bm_sm);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_sparse_bool_matrix, m_sbm);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_sparse_bool_matrix,
                     assign)
-  INSTALL_ASSIGNCONV (octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_ASSIGNCONV_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix,
                       octave_bool_matrix);
 
-  INSTALL_WIDENOP (octave_bool_matrix, octave_sparse_bool_matrix,
+  INSTALL_WIDENOP_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix,
                    sparse_bool_matrix_conv);
 }

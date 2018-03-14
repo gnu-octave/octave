@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,13 +24,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cassert>
+#include <cmath>
+
 #include <iostream>
+#include <limits>
 
-#include <cfloat>
-
+#include "Array.h"
 #include "CollocWt.h"
-#include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-mappers.h"
 
 // The following routines jcobi, dif, and dfopr are based on the code
 // found in Villadsen, J. and M. L. Michelsen, Solution of Differential
@@ -235,7 +238,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
         }
 
       root[i] = x;
-      x += sqrt (std::numeric_limits<double>::epsilon ());
+      x += std::sqrt (std::numeric_limits<double>::epsilon ());
     }
 
   // Add interpolation points at x = 0 and/or x = 1.
@@ -373,7 +376,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 // Error handling.
 
 void
-CollocWt::error (const char* msg)
+CollocWt::error (const char *msg)
 {
   (*current_liboctave_error_handler) ("CollocWt: fatal error '%s'", msg);
 }
@@ -491,7 +494,7 @@ operator << (std::ostream& os, const CollocWt& a)
 
   os << "\n";
 
-  os << a.Alpha << " " << a.Beta << "\n\n"
+  os << a.Alpha << ' ' << a.Beta << "\n\n"
      << a.r << "\n\n"
      << a.q << "\n\n"
      << a.A << "\n"

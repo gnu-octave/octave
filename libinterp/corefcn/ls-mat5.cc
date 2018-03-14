@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,57 +26,55 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <cstring>
-#include <cctype>
 
-#include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
 #include "data-conv.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
-#include "file-stat.h"
-#include "oct-locbuf.h"
 
 #include "Cell.h"
 #include "call-stack.h"
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "load-save.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "load-path.h"
-#include "ovl.h"
+#include "load-save.h"
+#include "ls-mat5.h"
+#include "ls-utils.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "ov-class.h"
 #include "ov-fcn-inline.h"
+#include "ov.h"
+#include "ovl.h"
 #include "pager.h"
+#include "parse.h"
 #include "pt-exp.h"
 #include "sysdep.h"
-#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
-
-#include "ls-utils.h"
-#include "ls-mat5.h"
-
-#include "parse.h"
-#include "defaults.h"
 
 #if defined (HAVE_ZLIB)
 #  include <zlib.h>
@@ -491,13 +489,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   bool logicalvar;
   dim_vector dims;
   enum arrayclasstype arrayclass;
-  int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
   octave_idx_type nzmax;
   std::string classname;
 
+  bool flt_fmt_is_big_endian
+    = (octave::mach_info::native_float_format ()
+       == octave::mach_info::flt_fmt_ieee_big_endian);
+
   // MAT files always use IEEE floating point
   octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
-  if ((number == 1) ^ swap)
+  if ((flt_fmt_is_big_endian && ! swap) || (! flt_fmt_is_big_endian && swap))
     flt_fmt = octave::mach_info::flt_fmt_ieee_big_endian;
   else
     flt_fmt = octave::mach_info::flt_fmt_ieee_little_endian;
@@ -738,7 +739,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             scm = SparseComplexMatrix (nr, nc, nzmax);
             ridx = scm.ridx ();
             cidx = scm.cidx ();
-            data = 0;
+            data = nullptr;
           }
         else
           {
@@ -865,7 +866,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                 if ((fpath.length () >= mroot.length ())
                     && fpath.substr (0, mroot.length ()) == mroot
-                    && OCTAVE_EXEC_PREFIX != mroot)
+                    && octave::config::octave_exec_home () != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
                     // doesn't equal __octave_config_info__ ("exec_prefix")
@@ -875,8 +876,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     // running version of Octave?
 
                     // First check if just replacing matlabroot is enough
-                    std::string str = OCTAVE_EXEC_PREFIX +
-                                      fpath.substr (mroot.length ());
+                    std::string str
+                      = (octave::config::octave_exec_home ()
+                         + fpath.substr (mroot.length ()));
                     octave::sys::file_stat fs (str);
 
                     if (fs.exists ())
@@ -886,16 +888,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         std::string dir_name = str.substr (0, xpos);
 
-                        octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", "", fname);
+                        octave_value ov_fcn
+                          = octave::load_fcn_from_file (str, dir_name,
+                                                        "", "", fname);
 
-                        if (fcn)
-                          {
-                            octave_value tmp (fcn);
-
-                            tc = octave_value (new octave_fcn_handle (tmp,
-                                                                      fname));
-                          }
+                        if (ov_fcn.is_defined ())
+                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                       }
                     else
                       {
@@ -905,7 +903,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         names.push_back (fname + ".mex");
                         names.push_back (fname + ".m");
 
-                        octave::directory_path p (load_path::system_path ());
+                        octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+
+                        octave::directory_path p (lp.system_path ());
 
                         str =
                           octave::sys::env::make_absolute (p.find_first_of (names));
@@ -915,16 +915,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         std::string dir_name = str.substr (0, xpos);
 
-                        octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", "", fname);
+                        octave_value ov_fcn
+                          = octave::load_fcn_from_file (str, dir_name,
+                                                        "", "", fname);
 
-                        if (fcn)
-                          {
-                            octave_value tmp (fcn);
-
-                            tc = octave_value (new octave_fcn_handle (tmp,
-                                                                      fname));
-                          }
+                        if (ov_fcn.is_defined ())
+                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                         else
                           {
                             warning ("load: can't find the file %s",
@@ -940,15 +936,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     std::string dir_name = fpath.substr (0, xpos);
 
-                    octave_function *fcn
-                      = load_fcn_from_file (fpath, dir_name, "", "", fname);
+                    octave_value ov_fcn
+                      = octave::load_fcn_from_file (fpath, dir_name,
+                                                    "", "", fname);
 
-                    if (fcn)
-                      {
-                        octave_value tmp (fcn);
-
-                        tc = octave_value (new octave_fcn_handle (tmp, fname));
-                      }
+                    if (ov_fcn.is_defined ())
+                      tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                     else
                       {
                         warning ("load: can't find the file %s",
@@ -980,13 +973,17 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.
 
-            symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-            frame.add_fcn (symbol_table::erase_scope, local_scope);
+            octave::symbol_table& symtab
+              = octave::__get_symbol_table__ ("read_mat5_binary_element");
 
-            symbol_table::set_scope (local_scope);
+            octave::symbol_scope local_scope;
 
-            octave_call_stack::push (local_scope, 0);
-            frame.add_fcn (octave_call_stack::pop);
+            symtab.set_scope (local_scope);
+
+            octave::call_stack& cs
+              = octave::__get_call_stack__ ("read_mat5_binary_element");
+            cs.push (local_scope, 0);
+            frame.add_method (cs, &octave::call_stack::pop);
 
             if (m2.nfields () > 0)
               {
@@ -998,13 +995,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0);
 
-                    symbol_table::assign (key, val, local_scope, 0);
+                    local_scope.assign (key, val, 0);
                   }
               }
 
             int parse_status;
             octave_value anon_fcn_handle =
-              eval_string (fname.substr (4), true, parse_status);
+              octave::eval_string (fname.substr (4), true, parse_status);
 
             if (parse_status != 0)
               error ("load: failed to load anonymous function handle");
@@ -1193,7 +1190,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
             else
               {
-                octave_class* cls
+                octave_class *cls
                   = new octave_class (m, classname,
                                       std::list<std::string> ());
 
@@ -1204,12 +1201,14 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       warning ("load: unable to reconstruct object inheritance");
 
                     tc = cls;
-                    if (load_path::find_method (classname, "loadobj")
-                        != "")
+
+                    octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+
+                    if (lp.find_method (classname, "loadobj") != "")
                       {
                         try
                           {
-                            octave_value_list tmp = feval ("loadobj", tc, 1);
+                            octave_value_list tmp = octave::feval ("loadobj", tc, 1);
 
                             tc = tmp(0);
                           }
@@ -1860,7 +1859,7 @@ write_mat5_integer_data (std::ostream& os, const int *m,
 
 static bool
 write_mat5_cell_array (std::ostream& os, const Cell& cell,
-                       bool mark_as_global, bool save_as_floats)
+                       bool mark_global, bool save_as_floats)
 {
   octave_idx_type nel = cell.numel ();
 
@@ -1868,7 +1867,7 @@ write_mat5_cell_array (std::ostream& os, const Cell& cell,
     {
       octave_value ov = cell(i);
 
-      if (! save_mat5_binary_element (os, ov, "", mark_as_global,
+      if (! save_mat5_binary_element (os, ov, "", mark_global,
                                       false, save_as_floats))
         return false;
     }
@@ -1877,7 +1876,7 @@ write_mat5_cell_array (std::ostream& os, const Cell& cell,
 }
 
 int
-save_mat5_array_length (const double* val, octave_idx_type nel,
+save_mat5_array_length (const double *val, octave_idx_type nel,
                         bool save_as_floats)
 {
   if (nel > 0)
@@ -1891,7 +1890,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
             {
               double tmp = val[i];
 
-              if (octave::math::finite (tmp)
+              if (octave::math::isfinite (tmp)
                   && fabs (tmp) > std::numeric_limits<float>::max ())
                 {
                   too_large_for_float = true;
@@ -2007,7 +2006,7 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
 }
 
 int
-save_mat5_array_length (const Complex* val, octave_idx_type nel,
+save_mat5_array_length (const Complex *val, octave_idx_type nel,
                         bool save_as_floats)
 {
   int ret;
@@ -2015,12 +2014,12 @@ save_mat5_array_length (const Complex* val, octave_idx_type nel,
   OCTAVE_LOCAL_BUFFER (double, tmp, nel);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::real (val[i]);
+    tmp[i] = std::real (val[i]);
 
   ret = save_mat5_array_length (tmp, nel, save_as_floats);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::imag (val[i]);
+    tmp[i] = std::imag (val[i]);
 
   ret += save_mat5_array_length (tmp, nel, save_as_floats);
 
@@ -2028,7 +2027,7 @@ save_mat5_array_length (const Complex* val, octave_idx_type nel,
 }
 
 int
-save_mat5_array_length (const FloatComplex* val, octave_idx_type nel,
+save_mat5_array_length (const FloatComplex *val, octave_idx_type nel,
                         bool save_as_floats)
 {
   int ret;
@@ -2036,12 +2035,12 @@ save_mat5_array_length (const FloatComplex* val, octave_idx_type nel,
   OCTAVE_LOCAL_BUFFER (float, tmp, nel);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::real (val[i]);
+    tmp[i] = std::real (val[i]);
 
   ret = save_mat5_array_length (tmp, nel, save_as_floats);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = octave::math::imag (val[i]);
+    tmp[i] = std::imag (val[i]);
 
   ret += save_mat5_array_length (tmp, nel, save_as_floats);
 
@@ -2069,9 +2068,9 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (chm.numel () > 2)
         ret += PAD (2 * chm.numel ());
     }
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     {
-      if (tc.is_complex_type ())
+      if (tc.iscomplex ())
         {
           const SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
           octave_idx_type nc = m.cols ();
@@ -2121,7 +2120,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     INT_LEN (tc.uint32_array_value ().numel (), 4)
   else if (cname == "uint64")
     INT_LEN (tc.uint64_array_value ().numel (), 8)
-  else if (tc.is_bool_type ())
+  else if (tc.islogical ())
     INT_LEN (tc.bool_array_value ().numel (), 1)
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {
@@ -2138,7 +2137,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
                                          save_as_floats);
         }
     }
-  else if (tc.is_cell ())
+  else if (tc.iscell ())
     {
       Cell cell = tc.cell_value ();
       octave_idx_type nel = cell.numel ();
@@ -2162,7 +2161,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
                                          save_as_floats);
         }
     }
-  else if (tc.is_map () || tc.is_inline_function () || tc.is_object ())
+  else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
     {
       int fieldcnt = 0;
       const octave_map m = tc.map_value ();
@@ -2171,7 +2170,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (tc.is_inline_function ())
         // length of "inline" is 6
         ret += 8 + PAD (6 > max_namelen ? max_namelen : 6);
-      else if (tc.is_object ())
+      else if (tc.isobject ())
         {
           size_t classlen = tc.class_name ().length ();
 
@@ -2190,8 +2189,8 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
             {
               const Cell elts = m.contents (i);
 
-              ret += 8 + save_mat5_element_length (elts(j), "",
-                                               save_as_floats, mat7_format);
+              ret += 8 + save_mat5_element_length (elts(j), "", save_as_floats,
+                                                   mat7_format);
             }
         }
     }
@@ -2229,7 +2228,7 @@ warn_dim_too_large (const std::string& name)
 bool
 save_mat5_binary_element (std::ostream& os,
                           const octave_value& tc, const std::string& name,
-                          bool mark_as_global, bool mat7_format,
+                          bool mark_global, bool mat7_format,
                           bool save_as_floats, bool compressing)
 {
   int32_t flags = 0;
@@ -2252,12 +2251,12 @@ save_mat5_binary_element (std::ostream& os,
         }
     }
 
-  if (tc.is_sparse_type ())
+  if (tc.issparse ())
     {
       octave_idx_type nnz;
       octave_idx_type nc;
 
-      if (tc.is_complex_type ())
+      if (tc.iscomplex ())
         {
           SparseComplexMatrix scm = tc.sparse_complex_matrix_value ();
           nnz = scm.nzmax ();
@@ -2294,7 +2293,7 @@ save_mat5_binary_element (std::ostream& os,
 
       // The code seeks backwards in the stream to fix the header.
       // Can't do this with zlib, so use a stringstream.
-      ret = save_mat5_binary_element (buf, tc, name, mark_as_global, true,
+      ret = save_mat5_binary_element (buf, tc, name, mark_global, true,
                                       save_as_floats, true);
 
       if (ret)
@@ -2333,10 +2332,10 @@ save_mat5_binary_element (std::ostream& os,
   // array flags subelement
   write_mat5_tag (os, miUINT32, 8);
 
-  if (tc.is_bool_type ())
+  if (tc.islogical ())
     flags |= 0x0200;
 
-  if (mark_as_global)
+  if (mark_global)
     flags |= 0x0400;
 
   if (tc.is_complex_scalar () || tc.is_complex_matrix ())
@@ -2352,7 +2351,7 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_INT32_CLASS;
   else if (cname == "int64")
     flags |= MAT_FILE_INT64_CLASS;
-  else if (cname == "uint8" || tc.is_bool_type ())
+  else if (cname == "uint8" || tc.islogical ())
     flags |= MAT_FILE_UINT8_CLASS;
   else if (cname == "uint16")
     flags |= MAT_FILE_UINT16_CLASS;
@@ -2360,7 +2359,7 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_UINT32_CLASS;
   else if (cname == "uint64")
     flags |= MAT_FILE_UINT64_CLASS;
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     flags |= MAT_FILE_SPARSE_CLASS;
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ()
            || tc.is_complex_scalar () || tc.is_complex_matrix ())
@@ -2370,11 +2369,11 @@ save_mat5_binary_element (std::ostream& os,
       else
         flags |= MAT_FILE_DOUBLE_CLASS;
     }
-  else if (tc.is_map ())
+  else if (tc.isstruct ())
     flags |= MAT_FILE_STRUCT_CLASS;
-  else if (tc.is_cell ())
+  else if (tc.iscell ())
     flags |= MAT_FILE_CELL_CLASS;
-  else if (tc.is_inline_function () || tc.is_object ())
+  else if (tc.is_inline_function () || tc.isobject ())
     flags |= MAT_FILE_OBJECT_CLASS;
   else
     {
@@ -2444,9 +2443,9 @@ save_mat5_binary_element (std::ostream& os,
           os.write (padbuf, paddedlength - len);
         }
     }
-  else if (tc.is_sparse_type ())
+  else if (tc.issparse ())
     {
-      if (tc.is_complex_type ())
+      if (tc.iscomplex ())
         {
           const SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
           octave_idx_type nnz = m.nnz ();
@@ -2458,12 +2457,12 @@ save_mat5_binary_element (std::ostream& os,
           NDArray buf (dim_vector (nnz, 1));
 
           for (octave_idx_type i = 0; i < nnz; i++)
-            buf (i) = octave::math::real (m.data (i));
+            buf (i) = std::real (m.data (i));
 
           write_mat5_array (os, buf, save_as_floats);
 
           for (octave_idx_type i = 0; i < nnz; i++)
-            buf (i) = octave::math::imag (m.data (i));
+            buf (i) = std::imag (m.data (i));
 
           write_mat5_array (os, buf, save_as_floats);
         }
@@ -2534,7 +2533,7 @@ save_mat5_binary_element (std::ostream& os,
 
       write_mat5_integer_data (os, m.fortran_vec (), 8, m.numel ());
     }
-  else if (tc.is_bool_type ())
+  else if (tc.islogical ())
     {
       uint8NDArray m (tc.bool_array_value ());
 
@@ -2555,11 +2554,11 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_array (os, m, save_as_floats);
         }
     }
-  else if (tc.is_cell ())
+  else if (tc.iscell ())
     {
       Cell cell = tc.cell_value ();
 
-      if (! write_mat5_cell_array (os, cell, mark_as_global, save_as_floats))
+      if (! write_mat5_cell_array (os, cell, mark_global, save_as_floats))
         error ("save: error while writing '%s' to MAT file", name.c_str ());
     }
   else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
@@ -2579,11 +2578,11 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
         }
     }
-  else if (tc.is_map () || tc.is_inline_function () || tc.is_object ())
+  else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
     {
-      if (tc.is_inline_function () || tc.is_object ())
+      if (tc.is_inline_function () || tc.isobject ())
         {
-          std::string classname = tc.is_object () ? tc.class_name () : "inline";
+          std::string classname = (tc.isobject () ? tc.class_name () : "inline");
           size_t namelen = classname.length ();
 
           if (namelen > max_namelen)
@@ -2600,13 +2599,14 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
-      if (tc.is_object ()
-          && load_path::find_method (tc.class_name (),
-                                     "saveobj") != "")
+      octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+
+      if (tc.isobject ()
+          && lp.find_method (tc.class_name (), "saveobj") != "")
         {
           try
             {
-              octave_value_list tmp = feval ("saveobj", tc, 1);
+              octave_value_list tmp = octave::feval ("saveobj", tc, 1);
 
               m = tmp(0).map_value ();
             }
@@ -2663,7 +2663,7 @@ save_mat5_binary_element (std::ostream& os,
             for (octave_idx_type i = 0; i < nf; i++)
               {
                 bool retval2 = save_mat5_binary_element (os, elts[i][j], "",
-                                                         mark_as_global,
+                                                         mark_global,
                                                          false,
                                                          save_as_floats);
                 if (! retval2)

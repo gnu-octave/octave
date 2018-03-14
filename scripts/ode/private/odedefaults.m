@@ -3,26 +3,26 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{defaults}, @var{classes}, @var{attributes}] =} odedefaults (@var{n}, @var{t0}, @var{tf})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [defaults, classes, attributes] = odedefaults (n, t0, tf)
+function [rdefaults, rclasses, rattributes] = odedefaults (n, t0, tf)
 
   persistent defaults = struct ("AbsTol", 1e-6,
                                 "BDF", "off",
@@ -80,13 +80,13 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                   "InitialStep", {{"positive", "scalar"}},
                                   "Jacobian", {{}},
                                   "JConstant", {{"on", "off"}},
-                                  "JPattern", {{"vector"}},
+                                  "JPattern", {{}},
                                   "Mass", {{}},
                                   "MassSingular", {{"no", "maybe", "yes"}},
                                   "MaxOrder", {{">=", 0, "<=", 5, "integer"}},
                                   "MaxStep", {{"positive", "scalar", "real"}},
                                   "MStateDependence", {{"weak", "strong", "none"}},
-                                  "MvPattern", {{"vector"}},
+                                  "MvPattern", {{}},
                                   "NonNegative", {{"vector", "integer", "positive"}},
                                   "NormControl", {{"on", "off"}},
                                   "OutputFcn", {{}},
@@ -99,5 +99,9 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
 
   attributes.InitialSlope = {"real", "vector", "numel", n};
   attributes.OutputSel = {"vector", "integer", "positive", ">", 0, "<=", n};
+
+  rdefaults = defaults;
+  rclasses = classes;
+  rattributes = attributes;
 
 endfunction

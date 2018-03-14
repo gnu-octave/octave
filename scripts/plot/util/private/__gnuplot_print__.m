@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __gnuplot_print__ (@var{@dots{}})
@@ -47,7 +47,7 @@ function opts = __gnuplot_print__ (opts)
   gp_opts = font_spec (opts);
   bg = get (opts.figure, "color");
   if (isnumeric (bg))
-    gp_opts = sprintf ("%s background rgb \"#%02x%02x%02x\"",
+    gp_opts = sprintf ('%s background rgb "#%02x%02x%02x"',
                        gp_opts, round (255 * bg));
   else
     gp_opts = sprintf ("%s nobackground", gp_opts);
@@ -354,9 +354,7 @@ function [h, fontsize] = get_figure_text_objs (opts)
   ## Do not change the text objects fontsizes for the children of a
   ## legend axes.  These will be handled by the fontsize listener.
   is_legend_key_string = strcmp (get (hp, "tag"), "legend") ...
-                       & isprop (hp, "string") ...
-                       & isprop (hp, "location") ...
-                       & strcmp (get (hp, "type"), "axes");
+                         & strcmp (get (hp, "type"), "axes");
   h(is_legend_key_string) = [];
   fontsize = get (h, "fontsize");
   switch (numel (fontsize))

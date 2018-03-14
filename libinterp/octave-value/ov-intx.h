@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -50,31 +50,31 @@ along with Octave; see the file COPYING.  If not, see
 class
 OCTINTERP_API
 OCTAVE_VALUE_INT_MATRIX_T
-  : public octave_base_int_matrix<intNDArray<OCTAVE_INT_T> >
+  : public octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
 {
 public:
 
   OCTAVE_VALUE_INT_MATRIX_T (void)
-    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> > () { }
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>> () { }
 
   OCTAVE_VALUE_INT_MATRIX_T (const intNDArray<OCTAVE_INT_T>& nda)
-    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> > (nda) { }
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>> (nda) { }
 
   OCTAVE_VALUE_INT_MATRIX_T (const Array<OCTAVE_INT_T>& nda)
-    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> >
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
         (intNDArray<OCTAVE_INT_T> (nda)) { }
 
-  ~OCTAVE_VALUE_INT_MATRIX_T (void) { }
+  ~OCTAVE_VALUE_INT_MATRIX_T (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new OCTAVE_VALUE_INT_MATRIX_T (*this); }
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
 
-  bool is_integer_type (void) const { return true; }
+  bool isinteger (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
 
@@ -109,7 +109,7 @@ public:
   {
     double retval = lo_ieee_nan_value ();
 
-    if (is_empty ())
+    if (isempty ())
       err_invalid_conversion (type_name (), "real scalar");
 
     warn_implicit_conversion ("Octave:array-to-scalar",
@@ -125,7 +125,7 @@ public:
   {
     float retval = lo_ieee_float_nan_value ();
 
-    if (is_empty ())
+    if (isempty ())
       err_invalid_conversion (type_name (), "real scalar");
 
     warn_implicit_conversion ("Octave:array-to-scalar",
@@ -304,16 +304,16 @@ public:
     return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix));
   }
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const { return matrix.mex_get_data (); }
+  void * mex_get_data (void) const { return matrix.mex_get_data (); }
 
-  mxArray *as_mxArray (void) const
+  mxArray * as_mxArray (void) const
   {
     mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, dims (), mxREAL);
 
@@ -369,7 +369,19 @@ public:
       }
   }
 
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag)
+  {
+    return save_hdf5_internal (loc_id, hdf5_save_type, name, flag);
+  }
+
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
+  {
+    return load_hdf5_internal (loc_id, hdf5_save_type, name);
+  }
+
 private:
+
+  static octave_hdf5_id hdf5_save_type;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -387,12 +399,12 @@ public:
   OCTAVE_VALUE_INT_SCALAR_T (const OCTAVE_INT_T& nda)
     : octave_base_int_scalar<OCTAVE_INT_T> (nda) { }
 
-  ~OCTAVE_VALUE_INT_SCALAR_T (void) { }
+  ~OCTAVE_VALUE_INT_SCALAR_T (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new OCTAVE_VALUE_INT_SCALAR_T (*this); }
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   octave_value do_index_op (const octave_value_list& idx,
@@ -417,7 +429,7 @@ public:
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
 
-  bool is_integer_type (void) const { return true; }
+  bool isinteger (void) const { return true; }
 
   builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
 
@@ -558,7 +570,7 @@ public:
   complex_array_value (bool = false) const
   {
     ComplexNDArray retval (dim_vector (1, 1));
-    retval(0) = FloatComplex (scalar.double_value ());
+    retval(0) = Complex (scalar.double_value ());
     return retval;
   }
 
@@ -611,8 +623,8 @@ public:
 
   idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
 
-  int write (octave_stream& os, int block_size,
-             oct_data_conv::data_type output_type, octave_idx_type skip,
+  int write (octave::stream& os, int block_size,
+             oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   {
     return os.write (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (),
@@ -621,9 +633,9 @@ public:
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const { return scalar.mex_get_data (); }
+  void * mex_get_data (void) const { return scalar.mex_get_data (); }
 
-  mxArray *as_mxArray (void) const
+  mxArray * as_mxArray (void) const
   {
     mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, 1, 1, mxREAL);
 
@@ -672,7 +684,19 @@ public:
       }
   }
 
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag)
+  {
+    return save_hdf5_internal (loc_id, hdf5_save_type, name, flag);
+  }
+
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
+  {
+    return load_hdf5_internal (loc_id, hdf5_save_type, name);
+  }
+
 private:
+
+  static octave_hdf5_id hdf5_save_type;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

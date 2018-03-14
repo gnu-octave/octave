@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-cell.h"
 #include "pager.h"
+#include "parse.h"
 #include "pr-output.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -74,7 +75,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
       try
         {
-          tmp = lsode_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (lsode_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -84,7 +85,7 @@ lsode_user_function (const ColumnVector& x, double t)
       if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("lsode");
 
-      if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+      if (! warned_fcn_imaginary && tmp(0).iscomplex ())
         {
           warning ("lsode: ignoring imaginary part returned from user-supplied function");
           warned_fcn_imaginary = true;
@@ -92,7 +93,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
       retval = tmp(0).xvector_value ("lsode: expecting user supplied function to return numeric vector");
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("lsode");
     }
 
@@ -114,7 +115,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
       try
         {
-          tmp = lsode_jac->do_multi_index_op (1, args);
+          tmp = octave::feval (lsode_jac, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -124,7 +125,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
       if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("lsode");
 
-      if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+      if (! warned_jac_imaginary && tmp(0).iscomplex ())
         {
           warning ("lsode: ignoring imaginary part returned from user-supplied jacobian function");
           warned_jac_imaginary = true;
@@ -132,15 +133,15 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
       retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("lsode");
     }
 
   return retval;
 }
 
-DEFUN (lsode, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (lsode, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})
 @deftypefnx {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})
 Ordinary Differential Equation (ODE) solver.
@@ -274,13 +275,15 @@ parameters for @code{lsode}.
   if (call_depth > 1)
     error ("lsode: invalid recursive call");
 
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   std::string fcn_name, fname, jac_name, jname;
-  lsode_fcn = 0;
-  lsode_jac = 0;
+  lsode_fcn = nullptr;
+  lsode_jac = nullptr;
 
   octave_value f_arg = args(0);
 
-  if (f_arg.is_cell ())
+  if (f_arg.iscell ())
     {
       Cell c = f_arg.cell_value ();
       if (c.numel () == 1)
@@ -315,8 +318,8 @@ parameters for @code{lsode}.
                   if (! lsode_jac)
                     {
                       if (fcn_name.length ())
-                        clear_function (fcn_name);
-                      lsode_fcn = 0;
+                        symtab.clear_function (fcn_name);
+                      lsode_fcn = nullptr;
                     }
                 }
             }
@@ -325,7 +328,7 @@ parameters for @code{lsode}.
         error ("lsode: incorrect number of elements in cell array");
     }
 
-  if (! lsode_fcn && ! f_arg.is_cell ())
+  if (! lsode_fcn && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         lsode_fcn = f_arg.function_value ();
@@ -370,8 +373,8 @@ parameters for @code{lsode}.
                     if (! lsode_jac)
                       {
                         if (fcn_name.length ())
-                          clear_function (fcn_name);
-                        lsode_fcn = 0;
+                          symtab.clear_function (fcn_name);
+                        lsode_fcn = nullptr;
                       }
                   }
               }
@@ -416,9 +419,9 @@ parameters for @code{lsode}.
     output = ode.integrate (out_times);
 
   if (fcn_name.length ())
-    clear_function (fcn_name);
+    symtab.clear_function (fcn_name);
   if (jac_name.length ())
-    clear_function (jac_name);
+    symtab.clear_function (jac_name);
 
   std::string msg = ode.error_message ();
 

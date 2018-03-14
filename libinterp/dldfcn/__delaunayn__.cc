@@ -4,19 +4,19 @@ Copyright (C) 2000-2017 Kai Habel
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -42,17 +42,21 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <cstdio>
+
+#include <limits>
 #include <string>
 
+#include "Array.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "oct-locbuf.h"
+#include "unwind-prot.h"
 
-#include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
 
@@ -134,15 +138,15 @@ Undocumented internal function.
     {
       if (args(1).is_string ())
         options = args(1).string_value ();
-      else if (args(1).is_empty ())
+      else if (args(1).isempty ())
         ;  // Use default options
-      else if (args(1).is_cellstr ())
+      else if (args(1).iscellstr ())
         {
           options = "";
           Array<std::string> tmp = args(1).cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += tmp(i) + " ";
+            options += tmp(i) + ' ';
         }
       else
         error ("__delaunayn__: OPTIONS argument must be a string, cell array of strings, or empty");
@@ -223,8 +227,8 @@ Undocumented internal function.
     }
   else if (n == dim + 1)
     {
-      // one should check if nx points span a simplex
-      // I will look at this later.
+      // FIXME: One should check if nx points span a simplex.
+      //        I will look at this later.
       RowVector vec (n);
       for (octave_idx_type i = 0; i < n; i++)
         vec(i) = i + 1.0;

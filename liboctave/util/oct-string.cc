@@ -3,19 +3,19 @@ Copyright (C) 2016-2017 Carnë Draug
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -30,11 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <Array.h>
+#include "Array.h"
 
 template <typename T>
 static bool
-str_data_cmp (const typename T::value_type* a, const typename T::value_type* b,
+str_data_cmp (const typename T::value_type *a, const typename T::value_type *b,
               const typename T::size_type n)
 {
   for (typename T::size_type i = 0; i < n; ++i)
@@ -45,7 +45,7 @@ str_data_cmp (const typename T::value_type* a, const typename T::value_type* b,
 
 template <typename T>
 static bool
-str_data_cmpi (const typename T::value_type* a, const typename T::value_type* b,
+str_data_cmpi (const typename T::value_type *a, const typename T::value_type *b,
                const typename T::size_type n)
 {
   for (typename T::size_type i = 0; i < n; ++i)
@@ -72,7 +72,7 @@ numel (const Array<char>& str)
 
 template <typename T>
 typename T::size_type
-strlen (const typename T::value_type* str)
+strlen (const typename T::value_type *str)
 {
   return std::strlen (str);
 }
@@ -93,16 +93,16 @@ sizes_cmp (const Array<char>& str_a, const Array<char>& str_b)
 
 template <typename T>
 bool
-sizes_cmp (const T& str_a, const typename T::value_type* str_b)
+sizes_cmp (const T& str_a, const typename T::value_type *str_b)
 {
   return str_a.size () == strlen<T> (str_b);
 }
 
 template <>
 bool
-sizes_cmp (const Array<char>& str_a, const char* str_b)
+sizes_cmp (const Array<char>& str_a, const char *str_b)
 {
-  return (str_a.is_vector () && str_a.rows () == 1
+  return (str_a.isvector () && str_a.rows () == 1
           && str_a.numel () == strlen<Array<char>> (str_b));
 }
 
@@ -117,7 +117,7 @@ octave::string::strcmp (const T& str_a, const T& str_b)
 
 template<typename T>
 bool
-octave::string::strcmp (const T& str_a, const typename T::value_type* str_b)
+octave::string::strcmp (const T& str_a, const typename T::value_type *str_b)
 {
   return (sizes_cmp (str_a, str_b)
           && str_data_cmp<T> (str_a.data (), str_b, numel (str_a)));
@@ -134,7 +134,7 @@ octave::string::strcmpi (const T& str_a, const T& str_b)
 
 template<typename T>
 bool
-octave::string::strcmpi (const T& str_a, const typename T::value_type* str_b)
+octave::string::strcmpi (const T& str_a, const typename T::value_type *str_b)
 {
   return (sizes_cmp (str_a, str_b)
           && str_data_cmpi<T> (str_a.data (), str_b, numel (str_a)));
@@ -152,7 +152,7 @@ octave::string::strncmp (const T& str_a, const T& str_b,
 
 template<typename T>
 bool
-octave::string::strncmp (const T& str_a, const typename T::value_type* str_b,
+octave::string::strncmp (const T& str_a, const typename T::value_type *str_b,
                          const typename T::size_type n)
 {
   return (numel (str_a) >= n && strlen<T> (str_b) >= n
@@ -171,7 +171,7 @@ octave::string::strncmpi (const T& str_a, const T& str_b,
 
 template<typename T>
 bool
-octave::string::strncmpi (const T& str_a, const typename T::value_type* str_b,
+octave::string::strncmpi (const T& str_a, const typename T::value_type *str_b,
                           const typename T::size_type n)
 {
   return (numel (str_a) >= n && strlen<T> (str_b) >= n

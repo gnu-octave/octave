@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{solution} =} integrate_adaptive (@var{@@stepper}, @var{order}, @var{@@func}, @var{tspan}, @var{x0}, @var{options})
@@ -101,7 +101,9 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   endif
 
   ## Initialize the EventFcn
+  have_EventFcn = false;
   if (! isempty (options.Events))
+    have_EventFcn  = true;
     ode_event_handler (options.Events, tspan(1), x,
                        "init", options.funarguments{:});
   endif
@@ -162,7 +164,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
           ## Call Events function only if a valid result has been found.
           ## Stop integration if eventbreak is true.
-          if (! isempty (options.Events))
+          if (have_EventFcn)
             break_loop = false;
             for idenseout = 1:numel (t_caught)
               id = t_caught(idenseout);
@@ -224,7 +226,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
         ## Call Events function only if a valid result has been found.
         ## Stop integration if eventbreak is true.
-        if (! isempty (options.Events))
+        if (have_EventFcn)
           solution.event = ...
             ode_event_handler (options.Events, t(istep), x(:, istep), [],
                                options.funarguments{:});

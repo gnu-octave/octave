@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __gnuplot_drawnow__ (@var{h}, @var{term}, @var{file}, @var{debug_file})
@@ -237,8 +237,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
               set (0, "units", units);
             end_unwind_protect
             if (all (screen_size > 0))
-              ## For X11/Windows, set the figure positon as well as the size
-              ## gnuplot position is UL, Octave's is LL (same for screen/window)
+              ## Set the figure position as well as the size.  gnuplot position
+              ## is UL, Octave's is LL (same for screen/window)
               gnuplot_pos(2) = screen_size(2) - gnuplot_pos(2) - gnuplot_size(2);
               gnuplot_pos = max (gnuplot_pos, 1);
               size_str = sprintf ("%s position %d,%d", size_str,

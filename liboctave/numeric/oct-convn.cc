@@ -4,19 +4,19 @@ Copyright (C) 2010-2017 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,19 +24,18 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
 #include <algorithm>
 
+#include "Array.h"
+#include "MArray.h"
 #include "f77-fcn.h"
-
 #include "oct-convn.h"
-#include "oct-locbuf.h"
 
 // 2d convolution with a matrix kernel.
 template <typename T, typename R>
 static void
-convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
-             const R *b, octave_idx_type mb, octave_idx_type nb,
+convolve_2d (const T *a, F77_INT ma, F77_INT na,
+             const R *b, F77_INT mb, F77_INT nb,
              T *c, bool inner);
 
 // Forward instances to our Fortran implementations.
@@ -44,15 +43,13 @@ convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
                      R_CONST_CAST, f, F)                                \
   extern "C"                                                            \
   F77_RET_T                                                             \
-  F77_FUNC (f##conv2o, F##CONV2O) (const F77_INT&,                      \
-                                   const F77_INT&,                      \
+  F77_FUNC (f##conv2o, F##CONV2O) (const F77_INT&, const F77_INT&,      \
                                    const T*, const F77_INT&,            \
                                    const F77_INT&, const R*, T *);      \
                                                                         \
   extern "C"                                                            \
   F77_RET_T                                                             \
-  F77_FUNC (f##conv2i, F##CONV2I) (const F77_INT&,                      \
-                                   const F77_INT&,                      \
+  F77_FUNC (f##conv2i, F##CONV2I) (const F77_INT&, const F77_INT&,      \
                                    const T*, const F77_INT&,            \
                                    const F77_INT&, const R*, T *);      \
                                                                         \
@@ -93,7 +90,15 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
                   T *c, const dim_vector& ccd, int nd, bool inner)
 {
   if (nd == 2)
-    convolve_2d<T, R> (a, ad(0), ad(1), b, bd(0), bd(1), c, inner);
+    {
+      F77_INT ad0 = octave::to_f77_int (ad(0));
+      F77_INT ad1 = octave::to_f77_int (ad(1));
+
+      F77_INT bd0 = octave::to_f77_int (bd(0));
+      F77_INT bd1 = octave::to_f77_int (bd(1));
+
+      convolve_2d<T, R> (a, ad0, ad1, b, bd0, bd1, c, inner);
+    }
   else
     {
       octave_idx_type ma = acd(nd-2);
@@ -101,6 +106,7 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
       octave_idx_type mb = bcd(nd-2);
       octave_idx_type nb = bd(nd-1);
       octave_idx_type ldc = ccd(nd-2);
+
       if (inner)
         {
           for (octave_idx_type ja = 0; ja < na - nb + 1; ja++)
@@ -126,7 +132,7 @@ static MArray<T>
 convolve (const MArray<T>& a, const MArray<R>& b,
           convn_type ct)
 {
-  if (a.is_empty () || b.is_empty ())
+  if (a.isempty () || b.isempty ())
     return MArray<T> ();
 
   int nd = std::max (a.ndims (), b.ndims ());
@@ -145,6 +151,11 @@ convolve (const MArray<T>& a, const MArray<R>& b,
     }
 
   MArray<T> c (cdims, T ());
+
+  // "valid" shape can sometimes result in empty matrices which must avoid
+  // calling Fortran code which does not expect this (bug #52067)
+  if (c.isempty ())
+    return c;
 
   convolve_nd<T, R> (a.fortran_vec (), adims, adims.cumulative (),
                      b.fortran_vec (), bdims, bdims.cumulative (),

@@ -6,19 +6,19 @@ Copyright (C) 2002-2005 Paul Kienzle
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -184,7 +184,7 @@ namespace octave
                            who.c_str (), MAXLOOKBEHIND);
                       }
 
-                    buf << pattern.substr (pos, new_pos - pos) << "(";
+                    buf << pattern.substr (pos, new_pos - pos) << '(';
 
                     size_t i;
 
@@ -196,13 +196,13 @@ namespace octave
                     for (; i < max_length + 1; i++)
                       {
                         buf << pattern.substr (new_pos, tmp_pos3 - new_pos)
-                            << "{" << i << "}";
+                            << '{' << i << '}';
                         buf << pattern.substr (tmp_pos3 + 1,
                                                tmp_pos1 - tmp_pos3 - 1);
                         if (i != max_length)
-                          buf << "|";
+                          buf << '|';
                       }
-                    buf << ")";
+                    buf << ')';
                   }
                 else
                   buf << pattern.substr (pos, tmp_pos1 - pos);
@@ -220,17 +220,23 @@ namespace octave
 
     buf << pattern.substr (pos);
 
+    // Replace NULLs with escape sequence because conversion function c_str() 
+    // will terminate string early at embedded NULLs.
+    std::string buf_str = buf.str ();
+    while ((pos = buf_str.find ('\0')) != std::string::npos)
+      buf_str.replace (pos, 1, "\\000");
+
     const char *err;
     int erroffset;
-    std::string buf_str = buf.str ();
 
     int pcre_options
-      = ((options.case_insensitive () ? PCRE_CASELESS : 0)
+      = (  (options.case_insensitive () ? PCRE_CASELESS : 0)
          | (options.dotexceptnewline () ? 0 : PCRE_DOTALL)
          | (options.lineanchors () ? PCRE_MULTILINE : 0)
          | (options.freespacing () ? PCRE_EXTENDED : 0));
 
-    data = pcre_compile (buf_str.c_str (), pcre_options, &err, &erroffset, 0);
+    data = pcre_compile (buf_str.c_str (), pcre_options,
+                         &err, &erroffset, nullptr);
 
     if (! data)
       (*current_liboctave_error_handler)
@@ -252,17 +258,17 @@ namespace octave
 
     pcre *re = static_cast<pcre *> (data);
 
-    pcre_fullinfo (re, 0, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
-    pcre_fullinfo (re, 0, PCRE_INFO_NAMECOUNT, &namecount);
-    pcre_fullinfo (re, 0, PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
-    pcre_fullinfo (re, 0, PCRE_INFO_NAMETABLE, &nametable);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMECOUNT, &namecount);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
+    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMETABLE, &nametable);
 
     OCTAVE_LOCAL_BUFFER (int, ovector, (subpatterns+1)*3);
     OCTAVE_LOCAL_BUFFER (int, nidx, namecount);
 
     for (int i = 0; i < namecount; i++)
       {
-        // Index of subpattern in first two bytes MSB first of name.
+        // Index of subpattern in first two bytes of name (MSB first).
         // Extract index.
         nidx[i] = (static_cast<int> (nametable[i*nameentrysize])) << 8
                   | static_cast<int> (nametable[i*nameentrysize+1]);
@@ -270,9 +276,9 @@ namespace octave
 
     while (true)
       {
-        OCTAVE_QUIT;
+        octave_quit ();
 
-        int matches = pcre_exec (re, 0, buffer.c_str (),
+        int matches = pcre_exec (re, nullptr, buffer.c_str (),
                                  buffer.length (), idx,
                                  (idx ? PCRE_NOTBOL : 0),
                                  ovector, (subpatterns+1)*3);
@@ -296,7 +302,7 @@ namespace octave
             while (matches == PCRE_ERROR_MATCHLIMIT
                    && i++ < PCRE_MATCHLIMIT_MAX)
               {
-                OCTAVE_QUIT;
+                octave_quit ();
 
                 pe.match_limit *= 10;
                 matches = pcre_exec (re, &pe, buffer.c_str (),
@@ -313,7 +319,7 @@ namespace octave
 
         if (matches == PCRE_ERROR_NOMATCH)
           break;
-        else if (ovector[1] <= ovector[0] && ! options.emptymatch ())
+        else if (ovector[0] >= ovector[1] && ! options.emptymatch ())
           {
             // Zero length match.  Skip to next char.
             idx = ovector[0] + 1;
@@ -352,6 +358,9 @@ namespace octave
                 ("%s: cannot allocate memory in pcre_get_substring_list",
                  who.c_str ());
 
+            // Must use explicit length constructor as match can contain '\0'.
+            std::string match_string = std::string (*listptr, end - start + 1);
+
             string_vector tokens (pos_match);
             string_vector named_tokens (nnames);
             int pos_offset = 0;
@@ -374,21 +383,22 @@ namespace octave
                               {
                                 if (nidx[j] == i)
                                   {
+                                    size_t len = ovector[2*i+1] - ovector[2*i];
                                     named_tokens(named_idx(j)) =
-                                      std::string (*(listptr+i-pos_offset));
+                                      std::string (*(listptr+i-pos_offset),
+                                                   len);
                                     break;
                                   }
                               }
                           }
 
-                        tokens(pos_match++) = std::string (*(listptr+i));
+                        size_t len = ovector[2*i+1] - ovector[2*i];
+                        tokens(pos_match++) = std::string (*(listptr+i), len);
                       }
                     else
                       pos_offset++;
                   }
               }
-
-            std::string match_string = std::string (*listptr);
 
             pcre_free_substring_list (listptr);
 
@@ -511,7 +521,7 @@ namespace octave
         regexp::match_data::const_iterator p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
 
             double start = p->start ();
             double end = p->end ();
@@ -538,7 +548,7 @@ namespace octave
         p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
 
             double start = p->start ();
             double end = p->end ();
@@ -588,7 +598,8 @@ namespace octave
         regexp::match_data::const_iterator p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             delta += static_cast<int> (replen)
                      - static_cast<int> (p->end () - p->start () + 1);
             p++;
@@ -600,7 +611,8 @@ namespace octave
         p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             rep.append (&buffer[from],
                         static_cast<size_t> (p->start () - 1 - from));
             from = static_cast<size_t> (p->end ());

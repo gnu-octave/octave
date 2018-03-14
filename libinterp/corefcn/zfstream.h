@@ -4,19 +4,19 @@ Copyright (C) 2005-2017 Ludwig Schwardt, Kevin Ruland
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -55,9 +55,14 @@ public:
   //  Default constructor.
   gzfilebuf ();
 
+  // No copying!
+
+  gzfilebuf (const gzfilebuf&) = delete;
+
+  gzfilebuf& operator = (const gzfilebuf&) = delete;
+
   //  Destructor.
-  virtual
-  ~gzfilebuf ();
+  virtual ~gzfilebuf ();
 
   /**
    *  @brief  Set compression level and strategy on the fly.
@@ -79,7 +84,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open () const { return (file != 0); }
+  is_open () const { return (file != nullptr); }
 
   /**
    *  @brief  Open gzipped file.
@@ -88,7 +93,7 @@ public:
    *  @return  @c this on success, NULL on failure.
   */
   gzfilebuf*
-  open (const char* name,
+  open (const char *name,
         std::ios_base::openmode mode);
 
   /**
@@ -115,7 +120,7 @@ protected:
   */
   bool
   open_mode (std::ios_base::openmode mode,
-             char* c_mode) const;
+             char *c_mode) const;
 
   /**
    *  @brief  Number of characters available in stream buffer.
@@ -158,7 +163,7 @@ protected:
    *  Call setbuf(0,0) to enable unbuffered output.
   */
   virtual std::streambuf*
-  setbuf (char_type* p,
+  setbuf (char_type *p,
           std::streamsize n);
 
   /**
@@ -199,12 +204,6 @@ protected:
 //  virtual int_type pbackfail(int_type c = traits_type::eof());
 
 private:
-
-  // No copying!
-
-  gzfilebuf (const gzfilebuf&);
-
-  gzfilebuf& operator = (const gzfilebuf&);
 
   /**
    *  @brief  Allocate internal buffer.
@@ -251,7 +250,7 @@ private:
    *  For simplicity this remains allocated on the free store for the
    *  entire life span of the gzfilebuf object, unless replaced by setbuf.
   */
-  char_type* buffer;
+  char_type *buffer;
 
   /**
    *  @brief  Stream buffer size.
@@ -288,7 +287,7 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::in).
   */
   explicit
-  gzifstream (const char* name,
+  gzifstream (const char *name,
               std::ios_base::openmode mode = std::ios_base::in);
 
   /**
@@ -305,7 +304,7 @@ public:
   */
   gzfilebuf*
   rdbuf () const
-  { return const_cast<gzfilebuf*>(&sb); }
+  { return const_cast<gzfilebuf *>(&sb); }
 
   /**
    *  @brief  Check if file is open.
@@ -327,7 +326,7 @@ public:
    *  convenience.
   */
   void
-  open (const char* name,
+  open (const char *name,
         std::ios_base::openmode mode = std::ios_base::in);
 
   /**
@@ -375,7 +374,7 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::out).
   */
   explicit
-  gzofstream (const char* name,
+  gzofstream (const char *name,
               std::ios_base::openmode mode = std::ios_base::out);
 
   /**
@@ -392,7 +391,7 @@ public:
   */
   gzfilebuf*
   rdbuf () const
-  { return const_cast<gzfilebuf*>(&sb); }
+  { return const_cast<gzfilebuf *>(&sb); }
 
   /**
    *  @brief  Check if file is open.
@@ -414,7 +413,7 @@ public:
    *  convenience.
   */
   void
-  open (const char* name,
+  open (const char *name,
         std::ios_base::openmode mode = std::ios_base::out);
 
   /**
@@ -476,7 +475,7 @@ private:
 
 // Manipulator function thunks through to stream buffer
 inline gzofstream&
-setcompression (gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
+setcompression (gzofstream& gzs, int l, int s = Z_DEFAULT_STRATEGY)
 {
   (gzs.rdbuf ())->setcompression (l, s);
   return gzs;

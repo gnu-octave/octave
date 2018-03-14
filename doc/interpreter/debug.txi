@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Debugging
 @chapter Debugging
@@ -83,7 +83,7 @@ function.
 @noindent
 Breakpoints in class methods are also supported (e.g.,
 @code{dbstop ("@@class/method")}).  However, breakpoints cannot be set in
-built-in functions (e.g., @code{sin}, etc.) or dynamically loaded functions
+built-in functions (e.g., @code{sin}, etc.@:) or dynamically loaded functions
 (i.e., oct-files).
 
 To set a breakpoint immediately upon entering a function use line number 1, or
@@ -133,19 +133,13 @@ then a breakpoint can be set at the start of the subfunction directly with
 
 @example
 @group
-dbstop (["func1", filemarker(), "func2"])
+dbstop func1>func2
 @result{} 5
 @end group
 @end example
 
-Note that @code{filemarker} returns the character that marks subfunctions from
-the file containing them.  Unless the default has been changed this character
-is @samp{>}.  Thus, a quicker and more normal way to set the breakpoint would
-be
-
-@example
-dbstop func1>func2
-@end example
+Note that @samp{>} is the character that distinguishes subfunctions from the
+m-file containing them.
 
 Another simple way of setting a breakpoint in an Octave script is the
 use of the @code{keyboard} function.

@@ -2,18 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with Octave; If not, see <http://www.gnu.org/licenses/>.
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} linsolve (@var{A}, @var{b})
@@ -31,11 +32,11 @@
 ## In this case Octave will skip the matrix examination and proceed directly
 ## to solving the linear system.
 ##
-## @strong{Warning:} If the matrix @var{A} does not have the properties
-## listed in the @var{opts} structure then the result will not be accurate
-## AND no warning will be given.  When in doubt, let Octave examine the matrix
-## and choose the appropriate solver as this step takes little time and the
-## result is cached so that it is only done once per linear system.
+## @strong{Warning:} If the matrix @var{A} does not have the properties listed
+## in the @var{opts} structure then the result will not be accurate AND no
+## warning will be given.  When in doubt, let Octave examine the matrix and
+## choose the appropriate solver as this step takes little time and the result
+## is cached so that it is only done once per linear system.
 ##
 ## Possible @var{opts} fields (set value to true/false):
 ##
@@ -59,7 +60,7 @@
 ##   @var{A} is general rectangular (currently makes no difference)
 ##
 ## @item TRANSA
-##   Solve @code{A'*x = b} by @code{transpose (A) \ b}
+##   Solve @code{A'*x = b} if true rather than @code{A*x = b}
 ## @end table
 ##
 ## The optional second output @var{R} is the inverse condition number of

@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} install (@var{files}, @var{handle_deps}, @var{prefix}, @var{archprefix}, @var{verbose}, @var{local_list}, @var{global_list}, @var{global_install})
@@ -504,9 +504,10 @@ function copy_files (desc, packdir, global_install)
       error ("couldn't copy files to the installation directory");
     endif
     if (exist (fullfile (desc.dir, getarch ()), "dir")
-        && ! strcmp (fullfile (desc.dir, getarch ()), octfiledir))
+        && ! strcmp (canonicalize_file_name (fullfile (desc.dir, getarch ())),
+                     canonicalize_file_name (octfiledir)))
       if (! exist (octfiledir, "dir"))
-        ## Can be required to create upto three levels of dirs.
+        ## Can be required to create up to three levels of dirs.
         octm1 = fileparts (octfiledir);
         if (! exist (octm1, "dir"))
           octm2 = fileparts (octm1);
@@ -711,16 +712,19 @@ function create_pkgadddel (desc, packdir, nm, global_install)
 
   if (archfid >= 0 && instfid >= 0)
     ## Search all dot-m files for PKG commands.
-    lst = dir (fullfile (packdir, "inst", "*.m"));
+    lst = glob (fullfile (packdir, "inst", "*.m"));
     for i = 1:length (lst)
-      nam = fullfile (packdir, "inst", lst(i).name);
+      nam = lst{i};
       fwrite (instfid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
     ## Search all C++ source files for PKG commands.
-    lst = dir (fullfile (packdir, "src", "*.cc"));
+    cc_lst = glob (fullfile (packdir, "src", "*.cc"));
+    cpp_lst = glob (fullfile (packdir, "src", "*.cpp"));
+    cxx_lst = glob (fullfile (packdir, "src", "*.cxx"));
+    lst = [cc_lst; cpp_lst; cxx_lst];
     for i = 1:length (lst)
-      nam = fullfile (packdir, "src", lst(i).name);
+      nam = lst{i};
       fwrite (archfid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
       fwrite (archfid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
     endfor

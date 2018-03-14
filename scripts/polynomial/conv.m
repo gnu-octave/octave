@@ -2,38 +2,43 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} conv (@var{a}, @var{b})
 ## @deftypefnx {} {} conv (@var{a}, @var{b}, @var{shape})
 ## Convolve two vectors @var{a} and @var{b}.
 ##
-## The output convolution is a vector with length equal to
-## @code{length (@var{a}) + length (@var{b}) - 1}.
 ## When @var{a} and @var{b} are the coefficient vectors of two polynomials, the
 ## convolution represents the coefficient vector of the product polynomial.
 ##
-## The optional @var{shape} argument may be
+## The size of the result is determined by the optional @var{shape} argument
+## which takes the following values
 ##
 ## @table @asis
 ## @item @var{shape} = @qcode{"full"}
 ## Return the full convolution.  (default)
+## The result is a vector with length equal to
+## @code{length (@var{a}) + length (@var{b}) - 1}.
 ##
 ## @item @var{shape} = @qcode{"same"}
 ## Return the central part of the convolution with the same size as @var{a}.
+##
+## @item @var{shape} = @qcode{"valid"}
+## Return only the parts which do not include zero-padded edges.
+## The size of the result is @code{max (size (@var{a}) - size (@var{b}) + 1, 0)}.
 ## @end table
 ##
 ## @seealso{deconv, conv2, convn, fftconv}

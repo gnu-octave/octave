@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, args)
 
@@ -72,8 +72,8 @@ function x_out = hermite_cubic_interpolation (t, x, der, t_out)
   s = (t_out - t(1)) / dt;
   x_out = ((1 + 2*s) .* (1-s).^2) .* x(:,1) + ...
           (s .* (1-s).^2 * dt   ) .* der(:,1) + ...
-          ((3-2*s) .* s.^2      ) .* x(:,2) + ...
-          ((s-1) .* s.^2   * dt ) .* der(:,2);
+          ((3-2*s) .* s.^2      ) .* x(:,end) + ...
+          ((s-1) .* s.^2   * dt ) .* der(:,end);
 
 endfunction
 

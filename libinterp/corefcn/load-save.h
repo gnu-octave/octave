@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,8 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mach-info.h"
-#include "symtab.h"
 
+namespace octave
+{
+  class symbol_record;
+}
+
+class string_vector;
 class octave_value;
 
 // FIXME: maybe MAT5 and MAT7 should be options to MAT_BINARY.
@@ -86,7 +91,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
 extern OCTINTERP_API bool is_octave_data_file (const std::string& file);
 
 extern void
-do_save (std::ostream& os, const symbol_table::symbol_record& sr,
+do_save (std::ostream& os, const octave::symbol_record& sr,
          load_save_format fmt, bool save_as_floats);
 
 extern void

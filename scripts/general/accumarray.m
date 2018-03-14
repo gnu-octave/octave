@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
@@ -154,6 +154,12 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     endif
   endif
 
+  if (isempty (func))
+    func = @sum;
+  elseif (! is_function_handle (func))
+    error ("accumarray: FUNC must be a function handle");
+  endif
+
   if (isempty (fillval))
     fillval = 0;
   endif
@@ -189,7 +195,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       error ("accumarray: in the sparse case, values must be numeric or logical");
     endif
 
-    if (! (isempty (func) || func == @sum))
+    if (func != @sum)
 
       ## Reduce values.  This is not needed if we're about to sum them,
       ## because "sparse" can do that.
@@ -252,7 +258,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     ## Some built-in reductions handled efficiently.
 
-    if (isempty (func) || func == @sum)
+    if (func == @sum)
       ## Fast summation.
       if (isempty (sz))
         A = __accumarray_sum__ (subs, vals);
@@ -434,7 +440,7 @@ endfunction
 %!error (accumarray ([1,2,3],1:2))
 
 ## Handle empty arrays
-%!test <47287>
+%!test <*47287>
 %! ## min, max, and sum are special cases within accumarray so test them.
 %! funcs = {@(x) length (x) > 1, @min, @max, @sum};
 %! for idx = 1:numel (funcs)
@@ -446,3 +452,6 @@ endfunction
 ## Matlab returns an array of doubles even though FUNC returns cells.  In
 ## Octave, we do not have that bug, at least for this case.
 %!assert (accumarray (zeros (0, 1), [], [0 1] , @(x) {x}), cell (0, 1))
+
+%!error <FUNC must be a function handle>
+%! accumarray ([1; 2; 3], [1; 2; 3], [3 1], '@(x) {x}')

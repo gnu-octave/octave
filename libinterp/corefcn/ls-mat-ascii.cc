@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,17 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <cstring>
 #include <cctype>
 
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
 #include "data-conv.h"
 #include "file-ops.h"
 #include "glob-match.h"
@@ -43,28 +41,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-time.h"
 #include "quit.h"
-#include "str-vec.h"
 
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "errwarn.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-save.h"
 #include "ls-ascii-helper.h"
 #include "ls-mat-ascii.h"
-#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ov.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
 
 static std::string
 get_mat_data_input_line (std::istream& is)
@@ -176,9 +170,8 @@ get_lines_and_columns (std::istream& is,
               if (beg == std::string::npos
                   || (buf[beg] == '\r' && beg == buf.length () - 1))
                 {
-                  // We had a line with trailing spaces and
-                  // ending with a CRLF, so this should look like EOL,
-                  // not a new colum.
+                  // We had a line with trailing spaces and ending with a CRLF,
+                  // so this should look like EOL, not a new column.
                   break;
                 }
             }
@@ -349,8 +342,14 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
 {
   bool success = true;
 
-  if (val.is_complex_type ())
+  if (val.iscomplex ())
     warning ("save: omitting imaginary part for ASCII file");
+
+  if (val.ndims () > 2)
+    {
+      warning ("save: skipping variable which is not a 2-D matrix");
+      return true;
+    }
 
   Matrix m;
 
@@ -360,7 +359,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
     }
   catch (const octave::execution_exception& e)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       success = false;
     }
@@ -382,7 +381,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
                 {
                   // Omit leading tabs.
                   if (j != 0) os << '\t';
-                  octave_write_double (os, m (i, j));
+                  octave_write_double (os, m(i, j));
                 }
               os << "\n";
             }
@@ -390,8 +389,8 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
       else
         os << m;
 
+      // Restore format
       os.flags (oflags);
-
       os.precision (old_precision);
     }
 

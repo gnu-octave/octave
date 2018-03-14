@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -36,6 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 class octave_value_list;
 
+namespace octave
+{
+  class tree_evaluator;
+}
+
 // Dynamically-linked functions.
 
 class
@@ -44,75 +49,72 @@ octave_mex_function : public octave_function
 public:
 
   octave_mex_function (void)
-    : mex_fcn_ptr (), exit_fcn_ptr (), have_fmex (), sh_lib (),
-      t_checked (), system_fcn_file () { }
+    : m_mex_fcn_ptr (), m_exit_fcn_ptr (), m_is_fmex (), m_sh_lib (),
+      m_time_checked (), m_is_system_fcn_file () { }
 
-  octave_mex_function (void *fptr, bool fmex, const octave::dynamic_library& shl,
+  octave_mex_function (void *fptr, bool fmex,
+                       const octave::dynamic_library& shl,
                        const std::string& nm = "");
+
+  // No copying!
+
+  octave_mex_function (const octave_mex_function& fn) = delete;
+
+  octave_mex_function& operator = (const octave_mex_function& fn) = delete;
 
   ~octave_mex_function (void);
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx)
+  octave_function * function_value (bool = false) { return this; }
+
+  const octave_function * function_value (bool = false) const { return this; }
+
+  void mark_fcn_file_up_to_date (const octave::sys::time& t)
   {
-    octave_value_list tmp = subsref (type, idx, 1);
-    return tmp.length () > 0 ? tmp(0) : octave_value ();
+    m_time_checked = t;
   }
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
-
-  octave_function *function_value (bool = false) { return this; }
-
-  const octave_function *function_value (bool = false) const { return this; }
-
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
   std::string fcn_file_name (void) const;
 
   octave::sys::time time_parsed (void) const;
 
-  octave::sys::time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return m_time_checked; }
 
-  bool is_system_fcn_file (void) const { return system_fcn_file; }
+  bool is_system_fcn_file (void) const { return m_is_system_fcn_file; }
 
   bool is_builtin_function (void) const { return false; }
 
   bool is_mex_function (void) const { return true; }
 
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
 
-  void atexit (void (*fcn) (void)) { exit_fcn_ptr = fcn; }
+  void atexit (void (*fcn) (void)) { m_exit_fcn_ptr = fcn; }
 
-  octave::dynamic_library get_shlib (void) const
-  { return sh_lib; }
+  octave::dynamic_library get_shlib (void) const { return m_sh_lib; }
+
+  void *mex_fcn_ptr (void) const { return m_mex_fcn_ptr; }
+
+  bool is_fmex (void) const { return m_is_fmex; }
 
 private:
 
-  void *mex_fcn_ptr;
+  void *m_mex_fcn_ptr;
 
-  void (*exit_fcn_ptr) (void);
+  void (*m_exit_fcn_ptr) (void);
 
-  bool have_fmex;
+  bool m_is_fmex;
 
-  octave::dynamic_library sh_lib;
+  octave::dynamic_library m_sh_lib;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  mutable octave::sys::time t_checked;
+  mutable octave::sys::time m_time_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
-  bool system_fcn_file;
-
-  // No copying!
-
-  octave_mex_function (const octave_mex_function& fn);
-
-  octave_mex_function& operator = (const octave_mex_function& fn);
+  bool m_is_system_fcn_file;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

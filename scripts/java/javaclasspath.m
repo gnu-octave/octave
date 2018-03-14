@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} javaclasspath ()
@@ -54,7 +54,7 @@
 ## @seealso{javaaddpath, javarmpath}
 ## @end deftypefn
 
-function [path1, path2] = javaclasspath (which)
+function [path1, path2] = javaclasspath (what = "")
 
   if (nargin > 1)
     print_usage ();
@@ -77,9 +77,9 @@ function [path1, path2] = javaclasspath (which)
 
   if (nargout == 0)
     if (! nargin)
-      which = "-all";
+      what = "-all";
     endif
-    switch (tolower (which))
+    switch (tolower (what))
       case "-dynamic", disp_path_list ("DYNAMIC", dynamic_path_list);
       case "-static",  disp_path_list ("STATIC", static_path_list);
       case "-all"
@@ -98,7 +98,7 @@ function [path1, path2] = javaclasspath (which)
       path1 = cellstr (dynamic_path_list);
       path2 = cellstr (static_path_list);
     else
-      switch (tolower (which))
+      switch (tolower (what))
         case "-all",     path1 = cellstr ([static_path_list,dynamic_path_list]);
         case "-dynamic", path1 = cellstr (dynamic_path_list);
         case "-static",  path1 = cellstr (static_path_list);
@@ -112,8 +112,8 @@ endfunction
 
 ## Display cell array of paths
 
-function disp_path_list (which, path_list)
-  printf ("   %s JAVA PATH\n\n", which);
+function disp_path_list (what, path_list)
+  printf ("   %s JAVA PATH\n\n", what);
   if (numel (path_list) > 0)
     printf ("      %s\n", path_list{:});
   else

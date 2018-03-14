@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -61,22 +61,6 @@ Cell::Cell (const string_vector& sv, bool trim)
     }
 }
 
-Cell::Cell (const std::list<std::string>& lst)
-  : Array<octave_value> ()
-{
-  size_t n = lst.size ();
-
-  if (n > 0)
-    {
-      resize (dim_vector (n, 1));
-
-      octave_idx_type i = 0;
-
-      for (const auto& str : lst)
-        elem(i++,0) = str;
-    }
-}
-
 Cell::Cell (const Array<std::string>& sa)
   : Array<octave_value> (sa.dims ())
 {
@@ -101,7 +85,7 @@ Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
     {
       octave_idx_type m = numel ();
 
-      octave_idx_type len = n > m ? m : n;
+      octave_idx_type len = (n > m ? m : n);
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -120,7 +104,7 @@ Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
 }
 
 bool
-Cell::is_cellstr (void) const
+Cell::iscellstr (void) const
 {
   bool retval = true;
 
@@ -144,6 +128,19 @@ Cell::cellstr_value (void) const
   Array<std::string> retval (dims ());
 
   octave_idx_type n = numel ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    retval.xelem (i) = elem (i).string_value ();
+
+  return retval;
+}
+
+string_vector
+Cell::string_vector_value (void) const
+{
+  octave_idx_type n = numel ();
+
+  string_vector retval (n);
 
   for (octave_idx_type i = 0; i < n; i++)
     retval.xelem (i) = elem (i).string_value ();

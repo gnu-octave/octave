@@ -7,19 +7,19 @@ Copyright (C) 2010 David Grundberg
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -95,7 +95,7 @@ is_indexed (const Magick::Image& img)
           // GM PseudoClass says.
           const std::string color_type =
             const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig");
-          if (! color_type.empty() && color_type != "3")
+          if (! color_type.empty () && color_type != "3")
             indexed = false;
         }
     }
@@ -157,36 +157,92 @@ get_region_range (const octave_value& region)
   return output;
 }
 
-static std::map<std::string, octave_idx_type>
-calculate_region (const octave_scalar_map& options)
+class
+image_region
 {
-  std::map<std::string, octave_idx_type> region;
-  const Cell pixel_region = options.getfield ("region").cell_value ();
+public:
 
-  // Subtract 1 to account for 0 indexing.
-  const Range rows    = get_region_range (pixel_region (0));
-  const Range cols    = get_region_range (pixel_region (1));
-  region["row_start"] = rows.base () -1;
-  region["col_start"] = cols.base () -1;
-  region["row_end"]   = rows.max ()  -1;
-  region["col_end"]   = cols.max ()  -1;
+  image_region (const octave_scalar_map& options)
+  {
+    // FIXME: should we have better checking on the input map and values
+    // or is that expected to be done elsewhere?
+
+    const Cell pixel_region = options.getfield ("region").cell_value ();
+
+    // Subtract 1 to account for 0 indexing.
+
+    const Range rows = get_region_range (pixel_region (0));
+    const Range cols = get_region_range (pixel_region (1));
+
+    m_row_start = rows.base () - 1;
+    m_col_start = cols.base () - 1;
+    m_row_end = rows.max () - 1;
+    m_col_end = cols.max () - 1;
+
+    m_row_cache = m_row_end - m_row_start + 1;
+    m_col_cache = m_col_end - m_col_start + 1;
+
+    m_row_shift = m_col_cache * rows.inc ();
+    m_col_shift = m_col_cache * (m_row_cache + rows.inc () - 1) - cols.inc ();
+
+    m_row_out = rows.numel ();
+    m_col_out = cols.numel ();
+  }
+
+  // Default copy, move, and delete methods are all OK for this class.
+
+  image_region (const image_region&) = default;
+  image_region (image_region&&) = default;
+
+  image_region& operator = (const image_region&) = default;
+  image_region& operator = (image_region&&) = default;
+
+  ~image_region (void) = default;
+
+  octave_idx_type row_start (void) const { return m_row_start; }
+  octave_idx_type col_start (void) const { return m_col_start; }
+  octave_idx_type row_end (void) const { return m_row_end; }
+  octave_idx_type col_end (void) const { return m_col_end; }
 
   // Length of the area to load into the Image Pixel Cache.  We use max and
   // min to account for cases where last element of range is the range limit.
-  region["row_cache"] = region["row_end"] - region["row_start"] +1;
-  region["col_cache"] = region["col_end"] - region["col_start"] +1;
+
+  octave_idx_type row_cache (void) const { return m_row_cache; }
+  octave_idx_type col_cache (void) const { return m_col_cache; }
 
   // How much we have to shift in the memory when doing the loops.
-  region["row_shift"] = region["col_cache"] * rows.inc ();
-  region["col_shift"] = region["col_cache"] *
-                        (region["row_cache"] + rows.inc () -1) - cols.inc ();
+
+  octave_idx_type row_shift (void) const { return m_row_shift; }
+  octave_idx_type col_shift (void) const { return m_col_shift; }
 
   // The actual height and width of the output image
-  region["row_out"] = rows.numel ();
-  region["col_out"] = cols.numel ();
 
-  return region;
-}
+  octave_idx_type row_out (void) const { return m_row_out; }
+  octave_idx_type col_out (void) const { return m_col_out; }
+
+private:
+
+  octave_idx_type m_row_start;
+  octave_idx_type m_col_start;
+  octave_idx_type m_row_end;
+  octave_idx_type m_col_end;
+
+  // Length of the area to load into the Image Pixel Cache.  We use max and
+  // min to account for cases where last element of range is the range limit.
+
+  octave_idx_type m_row_cache;
+  octave_idx_type m_col_cache;
+
+  // How much we have to shift in the memory when doing the loops.
+
+  octave_idx_type m_row_shift;
+  octave_idx_type m_col_shift;
+
+  // The actual height and width of the output image
+
+  octave_idx_type m_row_out;
+  octave_idx_type m_col_out;
+};
 
 static octave_value_list
 read_maps (Magick::Image& img)
@@ -220,10 +276,11 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
 
   octave_value_list retval (1);
 
-  std::map<std::string, octave_idx_type> region = calculate_region (options);
+  image_region region (options);
+
   const octave_idx_type nFrames = frameidx.numel ();
-  const octave_idx_type nRows = region["row_out"];
-  const octave_idx_type nCols = region["col_out"];
+  const octave_idx_type nRows = region.row_out ();
+  const octave_idx_type nCols = region.col_out ();
 
   // imvec has all of the pages of a file, even the ones we are not
   // interested in.  We will use the first image that we will be actually
@@ -231,14 +288,14 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   const octave_idx_type def_elem = frameidx(0);
 
   T img       = T (dim_vector (nRows, nCols, 1, nFrames));
-  P* img_fvec = img.fortran_vec ();
+  P *img_fvec = img.fortran_vec ();
 
-  const octave_idx_type row_start = region["row_start"];
-  const octave_idx_type col_start = region["col_start"];
-  const octave_idx_type row_shift = region["row_shift"];
-  const octave_idx_type col_shift = region["col_shift"];
-  const octave_idx_type row_cache = region["row_cache"];
-  const octave_idx_type col_cache = region["col_cache"];
+  const octave_idx_type row_start = region.row_start ();
+  const octave_idx_type col_start = region.col_start ();
+  const octave_idx_type row_shift = region.row_shift ();
+  const octave_idx_type col_shift = region.col_shift ();
+  const octave_idx_type row_cache = region.row_cache ();
+  const octave_idx_type col_cache = region.col_cache ();
 
   // When reading PixelPackets from the Image Pixel Cache, they come in
   // row major order.  So we keep moving back and forth there so we can
@@ -246,7 +303,8 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   octave_idx_type idx = 0;
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                              col_cache, row_cache);
 
@@ -282,10 +340,10 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
       if (imvec[def_elem].matte () && nargout >= 3)
         {
           const Matrix amap = maps(1).matrix_value ();
-          const double* amap_fvec = amap.fortran_vec ();
+          const double *amap_fvec = amap.fortran_vec ();
 
           NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
-          double* alpha_fvec = alpha.fortran_vec ();
+          double *alpha_fvec = alpha.fortran_vec ();
 
           // GraphicsMagick stores the alpha values inverted, i.e.,
           // 1 for transparent and 0 for opaque so we fix that here.
@@ -315,10 +373,11 @@ read_images (std::vector<Magick::Image>& imvec,
 
   octave_value_list retval (3, Matrix ());
 
-  std::map<std::string, octave_idx_type> region = calculate_region (options);
+  image_region region (options);
+
   const octave_idx_type nFrames = frameidx.numel ();
-  const octave_idx_type nRows = region["row_out"];
-  const octave_idx_type nCols = region["col_out"];
+  const octave_idx_type nRows = region.row_out ();
+  const octave_idx_type nCols = region.col_out ();
   T img;
 
   // imvec has all of the pages of a file, even the ones we are not
@@ -326,12 +385,12 @@ read_images (std::vector<Magick::Image>& imvec,
   // reading to get information about the image.
   const octave_idx_type def_elem = frameidx(0);
 
-  const octave_idx_type row_start = region["row_start"];
-  const octave_idx_type col_start = region["col_start"];
-  const octave_idx_type row_shift = region["row_shift"];
-  const octave_idx_type col_shift = region["col_shift"];
-  const octave_idx_type row_cache = region["row_cache"];
-  const octave_idx_type col_cache = region["col_cache"];
+  const octave_idx_type row_start = region.row_start ();
+  const octave_idx_type col_start = region.col_start ();
+  const octave_idx_type row_shift = region.row_shift ();
+  const octave_idx_type col_shift = region.col_shift ();
+  const octave_idx_type row_cache = region.row_cache ();
+  const octave_idx_type col_cache = region.col_cache ();
 
   // GraphicsMagick (GM) keeps the image values in memory using whatever
   // QuantumDepth it was built with independently of the original image
@@ -451,7 +510,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -479,7 +539,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -509,7 +570,8 @@ read_images (std::vector<Magick::Image>& imvec,
         const octave_idx_type frame_stride = color_stride * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -551,7 +613,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type a_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -588,7 +651,8 @@ read_images (std::vector<Magick::Image>& imvec,
         const octave_idx_type frame_stride = color_stride * 4;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -632,7 +696,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type a_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -703,7 +768,7 @@ maybe_initialize_magick (void)
     {
       // Save locale as GraphicsMagick might change this (fixed in
       // GraphicsMagick since version 1.3.13 released on December 24, 2011)
-      const char *static_locale = setlocale (LC_ALL, NULL);
+      const char *static_locale = setlocale (LC_ALL, nullptr);
       const std::string locale (static_locale);
 
       const std::string program_name
@@ -733,7 +798,7 @@ maybe_initialize_magick (void)
       // is also the GraphicsMagick recommended setting and the default
       // for ImageMagick.
       if (QuantumDepth < 16)
-        warning_with_id ("Octave:GraphicsMagic-Quantum-Depth",
+        warning_with_id ("Octave:GraphicsMagick-Quantum-Depth",
                          "your version of %s limits images to %d bits per pixel\n",
                          MagickPackageName, QuantumDepth);
 
@@ -875,8 +940,8 @@ img_float2uint (const T& img)
   typedef typename T::element_type P;
   uint32NDArray out (img.dims ());
 
-  octave_uint32* out_fvec = out.fortran_vec ();
-  const P*       img_fvec = img.fortran_vec ();
+  octave_uint32 *out_fvec = out.fortran_vec ();
+  const P       *img_fvec = img.fortran_vec ();
 
   const octave_uint32 max = octave_uint32::max ();
   const octave_idx_type numel = img.numel ();
@@ -936,7 +1001,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
                        const Matrix& cmap)
 {
   typedef typename T::element_type P;
-  const octave_idx_type nFrames   = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type nFrames   = (img.ndims () < 4 ? 1 : img.dims ()(3));
   const octave_idx_type nRows     = img.rows ();
   const octave_idx_type nCols     = img.columns ();
   const octave_idx_type cmap_size = cmap.rows ();
@@ -946,7 +1011,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
   // even if it's always the same.  We can least get a vector for the Colors.
   std::vector<Magick::ColorRGB> colormap;
   {
-    const double* cmap_fvec = cmap.fortran_vec ();
+    const double *cmap_fvec = cmap.fortran_vec ();
     const octave_idx_type G_offset = cmap_size;
     const octave_idx_type B_offset = cmap_size * 2;
     for (octave_idx_type map_idx = 0; map_idx < cmap_size; map_idx++)
@@ -957,7 +1022,8 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                 Magick::PaletteType,
                                                 Magick::PseudoClass);
@@ -976,9 +1042,9 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
       // values (no indexes), then set the image as PseudoClass and GM
       // would create a colormap for us.  However, we wouldn't have control
       // over the order of that colormap.  And that's why we set both.
-      Magick::PixelPacket* pix = m_img.getPixels (0, 0, nCols, nRows);
-      Magick::IndexPacket* ind = m_img.getIndexes ();
-      const P* img_fvec        = img.fortran_vec ();
+      Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+      Magick::IndexPacket *ind = m_img.getIndexes ();
+      const P *img_fvec        = img.fortran_vec ();
 
       octave_idx_type GM_idx = 0;
       for (octave_idx_type column = 0; column < nCols; column++)
@@ -1002,7 +1068,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
 static void
 encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
 {
-  const octave_idx_type nFrames = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type nFrames = (img.ndims () < 4 ? 1 : img.dims ()(3));
   const octave_idx_type nRows   = img.rows ();
   const octave_idx_type nCols   = img.columns ();
 
@@ -1013,7 +1079,8 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
   octave_idx_type img_idx = 0;
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       // For some reason, we can't set the type to Magick::BilevelType or
       // the output image will be black, changing to white has no effect.
       // However, this will still work fine and a binary image will be
@@ -1051,14 +1118,14 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                    const T& img, const T& alpha)
 {
   typedef typename T::element_type P;
-  const octave_idx_type channels = img.ndims () < 3 ? 1 : img.dims ()(2);
-  const octave_idx_type nFrames  = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type channels = (img.ndims () < 3 ? 1 : img.dims ()(2));
+  const octave_idx_type nFrames  = (img.ndims () < 4 ? 1 : img.dims ()(3));
   const octave_idx_type nRows    = img.rows ();
   const octave_idx_type nCols    = img.columns ();
   const octave_idx_type bitdepth = bitdepth_from_class<T> ();
 
   Magick::ImageType type;
-  const bool has_alpha = ! alpha.is_empty ();
+  const bool has_alpha = ! alpha.isempty ();
   switch (channels)
     {
     case 1:
@@ -1105,7 +1172,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
       {
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1135,7 +1203,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
       {
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1170,7 +1239,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type B_offset = nCols * nRows * 2;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1205,7 +1275,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type B_offset = nCols * nRows * 2;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1243,7 +1314,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type K_offset = nCols * nRows * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1280,7 +1352,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type K_offset = nCols * nRows * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1369,7 +1442,7 @@ write_file (const std::string& filename,
 {
   try
     {
-      Magick::writeImages (imvec.begin (), imvec.end (), ext + ":" + filename);
+      Magick::writeImages (imvec.begin (), imvec.end (), ext + ':' + filename);
     }
   catch (Magick::Warning& w)
     {
@@ -1416,10 +1489,10 @@ Use @code{imwrite} instead.
 
   std::vector<Magick::Image> imvec;
 
-  if (cmap.is_empty ())
+  if (cmap.isempty ())
     {
       const octave_value alpha = options.getfield ("alpha");
-      if (img.is_bool_type ())
+      if (img.islogical ())
         encode_bool_image (imvec, img.bool_array_value ());
       else if (img.is_uint8_type ())
         encode_uint_image<uint8NDArray>  (imvec, img.uint8_array_value (),
@@ -1430,7 +1503,7 @@ Use @code{imwrite} instead.
       else if (img.is_uint32_type ())
         encode_uint_image<uint32NDArray> (imvec, img.uint32_array_value (),
                                           alpha.uint32_array_value ());
-      else if (img.is_float_type ())
+      else if (img.isfloat ())
         {
           // For image formats that support floating point values, we write
           // the actual values.  For those who don't, we only use the values
@@ -1617,7 +1690,7 @@ This is a private internal function not intended for direct use.
       error ("Magick++ exception: %s", e.what ());
     }
 
-  static const char *fields[] = {"rows", "columns", "format", 0};
+  static const char *fields[] = {"rows", "columns", "format", nullptr};
   octave_scalar_map ping = octave_scalar_map (string_vector (fields));
   ping.setfield ("rows",    octave_value (img.rows ()));
   ping.setfield ("columns", octave_value (img.columns ()));
@@ -1894,7 +1967,7 @@ Use @code{imfinfo} instead.
     //  backgroundColor() -> BackgroundColor
     //  interlaceType()   -> Interlaced, InterlaceType, and PlanarConfiguration
     //  label()           -> Title
-    0
+    nullptr
   };
 
   // The one we will return at the end
@@ -1922,7 +1995,8 @@ Use @code{imfinfo} instead.
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       octave_scalar_map info_frame (template_info);
       const Magick::Image img = imvec[frame];
 
@@ -1981,7 +2055,7 @@ Use @code{imfinfo} instead.
         // be all zeros.  So rather than send a matrix of zeros, we will
         // check for that, and send an empty vector instead.
         RowVector chromaticities (8);
-        double* chroma_fvec = chromaticities.fortran_vec ();
+        double *chroma_fvec = chromaticities.fortran_vec ();
         img.chromaWhitePoint    (&chroma_fvec[0], &chroma_fvec[1]);
         img.chromaRedPrimary    (&chroma_fvec[2], &chroma_fvec[3]);
         img.chromaGreenPrimary  (&chroma_fvec[4], &chroma_fvec[5]);
@@ -2031,7 +2105,7 @@ Use @code{imfinfo} instead.
           "Software",
           "Artist",
           "Copyright",
-          0,
+          nullptr,
         };
         static const string_vector base_exif_str (base_exif_str_fields);
         static const octave_idx_type n_base_exif_str = base_exif_str.numel ();
@@ -2070,7 +2144,7 @@ Use @code{imfinfo} instead.
               // be strings.  Even if they're not GM returns a string anyway.
               "UserComment",
               "MakerComment",
-              0
+              nullptr
             };
             static const string_vector exif_str (exif_str_fields);
             static const octave_idx_type n_exif_str = exif_str.numel ();
@@ -2114,7 +2188,7 @@ Use @code{imfinfo} instead.
               "Saturation",
               "Sharpness",
               "SubjectDistanceRange",
-              0
+              nullptr
             };
             static const string_vector exif_int (exif_int_fields);
             static const octave_idx_type n_exif_int = exif_int.numel ();
@@ -2142,7 +2216,7 @@ Use @code{imfinfo} instead.
               "DigitalZoomRatio",
               // Listed as RATIONAL or SRATIONAL with more than 1 count.
               "LensSpecification",
-              0
+              nullptr
             };
             static const string_vector exif_float (exif_float_fields);
             static const octave_idx_type n_exif_float = exif_float.numel ();
@@ -2175,7 +2249,7 @@ Use @code{imfinfo} instead.
                   "GPSDestBearingRef",
                   "GPSDestDistanceRef",
                   "GPSDateStamp",
-                  0
+                  nullptr
                 };
                 static const string_vector gps_str (gps_str_fields);
                 static const octave_idx_type n_gps_str = gps_str.numel ();
@@ -2185,7 +2259,7 @@ Use @code{imfinfo} instead.
                 static const char *gps_int_fields[] =
                 {
                   "GPSDifferential",
-                  0
+                  nullptr
                 };
                 static const string_vector gps_int (gps_int_fields);
                 static const octave_idx_type n_gps_int = gps_int.numel ();
@@ -2208,7 +2282,7 @@ Use @code{imfinfo} instead.
                   "GPSTimeStamp",
                   "GPSDestLatitude",
                   "GPSDestLongitude",
-                  0
+                  nullptr
                 };
                 static const string_vector gps_float (gps_float_fields);
                 static const octave_idx_type n_gps_float = gps_float.numel ();
@@ -2261,7 +2335,7 @@ Fill formats info with GraphicsMagick CoderInfo.
 @seealso{imfinfo, imformats, imread, imwrite}
 @end deftypefn */)
 {
-  if (args.length () != 1 || ! args(0).is_map ())
+  if (args.length () != 1 || ! args(0).isstruct ())
     print_usage ();
 
   octave_map formats = args(0).map_value ();

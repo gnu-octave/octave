@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -78,15 +78,15 @@ iprocstream : public std::istream, public procstreambase
 {
 public:
 
-  iprocstream (void) : std::istream (0), procstreambase () { }
+  iprocstream (void) : std::istream (nullptr), procstreambase () { }
 
   iprocstream (const std::string& name, int mode = std::ios::in)
-    : std::istream (0), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode) { }
 
   iprocstream (const char *name, int mode = std::ios::in)
-    : std::istream (0), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode) { }
 
-  ~iprocstream (void) { }
+  ~iprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::in)
   { procstreambase::open (name, mode); }
@@ -108,15 +108,15 @@ oprocstream : public std::ostream, public procstreambase
 {
 public:
 
-  oprocstream (void) : std::ostream (0), procstreambase () { }
+  oprocstream (void) : std::ostream (nullptr), procstreambase () { }
 
   oprocstream (const std::string& name, int mode = std::ios::out)
-    : std::ostream (0), procstreambase (name, mode) { }
+    : std::ostream (nullptr), procstreambase (name, mode) { }
 
   oprocstream (const char *name, int mode = std::ios::out)
-    : std::ostream (0), procstreambase (name, mode) { }
+    : std::ostream (nullptr), procstreambase (name, mode) { }
 
-  ~oprocstream (void) { }
+  ~oprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::out)
   { procstreambase::open (name, mode); }
@@ -138,15 +138,15 @@ procstream : public std::iostream, public procstreambase
 {
 public:
 
-  procstream (void) : std::iostream (0), procstreambase () { }
+  procstream (void) : std::iostream (nullptr), procstreambase () { }
 
   procstream (const std::string& name, int mode)
-    : std::iostream (0), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode) { }
 
   procstream (const char *name, int mode)
-    : std::iostream (0), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode) { }
 
-  ~procstream (void) { }
+  ~procstream (void) = default;
 
   void open (const std::string& name, int mode)
   { procstreambase::open (name, mode); }

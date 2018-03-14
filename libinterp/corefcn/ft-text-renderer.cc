@@ -5,19 +5,19 @@ Copyright (C) 2009-2016 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,12 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "base-text-renderer.h"
+#include "ft-text-renderer.h"
 
 #if defined (HAVE_FREETYPE)
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
 #include <ft2build.h>
@@ -42,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 #endif
 
 #include <clocale>
@@ -53,46 +54,93 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "singleton-cleanup.h"
 
+#include "defaults.h"
 #include "error.h"
+#include "file-ops.h"
+#include "oct-env.h"
 #include "pr-output.h"
 #include "text-renderer.h"
 
-// FIXME: maybe issue at most one warning per glyph/font/size/weight
-//        combination.
-
-static void
-warn_missing_glyph (FT_ULong c)
+namespace octave
 {
-  warning_with_id ("Octave:missing-glyph",
-                   "text_renderer: skipping missing glyph for character '%x'", c);
-}
+  // FIXME: maybe issue at most one warning per glyph/font/size/weight
+  //        combination.
 
-static void
-warn_glyph_render (FT_ULong c)
-{
-  warning_with_id ("Octave:glyph-render",
-                   "text_renderer: unable to render glyph for character '%x'", c);
-}
+  static void
+  warn_missing_glyph (FT_ULong c)
+  {
+    warning_with_id ("Octave:missing-glyph",
+                     "text_renderer: skipping missing glyph for character '%x'", c);
+  }
+
+  static void
+  warn_glyph_render (FT_ULong c)
+  {
+    warning_with_id ("Octave:glyph-render",
+                     "text_renderer: unable to render glyph for character '%x'", c);
+  }
 
 #if defined (_MSC_VER)
-// FIXME: is this really needed?
-//
-// This is just a trick to avoid multiple symbol definitions.
-// PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
-// that will cause MSVC not to generate a new instantiation and
-// use the imported one instead.
+  // FIXME: is this really needed?
+  //
+  // This is just a trick to avoid multiple symbol definitions.
+  // PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
+  // that will cause MSVC not to generate a new instantiation and
+  // use the imported one instead.
 #  include "PermMatrix.h"
 #endif
 
-// Forward declaration
-static void ft_face_destroyed (void *object);
+  // Forward declaration
+  static void ft_face_destroyed (void *object);
 
-namespace octave
-{
   class
   ft_manager
   {
+  private:
+
+    ft_manager (void)
+      : library (), freetype_initialized (false), fontconfig_initialized (false)
+    {
+      if (FT_Init_FreeType (&library))
+        error ("unable to initialize FreeType library");
+      else
+        freetype_initialized = true;
+
+#if defined (HAVE_FONTCONFIG)
+      if (! FcInit ())
+        error ("unable to initialize fontconfig library");
+      else
+        fontconfig_initialized = true;
+#endif
+    }
+
   public:
+
+    // No copying!
+
+    ft_manager (const ft_manager&) = delete;
+
+    ft_manager& operator = (const ft_manager&) = delete;
+
+  private:
+
+    ~ft_manager (void)
+    {
+      if (freetype_initialized)
+        FT_Done_FreeType (library);
+
+#if defined (HAVE_FONTCONFIG)
+      // FIXME: Skip the call to FcFini because it can trigger the assertion
+      //
+      //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
+      //
+      // if (fontconfig_initialized)
+      //   FcFini ();
+#endif
+    }
+
+  public:
+
     static bool instance_ok (void)
     {
       bool retval = true;
@@ -111,14 +159,14 @@ namespace octave
       return retval;
     }
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     static FT_Face get_font (const std::string& name, const std::string& weight,
                              const std::string& angle, double size)
     {
       return (instance_ok ()
               ? instance->do_get_font (name, weight, angle, size)
-              : 0);
+              : nullptr);
     }
 
     static void font_destroyed (FT_Face face)
@@ -139,55 +187,16 @@ namespace octave
     // in class text_renderer.
     ft_cache cache;
 
-  private:
-
-    // No copying!
-
-    ft_manager (const ft_manager&);
-
-    ft_manager& operator = (const ft_manager&);
-
-    ft_manager (void)
-      : library (), freetype_initialized (false), fontconfig_initialized (false)
-    {
-      if (FT_Init_FreeType (&library))
-        error ("unable to initialize FreeType library");
-      else
-        freetype_initialized = true;
-
-#if defined (HAVE_FONTCONFIG)
-      if (! FcInit ())
-        error ("unable to initialize fontconfig library");
-      else
-        fontconfig_initialized = true;
-#endif
-    }
-
-    ~ft_manager (void)
-    {
-      if (freetype_initialized)
-        FT_Done_FreeType (library);
-
-#if defined (HAVE_FONTCONFIG)
-      // FIXME: Skip the call to FcFini because it can trigger the assertion
-      //
-      //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
-      //
-      // if (fontconfig_initialized)
-      //   FcFini ();
-#endif
-    }
-
     FT_Face do_get_font (const std::string& name, const std::string& weight,
                          const std::string& angle, double size)
     {
-      FT_Face retval = 0;
+      FT_Face retval = nullptr;
 
 #if defined (HAVE_FT_REFERENCE_FACE)
       // Look first into the font cache, then use fontconfig.  If the font
       // is present in the cache, simply add a reference and return it.
 
-      ft_key key (name + ":" + weight + ":" + angle, size);
+      ft_key key (name + ':' + weight + ':' + angle, size);
       ft_cache::const_iterator it = cache.find (key);
 
       if (it != cache.end ())
@@ -197,10 +206,36 @@ namespace octave
         }
 #endif
 
+      static std::string font_dir;
+
+      if (font_dir.empty ())
+        {
+          font_dir = sys::env::getenv ("OCTAVE_FONT_DIR");
+
+          if (font_dir.empty ())
+            font_dir = config::oct_etc_dir () + sys::file_ops::dir_sep_str ()
+                       + "fonts";
+        }
+
+
+      // Default font file
       std::string file;
 
+      if (! font_dir.empty ())
+        {
+          file = font_dir + octave::sys::file_ops::dir_sep_str () + "FreeSans";
+
+          if (weight == "bold")
+            file += "Bold";
+
+          if (angle == "italic" || angle == "oblique")
+            file += "Oblique";
+
+          file += ".otf";
+        }
+
 #if defined (HAVE_FONTCONFIG)
-      if (fontconfig_initialized)
+      if (name != "*" && fontconfig_initialized)
         {
           int fc_weight, fc_angle;
 
@@ -223,20 +258,20 @@ namespace octave
           FcPattern *pat = FcPatternCreate ();
 
           FcPatternAddString (pat, FC_FAMILY,
-                              (reinterpret_cast<const FcChar8*>
-                               (name == "*" ? "sans" : name.c_str ())));
+                              (reinterpret_cast<const FcChar8 *>
+                               (name.c_str ())));
 
           FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
           FcPatternAddInteger (pat, FC_SLANT, fc_angle);
           FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
 
-          if (FcConfigSubstitute (0, pat, FcMatchPattern))
+          if (FcConfigSubstitute (nullptr, pat, FcMatchPattern))
             {
               FcResult res;
               FcPattern *match;
 
               FcDefaultSubstitute (pat);
-              match = FcFontMatch (0, pat, &res);
+              match = FcFontMatch (nullptr, pat, &res);
 
               // FIXME: originally, this test also required that
               // res != FcResultNoMatch.  Is that really needed?
@@ -245,10 +280,10 @@ namespace octave
                   unsigned char *tmp;
 
                   FcPatternGetString (match, FC_FILE, 0, &tmp);
-                  file = reinterpret_cast<char*> (tmp);
+                  file = reinterpret_cast<char *> (tmp);
                 }
               else
-                ::warning ("could not match any font: %s-%s-%s-%g",
+                ::warning ("could not match any font: %s-%s-%s-%g, using default font",
                            name.c_str (), weight.c_str (), angle.c_str (),
                            size);
 
@@ -261,15 +296,8 @@ namespace octave
 #endif
 
       if (file.empty ())
-        {
-#if defined (OCTAVE_USE_WINDOWS_API)
-          file = "C:/WINDOWS/Fonts/verdana.ttf";
-#else
-          // FIXME: find a "standard" font for UNIX platforms
-#endif
-        }
-
-      if (! file.empty ())
+        ::warning ("unable to find default font files");
+      else
         {
           if (FT_New_Face (library, file.c_str (), 0, &retval))
             ::warning ("ft_manager: unable to load font: %s", file.c_str ());
@@ -297,11 +325,11 @@ namespace octave
     {
       if (face->generic.data)
         {
-          ft_key *pkey = reinterpret_cast<ft_key*> (face->generic.data);
+          ft_key *pkey = reinterpret_cast<ft_key *> (face->generic.data);
 
           cache.erase (*pkey);
           delete pkey;
-          face->generic.data = 0;
+          face->generic.data = nullptr;
         }
     }
 
@@ -311,18 +339,14 @@ namespace octave
     bool fontconfig_initialized;
   };
 
-  ft_manager *ft_manager::instance = 0;
+  ft_manager *ft_manager::instance = nullptr;
 
-}
+  static void
+  ft_face_destroyed (void *object)
+  {
+    octave::ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
+  }
 
-static void
-ft_face_destroyed (void *object)
-{
-  octave::ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
-}
-
-namespace octave
-{
   class
   OCTINTERP_API
   ft_text_renderer : public base_text_renderer
@@ -351,7 +375,13 @@ namespace octave
         color (dim_vector (1, 3), 0)
     { }
 
-    ~ft_text_renderer (void) { }
+    // No copying!
+
+    ft_text_renderer (const ft_text_renderer&) = delete;
+
+    ft_text_renderer& operator = (const ft_text_renderer&) = delete;
+
+    ~ft_text_renderer (void) = default;
 
     void visit (text_element_string& e);
 
@@ -403,12 +433,6 @@ namespace octave
 
     int rotation_to_mode (double rotation) const;
 
-    // No copying!
-
-    ft_text_renderer (const ft_text_renderer&);
-
-    ft_text_renderer& operator = (const ft_text_renderer&);
-
     // Class to hold information about fonts and a strong
     // reference to the font objects loaded by FreeType.
 
@@ -417,10 +441,10 @@ namespace octave
     public:
 
       ft_font (void)
-        : text_renderer::font (), face (0) { }
+        : text_renderer::font (), face (nullptr) { }
 
       ft_font (const std::string& nm, const std::string& wt,
-               const std::string& ang, double sz, FT_Face f = 0)
+               const std::string& ang, double sz, FT_Face f = nullptr)
         : text_renderer::font (nm, wt, ang, sz), face (f)
       { }
 
@@ -514,7 +538,7 @@ namespace octave
   {
     // FIXME: take "fontunits" into account
 
-    font = ft_font (name, weight, angle, size, 0);
+    font = ft_font (name, weight, angle, size, nullptr);
   }
 
   void
@@ -567,7 +591,7 @@ namespace octave
   int
   ft_text_renderer::compute_line_xoffset (const Matrix& lb) const
   {
-    if (! bbox.is_empty ())
+    if (! bbox.isempty ())
       {
         switch (halign)
           {
@@ -601,16 +625,15 @@ namespace octave
         break;
 
       default:
-        for (std::list<Matrix>::const_iterator it = line_bbox.begin ();
-             it != line_bbox.end (); ++it)
+        for (const auto& lbox : line_bbox)
           {
-            if (bbox.is_empty ())
-              bbox = it->extract (0, 0, 0, 3);
+            if (bbox.isempty ())
+              bbox = lbox.extract (0, 0, 0, 3);
             else
               {
-                bbox(1) -= (*it)(3);
-                bbox(3) += (*it)(3);
-                bbox(2) = octave::math::max (bbox(2), (*it)(2));
+                bbox(1) -= lbox(3);
+                bbox(3) += lbox(3);
+                bbox(2) = math::max (bbox(2), lbox(2));
               }
           }
         break;
@@ -812,7 +835,7 @@ namespace octave
                     // glyph.  Then extend the line bounding box if necessary.
 
                     xoffset += (face->glyph->advance.x >> 6);
-                    bb(2) = octave::math::max (bb(2), xoffset);
+                    bb(2) = math::max (bb(2), xoffset);
                   }
                 break;
               }
@@ -852,8 +875,9 @@ namespace octave
         mbstate_t ps;
         memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
         wchar_t wc;
-
+        std::string fname = font.get_face ()->family_name;
         text_renderer::string fs (str, font, xoffset, yoffset);
+        std::vector<double> xdata;
 
         while (n > 0)
           {
@@ -868,7 +892,7 @@ namespace octave
 
                 if (wc == L'\n')
                   {
-                    // Finish previous string in srtlist before processing
+                    // Finish previous string in strlist before processing
                     // the newline character
                     fs.set_y (line_yoffset + yoffset);
                     fs.set_color (color);
@@ -876,9 +900,13 @@ namespace octave
                     if (! s.empty ())
                       {
                         fs.set_string (s);
+                        fs.set_xdata (xdata);
+                        fs.set_family (fname);
                         strlist.push_back (fs);
                       }
                   }
+                else
+                  xdata.push_back (xoffset);
 
                 glyph_index = process_character (wc, previous);
 
@@ -887,9 +915,9 @@ namespace octave
                     previous = 0;
                     // Start a new string in strlist
                     idx = curr;
+                    xdata.clear ();
                     fs = text_renderer::string (str.substr (idx), font,
                                                 line_xoffset, yoffset);
-
                   }
                 else
                   previous = glyph_index;
@@ -899,7 +927,7 @@ namespace octave
                 if (r != 0)
                   ::warning ("ft_text_renderer: failed to decode string `%s' with "
                              "locale `%s'", str.c_str (),
-                             std::setlocale (LC_CTYPE, 0));
+                             std::setlocale (LC_CTYPE, nullptr));
                 break;
               }
           }
@@ -908,6 +936,8 @@ namespace octave
           {
             fs.set_y (line_yoffset + yoffset);
             fs.set_color (color);
+            fs.set_xdata (xdata);
+            fs.set_family (fname);
             strlist.push_back (fs);
           }
       }
@@ -1051,12 +1081,14 @@ namespace octave
   {
     uint32_t code = e.get_symbol_code ();
 
-    text_renderer::string fs (std::string ("-"), font, xoffset, yoffset);
+    std::vector<double> xdata (1, xoffset);
+    text_renderer::string fs ("-", font, xoffset, yoffset);
 
     if (code != text_element_symbol::invalid_code && font.is_valid ())
       {
         process_character (code);
         fs.set_code (code);
+        fs.set_xdata (xdata);
       }
     else if (font.is_valid ())
       ::warning ("ignoring unknown symbol: %d", e.get_symbol ());
@@ -1065,6 +1097,7 @@ namespace octave
       {
         fs.set_y (line_yoffset + yoffset);
         fs.set_color (color);
+        fs.set_family (font.get_face ()->family_name);
         strlist.push_back (fs);
       }
   }
@@ -1075,11 +1108,11 @@ namespace octave
     int saved_xoffset = xoffset;
     int max_xoffset = xoffset;
 
-    for (text_element_combined::iterator it = e.begin (); it != e.end (); ++it)
+    for (auto *txt_elt : e)
       {
         xoffset = saved_xoffset;
-        (*it)->accept (*this);
-        max_xoffset = octave::math::max (xoffset, max_xoffset);
+        txt_elt->accept (*this);
+        max_xoffset = math::max (xoffset, max_xoffset);
       }
 
     xoffset = max_xoffset;
@@ -1251,7 +1284,7 @@ namespace octave
     pxls = render (elt, box, rot_mode);
     delete elt;
 
-    if (pxls.is_empty ())
+    if (pxls.isempty ())
       return;  // nothing to render
 
     switch (halign)
@@ -1316,7 +1349,7 @@ namespace octave
   }
 
   ft_text_renderer::ft_font::ft_font (const ft_font& ft)
-    : text_renderer::font (ft), face (0)
+    : text_renderer::font (ft), face (nullptr)
   {
 #if defined (HAVE_FT_REFERENCE_FACE)
     FT_Face ft_face = ft.get_face ();
@@ -1336,7 +1369,7 @@ namespace octave
         if (face)
           {
             FT_Done_Face (face);
-            face = 0;
+            face = nullptr;
           }
 
 #if defined (HAVE_FT_REFERENCE_FACE)

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b})
@@ -45,7 +45,7 @@
 ## same.
 ##
 ## The optional argument @var{tol} defines the absolute tolerance used to stop
-## the integration procedure.  The default value is 1e-10.
+## the integration procedure.  The default value is 1e-10 (1e-5 for single).
 ##
 ## The algorithm used by @code{quadgk} involves subdividing the integration
 ## interval and evaluating each subinterval.  If @var{trace} is true then after
@@ -120,7 +120,8 @@
 ## Computational and Applied Mathematics, pp. 131--140, Vol 211, Issue 2,
 ## Feb 2008.
 ##
-## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad}
+## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad, integral,
+##           integral2, integral3}
 ## @end deftypefn
 
 function [q, err] = quadgk (f, a, b, varargin)
@@ -459,24 +460,26 @@ function t = __quadgk_finite_waypoint__ (x, a, b)
 endfunction
 
 
-%!assert (quadgk (@sin,-pi,pi), 0, 1e-6)
-%!assert (quadgk (inline ("sin"),-pi,pi), 0, 1e-6)
-%!assert (quadgk ("sin",-pi,pi), 0, 1e-6)
-%!assert (quadgk (@sin,-pi,pi, "waypoints", 0, "MaxIntervalCount", 100, "reltol", 1e-3, "abstol", 1e-6, "trace", false), 0, 1e-6)
-%!assert (quadgk (@sin,-pi,pi, 1e-6,false), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi), 0, 1e-10)
+%!assert (quadgk (inline ("sin"),-pi,pi), 0, 1e-10)
+%!assert (quadgk ("sin",-pi,pi), 0, 1e-10)
+%!assert (quadgk (@sin,-pi,pi, "WayPoints", 0, "MaxIntervalCount", 100,
+%!                "RelTol", 1e-3, "AbsTol", 1e-6, "trace", false), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi, 1e-6, false), 0, 1e-6)
 %!assert <51867> (quadgk (@(x) x, 0, 0), 0, 0)
 
-%!assert (quadgk (@sin,-pi,0), -2, 1e-6)
-%!assert (quadgk (@sin,0,pi), 2, 1e-6)
-%!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-6)
-%!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-6)
-%!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-6)
-%!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
-%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), 1e-6)
-%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, 1e-6)
+%!assert (quadgk (@sin,-pi,0), -2, 1e-10)
+%!assert (quadgk (@sin,0,pi), 2, 1e-10)
+%!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-10)
+%!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-10)
+%!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-10)
+%!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]),
+%!        -pi * 1i, 1e-10)
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), -1e-6)
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, -1e-6)
 %!test
 %! f = @(x) x .^ 5 .* exp (-x) .* sin (x);
-%! assert (quadgk (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, 2e-12);
+%! assert (quadgk (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
 
 ## Test input validation
 %!error quadgk (@sin)

@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -42,8 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
-#include "symtab.h"
+#include "pt-eval.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
+#include "symtab.h"
 #include "variables.h"
 #include "parse.h"
 
@@ -51,7 +53,10 @@ along with Octave; see the file COPYING.  If not, see
 void
 print_usage (void)
 {
-  const octave_function *cur = octave_call_stack::current ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("print_usage");
+
+  const octave_function *cur = cs.current ();
+
   if (cur)
     print_usage (cur->name ());
   else
@@ -61,7 +66,7 @@ print_usage (void)
 void
 print_usage (const std::string& name)
 {
-  feval ("print_usage", octave_value (name), 0);
+  octave::feval ("print_usage", octave_value (name), 0);
 }
 
 void
@@ -86,7 +91,23 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 {
   octave_value fcn (new octave_builtin (f, name, file, doc));
 
-  symbol_table::install_built_in_function (name, fcn);
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_builtin_function");
+
+  symtab.install_built_in_function (name, fcn);
+}
+
+void
+install_builtin_function (octave_builtin::meth m, const std::string& name,
+                          const std::string& file, const std::string& doc,
+                          bool /* can_hide_function -- not yet implemented */)
+{
+  octave_value fcn (new octave_builtin (m, name, file, doc));
+
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_builtin_function");
+
+  symtab.install_built_in_function (name, fcn);
 }
 
 void
@@ -101,7 +122,28 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table::install_built_in_function (name, fval);
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_dld_function");
+
+  symtab.install_built_in_function (name, fval);
+}
+
+void
+install_dld_function (octave_dld_function::meth m, const std::string& name,
+                      const octave::dynamic_library& shl, const std::string& doc,
+                      bool relative)
+{
+  octave_dld_function *fcn = new octave_dld_function (m, shl, name, doc);
+
+  if (relative)
+    fcn->mark_relative ();
+
+  octave_value fval (fcn);
+
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_dld_function");
+
+  symtab.install_built_in_function (name, fval);
 }
 
 void
@@ -115,13 +157,27 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table::install_built_in_function (name, fval);
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_mex_function");
+
+  symtab.install_built_in_function (name, fval);
 }
 
 void
 alias_builtin (const std::string& alias, const std::string& name)
 {
-  symbol_table::alias_built_in_function (alias, name);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("alias_builtin");
+
+  symtab.alias_built_in_function (alias, name);
+}
+
+void
+install_builtin_dispatch (const std::string& name, const std::string& klass)
+{
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("install_builtin_dispatch");
+
+  symtab.install_built_in_dispatch (name, klass);
 }
 
 octave::dynamic_library
@@ -129,7 +185,10 @@ get_current_shlib (void)
 {
   octave::dynamic_library retval;
 
-  octave_function *curr_fcn = octave_call_stack::current ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("get_current_shlib");
+
+  octave_function *curr_fcn = cs.current ();
+
   if (curr_fcn)
     {
       if (curr_fcn->is_dld_function ())
@@ -149,57 +208,18 @@ get_current_shlib (void)
   return retval;
 }
 
-bool defun_isargout (int nargout, int iout)
+bool
+defun_isargout (int nargout, int iout)
 {
-  const std::list<octave_lvalue> *lvalue_list
-    = octave_builtin::curr_lvalue_list;
-  if (iout >= std::max (nargout, 1))
-    return false;
-  else if (lvalue_list)
-    {
-      int k = 0;
-      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
-           p != lvalue_list->end (); p++)
-        {
-          if (k == iout)
-            return ! p->is_black_hole ();
-          k += p->numel ();
-          if (k > iout)
-            break;
-        }
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
 
-      return true;
-    }
-  else
-    return true;
+  return tw.isargout (nargout, iout);
 }
 
-void defun_isargout (int nargout, int nout, bool *isargout)
+void
+defun_isargout (int nargout, int nout, bool *isargout)
 {
-  const std::list<octave_lvalue> *lvalue_list
-    = octave_builtin::curr_lvalue_list;
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
 
-  if (lvalue_list)
-    {
-      int k = 0;
-      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
-           p != lvalue_list->end () && k < nout; p++)
-        {
-          if (p->is_black_hole ())
-            isargout[k++] = false;
-          else
-            {
-              int l = std::min (k + p->numel (),
-                                static_cast<octave_idx_type> (nout));
-              while (k < l)
-                isargout[k++] = true;
-            }
-        }
-    }
-  else
-    for (int i = 0; i < nout; i++)
-      isargout[i] = true;
-
-  for (int i = std::max (nargout, 1); i < nout; i++)
-    isargout[i] = false;
+  return tw.isargout (nargout, nout, isargout);
 }

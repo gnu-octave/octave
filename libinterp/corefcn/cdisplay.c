@@ -4,19 +4,19 @@ Copyright (C) 2009-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -48,14 +48,16 @@ along with Octave; see the file COPYING.  If not, see
 // display.cc.
 
 const char *
-octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
-                         int *dpy_avail)
+octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
+                         double *rx, double *ry, int *dpy_avail)
 {
-  const char *msg = 0;
+  const char *msg = NULL;
 
   *dpy_avail = 0;
 
 #if defined (OCTAVE_USE_WINDOWS_API)
+
+  octave_unused_parameter (dpy_name);
 
   HDC hdc = GetDC (0);
 
@@ -78,6 +80,8 @@ octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
     msg = "no graphical display found";
 
 #elif defined (HAVE_FRAMEWORK_CARBON)
+
+  octave_unused_parameter (dpy_name);
 
   CGDirectDisplayID display = CGMainDisplayID ();
 
@@ -127,46 +131,43 @@ octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
 
 #elif defined (HAVE_X_WINDOWS)
 
-  const char *display_name = getenv ("DISPLAY");
+  /* If dpy_name is NULL, XopenDisplay will look for DISPLAY in the
+     environment.  */
 
-  if (display_name && *display_name)
+  Display *display = XOpenDisplay (dpy_name);
+
+  if (display)
     {
-      Display *display = XOpenDisplay (display_name);
+      Screen *screen = DefaultScreenOfDisplay (display);
 
-      if (display)
+      if (screen)
         {
-          Screen *screen = DefaultScreenOfDisplay (display);
+          *dp = DefaultDepthOfScreen (screen);
 
-          if (screen)
-            {
-              *dp = DefaultDepthOfScreen (screen);
+          *ht = HeightOfScreen (screen);
+          *wd = WidthOfScreen (screen);
 
-              *ht = HeightOfScreen (screen);
-              *wd = WidthOfScreen (screen);
+          int screen_number = XScreenNumberOfScreen (screen);
 
-              int screen_number = XScreenNumberOfScreen (screen);
+          double ht_mm = DisplayHeightMM (display, screen_number);
+          double wd_mm = DisplayWidthMM (display, screen_number);
 
-              double ht_mm = DisplayHeightMM (display, screen_number);
-              double wd_mm = DisplayWidthMM (display, screen_number);
-
-              *rx = *wd * 25.4 / wd_mm;
-              *ry = *ht * 25.4 / ht_mm;
-            }
-          else
-            msg = "X11 display has no default screen";
-
-          XCloseDisplay (display);
-
-          *dpy_avail = 1;
+          *rx = *wd * 25.4 / wd_mm;
+          *ry = *ht * 25.4 / ht_mm;
         }
       else
-        msg = "unable to open X11 DISPLAY";
+        msg = "X11 display has no default screen";
+
+      XCloseDisplay (display);
+
+      *dpy_avail = 1;
     }
   else
-    msg = "X11 DISPLAY environment variable not set";
+    msg = "unable to open X11 DISPLAY";
 
 #else
 
+  octave_unused_parameter (dpy_name);
   octave_unused_parameter (ht);
   octave_unused_parameter (wd);
   octave_unused_parameter (dp);

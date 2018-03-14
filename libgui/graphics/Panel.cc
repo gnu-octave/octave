@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -87,21 +87,22 @@ namespace QtHandles
   Panel*
   Panel::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new Panel (go, new QFrame (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
-  Panel::Panel (const graphics_object& go, QFrame* frame)
-    : Object (go, frame), m_container (0), m_title (0), m_blockUpdates (false)
+  Panel::Panel (const graphics_object& go, QFrame *frame)
+    : Object (go, frame), m_container (nullptr), m_title (nullptr),
+      m_blockUpdates (false)
   {
     uipanel::properties& pp = properties<uipanel> ();
 
@@ -121,8 +122,8 @@ namespace QtHandles
 
     if (frame->hasMouseTracking ())
       {
-        foreach (QWidget* w, frame->findChildren<QWidget*> ())
-        { w->setMouseTracking (true); }
+        foreach (QWidget *w, frame->findChildren<QWidget*> ())
+          w->setMouseTracking (true);
       }
 
     QString title = Utils::fromStdString (pp.get_title ());
@@ -148,7 +149,7 @@ namespace QtHandles
   { }
 
   bool
-  Panel::eventFilter (QObject* watched, QEvent* xevent)
+  Panel::eventFilter (QObject *watched, QEvent *xevent)
   {
     if (! m_blockUpdates)
       {
@@ -170,7 +171,7 @@ namespace QtHandles
 
                           if (pp.fontunits_is ("normalized"))
                             {
-                              QFrame* frame = qWidget<QFrame> ();
+                              QFrame *frame = qWidget<QFrame> ();
 
                               m_title->setFont (Utils::computeFont<uipanel>
                                                 (pp, frame->height ()));
@@ -184,7 +185,7 @@ namespace QtHandles
 
               case QEvent::MouseButtonPress:
                 {
-                  QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+                  QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
 
                   if (m->button () == Qt::RightButton)
                     {
@@ -232,7 +233,7 @@ namespace QtHandles
   Panel::update (int pId)
   {
     uipanel::properties& pp = properties<uipanel> ();
-    QFrame* frame = qWidget<QFrame> ();
+    QFrame *frame = qWidget<QFrame> ();
 
     m_blockUpdates = true;
 
@@ -275,7 +276,7 @@ namespace QtHandles
             {
               if (m_title)
                 delete m_title;
-              m_title = 0;
+              m_title = nullptr;
             }
           else
             {
@@ -336,7 +337,7 @@ namespace QtHandles
   void
   Panel::redraw (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->redraw ();
@@ -346,7 +347,7 @@ namespace QtHandles
   Panel::updateLayout (void)
   {
     uipanel::properties& pp = properties<uipanel> ();
-    QFrame* frame = qWidget<QFrame> ();
+    QFrame *frame = qWidget<QFrame> ();
 
     Matrix bb = pp.get_boundingbox (true);
     int bw = borderWidthFromProperties (pp);

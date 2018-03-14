@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{val} =} getpref ("@var{group}", "@var{pref}")
@@ -81,7 +81,7 @@ function retval = getpref (group, pref, default)
         addpref (group, pref, default);
         retval = default;
       else
-        error ("getpref: preference %s does not exist in group %s",
+        error ("getpref: preference %s does not exist in GROUP %s",
                pref, group);
       endif
     else
@@ -96,7 +96,7 @@ function retval = getpref (group, pref, default)
           addpref (group, pref{i}, default{i});
           retval{i} = default{i};
         else
-          error ("getpref: preference %s does not exist in group %s",
+          error ("getpref: preference %s does not exist in GROUP %s",
                  pref{i}, group);
         endif
       endfor
@@ -108,8 +108,11 @@ endfunction
 
 %!test
 %! HOME = getenv ("HOME");
+%! tmp_home = tempname ();
 %! unwind_protect
-%!   setenv ("HOME", P_tmpdir ());
+%!   mkdir (tmp_home);
+%!   setenv ("HOME", tmp_home);
+%!
 %!   addpref ("group1", "pref1", [1 2 3]);
 %!   addpref ("group2", {"prefA", "prefB"}, {"StringA", {"StringB"}});
 %!
@@ -129,7 +132,7 @@ endfunction
 %!   assert (getpref ("group1", "pref2", "New_Value"), "New_Value");
 %!   assert (getpref ("group1", "pref2"), "New_Value");
 %!   fail ('getpref ("group1", "no_such_pref")', ...
-%!         "preference no_such_pref does not exist in group group1");
+%!         "preference no_such_pref does not exist in GROUP group1");
 %!
 %!   assert (getpref ("group2", {"prefA", "prefB"}), {"StringA", {"StringB"}});
 %!   assert (getpref ("group2", {"prefA", "prefC"}, {1, "StringC"}),
@@ -138,10 +141,13 @@ endfunction
 %!   fail ('getpref ("group1", {"p1", "p2"}, 1)', ...
 %!         "size mismatch for PREF and DEFAULT");
 %!   fail ('getpref ("group2", {"prefA", "prefD"})',
-%!         "preference prefD does not exist in group group2");
+%!         "preference prefD does not exist in GROUP group2");
 %!
 %! unwind_protect_cleanup
-%!   unlink (fullfile (P_tmpdir (), ".octave_prefs"));
+%!   unlink (fullfile (tmp_home, ".octave_prefs"));
+%!   if (exist (tmp_home, "dir"))
+%!     rmdir (tmp_home);
+%!   endif
 %!   if (isempty (HOME))
 %!     unsetenv ("HOME");
 %!   else

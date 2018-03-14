@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __prog_output_assert__ (@var{str})
@@ -22,17 +22,17 @@
 ## @end deftypefn
 
 function ret = __prog_output_assert__ (str)
-  global _assert_printf = "";
+  global __assert_printf__ = "";
 
-  if (isempty (_assert_printf))
+  if (isempty (__assert_printf__))
     ret = isempty (str);
-  elseif (_assert_printf(end) == "\n")
-    ret = strcmp (_assert_printf(1:(end-1)), str);
+  elseif (__assert_printf__(end) == "\n")
+    ret = strcmp (__assert_printf__(1:(end-1)), str);
   else
-    ret = strcmp (_assert_printf, str);
+    ret = strcmp (__assert_printf__, str);
   endif
 
-  _assert_printf = "";
+  __assert_printf__ = "";
 
 endfunction
 

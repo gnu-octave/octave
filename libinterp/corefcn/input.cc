@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,8 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "bp-table.h"
+#include "builtin-defun-decls.h"
 #include "call-stack.h"
-#include "debug.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -49,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "hook-fcn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
@@ -60,14 +62,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 #include "ovl.h"
 #include "ov-fcn-handle.h"
+#include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
-#include "pt.h"
-#include "pt-const.h"
 #include "pt-eval.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
-#include "symtab.h"
 #include "sysdep.h"
 #include "interpreter.h"
 #include "unwind-prot.h"
@@ -79,18 +79,6 @@ static std::string VPS1;
 
 // Secondary prompt string.
 static std::string VPS2;
-
-// String printed before echoed input (enabled by --echo-input).
-std::string VPS4 = "+ ";
-
-// Echo commands as they are executed?
-//
-//   1  ==>  echo commands read from script files
-//   2  ==>  echo commands from functions
-//   4  ==>  echo commands read from command line
-//
-// more than one state can be active at once.
-int Vecho_executing_commands = ECHO_OFF;
 
 // The time we last printed a prompt.
 octave::sys::time Vlast_prompt_time = 0.0;
@@ -120,9 +108,6 @@ static std::string last_debugging_command = "\n";
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
 
-// The filemarker used to separate filenames from subfunction names
-char Vfilemarker = '>';
-
 static hook_function_list input_event_hook_functions;
 
 // For octave_quit.
@@ -138,42 +123,11 @@ set_default_prompts (void)
   // Use literal "octave" instead of "\\s" to avoid setting the prompt
   // to "octave.exe" or "octave-gui", etc.
 
-  VPS1 = "octave:\\#> ";
+  VPS1 = R"(octave:\#> )";
   VPS2 = "> ";
-  VPS4 = "+ ";
+  std::string VPS4 = "+ ";
 
   octave_link::set_default_prompts (VPS1, VPS2, VPS4);
-}
-
-void
-octave_base_reader::do_input_echo (const std::string& input_string) const
-{
-  bool forced_interactive = octave::application::forced_interactive ();
-
-  int do_echo = reading_script_file ()
-    ? (Vecho_executing_commands & ECHO_SCRIPTS)
-    : ((Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive);
-
-  if (do_echo)
-    {
-      if (forced_interactive)
-        {
-          if (pflag > 0)
-            octave_stdout << octave::command_editor::decode_prompt_string (VPS1);
-          else
-            octave_stdout << octave::command_editor::decode_prompt_string (VPS2);
-        }
-      else
-        octave_stdout << octave::command_editor::decode_prompt_string (VPS4);
-
-      if (! input_string.empty ())
-        {
-          octave_stdout << input_string;
-
-          if (input_string[input_string.length () - 1] != '\n')
-            octave_stdout << "\n";
-        }
-    }
 }
 
 static std::string
@@ -202,7 +156,7 @@ interactive_input (const std::string& s, bool& eof)
 
       try
         {
-          feval ("drawnow");
+          Fdrawnow ();
         }
       catch (const octave::execution_exception& e)
         {
@@ -214,10 +168,10 @@ interactive_input (const std::string& s, bool& eof)
             std::cerr << stack_trace;
 
           if (octave::application::interactive ())
-            recover_from_exception ();
+            octave::interpreter::recover_from_exception ();
         }
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       // We set Vdrawnow_requested to false even if there is an error in
       // drawnow so that the error doesn't reappear at every prompt.
@@ -231,106 +185,180 @@ interactive_input (const std::string& s, bool& eof)
   return gnu_readline (s, eof);
 }
 
-std::string
-octave_base_reader::octave_gets (bool& eof)
+namespace octave
 {
-  octave_quit ();
+  std::string base_reader::octave_gets (bool& eof)
+  {
+    octave_quit ();
 
-  eof = false;
+    eof = false;
 
-  std::string retval;
+    std::string retval;
 
-  // Process pre input event hook function prior to flushing output and
-  // printing the prompt.
+    // Process pre input event hook function prior to flushing output and
+    // printing the prompt.
 
-  if (octave::application::interactive ())
-    {
-      if (! Vdebugging)
-        octave_link::exit_debugger_event ();
+    if (application::interactive ())
+      {
+        if (! Vdebugging)
+          octave_link::exit_debugger_event ();
 
-      octave_link::pre_input_event ();
+        octave_link::pre_input_event ();
 
-      octave_link::set_workspace ();
-    }
+        octave_link::set_workspace ();
+      }
 
-  bool history_skip_auto_repeated_debugging_command = false;
+    bool history_skip_auto_repeated_debugging_command = false;
 
-  std::string ps = (pflag > 0) ? VPS1 : VPS2;
+    std::string ps = (m_pflag > 0) ? VPS1 : VPS2;
 
-  std::string prompt = octave::command_editor::decode_prompt_string (ps);
+    std::string prompt = command_editor::decode_prompt_string (ps);
 
-  octave::pipe_handler_error_count = 0;
+    pipe_handler_error_count = 0;
 
-  flush_octave_stdout ();
+    flush_stdout ();
 
-  octave_pager_stream::reset ();
-  octave_diary_stream::reset ();
+    pager_stream::reset ();
+    diary_stream::reset ();
 
-  octave_diary << prompt;
+    octave_diary << prompt;
 
-  retval = interactive_input (prompt, eof);
+    retval = interactive_input (prompt, eof);
 
-  // There is no need to update the load_path cache if there is no
-  // user input.
-  if (retval != "\n"
-      && retval.find_first_not_of (" \t\n\r") != std::string::npos)
-    {
-      load_path::update ();
+    // There is no need to update the load_path cache if there is no
+    // user input.
+    if (retval != "\n"
+        && retval.find_first_not_of (" \t\n\r") != std::string::npos)
+      {
+        load_path& lp = __get_load_path__ ("base_reader::octave_gets");
 
-      if (Vdebugging)
-        last_debugging_command = retval;
-      else
-        last_debugging_command = "\n";
-    }
-  else if (Vdebugging)
-    {
-      retval = last_debugging_command;
-      history_skip_auto_repeated_debugging_command = true;
-    }
+        lp.update ();
 
-  if (retval != "\n")
-    {
-      if (! history_skip_auto_repeated_debugging_command)
-        {
-          if (octave::command_history::add (retval))
-            octave_link::append_history (retval);
-        }
+        if (Vdebugging)
+          last_debugging_command = retval;
+        else
+          last_debugging_command = "\n";
+      }
+    else if (Vdebugging)
+      {
+        retval = last_debugging_command;
+        history_skip_auto_repeated_debugging_command = true;
+      }
 
-      octave_diary << retval;
+    if (retval != "\n")
+      {
+        if (! history_skip_auto_repeated_debugging_command)
+          {
+            if (command_history::add (retval))
+              octave_link::append_history (retval);
+          }
 
-      if (retval[retval.length () - 1] != '\n')
-        octave_diary << "\n";
+        octave_diary << retval;
 
-      do_input_echo (retval);
-    }
-  else
-    octave_diary << "\n";
+        if (retval.back () != '\n')
+          octave_diary << "\n";
+      }
+    else
+      octave_diary << "\n";
 
-  // Process post input event hook function after the internal history
-  // list has been updated.
+    // Process post input event hook function after the internal history
+    // list has been updated.
 
-  if (octave::application::interactive ())
-    octave_link::post_input_event ();
+    if (application::interactive ())
+      octave_link::post_input_event ();
 
-  return retval;
-}
+    return retval;
+  }
 
-bool
-octave_base_reader::reading_fcn_file (void) const
-{
-  return lexer ? lexer->reading_fcn_file : false;
-}
+  bool base_reader::reading_fcn_file (void) const
+  {
+    return m_lexer ? m_lexer->m_reading_fcn_file : false;
+  }
 
-bool
-octave_base_reader::reading_classdef_file (void) const
-{
-  return lexer ? lexer->reading_classdef_file : false;
-}
+  bool base_reader::reading_classdef_file (void) const
+  {
+    return m_lexer ? m_lexer->m_reading_classdef_file : false;
+  }
 
-bool
-octave_base_reader::reading_script_file (void) const
-{
-  return lexer ? lexer->reading_script_file : false;
+  bool base_reader::reading_script_file (void) const
+  {
+    return m_lexer ? m_lexer->m_reading_script_file : false;
+  }
+
+  class
+  terminal_reader : public base_reader
+  {
+  public:
+
+    terminal_reader (base_lexer *lxr = nullptr)
+      : base_reader (lxr)
+    { }
+
+    std::string get_input (bool& eof);
+
+    std::string input_source (void) const { return s_in_src; }
+
+    bool input_from_terminal (void) const { return true; }
+
+  private:
+
+    static const std::string s_in_src;
+  };
+
+  class
+  file_reader : public base_reader
+  {
+  public:
+
+    file_reader (FILE *f_arg, base_lexer *lxr = nullptr)
+      : base_reader (lxr), m_file (f_arg) { }
+
+    std::string get_input (bool& eof);
+
+    std::string input_source (void) const { return s_in_src; }
+
+    bool input_from_file (void) const { return true; }
+
+  private:
+
+    FILE *m_file;
+
+    static const std::string s_in_src;
+  };
+
+  class
+  eval_string_reader : public base_reader
+  {
+  public:
+
+    eval_string_reader (const std::string& str, base_lexer *lxr = nullptr)
+      : base_reader (lxr), m_eval_string (str)
+    { }
+
+    std::string get_input (bool& eof);
+
+    std::string input_source (void) const { return s_in_src; }
+
+    bool input_from_eval_string (void) const { return true; }
+
+  private:
+
+    std::string m_eval_string;
+
+    static const std::string s_in_src;
+  };
+
+  input_reader::input_reader (base_lexer *lxr)
+    : m_rep (new terminal_reader (lxr))
+  { }
+
+  input_reader::input_reader (FILE *file, base_lexer *lxr)
+    : m_rep (new file_reader (file, lxr))
+  { }
+
+  input_reader::input_reader (const std::string& str, base_lexer *lxr)
+    : m_rep (new eval_string_reader (str, lxr))
+  { }
 }
 
 // Fix things up so that input can come from the standard input.  This
@@ -360,7 +388,7 @@ generate_possible_completions (const std::string& text, std::string& prefix,
   if (deemed_struct)
     names = generate_struct_completions (text, prefix, hint);
   else
-    names = make_name_list ();
+    names = octave::make_name_list ();
 
   // Sort and remove duplicates.
 
@@ -381,7 +409,7 @@ is_completing_dirfns (void)
 
   for (size_t i = 0; i < dirfns_commands_length; i++)
     {
-      int index = line.find (dirfns_commands[i] + " ");
+      int index = line.find (dirfns_commands[i] + ' ');
 
       if (index == 0)
         {
@@ -467,7 +495,7 @@ generate_completion (const std::string& text, int state)
               // Special case: array reference forces prefix="."
               //               in generate_struct_completions ()
               if (list_index <= name_list_len && ! prefix.empty ())
-                retval = (prefix == "." ? "" : prefix) + "." + name;
+                retval = (prefix == "." ? "" : prefix) + '.' + name;
               else
                 retval = name;
 
@@ -493,12 +521,12 @@ generate_completion (const std::string& text, int state)
 }
 
 static std::string
-quoting_filename (const std::string &text, int, char quote)
+quoting_filename (const std::string& text, int, char quote)
 {
   if (quote)
     return text;
   else
-    return (std::string ("'") + text);
+    return ("'" + text);
 }
 
 // Try to parse a partial command line in reverse, excluding trailing TEXT.
@@ -565,10 +593,10 @@ initialize_command_input (void)
 
   octave::command_editor::set_completer_word_break_characters (s);
 
-  octave::command_editor::set_basic_quote_characters ("\"");
+  octave::command_editor::set_basic_quote_characters (R"(")");
 
   octave::command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
-  octave::command_editor::set_completer_quote_characters ("'\"");
+  octave::command_editor::set_completer_quote_characters (R"('")");
 
   octave::command_editor::set_completion_function (generate_completion);
 
@@ -582,14 +610,16 @@ execute_in_debugger_handler (const std::pair<std::string, int>& arg)
 }
 
 static void
-get_debug_input (const std::string& prompt)
+get_debug_input (octave::interpreter& interp, const std::string& prompt)
 {
   octave::unwind_protect frame;
 
   bool silent = octave::tree_evaluator::quiet_breakpoint_flag;
   octave::tree_evaluator::quiet_breakpoint_flag = false;
 
-  octave_user_code *caller = octave_call_stack::caller_user_code ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_user_code *caller = cs.caller_user_code ();
   std::string nm;
   int curr_debug_line;
 
@@ -604,10 +634,10 @@ get_debug_input (const std::string& prompt)
       else
         have_file = true;
 
-      curr_debug_line = octave_call_stack::caller_user_code_line ();
+      curr_debug_line = cs.caller_user_code_line ();
     }
   else
-    curr_debug_line = octave_call_stack::current_line ();
+    curr_debug_line = cs.current_line ();
 
   std::ostringstream buf;
 
@@ -617,7 +647,7 @@ get_debug_input (const std::string& prompt)
         {
           static char ctrl_z = 'Z' & 0x1f;
 
-          buf << ctrl_z << ctrl_z << nm << ":" << curr_debug_line;
+          buf << ctrl_z << ctrl_z << nm << ':' << curr_debug_line;
         }
       else
         {
@@ -644,8 +674,10 @@ get_debug_input (const std::string& prompt)
 
               if (! silent)
                 {
-                  std::string line_buf
-                    = get_file_line (nm, curr_debug_line);
+                  std::string line_buf;
+
+                  if (caller)
+                    line_buf = caller->get_code_line (curr_debug_line);
 
                   if (! line_buf.empty ())
                     buf << "\n" << curr_debug_line << ": " << line_buf;
@@ -665,6 +697,8 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
+  // FIXME: should debugging be possible in an embedded interpreter?
+
   octave::application *app = octave::application::app ();
 
   if (! app->interactive ())
@@ -683,6 +717,8 @@ get_debug_input (const std::string& prompt)
 
   octave::parser curr_parser;
 
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
   while (Vdebugging)
     {
       try
@@ -699,9 +735,9 @@ get_debug_input (const std::string& prompt)
             break;
           else
             {
-              if (retval == 0 && curr_parser.stmt_list)
+              if (retval == 0 && curr_parser.m_stmt_list)
                 {
-                  curr_parser.stmt_list->accept (*octave::current_evaluator);
+                  curr_parser.m_stmt_list->accept (tw);
 
                   if (octave_completion_matches_called)
                     octave_completion_matches_called = false;
@@ -718,58 +754,61 @@ get_debug_input (const std::string& prompt)
             std::cerr << stack_trace;
 
           // Ignore errors when in debugging mode;
-          recover_from_exception ();
+          octave::interpreter::recover_from_exception ();
         }
     }
 }
 
-const std::string octave_base_reader::in_src ("invalid");
-
-const std::string octave_terminal_reader::in_src ("terminal");
-
-std::string
-octave_terminal_reader::get_input (bool& eof)
+namespace octave
 {
-  octave_quit ();
+  const std::string base_reader::s_in_src ("invalid");
 
-  eof = false;
+  const std::string terminal_reader::s_in_src ("terminal");
 
-  return octave_gets (eof);
-}
+  std::string
+  terminal_reader::get_input (bool& eof)
+  {
+    octave_quit ();
 
-const std::string octave_file_reader::in_src ("file");
+    eof = false;
 
-std::string
-octave_file_reader::get_input (bool& eof)
-{
-  octave_quit ();
+    return octave_gets (eof);
+  }
 
-  eof = false;
+  const std::string file_reader::s_in_src ("file");
 
-  return octave_fgets (file, eof);
-}
+  std::string
+  file_reader::get_input (bool& eof)
+  {
+    octave_quit ();
 
-const std::string octave_eval_string_reader::in_src ("eval_string");
+    eof = false;
 
-std::string
-octave_eval_string_reader::get_input (bool& eof)
-{
-  octave_quit ();
+    return octave_fgets (m_file, eof);
+  }
 
-  eof = false;
+  const std::string eval_string_reader::s_in_src ("eval_string");
 
-  std::string retval;
+  std::string
+  eval_string_reader::get_input (bool& eof)
+  {
+    octave_quit ();
 
-  retval = eval_string;
+    eof = false;
 
-  // Clear the eval string so that the next call will return
-  // an empty character string with EOF = true.
-  eval_string = "";
+    std::string retval;
 
-  if (retval.empty ())
-    eof = true;
+    retval = m_eval_string;
 
-  return retval;
+    // Clear the eval string so that the next call will return
+    // an empty character string with EOF = true.
+    m_eval_string = "";
+
+    if (retval.empty ())
+      eof = true;
+
+    return retval;
+  }
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -786,10 +825,10 @@ get_user_input (const octave_value_list& args, int nargout)
 
   std::string prompt = args(0).xstring_value ("input: unrecognized argument");
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
-  octave_pager_stream::reset ();
-  octave_diary_stream::reset ();
+  octave::pager_stream::reset ();
+  octave::diary_stream::reset ();
 
   octave_diary << prompt;
 
@@ -822,7 +861,7 @@ get_user_input (const octave_value_list& args, int nargout)
     {
       int parse_status = 0;
 
-      retval = eval_string (input_buf, true, parse_status, nargout);
+      retval = octave::eval_string (input_buf, true, parse_status, nargout);
 
       if (! Vdebugging && retval.empty ())
         retval(0) = Matrix ();
@@ -894,7 +933,7 @@ octave_yes_or_no (const std::string& prompt)
       else if (input_buf == "no")
         return false;
       else
-        message (0, "Please answer yes or no.");
+        message (nullptr, "Please answer yes or no.");
     }
 }
 
@@ -926,7 +965,7 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with
 }
 
 octave_value
-do_keyboard (const octave_value_list& args)
+do_keyboard (octave::interpreter& interp, const octave_value_list& args)
 {
   octave_value retval;
 
@@ -943,8 +982,10 @@ do_keyboard (const octave_value_list& args)
 
   frame.protect_var (Vdebugging);
 
-  frame.add_fcn (octave_call_stack::restore_frame,
-                 octave_call_stack::current_frame ());
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  frame.add_method (cs, &octave::call_stack::restore_frame,
+                    cs.current_frame ());
 
   // FIXME: probably we just want to print one line, not the
   // entire statement, which might span many lines...
@@ -959,13 +1000,21 @@ do_keyboard (const octave_value_list& args)
   if (nargin > 0)
     prompt = args(0).string_value ();
 
-  get_debug_input (prompt);
+  get_debug_input (interp, prompt);
 
   return retval;
 }
 
-DEFUN (keyboard, args, ,
-       doc: /* -*- texinfo -*-
+octave_value
+do_keyboard (const octave_value_list& args)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("do_keyboard");
+
+  return do_keyboard (interp, args);
+}
+
+DEFMETHOD (keyboard, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} keyboard ()
 @deftypefnx {} {} keyboard ("@var{prompt}")
 Stop m-file execution and enter debug mode.
@@ -987,160 +1036,22 @@ If @code{keyboard} is invoked without arguments, a default prompt of
 
   octave::unwind_protect frame;
 
-  frame.add_fcn (octave_call_stack::restore_frame,
-                 octave_call_stack::current_frame ());
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  frame.add_method (cs, &octave::call_stack::restore_frame,
+                    cs.current_frame ());
 
   // Skip the frame assigned to the keyboard function.
-  octave_call_stack::goto_frame_relative (0);
+  cs.goto_frame_relative (0);
 
   octave::tree_evaluator::debug_mode = true;
   octave::tree_evaluator::quiet_breakpoint_flag = false;
 
-  octave::tree_evaluator::current_frame = octave_call_stack::current_frame ();
+  octave::tree_evaluator::current_frame = cs.current_frame ();
 
-  do_keyboard (args);
-
-  return ovl ();
-}
-
-DEFUN (echo, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} echo
-@deftypefnx {} {} echo on
-@deftypefnx {} {} echo off
-@deftypefnx {} {} echo on all
-@deftypefnx {} {} echo off all
-Control whether commands are displayed as they are executed.
-
-Valid options are:
-
-@table @code
-@item on
-Enable echoing of commands as they are executed in script files.
-
-@item off
-Disable echoing of commands as they are executed in script files.
-
-@item on all
-Enable echoing of commands as they are executed in script files and
-functions.
-
-@item off all
-Disable echoing of commands as they are executed in script files and
-functions.
-@end table
-
-@noindent
-With no arguments, @code{echo} toggles the current echo state.
-
-@seealso{echo_executing_commands}
-@end deftypefn */)
-{
-  string_vector argv = args.make_argv ();
-
-  switch (args.length ())
-    {
-    case 0:
-      {
-        if ((Vecho_executing_commands & ECHO_SCRIPTS)
-            || (Vecho_executing_commands & ECHO_FUNCTIONS))
-          Vecho_executing_commands = ECHO_OFF;
-        else
-          Vecho_executing_commands = ECHO_SCRIPTS;
-      }
-      break;
-
-    case 1:
-      {
-        std::string arg = argv[0];
-
-        if (arg == "on")
-          Vecho_executing_commands = ECHO_SCRIPTS;
-        else if (arg == "off")
-          Vecho_executing_commands = ECHO_OFF;
-        else
-          print_usage ();
-      }
-      break;
-
-    case 2:
-      {
-        std::string arg = argv[0];
-
-        if (arg == "on" && argv[1] == "all")
-          {
-            int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
-            Vecho_executing_commands = tmp;
-          }
-        else if (arg == "off" && argv[1] == "all")
-          Vecho_executing_commands = ECHO_OFF;
-        else
-          print_usage ();
-      }
-      break;
-
-    default:
-      print_usage ();
-      break;
-    }
+  do_keyboard (interp, args);
 
   return ovl ();
-}
-
-/*
-%!test
-%! state = echo_executing_commands ();
-%! unwind_protect
-%!   echo ();
-%!   s1 = echo_executing_commands ();
-%!   assert (s1 != state);
-%!   echo ();
-%!   s2 = echo_executing_commands ();
-%!   assert (s2 != s1);
-%! unwind_protect_cleanup
-%!   echo_executing_commands (state);
-%! end_unwind_protect
-
-%!test
-%! state = echo_executing_commands ();
-%! unwind_protect
-%!   echo ("off");
-%!   assert (echo_executing_commands () == 0);
-%!   echo ("on");
-%!   assert (echo_executing_commands () != 0);
-%!   echo ("off");
-%!   assert (echo_executing_commands () == 0);
-%! unwind_protect_cleanup
-%!   echo_executing_commands (state);
-%! end_unwind_protect
-
-%!#test  # FIXME: This passes, but produces a lot of onscreen output
-%! state = echo_executing_commands ();
-%! unwind_protect
-%!   echo ("on", "all");
-%!   assert (echo_executing_commands () != 0);
-%!   echo ("off", "all");
-%!   assert (echo_executing_commands () == 0);
-%! unwind_protect_cleanup
-%!   echo_executing_commands (state);
-%! end_unwind_protect
-
-%!error echo ([])
-%!error echo (0)
-%!error echo ("")
-%!error echo ("Octave")
-%!error echo ("off", "invalid")
-%!error echo ("on", "invalid")
-%!error echo ("on", "all", "all")
-*/
-
-DEFUN (__echostate__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {@var{state} =} __echostate__ ()
-Undocumented internal function
-@end deftypefn */)
-{
-  return ovl (Vecho_executing_commands == ECHO_SCRIPTS);
 }
 
 DEFUN (completion_matches, args, nargout,
@@ -1424,26 +1335,6 @@ The original variable value is restored when exiting the function.
   return SET_INTERNAL_VARIABLE (PS2);
 }
 
-DEFUN (PS4, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} PS4 ()
-@deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})
-@deftypefnx {} {} PS4 (@var{new_val}, "local")
-Query or set the character string used to prefix output produced
-when echoing commands is enabled.
-
-The default value is @qcode{"+ "}.
-@xref{Diary and Echo Commands}, for a description of echoing commands.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@seealso{echo, echo_executing_commands, PS1, PS2}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (PS4);
-}
-
 DEFUN (completion_append_char, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} completion_append_char ()
@@ -1460,42 +1351,6 @@ The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (completion_append_char);
-}
-
-DEFUN (echo_executing_commands, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} echo_executing_commands ()
-@deftypefnx {} {@var{old_val} =} echo_executing_commands (@var{new_val})
-@deftypefnx {} {} echo_executing_commands (@var{new_val}, "local")
-Query or set the internal variable that controls the echo state.
-
-It may be the sum of the following values:
-
-@table @asis
-@item 1
-Echo commands read from script files.
-
-@item 2
-Echo commands from functions.
-
-@item 4
-Echo commands read from command line.
-@end table
-
-More than one state can be active at once.  For example, a value of 3 is
-equivalent to the command @kbd{echo on all}.
-
-The value of @code{echo_executing_commands} may be set by the @kbd{echo}
-command or the command line option @option{--echo-commands}.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-
-@seealso{echo}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (echo_executing_commands);
 }
 
 DEFUN (__request_drawnow__, args, ,
@@ -1535,55 +1390,6 @@ Undocumented internal function.
     retval = ovl (Vgud_mode);
   else
     Vgud_mode = args(0).bool_value ();
-
-  return retval;
-}
-
-DEFUN (filemarker, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} filemarker ()
-@deftypefnx {} {@var{old_val} =} filemarker (@var{new_val})
-@deftypefnx {} {} filemarker (@var{new_val}, "local")
-Query or set the character used to separate the filename from the
-subfunction names contained within the file.
-
-By default this is the character @samp{>}.
-This can be used in a generic manner to interact with subfunctions.
-For example,
-
-@example
-help (["myfunc", filemarker, "mysubfunc"])
-@end example
-
-@noindent
-returns the help string associated with the subfunction @code{mysubfunc}
-located in the file @file{myfunc.m}.
-
-@code{filemarker} is also useful during debugging for placing breakpoints
-within subfunctions or nested functions.
-For example,
-
-@example
-dbstop (["myfunc", filemarker, "mysubfunc"])
-@end example
-
-@noindent
-will set a breakpoint at the first line of the subfunction @code{mysubfunc}.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  char tmp = Vfilemarker;
-  octave_value retval = SET_INTERNAL_VARIABLE (filemarker);
-
-  // The character passed must not be a legal character for a function name
-  if (::isalnum (Vfilemarker) || Vfilemarker == '_')
-    {
-      Vfilemarker = tmp;
-      error ("filemarker: character can not be a valid character for a function name");
-    }
 
   return retval;
 }

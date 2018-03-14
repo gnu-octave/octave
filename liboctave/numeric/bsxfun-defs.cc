@@ -5,37 +5,34 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
 #if ! defined (octave_bsxfun_defs_h)
 #define octave_bsxfun_defs_h 1
 
-// This file should not include config.h.  It is only included in other
-// C++ source files that should have included config.h before including
-// this file.
+// This file should *not* include config.h.  It is only included in other C++
+// source files that should have included config.h before including this file.
 
 #include <algorithm>
-#include <iostream>
 
 #include "dim-vector.h"
-#include "oct-locbuf.h"
 #include "lo-error.h"
-
 #include "mx-inlines.cc"
+#include "oct-locbuf.h"
 
 template <typename R, typename X, typename Y>
 Array<R>
@@ -80,7 +77,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
       ldr *= dvr(start);
     }
 
-  if (retval.is_empty ())
+  if (retval.isempty ())
     ; // do nothing
   else if (start == nd)
     op_vv (retval.numel (), rvec, xvec, yvec);
@@ -149,8 +146,8 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
   octave_idx_type nd = r.ndims ();
   dvx.redim (nd);
 
-  const X* xvec = x.fortran_vec ();
-  R* rvec = r.fortran_vec ();
+  const X *xvec = x.fortran_vec ();
+  R *rvec = r.fortran_vec ();
 
   // Fold the common leading dimensions.
   octave_idx_type start, ldr = 1;
@@ -161,7 +158,7 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
       ldr *= dvr(start);
     }
 
-  if (r.is_empty ())
+  if (r.isempty ())
     ; // do nothing
   else if (start == nd)
     op_vv (r.numel (), rvec, xvec);

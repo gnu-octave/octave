@@ -4,19 +4,19 @@ Copyright (C) 2012-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,10 +29,25 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename T> class Array;
 
-extern OCTAVE_API bool
+namespace octave
+{
+  extern OCTAVE_API bool
+  base64_encode (const char *inc, const size_t inlen, char **out);
+
+  extern OCTAVE_API Array<double>
+  base64_decode (const std::string& str);
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::base_64_encode' instead")
+extern bool
 octave_base64_encode (const char *inc, const size_t inlen, char **out);
 
-extern OCTAVE_API Array<double>
+OCTAVE_DEPRECATED (4.4, "use 'octave::base_64_decode' instead")
+extern Array<double>
 octave_base64_decode (const std::string& str);
+
+#endif
 
 #endif

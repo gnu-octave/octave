@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  command_history *command_history::instance = 0;
+  command_history *command_history::instance = nullptr;
 
 #if defined (USE_READLINE)
 
@@ -60,7 +60,7 @@ namespace octave
     gnu_history (void)
       : command_history (), mark (0) { }
 
-    ~gnu_history (void) { }
+    ~gnu_history (void) = default;
 
     void do_process_histcontrol (const std::string&);
 
@@ -129,7 +129,7 @@ namespace octave
           beg++;
         else
           {
-            size_t end = control_arg.find (":", beg);
+            size_t end = control_arg.find (':', beg);
 
             if (end == std::string::npos)
               end = len;
@@ -169,7 +169,7 @@ namespace octave
     if (history_control & HC_IGNDUPS)
       {
         if (retval.length () > 0)
-          retval.append (":");
+          retval += ':';
 
         retval.append ("ignoredups");
       }
@@ -177,7 +177,7 @@ namespace octave
     if (history_control & HC_ERASEDUPS)
       {
         if (retval.length () > 0)
-          retval.append (":");
+          retval += ':';
 
         retval.append ("erasedups");
       }
@@ -196,9 +196,8 @@ namespace octave
 
         // Strip newline before adding to list
         std::string stmp = s;
-        int stmp_len = stmp.length ();
-        if (stmp[stmp_len - 1] == '\n')
-          stmp.resize (stmp_len - 1);
+        if (stmp.back () == '\n')
+          stmp.pop_back ();
 
         int added = ::octave_add_history (stmp.c_str (), history_control);
         lines_this_session += added;
@@ -394,7 +393,7 @@ namespace octave
 
                 if (! f.empty ())
                   {
-                    octave::sys::file_stat fs (f);
+                    sys::file_stat fs (f);
 
                     if (! fs)
                       {
@@ -548,7 +547,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        std::string f = octave::sys::file_ops::tilde_expand (f_arg);
+        std::string f = sys::file_ops::tilde_expand (f_arg);
 
         instance->do_set_file (f);
       }

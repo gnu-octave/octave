@@ -4,7 +4,7 @@
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -40,9 +40,9 @@ BlockArray::BlockArray()
     : size(0),
       current(size_t(-1)),
       index(size_t(-1)),
-      lastmap(0),
+      lastmap(nullptr),
       lastmap_index(size_t(-1)),
-      lastblock(0), ion(-1),
+      lastblock(nullptr), ion(-1),
       length(0)
 {
     // lastmap_index = index = current = size_t(-1);
@@ -115,7 +115,7 @@ const Block* BlockArray::at(size_t i)
 
     if (i > index) {
         qDebug() << "BlockArray::at() i > index\n";
-        return 0;
+        return nullptr;
     }
 
 //     if (index - i >= length) {
@@ -128,9 +128,9 @@ const Block* BlockArray::at(size_t i)
     assert(j < size);
     unmap();
 
-    Block *block = (Block*)mmap(0, blocksize, PROT_READ, MAP_PRIVATE, ion, j * blocksize);
+    Block *block = (Block*)mmap(nullptr, blocksize, PROT_READ, MAP_PRIVATE, ion, j * blocksize);
 
-    if (block == (Block*)-1) { perror("mmap"); return 0; }
+    if (block == (Block*)-1) { perror("mmap"); return nullptr; }
 
     lastmap = block;
     lastmap_index = i;
@@ -144,7 +144,7 @@ void BlockArray::unmap()
         int res = munmap((char*)lastmap, blocksize);
         if (res < 0) perror("munmap");
     }
-    lastmap = 0;
+    lastmap = nullptr;
     lastmap_index = size_t(-1);
 }
 
@@ -164,7 +164,7 @@ bool BlockArray::setHistorySize(size_t newsize)
 
     if (!newsize) {
         delete lastblock;
-        lastblock = 0;
+        lastblock = nullptr;
         if (ion >= 0) close(ion);
         ion = -1;
         current = size_t(-1);
@@ -333,4 +333,3 @@ void BlockArray::increaseBuffer()
     fclose(fion);
 
 }
-

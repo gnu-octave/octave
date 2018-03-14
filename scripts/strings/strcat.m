@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} strcat (@var{s1}, @var{s2}, @dots{})
@@ -138,7 +138,7 @@ endfunction
 
 ## test for deblanking implied trailing spaces of character input
 %!assert (strcat ("foo", "bar"), "foobar")
-%!assert (strcat (["a"; "bb"], ["foo"; "bar"]), ["afoo "; "bbbar"])
+%!assert (strcat (["a "; "bb"], ["foo"; "bar"]), ["afoo "; "bbbar"])
 
 ## test for mixing character and cell inputs
 %!assert (strcat ("a", {"bc", "de"}, "f"), {"abcf", "adef"})
@@ -151,8 +151,8 @@ endfunction
 %!assert (all (strcmp (strcat ("a", {"bb", "ccc"}), {"abb", "accc"})))
 
 ## test with a single string or cell input
-%!assert <49094> (strcat ("foo    "), "foo")
-%!assert <49094> (strcat ({"foo"}), {"foo"})
+%!assert <*49094> (strcat ("foo    "), "foo")
+%!assert <*49094> (strcat ({"foo"}), {"foo"})
 
 %!assert (strcat (1), char (1))
 %!assert (strcat (1, 2), strcat (char (1), char (2)))

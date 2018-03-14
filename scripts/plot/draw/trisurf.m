@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
@@ -101,10 +101,10 @@ endfunction
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
-%! h = trisurf (tri, x, y, z, "facecolor", "interp");
+%! h = trisurf (tri, x, y, z, "facecolor", "flat");
 %! axis tight;
 %! zlim auto;
-%! title (sprintf ("facecolor = %s", get (h, "facecolor")));
+%! title ({"trisurf() of peaks() function", 'facecolor = "flat"'});
 
 %!demo
 %! clf;
@@ -113,12 +113,10 @@ endfunction
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
-%! h = trisurf (tri, x, y, z, "facecolor", "flat");
+%! h = trisurf (tri, x, y, z, "facecolor", "interp");
 %! axis tight;
 %! zlim auto;
-%! title (sprintf ("facecolor = %s", get (h, "facecolor")));
-
-## FIXME: The demos below should each have a title
+%! title ({"trisurf() of peaks() function", 'facecolor = "interp"'});
 
 %!demo
 %! clf;
@@ -132,6 +130,7 @@ endfunction
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
 %! trisurf (tri, x(:), y(:), z(:));
+%! title ("trisurf() of sparsely-sampled triangulation of peaks()");
 
 %!demo
 %! clf;
@@ -141,6 +140,7 @@ endfunction
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z);
+%! title ({"trisurf() of random data", 'default "facecolor" = "flat", "edgecolor" = "black"'});
 
 %!demo
 %! clf;
@@ -150,6 +150,7 @@ endfunction
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z, "facecolor", "interp");
+%! title ({"trisurf() of random data", '"facecolor" = "interp"'});
 
 %!demo
 %! clf;
@@ -158,7 +159,8 @@ endfunction
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k");
+%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "w");
+%! title ({"trisurf() of random data", '"facecolor" = "interp", "edgecolor" = "white"'});
 
 ## Test input validation
 %!error trisurf ()

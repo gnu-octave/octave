@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,35 +24,27 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
 #include <sstream>
 
 #include "LSODE.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-math.h"
 #include "quit.h"
 
-typedef octave_idx_type (*lsode_fcn_ptr) (const octave_idx_type&,
-                                          const double&, double*,
-                                          double*, octave_idx_type&);
+typedef F77_INT (*lsode_fcn_ptr) (const F77_INT&, const double&, double*,
+                                  double*, F77_INT&);
 
-typedef octave_idx_type (*lsode_jac_ptr) (const octave_idx_type&,
-                                          const double&, double*,
-                                          const octave_idx_type&,
-                                          const octave_idx_type&,
-                                          double*, const octave_idx_type&);
+typedef F77_INT (*lsode_jac_ptr) (const F77_INT&, const double&, double*,
+                                  const F77_INT&, const F77_INT&, double*,
+                                  const F77_INT&);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, F77_INT&, F77_DBLE*,
-                             F77_DBLE&, F77_DBLE&, F77_INT&, F77_DBLE&,
-                             const F77_DBLE*, F77_INT&,
-                             F77_INT&, F77_INT&,
-                             F77_DBLE*, F77_INT&, F77_INT*,
-                             F77_INT&, lsode_jac_ptr,
+  F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, F77_INT&, F77_DBLE*, F77_DBLE&,
+                             F77_DBLE&, F77_INT&, F77_DBLE&, const F77_DBLE*,
+                             F77_INT&, F77_INT&, F77_INT&, F77_DBLE*,
+                             F77_INT&, F77_INT*, F77_INT&, lsode_jac_ptr,
                              F77_INT&);
 }
 
@@ -60,9 +52,9 @@ static ODEFunc::ODERHSFunc user_fun;
 static ODEFunc::ODEJacFunc user_jac;
 static ColumnVector *tmp_x;
 
-static octave_idx_type
-lsode_f (const octave_idx_type& neq, const double& time, double *,
-         double *deriv, octave_idx_type& ierr)
+static F77_INT
+lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
+         F77_INT& ierr)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -74,11 +66,11 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
 
   tmp_deriv = (*user_fun) (*tmp_x, time);
 
-  if (tmp_deriv.is_empty ())
+  if (tmp_deriv.isempty ())
     ierr = -1;
   else
     {
-      for (octave_idx_type i = 0; i < neq; i++)
+      for (F77_INT i = 0; i < neq; i++)
         deriv[i] = tmp_deriv.elem (i);
     }
 
@@ -87,10 +79,9 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
   return 0;
 }
 
-static octave_idx_type
-lsode_j (const octave_idx_type& neq, const double& time, double *,
-         const octave_idx_type&, const octave_idx_type&, double *pd,
-         const octave_idx_type& nrowpd)
+static F77_INT
+lsode_j (const F77_INT& neq, const double& time, double *, const F77_INT&,
+         const F77_INT&, double *pd, const F77_INT& nrowpd)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -102,8 +93,8 @@ lsode_j (const octave_idx_type& neq, const double& time, double *,
 
   tmp_jac = (*user_jac) (*tmp_x, time);
 
-  for (octave_idx_type j = 0; j < neq; j++)
-    for (octave_idx_type i = 0; i < neq; i++)
+  for (F77_INT j = 0; j < neq; j++)
+    for (F77_INT i = 0; i < neq; i++)
       pd[nrowpd * j + i] = tmp_jac (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -116,7 +107,7 @@ LSODE::do_integrate (double tout)
 {
   ColumnVector retval;
 
-  static octave_idx_type nn = 0;
+  static F77_INT nn = 0;
 
   if (! initialized || restart || ODEFunc::reset || LSODE_options::reset)
     {
@@ -126,7 +117,7 @@ LSODE::do_integrate (double tout)
 
       istate = 1;
 
-      octave_idx_type n = size ();
+      F77_INT n = octave::to_f77_int (size ());
 
       nn = n;
 
@@ -154,23 +145,23 @@ LSODE::do_integrate (double tout)
           lrw = 22 + 16 * n;
         }
 
-      maxord = maximum_order ();
-
       iwork.resize (dim_vector (liw, 1));
 
-      for (octave_idx_type i = 4; i < 9; i++)
+      for (F77_INT i = 4; i < 9; i++)
         iwork(i) = 0;
 
       rwork.resize (dim_vector (lrw, 1));
 
-      for (octave_idx_type i = 4; i < 9; i++)
+      for (F77_INT i = 4; i < 9; i++)
         rwork(i) = 0;
+
+      octave_idx_type maxord = maximum_order ();
 
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord <= max_maxord)
             {
-              iwork(4) = maxord;
+              iwork(4) = octave::to_f77_int (maxord);
               iopt = 1;
             }
           else
@@ -226,7 +217,7 @@ LSODE::do_integrate (double tout)
       rel_tol = relative_tolerance ();
       abs_tol = absolute_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.numel ();
+      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
 
       if (abs_tol_len == 1)
         itol = 1;
@@ -263,7 +254,7 @@ LSODE::do_integrate (double tout)
           iopt = 1;
         }
 
-      octave_idx_type sl = step_limit ();
+      F77_INT sl = octave::to_f77_int (step_limit ());
       if (sl > 0)
         {
           iwork(5) = sl;
@@ -277,12 +268,16 @@ LSODE::do_integrate (double tout)
 
   double *pabs_tol = abs_tol.fortran_vec ();
 
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.fortran_vec ();
   double *prwork = rwork.fortran_vec ();
 
+  F77_INT tmp_istate = octave::to_f77_int (istate);
+
   F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
-                             pabs_tol, itask, istate, iopt, prwork, lrw,
+                             pabs_tol, itask, tmp_istate, iopt, prwork, lrw,
                              piwork, liw, lsode_j, method_flag));
+
+  istate = tmp_istate;
 
   switch (istate)
     {
@@ -338,8 +333,8 @@ LSODE::error_message (void) const
       break;
 
     case -1:
-      retval = std::string ("excess work on this call (t = ")
-               + t_curr + "; perhaps wrong integration method)";
+      retval = "excess work on this call (t = " + t_curr +
+               "; perhaps wrong integration method)";
       break;
 
     case -2:
@@ -351,25 +346,23 @@ LSODE::error_message (void) const
       break;
 
     case -4:
-      retval = std::string ("repeated error test failures (t = ")
-               + t_curr + "; check all inputs)";
+      retval = "repeated error test failures (t = " + t_curr +
+               "; check all inputs)";
       break;
 
     case -5:
-      retval = std::string ("repeated convergence failures (t = ")
-               + t_curr
-               + "; perhaps bad Jacobian supplied or wrong choice of integration method or tolerances)";
+      retval = "repeated convergence failures (t = " + t_curr +
+               "; perhaps bad Jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:
-      retval = std::string ("error weight became zero during problem. (t = ")
-               + t_curr
-               + "; solution component i vanished, and atol or atol(i) == 0)";
+      retval = "error weight became zero during problem. (t = " + t_curr +
+               "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -13:
       retval = "return requested in user-supplied function (t = "
-               + t_curr + ")";
+               + t_curr + ')';
       break;
 
     default:
@@ -386,13 +379,13 @@ LSODE::do_integrate (const ColumnVector& tout)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         retval.elem (0, i) = x.elem (i);
 
       for (octave_idx_type j = 1; j < n_out; j++)
@@ -402,7 +395,7 @@ LSODE::do_integrate (const ColumnVector& tout)
           if (integration_error)
             return retval;
 
-          for (octave_idx_type i = 0; i < n; i++)
+          for (F77_INT i = 0; i < n; i++)
             retval.elem (j, i) = x_next.elem (i);
         }
     }
@@ -416,13 +409,13 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         retval.elem (0, i) = x.elem (i);
 
       octave_idx_type n_crit = tcrit.numel ();
@@ -441,14 +434,14 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
               if (i_crit < n_crit)
                 next_crit = tcrit.elem (i_crit);
 
-              octave_idx_type save_output;
+              bool save_output = false;
               double t_out;
 
               if (next_crit == next_out)
                 {
                   set_stop_time (next_crit);
                   t_out = next_out;
-                  save_output = 1;
+                  save_output = true;
                   i_out++;
                   i_crit++;
                   do_restart = true;
@@ -459,7 +452,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                     {
                       set_stop_time (next_crit);
                       t_out = next_crit;
-                      save_output = 0;
+                      save_output = false;
                       i_crit++;
                       do_restart = true;
                     }
@@ -467,7 +460,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                     {
                       clear_stop_time ();
                       t_out = next_out;
-                      save_output = 1;
+                      save_output = true;
                       i_out++;
                     }
                 }
@@ -475,7 +468,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                 {
                   set_stop_time (next_crit);
                   t_out = next_out;
-                  save_output = 1;
+                  save_output = true;
                   i_out++;
                 }
 
@@ -486,7 +479,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
               if (save_output)
                 {
-                  for (octave_idx_type i = 0; i < n; i++)
+                  for (F77_INT i = 0; i < n; i++)
                     retval.elem (i_out-1, i) = x_next.elem (i);
                 }
 

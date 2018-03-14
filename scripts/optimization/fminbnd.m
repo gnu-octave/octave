@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 ##
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
@@ -60,7 +60,7 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fminbnd");
 
-function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ())
+function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
@@ -73,7 +73,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     print_usage ();
   endif
 
-  if (xmin > xmax)
+  if (a > b)
     error ("Octave:invalid-input-arg",
            "fminbnd: the lower bound cannot be greater than the upper one");
   endif
@@ -100,14 +100,13 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   nfev = 0;
 
   c = 0.5*(3 - sqrt (5));
-  a = xmin; b = xmax;
   v = a + c*(b-a);
   w = x = v;
   e = 0;
   fv = fw = fval = fun (x);
   nfev += 1;
 
-  if (isa (xmin, "single") || isa (xmax, "single") || isa (fval, "single"))
+  if (isa (a, "single") || isa (b, "single") || isa (fval, "single"))
     sqrteps = eps ("single");
   else
     sqrteps = eps ("double");

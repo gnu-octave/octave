@@ -5,19 +5,19 @@ Copyright (C) 2006 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -60,15 +60,15 @@ public:
 
   MatrixType (void);
 
-  MatrixType (const MatrixType &a);
+  MatrixType (const MatrixType& a);
 
-  MatrixType (const Matrix &a);
+  MatrixType (const Matrix& a);
 
-  MatrixType (const ComplexMatrix &a);
+  MatrixType (const ComplexMatrix& a);
 
-  MatrixType (const FloatMatrix &a);
+  MatrixType (const FloatMatrix& a);
 
-  MatrixType (const FloatComplexMatrix &a);
+  MatrixType (const FloatComplexMatrix& a);
 
   template <typename T>
   MatrixType (const MSparse<T> &a);
@@ -87,17 +87,17 @@ public:
 
   int type (bool quiet = true);
 
-  int type (const Matrix &a);
+  int type (const Matrix& a);
 
-  int type (const ComplexMatrix &a);
+  int type (const ComplexMatrix& a);
 
-  int type (const FloatMatrix &a);
+  int type (const FloatMatrix& a);
 
-  int type (const FloatComplexMatrix &a);
+  int type (const FloatComplexMatrix& a);
 
-  int type (const SparseMatrix &a);
+  int type (const SparseMatrix& a);
 
-  int type (const SparseComplexMatrix &a);
+  int type (const SparseComplexMatrix& a);
 
   double band_density (void) const { return bandden; }
 
@@ -107,26 +107,46 @@ public:
 
   bool is_dense (void) const { return dense; }
 
-  bool is_diagonal (void) const
+  bool isdiag (void) const
   { return (typ == Diagonal || typ == Permuted_Diagonal); }
 
-  bool is_upper_triangular (void) const
+  OCTAVE_DEPRECATED (4.4, "use 'isdiag' instead")
+  bool is_diagonal (void) const
+  { return isdiag (); }
+
+  bool istriu (void) const
   { return (typ == Upper || typ == Permuted_Upper); }
 
-  bool is_lower_triangular (void) const
+  OCTAVE_DEPRECATED (4.4, "use 'istriu' instead")
+  bool is_upper_triangular (void) const
+  { return istriu (); }
+
+  bool istril (void) const
   { return (typ == Lower || typ == Permuted_Lower); }
 
-  bool is_banded (void)
+  OCTAVE_DEPRECATED (4.4, "use 'istril' instead")
+  bool is_lower_triangular (void) const
+  { return istril (); }
+
+  bool isbanded (void) const
   { return (typ == Banded || typ == Banded_Hermitian); }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isbanded' instead")
+  bool is_banded (void) const
+  { return isbanded (); }
 
   bool is_tridiagonal (void) const
   { return (typ == Tridiagonal || typ == Tridiagonal_Hermitian); }
 
-  bool is_hermitian (void) const
+  bool ishermitian (void) const
   {
     return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian
             || typ == Hermitian);
   }
+
+  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
+  bool is_hermitian (void) const
+  { return ishermitian (); }
 
   bool is_rectangular (void) const { return (typ == Rectangular); }
 

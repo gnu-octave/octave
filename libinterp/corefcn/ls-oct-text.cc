@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-save.h"
 #include "ls-ascii-helper.h"
 #include "ls-oct-text.h"
@@ -64,8 +65,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 #include "dMatrix.h"
 
-// The number of decimal digits to use when writing ascii data.
-static int Vsave_precision = 16;
+// The number of decimal digits to use when writing ASCII data.
+// 17 is the minimum necessary for lossless save/restore of IEEE-754 doubles.
+static int Vsave_precision = 17;
 
 // Functions for reading octave format text data.
 
@@ -268,7 +270,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
     {
       global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
 
-      typ = global ? tag.substr (7) : tag;
+      typ = (global ? tag.substr (7) : tag);
     }
   else
     typ = tag;
@@ -277,7 +279,12 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
     tc = charMatrix ();
   else
-    tc = octave_value_typeinfo::lookup_type (typ);
+    {
+      octave::type_info& type_info
+        = octave::__get_type_info__ ("read_text_data");
+
+      tc = type_info.lookup_type (typ);
+    }
 
   if (! tc.load_ascii (is))
     error ("load: trouble reading ascii file '%s'", filename.c_str ());
@@ -298,7 +305,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
 
 bool
 save_text_data (std::ostream& os, const octave_value& val_arg,
-                const std::string& name, bool mark_as_global,
+                const std::string& name, bool mark_global,
                 int precision)
 {
   bool success = true;
@@ -308,7 +315,7 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
 
   octave_value val = val_arg;
 
-  if (mark_as_global)
+  if (mark_global)
     os << "# type: global " << val.type_name () << "\n";
   else
     os << "# type: " << val.type_name () << "\n";
@@ -406,9 +413,17 @@ DEFUN (save_precision, args, nargout,
 Query or set the internal variable that specifies the number of digits to
 keep when saving data in text format.
 
+The default value is 17 which is the minimum necessary for the lossless saving
+and restoring of IEEE-754 double values; For IEEE-754 single values the minimum
+value is 9.  If file size is a concern, it is probably better to choose a
+binary format for saving data rather than to reduce the precision of the saved
+values.
+
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
+
+@seealso{save_default_options}
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1,

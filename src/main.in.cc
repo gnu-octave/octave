@@ -5,19 +5,19 @@ Copyright (C) 2012-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "fcntl-wrappers.h"
 #include "signal-wrappers.h"
-#include "strdup-wrapper.h"
 #include "unistd-wrappers.h"
 #include "wait-wrappers.h"
 
@@ -59,6 +58,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #if ! defined (OCTAVE_PREFIX)
 #  define OCTAVE_PREFIX %OCTAVE_PREFIX%
+#endif
+
+#if ! defined (OCTAVE_EXEC_PREFIX)
+#  define OCTAVE_EXEC_PREFIX %OCTAVE_EXEC_PREFIX%
 #endif
 
 #include "display-available.h"
@@ -89,6 +92,10 @@ gui_driver_set_signal_handler (const char *signame,
 static void
 install_signal_handlers (void)
 {
+  // FIXME: do we need to handle and forward all the signals that Octave
+  // handles, or is it sufficient to only forward things like SIGINT,
+  // SIGBREAK, SIGABRT, SIGQUIT, and possibly a few others?
+
   gui_driver_set_signal_handler ("SIGINT", gui_driver_sig_handler);
   gui_driver_set_signal_handler ("SIGBREAK", gui_driver_sig_handler);
   gui_driver_set_signal_handler ("SIGABRT", gui_driver_sig_handler);
@@ -152,7 +159,7 @@ get_octave_bindir (void)
 
   std::string obd = octave_getenv ("OCTAVE_BINDIR");
 
-  return obd.empty () ? subst_octave_home (std::string (OCTAVE_BINDIR)) : obd;
+  return obd.empty () ? prepend_octave_exec_home (std::string (OCTAVE_BINDIR)) : obd;
 }
 
 static std::string
@@ -165,7 +172,7 @@ get_octave_archlibdir (void)
 
   std::string dir = octave_getenv ("OCTAVE_ARCHLIBDIR");
 
-  return dir.empty () ? subst_octave_home (std::string (OCTAVE_ARCHLIBDIR))
+  return dir.empty () ? prepend_octave_exec_home (std::string (OCTAVE_ARCHLIBDIR))
                       : dir;
 }
 
@@ -183,7 +190,7 @@ static char *
 strsave (const char *s)
 {
   if (! s)
-    return 0;
+    return nullptr;
 
   int len = strlen (s);
   char *tmp = new char [len+1];
@@ -198,6 +205,8 @@ main (int argc, char **argv)
 
   bool start_gui = true;
   bool gui_libs = true;
+
+  set_octave_home ();
 
   std::string octave_bindir = get_octave_bindir ();
   std::string octave_archlibdir = get_octave_archlibdir ();
@@ -249,23 +258,43 @@ main (int argc, char **argv)
           start_gui = false;
           new_argv[k++] = argv[i];
         }
-      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet")
-               || ! strcmp (argv[i], "-q"))
+      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet"))
         {
           warn_display = false;
           new_argv[k++] = argv[i];
         }
-      else if (! strcmp (argv[i], "--no-window-system")
-               || ! strcmp (argv[i], "-W"))
+      else if (! strcmp (argv[i], "--no-window-system"))
         {
           no_display = true;
+          new_argv[k++] = argv[i];
+        }
+      else if (strlen (argv[i]) > 1 && argv[i][0] == '-' && argv[i][1] != '-')
+        {
+          // Handle all single-letter command line options here; they may
+          // occur alone or may be aggregated into a single argument.
+
+          size_t len = strlen (argv[i]);
+
+          for (size_t j = 1; j < len; j++)
+            switch (argv[i][j])
+              {
+                case 'W':
+                  no_display = true;
+                  break;
+                case 'q':
+                  warn_display = false;
+                  break;
+                default:
+                  break;
+              }
+
           new_argv[k++] = argv[i];
         }
       else
         new_argv[k++] = argv[i];
     }
 
-  new_argv[k] = 0;
+  new_argv[k] = nullptr;
 
   if (no_display)
     {
@@ -304,6 +333,16 @@ main (int argc, char **argv)
 
   new_argv[0] = strsave (file.c_str ());
 
+  // The Octave interpreter may be multithreaded.  If so, we attempt to
+  // ensure that signals are delivered to the main interpreter thread
+  // and no others by blocking signals before we exec the Octave
+  // interpreter executable.  When that process starts, it will unblock
+  // signals in the main interpreter thread.  When running the GUI as a
+  // subprocess, we also unblock signals that the parent process handles
+  // so we can forward them to the child.
+
+  octave_block_async_signals ();
+
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
   if (gui_libs && start_gui)
@@ -317,8 +356,6 @@ main (int argc, char **argv)
       // interrupting the interpreter.  See also bug #49609 and the
       // function pthread_thread_manager::interrupt in the file
       // libgui/src/thread-manager.cc.
-
-      install_signal_handlers ();
 
       gui_pid = octave_fork_wrapper ();
 
@@ -344,6 +381,10 @@ main (int argc, char **argv)
       else
         {
           // Parent.  Forward signals to child while waiting for it to exit.
+
+          install_signal_handlers ();
+
+          octave_unblock_async_signals ();
 
           int status;
 
@@ -392,21 +433,3 @@ main (int argc, char **argv)
 
   return retval;
 }
-
-/*!
-@mainpage Source code documentation for GNU Octave
-
-GNU Octave is a high-level language, primarily intended for numerical
-computations.  It provides a convenient interactive command line
-interface for solving linear and nonlinear problems numerically, and
-for performing other numerical experiments.  It may also be used as a
-batch-oriented language for data processing.
-
-GNU Octave is free software. You may redistribute it and/or modify it
-under the terms of the <a href="http://www.gnu.org/licenses/">GNU
-General Public License</a> as published by the Free Software Foundation.
-
-This is the developer documentation for Octave's own source code. It is
-intended to help for hacking Octave. It may also be useful for
-understanding the Octave API when writing your own .oct files.
-*/

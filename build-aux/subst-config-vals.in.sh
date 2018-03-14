@@ -4,24 +4,23 @@
 #
 # This file is part of Octave.
 #
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at
-# your option) any later version.
+# Octave is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
+# Octave is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
-# <http://www.gnu.org/licenses/>.
+# <https://www.gnu.org/licenses/>.
 
 : ${SED=@SED@}
 
 NO_OCT_FILE_STRIP="@NO_OCT_FILE_STRIP@"
-bindir="@bindir@"
 AMD_CPPFLAGS="@AMD_CPPFLAGS@"
 AMD_LDFLAGS="@AMD_LDFLAGS@"
 AMD_LIBS="@AMD_LIBS@"
@@ -94,7 +93,9 @@ GNUPLOT="@GNUPLOT@"
 HDF5_CPPFLAGS="@HDF5_CPPFLAGS@"
 HDF5_LDFLAGS="@HDF5_LDFLAGS@"
 HDF5_LIBS="@HDF5_LIBS@"
-includedir="@includedir@"
+KLU_CPPFLAGS="@KLU_CPPFLAGS@"
+KLU_LDFLAGS="@KLU_LDFLAGS@"
+KLU_LIBS="@KLU_LIBS@"
 LAPACK_LIBS="@LAPACK_LIBS@"
 LD_CXX="@LD_CXX@"
 LDFLAGS="@LDFLAGS@"
@@ -102,7 +103,6 @@ LD_STATIC_FLAG="@LD_STATIC_FLAG@"
 LEX="@LEX@"
 LEXLIB="@LEXLIB@"
 LFLAGS="@LFLAGS@"
-libdir="@libdir@"
 LIBOCTAVE="@LIBOCTAVE@"
 LIBOCTINTERP="@LIBOCTINTERP@"
 LIBS="@LIBS@"
@@ -121,10 +121,10 @@ MKOCTFILE_DL_LDFLAGS="@MKOCTFILE_DL_LDFLAGS@"
 MKOCTFILE_F77="@MKOCTFILE_F77@"
 MKOCTFILE_LD_CXX="@MKOCTFILE_LD_CXX@"
 MKOCTFILE_RANLIB="@MKOCTFILE_RANLIB@"
+MKOCTFILE_OCTAVE_LINK_DEPS="@MKOCTFILE_OCTAVE_LINK_DEPS@"
+MKOCTFILE_OCT_LINK_DEPS="@MKOCTFILE_OCT_LINK_DEPS@"
 OCTAVE_LINK_DEPS="@OCTAVE_LINK_DEPS@"
 OCTAVE_LINK_OPTS="@OCTAVE_LINK_OPTS@"
-octincludedir="@octincludedir@"
-octlibdir="@octlibdir@"
 OCT_LINK_DEPS="@OCT_LINK_DEPS@"
 OCT_LINK_OPTS="@OCT_LINK_OPTS@"
 OPENGL_LIBS="@OPENGL_LIBS@"
@@ -132,8 +132,8 @@ OSMESA_CPPFLAGS="@OSMESA_CPPFLAGS@"
 OSMESA_LDFLAGS="@OSMESA_LDFLAGS@"
 OSMESA_LIBS="@OSMESA_LIBS@"
 PCRE_CPPFLAGS="@PCRE_CPPFLAGS@"
+PCRE_LDFLAGS="@PCRE_LDFLAGS@"
 PCRE_LIBS="@PCRE_LIBS@"
-prefix="@prefix@"
 PTHREAD_CFLAGS="@PTHREAD_CFLAGS@"
 PTHREAD_LIBS="@PTHREAD_LIBS@"
 QHULL_CPPFLAGS="@QHULL_CPPFLAGS@"
@@ -153,7 +153,13 @@ SHARED_LIBS="@SHARED_LIBS@"
 SH_LD="@SH_LD@"
 SH_LDFLAGS="@SH_LDFLAGS@"
 STATIC_LIBS="@STATIC_LIBS@"
-SUITESPARSE_CONFIG_LIBS="@SUITESPARSE_CONFIG_LIBS@"
+SUITESPARSECONFIG_LIBS="@SUITESPARSECONFIG_LIBS@"
+SUNDIALS_IDA_CPPFLAGS="@SUNDIALS_IDA_CPPFLAGS@"
+SUNDIALS_IDA_LDFLAGS="@SUNDIALS_IDA_LDFLAGS@"
+SUNDIALS_IDA_LIBS="@SUNDIALS_IDA_LIBS@"
+SUNDIALS_NVECSERIAL_CPPFLAGS="@SUNDIALS_NVECSERIAL_CPPFLAGS@"
+SUNDIALS_NVECSERIAL_LDFLAGS="@SUNDIALS_NVECSERIAL_LDFLAGS@"
+SUNDIALS_NVECSERIAL_LIBS="@SUNDIALS_NVECSERIAL_LIBS@"
 TERM_LIBS="@TERM_LIBS@"
 UMFPACK_CPPFLAGS="@UMFPACK_CPPFLAGS@"
 UMFPACK_LDFLAGS="@UMFPACK_LDFLAGS@"
@@ -171,6 +177,16 @@ Z_CPPFLAGS="@Z_CPPFLAGS@"
 Z_LDFLAGS="@Z_LDFLAGS@"
 Z_LIBS="@Z_LIBS@"
 config_opts="@config_opts@"
+
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+
+bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
+libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
+octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
+
+includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
+octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by subst-config-vals.|" \
@@ -219,6 +235,7 @@ $SED \
   -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DL_LIBS%|\"${DL_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_EXEC_PREFIX%|\"${exec_prefix}\"|" \
   -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
   -e "s|%OCTAVE_CONF_GCC_VERSION%|\"${GCC_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_GXX_VERSION%|\"${GXX_VERSION}\"|" \
@@ -249,6 +266,9 @@ $SED \
   $SED -e "s|%OCTAVE_CONF_HDF5_LDFLAGS%|\"${HDF5_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_HDF5_LIBS%|\"${HDF5_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_INCLUDEDIR%|\"${includedir}\"|" \
+  -e "s|%OCTAVE_CONF_KLU_CPPFLAGS%|\"${KLU_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_KLU_LDFLAGS%|\"${KLU_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_KLU_LIBS%|\"${KLU_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LAPACK_LIBS%|\"${LAPACK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \
   -e "s|%OCTAVE_CONF_LDFLAGS%|\"${LDFLAGS}\"|" \
@@ -275,6 +295,8 @@ $SED \
   -e "s|%OCTAVE_CONF_MKOCTFILE_F77%|\"${MKOCTFILE_F77}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_LD_CXX%|\"${MKOCTFILE_LD_CXX}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${MKOCTFILE_RANLIB}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%|\"${MKOCTFILE_OCTAVE_LINK_DEPS}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%|\"${MKOCTFILE_OCT_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_DEPS%|\"${OCTAVE_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_OPTS%|\"${OCTAVE_LINK_OPTS}\"|" \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
@@ -286,6 +308,7 @@ $SED \
   -e "s|%OCTAVE_CONF_OSMESA_LDFLAGS%|\"${OSMESA_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_OSMESA_LIBS%|\"${OSMESA_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_PCRE_CPPFLAGS%|\"${PCRE_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_PCRE_LDFLAGS%|\"${PCRE_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_PCRE_LIBS%|\"${PCRE_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_CONF_PTHREAD_CFLAGS%|\"${PTHREAD_CFLAGS}\"|" \
@@ -307,7 +330,13 @@ $SED \
   -e "s|%OCTAVE_CONF_SH_LD%|\"${SH_LD}\"|" \
   -e "s|%OCTAVE_CONF_SH_LDFLAGS%|\"${SH_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_STATIC_LIBS%|\"${STATIC_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_SUITESPARSE_CONFIG_LIBS%|\"${SUITESPARSE_CONFIG_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_SUITESPARSECONFIG_LIBS%|\"${SUITESPARSECONFIG_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_IDA_CPPFLAGS%|\"${SUNDIALS_IDA_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_IDA_LDFLAGS%|\"${SUNDIALS_IDA_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_IDA_LIBS%|\"${SUNDIALS_IDA_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_NVECSERIAL_CPPFLAGS%|\"${SUNDIALS_NVECSERIAL_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_NVECSERIAL_LDFLAGS%|\"${SUNDIALS_NVECSERIAL_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_NVECSERIAL_LIBS%|\"${SUNDIALS_NVECSERIAL_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_TERM_LIBS%|\"${TERM_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_UMFPACK_CPPFLAGS%|\"${UMFPACK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_UMFPACK_LDFLAGS%|\"${UMFPACK_LDFLAGS}\"|" \

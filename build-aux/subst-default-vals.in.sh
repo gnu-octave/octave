@@ -4,64 +4,70 @@
 #
 # This file is part of Octave.
 #
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at
-# your option) any later version.
+# Octave is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
+# Octave is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
-# <http://www.gnu.org/licenses/>.
+# <https://www.gnu.org/licenses/>.
 
 : ${SED=@SED@}
 
-archlibdir="@archlibdir@"
-bindir="@bindir@"
 canonical_host_type="@canonical_host_type@"
-datadir="@datadir@"
-datarootdir="@datarootdir@"
 DEFAULT_PAGER="@DEFAULT_PAGER@"
-doc_cache_file="@doc_cache_file@"
-exec_prefix="@exec_prefix@"
 EXEEXT="@EXEEXT@"
-fcnfiledir="@fcnfiledir@"
-imagedir="@imagedir@"
-includedir="@includedir@"
-infodir="@infodir@"
-infofile="@infofile@"
-libdir="@libdir@"
-libexecdir="@libexecdir@"
-localapifcnfiledir="@localapifcnfiledir@"
-localapioctfiledir="@localapioctfiledir@"
-localarchlibdir="@localarchlibdir@"
-localfcnfiledir="@localfcnfiledir@"
-localoctfiledir="@localoctfiledir@"
-localstartupfiledir="@localstartupfiledir@"
-localapiarchlibdir="@localapiarchlibdir@"
-localverarchlibdir="@localverarchlibdir@"
-localverfcnfiledir="@localverfcnfiledir@"
-localveroctfiledir="@localveroctfiledir@"
-man1dir="@man1dir@"
 man1ext="@man1ext@"
-mandir="@mandir@"
-octdatadir="@octdatadir@"
-octfiledir="@octfiledir@"
-octetcdir="@octetcdir@"
-octincludedir="@octincludedir@"
-octlibdir="@octlibdir@"
-octlocaledir="@octlocaledir@"
-octtestsdir="@octtestsdir@"
-prefix="@prefix@"
-startupfiledir="@startupfiledir@"
 api_version="@OCTAVE_API_VERSION@"
 OCTAVE_RELEASE=""
-texi_macros_file="@texi_macros_file@"
 version="@PACKAGE_VERSION@"
+
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+
+archlibdir=`echo "@archlibdir@" | sed "s|^${exec_prefix}/||"`
+bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
+libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
+libexecdir=`echo "@libexecdir@" | sed "s|^${exec_prefix}/||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localapioctfiledir=`echo "@localapioctfiledir@" | sed "s|^${exec_prefix}/||"`
+localarchlibdir=`echo "@localarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localoctfiledir=`echo "@localoctfiledir@" | sed "s|^${exec_prefix}/||"`
+localverarchlibdir=`echo "@localverarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localveroctfiledir=`echo "@localveroctfiledir@" | sed "s|^${exec_prefix}/||"`
+octfiledir=`echo "@octfiledir@" | sed "s|^${exec_prefix}/||"`
+octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
+
+datadir=`echo "@datadir@" | sed "s|^${prefix}/||"`
+datarootdir=`echo "@datarootdir@" | sed "s|^${prefix}/||"`
+doc_cache_file=`echo "@doc_cache_file@" | sed "s|^${prefix}/||"`
+exec_prefix=`echo "@exec_prefix@" | sed "s|^${prefix}/||"`
+fcnfiledir=`echo "@fcnfiledir@" | sed "s|^${prefix}/||"`
+imagedir=`echo "@imagedir@" | sed "s|^${prefix}/||"`
+includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
+infodir=`echo "@infodir@" | sed "s|^${prefix}/||"`
+infofile=`echo "@infofile@" | sed "s|^${prefix}/||"`
+localapifcnfiledir=`echo "@localapifcnfiledir@" | sed "s|^${prefix}/||"`
+localfcnfiledir=`echo "@localfcnfiledir@" | sed "s|^${prefix}/||"`
+localstartupfiledir=`echo "@localstartupfiledir@" | sed "s|^${prefix}/||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${prefix}/||"`
+localverfcnfiledir=`echo "@localverfcnfiledir@" | sed "s|^${prefix}/||"`
+man1dir=`echo "@man1dir@" | sed "s|^${prefix}/||"`
+mandir=`echo "@mandir@" | sed "s|^${prefix}/||"`
+octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/||"`
+octdocdir=`echo "@octdocdir@" | sed "s|^${prefix}/||"`
+octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/||"`
+octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
+octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/||"`
+octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/||"`
+startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/||"`
+texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/||"`
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by subst-default-vals.|" \
@@ -70,6 +76,7 @@ $SED \
   -e "s|%OCTAVE_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
   -e "s|%OCTAVE_DATADIR%|\"${datadir}\"|" \
   -e "s|%OCTAVE_DATAROOTDIR%|\"${datarootdir}\"|" \
+  -e "s|%OCTAVE_DOCDIR%|\"${docdir}\"|" \
   -e "s|%OCTAVE_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
   -e "s|%OCTAVE_DOC_CACHE_FILE%|\"${doc_cache_file}\"|" \
   -e "s|%OCTAVE_EXEC_PREFIX%|\"${exec_prefix}\"|" \
@@ -95,6 +102,7 @@ $SED \
   -e "s|%OCTAVE_MAN1EXT%|\"${man1ext}\"|" \
   -e "s|%OCTAVE_MANDIR%|\"${mandir}\"|" \
   -e "s|%OCTAVE_OCTDATADIR%|\"${octdatadir}\"|" \
+  -e "s|%OCTAVE_OCTDOCDIR%|\"${octdocdir}\"|" \
   -e "s|%OCTAVE_OCTFILEDIR%|\"${octfiledir}\"|" \
   -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \

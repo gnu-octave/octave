@@ -6,19 +6,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -48,14 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "xdiv.h"
 
-static inline bool
-result_ok (octave_idx_type info)
-{
-  assert (info != -1);
-
-  return (info != -2);
-}
-
 static void
 solve_singularity_warning (double rcond)
 {
@@ -66,16 +58,16 @@ template <typename T1, typename T2>
 bool
 mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
 {
-  octave_idx_type a_nr = blas_trans == blas_no_trans ? a.rows () : a.cols ();
+  octave_idx_type a_nr = (blas_trans == blas_no_trans ? a.rows () : a.cols ());
   octave_idx_type b_nr = b.rows ();
 
   if (a_nr != b_nr)
     {
-      octave_idx_type a_nc = blas_trans == blas_no_trans ? a.cols ()
-                                                         : a.rows ();
+      octave_idx_type a_nc = (blas_trans == blas_no_trans ? a.cols ()
+                                                          : a.rows ());
       octave_idx_type b_nc = b.cols ();
 
-      octave::err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
+      octave::err_nonconformant (R"(operator \)", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
@@ -126,7 +118,7 @@ INSTANTIATE_MX_DIV_CONFORM (ComplexMatrix, ComplexMatrix);
 
 // -*- 1 -*-
 Matrix
-xdiv (const Matrix& a, const Matrix& b, MatrixType &typ)
+xdiv (const Matrix& a, const Matrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return Matrix ();
@@ -143,7 +135,7 @@ xdiv (const Matrix& a, const Matrix& b, MatrixType &typ)
 
 // -*- 2 -*-
 ComplexMatrix
-xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
+xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -160,7 +152,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
 
 // -*- 3 -*-
 ComplexMatrix
-xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ)
+xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -177,7 +169,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ)
 
 // -*- 4 -*-
 ComplexMatrix
-xdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ)
+xdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -349,7 +341,7 @@ x_el_div (const Complex a, const ComplexNDArray& b)
 
 // -*- 1 -*-
 Matrix
-xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ,
+xleftdiv (const Matrix& a, const Matrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -362,7 +354,7 @@ xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ,
 
 // -*- 2 -*-
 ComplexMatrix
-xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ,
+xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -376,7 +368,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ,
 
 // -*- 3 -*-
 ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ,
+xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -389,7 +381,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ,
 
 // -*- 4 -*-
 ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ,
+xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -427,7 +419,7 @@ INSTANTIATE_MX_DIV_CONFORM (FloatComplexMatrix, FloatComplexMatrix);
 
 // -*- 1 -*-
 FloatMatrix
-xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ)
+xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatMatrix ();
@@ -444,7 +436,7 @@ xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ)
 
 // -*- 2 -*-
 FloatComplexMatrix
-xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
+xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
@@ -461,7 +453,7 @@ xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
 
 // -*- 3 -*-
 FloatComplexMatrix
-xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ)
+xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
@@ -478,7 +470,7 @@ xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ)
 
 // -*- 4 -*-
 FloatComplexMatrix
-xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
+xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
@@ -650,7 +642,7 @@ x_el_div (const FloatComplex a, const FloatComplexNDArray& b)
 
 // -*- 1 -*-
 FloatMatrix
-xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ,
+xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -663,7 +655,7 @@ xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ,
 
 // -*- 2 -*-
 FloatComplexMatrix
-xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ,
+xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -677,7 +669,7 @@ xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ,
 
 // -*- 3 -*-
 FloatComplexMatrix
-xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ,
+xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -691,7 +683,7 @@ xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ,
 // -*- 4 -*-
 FloatComplexMatrix
 xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
-          MatrixType &typ, blas_trans_type transt)
+          MatrixType& typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
     return FloatComplexMatrix ();
@@ -807,7 +799,7 @@ dmm_leftdiv_impl (const DMT& d, const MT& a)
   for (octave_idx_type j = 0; j < n; j++)
     {
       for (octave_idx_type i = 0; i < l; i++)
-        xx[i] = dd[i] != S () ? aa[i] / dd[i] : T ();
+        xx[i] = (dd[i] != S () ? aa[i] / dd[i] : T ());
       for (octave_idx_type i = l; i < m; i++)
         xx[i] = T ();
       aa += k; xx += m;
@@ -886,7 +878,7 @@ dmdm_div_impl (const MT& a, const DMT& d)
   T *xx = x.fortran_vec ();
 
   for (octave_idx_type i = 0; i < lk; i++)
-    xx[i] = dd[i] != S () ? aa[i] / dd[i] : T ();
+    xx[i] = (dd[i] != S () ? aa[i] / dd[i] : T ());
   for (octave_idx_type i = lk; i < l; i++)
     xx[i] = T ();
 
@@ -961,7 +953,7 @@ dmdm_leftdiv_impl (const DMT& d, const MT& a)
   T *xx = x.fortran_vec ();
 
   for (octave_idx_type i = 0; i < lk; i++)
-    xx[i] = dd[i] != S () ? aa[i] / dd[i] : T ();
+    xx[i] = (dd[i] != S () ? aa[i] / dd[i] : T ());
   for (octave_idx_type i = lk; i < l; i++)
     xx[i] = T ();
 

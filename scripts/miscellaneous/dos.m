@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} dos ("@var{command}")
@@ -39,7 +39,13 @@ function [status, text] = dos (command, echo_arg)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (! isunix ())
+  endif
+
+  status = 1;
+  text = "";
+
+  ## FIXME: Should this be ispc ()?  There may be an issue with MinGW
+  if (! isunix ())
     [status, text] = system (command);
     if (nargin > 1 || nargout == 0)
       printf ("%s\n", text);
@@ -51,7 +57,6 @@ endfunction
 
 %!test
 %! cmd = ls_command ();
-%! warning ("off", "Octave:undefined-return-values", "local");
 %! [status, output] = dos (cmd);
 %!
 %! if (ispc () && ! isunix ())
@@ -60,8 +65,8 @@ endfunction
 %!   assert (ischar (output));
 %!   assert (! isempty (output));
 %! else
-%!   assert (status, []);
-%!   assert (output, []);
+%!   assert (status, 1);
+%!   assert (output, "");
 %! endif
 
 %!error dos ()

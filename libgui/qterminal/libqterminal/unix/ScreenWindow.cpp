@@ -3,7 +3,7 @@
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -30,7 +30,7 @@
 
 ScreenWindow::ScreenWindow(QObject* parent)
     : QObject(parent)
-	, _windowBuffer(0)
+	, _windowBuffer(nullptr)
 	, _windowBufferSize(0)
 	, _bufferNeedsUpdate(true)
 	, _windowLines(1)
@@ -60,7 +60,7 @@ Character* ScreenWindow::getImage()
 {
 	// reallocate internal buffer if the window size has changed
 	int size = windowLines() * windowColumns();
-	if (_windowBuffer == 0 || _windowBufferSize != size)
+	if (_windowBuffer == nullptr || _windowBufferSize != size)
 	{
 		delete[] _windowBuffer;
 		_windowBufferSize = size;
@@ -291,4 +291,3 @@ void ScreenWindow::notifyOutputChanged()
 
     emit outputChanged();
 }
-

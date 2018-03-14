@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Functions and Scripts
 @chapter Functions and Scripts
@@ -1349,8 +1349,8 @@ The counterpart to @code{publish} is @code{grabcode}:
 @subsubsection Using Publishing Markup in Script Files
 
 To use Publishing Markup, start by typing @samp{##} or @samp{%%} at the
-beginning of a new line.  For @sc{matlab} compatibility @samp{%%} is treated
-the same way as @samp{##}.
+beginning of a new line.  For @sc{matlab} compatibility @samp{%%%} is treated
+the same way as @samp{%%}.
 
 The lines following @samp{##} or @samp{%%} start with one of either
 @samp{#} or @samp{%} followed by at least one space.  These lines are
@@ -1414,7 +1414,7 @@ A section is started by typing @samp{##} or @samp{%%} at the beginning of
 a new line.  A section title can be provided by writing it, separated by a
 space, in the first line after @samp{##} or @samp{%%}.  Without a section
 title, the section is interpreted as a continuation of the previous section.
-For @sc{matlab} compatibility @samp{%%} is treated the same way as @samp{%%}.
+For @sc{matlab} compatibility @samp{%%%} is treated the same way as @samp{%%}.
 
 @example
 @group
@@ -1431,9 +1431,9 @@ some_code ();
 
 some_code ();
 
-### Section 3
-#
-#
+%%% Section 3
+%
+%
 @end group
 @end example
 
@@ -1917,6 +1917,12 @@ The following is a list of all the function file subdirectories, and the
 types of functions you will find there.
 
 @table @file
+@item @@ftp
+Class functions for the FTP object.
+
+@item +containers
+Package for the containers classes.
+
 @item audio
 Functions for playing and recording sounds.
 
@@ -1926,9 +1932,6 @@ Out-of-date functions which will eventually be removed from Octave.
 @item elfun
 Elementary functions, principally trigonometric.
 
-@item @@ftp
-Class functions for the FTP object.
-
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
@@ -1936,6 +1939,9 @@ and @code{triu}, as well as other basic functions, like
 
 @item geometry
 Functions related to Delaunay triangulation.
+
+@item gui
+Functions for GUI elements like dialog, message box, etc.
 
 @item help
 Functions for Octave's built-in help system.
@@ -1946,11 +1952,17 @@ Image processing tools.  These functions require the X Window System.
 @item io
 Input-output functions.
 
+@item java
+Functions related to the Java integration.
+
 @item linear-algebra
 Functions for linear algebra.
 
 @item miscellaneous
 Functions that don't really belong anywhere else.
+
+@item ode
+Functions to solve ordinary differential equations (ODEs).
 
 @item optimization
 Functions related to minimization, optimization, and root finding.

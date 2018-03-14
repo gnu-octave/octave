@@ -1,23 +1,22 @@
-// utils.cc
 /*
 
 Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,12 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cctype>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
-#include <cfloat>
 
+#include <complex>
 #include <limits>
 #include <string>
 
@@ -53,7 +50,7 @@ bool xis_zero (double x)
 
 bool xtoo_large_for_float (double x)
 {
-  return (octave::math::finite (x)
+  return (octave::math::isfinite (x)
           && fabs (x) > std::numeric_limits<float>::max ());
 }
 
@@ -78,7 +75,7 @@ char *
 strsave (const char *s)
 {
   if (! s)
-    return 0;
+    return nullptr;
 
   int len = strlen (s);
   char *tmp = new char [len+1];
@@ -99,7 +96,7 @@ octave_putenv (const std::string& name, const std::string& value)
   // FIXME: This leaks memory, but so would a call to setenv.
   // Short of extreme measures to track memory, altering the environment
   // always leaks memory, but the saving grace is that the leaks are small.
-  char *new_item = static_cast<char*> (std::malloc (new_len));
+  char *new_item = static_cast<char *> (std::malloc (new_len));
 
   sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
 
@@ -168,7 +165,7 @@ octave_fgets (FILE *f, bool& eof)
 
               free (buf);
 
-              buf = 0;
+              buf = nullptr;
             }
 
           break;
@@ -176,8 +173,7 @@ octave_fgets (FILE *f, bool& eof)
     }
   while (retval.empty ());
 
-  if (buf)
-    free (buf);
+  free (buf);
 
   octave_quit ();
 
@@ -196,10 +192,8 @@ octave_fgetl (FILE *f, bool& eof)
 {
   std::string retval = octave_fgets (f, eof);
 
-  size_t len = retval.length ();
-
-  if (retval[len-1] == '\n')
-    retval.resize (len-1);
+  if (! retval.empty () && retval.back () == '\n')
+    retval.pop_back ();
 
   return retval;
 }
@@ -251,7 +245,7 @@ read_inf_nan_na (std::istream& is, char c0)
       break;
 
     default:
-      abort ();
+      (*current_liboctave_error_handler) ("read_inf_nan_na: invalid character '%c'");
     }
 
   return val;
@@ -280,7 +274,7 @@ octave_read_fp_value (std::istream& is)
     {
     case '-':
       neg = true;
-      // fall through...
+      OCTAVE_FALLTHROUGH;
 
     case '+':
       {
@@ -313,9 +307,22 @@ octave_read_fp_value (std::istream& is)
   std::ios::iostate status = is.rdstate ();
   if (status & std::ios::failbit)
     {
-      is.clear ();
-      is.seekg (pos);
-      is.setstate (status);
+      // Convert MAX_VAL returned by C++ streams for very large numbers to Inf
+      if (val == std::numeric_limits<T>::max ())
+        {
+          if (neg)
+            val = -std::numeric_limits<T>::infinity ();
+          else
+            val = std::numeric_limits<T>::infinity ();
+          is.clear (status & ~std::ios::failbit);
+        }
+      else
+        {
+          // True error.  Reset stream to original position and pass status on.
+          is.clear ();
+          is.seekg (pos);
+          is.setstate (status);
+        }
     }
 
   return val;
@@ -400,11 +407,11 @@ octave_write_double (std::ostream& os, double d)
 void
 octave_write_complex (std::ostream& os, const Complex& c)
 {
-  os << "(";
+  os << '(';
   octave_write_double (os, real (c));
-  os << ",";
+  os << ',';
   octave_write_double (os, imag (c));
-  os << ")";
+  os << ')';
 }
 
 void
@@ -423,9 +430,9 @@ octave_write_float (std::ostream& os, float d)
 void
 octave_write_float_complex (std::ostream& os, const FloatComplex& c)
 {
-  os << "(";
+  os << '(';
   octave_write_float (os, real (c));
-  os << ",";
+  os << ',';
   octave_write_float (os, imag (c));
-  os << ")";
+  os << ')';
 }

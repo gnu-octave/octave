@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-cell.h"
 #include "pager.h"
+#include "parse.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -77,7 +78,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = daspk_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (daspk_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -88,7 +89,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen == 0 || ! tmp(0).is_defined ())
         err_user_supplied_eval ("daspk");
 
-      if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+      if (! warned_fcn_imaginary && tmp(0).iscomplex ())
         {
           warning ("daspk: ignoring imaginary part returned from user-supplied function");
           warned_fcn_imaginary = true;
@@ -99,7 +100,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen > 1)
         ires = tmp(1).idx_type_value ();
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("daspk");
     }
 
@@ -127,7 +128,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = daspk_jac->do_multi_index_op (1, args);
+          tmp = octave::feval (daspk_jac, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -138,7 +139,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
       if (tlen == 0 || ! tmp(0).is_defined ())
         err_user_supplied_eval ("daspk");
 
-      if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+      if (! warned_jac_imaginary && tmp(0).iscomplex ())
         {
           warning ("daspk: ignoring imaginary part returned from user-supplied jacobian function");
           warned_jac_imaginary = true;
@@ -146,15 +147,15 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
       retval = tmp(0).matrix_value ();
 
-      if (retval.is_empty ())
+      if (retval.isempty ())
         err_user_supplied_eval ("daspk");
     }
 
   return retval;
 }
 
-DEFUN (daspk, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (daspk, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 Solve the set of differential-algebraic equations
 @tex
@@ -269,16 +270,18 @@ parameters for @code{daspk}.
   frame.protect_var (call_depth);
   call_depth++;
 
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   if (call_depth > 1)
     error ("daspk: invalid recursive call");
 
   std::string fcn_name, fname, jac_name, jname;
-  daspk_fcn = 0;
-  daspk_jac = 0;
+  daspk_fcn = nullptr;
+  daspk_jac = nullptr;
 
   octave_value f_arg = args(0);
 
-  if (f_arg.is_cell ())
+  if (f_arg.iscell ())
     {
       Cell c = f_arg.cell_value ();
       if (c.numel () == 1)
@@ -313,8 +316,8 @@ parameters for @code{daspk}.
                   if (! daspk_jac)
                     {
                       if (fcn_name.length ())
-                        clear_function (fcn_name);
-                      daspk_fcn = 0;
+                        symtab.clear_function (fcn_name);
+                      daspk_fcn = nullptr;
                     }
                 }
             }
@@ -323,7 +326,7 @@ parameters for @code{daspk}.
         error ("daspk: incorrect number of elements in cell array");
     }
 
-  if (! daspk_fcn && ! f_arg.is_cell ())
+  if (! daspk_fcn && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         daspk_fcn = f_arg.function_value ();
@@ -367,8 +370,8 @@ parameters for @code{daspk}.
                     if (! daspk_jac)
                       {
                         if (fcn_name.length ())
-                          clear_function (fcn_name);
-                        daspk_fcn = 0;
+                          symtab.clear_function (fcn_name);
+                        daspk_fcn = nullptr;
                       }
                   }
               }
@@ -415,9 +418,9 @@ parameters for @code{daspk}.
     output = dae.integrate (out_times, deriv_output);
 
   if (fcn_name.length ())
-    clear_function (fcn_name);
+    symtab.clear_function (fcn_name);
   if (jac_name.length ())
-    clear_function (jac_name);
+    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

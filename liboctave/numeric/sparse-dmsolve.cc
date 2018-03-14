@@ -5,19 +5,19 @@ Copyright (C) 2006-2016 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,15 +25,21 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <vector>
+#include <algorithm>
 
+#include "CMatrix.h"
+#include "CSparse.h"
 #include "MArray.h"
 #include "MSparse.h"
 #include "MatrixType.h"
+#include "dSparse.h"
+#include "lo-error.h"
 #include "oct-inttypes.h"
 #include "oct-locbuf.h"
 #include "oct-sort.h"
 #include "oct-sparse.h"
+#include "quit.h"
+#include "sparse-dmsolve.h"
 #include "sparse-qr.h"
 
 template <typename T>
@@ -357,7 +363,7 @@ solve_singularity_warning (double)
 
 template <typename RT, typename ST, typename T>
 RT
-dmsolve (const ST &a, const T &b, octave_idx_type &info)
+dmsolve (const ST& a, const T& b, octave_idx_type& info)
 {
   RT retval;
 
@@ -383,18 +389,20 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 
       csm.m = nr;
       csm.n = nc;
-      csm.x = 0;
+      csm.x = nullptr;
       csm.nz = -1;
       csm.nzmax = a.nnz ();
 
       // Cast away const on A, with full knowledge that CSparse won't touch it.
-      // Prevents the methods below making a copy of the data.
-      csm.p = const_cast<octave_idx_type *>(a.cidx ());
-      csm.i = const_cast<octave_idx_type *>(a.ridx ());
+      // Prevents the methods below from making a copy of the data.
+      csm.p = const_cast<octave::suitesparse_integer *>
+                (octave::to_suitesparse_intptr (a.cidx ()));
+      csm.i = const_cast<octave::suitesparse_integer *>
+                (octave::to_suitesparse_intptr (a.ridx ()));
 
       CXSPARSE_DNAME (d) *dm = CXSPARSE_DNAME(_dmperm) (&csm, 0);
-      octave_idx_type *p = dm->p;
-      octave_idx_type *q = dm->q;
+      octave_idx_type *p = octave::to_octave_idx_type_ptr (dm->p);
+      octave_idx_type *q = octave::to_octave_idx_type_ptr (dm->q);
 
       OCTAVE_LOCAL_BUFFER (octave_idx_type, pinv, nr);
 
@@ -413,8 +421,11 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
           ST m = dmsolve_extract (a, pinv, q, dm->rr[2], nr, dm->cc[3], nc,
                                   nnz_remaining, true);
           nnz_remaining -= m.nnz ();
-          RT mtmp = octave::math::qrsolve (m, dmsolve_extract (btmp, 0, 0, dm->rr[2],
-                                           b_nr, 0, b_nc), info);
+          RT mtmp = octave::math::qrsolve (m, dmsolve_extract (btmp,
+                                                               nullptr, nullptr,
+                                                               dm->rr[2], b_nr,
+                                                               0, b_nc),
+                                           info);
           dmsolve_insert (retval, mtmp, q, dm->cc[3], 0);
 
           if (dm->rr[2] > 0 && ! info)
@@ -422,7 +433,8 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
               m = dmsolve_extract (a, pinv, q, 0, dm->rr[2],
                                    dm->cc[3], nc, nnz_remaining, true);
               nnz_remaining -= m.nnz ();
-              RT ctmp = dmsolve_extract (btmp, 0, 0, 0, dm->rr[2], 0, b_nc);
+              RT ctmp = dmsolve_extract (btmp, nullptr, nullptr,
+                                         0, dm->rr[2], 0, b_nc);
               btmp.insert (ctmp - m * mtmp, 0, 0);
             }
         }
@@ -434,7 +446,8 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
           ST m = dmsolve_extract (a, pinv, q, dm->rr[1], dm->rr[2],
                                   dm->cc[2], dm->cc[3], nnz_remaining, false);
           nnz_remaining -= m.nnz ();
-          RT btmp2 = dmsolve_extract (btmp, 0, 0, dm->rr[1], dm->rr[2],
+          RT btmp2 = dmsolve_extract (btmp, nullptr, nullptr,
+                                      dm->rr[1], dm->rr[2],
                                       0, b_nc);
           double rcond = 0.0;
           MatrixType mtyp (MatrixType::Full);
@@ -452,7 +465,8 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
               m = dmsolve_extract (a, pinv, q, 0, dm->rr[1], dm->cc[2],
                                    dm->cc[3], nnz_remaining, true);
               nnz_remaining -= m.nnz ();
-              RT ctmp = dmsolve_extract (btmp, 0, 0, 0, dm->rr[1], 0, b_nc);
+              RT ctmp = dmsolve_extract (btmp, nullptr, nullptr,
+                                         0, dm->rr[1], 0, b_nc);
               btmp.insert (ctmp - m * mtmp, 0, 0);
             }
         }
@@ -462,8 +476,11 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
         {
           ST m = dmsolve_extract (a, pinv, q, 0, dm->rr[1], 0,
                                   dm->cc[2], nnz_remaining, true);
-          RT mtmp = octave::math::qrsolve (m, dmsolve_extract (btmp, 0, 0, 0, dm->rr[1],
-                                           0, b_nc), info);
+          RT mtmp = octave::math::qrsolve (m, dmsolve_extract (btmp, nullptr,
+                                                               nullptr, 0,
+                                                               dm->rr[1], 0,
+                                                               b_nc),
+                                           info);
           dmsolve_insert (retval, mtmp, q, 0, 0);
         }
 

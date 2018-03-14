@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -50,12 +50,12 @@ public:
 
   string_vector (const string_vector& s) : Array<std::string> (s) { }
 
-  //! Constructor for STL containers of std::string
-  /*!
-    Templated constructor for any template class with std::string as the
-    first parameter, and begin, end, and size methods, i.e., a class with
-    similar interface as the STL containers.
-  */
+  //! Constructor for STL containers of std::string.
+  //!
+  //! Templated constructor for any template class with std::string as the
+  //! first parameter, and begin, end, and size methods, i.e., a class with
+  //! similar interface as the STL containers.
+
   template<template <typename...> class String_Container, typename... Other>
   string_vector (const String_Container<std::string, Other...>& lst);
 
@@ -74,7 +74,7 @@ public:
     return *this;
   }
 
-  ~string_vector (void) { }
+  ~string_vector (void) = default;
 
   bool empty (void) const { return numel () == 0; }
 
@@ -115,7 +115,7 @@ public:
 
   std::string join (const std::string& sep = "") const;
 
-  char **c_str_vec (void) const;
+  char ** c_str_vec (void) const;
 
   std::list<std::string> std_list (void) const;
 

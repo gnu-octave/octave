@@ -36,6 +36,7 @@
         <file>icons/graphic_logo_WorkspaceView.png</file>
         <file>icons/graphic_logo_DocumentationDockWidget.png</file>
         <file>icons/graphic_logo_ReleaseWidget.png</file>
+        <file>icons/graphic_logo_VariableEditor.png</file>
         <file>icons/letter_logo_FilesDockWidget.png</file>
         <file>icons/letter_logo_FileEditor.png</file>
         <file>icons/letter_logo_NewsDockWidget.png</file>
@@ -44,7 +45,9 @@
         <file>icons/letter_logo_WorkspaceView.png</file>
         <file>icons/letter_logo_DocumentationDockWidget.png</file>
         <file>icons/letter_logo_ReleaseWidget.png</file>
+        <file>icons/letter_logo_VariableEditor.png</file>
         <file>icons/logo.png</file>
+        <file>icons/plot-xy-curve.png</file>
         <file>icons/preferences-system.png</file>
         <file>icons/system-run.png</file>
         <file>icons/user-home.png</file>

@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -34,296 +34,341 @@ along with Octave; see the file COPYING.  If not, see
 
 class string_vector;
 
-class
-OCTINTERP_API
-octave_value_typeinfo
+namespace octave
 {
-public:
+  class type_info
+  {
+  public:
 
-  typedef octave_value (*unary_class_op_fcn) (const octave_value&);
+    typedef octave_value (*unary_class_op_fcn) (const octave_value&);
 
-  typedef octave_value (*unary_op_fcn) (const octave_base_value&);
+    typedef octave_value (*unary_op_fcn) (const octave_base_value&);
 
-  typedef void (*non_const_unary_op_fcn) (octave_base_value&);
+    typedef void (*non_const_unary_op_fcn) (octave_base_value&);
 
-  typedef octave_value (*binary_class_op_fcn)
+    typedef octave_value (*binary_class_op_fcn)
     (const octave_value&, const octave_value&);
 
-  typedef octave_value (*binary_op_fcn)
+    typedef octave_value (*binary_op_fcn)
     (const octave_base_value&, const octave_base_value&);
 
-  typedef octave_value (*cat_op_fcn)
+    typedef octave_value (*cat_op_fcn)
     (octave_base_value&, const octave_base_value&,
      const Array<octave_idx_type>& ra_idx);
 
-  typedef octave_value (*assign_op_fcn)
+    typedef octave_value (*assign_op_fcn)
     (octave_base_value&, const octave_value_list&, const octave_base_value&);
 
-  typedef octave_value (*assignany_op_fcn)
+    typedef octave_value (*assignany_op_fcn)
     (octave_base_value&, const octave_value_list&, const octave_value&);
 
-  static bool instance_ok (void);
-
-  static int register_type (const std::string&, const std::string&,
-                            const octave_value&);
-
-  static bool register_unary_class_op (octave_value::unary_op,
-                                       unary_class_op_fcn);
-
-  static bool register_unary_op (octave_value::unary_op, int, unary_op_fcn);
-
-  static bool register_non_const_unary_op (octave_value::unary_op, int,
-                                           non_const_unary_op_fcn);
-
-  static bool register_binary_class_op (octave_value::binary_op,
-                                        binary_class_op_fcn);
-
-  static bool register_binary_op (octave_value::binary_op, int, int,
-                                  binary_op_fcn);
-
-  static bool register_binary_class_op (octave_value::compound_binary_op,
-                                        binary_class_op_fcn);
-
-  static bool register_binary_op (octave_value::compound_binary_op, int, int,
-                                  binary_op_fcn);
-
-  static bool register_cat_op (int, int, cat_op_fcn);
-
-  static bool register_assign_op (octave_value::assign_op, int, int,
-                                  assign_op_fcn);
-
-  static bool register_assignany_op (octave_value::assign_op, int,
-                                     assignany_op_fcn);
-
-  static bool register_pref_assign_conv (int, int, int);
-
-  static bool
-  register_widening_op (int, int, octave_base_value::type_conv_fcn);
-
-  static octave_value
-  lookup_type (const std::string& nm)
-  {
-    return instance->do_lookup_type (nm);
-  }
-
-  static unary_class_op_fcn
-  lookup_unary_class_op (octave_value::unary_op op)
-  {
-    return instance->do_lookup_unary_class_op (op);
-  }
-
-  static unary_op_fcn
-  lookup_unary_op (octave_value::unary_op op, int t)
-  {
-    return instance->do_lookup_unary_op (op, t);
-  }
-
-  static non_const_unary_op_fcn
-  lookup_non_const_unary_op (octave_value::unary_op op, int t)
-  {
-    return instance->do_lookup_non_const_unary_op (op, t);
-  }
-
-  static binary_class_op_fcn
-  lookup_binary_class_op (octave_value::binary_op op)
-  {
-    return instance->do_lookup_binary_class_op (op);
-  }
+    explicit type_info (int init_tab_sz = 16);
+
+    // No copying!
+
+    type_info (const type_info&) = delete;
+
+    type_info& operator = (const type_info&) = delete;
+
+    ~type_info (void) = default;
+
+    // It is intentional that there is no install_type function.
+
+    bool install_unary_class_op (octave_value::unary_op op,
+                                 unary_class_op_fcn f)
+    {
+      return register_unary_class_op (op, f, true);
+    }
+
+    bool install_unary_op (octave_value::unary_op op, int t, unary_op_fcn f)
+    {
+      return register_unary_op (op, t, f, true);
+    }
+
+    bool install_non_const_unary_op (octave_value::unary_op op, int t,
+                                     non_const_unary_op_fcn f)
+    {
+      return register_non_const_unary_op (op, t, f, true);
+    }
 
-  static binary_op_fcn
-  lookup_binary_op (octave_value::binary_op op, int t1, int t2)
-  {
-    return instance->do_lookup_binary_op (op, t1, t2);
-  }
+    bool install_binary_class_op (octave_value::binary_op op,
+                                  binary_class_op_fcn f)
+    {
+      return register_binary_class_op (op, f, true);
+    }
 
-  static binary_class_op_fcn
-  lookup_binary_class_op (octave_value::compound_binary_op op)
-  {
-    return instance->do_lookup_binary_class_op (op);
-  }
+    bool install_binary_op (octave_value::binary_op op, int t1, int t2,
+                            binary_op_fcn f)
+    {
+      return register_binary_op (op, t1, t2, f, true);
+    }
 
-  static binary_op_fcn
-  lookup_binary_op (octave_value::compound_binary_op op, int t1, int t2)
-  {
-    return instance->do_lookup_binary_op (op, t1, t2);
-  }
+    bool install_binary_class_op (octave_value::compound_binary_op op,
+                                  binary_class_op_fcn f)
+    {
+      return register_binary_class_op (op, f, true);
+    }
 
-  static cat_op_fcn
-  lookup_cat_op (int t1, int t2)
-  {
-    return instance->do_lookup_cat_op (t1, t2);
-  }
+    bool install_binary_op (octave_value::compound_binary_op op,
+                            int t_lhs, int t_rhs, binary_op_fcn f)
+    {
+      return register_binary_op (op, t_lhs, t_rhs, f, true);
+    }
 
-  static assign_op_fcn
-  lookup_assign_op (octave_value::assign_op op, int t_lhs, int t_rhs)
-  {
-    return instance->do_lookup_assign_op (op, t_lhs, t_rhs);
-  }
+    bool install_cat_op (int t1, int t2, cat_op_fcn f)
+    {
+      return register_cat_op (t1, t2, f, true);
+    }
 
-  static assignany_op_fcn
-  lookup_assignany_op (octave_value::assign_op op, int t_lhs)
-  {
-    return instance->do_lookup_assignany_op (op, t_lhs);
-  }
+    bool install_assign_op (octave_value::assign_op op,
+                            int t_lhs, int t_rhs, assign_op_fcn f)
+    {
+      return register_assign_op (op, t_lhs, t_rhs, f, true);
+    }
 
-  static int
-  lookup_pref_assign_conv (int t_lhs, int t_rhs)
-  {
-    return instance->do_lookup_pref_assign_conv (t_lhs, t_rhs);
-  }
+    bool install_assignany_op (octave_value::assign_op op, int t_lhs,
+                               assignany_op_fcn f)
+    {
+      return register_assignany_op (op, t_lhs, f, true);
+    }
 
-  static octave_base_value::type_conv_fcn
-  lookup_widening_op (int t, int t_result)
-  {
-    return instance->do_lookup_widening_op (t, t_result);
-  }
+    bool install_pref_assign_conv (int t_lhs, int t_rhs, int t_result)
+    {
+      return register_pref_assign_conv (t_lhs, t_rhs, t_result, true);
+    }
 
-  static string_vector installed_type_names (void)
-  {
-    return instance->do_installed_type_names ();
-  }
+    bool install_widening_op (int t, int t_result,
+                              octave_base_value::type_conv_fcn f)
+    {
+      return register_widening_op (t, t_result, f, true);
+    }
 
-  static octave_scalar_map installed_type_info (void)
-  {
-    return instance->do_installed_type_info ();
-  }
+    int register_type (const std::string&, const std::string&,
+                       const octave_value&, bool abort_on_duplicate = false);
 
-protected:
+    bool register_unary_class_op (octave_value::unary_op, unary_class_op_fcn,
+                                  bool abort_on_duplicate = false);
 
-  octave_value_typeinfo (void)
-    : num_types (0), types (dim_vector (init_tab_sz, 1), ""),
-      vals (dim_vector (init_tab_sz, 1)),
-      unary_class_ops (dim_vector (octave_value::num_unary_ops, 1), 0),
-      unary_ops (dim_vector (octave_value::num_unary_ops, init_tab_sz), 0),
-      non_const_unary_ops (dim_vector (octave_value::num_unary_ops, init_tab_sz), 0),
-      binary_class_ops (dim_vector (octave_value::num_binary_ops, 1), 0),
-      binary_ops (dim_vector (octave_value::num_binary_ops, init_tab_sz, init_tab_sz), 0),
-      compound_binary_class_ops (dim_vector (octave_value::num_compound_binary_ops, 1), 0),
-      compound_binary_ops (dim_vector (octave_value::num_compound_binary_ops, init_tab_sz, init_tab_sz), 0),
-      cat_ops (dim_vector (init_tab_sz, init_tab_sz), 0),
-      assign_ops (dim_vector (octave_value::num_assign_ops, init_tab_sz, init_tab_sz), 0),
-      assignany_ops (dim_vector (octave_value::num_assign_ops, init_tab_sz), 0),
-      pref_assign_conv (dim_vector (init_tab_sz, init_tab_sz), -1),
-      widening_ops (dim_vector (init_tab_sz, init_tab_sz), 0)  { }
+    bool register_unary_op (octave_value::unary_op, int, unary_op_fcn,
+                            bool abort_on_duplicate = false);
 
-  ~octave_value_typeinfo (void) { }
+    bool register_non_const_unary_op (octave_value::unary_op, int,
+                                      non_const_unary_op_fcn,
+                                      bool abort_on_duplicate = false);
 
-private:
+    bool register_binary_class_op (octave_value::binary_op,
+                                   binary_class_op_fcn,
+                                   bool abort_on_duplicate = false);
 
-  static const int init_tab_sz;
+    bool register_binary_op (octave_value::binary_op, int, int,
+                             binary_op_fcn, bool abort_on_duplicate = false);
 
-  static octave_value_typeinfo *instance;
+    bool register_binary_class_op (octave_value::compound_binary_op,
+                                   binary_class_op_fcn,
+                                   bool abort_on_duplicate = false);
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+    bool register_binary_op (octave_value::compound_binary_op, int, int,
+                             binary_op_fcn, bool abort_on_duplicate = false);
 
-  int num_types;
+    bool register_cat_op (int, int, cat_op_fcn,
+                          bool abort_on_duplicate = false);
 
-  Array<std::string> types;
+    bool register_assign_op (octave_value::assign_op, int, int, assign_op_fcn,
+                             bool abort_on_duplicate = false);
 
-  Array<octave_value> vals;
+    bool register_assignany_op (octave_value::assign_op, int, assignany_op_fcn,
+                                bool abort_on_duplicate = false);
 
-  Array<void *> unary_class_ops;
+    bool register_pref_assign_conv (int, int, int,
+                                    bool abort_on_duplicate = false);
 
-  Array<void *> unary_ops;
+    bool register_widening_op (int, int, octave_base_value::type_conv_fcn,
+                               bool abort_on_duplicate = false);
 
-  Array<void *> non_const_unary_ops;
+    octave_value lookup_type (const std::string& nm);
 
-  Array<void *> binary_class_ops;
+    unary_class_op_fcn lookup_unary_class_op (octave_value::unary_op);
 
-  Array<void *> binary_ops;
+    unary_op_fcn lookup_unary_op (octave_value::unary_op, int);
 
-  Array<void *> compound_binary_class_ops;
+    non_const_unary_op_fcn
+    lookup_non_const_unary_op (octave_value::unary_op, int);
 
-  Array<void *> compound_binary_ops;
+    binary_class_op_fcn lookup_binary_class_op (octave_value::binary_op);
 
-  Array<void *> cat_ops;
+    binary_op_fcn lookup_binary_op (octave_value::binary_op, int, int);
 
-  Array<void *> assign_ops;
+    binary_class_op_fcn
+    lookup_binary_class_op (octave_value::compound_binary_op);
 
-  Array<void *> assignany_ops;
+    binary_op_fcn
+    lookup_binary_op (octave_value::compound_binary_op, int, int);
 
-  Array<int> pref_assign_conv;
+    cat_op_fcn lookup_cat_op (int, int);
 
-  Array<void *> widening_ops;
+    assign_op_fcn lookup_assign_op (octave_value::assign_op, int, int);
 
-  int do_register_type (const std::string&, const std::string&,
-                        const octave_value&);
+    assignany_op_fcn lookup_assignany_op (octave_value::assign_op, int);
 
-  bool do_register_unary_class_op (octave_value::unary_op, unary_class_op_fcn);
+    int lookup_pref_assign_conv (int, int);
 
-  bool do_register_unary_op (octave_value::unary_op, int, unary_op_fcn);
+    octave_base_value::type_conv_fcn lookup_widening_op (int, int);
 
-  bool do_register_non_const_unary_op (octave_value::unary_op, int,
-                                       non_const_unary_op_fcn);
+    string_vector installed_type_names (void) const;
 
-  bool do_register_binary_class_op (octave_value::binary_op,
-                                    binary_class_op_fcn);
+    octave_scalar_map installed_type_info (void) const;
 
-  bool do_register_binary_op (octave_value::binary_op, int, int,
-                              binary_op_fcn);
+    octave_scalar_map unary_ops_map (void) const;
 
-  bool do_register_binary_class_op (octave_value::compound_binary_op,
-                                    binary_class_op_fcn);
+    octave_scalar_map non_const_unary_ops_map (void) const;
 
-  bool do_register_binary_op (octave_value::compound_binary_op, int, int,
-                              binary_op_fcn);
+    octave_scalar_map binary_ops_map (void) const;
 
-  bool do_register_cat_op (int, int, cat_op_fcn);
+    octave_scalar_map compound_binary_ops_map (void) const;
 
-  bool do_register_assign_op (octave_value::assign_op, int, int,
-                              assign_op_fcn);
+    octave_scalar_map assign_ops_map (void) const;
 
-  bool do_register_assignany_op (octave_value::assign_op, int,
-                                 assignany_op_fcn);
+    octave_scalar_map assignany_ops_map (void) const;
 
-  bool do_register_pref_assign_conv (int, int, int);
+  private:
 
-  bool do_register_widening_op (int, int, octave_base_value::type_conv_fcn);
+    int num_types;
 
-  octave_value do_lookup_type (const std::string& nm);
+    Array<std::string> types;
 
-  unary_class_op_fcn do_lookup_unary_class_op (octave_value::unary_op);
+    Array<octave_value *> vals;
 
-  unary_op_fcn do_lookup_unary_op (octave_value::unary_op, int);
+    Array<void *> unary_class_ops;
 
-  non_const_unary_op_fcn do_lookup_non_const_unary_op
-    (octave_value::unary_op, int);
+    Array<void *> unary_ops;
 
-  binary_class_op_fcn do_lookup_binary_class_op (octave_value::binary_op);
+    Array<void *> non_const_unary_ops;
 
-  binary_op_fcn do_lookup_binary_op (octave_value::binary_op, int, int);
+    Array<void *> binary_class_ops;
 
-  binary_class_op_fcn do_lookup_binary_class_op (octave_value::compound_binary_op);
+    Array<void *> binary_ops;
 
-  binary_op_fcn do_lookup_binary_op (octave_value::compound_binary_op,
-                                     int, int);
+    Array<void *> compound_binary_class_ops;
 
-  cat_op_fcn do_lookup_cat_op (int, int);
+    Array<void *> compound_binary_ops;
 
-  assign_op_fcn do_lookup_assign_op (octave_value::assign_op, int, int);
+    Array<void *> cat_ops;
 
-  assignany_op_fcn do_lookup_assignany_op (octave_value::assign_op, int);
+    Array<void *> assign_ops;
 
-  int do_lookup_pref_assign_conv (int, int);
+    Array<void *> assignany_ops;
 
-  octave_base_value::type_conv_fcn do_lookup_widening_op (int, int);
+    Array<int> pref_assign_conv;
 
-  string_vector do_installed_type_names (void) const;
+    Array<void *> widening_ops;
+  };
+}
 
-  octave_scalar_map do_installed_type_info (void) const;
+namespace octave_value_typeinfo
+{
+  typedef octave::type_info::unary_class_op_fcn unary_class_op_fcn;
 
-  octave_scalar_map unary_ops_map (void) const;
-  octave_scalar_map non_const_unary_ops_map (void) const;
-  octave_scalar_map binary_ops_map (void) const;
-  octave_scalar_map compound_binary_ops_map (void) const;
-  octave_scalar_map assign_ops_map (void) const;
-  octave_scalar_map assignany_ops_map (void) const;
+  typedef octave::type_info::unary_op_fcn unary_op_fcn;
 
-  // No copying!
+  typedef octave::type_info::non_const_unary_op_fcn non_const_unary_op_fcn;
 
-  octave_value_typeinfo (const octave_value_typeinfo&);
+  typedef octave::type_info::binary_class_op_fcn binary_class_op_fcn;
 
-  octave_value_typeinfo& operator = (const octave_value_typeinfo&);
-};
+  typedef octave::type_info::binary_op_fcn binary_op_fcn;
+
+  typedef octave::type_info::cat_op_fcn cat_op_fcn;
+
+  typedef octave::type_info::assign_op_fcn assign_op_fcn;
+
+  typedef octave::type_info::assignany_op_fcn assignany_op_fcn;
+
+  extern int register_type (const std::string& t_name,
+                            const std::string& c_name,
+                            const octave_value& val);
+
+  OCTAVE_DEPRECATED(4.4, "use octave::type_info::register_unary_class_op instead")
+  extern bool register_unary_class_op (octave_value::unary_op op,
+                                       unary_class_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_unary_op instead")
+  extern bool register_unary_op (octave_value::unary_op op,
+                                 int t, unary_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_non_const_unary_op instead")
+  extern bool register_non_const_unary_op (octave_value::unary_op op,
+                                           int t, non_const_unary_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_class_op instead")
+  extern bool register_binary_class_op (octave_value::binary_op op,
+                                        binary_class_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_op instead")
+  extern bool register_binary_op (octave_value::binary_op op,
+                                  int t1, int t2, binary_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_class_op instead")
+  extern bool register_binary_class_op (octave_value::compound_binary_op op,
+                                        binary_class_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_op instead")
+  extern bool register_binary_op (octave_value::compound_binary_op op,
+                                  int t1, int t2, binary_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_cat_op instead")
+  extern bool register_cat_op (int t1, int t2, cat_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_assign_op instead")
+  extern bool register_assign_op (octave_value::assign_op op,
+                                  int t_lhs, int t_rhs, assign_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_assignany_op instead")
+  extern bool register_assignany_op (octave_value::assign_op op,
+                                     int t_lhs, assignany_op_fcn f);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_pref_assign_conv instead")
+  extern bool register_pref_assign_conv (int t_lhs, int t_rhs, int t_result);
+
+  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_widening_op instead")
+  extern bool register_widening_op (int t, int t_result,
+                                    octave_base_value::type_conv_fcn f);
+
+  extern octave_value lookup_type (const std::string& nm);
+
+  extern unary_class_op_fcn lookup_unary_class_op (octave_value::unary_op op);
+
+  extern unary_op_fcn lookup_unary_op (octave_value::unary_op op, int t);
+
+  extern non_const_unary_op_fcn
+  lookup_non_const_unary_op (octave_value::unary_op op, int t);
+
+  extern binary_class_op_fcn
+  lookup_binary_class_op (octave_value::binary_op op);
+
+  extern binary_op_fcn
+  lookup_binary_op (octave_value::binary_op op, int t1, int t2);
+
+  extern binary_class_op_fcn
+  lookup_binary_class_op (octave_value::compound_binary_op op);
+
+  extern binary_op_fcn
+  lookup_binary_op (octave_value::compound_binary_op op, int t1, int t2);
+
+  extern cat_op_fcn lookup_cat_op (int t1, int t2);
+
+  extern assign_op_fcn
+  lookup_assign_op (octave_value::assign_op op, int t_lhs, int t_rhs);
+
+  extern assignany_op_fcn
+  lookup_assignany_op (octave_value::assign_op op, int t_lhs);
+
+  extern int lookup_pref_assign_conv (int t_lhs, int t_rhs);
+
+  extern octave_base_value::type_conv_fcn
+  lookup_widening_op (int t, int t_result);
+
+  extern string_vector installed_type_names (void);
+
+  extern octave_scalar_map installed_type_info (void);
+}
 
 #endif

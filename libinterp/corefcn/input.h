@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -42,7 +42,7 @@ namespace octave
   class base_lexer;
 }
 
-extern OCTINTERP_API FILE *get_input_from_stdin (void);
+extern OCTINTERP_API FILE * get_input_from_stdin (void);
 
 // TRUE after a call to completion_matches.
 extern bool octave_completion_matches_called;
@@ -70,226 +70,144 @@ extern void remove_input_event_hook_functions (void);
 
 extern void set_default_prompts (void);
 
-extern std::string VPS4;
-
-extern char Vfilemarker;
-
-enum echo_state
-{
-  ECHO_OFF = 0,
-  ECHO_SCRIPTS = 1,
-  ECHO_FUNCTIONS = 2,
-  ECHO_CMD_LINE = 4
-};
-
-extern int Vecho_executing_commands;
-
 extern octave::sys::time Vlast_prompt_time;
 
-class
-octave_base_reader
+namespace octave
 {
-public:
-
-  friend class octave_input_reader;
-
-  octave_base_reader (octave::base_lexer *lxr)
-    : count (1), pflag (0), lexer (lxr)
-  { }
-
-  octave_base_reader (const octave_base_reader& x)
-    : count (1), pflag (x.pflag), lexer (x.lexer)
-  { }
-
-  virtual ~octave_base_reader (void) { }
-
-  virtual std::string get_input (bool& eof) = 0;
-
-  virtual std::string input_source (void) const { return in_src; }
-
-  void reset (void) { promptflag (1); }
-
-  void increment_promptflag (void) { pflag++; }
-
-  void decrement_promptflag (void) { pflag--; }
-
-  int promptflag (void) const { return pflag; }
-
-  int promptflag (int n)
+  class
+  base_reader
   {
-    int retval = pflag;
-    pflag = n;
-    return retval;
-  }
+  public:
 
-  std::string octave_gets (bool& eof);
+    friend class input_reader;
 
-  virtual bool reading_fcn_file (void) const;
+    base_reader (base_lexer *lxr)
+      : m_count (1), m_pflag (0), m_lexer (lxr)
+    { }
 
-  virtual bool reading_classdef_file (void) const;
+    base_reader (const base_reader& x)
+      : m_count (1), m_pflag (x.m_pflag), m_lexer (x.m_lexer)
+    { }
 
-  virtual bool reading_script_file (void) const;
+    virtual ~base_reader (void) = default;
 
-  virtual bool input_from_terminal (void) const { return false; }
+    virtual std::string get_input (bool& eof) = 0;
 
-  virtual bool input_from_file (void) const { return false; }
+    virtual std::string input_source (void) const { return s_in_src; }
 
-  virtual bool input_from_eval_string (void) const { return false; }
+    void reset (void) { promptflag (1); }
 
-private:
+    void increment_promptflag (void) { m_pflag++; }
 
-  octave_refcount<int> count;
+    void decrement_promptflag (void) { m_pflag--; }
 
-  int pflag;
+    int promptflag (void) const { return m_pflag; }
 
-  octave::base_lexer *lexer;
+    int promptflag (int n)
+    {
+      int retval = m_pflag;
+      m_pflag = n;
+      return retval;
+    }
 
-  void do_input_echo (const std::string&) const;
+    std::string octave_gets (bool& eof);
 
-  static const std::string in_src;
-};
+    virtual bool reading_fcn_file (void) const;
 
-class
-octave_terminal_reader : public octave_base_reader
-{
-public:
+    virtual bool reading_classdef_file (void) const;
 
-  octave_terminal_reader (octave::base_lexer *lxr = 0)
-    : octave_base_reader (lxr)
-  { }
+    virtual bool reading_script_file (void) const;
 
-  std::string get_input (bool& eof);
+    virtual bool input_from_terminal (void) const { return false; }
 
-  std::string input_source (void) const { return in_src; }
+    virtual bool input_from_file (void) const { return false; }
 
-  bool input_from_terminal (void) const { return true; }
+    virtual bool input_from_eval_string (void) const { return false; }
 
-private:
+  private:
 
-  static const std::string in_src;
-};
+    refcount<int> m_count;
 
-class
-octave_file_reader : public octave_base_reader
-{
-public:
+    int m_pflag;
 
-  octave_file_reader (FILE *f_arg, octave::base_lexer *lxr = 0)
-    : octave_base_reader (lxr), file (f_arg) { }
+    base_lexer *m_lexer;
 
-  std::string get_input (bool& eof);
+    static const std::string s_in_src;
+  };
 
-  std::string input_source (void) const { return in_src; }
-
-  bool input_from_file (void) const { return true; }
-
-private:
-
-  FILE *file;
-
-  static const std::string in_src;
-};
-
-class
-octave_eval_string_reader : public octave_base_reader
-{
-public:
-
-  octave_eval_string_reader (const std::string& str,
-                             octave::base_lexer *lxr = 0)
-    : octave_base_reader (lxr), eval_string (str)
-  { }
-
-  std::string get_input (bool& eof);
-
-  std::string input_source (void) const { return in_src; }
-
-  bool input_from_eval_string (void) const { return true; }
-
-private:
-
-  std::string eval_string;
-
-  static const std::string in_src;
-};
-
-class
-octave_input_reader
-{
-public:
-  octave_input_reader (octave::base_lexer *lxr = 0)
-    : rep (new octave_terminal_reader (lxr))
-  { }
-
-  octave_input_reader (FILE *file, octave::base_lexer *lxr = 0)
-    : rep (new octave_file_reader (file, lxr))
-  { }
-
-  octave_input_reader (const std::string& str, octave::base_lexer *lxr = 0)
-    : rep (new octave_eval_string_reader (str, lxr))
-  { }
-
-  octave_input_reader (const octave_input_reader& ir)
+  class
+  input_reader
   {
-    rep = ir.rep;
-    rep->count++;
-  }
+  public:
 
-  octave_input_reader& operator = (const octave_input_reader& ir)
-  {
-    if (&ir != this)
-      {
-        rep = ir.rep;
-        rep->count++;
-      }
+    input_reader (base_lexer *lxr = nullptr);
 
-    return *this;
-  }
+    input_reader (FILE *file, base_lexer *lxr = nullptr);
 
-  ~octave_input_reader (void)
-  {
-    if (--rep->count == 0)
-      delete rep;
-  }
+    input_reader (const std::string& str, base_lexer *lxr = nullptr);
 
-  void reset (void) { return rep->reset (); }
+    input_reader (const input_reader& ir)
+    {
+      m_rep = ir.m_rep;
+      m_rep->m_count++;
+    }
 
-  void increment_promptflag (void) { rep->increment_promptflag (); }
+    input_reader& operator = (const input_reader& ir)
+    {
+      if (&ir != this)
+        {
+          m_rep = ir.m_rep;
+          m_rep->m_count++;
+        }
 
-  void decrement_promptflag (void) { rep->decrement_promptflag (); }
+      return *this;
+    }
 
-  int promptflag (void) const { return rep->promptflag (); }
+    ~input_reader (void)
+    {
+      if (--m_rep->m_count == 0)
+        delete m_rep;
+    }
 
-  int promptflag (int n) { return rep->promptflag (n); }
+    void reset (void) { return m_rep->reset (); }
 
-  std::string get_input (bool& eof)
-  {
-    return rep->get_input (eof);
-  }
+    void increment_promptflag (void) { m_rep->increment_promptflag (); }
 
-  std::string input_source (void) const
-  {
-    return rep->input_source ();
-  }
+    void decrement_promptflag (void) { m_rep->decrement_promptflag (); }
 
-  bool input_from_terminal (void) const
-  {
-    return rep->input_from_terminal ();
-  }
+    int promptflag (void) const { return m_rep->promptflag (); }
 
-  bool input_from_file (void) const
-  {
-    return rep->input_from_file ();
-  }
+    int promptflag (int n) { return m_rep->promptflag (n); }
 
-  bool input_from_eval_string (void) const
-  {
-    return rep->input_from_eval_string ();
-  }
+    std::string get_input (bool& eof)
+    {
+      return m_rep->get_input (eof);
+    }
 
-private:
+    std::string input_source (void) const
+    {
+      return m_rep->input_source ();
+    }
 
-  octave_base_reader *rep;
-};
+    bool input_from_terminal (void) const
+    {
+      return m_rep->input_from_terminal ();
+    }
+
+    bool input_from_file (void) const
+    {
+      return m_rep->input_from_file ();
+    }
+
+    bool input_from_eval_string (void) const
+    {
+      return m_rep->input_from_eval_string ();
+    }
+
+  private:
+
+    base_reader *m_rep;
+  };
+}
 
 #endif

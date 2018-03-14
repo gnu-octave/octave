@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} dir
@@ -29,6 +29,9 @@
 ## @table @asis
 ## @item name
 ## File or directory name.
+##
+## @item folder
+## Location of file or directory
 ##
 ## @item date
 ## Timestamp of file modification (string value).
@@ -81,8 +84,7 @@ function retval = dir (directory)
 
   ## Prep the retval.
   info = struct (zeros (0, 1),
-                 {"name", "date", "bytes", "isdir", "datenum", "statinfo"});
-
+           {"name", "folder" "date", "bytes", "isdir", "datenum", "statinfo"});
 
   if (strcmp (directory, "*"))
     directory = ".";
@@ -105,13 +107,17 @@ function retval = dir (directory)
     elseif (S_ISDIR (st.mode))
       flst = readdir (flst{1});
       nf = numel (flst);
-      for i = 1:nf
-        flst{i} = fullfile (fn, flst{i});
-      endfor
+      flst = strcat ([fn filesep], flst);
     endif
   endif
 
   if (numel (flst) > 0)
+
+    fs = regexptranslate ("escape", filesep ("all"));
+    re = sprintf ('(^.+)[%s]([^%s.]*)([.][^%s]*)?$', fs, fs, fs);
+    last_dir = last_absdir = "";
+    info(nf,1).name = "";  # pre-declare size of struct array
+
     ## Collect results.
     for i = nf:-1:1
       fn = flst{i};
@@ -123,23 +129,35 @@ function retval = dir (directory)
         ## return info about the target of the link, otherwise, return
         ## info about the link itself.
         if (S_ISLNK (st.mode))
-          [xst, err, msg] = stat (fn);
+          [xst, err] = stat (fn);
           if (! err)
             st = xst;
           endif
         endif
-        [dummy, fn, ext] = fileparts (fn);
-        fn = [fn ext];
-        info(i,1).name = fn;
+        tmpdir = regexprep (fn, re, '$1');
+        fn = regexprep (fn, re, '$2$3');
+        info(i).name = fn;
+        if (! strcmp (last_dir, tmpdir))
+          ## Caching mechanism to speed up function
+          last_dir = tmpdir;
+          last_absdir = canonicalize_file_name (last_dir);
+        endif
+        info(i).folder = last_absdir;
         lt = localtime (st.mtime);
-        info(i,1).date = strftime ("%d-%b-%Y %T", lt);
-        info(i,1).bytes = st.size;
-        info(i,1).isdir = S_ISDIR (st.mode);
-        info(i,1).datenum = datenum (lt.year + 1900, lt.mon + 1, lt.mday,
-                                     lt.hour, lt.min, lt.sec);
-        info(i,1).statinfo = st;
+        info(i).date = strftime ("%d-%b-%Y %T", lt);
+        info(i).bytes = st.size;
+        info(i).isdir = S_ISDIR (st.mode);
+        info(i).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
+                             lt.hour, lt.min, lt.sec];
+        info(i).statinfo = st;
       endif
     endfor
+    ## A lot of gymnastics in order to call datenum just once.  2x speed up.
+    dvec = [info.datenum]([[1:6:end]', [2:6:end]', [3:6:end]', ...
+                           [4:6:end]', [5:6:end]', [6:6:end]']);
+    dnum = datenum (dvec);
+    ctmp = mat2cell (dnum, ones (nf,1), 1);
+    [info.datenum] = ctmp{:};
   endif
 
   ## Return the output arguments.
@@ -160,17 +178,18 @@ endfunction
 %! list = dir ();
 %! assert (isstruct (list) && ! isempty (list));
 %! assert (fieldnames (list),
-%!         {"name"; "date"; "bytes"; "isdir"; "datenum"; "statinfo"});
+%!         {"name"; "folder"; "date"; "bytes"; "isdir"; "datenum"; "statinfo"});
 %!
 %! if (isunix ())
-%!   assert ({list(1:2).name}, {".", ".."});
-%!   assert ([list(1:2).isdir], [true true]);
+%!   idx = find (strcmp ({list.name}, "."), 1);
+%!   assert ({list(idx:idx+1).name}, {".", ".."});
+%!   assert ([list(idx:idx+1).isdir], [true true]);
 %! endif
 %!
 %! ## test that specifying a filename works the same as using a directory.
 %! found = find (! [list.isdir], 1);
 %! if (! isempty (found))
-%!   list2 = dir (list(found).name);
+%!   list2 = dir (fullfile (list(found).folder, list(found).name));
 %!   assert (list(found), list2);
 %! endif
 

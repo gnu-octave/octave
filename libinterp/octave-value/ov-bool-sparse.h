@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -44,8 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 
 class octave_value_list;
-
-class tree_walker;
 
 class
 OCTINTERP_API
@@ -75,16 +73,16 @@ public:
   octave_sparse_bool_matrix (const octave_sparse_bool_matrix& bm)
     : octave_base_sparse<SparseBoolMatrix> (bm) { }
 
-  ~octave_sparse_bool_matrix (void) { }
+  ~octave_sparse_bool_matrix (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_sparse_bool_matrix (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_sparse_bool_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   // FIXME: Adapt idx_vector to allow sparse logical indexing without overflow!
   idx_vector index_vector (bool /* require_integers */ = false) const
@@ -96,11 +94,11 @@ public:
 
   bool is_bool_matrix (void) const { return true; }
 
-  bool is_bool_type (void) const { return true; }
+  bool islogical (void) const { return true; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
-  bool is_numeric_type (void) const { return false; }
+  bool isnumeric (void) const { return false; }
 
   double double_value (bool = false) const;
 
@@ -143,7 +141,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   // Mapper functions are converted to double for treatment
   octave_value map (unary_mapper_t umap) const

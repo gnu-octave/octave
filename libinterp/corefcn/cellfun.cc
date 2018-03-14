@@ -7,19 +7,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -76,13 +76,13 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 
   try
     {
-      tmp = func.do_multi_index_op (nargout, inputlist);
+      tmp = octave::feval (func, inputlist, nargout);
     }
   catch (const octave::execution_exception& e)
     {
       if (error_handler.is_defined ())
         {
-          recover_from_exception ();
+          octave::interpreter::recover_from_exception ();
 
           execution_error = true;
         }
@@ -106,7 +106,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 
           buffer_error_messages--;
 
-          tmp = error_handler.do_multi_index_op (nargout, errlist);
+          tmp = octave::feval (error_handler, errlist, nargout);
         }
       else
         tmp.clear ();
@@ -134,28 +134,28 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
-        result(count) = f_args.elem (count).is_empty ();
+        result(count) = f_args.elem (count).isempty ();
       retval(0) = result;
     }
   else if (name == "islogical")
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).is_bool_type ();
+        result(count) = f_args.elem (count).islogical ();
       retval(0) = result;
     }
   else if (name == "isnumeric")
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).is_numeric_type ();
+        result(count) = f_args.elem (count).isnumeric ();
       retval(0) = result;
     }
   else if (name == "isreal")
     {
       BNDA result (f_args.dims ());
       for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).is_real_type ();
+        result(count) = f_args.elem (count).isreal ();
       retval(0) = result;
     }
   else if (name == "length")
@@ -182,7 +182,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
   else if (name == "size")
     {
       if (nargin != 3)
-        error ("cellfun: not enough arguments for \"size\"");
+        error (R"(cellfun: not enough arguments for "size")");
 
       int d = args(2).nint_value () - 1;
 
@@ -205,7 +205,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
   else if (name == "isclass")
     {
       if (nargin != 3)
-        error ("cellfun: not enough arguments for \"isclass\"");
+        error (R"(cellfun: not enough arguments for "isclass")");
 
       std::string class_name = args(2).string_value ();
       BNDA result (f_args.dims ());
@@ -219,8 +219,9 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 }
 
 static void
-get_mapper_fun_options (const octave_value_list& args, int& nargin,
-                        bool& uniform_output, octave_value& error_handler)
+get_mapper_fun_options (octave::symbol_table& symtab, const octave_value_list& args,
+                        int& nargin, bool& uniform_output,
+                        octave_value& error_handler)
 {
   while (nargin > 3 && args(nargin-2).is_string ())
     {
@@ -241,7 +242,7 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
             {
               std::string err_name = args(nargin-1).string_value ();
 
-              error_handler = symbol_table::find_function (err_name);
+              error_handler = symtab.find_function (err_name);
 
               if (error_handler.is_undefined ())
                 error ("cellfun: invalid function NAME: %s",
@@ -259,8 +260,8 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
   nargin -= 1;
 }
 
-DEFUN (cellfun, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (cellfun, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} cellfun (@var{name}, @var{C})
 @deftypefnx {} {} cellfun ("size", @var{C}, @var{k})
 @deftypefnx {} {} cellfun ("isclass", @var{C}, @var{class})
@@ -402,13 +403,15 @@ v = cellfun (@@det, a); # faster
   if (nargin < 2)
     print_usage ();
 
-  if (! args(1).is_cell ())
+  if (! args(1).iscell ())
     error ("cellfun: C must be a cell array");
 
   octave_value_list retval;
   int nargout1 = (nargout < 1 ? 1 : nargout);
 
   octave_value func = args(0);
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   if (func.is_string ())
     {
@@ -435,7 +438,7 @@ v = cellfun (@@det, a); # faster
         }
       else
         {
-          func = symbol_table::find_function (name);
+          func = symtab.find_function (name);
 
           if (func.is_undefined ())
             error ("cellfun: invalid function NAME: %s", name.c_str ());
@@ -449,7 +452,7 @@ v = cellfun (@@det, a); # faster
   bool uniform_output = true;
   octave_value error_handler;
 
-  get_mapper_fun_options (args, nargin, uniform_output, error_handler);
+  get_mapper_fun_options (symtab, args, nargin, uniform_output, error_handler);
 
   // The following is an optimization because the symbol table can give a
   // more specific function class, so this can result in fewer polymorphic
@@ -457,7 +460,7 @@ v = cellfun (@@det, a); # faster
   {
     if (func.is_function_handle ())
       {
-        octave_fcn_handle* f = func.fcn_handle_value ();
+        octave_fcn_handle *f = func.fcn_handle_value ();
 
         // Overloaded function handles need to check the type of the
         // arguments for each element of the array, so they cannot be
@@ -467,7 +470,7 @@ v = cellfun (@@det, a); # faster
       }
 
     std::string name = func.function_value () -> name ();
-    octave_value f = symbol_table::find_function (name);
+    octave_value f = symtab.find_function (name);
 
     if (f.is_defined ())
       {
@@ -516,7 +519,7 @@ v = cellfun (@@det, a); # faster
 
   for (int j = 0; j < nargin; j++)
     {
-      if (! args(j+1).is_cell ())
+      if (! args(j+1).iscell ())
         error ("cellfun: arguments must be cells");
 
       inputs[j] = args(j+1).cell_value ();
@@ -571,9 +574,9 @@ v = cellfun (@@det, a); # faster
           if (nargout > 0 && tmp.length () < nargout)
             error ("cellfun: function returned fewer than nargout values");
 
-          if  (nargout > 0
-               || (nargout == 0
-                   && tmp.length () > 0 && tmp(0).is_defined ()))
+          if (nargout > 0
+              || (nargout == 0
+                  && tmp.length () > 0 && tmp(0).is_defined ()))
             {
               int num_to_copy = tmp.length ();
 
@@ -652,9 +655,9 @@ v = cellfun (@@det, a); # faster
           if (nargout > 0 && tmp.length () < nargout)
             error ("cellfun: function returned fewer than nargout values");
 
-          if  (nargout > 0
-               || (nargout == 0
-                   && tmp.length () > 0 && tmp(0).is_defined ()))
+          if (nargout > 0
+              || (nargout == 0
+                  && tmp.length () > 0 && tmp(0).is_defined ()))
             {
               int num_to_copy = tmp.length ();
 
@@ -722,13 +725,13 @@ v = cellfun (@@det, a); # faster
 %! assert (a, cell (2, 0));
 %! assert (b, cell (2, 0));
 
-%% Test function to check the "Errorhandler" option
+## Test function to check the "Errorhandler" option
 %!function z = __cellfunerror (S, varargin)
 %!  z = S;
 %!endfunction
 
-%% First input argument can be a string, an inline function,
-%% a function_handle or an anonymous function
+## First input argument can be a string, an inline function,
+## a function_handle or an anonymous function
 %!test
 %! A = cellfun ("islogical", {true, 0.1, false, i*2});
 %! assert (A, [true, false, true, false]);
@@ -742,8 +745,8 @@ v = cellfun (@@det, a); # faster
 %! A = cellfun (@(x) islogical (x), {true, 0.1, false, i*2});
 %! assert (A, [true, false, true, false]);
 
-%% First input argument can be the special string "isreal",
-%% "isempty", "islogical", "isnumeric", "length", "ndims" or "prodofsize"
+## First input argument can be the special string "isreal",
+## "isempty", "islogical", "isnumeric", "length", "ndims" or "prodofsize"
 %!test
 %! A = cellfun ("isreal", {true, 0.1, {}, i*2, [], "abc"});
 %! assert (A, [true, true, false, false, true, true]);
@@ -766,7 +769,7 @@ v = cellfun (@@det, a); # faster
 %! A = cellfun ("prodofsize", {[1, 2; 3, 4], (cell (1,2,3,4))});
 %! assert (A, [4, 24]);
 
-%% Number of input and output arguments may not be limited to one
+## Number of input and output arguments may not be limited to one
 %!test
 %! A = cellfun (@(x,y,z) x + y + z, {1, 1, 1}, {2, 2, 2}, {3, 4, 5});
 %! assert (A, [6, 7, 8]);
@@ -774,20 +777,20 @@ v = cellfun (@@det, a); # faster
 %! A = cellfun (@(x,y,z) x + y + z, {1, 1, 1}, {2, 2, 2}, {3, 4, 5}, ...
 %!              "UniformOutput", false);
 %! assert (A, {6, 7, 8});
-%!test %% Two input arguments of different types
+%!test  # Two input arguments of different types
 %! A = cellfun (@(x,y) islogical (x) && ischar (y), {false, true}, {"a", 3});
 %! assert (A, [true, false]);
-%!test %% Pass another variable to the anonymous function
+%!test  # Pass another variable to the anonymous function
 %! y = true;
 %! A = cellfun (@(x) islogical (x) && y, {false, 0.3});
 %! assert (A, [true, false]);
-%!test %% Three ouptut arguments of different type
+%!test  # Three ouptut arguments of different type
 %! [A, B, C] = cellfun (@find, {10, 11; 0, 12}, "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));
 %! assert (isequal (C, {10, 11; [], 12}));
 
-%% Input arguments can be of type cell array of logical
+## Input arguments can be of type cell array of logical
 %!test
 %! A = cellfun (@(x,y) x == y, {false, true}, {true, true});
 %! assert (A, [false, true]);
@@ -798,7 +801,7 @@ v = cellfun (@@det, a); # faster
 %!test
 %! A = cellfun (@(x) x, {false, true; false, true}, "UniformOutput", false);
 %! assert (A, {false, true; false, true});
-%!test %% Three ouptut arguments of same type
+%!test  # Three ouptut arguments of same type
 %! [A, B, C] = cellfun (@find, {true, false; false, true}, ...
 %!                      "UniformOutput", false);
 %! assert (isequal (A, {true, []; [], true}));
@@ -812,7 +815,7 @@ v = cellfun (@@det, a); # faster
 %! assert (isfield (A, "index"), true);
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) cell2str (x,y), {true}, {true}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert (isfield (A, "identifier"), true);
@@ -821,7 +824,7 @@ v = cellfun (@@det, a); # faster
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 
-%% Input arguments can be of type cell array of numeric
+## Input arguments can be of type cell array of numeric
 %!test
 %! A = cellfun (@(x,y) x>y, {1.1, 4.2}, {3.1, 2+3*i});
 %! assert (A, [false, true]);
@@ -833,7 +836,7 @@ v = cellfun (@@det, a); # faster
 %! A = cellfun (@(x,y) x:y, {1.1, 4}, {3.1, 6}, "UniformOutput", false);
 %! assert (isequal (A{1}, [1.1, 2.1, 3.1]));
 %! assert (isequal (A{2}, [4, 5, 6]));
-%!test %% Three ouptut arguments of different type
+%!test  # Three ouptut arguments of different type
 %! [A, B, C] = cellfun (@find, {10, 11; 0, 12}, "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));
@@ -847,7 +850,7 @@ v = cellfun (@@det, a); # faster
 %! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
@@ -857,8 +860,8 @@ v = cellfun (@@det, a); # faster
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
-%% Input arguments can be of type cell arrays of character or strings
-%!error %% "UniformOutput" false should be used
+## Input arguments can be of type cell arrays of character or strings
+%!error  # "UniformOutput" false should be used
 %! A = cellfun (@(x,y) x>y, {"ad", "c", "ghi"}, {"cc", "d", "fgh"});
 %!test
 %! A = cellfun (@(x,y) x>y, {"a"; "f"}, {"c"; "d"}, "UniformOutput", true);
@@ -874,7 +877,7 @@ v = cellfun (@@det, a); # faster
 %! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -883,12 +886,12 @@ v = cellfun (@@det, a); # faster
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
-%% Structures cannot be handled by cellfun
+## Structures cannot be handled by cellfun
 %!error
 %! vst1.a = 1.1;  vst1.b = 4.2;  vst2.a = 3.1;  vst2.b = 2;
 %! A = cellfun (@(x,y) (x.a < y.a) && (x.b > y.b), vst1, vst2);
 
-%% Input arguments can be of type cell array of cell arrays
+## Input arguments can be of type cell array of cell arrays
 %!test
 %! A = cellfun (@(x,y) x{1} < y{1}, {{1.1}, {4.2}}, {{3.1}, {2}});
 %! assert (A, [1, 0], 1e-16);
@@ -908,7 +911,7 @@ v = cellfun (@@det, a); # faster
 %! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -917,7 +920,7 @@ v = cellfun (@@det, a); # faster
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
-%% Input arguments can be of type cell array of structure arrays
+## Input arguments can be of type cell array of structure arrays
 %!test
 %! a = struct ("a", 1, "b", 2);  b = struct ("a", 1, "b", 3);
 %! A = cellfun (@(x,y) (x.a == y.a) && (x.b < y.b), {a}, {b});
@@ -941,7 +944,7 @@ v = cellfun (@@det, a); # faster
 %! assert (isfield (A, "index"), true);
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! a = struct ("a", 1, "b", 2);  b = struct ("a", 1, "b", 3);
 %! A = cellfun (@(x,y) cell2str (x.a, y.a), {a}, {b}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
@@ -951,7 +954,7 @@ v = cellfun (@@det, a); # faster
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 
-%% A lot of other tests
+## A lot of other tests
 %!assert (cellfun (@sin, {0,1}), sin ([0,1]))
 %!assert (cellfun (inline ("sin (x)"), {0,1}), sin ([0,1]))
 %!assert (cellfun ("sin", {0,1}), sin ([0,1]))
@@ -979,10 +982,10 @@ v = cellfun (@@det, a); # faster
 %! assert (b, {"c", "g"});
 %! assert (c, {".d", ".h"});
 
-%!assert <40467> (cellfun (@isreal, {1 inf nan []}), [true, true, true, true])
-%!assert <40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true})
-%!assert <40467> (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false])
-%!assert <40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false})
+%!assert <*40467> (cellfun (@isreal, {1 inf nan []}), [true, true, true, true])
+%!assert <*40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true})
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false])
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false})
 
 %!error cellfun (1)
 %!error cellfun ("isclass", 1)
@@ -996,8 +999,8 @@ v = cellfun (@@det, a); # faster
 // Hajek.  It was converted to C++ by jwe so that it could properly
 // handle the nargout = 0 case.
 
-DEFUN (arrayfun, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (arrayfun, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} arrayfun (@var{func}, @var{A})
 @deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A})
 @deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})
@@ -1121,6 +1124,8 @@ arrayfun (@@str2num, [1234],
   bool symbol_table_lookup = false;
   octave_value func = args(0);
 
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   if (func.is_string ())
     {
       // See if we can convert the string into a function.
@@ -1140,7 +1145,7 @@ arrayfun (@@str2num, [1234],
         }
       else
         {
-          func = symbol_table::find_function (name);
+          func = symtab.find_function (name);
 
           if (func.is_undefined ())
             error_with_id ("Octave:invalid-input-arg",
@@ -1162,7 +1167,7 @@ arrayfun (@@str2num, [1234],
         {
           if (func.is_function_handle ())
             {
-              octave_fcn_handle* f = func.fcn_handle_value ();
+              octave_fcn_handle *f = func.fcn_handle_value ();
 
               // Overloaded function handles need to check the type of the
               // arguments for each element of the array, so they cannot be
@@ -1171,7 +1176,7 @@ arrayfun (@@str2num, [1234],
                 goto nevermind;
             }
           octave_value f
-            = symbol_table::find_function (func.function_value () -> name ());
+            = symtab.find_function (func.function_value () -> name ());
 
           if (f.is_defined ())
             func = f;
@@ -1182,7 +1187,8 @@ arrayfun (@@str2num, [1234],
       bool uniform_output = true;
       octave_value error_handler;
 
-      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
+      get_mapper_fun_options (symtab, args, nargin, uniform_output,
+                              error_handler);
 
       octave_value_list inputlist (nargin, octave_value ());
 
@@ -1255,9 +1261,9 @@ arrayfun (@@str2num, [1234],
                 error_with_id ("Octave:invalid-fun-call",
                                "arrayfun: function returned fewer than nargout values");
 
-              if  (nargout > 0
-                   || (nargout == 0
-                       && tmp.length () > 0 && tmp(0).is_defined ()))
+              if (nargout > 0
+                  || (nargout == 0
+                      && tmp.length () > 0 && tmp(0).is_defined ()))
                 {
                   int num_to_copy = tmp.length ();
 
@@ -1347,9 +1353,9 @@ arrayfun (@@str2num, [1234],
                 error_with_id ("Octave:invalid-fun-call",
                                "arrayfun: function returned fewer than nargout values");
 
-              if  (nargout > 0
-                   || (nargout == 0
-                       && tmp.length () > 0 && tmp(0).is_defined ()))
+              if (nargout > 0
+                  || (nargout == 0
+                      && tmp.length () > 0 && tmp(0).is_defined ()))
                 {
                   int num_to_copy = tmp.length ();
 
@@ -1414,12 +1420,12 @@ arrayfun (@@str2num, [1234],
 
 %!assert (arrayfun (@ones, 1, [2,3], "uniformoutput", false), {[1,1], [1,1,1]})
 
-%% Test function to check the "Errorhandler" option
+## Test function to check the "Errorhandler" option
 %!function z = __arrayfunerror (S, varargin)
 %!  z = S;
 %!endfunction
-%% First input argument can be a string, an inline function, a
-%% function_handle or an anonymous function
+## First input argument can be a string, an inline function, a
+## function_handle or an anonymous function
 %!test
 %! arrayfun (@isequal, [false, true], [true, true]);  # No output argument
 %!error
@@ -1437,27 +1443,27 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun (@(x,y) isequal (x,y), [false, true], [true, true]);
 %! assert (A, [false, true]);
 
-%% Number of input and output arguments may be greater than one
-%#!test
+## Number of input and output arguments may be greater than one
+%!test
 %! A = arrayfun (@(x) islogical (x), false);
 %! assert (A, true);
 %!test
 %! A = arrayfun (@(x,y,z) x + y + z, [1, 1, 1], [2, 2, 2], [3, 4, 5]);
 %! assert (A, [6, 7, 8], 1e-16);
-%!test %% Two input arguments of different types
+%!test  # Two input arguments of different types
 %! A = arrayfun (@(x,y) islogical (x) && ischar (y), false, "a");
 %! assert (A, true);
-%!test %% Pass another variable to the anonymous function
+%!test  # Pass another variable to the anonymous function
 %! y = true;
 %! A = arrayfun (@(x) islogical (x && y), false);
 %! assert (A, true);
-%!test %% Three ouptut arguments of different type
+%!test  # Three ouptut arguments of different type
 %! [A, B, C] = arrayfun (@find, [10, 11; 0, 12], "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));
 %! assert (isequal (C, {10, 11; [], 12}));
 
-%% Input arguments can be of type logical
+## Input arguments can be of type logical
 %!test
 %! A = arrayfun (@(x,y) x == y, [false, true], [true, true]);
 %! assert (A, [false, true]);
@@ -1467,7 +1473,7 @@ arrayfun (@@str2num, [1234],
 %!test
 %! A = arrayfun (@(x) x, [false, true, false, true], "UniformOutput", false);
 %! assert (A, {false, true, false, true});
-%!test %% Three ouptut arguments of same type
+%!test  # Three ouptut arguments of same type
 %! [A, B, C] = arrayfun (@find, [true, false; false, true], "UniformOutput", false);
 %! assert (isequal (A, {true, []; [], true}));
 %! assert (isequal (B, {true, []; [], true}));
@@ -1480,7 +1486,7 @@ arrayfun (@@str2num, [1234],
 %! assert (isfield (A, "index"), true);
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! A = arrayfun (@(x,y) array2str (x,y), true, true, "UniformOutput", true, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
@@ -1489,7 +1495,7 @@ arrayfun (@@str2num, [1234],
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 
-%% Input arguments can be of type numeric
+## Input arguments can be of type numeric
 %!test
 %! A = arrayfun (@(x,y) x>y, [1.1, 4.2], [3.1, 2+3*i]);
 %! assert (A, [false, true]);
@@ -1500,7 +1506,7 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun (@(x,y) x:y, [1.1, 4], [3.1, 6], "UniformOutput", false);
 %! assert (isequal (A{1}, [1.1, 2.1, 3.1]));
 %! assert (isequal (A{2}, [4, 5, 6]));
-%!test %% Three ouptut arguments of different type
+%!test  # Three ouptut arguments of different type
 %! [A, B, C] = arrayfun (@find, [10, 11; 0, 12], "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));
@@ -1514,7 +1520,7 @@ arrayfun (@@str2num, [1234],
 %! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
@@ -1524,7 +1530,7 @@ arrayfun (@@str2num, [1234],
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
-%% Input arguments can be of type character or strings
+## Input arguments can be of type character or strings
 %!test
 %! A = arrayfun (@(x,y) x>y, ["ad", "c", "ghi"], ["cc", "d", "fgh"]);
 %! assert (A, [false, true, false, true, true, true]);
@@ -1540,7 +1546,7 @@ arrayfun (@@str2num, [1234],
 %! B = isfield (A(1), "identifier") && isfield (A(1), "message") && isfield (A(1), "index");
 %! assert (B, true);
 
-%% Input arguments can be of type structure
+## Input arguments can be of type structure
 %!test
 %! a = struct ("a", 1.1, "b", 4.2);  b = struct ("a", 3.1, "b", 2);
 %! A = arrayfun (@(x,y) (x.a < y.a) && (x.b > y.b), a, b);
@@ -1560,7 +1566,7 @@ arrayfun (@@str2num, [1234],
 %! assert (isfield (A, "index"), true);
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
-%!test %% Overwriting setting of "UniformOutput" true
+%!test  # Overwriting setting of "UniformOutput" true
 %! A = arrayfun (@(x) mat2str(x), "a", "UniformOutput", true, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
@@ -1569,7 +1575,7 @@ arrayfun (@@str2num, [1234],
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 
-%% Input arguments can be of type cell array
+## Input arguments can be of type cell array
 %!test
 %! A = arrayfun (@(x,y) x{1} < y{1}, {1.1, 4.2}, {3.1, 2});
 %! assert (A, [true, false]);
@@ -1651,7 +1657,7 @@ template <typename NDA>
 static Cell
 do_num2cell (const NDA& array, const Array<int>& dimv)
 {
-  if (dimv.is_empty ())
+  if (dimv.isempty ())
     {
       Cell retval (array.dims ());
       octave_idx_type nel = array.numel ();
@@ -1712,7 +1718,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
   // method is not const.
   octave_value array = obj;
 
-  if (! dimv.is_empty ())
+  if (! dimv.isempty ())
     error ("num2cell (A, dim) not implemented for class objects");
 
   dim_vector dv = get_object_dims (array);
@@ -1782,13 +1788,13 @@ num2cell ([1,2;3,4],1)
   if (nargin > 1)
     dimv = args(1).int_vector_value (true);
 
-  if (array.is_bool_type ())
+  if (array.islogical ())
     retval = do_num2cell (array.bool_array_value (), dimv);
   else if (array.is_char_matrix ())
     retval = do_num2cell (array.char_array_value (), dimv);
-  else if (array.is_numeric_type ())
+  else if (array.isnumeric ())
     {
-      if (array.is_integer_type ())
+      if (array.isinteger ())
         {
           if (array.is_int8_type ())
             retval = do_num2cell (array.int8_array_value (), dimv);
@@ -1807,7 +1813,7 @@ num2cell ([1,2;3,4],1)
           else if (array.is_uint64_type ())
             retval = do_num2cell (array.uint64_array_value (), dimv);
         }
-      else if (array.is_complex_type ())
+      else if (array.iscomplex ())
         {
           if (array.is_single_type ())
             retval = do_num2cell (array.float_complex_array_value (), dimv);
@@ -1822,11 +1828,11 @@ num2cell ([1,2;3,4],1)
             retval = do_num2cell (array.array_value (), dimv);
         }
     }
-  else if (array.is_object ())
+  else if (array.isobject ())
     retval = do_object2cell (array, dimv);
-  else if (array.is_map ())
+  else if (array.isstruct ())
     retval = do_num2cell (array.map_value (), dimv);
-  else if (array.is_cell ())
+  else if (array.iscell ())
     retval = do_num2cell (array.cell_value (), dimv);
   else
     err_wrong_type_arg ("num2cell", array);
@@ -1850,7 +1856,7 @@ mat2cell_mismatch (const dim_vector& dv,
       for (octave_idx_type j = 0; j < d[i].numel (); j++)
         s += d[i](j);
 
-      octave_idx_type r = i < dv.ndims () ? dv(i) : 1;
+      octave_idx_type r = (i < dv.ndims () ? dv(i) : 1);
 
       if (s != r)
         error ("mat2cell: mismatch on dimension %d (%d != %d)", i+1, r, s);
@@ -1864,7 +1870,7 @@ static void
 prepare_idx (container *idx, int idim, int nd,
              const Array<octave_idx_type>* d)
 {
-  octave_idx_type nidx = idim < nd ? d[idim].numel () : 1;
+  octave_idx_type nidx = (idim < nd ? d[idim].numel () : 1);
   if (nidx == 1)
     idx[0] = idx_vector::colon;
   else
@@ -1894,7 +1900,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
     return retval;
 
   octave_idx_type nridx = d[0].numel ();
-  octave_idx_type ncidx = nd == 1 ? 1 : d[1].numel ();
+  octave_idx_type ncidx = (nd == 1 ? 1 : d[1].numel ());
   retval.clear (nridx, ncidx);
 
   int ivec = -1;
@@ -1972,7 +1978,7 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  NoAlias< Array<idx_vector> > ra_idx
+  NoAlias< Array<idx_vector>> ra_idx
     (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
 
   for (octave_idx_type j = 0; j < retval.numel (); j++)
@@ -2113,7 +2119,7 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])
     d[i-1] = args(i).octave_idx_type_vector_value (true);
 
   octave_value a = args(0);
-  bool sparse = a.is_sparse_type ();
+  bool sparse = a.issparse ();
   if (sparse && nargin > 3)
     error ("mat2cell: sparse arguments only support 2-D indexing");
 
@@ -2197,7 +2203,7 @@ do_cellslices_nda (const NDA& array,
 {
   octave_idx_type n = lb.numel ();
   Cell retval (1, n);
-  if (array.is_vector () && (dim == -1
+  if (array.isvector () && (dim == -1
                              || (dim == 0 && array.columns () == 1)
                              || (dim == 1 && array.rows () == 1)))
     {
@@ -2268,16 +2274,16 @@ slicing is done along the first non-singleton dimension.
     error ("cellslices: the lengths of LB and UB must match");
 
   Cell retcell;
-  if (! x.is_sparse_type () && x.is_matrix_type ())
+  if (! x.issparse () && x.is_matrix_type ())
     {
       // specialize for some dense arrays.
-      if (x.is_bool_type ())
+      if (x.islogical ())
         retcell = do_cellslices_nda (x.bool_array_value (),
                                      lb, ub, dim);
       else if (x.is_char_matrix ())
         retcell = do_cellslices_nda (x.char_array_value (),
                                      lb, ub, dim);
-      else if (x.is_integer_type ())
+      else if (x.isinteger ())
         {
           if (x.is_int8_type ())
             retcell = do_cellslices_nda (x.int8_array_value (),
@@ -2304,7 +2310,7 @@ slicing is done along the first non-singleton dimension.
             retcell = do_cellslices_nda (x.uint64_array_value (),
                                          lb, ub, dim);
         }
-      else if (x.is_complex_type ())
+      else if (x.iscomplex ())
         {
           if (x.is_single_type ())
             retcell = do_cellslices_nda (x.float_complex_array_value (),

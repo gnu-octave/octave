@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfunc}, @var{varargin})
@@ -398,7 +398,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
 
           elseif (auto_domain && ! auto_domain_done)
             valid_domain = find_valid_domain (X, Y, Z);
-            domain_ok = isequal (domain, valid_domain);
+            domain_ok = all (domain == valid_domain);
             domain = valid_domain;
             auto_domain_done = true;  # ensures only 1 round of do loop done
           else
@@ -482,7 +482,7 @@ endfunction
 
 ## Find: 1) range of function where there are not NaN values,
 ##       2) function is changing (not just flat surface)
-function domain = find_valid_domain (X, Y, Z);
+function domain = find_valid_domain (X, Y, Z)
 
   if (isvector (Z))
     ## 2-D data for isplot
@@ -501,6 +501,12 @@ function domain = find_valid_domain (X, Y, Z);
       domain(4) = min (XX(end) + d/8, irhi + d);
     else
       domain(3:4) = [XX(1), XX(end)];
+    endif
+
+    ## Handle exceptional case of constant function
+    if (domain(3) == domain(4))
+      domain(3) -= 1;
+      domain(4) += 1;
     endif
 
   else

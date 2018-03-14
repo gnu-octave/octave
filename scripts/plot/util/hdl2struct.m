@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{s} =} hdl2struct (@var{h})
@@ -31,143 +31,138 @@
 
 function s = hdl2struct (h)
 
-  if (nargin != 1 || ! ishandle (h))
+  if (nargin != 1 || ! ishghandle (h))
     print_usage ();
   endif
 
   hiddenh = get (0, "showhiddenhandles");
-  if (strcmp (hiddenh, "on"))
+  unwind_protect
     set (0, "showhiddenhandles", "off");
-  endif
 
-  ## main object
-  main = get (h);
-  s.handle = h;
-  s.type = main.type;
-  s.properties = getprops (h);
-  s.children = [];
-  s.special = [];
+    ## main object
+    s.handle = h;
+    s.type = get (h, "type");
+    s.properties = getprops (h);
+    s.children = [];
+    s.special = [];
 
-  ## sweep all children but legends, colorbars, uimenu and hggroup children
-  ## in reverse order
-  kids = main.children;
-  lg = findobj (h, "-depth", 1, "tag", "legend");
-  cb = findobj (h, "-depth", 1, "tag", "colorbar");
-  ui = findobj (h, "-depth", 1, "type", "uimenu");
-  nkids = length (kids);
-  ii = 0;
-  while (nkids)
-    if (! any (kids (nkids) == lg) && ! any (kids (nkids) == cb)
-          && ! any (kids (nkids) == ui) && ! strcmp (main.type, "hggroup"))
+    ## Process, in reverse order, all children except for
+    ## legends, colorbars, uimenu, and hggroup children
+    ii = 0;
+    allkids = get (h, "children");
+    if (! strcmp (s.type, "hggroup"))
+      hnot = findobj (h, "-depth", 1, "tag", "legend", "-or", "tag", "colorbar",
+                                      "-or", "type", "uimenu");
+      kids = allkids(! ismember (allkids, hnot));
+      nkids = length (kids);
+      for i = nkids:-1:1
+        s.children(++ii) = hdl2struct (kids(i));
+      endfor
+    endif
+
+    ## add non "children" children objects (title, xlabel, ...) and
+    ## hggroup children and tag them in "special"
+    if (strcmp (s.type, "hggroup"))
+      special = allkids;
+    else
+      special = [];
+    endif
+    special = [special getspecial(h)];
+    nsp = length (special);
+    while (nsp)
       ii += 1;
-      s.children(ii) = hdl2struct (kids(nkids));
-    endif
-    nkids -= 1;
-  endwhile
+      s.children(ii) = hdl2struct (special(nsp));
+      s.special(nsp) = ii;
+      nsp -= 1;
+    endwhile
 
-  ## add non "children" children objects (title, xlabel, ...) and
-  ## hggroup children and tag theim in "special"
-  special = [];
-  if (strcmp (main.type, "hggroup"))
-    special = main.children;
-  endif
-  special = [special getspecial(h)];
-  nsp = length (special);
-  while (nsp)
-    ii += 1;
-    s.children(ii) = hdl2struct (special(nsp));
-    s.special(nsp) = ii;
-    nsp -= 1;
-  endwhile
+    if (strcmp (s.type, "axes") && isempty (get (h, "tag")))
+      ## look for legends and colorbars among axes brothers and add them
+      ## to the children list
+      try
+        lg = get (h, "__legend_handle__");
+      catch
+        lg = [];
+      end_try_catch
+      nlg = length (lg);
+      if (nlg == 1)
+        ii += 1;
+        s.children(ii) = hdl2struct (lg);
+      elseif (nlg > 1)
+        ## FIXME: Unreachable code now.  Delete?
+        error ("hdl2struct: more than one legend found");
+      endif
 
-  ## look for legends and colorbars among "main"'s brothers and add them
-  ## to the children list
-  if (strcmp (main.type, "axes"))
-    par = main.parent;
-    lg = findobj (par, "-depth", 1, "tag", "legend");
-    if (! isempty (lg))
-      idx = arrayfun (@(x) get(x).userdata.handle(end) == h, lg);
-      lg = lg(find (idx));
-    endif
-    nlg = length (lg);
-    if (nlg == 1)
-      ii += 1;
-      s.children(ii) = hdl2struct (lg);
-    elseif (nlg > 1)
-      error ("hdl2struct: more than one legend found");
-    endif
-
-    cb = findobj (par, "-depth", 1, "tag", "colorbar");
-    if (! isempty (cb))
-      idx = arrayfun (@(x) get(x).axes == h, cb);
-      cb = cb(find (idx));
+      try
+        cb = get (h, "__colorbar_handle__");
+      catch
+        cb = [];
+      end_try_catch
+      ncb = length (cb);
+      if (ncb == 1)
+        ii += 1;
+        s.children(ii) = hdl2struct (cb);
+      elseif (ncb > 1)
+        ## FIXME: Unreachable code now.  Delete?
+        error ("hdl2struct: more than one colorbar found");
+      endif
     endif
 
-    ncb = length (cb);
-    if (ncb == 1)
-      ii += 1;
-      s.children(ii) = hdl2struct (cb);
-    elseif (nlg > 1)
-      error ("hdl2struct: more than one colorbar found");
-    endif
-  endif
-
-  set (0, "showhiddenhandles", hiddenh);
+  unwind_protect_cleanup
+    set (0, "showhiddenhandles", hiddenh);
+  end_unwind_protect
 
 endfunction
 
-function hdlist = getspecial (h)
+function hlist = getspecial (h)
 
   ## return handles to special children
-  hdlist = [];
+  hlist = [];
 
   regkids = get (h, "children");
+  ## inline version of allchild() for performance
   set (0, "showhiddenhandles", "on");
   allkids = get (h, "children");
   set (0, "showhiddenhandles", "off");
-  speckids = arrayfun (@(x) ! any (x == regkids), allkids);
-  hdlist = allkids (find (speckids));
-  hdlist = reshape (hdlist, 1, numel (hdlist));
+  speckids = ! ismember (allkids, regkids);
+  hlist = allkids(speckids);
+  hlist = hlist(:).';  # return row vector
 
 endfunction
 
-function prpstr = getprops (h)
+function propstruct = getprops (h)
+
+  persistent excluded;
+
+  if (isempty (excluded))
+    excluded = cell2struct (repmat ({[]}, 1, 21),
+                            {"beingdeleted", "busyaction", "buttondownfcn", ...
+                             "children", "clipping", "createfcn", ...
+                             "deletefcn", "handlevisibility", "hittest", ...
+                             "interruptible", "parent", "selected" , ...
+                             "selectionhighlight", "type", "uicontextmenu", ...
+                             "currentaxes", "currentcharacter", ...
+                             "currentobject", "tightinset", "currentpoint", ...
+                             "extent"}, 2);
+  endif
 
   obj = get (h);
   ## get useful properties rejecting readonly, children, handles ...
   fields = fieldnames (obj);
-  hdlist = [];
-
-  forbid = {"beingdeleted", "busyaction", "buttondownfcn", ...
-            "children", "clipping", "createfcn", ...
-            "deletefcn", "handlevisibility", "hittest", ...
-            "interruptible", "parent", "selected" ,...
-            "selectionhighlight", "type", "__modified__", ...
-            "uicontextmenu", "__graphics_toolkit__", "currentaxes", ...
-            "currentcharacter", "currentobject","tightinset", ...
-            "currentpoint", "extent"};
-
-  nflds = length (fields);
-  ii = 0;
-  while (nflds)
-    prop = fields{nflds};
-    val = obj.(fields{nflds});
-    ii += 1;
-    if (! any (strcmp (prop, forbid)))
-      prpstr.(prop) = val;
-    endif
-    nflds -= 1;
-  endwhile
+  tf = isfield (excluded, fields);
+  propstruct = rmfield (obj, fields(tf));
 
   ## hidden properties
-  hidden = {"autopos_tag", "looseinset"};
-  for ii = 1:numel (hidden)
-    if (isprop (h, hidden{ii}))
-      prpstr.(hidden{ii}) = get (h, hidden{ii});
-    endif
+  hidden_props = {"__autopos_tag__", "looseinset"};
+  for prop = hidden_props
+    try
+      val = get (h, prop{1});
+      propstruct.(prop{1}) = val;
+    end_try_catch
   endfor
 
 endfunction
 
-
 ## FIXME: need validation tests
+
+## FIXME: Need to test code for legends, colorbars.

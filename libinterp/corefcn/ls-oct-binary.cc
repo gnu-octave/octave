@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,15 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <cstring>
-#include <cctype>
-
-#include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "byte-swap.h"
 #include "data-conv.h"
@@ -41,30 +34,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
-#include "oct-time.h"
-#include "quit.h"
-#include "str-vec.h"
 #include "oct-locbuf.h"
+#include "oct-time.h"
 
-#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-save.h"
-#include "ovl.h"
-#include "oct-map.h"
+#include "ls-oct-binary.h"
+#include "ls-utils.h"
 #include "ov-cell.h"
+#include "ov.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
-
-#include "ls-utils.h"
-#include "ls-oct-binary.h"
 
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.  If the value
@@ -109,7 +96,7 @@ along with Octave; see the file COPYING.  If not, see
 //
 //   type                 string    type_length
 //
-// The string "type" is then used with octave_value_typeinfo::lookup_type
+// The string "type" is then used with octave::type_info::lookup_type
 // to create an octave_value of the correct type.  The specific load/save
 // function is then called.
 //
@@ -143,7 +130,7 @@ read_binary_data (std::istream& is, bool swap,
   int32_t name_len = 0;
   int32_t doc_len = 0;
 
-  doc.resize (0);
+  doc.clear ();
 
   // We expect to fail here, at the beginning of a record, so not
   // being able to read another name should not result in an error.
@@ -178,29 +165,32 @@ read_binary_data (std::istream& is, bool swap,
 
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     error ("load: trouble reading binary file '%s'", filename.c_str ());
-  global = tmp ? 1 : 0;
+  global = (tmp ? 1 : 0);
 
   tmp = 0;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     error ("load: trouble reading binary file '%s'", filename.c_str ());
 
+  octave::type_info& type_info
+    = octave::__get_type_info__ ("read_binary_data");
+
   // All cases except 255 kept for backwards compatibility
   switch (tmp)
     {
     case 1:
-      tc = octave_value_typeinfo::lookup_type ("scalar");
+      tc = type_info.lookup_type ("scalar");
       break;
 
     case 2:
-      tc = octave_value_typeinfo::lookup_type ("matrix");
+      tc = type_info.lookup_type ("matrix");
       break;
 
     case 3:
-      tc = octave_value_typeinfo::lookup_type ("complex scalar");
+      tc = type_info.lookup_type ("complex scalar");
       break;
 
     case 4:
-      tc = octave_value_typeinfo::lookup_type ("complex matrix");
+      tc = type_info.lookup_type ("complex matrix");
       break;
 
     case 5:
@@ -225,11 +215,11 @@ read_binary_data (std::istream& is, bool swap,
       break;
 
     case 6:
-      tc = octave_value_typeinfo::lookup_type ("range");
+      tc = type_info.lookup_type ("range");
       break;
 
     case 7:
-      tc = octave_value_typeinfo::lookup_type ("string");
+      tc = type_info.lookup_type ("string");
       break;
 
     case 255:
@@ -245,7 +235,7 @@ read_binary_data (std::istream& is, bool swap,
           error ("load: trouble reading binary file '%s'", filename.c_str ());
         s[len] = '\0';
         std::string typ = s;
-        tc = octave_value_typeinfo::lookup_type (typ);
+        tc = type_info.lookup_type (typ);
       }
       break;
     default:
@@ -266,7 +256,7 @@ read_binary_data (std::istream& is, bool swap,
 bool
 save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,
-                  bool mark_as_global, bool save_as_floats)
+                  bool mark_global, bool save_as_floats)
 {
   int32_t name_len = name.length ();
 
@@ -280,7 +270,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 
   unsigned char tmp;
 
-  tmp = mark_as_global;
+  tmp = mark_global;
   os.write (reinterpret_cast<char *> (&tmp), 1);
 
   // 255 flags the new binary format

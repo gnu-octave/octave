@@ -4,19 +4,19 @@
 #
 # This file is part of Octave.
 #
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at
-# your option) any later version.
+# Octave is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
+# Octave is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
-# <http://www.gnu.org/licenses/>.
+# <https://www.gnu.org/licenses/>.
 
 # Generate option handling code from a simpler input files for
 # Octave's functions like lsode, dassl, etc.
@@ -110,7 +110,7 @@ sub parse_input
         }
       elsif (/^\s*INCLUDE\s*=\s*"(\S+)"\s*$/)
         {
-          $INCLUDE .= "#include <$1>\n";
+          $INCLUDE .= qq (#include "$1"\n);
         }
       elsif (/^\s*DOC_STRING\s*$/)
         {
@@ -374,8 +374,9 @@ sub emit_opt_class_header
 #if ! defined (octave_${CLASS_NAME}_h)
 #define octave_${CLASS_NAME}_h 1
 
-#include <cfloat>
 #include <cmath>
+
+#include <limits>
 
 $INCLUDE
 
@@ -581,7 +582,7 @@ sub emit_option_table_entry
 
   if ($empty)
     {
-      print "  { 0,\n";
+      print "  { nullptr,\n";
     }
   else
     {
@@ -594,7 +595,7 @@ sub emit_option_table_entry
     {
       if ($empty or $k > $n)
         {
-          print " 0,";
+          print " nullptr,";
         }
       else
         {

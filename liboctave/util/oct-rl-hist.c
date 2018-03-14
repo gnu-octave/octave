@@ -4,19 +4,19 @@ Copyright (C) 2000-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -202,12 +202,9 @@ octave_remove_history (int n)
   HIST_ENTRY *discard = remove_history (n);
 
   if (discard)
-    {
-      if (discard->line)
-        free (discard->line);
+    free (discard->line);
 
-      free (discard);
-    }
+  free (discard);
 }
 
 void
@@ -309,12 +306,9 @@ octave_replace_history_entry (int which, const char *line)
   HIST_ENTRY *discard = replace_history_entry (which, line, 0);
 
   if (discard)
-    {
-      if (discard->line)
-        free (discard->line);
+    free (discard->line);
 
-      free (discard);
-    }
+  free (discard);
 }
 
 #endif

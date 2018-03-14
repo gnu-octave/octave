@@ -4,19 +4,19 @@ Copyright (C) 2006-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
+#include <string>
 
 #if defined (HAVE_FFTW3_H)
 #  include <fftw3.h>
@@ -34,9 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-dld.h"
 #include "error.h"
-#include "ov.h"
-
 #include "errwarn.h"
+#include "ov.h"
 
 DEFUN_DLD (fftw, args, ,
            doc: /* -*- texinfo -*-
@@ -157,65 +157,65 @@ used per default.
           std::string arg1 = args(1).xstring_value ("fftw: METHOD must be a string");
 
           std::transform (arg1.begin (), arg1.end (), arg1.begin (), tolower);
-          octave_fftw_planner::FftwMethod meth
-            = octave_fftw_planner::UNKNOWN;
-          octave_float_fftw_planner::FftwMethod methf
-            = octave_float_fftw_planner::UNKNOWN;
+          octave::fftw_planner::FftwMethod meth
+            = octave::fftw_planner::UNKNOWN;
+          octave::float_fftw_planner::FftwMethod methf
+            = octave::float_fftw_planner::UNKNOWN;
 
           if (arg1 == "estimate")
             {
-              meth = octave_fftw_planner::ESTIMATE;
-              methf = octave_float_fftw_planner::ESTIMATE;
+              meth = octave::fftw_planner::ESTIMATE;
+              methf = octave::float_fftw_planner::ESTIMATE;
             }
           else if (arg1 == "measure")
             {
-              meth = octave_fftw_planner::MEASURE;
-              methf = octave_float_fftw_planner::MEASURE;
+              meth = octave::fftw_planner::MEASURE;
+              methf = octave::float_fftw_planner::MEASURE;
             }
           else if (arg1 == "patient")
             {
-              meth = octave_fftw_planner::PATIENT;
-              methf = octave_float_fftw_planner::PATIENT;
+              meth = octave::fftw_planner::PATIENT;
+              methf = octave::float_fftw_planner::PATIENT;
             }
           else if (arg1 == "exhaustive")
             {
-              meth = octave_fftw_planner::EXHAUSTIVE;
-              methf = octave_float_fftw_planner::EXHAUSTIVE;
+              meth = octave::fftw_planner::EXHAUSTIVE;
+              methf = octave::float_fftw_planner::EXHAUSTIVE;
             }
           else if (arg1 == "hybrid")
             {
-              meth = octave_fftw_planner::HYBRID;
-              methf = octave_float_fftw_planner::HYBRID;
+              meth = octave::fftw_planner::HYBRID;
+              methf = octave::float_fftw_planner::HYBRID;
             }
           else
             error ("fftw: unrecognized planner METHOD");
 
-          meth = octave_fftw_planner::method (meth);
-          octave_float_fftw_planner::method (methf);
+          meth = octave::fftw_planner::method (meth);
+          octave::float_fftw_planner::method (methf);
 
-          if (meth == octave_fftw_planner::MEASURE)
+          if (meth == octave::fftw_planner::MEASURE)
             retval = octave_value ("measure");
-          else if (meth == octave_fftw_planner::PATIENT)
+          else if (meth == octave::fftw_planner::PATIENT)
             retval = octave_value ("patient");
-          else if (meth == octave_fftw_planner::EXHAUSTIVE)
+          else if (meth == octave::fftw_planner::EXHAUSTIVE)
             retval = octave_value ("exhaustive");
-          else if (meth == octave_fftw_planner::HYBRID)
+          else if (meth == octave::fftw_planner::HYBRID)
             retval = octave_value ("hybrid");
           else
             retval = octave_value ("estimate");
         }
       else //planner getter
         {
-          octave_fftw_planner::FftwMethod meth =
-            octave_fftw_planner::method ();
+          octave::fftw_planner::FftwMethod meth =
+            octave::fftw_planner::method ();
 
-          if (meth == octave_fftw_planner::MEASURE)
+          if (meth == octave::fftw_planner::MEASURE)
             retval = octave_value ("measure");
-          else if (meth == octave_fftw_planner::PATIENT)
+          else if (meth == octave::fftw_planner::PATIENT)
             retval = octave_value ("patient");
-          else if (meth == octave_fftw_planner::EXHAUSTIVE)
+          else if (meth == octave::fftw_planner::EXHAUSTIVE)
             retval = octave_value ("exhaustive");
-          else if (meth == octave_fftw_planner::HYBRID)
+          else if (meth == octave::fftw_planner::HYBRID)
             retval = octave_value ("hybrid");
           else
             retval = octave_value ("estimate");
@@ -232,6 +232,9 @@ used per default.
           std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftw_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
 
@@ -245,6 +248,9 @@ used per default.
       else //dwisdom getter
         {
           char *str = fftw_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
           retval = octave_value (wisdom_str);
@@ -262,6 +268,9 @@ used per default.
           std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftwf_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
 
@@ -275,6 +284,9 @@ used per default.
       else //swisdom getter
         {
           char *str = fftwf_export_wisdom_to_string ();
+          if (! str)
+            error ("fftw: could not get current FFTW wisdom");
+
           std::string wisdom_str (str);
           free (str);
           retval = octave_value (wisdom_str);
@@ -292,19 +304,19 @@ used per default.
             error ("fftw: number of threads must be >=1");
 
 #if defined (HAVE_FFTW3_THREADS)
-          octave_fftw_planner::threads (nthreads);
+          octave::fftw_planner::threads (nthreads);
 #else
           err_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
 #if defined (HAVE_FFTW3F_THREADS)
-          octave_float_fftw_planner::threads (nthreads);
+          octave::float_fftw_planner::threads (nthreads);
 #else
           err_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
         }
       else //threads getter
 #if defined (HAVE_FFTW3_THREADS)
-        retval = octave_value (octave_fftw_planner::threads());
+        retval = octave_value (octave::fftw_planner::threads());
 #else
         retval = 1;
 #endif

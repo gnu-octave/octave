@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -148,38 +148,38 @@ DEFCONV (sparse_complex_matrix_conv, scalar, sparse_complex_matrix)
 }
 
 void
-install_s_scm_ops (void)
+install_s_scm_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_add, octave_scalar, octave_sparse_complex_matrix, add);
-  INSTALL_BINOP (op_sub, octave_scalar, octave_sparse_complex_matrix, sub);
-  INSTALL_BINOP (op_mul, octave_scalar, octave_sparse_complex_matrix, mul);
-  INSTALL_BINOP (op_div, octave_scalar, octave_sparse_complex_matrix, div);
-  INSTALL_BINOP (op_pow, octave_scalar, octave_sparse_complex_matrix, pow);
-  INSTALL_BINOP (op_ldiv, octave_scalar, octave_sparse_complex_matrix, ldiv);
-  INSTALL_BINOP (op_lt, octave_scalar, octave_sparse_complex_matrix, lt);
-  INSTALL_BINOP (op_le, octave_scalar, octave_sparse_complex_matrix, le);
-  INSTALL_BINOP (op_eq, octave_scalar, octave_sparse_complex_matrix, eq);
-  INSTALL_BINOP (op_ge, octave_scalar, octave_sparse_complex_matrix, ge);
-  INSTALL_BINOP (op_gt, octave_scalar, octave_sparse_complex_matrix, gt);
-  INSTALL_BINOP (op_ne, octave_scalar, octave_sparse_complex_matrix, ne);
-  INSTALL_BINOP (op_el_mul, octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_BINOP_TI (ti, op_add, octave_scalar, octave_sparse_complex_matrix, add);
+  INSTALL_BINOP_TI (ti, op_sub, octave_scalar, octave_sparse_complex_matrix, sub);
+  INSTALL_BINOP_TI (ti, op_mul, octave_scalar, octave_sparse_complex_matrix, mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_scalar, octave_sparse_complex_matrix, div);
+  INSTALL_BINOP_TI (ti, op_pow, octave_scalar, octave_sparse_complex_matrix, pow);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_scalar, octave_sparse_complex_matrix, ldiv);
+  INSTALL_BINOP_TI (ti, op_lt, octave_scalar, octave_sparse_complex_matrix, lt);
+  INSTALL_BINOP_TI (ti, op_le, octave_scalar, octave_sparse_complex_matrix, le);
+  INSTALL_BINOP_TI (ti, op_eq, octave_scalar, octave_sparse_complex_matrix, eq);
+  INSTALL_BINOP_TI (ti, op_ge, octave_scalar, octave_sparse_complex_matrix, ge);
+  INSTALL_BINOP_TI (ti, op_gt, octave_scalar, octave_sparse_complex_matrix, gt);
+  INSTALL_BINOP_TI (ti, op_ne, octave_scalar, octave_sparse_complex_matrix, ne);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_scalar, octave_sparse_complex_matrix,
                  el_mul);
-  INSTALL_BINOP (op_el_div, octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_BINOP_TI (ti, op_el_div, octave_scalar, octave_sparse_complex_matrix,
                  el_div);
-  INSTALL_BINOP (op_el_pow, octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_scalar, octave_sparse_complex_matrix,
                  el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_scalar, octave_sparse_complex_matrix,
                  el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_BINOP_TI (ti, op_el_and, octave_scalar, octave_sparse_complex_matrix,
                  el_and);
-  INSTALL_BINOP (op_el_or, octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_BINOP_TI (ti, op_el_or, octave_scalar, octave_sparse_complex_matrix,
                  el_or);
 
-  INSTALL_CATOP (octave_scalar, octave_sparse_complex_matrix, s_scm);
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_sparse_complex_matrix, s_scm);
 
-  INSTALL_ASSIGNCONV (octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_ASSIGNCONV_TI (ti, octave_scalar, octave_sparse_complex_matrix,
                       octave_complex_matrix);
 
-  INSTALL_WIDENOP (octave_scalar, octave_sparse_complex_matrix,
+  INSTALL_WIDENOP_TI (ti, octave_scalar, octave_sparse_complex_matrix,
                    sparse_complex_matrix_conv);
 }

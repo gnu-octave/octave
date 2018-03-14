@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "child-list.h"
 #include "cmd-edit.h"
 #include "oct-env.h"
 #include "oct-syscalls.h"
@@ -38,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "octave.h"
 #include "ovl.h"
 #include "pager.h"
@@ -48,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 // Our actual connection to the external pager.
-static oprocstream *external_pager = 0;
+static oprocstream *external_pager = nullptr;
 
 // TRUE means we write to the diary file.
 static bool write_to_diary_file = false;
@@ -64,10 +66,8 @@ default_pager (void)
 {
   std::string pager_binary = octave::sys::env::getenv ("PAGER");
 
-#if defined (OCTAVE_DEFAULT_PAGER)
   if (pager_binary.empty ())
-    pager_binary = OCTAVE_DEFAULT_PAGER;
-#endif
+    pager_binary = octave::config::default_pager ();
 
   return pager_binary;
 }
@@ -85,7 +85,7 @@ static bool Vpage_output_immediately = false;
 
 // TRUE means all output intended for the screen should be passed
 // through the pager.
-static bool Vpage_screen_output = true;
+static bool Vpage_screen_output = false;
 
 static bool really_flush_to_pager = false;
 
@@ -96,10 +96,13 @@ clear_external_pager (void)
 {
   if (external_pager)
     {
-      octave::child_list::remove (external_pager->pid ());
+      octave::child_list& kids
+        = octave::__get_child_list__ ("clear_external_pager");
+
+      kids.remove (external_pager->pid ());
 
       delete external_pager;
-      external_pager = 0;
+      external_pager = nullptr;
     }
 }
 
@@ -116,7 +119,7 @@ pager_event_handler (pid_t pid, int status)
           // which would be bad news.
 
           std::cerr << "warning: connection to external pager lost (pid = "
-                    << pid << ")" << std::endl;
+                    << pid << ')' << std::endl;
           std::cerr << "warning: flushing pending output (please wait)"
                     << std::endl;
 
@@ -136,7 +139,7 @@ pager_command (void)
   std::string cmd = VPAGER;
 
   if (! (cmd.empty () || VPAGER_FLAGS.empty ()))
-    cmd += " " + VPAGER_FLAGS;
+    cmd += ' ' + VPAGER_FLAGS;
 
   return cmd;
 }
@@ -162,8 +165,13 @@ do_sync (const char *msg, int len, bool bypass_pager)
                   external_pager = new oprocstream (pgr.c_str ());
 
                   if (external_pager)
-                    octave::child_list::insert (external_pager->pid (),
-                                                pager_event_handler);
+                    {
+                      octave::child_list& kids
+                        = octave::__get_child_list__ ("do_sync");
+
+                      kids.insert (external_pager->pid (),
+                                   pager_event_handler);
+                    }
                 }
             }
 
@@ -230,243 +238,246 @@ more_than_a_screenful (const char *s, int len)
   return false;
 }
 
-int
-octave_pager_buf::sync (void)
+namespace octave
 {
-  if (! octave::application::interactive ()
-      || octave::application::forced_interactive ()
-      || really_flush_to_pager
-      || (Vpage_screen_output && Vpage_output_immediately)
-      || ! Vpage_screen_output)
-    {
-      char *buf = eback ();
+  int
+  pager_buf::sync (void)
+  {
+    if (! application::interactive ()
+        || application::forced_interactive ()
+        || really_flush_to_pager
+        || (Vpage_screen_output && Vpage_output_immediately)
+        || ! Vpage_screen_output)
+      {
+        char *buf = eback ();
 
-      int len = pptr () - buf;
+        int len = pptr () - buf;
 
-      bool bypass_pager = (! octave::application::interactive ()
-                           || octave::application::forced_interactive ()
-                           || ! Vpage_screen_output
-                           || (really_flush_to_pager
-                               && Vpage_screen_output
-                               && ! Vpage_output_immediately
-                               && ! more_than_a_screenful (buf, len)));
+        bool bypass_pager = (! application::interactive ()
+                             || application::forced_interactive ()
+                             || ! Vpage_screen_output
+                             || (really_flush_to_pager
+                                 && Vpage_screen_output
+                                 && ! Vpage_output_immediately
+                                 && ! more_than_a_screenful (buf, len)));
 
-      if (len > 0)
-        {
-          do_sync (buf, len, bypass_pager);
+        if (len > 0)
+          {
+            do_sync (buf, len, bypass_pager);
 
-          flush_current_contents_to_diary ();
+            flush_current_contents_to_diary ();
 
-          seekoff (0, std::ios::beg);
-        }
-    }
+            seekoff (0, std::ios::beg);
+          }
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-void
-octave_pager_buf::flush_current_contents_to_diary (void)
-{
-  char *buf = eback () + diary_skip;
+  void
+  pager_buf::flush_current_contents_to_diary (void)
+  {
+    char *buf = eback () + diary_skip;
 
-  size_t len = pptr () - buf;
+    size_t len = pptr () - buf;
 
-  octave_diary.write (buf, len);
+    octave_diary.write (buf, len);
 
-  diary_skip = 0;
-}
+    diary_skip = 0;
+  }
 
-void
-octave_pager_buf::set_diary_skip (void)
-{
-  diary_skip = pptr () - eback ();
-}
+  void
+  pager_buf::set_diary_skip (void)
+  {
+    diary_skip = pptr () - eback ();
+  }
 
-int
-octave_diary_buf::sync (void)
-{
-  if (write_to_diary_file && external_diary_file)
-    {
-      char *buf = eback ();
+  int
+  diary_buf::sync (void)
+  {
+    if (write_to_diary_file && external_diary_file)
+      {
+        char *buf = eback ();
 
-      int len = pptr () - buf;
+        int len = pptr () - buf;
 
-      if (len > 0)
-        external_diary_file.write (buf, len);
-    }
+        if (len > 0)
+          external_diary_file.write (buf, len);
+      }
 
-  seekoff (0, std::ios::beg);
+    seekoff (0, std::ios::beg);
 
-  return 0;
-}
+    return 0;
+  }
 
-octave_pager_stream *octave_pager_stream::instance = 0;
+  pager_stream *pager_stream::instance = nullptr;
 
-octave_pager_stream::octave_pager_stream (void) : std::ostream (0), pb (0)
-{
-  pb = new octave_pager_buf ();
-  rdbuf (pb);
-  setf (unitbuf);
-}
+  pager_stream::pager_stream (void) : std::ostream (nullptr), pb (nullptr)
+  {
+    pb = new pager_buf ();
+    rdbuf (pb);
+    setf (unitbuf);
+  }
 
-octave_pager_stream::~octave_pager_stream (void)
-{
-  flush ();
-  delete pb;
-}
+  pager_stream::~pager_stream (void)
+  {
+    flush ();
+    delete pb;
+  }
 
-std::ostream&
-octave_pager_stream::stream (void)
-{
-  return instance_ok () ? *instance : std::cout;
-}
+  std::ostream&
+  pager_stream::stream (void)
+  {
+    return instance_ok () ? *instance : std::cout;
+  }
 
-void
-octave_pager_stream::flush_current_contents_to_diary (void)
-{
-  if (instance_ok ())
-    instance->do_flush_current_contents_to_diary ();
-}
+  void
+  pager_stream::flush_current_contents_to_diary (void)
+  {
+    if (instance_ok ())
+      instance->do_flush_current_contents_to_diary ();
+  }
 
-void
-octave_pager_stream::set_diary_skip (void)
-{
-  if (instance_ok ())
-    instance->do_set_diary_skip ();
-}
+  void
+  pager_stream::set_diary_skip (void)
+  {
+    if (instance_ok ())
+      instance->do_set_diary_skip ();
+  }
 
-// Reinitialize the pager buffer to avoid hanging on to large internal
-// buffers when they might not be needed.  This function should only be
-// called when the pager is not in use.  For example, just before
-// getting command-line input.
+  // Reinitialize the pager buffer to avoid hanging on to large internal
+  // buffers when they might not be needed.  This function should only be
+  // called when the pager is not in use.  For example, just before
+  // getting command-line input.
 
-void
-octave_pager_stream::reset (void)
-{
-  if (instance_ok ())
-    instance->do_reset ();
-}
+  void
+  pager_stream::reset (void)
+  {
+    if (instance_ok ())
+      instance->do_reset ();
+  }
 
-void
-octave_pager_stream::do_flush_current_contents_to_diary (void)
-{
-  if (pb)
-    pb->flush_current_contents_to_diary ();
-}
+  void
+  pager_stream::do_flush_current_contents_to_diary (void)
+  {
+    if (pb)
+      pb->flush_current_contents_to_diary ();
+  }
 
-void
-octave_pager_stream::do_set_diary_skip (void)
-{
-  if (pb)
-    pb->set_diary_skip ();
-}
+  void
+  pager_stream::do_set_diary_skip (void)
+  {
+    if (pb)
+      pb->set_diary_skip ();
+  }
 
-void
-octave_pager_stream::do_reset (void)
-{
-  delete pb;
-  pb = new octave_pager_buf ();
-  rdbuf (pb);
-  setf (unitbuf);
-}
+  void
+  pager_stream::do_reset (void)
+  {
+    delete pb;
+    pb = new pager_buf ();
+    rdbuf (pb);
+    setf (unitbuf);
+  }
 
-bool
-octave_pager_stream::instance_ok (void)
-{
-  bool retval = true;
+  bool
+  pager_stream::instance_ok (void)
+  {
+    bool retval = true;
 
-  if (! instance)
-    {
-      instance = new octave_pager_stream ();
+    if (! instance)
+      {
+        instance = new pager_stream ();
 
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
+        if (instance)
+          singleton_cleanup_list::add (cleanup_instance);
+      }
 
-  if (! instance)
-    error ("unable to create pager_stream object!");
+    if (! instance)
+      error ("unable to create pager_stream object!");
 
-  return retval;
-}
+    return retval;
+  }
 
-octave_diary_stream *octave_diary_stream::instance = 0;
+  diary_stream *diary_stream::instance = nullptr;
 
-octave_diary_stream::octave_diary_stream (void) : std::ostream (0), db (0)
-{
-  db = new octave_diary_buf ();
-  rdbuf (db);
-  setf (unitbuf);
-}
+  diary_stream::diary_stream (void) : std::ostream (nullptr), db (nullptr)
+  {
+    db = new diary_buf ();
+    rdbuf (db);
+    setf (unitbuf);
+  }
 
-octave_diary_stream::~octave_diary_stream (void)
-{
-  flush ();
-  delete db;
-}
+  diary_stream::~diary_stream (void)
+  {
+    flush ();
+    delete db;
+  }
 
-std::ostream&
-octave_diary_stream::stream (void)
-{
-  return instance_ok () ? *instance : std::cout;
-}
+  std::ostream&
+  diary_stream::stream (void)
+  {
+    return instance_ok () ? *instance : std::cout;
+  }
 
-// Reinitialize the diary buffer to avoid hanging on to large internal
-// buffers when they might not be needed.  This function should only be
-// called when the pager is not in use.  For example, just before
-// getting command-line input.
+  // Reinitialize the diary buffer to avoid hanging on to large internal
+  // buffers when they might not be needed.  This function should only be
+  // called when the pager is not in use.  For example, just before
+  // getting command-line input.
 
-void
-octave_diary_stream::reset (void)
-{
-  if (instance_ok ())
-    instance->do_reset ();
-}
+  void
+  diary_stream::reset (void)
+  {
+    if (instance_ok ())
+      instance->do_reset ();
+  }
 
-void
-octave_diary_stream::do_reset (void)
-{
-  delete db;
-  db = new octave_diary_buf ();
-  rdbuf (db);
-  setf (unitbuf);
-}
+  void
+  diary_stream::do_reset (void)
+  {
+    delete db;
+    db = new diary_buf ();
+    rdbuf (db);
+    setf (unitbuf);
+  }
 
-bool
-octave_diary_stream::instance_ok (void)
-{
-  bool retval = true;
+  bool
+  diary_stream::instance_ok (void)
+  {
+    bool retval = true;
 
-  if (! instance)
-    {
-      instance = new octave_diary_stream ();
+    if (! instance)
+      {
+        instance = new diary_stream ();
 
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
+        if (instance)
+          singleton_cleanup_list::add (cleanup_instance);
+      }
 
-  if (! instance)
-    error ("unable to create diary_stream object!");
+    if (! instance)
+      error ("unable to create diary_stream object!");
 
-  return retval;
-}
+    return retval;
+  }
 
-void
-flush_octave_stdout (void)
-{
-  if (! flushing_output_to_pager)
-    {
-      octave::unwind_protect frame;
+  void
+  flush_stdout (void)
+  {
+    if (! flushing_output_to_pager)
+      {
+        unwind_protect frame;
 
-      frame.protect_var (really_flush_to_pager);
-      frame.protect_var (flushing_output_to_pager);
+        frame.protect_var (really_flush_to_pager);
+        frame.protect_var (flushing_output_to_pager);
 
-      really_flush_to_pager = true;
-      flushing_output_to_pager = true;
+        really_flush_to_pager = true;
+        flushing_output_to_pager = true;
 
-      octave_stdout.flush ();
+        octave_stdout.flush ();
 
-      clear_external_pager ();
-    }
+        clear_external_pager ();
+      }
+  }
 }
 
 static void
@@ -483,7 +494,7 @@ close_diary_file (void)
   //
   // will do the right thing.
 
-  octave_pager_stream::flush_current_contents_to_diary ();
+  octave::pager_stream::flush_current_contents_to_diary ();
 
   if (external_diary_file.is_open ())
     {
@@ -500,7 +511,7 @@ open_diary_file (void)
   // If there is pending output in the pager buf, it should not go
   // into the diary file.
 
-  octave_pager_stream::set_diary_skip ();
+  octave::pager_stream::set_diary_skip ();
 
   external_diary_file.open (diary_file.c_str (), std::ios::app);
 
@@ -508,12 +519,13 @@ open_diary_file (void)
     error ("diary: can't open diary file '%s'", diary_file.c_str ());
 }
 
-DEFUN (diary, args, ,
+DEFUN (diary, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} diary
 @deftypefnx {} {} diary on
 @deftypefnx {} {} diary off
 @deftypefnx {} {} diary @var{filename}
+@deftypefnx {} {[@var{status}, @var{diaryfile}] =} diary
 Record a list of all commands @emph{and} the output they produce, mixed
 together just as they appear on the terminal.
 
@@ -521,8 +533,8 @@ Valid options are:
 
 @table @asis
 @item on
-Start recording a session in a file called @file{diary} in the
-current working directory.
+Start recording a session in a file called @file{diary} in the current working
+directory.
 
 @item off
 Stop recording the session in the diary file.
@@ -531,7 +543,13 @@ Stop recording the session in the diary file.
 Record the session in the file named @var{filename}.
 @end table
 
-With no arguments, @code{diary} toggles the current diary state.
+With no input or output arguments, @code{diary} toggles the current diary
+state.
+
+If output arguments are requested, @code{diary} ignores inputs and returns
+the current status.  The boolean @var{status} indicates whether recording is on
+or off, and @var{diaryfile} is the name of the file where the session is
+stored.
 @seealso{history, evalc}
 @end deftypefn */)
 {
@@ -542,6 +560,15 @@ With no arguments, @code{diary} toggles the current diary state.
 
   if (diary_file.empty ())
     diary_file = "diary";
+
+  if (nargout > 0)
+    {
+      // Querying diary variables
+      if (nargout == 1)
+        return ovl (write_to_diary_file);
+      else
+        return ovl (write_to_diary_file, diary_file);
+    }
 
   if (nargin == 0)
     {
@@ -573,24 +600,6 @@ With no arguments, @code{diary} toggles the current diary state.
   return ovl ();
 }
 
-DEFUN (__diaryfile__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {@var{fname} =} __diaryfile__ ()
-Undocumented internal function
-@end deftypefn */)
-{
-  return ovl (diary_file);
-}
-
-DEFUN (__diarystate__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {@var{state} =} __diarystate__ ()
-Undocumented internal function
-@end deftypefn */)
-{
-  return ovl (write_to_diary_file);
-}
-
 DEFUN (more, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} more
@@ -611,14 +620,14 @@ The current state can be determined via @code{page_screen_output}.
 
   if (nargin > 0)
     {
-      std::string arg = args(0).xstring_value ("more: argument must be string \"on\" or \"off\"");
+      std::string arg = args(0).xstring_value (R"(more: argument must be string "on" or "off")");
 
       if (arg == "on")
         Vpage_screen_output = true;
       else if (arg == "off")
         Vpage_screen_output = false;
       else
-        error ("more: argument must be \"on\" or \"off\"");
+        error (R"(more: argument must be "on" or "off")");
     }
   else
     Vpage_screen_output = ! Vpage_screen_output;

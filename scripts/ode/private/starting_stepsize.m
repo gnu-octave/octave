@@ -2,22 +2,22 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} starting_stepsize (@var{order}, @var{func}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol})
+## @deftypefn {} {@var{h} =} starting_stepsize (@var{order}, @var{func}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol}, @var{args})
 ##
 ## Determine a good initial timestep for an ODE solver of order @var{order}
 ## using the algorithm described in reference [1].

@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} area (@var{y})
@@ -168,20 +168,24 @@ function retval = __area__ (ax, x, y, bv, varargin)
     addproperty ("basevalue", hg, "data", bv);
     addlistener (hg, "basevalue", @move_baseline);
 
+    addproperty ("edgealpha", hg, "patchedgealpha", get (h, "edgealpha"));
     addproperty ("edgecolor", hg, "patchedgecolor", get (h, "edgecolor"));
+    addproperty ("facealpha", hg, "patchfacealpha", get (h, "facealpha"));
     addproperty ("facecolor", hg, "patchfacecolor", get (h, "facecolor"));
     addproperty ("linestyle", hg, "patchlinestyle", get (h, "linestyle"));
     addproperty ("linewidth", hg, "patchlinewidth", get (h, "linewidth"));
 
-    addlistener (hg, "edgecolor", @update_props);
-    addlistener (hg, "facecolor", @update_props);
-    addlistener (hg, "linestyle", @update_props);
-    addlistener (hg, "linewidth", @update_props);
+    addlistener (hg, "edgealpha", {@update_prop, "edgealpha"});
+    addlistener (hg, "edgecolor", {@update_prop, "edgecolor"});
+    addlistener (hg, "facealpha", {@update_prop, "facealpha"});
+    addlistener (hg, "facecolor", {@update_prop, "facecolor"});
+    addlistener (hg, "linestyle", {@update_prop, "linestyle"});
+    addlistener (hg, "linewidth", {@update_prop, "linewidth"});
 
     addproperty ("areagroup", hg, "data");
     set (retval, "areagroup", retval);
 
-    ## Matlab property, although Octave does not implement it.
+    ## Deprecated Matlab property which Octave does not implement.
     addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
 
     if (! isempty (args))
@@ -191,14 +195,9 @@ function retval = __area__ (ax, x, y, bv, varargin)
 
 endfunction
 
-function update_props (h, d)
-
+function update_prop (h, ~, prop)
   kids = get (h, "children");
-  set (kids, "edgecolor", get (h, "edgecolor"),
-             "facecolor", get (h, "facecolor"),
-             "linestyle", get (h, "linestyle"),
-             "linewidth", get (h, "linewidth"));
-
+  set (kids, prop, get (h, prop));
 endfunction
 
 function move_baseline (h, d)

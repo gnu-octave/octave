@@ -4,19 +4,19 @@ Copyright (C) 2013-2017 John Donoghue
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 #if ! defined (octave_find_files_model_h)
@@ -28,36 +28,43 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileInfo>
 #include <QIcon>
 
-
-class find_files_model : public QAbstractListModel
+namespace octave
 {
-  Q_OBJECT
+  class find_files_model : public QAbstractListModel
+  {
+    Q_OBJECT
 
-public:
-  find_files_model (QObject *p=0);
-  ~find_files_model ();
+  public:
 
-  void clear ();
+    find_files_model (QObject *p = nullptr);
 
-  void addFile (const QFileInfo &info);
+    ~find_files_model (void) = default;
 
-  int rowCount (const QModelIndex & p=QModelIndex ()) const;
+    void clear (void);
 
-  int columnCount (const QModelIndex & p=QModelIndex ()) const;
+    void addFile (const QFileInfo& info);
 
-  QVariant data (const QModelIndex& idx, int role) const;
+    int rowCount (const QModelIndex& p = QModelIndex ()) const;
 
-  QVariant headerData (int section, Qt::Orientation orientation,
-                       int role = Qt::DisplayRole) const;
+    int columnCount (const QModelIndex& p = QModelIndex ()) const;
 
-  void sort (int column, Qt::SortOrder order=Qt::AscendingOrder);
+    QVariant data (const QModelIndex& idx, int role) const;
 
-  QFileInfo fileInfo (const QModelIndex & p) const;
-  QIcon     fileIcon (const QModelIndex &p) const;
-private:
-  QList<QFileInfo> _files;
-  QStringList _columnNames;
-  int _sortorder;
-};
+    QVariant headerData (int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole) const;
+
+    void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
+
+    QFileInfo fileInfo (const QModelIndex& p) const;
+
+    QIcon fileIcon (const QModelIndex& p) const;
+
+  private:
+
+    QList<QFileInfo> m_files;
+    QStringList m_columnNames;
+    int m_sortorder;
+  };
+}
 
 #endif

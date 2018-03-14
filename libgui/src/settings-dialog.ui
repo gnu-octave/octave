@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>570</width>
-            <height>382</height>
+            <width>658</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -65,57 +65,6 @@
              <layout class="QVBoxLayout" name="verticalLayout_21">
               <item>
                <layout class="QGridLayout" name="gridLayout">
-                <item row="4" column="0">
-                 <widget class="QLabel" name="label_15">
-                  <property name="text">
-                   <string>Dock widget title bar</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <layout class="QHBoxLayout" name="horizontalLayout_8">
-                  <item>
-                   <widget class="QComboBox" name="comboBox_language">
-                    <property name="insertPolicy">
-                     <enum>QComboBox::InsertAtBottom</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_3">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>Icon size</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="6" column="0">
-                 <widget class="QCheckBox" name="cb_prompt_to_exit">
-                  <property name="text">
-                   <string>Confirm before exiting</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="2" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
                   <item>
@@ -157,41 +106,17 @@
                   </item>
                  </layout>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_2">
-                  <property name="text">
-                   <string>Language (requires restart)</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <item row="1" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
                   <item>
-                   <widget class="QRadioButton" name="general_icon_octave">
-                    <property name="text">
-                     <string>Octave logo only</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
+                   <widget class="QComboBox" name="comboBox_language">
+                    <property name="insertPolicy">
+                     <enum>QComboBox::InsertAtBottom</enum>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="general_icon_letter">
-                    <property name="text">
-                     <string>Letter icons</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="general_icon_graphic">
-                    <property name="text">
-                     <string>Graphic icons</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_6">
+                   <spacer name="horizontalSpacer_3">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -205,20 +130,27 @@
                   </item>
                  </layout>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_9">
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_8">
                   <property name="text">
-                   <string>Icon set for dock widgets</string>
+                   <string>Icon size</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
-                 <widget class="QCheckBox" name="cb_status_bar">
+                <item row="7" column="0">
+                 <widget class="QCheckBox" name="cb_prompt_to_exit">
                   <property name="text">
-                   <string>Show status bar</string>
+                   <string>Confirm before exiting</string>
                   </property>
-                  <property name="checked">
-                   <bool>true</bool>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Language (requires restart)</string>
                   </property>
                  </widget>
                 </item>
@@ -384,6 +316,84 @@
                   </item>
                  </layout>
                 </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_15">
+                  <property name="text">
+                   <string>Dock widget title bar</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                  <item>
+                   <widget class="QRadioButton" name="general_icon_octave">
+                    <property name="text">
+                     <string>Octave logo only</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="general_icon_letter">
+                    <property name="text">
+                     <string>Letter icons</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="general_icon_graphic">
+                    <property name="text">
+                     <string>Graphic icons</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_6">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_9">
+                  <property name="text">
+                   <string>Icon set for dock widgets</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QCheckBox" name="cb_status_bar">
+                  <property name="text">
+                   <string>Show status bar</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QCheckBox" name="cb_cursor_blinking">
+                  <property name="text">
+                   <string>Cursor blinking</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
              </layout>
@@ -499,8 +509,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>586</width>
-            <height>813</height>
+            <width>642</width>
+            <height>1012</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -512,181 +522,16 @@
              <layout class="QVBoxLayout" name="verticalLayout_13">
               <item>
                <layout class="QGridLayout" name="editor_common_settings_grid">
-                <item row="6" column="0">
-                 <widget class="QCheckBox" name="editor_long_line_marker">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip">
-                   <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
-                  </property>
-                  <property name="text">
-                   <string>Draw a long line marker</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="8" column="2">
-                 <widget class="QCheckBox" name="cb_edit_tool_bar">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Show tool bar</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QCheckBox" name="editor_showLineNumbers">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Show line numbers</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <spacer name="horizontalSpacer_24">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>10</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="5" column="2">
-                 <layout class="QGridLayout" name="editor_grid_current_line" rowstretch="0" columnstretch="0,0,0,0,0">
-                  <property name="horizontalSpacing">
-                   <number>12</number>
-                  </property>
-                  <property name="verticalSpacing">
-                   <number>0</number>
-                  </property>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="editor_label_cl_color">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>Color</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="3">
-                   <spacer name="horizontalSpacer_11">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>80</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="4">
-                   <spacer name="horizontalSpacer_9">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QCheckBox" name="editor_highlightCurrentLine">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Highlight current line</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QCheckBox" name="editor_longWindowTitle">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Show complete path in window title</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QCheckBox" name="editor_ws_checkbox">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Show whitespace</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QCheckBox" name="cb_show_eol">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Show EOL characters</string>
-                  </property>
-                 </widget>
-                </item>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
                 <item row="1" column="2">
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
                    <widget class="QLabel" name="editor_lbl_min_tab_width">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Tab width min.</string>
                     </property>
@@ -729,6 +574,9 @@
                   </item>
                   <item row="0" column="5">
                    <widget class="QSpinBox" name="editor_notebook_tab_width_max">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -751,6 +599,9 @@
                   </item>
                   <item row="0" column="4">
                    <widget class="QLabel" name="editor_lbl_max_tab_width">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>max.</string>
                     </property>
@@ -758,50 +609,91 @@
                   </item>
                  </layout>
                 </item>
-                <item row="6" column="2">
-                 <layout class="QHBoxLayout" name="horizontalLayout_3">
-                  <item>
-                   <widget class="QLabel" name="editor_long_line_column_text">
-                    <property name="text">
-                     <string>After Column</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSpinBox" name="editor_long_line_column">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimum">
-                     <number>2</number>
-                    </property>
-                    <property name="maximum">
-                     <number>256</number>
-                    </property>
-                    <property name="value">
-                     <number>80</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_7">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
+                <item row="1" column="0">
+                 <widget class="QCheckBox" name="editor_longWindowTitle">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Show complete path in title</string>
+                  </property>
+                 </widget>
                 </item>
-                <item row="7" column="0">
+                <item row="1" column="1">
+                 <spacer name="horizontalSpacer_24">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QCheckBox" name="editor_ws_indent_checkbox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Do not show whitespace used for indentation</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="10" column="0">
+                 <widget class="QCheckBox" name="cb_edit_status_bar">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Show status bar</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QCheckBox" name="editor_showLineNumbers">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Show line numbers</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QCheckBox" name="editor_ws_checkbox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Show whitespace</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="9" column="0">
                  <widget class="QCheckBox" name="cb_code_folding">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -817,17 +709,23 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="2">
-                 <widget class="QCheckBox" name="editor_ws_indent_checkbox">
-                  <property name="enabled">
-                   <bool>false</bool>
+                <item row="10" column="2">
+                 <widget class="QCheckBox" name="cb_edit_tool_bar">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Do not show whitespace used for indentation</string>
+                   <string>Show tool bar</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
-                <item row="9" column="0">
+                <item row="9" column="2">
                  <widget class="QCheckBox" name="cb_show_hscrollbar">
                   <property name="enabled">
                    <bool>true</bool>
@@ -846,8 +744,114 @@
                   </property>
                  </widget>
                 </item>
-                <item row="8" column="0">
-                 <widget class="QCheckBox" name="cb_edit_status_bar">
+                <item row="2" column="2">
+                 <layout class="QGridLayout" name="gridLayout_17">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="editor_linenr_size_label">
+                    <property name="text">
+                     <string>Number size as difference to editor font</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QSpinBox" name="editor_linenr_size">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimum">
+                     <number>-6</number>
+                    </property>
+                    <property name="maximum">
+                     <number>6</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <spacer name="horizontalSpacer_9">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="4" column="2">
+                 <layout class="QGridLayout" name="gridLayout_16">
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_11">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <layout class="QGridLayout" name="editor_grid_current_line">
+                    <item row="0" column="2">
+                     <widget class="QLabel" name="editor_label_cl_color">
+                      <property name="enabled">
+                       <bool>false</bool>
+                      </property>
+                      <property name="text">
+                       <string>Color</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="editor_highlightCurrentLine">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Highlight current line</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <spacer name="horizontalSpacer_14">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QCheckBox" name="cb_show_eol">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -855,10 +859,21 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Show status bar</string>
+                   <string>Show EOL characters</string>
                   </property>
-                  <property name="checked">
-                   <bool>true</bool>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_22">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="editor_highlight_all_occurrences">
+                  <property name="text">
+                   <string>Highlight all occurrences of a word selected by a double click</string>
                   </property>
                  </widget>
                 </item>
@@ -921,15 +936,135 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_6">
+            <widget class="QGroupBox" name="groupBox_9">
              <property name="title">
-              <string>Indentation</string>
+              <string>Comments (Octave)</string>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_28">
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_24">
               <item>
-               <layout class="QGridLayout" name="gridLayout_4">
-                <item row="0" column="5">
-                 <spacer name="horizontalSpacer_14">
+               <layout class="QGridLayout" name="gridLayout_18">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_28">
+                  <property name="text">
+                   <string>Strings considered for uncommenting text</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <spacer name="horizontalSpacer_35">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_24">
+                  <property name="text">
+                   <string>String used for commenting selected text</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <layout class="QHBoxLayout" name="layout_comment_strings"/>
+                </item>
+                <item row="1" column="2">
+                 <layout class="QHBoxLayout" name="layout_uncomment_strings"/>
+                </item>
+                <item row="0" column="8">
+                 <spacer name="horizontalSpacer_34">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_3">
+             <property name="title">
+              <string>Long lines</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_23">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_21">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item row="2" column="5">
+                 <layout class="QHBoxLayout" name="horizontalLayout_18">
+                  <item>
+                   <widget class="QCheckBox" name="editor_break_checkbox">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="toolTip">
+                     <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
+                    </property>
+                    <property name="text">
+                     <string>Break long lines at line length</string>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="editor_break_comments_checkbox">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Break lines only in comments</string>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_17">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="3">
+                 <spacer name="horizontalSpacer_37">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -944,27 +1079,115 @@
                   </property>
                  </spacer>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_13">
-                  <property name="text">
-                   <string>Indent width</string>
+                <item row="0" column="2">
+                 <widget class="QSpinBox" name="editor_long_line_column">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimum">
+                   <number>2</number>
+                  </property>
+                  <property name="maximum">
+                   <number>256</number>
+                  </property>
+                  <property name="value">
+                   <number>80</number>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="4">
-                 <widget class="QCheckBox" name="editor_tab_ind_checkbox">
+                <item row="0" column="1">
+                 <widget class="QLabel" name="editor_long_line_column_text">
                   <property name="text">
-                   <string>Tab indents line</string>
+                   <string>Line length</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="4">
-                 <widget class="QCheckBox" name="editor_auto_ind_checkbox">
+                <item row="0" column="5">
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <item>
+                   <widget class="QCheckBox" name="editor_long_line_marker">
+                    <property name="text">
+                     <string>Long line marker</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="editor_long_line_marker_line">
+                    <property name="text">
+                     <string>Line</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="editor_long_line_marker_background">
+                    <property name="text">
+                     <string>Background</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_7">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_19">
+                <item>
+                 <widget class="QCheckBox" name="editor_wrap_checkbox">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
+                  </property>
                   <property name="text">
-                   <string>Auto indentation</string>
+                   <string>Wrap long lines at curent window border</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="title">
+              <string>Indentation</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_28">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_4">
                 <item row="0" column="2">
                  <widget class="QSpinBox" name="editor_ind_width_spinbox">
                   <property name="sizePolicy">
@@ -984,17 +1207,50 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_14">
+                <item row="2" column="10">
+                 <spacer name="horizontalSpacer_20">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_13">
                   <property name="text">
-                   <string>Tab width</string>
+                   <string>Indent width</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="6">
-                 <widget class="QCheckBox" name="editor_ind_guides_checkbox">
+                <item row="2" column="4">
+                 <widget class="QCheckBox" name="editor_tab_ind_checkbox">
                   <property name="text">
-                   <string>Show indentation guides</string>
+                   <string>Tab indents line</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="10">
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="4">
+                 <widget class="QCheckBox" name="editor_auto_ind_checkbox">
+                  <property name="text">
+                   <string>Auto indentation</string>
                   </property>
                  </widget>
                 </item>
@@ -1011,6 +1267,20 @@
                   </property>
                   <property name="maximum">
                    <number>32</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_14">
+                  <property name="text">
+                   <string>Tab width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="6">
+                 <widget class="QCheckBox" name="editor_ind_guides_checkbox">
+                  <property name="text">
+                   <string>Show indentation guides</string>
                   </property>
                  </widget>
                 </item>
@@ -1044,28 +1314,60 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="10">
-                 <spacer name="horizontalSpacer_20">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_autoclose">
+                <item>
+                 <widget class="QLabel" name="label_auto_endif">
+                  <property name="text">
+                   <string>Auto insert after &quot;if&quot; etc.</string>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
+                 </widget>
                 </item>
-                <item row="0" column="10">
-                 <spacer name="horizontalSpacer_13">
+                <item>
+                 <widget class="QComboBox" name="editor_auto_endif">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QComboBox::AdjustToContents</enum>
+                  </property>
+                  <property name="minimumContentsLength">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Nothing</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>&quot;endif&quot; etc.</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>&quot;end&quot;</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_autoclose">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Expanding</enum>
+                  </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>40</width>
-                    <height>20</height>
+                    <width>10</width>
+                    <height>0</height>
                    </size>
                   </property>
                  </spacer>
@@ -1316,7 +1618,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Restore editor tabs from previous session on startup</string>
+                     <string>Restore editor tabs from previous session on startup or when editor is shown again after closing</string>
                     </property>
                    </widget>
                   </item>
@@ -1333,7 +1635,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0">
+                  <item row="6" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <property name="topMargin">
                      <number>0</number>
@@ -1391,7 +1693,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="7" column="0">
+                  <item row="8" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
                      <widget class="QLabel" name="label_16">
@@ -1417,6 +1719,13 @@
                      </spacer>
                     </item>
                    </layout>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QCheckBox" name="editor_hiding_closes_files">
+                    <property name="text">
+                     <string>Close all files when the editor widget is closed/hidden</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </item>
@@ -1514,8 +1823,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
-            <height>236</height>
+            <width>481</width>
+            <height>230</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1535,13 +1844,6 @@
                   <widget class="QCheckBox" name="terminal_cursorUseForegroundColor">
                    <property name="text">
                     <string>Use foreground color</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="terminal_cursorBlinking">
-                   <property name="text">
-                    <string>Cursor blinking</string>
                    </property>
                   </widget>
                  </item>
@@ -1803,7 +2105,7 @@
             <x>0</x>
             <y>0</y>
             <width>474</width>
-            <height>199</height>
+            <height>196</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -1947,7 +2249,7 @@
             <x>0</x>
             <y>0</y>
             <width>200</width>
-            <height>79</height>
+            <height>77</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2016,7 +2318,7 @@
             <x>0</x>
             <y>0</y>
             <width>364</width>
-            <height>212</height>
+            <height>210</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2215,7 +2517,7 @@
             <x>0</x>
             <y>0</y>
             <width>529</width>
-            <height>204</height>
+            <height>199</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2341,6 +2643,205 @@
            </item>
            <item>
             <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_varedit">
+      <attribute name="title">
+       <string>Variable Editor</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_ve_manual">
+       <item>
+        <widget class="QScrollArea" name="scrollArea_8">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_3">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>615</width>
+            <height>169</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
+           <property name="geometry" stdset="0">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>678</width>
+             <height>384</height>
+            </rect>
+           </property>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_ve">
+             <item>
+              <layout class="QGridLayout" name="gridLayout_ve">
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_27">
+                 <property name="text">
+                  <string>Default row height</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_25">
+                 <property name="text">
+                  <string>Font</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="varedit_columnWidth">
+                 <property name="text">
+                  <string>20</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_ve_colwidth">
+                 <property name="text">
+                  <string>Default column width</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="5">
+                <widget class="QCheckBox" name="varedit_useTerminalFont">
+                 <property name="text">
+                  <string>Use Terminal Font</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4">
+                <widget class="QSpinBox" name="varedit_fontSize">
+                 <property name="value">
+                  <number>10</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="3">
+                <widget class="QLabel" name="label_26">
+                 <property name="text">
+                  <string>Font size</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="varedit_rowHeight">
+                 <property name="text">
+                  <string>2</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" colspan="2">
+                <widget class="QFontComboBox" name="varedit_font">
+                 <property name="currentFont">
+                  <font>
+                   <family>Liberation Mono</family>
+                  </font>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QCheckBox" name="varedit_autoFitColumnWidth">
+                 <property name="text">
+                  <string>Autofit</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2" colspan="2">
+                <widget class="QCheckBox" name="varedit_rowAutofit">
+                 <property name="text">
+                  <string>Plus font height</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3" colspan="2">
+                <widget class="QComboBox" name="varedit_autofitType">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="currentIndex">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>By Column</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Uniform</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="2" column="6">
+                <spacer name="horizontalSpacer_ve">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="varedit_colors_box">
+               <property name="title">
+                <string>Variable Editor Colors</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="varedit_alternate">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Use alternating row colors</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -2788,38 +3289,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>editor_long_line_marker</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_long_line_column</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>145</x>
-     <y>187</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>355</x>
-     <y>187</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_long_line_marker</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_long_line_column_text</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>145</x>
-     <y>187</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>302</x>
-     <y>187</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>editor_checkbox_ac_keywords</sender>
    <signal>toggled(bool)</signal>
    <receiver>editor_checkbox_ac_builtins</receiver>
@@ -2912,6 +3381,102 @@
     <hint type="destinationlabel">
      <x>507</x>
      <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_break_checkbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_break_comments_checkbox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>483</x>
+     <y>446</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_showLineNumbers</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_linenr_size_label</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>161</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_showLineNumbers</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_linenr_size</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>161</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>488</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>varedit_autoFitColumnWidth</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>varedit_autofitType</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>334</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>429</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_long_line_marker</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_long_line_marker_line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>397</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>346</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_long_line_marker</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_long_line_marker_background</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>397</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>397</y>
     </hint>
    </hints>
   </connection>

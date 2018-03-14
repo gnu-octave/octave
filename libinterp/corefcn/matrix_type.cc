@@ -4,19 +4,19 @@ Copyright (C) 2005-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -141,13 +141,13 @@ LU@tie{}factorization.  Once the matrix has been factorized,
       else
         retval = args(0);
     }
-  else if (args(0).is_sparse_type ())
+  else if (args(0).issparse ())
     {
       if (nargin == 1)
         {
           MatrixType mattyp;
 
-          if (args(0).is_complex_type ())
+          if (args(0).iscomplex ())
             {
               mattyp = args(0).matrix_type ();
 
@@ -287,7 +287,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
             error ("matrix_type: Invalid number of arguments");
 
           // Set the matrix type
-          if (args(0).is_complex_type ())
+          if (args(0).iscomplex ())
             retval = octave_value (args(0).sparse_complex_matrix_value (),
                                    mattyp);
           else
@@ -301,7 +301,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
         {
           MatrixType mattyp;
 
-          if (args(0).is_complex_type ())
+          if (args(0).iscomplex ())
             {
               mattyp = args(0).matrix_type ();
 
@@ -424,7 +424,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
           // Set the matrix type
           if (args(0).is_single_type ())
             {
-              if (args(0).is_complex_type ())
+              if (args(0).iscomplex ())
                 retval = octave_value (args(0).float_complex_matrix_value (),
                                        mattyp);
               else
@@ -433,7 +433,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
             }
           else
             {
-              if (args(0).is_complex_type ())
+              if (args(0).iscomplex ())
                 retval = octave_value (args(0).complex_matrix_value (),
                                        mattyp);
               else

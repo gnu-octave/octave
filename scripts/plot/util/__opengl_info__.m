@@ -1,17 +1,20 @@
 ## Copyright (C) 2016-2017 John Donoghue <john.donoghue@ieee.org>
 ##
-## This program is free software; you can redistribute it and/or modify it
+## This file is part of Octave.
+##
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} __opengl_info__
@@ -39,6 +42,8 @@
 ## List of enabled extensions for the OpenGL driver.
 ## @end table
 ##
+## Example Code:
+##
 ## @example
 ## glinfo = __opengl_info__ ();
 ## @end example
@@ -47,7 +52,6 @@
 
 function retval = __opengl_info__ ()
 
-  ## currently we only handle a single argument
   if (nargin != 0)
     print_usage ();
   endif
@@ -58,10 +62,10 @@ function retval = __opengl_info__ ()
     warning (msg);
   else
     if (nargout == 0)
-      printf ("version    = %s\n", info.version);
-      printf ("vendor     = %s\n", info.vendor);
-      printf ("renderer   = %s\n", info.renderer);
-      printf ("extensions =\n");
+      printf ("   version: %s\n", info.version);
+      printf ("    vendor: %s\n", info.vendor);
+      printf ("  renderer: %s\n", info.renderer);
+      printf ("extensions:\n");
       printf ("  %s\n", info.extensions{:});
     else
       retval = info;
@@ -71,27 +75,28 @@ function retval = __opengl_info__ ()
 endfunction
 
 function info = fig_gl_info (h)
+
   info = [];
 
-  if (ishandle (h) && strcmp (get (h, "renderer"), "opengl"))
-    vers = get (h, "__gl_version__");
+  if (ishghandle (h) && strcmp (get (h, "renderer"), "opengl"))
     vend = get (h, "__gl_vendor__");
-    rend = get (h, "__gl_renderer__");
-    exts = get (h, "__gl_extensions__");
-    if (! isempty (vend))
-      info.version = vers;
-      info.vendor = vend;
-      info.renderer = rend;
-      info.extensions = strsplit (strtrim (exts));
+    if (isempty (vend))
+      return;
     endif
+    info.vendor   = vend;
+    info.version  = get (h, "__gl_version__");
+    info.renderer = get (h, "__gl_renderer__");
+    info.extensions = strsplit (strtrim (get (h, "__gl_extensions__")));
   endif
+
 endfunction
 
 function [info, msg] = gl_info ()
+
   info = [];
   msg = "";
 
-  ## If we have any open figures, take a look for any OpenGL info.
+  ## If we have any open figures, take a look there for OpenGL info.
   figs = findall (0, "type", "figure");
 
   for hf = figs.'
@@ -102,14 +107,17 @@ function [info, msg] = gl_info ()
   endfor
 
   ## If no info yet, try open a figure to get the info.
-  if (isempty (info))
+  attempts = 1;
+  while (isempty (info) && attempts++ <= 3)
     ## Need to create a figure, place an OpenGL object, and force drawing.
-    h = figure ("position", [0,0,1,1], "toolbar", "none", "menubar", "none");
+    hf = figure ("position", [0,0,1,1], "toolbar", "none", "menubar", "none");
     hax = axes ();
-    drawnow ();
-    info = fig_gl_info (h);
-    close (h);
-  endif
+    ## FIXME: Race condition means this delay may not always work.
+    pause (0.1 * attempts);
+    refresh (hf);
+    info = fig_gl_info (hf);
+    close (hf);
+  endwhile
 
   if (isempty (info))
     msg = "__opengl_info__: can not obtain OpenGL information";
@@ -118,7 +126,26 @@ function [info, msg] = gl_info ()
 endfunction
 
 
-%!xtest
-%! a = __opengl_info__ ();
-%! assert (! isempty (a))
-%! assert (isfield (a, "version"))
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+%! old_toolkit = graphics_toolkit ();
+%! unwind_protect
+%!   graphics_toolkit ("fltk");
+%!   a = __opengl_info__ ();
+%! unwind_protect_cleanup
+%!   graphics_toolkit (old_toolkit);
+%! end_unwind_protect
+%! assert (! isempty (a));
+%! assert (isfield (a, "version"));
+
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%! old_toolkit = graphics_toolkit ();
+%! unwind_protect
+%!   graphics_toolkit ("qt");
+%!   a = __opengl_info__ ();
+%! unwind_protect_cleanup
+%!   graphics_toolkit (old_toolkit);
+%! end_unwind_protect
+%! assert (! isempty (a));
+%! assert (isfield (a, "version"));
+
+%!error __opengl_info ("foobar")

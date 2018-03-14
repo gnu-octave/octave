@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} newplot ()
@@ -109,9 +109,14 @@ function hax = newplot (hsave = [])
     endif
   endif
 
+  do_reset = true;
   if (isempty (cf))
     ## get current figure, or create a new one if necessary
-    cf = gcf ();
+    cf = get (0, "currentfigure");
+    if (isempty (cf))
+      cf = figure ();
+      do_reset = false;
+    endif
   else
     ## switch to figure provided without causing other updates
     set (0, "currentfigure", cf);
@@ -135,17 +140,24 @@ function hax = newplot (hsave = [])
       endif
       delete (kids);
     case "replace"
-      kids = allchild (cf);
-      if (! isempty (ca))
-        kids(kids == ca) = [];
+      if (do_reset)
+        kids = allchild (cf);
+        if (! isempty (ca))
+          kids(kids == ca) = [];
+        endif
+        delete (kids);
+        reset (cf);
       endif
-      delete (kids);
-      reset (cf);
   endswitch
   set (cf, "nextplot", "add");  # Matlab compatibility
 
+  do_reset = true;
   if (isempty (ca))
-    ca = gca ();
+    ca = get (cf, "currentaxes");
+    if (isempty (ca))
+      ca = axes ();
+      do_reset = false;
+    endif
     deleteall = true;
   else
     set (cf, "currentaxes", ca);
@@ -185,22 +197,16 @@ function hax = newplot (hsave = [])
           ## property created with addproperty short of deleting the object.
           delete (ca);
           ca = axes ();
-        else
-          __go_axes_init__ (ca, "replace");
-          __request_drawnow__ ();
+        elseif (do_reset)
+          rcn = getappdata (ca, "__subplotrcn__");
+          delete (allchild (ca));
+          reset (ca);
+          ## Reinstall listeners for subplot
+          if (! isempty (rcn))
+            subplot (rcn{:}, ca)
+          endif
         endif
       endif
-      ## FIXME: The code above should perform the following:
-      ###########################
-      ## delete (allchild (ca));
-      ## reset (ca);
-      ###########################
-      ## Actually, __go_axes_init__ does both less and more.
-      ## It doesn't really remove all children since it re-instantiates
-      ## xlabel, ylabel, zlabel, and title text objects.
-      ## Also it preserves font properties like fontsize.
-      ## For the time being, in order to have axis labels and title work,
-      ## the above code is required.
   endswitch
 
   ## Reset line and color styles when hold is not on
@@ -238,7 +244,7 @@ endfunction
 %!   li2 = line (1:10, sin (1:10), "parent", hg2);
 %!   hold off;
 %!   newplot (hg2);
-%!   assert (ishandle (li0), false);
+%!   assert (ishghandle (li0), false);
 %!   assert (get (hax, "children"), hg1);
 %!
 %!   ## kids are preserved for hggroups
@@ -248,7 +254,7 @@ endfunction
 %!
 %!   ## preserve objects
 %!   newplot (li1);
-%!   assert (ishandle (li1));
+%!   assert (ishghandle (li1));
 %!
 %!   ## kids are deleted for axes
 %!   newplot (hax);

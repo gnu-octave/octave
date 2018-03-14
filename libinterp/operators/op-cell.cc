@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -53,16 +53,16 @@ DEFASSIGNANYOP_FN (assign, cell, assign);
 DEFNULLASSIGNOP_FN (null_assign, cell, delete_elements)
 
 void
-install_cell_ops (void)
+install_cell_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_transpose, octave_cell, transpose);
-  INSTALL_UNOP (op_hermitian, octave_cell, transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_cell, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_cell, transpose);
 
-  INSTALL_CATOP (octave_cell, octave_cell, c_c);
+  INSTALL_CATOP_TI (ti, octave_cell, octave_cell, c_c);
 
-  INSTALL_ASSIGNANYOP (op_asn_eq, octave_cell, assign);
+  INSTALL_ASSIGNANYOP_TI (ti, op_asn_eq, octave_cell, assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
 }

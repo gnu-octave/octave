@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{desc} =} get_description (@var{filename})
@@ -45,7 +45,7 @@ function desc = get_description (filename)
       ## Keyword/value pair
       colon = find (line == ":");
       if (length (colon) == 0)
-        disp ("skipping line");
+        warning ("pkg: skipping invalid line in DESCRIPTION file");
       else
         colon = colon(1);
         keyword = tolower (strtrim (line(1:colon-1)));
@@ -55,7 +55,12 @@ function desc = get_description (filename)
             error ("The keyword '%s' of the package '%s' has an empty value",
                     keyword, desc.name);
         endif
-        desc.(keyword) = value;
+        if (isfield (desc, keyword))
+          warning ('pkg: duplicate keyword "%s" in DESCRIPTION, ignoring',
+                   keyword);
+        else
+          desc.(keyword) = value;
+        endif
       endif
     endif
     line = fgetl (fid);

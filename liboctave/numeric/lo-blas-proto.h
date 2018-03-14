@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 extern "C"
 {
-  // DOT (liboctave/cruft/blas-xtra)
+  // DOT (liboctave/external/blas-xtra)
 
   F77_RET_T
   F77_FUNC (xddot, XDDOT) (const F77_INT&, const F77_DBLE*,
@@ -53,7 +53,7 @@ extern "C"
                            const F77_INT&, const F77_REAL*,
                            const F77_REAL*, F77_REAL*);
 
-  // DOTC (liboctave/cruft/blas-xtra)
+  // DOTC (liboctave/external/blas-xtra)
 
   F77_RET_T
   F77_FUNC (xcdotc, XCDOTC) (const F77_INT&, const F77_CMPLX*,
@@ -77,7 +77,7 @@ extern "C"
                              const F77_INT&, const F77_DBLE_CMPLX*,
                              const F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
 
-  // DOTU (liboctave/cruft/blas-xtra)
+  // DOTU (liboctave/external/blas-xtra)
 
   F77_RET_T
   F77_FUNC (xcdotu, XCDOTU) (const F77_INT&, const F77_CMPLX*,
@@ -110,7 +110,8 @@ extern "C"
                            const F77_INT&, const F77_DBLE&,
                            const F77_DBLE*, const F77_INT&,
                            const F77_DBLE*, const F77_INT&,
-                           const F77_DBLE&, F77_DBLE*, const F77_INT&
+                           const F77_DBLE&, F77_DBLE*,
+                           const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
 
@@ -133,7 +134,8 @@ extern "C"
                            const F77_INT&, const F77_DBLE_CMPLX&,
                            const F77_DBLE_CMPLX*, const F77_INT&,
                            const F77_DBLE_CMPLX*, const F77_INT&,
-                           const F77_DBLE_CMPLX&, F77_DBLE_CMPLX*, const F77_INT&
+                           const F77_DBLE_CMPLX&, F77_DBLE_CMPLX*,
+                           const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
 

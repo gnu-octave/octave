@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,10 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "Cell.h"
-#include "ov.h"
+#include "builtin-defun-decls.h"
 #include "defun.h"
-#include "unwind-prot.h"
 #include "errwarn.h"
+#include "ov.h"
+#include "unwind-prot.h"
 #include "utils.h"
 
 // This allows safe indexing with char.
@@ -138,11 +139,8 @@ qs_search (const Array<char>& needle,
   octave_idx_type one = 1;
   Array<octave_idx_type> result (dim_vector (std::min (one, nmatch), nmatch));
   octave_idx_type k = 0;
-  for (std::deque<octave_idx_type>::const_iterator iter = accum.begin ();
-       iter != accum.end (); iter++)
-    {
-      result.xelem (k++) = *iter;
-    }
+  for (const auto& idx : accum)
+    result.xelem (k++) = idx;
 
   return result;
 }
@@ -222,7 +220,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
       qs_preprocess (needle, table);
 
       if (argstr.is_string ())
-        if (argpat.is_empty ())
+        if (argpat.isempty ())
           // Return a null matrix for null pattern for MW compatibility
           retval = Matrix ();
         else
@@ -230,7 +228,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
                                             argstr.char_array_value (),
                                             table, overlaps),
                                  true, true);
-      else if (argstr.is_cell ())
+      else if (argstr.iscell ())
         {
           const Cell argsc = argstr.cell_value ();
           Cell retc (argsc.dims ());
@@ -242,7 +240,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
               if (! argse.is_string ())
                 error ("strfind: each element of CELLSTR must be a string");
 
-              if (argpat.is_empty ())
+              if (argpat.isempty ())
                 retc(i) = Matrix ();
               else
                 retc(i) = octave_value (qs_search (needle,
@@ -256,7 +254,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
       else
         error ("strfind: first argument must be a string or cell array of strings");
     }
-  else if (argpat.is_cell ())
+  else if (argpat.iscell ())
     retval = do_simple_cellfun (Fstrfind, "strfind", args);
   else
     error ("strfind: PATTERN must be a string or cell array of strings");
@@ -413,7 +411,7 @@ strrep ("This is a test string", "is", "&%$")
       if (argstr.is_string ())
         retval = qs_replace (argstr.char_array_value (), pat, rep,
                              table, overlaps);
-      else if (argstr.is_cell ())
+      else if (argstr.iscell ())
         {
           const Cell argsc = argstr.cell_value ();
           Cell retc (argsc.dims ());
@@ -434,7 +432,7 @@ strrep ("This is a test string", "is", "&%$")
       else
         error ("strrep: S must be a string or cell array of strings");
     }
-  else if (argpat.is_cell () || argrep.is_cell ())
+  else if (argpat.iscell () || argrep.iscell ())
     retval = do_simple_cellfun (Fstrrep, "strrep", args);
   else
     error ("strrep: PTN and REP arguments must be strings or cell arrays of strings");

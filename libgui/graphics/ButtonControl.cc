@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
+  ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton *btn)
     : BaseControl (go, btn), m_blockCallback (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
@@ -63,7 +63,7 @@ namespace QtHandles
   ButtonControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QAbstractButton* btn = qWidget<QAbstractButton> ();
+    QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     switch (pId)
       {
@@ -92,9 +92,9 @@ namespace QtHandles
                     btn->setChecked (false);
                     if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
                       {
-                        Object* parent = Object::parentObject (gh_manager::get_object (
+                        Object *parent = Object::parentObject (gh_manager::get_object (
                             up.get___myhandle__ ()));
-                        ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
+                        ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
                         if (btnGroup)
                           btnGroup->selectNothing ();
                       }
@@ -115,7 +115,7 @@ namespace QtHandles
   void
   ButtonControl::toggled (bool checked)
   {
-    QAbstractButton* btn = qWidget<QAbstractButton> ();
+    QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     if (! m_blockCallback && btn->isCheckable ())
       {
@@ -126,8 +126,7 @@ namespace QtHandles
         Matrix oldValue = up.get_value ().matrix_value ();
         double newValue = (checked ? up.get_max () : up.get_min ());
 
-        if (oldValue.numel() != 1
-            || (newValue != oldValue(0)))
+        if (oldValue.numel () != 1 || (newValue != oldValue(0)))
           gh_manager::post_set (m_handle, "value", newValue, false);
         gh_manager::post_callback (m_handle, "callback");
       }
@@ -136,7 +135,7 @@ namespace QtHandles
   void
   ButtonControl::clicked (void)
   {
-    QAbstractButton* btn = qWidget<QAbstractButton> ();
+    QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     if (! btn->isCheckable ())
       gh_manager::post_callback (m_handle, "callback");

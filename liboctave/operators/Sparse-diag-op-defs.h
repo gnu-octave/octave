@@ -4,19 +4,19 @@ Copyright (C) 2009-2017 Jason Riedy, Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_Sparse_diag_op_defs_h 1
 
 #include "octave-config.h"
+
+#include "lo-array-errwarn.h"
 
 // Matrix multiplication
 
@@ -75,7 +77,7 @@ RT do_mul_sm_dm (const SM& a, const DM& d)
   if (nr != a_nc)
     octave::err_nonconformant ("operator *", a_nr, a_nc, nr, nc);
 
-  const octave_idx_type mnc = nc < a_nc ? nc: a_nc;
+  const octave_idx_type mnc = (nc < a_nc ? nc: a_nc);
   RT r (a_nr, nc, a.cidx (mnc));
 
   for (octave_idx_type j = 0; j < mnc; ++j)

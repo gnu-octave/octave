@@ -2,26 +2,26 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Strings
 @chapter Strings
 @cindex strings
 @cindex character strings
 @opindex "
-@opindex '
+@opindex @code{'}
 
 A @dfn{string constant} consists of a sequence of characters enclosed in
 either double-quote or single-quote marks.  For example, both of the
@@ -74,9 +74,9 @@ is not a special character.  Here is an example showing the difference:
 
 @example
 @group
-toascii ("\n")
+double ("\n")
     @result{} 10
-toascii ('\n')
+double ('\n')
     @result{} [ 92 110 ]
 @end group
 @end example
@@ -177,19 +177,21 @@ matrix.
 
 @DOCSTRING(ischar)
 
-To test if an object is a string (i.e., a character vector and not a character
-matrix) you can use the @code{ischar} function in combination with the
-@code{isvector} function as in the following example:
+@DOCSTRING(isstring)
+
+To test if an object is a string (i.e., a 1xN row vector of characters
+and not a character matrix) you can use the @code{ischar} function in
+combination with the @code{isrow} function as in the following example:
 
 @example
 @group
 ischar (collection)
      @result{} 1
 
-ischar (collection) && isvector (collection)
+ischar (collection) && isrow (collection)
      @result{} 0
 
-ischar ("my string") && isvector ("my string")
+ischar ("my string") && isrow ("my string")
      @result{} 1
 @end group
 @end example
@@ -452,6 +454,8 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(strrep)
 
+@DOCSTRING(erase)
+
 @DOCSTRING(substr)
 
 @DOCSTRING(regexp)
@@ -500,11 +504,13 @@ hex2dec ("FF")
 
 @DOCSTRING(str2num)
 
-@DOCSTRING(toascii)
-
 @DOCSTRING(tolower)
 
 @DOCSTRING(toupper)
+
+@DOCSTRING(unicode2native)
+
+@DOCSTRING(native2unicode)
 
 @DOCSTRING(do_string_escapes)
 

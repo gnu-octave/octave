@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The text of this file appears in the file INSTALL in the Octave
 @c distribution, as well as in the Octave manual.
@@ -29,7 +29,7 @@
 
 This file documents the installation of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
+Octave is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation.
 
@@ -323,7 +323,7 @@ SuiteSparse is required to provide sparse matrix factorizations and
 solution of linear equations for sparse systems.
 
 @item SUNDIALS
-The SUite of Nonlinear and DIfferential/ALgebraic Equation Solvers
+@nospell{The SUite of Nonlinear and DIfferential/ALgebraic Equation Solvers}
 (@url{http://computation.llnl.gov/projects/sundials}) is required for
 the Ordinary Differential Equations (ODE) solvers @code{ode15i} and
 @code{ode15s}.
@@ -357,18 +357,44 @@ of @var{prefix} is @file{/usr/local}.
 @item --srcdir=@var{dir}
 Look for Octave sources in the directory @var{dir}.
 
-@item --enable-64
-This is an @strong{experimental} option to enable Octave to use 64-bit
-integers for array dimensions and indexing on 64-bit platforms.  You
-probably don't want to use this option unless you know what you are
-doing.  @xref{Compiling Octave with 64-bit Indexing}, for more details
-about building Octave with this option.
+@item --disable-64
+Disable using 64-bit integers for indexing arrays and use 32-bit
+integers instead.  On systems with 32-bit pointers, this option is
+always disabled.  If the configure script determines that your @sc{blas}
+library uses 32-bit integers, then operations using the following
+libraries are limited to arrays with dimensions that are smaller than
+@math{2^{31}} elements:
 
-@item --enable-bounds-check
-Enable bounds checking for indexing operators in the internal array
-classes.  This option is primarily used for debugging Octave.  Building
-Octave with this option has a negative impact on performance and is not
-recommended for general use.
+@itemize @bullet
+@item @sc{blas}
+
+@item @sc{lapack}
+
+@item QRUPDATE
+
+@item SuiteSparse
+
+@item @sc{arpack}
+@end itemize
+
+Additionally, the following libraries use @code{int} internally, so
+maximum problem sizes are always limited:
+
+@itemize @bullet
+@item @sc{glpk}
+
+@item Qhull
+@end itemize
+
+@xref{Compiling Octave with 64-bit Indexing}, for more details
+about building Octave with more complete support for large arrays.
+
+@item --enable-address-sanitizer-flags
+Enable compiler options @option{-fsanitize=address} and
+@option{-fomit-frame-pointer} for memory access checking.  This option is
+primarily used for debugging Octave.  Building Octave with this option
+has a negative impact on performance and is not recommended for general
+use.  It may also interfere with proper functioning of the GUI.
 
 @item --disable-docs
 Disable building all forms of the documentation (Info, PDF, HTML).  The
@@ -608,53 +634,42 @@ Note: the following only applies to systems that have 64-bit pointers.
 Configuring Octave with @option{--enable-64} cannot magically make a
 32-bit system have a 64-bit address space.
 
-On 64-bit systems, Octave is limited to (approximately) the following
-array sizes when using the default 32-bit indexing mode:
+On 64-bit systems, Octave uses 64-bit integers for indexing arrays
+by default.  If the configure script determines that your @sc{blas}
+library uses 32-bit integers, then operations using the following
+libraries are limited to arrays with dimensions that are smaller than
+@math{2^{31}} elements:
 
-@example
-@group
-double:         16 GB
-single:          8 GB
-uint64, int64:  16 GB
-uint32, int32:   8 GB
-uint16, int16:   4 GB
-uint8, int8:     2 GB
-@end group
-@end example
+@itemize @bullet
+@item @sc{blas}
 
-In each case, the limit is really (approximately) @math{2^{31}} elements
-because of the default type of the value used for indexing arrays
-(signed 32-bit integer, corresponding to the size of a Fortran INTEGER
-value).
+@item @sc{lapack}
 
-Trying to create larger arrays will produce the following error:
+@item QRUPDATE
 
-@example
-@group
-octave:1> a = zeros (1024*1024*1024*3, 1, 'int8');
-error: memory exhausted or requested size too large
-       for range of Octave's index type --
-       trying to return to prompt
-@end group
-@end example
+@item SuiteSparse
 
-@noindent
-You will obtain this error even if your system has enough memory to
-create this array (4 GB in the above case).
+@item @sc{arpack}
+@end itemize
 
-To use arrays larger than 2 GB, Octave has to be configured with the
-option @option{--enable-64}.  This option is experimental and you are
-encouraged to submit bug reports if you find a problem.  With this
-option, Octave will use 64-bit integers internally for array dimensions
-and indexing.  However, all numerical libraries used by Octave will
-@strong{also} need to use 64-bit integers for array dimensions and
-indexing.  In most cases, this means they will need to be compiled from
-source since most (all?) distributions which package these libraries
-compile them with the default Fortran integer size, which is normally
-32-bits wide.
+Additionally, the following libraries use @code{int} internally, so
+maximum problem sizes are always limited:
+
+@itemize @bullet
+@item @sc{glpk}
+
+@item Qhull
+@end itemize
+
+Except for @sc{glpk} and Qhull, these libraries may also be configured
+to use 64-bit integers, but most systems do not provide packages built
+this way.  If you wish to experiment with large arrays, the following
+information may be helpful.
 
 The following instructions were tested with the development version of
-Octave and GCC 4.3.4 on an x86_64 Debian system.
+Octave and GCC 4.3.4 on an x86_64 Debian system and may be out of date
+now.  Please report any problems or corrections on the Octave bug
+tracker.
 
 The versions listed below are the versions used for testing.  If newer
 versions of these packages are available, you should try to use them,
@@ -774,12 +789,12 @@ Octave's 64-bit index support is activated with the configure option
 @end example
 
 You must ensure that all Fortran sources except those in the
-@file{liboctave/cruft/ranlib} directory are compiled such that INTEGERS are
+@file{liboctave/external/ranlib} directory are compiled such that INTEGERS are
 8-bytes wide.  If you are using gfortran, the configure script should
 automatically set the Makefile variable @w{@env{F77_INTEGER_8_FLAG}} to
 @option{-fdefault-integer-8}.  If you are using another compiler, you
 must set this variable yourself.  You should NOT set this flag in
-@env{FFLAGS}, otherwise the files in @file{liboctave/cruft/ranlib} will be
+@env{FFLAGS}, otherwise the files in @file{liboctave/external/ranlib} will be
 miscompiled.
 
 @item Other dependencies
@@ -954,7 +969,7 @@ make[2]: *** [zgemm.o] Error 1
 @end example
 
 @noindent
-when compiling the Fortran subroutines in the @file{liboctave/cruft}
+when compiling the Fortran subroutines in the @file{liboctave/external}
 subdirectory, you should either upgrade your compiler or try compiling
 with optimization turned off.
 

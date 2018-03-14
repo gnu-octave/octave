@@ -5,19 +5,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -173,6 +173,12 @@ namespace octave
 
     const char *INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
 
+    const char *KLU_CPPFLAGS = %OCTAVE_CONF_KLU_CPPFLAGS%;
+
+    const char *KLU_LDFLAGS = %OCTAVE_CONF_KLU_LDFLAGS%;
+
+    const char *KLU_LIBS = %OCTAVE_CONF_KLU_LIBS%;
+
     const char *LAPACK_LIBS = %OCTAVE_CONF_LAPACK_LIBS%;
 
     const char *LDFLAGS = %OCTAVE_CONF_LDFLAGS%;
@@ -231,6 +237,8 @@ namespace octave
 
     const char *PCRE_CPPFLAGS = %OCTAVE_CONF_PCRE_CPPFLAGS%;
 
+    const char *PCRE_LDFLAGS = %OCTAVE_CONF_PCRE_LDFLAGS%;
+
     const char *PCRE_LIBS = %OCTAVE_CONF_PCRE_LIBS%;
 
     const char *PREFIX = %OCTAVE_CONF_PREFIX%;
@@ -273,7 +281,19 @@ namespace octave
 
     const char *STATIC_LIBS = %OCTAVE_CONF_STATIC_LIBS%;
 
-    const char *SUITESPARSE_CONFIG_LIBS = %OCTAVE_CONF_SUITESPARSE_CONFIG_LIBS%;
+    const char *SUITESPARSECONFIG_LIBS = %OCTAVE_CONF_SUITESPARSECONFIG_LIBS%;
+
+    const char *SUNDIALS_IDA_CPPFLAGS = %OCTAVE_CONF_SUNDIALS_IDA_CPPFLAGS%;
+
+    const char *SUNDIALS_IDA_LDFLAGS = %OCTAVE_CONF_SUNDIALS_IDA_LDFLAGS%;
+
+    const char *SUNDIALS_IDA_LIBS = %OCTAVE_CONF_SUNDIALS_IDA_LIBS%;
+
+    const char *SUNDIALS_NVECSERIAL_CPPFLAGS = %OCTAVE_CONF_SUNDIALS_NVECSERIAL_CPPFLAGS%;
+
+    const char *SUNDIALS_NVECSERIAL_LDFLAGS = %OCTAVE_CONF_SUNDIALS_NVECSERIAL_LDFLAGS%;
+
+    const char *SUNDIALS_NVECSERIAL_LIBS = %OCTAVE_CONF_SUNDIALS_NVECSERIAL_LIBS%;
 
     const char *TERM_LIBS = %OCTAVE_CONF_TERM_LIBS%;
 

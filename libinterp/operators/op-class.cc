@@ -4,19 +4,19 @@ Copyright (C) 2007-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-path.h"
 #include "ovl.h"
 #include "ov.h"
@@ -46,7 +47,10 @@ along with Octave; see the file COPYING.  If not, see
                                                                         \
     std::string class_name = a.class_name ();                           \
                                                                         \
-    octave_value meth = symbol_table::find_method (#name, class_name);  \
+    octave::symbol_table& symtab                                        \
+      = octave::__get_symbol_table__ ("oct_unop_" #name);               \
+                                                                        \
+    octave_value meth = symtab.find_method (#name, class_name);         \
                                                                         \
     if (meth.is_undefined ())                                           \
       error ("%s method not defined for %s class", #name,               \
@@ -56,7 +60,7 @@ along with Octave; see the file COPYING.  If not, see
                                                                         \
     args(0) = a;                                                        \
                                                                         \
-    octave_value_list tmp = feval (meth.function_value (), args, 1);    \
+    octave_value_list tmp = octave::feval (meth.function_value (), args, 1); \
                                                                         \
     if (tmp.length () > 0)                                              \
       retval = tmp(0);                                                  \
@@ -79,9 +83,12 @@ DEF_CLASS_UNOP (ctranspose)
     octave_value retval;                                                \
                                                                         \
     std::string dispatch_type                                           \
-      = a1.is_object () ? a1.class_name () : a2.class_name ();          \
+      = (a1.isobject () ? a1.class_name () : a2.class_name ());         \
                                                                         \
-    octave_value meth = symbol_table::find_method (#name, dispatch_type); \
+    octave::symbol_table& symtab                                        \
+      = octave::__get_symbol_table__ ("oct_unop_" #name);               \
+                                                                        \
+    octave_value meth = symtab.find_method (#name, dispatch_type);      \
                                                                         \
     if (meth.is_undefined ())                                           \
       error ("%s method not defined for %s class", #name,               \
@@ -92,7 +99,7 @@ DEF_CLASS_UNOP (ctranspose)
     args(1) = a2;                                                       \
     args(0) = a1;                                                       \
                                                                         \
-    octave_value_list tmp = feval (meth.function_value (), args, 1);    \
+    octave_value_list tmp = octave::feval (meth.function_value (), args, 1); \
                                                                         \
     if (tmp.length () > 0)                                              \
       retval = tmp(0);                                                  \
@@ -119,39 +126,37 @@ DEF_CLASS_BINOP (ldivide)
 DEF_CLASS_BINOP (and)
 DEF_CLASS_BINOP (or)
 
-#define INSTALL_CLASS_UNOP(op, f)                       \
-  octave_value_typeinfo::register_unary_class_op        \
-    (octave_value::op, oct_unop_ ## f)
+#define INSTALL_CLASS_UNOP_TI(ti, op, f)                        \
+  ti.install_unary_class_op (octave_value::op, oct_unop_ ## f)
 
-#define INSTALL_CLASS_BINOP(op, f)                      \
-  octave_value_typeinfo::register_binary_class_op       \
-    (octave_value::op, oct_binop_ ## f)
+#define INSTALL_CLASS_BINOP_TI(ti, op, f)                       \
+  ti.install_binary_class_op (octave_value::op, oct_binop_ ## f)
 
 void
-install_class_ops (void)
+install_class_ops (octave::type_info& ti)
 {
-  INSTALL_CLASS_UNOP (op_not, not);
-  INSTALL_CLASS_UNOP (op_uplus, uplus);
-  INSTALL_CLASS_UNOP (op_uminus, uminus);
-  INSTALL_CLASS_UNOP (op_transpose, transpose);
-  INSTALL_CLASS_UNOP (op_hermitian, ctranspose);
+  INSTALL_CLASS_UNOP_TI (ti, op_not, not);
+  INSTALL_CLASS_UNOP_TI (ti, op_uplus, uplus);
+  INSTALL_CLASS_UNOP_TI (ti, op_uminus, uminus);
+  INSTALL_CLASS_UNOP_TI (ti, op_transpose, transpose);
+  INSTALL_CLASS_UNOP_TI (ti, op_hermitian, ctranspose);
 
-  INSTALL_CLASS_BINOP (op_add, plus);
-  INSTALL_CLASS_BINOP (op_sub, minus);
-  INSTALL_CLASS_BINOP (op_mul, mtimes);
-  INSTALL_CLASS_BINOP (op_div, mrdivide);
-  INSTALL_CLASS_BINOP (op_pow, mpower);
-  INSTALL_CLASS_BINOP (op_ldiv, mldivide);
-  INSTALL_CLASS_BINOP (op_lt, lt);
-  INSTALL_CLASS_BINOP (op_le, le);
-  INSTALL_CLASS_BINOP (op_eq, eq);
-  INSTALL_CLASS_BINOP (op_ge, ge);
-  INSTALL_CLASS_BINOP (op_gt, gt);
-  INSTALL_CLASS_BINOP (op_ne, ne);
-  INSTALL_CLASS_BINOP (op_el_mul, times);
-  INSTALL_CLASS_BINOP (op_el_div, rdivide);
-  INSTALL_CLASS_BINOP (op_el_pow, power);
-  INSTALL_CLASS_BINOP (op_el_ldiv, ldivide);
-  INSTALL_CLASS_BINOP (op_el_and, and);
-  INSTALL_CLASS_BINOP (op_el_or, or);
+  INSTALL_CLASS_BINOP_TI (ti, op_add, plus);
+  INSTALL_CLASS_BINOP_TI (ti, op_sub, minus);
+  INSTALL_CLASS_BINOP_TI (ti, op_mul, mtimes);
+  INSTALL_CLASS_BINOP_TI (ti, op_div, mrdivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_pow, mpower);
+  INSTALL_CLASS_BINOP_TI (ti, op_ldiv, mldivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_lt, lt);
+  INSTALL_CLASS_BINOP_TI (ti, op_le, le);
+  INSTALL_CLASS_BINOP_TI (ti, op_eq, eq);
+  INSTALL_CLASS_BINOP_TI (ti, op_ge, ge);
+  INSTALL_CLASS_BINOP_TI (ti, op_gt, gt);
+  INSTALL_CLASS_BINOP_TI (ti, op_ne, ne);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_mul, times);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_div, rdivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_pow, power);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_ldiv, ldivide);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_and, and);
+  INSTALL_CLASS_BINOP_TI (ti, op_el_or, or);
 }

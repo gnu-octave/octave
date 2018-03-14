@@ -1,4 +1,3 @@
-// N-D Array manipulations.
 /*
 
 Copyright (C) 1996-2017 John W. Eaton
@@ -6,19 +5,19 @@ Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,9 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
-#include <vector>
+#include <iostream>
+#include <limits>
 
 #include "Array-util.h"
 #include "dNDArray.h"
@@ -121,8 +119,8 @@ NDArray::fourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::fft (in + k * stride * n, out + k * stride * n,
-                      n, howmany, stride, dist);
+    octave::fftw::fft (in + k * stride * n, out + k * stride * n,
+                       n, howmany, stride, dist);
 
   return retval;
 }
@@ -151,8 +149,8 @@ NDArray::ifourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::ifft (out + k * stride * n, out + k * stride * n,
-                       n, howmany, stride, dist);
+    octave::fftw::ifft (out + k * stride * n, out + k * stride * n,
+                        n, howmany, stride, dist);
 
   return retval;
 }
@@ -172,7 +170,7 @@ NDArray::fourier2d (void) const
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
-    octave_fftw::fftNd (in + i*dist, out + i*dist, 2, dv2);
+    octave::fftw::fftNd (in + i*dist, out + i*dist, 2, dv2);
 
   return retval;
 }
@@ -191,7 +189,7 @@ NDArray::ifourier2d (void) const
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
-    octave_fftw::ifftNd (out + i*dist, out + i*dist, 2, dv2);
+    octave::fftw::ifftNd (out + i*dist, out + i*dist, 2, dv2);
 
   return retval;
 }
@@ -206,7 +204,7 @@ NDArray::fourierNd (void) const
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::fftNd (in, out, rank, dv);
+  octave::fftw::fftNd (in, out, rank, dv);
 
   return retval;
 }
@@ -222,7 +220,7 @@ NDArray::ifourierNd (void) const
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::ifftNd (in, out, rank, dv);
+  octave::fftw::ifftNd (in, out, rank, dv);
 
   return retval;
 }
@@ -347,8 +345,8 @@ NDArray::fourier2d (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
@@ -396,8 +394,8 @@ NDArray::ifourier2d (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
@@ -445,8 +443,8 @@ NDArray::fourierNd (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
@@ -493,8 +491,8 @@ NDArray::ifourierNd (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
@@ -770,7 +768,7 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
       retval.elem (i) = static_cast<char>(ival);
     }
 
-  if (rb.is_empty ())
+  if (rb.isempty ())
     return retval;
 
   retval.insert (rb, ra_idx);
@@ -824,7 +822,7 @@ NDArray::isinf (void) const
 boolNDArray
 NDArray::isfinite (void) const
 {
-  return do_mx_unary_map<bool, double, octave::math::finite> (*this);
+  return do_mx_unary_map<bool, double, octave::math::isfinite> (*this);
 }
 
 void
@@ -862,7 +860,7 @@ operator << (std::ostream& os, const NDArray& a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      os << " ";
+      os << ' ';
       octave_write_double (os, a.elem (i));
       os << "\n";
     }

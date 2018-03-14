@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,7 +40,13 @@ public:
                       octave::mach_info::float_format flt_fmt
                         = octave::mach_info::native_float_format ());
 
-  static octave_stream
+  // No copying!
+
+  octave_iprocstream (const octave_iprocstream&) = delete;
+
+  octave_iprocstream& operator = (const octave_iprocstream&) = delete;
+
+  static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
           octave::mach_info::float_format flt_fmt
             = octave::mach_info::native_float_format ());
@@ -48,14 +54,6 @@ public:
 protected:
 
   ~octave_iprocstream (void);
-
-private:
-
-  // No copying!
-
-  octave_iprocstream (const octave_iprocstream&);
-
-  octave_iprocstream& operator = (const octave_iprocstream&);
 };
 
 class
@@ -68,7 +66,13 @@ public:
                       octave::mach_info::float_format flt_fmt
                         = octave::mach_info::native_float_format ());
 
-  static octave_stream
+  // No copying!
+
+  octave_oprocstream (const octave_oprocstream&) = delete;
+
+  octave_oprocstream& operator = (const octave_oprocstream&) = delete;
+
+  static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format flt_fmt
             = octave::mach_info::native_float_format ());
@@ -76,14 +80,6 @@ public:
 protected:
 
   ~octave_oprocstream (void);
-
-private:
-
-  // No copying!
-
-  octave_oprocstream (const octave_oprocstream&);
-
-  octave_oprocstream& operator = (const octave_oprocstream&);
 };
 
 #endif

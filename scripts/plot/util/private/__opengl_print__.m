@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __opengl_print__ (@var{@dots{}})
@@ -24,9 +24,6 @@
 function opts = __opengl_print__ (opts)
 
   dos_shell = (ispc () && ! isunix ());
-
-  set (0, "currentfigure", opts.figure);
-  drawnow ("expose");
 
   if (! isempty (opts.fig2dev_binary))
     ## fig2dev is prefered for conversion to emf
@@ -148,23 +145,15 @@ function opts = __opengl_print__ (opts)
 
   opts.pipeline = pipeline;
 
-  ## Tell gl2ps to use different rendering options for 2D plots
-  haxes = findall (opts.figure, "type", "axes");
-  vw = get (haxes, "view");
-  if (iscell (vw))
-    vw = vertcat (vw{:});
-  endif
-  is2D = all (abs (vw(:,2)) == 90);
-  if (is2D)
-    gl2ps_device{end} = [gl2ps_device{end}, "is2D"];
-  endif
-
   for n = 1:numel (pipeline)
     if (opts.debug)
       fprintf ("opengl-pipeline: '%s'\n", pipeline{n});
     endif
 
-    if (strcmp (get (opts.figure, "visible"), "on"))
+    if (strcmp (get (opts.figure, "visible"), "on")
+        || (strcmp (get (opts.figure, "__graphics_toolkit__"), "qt")
+            && (strcmp (get (opts.figure, "__gl_window__"), "on")
+                || __have_feature__ ("QT_OFFSCREEN"))))
       ## Use toolkits "print_figure" method
       drawnow (gl2ps_device{n}, ['|' pipeline{n}]);
     else

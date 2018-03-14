@@ -2,26 +2,26 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
+function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (fcndirs, fixedtestdirs, topsrcdir = [], topbuilddir = [])
 
   testsdir = __octave_config_info__ ("octtestsdir");
   libinterptestdir = fullfile (testsdir, "libinterp");
@@ -32,14 +32,17 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
     fcndirs = { liboctavetestdir, libinterptestdir, fcnfiledir };
     fixedtestdirs = { fixedtestdir };
   endif
-  global files_with_no_tests;
-  global files_with_tests;
   files_with_no_tests = {};
   files_with_tests = {};
   ## FIXME: These names don't really make sense if we are running
   ##        tests for an installed copy of Octave.
-  global topsrcdir = fcnfiledir;
-  global topbuilddir = testsdir;
+  if (isempty (topsrcdir))
+    topsrcdir = fcnfiledir;
+  endif
+  if (isempty (topbuilddir))
+    topbuilddir = testsdir;
+  endif
+
   pso = page_screen_output ();
   orig_wstate = warning ();
   logfile = make_absolute_filename ("fntests.log");
@@ -47,55 +50,69 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
     page_screen_output (false);
     warning ("on", "quiet");
     warning ("off", "Octave:deprecated-function");
+    nfail = dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
     try
       fid = fopen (logfile, "wt");
       if (fid < 0)
         error ("__run_test_suite__: could not open %s for writing", logfile);
       endif
       test ("", "explain", fid);
-      dp = dn = dxf = dsk = 0;
       puts ("\nIntegrated test scripts:\n\n");
       for i = 1:length (fcndirs)
-        [p, n, xf, sk] = run_test_script (fid, fcndirs{i});
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_script (fid, fcndirs{i});
         dp += p;
         dn += n;
         dxf += xf;
+        dxb += xb;
         dsk += sk;
+        drtsk += rtsk;
+        drgrs += rgrs;
       endfor
       puts ("\nFixed test scripts:\n\n");
       for i = 1:length (fixedtestdirs)
-        [p, n, xf, sk] = run_test_dir (fid, fixedtestdirs{i});
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fixedtestdirs{i});
         dp += p;
         dn += n;
         dxf += xf;
+        dxb += xb;
         dsk += sk;
+        drtsk += rtsk;
+        drgrs += rgrs;
       endfor
       puts ("\nSummary:\n\n");
-      nfail = dn - dp - dxf;
-      printf ("  PASS    %6d\n", dp);
-      printf ("  FAIL    %6d\n", nfail);
+      nfail = dn - dp - dxf - dxb - drgrs;
+      printf ("  %-30s %6d\n", "PASS", dp);
+      printf ("  %-30s %6d\n", "FAIL", nfail);
+      if (drgrs > 0)
+        printf ("  %-30s %6d\n", "REGRESSION", drgrs);
+      endif
+      if (dxb > 0)
+        printf ("  %-30s %6d\n", "XFAIL (reported bug)", dxb);
+      endif
       if (dxf > 0)
-        printf ("  XFAIL   %6d\n", dxf);
+        printf ("  %-30s %6d\n", "XFAIL (expected failure)", dxf);
       endif
       if (dsk > 0)
-        printf ("  SKIPPED %6d\n", dsk);
+        printf ("  %-30s %6d\n", "SKIP (missing feature)", dsk);
+      endif
+      if (drtsk > 0)
+        printf ("  %-30s %6d\n", "SKIP (run-time condition)", drtsk);
       endif
       puts ("\n");
       printf ("See the file %s for additional details.\n", logfile);
-      if (dxf > 0)
+      if (dxf > 0 || dxb > 0)
         puts ("\n");
-        puts ("Items listed as XFAIL above are known bugs.\n");
-        puts ("Bug report numbers for them may be found in the log file:\n");
+        puts ("XFAIL items are known bugs or expected failures.\n");
+        puts ("Bug report numbers may be found in the log file:\n");
         puts (logfile);
         puts ("\nPlease help improve Octave by contributing fixes for them.\n");
       endif
-      if (dsk > 0)
+      if (dsk > 0 || drtsk > 0)
         puts ("\n");
-        puts ("Tests are most often skipped because the features they require\n");
-        puts ("have been disabled.  Features are most often disabled because\n");
-        puts ("they require dependencies that were not present when Octave\n");
-        puts ("was built.  The configure script should have printed a summary\n");
-        puts ("at the end of its run indicating which dependencies were not found.\n");
+        puts ("Tests are often skipped because required features were\n");
+        puts ("disabled or were not present when Octave was built.\n");
+        puts ("The configure script should have printed a summary\n");
+        puts ("indicating which dependencies were not found.\n");
       endif
 
       ## Weed out deprecated and private functions
@@ -125,8 +142,118 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
     pass = dp;
     fail = nfail;
     xfail = dxf;
+    xbug = dxb;
     skip = dsk;
+    rtskip = drtsk;
+    regress = drgrs;
   endif
+
+
+  function [dp, dn, dxf, dxb, dsk, drtsk, drgrs] = run_test_dir (fid, d)
+
+    lst = dir (d);
+    dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
+    for i = 1:length (lst)
+      nm = lst(i).name;
+      if (lst(i).isdir
+          && nm(1) != "." && ! strcmp (nm, "private") && nm(1) != "@")
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, [d, filesep, nm]);
+        dp += p;
+        dn += n;
+        dxf += xf;
+        dxb += xb;
+        dsk += sk;
+        drtsk += rtsk;
+        drgrs += rgrs;
+      endif
+    endfor
+
+    saved_dir = pwd ();
+    unwind_protect
+      cd (d);
+      for i = 1:length (lst)
+        nm = lst(i).name;
+        if (length (nm) > 4 && strcmpi (nm((end-3):end), ".tst"))
+          p = n = xf = xb = sk = rtsk = 0;
+          ffnm = fullfile (d, nm);
+          if (has_tests (ffnm))
+            print_test_file_name (nm);
+            [p, n, xf, xb, sk, rtsk, rgrs] = test (nm, "quiet", fid);
+            print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
+            files_with_tests(end+1) = ffnm;
+          else
+            files_with_no_tests(end+1) = ffnm;
+          endif
+          dp += p;
+          dn += n;
+          dxf += xf;
+          dxb += xb;
+          dsk += sk;
+          drtsk += rtsk;
+          drgrs += rgrs;
+        endif
+      endfor
+    unwind_protect_cleanup
+      cd (saved_dir);
+    end_unwind_protect
+
+  endfunction
+
+  function [dp, dn, dxf, dxb, dsk, drtsk, drgrs] = run_test_script (fid, d)
+
+    lst = dir (d);
+    dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
+    for i = 1:length (lst)
+      nm = lst(i).name;
+      if (lst(i).isdir && nm(1) != ".")
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_script (fid, [d, filesep, nm]);
+        dp += p;
+        dn += n;
+        dxf += xf;
+        dxb += xb;
+        dsk += sk;
+        drtsk += rtsk;
+        drgrs += rgrs;
+      endif
+    endfor
+
+    for i = 1:length (lst)
+      nm = lst(i).name;
+      ## Ignore hidden files
+      if (nm(1) == '.')
+        continue
+      endif
+      f = fullfile (d, nm);
+      if ((length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
+          || (length (nm) > 4
+              && (   strcmpi (nm((end-3):end), "-tst")
+                  || strcmpi (nm((end-3):end), ".tst"))))
+        p = n = xf = xb = 0;
+        ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning
+        if (has_tests (f))
+          tmp = strrep (f, [topsrcdir, filesep], "");
+          tmp = strrep (tmp, [topbuilddir, filesep], "");
+          print_test_file_name (tmp);
+          [p, n, xf, xb, sk, rtsk, rgrs] = test (f, "quiet", fid);
+          print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
+          dp += p;
+          dn += n;
+          dxf += xf;
+          dxb += xb;
+          dsk += sk;
+          drtsk += rtsk;
+          drgrs += rgrs;
+          files_with_tests(end+1) = f;
+        else
+          ## To reduce the list length, only mark .cc files that contain
+          ## DEFUN definitions.
+          files_with_no_tests(end+1) = f;
+        endif
+      endif
+    endfor
+    ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
+
+  endfunction
 
 endfunction
 
@@ -135,19 +262,28 @@ function print_test_file_name (nm)
   printf ("  %s %s", nm, filler);
 endfunction
 
-function print_pass_fail (p, n, xf, sk)
+function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
 
-  if ((n + sk) > 0)
+  if ((n + sk + rtsk + rgrs) > 0)
     printf (" PASS   %4d/%-4d", p, n);
-    nfail = n - p - xf;
+    nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)
       printf ("\n%71s %3d", "FAIL ", nfail);
     endif
+    if (rgrs > 0)
+      printf ("\n%71s %3d", "REGRESSION", rgrs);
+    endif
     if (sk > 0)
-      printf ("\n%71s %3d", "SKIP ", sk);
+      printf ("\n%71s %3d", "(missing feature) SKIP ", sk);
+    endif
+    if (rtsk > 0)
+      printf ("\n%71s %3d", "(run-time condition) SKIP ", rtsk);
+    endif
+    if (xb > 0)
+      printf ("\n%71s %3d", "(reported bug) XFAIL", xb);
     endif
     if (xf > 0)
-      printf ("\n%71s %3d", "XFAIL", xf);
+      printf ("\n%71s %3d", "(expected failure) XFAIL", xf);
     endif
   endif
   puts ("\n");
@@ -186,106 +322,6 @@ function retval = has_tests (f)
   retval = ! isempty (regexp (str,
                               '^%!(assert|error|fail|test|xtest|warning)',
                               'lineanchors', 'once'));
-
-endfunction
-
-function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
-  global files_with_tests;
-  global files_with_no_tests;
-
-  lst = dir (d);
-  dp = dn = dxf = dsk = 0;
-  for i = 1:length (lst)
-    nm = lst(i).name;
-    if (lst(i).isdir
-        && nm(1) != "." && ! strcmp (nm, "private") && nm(1) != "@")
-      [p, n, xf, sk] = run_test_dir (fid, [d, filesep, nm]);
-      dp += p;
-      dn += n;
-      dxf += xf;
-      dsk += sk;
-    endif
-  endfor
-
-  saved_dir = pwd ();
-  unwind_protect
-    cd (d);
-    for i = 1:length (lst)
-      nm = lst(i).name;
-      if (length (nm) > 4 && strcmpi (nm((end-3):end), ".tst"))
-        p = n = xf = sk = 0;
-        ffnm = fullfile (d, nm);
-        if (has_tests (ffnm))
-          print_test_file_name (nm);
-          [p, n, xf, sk] = test (nm, "quiet", fid);
-          print_pass_fail (p, n, xf, sk);
-          files_with_tests(end+1) = ffnm;
-        else
-          files_with_no_tests(end+1) = ffnm;
-        endif
-        dp += p;
-        dn += n;
-        dxf += xf;
-        dsk += sk;
-      endif
-    endfor
-  unwind_protect_cleanup
-    cd (saved_dir);
-  end_unwind_protect
-
-endfunction
-
-function [dp, dn, dxf, dsk] = run_test_script (fid, d);
-  global files_with_tests;
-  global files_with_no_tests;
-  global topsrcdir;
-  global topbuilddir;
-
-  lst = dir (d);
-  dp = dn = dxf = dsk = 0;
-  for i = 1:length (lst)
-    nm = lst(i).name;
-    if (lst(i).isdir && nm(1) != ".")
-      [p, n, xf, sk] = run_test_script (fid, [d, filesep, nm]);
-      dp += p;
-      dn += n;
-      dxf += xf;
-      dsk += sk;
-    endif
-  endfor
-
-  for i = 1:length (lst)
-    nm = lst(i).name;
-    ## Ignore hidden files
-    if (nm(1) == '.')
-      continue
-    endif
-    f = fullfile (d, nm);
-    if ((length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
-        || (length (nm) > 4
-            && (   strcmpi (nm((end-3):end), "-tst")
-                || strcmpi (nm((end-3):end), ".tst"))))
-      p = n = xf = 0;
-      ## Only run if it contains %!test, %!assert, %!error, %!fail, or %!warning
-      if (has_tests (f))
-        tmp = strrep (f, [topsrcdir, filesep], "");
-        tmp = strrep (tmp, [topbuilddir, filesep], "");
-        print_test_file_name (tmp);
-        [p, n, xf, sk] = test (f, "quiet", fid);
-        print_pass_fail (p, n, xf, sk);
-        dp += p;
-        dn += n;
-        dxf += xf;
-        dsk += sk;
-        files_with_tests(end+1) = f;
-      else
-        ## To reduce the list length, only mark .cc files that contain
-        ## DEFUN definitions.
-        files_with_no_tests(end+1) = f;
-      endif
-    endif
-  endfor
-  ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
 
 endfunction
 

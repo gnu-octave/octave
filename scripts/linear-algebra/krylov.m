@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{A}, @var{V}, @var{k}, @var{eps1}, @var{pflg})
@@ -55,7 +55,7 @@
 
 ## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
-function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
+function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
 
   if (isa (A, "single") || isa (V, "single"))
     defeps = 1e-6;
@@ -165,7 +165,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
         ## Reduce V per the reflection.
         V(idx,:) = V(idx,:) - av*hv*(hv' * V(idx,:));
-        if(iter > 1)
+        if (iter > 1)
           ## FIXME: not done correctly for block case.
           H(nu,nu-1) = V(pivot_vec(nu),jj);
         endif

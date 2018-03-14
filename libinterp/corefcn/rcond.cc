@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -50,12 +50,12 @@ instead.
 
   octave_value retval;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     error ("rcond: for sparse matrices use 'rcond (full (a))' or 'condest (a)' instead");
 
   if (args(0).is_single_type ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           FloatComplexMatrix m = args(0).float_complex_matrix_value ();
           MatrixType mattyp;
@@ -70,7 +70,7 @@ instead.
           args(0).matrix_type (mattyp);
         }
     }
-  else if (args(0).is_complex_type ())
+  else if (args(0).iscomplex ())
     {
       ComplexMatrix m = args(0).complex_matrix_value ();
       MatrixType mattyp;

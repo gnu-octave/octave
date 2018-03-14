@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{area} =} rectint (@var{a}, @var{b})
@@ -94,10 +94,10 @@ endfunction
 %!assert (rectint ([0 0 1 1;0.5 0.5 1 1;-1 -1 2 2], [1 1 2 2]), [0;0.25;0])
 %!assert (rectint ([1 1 2 2], [0 0 1 1;0.5 0.5 1 1;-1 -1 2 2]), [0 0.25 0])
 
-%!assert <44904> (rectint ([0 0 5 5], [6 6 5 5]), 0)
-%!assert <44904> (rectint ([0 0 5 5], [0 6 5 5]), 0)
-%!assert <44904> (rectint ([0 0 5 5], [6 0 5 5]), 0)
-%!assert <44904> (rectint ([0 0 0 5 5 5], [0 0 6 5 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 5 5], [6 6 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 5 5], [0 6 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 5 5], [6 0 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 0 5 5 5], [0 0 6 5 5 5]), 0)
 
 ## Test volumes
 %!shared r1, r2, r3, r4, r5

@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,17 +24,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
+#include <cmath>
 
 #include <iostream>
 #include <limits>
 
+#include "Array-util.h"
 #include "Range.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
-#include "lo-math.h"
 #include "lo-utils.h"
-#include "Array-util.h"
 
 bool
 Range::all_elements_are_ints (void) const
@@ -48,10 +47,43 @@ Range::all_elements_are_ints (void) const
           && (octave::math::nint_big (rng_inc) == rng_inc || rng_numel <= 1));
 }
 
+octave_idx_type
+Range::nnz (void) const
+{
+  octave_idx_type retval = 0;
+
+  if (! isempty ())
+    {
+      if ((rng_base > 0.0 && rng_limit > 0.0)
+          || (rng_base < 0.0 && rng_limit < 0.0))
+        {
+          // All elements have the same sign, hence there are no zeros.
+          retval = rng_numel;
+        }
+      else if (rng_inc != 0.0)
+        {
+          if (rng_base == 0.0 || rng_limit == 0.0)
+            retval = rng_numel - 1;
+          else if ((rng_base / rng_inc) != std::floor (rng_base / rng_inc))
+            retval = rng_numel;
+          else
+            retval = rng_numel - 1;
+        }
+      else
+        {
+          // All elements are equal (rng_inc = 0) but not positive or negative,
+          // therefore all elements are zero.
+          retval = 0;
+        }
+    }
+
+  return retval;
+}
+
 Matrix
 Range::matrix_value (void) const
 {
-  if (rng_numel > 0 && cache.is_empty ())
+  if (rng_numel > 0 && cache.isempty ())
     {
       cache.resize (1, rng_numel);
 
@@ -73,8 +105,10 @@ Range::matrix_value (void) const
 double
 Range::checkelem (octave_idx_type i) const
 {
+  // Ranges are row vectors.
+
   if (i < 0 || i >= rng_numel)
-    octave::err_index_out_of_range (1, 1, i+1, rng_numel);
+    octave::err_index_out_of_range (2, 2, i+1, rng_numel);
 
   if (i == 0)
     return rng_base;
@@ -85,18 +119,23 @@ Range::checkelem (octave_idx_type i) const
 }
 
 double
+Range::checkelem (octave_idx_type i, octave_idx_type j) const
+{
+  if (i != 0)
+    octave::err_index_out_of_range (1, 1, i+1, rng_numel);
+
+  return checkelem (j);
+}
+
+double
 Range::elem (octave_idx_type i) const
 {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  return checkelem (i);
-#else
   if (i == 0)
     return rng_base;
   else if (i < rng_numel - 1)
     return rng_base + i * rng_inc;
   else
     return rng_limit;
-#endif
 }
 
 // Helper class used solely for idx_vector.loop () function call
@@ -143,7 +182,7 @@ Range::index (const idx_vector& i) const
       octave_idx_type il = i.length (n);
 
       // taken from Array.cc.
-      if (n != 1 && rd.is_vector ())
+      if (n != 1 && rd.isvector ())
         rd = dim_vector (1, il);
 
       retval.clear (rd);
@@ -239,8 +278,8 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
       reverse = true;
     }
 
-  octave_idx_type tmp = reverse ? nel - 1 : 0;
-  octave_idx_type stp = reverse ? -1 : 1;
+  octave_idx_type tmp = (reverse ? nel - 1 : 0);
+  octave_idx_type stp = (reverse ? -1 : 1);
 
   for (octave_idx_type i = 0; i < nel; i++, tmp += stp)
     psidx[i] = tmp;
@@ -291,14 +330,14 @@ Range::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
 }
 
 sortmode
-Range::is_sorted (sortmode mode) const
+Range::issorted (sortmode mode) const
 {
   if (rng_numel > 1 && rng_inc > 0)
     mode = (mode == DESCENDING) ? UNSORTED : ASCENDING;
   else if (rng_numel > 1 && rng_inc < 0)
     mode = (mode == ASCENDING) ? UNSORTED : DESCENDING;
   else
-    mode = mode ? mode : ASCENDING;
+    mode = (mode ? mode : ASCENDING);
 
   return mode;
 }
@@ -346,9 +385,9 @@ operator << (std::ostream& os, const Range& a)
   if (num_elem > 1)
     {
       // First element must be the base *exactly* (-0).
-      os << b << " ";
+      os << b << ' ';
       for (octave_idx_type i = 1; i < num_elem-1; i++)
-        os << b + i * increment << " ";
+        os << b + i * increment << ' ';
     }
 
   // Print out exactly the last element, rather than a calculated last element.
@@ -488,20 +527,14 @@ tfloor (double x, double ct)
 
   double t1 = 1.0 + std::floor (x);
   t1 = (ct / q) * (t1 < 0.0 ? -t1 : t1);
-  t1 = rmax < t1 ? rmax : t1;
-  t1 = ct > t1 ? ct : t1;
+  t1 = (rmax < t1 ? rmax : t1);
+  t1 = (ct > t1 ? ct : t1);
   t1 = std::floor (x + t1);
 
   if (x <= 0.0 || (t1 - x) < rmax)
     return t1;
   else
     return t1 - 1.0;
-}
-
-static inline double
-tceil (double x, double ct)
-{
-  return -tfloor (-x, ct);
 }
 
 static inline bool

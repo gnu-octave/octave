@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -37,8 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
-class tree_walker;
-
 // Real matrix values.
 
 template <typename DMT, typename MT>
@@ -58,7 +56,7 @@ public:
   octave_base_diag (const octave_base_diag& m)
     : octave_base_value (), matrix (m.matrix), dense_cache () { }
 
-  ~octave_base_diag (void) { }
+  ~octave_base_diag (void) = default;
 
   size_t byte_size (void) const { return matrix.byte_size (); }
 
@@ -114,8 +112,8 @@ public:
                      sortmode mode = ASCENDING) const
   { return to_dense ().sort (sidx, dim, mode); }
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return to_dense ().is_sorted (mode); }
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return to_dense ().issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
   { return to_dense ().sort_rows_idx (mode); }
@@ -125,7 +123,7 @@ public:
 
   bool is_matrix_type (void) const { return true; }
 
-  bool is_numeric_type (void) const { return true; }
+  bool isnumeric (void) const { return true; }
 
   bool is_defined (void) const { return true; }
 
@@ -200,21 +198,28 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  float_display_format get_edit_display_format (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const;
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   bool print_as_scalar (void) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_info (std::ostream& os, const std::string& prefix) const;
+
+  void short_disp (std::ostream& os) const;
 
   octave_value fast_elem_extract (octave_idx_type n) const;
 

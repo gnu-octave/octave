@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -38,11 +38,10 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
   octave_idx_type nel = 0;
 
   // Determine number.
-  for (std::list<octave_value_list>::const_iterator p = lst.begin ();
-       p != lst.end (); p++)
+  for (const auto& ovl : lst)
     {
       n++;
-      nel += p->length ();
+      nel += ovl.length ();
     }
 
   // Optimize single-element case
@@ -52,11 +51,10 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
     {
       data.resize (dim_vector (1, nel));
       octave_idx_type k = 0;
-      for (std::list<octave_value_list>::const_iterator p = lst.begin ();
-           p != lst.end (); p++)
+      for (const auto& ovl : lst)
         {
-          data.assign (idx_vector (k, k + p->length ()), p->data);
-          k += p->length ();
+          data.assign (idx_vector (k, k + ovl.length ()), ovl.data);
+          k += ovl.length ();
         }
       assert (k == nel);
     }
@@ -192,7 +190,7 @@ octave_value_list::any_cell (void) const
   octave_idx_type n = length ();
 
   for (octave_idx_type i = 0; i < n; i++)
-    if (elem (i).is_cell ())
+    if (elem (i).iscell ())
       return true;
 
   return false;

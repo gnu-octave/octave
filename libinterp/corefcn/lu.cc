@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -39,7 +39,7 @@ static octave_value
 get_lu_l (const octave::math::lu<MT>& fact)
 {
   MT L = fact.L ();
-  if (L.is_square ())
+  if (L.issquare ())
     return octave_value (L, MatrixType (MatrixType::Lower));
   else
     return L;
@@ -50,7 +50,7 @@ static octave_value
 get_lu_u (const octave::math::lu<MT>& fact)
 {
   MT U = fact.U ();
-  if (U.is_square () && fact.regular ())
+  if (U.issquare () && fact.regular ())
     return octave_value (U, MatrixType (MatrixType::Upper));
   else
     return U;
@@ -138,7 +138,7 @@ permutation information.
 @end deftypefn */)
 {
   int nargin = args.length ();
-  bool issparse = (nargin > 0 && args(0).is_sparse_type ());
+  bool issparse = (nargin > 0 && args(0).issparse ());
 
   if (nargin < 1 || (issparse && nargin > 3) || (! issparse && nargin > 2))
     print_usage ();
@@ -187,10 +187,10 @@ permutation information.
 
   if (issparse)
     {
-      if (arg.is_empty ())
+      if (arg.isempty ())
         return octave_value_list (5, SparseMatrix ());
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -255,7 +255,7 @@ permutation information.
                 retval(4) = fact.R ();
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
@@ -327,10 +327,10 @@ permutation information.
     }
   else
     {
-      if (arg.is_empty ())
+      if (arg.isempty ())
         return octave_value_list (3, Matrix ());
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           if (arg.is_single_type ())
             {
@@ -401,7 +401,7 @@ permutation information.
                 }
             }
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           if (arg.is_single_type ())
             {
@@ -614,12 +614,12 @@ factorization from scratch.
 
   octave_value argl = args(0);
   octave_value argu = args(1);
-  octave_value argp = pivoted ? args(2) : octave_value ();
+  octave_value argp = (pivoted ? args(2) : octave_value ());
   octave_value argx = args(2 + pivoted);
   octave_value argy = args(3 + pivoted);
 
-  if (! (argl.is_numeric_type () && argu.is_numeric_type ()
-         && argx.is_numeric_type () && argy.is_numeric_type ()
+  if (! (argl.isnumeric () && argu.isnumeric ()
+         && argx.isnumeric () && argy.isnumeric ()
          && (! pivoted || argp.is_perm_matrix ())))
     error ("luupdate: L, U, X, and Y must be numeric");
 
@@ -630,8 +630,8 @@ factorization from scratch.
                   ? argp.perm_matrix_value ()
                   : PermMatrix::eye (argl.rows ()));
 
-  if (argl.is_real_type () && argu.is_real_type ()
-      && argx.is_real_type () && argy.is_real_type ())
+  if (argl.isreal () && argu.isreal ()
+      && argx.isreal () && argy.isreal ())
     {
       // all real case
       if (argl.is_single_type () || argu.is_single_type ()

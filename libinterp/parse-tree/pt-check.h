@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,121 +25,128 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <string>
+
 #include "pt-walk.h"
 
-class tree_decl_command;
-
-// How to check the semantics of the code that the parse trees represent.
-
-class
-tree_checker : public tree_walker
+namespace octave
 {
-public:
+  class tree_decl_command;
 
-  tree_checker (void)
-    : do_lvalue_check (false), file_name () { }
+  // How to check the semantics of the code that the parse trees represent.
 
-  ~tree_checker (void) { }
+  class tree_checker : public tree_walker
+  {
+  public:
 
-  void visit_argument_list (tree_argument_list&);
+    tree_checker (void)
+      : m_do_lvalue_check (false), m_file_name () { }
 
-  void visit_binary_expression (tree_binary_expression&);
+    // No copying!
 
-  void visit_break_command (tree_break_command&);
+    tree_checker (const tree_checker&) = delete;
 
-  void visit_colon_expression (tree_colon_expression&);
+    tree_checker& operator = (const tree_checker&) = delete;
 
-  void visit_continue_command(tree_continue_command&);
+    ~tree_checker (void) = default;
 
-  void visit_global_command (tree_global_command&);
+    void visit_argument_list (tree_argument_list&);
 
-  void visit_persistent_command (tree_persistent_command&);
+    void visit_binary_expression (tree_binary_expression&);
 
-  void visit_decl_elt (tree_decl_elt&);
+    void visit_break_command (tree_break_command&);
 
-  void visit_decl_init_list (tree_decl_init_list&);
+    void visit_colon_expression (tree_colon_expression&);
 
-  void visit_simple_for_command (tree_simple_for_command&);
+    void visit_continue_command(tree_continue_command&);
 
-  void visit_complex_for_command (tree_complex_for_command&);
+    void visit_decl_command (tree_decl_command&);
 
-  void visit_octave_user_script (octave_user_script&);
+    void visit_decl_init_list (tree_decl_init_list&);
 
-  void visit_octave_user_function (octave_user_function&);
+    void visit_decl_elt (tree_decl_elt&);
 
-  void visit_function_def (tree_function_def&);
+    void visit_simple_for_command (tree_simple_for_command&);
 
-  void visit_identifier (tree_identifier&);
+    void visit_complex_for_command (tree_complex_for_command&);
 
-  void visit_if_clause (tree_if_clause&);
+    void visit_octave_user_script (octave_user_script&);
 
-  void visit_if_command (tree_if_command&);
+    void visit_octave_user_function (octave_user_function&);
 
-  void visit_if_command_list (tree_if_command_list&);
+    void visit_function_def (tree_function_def&);
 
-  void visit_index_expression (tree_index_expression&);
+    void visit_identifier (tree_identifier&);
 
-  void visit_matrix (tree_matrix&);
+    void visit_if_clause (tree_if_clause&);
 
-  void visit_cell (tree_cell&);
+    void visit_if_command (tree_if_command&);
 
-  void visit_multi_assignment (tree_multi_assignment&);
+    void visit_if_command_list (tree_if_command_list&);
 
-  void visit_no_op_command (tree_no_op_command&);
+    void visit_index_expression (tree_index_expression&);
 
-  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
+    void visit_matrix (tree_matrix&);
 
-  void visit_constant (tree_constant&);
+    void visit_cell (tree_cell&);
 
-  void visit_fcn_handle (tree_fcn_handle&);
+    void visit_multi_assignment (tree_multi_assignment&);
 
-  void visit_funcall (tree_funcall&);
+    void visit_no_op_command (tree_no_op_command&);
 
-  void visit_parameter_list (tree_parameter_list&);
+    void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
-  void visit_postfix_expression (tree_postfix_expression&);
+    void visit_constant (tree_constant&);
 
-  void visit_prefix_expression (tree_prefix_expression&);
+    void visit_fcn_handle (tree_fcn_handle&);
 
-  void visit_return_command (tree_return_command&);
+    void visit_funcall (tree_funcall&);
 
-  void visit_return_list (tree_return_list&);
+    void visit_parameter_list (tree_parameter_list&);
 
-  void visit_simple_assignment (tree_simple_assignment&);
+    void visit_postfix_expression (tree_postfix_expression&);
 
-  void visit_statement (tree_statement&);
+    void visit_prefix_expression (tree_prefix_expression&);
 
-  void visit_statement_list (tree_statement_list&);
+    void visit_return_command (tree_return_command&);
 
-  void visit_switch_case (tree_switch_case&);
+    void visit_return_list (tree_return_list&);
 
-  void visit_switch_case_list (tree_switch_case_list&);
+    void visit_simple_assignment (tree_simple_assignment&);
 
-  void visit_switch_command (tree_switch_command&);
+    void visit_statement (tree_statement&);
 
-  void visit_try_catch_command (tree_try_catch_command&);
+    void visit_statement_list (tree_statement_list&);
 
-  void visit_unwind_protect_command (tree_unwind_protect_command&);
+    void visit_switch_case (tree_switch_case&);
 
-  void visit_while_command (tree_while_command&);
+    void visit_switch_case_list (tree_switch_case_list&);
 
-  void visit_do_until_command (tree_do_until_command&);
+    void visit_switch_command (tree_switch_command&);
 
-private:
+    void visit_try_catch_command (tree_try_catch_command&);
 
-  bool do_lvalue_check;
+    void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-  std::string file_name;
+    void visit_while_command (tree_while_command&);
 
-  void do_decl_command (tree_decl_command&);
+    void visit_do_until_command (tree_do_until_command&);
 
-  OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
+  private:
 
-  // No copying!
+    bool m_do_lvalue_check;
 
-  tree_checker (const tree_checker&);
+    std::string m_file_name;
 
-  tree_checker& operator = (const tree_checker&);
-};
+    OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_checker' instead")
+typedef octave::tree_checker tree_checker;
+
+#endif
 
 #endif

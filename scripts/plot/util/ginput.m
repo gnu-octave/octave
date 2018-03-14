@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
@@ -110,7 +110,7 @@ function varargout = ginput (n = -1)
 
 endfunction
 
-function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
+function [rx, ry, rn, rbutton] = ginput_accumulator (mode, xn, yn, btn)
   persistent x y n button;
 
   if (mode == 0)
@@ -126,7 +126,12 @@ function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
   elseif (mode == 2)
     ## The end due to Enter.
     n = -1;
- endif
+  endif
+
+  rx = x;
+  ry = y;
+  rn = n;
+  rbutton = button;
 
 endfunction
 

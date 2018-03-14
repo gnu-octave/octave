@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -81,7 +81,7 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
                  || arg_b.is_single_type ()
                  || arg_c.is_single_type ();
 
-  if (arg_a.is_empty () || arg_b.is_empty () || arg_c.is_empty ())
+  if (arg_a.isempty () || arg_b.isempty () || arg_c.isempty ())
     {
       if (isfloat)
         return ovl (FloatMatrix ());
@@ -100,9 +100,9 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 
   if (isfloat)
     {
-      if (arg_a.is_complex_type ()
-          || arg_b.is_complex_type ()
-          || arg_c.is_complex_type ())
+      if (arg_a.iscomplex ()
+          || arg_b.iscomplex ()
+          || arg_c.iscomplex ())
         {
           // Do everything in complex arithmetic;
 
@@ -125,9 +125,9 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
     }
   else
     {
-      if (arg_a.is_complex_type ()
-          || arg_b.is_complex_type ()
-          || arg_c.is_complex_type ())
+      if (arg_a.iscomplex ()
+          || arg_b.iscomplex ()
+          || arg_c.iscomplex ())
         {
           // Do everything in complex arithmetic;
 
@@ -156,7 +156,7 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 %!assert (sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12]), [1/2, 2/3; 2/3, 1/2], sqrt (eps))
 %!assert (sylvester (single ([1, 2; 3, 4]), single ([5, 6; 7, 8]), single ([9, 10; 11, 12])), single ([1/2, 2/3; 2/3, 1/2]), sqrt (eps ("single")))
 
-%% Test input validation
+## Test input validation
 %!error sylvester ()
 %!error sylvester (1)
 %!error sylvester (1,2)

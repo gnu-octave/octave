@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{cest} =} condest (@var{A})
@@ -140,24 +140,22 @@
 ## Keywords: linear-algebra norm estimation
 ## Version: 0.2
 
-function [est, v] = condest (varargin)
+function [cest, v] = condest (varargin)
 
   if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
 
-  default_t = 5;
-
   if ((nargin == 3 && is_function_handle (varargin{3}))
       || (nargin == 4 && is_function_handle (varargin{3})
           && isnumeric (varargin{4})))
     ## onenormest syntax, deprecated in 4.2
-    [est, v] = condest_legacy (varargin{:});
-    return
+    [cest, v] = condest_legacy (varargin{:});
+    return;
   elseif ((nargin >= 5) && is_function_handle (varargin{4}))
     ## onenormest syntax, deprecated in 4.2
-    [est, v] = condest_legacy (varargin{:});
-    return
+    [cest, v] = condest_legacy (varargin{:});
+    return;
   endif
 
   have_A = false;
@@ -168,7 +166,7 @@ function [est, v] = condest (varargin)
   if (isnumeric (varargin{1}))
     A = varargin{1};
     if (! issquare (A))
-      error ("condest: matrix must be square");
+      error ("condest: A must be square");
     endif
     n = rows (A);
     have_A = true;
@@ -188,24 +186,23 @@ function [est, v] = condest (varargin)
     else
       real_op = isreal (A);
     endif
-  else # varargin{1} is function handle
+  else  # varargin{1} is a function handle
+    if (nargin == 1)
+      error("condest: must provide SOLVEFCN when using AFCN");
+    endif
     apply = varargin{1};
-    if (nargin > 1)
-      solve = varargin{2};
-      have_apply_normest1 = true;
-      have_solve_normest1 = true;
-      n = apply ("dim", [], varargin{4:end});
-      if (nargin > 2)
-        t = varargin{3};
-        have_t = true;
-      endif
-    else
-      error("condest: wrong number of input parameters");
+    have_apply_normest1 = true;
+    solve = varargin{2};
+    have_solve_normest1 = true;
+    n = apply ("dim", [], varargin{4:end});
+    if (nargin > 2)
+      t = varargin{3};
+      have_t = true;
     endif
   endif
 
   if (! have_t)
-    t = min (n, default_t);
+    t = min (n, 5);
   endif
 
   if (! have_solve_normest1)
@@ -226,13 +223,13 @@ function [est, v] = condest (varargin)
   endif
   [Ainv_norm, v, w] = normest1 (solve, t, [], varargin{4:end});
 
-  est = Anorm * Ainv_norm;
+  cest = Anorm * Ainv_norm;
   v = w / norm (w, 1);
 
 endfunction
 
 function value = solve_sparse (flag, x, n, real_op, L , U , P , Pc)
-  switch flag
+  switch (flag)
     case "dim"
       value = n;
     case "real"
@@ -245,7 +242,7 @@ function value = solve_sparse (flag, x, n, real_op, L , U , P , Pc)
 endfunction
 
 function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
-  switch flag
+  switch (flag)
     case "dim"
       value = n;
     case "real"
@@ -257,7 +254,8 @@ function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
   endswitch
 endfunction
 
-function [est, v] = condest_legacy (varargin) # to be removed after 4.2
+## FIXME: remove after 4.4
+function [cest, v] = condest_legacy (varargin)
 
   persistent warned = false;
   if (! warned)
@@ -329,8 +327,8 @@ function [est, v] = condest_legacy (varargin) # to be removed after 4.2
     endif
   endif
 
-  ## We already warned about this usage being deprecated.  Don't
-  ## warn again about onenormest.
+  ## We already warned about this usage being deprecated.
+  ## Don't warn again about onenormest.
   warning ("off", "Octave:deprecated-function", "local");
 
   if (have_A)
@@ -341,19 +339,20 @@ function [est, v] = condest_legacy (varargin) # to be removed after 4.2
 
   [Ainv_norm, v, w] = onenormest (solve, solve_t, n, t);
 
-  est = Anorm * Ainv_norm;
+  cest = Anorm * Ainv_norm;
   v = w / norm (w, 1);
 
 endfunction
 
-## Yes, these test bounds are really loose.  There's
-## enough randomization to trigger odd cases with hilb().
+
+## Note: These test bounds are very loose.  There is enough randomization to
+## trigger odd cases with hilb().
 
 %!function value = apply_fun (flag, x, A, m)
 %!  if (nargin == 3)
 %!    m = 1;
 %!  endif
-%!  switch flag
+%!  switch (flag)
 %!    case "dim"
 %!      value = length (A);
 %!    case "real"
@@ -368,7 +367,7 @@ endfunction
 %!  if (nargin == 3)
 %!    m = 1;
 %!  endif
-%!  switch flag
+%!  switch (flag)
 %!    case "dim"
 %!      value = length (A);
 %!    case "real"
@@ -387,7 +386,7 @@ endfunction
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-8);
 
-%!test # to be removed after 4.2
+%!test # to be removed after 4.4
 %! warning ("off", "Octave:deprecated-function", "local");
 %! N = 6;
 %! A = hilb (N);
@@ -396,7 +395,7 @@ endfunction
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-8);
 
-%!test # to be removed after 4.2
+%!test # to be removed after 4.4
 %! warning ("off", "Octave:deprecated-function", "local");
 %! N = 6;
 %! A = hilb (N);
@@ -406,7 +405,7 @@ endfunction
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-6);
 
-%!test # to be removed after 4.2
+%!test # to be removed after 4.4
 %! warning ("off", "Octave:deprecated-function", "local");
 %! N = 6;
 %! A = hilb (N);
@@ -420,7 +419,7 @@ endfunction
 %! warning ("off", "Octave:nearly-singular-matrix", "local");
 %! N = 12;
 %! A = hilb (N);
-%! [rcondA, v] = condest (A);
+%! [~, v] = condest (A);
 %! x = A*v;
 %! assert (norm (x, inf), 0, eps);
 
@@ -431,6 +430,7 @@ endfunction
 %! cA = condest (A, solve);
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-6);
+
 %!test
 %! N = 6;
 %! A = hilb (N);
@@ -447,3 +447,9 @@ endfunction
 %! cA = condest (@apply_fun, @solve_fun, [], A, m);
 %! cA_test = norm (inv (A^2), 1) * norm (A^2, 1);
 %! assert (cA, cA_test, -2^-6);
+
+## Test input validation
+%!error condest ()
+%!error condest (1,2,3,4,5,6,7)
+%!error <A must be square> condest ([1 2])
+%!error <must provide SOLVEFCN when using AFCN> condest (@sin)

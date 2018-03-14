@@ -4,19 +4,19 @@ Copyright (C) 2013-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,72 +25,53 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "oct-refcount.h"
+#include <memory>
 
-class octave_base_thread_manager
+namespace octave
 {
-public:
-
-  friend class octave_thread_manager;
-
-  octave_base_thread_manager (void) : count (1) { }
-
-  octave_base_thread_manager (const octave_base_thread_manager&)
-    : count (1)
-  { }
-
-  virtual ~octave_base_thread_manager (void) { }
-
-  virtual void register_current_thread (void) = 0;
-
-  virtual void interrupt (void) = 0;
-
-protected:
-
-  octave_refcount<int> count;
-};
-
-class octave_thread_manager
-{
-public:
-
-  octave_thread_manager (void);
-
-  ~octave_thread_manager (void)
+  class base_thread_manager
   {
-    if (--rep->count == 0)
-      delete rep;
-  }
+  public:
 
-  octave_thread_manager (const octave_thread_manager& tm) : rep (tm.rep) { }
+    friend class thread_manager;
 
-  octave_thread_manager& operator = (const octave_thread_manager& tm)
+    base_thread_manager (void) = default;
+
+    base_thread_manager (const base_thread_manager&) = default;
+
+    virtual ~base_thread_manager (void) = default;
+
+    virtual void register_current_thread (void) = 0;
+
+    virtual void interrupt (void) = 0;
+  };
+
+  class thread_manager
   {
-    if (rep != tm.rep)
-      {
-        if (--rep->count == 0)
-          delete rep;
+  public:
 
-        rep = tm.rep;
-        rep->count++;
-      }
+    thread_manager (void);
 
-    return *this;
-  }
+    ~thread_manager (void) = default;
 
-  void register_current_thread (void) { rep->register_current_thread (); }
+    thread_manager (const thread_manager& tm) = default;
 
-  void interrupt (void) { rep->interrupt (); }
+    thread_manager& operator = (const thread_manager& tm) = default;
 
-  static void block_interrupt_signal (void);
+    void register_current_thread (void) { m_rep->register_current_thread (); }
 
-  static void unblock_interrupt_signal (void);
+    void interrupt (void) { m_rep->interrupt (); }
 
-private:
+    static void block_interrupt_signal (void);
 
-  octave_base_thread_manager *rep;
+    static void unblock_interrupt_signal (void);
 
-  static octave_base_thread_manager *create_rep (void);
-};
+  private:
+
+    std::shared_ptr<base_thread_manager> m_rep;
+
+    static base_thread_manager * create_rep (void);
+  };
+}
 
 #endif

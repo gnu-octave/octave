@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 Andreas Weber <andy.weber.aw@gmail.com>
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 This code is based on Brian Pauls' src/osdemos/osdemo.c
 from git://anongit.freedesktop.org/mesa/demos
@@ -33,15 +33,23 @@ from git://anongit.freedesktop.org/mesa/demos
 #  include <GL/osmesa.h>
 #endif
 
+#include <string>
+
+#include "Array.h"
+#include "dMatrix.h"
 #include "oct-locbuf.h"
+#include "uint8NDArray.h"
 #include "unwind-prot.h"
 
 #include "defun-dld.h"
+#include "error.h"
 #include "errwarn.h"
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
 #include "oct-opengl.h"
+#include "ov.h"
+#include "ovl.h"
 
 #if defined (HAVE_OSMESA)
 
@@ -115,7 +123,7 @@ instead.
   GLsizei Height = static_cast<GLsizei> (bb(3));
 
   // Create an RGBA-mode context, specify Z=16, stencil=0, accum=0 sizes
-  OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, NULL);
+  OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, nullptr);
   if (! ctx)
     error ("__osmesa_print__: OSMesaCreateContext failed!\n");
 
@@ -154,7 +162,7 @@ instead.
       std::string file = args(1).string_value ();
       std::string term = args(2).string_value ();
 
-      gl2ps_print (fobj, file, term);
+      octave::gl2ps_print (fobj, file, term);
     }
   else
     {
@@ -172,7 +180,7 @@ instead.
       // Adapt code if this isn't always true
       assert (sizeof (GLubyte) == 1);
       uint8NDArray img (dv);
-      unsigned char *p = reinterpret_cast<unsigned char*>(img.fortran_vec ());
+      unsigned char *p = reinterpret_cast<unsigned char *>(img.fortran_vec ());
       memcpy (p, buffer, (4 * Width * Height));
 
       Array<octave_idx_type> perm (dim_vector (3, 1));
@@ -188,7 +196,7 @@ instead.
 
       // Remove alpha channel
       idx(2) = idx_vector (0, 3);
-      retval = octave_value (img.permute (perm).index(idx));
+      retval(0) = octave_value (img.permute (perm).index(idx));
     }
 
   OSMesaDestroyContext (ctx);
@@ -216,7 +224,7 @@ instead.
 %!   unwind_protect
 %!     sombrero ();
 %!     __osmesa_print__ (hf, fn, "svg");
-%!     assert (stat (fn).size, 2579392, -0.1);
+%!     assert (stat (fn).size > 2e6);
 %!     img = __osmesa_print__ (hf);
 %!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
 %!     ## Use pixel sum per RGB channel as fingerprint
@@ -235,7 +243,7 @@ instead.
 %!   unwind_protect
 %!     plot (sin (0:0.1:2*pi));
 %!     __osmesa_print__ (hf, fn, "svgis2d");
-%!     assert (stat (fn).size, 6276, -0.1);
+%!     assert (stat (fn).size, 9022, -0.20);
 %!     img = __osmesa_print__ (hf);
 %!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
 %!     ## Use pixel sum per RGB channel as fingerprint

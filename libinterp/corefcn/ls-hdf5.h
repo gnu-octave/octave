@@ -4,19 +4,19 @@ Copyright (C) 2003-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,7 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iostream>
+
 #include "oct-hdf5-types.h"
+#include "ov.h"
 
 // first, we need to define our own dummy stream subclass, since
 // HDF5 needs to do its own file i/o
@@ -61,11 +64,11 @@ class hdf5_ifstream : public hdf5_fstreambase, public std::istream
 {
 public:
 
-  hdf5_ifstream () : hdf5_fstreambase (), std::istream (0) { }
+  hdf5_ifstream () : hdf5_fstreambase (), std::istream (nullptr) { }
 
   hdf5_ifstream (const char *name, int mode = std::ios::in | std::ios::binary,
                  int prot = 0)
-    : hdf5_fstreambase (name, mode, prot), std::istream (0) { }
+    : hdf5_fstreambase (name, mode, prot), std::istream (nullptr) { }
 
   void open (const char *name, int mode = std::ios::in | std::ios::binary,
              int prot = 0)
@@ -76,11 +79,11 @@ class hdf5_ofstream : public hdf5_fstreambase, public std::ostream
 {
 public:
 
-  hdf5_ofstream () : hdf5_fstreambase (), std::ostream (0) { }
+  hdf5_ofstream () : hdf5_fstreambase (), std::ostream (nullptr) { }
 
   hdf5_ofstream (const char *name, int mode = std::ios::out | std::ios::binary,
                  int prot = 0)
-    : hdf5_fstreambase (name, mode, prot), std::ostream (0) { }
+    : hdf5_fstreambase (name, mode, prot), std::ostream (nullptr) { }
 
   void open (const char *name, int mode = std::ios::out | std::ios::binary,
              int prot = 0)
@@ -123,19 +126,19 @@ extern OCTINTERP_API octave_hdf5_err
 hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv);
 
 extern OCTINTERP_API octave_hdf5_err
-hdf5_h5g_iterate (octave_hdf5_id loc_id, const char* name, int *idx,
+hdf5_h5g_iterate (octave_hdf5_id loc_id, const char *name, int *idx,
                   void *operator_data);
 
 extern OCTINTERP_API bool
 add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                const std::string& name, const std::string& doc,
-               bool mark_as_global, bool save_as_floats);
+               bool mark_global, bool save_as_floats);
 
 extern OCTINTERP_API int
-save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d);
+save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector& d);
 
 extern OCTINTERP_API int
-load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector &d);
+load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector& d);
 
 extern OCTINTERP_API std::string
 read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
@@ -145,7 +148,7 @@ read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
 extern OCTINTERP_API bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
-                bool mark_as_global, bool save_as_floats);
+                bool mark_global, bool save_as_floats);
 
 extern OCTINTERP_API bool
 hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name);

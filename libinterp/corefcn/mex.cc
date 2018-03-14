@@ -4,19 +4,19 @@ Copyright (C) 2006-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,22 +24,25 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <csetjmp>
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
 
+#include <limits>
+#include <map>
 #include <set>
+#include <string>
 
 #include "f77-fcn.h"
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 
 #include "Cell.h"
 #include "call-stack.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 // mxArray must be declared as a class before including mexproto.h.
 #include "mxarray.h"
@@ -125,7 +128,7 @@ calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
       {
         // Both nsubs and ndims should be at least 2 here.
 
-        mwSize n = nsubs <= ndims ? nsubs : ndims;
+        mwSize n = (nsubs <= ndims ? nsubs : ndims);
 
         retval = subs[--n];
 
@@ -149,7 +152,7 @@ calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
 // happens, we delete this representation, so the conversion can only
 // happen once per call to a MEX file.
 
-static inline void *maybe_mark_foreign (void *ptr);
+static inline void * maybe_mark_foreign (void *ptr);
 
 class mxArray_octave_value : public mxArray_base
 {
@@ -157,11 +160,16 @@ public:
 
   mxArray_octave_value (const octave_value& ov)
     : mxArray_base (), val (ov), mutate_flag (false),
-      id (mxUNKNOWN_CLASS), class_name (0), ndims (-1), dims (0) { }
+      id (mxUNKNOWN_CLASS), class_name (nullptr), ndims (-1), dims (nullptr) { }
 
-  mxArray_base *dup (void) const { return new mxArray_octave_value (*this); }
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
 
-  mxArray *as_mxArray (void) const
+  mxArray_octave_value& operator = (const mxArray_octave_value&) = delete;
+
+  mxArray_base * dup (void) const { return new mxArray_octave_value (*this); }
+
+  mxArray * as_mxArray (void) const
   {
     mxArray *retval = val.as_mxArray ();
 
@@ -180,7 +188,7 @@ public:
           {
             retval->set_class_name (class_name);
 
-            class_name = 0;
+            class_name = nullptr;
           }
 
         if (dims)
@@ -191,7 +199,7 @@ public:
 
             retval->set_dimensions (dims, ndims);
 
-            dims = 0;
+            dims = nullptr;
           }
       }
 
@@ -206,11 +214,11 @@ public:
 
   bool is_octave_value (void) const { return true; }
 
-  int is_cell (void) const { return val.is_cell (); }
+  int iscell (void) const { return val.iscell (); }
 
   int is_char (void) const { return val.is_string (); }
 
-  int is_complex (void) const { return val.is_complex_type (); }
+  int is_complex (void) const { return val.iscomplex (); }
 
   int is_double (void) const { return val.is_double_type (); }
 
@@ -224,15 +232,15 @@ public:
 
   int is_int8 (void) const { return val.is_int8_type (); }
 
-  int is_logical (void) const { return val.is_bool_type (); }
+  int is_logical (void) const { return val.islogical (); }
 
-  int is_numeric (void) const { return val.is_numeric_type (); }
+  int is_numeric (void) const { return val.isnumeric (); }
 
   int is_single (void) const { return val.is_single_type (); }
 
-  int is_sparse (void) const { return val.is_sparse_type (); }
+  int is_sparse (void) const { return val.issparse (); }
 
-  int is_struct (void) const { return val.is_map (); }
+  int is_struct (void) const { return val.isstruct (); }
 
   int is_uint16 (void) const { return val.is_uint16_type (); }
 
@@ -244,7 +252,7 @@ public:
 
   int is_range (void) const { return val.is_range (); }
 
-  int is_real_type (void) const { return val.is_real_type (); }
+  int isreal (void) const { return val.isreal (); }
 
   int is_logical_scalar_true (void) const
   {
@@ -266,7 +274,7 @@ public:
     return n;
   }
 
-  mwSize *get_dimensions (void) const
+  mwSize * get_dimensions (void) const
   {
     if (! dims)
       {
@@ -305,7 +313,7 @@ public:
 
   mwSize get_number_of_elements (void) const { return val.numel (); }
 
-  int is_empty (void) const { return val.is_empty (); }
+  int isempty (void) const { return val.isempty (); }
 
   bool is_scalar (void) const
   {
@@ -355,7 +363,7 @@ public:
     return id;
   }
 
-  const char *get_class_name (void) const
+  const char * get_class_name (void) const
   {
     if (! class_name)
       {
@@ -369,10 +377,43 @@ public:
   // Not allowed.
   void set_class_name (const char * /*name_arg*/) { request_mutation (); }
 
-  mxArray *get_cell (mwIndex /*idx*/) const
+  mxArray * get_property (mwIndex idx, const char *pname) const
+  {
+    mxArray *retval = nullptr;
+
+    if (val.is_classdef_object ())
+      {
+        octave_classdef *ov_cdef = val.classdef_object_value ();
+
+        if (ov_cdef)
+          {
+            octave_value pval = ov_cdef->get_property (idx, pname);
+
+            if (pval.is_defined())
+              retval = new mxArray (pval);
+          }
+      }
+
+    return retval;
+  }
+
+  void set_property (mwIndex idx, const char *pname, const mxArray *pval)
+  {
+    if (val.is_classdef_object ())
+      {
+        octave_classdef *ov_cdef = val.classdef_object_value ();
+
+        if (ov_cdef)
+          ov_cdef->set_property (idx, pname, pval->as_octave_value ());
+      }
+    else
+      err_invalid_type ();
+  }
+
+  mxArray * get_cell (mwIndex /*idx*/) const
   {
     request_mutation ();
-    return 0;
+    return nullptr;
   }
 
   // Not allowed.
@@ -380,16 +421,16 @@ public:
 
   double get_scalar (void) const
   {
-    if (val.is_sparse_type ())
+    if (val.issparse ())
       {
         // For sparse arrays, return the first non-zero value.
-        void * data = val.mex_get_data ();
-        if (data == NULL)
+        void *data = val.mex_get_data ();
+        if (data == nullptr)
           return 0.0;
 
-        if (val.is_bool_type ())
+        if (val.islogical ())
           return *static_cast<bool *> (data);
-        else if (val.is_real_type ())
+        else if (val.isreal ())
           return *static_cast<double *> (data);
         else  // Complex type, only return real part
           return *static_cast<double *> (data);
@@ -398,7 +439,7 @@ public:
       return val.scalar_value (true);
   }
 
-  void *get_data (void) const
+  void * get_data (void) const
   {
     void *retval = val.mex_get_data ();
 
@@ -410,12 +451,12 @@ public:
     return retval;
   }
 
-  void *get_imag_data (void) const
+  void * get_imag_data (void) const
   {
-    void *retval = 0;
+    void *retval = nullptr;
 
-    if (is_numeric () && is_real_type ())
-      retval = 0;
+    if (is_numeric () && isreal ())
+      retval = nullptr;
     else
       request_mutation ();
 
@@ -428,12 +469,12 @@ public:
   // Not allowed.
   void set_imag_data (void * /*pi*/) { request_mutation (); }
 
-  mwIndex *get_ir (void) const
+  mwIndex * get_ir (void) const
   {
     return static_cast<mwIndex *> (maybe_mark_foreign (val.mex_get_ir ()));
   }
 
-  mwIndex *get_jc (void) const
+  mwIndex * get_jc (void) const
   {
     return static_cast<mwIndex *> (maybe_mark_foreign (val.mex_get_jc ()));
   }
@@ -459,10 +500,10 @@ public:
   // Not allowed.
   void remove_field (int /*key_num*/) { request_mutation (); }
 
-  mxArray *get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
+  mxArray * get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
   {
     request_mutation ();
-    return 0;
+    return nullptr;
   }
 
   // Not allowed.
@@ -474,10 +515,10 @@ public:
 
   int get_number_of_fields (void) const { return val.nfields (); }
 
-  const char *get_field_name_by_number (int /*key_num*/) const
+  const char * get_field_name_by_number (int /*key_num*/) const
   {
     request_mutation ();
-    return 0;
+    return nullptr;
   }
 
   int get_field_number (const char * /*key*/) const
@@ -509,11 +550,11 @@ public:
     return retval;
   }
 
-  char *array_to_string (void) const
+  char * array_to_string (void) const
   {
     // FIXME: this is supposed to handle multi-byte character strings.
 
-    char *buf = 0;
+    char *buf = nullptr;
 
     if (val.is_string ())
       {
@@ -583,7 +624,7 @@ public:
     mutate_flag = true;
   }
 
-  mxArray *mutate (void) const { return as_mxArray (); }
+  mxArray * mutate (void) const { return as_mxArray (); }
 
   octave_value as_octave_value (void) const { return val; }
 
@@ -595,7 +636,7 @@ protected:
       ndims (arg.ndims),
       dims (ndims > 0 ? static_cast<mwSize *>
                          (mxArray::malloc (ndims * sizeof (mwSize)))
-                      : 0)
+                      : nullptr)
   {
     if (dims)
       {
@@ -618,11 +659,6 @@ private:
   mutable char *class_name;
   mutable mwSize ndims;
   mutable mwSize *dims;
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_octave_value& operator = (const mxArray_octave_value&);
 };
 
 // The base class for the Matlab-style representation, used to handle
@@ -633,10 +669,10 @@ class mxArray_matlab : public mxArray_base
 protected:
 
   mxArray_matlab (mxClassID id_arg = mxUNKNOWN_CLASS)
-    : mxArray_base (), class_name (0), id (id_arg), ndims (0), dims (0) { }
+    : mxArray_base (), class_name (nullptr), id (id_arg), ndims (0), dims (nullptr) { }
 
   mxArray_matlab (mxClassID id_arg, mwSize ndims_arg, const mwSize *dims_arg)
-    : mxArray_base (), class_name (0), id (id_arg),
+    : mxArray_base (), class_name (nullptr), id (id_arg),
       ndims (ndims_arg < 2 ? 2 : ndims_arg),
       dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
@@ -664,7 +700,7 @@ protected:
   }
 
   mxArray_matlab (mxClassID id_arg, const dim_vector& dv)
-    : mxArray_base (), class_name (0), id (id_arg),
+    : mxArray_base (), class_name (nullptr), id (id_arg),
       ndims (dv.ndims ()),
       dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
@@ -681,14 +717,29 @@ protected:
   }
 
   mxArray_matlab (mxClassID id_arg, mwSize m, mwSize n)
-    : mxArray_base (), class_name (0), id (id_arg), ndims (2),
+    : mxArray_base (), class_name (nullptr), id (id_arg), ndims (2),
       dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
     dims[0] = m;
     dims[1] = n;
   }
 
+  mxArray_matlab (const mxArray_matlab& val)
+    : mxArray_base (val), class_name (mxArray::strsave (val.class_name)),
+      id (val.id), ndims (val.ndims),
+      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
+  {
+    for (mwIndex i = 0; i < ndims; i++)
+      dims[i] = val.dims[i];
+  }
+
 public:
+
+  // No assignment!
+  // FIXME: should this be implemented?
+  //        Note that we *do* have a copy constructor.
+
+  mxArray_matlab& operator = (const mxArray_matlab&);
 
   ~mxArray_matlab (void)
   {
@@ -696,7 +747,7 @@ public:
     mxFree (dims);
   }
 
-  int is_cell (void) const { return id == mxCELL_CLASS; }
+  int iscell (void) const { return id == mxCELL_CLASS; }
 
   int is_char (void) const { return id == mxCHAR_CLASS; }
 
@@ -757,7 +808,7 @@ public:
     return n;
   }
 
-  mwSize *get_dimensions (void) const { return dims; }
+  mwSize * get_dimensions (void) const { return dims; }
 
   mwSize get_number_of_dimensions (void) const { return ndims; }
 
@@ -776,7 +827,7 @@ public:
         dims
           = static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize)));
 
-        if (dims == NULL)
+        if (dims == nullptr)
           return 1;
 
         for (int i = 0; i < ndims; i++)
@@ -786,7 +837,7 @@ public:
       }
     else
       {
-        dims = 0;
+        dims = nullptr;
         return 0;
       }
   }
@@ -801,7 +852,7 @@ public:
     return retval;
   }
 
-  int is_empty (void) const { return get_number_of_elements () == 0; }
+  int isempty (void) const { return get_number_of_elements () == 0; }
 
   bool is_scalar (void) const
   {
@@ -810,7 +861,7 @@ public:
 
   mxClassID get_class_id (void) const { return id; }
 
-  const char *get_class_name (void) const
+  const char * get_class_name (void) const
   {
     switch (id)
       {
@@ -842,7 +893,7 @@ public:
     strcpy (class_name, name_arg);
   }
 
-  mxArray *get_cell (mwIndex /*idx*/) const
+  mxArray * get_cell (mwIndex /*idx*/) const
   {
     err_invalid_type ();
   }
@@ -857,12 +908,12 @@ public:
     err_invalid_type ();
   }
 
-  void *get_data (void) const
+  void * get_data (void) const
   {
     err_invalid_type ();
   }
 
-  void *get_imag_data (void) const
+  void * get_imag_data (void) const
   {
     err_invalid_type ();
   }
@@ -877,12 +928,12 @@ public:
     err_invalid_type ();
   }
 
-  mwIndex *get_ir (void) const
+  mwIndex * get_ir (void) const
   {
     err_invalid_type ();
   }
 
-  mwIndex *get_jc (void) const
+  mwIndex * get_jc (void) const
   {
     err_invalid_type ();
   }
@@ -917,7 +968,7 @@ public:
     err_invalid_type ();
   }
 
-  mxArray *get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
+  mxArray * get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
   {
     err_invalid_type ();
   }
@@ -933,7 +984,7 @@ public:
     err_invalid_type ();
   }
 
-  const char *get_field_name_by_number (int /*key_num*/) const
+  const char * get_field_name_by_number (int /*key_num*/) const
   {
     err_invalid_type ();
   }
@@ -948,7 +999,7 @@ public:
     err_invalid_type ();
   }
 
-  char *array_to_string (void) const
+  char * array_to_string (void) const
   {
     err_invalid_type ();
   }
@@ -985,15 +1036,6 @@ public:
 
 protected:
 
-  mxArray_matlab (const mxArray_matlab& val)
-    : mxArray_base (val), class_name (mxArray::strsave (val.class_name)),
-      id (val.id), ndims (val.ndims),
-      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
-  {
-    for (mwIndex i = 0; i < ndims; i++)
-      dims[i] = val.dims[i];
-  }
-
   dim_vector
   dims_to_dim_vector (void) const
   {
@@ -1023,12 +1065,6 @@ private:
   {
     error ("invalid type for operation");
   }
-
-  // No assignment!
-  // FIXME: should this be implemented?
-  //        Note that we *do* have a copy constructor.
-
-  mxArray_matlab& operator = (const mxArray_matlab&);
 };
 
 // Matlab-style numeric, character, and logical data.
@@ -1049,7 +1085,7 @@ public:
                                        get_element_size ())
                     : mxArray::malloc (get_number_of_elements ()
                                        * get_element_size ()))
-            : 0) { }
+            : nullptr) { }
 
   mxArray_number (mxClassID id_arg, const dim_vector& dv,
                   mxComplexity flag = mxREAL)
@@ -1057,7 +1093,7 @@ public:
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
                                                get_element_size ())
-                            : 0)
+                            : nullptr)
   { }
 
   mxArray_number (mxClassID id_arg, mwSize m, mwSize n,
@@ -1072,13 +1108,13 @@ public:
                                        get_element_size ())
                     : mxArray::malloc (get_number_of_elements ()
                                        * get_element_size ()))
-            : 0)
+            : nullptr)
   { }
 
   mxArray_number (mxClassID id_arg, double val)
     : mxArray_matlab (id_arg, 1, 1),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (0)
+      pi (nullptr)
   {
     double *dpr = static_cast<double *> (pr);
     dpr[0] = val;
@@ -1087,7 +1123,7 @@ public:
   mxArray_number (mxClassID id_arg, mxLogical val)
     : mxArray_matlab (id_arg, 1, 1),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (0)
+      pi (nullptr)
   {
     mxLogical *lpr = static_cast<mxLogical *> (pr);
     lpr[0] = val;
@@ -1098,7 +1134,7 @@ public:
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
     pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-    pi (0)
+    pi (nullptr)
   {
     mxChar *cpr = static_cast<mxChar *> (pr);
     mwSize nel = get_number_of_elements ();
@@ -1110,7 +1146,7 @@ public:
   mxArray_number (mwSize m, const char **str)
     : mxArray_matlab (mxCHAR_CLASS, m, max_str_len (m, str)),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (0)
+      pi (nullptr)
   {
     mxChar *cpr = static_cast<mxChar *> (pr);
 
@@ -1132,7 +1168,32 @@ public:
       }
   }
 
-  mxArray_base *dup (void) const { return new mxArray_number (*this); }
+protected:
+
+  mxArray_number (const mxArray_number& val)
+    : mxArray_matlab (val),
+      pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
+      pi (val.pi ? mxArray::malloc (get_number_of_elements ()
+                                    * get_element_size ())
+                 : nullptr)
+  {
+    size_t nbytes = get_number_of_elements () * get_element_size ();
+
+    if (pr)
+      memcpy (pr, val.pr, nbytes);
+
+    if (pi)
+      memcpy (pi, val.pi, nbytes);
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_number& operator = (const mxArray_number&);
+
+  mxArray_base * dup (void) const { return new mxArray_number (*this); }
 
   ~mxArray_number (void)
   {
@@ -1140,7 +1201,7 @@ public:
     mxFree (pi);
   }
 
-  int is_complex (void) const { return pi != 0; }
+  int is_complex (void) const { return pi != nullptr; }
 
   double get_scalar (void) const
   {
@@ -1203,9 +1264,9 @@ public:
     return retval;
   }
 
-  void *get_data (void) const { return pr; }
+  void * get_data (void) const { return pr; }
 
-  void *get_imag_data (void) const { return pi; }
+  void * get_imag_data (void) const { return pi; }
 
   void set_data (void *pr_arg) { pr = pr_arg; }
 
@@ -1237,7 +1298,7 @@ public:
     return retval;
   }
 
-  char *array_to_string (void) const
+  char * array_to_string (void) const
   {
     // FIXME: this is supposed to handle multi-byte character strings.
 
@@ -1415,31 +1476,10 @@ protected:
     return octave_value (val);
   }
 
-  mxArray_number (const mxArray_number& val)
-    : mxArray_matlab (val),
-      pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
-      pi (val.pi ? mxArray::malloc (get_number_of_elements ()
-                                    * get_element_size ())
-                 : 0)
-  {
-    size_t nbytes = get_number_of_elements () * get_element_size ();
-
-    if (pr)
-      memcpy (pr, val.pr, nbytes);
-
-    if (pi)
-      memcpy (pi, val.pi, nbytes);
-  }
-
 private:
 
   void *pr;
   void *pi;
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_number& operator = (const mxArray_number&);
 };
 
 // Matlab-style sparse arrays.
@@ -1452,12 +1492,43 @@ public:
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg),
       pr (mxArray::calloc (nzmax, get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ()) : 0),
+      pi (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ()) : nullptr),
       ir (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex)))),
       jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
   { }
 
-  mxArray_base *dup (void) const { return new mxArray_sparse (*this); }
+private:
+
+  mxArray_sparse (const mxArray_sparse& val)
+    : mxArray_matlab (val), nzmax (val.nzmax),
+      pr (mxArray::malloc (nzmax * get_element_size ())),
+      pi (val.pi ? mxArray::malloc (nzmax * get_element_size ()) : nullptr),
+      ir (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex)))),
+      jc (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex))))
+  {
+    size_t nbytes = nzmax * get_element_size ();
+
+    if (pr)
+      memcpy (pr, val.pr, nbytes);
+
+    if (pi)
+      memcpy (pi, val.pi, nbytes);
+
+    if (ir)
+      memcpy (ir, val.ir, nzmax * sizeof (mwIndex));
+
+    if (jc)
+      memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (mwIndex));
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_sparse& operator = (const mxArray_sparse&);
+
+  mxArray_base * dup (void) const { return new mxArray_sparse (*this); }
 
   ~mxArray_sparse (void)
   {
@@ -1467,21 +1538,21 @@ public:
     mxFree (jc);
   }
 
-  int is_complex (void) const { return pi != 0; }
+  int is_complex (void) const { return pi != nullptr; }
 
   int is_sparse (void) const { return 1; }
 
-  void *get_data (void) const { return pr; }
+  void * get_data (void) const { return pr; }
 
-  void *get_imag_data (void) const { return pi; }
+  void * get_imag_data (void) const { return pi; }
 
   void set_data (void *pr_arg) { pr = pr_arg; }
 
   void set_imag_data (void *pi_arg) { pi = pi_arg; }
 
-  mwIndex *get_ir (void) const { return ir; }
+  mwIndex * get_ir (void) const { return ir; }
 
-  mwIndex *get_jc (void) const { return jc; }
+  mwIndex * get_jc (void) const { return jc; }
 
   mwSize get_nzmax (void) const { return nzmax; }
 
@@ -1580,33 +1651,6 @@ private:
   void *pi;
   mwIndex *ir;
   mwIndex *jc;
-
-  mxArray_sparse (const mxArray_sparse& val)
-    : mxArray_matlab (val), nzmax (val.nzmax),
-      pr (mxArray::malloc (nzmax * get_element_size ())),
-      pi (val.pi ? mxArray::malloc (nzmax * get_element_size ()) : 0),
-      ir (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex)))),
-      jc (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex))))
-  {
-    size_t nbytes = nzmax * get_element_size ();
-
-    if (pr)
-      memcpy (pr, val.pr, nbytes);
-
-    if (pi)
-      memcpy (pi, val.pi, nbytes);
-
-    if (ir)
-      memcpy (ir, val.ir, nzmax * sizeof (mwIndex));
-
-    if (jc)
-      memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (mwIndex));
-  }
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_sparse& operator = (const mxArray_sparse&);
 };
 
 // Matlab-style struct arrays.
@@ -1650,13 +1694,42 @@ public:
     init (keys);
   }
 
+private:
+
+  mxArray_struct (const mxArray_struct& val)
+    : mxArray_matlab (val), nfields (val.nfields),
+      fields (static_cast<char **> (mxArray::malloc (nfields
+                                                     * sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::malloc (nfields *
+                                                      get_number_of_elements ()
+                                                      * sizeof (mxArray *))))
+  {
+    for (int i = 0; i < nfields; i++)
+      fields[i] = mxArray::strsave (val.fields[i]);
+
+    mwSize nel = get_number_of_elements ();
+
+    for (mwIndex i = 0; i < nel * nfields; i++)
+      {
+        mxArray *ptr = val.data[i];
+        data[i] = (ptr ? ptr->dup () : nullptr);
+      }
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_struct& operator = (const mxArray_struct& val);
+
   void init (const char **keys)
   {
     for (int i = 0; i < nfields; i++)
       fields[i] = mxArray::strsave (keys[i]);
   }
 
-  mxArray_base *dup (void) const { return new mxArray_struct (*this); }
+  mxArray_base * dup (void) const { return new mxArray_struct (*this); }
 
   ~mxArray_struct (void)
   {
@@ -1706,7 +1779,7 @@ public:
                   {
                     if (++n == nfields)
                       {
-                        new_data[j++] = 0;
+                        new_data[j++] = nullptr;
                         n = 0;
                       }
                     else
@@ -1776,19 +1849,19 @@ public:
       }
   }
 
-  mxArray *get_field_by_number (mwIndex index, int key_num) const
+  mxArray * get_field_by_number (mwIndex index, int key_num) const
   {
     return key_num >= 0 && key_num < nfields
-           ? data[nfields * index + key_num] : 0;
+           ? data[nfields * index + key_num] : nullptr;
   }
 
   void set_field_by_number (mwIndex index, int key_num, mxArray *val);
 
   int get_number_of_fields (void) const { return nfields; }
 
-  const char *get_field_name_by_number (int key_num) const
+  const char * get_field_name_by_number (int key_num) const
   {
-    return key_num >= 0 && key_num < nfields ? fields[key_num] : 0;
+    return key_num >= 0 && key_num < nfields ? fields[key_num] : nullptr;
   }
 
   int get_field_number (const char *key) const
@@ -1807,7 +1880,7 @@ public:
     return retval;
   }
 
-  void *get_data (void) const { return data; }
+  void * get_data (void) const { return data; }
 
   void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
 
@@ -1844,31 +1917,6 @@ private:
   char **fields;
 
   mxArray **data;
-
-  mxArray_struct (const mxArray_struct& val)
-    : mxArray_matlab (val), nfields (val.nfields),
-      fields (static_cast<char **> (mxArray::malloc (nfields
-                                                     * sizeof (char *)))),
-      data (static_cast<mxArray **> (mxArray::malloc (nfields *
-                                                      get_number_of_elements ()
-                                                      * sizeof (mxArray *))))
-  {
-    for (int i = 0; i < nfields; i++)
-      fields[i] = mxArray::strsave (val.fields[i]);
-
-    mwSize nel = get_number_of_elements ();
-
-    for (mwIndex i = 0; i < nel * nfields; i++)
-      {
-        mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->dup () : 0;
-      }
-  }
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_struct& operator = (const mxArray_struct& val);
 };
 
 // Matlab-style cell arrays.
@@ -1892,7 +1940,30 @@ public:
       data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (),
                                      sizeof (mxArray *)))) { }
 
-  mxArray_base *dup (void) const { return new mxArray_cell (*this); }
+private:
+
+  mxArray_cell (const mxArray_cell& val)
+    : mxArray_matlab (val),
+      data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements ()
+                                                      * sizeof (mxArray *))))
+  {
+    mwSize nel = get_number_of_elements ();
+
+    for (mwIndex i = 0; i < nel; i++)
+      {
+        mxArray *ptr = val.data[i];
+        data[i] = (ptr ? ptr->dup () : nullptr);
+      }
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_cell& operator = (const mxArray_cell&);
+
+  mxArray_base * dup (void) const { return new mxArray_cell (*this); }
 
   ~mxArray_cell (void)
   {
@@ -1904,14 +1975,14 @@ public:
     mxFree (data);
   }
 
-  mxArray *get_cell (mwIndex idx) const
+  mxArray * get_cell (mwIndex idx) const
   {
-    return idx >= 0 && idx < get_number_of_elements () ? data[idx] : 0;
+    return idx >= 0 && idx < get_number_of_elements () ? data[idx] : nullptr;
   }
 
   void set_cell (mwIndex idx, mxArray *val);
 
-  void *get_data (void) const { return data; }
+  void * get_data (void) const { return data; }
 
   void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
 
@@ -1934,77 +2005,58 @@ public:
 private:
 
   mxArray **data;
-
-  mxArray_cell (const mxArray_cell& val)
-    : mxArray_matlab (val),
-      data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements ()
-                                                      * sizeof (mxArray *))))
-  {
-    mwSize nel = get_number_of_elements ();
-
-    for (mwIndex i = 0; i < nel; i++)
-      {
-        mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->dup () : 0;
-      }
-  }
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_cell& operator = (const mxArray_cell&);
 };
 
 // ------------------------------------------------------------------
 
 mxArray::mxArray (const octave_value& ov)
-  : rep (new mxArray_octave_value (ov)), name (0) { }
+  : rep (new mxArray_octave_value (ov)), name (nullptr) { }
 
 mxArray::mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
                   mxComplexity flag, bool init)
-  : rep (new mxArray_number (id, ndims, dims, flag, init)), name (0) { }
+  : rep (new mxArray_number (id, ndims, dims, flag, init)), name (nullptr) { }
 
 mxArray::mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag)
-  : rep (new mxArray_number (id, dv, flag)), name (0) { }
+  : rep (new mxArray_number (id, dv, flag)), name (nullptr) { }
 
 mxArray::mxArray (mxClassID id, mwSize m, mwSize n,
                   mxComplexity flag, bool init)
-  : rep (new mxArray_number (id, m, n, flag, init)), name (0) { }
+  : rep (new mxArray_number (id, m, n, flag, init)), name (nullptr) { }
 
 mxArray::mxArray (mxClassID id, double val)
-  : rep (new mxArray_number (id, val)), name (0) { }
+  : rep (new mxArray_number (id, val)), name (nullptr) { }
 
 mxArray::mxArray (mxClassID id, mxLogical val)
-  : rep (new mxArray_number (id, val)), name (0) { }
+  : rep (new mxArray_number (id, val)), name (nullptr) { }
 
 mxArray::mxArray (const char *str)
-  : rep (new mxArray_number (str)), name (0) { }
+  : rep (new mxArray_number (str)), name (nullptr) { }
 
 mxArray::mxArray (mwSize m, const char **str)
-  : rep (new mxArray_number (m, str)), name (0) { }
+  : rep (new mxArray_number (m, str)), name (nullptr) { }
 
 mxArray::mxArray (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
                   mxComplexity flag)
-  : rep (new mxArray_sparse (id, m, n, nzmax, flag)), name (0) { }
+  : rep (new mxArray_sparse (id, m, n, nzmax, flag)), name (nullptr) { }
 
 mxArray::mxArray (mwSize ndims, const mwSize *dims, int num_keys,
                   const char **keys)
-  : rep (new mxArray_struct (ndims, dims, num_keys, keys)), name (0) { }
+  : rep (new mxArray_struct (ndims, dims, num_keys, keys)), name (nullptr) { }
 
 mxArray::mxArray (const dim_vector& dv, int num_keys, const char **keys)
-  : rep (new mxArray_struct (dv, num_keys, keys)), name (0) { }
+  : rep (new mxArray_struct (dv, num_keys, keys)), name (nullptr) { }
 
 mxArray::mxArray (mwSize m, mwSize n, int num_keys, const char **keys)
-  : rep (new mxArray_struct (m, n, num_keys, keys)), name (0) { }
+  : rep (new mxArray_struct (m, n, num_keys, keys)), name (nullptr) { }
 
 mxArray::mxArray (mwSize ndims, const mwSize *dims)
-  : rep (new mxArray_cell (ndims, dims)), name (0) { }
+  : rep (new mxArray_cell (ndims, dims)), name (nullptr) { }
 
 mxArray::mxArray (const dim_vector& dv)
-  : rep (new mxArray_cell (dv)), name (0) { }
+  : rep (new mxArray_cell (dv)), name (nullptr) { }
 
 mxArray::mxArray (mwSize m, mwSize n)
-  : rep (new mxArray_cell (m, n)), name (0) { }
+  : rep (new mxArray_cell (m, n)), name (nullptr) { }
 
 mxArray::~mxArray (void)
 {
@@ -2023,7 +2075,7 @@ mxArray::set_name (const char *name_arg)
 octave_value
 mxArray::as_octave_value (const mxArray *ptr)
 {
-  return ptr ? ptr->as_octave_value () : octave_value (Matrix ());
+  return ptr ? ptr->as_octave_value () : octave_value ();
 }
 
 octave_value
@@ -2047,7 +2099,7 @@ mxArray::maybe_mutate (void) const
         {
           delete rep;
           rep = new_val->rep;
-          new_val->rep = 0;
+          new_val->rep = nullptr;
           delete new_val;
         }
     }
@@ -2063,7 +2115,13 @@ class mex
 public:
 
   mex (octave_mex_function *f)
-    : curr_mex_fcn (f), memlist (), arraylist (), fname (0) { }
+    : curr_mex_fcn (f), memlist (), arraylist (), fname (nullptr) { }
+
+  // No copying!
+
+  mex (const mex&) = delete;
+
+  mex& operator = (const mex&) = delete;
 
   ~mex (void)
   {
@@ -2089,11 +2147,14 @@ public:
     mxFree (fname);
   }
 
-  const char *function_name (void) const
+  const char * function_name (void) const
   {
     if (! fname)
       {
-        octave_function *fcn = octave_call_stack::current ();
+        octave::call_stack& cs
+          = octave::__get_call_stack__ ("mex::function_name");
+
+        octave_function *fcn = cs.current ();
 
         if (fcn)
           {
@@ -2108,7 +2169,7 @@ public:
   }
 
   // Allocate memory.
-  void *malloc_unmarked (size_t n)
+  void * malloc_unmarked (size_t n)
   {
     void *ptr = std::malloc (n);
 
@@ -2125,7 +2186,7 @@ public:
   }
 
   // Allocate memory to be freed on exit.
-  void *malloc (size_t n)
+  void * malloc (size_t n)
   {
     void *ptr = malloc_unmarked (n);
 
@@ -2135,7 +2196,7 @@ public:
   }
 
   // Allocate memory and initialize to 0.
-  void *calloc_unmarked (size_t n, size_t t)
+  void * calloc_unmarked (size_t n, size_t t)
   {
     void *ptr = malloc_unmarked (n*t);
 
@@ -2145,7 +2206,7 @@ public:
   }
 
   // Allocate memory to be freed on exit and initialize to 0.
-  void *calloc (size_t n, size_t t)
+  void * calloc (size_t n, size_t t)
   {
     void *ptr = calloc_unmarked (n, t);
 
@@ -2157,7 +2218,7 @@ public:
   // Reallocate a pointer obtained from malloc or calloc.
   // If the pointer is NULL, allocate using malloc.
   // We don't need an "unmarked" version of this.
-  void *realloc (void *ptr, size_t n)
+  void * realloc (void *ptr, size_t n)
   {
     void *v;
 
@@ -2241,7 +2302,7 @@ public:
 #endif
   }
 
-  mxArray *mark_array (mxArray *ptr)
+  mxArray * mark_array (mxArray *ptr)
   {
     arraylist.insert (ptr);
     return ptr;
@@ -2282,7 +2343,7 @@ public:
 
   // Make a new array value and initialize from an octave value; it will be
   // freed on exit unless marked as persistent.
-  mxArray *make_value (const octave_value& ov)
+  mxArray * make_value (const octave_value& ov)
   {
     return mark_array (new mxArray (ov));
   }
@@ -2308,7 +2369,7 @@ public:
     return inlist;
   }
 
-  octave_mex_function *current_mex_function (void) const
+  octave_mex_function * current_mex_function (void) const
   {
     return curr_mex_fcn;
   }
@@ -2361,19 +2422,13 @@ private:
 #endif
 
   }
-
-  // No copying!
-
-  mex (const mex&);
-
-  mex& operator = (const mex&);
 };
 
 // List of memory resources we allocated.
 std::set<void *> mex::global_memlist;
 
 // Current context.
-mex *mex_context = 0;
+mex *mex_context = nullptr;
 
 void *
 mxArray::malloc (size_t n)
@@ -2638,7 +2693,7 @@ mxDestroyArray (mxArray *ptr)
 bool
 mxIsCell (const mxArray *ptr)
 {
-  return ptr->is_cell ();
+  return ptr->iscell ();
 }
 
 bool
@@ -2767,7 +2822,7 @@ mxIsLogicalScalarTrue (const mxArray *ptr)
 bool
 mxIsEmpty (const mxArray *ptr)
 {
-  return ptr->is_empty ();
+  return ptr->isempty ();
 }
 
 bool
@@ -2863,7 +2918,7 @@ mxGetChars (const mxArray *ptr)
   if (mxIsChar (ptr))
     return static_cast<mxChar *> (ptr->get_data ());
   else
-    return NULL;
+    return nullptr;
 }
 
 mxLogical *
@@ -2926,6 +2981,19 @@ void
 mxSetClassName (mxArray *ptr, const char *name)
 {
   ptr->set_class_name (name);
+}
+
+void
+mxSetProperty (mxArray *ptr, mwIndex idx, const char *property_name,
+               const mxArray *property_value)
+{
+  ptr->set_property (idx, property_name, property_value);
+}
+
+mxArray *
+mxGetProperty (const mxArray *ptr, mwIndex idx, const char *property_name)
+{
+  return ptr->get_property (idx, property_name);
 }
 
 // Cell support.
@@ -3062,12 +3130,12 @@ mxGetElementSize (const mxArray *ptr)
 // ------------------------------------------------------------------
 
 typedef void (*cmex_fptr) (int nlhs, mxArray **plhs, int nrhs, mxArray **prhs);
-typedef F77_RET_T (*fmex_fptr) (int& nlhs, mxArray **plhs,
-                                int& nrhs, mxArray **prhs);
+typedef F77_RET_T (*fmex_fptr) (F77_INT& nlhs, mxArray **plhs,
+                                F77_INT& nrhs, mxArray **prhs);
 
 octave_value_list
-call_mex (bool have_fmex, void *f, const octave_value_list& args,
-          int nargout_arg, octave_mex_function *curr_mex_fcn)
+call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
+          int nargout_arg)
 {
   octave_quit ();
 
@@ -3079,37 +3147,39 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
   int nargin = args.length ();
   OCTAVE_LOCAL_BUFFER (mxArray *, argin, nargin);
   for (int i = 0; i < nargin; i++)
-    argin[i] = 0;
+    argin[i] = nullptr;
 
-  int nout = nargout == 0 ? 1 : nargout;
+  int nout = (nargout == 0 ? 1 : nargout);
   OCTAVE_LOCAL_BUFFER (mxArray *, argout, nout);
   for (int i = 0; i < nout; i++)
-    argout[i] = 0;
+    argout[i] = nullptr;
 
   octave::unwind_protect_safe frame;
 
   // Save old mex pointer.
   frame.protect_var (mex_context);
 
-  mex context (curr_mex_fcn);
+  mex context (&mex_fcn);
 
   for (int i = 0; i < nargin; i++)
     argin[i] = context.make_value (args(i));
 
   mex_context = &context;
 
-  if (have_fmex)
-    {
-      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (f);
+  void *mex_fcn_ptr = mex_fcn.mex_fcn_ptr ();
 
-      int tmp_nargout = nargout;
-      int tmp_nargin = nargin;
+  if (mex_fcn.is_fmex ())
+    {
+      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (mex_fcn_ptr);
+
+      F77_INT tmp_nargout = nargout;
+      F77_INT tmp_nargin = nargin;
 
       fcn (tmp_nargout, argout, tmp_nargin, argin);
     }
   else
     {
-      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (f);
+      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (mex_fcn_ptr);
 
       fcn (nargout, argout, nargin, argin);
     }
@@ -3164,13 +3234,13 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 
   try
     {
-      retval = feval (fname, args, nargout);
+      retval = octave::feval (fname, args, nargout);
     }
   catch (const octave::execution_exception&)
     {
       if (mex_context->trap_feval_error)
         {
-          recover_from_exception ();
+          octave::interpreter::recover_from_exception ();
 
           execution_error = true;
         }
@@ -3198,7 +3268,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
     }
 
   while (num_to_copy < nargout)
-    argout[num_to_copy++] = 0;
+    argout[num_to_copy++] = nullptr;
 
   return execution_error ? 1 : 0;
 }
@@ -3207,9 +3277,9 @@ mxArray *
 mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
                        mxArray *argin[], const char *fname)
 {
-  mxArray *mx = NULL;
+  mxArray *mx = nullptr;
 
-  int old_flag = mex_context ? mex_context->trap_feval_error : 0;
+  int old_flag = (mex_context ? mex_context->trap_feval_error : 0);
   mexSetTrapFlag (1);
   if (mexCallMATLAB (nargout, argout, nargin, argin, fname))
     {
@@ -3220,7 +3290,7 @@ mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
                         + std::string (fname) + "> failed";
       mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
       mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
-      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, nullptr));
     }
   mexSetTrapFlag (old_flag);
 
@@ -3246,11 +3316,11 @@ mexEvalString (const char *s)
 
   try
     {
-      ret = eval_string (s, false, parse_status, 0);
+      ret = octave::eval_string (s, false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       execution_error = true;
     }
@@ -3264,7 +3334,7 @@ mexEvalString (const char *s)
 mxArray *
 mexEvalStringWithTrap (const char *s)
 {
-  mxArray *mx = NULL;
+  mxArray *mx = nullptr;
 
   int parse_status;
   bool execution_error = false;
@@ -3273,11 +3343,11 @@ mexEvalStringWithTrap (const char *s)
 
   try
     {
-      ret = eval_string (s, false, parse_status, 0);
+      ret = octave::eval_string (s, false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       execution_error = true;
     }
@@ -3291,7 +3361,7 @@ mexEvalStringWithTrap (const char *s)
                         + std::string (s) + "> failed";
       mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
       mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
-      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, nullptr));
     }
 
   return mx;
@@ -3371,12 +3441,17 @@ mexPrintf (const char *fmt, ...)
 mxArray *
 mexGetVariable (const char *space, const char *name)
 {
-  mxArray *retval = 0;
+  mxArray *retval = nullptr;
 
   octave_value val;
 
   if (! strcmp (space, "global"))
-    val = get_global_value (name);
+    {
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("mexGetVariable");
+
+      val = symtab.global_varval (name);
+    }
   else
     {
       // FIXME: should this be in variables.cc?
@@ -3393,12 +3468,18 @@ mexGetVariable (const char *space, const char *name)
 
           if (base)
             {
-              octave_call_stack::goto_base_frame ();
+              octave::call_stack& cs
+                = octave::__get_call_stack__ ("mexGetVariable");
 
-              frame.add_fcn (octave_call_stack::pop);
+              cs.goto_base_frame ();
+
+              frame.add_method (cs, &octave::call_stack::pop);
             }
 
-          val = symbol_table::varval (name);
+          octave::symbol_scope scope
+            = octave::__require_current_scope__ ("mexGetVariable");
+
+          val = scope.varval (name);
         }
       else
         mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
@@ -3436,7 +3517,12 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
     return 1;
 
   if (! strcmp (space, "global"))
-    set_global_value (name, mxArray::as_octave_value (ptr));
+    {
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("mexPutVariable");
+
+      symtab.global_assign (name, mxArray::as_octave_value (ptr));
+    }
   else
     {
       // FIXME: should this be in variables.cc?
@@ -3453,12 +3539,18 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
           if (base)
             {
-              octave_call_stack::goto_base_frame ();
+              octave::call_stack& cs
+                = octave::__get_call_stack__ ("mexPutVariable");
 
-              frame.add_fcn (octave_call_stack::pop);
+              cs.goto_base_frame ();
+
+              frame.add_method (cs, &octave::call_stack::pop);
             }
 
-          symbol_table::assign (name, mxArray::as_octave_value (ptr));
+          octave::symbol_scope scope
+            = octave::__require_current_scope__ ("mexPutVariable");
+
+          scope.assign (name, mxArray::as_octave_value (ptr));
         }
       else
         mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
@@ -3497,7 +3589,7 @@ mexAtExit (void (*f) (void))
 const mxArray *
 mexGet (double handle, const char *property)
 {
-  mxArray *m = 0;
+  mxArray *m = nullptr;
 
   octave_value ret = get_property_from_handle (handle, property, "mexGet");
 
@@ -3522,7 +3614,9 @@ mexIsLocked (void)
     {
       const char *fname = mexFunctionName ();
 
-      retval = mislocked (fname);
+      octave::interpreter& interp = octave::__get_interpreter__ ("mexIsLocked");
+
+      retval = interp.mislocked (fname);
     }
 
   return retval;
@@ -3542,7 +3636,9 @@ mexLock (void)
       else
         mex_lock_count[fname]++;
 
-      mlock ();
+      octave::interpreter& interp = octave::__get_interpreter__ ("mexLock");
+
+      interp.mlock ();
     }
 }
 
@@ -3570,7 +3666,10 @@ mexUnlock (void)
 
           if (count == 0)
             {
-              munlock (fname);
+              octave::interpreter& interp
+                = octave::__get_interpreter__ ("mexUnLock");
+
+              interp.munlock (fname);
 
               mex_lock_count.erase (p);
             }

@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,17 +27,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "dMatrix.h"
+// FIXME: Don't really need these for compiling schur.h, but it messes
+// up compilation in liboctave/array if these are not present.
 #include "CMatrix.h"
-#include "fMatrix.h"
+#include "dMatrix.h"
 #include "fCMatrix.h"
+#include "fMatrix.h"
 
 namespace octave
 {
   namespace math
   {
-    template <typename T> class schur;
-
     template <typename T>
     class
     schur
@@ -52,7 +52,7 @@ namespace octave
         init (a, ord, calc_unitary);
       }
 
-      schur (const T& a, const std::string& ord, octave_idx_type& info,
+      schur (const T& a, const std::string& ord, octave_f77_int_type& info,
              bool calc_unitary = true)
         : schur_mat (), unitary_mat ()
       {
@@ -65,7 +65,6 @@ namespace octave
       schur (const T& s, const T& u) : schur_mat (s), unitary_mat (u) { }
 
       schur (const schur& a)
-
         : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat)
       { }
 
@@ -80,7 +79,7 @@ namespace octave
         return *this;
       }
 
-      ~schur (void) { }
+      ~schur (void) = default;
 
       T schur_matrix (void) const { return schur_mat; }
 
@@ -93,7 +92,7 @@ namespace octave
       T schur_mat;
       T unitary_mat;
 
-      octave_idx_type
+      octave_f77_int_type
       init (const T& a, const std::string& ord, bool calc_unitary);
     };
 

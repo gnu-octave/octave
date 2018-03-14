@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node System Utilities
 @chapter System Utilities
@@ -78,7 +78,7 @@ Days since Sunday (0-6).
 Days since January 1 (0-365).
 
 @item isdst
-Daylight Savings Time flag.
+Daylight saving time flag.
 
 @item gmtoff
 Seconds offset from UTC.
@@ -204,8 +204,6 @@ status information on files; and for manipulating file and path names.
 @DOCSTRING(file_in_path)
 
 @DOCSTRING(filesep)
-
-@DOCSTRING(filemarker)
 
 @DOCSTRING(fileparts)
 
@@ -518,6 +516,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(OCTAVE_HOME)
 
+@DOCSTRING(OCTAVE_EXEC_HOME)
+
 @DOCSTRING(matlabroot)
 
 @DOCSTRING(OCTAVE_VERSION)
@@ -531,6 +531,8 @@ referred to as a @var{grp_struct}.
 @DOCSTRING(license)
 
 @DOCSTRING(getrusage)
+
+@DOCSTRING(winqueryreg)
 
 @node Hashing Functions
 @section Hashing Functions

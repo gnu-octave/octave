@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{c}, @var{hg}] =} __contour__ (@dots{})
@@ -73,14 +73,36 @@ function [c, hg] = __contour__ (varargin)
     z1 = varargin{3};
     x1 = 1 : columns (z1);
     y1 = 1 : rows (z1);
+    if (! ismatrix (z1))
+      error ("__contour__: Z must be a 2-D matrix");
+    endif
   else
     x1 = varargin{3};
     y1 = varargin{4};
     z1 = varargin{5};
+    if (! ismatrix (z1) || ! ismatrix (x1) || ! ismatrix (y1))
+      error ("__contour__: X, Y, and Z must be matrices");
+    endif
+    if (isvector (x1))
+      if (columns (z1) != length (x1))
+        error ("__contour__: size of X must match number of columns in Z");
+      endif
+    else
+      if (! size_equal (x1, z1))
+        error ("__contour__: size of X and Z must match");
+      endif
+    endif
+    if (isvector (y1))
+      if (rows (z1) != length (y1))
+        error ("__contour__: size of Y must match number of rows in Z");
+      endif
+    else
+      if (! size_equal (y1, z1))
+        error ("__contour__: size of Y and Z must match");
+      endif
+    endif
   endif
-  if (! ismatrix (z1) || ! ismatrix (x1) || ! ismatrix (y1))
-    error ("__contour__: X, Y, and Z must be matrices");
-  endif
+
   if (length (varargin) == 4 || length (varargin) == 6)
     vn = varargin{end};
     vnauto = false;

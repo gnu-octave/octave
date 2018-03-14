@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b})
@@ -57,10 +57,11 @@
 ## Note: @code{quadv} is written in Octave's scripting language and can be
 ## used recursively in @code{dblquad} and @code{triplequad}, unlike the
 ## @code{quad} function.
-## @seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad}
+## @seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad, integral,
+##          integral2, integral3}
 ## @end deftypefn
 
-function [q, nfun] = quadv (f, a, b, tol = [], trace = [], varargin)
+function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -75,9 +76,6 @@ function [q, nfun] = quadv (f, a, b, tol = [], trace = [], varargin)
     tol = 1e-6;
   elseif (! isscalar (tol) || tol < 0)
     error ("quadv: TOL must be a scalar >=0");
-  endif
-  if (isempty (trace))
-    trace = false;
   endif
 
   ## Split the interval into 3 abscissa, and apply a 3-point Simpson's rule
@@ -150,25 +148,26 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, nfun, hmin,
 endfunction
 
 
-%!assert (quadv (@sin, 0, 2*pi), 0, 1e-5)
-%!assert (quadv (@sin, 0, pi), 2, 1e-5)
+%!assert (quadv (@sin, 0, 2*pi), 0, 1e-6)
+%!assert (quadv (@sin, 0, pi), 2, 1e-6)
 
 ## Test weak singularities at the edge
 %!test
 %! warning ("off", "Octave:divide-by-zero", "local");
-%! assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 1e-5);
+%! assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 2e-6);
 
 ## Test vector-valued functions
-%!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-5)
+%!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-6)
 
 ## Test matrix-valued functions
 %!test
 %! warning ("off", "Octave:divide-by-zero", "local");
-%! assert (quadv (@(x) [ x, x, x; x, 1./sqrt(x), x; x, x, x ], 0, 1),
-%!         [0.5, 0.5, 0.5; 0.5, 2, 0.5; 0.5, 0.5, 0.5], 1e-5);
+%! assert (quadv (@(x) [ x,x,x; x,1./sqrt(x),x; x,x,x ], 0, 1),
+%!         [0.5,0.5,0.5; 0.5,2,0.5; 0.5,0.5,0.5], 2e-6);
 
 ## Test input validation
 %!error quadv ()
 %!error quadv (@sin)
 %!error quadv (@sin,1)
 %!error <TOL must be a scalar> quadv (@sin,0,1, ones (2,2))
+%!error <TOL must be .* .=0> quadv (@sin,0,1, -1)

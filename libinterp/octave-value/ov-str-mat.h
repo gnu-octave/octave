@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -42,8 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 
 class octave_value_list;
-
-class tree_walker;
 
 // Character matrix values with special properties for use as
 // strings.
@@ -84,11 +82,11 @@ public:
   octave_char_matrix_str (const octave_char_matrix_str& chms)
     : octave_char_matrix (chms) { }
 
-  ~octave_char_matrix_str (void) { }
+  ~octave_char_matrix_str (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_char_matrix_str (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_char_matrix_str (); }
 
   type_conv_info numeric_conversion_function (void) const;
@@ -113,7 +111,7 @@ public:
 
   bool is_string (void) const { return true; }
 
-  bool is_numeric_type (void) const { return false; }
+  bool isnumeric (void) const { return false; }
 
   double double_value (bool = false) const;
 
@@ -148,6 +146,9 @@ public:
 
   void short_disp (std::ostream& os) const;
 
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -161,7 +162,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
@@ -213,11 +214,11 @@ public:
   octave_char_matrix_sq_str (const octave_char_matrix_sq_str& chms)
     : octave_char_matrix_str (chms) { }
 
-  ~octave_char_matrix_sq_str (void) { }
+  ~octave_char_matrix_sq_str (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_char_matrix_sq_str (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_char_matrix_sq_str (); }
 
   octave_value squeeze (void) const

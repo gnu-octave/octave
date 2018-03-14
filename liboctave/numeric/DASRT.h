@@ -4,19 +4,19 @@ Copyright (C) 2002-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,9 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <cfloat>
+#include <string>
 
+#include "Array.h"
 #include "DASRT-opts.h"
+#include "dMatrix.h"
 
 class
 DASRT_result
@@ -54,7 +56,7 @@ public:
     return *this;
   }
 
-  ~DASRT_result (void) { }
+  ~DASRT_result (void) = default;
 
   Matrix state (void) const { return x; }
   Matrix deriv (void) const { return xdot; }
@@ -92,7 +94,7 @@ public:
       abs_tol (), rel_tol ()
   { }
 
-  ~DASRT (void) { }
+  ~DASRT (void) = default;
 
   DASRT_result integrate (const ColumnVector& tout);
 
@@ -105,14 +107,14 @@ private:
 
   bool initialized;
 
-  octave_idx_type liw;
-  octave_idx_type lrw;
+  octave_f77_int_type liw;
+  octave_f77_int_type lrw;
 
-  octave_idx_type ng;
+  octave_f77_int_type ng;
 
-  Array<octave_idx_type> info;
-  Array<octave_idx_type> iwork;
-  Array<octave_idx_type> jroot;
+  Array<octave_f77_int_type> info;
+  Array<octave_f77_int_type> iwork;
+  Array<octave_f77_int_type> jroot;
 
   Array<double> rwork;
 

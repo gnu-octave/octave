@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{x}, @var{y}, @var{buttons}] =} __gnuplot_ginput__ (@var{f}, @var{n})
@@ -80,14 +80,14 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
       ## or Alt-F4.  Further, this abrupt close also requires the leading
       ## "\n" on the next line.
       if (use_mkfifo)
-        fprintf (ostream, "set print \"%s\";\n", gpin_name);
+        fprintf (ostream, ['set print "%s";' "\n"], gpin_name);
         fflush (ostream);
         [gpin, err] = fopen (gpin_name, "r");
         if (err)
           error ("ginput: Can not open FIFO (%s)", msg);
         endif
         fputs (ostream, "pause mouse any;\n\n");
-        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
+        fputs (ostream, ["\n" 'if (exists("MOUSE_KEY") && exists("MOUSE_X")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print "0 0 -1"' "\n"]);
 
         ## Close output file, to force it to be flushed
         fputs (ostream, "set print;\n");
@@ -97,10 +97,10 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         [x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
         fclose (gpin);
       else
-        fputs (ostream, "set print \"-\";\n");
+        fputs (ostream, ['set print "-";' "\n"]);
         fflush (ostream);
         fputs (ostream, "pause mouse any;\n\n");
-        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) key = (MOUSE_KEY==1063 ? 1 : MOUSE_KEY); print \"OCTAVE: \", MOUSE_X, MOUSE_Y, key; else print \"0 0 -1\"\n");
+        fputs (ostream, ["\n" 'if (exists("MOUSE_KEY") && exists("MOUSE_X")) key = (MOUSE_KEY==1063 ? 1 : MOUSE_KEY); print "OCTAVE: ", MOUSE_X, MOUSE_Y, key; else print "0 0 -1"' "\n"]);
 
         ## Close output file, to force it to be flushed
         fputs (ostream, "set print;\n");

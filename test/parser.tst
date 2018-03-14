@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## Tests for parser problems belong in this file.
 ## We need many more tests here!
@@ -327,9 +327,13 @@
 ## invalidate error handling (bug #46534).
 #!error <vertical dimensions mismatch \(1x2 vs 1x1\)> z = [1, 2; 3]
 
+%!test
+%! f = @(s,t=toeplitz(s),u=t(x=2:end-1,x)=32)t;
+%! assert (f (1), 1);
+%! assert (f (1, 2), 2);
+
 ## FIXME: We need a sequence of concatenation tests since this seems
 ##        to be a frequently reported source of incompatibilities w/Matlab
 ## Check concatenation of empty char matrices (bug #52542)
 %!assert (double ([char(ones(0,3)); 'A']), 65)
 %!assert (double ([char(ones(0,3)); char(ones(2,0)); 'A']), 65)
-

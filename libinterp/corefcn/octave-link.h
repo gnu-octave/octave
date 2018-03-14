@@ -6,19 +6,19 @@ Copyright (C) 2011-2016 John P. Swensen
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,21 +27,27 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
+
+#include "oct-mutex.h"
 
 #include "event-queue.h"
 
-class octave_mutex;
+class octave_value;
 class string_vector;
-class workspace_element;
 
-// \class OctaveLink
-// \brief Provides threadsafe access to octave.
-// \author Jacob Dawid
-//
-// This class is a wrapper around octave and provides thread safety by
-// buffering access operations to octave and executing them in the
-// readline event hook, which lives in the octave thread.
+namespace octave
+{
+  class symbol_scope;
+}
+
+//! Provides threadsafe access to octave.
+//! @author Jacob Dawid
+//!
+//! This class is a wrapper around octave and provides thread safety by
+//! buffering access operations to octave and executing them in the
+//! readline event hook, which lives in the octave thread.
 
 class
 OCTINTERP_API
@@ -52,6 +58,12 @@ protected:
   octave_link (void);
 
 public:
+
+  // No copying!
+
+  octave_link (const octave_link&) = delete;
+
+  octave_link& operator = (const octave_link&) = delete;
 
   virtual ~octave_link (void);
 
@@ -69,7 +81,7 @@ public:
     if (enabled ())
       {
         if (disable)
-          instance->link_enabled = false;
+          instance->do_disable ();
 
         instance->do_process_events ();
       }
@@ -85,18 +97,8 @@ public:
   {
     bool retval = true;
 
-    if (instance_ok ())
+    if (enabled ())
       retval = instance->do_confirm_shutdown ();
-
-    return retval;
-  }
-
-  static bool exit (int status)
-  {
-    bool retval = false;
-
-    if (instance_ok ())
-      retval = instance->do_exit (status);
 
     return retval;
   }
@@ -120,6 +122,41 @@ public:
   {
     if (enabled ())
       instance->do_post_event (obj, method, arg);
+  }
+
+  template <class T, class A, class B>
+  static void post_event (T *obj, void (T::*method) (const A&, const B&),
+                          const A& arg_a, const B& arg_b)
+  {
+    if (enabled ())
+      instance->do_post_event<T, A, B> (obj, method, arg_a, arg_b);
+  }
+
+  template <class T, class A, class B, class C>
+  static void post_event (T *obj,
+                          void (T::*method) (const A&, const B&, const C&),
+                          const A& arg_a, const B& arg_b, const C& arg_c)
+  {
+    if (enabled ())
+      instance->do_post_event<T, A, B, C> (obj, method, arg_a, arg_b, arg_c);
+  }
+
+  template <class T, class A, class B, class C, class D>
+  static void
+  post_event (T *obj,
+              void (T::*method) (const A&, const B&, const C&, const D&),
+              const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
+  {
+    if (enabled ())
+      instance->do_post_event<T, A, B, C, D>
+        (obj, method, arg_a, arg_b, arg_c, arg_d);
+  }
+
+  static void
+  post_exception (const std::exception_ptr &p)
+  {
+    if (enabled ())
+      instance->do_post_exception (p);
   }
 
   static void entered_readline_hook (void)
@@ -165,7 +202,7 @@ public:
                    const std::string& btn3, const std::string& btndef)
   {
     return enabled () ? instance->do_question_dialog (msg, title, btn1,
-                                                      btn2, btn3, btndef) : 0;
+                                                      btn2, btn3, btndef) : "";
   }
 
   static std::pair<std::list<int>, int>
@@ -197,7 +234,7 @@ public:
            : std::list<std::string> ();
   }
 
-  typedef std::list<std::pair<std::string, std::string> > filter_list;
+  typedef std::list<std::pair<std::string, std::string>> filter_list;
 
   static std::list<std::string>
   file_dialog (const filter_list& filter, const std::string& title,
@@ -235,10 +272,12 @@ public:
   static void set_workspace (void);
 
   static void set_workspace (bool top_level,
-                             const std::list<workspace_element>& ws)
+                             const octave::symbol_scope& scope,
+                             bool update_variable_editor = true)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, instance->debugging, ws);
+      instance->do_set_workspace (top_level, instance->debugging, scope,
+                                  update_variable_editor);
   }
 
   static void clear_workspace (void)
@@ -313,11 +352,51 @@ public:
 
   static void connect_link (octave_link *);
 
+  static octave_link * disconnect_link (bool delete_instance = true)
+  {
+    if (delete_instance)
+      {
+        delete instance;
+        instance = nullptr;
+        return nullptr;
+      }
+    else
+      {
+        octave_link *retval = instance;
+        instance = nullptr;
+        return retval;
+      }
+  }
+
   static void set_default_prompts (std::string& ps1, std::string& ps2,
                                    std::string& ps4)
   {
     if (enabled ())
       instance->do_set_default_prompts (ps1, ps2, ps4);
+  }
+
+  static bool enable (void)
+  {
+    return instance_ok () ? instance->do_enable () : false;
+  }
+
+  static bool disable (void)
+  {
+    return instance_ok () ? instance->do_disable () : false;
+  }
+
+  bool do_enable (void)
+  {
+    bool retval = link_enabled;
+    link_enabled = true;
+    return retval;
+  }
+
+  bool do_disable (void)
+  {
+    bool retval = link_enabled;
+    link_enabled = false;
+    return retval;
   }
 
   static bool enabled (void)
@@ -350,25 +429,31 @@ public:
 
   }
 
+  static bool
+  edit_variable (const std::string &name, const octave_value& val)
+  {
+    if (enabled ())
+      {
+        instance->do_edit_variable (name, val);
+        return true;
+      }
+    else
+      return false;
+  }
+
 private:
 
   static octave_link *instance;
 
-  // No copying!
-
-  octave_link (const octave_link&);
-
-  octave_link& operator = (const octave_link&);
-
-  static bool instance_ok (void) { return instance != 0; }
+  static bool instance_ok (void) { return instance != nullptr; }
 
 protected:
 
   // Semaphore to lock access to the event queue.
-  octave_mutex *event_queue_mutex;
+  octave::mutex *event_queue_mutex;
 
   // Event Queue.
-  event_queue gui_event_queue;
+  octave::event_queue gui_event_queue;
 
   bool debugging;
   bool link_enabled;
@@ -395,11 +480,49 @@ protected:
     gui_event_queue.add_method (obj, method, arg);
   }
 
+  template <class T, class A, class B>
+  void do_post_event (T *obj, void (T::*method) (const A&, const B&),
+                      const A& arg_a, const B& arg_b)
+  {
+    gui_event_queue.add_method<T, A, B>
+      (obj, method, arg_a, arg_b);
+  }
+
+  template <class T, class A, class B, class C>
+  void do_post_event (T *obj,
+                      void (T::*method) (const A&, const B&, const C&),
+                      const A& arg_a, const B& arg_b, const C& arg_c)
+  {
+    gui_event_queue.add_method<T, A, B, C>
+      (obj, method, arg_a, arg_b, arg_c);
+  }
+
+  template <class T, class A, class B, class C, class D>
+  void
+  do_post_event (T *obj,
+                 void (T::*method) (const A&, const B&, const C&, const D&),
+                 const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
+  {
+    gui_event_queue.add_method<T, A, B, C, D>
+      (obj, method, arg_a, arg_b, arg_c, arg_d);
+  }
+
+  void
+  rethrow_exception_callback (const std::exception_ptr &p)
+  {
+    std::rethrow_exception (p);
+  }
+
+  void
+  do_post_exception (const std::exception_ptr &p)
+  {
+    do_post_event (this, &octave_link::rethrow_exception_callback, p);
+  }
+
   void do_entered_readline_hook (void) { }
   void do_finished_readline_hook (void) { }
 
   virtual bool do_confirm_shutdown (void) = 0;
-  virtual bool do_exit (int status) = 0;
 
   virtual bool do_copy_image_to_clipboard (const std::string& file) = 0;
 
@@ -448,7 +571,8 @@ protected:
 
   virtual void
   do_set_workspace (bool top_level, bool debug,
-                    const std::list<workspace_element>& ws) = 0;
+                    const octave::symbol_scope& scope,
+                    bool update_variable_editor) = 0;
 
   virtual void do_clear_workspace (void) = 0;
 
@@ -476,7 +600,10 @@ protected:
 
   virtual void do_show_preferences (void) = 0;
 
-  virtual void do_show_doc (const std::string &file) = 0;
+  virtual void do_show_doc (const std::string& file) = 0;
+
+  virtual void
+  do_edit_variable (const std::string& name, const octave_value& val) = 0;
 };
 
 #endif

@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -59,7 +59,7 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (Matrix ());
 
   octave_value retval;
@@ -77,7 +77,7 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
           if (tol < 0.0)
             error ("pinv: TOL must be greater than zero");
 
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             retval = arg.float_diag_matrix_value ().pseudo_inverse (tol);
           else
             retval = arg.float_complex_diag_matrix_value ().pseudo_inverse (tol);
@@ -91,7 +91,7 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
           if (tol < 0.0)
             error ("pinv: TOL must be greater than zero");
 
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             retval = arg.diag_matrix_value ().pseudo_inverse (tol);
           else
             retval = arg.complex_diag_matrix_value ().pseudo_inverse (tol);
@@ -110,13 +110,13 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
       if (tol < 0.0)
         error ("pinv: TOL must be greater than zero");
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatMatrix m = arg.float_matrix_value ();
 
           retval = m.pseudo_inverse (tol);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -134,13 +134,13 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
       if (tol < 0.0)
         error ("pinv: TOL must be greater than zero");
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           Matrix m = arg.matrix_value ();
 
           retval = m.pseudo_inverse (tol);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexMatrix m = arg.complex_matrix_value ();
 
@@ -188,4 +188,13 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 %! y = pinv (x, 2);
 %! assert (diag (y), [1/3 1/2 0 0 0]');
 
+## Test special case of 0 scalars and vectors
+%!assert (pinv (0), 0)
+%!assert (pinv ([0, 0, 0]), [0; 0; 0])
+%!assert (pinv (single (0)), single (0))
+%!assert (pinv (single ([0, 0, 0])), single ([0; 0; 0]))
+%!assert (pinv (complex (0,0)), 0)
+%!assert (pinv (complex ([0,0,0], [0,0,0])), [0; 0; 0])
+%!assert (pinv (complex (single (0),0)), single (0))
+%!assert (pinv (complex (single ([0,0,0]), [0,0,0])), single ([0; 0; 0]))
 */

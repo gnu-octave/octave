@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -39,15 +39,9 @@ public:
 
   PermMatrix (octave_idx_type n);
 
-  OCTAVE_DEPRECATED ("use 'PermMatrix (p, false, true)' instead")
-  PermMatrix (const Array<octave_idx_type>& p);
-
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
 
   PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
-
-  OCTAVE_DEPRECATED ("use 'PermVector (idx, false, 0)' instead")
-  PermMatrix (const idx_vector& idx);
 
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 
@@ -66,7 +60,7 @@ public:
   octave_idx_type length (void) const
   { return perm_length (); }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type nelem (void) const { return numel (); }
 
   octave_idx_type numel (void) const { return dim1 () * dim2 (); }
@@ -75,6 +69,10 @@ public:
   { return Array<octave_idx_type>::byte_size (); }
 
   dim_vector dims (void) const { return dim_vector (dim1 (), dim2 ()); }
+
+  bool isempty (void) const { return numel () == 0; }
+
+  int ndims (void) const { return 2; }
 
   const Array<octave_idx_type>& col_perm_vec (void) const
   { return *this; }
@@ -91,11 +89,7 @@ public:
   octave_idx_type
   operator () (octave_idx_type i, octave_idx_type j) const
   {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    return checkelem (i, j);
-#else
     return elem (i, j);
-#endif
   }
 
   // These are, in fact, super-fast.

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{hnew} =} copyobj (@var{horig})
@@ -44,9 +44,9 @@ function hnew = copyobj (horig, hparent = 0)
   othertypes = {"line", "patch", "surface", "image", "text"};
   alltypes = [partypes othertypes];
 
-  if (! ishandle (horig) || nargin > 2)
+  if (! ishghandle (horig) || nargin > 2)
     print_usage ();
-  elseif (! ishandle (hparent))
+  elseif (! ishghandle (hparent))
     hparent = figure (fix (hparent));
   else
     for hp = hparent(:)'
@@ -169,7 +169,36 @@ endfunction
 %! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
-%!testif HAVE_MAGICK
+%!demo
+%! hobj = clf;
+%! set (hobj, "name", "Original", "numbertitle", "off");
+%! x = 0:0.1:2*pi;
+%! y1 = sin (x);
+%! y2 = exp (x - 1);
+%! ax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
+%! xlabel ("X");
+%! ylabel (ax(1), "Axis 1");
+%! ylabel (ax(2), "Axis 2");
+%! lcolor = get (gca, "ColorOrder")(1,:);
+%! rcolor = get (gca, "ColorOrder")(2,:);
+%! text (0.5, 0.5, "Left Axis", ...
+%!       "color", lcolor, "horizontalalignment", "center", "parent", ax(1));
+%! text (4.5, 80, "Right Axis", ...
+%!       "color", rcolor, "horizontalalignment", "center", "parent", ax(2));
+%! title ({"plotyy() example"; "left axis uses @plot, right axis uses @semilogy"});
+%! drawnow ();
+%! pos = get (hobj, "position");
+%! scrn = get (0, "screensize");
+%! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
+%! hnew = copyobj (hobj);
+%! drawnow ();
+%! set (hnew, "name", "Copyobj");
+%! drawnow ();
+%! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
+
+%!testif HAVE_MAGICK; any (strcmp ("gnuplot", available_graphics_toolkits ()))
 %! toolkit = graphics_toolkit ();
 %! graphics_toolkit ("gnuplot");
 %! unwind_protect

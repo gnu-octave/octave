@@ -2,26 +2,26 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{retval} =} ode_event_handler (@var{@@evtfun}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
 ##
 ## Return the solution of the event function (@var{@@evtfun}) which is
 ## specified in the form of a function handle.
-#
+##
 ## The second input argument @var{t} is a scalar double and specifies the time
 ## of the event evaluation.
 ##
@@ -72,6 +72,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
   ## evtcnt  the counter for how often this function has been called
   persistent evtold told yold retcell;
   persistent evtcnt = 1;   # Don't remove.  Required for Octave parser.
+  persistent firstrun = true;
 
   if (isempty (flag))
     ## Process the event, i.e.,
@@ -109,7 +110,12 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
       ## Create new output values if a valid index has been found
       if (! isempty (idx))
         ## Change the persistent result cell array
-        retcell{1} = any (term(idx));     # Stop integration or not
+        if (firstrun)
+          ## Matlab compatibility requires ignoring condition on first run.
+          retcell{1} = false;
+        else
+          retcell{1} = any (term(idx));     # Stop integration or not
+        endif
         retcell{2}(evtcnt,1) = idx(1,1);  # Take first event found
         ## Calculate the time stamp when the event function returned 0 and
         ## calculate new values for the integration results, we do both by
@@ -122,6 +128,8 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
       endif
 
     endif
+
+    firstrun = false;
     evtold = evt; told = t; yold = y;
     retval = retcell;
 
@@ -129,6 +137,8 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     ## Call the event function if an event function has been defined to
     ## initialize the internal variables of the event function and to get
     ## a value for evtold.
+
+    firstrun = true;
 
     if (! iscell (y))
       inpargs = {evtfun, t, y};
@@ -148,6 +158,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
 
   elseif (strcmp (flag, "done"))
     ## Clear this event handling function
+    firstrun = true;
     evtold = told = yold = evtcnt = [];
     retval = retcell = cell (1,4);
 

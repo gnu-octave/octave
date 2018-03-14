@@ -2,25 +2,25 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} rotate (@var{h}, @var{dir}, @var{alpha})
+## @deftypefn  {} {} rotate (@var{h}, @var{direction}, @var{alpha})
 ## @deftypefnx {} {} rotate (@dots{}, @var{origin})
 ## Rotate the plot object @var{h} through @var{alpha} degrees around the line
-## with direction @var{dir} and origin @var{origin}.
+## with direction @var{direction} and origin @var{origin}.
 ##
 ## The default value of @var{origin} is the center of the axes object that is
 ## the parent of @var{h}.
@@ -42,7 +42,7 @@ function rotate (h, direction, alpha, origin)
     print_usage ();
   endif
 
-  is_h = ishandle (h);
+  is_h = ishghandle (h);
   if (is_h)
     ax_list = get (h, "parent");
     if (iscell (ax_list))
@@ -78,7 +78,7 @@ function rotate (h, direction, alpha, origin)
 
   if (nargin == 4)
     if (! (isnumeric (origin) && numel (origin) == 3))
-       error ("rotate: invalid origin");
+       error ("rotate: invalid ORIGIN");
     endif
   else
     ## Should Z limit be considered when computing origin?
@@ -180,7 +180,7 @@ endfunction
 %!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90)
 %!error <invalid direction> rotate (o1, "foo", 90)
 %!error <invalid rotation angle> rotate (o1, [0,0,0], "foo")
-%!error <invalid origin> rotate (o1, [0,0,0], 90, "foo")
+%!error <invalid ORIGIN> rotate (o1, [0,0,0], 90, "foo")
 %!error rotate (o1, [0,0,0], 90, [0,0,0], 1)
 %!error <H must be an array of one or more graphics handles> rotate (NaN, [0,0,0], 90)
 %!error <expecting image, line, patch, or surface objects> rotate (o3, [0,0,0], 90)

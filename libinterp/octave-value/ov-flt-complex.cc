@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -62,7 +62,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex,
 octave_base_value *
 octave_float_complex::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   float im = scalar.imag ();
 
@@ -311,7 +311,7 @@ octave_float_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
 
-  space_hid = H5Screate_simple (0, dimens, 0);
+  space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0)
     return false;
 
@@ -469,10 +469,15 @@ octave_float_complex::map (unary_mapper_t umap) const
     SCALAR_MAPPER (sqrt, std::sqrt);
     SCALAR_MAPPER (tan, std::tan);
     SCALAR_MAPPER (tanh, std::tanh);
-    SCALAR_MAPPER (isfinite, octave::math::finite);
+    SCALAR_MAPPER (isfinite, octave::math::isfinite);
     SCALAR_MAPPER (isinf, octave::math::isinf);
-    SCALAR_MAPPER (isna, octave::math::is_NA);
+    SCALAR_MAPPER (isna, octave::math::isna);
     SCALAR_MAPPER (isnan, octave::math::isnan);
+
+    // Special cases for Matlab compatibility
+    case umap_xtolower:
+    case umap_xtoupper:
+      return scalar;
 
     default:
       return octave_base_value::map (umap);

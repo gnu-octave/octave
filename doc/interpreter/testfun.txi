@@ -3,19 +3,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Test and Demo Functions
 @appendix Test and Demo Functions
@@ -331,19 +331,22 @@ PASSES 3 out of 4 tests (1 expected failure)
 @subsubheading Block type summary:
 
 @table @code
-@item %!test
+@item  %!test
 @itemx %!test <MESSAGE>
 Check that entire block is correct.  If @code{<MESSAGE>} is present, the
 test block is interpreted as for @code{xtest}.
 
-@item %!testif HAVE_XXX
+@item  %!testif HAVE_XXX
 @itemx %!testif HAVE_XXX, HAVE_YYY, @dots{}
+@itemx %!testif HAVE_XXX, HAVE_YYY @dots{}; RUNTIME_COND
 @itemx %!testif @dots{} <MESSAGE>
-Check block only if Octave was compiled with feature HAVE_XXX.  If
-@code{<MESSAGE>} is present, the test block is interpreted as for
-@code{xtest}.
+Check block only if Octave was compiled with feature @w{@code{HAVE_XXX}}.
+@w{@code{RUNTIME_COND}} is an optional expression to evaluate to check
+whether some condition is met when the test is executed.  If
+@w{@code{RUNTIME_COND}} is false, the test is skipped.  If @code{<MESSAGE>}
+is present, the test block is interpreted as for @code{xtest}.
 
-@item %!xtest
+@item  %!xtest
 @itemx %!xtest <MESSAGE>
 Check block, report a test failure but do not abort testing.  If
 @code{<MESSAGE>} is present, then the text of the message is displayed
@@ -365,7 +368,7 @@ Octave bug tracker and reported as
 in which BUG-ID is the integer bug number.  The intent is to allow
 clearer documentation of known problems.
 
-@item %!error
+@item  %!error
 @itemx %!error <MESSAGE>
 @itemx %!warning
 @itemx %!warning <MESSAGE>
@@ -389,8 +392,11 @@ Define a function for use in multiple tests.
 Close a function definition.
 
 @item %!assert (x, y, tol)
+
 @item %!assert <MESSAGE> (x, y, tol)
+
 @item %!fail (CODE, PATTERN)
+
 @item %!fail <MESSAGE> (CODE, PATTERN)
 Shorthand for @code{%!test assert (x, y, tol)} or
 @code{%!test fail (CODE, PATTERN)}.  If @code{<MESSAGE>} is present, the

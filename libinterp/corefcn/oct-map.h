@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <map>
+
+#include "oct-refcount.h"
 
 #include "Cell.h"
 #include "ovl.h"
@@ -45,7 +47,7 @@ octave_fields
     fields_rep (const fields_rep& other)
       : std::map<std::string, octave_idx_type> (other), count (1) { }
 
-    octave_refcount<int> count;
+    octave::refcount<int> count;
 
   private:
     fields_rep& operator = (const fields_rep&); // no assignment!
@@ -130,7 +132,7 @@ public:
   // returns a permutation needed to bring the fields of *other*
   // into the order of *this*.
   bool equal_up_to_order (const octave_fields& other,
-                          octave_idx_type* perm) const;
+                          octave_idx_type *perm) const;
 
   bool equal_up_to_order (const octave_fields& other,
                           Array<octave_idx_type>& perm) const;
@@ -161,7 +163,9 @@ public:
     : xkeys (k), xvals (k.numel ()) { }
 
   octave_scalar_map (const octave_scalar_map& m)
-    : xkeys (m.xkeys), xvals(m.xvals) { }
+    : xkeys (m.xkeys), xvals (m.xvals) { }
+
+  octave_scalar_map (const std::map<std::string, octave_value>& m);
 
   octave_scalar_map& operator = (const octave_scalar_map& m)
   {
@@ -370,27 +374,40 @@ public:
   // The Array-like methods.
   octave_idx_type numel (void) const { return dimensions.numel (); }
   octave_idx_type length (void) const { return numel (); }
-  bool is_empty (void) const { return dimensions.any_zero (); }
+  bool isempty (void) const { return dimensions.any_zero (); }
 
   octave_idx_type rows (void) const { return dimensions(0); }
   octave_idx_type cols (void) const { return dimensions(1); }
   octave_idx_type columns (void) const { return dimensions(1); }
 
   // Extract a scalar substructure.
-  octave_scalar_map checkelem (octave_idx_type n) const;
-  octave_scalar_map checkelem (octave_idx_type i, octave_idx_type j) const;
+  // FIXME: actually check something.
+  octave_scalar_map checkelem (octave_idx_type n) const
+  { return elem (n); }
 
-  octave_scalar_map
-  checkelem (const Array<octave_idx_type>& ra_idx) const;
+  // FIXME: actually check something.
+  octave_scalar_map checkelem (octave_idx_type i, octave_idx_type j) const
+  { return elem (i, j); }
+
+  // FIXME: actually check something.
+  octave_scalar_map checkelem (const Array<octave_idx_type>& ra_idx) const
+  { return elem (ra_idx); }
+
+  octave_scalar_map elem (octave_idx_type n) const;
+
+  octave_scalar_map elem (octave_idx_type i, octave_idx_type j) const;
+
+  octave_scalar_map elem (const Array<octave_idx_type>& ra_idx) const;
 
   octave_scalar_map operator () (octave_idx_type n) const
-  { return checkelem (n); }
+  { return elem (n); }
+
   octave_scalar_map operator () (octave_idx_type i, octave_idx_type j) const
-  { return checkelem (i, j); }
+  { return elem (i, j); }
 
   octave_scalar_map
   operator () (const Array<octave_idx_type>& ra_idx) const
-  { return checkelem (ra_idx); }
+  { return elem (ra_idx); }
 
   octave_map squeeze (void) const;
 

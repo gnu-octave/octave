@@ -5,7 +5,7 @@
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -81,7 +81,7 @@ void KeyboardTranslatorManager::findTranslators()
         QString name = QFileInfo(translatorPath).baseName();
 
         if ( !_translators.contains(name) ) {
-            _translators.insert(name,0);
+            _translators.insert(name,nullptr);
 	}
     }
     _haveLoadedAll = true;
@@ -95,13 +95,13 @@ const KeyboardTranslator* KeyboardTranslatorManager::findTranslator(const QStrin
     //here was smth wrong in original Konsole source
     findTranslators();
 
-    if ( _translators.contains(name) && _translators[name] != 0 ) {
+    if ( _translators.contains(name) && _translators[name] != nullptr ) {
         return _translators[name];
     }
 
     KeyboardTranslator* translator = loadTranslator(name);
 
-    if ( translator != 0 )
+    if ( translator != nullptr )
         _translators[name] = translator;
     else if ( !name.isEmpty() )
         qWarning() << "Unable to load translator" << name;
@@ -147,7 +147,7 @@ KeyboardTranslator* KeyboardTranslatorManager::loadTranslator(const QString& nam
     QFile source(path);
 
     if (name.isEmpty() || !source.open(QIODevice::ReadOnly | QIODevice::Text))
-        return 0;
+        return nullptr;
 
     return loadTranslator(&source,name);
 }
@@ -158,7 +158,7 @@ const KeyboardTranslator* KeyboardTranslatorManager::defaultTranslator()
     textBuffer.setData(defaultTranslatorText,strlen(defaultTranslatorText));
 
     if (!textBuffer.open(QIODevice::ReadOnly))
-        return 0;
+        return nullptr;
 
     return loadTranslator(&textBuffer,"fallback");
 }
@@ -182,7 +182,7 @@ KeyboardTranslator* KeyboardTranslatorManager::loadTranslator(QIODevice* source,
     else
     {
         delete translator;
-        return 0;
+        return nullptr;
     }
 }
 
@@ -653,7 +653,7 @@ QByteArray KeyboardTranslator::Entry::escapedText(bool expandWildCards,Qt::Keybo
 
         if ( replacement == 'x' )
         {
-          result.replace(i,1,"\\x"+QByteArray::number(QByteArray(1,ch).toInt(0, 16)));
+          result.replace(i,1,"\\x"+QByteArray::number(QByteArray(1,ch).toInt(nullptr, 16)));
         } else if ( replacement != 0 )
         {
             result.remove(i,1);

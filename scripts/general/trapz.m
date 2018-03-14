@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} trapz (@var{y})
@@ -72,6 +72,10 @@ function z = trapz (x, y, dim)
     have_xy = true;
     have_dim = true;
   elseif (nargin == 2)
+    if (isvector (x) && isvector (y))
+      x = x(:);
+      y = y(:);
+    endif
     if (! size_equal (x, y) && isscalar (y))
       dim = y;
       have_dim = true;
@@ -127,6 +131,10 @@ endfunction
 
 
 %!assert (trapz (1:5), 12)
+%!assert (trapz ([1:5], [1:5]), 12)
+%!assert (trapz ([1:5], [1:5]'), 12)
+%!assert (trapz ([1:5]', [1:5]'), 12)
+%!assert (trapz ([1:5]', [1:5]), 12)
 %!assert (trapz (0:0.5:2,1:5), 6)
 %!assert (trapz ([1:5;1:5].',1), [12,12])
 %!assert (trapz ([1:5;1:5],2), [12;12])

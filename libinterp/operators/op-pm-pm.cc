@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -74,16 +74,16 @@ CONVDECL (perm_matrix_to_matrix)
 }
 
 void
-install_pm_pm_ops (void)
+install_pm_pm_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_transpose, octave_perm_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_perm_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_perm_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_perm_matrix, transpose);
 
-  INSTALL_BINOP (op_mul, octave_perm_matrix, octave_perm_matrix, mul);
-  INSTALL_BINOP (op_div, octave_perm_matrix, octave_perm_matrix, div);
-  INSTALL_BINOP (op_ldiv, octave_perm_matrix, octave_perm_matrix, ldiv);
-  INSTALL_BINOP (op_pow, octave_perm_matrix, octave_scalar, pow);
+  INSTALL_BINOP_TI (ti, op_mul, octave_perm_matrix, octave_perm_matrix, mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_perm_matrix, octave_perm_matrix, div);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_perm_matrix, octave_perm_matrix, ldiv);
+  INSTALL_BINOP_TI (ti, op_pow, octave_perm_matrix, octave_scalar, pow);
 
-  INSTALL_ASSIGNCONV (octave_perm_matrix, octave_matrix, octave_matrix);
-  INSTALL_WIDENOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_perm_matrix, octave_matrix, octave_matrix);
+  INSTALL_WIDENOP_TI (ti, octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
 }

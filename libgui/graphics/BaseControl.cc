@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -37,7 +37,7 @@ namespace QtHandles
 {
 
   static void
-  updatePalette (const uicontrol::properties& props, QWidget* w)
+  updatePalette (const uicontrol::properties& props, QWidget *w)
   {
     QPalette p = w->palette ();
 
@@ -88,14 +88,14 @@ namespace QtHandles
     w->setPalette (p);
   }
 
-  BaseControl::BaseControl (const graphics_object& go, QWidget* w)
+  BaseControl::BaseControl (const graphics_object& go, QWidget *w)
     : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
   {
     init (w);
   }
 
   void
-  BaseControl::init (QWidget* w, bool callBase)
+  BaseControl::init (QWidget *w, bool callBase)
   {
     if (callBase)
       Object::init (w, callBase);
@@ -110,7 +110,7 @@ namespace QtHandles
     w->setEnabled (up.enable_is ("on"));
     w->setToolTip (Utils::fromStdString (up.get_tooltipstring ()));
     w->setVisible (up.is_visible ());
-    m_keyPressHandlerDefined = ! up.get_keypressfcn ().is_empty ();
+    m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
 
     w->installEventFilter (this);
 
@@ -124,7 +124,7 @@ namespace QtHandles
   BaseControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QWidget* w = qWidget<QWidget> ();
+    QWidget *w = qWidget<QWidget> ();
 
     switch (pId)
       {
@@ -168,7 +168,7 @@ namespace QtHandles
         break;
 
       case uicontrol::properties::ID_KEYPRESSFCN:
-        m_keyPressHandlerDefined = ! up.get_keypressfcn ().is_empty ();
+        m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
         break;
 
       default:
@@ -177,7 +177,7 @@ namespace QtHandles
   }
 
   bool
-  BaseControl::eventFilter (QObject* watched, QEvent* xevent)
+  BaseControl::eventFilter (QObject *watched, QEvent *xevent)
   {
     switch (xevent->type ())
       {
@@ -195,7 +195,7 @@ namespace QtHandles
         {
           gh_manager::auto_lock lock;
 
-          QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+          QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
           graphics_object go = object ();
           uicontrol::properties& up = Utils::properties<uicontrol> (go);
           graphics_object fig = go.get_ancestor ("figure");
@@ -232,7 +232,7 @@ namespace QtHandles
           {
             gh_manager::auto_lock lock;
 
-            QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+            QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
             graphics_object go = object ();
             graphics_object fig = go.get_ancestor ("figure");
 
@@ -248,7 +248,7 @@ namespace QtHandles
             gh_manager::auto_lock lock;
 
             octave_scalar_map keyData =
-              Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent*> (xevent));
+              Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent *> (xevent));
             graphics_object fig = object ().get_ancestor ("figure");
 
             gh_manager::post_set (fig.get_handle (), "currentcharacter",

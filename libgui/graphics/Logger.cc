@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Logger* Logger::s_instance = 0;
-  QMutex* Logger::s_mutex = 0;
+  Logger *Logger::s_instance = nullptr;
+  QMutex *Logger::s_mutex = nullptr;
 
   Logger::Logger (void)
     : m_debugEnabled (false)
@@ -63,7 +63,7 @@ namespace QtHandles
   }
 
 #define STATIC_LOGGER(fun) \
-  void Logger::fun (const char* fmt, ...) \
+  void Logger::fun (const char *fmt, ...) \
   { \
     QMutexLocker lock (s_mutex); \
     va_list vl; \
@@ -75,7 +75,7 @@ namespace QtHandles
   STATIC_LOGGER (debug)
 
   void
-  Logger::debugV (const char* fmt, va_list arg)
+  Logger::debugV (const char *fmt, va_list arg)
   {
     if (m_debugEnabled)
       {

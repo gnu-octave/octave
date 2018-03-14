@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "annotation-dialog.h"
 
-#include "gl2ps-print.h"
 #include "oct-opengl.h"
 #include "octave-qt-link.h"
 
@@ -101,28 +100,14 @@ namespace QtHandles
       }
   }
 
-  void
-  Canvas::print (const QString& file_cmd, const QString& term)
-  {
-    gh_manager::auto_lock lock;
-    graphics_object obj = gh_manager::get_object (m_handle);
-
-    if (obj.valid_object ())
-      {
-        graphics_object figObj (obj.get_ancestor ("figure"));
-
-        gl2ps_print (figObj, file_cmd.toStdString (), term.toStdString ());
-      }
-  }
-
   /*
      Two updateCurrentPoint() routines are required:
      1) Used for QMouseEvents where cursor position data is in callback from Qt.
      2) Used for QKeyEvents where cursor position must be determined.
   */
   void
-  Canvas::updateCurrentPoint(const graphics_object& fig,
-                             const graphics_object& obj, QMouseEvent* event)
+  Canvas::updateCurrentPoint (const graphics_object& fig,
+                              const graphics_object& obj, QMouseEvent *event)
   {
     gh_manager::auto_lock lock;
 
@@ -159,8 +144,8 @@ namespace QtHandles
   }
 
   void
-  Canvas::updateCurrentPoint(const graphics_object& fig,
-                             const graphics_object& obj)
+  Canvas::updateCurrentPoint (const graphics_object& fig,
+                              const graphics_object& obj)
   {
     gh_manager::auto_lock lock;
 
@@ -176,8 +161,8 @@ namespace QtHandles
 
         if (childObj.isa ("axes"))
           {
-            // FIXME: QCursor::pos() may give inaccurate results with asynchronous
-            //        window systems like X11 over ssh.
+            // FIXME: QCursor::pos() may give inaccurate results with
+            //        asynchronous window systems like X11 over ssh.
             QWidget *w = qWidget ();
             QPoint p = w->mapFromGlobal (QCursor::pos ());
             axes::properties& ap = Utils::properties<axes> (childObj);
@@ -372,8 +357,8 @@ namespace QtHandles
   }
 
   void
-  Canvas::select_object (graphics_object obj, QMouseEvent* event,
-                         graphics_object &currentObj, graphics_object &axesObj,
+  Canvas::select_object (graphics_object obj, QMouseEvent *event,
+                         graphics_object& currentObj, graphics_object& axesObj,
                          bool axes_only, std::vector<std::string> omit)
   {
     QList<graphics_object> axesList;
@@ -404,10 +389,10 @@ namespace QtHandles
 
             r.adjust (-5, -5, 5, 5);
 
-#if (HAVE_QT4)
-            bool rect_contains_pos = r.contains (event->posF ());
-#else
+#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
             bool rect_contains_pos = r.contains (event->localPos ());
+#else
+            bool rect_contains_pos = r.contains (event->posF ());
 #endif
             if (rect_contains_pos)
               {
@@ -458,10 +443,10 @@ namespace QtHandles
                 Matrix bb = it->get_properties ().get_boundingbox (true);
                 QRectF r (bb(0), bb(1), bb(2), bb(3));
 
-#if defined (HAVE_QT4)
-                bool rect_contains_pos = r.contains (event->posF ());
-#else
+#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
                 bool rect_contains_pos = r.contains (event->localPos ());
+#else
+                bool rect_contains_pos = r.contains (event->posF ());
 #endif
                 if (rect_contains_pos)
                   axesObj = *it;
@@ -474,7 +459,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMouseMoveEvent (QMouseEvent* event)
+  Canvas::canvasMouseMoveEvent (QMouseEvent *event)
   {
     gh_manager::auto_lock lock;
     graphics_object ax = gh_manager::get_object (m_mouseAxes);
@@ -539,7 +524,7 @@ namespace QtHandles
             graphics_object figObj (obj.get_ancestor ("figure"));
 
             if (figObj.valid_object () &&
-                ! figObj.get ("windowbuttonmotionfcn").is_empty ())
+                ! figObj.get ("windowbuttonmotionfcn").isempty ())
               {
                 updateCurrentPoint (figObj, obj, event);
                 gh_manager::post_callback (figObj.get_handle (),
@@ -562,8 +547,8 @@ namespace QtHandles
           {
             // FIXME: should we use signal/slot mechanism instead of
             //        directly calling parent fig methods
-            Figure* fig =
-              dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+            Figure *fig =
+              dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
             axes::properties& ap = Utils::properties<axes> (axesObj);
 
             if (fig)
@@ -573,7 +558,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
+  Canvas::canvasMouseDoubleClickEvent (QMouseEvent *event)
   {
     // same processing as normal click, but event type is MouseButtonDblClick
     canvasMousePressEvent (event);
@@ -606,7 +591,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMousePressEvent (QMouseEvent* event)
+  Canvas::canvasMousePressEvent (QMouseEvent *event)
   {
     gh_manager::auto_lock lock;
     graphics_object obj = gh_manager::get_object (m_handle);
@@ -617,6 +602,7 @@ namespace QtHandles
       {
         graphics_object figObj (obj.get_ancestor ("figure"));
 
+        // Any click in a figure canvas makes it current
         if (figObj)
           {
             graphics_object root = gh_manager::get_object (0);
@@ -626,7 +612,29 @@ namespace QtHandles
 
         graphics_object currentObj, axesObj;
 
+        // Retrieve selected object.
         select_object (obj, event, currentObj, axesObj);
+
+        // currentObj may be invalid if, e.g., all objects under the mouse
+        // click had "hittest" -> "off" or "pickableparts" -> "none".  In that
+        // case, replace with underlying figObj which always accepts mouse
+        // clicks.
+        if (! currentObj.valid_object ())
+          currentObj = figObj;
+        else if (! currentObj.get_properties ().is_hittest ())
+          {
+            // Objects with "hittest"->"off" pass the mouse event to their
+            // parent and so on.
+            graphics_object tmpgo;
+            tmpgo = gh_manager::get_object (currentObj.get_parent ());
+            while (tmpgo && ! tmpgo.get_properties ().is_hittest ())
+              tmpgo = gh_manager::get_object (tmpgo.get_parent ());
+
+            if (tmpgo && tmpgo.get_handle () != 0.0)
+              currentObj = tmpgo;
+            else
+              currentObj = graphics_object ();
+          }
 
         if (axesObj)
           {
@@ -635,21 +643,9 @@ namespace QtHandles
                 && axesObj.get_properties ().get_tag () != "colorbar")
               Utils::properties<figure> (figObj)
               .set_currentaxes (axesObj.get_handle ().as_octave_value ());
-            if (! currentObj)
-              currentObj = axesObj;
           }
 
-        if (! currentObj)
-          currentObj = obj;
-
-        if (currentObj.get_properties ().handlevisibility_is ("on"))
-          Utils::properties<figure> (figObj)
-          .set_currentobject (currentObj.get_handle ().as_octave_value ());
-        else
-          Utils::properties<figure> (figObj).set_currentobject (
-            octave::numeric_limits<double>::NaN ());
-
-        Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+        Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
         MouseMode newMouseMode = NoMode;
 
@@ -659,33 +655,44 @@ namespace QtHandles
         switch (newMouseMode)
           {
           case NoMode:
-            gh_manager::post_set (figObj.get_handle (), "selectiontype",
-                                  Utils::figureSelectionType (event, isdblclick), false);
+            {
+              // Update the figure "currentobject"
+              auto& fprop = Utils::properties<figure> (figObj);
 
-            updateCurrentPoint (figObj, obj, event);
+              if (currentObj
+                  && currentObj.get_properties ().handlevisibility_is ("on"))
+                fprop.set_currentobject (currentObj.get_handle ()
+                                         .as_octave_value ());
+              else
+                fprop.set_currentobject (Matrix ());
 
-            gh_manager::post_callback (figObj.get_handle (),
-                                       "windowbuttondownfcn",
-                                       button_number (event));
+              // Update figure "selectiontype" and "currentpoint"
+              gh_manager::post_set (
+                                    figObj.get_handle (), "selectiontype",
+                                    Utils::figureSelectionType (event, isdblclick), false);
 
-            if (currentObj.get ("buttondownfcn").is_empty ())
-              {
-                graphics_object parentObj =
-                  gh_manager::get_object (currentObj.get_parent ());
+              updateCurrentPoint (figObj, obj, event);
 
-                if (parentObj.valid_object () && parentObj.isa ("hggroup"))
-                  gh_manager::post_callback (parentObj.get_handle (),
-                                             "buttondownfcn",
-                                             button_number (event));
-              }
-            else
-              gh_manager::post_callback (currentObj.get_handle (),
-                                         "buttondownfcn",
+              gh_manager::post_callback (figObj.get_handle (),
+                                         "windowbuttondownfcn",
                                          button_number (event));
 
-            if (event->button () == Qt::RightButton)
-              ContextMenu::executeAt (currentObj.get_properties (),
-                                      event->globalPos ());
+              // Execute the "buttondownfcn" of the selected object. If the
+              // latter is empty then execute the figure "buttondownfcn"
+              if (currentObj && ! currentObj.get ("buttondownfcn").isempty ())
+                gh_manager::post_callback (currentObj.get_handle (),
+                                           "buttondownfcn",
+                                           button_number (event));
+              else if (figObj && ! figObj.get ("buttondownfcn").isempty ())
+                gh_manager::post_callback (figObj.get_handle (),
+                                           "buttondownfcn",
+                                           button_number (event));
+
+              // Show context menu of the selected object
+              if (currentObj && event->button () == Qt::RightButton)
+                ContextMenu::executeAt (currentObj.get_properties (),
+                                        event->globalPos ());
+            }
             break;
 
           case TextMode:
@@ -794,7 +801,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
+  Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
   {
     if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
         && m_mouseAxes.ok ())
@@ -814,7 +821,7 @@ namespace QtHandles
 
             if (m_mouseAnchor == event->pos ())
               {
-                double factor = m_clickMode ? 2.0 : 0.5;
+                double factor = (m_clickMode ? 2.0 : 0.5);
 
                 ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
 
@@ -893,7 +900,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasWheelEvent (QWheelEvent* event)
+  Canvas::canvasWheelEvent (QWheelEvent *event)
   {
     gh_manager::auto_lock lock;
     graphics_object obj = gh_manager::get_object (m_handle);
@@ -929,7 +936,7 @@ namespace QtHandles
 
             graphics_object figObj (obj.get_ancestor ("figure"));
 
-            Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+            Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
             if (fig)
               newMouseMode = fig->mouseMode ();
@@ -983,12 +990,12 @@ namespace QtHandles
                 {
                   axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                  double factor = event->delta () > 0 ? 0.1 : -0.1;
+                  double factor = (event->delta () > 0 ? 0.1 : -0.1);
 
-                  if (event->modifiers () == Qt::NoModifier 
+                  if (event->modifiers () == Qt::NoModifier
                       && mode != "horizontal")
                     ap.pan ("vertical", factor);
-                  else if (event->modifiers () == Qt::ShiftModifier 
+                  else if (event->modifiers () == Qt::ShiftModifier
                       && mode != "vertical")
                     ap.pan ("horizontal", factor);
                 }
@@ -1006,7 +1013,7 @@ namespace QtHandles
   }
 
   bool
-  Canvas::canvasKeyPressEvent (QKeyEvent* event)
+  Canvas::canvasKeyPressEvent (QKeyEvent *event)
   {
     if (m_eventMask & KeyPress)
       {
@@ -1033,7 +1040,7 @@ namespace QtHandles
   }
 
   bool
-  Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
+  Canvas::canvasKeyReleaseEvent (QKeyEvent *event)
   {
     if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
       {
@@ -1047,7 +1054,7 @@ namespace QtHandles
   }
 
   Canvas*
-  Canvas::create (const std::string& /* name */, QWidget* parent,
+  Canvas::create (const std::string& /* name */, QWidget *parent,
                   const graphics_handle& handle)
   {
     // Only OpenGL

@@ -3,22 +3,22 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{out1}, @var{out2}] =} installed_packages (@var{local_list}, @var{global_list})
+## @deftypefn {} {[@var{out1}, @var{out2}] =} installed_packages (@var{local_list}, @var{global_list}, @var{pkgname})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -58,8 +58,8 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
   endif
 
   ## Now check if the package is loaded.
-  ## FIXME: couldn't dir_in_loadpath() be used here?
-  tmppath = strrep (path (), "\\", "/");
+  ## FIXME: Couldn't dir_in_loadpath() be used here?
+  tmppath = strrep (path (), '\', '/');
   for i = 1:numel (installed_pkgs_lst)
     if (strfind (tmppath, strrep (installed_pkgs_lst{i}.dir, '\', '/')))
       installed_pkgs_lst{i}.loaded = true;

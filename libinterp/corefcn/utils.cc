@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -48,12 +48,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "vasprintf-wrapper.h"
 
 #include "Cell.h"
-#include <defaults.h>
+#include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
-#include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
@@ -186,7 +186,7 @@ keyword_almost_match (const char * const *std, int *min_len,
 
   s2[tok_count] = beg;
   char *end;
-  while ((end = strchr (beg, ' ')) != 0)
+  while ((end = strchr (beg, ' ')) != nullptr)
     {
       *end = '\0';
       beg = end + 1;
@@ -203,7 +203,7 @@ keyword_almost_match (const char * const *std, int *min_len,
 
       s2[tok_count] = beg;
     }
-  s2[tok_count+1] = 0;
+  s2[tok_count+1] = nullptr;
 
   s2 = to_match;
 
@@ -281,15 +281,18 @@ make_absolute (const string_vector& sv)
   return retval;
 }
 
-DEFUN (file_in_loadpath, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} file_in_loadpath (@var{file})
-@deftypefnx {} {} file_in_loadpath (@var{file}, "all")
-
-Return the absolute name of @var{file} if it can be found in
-the list of directories specified by @code{path}.
+DEFMETHOD (file_in_loadpath, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{fname} =} file_in_loadpath (@var{file})
+@deftypefnx {} {@var{fname} =} file_in_loadpath (@var{file}, "all")
+Return the absolute name of @var{file} if it can be found in the list of
+directories specified by @code{path}.
 
 If no file is found, return an empty character string.
+
+When @var{file} is already an absolute name, the name is checked against the
+file system instead of Octave's loadpath.  In this case, if @var{file} exists
+it will be returned in @var{fname}, otherwise an empty string is returned.
 
 If the first argument is a cell array of strings, search each directory of
 the loadpath for element of the cell array and return the first that
@@ -311,16 +314,18 @@ If no files are found, return an empty cell array.
   if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
 
+  octave::load_path& lp = interp.get_load_path ();
+
   if (nargin == 1)
-    return ovl (octave::sys::env::make_absolute (load_path::find_first_of (names)));
+    return ovl (octave::sys::env::make_absolute (lp.find_first_of (names)));
   else
     {
       std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
 
       if (opt != "all")
-        error ("file_in_loadpath: \"all\" is only valid second argument");
+        error (R"(file_in_loadpath: "all" is only valid second argument)");
 
-      return ovl (Cell (make_absolute (load_path::find_all_first_of (names))));
+      return ovl (Cell (make_absolute (lp.find_all_first_of (names))));
     }
 }
 
@@ -389,7 +394,7 @@ If no files are found, return an empty cell array.
       std::string opt = args(2).xstring_value ("file_in_path: optional third argument must be a string");
 
       if (opt != "all")
-        error ("file_in_path: \"all\" is only valid third argument");
+        error (R"(file_in_path: "all" is only valid third argument)");
 
       return ovl (Cell (make_absolute (search_path_for_all_files (path, names))));
     }
@@ -425,7 +430,9 @@ file_in_path (const std::string& name, const std::string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return octave::sys::env::make_absolute (load_path::find_file (nm));
+  octave::load_path& lp = octave::__get_load_path__ ("file_in_path");
+
+  return octave::sys::env::make_absolute (lp.find_file (nm));
 }
 
 std::string
@@ -448,9 +455,11 @@ find_data_file_in_load_path  (const std::string& fcn,
 
       if (! local_file_ok)
         {
+          octave::load_path& lp = octave::__get_load_path__ ("find_data_file_in_load_path");
+
           // Not directly found; search load path.
           std::string tmp
-            = octave::sys::env::make_absolute (load_path::find_file (fname));
+            = octave::sys::env::make_absolute (lp.find_file (fname));
 
           if (! tmp.empty ())
             {
@@ -484,15 +493,21 @@ fcn_file_in_path (const std::string& name)
             retval = name;
         }
       else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
-        retval = load_path::find_fcn_file (name.substr (0, len-2));
+        {
+          octave::load_path& lp = octave::__get_load_path__ ("fcn_file_in_path");
+
+          retval = lp.find_fcn_file (name.substr (0, len-2));
+        }
       else
         {
           std::string fname = name;
-          size_t pos = name.find_first_of (Vfilemarker);
+          size_t pos = name.find_first_of ('>');
           if (pos != std::string::npos)
             fname = name.substr (0, pos);
 
-          retval = load_path::find_fcn_file (fname);
+          octave::load_path& lp = octave::__get_load_path__ ("fcn_file_in_path");
+
+          retval = lp.find_fcn_file (fname);
         }
     }
 
@@ -507,10 +522,12 @@ contents_file_in_path (const std::string& dir)
 {
   std::string retval;
 
-  if (dir.length () > 0)
+  if (! dir.empty ())
     {
-      std::string tcontents = octave::sys::file_ops::concat (load_path::find_dir (dir),
-                                                std::string ("Contents.m"));
+      octave::load_path& lp = octave::__get_load_path__ ("contents_in_file_path");
+
+      std::string tcontents
+        = octave::sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
 
       octave::sys::file_stat fs (tcontents);
 
@@ -542,9 +559,17 @@ oct_file_in_path (const std::string& name)
             retval = name;
         }
       else if (len > 4 && name.find (".oct", len-5))
-        retval = load_path::find_oct_file (name.substr (0, len-4));
+        {
+          octave::load_path& lp = octave::__get_load_path__ ("oct_file_in_path");
+
+          retval = lp.find_oct_file (name.substr (0, len-4));
+        }
       else
-        retval = load_path::find_oct_file (name);
+        {
+          octave::load_path& lp = octave::__get_load_path__ ("oct_file_in_path");
+
+          retval = lp.find_oct_file (name);
+        }
     }
 
   return retval;
@@ -571,9 +596,17 @@ mex_file_in_path (const std::string& name)
             retval = name;
         }
       else if (len > 4 && name.find (".mex", len-5))
-        retval = load_path::find_mex_file (name.substr (0, len-4));
+        {
+          octave::load_path& lp = octave::__get_load_path__ ("mex_file_in_path");
+
+          retval = lp.find_mex_file (name.substr (0, len-4));
+        }
       else
-        retval = load_path::find_mex_file (name);
+        {
+          octave::load_path& lp = octave::__get_load_path__ ("mex_file_in_path");
+
+          retval = lp.find_mex_file (name);
+        }
     }
 
   return retval;
@@ -682,7 +715,7 @@ do_string_escapes (const std::string& s)
                 }
 
               if (k == j+1)
-                warning ("malformed hex escape sequence '\\x' -- converting to '\\0'");
+                warning (R"(malformed hex escape sequence '\x' -- converting to '\0')");
 
               retval[i] = tmpi;
               j = k - 1;
@@ -690,7 +723,7 @@ do_string_escapes (const std::string& s)
             }
 
             default:
-              warning ("unrecognized escape sequence '\\%c' -- converting to '%c'", s[j], s[j]);
+              warning (R"(unrecognized escape sequence '\%c' -- converting to '%c')", s[j], s[j]);
               retval[i] = s[j];
               break;
             }
@@ -772,38 +805,38 @@ undo_string_escape (char c)
   switch (c)
     {
     case '\0':
-      return "\\0";
+      return R"(\0)";
 
     case '\a':
-      return "\\a";
+      return R"(\a)";
 
     case '\b': // backspace
-      return "\\b";
+      return R"(\b)";
 
     case '\f': // formfeed
-      return "\\f";
+      return R"(\f)";
 
     case '\n': // newline
-      return "\\n";
+      return R"(\n)";
 
     case '\r': // carriage return
-      return "\\r";
+      return R"(\r)";
 
     case '\t': // horizontal tab
-      return "\\t";
+      return R"(\t)";
 
     case '\v': // vertical tab
-      return "\\v";
+      return R"(\v)";
 
     case '\\': // backslash
-      return "\\\\";
+      return R"(\\)";
 
     case '"': // double quote
-      return "\\\"";
+      return R"(\")";
 
     default:
       {
-        static char retval[2] = "\0";
+        static char retval[2] {'\0', '\0'};
 
         retval[0] = c;
         return retval;
@@ -950,17 +983,23 @@ No check is done for the existence of @var{file}.
 %!error make_absolute_filename ("foo", "bar")
 */
 
-DEFUN (dir_in_loadpath, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} dir_in_loadpath (@var{dir})
-@deftypefnx {} {} dir_in_loadpath (@var{dir}, "all")
-Return the full name of the path element matching @var{dir}.
+DEFMETHOD (dir_in_loadpath, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{dirname} =} dir_in_loadpath (@var{dir})
+@deftypefnx {} {@var{dirname} =} dir_in_loadpath (@var{dir}, "all")
+Return the absolute name of the loadpath element matching @var{dir} if it can
+be found in the list of directories specified by @code{path}.
+
+If no match is found, return an empty character string.
 
 The match is performed at the end of each path element.  For example, if
 @var{dir} is @qcode{"foo/bar"}, it matches the path element
 @nospell{@qcode{"/some/dir/foo/bar"}}, but not
 @nospell{@qcode{"/some/dir/foo/bar/baz"}}
-@nospell{@qcode{"/some/dir/allfoo/bar"}}.
+@nospell{@qcode{"/some/dir/allfoo/bar"}}.  When @var{dir} is an absolute name,
+rather than just a path fragment, it is matched against the file system
+instead of Octave's loadpath.  In this case, if @var{dir} exists it will be
+returned in @var{dirname}, otherwise an empty string is returned.
 
 If the optional second argument is supplied, return a cell array containing
 all name matches rather than just the first.
@@ -976,10 +1015,12 @@ all name matches rather than just the first.
 
   dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
 
+  octave::load_path& lp = interp.get_load_path ();
+
   if (nargin == 1)
-    return ovl (load_path::find_dir (dir));
+    return ovl (lp.find_dir (dir));
   else
-    return ovl (Cell (load_path::find_matching_dirs (dir)));
+    return ovl (Cell (lp.find_matching_dirs (dir)));
 }
 
 /*
@@ -1113,7 +1154,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
   // We support dimensions to be specified by any vector, even if it's a
   // vector of dimensions 0x1, 1x0, 1x1x0, or 1x1x6.  If the vector ends
   // up being empty, the final dimensions end up being 0x0.
-  if (! a.dims ().is_vector ())
+  if (! a.dims ().isvector ())
     error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
 
   const Array<octave_idx_type> v = a.octave_idx_type_vector_value ();
@@ -1165,9 +1206,9 @@ void
 get_dimensions (const octave_value& a, const octave_value& b,
                 const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
 {
-  nr = a.is_empty ()
+  nr = a.isempty ()
        ? 0 : a.idx_type_value ("%s: row dimension must be a scalar", warn_for);
-  nc = b.is_empty ()
+  nc = b.isempty ()
        ? 0 : b.idx_type_value ("%s: column dimension must be a scalar", warn_for);
 
   check_dimensions (nr, nc, warn_for);
@@ -1191,7 +1232,7 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx_arg)
           octave_value idxi = idx_arg(i);
           if (idxi.is_magic_colon ())
             retval *= dv(i);
-          else if (idxi.is_numeric_type ())
+          else if (idxi.isnumeric ())
             retval *= idxi.numel ();
           else
             {
@@ -1306,24 +1347,63 @@ octave_asprintf (const char *fmt, ...)
   return retval;
 }
 
+// FIXME: sleep is complicated because we want it to be interruptible.
+// With the way this program handles signals, the sleep system call
+// won't respond to SIGINT.  Maybe there is a better way than
+// breaking this up into multiple shorter intervals?
+
 void
 octave_sleep (double seconds)
 {
   if (seconds <= 0)
     return;
 
+  // Split delay into whole seconds and the remainder as a decimal
+  // fraction.
+
   double fraction = std::modf (seconds, &seconds);
-  fraction = std::floor (fraction * 1000000000); // nanoseconds
+
+  // Further split the fractional seconds into whole tenths and the
+  // nearest number of nanoseconds remaining.
+
+  double tenths = 0;
+  fraction = std::modf (fraction * 10, &tenths) / 10;
+  fraction = std::round (fraction * 1000000000);
+
+  // Sleep for the hundredths portion.
+
+  struct timespec hundredths_delay = { 0, static_cast<long> (fraction) };
+
+  octave_nanosleep_wrapper (&hundredths_delay, nullptr);
+
+  // Sleep for the whole tenths portion, allowing interrupts every
+  // tenth.
+
+  struct timespec one_tenth = { 0, 100000000 };
+
+  for (int i = 0; i < static_cast<int> (tenths); i++)
+    {
+      octave_nanosleep_wrapper (&one_tenth, nullptr);
+
+      octave_quit ();
+    }
+
+  // Sleep for the whole seconds portion, allowing interrupts every
+  // tenth.
 
   time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
                 ? std::numeric_limits<time_t>::max ()
                 : static_cast<time_t> (seconds));
 
-  struct timespec delay = { sec, static_cast<long> (fraction) };
-  struct timespec remaining;
-  octave_nanosleep_wrapper (&delay, &remaining);
+  for (time_t s = 0; s < sec; s++)
+    {
+      for (int i = 0; i < 10; i++)
+        {
+          octave_nanosleep_wrapper (&one_tenth, nullptr);
 
-  octave_quit ();
+          octave_quit ();
+        }
+    }
 }
 
 DEFUN (isindex, args, ,
@@ -1371,7 +1451,7 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       retval = false;
     }
@@ -1409,7 +1489,7 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
   for (int i = 0; i < nargin; i++)
     {
       octave_value arg = new_args(i);
-      iscell[i] = arg.is_cell ();
+      iscell[i] = arg.iscell ();
       if (iscell[i])
         {
           cells[i] = arg.cell_value ();

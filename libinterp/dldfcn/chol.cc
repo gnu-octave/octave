@@ -6,19 +6,19 @@ Copyright (C) 2008-2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,19 +28,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "Matrix.h"
 #include "chol.h"
+#include "oct-string.h"
 #include "sparse-chol.h"
-#include "oct-spparms.h"
 #include "sparse-util.h"
 
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "ov.h"
 #include "ovl.h"
-
-#include "oct-string.h"
 
 template <typename CHOLT>
 static octave_value
@@ -154,7 +152,7 @@ sparse matrices.
 
   if (nargin < 1 || nargin > 3 || nargout > 3)
     print_usage ();
-  if (nargout > 2 && ! args(0).is_sparse_type ())
+  if (nargout > 2 && ! args(0).issparse ())
     error ("chol: using three output arguments, matrix A must be sparse");
 
   bool LLt = false;
@@ -172,22 +170,22 @@ sparse matrices.
       else if (octave::string::strcmpi (tmp, "upper"))
         LLt = false;
       else
-        error ("chol: optional argument must be one of \"vector\", \"lower\", or \"upper\"");
+        error (R"(chol: optional argument must be one of "vector", "lower", or "upper")");
     }
 
   octave_value_list retval;
   octave_value arg = args(0);
 
-  if (arg.is_empty ())
+  if (arg.isempty ())
     return ovl (Matrix ());
 
-  if (arg.is_sparse_type ())
+  if (arg.issparse ())
     {
       octave_idx_type info;
       bool natural = (nargout != 3);
       bool force = nargout > 1;
 
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -212,7 +210,7 @@ sparse matrices.
           else
             error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
@@ -243,8 +241,8 @@ sparse matrices.
   else if (arg.is_single_type ())
     {
       if (vecout)
-        error ("chol: A must be sparse for the \"vector\" option");
-      if (arg.is_real_type ())
+        error (R"(chol: A must be sparse for the "vector" option)");
+      if (arg.isreal ())
         {
           FloatMatrix m = arg.float_matrix_value ();
 
@@ -257,7 +255,7 @@ sparse matrices.
           else
             error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -276,8 +274,8 @@ sparse matrices.
   else
     {
       if (vecout)
-        error ("chol: A must be sparse for the \"vector\" option");
-      if (arg.is_real_type ())
+        error (R"(chol: A must be sparse for the "vector" option)");
+      if (arg.isreal ())
         {
           Matrix m = arg.matrix_value ();
 
@@ -290,7 +288,7 @@ sparse matrices.
           else
             error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           ComplexMatrix m = arg.complex_matrix_value ();
 
@@ -341,7 +339,7 @@ sparse matrices.
 %! assert (pd, pv)
 %! assert (qv, [1 2])
 
-%!testif HAVE_CHOLMOD <42587>
+%!testif HAVE_CHOLMOD <*42587>
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);
 %! [Q, p] = chol (A);
 %! assert (p != 0);
@@ -376,11 +374,11 @@ the Cholesky@tie{}factorization.
     retval = Matrix ();
   else
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           octave_idx_type info;
 
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -391,7 +389,7 @@ the Cholesky@tie{}factorization.
               else
                 error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
@@ -407,7 +405,7 @@ the Cholesky@tie{}factorization.
         }
       else if (arg.is_single_type ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               FloatMatrix m = arg.float_matrix_value ();
 
@@ -418,7 +416,7 @@ the Cholesky@tie{}factorization.
               else
                 error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
@@ -434,7 +432,7 @@ the Cholesky@tie{}factorization.
         }
       else
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               Matrix m = arg.matrix_value ();
 
@@ -445,7 +443,7 @@ the Cholesky@tie{}factorization.
               else
                 error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               ComplexMatrix m = arg.complex_matrix_value ();
 
@@ -505,15 +503,15 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
     retval = Matrix ();
   else
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               SparseMatrix r = arg.sparse_matrix_value ();
 
               retval = octave::math::chol2inv (r);
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               SparseComplexMatrix r = arg.sparse_complex_matrix_value ();
 
@@ -524,13 +522,13 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
         }
       else if (arg.is_single_type ())
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               FloatMatrix r = arg.float_matrix_value ();
 
               retval = octave::math::chol2inv (r);
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               FloatComplexMatrix r = arg.float_complex_matrix_value ();
 
@@ -542,13 +540,13 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
         }
       else
         {
-          if (arg.is_real_type ())
+          if (arg.isreal ())
             {
               Matrix r = arg.matrix_value ();
 
               retval = octave::math::chol2inv (r);
             }
-          else if (arg.is_complex_type ())
+          else if (arg.iscomplex ())
             {
               ComplexMatrix r = arg.complex_matrix_value ();
 
@@ -631,7 +629,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   octave_value argr = args(0);
   octave_value argu = args(1);
 
-  if (! argr.is_numeric_type () || ! argu.is_numeric_type ()
+  if (! argr.isnumeric () || ! argu.isnumeric ()
       || (nargin > 2 && ! args(2).is_string ()))
     print_usage ();
 
@@ -644,7 +642,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   bool down = (op == "-");
 
   if (! down && op != "+")
-    error ("cholupdate: OP must be \"+\" or \"-\"");
+    error (R"(cholupdate: OP must be "+" or "-")");
 
   if (argr.columns () != n || argu.rows () != n || argu.columns () != 1)
     error ("cholupdate: dimension mismatch between R and U");
@@ -652,7 +650,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   int err = 0;
   if (argr.is_single_type () || argu.is_single_type ())
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -688,7 +686,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
     }
   else
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();
@@ -825,7 +823,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   octave_value argj = args(1);
   octave_value argu = args(2);
 
-  if (! argr.is_numeric_type () || ! argu.is_numeric_type ()
+  if (! argr.isnumeric () || ! argu.isnumeric ()
       || ! argj.is_real_scalar ())
     print_usage ();
 
@@ -843,7 +841,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
   int err = 0;
   if (argr.is_single_type () || argu.is_single_type ())
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -871,7 +869,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
     }
   else
     {
-      if (argr.is_real_type () && argu.is_real_type ())
+      if (argr.isreal () && argu.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();
@@ -1063,7 +1061,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
   octave_value argr = args(0);
   octave_value argj = args(1);
 
-  if (! argr.is_numeric_type () || ! argj.is_real_scalar ())
+  if (! argr.isnumeric () || ! argj.is_real_scalar ())
     print_usage ();
 
   octave_idx_type n = argr.rows ();
@@ -1079,7 +1077,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 
   if (argr.is_single_type ())
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -1104,7 +1102,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
     }
   else
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();
@@ -1190,7 +1188,7 @@ triangular, return the Cholesky@tie{}factorization of
   octave_value argi = args(1);
   octave_value argj = args(2);
 
-  if (! argr.is_numeric_type () || ! argi.is_real_scalar ()
+  if (! argr.isnumeric () || ! argi.is_real_scalar ()
       || ! argj.is_real_scalar ())
     print_usage ();
 
@@ -1209,7 +1207,7 @@ triangular, return the Cholesky@tie{}factorization of
   if (argr.is_single_type () && argi.is_single_type ()
       && argj.is_single_type ())
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           FloatMatrix R = argr.float_matrix_value ();
@@ -1234,7 +1232,7 @@ triangular, return the Cholesky@tie{}factorization of
     }
   else
     {
-      if (argr.is_real_type ())
+      if (argr.isreal ())
         {
           // real case
           Matrix R = argr.matrix_value ();

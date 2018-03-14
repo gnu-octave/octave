@@ -6,19 +6,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -176,7 +176,7 @@ SparseBoolMatrix::any (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
+          std::copy_n (ridx (), nz, tmp.fortran_vec ());
           retval = Sparse<bool> (Array<bool> (dim_vector (1, 1), true),
                                  idx_vector (tmp),
                                  idx_vector (static_cast<octave_idx_type> (0)),
@@ -227,7 +227,7 @@ SparseBoolMatrix::sum (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
+          std::copy_n (ridx (), nz, tmp.fortran_vec ());
           retval = Sparse<double> (Array<double> (dim_vector (1, 1), 1.0),
                                    idx_vector (tmp),
                                    idx_vector (static_cast<octave_idx_type> (0)),
@@ -269,7 +269,7 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
     {
       octave_quit ();
       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-        os << a.ridx (i) + 1 << " "  << j + 1 << " " << a.data (i) << "\n";
+        os << a.ridx (i) + 1 << ' '  << j + 1 << ' ' << a.data (i) << "\n";
     }
 
   return os;

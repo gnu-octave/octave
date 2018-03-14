@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -88,7 +88,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
 octave_base_value *
 octave_float_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.numel () == 1)
     retval = new octave_float_scalar (matrix (0));
@@ -99,7 +99,7 @@ octave_float_matrix::try_narrowing_conversion (void)
 double
 octave_float_matrix::double_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -111,7 +111,7 @@ octave_float_matrix::double_value (bool) const
 float
 octave_float_matrix::float_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -375,7 +375,7 @@ octave_float_matrix::save_ascii (std::ostream& os)
       os << "# ndims: " << dv.ndims () << "\n";
 
       for (int i=0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
 
       os << "\n" << tmp;
     }
@@ -587,7 +587,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
   for (int i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, 0);
+  space_hid = H5Screate_simple (rank, hdims, nullptr);
 
   if (space_hid < 0) return false;
 
@@ -801,8 +801,8 @@ octave_float_matrix::map (unary_mapper_t umap) const
 
     RC_ARRAY_MAPPER (acos, FloatComplex, octave::math::rc_acos);
     RC_ARRAY_MAPPER (acosh, FloatComplex, octave::math::rc_acosh);
-    ARRAY_MAPPER (angle, float, octave::math::arg);
-    ARRAY_MAPPER (arg, float,octave::math ::arg);
+    ARRAY_MAPPER (angle, float, std::arg);
+    ARRAY_MAPPER (arg, float, std::arg);
     RC_ARRAY_MAPPER (asin, FloatComplex, octave::math::rc_asin);
     ARRAY_MAPPER (asinh, float, octave::math::asinh);
     ARRAY_MAPPER (atan, float, ::atanf);
@@ -836,7 +836,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
     RC_ARRAY_MAPPER (sqrt, FloatComplex, octave::math::rc_sqrt);
     ARRAY_MAPPER (tan, float, ::tanf);
     ARRAY_MAPPER (tanh, float, ::tanhf);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
     ARRAY_MAPPER (xsignbit, float, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
@@ -856,7 +856,6 @@ octave_float_matrix::map (unary_mapper_t umap) const
     case umap_xisspace:
     case umap_xisupper:
     case umap_xisxdigit:
-    case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
         return str_conv.map (umap);

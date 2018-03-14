@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -83,9 +83,9 @@ namespace octave
       // The minimum difference in file time stamp values.
       // FIXME: This value should come from the filesystem itself.
       //        How can we get that info?
-      octave::sys::time time_resolution (void) const
+      sys::time time_resolution (void) const
       {
-        static octave::sys::time resolution (1.0);
+        static sys::time resolution (1.0);
         return resolution;
       }
 
@@ -124,9 +124,9 @@ namespace octave
 
       off_t size (void) const { return m_size; }
 
-      octave::sys::time atime (void) const { return m_atime; }
-      octave::sys::time mtime (void) const { return m_mtime; }
-      octave::sys::time ctime (void) const { return m_ctime; }
+      sys::time atime (void) const { return m_atime; }
+      sys::time mtime (void) const { return m_mtime; }
+      sys::time ctime (void) const { return m_ctime; }
 
       dev_t rdev (void) const { return m_rdev; }
 
@@ -146,15 +146,15 @@ namespace octave
       std::string error (void) const { return ok () ? "" : errmsg; }
 
       // Has the file referenced by this object been modified since TIME?
-      bool is_newer (const octave::sys::time& time) const { return m_mtime > time; }
+      bool is_newer (const sys::time& time) const { return m_mtime > time; }
 
       // It's nice to be able to hide the file_stat object if we don't
       // really care about it.
-      static int is_newer (const std::string&, const octave::sys::time&);
+      static int is_newer (const std::string&, const sys::time&);
 
     protected:
 
-      virtual ~base_file_stat (void) { }
+      virtual ~base_file_stat (void) = default;
 
       // TRUE means we have already called stat.
       bool initialized;
@@ -187,13 +187,13 @@ namespace octave
       off_t m_size;
 
       // time of last access
-      octave::sys::time m_atime;
+      sys::time m_atime;
 
       // time of last modification
-      octave::sys::time m_mtime;
+      sys::time m_mtime;
 
       // time of last file status change
-      octave::sys::time m_ctime;
+      sys::time m_ctime;
 
       // device number for special files
       dev_t m_rdev;
@@ -292,7 +292,7 @@ namespace octave
         return *this;
       }
 
-      ~file_fstat (void) { }
+      ~file_fstat (void) = default;
 
       void get_stats (bool force = false)
       {
@@ -324,13 +324,13 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::base_file_stat' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::base_file_stat' instead")
 typedef octave::sys::base_file_stat base_file_stat;
 
-OCTAVE_DEPRECATED ("use 'octave::sys::file_stat' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::file_stat' instead")
 typedef octave::sys::file_stat file_stat;
 
-OCTAVE_DEPRECATED ("use 'octave::sys::file_fstat' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::file_fstat' instead")
 typedef octave::sys::file_fstat file_fstat;
 
 #endif

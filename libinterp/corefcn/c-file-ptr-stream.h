@@ -4,19 +4,19 @@ Copyright (C) 2000-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
+#include <iostream>
 #include <streambuf>
 
 class
@@ -38,11 +39,17 @@ public:
 
   typedef int (*close_fcn) (FILE *);
 
-  FILE* stdiofile (void) { return f; }
+  FILE *stdiofile (void) { return f; }
 
   c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = file_close)
     : std::streambuf (), f (f_arg), cf (cf_arg)
   { }
+
+  // No copying!
+
+  c_file_ptr_buf (const c_file_ptr_buf&) = delete;
+
+  c_file_ptr_buf& operator = (const c_file_ptr_buf&) = delete;
 
   ~c_file_ptr_buf (void);
 
@@ -89,12 +96,6 @@ protected:
 private:
 
   int_type underflow_common (bool);
-
-  // No copying!
-
-  c_file_ptr_buf (const c_file_ptr_buf&);
-
-  c_file_ptr_buf& operator = (const c_file_ptr_buf&);
 };
 
 // FIXME: the following three classes could probably share some code...
@@ -106,11 +107,17 @@ c_file_ptr_stream : public STREAM_T
 public:
 
   c_file_ptr_stream (FILE_T f, typename BUF_T::close_fcn cf = BUF_T::file_close)
-    : STREAM_T (0), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
+    : STREAM_T (nullptr), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
 
-  ~c_file_ptr_stream (void) { delete buf; buf = 0; }
+  // No copying!
 
-  BUF_T *rdbuf (void) { return buf; }
+  c_file_ptr_stream (const c_file_ptr_stream&) = delete;
+
+  c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
+
+  ~c_file_ptr_stream (void) { delete buf; buf = nullptr; }
+
+  BUF_T * rdbuf (void) { return buf; }
 
   void stream_close (void) { if (buf) buf->buf_close (); }
 
@@ -124,12 +131,6 @@ public:
 private:
 
   BUF_T *buf;
-
-  // No copying!
-
-  c_file_ptr_stream (const c_file_ptr_stream&);
-
-  c_file_ptr_stream& operator = (const c_file_ptr_stream&);
 };
 
 typedef c_file_ptr_stream<std::istream, FILE *, c_file_ptr_buf>
@@ -159,6 +160,12 @@ public:
   c_zfile_ptr_buf (gzFile f_arg, close_fcn cf_arg = file_close)
     : std::streambuf (), f (f_arg), cf (cf_arg)
   { }
+
+  // No copying!
+
+  c_zfile_ptr_buf (const c_zfile_ptr_buf&) = delete;
+
+  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&) = delete;
 
   ~c_zfile_ptr_buf (void);
 
@@ -206,12 +213,6 @@ protected:
 private:
 
   int_type underflow_common (bool);
-
-  // No copying!
-
-  c_zfile_ptr_buf (const c_zfile_ptr_buf&);
-
-  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&);
 };
 
 typedef c_file_ptr_stream<std::istream, gzFile, c_zfile_ptr_buf>

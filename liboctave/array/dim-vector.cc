@@ -5,19 +5,19 @@ Copyirght (C) 2009, 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,11 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <sstream>
 #include <limits>
-#include <string>
 #include <new>
+#include <sstream>
 
+#include "Array.h"
 #include "dim-vector.h"
 
 octave_idx_type *
@@ -55,9 +55,9 @@ dim_vector::chop_all_singletons (void)
   make_unique ();
 
   int j = 0;
-  int l = ndims ();
+  int nd = ndims ();
 
-  for (int i = 0; i < l; i++)
+  for (int i = 0; i < nd; i++)
     {
       if (rep[i] != 1)
         rep[j++] = rep[i];
@@ -66,7 +66,7 @@ dim_vector::chop_all_singletons (void)
   if (j == 1)
     rep[1] = 1;
 
-  rep[-1] = j > 2 ? j : 2;
+  rep[-1] = (j > 2 ? j : 2);
 }
 
 std::string
@@ -76,7 +76,7 @@ dim_vector::str (char sep) const
 
   for (int i = 0; i < ndims (); i++)
     {
-      buf << elem (i);
+      buf << xelem (i);
 
       if (i < ndims () - 1)
         buf << sep;
@@ -93,7 +93,7 @@ dim_vector::num_ones (void) const
   int retval = 0;
 
   for (int i = 0; i < ndims (); i++)
-    if (elem (i) == 1)
+    if (xelem (i) == 1)
       retval++;
 
   return retval;
@@ -122,53 +122,11 @@ dim_vector
 dim_vector::squeeze (void) const
 {
   dim_vector new_dims = *this;
+  new_dims.chop_all_singletons ();
 
-  bool dims_changed = 1;
-
-  int k = 0;
-
-  for (int i = 0; i < ndims (); i++)
-    {
-      if (elem (i) == 1)
-        dims_changed = true;
-      else
-        new_dims(k++) = elem (i);
-    }
-
-  if (dims_changed)
-    {
-      if (k == 0)
-        new_dims = dim_vector (1, 1);
-      else if (k == 1)
-        {
-          // There is one non-singleton dimension, so we need
-          // to decide the correct orientation.
-
-          if (elem (0) == 1)
-            {
-              // The original dimension vector had a leading
-              // singleton dimension.
-
-              octave_idx_type tmp = new_dims(0);
-
-              new_dims.resize (2);
-
-              new_dims(0) = 1;
-              new_dims(1) = tmp;
-            }
-          else
-            {
-              // The first element of the original dimension vector
-              // was not a singleton dimension.
-
-              new_dims.resize (2);
-
-              new_dims(1) = 1;
-            }
-        }
-      else
-        new_dims.resize (k);
-    }
+  // preserve orientation if there is only one non-singleton dimension left
+  if (new_dims.ndims () == 2 && xelem(0) == 1 && new_dims.elem(1) == 1)
+    return new_dims.as_row ();
 
   return new_dims;
 }
@@ -188,7 +146,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 {
   int orig_nd = ndims ();
   int ndb = dvb.ndims ();
-  int new_nd = dim < ndb ? ndb : dim + 1;
+  int new_nd = (dim < ndb ? ndb : dim + 1);
   if (new_nd > orig_nd)
     resize (new_nd, 1);
   else
@@ -282,31 +240,44 @@ dim_vector::redim (int n) const
     {
       dim_vector retval = alloc (n);
 
-      for (int i = 0; i < n_dims; i++)
-        retval.rep[i] = rep[i];
-
-      for (int i = n_dims; i < n; i++)
-        retval.rep[i] = 1;
+      std::copy_n (rep, n_dims, retval.rep);
+      std::fill_n (retval.rep + n_dims, n - n_dims, 1);
 
       return retval;
     }
   else
     {
-      if (n < 1) n = 1;
+      if (n < 1)
+        n = 1;
 
       dim_vector retval = alloc (n);
 
-      retval.rep[1] = 1;
+      std::copy_n (rep, n-1, retval.rep);
 
-      for (int i = 0; i < n-1; i++)
-        retval.rep[i] = rep[i];
-
+      // Accumulate overflow dimensions into last remaining dimension
       int k = rep[n-1];
       for (int i = n; i < n_dims; i++)
         k *= rep[i];
 
       retval.rep[n-1] = k;
 
+      // All dim_vectors are at least 2-D.  Make Nx1 if necessary.
+      if (n == 1)
+        retval.rep[1] = 1;
+
       return retval;
     }
+}
+
+Array<octave_idx_type>
+dim_vector::as_array (void) const
+{
+  octave_idx_type nd = ndims ();
+
+  Array<octave_idx_type> retval (dim_vector (1, nd));
+
+  for (octave_idx_type i = 0; i < nd; i++)
+    retval(i) = elem (i);
+
+  return retval;
 }

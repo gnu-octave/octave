@@ -5,19 +5,19 @@ Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -55,7 +55,7 @@ Undocumented internal function.
           FloatColumnVector xvec (args(0).float_vector_value ());
           FloatMatrix ymat (args(1).float_matrix_value ());
 
-          octave_idx_type nx = xvec.numel ();
+          F77_INT nx = octave::to_f77_int (xvec.numel ());
 
           if (nx < 2)
             error ("__pchip_deriv__: X must be at least of length 2");
@@ -68,9 +68,9 @@ Undocumented internal function.
 
           FloatMatrix dmat (nyr, nyc);
 
-          octave_idx_type ierr;
-          const octave_idx_type incfd = rows ? nyr : 1;
-          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          F77_INT ierr;
+          const F77_INT incfd = (rows ? octave::to_f77_int (nyr) : 1);
+          volatile const octave_idx_type inc = (rows ? 1 : nyr);
           volatile octave_idx_type k = 0;
 
           for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
@@ -78,7 +78,7 @@ Undocumented internal function.
               F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
                                        ymat.data () + k * inc,
                                        dmat.fortran_vec () + k * inc,
-                                       incfd, &ierr));
+                                       incfd, ierr));
 
               k++;
 
@@ -93,7 +93,7 @@ Undocumented internal function.
           ColumnVector xvec (args(0).vector_value ());
           Matrix ymat (args(1).matrix_value ());
 
-          octave_idx_type nx = xvec.numel ();
+          F77_INT nx = octave::to_f77_int (xvec.numel ());
 
           if (nx < 2)
             error ("__pchip_deriv__: X must be at least of length 2");
@@ -106,9 +106,9 @@ Undocumented internal function.
 
           Matrix dmat (nyr, nyc);
 
-          octave_idx_type ierr;
-          const octave_idx_type incfd = rows ? nyr : 1;
-          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          F77_INT ierr;
+          const F77_INT incfd = (rows ? octave::to_f77_int (nyr) : 1);
+          volatile const octave_idx_type inc = (rows ? 1 : nyr);
           volatile octave_idx_type k = 0;
 
           for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
@@ -116,7 +116,7 @@ Undocumented internal function.
               F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
                                          ymat.data () + k * inc,
                                          dmat.fortran_vec () + k * inc,
-                                         incfd, &ierr));
+                                         incfd, ierr));
               k++;
 
               if (ierr < 0)

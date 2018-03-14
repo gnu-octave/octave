@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -144,19 +144,19 @@ typecast (@var{x}, "uint8")
 
   octave::unwind_protect frame;
 
-  const void *data = 0;
+  const void *data = nullptr;
   octave_idx_type byte_size = 0;
   dim_vector old_dims;
 
   octave_value array = args(0);
 
-  if (array.is_bool_type ())
+  if (array.islogical ())
     get_data_and_bytesize (array.bool_array_value (), data, byte_size,
                            old_dims, frame);
   else if (array.is_string ())
     get_data_and_bytesize (array.char_array_value (), data, byte_size,
                            old_dims, frame);
-  else if (array.is_integer_type ())
+  else if (array.isinteger ())
     {
       if (array.is_int8_type ())
         get_data_and_bytesize (array.int8_array_value (), data, byte_size,
@@ -185,7 +185,7 @@ typecast (@var{x}, "uint8")
       else
         assert (0);
     }
-  else if (array.is_complex_type ())
+  else if (array.iscomplex ())
     {
       if (array.is_single_type ())
         get_data_and_bytesize (array.float_complex_array_value (), data,
@@ -194,7 +194,7 @@ typecast (@var{x}, "uint8")
         get_data_and_bytesize (array.complex_array_value (), data,
                                byte_size, old_dims, frame);
     }
-  else if (array.is_real_type ())
+  else if (array.isreal ())
     {
       if (array.is_single_type ())
         get_data_and_bytesize (array.float_array_value (), data, byte_size,
@@ -204,7 +204,7 @@ typecast (@var{x}, "uint8")
                                old_dims, frame);
     }
   else
-    error ("typecast: invalid input class: %s",
+    error ("typecast: invalid input CLASS: %s",
            array.class_name ().c_str ());
 
   std::string numclass = args(1).string_value ();
@@ -355,7 +355,7 @@ column vector.
   if (args.length () != 2)
     print_usage ();
 
-  if (! args(0).is_bool_type ())
+  if (! args(0).islogical ())
     error ("bitpack: X must be a logical array");
 
   octave_value retval;
@@ -488,7 +488,7 @@ column vector.
   if (args.length () != 1)
     print_usage ();
 
-  if (! (args(0).is_numeric_type () || args(0).is_string ()))
+  if (! (args(0).isnumeric () || args(0).is_string ()))
     error ("bitunpack: argument must be a number or a string");
 
   octave_value retval;
@@ -497,7 +497,7 @@ column vector.
 
   if (array.is_string ())
     retval = do_bitunpack (array.char_array_value ());
-  else if (array.is_integer_type ())
+  else if (array.isinteger ())
     {
       if (array.is_int8_type ())
         retval = do_bitunpack (array.int8_array_value ());
@@ -518,14 +518,14 @@ column vector.
       else
         assert (0);
     }
-  else if (array.is_complex_type ())
+  else if (array.iscomplex ())
     {
       if (array.is_single_type ())
         retval = do_bitunpack (array.float_complex_array_value ());
       else
         retval = do_bitunpack (array.complex_array_value ());
     }
-  else if (array.is_real_type ())
+  else if (array.isreal ())
     {
       if (array.is_single_type ())
         retval = do_bitunpack (array.float_array_value ());

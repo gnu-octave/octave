@@ -4,19 +4,19 @@ Copyright (C) 1999-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,15 +24,18 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <limits>
-
+#include <cmath>
 #include <ctime>
 
+#include <iomanip>
+#include <iostream>
+#include <limits>
+
 #include "lo-error.h"
-#include "lo-math.h"
 #include "lo-utils.h"
 #include "oct-locbuf.h"
 #include "oct-time.h"
+#include "octave-preserve-stream-state.h"
 #include "strftime-wrapper.h"
 #include "strptime-wrapper.h"
 #include "time-wrappers.h"
@@ -86,6 +89,17 @@ namespace octave
     time::ctime (void) const
     {
       return localtime (*this).asctime ();
+    }
+
+    std::ostream&
+    operator << (std::ostream& os, const time& ot)
+    {
+      preserve_stream_state stream_state (os);
+
+      os << ot.ot_unix_time << '.'
+         << std::setw (6) << std::setfill ('0') << ot.ot_usec;
+
+      return os;
     }
 
     void
@@ -173,7 +187,7 @@ namespace octave
 
           const char *fmt_str = fmt.c_str ();
 
-          char *buf = 0;
+          char *buf = nullptr;
           size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
           size_t chars_written = 0;
 
@@ -184,7 +198,7 @@ namespace octave
               buf[0] = '\0';
 
               chars_written
-                = octave_strftime_wrapper (buf, bufsize, fmt_str, &t, 0, 0);
+                = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
 
               bufsize *= 2;
             }
@@ -207,7 +221,7 @@ namespace octave
       if (! p)
         return;
 
-      struct ::tm *t = static_cast<struct ::tm*> (p);
+      struct ::tm *t = static_cast<struct ::tm *> (p);
 
       m_sec = t->tm_sec;
       m_min = t->tm_min;

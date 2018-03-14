@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -156,48 +156,48 @@ DEFASSIGNOP_FN (assign, sparse_matrix, sparse_matrix, assign)
 DEFNULLASSIGNOP_FN (null_assign, sparse_matrix, delete_elements)
 
 void
-install_sm_sm_ops (void)
+install_sm_sm_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_not, octave_sparse_matrix, not);
-  INSTALL_UNOP (op_uplus, octave_sparse_matrix, uplus);
-  INSTALL_UNOP (op_uminus, octave_sparse_matrix, uminus);
-  INSTALL_UNOP (op_transpose, octave_sparse_matrix, transpose);
-  INSTALL_UNOP (op_hermitian, octave_sparse_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_not, octave_sparse_matrix, not);
+  INSTALL_UNOP_TI (ti, op_uplus, octave_sparse_matrix, uplus);
+  INSTALL_UNOP_TI (ti, op_uminus, octave_sparse_matrix, uminus);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_sparse_matrix, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_sparse_matrix, transpose);
 
-  INSTALL_BINOP (op_add, octave_sparse_matrix, octave_sparse_matrix, add);
-  INSTALL_BINOP (op_sub, octave_sparse_matrix, octave_sparse_matrix, sub);
-  INSTALL_BINOP (op_mul, octave_sparse_matrix, octave_sparse_matrix, mul);
-  INSTALL_BINOP (op_div, octave_sparse_matrix, octave_sparse_matrix, div);
-  INSTALL_BINOP (op_pow, octave_sparse_matrix, octave_sparse_matrix, pow);
-  INSTALL_BINOP (op_ldiv, octave_sparse_matrix, octave_sparse_matrix, ldiv);
-  INSTALL_BINOP (op_lt, octave_sparse_matrix, octave_sparse_matrix, lt);
-  INSTALL_BINOP (op_le, octave_sparse_matrix, octave_sparse_matrix, le);
-  INSTALL_BINOP (op_eq, octave_sparse_matrix, octave_sparse_matrix, eq);
-  INSTALL_BINOP (op_ge, octave_sparse_matrix, octave_sparse_matrix, ge);
-  INSTALL_BINOP (op_gt, octave_sparse_matrix, octave_sparse_matrix, gt);
-  INSTALL_BINOP (op_ne, octave_sparse_matrix, octave_sparse_matrix, ne);
-  INSTALL_BINOP (op_el_mul, octave_sparse_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_add, octave_sparse_matrix, octave_sparse_matrix, add);
+  INSTALL_BINOP_TI (ti, op_sub, octave_sparse_matrix, octave_sparse_matrix, sub);
+  INSTALL_BINOP_TI (ti, op_mul, octave_sparse_matrix, octave_sparse_matrix, mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_sparse_matrix, octave_sparse_matrix, div);
+  INSTALL_BINOP_TI (ti, op_pow, octave_sparse_matrix, octave_sparse_matrix, pow);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_sparse_matrix, octave_sparse_matrix, ldiv);
+  INSTALL_BINOP_TI (ti, op_lt, octave_sparse_matrix, octave_sparse_matrix, lt);
+  INSTALL_BINOP_TI (ti, op_le, octave_sparse_matrix, octave_sparse_matrix, le);
+  INSTALL_BINOP_TI (ti, op_eq, octave_sparse_matrix, octave_sparse_matrix, eq);
+  INSTALL_BINOP_TI (ti, op_ge, octave_sparse_matrix, octave_sparse_matrix, ge);
+  INSTALL_BINOP_TI (ti, op_gt, octave_sparse_matrix, octave_sparse_matrix, gt);
+  INSTALL_BINOP_TI (ti, op_ne, octave_sparse_matrix, octave_sparse_matrix, ne);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_sparse_matrix, octave_sparse_matrix,
                  el_mul);
-  INSTALL_BINOP (op_el_div, octave_sparse_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_el_div, octave_sparse_matrix, octave_sparse_matrix,
                  el_div);
-  INSTALL_BINOP (op_el_pow, octave_sparse_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_sparse_matrix, octave_sparse_matrix,
                  el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_sparse_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_sparse_matrix, octave_sparse_matrix,
                  el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_sparse_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_el_and, octave_sparse_matrix, octave_sparse_matrix,
                  el_and);
-  INSTALL_BINOP (op_el_or, octave_sparse_matrix, octave_sparse_matrix,
+  INSTALL_BINOP_TI (ti, op_el_or, octave_sparse_matrix, octave_sparse_matrix,
                  el_or);
 
-  INSTALL_CATOP (octave_sparse_matrix, octave_sparse_matrix, sm_sm);
+  INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_sparse_matrix, sm_sm);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_sparse_matrix,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_sparse_matrix,
                     assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_matrix,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_null_matrix,
                     null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_str,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_null_str,
                     null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_sq_str,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_null_sq_str,
                     null_assign);
 }

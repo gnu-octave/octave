@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 Rik Wehbring
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -47,7 +47,7 @@ namespace octave
       : index (index_arg), nd (nd_arg), dim (dim_arg), var (var_arg)
     { }
 
-    ~index_exception (void) { }
+    ~index_exception (void) = default;
 
     // Erroneous index value.  Called in what, and by external code
     // (e.g., nth_element) to make a custom error message.
@@ -57,7 +57,7 @@ namespace octave
     virtual std::string details (void) const = 0;
 
     // ID of error to throw.
-    virtual const char *err_id (void) const = 0;
+    virtual const char * err_id (void) const = 0;
 
     virtual std::string message (void) const;
 
@@ -159,21 +159,21 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::err_nan_to_logical_conversion' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_nan_to_logical_conversion' instead")
 OCTAVE_NORETURN inline void
 err_nan_to_logical_conversion (void)
 {
   octave::err_nan_to_logical_conversion ();
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_nan_to_character_conversion' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_nan_to_character_conversion' instead")
 OCTAVE_NORETURN inline void
 err_nan_to_character_conversion (void)
 {
   octave::err_nan_to_character_conversion ();
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_nonconformant' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_nonconformant' instead")
 OCTAVE_NORETURN inline void
 err_nonconformant (const char *op, octave_idx_type op1_len,
                    octave_idx_type op2_len)
@@ -181,7 +181,7 @@ err_nonconformant (const char *op, octave_idx_type op1_len,
   octave::err_nonconformant (op, op1_len, op2_len);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_nonconformant' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_nonconformant' instead")
 OCTAVE_NORETURN inline void
 err_nonconformant (const char *op,
                    octave_idx_type op1_nr, octave_idx_type op1_nc,
@@ -190,7 +190,7 @@ err_nonconformant (const char *op,
   octave::err_nonconformant (op, op1_nr, op1_nc, op2_nr, op2_nc);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_nonconformant' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_nonconformant' instead")
 OCTAVE_NORETURN inline void
 err_nonconformant (const char *op,
                    const dim_vector& op1_dims, const dim_vector& op2_dims)
@@ -198,7 +198,7 @@ err_nonconformant (const char *op,
   octave::err_nonconformant (op, op1_dims, op2_dims);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_index_out_of_range' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_index_out_of_range' instead")
 OCTAVE_NORETURN inline void
 err_index_out_of_range (int nd, int dim, octave_idx_type iext,
                         octave_idx_type ext, const dim_vector& d)
@@ -206,7 +206,7 @@ err_index_out_of_range (int nd, int dim, octave_idx_type iext,
   octave::err_index_out_of_range (nd, dim, iext, ext, d);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_index_out_of_range' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_index_out_of_range' instead")
 OCTAVE_NORETURN inline void
 err_index_out_of_range (int nd, int dim, octave_idx_type iext,
                         octave_idx_type ext)
@@ -214,7 +214,7 @@ err_index_out_of_range (int nd, int dim, octave_idx_type iext,
   octave::err_index_out_of_range (nd, dim, iext, ext);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_del_index_out_of_range' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_del_index_out_of_range' instead")
 OCTAVE_NORETURN inline void
 err_del_index_out_of_range (bool is1d, octave_idx_type iext,
                             octave_idx_type ext)
@@ -230,7 +230,7 @@ err_invalid_index (double n, octave_idx_type nd = 0,
   octave::err_invalid_index (n, nd, dim, var);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_invalid_index' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_invalid_index' instead")
 OCTAVE_NORETURN inline void
 err_invalid_index (octave_idx_type n, octave_idx_type nd = 0,
                    octave_idx_type dim = 0,
@@ -239,7 +239,7 @@ err_invalid_index (octave_idx_type n, octave_idx_type nd = 0,
   octave::err_invalid_index (n, nd, dim, var);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_invalid_index' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_invalid_index' instead")
 OCTAVE_NORETURN inline void
 err_invalid_index (const std::string& idx, octave_idx_type nd = 0,
                    octave_idx_type dim = 0,
@@ -248,14 +248,14 @@ err_invalid_index (const std::string& idx, octave_idx_type nd = 0,
   octave::err_invalid_index (idx, nd, dim, var);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::err_invalid_resize' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::err_invalid_resize' instead")
 OCTAVE_NORETURN inline void
 err_invalid_resize (void)
 {
   octave::err_invalid_resize ();
 }
 
-OCTAVE_DEPRECATED ("use 'octave::warn_singular_matrix' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::warn_singular_matrix' instead")
 inline void
 warn_singular_matrix (double rcond = 0.0)
 {

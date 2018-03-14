@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 Andrew Thornton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -65,7 +65,7 @@ namespace QtHandles
   }
 
   static void
-  setupPalette (const uibuttongroup::properties& pp, QPalette &p)
+  setupPalette (const uibuttongroup::properties& pp, QPalette& p)
   {
     p.setColor (QPalette::Window,
                 Utils::fromRgb (pp.get_backgroundcolor_rgb ()));
@@ -95,26 +95,26 @@ namespace QtHandles
   ButtonGroup*
   ButtonGroup::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           {
-            QFrame* frame = new QFrame(container);
+            QFrame *frame = new QFrame (container);
             return new ButtonGroup (go, new QButtonGroup (frame), frame);
           }
       }
 
-    return 0;
+    return nullptr;
   }
 
-  ButtonGroup::ButtonGroup (const graphics_object& go, QButtonGroup* buttongroup,
-                            QFrame* frame)
-    : Object (go, frame), m_hiddenbutton(0), m_container (0), m_title (0),
-      m_blockUpdates (false)
+  ButtonGroup::ButtonGroup (const graphics_object& go, QButtonGroup *buttongroup,
+                            QFrame *frame)
+    : Object (go, frame), m_hiddenbutton(nullptr), m_container (nullptr),
+      m_title (nullptr), m_blockUpdates (false)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
 
@@ -138,10 +138,10 @@ namespace QtHandles
 
     if (frame->hasMouseTracking ())
       {
-        foreach (QWidget* w, frame->findChildren<QWidget*> ())
-        { w->setMouseTracking (true); }
-        foreach (QWidget* w, buttongroup->findChildren<QWidget*> ())
-        { w->setMouseTracking (true); }
+        foreach (QWidget *w, frame->findChildren<QWidget*> ())
+          w->setMouseTracking (true);
+        foreach (QWidget *w, buttongroup->findChildren<QWidget*> ())
+          w->setMouseTracking (true);
       }
 
     QString title = Utils::fromStdString (pp.get_title ());
@@ -173,7 +173,7 @@ namespace QtHandles
   { }
 
   bool
-  ButtonGroup::eventFilter (QObject* watched, QEvent* xevent)
+  ButtonGroup::eventFilter (QObject *watched, QEvent *xevent)
   {
     if (! m_blockUpdates)
       {
@@ -195,7 +195,7 @@ namespace QtHandles
 
                           if (pp.fontunits_is ("normalized"))
                             {
-                              QFrame* frame = qWidget<QFrame> ();
+                              QFrame *frame = qWidget<QFrame> ();
 
                               m_title->setFont (Utils::computeFont<uibuttongroup>
                                                 (pp, frame->height ()));
@@ -209,7 +209,7 @@ namespace QtHandles
 
               case QEvent::MouseButtonPress:
                 {
-                  QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+                  QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
 
                   if (m->button () == Qt::RightButton)
                     {
@@ -250,7 +250,7 @@ namespace QtHandles
   ButtonGroup::update (int pId)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
-    QFrame* frame = qWidget<QFrame> ();
+    QFrame *frame = qWidget<QFrame> ();
 
     m_blockUpdates = true;
 
@@ -293,7 +293,7 @@ namespace QtHandles
             {
               if (m_title)
                 delete m_title;
-              m_title = 0;
+              m_title = nullptr;
             }
           else
             {
@@ -349,10 +349,10 @@ namespace QtHandles
           graphics_handle h = pp.get_selectedobject ();
           gh_manager::auto_lock lock;
           graphics_object go = gh_manager::get_object (h);
-          Object* selectedObject = Backend::toolkitObject (go);
-          ToggleButtonControl* toggle = static_cast<ToggleButtonControl*>
+          Object *selectedObject = Backend::toolkitObject (go);
+          ToggleButtonControl *toggle = static_cast<ToggleButtonControl *>
                                         (selectedObject);
-          RadioButtonControl* radio = static_cast<RadioButtonControl*>(selectedObject);
+          RadioButtonControl *radio = static_cast<RadioButtonControl *>(selectedObject);
           if (toggle)
             {
               go.get_properties ().set ("value", 1);
@@ -378,7 +378,7 @@ namespace QtHandles
   void
   ButtonGroup::redraw (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->redraw ();
@@ -388,7 +388,7 @@ namespace QtHandles
   ButtonGroup::updateLayout (void)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
-    QFrame* frame = qWidget<QFrame> ();
+    QFrame *frame = qWidget<QFrame> ();
 
     Matrix bb = pp.get_boundingbox (true);
     int bw = borderWidthFromProperties (pp);
@@ -433,9 +433,9 @@ namespace QtHandles
 
 
   void
-  ButtonGroup::addButton (QAbstractButton* btn)
+  ButtonGroup::addButton (QAbstractButton *btn)
   {
-    m_buttongroup->addButton(btn);
+    m_buttongroup->addButton (btn);
     connect (btn, SIGNAL (toggled (bool)), SLOT (buttonToggled (bool)));
   }
 
@@ -443,19 +443,19 @@ namespace QtHandles
   ButtonGroup::buttonToggled (bool toggled)
   {
     Q_UNUSED (toggled);
-    if (!m_blockUpdates)
+    if (! m_blockUpdates)
       {
         gh_manager::auto_lock lock;
         uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
-        graphics_handle oldValue = bp.get_selectedobject();
+        graphics_handle oldValue = bp.get_selectedobject ();
 
-        QAbstractButton* checkedBtn = m_buttongroup->checkedButton();
+        QAbstractButton *checkedBtn = m_buttongroup->checkedButton ();
 
         graphics_handle newValue = graphics_handle ();
         if (checkedBtn != m_hiddenbutton)
           {
-            Object* checkedObj = Object::fromQObject(checkedBtn);
+            Object *checkedObj = Object::fromQObject (checkedBtn);
             newValue = checkedObj->properties ().get___myhandle__ ();
           }
 
@@ -466,17 +466,17 @@ namespace QtHandles
   }
 
   void
-  ButtonGroup::buttonClicked (QAbstractButton* btn)
+  ButtonGroup::buttonClicked (QAbstractButton *btn)
   {
-    Q_UNUSED(btn);
+    Q_UNUSED (btn);
 
     gh_manager::auto_lock lock;
     uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
-    graphics_handle oldValue = bp.get_selectedobject();
+    graphics_handle oldValue = bp.get_selectedobject ();
 
-    QAbstractButton* checkedBtn = m_buttongroup->checkedButton();
-    Object* checkedObj = Object::fromQObject(checkedBtn);
+    QAbstractButton *checkedBtn = m_buttongroup->checkedButton ();
+    Object *checkedObj = Object::fromQObject (checkedBtn);
     graphics_handle newValue = checkedObj->properties ().get___myhandle__ ();
 
     if (oldValue != newValue)
@@ -488,7 +488,7 @@ namespace QtHandles
         eventData.setfield ("EventName", "SelectionChanged");
         octave_value selectionChangedEventObject = octave_value (new octave_struct (
               eventData));
-        gh_manager::post_callback(m_handle, "selectionchangedfcn",
+        gh_manager::post_callback (m_handle, "selectionchangedfcn",
                                   selectionChangedEventObject);
       }
   }

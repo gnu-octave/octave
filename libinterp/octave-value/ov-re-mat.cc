@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -71,6 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-diag.h"
 #include "ov-lazy-idx.h"
 #include "ov-perm.h"
+#include "pr-flt-fmt.h"
 #include "pr-output.h"
 #include "variables.h"
 
@@ -103,7 +104,7 @@ octave_matrix::numeric_demotion_function (void) const
 octave_base_value *
 octave_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.numel () == 1)
     retval = new octave_scalar (matrix (0));
@@ -114,7 +115,7 @@ octave_matrix::try_narrowing_conversion (void)
 double
 octave_matrix::double_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -126,7 +127,7 @@ octave_matrix::double_value (bool) const
 float
 octave_matrix::float_value (bool) const
 {
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -385,16 +386,16 @@ octave_matrix::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 }
 
 sortmode
-octave_matrix::is_sorted (sortmode mode) const
+octave_matrix::issorted (sortmode mode) const
 {
   if (idx_cache)
     {
       // This is a valid index matrix, so check via integers because it's
       // generally more efficient.
-      return idx_cache->as_array ().is_sorted (mode);
+      return idx_cache->as_array ().issorted (mode);
     }
   else
-    return octave_base_matrix<NDArray>::is_sorted (mode);
+    return octave_base_matrix<NDArray>::issorted (mode);
 }
 Array<octave_idx_type>
 octave_matrix::sort_rows_idx (sortmode mode) const
@@ -477,7 +478,7 @@ octave_matrix::save_ascii (std::ostream& os)
       os << "# ndims: " << dv.ndims () << "\n";
 
       for (int i=0; i < dv.ndims (); i++)
-        os << " " << dv(i);
+        os << ' ' << dv(i);
 
       os << "\n" << tmp;
     }
@@ -701,7 +702,7 @@ octave_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, 0);
+  space_hid = H5Screate_simple (rank, hdims, nullptr);
 
   if (space_hid < 0) return false;
 
@@ -927,8 +928,8 @@ octave_matrix::map (unary_mapper_t umap) const
 
     RC_ARRAY_MAPPER (acos, Complex, octave::math::rc_acos);
     RC_ARRAY_MAPPER (acosh, Complex, octave::math::rc_acosh);
-    ARRAY_MAPPER (angle, double, octave::math::arg);
-    ARRAY_MAPPER (arg, double,octave::math ::arg);
+    ARRAY_MAPPER (angle, double, std::arg);
+    ARRAY_MAPPER (arg, double,std::arg);
     RC_ARRAY_MAPPER (asin, Complex, octave::math::rc_asin);
     ARRAY_MAPPER (asinh, double, octave::math::asinh);
     ARRAY_MAPPER (atan, double, ::atan);
@@ -962,7 +963,7 @@ octave_matrix::map (unary_mapper_t umap) const
     RC_ARRAY_MAPPER (sqrt, Complex, octave::math::rc_sqrt);
     ARRAY_MAPPER (tan, double, ::tan);
     ARRAY_MAPPER (tanh, double, ::tanh);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
     ARRAY_MAPPER (xsignbit, double, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
@@ -982,7 +983,6 @@ octave_matrix::map (unary_mapper_t umap) const
     case umap_xisspace:
     case umap_xisupper:
     case umap_xisxdigit:
-    case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
         return str_conv.map (umap);

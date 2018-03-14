@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not,
-see <http://www.gnu.org/licenses/>.
+see <https://www.gnu.org/licenses/>.
 
 */
 
@@ -99,6 +99,9 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
 
     _edit_action->setVisible (false);
 
+#if defined (Q_OS_WIN32)
+    // include this when in windows because there is no filter for
+    // detecting links and error messages yet
     if (has_selected_text)
       {
         QRegExp file ("(?:[ \\t]+)(\\S+) at line (\\d+) column (?:\\d+)");
@@ -119,11 +122,24 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
             _edit_action->setData (data);
           }
       }
+#endif
 
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (has_selected_text);
 
+    // Get the actions of any hotspots the filters may have found
+    QList<QAction*> actions = get_hotspot_actions (at);
+    if (actions.length ())
+      _contextMenu->addSeparator ();
+    for (int i = 0; i < actions.length (); i++)
+      _contextMenu->addAction (actions.at(i));
+
+    // Finally, show the context menu
     _contextMenu->exec (mapToGlobal (at));
+
+    // Cleaning up, remove actions of the hotspot
+    for (int i = 0; i < actions.length (); i++)
+      _contextMenu->removeAction (actions.at(i));
   }
 
 // slot for edit files in error messages
@@ -152,8 +168,11 @@ QTerminal::notice_settings (const QSettings *settings)
   QString cursorType
     = settings->value ("terminal/cursorType", "ibeam").toString ();
 
-  bool cursorBlinking
-    = settings->value ("terminal/cursorBlinking", true).toBool ();
+  bool cursorBlinking;
+  if (settings->contains ("cursor_blinking"))
+    cursorBlinking = settings->value ("cursor_blinking",true).toBool ();
+  else
+    cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
 
   if (cursorType == "ibeam")
     setCursorType (QTerminal::IBeamCursor, cursorBlinking);

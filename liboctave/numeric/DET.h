@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,8 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <cmath>
-#include "oct-cmplx.h"
+
 #include "lo-mappers.h"
+#include "oct-cmplx.h"
 
 template <typename T>
 class
@@ -73,7 +74,9 @@ public:
   void operator *= (T t)
   {
     int e;
-    c2 *= octave::math::log2 (t, e);
+    c2 *= t;
+    // Renormalize c2 to [0.5, 1), and find required change in exponent.
+    c2 = octave::math::log2 (c2, e);
     e2 += e;
   }
 

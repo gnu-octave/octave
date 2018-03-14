@@ -4,19 +4,19 @@ Copyright (C) 2012-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,10 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <string>
 
-#include "oct-map.h"
 #include "oct-refcount.h"
+
+#include "oct-map.h"
 #include "ov-base.h"
-#include "symtab.h"
+#include "ov-builtin.h"
 
 class cdef_object;
 class cdef_class;
@@ -40,7 +41,12 @@ class cdef_property;
 class cdef_method;
 class cdef_package;
 
-class tree_classdef;
+namespace octave
+{
+  class interpreter;
+  class tree_classdef;
+  class type_info;
+}
 
 // This is mainly a boostrap class to declare the expected interface.
 // The actual base class is cdef_class_base, which is declared after
@@ -52,31 +58,35 @@ public:
   friend class cdef_object;
 
 public:
-  cdef_object_rep (void) : refcount (1) { }
 
-  virtual ~cdef_object_rep (void) { }
+  cdef_object_rep (void) : refcount (1)
+  { }
+
+  cdef_object_rep& operator = (const cdef_object_rep&) = delete;
+
+  virtual ~cdef_object_rep (void) = default;
 
   virtual cdef_class get_class (void) const;
 
   virtual void set_class (const cdef_class&)
   { err_invalid_object ("set_class"); }
 
-  virtual cdef_object_rep* clone (void) const
+  virtual cdef_object_rep * clone (void) const
   {
     err_invalid_object ("clone");
   }
 
-  virtual cdef_object_rep* empty_clone (void) const
+  virtual cdef_object_rep * empty_clone (void) const
   {
     err_invalid_object ("empty_clone");
   }
 
-  virtual cdef_object_rep* copy (void) const
+  virtual cdef_object_rep * copy (void) const
   {
     err_invalid_object ("copy");
   }
 
-  virtual cdef_object_rep* make_array (void) const
+  virtual cdef_object_rep * make_array (void) const
   {
     err_invalid_object ("make_array");
   }
@@ -100,6 +110,17 @@ public:
   virtual octave_value get (const std::string&) const
   {
     err_invalid_object ("get");
+  }
+
+  virtual void set_property (octave_idx_type, const std::string&,
+                             const octave_value&)
+  {
+    err_invalid_object ("set_property");
+  }
+
+  virtual octave_value get_property (octave_idx_type, const std::string&) const
+  {
+    err_invalid_object ("get_property");
   }
 
   virtual octave_value_list
@@ -165,17 +186,19 @@ public:
   virtual dim_vector dims (void) const { return dim_vector (); }
 
 protected:
+
   // Reference count
-  octave_refcount<octave_idx_type> refcount;
+  octave::refcount<octave_idx_type> refcount;
 
 protected:
-  // Restricted copying
+
+  // Restricted copying.
+
   cdef_object_rep (const cdef_object_rep&)
-    : refcount (1) { }
+    : refcount (1)
+  { }
 
 private:
-  // No assignment
-  cdef_object_rep& operator = (const cdef_object_rep& );
 
   OCTAVE_NORETURN void err_invalid_object (const char *who) const
   { error ("%s: invalid object", who); }
@@ -190,10 +213,7 @@ public:
     : rep (new cdef_object_rep ()) { }
 
   cdef_object (const cdef_object& obj)
-    : rep (obj.rep)
-  {
-    rep->refcount++;
-  }
+    : rep (obj.rep) { rep->refcount++; }
 
   cdef_object (cdef_object_rep *r)
     : rep (r) { }
@@ -251,6 +271,14 @@ public:
   octave_value get (const std::string& pname) const
   { return rep->get (pname); }
 
+  void set_property (octave_idx_type idx, const std::string& pname,
+                     const octave_value& pval)
+  { return rep->set_property (idx, pname, pval); }
+
+  octave_value
+  get_property (octave_idx_type idx, const std::string& pname) const
+  { return rep->get_property (idx, pname); }
+
   octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
            int nargout, size_t& skip, const cdef_class& context,
@@ -269,7 +297,7 @@ public:
 
   octave_map map_value (void) const;
 
-  const cdef_object_rep* get_rep (void) const { return rep; }
+  const cdef_object_rep * get_rep (void) const { return rep; }
 
   bool ok (void) const { return rep->is_valid (); }
 
@@ -292,7 +320,7 @@ public:
   bool is (const cdef_object& obj) const { return rep == obj.rep; }
 
 protected:
-  cdef_object_rep* get_rep (void) { return rep; }
+  cdef_object_rep * get_rep (void) { return rep; }
 
   void make_unique (int ignore_copies)
   {
@@ -320,10 +348,10 @@ public:
 
   void set_class (const cdef_class& cls);
 
-  cdef_object_rep* empty_clone (void) const
+  cdef_object_rep * empty_clone (void) const
   { return new cdef_object_base (*this); }
 
-  cdef_object_rep* make_array (void) const;
+  cdef_object_rep * make_array (void) const;
 
 protected:
   // Restricted copying!
@@ -338,11 +366,9 @@ private:
 
   void unregister_object (void);
 
-private:
   // The class of the object
   cdef_object klass;
 
-private:
   // No assignment!
   cdef_object_base& operator = (const cdef_object_base&);
 };
@@ -356,7 +382,7 @@ public:
   cdef_object_array (const Array<cdef_object>& a)
     : cdef_object_base (), array (a) { }
 
-  cdef_object_rep* clone (void) const
+  cdef_object_rep * clone (void) const
   { return new cdef_object_array (*this); }
 
   dim_vector dims (void) const { return array.dims (); }
@@ -376,10 +402,25 @@ public:
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
+  void set_property (octave_idx_type idx, const std::string& pname,
+                     const octave_value& pval)
+  {
+    cdef_object& tmp = array.elem (idx);
+
+    return tmp.put (pname, pval);
+  }
+
+  octave_value
+  get_property (octave_idx_type idx, const std::string& pname) const
+  {
+    cdef_object tmp = array.elem (idx);
+
+    return tmp.get (pname);
+  }
+
 private:
   Array<cdef_object> array;
 
-private:
   void fill_empty_values (void) { fill_empty_values (array); }
 
   void fill_empty_values (Array<cdef_object>& arr);
@@ -398,7 +439,7 @@ cdef_object_scalar : public cdef_object_base
 public:
   cdef_object_scalar (void) : cdef_object_base () { }
 
-  ~cdef_object_scalar (void) { }
+  ~cdef_object_scalar (void) = default;
 
   dim_vector dims (void) const { return dim_vector (1, 1); }
 
@@ -413,6 +454,24 @@ public:
       error ("get: unknown slot: %s", pname.c_str ());
 
     return val(0, 0);
+  }
+
+  void set_property (octave_idx_type idx, const std::string& pname,
+                     const octave_value& pval)
+  {
+    if (idx != 0)
+      error ("invalid index");  // FIXME
+
+    put (pname, pval);
+  }
+
+  octave_value
+  get_property (octave_idx_type idx, const std::string& pname) const
+  {
+    if (idx != 0)
+      error ("invalid index");  // FIXME
+
+    return get (pname);
   }
 
   octave_value_list
@@ -441,7 +500,7 @@ protected:
   octave_scalar_map map;
 
   // Internal/temporary structure used during object construction
-  std::map< cdef_class, std::list<cdef_class> > ctor_list;
+  std::map< cdef_class, std::list<cdef_class>> ctor_list;
 
 protected:
   // Restricted object copying!
@@ -462,14 +521,14 @@ public:
 
   ~handle_cdef_object (void);
 
-  cdef_object_rep* clone (void) const
+  cdef_object_rep * clone (void) const
   {
     handle_cdef_object *obj = const_cast<handle_cdef_object *> (this);
     obj->refcount++;
     return obj;
   }
 
-  cdef_object_rep* copy (void) const
+  cdef_object_rep * copy (void) const
   { return new handle_cdef_object (*this); }
 
   bool is_valid (void) const { return true; }
@@ -495,10 +554,10 @@ public:
 
   ~value_cdef_object (void);
 
-  cdef_object_rep* clone (void) const
+  cdef_object_rep * clone (void) const
   { return new value_cdef_object (*this); }
 
-  cdef_object_rep* copy (void) const { return clone (); }
+  cdef_object_rep * copy (void) const { return clone (); }
 
   bool is_valid (void) const { return true; }
 
@@ -520,9 +579,9 @@ public:
   cdef_meta_object_rep (void)
     : handle_cdef_object () { }
 
-  ~cdef_meta_object_rep (void) { }
+  ~cdef_meta_object_rep (void) = default;
 
-  cdef_object_rep* copy (void) const
+  cdef_object_rep * copy (void) const
   { return new cdef_meta_object_rep (*this); }
 
   bool is_meta_object (void) const { return true; }
@@ -545,7 +604,7 @@ public:
 
   virtual void meta_release (void) { }
 
-  virtual bool meta_is_postfix_index_handled (char /* type */) const
+  virtual bool meta_accepts_postfix_index (char /* type */) const
   { return false; }
 
 protected:
@@ -565,17 +624,17 @@ public:
   cdef_meta_object (void)
     : cdef_object () { }
 
+  // Object consistency is checked in sub-classes.
   cdef_meta_object (const cdef_meta_object& obj)
     : cdef_object (obj) { }
 
   cdef_meta_object (cdef_meta_object_rep *r)
     : cdef_object (r) { }
 
-  // Object consistency is checked in sub-classes.
   cdef_meta_object (const cdef_object& obj)
     : cdef_object (obj) { }
 
-  ~cdef_meta_object (void) { }
+  ~cdef_meta_object (void) = default;
 
   bool is_class (void) const { return get_rep ()->is_class (); }
 
@@ -592,14 +651,14 @@ public:
 
   void meta_release (void) { get_rep ()->meta_release (); }
 
-  bool meta_is_postfix_index_handled (char type) const
-  { return get_rep ()->meta_is_postfix_index_handled (type); }
+  bool meta_accepts_postfix_index (char type) const
+  { return get_rep ()->meta_accepts_postfix_index (type); }
 
 private:
-  cdef_meta_object_rep* get_rep (void)
+  cdef_meta_object_rep * get_rep (void)
   { return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_meta_object_rep* get_rep (void) const
+  const cdef_meta_object_rep * get_rep (void) const
   { return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ()); }
 };
 
@@ -614,11 +673,12 @@ private:
   public:
     cdef_class_rep (void)
       : cdef_meta_object_rep (), member_count (0), handle_class (false),
-        object_count (0), meta (false) { }
+        object_count (0), meta (false)
+    { }
 
     cdef_class_rep (const std::list<cdef_class>& superclasses);
 
-    cdef_object_rep* copy (void) const { return new cdef_class_rep (*this); }
+    cdef_object_rep * copy (void) const { return new cdef_class_rep (*this); }
 
     bool is_class (void) const { return true; }
 
@@ -659,7 +719,7 @@ private:
 
     void meta_release (void);
 
-    bool meta_is_postfix_index_handled (char type) const
+    bool meta_accepts_postfix_index (char type) const
     { return (type == '(' || type == '.'); }
 
     octave_value construct (const octave_value_list& args);
@@ -700,6 +760,7 @@ private:
     bool is_meta_class (void) const { return meta; }
 
   private:
+
     void load_all_methods (void);
 
     void find_names (std::set<std::string>& names, bool all);
@@ -716,7 +777,6 @@ private:
       return cdef_class (this);
     }
 
-  private:
     // The @-directory were this class is loaded from.
     // (not used yet)
     std::string directory;
@@ -740,7 +800,7 @@ private:
     std::list<cdef_class> implicit_ctor_list;
 
     // The number of objects of this class.
-    octave_refcount<octave_idx_type> object_count;
+    octave::refcount<octave_idx_type> object_count;
 
     // TRUE if this class is a built-in meta class.
     bool meta;
@@ -751,7 +811,6 @@ private:
     typedef std::map<std::string,cdef_property>::iterator property_iterator;
     typedef std::map<std::string,cdef_property>::const_iterator property_const_iterator;
 
-  private:
     cdef_class_rep (const cdef_class_rep& c)
       : cdef_meta_object_rep (c), directory (c.directory),
         method_map (c.method_map), property_map (c.property_map),
@@ -765,8 +824,7 @@ public:
   cdef_class (void)
     : cdef_meta_object () { }
 
-  cdef_class (const std::string& nm,
-              const std::list<cdef_class>& superclasses)
+  cdef_class (const std::string& nm, const std::list<cdef_class>& superclasses)
     : cdef_meta_object (new cdef_class_rep (superclasses))
   { get_rep ()->set_name (nm); }
 
@@ -829,12 +887,33 @@ public:
   void delete_object (cdef_object obj)
   { get_rep ()->delete_object (obj); }
 
-  static cdef_class make_meta_class (tree_classdef* t,
-                                     bool is_at_folder = false);
+  //! Analyze the tree_classdef tree and transform it to a cdef_class
+  //!
+  //! <b>All attribute validation should occur here.</b>
+  //!
+  //! Classdef attribute values can be given in the form of
+  //! expressions.  These expressions must be evaluated before
+  //! assigning them as attribute values.  Evaluating them as they are
+  //! parsed causes trouble with possible recusion in the parser so we
+  //! do it here.  For example
+  //!
+  //! @code
+  //! classdef recursion_class
+  //!   methods (Access = ?recursion_class)
+  //!   endmethods
+  //! endclassdef
+  //! @endcode
+  //!
+  //! will fail because each attempt to compute the metaclass of
+  //! recursion_class will cause recursion_class to be parsed again.
 
-  octave_function* get_method_function (const std::string& nm);
+  static cdef_class
+  make_meta_class (octave::interpreter& interp, octave::tree_classdef *t,
+                   bool is_at_folder = false);
 
-  octave_function* get_constructor_function (void)
+  octave_function * get_method_function (const std::string& nm);
+
+  octave_function * get_constructor_function (void)
   { return get_method_function (get_name ()); }
 
   octave_value construct (const octave_value_list& args)
@@ -859,11 +938,6 @@ public:
 
   bool is_meta_class (void) const { return get_rep ()->is_meta_class (); }
 
-  static const cdef_class& meta_class (void) { return _meta_class; }
-  static const cdef_class& meta_property (void) { return _meta_property; }
-  static const cdef_class& meta_method (void) { return _meta_method; }
-  static const cdef_class& meta_package (void) { return _meta_package; }
-
   void register_object (void) { get_rep ()->register_object (); }
 
   void unregister_object (void) { get_rep ()->unregister_object (); }
@@ -877,23 +951,17 @@ public:
   };
 
 private:
-  cdef_class_rep* get_rep (void)
+  cdef_class_rep * get_rep (void)
   { return dynamic_cast<cdef_class_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_class_rep* get_rep (void) const
+  const cdef_class_rep * get_rep (void) const
   { return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ()); }
 
   friend bool operator == (const cdef_class&, const cdef_class&);
   friend bool operator != (const cdef_class&, const cdef_class&);
   friend bool operator < (const cdef_class&, const cdef_class&);
 
-private:
-  static cdef_class _meta_class;
-  static cdef_class _meta_property;
-  static cdef_class _meta_method;
-  static cdef_class _meta_package;
-
-  friend void install_classdef (void);
+  friend void install_classdef (octave::interpreter& interp);
 };
 
 inline bool
@@ -924,7 +992,7 @@ private:
     cdef_property_rep (void)
       : cdef_meta_object_rep () { }
 
-    cdef_object_rep* copy (void) const { return new cdef_property_rep (*this); }
+    cdef_object_rep * copy (void) const { return new cdef_property_rep (*this); }
 
     bool is_property (void) const { return true; }
 
@@ -1012,10 +1080,10 @@ public:
   bool is_constant (void) const { return get_rep ()->is_constant (); }
 
 private:
-  cdef_property_rep* get_rep (void)
+  cdef_property_rep * get_rep (void)
   { return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_property_rep* get_rep (void) const
+  const cdef_property_rep * get_rep (void) const
   { return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ()); }
 };
 
@@ -1034,7 +1102,7 @@ private:
       : cdef_meta_object_rep (), function (), dispatch_type ()
     { }
 
-    cdef_object_rep* copy (void) const { return new cdef_method_rep(*this); }
+    cdef_object_rep * copy (void) const { return new cdef_method_rep(*this); }
 
     bool is_method (void) const { return true; }
 
@@ -1070,7 +1138,7 @@ private:
     meta_subsref (const std::string& type,
                   const std::list<octave_value_list>& idx, int nargout);
 
-    bool meta_is_postfix_index_handled (char type) const
+    bool meta_accepts_postfix_index (char type) const
     { return (type == '(' || type == '.'); }
 
   private:
@@ -1087,7 +1155,6 @@ private:
       return cdef_method (this);
     }
 
-  private:
     octave_value function;
 
     // When non-empty, the method is externally defined and this member
@@ -1155,10 +1222,10 @@ public:
   { get_rep ()->mark_as_external (dtype); }
 
 private:
-  cdef_method_rep* get_rep (void)
+  cdef_method_rep * get_rep (void)
   { return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_method_rep* get_rep (void) const
+  const cdef_method_rep * get_rep (void) const
   { return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ()); }
 };
 
@@ -1220,7 +1287,7 @@ cdef_object_base::unregister_object (void)
 inline cdef_object_rep*
 cdef_object_base::make_array (void) const
 {
-  cdef_object_rep* r = new cdef_object_array ();
+  cdef_object_rep *r = new cdef_object_array ();
 
   r->set_class (get_class ());
 
@@ -1249,9 +1316,9 @@ private:
     cdef_package_rep (void)
       : cdef_meta_object_rep (), member_count (0) { }
 
-    ~cdef_package_rep (void) { }
+    ~cdef_package_rep (void) = default;
 
-    cdef_object_rep* copy (void) const { return new cdef_package_rep (*this); }
+    cdef_object_rep * copy (void) const { return new cdef_package_rep (*this); }
 
     bool is_package (void) const { return true; }
 
@@ -1294,7 +1361,7 @@ private:
 
     void meta_release (void);
 
-    bool meta_is_postfix_index_handled (char type) const
+    bool meta_accepts_postfix_index (char type) const
     { return (type == '.'); }
 
     octave_value find (const std::string& nm);
@@ -1316,7 +1383,6 @@ private:
     typedef std::map<std::string, cdef_package>::iterator package_iterator;
     typedef std::map<std::string, cdef_package>::const_iterator package_const_iterator;
 
-  private:
     cdef_package_rep (const cdef_package_rep& p)
       : cdef_meta_object_rep (p), full_name (p.full_name),
         class_map (p.class_map), function_map (p.function_map),
@@ -1378,19 +1444,14 @@ public:
 
   octave_value find (const std::string& nm) { return get_rep ()->find (nm); }
 
-  static const cdef_package& meta (void) { return _meta; }
-
 private:
-  cdef_package_rep* get_rep (void)
+  cdef_package_rep * get_rep (void)
   { return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_package_rep* get_rep (void) const
+  const cdef_package_rep * get_rep (void) const
   { return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ()); }
 
-private:
-  static cdef_package _meta;
-
-  friend void install_classdef (void);
+  friend void install_classdef (octave::interpreter& interp);
 };
 
 class
@@ -1406,11 +1467,13 @@ public:
   octave_classdef (const octave_classdef& obj)
     : octave_base_value (obj), object (obj.object) { }
 
-  octave_base_value* clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_classdef (object.clone ()); }
 
-  octave_base_value* empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_classdef (object.empty_clone ()); }
+
+  octave_classdef * classdef_object_value (bool = false) { return this; }
 
   cdef_object get_object (void) const { return object; }
 
@@ -1418,9 +1481,9 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  bool is_map (void) const { return false; }
+  bool isstruct (void) const { return false; }
 
-  bool is_object (void) const { return true; }
+  bool isobject (void) const { return true; }
 
   bool is_classdef_object (void) const { return true; }
 
@@ -1467,10 +1530,17 @@ public:
 
   dim_vector dims (void) const { return object.dims (); }
 
-private:
-  cdef_object object;
+  void set_property (octave_idx_type idx, const std::string& name,
+                     const octave_value& pval)
+  {
+    object.set_property (idx, name, pval);
+  }
 
-private:
+  octave_value
+  get_property (octave_idx_type idx, const std::string& name) const
+  {
+    return object.get_property (idx, name);
+  }
 
 public:
   int type_id (void) const { return t_id; }
@@ -1480,9 +1550,12 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (void);
+  static void register_type (octave::type_info&);
 
 private:
+
+  cdef_object object;
+
   static int t_id;
 
   static const std::string t_name;
@@ -1523,142 +1596,119 @@ inline cdef_object
 to_cdef (const cdef_object& obj)
 { return obj; }
 
-OCTINTERP_API void install_classdef (void);
+OCTINTERP_API void install_classdef (octave::interpreter& interp);
 
 class
 cdef_manager
 {
 public:
 
-  static cdef_class find_class (const std::string& name,
-                                bool error_if_not_found = true,
-                                bool load_if_not_found = true)
-  {
-    if (instance_ok ())
-      return instance->do_find_class (name, error_if_not_found,
-                                      load_if_not_found);
+  cdef_manager (octave::interpreter& interp);
 
-    return cdef_class ();
+  // No copying!
+
+  cdef_manager (const cdef_manager&) = delete;
+
+  cdef_manager& operator = (const cdef_manager&) = delete;
+
+  ~cdef_manager (void) = default;
+
+  cdef_class find_class (const std::string& name, bool error_if_not_found = true,
+                         bool load_if_not_found = true);
+
+  octave_function * find_method_symbol (const std::string& method_name,
+                                        const std::string& class_name);
+
+  cdef_package find_package (const std::string& name,
+                             bool error_if_not_found = true,
+                             bool load_if_not_found = true);
+
+  octave_function * find_package_symbol (const std::string& pack_name);
+
+  void register_class (const cdef_class& cls)
+  {
+    m_all_classes[cls.get_name ()] = cls;
   }
 
-  static octave_function* find_method_symbol (const std::string& method_name,
-      const std::string& class_name)
+  void unregister_class (const cdef_class& cls)
   {
-    if (instance_ok ())
-      return instance->do_find_method_symbol (method_name, class_name);
-
-    return 0;
+    m_all_classes.erase(cls.get_name ());
   }
 
-  static cdef_package find_package (const std::string& name,
-                                    bool error_if_not_found = true,
-                                    bool load_if_not_found = true)
+  void register_package (const cdef_package& pkg)
   {
-    if (instance_ok ())
-      return instance->do_find_package (name, error_if_not_found,
-                                        load_if_not_found);
-
-    return cdef_package ();
+    m_all_packages[pkg.get_name ()] = pkg;
   }
 
-  static octave_function* find_package_symbol (const std::string& pack_name)
+  void unregister_package (const cdef_package& pkg)
   {
-    if (instance_ok ())
-      return instance->do_find_package_symbol (pack_name);
-
-    return 0;
+    m_all_packages.erase (pkg.get_name ());
   }
 
-  static void register_class (const cdef_class& cls)
-  {
-    if (instance_ok ())
-      instance->do_register_class (cls);
-  }
+  const cdef_class& meta_class (void) const { return m_meta_class; }
+  const cdef_class& meta_property (void) const { return m_meta_property; }
+  const cdef_class& meta_method (void) const { return m_meta_method; }
+  const cdef_class& meta_package (void) const { return m_meta_package; }
 
-  static void unregister_class (const cdef_class& cls)
-  {
-    if (instance_ok ())
-      instance->do_unregister_class (cls);
-  }
+  const cdef_package& meta (void) const { return m_meta; }
 
-  static void register_package (const cdef_package& pkg)
-  {
-    if (instance_ok ())
-      instance->do_register_package (pkg);
-  }
+  cdef_class
+  make_class (const std::string& name,
+              const std::list<cdef_class>& super_list = std::list<cdef_class> ());
 
-  static void unregister_package (const cdef_package& pkg)
-  {
-    if (instance_ok ())
-      instance->do_unregister_package (pkg);
-  }
+  cdef_class
+  make_class (const std::string& name, const cdef_class& super);
+
+  cdef_class
+  make_meta_class (const std::string& name, const cdef_class& super);
+
+  cdef_property
+  make_property (const cdef_class& cls, const std::string& name,
+                 const octave_value& get_method = Matrix (),
+                 const std::string& get_access = "public",
+                 const octave_value& set_method = Matrix (),
+                 const std::string& set_access = "public");
+
+  cdef_property
+  make_attribute (const cdef_class& cls, const std::string& name);
+
+  cdef_method
+  make_method (const cdef_class& cls, const std::string& name,
+               const octave_value& fcn,
+               const std::string& m_access = "public",
+               bool is_static = false);
+
+  cdef_method
+  make_method (const cdef_class& cls, const std::string& name,
+               octave_builtin::fcn ff,
+               const std::string& m_access = "public",
+               bool is_static = false);
+
+  cdef_method
+  make_method (const cdef_class& cls, const std::string& name,
+               octave_builtin::meth mm,
+               const std::string& m_access = "public",
+               bool is_static = false);
+
+  cdef_package
+  make_package (const std::string& nm, const std::string& parent = "");
 
 private:
 
-  cdef_manager (void) { }
-
-  cdef_manager (const cdef_manager&);
-
-  cdef_manager& operator = (const cdef_manager&);
-
-  ~cdef_manager (void) { }
-
-  static void create_instance (void);
-
-  static bool instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      create_instance ();
-
-    if (! instance)
-      error ("unable to create cdef_manager!");
-
-    return retval;
-  }
-
-  static void cleanup_instance (void)
-  {
-    delete instance;
-
-    instance = 0;
-  }
-
-  cdef_class do_find_class (const std::string& name, bool error_if_not_found,
-                            bool load_if_not_found);
-
-  octave_function* do_find_method_symbol (const std::string& method_name,
-                                          const std::string& class_name);
-
-  cdef_package do_find_package (const std::string& name,
-                                bool error_if_not_found,
-                                bool load_if_not_found);
-
-  octave_function* do_find_package_symbol (const std::string& pack_name);
-
-  void do_register_class (const cdef_class& cls)
-  { all_classes[cls.get_name ()] = cls; }
-
-  void do_unregister_class (const cdef_class& cls)
-  { all_classes.erase(cls.get_name ()); }
-
-  void do_register_package (const cdef_package& pkg)
-  { all_packages[pkg.get_name ()] = pkg; }
-
-  void do_unregister_package (const cdef_package& pkg)
-  { all_packages.erase(pkg.get_name ()); }
-
-private:
-
-  // The single cdef_manager instance
-  static cdef_manager *instance;
+  octave::interpreter& m_interpreter;
 
   // All registered/loaded classes
-  std::map<std::string, cdef_class> all_classes;
+  std::map<std::string, cdef_class> m_all_classes;
 
   // All registered/loaded packages
-  std::map<std::string, cdef_package> all_packages;
+  std::map<std::string, cdef_package> m_all_packages;
+
+  cdef_class m_meta_class;
+  cdef_class m_meta_property;
+  cdef_class m_meta_method;
+  cdef_class m_meta_package;
+
+  cdef_package m_meta;
 };
 
 #endif

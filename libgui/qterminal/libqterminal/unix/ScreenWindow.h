@@ -3,7 +3,7 @@
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -62,7 +62,7 @@ public:
      * to notify the window when the associated screen has changed and synchronize selection updates
      * between all views on a session.
      */
-    ScreenWindow(QObject* parent = 0);
+    ScreenWindow(QObject* parent = nullptr);
 	virtual ~ScreenWindow();
 
     /** Sets the screen which this window looks onto */

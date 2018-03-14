@@ -7,7 +7,7 @@
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
     Copyright (C) 2012-2016 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -43,8 +43,8 @@
 #include "unix/Vt102Emulation.h"
 
 TerminalModel::TerminalModel(KPty *kpty) :
-    _shellProcess(0)
-  , _emulation(0)
+    _shellProcess(nullptr)
+  , _emulation(nullptr)
   , _monitorActivity(false)
   , _monitorSilence(false)
   , _notifiedActivity(false)
@@ -114,7 +114,7 @@ void TerminalModel::addView(TerminalView* widget)
 
     _views.append(widget);
 
-    if ( _emulation != 0 )
+    if ( _emulation != nullptr )
     {
         // connect emulation - view signals and slots
         connect( widget , SIGNAL(keyPressedSignal(QKeyEvent*)) , _emulation ,
@@ -163,9 +163,9 @@ void TerminalModel::removeView(TerminalView* widget)
 {
     _views.removeAll(widget);
 
-    disconnect(widget,0,this,0);
+    disconnect(widget,nullptr,this,nullptr);
 
-    if ( _emulation != 0 )
+    if ( _emulation != nullptr )
     {
         // disconnect
         //  - key presses signals from widget
@@ -173,10 +173,10 @@ void TerminalModel::removeView(TerminalView* widget)
         //  - string sending signals from widget
         //
         //  ... and any other signals connected in addView()
-        disconnect( widget, 0, _emulation, 0);
+        disconnect( widget, nullptr, _emulation, nullptr);
 
         // disconnect state change signals emitted by emulation
-        disconnect( _emulation , 0 , widget , 0);
+        disconnect( _emulation , nullptr , widget , nullptr);
     }
 
     // close the session automatically when the last view is removed

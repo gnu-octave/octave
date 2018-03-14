@@ -4,19 +4,19 @@ Copyright (C) 2002-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -166,9 +166,9 @@ dispatch_kron (const octave_value& a, const octave_value& b)
   octave_value retval;
   if (a.is_perm_matrix () && b.is_perm_matrix ())
     retval = do_kron<PermMatrix, PermMatrix> (a, b);
-  else if (a.is_sparse_type () || b.is_sparse_type ())
+  else if (a.issparse () || b.issparse ())
     {
-      if (a.is_complex_type () || b.is_complex_type ())
+      if (a.iscomplex () || b.iscomplex ())
         retval = do_kron<SparseComplexMatrix, SparseComplexMatrix> (a, b);
       else
         retval = do_kron<SparseMatrix, SparseMatrix> (a, b);
@@ -193,18 +193,18 @@ dispatch_kron (const octave_value& a, const octave_value& b)
         }
       else if (a.is_single_type () || b.is_single_type ())
         {
-          if (a.is_complex_type ())
+          if (a.iscomplex ())
             retval = do_kron<FloatComplexDiagMatrix, FloatComplexMatrix> (a, b);
-          else if (b.is_complex_type ())
+          else if (b.iscomplex ())
             retval = do_kron<FloatDiagMatrix, FloatComplexMatrix> (a, b);
           else
             retval = do_kron<FloatDiagMatrix, FloatMatrix> (a, b);
         }
       else
         {
-          if (a.is_complex_type ())
+          if (a.iscomplex ())
             retval = do_kron<ComplexDiagMatrix, ComplexMatrix> (a, b);
-          else if (b.is_complex_type ())
+          else if (b.iscomplex ())
             retval = do_kron<DiagMatrix, ComplexMatrix> (a, b);
           else
             retval = do_kron<DiagMatrix, Matrix> (a, b);
@@ -212,18 +212,18 @@ dispatch_kron (const octave_value& a, const octave_value& b)
     }
   else if (a.is_single_type () || b.is_single_type ())
     {
-      if (a.is_complex_type ())
+      if (a.iscomplex ())
         retval = do_kron<FloatComplexMatrix, FloatComplexMatrix> (a, b);
-      else if (b.is_complex_type ())
+      else if (b.iscomplex ())
         retval = do_kron<FloatMatrix, FloatComplexMatrix> (a, b);
       else
         retval = do_kron<FloatMatrix, FloatMatrix> (a, b);
     }
   else
     {
-      if (a.is_complex_type ())
+      if (a.iscomplex ())
         retval = do_kron<ComplexMatrix, ComplexMatrix> (a, b);
-      else if (b.is_complex_type ())
+      else if (b.iscomplex ())
         retval = do_kron<Matrix, ComplexMatrix> (a, b);
       else
         retval = do_kron<Matrix, Matrix> (a, b);
@@ -311,9 +311,8 @@ Since the Kronecker product is associative, this is well-defined.
 
 %!assert (kron (diag ([1, 2]), diag ([3, 4])), diag ([3, 4, 6, 8]))
 
-%% Test for two diag matrices.  See the comments above in
-%% dispatch_kron for this case.
-%%
+## Test for two diag matrices.
+## See the comments above in dispatch_kron for this case.
 %!test
 %! expected = zeros (16, 16);
 %! expected (1, 11) = 3;

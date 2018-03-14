@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{h} =} __errplot__ (@var{fstr}, @var{hax}, @dots{})
@@ -242,7 +242,6 @@ function h = __do_errplot__ (fstr, hax, varargin)
     addlistener (hg, "xudata", fcn);
     addlistener (hg, "format", fcn);
 
-    hax = ancestor (hg, "axes");
     addlistener (hax, "xscale", fcn);
     addlistener (hax, "yscale", fcn);
 
@@ -252,18 +251,11 @@ function h = __do_errplot__ (fstr, hax, varargin)
 
   ## Process legend key
   if (! isempty (fmt.key) && nplots > 0)
-    hlegend = [];
-    fkids = get (gcf (), "children");
-    for i = 1 : numel (fkids)
-      if (   strcmp (get (fkids(i), "type"), "axes")
-          && strcmp (get (fkids(i), "tag"), "legend"))
-        udata = get (fkids(i), "userdata");
-        if (! isempty (intersect (udata.handle, gca ())))
-          hlegend = fkids(i);
-          break;
-        endif
-      endif
-    endfor
+    try
+      hlegend = get (hax, "__legend_handle__");
+    catch
+      hlegend = [];
+    end_try_catch
 
     if (isempty (hlegend))
       hlgnd = [];

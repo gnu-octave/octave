@@ -5,19 +5,19 @@ Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,15 +25,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "CSparse.h"
+#include "dRowVector.h"
+#include "dSparse.h"
+#include "oct-sparse.h"
+
 #include "defun-dld.h"
-#include "error.h"
 #include "errwarn.h"
+#include "ov.h"
 #include "ovl.h"
 #include "utils.h"
-
-#include "oct-sparse.h"
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
 
 #if defined (OCTAVE_ENABLE_64)
 #  define CXSPARSE_NAME(name) cs_dl ## name
@@ -44,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_CXSPARSE)
 
 static RowVector
-put_int (octave_idx_type *p, octave_idx_type n)
+put_int (octave::suitesparse_integer *p, octave_idx_type n)
 {
   RowVector ret (n);
   for (octave_idx_type i = 0; i < n; i++)
@@ -63,27 +64,27 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
   CXSPARSE_NAME () csm;
   csm.m = nr;
   csm.n = nc;
-  csm.x = 0;
+  csm.x = nullptr;
   csm.nz = -1;
 
-  if (arg.is_real_type ())
+  if (arg.isreal ())
     {
       m = arg.sparse_matrix_value ();
       csm.nzmax = m.nnz ();
-      csm.p = m.xcidx ();
-      csm.i = m.xridx ();
+      csm.p = octave::to_suitesparse_intptr (m.xcidx ());
+      csm.i = octave::to_suitesparse_intptr (m.xridx ());
     }
   else
     {
       cm = arg.sparse_complex_matrix_value ();
       csm.nzmax = cm.nnz ();
-      csm.p = cm.xcidx ();
-      csm.i = cm.xridx ();
+      csm.p = octave::to_suitesparse_intptr (cm.xcidx ());
+      csm.i = octave::to_suitesparse_intptr (cm.xridx ());
     }
 
   if (nargout <= 1 || rank)
     {
-      octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm, 0);
+      octave::suitesparse_integer *jmatch = CXSPARSE_NAME (_maxtrans) (&csm, 0);
       if (rank)
         {
           octave_idx_type r = 0;
@@ -142,7 +143,7 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (dmperm_internal (false, args(0), nargout));
+  return dmperm_internal (false, args(0), nargout);
 
 #else
 
@@ -190,7 +191,7 @@ such the numerical rank of the matrix @var{S} is bounded by
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (dmperm_internal (true, args(0), nargout));
+  return dmperm_internal (true, args(0), nargout);
 
 #else
 

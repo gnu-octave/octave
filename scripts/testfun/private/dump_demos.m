@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} dump_demos ()
@@ -50,7 +50,7 @@
 
 ## Author: Søren Hauberg  <soren@hauberg.org>
 
-function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, output="dump_plot_demos.m", fmt="png")
+function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, mfile="dump_plot_demos.m", fmt="png")
 
   if (nargin > 3)
     print_usage ();
@@ -66,13 +66,13 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
     dirs = strrep (dirs, "/", filesep ());
   endif
 
-  [~, funcname, ext] = fileparts (output);
+  [~, funcname, ext] = fileparts (mfile);
   if (isempty (ext))
-    output = [output ".m"];
+    mfile = [mfile ".m"];
   endif
 
   ## Create script beginning (close figures, etc.)
-  fid = fopen (output, "w");
+  fid = fopen (mfile, "w");
   fprintf (fid, "%% DO NOT EDIT!  Generated automatically by dump_demos.m\n");
   fprintf (fid, "function %s ()\n", funcname);
   fprintf (fid, "set (0, 'DefaultAxesColorOrder', ...\n");

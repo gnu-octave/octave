@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -81,10 +81,10 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDCATOP_FN2 (T1 ## _ ## T2 ## _m_m, T1 ## _matrix, T2 ## _matrix, , T1 ## NDArray, T1 ## _array, T2 ## _array, concat)
 
 #define OCTAVE_INSTALL_CONCAT_FN2(T1, T2)                               \
-  INSTALL_CATOP (octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, T1 ## _ ## T2 ## _s_s) \
-  INSTALL_CATOP (octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, T1 ## _ ## T2 ## _s_m) \
-  INSTALL_CATOP (octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, T1 ## _ ## T2 ## _m_s) \
-  INSTALL_CATOP (octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, T1 ## _ ## T2 ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, T1 ## _ ## T2 ## _s_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, T1 ## _ ## T2 ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, T1 ## _ ## T2 ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, T1 ## _ ## T2 ## _m_m)
 
 #define OCTAVE_DOUBLE_INT_CONCAT_FN(TYPE)                               \
   DEFNDCATOP_FN2 (double ## _ ## TYPE ## _s_s, scalar, TYPE ## _scalar, TYPE ## NDArray, , array, TYPE ## _array, concat) \
@@ -93,10 +93,10 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDCATOP_FN2 (double ## _ ## TYPE ## _m_m, matrix, TYPE ## _matrix, TYPE ## NDArray, , array, TYPE ## _array, concat)
 
 #define OCTAVE_INSTALL_DOUBLE_INT_CONCAT_FN(TYPE)                       \
-  INSTALL_CATOP (octave_scalar, octave_ ## TYPE ## _scalar, double ## _ ## TYPE ## _s_s) \
-  INSTALL_CATOP (octave_scalar, octave_ ## TYPE ## _matrix, double ## _ ## TYPE ## _s_m) \
-  INSTALL_CATOP (octave_matrix, octave_ ## TYPE ## _scalar, double ## _ ## TYPE ## _m_s) \
-  INSTALL_CATOP (octave_matrix, octave_ ## TYPE ## _matrix, double ## _ ## TYPE ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_ ## TYPE ## _scalar, double ## _ ## TYPE ## _s_s) \
+  INSTALL_CATOP_TI (ti, octave_scalar, octave_ ## TYPE ## _matrix, double ## _ ## TYPE ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_ ## TYPE ## _scalar, double ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_ ## TYPE ## _matrix, double ## _ ## TYPE ## _m_m)
 
 #define OCTAVE_INT_DOUBLE_CONCAT_FN(TYPE)                               \
   DEFNDCATOP_FN2 (TYPE ## _ ## double ## _s_s, TYPE ## _scalar, scalar, , TYPE ## NDArray, TYPE ## _array, array, concat) \
@@ -105,10 +105,10 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDCATOP_FN2 (TYPE ## _ ## double ## _m_m, TYPE ## _matrix, matrix, , TYPE ## NDArray, TYPE ## _array, array, concat)
 
 #define OCTAVE_INSTALL_INT_DOUBLE_CONCAT_FN(TYPE)                       \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_scalar, TYPE ## _ ## double ## _s_s) \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_matrix, TYPE ## _ ## double ## _s_m) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_scalar, TYPE ## _ ## double ## _m_s) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_matrix, TYPE ## _ ## double ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_scalar, TYPE ## _ ## double ## _s_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_matrix, TYPE ## _ ## double ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_scalar, TYPE ## _ ## double ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_matrix, TYPE ## _ ## double ## _m_m)
 
 #define OCTAVE_FLOAT_INT_CONCAT_FN(TYPE)                                \
   DEFNDCATOP_FN2 (float ## _ ## TYPE ## _s_s, float_scalar, TYPE ## _scalar, TYPE ## NDArray, , float_array, TYPE ## _array, concat) \
@@ -117,10 +117,10 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDCATOP_FN2 (float ## _ ## TYPE ## _m_m, float_matrix, TYPE ## _matrix, TYPE ## NDArray, , float_array, TYPE ## _array, concat)
 
 #define OCTAVE_INSTALL_FLOAT_INT_CONCAT_FN(TYPE)                        \
-  INSTALL_CATOP (octave_float_scalar, octave_ ## TYPE ## _scalar, float ## _ ## TYPE ## _s_s) \
-  INSTALL_CATOP (octave_float_scalar, octave_ ## TYPE ## _matrix, float ## _ ## TYPE ## _s_m) \
-  INSTALL_CATOP (octave_float_matrix, octave_ ## TYPE ## _scalar, float ## _ ## TYPE ## _m_s) \
-  INSTALL_CATOP (octave_float_matrix, octave_ ## TYPE ## _matrix, float ## _ ## TYPE ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_float_scalar, octave_ ## TYPE ## _scalar, float ## _ ## TYPE ## _s_s) \
+  INSTALL_CATOP_TI (ti, octave_float_scalar, octave_ ## TYPE ## _matrix, float ## _ ## TYPE ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_float_matrix, octave_ ## TYPE ## _scalar, float ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_float_matrix, octave_ ## TYPE ## _matrix, float ## _ ## TYPE ## _m_m)
 
 #define OCTAVE_INT_FLOAT_CONCAT_FN(TYPE)                                \
   DEFNDCATOP_FN2 (TYPE ## _ ## float ## _s_s, TYPE ## _scalar, float_scalar, , TYPE ## NDArray, TYPE ## _array, float_array, concat) \
@@ -129,10 +129,10 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDCATOP_FN2 (TYPE ## _ ## float ## _m_m, TYPE ## _matrix, float_matrix, , TYPE ## NDArray, TYPE ## _array, float_array, concat)
 
 #define OCTAVE_INSTALL_INT_FLOAT_CONCAT_FN(TYPE)                        \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_float_scalar, TYPE ## _ ## float ## _s_s) \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_float_matrix, TYPE ## _ ## float ## _s_m) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_float_scalar, TYPE ## _ ## float ## _m_s) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_float_matrix, TYPE ## _ ## float ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_float_scalar, TYPE ## _ ## float ## _s_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_float_matrix, TYPE ## _ ## float ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_float_scalar, TYPE ## _ ## float ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_float_matrix, TYPE ## _ ## float ## _m_m)
 
 // For compatibility, concatenation with a character always returns a
 // character.
@@ -142,20 +142,20 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDCHARCATOP_FN (char ## _ ## TYPE ## _m_m, char_matrix, TYPE ## _matrix, concat)
 
 #define OCTAVE_INSTALL_CHAR_INT_CONCAT_FN(TYPE)                         \
-  INSTALL_CATOP (octave_char_matrix_str, octave_ ## TYPE ## _scalar, char ## _ ## TYPE ## _m_s) \
-  INSTALL_CATOP (octave_char_matrix_str, octave_ ## TYPE ## _matrix, char ## _ ## TYPE ## _m_m) \
-  INSTALL_CATOP (octave_char_matrix_sq_str, octave_ ## TYPE ## _scalar, char ## _ ## TYPE ## _m_s) \
-  INSTALL_CATOP (octave_char_matrix_sq_str, octave_ ## TYPE ## _matrix, char ## _ ## TYPE ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_char_matrix_str, octave_ ## TYPE ## _scalar, char ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_char_matrix_str, octave_ ## TYPE ## _matrix, char ## _ ## TYPE ## _m_m) \
+  INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_ ## TYPE ## _scalar, char ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_ ## TYPE ## _matrix, char ## _ ## TYPE ## _m_m)
 
 #define OCTAVE_INT_CHAR_CONCAT_FN(TYPE)                                 \
   DEFNDCHARCATOP_FN (TYPE ## _ ## char ## _s_m, TYPE ## _scalar, char_matrix, concat) \
   DEFNDCHARCATOP_FN (TYPE ## _ ## char ## _m_m, TYPE ## _matrix, char_matrix, concat)
 
 #define OCTAVE_INSTALL_INT_CHAR_CONCAT_FN(TYPE)                         \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_char_matrix_str, TYPE ## _ ## char ## _s_m) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_char_matrix_str, TYPE ## _ ## char ## _m_m) \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_char_matrix_sq_str, TYPE ## _ ## char ## _s_m) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_char_matrix_sq_str, TYPE ## _ ## char ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_char_matrix_str, TYPE ## _ ## char ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_char_matrix_str, TYPE ## _ ## char ## _m_m) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_char_matrix_sq_str, TYPE ## _ ## char ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_char_matrix_sq_str, TYPE ## _ ## char ## _m_m)
 
 #define OCTAVE_CONCAT_FN(TYPE)                                          \
   DEFNDCATOP_FN (TYPE ## _s_s, TYPE ## _scalar, TYPE ## _scalar, TYPE ## _array, TYPE ## _array, concat) \
@@ -164,10 +164,10 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDCATOP_FN (TYPE ## _m_m, TYPE ## _matrix, TYPE ## _matrix, TYPE ## _array, TYPE ## _array, concat)
 
 #define OCTAVE_INSTALL_CONCAT_FN(TYPE)                                  \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _scalar, TYPE ## _s_s) \
-  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, TYPE ## _s_m) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _scalar, TYPE ## _m_s) \
-  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix, TYPE ## _m_m)
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _scalar, TYPE ## _s_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, TYPE ## _s_m) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _scalar, TYPE ## _m_s) \
+  INSTALL_CATOP_TI (ti, octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix, TYPE ## _m_m)
 
 // scalar unary ops.
 #define OCTAVE_S_INT_UNOPS(TYPE)                                        \
@@ -399,7 +399,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a, b(i));                             \
       }                                                         \
     return octave_value (result);                               \
@@ -411,7 +411,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a, b(i));                             \
       }                                                         \
     return octave_value (result);                               \
@@ -423,7 +423,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a, b(i));                             \
       }                                                         \
     return octave_value (result);                               \
@@ -435,7 +435,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a, b(i));                            \
       }                                                         \
     return octave_value (result);                               \
@@ -447,7 +447,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a, b(i));                            \
       }                                                         \
     return octave_value (result);                               \
@@ -568,7 +568,7 @@ along with Octave; see the file COPYING.  If not, see
    T1 ## NDArray result (a.dims ());                            \
    for (int i = 0; i < a.numel (); i++)                         \
      {                                                          \
-       OCTAVE_QUIT;                                             \
+       octave_quit ();                                          \
        result (i) = pow (a(i), b);                              \
      }                                                          \
    return octave_value (result);                                \
@@ -579,7 +579,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b);                             \
       }                                                         \
     return octave_value (result);                               \
@@ -590,7 +590,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b);                             \
       }                                                         \
     return octave_value (result);                               \
@@ -601,7 +601,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b);                            \
       }                                                         \
     return octave_value (result);                               \
@@ -612,7 +612,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b);                            \
       }                                                         \
     return octave_value (result);                               \
@@ -738,7 +738,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b(i));                          \
       }                                                         \
     return octave_value (result);                               \
@@ -759,7 +759,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b(i));                          \
       }                                                         \
     return octave_value (result);                               \
@@ -780,7 +780,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b(i));                          \
       }                                                         \
     return octave_value (result);                               \
@@ -801,7 +801,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b(i));                         \
       }                                                         \
     return octave_value (result);                               \
@@ -822,7 +822,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b(i));                         \
       }                                                         \
     return octave_value (result);                               \
@@ -893,38 +893,38 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_INT_NULL_ASSIGN_OPS(TYPE)
 
 #define OCTAVE_INSTALL_S_INT_UNOPS(TYPE)                                \
-  INSTALL_UNOP (op_not, octave_ ## TYPE ## _scalar, s_not);             \
-  INSTALL_UNOP (op_uplus, octave_ ## TYPE ## _scalar, s_uplus);         \
-  INSTALL_UNOP (op_uminus, octave_ ## TYPE ## _scalar, s_uminus);       \
-  INSTALL_UNOP (op_transpose, octave_ ## TYPE ## _scalar, s_transpose); \
-  INSTALL_UNOP (op_hermitian, octave_ ## TYPE ## _scalar, s_hermitian); \
+  INSTALL_UNOP_TI (ti, op_not, octave_ ## TYPE ## _scalar, s_not);             \
+  INSTALL_UNOP_TI (ti, op_uplus, octave_ ## TYPE ## _scalar, s_uplus);         \
+  INSTALL_UNOP_TI (ti, op_uminus, octave_ ## TYPE ## _scalar, s_uminus);       \
+  INSTALL_UNOP_TI (ti, op_transpose, octave_ ## TYPE ## _scalar, s_transpose); \
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_ ## TYPE ## _scalar, s_hermitian); \
                                                                         \
-  INSTALL_NCUNOP (op_incr, octave_ ## TYPE ## _scalar, s_incr);         \
-  INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _scalar, s_decr);
+  INSTALL_NCUNOP_TI (ti, op_incr, octave_ ## TYPE ## _scalar, s_incr);         \
+  INSTALL_NCUNOP_TI (ti, op_decr, octave_ ## TYPE ## _scalar, s_decr);
 
 #define OCTAVE_INSTALL_SS_INT_ARITH_OPS(PFX, T1, T2)                    \
-  INSTALL_BINOP (op_add, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _add); \
-  INSTALL_BINOP (op_sub, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _sub); \
-  INSTALL_BINOP (op_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _mul); \
-  INSTALL_BINOP (op_div, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _div); \
-  INSTALL_BINOP (op_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _pow); \
-  INSTALL_BINOP (op_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _ldiv); \
-  INSTALL_BINOP (op_el_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_mul); \
-  INSTALL_BINOP (op_el_div, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_div); \
-  INSTALL_BINOP (op_el_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_pow); \
-  INSTALL_BINOP (op_el_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_ldiv);
+  INSTALL_BINOP_TI (ti, op_add, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _add); \
+  INSTALL_BINOP_TI (ti, op_sub, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _sub); \
+  INSTALL_BINOP_TI (ti, op_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _mul); \
+  INSTALL_BINOP_TI (ti, op_div, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _div); \
+  INSTALL_BINOP_TI (ti, op_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _pow); \
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _ldiv); \
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_mul); \
+  INSTALL_BINOP_TI (ti, op_el_div, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_div); \
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_pow); \
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_ldiv);
 
 #define OCTAVE_INSTALL_SS_INT_CMP_OPS(PFX, T1, T2)                      \
-  INSTALL_BINOP (op_lt, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _lt); \
-  INSTALL_BINOP (op_le, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _le); \
-  INSTALL_BINOP (op_eq, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _eq); \
-  INSTALL_BINOP (op_ge, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _ge); \
-  INSTALL_BINOP (op_gt, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _gt); \
-  INSTALL_BINOP (op_ne, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _ne);
+  INSTALL_BINOP_TI (ti, op_lt, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _lt); \
+  INSTALL_BINOP_TI (ti, op_le, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _le); \
+  INSTALL_BINOP_TI (ti, op_eq, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _eq); \
+  INSTALL_BINOP_TI (ti, op_ge, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _ge); \
+  INSTALL_BINOP_TI (ti, op_gt, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _gt); \
+  INSTALL_BINOP_TI (ti, op_ne, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _ne);
 
 #define OCTAVE_INSTALL_SS_INT_BOOL_OPS(PFX, T1, T2)                     \
-  INSTALL_BINOP (op_el_and, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_and); \
-  INSTALL_BINOP (op_el_or, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_or);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_and); \
+  INSTALL_BINOP_TI (ti, op_el_or, octave_ ## T1 ## scalar, octave_ ## T2 ## scalar, PFX ## _el_or);
 
 #define OCTAVE_INSTALL_SS_INT_OPS(TYPE)                                 \
   OCTAVE_INSTALL_S_INT_UNOPS (TYPE)                                     \
@@ -943,37 +943,37 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_INSTALL_SS_INT_BOOL_OPS (xs, , TYPE ## _)                      \
   OCTAVE_INSTALL_SS_INT_BOOL_OPS (sfx, TYPE ## _, float_)               \
   OCTAVE_INSTALL_SS_INT_BOOL_OPS (fxs, float_, TYPE ## _)               \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_scalar, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_scalar, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_scalar, octave_complex_matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_complex_scalar, octave_float_complex_matrix)
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_scalar, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_float_scalar, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_complex_scalar, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_float_complex_scalar, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_SM_INT_ARITH_OPS(PFX, T1, T2)                    \
-  INSTALL_BINOP (op_add, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _add); \
-  INSTALL_BINOP (op_sub, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _sub); \
-  INSTALL_BINOP (op_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _mul); \
-  /* INSTALL_BINOP (op_div, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _div); */ \
-  /* INSTALL_BINOP (op_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _pow); */ \
-  INSTALL_BINOP (op_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _ldiv); \
-  INSTALL_BINOP (op_el_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_mul); \
-  INSTALL_BINOP (op_el_div, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_div); \
-  INSTALL_BINOP (op_el_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_pow); \
-  INSTALL_BINOP (op_el_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_ldiv);
+  INSTALL_BINOP_TI (ti, op_add, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _add); \
+  INSTALL_BINOP_TI (ti, op_sub, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _sub); \
+  INSTALL_BINOP_TI (ti, op_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _mul); \
+  /* INSTALL_BINOP_TI (ti, op_div, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _div); */ \
+  /* INSTALL_BINOP_TI (ti, op_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _pow); */ \
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _ldiv); \
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_mul); \
+  INSTALL_BINOP_TI (ti, op_el_div, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_div); \
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_pow); \
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_ldiv);
 
 #define OCTAVE_INSTALL_SM_INT_CMP_OPS(PFX, T1, T2)                      \
-  INSTALL_BINOP (op_lt, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _lt); \
-  INSTALL_BINOP (op_le, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _le); \
-  INSTALL_BINOP (op_eq, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _eq); \
-  INSTALL_BINOP (op_ge, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _ge); \
-  INSTALL_BINOP (op_gt, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _gt); \
-  INSTALL_BINOP (op_ne, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _ne);
+  INSTALL_BINOP_TI (ti, op_lt, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _lt); \
+  INSTALL_BINOP_TI (ti, op_le, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _le); \
+  INSTALL_BINOP_TI (ti, op_eq, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _eq); \
+  INSTALL_BINOP_TI (ti, op_ge, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _ge); \
+  INSTALL_BINOP_TI (ti, op_gt, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _gt); \
+  INSTALL_BINOP_TI (ti, op_ne, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _ne);
 
 #define OCTAVE_INSTALL_SM_INT_BOOL_OPS(PFX, T1, T2)                     \
-  INSTALL_BINOP (op_el_and, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_and); \
-  INSTALL_BINOP (op_el_or, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_or); \
-  INSTALL_BINOP (op_el_and_not, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_and_not); \
-  INSTALL_BINOP (op_el_or_not, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_or_not);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_and); \
+  INSTALL_BINOP_TI (ti, op_el_or, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_or); \
+  INSTALL_BINOP_TI (ti, op_el_and_not, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_and_not); \
+  INSTALL_BINOP_TI (ti, op_el_or_not, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _el_or_not);
 
 #define OCTAVE_INSTALL_SM_INT_OPS(TYPE)                                 \
   OCTAVE_INSTALL_SM_INT_ARITH_OPS (sm, TYPE ## _, TYPE ## _)            \
@@ -991,50 +991,50 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_INSTALL_SM_INT_BOOL_OPS (smx, TYPE ## _, )                     \
   OCTAVE_INSTALL_SM_INT_BOOL_OPS (fxm, float_, TYPE ## _)               \
   OCTAVE_INSTALL_SM_INT_BOOL_OPS (smfx, TYPE ## _, float_)              \
-  INSTALL_WIDENOP (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, TYPE ## _s_ ## TYPE ## _m_conv) \
-  INSTALL_WIDENOP (octave_ ## TYPE ## _scalar, octave_complex_matrix, TYPE ## _s_complex_m_conv) \
-  INSTALL_WIDENOP (octave_ ## TYPE ## _scalar, octave_float_complex_matrix, TYPE ## _s_float_complex_m_conv) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_matrix, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_matrix, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_matrix, octave_complex_matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_complex_matrix, octave_float_complex_matrix)
+  INSTALL_WIDENOP_TI (ti, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, TYPE ## _s_ ## TYPE ## _m_conv) \
+  INSTALL_WIDENOP_TI (ti, octave_ ## TYPE ## _scalar, octave_complex_matrix, TYPE ## _s_complex_m_conv) \
+  INSTALL_WIDENOP_TI (ti, octave_ ## TYPE ## _scalar, octave_float_complex_matrix, TYPE ## _s_float_complex_m_conv) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_matrix, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_float_matrix, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_complex_matrix, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_float_complex_matrix, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_MS_INT_ARITH_OPS(PFX, T1, T2)                    \
-  INSTALL_BINOP (op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _add); \
-  INSTALL_BINOP (op_sub, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _sub); \
-  INSTALL_BINOP (op_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _mul); \
-  INSTALL_BINOP (op_div, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _div); \
-  /* INSTALL_BINOP (op_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _pow); */ \
-  /* INSTALL_BINOP (op_ldiv, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _ldiv); */ \
+  INSTALL_BINOP_TI (ti, op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _add); \
+  INSTALL_BINOP_TI (ti, op_sub, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _sub); \
+  INSTALL_BINOP_TI (ti, op_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _mul); \
+  INSTALL_BINOP_TI (ti, op_div, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _div); \
+  /* INSTALL_BINOP_TI (ti, op_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _pow); */ \
+  /* INSTALL_BINOP_TI (ti, op_ldiv, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _ldiv); */ \
                                                                         \
-  INSTALL_BINOP (op_el_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_mul); \
-  INSTALL_BINOP (op_el_div, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_div); \
-  INSTALL_BINOP (op_el_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_pow); \
-  INSTALL_BINOP (op_el_ldiv, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_mul); \
+  INSTALL_BINOP_TI (ti, op_el_div, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_div); \
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_pow); \
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_ldiv);
 
 #define OCTAVE_INSTALL_MS_INT_CMP_OPS(PFX, T1, T2)                      \
-  INSTALL_BINOP (op_lt, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _lt); \
-  INSTALL_BINOP (op_le, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _le); \
-  INSTALL_BINOP (op_eq, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _eq); \
-  INSTALL_BINOP (op_ge, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _ge); \
-  INSTALL_BINOP (op_gt, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _gt); \
-  INSTALL_BINOP (op_ne, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _ne);
+  INSTALL_BINOP_TI (ti, op_lt, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _lt); \
+  INSTALL_BINOP_TI (ti, op_le, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _le); \
+  INSTALL_BINOP_TI (ti, op_eq, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _eq); \
+  INSTALL_BINOP_TI (ti, op_ge, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _ge); \
+  INSTALL_BINOP_TI (ti, op_gt, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _gt); \
+  INSTALL_BINOP_TI (ti, op_ne, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _ne);
 
 #define OCTAVE_INSTALL_MS_INT_BOOL_OPS(PFX, T1, T2)                     \
-  INSTALL_BINOP (op_el_and, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_and); \
-  INSTALL_BINOP (op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_or); \
-  INSTALL_BINOP (op_el_not_and, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_not_and); \
-  INSTALL_BINOP (op_el_not_or, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_not_or);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_and); \
+  INSTALL_BINOP_TI (ti, op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_or); \
+  INSTALL_BINOP_TI (ti, op_el_not_and, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_not_and); \
+  INSTALL_BINOP_TI (ti, op_el_not_or, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _el_not_or);
 
 #define OCTAVE_INSTALL_MS_INT_ASSIGN_OPS(PFX, TLHS, TRHS)               \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign)
 
 #define OCTAVE_INSTALL_MS_INT_ASSIGNEQ_OPS(PFX, TLHS, TRHS)             \
-  INSTALL_ASSIGNOP (op_add_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_add) \
-  INSTALL_ASSIGNOP (op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_sub) \
-  INSTALL_ASSIGNOP (op_mul_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_mul) \
-  INSTALL_ASSIGNOP (op_div_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_div)
+  INSTALL_ASSIGNOP_TI (ti, op_add_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_add) \
+  INSTALL_ASSIGNOP_TI (ti, op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_sub) \
+  INSTALL_ASSIGNOP_TI (ti, op_mul_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_mul) \
+  INSTALL_ASSIGNOP_TI (ti, op_div_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## scalar, PFX ## _assign_div)
 
 #define OCTAVE_INSTALL_MS_INT_OPS(TYPE)                                 \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (ms, TYPE ## _, TYPE ## _)            \
@@ -1056,56 +1056,56 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_INSTALL_MS_INT_ASSIGNEQ_OPS (mse, TYPE ## _, TYPE ## _)        \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mx, TYPE ## _, )                    \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mfx, TYPE ## _, float_)             \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_scalar, octave_complex_matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_float_complex_scalar, octave_float_complex_matrix)
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _matrix, octave_complex_scalar, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _matrix, octave_float_complex_scalar, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_M_INT_UNOPS(TYPE)                                \
-  INSTALL_UNOP (op_not, octave_ ## TYPE ## _matrix, m_not);             \
-  INSTALL_UNOP (op_uplus, octave_ ## TYPE ## _matrix, m_uplus);         \
-  INSTALL_UNOP (op_uminus, octave_ ## TYPE ## _matrix, m_uminus);       \
-  INSTALL_UNOP (op_transpose, octave_ ## TYPE ## _matrix, m_transpose); \
-  INSTALL_UNOP (op_hermitian, octave_ ## TYPE ## _matrix, m_transpose); \
+  INSTALL_UNOP_TI (ti, op_not, octave_ ## TYPE ## _matrix, m_not);             \
+  INSTALL_UNOP_TI (ti, op_uplus, octave_ ## TYPE ## _matrix, m_uplus);         \
+  INSTALL_UNOP_TI (ti, op_uminus, octave_ ## TYPE ## _matrix, m_uminus);       \
+  INSTALL_UNOP_TI (ti, op_transpose, octave_ ## TYPE ## _matrix, m_transpose); \
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_ ## TYPE ## _matrix, m_transpose); \
                                                                         \
-  INSTALL_NCUNOP (op_incr, octave_ ## TYPE ## _matrix, m_incr);         \
-  INSTALL_NCUNOP (op_decr, octave_ ## TYPE ## _matrix, m_decr);         \
-  INSTALL_NCUNOP (op_uminus, octave_ ## TYPE ## _matrix, m_changesign);
+  INSTALL_NCUNOP_TI (ti, op_incr, octave_ ## TYPE ## _matrix, m_incr);         \
+  INSTALL_NCUNOP_TI (ti, op_decr, octave_ ## TYPE ## _matrix, m_decr);         \
+  INSTALL_NCUNOP_TI (ti, op_uminus, octave_ ## TYPE ## _matrix, m_changesign);
 
 #define OCTAVE_INSTALL_MM_INT_ARITH_OPS(PFX, T1, T2)                    \
-  INSTALL_BINOP (op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _add); \
-  INSTALL_BINOP (op_sub, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _sub); \
-  /* INSTALL_BINOP (op_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _mul); */ \
-  /* INSTALL_BINOP (op_div, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _div); */ \
-  INSTALL_BINOP (op_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _pow); \
-  /* INSTALL_BINOP (op_ldiv, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_ldiv); */ \
-  INSTALL_BINOP (op_el_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_mul); \
-  INSTALL_BINOP (op_el_div, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_div); \
-  INSTALL_BINOP (op_el_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_pow); \
-  INSTALL_BINOP (op_el_ldiv, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_ldiv);
+  INSTALL_BINOP_TI (ti, op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _add); \
+  INSTALL_BINOP_TI (ti, op_sub, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _sub); \
+  /* INSTALL_BINOP_TI (ti, op_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _mul); */ \
+  /* INSTALL_BINOP_TI (ti, op_div, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _div); */ \
+  INSTALL_BINOP_TI (ti, op_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _pow); \
+  /* INSTALL_BINOP_TI (ti, op_ldiv, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_ldiv); */ \
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_mul); \
+  INSTALL_BINOP_TI (ti, op_el_div, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_div); \
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_pow); \
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_ldiv);
 
 #define OCTAVE_INSTALL_MM_INT_CMP_OPS(PFX, T1, T2)                      \
-  INSTALL_BINOP (op_lt, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _lt); \
-  INSTALL_BINOP (op_le, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _le); \
-  INSTALL_BINOP (op_eq, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _eq); \
-  INSTALL_BINOP (op_ge, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _ge); \
-  INSTALL_BINOP (op_gt, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _gt); \
-  INSTALL_BINOP (op_ne, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _ne);
+  INSTALL_BINOP_TI (ti, op_lt, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _lt); \
+  INSTALL_BINOP_TI (ti, op_le, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _le); \
+  INSTALL_BINOP_TI (ti, op_eq, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _eq); \
+  INSTALL_BINOP_TI (ti, op_ge, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _ge); \
+  INSTALL_BINOP_TI (ti, op_gt, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _gt); \
+  INSTALL_BINOP_TI (ti, op_ne, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _ne);
 
 #define OCTAVE_INSTALL_MM_INT_BOOL_OPS(PFX, T1, T2)                     \
-  INSTALL_BINOP (op_el_and, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_and); \
-  INSTALL_BINOP (op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_or); \
-  INSTALL_BINOP (op_el_not_and, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_not_and); \
-  INSTALL_BINOP (op_el_not_or, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_not_or); \
-  INSTALL_BINOP (op_el_and_not, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_and_not); \
-  INSTALL_BINOP (op_el_or_not, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_or_not);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_and); \
+  INSTALL_BINOP_TI (ti, op_el_or, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_or); \
+  INSTALL_BINOP_TI (ti, op_el_not_and, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_not_and); \
+  INSTALL_BINOP_TI (ti, op_el_not_or, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_not_or); \
+  INSTALL_BINOP_TI (ti, op_el_and_not, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_and_not); \
+  INSTALL_BINOP_TI (ti, op_el_or_not, octave_ ## T1 ## matrix, octave_ ## T2 ## matrix, PFX ## _el_or_not);
 
 #define OCTAVE_INSTALL_MM_INT_ASSIGN_OPS(PFX, TLHS, TRHS)               \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign)
 
 #define OCTAVE_INSTALL_MM_INT_ASSIGNEQ_OPS(PFX, TLHS, TRHS)             \
-  INSTALL_ASSIGNOP (op_add_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_add) \
-  INSTALL_ASSIGNOP (op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_sub) \
-  INSTALL_ASSIGNOP (op_el_mul_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_el_mul) \
-  INSTALL_ASSIGNOP (op_el_div_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_el_div)
+  INSTALL_ASSIGNOP_TI (ti, op_add_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_add) \
+  INSTALL_ASSIGNOP_TI (ti, op_sub_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_sub) \
+  INSTALL_ASSIGNOP_TI (ti, op_el_mul_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_el_mul) \
+  INSTALL_ASSIGNOP_TI (ti, op_el_div_eq, octave_ ## TLHS ## matrix, octave_ ## TRHS ## matrix, PFX ## _assign_el_div)
 
 #define OCTAVE_INSTALL_MM_INT_OPS(TYPE)                                 \
   OCTAVE_INSTALL_M_INT_UNOPS (TYPE)                                     \
@@ -1128,42 +1128,42 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_INSTALL_MM_INT_ASSIGNEQ_OPS (mme, TYPE ## _, TYPE ## _)        \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, )                   \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmfx, TYPE ## _, float_)            \
-  INSTALL_WIDENOP (octave_ ## TYPE ## _matrix, octave_complex_matrix, TYPE ## _m_complex_m_conv) \
-  INSTALL_WIDENOP (octave_ ## TYPE ## _matrix, octave_float_complex_matrix, TYPE ## _m_float_complex_m_conv) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_matrix, octave_complex_matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_float_complex_matrix, octave_float_complex_matrix)
+  INSTALL_WIDENOP_TI (ti, octave_ ## TYPE ## _matrix, octave_complex_matrix, TYPE ## _m_complex_m_conv) \
+  INSTALL_WIDENOP_TI (ti, octave_ ## TYPE ## _matrix, octave_float_complex_matrix, TYPE ## _m_float_complex_m_conv) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _matrix, octave_complex_matrix, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _matrix, octave_float_complex_matrix, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_RE_INT_ASSIGN_OPS(TYPE)                          \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_ ## TYPE ## _scalar, TYPE ## ms_assign) \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_ ## TYPE ## _matrix, TYPE ## mm_assign) \
-  INSTALL_ASSIGNCONV (octave_scalar, octave_ ## TYPE ## _scalar, octave_matrix) \
-  INSTALL_ASSIGNCONV (octave_matrix, octave_ ## TYPE ## _matrix, octave_matrix)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_ ## TYPE ## _scalar, TYPE ## ms_assign) \
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_ ## TYPE ## _matrix, TYPE ## mm_assign) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_scalar, octave_ ## TYPE ## _scalar, octave_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_matrix, octave_ ## TYPE ## _matrix, octave_matrix)
 
 #define OCTAVE_INSTALL_FLT_RE_INT_ASSIGN_OPS(TYPE)                      \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_ ## TYPE ## _scalar, TYPE ## fms_assign) \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_ ## TYPE ## _matrix, TYPE ## fmm_assign) \
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_ ## TYPE ## _scalar, octave_float_matrix) \
-  INSTALL_ASSIGNCONV (octave_float_matrix, octave_ ## TYPE ## _matrix, octave_float_matrix)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_ ## TYPE ## _scalar, TYPE ## fms_assign) \
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_ ## TYPE ## _matrix, TYPE ## fmm_assign) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_float_scalar, octave_ ## TYPE ## _scalar, octave_float_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_float_matrix, octave_ ## TYPE ## _matrix, octave_float_matrix)
 
 #define OCTAVE_INSTALL_CX_INT_ASSIGN_OPS(TYPE)                          \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_ ## TYPE ## _scalar, TYPE ## cms_assign) \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_ ## TYPE ## _matrix, TYPE ## cmm_assign) \
-  INSTALL_ASSIGNCONV (octave_complex_scalar, octave_ ## TYPE ## _scalar, octave_complex_matrix) \
-  INSTALL_ASSIGNCONV (octave_complex_matrix, octave_ ## TYPE ## _matrix, octave_complex_matrix)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_complex_matrix, octave_ ## TYPE ## _scalar, TYPE ## cms_assign) \
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_complex_matrix, octave_ ## TYPE ## _matrix, TYPE ## cmm_assign) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_complex_scalar, octave_ ## TYPE ## _scalar, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_complex_matrix, octave_ ## TYPE ## _matrix, octave_complex_matrix)
 
 #define OCTAVE_INSTALL_FLT_CX_INT_ASSIGN_OPS(TYPE)                      \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, octave_ ## TYPE ## _scalar, TYPE ## fcms_assign) \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, octave_ ## TYPE ## _matrix, TYPE ## fcmm_assign) \
-  INSTALL_ASSIGNCONV (octave_float_complex_scalar, octave_ ## TYPE ## _scalar, octave_complex_matrix) \
-  INSTALL_ASSIGNCONV (octave_float_complex_matrix, octave_ ## TYPE ## _matrix, octave_complex_matrix)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_complex_matrix, octave_ ## TYPE ## _scalar, TYPE ## fcms_assign) \
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_complex_matrix, octave_ ## TYPE ## _matrix, TYPE ## fcmm_assign) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_float_complex_scalar, octave_ ## TYPE ## _scalar, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_float_complex_matrix, octave_ ## TYPE ## _matrix, octave_complex_matrix)
 
 #define OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS(TYPE)                        \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_matrix, TYPE ## null_assign) \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_str, TYPE ## null_assign) \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_sq_str, TYPE ## null_assign) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_null_matrix, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_## TYPE ## _scalar, octave_null_str, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_## TYPE ## _scalar, octave_null_sq_str, octave_ ## TYPE ## _matrix)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_matrix, TYPE ## null_assign) \
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_str, TYPE ## null_assign) \
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_sq_str, TYPE ## null_assign) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TYPE ## _scalar, octave_null_matrix, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_## TYPE ## _scalar, octave_null_str, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_## TYPE ## _scalar, octave_null_sq_str, octave_ ## TYPE ## _matrix)
 
 #define OCTAVE_INSTALL_INT_OPS(TYPE)            \
   OCTAVE_INSTALL_SS_INT_OPS (TYPE)              \
@@ -1178,8 +1178,8 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS(TYPE)
 
 #define OCTAVE_INSTALL_SM_INT_ASSIGNCONV(TLHS, TRHS)                    \
-  INSTALL_ASSIGNCONV (octave_ ## TLHS ## _scalar, octave_ ## TRHS ## _scalar, octave_ ## TLHS ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TLHS ## _scalar, octave_ ## TRHS ## _matrix, octave_ ## TLHS ## _matrix)
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TLHS ## _scalar, octave_ ## TRHS ## _scalar, octave_ ## TLHS ## _matrix) \
+  INSTALL_ASSIGNCONV_TI (ti, octave_ ## TLHS ## _scalar, octave_ ## TRHS ## _matrix, octave_ ## TLHS ## _matrix)
 
 #define OCTAVE_MIXED_INT_CMP_OPS(T1, T2)                                \
   OCTAVE_SS_INT_CMP_OPS (T1 ## _ ## T2 ## _ss, T1 ## _, T2 ## _)        \

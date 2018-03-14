@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -34,6 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
+
+namespace octave
+{
+  class tree_evaluator;
+}
 
 // Function handles.
 
@@ -67,11 +72,11 @@ public:
     overloads = fh.overloads;
   }
 
-  ~octave_fcn_handle (void) { }
+  ~octave_fcn_handle (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_fcn_handle (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_fcn_handle (); }
 
   octave_value subsref (const std::string& type,
@@ -85,18 +90,6 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout,
-                             const std::list<octave_lvalue>* lvalue_list);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args,
-                     const std::list<octave_lvalue>* lvalue_list);
-
   bool is_defined (void) const { return true; }
 
   bool is_function_handle (void) const { return true; }
@@ -107,13 +100,13 @@ public:
 
   dim_vector dims (void) const;
 
-  octave_function *function_value (bool = false)
+  octave_function * function_value (bool = false)
   { return fcn.function_value (); }
 
-  octave_user_function *user_function_value (bool = false)
+  octave_user_function * user_function_value (bool = false)
   { return fcn.user_function_value (); }
 
-  octave_fcn_handle *fcn_handle_value (bool = false) { return this; }
+  octave_fcn_handle * fcn_handle_value (bool = false) { return this; }
 
   octave_value fcn_val (void) const { return fcn; }
 
@@ -160,7 +153,7 @@ public:
 
 private:
 
-  bool set_fcn (const std::string &octaveroot, const std::string& fpath);
+  bool set_fcn (const std::string& octaveroot, const std::string& fpath);
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
@@ -181,6 +174,10 @@ protected:
   // Overloads for other classes.
   str_ov_map overloads;
 
+  bool parse_anon_fcn_handle (const std::string& fcn_text);
+
+  virtual octave_value_list call (int nargout, const octave_value_list& args);
+
   friend octave_value make_fcn_handle (const std::string &, bool);
 };
 
@@ -200,16 +197,12 @@ private:
 public:
 
   // Factory method.
-  static octave_fcn_handle *maybe_binder (const octave_value& f);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args,
-                     const std::list<octave_lvalue>* lvalue_list);
+  static octave_fcn_handle * maybe_binder (const octave_value& f,
+                                           octave::tree_evaluator *tw);
 
 protected:
+
+  octave_value_list call (int nargout, const octave_value_list& args);
 
   octave_value root_handle;
   octave_value_list arg_template;

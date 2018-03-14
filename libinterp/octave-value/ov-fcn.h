@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,9 +33,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
-#include "symtab.h"
+#include "symscope.h"
 
-class tree_walker;
+namespace octave
+{
+  class tree_evaluator;
+  class tree_walker;
+}
 
 // Functions.
 
@@ -50,10 +54,16 @@ public:
       xdispatch_class (), xpackage_name (), my_name (), my_dir_name (),
       doc () { }
 
-  ~octave_function (void) { }
+  // No copying!
 
-  octave_base_value *clone (void) const;
-  octave_base_value *empty_clone (void) const;
+  octave_function (const octave_function& f) = delete;
+
+  octave_function& operator = (const octave_function& f) = delete;
+
+  ~octave_function (void) = default;
+
+  octave_base_value * clone (void) const;
+  octave_base_value * empty_clone (void) const;
 
   bool is_defined (void) const { return true; }
 
@@ -70,11 +80,12 @@ public:
 
   virtual std::string parent_fcn_name (void) const { return ""; }
 
-  virtual symbol_table::scope_id parent_fcn_scope (void) const { return -1; }
+  virtual octave::symbol_scope parent_fcn_scope (void) const
+  { return octave::symbol_scope (); }
 
   virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
-  virtual symbol_table::scope_id scope (void) { return -1; }
+  virtual octave::symbol_scope scope (void) { return octave::symbol_scope (); }
 
   virtual octave::sys::time time_parsed (void) const
   { return octave::sys::time (static_cast<time_t> (0)); }
@@ -97,6 +108,14 @@ public:
   virtual bool takes_varargs (void) const { return false; }
 
   virtual bool takes_var_return (void) const { return false; }
+
+  // The next two functions are for dispatching to built-in
+  // functions given built-in classes.
+
+  virtual void push_dispatch_class (const std::string&) { }
+
+  virtual bool handles_dispatch_class (const std::string&) const
+  { return false; }
 
   void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
 
@@ -167,7 +186,7 @@ public:
     if (xpackage_name.empty ())
       return my_name;
     else
-      return xpackage_name + "." + my_name;
+      return xpackage_name + '.' + my_name;
   }
 
   void document (const std::string& ds) { doc = ds; }
@@ -176,10 +195,14 @@ public:
 
   virtual void unload (void) { }
 
-  virtual void accept (tree_walker&) { }
+  virtual void accept (octave::tree_walker&) { }
 
-  virtual bool is_postfix_index_handled (char type) const
-  { return (type == '(' || type == '{'); }
+  virtual bool accepts_postfix_index (char type) const
+  { return (type == '('); }
+
+  virtual octave_value_list
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ()) = 0;
 
 protected:
 
@@ -215,15 +238,6 @@ protected:
 
   // The help text for this function.
   std::string doc;
-
-private:
-
-  // No copying!
-
-  octave_function (const octave_function& f);
-
-  octave_function& operator = (const octave_function& f);
-
 };
 
 #endif

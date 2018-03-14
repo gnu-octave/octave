@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 %% Test script for legacy OOP.
 %% Requires the path to contain the test classes.
@@ -309,19 +309,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Test overloaded vertcat() for the Snork class
-%!test <38128>
+%!test <*38128>
 %! s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [s1; x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [x1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
 
 %% Test overloaded horzcat() for the Snork class
-%!test <38128>
+%!test <*38128>
 %! s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 
 %% Test with the Blork class, where neither vertcat() nor horzcat()
@@ -388,8 +388,8 @@
 %! assert (isequal (numel (st), 2));
 %!assert (isequal (ndims (st), 2))
 %!assert (isequal (rows (st), 1))
-%!xtest assert (isequal (columns (st), 2))
-%!assert <44334> (isequal (st, st))
+%!assert <51308> (isequal (columns (st), 2))
+%!assert <*44334> (isequal (st, st))
 %!assert <44498> (not (isscalar (st)))
 %!assert (isvector (st))
 
@@ -397,18 +397,18 @@
 %! assert (isequal (size (st), [2 3]));
 %! assert (isequal (numel (st), 6));
 %!assert (isequal (ndims (st), 2))
-%!xtest assert (isequal (rows (st), 2))
-%!xtest assert (isequal (columns (st), 3))
-%!assert <44334> (isequal (st, st))
+%!assert <51308> (isequal (rows (st), 2))
+%!assert <51308> (isequal (columns (st), 3))
+%!assert <*44334> (isequal (st, st))
 %!assert <44498> (not (isscalar (st)))
 %!assert <44498> (not (isvector (st)))
 
 %!test st = SizeTester ([2 3 4]);
 %! assert (isequal (size (st), [2 3 4]));
 %! assert (isequal (numel (st), 24));
-%!xtest assert (isequal (ndims (st), 3))
-%!xtest assert (isequal (rows (st), 2))
-%!xtest assert (isequal (columns (st), 3))
-%!assert <44334> (isequal (st, st))
+%!assert <51308> (isequal (ndims (st), 3))
+%!assert <51308> (isequal (rows (st), 2))
+%!assert <51308> (isequal (columns (st), 3))
+%!assert <*44334> (isequal (st, st))
 %!assert <44498> (not (isscalar (st)))
 %!assert <44498> (not (isvector (st)))

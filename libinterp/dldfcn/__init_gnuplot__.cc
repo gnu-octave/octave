@@ -4,19 +4,19 @@ Copyright (C) 2007-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,13 +33,19 @@ To initialize:
 #  include "config.h"
 #endif
 
+#include <string>
+
+#include "dMatrix.h"
+#include "file-stat.h"
+#include "oct-env.h"
+
 #include "build-env.h"
 #include "builtin-defun-decls.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "file-stat.h"
 #include "graphics.h"
-#include "oct-env.h"
+#include "ov.h"
+#include "ovl.h"
 #include "parse.h"
 #include "utils.h"
 #include "variables.h"
@@ -51,10 +57,10 @@ static bool toolkit_loaded = false;
 class gnuplot_graphics_toolkit : public base_graphics_toolkit
 {
 public:
-  gnuplot_graphics_toolkit (void)
-    : base_graphics_toolkit ("gnuplot") { }
+  gnuplot_graphics_toolkit (octave::interpreter& interp)
+    : base_graphics_toolkit ("gnuplot"), m_interpreter (interp) { }
 
-  ~gnuplot_graphics_toolkit (void) { }
+  ~gnuplot_graphics_toolkit (void) = default;
 
   bool is_valid (void) const { return true; }
 
@@ -101,7 +107,7 @@ public:
   {
     octave_value_list args;
     args(0) = go.get_handle ().as_octave_value ();
-    feval ("__gnuplot_drawnow__", args);
+    octave::feval ("__gnuplot_drawnow__", args);
   }
 
   void print_figure (const graphics_object& go, const std::string& term,
@@ -114,7 +120,7 @@ public:
     args(2) = file;
     args(1) = term;
     args(0) = go.get_handle ().as_octave_value ();
-    feval ("__gnuplot_drawnow__", args);
+    octave::feval ("__gnuplot_drawnow__", args);
   }
 
   Matrix get_canvas_size (const graphics_handle&) const
@@ -133,9 +139,7 @@ public:
   {
     if (toolkit_loaded)
       {
-        munlock ("__init_gnuplot__");
-
-        gtk_manager::unload_toolkit ("gnuplot");
+        m_interpreter.munlock ("__init_gnuplot__");
 
         toolkit_loaded = false;
       }
@@ -145,25 +149,27 @@ private:
 
   void send_quit (const octave_value& pstream) const
   {
-    if (! pstream.is_empty ())
+    if (! pstream.isempty ())
       {
         octave_value_list args;
         Matrix fids = pstream.matrix_value ();
 
-        Ffputs (ovl (fids(0), "\nquit;\n"));
+        Ffputs (m_interpreter, ovl (fids(0), "\nquit;\n"));
 
-        Ffflush (ovl (fids(0)));
-        Fpclose (ovl (fids(0)));
+        Ffflush (m_interpreter, ovl (fids(0)));
+        Fpclose (m_interpreter, ovl (fids(0)));
 
         if (fids.numel () > 1)
           {
-            Fpclose (ovl (fids(1)));
+            Fpclose (m_interpreter, ovl (fids(1)));
 
             if (fids.numel () > 2)
               Fwaitpid (ovl (fids(2)));
           }
       }
   }
+
+  octave::interpreter& m_interpreter;
 };
 
 static bool
@@ -175,7 +181,8 @@ have_gnuplot_binary (void)
 
   try
     {
-      octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
+      octave_value_list tmp
+        = octave::feval ("gnuplot_binary", octave_value_list ());
 
       if (tmp(0).is_string ())
         {
@@ -206,27 +213,27 @@ have_gnuplot_binary (void)
 
 // Initialize the gnuplot graphics toolkit.
 
-DEFUN_DLD (__init_gnuplot__, , ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__init_gnuplot__, interp, , ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __init_gnuplot__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave_value retval;
-
   if (! have_gnuplot_binary ())
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
   else if (! toolkit_loaded)
     {
-      mlock ();
+      interp.mlock ();
 
-      graphics_toolkit tk (new gnuplot_graphics_toolkit ());
-      gtk_manager::load_toolkit (tk);
+      octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+
+      graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
+      gtk_mgr.load_toolkit (tk);
 
       toolkit_loaded = true;
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN_DLD (__have_gnuplot__, , ,
@@ -235,11 +242,7 @@ DEFUN_DLD (__have_gnuplot__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave_value retval;
-
-  retval = have_gnuplot_binary ();
-
-  return retval;
+  return ovl (have_gnuplot_binary ());
 }
 
 /*

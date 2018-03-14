@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -72,7 +72,7 @@ namespace octave
     complex_index_exception (const std::string& value)
       : index_exception (value) { }
 
-    ~complex_index_exception (void) { }
+    ~complex_index_exception (void) = default;
 
     std::string details (void) const
     {
@@ -80,7 +80,7 @@ namespace octave
     }
 
     // ID of error to throw.
-    const char *err_id (void) const
+    const char * err_id (void) const
     {
       return "Octave:invalid-index";
     }
@@ -106,7 +106,7 @@ octave_complex::numeric_demotion_function (void) const
 octave_base_value *
 octave_complex::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   double im = scalar.imag ();
 
@@ -139,7 +139,7 @@ idx_vector
 octave_complex::index_vector (bool) const
 {
   std::ostringstream buf;
-  buf << scalar.real () << std::showpos << scalar.imag () << "i";
+  buf << scalar.real () << std::showpos << scalar.imag () << 'i';
   octave::complex_index_exception e (buf.str ());
 
   throw e;
@@ -364,7 +364,7 @@ octave_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
 
-  space_hid = H5Screate_simple (0, dimens, 0);
+  space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0)
     return false;
 
@@ -521,10 +521,15 @@ octave_complex::map (unary_mapper_t umap) const
     SCALAR_MAPPER (sqrt, std::sqrt);
     SCALAR_MAPPER (tan, std::tan);
     SCALAR_MAPPER (tanh, std::tanh);
-    SCALAR_MAPPER (isfinite, octave::math::finite);
+    SCALAR_MAPPER (isfinite, octave::math::isfinite);
     SCALAR_MAPPER (isinf, octave::math::isinf);
-    SCALAR_MAPPER (isna, octave::math::is_NA);
+    SCALAR_MAPPER (isna, octave::math::isna);
     SCALAR_MAPPER (isnan, octave::math::isnan);
+
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return scalar;
 
     default:
       return octave_base_value::map (umap);

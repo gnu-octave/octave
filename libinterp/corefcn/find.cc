@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -49,14 +49,14 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     idx = nda.find ();
 
   // The maximum element is always at the end.
-  octave_idx_type iext = idx.is_empty () ? 0 : idx.xelem (idx.numel () - 1) + 1;
+  octave_idx_type iext = (idx.isempty () ? 0 : idx.xelem (idx.numel () - 1) + 1);
 
   switch (nargout)
     {
     default:
     case 3:
       retval(2) = Array<T> (nda.index (idx_vector (idx)));
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 2:
       {
@@ -71,7 +71,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
         iext = -1;
         retval(1) = idx_vector (jdx, -1);
       }
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 1:
     case 0:
@@ -111,7 +111,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
     {
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           if (v.cidx (j) == 0 && v.cidx (j+1) != 0)
             start_nc = j;
           if (v.cidx (j+1) >= n_to_find)
@@ -125,7 +126,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
     {
       for (octave_idx_type j = nc; j > 0; j--)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           if (v.cidx (j) == nz && v.cidx (j-1) != nz)
             end_nc = j;
           if (nz - v.cidx (j-1) >= n_to_find)
@@ -169,7 +171,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++)
         for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             if (direction < 0 && i < nz - count)
               continue;
             i_idx(cx) = static_cast<double> (v.ridx (i) + 1);
@@ -205,15 +208,15 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 
     case 5:
       retval(4) = nc;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 4:
       retval(3) = nr;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 3:
       retval(2) = val;
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 2:
       retval(1) = j_idx;
@@ -263,7 +266,8 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
       const Array<octave_idx_type>& p = v.col_perm_vec ();
       for (octave_idx_type k = 0; k < count; k++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           const octave_idx_type j = start_nc + k;
           const octave_idx_type i = p(j);
           i_idx(k) = static_cast<double> (1+i);
@@ -299,15 +303,15 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
     case 5:
       retval(4) = nc;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 4:
       retval(3) = nc;
-      // Fall through
+      OCTAVE_FALLTHROUGH;
 
     case 3:
       retval(2) = val;
-      // Fall through!
+      OCTAVE_FALLTHROUGH;
 
     case 2:
       retval(1) = j_idx;
@@ -414,16 +418,16 @@ b = sparse (i, j, v, sz(1), sz(2));
       else if (s_arg == "last")
         direction = -1;
       else
-        error ("find: DIRECTION must be \"first\" or \"last\"");
+        error (R"(find: DIRECTION must be "first" or "last")");
     }
 
   octave_value_list retval;
 
   octave_value arg = args(0);
 
-  if (arg.is_bool_type ())
+  if (arg.islogical ())
     {
-      if (arg.is_sparse_type ())
+      if (arg.issparse ())
         {
           SparseBoolMatrix v = arg.sparse_bool_matrix_value ();
 
@@ -445,7 +449,7 @@ b = sparse (i, j, v, sz(1), sz(2));
           retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
     }
-  else if (arg.is_integer_type ())
+  else if (arg.isinteger ())
     {
 #define DO_INT_BRANCH(INTT)                                             \
       else if (arg.is_ ## INTT ## _type ())                             \
@@ -468,15 +472,15 @@ b = sparse (i, j, v, sz(1), sz(2));
       else
         panic_impossible ();
     }
-  else if (arg.is_sparse_type ())
+  else if (arg.issparse ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           SparseMatrix v = arg.sparse_matrix_value ();
 
           retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           SparseComplexMatrix v = arg.sparse_complex_matrix_value ();
 
@@ -499,26 +503,26 @@ b = sparse (i, j, v, sz(1), sz(2));
     }
   else if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (arg.isreal ())
         {
           FloatNDArray nda = arg.float_array_value ();
 
           retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
         }
-      else if (arg.is_complex_type ())
+      else if (arg.iscomplex ())
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
           retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
         }
     }
-  else if (arg.is_real_type ())
+  else if (arg.isreal ())
     {
       NDArray nda = arg.array_value ();
 
       retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
     }
-  else if (arg.is_complex_type ())
+  else if (arg.iscomplex ())
     {
       ComplexNDArray cnda = arg.complex_array_value ();
 

@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -80,7 +80,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
       {
         if (type.length () == 1)
           retval = numeric_assign (type, idx, rhs);
-        else if (is_empty ())
+        else if (isempty ())
           {
             // Allow conversion of empty matrix to some other type in
             // cases like
@@ -106,7 +106,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-        if (! is_empty ())
+        if (! isempty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
@@ -458,7 +458,7 @@ template <typename MT>
 void
 octave_base_matrix<MT>::short_disp (std::ostream& os) const
 {
-  if (matrix.is_empty ())
+  if (matrix.isempty ())
     os << "[]";
   else if (matrix.ndims () == 2)
     {
@@ -471,7 +471,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
       octave_idx_type nr = matrix.rows ();
       octave_idx_type nc = matrix.columns ();
 
-      os << "[";
+      os << '[';
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -480,7 +480,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
               std::ostringstream buf;
               octave_print_internal (buf, matrix(j*nr+i));
               std::string tmp = buf.str ();
-              size_t pos = tmp.find_first_not_of (" ");
+              size_t pos = tmp.find_first_not_of (' ');
               if (pos != std::string::npos)
                 os << tmp.substr (pos);
               else if (! tmp.empty ())
@@ -500,10 +500,28 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
     done:
 
       if (nel <= max_elts)
-        os << "]";
+        os << ']';
     }
   else
     os << "...";
+}
+
+template <typename MT>
+float_display_format
+octave_base_matrix<MT>::get_edit_display_format (void) const
+{
+  return make_format (matrix);
+}
+
+template <typename MT>
+std::string
+octave_base_matrix<MT>::edit_display (const float_display_format& fmt,
+                                      octave_idx_type i,
+                                      octave_idx_type j) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, matrix(i,j));
+  return buf.str ();
 }
 
 template <typename MT>

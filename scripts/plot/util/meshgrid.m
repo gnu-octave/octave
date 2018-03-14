@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
@@ -29,7 +29,8 @@
 ## as @var{x}.
 ##
 ## If the optional @var{z} input is given, or @var{zz} is requested, then the
-## output will be a full 3-D grid.
+## output will be a full 3-D grid.  If @var{z} is omitted and @var{zz} is
+## requested, it is assumed to be the same as @var{y}.
 ##
 ## @code{meshgrid} is most frequently used to produce input for a 2-D or 3-D
 ## function that will be plotted.  The following example creates a surface
@@ -71,7 +72,7 @@ function [xx, yy, zz] = meshgrid (x, y, z)
 
   ## Use repmat to ensure that result values have the same type as the inputs
 
-  if (nargout < 3)
+  if (nargout < 3 && nargin < 3)
     if (! (isvector (x) && isvector (y)))
       error ("meshgrid: X and Y must be vectors");
     endif
@@ -125,6 +126,17 @@ endfunction
 %! assert (size (XX1), [3, 3]);
 %! assert (XX1, XX2);
 %! assert (YY1, YY2);
+
+%!test
+%! x = 1:2;
+%! y = 1:3;
+%! z = 1:4;
+%! [XX, YY] = meshgrid (x, y, z);
+%! assert (size_equal (XX, YY));
+%! assert (ndims (XX), 3);
+%! assert (size (XX), [3, 2, 4]);
+%! assert (XX(1) * YY(1), x(1) * y(1));
+%! assert (XX(end) * YY(end), x(end) * y(end));
 
 ## Test input validation
 %!error meshgrid ()

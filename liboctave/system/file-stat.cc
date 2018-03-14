@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -158,7 +158,7 @@ namespace octave
 
     int
     base_file_stat::is_newer (const std::string& file,
-                              const octave::sys::time& time)
+                              const sys::time& time)
     {
       file_stat fs (file);
 
@@ -184,14 +184,14 @@ namespace octave
           initialized = false;
           fail = false;
 
-          std::string full_file_name = octave::sys::file_ops::tilde_expand (file_name);
+          std::string full_file_name = sys::file_ops::tilde_expand (file_name);
 
 #if defined (__WIN32__)
           // Remove trailing slash.
-          if (octave::sys::file_ops::is_dir_sep (full_file_name[full_file_name.length () - 1])
-              && full_file_name.length () != 1
+          if (full_file_name.length () > 1
+              && sys::file_ops::is_dir_sep (full_file_name.back ())
               && ! (full_file_name.length () == 3 && full_file_name[1] == ':'))
-            full_file_name.resize (full_file_name.length () - 1);
+            full_file_name.pop_back ();
 #endif
 
           const char *cname = full_file_name.c_str ();
@@ -216,9 +216,9 @@ namespace octave
             }
           else
             {
-              m_atime = octave::sys::time (sys_atime);
-              m_mtime = octave::sys::time (sys_mtime);
-              m_ctime = octave::sys::time (sys_ctime);
+              m_atime = sys::time (sys_atime);
+              m_mtime = sys::time (sys_mtime);
+              m_ctime = sys::time (sys_ctime);
             }
 
           initialized = true;
@@ -248,9 +248,9 @@ namespace octave
             }
           else
             {
-              m_atime = octave::sys::time (sys_atime);
-              m_mtime = octave::sys::time (sys_mtime);
-              m_ctime = octave::sys::time (sys_ctime);
+              m_atime = sys::time (sys_atime);
+              m_mtime = sys::time (sys_mtime);
+              m_ctime = sys::time (sys_ctime);
             }
 
           initialized = true;

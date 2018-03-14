@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -51,9 +51,9 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  char *do_completer_word_break_hook ();
+  char * do_completer_word_break_hook ();
 
-  command_editor *command_editor::instance = 0;
+  command_editor *command_editor::instance = nullptr;
 
   std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
 
@@ -61,7 +61,7 @@ namespace octave
 
   std::set<command_editor::event_hook_fcn> command_editor::event_hook_set;
 
-  static octave_mutex event_hook_lock;
+  static mutex event_hook_lock;
 
 #if defined (USE_READLINE)
 
@@ -80,7 +80,7 @@ namespace octave
 
     gnu_readline (void);
 
-    ~gnu_readline (void) { }
+    ~gnu_readline (void) = default;
 
     void do_set_name (const std::string& n);
 
@@ -88,11 +88,11 @@ namespace octave
 
     void do_set_input_stream (FILE *f);
 
-    FILE *do_get_input_stream (void);
+    FILE * do_get_input_stream (void);
 
     void do_set_output_stream (FILE *f);
 
-    FILE *do_get_output_stream (void);
+    FILE * do_get_output_stream (void);
 
     void do_redisplay (void);
 
@@ -195,6 +195,8 @@ namespace octave
 
     void do_interrupt (bool);
 
+    void do_handle_interrupt_signal (void);
+
     static int operate_and_get_next (int, int);
 
     static int history_search_backward (int, int);
@@ -221,33 +223,33 @@ namespace octave
 
     static std::string completer_quote_characters;
 
-    static char *command_generator (const char *text, int state);
+    static char * command_generator (const char *text, int state);
 
-    static char *command_quoter (char *text, int match_type, char *quote_pointer);
-    static char *command_dequoter (char *text, int match_type);
+    static char * command_quoter (char *text, int match_type, char *quote_pointer);
+    static char * command_dequoter (char *text, int match_type);
 
     static int command_char_is_quoted (char *text, int index);
 
     static int command_accept_line (int count, int key);
 
-    static char **command_completer (const char *text, int start, int end);
+    static char ** command_completer (const char *text, int start, int end);
 
-    static char *do_completer_word_break_hook ();
+    static char * do_completer_word_break_hook ();
   };
 
   std::string gnu_readline::completer_quote_characters = "";
 
   gnu_readline::gnu_readline ()
-    : command_editor (), previous_startup_hook (0),
-      previous_pre_input_hook (0),
-      previous_event_hook (0), completion_function (0),
-      quoting_function (0), dequoting_function (0),
-      char_is_quoted_function (0), user_accept_line_function (0)
+    : command_editor (), previous_startup_hook (nullptr),
+      previous_pre_input_hook (nullptr),
+      previous_event_hook (nullptr), completion_function (nullptr),
+      quoting_function (nullptr), dequoting_function (nullptr),
+      char_is_quoted_function (nullptr), user_accept_line_function (nullptr)
   {
     // FIXME: need interface to rl_add_defun, rl_initialize, and
     // a function to set rl_terminal_name
 
-    std::string term = octave::sys::env::getenv ("TERM");
+    std::string term = sys::env::getenv ("TERM");
 
     octave_rl_set_terminal_name (term.c_str ());
 
@@ -287,8 +289,6 @@ namespace octave
 
     const char *p = prompt.c_str ();
 
-    BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
     char *line = ::octave_rl_readline (p);
 
     if (line)
@@ -299,8 +299,6 @@ namespace octave
       }
     else
       eof = true;
-
-    END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
     return retval;
   }
@@ -445,7 +443,7 @@ namespace octave
     completion_function = f;
 
     rl_attempted_completion_fcn_ptr fp
-      = f ? gnu_readline::command_completer : 0;
+      = (f ? gnu_readline::command_completer : nullptr);
 
     ::octave_rl_set_completion_function (fp);
   }
@@ -456,7 +454,7 @@ namespace octave
     quoting_function = f;
 
     rl_quoting_fcn_ptr fp
-      = f ? gnu_readline::command_quoter : 0;
+      = (f ? gnu_readline::command_quoter : nullptr);
 
     ::octave_rl_set_quoting_function (fp);
   }
@@ -467,7 +465,7 @@ namespace octave
     dequoting_function = f;
 
     rl_dequoting_fcn_ptr fp
-      = f ? gnu_readline::command_dequoter : 0;
+      = (f ? gnu_readline::command_dequoter : nullptr);
 
     ::octave_rl_set_dequoting_function (fp);
   }
@@ -478,7 +476,7 @@ namespace octave
     char_is_quoted_function = f;
 
     rl_char_is_quoted_fcn_ptr fp
-      = f ? gnu_readline::command_char_is_quoted : 0;
+      = (f ? gnu_readline::command_char_is_quoted : nullptr);
 
     ::octave_rl_set_char_is_quoted_function (fp);
   }
@@ -539,7 +537,7 @@ namespace octave
     if (s)
       {
         // Remove incomplete component.
-        const char *f = strrchr (line, octave::sys::file_ops::dir_sep_char ());
+        const char *f = strrchr (line, sys::file_ops::dir_sep_char ());
 
         if (s[1] == '~' || (f && f != s))
           {
@@ -553,9 +551,9 @@ namespace octave
 
             if (candidate_filename[0] == '~')
               candidate_filename
-                = octave::sys::file_ops::tilde_expand (candidate_filename);
+                = sys::file_ops::tilde_expand (candidate_filename);
 
-            octave::sys::file_stat fs (candidate_filename);
+            sys::file_stat fs (candidate_filename);
 
             retval = fs.is_dir ();
           }
@@ -603,7 +601,7 @@ namespace octave
     int n = 0;
     int count = 0;
 
-    char *fn = 0;
+    char *fn = nullptr;
 
     while (1)
       {
@@ -616,7 +614,6 @@ namespace octave
                 // Famous last words:  Most large directories will not
                 // have more than a few hundred files, so we should not
                 // resize too many times even if the growth is linear...
-
                 n += 100;
                 retval.resize (n);
               }
@@ -783,6 +780,17 @@ namespace octave
     ::octave_rl_done (arg);
   }
 
+  void
+  gnu_readline::do_handle_interrupt_signal (void)
+  {
+    octave_signal_caught = 0;
+    octave_interrupt_state = 0;
+
+    ::octave_rl_recover_from_interrupt ();
+
+    throw octave::interrupt_exception ();
+  }
+
   int
   gnu_readline::operate_and_get_next (int /* count */, int /* c */)
   {
@@ -823,7 +831,7 @@ namespace octave
   char *
   gnu_readline::command_generator (const char *text, int state)
   {
-    char *retval = 0;
+    char *retval = nullptr;
 
     completion_fcn f = command_editor::get_completion_function ();
 
@@ -844,7 +852,7 @@ namespace octave
   char *
   gnu_readline::command_quoter (char *text, int matches, char *qcp)
   {
-    char *retval = 0;
+    char *retval = nullptr;
 
     quoting_fcn f = command_editor::get_quoting_function ();
 
@@ -865,7 +873,7 @@ namespace octave
   char *
   gnu_readline::command_dequoter (char *text, int quote)
   {
-    char *retval = 0;
+    char *retval = nullptr;
 
     dequoting_fcn f = command_editor::get_dequoting_function ();
 
@@ -907,7 +915,7 @@ namespace octave
   char **
   gnu_readline::command_completer (const char *text, int, int)
   {
-    char **matches = 0;
+    char **matches = nullptr;
     matches
       = ::octave_rl_completion_matches (text, gnu_readline::command_generator);
     return matches;
@@ -923,17 +931,23 @@ namespace octave
     default_command_editor (void)
       : command_editor (), input_stream (stdin), output_stream (stdout) { }
 
-    ~default_command_editor (void) { }
+    // No copying!
+
+    default_command_editor (const default_command_editor&) = delete;
+
+    default_command_editor& operator = (const default_command_editor&) = delete;
+
+    ~default_command_editor (void) = default;
 
     std::string do_readline (const std::string& prompt, bool& eof);
 
     void do_set_input_stream (FILE *f);
 
-    FILE *do_get_input_stream (void);
+    FILE * do_get_input_stream (void);
 
     void do_set_output_stream (FILE *f);
 
-    FILE *do_get_output_stream (void);
+    FILE * do_get_output_stream (void);
 
     string_vector do_generate_filename_completions (const std::string& text);
 
@@ -958,12 +972,6 @@ namespace octave
     FILE *input_stream;
 
     FILE *output_stream;
-
-    // No copying!
-
-    default_command_editor (const default_command_editor&);
-
-    default_command_editor& operator = (const default_command_editor&);
   };
 
   std::string
@@ -1065,7 +1073,11 @@ namespace octave
         make_command_editor ();
 
         if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+          {
+            instance->set_event_hook (event_handler);
+
+            singleton_cleanup_list::add (cleanup_instance);
+          }
       }
 
     if (! instance)
@@ -1108,10 +1120,8 @@ namespace octave
   int
   command_editor::startup_handler (void)
   {
-    for (auto& fcnptr : startup_hook_set)
+    for (startup_hook_fcn f : startup_hook_set)
       {
-        startup_hook_fcn f = *fcnptr;
-
         if (f)
           f ();
       }
@@ -1122,10 +1132,8 @@ namespace octave
   int
   command_editor::pre_input_handler (void)
   {
-    for (auto& fcnptr : pre_input_hook_set)
+    for (pre_input_hook_fcn f : pre_input_hook_set)
       {
-        pre_input_hook_fcn f = *fcnptr;
-
         if (f)
           f ();
       }
@@ -1136,16 +1144,17 @@ namespace octave
   int
   command_editor::event_handler (void)
   {
+    if (octave_interrupt_state)
+      handle_interrupt_signal ();
+
     event_hook_lock.lock ();
 
     std::set<event_hook_fcn> hook_set (event_hook_set);
 
     event_hook_lock.unlock ();
 
-    for (auto& fcnptr : hook_set)
+    for (event_hook_fcn f : hook_set)
       {
-        event_hook_fcn f = *fcnptr;
-
         if (f)
           f ();
       }
@@ -1195,7 +1204,7 @@ namespace octave
   command_editor::get_input_stream (void)
   {
     return (instance_ok ())
-           ? instance->do_get_input_stream () : 0;
+           ? instance->do_get_input_stream () : nullptr;
   }
 
   void
@@ -1209,7 +1218,7 @@ namespace octave
   command_editor::get_output_stream (void)
   {
     return (instance_ok ())
-           ? instance->do_get_output_stream () : 0;
+           ? instance->do_get_output_stream () : nullptr;
   }
 
   void
@@ -1383,35 +1392,35 @@ namespace octave
   command_editor::get_completion_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_completion_function () : 0;
+           ? instance->do_get_completion_function () : nullptr;
   }
 
   command_editor::quoting_fcn
   command_editor::get_quoting_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_quoting_function () : 0;
+           ? instance->do_get_quoting_function () : nullptr;
   }
 
   command_editor::dequoting_fcn
   command_editor::get_dequoting_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_dequoting_function () : 0;
+           ? instance->do_get_dequoting_function () : nullptr;
   }
 
   command_editor::char_is_quoted_fcn
   command_editor::get_char_is_quoted_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_char_is_quoted_function () : 0;
+           ? instance->do_get_char_is_quoted_function () : nullptr;
   }
 
   command_editor::user_accept_line_fcn
   command_editor::get_user_accept_line_function (void)
   {
     return (instance_ok ())
-           ? instance->do_get_user_accept_line_function () : 0;
+           ? instance->do_get_user_accept_line_function () : nullptr;
   }
 
   string_vector
@@ -1544,31 +1553,21 @@ namespace octave
   void
   command_editor::add_event_hook (event_hook_fcn f)
   {
-    octave_autolock guard (event_hook_lock);
+    autolock guard (event_hook_lock);
 
-    if (instance_ok ())
-      {
-        event_hook_set.insert (f);
-
-        instance->set_event_hook (event_handler);
-      }
+    event_hook_set.insert (f);
   }
 
   void
   command_editor::remove_event_hook (event_hook_fcn f)
   {
-    octave_autolock guard (event_hook_lock);
+    autolock guard (event_hook_lock);
 
-    if (instance_ok ())
-      {
-        auto p = event_hook_set.find (f);
+    auto p = event_hook_set.find (f);
 
-        if (p != event_hook_set.end ())
-          event_hook_set.erase (p);
+    if (p != event_hook_set.end ())
+      event_hook_set.erase (p);
 
-        if (event_hook_set.empty ())
-          instance->restore_event_hook ();
-      }
   }
 
   void
@@ -1582,7 +1581,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        std::string file = octave::sys::file_ops::tilde_expand (file_arg);
+        std::string file = sys::file_ops::tilde_expand (file_arg);
 
         instance->do_read_init_file (file);
       }
@@ -1634,6 +1633,13 @@ namespace octave
       retval = false;
 
     return retval;
+  }
+
+  void
+  command_editor::handle_interrupt_signal (void)
+  {
+    if (instance_ok ())
+      instance->do_handle_interrupt_signal ();
   }
 
   // Return a string which will be printed as a prompt.  The string may
@@ -1695,7 +1701,7 @@ namespace octave
                 {
                   int n = read_octal (s.substr (i, 3));
 
-                  tmpstr = "\\";
+                  tmpstr = '\\';
 
                   if (n != -1)
                     {
@@ -1720,7 +1726,7 @@ namespace octave
               case 'A':
                 // Make the current time/date into a string.
                 {
-                  octave::sys::localtime now;
+                  sys::localtime now;
 
                   if (c == 'd')
                     tmpstr = now.strftime ("%a %b %d");
@@ -1745,7 +1751,7 @@ namespace octave
 
               case 'h':
                 {
-                  tmpstr = octave::sys::env::get_host_name ();
+                  tmpstr = sys::env::get_host_name ();
 
                   size_t pos = tmpstr.find ('.');
 
@@ -1757,7 +1763,7 @@ namespace octave
 
               case 'H':
                 {
-                  tmpstr = octave::sys::env::get_host_name ();
+                  tmpstr = sys::env::get_host_name ();
 
                   break;
                 }
@@ -1778,15 +1784,15 @@ namespace octave
 
               case 's':
                 {
-                  tmpstr = octave::sys::env::get_program_name ();
-                  tmpstr = octave::sys::env::base_pathname (tmpstr);
+                  tmpstr = sys::env::get_program_name ();
+                  tmpstr = sys::env::base_pathname (tmpstr);
 
                   break;
                 }
 
               case 'u':
                 {
-                  tmpstr = octave::sys::env::get_user_name ();
+                  tmpstr = sys::env::get_user_name ();
 
                   break;
                 }
@@ -1796,14 +1802,14 @@ namespace octave
                 {
                   try
                     {
-                      tmpstr = octave::sys::env::get_current_directory ();
+                      tmpstr = sys::env::get_current_directory ();
                     }
-                  catch (const octave::execution_exception&)
+                  catch (const execution_exception&)
                     {
                       tmpstr = "";
                     }
 
-                  std::string home_dir = octave::sys::env::get_home_directory ();
+                  std::string home_dir = sys::env::get_home_directory ();
 
                   if (c == 'W' && (home_dir.empty () || tmpstr != home_dir))
                     {
@@ -1816,7 +1822,7 @@ namespace octave
                         }
                     }
                   else
-                    tmpstr = octave::sys::env::polite_directory_format (tmpstr);
+                    tmpstr = sys::env::polite_directory_format (tmpstr);
 
                   break;
                 }
@@ -1865,7 +1871,7 @@ namespace octave
 
               case '\\':
                 {
-                  tmpstr = "\\";
+                  tmpstr = '\\';
 
                   break;
                 }

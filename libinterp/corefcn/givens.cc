@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -48,19 +48,28 @@ $$
 with $x$ and $y$ scalars.
 @end tex
 @ifnottex
-The Givens matrix is a 2 by 2 orthogonal matrix
+The Givens matrix is a 2-by-2 orthogonal matrix
 
-@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]}
+@example
+@group
+@var{G} = [ @var{c} , @var{s}
+     -@var{s}', @var{c}]
+@end group
+@end example
 
+@noindent
 such that
 
-@code{@var{g} [@var{x}; @var{y}] = [*; 0]}
+@example
+@var{G} * [@var{x}; @var{y}] = [*; 0]
+@end example
 
+@noindent
 with @var{x} and @var{y} scalars.
 @end ifnottex
 
-If two output arguments are requested, return the factors @var{c} and
-@var{s} rather than the Givens rotation matrix.
+If two output arguments are requested, return the factors @var{c} and @var{s}
+rather than the Givens rotation matrix.
 
 For example:
 
@@ -71,7 +80,11 @@ givens (1, 1)
        -0.70711   0.70711
 @end group
 @end example
-@seealso{planerot}
+
+Note: The Givens matrix represents a counterclockwise rotation of a 2-D
+plane and can be used to introduce zeros into a matrix prior to complete
+factorization.
+@seealso{planerot, qr}
 @end deftypefn */)
 {
   if (args.length () != 2)
@@ -81,7 +94,7 @@ givens (1, 1)
 
   if (args(0).is_single_type () || args(1).is_single_type ())
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           FloatComplex cx = args(0).float_complex_value ();
           FloatComplex cy = args(1).float_complex_value ();
@@ -122,7 +135,7 @@ givens (1, 1)
     }
   else
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).iscomplex () || args(1).iscomplex ())
         {
           Complex cx = args(0).complex_value ();
           Complex cy = args(1).complex_value ();

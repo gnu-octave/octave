@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -34,50 +34,88 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
-#include "symtab.h"
+#include "symscope.h"
 #include "unwind-prot.h"
 
 class string_vector;
 
 class octave_value;
-class tree_parameter_list;
-class tree_statement_list;
-class tree_va_return_list;
-class tree_expression;
-class tree_walker;
 
+namespace octave
+{
+  class file_info;
+  class tree_parameter_list;
+  class tree_statement_list;
+  class tree_evaluator;
+  class tree_expression;
+  class tree_walker;
 #if defined (HAVE_LLVM)
-class jit_function_info;
+  class jit_function_info;
 #endif
+
+}
 
 class
 octave_user_code : public octave_function
 {
-public:
-  octave_user_code (void)
-    : octave_function () { }
-
-  ~octave_user_code (void) { }
-
-  bool is_user_code (void) const { return true; }
-
-  virtual std::map<std::string, octave_value> subfunctions (void) const;
-
-  virtual tree_statement_list *body (void) = 0;
-
 protected:
 
   octave_user_code (const std::string& nm,
+                    const octave::symbol_scope& scope = octave::symbol_scope (),
                     const std::string& ds = "")
-    : octave_function (nm, ds) { }
+    : octave_function (nm, ds), m_scope (scope), m_file_info (nullptr),
+      curr_unwind_protect_frame (nullptr)
+  { }
 
-private:
+public:
+
+  octave_user_code (void)
+    : octave_function (), m_scope (), m_file_info (nullptr),
+      curr_unwind_protect_frame (nullptr)
+  { }
 
   // No copying!
 
-  octave_user_code (const octave_user_code& f);
+  octave_user_code (const octave_user_code& f) = delete;
 
-  octave_user_code& operator = (const octave_user_code& f);
+  octave_user_code& operator = (const octave_user_code& f) = delete;
+
+  ~octave_user_code (void);
+
+  bool is_user_code (void) const { return true; }
+
+  octave::unwind_protect *
+  unwind_protect_frame (void)
+  {
+    return curr_unwind_protect_frame;
+  }
+
+  std::string get_code_line (size_t line);
+
+  std::deque<std::string> get_code_lines (size_t line, size_t num_lines);
+
+  void cache_function_text (const std::string& text,
+                            const octave::sys::time& timestamp);
+
+  octave::symbol_scope scope (void) { return m_scope; }
+
+  virtual std::map<std::string, octave_value> subfunctions (void) const;
+
+  virtual octave::tree_statement_list * body (void) = 0;
+
+protected:
+
+  void get_file_info (void);
+
+  // Our symbol table scope.
+  octave::symbol_scope m_scope;
+
+  // Cached text of function or script code with line offsets
+  // calculated.
+  octave::file_info *m_file_info;
+
+  // pointer to the current unwind_protect frame of this function.
+  octave::unwind_protect *curr_unwind_protect_frame;
 };
 
 // Scripts.
@@ -90,19 +128,27 @@ public:
   octave_user_script (void);
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      tree_statement_list *cmds,
+                      const octave::symbol_scope& scope = octave::symbol_scope (),
+                      octave::tree_statement_list *cmds = nullptr,
                       const std::string& ds = "");
 
   octave_user_script (const std::string& fnm, const std::string& nm,
+                      const octave::symbol_scope& scope = octave::symbol_scope (),
                       const std::string& ds = "");
+
+  // No copying!
+
+  octave_user_script (const octave_user_script& f) = delete;
+
+  octave_user_script& operator = (const octave_user_script& f) = delete;
 
   ~octave_user_script (void);
 
-  octave_function *function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
-  octave_user_script *user_script_value (bool = false) { return this; }
+  octave_user_script * user_script_value (bool = false) { return this; }
 
-  octave_user_code *user_code_value (bool = false) { return this; }
+  octave_user_code * user_code_value (bool = false) { return this; }
 
   // Scripts and user functions are both considered "scripts" because
   // they are written in Octave's scripting language.
@@ -125,28 +171,18 @@ public:
 
   octave::sys::time time_checked (void) const { return t_checked; }
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx)
-  {
-    octave_value_list tmp = subsref (type, idx, 1);
-    return tmp.length () > 0 ? tmp(0) : octave_value ();
-  }
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
-
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
 
-  tree_statement_list *body (void) { return cmd_list; }
+  octave::tree_statement_list * body (void) { return cmd_list; }
 
-  void accept (tree_walker& tw);
+  void accept (octave::tree_walker& tw);
 
 private:
 
   // The list of commands that make up the body of this function.
-  tree_statement_list *cmd_list;
+  octave::tree_statement_list *cmd_list;
 
   // The name of the file we parsed.
   std::string file_name;
@@ -161,12 +197,6 @@ private:
   // Used to keep track of recursion depth.
   int call_depth;
 
-  // No copying!
-
-  octave_user_script (const octave_user_script& f);
-
-  octave_user_script& operator = (const octave_user_script& f);
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
@@ -177,28 +207,34 @@ octave_user_function : public octave_user_code
 {
 public:
 
-  octave_user_function (symbol_table::scope_id sid = -1,
-                        tree_parameter_list *pl = 0,
-                        tree_parameter_list *rl = 0,
-                        tree_statement_list *cl = 0);
+  octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope (),
+                        octave::tree_parameter_list *pl = nullptr,
+                        octave::tree_parameter_list *rl = nullptr,
+                        octave::tree_statement_list *cl = nullptr);
+
+  // No copying!
+
+  octave_user_function (const octave_user_function& fn) = delete;
+
+  octave_user_function& operator = (const octave_user_function& fn) = delete;
 
   ~octave_user_function (void);
 
-  symbol_table::context_id active_context () const
+  octave::symbol_record::context_id active_context () const
   {
     return is_anonymous_function ()
-           ? 0 : static_cast<symbol_table::context_id>(call_depth);
+      ? 0 : static_cast<octave::symbol_record::context_id>(call_depth);
   }
 
-  octave_function *function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
-  octave_user_function *user_function_value (bool = false) { return this; }
+  octave_user_function * user_function_value (bool = false) { return this; }
 
-  octave_user_code *user_code_value (bool = false) { return this; }
+  octave_user_code * user_code_value (bool = false) { return this; }
 
-  octave_user_function *define_param_list (tree_parameter_list *t);
+  octave_user_function * define_param_list (octave::tree_parameter_list *t);
 
-  octave_user_function *define_ret_list (tree_parameter_list *t);
+  octave_user_function * define_ret_list (octave::tree_parameter_list *t);
 
   void stash_fcn_file_name (const std::string& nm);
 
@@ -224,11 +260,11 @@ public:
 
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
-  void stash_parent_fcn_scope (symbol_table::scope_id ps) { parent_scope = ps; }
+  void stash_parent_fcn_scope (const octave::symbol_scope& ps);
 
-  void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
+  void stash_leading_comment (octave::comment_list *lc) { lead_comm = lc; }
 
-  void stash_trailing_comment (octave_comment_list *tc) { trail_comm = tc; }
+  void stash_trailing_comment (octave::comment_list *tc) { trail_comm = tc; }
 
   void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
@@ -244,10 +280,6 @@ public:
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
-  symbol_table::scope_id parent_fcn_scope (void) const { return parent_scope; }
-
-  symbol_table::scope_id scope (void) { return local_scope; }
-
   octave::sys::time time_parsed (void) const { return t_parsed; }
 
   octave::sys::time time_checked (void) const { return t_checked; }
@@ -258,21 +290,13 @@ public:
 
   bool is_user_function (void) const { return true; }
 
-  void erase_subfunctions (void)
-  {
-    symbol_table::erase_subfunctions_in_scope (local_scope);
-  }
+  void erase_subfunctions (void);
 
   bool takes_varargs (void) const;
 
   bool takes_var_return (void) const;
 
-  void mark_as_private_function (const std::string& cname = "")
-  {
-    symbol_table::mark_subfunctions_in_scope_as_private (local_scope, cname);
-
-    octave_function::mark_as_private_function (cname);
-  }
+  void mark_as_private_function (const std::string& cname = "");
 
   void lock_subfunctions (void);
 
@@ -284,10 +308,7 @@ public:
 
   void stash_subfunction_names (const std::list<std::string>& names);
 
-  std::list<std::string> subfunction_names (void) const
-  {
-    return subfcn_names;
-  }
+  std::list<std::string> subfunction_names (void) const;
 
   octave_value_list all_va_args (const octave_value_list& args);
 
@@ -351,68 +372,35 @@ public:
            ? (cname.empty () ? true : cname == dispatch_class ()) : false;
   }
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx)
-  {
-    octave_value_list tmp = subsref (type, idx, 1);
-    return tmp.length () > 0 ? tmp(0) : octave_value ();
-  }
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout,
-                             const std::list<octave_lvalue>* lvalue_list);
-
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args,
-                     const std::list<octave_lvalue>* lvalue_list);
+  octave::tree_parameter_list * parameter_list (void) { return param_list; }
 
-  tree_parameter_list *parameter_list (void) { return param_list; }
+  octave::tree_parameter_list * return_list (void) { return ret_list; }
 
-  tree_parameter_list *return_list (void) { return ret_list; }
+  octave::tree_statement_list * body (void) { return cmd_list; }
 
-  tree_statement_list *body (void) { return cmd_list; }
+  octave::comment_list * leading_comment (void) { return lead_comm; }
 
-  octave_comment_list *leading_comment (void) { return lead_comm; }
-
-  octave_comment_list *trailing_comment (void) { return trail_comm; }
+  octave::comment_list * trailing_comment (void) { return trail_comm; }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
-  tree_expression *special_expr (void);
+  octave::tree_expression * special_expr (void);
 
   bool subsasgn_optimization_ok (void);
 
-  void accept (tree_walker& tw);
-
-  template <typename T>
-  bool local_protect (T& variable)
-  {
-    if (curr_unwind_protect_frame)
-      {
-        curr_unwind_protect_frame->protect_var (variable);
-        return true;
-      }
-    else
-      return false;
-  }
+  void accept (octave::tree_walker& tw);
 
 #if defined (HAVE_LLVM)
-  jit_function_info *get_info (void) { return jit_info; }
+  octave::jit_function_info * get_info (void) { return jit_info; }
 
-  void stash_info (jit_function_info *info) { jit_info = info; }
+  void stash_info (octave::jit_function_info *info) { jit_info = info; }
 #endif
 
-#if 0
-  void print_symtab_info (std::ostream& os) const;
-#endif
+  octave_value dump (void) const;
 
 private:
 
@@ -423,21 +411,23 @@ private:
     classdef
   };
 
+  std::string ctor_type_str (void) const;
+
   // List of arguments for this function.  These are local variables.
-  tree_parameter_list *param_list;
+  octave::tree_parameter_list *param_list;
 
   // List of parameters we return.  These are also local variables in
   // this function.
-  tree_parameter_list *ret_list;
+  octave::tree_parameter_list *ret_list;
 
   // The list of commands that make up the body of this function.
-  tree_statement_list *cmd_list;
+  octave::tree_statement_list *cmd_list;
 
   // The comments preceding the FUNCTION token.
-  octave_comment_list *lead_comm;
+  octave::comment_list *lead_comm;
 
   // The comments preceding the ENDFUNCTION token.
-  octave_comment_list *trail_comm;
+  octave::comment_list *trail_comm;
 
   // The name of the file we parsed.
   std::string file_name;
@@ -450,10 +440,6 @@ private:
 
   // The name of the parent function, if any.
   std::string parent_name;
-
-  // The list of subfunctions (if any) in the order they appear in the
-  // file.
-  std::list<std::string> subfcn_names;
 
   // The time the file was parsed.
   octave::sys::time t_parsed;
@@ -473,7 +459,7 @@ private:
   // The number of arguments that have names.
   int num_named_args;
 
-  // TRUE means this subfunction of a primary function.
+  // TRUE means this is a subfunction of a primary function.
   bool subfunction;
 
   // TRUE means this is an inline function.
@@ -491,35 +477,22 @@ private:
   // TRUE means this function is a method for a class.
   bool class_method;
 
-  // The scope of the parent function, if any.
-  symbol_table::scope_id parent_scope;
-
-  symbol_table::scope_id local_scope;
-
-  // pointer to the current unwind_protect frame of this function.
-  octave::unwind_protect *curr_unwind_protect_frame;
-
 #if defined (HAVE_LLVM)
-  jit_function_info *jit_info;
+  octave::jit_function_info *jit_info;
 #endif
 
   void maybe_relocate_end_internal (void);
 
-  void print_code_function_header (void);
+  void print_code_function_header (const std::string& prefix);
 
-  void print_code_function_trailer (void);
+  void print_code_function_trailer (const std::string& prefix);
 
-  void bind_automatic_vars (const string_vector& arg_names, int nargin,
-                            int nargout, const octave_value_list& va_args,
-                            const std::list<octave_lvalue> *lvalue_list);
+  void bind_automatic_vars (octave::tree_evaluator& tw,
+                            const string_vector& arg_names,
+                            int nargin, int nargout,
+                            const octave_value_list& va_args);
 
   void restore_warning_states (void);
-
-  // No copying!
-
-  octave_user_function (const octave_user_function& fn);
-
-  octave_user_function& operator = (const octave_user_function& fn);
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

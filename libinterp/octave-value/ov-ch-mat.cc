@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -247,15 +247,6 @@ static inline int xisascii (int c)
 #endif
 }
 
-static inline int xtoascii (int c)
-{
-#if defined (HAVE_TOASCII)
-  return toascii (c);
-#else
-  return (c & 0x7F);
-#endif
-}
-
 octave_value
 octave_char_matrix::map (unary_mapper_t umap) const
 {
@@ -279,7 +270,6 @@ octave_char_matrix::map (unary_mapper_t umap) const
     STRING_MAPPER (xisspace, std::isspace, bool);
     STRING_MAPPER (xisupper, std::isupper, bool);
     STRING_MAPPER (xisxdigit, std::isxdigit, bool);
-    STRING_MAPPER (xtoascii, xtoascii, double);
     STRING_MAPPER (xtolower, std::tolower, char);
     STRING_MAPPER (xtoupper, std::toupper, char);
 

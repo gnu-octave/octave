@@ -5,19 +5,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -58,7 +58,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
 octave_base_value *
 octave_sparse_complex_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (Vsparse_auto_mutate)
     {
@@ -111,14 +111,14 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
                               "complex sparse matrix", "real scalar");
 
   // FIXME: maybe this should be a function, valid_as_scalar()
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("complex sparse matrix", "real scalar");
 
   if (numel () > 1)
     warn_implicit_conversion ("Octave:array-to-scalar",
                               "complex sparse matrix", "real scalar");
 
-  return octave::math::real (matrix(0, 0));
+  return std::real (matrix(0, 0));
 }
 
 Matrix
@@ -139,7 +139,7 @@ Complex
 octave_sparse_complex_matrix::complex_value (bool) const
 {
   // FIXME: maybe this should be a function, valid_as_scalar()
-  if (is_empty ())
+  if (isempty ())
     err_invalid_conversion ("complex sparse matrix", "real scalar");
 
   if (numel () > 1)
@@ -178,7 +178,7 @@ octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
           retval(matrix.ridx (i) + nr * j) =
-            static_cast<char>(octave::math::real (matrix.data (i)));
+            static_cast<char>(std::real (matrix.data (i)));
     }
 
   return retval;
@@ -388,7 +388,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
   octave_idx_type tmp;
   hsize_t hdims[2];
 
-  space_hid = H5Screate_simple (0, hdims, 0);
+  space_hid = H5Screate_simple (0, hdims, nullptr);
   if (space_hid < 0)
     {
       H5Gclose (group_hid);
@@ -475,7 +475,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
   hdims[0] = m.cols () + 1;
   hdims[1] = 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
 
   if (space_hid < 0)
     {
@@ -497,7 +497,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
       return false;
     }
 
-  octave_idx_type * itmp = m.xcidx ();
+  octave_idx_type *itmp = m.xcidx ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
                      octave_H5P_DEFAULT, itmp) >= 0;
   H5Dclose (data_hid);
@@ -513,7 +513,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
   hdims[0] = m.nnz ();
   hdims[1] = 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
 
   if (space_hid < 0)
     {
@@ -596,7 +596,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
   retval = false;
   if (complex_type_hid >= 0)
     {
-      Complex * ctmp = m.xdata ();
+      Complex *ctmp = m.xdata ();
 
       retval = H5Dwrite (data_hid, complex_type_hid, octave_H5S_ALL, octave_H5S_ALL,
                          octave_H5P_DEFAULT, ctmp) >= 0;
@@ -950,9 +950,9 @@ octave_sparse_complex_matrix::map (unary_mapper_t umap) const
     ARRAY_MAPPER (tan, Complex, std::tan);
     ARRAY_MAPPER (tanh, Complex, std::tanh);
     ARRAY_MAPPER (isnan, bool, octave::math::isnan);
-    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (isna, bool, octave::math::isna);
     ARRAY_MAPPER (isinf, bool, octave::math::isinf);
-    ARRAY_MAPPER (isfinite, bool, octave::math::finite);
+    ARRAY_MAPPER (isfinite, bool, octave::math::isfinite);
 
     default: // Attempt to go via dense matrix.
       return octave_base_sparse<SparseComplexMatrix>::map (umap);

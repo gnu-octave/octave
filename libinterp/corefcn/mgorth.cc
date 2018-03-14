@@ -5,19 +5,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -44,7 +44,7 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
     }
 
   h(Vc) = xnorm (x);
-  if (octave::math::real (h(Vc)) > 0)
+  if (std::real (h(Vc)) > 0)
     x /= h(Vc);
 }
 
@@ -78,12 +78,12 @@ On exit, @var{y} is a unit vector such that:
     error ("mgorth: V should be a matrix, and X a column vector with"
            " the same number of rows as V.");
 
-  if (! arg_x.is_numeric_type () && ! arg_v.is_numeric_type ())
+  if (! arg_x.isnumeric () && ! arg_v.isnumeric ())
     error ("mgorth: X and V must be numeric");
 
   octave_value_list retval;
 
-  bool iscomplex = (arg_x.is_complex_type () || arg_v.is_complex_type ());
+  bool iscomplex = (arg_x.iscomplex () || arg_v.iscomplex ());
   if (arg_x.is_single_type () || arg_v.is_single_type ())
     {
       if (iscomplex)

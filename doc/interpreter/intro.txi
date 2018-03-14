@@ -2,19 +2,19 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Introduction
 @chapter A Brief Introduction to Octave
@@ -399,10 +399,6 @@ help plot
 @noindent
 will display the help text for the @code{plot} function.
 
-Octave sends output that is too long to fit on one screen through a
-pager like @code{less} or @code{more}.  Type a @key{RET} to advance one
-line, a @key{SPC} to advance one page, and @key{q} to quit the pager.
-
 The part of Octave's help facility that allows you to read the complete
 text of the printed manual from within Octave normally uses a separate
 program called Info.  When you invoke Info you will be put into a menu
@@ -630,6 +626,7 @@ command:
 @deftypefnx {} {} diary on
 @deftypefnx {} {} diary off
 @deftypefnx {} {} diary @var{filename}
+@deftypefnx {} {[@var{status}, @var{diaryfile}] =} diary
 Record a list of all commands @emph{and} the output they produce, mixed
 together just as they appear on the terminal.
 
@@ -637,8 +634,8 @@ Valid options are:
 
 @table @asis
 @item on
-Start recording a session in a file called @file{diary} in the
-current working directory.
+Start recording a session in a file called @file{diary} in the current working
+directory.
 
 @item off
 Stop recording the session in the diary file.
@@ -647,6 +644,12 @@ Stop recording the session in the diary file.
 Record the session in the file named @var{filename}.
 @end table
 
-With no arguments, @code{diary} toggles the current diary state.
+With no input or output arguments, @code{diary} toggles the current diary
+state.
+
+If output arguments are requested, @code{diary} ignores inputs and returns
+the current status.  The boolean @var{status} indicates whether recording is on
+or off, and @var{diaryfile} is the name of the file where the session is
+stored.
 @seealso{history, evalc}
 @end deftypefn

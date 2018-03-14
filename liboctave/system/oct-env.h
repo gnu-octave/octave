@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,6 +40,12 @@ namespace octave
       env (void);
 
     public:
+
+      // No copying!
+
+      env (const env&) = delete;
+
+      env& operator = (const env&) = delete;
 
       static std::string polite_directory_format (const std::string& name);
 
@@ -116,16 +122,10 @@ namespace octave
 
       void error (const std::string&) const;
 
-      // No copying!
-
-      env (const env&);
-
-      env& operator = (const env&);
-
       // The real thing.
       static env *instance;
 
-      static void cleanup_instance (void) { delete instance; instance = 0; }
+      static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
       // TRUE means follow symbolic links that point to directories just
       // as if they are real directories.
@@ -152,7 +152,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::env' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::env' instead")
 typedef octave::sys::env octave_env;
 
 #endif

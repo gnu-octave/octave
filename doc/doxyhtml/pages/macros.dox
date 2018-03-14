@@ -1,0 +1,106 @@
+/** @page Macros Important Macros
+
+@tableofcontents
+
+Builtin function and method definition   {#macros_defun}
+======================================
+
+In Octave a function is called from the interpreter by for example
+
+    [a, b, c] = foo (d, e);
+
+If `foo` should be defined as **builtin function**, it has to have the type
+`octave_builtin::fcn` or equivalently:
+
+```{.cc}
+octave_value_list
+Ffoo (const octave_value_list& args_name, int nargout_name)
+```
+
+> Notice the **F** prefix of `foo`!
+
+Basically, an `octave_value_list` goes in (referenced within that function by
+`args_name`) and another `octave_value_list` comes out.  The integer
+`nargout_name` indicates, how many outputs arguments the caller of this
+functions expects.
+
+Thus in the example above, `d` and `e` are available via `args_name` and
+`nargout_name` takes the value `3`, because three output arguments `a`, `b`,
+and `c` are expected.
+
+Very similar to builtin functions are **builtin methods**.  Builtin methods
+have to have the type `octave_builtin::meth` or equivalently:
+
+```{.cc}
+octave_value_list
+Ffoo (octave::interpreter& interp_name,
+      const octave_value_list& args_name, int nargout_name)
+```
+
+Notice again the `F` prefix of `foo`.
+
+> The difference between builtin functions and builtin methods is, that builtin
+> methods have access to the `octave::interpreter`, which is referenced by
+> `interp_name`.
+
+To make a builtin function or builtin method available to the interpreter, it
+is not sufficient to just define them somewhere inside `libinterp`.  Octave
+provides two convenience macros, to define them properly:
+
+```{.cc}
+DEFUN     (foo,              args_name, nargout_name, doc)
+DEFMETHOD (foo, interp_name, args_name, nargout_name, doc)
+```
+
+> For a usage example, see the definition of `#Feig`.
+
+The last argument of both macros `doc` will not appear in the builtin function
+or builtin method definition but is further processed.  The idea is, that code
+and documentation should be at one place.
+
+The macros #DEFUN or #DEFMETHOD fulfill two tasks:
+
+1. Proper builtin function or builtin method definition.
+2. Defining a fixed pattern for further processing by
+   - `mk-builtins.pl` (installation on `octave::symbol_table`)
+   - `mk-doc.pl` (docstring `doc` extraction for the help system)
+
+In addition to #DEFUN and #DEFMETHOD, there are two specialized versions of
+both macros, that should only be used with reason:
+
+1. If the name `foo` cannot be used directly (for example if it is already
+   defined as a macro), one can use instead one of
+   ```{.cc}
+   DEFUNX     ("foo", Ffoo,              args_name, nargout_name, doc)
+   DEFMETHODX ("foo", Ffoo, interp_name, args_name, nargout_name, doc)
+   ```
+   where `"foo"` is the name for the interpreter, protected by macro expansion
+   inside a string, and `Ffoo` is the actual builtin function or builtin method
+   name.
+2. In case `foo` may not be hidden by a variable, defined in an Octave
+   interpreter session, one can use instead one of
+   ```{.cc}
+   DEFCONSTFUN    (foo,              args_name, nargout_name, doc)
+   DEFCONSTMETHOD (foo, interp_name, args_name, nargout_name, doc)
+   ```
+
+Last but not least, there is #DEFALIAS.  As the name suggests, this macro can
+be used to define an alias for an existing builtin function.
+
+Dynamic builtin function and method definition  {#macros_defun_dld}
+==============================================
+
+When making use of the [OCT-file interface][OCT], it is desired to define
+functions or methods, than can be loaded dynamically at run time, e.g. those
+are not loaded at Octave startup.
+
+[OCT]: https://www.gnu.org/software/octave/doc/interpreter/Oct_002dFiles.html
+
+To achieve this, analog to #DEFUN and #DEFMETHOD, there are:
+
+```{.cc}
+DEFUN_DLD     (name,              args_name, nargout_name, doc)
+DEFMETHOD_DLD (name, interp_name, args_name, nargout_name, doc)
+```
+
+**/

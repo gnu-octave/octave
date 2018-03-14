@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -50,7 +50,7 @@ Software Foundation, Inc.
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 
-#include <defaults.h>
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -98,7 +98,7 @@ default_history_size (void)
       int val;
 
       if (sscanf (env_size.c_str (), "%d", &val) == 1)
-        size = val > 0 ? val : 0;
+        size = (val > 0 ? val : 0);
     }
 
   return size;
@@ -108,11 +108,11 @@ static std::string
 default_history_timestamp_format (void)
 {
   return
-    std::string ("# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
+    "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <"
     + octave::sys::env::get_user_name ()
-    + std::string ("@")
+    + '@'
     + octave::sys::env::get_host_name ()
-    + std::string (">");
+    + '>';
 }
 
 // The format of the timestamp marker written to the history file when
@@ -151,7 +151,7 @@ do_history (const octave_value_list& args, int nargout)
 
       if (arg.is_string ())
         option = arg.string_value ();
-      else if (arg.is_numeric_type ())
+      else if (arg.isnumeric ())
         {
           limit = arg.int_value ();
           if (limit < 0)
@@ -287,7 +287,7 @@ edit_history_readline (std::fstream& stream)
   if (! lindex)
     {
       delete [] line;
-      return 0;
+      return nullptr;
     }
 
   if (lindex + 2 >= line_len)
@@ -334,7 +334,7 @@ get_int_arg (const octave_value& arg, int& val)
 
       ok = sscanf (tmp.c_str (), "%d", &val) == 1;
     }
-  else if (arg.is_numeric_type ())
+  else if (arg.isnumeric ())
     val = arg.int_value ();
   else
     ok = false;
@@ -440,7 +440,7 @@ unlink_cleanup (const char *file)
 }
 
 static void
-do_edit_history (const octave_value_list& args)
+do_edit_history (octave::interpreter& interp, const octave_value_list& args)
 {
   std::string name = mk_tmp_hist_file (args, false, "edit_history");
 
@@ -449,8 +449,9 @@ do_edit_history (const octave_value_list& args)
 
   // Call up our favorite editor on the file of commands.
 
-  std::string cmd = VEDITOR;
-  cmd.append (" \"" + name + "\"");
+  octave::environment& env = interp.get_environment ();
+  std::string cmd = env.editor ();
+  cmd.append (R"( ")" + name + '"');
 
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?
@@ -474,7 +475,7 @@ do_edit_history (const octave_value_list& args)
 
   char *line;
   //int first = 1;
-  while ((line = edit_history_readline (file)) != 0)
+  while ((line = edit_history_readline (file)) != nullptr)
     {
       // Skip blank lines.
 
@@ -491,19 +492,18 @@ do_edit_history (const octave_value_list& args)
 
   file.close ();
 
-  // Turn on command echo, so the output from this will make better
-  // sense.
-
   octave::unwind_protect frame;
 
   frame.add_fcn (unlink_cleanup, name.c_str ());
-  frame.protect_var (Vecho_executing_commands);
   frame.protect_var (input_from_tmp_history_file);
 
-  Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
-  source_file (name);
+  // FIXME: instead of sourcing a file, we should just iterate through
+  // the list of commands, parsing and executing them one at a time as
+  // if they were entered interactively.
+
+  octave::source_file (name);
 }
 
 static void
@@ -514,18 +514,18 @@ do_run_history (const octave_value_list& args)
   if (name.empty ())
     return;
 
-  // Turn on command echo so the output from this will make better sense.
-
   octave::unwind_protect frame;
 
   frame.add_fcn (unlink_cleanup, name.c_str ());
-  frame.protect_var (Vecho_executing_commands);
   frame.protect_var (input_from_tmp_history_file);
 
-  Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
-  source_file (name);
+  // FIXME: instead of sourcing a file, we should just iterate through
+  // the list of commands, parsing and executing them one at a time as
+  // if they were entered interactively.
+
+  octave::source_file (name);
 }
 
 void
@@ -551,8 +551,8 @@ octave_history_write_timestamp (void)
       octave_link::append_history (timestamp);
 }
 
-DEFUN (edit_history, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (edit_history, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} edit_history
 @deftypefnx {} {} edit_history @var{cmd_number}
 @deftypefnx {} {} edit_history @var{first} @var{last}
@@ -586,10 +586,12 @@ buffer to be edited.
 @seealso{run_history, history}
 @end deftypefn */)
 {
+  // FIXME: should this be limited to the top-level context?
+
   if (args.length () > 2)
     print_usage ();
 
-  do_edit_history (args);
+  do_edit_history (interp, args);
 
   return ovl ();
 }
@@ -636,6 +638,8 @@ argument as a cell string and will not be output to screen.
 @seealso{edit_history, run_history}
 @end deftypefn */)
 {
+  // FIXME: should this be limited to the top-level context?
+
   // Call do_history even if nargout is zero to display history list.
 
   string_vector hlist = do_history (args, nargout);
@@ -695,6 +699,8 @@ run_history -1 -2
 @seealso{edit_history, history}
 @end deftypefn */)
 {
+  // FIXME: should this be limited to the top-level context?
+
   if (args.length () > 2)
     print_usage ();
 

@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -62,8 +62,8 @@ public:
     : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
       rng_numel (n), cache ()
   {
-    if (! octave::math::finite (b) || ! octave::math::finite (i)
-        || ! octave::math::finite (rng_limit))
+    if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
+        || ! octave::math::isfinite (rng_limit))
       rng_numel = -2;
     else
       {
@@ -79,12 +79,21 @@ public:
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }
 
-  OCTAVE_DEPRECATED ("use 'numel' instead")
+  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type nelem (void) const { return numel (); }
 
   octave_idx_type numel (void) const { return rng_numel; }
 
-  bool is_empty (void) const { return numel () == 0; }
+  octave_idx_type rows (void) const { return 1; }
+
+  octave_idx_type cols (void) const { return numel (); }
+  octave_idx_type columns (void) const { return numel (); }
+
+  bool isempty (void) const { return numel () == 0; }
+
+  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
+  bool is_empty (void) const
+  { return isempty (); }
 
   bool all_elements_are_ints (void) const;
 
@@ -103,13 +112,26 @@ public:
   Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
               sortmode mode = ASCENDING) const;
 
-  sortmode is_sorted (sortmode mode = ASCENDING) const;
+  sortmode issorted (sortmode mode = ASCENDING) const;
+
+  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
+  sortmode is_sorted (sortmode mode = ASCENDING) const
+  { return issorted (mode); }
+
+  octave_idx_type nnz (void) const;
 
   // Support for single-index subscripting, without generating matrix cache.
 
   double checkelem (octave_idx_type i) const;
+  double checkelem (octave_idx_type i, octave_idx_type j) const;
 
   double elem (octave_idx_type i) const;
+  double elem (octave_idx_type /* i */, octave_idx_type j) const
+  { return elem (j); }
+
+  double operator () (octave_idx_type i) const { return elem (i); }
+  double operator () (octave_idx_type i, octave_idx_type j) const
+  { return elem (i, j); }
 
   Array<double> index (const idx_vector& i) const;
 
@@ -156,8 +178,8 @@ protected:
     : rng_base (b), rng_limit (l), rng_inc (i),
       rng_numel (n), cache ()
   {
-    if (! octave::math::finite (b) || ! octave::math::finite (i)
-        || ! octave::math::finite (l))
+    if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
+        || ! octave::math::isfinite (l))
       rng_numel = -2;
   }
 };

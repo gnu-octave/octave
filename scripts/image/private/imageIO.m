@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## This function the image input functions imread() and imfinfo() to the
 ## functions that will actually be used, based on their format.  See below
@@ -54,22 +54,23 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
   ## Filename was given with file extension
   fn = abs_path (filename);
   if (isempty (fn) && ! isempty (varargin))
-    ## Maybe if we add a file extension
+    ## Maybe if we add a file extension?
     fn = abs_path ([filename "." varargin{1}]);
   endif
 
-  ## Maybe we have an URL
-  if (isempty (fn))
+  ## Maybe we have a URL
+  if (isempty (fn)
+      && ! isempty (regexp (filename, '^[a-zA-Z][a-zA-Z0-9.+-]+:')))
     file_2_delete = true; # mark file for deletion
     [fn, ~] = urlwrite (filename, tempname ());
-    ## Maybe the URL is missing the file extension
+    ## Maybe the URL is missing the file extension?
     if (isempty (fn) && ! isempty (varargin))
       [fn, ~] = urlwrite ([filename "." varargin{1}], tempname ());
     endif
+  endif
 
-    if (isempty (fn))
-      error ("%s: unable to find file %s", func, filename);
-    endif
+  if (isempty (fn))
+    error ([func ": unable to find file '" filename "'"]);
   endif
 
   ## unwind_protect block because we may have a file to remove in the end

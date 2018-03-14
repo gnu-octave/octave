@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 Carnë Draug
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -87,8 +87,8 @@ can have any value real or complex value.  However, for polygamma functions
           const A ## NDArray z = oct_z.M ## array_value ();     \
           A ## NDArray psi_z (z.dims ());                       \
                                                                 \
-          const E* zv = z.data ();                              \
-          E* psi_zv = psi_z.fortran_vec ();                     \
+          const E *zv = z.data ();                              \
+          E *psi_zv = psi_z.fortran_vec ();                     \
           const octave_idx_type n = z.numel ();                 \
           for (octave_idx_type i = 0; i < n; i++)               \
             *psi_zv++ = octave::math::psi (*zv++);              \
@@ -96,7 +96,7 @@ can have any value real or complex value.  However, for polygamma functions
           retval = psi_z;                                       \
         }
 
-      if (oct_z.is_complex_type ())
+      if (oct_z.iscomplex ())
         {
           FLOAT_BRANCH(double, Complex, complex_, Complex)
           else FLOAT_BRANCH(single, FloatComplex, float_complex_, FloatComplex)
@@ -115,7 +115,7 @@ can have any value real or complex value.  However, for polygamma functions
     }
   else
     {
-      if (! oct_z.is_real_type ())
+      if (! oct_z.isreal ())
         error ("psi: Z must be real value for polygamma (K > 0)");
 
 #define FLOAT_BRANCH(T, A, M, E)                                        \
@@ -124,8 +124,8 @@ can have any value real or complex value.  However, for polygamma functions
           const A ## NDArray z = oct_z.M ## array_value ();             \
           A ## NDArray psi_z (z.dims ());                               \
                                                                         \
-          const E* zv = z.data ();                                      \
-          E* psi_zv = psi_z.fortran_vec ();                             \
+          const E *zv = z.data ();                                      \
+          E *psi_zv = psi_z.fortran_vec ();                             \
           const octave_idx_type n = z.numel ();                         \
           for (octave_idx_type i = 0; i < n; i++)                       \
             {                                                           \

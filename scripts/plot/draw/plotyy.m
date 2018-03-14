@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} plotyy (@var{x1}, @var{y1}, @var{x2}, @var{y2})
@@ -76,10 +76,10 @@ function [ax, h1, h2] = plotyy (varargin)
     ## FIXME: Second conditional test shouldn't be required.
     ##        'cla reset' needs to delete user properties like __plotyy_axes__.
     if (isprop (hax, "__plotyy_axes__")
-        && isaxes (get (hax, "__plotyy_axes__")) == [true true])
+        && isaxes (get (hax, "__plotyy_axes__")) == [true; true])
       hax = get (hax, "__plotyy_axes__");
     else
-      hax(2) = axes ("nextplot", get (hax(1), "nextplot"));
+      hax = [hax; axes("nextplot", get (hax(1), "nextplot"))];
     endif
 
     [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});
@@ -112,7 +112,11 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
 
   h1 = feval (fun1, x1, y1);
 
-  set (ax(1), "ycolor", getcolor (h1(1)), "xlim", xlim);
+  set (ax(1), "xlim", xlim);
+  if (isscalar (h1))
+    ## Coloring y-axis only makes sense if plot contains exactly one line
+    set (ax(1), "ycolor", getcolor (h1));
+  endif
 
   set (gcf (), "nextplot", "add");
 
@@ -121,8 +125,8 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   colors = get (ax(1), "colororder");
   set (ax(2), "colororder", [colors(2:end,:); colors(1,:)]);
 
-  if (strcmp (get (ax(1), "autopos_tag"), "subplot"))
-    set (ax(2), "autopos_tag", "subplot");
+  if (strcmp (get (ax(1), "__autopos_tag__"), "subplot"))
+    set (ax(2), "__autopos_tag__", "subplot");
   else
     set (ax, "activepositionproperty", "position");
   endif
@@ -133,8 +137,12 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   endif
   h2 = feval (fun2, x2, y2);
 
-  set (ax(2), "yaxislocation", "right", "color", "none",
-              "ycolor", getcolor (h2(1)), "box", "off", "xlim", xlim);
+  set (ax(2), "yaxislocation", "right", "color", "none", "box", "off",
+              "xlim", xlim);
+  if (isscalar (h2))
+    ## Coloring y-axis only makes sense if plot contains exactly one line
+    set (ax(2), "ycolor", getcolor (h2));
+  endif
 
   if (strcmp (get(ax(1), "activepositionproperty"), "position"))
     set (ax(2), "position", get (ax(1), "position"));
@@ -150,10 +158,13 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   ## also remove the other axis
   t1 = text (0, 0, "", "parent", ax(1), "tag", "plotyy",
              "visible", "off", "handlevisibility", "off",
-             "xliminclude", "off", "yliminclude", "off");
+             "xliminclude", "off", "yliminclude", "off",
+             "zliminclude", "off");
+
   t2 = text (0, 0, "", "parent", ax(2), "tag", "plotyy",
              "visible", "off", "handlevisibility", "off",
-             "xliminclude", "off", "yliminclude", "off");
+             "xliminclude", "off", "yliminclude", "off",
+             "zliminclude", "off");
 
   set (t1, "deletefcn", {@deleteplotyy, ax(2), t2});
   set (t2, "deletefcn", {@deleteplotyy, ax(1), t1});
@@ -175,29 +186,23 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   addlistener (ax(2), "nextplot", {@update_nextplot, ax(1)});
 
   ## Store the axes handles for the sister axes.
-  if (ishandle (ax(1)) && ! isprop (ax(1), "__plotyy_axes__"))
+  if (! isprop (ax(1), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(1), "data");
     set (ax(1), "__plotyy_axes__", ax);
-  elseif (ishandle (ax(1)))
-    set (ax(1), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen.  File a bug report.");
+    set (ax(1), "__plotyy_axes__", ax);
   endif
-  if (ishandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
+  if (! isprop (ax(2), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(2), "data");
     set (ax(2), "__plotyy_axes__", ax);
-  elseif (ishandle (ax(2)))
-    set (ax(2), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen.  File a bug report.");
+    set (ax(2), "__plotyy_axes__", ax);
   endif
 
 endfunction
 
 function deleteplotyy (h, ~, ax2, t2)
-  if (isaxes (ax2)
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
-      && strcmp (get (ax2, "beingdeleted"), "off"))
+  if (isaxes (ax2))
     set (t2, "deletefcn", []);
     delete (ax2);
   endif
@@ -297,24 +302,12 @@ endfunction
 %! x = linspace (-1, 1, 201);
 %! subplot (2,2,1);
 %!  plotyy (x,sin(pi*x), x,10*cos(pi*x));
+%!  title ("plotyy() in subplot");
 %! subplot (2,2,2);
 %!  surf (peaks (25));
 %! subplot (2,2,3);
 %!  contour (peaks (25));
 %! subplot (2,2,4);
 %!  plotyy (x,10*sin(2*pi*x), x,cos(2*pi*x));
+%!  title ("plotyy() in subplot");
 %!  axis square;
-
-%!demo
-%! clf;
-%! hold on
-%! t = (0:0.1:9);
-%! x = sin (t);
-%! y = 5 * cos (t);
-%! [hax, h1, h2] = plotyy (t, x, t, y);
-%! [~, h3, h4] = plotyy (t+1, x, t+1, y);
-%! set ([h3, h4], "linestyle", "--");
-%! xlabel (hax(1), "xlabel");
-%! title (hax(2), 'Two plotyy graphs on same figure using "hold on"');
-%! ylabel (hax(1), "Left axis is Blue");
-%! ylabel (hax(2), "Right axis is Orange");

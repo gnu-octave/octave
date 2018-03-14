@@ -4,19 +4,19 @@ Copyright (C) 2004-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 In addition to the terms of the GPL, you are permitted to link
 this program with any Open Source program, as defined by the
@@ -39,15 +39,16 @@ Open Source Initiative (www.opensource.org)
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-inline.h"
 #include "ov-usr-fcn.h"
+#include "parse.h"
 #include "pr-output.h"
 #include "variables.h"
-#include "parse.h"
-#include "interpreter.h"
 
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"
@@ -82,7 +83,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
   buf << ") " << iftext;
 
   int parse_status;
-  octave_value anon_fcn_handle = eval_string (buf.str (), true, parse_status);
+  octave_value anon_fcn_handle = octave::eval_string (buf.str (), true, parse_status);
 
   if (parse_status == 0)
     {
@@ -96,14 +97,17 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
           if (uf)
             {
-              octave_function *curr_fcn = octave_call_stack::current ();
+              octave::call_stack& cs
+                = octave::__get_call_stack__ ("octave_fcn_inline");
+
+              octave_function *curr_fcn = cs.current ();
 
               if (curr_fcn)
                 {
-                  symbol_table::scope_id parent_scope
+                  octave::symbol_scope parent_scope
                     = curr_fcn->parent_fcn_scope ();
 
-                  if (parent_scope < 0)
+                  if (! parent_scope)
                     parent_scope = curr_fcn->scope ();
 
                   uf->stash_parent_fcn_scope (parent_scope);
@@ -309,7 +313,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hdims[1] = ifargs.numel ();
   hdims[0] = len + 1;
 
-  space_hid = H5Screate_simple (2, hdims, 0);
+  space_hid = H5Screate_simple (2, hdims, nullptr);
   if (space_hid < 0)
     {
       H5Gclose (group_hid);
@@ -334,7 +338,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   // Save the args as a null teminated list
   for (int i = 0; i < ifargs.numel (); i++)
     {
-      const char * cptr = ifargs(i).c_str ();
+      const char *cptr = ifargs(i).c_str ();
       for (size_t j = 0; j < ifargs(i).length (); j++)
         s[i*(len+1)+j] = *cptr++;
       s[ifargs(i).length ()] = '\0';
@@ -362,7 +366,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, 0);
+  space_hid = H5Screate_simple (0 , hdims, nullptr);
   if (space_hid < 0)
     {
       H5Tclose (type_hid);
@@ -639,7 +643,7 @@ octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   if (nm.empty ())
     buf << "f(";
   else
-    buf << nm << "(";
+    buf << nm << '(';
 
   for (int i = 0; i < ifargs.numel (); i++)
     {
@@ -781,14 +785,14 @@ functions from strings is through the use of anonymous functions
             }
         }
 
-      // Sort the arguments into ascii order.
+      // Sort the arguments into ASCII order.
       fargs.sort ();
 
-      if (fargs.is_empty ())
+      if (fargs.isempty ())
         fargs.append (std::string ("x"));
 
     }
-  else if (nargin == 2 && args(1).is_numeric_type ())
+  else if (nargin == 2 && args(1).isnumeric ())
     {
       if (! args(1).is_scalar_type ())
         error ("inline: N must be an integer");
@@ -805,7 +809,7 @@ functions from strings is through the use of anonymous functions
       for (int i = 1; i < n+1; i++)
         {
           std::ostringstream buf;
-          buf << "P" << i;
+          buf << 'P' << i;
           fargs(i) = buf.str ();
         }
     }
@@ -853,7 +857,7 @@ Note that @code{char (@var{fun})} is equivalent to
   if (args.length () != 1)
     print_usage ();
 
-  octave_fcn_inline* fn = args(0).fcn_inline_value (true);
+  octave_fcn_inline *fn = args(0).fcn_inline_value (true);
 
   if (! fn)
     error ("formula: FUN must be an inline function");
@@ -932,43 +936,44 @@ quadv (fcn, 0, 3)
     print_usage ();
 
   std::string old_func;
-  octave_fcn_inline* old = 0;
+  octave_fcn_inline *old = nullptr;
   bool func_is_string = true;
 
   if (args(0).is_string ())
     old_func = args(0).string_value ();
   else
     {
-      old = args(0).fcn_inline_value (true);
       func_is_string = false;
 
-      if (old)
-        old_func = old->fcn_text ();
-      else
+      old = args(0).fcn_inline_value (true);
+      if (! old)
         error ("vectorize: FUN must be a string or inline function");
+
+      old_func = old->fcn_text ();
     }
 
+  size_t len = old_func.length ();
   std::string new_func;
+  new_func.reserve (len + 10);
+
   size_t i = 0;
-
-  while (i < old_func.length ())
+  while (i < len)
     {
-      std::string t1 = old_func.substr (i, 1);
+      char t1 = old_func[i];
 
-      if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
+      if (t1 == '*' || t1 == '/' || t1 == '\\' || t1 == '^')
         {
-          if (i && old_func.substr (i-1, 1) != ".")
-            new_func.append (".");
+          if (i && old_func[i-1] != '.')
+            new_func.push_back ('.');
 
           // Special case for ** operator.
-          if (t1 == "*" && i < (old_func.length () - 1)
-              && old_func.substr (i+1, 1) == "*")
+          if (t1 == '*' && i < (len - 1) && old_func[i+1] == '*')
             {
-              new_func.append ("*");
+              new_func.push_back ('*');
               i++;
             }
         }
-      new_func.append (t1);
+      new_func.push_back (t1);
       i++;
     }
 

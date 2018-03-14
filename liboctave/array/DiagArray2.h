@@ -1,4 +1,3 @@
-// Template array classes
 /*
 
 Copyright (C) 1996-2017 John W. Eaton
@@ -7,19 +6,19 @@ Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -68,7 +67,7 @@ public:
   DiagArray2 (const DiagArray2<U>& a)
     : Array<T> (a.extract_diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 
-  ~DiagArray2 (void) { }
+  ~DiagArray2 (void) = default;
 
   DiagArray2<T>& operator = (const DiagArray2<T>& a)
   {
@@ -99,10 +98,12 @@ public:
 
   dim_vector dims (void) const { return dim_vector (d1, d2); }
 
-  OCTAVE_DEPRECATED ("use 'extract_diag' instead")
-  Array<T> diag (octave_idx_type k = 0) const;
+  bool isempty (void) const { return numel () == 0; }
+
+  int ndims (void) const { return 2; }
 
   Array<T> extract_diag (octave_idx_type k = 0) const;
+
   DiagArray2<T> build_diag_matrix () const
   {
     return DiagArray2<T> (array_value ());
@@ -125,28 +126,18 @@ public:
   { return Array<T>::elem (i); }
 
   T checkelem (octave_idx_type r, octave_idx_type c) const
-  {
-    return check_idx (r, c) ? elem (r, c) : T (0);
-  }
+  { return check_idx (r, c) ? elem (r, c) : T (0); }
 
   T operator () (octave_idx_type r, octave_idx_type c) const
   {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    return checkelem (r, c);
-#else
     return elem (r, c);
-#endif
   }
 
   T& checkelem (octave_idx_type r, octave_idx_type c);
 
   T& operator () (octave_idx_type r, octave_idx_type c)
   {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    return checkelem (r, c);
-#else
     return elem (r, c);
-#endif
   }
 
   // No checking.
@@ -169,15 +160,15 @@ public:
   }
 
   DiagArray2<T> transpose (void) const;
-  DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;
+  DiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const;
 
   Array<T> array_value (void) const;
 
-  const T *data (void) const { return Array<T>::data (); }
+  const T * data (void) const { return Array<T>::data (); }
 
-  const T *fortran_vec (void) const { return Array<T>::fortran_vec (); }
+  const T * fortran_vec (void) const { return Array<T>::fortran_vec (); }
 
-  T *fortran_vec (void) { return Array<T>::fortran_vec (); }
+  T * fortran_vec (void) { return Array<T>::fortran_vec (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const
   { Array<T>::print_info (os, prefix); }

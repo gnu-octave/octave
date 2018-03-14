@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fill (@var{x}, @var{y}, @var{c})
@@ -108,20 +108,41 @@ function h = fill (varargin)
             error ("fill: X annd Y must have same number of rows");
           endif
         endif
+
+        if (isrow (x))
+          x = x(:);
+        endif
+        if (isrow (y))
+          y = y(:);
+        endif
+
+        if (ischar (cdata) || isequal (size (cdata), [1, 3]))
+          one_color = true;
+        else
+          one_color = false;
+        endif
+
         ## For Matlab compatibility, replicate cdata to match size of data
-        if (iscolumn (cdata) && ! ischar (cdata))
+        if (! one_color && iscolumn (cdata))
           sz = size (x);
           if (all (sz > 1))
             cdata = repmat (cdata, [1, sz(2)]);
           endif
         endif
 
-        [htmp, fail] = __patch__ (hax, x, y, cdata, opts{:});
-        if (fail)
-          print_usage ();
-        endif
+        ## For Matlab compatibility, return 1 patch object for each column
+        for j = 1 : columns (x)
+          if (one_color)
+            [htmp, err] = __patch__ (hax, x(:,j), y(:,j), cdata, opts{:});
+          else
+            [htmp, err] = __patch__ (hax, x(:,j), y(:,j), cdata(:,j), opts{:});
+          endif
+          if (err)
+            print_usage ();
+          endif
+          hlist(end+1, 1) = htmp;
+        endfor
 
-        hlist(end+1, 1) = htmp;
       endfor
 
     unwind_protect_cleanup

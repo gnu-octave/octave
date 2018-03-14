@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,9 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "lo-math.h"
 #include "dNDArray.h"
 #include "CNDArray.h"
 #include "quit.h"
@@ -115,14 +116,14 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
 {
   octave_value_list retval;
 
-  if (! arg.is_sparse_type ())
+  if (! arg.issparse ())
     {
       if (nargout <= 1)
         {
           // This case can be handled using any/all.
           boolNDArray array = arg.bool_array_value ();
 
-          if (array.is_empty ())
+          if (array.isempty ())
             retval(0) = array;
           else if (ismin)
             retval(0) = array.all (dim);
@@ -243,7 +244,7 @@ do_minmax_body (const octave_value_list& args,
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
 
-  const char *func = ismin ? "min" : "max";
+  const char *func = (ismin ? "min" : "max");
 
   if (nargin == 3 || nargin == 1)
     {
@@ -256,7 +257,7 @@ do_minmax_body (const octave_value_list& args,
           if (dim < 0)
             error ("%s: DIM must be a valid dimension", func);
 
-          if (! args(1).is_empty ())
+          if (! args(1).isempty ())
             warning ("%s: second argument is ignored", func);
         }
 
@@ -288,7 +289,7 @@ do_minmax_body (const octave_value_list& args,
                                   (range.inc () >= 0 ? range.numel () : 1);
                   }
               }
-            else if (arg.is_sparse_type ())
+            else if (arg.issparse ())
               retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim,
                                                        ismin);
             else
@@ -299,7 +300,7 @@ do_minmax_body (const octave_value_list& args,
 
         case btyp_complex:
           {
-            if (arg.is_sparse_type ())
+            if (arg.issparse ())
               retval = do_minmax_red_op<SparseComplexMatrix> (arg, nargout, dim,
                                                               ismin);
             else
@@ -364,9 +365,9 @@ do_minmax_body (const octave_value_list& args,
         {
         case btyp_double:
           {
-            if ((argx.is_sparse_type ()
-                 && (argy.is_sparse_type () || argy.is_scalar_type ()))
-                || (argy.is_sparse_type () && argx.is_scalar_type ()))
+            if ((argx.issparse ()
+                 && (argy.issparse () || argy.is_scalar_type ()))
+                || (argy.issparse () && argx.is_scalar_type ()))
               retval = do_minmax_bin_op<SparseMatrix> (argx, argy, ismin);
             else
               retval = do_minmax_bin_op<NDArray> (argx, argy, ismin);
@@ -375,9 +376,9 @@ do_minmax_body (const octave_value_list& args,
 
         case btyp_complex:
           {
-            if ((argx.is_sparse_type ()
-                 && (argy.is_sparse_type () || argy.is_scalar_type ()))
-                || (argy.is_sparse_type () && argx.is_scalar_type ()))
+            if ((argx.issparse ()
+                 && (argy.issparse () || argy.is_scalar_type ()))
+                || (argy.issparse () && argx.is_scalar_type ()))
               retval = do_minmax_bin_op<SparseComplexMatrix> (argx, argy,
                                                               ismin);
             else
@@ -539,7 +540,7 @@ the first index of the minimum value(s).  Thus,
 %!assert (min (sparse ([1, 4, 2, 3])), sparse (1))
 %!assert (min (sparse ([1; -10; 5; -2])), sparse(-10))
 ## FIXME: sparse doesn't order complex values by phase angle
-%!xtest
+%!test <51307>
 %! assert (min (sparse ([4, 2i 4.999; -2, 2, 3+4i])), sparse ([-2, 2, 4.999]));
 
 ## Test dimension argument
@@ -587,7 +588,7 @@ the first index of the minimum value(s).  Thus,
 ## FIXME: Ordering of complex results with equal magnitude is not by phase
 ##        angle in the 2-input form.  Instead, it is in the order in which it
 ##        appears in the argument list.
-%!xtest
+%!test <51307>
 %! x = [1, 2, 3, 4];  y = fliplr (x);
 %! assert (min (x, 2i), [2i 2i 3 4]);
 ## Special routines for char arrays
@@ -806,7 +807,7 @@ the first index of the maximum value(s).  Thus,
 ## FIXME: Ordering of complex results with equal magnitude is not by phase
 ##        angle in the 2-input form.  Instead, it is in the order in which it
 ##        appears in the argument list.
-%!xtest
+%!test <51307>
 %! x = [1, 2, 3, 4];  y = fliplr (x);
 %! assert (max (x, 2i), [2i 2i 3 4]);
 ## Special routines for char arrays
@@ -865,9 +866,9 @@ the first index of the maximum value(s).  Thus,
 %! assert (max (x, 2.1i), sparse ([2.1i 2.1i 3 4]));
 
 ## Test for bug #40743
-%!assert <40743> (max (zeros (1,0), ones (1,1)), zeros (1,0))
-%!assert <40743> (max (sparse (zeros (1,0)), sparse (ones (1,1))),
-                  sparse (zeros (1,0)))
+%!assert <*40743> (max (zeros (1,0), ones (1,1)), zeros (1,0))
+%!assert <*40743> (max (sparse (zeros (1,0)), sparse (ones (1,1))),
+%!                sparse (zeros (1,0)))
 
 %!error max ()
 %!error max (1, 2, 3, 4)
@@ -917,7 +918,7 @@ do_cumminmax_body (const octave_value_list& args,
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  const char *func = ismin ? "cummin" : "cummax";
+  const char *func = (ismin ? "cummin" : "cummax");
 
   octave_value arg = args(0);
   int dim = -1;

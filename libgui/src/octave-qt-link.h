@@ -6,24 +6,24 @@ Copyright (C) 2011-2016 John P. Swensen
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
-#if ! defined (octave_octave_qt_link_h)
-#define octave_octave_qt_link_h 1
+#if ! defined (octave_qt_link_h)
+#define octave_qt_link_h 1
 
 #include <list>
 #include <string>
@@ -31,185 +31,177 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QObject>
 #include <QString>
-#include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
 
 #include "octave-gui.h"
 #include "octave-link.h"
-#include "octave-interpreter.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
-// @class OctaveLink
-// @brief Provides threadsafe access to octave.
-// @author Jacob Dawid
-//
-// This class is a wrapper around octave and provides thread safety by
-// buffering access operations to octave and executing them in the
-// readline event hook, which lives in the octave thread.
+class octave_value;
 
-class octave_qt_link : public QObject, public octave_link
+namespace octave
 {
-  Q_OBJECT
 
-public:
+  //! Provides threadsafe access to octave.
+  //! @author Jacob Dawid
+  //!
+  //! This class is a wrapper around octave and provides thread safety by
+  //! buffering access operations to octave and executing them in the
+  //! readline event hook, which lives in the octave thread.
 
-  octave_qt_link (QWidget *p, octave::gui_application *app_context);
+  class octave_qt_link : public QObject, public octave_link
+  {
+    Q_OBJECT
 
-  ~octave_qt_link (void);
+  public:
 
-  void execute_interpreter (void);
+    octave_qt_link (QWidget *p, gui_application *app_context);
 
-  bool do_confirm_shutdown (void);
-  bool do_exit (int status);
+    // No copying!
 
-  bool do_copy_image_to_clipboard (const std::string& file);
+    octave_qt_link (const octave_qt_link&) = delete;
 
-  bool do_edit_file (const std::string& file);
-  bool do_prompt_new_edit_file (const std::string& file);
+    octave_qt_link& operator = (const octave_qt_link&) = delete;
 
-  int do_message_dialog (const std::string& dlg, const std::string& msg,
-                         const std::string& title);
+    ~octave_qt_link (void) = default;
 
-  std::string
-  do_question_dialog (const std::string& msg, const std::string& title,
-                      const std::string& btn1, const std::string& btn2,
-                      const std::string& btn3, const std::string& btndef);
+    bool do_confirm_shutdown (void);
 
-  std::pair<std::list<int>, int>
-  do_list_dialog (const std::list<std::string>& list,
-                  const std::string& mode,
-                  int width, int height,
-                  const std::list<int>& initial_value,
-                  const std::string& name,
-                  const std::list<std::string>& prompt,
-                  const std::string& ok_string,
-                  const std::string& cancel_string);
+    bool do_copy_image_to_clipboard (const std::string& file);
 
-  std::list<std::string>
-  do_input_dialog (const std::list<std::string>& prompt,
-                   const std::string& title,
-                   const std::list<float>& nr,
-                   const std::list<float>& nc,
-                   const std::list<std::string>& defaults);
+    bool do_edit_file (const std::string& file);
+    bool do_prompt_new_edit_file (const std::string& file);
 
-  std::list<std::string>
-  do_file_dialog (const filter_list& filter, const std::string& title,
-                  const std::string &filename, const std::string &pathname,
-                  const std::string& multimode);
+    int do_message_dialog (const std::string& dlg, const std::string& msg,
+                           const std::string& title);
 
-  int
-  do_debug_cd_or_addpath_error (const std::string& file,
-                                const std::string& dir,
-                                bool addpath_option);
+    std::string
+    do_question_dialog (const std::string& msg, const std::string& title,
+                        const std::string& btn1, const std::string& btn2,
+                        const std::string& btn3, const std::string& btndef);
 
-  void do_change_directory (const std::string& dir);
+    std::pair<std::list<int>, int>
+    do_list_dialog (const std::list<std::string>& list,
+                    const std::string& mode,
+                    int width, int height,
+                    const std::list<int>& initial_value,
+                    const std::string& name,
+                    const std::list<std::string>& prompt,
+                    const std::string& ok_string,
+                    const std::string& cancel_string);
 
-  void do_execute_command_in_terminal (const std::string& command);
+    std::list<std::string>
+    do_input_dialog (const std::list<std::string>& prompt,
+                     const std::string& title,
+                     const std::list<float>& nr,
+                     const std::list<float>& nc,
+                     const std::list<std::string>& defaults);
 
-  void do_set_workspace (bool top_level, bool debug,
-                         const std::list<workspace_element>& ws);
+    std::list<std::string>
+    do_file_dialog (const filter_list& filter, const std::string& title,
+                    const std::string& filename, const std::string& pathname,
+                    const std::string& multimode);
 
-  void do_clear_workspace (void);
+    int
+    do_debug_cd_or_addpath_error (const std::string& file,
+                                  const std::string& dir,
+                                  bool addpath_option);
 
-  void do_set_history (const string_vector& hist);
-  void do_append_history (const std::string& hist_entry);
-  void do_clear_history (void);
+    void do_change_directory (const std::string& dir);
 
-  void do_pre_input_event (void);
-  void do_post_input_event (void);
+    void do_execute_command_in_terminal (const std::string& command);
 
-  void do_enter_debugger_event (const std::string& file, int line);
-  void do_execute_in_debugger_event (const std::string& file, int line);
-  void do_exit_debugger_event (void);
+    void do_set_workspace (bool top_level, bool debug,
+                           const symbol_scope& scope,
+                           bool update_variable_editor);
 
-  void do_update_breakpoint (bool insert, const std::string& file, int line,
-                             const std::string& cond);
+    void do_clear_workspace (void);
 
-  void do_set_default_prompts (std::string& ps1, std::string& ps2,
-                               std::string& ps4);
+    void do_set_history (const string_vector& hist);
+    void do_append_history (const std::string& hist_entry);
+    void do_clear_history (void);
 
-  static bool file_in_path (const std::string& file, const std::string& dir);
+    void do_pre_input_event (void);
+    void do_post_input_event (void);
 
-  void do_show_preferences (void);
+    void do_enter_debugger_event (const std::string& file, int line);
+    void do_execute_in_debugger_event (const std::string& file, int line);
+    void do_exit_debugger_event (void);
 
-  void do_show_doc (const std::string& file);
+    void do_update_breakpoint (bool insert, const std::string& file, int line,
+                               const std::string& cond);
 
-  QMutex mutex;
-  QWaitCondition waitcondition;
-  void shutdown_confirmation (bool sd) {_shutdown_confirm_result = sd;}
+    void do_set_default_prompts (std::string& ps1, std::string& ps2,
+                                 std::string& ps4);
 
-  void update_directory (void);
+    static bool file_in_path (const std::string& file, const std::string& dir);
 
-private:
+    void do_show_preferences (void);
 
-  bool _shutdown_confirm_result;
+    void do_show_doc (const std::string& file);
 
-  octave_qt_link (const octave_qt_link&);
+    void do_edit_variable (const std::string& name, const octave_value& val);
 
-  octave_qt_link& operator = (const octave_qt_link&);
+    void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
 
-  void do_insert_debugger_pointer (const std::string& file, int line);
-  void do_delete_debugger_pointer (const std::string& file, int line);
+    void lock (void) { m_mutex.lock (); }
+    void wait (void) { m_waitcondition.wait (&m_mutex); }
+    void unlock (void) { m_mutex.unlock (); }
+    void wake_all (void) { m_waitcondition.wakeAll (); }
 
-  // Thread running octave_main.
-  QThread *main_thread;
+  private:
 
-  octave::gui_application *m_app_context;
+    void do_insert_debugger_pointer (const std::string& file, int line);
+    void do_delete_debugger_pointer (const std::string& file, int line);
 
-  octave_interpreter *command_interpreter;
+    gui_application *m_app_context;
 
-  QString _current_directory;
-  bool    _new_dir;
+    bool m_shutdown_confirm_result;
 
-signals:
+    QMutex m_mutex;
+    QWaitCondition m_waitcondition;
 
-  void execute_interpreter_signal (void);
+  signals:
 
-  void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
+    void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
 
-  void edit_file_signal (const QString& file);
+    void edit_file_signal (const QString& file);
 
-  void change_directory_signal (const QString& dir);
+    void change_directory_signal (const QString& dir);
 
-  void execute_command_in_terminal_signal (const QString& command);
+    void execute_command_in_terminal_signal (const QString& command);
 
-  void set_workspace_signal (bool top_level,
-                             bool debug,
-                             const QString& scopes,
-                             const QStringList& symbols,
-                             const QStringList& class_names,
-                             const QStringList& dimensions,
-                             const QStringList& values,
-                             const QIntList& complex_flags);
+    void set_workspace_signal (bool top_level, bool debug,
+                               const symbol_scope& scope);
 
-  void clear_workspace_signal (void);
+    void clear_workspace_signal (void);
 
-  void set_history_signal (const QStringList& hist);
-  void append_history_signal (const QString& hist_entry);
-  void clear_history_signal (void);
+    void set_history_signal (const QStringList& hist);
+    void append_history_signal (const QString& hist_entry);
+    void clear_history_signal (void);
 
-  void enter_debugger_signal (void);
-  void exit_debugger_signal (void);
+    void enter_debugger_signal (void);
+    void exit_debugger_signal (void);
 
-  void update_breakpoint_marker_signal (bool insert, const QString& file,
-                                        int line, const QString& cond);
+    void update_breakpoint_marker_signal (bool insert, const QString& file,
+                                          int line, const QString& cond);
 
-  void insert_debugger_pointer_signal (const QString&, int);
-  void delete_debugger_pointer_signal (const QString&, int);
+    void insert_debugger_pointer_signal (const QString&, int);
+    void delete_debugger_pointer_signal (const QString&, int);
 
-  void show_preferences_signal (void);
+    void show_preferences_signal (void);
 
-  void show_doc_signal (const QString &file);
+    void show_doc_signal (const QString& file);
 
-  void confirm_shutdown_signal (void);
-  void exit_app_signal (int status);
+    void edit_variable_signal (const QString& name, const octave_value& val);
 
-public slots:
+    void refresh_variable_editor_signal (void);
 
-  void terminal_interrupt (void);
-};
+    void confirm_shutdown_signal (void);
+  };
+}
 
 #endif

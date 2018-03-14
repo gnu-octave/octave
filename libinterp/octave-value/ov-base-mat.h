@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,8 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
-class tree_walker;
-
 // Real matrix values.
 
 template <typename MT>
@@ -55,7 +53,7 @@ public:
 
   octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
     : octave_base_value (), matrix (m),
-      typ (t.is_known () ? new MatrixType (t) : 0), idx_cache ()
+      typ (t.is_known () ? new MatrixType (t) : nullptr), idx_cache ()
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
@@ -63,8 +61,8 @@ public:
 
   octave_base_matrix (const octave_base_matrix& m)
     : octave_base_value (), matrix (m.matrix),
-      typ (m.typ ? new MatrixType (*m.typ) : 0),
-      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : 0)
+      typ (m.typ ? new MatrixType (*m.typ) : nullptr),
+      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : nullptr)
   { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }
@@ -90,9 +88,6 @@ public:
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
-
-  octave_value_list do_multi_index_op (int, const octave_value_list& idx)
-  { return do_index_op (idx); }
 
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't
@@ -141,8 +136,8 @@ public:
                      sortmode mode = ASCENDING) const
   { return octave_value (matrix.sort (sidx, dim, mode)); }
 
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return matrix.is_sorted (mode); }
+  sortmode issorted (sortmode mode = UNSORTED) const
+  { return matrix.issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
   { return matrix.sort_rows_idx (mode); }
@@ -152,7 +147,7 @@ public:
 
   bool is_matrix_type (void) const { return true; }
 
-  bool is_numeric_type (void) const { return true; }
+  bool isnumeric (void) const { return true; }
 
   bool is_defined (void) const { return true; }
 
@@ -167,6 +162,11 @@ public:
   void print_info (std::ostream& os, const std::string& prefix) const;
 
   void short_disp (std::ostream& os) const;
+
+  float_display_format get_edit_display_format (void) const;
+
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
 
   MT& matrix_ref (void)
   {
@@ -192,14 +192,14 @@ protected:
   idx_vector set_idx_cache (const idx_vector& idx) const
   {
     delete idx_cache;
-    idx_cache = idx ? new idx_vector (idx) : 0;
+    idx_cache = (idx ? new idx_vector (idx) : nullptr);
     return idx;
   }
 
   void clear_cached_info (void) const
   {
-    delete typ; typ = 0;
-    delete idx_cache; idx_cache = 0;
+    delete typ; typ = nullptr;
+    delete idx_cache; idx_cache = nullptr;
   }
 
   mutable MatrixType *typ;

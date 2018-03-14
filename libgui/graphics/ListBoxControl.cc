@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QListWidget>
+#include <QEvent>
+#include <QMouseEvent>
 
 #include "Container.h"
 #include "ListBoxControl.h"
@@ -34,7 +36,7 @@ namespace QtHandles
 {
 
   static void
-  updateSelection (QListWidget* list, const Matrix& value)
+  updateSelection (QListWidget *list, const Matrix& value)
   {
     octave_idx_type n = value.numel ();
     int lc = list->count ();
@@ -65,21 +67,21 @@ namespace QtHandles
   ListBoxControl*
   ListBoxControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new ListBoxControl (go, new QListWidget (container));
       }
 
-    return 0;
+    return nullptr;
   }
 
-  ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
-    : BaseControl (go, list), m_blockCallback (false)
+  ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget *list)
+    : BaseControl (go, list), m_blockCallback (false), m_selectionChanged (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 
@@ -109,11 +111,14 @@ namespace QtHandles
           }
       }
 
-    list->removeEventFilter (this);
     list->viewport ()->installEventFilter (this);
 
     connect (list, SIGNAL (itemSelectionChanged (void)),
              SLOT (itemSelectionChanged (void)));
+    connect (list, SIGNAL (activated (const QModelIndex &)),
+             SLOT (itemActivated (const QModelIndex &)));
+    connect (list, SIGNAL (itemPressed (QListWidgetItem*)),
+           SLOT (itemPressed (QListWidgetItem*)));
   }
 
   ListBoxControl::~ListBoxControl (void)
@@ -123,7 +128,7 @@ namespace QtHandles
   ListBoxControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QListWidget* list = qWidget<QListWidget> ();
+    QListWidget *list = qWidget<QListWidget> ();
 
     switch (pId)
       {
@@ -157,22 +162,110 @@ namespace QtHandles
   }
 
   void
-  ListBoxControl::itemSelectionChanged (void)
+  ListBoxControl::sendSelectionChange ()
   {
     if (! m_blockCallback)
       {
-        QListWidget* list = qWidget<QListWidget> ();
+        QListWidget *list = qWidget<QListWidget> ();
 
         QModelIndexList l = list->selectionModel ()->selectedIndexes ();
         Matrix value (dim_vector (1, l.size ()));
         int i = 0;
 
         foreach (const QModelIndex& idx, l)
-        value(i++) = (idx.row () + 1);
+          value(i++) = idx.row () + 1;
 
         gh_manager::post_set (m_handle, "value", octave_value (value), false);
         gh_manager::post_callback (m_handle, "callback");
       }
+
+      m_selectionChanged = false;
   }
 
+  void
+  ListBoxControl::itemSelectionChanged (void)
+  {
+    if (! m_blockCallback)
+      m_selectionChanged = true;
+  }
+
+  void
+  ListBoxControl::itemActivated (const QModelIndex &)
+  {
+    m_selectionChanged = true;
+  }
+  void
+  ListBoxControl::itemPressed (QListWidgetItem*)
+  {
+    m_selectionChanged = true;
+  }
+
+  bool
+  ListBoxControl::eventFilter (QObject *watched, QEvent *e)
+  {
+    // listbox change
+    if (watched == m_qobject)
+      {
+        switch (e->type ())
+          {
+            case QEvent::KeyRelease:
+              if (m_selectionChanged)
+                sendSelectionChange ();
+              m_selectionChanged = false;
+              break;
+
+            default:
+              break;
+          }
+
+        return Object::eventFilter (watched, e);
+      }
+    // listbox viewport
+    else
+      {
+        bool override_return = false;
+        QListWidget *list = qWidget<QListWidget> ();
+
+        switch (e->type ())
+          {
+            case QEvent::MouseButtonPress:
+              {
+                QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
+
+                if (m->button () & Qt::RightButton)
+                  override_return = true;
+                else
+                  {
+                    if (! list->indexAt (m->pos ()).isValid ())
+                      override_return = true;
+                    m_selectionChanged = true;
+                  }
+                break;
+              }
+            case QEvent::MouseButtonRelease:
+              {
+                QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
+
+                if (m->button () & Qt::RightButton)
+                  override_return = true;
+
+                else if (! list->indexAt (m->pos ()).isValid ())
+                  {
+                    list->setCurrentRow (list->count () - 1);
+                    override_return = true;
+                  }
+
+                if (m_selectionChanged)
+                  sendSelectionChange ();
+                m_selectionChanged = false;
+
+                break;
+              }
+            default:
+              break;
+
+          }
+        return BaseControl::eventFilter (watched, e) || override_return;
+      }
+  }
 }

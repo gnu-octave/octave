@@ -4,19 +4,19 @@ Copyright (C) 2013-2017 Leopoldo Cerbaro <redbliss@libero.it>
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -82,7 +82,7 @@ and 16.15), Dover, 1965.
 
       if (u_arg.is_scalar_type ())
         {
-          if (u_arg.is_real_type ())
+          if (u_arg.isreal ())
             {
               // u real, m scalar
               double u = args(0).xdouble_value ("ellipj: U must be a scalar or matrix");
@@ -139,7 +139,7 @@ and 16.15), Dover, 1965.
       if (u_arg.is_scalar_type ())
         {
           // u is scalar, m is array
-          if (u_arg.is_real_type ())
+          if (u_arg.isreal ())
             {
               // u is real scalar, m is array
               double u = u_arg.xdouble_value ("ellipj: U must be a scalar or matrix");
@@ -183,7 +183,7 @@ and 16.15), Dover, 1965.
       else
         {
           // u is array, m is array
-          if (u_arg.is_real_type ())
+          if (u_arg.isreal ())
             {
               // u is real array, m is array
               NDArray u = u_arg.xarray_value ("ellipj: U must be a scalar or matrix");
@@ -816,7 +816,7 @@ and 16.15), Dover, 1965.
 %! assert (cn, C, 8*eps);
 %! assert (dn, D, 8*eps);
 
-%!test <43344>
+%!test <*43344>
 %! ## Test continuity of dn when cn is near zero
 %! m = 0.5;
 %! u = ellipke (0.5);

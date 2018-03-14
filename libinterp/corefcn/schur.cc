@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -149,7 +149,7 @@ in control (see @code{are} and @code{dare}).
     }
   else
     {
-      char ord_char = ord.empty () ? 'U' : ord[0];
+      char ord_char = (ord.empty () ? 'U' : ord[0]);
 
       if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
           && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
@@ -166,14 +166,14 @@ in control (see @code{are} and @code{dare}).
   if (nr != nc)
     err_square_matrix_required ("schur", "A");
 
-  if (! arg.is_numeric_type ())
+  if (! arg.isnumeric ())
     err_wrong_type_arg ("schur", arg);
 
   octave_value_list retval;
 
   if (arg.is_single_type ())
     {
-      if (! force_complex && arg.is_real_type ())
+      if (! force_complex && arg.isreal ())
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
@@ -208,7 +208,7 @@ in control (see @code{are} and @code{dare}).
     }
   else
     {
-      if (! force_complex && arg.is_real_type ())
+      if (! force_complex && arg.isreal ())
         {
           Matrix tmp = arg.matrix_value ();
 
@@ -289,11 +289,11 @@ Note also that @var{U} and @var{T} are not unique.
   if (args.length () != 2 || nargout > 2)
     print_usage ();
 
-  if (! args(0).is_numeric_type ())
+  if (! args(0).isnumeric ())
     err_wrong_type_arg ("rsf2csf", args(0));
-  if (! args(1).is_numeric_type ())
+  if (! args(1).isnumeric ())
     err_wrong_type_arg ("rsf2csf", args(1));
-  if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).iscomplex () || args(1).iscomplex ())
     error ("rsf2csf: UR and TR must be real matrices");
 
   if (args(0).is_single_type () || args(1).is_single_type ())

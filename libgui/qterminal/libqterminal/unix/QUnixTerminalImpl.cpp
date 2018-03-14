@@ -1,7 +1,7 @@
 /*  Copyright (C) 2008 e_k (e_k@users.sourceforge.net)
     Copyright (C) 2012-2016 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
-    This library is free software; you can redistribute it and/or
+    This library is free software: you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
     License as published by the Free Software Foundation; either
     version 2 of the License, or (at your option) any later version.
@@ -24,8 +24,10 @@
 
 #include <termios.h>
 
-QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
-    : QTerminal(parent) {
+QUnixTerminalImpl::QUnixTerminalImpl(QWidget *p)
+    : QTerminal(p),
+      _parent (p)
+{
     setMinimumSize(300, 200);
     initialize();
 }
@@ -42,6 +44,17 @@ void QUnixTerminalImpl::initialize()
     m_terminalView->setTerminalSizeStartup(true);
     m_terminalView->setSize(80, 40);
     m_terminalView->setScrollBarPosition(TerminalView::ScrollBarRight);
+
+    UrlFilter *url_filter = new UrlFilter();
+    m_terminalView->filterChain ()->addFilter (url_filter);
+
+    UrlFilter *file_filter = new UrlFilter (Filter::Type::ErrorLink);
+    m_terminalView->filterChain ()->addFilter (file_filter);
+
+    connect (file_filter, SIGNAL (request_edit_mfile_signal (const QString&, int)),
+             _parent, SLOT (edit_mfile (const QString&, int)));
+    connect (file_filter, SIGNAL (request_open_file_signal (const QString&, int)),
+             _parent, SLOT (open_file (const QString&, int)));
 
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));
@@ -85,6 +98,12 @@ void QUnixTerminalImpl::setScrollBufferSize(int value)
     }
   else
     m_terminalModel->setHistoryType (HistoryTypeNone ());
+}
+
+QList<QAction*>
+QUnixTerminalImpl::get_hotspot_actions (const QPoint& at)
+{
+  return m_terminalView->filterActions (at);
 }
 
 void QUnixTerminalImpl::connectToPty()
@@ -235,3 +254,9 @@ QUnixTerminalImpl::has_extra_interrupt (bool extra)
 {
   _extra_interrupt = extra;
 }
+
+void
+QUnixTerminalImpl::handle_visibility_changed (bool visible)
+{
+  m_terminalView->visibility_changed (visible);
+};

@@ -1,23 +1,22 @@
-// N-D Array manipulations.
 /*
 
 Copyright (C) 2003-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -50,7 +49,7 @@ charNDArray::charNDArray (char c)
 charNDArray::charNDArray (const char *s)
   : Array<char> ()
 {
-  octave_idx_type n = s ? strlen (s) : 0;
+  octave_idx_type n = (s ? strlen (s) : 0);
 
   resize1 (n);
 
@@ -112,7 +111,7 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
   charNDArray tmp (rb.dims ());
   octave_idx_type nel = rb.numel ();
 
-  if (rb.is_empty ())
+  if (rb.isempty ())
     return *this;
 
   for (octave_idx_type i = 0; i < nel; i++)

@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -59,7 +59,12 @@ along with Octave; see the file COPYING.  If not, see
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
 
-static octave_procbuf *octave_procbuf_list = 0;
+#if (! (defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)) \
+     && defined (HAVE_UNISTD_H))
+
+static octave_procbuf *octave_procbuf_list = nullptr;
+
+#endif
 
 #if ! defined (BUFSIZ)
 #  define BUFSIZ 1024
@@ -73,7 +78,7 @@ octave_procbuf::open (const char *command, int mode)
   if (is_open ())
     return 0;
 
-  f = octave_popen (command, (mode & std::ios::in) ? "r" : "w");
+  f = (octave_popen (command, (mode & std::ios::in) ? "r" : "w"));
 
   if (! f)
     return 0;
@@ -98,10 +103,10 @@ octave_procbuf::open (const char *command, int mode)
   volatile int parent_end, child_end;
 
   if (is_open ())
-    return 0;
+    return nullptr;
 
   if (octave::sys::pipe (pipe_fds) < 0)
-    return 0;
+    return nullptr;
 
   if (mode & std::ios::in)
     {
@@ -133,13 +138,13 @@ octave_procbuf::open (const char *command, int mode)
           if (fp)
             {
               std::fclose (fp);
-              fp = 0;
+              fp = nullptr;
             }
 
           octave_procbuf_list = octave_procbuf_list->next;
         }
 
-      execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (0));
+      execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (nullptr));
 
       exit (127);
     }
@@ -149,13 +154,13 @@ octave_procbuf::open (const char *command, int mode)
   if (proc_pid < 0)
     {
       octave_close_wrapper (parent_end);
-      return 0;
+      return nullptr;
     }
 
-  f = ::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w");
+  f = (::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w"));
 
   if (mode & std::ios::out)
-    ::setvbuf (f, 0, _IOLBF, BUFSIZ);
+    ::setvbuf (f, nullptr, _IOLBF, BUFSIZ);
 
   open_p = true;
 
@@ -195,7 +200,7 @@ octave_procbuf::close (void)
       int status = -1;
 
       for (octave_procbuf **ptr = &octave_procbuf_list;
-           *ptr != 0;
+           *ptr != nullptr;
            ptr = &(*ptr)->next)
         {
           if (*ptr == this)
@@ -217,7 +222,7 @@ octave_procbuf::close (void)
           while (wait_pid == -1 && errno == EINTR);
         }
 
-      f = 0;
+      f = nullptr;
     }
 
   open_p = false;

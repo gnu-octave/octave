@@ -1,23 +1,23 @@
 /*
 
 Copyright (C) 2014-2017 Eduardo Ramos Fernández <eduradical951@gmail.com>
-Copyright (C) 2013-2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
+Copyright (C) 2013-2017 Kai T. Ohlhus <k.ohlhus@gmail.com>
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,10 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "oct-locbuf.h"
+#include "oct-norm.h"
 
 #include "defun.h"
 #include "error.h"
-#include "parse.h"
+
+#include "builtin-defun-decls.h"
 
 // This function implements the IKJ and JKI variants of Gaussian elimination to
 // perform the ILUTP decomposition.  The behavior is controlled by milu
@@ -58,9 +60,9 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
     opt = OFF;
 
   // Input matrix pointers
-  octave_idx_type* cidx = sm.cidx ();
-  octave_idx_type* ridx = sm.ridx ();
-  T* data = sm.data ();
+  octave_idx_type *cidx = sm.cidx ();
+  octave_idx_type *ridx = sm.ridx ();
+  T *data = sm.data ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (octave_idx_type, iw, n);
@@ -135,50 +137,42 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
 
 DEFUN (__ilu0__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})
+@deftypefn  {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @var{milu})
 Undocumented internal function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 2)
+  if (args.length () != 2)
     print_usage ();
 
   octave_value_list retval (2);
 
-  std::string milu;
+  std::string milu = args(1).string_value ();
 
   // In ILU0 algorithm the zero-pattern of the input matrix is preserved so
   // its structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
   octave_value_list arg_list;
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
+      SparseMatrix speye (DiagMatrix (sm.cols (), sm.cols (), 1.0));
+
       ilu_0 <SparseMatrix, double> (sm, milu);
 
-      arg_list.append (sm);
-      retval(1) = feval ("triu", arg_list)(0).sparse_matrix_value ();
-      SparseMatrix eye =
-        feval ("speye", ovl (sm.cols ()))(0).sparse_matrix_value ();
-      arg_list.append (-1);
-      retval(0) = eye +
-                  feval ("tril", arg_list)(0).sparse_matrix_value ();
+      retval(0) = speye + Ftril (ovl (sm, -1))(0).sparse_matrix_value ();
+      retval(1) = Ftriu (ovl (sm))(0).sparse_matrix_value ();
     }
   else
     {
       SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
+      SparseMatrix speye (DiagMatrix (sm.cols (), sm.cols (), 1.0));
+
       ilu_0 <SparseComplexMatrix, Complex> (sm, milu);
 
-      arg_list.append (sm);
-      retval(1) = feval ("triu", arg_list)(0).sparse_complex_matrix_value ();
-      SparseComplexMatrix eye =
-        feval ("speye", ovl (sm.cols ()))(0).sparse_complex_matrix_value ();
-      arg_list.append (-1);
-      retval(0) = eye +
-                  feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+      retval(0) = speye +
+        Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ();
+      retval(1) = Ftriu (ovl (sm))(0).sparse_complex_matrix_value ();
     }
 
   return retval;
@@ -186,8 +180,8 @@ Undocumented internal function.
 
 template <typename octave_matrix_t, typename T>
 void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
-                octave_matrix_t& L, octave_matrix_t& U, T* cols_norm,
-                T* rows_norm, const T droptol = 0,
+                octave_matrix_t& L, octave_matrix_t& U, T *cols_norm,
+                T *rows_norm, const T droptol = 0,
                 const std::string milu = "off")
 {
   // Map the strings into chars for faster comparing inside loops
@@ -212,24 +206,24 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
   max_len_l += (0.1 * max_len_l) > n ? 0.1 * max_len_l : n;
 
   // Extract pointers to the arrays for faster access inside loops
-  octave_idx_type* cidx_in_u = sm_u.cidx ();
-  octave_idx_type* ridx_in_u = sm_u.ridx ();
-  T* data_in_u = sm_u.data ();
-  octave_idx_type* cidx_in_l = sm_l.cidx ();
-  octave_idx_type* ridx_in_l = sm_l.ridx ();
-  T* data_in_l = sm_l.data ();
+  octave_idx_type *cidx_in_u = sm_u.cidx ();
+  octave_idx_type *ridx_in_u = sm_u.ridx ();
+  T *data_in_u = sm_u.data ();
+  octave_idx_type *cidx_in_l = sm_l.cidx ();
+  octave_idx_type *ridx_in_l = sm_l.ridx ();
+  T *data_in_l = sm_l.data ();
 
   // L output arrays
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len_l, 1));
-  octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len_l, 1));
-  T* data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.fortran_vec ();
 
   // U output arrays
   Array <octave_idx_type> ridx_out_u (dim_vector (max_len_u, 1));
-  octave_idx_type* ridx_u = ridx_out_u.fortran_vec ();
+  octave_idx_type *ridx_u = ridx_out_u.fortran_vec ();
   Array <T> data_out_u (dim_vector (max_len_u, 1));
-  T* data_u = data_out_u.fortran_vec ();
+  T *data_u = data_out_u.fortran_vec ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (octave_idx_type, cidx_l, n + 1);
@@ -468,72 +462,49 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
 
 DEFUN (__iluc__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {[@var{L}, @var{U}] =} __iluc__ (@var{A})
-@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})
-@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})
+@deftypefn {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})
 Undocumented internal function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 3)
+  if (args.length () != 3)
     print_usage ();
 
-  std::string milu = "off";
-  double droptol = 0;
+  double droptol = args(1).double_value ();
+  std::string milu = args(2).string_value ();
 
-  // Don't repeat input validation of arguments done in ilu.m
-  if (nargin >= 2)
-    droptol = args(1).double_value ();
-
-  if (nargin == 3)
-    milu = args(2).string_value ();
-
-  octave_value_list arg_list;
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
-      Array<double> cols_norm, rows_norm;
-      arg_list.append (args(0).sparse_matrix_value ());
-      SparseMatrix sm_u = feval ("triu", arg_list)(0).sparse_matrix_value ();
-      arg_list.append (-1);
-      SparseMatrix sm_l = feval ("tril", arg_list)(0).sparse_matrix_value ();
-      arg_list(1) = "rows";
-      rows_norm = feval ("norm", arg_list)(0).vector_value ();
-      arg_list(1) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).vector_value ();
-      arg_list.clear ();
+      SparseMatrix sm = args(0).sparse_matrix_value ();
+      SparseMatrix sm_u = Ftriu (ovl (sm))(0).sparse_matrix_value ();
+      SparseMatrix sm_l = Ftril (ovl (sm, -1))(0).sparse_matrix_value ();
       SparseMatrix U, L;
+
       ilu_crout <SparseMatrix, double> (sm_l, sm_u, L, U,
-                                        cols_norm.fortran_vec (),
-                                        rows_norm.fortran_vec (),
+                                        xcolnorms (sm).fortran_vec (),
+                                        xrownorms (sm).fortran_vec (),
                                         droptol, milu);
-      arg_list.append (octave_value (L.cols ()));
-      SparseMatrix eye = feval ("speye", arg_list)(0).sparse_matrix_value ();
-      return ovl (L + eye, U);
+
+      SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
+
+      return ovl (L + speye, U);
     }
   else
     {
-      Array<Complex> cols_norm, rows_norm;
-      arg_list.append (args(0).sparse_complex_matrix_value ());
-      SparseComplexMatrix sm_u =
-        feval ("triu", arg_list)(0).sparse_complex_matrix_value ();
-      arg_list.append (-1);
-      SparseComplexMatrix sm_l =
-        feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
-      arg_list(1) = "rows";
-      rows_norm = feval ("norm", arg_list)(0).complex_vector_value ();
-      arg_list(1) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).complex_vector_value ();
-      arg_list.clear ();
+      SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix sm_u = Ftriu (ovl (sm))(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix sm_l = Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ();
       SparseComplexMatrix U, L;
-      ilu_crout <SparseComplexMatrix, Complex>
-                (sm_l, sm_u, L, U, cols_norm.fortran_vec (),
-                 rows_norm.fortran_vec (), Complex (droptol), milu);
+      Array<Complex> cols_norm = xcolnorms (sm);
+      Array<Complex> rows_norm = xrownorms (sm);
 
-      arg_list.append (octave_value (L.cols ()));
-      SparseComplexMatrix eye =
-        feval ("speye", arg_list)(0).sparse_complex_matrix_value ();
-      return ovl (L + eye, U);
+      ilu_crout <SparseComplexMatrix, Complex> (sm_l, sm_u, L, U,
+                                                cols_norm.fortran_vec (),
+                                                rows_norm.fortran_vec (),
+                                                Complex (droptol), milu);
+
+      SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
+
+      return ovl (L + speye, U);
     }
 }
 
@@ -547,7 +518,7 @@ Undocumented internal function.
 
 template <typename octave_matrix_t, typename T>
 void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
-             octave_idx_type nnz_u, octave_idx_type nnz_l, T* cols_norm,
+             octave_idx_type nnz_u, octave_idx_type nnz_l, T *cols_norm,
              Array <octave_idx_type>& perm_vec, const T droptol = T(0),
              const T thresh = T(0), const  std::string milu = "off",
              const double udiag = 0)
@@ -568,9 +539,9 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
     sm = sm.transpose ();
 
   // Extract pointers to the arrays for faster access inside loops
-  octave_idx_type* cidx_in = sm.cidx ();
-  octave_idx_type* ridx_in = sm.ridx ();
-  T* data_in = sm.data ();
+  octave_idx_type *cidx_in = sm.cidx ();
+  octave_idx_type *ridx_in = sm.ridx ();
+  T *data_in = sm.data ();
   octave_idx_type jrow, i, j, k, jj, c, total_len_l, total_len_u, p_perm,
                   max_ind, max_len_l, max_len_u;
   T zero = T(0);
@@ -584,19 +555,19 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 
   // Extract pointers to the arrays for faster access inside loops
   Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
-  octave_idx_type* cidx_l = cidx_out_l.fortran_vec ();
+  octave_idx_type *cidx_l = cidx_out_l.fortran_vec ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len_l, 1));
-  octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len_l, 1));
-  T* data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.fortran_vec ();
 
   // Data for U
   Array <octave_idx_type> cidx_out_u (dim_vector (n + 1, 1));
-  octave_idx_type* cidx_u = cidx_out_u.fortran_vec ();
+  octave_idx_type *cidx_u = cidx_out_u.fortran_vec ();
   Array <octave_idx_type> ridx_out_u (dim_vector (max_len_u, 1));
-  octave_idx_type* ridx_u = ridx_out_u.fortran_vec ();
+  octave_idx_type *ridx_u = ridx_out_u.fortran_vec ();
   Array <T> data_out_u (dim_vector (max_len_u, 1));
-  T* data_u = data_out_u.fortran_vec ();
+  T *data_u = data_out_u.fortran_vec ();
 
   // Working arrays and permutation arrays
   octave_idx_type w_len_u, w_len_l;
@@ -606,7 +577,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   std::set <octave_idx_type>::iterator it, it2;
   OCTAVE_LOCAL_BUFFER (T, w_data, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, iperm, n);
-  octave_idx_type* perm = perm_vec.fortran_vec ();
+  octave_idx_type *perm = perm_vec.fortran_vec ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, uptr, n);
 
   // Initialize working and permutation arrays
@@ -926,138 +897,102 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 
 DEFUN (__ilutp__, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A})
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol})
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh})
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu})
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@var{A}, @dots{})
+@deftypefn  {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@dots{})
 Undocumented internal function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 5)
+  if (args.length () != 5)
     print_usage ();
 
   octave_value_list retval;
-  std::string milu = "";
-  double droptol = 0;
-  double thresh = 1;
-  double udiag = 0;
-
-  // Don't repeat input validation of arguments done in ilu.m
-  if (nargin >= 2)
-    droptol = args(1).double_value ();
-
-  if (nargin >= 3)
-    thresh = args(2).double_value ();
-
-  if (nargin >= 4)
-    milu = args(3).string_value ();
-
-  if (nargin == 5)
-    udiag = args(4).double_value ();
+  double droptol = args(1).double_value ();
+  double thresh = args(2).double_value ();
+  std::string milu = args(3).string_value ();
+  double udiag = args(4).double_value ();
 
   octave_value_list arg_list;
   octave_idx_type nnz_u, nnz_l;
-  if (! args(0).is_complex_type ())
+  if (! args(0).iscomplex ())
     {
-      Array <double> rc_norm;
       SparseMatrix sm = args(0).sparse_matrix_value ();
-      arg_list.append (sm);
-      nnz_u =  (feval ("triu", arg_list)(0).sparse_matrix_value ()).nnz ();
-      arg_list.append (-1);
-      nnz_l =  (feval ("tril", arg_list)(0).sparse_matrix_value ()).nnz ();
-      if (milu == "row")
-        arg_list (1) = "rows";
-      else
-        arg_list (1) = "cols";
-      rc_norm = feval ("norm", arg_list)(0).vector_value ();
-      arg_list.clear ();
-      Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
       SparseMatrix U, L;
+      nnz_u = (Ftriu (ovl (sm))(0).sparse_matrix_value ()).nnz ();
+      nnz_l = (Ftril (ovl (sm, -1))(0).sparse_matrix_value ()).nnz ();
+      Array <double> rc_norm;
+      if (milu == "row")
+        rc_norm = xrownorms (sm);
+      else
+        rc_norm = xcolnorms (sm);
+      Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
+
       ilu_tp <SparseMatrix, double> (sm, L, U, nnz_u, nnz_l,
                                      rc_norm.fortran_vec (),
                                      perm, droptol, thresh, milu, udiag);
-      arg_list.append (octave_value (L.cols ()));
-      SparseMatrix eye =
-        feval ("speye", arg_list)(0).sparse_matrix_value ();
+
+      SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
       if (milu == "row")
         {
+          retval(0) = L + speye;
           if (nargout == 3)
             {
-              retval(2) = eye.index (idx_vector::colon, perm);
               retval(1) = U.index (idx_vector::colon, perm);
+              retval(2) = speye.index (idx_vector::colon, perm);
             }
-          else if (nargout == 2)
+          else
             retval(1) = U;
-          retval(0) = L + eye;
         }
       else
         {
+          retval(1) = U;
           if (nargout == 3)
             {
-              retval(2) = eye.index (perm, idx_vector::colon);
-              retval(1) = U;
-              retval(0) = L.index (perm, idx_vector::colon) + eye;
+              retval(0) = L.index (perm, idx_vector::colon) + speye;
+              retval(2) = speye.index (perm, idx_vector::colon);
             }
           else
-            {
-              retval(1) = U;
-              retval(0) = L + eye.index (perm, idx_vector::colon);
-            }
+            retval(0) = L + speye.index (perm, idx_vector::colon);
         }
     }
   else
     {
-      Array <Complex> rc_norm;
       SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
-      arg_list.append (sm);
-      nnz_u =
-        feval ("triu", arg_list)(0).sparse_complex_matrix_value ().nnz ();
-      arg_list.append (-1);
-      nnz_l =
-        feval ("tril", arg_list)(0).sparse_complex_matrix_value ().nnz ();
-      if (milu == "row")
-        arg_list(1) = "rows";
-      else
-        arg_list(1) = "cols";
-      rc_norm = feval ("norm", arg_list)(0).complex_vector_value ();
-      arg_list.clear ();
-      Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
       SparseComplexMatrix U, L;
+      nnz_u = (Ftriu (ovl (sm))(0).sparse_complex_matrix_value ()).nnz ();
+      nnz_l = (Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ()).nnz ();
+      Array <Complex> rc_norm;
+      if (milu == "row")
+        rc_norm = xrownorms (sm);
+      else
+        rc_norm = xcolnorms (sm);
+      Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
+
       ilu_tp <SparseComplexMatrix, Complex>
               (sm, L, U, nnz_u, nnz_l, rc_norm.fortran_vec (), perm,
                Complex (droptol), Complex (thresh), milu, udiag);
 
-      arg_list.append (octave_value (L.cols ()));
-      SparseComplexMatrix eye =
-        feval ("speye", arg_list)(0).sparse_complex_matrix_value ();
+      SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
       if (milu == "row")
         {
+          retval(0) = L + speye;
           if (nargout == 3)
             {
-              retval(2) = eye.index (idx_vector::colon, perm);
               retval(1) = U.index (idx_vector::colon, perm);
+              retval(2) = speye.index (idx_vector::colon, perm);
             }
           else if (nargout == 2)
             retval(1) = U;
-          retval(0) = L + eye;
         }
       else
         {
+          retval(1) = U;
           if (nargout == 3)
             {
-              retval(2) = eye.index (perm, idx_vector::colon);
-              retval(1) = U;
-              retval(0) = L.index (perm, idx_vector::colon) + eye;
+              retval(0) = L.index (perm, idx_vector::colon) + speye;
+              retval(2) = speye.index (perm, idx_vector::colon);
             }
           else
-            {
-              retval(1) = U;
-              retval(0) = L + eye.index (perm, idx_vector::colon);
-            }
+            retval(0) = L + speye.index (perm, idx_vector::colon);
         }
     }
 

@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -47,7 +47,7 @@ extern int octave_chdir_wrapper (const char *nm);
 
 extern int octave_close_wrapper (int fd);
 
-extern const char *octave_ctermid_wrapper (void);
+extern const char * octave_ctermid_wrapper (void);
 
 extern int octave_dup2_wrapper (int fd1, int fd2);
 
@@ -59,7 +59,7 @@ extern pid_t octave_fork_wrapper (void);
 
 extern int octave_ftruncate_wrapper (int fd, off_t sz);
 
-extern char *octave_getcwd_wrapper (char *nm, size_t len);
+extern char * octave_getcwd_wrapper (char *nm, size_t len);
 
 extern gid_t octave_getegid_wrapper (void);
 

@@ -1,18 +1,20 @@
 ## Copyright (C) 2014-2017 Pantxo Diribarne
 ##
-## This program is free software; you can redistribute it and/or modify it
+## This file is part of Octave.
+##
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see
-## <http://www.gnu.org/licenses/>.
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{retval} =} genpropdoc (@var{OBJNAME}, @var{FILENAME})
@@ -108,6 +110,17 @@ function s = getdoc (objname, field, base)
 __prop__ is unused.";
   doc_unused =  "__prop__ is unused.";
 
+  doc_fontangle = "Control whether the font is italic or normal.";
+  doc_fontsize = "Size of the font used for text rendering.  \
+@xref{XREF__objname__fontunits, , fontunits property}.";
+  doc_fontname = "Name of font used for text rendering.  When setting \
+this property, the text rendering engine will search for a matching \
+font in your system.  If none is found then text is rendered using a \
+default sans serif font (same as the default @qcode{\"*\"} value).";
+  doc_fontunits = "Units used to interpret the @qcode{\"fontsize\"} property.";
+  doc_fontweight = "Control the variant of the base font used for \
+text rendering.";
+
   ## Initialize structure
   if (isfield (base, field))
     s = base.(field);
@@ -123,6 +136,15 @@ __prop__ is unused.";
     switch (field)
       case "beingdeleted"
       case "busyaction"
+        s.doc = "Define how Octave handles the execution of this object's \
+callback properties when it is unable to interrupt another object's \
+executing callback.  This is only relevant when the currently executing \
+callback object has its @code{interruptible} property set to \
+\@qcode{\"off\"}.  The __prop__ property of the interrupting callback object \
+indicates whether the interrupting callback is queued (@qcode{\"queue\"} \
+(default)) or discarded (@qcode{\"cancel\"}).\n\
+@xref{Callbacks, , @w{Callbacks section}}.";
+
       case "buttondownfcn"
         s.doc = "__fcnmsg__";
         s.valid = valid_fcn;
@@ -138,7 +160,7 @@ clipped in its parent axes limits.";
       case "createfcn"
         s.doc = "Callback function executed immediately after __objname__ \
 has been created.  Function is set by using default property on root object, \
-e.g., @code{set (0, \"default__objname__createfcn\", \
+e.g., @code{set (groot, \"default__objname__createfcn\", \
 'disp (\"__objname__ created!\")')}.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
@@ -152,10 +174,35 @@ is deleted.\n\n__fcnmsg__";
 handle is not visible in its parent's \"children\" property.";
 
       case "hittest"
+        s.doc = "Specify whether __objname__ processes mouse events \
+or passes them to ancestors of the object.  When enabled, the object may \
+respond to mouse clicks by evaluating the @qcode{\"buttondownfcn\"}, showing \
+the uicontextmenu, and eventually becoming the root \
+@qcode{\"currentobject\"}.  This property is only relevant when the object \
+can accept mouse clicks which is determined by the @qcode{\"pickableparts\"} \
+property.  @xref{XREF__objname__pickableparts, , @w{pickableparts property}}.";
+
       case "interruptible"
+        s.doc = "Specify whether this object's callback functions may be \
+interrupted by other callbacks.  By default __prop__ is @qcode{\"on\"} \
+and callbacks that make use of @code{drawnow}, @code{figure}, @code{waitfor}, \
+@code{getframe} or @code{pause} functions are eventually interrupted.\n\
+@xref{Callbacks, , @w{Callbacks section}}.";
+
       case "parent"
         s.doc = "Handle of the parent graphics object.";
         s.valid = valid_handle;
+
+      case "pickableparts"
+        s.doc = "Specify whether __objname__ will accept mouse clicks.  \
+By default, __prop__ is @qcode{\"visible\"} and only visible parts of the \
+__objname__ or its children may react to mouse clicks.  When __prop__ is \
+@qcode{\"all\"} both visible and invisible parts (or children) may react to \
+mouse clicks.  When __prop__ is @qcode{\"none\"} mouse clicks on the object \
+are ignored and transmitted to any objects underneath this one.  When an \
+object is configured to accept mouse clicks the @qcode{\"hittest\"} property \
+will determine how they are processed.  \
+@xref{XREF__objname__hittest, , @w{hittest property}}.";
 
       case "selected"
       case "selectionhighlight"
@@ -196,6 +243,12 @@ not rendered on screen.";
       case "parent"
         s.doc = "Root figure has no parent graphics object.  __prop__ \
 is always empty.";
+
+      case "hittest"
+        s.doc = doc_unused;
+
+      case "pickableparts"
+        s.doc = doc_unused;
 
       ## Specific properties
       case "callbackobject"
@@ -281,6 +334,9 @@ are visible in their parents' children list, regardless of the value of their \
     switch (field)
       ## Overridden shared properties
       case "clipping"
+        s.doc = doc_unused;
+
+      case "pickableparts"
         s.doc = doc_unused;
 
       ## Specific properties
@@ -623,24 +679,25 @@ to be the same as the length of 2 units on the y-axis.  \
 
       case "dataaspectratiomode"
       case "fontangle"
-        s.doc = "Control whether the font is italic or normal.";
+        s.doc = doc_fontangle;
+
       case "fontname"
-        s.doc = "Name of the font used for axes annotations.";
+        s.doc = doc_fontname;
         s.valid = valid_string;
 
       case "fontsize"
-        s.doc = "Size of the font used for axes annotations.  \
-@xref{XREFaxesfontunits, , @w{fontunits property}}.";
+        s.doc = doc_fontsize;
         s.valid = "scalar";
 
       case "fontunits"
-        s.doc = "Unit used to interpret @code{fontsize} property.";
+        s.doc = doc_fontunits;
 
       case "fontsmoothing"
         s.doc = doc_unused;
 
       case "fontweight"
-        s.doc = "Control variant of base font used: bold, demi, light, normal.";
+        s.doc = doc_fontweight;
+
       case "gridalpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
 
@@ -706,9 +763,6 @@ left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesposition, , @w{position property}}.";
         s.valid = valid_4elvec;
-
-      case "pickableparts"
-        s.doc = doc_unused;
 
       case "plotboxaspectratio"
         s.doc = "@xref{XREFpbaspect, , pbaspect function}.  \
@@ -928,6 +982,10 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
       case "linewidth"
         s.doc = "Width of the line object measured in points.";
 
+      case "linejoin"
+        s.doc = "Control the shape of the junction of line segments. \
+This property currently only affects the printed output.";
+
       case "marker"
         s.doc = "Shape of the marker for each data point.  \
 @xref{Marker Styles}.";
@@ -986,7 +1044,8 @@ z data.";
 
       ## Specific properties
       case "backgroundcolor"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Color of the background area.  \
+@xref{Colors, , colorspec}.";
         s.valid = valid_color;
 
       case "color"
@@ -995,7 +1054,8 @@ z data.";
 
       case "displayname"
       case "edgecolor"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Color of the outline of the background area.  \
+@xref{Colors, , colorspec}.";
         s.valid = valid_color;
 
       case "editing"
@@ -1007,23 +1067,21 @@ and location of the text string.";
         s.valid = valid_4elvec;
 
       case "fontangle"
-        s.doc = "Control whether the font is italic or normal.  \
-@code{fontangle} is currently unused.";
+        s.doc = doc_fontangle;
 
       case "fontname"
-        s.doc = "The font used for the text.";
+        s.doc = doc_fontname;
         s.valid = valid_string;
 
       case "fontsize"
-        s.doc = "The font size of the text as measured in \
-@code{fontunits}.";
+        s.doc = doc_fontsize;
         s.valid = "scalar";
 
       case "fontunits"
-        s.doc = "The units used to interpret @code{fontsize} property.";
+        s.doc = doc_fontunits;
 
       case "fontweight"
-        s.doc = "Control variant of base font used: bold, light, normal, etc.";
+        s.doc = doc_fontweight;
 
       case "horizontalalignment"
       case "interpreter"
@@ -1032,14 +1090,16 @@ interpreted.\n\
 @xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
 
       case "linestyle"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Style of the outline.  @xref{Line Styles}.";
 
       case "linewidth"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Width of the outline.";
         s.valid = "scalar";
 
       case "margin"
-        s.doc = sprintf (doc_notimpl, "Background area");
+        s.doc = "Margins between the borders of the background area \
+and the texts.  The value is currently interpreted as pixels, regardless \
+of the @qcode{\"fontunits\"} property.";
         s.valid = "scalar";
 
       case "position"
@@ -1153,8 +1213,17 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facealpha"
-        s.doc = sprintf (doc_notimpl, "Transparency");
-        s.valid = valid_scalmat;
+        s.doc = "Transparency level of the faces of the surface object.  Only \
+double values are supported at present where a value of 0 means complete \
+transparency and a value of 1 means solid faces without transparency.  Setting \
+the property to @qcode{\"flat\"}, @qcode{\"interp\"} or @qcode{\"texturemap\"} \
+causes the faces to not being rendered.  Additionally, the faces are not sorted \
+from back to front which might lead to unexpected results when rendering \
+layered transparent faces.";
+        s.valid = packopt ({"scalar", ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"interp\"}", ...
+                            "@qcode{\"texturemap\"}"});
 
       case "facecolor"
       case "facelighting"
@@ -1276,8 +1345,16 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facealpha"
-        s.doc = sprintf (doc_notimpl, "Transparency");
-        s.valid = valid_scalmat;
+        s.doc = "Transparency level of the faces of the patch object.  Only \
+double values are supported at present where a value of 0 means complete \
+transparency and a value of 1 means solid faces without transparency.  Setting \
+the property to @qcode{\"flat\"} or @qcode{\"interp\"} causes the faces to not \
+being rendered.  Additionally, the faces are not sorted from back to front \
+which might lead to unexpected results when rendering layered transparent \
+faces.";
+        s.valid = packopt ({"scalar", ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"interp\"}"});
 
       case "facecolor"
         ## Don't provide a default value, and mark colorspec with
@@ -1419,10 +1496,22 @@ point source (@qcode{\"local\"}).";
       case "bordertype"
       case "borderwidth"
       case "fontangle"
+        s.doc = doc_fontangle;
+
       case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
       case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
       case "fontunits"
+        s.doc = doc_fontunits;
+
       case "fontweight"
+        s.doc = doc_fontweight;
+
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
@@ -1440,24 +1529,36 @@ point source (@qcode{\"local\"}).";
       ## Overridden shared properties
 
       ## Specific properties
-        case "backgroundcolor"
-        case "bordertype"
-        case "borderwidth"
-        case "fontangle"
-        case "fontname"
-        case "fontsize"
-        case "fontunits"
-        case "fontweight"
-        case "foregroundcolor"
-        case "highlightcolor"
-        case "position"
-        case "resizefcn"
-        case "selectedobject"
-        case "selectionchangedfcn"
-        case "shadowcolor"
-        case "title"
-        case "titleposition"
-        case "units"
+      case "backgroundcolor"
+      case "bordertype"
+      case "borderwidth"
+      case "fontangle"
+        s.doc = doc_fontangle;
+
+      case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
+      case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
+      case "fontunits"
+        s.doc = doc_fontunits;
+
+      case "fontweight"
+        s.doc = doc_fontweight;
+
+      case "foregroundcolor"
+      case "highlightcolor"
+      case "position"
+      case "resizefcn"
+      case "selectedobject"
+      case "selectionchangedfcn"
+      case "shadowcolor"
+      case "title"
+      case "titleposition"
+      case "units"
 
     endswitch
 
@@ -1473,10 +1574,22 @@ point source (@qcode{\"local\"}).";
       case "enable"
       case "extent"
       case "fontangle"
+        s.doc = doc_fontangle;
+
       case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
       case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
       case "fontunits"
+        s.doc = doc_fontunits;
+
       case "fontweight"
+        s.doc = doc_fontweight;
+
       case "foregroundcolor"
       case "horizontalalignment"
       case "keypressfcn"
@@ -1562,7 +1675,7 @@ endfunction
 function s = getstructure (objname, base = [])
   hf = [];
   if (! strcmp (objname, "root"))
-    ## Use an improbable number to avoid ishandle to return true for 1
+    ## Use an improbable number to avoid ishghandle to return true for 1
     hf = figure (2265465, "visible", "off");
   endif
 
@@ -1632,7 +1745,7 @@ function def = getdefault (h, objname, field)
   def = get (h, field);
 
   ## Don't print default values for graphics handles
-  if (isscalar (def) && def != 0 && ishandle (def))
+  if (isscalar (def) && def != 0 && ishghandle (def))
     def = "";
   else
     if (ischar (def))
@@ -1683,7 +1796,7 @@ function str = printdoc (objname, obj)
 
     ## @anchor: cross reference using XREFobjnamefield label
     ## Concept index: call info from octave with 'doc ("objname field")'
-    str = sprintf ("%s@anchor{XREF%s%s}\n@cindex %s %s\n",
+    str = sprintf ("%s@anchor{XREF%s%s}\n@prindex %s %s\n",
                    str, objname, field, objname, field);
 
     ## Item
@@ -1717,23 +1830,23 @@ endfunction
 function str = warn_autogen ()
   str = "@c DO NOT EDIT!  Generated automatically by genpropdoc.m.\n\
 \n\
-@c Copyright (C) 2014-2016 Pantxo Diribarne\n\
+@c Copyright (C) 2014-2018 Pantxo Diribarne\n\
 @c\n\
 @c This file is part of Octave.\n\
 @c\n\
-@c Octave is free software; you can redistribute it and/or modify it\n\
-@c under the terms of the GNU General Public License as published by the\n\
-@c Free Software Foundation; either version 3 of the License, or (at\n\
-@c your option) any later version.\n\
+@c Octave is free software: you can redistribute it and/or modify it\n\
+@c under the terms of the GNU General Public License as published by\n\
+@c the Free Software Foundation, either version 3 of the License, or\n\
+@c (at your option) any later version.\n\
 @c\n\
-@c Octave is distributed in the hope that it will be useful, but WITHOUT\n\
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\
-@c for more details.\n\
+@c Octave is distributed in the hope that it will be useful, but\n\
+@c WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+@c GNU General Public License for more details.\n\
 @c\n\
 @c You should have received a copy of the GNU General Public License\n\
 @c along with Octave; see the file COPYING.  If not, see\n\
-@c <http://www.gnu.org/licenses/>.";
+@c <https://www.gnu.org/licenses/>.";
 endfunction
 
 function str = print_options (val, default)

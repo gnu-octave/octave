@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{fv} =} isosurface (@var{v}, @var{isoval})
@@ -378,9 +378,10 @@ endfunction
 %! isosurface (x, y, z, v, 3);
 %! isosurface (x, y, z, v, 5);
 %! axis equal;
-%! title ("isosurfaces of two nested spheres");
+%! title ("isosurface() of two nested spheres");
 
 %!demo
+%! clf;
 %! x = 0:2;
 %! y = 0:3;
 %! z = 0:1;
@@ -388,7 +389,6 @@ endfunction
 %! v        = [0, 0, 0; 0, 0, 0; 0, 0, 1; 0, 0, 1];
 %! v(:,:,2) = [0, 0, 0; 0, 0, 1; 0, 1, 2; 0, 1, 2];
 %! iso = 0.8;
-%! clf;
 %!
 %! ## Three arguments, no output
 %! subplot (2, 2, 1);
@@ -414,7 +414,11 @@ endfunction
 %!  patch (fvc);
 %!  shading faceted;
 %!  view (110, 40);
-%!  annotation ("textbox", [0.1 0.9 0.9 0.1], ...
+%!  annotation ("textbox", [0.41 0.9 0.9 0.1], ...
+%!      "String", "isosurface() called 4 ways", ...
+%!      "HorizontalAlignment", "center", ...
+%!      "FontSize", 12);
+%!  annotation ("textbox", [0.1 0.45 0.9 0.1], ...
 %!      "String", {["Apart from the first plot having a different scale, " ...
 %!                  "all four plots must look the same."],
 %!                 ["The last plot might have different colors but must " ...

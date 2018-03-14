@@ -1,76 +1,102 @@
-test_EXTRA_DIST =
+%canon_reldir%_EXTRA_DIST =
 
-test_CLEANFILES =
-test_DISTCLEANFILES =
-test_MAINTAINERCLEANFILES =
+%canon_reldir%_CLEANFILES =
+%canon_reldir%_DISTCLEANFILES =
+%canon_reldir%_MAINTAINERCLEANFILES =
 
 TEST_FILES += \
-  test/fntests.m \
-  test/args.tst \
-  test/bug-31371.tst \
-  test/bug-38565.tst \
-  test/bug-38576.tst \
-  test/bug-46330.tst \
-  test/bug-49904.tst \
-  test/colormaps.tst \
-  test/command.tst \
-  test/complex.tst \
-  test/diag-perm.tst \
-  test/error.tst \
-  test/eval-catch.tst \
-  test/for.tst \
-  test/func.tst \
-  test/global.tst \
-  test/if.tst \
-  test/index.tst \
-  test/io.tst \
-  test/jit.tst \
-  test/line-continue.tst \
-  test/logical-index.tst \
-  test/null-assign.tst \
-  test/parser.tst \
-  test/prefer.tst \
-  test/range.tst \
-  test/recursion.tst \
-  test/return.tst \
-  test/slice.tst \
-  test/struct.tst \
-  test/switch.tst \
-  test/system.tst \
-  test/transpose.tst \
-  test/try.tst \
-  test/unwind.tst \
-  test/while.tst
+  %reldir%/fntests.m \
+  %reldir%/args.tst \
+  %reldir%/bug-31371.tst \
+  %reldir%/bug-38565.tst \
+  %reldir%/bug-38576.tst \
+  %reldir%/bug-46330.tst \
+  %reldir%/bug-49904.tst \
+  %reldir%/colormaps.tst \
+  %reldir%/command.tst \
+  %reldir%/complex.tst \
+  %reldir%/deprecate-props.tst \
+  %reldir%/diag-perm.tst \
+  %reldir%/error.tst \
+  %reldir%/eval-catch.tst \
+  %reldir%/for.tst \
+  %reldir%/func.tst \
+  %reldir%/global.tst \
+  %reldir%/if.tst \
+  %reldir%/index.tst \
+  %reldir%/io.tst \
+  %reldir%/jit.tst \
+  %reldir%/leftdiv.tst \
+  %reldir%/line-continue.tst \
+  %reldir%/logical-index.tst \
+  %reldir%/null-assign.tst \
+  %reldir%/parser.tst \
+  %reldir%/prefer.tst \
+  %reldir%/range.tst \
+  %reldir%/recursion.tst \
+  %reldir%/return.tst \
+  %reldir%/single-index.tst \
+  %reldir%/slice.tst \
+  %reldir%/struct.tst \
+  %reldir%/switch.tst \
+  %reldir%/system.tst \
+  %reldir%/transpose.tst \
+  %reldir%/try.tst \
+  %reldir%/unwind.tst \
+  %reldir%/while.tst
 
-DIRSTAMP_FILES += test/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
-include test/bug-35448/module.mk
-include test/bug-36025/module.mk
-include test/bug-38236/module.mk
-include test/bug-38691/module.mk
-include test/bug-44940/module.mk
-include test/class-concat/module.mk
-include test/classdef/module.mk
-include test/classes/module.mk
-include test/ctor-vs-method/module.mk
-include test/fcn-handle-derived-resolution/module.mk
-include test/nest/module.mk
-include test/publish/module.mk
+include %reldir%/bug-35448/module.mk
+include %reldir%/bug-35881/module.mk
+include %reldir%/bug-36025/module.mk
+include %reldir%/bug-38236/module.mk
+include %reldir%/bug-38691/module.mk
+include %reldir%/bug-41723/module.mk
+include %reldir%/bug-44940/module.mk
+include %reldir%/bug-46660/module.mk
+include %reldir%/bug-49379/module.mk
+include %reldir%/bug-50014/module.mk
+include %reldir%/bug-50035/module.mk
+include %reldir%/bug-50716/module.mk
+include %reldir%/bug-51192/module.mk
+include %reldir%/bug-51532/module.mk
+include %reldir%/bug-51534/module.mk
+include %reldir%/bug-51599/module.mk
+include %reldir%/bug-52075/module.mk
+include %reldir%/bug-52722/module.mk
+include %reldir%/class-concat/module.mk
+include %reldir%/classdef/module.mk
+include %reldir%/classdef-multiple-inheritance/module.mk
+include %reldir%/classes/module.mk
+include %reldir%/ctor-vs-method/module.mk
+include %reldir%/fcn-handle-derived-resolution/module.mk
+include %reldir%/nest/module.mk
+include %reldir%/publish/module.mk
 
-ALL_LOCAL_TARGETS += test/.gdbinit
+define run-octave-tests
+  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ); \
+  if $(AM_V_P); then \
+    echo ""; \
+    if [ -f %reldir%/fntests.log ]; then \
+      echo "Contents of %reldir%/fntests.log:"; \
+      echo ""; \
+      $(AWK) -f $(srcdir)/%reldir%/show-failures.awk %reldir%/fntests.log; \
+    else \
+      echo "%reldir%/fntests.log is missing!"; \
+    fi; \
+  fi
+endef
 
-test/.gdbinit: etc/gdbinit
-	@$(gdbinit_install_rule)
-
-check-local: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
-	cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
+check-local: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
+	$(AM_V_at)$(call run-octave-tests)
 
 if AMCOND_HAVE_LLVM
-check-jit: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
-	cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
+check-jit: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
+	$(AM_V_at)$(call run-octave-tests,--jit-compiler)
 endif
 
-COVERAGE_DIR = test/coverage
+COVERAGE_DIR = %reldir%/coverage
 COVERAGE_INFO = $(COVERAGE_DIR)/$(PACKAGE).info
 
 ## FIXME: To get something useful out of 'make coverage', you should use gcc
@@ -94,41 +120,41 @@ coverage: all
 	@echo ""
 .PHONY: coverage
 
-test/sparse.tst: test/build-sparse-tests.sh | test/$(octave_dirstamp)
+%reldir%/conv.tst: %reldir%/mk-conv-tst.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/test/build-sparse-tests.sh > $@-t && \
+	$(SHELL) $(srcdir)/%reldir%/mk-conv-tst.sh > $@-t && \
 	mv $@-t $@
 
-test/conv.tst: test/build-conv-tests.sh | test/$(octave_dirstamp)
+%reldir%/sparse.tst: %reldir%/mk-sparse-tst.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/test/build-conv-tests.sh > $@-t && \
+	$(SHELL) $(srcdir)/%reldir%/mk-sparse-tst.sh > $@-t && \
 	mv $@-t $@
 
 GENERATED_BC_OVERLOADS_DIRS := \
-  $(shell $(SHELL) $(srcdir)/test/build-bc-overload-tests.sh test --list-dirs)
+  $(shell $(SHELL) $(srcdir)/%reldir%/mk-bc-overloads-tst.sh test --list-dirs)
 
 GENERATED_BC_OVERLOADS_FILES := \
-  $(shell $(SHELL) $(srcdir)/test/build-bc-overload-tests.sh test --list-files)
+  $(shell $(SHELL) $(srcdir)/%reldir%/mk-bc-overloads-tst.sh test --list-files)
 
-$(GENERATED_BC_OVERLOADS_FILES): test/.bc-overload-tests-stamp
+$(GENERATED_BC_OVERLOADS_FILES): %reldir%/mk-bc-overloads-tst-stamp
 
-test/.bc-overload-tests-stamp: test/build-bc-overload-tests.sh test/bc-overloads-expected | test/$(octave_dirstamp)
+%reldir%/.bc-overload-tests-stamp: %reldir%/mk-bc-overloads-tst.sh %reldir%/bc-overloads-expected | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
-	$(SHELL) $(srcdir)/test/build-bc-overload-tests.sh test $(srcdir)/test/bc-overloads-expected && \
+	$(SHELL) $(srcdir)/%reldir%/mk-bc-overloads-tst.sh test $(srcdir)/%reldir%/bc-overloads-expected && \
 	touch $@
 
 GENERATED_TEST_FILES = \
-  test/conv.tst \
-  test/sparse.tst \
-  test/.bc-overload-tests-stamp
+  %reldir%/conv.tst \
+  %reldir%/sparse.tst \
+  %reldir%/.bc-overload-tests-stamp
 
 fixedtestsdir := $(octtestsdir)/fixed
 
 TEST_INST_FILES = \
-  test/conv.tst \
-  test/sparse.tst \
+  %reldir%/conv.tst \
+  %reldir%/sparse.tst \
   $(GENERATED_BC_OVERLOADS_FILES) \
-  $(filter-out test/fntests.m, $(TEST_FILES))
+  $(filter-out %reldir%/fntests.m, $(TEST_FILES))
 
 install-data-local: install-test-files
 
@@ -137,7 +163,7 @@ uninstall-local: uninstall-test-files
 install-test-files:
 	for f in $(TEST_INST_FILES); do \
 	  if test -f "$$f"; then d=; else d="$(srcdir)/"; fi; \
-	  base=`echo $$f | $(SED) 's,^test/,,'`; \
+	  base=`echo $$f | $(SED) 's,^%reldir%/,,'`; \
 	  $(MKDIR_P) $(DESTDIR)$(fixedtestsdir)/`echo $$base | $(SED) 's,/*[^/]*$$,,'`; \
 	  $(INSTALL_DATA) $$d$$f $(DESTDIR)$(fixedtestsdir)/$$base; \
 	done
@@ -145,44 +171,44 @@ install-test-files:
 
 uninstall-test-files:
 	for f in $(TEST_INST_FILES); do \
-	  base=`echo $$f | $(SED) 's,^test/,,'`; \
+	  base=`echo $$f | $(SED) 's,^%reldir%/,,'`; \
 	  rm -f $(DESTDIR)$(fixedtestsdir)/$$base; \
 	done
 .PHONY: uninstall-test-files
 
 BUILT_SOURCES += $(GENERATED_TEST_FILES)
 
-test_EXTRA_DIST += \
-  test/build-conv-tests.sh \
-  test/build-sparse-tests.sh \
-  test/build-bc-overload-tests.sh \
-  test/bc-overloads-expected \
-  test/build_bc_overloads_expected.m \
+%canon_reldir%_EXTRA_DIST += \
+  %reldir%/bc-overloads-expected \
+  %reldir%/mk-bc-overloads-tst.sh \
+  %reldir%/mk-conv-tst.sh \
+  %reldir%/mk-sparse-tst.sh \
+  %reldir%/mk_bc_overloads_expected.m \
+  %reldir%/show-failures.awk \
   $(TEST_FILES)
 
-EXTRA_DIST += $(test_EXTRA_DIST)
+EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
-test_CLEANFILES += \
+%canon_reldir%_CLEANFILES += \
   $(GENERATED_BC_OVERLOADS_FILES) \
   $(GENERATED_TEST_FILES)
 
-test_DISTCLEANFILES += \
-  test/.gdbinit \
-  test/fntests.log
+%canon_reldir%_DISTCLEANFILES += \
+  %reldir%/fntests.log
 
-CLEANFILES += $(test_CLEANFILES)
-DISTCLEANFILES += $(test_DISTCLEANFILES)
-MAINTAINERCLEANFILES += $(test_MAINTAINERCLEANFILES)
+CLEANFILES += $(%canon_reldir%_CLEANFILES)
+DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(%canon_reldir%_MAINTAINERCLEANFILES)
 
 clean-local: test-clean
 
 test-clean:
-	rm -f $(test_CLEANFILES)
+	rm -f $(%canon_reldir%_CLEANFILES)
 	rm -rf $(GENERATED_BC_OVERLOADS_DIRS)
 	rm -rf $(COVERAGE_DIR)
 
 test-distclean: test-clean
-	rm -f $(test_DISTCLEANFILES)
+	rm -f $(%canon_reldir%_DISTCLEANFILES)
 
 test-maintainer-clean: test-distclean
-	rm -f $(test_MAINTAINERCLEANFILES)
+	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)

@@ -4,19 +4,19 @@ Copyright (C) 2003-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,13 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cassert>
 #include <cstdint>
 
-#include <map>
-#include <vector>
+#include <limits>
 
-#include "data-conv.h"
-#include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -39,12 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-rand.h"
 #include "oct-time.h"
+#include "quit.h"
 #include "randgamma.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
 #include "singleton-cleanup.h"
 
-octave_rand *octave_rand::instance = 0;
+octave_rand *octave_rand::instance = nullptr;
 
 octave_rand::octave_rand (void)
   : current_distribution (uniform_dist), use_old_generators (false),
@@ -88,6 +87,7 @@ octave_rand::do_seed (void)
     case octave::mach_info::flt_fmt_ieee_big_endian:
       F77_FUNC (getsd, GETSD) (u.i[1], u.i[0]);
       break;
+
     default:
       F77_FUNC (getsd, GETSD) (u.i[0], u.i[1]);
       break;
@@ -101,7 +101,7 @@ force_to_fit_range (int32_t i, int32_t lo, int32_t hi)
 {
   assert (hi > lo && lo >= 0 && hi > lo);
 
-  i = i > 0 ? i : -i;
+  i = (i > 0 ? i : -i);
 
   if (i < lo)
     i = lo;
@@ -129,6 +129,7 @@ octave_rand::do_seed (double s)
       i1 = force_to_fit_range (u.i[0], 1, 2147483563);
       i0 = force_to_fit_range (u.i[1], 1, 2147483399);
       break;
+
     default:
       i0 = force_to_fit_range (u.i[0], 1, 2147483563);
       i1 = force_to_fit_range (u.i[1], 1, 2147483399);
@@ -145,22 +146,22 @@ octave_rand::do_reset (void)
   initialize_ranlib_generators ();
 }
 
-ColumnVector
+uint32NDArray
 octave_rand::do_state (const std::string& d)
 {
   return rand_states[d.empty () ? current_distribution : get_dist_id (d)];
 }
 
 void
-octave_rand::do_state (const ColumnVector& s, const std::string& d)
+octave_rand::do_state (const uint32NDArray& s, const std::string& d)
 {
   use_old_generators = false;
 
   int old_dist = current_distribution;
 
-  int new_dist = d.empty () ? current_distribution : get_dist_id (d);
+  int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
 
-  ColumnVector saved_state;
+  uint32NDArray saved_state;
 
   if (old_dist != new_dist)
     saved_state = get_internal_state ();
@@ -180,9 +181,9 @@ octave_rand::do_reset (const std::string& d)
 
   int old_dist = current_distribution;
 
-  int new_dist = d.empty () ? current_distribution : get_dist_id (d);
+  int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
 
-  ColumnVector saved_state;
+  uint32NDArray saved_state;
 
   if (old_dist != new_dist)
     saved_state = get_internal_state ();
@@ -326,7 +327,7 @@ octave_rand::do_scalar (double a)
           break;
 
         case poisson_dist:
-          if (a < 0.0 || ! octave::math::finite (a))
+          if (a < 0.0 || ! octave::math::isfinite (a))
             retval = octave::numeric_limits<double>::NaN ();
           else
             {
@@ -337,7 +338,7 @@ octave_rand::do_scalar (double a)
           break;
 
         case gamma_dist:
-          if (a <= 0.0 || ! octave::math::finite (a))
+          if (a <= 0.0 || ! octave::math::isfinite (a))
             retval = octave::numeric_limits<double>::NaN ();
           else
             F77_FUNC (dgengam, DGENGAM) (1.0, a, retval);
@@ -392,38 +393,36 @@ octave_rand::do_float_scalar (float a)
 
   if (use_old_generators)
     {
-      double da = a;
-      double dretval = 0.0;
       switch (current_distribution)
         {
         case uniform_dist:
-          F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, dretval);
+          F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, retval);
           break;
 
         case normal_dist:
-          F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, dretval);
+          F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, retval);
           break;
 
         case expon_dist:
-          F77_FUNC (dgenexp, DGENEXP) (1.0, dretval);
+          F77_FUNC (fgenexp, FGENEXP) (1.0f, retval);
           break;
 
         case poisson_dist:
-          if (da < 0.0 || ! octave::math::finite (a))
-            dretval = octave::numeric_limits<double>::NaN ();
+          if (a < 0.0f || ! octave::math::isfinite (a))
+            retval = octave::numeric_limits<float>::NaN ();
           else
             {
               // workaround bug in ignpoi, by calling with different Mu
-              F77_FUNC (dignpoi, DIGNPOI) (da + 1, dretval);
-              F77_FUNC (dignpoi, DIGNPOI) (da, dretval);
+              F77_FUNC (fignpoi, FIGNPOI) (a + 1, retval);
+              F77_FUNC (fignpoi, FIGNPOI) (a, retval);
             }
           break;
 
         case gamma_dist:
-          if (da <= 0.0 || ! octave::math::finite (a))
-            dretval = octave::numeric_limits<double>::NaN ();
+          if (a <= 0.0f || ! octave::math::isfinite (a))
+            retval = octave::numeric_limits<float>::NaN ();
           else
-            F77_FUNC (dgengam, DGENGAM) (1.0, da, dretval);
+            F77_FUNC (fgengam, FGENGAM) (1.0, a, retval);
           break;
 
         default:
@@ -431,7 +430,6 @@ octave_rand::do_float_scalar (float a)
             ("rand: invalid distribution ID = %d", current_distribution);
           break;
         }
-      retval = dretval;
     }
   else
     {
@@ -563,10 +561,10 @@ octave_rand::initialize_ranlib_generators (void)
 void
 octave_rand::initialize_mersenne_twister (void)
 {
+  uint32NDArray s;
+
   oct_init_by_entropy ();
-
-  ColumnVector s = get_internal_state ();
-
+  s = get_internal_state ();
   rand_states[uniform_dist] = s;
 
   oct_init_by_entropy ();
@@ -584,19 +582,18 @@ octave_rand::initialize_mersenne_twister (void)
   oct_init_by_entropy ();
   s = get_internal_state ();
   rand_states[gamma_dist] = s;
+
+  // All of the initializations above have messed with the internal state.
+  // Restore the state of the currently selected distribution.
+  set_internal_state (rand_states[current_distribution]);
 }
 
-ColumnVector
+uint32NDArray
 octave_rand::get_internal_state (void)
 {
-  ColumnVector s (MT_N + 1);
+  uint32NDArray s (dim_vector (MT_N + 1, 1));
 
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
-
-  oct_get_state (tmp);
-
-  for (octave_idx_type i = 0; i <= MT_N; i++)
-    s.elem (i) = static_cast<double> (tmp[i]);
+  oct_get_state (reinterpret_cast<uint32_t *> (s.fortran_vec ()));
 
   return s;
 }
@@ -629,45 +626,17 @@ octave_rand::get_dist_id (const std::string& d)
   return retval;
 }
 
-// Guarantee reproducible conversion of negative initialization values to
-// random number algorithm.  Note that Matlab employs slightly different rules.
-// 1) Seed saturates at 2^32-1 for any value larger than that.
-// 2) NaN, Inf are translated to 2^32-1.
-// 3) -Inf is translated to 0.
-static uint32_t
-double2uint32 (double d)
-{
-  uint32_t u;
-  static const double TWOUP32 = std::numeric_limits<uint32_t>::max() + 1.0;
-
-  if (! octave::math::finite (d))
-    u = 0;
-  else
-    {
-      d = fmod (d, TWOUP32);
-      if (d < 0)
-        d += TWOUP32;
-      u = static_cast<uint32_t> (d);
-    }
-
-  return u;
-}
-
 void
-octave_rand::set_internal_state (const ColumnVector& s)
+octave_rand::set_internal_state (const uint32NDArray& s)
 {
   octave_idx_type len = s.numel ();
-  octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
 
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
+  const uint32_t *sdata = reinterpret_cast <const uint32_t *> (s.data ());
 
-  for (octave_idx_type i = 0; i < n; i++)
-    tmp[i] = double2uint32 (s.elem (i));
-
-  if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
-    oct_set_state (tmp);
+  if (len == MT_N + 1 && sdata[MT_N] <= MT_N && sdata[MT_N] > 0)
+    oct_set_state (sdata);
   else
-    oct_init_by_array (tmp, len);
+    oct_init_by_array (sdata, len);
 }
 
 void
@@ -681,19 +650,6 @@ octave_rand::switch_to_generator (int dist)
     }
 }
 
-#define MAKE_RAND(len)                                          \
-  do                                                            \
-    {                                                           \
-      double val;                                               \
-      for (volatile octave_idx_type i = 0; i < len; i++)        \
-        {                                                       \
-          octave_quit ();                                       \
-          RAND_FUNC (val);                                      \
-          v[i] = val;                                           \
-        }                                                       \
-    }                                                           \
-  while (0)
-
 void
 octave_rand::fill (octave_idx_type len, double *v, double a)
 {
@@ -704,33 +660,21 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     {
     case uniform_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x); return x; });
       else
         oct_fill_randu (len, v);
       break;
 
     case normal_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x); return x; });
       else
         oct_fill_randn (len, v);
       break;
 
     case expon_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenexp, DGENEXP) (1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenexp, DGENEXP) (1.0, x); return x; });
       else
         oct_fill_rande (len, v);
       break;
@@ -738,18 +682,14 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     case poisson_dist:
       if (use_old_generators)
         {
-          if (a < 0.0 || ! octave::math::finite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+          if (a < 0.0 || ! octave::math::isfinite (a))
+            std::fill_n (v, len, octave::numeric_limits<double>::NaN ());
           else
             {
               // workaround bug in ignpoi, by calling with different Mu
               double tmp;
               F77_FUNC (dignpoi, DIGNPOI) (a + 1, tmp);
-#define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (a, x)
-              MAKE_RAND (len);
-#undef RAND_FUNC
+              std::generate_n (v, len, [a](void) { double x; F77_FUNC (dignpoi, DIGNPOI) (a, x); return x; });
             }
         }
       else
@@ -759,14 +699,10 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     case gamma_dist:
       if (use_old_generators)
         {
-          if (a <= 0.0 || ! octave::math::finite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+          if (a <= 0.0 || ! octave::math::isfinite (a))
+            std::fill_n (v, len, octave::numeric_limits<double>::NaN ());
           else
-#define RAND_FUNC(x) F77_FUNC (dgengam, DGENGAM) (1.0, a, x)
-            MAKE_RAND (len);
-#undef RAND_FUNC
+            std::generate_n (v, len, [a](void) { double x; F77_FUNC (dgengam, DGENGAM) (1.0, a, x); return x; });
         }
       else
         oct_fill_randg (a, len, v);
@@ -793,33 +729,21 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
     {
     case uniform_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, x); return x; });
       else
         oct_fill_float_randu (len, v);
       break;
 
     case normal_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, x); return x; });
       else
         oct_fill_float_randn (len, v);
       break;
 
     case expon_dist:
       if (use_old_generators)
-        {
-#define RAND_FUNC(x) F77_FUNC (dgenexp, DGENEXP) (1.0, x)
-          MAKE_RAND (len);
-#undef RAND_FUNC
-        }
+        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenexp, FGENEXP) (1.0f, x); return x; });
       else
         oct_fill_float_rande (len, v);
       break;
@@ -827,19 +751,14 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
     case poisson_dist:
       if (use_old_generators)
         {
-          double da = a;
-          if (da < 0.0 || ! octave::math::finite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+          if (a < 0.0f || ! octave::math::isfinite (a))
+            std::fill_n (v, len, octave::numeric_limits<float>::NaN ());
           else
             {
               // workaround bug in ignpoi, by calling with different Mu
-              double tmp;
-              F77_FUNC (dignpoi, DIGNPOI) (da + 1, tmp);
-#define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (da, x)
-              MAKE_RAND (len);
-#undef RAND_FUNC
+              float tmp;
+              F77_FUNC (fignpoi, FIGNPOI) (a + 1, tmp);
+              std::generate_n (v, len, [a](void) { float x; F77_FUNC (fignpoi, FIGNPOI) (a, x); return x; });
             }
         }
       else
@@ -849,15 +768,10 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
     case gamma_dist:
       if (use_old_generators)
         {
-          double da = a;
-          if (da <= 0.0 || ! octave::math::finite (a))
-#define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
-            MAKE_RAND (len);
-#undef RAND_FUNC
+          if (a <= 0.0f || ! octave::math::isfinite (a))
+            std::fill_n (v, len, octave::numeric_limits<float>::NaN ());
           else
-#define RAND_FUNC(x) F77_FUNC (dgengam, DGENGAM) (1.0, da, x)
-            MAKE_RAND (len);
-#undef RAND_FUNC
+            std::generate_n (v, len, [a](void) { float x; F77_FUNC (fgengam, FGENGAM) (1.0f, a, x); return x; });
         }
       else
         oct_fill_float_randg (a, len, v);

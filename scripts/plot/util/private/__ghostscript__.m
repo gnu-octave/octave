@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __ghostscript__ (@var{@dots{}})
@@ -24,7 +24,7 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-07-26
 
-function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
+function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
 
   dos_shell = (ispc () && ! isunix ());
 
@@ -59,6 +59,10 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
   for n = 1:2:numel (args)
     opts.(args{n}) = args{n+1};
   endfor
+
+  if (isempty (opts.binary))
+    error ("print:no_ghostscript", "__ghostscript__.m: Ghostscript binary is required for specified output format, but binary is not available in PATH");
+  endif
 
   if (isempty (opts.papersize))
     format_for_printer = false;
@@ -140,12 +144,11 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     endif
   endif
 
-  if (isempty (opts.binary))
-    error ("print:no_ghostscript", "__ghostscript__.m: ghostscript is required.");
-  elseif (isempty (opts.output))
+  if (isempty (opts.output))
     cmd = sprintf ("%s %s", opts.binary, gs_opts);
   else
-    cmd = sprintf ("%s %s -sOutputFile=\"%s\"", opts.binary, gs_opts, opts.output);
+    cmd = sprintf ('%s %s -sOutputFile="%s"',
+                   opts.binary, gs_opts, opts.output);
   endif
   if (! isempty (opts.prepend)
       && any (strcmpi (opts.device, {"pswrite", "ps2write", "pdfwrite"})))

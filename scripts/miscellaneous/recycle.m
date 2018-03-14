@@ -2,23 +2,23 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{current_state} =} recycle ()
-## @deftypefnx {} {@var{old_state} =} recycle (@var{new_state})
+## @deftypefn  {} {@var{val} =} recycle ()
+## @deftypefnx {} {@var{old_val} =} recycle (@var{new_val})
 ## Query or set the preference for recycling deleted files.
 ##
 ## When recycling is enabled, commands which would permanently erase files
@@ -33,7 +33,7 @@
 
 ## Author: jwe
 
-function retval = recycle (state)
+function val = recycle (new_val)
 
   persistent current_state = "off";
 
@@ -42,20 +42,20 @@ function retval = recycle (state)
   endif
 
   if (nargin == 0 || nargout > 0)
-    retval = current_state;
+    val = current_state;
   endif
 
   if (nargin == 1)
-    if (! ischar (state))
-      error ("recycle: STATE must be a character string");
+    if (! ischar (new_val))
+      error ("recycle: NEW_VAL must be a character string");
     endif
 
-    if (strcmpi (state, "on"))
+    if (strcmpi (new_val, "on"))
       error ("recycle: recycling files is not implemented");
-    elseif (strcmpi (state, "off"))
+    elseif (strcmpi (new_val, "off"))
       current_state = "off";
     else
-      error ("recycle: invalid value of STATE = '%s'", state);
+      error ("recycle: invalid value '%s'", new_val);
     endif
   endif
 
@@ -67,6 +67,6 @@ endfunction
 %! assert (recycle ("off"), "off");
 
 %!error recycle ("on", "and I mean it")
-%!error <STATE must be a character string> recycle (1)
+%!error <NEW_VAL must be a character string> recycle (1)
 %!error <recycling files is not implemented> recycle ("on")
-%!error <invalid value of STATE = 'foobar'> recycle ("foobar")
+%!error <invalid value 'foobar'> recycle ("foobar")

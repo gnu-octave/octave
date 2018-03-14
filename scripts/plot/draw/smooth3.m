@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{smoothed_data} =} smooth3 (@var{data})
@@ -81,7 +81,7 @@ function smoothed_data = smooth3 (data, method = "box", sz = 3, std_dev = 0.65)
 
 endfunction
 
-function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, method, sz, std_dev);
+function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, method, sz, std_dev)
 
   if (! isnumeric (data) || ndims (data) != 3)
     error ("smooth3: DATA must be a 3-D numeric matrix");
@@ -145,8 +145,8 @@ endfunction
 
 
 %!demo
-%! data = rand (10, 10, 10);
 %! clf;
+%! data = rand (10, 10, 10);
 %! subplot (1, 2, 1);
 %!  patch (isosurface (data, .5), ...
 %!         "FaceColor", "blue", "EdgeColor", "k");

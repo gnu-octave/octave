@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} plotmatrix (@var{x}, @var{y})
@@ -111,6 +111,7 @@ endfunction
 %!demo
 %! clf;
 %! plotmatrix (randn (100, 3), "g+");
+%! title ("plotmatrix() demo #1");
 
 
 function plotmatrixdelete (h, d, ax)
@@ -120,7 +121,7 @@ function plotmatrixdelete (h, d, ax)
     if (isaxes (hc) && strcmpi (get (hc, "beingdeleted"), "off"))
       parent = get (hc, "parent");
       ## If the parent is invalid or being deleted, then do nothing
-      if (ishandle (parent) && strcmpi (get (parent, "beingdeleted"), "off"))
+      if (ishghandle (parent) && strcmpi (get (parent, "beingdeleted"), "off"))
         delete (hc);
       endif
     endif

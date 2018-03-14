@@ -6,19 +6,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by the
-## Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful, but WITHOUT
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-## for more details.
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 : ${AWK=%AWK%}
 : ${FIND=%FIND%}
@@ -36,9 +36,9 @@ d2="$builddir/scripts"
 d3="$builddir/libinterp"
 d4="$top_srcdir/examples/data"
 
-d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d4_list=`$FIND "$d4" -type d -exec echo '{}' ';' | $SED 's/$/:/'`
 
 d1_path=`echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
@@ -49,7 +49,7 @@ d4_path=`echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s);
 octave_executable="$builddir/src/octave"
 
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
-IMAGEPATH="$top_srcdir/scripts/image"
+IMAGEPATH=".:$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
 BUILT_IN_DOCSTRINGS_FILE="$builddir/libinterp/DOCSTRINGS"
 TEXIMACROSFILE="$top_srcdir/doc/interpreter/macros.texi"
@@ -104,8 +104,10 @@ fi
 OCTAVE_ARCHLIBDIR="$builddir/src"; export OCTAVE_ARCHLIBDIR
 OCTAVE_BINDIR="$builddir/src"; export OCTAVE_BINDIR
 OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings"; export OCTAVE_DEFAULT_QT_SETTINGS
+OCTAVE_FONT_DIR="$top_srcdir/etc/fonts"; export OCTAVE_FONT_DIR
 OCTAVE_JAVA_DIR="$builddir/scripts/java"; export OCTAVE_JAVA_DIR
 OCTAVE_LOCALE_DIR="$builddir/libgui/languages"; export OCTAVE_LOCALE_DIR
+OCTAVE_QTHELP_COLLECTION="$builddir/doc/interpreter/octave_interpreter.qhc"; export OCTAVE_QTHELP_COLLECTION
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/site-rcfile"; export OCTAVE_SITE_INITFILE
 OCTAVE_VERSION_INITFILE="$top_srcdir/scripts/startup/version-rcfile"; export OCTAVE_VERSION_INITFILE
 

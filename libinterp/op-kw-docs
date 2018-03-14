@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 !
 @c libinterp/parse-tree/oct-parse.in.yy
@@ -122,7 +122,7 @@ and after @code{%@}}.  It is possible to nest block comments.
 @deftypefn {} {} ...
 Continuation marker.
 
-Joins current line with following line.
+Joins current line with following line before parsing.
 @end deftypefn
 &
 @c libinterp/parse-tree/oct-parse.in.yy
@@ -296,6 +296,9 @@ Element by element left division operator.
 -*- texinfo -*-
 @deftypefn {} {} \
 Left division operator.
+
+Within double-quoted strings, @samp{\} is the line continuation marker used
+to join the current line with the following line.
 @seealso{.\\, /, ldivide, mldivide}
 @end deftypefn
 :
@@ -379,6 +382,26 @@ Element by element logical 'or' operator.
 @deftypefn {} {} ||
 Logical 'or' (with short-circuit evaluation) operator.
 @seealso{|, or}
+@end deftypefn
+@
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} @@
+Return handle to a function.
+
+Example:
+
+@example
+@group
+f = @@plus;
+f (2, 2)
+@result{}  4
+@end group
+@end example
+
+(Note: @@ also finds use in creating classes.  See manual chapter titled
+Object Oriented Programming for detailed description.)
+@seealso{function, functions, func2str, str2func}
 @end deftypefn
 break
 @c libinterp/parse-tree/oct-parse.in.yy
@@ -736,7 +759,7 @@ If an error occurs within the first part of an unwind_protect block the
 commands within the unwind_protect_cleanup block are executed before the error
 is thrown.  If an error is not thrown, then the unwind_protect_cleanup block is
 still executed.  In other words, the unwind_protect_cleanup code is guaranteed
-to execute regardless of success or failure in the unwind_protect block. 
+to execute regardless of success or failure in the unwind_protect block.
 @seealso{unwind_protect_cleanup, try}
 @end deftypefn
 unwind_protect_cleanup

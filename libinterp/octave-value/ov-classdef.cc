@@ -4,19 +4,19 @@ Copyright (C) 2012-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "defun.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "ov-builtin.h"
 #include "ov-classdef.h"
@@ -36,13 +38,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "pt-assign.h"
 #include "pt-classdef.h"
+#include "pt-eval.h"
 #include "pt-funcall.h"
+#include "pt-idx.h"
 #include "pt-misc.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
-#include "singleton-cleanup.h"
 #include "symtab.h"
-#include "interpreter.h"
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
@@ -68,7 +70,7 @@ void
 err_property_access (const std::string& from, const cdef_property& prop,
                      bool is_set = false)
 {
-  octave_value acc = prop.get (is_set ? "SetAccess" : "GetAccess");
+  octave_value acc = (prop.get (is_set ? "SetAccess" : "GetAccess"));
   std::string acc_s;
 
   if (acc.is_string ())
@@ -144,22 +146,13 @@ make_fcn_handle (const octave_value& fcn, const std::string& nm)
   return retval;
 }
 
-inline octave_value_list
-execute_ov (octave_value val, const octave_value_list& args, int nargout)
-{
-  std::list<octave_value_list> idx (1, args);
-
-  std::string type ("(");
-
-  return val.subsref (type, idx, nargout);
-}
-
 static cdef_class
 lookup_class (const std::string& name, bool error_if_not_found = true,
               bool load_if_not_found = true)
 {
-  return cdef_manager::find_class (name, error_if_not_found,
-                                   load_if_not_found);
+  cdef_manager& cdm = octave::__get_cdef_manager__ ("lookup_class");
+
+  return cdm.find_class (name, error_if_not_found, load_if_not_found);
 }
 
 static cdef_class
@@ -207,9 +200,8 @@ to_ov (const std::list<cdef_class>& class_list)
   Cell cls (class_list.size (), 1);
   int i = 0;
 
-  for (std::list<cdef_class>::const_iterator it = class_list.begin ();
-       it != class_list.end (); ++it, ++i)
-    cls(i) = to_ov (*it);
+  for (const auto& cdef_cls : class_list)
+    cls(i++) = to_ov (cdef_cls);
 
   return octave_value (cls);
 }
@@ -266,7 +258,9 @@ get_class_context (std::string& name, bool& in_constructor)
 {
   cdef_class cls;
 
-  octave_function* fcn = octave_call_stack::current ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("get_class_context");
+
+  octave_function *fcn = cs.current ();
 
   in_constructor = false;
 
@@ -370,7 +364,7 @@ check_access (const cdef_class& cls, const octave_value& acc,
             panic_impossible ();
         }
     }
-  else if (acc.is_cell ())
+  else if (acc.iscell ())
     {
       Cell acc_c = acc.cell_value ();
 
@@ -420,18 +414,23 @@ is_dummy_method (const octave_value& fcn)
   return retval;
 }
 
-bool
+static bool
 is_method_executing (const octave_value& ov, const cdef_object& obj)
 {
-  octave_function* stack_fcn = octave_call_stack::current ();
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("is_method_executing");
 
-  octave_function* method_fcn = ov.function_value (true);
+  octave::call_stack& cs = octave::__get_call_stack__ ("is_method_executing");
+
+  octave_function *stack_fcn = cs.current ();
+
+  octave_function *method_fcn = ov.function_value (true);
 
   // Does the top of the call stack match our target function?
 
   if (stack_fcn && stack_fcn == method_fcn)
     {
-      octave_user_function* uf = method_fcn->user_function_value (true);
+      octave_user_function *uf = method_fcn->user_function_value (true);
 
       // We can only check the context object for user-function (not builtin),
       // where we have access to the parameters (arguments and return values).
@@ -445,12 +444,14 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
           // methods, it's the first argument of the function; for ctors, it
           // is the first return value.
 
-          tree_parameter_list* pl = uf->is_classdef_constructor ()
+          octave::tree_parameter_list *pl = uf->is_classdef_constructor ()
             ? uf->return_list () : uf->parameter_list ();
 
           if (pl && pl->size () > 0)
             {
-              octave_value arg0 = pl->front ()->lvalue ().value ();
+              octave::tree_decl_elt *elt = pl->front ();
+
+              octave_value arg0 = tw.evaluate (elt);
 
               if (arg0.is_defined () && arg0.type_name () == "object")
                 {
@@ -526,7 +527,7 @@ class_fromName (const octave_value_list& args, int /* nargout */)
 
   std::string name = args(0).xstring_value ("fromName: CLASS_NAME must be a string");
 
-  retval(0) = to_ov (lookup_class (name));
+  retval(0) = to_ov (lookup_class (name, false));
 
   return retval;
 }
@@ -639,13 +640,14 @@ handle_delete (const octave_value_list& /* args */, int /* nargout */)
   return retval;
 }
 
-static cdef_class
-make_class (const std::string& name,
-            const std::list<cdef_class>& super_list = std::list<cdef_class> ())
+cdef_class
+cdef_manager::make_class (const std::string& name,
+                          const std::list<cdef_class>& super_list)
 {
   cdef_class cls (name, super_list);
 
-  cls.set_class (cdef_class::meta_class ());
+  cls.set_class (meta_class ());
+
   cls.put ("Abstract", false);
   cls.put ("ConstructOnLoad", false);
   cls.put ("ContainingPackage", Matrix ());
@@ -672,12 +674,11 @@ make_class (const std::string& name,
       bool all_handle_compatible = true;
       bool has_handle_class = false;
 
-      for (std::list<cdef_class>::const_iterator it = super_list.begin ();
-           it != super_list.end (); ++it)
+      for (const auto& cl : super_list)
         {
           all_handle_compatible = all_handle_compatible
-                                  && it->get ("HandleCompatible").bool_value ();
-          has_handle_class = has_handle_class || it->is_handle_class ();
+                                  && cl.get ("HandleCompatible").bool_value ();
+          has_handle_class = has_handle_class || cl.is_handle_class ();
         }
 
       if (has_handle_class && ! all_handle_compatible)
@@ -690,19 +691,21 @@ make_class (const std::string& name,
     }
 
   if (! name.empty ())
-    cdef_manager::register_class (cls);
+    register_class (cls);
 
   return cls;
 }
 
-static cdef_class
-make_class (const std::string& name, const cdef_class& super)
+cdef_class
+cdef_manager::make_class (const std::string& name,
+                          const cdef_class& super)
 {
   return make_class (name, std::list<cdef_class> (1, super));
 }
 
-static cdef_class
-make_meta_class (const std::string& name, const cdef_class& super)
+cdef_class
+cdef_manager::make_meta_class (const std::string& name,
+                               const cdef_class& super)
 {
   cdef_class cls = make_class (name, super);
 
@@ -712,16 +715,17 @@ make_meta_class (const std::string& name, const cdef_class& super)
   return cls;
 }
 
-static cdef_property
-make_property (const cdef_class& cls, const std::string& name,
-               const octave_value& get_method = Matrix (),
-               const std::string& get_access = "public",
-               const octave_value& set_method = Matrix (),
-               const std::string& set_access = "public")
+cdef_property
+cdef_manager::make_property (const cdef_class& cls, const std::string& name,
+                             const octave_value& get_method,
+                             const std::string& get_access,
+                             const octave_value& set_method,
+                             const std::string& set_access)
 {
   cdef_property prop (name);
 
-  prop.set_class (cdef_class::meta_property ());
+  prop.set_class (meta_property ());
+
   prop.put ("Description", "");
   prop.put ("DetailedDescription", "");
   prop.put ("Abstract", false);
@@ -741,28 +745,29 @@ make_property (const cdef_class& cls, const std::string& name,
 
   std::string class_name = cls.get_name ();
 
-  if (! get_method.is_empty ())
+  if (! get_method.isempty ())
     make_function_of_class (class_name, get_method);
-  if (! set_method.is_empty ())
+  if (! set_method.isempty ())
     make_function_of_class (class_name, set_method);
 
   return prop;
 }
 
-inline cdef_property
-make_attribute (const cdef_class& cls, const std::string& name)
+cdef_property
+cdef_manager::make_attribute (const cdef_class& cls, const std::string& name)
 {
   return make_property (cls, name, Matrix (), "public", Matrix (), "private");
 }
 
-static cdef_method
-make_method (const cdef_class& cls, const std::string& name,
-             const octave_value& fcn,const std::string& m_access = "public",
-             bool is_static = false)
+cdef_method
+cdef_manager::make_method (const cdef_class& cls, const std::string& name,
+                           const octave_value& fcn,
+                           const std::string& m_access, bool is_static)
 {
   cdef_method meth (name);
 
-  meth.set_class (cdef_class::meta_method ());
+  meth.set_class (meta_method ());
+
   meth.put ("Abstract", false);
   meth.put ("Access", m_access);
   meth.put ("DefiningClass", to_ov (cls));
@@ -783,30 +788,40 @@ make_method (const cdef_class& cls, const std::string& name,
   return meth;
 }
 
-inline cdef_method
-make_method (const cdef_class& cls, const std::string& name,
-             octave_builtin::fcn ff, const std::string& m_access = "public",
-             bool is_static = false)
+cdef_method
+cdef_manager::make_method (const cdef_class& cls, const std::string& name,
+                           octave_builtin::fcn ff,
+                           const std::string& m_access, bool is_static)
 {
   octave_value fcn (new octave_builtin (ff, name));
 
   return make_method (cls, name, fcn, m_access, is_static);
 }
 
-static cdef_package
-make_package (const std::string& nm,
-              const std::string& parent = "")
+cdef_method
+cdef_manager::make_method (const cdef_class& cls, const std::string& name,
+                           octave_builtin::meth mm,
+                           const std::string& m_access, bool is_static)
+{
+  octave_value fcn (new octave_builtin (mm, name));
+
+  return make_method (cls, name, fcn, m_access, is_static);
+}
+
+cdef_package
+cdef_manager::make_package (const std::string& nm, const std::string& parent)
 {
   cdef_package pack (nm);
 
-  pack.set_class (cdef_class::meta_package ());
+  pack.set_class (meta_package ());
+
   if (parent.empty ())
     pack.put ("ContainingPackage", Matrix ());
   else
-    pack.put ("ContainingPackage", to_ov (cdef_manager::find_package (parent)));
+    pack.put ("ContainingPackage", to_ov (find_package (parent)));
 
   if (! nm.empty ())
-    cdef_manager::register_package (pack);
+    register_package (pack);
 
   return pack;
 }
@@ -818,11 +833,10 @@ int octave_classdef::t_id (-1);
 const std::string octave_classdef::t_name ("object");
 
 void
-octave_classdef::register_type (void)
+octave_classdef::register_type (octave::type_info& ti)
 {
-  t_id = octave_value_typeinfo::register_type
-         (octave_classdef::t_name, "<unknown>",
-          octave_value (new octave_classdef ()));
+  t_id = ti.register_type (octave_classdef::t_name, "<unknown>",
+                           octave_value (new octave_classdef ()));
 }
 
 octave_value_list
@@ -981,24 +995,6 @@ octave_classdef::numel (const octave_value_list& idx)
 void
 octave_classdef::print (std::ostream& os, bool)
 {
-  if (! called_from_builtin ())
-    {
-      cdef_method meth = object.get_class ().find_method ("disp");
-
-      if (meth.ok ())
-        {
-          octave_value_list args;
-
-          count++;
-          args(0) = octave_value (this);
-
-          indent (os);
-          meth.execute (args, 0, true, "disp");
-
-          return;
-        }
-    }
-
   print_raw (os);
 }
 
@@ -1009,7 +1005,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
   os << "<object ";
   if (object.is_array ())
     os << "array ";
-  os << class_name () << ">";
+  os << class_name () << '>';
   newline (os);
 }
 
@@ -1024,25 +1020,7 @@ void
 octave_classdef::print_with_name (std::ostream& os, const std::string& name,
                                   bool print_padding)
 {
-  cdef_method meth = object.get_class ().find_method ("display");
-
-  if (meth.ok ())
-    {
-      octave_value_list args;
-
-      count++;
-      args(0) = octave_value (this);
-
-      string_vector arg_names (1);
-
-      arg_names[0] = name;
-      args.stash_name_tags (arg_names);
-
-      indent (os);
-      meth.execute (args, 0, true, "display");
-    }
-  else
-    octave_base_value::print_with_name (os, name, print_padding);
+  octave_base_value::print_with_name (os, name, print_padding);
 }
 
 bool
@@ -1067,38 +1045,33 @@ public:
   ~octave_classdef_meta (void)
   { object.meta_release (); }
 
-  octave_function* function_value (bool = false) { return this; }
+  bool is_classdef_meta (void) const { return true; }
+
+  bool is_package (void) const { return object.is_package(); }
+
+  octave_function * function_value (bool = false) { return this; }
 
   octave_value_list
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,
            int nargout)
-  { return object.meta_subsref (type, idx, nargout); }
-
-  octave_value
-  subsref (const std::string& type,
-           const std::list<octave_value_list>& idx)
   {
-    octave_value_list retval;
-
-    retval = subsref (type, idx, 1);
-
-    return (retval.length () > 0 ? retval(0) : octave_value ());
+    return object.meta_subsref (type, idx, nargout);
   }
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx)
+  octave_value_list call (octave::tree_evaluator&, int nargout,
+                          const octave_value_list& args)
   {
     // Emulate ()-type meta subsref
 
-    std::list<octave_value_list> l (1, idx);
+    std::list<octave_value_list> idx (1, args);
     std::string type ("(");
 
-    return subsref (type, l, nargout);
+    return subsref (type, idx, nargout);
   }
 
-  bool is_postfix_index_handled (char type) const
-  { return object.meta_is_postfix_index_handled (type); }
+  bool accepts_postfix_index (char type) const
+  { return object.meta_accepts_postfix_index (type); }
 
   bool
   is_classdef_constructor (const std::string& cname = "") const
@@ -1133,50 +1106,14 @@ public:
   octave_classdef_superclass_ref (const octave_value_list& a)
     : octave_function (), args (a) { }
 
-  ~octave_classdef_superclass_ref (void) { }
+  ~octave_classdef_superclass_ref (void) = default;
 
-  octave_function* function_value (bool = false) { return this; }
+  bool is_classdef_superclass_ref (void) const { return true; }
 
-  octave_value_list
-  subsref (const std::string& type,
-           const std::list<octave_value_list>& idx,
-           int nargout)
-  {
-    size_t skip = 0;
-    octave_value_list retval;
-
-    switch (type[0])
-      {
-      case '(':
-        skip = 1;
-        retval = do_multi_index_op (type.length () > 1 ? 1 : nargout,
-                                    idx.front ());
-        break;
-      default:
-        retval = do_multi_index_op (1, octave_value_list ());
-        break;
-      }
-
-    if (type.length () > skip && idx.size () > skip
-        && retval.length () > 0)
-      retval = retval(0).next_subsref (nargout, type, idx, skip);
-
-    return retval;
-  }
-
-  octave_value
-  subsref (const std::string& type,
-           const std::list<octave_value_list>& idx)
-  {
-    octave_value_list retval;
-
-    retval = subsref (type, idx, 1);
-
-    return (retval.length () > 0 ? retval(0) : octave_value ());
-  }
+  octave_function * function_value (bool = false) { return this; }
 
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx)
+  call (octave::tree_evaluator&, int nargout, const octave_value_list& idx)
   {
     octave_value_list retval;
 
@@ -1204,7 +1141,10 @@ public:
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        octave_value sym = symbol_table::varval (mname);
+        octave::symbol_scope scope
+          = octave::__require_current_scope__ ("octave_classdef_superclass_ref::call");
+
+        octave_value sym = scope.varval (mname);
 
         cls.run_constructor (to_cdef_ref (sym), idx);
 
@@ -1247,7 +1187,10 @@ public:
 private:
   bool is_constructed_object (const std::string nm)
   {
-    octave_function *of = octave_call_stack::current ();
+    octave::call_stack& cs
+      = octave::__get_call_stack__ ("octave_classdef_superclass_ref::is_constructed_object");
+
+    octave_function *of = cs.current ();
 
     if (of->is_classdef_constructor ())
       {
@@ -1255,7 +1198,7 @@ private:
 
         if (uf)
           {
-            tree_parameter_list *ret_list = uf->return_list ();
+            octave::tree_parameter_list *ret_list = uf->return_list ();
 
             if (ret_list && ret_list->length () == 1)
               return (ret_list->front ()->name () == nm);
@@ -1290,8 +1233,8 @@ cdef_object::map_value (void) const
 
       props = cls.get_property_map (cdef_class::property_all);
 
-      for (std::map<std::string, cdef_property>::iterator it = props.begin ();
-           it != props.end (); ++it)
+      // FIXME: Why not const here?
+      for (auto& prop_val : props)
         {
           if (is_array ())
             {
@@ -1300,16 +1243,16 @@ cdef_object::map_value (void) const
               Cell cvalue (a_obj.dims ());
 
               for (octave_idx_type i = 0; i < a_obj.numel (); i++)
-                cvalue (i) = it->second.get_value (a_obj(i), false);
+                cvalue (i) = prop_val.second.get_value (a_obj(i), false);
 
-              retval.setfield (it->first, cvalue);
+              retval.setfield (prop_val.first, cvalue);
             }
           else
             {
               Cell cvalue (dim_vector (1, 1),
-                           it->second.get_value (*this, false));
+                           prop_val.second.get_value (*this, false));
 
-              retval.setfield (it->first, cvalue);
+              retval.setfield (prop_val.first, cvalue);
             }
         }
     }
@@ -1613,7 +1556,7 @@ cdef_object_array::subsref (const std::string& type,
 
           break;
         }
-      // fall through "default"
+      OCTAVE_FALLTHROUGH;
 
     default:
       error ("can't perform indexing operation on array of %s objects",
@@ -1684,12 +1627,19 @@ cdef_object_array::subsasgn (const std::string& type,
         }
       else
         {
-          const octave_value_list& ival = idx.front ();
+          const octave_value_list& ivl = idx.front ();
+
+          // Fill in trailing singleton dimensions so that
+          // array.index doesn't create a new blank entry (bug #46660).
+          const octave_idx_type one = static_cast<octave_idx_type> (1);
+          const octave_value_list& ival = ivl.length () >= 2
+                                            ? ivl : ((array.dims ()(0) == 1)
+                                                      ? ovl (one, ivl(0))
+                                                      : ovl (ivl(0), one));
 
           bool is_scalar = true;
 
-          Array<idx_vector> iv (dim_vector (1, std::max (ival.length (),
-            static_cast<octave_idx_type> (2))));
+          Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
           for (int i = 0; i < ival.length (); i++)
             {
@@ -1711,11 +1661,6 @@ cdef_object_array::subsasgn (const std::string& type,
                        ", the index must reference a single object in the "
                        "array.");
             }
-
-          // Fill in trailing singleton dimensions so that
-          // array.index doesn't create a new blank entry (bug #46660).
-          for (int i = ival.length (); i < 2; i++)
-            iv(i) = static_cast<octave_idx_type> (1);
 
           Array<cdef_object> a = array.index (iv, true);
 
@@ -1820,7 +1765,7 @@ cdef_object_scalar::is_constructed_for (const cdef_class& cls) const
 bool
 cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
 {
-  std::map< cdef_class, std::list<cdef_class> >::const_iterator it;
+  std::map< cdef_class, std::list<cdef_class>>::const_iterator it;
 
   if (is_constructed ())
     return true;
@@ -1828,9 +1773,8 @@ cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
            || it->second.empty ())
     return true;
 
-  for (std::list<cdef_class>::const_iterator lit = it->second.begin ();
-       lit != it->second.end (); ++lit)
-    if (! is_constructed_for (*lit))
+  for (const auto& cdef_cls : it->second)
+    if (! is_constructed_for (cdef_cls))
       return false;
 
   return true;
@@ -1858,8 +1802,7 @@ value_cdef_object::~value_cdef_object (void)
 #endif
 }
 
-cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>&
-                                            superclasses)
+cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
   : cdef_meta_object_rep (), member_count (0), handle_class (false),
     object_count (0), meta (false)
 {
@@ -1906,41 +1849,40 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
   return cdef_method ();
 }
 
-class ctor_analyzer : public tree_walker
+class ctor_analyzer : public octave::tree_walker
 {
 public:
   ctor_analyzer (const std::string& ctor, const std::string& obj)
-    : tree_walker (), who (ctor), obj_name (obj) { }
+    : octave::tree_walker (), who (ctor), obj_name (obj) { }
 
-  void visit_statement_list (tree_statement_list& t)
+  void visit_statement_list (octave::tree_statement_list& t)
   {
-    for (tree_statement_list::const_iterator it = t.begin ();
-         it != t.end (); ++it)
-      (*it)->accept (*this);
+    for (const auto& stmt_p : t)
+      stmt_p->accept (*this);
   }
 
-  void visit_statement (tree_statement& t)
+  void visit_statement (octave::tree_statement& t)
   {
     if (t.is_expression ())
       t.expression ()->accept (*this);
   }
 
-  void visit_simple_assignment (tree_simple_assignment& t)
+  void visit_simple_assignment (octave::tree_simple_assignment& t)
   {
     t.right_hand_side ()->accept (*this);
   }
 
-  void visit_multi_assignment (tree_multi_assignment& t)
+  void visit_multi_assignment (octave::tree_multi_assignment& t)
   {
     t.right_hand_side ()->accept (*this);
   }
 
-  void visit_index_expression (tree_index_expression& t)
+  void visit_index_expression (octave::tree_index_expression& t)
   {
     t.expression ()->accept (*this);
   }
 
-  void visit_funcall (tree_funcall& t)
+  void visit_funcall (octave::tree_funcall& t)
   {
     octave_value fcn = t.function ();
 
@@ -1972,42 +1914,41 @@ public:
   { return ctor_list; }
 
   // NO-OP
-  void visit_anon_fcn_handle (tree_anon_fcn_handle&) { }
-  void visit_argument_list (tree_argument_list&) { }
-  void visit_binary_expression (tree_binary_expression&) { }
-  void visit_break_command (tree_break_command&) { }
-  void visit_colon_expression (tree_colon_expression&) { }
-  void visit_continue_command (tree_continue_command&) { }
-  void visit_global_command (tree_global_command&) { }
-  void visit_persistent_command (tree_persistent_command&) { }
-  void visit_decl_elt (tree_decl_elt&) { }
-  void visit_decl_init_list (tree_decl_init_list&) { }
-  void visit_simple_for_command (tree_simple_for_command&) { }
-  void visit_complex_for_command (tree_complex_for_command&) { }
+  void visit_anon_fcn_handle (octave::tree_anon_fcn_handle&) { }
+  void visit_argument_list (octave::tree_argument_list&) { }
+  void visit_binary_expression (octave::tree_binary_expression&) { }
+  void visit_break_command (octave::tree_break_command&) { }
+  void visit_colon_expression (octave::tree_colon_expression&) { }
+  void visit_continue_command (octave::tree_continue_command&) { }
+  void visit_decl_command (octave::tree_decl_command&) { }
+  void visit_decl_init_list (octave::tree_decl_init_list&) { }
+  void visit_decl_elt (octave::tree_decl_elt&) { }
+  void visit_simple_for_command (octave::tree_simple_for_command&) { }
+  void visit_complex_for_command (octave::tree_complex_for_command&) { }
   void visit_octave_user_script (octave_user_script&) { }
   void visit_octave_user_function (octave_user_function&) { }
-  void visit_function_def (tree_function_def&) { }
-  void visit_identifier (tree_identifier&) { }
-  void visit_if_clause (tree_if_clause&) { }
-  void visit_if_command (tree_if_command&) { }
-  void visit_if_command_list (tree_if_command_list&) { }
-  void visit_switch_case (tree_switch_case&) { }
-  void visit_switch_case_list (tree_switch_case_list&) { }
-  void visit_switch_command (tree_switch_command&) { }
-  void visit_matrix (tree_matrix&) { }
-  void visit_cell (tree_cell&) { }
-  void visit_no_op_command (tree_no_op_command&) { }
-  void visit_constant (tree_constant&) { }
-  void visit_fcn_handle (tree_fcn_handle&) { }
-  void visit_parameter_list (tree_parameter_list&) { }
-  void visit_postfix_expression (tree_postfix_expression&) { }
-  void visit_prefix_expression (tree_prefix_expression&) { }
-  void visit_return_command (tree_return_command&) { }
-  void visit_return_list (tree_return_list&) { }
-  void visit_try_catch_command (tree_try_catch_command&) { }
-  void visit_unwind_protect_command (tree_unwind_protect_command&) { }
-  void visit_while_command (tree_while_command&) { }
-  void visit_do_until_command (tree_do_until_command&) { }
+  void visit_function_def (octave::tree_function_def&) { }
+  void visit_identifier (octave::tree_identifier&) { }
+  void visit_if_clause (octave::tree_if_clause&) { }
+  void visit_if_command (octave::tree_if_command&) { }
+  void visit_if_command_list (octave::tree_if_command_list&) { }
+  void visit_switch_case (octave::tree_switch_case&) { }
+  void visit_switch_case_list (octave::tree_switch_case_list&) { }
+  void visit_switch_command (octave::tree_switch_command&) { }
+  void visit_matrix (octave::tree_matrix&) { }
+  void visit_cell (octave::tree_cell&) { }
+  void visit_no_op_command (octave::tree_no_op_command&) { }
+  void visit_constant (octave::tree_constant&) { }
+  void visit_fcn_handle (octave::tree_fcn_handle&) { }
+  void visit_parameter_list (octave::tree_parameter_list&) { }
+  void visit_postfix_expression (octave::tree_postfix_expression&) { }
+  void visit_prefix_expression (octave::tree_prefix_expression&) { }
+  void visit_return_command (octave::tree_return_command&) { }
+  void visit_return_list (octave::tree_return_list&) { }
+  void visit_try_catch_command (octave::tree_try_catch_command&) { }
+  void visit_unwind_protect_command (octave::tree_unwind_protect_command&) { }
+  void visit_while_command (octave::tree_while_command&) { }
+  void visit_do_until_command (octave::tree_do_until_command&) { }
 
 private:
   // The name of the constructor being analyzed.
@@ -2040,8 +1981,8 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 
           if (uf)
             {
-              tree_parameter_list *ret_list = uf->return_list ();
-              tree_statement_list *body = uf->body ();
+              octave::tree_parameter_list *ret_list = uf->return_list ();
+              octave::tree_statement_list *body = uf->body ();
 
               if (! ret_list || ret_list->size () != 1)
                 error ("%s: invalid constructor output arguments",
@@ -2055,17 +1996,14 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
               std::list<cdef_class> explicit_ctor_list
                 = a.get_constructor_list ();
 
-              for (std::list<cdef_class>::const_iterator
-                   it = explicit_ctor_list.begin ();
-                   it != explicit_ctor_list.end ();
-                   ++it)
+              for (const auto& cdef_cls : explicit_ctor_list)
                 {
 #if DEBUG_TRACE
                   std::cerr << "explicit superclass constructor: "
-                            << it->get_name () << std::endl;
+                            << cdef_cls.get_name () << std::endl;
 #endif
 
-                  implicit_ctor_list.remove (*it);
+                  implicit_ctor_list.remove (cdef_cls);
                 }
             }
         }
@@ -2089,9 +2027,8 @@ cdef_class::cdef_class_rep::get_methods (void)
 
   int idx = 0;
 
-  for (std::map<std::string,cdef_method>::const_iterator
-       it = meths.begin (); it != meths.end (); ++it, ++idx)
-    c (idx, 0) = to_ov (it->second);
+  for (const auto& nm_mthd : meths)
+    c(idx++, 0) = to_ov (nm_mthd.second);
 
   return c;
 }
@@ -2188,9 +2125,8 @@ cdef_class::cdef_class_rep::get_properties (int mode)
 
   int idx = 0;
 
-  for (std::map<std::string,cdef_property>::const_iterator
-       it = props.begin (); it != props.end (); ++it, ++idx)
-    c (idx, 0) = to_ov (it->second);
+  for (const auto& pname_prop : props)
+    c(idx++, 0) = to_ov (pname_prop.second);
 
   return c;
 }
@@ -2252,16 +2188,15 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 {
   load_all_methods ();
 
-  for (method_const_iterator it = method_map.begin ();
-       it != method_map.end(); ++it)
+  for (const auto& cls_fnmap : method_map)
     {
-      if (! it->second.is_constructor ())
+      if (! cls_fnmap.second.is_constructor ())
         {
-          std::string nm = it->second.get_name ();
+          std::string nm = cls_fnmap.second.get_name ();
 
           if (! all)
             {
-              octave_value acc = it->second.get ("Access");
+              octave_value acc = cls_fnmap.second.get ("Access");
 
               if (! acc.is_string()
                   || acc.string_value () != "public")
@@ -2272,14 +2207,13 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
         }
     }
 
-  for (property_const_iterator it = property_map.begin ();
-       it != property_map.end (); ++it)
+  for (const auto& pname_prop : property_map)
     {
-      std::string nm = it->second.get_name ();
+      std::string nm = pname_prop.second.get_name ();
 
       if (! all)
         {
-          octave_value acc = it->second.get ("GetAccess");
+          octave_value acc = pname_prop.second.get ("GetAccess");
 
           if (! acc.is_string()
               || acc.string_value () != "public")
@@ -2426,7 +2360,10 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 void
 cdef_class::cdef_class_rep::meta_release (void)
 {
-  cdef_manager::unregister_class (wrap ());
+  cdef_manager& cdm
+    = octave::__get_cdef_manager__ ("cdef_class::cdef_class_rep::meta_release");
+
+  cdm.unregister_class (wrap ());
 }
 
 void
@@ -2437,21 +2374,19 @@ cdef_class::cdef_class_rep::initialize_object (cdef_object& obj)
   std::list<cdef_class> super_classes = lookup_classes (
                                           get ("SuperClasses").cell_value ());
 
-  for (std::list<cdef_class>::iterator it = super_classes.begin ();
-       it != super_classes.end (); ++it)
-    it->initialize_object (obj);
+  for (auto& cls : super_classes)
+    cls.initialize_object (obj);
 
-  for (property_const_iterator it = property_map.begin ();
-       it != property_map.end (); ++it)
+  for (const auto& pname_prop : property_map)
     {
-      if (! it->second.get ("Dependent").bool_value ())
+      if (! pname_prop.second.get ("Dependent").bool_value ())
         {
-          octave_value pvalue = it->second.get ("DefaultValue");
+          octave_value pvalue = pname_prop.second.get ("DefaultValue");
 
           if (pvalue.is_defined ())
-            obj.put (it->first, pvalue);
+            obj.put (pname_prop.first, pvalue);
           else
-            obj.put (it->first, octave_value (Matrix ()));
+            obj.put (pname_prop.first, octave_value (Matrix ()));
         }
     }
 
@@ -2465,10 +2400,9 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
 {
   octave_value_list empty_args;
 
-  for (std::list<cdef_class>::const_iterator it = implicit_ctor_list.begin ();
-       it != implicit_ctor_list.end (); ++it)
+  for (const auto& cls : implicit_ctor_list)
     {
-      cdef_class supcls = lookup_class (*it);
+      cdef_class supcls = lookup_class (cls);
 
       supcls.run_constructor (obj, empty_args);
     }
@@ -2525,38 +2459,41 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 
       static cdef_object empty_class;
 
-      if (this_cls == cdef_class::meta_class ())
+      cdef_manager& cdm
+        = octave::__get_cdef_manager__ ("cdef_class::cdef_class_rep::construct_object");
+
+      if (this_cls == cdm.meta_class ())
         {
           if (! empty_class.ok ())
-            empty_class = make_class ("", std::list<cdef_class> ());
+            empty_class = cdm.make_class ("", std::list<cdef_class> ());
           obj = empty_class;
         }
-      else if (this_cls == cdef_class::meta_property ())
+      else if (this_cls == cdm.meta_property ())
         {
           static cdef_property empty_property;
 
           if (! empty_class.ok ())
-            empty_class = make_class ("", std::list<cdef_class> ());
+            empty_class = cdm.make_class ("", std::list<cdef_class> ());
           if (! empty_property.ok ())
-            empty_property = make_property (empty_class, "");
+            empty_property = cdm.make_property (empty_class, "");
           obj = empty_property;
         }
-      else if (this_cls == cdef_class::meta_method ())
+      else if (this_cls == cdm.meta_method ())
         {
           static cdef_method empty_method;
 
           if (! empty_class.ok ())
-            empty_class = make_class ("", std::list<cdef_class> ());
+            empty_class = cdm.make_class ("", std::list<cdef_class> ());
           if (! empty_method.ok ())
-            empty_method = make_method (empty_class, "", octave_value ());
+            empty_method = cdm.make_method (empty_class, "", octave_value ());
           obj = empty_method;
         }
-      else if (this_cls == cdef_class::meta_package ())
+      else if (this_cls == cdm.meta_package ())
         {
           static cdef_package empty_package;
 
           if (! empty_package.ok ())
-            empty_package = make_package ("");
+            empty_package = cdm.make_package ("");
           obj = empty_package;
         }
       else
@@ -2583,13 +2520,16 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 }
 
 static octave_value
-compute_attribute_value (tree_classdef_attribute* t)
+compute_attribute_value (octave::tree_evaluator& tw,
+                         octave::tree_classdef_attribute *t)
 {
-  if (t->expression ())
+  octave::tree_expression *expr = t->expression ();
+
+  if (expr)
     {
-      if (t->expression ()->is_identifier ())
+      if (expr->is_identifier ())
         {
-          std::string s = t->expression ()->name ();
+          std::string s = expr->name ();
 
           if (s == "public")
             return std::string ("public");
@@ -2599,7 +2539,7 @@ compute_attribute_value (tree_classdef_attribute* t)
             return std::string ("private");
         }
 
-      return t->expression ()->rvalue1 ();
+      return tw.evaluate (expr);
     }
   else
     return octave_value (true);
@@ -2607,18 +2547,19 @@ compute_attribute_value (tree_classdef_attribute* t)
 
 template <typename T>
 static std::string
-attribute_value_to_string (T* t, octave_value v)
+attribute_value_to_string (T *t, octave_value v)
 {
   if (v.is_string ())
     return v.string_value ();
   else if (t->expression ())
     return t->expression ()->original_text ();
   else
-    return std::string ("true");
+    return "true";
 }
 
 cdef_class
-cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
+cdef_class::make_meta_class (octave::interpreter& interp,
+                             octave::tree_classdef *t, bool is_at_folder)
 {
   cdef_class retval;
   std::string class_name, full_class_name;
@@ -2627,7 +2568,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
   class_name = full_class_name = t->ident ()->name ();
   if (! t->package_name ().empty ())
-    full_class_name = t->package_name () + "." + full_class_name;
+    full_class_name = t->package_name () + '.' + full_class_name;
 
 #if DEBUG_TRACE
   std::cerr << "class: " << full_class_name << std::endl;
@@ -2637,11 +2578,9 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
   if (t->superclass_list ())
     {
-      for (tree_classdef_superclass_list::iterator it =
-             t->superclass_list ()->begin ();
-           it != t->superclass_list ()->end (); ++it)
+      for (auto& scls : (*t->superclass_list ()))
         {
-          std::string sclass_name = (*it)->class_name ();
+          std::string sclass_name = (scls)->class_name ();
 
 #if DEBUG_TRACE
           std::cerr << "superclass: " << sclass_name << std::endl;
@@ -2657,13 +2596,16 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
         }
     }
 
-  retval = ::make_class (full_class_name, slist);
+  cdef_manager& cdm
+    = octave::__get_cdef_manager__ ("cdef_class::make_meta_class");
+
+  retval = cdm.make_class (full_class_name, slist);
 
   // Package owning this class
 
   if (! t->package_name ().empty ())
     {
-      cdef_package pack = cdef_manager::find_package (t->package_name ());
+      cdef_package pack = cdm.find_package (t->package_name ());
 
       if (pack.ok ())
         retval.put ("ContainingPackage", to_ov (pack));
@@ -2671,26 +2613,25 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
   // Class attributes
 
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
   if (t->attribute_list ())
     {
-      for (tree_classdef_attribute_list::iterator
-           it = t->attribute_list ()->begin ();
-           it != t->attribute_list ()->end ();
-           ++it)
+      for (const auto& attr : (*t->attribute_list ()))
         {
-          std::string aname = (*it)->ident ()->name ();
-          octave_value avalue = compute_attribute_value (*it);
+          std::string aname = attr->ident ()->name ();
+          octave_value avalue = compute_attribute_value (tw, attr);
 
 #if DEBUG_TRACE
           std::cerr << "class attribute: " << aname << " = "
-                    << attribute_value_to_string (*it, avalue) << std::endl;
+                    << attribute_value_to_string (attr, avalue) << std::endl;
 #endif
 
           retval.put (aname, avalue);
         }
     }
 
-  tree_classdef_body* b = t->body ();
+  octave::tree_classdef_body *b = t->body ();
 
   if (b)
     {
@@ -2702,10 +2643,11 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
       // Method blocks
 
-      std::list<tree_classdef_methods_block *> mb_list = b->methods_list ();
+      std::list<octave::tree_classdef_methods_block *> mb_list = b->methods_list ();
 
-      for (tree_classdef_body::methods_list_iterator it = mb_list.begin ();
-           it != mb_list.end (); ++it)
+      octave::load_path& lp = interp.get_load_path ();
+
+      for (auto& mb_p : mb_list)
         {
           std::map<std::string, octave_value> amap;
 
@@ -2715,18 +2657,16 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Method attributes
 
-          if ((*it)->attribute_list ())
+          if (mb_p->attribute_list ())
             {
-              for (tree_classdef_attribute_list::iterator ait =
-                     (*it)->attribute_list ()->begin ();
-                   ait != (*it)->attribute_list ()->end (); ++ait)
+              for (auto& attr_p : *mb_p->attribute_list ())
                 {
-                  std::string aname = (*ait)->ident ()->name ();
-                  octave_value avalue = compute_attribute_value (*ait);
+                  std::string aname = attr_p->ident ()->name ();
+                  octave_value avalue = compute_attribute_value (tw, attr_p);
 
 #if DEBUG_TRACE
                   std::cerr << "method attribute: " << aname << " = "
-                            << attribute_value_to_string (*ait, avalue)
+                            << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
 #endif
 
@@ -2736,24 +2676,22 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Methods
 
-          if ((*it)->element_list ())
+          if (mb_p->element_list ())
             {
-              for (tree_classdef_methods_list::iterator mit =
-                     (*it)->element_list ()->begin ();
-                   mit != (*it)->element_list ()->end (); ++mit)
+              for (auto& mtd : *mb_p->element_list ())
                 {
-                  std::string mname = mit->function_value ()->name ();
+                  std::string mname = mtd.function_value ()->name ();
                   std::string mprefix = mname.substr (0, 4);
 
                   if (mprefix == "get.")
                     get_methods[mname.substr (4)] =
-                      make_fcn_handle (*mit, full_class_name + ">" + mname);
+                      make_fcn_handle (mtd, full_class_name + '>' + mname);
                   else if (mprefix == "set.")
                     set_methods[mname.substr (4)] =
-                      make_fcn_handle (*mit, full_class_name + ">" + mname);
+                      make_fcn_handle (mtd, full_class_name + '>' + mname);
                   else
                     {
-                      cdef_method meth = make_method (retval, mname, *mit);
+                      cdef_method meth = cdm.make_method (retval, mname, mtd);
 
 #if DEBUG_TRACE
                       std::cerr << (mname == class_name ? "constructor"
@@ -2761,9 +2699,8 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                                 << ": " << mname << std::endl;
 #endif
 
-                      for (std::map<std::string, octave_value>::iterator
-                           ait = amap.begin (); ait != amap.end (); ++ait)
-                        meth.put (ait->first, ait->second);
+                      for (auto& attrnm_val : amap)
+                        meth.put (attrnm_val.first, attrnm_val.second);
 
                       retval.install_method (meth);
                     }
@@ -2776,34 +2713,29 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
           // Look for all external methods visible on octave path at the
           // time of loading of the class.
           //
-          // FIXME: This is an "extension" to Matlab behavior, which only
-          // looks in the @-folder containing the original classdef
-          // file.  However, this is easier to implement it that way at
-          // the moment.
+          // FIXME: This is an "extension" to Matlab behavior, which only looks
+          // in the @-folder containing the original classdef file.  However,
+          // this is easier to implement it that way at the moment.
 
-          std::list<std::string> external_methods =
-            load_path::methods (full_class_name);
+          std::list<std::string> external_methods
+            = lp.methods (full_class_name);
 
-          for (std::list<std::string>::const_iterator
-               it = external_methods.begin ();
-               it != external_methods.end ();
-               ++it)
+          for (const auto& mtdnm : external_methods)
             {
               // FIXME: should we issue a warning if the method is already
               // defined in the classdef file?
 
-              if (*it != class_name
-                  && ! retval.find_method (*it, true).ok ())
+              if (mtdnm != class_name
+                  && ! retval.find_method (mtdnm, true).ok ())
                 {
                   // Create a dummy method that is used until the actual
                   // method is loaded.
-
                   octave_user_function *fcn = new octave_user_function ();
 
-                  fcn->stash_function_name (*it);
+                  fcn->stash_function_name (mtdnm);
 
-                  cdef_method meth = make_method (retval, *it,
-                                                  octave_value (fcn));
+                  cdef_method meth
+                    = cdm.make_method (retval, mtdnm, octave_value (fcn));
 
                   retval.install_method (meth);
                 }
@@ -2817,11 +2749,10 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
       //        symbol should be added to the scope before evaluating default
       //        value expressions.
 
-      std::list<tree_classdef_properties_block *> pb_list
+      std::list<octave::tree_classdef_properties_block *> pb_list
         = b->properties_list ();
 
-      for (tree_classdef_body::properties_list_iterator it = pb_list.begin ();
-           it != pb_list.end (); ++it)
+      for (auto& pb_p : pb_list)
         {
           std::map<std::string, octave_value> amap;
 
@@ -2831,18 +2762,16 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Property attributes
 
-          if ((*it)->attribute_list ())
+          if (pb_p->attribute_list ())
             {
-              for (tree_classdef_attribute_list::iterator ait =
-                     (*it)->attribute_list ()->begin ();
-                   ait != (*it)->attribute_list ()->end (); ++ait)
+              for (auto& attr_p : *pb_p->attribute_list ())
                 {
-                  std::string aname = (*ait)->ident ()->name ();
-                  octave_value avalue = compute_attribute_value (*ait);
+                  std::string aname = attr_p->ident ()->name ();
+                  octave_value avalue = compute_attribute_value (tw, attr_p);
 
 #if DEBUG_TRACE
                   std::cerr << "property attribute: " << aname << " = "
-                            << attribute_value_to_string (*ait, avalue)
+                            << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
 #endif
 
@@ -2858,24 +2787,23 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Properties
 
-          if ((*it)->element_list ())
+          if (pb_p->element_list ())
             {
-              for (tree_classdef_property_list::iterator pit =
-                     (*it)->element_list ()->begin ();
-                   pit != (*it)->element_list ()->end (); ++pit)
+              for (auto& prop_p : *pb_p->element_list ())
                 {
-                  std::string prop_name = (*pit)->ident ()->name ();
+                  std::string prop_name = prop_p->ident ()->name ();
 
-                  cdef_property prop = ::make_property (retval, prop_name);
+                  cdef_property prop = cdm.make_property (retval, prop_name);
 
 #if DEBUG_TRACE
-                  std::cerr << "property: " << (*pit)->ident ()->name ()
+                  std::cerr << "property: " << prop_p->ident ()->name ()
                             << std::endl;
 #endif
 
-                  if ((*pit)->expression ())
+                  octave::tree_expression *expr = prop_p->expression ();
+                  if (expr)
                     {
-                      octave_value pvalue = (*pit)->expression ()->rvalue1 ();
+                      octave_value pvalue = tw.evaluate (expr);
 
 #if DEBUG_TRACE
                       std::cerr << "property default: "
@@ -2887,12 +2815,11 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                     }
 
                   // Install property attributes.  This is done before assigning
-                  // the property accessors so we can do validationby using
+                  // the property accessors so we can do validation by using
                   // cdef_property methods.
 
-                  for (std::map<std::string, octave_value>::iterator ait = amap.begin ();
-                       ait != amap.end (); ++ait)
-                    prop.put (ait->first, ait->second);
+                  for (auto& attrnm_val : amap)
+                    prop.put (attrnm_val.first, attrnm_val.second);
 
                   // Install property access methods, if any.  Remove the
                   // accessor methods from the temporary storage map, so we can
@@ -2931,7 +2858,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 octave_function*
 cdef_class::get_method_function (const std::string& /* nm */)
 {
-  octave_classdef_meta* p = new octave_classdef_meta (*this);
+  octave_classdef_meta *p = new octave_classdef_meta (*this);
 
   return p;
 }
@@ -2959,7 +2886,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
   // FIXME: should check whether we're already in get accessor method
 
-  if (get_fcn.is_empty () || is_method_executing (get_fcn, obj))
+  if (get_fcn.isempty () || is_method_executing (get_fcn, obj))
     retval = obj.get (get ("Name").string_value ());
   else
     {
@@ -2967,7 +2894,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
       args(0) = to_ov (obj);
 
-      args = execute_ov (get_fcn, args, 1);
+      args = octave::feval (get_fcn, args, 1);
 
       retval = args(0);
     }
@@ -3012,7 +2939,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 
   octave_value set_fcn = get ("SetMethod");
 
-  if (set_fcn.is_empty () || is_method_executing (set_fcn, obj))
+  if (set_fcn.isempty () || is_method_executing (set_fcn, obj))
     obj.put (get ("Name").string_value (), val);
   else
     {
@@ -3021,7 +2948,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
       args(0) = to_ov (obj);
       args(1) = val;
 
-      args = execute_ov (set_fcn, args, 1);
+      args = octave::feval (set_fcn, args, 1);
 
       if (args.length () > 0 && args(0).is_defined ())
         {
@@ -3067,6 +2994,9 @@ cdef_method::cdef_method_rep::check_method (void)
     {
       if (is_dummy_method (function))
         {
+          octave::load_path& lp
+            = octave::__get_load_path__ ("cdef_method::cdef_method_rep::check_method");
+
           std::string name = get_name ();
           std::string cls_name = dispatch_type;
           std::string pack_name;
@@ -3080,18 +3010,18 @@ cdef_method::cdef_method_rep::check_method (void)
             }
 
           std::string dir_name;
-          std::string file_name = load_path::find_method (cls_name, name,
-                                                          dir_name, pack_name);
+          std::string file_name = lp.find_method (cls_name, name,
+                                                  dir_name, pack_name);
 
           if (! file_name.empty ())
             {
-              octave_function *fcn = load_fcn_from_file (file_name, dir_name,
-                                                         dispatch_type,
-                                                         pack_name);
+              octave_value ov_fcn
+                = octave::load_fcn_from_file (file_name, dir_name,
+                                              dispatch_type, pack_name);
 
-              if (fcn)
+              if (ov_fcn.is_defined ())
                 {
-                  function = octave_value (fcn);
+                  function = ov_fcn;
 
                   make_function_of_class (dispatch_type, function);
                 }
@@ -3125,7 +3055,7 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
   check_method ();
 
   if (function.is_defined ())
-    retval = execute_ov (function, args, nargout);
+    retval = octave::feval (function, args, nargout);
 
   return retval;
 }
@@ -3157,7 +3087,7 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
       for (int i = 0; i < args.length (); i++)
         new_args(i+1) = args(i);
 
-      retval = execute_ov (function, new_args, nargout);
+      retval = octave::feval (function, new_args, nargout);
     }
 
   return retval;
@@ -3190,7 +3120,7 @@ cdef_method::cdef_method_rep::meta_subsref
   switch (type[0])
     {
     case '(':
-      retval = execute (idx.front (), type.length () > 1 ? 1 : nargout, true);
+      retval = (execute (idx.front (), type.length () > 1 ? 1 : nargout, true));
       break;
 
     default:
@@ -3205,9 +3135,12 @@ cdef_method::cdef_method_rep::meta_subsref
 }
 
 static cdef_package
-lookup_package (const std::string& name)
+lookup_package (const std::string& name, bool error_if_not_found = true,
+                bool load_if_not_found = true)
 {
-  return cdef_manager::find_package (name);
+  cdef_manager& cdm = octave::__get_cdef_manager__ ("lookup_package");
+
+  return cdm.find_package (name, error_if_not_found, load_if_not_found);
 }
 
 static octave_value_list
@@ -3220,7 +3153,7 @@ package_fromName (const octave_value_list& args, int /* nargout */)
 
   std::string name = args(0).xstring_value ("fromName: PACKAGE_NAME must be a string");
 
-  retval(0) = to_ov (lookup_package (name));
+  retval(0) = to_ov (lookup_package (name, false));
 
   return retval;
 }
@@ -3274,27 +3207,28 @@ package_get_packages (const octave_value_list& args, int /* nargout */)
 }
 
 static octave_value_list
-package_getAllPackages (const octave_value_list& /* args */, int /* nargout */)
+package_getAllPackages (octave::interpreter& interp,
+                        const octave_value_list& /* args */, int /* nargout */)
 {
   std::map<std::string, cdef_package> toplevel_packages;
 
-  std::list<std::string> names = load_path::get_all_package_names ();
+  octave::load_path& lp = interp.get_load_path ();
 
-  toplevel_packages["meta"] = cdef_manager::find_package ("meta", false,
-                                                          false);
+  std::list<std::string> names = lp.get_all_package_names ();
 
-  for (std::list<std::string>::const_iterator it = names.begin ();
-       it != names.end (); ++it)
-    toplevel_packages[*it] = cdef_manager::find_package (*it, false, true);
+  cdef_manager& cdm = octave::__get_cdef_manager__ ("package_getAllPackages");
+
+  toplevel_packages["meta"] = cdm.find_package ("meta", false, false);
+
+  for (const auto& nm : names)
+    toplevel_packages[nm] = cdm.find_package (nm, false, true);
 
   Cell c (toplevel_packages.size (), 1);
 
   int i = 0;
 
-  for (std::map<std::string, cdef_package>::const_iterator it =
-         toplevel_packages.begin ();
-       it != toplevel_packages.end (); ++it)
-    c(i++,0) = to_ov (it->second);
+  for (const auto& nm_pkg : toplevel_packages)
+    c(i++,0) = to_ov (nm_pkg.second);
 
   return octave_value_list (octave_value (c));
 }
@@ -3355,9 +3289,12 @@ cdef_package::cdef_package_rep::get_packages (void) const
 octave_value
 cdef_package::cdef_package_rep::find (const std::string& nm)
 {
-  std::string symbol_name = get_name () + "." + nm;
+  std::string symbol_name = get_name () + '.' + nm;
 
-  return symbol_table::find (symbol_name, octave_value_list (), true, false);
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("cdef_package::cdef_package_rep::find");
+
+  return symtab.find (symbol_name, octave_value_list (), true, false);
 }
 
 octave_value_list
@@ -3388,7 +3325,7 @@ cdef_package::cdef_package_rep::meta_subsref
 
         if (o.is_function ())
           {
-            octave_function* fcn = o.function_value ();
+            octave_function *fcn = o.function_value ();
 
             // NOTE: the case where the package query is the last
             // part of this subsref index is handled in the parse
@@ -3397,12 +3334,11 @@ cdef_package::cdef_package_rep::meta_subsref
             // function call at this stage.
 
             if (type.size () > 1
-                && ! fcn->is_postfix_index_handled (type[1]))
+                && ! fcn->accepts_postfix_index (type[1]))
               {
                 octave_value_list tmp_args;
 
-                retval = o.do_multi_index_op (nargout,
-                                              tmp_args);
+                retval = octave::feval (o, tmp_args, nargout);
               }
             else
               retval(0) = o;
@@ -3435,204 +3371,329 @@ cdef_package::cdef_package_rep::meta_release (void)
   //        match the one already referenced by those classes or
   //        sub-packages.
 
-  //cdef_manager::unregister_package (wrap ());
-}
+  cdef_manager& cdm
+    = octave::__get_cdef_manager__ ("cdef_package::cdef_package_rep::meta_release");
 
-cdef_class cdef_class::_meta_class = cdef_class ();
-cdef_class cdef_class::_meta_property = cdef_class ();
-cdef_class cdef_class::_meta_method = cdef_class ();
-cdef_class cdef_class::_meta_package = cdef_class ();
-
-cdef_package cdef_package::_meta = cdef_package ();
-
-void
-install_classdef (void)
-{
-  octave_classdef::register_type ();
-
-  // bootstrap
-  cdef_class handle = make_class ("handle");
-  cdef_class meta_class = cdef_class::_meta_class = make_meta_class ("meta.class", handle);
-  handle.set_class (meta_class);
-  meta_class.set_class (meta_class);
-
-  // meta classes
-  cdef_class meta_property = cdef_class::_meta_property = make_meta_class ("meta.property", handle);
-  cdef_class meta_method = cdef_class::_meta_method = make_meta_class ("meta.method", handle);
-  cdef_class meta_package = cdef_class::_meta_package = make_meta_class ("meta.package", handle);
-
-  cdef_class meta_event = make_meta_class ("meta.event", handle);
-  cdef_class meta_dynproperty = make_meta_class ("meta.dynamicproperty", handle);
-
-  // meta.class properties
-  meta_class.install_property (make_attribute (meta_class, "Abstract"));
-  meta_class.install_property (make_attribute (meta_class, "ConstructOnLoad"));
-  meta_class.install_property (make_property  (meta_class, "ContainingPackage"));
-  meta_class.install_property (make_property  (meta_class, "Description"));
-  meta_class.install_property (make_property  (meta_class, "DetailedDescription"));
-  meta_class.install_property (make_property  (meta_class, "Events"));
-  meta_class.install_property (make_attribute (meta_class, "HandleCompatible"));
-  meta_class.install_property (make_attribute (meta_class, "Hidden"));
-  meta_class.install_property
-      (make_property (meta_class, "InferiorClasses",
-                      make_fcn_handle (class_get_inferiorclasses, "meta.class>get.InferiorClasses"),
-                      "public", Matrix (), "private"));
-  meta_class.install_property
-      (make_property  (meta_class, "Methods",
-                       make_fcn_handle (class_get_methods, "meta.class>get.Methods"),
-                       "public", Matrix (), "private"));
-  meta_class.install_property
-      (make_property  (meta_class, "MethodList",
-                       make_fcn_handle (class_get_methods, "meta.class>get.MethodList"),
-                       "public", Matrix (), "private"));
-  meta_class.install_property (make_attribute (meta_class, "Name"));
-  meta_class.install_property
-      (make_property  (meta_class, "Properties",
-                       make_fcn_handle (class_get_properties, "meta.class>get.Properties"),
-                       "public", Matrix (), "private"));
-  meta_class.install_property
-      (make_property  (meta_class, "PropertyList",
-                       make_fcn_handle (class_get_properties, "meta.class>get.PropertyList"),
-                       "public", Matrix (), "private"));
-  meta_class.install_property (make_attribute (meta_class, "Sealed"));
-  meta_class.install_property
-      (make_property (meta_class, "SuperClasses",
-                      make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClasses"),
-                      "public", Matrix (), "private"));
-  meta_class.install_property
-      (make_property (meta_class, "SuperClassList",
-                      make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClassList"),
-                      "public", Matrix (), "private"));
-  // meta.class methods
-  meta_class.install_method (make_method (meta_class, "fromName", class_fromName,
-                                          "public", true));
-  meta_class.install_method (make_method (meta_class, "fevalStatic",
-                                          class_fevalStatic,
-                                          "public", false));
-  meta_class.install_method (make_method (meta_class, "getConstant",
-                                          class_getConstant,
-                                          "public", false));
-  meta_class.install_method (make_method (meta_class, "eq", class_eq));
-  meta_class.install_method (make_method (meta_class, "ne", class_ne));
-  meta_class.install_method (make_method (meta_class, "lt", class_lt));
-  meta_class.install_method (make_method (meta_class, "le", class_le));
-  meta_class.install_method (make_method (meta_class, "gt", class_gt));
-  meta_class.install_method (make_method (meta_class, "ge", class_ge));
-
-  // meta.method properties
-  meta_method.install_property (make_attribute (meta_method, "Abstract"));
-  meta_method.install_property (make_attribute (meta_method, "Access"));
-  meta_method.install_property (make_attribute (meta_method, "DefiningClass"));
-  meta_method.install_property (make_attribute (meta_method, "Description"));
-  meta_method.install_property (make_attribute (meta_method, "DetailedDescription"));
-  meta_method.install_property (make_attribute (meta_method, "Hidden"));
-  meta_method.install_property (make_attribute (meta_method, "Name"));
-  meta_method.install_property (make_attribute (meta_method, "Sealed"));
-  meta_method.install_property (make_attribute (meta_method, "Static"));
-
-  // meta.property properties
-  meta_property.install_property (make_attribute (meta_property, "Name"));
-  meta_property.install_property (make_attribute (meta_property, "Description"));
-  meta_property.install_property (make_attribute (meta_property, "DetailedDescription"));
-  meta_property.install_property (make_attribute (meta_property, "Abstract"));
-  meta_property.install_property (make_attribute (meta_property, "Constant"));
-  meta_property.install_property (make_attribute (meta_property, "GetAccess"));
-  meta_property.install_property (make_attribute (meta_property, "SetAccess"));
-  meta_property.install_property (make_attribute (meta_property, "Dependent"));
-  meta_property.install_property (make_attribute (meta_property, "Transient"));
-  meta_property.install_property (make_attribute (meta_property, "Hidden"));
-  meta_property.install_property (make_attribute (meta_property, "GetObservable"));
-  meta_property.install_property (make_attribute (meta_property, "SetObservable"));
-  meta_property.install_property (make_attribute (meta_property, "GetMethod"));
-  meta_property.install_property (make_attribute (meta_property, "SetMethod"));
-  meta_property.install_property (make_attribute (meta_property, "DefiningClass"));
-  meta_property.install_property
-      (make_property (meta_property, "DefaultValue",
-                      make_fcn_handle (property_get_defaultvalue, "meta.property>get.DefaultValue"),
-                      "public", Matrix (), "private"));
-  meta_property.install_property (make_attribute (meta_property, "HasDefault"));
-  // meta.property events
-  // FIXME: add events
-
-  // handle methods
-  handle.install_method (make_method (handle, "delete", handle_delete));
-
-  // meta.package properties
-  meta_package.install_property (make_attribute (meta_package, "Name"));
-  meta_package.install_property (make_property  (meta_package, "ContainingPackage"));
-  meta_package.install_property
-      (make_property (meta_package, "ClassList",
-                      make_fcn_handle (package_get_classes, "meta.package>get.ClassList"),
-                      "public", Matrix (), "private"));
-  meta_package.install_property
-      (make_property (meta_package, "Classes",
-                      make_fcn_handle (package_get_classes, "meta.package>get.Classes"),
-                      "public", Matrix (), "private"));
-  meta_package.install_property
-      (make_property (meta_package, "FunctionList",
-                      make_fcn_handle (package_get_functions, "meta.package>get.FunctionList"),
-                      "public", Matrix (), "private"));
-  meta_package.install_property
-      (make_property (meta_package, "Functions",
-                      make_fcn_handle (package_get_functions, "meta.package>get.Functions"),
-                      "public", Matrix (), "private"));
-  meta_package.install_property
-      (make_property (meta_package, "PackageList",
-                      make_fcn_handle (package_get_packages, "meta.package>get.PackageList"),
-                      "public", Matrix (), "private"));
-  meta_package.install_property
-      (make_property (meta_package, "Packages",
-                      make_fcn_handle (package_get_packages, "meta.package>get.Packages"),
-                      "public", Matrix (), "private"));
-  meta_package.install_method (make_method (meta_package, "fromName", package_fromName,
-                                            "public", true));
-  meta_package.install_method (make_method (meta_package, "getAllPackages", package_getAllPackages,
-                                            "public", true));
-
-  // create "meta" package
-  cdef_package package_meta = cdef_package::_meta = make_package ("meta");
-  package_meta.install_class (meta_class,       "class");
-  package_meta.install_class (meta_property,    "property");
-  package_meta.install_class (meta_method,      "method");
-  package_meta.install_class (meta_package,     "package");
-  package_meta.install_class (meta_event,       "event");
-  package_meta.install_class (meta_dynproperty, "dynproperty");
-
-  // install built-in classes into the symbol table
-  symbol_table::install_built_in_function
-    ("meta.class", octave_value (meta_class.get_constructor_function ()));
-  symbol_table::install_built_in_function
-    ("meta.method", octave_value (meta_method.get_constructor_function ()));
-  symbol_table::install_built_in_function
-    ("meta.property", octave_value (meta_property.get_constructor_function ()));
-  symbol_table::install_built_in_function
-    ("meta.package", octave_value (meta_package.get_constructor_function ()));
-  symbol_table::install_built_in_function
-    ("meta.event", octave_value (meta_event.get_constructor_function ()));
-  symbol_table::install_built_in_function
-    ("meta.dynproperty", octave_value (meta_dynproperty.get_constructor_function ()));
+  // Don't delete the "meta" package.
+  if (this != cdm.meta ().get_rep ())
+    cdm.unregister_package (wrap ());
 }
 
 //----------------------------------------------------------------------------
 
-cdef_manager* cdef_manager::instance = 0;
-
-void
-cdef_manager::create_instance (void)
+cdef_manager::cdef_manager (octave::interpreter& interp)
+  : m_interpreter (interp), m_all_classes (), m_all_packages (),
+    m_meta_class (), m_meta_property (), m_meta_method (),
+    m_meta_package (), m_meta ()
 {
-  instance = new cdef_manager ();
+  octave::type_info& ti = m_interpreter.get_type_info ();
 
-  if (instance)
-    singleton_cleanup_list::add (cleanup_instance);
+  octave_classdef::register_type (ti);
+
+  // bootstrap
+  cdef_class tmp_handle = make_class ("handle");
+
+  m_meta_class = make_meta_class ("meta.class", tmp_handle);
+
+  tmp_handle.set_class (m_meta_class);
+  m_meta_class.set_class (m_meta_class);
+
+  // meta classes
+  m_meta_property = make_meta_class ("meta.property", tmp_handle);
+
+  m_meta_method = make_meta_class ("meta.method", tmp_handle);
+
+  m_meta_package = make_meta_class ("meta.package", tmp_handle);
+
+  cdef_class tmp_meta_event
+    = make_meta_class ("meta.event", tmp_handle);
+
+  cdef_class tmp_meta_dynproperty
+    = make_meta_class ("meta.dynamicproperty", tmp_handle);
+
+  // meta.class properties
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "Abstract"));
+
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "ConstructOnLoad"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "ContainingPackage"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Description"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "DetailedDescription"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Events"));
+
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "HandleCompatible"));
+
+  m_meta_class.install_property
+    (make_attribute (m_meta_class, "Hidden"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "InferiorClasses",
+                    make_fcn_handle (class_get_inferiorclasses,
+                                     "meta.class>get.InferiorClasses"),
+                    "public", Matrix (), "private"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Methods",
+                    make_fcn_handle (class_get_methods,
+                                     "meta.class>get.Methods"),
+                    "public", Matrix (), "private"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "MethodList",
+                     make_fcn_handle (class_get_methods,
+                                      "meta.class>get.MethodList"),
+                    "public", Matrix (), "private"));
+
+  m_meta_class.install_property (make_attribute (m_meta_class, "Name"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "Properties",
+                    make_fcn_handle (class_get_properties,
+                                     "meta.class>get.Properties"),
+                    "public", Matrix (), "private"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "PropertyList",
+                    make_fcn_handle (class_get_properties,
+                                     "meta.class>get.PropertyList"),
+                    "public", Matrix (), "private"));
+
+  m_meta_class.install_property (make_attribute (m_meta_class, "Sealed"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "SuperClasses",
+                    make_fcn_handle (class_get_superclasses,
+                                     "meta.class>get.SuperClasses"),
+                    "public", Matrix (), "private"));
+
+  m_meta_class.install_property
+    (make_property (m_meta_class, "SuperClassList",
+                    make_fcn_handle (class_get_superclasses,
+                                     "meta.class>get.SuperClassList"),
+                    "public", Matrix (), "private"));
+
+  // meta.class methods
+  m_meta_class.install_method
+    (make_method (m_meta_class, "fromName", class_fromName, "public", true));
+
+  m_meta_class.install_method
+    (make_method (m_meta_class, "fevalStatic", class_fevalStatic, "public",
+                  false));
+
+  m_meta_class.install_method
+    (make_method (m_meta_class, "getConstant", class_getConstant, "public",
+                  false));
+
+  m_meta_class.install_method (make_method (m_meta_class, "eq", class_eq));
+  m_meta_class.install_method (make_method (m_meta_class, "ne", class_ne));
+  m_meta_class.install_method (make_method (m_meta_class, "lt", class_lt));
+  m_meta_class.install_method (make_method (m_meta_class, "le", class_le));
+  m_meta_class.install_method (make_method (m_meta_class, "gt", class_gt));
+  m_meta_class.install_method (make_method (m_meta_class, "ge", class_ge));
+
+  // meta.method properties
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Abstract"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Access"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "DefiningClass"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Description"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "DetailedDescription"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Hidden"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Name"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Sealed"));
+
+  m_meta_method.install_property
+    (make_attribute (m_meta_method, "Static"));
+
+  // meta.property properties
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Name"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Description"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "DetailedDescription"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Abstract"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Constant"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "GetAccess"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "SetAccess"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Dependent"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Transient"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "Hidden"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "GetObservable"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "SetObservable"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "GetMethod"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "SetMethod"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "DefiningClass"));
+
+  m_meta_property.install_property
+    (make_property (m_meta_property, "DefaultValue",
+                    make_fcn_handle (property_get_defaultvalue,
+                                     "meta.property>get.DefaultValue"),
+                    "public", Matrix (), "private"));
+
+  m_meta_property.install_property
+    (make_attribute (m_meta_property, "HasDefault"));
+
+  // meta.property events
+  // FIXME: add events
+
+  // handle methods
+
+  tmp_handle.install_method
+    (make_method (tmp_handle, "delete", handle_delete));
+
+  // meta.package properties
+
+  m_meta_package.install_property
+    (make_attribute (m_meta_package, "Name"));
+
+  m_meta_package.install_property
+    (make_property (m_meta_package, "ContainingPackage"));
+
+  m_meta_package.install_property
+    (make_property (m_meta_package, "ClassList",
+                    make_fcn_handle (package_get_classes,
+                                     "meta.package>get.ClassList"),
+                    "public", Matrix (), "private"));
+
+  m_meta_package.install_property
+    (make_property (m_meta_package, "Classes",
+                    make_fcn_handle (package_get_classes,
+                                     "meta.package>get.Classes"),
+                    "public", Matrix (), "private"));
+
+  m_meta_package.install_property
+    (make_property (m_meta_package, "FunctionList",
+                    make_fcn_handle (package_get_functions,
+                                     "meta.package>get.FunctionList"),
+                    "public", Matrix (), "private"));
+
+  m_meta_package.install_property
+    (make_property (m_meta_package, "Functions",
+                    make_fcn_handle (package_get_functions,
+                                     "meta.package>get.Functions"),
+                    "public", Matrix (), "private"));
+
+  m_meta_package.install_property
+    (make_property (m_meta_package, "PackageList",
+                      make_fcn_handle (package_get_packages,
+                                       "meta.package>get.PackageList"),
+                    "public", Matrix (), "private"));
+
+  m_meta_package.install_property
+    (make_property (m_meta_package, "Packages",
+                    make_fcn_handle (package_get_packages,
+                                     "meta.package>get.Packages"),
+                    "public", Matrix (), "private"));
+
+  m_meta_package.install_method
+    (make_method (m_meta_package, "fromName", package_fromName,
+                  "public", true));
+
+  m_meta_package.install_method
+    (make_method (m_meta_package, "getAllPackages", package_getAllPackages,
+                  "public", true));
+
+  // create "meta" package
+  cdef_package package_meta
+    = m_meta
+    = make_package ("meta");
+
+  package_meta.install_class (m_meta_class, "class");
+  package_meta.install_class (m_meta_property, "property");
+  package_meta.install_class (m_meta_method, "method");
+  package_meta.install_class (m_meta_package, "package");
+  package_meta.install_class (tmp_meta_event, "event");
+  package_meta.install_class (tmp_meta_dynproperty, "dynproperty");
+
+  octave::symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+  // install built-in classes into the symbol table
+  symtab.install_built_in_function
+    ("meta.class",
+     octave_value (m_meta_class.get_constructor_function ()));
+
+  symtab.install_built_in_function
+    ("meta.method",
+     octave_value (m_meta_method.get_constructor_function ()));
+
+  symtab.install_built_in_function
+    ("meta.property",
+     octave_value (m_meta_property.get_constructor_function ()));
+
+  symtab.install_built_in_function
+    ("meta.package",
+     octave_value (m_meta_package.get_constructor_function ()));
+
+// FIXME: meta.event and meta.dynproperty are not implemented
+//        and should not be installed into symbol table.
+
+//  symtab.install_built_in_function
+//    ("meta.event",
+//     octave_value (tmp_meta_event.get_constructor_function ()));
+
+//  symtab.install_built_in_function
+//    ("meta.dynproperty",
+//     octave_value (tmp_meta_dynproperty.get_constructor_function ()));
 }
 
 cdef_class
-cdef_manager::do_find_class (const std::string& name,
-                             bool error_if_not_found, bool load_if_not_found)
+cdef_manager::find_class (const std::string& name, bool error_if_not_found,
+                          bool load_if_not_found)
 {
-  std::map<std::string, cdef_class>::iterator it = all_classes.find (name);
+  std::map<std::string, cdef_class>::iterator it = m_all_classes.find (name);
 
-  if (it == all_classes.end ())
+  if (it == m_all_classes.end ())
     {
       if (load_if_not_found)
         {
@@ -3641,23 +3702,28 @@ cdef_manager::do_find_class (const std::string& name,
           size_t pos = name.rfind ('.');
 
           if (pos == std::string::npos)
-            ov_cls = symbol_table::find (name);
+            {
+              octave::symbol_table& symtab
+                = octave::__get_symbol_table__ ("cdef_manager::find_class");
+
+              ov_cls = symtab.find (name);
+            }
           else
             {
               std::string pack_name = name.substr (0, pos);
 
-              cdef_package pack = do_find_package (pack_name, false, true);
+              cdef_package pack = find_package (pack_name, false, true);
 
               if (pack.ok ())
                 ov_cls = pack.find (name.substr (pos+1));
             }
 
           if (ov_cls.is_defined ())
-            it = all_classes.find (name);
+            it = m_all_classes.find (name);
         }
     }
 
-  if (it == all_classes.end ())
+  if (it == m_all_classes.end ())
     {
       if (error_if_not_found)
         error ("class not found: %s", name.c_str ());
@@ -3672,17 +3738,17 @@ cdef_manager::do_find_class (const std::string& name,
       if (cls.ok ())
         return cls;
       else
-        all_classes.erase (it);
+        m_all_classes.erase (it);
     }
 
   return cdef_class ();
 }
 
-octave_function*
-cdef_manager::do_find_method_symbol (const std::string& method_name,
-                                     const std::string& class_name)
+octave_function *
+cdef_manager::find_method_symbol (const std::string& method_name,
+                                  const std::string& class_name)
 {
-  octave_function *retval = 0;
+  octave_function *retval = nullptr;
 
   cdef_class cls = find_class (class_name, false, false);
 
@@ -3698,16 +3764,15 @@ cdef_manager::do_find_method_symbol (const std::string& method_name,
 }
 
 cdef_package
-cdef_manager::do_find_package (const std::string& name,
-                               bool error_if_not_found,
-                               bool load_if_not_found)
+cdef_manager::find_package (const std::string& name, bool error_if_not_found,
+                            bool load_if_not_found)
 {
   cdef_package retval;
 
   std::map<std::string, cdef_package>::const_iterator it
-    = all_packages.find (name);
+    = m_all_packages.find (name);
 
-  if (it != all_packages.end ())
+  if (it != m_all_packages.end ())
     {
       retval = it->second;
 
@@ -3716,7 +3781,10 @@ cdef_manager::do_find_package (const std::string& name,
     }
   else
     {
-      if (load_if_not_found && load_path::find_package (name))
+      octave::load_path& lp
+        = octave::__get_load_path__ ("cdef_manager::find_package");
+
+      if (load_if_not_found && lp.find_package (name))
         {
           size_t pos = name.find ('.');
 
@@ -3736,10 +3804,10 @@ cdef_manager::do_find_package (const std::string& name,
   return retval;
 }
 
-octave_function*
-cdef_manager::do_find_package_symbol (const std::string& pack_name)
+octave_function *
+cdef_manager::find_package_symbol (const std::string& pack_name)
 {
-  octave_function* retval = 0;
+  octave_function *retval = nullptr;
 
   cdef_package pack = find_package (pack_name, false);
 
@@ -3782,7 +3850,7 @@ Undocumented internal function.
 {
 #if DEBUG_TRACE
   std::cerr << "__meta_class_query__ ("
-            << args(0).string_value () << ")"
+            << args(0).string_value () << ')'
             << std::endl;
 #endif
 

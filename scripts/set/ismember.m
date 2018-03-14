@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tf} =} ismember (@var{a}, @var{s})
@@ -80,12 +80,32 @@ function [tf, s_idx] = ismember (a, s, varargin)
     print_usage ();
   endif
 
+  ## lookup() uses absolute values for complex input so we handle the
+  ## real and imaginary parts separately (bug #52437)
+  if (iscomplex (a) || iscomplex (s))
+    real_argout = cell (nargout, 1);
+    imag_argout = cell (nargout, 1);
+    [real_argout{:}] = ismember (real (a), real (s), varargin{:});
+    [imag_argout{:}] = ismember (imag (a), imag (s), varargin{:});
+    tf = real_argout{1} & imag_argout{1};
+    if (isargout (2))
+      s_idx = zeros (size (real_argout{2}));
+      s_idx(tf) = real_argout{2}(tf);
+    endif
+    return
+  endif
+
   ## lookup() does not handle logical values
   if (islogical (a))
     a = uint8 (a);
   endif
   if (islogical (s))
     s = uint8 (s);
+  endif
+
+  ## Matlab-compatible behavior (R2016b).  See bug #51187.
+  if (ischar (a) && rows (a) == 1 && iscell (s))
+    a = {a};
   endif
 
   [a, s] = validsetargs ("ismember", a, s, varargin{:});
@@ -225,3 +245,40 @@ endfunction
 %! [result, s_idx] = ismember ([1:3; 5:7; 4:6; 0:2; 1:3; 2:4], [1:3], "rows");
 %! assert (result, logical ([1 0 0 0 1 0]'));
 %! assert (s_idx, [1 0 0 0 1 0]');
+
+%!test <*51187>
+%! assert (ismember ('b ', {'a ', 'b '}), true);
+
+%!test <*51187>
+%! abc = ['a '; 'b '; 'c '];
+%! assert (ismember (abc, {abc}), [false; false; false]);
+
+%!test <*52437>
+%! [tf, s_idx] = ismember ([5 4-3j 3+4j], [5 4-3j 3+4j]);
+%! assert (tf, logical ([1 1 1]))
+%! assert (s_idx, [1 2 3])
+%!
+%! [tf, s_idx] = ismember ([5 4-3j 3+4j], 5);
+%! assert (tf, logical ([1 0 0]))
+%! assert (s_idx, [1 0 0])
+%!
+%! [tf, s_idx] = ismember ([5 5 5], 4-3j);
+%! assert (tf, logical ([0 0 0]))
+%! assert (s_idx, [0 0 0])
+%!
+%! [tf, s_idx] = ismember ([5 4-3j 3+4j; 5i 6 6i], [5 6]);
+%! assert (tf, logical ([1 0 0; 0 1 0]))
+%! assert (s_idx, [1 0 0; 0 2 0])
+%!
+%! [tf, s_idx] = ismember ([5 4-3j 3+4j; 5 4-3j 3+4j], [5 5 5], "rows");
+%! assert (tf, logical ([0; 0]))
+%! assert (s_idx, [0; 0])
+%!
+%! [tf, s_idx] = ismember ([5 5 5], [5 4-3j 3+4j; 5 5 5], "rows");
+%! assert (tf, true)
+%! assert (s_idx, 2)
+%!
+%! [tf] = ismember ([5 4-3j 3+4j], 5);
+%! assert (tf, logical ([1 0 0]))
+%! [~, s_idx] = ismember ([5 4-3j 3+4j], 5);
+%! assert (s_idx, [1 0 0])

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} assert (@var{cond})
@@ -333,8 +333,11 @@ function assert (cond, varargin)
             err.expected(end+1:end+length (erridx)) = ...
               strtrim (cellstr (num2str (B(erridx) (:))));
             err.reason(end+1:end+length (erridx)) = ...
-              ostrsplit (deblank (sprintf ("Abs err %.5g exceeds tol %.5g\n",...
-              [abs(A_null(erridx) - B_null(erridx))(:) mtol(erridx)(:)]')), "\n");
+              ostrsplit (deblank (
+                         sprintf ("Abs err %.5g exceeds tol %.5g by %.1g\n",
+                [abs(A_null(erridx) - B_null(erridx))(:), mtol(erridx)(:), ...
+                 abs(A_null(erridx) - B_null(erridx))(:)-mtol(erridx)(:)].')),
+                         "\n");
           endif
 
           k = (mtol > 0);
@@ -347,8 +350,11 @@ function assert (cond, varargin)
             err.expected(end+1:end+length (erridx)) = ...
               strtrim (cellstr (num2str (B(erridx) (:))));
             err.reason(end+1:end+length (erridx)) = ...
-              ostrsplit (deblank (sprintf ("Abs err %.5g exceeds tol %.5g\n",...
-              [abs(A_null(erridx) - B_null(erridx))(:) mtol(erridx)(:)]')), "\n");
+              ostrsplit (deblank (
+                         sprintf ("Abs err %.5g exceeds tol %.5g by %.1g\n",
+                [abs(A_null(erridx) - B_null(erridx))(:), mtol(erridx)(:), ...
+                 abs(A_null(erridx) - B_null(erridx))(:)-mtol(erridx)(:)].')),
+                         "\n");
           endif
 
           k = (mtol < 0);
@@ -363,8 +369,11 @@ function assert (cond, varargin)
               err.expected(end+1:end+length (erridx)) = ...
                 strtrim (cellstr (num2str (B(erridx) (:))));
               err.reason(end+1:end+length (erridx)) = ...
-                ostrsplit (deblank (sprintf ("Abs err %.5g exceeds tol %.5g\n",
-                [abs(A_null(erridx) - B_null(erridx)) -mtol(erridx)]')), "\n");
+                ostrsplit (deblank (
+                           sprintf ("Abs err %.5g exceeds tol %.5g by %.1g\n",
+                      [abs(A_null(erridx) - B_null(erridx)), -mtol(erridx), ...
+                       abs(A_null(erridx) - B_null(erridx))+mtol(erridx)].')),
+                           "\n");
             endif
             ## Test for relative error
             Bdiv = Inf (size (B_null));
@@ -379,8 +388,11 @@ function assert (cond, varargin)
               err.expected(end+1:end+length (erridx)) = ...
                 strtrim (cellstr (num2str (B(erridx) (:))));
               err.reason(end+1:end+length (erridx)) = ...
-                ostrsplit (deblank (sprintf ("Rel err %.5g exceeds tol %.5g\n",
-                [relerr(erridx)(:) -mtol(erridx)(:)]')), "\n");
+                ostrsplit (deblank (
+                           sprintf ("Rel err %.5g exceeds tol %.5g by %.1g\n",
+                                    [relerr(erridx)(:), -mtol(erridx)(:), ...
+                                     relerr(erridx)(:)+mtol(erridx)(:)].')),
+                           "\n");
             endif
           endif
         endif
@@ -624,7 +636,9 @@ endfunction
 %! x = [-40:0];
 %! y1 = (10.^x).*(10.^x);
 %! y2 = 10.^(2*x);
-%! assert (y1, y2, eps (y1));
+%! ## Increase tolerance from eps (y1) to 4*eps (y1) because of an upstream bug
+%! ## in mingw-w64: https://sourceforge.net/p/mingw-w64/bugs/466/
+%! assert (y1, y2, 4*eps (y1));
 %! fail ("assert (y1, y2 + eps*1e-70, eps (y1))");
 
 ## Multiple tolerances

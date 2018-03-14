@@ -4,19 +4,19 @@ Copyright (C) 2010-2017 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-oncleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
+#include "parse.h"
 #include "pt-misc.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_oncleanup, "onCleanup",
@@ -46,11 +47,11 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
       octave_user_function *uptr
         = dynamic_cast<octave_user_function *> (fptr);
 
-      if (uptr != 0)
+      if (uptr != nullptr)
         {
-          tree_parameter_list *pl = uptr->parameter_list ();
+          octave::tree_parameter_list *pl = uptr->parameter_list ();
 
-          if (pl != 0 && pl->length () > 0)
+          if (pl != nullptr && pl->length () > 0)
             warning ("onCleanup: cleanup action takes parameters");
         }
     }
@@ -81,11 +82,11 @@ octave_oncleanup::~octave_oncleanup (void)
   try
     {
       // Run the actual code.
-      fcn.do_multi_index_op (0, octave_value_list ());
+      octave::feval (fcn);
     }
   catch (const octave::interrupt_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       warning ("onCleanup: interrupt occurred in cleanup action");
     }
@@ -179,7 +180,7 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   os << "onCleanup (";
   if (fcn.is_defined ())
     fcn.print_raw (os, pr_as_read_syntax);
-  os << ")";
+  os << ')';
 }
 
 DEFUN (onCleanup, args, ,

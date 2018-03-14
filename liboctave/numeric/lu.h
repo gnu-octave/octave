@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,7 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "PermMatrix.h"
+#include "Array.h"
+
+class ColumnVector;
+class PermMatrix;
 
 namespace octave
 {
@@ -63,7 +66,7 @@ namespace octave
         return *this;
       }
 
-      virtual ~lu (void) { }
+      virtual ~lu (void) = default;
 
       bool packed (void) const;
 
@@ -91,12 +94,16 @@ namespace octave
 
     protected:
 
+      // The result of getp is passed to other Octave Matrix functions,
+      // so we use octave_idx_type.
       Array<octave_idx_type> getp (void) const;
 
       T a_fact;
       T l_fact;
 
-      Array<octave_idx_type> ipvt;
+      // This is internal storage that is passed to Fortran,
+      // so we need a Fortran INTEGER.
+      Array<octave_f77_int_type> ipvt;
     };
   }
 }

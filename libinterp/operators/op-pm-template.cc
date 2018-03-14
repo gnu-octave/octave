@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 Jaroslav Hajek
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -80,17 +80,17 @@ DEFBINOP (div, LMATRIX, RMATRIX)
 #define INST_NAME CONCAT3(install_, SHORT_NAME, _ops)
 
 void
-INST_NAME (void)
+INST_NAME (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_mul, OCTAVE_LMATRIX, OCTAVE_RMATRIX, mul);
+  INSTALL_BINOP_TI (ti, op_mul, OCTAVE_LMATRIX, OCTAVE_RMATRIX, mul);
 #if defined (LEFT)
-  INSTALL_BINOP (op_ldiv, OCTAVE_LMATRIX, OCTAVE_RMATRIX, ldiv);
+  INSTALL_BINOP_TI (ti, op_ldiv, OCTAVE_LMATRIX, OCTAVE_RMATRIX, ldiv);
 #else
-  INSTALL_BINOP (op_div, OCTAVE_LMATRIX, OCTAVE_RMATRIX, div);
+  INSTALL_BINOP_TI (ti, op_div, OCTAVE_LMATRIX, OCTAVE_RMATRIX, div);
 #endif
 #if defined (DEFINENULLASSIGNCONV)
-  INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_matrix, OCTAVE_LDMATRIX);
-  INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_str, OCTAVE_LDMATRIX);
-  INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_sq_str, OCTAVE_LDMATRIX);
+  INSTALL_ASSIGNCONV_TI (ti, OCTAVE_LMATRIX, octave_null_matrix, OCTAVE_LDMATRIX);
+  INSTALL_ASSIGNCONV_TI (ti, OCTAVE_LMATRIX, octave_null_str, OCTAVE_LDMATRIX);
+  INSTALL_ASSIGNCONV_TI (ti, OCTAVE_LMATRIX, octave_null_sq_str, OCTAVE_LDMATRIX);
 #endif
 }

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{sx}, @var{sy}, @var{sz})
@@ -207,6 +207,7 @@ endfunction
 %! [x, y, z] = meshgrid (linspace (-8, 8, 32));
 %! v = sin (sqrt (x.^2 + y.^2 + z.^2)) ./ (sqrt (x.^2 + y.^2 + z.^2));
 %! slice (x, y, z, v, [], 0, []);
+%! title ("slice() demo #1");
 
 %!demo
 %! clf;
@@ -216,3 +217,4 @@ endfunction
 %! [xi, yi] = meshgrid (linspace (-7, 7));
 %! zi = xi + yi;
 %! slice (x, y, z, v, xi, yi, zi);
+%! title ("slice() demo #2");

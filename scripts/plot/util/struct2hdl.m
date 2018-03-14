@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} struct2hdl (@var{s})
@@ -51,7 +51,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   elseif (! all (isfield (s, fields)))
     print_usage ();
   elseif (isscalar (p))
-    if (! ishandle (p))
+    if (! ishghandle (p))
       error ("struct2hdl: P is not a handle to a graphic object");
     endif
     if (any (strcmp (get (p).type, partypes)))
@@ -68,12 +68,12 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     ## create appropriate parent if needed
     if (any (strcmp (s.type, othertypes)))
       for ii = (paridx+1) : (numel (partypes)-1)
-        eval (["hpar = " partypes{ii} "(\"parent\", hpar);"]);
+        eval (["hpar = " partypes{ii} '("parent", hpar);']);
         p = [p [NaN; hpar]];
       endfor
     elseif (any (strcmp (s.type, {"hggroup", "axes"})))
       for ii = (paridx+1) : (kididx-1)
-        eval (["hpar = " partypes{ii} "(\"parent\", hpar);"]);
+        eval (["hpar = " partypes{ii} '("parent", hpar);']);
         p = [p [NaN; hpar]];
       endfor
     else
@@ -181,7 +181,7 @@ function [h, sout] = createaxes (s, p, par)
   if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     ## regular axes
     propval = {"position", s.properties.position};
-    hid = {"autopos_tag", "looseinset"};
+    hid = {"__autopos_tag__", "looseinset"};
     for ii = 1:numel (hid)
       prop = hid{ii};
       if (isfield (s.properties, prop))
@@ -261,7 +261,7 @@ function [h, sout] = createaxes (s, p, par)
     ## remove all properties such as "textposition" that redefine
     ## the entire legend.  Also remove chidren.
     s.properties = rmfield (s.properties, ...
-                              {"userdata", "xlabel",...
+                              {"__appdata__", "xlabel",...
                                "ylabel", "zlabel", "location", ...
                                "title", "string","orientation", ...
                                "visible", "textposition"});
@@ -276,7 +276,7 @@ function [h, sout] = createaxes (s, p, par)
       location = s.properties.location;
       h = colorbar ("peer", ax, location);
       s.properties = rmfield (s.properties, ...
-                                {"userdata", "xlabel" ...
+                                {"__appdata__", "xlabel" ...
                                  "ylabel", "zlabel", ...
                                  "title", "axes"});
       s.children= [];
@@ -646,7 +646,7 @@ endfunction
 
 function addmissingprops (h, props)
 
-  hid = {"autopos_tag", "looseinset"};
+  hid = {"__autopos_tag__", "looseinset"};
   oldfields = fieldnames (props);
   curfields = fieldnames (get (h));
   missing = ! ismember (oldfields, curfields);

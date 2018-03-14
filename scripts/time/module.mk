@@ -1,27 +1,27 @@
 FCN_FILE_DIRS += scripts/time
 
-scripts_time_FCN_FILES = \
-  scripts/time/addtodate.m \
-  scripts/time/asctime.m \
-  scripts/time/calendar.m \
-  scripts/time/clock.m \
-  scripts/time/ctime.m \
-  scripts/time/date.m \
-  scripts/time/datenum.m \
-  scripts/time/datestr.m \
-  scripts/time/datevec.m \
-  scripts/time/eomday.m \
-  scripts/time/etime.m \
-  scripts/time/is_leap_year.m \
-  scripts/time/now.m \
-  scripts/time/weekday.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/addtodate.m \
+  %reldir%/asctime.m \
+  %reldir%/calendar.m \
+  %reldir%/clock.m \
+  %reldir%/ctime.m \
+  %reldir%/date.m \
+  %reldir%/datenum.m \
+  %reldir%/datestr.m \
+  %reldir%/datevec.m \
+  %reldir%/eomday.m \
+  %reldir%/etime.m \
+  %reldir%/is_leap_year.m \
+  %reldir%/now.m \
+  %reldir%/weekday.m
 
-scripts_timedir = $(fcnfiledir)/time
+%canon_reldir%dir = $(fcnfiledir)/time
 
-scripts_time_DATA = $(scripts_time_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_time_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/time/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/time/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

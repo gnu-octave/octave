@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fplot (@var{fn}, @var{limits})
@@ -66,10 +66,11 @@
 ## discontinuities are unlikely to plot well.  This restriction may be removed
 ## in the future.
 ##
-## @code{fplot} requires that the function accept and return a vector argument.
-## Consider this when writing user-defined functions and use @code{.*},
-## @code{./}, etc.  See the function @code{vectorize} for potentially
-## converting inline or anonymous functions to vectorized versions.
+## @code{fplot} performance is better when the function accepts and returns a
+## vector argument.  Consider this when writing user-defined functions and use
+## element-by-element operators such as @code{.*}, @code{./}, etc.  See the
+## function @code{vectorize} for potentially converting inline or anonymous
+## functions to vectorized versions.
 ##
 ## @seealso{ezplot, plot, vectorize}
 ## @end deftypefn
@@ -138,16 +139,19 @@ function [X, Y] = fplot (varargin)
     y = feval (fn, x);
   endif
 
+  if (isscalar (y0))
+    warning ("fplot: FN is not a vectorized function which reduces performance");
+    fn = @(x) arrayfun (fn, x);  # Create a new fn that accepts vectors
+    y0 = feval (fn, x0);
+    y = feval (fn, x);
+  endif
+
   if (rows (x0) == rows (y0))
     fcn_transpose = false;
   elseif (rows (x0) == columns (y0))
     fcn_transpose = true;
     y0 = y0.';
     y = y.';
-  elseif (isscalar (y0))
-    ## FN is a constant value function
-    y0 = repmat (y0, size (x0));
-    y = repmat (y, size (x));
   else
     error ("fplot: invalid function FN (# of outputs not equal to inputs)");
   endif
@@ -165,7 +169,7 @@ function [X, Y] = fplot (varargin)
     yi = interp1 (x0, y0, x, "linear");
     ## relative error calculation using average of [yi,y] as reference
     ## since neither estimate is known a priori to be better than the other.
-    err = 0.5 * max (abs ((yi - y) ./ (yi + y))(:));
+    err = 0.5 * max (abs ((yi - y) ./ (yi + y + eps))(:));
     if (err < tol || abs (err - err0) < tol/2)
       ## Either relative tolerance has been met OR
       ## algorithm has stopped making any reasonable progress per iteration.
@@ -237,11 +241,11 @@ endfunction
 
 %!test
 %! ## Constant value function
-%! fn = @(x) 5;
+%! fn = @(x) 0;
 %! [x, y] = fplot (fn, [-1, 1]);
 %! assert (columns (y) == 1);
 %! assert (rows (x) == rows (y));
-%! assert (y, repmat ([5], size (x)));
+%! assert (y, repmat ([0], size (x)));
 
 ## Test input validation
 %!error fplot (1)
@@ -254,3 +258,6 @@ endfunction
 %!error <invalid function FN>
 %! fn = @(x) [x;x];
 %! fplot (fn, [-1,1]);
+%!warning <FN is not a vectorized function>
+%! fn = @(x) 0;
+%! [x,y] = fplot (fn, [-1,1]);

@@ -4,19 +4,19 @@ Copyright (C) 1999-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,7 +26,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <ctime>
+
+#include <iosfwd>
 #include <string>
+
+static inline double
+as_double (time_t sec, long usec)
+{
+  // Unix time will be exactly representable as a double for more than
+  // 100 million years, so no worry there, and microseconds has a
+  // range of 0-1e6, so we are safe there as well.
+
+  return (static_cast<double> (sec) + static_cast<double> (usec) / 1.0e6);
+}
 
 namespace octave
 {
@@ -46,10 +58,10 @@ namespace octave
       time (time_t t)
         : ot_unix_time (t), ot_usec (0) { }
 
-      time (time_t t, int us)
+      time (time_t t, long us)
         : ot_unix_time (t), ot_usec ()
       {
-        int rem, extra;
+        long rem, extra;
 
         if (us >= 0)
           {
@@ -86,17 +98,22 @@ namespace octave
         return *this;
       }
 
-      ~time (void) { }
+      ~time (void) = default;
 
       void stamp (void);
 
-      double double_value (void) const { return ot_unix_time + ot_usec / 1e6; }
+      double double_value (void) const
+      {
+        return as_double (ot_unix_time, ot_usec);
+      }
 
       time_t unix_time (void) const { return ot_unix_time; }
 
       long usec (void) const { return ot_usec; }
 
       std::string ctime (void) const;
+
+      friend std::ostream& operator << (std::ostream& os, const time& ot);
 
     private:
 
@@ -204,7 +221,7 @@ namespace octave
         return *this;
       }
 
-      virtual ~base_tm (void) { }
+      virtual ~base_tm (void) = default;
 
       int usec (void) const { return m_usec; }
       int sec (void) const { return m_sec; }
@@ -266,7 +283,7 @@ namespace octave
       // Days since January 1 (0, 365).
       int m_yday;
 
-      // Daylight Savings Time flag.
+      // Daylight saving time flag.
       int m_isdst;
 
       // Time zone.
@@ -299,7 +316,7 @@ namespace octave
         return *this;
       }
 
-      ~localtime (void) { }
+      ~localtime (void) = default;
 
     private:
 
@@ -324,7 +341,7 @@ namespace octave
         return *this;
       }
 
-      ~gmtime (void) { }
+      ~gmtime (void) = default;
 
     private:
 
@@ -355,7 +372,7 @@ namespace octave
 
       int characters_converted (void) const { return nchars; }
 
-      ~strptime (void) { }
+      ~strptime (void) = default;
 
     private:
 
@@ -400,14 +417,12 @@ namespace octave
 
       double user (void) const
       {
-        return (static_cast<double> (m_usr_sec)
-                + static_cast<double> (m_sys_usec) * 1e-6);
+        return as_double (m_usr_sec, m_usr_usec);
       }
 
       double system (void) const
       {
-        return (static_cast<double> (m_sys_sec)
-                + static_cast<double> (m_sys_usec) * 1e-6);
+        return as_double (m_sys_sec, m_sys_usec);
       }
 
       time_t user_sec (void) const { return m_usr_sec; }
@@ -523,19 +538,19 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::time' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::time' instead")
 typedef octave::sys::time octave_time;
 
-OCTAVE_DEPRECATED ("use 'octave::sys::base_tm' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::base_tm' instead")
 typedef octave::sys::base_tm octave_base_tm;
 
-OCTAVE_DEPRECATED ("use 'octave::sys::localtime' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::localtime' instead")
 typedef octave::sys::localtime octave_localtime;
 
-OCTAVE_DEPRECATED ("use 'octave::sys::gmtime' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::gmtime' instead")
 typedef octave::sys::gmtime octave_gmtime;
 
-OCTAVE_DEPRECATED ("use 'octave::sys::strptime' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::strptime' instead")
 typedef octave::sys::strptime octave_strptime;
 
 #endif

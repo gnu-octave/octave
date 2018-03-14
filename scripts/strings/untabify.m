@@ -2,10 +2,10 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,7 +14,7 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} untabify (@var{t})
@@ -51,7 +51,7 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-10-15
 
-function s = untabify (t, tw = 8, dblank = false)
+function s = untabify (t, tw = 8, deblank_arg = false)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -65,7 +65,7 @@ function s = untabify (t, tw = 8, dblank = false)
     s = cellfun (@replace_tabs, t, {tw}, "uniformoutput", false);
   endif
 
-  if (dblank)
+  if (deblank_arg)
     s = deblank (s);
   endif
 

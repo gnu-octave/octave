@@ -5,19 +5,19 @@ Copyright (C) 2005-2016 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -49,7 +49,7 @@ namespace octave
     regexp (const std::string& pat = "",
             const regexp::opts& opt = regexp::opts (),
             const std::string& w = "regexp")
-      : pattern (pat), options (opt), data (0), named_pats (),
+      : pattern (pat), options (opt), data (nullptr), named_pats (),
         nnames (0), named_idx (), who (w)
     {
       compile_internal ();
@@ -167,7 +167,7 @@ namespace octave
         return *this;
       }
 
-      ~opts (void) { }
+      ~opts (void) = default;
 
       void case_insensitive (bool val) { x_case_insensitive = val; }
       void dotexceptnewline (bool val) { x_dotexceptnewline = val; }
@@ -204,7 +204,7 @@ namespace octave
           x_token_extents (te), x_start (s), x_end (e)
       { }
 
-      match_element (const match_element &a)
+      match_element (const match_element& a)
         : x_match_string (a.x_match_string),
           x_named_tokens (a.x_named_tokens), x_tokens (a.x_tokens),
           x_token_extents (a.x_token_extents),
@@ -256,7 +256,7 @@ namespace octave
         return *this;
       }
 
-      ~match_data (void) { }
+      ~match_data (void) = default;
 
       string_vector named_patterns (void) { return named_pats; }
 
@@ -289,10 +289,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::regexp' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp' instead")
 typedef octave::regexp regexp;
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::match' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::match' instead")
 inline regexp::match_data
 regexp_match (const std::string& pat,
               const std::string& buffer,
@@ -302,7 +302,7 @@ regexp_match (const std::string& pat,
   return octave::regexp::match (pat, buffer, opt, who);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::is_match' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::is_match' instead")
 inline bool
 is_regexp_match (const std::string& pat,
                  const std::string& buffer,
@@ -312,7 +312,7 @@ is_regexp_match (const std::string& pat,
   return octave::regexp::is_match (pat, buffer, opt, who);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::is_match' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::is_match' instead")
 inline Array<bool>
 is_regexp_match (const std::string& pat,
                  const string_vector& buffer,
@@ -322,7 +322,7 @@ is_regexp_match (const std::string& pat,
   return octave::regexp::is_match (pat, buffer, opt, who);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::regexp::replace' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::replace' instead")
 inline std::string
 regexp_replace (const std::string& pat,
                 const std::string& buffer,

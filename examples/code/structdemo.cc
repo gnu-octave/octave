@@ -6,7 +6,7 @@ DEFUN_DLD (structdemo, args, , "Struct Demo")
   if (args.length () != 2)
     print_usage ();
 
-  if (! args(0).is_map ())
+  if (! args(0).isstruct ())
     error ("structdemo: ARG1 must be a struct");
 
   octave_scalar_map arg0 = args(0).scalar_map_value ();

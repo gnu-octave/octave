@@ -5,19 +5,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{map} =} viridis ()
@@ -36,14 +36,23 @@
 ## by Eric Firing.  The original file is distributed under CC0:
 ## http://creativecommons.org/publicdomain/zero/1.0
 
-function map = viridis (n = rows (colormap ()))
+function map = viridis (n)
 
   if (nargin > 1)
     print_usage ();
-  elseif (! isscalar (n))
-    error ("viridis: N must be a scalar");
+  elseif (nargin == 1)
+    if (! isscalar (n))
+      error ("viridis: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 64;
+    endif
   endif
-
   ## FIXME: Is there no algorithmic definition of the viridis colormap?
   persistent viridi = [0.26700401  0.00487433  0.32941519
                        0.26851048  0.00960483  0.33542652

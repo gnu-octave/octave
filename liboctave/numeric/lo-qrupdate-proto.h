@@ -4,19 +4,19 @@ Copyright (C) 2016-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -41,18 +41,18 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dch1dn, DCH1DN) (const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*, F77_DBLE*,
-                             F77_INT&);
+                             const F77_INT&, F77_DBLE*,
+                             F77_DBLE*, F77_INT&);
 
   F77_RET_T
   F77_FUNC (sch1dn, SCH1DN) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*, F77_REAL*,
-                             F77_INT&);
+                             const F77_INT&, F77_REAL*,
+                             F77_REAL*, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zch1dn, ZCH1DN) (const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*,
-                             F77_INT&);
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             F77_DBLE*, F77_INT&);
 
   // CH1UP
 
@@ -186,8 +186,8 @@ extern "C"
   F77_FUNC (sqrdec, SQRDEC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_REAL*,
                              const F77_INT&, F77_REAL*,
-                             const F77_INT&,
-                             const F77_INT&, F77_REAL*);
+                             const F77_INT&, const F77_INT&,
+                             F77_REAL*);
 
   F77_RET_T
   F77_FUNC (zqrdec, ZQRDEC) (const F77_INT&, const F77_INT&,
@@ -206,9 +206,9 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dqrder, DQRDER) (const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*);
+                             F77_DBLE*, const F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             const F77_INT&, F77_DBLE*);
 
   F77_RET_T
   F77_FUNC (sqrder, SQRDER) (const F77_INT&, const F77_INT&,
@@ -218,9 +218,9 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (zqrder, ZQRDER) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, F77_DBLE*);
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*);
 
   // QRINC
 
@@ -228,7 +228,7 @@ extern "C"
   F77_FUNC (cqrinc, CQRINC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_CMPLX*,
                              const F77_INT&, F77_CMPLX*,
-                             const F77_INT&,const F77_INT&,
+                             const F77_INT&, const F77_INT&,
                              const F77_CMPLX*, F77_REAL*);
 
   F77_RET_T
@@ -242,8 +242,8 @@ extern "C"
   F77_FUNC (sqrinc, SQRINC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_REAL*,
                              const F77_INT&, F77_REAL*,
-                             const F77_INT&,
-                             const F77_INT&, const F77_REAL*, F77_REAL*);
+                             const F77_INT&, const F77_INT&,
+                             const F77_REAL*, F77_REAL*);
 
   F77_RET_T
   F77_FUNC (zqrinc, ZQRINC) (const F77_INT&, const F77_INT&,
@@ -263,21 +263,24 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dqrinr, DQRINR) (const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE*, F77_DBLE*);
+                             F77_DBLE*, const F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             const F77_INT&, const F77_DBLE*,
+                             F77_DBLE*);
 
   F77_RET_T
   F77_FUNC (sqrinr, SQRINR) (const F77_INT&, const F77_INT&,
                              F77_REAL*, const F77_INT&,
                              F77_REAL*, const F77_INT&,
-                             const F77_INT&, const F77_REAL*, F77_REAL*);
+                             const F77_INT&, const F77_REAL*,
+                             F77_REAL*);
 
   F77_RET_T
   F77_FUNC (zqrinr, ZQRINR) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE_CMPLX*, F77_DBLE*);
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             const F77_INT&, const F77_DBLE_CMPLX*,
+                             F77_DBLE*);
 
   // QRSHC
 
@@ -286,21 +289,22 @@ extern "C"
                              const F77_INT&, F77_CMPLX*,
                              const F77_INT&, F77_CMPLX*,
                              const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_CMPLX*,
-                             F77_REAL*);
+                             const F77_INT&,
+                             F77_CMPLX*, F77_REAL*);
   F77_RET_T
   F77_FUNC (dqrshc, DQRSHC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_DBLE*,
                              const F77_INT&, F77_DBLE*,
                              const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE*);
+                             const F77_INT&,
+                             F77_DBLE*);
 
   F77_RET_T
   F77_FUNC (sqrshc, SQRSHC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_REAL*,
                              const F77_INT&, F77_REAL*,
-                             const F77_INT&,
                              const F77_INT&, const F77_INT&,
+                             const F77_INT&,
                              F77_REAL*);
 
   F77_RET_T
@@ -308,7 +312,8 @@ extern "C"
                              const F77_INT&, F77_DBLE_CMPLX*,
                              const F77_INT&, F77_DBLE_CMPLX*,
                              const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*);
+                             const F77_INT&,
+                             F77_DBLE_CMPLX*, F77_DBLE*);
 
 #endif
 

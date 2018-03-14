@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "procstream.h"
 #include "sysdep.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -82,7 +83,9 @@ octave_change_to_directory (const std::string& newdir)
   // FIXME: should these actions be handled as a list of functions
   // to call so users can add their own chdir handlers?
 
-  load_path::update ();
+  octave::load_path& lp = octave::__get_load_path__ ("octave_change_to_directory");
+
+  lp.update ();
 
   octave_link::change_directory (octave::sys::env::get_current_directory ());
 
@@ -278,7 +281,7 @@ identifier.
   if (nargin == 2)
     {
       if (args(1).string_value () != "s")
-        error ("rmdir: second argument must be \"s\" for recursive removal");
+        error (R"(rmdir: second argument must be "s" for recursive removal)");
 
       bool doit = true;
 
@@ -641,7 +644,7 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
     {
       std::string s = args(0).xstring_value ("filesep: argument must be a string");
       if (s != "all")
-        error ("filesep: argument must be \"all\"");
+        error (R"(filesep: argument must be "all")");
 
       retval = octave::sys::file_ops::dir_sep_chars ();
     }
@@ -649,45 +652,19 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
   return retval;
 }
 
-DEFUN (pathsep, args, nargout,
+DEFUN (pathsep, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} pathsep ()
-@deftypefnx {} {@var{old_val} =} pathsep (@var{new_val})
-Query or set the character used to separate directories in a path.
+Query the character used to separate directories in a path.
 @seealso{filesep}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
-  if (nargin > 1)
+  if (nargin > 0)
     print_usage ();
 
-  octave_value retval;
-
-  if (nargout > 0 || nargin == 0)
-    retval = octave::directory_path::path_sep_str ();
-
-  if (nargin == 1)
-    {
-      std::string sval = args(0).xstring_value ("pathsep: argument must be a single character");
-
-      switch (sval.length ())
-        {
-        case 1:
-          octave::directory_path::path_sep_char (sval[0]);
-          break;
-
-        case 0:
-          octave::directory_path::path_sep_char ('\0');
-          break;
-
-        default:
-          error ("pathsep: argument must be a single character");
-          break;
-        }
-    }
-
-  return retval;
+  return ovl (octave::directory_path::path_sep_str ());
 }
 
 DEFUN (confirm_recursive_rmdir, args, nargout,

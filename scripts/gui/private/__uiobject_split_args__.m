@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
@@ -30,7 +30,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
   offset = 1;
 
   if (! isempty (in_args))
-    if (ishandle (in_args{1}))
+    if (ishghandle (in_args{1}))
       parent = in_args{1};
       offset = 2;
     elseif (! ischar (in_args{1}))
@@ -48,7 +48,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
     i = find (strcmpi (args(1:2:end), "parent"), 1, "first");
     if (! isempty (i) && length (args) >= 2*i)
       parent = args{2*i};
-      if (! ishandle (parent))
+      if (! ishghandle (parent))
         error ("%s: invalid parent handle.", who);
       endif
       args([2*i-1, 2*i]) = [];

@@ -4,19 +4,19 @@ Copyright (C) 2001-2017 Cai Jianming
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -82,39 +82,39 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
 }
 
 void
-install_bm_b_ops (void)
+install_bm_b_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_bool, el_and);
-  INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_bool, el_or);
-  INSTALL_BINOP (op_el_not_and, octave_bool_matrix, octave_bool, el_not_and);
-  INSTALL_BINOP (op_el_not_or, octave_bool_matrix, octave_bool, el_not_or);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_bool_matrix, octave_bool, el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_bool_matrix, octave_bool, el_or);
+  INSTALL_BINOP_TI (ti, op_el_not_and, octave_bool_matrix, octave_bool, el_not_and);
+  INSTALL_BINOP_TI (ti, op_el_not_or, octave_bool_matrix, octave_bool, el_not_or);
 
-  INSTALL_CATOP (octave_bool_matrix, octave_bool, bm_b);
-  INSTALL_CATOP (octave_bool_matrix, octave_scalar, bm_s);
-  INSTALL_CATOP (octave_matrix, octave_bool, m_b);
-  INSTALL_CATOP (octave_bool_matrix, octave_float_scalar, bm_f);
-  INSTALL_CATOP (octave_float_matrix, octave_bool, fm_b);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_bool, bm_b);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_scalar, bm_s);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_bool, m_b);
+  INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_float_scalar, bm_f);
+  INSTALL_CATOP_TI (ti, octave_float_matrix, octave_bool, fm_b);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_bool, assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_scalar,
-                    conv_and_assign);
-
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int8_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int16_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int32_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int64_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_scalar,
                     conv_and_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint8_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_int8_scalar,
                     conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint16_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_int16_scalar,
                     conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint32_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_int32_scalar,
                     conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint64_scalar,
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_int64_scalar,
+                    conv_and_assign);
+
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_uint8_scalar,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_uint16_scalar,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_uint32_scalar,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_uint64_scalar,
                     conv_and_assign);
 }

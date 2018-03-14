@@ -2,25 +2,26 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{hui} =} uipanel (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uipanel (@var{parent}, "@var{property}, @var{value}, @dots{})
+## @deftypefn  {} {} uipanel (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} uipanel (@var{parent}, "@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uipanel (@dots{})
 ##
-## Create a uipanel object and return a handle to it.
+## Create a uipanel object.
 ##
 ## uipanels are used as containers to group other uicontrol objects.
 ##
@@ -33,6 +34,9 @@
 ## created uipanel object.
 ##
 ## Uipanel properties are documented at @ref{Uipanel Properties}.
+##
+## The optional return value @var{hui} is a graphics handle to the created
+## uipanel object.
 ##
 ## Examples:
 ##
@@ -57,6 +61,10 @@ function hui = uipanel (varargin)
 
   [h, args] = __uiobject_split_args__ ("uipanel", varargin,
                                        {"figure", "uipanel", "uibuttongroup"});
-  hui = __go_uipanel__ (h, args{:});
+  htmp = __go_uipanel__ (h, args{:});
+
+  if (nargout > 0)
+    hui = htmp;
+  endif
 
 endfunction

@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cstdarg>
+#include <cstdlib>
 #include <cstring>
 
 #include <iomanip>
@@ -32,23 +33,23 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
+#include "bp-table.h"
+#include "builtin-defun-decls.h"
 #include "call-stack.h"
-#include "debug.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
-#include "octave.h"
-#include "pager.h"
-#include "ovl.h"
-#include "oct-map.h"
-#include "utils.h"
-#include "ov.h"
-#include "ov-usr-fcn.h"
-#include "pt-eval.h"
-#include "pt-pr-code.h"
-#include "pt-stmt.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
+#include "oct-map.h"
+#include "octave.h"
+#include "ov-usr-fcn.h"
+#include "ov.h"
+#include "ovl.h"
+#include "pager.h"
+#include "pt-eval.h"
 #include "unwind-prot.h"
+#include "utils.h"
 #include "variables.h"
 
 // TRUE means that Octave will try to beep obnoxiously before printing
@@ -142,7 +143,10 @@ initialize_warning_options (const std::string& state)
 static octave_map
 initialize_last_error_stack (void)
 {
-  return octave_call_stack::empty_backtrace ();
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("initialize_last_error_stack");
+
+  return cs.empty_backtrace ();
 }
 
 static void
@@ -154,7 +158,7 @@ verror (bool save_last_error, std::ostream& os,
     return;
 
   if (! buffer_error_messages || Vdebug_on_caught)
-    flush_octave_stdout ();
+    octave::flush_stdout ();
 
   // FIXME: we really want to capture the message before it has all the
   //        formatting goop attached to it.  We probably also want just the
@@ -181,13 +185,15 @@ verror (bool save_last_error, std::ostream& os,
         msg_string += std::string (name) + ": ";
     }
 
+  octave::call_stack& cs = octave::__get_call_stack__ ("verror");
+
   // If with_fcn is specified, we'll attempt to prefix the message with the name
   // of the current executing function.  But we'll do so only if:
   // 1. the name is not empty (anonymous function)
   // 2. it is not already there (including the following colon)
   if (with_cfn)
     {
-      octave_function *curfcn = octave_call_stack::current ();
+      octave_function *curfcn = cs.current ();
       if (curfcn)
         {
           std::string cfn = curfcn->name ();
@@ -203,7 +209,7 @@ verror (bool save_last_error, std::ostream& os,
         }
     }
 
-  msg_string += base_msg + "\n";
+  msg_string += base_msg + '\n';
 
   if (save_last_error)
     {
@@ -212,13 +218,13 @@ verror (bool save_last_error, std::ostream& os,
       Vlast_error_id = id;
       Vlast_error_message = base_msg;
 
-      octave_user_code *fcn = octave_call_stack::caller_user_code ();
+      octave_user_code *fcn = cs.caller_user_code ();
 
       if (fcn)
         {
           octave_idx_type curr_frame = -1;
 
-          Vlast_error_stack = octave_call_stack::backtrace (0, curr_frame);
+          Vlast_error_stack = cs.backtrace (0, curr_frame);
         }
       else
         Vlast_error_stack = initialize_last_error_stack ();
@@ -247,11 +253,11 @@ pr_where_2 (std::ostream& os, const char *fmt, va_list args)
                   if (len > 1)
                     {
                       std::string tmp_fmt (fmt, len - 1);
-                      verror (false, os, 0, "", tmp_fmt.c_str (), args);
+                      verror (false, os, nullptr, "", tmp_fmt.c_str (), args);
                     }
                 }
               else
-                verror (false, os, 0, "", fmt, args);
+                verror (false, os, nullptr, "", fmt, args);
             }
         }
     }
@@ -285,14 +291,11 @@ pr_where (std::ostream& os, const char *who,
   if (nframes > 0)
     pr_where_1 (os, "%s: called from\n", who);
 
-  for (std::list<error_stack_frame>::const_iterator p = frames.begin ();
-       p != frames.end (); p++)
+  for (const auto& frm : frames)
     {
-      const error_stack_frame& elt = *p;
-
-      std::string fcn_name = elt.name;
-      int line = elt.line;
-      int column = elt.column;
+      std::string fcn_name = frm.name;
+      int line = frm.line;
+      int column = frm.column;
 
       if (line > 0)
         {
@@ -310,24 +313,23 @@ pr_where (std::ostream& os, const char *who,
 static void
 pr_where (std::ostream& os, const char *who)
 {
-  std::list<octave_call_stack::stack_frame> call_stack_frames
-    = octave_call_stack::backtrace_frames ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("pr_where");
+
+  std::list<octave::call_stack::stack_frame> call_stack_frames
+    = cs.backtrace_frames ();
 
   // Print the error message only if it is different from the previous one;
   // Makes the output more concise and readable.
   call_stack_frames.unique ();
 
   std::list<error_stack_frame> frames;
-  for (std::list<octave_call_stack::stack_frame>::const_iterator p = call_stack_frames.begin ();
-       p != call_stack_frames.end (); p++)
+  for (const auto& frm : call_stack_frames)
     {
-      const octave_call_stack::stack_frame& elt = *p;
-
       error_stack_frame frame;
 
-      frame.name = elt.fcn_name ();
-      frame.line = elt.line ();
-      frame.column = elt.column ();
+      frame.name = frm.fcn_name ();
+      frame.line = frm.line ();
+      frame.column = frm.column ();
 
       frames.push_back (frame);
     }
@@ -353,11 +355,14 @@ static void
 maybe_enter_debugger (octave::execution_exception& e,
                       bool show_stack_trace = false)
 {
+  octave::call_stack& cs = octave::__get_call_stack__ ("maybe_enter_debugger");
+  octave::bp_table& bptab = octave::__get_bp_table__ ("maybe_enter_debugger");
+
   if ((octave::application::interactive ()
        || octave::application::forced_interactive ())
-      && ((Vdebug_on_error && bp_table::debug_on_err (last_error_id ()))
-          || (Vdebug_on_caught && bp_table::debug_on_caught (last_error_id ())))
-      && octave_call_stack::caller_user_code ())
+      && ((Vdebug_on_error && bptab.debug_on_err (last_error_id ()))
+          || (Vdebug_on_caught && bptab.debug_on_caught (last_error_id ())))
+      && cs.caller_user_code ())
     {
       octave::unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
@@ -365,7 +370,7 @@ maybe_enter_debugger (octave::execution_exception& e,
 
       octave::tree_evaluator::debug_mode = true;
 
-      octave::tree_evaluator::current_frame = octave_call_stack::current_frame ();
+      octave::tree_evaluator::current_frame = cs.current_frame ();
 
       if (show_stack_trace)
         {
@@ -391,7 +396,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
   if (discard_warning_messages)
     return;
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::ostringstream output_buf;
 
@@ -407,7 +412,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
   if (name)
     msg_string = std::string (name) + ": ";
 
-  msg_string += base_msg + "\n";
+  msg_string += base_msg + '\n';
 
   Vlast_warning_id = id;
   Vlast_warning_message = base_msg;
@@ -534,7 +539,10 @@ error_1 (octave::execution_exception& e, std::ostream& os,
                 {
                   verror (true, os, name, id, fmt, args, with_cfn);
 
-                  bool in_user_code = octave_call_stack::caller_user_code () != 0;
+                  octave::call_stack& cs
+                    = octave::__get_call_stack__ ("error_1");
+
+                  bool in_user_code = cs.caller_user_code () != nullptr;
 
                   if (in_user_code && ! discard_error_messages)
                     show_stack_trace = true;
@@ -742,7 +750,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
   else if (warn_opt == 1)
     {
       bool fmt_suppresses_backtrace = false;
-      size_t fmt_len = fmt ? strlen (fmt) : 0;
+      size_t fmt_len = (fmt ? strlen (fmt) : 0);
       fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
 
       if (fmt_suppresses_backtrace && fmt_len > 1)
@@ -754,16 +762,21 @@ warning_1 (const char *id, const char *fmt, va_list args)
       else
         vwarning ("warning", id, fmt, args);
 
-      bool in_user_code = octave_call_stack::caller_user_code () != 0;
+      octave::call_stack& cs = octave::__get_call_stack__ ("warning_1");
+
+      bool in_user_code = cs.caller_user_code () != nullptr;
 
       if (! fmt_suppresses_backtrace && in_user_code
           && Vbacktrace_on_warning
           && ! discard_warning_messages)
         pr_where (std::cerr, "warning");
 
+      octave::bp_table& bptab
+        = octave::__get_bp_table__ ("warning_1");
+
       if ((octave::application::interactive ()
            || octave::application::forced_interactive ())
-          && Vdebug_on_warning && in_user_code && bp_table::debug_on_warn (id))
+          && Vdebug_on_warning && in_user_code && bptab.debug_on_warn (id))
         {
           octave::unwind_protect frame;
           frame.protect_var (Vdebug_on_warning);
@@ -771,7 +784,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
           octave::tree_evaluator::debug_mode = true;
 
-          octave::tree_evaluator::current_frame = octave_call_stack::current_frame ();
+          octave::tree_evaluator::current_frame = cs.current_frame ();
 
           do_keyboard (octave_value_list ());
         }
@@ -811,7 +824,7 @@ warning_with_id (const char *id, const char *fmt, ...)
 void
 vparse_error (const char *fmt, va_list args)
 {
-  error_1 (std::cerr, 0, "", fmt, args);
+  error_1 (std::cerr, nullptr, "", fmt, args);
 }
 
 void
@@ -826,7 +839,7 @@ parse_error (const char *fmt, ...)
 void
 vparse_error_with_id (const char *id, const char *fmt, va_list args)
 {
-  error_1 (std::cerr, 0, id, fmt, args);
+  error_1 (std::cerr, nullptr, id, fmt, args);
 }
 
 void
@@ -843,7 +856,7 @@ rethrow_error (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (std::cerr, 0, id, fmt, args);
+  error_1 (std::cerr, nullptr, id, fmt, args);
   va_end (args);
 }
 
@@ -870,7 +883,7 @@ make_stack_frame_list (const octave_map& stack)
 
       frame.name = name(i).string_value ();
       frame.line = line(i).int_value ();
-      frame.column = have_column ? column(i).int_value () : -1;
+      frame.column = (have_column ? column(i).int_value () : -1);
 
       frames.push_back (frame);
     }
@@ -883,7 +896,7 @@ rethrow_error_1 (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (false, std::cerr, 0, id, fmt, args);
+  verror (false, std::cerr, nullptr, id, fmt, args);
   va_end (args);
 }
 
@@ -894,7 +907,7 @@ rethrow_error (const std::string& id, const std::string& msg,
 {
   octave::execution_exception e = make_execution_exception ("error");
 
-  if (! stack.is_empty ()
+  if (! stack.isempty ()
       && ! (stack.contains ("file") && stack.contains ("name")
             && stack.contains ("line")))
     error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
@@ -915,7 +928,7 @@ rethrow_error (const std::string& id, const std::string& msg,
   else
     rethrow_error_1 (id.c_str (), "%s", tmp_msg.c_str ());
 
-  if (! stack.is_empty ())
+  if (! stack.isempty ())
     {
       std::ostringstream buf;
 
@@ -944,7 +957,7 @@ defun_usage_message_1 (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (octave_stdout, 0, "", fmt, args);
+  error_1 (octave_stdout, nullptr, "", fmt, args);
   va_end (args);
 }
 
@@ -988,7 +1001,7 @@ handle_message (error_fun f, const char *id, const char *msg,
               if (! msg)
                 return retval;
             }
-          else if (arg.is_empty ())
+          else if (arg.isempty ())
             return retval;
         }
     }
@@ -1071,15 +1084,14 @@ maybe_extract_message_id (const std::string& caller,
     {
       std::string arg1 = args(0).string_value ();
 
-      // For compatibility with Matlab, an identifier must contain
-      // ':', but not at the beginning or the end, and it must not
-      // contain '%' (even if it is not a valid conversion
-      // operator) or whitespace.
+      // For compatibility with Matlab, an identifier must contain ':',
+      // but not at the beginning or the end, and it must not contain '%'
+      // (even if it is not a valid conversion operator) or whitespace.
 
       if (arg1.find_first_of ("% \f\n\r\t\v") == std::string::npos
           && arg1.find (':') != std::string::npos
           && arg1[0] != ':'
-          && arg1[arg1.length ()-1] != ':')
+          && arg1.back () != ':')
         {
           if (nargin > 1)
             {
@@ -1202,10 +1214,10 @@ disable escape sequence expansion use a second backslash before the sequence
 
   bool have_fmt = false;
 
-  if (nargin == 1 && args(0).is_map ())
+  if (nargin == 1 && args(0).isstruct ())
     {
       // empty struct is not an error.  return and resume calling function.
-      if (args(0).is_empty ())
+      if (args(0).isempty ())
         return retval;
 
       octave_scalar_map m = args(0).scalar_map_value ();
@@ -1414,61 +1426,113 @@ set_warning_option (const std::string& state, const std::string& ident)
   warning_options.assign ("state", tst);
 }
 
-DEFUN (warning, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (warning, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} warning (@var{template}, @dots{})
 @deftypefnx {} {} warning (@var{id}, @var{template}, @dots{})
 @deftypefnx {} {} warning ("on", @var{id})
 @deftypefnx {} {} warning ("off", @var{id})
-@deftypefnx {} {} warning ("query", @var{id})
 @deftypefnx {} {} warning ("error", @var{id})
-@deftypefnx {} {} warning (@var{state}, "backtrace")
+@deftypefnx {} {} warning ("query", @var{id})
 @deftypefnx {} {} warning (@var{state}, @var{id}, "local")
+@deftypefnx {} {} warning (@var{stin})
+@deftypefnx {} {@var{stout} =} warning (@dots{})
+@deftypefnx {} {@var{mode_st} =} warning (@var{state}, @var{mode})
+@deftypefnx {} {} warning (@var{mode_st})
+
 Display a warning message or control the behavior of Octave's warning
 system.
 
-Format the optional arguments under the control of the template string
-@var{template} using the same rules as the @code{printf} family of
-functions (@pxref{Formatted Output}) and print the resulting message
-on the @code{stderr} stream.  The message is prefixed by the character
-string @samp{warning: }.
-You should use this function when you want to notify the user
-of an unusual condition, but only when it makes sense for your program
-to go on.
-
-The optional message identifier allows users to enable or disable
-warnings tagged by @var{id}.  A message identifier is of the form
-"NAMESPACE:WARNING-NAME".  Octave's own warnings use the
-@qcode{"Octave"} namespace (@pxref{XREFwarning_ids,,warning_ids}).  The special
-identifier @qcode{"all"} may be used to set the state of all warnings.
-
-If the first argument is @qcode{"on"} or @qcode{"off"},
-set the state of a particular warning using the identifier @var{id}.  If the
-first argument is @qcode{"query"}, query the state of this warning
-instead.  If the identifier is omitted, a value of @qcode{"all"} is
-assumed.  If you set the state of a warning to @qcode{"error"}, the
-warning named by @var{id} is handled as if it were an error instead.  So,
-for example, the following handles all warnings as errors:
+The first call form uses a template @var{template} and optional
+additional arguments to display a message on the @code{stderr} stream.
+The message is formatted using the same rules as the @code{printf} family
+of functions (@pxref{Formatted Output}) and prefixed by the character
+string @samp{warning: }.  You should use this function when you want to
+notify the user of an unusual condition, but only when it makes sense for
+your program to go on.  For example:
 
 @example
 @group
-warning ("error");
+warning ("foo: maybe something wrong here");
 @end group
 @end example
 
-If the state is @qcode{"on"} or @qcode{"off"} and the third argument
-is @qcode{"backtrace"}, then a stack trace is printed along with the
-warning message when warnings occur inside function calls.  This option
-is enabled by default.
+The optional warning identifier @var{id} allows users to enable or disable
+warnings tagged by this identifier.  A message identifier is a string of the
+form @qcode{"NAMESPACE:WARNING-NAME"}.  Octave's own warnings use the
+@qcode{"Octave"} namespace (@pxref{XREFwarning_ids,,warning_ids}).  For
+example:
 
-If the state is @qcode{"on"}, @qcode{"off"}, or @qcode{"error"}
-and the third argument is @qcode{"local"}, then the warning state
-will be set temporarily, until the end of the current function.
-Changes to warning states that are set locally affect the current
-function and all functions called from the current scope.  The
-previous warning state is restored on return from the current
-function.  The @qcode{"local"} option is ignored if used in the top-level
-workspace.
+@example
+@group
+warning ("MyNameSpace:check-something",
+         "foo: maybe something wrong here");
+@end group
+@end example
+
+The second call form is meant to change and/or query the state of warnings.
+The first input argument must be a string @var{state} (@qcode{"on"},
+@qcode{"off"}, @qcode{"error"}, or @qcode{"query"}) followed by an optional
+warning identifier @var{id} or @qcode{"all"} (default).
+
+The optional output argument @var{stout} is a structure or structure array
+with fields @qcode{"state"} and @qcode{"identifier"}.  The @var{state} argument
+may have the following values:
+
+@table @asis
+@item @qcode{"on"}|@qcode{"off"}:
+Enable or disable the display of warnings identified by @var{id} and optionally
+return their previous state @var{stout}.
+
+@item @qcode{"error"}:
+Turn warnings identified by @var{id} into errors and optionally return their
+previous state @var{stout}.
+
+@item @qcode{"query"}:
+Return the current state of warnings identified by @var{id}.
+@end table
+
+A structure or structure array @var{stin}, with fields @qcode{"state"} and
+@qcode{"identifier"}, may be passed to achieve equivalent results.  The
+following example shows how to temporarily disable a warning and then restore
+its original state:
+
+@example
+@group
+loglog (-1:10);
+## Disable the previous warning and save its original state
+[~, id] = lastwarn ();
+warnstate = warning ("off", id);
+loglog (-1:10);
+## Restore its original state
+warning (warnstate);
+@end group
+@end example
+
+If a final argument @qcode{"local"} is provided then the warning state will be
+set temporarily until the end of the current function.  Changes to warning
+states that are set locally affect the current function and all functions
+called from the current scope.  The previous warning state is restored on
+return from the current function.  The @qcode{"local"} option is ignored if
+used in the top-level workspace.
+
+With no input argument @code{warning ()} is equivalent to
+@code{warning ("query", "all")} except that in the absence of an output
+argument, the state of warnings is displayed on @code{stderr}.
+
+The level of verbosity of the warning system may also be controlled by two
+modes @var{mode}:
+
+@table @asis
+@item @qcode{"backtrace"}:
+enable/disable the display of the stack trace after the warning message
+
+@item @qcode{"verbose"}:
+enable/disable the display of additional information after the warning message
+@end table
+
+In this case the @var{state} argument may only be @qcode{"on"} or
+@qcode{"off"}.
 
 Implementation Note: For compatibility with @sc{matlab}, escape
 sequences in @var{template} (e.g., @qcode{"@xbackslashchar{}n"} =>
@@ -1497,16 +1561,20 @@ disable escape sequence expansion use a second backslash before the sequence
 
       if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
-          octave_map old_warning_options = warning_options;
+          // Prepare output structure
+          octave_map old_warning_options;
+          if (arg2 == "all")
+            old_warning_options = warning_options;
+          else
+            old_warning_options = octave_map (warning_query (arg2));
+
+          octave::symbol_table& symtab = interp.get_symbol_table ();
 
           if (nargin == 3 && argv[3] == "local"
-              && ! symbol_table::at_top_level ())
+              && ! symtab.at_top_level ())
             {
-              symbol_table::scope_id scope
-                = octave_call_stack::current_scope ();
-
-              symbol_table::context_id context
-                = octave_call_stack::current_context ();
+              octave::symbol_scope scope
+                = symtab.require_current_scope ("warning");
 
               octave_scalar_map val = warning_query (arg2);
 
@@ -1515,8 +1583,7 @@ disable escape sequence expansion use a second backslash before the sequence
               // FIXME: this might be better with a dictionary object.
 
               octave_value curr_warning_states
-                = symbol_table::varval (".saved_warning_states.",
-                                        scope, context);
+                = scope.varval (".saved_warning_states.");
 
               octave_map m;
 
@@ -1564,8 +1631,7 @@ disable escape sequence expansion use a second backslash before the sequence
               m.contents ("identifier") = ids;
               m.contents ("state") = states;
 
-              symbol_table::assign (".saved_warning_states.",
-                                    m, scope, context);
+              scope.force_assign (".saved_warning_states.", m);
 
               // Now ignore the "local" argument and continue to
               // handle the current setting.
@@ -1690,9 +1756,9 @@ disable escape sequence expansion use a second backslash before the sequence
     {
       octave_value arg = args(0);
 
-      octave_map old_warning_options = warning_options;
+      octave_map old_warning_options;
 
-      if (arg.is_map ())
+      if (arg.isstruct ())
         {
           octave_map m = arg.map_value ();
 
@@ -1706,6 +1772,18 @@ disable escape sequence expansion use a second backslash before the sequence
 
           octave_idx_type nel = ident.numel ();
 
+          // Prepare output structure
+          old_warning_options = octave_map (m);
+          Cell oldstate (state);
+
+          for (octave_idx_type i = 0; i < nel; i++)
+            {
+              std::string tid = ident(i).string_value ();
+              oldstate(i) = warning_query (tid).getfield ("state");
+            }
+          old_warning_options.setfield ("state", oldstate);
+
+          // Set new values
           for (octave_idx_type i = 0; i < nel; i++)
             {
               std::string tst = state(i).string_value ();
@@ -1743,9 +1821,22 @@ disable escape sequence expansion use a second backslash before the sequence
 }
 
 /*
-%!test <45753>
+%!test <*45753>
 %! warning ("error");
 %! assert (! isempty (help ("warning")));
+*/
+
+/*
+%!test <*51997>
+%! id = "Octave:divide-by-zero";
+%! current = warning ("query", id);
+%! current_all = warning ();
+%! previous = warning (current_all);
+%! assert (previous, current_all);
+%! previous = warning (current);
+%! assert (previous, current);
+%! previous = warning (current.state, id);
+%! assert (previous, current);
 */
 
 octave_value_list
@@ -1756,13 +1847,19 @@ set_warning_state (const std::string& id, const std::string& state)
   args(1) = id;
   args(0) = state;
 
-  return Fwarning (args, 1);
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("set_warning_state");
+
+  return Fwarning (interp, args, 1);
 }
 
 octave_value_list
 set_warning_state (const octave_value_list& args)
 {
-  return Fwarning (args, 1);
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("set_warning_state");
+
+  return Fwarning (interp, args, 1);
 }
 
 void
@@ -1793,8 +1890,8 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:variable-switch-label");
 }
 
-DEFUN (lasterror, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (lasterror, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{lasterr} =} lasterror ()
 @deftypefnx {} {} lasterror (@var{err})
 @deftypefnx {} {} lasterror ("reset")
@@ -1864,7 +1961,7 @@ fields are set to their default values.
 
           Vlast_error_stack = initialize_last_error_stack ();
         }
-      else if (args(0).is_map ())
+      else if (args(0).isstruct ())
         {
           octave_scalar_map new_err = args(0).scalar_map_value ();
           octave_scalar_map new_err_stack;
@@ -1892,7 +1989,7 @@ fields are set to their default values.
 
           if (new_err.contains ("stack"))
             {
-              if (new_err.getfield ("stack").is_empty ())
+              if (new_err.getfield ("stack").isempty ())
                 initialize_stack = true;
               else
                 {
@@ -1947,8 +2044,9 @@ fields are set to their default values.
               // No stack field.  Fill it in with backtrace info.
               octave_idx_type curr_frame = -1;
 
-              Vlast_error_stack
-                = octave_call_stack::backtrace (0, curr_frame);
+              octave::call_stack& cs = interp.get_call_stack ();
+
+              Vlast_error_stack = cs.backtrace (0, curr_frame);
             }
         }
       else

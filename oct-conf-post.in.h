@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,9 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (__GNUC__)
    /* The following attributes are used with gcc and clang compilers.  */
 #  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
-#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))
 #  else
-#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__))
+#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
 #  endif
 #  define HAVE_OCTAVE_DEPRECATED_ATTR 1
 
@@ -45,12 +45,30 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_UNUSED __attribute__ ((__unused__))
 #  define HAVE_OCTAVE_UNUSED_ATTR 1
 #else
-#  define OCTAVE_DEPRECATED(msg)
+#  define OCTAVE_DEPRECATED(ver, msg)
 #  define OCTAVE_NORETURN
 #  define OCTAVE_UNUSED
 #endif
 
-#define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
+#if ! defined (OCTAVE_FALLTHROUGH)
+#  if defined (__cplusplus) && __cplusplus > 201402L
+#    define OCTAVE_FALLTHROUGH [[fallthrough]]
+#  elif defined (__GNUC__) && __GNUC__ < 7
+#    define OCTAVE_FALLTHROUGH ((void) 0)
+#  else
+#    define OCTAVE_FALLTHROUGH __attribute__ ((__fallthrough__))
+#  endif
+#endif
+
+/* This macro could have a better name...  It is intended to be used
+   only to enable inline functions or typedefs that provide access to
+   symbols that have been moved to the octave namespace.  It may be
+   temporarily useful to define this macro when moving a symbol to the
+   octave namespace but it should not be defined when building
+   released versions of Octave, as building those should not require
+   deprecated symbols.  It is defined in octave-config.h, so users of
+   Octave may continue to access symbols using the deprecated names.  */
+/* #undef OCTAVE_USE_DEPRECATED_FUNCTIONS */
 
 #if defined (__cplusplus)
 template <typename T>
@@ -101,12 +119,6 @@ typedef unsigned long ino_t;
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
 #  define OCTAVE_HAVE_SIG_JUMP 1
-#endif
-
-#if defined (OCTAVE_ENABLE_64)
-#  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
-#else
-#  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
 #endif
 
 /* To be able to use long doubles for 64-bit mixed arithmetics, we need
@@ -189,6 +201,13 @@ typedef unsigned long ino_t;
 #endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;
+typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
+
+#define OCTAVE_HAVE_F77_INT_TYPE 1
+
+#if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
+#  define OCTAVE_THREAD_LOCAL
+#endif
 
 /* Tag indicating Octave's autoconf-generated config.h has been
    included.  This symbol is provided because autoconf-generated

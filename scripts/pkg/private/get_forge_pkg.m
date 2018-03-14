@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
@@ -31,7 +31,7 @@ function [ver, url] = get_forge_pkg (name)
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
     error ("get_forge_pkg: package NAME must be a string");
   elseif (! all (isalnum (name) | name == "-" | name == "." | name == "_"))
-    error ("get_forge_pkg: invalid package name: %s", name);
+    error ("get_forge_pkg: invalid package NAME: %s", name);
   endif
 
   name = tolower (name);

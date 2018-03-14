@@ -4,19 +4,19 @@ Copyright (C) 2005-2017 Ludwig Schwardt, Kevin Ruland
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -52,8 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Default constructor
 gzfilebuf::gzfilebuf ()
-  : file(0), io_mode(std::ios_base::openmode(0)), own_fd(false),
-    buffer(0), buffer_size(BIGBUFSIZE), own_buffer(true)
+  : file(nullptr), io_mode(std::ios_base::openmode(0)), own_fd(false),
+    buffer(nullptr), buffer_size(BIGBUFSIZE), own_buffer(true)
 {
   // No buffers to start with
   this->disable_buffer ();
@@ -84,19 +84,19 @@ gzfilebuf::open (const char *name, std::ios_base::openmode mode)
 {
   // Fail if file already open
   if (this->is_open ())
-    return 0;
+    return nullptr;
   // Don't support simultaneous read/write access (yet)
   if ((mode & std::ios_base::in) && (mode & std::ios_base::out))
-    return 0;
+    return nullptr;
 
   // Build mode string for gzopen and check it [27.8.1.3.2]
   char char_mode[6] = "\0\0\0\0\0";
   if (! this->open_mode (mode, char_mode))
-    return 0;
+    return nullptr;
 
   // Attempt to open file
-  if ((file = gzopen (name, char_mode)) == 0)
-    return 0;
+  if ((file = gzopen (name, char_mode)) == nullptr)
+    return nullptr;
 
   // On success, allocate internal buffer and set flags
   this->enable_buffer ();
@@ -111,19 +111,19 @@ gzfilebuf::attach (int fd, std::ios_base::openmode mode)
 {
   // Fail if file already open
   if (this->is_open ())
-    return 0;
+    return nullptr;
   // Don't support simultaneous read/write access (yet)
   if ((mode & std::ios_base::in) && (mode & std::ios_base::out))
-    return 0;
+    return nullptr;
 
   // Build mode string for gzdopen and check it [27.8.1.3.2]
   char char_mode[6] = "\0\0\0\0\0";
   if (! this->open_mode (mode, char_mode))
-    return 0;
+    return nullptr;
 
   // Attempt to attach to file
-  if ((file = gzdopen (fd, char_mode)) == 0)
-    return 0;
+  if ((file = gzdopen (fd, char_mode)) == nullptr)
+    return nullptr;
 
   // On success, allocate internal buffer and set flags
   this->enable_buffer ();
@@ -138,16 +138,16 @@ gzfilebuf::close ()
 {
   // Fail immediately if no file is open
   if (! this->is_open ())
-    return 0;
+    return nullptr;
   // Assume success
-  gzfilebuf* retval = this;
+  gzfilebuf *retval = this;
   // Attempt to sync and close gzipped file
   if (this->sync () == -1)
-    retval = 0;
+    retval = nullptr;
   if (gzclose (file) < 0)
-    retval = 0;
+    retval = nullptr;
   // File is now gone anyway (postcondition [27.8.1.3.8])
-  file = 0;
+  file = nullptr;
   own_fd = false;
   // Destroy internal buffer if it exists
   this->disable_buffer ();
@@ -158,7 +158,7 @@ gzfilebuf::close ()
 
 // Convert int open mode to mode string
 bool
-gzfilebuf::open_mode (std::ios_base::openmode mode, char* c_mode) const
+gzfilebuf::open_mode (std::ios_base::openmode mode, char *c_mode) const
 {
   // FIXME: do we need testb?
   // bool testb = mode & std::ios_base::binary;
@@ -347,11 +347,11 @@ gzfilebuf::overflow (int_type c)
 
 // Assign new buffer
 std::streambuf*
-gzfilebuf::setbuf (char_type* p, std::streamsize n)
+gzfilebuf::setbuf (char_type *p, std::streamsize n)
 {
   // First make sure stuff is sync'ed, for safety
   if (this->sync () == -1)
-    return 0;
+    return nullptr;
   // If buffering is turned off on purpose via setbuf(0,0), still allocate one.
   // "Unbuffered" only really refers to put [27.8.1.4.10], while get needs at
   // least a buffer of size 1 (very inefficient though, therefore make it
@@ -361,7 +361,7 @@ gzfilebuf::setbuf (char_type* p, std::streamsize n)
     {
       // Replace existing buffer (if any) with small internal buffer
       this->disable_buffer ();
-      buffer = 0;
+      buffer = nullptr;
       buffer_size = 0;
       own_buffer = true;
       this->enable_buffer ();
@@ -416,7 +416,7 @@ gzfilebuf::enable_buffer ()
           buffer = new char_type [buffer_size];
           this->setg (buffer, buffer, buffer);
           // "Unbuffered" means no put buffer
-          this->setp (0, 0);
+          this->setp (nullptr, nullptr);
         }
     }
   else
@@ -439,9 +439,9 @@ gzfilebuf::disable_buffer ()
       if (! this->pbase ())
         buffer_size = 0;
       delete[] buffer;
-      buffer = 0;
-      this->setg (0, 0, 0);
-      this->setp (0, 0);
+      buffer = nullptr;
+      this->setg (nullptr, nullptr, nullptr);
+      this->setp (nullptr, nullptr);
     }
   else
     {
@@ -450,7 +450,7 @@ gzfilebuf::disable_buffer ()
       if (buffer)
         this->setp (buffer, buffer + buffer_size - 1);
       else
-        this->setp (0, 0);
+        this->setp (nullptr, nullptr);
     }
 }
 
@@ -516,12 +516,12 @@ gzfilebuf::seekpos (pos_type sp, std::ios_base::openmode)
 
 // Default constructor initializes stream buffer
 gzifstream::gzifstream ()
-  : std::istream (0), sb ()
+  : std::istream (nullptr), sb ()
 { this->init (&sb); }
 
 // Initialize stream buffer and open file
-gzifstream::gzifstream (const char* name, std::ios_base::openmode mode)
-  : std::istream (0), sb ()
+gzifstream::gzifstream (const char *name, std::ios_base::openmode mode)
+  : std::istream (nullptr), sb ()
 {
   this->init (&sb);
   this->open (name, mode);
@@ -529,7 +529,7 @@ gzifstream::gzifstream (const char* name, std::ios_base::openmode mode)
 
 // Initialize stream buffer and attach to file
 gzifstream::gzifstream (int fd, std::ios_base::openmode mode)
-  : std::istream (0), sb ()
+  : std::istream (nullptr), sb ()
 {
   this->init (&sb);
   this->attach (fd, mode);
@@ -537,7 +537,7 @@ gzifstream::gzifstream (int fd, std::ios_base::openmode mode)
 
 // Open file and go into fail() state if unsuccessful
 void
-gzifstream::open (const char* name, std::ios_base::openmode mode)
+gzifstream::open (const char *name, std::ios_base::openmode mode)
 {
   if (! sb.open (name, mode | std::ios_base::in))
     this->setstate (std::ios_base::failbit);
@@ -565,12 +565,12 @@ gzifstream::close ()
 
 // Default constructor initializes stream buffer
 gzofstream::gzofstream ()
-  : std::ostream (0), sb ()
+  : std::ostream (nullptr), sb ()
 { this->init (&sb); }
 
 // Initialize stream buffer and open file
-gzofstream::gzofstream (const char* name, std::ios_base::openmode mode)
-  : std::ostream (0), sb ()
+gzofstream::gzofstream (const char *name, std::ios_base::openmode mode)
+  : std::ostream (nullptr), sb ()
 {
   this->init (&sb);
   this->open (name, mode);
@@ -578,7 +578,7 @@ gzofstream::gzofstream (const char* name, std::ios_base::openmode mode)
 
 // Initialize stream buffer and attach to file
 gzofstream::gzofstream (int fd, std::ios_base::openmode mode)
-  : std::ostream (0), sb ()
+  : std::ostream (nullptr), sb ()
 {
   this->init (&sb);
   this->attach (fd, mode);
@@ -586,7 +586,7 @@ gzofstream::gzofstream (int fd, std::ios_base::openmode mode)
 
 // Open file and go into fail() state if unsuccessful
 void
-gzofstream::open (const char* name, std::ios_base::openmode mode)
+gzofstream::open (const char *name, std::ios_base::openmode mode)
 {
   if (! sb.open (name, mode | std::ios_base::out))
     this->setstate (std::ios_base::failbit);

@@ -4,7 +4,7 @@
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -74,7 +74,7 @@ Screen::Screen(int l, int c)
     cuX(0), cuY(0),
     cu_re(0),
     tmargin(0), bmargin(0),
-    tabstops(0),
+    tabstops(nullptr),
     sel_begin(0), sel_TL(0), sel_BR(0),
     sel_busy(false),
     columnmode(false),
@@ -1533,7 +1533,7 @@ void Screen::setScroll(const HistoryType& t , bool copyPreviousScroll)
   else
   {
       HistoryScroll* oldScroll = hist;
-      hist = t.scroll(0);
+      hist = t.scroll(nullptr);
       delete oldScroll;
   }
 }

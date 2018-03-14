@@ -4,19 +4,19 @@ Copyright (C) 2008-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,27 +29,18 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#include <string>
-#include <vector>
-
-#include "ov.h"
-#include "defun-dld.h"
-#include "errwarn.h"
-#include "pager.h"
-#include "ov-re-mat.h"
-
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
-#include "oct-map.h"
-
-#include "oct-sparse.h"
+#include "CSparse.h"
+#include "Sparse.h"
+#include "dMatrix.h"
 #include "oct-locbuf.h"
+#include "oct-sparse.h"
 
-#if defined (OCTAVE_ENABLE_64)
-#  define AMD_NAME(name) amd_l ## name
-#else
-#  define AMD_NAME(name) amd ## name
-#endif
+#include "defun-dld.h"
+#include "error.h"
+#include "errwarn.h"
+#include "oct-map.h"
+#include "ov.h"
+#include "ovl.h"
 
 DEFUN_DLD (amd, args, nargout,
            doc: /* -*- texinfo -*-
@@ -93,40 +84,40 @@ The author of the code itself is Timothy A. Davis
     print_usage ();
 
   octave_idx_type n_row, n_col;
-  const octave_idx_type *ridx, *cidx;
+  const octave::suitesparse_integer *ridx, *cidx;
   SparseMatrix sm;
   SparseComplexMatrix scm;
 
-  if (args(0).is_sparse_type ())
+  if (args(0).issparse ())
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         {
           scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
           n_col = scm.cols ();
-          ridx = scm.xridx ();
-          cidx = scm.xcidx ();
+          ridx = octave::to_suitesparse_intptr (scm.xridx ());
+          cidx = octave::to_suitesparse_intptr (scm.xcidx ());
         }
       else
         {
           sm = args(0).sparse_matrix_value ();
           n_row = sm.rows ();
           n_col = sm.cols ();
-          ridx = sm.xridx ();
-          cidx = sm.xcidx ();
+          ridx = octave::to_suitesparse_intptr (sm.xridx ());
+          cidx = octave::to_suitesparse_intptr (sm.xcidx ());
         }
     }
   else
     {
-      if (args(0).is_complex_type ())
+      if (args(0).iscomplex ())
         sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
         sm = SparseMatrix (args(0).matrix_value ());
 
       n_row = sm.rows ();
       n_col = sm.cols ();
-      ridx = sm.xridx ();
-      cidx = sm.xcidx ();
+      ridx = octave::to_suitesparse_intptr (sm.xridx ());
+      cidx = octave::to_suitesparse_intptr (sm.xcidx ());
     }
 
   if (n_row != n_col)
@@ -149,7 +140,7 @@ The author of the code itself is Timothy A. Davis
         Control[AMD_AGGRESSIVE] = tmp.double_value ();
     }
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, P, n_col);
   Matrix xinfo (AMD_INFO, 1);
   double *Info = xinfo.fortran_vec ();
 
@@ -161,8 +152,8 @@ The author of the code itself is Timothy A. Davis
   SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
   SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
 
-  octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
-                                              Control, Info);
+  octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P, Control,
+                                              Info);
 
   if (result == AMD_OUT_OF_MEMORY)
     error ("amd: out of memory");

@@ -2,28 +2,28 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} primes (@var{n})
+## @deftypefn {} {@var{p} =} primes (@var{n})
 ## Return all primes up to @var{n}.
 ##
-## The output data class (double, single, uint32, etc.) is the same as the
+## The output data class (double, single, uint32, etc.@:) is the same as the
 ## input class of @var{n}.  The algorithm used is the Sieve of Eratosthenes.
 ##
-## Notes: If you need a specific number of primes you can use the fact that the
+## Note: If you need a specific number of primes you can use the fact that the
 ## distance from one prime to the next is, on average, proportional to the
 ## logarithm of the prime.  Integrating, one finds that there are about
 ## @math{k} primes less than
@@ -94,7 +94,7 @@ function p = primes (n)
   endif
 
   if (! isa (n, "double"))
-    cast (p, class (n));
+    p = cast (p, class (n));
   endif
 
 endfunction
@@ -102,6 +102,8 @@ endfunction
 
 %!assert (size (primes (350)), [1, 70])
 %!assert (primes (357)(end), 353)
+%!assert (class (primes (single (10))), "single")
+%!assert (class (primes (uint8 (10))), "uint8")
 
 %!error primes ()
 %!error primes (1, 2)

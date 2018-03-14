@@ -6,19 +6,19 @@ Copyright (C) 2009 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -31,7 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <iosfwd>
+#include <memory>
 #include <string>
+
+#include "str-vec.h"
+
+template <typename T> class Array;
 
 namespace octave
 {
@@ -53,7 +58,7 @@ namespace octave
     friend class url_transfer;
 
     base_url_transfer (void)
-      : count (1), host_or_url (), valid (false), ftp (false),
+      : host_or_url (), valid (false), ftp (false),
         ascii_mode (false), ok (true), errmsg (),
         curr_istream (&std::cin), curr_ostream (&std::cout) { }
 
@@ -61,16 +66,22 @@ namespace octave
                        const std::string& /* user_arg */,
                        const std::string& /* passwd */,
                        std::ostream& os)
-      : count (1), host_or_url (host), valid (false), ftp (true),
+      : host_or_url (host), valid (false), ftp (true),
         ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
         curr_ostream (&os) { }
 
     base_url_transfer (const std::string& url, std::ostream& os)
-      : count (1), host_or_url (url), valid (false), ftp (false),
+      : host_or_url (url), valid (false), ftp (false),
         ascii_mode (false), ok (true), errmsg (),
         curr_istream (&std::cin), curr_ostream (&os) { }
 
-    virtual ~base_url_transfer (void) { }
+    // No copying!
+
+    base_url_transfer (const base_url_transfer&) = delete;
+
+    base_url_transfer& operator = (const base_url_transfer&) = delete;
+
+    virtual ~base_url_transfer (void) = default;
 
     bool is_valid (void) const { return valid; }
 
@@ -141,9 +152,6 @@ namespace octave
 
   protected:
 
-    // Reference count.
-    octave_refcount<size_t> count;
-
     // Host for ftp transfers or full URL for http requests.
     std::string host_or_url;
     bool valid;
@@ -153,14 +161,6 @@ namespace octave
     std::string errmsg;
     std::istream *curr_istream;
     std::ostream *curr_ostream;
-
-  private:
-
-    // No copying!
-
-    base_url_transfer (const base_url_transfer&);
-
-    base_url_transfer& operator = (const base_url_transfer&);
   };
 
   class
@@ -176,30 +176,11 @@ namespace octave
 
     url_transfer (const std::string& url, std::ostream& os);
 
-    url_transfer (const url_transfer& h) : rep (h.rep)
-    {
-      rep->count++;
-    }
+    url_transfer (const url_transfer& h) = default;
 
-    ~url_transfer (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+    url_transfer& operator = (const url_transfer& h) = default;
 
-    url_transfer& operator = (const url_transfer& h)
-    {
-      if (this != &h)
-        {
-          if (--rep->count == 0)
-            delete rep;
-
-          rep = h.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
+    ~url_transfer (void) = default;
 
     bool is_valid (void) const { return rep->is_valid (); }
 
@@ -284,16 +265,16 @@ namespace octave
 
   private:
 
-    base_url_transfer *rep;
+    std::shared_ptr<base_url_transfer> rep;
   };
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::base_url_transfer' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::base_url_transfer' instead")
 typedef octave::base_url_transfer base_url_transfer;
 
-OCTAVE_DEPRECATED ("use 'octave::url_transfer' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::url_transfer' instead")
 typedef octave::url_transfer url_transfer;
 
 #endif

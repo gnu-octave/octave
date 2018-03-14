@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 
 #include "dMatrix.h"
+#include "localcharset-wrapper.h"
+#include "uniconv-wrappers.h"
 
 #include "Cell.h"
 #include "defun.h"
@@ -156,7 +158,7 @@ char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 %!assert (char (100, [], 100), ["d";" ";"d"])
 %!assert (char ({100, [], 100}), ["d";" ";"d"])
 %!assert (char ({100,{100, {""}}}), ["d";"d";" "])
-%!assert (char (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
+%!assert (char (["a ";"be"], {"c", 100}), ["a ";"be";"c ";"d "])
 %!assert (char ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
 %!assert (char ([65, 83, 67, 73, 73]), "ASCII")
 
@@ -219,7 +221,7 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
         {
           for (size_t j = 0; j < n; j++)
             {
-              if (s[j].length () > 0)
+              if (! s[j].empty ())
                 n_elts++;
             }
         }
@@ -275,7 +277,7 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 %!assert (strvcat (100, [], 100), ["d";"d"])
 %!assert (strvcat ({100, [], 100}), ["d";"d"])
 %!assert (strvcat ({100,{100, {""}}}), ["d";"d"])
-%!assert (strvcat (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
+%!assert (strvcat (["a ";"be"], {"c", 100}), ["a ";"be";"c ";"d "])
 %!assert (strvcat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
 %!assert (strvcat (), "")
 */
@@ -284,7 +286,7 @@ DEFUN (ischar, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} ischar (@var{x})
 Return true if @var{x} is a character array.
-@seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}
+@seealso{isfloat, isinteger, islogical, isnumeric, isstring, iscellstr, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -322,9 +324,9 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
   octave_value retval;
 
   bool s1_string = arg0.is_string ();
-  bool s1_cell = arg0.is_cell ();
+  bool s1_cell = arg0.iscell ();
   bool s2_string = arg1.is_string ();
-  bool s2_cell = arg1.is_cell ();
+  bool s2_cell = arg1.iscell ();
 
   if (s1_string && s2_string)
     retval = array_op (arg0.char_array_value (), arg1.char_array_value (), n);
@@ -353,9 +355,9 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
           boolNDArray output (cell_val.dims (), false);
 
-          std::string s = r == 0 ? "" : str[0];
+          std::string s = (r == 0 ? "" : str[0]);
 
-          if (cell_val.is_cellstr ())
+          if (cell_val.iscellstr ())
             {
               const Array<std::string> cellstr = cell_val.cellstr_value ();
               for (octave_idx_type i = 0; i < cellstr.numel (); i++)
@@ -400,7 +402,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
               if (cell.numel () == r)
                 {
-                  if (cell_val.is_cellstr ())
+                  if (cell_val.iscellstr ())
                     {
                       const Array<std::string> cellstr
                         = cell_val.cellstr_value ();
@@ -461,7 +463,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
             {
               const std::string str2 = cell2(0).string_value ();
 
-              if (cell1_val.is_cellstr ())
+              if (cell1_val.iscellstr ())
                 {
                   const Array<std::string> cellstr = cell1_val.cellstr_value ();
                   for (octave_idx_type i = 0; i < cellstr.numel (); i++)
@@ -486,7 +488,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
           if (size1 != size2)
             error ("%s: nonconformant cell arrays", fcn_name);
 
-          if (cell1.is_cellstr () && cell2.is_cellstr ())
+          if (cell1.iscellstr () && cell2.iscellstr ())
             {
               const Array<std::string> cellstr1 = cell1_val.cellstr_value ();
               const Array<std::string> cellstr2 = cell2_val.cellstr_value ();
@@ -732,6 +734,100 @@ This is just the opposite of the corresponding C library function.
 %!assert (strncmpi ("abc123", "ABC456", 3), true)
 */
 
+DEFUN (__native2unicode__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{utf8_str} =} __native2unicode__ (@var{native_bytes}, @var{codepage})
+Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
+
+@seealso{native2unicode, __unicode2native__}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    print_usage ();
+
+  if (args(0).is_string ())
+    return ovl (args(0));
+
+  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  const char *codepage
+    = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
+
+  charNDArray native_bytes = args(0).char_array_value ();
+
+  const char *src = native_bytes.data ();
+  size_t srclen = native_bytes.numel ();
+
+  size_t length;
+  uint8_t *utf8_str = nullptr;
+
+  octave::unwind_protect frame;
+
+  utf8_str = octave_u8_conv_from_encoding (codepage, src, srclen, &length);
+
+  if (! utf8_str)
+    error ("native2unicode: converting from codepage '%s' to UTF-8: %s",
+           codepage, std::strerror (errno));
+
+  frame.add_fcn (::free, static_cast<void *> (utf8_str));
+
+  octave_idx_type len = length;
+
+  charNDArray retval (dim_vector (1, len));
+
+  for (octave_idx_type i = 0; i < len; i++)
+    retval.xelem(i) = utf8_str[i];
+
+  return ovl (retval);
+}
+
+DEFUN (__unicode2native__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{native_bytes} =} __unicode2native__ (@var{utf8_str}, @var{codepage})
+Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
+@var{codepage}.
+
+@seealso{unicode2native, __native2unicode__}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    print_usage ();
+
+  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  const char *codepage
+    = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
+
+  charNDArray utf8_str = args(0).xchar_array_value ("UTF8_STR must be a string");
+
+  const uint8_t *src = reinterpret_cast<const uint8_t *> (utf8_str.data ());
+  size_t srclen = utf8_str.numel ();
+
+  size_t length;
+  char *native_bytes = nullptr;
+
+  octave::unwind_protect frame;
+
+  native_bytes = octave_u8_conv_to_encoding (codepage, src, srclen, &length);
+
+  if (! native_bytes)
+    error ("native2unicode: converting from UTF-8 to codepage '%s': %s",
+           codepage, std::strerror (errno));
+
+  frame.add_fcn (::free, static_cast<void *> (native_bytes));
+
+  octave_idx_type len = length;
+
+  uint8NDArray retval (dim_vector (1, len));
+
+  for (octave_idx_type i = 0; i < len; i++)
+    retval.xelem(i) = native_bytes[i];
+
+  return ovl (retval);
+}
+
 DEFUN (list_in_columns, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})
@@ -777,7 +873,7 @@ whos ans
 
   int width = -1;
 
-  if (nargin > 1 && ! args(1).is_empty ())
+  if (nargin > 1 && ! args(1).isempty ())
     width = args(1).xint_value ("list_in_columns: WIDTH must be an integer");
 
   std::string prefix;
@@ -798,11 +894,11 @@ whos ans
 %! result = "abc     mnop\ndef     qrs\nghijkl  tuv\n";
 %! assert (list_in_columns (input, 20), result);
 %!test
-%! input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
+%! input  = char ("abc", "def", "ghijkl", "mnop", "qrs", "tuv");
 %! result = "abc     mnop  \ndef     qrs   \nghijkl  tuv   \n";
 %! assert (list_in_columns (input, 20), result);
 %!test
-%! input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
+%! input  = char ("abc", "def", "ghijkl", "mnop", "qrs", "tuv");
 %! result = "  abc     mnop  \n  def     qrs   \n  ghijkl  tuv   \n";
 %! assert (list_in_columns (input, 20, "  "), result);
 

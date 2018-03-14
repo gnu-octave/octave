@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __bar__ (@var{vertical}, @var{func}, @dots{})
@@ -27,10 +27,19 @@ function varargout = __bar__ (vertical, func, varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ (func, varargin{:});
 
+  if (! isnumeric (varargin{1}))
+    error ("%s: Y must be numeric", func);
+  endif
+
   width = 0.8;
   group = true;
   histc = NA;
-  bv = 0;  # BaseValue
+  ## BaseValue
+  if (strcmp (get (hax, "yscale"), "log"))
+    bv = 1;
+  else
+    bv = 0;
+  endif
 
   if (nargin > 1 && isnumeric (varargin{2}))
     x = varargin{1};
@@ -41,16 +50,16 @@ function varargout = __bar__ (vertical, func, varargin)
     if (isvector (y))
       y = y(:);
     endif
-    if (rows (x) != rows (y))
-      y = varargin{1};
-      if (isvector (y))
-        y = y(:);
-      endif
+    if (isscalar (y) && ! isscalar (x))
+      ## "y" is actually "width" argument
+      y = x;
       x = [1:rows(y)]';
       idx = 2;
     else
       if (! isvector (x))
         error ("%s: X must be a vector", func);
+      elseif (numel (unique (x)) != numel (x))
+        error ("%s: X vector values must be unique", func);
       endif
       idx = 3;
     endif
@@ -110,11 +119,12 @@ function varargout = __bar__ (vertical, func, varargin)
   endwhile
 
   ngrp = rows (x);
+
+  if (isvector (y) && ngrp != rows (y))
+    y = y.';
+  endif
   if (ngrp != rows (y))
     error ("%s: length of X and Y must be equal", func);
-  endif
-  if (any (x(2:end) < x(1:end-1)))
-    error ("%s: X vector values must be in ascending order", func);
   endif
 
   nbars = columns (y);
@@ -195,7 +205,9 @@ function varargout = __bar__ (vertical, func, varargin)
                    have_line_spec, bv, newargs{:});
 
       if (! ishold ())
-        if (all (x(:,1) == fix (x(:,1))))
+        if (numel (x(:,1)) <= 15 && all (x(:,1) == fix (x(:,1))))
+          ## Set manual ticks, rather than relying on autoselection,
+          ## when ticks are a small number of integers.
           if (vertical)
             set (hax, "xtick", x(:,1));
           else
@@ -336,6 +348,7 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
   ## Add listeners outside of for loop to prevent constant updating during
   ## creation of plot when patch objects are added.
   addlistener (hax, "xlim", @update_xlim);
+  addlistener (hax, "yscale", {@update_basevalue_logscale, hg});
   addlistener (h_baseline, "ydata", @update_baseline);
   addlistener (h_baseline, "visible", @update_baseline);
 
@@ -355,6 +368,19 @@ function update_xlim (h, ~)
     endif
   endfor
 
+endfunction
+
+function update_basevalue_logscale (hax, ~, hg)
+  if (strcmp (get (hax, "yscale"), "log"))
+    warning ("off", "Octave:negative-data-log-axis", "local");
+    if (get (hg, "basevalue") == 0)
+      set (hg, "basevalue", 1);
+    endif
+  else
+    if (get (hg, "basevalue") == 1)
+      set (hg, "basevalue", 0);
+    endif
+  endif
 endfunction
 
 function update_baseline (h, ~)

@@ -1,23 +1,22 @@
-// RowVector manipulations.
 /*
 
 Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -170,10 +169,10 @@ operator * (const RowVector& v, const Matrix& a)
 {
   RowVector retval;
 
-  octave_idx_type len = v.numel ();
+  F77_INT len = octave::to_f77_int (v.numel ());
 
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
+  F77_INT a_nr = octave::to_f77_int (a.rows ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
 
   if (a_nr != len)
     octave::err_nonconformant ("operator *", 1, len, a_nr, a_nc);
@@ -184,7 +183,7 @@ operator * (const RowVector& v, const Matrix& a)
     {
       // Transpose A to form A'*x == (x'*A)'
 
-      octave_idx_type ld = a_nr;
+      F77_INT ld = a_nr;
 
       retval.resize (a_nc);
       double *y = retval.fortran_vec ();
@@ -238,7 +237,7 @@ operator << (std::ostream& os, const RowVector& a)
 //  int field_width = os.precision () + 7;
 
   for (octave_idx_type i = 0; i < a.numel (); i++)
-    os << " " /* setw (field_width) */ << a.elem (i);
+    os << ' ' /* setw (field_width) */ << a.elem (i);
   return os;
 }
 
@@ -292,9 +291,9 @@ operator * (const RowVector& v, const ColumnVector& a)
 {
   double retval = 0.0;
 
-  octave_idx_type len = v.numel ();
+  F77_INT len = octave::to_f77_int (v.numel ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (len != a_len)
     octave::err_nonconformant ("operator *", len, a_len);

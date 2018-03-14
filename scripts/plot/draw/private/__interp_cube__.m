@@ -2,31 +2,32 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 ##
 ## Author: Martin Helm <martin@mhelm.de>
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{vxyz}, @var{idx}, @var{frac}] =} __interp_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{v})
+## @deftypefn {} {[@var{vxyz}, @var{idx}, @var{frac}] =} __interp_cube__ (@var{caller}, @var{x}, @var{y}, @var{z}, @var{val}, @var{v})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
+function [Vxyz, idx, frac] = __interp_cube__ (caller, x, y, z, val, v,
+                                              req = "values")
 
-  if (isnumeric (x) && ndims (x) == 3 && isnumeric (y) && ndims (y) == 3
-       && isnumeric (z) && ndims (z) == 3 && size_equal (x, y, z, val))
+  if (isnumeric (x) && ndims (x) == 3 && isnumeric (y) && isnumeric (z)
+      && size_equal (x, y, z, val))
     x = squeeze (x(1,:,1))(:);
     y = squeeze (y(:,1,1))(:);
     z = squeeze (z(1,1,:))(:);
@@ -35,18 +36,15 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
     y = y(:);
     z = z(:);
   else
-    error ("__interp_cube__: X, Y, Z have wrong dimensions");
+    error ([caller ": X, Y, Z have unequal dimensions"]);
   endif
 
   if (size (val) != [length(x), length(y), length(z)])
-    error ("__interp_cube__: VAL has wrong dimensions");
+    error ([caller ": VAL dimensions must match those of X, Y, and Z"]);
   endif
   if (columns (v) != 3)
-    error ( "V has to be Nx3 matrix");
+    error ([caller ": V must be an Nx3 matrix"]);
   endif
-  ##if (! ischar (req))
-  ##  error ('__interp_cube__: Invalid request parameter use "values", "normals" or "normals8"');
-  ##endif
 
   if (isempty (v))
     Vxyz = idx = frac = [];
@@ -86,6 +84,7 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
       Dy = -v000 .- v100 .+ v010 .- v001 .+ v011 .- v101 .+ v110 .+ v111;
       Dz = -v000 .- v100 .- v010 .+ v001 .+ v011 .+ v101 .- v110 .+ v111;
       Vxyz = 0.5 .* [Dx./dx, Dy./dy, Dz./dz];
+
     case "normals8"
       [idx, frac] = cube_idx (x, y, z, v);
 
@@ -97,10 +96,13 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
       dz = [dz;dz(end)](idx(:,3));
       [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad (x, y, z, val, v);
       Vxyz = [Dx./dx, Dy./dy, Dz./dz];
+
     case "values"
       [Vxyz, idx, frac] = interp_cube_trilin (x, y, z, val, v);
+
    otherwise
-     error ('__interp_cube__: Invalid request type "%s", use "values", "normals" or "normals8"', req);
+     error ([caller ': Invalid request type "%s", use "values", "normals" or "normals8"'], req);
+
   endswitch
 
 endfunction

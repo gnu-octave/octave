@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{a}, @dots{}] =} strread (@var{str})
@@ -176,7 +176,7 @@
 ##
 ## @table @asis
 ## @item last character = @qcode{"@xbackslashchar{}n"}
-## Data columns are padded with empty fields or Nan so that all columns have
+## Data columns are padded with empty fields or NaN so that all columns have
 ## equal length
 ##
 ## @item last character is not @qcode{"@xbackslashchar{}n"}
@@ -237,6 +237,8 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Parse options.  First initialize defaults
   comment_flag = false;
+  open_comment = false;
+  cmt_eol = "\n";
   delimiter_str = "";
   empty_str = "";
   eol_char = "";
@@ -255,15 +257,19 @@ function varargout = strread (str, format = "%f", varargin)
           case "c"
             [comment_start, comment_end] = deal ("/*", "*/");
           case "c++"
-            [comment_start, comment_end] = deal ("//", "eol_char");
+            [comment_start, comment_end] = deal ("//", "cmt_eol");
+            open_comment = true;
           case "shell"
-            [comment_start, comment_end] = deal ("#" , "eol_char");
+            [comment_start, comment_end] = deal ("#" , "cmt_eol");
+            open_comment = true;
           case "matlab"
-            [comment_start, comment_end] = deal ("%" , "eol_char");
+            [comment_start, comment_end] = deal ("%" , "cmt_eol");
+            open_comment = true;
           otherwise
             if (ischar (varargin{n+1})
                 || (numel (varargin{n+1}) == 1 && iscellstr (varargin{n+1})))
-              [comment_start, comment_end] = deal (char (varargin{n+1}), "eol_char");
+              [comment_start, comment_end] = deal (char (varargin{n+1}), "cmt_eol");
+            open_comment = true;
             elseif (iscellstr (varargin{n+1}) && numel (varargin{n+1}) == 2)
               [comment_start, comment_end] = deal (varargin{n+1}{:});
             else
@@ -293,6 +299,8 @@ function varargout = strread (str, format = "%f", varargin)
         if (strcmp (typeinfo (eol_char), "sq_string"))
           eol_char = do_string_escapes (eol_char);
         endif
+        cmt_eol = eol_char;
+        open_comment = false;
       case "returnonerror"
         err_action = varargin{n+1};
       case "multipledelimsasone"
@@ -363,10 +371,13 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Remove comments in str
   if (comment_flag)
-    ## Expand 'eol_char' here, after option processing which may have set value
-    comment_end = strrep (comment_end, "eol_char", eol_char);
+    ## Expand 'cmt_eol' here, after option processing which may have set value
+    comment_end = strrep (comment_end, "cmt_eol", cmt_eol);
     cstart = strfind (str, comment_start);
     cstop  = strfind (str, comment_end);
+    if (open_comment)
+      cstop -= 1;
+    endif
     ## Treat end of string as additional comment stop
     if (isempty (cstop) || cstop(end) != length (str))
       cstop(end+1) = length (str);
@@ -885,6 +896,11 @@ endfunction
 %!                  "commentstyle", "shell"), ...
 %!         {"Hello"; "World!"});
 
+%!test <*49454>
+%! assert (strread ("hello%foo\nworld, another%bar\r\nday", "%s", ...
+%!                  "commentstyle", "matlab", "delimiter", " ,"),...
+%!         {"hello"; "world"; "another"; "day"});
+
 %!test
 %! str = sprintf ("Tom 100 miles/hr\nDick 90 miles/hr\nHarry 80 miles/hr");
 %! fmt = "%s %f miles/hr";
@@ -909,13 +925,13 @@ endfunction
 %! assert (a, int32 (10));
 %! assert (b, {"a"});
 
-%!test <33536>
+%!test <*33536>
 %! [a, b, c] = strread ("1,,2", "%s%s%s", "delimiter", ",");
 %! assert (a{1}, "1");
 %! assert (b{1}, "");
 %! assert (c{1}, "2");
 
-%!test <33536>
+%!test <*33536>
 %!test
 %! a = strread ("[SomeText]", "[%s", "delimiter", "]");
 %! assert (a{1}, "SomeText");
@@ -970,7 +986,7 @@ endfunction
 %! assert (c', [13, 24, 34]);
 %! assert (d', [15, 25, 35]);
 
-%!assert <44750> (strread ('/home/foo/','%s','delimiter','/','MultipleDelimsAsOne',1),
+%!assert <*44750> (strread ('/home/foo/','%s','delimiter','/','MultipleDelimsAsOne',1),
 %!                {"home"; "foo"})
 
 ## delimiter as sq_string and dq_string
@@ -1027,13 +1043,13 @@ endfunction
 %! assert (a, NaN);
 %! assert (b, NaN);
 
-%!test <35999>
+%!test <*35999>
 %! [a, b, c] = strread ("", "%f");
 %! assert (isempty (a));
 %! assert (isempty (b));
 %! assert (isempty (c));
 
-%!test <37023>
+%!test <*37023>
 %! [a, b] = strread (" 1. 1 \n  2 3 \n", "%f %f", "endofline", "\n");
 %! assert (a, [1; 2], 1e-15);
 %! assert (b, [1; 3], 1e-15);
@@ -1043,28 +1059,28 @@ endfunction
 %!        [NaN; 2; NaN; 4; 5; NaN; 7])
 
 ## Test #1 bug #42609
-%!test <42609>
+%!test <*42609>
 %! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", "%f %f %f\n");
 %! assert (a, [1; 4; 7]);
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
 ## Test #2 bug #42609
-%!test <42609>
+%!test <*42609>
 %! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", "%f %f\n%f");
 %! assert (a, [1;4;7]);
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
 ## Test #3 bug #42609
-%!test <42609>
+%!test <*42609>
 %! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", '%f %f %f\n');
 %! assert (a, [1; 4; 7]);
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
 ## Test #4 bug #42609
-%!test <42609>
+%!test <*42609>
 %! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", '%f %f\n%f');
 %! assert (a, [1;4;7]);
 %! assert (b, [2; 5; 8]);
@@ -1093,7 +1109,7 @@ endfunction
 %!assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5)
 
 ## Test various forms of string format specifiers
-%!test <45712>
+%!test <*45712>
 %! str = "14 :1 z:2 z:3 z:5 z:11";
 %! [a, b, c, d] = strread (str, "%f %s %*s %3s %*3s %f", "delimiter", ":");
 %! assert ({a, b, c, d}, {14, {"1 z"}, {"3 z"}, 11});

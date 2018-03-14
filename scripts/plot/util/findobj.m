@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} findobj ()
@@ -72,7 +72,7 @@
 ## property values, where property values that match
 ## @code{regexp (@var{prop_value}, @var{pattern})} are returned.
 ##
-## Finally, objects which have a property name can be found with the 
+## Finally, objects which have a property name can be found with the
 ## @qcode{"-property"} option.  For example, code to locate objects with a
 ## @qcode{"meshstyle"} property is
 ##
@@ -96,7 +96,7 @@ function h = findobj (varargin)
     n1 = 0;
   else
     if (! isempty (varargin{1}))
-      if (ishandle (varargin{1}(1)))
+      if (ishghandle (varargin{1}(1)))
         handles = varargin{1};
         n1 = 2;
       else

@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "pager.h"
+#include "parse.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "unwind-prot.h"
@@ -43,10 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 #include "Quad-opts.cc"
-
-#if defined (quad)
-#  undef quad
-#endif
 
 // Global pointer for user defined function required by quadrature functions.
 static octave_function *quad_fcn;
@@ -71,7 +68,7 @@ quad_user_function (double x)
 
       try
         {
-          tmp = quad_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (quad_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -81,7 +78,7 @@ quad_user_function (double x)
       if (! tmp.length () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("quad");
 
-      if (! warned_imaginary && tmp(0).is_complex_type ())
+      if (! warned_imaginary && tmp(0).iscomplex ())
         {
           warning ("quad: ignoring imaginary part returned from user-supplied function");
           warned_imaginary = true;
@@ -107,7 +104,7 @@ quad_float_user_function (float x)
 
       try
         {
-          tmp = quad_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (quad_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -117,7 +114,7 @@ quad_float_user_function (float x)
       if (! tmp.length () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("quad");
 
-      if (! warned_imaginary && tmp(0).is_complex_type ())
+      if (! warned_imaginary && tmp(0).iscomplex ())
         {
           warning ("quad: ignoring imaginary part returned from user-supplied function");
           warned_imaginary = true;
@@ -129,8 +126,8 @@ quad_float_user_function (float x)
   return retval;
 }
 
-DEFUN (quad, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHODX ("quad", Fquad, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
@@ -202,7 +199,8 @@ variable by routines @code{dblquad} and @code{triplequad}.
       fname.append ("(x) y = ");
       quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
                                    "; endfunction");
-      frame.add_fcn (clear_function, fcn_name);
+      octave::symbol_table& symtab = interp.get_symbol_table ();
+      frame.add_method (symtab, &octave::symbol_table::clear_function, fcn_name);
     }
 
   if (! quad_fcn)
@@ -254,6 +252,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           have_sing = true;
 
           sing = args(4).xfloat_vector_value ("quad: fifth argument SING must be a vector of singularities");
+          OCTAVE_FALLTHROUGH;
 
         case 4:
           tol = args(3).xfloat_vector_value ("quad: TOL must be a 1 or 2-element vector");
@@ -262,6 +261,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
             {
             case 2:
               quad_opts.set_single_precision_relative_tolerance (tol (1));
+              OCTAVE_FALLTHROUGH;
 
             case 1:
               quad_opts.set_single_precision_absolute_tolerance (tol (0));
@@ -347,6 +347,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           have_sing = true;
 
           sing = args(4).vector_value ("quad: fifth argument SING must be a vector of singularities");
+          OCTAVE_FALLTHROUGH;
 
         case 4:
           tol = args(3).xvector_value ("quad: TOL must be a 1 or 2-element vector");
@@ -355,6 +356,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
             {
             case 2:
               quad_opts.set_relative_tolerance (tol (1));
+              OCTAVE_FALLTHROUGH;
 
             case 1:
               quad_opts.set_absolute_tolerance (tol (0));
@@ -395,9 +397,6 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
       retval = ovl (val, ier, nfun, abserr);
     }
-
-  if (fcn_name.length ())
-    clear_function (fcn_name);
 
   return retval;
 }

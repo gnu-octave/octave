@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -140,7 +140,9 @@ namespace octave
 
     object_map[name] = go;
     glPushName (name);
+    set_selecting (true);
     opengl_renderer::draw (go, toplevel);
+    set_selecting (false);
     glPopName ();
   }
 
@@ -176,7 +178,7 @@ namespace octave
   void
   opengl_selector::draw_text (const text::properties& props)
   {
-    if (props.get_string ().is_empty ())
+    if (props.get_string ().isempty ())
       return;
 
     Matrix pos = props.get_data_position ();
@@ -196,7 +198,7 @@ namespace octave
     // FIXME: probably more efficient to only compute bbox instead
     //        of doing full text rendering...
     text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
-    fake_text(x, y, z, bbox, false);
+    fake_text (x, y, z, bbox, false);
 
     return bbox;
   }

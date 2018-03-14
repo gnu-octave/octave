@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -274,7 +274,7 @@ octave_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
 
-  space_hid = H5Screate_simple (0, dimens, 0);
+  space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0) return false;
 
 #if defined (HAVE_HDF5_18)
@@ -382,8 +382,8 @@ octave_scalar::map (unary_mapper_t umap) const
     SCALAR_MAPPER (abs, ::fabs);
     SCALAR_MAPPER (acos, octave::math::rc_acos);
     SCALAR_MAPPER (acosh, octave::math::rc_acosh);
-    SCALAR_MAPPER (angle, octave::math::arg);
-    SCALAR_MAPPER (arg,octave::math ::arg);
+    SCALAR_MAPPER (angle, std::arg);
+    SCALAR_MAPPER (arg, std::arg);
     SCALAR_MAPPER (asin, octave::math::rc_asin);
     SCALAR_MAPPER (asinh, octave::math::asinh);
     SCALAR_MAPPER (atan, ::atan);
@@ -417,9 +417,9 @@ octave_scalar::map (unary_mapper_t umap) const
     SCALAR_MAPPER (sqrt, octave::math::rc_sqrt);
     SCALAR_MAPPER (tan, ::tan);
     SCALAR_MAPPER (tanh, ::tanh);
-    SCALAR_MAPPER (isfinite, octave::math::finite);
+    SCALAR_MAPPER (isfinite, octave::math::isfinite);
     SCALAR_MAPPER (isinf, octave::math::isinf);
-    SCALAR_MAPPER (isna, octave::math::is_NA);
+    SCALAR_MAPPER (isna, octave::math::isna);
     SCALAR_MAPPER (isnan, octave::math::isnan);
     SCALAR_MAPPER (xsignbit, octave::math::signbit);
 
@@ -440,7 +440,6 @@ octave_scalar::map (unary_mapper_t umap) const
     case umap_xisspace:
     case umap_xisupper:
     case umap_xisxdigit:
-    case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
         return str_conv.map (umap);

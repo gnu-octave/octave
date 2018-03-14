@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{files} =} unpack (@var{file})
@@ -90,7 +90,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
       ## FIXME: The above code is not a perfect test for a URL
       gfile = glob (file);
       if (isempty (gfile))
-        error ('unpack: file "%s" not found', file{1});
+        error ('unpack: FILE "%s" not found', file{1});
       else
         file = gfile;
       endif
@@ -240,11 +240,17 @@ function filelist = unpack (file, dir = ".", filetype = "")
     error ("unpack: %s: not a directory", dir);
   endif
 
+  ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.
+  tar_options_env = getenv ("TAR_OPTIONS");
   unwind_protect
+    unsetenv ("TAR_OPTIONS");
     cd (dir);
     [status, output] = system (sprintf ([command " 2>&1"], file));
   unwind_protect_cleanup
     cd (origdir);
+    if (! isempty (tar_options_env))
+      setenv ("TAR_OPTIONS", tar_options_env);
+    endif
   end_unwind_protect
 
   if (status)
@@ -305,46 +311,61 @@ endfunction
 
 
 %!testif HAVE_ZLIB
-%! ## Create temporary directory and file for packing and unpacking
-%! dirname = tempname ();
-%! assert (mkdir (dirname));
-%! filename = tempname ();
-%! fid = fopen (filename, "wt");
-%! assert (fid >= 0);
-%! fprintf (fid, "Hello World\n");
-%! fprintf (fid, "123 456 789\n");
-%! fclose (fid);
+%! envvar = {"TMPDIR", "TMP"};
+%! envdir = cellfun (@(x) getenv (x), envvar, "uniformoutput", false);
 %! unwind_protect
-%!   copyfile (filename, [filename ".orig"]);
-%!   gzip (filename, dirname);
-%!   [~, f] = fileparts (filename);
-%!   filelist = unpack (fullfile (dirname, [f ".gz"]), tempdir);
-%!   assert (filelist{1}, filename);
-%!   fid = fopen ([filename ".orig"], "rb");
+%!   cellfun (@(x) unsetenv (x), envvar);
+%!   ## Create temporary directory and file for packing and unpacking
+%!   dirname = tempname ();
+%!   assert (mkdir (dirname));
+%!   filename = tempname ();
+%!   fid = fopen (filename, "wt");
 %!   assert (fid >= 0);
-%!   orig_data = fread (fid);
+%!   fprintf (fid, "Hello World\n");
+%!   fprintf (fid, "123 456 789\n");
 %!   fclose (fid);
-%!   fid = fopen (filename, "rb");
-%!   assert (fid >= 0);
-%!   new_data = fread (fid);
-%!   fclose (fid);
-%!   if (orig_data != new_data)
-%!     error ("unpack: Unpacked file does not equal original");
-%!   endif
+%!
+%!   unwind_protect
+%!     copyfile (filename, [filename ".orig"]);
+%!     gzip (filename, dirname);
+%!     [~, f] = fileparts (filename);
+%!     filelist = unpack (fullfile (dirname, [f ".gz"]), tempdir);
+%!     assert (filelist{1}, filename);
+%!     fid = fopen ([filename ".orig"], "rb");
+%!     assert (fid >= 0);
+%!     orig_data = fread (fid);
+%!     fclose (fid);
+%!     fid = fopen (filename, "rb");
+%!     assert (fid >= 0);
+%!     new_data = fread (fid);
+%!     fclose (fid);
+%!     if (orig_data != new_data)
+%!       error ("unpack: Unpacked file does not equal original");
+%!     endif
+%!   unwind_protect_cleanup
+%!     unlink (filename);
+%!     unlink ([filename ".orig"]);
+%!     confirm_recursive_rmdir (false, "local");
+%!     rmdir (dirname, "s");
+%!   end_unwind_protect
 %! unwind_protect_cleanup
-%!   unlink (filename);
-%!   unlink ([filename ".orig"]);
-%!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (dirname, "s");
+%!   ## Restore environment variables TMPDIR, TMP
+%!   for i = 1:numel (envvar)
+%!     if (isempty (envdir{i}))
+%!       unsetenv (envvar{i});
+%!     else
+%!       setenv (envvar{i}, envdir{i});
+%!     endif
+%!   endfor
 %! end_unwind_protect
 
 ## Test input validation
 %!error unpack ()
 %!error unpack (1,2,3,4)
 %!error <FILE must be a string or cell array of strings> unpack (1)
-%!error <file "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
-%!error <file "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
-%!error <file "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
+%!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
+%!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
+%!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
 %!error <FILETYPE must be given for a directory>
 %! if (isunix || ismac)
 %!   unpack ("/");

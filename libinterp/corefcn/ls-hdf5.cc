@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -28,11 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_HDF5)
 
-#include <cfloat>
-#include <cstring>
 #include <cctype>
 
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -55,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-save.h"
 #include "oct-hdf5.h"
 #include "ovl.h"
@@ -238,10 +236,10 @@ hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name)
 
 #if defined (HAVE_HDF5_18)
   H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-  H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+  H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
   H5Eget_auto (&err_func, &err_func_data);
-  H5Eset_auto (0, 0);
+  H5Eset_auto (nullptr, nullptr);
 #endif
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);
@@ -286,10 +284,10 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 
 #if defined (HAVE_HDF5_18)
   H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
-  H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
+  H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
   H5Eget_auto (&err_func, &err_func_data);
-  H5Eset_auto (0, 0);
+  H5Eset_auto (nullptr, nullptr);
 #endif
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);
@@ -369,6 +367,9 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
   std::string vname = name;
 
+  octave::type_info& type_info
+    = octave::__get_type_info__ ("hdf5_read_next_data_internal");
+
   // Allow identifiers as all digits so we can load lists saved by
   // earlier versions of Octave.
 
@@ -441,7 +442,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           H5Tclose (st_id);
           H5Dclose (data_id);
 
-          d->tc = octave_value_typeinfo::lookup_type (typ);
+          d->tc = type_info.lookup_type (typ);
 
           retval = (d->tc.load_hdf5 (subgroup_id, "value") ? 1 : -1);
 
@@ -457,9 +458,9 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           // octave list otherwise.
 
           if (hdf5_check_attr (subgroup_id, "OCTAVE_LIST"))
-            d->tc = octave_value_typeinfo::lookup_type ("list");
+            d->tc = type_info.lookup_type ("list");
           else
-            d->tc = octave_value_typeinfo::lookup_type ("struct");
+            d->tc = type_info.lookup_type ("struct");
 
           // check for OCTAVE_GLOBAL attribute:
           d->global = hdf5_check_attr (subgroup_id, "OCTAVE_GLOBAL");
@@ -496,9 +497,9 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           hsize_t rank = H5Sget_simple_extent_ndims (space_id);
 
           if (rank == 0)
-            d->tc = octave_value_typeinfo::lookup_type ("scalar");
+            d->tc = type_info.lookup_type ("scalar");
           else
-            d->tc = octave_value_typeinfo::lookup_type ("matrix");
+            d->tc = type_info.lookup_type ("matrix");
 
           H5Sclose (space_id);
         }
@@ -554,7 +555,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           else
             {
               if (int_sign == H5T_SGN_NONE)
-                int_typ.append ("u");
+                int_typ.push_back ('u');
               int_typ.append ("int");
 
               int slen = H5Tget_size (type_id);
@@ -603,12 +604,12 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
               else
                 int_typ.append ("matrix");
 
-              d->tc = octave_value_typeinfo::lookup_type (int_typ);
+              d->tc = type_info.lookup_type (int_typ);
               H5Sclose (space_id);
             }
         }
       else if (type_class_id == H5T_STRING)
-        d->tc = octave_value_typeinfo::lookup_type ("string");
+        d->tc = type_info.lookup_type ("string");
       else if (type_class_id == H5T_COMPOUND)
         {
           hid_t complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
@@ -620,16 +621,16 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
               hsize_t rank = H5Sget_simple_extent_ndims (space_id);
 
               if (rank == 0)
-                d->tc = octave_value_typeinfo::lookup_type ("complex scalar");
+                d->tc = type_info.lookup_type ("complex scalar");
               else
-                d->tc = octave_value_typeinfo::lookup_type ("complex matrix");
+                d->tc = type_info.lookup_type ("complex matrix");
 
               H5Sclose (space_id);
             }
           else
             // Assume that if its not complex its a range.
             // If its not, it'll be rejected later in the range code.
-            d->tc = octave_value_typeinfo::lookup_type ("range");
+            d->tc = type_info.lookup_type ("range");
 
           H5Tclose (complex_type);
         }
@@ -664,7 +665,7 @@ done:
   if (retval > 0)
     {
       // get documentation string, if any:
-      int comment_length = H5Gget_comment (group_id, name, 0, 0);
+      int comment_length = H5Gget_comment (group_id, name, 0, nullptr);
 
       if (comment_length > 1)
         {
@@ -703,7 +704,7 @@ hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
 }
 
 octave_hdf5_err
-hdf5_h5g_iterate (octave_hdf5_id loc_id, const char* name, int *idx,
+hdf5_h5g_iterate (octave_hdf5_id loc_id, const char *name, int *idx,
                   void *operator_data)
 {
 #if defined (HAVE_HDF5)
@@ -718,11 +719,10 @@ hdf5_h5g_iterate (octave_hdf5_id loc_id, const char* name, int *idx,
 #endif
 }
 
-// Read the next Octave variable from the stream IS, which must really be
-// an hdf5_ifstream.  Return the variable value in tc, its doc string
-// in doc, and whether it is global in global.  The return value is
-// the name of the variable, or NULL if none were found or there was
-// and error.
+// Read the next Octave variable from the stream IS, which must really be an
+// hdf5_ifstream.  Return the variable value in tc, its doc string in doc, and
+// whether it is global in global.  The return value is the name of the
+// variable, or NULL if none were found or there was an error.
 std::string
 read_hdf5_data (std::istream& is, const std::string& /* filename */,
                 bool& global, octave_value& tc, std::string& doc,
@@ -734,7 +734,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
   std::string retval;
 
-  doc.resize (0);
+  doc.clear ();
 
   hdf5_ifstream& hs = dynamic_cast<hdf5_ifstream&> (is);
   hdf5_callback_data d;
@@ -759,7 +759,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
       bool found = false;
       size_t len = 0;
 
-      len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, 0, 0);
+      len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, nullptr, 0);
       var_name.resize (len+1);
       H5Gget_objname_by_idx (hs.file_id, hs.current_item, &var_name[0], len+1);
 
@@ -894,7 +894,7 @@ hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 //    = 0  Not an empty matrix; did nothing
 //    < 0  Error condition
 int
-save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
+save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector& d)
 {
 #if defined (HAVE_HDF5)
 
@@ -914,7 +914,7 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
   if (! empty)
     return 0;
 
-  space_hid = H5Screate_simple (1, &sz, 0);
+  space_hid = H5Screate_simple (1, &sz, nullptr);
   if (space_hid < 0) return space_hid;
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid,
@@ -950,7 +950,7 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
 //    = 0  Not an empty matrix; did nothing
 //    < 0  Error condition
 int
-load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector &d)
+load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector& d)
 {
 #if defined (HAVE_HDF5)
 
@@ -1052,7 +1052,7 @@ save_type_to_hdf5 (save_type st)
 bool
 add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                const std::string& name, const std::string& doc,
-               bool mark_as_global, bool save_as_floats)
+               bool mark_global, bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
 
@@ -1085,7 +1085,7 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
     goto error_cleanup;
 
   dims[0] = 0;
-  space_id = H5Screate_simple (0 , dims, 0);
+  space_id = H5Screate_simple (0 , dims, nullptr);
   if (space_id < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)
@@ -1110,7 +1110,7 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
     retval = false;
 
   // if it's global, add an attribute "OCTAVE_GLOBAL" with value 1
-  if (retval && mark_as_global)
+  if (retval && mark_global)
     retval = hdf5_add_attr (data_id, "OCTAVE_GLOBAL") >= 0;
 
   // We are saving in the new variable format, so mark it
@@ -1147,7 +1147,7 @@ error_cleanup:
 bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
-                bool mark_as_global, bool save_as_floats)
+                bool mark_global, bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
 
@@ -1156,7 +1156,7 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
   hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 
   return add_hdf5_data (hs.file_id, tc, name, doc,
-                        mark_as_global, save_as_floats);
+                        mark_global, save_as_floats);
 
 #else
   err_disabled_feature ("save_hdf5_data", "HDF5");

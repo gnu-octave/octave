@@ -4,19 +4,19 @@ Copyright (C) 2013-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,7 +40,7 @@ FITNESS FOR A PARTICULAR PURPOSE."
 static std::string
 format_url (bool html, const std::string& url)
 {
-  return html ? "<a href=\"" + url + "\">" + url + "</a>" : url;
+  return html ? R"(<a href=")" + url + R"(">)" + url + "</a>" : url;
 }
 
 std::string
@@ -79,8 +79,8 @@ std::string
 octave_name_version_copyright_copying_and_warranty
   (bool html, const std::string& extra_info)
 {
-  std::string br = html ? "<br>\n" : "\n";
-  std::string sep = html ? "\n</p>\n<p>\n" : "\n\n";
+  std::string br = (html ? "<br>\n" : "\n");
+  std::string sep = (html ? "\n</p>\n<p>\n" : "\n\n");
 
   return octave_name_version_and_copyright ()
          + br
@@ -88,14 +88,16 @@ octave_name_version_copyright_copying_and_warranty
          + br
          + octave_warranty_statement (extra_info)
          + sep
-         + "Octave was configured for \"" OCTAVE_CANONICAL_HOST_TYPE "\".";
+         + R"(Octave was configured for ")"
+         + octave::config::canonical_host_type ()
+         + R"(".)";
 }
 
 std::string
 octave_name_version_copyright_copying_warranty_and_bugs
   (bool html, const std::string& extra_info)
 {
-  std::string sep = html ? "\n</p>\n<p>\n" : "\n\n";
+  std::string sep = (html ? "\n</p>\n<p>\n" : "\n\n");
 
   std::string msg;
 

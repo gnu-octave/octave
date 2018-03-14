@@ -4,19 +4,19 @@ Copyright (C) 2009-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -53,7 +53,7 @@ text_element
 public:
   text_element (void) { }
 
-  virtual ~text_element (void) { }
+  virtual ~text_element (void) = default;
 
   virtual void accept (text_processor& p) = 0;
 
@@ -69,7 +69,7 @@ public:
   text_element_string (const std::string& s = "")
     : text_element (), str (s) { }
 
-  ~text_element_string (void) { }
+  ~text_element_string (void) = default;
 
   std::string string_value (void) const { return str; }
 
@@ -93,7 +93,7 @@ public:
   text_element_symbol (int sym)
     : text_element (), symbol (sym) { }
 
-  ~text_element_symbol (void) { }
+  ~text_element_symbol (void) = default;
 
   int get_symbol (void) const { return symbol; }
 
@@ -114,7 +114,7 @@ public:
   text_element_list (void)
     : text_element (), octave::base_list<text_element*> () { }
 
-  text_element_list (text_element* e)
+  text_element_list (text_element *e)
     : text_element (), octave::base_list<text_element*> ()
   { push_back (e); }
 
@@ -136,7 +136,7 @@ OCTINTERP_API
 text_element_subscript : public text_element
 {
 public:
-  text_element_subscript (text_element* e)
+  text_element_subscript (text_element *e)
     : text_element (), elem (e) { }
 
   text_element_subscript (char c)
@@ -148,10 +148,10 @@ public:
 
   void accept (text_processor& p);
 
-  text_element* get_element (void) { return elem; }
+  text_element * get_element (void) { return elem; }
 
 private:
-  text_element* elem;
+  text_element *elem;
 
 private:
   text_element_subscript (void);
@@ -162,7 +162,7 @@ OCTINTERP_API
 text_element_superscript : public text_element
 {
 public:
-  text_element_superscript (text_element* e)
+  text_element_superscript (text_element *e)
     : text_element (), elem (e) { }
 
   text_element_superscript (char c)
@@ -174,10 +174,10 @@ public:
 
   void accept (text_processor& p);
 
-  text_element* get_element (void) { return elem; }
+  text_element * get_element (void) { return elem; }
 
 private:
-  text_element* elem;
+  text_element *elem;
 
 private:
   text_element_superscript (void);
@@ -188,10 +188,10 @@ OCTINTERP_API
 text_element_combined : public text_element_list
 {
 public:
-  text_element_combined (text_element* e)
+  text_element_combined (text_element *e)
     : text_element_list (e) { }
 
-  text_element_combined (text_element* e1, text_element* e2)
+  text_element_combined (text_element *e1, text_element *e2)
     : text_element_list(e1)
   { push_back (e2); }
 
@@ -214,7 +214,7 @@ public:
   text_element_fontstyle (fontstyle st)
     : text_element (), style (st) { }
 
-  ~text_element_fontstyle (void) { }
+  ~text_element_fontstyle (void) = default;
 
   fontstyle get_fontstyle (void) const { return style; }
 
@@ -235,7 +235,7 @@ public:
   text_element_fontname (const std::string& fname)
     : text_element (), name (fname) { }
 
-  ~text_element_fontname (void) { }
+  ~text_element_fontname (void) = default;
 
   const std::string& get_fontname (void) const { return name; }
 
@@ -256,7 +256,7 @@ public:
   text_element_fontsize (double fsize)
     : text_element (), size (fsize) { }
 
-  ~text_element_fontsize (void) { }
+  ~text_element_fontsize (void) = default;
 
   double get_fontsize (void) const { return size; }
 
@@ -300,7 +300,7 @@ public:
 #undef ASSIGN_COLOR
   }
 
-  ~text_element_color (void) { }
+  ~text_element_color (void) = default;
 
   Matrix get_color (void) { return rgb; }
 
@@ -321,10 +321,9 @@ public:
 
   virtual void visit (text_element_list& e)
   {
-    for (text_element_list::iterator it = e.begin ();
-         it != e.end (); ++it)
+    for (auto& el_p : e)
       {
-        (*it)->accept (*this);
+        el_p->accept (*this);
       }
   }
 
@@ -349,7 +348,7 @@ public:
 protected:
   text_processor (void) { }
 
-  virtual ~text_processor (void) { }
+  virtual ~text_processor (void) = default;
 };
 
 #define TEXT_ELEMENT_ACCEPT(cls)                \
@@ -377,13 +376,13 @@ text_parser
 public:
   text_parser (void) { }
 
-  virtual ~text_parser (void) { }
+  virtual ~text_parser (void) = default;
 
-  virtual text_element* parse (const std::string& s) = 0;
+  virtual text_element * parse (const std::string& s) = 0;
 
 public:
-  static text_element* parse (const std::string& s,
-                              const caseless_str& interpreter);
+  static text_element * parse (const std::string& s,
+                               const caseless_str& interpreter);
 };
 
 class
@@ -393,14 +392,14 @@ text_parser_none : public text_parser
 public:
   text_parser_none (void) : text_parser () { }
 
-  ~text_parser_none (void) { }
+  ~text_parser_none (void) = default;
 
   // FIXME: is it possible to use reference counting to manage the
   // memory for the object returned by the text parser?  That would be
   // preferable to having to know when and where to delete the object it
   // creates...
 
-  text_element* parse (const std::string& s)
+  text_element * parse (const std::string& s)
   {
     return new text_element_string (s);
   }
@@ -412,19 +411,19 @@ text_parser_tex : public text_parser
 {
 public:
   text_parser_tex (void)
-    : text_parser (), scanner (0), buffer_state (0), result (0)
+    : text_parser (), scanner (nullptr), buffer_state (nullptr), result (nullptr)
   { }
 
   ~text_parser_tex (void)
   { destroy_lexer (); }
 
-  text_element* parse (const std::string& s);
+  text_element * parse (const std::string& s);
 
-  void* get_scanner (void) { return scanner; }
+  void * get_scanner (void) { return scanner; }
 
-  void set_parse_result (text_element* e) { result = e; }
+  void set_parse_result (text_element *e) { result = e; }
 
-  text_element* get_parse_result (void) { return result; }
+  text_element * get_parse_result (void) { return result; }
 
 private:
   bool init_lexer (const std::string& s);
@@ -432,11 +431,11 @@ private:
   void destroy_lexer (void);
 
 private:
-  void* scanner;
+  void *scanner;
 
-  void* buffer_state;
+  void *buffer_state;
 
-  text_element* result;
+  text_element *result;
 };
 
 inline text_element*

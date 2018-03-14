@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -48,7 +48,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   octave_idx_type a_len = a.numel ();
   octave_idx_type b_len = b.numel ();
 
-  octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
+  octave_idx_type ab_len = (a_len > b_len ? a_len : b_len);
 
   // FIXME: The two lines below should be unecessary because
   //        this template is called with a and b as column vectors
@@ -147,7 +147,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 {
                   for (octave_idx_type j = 0; j < si_len - 1; j++)
                     {
-                      OCTAVE_QUIT;
+                      octave_quit ();
 
                       psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
                     }
@@ -156,7 +156,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 }
               else
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   psi[0] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
                 }
@@ -182,7 +182,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 {
                   for (octave_idx_type j = 0; j < si_len - 1; j++)
                     {
-                      OCTAVE_QUIT;
+                      octave_quit ();
 
                       psi[j] = psi[j+1] + pb[j+1] * px[idx];
                     }
@@ -191,7 +191,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 }
               else
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   psi[0] = pb[1] * px[idx];
                 }
@@ -357,10 +357,10 @@ H(z) = ---------------------
                   || args(2).is_single_type ()
                   || (nargin >= 4 && args(3).is_single_type ()));
 
-  if (args(0).is_complex_type ()
-      || args(1).is_complex_type ()
-      || args(2).is_complex_type ()
-      || (nargin >= 4 && args(3).is_complex_type ()))
+  if (args(0).iscomplex ()
+      || args(1).iscomplex ()
+      || args(2).iscomplex ()
+      || (nargin >= 4 && args(3).iscomplex ()))
     {
       if (isfloat)
         {
@@ -370,7 +370,7 @@ H(z) = ---------------------
 
           FloatComplexNDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();
@@ -388,7 +388,7 @@ H(z) = ---------------------
             {
               si = args(3).xfloat_complex_array_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 
@@ -405,7 +405,7 @@ H(z) = ---------------------
 
           ComplexNDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();
@@ -423,7 +423,7 @@ H(z) = ---------------------
             {
               si = args(3).xcomplex_array_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 
@@ -443,7 +443,7 @@ H(z) = ---------------------
 
           FloatNDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();
@@ -461,7 +461,7 @@ H(z) = ---------------------
             {
               si = args(3).xfloat_array_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 
@@ -478,7 +478,7 @@ H(z) = ---------------------
 
           NDArray si;
 
-          if (nargin == 3 || args(3).is_empty ())
+          if (nargin == 3 || args(3).isempty ())
             {
               octave_idx_type a_len = a.numel ();
               octave_idx_type b_len = b.numel ();
@@ -496,7 +496,7 @@ H(z) = ---------------------
             {
               si = args(3).xarray_value (x_si_errmsg);
 
-              if (si.is_vector () && x.is_vector ())
+              if (si.isvector () && x.isvector ())
                 si = si.reshape (dim_vector (si.numel (), 1));
             }
 
@@ -598,7 +598,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %!assert (filter (1, ones (10,1) / 10, zeros (0,10)), zeros (0,10))
 %!assert (filter (1, ones (10,1) / 10, single (1:5)), repmat (single (10), 1, 5))
 
-%% Test using initial conditions
+## Test using initial conditions
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]), [2 2])
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]'), [2 2])
 %!assert (filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]), [5 7; 6 10; 14 18])

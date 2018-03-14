@@ -4,19 +4,19 @@ Copyright (C) 2004-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -51,17 +51,17 @@ public:
 
   octave_base_int_matrix (const T& nda) : octave_base_matrix<T> (nda) { }
 
-  ~octave_base_int_matrix (void) { }
+  ~octave_base_int_matrix (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_base_int_matrix (*this); }
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_base_int_matrix (); }
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   //  void increment (void) { matrix += 1; }
 
@@ -84,6 +84,9 @@ public:
   octave_value as_uint32 (void) const;
   octave_value as_uint64 (void) const;
 
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -93,9 +96,13 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format);
 
-  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
+protected:
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+  bool save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name, bool);
+
+  bool load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name);
 };
 
 // base int scalar values.
@@ -110,16 +117,16 @@ public:
 
   octave_base_int_scalar (const T& s) : octave_base_scalar<T> (s) { }
 
-  ~octave_base_int_scalar (void) { }
+  ~octave_base_int_scalar (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_base_int_scalar (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_base_int_scalar (); }
 
-  octave_base_value *try_narrowing_conversion (void) { return 0; }
+  octave_base_value * try_narrowing_conversion (void) { return nullptr; }
 
-  bool is_real_type (void) const { return true; }
+  bool isreal (void) const { return true; }
 
   bool is_real_scalar (void) const { return true; }
 
@@ -142,6 +149,9 @@ public:
   octave_value as_uint32 (void) const;
   octave_value as_uint64 (void) const;
 
+  std::string edit_display (const float_display_format& fmt,
+                            octave_idx_type i, octave_idx_type j) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -150,10 +160,13 @@ public:
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format);
+protected:
 
-  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
+  bool save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name, bool);
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+  bool load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                           const char *name);
 };
 
 #endif

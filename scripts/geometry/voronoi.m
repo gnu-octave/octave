@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} voronoi (@var{x}, @var{y})
@@ -68,7 +68,7 @@ function [vx, vy] = voronoi (varargin)
 
   narg = 1;
   hax = NaN;
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+  if (isscalar (varargin{1}) && ishghandle (varargin{1}))
     hax = varargin{1};
     if (! isaxes (hax))
       error ("voronoi: HAX argument must be an axes object");
@@ -200,19 +200,19 @@ endfunction
 %! assert (vx(2,:), zeros (1, columns (vx)), eps);
 %! assert (vy(2,:), zeros (1, columns (vy)), eps);
 
-%!testif HAVE_QHULL <40996>
+%!testif HAVE_QHULL <*40996>
 %! ## Special case of just 2 points
 %! x = [0 1];  y = [1 0];
 %! [vx, vy] = voronoi (x,y);
 %! assert (vx, [-0.7; 1.7], eps);
 %! assert (vy, [-0.7; 1.7], eps);
 
-%!testif HAVE_QHULL <38295>
+%!testif HAVE_QHULL <*38295>
 %! x = [1,2,3];  y = [2,3,1];
 %! [vx, vy] = voronoi (x,y);
 %! assert (columns (vx), 3);
 
-%!testif HAVE_QHULL <37270>
+%!testif HAVE_QHULL <*37270>
 %! ## Duplicate points can cause an internal error
 %! x = [1,2,3, 3];  y = [2,3,1, 1];
 %! [vx, vy] = voronoi (x,y);

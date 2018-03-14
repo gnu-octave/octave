@@ -7,7 +7,7 @@
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
     Copyright (C) 2012-2016 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
@@ -90,7 +90,7 @@ void TerminalView::setScreenWindow(ScreenWindow* window)
   // disconnect existing screen window if any
   if ( _screenWindow )
     {
-      disconnect( _screenWindow , 0 , this , 0 );
+      disconnect( _screenWindow , nullptr , this , nullptr );
     }
 
   _screenWindow = window;
@@ -237,9 +237,9 @@ void TerminalView::setFont(const QFont &)
 
 TerminalView::TerminalView(QWidget *parent)
   :QWidget(parent)
-  ,_screenWindow(0)
+  ,_screenWindow(nullptr)
   ,_allowBell(true)
-  ,_gridLayout(0)
+  ,_gridLayout(nullptr)
   ,_fontHeight(1)
   ,_fontWidth(1)
   ,_fontAscent(1)
@@ -249,7 +249,7 @@ TerminalView::TerminalView(QWidget *parent)
   ,_usedColumns(1)
   ,_contentHeight(1)
   ,_contentWidth(1)
-  ,_image(0)
+  ,_image(nullptr)
   ,_randomSeed(0)
   ,_resizing(false)
   ,_terminalSizeHint(false)
@@ -269,9 +269,9 @@ TerminalView::TerminalView(QWidget *parent)
   ,_tripleClickMode(SelectWholeLine)
   ,_isFixedSize(false)
   ,_possibleTripleClick(false)
-  ,_resizeWidget(0)
-  ,_resizeTimer(0)
-  ,_outputSuspendedLabel(0)
+  ,_resizeWidget(nullptr)
+  ,_resizeTimer(nullptr)
+  ,_outputSuspendedLabel(nullptr)
   ,_lineSpacing(0)
   ,_colorsInverted(false)
   ,_blendColor(qRgba(0,0,0,0xff))
@@ -300,8 +300,14 @@ TerminalView::TerminalView(QWidget *parent)
   // setup timers for blinking cursor and text
   _blinkTimer   = new QTimer(this);
   connect(_blinkTimer, SIGNAL(timeout()), this, SLOT(blinkEvent()));
+
   _blinkCursorTimer   = new QTimer(this);
   connect(_blinkCursorTimer, SIGNAL(timeout()), this, SLOT(blinkCursorEvent()));
+
+  _process_filter_timer = new QTimer (this);
+  connect (_process_filter_timer, SIGNAL (timeout ()),
+           this, SLOT (processFilters ()));
+  _process_filter_timer->start (300);
 
   //  QCursor::setAutoHideCursor( this, true );
 
@@ -713,11 +719,12 @@ void TerminalView::scrollImage(int lines , const QRect& screenWindowRegion)
   QRect region = screenWindowRegion;
   region.setBottom( qMin(region.bottom(),this->_lines-2) );
 
-  if (    lines == 0
-          || _image == 0
-          || !region.isValid()
-          || (region.top() + abs(lines)) >= region.bottom()
-          || this->_lines <= region.height() ) return;
+  if (lines == 0
+      || _image == nullptr
+      || !region.isValid()
+      || (region.top() + abs(lines)) >= region.bottom()
+      || this->_lines <= region.height() )
+    return;
 
   QRect scrollRect;
 
@@ -826,7 +833,7 @@ void TerminalView::updateImage()
   _screenWindow->resetScrollCount();
 
   Character* const newimg = _screenWindow->getImage();
-  int lines = _screenWindow->windowLines() + 1;
+  int lines = _screenWindow->windowLines();
   int columns = _screenWindow->windowColumns();
 
   setScroll( _screenWindow->currentLine() , _screenWindow->lineCount() );
@@ -1194,27 +1201,33 @@ void TerminalView::paintFilters(QPainter& painter)
                        endColumn*_fontWidth - 1, (line+1)*_fontHeight - 1 );
 
           // Underline link hotspots
-          if ( spot->type() == Filter::HotSpot::Link )
+          if ( spot->type() == Filter::Link ||
+               spot->type() == Filter::ErrorLink)
             {
               QFontMetrics metrics(font());
 
-              // find the baseline (which is the invisible line that the characters in the font sit on,
-              // with some having tails dangling below)
-              int baseline = r.bottom() - metrics.descent();
+              // find the baseline (which is the invisible line that the
+              // characters in the font sit on
+              int baseline = r.bottom() + 1;
               // find the position of the underline below that
               int underlinePos = baseline + metrics.underlinePos();
 
-              if ( r.contains( mapFromGlobal(QCursor::pos()) ) )
-                painter.drawLine( r.left() , underlinePos ,
-                                  r.right() , underlinePos );
+              if (r.contains (mapFromGlobal(QCursor::pos())))
+                {
+                  if (spot->type () == Filter::ErrorLink)
+                    painter.setPen (QColor (255,0,0));
+                  painter.drawLine (r.left(), underlinePos,
+                                    r.right() + 2, underlinePos);
+                }
             }
           // Marker hotspots simply have a transparent rectanglular shape
           // drawn on top of them
-          else if ( spot->type() == Filter::HotSpot::Marker )
+          else if ( spot->type() == Filter::Marker )
             {
               //TODO - Do not use a hardcoded colour for this
               painter.fillRect(r,QBrush(QColor(255,0,0,120)));
             }
+
         }
     }
 }
@@ -1559,6 +1572,17 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
 
   if ( ev->button() == Qt::LeftButton)
     {
+
+      Filter::HotSpot* spot = _filterChain->hotSpotAt(charLine,charColumn);
+      if ( spot &&
+          (spot->type() == Filter::Link || spot->type() == Filter::ErrorLink))
+        {
+          QList<QAction*> actions = spot->actions ();
+          if (actions.length ())
+            actions.at (0)->activate (QAction::Trigger);
+          return;
+        }
+
       _lineSelectionMode = false;
       _wordSelectionMode = false;
 
@@ -1643,8 +1667,13 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
   // handle filters
   // change link hot-spot appearance on mouse-over
   Filter::HotSpot* spot = _filterChain->hotSpotAt(charLine,charColumn);
-  if ( spot && spot->type() == Filter::HotSpot::Link)
+  if ( spot &&
+      (spot->type() == Filter::Link || spot->type() == Filter::ErrorLink))
     {
+      // change mouse cursor when mouse is over links
+      if (! _mouseOverHotspotArea.isValid())
+        setCursor (Qt::PointingHandCursor);
+
       QRect previousHotspotArea = _mouseOverHotspotArea;
       _mouseOverHotspotArea.setCoords( qMin(spot->startColumn() , spot->endColumn()) * _fontWidth,
                                        spot->startLine() * _fontHeight,
@@ -1663,6 +1692,7 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
     }
   else if ( _mouseOverHotspotArea.isValid() )
     {
+      setUsesMouse (true);
       update( _mouseOverHotspotArea );
       // set hotspot area to an invalid rectangle
       _mouseOverHotspotArea = QRect();
@@ -2600,7 +2630,7 @@ void TerminalView::dropEvent(QDropEvent* event)
     foreach (QUrl url, event->mimeData ()->urls ())
     {
       if(dropText.length () > 0)
-        dropText += "\n";
+        dropText += '\n';
       dropText  += url.toLocalFile ();
     }
   }
@@ -2708,4 +2738,15 @@ QString TerminalView::selectedText ()
 {
   QString text = _screenWindow->selectedText (_preserveLineBreaks);
   return text;
+}
+
+void
+TerminalView::visibility_changed (bool visible)
+{
+  // Disable the timer for processing the filter chain, since this might time
+  // consuming
+  if (visible)
+    _process_filter_timer->start (300);
+  else
+    _process_filter_timer->stop ();
 }

@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -60,21 +60,21 @@ namespace QtHandles
   Menu*
   Menu::create (const graphics_object& go)
   {
-    Object* parent_obj = Object::parentObject (go);
+    Object *parent_obj = Object::parentObject (go);
 
     if (parent_obj)
       {
-        QObject* qObj = parent_obj->qObject ();
+        QObject *qObj = parent_obj->qObject ();
 
         if (qObj)
           return new Menu (go, new QAction (qObj), parent_obj);
       }
 
-    return 0;
+    return nullptr;
   }
 
-  Menu::Menu (const graphics_object& go, QAction* action, Object* xparent)
-    : Object (go, action), m_parent (0), m_separator (0)
+  Menu::Menu (const graphics_object& go, QAction *action, Object *xparent)
+    : Object (go, action), m_parent (nullptr), m_separator (nullptr)
   {
     uimenu::properties& up = properties<uimenu> ();
 
@@ -97,7 +97,7 @@ namespace QtHandles
         m_separator->setVisible (up.is_visible ());
       }
 
-    MenuContainer* menuContainer = dynamic_cast<MenuContainer*> (xparent);
+    MenuContainer *menuContainer = dynamic_cast<MenuContainer *> (xparent);
 
     if (menuContainer)
       m_parent = menuContainer->menu ();
@@ -109,14 +109,15 @@ namespace QtHandles
         if (pos <= 0)
           {
             if (m_separator)
-              m_parent->insertAction (0, m_separator);
-            m_parent->insertAction (0, action);
+              m_parent->insertAction (nullptr, m_separator);
+            m_parent->insertAction (nullptr, action);
 
             int count = 0;
 
-            foreach (QAction* a, m_parent->actions ())
-            if (! a->isSeparator () && a->objectName () != "builtinMenu")
-              count++;
+            foreach (QAction *a, m_parent->actions ())
+              if (! a->isSeparator ())
+                count++;
+
             up.get_property ("position").set
             (octave_value (static_cast<double> (count)), true, false);
           }
@@ -124,16 +125,18 @@ namespace QtHandles
           {
 
             int count = 0;
-            QAction* before = 0;
+            QAction *before = nullptr;
 
-            foreach (QAction* a, m_parent->actions ())
-            if (! a->isSeparator () && a->objectName () != "builtinMenu")
+            foreach (QAction *a, m_parent->actions ())
               {
-                count++;
-                if (pos <= count)
+                if (! a->isSeparator ())
                   {
-                    before = a;
-                    break;
+                    count++;
+                    if (pos <= count)
+                      {
+                        before = a;
+                        break;
+                      }
                   }
               }
 
@@ -159,7 +162,7 @@ namespace QtHandles
   Menu::update (int pId)
   {
     uimenu::properties& up = properties<uimenu> ();
-    QAction* action = qWidget<QAction> ();
+    QAction *action = qWidget<QAction> ();
 
     switch (pId)
       {
@@ -205,7 +208,7 @@ namespace QtHandles
           {
             if (m_separator)
               delete m_separator;
-            m_separator = 0;
+            m_separator = nullptr;
           }
         break;
 
@@ -223,20 +226,22 @@ namespace QtHandles
           m_parent->removeAction (action);
 
           int pos = static_cast<int> (up.get_position ());
-          QAction* before = 0;
+          QAction *before = nullptr;
 
           if (pos > 0)
             {
               int count = 0;
 
-              foreach (QAction* a, m_parent->actions ())
-              if (! a->isSeparator () && a->objectName () != "builtinMenu")
+              foreach (QAction *a, m_parent->actions ())
                 {
-                  count++;
-                  if (pos <= count)
+                  if (! a->isSeparator ())
                     {
-                      before = a;
-                      break;
+                      count++;
+                      if (pos <= count)
+                        {
+                          before = a;
+                          break;
+                        }
                     }
                 }
             }
@@ -259,8 +264,8 @@ namespace QtHandles
   QWidget*
   Menu::menu (void)
   {
-    QAction* action = qWidget<QAction> ();
-    QMenu* _menu = action->menu ();
+    QAction *action = qWidget<QAction> ();
+    QMenu *_menu = action->menu ();
 
     if (! _menu)
       {
@@ -277,7 +282,7 @@ namespace QtHandles
   void
   Menu::actionTriggered (void)
   {
-    QAction* action = qWidget<QAction> ();
+    QAction *action = qWidget<QAction> ();
 
     if (action->isCheckable ())
       action->setChecked (! action->isChecked ());
@@ -297,30 +302,30 @@ namespace QtHandles
       {
         double count = 1.0;
 
-        foreach (QAction* a, m_parent->actions ())
-        {
-          if (! a->isSeparator () && a->objectName () != "builtinMenu")
-            {
-              Object* aObj = Object::fromQObject (a);
+        foreach (QAction *a, m_parent->actions ())
+          {
+            if (! a->isSeparator ())
+              {
+                Object *aObj = Object::fromQObject (a);
 
-              if (aObj)
-                {
-                  graphics_object go = aObj->object ();
+                if (aObj)
+                  {
+                    graphics_object go = aObj->object ();
 
-                  // Probably overkill as a uimenu child can only be another
-                  // uimenu object.
-                  if (go.isa ("uimenu"))
-                    {
-                      uimenu::properties& up = Utils::properties<uimenu> (go);
+                    // Probably overkill as a uimenu child can only be another
+                    // uimenu object.
+                    if (go.isa ("uimenu"))
+                      {
+                        uimenu::properties& up = Utils::properties<uimenu> (go);
 
-                      up.get_property ("position").set
-                      (octave_value (count), true, false);
-                    }
-                }
+                        up.get_property ("position").set
+                        (octave_value (count), true, false);
+                      }
+                  }
 
-              count++;
-            }
-        }
+                count++;
+              }
+          }
       }
   }
 

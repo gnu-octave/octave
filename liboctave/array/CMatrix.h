@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,15 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "CNDArray.h"
+#include "DET.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
-#include "CNDArray.h"
-
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 #include "oct-cmplx.h"
-#include "DET.h"
 
 class
 OCTAVE_API
@@ -110,7 +109,11 @@ public:
   bool operator == (const ComplexMatrix& a) const;
   bool operator != (const ComplexMatrix& a) const;
 
-  bool is_hermitian (void) const;
+  bool ishermitian (void) const;
+
+  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
+  bool is_hermitian (void) const
+  { return ishermitian (); }
 
   // destructive insert/delete/reorder operations
 
@@ -188,10 +191,10 @@ public:
   }
 
 private:
-  ComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
+  ComplexMatrix tinverse (MatrixType& mattype, octave_idx_type& info,
                           double& rcon, bool force, bool calc_cond) const;
 
-  ComplexMatrix finverse (MatrixType &mattype, octave_idx_type& info,
+  ComplexMatrix finverse (MatrixType& mattype, octave_idx_type& info,
                           double& rcon, bool force, bool calc_cond) const;
 
 public:
@@ -200,9 +203,9 @@ public:
   ComplexMatrix inverse (octave_idx_type& info, double& rcon,
                          bool force = false, bool calc_cond = true) const;
 
-  ComplexMatrix inverse (MatrixType &mattype) const;
-  ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
-  ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,
+  ComplexMatrix inverse (MatrixType& mattype) const;
+  ComplexMatrix inverse (MatrixType& mattype, octave_idx_type& info) const;
+  ComplexMatrix inverse (MatrixType& mattype, octave_idx_type& info,
                          double& rcon, bool force = false,
                          bool calc_cond = true) const;
 
@@ -218,73 +221,73 @@ public:
   ComplexDET determinant (octave_idx_type& info) const;
   ComplexDET determinant (octave_idx_type& info, double& rcon,
                           bool calc_cond = true) const;
-  ComplexDET determinant (MatrixType &mattype, octave_idx_type& info,
+  ComplexDET determinant (MatrixType& mattype, octave_idx_type& info,
                           double& rcon, bool calc_cond = true) const;
 
   double rcond (void) const;
-  double rcond (MatrixType &mattype) const;
+  double rcond (MatrixType& mattype) const;
 
 private:
   // Upper triangular matrix solvers
-  ComplexMatrix utsolve (MatrixType &typ, const ComplexMatrix& b,
+  ComplexMatrix utsolve (MatrixType& mattype, const ComplexMatrix& b,
                          octave_idx_type& info, double& rcon,
                          solve_singularity_handler sing_handler,
                          bool calc_cond = false,
                          blas_trans_type transt = blas_no_trans) const;
 
   // Lower triangular matrix solvers
-  ComplexMatrix ltsolve (MatrixType &typ, const ComplexMatrix& b,
+  ComplexMatrix ltsolve (MatrixType& mattype, const ComplexMatrix& b,
                          octave_idx_type& info, double& rcon,
                          solve_singularity_handler sing_handler,
                          bool calc_cond = false,
                          blas_trans_type transt = blas_no_trans) const;
 
   // Full matrix solvers (umfpack/cholesky)
-  ComplexMatrix fsolve (MatrixType &typ, const ComplexMatrix& b,
+  ComplexMatrix fsolve (MatrixType& mattype, const ComplexMatrix& b,
                         octave_idx_type& info, double& rcon,
                         solve_singularity_handler sing_handler,
                         bool calc_cond = false) const;
 
 public:
   // Generic interface to solver with no probing of type
-  ComplexMatrix solve (MatrixType &typ, const Matrix& b) const;
-  ComplexMatrix solve (MatrixType &typ, const Matrix& b,
+  ComplexMatrix solve (MatrixType& mattype, const Matrix& b) const;
+  ComplexMatrix solve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& info) const;
-  ComplexMatrix solve (MatrixType &typ, const Matrix& b,
+  ComplexMatrix solve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& info, double& rcon) const;
-  ComplexMatrix solve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
+  ComplexMatrix solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                        double& rcon, solve_singularity_handler sing_handler,
                        bool singular_fallback = true,
                        blas_trans_type transt = blas_no_trans) const;
 
-  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b) const;
-  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b,
+  ComplexMatrix solve (MatrixType& mattype, const ComplexMatrix& b) const;
+  ComplexMatrix solve (MatrixType& mattype, const ComplexMatrix& b,
                        octave_idx_type& info) const;
-  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b,
+  ComplexMatrix solve (MatrixType& mattype, const ComplexMatrix& b,
                        octave_idx_type& info, double& rcon) const;
-  ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b,
+  ComplexMatrix solve (MatrixType& mattype, const ComplexMatrix& b,
                        octave_idx_type& info, double& rcon,
                        solve_singularity_handler sing_handler,
                        bool singular_fallback = true,
                        blas_trans_type transt = blas_no_trans) const;
 
-  ComplexColumnVector solve (MatrixType &typ, const ColumnVector& b) const;
-  ComplexColumnVector solve (MatrixType &typ, const ColumnVector& b,
+  ComplexColumnVector solve (MatrixType& mattype, const ColumnVector& b) const;
+  ComplexColumnVector solve (MatrixType& mattype, const ColumnVector& b,
                              octave_idx_type& info) const;
-  ComplexColumnVector solve (MatrixType &typ, const ColumnVector& b,
+  ComplexColumnVector solve (MatrixType& mattype, const ColumnVector& b,
                              octave_idx_type& info, double& rcon) const;
-  ComplexColumnVector solve (MatrixType &typ, const ColumnVector& b,
+  ComplexColumnVector solve (MatrixType& mattype, const ColumnVector& b,
                              octave_idx_type& info, double& rcon,
                              solve_singularity_handler sing_handler,
                              blas_trans_type transt = blas_no_trans) const;
 
-  ComplexColumnVector solve (MatrixType &typ,
+  ComplexColumnVector solve (MatrixType& mattype,
                              const ComplexColumnVector& b) const;
-  ComplexColumnVector solve (MatrixType &typ, const ComplexColumnVector& b,
+  ComplexColumnVector solve (MatrixType& mattype, const ComplexColumnVector& b,
                              octave_idx_type& info) const;
-  ComplexColumnVector solve (MatrixType &typ, const ComplexColumnVector& b,
+  ComplexColumnVector solve (MatrixType& mattype, const ComplexColumnVector& b,
                              octave_idx_type& info, double& rcon) const;
-  ComplexColumnVector solve (MatrixType &typ, const ComplexColumnVector& b,
+  ComplexColumnVector solve (MatrixType& mattype, const ComplexColumnVector& b,
                              octave_idx_type& info, double& rcon,
                              solve_singularity_handler sing_handler,
                              blas_trans_type transt = blas_no_trans) const;

@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} quadl (@var{f}, @var{a}, @var{b})
@@ -54,7 +54,8 @@
 ## Reference: @nospell{W. Gander and W. Gautschi}, @cite{Adaptive Quadrature -
 ## Revisited}, BIT Vol. 40, No. 1, March 2000, pp. 84--101.
 ## @url{http://www.inf.ethz.ch/personal/gander/}
-## @seealso{quad, quadv, quadgk, quadcc, trapz, dblquad, triplequad}
+## @seealso{quad, quadv, quadgk, quadcc, trapz, dblquad, triplequad, integral,
+##          integral2, integral3}
 ## @end deftypefn
 
 ## Original Author: Walter Gautschi
@@ -80,6 +81,8 @@ function [q, nfun] = quadl (f, a, b, tol = [], trace = false, varargin)
   elseif (! isscalar (tol) || tol < 0)
     error ("quadl: TOL must be a scalar >=0");
   elseif (tol < eps)
+    warning ("quadl: TOL specified is smaller than machine precision, using %g",
+                                                                           tol);
     tol = eps;
   endif
   if (isempty (trace))
@@ -146,7 +149,7 @@ function [q, nfun, hmin] = adaptlobstp (f, a, b, fa, fb, q0, nfun, hmin,
   if ((abs (i1-i2) < tol || mll <= a || b <= mrr) && nfun > 2)
     q = i1;
   else
-    q = zeros (6, 1);
+    q = zeros (6, 1, class (x));
     [q(1), nfun, hmin] = adaptlobstp (f, a  , mll, fa  , fmll, q0/6, nfun, hmin,
                                       tol, trace, varargin{:});
     [q(2), nfun, hmin] = adaptlobstp (f, mll, ml , fmll, fml , q0/6, nfun, hmin,
@@ -166,7 +169,7 @@ endfunction
 
 
 ## basic functionality
-%!assert (quadl (@(x) sin (x), 0, pi), 2, 5e-15)
+%!assert (quadl (@(x) sin (x), 0, pi), 2, 1e-6)
 
 ## the values here are very high so it may be unavoidable that this fails
 %!assert (quadl (@(x) sin (3*x).*cosh (x).*sinh (x),10,15, 1e-3),
@@ -174,7 +177,7 @@ endfunction
 
 ## extra parameters
 %!assert (quadl (@(x,a,b) sin (a + b*x), 0, 1, [], [], 2, 3),
-%!        cos(2)/3 - cos(5)/3, 1e-15)
+%!        cos(2)/3 - cos(5)/3, 1e-6)
 
 ## test different tolerances.
 %!test
@@ -184,8 +187,14 @@ endfunction
 %! assert (q, (60 + sin(4) - sin(64))/12, 0.1);
 %! assert (nfun2 > nfun1);
 
+%!test  # test single input/output
+%! assert (class (quadl (@sin, 0, 1)), "double");
+%! assert (class (quadl (@sin, single (0), 1)), "single");
+%! assert (class (quadl (@sin, 0, single (1))), "single");
+
 ## Test input validation
 %!error quadl ()
 %!error quadl (@sin)
 %!error quadl (@sin,1)
-%!error <TOL must be a scalar> quadl (@sin, 0, 1, ones (2,2))
+%!error <TOL must be a scalar> quadl (@sin,0,1, ones (2,2))
+%!error <TOL must be .* .=0> quadl (@sin,0,1, -1)

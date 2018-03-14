@@ -4,19 +4,19 @@ Copyright (C) 1999-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -29,46 +29,51 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 class octave_value_list;
-class tree_argument_list;
-
-class tree_walker;
 
 #include "pt-mat.h"
-#include "symtab.h"
+#include "pt-walk.h"
 
-// General cells.
-
-class
-tree_cell : public tree_array_list
+namespace octave
 {
-public:
+  class symbol_scope;
+  class tree_argument_list;
 
-  tree_cell (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_array_list (row, l, c)
-  { }
+  // General cells.
 
-  ~tree_cell (void) { }
+  class tree_cell : public tree_array_list
+  {
+  public:
 
-  bool is_cell (void) const { return true; }
+    tree_cell (tree_argument_list *row = nullptr, int l = -1, int c = -1)
+      : tree_array_list (row, l, c)
+    { }
 
-  bool rvalue_ok (void) const { return true; }
+    // No copying!
 
-  octave_value rvalue1 (int nargout = 1);
+    tree_cell (const tree_cell&) = delete;
 
-  octave_value_list rvalue (int);
+    tree_cell& operator = (const tree_cell&) = delete;
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    ~tree_cell (void) = default;
 
-  void accept (tree_walker& tw);
+    bool iscell (void) const { return true; }
 
-private:
+    bool rvalue_ok (void) const { return true; }
 
-  // No copying!
+    tree_expression * dup (symbol_scope& scope) const;
 
-  tree_cell (const tree_cell&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_cell (*this);
+    }
+  };
+}
 
-  tree_cell& operator = (const tree_cell&);
-};
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::tree_cell' instead")
+typedef octave::tree_cell tree_cell;
+
+#endif
 
 #endif

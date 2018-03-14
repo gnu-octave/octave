@@ -5,19 +5,19 @@ Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "Array-util.h"
-#include "dim-vector.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
 
@@ -136,7 +135,7 @@ is_scalar (const dim_vector& dim)
 }
 
 bool
-is_vector (const dim_vector& dim)
+isvector (const dim_vector& dim)
 {
   int m = 0;
   int n = dim.ndims ();
@@ -267,7 +266,7 @@ freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
 
   retval.resize (n);
 
-  static const char *tag[3] = { "row", "column", 0 };
+  static const char *tag[3] = { "row", "column", nullptr };
 
   for (int i = 0; i < n; i++)
     retval(i) = ra_idx(i).freeze (dimensions(i), tag[i < 2 ? i : 2],
@@ -496,8 +495,8 @@ zero_dims_inquire (const idx_vector& i, const idx_vector& j,
   else if (rhdv.ndims () == 2
            && ! i.is_scalar () && ! j.is_scalar ())
     {
-      rdv(0) = icol ? rhdv(0) : i.extent (0);
-      rdv(1) = jcol ? rhdv(1) : j.extent (0);
+      rdv(0) = (icol ? rhdv(0) : i.extent (0));
+      rdv(1) = (jcol ? rhdv(1) : j.extent (0));
     }
   else
     {

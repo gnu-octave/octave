@@ -5,19 +5,19 @@ Copyright (C) 2016 Barbara Lócsi
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -46,14 +46,13 @@ DEFUN (eig, args, nargout,
 @deftypefnx {} {[@dots{}] =} eig (@var{A}, @var{B}, @var{algorithm})
 @deftypefnx {} {[@dots{}] =} eig (@dots{}, @var{eigvalOption})
 Compute the eigenvalues (@var{lambda}) and optionally the right eigenvectors
-(@var{V}) and the left eigenvectors (@var{W}) of a matrix or a pair of
-matrices.
+(@var{V}) and the left eigenvectors (@var{W}) of a matrix or pair of matrices.
 
 The flag @var{balanceOption} can be one of:
 
 @table @asis
-@item @qcode{"balance"}
-Preliminary balancing is on. (default)
+@item @qcode{"balance"} (default)
+Preliminary balancing is on.
 
 @item @qcode{"nobalance"}
 Disables preliminary balancing.
@@ -63,24 +62,23 @@ The flag @var{eigvalOption} can be one of:
 
 @table @asis
 @item @qcode{"matrix"}
-Return the eigenvalues in a diagonal matrix. (default if 2 or 3 outputs
-are specified)
+Return the eigenvalues in a diagonal matrix.  (default if 2 or 3 outputs
+are requested)
 
 @item @qcode{"vector"}
-Return the eigenvalues in a column vector. (default if 1 output is
-specified, e.g. @var{lambda} = eig (@var{A}))
+Return the eigenvalues in a column vector.  (default if only 1 output is
+requested, e.g., @var{lambda} = eig (@var{A}))
 @end table
 
 The flag @var{algorithm} can be one of:
 
 @table @asis
 @item @qcode{"chol"}
-Uses the Cholesky factorization of B. (default if A is symmetric (Hermitian)
-and B is symmetric (Hermitian) positive definite)
+Use the Cholesky factorization of B.  (default if @var{A} is symmetric
+(Hermitian) and @var{B} is symmetric (Hermitian) positive definite)
 
 @item @qcode{"qz"}
-Uses the QZ algorithm. (When A or B are not symmetric always the
-QZ algorithm will be used)
+Use the QZ algorithm.  (used whenever @var{A} or @var{B} are not symmetric)
 @end table
 
 @multitable @columnfractions .31 .23 .23 .23
@@ -110,10 +108,10 @@ The eigenvalues returned by @code{eig} are not ordered.
 
   arg_a = args(0);
 
-  if (arg_a.is_empty ())
+  if (arg_a.isempty ())
     return octave_value_list (2, Matrix ());
 
-  if (! arg_a.is_float_type ())
+  if (! arg_a.isfloat ())
     err_wrong_type_arg ("eig", arg_a);
 
   if (arg_a.rows () != arg_a.columns ())
@@ -126,10 +124,10 @@ The eigenvalues returned by @code{eig} are not ordered.
     {
       arg_b = args(1);
 
-      if (arg_b.is_empty ())
+      if (arg_b.isempty ())
         return octave_value_list (2, Matrix ());
 
-      if (! arg_b.is_float_type ())
+      if (! arg_b.isfloat ())
         err_wrong_type_arg ("eig", arg_b);
 
       if (arg_b.rows () != arg_b.columns ())
@@ -162,33 +160,33 @@ The eigenvalues returned by @code{eig} are not ordered.
       else if (octave::string::strcmpi (arg_i, "vector"))
         vector_flag = true;
       else
-        error ("eig: invalid option \"%s\"", arg_i.c_str ());
+        error (R"(eig: invalid option "%s")", arg_i.c_str ());
     }
 
   if (balance_flag && no_balance_flag)
-    error ("eig: \"balance\" and \"nobalance\" options are mutually exclusive");
+    error (R"(eig: "balance" and "nobalance" options are mutually exclusive)");
   if (vector_flag && matrix_flag)
-    error ("eig: \"vector\" and \"matrix\" options are mutually exclusive");
+    error (R"(eig: "vector" and "matrix" options are mutually exclusive)");
   if (qz_flag && chol_flag)
-    error ("eig: \"qz\" and \"chol\" options are mutually exclusive");
+    error (R"(eig: "qz" and "chol" options are mutually exclusive)");
 
   if (AEPcase)
     {
       if (qz_flag)
-        error ("eig: invalid \"qz\" option for algebraic eigenvalue problem");
+        error (R"(eig: invalid "qz" option for algebraic eigenvalue problem)");
       if (chol_flag)
-        error ("eig: invalid \"chol\" option for algebraic eigenvalue problem");
+        error (R"(eig: invalid "chol" option for algebraic eigenvalue problem)");
     }
   else
     {
       if (balance_flag)
-        error ("eig: invalid \"balance\" option for generalized eigenvalue problem");
+        error (R"(eig: invalid "balance" option for generalized eigenvalue problem)");
       if (no_balance_flag)
-        error ("eig: invalid \"nobalance\" option for generalized eigenvalue problem");
+        error (R"(eig: invalid "nobalance" option for generalized eigenvalue problem)");
     }
 
   // Default is to balance
-  const bool balance = no_balance_flag ? false : true;
+  const bool balance = (no_balance_flag ? false : true);
   const bool force_qz = qz_flag;
 
 
@@ -202,7 +200,7 @@ The eigenvalues returned by @code{eig} are not ordered.
       FloatEIG result;
       if (AEPcase)
         {
-          if (arg_a.is_real_type ())
+          if (arg_a.isreal ())
             {
               ftmp_a = arg_a.float_matrix_value ();
 
@@ -217,7 +215,7 @@ The eigenvalues returned by @code{eig} are not ordered.
         }
       else
         {
-          if (arg_a.is_real_type () && arg_b.is_real_type ())
+          if (arg_a.isreal () && arg_b.isreal ())
             {
               ftmp_a = arg_a.float_matrix_value ();
               ftmp_b = arg_b.float_matrix_value ();
@@ -268,7 +266,7 @@ The eigenvalues returned by @code{eig} are not ordered.
 
       if (AEPcase)
         {
-          if (arg_a.is_real_type ())
+          if (arg_a.isreal ())
             {
               tmp_a = arg_a.matrix_value ();
 
@@ -283,7 +281,7 @@ The eigenvalues returned by @code{eig} are not ordered.
         }
       else
         {
-          if (arg_a.is_real_type () && arg_b.is_real_type ())
+          if (arg_a.isreal () && arg_b.isreal ())
             {
               tmp_a = arg_a.matrix_value ();
               tmp_b = arg_b.matrix_value ();
@@ -580,23 +578,19 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!test shapes_GEP (single ([1, 2; 3, 8]),  single ([8, 3; 4, 3]));
 %!test shapes_GEP (single ([1, 2; -1, 1]),  single ([3, 3; 1, 2]));
 
+## Check if correct default method is used for symmetric input
 %!function chol_qz_accuracy (A, B, is_qz_accurate, is_chol_accurate)
-%!  [V1,D1] = eig (A,B, 'qz');
-%!  [V2,D2] = eig (A,B); #default is chol
-%!  assert (isequal (A*V1,A*V1*D1), is_qz_accurate)
+%!  [V1, D1] = eig (A, B, 'qz');
+%!  [V2, D2] = eig (A, B); #default is chol
+%!  assert (isequal (A*V1, A*V1*D1), is_qz_accurate)
 %!  assert (isequal (A*V2, A*V2*D2), is_chol_accurate)
 %!endfunction
-
 %!test
-%! minij_100 = gallery('minij',100);
+%! minij_100 = gallery ('minij', 100);
 %! chol_qz_accuracy (minij_100, minij_100, false, true);
-
-%!test
-%! moler_100 = gallery('moler',100);
+%! moler_100 = gallery ('moler', 100);
 %! chol_qz_accuracy (moler_100, moler_100, false, true);
-
-%!test
-%! A = diag([10^-16, 10^-15]);
+%! A = diag([1e-16, 1e-15]);
 %! chol_qz_accuracy (A, A, true, false);
 
 %!error eig ()

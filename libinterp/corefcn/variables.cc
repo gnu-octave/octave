@@ -5,19 +5,19 @@ Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "call-stack.h"
-#include <defaults.h>
+#include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "help.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
@@ -69,30 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 static std::string Vwhos_line_format
   = "  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n";
 
-void
-clear_mex_functions (void)
-{
-  symbol_table::clear_mex_functions ();
-}
-
-void
-clear_function (const std::string& nm)
-{
-  symbol_table::clear_function (nm);
-}
-
-void
-clear_variable (const std::string& nm)
-{
-  symbol_table::clear_variable (nm);
-}
-
-void
-clear_symbol (const std::string& nm)
-{
-  symbol_table::clear_symbol (nm);
-}
-
 // Attributes of variables and functions.
 
 // Is this octave_value a valid function?
@@ -101,11 +78,14 @@ octave_function *
 is_valid_function (const std::string& fcn_name,
                    const std::string& warn_for, bool warn)
 {
-  octave_function *ans = 0;
+  octave_function *ans = nullptr;
 
   if (! fcn_name.empty ())
     {
-      octave_value val = symbol_table::find_function (fcn_name);
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("is_valid_function");
+
+      octave_value val = symtab.find_function (fcn_name);
 
       if (val.is_defined ())
         ans = val.function_value (true);
@@ -123,7 +103,7 @@ octave_function *
 is_valid_function (const octave_value& arg,
                    const std::string& warn_for, bool warn)
 {
-  octave_function *ans = 0;
+  octave_function *ans = nullptr;
 
   std::string fcn_name;
 
@@ -146,13 +126,13 @@ extract_function (const octave_value& arg, const std::string& warn_for,
                   const std::string& fname, const std::string& header,
                   const std::string& trailer)
 {
-  octave_function *retval = 0;
+  octave_function *retval = nullptr;
 
   retval = is_valid_function (arg, warn_for, 0);
 
   if (! retval)
     {
-      std::string s = arg.xstring_value ("%s: first argument must be a string",
+      std::string s = arg.xstring_value ("%s: argument must be a string",
                                          warn_for.c_str ());
 
       std::string cmd = header;
@@ -161,7 +141,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
       int parse_status;
 
-      eval_string (cmd, true, parse_status, 0);
+      octave::eval_string (cmd, true, parse_status, 0);
 
       if (parse_status != 0)
         error ("%s: '%s' is not valid as a function",
@@ -218,13 +198,15 @@ get_struct_elts (const std::string& text)
 }
 
 static inline bool
-is_variable (const std::string& name)
+is_variable (octave::symbol_table& symtab, const std::string& name)
 {
   bool retval = false;
 
   if (! name.empty ())
     {
-      octave_value val = symbol_table::varval (name);
+      octave::symbol_scope scope = symtab.current_scope ();
+
+      octave_value val = scope ? scope.varval (name) : octave_value ();
 
       retval = val.is_defined ();
     }
@@ -263,7 +245,10 @@ generate_struct_completions (const std::string& text,
       if (pos != std::string::npos)
         base_name = base_name.substr (0, pos);
 
-      if (is_variable (base_name))
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("generate_struct_completions");
+
+        if (is_variable (symtab, base_name))
         {
           int parse_status;
 
@@ -277,17 +262,17 @@ generate_struct_completions (const std::string& text,
 
           try
             {
-              octave_value tmp = eval_string (prefix, true, parse_status);
+              octave_value tmp = octave::eval_string (prefix, true, parse_status);
 
               frame.run ();
 
               if (tmp.is_defined ()
-                  && (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
+                  && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
                 names = tmp.map_keys ();
             }
           catch (const octave::execution_exception&)
             {
-              recover_from_exception ();
+              octave::interpreter::recover_from_exception ();
             }
         }
     }
@@ -327,7 +312,7 @@ looks_like_struct (const std::string& text, char prev_char)
 
       frame.run ();
 
-      retval = (tmp.is_defined () && tmp.is_map ());
+      retval = (tmp.is_defined () && tmp.isstruct ());
     }
 #endif
 
@@ -335,7 +320,7 @@ looks_like_struct (const std::string& text, char prev_char)
 }
 
 static octave_value
-do_isglobal (const octave_value_list& args)
+do_isglobal (octave::symbol_table& symtab, const octave_value_list& args)
 {
   if (args.length () != 1)
     print_usage ();
@@ -343,13 +328,15 @@ do_isglobal (const octave_value_list& args)
   if (! args(0).is_string ())
     error ("isglobal: NAME must be a string");
 
+  octave::symbol_scope scope = symtab.current_scope ();
+
   std::string name = args(0).string_value ();
 
-  return symbol_table::is_global (name);
+  return scope && scope.is_global (name);
 }
 
-DEFUN (isglobal, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (isglobal, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} isglobal (@var{name})
 Return true if @var{name} is a globally visible variable.
 
@@ -365,7 +352,9 @@ isglobal ("x")
 @seealso{isvarname, exist}
 @end deftypefn */)
 {
-  return do_isglobal (args);
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
+  return do_isglobal (symtab, args);
 }
 
 /*
@@ -378,8 +367,9 @@ isglobal ("x")
 %!error isglobal (1)
 */
 
-int
-symbol_exist (const std::string& name, const std::string& type)
+static int
+symbol_exist (octave::interpreter& interp, const std::string& name,
+              const std::string& type = "any")
 {
   if (octave::is_keyword (name))
     return 0;
@@ -393,13 +383,17 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (! (search_any || search_var || search_dir || search_file ||
          search_builtin || search_class))
-    error ("exist: unrecognized type argument \"%s\"", type.c_str ());
+    error (R"(exist: unrecognized type argument "%s")", type.c_str ());
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   if (search_any || search_var)
     {
-      octave_value val = symbol_table::varval (name);
+      octave::symbol_scope scope = symtab.current_scope ();
 
-      if (val.is_constant () || val.is_object ()
+      octave_value val = scope ? scope.varval (name) : octave_value ();
+
+      if (val.is_constant () || val.isobject ()
           || val.is_function_handle ()
           || val.is_anonymous_function ()
           || val.is_inline_function ())
@@ -415,7 +409,7 @@ symbol_exist (const std::string& name, const std::string& type)
   // Command line function which Matlab does not support
   if (search_any)
     {
-      octave_value val = symbol_table::find_cmdline_function (name);
+      octave_value val = symtab.find_cmdline_function (name);
 
       if (val.is_defined ())
         return 103;
@@ -423,10 +417,14 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (search_any || search_file || search_dir)
     {
-      std::string file_name = lookup_autoload (name);
+      std::string file_name = octave::lookup_autoload (name);
 
       if (file_name.empty ())
-        file_name = load_path::find_fcn (name);
+        {
+          octave::load_path& lp = interp.get_load_path ();
+
+          file_name = lp.find_fcn (name);
+        }
 
       size_t len = file_name.length ();
 
@@ -474,7 +472,7 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (search_any || search_builtin)
     {
-      if (symbol_table::is_built_in_function_name (name))
+      if (symtab.is_built_in_function_name (name))
         return 5;
 
       if (search_builtin)
@@ -483,6 +481,15 @@ symbol_exist (const std::string& name, const std::string& type)
 
   return 0;
 }
+
+int
+symbol_exist (const std::string& name, const std::string& type)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("symbol_exist");
+
+  return symbol_exist (interp, name, type);
+}
+
 
 #define GET_IDX(LEN)                                                    \
   static_cast<int> ((LEN-1) * static_cast<double> (rand ()) / RAND_MAX)
@@ -502,18 +509,21 @@ unique_symbol_name (const std::string& basename)
   if (nm.substr (0, 2) == "__")
     nm.append ("__");
 
-  while (symbol_exist (nm, "any"))
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("unique_symbol_name");
+
+  while (symbol_exist (interp, nm, "any"))
     nm.insert (pos++, 1, alpha[GET_IDX (len)]);
 
   return nm;
 }
 
-DEFUN (exist, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (exist, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{c} =} exist (@var{name})
 @deftypefnx {} {@var{c} =} exist (@var{name}, @var{type})
-Check for the existence of @var{name} as a variable, function, file,
-directory, or class.
+Check for the existence of @var{name} as a variable, function, file, directory,
+or class.
 
 The return code @var{c} is one of
 
@@ -522,9 +532,8 @@ The return code @var{c} is one of
 @var{name} is a variable.
 
 @item 2
-@var{name} is an absolute filename, an ordinary file in Octave's
-@code{path}, or (after appending @samp{.m}) a function file in Octave's
-@code{path}.
+@var{name} is an absolute filename, an ordinary file in Octave's @code{path},
+or (after appending @samp{.m}) a function file in Octave's @code{path}.
 
 @item 3
 @var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.
@@ -535,6 +544,9 @@ The return code @var{c} is one of
 @item 7
 @var{name} is a directory.
 
+@item 8
+@var{name} is a class.  (Note: not currently implemented)
+
 @item 103
 @var{name} is a function not associated with a file (entered on the command
 line).
@@ -543,8 +555,8 @@ line).
 @var{name} does not exist.
 @end table
 
-If the optional argument @var{type} is supplied, check only for symbols of
-the specified type.  Valid types are
+If the optional argument @var{type} is supplied, check only for symbols of the
+specified type.  Valid types are
 
 @table @asis
 @item @qcode{"var"}
@@ -569,14 +581,13 @@ If no type is given, and there are multiple possible matches for name,
 variable, built-in function, oct-file, directory, file, class.
 
 @code{exist} returns 2 if a regular file called @var{name} is present in
-Octave's search path.  If you want information about other types of files
-not on the search path you should use some combination of the functions
-@code{file_in_path} and @code{stat} instead.
+Octave's search path.  For information about other types of files not on the
+search path use some combination of the functions @code{file_in_path} and
+@code{stat} instead.
 
 Programming Note: If @var{name} is implemented by a buggy .oct/.mex file,
-calling @var{exist} may cause Octave to crash.  To maintain high
-performance, Octave trusts .oct/.mex files instead of @nospell{sandboxing}
-them.
+calling @var{exist} may cause Octave to crash.  To maintain high performance,
+Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 
 @seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}
 @end deftypefn */)
@@ -593,12 +604,12 @@ them.
       std::string type = args(1).xstring_value ("exist: TYPE must be a string");
 
       if (type == "class")
-        warning ("exist: \"class\" type argument is not implemented");
+        warning (R"(exist: "class" type argument is not implemented)");
 
-      return ovl (symbol_exist (name, type));
+      return ovl (symbol_exist (interp, name, type));
     }
   else
-    return ovl (symbol_exist (name));
+    return ovl (symbol_exist (interp, name));
 }
 
 /*
@@ -671,48 +682,6 @@ them.
 
 */
 
-octave_value
-lookup_function_handle (const std::string& nm)
-{
-  octave_value val = symbol_table::varval (nm);
-
-  return val.is_function_handle () ? val : octave_value ();
-}
-
-octave_value
-get_global_value (const std::string& nm, bool silent)
-{
-  octave_value val = symbol_table::global_varval (nm);
-
-  if (val.is_undefined () && ! silent)
-    error ("get_global_value: undefined symbol '%s'", nm.c_str ());
-
-  return val;
-}
-
-void
-set_global_value (const std::string& nm, const octave_value& val)
-{
-  symbol_table::global_assign (nm, val);
-}
-
-octave_value
-get_top_level_value (const std::string& nm, bool silent)
-{
-  octave_value val = symbol_table::top_level_varval (nm);
-
-  if (val.is_undefined () && ! silent)
-    error ("get_top_level_value: undefined symbol '%s'", nm.c_str ());
-
-  return val;
-}
-
-void
-set_top_level_value (const std::string& nm, const octave_value& val)
-{
-  symbol_table::top_level_assign (nm, val);
-}
-
 // Variable values.
 
 static bool
@@ -723,7 +692,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
   if (nargin == 2)
     {
       if (! args(1).is_string () || args(1).string_value () != "local")
-        error_with_cfn ("second argument must be \"local\"");
+        error_with_cfn (R"(second argument must be "local")");
 
       nargin = 1;
       retval = true;
@@ -732,16 +701,32 @@ wants_local_change (const octave_value_list& args, int& nargin)
   return retval;
 }
 
-template <typename T>
-bool try_local_protect (T& var)
+static octave::unwind_protect *
+curr_fcn_unwind_protect_frame (void)
 {
-  octave_user_code *curr_usr_code = octave_call_stack::caller_user_code ();
-  octave_user_function *curr_usr_fcn = 0;
-  if (curr_usr_code && curr_usr_code->is_user_function ())
-    curr_usr_fcn = dynamic_cast<octave_user_function *> (curr_usr_code);
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("curr_fcn_unwind_protect_frame");
 
-  if (curr_usr_fcn && curr_usr_fcn->local_protect (var))
-    return true;
+  octave_user_code *curr_usr_code = cs.caller_user_code ();
+
+  octave_user_function *curr_usr_fcn
+    = (curr_usr_code && curr_usr_code->is_user_function ()
+       ? dynamic_cast<octave_user_function *> (curr_usr_code) : nullptr);
+
+  return curr_usr_fcn ? curr_usr_fcn->unwind_protect_frame () : nullptr;
+}
+
+template <typename T>
+static bool
+try_local_protect (T& var)
+{
+  octave::unwind_protect *frame = curr_fcn_unwind_protect_frame ();
+
+  if (frame)
+    {
+      frame->protect_var (var);
+      return true;
+    }
   else
     return false;
 }
@@ -760,7 +745,7 @@ set_internal_variable (bool& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -790,7 +775,7 @@ set_internal_variable (char& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -834,7 +819,7 @@ set_internal_variable (int& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -870,7 +855,7 @@ set_internal_variable (double& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -905,7 +890,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -930,7 +915,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 {
   octave_value retval;
   int nchoices = 0;
-  while (choices[nchoices] != 0)
+  while (choices[nchoices] != nullptr)
     nchoices++;
 
   int nargin = args.length ();
@@ -943,7 +928,7 @@ set_internal_variable (int& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -963,7 +948,7 @@ set_internal_variable (int& var, const octave_value_list& args,
             }
         }
       if (i == nchoices)
-        error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
+        error (R"(%s: value not allowed ("%s"))", nm, sval.c_str ());
     }
 
   return retval;
@@ -975,7 +960,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 {
   octave_value retval;
   int nchoices = 0;
-  while (choices[nchoices] != 0)
+  while (choices[nchoices] != nullptr)
     nchoices++;
 
   int nargin = args.length ();
@@ -986,7 +971,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
   if (wants_local_change (args, nargin))
     {
       if (! try_local_protect (var))
-        warning ("\"local\" has no effect outside a function");
+        warning (R"("local" has no effect outside a function)");
     }
 
   if (nargin > 1)
@@ -1006,7 +991,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
             }
         }
       if (i == nchoices)
-        error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
+        error (R"(%s: value not allowed ("%s"))", nm, sval.c_str ());
     }
 
   return retval;
@@ -1031,7 +1016,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   std::list<whos_parameter>::iterator i = params.begin ();
   std::ostringstream param_buf;
 
-  octave_preserve_stream_state stream_state (os);
+  octave::preserve_stream_state stream_state (os);
 
   while (i != params.end ())
     {
@@ -1146,17 +1131,23 @@ symbol_info_list
 private:
   struct symbol_info
   {
-    symbol_info (const symbol_table::symbol_record& sr,
+    symbol_info (const octave::symbol_record& sr,
+                 octave::symbol_record::context_id context,
                  const std::string& expr_str = "",
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
-        varval (expr_val.is_undefined () ? sr.varval () : expr_val),
+        varval (),
         is_automatic (sr.is_automatic ()),
-        is_complex (varval.is_complex_type ()),
+        is_complex (varval.iscomplex ()),
         is_formal (sr.is_formal ()),
         is_global (sr.is_global ()),
         is_persistent (sr.is_persistent ())
-    { }
+    {
+      varval = (expr_val.is_undefined ()
+                ? sr.varval (context) : expr_val);
+
+      is_complex = varval.iscomplex ();
+    }
 
     void display_line (std::ostream& os,
                        const std::list<whos_parameter>& params) const
@@ -1165,7 +1156,7 @@ private:
 
       std::list<whos_parameter>::const_iterator i = params.begin ();
 
-      octave_preserve_stream_state stream_state (os);
+      octave::preserve_stream_state stream_state (os);
 
       while (i != params.end ())
         {
@@ -1304,18 +1295,20 @@ public:
     return *this;
   }
 
-  ~symbol_info_list (void) { }
+  ~symbol_info_list (void) = default;
 
-  void append (const symbol_table::symbol_record& sr)
+  void append (const octave::symbol_record& sr,
+               octave::symbol_record::context_id context)
   {
-    lst.push_back (symbol_info (sr));
+    lst.push_back (symbol_info (sr, context));
   }
 
-  void append (const symbol_table::symbol_record& sr,
+  void append (const octave::symbol_record& sr,
+               octave::symbol_record::context_id context,
                const std::string& expr_str,
                const octave_value& expr_val)
   {
-    lst.push_back (symbol_info (sr, expr_str, expr_val));
+    lst.push_back (symbol_info (sr, context, expr_str, expr_val));
   }
 
   size_t size (void) const { return lst.size (); }
@@ -1357,8 +1350,8 @@ public:
         size_info(j) = val.size ();
         bytes_info(j) = val.byte_size ();
         class_info(j) = val.class_name ();
-        sparse_info(j) = val.is_sparse_type ();
-        complex_info(j) = val.is_complex_type ();
+        sparse_info(j) = val.issparse ();
+        complex_info(j) = val.iscomplex ();
         nesting_info(j) = ni;
       }
 
@@ -1390,12 +1383,11 @@ public:
 
         octave_stdout << "\n";
 
-        for (std::list<symbol_info>::const_iterator p = lst.begin ();
-             p != lst.end (); p++)
+        for (const auto& syminfo : lst)
           {
-            p->display_line (os, params);
+            syminfo.display_line (os, params);
 
-            octave_value val = p->varval;
+            octave_value val = syminfo.varval;
 
             elements += val.numel ();
             bytes += val.byte_size ();
@@ -1451,18 +1443,17 @@ public:
     // Calculating necessary spacing for name column,
     // bytes column, elements column and class column
 
-    for (std::list<symbol_info>::const_iterator p = lst.begin ();
-         p != lst.end (); p++)
+    for (const auto& syminfo : lst)
       {
         std::stringstream ss1, ss2;
         std::string str;
 
-        str = p->name;
+        str = syminfo.name;
         param_length(pos_n) = ((str.length ()
                                 > static_cast<size_t> (param_length(pos_n)))
                                ? str.length () : param_length(pos_n));
 
-        octave_value val = p->varval;
+        octave_value val = syminfo.varval;
 
         str = val.type_name ();
         param_length(pos_t) = ((str.length ()
@@ -1526,6 +1517,14 @@ public:
             if (items < 2)
               error ("whos_line_format: parameter structure without command in whos_line_format");
 
+            // Exception case of bare class command 'c' without modifier 'l/r'
+            if (param.modifier == 'c'
+                && param_string.find (param.command) == std::string::npos)
+              {
+                param.modifier = 'r';
+                param.command = 'c';
+              }
+
             // Insert data into parameter
             param.first_parameter_length = 0;
             pos = param_string.find (param.command);
@@ -1553,10 +1552,9 @@ public:
                 int first = param.first_parameter_length;
                 int total = param.parameter_length;
 
-                for (std::list<symbol_info>::const_iterator p = lst.begin ();
-                     p != lst.end (); p++)
+                for (const auto& syminfo : lst)
                   {
-                    octave_value val = p->varval;
+                    octave_value val = syminfo.varval;
                     std::string dims_str = get_dims_str (val);
                     int first1 = dims_str.find ('x');
                     int total1 = dims_str.length ();
@@ -1590,8 +1588,9 @@ public:
             // What happens if whos_line_format contains negative numbers
             // at param_length positions?
             param.balance = (b < 0 ? 0 : param.balance);
-            param.first_parameter_length = (b < 0 ? 0 :
-                                            param.first_parameter_length);
+            param.first_parameter_length = (b < 0
+                                            ? 0
+                                            : param.first_parameter_length);
             param.parameter_length = (a < 0
                                       ? 0
                                       : (param.parameter_length
@@ -1630,10 +1629,13 @@ private:
 };
 
 static octave_value
-do_who (int argc, const string_vector& argv, bool return_list,
-        bool verbose = false, std::string msg = "")
+do_who (octave::interpreter& interp, int argc, const string_vector& argv,
+        bool return_list, bool verbose = false, std::string msg = "")
 {
   octave_value retval;
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+  octave::call_stack& cs = interp.get_call_stack ();
 
   std::string my_name = argv[0];
 
@@ -1652,7 +1654,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
           // implement this option there so that the variables are never
           // stored at all.
           if (i == argc - 1)
-            error ("whos: -file argument must be followed by a filename");
+            error ("%s: -file argument must be followed by a filename",
+                   my_name.c_str ());
 
           std::string nm = argv[i + 1];
 
@@ -1660,22 +1663,18 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
           // Set up temporary scope.
 
-          symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
-          frame.add_fcn (symbol_table::erase_scope, tmp_scope);
+          octave::symbol_scope tmp_scope;
 
-          symbol_table::set_scope (tmp_scope);
+          symtab.set_scope (tmp_scope);
 
-          octave_call_stack::push (tmp_scope, 0);
-          frame.add_fcn (octave_call_stack::pop);
+          cs.push (tmp_scope, 0);
+          frame.add_method (cs, &octave::call_stack::pop);
 
-          frame.add_fcn (symbol_table::clear_variables);
+          octave::feval ("load", octave_value (nm), 0);
 
-          feval ("load", octave_value (nm), 0);
+          std::string newmsg = "Variables in the file " + nm + ":\n\n";
 
-          std::string newmsg = std::string ("Variables in the file ")
-                               + nm + ":\n\n";
-
-          retval = do_who (i, argv, return_list, verbose, newmsg);
+          retval = do_who (interp, i, argv, return_list, verbose, newmsg);
 
           return retval;
         }
@@ -1707,25 +1706,29 @@ do_who (int argc, const string_vector& argv, bool return_list,
   symbol_info_list symbol_stats;
   std::list<std::string> symbol_names;
 
+  octave::symbol_scope scope = symtab.current_scope ();
+
+  octave::symbol_record::context_id context = scope.current_context ();
+
   for (int j = 0; j < npats; j++)
     {
       std::string pat = pats[j];
 
       if (have_regexp)
         {
-          std::list<symbol_table::symbol_record> tmp = global_only
-            ? symbol_table::regexp_global_variables (pat)
-            : symbol_table::regexp_variables (pat);
+          std::list<octave::symbol_record> tmp
+            = (global_only
+               ? symtab.regexp_global_variables (pat)
+               : symtab.regexp_variables (pat));
 
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = tmp.begin (); p != tmp.end (); p++)
+          for (const auto& symrec : tmp)
             {
-              if (p->is_variable ())
+              if (symrec.is_variable (context))
                 {
                   if (verbose)
-                    symbol_stats.append (*p);
+                    symbol_stats.append (symrec, context);
                   else
-                    symbol_names.push_back (p->name ());
+                    symbol_names.push_back (symrec.name ());
                 }
             }
         }
@@ -1746,38 +1749,38 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
                   std::string base_name = pat.substr (0, pos);
 
-                  if (symbol_table::is_variable (base_name))
+                  if (scope && scope.is_variable (base_name))
                     {
-                      symbol_table::symbol_record sr
-                        = symbol_table::find_symbol (base_name);
+                      octave::symbol_record sr
+                        = symtab.find_symbol (base_name);
 
                       if (! global_only || sr.is_global ())
                         {
                           int parse_status;
 
                           octave_value expr_val
-                            = eval_string (pat, true, parse_status);
+                            = octave::eval_string (pat, true, parse_status);
 
-                          symbol_stats.append (sr, pat, expr_val);
+                          symbol_stats.append (sr, context, pat, expr_val);
                         }
                     }
                 }
             }
           else
             {
-              std::list<symbol_table::symbol_record> tmp = global_only
-                ? symbol_table::glob_global_variables (pat)
-                : symbol_table::glob_variables (pat);
+              std::list<octave::symbol_record> tmp
+                = (global_only
+                   ? symtab.glob_global_variables (pat)
+                   : symtab.glob_variables (pat));
 
-              for (std::list<symbol_table::symbol_record>::const_iterator
-                   p = tmp.begin (); p != tmp.end (); p++)
+              for (const auto& symrec : tmp)
                 {
-                  if (p->is_variable ())
+                  if (symrec.is_variable (context))
                     {
                       if (verbose)
-                        symbol_stats.append (*p);
+                        symbol_stats.append (symrec, context);
                       else
-                        symbol_names.push_back (p->name ());
+                        symbol_names.push_back (symrec.name ());
                     }
                 }
             }
@@ -1789,7 +1792,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
       if (verbose)
         {
           std::string caller_function_name;
-          octave_function *caller = octave_call_stack::caller ();
+          octave_function *caller = cs.caller ();
           if (caller)
             caller_function_name = caller->name ();
 
@@ -1823,8 +1826,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
   return retval;
 }
 
-DEFUN (who, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (who, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} who
 @deftypefnx {} {} who pattern @dots{}
 @deftypefnx {} {} who option pattern @dots{}
@@ -1862,11 +1865,11 @@ matching the given patterns.
 
   string_vector argv = args.make_argv ("who");
 
-  return do_who (argc, argv, nargout == 1);
+  return do_who (interp, argc, argv, nargout == 1);
 }
 
-DEFUN (whos, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (whos, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} whos
 @deftypefnx {} {} whos pattern @dots{}
 @deftypefnx {} {} whos option pattern @dots{}
@@ -1933,90 +1936,11 @@ complex, nesting, persistent.
 
   string_vector argv = args.make_argv ("whos");
 
-  return do_who (argc, argv, nargout == 1, true);
+  return do_who (interp, argc, argv, nargout == 1, true);
 }
 
-// Defining variables.
-
-void
-bind_ans (const octave_value& val, bool print)
-{
-  static std::string ans = "ans";
-
-  if (val.is_defined ())
-    {
-      if (val.is_cs_list ())
-        {
-          octave_value_list lst = val.list_value ();
-
-          for (octave_idx_type i = 0; i < lst.length (); i++)
-            bind_ans (lst(i), print);
-        }
-      else
-        {
-          symbol_table::force_assign (ans, val);
-
-          if (print)
-            val.print_with_name (octave_stdout, ans);
-        }
-    }
-}
-
-void
-bind_internal_variable (const std::string& fname, const octave_value& val)
-{
-  octave_value_list args;
-
-  args(0) = val;
-
-  feval (fname, args, 0);
-}
-
-void
-mlock (void)
-{
-  octave_function *fcn = octave_call_stack::current ();
-
-  if (! fcn)
-    error ("mlock: invalid use outside a function");
-
-  fcn->lock ();
-}
-
-void
-munlock (const std::string& nm)
-{
-  octave_value val = symbol_table::find_function (nm);
-
-  if (val.is_defined ())
-    {
-      octave_function *fcn = val.function_value ();
-
-      if (fcn)
-        fcn->unlock ();
-    }
-}
-
-bool
-mislocked (const std::string& nm)
-{
-  bool retval = false;
-
-  octave_value val = symbol_table::find_function (nm);
-
-  if (val.is_defined ())
-    {
-      octave_function *fcn = val.function_value ();
-
-      if (fcn)
-        retval = fcn->islocked ();
-    }
-
-  return retval;
-}
-
-DEFUN (mlock, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (mlock, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} mlock ()
 Lock the current function into memory so that it can't be cleared.
 @seealso{munlock, mislocked, persistent}
@@ -2025,7 +1949,9 @@ Lock the current function into memory so that it can't be cleared.
   if (args.length () != 0)
     print_usage ();
 
-  octave_function *fcn = octave_call_stack::caller ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_function *fcn = cs.caller ();
 
   if (! fcn)
     error ("mlock: invalid use outside a function");
@@ -2035,8 +1961,8 @@ Lock the current function into memory so that it can't be cleared.
   return ovl ();
 }
 
-DEFUN (munlock, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (munlock, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} munlock ()
 @deftypefnx {} {} munlock (@var{fcn})
 Unlock the named function @var{fcn}.
@@ -2054,11 +1980,13 @@ If no function is named then unlock the current function.
     {
       std::string name = args(0).xstring_value ("munlock: FCN must be a string");
 
-      munlock (name);
+      interp.munlock (name);
     }
   else
     {
-      octave_function *fcn = octave_call_stack::caller ();
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      octave_function *fcn = cs.caller ();
 
       if (! fcn)
         error ("munlock: invalid use outside a function");
@@ -2069,8 +1997,8 @@ If no function is named then unlock the current function.
   return ovl ();
 }
 
-DEFUN (mislocked, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (mislocked, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} mislocked ()
 @deftypefnx {} {} mislocked (@var{fcn})
 Return true if the named function @var{fcn} is locked.
@@ -2090,11 +2018,13 @@ If no function is named then return true if the current function is locked.
     {
       std::string name = args(0).xstring_value ("mislocked: FCN must be a string");
 
-      retval = mislocked (name);
+      retval = interp.mislocked (name);
     }
   else
     {
-      octave_function *fcn = octave_call_stack::caller ();
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      octave_function *fcn = cs.caller ();
 
       if (! fcn)
         error ("mislocked: invalid use outside a function");
@@ -2150,16 +2080,17 @@ maybe_warn_exclusive (bool exclusive)
 }
 
 static void
-do_clear_functions (const string_vector& argv, int argc, int idx,
+do_clear_functions (octave::symbol_table& symtab,
+                    const string_vector& argv, int argc, int idx,
                     bool exclusive = false)
 {
   if (idx == argc)
-    symbol_table::clear_functions ();
+    symtab.clear_functions ();
   else
     {
       if (exclusive)
         {
-          string_vector fcns = symbol_table::user_function_names ();
+          string_vector fcns = symtab.user_function_names ();
 
           int fcount = fcns.numel ();
 
@@ -2168,65 +2099,90 @@ do_clear_functions (const string_vector& argv, int argc, int idx,
               std::string nm = fcns[i];
 
               if (! name_matches_any_pattern (nm, argv, argc, idx))
-                symbol_table::clear_function (nm);
+                symtab.clear_function (nm);
             }
         }
       else
         {
           while (idx < argc)
-            symbol_table::clear_function_pattern (argv[idx++]);
+            symtab.clear_function_pattern (argv[idx++]);
         }
     }
 }
 
 static void
-do_clear_globals (const string_vector& argv, int argc, int idx,
+do_clear_globals (octave::symbol_table& symtab,
+                  const string_vector& argv, int argc, int idx,
                   bool exclusive = false)
 {
+  octave::symbol_scope scope = symtab.current_scope ();
+
+  if (! scope)
+    return;
+
   if (idx == argc)
     {
-      string_vector gvars = symbol_table::global_variable_names ();
+      string_vector gvars = symtab.global_variable_names ();
 
       int gcount = gvars.numel ();
 
       for (int i = 0; i < gcount; i++)
-        symbol_table::clear_global (gvars[i]);
+        {
+          std::string name = gvars[i];
+
+          scope.clear_variable (name);
+          symtab.clear_global (name);
+        }
     }
   else
     {
       if (exclusive)
         {
-          string_vector gvars = symbol_table::global_variable_names ();
+          string_vector gvars = symtab.global_variable_names ();
 
           int gcount = gvars.numel ();
 
           for (int i = 0; i < gcount; i++)
             {
-              std::string nm = gvars[i];
+              std::string name = gvars[i];
 
-              if (! name_matches_any_pattern (nm, argv, argc, idx))
-                symbol_table::clear_global (nm);
+              if (! name_matches_any_pattern (name, argv, argc, idx))
+                {
+                  scope.clear_variable (name);
+                  symtab.clear_global (name);
+                }
             }
         }
       else
         {
           while (idx < argc)
-            symbol_table::clear_global_pattern (argv[idx++]);
+            {
+              std::string pattern = argv[idx++];
+
+              scope.clear_variable_pattern (pattern);
+              symtab.clear_global_pattern (pattern);
+            }
         }
     }
 }
 
 static void
-do_clear_variables (const string_vector& argv, int argc, int idx,
+do_clear_variables (octave::symbol_table& symtab,
+                    const string_vector& argv, int argc, int idx,
                     bool exclusive = false, bool have_regexp = false)
 {
+  octave::symbol_scope scope = symtab.current_scope ();
+
+  if (! scope)
+    return;
+
   if (idx == argc)
-    symbol_table::clear_variables ();
+    scope.clear_variables ();
   else
     {
       if (exclusive)
         {
-          string_vector lvars = symbol_table::variable_names ();
+          string_vector lvars = scope.variable_names ();
 
           int lcount = lvars.numel ();
 
@@ -2235,27 +2191,33 @@ do_clear_variables (const string_vector& argv, int argc, int idx,
               std::string nm = lvars[i];
 
               if (! name_matches_any_pattern (nm, argv, argc, idx, have_regexp))
-                symbol_table::clear_variable (nm);
+                scope.clear_variable (nm);
             }
         }
       else
         {
           if (have_regexp)
             while (idx < argc)
-              symbol_table::clear_variable_regexp (argv[idx++]);
+              scope.clear_variable_regexp (argv[idx++]);
           else
             while (idx < argc)
-              symbol_table::clear_variable_pattern (argv[idx++]);
+              scope.clear_variable_pattern (argv[idx++]);
         }
     }
 }
 
 static void
-do_clear_symbols (const string_vector& argv, int argc, int idx,
+do_clear_symbols (octave::symbol_table& symtab,
+                  const string_vector& argv, int argc, int idx,
                   bool exclusive = false)
 {
   if (idx == argc)
-    symbol_table::clear_variables ();
+    {
+      octave::symbol_scope scope = symtab.current_scope ();
+
+      if (scope)
+        scope.clear_variables ();
+    }
   else
     {
       if (exclusive)
@@ -2265,54 +2227,60 @@ do_clear_symbols (const string_vector& argv, int argc, int idx,
           // shadowed by local variables?  It seems that would be a
           // bit harder to do.
 
-          do_clear_variables (argv, argc, idx, exclusive);
-          do_clear_functions (argv, argc, idx, exclusive);
+          do_clear_variables (symtab, argv, argc, idx, exclusive);
+          do_clear_functions (symtab, argv, argc, idx, exclusive);
         }
       else
         {
           while (idx < argc)
-            symbol_table::clear_symbol_pattern (argv[idx++]);
+            symtab.clear_symbol_pattern (argv[idx++]);
         }
     }
 }
 
 static void
-do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
+do_matlab_compatible_clear (octave::symbol_table& symtab,
+                            const string_vector& argv, int argc, int idx)
 {
   // This is supposed to be mostly Matlab compatible.
+
+  octave::symbol_scope scope = symtab.current_scope ();
+
+  if (! scope)
+    return;
 
   for (; idx < argc; idx++)
     {
       if (argv[idx] == "all"
-          && ! symbol_table::is_local_variable ("all"))
+          && ! scope.is_local_variable ("all"))
         {
-          symbol_table::clear_all ();
+          symtab.clear_all ();
         }
       else if (argv[idx] == "functions"
-               && ! symbol_table::is_local_variable ("functions"))
+               && ! scope.is_local_variable ("functions"))
         {
-          do_clear_functions (argv, argc, ++idx);
+          do_clear_functions (symtab, argv, argc, ++idx);
         }
       else if (argv[idx] == "global"
-               && ! symbol_table::is_local_variable ("global"))
+               && ! scope.is_local_variable ("global"))
         {
-          do_clear_globals (argv, argc, ++idx);
+          do_clear_globals (symtab, argv, argc, ++idx);
         }
       else if (argv[idx] == "variables"
-               && ! symbol_table::is_local_variable ("variables"))
+               && ! scope.is_local_variable ("variables"))
         {
-          symbol_table::clear_variables ();
+          scope.clear_variables ();
         }
       else if (argv[idx] == "classes"
-               && ! symbol_table::is_local_variable ("classes"))
+               && ! scope.is_local_variable ("classes"))
         {
-          symbol_table::clear_objects ();
+          scope.clear_objects ();
           octave_class::clear_exemplar_map ();
-          symbol_table::clear_all ();
+          symtab.clear_all ();
         }
       else
         {
-          symbol_table::clear_symbol_pattern (argv[idx]);
+          symtab.clear_symbol_pattern (argv[idx]);
         }
     }
 }
@@ -2325,8 +2293,8 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
     }                                           \
   while (0)
 
-DEFUN (clear, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (clear, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} clear [options] pattern @dots{}
 Delete the names matching the given patterns from the symbol table.
 
@@ -2399,14 +2367,16 @@ without the dash as well.
 @seealso{who, whos, exist}
 @end deftypefn */)
 {
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("clear");
 
   if (argc == 1)
     {
-      do_clear_globals (argv, argc, true);
-      do_clear_variables (argv, argc, true);
+      do_clear_globals (symtab, argv, argc, true);
+      do_clear_variables (symtab, argv, argc, true);
 
       octave_link::clear_workspace ();
     }
@@ -2422,6 +2392,8 @@ without the dash as well.
       bool exclusive = false;
       bool have_regexp = false;
       bool have_dash_option = false;
+
+      octave::symbol_scope scope = symtab.current_scope ();
 
       while (++idx < argc)
         {
@@ -2479,7 +2451,7 @@ without the dash as well.
       if (idx <= argc)
         {
           if (! have_dash_option)
-            do_matlab_compatible_clear (argv, argc, idx);
+            do_matlab_compatible_clear (symtab, argv, argc, idx);
           else
             {
               if (clear_all)
@@ -2489,33 +2461,34 @@ without the dash as well.
                   if (++idx < argc)
                     warning ("clear: ignoring extra arguments after -all");
 
-                  symbol_table::clear_all ();
+                  symtab.clear_all ();
                 }
               else if (have_regexp)
                 {
-                  do_clear_variables (argv, argc, idx, exclusive, true);
+                  do_clear_variables (symtab, argv, argc, idx, exclusive, true);
                 }
               else if (clear_functions)
                 {
-                  do_clear_functions (argv, argc, idx, exclusive);
+                  do_clear_functions (symtab, argv, argc, idx, exclusive);
                 }
               else if (clear_globals)
                 {
-                  do_clear_globals (argv, argc, idx, exclusive);
+                  do_clear_globals (symtab, argv, argc, idx, exclusive);
                 }
               else if (clear_variables)
                 {
-                  do_clear_variables (argv, argc, idx, exclusive);
+                  do_clear_variables (symtab, argv, argc, idx, exclusive);
                 }
               else if (clear_objects)
                 {
-                  symbol_table::clear_objects ();
+                  if (scope)
+                    scope.clear_objects ();
                   octave_class::clear_exemplar_map ();
-                  symbol_table::clear_all ();
+                  symtab.clear_all ();
                 }
               else
                 {
-                  do_clear_symbols (argv, argc, idx, exclusive);
+                  do_clear_symbols (symtab, argv, argc, idx, exclusive);
                 }
             }
 
@@ -2622,12 +2595,16 @@ The original variable value is restored when exiting the function.
   return SET_INTERNAL_VARIABLE (missing_function_hook);
 }
 
-void maybe_missing_function_hook (const std::string& name)
+void
+maybe_missing_function_hook (const std::string& name)
 {
   // Don't do this if we're handling errors.
   if (buffer_error_messages == 0 && ! Vmissing_function_hook.empty ())
     {
-      octave_value val = symbol_table::find_function (Vmissing_function_hook);
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("maybe_missing_function_hook");
+
+      octave_value val = symtab.find_function (Vmissing_function_hook);
 
       if (val.is_defined ())
         {
@@ -2640,13 +2617,13 @@ void maybe_missing_function_hook (const std::string& name)
           Vmissing_function_hook.clear ();
 
           // Call.
-          feval (func_name, octave_value (name));
+          octave::feval (func_name, octave_value (name));
         }
     }
 }
 
-DEFUN (__varval__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__varval__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __varval__ (@var{name})
 Return the value of the variable @var{name} directly from the symbol table.
 @end deftypefn */)
@@ -2656,7 +2633,9 @@ Return the value of the variable @var{name} directly from the symbol table.
 
   std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
 
-  return symbol_table::varval (args(0).string_value ());
+  octave::symbol_scope scope = interp.get_current_scope ();
+
+  return scope ? scope.varval (args(0).string_value ()) : octave_value ();
 }
 
 static std::string Vmissing_component_hook;
@@ -2690,4 +2669,125 @@ should return an error message to be displayed.
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);
+}
+
+// The following functions are deprecated.
+
+void
+mlock (void)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("mlock");
+
+  interp.mlock ();
+}
+
+void
+munlock (const std::string& nm)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("mlock");
+
+  return interp.munlock (nm);
+}
+
+bool
+mislocked (const std::string& nm)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("mlock");
+
+  return interp.mislocked (nm);
+}
+
+void
+bind_ans (const octave_value& val, bool print)
+{
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("bind_ans");
+
+  tw.bind_ans (val, print);
+}
+
+void
+clear_mex_functions (void)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_mex_functions");
+
+  symtab.clear_mex_functions ();
+}
+
+void
+clear_function (const std::string& nm)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_function");
+
+  symtab.clear_function (nm);
+}
+
+void
+clear_variable (const std::string& nm)
+{
+  octave::symbol_scope scope
+    = octave::__get_current_scope__ ("clear_variable");
+
+  if (scope)
+    scope.clear_variable (nm);
+}
+
+void
+clear_symbol (const std::string& nm)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_symbol");
+
+  symtab.clear_symbol (nm);
+}
+
+octave_value
+lookup_function_handle (const std::string& nm)
+{
+  octave::symbol_scope scope
+    = octave::__get_current_scope__ ("lookup_function_handle");
+
+  octave_value val = scope ? scope.varval (nm) : octave_value ();
+
+  return val.is_function_handle () ? val : octave_value ();
+}
+
+octave_value
+get_global_value (const std::string& nm, bool silent)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_global_value");
+
+  octave_value val = symtab.global_varval (nm);
+
+  if (val.is_undefined () && ! silent)
+    error ("get_global_value: undefined symbol '%s'", nm.c_str ());
+
+  return val;
+}
+
+void
+set_global_value (const std::string& nm, const octave_value& val)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_global_value");
+
+  symtab.global_assign (nm, val);
+}
+
+octave_value
+get_top_level_value (const std::string& nm, bool silent)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_top_level_value");
+
+  octave_value val = symtab.top_level_varval (nm);
+
+  if (val.is_undefined () && ! silent)
+    error ("get_top_level_value: undefined symbol '%s'", nm.c_str ());
+
+  return val;
+}
+
+void
+set_top_level_value (const std::string& nm, const octave_value& val)
+{
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_top_level_value");
+
+  symtab.top_level_assign (nm, val);
 }

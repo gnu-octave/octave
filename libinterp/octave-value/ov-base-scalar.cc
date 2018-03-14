@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -181,11 +181,28 @@ octave_base_scalar<ST>::short_disp (std::ostream& os) const
   std::ostringstream buf;
   octave_print_internal (buf, scalar);
   std::string tmp = buf.str ();
-  size_t pos = tmp.find_first_not_of (" ");
+  size_t pos = tmp.find_first_not_of (' ');
   if (pos != std::string::npos)
     os << tmp.substr (pos);
   else if (! tmp.empty ())
     os << tmp[0];
+}
+
+template <typename ST>
+float_display_format
+octave_base_scalar<ST>::get_edit_display_format (void) const
+{
+  return make_format (scalar);
+}
+
+template <typename ST>
+std::string
+octave_base_scalar<ST>::edit_display (const float_display_format& fmt,
+                                      octave_idx_type, octave_idx_type) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, fmt, scalar);
+  return buf.str ();
 }
 
 template <typename ST>

@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -105,7 +105,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::popen2' instead")
 inline pid_t
 octave_popen2 (const std::string& cmd, const string_vector& args,
                bool sync_mode, int *filedes)
@@ -113,7 +113,7 @@ octave_popen2 (const std::string& cmd, const string_vector& args,
   return octave::sys::popen2 (cmd, args, sync_mode, filedes);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::popen2' instead")
 inline pid_t
 popen2 (const std::string& cmd, const string_vector& args,
         bool sync_mode, int *filedes, std::string& msg)
@@ -121,7 +121,7 @@ popen2 (const std::string& cmd, const string_vector& args,
   return octave::sys::popen2 (cmd, args, sync_mode, filedes, msg);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave::sys::popen2' instead")
 inline pid_t
 popen2 (const std::string& cmd, const string_vector& args,
         bool sync_mode, int *filedes, std::string& msg,

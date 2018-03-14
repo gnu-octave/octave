@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,56 +24,46 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
 #include <sstream>
 
 #include "DASPK.h"
+#include "dMatrix.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-math.h"
 #include "quit.h"
 
-typedef octave_idx_type (*daspk_fcn_ptr) (const double&, const double*,
-                                          const double*, const double&,
-                                          double*, octave_idx_type&,
-                                          double*, octave_idx_type*);
+typedef F77_INT (*daspk_fcn_ptr) (const double&, const double*, const double*,
+                                  const double&, double*, F77_INT&, double*,
+                                  F77_INT*);
 
-typedef octave_idx_type (*daspk_jac_ptr) (const double&, const double*,
-                                          const double*, double*,
-                                          const double&, double*,
-                                          octave_idx_type*);
+typedef F77_INT (*daspk_jac_ptr) (const double&, const double*, const double*,
+                                  double*, const double&, double*, F77_INT*);
 
-typedef octave_idx_type (*daspk_psol_ptr) (const octave_idx_type&,
-                                           const double&, const double*,
-                                           const double*, const double*,
-                                           const double&, const double*,
-                                           double*, octave_idx_type*,
-                                           double*, const double&,
-                                           octave_idx_type&, double*,
-                                           octave_idx_type*);
+typedef F77_INT (*daspk_psol_ptr) (const F77_INT&, const double&,
+                                   const double*, const double*,
+                                   const double*, const double&,
+                                   const double*, double*, F77_INT*,
+                                   double*, const double&, F77_INT&,
+                                   double*, F77_INT*);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const F77_INT&,
-                             F77_DBLE&, F77_DBLE*, F77_DBLE*, F77_DBLE&,
-                             const F77_INT*, const F77_DBLE*,
-                             const F77_DBLE*, F77_INT&,
-                             F77_DBLE*, const F77_INT&,
-                             F77_INT*, const F77_INT&,
-                             const F77_DBLE*, const F77_INT*,
+  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const F77_INT&, F77_DBLE&,
+                             F77_DBLE*, F77_DBLE*, F77_DBLE&, const F77_INT*,
+                             const F77_DBLE*, const F77_DBLE*, F77_INT&,
+                             F77_DBLE*, const F77_INT&, F77_INT*,
+                             const F77_INT&, const F77_DBLE*, const F77_INT*,
                              daspk_jac_ptr, daspk_psol_ptr);
 }
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;
-static octave_idx_type nn;
+static F77_INT nn;
 
-static octave_idx_type
+static F77_INT
 ddaspk_f (const double& time, const double *state, const double *deriv,
-          const double&, double *delta, octave_idx_type& ires, double *,
-          octave_idx_type *)
+          const double&, double *delta, F77_INT& ires, double *, F77_INT *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -81,21 +71,25 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
   ColumnVector tmp_state (nn);
   ColumnVector tmp_delta (nn);
 
-  for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT i = 0; i < nn; i++)
     {
       tmp_deriv.elem (i) = deriv[i];
       tmp_state.elem (i) = state[i];
     }
 
-  tmp_delta = user_fun (tmp_state, tmp_deriv, time, ires);
+  octave_idx_type tmp_ires = ires;
+
+  tmp_delta = user_fun (tmp_state, tmp_deriv, time, tmp_ires);
+
+  ires = octave::to_f77_int (tmp_ires);
 
   if (ires >= 0)
     {
-      if (tmp_delta.is_empty ())
+      if (tmp_delta.isempty ())
         ires = -2;
       else
         {
-          for (octave_idx_type i = 0; i < nn; i++)
+          for (F77_INT i = 0; i < nn; i++)
             delta[i] = tmp_delta.elem (i);
         }
     }
@@ -108,24 +102,24 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 //NEQ, T, Y, YPRIME, SAVR, WK, CJ, WGHT,
 //C                          WP, IWP, B, EPLIN, IER, RPAR, IPAR)
 
-static octave_idx_type
-ddaspk_psol (const octave_idx_type&, const double&, const double *,
+static F77_INT
+ddaspk_psol (const F77_INT&, const double&, const double *,
              const double *, const double *, const double&,
-             const double *, double *, octave_idx_type *, double *,
-             const double&, octave_idx_type&, double *, octave_idx_type*)
+             const double *, double *, F77_INT *, double *,
+             const double&, F77_INT&, double *, F77_INT*)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  abort ();
+  (*current_liboctave_error_handler) ("daspk: PSOL is not implemented");
 
   END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }
 
-static octave_idx_type
+static F77_INT
 ddaspk_j (const double& time, const double *state, const double *deriv,
-          double *pd, const double& cj, double *, octave_idx_type *)
+          double *pd, const double& cj, double *, F77_INT *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -134,7 +128,7 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
-  for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT i = 0; i < nn; i++)
     {
       tmp_deriv.elem (i) = deriv[i];
       tmp_state.elem (i) = state[i];
@@ -142,8 +136,8 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
 
   Matrix tmp_pd = user_jac (tmp_state, tmp_deriv, time, cj);
 
-  for (octave_idx_type j = 0; j < nn; j++)
-    for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT j = 0; j < nn; j++)
+    for (F77_INT i = 0; i < nn; i++)
       pd[nn * j + i] = tmp_pd.elem (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -154,8 +148,7 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
 ColumnVector
 DASPK::do_integrate (double tout)
 {
-  // FIXME: should handle all this option stuff just once
-  // for each new problem.
+  // FIXME: should handle all this option stuff just once for each new problem.
 
   ColumnVector retval;
 
@@ -167,10 +160,10 @@ DASPK::do_integrate (double tout)
 
       info.resize (dim_vector (20, 1));
 
-      for (octave_idx_type i = 0; i < 20; i++)
+      for (F77_INT i = 0; i < 20; i++)
         info(i) = 0;
 
-      octave_idx_type n = size ();
+      F77_INT n = octave::to_f77_int (size ());
 
       nn = n;
 
@@ -215,7 +208,7 @@ DASPK::do_integrate (double tout)
           return retval;
         }
 
-      info(4) = user_jac ? 1 : 0;
+      info(4) = (user_jac ? 1 : 0);
 
       DAEFunc::reset = false;
 
@@ -241,8 +234,8 @@ DASPK::do_integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.numel ();
-      octave_idx_type rel_tol_len = rel_tol.numel ();
+      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -254,7 +247,6 @@ DASPK::do_integrate (double tout)
         }
       else
         {
-
           // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: inconsistent sizes for tolerance arrays");
@@ -287,7 +279,7 @@ DASPK::do_integrate (double tout)
           if (maxord > 0 && maxord < 6)
             {
               info(8) = 1;
-              iwork(2) = maxord;
+              iwork(2) = octave::to_f77_int (maxord);
             }
           else
             {
@@ -306,11 +298,13 @@ DASPK::do_integrate (double tout)
           {
             Array<octave_idx_type> ict = inequality_constraint_types ();
 
-            if (ict.numel () == n)
+            F77_INT ict_nel = octave::to_f77_int (ict.numel ());
+
+            if (ict_nel == n)
               {
-                for (octave_idx_type i = 0; i < n; i++)
+                for (F77_INT i = 0; i < n; i++)
                   {
-                    octave_idx_type val = ict(i);
+                    F77_INT val = octave::to_f77_int (ict(i));
                     if (val < -2 || val > 2)
                       {
                         // FIXME: Should this be a warning?
@@ -331,11 +325,11 @@ DASPK::do_integrate (double tout)
                 return retval;
               }
           }
-        // Fall through...
+          OCTAVE_FALLTHROUGH;
 
         case 0:
         case 2:
-          info(9) = eiq;
+          info(9) = octave::to_f77_int (eiq);
           break;
 
         default:
@@ -354,18 +348,21 @@ DASPK::do_integrate (double tout)
 
               Array<octave_idx_type> av = algebraic_variables ();
 
-              if (av.numel () == n)
+              F77_INT av_nel = octave::to_f77_int (av.numel ());
+
+              if (av_nel == n)
                 {
-                  octave_idx_type lid;
+                  F77_INT lid;
                   if (eiq == 0 || eiq == 2)
                     lid = 40;
                   else if (eiq == 1 || eiq == 3)
                     lid = 40 + n;
                   else
-                    abort ();
+                    (*current_liboctave_error_handler)
+                      ("daspk: invalid value for eiq: %d", eiq);
 
-                  for (octave_idx_type i = 0; i < n; i++)
-                    iwork(lid+i) = av(i) ? -1 : 1;
+                  for (F77_INT i = 0; i < n; i++)
+                    iwork(lid+i) = (av(i) ? -1 : 1);
                 }
               else
                 {
@@ -385,7 +382,7 @@ DASPK::do_integrate (double tout)
               return retval;
             }
 
-          info(10) = ccic;
+          info(10) = octave::to_f77_int (ccic);
         }
 
       if (eavfet)
@@ -396,18 +393,21 @@ DASPK::do_integrate (double tout)
 
           Array<octave_idx_type> av = algebraic_variables ();
 
-          if (av.numel () == n)
+          F77_INT av_nel = octave::to_f77_int (av.numel ());
+
+          if (av_nel == n)
             {
-              octave_idx_type lid;
+              F77_INT lid;
               if (eiq == 0 || eiq == 2)
                 lid = 40;
               else if (eiq == 1 || eiq == 3)
                 lid = 40 + n;
               else
-                abort ();
+                (*current_liboctave_error_handler)
+                  ("daspk: invalid value for eiq: %d", eiq);
 
-              for (octave_idx_type i = 0; i < n; i++)
-                iwork(lid+i) = av(i) ? -1 : 1;
+              for (F77_INT i = 0; i < n; i++)
+                iwork(lid+i) = (av(i) ? -1 : 1);
             }
         }
 
@@ -417,10 +417,10 @@ DASPK::do_integrate (double tout)
 
           if (ich.numel () == 6)
             {
-              iwork(31) = octave::math::nint_big (ich(0));
-              iwork(32) = octave::math::nint_big (ich(1));
-              iwork(33) = octave::math::nint_big (ich(2));
-              iwork(34) = octave::math::nint_big (ich(3));
+              iwork(31) = octave::to_f77_int (octave::math::nint_big (ich(0)));
+              iwork(32) = octave::to_f77_int (octave::math::nint_big (ich(1)));
+              iwork(33) = octave::to_f77_int (octave::math::nint_big (ich(2)));
+              iwork(34) = octave::to_f77_int (octave::math::nint_big (ich(3)));
 
               rwork(13) = ich(4);
               rwork(14) = ich(5);
@@ -443,7 +443,7 @@ DASPK::do_integrate (double tout)
         case 0:
         case 1:
         case 2:
-          info(17) = pici;
+          info(17) = octave::to_f77_int (pici);
           break;
 
         default:
@@ -463,21 +463,25 @@ DASPK::do_integrate (double tout)
   double *px = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
 
-  octave_idx_type *pinfo = info.fortran_vec ();
+  F77_INT *pinfo = info.fortran_vec ();
 
   double *prel_tol = rel_tol.fortran_vec ();
   double *pabs_tol = abs_tol.fortran_vec ();
 
   double *prwork = rwork.fortran_vec ();
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.fortran_vec ();
 
-  double *dummy = 0;
-  octave_idx_type *idummy = 0;
+  double *dummy = nullptr;
+  F77_INT *idummy = nullptr;
+
+  F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddaspk, DDASPK, (ddaspk_f, nn, t, px, pxdot, tout, pinfo,
-                             prel_tol, pabs_tol, istate, prwork, lrw,
+                             prel_tol, pabs_tol, tmp_istate, prwork, lrw,
                              piwork, liw, dummy, idummy, ddaspk_j,
                              ddaspk_psol));
+
+  istate = tmp_istate;
 
   switch (istate)
     {
@@ -549,14 +553,14 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           retval.elem (0, i) = x.elem (i);
           xdot_out.elem (0, i) = xdot.elem (i);
@@ -569,7 +573,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out)
           if (integration_error)
             return retval;
 
-          for (octave_idx_type i = 0; i < n; i++)
+          for (F77_INT i = 0; i < n; i++)
             {
               retval.elem (j, i) = x_next.elem (i);
               xdot_out.elem (j, i) = xdot.elem (i);
@@ -594,14 +598,14 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
       retval.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           retval.elem (0, i) = x.elem (i);
           xdot_out.elem (0, i) = xdot.elem (i);
@@ -668,7 +672,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 
               if (save_output)
                 {
-                  for (octave_idx_type i = 0; i < n; i++)
+                  for (F77_INT i = 0; i < n; i++)
                     {
                       retval.elem (i_out-1, i) = x_next.elem (i);
                       xdot_out.elem (i_out-1, i) = xdot.elem (i);
@@ -719,8 +723,7 @@ DASPK::error_message (void) const
       break;
 
     case -1:
-      retval = std::string ("a large amount of work has been expended (t =")
-               + t_curr + ")";
+      retval = "a large amount of work has been expended (t =" + t_curr + ')';
       break;
 
     case -2:
@@ -728,39 +731,37 @@ DASPK::error_message (void) const
       break;
 
     case -3:
-      retval = std::string ("error weight became zero during problem. (t = ")
-               + t_curr
-               + "; solution component i vanished, and atol or atol(i) == 0)";
+      retval = "error weight became zero during problem. (t = " + t_curr +
+               "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -6:
-      retval = std::string ("repeated error test failures on the last attempted step (t = ")
-               + t_curr + ")";
+      retval = "repeated error test failures on the last attempted step (t = "
+               + t_curr + ')';
       break;
 
     case -7:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + ")";
+      retval = "the corrector could not converge (t = " + t_curr + ')';
       break;
 
     case -8:
-      retval = std::string ("the matrix of partial derivatives is singular (t = ")
-               + t_curr + ")";
+      retval = "the matrix of partial derivatives is singular (t = " + t_curr +
+               ')';
       break;
 
     case -9:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + "; repeated test failures)";
+      retval = "the corrector could not converge (t = " + t_curr +
+               "; repeated test failures)";
       break;
 
     case -10:
-      retval = std::string ("corrector could not converge because IRES was -1 (t = ")
-               + t_curr + ")";
+      retval = "corrector could not converge because IRES was -1 (t = "
+               + t_curr + ')';
       break;
 
     case -11:
-      retval = std::string ("return requested in user-supplied function (t = ")
-               + t_curr + ")";
+      retval = "return requested in user-supplied function (t = " + t_curr +
+               ')';
       break;
 
     case -12:
@@ -768,13 +769,13 @@ DASPK::error_message (void) const
       break;
 
     case -13:
-      retval = std::string ("unrecoverable error encountered inside user's PSOL function (t = ")
-               + t_curr + ")";
+      retval = "unrecoverable error encountered inside user's PSOL function (t = "
+               + t_curr + ')';
       break;
 
     case -14:
-      retval = std::string ("the Krylov linear system solver failed to converge (t = ")
-               + t_curr + ")";
+      retval = "the Krylov linear system solver failed to converge (t = "
+               + t_curr + ')';
       break;
 
     case -33:

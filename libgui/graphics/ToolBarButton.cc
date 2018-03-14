@@ -4,19 +4,19 @@ Copyright (C) 2011-2017 Michael Goffioul
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -34,8 +34,8 @@ namespace QtHandles
 {
 
   template <typename T>
-  ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction* action)
-    : Object (go, action), m_separator (0)
+  ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction *action)
+    : Object (go, action), m_separator (nullptr)
   {
     typename T::properties& tp = properties<T> ();
 
@@ -51,7 +51,7 @@ namespace QtHandles
       }
     action->setEnabled (tp.is_enable ());
 
-    QWidget* w = qobject_cast<QWidget*> (action->parent ());
+    QWidget *w = qobject_cast<QWidget *> (action->parent ());
 
     w->insertAction (w->actions ().back (), action);
     if (m_separator)
@@ -67,7 +67,7 @@ namespace QtHandles
   ToolBarButton<T>::update (int pId)
   {
     typename T::properties& tp = properties<T> ();
-    QAction* action = qWidget<QAction> ();
+    QAction *action = qWidget<QAction> ();
 
     switch (pId)
       {
@@ -98,7 +98,7 @@ namespace QtHandles
                 m_separator->setSeparator (true);
                 m_separator->setVisible (tp.is_visible ());
 
-                QWidget* w = qobject_cast<QWidget*> (action->parent ());
+                QWidget *w = qobject_cast<QWidget *> (action->parent ());
 
                 w->insertAction (action, m_separator);
               }
@@ -107,7 +107,7 @@ namespace QtHandles
           {
             if (m_separator)
               delete m_separator;
-            m_separator = 0;
+            m_separator = nullptr;
           }
         break;
 

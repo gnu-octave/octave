@@ -6,19 +6,19 @@ Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "PermMatrix.h"
 #include "dSparse.h"
 #include "lo-error.h"
+#include "lo-mappers.h"
 #include "oct-locbuf.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
@@ -150,10 +151,11 @@ namespace octave
     umfpack_get_lunz<double>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
-      octave_idx_type ignore1, ignore2, ignore3;
+      suitesparse_integer ignore1, ignore2, ignore3;
 
-      return UMFPACK_DNAME (get_lunz) (lnz, unz, &ignore1, &ignore2,
-                                       &ignore3, Numeric);
+      return UMFPACK_DNAME (get_lunz) (to_suitesparse_intptr (lnz),
+                                       to_suitesparse_intptr (unz),
+                                       &ignore1, &ignore2, &ignore3, Numeric);
     }
 
     template <>
@@ -164,8 +166,14 @@ namespace octave
      octave_idx_type *p, octave_idx_type *q, double *Dx,
      octave_idx_type *do_recip, double *Rs, void *Numeric)
     {
-      return UMFPACK_DNAME (get_numeric) (Lp, Lj, Lx, Up, Ui, Ux, p, q, Dx,
-                                          do_recip, Rs, Numeric);
+      return UMFPACK_DNAME (get_numeric) (to_suitesparse_intptr (Lp),
+                                          to_suitesparse_intptr (Lj),
+                                          Lx, to_suitesparse_intptr (Up),
+                                          to_suitesparse_intptr (Ui), Ux,
+                                          to_suitesparse_intptr (p),
+                                          to_suitesparse_intptr (q), Dx,
+                                          to_suitesparse_intptr (do_recip),
+                                          Rs, Numeric);
     }
 
     template <>
@@ -175,8 +183,9 @@ namespace octave
      const double *Ax, void *Symbolic, void **Numeric,
      const double *Control, double *Info)
     {
-      return UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic, Numeric, Control,
-                                      Info);
+      return UMFPACK_DNAME (numeric) (to_suitesparse_intptr (Ap),
+                                      to_suitesparse_intptr (Ai),
+                                      Ax, Symbolic, Numeric, Control, Info);
     }
 
     template <>
@@ -187,7 +196,10 @@ namespace octave
      const octave_idx_type *Qinit, void **Symbolic,
      const double *Control, double *Info)
     {
-      return UMFPACK_DNAME (qsymbolic) (n_row, n_col, Ap, Ai, Ax, Qinit,
+      return UMFPACK_DNAME (qsymbolic) (n_row, n_col,
+                                        to_suitesparse_intptr (Ap),
+                                        to_suitesparse_intptr (Ai), Ax,
+                                        to_suitesparse_intptr (Qinit),
                                         Symbolic, Control, Info);
     }
 
@@ -212,7 +224,9 @@ namespace octave
      const octave_idx_type *Ai, const double *Ax, octave_idx_type col_form,
      const double *Control)
     {
-      UMFPACK_DNAME (report_matrix) (n_row, n_col, Ap, Ai, Ax,
+      UMFPACK_DNAME (report_matrix) (n_row, n_col,
+                                     to_suitesparse_intptr (Ap),
+                                     to_suitesparse_intptr (Ai), Ax,
                                      col_form, Control);
     }
 
@@ -228,7 +242,7 @@ namespace octave
     umfpack_report_perm<double>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
-      UMFPACK_DNAME (report_perm) (np, Perm, Control);
+      UMFPACK_DNAME (report_perm) (np, to_suitesparse_intptr (Perm), Control);
     }
 
     template <>
@@ -273,10 +287,11 @@ namespace octave
     umfpack_get_lunz<Complex>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
-      octave_idx_type ignore1, ignore2, ignore3;
+      suitesparse_integer ignore1, ignore2, ignore3;
 
-      return UMFPACK_ZNAME (get_lunz) (lnz, unz, &ignore1, &ignore2,
-                                       &ignore3, Numeric);
+      return UMFPACK_ZNAME (get_lunz) (to_suitesparse_intptr (lnz),
+                                       to_suitesparse_intptr (unz),
+                                       &ignore1, &ignore2, &ignore3, Numeric);
     }
 
     template <>
@@ -287,13 +302,17 @@ namespace octave
      octave_idx_type *p, octave_idx_type *q, double *Dz,
      octave_idx_type *do_recip, double *Rs, void *Numeric)
     {
-      return UMFPACK_ZNAME (get_numeric) (Lp, Lj,
+      return UMFPACK_ZNAME (get_numeric) (to_suitesparse_intptr (Lp),
+                                          to_suitesparse_intptr (Lj),
                                           reinterpret_cast<double *> (Lz),
-                                          0, Up, Ui,
+                                          nullptr, to_suitesparse_intptr (Up),
+                                          to_suitesparse_intptr (Ui),
                                           reinterpret_cast<double *> (Uz),
-                                          0, p, q,
+                                          nullptr, to_suitesparse_intptr (p),
+                                          to_suitesparse_intptr (q),
                                           reinterpret_cast<double *> (Dz),
-                                          0, do_recip, Rs, Numeric);
+                                          nullptr, to_suitesparse_intptr (do_recip),
+                                          Rs, Numeric);
     }
 
     template <>
@@ -303,9 +322,10 @@ namespace octave
      const Complex *Az, void *Symbolic, void **Numeric,
      const double *Control, double *Info)
     {
-      return UMFPACK_ZNAME (numeric) (Ap, Ai,
+      return UMFPACK_ZNAME (numeric) (to_suitesparse_intptr (Ap),
+                                      to_suitesparse_intptr (Ai),
                                       reinterpret_cast<const double *> (Az),
-                                      0, Symbolic, Numeric, Control, Info);
+                                      nullptr, Symbolic, Numeric, Control, Info);
     }
 
     template <>
@@ -316,9 +336,12 @@ namespace octave
      const Complex *Az, const octave_idx_type *Qinit,
      void **Symbolic, const double *Control, double *Info)
     {
-      return UMFPACK_ZNAME (qsymbolic) (n_row, n_col, Ap, Ai,
+      return UMFPACK_ZNAME (qsymbolic) (n_row, n_col,
+                                        to_suitesparse_intptr (Ap),
+                                        to_suitesparse_intptr (Ai),
                                         reinterpret_cast<const double *> (Az),
-                                        0, Qinit, Symbolic, Control, Info);
+                                        nullptr, to_suitesparse_intptr (Qinit),
+                                        Symbolic, Control, Info);
     }
 
     template <>
@@ -342,9 +365,11 @@ namespace octave
      const octave_idx_type *Ap, const octave_idx_type *Ai,
      const Complex *Az, octave_idx_type col_form, const double *Control)
     {
-      UMFPACK_ZNAME (report_matrix) (n_row, n_col, Ap, Ai,
+      UMFPACK_ZNAME (report_matrix) (n_row, n_col,
+                                     to_suitesparse_intptr (Ap),
+                                     to_suitesparse_intptr (Ai),
                                      reinterpret_cast<const double *> (Az),
-                                     0, col_form, Control);
+                                     nullptr, col_form, Control);
     }
 
     template <>
@@ -359,7 +384,7 @@ namespace octave
     umfpack_report_perm<Complex>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
-      UMFPACK_ZNAME (report_perm) (np, Perm, Control);
+      UMFPACK_ZNAME (report_perm) (np, to_suitesparse_intptr (Perm), Control);
     }
 
     template <>
@@ -393,33 +418,33 @@ namespace octave
       umfpack_defaults<lu_elt_type> (control);
 
       double tmp = octave_sparse_params::get_key ("spumoni");
-      if (! octave::math::isnan (tmp))
+      if (! math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
       if (piv_thres.numel () == 2)
         {
           tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
           tmp = (piv_thres (1) > 1. ? 1. : piv_thres (1));
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
       else
         {
           tmp = octave_sparse_params::get_key ("piv_tol");
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
           tmp = octave_sparse_params::get_key ("sym_tol");
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
 
       // Set whether we are allowed to modify Q or not
       tmp = octave_sparse_params::get_key ("autoamd");
-      if (! octave::math::isnan (tmp))
+      if (! math::isnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
 
       // Turn-off UMFPACK scaling for LU
@@ -441,7 +466,7 @@ namespace octave
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
-      int status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, 0,
+      int status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, nullptr,
                                                    &Symbolic, control, info);
 
       if (status < 0)
@@ -534,7 +559,7 @@ namespace octave
                   octave_idx_type do_recip;
                   status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
                                                              Up, Uj, Ux,
-                                                             p, q, 0,
+                                                             p, q, nullptr,
                                                              &do_recip, Rx,
                                                              Numeric);
 
@@ -611,26 +636,26 @@ namespace octave
       umfpack_defaults<lu_elt_type> (control);
 
       double tmp = octave_sparse_params::get_key ("spumoni");
-      if (! octave::math::isnan (tmp))
+      if (! math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
       if (piv_thres.numel () == 2)
         {
           tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
           tmp = (piv_thres (1) > 1. ? 1. : piv_thres (1));
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
       else
         {
           tmp = octave_sparse_params::get_key ("piv_tol");
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
           tmp = octave_sparse_params::get_key ("sym_tol");
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
 
@@ -643,7 +668,7 @@ namespace octave
       else
         {
           tmp = octave_sparse_params::get_key ("autoamd");
-          if (! octave::math::isnan (tmp))
+          if (! math::isnan (tmp))
             Control (UMFPACK_FIXQ) = tmp;
         }
 
@@ -772,7 +797,7 @@ namespace octave
                   octave_idx_type do_recip;
                   status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
                                                              Up, Uj, Ux,
-                                                             p, q, 0,
+                                                             p, q, nullptr,
                                                              &do_recip,
                                                              Rx, Numeric);
 

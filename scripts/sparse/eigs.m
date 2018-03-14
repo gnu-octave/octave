@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{d} =} eigs (@var{A})
@@ -124,8 +124,8 @@
 ## @item p
 ## The number of Lanzcos basis vectors to use.  More vectors will result in
 ## faster convergence, but a greater use of memory.  The optimal value of
-## @code{p} is problem dependent and should be in the range @var{k} to @var{n}.
-## The default value is @code{2 * @var{k}}.
+## @code{p} is problem dependent and should be in the range @code{@var{k} + 1}
+## to @var{n}.  The default value is @code{2 * @var{k}}.
 ##
 ## @item v0
 ## The starting vector for the algorithm.  An initial vector close to the
@@ -144,7 +144,7 @@
 ## @item permB
 ## The permutation vector of the Cholesky@tie{}factorization of @var{B} if
 ## @code{cholB} is true.  It is obtained by @code{[R, ~, permB] =
-## chol (@var{B}, @qcode{"vector"})}. The default is @code{1:@var{n}}.
+## chol (@var{B}, @qcode{"vector"})}.  The default is @code{1:@var{n}}.
 ##
 ## @end table
 ##
@@ -287,53 +287,53 @@ function out = select (args, k, sigma, real_valued, symmetric)
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "descend");
         else
-          error ('eigs: sigma = "la" requires real symmetric problem');
+          error ('eigs: SIGMA = "la" requires real symmetric problem');
         endif
 
       case "sa"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('eigs: sigma = "sa" requires real symmetric problem');
+          error ('eigs: SIGMA = "sa" requires real symmetric problem');
         endif
 
       case "be"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('eigs: sigma = "be" requires real symmetric problem');
+          error ('eigs: SIGMA = "be" requires real symmetric problem');
         endif
 
       case "lr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "descend");
         else
-          error ('eigs: sigma = "lr" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "lr" requires complex or unsymmetric problem');
         endif
 
       case "sr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('eigs: sigma = "sr" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "sr" requires complex or unsymmetric problem');
         endif
 
       case "li"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "descend");
         else
-          error ('eigs: sigma = "li" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "li" requires complex or unsymmetric problem');
         endif
 
       case "si"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "ascend");
         else
-          error ('eigs: sigma = "si" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "si" requires complex or unsymmetric problem');
         endif
 
       otherwise
-        error ("eigs: unrecognized value for sigma: %s", sigma);
+        error ("eigs: unrecognized value for SIGMA: %s", sigma);
     endswitch
   else
     ## numeric sigma, find k closest values
@@ -1241,6 +1241,12 @@ endfunction
 %! for i=1:k
 %!   assert (max (abs ((A - d1(i)*eye (n))*v1(:,i))), 0, 1e-11);
 %! endfor
+%!testif HAVE_ARPACK
+%! [v1,d1] = eigs (A, k, "li");
+%! d1 = diag (d1);
+%! for i=1:k
+%!   assert (max (abs ((A - d1(i)*eye (n))*v1(:,i))), 0, 1e-11);
+%! endfor
 
 %!test
 %! A = 2 * diag (ones (10, 1)) - diag (ones (9, 1), 1) - diag (ones (9, 1), -1);
@@ -1248,6 +1254,66 @@ endfunction
 %! reseig = eig (A, B);
 %! [~, idx] = sort (abs (reseig), "ascend");
 %! assert (eigs (A, B, 10, 0), reseig (idx));
+%!testif HAVE_ARPACK
+%! A = eye (9);
+%! A(1, 1) = 0;
+%! A(1, 9) = 1;
+%! [V, L] = eigs (A, 4, -1);
+%! assert (!any (isnan (diag (L))));
+%! assert (any (abs (diag (L)) <= 2 * eps));
+%!testif HAVE_ARPACK
+%! A = diag (ones (9, 1), 1);
+%! A(10,:) = [-1, zeros(1, 8), -1];
+%! opts.v0 = (1:10)';
+%! typ = "lr";
+%! [v, m] = eigs (A, 5, typ, opts);
+%! assert (sort (real (diag (m))), ...
+%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
+%! m = eigs (A, 5, typ, opts);
+%! assert (sort (real (m)), ...
+%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
+%! typ = "li";
+%! [v, m] = eigs (A, 5, typ, opts);
+%! assert (sort (abs (imag (diag (m)))), ...
+%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
+%! m = eigs (A, 5, typ, opts);
+%! assert (sort (abs (imag (m))), ...
+%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
+%! typ = "sr";
+%! [v, m] = eigs (A, 5, typ, opts);
+%! assert (sort (real (diag (m))), ...
+%!         [-1.12180; -1.12180; -0.69077; -0.08175; -0.08175], 1e-4);
+%! m = eigs (A, 5, typ, opts);
+%! assert (sort (real (m)), ...
+%!         [-1.12180; -1.12180; -0.69077; -0.69077; -0.08175], 1e-4);
+%! typ = "si";
+%! [v, m] = eigs (A, 5, typ, opts);
+%! assert (sort (abs (imag (diag (m)))), ...
+%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4);
+%! m = eigs (A, 5, typ, opts);
+%! assert (sort (abs (imag (m))), ...
+%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4);
+%! typ = "lm";
+%! [v, m] = eigs (A, 5, typ, opts);
+%! assert (sort (abs (diag (m))), ...
+%!         [0.96863; 0.96863;  1.02294; 1.15054; 1.15054], 1e-4);
+%! m = eigs (A, 5, typ, opts);
+%! assert (sort (abs (m)), ...
+%!         [0.96863; 1.02294; 1.02294; 1.15054; 1.15054], 1e-4);
+%! typ = "sm";
+%! [v, m] = eigs (A, 5, typ, opts);
+%! assert (sort (abs (diag (m))), ...
+%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4);
+%! m = eigs (A, 5, typ, opts);
+%! assert (sort (abs (m)), ...
+%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4);
+%!testif HAVE_ARPACK
+%! A = toeplitz (sparse ([2, 1, zeros(1,8)]));
+%! opts.v0 = (1:10)';
+%! [v, m] = eigs (A, 3, "sa", opts);
+%! assert (diag (m), [0.081014; 0.317493; 0.690279], 1e-4);
+%! m = eigs (A, 3, "sa", opts);
+%! assert (m, [0.081014; 0.317493; 0.690279], 1e-4);
 
 %!test
 %! X = [70 47 42 39 50 73 79 23;
@@ -1271,3 +1337,109 @@ endfunction
 %!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5])
 %!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1])
 %!assert (eigs (diag (1:5), 3, "be"), [1;4;5])
+%!error
+%! A = rand (10);
+%! opts.v0 = ones (8, 1);
+%! eigs (A, 4, "sm", opts);
+%!testif HAVE_ARPACK
+%! A = toeplitz ([-2, 1, zeros(1, 8)]);
+%! A = kron (A, eye (10)) + kron (eye (10), A);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 3;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 4, "lm", opts);
+%! assert (d(3:4), [NaN; NaN]);
+%!testif HAVE_ARPACK
+%! A = toeplitz ([-2, 1, zeros(1, 8)]);
+%! A = kron (A, eye (10)) + kron (eye (10), A);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 1;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 4, "sm", opts);
+%! assert (d(4), NaN);
+%!testif HAVE_ARPACK
+%! A = toeplitz ([-2, 1, zeros(1, 8)]);
+%! A = kron (A, eye (10)) + kron (eye (10), A);
+%! Afun = @(x) A * x;
+%! opts.v0 = (1:100)';
+%! opts.maxit = 3;
+%! opts.issym = true;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (Afun, 100, 4, "sm", opts);
+%! assert (d(3:4), [NaN; NaN]);
+%!testif HAVE_ARPACK
+%! A = toeplitz ([-2, 1, zeros(1, 8)]);
+%! A = kron (A, eye (10)) + kron (eye (10), A);
+%! A(1, 2) = 10;
+%! opts.v0 = (1:100)';
+%! opts.maxit = 5;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 4, "lm", opts);
+%! assert (d(3:4), [NaN; NaN]);
+%!testif HAVE_ARPACK
+%! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
+%! A = kron (A, eye (10)) + kron (eye (10), A);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 5;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 4, "lm", opts);
+%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);
+%!testif HAVE_ARPACK
+%! A = magic (100);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 1;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 10, "lm", opts);
+%! assert (d(9:10), [NaN; NaN]);
+%!testif HAVE_ARPACK
+%! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
+%! A(1, 1) = 1;
+%! A = kron (A, eye (10)) + kron (eye (10), A);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 1;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 4, "sm", opts);
+%! if (isreal (d))
+%!   assert (d(4), NaN);
+%! else
+%!   assert (d(4), NaN +1i*NaN);
+%! endif
+%!testif HAVE_ARPACK
+%! A = magic (100) / 10 + eye (100);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 10;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 10, "sm", opts);
+%! assert (d(10), NaN+1i*NaN);
+%!testif HAVE_ARPACK
+%! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
+%! A = kron (A, eye (10)) + kron (eye (10), A);
+%! Afun = @(x) A * x;
+%! opts.v0 = (1:100)';
+%! opts.maxit = 5;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (Afun, 100, 4, "lm", opts);
+%! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);
+%!testif HAVE_ARPACK
+%! A = 1i * magic (100);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 1;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 4, "lm", opts);
+%! assert (d(4), NaN+1i*NaN);
+%!testif HAVE_ARPACK
+%! A = 1i * magic (100) + eye (100);
+%! opts.v0 = (1:100)';
+%! opts.maxit = 7;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (A, 10, "sm", opts);
+%! assert (d(9:10), [NaN+1i*NaN; NaN+1i*NaN]);
+%!testif HAVE_ARPACK
+%! A = 1i * magic (100);
+%! Afun = @(x) A * x;
+%! opts.v0 = (1:100)';
+%! opts.maxit = 1;
+%! opts.isreal = false;
+%! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
+%! d = eigs (Afun, 100, 4, "lm", opts);
+%! assert (d(4), NaN+1i*NaN);

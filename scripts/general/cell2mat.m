@@ -3,19 +3,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{m} =} cell2mat (@var{c})
@@ -34,10 +34,8 @@ function m = cell2mat (c)
     print_usage ();
   endif
 
-  nb = numel (c);
-
-  if (nb == 0)
-    m = [];
+  if (isempty (c))
+    m = zeros (size (c));
   else
     if (! iscell (c))
       error ("cell2mat: C must be a cell array");
@@ -62,7 +60,6 @@ function m = cell2mat (c)
       ## Special case of all scalars
       m = reshape (cat (1, c{:}), sz);
     else
-
       ## The goal is to minimize the total number of cat() calls.
       ## The dimensions can be concatenated along in arbitrary order.
       ## The numbers of concatenations are:
@@ -96,6 +93,7 @@ endfunction
 
 %!assert (cell2mat ({}), [])
 %!assert (cell2mat ([]), [])
+%!assert (cell2mat (cell (2,0)), zeros (2,0))
 %!test
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! D = C; D(:,:,2) = C;

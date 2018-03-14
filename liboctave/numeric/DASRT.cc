@@ -4,19 +4,19 @@ Copyright (C) 2002-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -24,43 +24,32 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
 #include <sstream>
 
 #include "DASRT.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-math.h"
 #include "quit.h"
 
-typedef octave_idx_type (*dasrt_fcn_ptr) (const double&, const double*,
-                                          const double*, double*,
-                                          octave_idx_type&, double*,
-                                          octave_idx_type*);
+typedef F77_INT (*dasrt_fcn_ptr) (const double&, const double*, const double*,
+                                  double*, F77_INT&, double*, F77_INT*);
 
-typedef octave_idx_type (*dasrt_jac_ptr) (const double&, const double*,
-                                          const double*, double*,
-                                          const double&, double*,
-                                          octave_idx_type*);
+typedef F77_INT (*dasrt_jac_ptr) (const double&, const double*, const double*,
+                                  double*, const double&, double*, F77_INT*);
 
-typedef octave_idx_type (*dasrt_constr_ptr) (const octave_idx_type&,
-                                             const double&, const double*,
-                                             const octave_idx_type&,
-                                             double*, double*,
-                                             octave_idx_type*);
+typedef F77_INT (*dasrt_constr_ptr) (const F77_INT&, const double&,
+                                     const double*, const F77_INT&,
+                                     double*, double*, F77_INT*);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddasrt, DDASRT) (dasrt_fcn_ptr, const F77_INT&,
-                             F77_DBLE&, F77_DBLE*, F77_DBLE*, const F77_DBLE&,
-                             F77_INT*, const F77_DBLE*,
-                             const F77_DBLE*, F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT*,
-                             const F77_INT&, F77_DBLE*,
-                             F77_INT*, dasrt_jac_ptr,
-                             dasrt_constr_ptr, const F77_INT&,
+  F77_FUNC (ddasrt, DDASRT) (dasrt_fcn_ptr, const F77_INT&, F77_DBLE&,
+                             F77_DBLE*, F77_DBLE*, const F77_DBLE&, F77_INT*,
+                             const F77_DBLE*, const F77_DBLE*, F77_INT&,
+                             F77_DBLE*, const F77_INT&, F77_INT*,
+                             const F77_INT&, F77_DBLE*, F77_INT*,
+                             dasrt_jac_ptr, dasrt_constr_ptr, const F77_INT&,
                              F77_INT*);
 }
 
@@ -68,30 +57,34 @@ static DAEFunc::DAERHSFunc user_fsub;
 static DAEFunc::DAEJacFunc user_jsub;
 static DAERTFunc::DAERTConstrFunc user_csub;
 
-static octave_idx_type nn;
+static F77_INT nn;
 
-static octave_idx_type
+static F77_INT
 ddasrt_f (const double& t, const double *state, const double *deriv,
-          double *delta, octave_idx_type& ires, double *, octave_idx_type *)
+          double *delta, F77_INT& ires, double *, F77_INT *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
-  for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT i = 0; i < nn; i++)
     {
       tmp_state(i) = state[i];
       tmp_deriv(i) = deriv[i];
     }
 
-  ColumnVector tmp_fval = (*user_fsub) (tmp_state, tmp_deriv, t, ires);
+  octave_idx_type tmp_ires = ires;
 
-  if (tmp_fval.is_empty ())
+  ColumnVector tmp_fval = (*user_fsub) (tmp_state, tmp_deriv, t, tmp_ires);
+
+  ires = octave::to_f77_int (tmp_ires);
+
+  if (tmp_fval.isempty ())
     ires = -2;
   else
     {
-      for (octave_idx_type i = 0; i < nn; i++)
+      for (F77_INT i = 0; i < nn; i++)
         delta[i] = tmp_fval(i);
     }
 
@@ -100,9 +93,9 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
   return 0;
 }
 
-octave_idx_type
+F77_INT
 ddasrt_j (const double& time, const double *state, const double *deriv,
-          double *pd, const double& cj, double *, octave_idx_type *)
+          double *pd, const double& cj, double *, F77_INT *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -111,7 +104,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
-  for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT i = 0; i < nn; i++)
     {
       tmp_deriv.elem (i) = deriv[i];
       tmp_state.elem (i) = state[i];
@@ -119,8 +112,8 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 
   Matrix tmp_pd = (*user_jsub) (tmp_state, tmp_deriv, time, cj);
 
-  for (octave_idx_type j = 0; j < nn; j++)
-    for (octave_idx_type i = 0; i < nn; i++)
+  for (F77_INT j = 0; j < nn; j++)
+    for (F77_INT i = 0; i < nn; i++)
       pd[nn * j + i] = tmp_pd.elem (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -128,21 +121,21 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
   return 0;
 }
 
-static octave_idx_type
-ddasrt_g (const octave_idx_type& neq, const double& t, const double *state,
-          const octave_idx_type& ng, double *gout, double *, octave_idx_type *)
+static F77_INT
+ddasrt_g (const F77_INT& neq, const double& t, const double *state,
+          const F77_INT& ng, double *gout, double *, F77_INT *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  octave_idx_type n = neq;
+  F77_INT n = neq;
 
   ColumnVector tmp_state (n);
-  for (octave_idx_type i = 0; i < n; i++)
+  for (F77_INT i = 0; i < n; i++)
     tmp_state(i) = state[i];
 
   ColumnVector tmp_fval = (*user_csub) (tmp_state, t);
 
-  for (octave_idx_type i = 0; i < ng; i++)
+  for (F77_INT i = 0; i < ng; i++)
     gout[i] = tmp_fval(i);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -166,10 +159,10 @@ DASRT::integrate (double tout)
 
       info.resize (dim_vector (15, 1));
 
-      for (octave_idx_type i = 0; i < 15; i++)
+      for (F77_INT i = 0; i < 15; i++)
         info(i) = 0;
 
-      octave_idx_type n = size ();
+      F77_INT n = octave::to_f77_int (size ());
 
       nn = n;
 
@@ -180,12 +173,12 @@ DASRT::integrate (double tout)
       if (user_csub)
         {
           ColumnVector tmp = (*user_csub) (x, t);
-          ng = tmp.numel ();
+          ng = octave::to_f77_int (tmp.numel ());
         }
       else
         ng = 0;
 
-      octave_idx_type maxord = maximum_order ();
+      F77_INT maxord = octave::to_f77_int (maximum_order ());
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
@@ -249,7 +242,7 @@ DASRT::integrate (double tout)
           return;
         }
 
-      info(4) = user_jsub ? 1 : 0;
+      info(4) = (user_jsub ? 1 : 0);
 
       DAEFunc::reset = false;
 
@@ -277,10 +270,11 @@ DASRT::integrate (double tout)
       else
         info(7) = 0;
 
-      if (step_limit () >= 0)
+      F77_INT sl = octave::to_f77_int (step_limit ());
+      if (sl >= 0)
         {
           info(11) = 1;
-          iwork(20) = step_limit ();
+          iwork(20) = sl;
         }
       else
         info(11) = 0;
@@ -288,8 +282,8 @@ DASRT::integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.numel ();
-      octave_idx_type rel_tol_len = rel_tol.numel ();
+      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -314,23 +308,27 @@ DASRT::integrate (double tout)
   double *px = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
 
-  octave_idx_type *pinfo = info.fortran_vec ();
+  F77_INT *pinfo = info.fortran_vec ();
 
   double *prel_tol = rel_tol.fortran_vec ();
   double *pabs_tol = abs_tol.fortran_vec ();
 
   double *prwork = rwork.fortran_vec ();
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.fortran_vec ();
 
-  octave_idx_type *pjroot = jroot.fortran_vec ();
+  F77_INT *pjroot = jroot.fortran_vec ();
 
-  double *dummy = 0;
-  octave_idx_type *idummy = 0;
+  double *dummy = nullptr;
+  F77_INT *idummy = nullptr;
+
+  F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddasrt, DDASRT, (ddasrt_f, nn, t, px, pxdot, tout, pinfo,
-                             prel_tol, pabs_tol, istate, prwork, lrw,
+                             prel_tol, pabs_tol, tmp_istate, prwork, lrw,
                              piwork, liw, dummy, idummy, ddasrt_j,
                              ddasrt_g, ng, pjroot));
+
+  istate = tmp_istate;
 
   switch (istate)
     {
@@ -392,14 +390,14 @@ DASRT::integrate (const ColumnVector& tout)
   ColumnVector t_out = tout;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
       x_out.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           x_out(0,i) = x(i);
           xdot_out(0,i) = xdot(i);
@@ -420,7 +418,7 @@ DASRT::integrate (const ColumnVector& tout)
           else
             t_out(j) = tout(j);
 
-          for (octave_idx_type i = 0; i < n; i++)
+          for (F77_INT i = 0; i < n; i++)
             {
               x_out(j,i) = x(i);
               xdot_out(j,i) = xdot(i);
@@ -451,7 +449,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
   ColumnVector t_outs = tout;
 
   octave_idx_type n_out = tout.numel ();
-  octave_idx_type n = size ();
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
@@ -474,14 +472,14 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
               if (i_crit < n_crit)
                 next_crit = tcrit(i_crit);
 
-              octave_idx_type save_output;
+              bool save_output = false;
               double t_out;
 
               if (next_crit == next_out)
                 {
                   set_stop_time (next_crit);
                   t_out = next_out;
-                  save_output = 1;
+                  save_output = true;
                   i_out++;
                   i_crit++;
                   do_restart = true;
@@ -492,7 +490,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                     {
                       set_stop_time (next_crit);
                       t_out = next_crit;
-                      save_output = 0;
+                      save_output = false;
                       i_crit++;
                       do_restart = true;
                     }
@@ -500,7 +498,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                     {
                       clear_stop_time ();
                       t_out = next_out;
-                      save_output = 1;
+                      save_output = true;
                       i_out++;
                     }
                 }
@@ -508,7 +506,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                 {
                   set_stop_time (next_crit);
                   t_out = next_out;
-                  save_output = 1;
+                  save_output = true;
                   i_out++;
                 }
 
@@ -525,7 +523,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
               if (save_output)
                 {
-                  for (octave_idx_type i = 0; i < n; i++)
+                  for (F77_INT i = 0; i < n; i++)
                     {
                       x_out(i_out-1,i) = x(i);
                       xdot_out(i_out-1,i) = xdot(i);
@@ -588,8 +586,7 @@ DASRT::error_message (void) const
       break;
 
     case -1:
-      retval = std::string ("a large amount of work has been expended (t =")
-               + t_curr + ")";
+      retval = "a large amount of work has been expended (t =" + t_curr + ')';
       break;
 
     case -2:
@@ -597,39 +594,37 @@ DASRT::error_message (void) const
       break;
 
     case -3:
-      retval = std::string ("error weight became zero during problem. (t = ")
-               + t_curr
-               + "; solution component i vanished, and atol or atol(i) == 0)";
+      retval = "error weight became zero during problem. (t = " + t_curr +
+               "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -6:
-      retval = std::string ("repeated error test failures on the last attempted step (t = ")
-               + t_curr + ")";
+      retval = "repeated error test failures on the last attempted step (t = "
+               + t_curr + ')';
       break;
 
     case -7:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + ")";
+      retval = "the corrector could not converge (t = " + t_curr + ')';
       break;
 
     case -8:
-      retval = std::string ("the matrix of partial derivatives is singular (t = ")
-               + t_curr + ")";
+      retval = "the matrix of partial derivatives is singular (t = " + t_curr +
+               ')';
       break;
 
     case -9:
-      retval = std::string ("the corrector could not converge (t = ")
-               + t_curr + "; repeated test failures)";
+      retval = "the corrector could not converge (t = " + t_curr +
+               "; repeated test failures)";
       break;
 
     case -10:
-      retval = std::string ("corrector could not converge because IRES was -1 (t = ")
-               + t_curr + ")";
+      retval = "corrector could not converge because IRES was -1 (t = "
+               + t_curr + ')';
       break;
 
     case -11:
-      retval = std::string ("return requested in user-supplied function (t = ")
-               + t_curr + ")";
+      retval = "return requested in user-supplied function (t = " + t_curr +
+               ')';
       break;
 
     case -12:

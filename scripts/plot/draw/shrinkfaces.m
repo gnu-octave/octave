@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} shrinkfaces (@var{p}, @var{sf})
@@ -76,8 +76,7 @@ function [nf, nv] = shrinkfaces (varargin)
   colors = [];
   p = varargin{1};
 
-  if (isscalar (p) && ishandle (p) && nargin < 3
-      && strcmp (get (p, "type"), "patch"))
+  if (isscalar (p) && isgraphics (p, "patch") && nargin < 3)
     faces = get (p, "Faces");
     vertices = get (p, "Vertices");
     colors = get (p, "FaceVertexCData");
@@ -134,7 +133,7 @@ function [nf, nv] = shrinkfaces (varargin)
 
   switch (nargout)
     case 0
-      if (ishandle (p))
+      if (ishghandle (p))
         ## avoid exceptions
         set (p, "FaceVertexCData", [], "CData", []);
         set (p, "Vertices", v, "Faces", f, "FaceVertexCData", c);
@@ -160,6 +159,7 @@ endfunction
 %! patch (fv);
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
+%! title ("shrinkfaces() on triangular shapes");
 
 %!demo
 %! clf;
@@ -171,6 +171,7 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
+%! title ("shrinkfaces() on rhomboid shapes");
 
 %!demo
 %! clf;
@@ -182,7 +183,7 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
-%! title "faces which are not convex are clearly not allowed"
+%! title ("shrinkfaces() does not work on concave shapes");
 
 %!demo
 %! clf;
@@ -195,10 +196,11 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
+%! title ("shrinkfaces() on 2-D complex shapes tesselated with triangles");
 
 %!demo
 %! clf;
-%! N = 10;  % N intervals per axis
+%! N = 10;  # N intervals per axis
 %! [x, y, z] = meshgrid (linspace (-4,4,N+1));
 %! val = x.^3 + y.^3 + z.^3;
 %! fv = isosurface (x, y, z, val, 3, z, "noshare");
@@ -210,6 +212,7 @@ endfunction
 %! view (115, 30);
 %! drawnow;
 %! shrinkfaces (p, 0.6);
+%! title ("shrinkfaces() on 3-D complex shapes");
 
 %!shared faces, vertices, nfv, nfv2
 %! faces = [1 2 3];

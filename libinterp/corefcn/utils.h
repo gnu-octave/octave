@@ -4,19 +4,19 @@ Copyright (C) 1993-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -54,7 +54,7 @@ keyword_almost_match (const char * const *std, int *min_len,
                       const std::string& s, int min_toks_to_match,
                       int max_toks);
 
-OCTAVE_DEPRECATED ("use 'octave_value::is_empty' instead")
+OCTAVE_DEPRECATED (4.2, "use 'octave_value::isempty' instead")
 extern OCTINTERP_API int empty_arg (const char *name, octave_idx_type nr,
                                     octave_idx_type nc);
 
@@ -76,15 +76,15 @@ extern OCTINTERP_API std::string contents_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string fcn_file_in_path (const std::string&);
 
-OCTAVE_DEPRECATED ("use 'load_path::find_oct_file' instead")
+OCTAVE_DEPRECATED (4.2, "use 'load_path::find_oct_file' instead")
 extern OCTINTERP_API std::string oct_file_in_path (const std::string&);
 
-OCTAVE_DEPRECATED ("use 'load_path::find_mex_file' instead")
+OCTAVE_DEPRECATED (4.2, "use 'load_path::find_mex_file' instead")
 extern OCTINTERP_API std::string mex_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string do_string_escapes (const std::string& s);
 
-extern OCTINTERP_API const char *undo_string_escape (char c);
+extern OCTINTERP_API const char * undo_string_escape (char c);
 
 extern OCTINTERP_API std::string undo_string_escapes (const std::string& s);
 

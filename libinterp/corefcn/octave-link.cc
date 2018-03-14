@@ -6,19 +6,19 @@ Copyright (C) 2011-2016 John P. Swensen
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -26,15 +26,17 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "builtin-defun-decls.h"
 #include "cmd-edit.h"
 #include "defun.h"
+#include "interpreter.h"
+#include "interpreter-private.h"
+#include "octave-link.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
+#include "ovl.h"
 #include "pager.h"
-#include "singleton-cleanup.h"
-#include "interpreter.h"
-
-#include "octave-link.h"
+#include "symscope.h"
 
 static int
 octave_readline_hook (void)
@@ -47,10 +49,10 @@ octave_readline_hook (void)
   return 0;
 }
 
-octave_link *octave_link::instance = 0;
+octave_link *octave_link::instance = nullptr;
 
 octave_link::octave_link (void)
-  : event_queue_mutex (new octave_mutex ()), gui_event_queue (),
+  : event_queue_mutex (new octave::mutex ()), gui_event_queue (),
     debugging (false), link_enabled (true)
 {
   octave::command_editor::add_event_hook (octave_readline_hook);
@@ -65,10 +67,15 @@ void
 octave_link::set_workspace (void)
 {
   if (enabled ())
-    instance->do_set_workspace ((symbol_table::current_scope ()
-                                 == symbol_table::top_scope ()),
-                                instance->debugging,
-                                symbol_table::workspace_info ());
+    {
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_link::set_workspace");
+
+      octave::symbol_scope scope = symtab.current_scope ();
+
+      instance->do_set_workspace (symtab.at_top_level (),
+                                  instance->debugging, scope, true);
+    }
 }
 
 // OBJ should be an object of a class that is derived from the base
@@ -76,7 +83,7 @@ octave_link::set_workspace (void)
 // responsibility of the caller to delete obj.
 
 void
-octave_link::connect_link (octave_link* obj)
+octave_link::connect_link (octave_link *obj)
 {
   if (obj && instance)
     error ("octave_link is already linked!");
@@ -129,7 +136,7 @@ Undocumented internal function.
     {
       std::string file = args(0).xstring_value ("first argument must be filename");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::edit_file (file);
     }
@@ -137,7 +144,7 @@ Undocumented internal function.
     {
       std::string file = args(0).xstring_value ("first argument must be filename");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::prompt_new_edit_file (file);
     }
@@ -159,7 +166,7 @@ Undocumented internal function.
       std::string msg = args(1).xstring_value ("invalid arguments");
       std::string title = args(2).xstring_value ("invalid arguments");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::message_dialog (dlg, msg, title);
     }
@@ -184,7 +191,7 @@ Undocumented internal function.
       std::string btn3 = args(4).xstring_value ("invalid arguments");
       std::string btndef = args(5).xstring_value ("invalid arguments");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
                                              btndef);
@@ -219,7 +226,7 @@ Undocumented internal function.
                                           (flist.columns () > 1
                                            ? flist(i,1) : "")));
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::list<std::string> items_lst
     = octave_link::file_dialog (filter_lst, title, filename, pathname,
@@ -235,13 +242,12 @@ Undocumented internal function.
       else
         {
           int idx = 0;
-          for (std::list<std::string>::iterator it = items_lst.begin ();
-               it != items_lst.end (); it++)
+          for (auto& str : items_lst)
             {
               if (idx != 2)
-                retval(idx++) = *it;
+                retval(idx++) = str;
               else
-                retval(idx++) = atoi (it->c_str ());
+                retval(idx++) = atoi (str.c_str ());
             }
         }
     }
@@ -300,7 +306,7 @@ Undocumented internal function.
   std::string ok_string = args(6).string_value ();
   std::string cancel_string = args(7).string_value ();
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::pair<std::list<int>, int> result
     = octave_link::list_dialog (list_lst, mode, width, height,
@@ -311,11 +317,8 @@ Undocumented internal function.
   nel = items_lst.size ();
   Matrix items (dim_vector (1, nel));
   octave_idx_type i = 0;
-  for (std::list<int>::iterator it = items_lst.begin ();
-       it != items_lst.end (); it++)
-    {
-      items.xelem(i++) = *it;
-    }
+  for (const auto& int_el : items_lst)
+    items.xelem(i++) = int_el;
 
   return ovl (items, result.second);
 }
@@ -355,7 +358,7 @@ Undocumented internal function.
   for (octave_idx_type i = 0; i < nel; i++)
     defaults_lst.push_back (tmp(i));
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::list<std::string> items_lst
     = octave_link::input_dialog (prompt_lst, title, nr, nc,
@@ -364,11 +367,8 @@ Undocumented internal function.
   nel = items_lst.size ();
   Cell items (dim_vector (nel, 1));
   octave_idx_type i = 0;
-  for (std::list<std::string>::iterator it = items_lst.begin ();
-       it != items_lst.end (); it++)
-    {
-      items.xelem(i++) = *it;
-    }
+  for (const auto& str_el : items_lst)
+    items.xelem(i++) = str_el;
 
   return ovl (items);
 }
@@ -381,6 +381,43 @@ Undocumented internal function.
 {
   return ovl (octave_link::show_preferences ());
 }
+
+DEFMETHOD (openvar, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} openvar (@var{name})
+Open the variable @var{name} in the graphical Variable Editor.
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  if (! args(0).is_string ())
+    error ("openvar: NAME must be a string");
+
+  std::string name = args(0).string_value ();
+
+  if (! (Fisguirunning ())(0).is_true ())
+    warning ("openvar: GUI is not running, can't start Variable Editor");
+  else
+    {
+      octave::symbol_scope scope = interp.require_current_scope ("openvar");
+
+      octave_value val = scope.varval (name);
+
+      if (val.is_undefined ())
+        error ("openvar: '%s' is not a variable", name.c_str ());
+
+      octave_link::edit_variable (name, val);
+    }
+
+  return ovl ();
+}
+
+/*
+%!error openvar ()
+%!error openvar ("a", "b")
+%!error <NAME must be a string> openvar (1:10)
+*/
 
 DEFUN (__octave_link_show_doc__, args, ,
        doc: /* -*- texinfo -*-

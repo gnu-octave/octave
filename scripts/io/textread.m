@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{a}, @dots{}] =} textread (@var{filename})
@@ -476,7 +476,7 @@ endfunction
 #%! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
 
 ### Test endofline
-#%!test <45046>
+#%!test <*45046>
 #%! f = tempname ();
 #%! fid = fopen (f, "w");
 #%! fprintf (fid, "a\rb\rc");
@@ -490,7 +490,7 @@ endfunction
 #%! unlink (f);
 
 ### Properly process single-quoted EOL args
-#%!test <46477>
+#%!test <*46477>
 #%! f = tempname ();
 #%! fid = fopen (f, "w");
 #%! fprintf (fid, "hello, world!");

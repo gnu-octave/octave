@@ -4,19 +4,19 @@ Copyright (C) 1994-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,14 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "DET.h"
 #include "MDiagArray2.h"
-
-#include "fRowVector.h"
+#include "fCColVector.h"
 #include "fCRowVector.h"
 #include "fColVector.h"
-#include "fCColVector.h"
-#include "DET.h"
-
+#include "fRowVector.h"
 #include "mx-defs.h"
 
 class
@@ -40,6 +38,12 @@ OCTAVE_API
 FloatComplexDiagMatrix : public MDiagArray2<FloatComplex>
 {
 public:
+
+  typedef FloatComplexMatrix full_matrix_type;
+
+  typedef float real_elt_type;
+  typedef FloatComplex complex_elt_type;
+  typedef FloatComplex element_type;
 
   FloatComplexDiagMatrix (void) : MDiagArray2<FloatComplex> () { }
 

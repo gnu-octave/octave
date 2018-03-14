@@ -4,19 +4,19 @@ Copyright (C) 2005-2017 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -33,26 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include <amd/amd.h>
 #elif defined (HAVE_AMD_H)
 #  include <amd.h>
-#endif
-
-#if defined (HAVE_SUITESPARSE_UMFPACK_H)
-#  include <suitesparse/umfpack.h>
-#elif defined (HAVE_UFSPARSE_UMFPACK_H)
-#  include <ufsparse/umfpack.h>
-#elif defined (HAVE_UMFPACK_UMFPACK_H)
-#  include <umfpack/umfpack.h>
-#elif defined (HAVE_UMFPACK_H)
-#  include <umfpack.h>
-#endif
-
-#if defined (HAVE_SUITESPARSE_COLAMD_H)
-#  include <suitesparse/colamd.h>
-#elif defined (HAVE_UFSPARSE_COLAMD_H)
-#  include <ufsparse/colamd.h>
-#elif defined (HAVE_COLAMD_COLAMD_H)
-#  include <colamd/colamd.h>
-#elif defined (HAVE_COLAMD_H)
-#  include <colamd.h>
 #endif
 
 #if defined (HAVE_SUITESPARSE_CCOLAMD_H)
@@ -75,6 +55,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include <cholmod.h>
 #endif
 
+#if defined (HAVE_SUITESPARSE_COLAMD_H)
+#  include <suitesparse/colamd.h>
+#elif defined (HAVE_UFSPARSE_COLAMD_H)
+#  include <ufsparse/colamd.h>
+#elif defined (HAVE_COLAMD_COLAMD_H)
+#  include <colamd/colamd.h>
+#elif defined (HAVE_COLAMD_H)
+#  include <colamd.h>
+#endif
+
 #if defined (HAVE_SUITESPARSE_CS_H)
 #  include <suitesparse/cs.h>
 #elif defined (HAVE_UFSPARSE_CS_H)
@@ -85,15 +75,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include <cs.h>
 #endif
 
-#if (defined (HAVE_SUITESPARSE_CHOLMOD_H)       \
-     || defined (HAVE_UFSPARSE_CHOLMOD_H)       \
-     || defined (HAVE_CHOLMOD_CHOLMOD_H)        \
-     || defined (HAVE_CHOLMOD_H))
-#  if defined (OCTAVE_ENABLE_64)
-#    define CHOLMOD_NAME(name) cholmod_l_ ## name
-#  else
-#    define CHOLMOD_NAME(name) cholmod_ ## name
-#  endif
+#if defined (HAVE_SUITESPARSE_UMFPACK_H)
+#  include <suitesparse/umfpack.h>
+#elif defined (HAVE_UFSPARSE_UMFPACK_H)
+#  include <ufsparse/umfpack.h>
+#elif defined (HAVE_UMFPACK_UMFPACK_H)
+#  include <umfpack/umfpack.h>
+#elif defined (HAVE_UMFPACK_H)
+#  include <umfpack.h>
 #endif
 
 // Cope with new SuiteSparse versions
@@ -106,6 +95,44 @@ along with Octave; see the file COPYING.  If not, see
 #  else
 #    define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (f_var = f_assign)
 #    define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (f_var = CHOLMOD_NAME (f_assign))
+#  endif
+#endif
+
+// Function names depend on integer type.
+
+#if defined (HAVE_AMD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define AMD_NAME(name) amd_l ## name
+#  else
+#    define AMD_NAME(name) amd ## name
+#  endif
+#endif
+
+#if defined (HAVE_CCOLAMD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define CCOLAMD_NAME(name) ccolamd_l ## name
+#    define CSYMAMD_NAME(name) csymamd_l ## name
+#  else
+#    define CCOLAMD_NAME(name) ccolamd ## name
+#    define CSYMAMD_NAME(name) csymamd ## name
+#  endif
+#endif
+
+#if defined (HAVE_CHOLMOD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define CHOLMOD_NAME(name) cholmod_l_ ## name
+#  else
+#    define CHOLMOD_NAME(name) cholmod_ ## name
+#  endif
+#endif
+
+#if defined (HAVE_COLAMD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define COLAMD_NAME(name) colamd_l ## name
+#    define SYMAMD_NAME(name) symamd_l ## name
+#  else
+#    define COLAMD_NAME(name) colamd ## name
+#    define SYMAMD_NAME(name) symamd ## name
 #  endif
 #endif
 
@@ -129,4 +156,30 @@ along with Octave; see the file COPYING.  If not, see
 #  endif
 #endif
 
+#if (defined (HAVE_AMD) || defined (HAVE_CCOLAMD)               \
+     || defined (HAVE_CHOLMOD) || defined (HAVE_COLAMD)         \
+     || defined (HAVE_CXSPARSE) || defined (HAVE_UMFPACK))
+
+namespace octave
+{
+#  if defined (OCTAVE_ENABLE_64)
+  typedef SuiteSparse_long suitesparse_integer;
+#  else
+  typedef int suitesparse_integer;
+#  endif
+
+  extern suitesparse_integer *
+  to_suitesparse_intptr (octave_idx_type *i);
+
+  extern const suitesparse_integer *
+  to_suitesparse_intptr (const octave_idx_type *i);
+
+  extern octave_idx_type*
+  to_octave_idx_type_ptr (suitesparse_integer *i);
+
+  extern const octave_idx_type*
+  to_octave_idx_type_ptr (const suitesparse_integer *i);
+}
+
+#endif
 #endif

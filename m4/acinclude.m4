@@ -4,44 +4,45 @@ dnl Copyright (C) 1995-2017 John W. Eaton
 dnl
 dnl This file is part of Octave.
 dnl
-dnl Octave is free software; you can redistribute it and/or modify it
-dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 3 of the License, or (at
-dnl your option) any later version.
+dnl Octave is free software: you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation, either version 3 of the License, or
+dnl (at your option) any later version.
 dnl
-dnl Octave is distributed in the hope that it will be useful, but WITHOUT
-dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-dnl for more details.
+dnl Octave is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
 dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, see
-dnl <http://www.gnu.org/licenses/>.
-dnl
-dnl
-dnl Copyright (C) 2008 - 2009 Free Software Foundation, Inc.
-dnl
-dnl If needed, define the m4_ifblank and m4_ifnblank macros from autoconf 2.64
-dnl This allows us to run with earlier Autoconfs as well.
-dnl FIXME: these should go away once Autoconf 2.64 is required or ubiquitous.
-dnl
-ifdef([m4_ifblank],[],[
-m4_define([m4_ifblank],
-[m4_if(m4_translit([[$1]],  [ ][	][
-]), [], [$2], [$3])])])
-dnl
-ifdef([m4_ifnblank],[],[
-m4_define([m4_ifnblank],
-[m4_if(m4_translit([[$1]],  [ ][	][
-]), [], [$3], [$2])])])
-dnl
-dnl ----------------------------------------------------------------------
-dnl
+dnl <https://www.gnu.org/licenses/>.
 
 dnl
 dnl Alphabetical list of macros in the OCTAVE_ namespace
 dnl
 
+dnl
+dnl Figure out the hardware-vendor-os info.
+dnl
+AC_DEFUN([OCTAVE_CANONICAL_HOST], [
+  AC_CANONICAL_HOST
+  if test -z "$host"; then
+    host=unknown-unknown-unknown
+    AC_MSG_WARN([configuring Octave for unknown system type])
+  fi
+  canonical_host_type=$host
+  AC_SUBST(canonical_host_type)
+  if test -z "$host_cpu"; then
+    host_cpu=unknown
+  fi
+  if test -z "$host_vendor"; then
+    host_vendor=unknown
+  fi
+  if test -z "$host_os"; then
+    host_os=unknown
+  fi
+])
 dnl
 dnl Check if the Carbon Framework defines CGDisplayBitsPerPixel.
 dnl
@@ -118,7 +119,7 @@ AC_DEFUN([OCTAVE_CHECK_BROKEN_STL_ALGO_H], [
 
 // You should have received a copy of the GNU General Public License along
 // with this library; see the file COPYING3. If not see
-// <http://www.gnu.org/licenses/>.
+// <https://www.gnu.org/licenses/>.
 
 // 25.3.2 [lib.alg.nth.element]
 
@@ -268,139 +269,6 @@ AC_DEFUN([OCTAVE_CHECK_FFTW_THREADS], [
   LIBS="$ac_octave_save_LIBS"
 ])
 dnl
-dnl Check whether a math mapper function is available in <cmath>.
-dnl Will define HAVE_CMATH_FUNC if there is a double variant and
-dnl HAVE_CMATH_FUNCF if there is a float variant.
-dnl Currently capable of checking for functions with single
-dnl argument and returning bool/int/real.
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
-  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
-
-  AC_CACHE_CHECK([for std::$1 in <cmath>],
-    [octave_cv_func_cmath_$ac_safe],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <cmath>
-        void take_func (bool (*func) (double x));
-        void take_func (int (*func) (double x));
-        void take_func (double (*func) (double x));
-        ]], [[
-        take_func(std::$1);
-        ]])],
-      [eval "octave_cv_func_cmath_$ac_safe=yes"],
-      [eval "octave_cv_func_cmath_$ac_safe=no"])
-    AC_LANG_POP(C++)
-  ])
-  if eval "test \"`echo '$octave_cv_func_cmath_'$ac_safe`\" = yes"; then
-    AC_DEFINE(AS_TR_CPP([[HAVE_CMATH_][$1]]), 1,
-      [Define to 1 if <cmath> provides $1.])
-  fi
-
-  AC_CACHE_CHECK([for std::$1 (float variant) in <cmath>],
-    [octave_cv_func_cmath_f$ac_safe],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <cmath>
-        void take_func (bool (*func) (float x));
-        void take_func (int (*func) (float x));
-        void take_func (float (*func) (float x));
-        ]], [[
-        take_func(std::$1);
-        ]])],
-      [eval "octave_cv_func_cmath_f$ac_safe=yes"],
-      [eval "octave_cv_func_cmath_f$ac_safe=no"])
-    AC_LANG_POP(C++)
-  ])
-  if eval "test \"`echo '$octave_cv_func_cmath_f'$ac_safe`\" = yes"; then
-    AC_DEFINE(AS_TR_CPP([[HAVE_CMATH_][$1][F]]), 1,
-      [Define to 1 if <cmath> provides float variant of $1.])
-  fi
-])
-dnl
-dnl Check whether a complex-valued function is available in <complex>.
-dnl Will define HAVE_COMPLEX_STD_FUNC if the function is available in the
-dnl std namespace and is callable on both std::complex<double> and
-dnl std::complex<float>.  The return type of the function is expected to
-dnl be of the same std::complex<T> type.
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_COMPLEX], [
-  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
-
-  AC_CACHE_CHECK([for std::$1 in <complex>],
-    [octave_cv_func_complex_std_$ac_safe],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <complex>
-        ]], [[
-        std::complex<double> z = std::$1 (std::complex<double> (1.0, 1.0));
-        std::complex<float>  c = std::$1 (std::complex<float>  (1.0, 1.0));
-        ]])],
-      [eval "octave_cv_func_complex_std_$ac_safe=yes"],
-      [eval "octave_cv_func_complex_std_$ac_safe=no"])
-    AC_LANG_POP(C++)
-  ])
-  if eval "test \"`echo '$octave_cv_func_complex_std_'$ac_safe`\" = yes"; then
-    AC_DEFINE(AS_TR_CPP([[HAVE_COMPLEX_STD_][$1]]), 1,
-      [Define to 1 if <complex> provides std::$1(std::complex<T>).])
-  fi
-])
-dnl
-dnl Check whether QScintilla has version 2.6.0 or later
-dnl FIXME: This test uses a version number.  It potentially could
-dnl        be re-written to actually call the function, but is it worth it?
-dnl
-AC_DEFUN([OCTAVE_CHECK_QSCINTILLA_VERSION], [
-  AC_CACHE_CHECK([whether QScintilla has version 2.6.0 or later],
-    [octave_cv_version_2_6_0],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
-        #include <Qsci/qsciglobal.h>
-        ]], [[
-        #if QSCINTILLA_VERSION < 0x020600
-        #error Old FindFirst function found.
-        #endif
-        ]])],
-      octave_cv_version_2_6_0=yes,
-      octave_cv_version_2_6_0=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_version_2_6_0 = yes; then
-    AC_DEFINE(HAVE_QSCI_VERSION_2_6_0, 1,
-      [Define to 1 if QScintilla is of Version 2.6.0 or later.])
-  fi
-])
-dnl
-dnl Check if Fortran compiler has the intrinsic function ISNAN.
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
-  AC_CACHE_CHECK([whether $F77 has the intrinsic function ISNAN],
-    [octave_cv_func_fortran_isnan],
-    [AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE([[
-      program foo
-      implicit none
-      real x
-      double precision y
-      if (isnan(x)) then
-        print *, 'x is NaN'
-      end if
-      if (isnan(y)) then
-        print *, 'y is NaN'
-      end if
-      end program
-      ]],
-      octave_cv_func_fortran_isnan=yes, octave_cv_func_fortran_isnan=no)
-    AC_LANG_POP(Fortran 77)
-  ])
-])
-dnl
 dnl Check if function gluTessCallback is called with "(...)".
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
@@ -427,97 +295,15 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
   fi
 ])
 dnl
-dnl Check whether Qt provides QFont::Monospace
+dnl Check whether the Qt class QAbstractItemModel exists and has the
+dnl beginResetModel and endResetModel member functions.  These member
+dnl functions were introduced in Qt 4.6.
 dnl
-AC_DEFUN([OCTAVE_CHECK_QFONT_MONOSPACE], [
-  AC_CACHE_CHECK([whether Qt provides QFont::Monospace],
-    [octave_cv_decl_qfont_monospace],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QFont>
-        ]], [[
-        QFont::StyleHint hint = QFont::Monospace;
-        ]])],
-      octave_cv_decl_qfont_monospace=yes,
-      octave_cv_decl_qfont_monospace=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_decl_qfont_monospace = yes; then
-    AC_DEFINE(HAVE_QFONT_MONOSPACE, 1,
-      [Define to 1 if Qt provides QFont::Monospace.])
-  fi
-])
-dnl
-dnl Check whether Qt provides QFont::ForceIntegerMetrics
-dnl
-AC_DEFUN([OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS], [
-  AC_CACHE_CHECK([whether Qt provides QFont::ForceIntegerMetrics],
-    [octave_cv_decl_qfont_force_integer_metrics],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QFont>
-        ]], [[
-        QFont::StyleStrategy strategy = QFont::ForceIntegerMetrics;
-        ]])],
-      octave_cv_decl_qfont_force_integer_metrics=yes,
-      octave_cv_decl_qfont_force_integer_metrics=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_decl_qfont_force_integer_metrics = yes; then
-    AC_DEFINE(HAVE_QFONT_FORCE_INTEGER_METRICS, 1,
-      [Define to 1 if Qt provides QFont::ForceIntegerMetrics.])
-  fi
-])
-dnl
-dnl Check whether QScintilla SetPlaceholderText function exists.
-dnl FIXME: This test uses a version number.  It potentially could
-dnl        be re-written to actually call the function, but is it worth it?
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
-  AC_CACHE_CHECK([whether Qt has SetPlaceholderText function],
-    [octave_cv_func_setplaceholdertext],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
-        #include <qglobal.h>
-        ]], [[
-        #if QT_VERSION < 0x040700
-        #error No SetPlacholderText function available.
-        #endif
-        ]])],
-      octave_cv_func_setplaceholdertext=yes,
-      octave_cv_func_setplaceholdertext=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_func_setplaceholdertext = yes; then
-    AC_DEFINE(HAVE_SETPLACEHOLDERTEXT, 1,
-      [Define to 1 if you have the Qt SetPlaceholderText function.])
-  fi
-])
-dnl
-dnl Check whether the Qt QAbstractItemModel::beginResetModel function exists.
-dnl Also checks for QAbstractItemModel::endResetModel.  These are two of the
-dnl newest Qt functions that the Octave GUI depends on, added in Qt 4.6.
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.6 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
-  AC_CACHE_CHECK([whether Qt has the QAbstractItemModel::beginResetModel function],
+  AC_CACHE_CHECK([for QAbstractItemModel::beginResetModel in <QAbstractItemModel>],
     [octave_cv_func_qabstractitemmodel_beginresetmodel],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -554,49 +340,206 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   ])
   if test $octave_cv_func_qabstractitemmodel_beginresetmodel = yes; then
     AC_DEFINE(HAVE_QABSTRACTITEMMODEL_BEGINRESETMODEL, 1,
-      [Define to 1 if Qt has the QAbstractItemModel::beginResetModel() function.])
+      [Define to 1 if you have the `QAbstractItemModel::beginResetModel' member function.])
   fi
 ])
 dnl
-dnl Check whether the Qt QTabWidget::setMovable function exists.
-dnl This function was added in Qt 4.5.
+dnl Check whether the Qt QHeaderView class has the setSectionResizeMode
+dnl function.  This function was introduced in Qt 5.
 dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
-  AC_CACHE_CHECK([whether Qt has the QTabWidget::setMovable function],
-    [octave_cv_func_qtabwidget_setmovable],
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE], [
+  AC_CACHE_CHECK([for QHeaderView::setSectionResizeMode],
+    [octave_cv_func_qheaderview_setsectionresizemode],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     ac_octave_save_CXXFLAGS="$CXXFLAGS"
     CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QTabWidget>
-        class tab_widget : public QTabWidget
-        {
-        public:
-          tab_widget (QWidget *parent = 0) : QTabWidget (parent) { this->setMovable (true); }
-          ~tab_widget () {}
-        };
+        #include <QHeaderView>
         ]], [[
-        tab_widget tw;
+        QHeaderView header_view (Qt::Horizontal);
+        header_view.setSectionResizeMode (QHeaderView::Interactive);
         ]])],
-      octave_cv_func_qtabwidget_setmovable=yes,
-      octave_cv_func_qtabwidget_setmovable=no)
+      octave_cv_func_qheaderview_setsectionresizemode=yes,
+      octave_cv_func_qheaderview_setsectionresizemode=no)
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     CXXFLAGS="$ac_octave_save_CXXFLAGS"
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_qtabwidget_setmovable = yes; then
-    AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
-      [Define to 1 if Qt has the QTabWidget::setMovable function.])
+  if test $octave_cv_func_qheaderview_setsectionresizemode = yes; then
+    AC_DEFINE(HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE, 1,
+      [Define to 1 if you have the `QHeaderView::setSectionResizeMode' member function.])
   fi
 ])
 dnl
-dnl Check whether the QsciScintilla::findFirstInSelection function exists.
-dnl This function was added in QScintilla 2.7.
+dnl Check whether the Qt QHeaderView class has the setSectionsClickable
+dnl function.  This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE], [
+  AC_CACHE_CHECK([for QHeaderView::setSectionsClickable],
+    [octave_cv_func_qheaderview_setsectionsclickable],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHeaderView>
+        ]], [[
+        QHeaderView header_view (Qt::Horizontal);
+        header_view.setSectionsClickable (true);
+        ]])],
+      octave_cv_func_qheaderview_setsectionsclickable=yes,
+      octave_cv_func_qheaderview_setsectionsclickable=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qheaderview_setsectionsclickable = yes; then
+    AC_DEFINE(HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE, 1,
+      [Define to 1 if you have the `QHeaderView::setSectionsClickable' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt QHeaderView class has the setSectionsMovable
+dnl function.  This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE], [
+  AC_CACHE_CHECK([for QHeaderView::setSectionsMovable],
+    [octave_cv_func_qheaderview_setsectionsmovable],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHeaderView>
+        ]], [[
+        QHeaderView header_view (Qt::Horizontal);
+        header_view.setSectionsMovable (true);
+        ]])],
+      octave_cv_func_qheaderview_setsectionsmovable=yes,
+      octave_cv_func_qheaderview_setsectionsmovable=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qheaderview_setsectionsmovable = yes; then
+    AC_DEFINE(HAVE_QHEADERVIEW_SETSECTIONSMOVABLE, 1,
+      [Define to 1 if you have the `QHeaderView::setSectionsMovable' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt function qInstallMessageHandler is available.
+dnl This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QINSTALLMESSAGEHANDLER], [
+  AC_CACHE_CHECK([for qInstallMessageHandler],
+    [octave_cv_func_qinstallmessagehandler],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QtGlobal>
+        ]], [[
+        qInstallMessageHandler (nullptr);
+        ]])],
+      octave_cv_func_qinstallmessagehandler=yes,
+      octave_cv_func_qinstallmessagehandler=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qinstallmessagehandler = yes; then
+    AC_DEFINE(HAVE_QINSTALLMESSAGEHANDLER, 1,
+      [Define to 1 if you have the `qInstallMessageHandler' function.])
+  fi
+])
+dnl
+dnl Check whether the Qt class QLineEdit has the setPlaceholderText member
+dnl function.  This member function was introduced in Qt 4.7.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.7 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT], [
+  AC_CACHE_CHECK([for QLineEdit::setPlaceholderText in <QLinedEdit>],
+    [octave_cv_func_qlineedit_setplaceholdertext],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QLineEdit>
+        ]], [[
+        QLineEdit line_edit;
+        line_edit.setPlaceholderText ("placeholder text");
+        ]])],
+      octave_cv_func_qlineedit_setplaceholdertext=yes,
+      octave_cv_func_qlineedit_setplaceholdertext=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qlineedit_setplaceholdertext = yes; then
+    AC_DEFINE(HAVE_QLINEEDIT_SETPLACEHOLDERTEXT, 1,
+      [Define to 1 if you have the `QLineEdit::setPlaceholderText' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt QMouseEvent class has the localPos function.
+dnl This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS], [
+  AC_CACHE_CHECK([for QMouseEvent::localPos],
+    [octave_cv_func_qmouseevent_localpos],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QMouseEvent>
+        ]], [[
+        QMouseEvent *event;
+        event->localPos ();
+        ]])],
+      octave_cv_func_qmouseevent_localpos=yes,
+      octave_cv_func_qmouseevent_localpos=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qmouseevent_localpos = yes; then
+    AC_DEFINE(HAVE_QMOUSEEVENT_LOCALPOS, 1,
+      [Define to 1 if you have the `QMouseEvent::localPos' member function.])
+  fi
+])
+dnl
+dnl Check whether the QScintilla class QsciScintilla has the
+dnl findFirstInSelection member function.  This member function was introduced
+dnl in QScintilla 2.7.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that QScintilla 2.7
+dnl or later is in use everywhere, or when we drop support for Qt 4 (Qt 5 only
+dnl works with QScintilla 2.7.1 or later).
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
-  AC_CACHE_CHECK([whether QSci has the QsciScintilla::findFirstInSelection function],
+  AC_CACHE_CHECK([for QsciScintilla::findFirstInSelection in <Qsci/qsciscintilla.h>],
     [octave_cv_func_qsci_findfirstinselection],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -623,7 +566,111 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
   ])
   if test $octave_cv_func_qsci_findfirstinselection = yes; then
     AC_DEFINE(HAVE_QSCI_FINDSELECTION, 1,
-      [Define to 1 if Qsci has the QsciScintilla::findFirstInSelection function.])
+      [Define to 1 if you have the `QsciScintilla::findFirstInSelection' member function.])
+  fi
+])
+dnl
+dnl Check whether QObject::findChildren accepts Qt::FindChildOptions
+dnl argument.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS], [
+  AC_CACHE_CHECK([whether QObject::findChildren accepts Qt::FindChildOptions],
+    [octave_cv_func_qobject_findchildren_accepts_findchildoptions],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QList>
+        #include <QObject>
+        #include <QWidget>
+        ]], [[
+        QObject obj;
+        QList<QWidget *> widgets
+          = obj.findChildren<QWidget *> ("name", Qt::FindDirectChildrenOnly);
+        ]])],
+      octave_cv_func_qobject_findchildren_accepts_findchildoptions=yes,
+      octave_cv_func_qobject_findchildren_accepts_findchildoptions=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qobject_findchildren_accepts_findchildoptions = yes; then
+    AC_DEFINE(QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS, 1,
+      [Define to 1 if 'QObject::findChildren' accepts 'Qt::FindChildOptions' argument.])
+  fi
+])
+dnl
+dnl Check whether the Qt class QTabWidget has the setMovable member function.
+dnl This member function was introduced in Qt 4.5.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.5 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
+  AC_CACHE_CHECK([for QTabWidget::setMovable in <QTabWidget>],
+    [octave_cv_func_qtabwidget_setmovable],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QTabWidget>
+        class tab_widget : public QTabWidget
+        {
+        public:
+          tab_widget (QWidget *parent = 0) : QTabWidget (parent) { this->setMovable (true); }
+          ~tab_widget () {}
+        };
+        ]], [[
+        tab_widget tw;
+        ]])],
+      octave_cv_func_qtabwidget_setmovable=yes,
+      octave_cv_func_qtabwidget_setmovable=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qtabwidget_setmovable = yes; then
+    AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
+      [Define to 1 if you have the `QTabWidget::setMovable' member function.])
+  fi
+])
+dnl
+dnl Check whether Qt message handler function accepts QMessageLogContext
+dnl argument.  This change was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT], [
+  AC_CACHE_CHECK([whether Qt message handler accepts QMessageLogContext],
+    [octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QtGlobal>
+        static void
+        msg_handler (QtMsgType, const QMessageLogContext &, const QString &)
+        { }
+        ]], [[
+        QtMessageHandler fptr = msg_handler;
+        ]])],
+      octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext=yes,
+      octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qtmessagehandler_accepts_qmessagelogcontext = yes; then
+    AC_DEFINE(QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT, 1,
+      [Define to 1 if Qt message handler accepts 'QMessageLogContext' argument.])
   fi
 ])
 dnl
@@ -647,25 +694,30 @@ AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
 dnl
 dnl Usage:
 dnl OCTAVE_CHECK_LIB(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
-dnl                  LANG, DOC-STRING, EXTRA-CHECK, PKG-CONFIG-NAME)
+dnl                  LANG, DOC-STRING, EXTRA-CHECK, PKG-CONFIG-NAME,
+dnl                  REQUIRED)
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB], [
-  AC_ARG_WITH([$1-includedir],
-    [AS_HELP_STRING([--with-$1-includedir=DIR],
+  AC_ARG_WITH([m4_tolower($1)-includedir],
+    [AS_HELP_STRING([--with-m4_tolower($1)-includedir=DIR],
       [look for $2 include files in DIR])],
     [m4_toupper([$1])_CPPFLAGS="-I$withval"])
   AC_SUBST(m4_toupper([$1])_CPPFLAGS)
 
-  AC_ARG_WITH([$1-libdir],
-    [AS_HELP_STRING([--with-$1-libdir=DIR],
+  AC_ARG_WITH([m4_tolower($1)-libdir],
+    [AS_HELP_STRING([--with-m4_tolower($1)-libdir=DIR],
       [look for $2 libraries in DIR])],
     [m4_toupper([$1])_LDFLAGS="-L$withval"])
   AC_SUBST(m4_toupper([$1])_LDFLAGS)
 
-  AC_ARG_WITH([$1],
-    [m4_ifblank([$7],
-      [AS_HELP_STRING([--without-$1], [don't use $2 library])],
-      [AS_HELP_STRING([--without-$1], [$7])])],
+  AC_ARG_WITH([m4_tolower($1)],
+    [ifelse([$#], 10,
+       [m4_ifblank([$7],
+         [AS_HELP_STRING([--with-m4_tolower($1)=<lib>], [use $2 library <lib>])],
+         [AS_HELP_STRING([--with-m4_tolower($1)], [$7])])],
+       [m4_ifblank([$7],
+         [AS_HELP_STRING([--without-m4_tolower($1)], [don't use $2 library])],
+         [AS_HELP_STRING([--without-m4_tolower($1)], [$7])])])],
     with_$1=$withval, with_$1=yes)
 
   ac_octave_$1_pkg_check=no
@@ -673,8 +725,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   warn_$1="$3"
   case $with_$1 in
     no)
-      warn_$1="--without-$1 specified.  Functions or features that depend on $2 will be disabled."
-      m4_toupper([$1])_LIBS=
+      ifelse([$#], 10,
+        [AC_MSG_ERROR([--without-m4_tolower($1) specified but $2 is required.])],
+        [warn_$1="--without-m4_tolower($1) specified.  Functions or features that depend on $2 will be disabled."
+         m4_toupper([$1])_LIBS=])
     ;;
     yes | "")
       ac_octave_$1_pkg_check=yes
@@ -732,6 +786,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     octave_cv_lib_$1=no
   fi
 
+  ifelse([$#], 10, [
+    if test $octave_cv_lib_$1 = no; then
+      AC_MSG_ERROR([to build Octave, you must have the $2 library and header files installed])
+    fi])
   AC_SUBST(m4_toupper([$1])_LIBS)
   if test -n "$warn_$1"; then
     OCTAVE_CONFIGURE_WARNING([warn_$1])
@@ -952,10 +1010,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_2], [
     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
     AC_LANG_PUSH(Fortran 77)
     AC_RUN_IFELSE([[
-      program bug_52425 
+      program bug_52425
 c
       integer          maxn, maxnev, maxncv, ldv
-      parameter       (maxn=256, maxnev=10, maxncv=25, 
+      parameter       (maxn=256, maxnev=10, maxncv=25,
      $                 ldv=maxn )
 c
       Double precision
@@ -966,30 +1024,30 @@ c
       integer          iparam(11), ipntr(11)
 c
       character        bmat*1, which*2
-      integer          ido, n, nev, ncv, lworkl, info, ierr, j, 
+      integer          ido, n, nev, ncv, lworkl, info, ierr, j,
      &                 nx, nconv, maxitr, mode, ishfts
       logical          rvec
-      Double precision      
+      Double precision
      &                 tol, sigma
 c
       Double precision
      &                 zero
       parameter        (zero = 0.0D+0)
 c
-      Double precision           
+      Double precision
      &                 dnrm2
       external         dnrm2, daxpy
 c
       intrinsic        abs
 c
       n = 20
-      nev =  4 
-      ncv =  20 
+      nev =  4
+      ncv =  20
       bmat = 'I'
       which = 'BE'
 c
       lworkl = ncv*(ncv+8)
-      tol = zero 
+      tol = zero
       info = 1
       do j = 1,n
          resid (j) = 1.0d0
@@ -1000,28 +1058,28 @@ c
       maxitr = 300
       mode   = 1
 c
-      iparam(1) = ishfts 
-      iparam(3) = maxitr 
-      iparam(7) = mode 
+      iparam(1) = ishfts
+      iparam(3) = maxitr
+      iparam(7) = mode
 c
  10   continue
 c
-         call dsaupd ( ido, bmat, n, which, nev, tol, resid, 
+         call dsaupd ( ido, bmat, n, which, nev, tol, resid,
      &                 ncv, v, ldv, iparam, ipntr, workd, workl,
      &                 lworkl, info )
 c
          if (ido .eq. -1 .or. ido .eq. 1) then
             call av (n, workd(ipntr(1)), workd(ipntr(2)))
             go to 10
-         end if 
+         end if
 c
       if ( info .lt. 0 ) then
           stop 1
-      else 
+      else
          rvec = .false.
 c
-         call dseupd ( rvec, 'All', select, d, v, ldv, sigma, 
-     &        bmat, n, which, nev, tol, resid, ncv, v, ldv, 
+         call dseupd ( rvec, 'All', select, d, v, ldv, sigma,
+     &        bmat, n, which, nev, tol, resid, ncv, v, ldv,
      &        iparam, ipntr, workd, workl, lworkl, ierr )
 c
          if ( ierr .ne. 0) then
@@ -1037,7 +1095,7 @@ c
  20          continue
 c
 c            | Litmus test: return 1 or 0 based on returned eigenvalue
-c     
+c
              if (abs(d(1,1) - 2.0810) > 1.0d-4) then
                 stop 1
              else
@@ -1355,6 +1413,68 @@ dnl  done
   AC_SUBST(TERM_LIBS)
 ])
 dnl
+dnl Check whether the Qt class QFont has the ForceIntegerMetrics enumerated
+dnl type member.  This property was introduced in Qt 4.7.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.7 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS], [
+  AC_CACHE_CHECK([for QFont::ForceIntegerMetrics in <QFont>],
+    [octave_cv_decl_qfont_force_integer_metrics],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        ]], [[
+        QFont::StyleStrategy strategy = QFont::ForceIntegerMetrics;
+        ]])],
+      octave_cv_decl_qfont_force_integer_metrics=yes,
+      octave_cv_decl_qfont_force_integer_metrics=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qfont_force_integer_metrics = yes; then
+    AC_DEFINE(HAVE_QFONT_FORCE_INTEGER_METRICS, 1,
+      [Define to 1 if `ForceIntegerMetrics' is a member of `QFont'.])
+  fi
+])
+dnl
+dnl Check whether the Qt class QFont has the Monospace enumerated type member.
+dnl This property was introduced in Qt 4.7.
+dnl
+dnl FIXME: Delete this entirely when we can safely assume that Qt 4.7 or later
+dnl is in use everywhere, or when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE], [
+  AC_CACHE_CHECK([for QFont::Monospace in <QFont>],
+    [octave_cv_decl_qfont_monospace],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        ]], [[
+        QFont::StyleHint hint = QFont::Monospace;
+        ]])],
+      octave_cv_decl_qfont_monospace=yes,
+      octave_cv_decl_qfont_monospace=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qfont_monospace = yes; then
+    AC_DEFINE(HAVE_QFONT_MONOSPACE, 1,
+      [Define to 1 if `Monospace' is a member of `QFont'.])
+  fi
+])
+dnl
 dnl Check for the Qhull version.
 dnl
 AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
@@ -1400,90 +1520,19 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
   fi
 ])
 dnl
-dnl Check whether Qt works with full OpenGL support
+dnl Check whether we have QScintilla for the given Qt VERSION.
 dnl
-AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
-  AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
-    [octave_cv_qt_opengl_ok],
-    [AC_LANG_PUSH(C++)
-     ac_octave_save_CPPFLAGS="$CPPFLAGS"
-     ac_octave_save_CXXFLAGS="$CXXFLAGS"
-     CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-     CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-         #if HAVE_WINDOWS_H
-         # include <windows.h>
-         #endif
-         #if defined (HAVE_GL_GL_H)
-         # include <GL/gl.h>
-         #elif defined (HAVE_OPENGL_GL_H)
-         # include <OpenGL/gl.h>
-         #endif
-         #if defined (HAVE_GL_GLU_H)
-         # include <GL/glu.h>
-         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
-         # include <OpenGL/glu.h>
-         #endif
-         #include <QGLWidget>
-         class gl_widget : public QGLWidget
-         {
-         public:
-           gl_widget (QWidget *parent = 0) : QGLWidget (parent) {}
-           ~gl_widget () {}
-         };
-         ]], [[
-         gl_widget widget;
-       ]])],
-       octave_cv_qt_opengl_ok=yes,
-       octave_cv_qt_opengl_ok=no)
-     CPPFLAGS="$ac_octave_save_CPPFLAGS"
-     CXXFLAGS="$ac_octave_save_CXXFLAGS"
-     AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_qt_opengl_ok = yes; then
-    $1
-    :
-  else
-    $2
-    :
-  fi
-])
-dnl
-dnl Check whether Qt VERSION is present, supports QtOpenGL and
-dnl QScintilla and will work for Octave.
-dnl
-dnl OCTAVE_CHECK_QT_VERSION(VERSION)
-dnl
-AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
-  QT_CPPFLAGS=
-  QT_LDFLAGS=
-  QT_LIBS=
-
+AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
   qt_version="$1";
-
-  build_qt_gui=yes
-  build_qt_graphics=no
   use_qscintilla=no
-  win32_terminal=no
-
-  warn_qt_libraries=""
-  warn_qt_version=""
-  warn_qt_tools=""
-  warn_qt_setlocale=""
-  warn_qt_setvbuf=""
-  warn_qt_lib_fcns=""
-  warn_qt_abstract_item_model=""
-  warn_qt_opengl=""
   warn_qscintilla=""
 
   ## Check for Qt libraries
   case "$qt_version" in
     4)
-      QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
-      octave_qscintilla_libnames=qscintilla2
+      octave_qscintilla_libnames="qscintilla2-qt4 qscintilla2_qt4 qt4scintilla2 qscintilla2"
     ;;
     5)
-      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5PrintSupport"
       octave_qscintilla_libnames="qscintilla2-qt5 qscintilla2_qt5 qt5scintilla2"
     ;;
     *)
@@ -1491,140 +1540,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ;;
   esac
 
-  PKG_CHECK_MODULES(QT, [$QT_MODULES],
-    [],
-    [build_qt_gui=no
-     warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
-
-  if test $build_qt_gui = yes; then
-    ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
-    QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
-    QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
-
-    case $host_os in
-      *darwin*)
-        ## Qt might be installed in framework
-        if test -z "$QT_LIBS"; then
-          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
-          QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
-          ## Enabling link_all_deps works around libtool's imperfect handling
-          ## of the -F flag
-          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
-                         [test $link_all_deps = yes || test -n "$QT_LDFLAGS"])
-        fi
-      ;;
-    esac
-
-    if test $qt_version = 4; then
-      ## Check for Qt4
-      if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-        build_qt_gui=no
-        warn_qt_version="Qt >= 4.0.0 not found; disabling Qt GUI"
-      fi
-    fi
-  fi
-
-  if test $build_qt_gui = yes; then
-    AC_CHECK_TOOLS(MOC, [moc-qt$qt_version])
-    AC_CHECK_TOOLS(UIC, [uic-qt$qt_version])
-    AC_CHECK_TOOLS(RCC, [rcc-qt$qt_version])
-    AC_CHECK_TOOLS(LRELEASE, [lrelease-qt$qt_version])
-
-    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE"; then
-      AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
-
-      if test -z "$MOC"; then
-        AC_CHECK_TOOLS(MOC, [moc])
-        if test -n "$QTCHOOSER"; then
-          MOCFLAGS="-qt$qt_version"
-        fi
-      fi
-      if test -z "$UIC"; then
-        AC_CHECK_TOOLS(UIC, [uic])
-        if test -n "$QTCHOOSER"; then
-          UICFLAGS="-qt$qt_version"
-        fi
-      fi
-      if test -z "$RCC"; then
-        AC_CHECK_TOOLS(RCC, [rcc])
-        if test -n "$QTCHOOSER"; then
-          RCCFLAGS="-qt$qt_version"
-        fi
-      fi
-      if test -z "$LRELEASE"; then
-        AC_CHECK_TOOLS(LRELEASE, [lrelease])
-        if test -n "$QTCHOOSER"; then
-          LRELEASEFLAGS="-qt$qt_version"
-        fi
-      fi
-    fi
-
-    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE"; then
-      warn_qt_tools="one or more of the Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
-      build_qt_gui=no
-    fi
-  fi
-
-  if test $build_qt_gui = yes; then
-    AC_CHECK_FUNCS([setlocale], [],
-      [build_qt_gui=no
-       warn_qt_setlocale="setlocale not found; disabling Qt GUI"])
-  fi
-
-  if test $build_qt_gui = yes; then
-    case $host_os in
-      mingw* | msdosmsvc*)
-        AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
-          [build_qt_gui=no
-           warn_qt_setvbuf="setvbuf not found; disabling Qt GUI"])
-      ;;
-      *)
-        AC_CHECK_HEADERS([pty.h libutil.h util.h])
-        AC_SEARCH_LIBS([openpty], [util],
-          [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
-        AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
-          [build_qt_gui=no
-           warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])
-      ;;
-    esac
-  fi
-
-  if test $build_qt_gui = yes; then
-    OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
-
-    if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
-      build_qt_gui=no
-      warn_qt_abstract_item_model="QAbstractItemModel::beginResetModel not found; disabling Qt GUI"
-      ## Invalidate cache so that this test will be done again if we
-      ## perform the test with a different Qt version.
-      $as_unset octave_cv_func_qabstractitemmodel_beginresetmodel
-    fi
-  fi
-
-  if test $build_qt_gui = yes; then
-    ## We have what we need to build the Qt GUI.  The remaining
-    ## checks below are for optional features related to the Qt GUI.
-
-    AC_DEFINE(HAVE_QT, 1,
-      [Define to 1 if Qt is available, with all required functions, libraries, developer header files, and utility programs (moc, uic, rcc, and lrelease).])
-
-    ## We don't need to unset cache variables for any of the remaining
-    ## tests if they fail because we have already decided that the Qt
-    ## version that we are testing now will be the one used.
-
-    OCTAVE_CHECK_QFONT_MONOSPACE
-    OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
-    OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
-
-    if test -n "$OPENGL_LIBS"; then
-      OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],
-        [warn_qt_opengl="Qt does not work with the OpenGL libs (GL and GLU); disabling OpenGL graphics with Qt GUI"])
-
-      if test $build_qt_graphics = yes; then
-        AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
-      fi
-    fi
+  if test $build_qt_gui = yes && test $check_qscintilla = yes; then
 
     ## Check for QScintilla library which is used in the Qt GUI editor.
     AC_CACHE_CHECK([for the QScintilla library for Qt $qt_version],
@@ -1679,18 +1595,39 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       CPPFLAGS="$save_CPPFLAGS"
       CXXFLAGS="$save_CXXFLAGS"
 
-      OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
       OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
+
       use_qscintilla=yes
     fi
   fi
-  AC_SUBST(MOCFLAGS)
-  AC_SUBST(UICFLAGS)
-  AC_SUBST(RCCFLAGS)
-  AC_SUBST(LRELEASEFLAGS)
-  AC_SUBST(QT_CPPFLAGS)
-  AC_SUBST(QT_LDFLAGS)
-  AC_SUBST(QT_LIBS)
+])
+dnl
+dnl Check whether QScintilla has version 2.6.0 or later
+dnl FIXME: This test uses a version number.  It potentially could
+dnl        be re-written to actually call the function, but is it worth it?
+dnl
+AC_DEFUN([OCTAVE_CHECK_QSCINTILLA_VERSION], [
+  AC_CACHE_CHECK([whether QScintilla has version 2.6.0 or later],
+    [octave_cv_version_2_6_0],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qsci/qsciglobal.h>
+        ]], [[
+        #if QSCINTILLA_VERSION < 0x020600
+        #error Old FindFirst function found.
+        #endif
+        ]])],
+      octave_cv_version_2_6_0=yes,
+      octave_cv_version_2_6_0=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_version_2_6_0 = yes; then
+    AC_DEFINE(HAVE_QSCI_VERSION_2_6_0, 1,
+      [Define to 1 if QScintilla is of Version 2.6.0 or later.])
+  fi
 ])
 dnl
 dnl OCTAVE_CHECK_QT
@@ -1713,10 +1650,10 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
 
   if test $build_qt_gui = yes; then
     if test x"$have_qt_version" = x4; then
-      AC_DEFINE(HAVE_QT4, 1, [Define if you are using Qt version 4.])
+      AC_DEFINE(HAVE_QT4, 1, [Define to 1 if using Qt version 4.])
     fi
     if test x"$have_qt_version" = x5; then
-      AC_DEFINE(HAVE_QT5, 1, [Define if you are using Qt version 5.])
+      AC_DEFINE(HAVE_QT5, 1, [Define to 1 if using Qt version 5.])
     fi
   else
     if test -n "$warn_qt_libraries"; then
@@ -1754,58 +1691,460 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
   AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 ])
 dnl
+dnl Check whether QOffscreenSurface is present.
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK], [
+  dnl Normally the language and compiler flags would be set and restored
+  dnl inside of the AC_CACHE_CHECK body.  Because we also need to check for
+  dnl Qt header files associated with the compilation test, set and restore
+  dnl these values outside of the AC_CACHE_CHECK for this macro only.
+  AC_LANG_PUSH(C++)
+  ac_octave_save_CPPFLAGS="$CPPFLAGS"
+  ac_octave_save_CXXFLAGS="$CXXFLAGS"
+  CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+  CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+  AC_CHECK_HEADERS([QOffscreenSurface])
+  AC_CACHE_CHECK([whether Qt supports full offscreen OpenGL rendering],
+    [octave_cv_qt_opengl_os_ok],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+         #if HAVE_WINDOWS_H
+         #  include <windows.h>
+         #endif
+         #if defined (HAVE_GL_GL_H)
+         #  include <GL/gl.h>
+         #elif defined (HAVE_OPENGL_GL_H)
+         #  include <OpenGL/gl.h>
+         #endif
+         #if defined (HAVE_GL_GLU_H)
+         #  include <GL/glu.h>
+         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
+         #  include <OpenGL/glu.h>
+         #endif
+         #if defined (HAVE_QOPENGLWIDGET)
+         #  include <QOpenGLWidget>
+         #  include <QOpenGLContext>
+         #endif
+         #if defined (HAVE_QOFFSCREENSURFACE)
+         #  include <QOffscreenSurface>
+         #endif
+         QOpenGLContext ctx;    
+         QOffscreenSurface surf;
+       ]])],
+       octave_cv_qt_opengl_os_ok=yes,
+       octave_cv_qt_opengl_os_ok=no)
+  ])
+  CPPFLAGS="$ac_octave_save_CPPFLAGS"
+  CXXFLAGS="$ac_octave_save_CXXFLAGS"
+  AC_LANG_POP(C++)
+  if test $octave_cv_qt_opengl_os_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
+dnl Check whether Qt works with full OpenGL support
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
+  dnl Normally the language and compiler flags would be set and restored
+  dnl inside of the AC_CACHE_CHECK body.  Because we also need to check for
+  dnl Qt header files associated with the compilation test, set and restore
+  dnl these values outside of the AC_CACHE_CHECK for this macro only.
+  AC_LANG_PUSH(C++)
+  ac_octave_save_CPPFLAGS="$CPPFLAGS"
+  ac_octave_save_CXXFLAGS="$CXXFLAGS"
+  CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+  CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+  AC_CHECK_HEADERS([QOpenGLWidget QGLWidget])
+  AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
+    [octave_cv_qt_opengl_ok],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+         #if HAVE_WINDOWS_H
+         #  include <windows.h>
+         #endif
+         #if defined (HAVE_GL_GL_H)
+         #  include <GL/gl.h>
+         #elif defined (HAVE_OPENGL_GL_H)
+         #  include <OpenGL/gl.h>
+         #endif
+         #if defined (HAVE_GL_GLU_H)
+         #  include <GL/glu.h>
+         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
+         #  include <OpenGL/glu.h>
+         #endif
+         #if defined (HAVE_QOPENGLWIDGET)
+         #  include <QOpenGLWidget>
+         #  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
+         #elif defined (HAVE_QGLWIDGET)
+         #  include <QGLWidget>
+         #  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
+         #endif
+         class gl_widget : public OCTAVE_QT_OPENGL_WIDGET
+         {
+         public:
+           gl_widget (QWidget *parent = 0)
+             : OCTAVE_QT_OPENGL_WIDGET (parent) { }
+           ~gl_widget () {}
+         };
+         ]], [[
+         gl_widget widget;
+       ]])],
+       octave_cv_qt_opengl_ok=yes,
+       octave_cv_qt_opengl_ok=no)
+  ])
+  CPPFLAGS="$ac_octave_save_CPPFLAGS"
+  CXXFLAGS="$ac_octave_save_CXXFLAGS"
+  AC_LANG_POP(C++)
+  if test $octave_cv_qt_opengl_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
+dnl Check whether Qt VERSION is present, supports QtOpenGL and
+dnl QScintilla, and will work for Octave.
+dnl
+dnl OCTAVE_CHECK_QT_VERSION(VERSION)
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
+  QT_CPPFLAGS=
+  QT_LDFLAGS=
+  QT_LIBS=
+
+  qt_version="$1";
+
+  build_qt_gui=yes
+  build_qt_graphics=no
+  have_qt_opengl_offscreen=no
+  win32_terminal=no
+
+  warn_qt_libraries=""
+  warn_qt_version=""
+  warn_qt_tools=""
+  warn_qt_setlocale=""
+  warn_qt_setvbuf=""
+  warn_qt_lib_fcns=""
+  warn_qt_abstract_item_model=""
+  warn_qt_opengl=""
+
+  ## Check for Qt libraries
+  case "$qt_version" in
+    4)
+      QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
+    ;;
+    5)
+      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5PrintSupport"
+    ;;
+    *)
+      AC_MSG_ERROR([Unrecognized Qt version $qt_version])
+    ;;
+  esac
+
+  PKG_CHECK_MODULES(QT, [$QT_MODULES],
+    [],
+    [build_qt_gui=no
+     warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
+
+  if test $build_qt_gui = yes; then
+    ## Retrieve Qt compilation and linker flags
+    QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
+    QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
+    QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
+
+    case $host_os in
+      *darwin*)
+        ## Qt might be installed in framework
+        if test -z "$QT_LIBS"; then
+          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
+          QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+          ## Enabling link_all_deps works around libtool's imperfect handling
+          ## of the -F flag
+          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
+                         [test $link_all_deps = yes || test -n "$QT_LDFLAGS"])
+        fi
+      ;;
+    esac
+
+    if test $qt_version = 4; then
+      ## Check for Qt4
+      if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
+        build_qt_gui=no
+        warn_qt_version="Qt >= 4.0.0 not found; disabling Qt GUI"
+      fi
+    fi
+  fi
+
+  if test $build_qt_gui = yes; then
+    AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
+
+    AC_CHECK_TOOLS(MOC_QTVER, [moc-qt$qt_version])
+    if test -z "$MOC_QTVER"; then
+      AC_CHECK_TOOLS(MOC, [moc])
+      if test -n "$MOC" && test -n "$QTCHOOSER"; then
+        MOCFLAGS="-qt$qt_version"
+      fi
+    else
+      MOC="$MOC_QTVER"
+    fi
+
+    AC_CHECK_TOOLS(UIC_QTVER, [uic-qt$qt_version])
+    if test -z "$UIC_QTVER"; then
+      AC_CHECK_TOOLS(UIC, [uic])
+      if test -n "$UIC" && test -n "$QTCHOOSER"; then
+        UICFLAGS="-qt$qt_version"
+      fi
+    else
+      UIC="$UIC_QTVER"
+    fi
+
+    AC_CHECK_TOOLS(RCC_QTVER, [rcc-qt$qt_version])
+    if test -z "$RCC_QTVER"; then
+      AC_CHECK_TOOLS(RCC, [rcc])
+      if test -n "$RCC" && test -n "$QTCHOOSER"; then
+        RCCFLAGS="-qt$qt_version"
+      fi
+    else
+      RCC="$RCC_QTVER"
+    fi
+
+    AC_CHECK_TOOLS(LRELEASE_QTVER, [lrelease-qt$qt_version])
+    if test -z "$LRELEASE_QTVER"; then
+      AC_CHECK_TOOLS(LRELEASE, [lrelease])
+      if test -n "$LRELEASE" && test -n "$QTCHOOSER"; then
+        LRELEASEFLAGS="-qt$qt_version"
+      fi
+    else
+      LRELEASE="$LRELEASE_QTVER"
+    fi
+    
+    AC_CHECK_TOOLS(QCOLLECTIONGENERATOR_QTVER, [qcollectiongenerator-qt$qt_version])
+    if test -z "$QCOLLECTIONGENERATOR_QTVER"; then
+      AC_CHECK_TOOLS(QCOLLECTIONGENERATOR, [qcollectiongenerator])
+      if test -n "$QCOLLECTIONGENERATOR" && test -n "$QTCHOOSER"; then
+        QCOLLECTIONGENERATORFLAGS="-qt$qt_version"
+      fi
+    else
+      QCOLLECTIONGENERATOR="$QCOLLECTIONGENERATOR_QTVER"
+    fi
+
+    AC_CHECK_TOOLS(QHELPGENERATOR_QTVER, [qhelpgenerator-qt$qt_version])
+    if test -z "$QHELPGENERATOR_QTVER"; then
+      AC_CHECK_TOOLS(QHELPGENERATOR, [qhelpgenerator])
+      if test -n "$QHELPGENERATOR" && test -n "$QTCHOOSER"; then
+        QHELPGENERATORFLAGS="-qt$qt_version"
+      fi
+    else
+      QHELPGENERATOR="$QHELPGENERATOR_QTVER"
+    fi
+
+    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE" || test -z "$QCOLLECTIONGENERATOR" || test -z "$QHELPGENERATOR"; then
+      warn_qt_tools="one or more of the Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
+      build_qt_gui=no
+      MOC_QTVER=
+      UIC_QTVER=
+      RCC_QTVER=
+      LRELEASE_QTVER=
+      QCOLLECTIONGENERATOR_QTVER=
+      QHELPGENERATOR_QTVER=
+      MOCFLAGS=
+      UICFLAGS=
+      RCCFLAGS=
+      LRELEASEFLAGS=
+      QHELPGENERATORFLAGS=
+      QCOLLECTIONGENERATORFLAGS=
+      $as_unset ac_cv_prog_MOC_QTVER
+      $as_unset ac_cv_prog_ac_ct_MOC_QTVER
+      $as_unset ac_cv_prog_UIC_QTVER
+      $as_unset ac_cv_prog_ac_ct_UIC_QTVER
+      $as_unset ac_cv_prog_RCC_QTVER
+      $as_unset ac_cv_prog_ac_ct_RCC_QTVER
+      $as_unset ac_cv_prog_LRELEASE_QTVER
+      $as_unset ac_cv_prog_ac_ct_LRELEASE_QTVER
+      $as_unset ac_cv_prog_QHELPGENERATOR_QTVER
+      $as_unset ac_cv_prog_ac_ct_QHELPGENERATOR_QTVER
+    fi
+  fi
+
+  if test $build_qt_gui = yes; then
+    AC_CHECK_FUNCS([setlocale], [],
+      [build_qt_gui=no
+       warn_qt_setlocale="setlocale not found; disabling Qt GUI"])
+  fi
+
+  if test $build_qt_gui = yes; then
+    case $host_os in
+      mingw* | msdosmsvc*)
+        AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
+          [build_qt_gui=no
+           warn_qt_setvbuf="setvbuf not found; disabling Qt GUI"])
+      ;;
+      *)
+        AC_CHECK_HEADERS([pty.h libutil.h util.h])
+        AC_SEARCH_LIBS([openpty], [util],
+          [AC_DEFINE(HAVE_OPENPTY, 1, [Define to 1 if openpty exists])])
+        AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
+          [build_qt_gui=no
+           warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])
+      ;;
+    esac
+  fi
+
+  if test $build_qt_gui = yes; then
+    OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
+
+    if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
+      build_qt_gui=no
+      warn_qt_abstract_item_model="QAbstractItemModel::beginResetModel not found; disabling Qt GUI"
+      ## Invalidate cache so that this test will be done again if we
+      ## perform the test with a different Qt version.
+      $as_unset octave_cv_func_qabstractitemmodel_beginresetmodel
+    fi
+  fi
+
+  if test $build_qt_gui = yes; then
+    ## We have what we need to build the Qt GUI.  The remaining
+    ## checks below are for optional features related to the Qt GUI.
+
+    AC_DEFINE(HAVE_QT, 1,
+      [Define to 1 if Qt is available, with all required functions, libraries, developer header files, and utility programs (moc, uic, rcc, and lrelease).])
+
+    AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    AC_CHECK_HEADERS([QStandardPaths])
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+
+    ## We don't need to unset cache variables for any of the remaining
+    ## tests if they fail because we have already decided that the Qt
+    ## version that we are testing now will be the one used.
+
+    OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE
+    OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE
+    OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE
+    OCTAVE_CHECK_FUNC_QINSTALLMESSAGEHANDLER
+    OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT
+    OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS
+    OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS
+    OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
+    OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT
+    OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS
+    OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE
+    OCTAVE_HAVE_QGUIAPPLICATION
+
+    if test -n "$OPENGL_LIBS"; then
+      OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],
+        [warn_qt_opengl="Qt does not work with the OpenGL libs (GL and GLU); disabling OpenGL graphics with Qt GUI"])
+
+      if test $build_qt_graphics = yes; then
+        AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
+        OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK([have_qt_opengl_offscreen=yes])
+        if test $have_qt_opengl_offscreen = yes; then
+          AC_DEFINE(HAVE_QT_OFFSCREEN, 1, [Define to 1 if Qt handles offscreen OpenGL rendering])
+        fi
+      fi
+    fi
+
+    OCTAVE_CHECK_QSCINTILLA([$qt_version])
+
+  fi
+  AC_SUBST(MOCFLAGS)
+  AC_SUBST(UICFLAGS)
+  AC_SUBST(RCCFLAGS)
+  AC_SUBST(LRELEASEFLAGS)
+  AC_SUBST(QT_CPPFLAGS)
+  AC_SUBST(QT_LDFLAGS)
+  AC_SUBST(QT_LIBS)
+])
+dnl
 dnl Check if the default Fortran INTEGER is 64 bits wide.
+dnl If cross-compiling, assume 4 bytes unless the cache value
+dnl is already set.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
-  AC_CACHE_CHECK([whether $F77 generates correct size integers],
+  AC_CACHE_CHECK([default size of Fortran INTEGER],
     [octave_cv_sizeof_fortran_integer],
     [ac_octave_save_FFLAGS="$FFLAGS"
-    FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
-    AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE([[
-      subroutine foo(n, in, out)
-      integer n, in(n), out(n)
-      integer i
-      do 10 i = 1, n
-        out(i) = in(i)
-   10 continue
-      return
-      end
-      ]],
-      [mv conftest.$ac_objext fintsize.$ac_objext
-      ac_octave_save_LIBS="$LIBS"
-      LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
-      AC_LANG_PUSH(C)
-      AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-          #include <assert.h>
-          #include <stdint.h>
-          #if defined (OCTAVE_ENABLE_64)
-            typedef int64_t octave_idx_type;
-          #else
-            typedef int octave_idx_type;
-          #endif
-          void F77_FUNC(foo,FOO) (octave_idx_type*, octave_idx_type**, octave_idx_type**);
-          ]], [[
-          octave_idx_type n = 2;
-          octave_idx_type in[2];
-          octave_idx_type out[2];
-          in[0] = 13;
-          in[0] = 42;
-          F77_FUNC(foo,FOO) (&n, &in, &out);
-          assert (in[0] == out[0] && in[1] == out[1]);
-        ]])],
-        octave_cv_sizeof_fortran_integer=yes,
-        octave_cv_sizeof_fortran_integer=no,
-        octave_cv_sizeof_fortran_integer=yes)
-      AC_LANG_POP(C)
-      LIBS="$ac_octave_save_LIBS"
-      rm -f conftest.$ac_objext fintsize.$ac_objext],
-      [rm -f conftest.$ac_objext
-      AC_MSG_FAILURE([cannot compile a simple Fortran program])
-      octave_cv_sizeof_fortran_integer=no])
-    AC_LANG_POP(Fortran 77)
-    FFLAGS="$ac_octave_save_FFLAGS"
+     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
+     AC_LANG_PUSH(Fortran 77)
+     AC_RUN_IFELSE([AC_LANG_PROGRAM(,[[
+      integer*8 n8
+      integer n
+c Generate -2**33 + 1.
+      n8 = 2
+      n8 = -4 * (n8 ** 30)
+      n8 = n8 + 1
+c Convert to default integer type.  If the values are no longer equal,
+c assume the default integer size is 32-bits.
+      n = n8
+      if (n .ne. n8) stop 1
+       ]])],
+       octave_cv_sizeof_fortran_integer=8,
+       octave_cv_sizeof_fortran_integer=4,
+       octave_cv_sizeof_fortran_integer=4)
+     AC_LANG_POP(Fortran 77)
+     FFLAGS="$ac_octave_save_FFLAGS"
   ])
+])
+dnl
+dnl Check whether SUNDIALS IDA library is configured with double
+dnl precision realtype.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
+  AC_CHECK_HEADERS([ida/ida.h ida.h])
+  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with double precision realtype],
+    [octave_cv_sundials_realtype_is_double],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #if defined (HAVE_IDA_IDA_H)
+        #include <ida/ida.h>
+        #else
+        #include <ida.h>
+        #endif
+        #include <assert.h>
+        ]], [[
+        static_assert (sizeof (realtype) == sizeof (double),
+                       "SUNDIALS is not configured for double precision");
+      ]])],
+      octave_cv_sundials_realtype_is_double=yes,
+      octave_cv_sundials_realtype_is_double=no)
+  ])
+  if test $octave_cv_sundials_realtype_is_double = no; then
+    warn_sundials_realtype="SUNDIALS IDA library not configured with double precision realtype, ode15i and ode15s will be disabled"
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_realtype])
+  fi
+])
+dnl
+dnl Check whether SUNDIALS IDA library is configured with IDAKLU
+dnl enabled.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDAKLU], [
+  AC_CHECK_HEADERS([ida/ida_klu.h ida_klu.h])
+  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with IDAKLU enabled],
+    [octave_cv_sundials_idaklu],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+         #if defined (HAVE_IDA_IDA_KLU_H)
+         #include <ida/ida_klu.h>
+         #else
+         #include <ida_klu.h>
+         #endif
+         ]], [[
+         IDAKLU (0, 0, 0, 0);
+      ]])],
+      octave_cv_sundials_idaklu=yes,
+      octave_cv_sundials_idaklu=no)
+    ])
+  if test $octave_cv_sundials_idaklu = yes; then
+    AC_DEFINE(HAVE_SUNDIALS_IDAKLU, 1,
+      [Define to 1 if SUNDIALS IDA is configured with IDAKLU enabled.])
+  else
+    warn_sundials_idaklu="SUNDIALS IDA library not configured with IDAKLU, ode15i and ode15s will not support the sparse Jacobian feature"
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_idaklu])
+  fi
 ])
 dnl
 dnl Add warning to final summary.
@@ -2133,24 +2472,33 @@ AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
   fi
 ])
 dnl
-dnl Figure out the hardware-vendor-os info.
+dnl Check whether the Qt class QGuiApplication exists.
+dnl This class  was introduced in Qt 5.0.
 dnl
-AC_DEFUN([OCTAVE_CANONICAL_HOST], [
-  AC_CANONICAL_HOST
-  if test -z "$host"; then
-    host=unknown-unknown-unknown
-    AC_MSG_WARN([configuring Octave for unknown system type])
-  fi
-  canonical_host_type=$host
-  AC_SUBST(canonical_host_type)
-  if test -z "$host_cpu"; then
-    host_cpu=unknown
-  fi
-  if test -z "$host_vendor"; then
-    host_vendor=unknown
-  fi
-  if test -z "$host_os"; then
-    host_os=unknown
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_HAVE_QGUIAPPLICATION], [
+  AC_CACHE_CHECK([for QGuiApplication],
+    [octave_cv_decl_qguiapplication],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QGuiApplication>
+        ]], [[
+        QScreen *pscreen = QGuiApplication::primaryScreen ();
+        ]])],
+      octave_cv_decl_qguiapplication=yes,
+      octave_cv_decl_qguiapplication=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qguiapplication = yes; then
+    AC_DEFINE(HAVE_QGUIAPPLICATION, 1,
+      [Define to 1 if `QGuiApplication' class is available.])
   fi
 ])
 dnl
@@ -2288,29 +2636,6 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
   fi
 ])
 dnl
-dnl Check for raw_fd_ostream API
-dnl
-AC_DEFUN([OCTAVE_LLVM_RAW_FD_OSTREAM_API], [
-  AC_CACHE_CHECK([check LLVM::raw_fd_ostream arg type is llvm::sys:fs],
-    [octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs],
-    [AC_LANG_PUSH(C++)
-      AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[
-          #include <llvm/Support/raw_os_ostream.h>
-          ]], [[
-          std::string str;
-          llvm::raw_fd_ostream fout ("", str, llvm::sys::fs::F_Binary);
-        ]])],
-        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=yes,
-        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs = yes; then
-    AC_DEFINE(RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS, 1,
-      [Define to 1 if LLVM::raw_fd_ostream arg type is llvm::sys:fs.])
-  fi
-])
-dnl
 dnl Check for legacy::PassManager API
 dnl
 AC_DEFUN([OCTAVE_LLVM_LEGACY_PASSMANAGER_API], [
@@ -2340,6 +2665,29 @@ AC_DEFUN([OCTAVE_LLVM_LEGACY_PASSMANAGER_API], [
   fi
 ])
 dnl
+dnl Check for raw_fd_ostream API
+dnl
+AC_DEFUN([OCTAVE_LLVM_RAW_FD_OSTREAM_API], [
+  AC_CACHE_CHECK([check LLVM::raw_fd_ostream arg type is llvm::sys:fs],
+    [octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Support/raw_os_ostream.h>
+          ]], [[
+          std::string str;
+          llvm::raw_fd_ostream fout ("", str, llvm::sys::fs::F_Binary);
+        ]])],
+        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=yes,
+        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs = yes; then
+    AC_DEFINE(RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS, 1,
+      [Define to 1 if LLVM::raw_fd_ostream arg type is llvm::sys:fs.])
+  fi
+])
+dnl
 dnl Check for ar.
 dnl
 AC_DEFUN([OCTAVE_PROG_AR], [
@@ -2349,9 +2697,16 @@ AC_DEFUN([OCTAVE_PROG_AR], [
   AC_SUBST(AR)
 
   if test -z "$ARFLAGS"; then
-    ARFLAGS="rc"
+    ARFLAGS="cr"
   fi
   AC_SUBST(ARFLAGS)
+
+  dnl FIXME: Remove when libtool updated (placed 4/15/2017).
+  dnl This silences the following unnecessary warning during compile:
+  dnl ar: `u' modifier ignored since `D' is the default (see `U')
+  if test -z "$AR_FLAGS"; then
+    AR_FLAGS="$ARFLAGS"
+  fi
 ])
 dnl
 dnl Check for bison.
@@ -2629,6 +2984,44 @@ You may install a copy later for Octave to use.
 "
     OCTAVE_CONFIGURE_WARNING([warn_makeinfo])
   fi
+  dnl If we have a GNU makeinfo program, see if it supports the @sortas command
+  dnl for defining a custom sort key for an index entry.
+  if test -n "$MKINFO"; then
+    AC_CACHE_CHECK([for makeinfo support for @sortas command],
+      [octave_cv_makeinfo_sortas_command],
+      [cat << EOF > conftest.texi
+\input texinfo
+@node Top
+@top Document
+@menu
+* Chapter::
+* Index::
+@end menu
+@node Chapter
+@chapter Chapter
+@cindex @sortas{a} foo
+@node Index
+@unnumbered Index
+@printindex cp
+@bye
+EOF
+        if $MKINFO --no-warn conftest.texi 2>/dev/null; then
+          octave_cv_makeinfo_sortas_command=yes
+        else
+          octave_cv_makeinfo_sortas_command=no
+        fi
+        rm -f conftest.info conftest.texi
+    ])
+    if test $octave_cv_makeinfo_sortas_command = no; then
+      warn_makeinfo="
+
+I wasn't able to find a version of GNU makeinfo that supports the
+@sortas command, but it's only a problem if you need to build the
+manual, which is the case if you're building from VCS sources.
+"
+      OCTAVE_CONFIGURE_WARNING([warn_makeinfo])
+    fi
+  fi
 ])
 dnl
 dnl What pager should we use?
@@ -2751,6 +3144,31 @@ AC_DEFUN([OCTAVE_PROG_SED], [
   AC_MSG_RESULT([$SED])
 ])
 dnl
+dnl Check for options that can be passed to tar to make archives reproducible.
+dnl
+AC_DEFUN([OCTAVE_PROG_TAR_REPRODUCIBLE], [
+  AC_MSG_CHECKING([for options to make reproducible archives with GNU tar])
+dnl This uses Automake's logic for finding GNU tar under various names
+  for octave_tar in tar gnutar gtar :; do
+    $octave_tar --version >/dev/null 2>&1 && break
+  done
+dnl If we have a valid GNU tar program, see if it supports sets of options
+  if test x"$octave_tar" != x:; then
+    octave_tar_flags=
+    echo > conftest.txt
+    for octave_tar_flag in --owner=0 --group=0 --numeric-owner --sort=name; do
+      $octave_tar -cf conftest.tar $octave_tar_flags $octave_tar_flag conftest.txt 2>/dev/null
+      if test $? -eq 0; then
+        octave_tar_flags="${octave_tar_flags:+$octave_tar_flags }$octave_tar_flag"
+      fi
+    done
+    rm -f conftest.tar conftest.txt
+    REPRODUCIBLE_TAR_FLAGS="$octave_tar_flags"
+  fi
+  AC_SUBST(REPRODUCIBLE_TAR_FLAGS)
+  AC_MSG_RESULT([$REPRODUCIBLE_TAR_FLAGS])
+])
+dnl
 dnl Check for texi2dvi.
 dnl
 AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
@@ -2868,7 +3286,3 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
       [Define to 1 if the UMFPACK Complex solver allows matrix and RHS to be split independently.])
   fi
 ])
-
-dnl         End of macros written by Octave developers
-dnl ------------------------------------------------------------
-dnl

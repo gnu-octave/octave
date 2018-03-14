@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{str} =} datestr (@var{date})
@@ -194,18 +194,26 @@ function retval = datestr (date, f = [], p = [])
     endif
   endif
 
+  ## Round fractional seconds >= 0.9995 s to next full second.
+  idx = v(:,6) - fix (v(:,6)) >= 0.9995;
+  if (any (idx))
+    v(idx,6) = fix (v(idx,6)) + 1;
+    v(idx,:) = datevec (datenum (v(idx,:)));
+  endif
+
+  ## Automatic format selection
+  if (isempty (f))
+    if (v(:,4:6) == 0)
+      f = 1;
+    elseif (v(:,1:3) == [-1, 12, 31])
+      f = 16;
+    else
+      f = 0;
+    endif
+  endif
+
   retval = "";
   for i = 1 : rows (v)
-
-    if (isempty (f))
-      if (v(i,4:6) == 0)
-        f = 1;
-      elseif (v(i,1:3) == [-1, 12, 31])
-        f = 16;
-      else
-        f = 0;
-      endif
-    endif
 
     if (isnumeric (f))
       df = dateform{f + 1};
@@ -324,7 +332,7 @@ endfunction
 %!test
 %! obs = toupper (datestr (testtime,16));
 %! assert (obs, " 2:33 AM");
-%!test <48071>
+%!test <*48071>
 %! testtime2 = testtime;
 %! testtime2(4) = 15;
 %! obs = toupper (datestr (testtime2,16));
@@ -349,6 +357,12 @@ endfunction
 %!assert (datestr ([1944, 6, 6, 6, 30, 0], 0), "06-Jun-1944 06:30:00")
 ## Test fractional millisecond time extension
 %!assert (datestr (testtime, "HH:MM:SS:FFF"), "02:33:17:382")
+## Test automatic format detection over vectors
+%!assert (datestr ([2017 03 16 0 0 0; 2017 03 16 0 0 1]),
+%!        char ("16-Mar-2017 00:00:00", "16-Mar-2017 00:00:01"))
+## Test for correct millisecond rounding
+%!assert (datestr (datenum ("1:00") - datenum ("0:55"), "HH:MM:SS.FFF"),
+%!                 "00:05:00.000")
 
 ## Test input validation
 %!error datestr ()

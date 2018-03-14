@@ -2,33 +2,34 @@
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @node Data Containers
 @chapter Data Containers
 @cindex containers
 
-Octave includes support for two different mechanisms to contain
-arbitrary data types in the same variable.  Structures, which are C-like,
-and are indexed with named fields, and cell arrays, where each element
-of the array can have a different data type and or shape.  Multiple
-input arguments and return values of functions are organized as
-another data container, the comma separated list.
+Octave includes support for three different mechanisms to contain arbitrary
+data types in the same variable: Structures, which are C-like, and are indexed
+with named fields; containers.Map objects, which store data in key/value pairs;
+and cell arrays, where each element of the array can have a different data type
+and or shape.  Multiple input arguments and return values of functions are
+organized as another data container, the comma separated list.
 
 @menu
 * Structures::
+* containers.Map::
 * Cell Arrays::
 * Comma Separated Lists::
 @end menu
@@ -66,7 +67,7 @@ x.c = "string";
 @end group
 @end example
 
-@opindex .
+@opindex . @ @ @ 
 @noindent
 create a structure with three elements.  The @samp{.} character separates
 the structure name from the field name and indicates to Octave that this
@@ -536,6 +537,18 @@ Alternatively, to process the data in a structure, the structure might
 be converted to another type of container before being treated.
 
 @DOCSTRING(struct2cell)
+
+@node containers.Map
+@section containers.Map
+@cindex Map
+@cindex key/value store
+@cindex hash table
+
+@c FIXME: Need to fill in documentation on what a Map is, when to use it over
+@c        other container types, how to perform basic operations with a Map.
+
+@c FIXME: Currently have trouble getting documentation for classdef functions.
+@DOCSTRING(containers.Map)
 
 @node Cell Arrays
 @section Cell Arrays
@@ -1032,7 +1045,6 @@ If used on the left-hand side of an assignment, a comma separated list
 generated with @code{@{@}} can be assigned to.  An example is
 
 @example
-@group
 in@{1@} = [10, 20, 30];
 in@{2@} = inf;
 in@{3@} = "last";
@@ -1043,19 +1055,18 @@ out = cell (4, 1);
      @result{} out =
         @{
            [1,1] =
-         
+
               10   20   30
-         
+
            [2,1] = Inf
            [3,1] = last
            [4,1] =
-         
+
               10   20   30
-         
+
            [5,1] = Inf
            [6,1] = first
         @}
-@end group
 @end example
 
 

@@ -4,19 +4,19 @@ Copyright (C) 1996-2017 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -89,19 +89,19 @@ oct_catop_matrix_struct (octave_base_value& a1, const octave_base_value& a2,
 }
 
 void
-install_struct_ops (void)
+install_struct_ops (octave::type_info& ti)
 {
-  INSTALL_UNOP (op_transpose, octave_struct, transpose);
-  INSTALL_UNOP (op_hermitian, octave_struct, transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_struct, transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_struct, transpose);
 
-  INSTALL_UNOP (op_transpose, octave_scalar_struct, scalar_transpose);
-  INSTALL_UNOP (op_hermitian, octave_scalar_struct, scalar_transpose);
+  INSTALL_UNOP_TI (ti, op_transpose, octave_scalar_struct, scalar_transpose);
+  INSTALL_UNOP_TI (ti, op_hermitian, octave_scalar_struct, scalar_transpose);
 
-  INSTALL_CATOP (octave_struct, octave_struct, s_s_concat);
-  INSTALL_CATOP (octave_struct, octave_scalar_struct, s_ss_concat)
-  INSTALL_CATOP (octave_scalar_struct, octave_struct, ss_s_concat)
-  INSTALL_CATOP (octave_scalar_struct, octave_scalar_struct, ss_ss_concat)
+  INSTALL_CATOP_TI (ti, octave_struct, octave_struct, s_s_concat);
+  INSTALL_CATOP_TI (ti, octave_struct, octave_scalar_struct, s_ss_concat)
+  INSTALL_CATOP_TI (ti, octave_scalar_struct, octave_struct, ss_s_concat)
+  INSTALL_CATOP_TI (ti, octave_scalar_struct, octave_scalar_struct, ss_ss_concat)
 
-  INSTALL_CATOP (octave_struct, octave_matrix, struct_matrix);
-  INSTALL_CATOP (octave_matrix, octave_struct, matrix_struct);
+  INSTALL_CATOP_TI (ti, octave_struct, octave_matrix, struct_matrix);
+  INSTALL_CATOP_TI (ti, octave_matrix, octave_struct, matrix_struct);
 }

@@ -411,6 +411,7 @@ specified option.
            { "man1ext", octave::config::man1_ext () },
            { "mandir", octave::config::man_dir () },
            { "octdatadir", octave::config::oct_data_dir () },
+           { "octdocdir", octave::config::oct_doc_dir () },
            { "octfiledir", octave::config::oct_file_dir () },
            { "octetcdir", octave::config::oct_etc_dir () },
            { "octincludedir", octave::config::oct_include_dir () },

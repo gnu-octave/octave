@@ -61,7 +61,7 @@ localverfcnfiledir=`echo "@localverfcnfiledir@" | sed "s|^${prefix}/||"`
 man1dir=`echo "@man1dir@" | sed "s|^${prefix}/||"`
 mandir=`echo "@mandir@" | sed "s|^${prefix}/||"`
 octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/||"`
-octdatadir=`echo "@octdocdir@" | sed "s|^${prefix}/||"`
+octdocdir=`echo "@octdocdir@" | sed "s|^${prefix}/||"`
 octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/||"`
 octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
 octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/||"`
@@ -76,6 +76,7 @@ $SED \
   -e "s|%OCTAVE_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
   -e "s|%OCTAVE_DATADIR%|\"${datadir}\"|" \
   -e "s|%OCTAVE_DATAROOTDIR%|\"${datarootdir}\"|" \
+  -e "s|%OCTAVE_DOCDIR%|\"${docdir}\"|" \
   -e "s|%OCTAVE_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
   -e "s|%OCTAVE_DOC_CACHE_FILE%|\"${doc_cache_file}\"|" \
   -e "s|%OCTAVE_EXEC_PREFIX%|\"${exec_prefix}\"|" \

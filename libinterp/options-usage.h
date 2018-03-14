@@ -35,7 +35,7 @@ static const char *usage_string =
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
        [--gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--jit-compiler] [--line-editing] [--no-history]\n\
+       [--jit-compiler] [--line-editing] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-line-editing]\n\
        [--no-site-file] [--no-window-system] [--norc] [-p path]\n\
        [--path path] [--persist] [--silent] [--traditional]\n\
@@ -67,7 +67,7 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define DEBUG_JIT_OPTION 9
 #define JIT_COMPILER_OPTION 10
 #define LINE_EDITING_OPTION 11
-#define NO_GUI_OPTION 12 // ignored since Octave 4.4, remove for 4.8
+#define NO_GUI_OPTION 12
 #define NO_INIT_FILE_OPTION 13
 #define NO_INIT_PATH_OPTION 14
 #define NO_LINE_EDITING_OPTION 15
@@ -145,6 +145,7 @@ Options:\n\
   --interactive, -i       Force interactive behavior.\n\
   --jit-compiler          Enable the JIT compiler.\n\
   --line-editing          Force readline use for command-line editing.\n\
+  --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-init-path          Don't initialize function search path.\n\

@@ -186,7 +186,7 @@ namespace octave
             break;
 
           case NO_GUI_OPTION:
-            // This option does nothing now.
+            m_gui = false;
             break;
 
           case NO_INIT_FILE_OPTION:

@@ -203,7 +203,7 @@ $(OCTAVE_QTHELP_FILES): $(OCTAVE_QTHELP_STAMP)
 $(OCTAVE_QTHELP_STAMP): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/prepare_qhelp.py
 	$(AM_V_GEN) rm -f $(OCTAVE_QTHELP_FILES) && \
 	$(PYTHON) $(srcdir)/%reldir%/prepare_qhelp.py %reldir%/octave_interpreter octave.html && \
-	$(QCOLLECTIONGENERATOR) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
+	$(QCOLLECTIONGENERATOR) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && touch $@ && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
 
 $(srcdir)/%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi
@@ -284,6 +284,7 @@ doc_EXTRA_DIST += \
   $(HTMLDIR_IMAGES) \
   $(OCTAVE_CSS) \
   $(HTMLDIR_CSS) \
+  $(OCTAVE_QTHELP_STAMP) \
   $(OCTAVE_QTHELP_FILES)
 
 # Prevent packaging of distribution unless all libraries

@@ -582,7 +582,7 @@ function [local_packages, global_packages] = pkg (varargin)
       installed_pkgs_lst = installed_packages (local_list, global_list);
       if (numel (files) > 0)
          update_lst = {};
-         installed_names = {installed_pkgs_list.name}';
+         installed_names = {installed_pkgs_lst.name}';
          for i = 1:numel (files)
            idx = find (strcmp (files{i}, installed_names), 1);
            if (isempty (idx))

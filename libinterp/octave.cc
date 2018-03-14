@@ -154,8 +154,8 @@ namespace octave
               m_exec_path = octave_optarg_wrapper ();
             break;
 
-          case FORCE_GUI_OPTION:
-            m_force_gui = true;
+          case GUI_OPTION: // same value as FORCE_GUI_OPTION
+            m_gui = true;
             break;
 
           case IMAGE_PATH_OPTION:
@@ -186,7 +186,7 @@ namespace octave
             break;
 
           case NO_GUI_OPTION:
-            m_no_gui = true;
+            // This option does nothing now.
             break;
 
           case NO_INIT_FILE_OPTION:
@@ -227,14 +227,6 @@ namespace octave
             panic_impossible ();
             break;
           }
-      }
-
-    // Check for various incompatible argument pairs
-    if (m_force_gui && m_no_gui)
-      {
-        std::cerr << "error: only one of --force-gui and --no-gui may be used\n";
-
-        octave_print_terse_usage_and_exit ();
       }
 
     m_remaining_args = string_vector (argv+octave_optind_wrapper (),
@@ -368,6 +360,21 @@ namespace octave
 
         octave_print_terse_usage_and_exit ();
       }
+
+    if (m_options.gui ())
+      {
+        if (m_options.no_window_system ())
+          {
+            std::cerr << "error: --gui and --no-window-system are mutually exclusive options" << std::endl;
+            octave_print_terse_usage_and_exit ();
+          }
+        if (! m_options.line_editing ())
+          {
+            std::cerr << "error: --gui and --no-line-editing are mutually exclusive options" << std::endl;
+            octave_print_terse_usage_and_exit ();
+          }
+      }
+
 
     m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
                            && ! m_options.persist ()

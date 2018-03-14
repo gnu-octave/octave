@@ -79,53 +79,7 @@ namespace octave
 
   bool gui_application::start_gui_p (void) const
   {
-    if (m_options.no_window_system ())
-      return false;
-
-    std::string err_msg;
-    if (! display_info::display_available (err_msg))
-      {
-        if (! (m_options.inhibit_startup_message () || err_msg.empty ()))
-          warning (err_msg.c_str ());
-
-        return false;
-      }
-
-    if (! m_options.line_editing ())
-      {
-        if (! (m_options.inhibit_startup_message ()
-               || m_options.no_gui ()))
-          warning ("--no-line-editing option given, disabling GUI");
-
-        return false;
-      }
-
-    if (m_options.force_gui ())
-      return true;
-
-    if (m_options.no_gui ())
-      return false;
-
-    if (m_options.persist ())
-      return true;
-
-    // If stdin is not a tty, then assume we are reading commands from a
-    // pipe or a redirected file and the GUI should not start.  If this
-    // is not the case (for example, starting from a desktop "launcher"
-    // with no terminal) and you want to start the GUI, you may use the
-    // --force-gui option to start the GUI.
-
-    if (! octave_isatty_wrapper (fileno (stdin)))
-      return false;
-
-    // If we have code to eval or execute from a file, and we are going
-    // to exit immediately after executing it, don't start the gui.
-
-    std::string code_to_eval = m_options.code_to_eval ();
-    if (! code_to_eval.empty () || m_have_script_file)
-      return false;
-
-    return true;
+    return m_options.gui ();
   }
 
   int gui_application::execute (void)

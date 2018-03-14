@@ -20,6 +20,15 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
       glpk  Qhull
 
+ ** The octave command no longer starts the GUI by default.  Most users
+    starting Octave from command line were expecting the command line
+    interface and Desktop launchers required the `--force-gui' option
+    anyway.  With this change, desktop launchers should change to use
+    the new option `--gui'.  The previous `--force-gui' will continue to
+    work and maps to `--gui' but will be removed in Octave 4.8.  The old
+    option `--no-gui' is now irrelevant and is ignored.  It will also be
+    removed in Octave 4.8.
+
  ** A new container data type--containers.Map--is available.  Map is a
     key/value storage container (a.k.a, a hash) that efficiently allows
     storing and retrieving values by name, rather than by position which

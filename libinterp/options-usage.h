@@ -33,9 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 static const char *usage_string =
   "octave [-HVWdfhiqvx] [--debug] [--debug-jit] [--doc-cache-file file]\n\
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
-       [--force-gui] [--help] [--image-path path]\n\
+       [--gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--jit-compiler] [--line-editing] [--no-gui] [--no-history]\n\
+       [--jit-compiler] [--line-editing] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-line-editing]\n\
        [--no-site-file] [--no-window-system] [--norc] [-p path]\n\
        [--path path] [--persist] [--silent] [--traditional]\n\
@@ -59,14 +59,15 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define DOC_CACHE_FILE_OPTION 2
 #define EVAL_OPTION 3
 #define EXEC_PATH_OPTION 4
-#define FORCE_GUI_OPTION 5
+#define FORCE_GUI_OPTION 5 // ignored since Octave 4.4, remove for 4.8
+#define GUI_OPTION 5
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7
 #define INFO_PROG_OPTION 8
 #define DEBUG_JIT_OPTION 9
 #define JIT_COMPILER_OPTION 10
 #define LINE_EDITING_OPTION 11
-#define NO_GUI_OPTION 12
+#define NO_GUI_OPTION 12 // ignored since Octave 4.4, remove for 4.8
 #define NO_INIT_FILE_OPTION 13
 #define NO_INIT_PATH_OPTION 14
 #define NO_LINE_EDITING_OPTION 15
@@ -85,6 +86,7 @@ struct octave_getopt_options long_opts[] =
   { "eval",                     octave_required_arg, 0, EVAL_OPTION },
   { "exec-path",                octave_required_arg, 0, EXEC_PATH_OPTION },
   { "force-gui",                octave_no_arg,       0, FORCE_GUI_OPTION },
+  { "gui",                      octave_no_arg,       0, GUI_OPTION },
   { "help",                     octave_no_arg,       0, 'h' },
   { "image-path",               octave_required_arg, 0, IMAGE_PATH_OPTION },
   { "info-file",                octave_required_arg, 0, INFO_FILE_OPTION },
@@ -135,7 +137,7 @@ Options:\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
-  --force-gui             Force graphical user interface to start.\n\
+  --gui                   Start the graphical user interface.\n\
   --help, -h,             Print short help message and exit.\n\
   --image-path PATH       Add PATH to head of image search path.\n\
   --info-file FILE        Use top-level info file FILE.\n\
@@ -143,7 +145,6 @@ Options:\n\
   --interactive, -i       Force interactive behavior.\n\
   --jit-compiler          Enable the JIT compiler.\n\
   --line-editing          Force readline use for command-line editing.\n\
-  --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-init-path          Don't initialize function search path.\n\

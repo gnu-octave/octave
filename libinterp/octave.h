@@ -50,13 +50,20 @@ namespace octave
 
     bool debug_jit (void) const { return m_debug_jit; }
     bool echo_commands (void) const { return m_echo_commands; }
-    bool force_gui (void) const { return m_force_gui; }
+
+    OCTAVE_DEPRECATED (4.4, "use 'gui' instead")
+    bool force_gui (void) const { return m_gui; }
+
     bool forced_interactive (void) const { return m_forced_interactive; }
     bool forced_line_editing (void) const { return m_forced_line_editing; }
+    bool gui (void) const { return m_gui; }
     bool inhibit_startup_message (void) const { return m_inhibit_startup_message; }
     bool jit_compiler (void) const { return m_jit_compiler; }
     bool line_editing (void) const { return m_line_editing; }
-    bool no_gui (void) const { return m_no_gui; }
+
+    OCTAVE_DEPRECATED (4.4, "use '! gui' instead")
+    bool no_gui (void) const { return ! gui (); }
+
     bool no_window_system (void) const { return m_no_window_system; }
     bool persist (void) const { return m_persist; }
     bool read_history_file (void) const { return m_read_history_file; }
@@ -79,13 +86,20 @@ namespace octave
 
     void debug_jit (bool arg) { m_debug_jit = arg; }
     void echo_commands (bool arg) { m_echo_commands = arg; }
-    void force_gui (bool arg) { m_force_gui = arg; }
+
+    OCTAVE_DEPRECATED (4.4, "use 'gui' instead")
+    void force_gui (bool arg) { m_gui = arg; }
+
     void forced_line_editing (bool arg) { m_forced_line_editing = arg; }
     void forced_interactive (bool arg) { m_forced_interactive = arg; }
+    void gui (bool arg) { m_gui = arg; }
     void inhibit_startup_message (bool arg) { m_inhibit_startup_message = arg; }
     void jit_compiler (bool arg) { m_jit_compiler = arg; }
     void line_editing (bool arg) { m_line_editing = arg; }
-    void no_gui (bool arg) { m_no_gui = arg; }
+
+    OCTAVE_DEPRECATED (4.4, "this has been removed and is the default now")
+    void no_gui (bool) { return; }
+
     void no_window_system (bool arg) { m_no_window_system = arg; }
     void persist (bool arg) { m_persist = arg; }
     void read_history_file (bool arg) { m_read_history_file = arg; }
@@ -116,8 +130,9 @@ namespace octave
     // (--echo-commands, -x)
     bool m_echo_commands = false;
 
-    // If TRUE, force the GUI to start.
-    // (--force-gui)
+    // If TRUE, start the GUI.
+    // (--gui) and (--force-gui) for backwards compatibility
+    bool m_gui = false;
     bool m_force_gui = false;
 
     // TRUE means the user forced this shell to be interactive.
@@ -139,10 +154,6 @@ namespace octave
     // TRUE means we are using readline.
     // (--no-line-editing)
     bool m_line_editing = true;
-
-    // If TRUE don't start the GUI.
-    // (--no-gui)
-    bool m_no_gui = false;
 
     // If TRUE, ignore the window system even if it is available.
     // (--no-window-system, -W)

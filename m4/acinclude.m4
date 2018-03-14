@@ -1922,17 +1922,29 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       LRELEASE="$LRELEASE_QTVER"
     fi
 
-    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE"; then
+    AC_CHECK_TOOLS(QHELPGENERATOR_QTVER, [qhelpgenerator-qt$qt_version])
+    if test -z "$QHELPGENERATOR_QTVER"; then
+      AC_CHECK_TOOLS(QHELPGENERATOR, [qhelpgenerator])
+      if test -n "$QHELPGENERATOR" && test -n "$QTCHOOSER"; then
+        QHELPGENERATORFLAGS="-qt$qt_version"
+      fi
+    else
+      QHELPGENERATOR="$QHELPGENERATOR_QTVER"
+    fi
+
+    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE" || test -z "$QHELPGENERATOR"; then
       warn_qt_tools="one or more of the Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
       build_qt_gui=no
       MOC_QTVER=
       UIC_QTVER=
       RCC_QTVER=
       LRELEASE_QTVER=
-      MOC_FLAGS=
-      UIC_FLAGS=
-      RCC_FLAGS=
-      LRELEASE_FLAGS=
+      QHELPGENERATOR_QTVER=
+      MOCFLAGS=
+      UICFLAGS=
+      RCCFLAGS=
+      LRELEASEFLAGS=
+      QHELPGENERATORFLAGS=
       $as_unset ac_cv_prog_MOC_QTVER
       $as_unset ac_cv_prog_ac_ct_MOC_QTVER
       $as_unset ac_cv_prog_UIC_QTVER
@@ -1941,6 +1953,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       $as_unset ac_cv_prog_ac_ct_RCC_QTVER
       $as_unset ac_cv_prog_LRELEASE_QTVER
       $as_unset ac_cv_prog_ac_ct_LRELEASE_QTVER
+      $as_unset ac_cv_prog_QHELPGENERATOR_QTVER
+      $as_unset ac_cv_prog_ac_ct_QHELPGENERATOR_QTVER
     fi
   fi
 

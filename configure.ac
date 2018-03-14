@@ -3341,6 +3341,7 @@ Octave is now configured for $canonical_host_type
   Qt uic:                        $UIC $UICFLAGS
   Qt rcc:                        $RCC $RCCFLAGS
   Qt lrelease:                   $LRELEASE $LRELEASEFLAGS
+  Qt qhelpgenerator:             $QHELPGENERATOR $QHELPGENERATORFLAGS
   READLINE libraries:            $READLINE_LIBS
   Sndfile CPPFLAGS:              $SNDFILE_CPPFLAGS
   Sndfile LDFLAGS:               $SNDFILE_LDFLAGS

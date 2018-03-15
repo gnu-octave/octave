@@ -2841,13 +2841,6 @@ building from VCS sources.
   fi
 ])
 dnl
-dnl Find desktop-file-install program.
-dnl
-AC_DEFUN([OCTAVE_PROG_DESKTOP_FILE_INSTALL], [
-  AC_CHECK_PROG(DESKTOP_FILE_INSTALL, desktop-file-install, desktop-file-install, [])
-  AC_SUBST(DESKTOP_FILE_INSTALL)
-])
-dnl
 dnl Find find program.
 dnl
 ## Prefer GNU find if found.

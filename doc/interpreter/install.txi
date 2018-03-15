@@ -125,13 +125,13 @@ The following tools are required:
 The Octave sources are primarily written in C++, but some portions are
 also written in C and Fortran.  The Octave sources are intended to be
 portable.  Recent versions of the GNU compiler collection (GCC) should
-work (@url{http://gcc.gnu.org}).  If you use GCC, you should avoid
+work (@url{https://gcc.gnu.org}).  If you use GCC, you should avoid
 mixing versions.  For example, be sure that you are not using the
 obsolete @code{g77} Fortran compiler with modern versions of @code{gcc}
 and @code{g++}.
 
 @item GNU Make
-Tool for building software (@url{http://www.gnu.org/software/make}).
+Tool for building software (@url{https://www.gnu.org/software/make}).
 Octave's build system requires GNU Make.  Other versions of Make will
 not work.  Fortunately, GNU Make is highly portable and easy to install.
 
@@ -145,40 +145,40 @@ Additionally, the following tools may be needed:
 
 @table @asis
 @item Bison
-Parser generator (@url{http://www.gnu.org/software/bison}).
+Parser generator (@url{https://www.gnu.org/software/bison}).
 You will need Bison if you modify the @code{oct-parse.yy} source file or
 if you delete the files that are generated from it.
 
 @item Flex
-Lexer analyzer (@url{http://www.gnu.org/software/flex}).  You will need
+Lexer analyzer (@url{https://www.gnu.org/software/flex}).  You will need
 Flex if you modify the @code{lex.ll} source file or if you delete the
 files that are generated from it.
 
 @item Autoconf
 Package for software configuration
-(@url{http://www.gnu.org/software/autoconf}).  Autoconf is required if
+(@url{https://www.gnu.org/software/autoconf}).  Autoconf is required if
 you modify Octave's @code{configure.ac} file or other files that it
 requires.
 
 @item Automake
 Package for Makefile generation
-(@url{http://www.gnu.org/software/automake}).  Automake is required if
+(@url{https://www.gnu.org/software/automake}).  Automake is required if
 you modify Octave's @code{Makefile.am} files or other files that they
 depend on.
 
 @item Libtool
 Package for building software libraries
-(@url{http://www.gnu.org/software/libtool}).  Libtool is required by
+(@url{https://www.gnu.org/software/libtool}).  Libtool is required by
 Automake.
 
 @item gperf
-Perfect hash function generator (@url{http://www.gnu.org/software/gperf}).
+Perfect hash function generator (@url{https://www.gnu.org/software/gperf}).
 You will need gperf if you modify the @code{octave.gperf} file or if you
 delete the file that is generated from it.
 
 @item Texinfo
 Package for generating online and print documentation
-(@url{http://www.gnu.org/software/texinfo}).  You will need Texinfo to
+(@url{https://www.gnu.org/software/texinfo}).  You will need Texinfo to
 build Octave's documentation or if you modify the documentation source
 files or the docstring of any Octave function.
 @end table
@@ -246,7 +246,7 @@ Portable font engine (@url{http://www.freetype.org}).  FreeType is used
 to perform font rendering for Octave's OpenGL-based graphics functions.
 
 @item GLPK
-GNU Linear Programming Kit (@url{http://www.gnu.org/software/glpk}).
+GNU Linear Programming Kit (@url{https://www.gnu.org/software/glpk}).
 GPLK is required for the function @code{glpk}.
 
 @item @nospell{gl2ps}

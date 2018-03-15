@@ -97,6 +97,7 @@ ldpreloadsep = ${null}@ldpreloadsep@${null}
 
 image_DATA =
 octdata_DATA =
+octdoc_DATA =
 octetc_DATA =
 octlocale_DATA =
 
@@ -399,7 +400,7 @@ DIRS_TO_MAKE = \
 installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
-install-data-local: installdirs-local doc-interpreter-install-doc-local
+install-data-local: installdirs-local
 
 clean-local: doc-clean
 

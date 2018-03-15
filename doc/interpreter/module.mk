@@ -192,19 +192,27 @@ OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.octave-html-stamp
 OCTAVE_CSS = %reldir%/octave.css
 HTMLDIR_CSS = $(OCTAVE_HTML_DIR)/octave.css
 
-OCTAVE_QTHELP_STAMP = %reldir%/.octave-qthelp-stamp
 OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interpreter.qch
+
+octdoc_DATA += \
+  $(OCTAVE_QTHELP_FILES)
 
 $(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 %reldir%/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
 %reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
 $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
-$(OCTAVE_QTHELP_FILES): $(OCTAVE_QTHELP_STAMP)
-$(OCTAVE_QTHELP_STAMP): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/prepare_qhelp.py
-	$(AM_V_GEN) rm -f $(OCTAVE_QTHELP_FILES) && \
+
+$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/prepare_qhelp.py
+	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	$(PYTHON) $(srcdir)/%reldir%/prepare_qhelp.py %reldir%/octave_interpreter octave.html && \
 	$(QCOLLECTIONGENERATOR) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
+
+## The Qt help collection generator command produces two output files
+## with the same base name: the compressed help (qch) file and the help
+## collection (qhc) file.  Declare the qhc file to depend on the
+## associated qch file, so that the files are built serially.
+%reldir%/octave_interpreter.qhc: %reldir%/octave_interpreter.qch
 
 $(srcdir)/%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
@@ -295,10 +303,6 @@ doc-interpreter-dist-hook:
 	@$(GREP) '#define HAVE_QHULL 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing QHULL library.  Cannot package distribution!" ; exit 1; }
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
-
-doc-interpreter-install-doc-local:
-	$(MKDIR_P) $(octdocdir)
-	cp $(OCTAVE_QTHELP_FILES) $(octdocdir)
 
 ## These two texi files have an additional dependency through the
 ## @EXAMPLEFILE macro.

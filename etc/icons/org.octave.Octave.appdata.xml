@@ -19,7 +19,7 @@
   <https://www.gnu.org/licenses/>.
 -->
 <component type="desktop">
-  <id>%OCTAVE_DESKTOP_FILE%</id>
+  <id>org.octave.Octave.desktop</id>
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>GNU Octave</name>

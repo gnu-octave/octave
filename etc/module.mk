@@ -32,6 +32,16 @@ etc_fonts_DATA = \
 %canon_reldir%_EXTRA_DIST += \
   $(etc_fonts_DATA)
 
+appdatadir = $(datadir)/metainfo
+
+appdata_DATA = \
+  %reldir%/icons/org.octave.Octave.appdata.xml
+
+desktopdir = $(datadir)/applications
+
+desktop_DATA = \
+  %reldir%/icons/org.octave.Octave.desktop
+
 icon_IMAGE_FILES = \
   %reldir%/icons/octave-logo.svg \
   %reldir%/icons/octave-sombrero.png
@@ -58,30 +68,22 @@ BUILT_ICONS = \
 %canon_reldir%_EXTRA_DIST += \
   $(BUILT_ICONS) \
   $(icon_IMAGE_FILES) \
-  %reldir%/icons/octave.appdata.xml.in \
-  %reldir%/icons/octave.desktop.in \
-  %reldir%/icons/octave_branding_samples.svg
+  %reldir%/icons/octave_branding_samples.svg \
+  %reldir%/icons/org.octave.Octave.appdata.xml \
+  %reldir%/icons/org.octave.Octave.desktop.in
 
 image_DATA += \
   $(icon_IMAGE_FILES) \
   %reldir%/icons/octave-logo.ico
-
-VENDOR = www.octave.org
 
 DIRSTAMP_FILES += \
   %reldir%/icons/$(octave_dirstamp)
 
 all-local: all-icons
 
-all-icons: %reldir%/icons/octave.appdata.xml %reldir%/icons/octave.desktop $(BUILT_ICONS)
+all-icons: %reldir%/icons/org.octave.Octave.desktop $(BUILT_ICONS)
 
-%reldir%/icons/octave.appdata.xml: %reldir%/icons/octave.appdata.xml.in | %reldir%/icons/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SED) < $< > $@-t \
-	  -e "s|%OCTAVE_DESKTOP_FILE%|${VENDOR}-octave.desktop|" && \
-	mv $@-t $@
-
-%reldir%/icons/octave.desktop: %reldir%/icons/octave.desktop.in | %reldir%/icons/$(octave_dirstamp)
+%reldir%/icons/org.octave.Octave.desktop: %reldir%/icons/org.octave.Octave.desktop.in | %reldir%/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|" && \
@@ -102,10 +104,6 @@ install-data-local: install-icons
 uninstall-local: uninstall-icons
 
 install-icons:
-	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
-	    --vendor $(VENDOR) %reldir%/icons/octave.desktop; \
-	fi
 	for f in $(BUILT_PNG_ICONS); do \
 	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \
 	  if test -f $$f; then d=; else d="$(srcdir)/"; fi; \
@@ -114,25 +112,18 @@ install-icons:
 	done
 	$(MKDIR_P) $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
 	$(INSTALL_DATA) $(srcdir)/%reldir%/icons/octave-logo.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
-	$(MKDIR_P) $(DESTDIR)$(datadir)/appdata
-	$(INSTALL_DATA) %reldir%/icons/octave.appdata.xml $(DESTDIR)$(datadir)/appdata/$(VENDOR)-octave.appdata.xml
 
 uninstall-icons:
-	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  rm -f $(DESTDIR)$(datadir)/applications/$(VENDOR)-octave.desktop; \
-	fi
 	for f in $(BUILT_PNG_ICONS); do \
 	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \
 	  rm -f $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps/octave.png; \
 	done
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
-	rm -f $(DESTDIR)$(datadir)/appdata/$(VENDOR)-octave.appdata.xml
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \
-  %reldir%/icons/octave.appdata.xml \
-  %reldir%/icons/octave.desktop
+  %reldir%/icons/org.octave.Octave.desktop
 
 %canon_reldir%_MAINTAINERCLEANFILES += \
   $(BUILT_ICONS)

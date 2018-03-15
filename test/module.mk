@@ -74,6 +74,7 @@ include %reldir%/fcn-handle-derived-resolution/module.mk
 include %reldir%/local-functions/module.mk
 include %reldir%/nest/module.mk
 include %reldir%/publish/module.mk
+include %reldir%/pkg/module.mk
 
 define run-octave-tests
   ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ); \

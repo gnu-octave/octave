@@ -1,0 +1,13 @@
+Name: mfile_minimal_test
+Version: 0.1.0
+Date: 2017-12-08
+Author: hopefully various authors
+Maintainer: hopefully some of those authors.
+Title: Example Minimal Package
+Description: Minimal package structure with only m-files.
+Depends: octave (>= 4.2.1)
+License: GPLv3+
+Categories: Test
+# BuildRequires:
+# SystemRequirements:
+# Url: external homepage

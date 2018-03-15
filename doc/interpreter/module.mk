@@ -194,6 +194,9 @@ HTMLDIR_CSS = $(OCTAVE_HTML_DIR)/octave.css
 
 OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interpreter.qch
 
+octdoc_DATA += \
+  $(OCTAVE_QTHELP_FILES)
+
 $(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 %reldir%/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
 %reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
@@ -300,10 +303,6 @@ doc-interpreter-dist-hook:
 	@$(GREP) '#define HAVE_QHULL 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing QHULL library.  Cannot package distribution!" ; exit 1; }
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
-
-doc-interpreter-install-doc-local:
-	$(MKDIR_P) $(octdocdir)
-	cp $(OCTAVE_QTHELP_FILES) $(octdocdir)
 
 ## These two texi files have an additional dependency through the
 ## @EXAMPLEFILE macro.

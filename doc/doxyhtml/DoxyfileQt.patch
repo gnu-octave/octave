@@ -1,0 +1,8 @@
+
+# The following lines are used to create a minimal version to be used
+# as documentation within the GNU Octave GUI widget Qt Assistant.
+
+HTML_OUTPUT            = doxyhtml/doxyqt
+HAVE_DOT               = NO
+GENERATE_TREEVIEW      = NO
+SEARCHENGINE           = NO

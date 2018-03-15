@@ -6,7 +6,7 @@
 # match the size of integers used by the BLAS library.
 
 # ===========================================================================
-#     http://www.gnu.org/software/autoconf-archive/ax_blas_f77_func.html
+#     https://www.gnu.org/software/autoconf-archive/ax_blas_f77_func.html
 # ===========================================================================
 #
 # SYNOPSIS

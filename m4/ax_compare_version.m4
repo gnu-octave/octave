@@ -1,5 +1,5 @@
 # ===========================================================================
-#    http://www.gnu.org/software/autoconf-archive/ax_compare_version.html
+#    https://www.gnu.org/software/autoconf-archive/ax_compare_version.html
 # ===========================================================================
 #
 # SYNOPSIS

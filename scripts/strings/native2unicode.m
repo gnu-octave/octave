@@ -28,7 +28,7 @@
 ## @var{codepage} must be an identifier of a valid code page.  Examples for
 ## valid code pages are @qcode{"ISO-8859-1"}, @qcode{"Shift-JIS"}, or
 ## @qcode{"UTF-16"}.  For a list of supported code pages, see
-## @url{http://www.gnu.org/software/libiconv}.  If @var{codepage} is omitted
+## @url{https://www.gnu.org/software/libiconv}.  If @var{codepage} is omitted
 ## or empty, the system default codepage is used.
 ##
 ## If @var{native_bytes} is a string vector, it is returned as is.

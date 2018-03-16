@@ -399,13 +399,19 @@ endfunction
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test
+%! ## Jacobi preconditioner works
 %! n = 10;
 %! tol = 1e-8;
-%! a = (2 * sprand (n, n, .1) - 1) + 1i * (2 * sprand (n, n, .1) - 1);
-%! A = a + 2 * eye (n);
+%! A = hilb (n) + 1i * hilb (n);
+%! A(1,1) = 100;
+%! A(n, n) = 100;
 %! b = sum (A, 2);
+%! [x, flag, relres, iter, resvec] = tfqmr (A, b, tol);
+%! assert (x, ones (size (b)), 0.005);
+%! assert (iter, 8);
 %! [x, flag, relres, iter, resvec] = tfqmr (A, b, tol, [], diag (diag (A)));
-%! assert (x, ones (size (b)), 1e-7);
+%! assert (x, ones (size (b)), 0.002);
+%! assert (iter, 6);
 
 %!test
 %! ## Solve complex linear system

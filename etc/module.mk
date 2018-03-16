@@ -27,8 +27,10 @@ fallback_FONT_FILES = \
   %reldir%/fonts/FreeSansBoldOblique.otf \
   %reldir%/fonts/FreeSansOblique.otf
 
+if AMCOND_INSTALL_INTERNAL_FONT_FILES
 octfonts_DATA += \
   $(fallback_FONT_FILES)
+endif
 
 %canon_reldir%_EXTRA_DIST += \
   $(fallback_FONT_FILES)

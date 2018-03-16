@@ -213,7 +213,11 @@ namespace octave
           fonts_dir = sys::env::getenv ("OCTAVE_FONTS_DIR");
 
           if (fonts_dir.empty ())
+#if defined (SYSTEM_FREEFONT_DIR)
+            fonts_dir = SYSTEM_FREEFONT_DIR;
+#else
             fonts_dir = config::oct_fonts_dir ();
+#endif
         }
 
 

@@ -687,7 +687,8 @@ namespace octave
   void
   octave_dock_widget::set_focus_predecessor (void)
   {
-    if (m_predecessor_widget)    // only != 0 if widget was tabbed
+    // only != 0 if widget was tabbed
+    if (m_predecessor_widget && m_predecessor_widget->isVisible ())
       m_predecessor_widget->focus ();
 
     m_predecessor_widget = nullptr;

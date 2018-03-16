@@ -99,6 +99,7 @@ image_DATA =
 octdata_DATA =
 octdoc_DATA =
 octetc_DATA =
+octfonts_DATA =
 octlocale_DATA =
 
 DOC_TARGETS =

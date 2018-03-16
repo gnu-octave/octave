@@ -63,6 +63,7 @@ mandir=`echo "@mandir@" | sed "s|^${prefix}/||"`
 octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/||"`
 octdocdir=`echo "@octdocdir@" | sed "s|^${prefix}/||"`
 octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/||"`
+octfontsdir=`echo "@octfontsdir@" | sed "s|^${prefix}/||"`
 octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
 octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/||"`
 octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/||"`
@@ -103,8 +104,9 @@ $SED \
   -e "s|%OCTAVE_MANDIR%|\"${mandir}\"|" \
   -e "s|%OCTAVE_OCTDATADIR%|\"${octdatadir}\"|" \
   -e "s|%OCTAVE_OCTDOCDIR%|\"${octdocdir}\"|" \
-  -e "s|%OCTAVE_OCTFILEDIR%|\"${octfiledir}\"|" \
   -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
+  -e "s|%OCTAVE_OCTFILEDIR%|\"${octfiledir}\"|" \
+  -e "s|%OCTAVE_OCTFONTSDIR%|\"${octfontsdir}\"|" \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_OCTLIBDIR%|\"${octlibdir}\"|" \
   -e "s|%OCTAVE_OCTLOCALEDIR%|\"${octlocaledir}\"|" \

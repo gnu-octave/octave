@@ -128,6 +128,10 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_OCTETCDIR %OCTAVE_OCTETCDIR%
 #endif
 
+#if ! defined (OCTAVE_OCTFONTSDIR)
+#  define OCTAVE_OCTFONTSDIR %OCTAVE_OCTFONTSDIR%
+#endif
+
 #if ! defined (OCTAVE_OCTINCLUDEDIR)
 #  define OCTAVE_OCTINCLUDEDIR %OCTAVE_OCTINCLUDEDIR%
 #endif

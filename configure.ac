@@ -170,6 +170,9 @@ OCTAVE_SET_DEFAULT([octdatadir], '${datadir}/octave/${version}/data')
 ## Where Octave will search for Qt help files shipped with distribution.
 OCTAVE_SET_DEFAULT([octdocdir], '${datadir}/octave/${version}/doc')
 
+## Where Octave will search for fallback font files shipped with distribution.
+OCTAVE_SET_DEFAULT([octfontsdir], '${datadir}/octave/${version}/fonts')
+
 ## Where Octave will look for startup files.
 OCTAVE_SET_DEFAULT([startupfiledir], '${fcnfiledir}/startup')
 OCTAVE_SET_DEFAULT([localstartupfiledir], '${localfcnfiledir}/startup')
@@ -3197,6 +3200,7 @@ AC_CONFIG_COMMANDS_PRE([
   eval imagedir="\"$imagedir\""
   eval octdatadir="\"$octdatadir\""
   eval octdocdir="\"$octdocdir\""
+  eval octfontsdir="\"$octfontsdir\""
   eval startupfiledir="\"$startupfiledir\""
   eval localstartupfiledir="\"$localstartupfiledir\""
   eval man1dir="\"$man1dir\""

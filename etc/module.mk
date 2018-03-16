@@ -21,16 +21,17 @@
   %reldir%/OLD-ChangeLogs/src-ChangeLog \
   %reldir%/OLD-ChangeLogs/test-ChangeLog
 
-etc_fontsdir = $(octetcdir)/fonts
-
-etc_fonts_DATA = \
+fallback_FONT_FILES = \
   %reldir%/fonts/FreeSans.otf \
   %reldir%/fonts/FreeSansBold.otf \
   %reldir%/fonts/FreeSansBoldOblique.otf \
   %reldir%/fonts/FreeSansOblique.otf
 
+octfonts_DATA += \
+  $(fallback_FONT_FILES)
+
 %canon_reldir%_EXTRA_DIST += \
-  $(etc_fonts_DATA)
+  $(fallback_FONT_FILES)
 
 appdatadir = $(datadir)/metainfo
 

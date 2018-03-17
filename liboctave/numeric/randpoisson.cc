@@ -264,19 +264,23 @@ namespace octave
 
   /* The remainder of the file is by Paul Kienzle */
 
-  /* Given uniform u, find x such that CDF(L,x)==u.  Return x. */
-  static void poisson_cdf_lookup (double lambda, double *p, size_t n)
-  {
-    /* Table size is predicated on the maximum value of lambda
-     * we want to store in the table, and the maximum value of
-     * returned by the uniform random number generator on [0,1).
-     * With lambda==10 and u_max = 1 - 1/(2^32+1), we
-     * have poisson_pdf(lambda,36) < 1-u_max.  If instead our
-     * generator uses more bits of mantissa or returns a value
-     * in the range [0,1], then for lambda==10 we need a table
-     * size of 46 instead.  For long doubles, the table size
-     * will need to be longer still.  */
+  /* Table size is predicated on the maximum value of lambda
+   * we want to store in the table, and the maximum value of
+   * returned by the uniform random number generator on [0,1).
+   * With lambda==10 and u_max = 1 - 1/(2^32+1), we
+   * have poisson_pdf(lambda,36) < 1-u_max.  If instead our
+   * generator uses more bits of mantissa or returns a value
+   * in the range [0,1], then for lambda==10 we need a table
+   * size of 46 instead.  For long doubles, the table size
+   * will need to be longer still.  */
 #define TABLESIZE 46
+
+  /* Given uniform u, find x such that CDF(L,x)==u.  Return x. */
+
+  template <typename T>
+  static void
+  poisson_cdf_lookup (double lambda, T *p, size_t n)
+  {
     double t[TABLESIZE];
 
     /* Precompute the table for the u up to and including 0.458.
@@ -311,7 +315,7 @@ namespace octave
       nextk:
         if (u <= t[k])
           {
-            p[i] = static_cast<double> (k);
+            p[i] = static_cast<T> (k);
             continue;
           }
         if (++k < tableidx)
@@ -333,81 +337,14 @@ namespace octave
         /* We are assuming that the table size is big enough here.
          * This should be true even if rand_uniform is returning values in
          * the range [0,1] rather than [0,1). */
-        p[i] = static_cast<double> (tableidx-1);
-      }
-  }
-
-  static void poisson_cdf_lookup_float (double lambda, float *p, size_t n)
-  {
-    double t[TABLESIZE];
-
-    /* Precompute the table for the u up to and including 0.458.
-     * We will almost certainly need it. */
-    int intlambda = static_cast<int> (std::floor (lambda));
-    double P;
-    int tableidx;
-    size_t i = n;
-
-    t[0] = P = exp (-lambda);
-    for (tableidx = 1; tableidx <= intlambda; tableidx++)
-      {
-        P = P*lambda/static_cast<double> (tableidx);
-        t[tableidx] = t[tableidx-1] + P;
-      }
-
-    while (i-- > 0)
-      {
-        double u = octave::rand_uniform<double> ();
-        int k = (u > 0.458 ? intlambda : 0);
-      nextk:
-        if (u <= t[k])
-          {
-            p[i] = static_cast<float> (k);
-            continue;
-          }
-        if (++k < tableidx)
-          goto nextk;
-
-        while (tableidx < TABLESIZE)
-          {
-            P = P*lambda/static_cast<double> (tableidx);
-            t[tableidx] = t[tableidx-1] + P;
-            if (t[tableidx] == t[tableidx-1]) t[tableidx] = 1.0;
-            tableidx++;
-            if (u <= t[tableidx-1]) break;
-          }
-
-        p[i] = static_cast<float> (tableidx-1);
+        p[i] = static_cast<T> (tableidx-1);
       }
   }
 
   /* From Press, et al., Numerical Recipes */
-  static void poisson_rejection (double lambda, double *p, size_t n)
-  {
-    double sq = std::sqrt (2.0*lambda);
-    double alxm = std::log (lambda);
-    double g = lambda*alxm - xlgamma (lambda+1.0);
-    size_t i;
-
-    for (i = 0; i < n; i++)
-      {
-        double y, em, t;
-        do
-          {
-            do
-              {
-                y = tan (M_PI*octave::rand_uniform<double> ());
-                em = sq * y + lambda;
-              } while (em < 0.0);
-            em = std::floor (em);
-            t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
-          } while (octave::rand_uniform<double> () > t);
-        p[i] = em;
-      }
-  }
-
-  /* From Press, et al., Numerical Recipes */
-  static void poisson_rejection_float (double lambda, float *p, size_t n)
+  template <typename T>
+  static void
+  poisson_rejection (double lambda, T *p, size_t n)
   {
     double sq = std::sqrt (2.0*lambda);
     double alxm = std::log (lambda);
@@ -442,17 +379,18 @@ namespace octave
    * and large enough. */
 
   /* Generate a set of poisson numbers with the same distribution */
-  template <> void rand_poisson<double> (double L, octave_idx_type n, double *p)
+  template <typename T> void rand_poisson (T L_arg, octave_idx_type n, T *p)
   {
+    double L = L_arg;
     octave_idx_type i;
     if (L < 0.0 || lo_ieee_isinf (L))
       {
         for (i=0; i<n; i++)
-          p[i] = numeric_limits<double>::NaN ();
+          p[i] = numeric_limits<T>::NaN ();
       }
     else if (L <= 10.0)
       {
-        poisson_cdf_lookup (L, p, n);
+        poisson_cdf_lookup<T> (L, p, n);
       }
     else if (L <= 1e8)
       {
@@ -465,18 +403,22 @@ namespace octave
         const double sqrtL = std::sqrt (L);
         for (i = 0; i < n; i++)
           {
-            p[i] = std::floor (rand_normal<double> () * sqrtL + L + 0.5);
+            p[i] = std::floor (rand_normal<T> () * sqrtL + L + 0.5);
             if (p[i] < 0.0)
               p[i] = 0.0; /* will probably never happen */
           }
       }
   }
 
+  template void rand_poisson<double> (double, octave_idx_type, double *);
+  template void rand_poisson<float> (float, octave_idx_type, float *);
+
   /* Generate one poisson variate */
-  template <> double rand_poisson<double> (double L)
+  template <typename T> T rand_poisson (T L_arg)
   {
-    double ret;
-    if (L < 0.0) ret = numeric_limits<double>::NaN ();
+    double L = L_arg;
+    T ret;
+    if (L < 0.0) ret = numeric_limits<T>::NaN ();
     else if (L <= 12.0)
       {
         /* From Press, et al. Numerical recipes */
@@ -486,98 +428,30 @@ namespace octave
         do
           {
             ++em;
-            t *= rand_uniform<double> ();
+            t *= rand_uniform<T> ();
           } while (t > g);
         ret = em;
       }
     else if (L <= 1e8)
       {
         /* numerical recipes */
-        poisson_rejection (L, &ret, 1);
+        poisson_rejection<T> (L, &ret, 1);
       }
     else if (lo_ieee_isinf (L))
       {
         /* FIXME: R uses NaN, but the normal approximation suggests that
          * limit should be Inf.  Which is correct? */
-        ret = numeric_limits<double>::NaN ();
+        ret = numeric_limits<T>::NaN ();
       }
     else
       {
         /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-        ret = std::floor (rand_normal<double> () * std::sqrt (L) + L + 0.5);
+        ret = std::floor (rand_normal<T> () * std::sqrt (L) + L + 0.5);
         if (ret < 0.0) ret = 0.0; /* will probably never happen */
       }
     return ret;
   }
 
-  /* Generate a set of poisson numbers with the same distribution */
-  template <> void rand_poisson<float> (float FL, octave_idx_type n, float *p)
-  {
-    double L = FL;
-    octave_idx_type i;
-    if (L < 0.0 || lo_ieee_isinf (L))
-      {
-        for (i=0; i<n; i++)
-          p[i] = numeric_limits<double>::NaN ();
-      }
-    else if (L <= 10.0)
-      {
-        poisson_cdf_lookup_float (L, p, n);
-      }
-    else if (L <= 1e8)
-      {
-        for (i=0; i<n; i++)
-          p[i] = pprsc (L);
-      }
-    else
-      {
-        /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-        const double sqrtL = std::sqrt (L);
-        for (i = 0; i < n; i++)
-          {
-            p[i] = std::floor (rand_normal<float> () * sqrtL + L + 0.5);
-            if (p[i] < 0.0)
-              p[i] = 0.0; /* will probably never happen */
-          }
-      }
-  }
-
-  /* Generate one poisson variate */
-  template <> float rand_poisson<float> (float FL)
-  {
-    double L = FL;
-    float ret;
-    if (L < 0.0) ret = numeric_limits<float>::NaN ();
-    else if (L <= 12.0)
-      {
-        /* From Press, et al. Numerical recipes */
-        double g = exp (-L);
-        int em = -1;
-        double t = 1.0;
-        do
-          {
-            ++em;
-            t *= rand_uniform<float> ();
-          } while (t > g);
-        ret = em;
-      }
-    else if (L <= 1e8)
-      {
-        /* numerical recipes */
-        poisson_rejection_float (L, &ret, 1);
-      }
-    else if (lo_ieee_isinf (L))
-      {
-        /* FIXME: R uses NaN, but the normal approximation suggests that
-         * limit should be Inf. Which is correct? */
-        ret = numeric_limits<float>::NaN ();
-      }
-    else
-      {
-        /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-        ret = std::floor (rand_normal<float> () * std::sqrt (L) + L + 0.5);
-        if (ret < 0.0) ret = 0.0; /* will probably never happen */
-      }
-    return ret;
-  }
+  template double rand_poisson<double> (double);
+  template float rand_poisson<float> (float);
 }

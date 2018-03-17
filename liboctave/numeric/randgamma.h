@@ -34,12 +34,6 @@ namespace octave
   void
   rand_gamma (T a, octave_idx_type n, T *p);
 
-  template <> void
-  rand_gamma<double> (double a, octave_idx_type n, double  *p);
-
-  template <> void
-  rand_gamma<float> (float a, octave_idx_type n, float  *p);
-
   template <typename T>
   T
   rand_gamma (T a)

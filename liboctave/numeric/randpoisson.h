@@ -30,19 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  template <typename T> void rand_poisson (T L, octave_idx_type n, T *p);
+
   template <typename T> T rand_poisson (T L);
-
-  template <> double rand_poisson<double> (double L);
-  template <> float rand_poisson<float> (float L);
-
-  template <typename T> void
-  rand_poisson (T L, octave_idx_type n, T *p);
-
-  template <> void
-  rand_poisson<double> (double L, octave_idx_type n, double *p);
-
-  template <> void
-  rand_poisson<float> (float L, octave_idx_type n, float *p);
 }
 
 OCTAVE_DEPRECATED (4.4, "use 'octave::rand_poisson<double>' instead")

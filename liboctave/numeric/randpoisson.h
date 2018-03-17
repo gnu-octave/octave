@@ -28,16 +28,49 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-extern OCTAVE_API double
-oct_randp (double L);
+namespace octave
+{
+  template <typename T> T rand_poisson (T L);
 
-extern OCTAVE_API void
-oct_fill_randp (double L, octave_idx_type n, double *p);
+  template <> double rand_poisson<double> (double L);
+  template <> float rand_poisson<float> (float L);
 
-extern OCTAVE_API float
-oct_float_randp (float L);
+  template <typename T> void
+  rand_poisson (T L, octave_idx_type n, T *p);
 
-extern OCTAVE_API void
-oct_fill_float_randp (float L, octave_idx_type n, float *p);
+  template <> void
+  rand_poisson<double> (double L, octave_idx_type n, double *p);
+
+  template <> void
+  rand_poisson<float> (float L, octave_idx_type n, float *p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_poisson<double>' instead")
+inline double
+oct_randp (double L)
+{
+  return octave::rand_poisson (L);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_poisson<double>' instead")
+inline void
+oct_fill_randp (double L, octave_idx_type n, double *p)
+{
+  octave::rand_poisson (L, n, p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_poisson<float>' instead")
+inline float
+oct_float_randp (float L)
+{
+  return octave::rand_poisson (L);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_poisson<float>' instead")
+inline void
+oct_fill_float_randp (float L, octave_idx_type n, float *p)
+{
+  octave::rand_poisson (L, n, p);
+}
 
 #endif

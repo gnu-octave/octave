@@ -641,10 +641,10 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
   if (resid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      resid = ColumnVector (octave_rand::vector (n));
-      octave_rand::distribution (rand_dist);
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      resid = ColumnVector (octave::rand::vector (n));
+      octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -933,10 +933,10 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
   if (resid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      resid = ColumnVector (octave_rand::vector (n));
-      octave_rand::distribution (rand_dist);
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      resid = ColumnVector (octave::rand::vector (n));
+      octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -1221,10 +1221,10 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   if (resid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      resid = ColumnVector (octave_rand::vector (n));
-      octave_rand::distribution (rand_dist);
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      resid = ColumnVector (octave::rand::vector (n));
+      octave::rand::distribution (rand_dist);
     }
   else if (n != resid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -1485,10 +1485,10 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
   if (resid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      resid = ColumnVector (octave_rand::vector (n));
-      octave_rand::distribution (rand_dist);
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      resid = ColumnVector (octave::rand::vector (n));
+      octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -1840,10 +1840,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
   if (resid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      resid = ColumnVector (octave_rand::vector (n));
-      octave_rand::distribution (rand_dist);
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      resid = ColumnVector (octave::rand::vector (n));
+      octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != resid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -2199,10 +2199,10 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   if (resid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      resid = ColumnVector (octave_rand::vector (n));
-      octave_rand::distribution (rand_dist);
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      resid = ColumnVector (octave::rand::vector (n));
+      octave::rand::distribution (rand_dist);
     }
   else if (n != resid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -2527,14 +2527,14 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
   if (cresid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      Array<double> rr (octave_rand::vector (n));
-      Array<double> ri (octave_rand::vector (n));
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      Array<double> rr (octave::rand::vector (n));
+      Array<double> ri (octave::rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (F77_INT i = 0; i < n; i++)
         cresid(i) = Complex (rr(i),ri(i));
-      octave_rand::distribution (rand_dist);
+      octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != cresid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -2831,14 +2831,14 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
   if (cresid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      Array<double> rr (octave_rand::vector (n));
-      Array<double> ri (octave_rand::vector (n));
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      Array<double> rr (octave::rand::vector (n));
+      Array<double> ri (octave::rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (F77_INT i = 0; i < n; i++)
         cresid(i) = Complex (rr(i),ri(i));
-      octave_rand::distribution (rand_dist);
+      octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != cresid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
@@ -3139,14 +3139,14 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
 
   if (cresid.isempty ())
     {
-      std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution ("uniform");
-      Array<double> rr (octave_rand::vector (n));
-      Array<double> ri (octave_rand::vector (n));
+      std::string rand_dist = octave::rand::distribution ();
+      octave::rand::distribution ("uniform");
+      Array<double> rr (octave::rand::vector (n));
+      Array<double> ri (octave::rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (F77_INT i = 0; i < n; i++)
         cresid(i) = Complex (rr(i),ri(i));
-      octave_rand::distribution (rand_dist);
+      octave::rand::distribution (rand_dist);
     }
   else if (n != cresid.numel ())
     (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");

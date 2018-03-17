@@ -28,11 +28,54 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-extern OCTAVE_API double oct_randg (double a);
-extern OCTAVE_API void oct_fill_randg (double a, octave_idx_type n, double *p);
+namespace octave
+{
+  template <typename T>
+  void
+  rand_gamma (T a, octave_idx_type n, T *p);
 
-extern OCTAVE_API float oct_float_randg (float a);
-extern OCTAVE_API void oct_fill_float_randg (float a, octave_idx_type n,
-                                             float *p);
+  template <> void
+  rand_gamma<double> (double a, octave_idx_type n, double  *p);
+
+  template <> void
+  rand_gamma<float> (float a, octave_idx_type n, float  *p);
+
+  template <typename T>
+  T
+  rand_gamma (T a)
+  {
+    T retval;
+    rand_gamma (a, 1, &retval);
+    return retval;
+  }
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<double>' instead")
+inline double
+oct_randg (double a)
+{
+  return octave::rand_gamma (a);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<float>' instead")
+inline float
+oct_float_randg (float a)
+{
+  return octave::rand_gamma (a);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<double>' instead")
+inline void
+oct_fill_randg (double a, octave_idx_type n, double *p)
+{
+  octave::rand_gamma (a, n, p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<float>' instead")
+inline void
+oct_fill_float_randg (float a, octave_idx_type n, float *p)
+{
+  octave::rand_gamma (a, n, p);
+}
 
 #endif

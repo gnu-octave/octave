@@ -64,25 +64,26 @@ static std::string help_msg =
 "  -p VAR, --print VAR   Print the value of the given configuration\n"
 "                        variable VAR.  Recognized variables are:\n"
 "\n"
-"                          API_VERSION            LOCALARCHLIBDIR\n"
-"                          ARCHLIBDIR             LOCALFCNFILEDIR\n"
-"                          BINDIR                 LOCALOCTFILEDIR\n"
-"                          CANONICAL_HOST_TYPE    LOCALSTARTUPFILEDIR\n"
-"                          DATADIR                LOCALVERARCHLIBDIR\n"
-"                          DATAROOTDIR            LOCALVERFCNFILEDIR\n"
-"                          DEFAULT_PAGER          LOCALVEROCTFILEDIR\n"
-"                          EXEC_PREFIX            MAN1DIR\n"
-"                          EXEEXT                 MAN1EXT\n"
-"                          FCNFILEDIR             MANDIR\n"
-"                          IMAGEDIR               OCTAVE_EXEC_HOME\n"
-"                          INCLUDEDIR             OCTAVE_HOME\n"
-"                          INFODIR                OCTDATADIR\n"
-"                          INFOFILE               OCTDOCDIR\n"
-"                          LIBDIR                 OCTFILEDIR\n"
+"                          API_VERSION            LOCALFCNFILEDIR\n"
+"                          ARCHLIBDIR             LOCALOCTFILEDIR\n"
+"                          BINDIR                 LOCALSTARTUPFILEDIR\n"
+"                          CANONICAL_HOST_TYPE    LOCALVERARCHLIBDIR\n"
+"                          DATADIR                LOCALVERFCNFILEDIR\n"
+"                          DATAROOTDIR            LOCALVEROCTFILEDIR\n"
+"                          DEFAULT_PAGER          MAN1DIR\n"
+"                          EXEC_PREFIX            MAN1EXT\n"
+"                          EXEEXT                 MANDIR\n"
+"                          FCNFILEDIR             OCTAVE_EXEC_HOME\n"
+"                          IMAGEDIR               OCTAVE_HOME\n"
+"                          INCLUDEDIR             OCTDATADIR\n"
+"                          INFODIR                OCTDOCDIR\n"
+"                          INFOFILE               OCTFILEDIR\n"
+"                          LIBDIR                 OCTFONTSDIR\n"
 "                          LIBEXECDIR             OCTINCLUDEDIR\n"
 "                          LOCALAPIARCHLIBDIR     OCTLIBDIR\n"
 "                          LOCALAPIFCNFILEDIR     STARTUPFILEDIR\n"
 "                          LOCALAPIOCTFILEDIR     VERSION\n"
+"                          LOCALARCHLIBDIR\n"
 "\n"
 "  -v, --version         Print the Octave version number.\n"
 "\n";
@@ -128,6 +129,7 @@ initialize (void)
   vars["OCTDATADIR"] = prepend_octave_home (%OCTAVE_OCTDATADIR%);
   vars["OCTDOCDIR"] = prepend_octave_home (%OCTAVE_OCTDOCDIR%);
   vars["OCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_OCTFILEDIR%);
+  vars["OCTFONTSDIR"] = prepend_octave_home (%OCTAVE_OCTFONTSDIR%);
   vars["OCTINCLUDEDIR"] = prepend_octave_home (%OCTAVE_OCTINCLUDEDIR%);
   vars["OCTLIBDIR"] = prepend_octave_exec_home (%OCTAVE_OCTLIBDIR%);
   vars["STARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_STARTUPFILEDIR%);

@@ -203,7 +203,7 @@ main (int argc, char **argv)
 {
   int retval = 0;
 
-  bool start_gui = true;
+  bool start_gui = false;
   bool gui_libs = true;
 
   set_octave_home ();
@@ -256,6 +256,15 @@ main (int argc, char **argv)
           // some plotting or ui* calls.
 
           start_gui = false;
+          new_argv[k++] = argv[i];
+        }
+      else if (! strcmp (argv[i], "--gui"))
+        {
+          // If we see this option, then we fork and exec octave with
+          // the --gui option, while continuing to handle signals in the
+          // terminal.
+
+          start_gui = true;
           new_argv[k++] = argv[i];
         }
       else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet"))

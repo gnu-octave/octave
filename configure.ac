@@ -170,6 +170,9 @@ OCTAVE_SET_DEFAULT([octdatadir], '${datadir}/octave/${version}/data')
 ## Where Octave will search for Qt help files shipped with distribution.
 OCTAVE_SET_DEFAULT([octdocdir], '${datadir}/octave/${version}/doc')
 
+## Where Octave will search for fallback font files shipped with distribution.
+OCTAVE_SET_DEFAULT([octfontsdir], '${datadir}/octave/${version}/fonts')
+
 ## Where Octave will look for startup files.
 OCTAVE_SET_DEFAULT([startupfiledir], '${fcnfiledir}/startup')
 OCTAVE_SET_DEFAULT([localstartupfiledir], '${localfcnfiledir}/startup')
@@ -272,6 +275,34 @@ case $with_shell in
 esac
 AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
   [Define this to be the path to the shell command interpreter.])
+
+### Use the system-wide installation of GNU FreeFont if the user requests it.
+### By default, Octave includes its own copy of the FreeSans font, which it
+### installs in its own directory for use as a fallback default font.  If this
+### configuration option is used, then do not install our own copy of the fonts
+### and assume they can be found in the provided system directory.
+SYSTEM_FREEFONT_DIR=
+AC_ARG_WITH([system-freefont],
+  [AS_HELP_STRING([--with-system-freefont=DIR],
+    [use FreeSans fonts in DIR (default: install and use internal copy)])])
+case $with_system_freefont in
+  no | "")
+    SYSTEM_FREEFONT_DIR=
+    ;;
+  yes)
+    AC_MSG_ERROR([directory argument required for --with-system-freefont])
+    ;;
+  *)
+    SYSTEM_FREEFONT_DIR=$with_system_freefont
+    ;;
+esac
+if test -n "$SYSTEM_FREEFONT_DIR"; then
+  AC_MSG_NOTICE([configuring Octave to use system fonts in $SYSTEM_FREEFONT_DIR])
+  AC_DEFINE_UNQUOTED([SYSTEM_FREEFONT_DIR], ["$SYSTEM_FREEFONT_DIR"],
+    [Define this to be the system directory containing the GNU FreeFont fonts.])
+fi
+AM_CONDITIONAL([AMCOND_INSTALL_INTERNAL_FONT_FILES],
+  [test -z "$SYSTEM_FREEFONT_DIR"])
 
 ### Determine which C++ compiler to use (we expect to find g++).
 
@@ -3197,6 +3228,7 @@ AC_CONFIG_COMMANDS_PRE([
   eval imagedir="\"$imagedir\""
   eval octdatadir="\"$octdatadir\""
   eval octdocdir="\"$octdocdir\""
+  eval octfontsdir="\"$octfontsdir\""
   eval startupfiledir="\"$startupfiledir\""
   eval localstartupfiledir="\"$localstartupfiledir\""
   eval man1dir="\"$man1dir\""

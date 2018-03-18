@@ -79,6 +79,7 @@ namespace octave
     extern OCTINTERP_API std::string oct_data_dir (void);
     extern OCTINTERP_API std::string oct_doc_dir (void);
     extern OCTINTERP_API std::string oct_etc_dir (void);
+    extern OCTINTERP_API std::string oct_fonts_dir (void);
     extern OCTINTERP_API std::string oct_include_dir (void);
     extern OCTINTERP_API std::string oct_lib_dir (void);
     extern OCTINTERP_API std::string oct_locale_dir (void);

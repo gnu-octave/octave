@@ -206,24 +206,27 @@ namespace octave
         }
 #endif
 
-      static std::string font_dir;
+      static std::string fonts_dir;
 
-      if (font_dir.empty ())
+      if (fonts_dir.empty ())
         {
-          font_dir = sys::env::getenv ("OCTAVE_FONT_DIR");
+          fonts_dir = sys::env::getenv ("OCTAVE_FONTS_DIR");
 
-          if (font_dir.empty ())
-            font_dir = config::oct_etc_dir () + sys::file_ops::dir_sep_str ()
-                       + "fonts";
+          if (fonts_dir.empty ())
+#if defined (SYSTEM_FREEFONT_DIR)
+            fonts_dir = SYSTEM_FREEFONT_DIR;
+#else
+            fonts_dir = config::oct_fonts_dir ();
+#endif
         }
 
 
       // Default font file
       std::string file;
 
-      if (! font_dir.empty ())
+      if (! fonts_dir.empty ())
         {
-          file = font_dir + octave::sys::file_ops::dir_sep_str () + "FreeSans";
+          file = fonts_dir + octave::sys::file_ops::dir_sep_str () + "FreeSans";
 
           if (weight == "bold")
             file += "Bold";

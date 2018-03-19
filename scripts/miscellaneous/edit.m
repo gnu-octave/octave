@@ -493,7 +493,7 @@ SUCH DAMAGE.\
         if (any (exists == [2, 103]))
           body = type (name){1};
         else
-          body = ["function [retval] = " basename " (input1, input2)\n\n" ...
+          body = ["function retval = " basename " (input1, input2)\n\n" ...
                   "endfunction\n"];
         endif
         if (isempty (head))

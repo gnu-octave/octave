@@ -209,7 +209,7 @@ endfunction
 %! [g] = write_and_read (".jpeg", gray, "quality", 100);
 %! assert (g, gray);
 
-%!function [compression] = get_bmp_compression (ext, cmap = [], varargin)
+%!function compression = get_bmp_compression (ext, cmap = [], varargin)
 %!  gray = repmat (uint8 (0:255), 100, 1);
 %!  filename = [tempname() ext];
 %!  unwind_protect

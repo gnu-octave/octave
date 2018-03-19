@@ -202,6 +202,7 @@ C-----------------------------------------------------------------------
 C     OVERFLOW TEST ON THE LAST MEMBER OF THE SEQUENCE
 C-----------------------------------------------------------------------
 C     UFL = EXP(-ELIM)
+   35 CONTINUE
       UFL = R1MACH(1)*1.0E+3
       IF (AZ.LT.UFL) GO TO 180
       IF (FNU.GT.FNUL) GO TO 80
@@ -270,7 +271,6 @@ C-----------------------------------------------------------------------
       IERR=5
       RETURN
   210 CONTINUE
-      NZ=0
       IERR=4
-      RETURN
+      GO TO 35
       END

@@ -172,11 +172,9 @@ OCTAVE_SET_DEFAULT([octdocdir], '${datadir}/octave/${version}/doc')
 
 ## Where Octave will search for fallback font files shipped with distribution.
 OCTAVE_SET_DEFAULT([octfontsdir], '${datadir}/octave/${version}/fonts')
-
 ## Where Octave will look for startup files.
 OCTAVE_SET_DEFAULT([startupfiledir], '${fcnfiledir}/startup')
 OCTAVE_SET_DEFAULT([localstartupfiledir], '${localfcnfiledir}/startup')
-
 ## Where Octave will look for man and info files.
 OCTAVE_SET_DEFAULT([man1dir], '${mandir}/man1')
 OCTAVE_SET_DEFAULT([man1ext], '.1')
@@ -2908,7 +2906,6 @@ fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
 ### Determine whether Mercurial ID should be embedded in library binaries.
-
 ENABLE_HG_ID=yes
 AC_ARG_ENABLE([hg-id],
   [AS_HELP_STRING([--disable-hg-id],

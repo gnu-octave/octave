@@ -202,6 +202,7 @@ C-----------------------------------------------------------------------
       AA = DSQRT(AA)
       IF (AZ.GT.AA) IERR=3
       IF (FN.GT.AA) IERR=3
+   35 CONTINUE
       ZNR = ZR
       ZNI = ZI
       CSGNR = CONER
@@ -263,7 +264,6 @@ C       CYR(I) = STR
       IERR=5
       RETURN
   260 CONTINUE
-      NZ=0
       IERR=4
-      RETURN
+      GO TO 35
       END

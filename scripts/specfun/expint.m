@@ -1,5 +1,4 @@
-## Copyright (C) 2006-2017 Sylvain Pelissier
-## Copyright (C) 2017 Michele Ginesi
+## Copyright (C) 2018 Michele Ginesi
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 
-## Authors: Sylvain Pelissier <sylvain.pelissier@gmail.com>
-##          Michele Ginesi <michele.ginesi@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn {} {} expint (@var{x})
 ## Compute the exponential integral:
+##
 ## @tex
 ## $$
 ## {\rm E_1} (x) = \int_x^\infty {e^{-t} \over t} dt
@@ -43,7 +40,8 @@
 ## @end example
 ##
 ## @end ifnottex
-## Note: For compatibility, this functions uses the @sc{matlab} definition
+##
+## Note: For compatibility, this function uses the @sc{matlab} definition
 ## of the exponential integral.  Most other sources refer to this particular
 ## value as @math{E_1 (x)}, and the exponential integral as
 ## @tex
@@ -75,6 +73,16 @@
 ## @ifnottex
 ## @w{@code{E_1 (-x) = -Ei (x) - i*pi}}.
 ## @end ifnottex
+##
+## References:
+##
+## @nospell{M. Abramowitz and I.A. Stegun},
+## @cite{Handbook of Mathematical Functions}, 1964.
+##
+## @nospell{N. Bleistein and R.A. Handelsman},
+## @cite{Asymptotic expansions of integrals}, 1986.
+##
+## @seealso{cosint, sinint, exp}
 ## @end deftypefn
 
 function E1 = expint (x)
@@ -85,11 +93,14 @@ function E1 = expint (x)
 
   if (! isnumeric (x))
     error ("expint: X must be numeric");
-  elseif (isinteger (x))
+  endif
+
+  ## Convert to floating point if necessary
+  if (isinteger (x))
     x = double (x);
   endif
 
-  sparse_x = issparse (x);
+  orig_sparse = issparse (x);
   orig_sz = size (x);
   x = x(:);  # convert to column vector
 
@@ -102,18 +113,17 @@ function E1 = expint (x)
   tol = eps (class (x));
 
   ## Divide the input into 3 regions and apply a different algorithm for each.
-  s_idx = (((real (x) + 19.5).^2 ./ (20.5^2) + imag (x).^2 ./ (10^2)) <= 1) ...
+  ## s = series expansion, cf = continued fraction, a = asymptotic series
+  s_idx = (((real (x) + 19.5).^ 2 ./ (20.5^2) + ...
+            imag (x).^2 ./ (10^2)) <= 1) ...
           | (real (x) < 0 & abs (imag (x)) <= 1e-8);
-  cf_idx = ((((real (x) + 1).^2 ./ (38^2) + imag (x).^2 ./ (40^2)) <= 1) ...
+  cf_idx = ((((real (x) + 1).^2 ./ (38^2) + ...
+              imag (x).^2 ./ (40^2)) <= 1) ...
             & (! s_idx)) & (real (x) <= 35);
-  a_idx = ! s_idx & ! cf_idx;
+  a_idx = (! s_idx) & (! cf_idx);
   x_s  = x(s_idx);
   x_cf = x(cf_idx);
   x_a  = x(a_idx);
-
-  ## FIXME: The performance of these routines need improvement.
-  ## There are numerous temporary variables created, some of which could
-  ## probably be eliminated.
 
   ## Series expansion
   ## Abramowitz, Stegun, "Handbook of Mathematical Functions",
@@ -124,72 +134,40 @@ function E1 = expint (x)
   res = -x_s;
   ssum = res;
   k = 1;
-  fflag = true (size (res));
-  while (k < 1e3 && any (fflag))
-    res_tmp = res(fflag);
-    x_s_tmp = x_s(fflag);
-    ssum_tmp = ssum(fflag);
-    res_tmp .*= (k * -x_s_tmp/((k + 1)^2));
-    ssum_tmp += res_tmp;
+  todo = true (size (res));
+  while (k < 1e3 && any (todo))
+    res(todo) .*= (k * (- x_s(todo)) / ((k + 1) ^ 2));
+    ssum(todo) += res(todo);
     k += 1;
-    res(fflag) = res_tmp;
-    ssum(fflag) = ssum_tmp;
-    x_s(fflag) = x_s_tmp;
-    fflag = abs (res) > tol*abs (ssum);
+    todo = (abs (res) > (tol * abs (ssum)));
   endwhile
   e1_s -= ssum;
 
-  ## Continued fraction,
+  ## Continued fraction expansion,
   ## Abramowitz, Stegun, "Handbook of Mathematical Functions",
   ## formula 5.1.22, p 229.
-  ## modified Lentz's algorithm, from "Numerical recipes in Fortran 77" p.165.
-  f_new = 2^-100 * ones (size (x_cf), class (x_cf));
-  C_new = f_new;
-  D_new = zeros (size (x_cf), class (x_cf));
-  k = 0;
-  fflag = true (size (x_cf));
-  Delta = C_old = D_old = f_old = ones (size (x_cf), class (x_cf));
-  while (k < 1e3 && any (fflag))
-    x_cf_tmp = x_cf(fflag);
-    C_new_tmp = C_new(fflag);
-    D_new_tmp = D_new(fflag);
-    f_old = f_new(fflag);
-    C_old = C_new_tmp;
-    D_old = D_new_tmp;
-    b = x_cf_tmp*(mod (k,2) == 0) + (mod (k,2) == 1);
-    a = exp (-x_cf_tmp)*(k == 0) + ceil (k/2)*(k >= 1);
-    D_new_tmp = b + a.*D_old;
-    D_new_tmp = D_new_tmp.*(D_new_tmp != 0) + 2^-100*(D_new_tmp == 0);
-    C_new_tmp = b + a./C_old;
-    C_new_tmp = C_new_tmp.*(C_new_tmp != 0) + 2^-100*(C_new_tmp == 0);
-    D_new_tmp = 1 ./ D_new_tmp;
-    Delta(fflag) = C_new_tmp.*D_new_tmp;
-    x_cf(fflag) = x_cf_tmp;
-    f_new(fflag) = f_old.*Delta(fflag);
-    C_new(fflag) = C_new_tmp;
-    D_new(fflag) = D_new_tmp;
-    fflag = abs (Delta-1) > tol;
-    k += 1;
-  endwhile
+  ## Modified Lentz's algorithm, from "Numerical recipes in Fortran 77" p.165.
 
-  e1_cf = f_new;
-  ## Asymptotic series, from Fikioris, Tastsoglou, Bakas,
-  ## "Selected Asymptotic Methods with Application to Magnetics and Antennas"
-  ## formula A.10 p 161.
+  e1_cf = exp (-x_cf) .* __expint__ (x_cf);
+
+  ## Remove spurious imaginary part if needed (__expint__ works automatically
+  ## with complex values)
+
+  if (isreal (x_cf) && x_cf >= 0)
+    e1_cf = real (e1_cf);
+  endif
+
+  ## Asymptotic series, from N. Bleistein and R.A. Handelsman
+  ## "Asymptotic expansion of integrals", pages 1-4.
   e1_a = exp (-x_a) ./ x_a;
-  oldres = ssum = res = ones (size (x_a), class (x_a));
+  ssum = res = ones (size (x_a), class (x_a));
   k = 0;
-  fflag = true (size (x_a));
-  while (k < 1e3 && any (fflag))
-    res_tmp = res(fflag);
-    oldres_tmp = res_tmp;
-    x_a_tmp = x_a(fflag);
-    res_tmp ./= (-x_a_tmp / (k+1));
-    ssum(fflag) += res_tmp;
+  todo = true (size (x_a));
+  while (k < 1e3 && any (todo))
+    res(todo) ./= (- x_a(todo) / (k + 1));
+    ssum(todo) += res(todo);
     k += 1;
-    res(fflag) = res_tmp;
-    oldres(fflag) = oldres_tmp;
-    fflag = abs (oldres) > abs (res);
+    todo = abs (x_a) > k;
   endwhile
   e1_a .*= ssum;
 
@@ -197,9 +175,11 @@ function E1 = expint (x)
   E1(s_idx)  = e1_s;
   E1(cf_idx) = e1_cf;
   E1(a_idx)  = e1_a;
+
+  ## Restore shape and sparsity of input
   E1 = reshape (E1, orig_sz);
-  if (sparse_x)
-    E1 = sparse (E1);  # if input was sparse format, output should be too.
+  if (orig_sparse)
+    E1 = sparse (E1);
   endif
 
 endfunction
@@ -249,7 +229,7 @@ endfunction
 %!            9.40470496160143e-05 - 2.44265223110736e-04i, ...
 %!            6.64487526601190e-09 - 7.87242868014498e-09i, ...
 %!            3.10273337426175e-13 - 2.28030229776792e-13i];
-%! assert (expint (X), y_exp, -1e-12);
+%! assert (expint (X), y_exp, -1e-14);
 
 ## Exceptional values (-Inf, Inf, NaN, 0, 0.37250741078)
 %!test
@@ -269,6 +249,10 @@ endfunction
 %!assert (class (expint (uint32 (1))), "double")
 %!assert (class (expint (uint64 (1))), "double")
 %!assert (issparse (expint (sparse (1))))
+
+## Test on the correct Image set
+%!assert (isreal (expint (linspace (0, 100))))
+%!assert (! isreal (expint (-1)))
 
 ## Test input validation
 %!error expint ()

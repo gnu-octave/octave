@@ -201,6 +201,7 @@ C-----------------------------------------------------------------------
       AA=SQRT(AA)
       IF(AZ.GT.AA) IERR=3
       IF(FN.GT.AA) IERR=3
+   35 CONTINUE
       ZN = Z
       CSGN = CONE
       IF (XX.GE.0.0E0) GO TO 40
@@ -252,7 +253,6 @@ C       CY(I) = CY(I)*CSGN
       IERR=5
       RETURN
   140 CONTINUE
-      NZ=0
       IERR=4
-      RETURN
+      GO TO 35
       END

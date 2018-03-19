@@ -2,11 +2,16 @@ FCN_FILE_DIRS += scripts/specfun
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/beta.m \
+  %reldir%/betainc.m \
+  %reldir%/betaincinv.m \
   %reldir%/betaln.m \
+  %reldir%/cosint.m \
   %reldir%/ellipke.m \
   %reldir%/expint.m \
   %reldir%/factor.m \
   %reldir%/factorial.m \
+  %reldir%/gammainc.m \
+  %reldir%/gammaincinv.m \
   %reldir%/isprime.m \
   %reldir%/lcm.m \
   %reldir%/legendre.m \
@@ -17,7 +22,8 @@ FCN_FILE_DIRS += scripts/specfun
   %reldir%/primes.m \
   %reldir%/reallog.m \
   %reldir%/realpow.m \
-  %reldir%/realsqrt.m
+  %reldir%/realsqrt.m \
+  %reldir%/sinint.m
 
 %canon_reldir%dir = $(fcnfiledir)/specfun
 

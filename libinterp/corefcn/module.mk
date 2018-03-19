@@ -107,8 +107,11 @@ NOINSTALL_COREFCN_INC = \
 
 COREFCN_SRC = \
   %reldir%/Cell.cc \
+  %reldir%/__betainc__.cc \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
+  %reldir%/__expint__.cc \
+  %reldir%/__gammainc__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \
   %reldir%/__lin_interpn__.cc \
@@ -118,7 +121,6 @@ COREFCN_SRC = \
   %reldir%/__qp__.cc \
   %reldir%/balance.cc \
   %reldir%/besselj.cc \
-  %reldir%/betainc.cc \
   %reldir%/bitfcns.cc \
   %reldir%/bsxfun.cc \
   %reldir%/c-file-ptr-stream.cc \
@@ -155,7 +157,6 @@ COREFCN_SRC = \
   %reldir%/filter.cc \
   %reldir%/find.cc \
   %reldir%/ft-text-renderer.cc \
-  %reldir%/gammainc.cc \
   %reldir%/gcd.cc \
   %reldir%/getgrent.cc \
   %reldir%/getpwent.cc \

@@ -44,6 +44,15 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     hex2num would accept a cell array of strings of arbitrary dimension
     but would always return a column vector.
 
+ ** New special functions cosint, sinint, and gammaincinv have been added.
+
+ ** Special functions in Octave have been rewritten for larger input
+    domains, better accuracy, and additional options.
+    * gammainc now accepts negative real values for X.
+    * improved accuracy for gammainc, betainc, betaincinv, expint.
+    * gammainc has new options "scaledlower" and "scaledupper".
+    * betainc, betaincinv have new option "upper".
+
  ** The "names" option used in regular expressions now returns a struct
     array, rather than a struct with a cell array for each field.  This
     change was made for Matlab compatibility.
@@ -252,7 +261,9 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       camva
       camzoom
       corrcoef
+      cosint
       erase
+      gammaincinv
       getframe
       groot
       gsvd
@@ -269,6 +280,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       repelem
       rgb2gray
       rticks
+      sinint
       tfqmr
       thetaticks
       vecnorm

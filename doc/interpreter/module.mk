@@ -354,6 +354,7 @@ doc_EXTRA_DIST += \
   %reldir%/mk-doc-cache.pl \
   %reldir%/mkcontrib.awk \
   %reldir%/munge-texi.pl \
+  %reldir%/prepare_qhelp.py \
   $(DOC_IMAGES) \
   $(DOC_IMAGES_SRC) \
   $(LOGOS) \

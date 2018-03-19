@@ -3,7 +3,7 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
@@ -15,14 +15,12 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
-
-## Authors: Michele Ginesi <michele.ginesi@gmail.com>
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} betainc (@var{x}, @var{a}, @var{b})
+## @deftypefn  {} {} betainc (@var{x}, @var{a}, @var{b})
 ## @deftypefnx {} {} betainc (@var{x}, @var{a}, @var{b}, @var{tail})
-## Compute the incomplete beta function ratio.
+## Compute the incomplete beta function.
 ##
 ## This is defined as
 ## @tex
@@ -46,147 +44,145 @@
 ##
 ## @end ifnottex
 ##
-## with @var{x} real in [0,1], @var{a} and @var{b} real and strictly positive.
-## If one of the input has more than one components, then the others must be
-## scalar or of compatible dimensions.
+## with real @var{x} in the range [0,1].  The inputs @var{a} and @var{b} must
+## be real and strictly positive (> 0).  If one of the inputs is not a scalar
+## then the other inputs must be scalar or of compatible dimensions.
 ##
-## By default or if @var{tail} is @qcode{"lower"} the incomplete beta function
-## ratio integrated from 0 to @var{x} is computed. If @var{tail} is
-## @qcode{"upper"} then the complementary function integrated from @var{x} to
-## 1 is calculated. The two choices are related as
+## By default, @var{tail} is @qcode{"lower"} and the incomplete beta function
+## integrated from 0 to @var{x} is computed.  If @var{tail} is @qcode{"upper"}
+## then the complementary function integrated from @var{x} to 1 is calculated.
+## The two choices are related by
 ##
-## betainc (@var{x}, @var{a}, @var{b}, @qcode{"lower"}) = 
-## 1 - betainc (@var{x}, @var{a}, @var{b}, @qcode{"upper"}).
+## betainc (@var{x}, @var{a}, @var{b}, @qcode{"upper"}) =
+## 1 - betainc (@var{x}, @var{a}, @var{b}, @qcode{"lower"}).
 ##
-## Reference
+## @code{betainc} uses a more sophisticated algorithm than subtraction to
+## get numerically accurate results when the @qcode{"lower"} value is small.
 ##
-## @nospell{A. Cuyt, V. Brevik Petersen, B. Verdonk, H. Waadeland, W.B. Jones}
-## @cite{Handbook of Continued Fractions for Special Functions},
-## ch. 18.
+## Reference: @nospell{A. Cuyt, V. Brevik Petersen, B. Verdonk, H. Waadeland,
+## W.B. Jones}, @cite{Handbook of Continued Fractions for Special Functions},
+## ch.@: 18.
 ##
 ## @seealso{beta, betaincinv, betaln}
-##
 ## @end deftypefn
 
-function [y] = betainc (x, a, b, tail = "lower")
+function y = betainc (x, a, b, tail = "lower")
 
-  if ((nargin > 4) || (nargin < 3))
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 
-  if ((! isscalar (x)) || (! isscalar (a)) || (! isscalar (b)))
-    [err, x, a, b] = common_size (x, a, b);
-    if (err > 0)
-      error ("betainc: x, a and b must be of common size or scalars");
-    endif
+  [err, x, a, b] = common_size (x, a, b);
+  if (err > 0)
+    error ("betainc: X, A, and B must be of common size or scalars");
   endif
 
-  if ((iscomplex (x)) || (iscomplex (a)) || (iscomplex (b)))
-    error ("betainc: inputs must be real or integer");
+  if (iscomplex (x) || iscomplex (a) || iscomplex (b))
+    error ("betainc: all inputs must be real");
+  endif
+
+  ## Remember original shape of data, but convert to column vector for calcs.
+  orig_sz = size (x);
+  x = x(:);
+  a = a(:);
+  b = b(:);
+
+  if (any ((x < 0) | (x > 1)))
+    error ("betainc: X must be in the range [0, 1]");
   endif
 
   if (any (a <= 0))
-    error ("betainc: a must be strictly positive");
+    error ("betainc: A must be strictly positive");
   endif
 
-    if (any (b <= 0))
-    error ("betainc: b must be strictly positive");
+  if (any (b <= 0))
+    error ("betainc: B must be strictly positive");
   endif
 
-  if (any ((x > 1) | (x < 0)))
-    error ("betainc: x must be between 0 and 1");
+  ## If any of the arguments is single then the output should be as well.
+  if (strcmp (class (x), "single") || strcmp (class (a), "single")
+      || strcmp (class (b), "single"))
+    a = single (a);
+    b = single (b);
+    x = single (x);
   endif
 
+  ## Convert to floating point if necessary
   if (isinteger (x))
     y = double (x);
   endif
-
   if (isinteger (a))
     a = double (a);
   endif
-
   if (isinteger (b))
     b = double (b);
   endif
 
-  sz = size (x);
-  x = x(:);
-  a = a(:);
-  b = b(:);
-  y = zeros (size (x));
+  ## Initialize output array
+  y = zeros (size (x), class (x));
 
-  # If any of the argument is single, also the output should be
+  ## In the following, we use the fact that the continued fraction Octave uses
+  ## is more efficient when x <= a / (a + b).  Moreover, to compute the upper
+  ## version, which is defined as I_x(a,b,"upper") = 1 - I_x(a,b) we use the
+  ## property I_x(a,b) + I_(1-x) (b,a) = 1.
 
-  if ((strcmpi (class (y), "single")) || (strcmpi (class (a), "single")) || (strcmpi (class (b), "single")))
-    a = single (a);
-    b = single (b);
-    x = single (x);
-    y = single (y);
-  endif
-
-  # In the following, we use the fact that the continued fraction we will
-  # use is more efficient when x <= a / (a + b).
-  # Moreover, to compute the upper version, which is defined as
-  # I_x(a,b,"upper") = 1 - I_x(a,b) we used the property
-  # I_x(a,b) + I_(1-x) (b,a) = 1.
-
-  if (strcmpi (tail, "upper"))
+  if (strcmpi (tail, "lower"))
+    fflag = (x > a./(a+b));
+    x(fflag) = 1 - x(fflag);
+    [a(fflag), b(fflag)] = deal (b(fflag), a(fflag));
+  elseif (strcmpi (tail, "upper"))
     fflag = (x < (a ./ (a + b)));
     x(! fflag) = 1 - x(! fflag);
     [a(! fflag), b(! fflag)] = deal (b(! fflag), a(! fflag));
-  elseif (strcmpi (tail, "lower"))
-    fflag = (x > a./(a+b));
-    x (fflag) = 1 - x(fflag);
-    [a(fflag), b(fflag)] = deal (b(fflag), a(fflag));
   else
-    error ("betainc: invalid value for fflag")
+    error ("betainc: invalid value for TAIL");
   endif
 
   f = zeros (size (x), class (x));
 
   ## Continued fractions: CPVWJ, formula 18.5.20, modified Lentz algorithm
-  ## implemented in a separate .cc file. This particular continued fraction
+  ## implemented in a separate .cc file.  This particular continued fraction
   ## gives (B(a,b) * I_x(a,b)) / (x^a * (1-x)^b).
 
-  f = __betainc_lentz__ (x, a, b, strcmpi (class (x), "single"));
+  f = __betainc__ (x, a, b);
 
-  # We divide the continued fraction by B(a,b) / (x^a * (1-x)^b)
-  # to obtain I_x(a,b).
+  ## Divide continued fraction by B(a,b) / (x^a * (1-x)^b) to obtain I_x(a,b).
   y = a .* log (x) + b .* log1p (-x) + gammaln (a + b) - ...
-    gammaln (a) - gammaln (b) + log (f);
+      gammaln (a) - gammaln (b) + log (f);
   y = real (exp (y));
   y(fflag) = 1 - y(fflag);
-  y = reshape (y, sz);
+
+  ## Restore original shape
+  y = reshape (y, orig_sz);
 
 endfunction
 
-## Tests from betainc.cc
 
-# Double precision
+## Double precision
 %!test
 %! a = [1, 1.5, 2, 3];
 %! b = [4, 3, 2, 1];
-%! v1 = betainc (1,a,b);
+%! v1 = betainc (1, a, b);
 %! v2 = [1,1,1,1];
 %! x = [.2, .4, .6, .8];
 %! v3 = betainc (x, a, b);
-%! v4 = 1 - betainc (1.-x, b, a);
+%! v4 = 1 - betainc (1-x, b, a);
 %! assert (v1, v2, sqrt (eps));
 %! assert (v3, v4, sqrt (eps));
 
-# Single precision
+## Single precision
 %!test
 %! a = single ([1, 1.5, 2, 3]);
 %! b = single ([4, 3, 2, 1]);
-%! v1 = betainc (1,a,b);
+%! v1 = betainc (1, a, b);
 %! v2 = single ([1,1,1,1]);
 %! x = single ([.2, .4, .6, .8]);
 %! v3 = betainc (x, a, b);
-%! v4 = 1 - betainc (1.-x, b, a);
+%! v4 = 1 - betainc (1-x, b, a);
 %! assert (v1, v2, sqrt (eps ("single")));
 %! assert (v3, v4, sqrt (eps ("single")));
 
-# Mixed double/single precision
+## Mixed double/single precision
 %!test
 %! a = single ([1, 1.5, 2, 3]);
 %! b = [4, 3, 2, 1];
@@ -198,10 +194,8 @@ endfunction
 %! assert (v1, v2, sqrt (eps ("single")));
 %! assert (v3, v4, sqrt (eps ("single")));
 
-## New test
-
-%!test #<51157>
-%! y = betainc([0.00780;0.00782;0.00784],250.005,49750.995);
+%!test <51157>
+%! y = betainc ([0.00780;0.00782;0.00784],250.005,49750.995);
 %! y_ex = [0.999999999999989; 0.999999999999992; 0.999999999999995];
 %! assert (y, y_ex, -1e-14);
 
@@ -212,25 +206,35 @@ endfunction
 %!assert (betainc (0.5, 200, 300), 0.9999964565197356, -1e-15);
 %!assert (betainc (0.5, 200, 300, "upper"), 3.54348026439253e-06, -1e-13);
 
-# Test trivial values
-
+## Test trivial values
 %!test
-%! [a,b] = ndgrid (linspace(1e-4, 100, 20), linspace(1e-4, 100, 20));
-%! assert (betainc (0,a,b), zeros(20));
-%! assert (betainc (1,a,b), ones(20));
+%! [a,b] = ndgrid (linspace (1e-4, 100, 20), linspace (1e-4, 100, 20));
+%! assert (betainc (0, a, b), zeros (20));
+%! assert (betainc (1, a, b), ones (20));
 
 ## Test input validation
-
 %!error betainc ()
 %!error betainc (1)
 %!error betainc (1,2)
-%!error betainc (1.1,1,1)
-%!error betainc (-0.1,1,1)
-%!error betainc (0.5,0,1)
-%!error betainc (0.5,1,0)
-%!error betainc (1,2,3,4)
-%!error betainc (1,2)
 %!error betainc (1,2,3,4,5)
-%!error betainc (0.5i, 1, 2)
-%!error betainc (0, 1i, 1)
-%!error betainc (0, 1, 1i)
+%!error <must be of common size or scalars> betainc (ones (2,2), ones (1,2), 1)
+%!error <all inputs must be real> betainc (0.5i, 1, 2)
+%!error <all inputs must be real> betainc (0, 1i, 1)
+%!error <all inputs must be real> betainc (0, 1, 1i)
+%!error <X must be in the range \[0, 1\]> betainc (-0.1,1,1)
+%!error <X must be in the range \[0, 1\]> betainc (1.1,1,1)
+%!error <X must be in the range \[0, 1\]>
+%! x = ones (1, 1, 2);
+%! x(1,1,2) = -1;
+%! betainc (x,1,1);
+%!error <A must be strictly positive> betainc (0.5,0,1)
+%!error <A must be strictly positive>
+%! a = ones (1, 1, 2);
+%! a(1,1,2) = 0;
+%! betainc (1,a,1);
+%!error <B must be strictly positive> betainc (0.5,1,0)
+%!error <B must be strictly positive>
+%! b = ones (1, 1, 2);
+%! b(1,1,2) = 0;
+%! betainc (1,1,b);
+%!error <invalid value for TAIL> betainc (1,2,3, "foobar")

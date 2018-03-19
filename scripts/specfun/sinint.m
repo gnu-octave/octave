@@ -2,21 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
-
-## Author: Michele Ginesi <michele.ginesi@gmail.com>
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} sinint (@var{x})
@@ -37,107 +35,116 @@
 ##          0
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ##
-## Reference:
-##
-## @nospell{M. Abramowitz and I.A. Stegun},
-## @cite{Handbook of Mathematical Functions}
-## 1964.
+## Reference: @nospell{M. Abramowitz and I.A. Stegun},
+## @cite{Handbook of Mathematical Functions}, 1964.
 ##
 ## @seealso{cosint, expint, sin}
-##
 ## @end deftypefn
 
-function [y] = sinint (x)
+function y = sinint (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  sz = size (x);
+  if (! isnumeric (x))
+    error ("sinint: X must be numeric");
+  endif
+
+  ## Convert to floating point if necessary
+  if (isinteger (x))
+    x = double (x);
+  endif
+
+  ## Convert to column vector
+  orig_sz = size (x);
   x = x(:);
+  if (iscomplex (x))
+    ## Work around reshape which narrows to real (bug #52953)
+    x = complex (real (x)(:), imag (x)(:));
+  else
+    x = x(:);
+  end
+
+  ## Initialize the result
   y = zeros (size (x), class (x));
   tol = eps (class (x));
 
-  i_miss = true (length (x), 1);
+  todo = true (size (x));
 
-  ## Trivial values
-  y(x == 0) = x(x == 0);  # correctly signed zero
+  ## Special values
+  y(x == 0) = x(x == 0);    # correctly signed zero
   y(x == Inf) = pi / 2;
   y(x == - Inf) = - pi / 2;
 
-  i_miss = ((i_miss) & (x != 0) & (x != Inf) & (x != - Inf));
+  todo = ((todo) & (x != 0) & (x != Inf) & (x != - Inf));
 
   ## For values large in modulus we use the relation with expint
 
   flag_large = abs (x) > 2;
-  xx = x(flag_large & i_miss);
+  xx = x(flag_large & todo);
   ii_neg = (real (xx) < 0);
   xx(ii_neg) *= -1;
-  ii_conj = ((real (xx) == 0) & (imag (xx) < 0));
+  ii_conj = (real (xx) == 0) & (imag (xx) < 0);
   xx(ii_conj) = conj (xx(ii_conj));
   yy = -0.5i * (expint (1i * xx) - expint (-1i * xx)) + pi / 2;
   yy(ii_neg) *= -1;
   yy(ii_conj) = conj (yy(ii_conj));
-  y(i_miss & flag_large) = yy;
+  y(todo & flag_large) = yy;
 
   ## For values small in modulus we use the series expansion
 
-  i_miss = ((i_miss) & (! flag_large));
-  xx = x(i_miss);
-  ssum = xx; # First term of the series expansion
+  todo = (todo) & (! flag_large);
+  xx = x(todo);
+  ssum = xx;  # First term of the series expansion
   yy = ssum;
-  flag_sum = true (nnz (i_miss), 1);
+  flag_sum = true (nnz (todo), 1);
   it = 0;
   maxit = 300;
-  while ((any (flag_sum)) && (it < maxit));
+  while (any (flag_sum) && (it < maxit))
     ssum .*= - xx .^ 2 * (2 * it + 1) / ((2 * it + 3) ^ 2 * (2 * it + 2));
     yy(flag_sum) += ssum (flag_sum);
     flag_sum = (abs (ssum) >= tol);
     it++;
   endwhile
 
-  y(i_miss) = yy;
+  y(todo) = yy;
 
-  y = reshape (y, sz);
+  y = reshape (y, orig_sz);
 
 endfunction
 
 
-%!test
-%! x = 1.1;
-%! %y = sym(11)/10;
-%! A = sinint (x);
-%! %B = double (sinint (y));
-%! B = 1.02868521867373;
-%! assert (A, B, -5e-15);
+%!assert (sinint (1.1), 1.02868521867373, -5e-15)
 
 %!test
-%! %y = [2 3 sym(pi); exp(sym(1)) 5 6];
 %! x = [2, 3, pi; exp(1), 5, 6];
 %! A = sinint (x);
-%! %B = double (sinint (y));
 %! B = [1.60541297680269, 1.84865252799947, 1.85193705198247e+00; ...
 %!      1.82104026914757, 1.54993124494467, 1.42468755128051e+00];
 %! assert (A, B, -5e-15);
 
+## Test exceptional values
 %!assert (sinint (0), 0)
 %!assert (signbit (sinint (-0)))
-%!assert (sinint (inf), pi/2)
-%!assert (sinint (-inf), -pi/2)
-%!assert (isnan (sinint (nan)))
+%!assert (sinint (Inf), pi/2)
+%!assert (sinint (-Inf), -pi/2)
+%!assert (isnan (sinint (NaN)))
 
+## Check single data type is preserved
 %!assert (class (sinint (single (1))), "single")
 
-##tests against maple
-%!assert (sinint (1), 0.9460830703671830149414, -2*eps)
-%!assert (sinint (-1), -0.9460830703671830149414, -2*eps)
-%!assert (sinint (pi), 1.851937051982466170361, -2*eps)
+## Tests against Maple
+%!assert (sinint (1)  ,  0.9460830703671830149414, -2*eps)
+%!assert (sinint (-1) , -0.9460830703671830149414, -2*eps)
+%!assert (sinint (pi) ,  1.851937051982466170361, -2*eps)
 %!assert (sinint (-pi), -1.851937051982466170361, -2*eps)
-%!assert (sinint (300), 1.5708810882137495193, -2*eps)
-%!assert (sinint (1e4), 1.5708915453859619157, -2*eps)
-%!assert (sinint (20i), 1.2807826332028294459e7*1i, -2*eps)
+%!assert (sinint (300),  1.5708810882137495193, -2*eps)
+%!assert (sinint (1e4),  1.5708915453859619157, -2*eps)
+%!assert (sinint (20i),  1.2807826332028294459e7*1i, -2*eps)
 
 %!test
 %! x = (0:4)';
@@ -190,3 +197,11 @@ endfunction
 %! assert (A, B, -3*eps)
 %! B = sinint (single (x));
 %! assert (A, B, -3*eps ("single"))
+
+## FIXME: Need a test for bug #52953
+%#!test <*52953>
+
+## Test input validation
+%!error sinint ()
+%!error sinint (1,2)
+%!error <X must be numeric> sinint ("1")

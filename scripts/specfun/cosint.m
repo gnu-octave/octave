@@ -2,19 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## Author: Michele Ginesi <michele.ginesi@gmail.com>
 
@@ -35,9 +35,9 @@
 ## Ci (x) = - | (cos (t)) / t dt
 ##            /
 ##           x
-##
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## An equivalent definition is
 ## @tex
@@ -49,16 +49,16 @@
 ##
 ## @example
 ## @group
-##
 ##                              x
 ##                             /
-##                             |   cos (t) - 1
-## Ci (x) = gamma + log (x) +  | ---------------  dt
-##                             |         t
+##                             |  cos (t) - 1
+## Ci (x) = gamma + log (x) +  | -------------  dt
+##                             |        t
 ##                             /
 ##                            0
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## Reference:
 ##
@@ -66,39 +66,49 @@
 ## @cite{Handbook of Mathematical Functions}
 ## 1964.
 ##
-## @seealso{expint, cos, sinint}
+## @seealso{sinint, expint, cos}
 ##
 ## @end deftypefn
 
-function [y] = cosint (x)
+function y = cosint (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  sz = size (x);
-  #x = reshape (x, numel (x), 1);
+  if (! isnumeric (x))
+    error ("cosint: X must be numeric");
+  endif
+
+  ## Convert to floating point if necessary
+  if (isinteger (x))
+    x = double (x);
+  endif
+
+  ## Convert to column vector
+  orig_sz = size (x);
   if (iscomplex (x))
-    ## workaround reshape narrowing to real (#52953)
+    ## Work around reshape which narrows to real (bug #52953)
     x = complex (real (x)(:), imag (x)(:));
   else
     x = x(:);
   end
 
+  ## Initialize the result
   y = zeros (size (x), class (x));
   tol = eps (class (x));
 
-  i_miss = true (length (x), 1);
+  todo = true (size (x));
 
-  ## special values
+  ## Special values
   y(x == Inf) = 0;
-  y((x == -Inf) & !signbit (imag(x))) = 1i * pi;
-  y((x == -Inf) &  signbit (imag(x))) = -1i * pi;
+  y((x == -Inf) & !signbit (imag (x))) = 1i * pi;
+  y((x == -Inf) &  signbit (imag (x))) = -1i * pi;
 
-  i_miss = ((i_miss) & (x != Inf) & (x != -Inf));
+  todo(isinf (x)) = false;
 
-  ## For values large in modulus and not in (-oo,0), we use the relation
-  ## with expint
+  ## For values large in modulus, but not in the range (-oo,0), we use the
+  ## relation with expint.
 
   flag_large = (abs (x) > 2);
   xx = x(flag_large);
@@ -111,35 +121,38 @@ function [y] = cosint (x)
   yy = -0.5 * (expint (1i * xx) + expint (-1i * xx));
   yy(ii_nw) += 1i * pi;
   yy(ii_sw) = conj (yy(ii_sw));
-  y(i_miss & flag_large) = yy;
+  y(todo & flag_large) = yy;
+
+  todo(flag_large) = false;
 
   ## For values small in modulus, use the series expansion (also near (-oo, 0])
-  i_miss = ((i_miss) & (! flag_large));
   if (iscomplex (x))
     ## indexing can lose imag part: if it was -0, we could end up on the
     ## wrong right side of the branch cut along the negative real axis.
-    xx = complex (real (x)(i_miss), imag (x)(i_miss));
+    xx = complex (real (x)(todo), imag (x)(todo));
   else
-    xx = x(i_miss);
+    xx = x(todo);
   end
   ssum = - xx .^ 2 / 4; # First term of the series expansion
+  ## FIXME: This is way more precision than a double value can hold.
   gma = 0.57721566490153286060651209008; # Euler gamma constant
-  yy = gma + log (complex (xx)) + ssum; # log(complex(...) handles signed zero
-  flag_sum = true (nnz (i_miss), 1);
-  it = 1;
+  yy = gma + log (complex (xx)) + ssum;  # log(complex(...) handles signed zero
+  flag_sum = true (nnz (todo), 1);
+  it = 0;
   maxit = 300;
-  while ((any (flag_sum)) && (it < maxit));
+  while (any (flag_sum) && (++it < maxit));
     ssum .*= - xx .^ 2 * (2 * it) / ((2 * it + 2) ^ 2 * (2 * it + 1));
     yy(flag_sum) += ssum (flag_sum);
     flag_sum = (abs (ssum) >= tol);
-    it++;
   endwhile
+  y(todo) = yy;
 
-  y(i_miss) = yy;
-  flag_neg_zero_imag = ((real(x) < 0) & (imag(x) == 0) & ...
-    (signbit (imag (x))));
-  y(flag_neg_zero_imag) = complex (real (y(flag_neg_zero_imag)), - pi);
-  y = reshape (y, sz);
+  ## Clean up values which are purely real
+  flag_neg_zero_imag = (real (x) < 0) & (imag (x) == 0) & signbit (imag (x));
+  y(flag_neg_zero_imag) = complex (real (y(flag_neg_zero_imag)), -pi);
+
+  ## Restore original shape
+  y = reshape (y, orig_sz);
 
 endfunction
 
@@ -164,7 +177,7 @@ endfunction
 
 %!assert (class (cosint (single (1))), "single")
 
-##tests against maple
+## tests against maple
 %!assert (cosint (1), 0.337403922900968135, -2*eps)
 %!assert (cosint (-1), 0.337403922900968135 + 3.14159265358979324*I, -2*eps)
 %!assert (cosint (pi), 0.0736679120464254860, -2*eps)
@@ -180,7 +193,7 @@ endfunction
 %!         0.422980828774864996
 %!         0.119629786008000328
 %!         -0.140981697886930412];
-%! assert (cosint(x), y_ex, -3e-15);
+%! assert (cosint (x), y_ex, -3e-15);
 
 %!test
 %! x = -(1:4).';
@@ -191,7 +204,7 @@ endfunction
 %! assert (cosint (x), y_ex, -4*eps);
 
 %!test
-%! x = complex(-(1:4).', 0);
+%! x = complex (-(1:4).', 0);
 %! y_ex = [0.337403922900968135 + pi*1i
 %!         0.422980828774864996 + pi*1i
 %!         0.119629786008000328 + pi*1i
@@ -233,15 +246,23 @@ endfunction
 %!      -8.63307471207423322 + 3.13159298695312800*I
 %!      0.0698222284673061493 - 3.11847446254772946*I ];
 %! B = cosint (x);
-%! assert (A, B, -3*eps)
+%! assert (A, B, -3*eps);
 %! B = cosint (single (x));
-%! assert (A, B, -3*eps ("single"))
+%! assert (A, B, -3*eps ("single"));
 
-## fails along negative real axis
+## Fails along negative real axis
 %!test
 %! x = [-25; -100; -1000];
 %! yex = [-0.0068485971797025909189 + pi*1i
 %!        -0.0051488251426104921444 + pi*1i
 %!        0.000826315511090682282 + pi*1i];
 %! y = cosint (x);
-%! assert (y, yex, -5*eps)
+%! assert (y, yex, -5*eps);
+
+## FIXME: Need a test for bug #52953
+%#!test <*52953>
+
+## Test input validation
+%!error cosint ()
+%!error cosint (1,2)
+%!error <X must be numeric> cosint ("1")

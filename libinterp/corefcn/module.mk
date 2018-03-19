@@ -107,11 +107,11 @@ NOINSTALL_COREFCN_INC = \
 
 COREFCN_SRC = \
   %reldir%/Cell.cc \
-  %reldir%/__betainc_lentz__.cc \
+  %reldir%/__betainc__.cc \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
-  %reldir%/__expint_lentz__.cc \
-  %reldir%/__gammainc_lentz__.cc \
+  %reldir%/__expint__.cc \
+  %reldir%/__gammainc__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \
   %reldir%/__lin_interpn__.cc \

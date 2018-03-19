@@ -1,4 +1,3 @@
-## Copyright (C) 2006-2017 Sylvain Pelissier
 ## Copyright (C) 2018 Michele Ginesi
 ##
 ## This file is part of Octave.
@@ -17,12 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 
-## Authors: Sylvain Pelissier <sylvain.pelissier@gmail.com>
-##          Michele Ginesi <michele.ginesi@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn {} {} expint (@var{x})
 ## Compute the exponential integral:
+##
 ## @tex
 ## $$
 ## {\rm E_1} (x) = \int_x^\infty {e^{-t} \over t} dt
@@ -43,7 +40,8 @@
 ## @end example
 ##
 ## @end ifnottex
-## Note: For compatibility, this functions uses the @sc{matlab} definition
+##
+## Note: For compatibility, this function uses the @sc{matlab} definition
 ## of the exponential integral.  Most other sources refer to this particular
 ## value as @math{E_1 (x)}, and the exponential integral as
 ## @tex
@@ -79,15 +77,12 @@
 ## References:
 ##
 ## @nospell{M. Abramowitz and I.A. Stegun},
-## @cite{Handbook of Mathematical Functions}
-## 1964.
+## @cite{Handbook of Mathematical Functions}, 1964.
 ##
 ## @nospell{N. Bleistein and R.A. Handelsman},
-## @cite{Asymptotic expansions of integrals}
-## 1986.
+## @cite{Asymptotic expansions of integrals}, 1986.
 ##
-## @seealso{cosint, exp, sinint}
-##
+## @seealso{cosint, sinint, exp}
 ## @end deftypefn
 
 function E1 = expint (x)
@@ -98,16 +93,19 @@ function E1 = expint (x)
 
   if (! isnumeric (x))
     error ("expint: X must be numeric");
-  elseif (isinteger (x))
+  endif
+
+  ## Convert to floating point if necessary
+  if (isinteger (x))
     x = double (x);
   endif
 
-  sparse_x = issparse (x);
+  orig_sparse = issparse (x);
   orig_sz = size (x);
   x = x(:);  # convert to column vector
 
   ## Initialize the result
-  if ((isreal (x)) && (x >= 0))
+  if (isreal (x) && x >= 0)
     E1 = zeros (size (x), class (x));
   else
     E1 = complex (zeros (size (x), class (x)));
@@ -115,77 +113,61 @@ function E1 = expint (x)
   tol = eps (class (x));
 
   ## Divide the input into 3 regions and apply a different algorithm for each.
-  s_idx = (((real (x) + 19.5) .^ 2 ./ (20.5 ^ 2) + ...
-          imag (x) .^ 2 ./ (10 ^ 2)) <= 1) ...
-          | (real (x) < 0 & abs (imag (x)) <= 1e-08);
-  cf_idx = ((((real (x) + 1) .^ 2 ./ (38 ^ 2) + ...
-            imag (x) .^ 2 ./ (40 ^ 2)) <= 1) ...
+  ## s = series expansion, cf = continued fraction, a = asymptotic series
+  s_idx = (((real (x) + 19.5).^ 2 ./ (20.5^2) + ...
+            imag (x).^2 ./ (10^2)) <= 1) ...
+          | (real (x) < 0 & abs (imag (x)) <= 1e-8);
+  cf_idx = ((((real (x) + 1).^2 ./ (38^2) + ...
+              imag (x).^2 ./ (40^2)) <= 1) ...
             & (! s_idx)) & (real (x) <= 35);
-  a_idx = ((! s_idx) & (! cf_idx));
+  a_idx = (! s_idx) & (! cf_idx);
   x_s  = x(s_idx);
   x_cf = x(cf_idx);
   x_a  = x(a_idx);
-
-  ## FIXME: The performance of these routines need improvement.
-  ## There are numerous temporary variables created, some of which could
-  ## probably be eliminated.
 
   ## Series expansion
   ## Abramowitz, Stegun, "Handbook of Mathematical Functions",
   ## formula 5.1.11, p 229.
   ## FIXME: Why so long?  IEEE double doesn't have this much precision.
   gm = 0.577215664901532860606512090082402431042159335;
-  e1_s = - gm - log (x_s);
-  res = - x_s;
+  e1_s = -gm - log (x_s);
+  res = -x_s;
   ssum = res;
   k = 1;
-  fflag = true (size (res));
-  while ((k < 1e03) && (any (fflag)))
-    res_tmp = res(fflag);
-    x_s_tmp = x_s(fflag);
-    ssum_tmp = ssum(fflag);
-    res_tmp .*= (k * (- x_s_tmp) / ((k + 1) ^ 2));
-    ssum_tmp += res_tmp;
+  todo = true (size (res));
+  while (k < 1e3 && any (todo))
+    res(todo) .*= (k * (- x_s(todo)) / ((k + 1) ^ 2));
+    ssum(todo) += res(todo);
     k += 1;
-    res(fflag) = res_tmp;
-    ssum(fflag) = ssum_tmp;
-    x_s(fflag) = x_s_tmp;
-    fflag = (abs (res) > (tol * abs (ssum)));
+    todo = (abs (res) > (tol * abs (ssum)));
   endwhile
   e1_s -= ssum;
 
-  ## Continued fraction,
+  ## Continued fraction expansion,
   ## Abramowitz, Stegun, "Handbook of Mathematical Functions",
   ## formula 5.1.22, p 229.
-  ## modified Lentz's algorithm, from "Numerical recipes in Fortran 77" p.165.
+  ## Modified Lentz's algorithm, from "Numerical recipes in Fortran 77" p.165.
 
-  e1_cf = exp(- x_cf);
-  e1_cf .*= __expint_lentz__ (x_cf, strcmpi (class (x_cf), "single"));
+  e1_cf = exp (-x_cf) .* __expint__ (x_cf);
 
-  # Remove spurious imaginary part if needed (__expint_lentz__ works
-  # automathically with complex values)
+  ## Remove spurious imaginary part if needed (__expint__ works automatically
+  ## with complex values)
 
   if (isreal (x_cf) && x_cf >= 0)
     e1_cf = real (e1_cf);
   endif
 
   ## Asymptotic series, from N. Bleistein and R.A. Handelsman
-  ## "Asymptotic expansion of integrals"
-  ## pages 1 -- 4.
+  ## "Asymptotic expansion of integrals", pages 1-4.
   e1_a = exp (-x_a) ./ x_a;
-  oldres = ssum = res = ones (size (x_a), class (x_a));
+  ssum = res = ones (size (x_a), class (x_a));
   k = 0;
-  fflag = true (size (x_a));
-  while (k < 1e3 && any (fflag))
-    res_tmp = res(fflag);
-    oldres_tmp = res_tmp;
-    x_a_tmp = x_a(fflag);
-    res_tmp ./= (- x_a_tmp / (k + 1));
-    ssum(fflag) += res_tmp;
+  todo = true (size (x_a));
+  while (k < 1e3 && any (todo))
+    res(todo) ./= (- x_a(todo) / (k + 1));
+    ssum(todo) += res(todo);
     k += 1;
-    res(fflag) = res_tmp;
-    oldres(fflag) = oldres_tmp;
-    fflag = abs (x_a) > k;
+    todo = abs (x_a) > k;
   endwhile
   e1_a .*= ssum;
 
@@ -193,9 +175,11 @@ function E1 = expint (x)
   E1(s_idx)  = e1_s;
   E1(cf_idx) = e1_cf;
   E1(a_idx)  = e1_a;
+
+  ## Restore shape and sparsity of input
   E1 = reshape (E1, orig_sz);
-  if (sparse_x)
-    E1 = sparse (E1);  # if input was sparse format, output should be too.
+  if (orig_sparse)
+    E1 = sparse (E1);
   endif
 
 endfunction
@@ -268,7 +252,7 @@ endfunction
 
 ## Test on the correct Image set
 %!assert (isreal (expint (linspace (0, 100))))
-%!assert (!isreal (expint (-1)))
+%!assert (! isreal (expint (-1)))
 
 ## Test input validation
 %!error expint ()

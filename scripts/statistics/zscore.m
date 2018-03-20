@@ -21,7 +21,7 @@
 ## @deftypefnx {} {@var{z} =} zscore (@var{x}, @var{opt})
 ## @deftypefnx {} {@var{z} =} zscore (@var{x}, @var{opt}, @var{dim})
 ## @deftypefnx {} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@dots{})
-## Compute the Z score of @var{x}
+## Compute the Z score of @var{x}.
 ##
 ## If @var{x} is a vector, subtract its mean and divide by its standard
 ## deviation.  If the standard deviation is zero, divide by 1 instead.

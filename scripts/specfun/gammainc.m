@@ -68,7 +68,7 @@
 ## @math{gamma(a+1)*exp(x)/(x^a)}.
 ## @end ifnottex
 ## If @var{tail} is @qcode{"scaledupper"}, then the upper incomplete gamma
-## function is divided by the same quantity.
+## function is multiplied by the same quantity.
 ##
 ## References:
 ##
@@ -242,7 +242,7 @@ endfunction
 
 ## x == 0, a == 0.
 function y = gammainc_00 (tail)
-  if ((strcmp (tail, "upper")) || (strcmp (tail, "scaledupper")))
+  if (strcmp (tail, "upper") || strcmp (tail, "scaledupper"))
     y = 0;
   else
     y = 1;

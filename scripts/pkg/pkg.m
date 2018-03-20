@@ -39,7 +39,7 @@
 ## @end example
 ##
 ## @noindent
-## installs the package found in the file @file{image-1.0.0.tar.gz}.  The 
+## installs the package found in the file @file{image-1.0.0.tar.gz}.  The
 ## file containing the package can be an url, e.g.
 ##
 ## @example
@@ -48,7 +48,7 @@
 ##
 ## @noindent
 ## installs the package found in the given url.  This
-## requires an internet connection and the cURL library.  
+## requires an internet connection and the cURL library.
 ##
 ## @noindent
 ## @emph{Security risk}: no verification of the package is performed
@@ -57,8 +57,8 @@
 ##
 ## @noindent
 ## @emph{No support}: the GNU Octave community is not responsible for
-## packages installed from foreign sites.  For support or for 
-## reporting bugs you need to contact the maintainers of the installed 
+## packages installed from foreign sites.  For support or for
+## reporting bugs you need to contact the maintainers of the installed
 ## package directly (see the @file{DESCRIPTION} file of the package)
 ##
 ## The @var{option} variable can contain options that affect the manner
@@ -421,7 +421,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
             for file_idx = find (external_files_mask)
 
-              warning ('Octave:security', 
+              warning ('Octave:security',
               ['You are installing from an unofficial source.\n' ...
                'The GNU Octave community is not responsible' ...
                ' for the content of this package.\n' ...

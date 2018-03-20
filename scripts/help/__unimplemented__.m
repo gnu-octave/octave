@@ -758,7 +758,6 @@ function rlist = missing_functions ()
   "FunctionTestCase",
   "functiontests",
   "funm",
-  "gammaincinv",
   "gather",
   "gcmr",
   "geobubble",

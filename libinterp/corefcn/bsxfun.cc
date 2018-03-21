@@ -25,20 +25,20 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <list>
 #include <string>
 #include <vector>
-#include <list>
 
 #include "lo-mappers.h"
 
-#include "oct-map.h"
 #include "defun.h"
 #include "interpreter.h"
-#include "parse.h"
-#include "variables.h"
+#include "oct-map.h"
 #include "ov-colon.h"
-#include "unwind-prot.h"
 #include "ov-fcn-handle.h"
+#include "parse.h"
+#include "unwind-prot.h"
+#include "variables.h"
 
 // Optimized bsxfun operations
 enum bsxfun_builtin_op
@@ -87,6 +87,7 @@ bsxfun_builtin_lookup (const std::string& name)
   for (int i = 0; i < bsxfun_num_builtin_ops; i++)
     if (name == bsxfun_builtin_names[i])
       return static_cast<bsxfun_builtin_op> (i);
+
   return bsxfun_builtin_unknown;
 }
 
@@ -495,16 +496,16 @@ dimensionality as the other array.
                           if (tmp(0).isreal ())
                             {
                               have_FloatNDArray = true;
-                              result_FloatNDArray
-                                = tmp(0).float_array_value ();
+                              result_FloatNDArray =
+                                tmp(0).float_array_value ();
                               result_FloatNDArray.resize (dvc);
                             }
                           else
                             {
-                              have_ComplexNDArray = true;
-                              result_ComplexNDArray =
-                                tmp(0).complex_array_value ();
-                              result_ComplexNDArray.resize (dvc);
+                              have_FloatComplexNDArray = true;
+                              result_FloatComplexNDArray =
+                                tmp(0).float_complex_array_value ();
+                              result_FloatComplexNDArray.resize (dvc);
                             }
                         }
                       else if BSXINIT(boolNDArray, "logical", bool)
@@ -532,44 +533,33 @@ dimensionality as the other array.
                 {
                   update_index (ra_idx, dvc, i);
 
-                  if (have_FloatNDArray
-                      || have_FloatComplexNDArray)
+                  if (have_NDArray)
                     {
                       if (! tmp(0).isfloat ())
                         {
-                          if (have_FloatNDArray)
-                            {
-                              have_FloatNDArray = false;
-                              C = result_FloatNDArray;
-                            }
-                          else
-                            {
-                              have_FloatComplexNDArray = false;
-                              C = result_FloatComplexNDArray;
-                            }
+                          have_NDArray = false;
+                          C = result_NDArray;
                           C = do_cat_op (C, tmp(0), ra_idx);
                         }
-                      else if (tmp(0).is_double_type ())
+                      else if (tmp(0).isreal ())
+                        result_NDArray.insert (tmp(0).array_value (), ra_idx);
+                      else
                         {
-                          if (tmp(0).iscomplex ()
-                              && have_FloatNDArray)
-                            {
-                              result_ComplexNDArray =
-                                ComplexNDArray (result_FloatNDArray);
-                              result_ComplexNDArray.insert
-                                (tmp(0).complex_array_value (), ra_idx);
-                              have_FloatComplexNDArray = false;
-                              have_ComplexNDArray = true;
-                            }
-                          else
-                            {
-                              result_NDArray =
-                                NDArray (result_FloatNDArray);
-                              result_NDArray.insert
-                                (tmp(0).array_value (), ra_idx);
-                              have_FloatNDArray = false;
-                              have_NDArray = true;
-                            }
+                          result_ComplexNDArray =
+                            ComplexNDArray (result_NDArray);
+                          result_ComplexNDArray.insert
+                            (tmp(0).complex_array_value (), ra_idx);
+                          have_NDArray = false;
+                          have_ComplexNDArray = true;
+                        }
+                    }
+                  else if (have_FloatNDArray)
+                    {
+                      if (! tmp(0).isfloat ())
+                        {
+                          have_FloatNDArray = false;
+                          C = result_FloatNDArray;
+                          C = do_cat_op (C, tmp(0), ra_idx);
                         }
                       else if (tmp(0).isreal ())
                         result_FloatNDArray.insert
@@ -579,31 +569,9 @@ dimensionality as the other array.
                           result_FloatComplexNDArray =
                             FloatComplexNDArray (result_FloatNDArray);
                           result_FloatComplexNDArray.insert
-                            (tmp(0).float_complex_array_value (),
-                             ra_idx);
+                            (tmp(0).float_complex_array_value (), ra_idx);
                           have_FloatNDArray = false;
                           have_FloatComplexNDArray = true;
-                        }
-                    }
-                  else if (have_NDArray)
-                    {
-                      if (! tmp(0).isfloat ())
-                        {
-                          have_NDArray = false;
-                          C = result_NDArray;
-                          C = do_cat_op (C, tmp(0), ra_idx);
-                        }
-                      else if (tmp(0).isreal ())
-                        result_NDArray.insert (tmp(0).array_value (),
-                                               ra_idx);
-                      else
-                        {
-                          result_ComplexNDArray =
-                            ComplexNDArray (result_NDArray);
-                          result_ComplexNDArray.insert
-                            (tmp(0).complex_array_value (), ra_idx);
-                          have_NDArray = false;
-                          have_ComplexNDArray = true;
                         }
                     }
 
@@ -621,6 +589,7 @@ dimensionality as the other array.
                     }
 
                   else if BSXLOOP(ComplexNDArray, "double", complex)
+                  else if BSXLOOP(FloatComplexNDArray, "single", float_complex)
                   else if BSXLOOP(boolNDArray, "logical", bool)
                   else if BSXLOOP(int8NDArray, "int8", int8)
                   else if BSXLOOP(int16NDArray, "int16", int16)
@@ -824,5 +793,12 @@ dimensionality as the other array.
 %! a = zeros (0, 3);
 %! a .+= [1 2 3];
 %! assert (a, zeros (0, 3));
+
+%!test <*53179>
+%! im = ones (4,4,2) + single (i);
+%! mask = true (4,4);
+%! mask(:,1:2) = false;
+%! r = bsxfun (@times, im, mask);
+%! assert (r(:,:,1), repmat (single ([0, 0, 1+i, 1+i]), [4, 1]));
 
 */

@@ -34,13 +34,13 @@ along with Octave; see the file COPYING.  If not, see
 
 inline
 bool
-is_valid_bsxfun (const std::string& name, const dim_vector& dx,
-                 const dim_vector& dy)
+is_valid_bsxfun (const std::string& name,
+                 const dim_vector& xdv, const dim_vector& ydv)
 {
-  for (int i = 0; i < std::min (dx.ndims (), dy.ndims ()); i++)
+  for (int i = 0; i < std::min (xdv.ndims (), ydv.ndims ()); i++)
     {
-      octave_idx_type xk = dx(i);
-      octave_idx_type yk = dy(i);
+      octave_idx_type xk = xdv(i);
+      octave_idx_type yk = ydv(i);
       // Check the three conditions for valid bsxfun dims
       if (! ((xk == yk) || (xk == 1 && yk != 1) || (xk != 1 && yk == 1)))
         return false;
@@ -53,25 +53,25 @@ is_valid_bsxfun (const std::string& name, const dim_vector& dx,
   return true;
 }
 
-// since we can't change the size of the assigned-to matrix, we cannot
-// apply singleton expansion to it, so the conditions to check are
-// different here.
+// For inplace operations the size of the resulting matrix cannot be changed.
+// Therefore we can only apply singleton expansion on the second matrix which
+// alters the conditions to check.
 inline
 bool
-is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
-                         const dim_vector& dx)
+is_valid_inplace_bsxfun (const std::string& name,
+                         const dim_vector& rdv, const dim_vector& xdv)
 {
-  octave_idx_type drl = dr.ndims ();
-  octave_idx_type dxl = dx.ndims ();
-  if (drl < dxl)
+  octave_idx_type r_nd = rdv.ndims ();
+  octave_idx_type x_nd = xdv.ndims ();
+  if (r_nd < x_nd)
     return false;
 
-  for (int i = 0; i < drl; i++)
+  for (int i = 0; i < r_nd; i++)
     {
-      octave_idx_type rk = dr(i);
-      octave_idx_type xk = dx(i);
+      octave_idx_type rk = rdv(i);
+      octave_idx_type xk = xdv(i);
 
-      // Only two valid canditions to check; can't stretch rk
+      // Only two valid conditions to check; can't stretch rk
       if (! ((rk == xk) || (rk != 1 && xk == 1)))
         return false;
     }

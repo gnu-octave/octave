@@ -202,9 +202,9 @@ $(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 %reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
 $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
 
-$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/prepare_qhelp.py
+$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/mk_qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
-	$(PYTHON) $(srcdir)/%reldir%/prepare_qhelp.py %reldir%/octave_interpreter octave.html && \
+	$(PERL) $(srcdir)/%reldir%/mk_qthelp.pl octave.html %reldir%/octave_interpreter && \
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
 
@@ -352,6 +352,7 @@ doc_EXTRA_DIST += \
   %reldir%/images.mk \
   %reldir%/macros.texi \
   %reldir%/mk-doc-cache.pl \
+  %reldir%/mk_qthelp.pl \
   %reldir%/mkcontrib.awk \
   %reldir%/munge-texi.pl \
   %reldir%/prepare_qhelp.py \

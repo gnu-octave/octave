@@ -190,7 +190,8 @@ namespace octave
           }
 
         // The scopes of nested functions are static.
-        m_is_static = true;
+        if (m_is_nested)
+          m_is_static = true;
       }
     else if (m_children.size ())
       {

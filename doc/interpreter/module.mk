@@ -204,9 +204,9 @@ OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interprete
 octdoc_DATA += \
   $(OCTAVE_QTHELP_FILES)
 
-$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/mk_qthelp.pl
+$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
-	$(PERL) $(srcdir)/%reldir%/mk_qthelp.pl octave.html %reldir%/octave_interpreter && \
+	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.html %reldir%/octave_interpreter && \
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
 
@@ -356,10 +356,9 @@ doc_EXTRA_DIST += \
   %reldir%/images.mk \
   %reldir%/macros.texi \
   %reldir%/mk-doc-cache.pl \
-  %reldir%/mk_qthelp.pl \
+  %reldir%/mk-qthelp.pl \
   %reldir%/mkcontrib.awk \
   %reldir%/munge-texi.pl \
-  %reldir%/prepare_qhelp.py \
   $(DOC_IMAGES) \
   $(DOC_IMAGES_SRC) \
   $(LOGOS) \

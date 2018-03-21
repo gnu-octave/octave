@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 
 ################################################################################
-# File    : mk_qthelp.pl
+# File    : mk-qthelp.pl
 # Purpose : Transform Octave HTML documentation into intermediate formats
 #           for Qt Help Project (.qhp) and Qt Help Collection Project (.qhcp).
-# Usage   : mk_qthelp.pl input_htmldir output_filename 
+# Usage   : mk-qthelp.pl input_htmldir output_filename
 ################################################################################
 use warnings;              # report warnings for questionable run-time code
 use strict qw(refs subs);  # check at compile-time for bad programming style
@@ -14,7 +14,7 @@ use File::Spec;            # For combining dirs and filenames into paths
 ################################################################################
 # Extract command line arguments
 if ($#ARGV != 1)
-{ die "USAGE: %0 input_htmldir output_filename"; } 
+{ die "USAGE: %0 input_htmldir output_filename"; }
 
 $htmldir = basename ($ARGV[0]);
 $basedir = File::Spec->rel2abs (dirname ($ARGV[1]));
@@ -37,10 +37,10 @@ while (<$HTML>)
     ($href, $text) = m|href="([^"]*)">(.*)</a>|;
     # Sanitize text
     $text =~ s/<[^>]*>//g;         # remove xml-looking blocks like <code>
-    $text =~ s/&rsquo;/&#8217;/g;  # Code for apostrophe 
+    $text =~ s/&rsquo;/&#8217;/g;  # Code for apostrophe
 
     push (@toc, { "href" => $href, "text" => $text,
-                  "level" => $level, "sectionstart" => 0 }); 
+                  "level" => $level, "sectionstart" => 0 });
   }
   elsif (/^\s+<ul /)
   {
@@ -124,7 +124,7 @@ foreach $hashref (@toc)
   while ($node{level} < $level)
   {
     # Unindent and close section
-    $level--;    
+    $level--;
     print $FH "  " x ($indent + $level);
     print $FH "</section>\n";
   }

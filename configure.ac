@@ -2907,6 +2907,9 @@ if test $ENABLE_DOCS = yes; then
 fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
+AM_CONDITIONAL([AMCOND_BUILD_QT_DOCS],
+               [test $ENABLE_DOCS = yes && test $build_qt_gui = yes])
+
 ### Determine whether Mercurial ID should be embedded in library binaries.
 
 ENABLE_HG_ID=yes

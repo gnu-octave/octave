@@ -8,7 +8,6 @@
 ################################################################################
 use warnings;              # report warnings for questionable run-time code
 use strict qw(refs subs);  # check at compile-time for bad programming style
-use autodie;               # issue an error and exit if any system call fails
 use File::Basename;        # For splitting paths between dir and file
 use File::Spec;            # For combining dirs and filenames into paths
 

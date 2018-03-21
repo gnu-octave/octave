@@ -68,7 +68,7 @@
 ## @math{gamma(a+1)*exp(x)/(x^a)}.
 ## @end ifnottex
 ## If @var{tail} is @qcode{"scaledupper"}, then the upper incomplete gamma
-## function is divided by the same quantity.
+## function is multiplied by the same quantity.
 ##
 ## References:
 ##
@@ -77,7 +77,7 @@
 ## @nospell{Dover publications, Inc.}, 1972.
 ##
 ## @nospell{W. Gautschi},
-## @cite{A computational procedure for incomplete gamma functions}, 
+## @cite{A computational procedure for incomplete gamma functions},
 ## @nospell{ACM Trans. Math Software}, pp. 466--481, Vol 5, No. 4, 2012.
 ##
 ## @nospell{W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery},
@@ -100,7 +100,7 @@ function y = gammainc (x, a, tail = "lower")
     error ("gammainc: X and A must be of common size or scalars");
   endif
 
-  if (iscomplex (x) || iscomplex (a)) 
+  if (iscomplex (x) || iscomplex (a))
     error ("gammainc: all inputs must be real");
   endif
 
@@ -242,7 +242,7 @@ endfunction
 
 ## x == 0, a == 0.
 function y = gammainc_00 (tail)
-  if ((strcmp (tail, "upper")) || (strcmp (tail, "scaledupper")))
+  if (strcmp (tail, "upper") || strcmp (tail, "scaledupper"))
     y = 0;
   else
     y = 1;
@@ -464,7 +464,7 @@ endfunction
 
 ## Test: case 8
 %!assert (gammainc (-10, 10), 3.112658265341493126871617e7, -2*eps)
-## Matlab fails this next one%!      %!      
+## Matlab fails this next one%!      %!
 %!assert (isreal (gammainc (-10, 10)), true)
 %!assert (gammainc (-10, 10.1, "upper"), ...
 %!        -2.9582761911890713293e7-1i * 9.612022339061679758e6, -30*eps)
@@ -473,7 +473,7 @@ endfunction
 %!assert (gammainc (-10, 10, "scaledlower"), 0.5128019364747265, -1e-14);
 %!assert (gammainc (-10, 10, "scaledupper"), -0.5128019200000000, -1e-14);
 %!assert (gammainc (200, 201, "upper"), 0.518794309678684497, -2 * eps);
-%!assert (gammainc (200, 201, "scaledupper"), 
+%!assert (gammainc (200, 201, "scaledupper"),
 %!        18.4904360746560462660798514, -eps)
 ## Here we are very good (no D (x,a)) involved
 %!assert (gammainc(1000, 1000.5, "scaledlower"), 39.48467539583672271, -2*eps)

@@ -35,8 +35,8 @@
 ## If requested, return index vectors @var{ia} and @var{ib} such that
 ## @code{@var{c} = @var{a}(@var{ia})} and @code{@var{c} = @var{b}(@var{ib})}.
 ##
-## @end deftypefn
 ## @seealso{unique, union, setdiff, setxor, ismember}
+## @end deftypefn
 
 function [c, ia, ib] = intersect (a, b, varargin)
 

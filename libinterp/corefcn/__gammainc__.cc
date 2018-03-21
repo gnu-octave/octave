@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "fNDArray.h"
 
-DEFUN (__gammainc__, args, , 
+DEFUN (__gammainc__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{y} =} __gammainc__ (@var{x}, @var{a})
 Continued fraction for incomplete gamma function.

@@ -205,7 +205,7 @@ $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
 $(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/prepare_qhelp.py
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	$(PYTHON) $(srcdir)/%reldir%/prepare_qhelp.py %reldir%/octave_interpreter octave.html && \
-	$(QCOLLECTIONGENERATOR) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
+	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
 
 ## The Qt help collection generator command produces two output files

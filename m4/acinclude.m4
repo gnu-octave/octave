@@ -1955,8 +1955,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       UICFLAGS=
       RCCFLAGS=
       LRELEASEFLAGS=
-      QHELPGENERATORFLAGS=
       QCOLLECTIONGENERATORFLAGS=
+      QHELPGENERATORFLAGS=
       $as_unset ac_cv_prog_MOC_QTVER
       $as_unset ac_cv_prog_ac_ct_MOC_QTVER
       $as_unset ac_cv_prog_UIC_QTVER
@@ -1965,6 +1965,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       $as_unset ac_cv_prog_ac_ct_RCC_QTVER
       $as_unset ac_cv_prog_LRELEASE_QTVER
       $as_unset ac_cv_prog_ac_ct_LRELEASE_QTVER
+      $as_unset ac_cv_prog_QCOLLECTIONGENERATOR_QTVER
+      $as_unset ac_cv_prog_ac_ct_QCOLLECTIONGENERATOR_QTVER
       $as_unset ac_cv_prog_QHELPGENERATOR_QTVER
       $as_unset ac_cv_prog_ac_ct_QHELPGENERATOR_QTVER
     fi
@@ -2057,6 +2059,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   AC_SUBST(UICFLAGS)
   AC_SUBST(RCCFLAGS)
   AC_SUBST(LRELEASEFLAGS)
+  AC_SUBST(QCOLLECTIONGENERATORFLAGS)
+  AC_SUBST(QHELPGENERATORFLAGS)
   AC_SUBST(QT_CPPFLAGS)
   AC_SUBST(QT_LDFLAGS)
   AC_SUBST(QT_LIBS)

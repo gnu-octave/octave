@@ -88,8 +88,8 @@
 ## @code{svds} is best for finding only a few singular values from a large
 ## sparse matrix.  Otherwise, @code{svd (full (@var{A}))} will likely be more
 ## efficient.
-## @end deftypefn
 ## @seealso{svd, eigs}
+## @end deftypefn
 
 function [u, s, v, flag] = svds (A, k, sigma, opts)
 

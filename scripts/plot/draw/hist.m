@@ -334,7 +334,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! hax = gca;
 %! unwind_protect
-%!   fail ("hist (hax, 1, [2 1 0])", "warning", "bin values X not sorted"); 
+%!   fail ("hist (hax, 1, [2 1 0])", "warning", "bin values X not sorted");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -2649,7 +2649,7 @@ DEFMETHODX ("ferror", Fferror, interp, args, ,
 @deftypefn  {} {@var{msg} =} ferror (@var{fid})
 @deftypefnx {} {[@var{msg}, @var{err}] =} ferror (@var{fid})
 @deftypefnx {} {[@dots{}] =} ferror (@var{fid}, "clear")
-Query the error status of the stream specified by file descriptor @var{fid}
+Query the error status of the stream specified by file descriptor @var{fid}.
 
 If an error condition exists then return a string @var{msg} describing the
 error.  Otherwise, return an empty string @qcode{""}.

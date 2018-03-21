@@ -52,8 +52,8 @@
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## rectangle object.
-## @end deftypefn
 ## @seealso{patch, line, cylinder, ellipsoid, sphere}
+## @end deftypefn
 
 function h = rectangle (varargin)
 

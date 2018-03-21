@@ -531,33 +531,42 @@ namespace octave
 
   private:
 
-    // Name for this scope (usually the corresponding filename of the
-    // function corresponding to the scope).
+    //! Name for this scope (usually the corresponding filename of the
+    //! function corresponding to the scope).
+
     std::string m_name;
 
-    // Map from symbol names to symbol info.
+    //! Map from symbol names to symbol info.
+
     std::map<std::string, symbol_record> m_symbols;
 
-    // Map from symbol names to subfunctions.
+    //! Map from symbol names to subfunctions.
+
     std::map<std::string, octave_value> m_subfunctions;
 
-    // The list of subfunctions (if any) in the order they appear in
-    // the function file.
+    //! The list of subfunctions (if any) in the order they appear in
+    //! the function file.
+
     std::list<std::string> m_subfunction_names;
 
-    // The associated user code (may be null).
+    //! The associated user code (may be null).
+
     octave_user_function *m_fcn;
 
-    // Parent of nested function (may be null).
+    //! Parent of nested function (may be null).
+
     std::weak_ptr<symbol_scope_rep> m_parent;
 
-    // Child nested functions.
+    //! Child nested functions.
+
     std::vector<symbol_scope> m_children;
 
-    // If true, then this scope belongs to a nested function.
+    //! If true, then this scope belongs to a nested function.
+
     bool m_is_nested;
 
-    // If true then no variables can be added.
+    //! If true then no variables can be added.
+    
     bool m_is_static;
 
     symbol_record::context_id m_context;

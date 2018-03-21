@@ -192,15 +192,17 @@ OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.octave-html-stamp
 OCTAVE_CSS = %reldir%/octave.css
 HTMLDIR_CSS = $(OCTAVE_HTML_DIR)/octave.css
 
-OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interpreter.qch
-
-octdoc_DATA += \
-  $(OCTAVE_QTHELP_FILES)
-
 $(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 %reldir%/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
 %reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
 $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
+
+if AMCOND_BUILD_QT_DOCS
+
+OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interpreter.qch
+
+octdoc_DATA += \
+  $(OCTAVE_QTHELP_FILES)
 
 $(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/mk_qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
@@ -213,6 +215,8 @@ $(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(srcdir)/%reldir%/mk_qthelp.pl
 ## collection (qhc) file.  Declare the qhc file to depend on the
 ## associated qch file, so that the files are built serially.
 %reldir%/octave_interpreter.qhc: %reldir%/octave_interpreter.qch
+
+endif
 
 $(srcdir)/%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \

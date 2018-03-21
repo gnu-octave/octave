@@ -1,5 +1,5 @@
-nest_TEST_FILES = \
+local_functions_TEST_FILES = \
   %reldir%/subfunctions.tst \
   %reldir%/subfunction_eval.m
 
-TEST_FILES += $(nest_TEST_FILES)
+TEST_FILES += $(local_functions_TEST_FILES)

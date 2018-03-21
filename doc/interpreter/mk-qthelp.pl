@@ -14,7 +14,7 @@ use File::Spec;            # For combining dirs and filenames into paths
 ################################################################################
 # Extract command line arguments
 if ($#ARGV != 1)
-{ die "USAGE: %0 input_htmldir output_filename"; }
+{ die "USAGE: $0 input_htmldir output_filename"; }
 
 $htmldir = basename ($ARGV[0]);
 $basedir = File::Spec->rel2abs (dirname ($ARGV[1]));

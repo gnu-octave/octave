@@ -172,8 +172,8 @@ close ($FH);
 # Prepare Qt Help Collection Project document (.qhcp file)
 open ($FH, ">", "$fname.qhcp") or die "Unable to open $fname.qhcp";
 
-$qhpfile = "$fname.qhp";
-$qchfile = "$fname.qch";
+$qhpfile = basename ($fname) . ".qhp";
+$qchfile = basename ($fname) . ".qch";
 
 # This is the entire file
 print $FH <<__EOT4__;

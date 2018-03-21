@@ -223,6 +223,20 @@ persistent d = 3 e f = 5
 The behavior of persistent variables is equivalent to the behavior of
 static variables in C@.
 
+One restriction for persistent variables is, that neither input nor
+output arguments of a function can be persistent:
+
+@example
+@group
+function y = foo ()
+  persistent y = 0;  # Not allowed!
+endfunction
+
+foo ()
+@print{} error: can't make function parameter y persistent
+@end group
+@end example
+
 Like global variables, a persistent variable may only be initialized once.
 For example, after executing the following code
 

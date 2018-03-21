@@ -1,5 +1,5 @@
 local_functions_TEST_FILES = \
-  %reldir%/subfunctions.tst \
-  %reldir%/subfunction_eval.m
+  %reldir%/local_functions.tst \
+  %reldir%/local_function_eval.m
 
 TEST_FILES += $(local_functions_TEST_FILES)

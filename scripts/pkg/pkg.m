@@ -102,6 +102,9 @@
 ## pkg update
 ## @end example
 ##
+## @noindent
+## To update a single package use @code{pkg install -forge}
+##
 ## @item uninstall
 ## Uninstall named packages.  For example,
 ##
@@ -421,27 +424,14 @@ function [local_packages, global_packages] = pkg (varargin)
 
             for file_idx = find (external_files_mask)
 
-              warning ('Octave:security',
-              ['You are installing from an unofficial source.\n' ...
-               'The GNU Octave community is not responsible' ...
-               ' for the content of this package.\n' ...
-               '%s will be downloaded and installed.\n'],
-               files{file_idx});
-              _yes = yes_or_no ('Are you sure you want to do this? ');
-
-              if (_yes)
-                [~, fname, fext] = fileparts (files{file_idx});
-                local_files{end+1} = fullfile (tmp_dir, [fname fext]);
-
-                [~, success, msg] = urlwrite (files{file_idx}, local_files{end});
-                if (success != 1)
-                  error ("pkg: failed to read package '%s': %s",
-                         files{file_idx}, msg);
-                endif
-                files{file_idx} = local_files{end};
-              else
-                files(file_idx) = [];
-              endif # do remote install
+              [~, fname, fext] = fileparts (files{file_idx});
+              local_files{end+1} = fullfile (tmp_dir, [fname fext]);
+              [~, success, msg] = urlwrite (files{file_idx}, local_files{end});
+              if (success != 1)
+                error ("pkg: failed to read package '%s': %s",
+                       files{file_idx}, msg);
+              endif
+              files{file_idx} = local_files{end};
 
             endfor
           endif

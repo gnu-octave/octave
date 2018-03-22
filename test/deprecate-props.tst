@@ -27,41 +27,12 @@
 %!      num2str (vrsmax{2}) < num2str (vrscur{2}))
 %!    if (isempty (val) && isprop (h, prop))
 %!      error ("Please remove %s property %s", get (h, "type"), prop);
-%!    elseif (! isempty (val) && ! isempty (strfind (val, set (h, prop))))
+%!    elseif (! isempty (val) && any (strcmp (val, set (h, prop))))
 %!      error ("Please remove '%s' from allowed values for %s property %s",
 %!             val, get (h, "type"), prop);
 %!    endif
 %!  endif
 %!endfunction
-
-## patch/surface "normalmode" deprecated in 4.2, remove from 4.5.+
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   hp = patch ();
-%!   testprop (hp, "normalmode", "4.4");
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   hs = surface ();
-%!   testprop (hs, "normalmode", "4.4");
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
-## axes, "zero" value for "x/yaxislocation" deprecated in 4.2, remove from 4.5.+
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   ha = axes ();
-%!   testprop (ha, "xaxislocation", "4.4", "zero");
-%!   testprop (ha, "yaxislocation", "4.4", "zero");
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
 
 ## annotation rectangle "edgecolor" deprecated in 4.4, remove from 4.7.+
 %!test

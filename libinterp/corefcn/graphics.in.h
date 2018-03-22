@@ -3661,8 +3661,7 @@ public:
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
-      // FIXME: Remove "zero" in 4.6
-      radio_property xaxislocation u , "{bottom}|top|origin|zero"
+      radio_property xaxislocation u , "{bottom}|top|origin"
       color_property xcolor mu , color_values (0.15, 0.15, 0.15)
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
@@ -3679,8 +3678,7 @@ public:
       radio_property xticklabelmode u , "{auto}|manual"
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
-      // FIXME: Remove "zero" in 4.6
-      radio_property yaxislocation u , "{left}|right|origin|zero"
+      radio_property yaxislocation u , "{left}|right|origin"
       color_property ycolor mu , color_values (0.15, 0.15, 0.15)
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
@@ -3822,11 +3820,6 @@ public:
     }
     void update_yaxislocation (void)
     {
-      // FIXME: Remove warning with "zero" in 4.6
-      if (yaxislocation_is ("zero"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'yaxislocation' to 'zero' is deprecated, "
-                         "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       if (xticklabelmode.is ("auto"))
@@ -3847,11 +3840,6 @@ public:
     }
     void update_xaxislocation (void)
     {
-      // FIXME: Remove warning with "zero" in 4.6
-      if (xaxislocation_is ("zero"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'xaxislocation' to 'zero' is deprecated, "
-                         "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       if (xticklabelmode.is ("auto"))
@@ -4877,7 +4865,6 @@ public:
       color_property markeredgecolor , color_property (radio_values ("none|{auto}|flat"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
-      radio_property normalmode hsg , "{auto}|manual"
       double_property specularcolorreflectance , 1.0
       double_property specularexponent , 10.0
       double_property specularstrength , 0.9
@@ -4994,22 +4981,6 @@ public:
     }
 
     void update_data (void);
-
-    void set_normalmode (const octave_value& val)
-    {
-      warning_with_id ("Octave:deprecated-property",
-        "patch: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      set_vertexnormalsmode (val);
-    }
-
-    std::string get_normalmode (void) const
-    {
-      warning_with_id ("Octave:deprecated-property",
-        "patch: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      return vertexnormalsmode.current_value ();
-    }
   };
 
 private:
@@ -5089,7 +5060,6 @@ public:
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
       radio_property meshstyle , "{both}|row|column"
-      radio_property normalmode hsg , "{auto}|manual"
       double_property specularcolorreflectance , 1
       double_property specularexponent , 10
       double_property specularstrength , 0.9
@@ -5185,22 +5155,6 @@ public:
 
     void update_vertexnormalsmode (void)
     { update_vertex_normals (); }
-
-    void set_normalmode (const octave_value& val)
-    {
-      warning_with_id ("Octave:deprecated-property",
-        "surface: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      set_vertexnormalsmode (val);
-    }
-
-    std::string get_normalmode (void) const
-    {
-      warning_with_id ("Octave:deprecated-property",
-        "surface: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      return vertexnormalsmode.current_value ();
-    }
   };
 
 private:

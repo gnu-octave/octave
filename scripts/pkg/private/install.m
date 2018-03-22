@@ -296,7 +296,8 @@ function install (files, handle_deps, prefix, archprefix, verbose,
   ## without creating it such as giving an invalid filename for the package
   if (exist ("desc", "var")
       && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
-    printf ("For information about changes from previous versions of the %s package, run 'news %s'.\n",
+    printf (["For information about changes from previous versions " ...
+             "of the %s package, run 'news %s'.\n"],
             desc.name, desc.name);
   endif
 

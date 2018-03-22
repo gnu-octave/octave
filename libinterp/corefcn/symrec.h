@@ -199,30 +199,18 @@ namespace octave
 
       void clear (context_id context)
       {
-        // There is no need to do anything with a fowarded
-        // symbol_record_rep here.
-        //
-        // For scripts, we are never executing in the script "scope".
-        //
-        // For globals, we are only interested in breaking the link to
-        // the global value and clearing the local value, not the
-        // global one.
-
-        // For persistent values, we clear the value then unmark so
-        // that we clear the first element of the value stack.
+        // For globals, break the link to the global value first, then
+        // clear the local value.
 
         if (is_global ())
-          {
-            unbind_fwd_rep ();
-            return;
-          }
-
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return;
+          unbind_fwd_rep ();
 
         if (! (is_hidden () || is_inherited ()))
           {
             assign (octave_value (), context);
+
+            // For persistent values, we clear the value then unmark so
+            // that we clear the first element of the value stack.
 
             if (is_persistent ())
               unmark_persistent ();
@@ -280,6 +268,11 @@ namespace octave
           return t_fwd_rep->is_inherited ();
 
         return m_storage_class & inherited;
+      }
+
+      bool is_forwarded (void) const
+      {
+        return ! m_fwd_rep.expired ();
       }
 
       bool is_global (void) const
@@ -499,6 +492,12 @@ namespace octave
 
       void unbind_fwd_rep (void)
       {
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          {
+            t_fwd_rep->unbind_fwd_rep ();
+            return;
+          }
+
         // When unbinding an object, only break the immediate link.
         // By doing that, we ensure that any variables that are made
         // global in a script remain linked as globals in the
@@ -629,6 +628,7 @@ namespace octave
     bool is_global (void) const { return m_rep->is_global (); }
     bool is_hidden (void) const { return m_rep->is_hidden (); }
     bool is_inherited (void) const { return m_rep->is_inherited (); }
+    bool is_forwarded (void) const { return m_rep->is_forwarded (); }
     bool is_persistent (void) const { return m_rep->is_persistent (); }
     bool is_added_static (void) const { return m_rep->is_added_static (); }
 

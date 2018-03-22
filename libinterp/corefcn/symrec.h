@@ -181,9 +181,9 @@ namespace octave
       //
       // Here, X should only exist in the final stack frame.
 
-      size_t pop_context (void)
+      context_id pop_context (void)
       {
-        size_t retval = 1;
+        context_id retval = 1;
 
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           return retval;
@@ -604,7 +604,7 @@ namespace octave
 
     void push_context (void) { m_rep->push_context (); }
 
-    size_t pop_context (void) { return m_rep->pop_context (); }
+    context_id pop_context (void) { return m_rep->pop_context (); }
 
     void clear (context_id context) { m_rep->clear (context); }
 

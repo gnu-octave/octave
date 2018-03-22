@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QScrollBar>
-#include <QDesktopWidget>
 #include <QCompleter>
 #include <QLabel>
 
@@ -341,12 +340,6 @@ namespace octave
     connect (m_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
              this, SLOT (handle_double_click (QModelIndex)));
 
-    // shrink max. displayed entry size to desktop width
-    QSize screen = QDesktopWidget ().screenGeometry ().size ();
-    int w = screen.width ();
-    QFontMetrics fm = m_history_list_view->fontMetrics ();
-    int h = fm.height ();
-    m_history_list_view->setGridSize (QSize (w,h));
     m_history_list_view->setTextElideMode (Qt::ElideRight);
   }
 }

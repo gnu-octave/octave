@@ -1,4 +1,4 @@
-## Copyright (C) 2017 Rik Wehbring
+## Copyright (C) 2017-2018 Rik Wehbring
 ## Copyright (C) 2005-2017 William Poetra Yoga Hadisoeseno
 ## Copyright (C) 2000-2017 Paul Kienzle
 ##
@@ -34,7 +34,7 @@
 ## 3. Convert objects to struct, and then compare as stated below.
 ## 4. For each argument after x, compare it for equality with x:
 ##    a. char       compare each member with strcmp
-##    b. numeric    compare each member with '=='
+##    b. numeric    compare each member with '==' with sparsity regarded
 ##    c. struct     compare number of fieldnames, value of fieldnames,
 ##                  and then each field with isequal (recursive)
 ##    d. cellstr    compare each cellstr member with strcmp
@@ -101,9 +101,17 @@ function t = isequal (x, varargin)
         t = strcmp (x, y);
 
       elseif (isreal (x) || iscomplex (x))
-        ## general "numeric" type.  Use '==' operator.
-        m = (x == y);
-        t = all (m(:));
+        if (issparse (x))
+          ## sparse types.
+          [xi, xj, xv] = find (x);
+          [yi, yj, yv] = find (y);
+          t = (length (xi) == length (yi)) && all (xi == yi) ...
+              && all (xj == yj) && all (xv == yv);
+        else
+          ## general "numeric" type.  Use '==' operator.
+          m = (x == y);
+          t = all (m(:));
+        endif
 
       elseif (isstruct (x))
         ## struct type.  Compare # of fields, fieldnames, then field values.
@@ -174,16 +182,34 @@ function t = isequal (x, varargin)
         endwhile
 
       elseif (isreal (x) || iscomplex (x))
-        ## general "numeric" type.  Use '==' operator.
 
-        idx = 1;
-        while (t && idx <= nvarargin)
-          y = varargin{idx};
-          m = (x == y);
-          t = all (m(:));
+        if (issparse (x))
+          ## sparse types.
 
-          idx += 1;
-        endwhile
+          idx = 1;
+          [xi, xj, xv] = find (x);
+          while (t && idx <= nvarargin)
+            y = varargin{idx};
+            [yi, yj, yv] = find (y);
+            t = (length (xi) == length (yi)) && all (xi == yi) ...
+                && all (xj == yj) && all (xv == yv);
+
+            idx += 1;
+          endwhile
+
+        else
+          ## general "numeric" type.  Use '==' operator.
+
+          idx = 1;
+          while (t && idx <= nvarargin)
+            y = varargin{idx};
+            m = (x == y);
+            t = all (m(:));
+
+            idx += 1;
+          endwhile
+
+        endif
 
       elseif (isstruct (x))
         ## struct type.  Compare # of fields, fieldnames, then field values.
@@ -468,6 +494,9 @@ endfunction
 %! assert (isequal (@(x) x.^2, @(x) x.^2, fcn), false);
 
 ## test for sparse matrices
+%!shared A, Z
+%!  A = sprand (2^31, 1000, 2^(-31));
+%!  Z = sparse (2^31, 1000);
 %!assert (isequal (sparse ([]), []), true)
 %!assert (isequal (sparse ([]), sparse ([]), []), true)
 %!assert (isequal ([], sparse ([])), true)
@@ -486,6 +515,12 @@ endfunction
 %!assert (isequal (eye (300), eye (300), speye (300)), true)
 %!assert (isequal (sparse (0,1), sparse (1,0)), false)
 %!assert (isequal (sparse (0,1), sparse (0,1), sparse (1,0)), false)
+%!assert (isequal (Z, Z), true)
+%!assert (isequal (A, A), true)
+%!assert (isequal (A, Z), false)
+%!assert (isequal (Z, Z, Z), true)
+%!assert (isequal (A, A, A), true)
+%!assert (isequal (A, Z, A), false)
 
 ## test NaN
 %!assert (isequal (NaN, NaN), false)

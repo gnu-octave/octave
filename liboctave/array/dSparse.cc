@@ -5860,6 +5860,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
 
           if (err == 0)
             {
+              // one iterative refinement instead of the default two in UMFPACK
+              Control (UMFPACK_IRSTEP) = 1;
               const double *Bx = b.fortran_vec ();
               retval.resize (b.rows (), b.cols ());
               double *result = retval.fortran_vec ();
@@ -6097,6 +6099,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
 
           if (err == 0)
             {
+              // one iterative refinement instead of the default two in UMFPACK
+              Control (UMFPACK_IRSTEP) = 1;
               octave_idx_type b_nr = b.rows ();
               octave_idx_type b_nc = b.cols ();
               int status = 0;
@@ -6353,6 +6357,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
 
           if (err == 0)
             {
+              // one iterative refinement instead of the default two in UMFPACK
+              Control (UMFPACK_IRSTEP) = 1;
               octave_idx_type b_nr = b.rows ();
               octave_idx_type b_nc = b.cols ();
               int status = 0;
@@ -6612,6 +6618,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
           if (err == 0)
             {
+              // one iterative refinement instead of the default two in UMFPACK
+              Control (UMFPACK_IRSTEP) = 1;
               octave_idx_type b_nr = b.rows ();
               octave_idx_type b_nc = b.cols ();
               int status = 0;

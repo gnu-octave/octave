@@ -228,6 +228,11 @@
 ## warning when concatenating a mixture of double and single quoted strings.
 ## By default, the @code{Octave:mixed-string-concat} warning is disabled.
 ##
+## @item  Octave:nearly-singular-matrix
+## @itemx Octave:singular-matrix
+## By default, the @code{Octave:nearly-singular-matrix} and
+## @code{Octave:singular-matrix} warnings are enabled.
+##
 ## @item Octave:neg-dim-as-zero
 ## If the @code{Octave:neg-dim-as-zero} warning is enabled, print a warning
 ## for expressions like
@@ -316,11 +321,6 @@
 ## Print warning if a single quote character is used to introduce a
 ## string constant.
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
-##
-## @item  Octave:nearly-singular-matrix
-## @itemx Octave:singular-matrix
-## By default, the @code{Octave:nearly-singular-matrix} and
-## @code{Octave:singular-matrix} warnings are enabled.
 ##
 ## @item Octave:sqrtm:SingularMatrix
 ## By default, the @code{Octave:sqrtm:SingularMatrix} warning is enabled.

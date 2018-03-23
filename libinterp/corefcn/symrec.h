@@ -199,30 +199,18 @@ namespace octave
 
       void clear (context_id context)
       {
-        // There is no need to do anything with a fowarded
-        // symbol_record_rep here.
-        //
-        // For scripts, we are never executing in the script "scope".
-        //
-        // For globals, we are only interested in breaking the link to
-        // the global value and clearing the local value, not the
-        // global one.
-
-        // For persistent values, we clear the value then unmark so
-        // that we clear the first element of the value stack.
+        // For globals, break the link to the global value first, then
+        // clear the local value.
 
         if (is_global ())
-          {
-            unbind_fwd_rep ();
-            return;
-          }
-
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          return;
+          unbind_fwd_rep ();
 
         if (! (is_hidden () || is_inherited ()))
           {
             assign (octave_value (), context);
+
+            // For persistent values, we clear the value then unmark so
+            // that we clear the first element of the value stack.
 
             if (is_persistent ())
               unmark_persistent ();
@@ -280,6 +268,11 @@ namespace octave
           return t_fwd_rep->is_inherited ();
 
         return m_storage_class & inherited;
+      }
+
+      bool is_forwarded (void) const
+      {
+        return ! m_fwd_rep.expired ();
       }
 
       bool is_global (void) const
@@ -497,12 +490,38 @@ namespace octave
         m_fwd_rep = fwd_rep;
       }
 
-      void unbind_fwd_rep (void)
+      void unbind_fwd_rep (bool recurse = true)
       {
-        // When unbinding an object, only break the immediate link.
-        // By doing that, we ensure that any variables that are made
-        // global in a script remain linked as globals in the
-        // enclosing scope.
+        // When unbinding variables in a script scope, recurse will be
+        // false and we will only break the immediate link.  By doing
+        // that, we ensure that any variables that are made global in
+        // a script remain linked as globals in the enclosing scope.
+
+        // When unbinding variables in a (possibly nested) function
+        // scope, recurse will be true and we will break the link to
+        // the global scope, not just the immediate link to the parent
+        // scope of the nested function.
+
+        if (recurse)
+          {
+            if (auto t_fwd_rep = m_fwd_rep.lock ())
+              {
+                // Currently, it is only possible to have at most two
+                // levels of indirection here, either
+                //
+                //   nested function -> parent function -> global scope
+                //
+                // or
+                //
+                //   script -> top level scope -> global scope
+                //
+                // so we can break the recursion here by setting the
+                // argument to unbind_fwd_rep to false.
+
+                t_fwd_rep->unbind_fwd_rep (false);
+                return;
+              }
+          }
 
         m_fwd_scope = std::weak_ptr<symbol_scope_rep> ();
         m_fwd_rep.reset ();
@@ -629,6 +648,7 @@ namespace octave
     bool is_global (void) const { return m_rep->is_global (); }
     bool is_hidden (void) const { return m_rep->is_hidden (); }
     bool is_inherited (void) const { return m_rep->is_inherited (); }
+    bool is_forwarded (void) const { return m_rep->is_forwarded (); }
     bool is_persistent (void) const { return m_rep->is_persistent (); }
     bool is_added_static (void) const { return m_rep->is_added_static (); }
 
@@ -659,7 +679,7 @@ namespace octave
       m_rep->bind_fwd_rep (fwd_scope, sr.m_rep);
     }
 
-    void unbind_fwd_rep (void) { m_rep->unbind_fwd_rep (); }
+    void unbind_fwd_rep (bool recurse = true) { m_rep->unbind_fwd_rep (recurse); }
 
     octave_value dump (context_id context) const
     {

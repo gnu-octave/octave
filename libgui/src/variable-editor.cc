@@ -1073,15 +1073,18 @@ namespace octave
         // Already open.
 
         // Put current focused variable out of focus
-        QFocusEvent event (QEvent::FocusOut, Qt::OtherFocusReason);
-        QApplication::sendEvent (m_main->focusWidget (), &event);
+        if (m_main->focusWidget () != nullptr)
+          {
+            QFocusEvent event (QEvent::FocusOut, Qt::OtherFocusReason);
+            QApplication::sendEvent (m_main->focusWidget (), &event);
+          }
 
         // Put existing variable in focus and raise
-        event = QFocusEvent (QEvent::FocusIn, Qt::OtherFocusReason);
+        QFocusEvent event (QEvent::FocusIn, Qt::OtherFocusReason);
         QApplication::sendEvent (existing_qdw, &event);
         existing_qdw->show ();
         existing_qdw->raise ();
-        existing_qdw->setFocus ();
+        existing_qdw->activateWindow ();
 
         return;
       }
@@ -1180,6 +1183,10 @@ namespace octave
     QList<QTableView *> viewlist = findChildren<QTableView *> ();
     if (viewlist.size () == 1)
       m_tool_bar->setEnabled (true);
+
+    page->show ();
+    page->raise ();
+    page->activateWindow ();
   }
 
   void

@@ -18,7 +18,7 @@
   along with Octave; see the file COPYING.  If not, see
   <https://www.gnu.org/licenses/>.
 -->
-<component type="desktop">
+<component type="desktop-application">
   <id>org.octave.Octave.desktop</id>
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0+</project_license>
@@ -59,7 +59,15 @@
     </screenshot>
   </screenshots>
 
-  <url type="homepage">http://www.octave.org</url>
+  <launchable type="desktop-id">org.octave.Octave.desktop</launchable>
+  <provides>
+    <binary>octave</binary>
+  </provides>
+
+  <url type="homepage">https://www.octave.org/</url>
+  <url type="bugtracker">https://bugs.octave.org/</url>
+  <url type="donation">https://www.octave.org/donate.html</url>
+  <url type="faq">https://wiki.octave.org/FAQ</url>
   <update_contact>maintainers@octave.org</update_contact>
   <project_group>GNU</project_group>
 </component>

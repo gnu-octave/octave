@@ -277,7 +277,7 @@ namespace octave
         {
           symbol_record& sr = nm_sr.second;
 
-          if (! sr.is_persistent ())
+          if (! (sr.is_persistent () || sr.is_forwarded ()))
             sr.clear (m_context);
         }
     }
@@ -305,6 +305,13 @@ namespace octave
 
       if (p != m_symbols.end ())
         p->second.clear (m_context);
+      else if (m_is_nested)
+        {
+          std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
+
+          if (psr)
+            psr->clear_variable (name);
+        }
     }
 
     void clear_variable_pattern (const std::string& pat)
@@ -321,6 +328,14 @@ namespace octave
                 sr.clear (m_context);
             }
         }
+
+      if (m_is_nested)
+        {
+          std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
+
+          if (psr)
+            psr->clear_variable_pattern (pat);
+        }
     }
 
     void clear_variable_regexp (const std::string& pat)
@@ -336,6 +351,14 @@ namespace octave
               if (pattern.is_match (sr.name ()))
                 sr.clear (m_context);
             }
+        }
+
+      if (m_is_nested)
+        {
+          std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
+
+          if (psr)
+            psr->clear_variable_regexp (pat);
         }
     }
 

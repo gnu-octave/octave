@@ -36,10 +36,10 @@ function A = magic (n)
   endif
 
   n = fix (n);
-  if (n < 1)
-
+  if (n < 0)
+    error ("magic: N must be non-negative");
+  elseif (n < 1)
     A = [];
-
   elseif (mod (n, 2) == 1)
 
     shift = floor ((0:n*n-1)/n);
@@ -91,10 +91,8 @@ endfunction
 %!test <*46672>
 %! m = magic (2);
 %! assert (size (m), [2 2]);
-%! assert (unique (m), [1; 2; 3; 4]);
+%! assert (m, [4 3; 1 2]);
 
-%!assert (magic (2), [4 3; 1 2])
-%!assert (isempty (magic (-1)))
 %!assert (isempty (magic (0)))
 %!assert (magic (1), 1)
 %!assert (magic (1.5), 1)
@@ -102,3 +100,4 @@ endfunction
 ## Test input validation
 %!error magic ()
 %!error magic (1, 2)
+%!error <N must be non-negative> magic (-5)

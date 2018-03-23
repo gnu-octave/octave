@@ -305,6 +305,7 @@ doc-interpreter-dist-hook:
 	@$(GREP) '#define HAVE_CHOLMOD 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing CHOLMOD library.  Cannot package distribution!" ; exit 1; }
 	@$(GREP) '#define HAVE_UMFPACK 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing UMFPACK library.  Cannot package distribution!" ; exit 1; }
 	@$(GREP) '#define HAVE_QHULL 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing QHULL library.  Cannot package distribution!" ; exit 1; }
+	@$(GREP) '#define HAVE_QT_OFFSCREEN 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires Qt offscreen OpenGL rendering.  Cannot package distribution!" ; exit 1; }
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
 

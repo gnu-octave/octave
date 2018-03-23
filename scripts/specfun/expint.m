@@ -238,6 +238,15 @@ endfunction
 %! y = expint (x);
 %! assert (y, y_exp, 5*eps);
 
+%!test <53351>
+%! assert (expint (32.5 + 1i),
+%!         1.181108930758065e-16 - 1.966348533426658e-16i, -4*eps);
+%! assert (expint (44 + 1i),
+%!         9.018757389858152e-22 - 1.475771020004195e-21i, -4*eps);
+
+%!test <47738>
+%! assert (expint (10i), 0.0454564330044554 + 0.0875512674239774i, -4*eps);
+
 ## Test preservation or conversion of the class
 %!assert (class (expint (single (1))), "single")
 %!assert (class (expint (int8 (1))), "double")

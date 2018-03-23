@@ -255,14 +255,14 @@ endfunction
 %! a = [0.1:0.1:1];
 %! [x,a,b] = ndgrid (x,a,a);
 %! xx = betaincinv (betainc (x, a, b), a, b);
-%! assert (xx, x, 3e-15);
+%! assert (xx, x, 5e-15);
 
 %!test
 %! x = linspace (0.1, 0.9, 11);
 %! a = [0.1:0.1:1];
 %! [x,a,b] = ndgrid (x,a,a);
 %! xx = betaincinv (betainc (x, a, b, "upper"), a, b, "upper");
-%! assert (xx, x, 3e-15);
+%! assert (xx, x, 5e-15);
 
 ## Test the conservation of the input class
 %!assert (class (betaincinv (0.5, 1, 1)), "double")

@@ -127,7 +127,7 @@ endfunction
 %!   camroll (-30);
 %!   ## note it does not go back to [0 0 1]: instead orthog to camera view:
 %!   p = camup ();
-%!   assert (dot (p, camtarget () - campos ()), 0, eps);
+%!   assert (dot (p, camtarget () - campos ()), 0, 32*eps);  # FIXME: looser tolerance needed on i386
 %!   q = [0.496200420425837  0.646660977913424  0.57932264103285];
 %!   assert (p, q, 10*eps);
 %! unwind_protect_cleanup

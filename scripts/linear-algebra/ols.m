@@ -71,8 +71,9 @@
 ## @var{y}$ if the matrix $@var{x}^T@var{x}$ is of full rank.
 ## @end tex
 ## @ifnottex
-## @var{beta} is calculated directly via @code{inv (@var{x}'*@var{x}) * @var{x}' * @var{y}} if the
-## matrix @code{@var{x}'*@var{x}} is of full rank.
+## @var{beta} is calculated directly via
+## @code{inv (@var{x}'*@var{x}) * @var{x}' * @var{y}} if the matrix
+## @code{@var{x}'*@var{x}} is of full rank.
 ## @end ifnottex
 ## Otherwise, @code{@var{beta} = pinv (@var{x}) * @var{y}} where
 ## @code{pinv (@var{x})} denotes the pseudoinverse of @var{x}.

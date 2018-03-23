@@ -38,6 +38,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex

@@ -21,7 +21,7 @@
 ## @deftypefnx {} {} isdefinite (@var{A}, @var{tol})
 ## Return 1 if @var{A} is symmetric positive definite within the
 ## tolerance specified by @var{tol} or 0 if @var{A} is symmetric
-## positive semidefinite.  Otherwise, return -1.
+## positive semi-definite.  Otherwise, return -1.
 ##
 ## If @var{tol} is omitted, use a tolerance of
 ## @code{100 * eps * norm (@var{A}, "fro")}

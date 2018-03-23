@@ -28,13 +28,13 @@
 ##
 ## @itemize @minus
 ##
-## @item @var{A} it is a square matrix. @var{A} can be passed as a matrix or
+## @item @var{A} it is a square matrix.  @var{A} can be passed as a matrix or
 ## as a function handle or inline function
 ## @code{Afun} such that @code{Afun (x, "notransp") = A * x} and
 ## @code{Afun (x, "transp") = A' * x}.  Additional parameters to
 ## @code{Afun} are passed after @var{x0}.
 ##
-## @item @var{b} is the right hand side vector. It must be a column vector
+## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with same number of rows of @var{A}.
 ##
 ## @item
@@ -47,7 +47,7 @@
 ## @item @var{maxit} the maximum number of outer iterations, if not given or
 ## set to [] the default value @code{min (20, numel (b))} is used.
 ##
-## @item @var{M1}, @var{M2} are the preconditioners. The
+## @item @var{M1}, @var{M2} are the preconditioners.  The
 ## preconditioner @var{M} is given as @code{@var{M} = @var{M1} * @var{M2}}.
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as a
 ## function handle or inline
@@ -77,7 +77,7 @@
 ##
 ## @itemize
 ##
-## @item @var{x} is the approximation computed. If the method doesn't
+## @item @var{x} is the approximation computed.  If the method doesn't
 ## converge then it is the iterated with the minimum residual.
 ##
 ## @item @var{flag} indicates the exit status:

@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} ishandle (@var{h})
+## @deftypefn {} {} ishandle (@var{h})
 ## Return true if @var{h} is a handle to a graphics or Java object and false
 ## otherwise.
 ##

@@ -24,8 +24,9 @@
 ## @deftypefnx {} {} camtarget (@var{ax}, @dots{})
 ## Set or get where the camera is pointed.
 ##
-## The camera target is a point in space where the camera is pointing.  Usually,
-## it is determined automatically based on the scene:
+## The camera target is a point in space where the camera is pointing.
+## Usually, it is determined automatically based on the scene:
+##
 ## @example
 ## @group
 ## hf = figure();
@@ -37,6 +38,7 @@
 ## @end example
 ##
 ## We can turn the camera to point at a new target:
+##
 ## @example
 ## @group
 ## camtarget ([1 1 1])
@@ -46,14 +48,17 @@
 ## @end example
 ##
 ## Having done so, the camera target @var{mode} is manual:
+##
 ## @example
 ## @group
 ## camtarget ("mode")
 ##   @result{} manual
 ## @end group
 ## @end example
+##
 ## This means, for example, adding new objects to the scene will not retarget
 ## the camera:
+##
 ## @example
 ## @group
 ## hold on;
@@ -64,6 +69,7 @@
 ## @end example
 ##
 ## We can reset it to be automatic:
+##
 ## @example
 ## @group
 ## @c doctest: +XFAIL

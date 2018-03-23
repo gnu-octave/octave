@@ -17,18 +17,21 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{[varargout]} =} __default__input__ (@var{def_val}, @var{varargin})
+## @deftypefn {} {@var{[varargout]} =} __default__input__ (@var{def_val}, @var{varargin})
 ## Check if the arguments in input of a function are empty or missing
 ## and in such cases sets up them in default values.
 ##
 ## The input argoments are:
+##
 ## @itemize @minus
 ## @item @var{def_val} is a cell array that contains the values to use
-## as  default.
+## as default.
+##
 ## @item @var{varargin} are the input argument
 ## @end itemize
 ##
 ## The output argoments:
+##
 ## @itemize @minus
 ## @item @var{varargout} all the input argument with filled the empty
 ## or missing paramenters.

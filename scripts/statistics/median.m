@@ -22,8 +22,8 @@
 ## @deftypefnx {} {} median (@var{x}, @var{dim})
 ## Compute the median value of the elements of the vector @var{x}.
 ##
-## When the elements of @var{x} are sorted, say @code{@var{s} = sort (@var{x})},
-## the median is defined as
+## When the elements of @var{x} are sorted, say
+## @code{@var{s} = sort (@var{x})}, the median is defined as
 ## @tex
 ## $$
 ## {\rm median} (x) =

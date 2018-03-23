@@ -23,6 +23,7 @@
 ##
 ## A value of @var{zf} larger than 1 ``zooms in'' such that the scene appears
 ## magnified:
+##
 ## @example
 ## @group
 ## hf = figure ();
@@ -31,7 +32,9 @@
 ## @end group
 ## @end example
 ##
-## A value smaller than 1 ``zooms out'' so the camera can see more of the scene:
+## A value smaller than 1 ``zooms out'' so the camera can see more of the
+## scene:
+##
 ## @example
 ## @group
 ## camzoom (0.5)
@@ -40,6 +43,7 @@
 ##
 ## Technically speaking, zooming affects the ``viewing angle''.  The following
 ## command resets to the default zoom:
+##
 ## @example
 ## @group
 ## camva ("auto")

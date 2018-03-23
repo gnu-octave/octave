@@ -25,40 +25,41 @@
 ## restart, a.k.a. PGMRES(restart).
 ##
 ## The input arguments are:
+##
 ## @itemize @minus
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}. Additional
+## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
 ## parameters to @code{Afun} are passed after @var{x0}.
 ##
-## @item @var{b} is the right hand side vector. It must be a column vector
+## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with the same numbers of rows as @var{A}.
 ##
 ## @item @var{restart} is the number of iterations before that the
-## method restarts. If it is [] or N = numel (b), then the restart
+## method restarts.  If it is [] or N = numel (b), then the restart
 ## is not applied.
 ##
 ## @item @var{tol} is the required relative tolerance for the
 ## preconditioned residual error,
-## @code{inv (@var{M}) * (@var{b} - @var{a} * @var{x})}. The iteration stops if
-## @code{norm (inv (@var{M}) * (@var{b} - @var{a} * @var{x})) <=
-## @var{tol} * norm (inv (@var{M}) * @var{B})}.  If @var{tol} is omitted or
-## empty, then a tolerance of 1e-6 is used.
+## @code{inv (@var{M}) * (@var{b} - @var{a} * @var{x})}.  The iteration
+## stops if @code{norm (inv (@var{M}) * (@var{b} - @var{a} * @var{x}))
+## @leq{} @var{tol} * norm (inv (@var{M}) * @var{B})}.  If @var{tol} is
+## omitted or empty, then a tolerance of 1e-6 is used.
 ##
 ## @item @var{maxit} is the maximum number of outer iterations, if not given or
 ## set to [], then the default value @code{min (10, @var{N} / @var{restart})}
 ## is used.
 ## Note that, if @var{restart} is empty, then @var{maxit} is the maximum number
-## of iterations. If @var{restart} and @var{maxit} are not empty, then
+## of iterations.  If @var{restart} and @var{maxit} are not empty, then
 ## the maximum number of iterations is @code{@var{restart} * @var{maxit}}.
 ## If both @var{restart} and @var{maxit} are empty, then the maximum
 ## number of iterations is set to @code{min (10, @var{N})}.
 ##
-## @item @var{M1}, @var{M2} are the preconditioners. The preconditioner
-## @var{M} is given as @code{M = M1 * M2}. Both @var{M1} and @var{M2} can
+## @item @var{M1}, @var{M2} are the preconditioners.  The preconditioner
+## @var{M} is given as @code{M = M1 * M2}.  Both @var{M1} and @var{M2} can
 ## be passed as a matrix, function handle, or inline function @code{g} such
-## that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}. If @var{M1} is [] or not
+## that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.  If @var{M1} is [] or not
 ## given, then the preconditioner is not applied.
 ## The technique used is the left-preconditioning, i.e., it is solved
 ## @code{inv(@var{M}) * @var{A} * @var{x} = inv(@var{M}) * @var{b}} instead of
@@ -78,7 +79,7 @@
 ##
 ## @itemize @minus
 ##
-## @item @var{x} the computed approximation. If the method does not
+## @item @var{x} the computed approximation.  If the method does not
 ## converge, then it is the iterated with minimum residual.
 ##
 ## @item @var{flag} indicates the exit status:
@@ -98,17 +99,17 @@
 ## residual of the approximation @var{x}.
 ##
 ## @item @var{iter} is a vector containing the number of outer iterations and
-## inner iterations performed to compute @var{x}. That is:
+## inner iterations performed to compute @var{x}.  That is:
 ##
 ## @itemize
-## @item @var{iter(1)}: number of outer iterations, i.e. how many
-## times the method restarted. (if @var{restart} is empty or @var{N},
-## then it is 1, if not 1 <= @var{iter(1)} <= @var{maxit}).
+## @item @var{iter(1)}: number of outer iterations, i.e., how many
+## times the method restarted.  (if @var{restart} is empty or @var{N},
+## then it is 1, if not 1 @leq{} @var{iter(1)} @leq{} @var{maxit}).
 ##
 ## @item @var{iter(2)}: the number of iterations performed before the
-## restart,  i.e., the method restarts when
-## @code{@var{iter(2)} = @var{restart}}. If @var{restart} is empty or
-## @var{N}, then 1 <= @var{iter(2)} <= @var{maxit}.
+## restart, i.e., the method restarts when
+## @code{@var{iter(2)} = @var{restart}}.  If @var{restart} is empty or
+## @var{N}, then 1 @leq{} @var{iter(2)} @leq{} @var{maxit}.
 ## @end itemize
 ##
 ## To be more clear, the approximation @var{x} is computed at the iteration
@@ -162,6 +163,7 @@
 ##
 ## @sc{Example 4:} @code{gmres} with a preconditioner matrix @var{M}
 ## with and without restart
+##
 ## @example
 ## @group
 ## x = gmres (A, b, [], 1e-06, n, M)

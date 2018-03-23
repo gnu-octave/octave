@@ -37,6 +37,7 @@
 ## mean (@var{x}) = SUM_i @var{x}(i) / N
 ## @end example
 ##
+## @noindent
 ## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex

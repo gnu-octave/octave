@@ -26,6 +26,7 @@
 ##
 ## The camera has a viewing angle which determines how much can be seen.  By
 ## default this is:
+##
 ## @example
 ## @group
 ## hf = figure();
@@ -35,8 +36,9 @@
 ## @end group
 ## @end example
 ##
-## To get a wider-angle view, we could double the viewing angle.  This will also
-## set the mode to manual:
+## To get a wider-angle view, we could double the viewing angle.  This will
+## also set the mode to manual:
+##
 ## @example
 ## @group
 ## camva (2*a)
@@ -46,6 +48,7 @@
 ## @end example
 ##
 ## We can set it back to automatic:
+##
 ## @example
 ## @group
 ## camva ("auto")

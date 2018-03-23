@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{Afun}, @var{M1fun}, @var{M2fun}] =} __alltohandles__ (@var{A}, @var{b}, @var{M1}, @var{M2}, @var{solver_name})
+## @deftypefn {} {[@var{Afun}, @var{M1fun}, @var{M2fun}] =} __alltohandles__ (@var{A}, @var{b}, @var{M1}, @var{M2}, @var{solver_name})
 ##
 ## Check if the parameters @var{A} (matrix of our linear system), @var{b}
 ## (right hand side vector), @var{M1}, @var{M2} (preconditioner matrices) are
@@ -30,13 +30,14 @@
 ##
 ## @item @var{b} is the right hand side vector.
 ##
-## @item @var{M1}, @var{M2} preconditioners. They can be [].
+## @item @var{M1}, @var{M2} preconditioners.  They can be [].
 ##
 ## @item @var{solver_name} is the name of the solver as string.
 ##
 ## @end itemize
 ##
 ## The output parameters are:
+##
 ## @itemize
 ##
 ## @item @var{Afun}, @var{M1fun}, @var{M2fun} are the corresponding

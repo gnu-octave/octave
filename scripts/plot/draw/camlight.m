@@ -70,9 +70,9 @@
 ## @end example
 ##
 ## Here the light is first pitched upwards (@pxref{XREFcamup,,camup}) from the
-## camera position (@pxref{XREFcampos,,campos}) by 30 degrees.  It is then yawed
-## by 45 degrees to the right.  Both rotations are centered around the camera
-## target (@pxref{XREFcamtarget,,camtarget}).
+## camera position (@pxref{XREFcampos,,campos}) by 30 degrees.  It is then
+## yawed by 45 degrees to the right.  Both rotations are centered around the
+## camera target (@pxref{XREFcamtarget,,camtarget}).
 ##
 ## Return a handle to further manipulate the light object
 ##

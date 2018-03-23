@@ -81,7 +81,6 @@
 ## The following example shows how to use this class:
 ##
 ## @example
-## @group
 ## function check (varargin)
 ## @c The next two comments need to be indented by one for alignment
 ##   p = inputParser ();                      # create object
@@ -107,7 +106,6 @@
 ##   ## the rest of the function can access inputs by using p.Results.
 ##   ## for example, get the tolerance input with p.Results.tolerance
 ## endfunction
-## @end group
 ## @end example
 ##
 ## @example

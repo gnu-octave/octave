@@ -31,10 +31,10 @@
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}. Additional
+## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
 ## parameters to @code{Afun} are passed after @var{x0}.
 ##
-## @item @var{b} is the right hand side vector. It must be a column vector
+## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with same number of rows of @var{A}.
 ##
 ## @item @var{tol} is the relative tolerance, if not given or set to [] the
@@ -43,12 +43,12 @@
 ## @item @var{maxit} the maximum number of outer iterations, if not given or
 ## set to [] the default value @code{min (20, numel (b))} is used.
 ##
-## @item @var{M1}, @var{M2} are the preconditioners. The preconditioner
+## @item @var{M1}, @var{M2} are the preconditioners.  The preconditioner
 ## matrix is given as @code{M = M1 * M2}.  Both @var{M1}
 ## and @var{M2} can be passed as a matrix or as a function handle or inline
 ## function @code{g} such that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.
 ## If M1 is empty or not passed then no preconditioners are applied.
-## The techinque used is the right preconditioning, i.e. it is solved
+## The techinque used is the right preconditioning, i.e., it is solved
 ## @code{@var{A}*inv(@var{M})*y = b} and then @code{@var{x} = inv(@var{M})*y}.
 ##
 ## @item @var{x0} the initial guess, if not given or set to [] the default
@@ -63,7 +63,7 @@
 ##
 ## @itemize @minus
 ##
-## @item @var{x} is the approximation computed. If the method doesn't
+## @item @var{x} is the approximation computed.  If the method doesn't
 ## converge then it is the iterated with the minimum residual.
 ##
 ## @item @var{flag} indicates the exit status:

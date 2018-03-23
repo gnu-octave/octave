@@ -35,9 +35,9 @@
 ##
 ## @item @option{-hdf5}, @option{-float-hdf5}
 ##
-## @item @option{-V7}, @option{-v7}, @code{-7}, @option{-mat7-binary}
+## @item @option{-V7}, @option{-v7}, @option{-7}, @option{-mat7-binary}
 ##
-## @item @option{-V6}, @option{-v6}, @code{-6}, @option{-mat6-binary}
+## @item @option{-V6}, @option{-v6}, @option{-6}, @option{-mat6-binary}
 ##
 ## @item @option{-text}
 ##

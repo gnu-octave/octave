@@ -609,7 +609,7 @@ use of @code{numel} should, therefore, be avoided unless it is known that it
 will not overflow.
 
 Extreme care is also required when using the @code{elem} method or the
-@qcode{()} operator which perform essentially the same function.  The reason is
+@code{()} operator which perform essentially the same function.  The reason is
 that if a sparse object is non-const, then Octave will assume that a request
 for a zero element in a sparse matrix is in fact a request to create this
 element so it can be filled.  Therefore, a piece of code like
@@ -1085,7 +1085,7 @@ oct-files often need additional input parameter checking.
 
 There are several functions within Octave that can be useful for the purposes
 of parameter checking.  These include the methods of the @code{octave_value}
-class like @code{is_real_matrix}, @code{is_numeric_type}, etc. (See
+class like @code{is_real_matrix}, @code{is_numeric_type}, etc. (see
 @file{ov.h}).  Often, with a knowledge of the Octave m-file language, you can
 guess at what the corresponding C++ routine will.  In addition there are some
 more specialized input validation functions of which a few are demonstrated

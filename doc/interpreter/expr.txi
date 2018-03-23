@@ -141,10 +141,10 @@ Cartesian product of the index elements.
 
 For the ordinary and most common case, the number of indices
 (@code{nidx = numel (@var{idx})}) matches the number of dimensions @samp{nd}.
-In this case, each element of @var{idx} corresponds to its respective dimension,
-i.e., @code{@var{idx}(1)} refers to dimension 1, @code{@var{idx}(2)} refers to
-dimension 2, etc.  If @w{@code{nidx < nd}}, and every index is less than the
-size of the array in the @math{i^{th}} dimension
+In this case, each element of @var{idx} corresponds to its respective
+dimension, i.e., @code{@var{idx}(1)} refers to dimension 1,
+@code{@var{idx}(2)} refers to dimension 2, etc.  If @w{@code{nidx < nd}}, and
+every index is less than the size of the array in the @math{i^{th}} dimension
 (@code{@var{idx}(i) < size (@var{array}, i)}), then the index expression is
 padded with @w{@code{nd - nidx}} trailing singleton dimensions.  If
 @w{@code{nidx < nd}} but one of the indices @code{@var{idx}(i)} is outside the
@@ -527,6 +527,7 @@ and graphics by adding listeners to properties or assigning pre-existing
 actions, such as in the following example:
 
 @cindex figure deletefcn
+
 @example
 @group
 function mydeletefcn (h, ~, msg)
@@ -539,10 +540,11 @@ close;
 @end example
 
 @noindent
-The above will print "Bye!" to the terminal upon the closing (deleting) of the
-figure.  There are many graphics property actions for which a callback function
-may be assigned, including, @code{buttondownfcn}, @code{windowscrollwheelfcn},
-@code{createfcn}, @code{deletefcn}, @code{keypressfcn}, etc.
+The above will print @qcode{"Bye!"} to the terminal upon the closing
+(deleting) of the figure.  There are many graphics property actions for which
+a callback function may be assigned, including, @code{buttondownfcn},
+@code{windowscrollwheelfcn}, @code{createfcn}, @code{deletefcn},
+@code{keypressfcn}, etc.
 
 Note that the @samp{@@} character also plays a role in defining class
 functions, i.e., methods, but not as a syntactical element.  Rather it begins a

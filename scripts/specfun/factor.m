@@ -47,8 +47,8 @@ function [pf, n] = factor (q)
     print_usage ();
   endif
 
-  if (! isreal (q) || ! isscalar (q) || q != fix (q))
-    error ("factor: Q must be a real integer");
+  if (! isscalar (q) || ! isreal (q) || q < 0 || q != fix (q))
+    error ("factor: Q must be a real non-negative integer");
   endif
 
   ## Special case of no primes less than sqrt(q).
@@ -87,7 +87,7 @@ function [pf, n] = factor (q)
     warning ("factor: Q too large.  Answer is unreliable");
   endif
 
-  ## Determine muliplicity.
+  ## Determine multiplicity.
   if (nargout > 1)
     idx = find ([0, pf] != [pf, 0]);
     pf = pf(idx(1:length (idx)-1));
@@ -111,6 +111,7 @@ endfunction
 ## Test input validation
 %!error factor ()
 %!error factor (1,2)
-%!error <Q must be a real integer> factor (6i)
-%!error <Q must be a real integer> factor ([1,2])
-%!error <Q must be a real integer> factor (1.5)
+%!error <Q must be a real non-negative integer> factor (6i)
+%!error <Q must be a real non-negative integer> factor ([1,2])
+%!error <Q must be a real non-negative integer> factor (1.5)
+%!error <Q must be a real non-negative integer> factor (-20)

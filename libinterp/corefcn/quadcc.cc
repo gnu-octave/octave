@@ -1552,7 +1552,7 @@ successive interpolations of the integrand over the nodes of the respective
 quadrature rules.
 
 @c FIXME: Remove in Octave version 4.8
-Implementation Note: For Octave versions <= 4.2, @code{quadcc} accepted a
+Implementation Note: For Octave versions @leq{} 4.2, @code{quadcc} accepted a
 single tolerance argument which specified the relative tolerance.  For
 versions 4.4 and 4.6, @code{quadcc} will issue a warning when called with a
 single tolerance argument indicating that the meaning of this input has

@@ -654,7 +654,7 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
 
 DEFUN (pathsep, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} pathsep ()
+@deftypefn {} {@var{val} =} pathsep ()
 Query the character used to separate directories in a path.
 @seealso{filesep}
 @end deftypefn */)

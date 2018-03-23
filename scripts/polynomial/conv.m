@@ -38,7 +38,8 @@
 ##
 ## @item @var{shape} = @qcode{"valid"}
 ## Return only the parts which do not include zero-padded edges.
-## The size of the result is @code{max (size (@var{a}) - size (@var{b}) + 1, 0)}.
+## The size of the result is
+## @code{max (size (@var{a}) - size (@var{b}) + 1, 0)}.
 ## @end table
 ##
 ## @seealso{deconv, conv2, convn, fftconv}

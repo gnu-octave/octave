@@ -28,28 +28,28 @@
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}. Additional
+## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
 ## parameters to @code{Afun} are passed after @var{x0}.
 ##
-## @item @var{b} is the right hand side vector. It must be a column vector
+## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with the same number of rows as @var{A}.
 ##
 ## @item @var{tol} is the relative tolerance, if not given or set to [] the
 ## default value 1e-6 is used.
 ##
 ## @item @var{maxit} the maximum number of outer iterations, if not given or
-## set to [] the default value @code{min (20, numel (b))} is used. To be
+## set to [] the default value @code{min (20, numel (b))} is used.  To be
 ## compatible, since the method as different behaviours in the iteration
 ## number is odd or even, is considered as iteration in @code{tfqmr} the
-## entire odd-even cycle. That is, to make an entire iteration, the algorithm
+## entire odd-even cycle.  That is, to make an entire iteration, the algorithm
 ## performs two sub-iterations: the odd one and the even one.
 ##
-## @item @var{M1}, @var{M2} are the preconditioners. The preconditioner
+## @item @var{M1}, @var{M2} are the preconditioners.  The preconditioner
 ## @var{M} is given as @code{M = M1 * M2}.
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as a function
 ## handle or inline function @code{g} such that @code{g(x) = M1 \ x} or
 ## @code {g(x) = M2 \ x}.
-## The technique used is the rigth-preconditioning, i.e. it is solved
+## The technique used is the rigth-preconditioning, i.e., it is solved
 ## @code{A*inv(M)*y = b} and then @code{x = inv(M)*y}, instead of
 ## @code{A x = b}.
 ##
@@ -66,7 +66,7 @@
 ##
 ## @itemize @minus
 ##
-## @item @var{x} is the approximation computed. If the method doesn't
+## @item @var{x} is the approximation computed.  If the method doesn't
 ## converge then it is the iterated with the minimum residual.
 ##
 ## @item @var{flag} indicates the exit status:

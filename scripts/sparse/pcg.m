@@ -18,7 +18,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
+## @deftypefn  {} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
 ## @deftypefnx {} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{M}, [], @var{x0}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@var{A}, @var{b}, @dots{})
 ##
@@ -52,10 +52,10 @@
 ## is omitted or empty then a value of 20 is used.
 ##
 ## @item
-## @var{m} is a HPD preconditioning matrix. For any decomposition
+## @var{m} is a HPD preconditioning matrix.  For any decomposition
 ## @code{@var{m} = @var{p1} * @var {p2}} such that
 ## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2})}} is HPD, the
-## conjugate gradient method is formally applied to the linear  system
+## conjugate gradient method is formally applied to the linear system
 ## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2}) * @var{y} = inv
 ## (@var{p1}) * @var{b}}},
 ## with @code{@var{x} = inv (@var{p2}) * @var{y}} (split preconditioning).
@@ -71,7 +71,7 @@
 ## @var{m2}, the user may pass two functions which return the results of
 ## applying the inverse of @var{m1} and @var{m2} to a vector.
 ## If @var{m1} is omitted or empty @code{[]}, then no preconditioning
-## is applied. If no factorization of @var{m} is available, @var{m2}
+## is applied.  If no factorization of @var{m} is available, @var{m2}
 ## can be omitted or left [], and the input variable @var{m1} can be
 ## used to pass the preconditioner @var{m}.
 ##
@@ -90,20 +90,25 @@
 ## @itemize
 ## @item
 ## @var{x} is the computed approximation to the solution of
-## @w{@code{@var{A} * @var{x} = @var{b}}}. If the algorithm did not converge,
+## @w{@code{@var{A} * @var{x} = @var{b}}}.  If the algorithm did not converge,
 ## then @var{x} is the iterated which has the minimum residual.
 ##
 ## @item
 ## @var{flag} reports on the convergence:
+##
 ## @itemize
 ## @item 0: The algorithm converged at the prescribed tolerance.
+##
 ## @item 1: The algorithm did not converge and it reached the maximum
 ## number of iterations.
+##
 ## @item 2: The preconditioner matrix is singular.
-## @item 3: The algorithm stagnated, i.e. the absolute value of the
+##
+## @item 3: The algorithm stagnated, i.e., the absolute value of the
 ## difference between
 ## the actual iteration @var{x} and the previous is less than
 ## @code{@var{eps} * norm (@var{x},2)}.
+##
 ## @item 4: The algorithm detects that the input (preconditioned) matrix is not
 ## HPD.
 ## @end itemize
@@ -114,7 +119,7 @@
 ##
 ## @item
 ## @var{iter} indicates the iteration of @var{x} which it was
-## computed. Since the output @var{x} corresponds to the minimal
+## computed.  Since the output @var{x} corresponds to the minimal
 ## residual solution, the total number of iterations that
 ## the method performed is given by @code{length(resvec) - 1}.
 ##

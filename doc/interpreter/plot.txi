@@ -719,7 +719,7 @@ Currently, the @qcode{"latex"} interpreter is not implemented for on-screen
 display and is equivalent to @qcode{"none"}.  Note that Octave does not parse
 or validate the text strings when in @qcode{"latex"} mode---it is the
 responsibility of the programmer to generate valid strings which may include
-wrapping sections that should appear in Math mode with '$' characters.
+wrapping sections that should appear in Math mode with @qcode{'$'} characters.
 
 The @qcode{"tex"} option implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
@@ -1893,8 +1893,8 @@ plot (x, "DeleteFcn", @@(h, e) disp ("Window Deleted"))
 @end example
 
 @noindent
-where at the moment that the plot is deleted, the message "Window Deleted" will
-be displayed.
+where at the moment that the plot is deleted, the message
+@qcode{"Window Deleted"} will be displayed.
 
 Additional user arguments can be passed to callback functions, and will be
 passed after the two default arguments.  For example:

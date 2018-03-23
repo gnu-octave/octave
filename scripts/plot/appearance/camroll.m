@@ -25,6 +25,7 @@
 ## For example, the following command will roll the camera by
 ## 30 degrees clockwise (to the right); this will cause the scene
 ## to appear to roll by 30 degrees to the left:
+##
 ## @example
 ## @group
 ## @c doctest: +SKIP
@@ -34,6 +35,7 @@
 ## @end example
 ##
 ## Roll the camera back:
+##
 ## @example
 ## @group
 ## @c doctest: +SKIP
@@ -42,6 +44,7 @@
 ## @end example
 ##
 ## The following command restores the default camera roll:
+##
 ## @example
 ## @group
 ## @c doctest: +SKIP

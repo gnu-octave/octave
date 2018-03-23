@@ -24,8 +24,9 @@
 ## @deftypefnx {} {} camup (@var{ax}, @dots{})
 ## Set or get the camera up vector.
 ##
-## By default, the camera is oriented so that ``up'' corresponds to the positive
-## z-axis:
+## By default, the camera is oriented so that ``up'' corresponds to the
+## positive z-axis:
+##
 ## @example
 ## @group
 ## hf = figure ();
@@ -37,6 +38,7 @@
 ## @end example
 ##
 ## Specifying a new ``up vector'' rolls the camera and sets the mode to manual:
+##
 ## @example
 ## @group
 ## camup ([1 1 0])
@@ -48,19 +50,24 @@
 ## @end example
 ##
 ## Modifying the up vector does not modify the camera target
-## (@pxref{XREFcamtarget,,camtarget}). Thus, the camera up vector might not be
+## (@pxref{XREFcamtarget,,camtarget}).  Thus, the camera up vector might not be
 ## orthogonal to the direction of the camera's view:
+##
 ## @example
+## @group
 ## camup ([1 2 3])
 ## dot (camup (), camtarget () - campos ())
 ##   @result{} 6...
+## @end group
 ## @end example
+##
 ## A consequence is that ``pulling back'' on the up vector does not pitch the
 ## camera view (as that would require changing the target).  Setting the up
 ## vector is thus typically used only to roll the camera.  A more intuitive
 ## command for this purpose is @pxref{XREFcamroll,,camroll}.
 ##
 ## Finally, we can reset the up vector to automatic mode:
+##
 ## @example
 ## @group
 ## camup ("auto")

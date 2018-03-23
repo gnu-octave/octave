@@ -670,7 +670,7 @@ Note that this function could not have been written using the
 without adding extra logic to avoid printing the message if the vector
 does contain a nonzero element.
 
-@deftypefn {Keyword} {} return
+@deftypefn {} {} return
 When Octave encounters the keyword @code{return} inside a function or
 script, it returns control to the caller immediately.  At the top level,
 the return statement is ignored.  A @code{return} statement is assumed

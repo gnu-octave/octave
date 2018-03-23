@@ -39,6 +39,7 @@
 ## cov (@var{x}) = 1/(N-1) * SUM_i (@var{x}(i) - mean(@var{x})) * (@var{y}(i) - mean(@var{y}))
 ## @end example
 ##
+## @noindent
 ## where @math{N} is the length of the @var{x} and @var{y} vectors.
 ##
 ## @end ifnottex

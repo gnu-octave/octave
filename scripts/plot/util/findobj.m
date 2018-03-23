@@ -60,9 +60,9 @@
 ## includes all descendants.
 ##
 ## A specified logical operator may be used between @var{prop_name},
-## @var{prop_value} pairs.  The supported logical operators are: @qcode{"-and"},
-## @qcode{"-or"}, @qcode{"-xor"}, @qcode{"-not"}.  Example code to locate all
-## figure and axes objects is
+## @var{prop_value} pairs.  The supported logical operators are:
+## @qcode{"-and"}, @qcode{"-or"}, @qcode{"-xor"}, @qcode{"-not"}.  Example code
+## to locate all figure and axes objects is
 ##
 ## @example
 ## findobj ("type", "figure", "-or", "type", "axes")

@@ -72,7 +72,7 @@
 ##
 ## References:
 ##
-## @nospell{M. Abramowitz and I. Stegun},
+## @nospell{M. Abramowitz and I.A. Stegun},
 ## @cite{Handbook of mathematical functions},
 ## @nospell{Dover publications, Inc.}, 1972.
 ##

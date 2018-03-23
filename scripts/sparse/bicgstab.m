@@ -31,10 +31,10 @@
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}. Additional
+## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
 ## parameters to @code{Afun} are passed after @var{x0}.
 ##
-## @item @var{b} is the right hand side vector. It must be a column vector
+## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with the same number of rows as @var{A}.
 ##
 ## @item
@@ -47,13 +47,13 @@
 ## @item @var{maxit} the maximum number of outer iterations, if not given or
 ## set to [] the default value @code{min (20, numel (b))} is used.
 ##
-## @item @var{M1}, @var{M2} are the preconditioners. The preconditioner
+## @item @var{M1}, @var{M2} are the preconditioners.  The preconditioner
 ## @var{M} is given as @code{@var{M} = @var{M1} * @var{M2}}.
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as a function
 ## handle or inline function @code{g} such that
 ## @code{g(@var{x}) = @var{M1} \ @var{x}} or
 ## @code {g(@var{x}) = @var{M2} \ @var{x}}.
-## The techinque used is the right preconditioning, i.e. it is
+## The techinque used is the right preconditioning, i.e., it is
 ## solved @code{@var{A} * inv (@var{M}) * @var{y} = @var{b}} and then
 ## @code{@var{x} = inv (@var{M}) * @var{y}}.
 ##
@@ -70,7 +70,7 @@
 ##
 ## @itemize @minus
 ##
-## @item @var{x} is the approximation computed. If the method doesn't
+## @item @var{x} is the approximation computed.  If the method doesn't
 ## converge then it is the iterated with the minimum residual.
 ##
 ## @item @var{flag} indicates the exit status:
@@ -91,7 +91,7 @@
 ## @code{(@var{A}*@var{x}-@var{b}) / @code{norm(@var{b})}}.
 ##
 ## @item @var{iter} is the (possibily half) iteration which @var{x} is
-## computed. If it is an half iteration then it is @code{@var{iter} + 0.5}
+## computed.  If it is an half iteration then it is @code{@var{iter} + 0.5}
 ##
 ## @item @var{resvec} is a vector containing the residual of each half and
 ## total iteration (There are also the half iterations since @var{x} is

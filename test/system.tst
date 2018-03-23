@@ -223,7 +223,7 @@
 %!error <Invalid call to tilde_expand> tilde_expand ("str", 2)
 
 %!testif HAVE_GETPGRP
-%! assert (getpgrp () > 0);
+%! assert (getpgrp () >= 0);
 
 %!error <... getpgrp> getpgrp (1)
 

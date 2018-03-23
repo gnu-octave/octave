@@ -26,6 +26,7 @@
 ##
 ## The default camera position is determined automatically based on the scene.
 ## For example, to get the camera position:
+##
 ## @example
 ## @group
 ## hf = figure();
@@ -37,6 +38,7 @@
 ## @end example
 ##
 ## We can then move the camera further up the z-axis:
+##
 ## @example
 ## @group
 ## campos (p + [0 0 10])
@@ -47,6 +49,7 @@
 ## @end example
 ##
 ## Having made that change, the camera position @var{mode} is now manual:
+##
 ## @example
 ## @group
 ## campos ("mode")
@@ -55,6 +58,7 @@
 ## @end example
 ##
 ## We can set it back to automatic:
+##
 ## @example
 ## @group
 ## campos ("auto")

@@ -140,7 +140,7 @@
 ## @end example
 ##
 ## @code{repelem} preserves the class of @var{x}, and works with strings,
-## cell arrays, NA, and NAN inputs.  If any @var{R_j} is  0 the output will
+## cell arrays, NA, and NAN inputs.  If any @var{R_j} is 0 the output will
 ## be an empty array.
 ##
 ## @example

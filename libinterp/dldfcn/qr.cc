@@ -226,12 +226,13 @@ In this case, the defining relationship is
 The default, however, is to return a permutation matrix and this may be
 explicitly specified by using a final argument of @qcode{"matrix"}.
 
-If the final argument is the scalar 0 an "economy" factorization is returned.
-When the original matrix @var{A} has size MxN and M > N then the "economy"
-factorization will calculate just N rows in @var{R} and N columns in @var{Q}
-and omit the zeros in @var{R}.  If M @leq{} N there is no difference between
-the economy and standard factorizations.  When calculating an "economy"
-factorization the output @var{P} is always a vector rather than a matrix.
+If the final argument is the scalar 0 an @qcode{"economy"} factorization is
+returned.  When the original matrix @var{A} has size MxN and M > N then the
+@qcode{"economy"} factorization will calculate just N rows in @var{R} and N
+columns in @var{Q} and omit the zeros in @var{R}.  If M @leq{} N there is no
+difference between the economy and standard factorizations.  When calculating
+an @qcode{"economy"} factorization the output @var{P} is always a vector
+rather than a matrix.
 
 Background: The QR factorization has applications in the solution of least
 squares problems

@@ -1508,7 +1508,7 @@ Append to the destination instead of overwriting.
 Save a matrix in a text file without a header or any other information.  The
 matrix must be 2-D and only the real part of any complex value is written to
 the file.  Numbers are stored in single-precision format and separated by
-spaces.  Additional options for the @code{-ascii} format are
+spaces.  Additional options for the @option{-ascii} format are
 
 @table @code
 @item -double

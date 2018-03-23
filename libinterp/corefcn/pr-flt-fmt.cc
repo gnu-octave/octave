@@ -47,7 +47,7 @@ set_output_prec (int prec)
 
 DEFUN (output_max_field_width, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} output_max_field_width
+@deftypefn {} {} output_max_field_width
 This function is obsolete and will be removed from a future version
 of Octave.
 @end deftypefn */)

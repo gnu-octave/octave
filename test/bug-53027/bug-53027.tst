@@ -28,7 +28,23 @@
 %! [a, b] = ntest53027a ();
 %! assert ([a, b], [0, 0])
 
-## Not fixed yet.
-%!test <53027>
+%!test <*53027>
 %! [a, b] = ntest53027b ();
 %! assert ([a, b], [0, 0])
+
+%!test <*53027>
+%! [a, b] = ntest53027c ();
+%! assert ([a, b], [0, 0])
+
+## Previous bugs have caused segfaults when executing script twice.
+%!test <*53027>
+%! gtest53027
+%! assert (isempty (a) && isempty (c))
+%! assert (isglobal ("a") && isglobal ("c"))
+%! assert (! exist ("b"))
+%! assert (isempty (xx) && ! isglobal ("xx"))
+%! gtest53027
+%! assert (isempty (a) && isempty (c))
+%! assert (isglobal ("a") && isglobal ("c"))
+%! assert (! exist ("b"))
+%! assert (isempty (xx) && ! isglobal ("xx"))

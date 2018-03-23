@@ -1,5 +1,5 @@
-function [m_exist, n_exist] = ntest53027b ()
-  global x
+function [m_exist, n_exist] = ntest53027c ()
+  ## In this test, x is not global.
   x = 3;
   n_exist = nest ();
   m_exist = exist ("x", 'var');

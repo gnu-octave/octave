@@ -490,18 +490,38 @@ namespace octave
         m_fwd_rep = fwd_rep;
       }
 
-      void unbind_fwd_rep (void)
+      void unbind_fwd_rep (bool recurse = true)
       {
-        if (auto t_fwd_rep = m_fwd_rep.lock ())
-          {
-            t_fwd_rep->unbind_fwd_rep ();
-            return;
-          }
+        // When unbinding variables in a script scope, recurse will be
+        // false and we will only break the immediate link.  By doing
+        // that, we ensure that any variables that are made global in
+        // a script remain linked as globals in the enclosing scope.
 
-        // When unbinding an object, only break the immediate link.
-        // By doing that, we ensure that any variables that are made
-        // global in a script remain linked as globals in the
-        // enclosing scope.
+        // When unbinding variables in a (possibly nested) function
+        // scope, recurse will be true and we will break the link to
+        // the global scope, not just the immediate link to the parent
+        // scope of the nested function.
+
+        if (recurse)
+          {
+            if (auto t_fwd_rep = m_fwd_rep.lock ())
+              {
+                // Currently, it is only possible to have at most two
+                // levels of indirection here, either
+                //
+                //   nested function -> parent function -> global scope
+                //
+                // or
+                //
+                //   script -> top level scope -> global scope
+                //
+                // so we can break the recursion here by setting the
+                // argument to unbind_fwd_rep to false.
+
+                t_fwd_rep->unbind_fwd_rep (false);
+                return;
+              }
+          }
 
         m_fwd_scope = std::weak_ptr<symbol_scope_rep> ();
         m_fwd_rep.reset ();
@@ -659,7 +679,7 @@ namespace octave
       m_rep->bind_fwd_rep (fwd_scope, sr.m_rep);
     }
 
-    void unbind_fwd_rep (void) { m_rep->unbind_fwd_rep (); }
+    void unbind_fwd_rep (bool recurse = true) { m_rep->unbind_fwd_rep (recurse); }
 
     octave_value dump (context_id context) const
     {

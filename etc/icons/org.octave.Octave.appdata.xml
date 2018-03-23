@@ -59,7 +59,10 @@
     </screenshot>
   </screenshots>
 
-  <url type="homepage">http://www.octave.org</url>
+  <url type="homepage">https://www.octave.org/</url>
+  <url type="bugtracker">https://bugs.octave.org/</url>
+  <url type="donation">https://www.octave.org/donate.html</url>
+  <url type="faq">https://wiki.octave.org/FAQ</url>
   <update_contact>maintainers@octave.org</update_contact>
   <project_group>GNU</project_group>
 </component>

@@ -53,7 +53,7 @@
 ##
 ## @item
 ## @var{m} is a HPD preconditioning matrix.  For any decomposition
-## @code{@var{m} = @var{p1} * @var {p2}} such that
+## @code{@var{m} = @var{p1} * @var{p2}} such that
 ## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2})}} is HPD, the
 ## conjugate gradient method is formally applied to the linear system
 ## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2}) * @var{y} = inv

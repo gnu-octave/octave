@@ -165,7 +165,7 @@
 ## x = bicg (Afun, b, 1e-6, n, M1fun, M2fun)
 ## @end example
 ##
-## @sc{Example 7:} @code {bicg} with as input a function requiring an argument
+## @sc{Example 7:} @code{bicg} with as input a function requiring an argument
 ##
 ## @example
 ## @group

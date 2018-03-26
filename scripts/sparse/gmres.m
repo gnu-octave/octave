@@ -190,7 +190,7 @@
 ## x = gmres (Afun, b, 1e-6, n, M1fun, M2fun)
 ## @end example
 ##
-## @sc{Example 8:} @code {gmres} with as input a function requiring an argument
+## @sc{Example 8:} @code{gmres} with as input a function requiring an argument
 ##
 ## @example
 ## @group

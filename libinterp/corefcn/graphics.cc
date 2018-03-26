@@ -11545,7 +11545,7 @@ Undocumented internal function.
 
 DEFUN (__image_pixel_size__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{px}, @var{py}} __image_pixel_size__ (@var{h})
+@deftypefn {} {@var{sz} =} __image_pixel_size__ (@var{h})
 Internal function: returns the pixel size of the image in normalized units.
 @end deftypefn */)
 {

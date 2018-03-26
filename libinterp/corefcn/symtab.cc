@@ -640,7 +640,7 @@ determine whether functions defined in function files need to recompiled.
 
 DEFMETHOD (__current_scope__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{scope}, @var{context}]} __current_scope__ ()
+@deftypefn {} {[@var{scope}, @var{context}] =} __current_scope__ ()
 Return the current scope and context as integers.
 @seealso{__dump_symtab_info__}
 @end deftypefn */)

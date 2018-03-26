@@ -1079,6 +1079,10 @@ the file pointer for a given file.
 
 @DOCSTRING(SEEK_SET)
 
+@DOCSTRING(SEEK_CUR)
+
+@DOCSTRING(SEEK_END)
+
 @DOCSTRING(frewind)
 
 The following example stores the current file position in the variable

@@ -458,7 +458,7 @@ endfunction
 %!assert (gammainc (2, 2, "scaledlower"), 2.194528049465325, -2e-15)
 %!assert (gammainc (2, 2, "scaledupper"), 1.500000000000000, -2e-15)
 %!assert (gammainc ([3 2 36],[2 3 18], "upper"), ...
-%!        [4/exp(3) 5*exp(-2) (4369755579265807723 / 2977975)/exp(36)])
+%!        [4/exp(3) 5*exp(-2) (4369755579265807723 / 2977975)/exp(36)], -eps)
 %!assert (gammainc (10, 10), 1 - (5719087 / 567) * exp (-10), -eps)
 %!assert (gammainc (10, 10, "upper"), (5719087 / 567) * exp (-10), -eps)
 
@@ -485,11 +485,11 @@ endfunction
 %!         -10*eps);
 ## Matlab is better here than Octave
 %!assert (gammainc (751, 750, "upper"), 0.4805914320558831327179457887, -12*eps)
-%!assert (gammainc (200, 200, "upper"), 0.49059658199276367497217454, -4*eps)
-%!assert (gammainc (200, 200), 0.509403418007236325027825459574527043, -3*eps)
+%!assert (gammainc (200, 200, "upper"), 0.49059658199276367497217454, -5*eps)
+%!assert (gammainc (200, 200), 0.509403418007236325027825459574527043, -5*eps)
 %!assert (gammainc (200, 200, "scaledupper"), 17.3984438553791505135122900,
-%!       -eps)
-%!assert (gammainc (200, 200, "scaledlower"), 18.065406676779221643065, -6*eps)
+%!       -2*eps)
+%!assert (gammainc (200, 200, "scaledlower"), 18.065406676779221643065, -7*eps)
 %!assert (gammainc (201, 200, "upper"), 0.46249244908276709524913736667, -7*eps)
 
 ## Test small argument

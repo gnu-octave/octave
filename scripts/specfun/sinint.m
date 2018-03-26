@@ -140,8 +140,8 @@ endfunction
 ## Tests against Maple
 %!assert (sinint (1)  ,  0.9460830703671830149414, -2*eps)
 %!assert (sinint (-1) , -0.9460830703671830149414, -2*eps)
-%!assert (sinint (pi) ,  1.851937051982466170361, -2*eps)
-%!assert (sinint (-pi), -1.851937051982466170361, -2*eps)
+%!assert (sinint (pi) ,  1.851937051982466170361, -3*eps)
+%!assert (sinint (-pi), -1.851937051982466170361, -3*eps)
 %!assert (sinint (300),  1.5708810882137495193, -2*eps)
 %!assert (sinint (1e4),  1.5708915453859619157, -2*eps)
 %!assert (sinint (20i),  1.2807826332028294459e7*1i, -2*eps)

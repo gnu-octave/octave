@@ -995,15 +995,12 @@ namespace octave
     set_title (tr ("Variable Editor"));
     setStatusTip (tr ("Edit variables."));
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    setFocusPolicy (Qt::NoFocus);
     setAttribute (Qt::WA_AlwaysShowToolTips);
 
     // Tool Bar.
 
     construct_tool_bar ();
     m_main->addToolBar (m_tool_bar);
-    m_main->setFocusPolicy (Qt::NoFocus);
-    setFocusPolicy (Qt::NoFocus);
 
     // Colors.
 

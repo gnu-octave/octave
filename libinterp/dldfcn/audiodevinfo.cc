@@ -1881,7 +1881,7 @@ get_recorder (const octave_value& ov)
 
 DEFUN_DLD (__recorder_getaudiodata__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{data}} __recorder_getaudiodata__ (@var{recorder})
+@deftypefn {} {@var{data} =} __recorder_getaudiodata__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {

@@ -234,7 +234,7 @@ endfunction
 %!   ## Matlab 2014a
 %!   pm = [-0.215772672525099  -9.04926615428815  14.7669978066852];
 %!   um = [0.413058199972826  0.773801198226611  0.48022351989284];
-%!   assert (p, pm, -5e-15);
+%!   assert (p, pm, -2e-14);  # FIXME: looser tolerance needed on i386
 %!   assert (u, um, -5e-15);
 %! unwind_protect_cleanup
 %!   close (hf);

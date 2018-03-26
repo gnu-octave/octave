@@ -238,9 +238,9 @@ namespace octave
         modifier (mod), char_class (ch_class)
     { }
 
-    scanf_format_elt (const scanf_format_elt& e) = default;
+    scanf_format_elt (const scanf_format_elt&) = default;
 
-    scanf_format_elt& operator = (const scanf_format_elt& e) = default;
+    scanf_format_elt& operator = (const scanf_format_elt&) = default;
 
     ~scanf_format_elt (void) = default;
 
@@ -734,9 +734,9 @@ namespace octave
         type (typ), modifier (mod)
     { }
 
-    printf_format_elt (const printf_format_elt& e) = default;
+    printf_format_elt (const printf_format_elt&) = default;
 
-    printf_format_elt& operator = (const printf_format_elt& e) = default;
+    printf_format_elt& operator = (const printf_format_elt&) = default;
 
     ~printf_format_elt (void) = default;
 

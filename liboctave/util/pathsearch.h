@@ -38,9 +38,9 @@ namespace octave
 
     directory_path (const std::string& s = "", const std::string& d = "");
 
-    directory_path (const directory_path& dp) = default;
+    directory_path (const directory_path&) = default;
 
-    directory_path& operator = (const directory_path& dp) = default;
+    directory_path& operator = (const directory_path&) = default;
 
     ~directory_path (void) = default;
 

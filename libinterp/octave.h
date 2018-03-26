@@ -44,9 +44,9 @@ namespace octave
 
     cmdline_options (int argc, char **argv);
 
-    cmdline_options (const cmdline_options& opts) = default;
+    cmdline_options (const cmdline_options&) = default;
 
-    cmdline_options& operator = (const cmdline_options& opts) = default;
+    cmdline_options& operator = (const cmdline_options&) = default;
 
     bool debug_jit (void) const { return m_debug_jit; }
     bool echo_commands (void) const { return m_echo_commands; }

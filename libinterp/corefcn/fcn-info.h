@@ -232,9 +232,9 @@ namespace octave
     fcn_info (const std::string& nm = "")
       : m_rep (new fcn_info_rep (nm)) { }
 
-    fcn_info (const fcn_info& fi) = default;
+    fcn_info (const fcn_info&) = default;
 
-    fcn_info& operator = (const fcn_info& fi) = default;
+    fcn_info& operator = (const fcn_info&) = default;
 
     ~fcn_info (void) = default;
 

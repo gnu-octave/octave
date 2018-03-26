@@ -259,11 +259,11 @@ namespace octave
         initialize ();
       }
 
-      dir_info (const dir_info& di) = default;
+      dir_info (const dir_info&) = default;
 
       ~dir_info (void) = default;
 
-      dir_info& operator = (const dir_info& di) = default;
+      dir_info& operator = (const dir_info&) = default;
 
       void update (void);
 

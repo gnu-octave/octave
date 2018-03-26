@@ -49,9 +49,9 @@ namespace octave
       : pid (id), handler (f), have_status (0), status (0)
     { }
 
-    child (const child& oc) = default;
+    child (const child&) = default;
 
-    child& operator = (const child& oc) = default;
+    child& operator = (const child&) = default;
 
     ~child (void) = default;
 

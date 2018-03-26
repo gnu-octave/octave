@@ -72,32 +72,32 @@
 ## @var{sigma} is a string, it must have one of the following values.
 ##
 ## @table @asis
-## @item @qcode{"lm"}
+## @item @nospell{@qcode{"lm"}}
 ## Largest Magnitude (default).
 ##
-## @item @qcode{"sm"}
+## @item @nospell{@qcode{"sm"}}
 ## Smallest Magnitude.
 ##
 ## @item @qcode{"la"}
 ## Largest Algebraic (valid only for real symmetric problems).
 ##
-## @item @qcode{"sa"}
+## @item @nospell{@qcode{"sa"}}
 ## Smallest Algebraic (valid only for real symmetric problems).
 ##
 ## @item @qcode{"be"}
 ## Both Ends, with one more from the high-end if @var{k} is odd (valid only for
 ## real symmetric problems).
 ##
-## @item @qcode{"lr"}
+## @item @nospell{@qcode{"lr"}}
 ## Largest Real part (valid only for complex or unsymmetric problems).
 ##
-## @item @qcode{"sr"}
+## @item @nospell{@qcode{"sr"}}
 ## Smallest Real part (valid only for complex or unsymmetric problems).
 ##
-## @item @qcode{"li"}
+## @item @nospell{@qcode{"li"}}
 ## Largest Imaginary part (valid only for complex or unsymmetric problems).
 ##
-## @item @qcode{"si"}
+## @item @nospell{@qcode{"si"}}
 ## Smallest Imaginary part (valid only for complex or unsymmetric problems).
 ## @end table
 ##

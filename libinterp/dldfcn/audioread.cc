@@ -515,7 +515,7 @@ Duration of the audio, in seconds.
 Number of bits per sample.
 
 @item BitRate
-Audio bitrate.  Unused, only present for compatibility with @sc{matlab}.
+Audio bit rate.  Unused, only present for compatibility with @sc{matlab}.
 
 @item Title
 @qcode{"Title"} audio metadata value as a string, or empty if not present.

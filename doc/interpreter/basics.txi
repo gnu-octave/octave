@@ -227,7 +227,7 @@ named on the command line.
 @itemx --quiet
 @itemx -q
 @cindex @sortas{options, Octave command --silent} @ @ @code{--silent}
-@cindex @sortas{options, Octave command --quie} @ @ @code{--quiet}
+@cindex @sortas{options, Octave command --quiet} @ @ @code{--quiet}
 @cindex @sortas{options, Octave command -q} @ @ @code{-q}
 Don't print the usual greeting and version message at startup.
 

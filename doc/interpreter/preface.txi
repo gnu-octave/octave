@@ -94,8 +94,8 @@ The United States Department of Energy, through grant number
 @nospell{Stanley C. Ahalt} of the Ohio Supercomputer Center.
 
 @item
-The National Science Foundation, through grant numbers CTS-0105360,
-CTS-9708497, CTS-9311420, CTS-8957123, and CNS-0540147.
+The National Science Foundation, through grant numbers @nospell{CTS-0105360},
+@nospell{CTS-9708497, CTS-9311420, CTS-8957123, and CNS-0540147}.
 
 @item
 The industrial members of the Texas-Wisconsin Modeling and Control

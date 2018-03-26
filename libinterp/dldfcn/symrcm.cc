@@ -433,7 +433,7 @@ minimization problem.  The implementation is based in the descriptions found
 in
 
 @nospell{E. Cuthill, J. McKee}. @cite{Reducing the Bandwidth of Sparse
-Symmetric Matrices}. Proceedings of the 24th ACM National Conference,
+Symmetric Matrices}. Proceedings of the 24th @nospell{ACM} National Conference,
 157--172 1969, Brandon Press, New Jersey.
 
 @nospell{A. George, J.W.H. Liu}. @cite{Computer Solution of Large Sparse

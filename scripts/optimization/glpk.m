@@ -294,9 +294,9 @@
 ## should delay sending information about the solution to the standard output.
 ##
 ## @item save (default: 0)
-## If this parameter is nonzero, save a copy of the problem in CPLEX LP
-## format to the file @file{"outpb.lp"}.  There is currently no way to change
-## the name of the output file.
+## If this parameter is nonzero, save a copy of the problem in @nospell{CPLEX}
+## LP format to the file @file{"outpb.lp"}.  There is currently no way to
+## change the name of the output file.
 ## @end table
 ##
 ## Real parameters:

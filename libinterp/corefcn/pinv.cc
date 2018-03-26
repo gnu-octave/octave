@@ -39,7 +39,7 @@ DEFUN (pinv, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} pinv (@var{x})
 @deftypefnx {} {} pinv (@var{x}, @var{tol})
-Return the Moore-Penrose pseudoinverse of @var{x}.
+Return the @nospell{Moore-Penrose} pseudoinverse of @var{x}.
 
 Singular values less than @var{tol} are ignored.
 

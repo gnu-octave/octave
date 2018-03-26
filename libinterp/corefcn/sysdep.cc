@@ -807,9 +807,10 @@ On Windows, return the value of the registry key @var{subkey} from the root key
 @var{rootkey}.  You can specify the name of the queried registry value with the
 optional argument @var{valuename}.  Otherwise, if called with only two
 arguments or @var{valuename} is empty, then the default value of @var{subkey}
-is returned.  If the registry value is of type @qcode{"REG_DWORD"} then
-@var{value} is of class int32.  If the value is of the type @qcode{"REG_SZ"} or
-@qcode{"REG_EXPAND_SZ"} a string is returned.
+is returned.  If the registry value is of type @nospell{@qcode{"REG_DWORD"}}
+then @var{value} is of class int32.  If the value is of the type
+@nospell{@qcode{"REG_SZ"}} or @nospell{@qcode{"REG_EXPAND_SZ"}} a string is
+returned.
 
 If the first argument is @qcode{"name"}, a cell array of strings with the names
 of the values at that key is returned.
@@ -817,32 +818,29 @@ of the values at that key is returned.
 The variable @var{rootkey} must be a string with a valid root key identifier:
 
 @table @asis
-@item  HKCR
-@itemx HKEY_CLASSES_ROOT
+@item  @nospell{HKCR}
+@itemx @nospell{HKEY_CLASSES_ROOT}
+
+@item @nospell{HKEY_CURRENT_CONFIG}
+
+@item  @nospell{HKCU}
+@itemx @nospell{HKEY_CURRENT_USER}
+
+@item  @nospell{HKLM}
+@itemx @nospell{HKEY_LOCAL_MACHINE}
 
 
-@item HKEY_CURRENT_CONFIG
+@item  @nospell{HKU}
+@itemx @nospell{HKEY_USERS}
 
 
-@item  HKCU
-@itemx HKEY_CURRENT_USER
-
-
-@item  HKLM
-@itemx HKEY_LOCAL_MACHINE
-
-
-@item  HKU
-@itemx HKEY_USERS
-
-
-@item HKEY_PERFORMANCE_DATA
+@item @nospell{HKEY_PERFORMANCE_DATA}
 
 @end table
 
 Examples:
 
-Get a list of value names at the key @qcode{'HKCU\Environment'}:
+Get a list of value names at the key @nospell{@qcode{'HKCU\Environment'}}:
 
 @example
 @group

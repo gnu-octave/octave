@@ -1995,8 +1995,8 @@ Functions for handling sparse matrices.
 Special functions such as @code{bessel} or @code{factor}.
 
 @item special-matrix
-Functions that create special matrix forms such as Hilbert or Vandermonde
-matrices.
+Functions that create special matrix forms such as Hilbert or
+@nospell{Vandermonde} matrices.
 
 @item startup
 Octave's system-wide startup file.

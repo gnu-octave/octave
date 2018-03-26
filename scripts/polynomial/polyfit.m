@@ -36,7 +36,8 @@
 ## Triangular factor R from the QR@tie{}decomposition.
 ##
 ## @item X
-## The Vandermonde matrix used to compute the polynomial coefficients.
+## The @nospell{Vandermonde} matrix used to compute the polynomial
+## coefficients.
 ##
 ## @item C
 ## The unscaled covariance matrix, formally equal to the inverse of

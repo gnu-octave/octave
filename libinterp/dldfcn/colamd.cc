@@ -263,9 +263,10 @@ the current version of @sc{colamd} (reserved for future use).
 The ordering is followed by a column elimination tree post-ordering.
 
 The authors of the code itself are @nospell{Stefan I. Larimore} and
-@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},
-Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
-@url{http://www.cise.ufl.edu/research/sparse/colamd})
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of
+Florida.  The algorithm was developed in collaboration with @nospell{John
+Gilbert}, Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.
+(see @url{http://www.cise.ufl.edu/research/sparse/colamd})
 @seealso{colperm, symamd, ccolamd}
 @end deftypefn */)
 {
@@ -505,9 +506,10 @@ always zero in the current version of SYMAMD (reserved for future use).
 The ordering is followed by a column elimination tree post-ordering.
 
 The authors of the code itself are @nospell{Stefan I. Larimore} and
-@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},
-Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
-@url{http://www.cise.ufl.edu/research/sparse/colamd})
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of
+Florida.  The algorithm was developed in collaboration with @nospell{John
+Gilbert}, Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.
+(see @url{http://www.cise.ufl.edu/research/sparse/colamd})
 @seealso{colperm, colamd}
 @end deftypefn */)
 {

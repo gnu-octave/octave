@@ -60,7 +60,7 @@
 ## A structure with two fields:
 ##
 ## @itemize @bullet
-## @item @qcode{"algorithm"}: The algorithm used (@qcode{"nnls"})
+## @item @qcode{"algorithm"}: The algorithm used (@nospell{@qcode{"nnls"}})
 ##
 ## @item @qcode{"iterations"}: The number of iterations taken.
 ## @end itemize

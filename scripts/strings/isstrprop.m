@@ -40,8 +40,8 @@
 ## @item @qcode{"alpha"}
 ## True for characters that are alphabetic (letters).
 ##
-## @item  @qcode{"alnum"}
-## @itemx @qcode{"alphanum"}
+## @item  @nospell{@qcode{"alnum"}}
+## @itemx @nospell{@qcode{"alphanum"}}
 ## True for characters that are alphabetic or digits.
 ##
 ## @item @qcode{"lower"}
@@ -53,19 +53,19 @@
 ## @item @qcode{"digit"}
 ## True for decimal digits (0-9).
 ##
-## @item @qcode{"xdigit"}
+## @item @nospell{@qcode{"xdigit"}}
 ## True for hexadecimal digits (@nospell{a-fA-F0-9}).
 ##
 ## @item  @qcode{"space"}
-## @itemx @qcode{"wspace"}
+## @itemx @nospell{@qcode{"wspace"}}
 ## True for whitespace characters (space, formfeed, newline, carriage return,
 ## tab, vertical tab).
 ##
-## @item @qcode{"punct"}
+## @item @nospell{@qcode{"punct"}}
 ## True for punctuation characters (printing characters except space or
 ## letter or digit).
 ##
-## @item @qcode{"cntrl"}
+## @item @nospell{@qcode{"cntrl"}}
 ## True for control characters.
 ##
 ## @item  @qcode{"graph"}

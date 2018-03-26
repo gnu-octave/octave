@@ -341,7 +341,7 @@ DEFUN (OCTAVE_EXEC_HOME, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} OCTAVE_HOME ()
 Return the name of the top-level Octave installation directory for
-architecture-dependendent files.  If not specified separately, the value
+architecture-dependent files.  If not specified separately, the value
 is the same as OCTAVE_HOME@.  OCTAVE_EXEC_HOME corresponds to the
 configuration variable @var{exec_prefix}.
 @seealso{EXEC_PATH, IMAGE_PATH, OCTAVE_HOME}

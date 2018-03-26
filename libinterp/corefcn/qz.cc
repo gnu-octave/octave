@@ -184,9 +184,9 @@ with @var{Q} and @var{Z} orthogonal (unitary for complex case).
 @item @code{[@var{AA}, @var{BB}, @var{Z} @{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}
 
 As in form 2 above, but allows ordering of generalized eigenpairs for, e.g.,
-solution of discrete time algebraic Riccati equations.  Form 3 is not available
-for complex matrices, and does not compute the generalized eigenvectors
-@var{V}, @var{W}, nor the orthogonal matrix @var{Q}.
+solution of discrete time algebraic @nospell{Riccati} equations.  Form 3 is not
+available for complex matrices, and does not compute the generalized
+eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.
 
 @table @var
 @item opt

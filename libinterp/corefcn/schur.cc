@@ -120,8 +120,8 @@ leading @var{k} columns of @var{U} always span the @var{A}-invariant
 subspace corresponding to the @var{k} leading eigenvalues of @var{S}.
 
 The Schur@tie{}decomposition is used to compute eigenvalues of a square
-matrix, and has applications in the solution of algebraic Riccati equations
-in control (see @code{are} and @code{dare}).
+matrix, and has applications in the solution of algebraic @nospell{Riccati}
+equations in control (see @code{are} and @code{dare}).
 @seealso{rsf2csf, ordschur, lu, chol, hess, qr, qz, svd}
 @end deftypefn */)
 {

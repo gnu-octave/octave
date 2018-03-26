@@ -62,8 +62,8 @@ val = dot (x.^(N:-1:0), c);
 @noindent
 While the above example shows how easy it is to compute the value of a
 polynomial, it isn't the most stable algorithm.  With larger polynomials
-you should use more elegant algorithms, such as Horner's Method, which
-is exactly what the Octave function @code{polyval} does.
+you should use more elegant algorithms, such as @nospell{Horner's} Method,
+which is exactly what the Octave function @code{polyval} does.
 
 In the case where @var{x} is a square matrix, the polynomial given by
 @var{c} is still well-defined.  As when @var{x} is a scalar the obvious

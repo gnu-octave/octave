@@ -24,7 +24,7 @@
 ## @deftypefnx {} {[@var{q}, @var{nfun}] =} quadl (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
-## an adaptive Lobatto rule.
+## an adaptive @nospell{Lobatto} rule.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be vectorized and

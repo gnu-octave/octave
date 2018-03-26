@@ -1236,7 +1236,7 @@ true if the child produced a core dump.
 
 This function should only be employed if @code{WIFSIGNALED} returned true.
 The macro used to implement this function is not specified in POSIX.1-2001
-and is not available on some Unix implementations (e.g., AIX, SunOS).
+and is not available on some Unix implementations (e.g., @nospell{AIX, SunOS}).
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
 @end deftypefn */)
 {

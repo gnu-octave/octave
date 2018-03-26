@@ -1561,8 +1561,8 @@ message is @qcode{"Octave:quadcc:RelTol-conversion"}.  The warning may be
 disabled with @code{warning ("off", "Octave:quadcc:RelTol-conversion")}.
 
 Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive
-Quadrature Using Explicit Interpolants}, ACM Transactions on Mathematical
-Software, Vol. 37, Issue 3, Article No. 3, 2010.
+Quadrature Using Explicit Interpolants}, @nospell{ACM} Transactions on
+Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}
 @end deftypefn */)
 {

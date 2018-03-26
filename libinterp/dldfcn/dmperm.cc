@@ -119,7 +119,7 @@ DEFUN_DLD (dmperm, args, nargout,
 @deftypefn  {} {@var{p} =} dmperm (@var{S})
 @deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})
 
-@cindex Dulmage-Mendelsohn decomposition
+@cindex @nospell{Dulmage-Mendelsohn} decomposition
 Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix
 @var{S}.
 
@@ -134,7 +134,7 @@ of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.
 
 The method used is described in: @nospell{A. Pothen & C.-J. Fan.}
 @cite{Computing the Block Triangular Form of a Sparse Matrix}.
-ACM Trans. Math. Software, 16(4):303-324, 1990.
+@nospell{ACM} Trans. Math. Software, 16(4):303-324, 1990.
 @seealso{colamd, ccolamd}
 @end deftypefn */)
 {

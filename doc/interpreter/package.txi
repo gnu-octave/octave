@@ -20,7 +20,7 @@
 @chapter Packages
 
 Since Octave is Free Software users are encouraged to share their
-programs amongst each other.  To aid this sharing Octave supports the
+programs with others.  To aid this sharing Octave supports the
 installation of extra packages.  The `Octave-Forge' project is a
 community-maintained set of packages that can be downloaded and
 installed in Octave.  At the time of writing the `Octave-Forge' project

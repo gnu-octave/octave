@@ -28,8 +28,8 @@
 ## as the first element of @var{c}, the first element of @var{c} is used.
 ##
 ## A Toeplitz, or diagonal-constant, matrix has the same value along each
-## diagonal.  Although it need not be square, it often is.  An MxN Toeplitz
-## matrix has the form:
+## diagonal.  Although it need not be square, it often is.  An @nospell{MxN}
+## Toeplitz matrix has the form:
 ## @tex
 ## $$
 ## \left[\matrix{c_1    & r_2     & r_3      & \cdots & r_n\cr

@@ -24,7 +24,7 @@
 ## @deftypefnx {} {[@var{q}, @var{err}] =} quadgk (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
-## using adaptive Gauss-Konrod quadrature.
+## using adaptive @nospell{Gauss-Konrod} quadrature.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be vectorized and

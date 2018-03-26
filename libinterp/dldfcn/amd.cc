@@ -71,7 +71,7 @@ absorption.  The default is not to perform aggressive absorption.
 @end table
 
 The author of the code itself is Timothy A. Davis
-@email{davis@@cise.ufl.edu}, University of Florida
+@nospell{@email{davis@@cise.ufl.edu}}, University of Florida
 (see @url{http://www.cise.ufl.edu/research/sparse/amd}).
 @seealso{symamd, colamd}
 @end deftypefn */)

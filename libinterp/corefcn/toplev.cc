@@ -206,7 +206,8 @@ For commands run asynchronously, @var{status} is the process id of the
 command shell that is started to run the command.
 
 The shell used for executing commands varies with operating system and is
-typically @file{/bin/sh} for UNIX systems and @file{cmd.exe} for Windows
+typically @file{/bin/sh} for UNIX systems and @nospell{@file{cmd.exe}} for
+Windows
 systems.
 @seealso{unix, dos}
 @end deftypefn */)

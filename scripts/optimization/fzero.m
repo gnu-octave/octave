@@ -72,7 +72,7 @@
 ## @item iterations
 ##  Number of iterations through loop.
 ##
-## @item nfev
+## @item @nospell{nfev}
 ##  Number of function evaluations.
 ##
 ## @item bracketx
@@ -86,10 +86,10 @@
 ## @seealso{optimset, fsolve}
 ## @end deftypefn
 
-## This is essentially the ACM algorithm 748: Enclosing Zeros of
-## Continuous Functions due to Alefeld, Potra and Shi, ACM Transactions
-## on Mathematical Software, Vol. 21, No. 3, September 1995. Although
-## the workflow should be the same, the structure of the algorithm has
+## This is essentially the @nospell{ACM} algorithm 748: Enclosing Zeros of
+## Continuous Functions due to Alefeld, Potra and Shi, @nospell{ACM}
+## Transactions on Mathematical Software, Vol. 21, No. 3, September 1995.
+## Although the workflow should be the same, the structure of the algorithm has
 ## been transformed non-trivially; instead of the authors' approach of
 ## sequentially calling building blocks subprograms we implement here a
 ## FSM version using one interior point determination and one bracketing

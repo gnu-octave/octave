@@ -43,8 +43,8 @@ permission notice.
 @cindex troubleshooting
 
 This section describes known problems that affect users of Octave.  Most
-of these are not Octave bugs per se---if they were, we would fix them.
-But the result for a user may be like the result of a bug.
+of these are not Octave bugs per @nospell{se}---if they were, we would fix
+them.  But the result for a user may be like the result of a bug.
 
 Some of these problems are due to bugs in other software, some are
 missing features that are too much work to add, and some are places

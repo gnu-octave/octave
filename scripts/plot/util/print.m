@@ -140,7 +140,7 @@
 ## @samp{epslatexstandalone} above.
 ##
 ##   @item  ill
-##   @itemx aifm
+##   @itemx @nospell{aifm}
 ##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
 ##
 ##   @item canvas
@@ -149,7 +149,7 @@
 ##
 ##   @item  cdr
 ##   @itemx @nospell{corel}
-##     CorelDraw
+##     @nospell{CorelDraw}
 ##
 ##   @item dxf
 ##     AutoCAD

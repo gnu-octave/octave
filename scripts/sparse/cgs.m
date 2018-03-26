@@ -48,7 +48,7 @@
 ## and @var{M2} can be passed as a matrix or as a function handle or inline
 ## function @code{g} such that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.
 ## If M1 is empty or not passed then no preconditioners are applied.
-## The techinque used is the right preconditioning, i.e., it is solved
+## The technique used is the right preconditioning, i.e., it is solved
 ## @code{@var{A}*inv(@var{M})*y = b} and then @code{@var{x} = inv(@var{M})*y}.
 ##
 ## @item @var{x0} the initial guess, if not given or set to [] the default
@@ -173,7 +173,7 @@
 ## ## reference solution computed by cgs after one iteration
 ## [x_ref, fl] = cgs (A, b, [], 1, M)
 ##
-## ## rigth preconditioning
+## ## right preconditioning
 ## [y, fl] = cgs (A / M, b, [], 1)
 ## x = M \ y # compare x and x_ref
 ##

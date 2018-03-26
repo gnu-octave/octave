@@ -115,6 +115,9 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   ## Reorder the properties with the mode properties coming last
   s.properties = orderfields (s.properties, names);
 
+  ## Silence deprecation warnings
+  warning ("off", "Octave:deprecated-property", "local");
+  
   ## create object
   if (strcmp (s.type, "root"))
     h = 0;
@@ -595,8 +598,9 @@ function setprops (s, h, p, hilev)
         idx = find (hdls == vals{nf});
         spec = specs(idx);
         if (isprop (h, field))
-           h2 = get (h , field);
-           set (h2, spec.properties);
+          h2 = get (h , field);
+          addmissingprops (h2, spec.properties);
+          set (h2, spec.properties);
         endif
         nf -= 1;
       endwhile
@@ -648,12 +652,9 @@ function addmissingprops (h, props)
 
   hid = {"__autopos_tag__", "looseinset"};
   oldfields = fieldnames (props);
-  curfields = fieldnames (get (h));
-  missing = ! ismember (oldfields, curfields);
-  idx = find (missing);
-  for ii = 1:length (idx)
-    prop = oldfields{idx(ii)};
-    if (! any (strcmp (prop, hid)))
+  for ii = 1:numel (oldfields)
+    prop = oldfields{ii};
+    if (! isprop (h, prop) && ! any (strcmp (prop, hid)))
       addproperty (prop, h, "any");
     endif
   endfor

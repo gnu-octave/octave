@@ -66,7 +66,7 @@
 ## @qcode{"Centimeter"}, or @qcode{"undefined"}.
 ##
 ## @item DelayTime
-## Time in 1/100ths of a second (0 to 65535) which must expire before
+## Time in @nospell{1/100ths} of a second (0 to 65535) which must expire before
 ## displaying the next image in an animated sequence.
 ##
 ## @item LoopCount

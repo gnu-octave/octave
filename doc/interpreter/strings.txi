@@ -179,9 +179,9 @@ matrix.
 
 @DOCSTRING(isstring)
 
-To test if an object is a string (i.e., a 1xN row vector of characters
-and not a character matrix) you can use the @code{ischar} function in
-combination with the @code{isrow} function as in the following example:
+To test if an object is a string (i.e., a @nospell{1xN} row vector of
+characters and not a character matrix) you can use the @code{ischar} function
+in combination with the @code{isrow} function as in the following example:
 
 @example
 @group

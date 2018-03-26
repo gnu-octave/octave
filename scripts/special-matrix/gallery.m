@@ -38,7 +38,7 @@
 ##
 ## @deftypefn  {} {@var{c} =} gallery ("chebvand", @var{p})
 ## @deftypefnx {} {@var{c} =} gallery ("chebvand", @var{m}, @var{p})
-## Create a Vandermonde-like matrix for the Chebyshev polynomials.
+## Create a @nospell{Vandermonde}-like matrix for the Chebyshev polynomials.
 ##
 ## @end deftypefn
 ##
@@ -244,7 +244,8 @@
 ## @end deftypefn
 ##
 ## @deftypefn {} {[@var{a}, @var{t}] =} gallery ("neumann", @var{n})
-## Create a singular matrix from the discrete Neumann problem (sparse).
+## Create a singular matrix from the discrete @nospell{Neumann} problem
+## (sparse).
 ##
 ## @end deftypefn
 ##

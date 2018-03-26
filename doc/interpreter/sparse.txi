@@ -900,7 +900,7 @@ Omega.
 @end ifnottex
 Boundary conditions may specify the potential (Dirichlet
 boundary condition), its normal derivative across the boundary
-(Neumann boundary condition), or a weighted sum of the potential and
+(@nospell{Neumann} boundary condition), or a weighted sum of the potential and
 its derivative (Cauchy boundary condition).
 
 In a thermal model, we want to calculate the temperature in
@@ -911,7 +911,7 @@ $\Omega$
 Omega
 @end ifnottex
 and know the boundary temperature (Dirichlet condition)
-or heat flux (from which we can calculate the Neumann condition
+or heat flux (from which we can calculate the @nospell{Neumann} condition
 by dividing by the thermal conductivity at the boundary).  Similarly,
 in an electrical model, we want to calculate the voltage in
 @tex
@@ -921,9 +921,9 @@ $\Omega$
 Omega
 @end ifnottex
 and know the boundary voltage (Dirichlet) or current
-(Neumann condition after diving by the electrical conductivity).
+(@nospell{Neumann} condition after diving by the electrical conductivity).
 In an electrical model, it is common for much of the boundary
-to be electrically isolated; this is a Neumann boundary condition
+to be electrically isolated; this is a @nospell{Neumann} boundary condition
 with the current equal to zero.
 
 The simplest finite element models will divide
@@ -1047,8 +1047,8 @@ $SV = I$.
 @ifnottex
 @code{S * V = I}.
 @end ifnottex
-Based on the Dirichlet and Neumann boundary conditions, we are able to
-solve for the voltages at each vertex @code{V}.
+Based on the Dirichlet and @nospell{Neumann} boundary conditions, we are able
+to solve for the voltages at each vertex @code{V}.
 
 @example
   ## Dirichlet boundary conditions

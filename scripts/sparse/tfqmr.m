@@ -39,7 +39,7 @@
 ##
 ## @item @var{maxit} the maximum number of outer iterations, if not given or
 ## set to [] the default value @code{min (20, numel (b))} is used.  To be
-## compatible, since the method as different behaviours in the iteration
+## compatible, since the method as different behaviors in the iteration
 ## number is odd or even, is considered as iteration in @code{tfqmr} the
 ## entire odd-even cycle.  That is, to make an entire iteration, the algorithm
 ## performs two sub-iterations: the odd one and the even one.
@@ -49,7 +49,7 @@
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as a function
 ## handle or inline function @code{g} such that @code{g(x) = M1 \ x} or
 ## @code{g(x) = M2 \ x}.
-## The technique used is the rigth-preconditioning, i.e., it is solved
+## The technique used is the right-preconditioning, i.e., it is solved
 ## @code{A*inv(M)*y = b} and then @code{x = inv(M)*y}, instead of
 ## @code{A x = b}.
 ##
@@ -179,7 +179,7 @@
 ## ## reference solution computed by tfqmr after one iteration
 ## [x_ref, fl] = tfqmr (A, b, [], 1, M)
 ##
-## ## rigth preconditioning
+## ## right preconditioning
 ## [y, fl] = tfqmr (A / M, b, [], 1)
 ## x = M \ y # compare x and x_ref
 ##

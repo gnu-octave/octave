@@ -35,8 +35,8 @@
 ## @end example
 ##
 ## @noindent
-## which corresponds to the luminance channel when RGB is translated to YIQ
-## as documented in @url{http://en.wikipedia.org/wiki/YIQ}.
+## which corresponds to the luminance channel when RGB is translated to
+## @nospell{YIQ} as documented in @url{http://en.wikipedia.org/wiki/YIQ}.
 ## @seealso{rgb2hsv, rgb2ind}
 ## @end deftypefn
 

@@ -5555,8 +5555,9 @@ Largest singular value of @var{A}.
 Infinity norm, the largest row sum of the absolute values of @var{A}.
 
 @item @var{p} = @qcode{"fro"}
-@cindex Frobenius norm
-Frobenius norm of @var{A}, @code{sqrt (sum (diag (@var{A}' * @var{A})))}.
+@cindex @nospell{Frobenius} norm
+@nospell{Frobenius} norm of @var{A},
+@code{sqrt (sum (diag (@var{A}' * @var{A})))}.
 
 @item other @var{p}, @code{@var{p} > 1}
 @cindex general p-norm
@@ -5573,7 +5574,7 @@ If @var{A} is a vector or a scalar:
 @code{min (abs (@var{A}))}.
 
 @item @var{p} = @qcode{"fro"}
-Frobenius norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.
+@nospell{Frobenius} norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.
 
 @item @var{p} = 0
 Hamming norm---the number of nonzero elements.

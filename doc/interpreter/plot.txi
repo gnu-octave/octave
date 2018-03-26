@@ -286,7 +286,7 @@ get or set individual axis limits.  Each has the same form.
 The @code{xticks}, @code{yticks}, @code{zticks}, @code{rticks}, and
 @code{thetaticks} functions may be used to get or set the tick mark locations
 and modes on the respective axis.  Each has the same form, although mode
-options are not currently avaliable for @code{rticks}, and @code{thetaticks}.
+options are not currently available for @code{rticks}, and @code{thetaticks}.
 
 @c FIXME: Update this section if polarplot and polar axes changes change the
 @c        associated axis properties.
@@ -2354,7 +2354,7 @@ The line and fill color of the markers on the error bars.  @xref{Colors}.
 @itemx udata
 @itemx xldata
 @itemx xudata
-The original x, y, l, u, xl, xu data of the error bars.
+The original x, y, l, u, @nospell{xl, xu} data of the error bars.
 
 @item  xdatasource
 @itemx ydatasource

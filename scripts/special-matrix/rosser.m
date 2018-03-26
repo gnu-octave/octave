@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} rosser ()
-## Return the Rosser matrix.
+## Return the @nospell{Rosser} matrix.
 ##
 ## This is a difficult test case used to evaluate eigenvalue algorithms.
 ## @seealso{wilkinson, eig}

@@ -33,7 +33,7 @@
 ## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
 ## parameters to @code{Afun} are passed after @var{x0}.
 ##
-## @var{A} has to be Hermitian and Positive Definite (HPD).  If
+## @var{A} has to be Hermitian and Positive Definite (@nospell{HPD}).  If
 ## @code{pcg} detects @var{A} not to be positive definite, a warning
 ## is printed and the @var{flag} output is set.
 ##
@@ -52,9 +52,9 @@
 ## is omitted or empty then a value of 20 is used.
 ##
 ## @item
-## @var{m} is a HPD preconditioning matrix.  For any decomposition
+## @var{m} is a @nospell{HPD} preconditioning matrix.  For any decomposition
 ## @code{@var{m} = @var{p1} * @var{p2}} such that
-## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2})}} is HPD, the
+## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2})}} is @nospell{HPD,} the
 ## conjugate gradient method is formally applied to the linear system
 ## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2}) * @var{y} = inv
 ## (@var{p1}) * @var{b}}},
@@ -110,7 +110,7 @@
 ## @code{@var{eps} * norm (@var{x},2)}.
 ##
 ## @item 4: The algorithm detects that the input (preconditioned) matrix is not
-## HPD.
+## @nospell{HPD}.
 ## @end itemize
 ##
 ## @item

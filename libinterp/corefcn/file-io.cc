@@ -724,10 +724,10 @@ Set the file pointer to the location @var{offset} within the file @var{fid}.
 The pointer is positioned @var{offset} characters from the @var{origin},
 which may be one of the predefined variables @w{@code{SEEK_CUR}} (current
 position), @w{@code{SEEK_SET}} (beginning), or @w{@code{SEEK_END}} (end of
-file) or strings @qcode{"cof"}, @qcode{"bof"} or @qcode{"eof"}.  If
-@var{origin} is omitted, @w{@code{SEEK_SET}} is assumed.  @var{offset} may
-be positive, negative, or zero but not all combinations of @var{origin} and
-@var{offset} can be realized.
+file) or strings @nospell{@qcode{"cof"}}, @nospell{@qcode{"bof"}}, or
+@nospell{@qcode{"eof"}}.  If @var{origin} is omitted, @w{@code{SEEK_SET}} is
+assumed.  @var{offset} may be positive, negative, or zero but not all
+combinations of @var{origin} and @var{offset} can be realized.
 
 @code{fseek} returns 0 on success and -1 on error.
 @seealso{fskipl, frewind, ftell, fopen}

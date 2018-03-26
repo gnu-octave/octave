@@ -259,7 +259,7 @@ deal
 @section Broadcasting
 @cindex broadcast
 @cindex broadcasting
-@cindex BSX
+@cindex @nospell{BSX}
 @cindex recycling
 @cindex SIMD
 
@@ -431,7 +431,7 @@ faster ordinary matrix multiplication, @code{@var{c} = @var{a}*@var{b};}.
 A note on terminology: ``broadcasting'' is the term popularized by the
 Numpy numerical environment in the Python programming language.  In other
 programming languages and environments, broadcasting may also be known
-as @emph{binary singleton expansion} (BSX, in @sc{matlab}, and the
+as @emph{binary singleton expansion} (@nospell{BSX}, in @sc{matlab}, and the
 origin of the name of the @code{bsxfun} function), @emph{recycling} (R
 programming language), @emph{single-instruction multiple data} (SIMD),
 or @emph{replication}.

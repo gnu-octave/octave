@@ -49,10 +49,10 @@ Numerical integration based on Gaussian quadrature.
 Numerical integration using an adaptive vectorized Simpson's rule.
 
 @item quadl
-Numerical integration using an adaptive Lobatto rule.
+Numerical integration using an adaptive @nospell{Lobatto} rule.
 
 @item quadgk
-Numerical integration using an adaptive Gauss-Konrod rule.
+Numerical integration using an adaptive @nospell{Gauss-Konrod} rule.
 
 @item quadcc
 Numerical integration using adaptive @nospell{Clenshaw-Curtis} rules.

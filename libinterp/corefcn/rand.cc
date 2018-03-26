@@ -400,8 +400,8 @@ Twister with a period of @math{2^{19937}-1}
 (See @nospell{M. Matsumoto and T. Nishimura},
 @cite{Mersenne Twister: A 623-dimensionally equidistributed uniform
 pseudorandom number generator},
-ACM Trans. on Modeling and Computer Simulation Vol. 8, No. 1, pp. 3--30,
-January 1998,
+@nospell{ACM} Trans. on Modeling and Computer Simulation Vol. 8, No. 1,
+pp. 3--30, January 1998,
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).
 Do @strong{not} use for cryptography without securely hashing several
 returned values together, otherwise the generator state can be learned after

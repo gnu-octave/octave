@@ -26,7 +26,7 @@
 ## Possible features are:
 ##
 ## @table @asis
-## @item @qcode{"awt"}
+## @item @nospell{@qcode{"awt"}}
 ## Abstract Window Toolkit for GUIs.
 ##
 ## @item @qcode{"desktop"}

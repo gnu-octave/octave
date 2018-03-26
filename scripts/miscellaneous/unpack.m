@@ -38,11 +38,11 @@
 ## Valid filetype extensions:
 ##
 ## @table @code
-## @item  bz
-## @itemx bz2
+## @item  @nospell{bz}
+## @itemx @nospell{bz2}
 ## bzip archive
 ##
-## @item gz
+## @item @nospell{gz}
 ## gzip archive
 ##
 ## @item tar

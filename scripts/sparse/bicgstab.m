@@ -53,7 +53,7 @@
 ## handle or inline function @code{g} such that
 ## @code{g(@var{x}) = @var{M1} \ @var{x}} or
 ## @code{g(@var{x}) = @var{M2} \ @var{x}}.
-## The techinque used is the right preconditioning, i.e., it is
+## The technique used is the right preconditioning, i.e., it is
 ## solved @code{@var{A} * inv (@var{M}) * @var{y} = @var{b}} and then
 ## @code{@var{x} = inv (@var{M}) * @var{y}}.
 ##
@@ -185,7 +185,7 @@
 ## ## reference solution computed by bicgstab after one iteration
 ## [x_ref, fl] = bicgstab (A, b, [], 1, M)
 ##
-## ## rigth preconditioning
+## ## right preconditioning
 ## [y, fl] = bicgstab (A / M, b, [], 1)
 ## x = M \ y # compare x and x_ref
 ##

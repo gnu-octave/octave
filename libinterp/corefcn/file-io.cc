@@ -721,16 +721,16 @@ DEFMETHOD (fseek, interp, args, ,
 @deftypefnx {} {@var{status} =} fseek (@dots{})
 Set the file pointer to the location @var{offset} within the file @var{fid}.
 
-The pointer is positioned @var{offset} characters from the @var{origin},
-which may be one of the predefined variables @w{@code{SEEK_CUR}} (current
-position), @w{@code{SEEK_SET}} (beginning), or @w{@code{SEEK_END}} (end of
-file) or strings @nospell{@qcode{"cof"}}, @nospell{@qcode{"bof"}}, or
+The pointer is positioned @var{offset} characters from the @var{origin}, which
+may be one of the predefined variables @w{@code{SEEK_SET}} (beginning),
+@w{@code{SEEK_CUR}} (current position), or @w{@code{SEEK_END}} (end of file) or
+strings @nospell{@qcode{"bof"}}, @nospell{@qcode{"cof"}}, or
 @nospell{@qcode{"eof"}}.  If @var{origin} is omitted, @w{@code{SEEK_SET}} is
 assumed.  @var{offset} may be positive, negative, or zero but not all
 combinations of @var{origin} and @var{offset} can be realized.
 
 @code{fseek} returns 0 on success and -1 on error.
-@seealso{fskipl, frewind, ftell, fopen}
+@seealso{fskipl, frewind, ftell, fopen, SEEK_SET, SEEK_CUR, SEEK_END}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -3084,27 +3084,14 @@ environment variable.
 }
 
 // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
-// this way for Matlab compatibility.
+//       this way for Matlab compatibility.
 
 DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn  {} {} SEEK_SET ()
-@deftypefnx {} {} SEEK_CUR ()
-@deftypefnx {} {} SEEK_END ()
-Return the numerical value to pass to @code{fseek} to perform one of the
-following actions:
-
-@table @code
-@item SEEK_SET
-Position file relative to the beginning.
-
-@item SEEK_CUR
-Position file relative to the current position.
-
-@item SEEK_END
-Position file relative to the end.
-@end table
-@seealso{fseek}
+Return the numerical value to pass to @code{fseek} to position the file pointer
+relative to the beginning of the file.
+@seealso{SEEK_CUR, SEEK_END, fseek}
 @end deftypefn */)
 {
   return const_value ("SEEK_SET", args, -1);
@@ -3113,9 +3100,9 @@ Position file relative to the end.
 DEFUNX ("SEEK_CUR", FSEEK_CUR, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} SEEK_CUR ()
-Return the numerical value to pass to @code{fseek} to
-position the file pointer relative to the current position.
-@seealso{SEEK_SET, SEEK_END}
+Return the numerical value to pass to @code{fseek} to position the file pointer
+relative to the current position.
+@seealso{SEEK_SET, SEEK_END, fseek}
 @end deftypefn */)
 {
   return const_value ("SEEK_CUR", args, 0);
@@ -3124,9 +3111,9 @@ position the file pointer relative to the current position.
 DEFUNX ("SEEK_END", FSEEK_END, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} SEEK_END ()
-Return the numerical value to pass to @code{fseek} to
-position the file pointer relative to the end of the file.
-@seealso{SEEK_SET, SEEK_CUR}
+Return the numerical value to pass to @code{fseek} to position the file pointer
+relative to the end of the file.
+@seealso{SEEK_SET, SEEK_CUR, fseek}
 @end deftypefn */)
 {
   return const_value ("SEEK_END", args, 1);

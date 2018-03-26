@@ -25,6 +25,7 @@
 @end ifclear
 
 @ifset BUGSONLY
+@include macros.texi
 
 This file documents known bugs in Octave and describes where and how to
 report any bugs that you may find.

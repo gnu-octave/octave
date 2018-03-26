@@ -315,6 +315,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       ---------------------|------------------
       chop                 | sprintf for visual results
       desktop              | isguirunning
+      tmpnam               | tempname
       toascii              | double
 
  ** The following functions were deprecated in Octave 4.0 and have been

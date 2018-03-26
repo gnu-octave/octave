@@ -231,8 +231,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
         p = n = xf = xb = 0;
         ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning
         if (has_tests (f))
-          tmp = strrep (f, [topsrcdir, filesep], "");
-          tmp = strrep (tmp, [topbuilddir, filesep], "");
+          tmp = reduce_test_file_name (f, topbuilddir, topsrcdir);
           print_test_file_name (tmp);
           [p, n, xf, xb, sk, rtsk, rgrs] = test (f, "quiet", fid);
           print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
@@ -287,6 +286,25 @@ function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
     endif
   endif
   puts ("\n");
+
+endfunction
+
+function retval = reduce_test_file_name (nm, builddir, srcdir)
+
+  ## Reduce the given absolute file name to a relative path by removing one
+  ## of the likely root directory prefixes.
+
+  prefix = { builddir, fullfile(builddir, "scripts"), ...
+             srcdir, fullfile(srcdir, "scripts") };
+
+  retval = nm;
+
+  for i = 1:length (prefix)
+    tmp = strrep (nm, [prefix{i}, filesep], "");
+    if (length (tmp) < length (retval))
+      retval = tmp;
+    endif
+  endfor
 
 endfunction
 

@@ -71,7 +71,6 @@ FCN_FILE_DIRS += \
   %reldir%/symvar.m \
   %reldir%/tar.m \
   %reldir%/tempdir.m \
-  %reldir%/tmpnam.m \
   %reldir%/unix.m \
   %reldir%/unpack.m \
   %reldir%/untar.m \

@@ -248,3 +248,6 @@ alphabetical order).
 @end multitable
 @end ifnottex
 
+@DOCSTRING(discrete_rnd)
+
+@DOCSTRING(empirical_rnd)

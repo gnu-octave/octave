@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2017 John W. Eaton
+## Copyright (C) 2003-2018 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -20,6 +20,9 @@
 ## @deftypefn  {} {@var{fname} =} tmpnam ()
 ## @deftypefnx {} {@var{fname} =} tmpnam (@var{dir})
 ## @deftypefnx {} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})
+## @code{tmpnam} is deprecated and will be removed in Octave version 4.8.
+## Use @code{tempname} instead.
+##
 ## Return a unique temporary filename as a string.
 ##
 ## If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.
@@ -34,12 +37,20 @@
 ## see @code{tmpfile}.  The functions @code{tmpnam} and @code{tempname} are
 ## equivalent with the latter provided for @sc{matlab} compatibility.
 ##
-## @strong{Caution}: @code{tmpnam} will be removed in a future version of
-## Octave.  Use the equivalent @code{tempname} in all new code.
+## @strong{Caution}: @code{tmpnam} will be removed in Octave version 4.8, or
+## whatever the version number is two releases from 4.4. Use the equivalent
+## @code{tempname} in all new code.
 ## @seealso{tempname, mkstemp, tempdir, P_tmpdir, tmpfile}
 ## @end deftypefn
 
 function filename = tmpnam (varargin)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "tmpnam is obsolete and will be removed from a future version of Octave, please use tempname instead");
+  endif
 
   filename = tempname (varargin{:});
 

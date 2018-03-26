@@ -47,7 +47,13 @@ while (($_ = $octave_output[$idx++]) !~ /^#!-separator-!#$/)
 }
 while ($_ = $octave_output[$idx++])
 {
-  push(@where, $1) if (/] = (\S*)$/);
+  push(@where, $1) if (/] = (.+)$/);
+}
+
+# Sanity check that Octave script worked
+if ($#all_functions != $#where)
+{
+  die "Unequal number of functions and locations.  Parsing failed\n"; 
 }
 
 # Second, remove functions based on directory location
@@ -108,29 +114,30 @@ besselk
 bessely
 bug_report
 chdir
-debug
 dbnext
+debug
 end
 exit
 F_DUPFD
 F_GETFD
 F_GETFL
+F_SETFD
+F_SETFL
 fact
 finite
 flipdim
 fmod
-F_SETFD
-F_SETFL
 gammaln
 home
 i
 ifelse
+import
 inf
 inverse
 isbool
 isfinite
-j
 J
+j
 java2mat
 lower
 lstat
@@ -148,14 +155,16 @@ O_SYNC
 O_TRUNC
 O_WRONLY
 putenv
-SEEK_CUR
-SEEK_END
+rticks
 setenv
-tmpnam
-toc
-triu
+slash
+thetaticks
 upper
 ylabel
 ylim
+yticklabels
+yticks
 zlabel
 zlim
+zticklabels
+zticks

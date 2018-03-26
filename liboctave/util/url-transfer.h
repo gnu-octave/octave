@@ -176,9 +176,9 @@ namespace octave
 
     url_transfer (const std::string& url, std::ostream& os);
 
-    url_transfer (const url_transfer& h) = default;
+    url_transfer (const url_transfer&) = default;
 
-    url_transfer& operator = (const url_transfer& h) = default;
+    url_transfer& operator = (const url_transfer&) = default;
 
     ~url_transfer (void) = default;
 

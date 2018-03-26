@@ -52,9 +52,9 @@ public:
   float_format (int w, int e, int p, int f)
     : fw (w), ex (e), prec (p), fmt (f), up (0), sp (0) { }
 
-  float_format (const float_format& ff) = default;
+  float_format (const float_format&) = default;
 
-  float_format& operator = (const float_format& ff) = default;
+  float_format& operator = (const float_format&) = default;
 
   ~float_format (void) = default;
 

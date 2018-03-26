@@ -2665,9 +2665,9 @@ public:
 
   graphics_object (base_graphics_object *new_rep) : rep (new_rep) { }
 
-  graphics_object (const graphics_object& obj) = default;
+  graphics_object (const graphics_object&) = default;
 
-  graphics_object& operator = (const graphics_object& obj) = default;
+  graphics_object& operator = (const graphics_object&) = default;
 
   ~graphics_object (void) = default;
 
@@ -5954,11 +5954,11 @@ public:
 
   graphics_event (base_graphics_event *new_rep) : rep (new_rep) { }
 
-  graphics_event (const graphics_event& e) = default;
+  graphics_event (const graphics_event&) = default;
 
   ~graphics_event (void) = default;
 
-  graphics_event& operator = (const graphics_event& e) = default;
+  graphics_event& operator = (const graphics_event&) = default;
 
   void execute (void)
   {

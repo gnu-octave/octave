@@ -557,9 +557,9 @@ namespace octave
       : m_rep (new symbol_record_rep (nm, v, sc))
     { }
 
-    symbol_record (const symbol_record& sr) = default;
+    symbol_record (const symbol_record&) = default;
 
-    symbol_record& operator = (const symbol_record& sr) = default;
+    symbol_record& operator = (const symbol_record&) = default;
 
     ~symbol_record (void) = default;
 

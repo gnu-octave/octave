@@ -46,9 +46,9 @@ namespace octave
         m_type (), m_idx (), m_nel (1)
     { }
 
-    octave_lvalue (const octave_lvalue& vr) = default;
+    octave_lvalue (const octave_lvalue&) = default;
 
-    octave_lvalue& operator = (const octave_lvalue& vr) = default;
+    octave_lvalue& operator = (const octave_lvalue&) = default;
 
     ~octave_lvalue (void) = default;
 

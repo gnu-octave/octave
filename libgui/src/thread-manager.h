@@ -54,9 +54,9 @@ namespace octave
 
     ~thread_manager (void) = default;
 
-    thread_manager (const thread_manager& tm) = default;
+    thread_manager (const thread_manager&) = default;
 
-    thread_manager& operator = (const thread_manager& tm) = default;
+    thread_manager& operator = (const thread_manager&) = default;
 
     void register_current_thread (void) { m_rep->register_current_thread (); }
 

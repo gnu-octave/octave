@@ -48,7 +48,7 @@
 ## @var{M} is given as @code{M = M1 * M2}.
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as a function
 ## handle or inline function @code{g} such that @code{g(x) = M1 \ x} or
-## @code {g(x) = M2 \ x}.
+## @code{g(x) = M2 \ x}.
 ## The technique used is the rigth-preconditioning, i.e., it is solved
 ## @code{A*inv(M)*y = b} and then @code{x = inv(M)*y}, instead of
 ## @code{A x = b}.

@@ -52,7 +52,7 @@
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as a function
 ## handle or inline function @code{g} such that
 ## @code{g(@var{x}) = @var{M1} \ @var{x}} or
-## @code {g(@var{x}) = @var{M2} \ @var{x}}.
+## @code{g(@var{x}) = @var{M2} \ @var{x}}.
 ## The techinque used is the right preconditioning, i.e., it is
 ## solved @code{@var{A} * inv (@var{M}) * @var{y} = @var{b}} and then
 ## @code{@var{x} = inv (@var{M}) * @var{y}}.
@@ -158,7 +158,7 @@
 ## x = bicgstab (Afun, b, 1e-6, n, M1fun, M2fun)
 ## @end example
 ##
-## @sc{Example 7:} @code {bicgstab} with as input a function requiring
+## @sc{Example 7:} @code{bicgstab} with as input a function requiring
 ## an argument
 ##
 ## @example

@@ -14,7 +14,7 @@
 %!test <*53027>
 %! global X
 %! X = 0;
-%! fname = tmpnam ();
+%! fname = tempname ();
 %! save53027 (fname);
 %! assert (X, 1);
 %! load53027 (fname);

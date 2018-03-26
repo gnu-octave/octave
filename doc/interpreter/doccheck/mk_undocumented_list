@@ -155,8 +155,10 @@ O_SYNC
 O_TRUNC
 O_WRONLY
 putenv
+rticks
 setenv
 slash
+thetaticks
 upper
 ylabel
 ylim

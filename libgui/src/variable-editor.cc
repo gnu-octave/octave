@@ -88,14 +88,7 @@ namespace octave
     : label_dock_widget (p)
   {
     setFocusPolicy (Qt::StrongFocus);
-    // This controls whether the variable_dock_widgets are deleted
-    // or hidden when clicking the upper right X icon.  (Look for
-    // the checkmark of the variable_editor's context menu.)
-    // Could make this an option, or perhaps add a drop-down menu
-    // in place of X "close" icon.
-#if 0
     setAttribute (Qt::WA_DeleteOnClose);
-#endif
 
     connect (m_dock_action, SIGNAL (triggered (bool)),
              this, SLOT (change_floating (bool)));

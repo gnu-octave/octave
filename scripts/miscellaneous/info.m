@@ -37,7 +37,7 @@ function info ()
 \n\
   Additional functionality can be enabled by using packages from\n\
   the Octave Forge project, which may be found at\n\
-  http://octave.sourceforge.net\n\
+  https://octave.sourceforge.io\n\
 \n\
   Report bugs to the bug tracker at\n\
   https://bugs.octave.org\n\

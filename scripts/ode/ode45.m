@@ -43,8 +43,8 @@
 ##
 ## By default, @code{ode45} uses an adaptive timestep with the
 ## @code{integrate_adaptive} algorithm.  The tolerance for the timestep
-## computation may be changed by using the options @qcode{"RelTol"}
-## and @qcode{"AbsTol"}.
+## computation may be changed by using the options @qcode{"RelTol"} and
+## @qcode{"AbsTol"}.
 ##
 ## @var{init} contains the initial value for the unknowns.  If it is a row
 ## vector then the solution @var{y} will be a matrix in which each column is
@@ -58,20 +58,20 @@
 ## output @var{y} is a matrix in which each column refers to a different
 ## unknown of the problem and each row corresponds to a time in @var{t}.
 ##
-## The output can also be returned as a structure @var{solution} which
-## has a field @var{x} containing a row vector of times where the solution
-## was evaluated and a field @var{y} containing the solution matrix such
-## that each column corresponds to a time in @var{x}.
-## Use @code{fieldnames (@var{solution})} to see the other fields and
+## The output can also be returned as a structure @var{solution} which has a
+## field @var{x} containing a row vector of times where the solution was
+## evaluated and a field @var{y} containing the solution matrix such that each
+## column corresponds to a time in @var{x}.  Use
+## @w{@code{fieldnames (@var{solution})}} to see the other fields and
 ## additional information returned.
 ##
-## If no output arguments are requested, and no @code{OutputFcn} is
-## specified in @var{ode_opt}, then the @code{OutputFcn} is set to
-## @code{odeplot} and the results of the solver are plotted immediately.
+## If no output arguments are requested, and no @code{OutputFcn} is specified
+## in @var{ode_opt}, then the @code{OutputFcn} is set to @code{odeplot} and the
+## results of the solver are plotted immediately.
 ##
-## If using the @qcode{"Events"} option then three additional outputs may
-## be returned.  @var{te} holds the time when an Event function returned a
-## zero.  @var{ye} holds the value of the solution at time @var{te}.  @var{ie}
+## If using the @qcode{"Events"} option then three additional outputs may be
+## returned.  @var{te} holds the time when an Event function returned a zero.
+## @var{ye} holds the value of the solution at time @var{te}.  @var{ie}
 ## contains an index indicating which Event function was triggered in the case
 ## of multiple Event functions.
 ##
@@ -83,7 +83,7 @@
 ## [@var{t},@var{y}] = ode45 (fvdp, [0, 20], [2, 0]);
 ## @end group
 ## @end example
-## @seealso{odeset, odeget, ode23}
+## @seealso{odeset, odeget, ode23, ode15s}
 ## @end deftypefn
 
 function varargout = ode45 (fun, trange, init, varargin)

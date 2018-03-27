@@ -329,30 +329,21 @@ do_trilu (const std::string& name,
 
 DEFUN (tril, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} tril (@var{A})
-@deftypefnx {} {} tril (@var{A}, @var{k})
-@deftypefnx {} {} tril (@var{A}, @var{k}, @var{pack})
-@deftypefnx {} {} triu (@var{A})
-@deftypefnx {} {} triu (@var{A}, @var{k})
-@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})
-Return a new matrix formed by extracting the lower (@code{tril})
-or upper (@code{triu}) triangular part of the matrix @var{A}, and
-setting all other elements to zero.
+@deftypefn  {} {@var{A_LO} =} tril (@var{A})
+@deftypefnx {} {@var{A_LO} =} tril (@var{A}, @var{k})
+@deftypefnx {} {@var{A_LO} =} tril (@var{A}, @var{k}, @var{pack})
+Return a new matrix formed by extracting the lower triangular part of the
+matrix @var{A}, and setting all other elements to zero.
 
-The second argument is optional, and specifies how many diagonals above or
-below the main diagonal should also be set to zero.
+The optional second argument specifies how many diagonals above or below the
+main diagonal should also be set to zero.  The default value of @var{k} is
+zero which includes the main diagonal as part of the result.  If the value of
+@var{k} is a nonzero integer then the selection of elements starts at an offset
+of @var{k} diagonals above the main diagonal for positive @var{k} or below the
+main diagonal for negative @var{k}.  The absolute value of @var{k} may not be
+greater than the number of subdiagonals or superdiagonals.
 
-The default value of @var{k} is zero, so that @code{triu} and @code{tril}
-normally include the main diagonal as part of the result.
-
-If the value of @var{k} is nonzero integer, the selection of elements starts
-at an offset of @var{k} diagonals above or below the main diagonal; above
-for positive @var{k} and below for negative @var{k}.
-
-The absolute value of @var{k} must not be greater than the number of
-subdiagonals or superdiagonals.
-
-For example:
+Example 1 : exclude main diagonal
 
 @example
 @group
@@ -364,7 +355,8 @@ tril (ones (3), -1)
 @end example
 
 @noindent
-and
+
+Example 2 : include first superdiagonal
 
 @example
 @group
@@ -375,10 +367,10 @@ tril (ones (3), 1)
 @end group
 @end example
 
-If the option @qcode{"pack"} is given as third argument, the extracted
-elements are not inserted into a matrix, but rather stacked column-wise one
-above other.
-@seealso{diag}
+If the optional third argument @qcode{"pack"} is given then the extracted
+elements are not inserted into a matrix, but instead stacked column-wise one
+above another, and returned as a column vector.
+@seealso{triu, istril, diag}
 @end deftypefn */)
 {
   return do_trilu ("tril", args);
@@ -386,11 +378,48 @@ above other.
 
 DEFUN (triu, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} triu (@var{A})
-@deftypefnx {} {} triu (@var{A}, @var{k})
-@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})
-See the documentation for the @code{tril} function (@pxref{tril}).
-@seealso{tril}
+@deftypefn  {} {@var{A_UP} =} triu (@var{A})
+@deftypefnx {} {@var{A_UP} =} triu (@var{A}, @var{k})
+@deftypefnx {} {@var{A_UP} =} triu (@var{A}, @var{k}, @var{pack})
+Return a new matrix formed by extracting the upper triangular part of the
+matrix @var{A}, and setting all other elements to zero.
+
+The optional second argument specifies how many diagonals above or below the
+main diagonal should also be set to zero.  The default value of @var{k} is
+zero which includes the main diagonal as part of the result.  If the value of
+@var{k} is a nonzero integer then the selection of elements starts at an offset
+of @var{k} diagonals above the main diagonal for positive @var{k} or below the
+main diagonal for negative @var{k}.  The absolute value of @var{k} may not be
+greater than the number of subdiagonals or superdiagonals.
+
+Example 1 : exclude main diagonal
+
+@example
+@group
+triu (ones (3), 1)
+     @result{}  0  1  1
+         0  0  1
+         0  0  0
+@end group
+@end example
+
+@noindent
+
+Example 2 : include first subdiagonal
+
+@example
+@group
+triu (ones (3), -1)
+     @result{}  1  1  1
+         1  1  1
+         0  1  1
+@end group
+@end example
+
+If the optional third argument @qcode{"pack"} is given then the extracted
+elements are not inserted into a matrix, but instead stacked column-wise one
+above another, and returned as a column vector.
+@seealso{tril, istriu, diag}
 @end deftypefn */)
 {
   return do_trilu ("triu", args);

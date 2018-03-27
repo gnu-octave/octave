@@ -254,8 +254,6 @@ cos (pi/2)
 
 @DOCSTRING(lcm)
 
-@DOCSTRING(chop)
-
 @DOCSTRING(rem)
 
 @DOCSTRING(mod)

@@ -124,8 +124,9 @@ useful.
 
 @DOCSTRING(is_leap_year)
 
-@anchor{XREFtoc}
 @DOCSTRING(tic)
+
+@DOCSTRING(toc)
 
 @DOCSTRING(pause)
 

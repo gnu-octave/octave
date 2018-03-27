@@ -212,6 +212,10 @@ endfunction
 %! assert (betainc (0, a, b), zeros (20));
 %! assert (betainc (1, a, b), ones (20));
 
+%!test <34405>
+%! assert (betainc (NaN, 1, 2), NaN);
+%! assert (betainc (0.5, 1, Inf), NaN);
+
 ## Test input validation
 %!error betainc ()
 %!error betainc (1)

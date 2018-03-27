@@ -6205,45 +6205,51 @@ DEFUN (tic, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} tic ()
 @deftypefnx {} {@var{id} =} tic ()
-@deftypefnx {} {} toc ()
-@deftypefnx {} {} toc (@var{id})
-@deftypefnx {} {@var{val} =} toc (@dots{})
-Set or check a wall-clock timer.
+Initialize a wall-clock timer.
 
-Calling @code{tic} without an output argument sets the internal timer state.
-Subsequent calls to @code{toc} return the number of seconds since the timer
-was set.
-For example,
+Calling @code{tic} without an output argument resets the internal timer.
+Subsequent calls to @code{toc} return the number of seconds since the timer was
+set.
+
+If called with one output argument, @code{tic} creates a new timer instance and
+returns a timer identifier @var{id}.  The @var{id} is a scalar of type
+@code{uint64} that may be passed to @code{toc} to check elapsed time on this
+timer, rather than the default internal timer.
+
+Example 1 : benchmarking code with internal timer
 
 @example
 @group
-tic ();
+tic;
 # many computations later@dots{}
-elapsed_time = toc ();
+elapsed_time = toc;
+@end group
+@end example
+
+Example 2 : mixed timer id and internal timer
+
+@example
+@group
+tic;
+pause (1);
+toc
+@result{} Elapsed time is 1.0089 seconds.
+id = tic;
+pause (2);
+toc (id)
+@result{} Elapsed time is 2.01142 seconds.
+toc
+Elapsed time is 3.02308 seconds.
 @end group
 @end example
 
 @noindent
-will set the variable @code{elapsed_time} to the number of seconds since
-the most recent call to the function @code{tic}.
+Calling @code{tic} and @code{toc} in this way allows nested timing calls.
 
-If called with one output argument, @code{tic} returns a scalar
-of type @code{uint64} that may be later passed to @code{toc}.
-
-@example
-@group
-id = tic; pause (5); toc (id)
-      @result{} 5.0010
-@end group
-@end example
-
-Calling @code{tic} and @code{toc} this way allows nested timing calls.
-
-If you are more interested in the CPU time that your process used, you
-should use the @code{cputime} function instead.  The @code{tic} and
-@code{toc} functions report the actual wall clock time that elapsed
-between the calls.  This may include time spent processing other jobs or
-doing nothing at all.
+If you are more interested in the CPU time that your process used, you should
+use the @code{cputime} function instead.  The @code{tic} and @code{toc}
+functions report the actual wall clock time that elapsed between the calls.
+This may include time spent processing other jobs or doing nothing at all.
 @seealso{toc, cputime}
 @end deftypefn */)
 {
@@ -6272,7 +6278,17 @@ DEFUN (toc, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} toc ()
 @deftypefnx {} {} toc (@var{id})
-@deftypefnx {} {@var{val} =} toc (@dots{})
+@deftypefnx {} {@var{elapsed_time} =} toc (@dots{})
+Measure elapsed time on a wall-clock timer.
+
+With no arguments, return the number of seconds elapsed on the internal timer
+since the last call to @code{tic}.
+
+When given the identifier @var{id} of a specific timer, return the number of
+seconds elapsed since the timer @var{id} was initialized.
+
+@xref{XREFtic, , tic}, for examples of the use of @code{tic}/@code{toc}. 
+
 @seealso{tic, cputime}
 @end deftypefn */)
 {

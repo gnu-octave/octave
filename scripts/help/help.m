@@ -61,7 +61,7 @@ function retval = help (name)
     doc\n\
 \n\
   GNU Octave is supported and developed by its user community.\n\
-  For more information visit http://www.octave.org.\n\n";
+  For more information visit https://www.octave.org.\n\n";
 
     if (nargout == 0)
       puts (text);

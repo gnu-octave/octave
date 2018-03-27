@@ -361,7 +361,7 @@ If the message is an integer, it is interpreted as a bug ID for the
 Octave bug tracker and reported as
 
 @example
-!!!!! Known bug: http://octave.org/testfailure/?BUG-ID
+!!!!! Known bug: https://octave.org/testfailure/?BUG-ID
 @end example
 
 @noindent

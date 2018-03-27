@@ -172,7 +172,7 @@ for improvement are welcome in any case.
 @cindex bugs, reporting
 
 To report a bug in Octave, submit a bug report to the Octave bug tracker
-@url{http://bugs.octave.org}.
+@url{https://bugs.octave.org}.
 
 @strong{Do not send bug reports to @samp{help-octave}}.  Most users of
 Octave do not want to receive bug reports.
@@ -182,7 +182,7 @@ Octave do not want to receive bug reports.
 @cindex bugs, reporting
 
 Submit bug reports for Octave to the Octave bug tracker
-@url{http://bugs.octave.org}.
+@url{https://bugs.octave.org}.
 
 The fundamental principle of reporting bugs usefully is this:
 @strong{report all the facts}.  If you are not sure whether to state a
@@ -397,9 +397,9 @@ mailing list, or other administrative trivia to the list itself.
 
 If you think you have found a bug in Octave or in the installation
 procedure, however, you should submit a complete bug report to
-the Octave bug tracker at @url{http://bugs.octave.org}.
+the Octave bug tracker at @url{https://bugs.octave.org}.
 But before you submit a bug report, please read
-@url{http://www.octave.org/bugs.html} to learn how to submit a useful
+@url{https://www.octave.org/bugs.html} to learn how to submit a useful
 bug report.
 
 @node How to Distinguish Between Octave and Matlab

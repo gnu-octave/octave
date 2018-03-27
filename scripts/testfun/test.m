@@ -668,7 +668,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
                   __xbug += 1;
                 endif
                 if (all (isdigit (__bug_id)))
-                  __bug_id = ["http://octave.org/testfailure/?" __bug_id];
+                  __bug_id = ["https://octave.org/testfailure/?" __bug_id];
                 endif
                 if (__fixed_bug)
                   __msg = ["regression: " __bug_id];

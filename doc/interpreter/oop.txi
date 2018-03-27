@@ -780,7 +780,7 @@ the distinction between @b{value and handle classes}.
 
 Several features have to be added in future versions of Octave to be fully
 compatible to @sc{matlab}.  An overview of what is missing can be found at
-@url{http://wiki.octave.org/Classdef}.
+@url{https://wiki.octave.org/Classdef}.
 
 @menu
 * Creating a classdef Class::

@@ -368,7 +368,8 @@ doc_EXTRA_DIST += \
 doc_MAINTAINERCLEANFILES += \
   AUTHORS \
   $(BUILT_DOC_IMAGES) \
-  $(BUILT_OCTAVE_TEXI_SRC)
+  $(BUILT_OCTAVE_TEXI_SRC) \
+  $(OCTAVE_QTHELP_FILES)
 
 ## The TeX software suite is used to create both PDF and PS output formats.
 ## In order to avoid race conditions between simultaneous TeX commands, the

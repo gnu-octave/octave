@@ -147,8 +147,8 @@ function y = betainc (x, a, b, tail = "lower")
   f = __betainc__ (x, a, b);
 
   ## Divide continued fraction by B(a,b) / (x^a * (1-x)^b) to obtain I_x(a,b).
-  y = a .* log (x) + b .* log1p (-x) + gammaln (a + b) - ...
-      gammaln (a) - gammaln (b) + log (f);
+  y = a .* log (x) + b .* log1p (-x) ...
+      + (gammaln (a + b) - gammaln (a) - gammaln (b)) + log (f);
   y = real (exp (y));
   y(fflag) = 1 - y(fflag);
 

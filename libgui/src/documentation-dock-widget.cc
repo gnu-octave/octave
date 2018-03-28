@@ -39,42 +39,38 @@ namespace octave
     set_title (tr ("Documentation"));
     setStatusTip (tr ("See the documentation for help."));
 
-    m_webinfo = new octave::webinfo (this);
-    setWidget (m_webinfo);
-    setFocusProxy (m_webinfo);
+    m_docs = new octave::documentation (this);
+    setWidget (m_docs);
+    setFocusProxy (m_docs);
 
     connect (p, SIGNAL (show_doc_signal (const QString&)),
              this, SLOT (showDoc (const QString&)));
   }
 
-  void documentation_dock_widget::notice_settings (const QSettings *settings)
+  documentation_dock_widget::~documentation_dock_widget (void)
   {
-    m_webinfo->notice_settings (settings);
+    if (m_docs)
+      delete m_docs;
   }
 
-  void documentation_dock_widget::load_info_file (void)
+  void documentation_dock_widget::notice_settings (const QSettings *settings)
   {
-    octave::help_system& help_sys
-      = octave::__get_help_system__ ("doc widget: load_info_file");
-
-    QString info_file = QString::fromStdString (help_sys.info_file ());
-
-    m_webinfo->load_info_file (info_file);
+    m_docs->notice_settings (settings);
   }
 
   void documentation_dock_widget::copyClipboard (void)
   {
-    m_webinfo->copyClipboard ();
+    m_docs->copyClipboard ();
   }
 
   void documentation_dock_widget::pasteClipboard (void)
   {
-    m_webinfo->pasteClipboard ();
+    m_docs->pasteClipboard ();
   }
 
   void documentation_dock_widget::selectAll (void)
   {
-    m_webinfo->selectAll ();
+    m_docs->selectAll ();
   }
 
   void documentation_dock_widget::showDoc (const QString& name)
@@ -85,6 +81,6 @@ namespace octave
 
     raise ();
 
-    m_webinfo->load_ref (name);
+    m_docs->load_ref (name);
   }
 }

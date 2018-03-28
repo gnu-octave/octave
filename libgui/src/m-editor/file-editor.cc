@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QMimeData>
 #include <QProcess>
+#include <QPushButton>
 #include <QStyle>
 #include <QTabBar>
 #include <QTextStream>
@@ -987,15 +988,15 @@ namespace octave
     m_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
     int tab_width_min = settings->value ("editor/notebook_tab_width_min", 160)
-      .toInt ();
+                        .toInt ();
     int tab_width_max = settings->value ("editor/notebook_tab_width_max", 300)
-      .toInt ();
+                        .toInt ();
 
     if (settings->value ("editor/longWindowTitle", false).toBool ())
       {
         QString style_sheet = QString ("QTabBar::tab "
                                        "{min-width: %1px; max-width: %2px;}")
-          .arg (tab_width_min).arg (tab_width_max);
+                              .arg (tab_width_min).arg (tab_width_max);
         m_tab_widget->setElideMode (Qt::ElideLeft);
         m_tab_widget->setStyleSheet (style_sheet);
       }
@@ -1516,7 +1517,7 @@ namespace octave
     QSettings *settings = resource_manager::get_settings ();
     m_mru_files = settings->value ("editor/mru_file_list").toStringList ();
     m_mru_files_encodings = settings->value ("editor/mru_file_encodings")
-      .toStringList ();
+                            .toStringList ();
 
     if (m_mru_files_encodings.count () != m_mru_files.count ())
       {

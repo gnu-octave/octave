@@ -261,6 +261,7 @@ $(OCTAVE_HTML_STAMP): %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.tex
 	 --css-ref=octave.css \
 	 -o $(OCTAVE_HTML_TMP_DIR) `test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi; \
 	then \
+	  $(PERL) -i -pe 's|(?<=</a>): ||g' $(OCTAVE_HTML_TMP_DIR)/* && \
 	  rm -rf $(OCTAVE_HTML_DIR) && \
 	  mv $(OCTAVE_HTML_TMP_DIR) $(OCTAVE_HTML_DIR) && \
 	  touch $@; \

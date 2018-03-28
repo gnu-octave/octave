@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __uiputfile_fltk__ ()
+## @deftypefn {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __uiputfile_fltk__ (@var{filters}, @var{title}, @var{defval}, @var{position}, @var{tag}, @var{defdir})
 ## Undocumented internal function.
 ## @end deftypefn
 

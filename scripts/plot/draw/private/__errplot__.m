@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} __errplot__ (@var{fstr}, @var{hax}, @dots{})
+## @deftypefn {} {@var{h} =} __errplot__ (@var{caller}, @var{hax}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

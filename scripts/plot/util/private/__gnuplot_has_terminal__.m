@@ -17,7 +17,8 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{has_terminal} =} __gnuplot_has_terminal__ (@var{terminal})
+## @deftypefn  {} {@var{has_terminal} =} __gnuplot_has_terminal__ (@var{term})
+## @deftypefnx {} {@var{has_terminal} =} __gnuplot_has_terminal__ (@var{term}, @var{plot_stream})
 ## Undocumented internal function.
 ## @end deftypefn
 

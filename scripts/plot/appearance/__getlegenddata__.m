@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{hplots}, @var{strings}] =} __getlegenddata__ (@var{h})
+## @deftypefn {} {[@var{hplots}, @var{strings}] =} __getlegenddata__ (@var{hlegend})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,11 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt})
-## Undocumented internal function.
-## @end deftypefn
-
-## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt})
+## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt}, @var{err_on_invalid})
 ##
 ## Decode plot option strings.
 ##
@@ -86,6 +82,7 @@
 ##
 ## The legend may be fixed to include the name of the variable
 ## plotted in some future version of Octave.
+## @end deftypefn
 
 ## Author: jwe
 

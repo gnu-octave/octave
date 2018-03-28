@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
-## @deftypefnx {} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{see_also})
+## @deftypefnx {} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{fsee_also})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -34,11 +34,11 @@
 ## macro is expanded, but otherwise the text is unaltered.
 ##
 ## If the optional argument @var{see_also} is present, it is used to expand the
-## Octave specific @t{@@seealso} macro.  This argument must be a function handle,
-## that accepts a cell array of strings as input argument (each elements of the
-## array corresponds to the arguments to the @t{@@seealso} macro), and return
-## the expanded string.  If this argument is not given, the @t{@@seealso} macro
-## will be expanded to the text
+## Octave specific @t{@@seealso} macro.  This argument must be a function
+## handle, that accepts a cell array of strings as input argument (each
+## elements of the array corresponds to the arguments to the @t{@@seealso}
+## macro), and return the expanded string.  If this argument is not given, the
+## @t{@@seealso} macro will be expanded to the text
 ##
 ## @example
 ## See also: arg1, arg2, ...

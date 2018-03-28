@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __axis_label__ (@var{caller}, @var{h}, @var{txt}, @dots{})
+## @deftypefn {} {} __axis_label__ (@var{caller}, @var{hax}, @var{txt}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

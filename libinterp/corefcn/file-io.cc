@@ -3088,7 +3088,7 @@ environment variable.
 
 DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn  {} {} SEEK_SET ()
+@deftypefn {} {} SEEK_SET ()
 Return the numerical value to pass to @code{fseek} to position the file pointer
 relative to the beginning of the file.
 @seealso{SEEK_CUR, SEEK_END, fseek}

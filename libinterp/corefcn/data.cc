@@ -6287,7 +6287,7 @@ since the last call to @code{tic}.
 When given the identifier @var{id} of a specific timer, return the number of
 seconds elapsed since the timer @var{id} was initialized.
 
-@xref{XREFtic, , tic}, for examples of the use of @code{tic}/@code{toc}. 
+@xref{XREFtic, , tic}, for examples of the use of @code{tic}/@code{toc}.
 
 @seealso{tic, cputime}
 @end deftypefn */)

@@ -38,7 +38,8 @@
 ##
 ## @end ifnottex
 ##
-## Reference: @nospell{M. Abramowitz and I.A. Stegun},
+## Reference:
+## @nospell{M. Abramowitz and I.A. Stegun},
 ## @cite{Handbook of Mathematical Functions}, 1964.
 ##
 ## @seealso{cosint, expint, sin}

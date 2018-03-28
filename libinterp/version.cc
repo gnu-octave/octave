@@ -47,7 +47,7 @@ std::string
 octave_www_statement (bool html)
 {
   return "Additional information about Octave is available at "
-         + format_url (html, "http://www.octave.org.");
+         + format_url (html, "https://www.octave.org.");
 }
 
 std::string
@@ -55,13 +55,13 @@ octave_contrib_statement (bool html)
 {
   return "Please contribute if you find this software useful.\n\
 For more information, visit "
-         + format_url (html, "http://www.octave.org/get-involved.html");
+         + format_url (html, "https://www.octave.org/get-involved.html");
 }
 
 std::string
 octave_bugs_statement (bool html)
 {
-  return "Read " + format_url (html, "http://www.octave.org/bugs.html")
+  return "Read " + format_url (html, "https://www.octave.org/bugs.html")
          + " to learn how to submit bug reports.";
 }
 

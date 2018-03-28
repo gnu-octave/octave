@@ -32,7 +32,7 @@ available in the online version of the manual.  Use the command\n\
 'doc <topic>' to search the manual index.\n\
 \n\
 Help and information about Octave is also available on the WWW\n\
-at http://www.octave.org and via the help@octave.org\n\
+at https://www.octave.org and via the help@octave.org\n\
 mailing list.\n";
   endif
 

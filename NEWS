@@ -135,132 +135,132 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     Octave to the statistics package available from Octave Forge.
 
     BASE
-      cloglog.m
-      table.m --renamed to --> crosstab.m
-      logit.m
-      prctile.m
-      probit.m
-      qqplot.m
+      cloglog
+      logit
+      prctile
+      probit
+      qqplot
+      table  (renamed to crosstab)
 
     DISTRIBUTIONS
-      betacdf.m
-      betainv.m
-      betapdf.m
-      betarnd.m
-      binocdf.m
-      binoinv.m
-      binopdf.m
-      binornd.m
-      cauchy_cdf.m
-      cauchy_inv.m
-      cauchy_pdf.m
-      cauchy_rnd.m
-      chi2cdf.m
-      chi2inv.m
-      chi2pdf.m
-      chi2rnd.m
-      expcdf.m
-      expinv.m
-      exppdf.m
-      exprnd.m
-      fcdf.m
-      finv.m
-      fpdf.m
-      frnd.m
-      gamcdf.m
-      gaminv.m
-      gampdf.m
-      gamrnd.m
-      geocdf.m
-      geoinv.m
-      geopdf.m
-      geornd.m
-      hygecdf.m
-      hygeinv.m
-      hygepdf.m
-      hygernd.m
-      kolmogorov_smirnov_cdf.m
-      laplace_cdf.m
-      laplace_inv.m
-      laplace_pdf.m
-      laplace_rnd.m
-      logistic_cdf.m
-      logistic_inv.m
-      logistic_pdf.m
-      logistic_rnd.m
-      logncdf.m
-      logninv.m
-      lognpdf.m
-      lognrnd.m
-      nbincdf.m
-      nbininv.m
-      nbinpdf.m
-      nbinrnd.m
-      normcdf.m
-      norminv.m
-      normpdf.m
-      normrnd.m
-      poisscdf.m
-      poissinv.m
-      poisspdf.m
-      poissrnd.m
-      stdnormal_cdf.m
-      stdnormal_inv.m
-      stdnormal_pdf.m
-      stdnormal_rnd.m
-      tcdf.m
-      tinv.m
-      tpdf.m
-      trnd.m
-      unidcdf.m
-      unidinv.m
-      unidpdf.m
-      unidrnd.m
-      unifcdf.m
-      unifinv.m
-      unifpdf.m
-      unifrnd.m
-      wblcdf.m
-      wblinv.m
-      wblpdf.m
-      wblrnd.m
-      wienrnd.m
+      betacdf
+      betainv
+      betapdf
+      betarnd
+      binocdf
+      binoinv
+      binopdf
+      binornd
+      cauchy_cdf
+      cauchy_inv
+      cauchy_pdf
+      cauchy_rnd
+      chi2cdf
+      chi2inv
+      chi2pdf
+      chi2rnd
+      expcdf
+      expinv
+      exppdf
+      exprnd
+      fcdf
+      finv
+      fpdf
+      frnd
+      gamcdf
+      gaminv
+      gampdf
+      gamrnd
+      geocdf
+      geoinv
+      geopdf
+      geornd
+      hygecdf
+      hygeinv
+      hygepdf
+      hygernd
+      kolmogorov_smirnov_cdf
+      laplace_cdf
+      laplace_inv
+      laplace_pdf
+      laplace_rnd
+      logistic_cdf
+      logistic_inv
+      logistic_pdf
+      logistic_rnd
+      logncdf
+      logninv
+      lognpdf
+      lognrnd
+      nbincdf
+      nbininv
+      nbinpdf
+      nbinrnd
+      normcdf
+      norminv
+      normpdf
+      normrnd
+      poisscdf
+      poissinv
+      poisspdf
+      poissrnd
+      stdnormal_cdf
+      stdnormal_inv
+      stdnormal_pdf
+      stdnormal_rnd
+      tcdf
+      tinv
+      tpdf
+      trnd
+      unidcdf
+      unidinv
+      unidpdf
+      unidrnd
+      unifcdf
+      unifinv
+      unifpdf
+      unifrnd
+      wblcdf
+      wblinv
+      wblpdf
+      wblrnd
+      wienrnd
 
     MODELS
-      logistic_regression.m
+      logistic_regression
 
     TESTS
-      anova.m
-      bartlett_test.m
-      chisquare_test_homogeneity.m
-      chisquare_test_independence.m
-      cor_test.m
-      f_test_regression.m
-      hotelling_test.m
-      hotelling_test_2.m
-      kolmogorov_smirnov_test.m
-      kolmogorov_smirnov_test_2.m
-      kruskal_wallis_test.m
-      manova.m
-      mcnemar_test.m
-      prop_test_2.m
-      run_test.m
-      sign_test.m
-      t_test.m
-      t_test_2.m
-      t_test_regression.m
-      u_test.m
-      var_test.m
-      welch_test.m
-      wilcoxon_test.m
-      z_test.m
-      z_test_2.m
+      anova
+      bartlett_test
+      chisquare_test_homogeneity
+      chisquare_test_independence
+      cor_test
+      f_test_regression
+      hotelling_test
+      hotelling_test_2
+      kolmogorov_smirnov_test
+      kolmogorov_smirnov_test_2
+      kruskal_wallis_test
+      manova
+      mcnemar_test
+      prop_test_2
+      run_test
+      sign_test
+      t_test
+      t_test_2
+      t_test_regression
+      u_test
+      var_test
+      welch_test
+      wilcoxon_test
+      z_test
+      z_test_2
 
  ** The following image functions have been moved from core Octave to
     the image package available from Octave Forge.
 
-    ntsc2rgb
-    rgb2ntsc
+      ntsc2rgb
+      rgb2ntsc
 
  ** Other new functions added in 4.4:
 
@@ -275,6 +275,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       camzoom
       corrcoef
       cosint
+      decic
       erase
       gammaincinv
       getframe
@@ -288,6 +289,8 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       isgraphics
       isstring
       mad
+      ode15i.m
+      ode15s.m
       openvar
       quad2d
       repelem

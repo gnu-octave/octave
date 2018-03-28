@@ -1943,7 +1943,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     fi
 
     if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE" || test -z "$QCOLLECTIONGENERATOR" || test -z "$QHELPGENERATOR"; then
-      warn_qt_tools="one or more of the Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
+      warn_qt_tools="one or more of the Qt utilities moc, uic, rcc, lrelease, qcollectiongenerator, and qhelpgenerator not found; disabling Qt GUI"
       build_qt_gui=no
       MOC_QTVER=
       UIC_QTVER=
@@ -2013,7 +2013,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ## checks below are for optional features related to the Qt GUI.
 
     AC_DEFINE(HAVE_QT, 1,
-      [Define to 1 if Qt is available, with all required functions, libraries, developer header files, and utility programs (moc, uic, rcc, and lrelease).])
+      [Define to 1 if Qt is available, with all required functions, libraries, developer header files, and utilities.])
 
     AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"

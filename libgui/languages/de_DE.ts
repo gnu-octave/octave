@@ -1304,12 +1304,12 @@ zu: </translation>
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;We hope you find Octave to be a useful tool.&lt;/p&gt;
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
-You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
+You can find more information about each of these by visiting &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Wir hoffen, dass Du Octave nützlich findest.&lt;/p&gt;
 &lt;p&gt;Wenn Du auf Probleme stoßen solltest, gibt es eine Reihe von Wegen, um Hilfe zu bekommen. Neben der Option kommerziellen Support zu erhalten, gibt es noch eine Mailingliste, ein Wiki und andere Community Support Channels.
-Mehr über jede Möglichkeit findest Du im Internet unter &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (Wird im externen Browser geöffnet).&lt;/p&gt;
+Mehr über jede Möglichkeit findest Du im Internet unter &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (Wird im externen Browser geöffnet).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -1321,8 +1321,8 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;For more information about Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
-&lt;li&gt;Get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
@@ -1333,8 +1333,8 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Für weitere Informationen über Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (Öffnet im externen Browser)&lt;/li&gt;
-&lt;li&gt;Online Dokumentation &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- oder &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;PDF&lt;/span&gt;&lt;/a&gt;-Dokument (Öffnet im externen Browser)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (Öffnet im externen Browser)&lt;/li&gt;
+&lt;li&gt;Online Dokumentation &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- oder &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;PDF&lt;/span&gt;&lt;/a&gt;-Dokument (Öffnet im externen Browser)&lt;/li&gt;
 &lt;li&gt;Benutze den Dokumentations-Browser von Octave GUI im Hilfe-Menü&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
@@ -2038,7 +2038,7 @@ Octave&apos;s community news source seems to be unavailable.
 &lt;/p&gt;
 &lt;p&gt;
 For the latest news, please check
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
@@ -2050,7 +2050,7 @@ Die Neuigkeiten aus der Octave Community scheinen nicht erreichbar zu sein.
 &lt;/p&gt;
 &lt;p&gt;
 Für die aktuellsten Neuigkeiten besuche
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 sobald Du über eine Verbindung zum Internet verfügst (Link öffnet sich im externen Browser).
 &lt;/p&gt;
 &lt;p&gt;
@@ -2065,7 +2065,7 @@ Connecting to the web to display the latest Octave Community news has been disab
 &lt;/p&gt;
 &lt;p&gt;
 For the latest news, please check
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser)
 or enable web connections for news in Octave&apos;s network settings dialog.
 &lt;/p&gt;
@@ -2078,7 +2078,7 @@ Die Verbindung zum Internet um aktuelle Neuigkeiten von der Octave Community anz
 &lt;/p&gt;
 &lt;p&gt;
 Für aktuelle Neuigkeiten besuche
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 sobald Du über eine Verbindung zum Internet verfügst (Link öffnet sich im externen Browser)
 oder aktiviere die Internetverbindung in den Einstellungen unter Netzwerk.
 &lt;/p&gt;
@@ -2859,13 +2859,13 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
 &lt;p&gt;When the Octave GUI starts, it will check the Octave web site for current news and information about the Octave community.
 The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p&gt;
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu in the GUI, or by visiting
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Beim Start der Octave GUI kann die Octave Webseite auf aktuelle Neuigkeiten und Informationen über die Octave Community geprüft werden.
 Die Überprüfung findet dann nur einmal am Tag statt und Neuigkeiten werden nur eingeblendet, wenn es seit der letzten Überprüfung etwas Neues gibt.&lt;/p&gt;
 &lt;p&gt;Du kannst dir die Neuigkeiten auch ansehen, indem Du den Punkt &quot;Neuigkeiten der Community&quot; im Menü auswählst oder folgende Internetseite besuchst:
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>

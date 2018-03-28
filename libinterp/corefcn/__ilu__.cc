@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 
 // This function implements the IKJ and JKI variants of Gaussian elimination to
-// perform the ILUTP decomposition.  The behavior is controlled by milu
+// perform the ILU0 decomposition.  The behavior is controlled by milu
 // parameter.  If milu = ['off'|'col'] the JKI version is performed taking
 // advantage of CCS format of the input matrix.  If milu = 'row' the input
 // matrix has to be transposed to obtain the equivalent CRS structure so we can
@@ -951,7 +951,7 @@ Undocumented internal function.
               retval(2) = speye.index (perm, idx_vector::colon);
             }
           else
-            retval(0) = L + speye.index (perm, idx_vector::colon);
+            retval(0) = L + speye.index (idx_vector::colon, perm);
         }
     }
   else
@@ -992,7 +992,7 @@ Undocumented internal function.
               retval(2) = speye.index (perm, idx_vector::colon);
             }
           else
-            retval(0) = L + speye.index (perm, idx_vector::colon);
+            retval(0) = L + speye.index (idx_vector::colon, perm);
         }
     }
 

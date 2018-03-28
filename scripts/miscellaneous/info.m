@@ -25,24 +25,24 @@ function info ()
 
   printf ("\n\
   Additional information about GNU Octave is available at\n\
-  http://www.octave.org\n\
+  https://www.octave.org\n\
 \n\
   Links to the mailing list and other resources for getting help with\n\
   Octave are available at\n\
-  http://www.octave.org/support.html\n\
+  https://www.octave.org/support.html\n\
 \n\
   The Octave Wiki has user-generated content on a variety of subjects\n\
   including installation and is available at\n\
-  http://wiki.octave.org\n\
+  https://wiki.octave.org\n\
 \n\
   Additional functionality can be enabled by using packages from\n\
   the Octave Forge project, which may be found at\n\
-  http://octave.sourceforge.net\n\
+  https://octave.sourceforge.io\n\
 \n\
   Report bugs to the bug tracker at\n\
-  http://bugs.octave.org\n\
+  https://bugs.octave.org\n\
   But first, please read the guidelines to writing a helpful report at\n\
-  http://www.octave.org/bugs.html\n");
+  https://www.octave.org/bugs.html\n");
 
 endfunction
 

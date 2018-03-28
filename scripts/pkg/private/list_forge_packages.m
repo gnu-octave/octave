@@ -24,7 +24,7 @@
 
 function list = list_forge_packages ()
 
-  [list, succ] = urlread ("http://packages.octave.org/list_packages.php");
+  [list, succ] = urlread ("https://packages.octave.org/list_packages.php");
   if (! succ)
     error ("pkg: could not read URL, please verify internet connection");
   endif

@@ -1979,12 +1979,12 @@ Beste kode bat aukeratu nahi duzu?</translation>
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;We hope you find Octave to be a useful tool.&lt;/p&gt;
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
-You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
+You can find more information about each of these by visiting &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Espero dugu Octave tresna baliagarria izana.&lt;/p&gt;
 &lt;p&gt;Arazorik izan baduzu, badaude hainbat modu laguntza lortzeko, euskarri komertziala barne, korreo elektronikoko zerrenda, wiki-orria eta komunitatean oinarritutako beste euskarri-kanal batzuk.
-Aukera horien gainean informazio gehiago aurki zenezake honakoei bisita eginda &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (nabigatzaile batean irekiko da).&lt;/p&gt;
+Aukera horien gainean informazio gehiago aurki zenezake honakoei bisita eginda &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (nabigatzaile batean irekiko da).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -1996,8 +1996,8 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;For more information about Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
-&lt;li&gt;Get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
@@ -2008,8 +2008,8 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Octaveri buruz informazio gehiago eskuratzeko:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Bisitatu &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (nabigatzaile batean irekiko da)&lt;/li&gt;
-&lt;li&gt;Eskuratu dokumentazioa linean honako formatuetan &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; edo &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt; dokumentu bezala (nabigatzaile batean irekiko da)&lt;/li&gt;
+&lt;li&gt;Bisitatu &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (nabigatzaile batean irekiko da)&lt;/li&gt;
+&lt;li&gt;Eskuratu dokumentazioa linean honako formatuetan &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; edo &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt; dokumentu bezala (nabigatzaile batean irekiko da)&lt;/li&gt;
 &lt;li&gt;Zabaldu Octaveren GUIaren dokumentazioaren nabigatzailea laguntza-menuarekin&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -2718,7 +2718,7 @@ Octave&apos;s community news source seems to be unavailable.
 &lt;/p&gt;
 &lt;p&gt;
 For the latest news, please check
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
@@ -2730,7 +2730,7 @@ Badirudi Octave komunitatearen berrien gaineko iturburuak ez daudela erabilgarri
 &lt;/p&gt;
 &lt;p&gt;
 Azken berritasunak ezagutzeko, bisita ezazu
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 web-konexioa duzunean (esteka nabigatzaile batean zabalduko da).
 &lt;/p&gt;
 &lt;p&gt;
@@ -2745,7 +2745,7 @@ Connecting to the web to display the latest Octave Community news has been disab
 &lt;/p&gt;
 &lt;p&gt;
 For the latest news, please check
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser)
 or enable web connections for news in Octave&apos;s network settings dialog.
 &lt;/p&gt;
@@ -2758,7 +2758,7 @@ Octaveren gaineko azken berriak bistaratzeko web-konexioa ezgaitu da.
 &lt;/p&gt;
 &lt;p&gt;
 Azken berritasunak ezagutzeko, bisita ezazu
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 web-konexioa duzunean (esteka nabigatzaile batean zabalduko da)
 edo aktibatu web-konexioa azken berrikuntzak Octaveren sare ezarpen-elkarrizketan ikusteko.
 &lt;/p&gt;
@@ -3538,13 +3538,13 @@ letra lodiak, etzanak eta normalak.</translation>
 &lt;p&gt;When the Octave GUI starts, it will check the Octave web site for current news and information about the Octave community.
 The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p&gt;
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu in the GUI, or by visiting
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Octaveren GUIa abiarazten denean, Octaveren web-gunea txekeatuko du Octaveren komunitatearen gaineko berriak eta informazioa jasotzeko.
 Azterketa hori egunean baten egingo da gehienez, eta aldez aurretik ikusi ez diren berriak baino ez dira erakutsiko.&lt;/p&gt;
 &lt;p&gt;Berriak txekeatu ahalko dira &quot;Komunitatearen berriak&quot; atalean, GUIaren laguntza-menuan edo honakoei bisita eginda
-&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>

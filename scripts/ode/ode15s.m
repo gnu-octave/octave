@@ -23,10 +23,10 @@
 ## @deftypefnx {} {@var{solution} =} ode15s (@dots{})
 ## @deftypefnx {} {} ode15s (@dots{})
 ##
-## Solve a set of stiff Ordinary Differential Equations and stiff semi-explicit
-## Differential Algebraic Equations (DAEs) of index 1, with the variable-step,
-## variable order BDF (Backward Differentiation Formula) method, which ranges
-## from order 1 to 5.
+## Solve a set of stiff Ordinary Differential Equations (ODEs) or stiff
+## semi-explicit Differential Algebraic Equations (DAEs) of index 1, with a
+## variable step, variable order BDF (Backward Differentiation Formula) method
+## that ranges from order 1 to 5.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{y' = f(t,y)}.  The function
@@ -51,47 +51,46 @@
 ## output @var{y} is a matrix in which each column refers to a different
 ## unknown of the problem and each row corresponds to a time in @var{t}.
 ##
-## The output can also be returned as a structure @var{solution} which
-## has a field @var{x} containing a row vector of times where the solution
-## was evaluated and a field @var{y} containing the solution matrix such
-## that each column corresponds to a time in @var{x}.
-## Use @code{fieldnames (@var{solution})} to see the other fields and
+## The output can also be returned as a structure @var{solution} which has a
+## field @var{x} containing a row vector of times where the solution was
+## evaluated and a field @var{y} containing the solution matrix such that each
+## column corresponds to a time in @var{x}.  Use
+## @w{@code{fieldnames (@var{solution})}} to see the other fields and
 ## additional information returned.
 ##
-## If no output arguments are requested, and no @code{OutputFcn} is
-## specified in @var{ode_opt}, then the @code{OutputFcn} is set to
-## @code{odeplot} and the results of the solver are plotted immediately.
+## If no output arguments are requested, and no @code{OutputFcn} is specified
+## in @var{ode_opt}, then the @code{OutputFcn} is set to @code{odeplot} and the
+## results of the solver are plotted immediately.
 ##
-## If using the @qcode{"Events"} option then three additional outputs may
-## be returned.  @var{te} holds the time when an Event function returned a
-## zero.  @var{ye} holds the value of the solution at time @var{te}.  @var{ie}
+## If using the @qcode{"Events"} option then three additional outputs may be
+## returned.  @var{te} holds the time when an Event function returned a zero.
+## @var{ye} holds the value of the solution at time @var{te}.  @var{ie}
 ## contains an index indicating which Event function was triggered in the case
 ## of multiple Event functions.
 ##
-## Example: Solve the @nospell{Robetson's} equations:
+## Example: Solve @nospell{Robertson's} equations:
 ##
-## @example
+## @smallexample
 ## @group
-## function r = robertsidae (@var{t}, @var{y})
-##   r = [-0.04*@var{y}(1) + 1e4*@var{y}(2)*@var{y}(3);
-##         0.04*@var{y}(1) - 1e4*@var{y}(2)*@var{y}(3) - 3e7*@var{y}(2)^2;
-##         @var{y}(1) + @var{y}(2) + @var{y}(3) - 1];
+## function r = robertson_dae (@var{t}, @var{y})
+##   r = [ -0.04*@var{y}(1) + 1e4*@var{y}(2)*@var{y}(3)
+##          0.04*@var{y}(1) - 1e4*@var{y}(2)*@var{y}(3) - 3e7*@var{y}(2)^2
+##               @var{y}(1) + @var{y}(2) + @var{y}(3) - 1 ];
 ## endfunction
 ## opt = odeset ("Mass", [1 0 0; 0 1 0; 0 0 0], "MStateDependence", "none");
-## [@var{t},@var{y}] = ode15s (@@robertsidae, [0, 1e3], [1; 0; 0], opt);
+## [@var{t},@var{y}] = ode15s (@@robertson_dae, [0, 1e3], [1; 0; 0], opt);
 ## @end group
-## @end example
-## @seealso{decic, odeset, odeget}
+## @end smallexample
+## @seealso{decic, odeset, odeget, ode23, ode45}
 ## @end deftypefn
 
 function varargout = ode15s (fun, trange, y0, varargin)
-
-  solver = "ode15s";
 
   if (nargin < 3)
     print_usage ();
   endif
 
+  solver = "ode15s";
   ## Check fun, trange, y0, yp0
   fun = check_default_input (fun, trange, solver, y0);
 

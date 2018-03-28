@@ -128,7 +128,7 @@ f ()
 @print{}  'doc <topic>' to search the manual index.
 @print{}
 @print{}  Help and information about Octave is also available on the WWW
-@print{}  at http://www.octave.org and via the help@@octave.org
+@print{}  at https://www.octave.org and via the help@@octave.org
 @print{}  mailing list.
 @end group
 @end example

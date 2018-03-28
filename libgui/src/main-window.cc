@@ -435,7 +435,7 @@ namespace octave
   void main_window::open_online_documentation_page (void)
   {
     QDesktopServices::openUrl (
-                               QUrl ("http://octave.org/doc/interpreter/index.html"));
+                               QUrl ("https://octave.org/doc/interpreter/index.html"));
   }
 
   void main_window::display_release_notes (void)
@@ -509,7 +509,7 @@ namespace octave
          ? settings->value ("news/allow_web_connection", false).toBool ()
          : true);
 
-    QString base_url = "http://octave.org";
+    QString base_url = "https://octave.org";
     QString page = "community-news.html";
 
     QThread *worker_thread = new QThread;
@@ -581,22 +581,22 @@ namespace octave
 
   void main_window::open_bug_tracker_page (void)
   {
-    QDesktopServices::openUrl (QUrl ("http://octave.org/bugs.html"));
+    QDesktopServices::openUrl (QUrl ("https://octave.org/bugs.html"));
   }
 
   void main_window::open_octave_packages_page (void)
   {
-    QDesktopServices::openUrl (QUrl ("http://octave.org/packages.html"));
+    QDesktopServices::openUrl (QUrl ("https://octave.org/packages.html"));
   }
 
   void main_window::open_contribute_page (void)
   {
-    QDesktopServices::openUrl (QUrl ("http://octave.org/contribute.html"));
+    QDesktopServices::openUrl (QUrl ("https://octave.org/contribute.html"));
   }
 
   void main_window::open_donate_page (void)
   {
-    QDesktopServices::openUrl (QUrl ("http://octave.org/donate.html"));
+    QDesktopServices::openUrl (QUrl ("https://octave.org/donate.html"));
   }
 
   void main_window::process_settings_dialog_request (const QString& desired_tab)
@@ -2734,7 +2734,7 @@ namespace octave
                  "</p>\n"
                  "<p>\n"
                  "For the latest news, please check\n"
-                 "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n"
+                 "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
                  "when you have a connection to the web (link opens in an external browser).\n"
                  "</p>\n"
                  "<p>\n"
@@ -2752,7 +2752,7 @@ namespace octave
              "</p>\n"
              "<p>\n"
              "For the latest news, please check\n"
-             "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n"
+             "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
              "when you have a connection to the web (link opens in an external browser)\n"
              "or enable web connections for news in Octave's network settings dialog.\n"
              "</p>\n"

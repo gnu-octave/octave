@@ -1368,7 +1368,7 @@ See the example below for clarity:
 %% Headline title
 %
 % Some *bold*, _italic_, or |monospaced| Text with
-% a <http://www.octave.org link to GNU Octave>.
+% a <https://www.octave.org link to GNU Octave>.
 %%
 
 # "Real" Octave commands to be evaluated
@@ -1587,7 +1587,7 @@ angle.
 @example
 @group
 ##
-# <http://www.octave.org>
+# <https://www.octave.org>
 @end group
 @end example
 
@@ -1597,7 +1597,7 @@ URL is a displayed text for the link.
 @example
 @group
 ##
-# <http://www.octave.org GNU Octave>
+# <https://www.octave.org GNU Octave>
 @end group
 @end example
 

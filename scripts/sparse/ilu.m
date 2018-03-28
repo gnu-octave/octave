@@ -42,7 +42,7 @@
 ## Type of factorization.
 ##
 ## @table @asis
-## @item @qcode{"nofill"}
+## @item @qcode{"nofill"} (default)
 ## ILU factorization with no fill-in (ILU(0)).
 ##
 ## Additional supported options: @code{milu}.
@@ -52,7 +52,7 @@
 ##
 ## Additional supported options: @code{milu}, @code{droptol}.
 ##
-## @item @qcode{"ilutp"} (default)
+## @item @qcode{"ilutp"}
 ## ILU factorization with threshold and pivoting.
 ##
 ## Additional supported options: @code{milu}, @code{droptol}, @code{udiag},
@@ -539,3 +539,8 @@ endfunction
 %! fail ("ilu (A_tiny, opts)", "THRESH must be a scalar");
 %! opts.thresh = [];
 %! fail ("ilu (A_tiny, opts)", "THRESH must be a scalar");
+%!test <*53440>
+%! A = sparse (magic (4));
+%! opts.type = "ilutp";
+%! [L, U] = ilu (A, opts);
+%! assert (L * U, A, eps)

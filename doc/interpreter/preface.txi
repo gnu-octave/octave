@@ -170,8 +170,8 @@ use @code{citation}.
 There are a number of ways that you can contribute to help make Octave a
 better system.  Perhaps the most important way to contribute is to write
 high-quality code for solving new problems, and to make your code freely
-available for others to use.  See @url{http://www.octave.org/get-involved.html}
-for detailed information.
+available for others to use.  See
+@url{https://www.octave.org/get-involved.html} for detailed information.
 
 If you find Octave useful, consider providing additional funding to
 continue its development.  Even a modest amount of additional funding
@@ -215,6 +215,6 @@ GNU General Public License that comes with Octave and that also appears
 in @ref{Copying}.
 
 To download a copy of Octave, please visit
-@url{http://www.octave.org/download.html}.
+@url{https://www.octave.org/download.html}.
 
 @end ifclear

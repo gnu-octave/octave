@@ -136,24 +136,42 @@ Currently implemented solvers are:
   @item @nospell{Runge-Kutta} methods
 
   @itemize
-    @item @code{ode45} Integrates a system of non--stiff ordinary differential equations
-    (non--stiff ODEs and DAEs) using second order @nospell{Dormand-Prince}
-    method.  This is a fourth--order accurate integrator therefore the local
-    error normally expected is @math{O(h^5)}.  This solver requires six
-    function evaluations per integration step.
+    @item @code{ode23} integrates a system of non-stiff ordinary differential
+    equations (ODEs) or index-1 differential-algebraic equations (DAEs).  It
+    uses the third-order @nospell{Bogacki-Shampine} method and adapts the local
+    step size in order to satisfy a user-specified tolerance.  The solver
+    requires three function evaluations per integration step.
 
-    @item @code{ode23} Integrates a system of non--stiff ordinary differential equations
-    (non-stiff ODEs and DAEs) using second order @nospell{Bogacki-Shampine}
-    method.  This is a second-order accurate integrator therefore the local
-    error normally expected is @math{O(h^3)}.  This solver requires three
-    function evaluations per integration step.
+    @item @code{ode45} integrates a system of non-stiff ODEs (or index-1 DAEs)
+    using the high-order, variable-step @nospell{Dormand-Prince} method.  It
+    requires six function evaluations per integration step, but may
+    take larger steps on smooth problems than @code{ode23}: potentially
+    offering improved efficiency at smaller tolerances.
+  @end itemize
+
+  @item Linear multistep methods
+
+  @itemize
+    @item @code{ode15s} integrates a system of stiff ODEs (or index-1 DAEs)
+    using a variable step, variable order method based on Backward Difference
+    Formulas (BDF).
+
+    @item @code{ode15i} integrates a system of fully-implicit ODEs (or index-1
+    DAEs) using the same variable step, variable order method as @code{ode15s}.
+    The function @code{decic} can be used to compute consistent initial
+    conditions.
   @end itemize
 @end itemize
-
 
 @DOCSTRING(ode45)
 
 @DOCSTRING(ode23)
+
+@DOCSTRING(ode15s)
+
+@DOCSTRING(ode15i)
+
+@DOCSTRING(decic)
 
 @DOCSTRING(odeset)
 

@@ -29,13 +29,13 @@ function bug_report ()
   disp ("  Bug reports play an essential role in making Octave");
   disp ("  reliable.  Please use the Octave bug tracker at");
   disp (" ");
-  disp ("    http://bugs.octave.org");
+  disp ("    https://bugs.octave.org");
   disp (" ");
   disp ("  to report problems.");
   disp (" ");
   disp ("  Please also read the bug reporting guidelines at");
   disp (" ");
-  disp ("    http://www.octave.org/bugs.html");
+  disp ("    https://www.octave.org/bugs.html");
   disp (" ");
   disp ("  to learn how to submit useful bug reports that will");
   disp ("  help the Octave community diagnose and fix the problem");

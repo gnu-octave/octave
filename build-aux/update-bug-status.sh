@@ -23,7 +23,7 @@ bug_numbers=$(for file in "$@"; do
 done | sort -u)
 
 fixed_bug_numbers=$(for num in $bug_numbers; do
-  status=$(wget -q -O - http://octave.org/testfailure/?$num | sed -n 's/.*>Status:<\/span><\/span>&nbsp;<\/td><td valign="middle" width="35%">\([^<]*\)<.*/\1/p');
+  status=$(wget -q -O - https://octave.org/testfailure/?$num | sed -n 's/.*>Status:<\/span><\/span>&nbsp;<\/td><td valign="middle" width="35%">\([^<]*\)<.*/\1/p');
   if [ "$status" = "Fixed" ]; then echo "$num"; fi
 done)
 

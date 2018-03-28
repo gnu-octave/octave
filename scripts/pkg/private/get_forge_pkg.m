@@ -37,7 +37,7 @@ function [ver, url] = get_forge_pkg (name)
   name = tolower (name);
 
   ## Try to download package's index page.
-  [html, succ] = urlread (sprintf ("http://packages.octave.org/%s/index.html",
+  [html, succ] = urlread (sprintf ("https://packages.octave.org/%s/index.html",
                                    name));
   if (succ)
     ## Remove blanks for simpler matching.
@@ -52,7 +52,7 @@ function [ver, url] = get_forge_pkg (name)
       if (nargout > 1)
         ## Build download string.
         pkg_file = sprintf ("%s-%s.tar.gz", name, ver);
-        url = ["http://packages.octave.org/download/" pkg_file];
+        url = ["https://packages.octave.org/download/" pkg_file];
         ## Verify that the package string exists on the page.
         if (isempty (strfind (html, pkg_file)))
           warning ("get_forge_pkg: download URL not verified");
@@ -61,7 +61,7 @@ function [ver, url] = get_forge_pkg (name)
     endif
   else
     ## Try get the list of all packages.
-    [html, succ] = urlread ("http://packages.octave.org/list_packages.php");
+    [html, succ] = urlread ("https://packages.octave.org/list_packages.php");
     if (! succ)
       error ("get_forge_pkg: could not read URL, please verify internet connection");
     endif

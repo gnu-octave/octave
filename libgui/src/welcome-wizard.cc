@@ -198,7 +198,7 @@ namespace octave
            "<p>When Octave starts, it will optionally check the Octave web site for current news and information about the Octave community.\n"
            "The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.</p>\n"
            "<p>You may also view the news by selecting the \"Community News\" item in the \"Help\" menu, or by visiting\n"
-           "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>.</p>\n"
+           "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>.</p>\n"
            "</body></html>"));
     m_message->setWordWrap (true);
     m_message->setMinimumWidth (400);
@@ -287,7 +287,7 @@ namespace octave
       (tr ("<html><body>\n"
            "<p>We hope you find Octave to be a useful tool.</p>\n"
            "<p>If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.\n"
-           "You can find more information about each of these by visiting <a href=\"http://octave.org/support.html\">http://octave.org/support.html</a> (opens in external browser).</p>\n"
+           "You can find more information about each of these by visiting <a href=\"https://octave.org/support.html\">https://octave.org/support.html</a> (opens in external browser).</p>\n"
            "</body></html>"));
     m_message->setWordWrap (true);
     m_message->setMinimumWidth (400);
@@ -312,8 +312,8 @@ namespace octave
            "<head/><body>\n"
            "<p>For more information about Octave:</p>\n"
            "<ul>\n"
-           "<li>Visit <a href=\"http://octave.org\">http://octave.org</a> (opens in external browser)</li>\n"
-           "<li>Get the documentation online as <a href=\"http://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"http://www.gnu.org/software/octave/octave.pdf\">pdf</span></a>-document (opens in external browser)</li>\n"
+           "<li>Visit <a href=\"https://octave.org\">https://octave.org</a> (opens in external browser)</li>\n"
+           "<li>Get the documentation online as <a href=\"https://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"https://www.gnu.org/software/octave/octave.pdf\">pdf</span></a>-document (opens in external browser)</li>\n"
            "<li>Open the documentation browser of the Octave GUI with the help menu</li>\n"
            "</ul>\n"
            "</body></html>"));

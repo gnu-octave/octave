@@ -195,7 +195,7 @@ function outstr = do_footer (m_source_str)
 "",
 "<footer>",
 "<hr>",
-['<a href="http://www.octave.org">Published with GNU Octave ' version() '</a>'],
+['<a href="https://www.octave.org">Published with GNU Octave ' version() '</a>'],
 "</footer>",
 "<!--",
 "##### SOURCE BEGIN #####",

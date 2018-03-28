@@ -623,16 +623,12 @@ get_debug_input (octave::interpreter& interp, const std::string& prompt)
   std::string nm;
   int curr_debug_line;
 
-  bool have_file = false;
-
   if (caller)
     {
       nm = caller->fcn_file_name ();
 
       if (nm.empty ())
         nm = caller->name ();
-      else
-        have_file = true;
 
       curr_debug_line = cs.caller_user_code_line ();
     }
@@ -663,25 +659,22 @@ get_debug_input (octave::interpreter& interp, const std::string& prompt)
                 buf << " at line " << curr_debug_line;
             }
 
-          if (have_file)
+          octave_link::enter_debugger_event (nm, curr_debug_line);
+
+          octave_link::set_workspace ();
+
+          frame.add_fcn (execute_in_debugger_handler,
+                         std::pair<std::string, int> (nm, curr_debug_line));
+
+          if (! silent)
             {
-              octave_link::enter_debugger_event (nm, curr_debug_line);
+              std::string line_buf;
 
-              octave_link::set_workspace ();
+              if (caller)
+                line_buf = caller->get_code_line (curr_debug_line);
 
-              frame.add_fcn (execute_in_debugger_handler,
-                             std::pair<std::string, int> (nm, curr_debug_line));
-
-              if (! silent)
-                {
-                  std::string line_buf;
-
-                  if (caller)
-                    line_buf = caller->get_code_line (curr_debug_line);
-
-                  if (! line_buf.empty ())
-                    buf << "\n" << curr_debug_line << ": " << line_buf;
-                }
+              if (! line_buf.empty ())
+                buf << "\n" << curr_debug_line << ": " << line_buf;
             }
         }
     }

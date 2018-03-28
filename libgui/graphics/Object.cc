@@ -35,7 +35,7 @@ namespace QtHandles
 {
 
   Object::Object (const graphics_object& go, QObject *obj)
-    : QObject (), m_handle (go.get_handle ()), m_qobject (nullptr)
+    : QObject (), m_go (go), m_handle (go.get_handle ()), m_qobject (nullptr)
   {
     gh_manager::auto_lock lock (false);
 
@@ -78,7 +78,7 @@ namespace QtHandles
                  "accessing graphics object (h=%g) without a valid lock!!!",
                  m_handle.value ());
 
-    return gh_manager::get_object (m_handle);
+    return m_go;
   }
 
   void

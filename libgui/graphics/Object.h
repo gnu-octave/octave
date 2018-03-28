@@ -97,7 +97,23 @@ namespace QtHandles
     virtual void beingDeleted (void);
 
   protected:
+
+    // Store the graphics object directly so that it will exist when
+    // we need it.  Previously, it was possible for the graphics
+    // backend to get a handle to a figure, then have the interpreter
+    // thread delete the corresponding object before the backend (GUI)
+    // thread had a chance to display it.  It should be OK to store
+    // this object and use it in both threads (graphics_object uses a
+    // std::shared_ptr) provided that we protect access with mutex locks.
+    graphics_object m_go;
+
+    // Handle to the graphics object.  This may be redundant now.
+    // Also, the whole ObjectProxy thing may not need to store a
+    // pointer now?  Maybe we can just have a lookup table from figure
+    // handle to Object?  What does the FLTK toolkit do?  Why does
+    // this seem to be so complicated?
     graphics_handle m_handle;
+
     QObject *m_qobject;
   };
 

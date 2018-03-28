@@ -438,6 +438,10 @@ namespace QtHandles
 
     QMainWindow *win = qWidget<QMainWindow> ();
 
+    // If the window doesn't exist, there's nothing we can do.
+    if (! win)
+      return;
+
     m_blockUpdates = true;
 
     switch (pId)

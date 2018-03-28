@@ -16,13 +16,15 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} mkdir @var{dir}
-## @deftypefnx {} {} mkdir (@var{parent}, @var{dir})
+## @deftypefn  {} {} mkdir @var{dirname}
+## @deftypefnx {} {} mkdir @var{parent} @var{dirname}
+## @deftypefnx {} {} mkdir (@var{dirname})
+## @deftypefnx {} {} mkdir (@var{parent}, @var{dirname})
 ## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@dots{})
-## Create a directory named @var{dir} in the directory @var{parent},
+## Create a directory named @var{dirname} in the directory @var{parent},
 ## creating any intermediate directories if necessary.
 ##
-## If @var{dir} is a relative path and no @var{parent} directory is specified
+## If @var{dir} is a relative path, and no @var{parent} directory is specified,
 ## then the present working directory is used.
 ##
 ## If successful, @var{status} is 1, and @var{msg} and @var{msgid} are empty

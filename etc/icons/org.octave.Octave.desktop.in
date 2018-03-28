@@ -9,6 +9,6 @@ Terminal=false
 Type=Application
 Categories=Education;Science;Math;
 StartupNotify=false
-StartupWMClass=octave-gui
+StartupWMClass=GNU Octave
 MimeType=text/x-octave;text/x-matlab;
 Keywords=science;math;matrix;numerical computation;plotting;

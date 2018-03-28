@@ -344,6 +344,36 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
+dnl Check whether the Qt QGuiApplication class has the setDesktopFileName
+dnl static member function.  This function was introduced in Qt 5.7.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.6 or older.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME], [
+  AC_CACHE_CHECK([for QGuiApplication::setDesktopFileName],
+    [octave_cv_func_qguiapplication_setdesktopfilename],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QGuiApplication>
+        ]], [[
+        QGuiApplication::setDesktopFileName ("com.example.Example.desktop");
+        ]])],
+      octave_cv_func_qguiapplication_setdesktopfilename=yes,
+      octave_cv_func_qguiapplication_setdesktopfilename=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qguiapplication_setdesktopfilename = yes; then
+    AC_DEFINE(HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME, 1,
+      [Define to 1 if you have the `QGuiApplication::setDesktopFileName' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt QHeaderView class has the setSectionResizeMode
 dnl function.  This function was introduced in Qt 5.
 dnl
@@ -2026,6 +2056,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ## tests if they fail because we have already decided that the Qt
     ## version that we are testing now will be the one used.
 
+    OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE

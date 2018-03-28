@@ -103,14 +103,14 @@ p =
 The matrix is not required to be square.
 
 When called with two or three output arguments and a sparse input matrix,
-@code{lu} does not attempt to perform sparsity preserving column
-permutations.  Called with a fourth output argument, the sparsity
-preserving column transformation @var{Q} is returned, such that
-@code{@var{P} * @var{A} * @var{Q} = @var{L} * @var{U}}.
+@code{lu} does not attempt to perform sparsity preserving column permutations.
+Called with a fourth output argument, the sparsity preserving column
+transformation @var{Q} is returned, such that
+@code{@var{P} * @var{A} * @var{Q} = @var{L} * @var{U}}.  This is the
+@strong{preferred} way to call @code{lu} with sparse input matrices.
 
-Called with a fifth output argument and a sparse input matrix,
-@code{lu} attempts to use a scaling factor @var{R} on the input matrix
-such that
+Called with a fifth output argument and a sparse input matrix, @code{lu}
+attempts to use a scaling factor @var{R} on the input matrix such that
 @code{@var{P} * (@var{R} \ @var{A}) * @var{Q} = @var{L} * @var{U}}.
 This typically leads to a sparser and more stable factorization.
 

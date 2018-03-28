@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QIcon>
+#include <QTextBrowser>
 #include <QTextStream>
 #include <QThread>
 #include <QDateTime>
@@ -210,9 +211,6 @@ namespace octave
 
     connect (m_interpreter, SIGNAL (octave_ready_signal (void)),
              this, SLOT (handle_octave_ready (void)));
-
-    connect (m_interpreter, SIGNAL (octave_ready_signal (void)),
-             m_doc_browser_window, SLOT (load_info_file (void)));
 
     connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
              this, SLOT (handle_octave_finished (int)));
@@ -662,14 +660,14 @@ namespace octave
     }
 
     widget_icon_data[] =
-      {
-        // array of possible icon sets (name, path (complete for NONE))
-        // the first entry here is the default!
-        {"NONE",    ":/actions/icons/logo.png"},
-        {"GRAPHIC", ":/actions/icons/graphic_logo_"},
-        {"LETTER",  ":/actions/icons/letter_logo_"},
-        {"", ""} // end marker has empty name
-      };
+    {
+      // array of possible icon sets (name, path (complete for NONE))
+      // the first entry here is the default!
+      {"NONE",    ":/actions/icons/logo.png"},
+      {"GRAPHIC", ":/actions/icons/graphic_logo_"},
+      {"LETTER",  ":/actions/icons/letter_logo_"},
+      {"", ""} // end marker has empty name
+    };
 
     int count = 0;
     int icon_set_found = 0; // default
@@ -691,7 +689,8 @@ namespace octave
       {
         QString name = widget->objectName ();
         if (! name.isEmpty ())
-          { // if children has a name
+          {
+            // if children has a name
             icon = widget_icon_data[icon_set_found].path; // prefix | octave-logo
             if (widget_icon_data[icon_set_found].name != "NONE")
               icon += name + ".png"; // add widget name and ext.
@@ -700,7 +699,7 @@ namespace octave
       }
     if (widget_icon_data[icon_set_found].name != "NONE")
       m_release_notes_icon = widget_icon_data[icon_set_found].path
-        + "ReleaseWidget.png";
+                             + "ReleaseWidget.png";
     else
       m_release_notes_icon = ":/actions/icons/logo.png";
 
@@ -2571,7 +2570,8 @@ namespace octave
     // file menu
     shortcut_manager::set_shortcut (m_open_action, "main_file:open_file");
     shortcut_manager::set_shortcut (m_new_script_action, "main_file:new_file");
-    shortcut_manager::set_shortcut (m_new_function_action, "main_file:new_function");
+    shortcut_manager::set_shortcut (m_new_function_action,
+                                    "main_file:new_function");
     shortcut_manager::set_shortcut (m_new_function_action, "main_file:new_figure");
     shortcut_manager::set_shortcut (m_load_workspace_action,
                                     "main_file:load_workspace");
@@ -2611,7 +2611,8 @@ namespace octave
                                     "main_window:show_workspace");
     shortcut_manager::set_shortcut (m_show_file_browser_action,
                                     "main_window:show_file_browser");
-    shortcut_manager::set_shortcut (m_show_editor_action, "main_window:show_editor");
+    shortcut_manager::set_shortcut (m_show_editor_action,
+                                    "main_window:show_editor");
     shortcut_manager::set_shortcut (m_show_documentation_action,
                                     "main_window:show_doc");
     shortcut_manager::set_shortcut (m_show_variable_editor_action,
@@ -2623,7 +2624,8 @@ namespace octave
                                     "main_window:file_browser");
     shortcut_manager::set_shortcut (m_editor_action, "main_window:editor");
     shortcut_manager::set_shortcut (m_documentation_action, "main_window:doc");
-    shortcut_manager::set_shortcut (m_variable_editor_action, "main_window:variable_editor");
+    shortcut_manager::set_shortcut (m_variable_editor_action,
+                                    "main_window:variable_editor");
     shortcut_manager::set_shortcut (m_reset_windows_action, "main_window:reset");
 
     // help menu

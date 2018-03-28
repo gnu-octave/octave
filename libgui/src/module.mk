@@ -106,6 +106,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-external-editor-interface.cc \
   %reldir%/moc-dialog.cc \
   %reldir%/moc-documentation-dock-widget.cc \
+  %reldir%/moc-documentation.cc \
   %reldir%/moc-files-dock-widget.cc \
   %reldir%/moc-history-dock-widget.cc \
   %reldir%/moc-main-window.cc \
@@ -152,6 +153,7 @@ noinst_HEADERS += \
   %reldir%/dialog.h \
   %reldir%/octave-dock-widget.h \
   %reldir%/documentation-dock-widget.h \
+  %reldir%/documentation.h \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
   %reldir%/history-dock-widget.h \
@@ -187,6 +189,7 @@ noinst_HEADERS += \
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
   %reldir%/dialog.cc \
   %reldir%/documentation-dock-widget.cc \
+  %reldir%/documentation.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
   %reldir%/history-dock-widget.cc \

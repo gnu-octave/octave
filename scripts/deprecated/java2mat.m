@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2017 John W. Eaton
+## Copyright (C) 2018 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,21 +17,27 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __axis_label__ (@var{caller}, @var{hax}, @var{txt}, @dots{})
-## Undocumented internal function.
+## @deftypefn {} {} java2mat (@var{javaobj})
+## @code{java2mat} is deprecated and will be removed in Octave version 4.8.
+##
+## For the next two releases, use @code{__java2mat__} if necessary, and file
+## a bug report explaining your programming use of @code{java2mat} and how it
+## can't be done with other Octave functions.
 ## @end deftypefn
 
-## Author: jwe
+function retval = java2mat (varargin)
 
-function retval = __axis_label__ (hax, caller, txt, varargin)
-
-  h = get (hax, caller);
-
-  ## Set other prop/values first in case they influence appearance of string.
-  set (h, varargin{:}, "string", txt);
-
-  if (nargout > 0)
-    retval = h;
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "java2mat is obsolete and will be removed from a future version of Octave");
   endif
 
+  retval = __java2mat__ (varargin{:});
+
 endfunction
+
+
+## No tests needed for alias.
+%!assert (1)

@@ -214,6 +214,13 @@
 ## @item Octave:logical-conversion
 ## By default, the @code{Octave:logical-conversion} warning is enabled.
 ##
+## @item Octave:lu:sparse_input
+## If the @code{Octave:lu:sparse_input} warning is enabled, Octave
+## will warn when the lu function is called with a sparse input and less than
+## four output arguments.  In this case, sparsity-preserving column
+## permutations are not performed and the result may be inaccurate.
+## By default, the @code{Octave:lu:sparse_input} warning is enabled.
+##
 ## @item Octave:missing-glyph
 ## By default, the @code{Octave:missing-glyph} warning is enabled.
 ##

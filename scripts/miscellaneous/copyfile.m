@@ -17,12 +17,16 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2})
-## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, 'f')
-## Copy the source files or directories @var{f1} to the destination @var{f2}.
+## @deftypefn  {} {} copyfile @var{f1} @var{f2}
+## @deftypefnx {} {} copyfile @var{f1} @var{f2} f
+## @deftypefnx {} {} copyfile (@var{f1}, @var{f2})
+## @deftypefnx {} {} copyfile (@var{f1}, @var{f2}, 'f')
+## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@dots{})
+## Copy the source file(s) or directory @var{f1} to the destination @var{f2}.
 ##
-## The name @var{f1} may contain globbing patterns.  If @var{f1} expands to
-## multiple filenames, @var{f2} must be a directory.
+## The name @var{f1} may contain globbing patterns, or may be a cell array of
+## strings.  If @var{f1} expands to multiple filenames, @var{f2} must be a
+## directory.
 ##
 ## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.

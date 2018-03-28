@@ -24,8 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_documentation_dock_widget_h 1
 
 #include "octave-dock-widget.h"
-
-#include "webinfo.h"
+#include "documentation.h"
 
 namespace octave
 {
@@ -36,12 +35,11 @@ namespace octave
   public:
 
     documentation_dock_widget (QWidget *parent = nullptr);
+    ~documentation_dock_widget (void);
 
   public slots:
 
     void notice_settings (const QSettings *settings);
-
-    void load_info_file (void);
 
   protected slots:
 
@@ -53,7 +51,7 @@ namespace octave
 
   private:
 
-    octave::webinfo *m_webinfo;
+    octave::documentation *m_docs;
   };
 }
 

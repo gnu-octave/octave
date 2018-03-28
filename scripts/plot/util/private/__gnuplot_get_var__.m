@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{value} =} __gnuplot_get_var__ (@var{h}, @var{name}, @var{fmt})
+## @deftypefn {} {@var{value} =} __gnuplot_get_var__ (@var{h}, @var{gp_var_name}, @var{fmt})
 ## Undocumented internal function.
 ## @end deftypefn
 

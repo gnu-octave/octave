@@ -17,8 +17,8 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isstring (@var{x})
-## Return true if @var{x} is a string array.
+## @deftypefn {} {} isstring (@var{s})
+## Return true if @var{s} is a string array.
 ##
 ## A string array is a data type that stores strings (row vectors of
 ## characters) at each element in the array.  It is distinct from character

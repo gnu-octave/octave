@@ -6,6 +6,7 @@ FCN_FILE_DIRS += scripts/deprecated
   %reldir%/comma.m \
   %reldir%/desktop.m \
   %reldir%/isstr.m \
+  %reldir%/java2mat.m \
   %reldir%/mahalanobis.m \
   %reldir%/md5sum.m \
   %reldir%/octave_config_info.m \

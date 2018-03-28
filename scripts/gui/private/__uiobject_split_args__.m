@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
+## @deftypefn {} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{in_args}, @var{parent_type}, @var{use_gcf})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -67,23 +67,23 @@
 
 ## Author: jwe
 
-function retval = logspace (base, limit, n = 50)
+function retval = logspace (a, b, n = 50)
 
   if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
 
-  if (! (isscalar (base) && isscalar (limit) && isscalar (n)))
-    error ("logspace: arguments BASE, LIMIT, and N must be scalars");
+  if (! (isscalar (a) && isscalar (b) && isscalar (n)))
+    error ("logspace: arguments A, B, and N must be scalars");
   endif
 
   npoints = fix (n);
 
-  if (limit == pi)
-    limit = log10 (pi);
+  if (b == pi)
+    b = log10 (pi);
   endif
 
-  retval = 10 .^ (linspace (base, limit, npoints));
+  retval = 10 .^ (linspace (a, b, npoints));
 
 endfunction
 

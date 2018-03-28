@@ -1848,7 +1848,7 @@ java_event_hook (void)
 //! Initializes the fields #jvm, #jvm_attached, #jvm_lib, and
 //! #octave_thread_ID.  To ensure that java is initialized, this method is
 //! used as part of octave functions @c javaObject, @c javaMethod,
-//! @c __java_get__, @c __java_set__, and @c java2mat.
+//! @c __java_get__, @c __java_set__, and @c __java2mat__.
 
 static void
 initialize_java (void)
@@ -3180,9 +3180,9 @@ equivalent
 #endif
 }
 
-DEFUN (java2mat, args, ,
+DEFUN (__java2mat__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} java2mat (@var{javaobj})
+@deftypefn {} {} __java2mat__ (@var{javaobj})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -3211,7 +3211,7 @@ Undocumented internal function.
 
   octave_unused_parameter (args);
 
-  err_disabled_feature ("java2mat", "Java");
+  err_disabled_feature ("__java2mat__", "Java");
 
 #endif
 }

@@ -19,7 +19,7 @@
 ## Undocumented internal function.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{yi} =} __splinen__ (@var{x}, @var{y}, @var{xi})
+## @deftypefn {} {@var{yi} =} __splinen__ (@var{x}, @var{y}, @var{xi}, @var{extrapval}, @var{f})
 ## Undocumented internal function.
 ## @end deftypefn
 

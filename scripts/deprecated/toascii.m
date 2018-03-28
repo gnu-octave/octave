@@ -17,12 +17,12 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} toascii (@var{s})
+## @deftypefn {} {} toascii (@var{str})
 ##
 ## @code{toascii} is deprecated and will be removed in Octave version 4.8.
 ## Use @code{double} instead.
 ##
-## Return ASCII representation of @var{s} in a matrix.
+## Return ASCII representation of @var{str} in a matrix.
 ##
 ## For example:
 ##

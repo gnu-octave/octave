@@ -196,10 +196,14 @@ permutation information.
 
           if (nargout < 4)
             {
+              warning_with_id ("Octave:lu:sparse_input",
+                               "lu: function may fail when called with less than 4 output arguments and a sparse input");
+
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
-              octave::math::sparse_lu<SparseMatrix> fact (m, Qinit, thres, false, true);
+              octave::math::sparse_lu<SparseMatrix> fact (m, Qinit, thres,
+                                                          false, true);
 
               if (nargout < 2)
                 retval(0) = fact.Y ();
@@ -261,6 +265,9 @@ permutation information.
 
           if (nargout < 4)
             {
+              warning_with_id ("Octave:lu:sparse_input",
+                               "lu: function may fail when called with less than 4 output arguments and a sparse input");
+
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
@@ -299,7 +306,8 @@ permutation information.
           else
             {
               retval.resize (scale ? 5 : 4);
-              octave::math::sparse_lu<SparseComplexMatrix> fact (m, thres, scale);
+              octave::math::sparse_lu<SparseComplexMatrix> fact (m, thres,
+                                                                 scale);
 
               retval(0) = octave_value (fact.L (),
                                         MatrixType (MatrixType::Lower));
@@ -530,20 +538,23 @@ permutation information.
 %! assert (u, single ([5, 6; 0, 4/5]), sqrt (eps ("single")));
 %! assert (p(:,:), single ([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps ("single")));
 
-%!error lu ()
-%!error <can not define pivoting threshold> lu ([1, 2; 3, 4], 2)
-
 %!testif HAVE_UMFPACK
 %! Bi = [1 2 3 4 5 2 3 6 7 8 4 5 7 8 9];
 %! Bj = [1 3 4 5 6 7 8 9 11 12 13 14 15 16 17];
 %! Bv = [1 1 1 1 1 1 -1 1 1 1 1 -1 1 -1 1];
 %! B = sparse (Bi, Bj, Bv);
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L, U] = lu (B);
 %! assert (L*U, B);
 %! [L, U, P] = lu(B);
 %! assert (P'*L*U, B);
 %! [L, U, P, Q] = lu (B);
 %! assert (P'*L*U*Q', B);
+
+%!error lu ()
+%!warning <function may fail>
+%! [l,u] = lu (sparse (magic (3)));
+%!error <can not define pivoting threshold> lu ([1, 2; 3, 4], 2)
 
 */
 

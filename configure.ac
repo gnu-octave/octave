@@ -2188,7 +2188,9 @@ AC_ARG_WITH([osmesa],
 
 dnl If no argument given, only use OSMesa when Qt is too old
 if test $use_osmesa = auto; then
-  if test $octave_cv_qt_opengl_os_ok = yes; then
+  ## Quote $octave_cv_qt_opengl_os_ok because it will only be set if
+  ## Qt is found.
+  if test "$octave_cv_qt_opengl_os_ok" = yes; then
     use_osmesa=no
   else
     use_osmesa=yes
@@ -2197,7 +2199,9 @@ fi
 
 if test $use_osmesa = yes; then
   dnl Pre-declare warning message, and unset if library is found
-  if test $octave_cv_qt_opengl_os_ok = no; then
+  ## Quote $octave_cv_qt_opengl_os_ok because it will only be set if
+  ## Qt is found.
+  if test "$octave_cv_qt_opengl_os_ok" = no; then
     warn_osmesa="OSMesa library not found and Qt < 5.1.  Offscreen rendering with OpenGL will be disabled."
   else
     warn_osmesa="OSMesa library not found.  Offscreen rendering with FLTK will be disabled."

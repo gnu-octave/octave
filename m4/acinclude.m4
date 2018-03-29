@@ -344,6 +344,36 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
+dnl Check whether the Qt QGuiApplication class has the setDesktopFileName
+dnl static member function.  This function was introduced in Qt 5.7.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.6 or older.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME], [
+  AC_CACHE_CHECK([for QGuiApplication::setDesktopFileName],
+    [octave_cv_func_qguiapplication_setdesktopfilename],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QGuiApplication>
+        ]], [[
+        QGuiApplication::setDesktopFileName ("com.example.Example.desktop");
+        ]])],
+      octave_cv_func_qguiapplication_setdesktopfilename=yes,
+      octave_cv_func_qguiapplication_setdesktopfilename=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qguiapplication_setdesktopfilename = yes; then
+    AC_DEFINE(HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME, 1,
+      [Define to 1 if you have the `QGuiApplication::setDesktopFileName' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt QHeaderView class has the setSectionResizeMode
 dnl function.  This function was introduced in Qt 5.
 dnl
@@ -805,7 +835,9 @@ dnl is the memory allocation that exposes the bug and using statically
 dnl allocated arrays in Fortran does not?
 dnl
 dnl FIXME: it would be nice to avoid the duplication of F77 macros
-dnl and typedefs here and in the f77-fcn.h header file.
+dnl and typedefs here and in the f77-fcn.h header file.  Also, the
+dnl definition of the character handling macros are not right for
+dnl all systems (but should work on most modern systems in use today).
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_1], [
   AC_CACHE_CHECK([whether the arpack library works],
@@ -817,7 +849,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_1], [
 
 #include <stdint.h>
 
-typedef OCTAVE_IDX_TYPE octave_idx_type;
 typedef int F77_RET_T;
 
 #define F77_CHAR_ARG2(x, l) x
@@ -828,46 +859,49 @@ typedef int F77_RET_T;
 #define F77_CONST_CHAR_ARG_DECL const char *
 #define F77_CHAR_ARG_LEN_DECL , long
 
+#define F77_INT $OCTAVE_F77_INT_TYPE
+#define F77_DBLE double
+
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dnaupd, DNAUPD) (octave_idx_type&,
+  F77_FUNC (dnaupd, DNAUPD) (F77_INT&,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&,
+                             const F77_INT&,
                              F77_CONST_CHAR_ARG_DECL,
-                             octave_idx_type&, const double&,
-                             double*, const octave_idx_type&, double*,
-                             const octave_idx_type&, octave_idx_type*,
-                             octave_idx_type*, double*, double*,
-                             const octave_idx_type&, octave_idx_type&
+                             F77_INT&, const F77_DBLE&,
+                             F77_DBLE*, const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_INT*,
+                             F77_INT*, F77_DBLE*, F77_DBLE*,
+                             const F77_INT&, F77_INT&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dneupd, DNEUPD) (const octave_idx_type&,
+  F77_FUNC (dneupd, DNEUPD) (const F77_INT&,
                              F77_CONST_CHAR_ARG_DECL,
-                             octave_idx_type*, double*, double*,
-                             double*, const octave_idx_type&, const double&,
-                             const double&, double*,
+                             F77_INT*, F77_DBLE*, F77_DBLE*,
+                             F77_DBLE*, const F77_INT&, const F77_DBLE&,
+                             const F77_DBLE&, F77_DBLE*,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&,
+                             const F77_INT&,
                              F77_CONST_CHAR_ARG_DECL,
-                             octave_idx_type&, const double&, double*,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, octave_idx_type*,
-                             octave_idx_type*, double*, double*,
-                             const octave_idx_type&, octave_idx_type&
+                             F77_INT&, const F77_DBLE&, F77_DBLE*,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_INT*,
+                             F77_INT*, F77_DBLE*, F77_DBLE*,
+                             const F77_INT&, F77_INT&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&,
-                           const double&, const double*,
-                           const octave_idx_type&, const double*,
-                           const octave_idx_type&, const double&, double*,
-                           const octave_idx_type&
+                           const F77_INT&, const F77_INT&,
+                           const F77_DBLE&, const F77_DBLE*,
+                           const F77_INT&, const F77_DBLE*,
+                           const F77_INT&, const F77_DBLE&,
+                           F77_DBLE*, const F77_INT&
                            F77_CHAR_ARG_LEN_DECL);
 }
 
@@ -877,7 +911,7 @@ doit (void)
   // Based on function EigsRealNonSymmetricMatrix from liboctave/eigs-base.cc.
 
   // Problem matrix.  See bug #31479.
-  octave_idx_type n = 4;
+  F77_INT n = 4;
   double *m = new double [n * n];
   m[0] = 1, m[4] = 0, m[8]  = 0, m[12] = -1;
   m[1] = 0, m[5] = 1, m[9]  = 0, m[13] =  0;
@@ -891,7 +925,7 @@ doit (void)
   resid[2] = 0.150143;
   resid[3] = 0.868067;
 
-  octave_idx_type *ip = new octave_idx_type [11];
+  F77_INT *ip = new F77_INT [11];
 
   ip[0] = 1;   // ishift
   ip[1] = 0;   // ip[1] not referenced
@@ -905,18 +939,18 @@ doit (void)
   ip[9] = 0;
   ip[10] = 0;
 
-  octave_idx_type *ipntr = new octave_idx_type [14];
+  F77_INT *ipntr = new F77_INT [14];
 
-  octave_idx_type k = 1;
-  octave_idx_type p = 3;
-  octave_idx_type lwork = 3 * p * (p + 2);
+  F77_INT k = 1;
+  F77_INT p = 3;
+  F77_INT lwork = 3 * p * (p + 2);
 
   double *v = new double [n * (p + 1)];
   double *workl = new double [lwork + 1];
   double *workd = new double [3 * n + 1];
 
-  octave_idx_type ido = 0;
-  octave_idx_type info = 0;
+  F77_INT ido = 0;
+  F77_INT info = 0;
 
   double tol = DBL_EPSILON;
 
@@ -948,17 +982,17 @@ doit (void)
     }
   while (1);
 
-  octave_idx_type *sel = new octave_idx_type [p];
+  F77_INT *sel = new F77_INT [p];
 
   // In Octave, the dimensions of dr and di are k+1, but k+2 avoids segfault
   double *dr = new double [k + 1];
   double *di = new double [k + 1];
   double *workev = new double [3 * p];
 
-  for (octave_idx_type i = 0; i < k + 1; i++)
+  for (F77_INT i = 0; i < k + 1; i++)
     dr[i] = di[i] = 0.0;
 
-  octave_idx_type rvec = 1;
+  F77_INT rvec = 1;
 
   double sigmar = 0.0;
   double sigmai = 0.0;
@@ -2026,6 +2060,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ## tests if they fail because we have already decided that the Qt
     ## version that we are testing now will be the one used.
 
+    OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE

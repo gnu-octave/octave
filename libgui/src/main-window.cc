@@ -176,6 +176,14 @@ namespace octave
         m_workspace_window = new workspace_view (this);
       }
 
+    // Initialize global Qt application metadata
+    QCoreApplication::setApplicationName ("GNU Octave");
+    QCoreApplication::setApplicationVersion (OCTAVE_VERSION);
+#if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
+    if (m_start_gui)
+      QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
+#endif
+
     m_external_editor = new external_editor_interface (this);
     m_active_editor = m_editor_window;  // for connecting signals
     if (! m_editor_window)

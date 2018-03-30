@@ -359,8 +359,8 @@ namespace octave
     QString file
       = QFileDialog::getSaveFileName (this,
                                       tr ("Save Variable %1 As").arg (name),
-                                      /* Should determine extension from save_default_options */
-                                      tr ("./%1.txt").arg (name),
+    // FIXME: Should determine extension from save_default_options
+                                      QString ("./%1.txt").arg (name),
                                       0, 0,
                                       QFileDialog::DontUseNativeDialog);
 

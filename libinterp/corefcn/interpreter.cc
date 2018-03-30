@@ -478,7 +478,8 @@ namespace octave
 
         if (options.echo_commands ())
           m_evaluator.echo
-            (tree_evaluator::ECHO_SCRIPTS | tree_evaluator::ECHO_FUNCTIONS);
+            (tree_evaluator::ECHO_SCRIPTS | tree_evaluator::ECHO_FUNCTIONS
+             | tree_evaluator::ECHO_ALL);
 
         std::string docstrings_file = options.docstrings_file ();
         if (! docstrings_file.empty ())

@@ -1,4 +1,4 @@
-## Copyright (C) 2015-2017 Piotr Held
+## Copyright (C) 2015-2018 Piotr Held
 ##
 ## This file is part of Octave.
 ##

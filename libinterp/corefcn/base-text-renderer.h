@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2016-2017 John W. Eaton
-Copyright (C) 2009-2016 Michael Goffioul
+Copyright (C) 2016-2018 John W. Eaton
+Copyright (C) 2009-2018 Michael Goffioul
 
 This file is part of Octave.
 

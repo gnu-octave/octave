@@ -1,4 +1,4 @@
-@c Copyright (C) 2017 Rik Wehbring
+@c Copyright (C) 2017-2018 Rik Wehbring
 @c
 @c This file is part of Octave.
 @c

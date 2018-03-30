@@ -1,4 +1,4 @@
-## Copyright (C) 2017 Lachlan Andrew
+## Copyright (C) 2017-2018 Lachlan Andrew
 ##
 ## This file is part of Octave.
 ##

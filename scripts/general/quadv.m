@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2017 David Bateman
+## Copyright (C) 2008-2018 David Bateman
 ## Copyright (C) 2012 Alexander Klein
 ##
 ## This file is part of Octave.

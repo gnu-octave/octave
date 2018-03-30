@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2007-2017 David Bateman
-Copyright (C) 2016 Kai T. Ohlhus
+Copyright (C) 2007-2018 David Bateman
+Copyright (C) 2016-2018 Kai T. Ohlhus
 
 This file is part of Octave.
 

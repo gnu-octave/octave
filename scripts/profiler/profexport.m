@@ -1,4 +1,4 @@
-## Copyright (C) 2015-2017 Daniel Kraft
+## Copyright (C) 2015-2018 Daniel Kraft
 ##
 ## This file is part of Octave.
 ##

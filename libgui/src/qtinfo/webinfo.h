@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012-2016 Jacob Dawid
+Copyright (C) 2012-2018 Jacob Dawid
 
 This file is part of Octave.
 

@@ -1,6 +1,6 @@
-## Copyright (C) 2008-2017 Radek Salac
+## Copyright (C) 2008-2018 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
-## Copyright (C) 2016 Cristiano Dorigo, Octave Arena
+## Copyright (C) 2016-2018 Cristiano Dorigo, Octave Arena
 ##
 ## This file is part of Octave.
 ##

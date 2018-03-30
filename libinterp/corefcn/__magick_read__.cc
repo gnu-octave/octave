@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2017 Carnë Draug
-Copyright (C) 2002-2016 Andy Adler
+Copyright (C) 2013-2018 Carnë Draug
+Copyright (C) 2002-2018 Andy Adler
 Copyright (C) 2008 Thomas L. Scofield
 Copyright (C) 2010 David Grundberg
 

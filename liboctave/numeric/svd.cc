@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2016-2017 Carnë Draug
-Copyright (C) 1994-2016 John W. Eaton
+Copyright (C) 2016-2018 Carnë Draug
+Copyright (C) 1994-2018 John W. Eaton
 
 This file is part of Octave.
 

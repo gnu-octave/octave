@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2017 Eduardo Ramos Fernández <eduradical951@gmail.com>
-## Copyright (C) 2013-2017 Kai T. Ohlhus <k.ohlhus@gmail.com>
+## Copyright (C) 2014-2018 Eduardo Ramos Fernández <eduradical951@gmail.com>
+## Copyright (C) 2013-2018 Kai T. Ohlhus <k.ohlhus@gmail.com>
 ##
 ## This file is part of Octave.
 ##
@@ -262,9 +262,11 @@ endfunction
 %! n = 1600;
 %! dtol = 0.1;
 %! A = gallery ("neumann", n) + speye (n);
+
 %!test
 %! opts.type = "nofill";
 %! assert (nnz (ilu (A, opts)), 7840);
+
 ## This test has been verified in both Matlab and Octave.
 %!test
 %! opts.type = "crout";
@@ -313,7 +315,7 @@ endfunction
 
 ## Tests for real matrices of different sizes for ilu0, iluc and ilutp.
 ## The difference A - L*U should be not greater than eps because with droptol
-## equaling 0, the LU complete factorization is performed.
+## equal to 0, the LU complete factorization is performed.
 %!shared n_tiny, n_small, n_medium, n_large, A_tiny, A_small, A_medium, A_large
 %! n_tiny = 5;
 %! n_small = 40;
@@ -323,7 +325,7 @@ endfunction
 %! A_small = sprand (n_small, n_small, 1/n_small) + speye (n_small);
 %! A_medium = sprand (n_medium, n_medium, 1/n_medium) + speye (n_medium);
 %! A_large = sprand (n_large, n_large, 1/n_large/10) + speye (n_large);
-%!
+
 %!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_tiny);
@@ -340,7 +342,7 @@ endfunction
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_large);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), 0, 1);
-%!
+
 %!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_tiny, opts);
@@ -357,7 +359,7 @@ endfunction
 %! opts.type = "crout";
 %! [L, U] = ilu (A_large, opts);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), eps, eps);
-%!
+
 %!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
@@ -397,7 +399,7 @@ endfunction
 %!   i * sprand (n_medium, n_medium, 1/n_medium) + speye (n_medium);
 %! A_large = sprand (n_large, n_large, 1/n_large/10) + ...
 %!   i * sprand (n_large, n_large, 1/n_large/10) + speye (n_large);
-%!
+
 %!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_tiny);
@@ -414,7 +416,7 @@ endfunction
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_large);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), 0, 1);
-%!
+
 %!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_tiny, opts);
@@ -431,7 +433,7 @@ endfunction
 %! opts.type = "crout";
 %! [L, U] = ilu (A_large, opts);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), eps, eps);
-%!
+
 %!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
@@ -458,10 +460,9 @@ endfunction
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), eps, eps);
 
 ## Specific tests for ilutp
-
 %!shared A
 %! A = sparse ([0 0 4 3 1; 5 1 2.3 2 4.5; 0 0 0 2 1;0 0 8 0 2.2; 0 0 9 9 1 ]);
-%!
+
 %!test
 %! opts.udiag = 1;
 %! opts.type = "ilutp";
@@ -469,23 +470,30 @@ endfunction
 %! [L, U, P] = ilu (A, opts);
 %! assert (norm (U, "fro"), 17.4577, 1e-4);
 %! assert (norm (L, "fro"), 2.4192, 1e-4);
-%!
-%!test
+
+%!error <encountered a pivot equal to 0>
 %! opts.type = "ilutp";
 %! opts.udiag = 0;
 %! opts.droptol = 0.2;
-%! fail ("ilu (A, opts)", "ilu: encountered a pivot equal to 0");
+%! ilu (A, opts);
 
-%!xtest
+## Matlab R2017b doesn't error, but returns a singular L which isn't helpful.
+%!error <encountered a pivot equal to 0>
 %! A = sparse ([3 1 0 0 4; 3 1 0 0 -2;0 0 8 0 0; 0 4 0 4 -4.5; 0 -1 0 0 1]);
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! opts.milu = "row";
-%! [L, U, P] = ilu (A, opts);  % Matlab R2016b passes, no pivoting necessary
+%! [L, U, P] = ilu (A, opts);
+
+%!test <*53440>
+%! A = sparse (magic (4));
+%! opts.type = "ilutp";
+%! [L, U] = ilu (A, opts);
+%! assert (L * U, A, eps)
 
 ## Tests for input validation
-%!shared A_tiny
+%!shared A_tiny, opts
 %! A_tiny = spconvert ([1 4 2 3 3 4 2 5; 1 1 2 3 4 4 5 5; 1 2 3 4 5 6 7 8]');
 
 %!test
@@ -500,47 +508,61 @@ endfunction
 %! [L, U] = ilu (sparse ([]), opts);
 %! assert (isempty (L));
 %! assert (isempty (U));
+
 %!error <A must be a sparse square matrix> ilu (0)
 %!error <A must be a sparse square matrix> ilu ([])
 %!error <zero on the diagonal> ilu (sparse (0))
 
-%!test
+%!error <invalid TYPE specified>
 %! opts.type = "foo";
-%! fail ("ilu (A_tiny, opts)", "invalid TYPE specified");
+%! ilu (A_tiny, opts);
+%!error <invalid TYPE specified>
 %! opts.type = 1;
-%! fail ("ilu (A_tiny, opts)", "invalid TYPE specified");
+%! ilu (A_tiny, opts);
+%!error <invalid TYPE specified>
 %! opts.type = [];
-%! fail ("ilu (A_tiny, opts)", "invalid TYPE specified");
-%!test
+%! ilu (A_tiny, opts);
+
+%!error <DROPTOL must be a non-negative real scalar>
+%! clear opts;
 %! opts.droptol = -1;
-%! fail ("ilu (A_tiny, opts)", "DROPTOL must be a non-negative real scalar");
+%! ilu (A_tiny, opts);
+%!error <DROPTOL must be a non-negative real scalar>
 %! opts.droptol = 0.5i;
-%! fail ("ilu (A_tiny, opts)", "DROPTOL must be a non-negative real scalar");
+%! ilu (A_tiny, opts);
+%!error <DROPTOL must be a non-negative real scalar>
 %! opts.droptol = [];
-%! fail ("ilu (A_tiny, opts)", "DROPTOL must be a non-negative real scalar");
-%!test
+%! ilu (A_tiny, opts);
+
+%!error <MILU must be one of "off", "col", or "row">
+%! clear opts;
 %! opts.milu = "foo";
-%! fail ("ilu (A_tiny, opts)", 'MILU must be one of "off"');
+%! ilu (A_tiny, opts);
+%!error <MILU must be one of "off", "col", or "row">
 %! opts.milu = 1;
-%! fail ("ilu (A_tiny, opts)", 'MILU must be one of "off"');
+%! ilu (A_tiny, opts);
+%!error <MILU must be one of "off", "col", or "row">
 %! opts.milu = [];
-%! fail ("ilu (A_tiny, opts)", 'MILU must be one of "off"');
-%!test
+%! ilu (A_tiny, opts);
+
+%!error <UDIAG must be 0 or 1>
+%! clear opts;
 %! opts.udiag = -1;
-%! fail ("ilu (A_tiny, opts)", "UDIAG must be 0 or 1");
+%! ilu (A_tiny, opts);
+%!error <UDIAG must be 0 or 1>
 %! opts.udiag = 0.5i;
-%! fail ("ilu (A_tiny, opts)", "UDIAG must be 0 or 1");
+%! ilu (A_tiny, opts);
+%!error <UDIAG must be 0 or 1>
 %! opts.udiag = [];
-%! fail ("ilu (A_tiny, opts)", "UDIAG must be 0 or 1");
-%!test
+%! ilu (A_tiny, opts);
+
+%!error <THRESH must be a scalar in the range \[0, 1\]>
+%! clear opts;
 %! opts.thresh = -1;
-%! fail ("ilu (A_tiny, opts)", "THRESH must be a scalar");
+%! ilu (A_tiny, opts);
+%!error <THRESH must be a scalar in the range \[0, 1\]>
 %! opts.thresh = 0.5i;
-%! fail ("ilu (A_tiny, opts)", "THRESH must be a scalar");
+%! ilu (A_tiny, opts);
+%!error <THRESH must be a scalar in the range \[0, 1\]>
 %! opts.thresh = [];
-%! fail ("ilu (A_tiny, opts)", "THRESH must be a scalar");
-%!test <*53440>
-%! A = sparse (magic (4));
-%! opts.type = "ilutp";
-%! [L, U] = ilu (A, opts);
-%! assert (L * U, A, eps)
+%! ilu (A_tiny, opts);

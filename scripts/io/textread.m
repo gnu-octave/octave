@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2017 Eric Chassande-Mottin, CNRS (France)
+## Copyright (C) 2009-2018 Eric Chassande-Mottin, CNRS (France)
 ##
 ## This file is part of Octave.
 ##

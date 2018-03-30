@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2017 John W. Eaton
+Copyright (C) 2013-2018 John W. Eaton
 Copyright (C) 2015 Michael Barnes
 Copyright (C) 2013 Rüdiger Sonderfeld
 

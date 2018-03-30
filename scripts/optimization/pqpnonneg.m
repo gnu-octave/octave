@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2017 Bill Denney
+## Copyright (C) 2008-2018 Bill Denney
 ## Copyright (C) 2008 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##

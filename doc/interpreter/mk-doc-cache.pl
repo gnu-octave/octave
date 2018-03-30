@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# Copyright (C) 2016-2017 John W. Eaton
+# Copyright (C) 2016-2018 John W. Eaton
 #
 # This file is part of Octave.
 #

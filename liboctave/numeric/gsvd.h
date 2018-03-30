@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2016-2017 Barbara Lócsi
+Copyright (C) 2016-2018 Barbara Lócsi
 Copyright (C) 2006 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
 Copyright (C) 1996, 1997 John W. Eaton
 

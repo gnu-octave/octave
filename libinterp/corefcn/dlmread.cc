@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2017 Jonathan Stickel
+Copyright (C) 2008-2018 Jonathan Stickel
 Copyright (C) 2010 Jaroslav Hajek
 
 This file is part of Octave.

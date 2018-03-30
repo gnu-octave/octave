@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2017 Max Brister
+## Copyright (C) 2012-2018 Max Brister
 ##
 ## This file is part of Octave.
 ##

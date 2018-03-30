@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2017 David Bateman
+Copyright (C) 2005-2018 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cmath>
 
+#include <algorithm>
 #include <string>
 
 #include "CSparse.h"
@@ -295,7 +296,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
         lnz += ColCount[j];
 
       // allocate the output matrix L (pattern-only)
-      SparseBoolMatrix L (n, n, lnz);
+      SparseBoolMatrix L (dim_vector (n, n), lnz);
 
       // initialize column pointers
       lnz = 0;
@@ -333,13 +334,12 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       // free workspace
       CHOLMOD_NAME(free_sparse) (&R, cm);
 
+      // fill L with one's
+      std::fill_n (L.xdata (), lnz, true);
+
       // transpose L to get R, or leave as is
       if (nargin < 3)
         L = L.transpose ();
-
-      // fill numerical values of L with one's
-      for (octave_idx_type p = 0 ; p < lnz ; p++)
-        L.xdata(p) = true;
 
       retval(4) = L;
     }

@@ -1,6 +1,6 @@
 #! /usr/bin/awk -f
 #
-# Copyright (C) 2016 Mike Miller
+# Copyright (C) 2016-2018 Mike Miller
 #
 # This file is part of Octave.
 #

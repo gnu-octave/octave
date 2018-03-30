@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2017 John W. Eaton
+Copyright (C) 2004-2018 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.

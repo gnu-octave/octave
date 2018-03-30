@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2017 Keith Goodman
+## Copyright (C) 2006-2018 Keith Goodman
 ##
 ## This file is part of Octave.
 ##

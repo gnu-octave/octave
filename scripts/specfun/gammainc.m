@@ -1,5 +1,5 @@
-## Copyright (C) 2016 Marco Caliari
-## Copyright (C) 2016 Nir Krakauer
+## Copyright (C) 2016-2018 Marco Caliari
+## Copyright (C) 2016-2018 Nir Krakauer
 ## Copyright (C) 2018 Stefan Schlögl
 ## Copyright (C) 2018 Michele Ginesi
 ##

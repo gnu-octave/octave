@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2017 David Bateman
+## Copyright (C) 2007-2018 David Bateman
 ##
 ## This file is part of Octave.
 ##

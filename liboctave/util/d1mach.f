@@ -1,4 +1,4 @@
-c Copyright (C) 1996-2017 John W. Eaton
+c Copyright (C) 1996-2018 John W. Eaton
 c
 c This file is part of Octave.
 c

@@ -34,7 +34,7 @@ OCTAVE_PATCH_VERSION=0+
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 2016 John W. Eaton and others."
+OCTAVE_COPYRIGHT="Copyright (C) 2018 John W. Eaton and others."
 
 OCTAVE_RELEASE_DATE="2016-11-13"
 

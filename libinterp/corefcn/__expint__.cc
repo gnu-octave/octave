@@ -63,17 +63,9 @@ Continued fraction expansion for the exponential integral.
       // Initialize variables used in algorithm
       static const FloatComplex tiny = pow (2, -50);
       static const float eps = std::numeric_limits<float>::epsilon ();
-      FloatComplex cone (1.0, 0.0);
-      FloatComplex czero (0.0, 0.0);
-      FloatComplex xj = x(0);
-      FloatComplex y = tiny;
-      FloatComplex Cj = y;
-      FloatComplex Dj = czero;
-      FloatComplex alpha_j = cone;
-      FloatComplex beta_j = czero;
-      FloatComplex Deltaj = czero;
-      int j = 1;
-      int maxit = 100;
+      const FloatComplex cone (1.0, 0.0);
+      const FloatComplex czero (0.0, 0.0);
+      const int maxit = 100;
 
       // Loop over all elements
       for (octave_idx_type i = 0; i < numel_x; ++i)
@@ -82,14 +74,14 @@ Continued fraction expansion for the exponential integral.
           OCTAVE_QUIT;
 
           // Variable initialization for the current element
-          xj = x(i);
-          y = tiny;
-          Cj = y;
-          Dj = czero;
-          alpha_j = cone;
-          beta_j = xj;
-          Deltaj = czero;
-          j = 1;
+          FloatComplex xj = x(i);
+          FloatComplex y = tiny;
+          FloatComplex Cj = y;
+          FloatComplex Dj = czero;
+          FloatComplex alpha_j = cone;
+          FloatComplex beta_j = xj;
+          FloatComplex Deltaj = czero;
+          int j = 1;
 
           // Lentz's algorithm
           while ((std::abs (Deltaj - cone)  > eps) && (j < maxit))
@@ -129,17 +121,9 @@ Continued fraction expansion for the exponential integral.
       // Initialize variables used in algorithm
       static const Complex tiny = pow (2, -100);
       static const double eps = std::numeric_limits<double>::epsilon ();
-      Complex cone (1.0, 0.0);
-      Complex czero (0.0, 0.0);
-      Complex xj = x(0);
-      Complex y = tiny;
-      Complex Cj = y;
-      Complex Dj = czero;
-      Complex alpha_j = cone;
-      Complex beta_j = xj;
-      Complex Deltaj = czero;
-      int j = 1;
-      int maxit = 200;
+      const Complex cone (1.0, 0.0);
+      const Complex czero (0.0, 0.0);
+      const int maxit = 200;
 
       // Loop over all scenarios
       for (octave_idx_type i = 0; i < numel_x; ++i)
@@ -148,14 +132,14 @@ Continued fraction expansion for the exponential integral.
           OCTAVE_QUIT;
 
           // Variable initialization for the current element
-          xj = x(i);
-          y = tiny;
-          Cj = y;
-          Dj = czero;
-          alpha_j = cone;
-          beta_j = xj;
-          Deltaj = czero;
-          j = 1;
+          Complex xj = x(i);
+          Complex y = tiny;
+          Complex Cj = y;
+          Complex Dj = czero;
+          Complex alpha_j = cone;
+          Complex beta_j = xj;
+          Complex Deltaj = czero;
+          int j = 1;
 
           // Lentz's algorithm
           while ((std::abs (Deltaj - cone)  > eps) && (j < maxit))

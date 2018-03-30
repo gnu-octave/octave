@@ -1,4 +1,4 @@
-## Copyright (C) 2017 Nicholas Jankowski, David Bateman
+## Copyright (C) 2017-2018 Nicholas Jankowski, David Bateman
 ##
 ## This file is part of Octave.
 ##

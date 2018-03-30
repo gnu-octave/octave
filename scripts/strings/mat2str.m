@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2017 Rolf Fabian
+## Copyright (C) 2002-2018 Rolf Fabian
 ##
 ## This file is part of Octave.
 ##

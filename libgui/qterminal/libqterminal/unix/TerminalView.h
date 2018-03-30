@@ -3,7 +3,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
-    Copyright (C) 2012-2016 Jacob Dawid <jacob.dawid@cybercatalyst.com>
+    Copyright (C) 2012-2018 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

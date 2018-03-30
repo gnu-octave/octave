@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2017 Vytautas Jančauskas
+Copyright (C) 2013-2018 Vytautas Jančauskas
 
 This file is part of Octave.
 

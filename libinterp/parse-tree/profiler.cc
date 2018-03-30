@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2014-2017 Julien Bect
-Copyright (C) 2012-2016 Daniel Kraft
+Copyright (C) 2014-2018 Julien Bect
+Copyright (C) 2012-2018 Daniel Kraft
 
 This file is part of Octave.
 

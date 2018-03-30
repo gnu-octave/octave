@@ -1,4 +1,4 @@
-## Copyright (C) 2017 Guillaume Flandin
+## Copyright (C) 2017-2018 Guillaume Flandin
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2017 Dirk Laurie
+## Copyright (C) 1993-2018 Dirk Laurie
 ##
 ## This file is part of Octave.
 ##

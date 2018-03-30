@@ -1,4 +1,4 @@
-## Copyright (C) 2017 Nicholas Jankowski
+## Copyright (C) 2017-2018 Nicholas Jankowski
 ##
 ## This file is part of Octave.
 ##

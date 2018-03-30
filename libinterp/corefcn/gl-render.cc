@@ -2018,6 +2018,7 @@ namespace octave
     // display them in the order they were added to the array.
 
     num_lights = 0;
+    current_light = GL_LIGHT0;
     draw_all_lights (props, obj_list);
 
     // disable other OpenGL lights

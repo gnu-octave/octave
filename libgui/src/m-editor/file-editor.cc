@@ -1740,7 +1740,7 @@ namespace octave
 
     m_conv_eol_windows_action
       = add_action (m_edit_fmt_menu,
-                    tr ("convert line endings to &windows (crlf)"),
+                    tr ("Convert Line Endings to &Windows (CRLF)"),
                     SLOT (request_conv_eol_windows (bool)));
 
     m_conv_eol_unix_action
@@ -2238,7 +2238,7 @@ namespace octave
     // configure and show active actions of mru-menu
     for (int i = 0; i < num_files; ++i)
       {
-        QString text = tr ("&%1 %2").
+        QString text = QString ("&%1 %2").
           arg ((i+1) % int (MaxMRUFiles)).arg (m_mru_files.at (i));
         m_mru_file_actions[i]->setText (text);
 

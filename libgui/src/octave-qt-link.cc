@@ -587,6 +587,16 @@ namespace octave
     emit show_doc_signal (QString::fromStdString (file));
   }
 
+  void octave_qt_link::do_register_doc (const std::string& file)
+  {
+    emit register_doc_signal (QString::fromStdString (file));
+  }
+
+  void octave_qt_link::do_unregister_doc (const std::string& file)
+  {
+    emit unregister_doc_signal (QString::fromStdString (file));
+  }
+
   void octave_qt_link::do_edit_variable (const std::string& expr,
                                          const octave_value& val)
   {

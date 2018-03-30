@@ -48,6 +48,8 @@ namespace octave
     void selectAll (void);
 
     void showDoc (const QString & name);
+    void registerDoc (const QString & name);
+    void unregisterDoc (const QString & name);
 
   private:
 

@@ -45,6 +45,12 @@ namespace octave
 
     connect (p, SIGNAL (show_doc_signal (const QString&)),
              this, SLOT (showDoc (const QString&)));
+
+    connect (p, SIGNAL (register_doc_signal (const QString&)),
+             this, SLOT (registerDoc (const QString&)));
+
+    connect (p, SIGNAL (unregister_doc_signal (const QString&)),
+             this, SLOT (unregisterDoc (const QString&)));
   }
 
   documentation_dock_widget::~documentation_dock_widget (void)
@@ -82,5 +88,15 @@ namespace octave
     raise ();
 
     m_docs->load_ref (name);
+  }
+
+  void documentation_dock_widget::registerDoc (const QString& name)
+  {
+    m_docs->registerDoc (name);
+  }
+
+  void documentation_dock_widget::unregisterDoc (const QString& name)
+  {
+    m_docs->unregisterDoc (name);
   }
 }

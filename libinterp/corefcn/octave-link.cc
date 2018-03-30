@@ -432,3 +432,31 @@ Undocumented internal function.
 
   return ovl (octave_link::show_doc (file));
 }
+
+DEFUN (__octave_link_register_doc__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_register_doc__ (@var{filename})
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string file;
+
+  if (args.length () >= 1)
+    file = args(0).string_value();
+
+  return ovl (octave_link::register_doc (file));
+}
+
+DEFUN (__octave_link_unregister_doc__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_unregister_doc__ (@var{filename})
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string file;
+
+  if (args.length () >= 1)
+    file = args(0).string_value();
+
+  return ovl (octave_link::unregister_doc (file));
+}

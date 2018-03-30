@@ -426,6 +426,30 @@ public:
       }
     else
       return false;
+  }
+
+  static bool
+  register_doc (const std::string & file)
+  {
+    if (enabled ())
+      {
+        instance->do_register_doc (file);
+        return true;
+      }
+    else
+      return false;
+  }
+
+  static bool
+  unregister_doc (const std::string & file)
+  {
+    if (enabled ())
+      {
+        instance->do_unregister_doc (file);
+        return true;
+      }
+    else
+      return false;
 
   }
 
@@ -601,6 +625,10 @@ protected:
   virtual void do_show_preferences (void) = 0;
 
   virtual void do_show_doc (const std::string& file) = 0;
+
+  virtual void do_register_doc (const std::string& file) = 0;
+
+  virtual void do_unregister_doc (const std::string& file) = 0;
 
   virtual void
   do_edit_variable (const std::string& name, const octave_value& val) = 0;

@@ -2242,7 +2242,7 @@ namespace octave
       {
         QMessageBox::critical (nullptr,
                                tr ("Octave Editor"),
-                               tr ("The current codec %1\n"
+                               tr ("The current encoding %1\n"
                                    "can not be applied.\n\n"
                                    "Please select another one or cancel saving!").arg (_encoding));
 
@@ -2254,9 +2254,9 @@ namespace octave
         int ans = QMessageBox::warning (nullptr,
                                         tr ("Octave Editor"),
                                         tr ("The current editor contents can not be encoded\n"
-                                            "with the selected codec %1.\n"
+                                            "with the selected encoding %1.\n"
                                             "Using it will result in data loss!\n\n"
-                                            "Do you want to chose another codec?").arg (_encoding),
+                                            "Do you want to chose another encoding?").arg (_encoding),
                                         QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
         if (ans == QMessageBox::Yes)

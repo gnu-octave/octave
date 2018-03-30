@@ -24,8 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "defaults.h"
+#include "file-ops.h"
+#include "oct-env.h"
+
 #include <QApplication>
 #include <QCompleter>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QHelpContentWidget>
 #include <QHelpIndexWidget>
 #include <QHelpSearchEngine>
@@ -33,8 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHelpSearchResultWidget>
 #include <QLabel>
 #include <QLineEdit>
-#include <QTabWidget>
 #include <QMessageBox>
+#include <QTabWidget>
 #include <QVBoxLayout>
 
 #include "documentation.h"
@@ -46,10 +53,28 @@ namespace octave
   documentation::documentation (QWidget *p)
     : QSplitter (Qt::Horizontal, p)
   {
+    // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
+    if (collection.isEmpty ())
+      collection = QString::fromStdString (octave::config::oct_doc_dir ()
+                                         + octave::sys::file_ops::dir_sep_str ()
+                                         + "octave_interpreter.qhc");
 
-    // Setup the help engine and load the help data
+    // Setup the help engine with the original collection, use a writable copy
+    // of the original collection and load the help data
     m_help_engine = new QHelpEngine (collection, this);
+
+    std::string tmpdir (octave::sys::env::getenv ("TMPDIR"));
+    m_collection
+      = QString::fromStdString (octave::sys::tempnam (tmpdir, "oct-qhelp-"));
+
+    if (m_help_engine->copyCollectionFile (m_collection))
+      m_help_engine->setCollectionFile (m_collection);
+    else
+      QMessageBox::warning (this, tr ("Octave Documentation"),
+                            tr ("Could not copy help collection to temporary\n"
+                                "file. Search capabilities may be affected.\n"
+                                "%1").arg (m_help_engine->error ()));
 
     connect(m_help_engine, SIGNAL(setupFinished()),
             m_help_engine->searchEngine(), SLOT(indexDocumentation()));
@@ -162,13 +187,37 @@ namespace octave
   documentation::~documentation (void)
   {
     if (m_help_engine)
-      delete m_help_engine;
+      {
+        delete m_help_engine;
+
+        // Cleanup temporary file and directory
+        QFile file (m_collection);
+        QFileInfo finfo (file);
+        QString bname = finfo.fileName ();
+        QDir dir = finfo.absoluteDir ();
+        dir.setFilter (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden);
+        QStringList namefilter;
+        namefilter.append ("*" + bname + "*");
+        foreach (QFileInfo fi, dir.entryInfoList (namefilter))
+          {
+            QDir tmpdir (fi.absoluteFilePath ());
+            tmpdir.removeRecursively ();
+          }
+
+        file.remove();
+      }
   }
 
   void documentation::global_search (void)
   {
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+    QString queries
+      = m_help_engine->searchEngine ()->queryWidget ()->searchInput ();
+#else
     QList<QHelpSearchQuery> queries
       = m_help_engine->searchEngine ()->queryWidget ()->query ();
+#endif
+
     m_help_engine->searchEngine ()->search (queries);
   }
 
@@ -225,6 +274,47 @@ namespace octave
     m_filter->setCurrentIndex (0);
   }
 
+  void documentation::registerDoc (const QString& qch)
+  {
+    if (m_help_engine)
+      {
+        QString ns = m_help_engine->namespaceName (qch);
+        bool do_setup = true;
+        if (m_help_engine->registeredDocumentations ().contains (ns))
+          {
+            if (m_help_engine->documentationFileName (ns) == qch)
+              do_setup = false;
+            else
+              {
+                m_help_engine->unregisterDocumentation (ns);
+                m_help_engine->registerDocumentation (qch);
+              }
+          }
+        else if (! m_help_engine->registerDocumentation (qch))
+          {
+            QMessageBox::warning (this, tr ("Octave Documentation"),
+                                  tr ("Unable to register help file %1.").
+                                  arg (qch));
+            do_setup = false;
+            return;
+          }
+
+        if (do_setup)
+          m_help_engine->setupData();
+      }
+  }
+
+  void documentation::unregisterDoc (const QString& qch)
+  {
+    QString ns = m_help_engine->namespaceName (qch);
+    if (m_help_engine
+        && m_help_engine->registeredDocumentations ().contains (ns)
+        && m_help_engine->documentationFileName (ns) == qch)
+      {
+        m_help_engine->unregisterDocumentation (ns);
+        m_help_engine->setupData ();
+      }
+  }
 
 
   // The documentation browser

@@ -210,8 +210,14 @@ namespace octave
 
   void documentation::global_search (void)
   {
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+    QString queries
+      = m_help_engine->searchEngine ()->queryWidget ()->searchInput ();
+#else
     QList<QHelpSearchQuery> queries
       = m_help_engine->searchEngine ()->queryWidget ()->query ();
+#endif
+
     m_help_engine->searchEngine ()->search (queries);
   }
 

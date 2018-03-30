@@ -467,6 +467,38 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE], [
   fi
 ])
 dnl
+dnl Check whether the Qt QHelpSearchQueryWidget class has the searchInput
+dnl member function.  This function was introduced in Qt 5.9.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.8 or older.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT], [
+  AC_CACHE_CHECK([for QHelpSearchQueryWidget::searchInput],
+    [octave_cv_func_qhelpsearchquerywidget_searchinput],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHelpSearchQueryWidget>
+        #include <QString>
+        ]], [[
+        QHelpSearchQueryWidget *query_widget = new QHelpSearchQueryWidget ();
+        QString search_input = query_widget->searchInput ();
+        ]])],
+      octave_cv_func_qhelpsearchquerywidget_searchinput=yes,
+      octave_cv_func_qhelpsearchquerywidget_searchinput=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qhelpsearchquerywidget_searchinput = yes; then
+    AC_DEFINE(HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT, 1,
+      [Define to 1 if you have the `QHelpSearchQueryWidget::searchInput' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt function qInstallMessageHandler is available.
 dnl This function was introduced in Qt 5.
 dnl
@@ -1761,7 +1793,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK], [
          #if defined (HAVE_QOFFSCREENSURFACE)
          #  include <QOffscreenSurface>
          #endif
-         QOpenGLContext ctx;    
+         QOpenGLContext ctx;
          QOffscreenSurface surf;
        ]])],
        octave_cv_qt_opengl_os_ok=yes,
@@ -1955,7 +1987,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     else
       LRELEASE="$LRELEASE_QTVER"
     fi
-    
+
     AC_CHECK_TOOLS(QCOLLECTIONGENERATOR_QTVER, [qcollectiongenerator-qt$qt_version])
     if test -z "$QCOLLECTIONGENERATOR_QTVER"; then
       AC_CHECK_TOOLS(QCOLLECTIONGENERATOR, [qcollectiongenerator])
@@ -2064,6 +2096,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE
+    OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT
     OCTAVE_CHECK_FUNC_QINSTALLMESSAGEHANDLER
     OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT
     OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS

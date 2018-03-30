@@ -1168,7 +1168,7 @@
                    <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
                   </property>
                   <property name="text">
-                   <string>Wrap long lines at curent window border</string>
+                   <string>Wrap long lines at current window border</string>
                   </property>
                   <property name="checked">
                    <bool>false</bool>

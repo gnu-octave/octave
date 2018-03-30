@@ -1740,7 +1740,7 @@ namespace octave
 
     m_conv_eol_windows_action
       = add_action (m_edit_fmt_menu,
-                    tr ("Convert line endings to &windows (crlf)"),
+                    tr ("Convert Line Endings to &Windows (CRLF)"),
                     SLOT (request_conv_eol_windows (bool)));
 
     m_conv_eol_unix_action

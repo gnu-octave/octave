@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2017 Jaroslav Hajek
+Copyright (C) 2012-2018 Jaroslav Hajek
 
 This file is part of Octave.
 

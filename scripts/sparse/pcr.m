@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2017 Piotr Krzyzanowski
+## Copyright (C) 2004-2018 Piotr Krzyzanowski
 ##
 ## This file is part of Octave.
 ##

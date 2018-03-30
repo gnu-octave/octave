@@ -1,7 +1,7 @@
-## Copyright (C) 2016-2017 Eric Firing
-## Copyright (C) 2016 Nathaniel J. Smith
-## Copyright (C) 2016 Stefan van der Walt
-## Copyright (C) 2016 Carlo de Falco
+## Copyright (C) 2016-2018 Eric Firing
+## Copyright (C) 2016-2018 Nathaniel J. Smith
+## Copyright (C) 2016-2018 Stefan van der Walt
+## Copyright (C) 2016-2018 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##

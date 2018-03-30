@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2017 Andy Adler
+## Copyright (C) 2003-2018 Andy Adler
 ## Copyright (C) 2002, 2013 N.J.Higham
 ##
 ## This file is part of Octave.

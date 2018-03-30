@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (C) 2005-2017 John W. Eaton
+# Copyright (C) 2005-2018 John W. Eaton
 #
 # This file is part of Octave.
 #

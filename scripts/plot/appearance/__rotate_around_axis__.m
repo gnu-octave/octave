@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2017 John W. Eaton
-## Copyright (C) 2016 Colin B. Macdonald
+## Copyright (C) 2014-2018 John W. Eaton
+## Copyright (C) 2016-2018 Colin B. Macdonald
 ##
 ## This file is part of Octave.
 ##

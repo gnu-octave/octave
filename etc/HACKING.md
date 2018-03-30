@@ -303,7 +303,7 @@ An overview of the directory layout of Octave's source files:
 
 ################################################################################
 
-Copyright (C) 2009-2017 John W. Eaton
+Copyright (C) 2009-2018 John W. Eaton
 
 This file is part of Octave.
 

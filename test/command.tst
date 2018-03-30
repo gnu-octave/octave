@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2017 Michael C. Grant
+## Copyright (C) 2014-2018 Michael C. Grant
 ##
 ## This file is part of Octave.
 ##

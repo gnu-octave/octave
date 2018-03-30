@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2017 John W. Eaton
+## Copyright (C) 1993-2018 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.

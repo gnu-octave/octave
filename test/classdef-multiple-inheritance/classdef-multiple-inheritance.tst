@@ -1,4 +1,4 @@
-## Copyright (C) 2017 Kai T. Ohlhus
+## Copyright (C) 2017-2018 Kai T. Ohlhus
 ##
 ## This file is part of Octave.
 ##

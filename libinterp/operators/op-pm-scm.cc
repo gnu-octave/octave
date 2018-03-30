@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2017 Jason Riedy
+Copyright (C) 2009-2018 Jason Riedy
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2017 Carnë Draug
+## Copyright (C) 2012-2018 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

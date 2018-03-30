@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# Copyright (C) 2010-2017 VZLU Prague
+# Copyright (C) 2010-2018 VZLU Prague
 #
 # This file is part of Octave.
 #

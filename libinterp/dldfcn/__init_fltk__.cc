@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2007-2017 Shai Ayal
-Copyright (C) 2014-2016 Andreas Weber
+Copyright (C) 2007-2018 Shai Ayal
+Copyright (C) 2014-2018 Andreas Weber
 
 This file is part of Octave.
 

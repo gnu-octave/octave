@@ -1,5 +1,5 @@
-## Copyright (C) 2016-2017 Mike Miller
-## Copyright (C) 1995-2016 John W. Eaton
+## Copyright (C) 2016-2018 Mike Miller
+## Copyright (C) 1995-2018 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

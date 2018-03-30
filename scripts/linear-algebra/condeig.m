@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2017 Arno Onken <asnelt@asnelt.org>
+## Copyright (C) 2006-2018 Arno Onken <asnelt@asnelt.org>
 ##
 ## This file is part of Octave.
 ##

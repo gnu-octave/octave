@@ -1,9 +1,9 @@
 /*
 
-Copyright (C) 1993-2017 John W. Eaton
+Copyright (C) 1993-2018 John W. Eaton
 Copyright (C) 2009 David Grundberg
 Copyright (C) 2009-2010 VZLU Prague
-Copyright (C) 2016 Oliver Heimlich
+Copyright (C) 2016-2018 Oliver Heimlich
 
 This file is part of Octave.
 

@@ -1,5 +1,5 @@
-## Copyright (C) 2004-2017 Piotr Krzyzanowski
-## Copyright (C) 2016-2017 Cristiano Dorigo
+## Copyright (C) 2004-2018 Piotr Krzyzanowski
+## Copyright (C) 2016-2018 Cristiano Dorigo
 ##
 ## This file is part of Octave.
 ##

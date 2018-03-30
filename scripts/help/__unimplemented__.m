@@ -1,6 +1,6 @@
-## Copyright (C) 2010-2017 John W. Eaton
+## Copyright (C) 2010-2018 John W. Eaton
 ## Copyright (C) 2010 VZLU Prague
-## Copyright (C) 2017 Colin B. Macdonald
+## Copyright (C) 2017-2018 Colin B. Macdonald
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2017 Julian Schnidder
+## Copyright (C) 2008-2018 Julian Schnidder
 ##
 ## This file is part of Octave.
 ##

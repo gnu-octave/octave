@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2017 Fotios Kasolis
+## Copyright (C) 2012-2018 Fotios Kasolis
 ##
 ## This file is part of Octave.
 ##

@@ -1,5 +1,5 @@
-## Copyright (C) 2007-2017 Søren Hauberg
-## Copyright (C) 2012-2016 Carnë Draug
+## Copyright (C) 2007-2018 Søren Hauberg
+## Copyright (C) 2012-2018 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

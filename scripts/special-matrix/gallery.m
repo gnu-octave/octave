@@ -1,5 +1,5 @@
 ## Copyright (C) 1989-1995 Nicholas .J. Higham
-## Copyright (C) 2013-2016 Carnë Draug
+## Copyright (C) 2013-2018 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

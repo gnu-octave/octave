@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2017 Bill Denney, Robert Platt
+## Copyright (C) 2008-2018 Bill Denney, Robert Platt
 ##
 ## This file is part of Octave.
 ##

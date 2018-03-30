@@ -1,5 +1,5 @@
-## Copyright (C) 2017 Michael Leitner
-## Copyright (C) 2001-2017 Paul Kienzle
+## Copyright (C) 2017-2018 Michael Leitner
+## Copyright (C) 2001-2018 Paul Kienzle
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.

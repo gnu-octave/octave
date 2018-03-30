@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2017 Vytautas Jančauskas
-Copyright (C) 2016 Damjan Angelovski
+Copyright (C) 2013-2018 Vytautas Jančauskas
+Copyright (C) 2016-2018 Damjan Angelovski
 
 This file is part of Octave.
 

@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 use utf8;
 
-# Copyright (C) 2012-2017 Rik Wehbring
+# Copyright (C) 2012-2018 Rik Wehbring
 #
 # This file is part of Octave.
 #

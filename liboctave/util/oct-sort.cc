@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2017 David Bateman
+Copyright (C) 2003-2018 David Bateman
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 

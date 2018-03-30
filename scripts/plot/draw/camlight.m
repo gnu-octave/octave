@@ -1,4 +1,4 @@
-## Copyright (C) 2016-2017 Colin B. Macdonald
+## Copyright (C) 2016-2018 Colin B. Macdonald
 ##
 ## This file is part of Octave.
 ##

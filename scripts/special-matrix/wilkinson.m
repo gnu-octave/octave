@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2017 Peter Ekberg
+## Copyright (C) 1999-2018 Peter Ekberg
 ##
 ## This file is part of Octave.
 ##

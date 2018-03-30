@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2017 John W. Eaton
-Copyright (C) 2001-2017 Ben Sapp
+Copyright (C) 2017-2018 John W. Eaton
+Copyright (C) 2001-2018 Ben Sapp
 
 This file is part of Octave.
 

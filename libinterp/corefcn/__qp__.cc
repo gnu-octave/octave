@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2017 Gabriele Pannocchia
+Copyright (C) 2000-2018 Gabriele Pannocchia
 
 This file is part of Octave.
 

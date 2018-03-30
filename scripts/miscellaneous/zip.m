@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2017 Sylvain Pelissier
+## Copyright (C) 2006-2018 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2017 Benjamin Lindner
+Copyright (C) 2009-2018 Benjamin Lindner
 
 This file is part of Octave.
 

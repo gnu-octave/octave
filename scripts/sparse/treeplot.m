@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2017 Ivana Varekova
+## Copyright (C) 2005-2018 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2017 Michael Goffioul
+## Copyright (C) 2007-2018 Michael Goffioul
 ## Copyright (C) 2007-2009 David Bateman
 ##
 ## This file is part of Octave.

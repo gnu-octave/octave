@@ -1,4 +1,4 @@
-## Copyright (C) 2016 Cristiano Dorigo, Octave Arena
+## Copyright (C) 2016-2018 Cristiano Dorigo, Octave Arena
 ##
 ## This file is part of Octave.
 ##

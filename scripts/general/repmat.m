@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2017 Markus Bergholz
-## Copyright (C) 2000-2016 Paul Kienzle
+## Copyright (C) 2014-2018 Markus Bergholz
+## Copyright (C) 2000-2018 Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.

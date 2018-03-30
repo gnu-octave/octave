@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2017 John W. Eaton
-Copyright (C) 2008-2017 David Bateman
+Copyright (C) 2017-2018 John W. Eaton
+Copyright (C) 2008-2018 David Bateman
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2016-2017 Lachlan Andrew
+## Copyright (C) 2016-2018 Lachlan Andrew
 ## Copyright (C) 2012 Carnë Draug
 ##
 ## Octave is free software: you can redistribute it and/or modify it

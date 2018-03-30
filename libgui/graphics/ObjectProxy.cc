@@ -129,7 +129,23 @@ namespace QtHandles
     QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
                                Q_RETURN_ARG (uint8NDArray, retval));
 
-    return retval;
-  }
+    // FIXME: The following may fail for obscure reasons, see bug #53328.
+    //        In absence of a solution, we retry twice before calling error().
+    if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
+                                     Q_RETURN_ARG (uint8NDArray, retval)))
+      {
+        QThread::msleep (100);
+        if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
+                                         Q_RETURN_ARG (uint8NDArray, retval)))
+          {
+            QThread::msleep (200);
+            if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
+                                             Q_RETURN_ARG (uint8NDArray, retval)))
+              error ("getframe: unable to retrieve figure pixels");
+          }
+      }
+    
+     return retval;
+   }
 
 };

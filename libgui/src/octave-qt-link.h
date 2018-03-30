@@ -142,6 +142,8 @@ namespace octave
     void do_show_preferences (void);
 
     void do_show_doc (const std::string& file);
+    void do_register_doc (const std::string& file);
+    void do_unregister_doc (const std::string& file);
 
     void do_edit_variable (const std::string& name, const octave_value& val);
 
@@ -195,6 +197,10 @@ namespace octave
     void show_preferences_signal (void);
 
     void show_doc_signal (const QString& file);
+
+    void register_doc_signal (const QString& file);
+
+    void unregister_doc_signal (const QString& file);
 
     void edit_variable_signal (const QString& name, const octave_value& val);
 

@@ -1476,6 +1476,16 @@ namespace octave
     emit show_doc_signal (file);
   }
 
+  void main_window::handle_register_doc (const QString& file)
+  {
+    emit register_doc_signal (file);
+  }
+
+  void main_window::handle_unregister_doc (const QString& file)
+  {
+    emit unregister_doc_signal (file);
+  }
+
   void main_window::handle_octave_ready (void)
   {
     // actions after the startup files are executed
@@ -1984,6 +1994,14 @@ namespace octave
         connect (m_octave_qt_link,
                  SIGNAL (show_doc_signal (const QString &)),
                  this, SLOT (handle_show_doc (const QString &)));
+
+        connect (m_octave_qt_link,
+                 SIGNAL (register_doc_signal (const QString &)),
+                 this, SLOT (handle_register_doc (const QString &)));
+
+        connect (m_octave_qt_link,
+                 SIGNAL (unregister_doc_signal (const QString &)),
+                 this, SLOT (handle_unregister_doc (const QString &)));
       }
 
     // Defer initializing and executing the interpreter until after the main

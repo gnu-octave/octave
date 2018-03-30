@@ -76,6 +76,8 @@ namespace octave
     void selectAll (void);
 
     void load_ref (const QString & name);
+    void registerDoc (const QString & name);
+    void unregisterDoc (const QString & name);
 
   private slots:
 
@@ -90,6 +92,7 @@ namespace octave
     QHelpEngine *m_help_engine;
     documentation_browser *m_doc_browser;
     QComboBox *m_filter;
+    QString m_collection;
 
   };
 

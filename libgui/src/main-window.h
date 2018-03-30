@@ -127,6 +127,8 @@ namespace octave
     void open_file_signal (const QString& file, const QString& enc, int line);
 
     void show_doc_signal (const QString&);
+    void register_doc_signal (const QString&);
+    void unregister_doc_signal (const QString&);
 
     void insert_debugger_pointer_signal (const QString& file, int line);
     void delete_debugger_pointer_signal (const QString& file, int line);
@@ -243,6 +245,8 @@ namespace octave
                                    const QString& multimode);
 
     void handle_show_doc (const QString& file);
+    void handle_register_doc (const QString& file);
+    void handle_unregister_doc (const QString& file);
 
     void handle_octave_ready ();
     void handle_octave_finished (int);

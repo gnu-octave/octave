@@ -107,7 +107,7 @@ OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings"; export OCTAVE
 OCTAVE_FONTS_DIR="$top_srcdir/etc/fonts"; export OCTAVE_FONTS_DIR
 OCTAVE_JAVA_DIR="$builddir/scripts/java"; export OCTAVE_JAVA_DIR
 OCTAVE_LOCALE_DIR="$builddir/libgui/languages"; export OCTAVE_LOCALE_DIR
-OCTAVE_QTHELP_COLLECTION="$builddir/doc/interpreter/octave_interpreter.qhc"; export OCTAVE_QTHELP_COLLECTION
+OCTAVE_QTHELP_FILE="$builddir/doc/interpreter/octave_interpreter.qch"; export OCTAVE_QTHELP_FILE
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/site-rcfile"; export OCTAVE_SITE_INITFILE
 OCTAVE_VERSION_INITFILE="$top_srcdir/scripts/startup/version-rcfile"; export OCTAVE_VERSION_INITFILE
 

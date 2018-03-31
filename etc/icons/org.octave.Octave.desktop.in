@@ -2,6 +2,7 @@
 Name=GNU Octave
 Comment=Interactive programming environment for numerical computations
 Comment[de]=Interaktive Programmierumgebung für numerische Berechnungen
+Comment[ja]=数値計算のための対話的なプログラミング環境
 TryExec=%OCTAVE_PREFIX%/bin/octave
 Exec=%OCTAVE_PREFIX%/bin/octave --gui %f
 Icon=octave

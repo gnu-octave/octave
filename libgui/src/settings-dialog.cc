@@ -568,10 +568,10 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   read_terminal_colors (settings);
 
   // variable editor
-  ui->varedit_columnWidth->setText (settings->value ("variable_editor/column_width", "100").toString ());
+  ui->varedit_columnWidth->setValue (settings->value ("variable_editor/column_width", 100).toInt ());
   ui->varedit_autoFitColumnWidth->setChecked (settings->value ("variable_editor/autofit_column_width", false).toBool ());
   ui->varedit_autofitType->setCurrentIndex (settings->value ("autofit_type", 0).toInt ());
-  ui->varedit_rowHeight->setText (settings->value ("variable_editor/row_height", "2").toString ());
+  ui->varedit_rowHeight->setValue (settings->value ("variable_editor/row_height", 10).toInt ());
   ui->varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
 
   ui->varedit_font->setCurrentFont (QFont (settings->value ("variable_editor/font_name", settings->value ("terminal/fontName", "Courier New")).toString ()));
@@ -961,8 +961,8 @@ settings_dialog::write_changed_settings (bool closing)
   // Variable editor
   settings->setValue ("variable_editor/autofit_column_width", ui->varedit_autoFitColumnWidth->isChecked ());
   settings->setValue ("variable_editor/autofit_type", ui->varedit_autofitType->currentIndex ());
-  settings->setValue ("variable_editor/column_width", ui->varedit_columnWidth->text ());
-  settings->setValue ("variable_editor/row_height", ui->varedit_rowHeight->text ());
+  settings->setValue ("variable_editor/column_width", ui->varedit_columnWidth->value ());
+  settings->setValue ("variable_editor/row_height", ui->varedit_rowHeight->value ());
   settings->setValue ("variable_editor/autofit_row_height", ui->varedit_rowAutofit->isChecked ());
   settings->setValue ("variable_editor/use_terminal_font", ui->varedit_useTerminalFont->isChecked ());
   settings->setValue ("variable_editor/alternate_rows", ui->varedit_alternate->isChecked ());

@@ -581,7 +581,7 @@
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"双引号字符串></translation>
+        <translation>双引号字符串</translation>
     </message>
     <message>
         <location line="+3"/>

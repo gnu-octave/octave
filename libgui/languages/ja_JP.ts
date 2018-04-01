@@ -1667,7 +1667,7 @@ Save and add breakpoint, or cancel?</source>
     <message>
         <location line="-6"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
-        <translatio>閉じるのを中止しますか，変更を無視しますか?</translation>
+        <translation>閉じるのを中止しますか，変更を無視しますか?</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2666,7 +2666,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+3"/>
         <source>Show Command Window</source>
-        <translatio>コマンドウィンドウの表示</translation>
+        <translation>コマンドウィンドウの表示</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4491,7 +4491,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+65"/>
         <source>Comments (Octave)</source>
-        <translatio>コメント (Octave)</translation>
+        <translation>コメント (Octave)</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -4597,7 +4597,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+35"/>
         <source>Colors for variable attributes</source>
-        <translation>変数の属性の色anslation>
+        <translation>変数の属性の色</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4663,7 +4663,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+17"/>
         <source>20</source>
-        <translation>20<translation>
+        <translation>20</translation>
     </message>
     <message>
         <location line="+7"/>

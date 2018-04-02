@@ -598,11 +598,17 @@ endfor
 function
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-
-@deftypefn  {} {} function @var{outputs} = function (@var{input}, @dots{})
-@deftypefnx {} {} function {} function (@var{input}, @dots{})
-@deftypefnx {} {} function @var{outputs} = function
-Begin a function body with @var{outputs} as results and @var{inputs} as
-parameters.
+@deftypefn  {} {} function @var{outputs} = function_name (@var{input}, @dots{})
+@deftypefnx {} {} function {} function_name (@var{input}, @dots{})
+@deftypefnx {} {} function @var{outputs} = function_name
+Begin a function body with name @code{function_name}, with @var{outputs} as
+results, and with @var{inputs} as parameters.  The function can later be
+invoked in Octave using the syntax
+
+@example
+[@var{output1}, @var{output2}, @dots{}] = function_name (@var{input1}, @var{input2}, @dots{})
+@end example
+
 @seealso{return}
 @end deftypefn
 global

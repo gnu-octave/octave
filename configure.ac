@@ -2720,7 +2720,7 @@ do
 
   ## Check Java version is recent enough.
   AC_MSG_CHECKING([for Java version])
-  java_version=[`"$JAVA" -version 2>&1 | $SED -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)"/\1/p'`]
+  java_version=[`"$JAVA" -version 2>&1 | $SED -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)".*/\1/p'`]
   AC_MSG_RESULT([$java_version])
   java_major=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
   java_minor=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]

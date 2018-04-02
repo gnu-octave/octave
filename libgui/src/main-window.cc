@@ -1838,9 +1838,14 @@ namespace octave
 
         setWindowTitle ("Octave");
 
+// See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
+#if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
         setDockOptions (QMainWindow::AnimatedDocks
                         | QMainWindow::AllowNestedDocks
                         | QMainWindow::AllowTabbedDocks);
+#else
+        setDockNestingEnabled (true);
+#endif
 
         addDockWidget (Qt::RightDockWidgetArea, m_command_window);
         addDockWidget (Qt::RightDockWidgetArea, m_doc_browser_window);

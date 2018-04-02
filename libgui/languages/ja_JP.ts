@@ -579,7 +579,8 @@
         <location line="+3"/>
         <source>Single-quoted string</source>
         <translation>シングルクォートで囲まれた文字列</translation>
-    </message>    <message>
+    </message>
+    <message>
         <location line="+3"/>
         <source>Operator</source>
         <translation>演算子</translation>
@@ -1085,12 +1086,21 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+59"/>
+        <location filename="../src/documentation.cc" line="+74"/>
+        <location line="+10"/>
+        <location line="+211"/>
         <source>Octave Documentation</source>
         <translation>Octave ドキュメント</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-220"/>
+        <source>Could not copy help collection to temporary
+file. Search capabilities may be affected.
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Console Widget will be available.</source>
@@ -1116,6 +1126,11 @@ the Console Widget will be available.</source>
         <location line="-22"/>
         <source>Index</source>
         <translation>インデックス</translation>
+    </message>
+    <message>
+        <location line="+156"/>
+        <source>Unable to register help file %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1338,7 +1353,7 @@ for write: %2.</source>
     <message>
         <location line="+5"/>
         <source>Transpose Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">行の入れ替え</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1392,8 +1407,8 @@ for write: %2.</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>convert line endings to &amp;windows (crlf)</source>
-        <translation>行末文字を windows 仕様にする (CRLF)  (&amp;W)</translation>
+        <source>Convert Line Endings to &amp;Windows (CRLF)</source>
+        <translation>行末文字を Windows 仕様にする (CRLF) (&amp;W)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1585,11 +1600,6 @@ for write: %2.</source>
         <source>Editor</source>
         <translation>エディタ</translation>
     </message>
-    <message>
-        <location line="+207"/>
-        <source>&amp;%1 %2</source>
-        <translation>&amp;%1 %2</translation>
-    </message>
 </context>
 <context>
     <name>octave::file_editor_tab</name>
@@ -1731,7 +1741,7 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+20"/>
-        <source>The current codec %1
+        <source>The current encoding %1
 can not be applied.
 
 Please select another one or cancel saving!</source>
@@ -1741,14 +1751,13 @@ Please select another one or cancel saving!</source>
     <message>
         <location line="+11"/>
         <source>The current editor contents can not be encoded
-with the selected codec %1.
+with the selected encoding %1.
 Using it will result in data loss!
 
-Do you want to chose another codec?</source>
+Do you want to choose another encoding?</source>
         <translation>現在エディタ上のコンテンツを選択された
 コーデック %1 でエンコードできません．
-それを使用するとデータを消失します！
-</translation>
+それを使用するとデータを消失します！</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2156,7 +2165,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+209"/>
         <source>Replace Result</source>
-        <translation >置換結果</translation>
+        <translation>置換結果</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2466,12 +2475,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1724"/>
+        <location line="+1742"/>
         <source>About Octave</source>
         <translation>Octave について</translation>
     </message>
     <message>
-        <location line="-1603"/>
+        <location line="-1621"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2482,12 +2491,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1600"/>
+        <location line="+1618"/>
         <source>Browse directories</source>
         <translation>ディレクトリのブラウズ</translation>
     </message>
     <message>
-        <location line="-1444"/>
+        <location line="-1462"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave ファイル (*.m);;全てのファイル (*)</translation>
     </message>
@@ -2524,7 +2533,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="+909"/>
+        <location line="+927"/>
         <source>&amp;File</source>
         <translation>ファイル (&amp;F)</translation>
     </message>
@@ -3154,7 +3163,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+2"/>
         <source>Clear Command History</source>
-        <translation >コマンドヒストリのクリア</translation>
+        <translation>コマンドヒストリのクリア</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3346,7 +3355,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+2"/>
         <source>Move Tab Right</source>
-        <translation> type="unfinished"</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3892,16 +3901,11 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <source>Save Variable %1 As</source>
         <translation>変数 %1 を別名で保存</translation>
     </message>
-    <message>
-        <location line="+2"/>
-        <source>./%1.txt</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+123"/>
+        <location line="+125"/>
         <source>Cut</source>
         <translation>切り取り</translation>
     </message>
@@ -4187,7 +4191,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+19"/>
         <source>3D</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">3D</translation>
     </message>
     <message>
         <location line="+132"/>
@@ -4263,7 +4267,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>ツールバーの表示</translation>
     </message>
     <message>
-        <location line="+465"/>
+        <location line="+450"/>
+        <source>Wrap long lines at current window border</source>
+        <translation>現在のウィンドウの境界で長い行をラップ</translation>
+    </message>
+    <message>
+        <location line="+15"/>
         <source>Indentation</source>
         <translation>インデント</translation>
     </message>
@@ -4389,12 +4398,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     </message>
     <message>
         <location line="-173"/>
-        <location line="+834"/>
+        <location line="+854"/>
         <source>Font</source>
         <translation>フォント</translation>
     </message>
     <message>
-        <location line="-2026"/>
+        <location line="-2046"/>
         <source>Show line numbers</source>
         <translation>行番号の表示</translation>
     </message>
@@ -4539,12 +4548,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>背景</translation>
     </message>
     <message>
-        <location line="+38"/>
-        <source>Wrap long lines at curent window border</source>
-        <translation>現在のウィンドウの境界で長い行をラップ</translation>
-    </message>
-    <message>
-        <location line="+153"/>
+        <location line="+191"/>
         <source>Auto insert after &quot;if&quot; etc.</source>
         <translation>&quot;if&quot; などの後に自動挿入</translation>
     </message>
@@ -4580,12 +4584,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+851"/>
+        <location line="+800"/>
         <source>Font size</source>
         <translation>フォントサイズ</translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-604"/>
         <source>File Browser</source>
         <translation>ファイルブラウザ</translation>
     </message>
@@ -4656,17 +4660,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>変数エディタ</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+53"/>
         <source>Default row height</source>
         <translation>既定の行の幅</translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>20</source>
-        <translation>20</translation>
-    </message>
-    <message>
-        <location line="+7"/>
         <source>Default column width</source>
         <translation>既定の列の幅</translation>
     </message>
@@ -4676,22 +4675,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>端末のフォントを使用する</translation>
     </message>
     <message>
-        <location line="+27"/>
-        <source>2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+26"/>
         <source>Autofit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-63"/>
         <source>Plus font height</source>
         <translation>フォントの高さをプラス</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+77"/>
         <source>By Column</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4701,7 +4695,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+40"/>
         <source>Variable Editor Colors</source>
         <translation>変数エディタの色</translation>
     </message>
@@ -4711,7 +4705,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-287"/>
+        <location line="-290"/>
         <source>HttpProxy</source>
         <translation>HTTP プロキシ</translation>
     </message>
@@ -4719,7 +4713,6 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="-2179"/>
         <source>Icon set for dock widgets</source>
         <translation>Dock widgets のためのアイコンセット</translation>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-220"/>

@@ -203,9 +203,13 @@ namespace octave
     if (dock)
       {
         settings->setValue ("MainWindow/windowState", m_parent->saveState ());
+        // Stay window, otherwise will bounce back to window by default because
+        // there is no layout information for this widget in the saved settings.
+        setParent (m_parent, Qt::Window);
         m_parent->addDockWidget (Qt::TopDockWidgetArea, this);
         // recover old window states, hide and re-show new added widget
         m_parent->restoreState (settings->value ("MainWindow/windowState").toByteArray ());
+        setFloating (false);
         focus ();
         QApplication::setActiveWindow (this);
         m_title_widget->setToolTip ("");

@@ -424,12 +424,24 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+59"/>
+        <location filename="../src/documentation.cc" line="+74"/>
+        <location line="+10"/>
+        <location line="+211"/>
         <source>Octave Documentation</source>
         <translation>Octave Dokumentation</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-220"/>
+        <source>Could not copy help collection to temporary
+file. Search capabilities may be affected.
+%1</source>
+        <translation>Hilfe-Sammlung konnte nicht in temporäre
+Datei kopiert werden. Suchfunktionen
+könnten beeinträchtigt sein.
+%1</translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Console Widget will be available.</source>
@@ -457,6 +469,11 @@ Das Betrachten der Hilfe ist auf das Befehlsfenster beschränkt.</translation>
         <location line="-22"/>
         <source>Index</source>
         <translation>Index</translation>
+    </message>
+    <message>
+        <location line="+156"/>
+        <source>Unable to register help file %1.</source>
+        <translation>Hilfe-Datei %1 konnte nicht registriert werden.</translation>
     </message>
 </context>
 <context>
@@ -1095,7 +1112,7 @@ Wählen Sie eine andere Kodierung oder brechen Sie das Speichern ab!</translatio
 with the selected encoding %1.
 Using it will result in data loss!
 
-Do you want to chose another encoding?</source>
+Do you want to choose another encoding?</source>
         <translation>Der Text kann mit der gewählten
 Zeichenkodierung %1 nicht ohne Datenverlust
 gespeichert werden!
@@ -1818,12 +1835,12 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1724"/>
+        <location line="+1742"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
     <message>
-        <location line="-1603"/>
+        <location line="-1621"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -1834,12 +1851,12 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1600"/>
+        <location line="+1618"/>
         <source>Browse directories</source>
         <translation>Verzeichnisse durchsuchen</translation>
     </message>
     <message>
-        <location line="-1444"/>
+        <location line="-1462"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave Dateien (*.m);;Alle Dateien (*)</translation>
     </message>
@@ -1876,7 +1893,7 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="+909"/>
+        <location line="+927"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
@@ -3252,7 +3269,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+123"/>
+        <location line="+125"/>
         <source>Cut</source>
         <translation>Ausschneiden</translation>
     </message>
@@ -3679,12 +3696,12 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     </message>
     <message>
         <location line="-173"/>
-        <location line="+834"/>
+        <location line="+854"/>
         <source>Font</source>
         <translation>Schriftart</translation>
     </message>
     <message>
-        <location line="-2026"/>
+        <location line="-2046"/>
         <source>Show line numbers</source>
         <translation>Zeilennummern anzeigen</translation>
     </message>
@@ -3799,12 +3816,12 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     </message>
     <message>
         <location line="+52"/>
-        <location line="+851"/>
+        <location line="+800"/>
         <source>Font size</source>
         <translation>Schriftgröße</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-677"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation>Wechsle ins Terminalfenster, wenn ein Befehl von einem anderen Fenster aus gestartet wird</translation>
     </message>
@@ -4035,17 +4052,12 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
         <translation>Variableneditor</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+53"/>
         <source>Default row height</source>
         <translation>Standard-Zeilenhöhe</translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>20</source>
-        <translation>20</translation>
-    </message>
-    <message>
-        <location line="+7"/>
         <source>Default column width</source>
         <translation>Standard-Spaltenbreite</translation>
     </message>
@@ -4055,22 +4067,17 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
         <translation>Schriftart des Befehlsfensters verwenden</translation>
     </message>
     <message>
-        <location line="+27"/>
-        <source>2</source>
-        <translation>2</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+26"/>
         <source>Autofit</source>
         <translation>automatisch</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-63"/>
         <source>Plus font height</source>
         <translation>plus Schrifthöhe</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+77"/>
         <source>By Column</source>
         <translation>Je Spalte</translation>
     </message>
@@ -4080,7 +4087,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
         <translation>Gleichmäßig</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+40"/>
         <source>Variable Editor Colors</source>
         <translation>Farben für Variableneditor</translation>
     </message>
@@ -4090,7 +4097,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
         <translation>Zeilen abwechselnd einfärben</translation>
     </message>
     <message>
-        <location line="-287"/>
+        <location line="-290"/>
         <source>HttpProxy</source>
         <translation>HTTP Proxy</translation>
     </message>

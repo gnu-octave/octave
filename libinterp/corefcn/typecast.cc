@@ -82,6 +82,25 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
   return retval;
 }
 
+template <typename ArrayType>
+static ArrayType
+reinterpret_int_copy (const void *data, octave_idx_type byte_size,
+                      const dim_vector& old_dims)
+{
+  typedef typename ArrayType::element_type T;
+  typedef typename T::val_type VT;
+  octave_idx_type n = byte_size / sizeof (T);
+
+  if (n * static_cast<int> (sizeof (T)) != byte_size)
+    error ("typecast: incorrect number of input values to make output value");
+
+  ArrayType retval (get_vec_dims (old_dims, n));
+  VT *dest = reinterpret_cast<VT *> (retval.fortran_vec ());
+  std::memcpy (dest, data, n * sizeof (VT));
+
+  return retval;
+}
+
 DEFUN (typecast, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{y} =} typecast (@var{x}, "@var{class}")
@@ -218,27 +237,27 @@ typecast (@var{x}, "uint8")
   else if (numclass[0] == 'i')
     {
       if (numclass == "int8")
-        retval = reinterpret_copy<int8NDArray> (data, byte_size, old_dims);
+        retval = reinterpret_int_copy<int8NDArray> (data, byte_size, old_dims);
       else if (numclass == "int16")
-        retval = reinterpret_copy<int16NDArray> (data, byte_size, old_dims);
+        retval = reinterpret_int_copy<int16NDArray> (data, byte_size, old_dims);
       else if (numclass == "int32")
-        retval = reinterpret_copy<int32NDArray> (data, byte_size, old_dims);
+        retval = reinterpret_int_copy<int32NDArray> (data, byte_size, old_dims);
       else if (numclass == "int64")
-        retval = reinterpret_copy<int64NDArray> (data, byte_size, old_dims);
+        retval = reinterpret_int_copy<int64NDArray> (data, byte_size, old_dims);
     }
   else if (numclass[0] == 'u')
     {
       if (numclass == "uint8")
-        retval = reinterpret_copy<uint8NDArray> (data, byte_size, old_dims);
+        retval = reinterpret_int_copy<uint8NDArray> (data, byte_size, old_dims);
       else if (numclass == "uint16")
-        retval = reinterpret_copy<uint16NDArray> (data, byte_size,
-                                                  old_dims);
+        retval = reinterpret_int_copy<uint16NDArray> (data, byte_size,
+                                                      old_dims);
       else if (numclass == "uint32")
-        retval = reinterpret_copy<uint32NDArray> (data, byte_size,
-                                                  old_dims);
+        retval = reinterpret_int_copy<uint32NDArray> (data, byte_size,
+                                                      old_dims);
       else if (numclass == "uint64")
-        retval = reinterpret_copy<uint64NDArray> (data, byte_size,
-                                                  old_dims);
+        retval = reinterpret_int_copy<uint64NDArray> (data, byte_size,
+                                                      old_dims);
     }
   else if (numclass == "single")
     retval = reinterpret_copy<FloatNDArray> (data, byte_size, old_dims);

@@ -138,7 +138,7 @@ namespace QtHandles
             octave::gl2ps_print (figObj, file_cmd.toStdString (),
                                  term.toStdString ());
           }
-        catch (octave::execution_exception e)
+        catch (octave::execution_exception& e)
           {
             octave_link::post_exception (std::current_exception ());
             end_rendering ();

@@ -9,7 +9,7 @@ This page shows the tasks to be completed before the GUI release is finalized.
 
 <!----------------------------------------------------------------------------->
 # Update gnulib to latest version
-# Must occur first as it could resolve, or create new, bug reports
+# Must occur first as it could resolve existing, or create new, bug reports
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # File bug reports for all outstanding bugs known, but not reported
@@ -30,6 +30,7 @@ This page shows the tasks to be completed before the GUI release is finalized.
 <!----------------------------------------------------------------------------->
 # GPL License activities
 #* Update Copyright statements for all source controlled files
+#* Update dates in any other locations (launch message, citation, etc.)
 #* Add any new contributors to contributors.in
 #: Completion Date:
 <!----------------------------------------------------------------------------->
@@ -40,10 +41,10 @@ This page shows the tasks to be completed before the GUI release is finalized.
 #* C++ style check.  Completion Date:
 <!----------------------------------------------------------------------------->
 # Run lint checker on code base
-#* cppcheck, Clang sanitize, etc.
+#* cppcheck, -fsanitize, etc.
 #: Completion Date:
 <!----------------------------------------------------------------------------->
-# Verify 'make check' is passing on all buildbot combinations of OS and compiler
+# Verify 'make check' is passing on all buildbot combinations of OS and compilers
 #* Start discussion on octave-maintainers list about which failing tests must be fixed
 #* Identify and fix any tests determined critical in step above
 #: Completion Date:

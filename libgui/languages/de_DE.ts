@@ -435,7 +435,10 @@
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe-Sammlung konnte nicht in temporäre
+Datei kopiert werden. Suchfunktionen
+könnten beeinträchtigt sein.
+%1</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -470,7 +473,7 @@ Das Betrachten der Hilfe ist auf das Befehlsfenster beschränkt.</translation>
     <message>
         <location line="+156"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe-Datei %1 konnte nicht registriert werden.</translation>
     </message>
 </context>
 <context>
@@ -1110,7 +1113,11 @@ with the selected encoding %1.
 Using it will result in data loss!
 
 Do you want to choose another encoding?</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Text kann mit der gewählten
+Zeichenkodierung %1 nicht ohne Datenverlust
+gespeichert werden!
+
+Andere Zeichenkodierung wählen?</translation>
     </message>
     <message>
         <location line="+85"/>

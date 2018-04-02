@@ -1408,7 +1408,7 @@ for write: %2.</source>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished"></translation>
+        <translation>行末文字を Windows 仕様にする (CRLF) (&amp;W)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1745,7 +1745,8 @@ Do you want to choose another name?</source>
 can not be applied.
 
 Please select another one or cancel saving!</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のコーデック %1
+は適用できません．別のもの選択するが保存をキャンセルしてください．</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1754,7 +1755,9 @@ with the selected encoding %1.
 Using it will result in data loss!
 
 Do you want to choose another encoding?</source>
-        <translation type="unfinished"></translation>
+        <translation>現在エディタ上のコンテンツを選択された
+コーデック %1 でエンコードできません．
+それを使用するとデータを消失します！</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -3352,7 +3355,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+2"/>
         <source>Move Tab Right</source>
-        <translation> type=&quot;unfinished&quot;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
@@ -4266,7 +4269,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+450"/>
         <source>Wrap long lines at current window border</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のウィンドウの境界で長い行をラップ</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -4709,7 +4712,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-2179"/>
         <source>Icon set for dock widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Dock widgets のためのアイコンセット</translation>
     </message>
     <message>
         <location line="-220"/>

@@ -40,6 +40,11 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     the new option `--gui'.  The previous `--force-gui' will continue to
     work and maps to `--gui' but will be removed in Octave 4.8.
 
+ ** A known bug in Qt (https://bugreports.qt.io/browse/QTBUG-55357) is
+    addressed by limiting GUI sub-panel relocation capabilities for Qt
+    versions in the range >= 5.6.1 and < 5.7.1.  However, this may not
+    thoroughly avoid issues on all platforms.
+
  ** A new container data type--containers.Map--is available.  Map is a
     key/value storage container (a.k.a, a hash) that efficiently allows
     storing and retrieving values by name, rather than by position which

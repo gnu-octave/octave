@@ -9432,6 +9432,7 @@ uicontextmenu::~uicontextmenu (void)
 %!   assert (get (hax, "uicontextmenu"), hctx2);
 %!   assert (get (hf, "children"), [hctx2; hctx1; hax]);
 %!   delete (hctx2);
+%!   pause (.005);
 %!   assert (get (hf, "uicontextmenu"), []);
 %!   assert (get (hax, "uicontextmenu"), []);
 %!   assert (get (hf, "children"), [hctx1; hax]);

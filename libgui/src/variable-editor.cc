@@ -997,6 +997,16 @@ namespace octave
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setAttribute (Qt::WA_AlwaysShowToolTips);
 
+    m_main->setParent (this);
+// See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
+#if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
+    m_main->setDockOptions (QMainWindow::AnimatedDocks |
+                            QMainWindow::AllowNestedDocks |
+                            QMainWindow::VerticalTabs);
+#else
+    m_main->setDockNestingEnabled (true);
+#endif
+
     // Tool Bar.
 
     construct_tool_bar ();
@@ -1017,9 +1027,6 @@ namespace octave
     central_mdiarea->resize (QSize (0, 0));
     m_main->setCentralWidget (central_mdiarea);
 
-    m_main->setParent (this);
-    m_main->setDockOptions (QMainWindow::AllowNestedDocks |
-                            QMainWindow::VerticalTabs);
     setWidget (m_main);
 
     connect (this, SIGNAL (command_signal (const QString&)),
@@ -1081,8 +1088,6 @@ namespace octave
 
     variable_dock_widget *page = new variable_dock_widget (this);
     page->setObjectName (name);
-    page->setAllowedAreas(Qt::LeftDockWidgetArea |
-                          Qt::RightDockWidgetArea);
     m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
 
     connect (QApplication::instance(), SIGNAL (focusChanged (QWidget *, QWidget *)),

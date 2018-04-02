@@ -270,6 +270,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
             default:
               error ("quad: TOL must be a 1 or 2-element vector");
             }
+          OCTAVE_FALLTHROUGH;
 
         case 3:
           if (indefinite)
@@ -365,6 +366,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
             default:
               error ("quad: TOL must be a 1 or 2-element vector");
             }
+          OCTAVE_FALLTHROUGH;
 
         case 3:
           if (indefinite)

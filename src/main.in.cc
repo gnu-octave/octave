@@ -243,7 +243,6 @@ main (int argc, char **argv)
           // require less memory.  Don't pass the --no-gui-libs option
           // on as that option is not recognized by Octave.
 
-          start_gui = false;
           gui_libs = false;
           file = octave_cli;
         }
@@ -301,6 +300,25 @@ main (int argc, char **argv)
         }
       else
         new_argv[k++] = argv[i];
+    }
+
+  // At this point, gui_libs and start_gui are just about options, not
+  // the environment.  Exit if they don't make sense.
+
+  if (start_gui)
+    {
+      if (! gui_libs)
+        {
+          std::cerr << "octave: conflicting options: --no-gui-libs and --gui"
+                    << std::endl;
+          return 1;
+        }
+
+#if ! defined (HAVE_OCTAVE_QT_GUI)
+      std::cerr << "octave: GUI features missing or disabled in this build"
+                << std::endl;
+      return 1;
+#endif
     }
 
   new_argv[k] = nullptr;

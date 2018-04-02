@@ -296,7 +296,11 @@ endfunction
 ## a == 1.
 function y = gammainc_a1 (x, tail)
   if (strcmp (tail, "lower"))
-    y = 1 - exp (-x);
+    if (abs (x) < 1/2)
+      y = - expm1 (-x);
+    else
+      y = 1 - exp (-x);
+    endif
   elseif (strcmp (tail, "upper"))
     y = exp (-x);
   elseif (strcmp (tail, "scaledlower"))
@@ -510,6 +514,10 @@ endfunction
 %!assert (gammainc ([1e-02, 1e-03, 1e-5, 1e-9, 1e-14], 2), ...
 %!        [0.0000496679133402659, 4.99666791633340e-7, 4.99996666679167e-11, ...
 %!        4.99999999666667e-19, 4.99999999999997e-29], -1e-12);
+
+%!test <*53543>
+%! y_exp = 9.995001666250085e-04;
+%! assert (gammainc (1/1000, 1), y_exp, -eps);
 
 ## FIXME: should this be tagged with a bug report number?
 %!xtest

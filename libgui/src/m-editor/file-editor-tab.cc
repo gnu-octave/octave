@@ -2256,7 +2256,7 @@ namespace octave
                                         tr ("The current editor contents can not be encoded\n"
                                             "with the selected encoding %1.\n"
                                             "Using it will result in data loss!\n\n"
-                                            "Do you want to chose another encoding?").arg (_encoding),
+                                            "Do you want to choose another encoding?").arg (_encoding),
                                         QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
         if (ans == QMessageBox::Yes)

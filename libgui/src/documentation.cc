@@ -200,8 +200,8 @@ namespace octave
         namefilter.append ("*" + bname + "*");
         foreach (QFileInfo fi, dir.entryInfoList (namefilter))
           {
-            QDir tmpdir (fi.absoluteFilePath ());
-            tmpdir.removeRecursively ();
+            std::string file_name = fi.absoluteFilePath ().toStdString ();
+            sys::recursive_rmdir (file_name);
           }
 
         file.remove();

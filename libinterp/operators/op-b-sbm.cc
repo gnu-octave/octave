@@ -94,8 +94,8 @@ install_b_sbm_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_scalar, octave_sparse_bool_matrix, s_sbm);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_sparse_bool_matrix,
-                      octave_bool_matrix);
+                         octave_bool_matrix);
 
   INSTALL_WIDENOP_TI (ti, octave_bool, octave_sparse_bool_matrix,
-                   sparse_bool_matrix_conv);
+                      sparse_bool_matrix_conv);
 }

@@ -449,7 +449,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       if (comp_q == 'V')
         std::cout << "qz: balancing done; QQ=" << std::endl << QQ << std::endl;
 #endif
-  }
+    }
 
   // then right
   if (comp_z == 'V')
@@ -507,7 +507,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn,
                  F77_DBLE_CMPLX_ARG (CZ.fortran_vec ()), nn,
                  F77_DBLE_CMPLX_ARG (cwork.fortran_vec ()), nn,
-                                     rwork.fortran_vec (), info
+                 rwork.fortran_vec (), info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
@@ -1081,7 +1081,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     default:
       error ("qz: too many return arguments");
       break;
-  }
+    }
 
 #if defined (DEBUG)
   std::cout << "qz: exiting (at long last)" << std::endl;

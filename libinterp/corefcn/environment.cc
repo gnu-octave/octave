@@ -58,9 +58,9 @@ static void append_to_shell_path (const std::string& exec_path)
       // FIXME: should we search for the elements individually, and
       // only append those that are missing?
 
-    std::string path_sep = octave::directory_path::path_sep_str ();
+      std::string path_sep = octave::directory_path::path_sep_str ();
 
-    if (shell_path.find (exec_path) == std::string::npos)
+      if (shell_path.find (exec_path) == std::string::npos)
         octave::sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
     }
 }

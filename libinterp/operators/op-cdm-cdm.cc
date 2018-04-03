@@ -98,19 +98,23 @@ install_cdm_cdm_ops (octave::type_info& ti)
   INSTALL_UNOP_TI (ti, op_transpose, octave_complex_diag_matrix, transpose);
   INSTALL_UNOP_TI (ti, op_hermitian, octave_complex_diag_matrix, hermitian);
 
-  INSTALL_BINOP_TI (ti, op_add, octave_complex_diag_matrix, octave_complex_diag_matrix,
-                 add);
-  INSTALL_BINOP_TI (ti, op_sub, octave_complex_diag_matrix, octave_complex_diag_matrix,
-                 sub);
-  INSTALL_BINOP_TI (ti, op_mul, octave_complex_diag_matrix, octave_complex_diag_matrix,
-                 mul);
-  INSTALL_BINOP_TI (ti, op_div, octave_complex_diag_matrix, octave_complex_diag_matrix,
-                 div);
+  INSTALL_BINOP_TI (ti, op_add, octave_complex_diag_matrix,
+                    octave_complex_diag_matrix,
+                    add);
+  INSTALL_BINOP_TI (ti, op_sub, octave_complex_diag_matrix,
+                    octave_complex_diag_matrix,
+                    sub);
+  INSTALL_BINOP_TI (ti, op_mul, octave_complex_diag_matrix,
+                    octave_complex_diag_matrix,
+                    mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_complex_diag_matrix,
+                    octave_complex_diag_matrix,
+                    div);
   INSTALL_BINOP_TI (ti, op_ldiv, octave_complex_diag_matrix,
-                 octave_complex_diag_matrix, ldiv);
+                    octave_complex_diag_matrix, ldiv);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_complex_diag_matrix, octave_complex_matrix,
-                      octave_complex_matrix);
+                         octave_complex_matrix);
   INSTALL_WIDENOP_TI (ti, octave_complex_diag_matrix, octave_complex_matrix,
-                   complex_diag_matrix_to_complex_matrix);
+                      complex_diag_matrix_to_complex_matrix);
 }

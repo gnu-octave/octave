@@ -1238,22 +1238,22 @@ protected:
                  get_name ().c_str (), maxval.first);
       }
 
-      if (finite_constraint == NO_CHECK) { /* do nothing */ }
-      else if (finite_constraint == FINITE)
-        {
-          if (! octave::math::isfinite (new_val))
-            error (R"(set: "%s" must be finite)", get_name ().c_str ());
-        }
-      else if (finite_constraint == NOT_NAN)
-        {
-          if (octave::math::isnan (new_val))
-            error (R"(set: "%s" must not be nan)", get_name ().c_str ());
-        }
-      else if (finite_constraint == NOT_INF)
-        {
-          if (octave::math::isinf (new_val))
-            error (R"(set: "%s" must not be infinite)", get_name ().c_str ());
-        }
+    if (finite_constraint == NO_CHECK) { /* do nothing */ }
+    else if (finite_constraint == FINITE)
+      {
+        if (! octave::math::isfinite (new_val))
+          error (R"(set: "%s" must be finite)", get_name ().c_str ());
+      }
+    else if (finite_constraint == NOT_NAN)
+      {
+        if (octave::math::isnan (new_val))
+          error (R"(set: "%s" must not be nan)", get_name ().c_str ());
+      }
+    else if (finite_constraint == NOT_INF)
+      {
+        if (octave::math::isinf (new_val))
+          error (R"(set: "%s" must not be infinite)", get_name ().c_str ());
+      }
 
     if (new_val != current_val)
       {
@@ -2381,7 +2381,7 @@ protected:
     graphics_handle __myhandle__ fhrs , mh
   END_PROPERTIES
 
-    virtual void update_handlevisibility (void);
+  virtual void update_handlevisibility (void);
 
 protected:
   struct cmp_caseless_str
@@ -4317,10 +4317,10 @@ public:
 
   protected:
     void init (void)
-      {
-        linewidth.add_constraint ("min", 0, false);
-        markersize.add_constraint ("min", 0, false);
-      }
+    {
+      linewidth.add_constraint ("min", 0, false);
+      markersize.add_constraint ("min", 0, false);
+    }
 
   private:
     Matrix compute_xlim (void) const;

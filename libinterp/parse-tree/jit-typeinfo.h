@@ -120,15 +120,15 @@ namespace octave
   {
     enum
     type
-      {
-        // internal to jit
-        internal,
+    {
+      // internal to jit
+      internal,
 
-        // an external C call
-        external,
+      // an external C call
+      external,
 
-        length
-      };
+      length
+    };
   }
 
   // Used to keep track of estimated (infered) types during JIT.  This is a

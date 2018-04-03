@@ -665,7 +665,8 @@ feval (const octave_value_list& args, int nargout = 0)
 
 OCTAVE_DEPRECATED (4.4, "use 'octave::eval_string' instead")
 static inline octave_value_list
-eval_string (const std::string& str, bool silent, int& parse_status, int nargout)
+eval_string (const std::string& str, bool silent, int& parse_status,
+             int nargout)
 {
   return octave::eval_string (str, silent, parse_status, nargout);
 }

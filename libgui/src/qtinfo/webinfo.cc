@@ -82,7 +82,7 @@ namespace octave
     _search_line_edit = new QLineEdit (this);
 #if defined (HAVE_QLINEEDIT_SETPLACEHOLDERTEXT)
     _search_line_edit->setPlaceholderText (
-                                           tr ("Type here and press \'Return\' to search"));
+      tr ("Type here and press \'Return\' to search"));
 #endif
     hbox_layout->addWidget (_search_line_edit);
 
@@ -101,7 +101,7 @@ namespace octave
     connect (_tab_bar, SIGNAL (close_current_tab_signal (bool)),
              this, SLOT (request_close_tab (bool)));
     connect (_tab_bar, SIGNAL (tabCloseRequested (int)),
-              this, SLOT (close_tab (int)));
+             this, SLOT (close_tab (int)));
     connect (_tab_bar, SIGNAL (currentChanged (int)), this,
              SLOT (current_tab_changed (int)));
     connect (_zoom_in_button, SIGNAL (clicked ()), this, SLOT (zoom_in ()));
@@ -140,11 +140,11 @@ namespace octave
         connect (a, SIGNAL (triggered ()), receiver, member);
       }
 
-      addAction (a);  // important for shortcut context
-      a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+    addAction (a);  // important for shortcut context
+    a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 
-      return a;
-    }
+    return a;
+  }
 
   // Slot for the close tab action
   void webinfo::request_close_tab (bool)

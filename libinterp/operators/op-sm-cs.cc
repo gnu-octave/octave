@@ -160,12 +160,13 @@ install_sm_cs_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_el_mul, octave_sparse_matrix, octave_complex, el_mul);
   INSTALL_BINOP_TI (ti, op_el_div, octave_sparse_matrix, octave_complex, el_div);
   INSTALL_BINOP_TI (ti, op_el_pow, octave_sparse_matrix, octave_complex, el_pow);
-  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_sparse_matrix, octave_complex, el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_sparse_matrix, octave_complex,
+                    el_ldiv);
   INSTALL_BINOP_TI (ti, op_el_and, octave_sparse_matrix, octave_complex, el_and);
   INSTALL_BINOP_TI (ti, op_el_or, octave_sparse_matrix, octave_complex, el_or);
 
   INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_complex, sm_cs);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_complex,
-                      octave_sparse_complex_matrix);
+                         octave_sparse_complex_matrix);
 }

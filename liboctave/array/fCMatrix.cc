@@ -882,7 +882,8 @@ FloatComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
     info = -1;
   else
     {
-      F77_XFCN (cgetrf, CGETRF, (nc, nc, F77_CMPLX_ARG (tmp_data), nr, pipvt, tmp_info));
+      F77_XFCN (cgetrf, CGETRF, (nc, nc, F77_CMPLX_ARG (tmp_data), nr, pipvt,
+                                 tmp_info));
 
       info = tmp_info;
     }
@@ -1461,7 +1462,8 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
         info = -1;
       else
         {
-          F77_XFCN (cgetrf, CGETRF, (nr, nr, F77_CMPLX_ARG (tmp_data), nr, pipvt, tmp_info));
+          F77_XFCN (cgetrf, CGETRF, (nr, nr, F77_CMPLX_ARG (tmp_data), nr, pipvt,
+                                     tmp_info));
 
           info = tmp_info;
         }
@@ -2022,7 +2024,8 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
             info = -2;
           else
             {
-              F77_XFCN (cgetrf, CGETRF, (nr, nr, F77_CMPLX_ARG (tmp_data), nr, pipvt, tmp_info));
+              F77_XFCN (cgetrf, CGETRF, (nr, nr, F77_CMPLX_ARG (tmp_data), nr, pipvt,
+                                         tmp_info));
 
               info = tmp_info;
             }
@@ -2536,9 +2539,9 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
         nlvl = 0;
 
       F77_INT lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
-                               + 3*smlsiz*nrhs
-                               + std::max ((smlsiz+1)*(smlsiz+1),
-                                           n*(1+nrhs) + 2*nrhs);
+                       + 3*smlsiz*nrhs
+                       + std::max ((smlsiz+1)*(smlsiz+1),
+                                   n*(1+nrhs) + 2*nrhs);
       if (lrwork < 1)
         lrwork = 1;
       Array<float> rwork (dim_vector (lrwork, 1));
@@ -2759,7 +2762,7 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
         nlvl = 0;
 
       F77_INT lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
-                               + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
+                       + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
       if (lrwork < 1)
         lrwork = 1;
       Array<float> rwork (dim_vector (lrwork, 1));

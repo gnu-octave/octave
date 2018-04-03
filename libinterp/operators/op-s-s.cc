@@ -169,7 +169,8 @@ install_s_s_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_scalar, octave_scalar, s_s);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_scalar, octave_scalar, octave_matrix);
-  INSTALL_ASSIGNCONV_TI (ti, octave_float_scalar, octave_scalar, octave_float_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_float_scalar, octave_scalar,
+                         octave_float_matrix);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_scalar, octave_null_matrix, octave_matrix);
   INSTALL_ASSIGNCONV_TI (ti, octave_scalar, octave_null_str, octave_matrix);

@@ -129,5 +129,6 @@ install_cs_m_ops (octave::type_info& ti)
 
   INSTALL_CATOP_TI (ti, octave_complex, octave_matrix, cs_m);
 
-  INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_matrix, octave_complex_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_matrix,
+                         octave_complex_matrix);
 }

@@ -118,69 +118,99 @@ install_str_str_ops (octave::type_info& ti)
   INSTALL_UNOP_TI (ti, op_hermitian, octave_char_matrix_str, transpose);
   INSTALL_UNOP_TI (ti, op_hermitian, octave_char_matrix_sq_str, transpose);
 
-  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_str, octave_char_matrix_str, lt);
-  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_str, octave_char_matrix_sq_str, lt);
-  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_sq_str, octave_char_matrix_str, lt);
-  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
-                 lt);
+  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_str, octave_char_matrix_str,
+                    lt);
+  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_str, octave_char_matrix_sq_str,
+                    lt);
+  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_sq_str, octave_char_matrix_str,
+                    lt);
+  INSTALL_BINOP_TI (ti, op_lt, octave_char_matrix_sq_str,
+                    octave_char_matrix_sq_str,
+                    lt);
 
-  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_str, octave_char_matrix_str, le);
-  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_str, octave_char_matrix_sq_str, le);
-  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_sq_str, octave_char_matrix_str, le);
-  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
-                 le);
+  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_str, octave_char_matrix_str,
+                    le);
+  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_str, octave_char_matrix_sq_str,
+                    le);
+  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_sq_str, octave_char_matrix_str,
+                    le);
+  INSTALL_BINOP_TI (ti, op_le, octave_char_matrix_sq_str,
+                    octave_char_matrix_sq_str,
+                    le);
 
-  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_str, octave_char_matrix_str, eq);
-  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_str, octave_char_matrix_sq_str, eq);
-  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_sq_str, octave_char_matrix_str, eq);
-  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
-                 eq);
+  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_str, octave_char_matrix_str,
+                    eq);
+  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_str, octave_char_matrix_sq_str,
+                    eq);
+  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_sq_str, octave_char_matrix_str,
+                    eq);
+  INSTALL_BINOP_TI (ti, op_eq, octave_char_matrix_sq_str,
+                    octave_char_matrix_sq_str,
+                    eq);
 
-  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_str, octave_char_matrix_str, ge);
-  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_str, octave_char_matrix_sq_str, ge);
-  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_sq_str, octave_char_matrix_str, ge);
-  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
-                 ge);
+  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_str, octave_char_matrix_str,
+                    ge);
+  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_str, octave_char_matrix_sq_str,
+                    ge);
+  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_sq_str, octave_char_matrix_str,
+                    ge);
+  INSTALL_BINOP_TI (ti, op_ge, octave_char_matrix_sq_str,
+                    octave_char_matrix_sq_str,
+                    ge);
 
-  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_str, octave_char_matrix_str, gt);
-  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_str, octave_char_matrix_sq_str, gt);
-  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_sq_str, octave_char_matrix_str, gt);
-  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
-                 gt);
+  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_str, octave_char_matrix_str,
+                    gt);
+  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_str, octave_char_matrix_sq_str,
+                    gt);
+  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_sq_str, octave_char_matrix_str,
+                    gt);
+  INSTALL_BINOP_TI (ti, op_gt, octave_char_matrix_sq_str,
+                    octave_char_matrix_sq_str,
+                    gt);
 
-  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_str, octave_char_matrix_str, ne);
-  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_str, octave_char_matrix_sq_str, ne);
-  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_sq_str, octave_char_matrix_str, ne);
-  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
-                 ne);
+  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_str, octave_char_matrix_str,
+                    ne);
+  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_str, octave_char_matrix_sq_str,
+                    ne);
+  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_sq_str, octave_char_matrix_str,
+                    ne);
+  INSTALL_BINOP_TI (ti, op_ne, octave_char_matrix_sq_str,
+                    octave_char_matrix_sq_str,
+                    ne);
 
   INSTALL_CATOP_TI (ti, octave_char_matrix_str, octave_char_matrix_str, str_str);
-  INSTALL_CATOP_TI (ti, octave_char_matrix_str, octave_char_matrix_sq_str, str_str);
-  INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_char_matrix_str, str_str);
-  INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_char_matrix_sq_str, str_str);
+  INSTALL_CATOP_TI (ti, octave_char_matrix_str, octave_char_matrix_sq_str,
+                    str_str);
+  INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_char_matrix_str,
+                    str_str);
+  INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
+                    str_str);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str, octave_char_matrix_str,
-                    assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str,
-                    octave_char_matrix_sq_str,
-                    assign);
+                       octave_char_matrix_str,
+                       assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str,
+                       octave_char_matrix_sq_str,
+                       assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str,
-                    octave_char_matrix_str,
-                    assign);
+                       octave_char_matrix_str,
+                       assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str,
-                    octave_char_matrix_sq_str, assign);
+                       octave_char_matrix_sq_str, assign);
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str, octave_null_matrix,
-                    null_assign);
+                       null_assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str, octave_null_str,
-                    null_assign);
+                       null_assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str, octave_null_sq_str,
-                    null_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str, octave_null_matrix,
-                    null_assign);
+                       null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str,
+                       octave_null_matrix,
+                       null_assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str, octave_null_str,
-                    null_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str, octave_null_sq_str,
-                    null_assign);
+                       null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str,
+                       octave_null_sq_str,
+                       null_assign);
 
 }

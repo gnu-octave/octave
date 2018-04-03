@@ -387,7 +387,7 @@ namespace octave
 
   octave_value
   symbol_table::fcn_table_find (const std::string& name,
-                               const octave_value_list& args, bool local_funcs)
+                                const octave_value_list& args, bool local_funcs)
   {
     fcn_table_iterator p = m_fcn_table.find (name);
 

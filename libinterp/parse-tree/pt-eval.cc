@@ -1176,7 +1176,8 @@ namespace octave
 
         e.set_var (var);
 
-        octave::symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
+        octave::symbol_table& symtab =
+          octave::__get_symbol_table__ ("final_index_error");
 
         octave_value fcn = symtab.find_function (var);
 

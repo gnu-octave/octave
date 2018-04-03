@@ -178,5 +178,6 @@ install_sm_s_ops (octave::type_info& ti)
 
   INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_scalar, sm_s);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_scalar, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_scalar,
+                       assign);
 }

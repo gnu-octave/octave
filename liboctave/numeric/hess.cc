@@ -40,7 +40,7 @@ namespace octave
     template <>
     octave_idx_type
     hess<Matrix>::init (const Matrix& a)
-   {
+    {
       F77_INT a_nr = to_f77_int (a.rows ());
       F77_INT a_nc = to_f77_int (a.cols ());
 

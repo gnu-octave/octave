@@ -346,7 +346,7 @@ namespace octave
 #if defined (HAVE_QSCI_VERSION_2_6_0)
                                                     , true
 #endif
-                                                    );
+                                                   );
 #endif
           }
         else
@@ -363,7 +363,7 @@ namespace octave
 #if defined (HAVE_QSCI_VERSION_2_6_0)
                                        , true
 #endif
-                                       );
+                                      );
           }
       }
 

@@ -455,7 +455,8 @@ find_data_file_in_load_path  (const std::string& fcn,
 
       if (! local_file_ok)
         {
-          octave::load_path& lp = octave::__get_load_path__ ("find_data_file_in_load_path");
+          octave::load_path& lp =
+            octave::__get_load_path__ ("find_data_file_in_load_path");
 
           // Not directly found; search load path.
           std::string tmp

@@ -334,7 +334,7 @@ pr_where (std::ostream& os, const char *who)
       frames.push_back (frame);
     }
 
-    pr_where (os, who, frames);
+  pr_where (os, who, frames);
 }
 
 octave::execution_exception

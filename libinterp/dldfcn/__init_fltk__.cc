@@ -820,7 +820,7 @@ public:
 
     int toolbar_y = m_menu_h + hh + 1;
     m_status = new Fl_Output (5 * m_status_h, toolbar_y,
-                            ww - 5 * m_status_h, m_status_h, "");
+                              ww - 5 * m_status_h, m_status_h, "");
 
     m_status->textcolor (FL_BLACK);
     m_status->color (FL_GRAY);
@@ -1032,7 +1032,7 @@ public:
     m_rotate->position (3 * m_status_h, toolbar_y);
     m_help->position (4 * m_status_h, toolbar_y);
     m_status->resize (5 * m_status_h, toolbar_y,
-                    w () - 5 * m_status_h, m_status_h);
+                      w () - 5 * m_status_h, m_status_h);
     init_sizes ();
     redraw ();
   }

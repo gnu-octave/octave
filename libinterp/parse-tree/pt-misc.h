@@ -45,10 +45,10 @@ namespace octave
   public:
 
     enum in_or_out
-      {
-        in = 1,
-        out = 2
-      };
+    {
+      in = 1,
+      out = 2
+    };
 
     tree_parameter_list (void)
       : m_marked_for_varargs (0) { }

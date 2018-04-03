@@ -163,7 +163,7 @@ typedef union
 
 typedef void *octave_cray_ftn_ch_dsc;
 
- #if defined (__cplusplus)
+#if defined (__cplusplus)
 #  define OCTAVE_F77_FCN_INLINE inline
 #else
 #  define OCTAVE_F77_FCN_INLINE

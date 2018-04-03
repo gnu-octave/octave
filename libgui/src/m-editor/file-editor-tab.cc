@@ -230,10 +230,10 @@ namespace octave
     // encoding, not updated with the settings
 #if defined (Q_OS_WIN32)
     _encoding = settings->value ("editor/default_encoding", "SYSTEM")
-      .toString ();
+                .toString ();
 #else
     _encoding = settings->value ("editor/default_encoding", "UTF-8")
-      .toString ();
+                .toString ();
 #endif
     _enc_indicator->setText (_encoding);
     // no changes in encoding yet
@@ -639,18 +639,18 @@ namespace octave
 #if defined (HAVE_QSTANDARDPATHS)
         QString prep_apis_path
           = QStandardPaths::writableLocation (QStandardPaths::HomeLocation)
-          + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
+            + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
 #else
         QString prep_apis_path
           = QDesktopServices::storageLocation (QDesktopServices::HomeLocation)
-          + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
+            + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
 #endif
 
         // get settings which infos are used for octave
         bool octave_builtins = settings->value (
-                                                "editor/codeCompletion_octave_builtins", true).toBool ();
+                                 "editor/codeCompletion_octave_builtins", true).toBool ();
         bool octave_functions = settings->value (
-                                                 "editor/codeCompletion_octave_functions", true).toBool ();
+                                  "editor/codeCompletion_octave_functions", true).toBool ();
 
         if (_is_octave_file)
           {
@@ -714,7 +714,7 @@ namespace octave
 
                 interpreter& interp
                   = __get_interpreter__ (
-                                                 "file_editor_tab::update_lexer_settings");
+                      "file_editor_tab::update_lexer_settings");
 
                 if (octave_builtins)
                   add_octave_apis (F__builtins__ (interp));       // add new entries
@@ -799,7 +799,7 @@ namespace octave
         QFont line_numbers_font = lexer->defaultFont ();
         int font_size = line_numbers_font.pointSize ();
         font_size = font_size
-          + settings->value ("editor/line_numbers_size", 0).toInt ();
+                    + settings->value ("editor/line_numbers_size", 0).toInt ();
         if (font_size < 4)
           font_size = 4;
         line_numbers_font.setPointSize (font_size);
@@ -1441,10 +1441,10 @@ namespace octave
             QSettings *settings = resource_manager::get_settings ();
 
             used_comment_str = QInputDialog::getText (
-                                                      this, tr ("Comment selected text"),
-                                                      tr ("Comment string to use:\n"), QLineEdit::Normal,
-                                                      settings->value (oct_last_comment_str, comment_str.at (0)).toString (),
-                                                      &ok);
+                                 this, tr ("Comment selected text"),
+                                 tr ("Comment string to use:\n"), QLineEdit::Normal,
+                                 settings->value (oct_last_comment_str, comment_str.at (0)).toString (),
+                                 &ok);
 
             if ((! ok) || used_comment_str.isEmpty ())
               return;  // No input, do nothing
@@ -1624,8 +1624,8 @@ namespace octave
         // editor tab can't be made parent because it may be deleted depending
         // upon the response.  Instead, change the _edit_area to read only.
         QMessageBox::StandardButtons buttons = QMessageBox::Save |
-          QMessageBox::Discard |
-          QMessageBox::Cancel;
+                                               QMessageBox::Discard |
+                                               QMessageBox::Cancel;
 
         // For now, just a warning message about closing a tab that has been
         // modified seems sufficient.  Exit-condition-specific messages could
@@ -1800,7 +1800,7 @@ namespace octave
 #endif
     QSettings *settings = resource_manager::get_settings ();
     QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
-                                                                           settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
+                                        settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
 
     int count_max = 0;
 
@@ -1882,8 +1882,8 @@ namespace octave
     int eol_mode = QsciScintilla::EolUnix;
 #endif
     _edit_area->setEolMode (
-                            static_cast<QsciScintilla::EolMode> (
-                                                                 settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
+      static_cast<QsciScintilla::EolMode> (
+        settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
 
     update_eol_indicator ();
 
@@ -2151,7 +2151,8 @@ namespace octave
         fileDialog->selectFile (_file_name);
         QFileInfo file_info (_file_name);
         if (file_info.suffix () != "m")
-          { // it is not an octave file
+          {
+            // it is not an octave file
             fileDialog->selectNameFilter (filters.at (1));  // "All Files"
             fileDialog->setDefaultSuffix ("");              // no default suffix
           }
@@ -2424,9 +2425,9 @@ namespace octave
       (settings->value ("editor/highlightCurrentLine", true).toBool ());
 
     bool match_keywords = settings->value
-      ("editor/codeCompletion_keywords",true).toBool ();
+                          ("editor/codeCompletion_keywords",true).toBool ();
     bool match_document = settings->value
-      ("editor/codeCompletion_document",true).toBool ();
+                          ("editor/codeCompletion_document",true).toBool ();
 
     QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
     if (match_keywords)
@@ -2739,7 +2740,8 @@ namespace octave
             if (bp != nullptr)
               {
                 if ((cond == "") != (bp->get_cond () == ""))
-                  {       // can only reuse conditional bp as conditional
+                  {
+                    // can only reuse conditional bp as conditional
                     emit remove_breakpoint_via_debugger_linenr (line);
                     bp = nullptr;
                   }
@@ -2949,7 +2951,7 @@ namespace octave
 #if defined (HAVE_QSCI_VERSION_2_6_0)
                                            , true
 #endif
-                                           );
+                                          );
 
                 // loop over all occurrences and set the related indicator
                 int oline, ocol;

@@ -224,7 +224,8 @@ public:
                      bool singular_fallback = true,
                      blas_trans_type transt = blas_no_trans) const;
 
-  FloatComplexMatrix solve (MatrixType& mattype, const FloatComplexMatrix& b) const;
+  FloatComplexMatrix solve (MatrixType& mattype,
+                            const FloatComplexMatrix& b) const;
   FloatComplexMatrix solve (MatrixType& mattype, const FloatComplexMatrix& b,
                             octave_idx_type& info) const;
   FloatComplexMatrix solve (MatrixType& mattype, const FloatComplexMatrix& b,

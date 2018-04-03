@@ -220,7 +220,7 @@ namespace octave
 
     buf << pattern.substr (pos);
 
-    // Replace NULLs with escape sequence because conversion function c_str() 
+    // Replace NULLs with escape sequence because conversion function c_str()
     // will terminate string early at embedded NULLs.
     std::string buf_str = buf.str ();
     while ((pos = buf_str.find ('\0')) != std::string::npos)

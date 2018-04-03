@@ -61,11 +61,11 @@ namespace octave
   public:
 
     enum
-      {
-        OSC_IMPORT  = 0,
-        OSC_EXPORT  = 1,
-        OSC_DEFAULT = 2
-      };
+    {
+      OSC_IMPORT  = 0,
+      OSC_EXPORT  = 1,
+      OSC_DEFAULT = 2
+    };
 
     shortcut_manager (void);
 

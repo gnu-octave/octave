@@ -247,7 +247,8 @@ namespace octave
     class method_arg3_elem : public elem
     {
     public:
-      method_arg3_elem (T *obj, void (T::*method) (const A&, const B&, const C&),
+      method_arg3_elem (T *obj,
+                        void (T::*method) (const A&, const B&, const C&),
                         const A& arg_a, const B& arg_b, const C& arg_c)
         : e_obj (obj), e_method (method),
           e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c)
@@ -275,13 +276,16 @@ namespace octave
     class method_arg4_elem : public elem
     {
     public:
-      method_arg4_elem (T *obj, void (T::*method) (const A&, const B&, const C&, const D&),
-                        const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
+      method_arg4_elem (T *obj,
+                        void (T::*method) (const A&, const B&, const C&, const D&),
+                        const A& arg_a, const B& arg_b, const C& arg_c,
+                        const D& arg_d)
         : e_obj (obj), e_method (method),
           e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c), e_arg_d (arg_d)
       { }
 
-      void run (void) {
+      void run (void)
+      {
         (e_obj->*e_method) (e_arg_a, e_arg_b, e_arg_c, e_arg_d);
       }
 

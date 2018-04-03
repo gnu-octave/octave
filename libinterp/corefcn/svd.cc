@@ -44,16 +44,15 @@ svd_type (int nargin, int nargout, const octave_value_list & args, const T & A)
     return octave::math::svd<T>::Type::sigma_only;
   else if (nargin == 1)
     return octave::math::svd<T>::Type::std;
+  else if (! args(1).is_real_scalar ())
+    return octave::math::svd<T>::Type::economy;
   else
-    if (! args(1).is_real_scalar ())
-      return octave::math::svd<T>::Type::economy;
-    else
-      {
-        if (A.rows () > A.columns ())
-          return octave::math::svd<T>::Type::economy;
-        else
-          return octave::math::svd<T>::Type::std;
-      }
+    {
+      if (A.rows () > A.columns ())
+        return octave::math::svd<T>::Type::economy;
+      else
+        return octave::math::svd<T>::Type::std;
+    }
 }
 
 template <typename T>

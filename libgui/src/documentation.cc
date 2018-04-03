@@ -57,16 +57,17 @@ namespace octave
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
     if (collection.isEmpty ())
       collection = QString::fromStdString (octave::config::oct_doc_dir ()
-                                         + octave::sys::file_ops::dir_sep_str ()
-                                         + "octave_interpreter.qhc");
+                                           + octave::sys::file_ops::dir_sep_str ()
+                                           + "octave_interpreter.qhc");
 
     // Setup the help engine with the original collection, use a writable copy
     // of the original collection and load the help data
     m_help_engine = new QHelpEngine (collection, this);
 
-    std::string tmpdir (octave::sys::env::getenv ("TMPDIR"));
+    QString tmpdir = QDir::tempPath();
     m_collection
-      = QString::fromStdString (octave::sys::tempnam (tmpdir, "oct-qhelp-"));
+      = QString::fromStdString (octave::sys::tempnam (tmpdir.toStdString (),
+                                                      "oct-qhelp-"));
 
     if (m_help_engine->copyCollectionFile (m_collection))
       m_help_engine->setCollectionFile (m_collection);
@@ -86,10 +87,9 @@ namespace octave
                                   "documentation viewer. Only help texts in\n"
                                   "the Console Widget will be available."));
         if (m_help_engine)
-          {
-            delete m_help_engine;
-            m_help_engine = 0;
-          }
+          delete m_help_engine;
+        m_help_engine = 0;
+        return;
       }
 
     // The browser
@@ -142,7 +142,7 @@ namespace octave
     connect(m_help_engine->indexWidget (),
             SIGNAL (linkActivated (const QUrl&, const QString&)),
             m_doc_browser, SLOT(handle_index_clicked (const QUrl&,
-                                                       const QString&)));
+                                                      const QString&)));
 
     connect (m_filter, SIGNAL (editTextChanged (const QString&)),
              this, SLOT(filter_update (const QString&)));
@@ -187,11 +187,12 @@ namespace octave
   documentation::~documentation (void)
   {
     if (m_help_engine)
-      {
-        delete m_help_engine;
+      delete m_help_engine;
 
-        // Cleanup temporary file and directory
-        QFile file (m_collection);
+    // Cleanup temporary file and directory
+    QFile file (m_collection);
+    if (file.exists ())
+      {
         QFileInfo finfo (file);
         QString bname = finfo.fileName ();
         QDir dir = finfo.absoluteDir ();
@@ -256,7 +257,7 @@ namespace octave
       return;
 
     QString wildcard;
-    if (expression.contains(QLatin1Char('*')))
+    if (expression.contains (QLatin1Char('*')))
       wildcard = expression;
 
     m_help_engine->indexWidget ()->filterIndices(expression, wildcard);
@@ -334,13 +335,12 @@ namespace octave
   void documentation_browser::notice_settings (const QSettings *)
   { }
 
-  QVariant documentation_browser::loadResource (int type,
-                                                const QUrl &url)
-    {
-        if (url.scheme () == "qthelp")
-          return QVariant (m_help_engine->fileData(url));
-        else
-          return QTextBrowser::loadResource(type, url);
-    }
+  QVariant documentation_browser::loadResource (int type, const QUrl &url)
+  {
+    if (url.scheme () == "qthelp")
+      return QVariant (m_help_engine->fileData(url));
+    else
+      return QTextBrowser::loadResource(type, url);
+  }
 
 }

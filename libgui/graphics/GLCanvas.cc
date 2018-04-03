@@ -78,7 +78,7 @@ namespace QtHandles
   {
     uint8NDArray retval;
     graphics_object go = gh_manager::get_object (gh);
-    
+
     if (go && go.isa ("figure"))
       {
         Matrix pos = go.get ("position").matrix_value ();
@@ -94,15 +94,15 @@ namespace QtHandles
             || go.get ("__printing__").string_value () == "on")
           {
             OCTAVE_QT_OPENGL_FBO
-              fbo (pos(2), pos(3),OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
-            
+            fbo (pos(2), pos(3),OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
+
             fbo.bind ();
-            
+
             octave::opengl_renderer r;
             r.set_viewport (pos(2), pos(3));
             r.draw (go);
             retval = r.get_pixels (pos(2), pos(3));
-            
+
             fbo.release ();
           }
         else
@@ -110,7 +110,7 @@ namespace QtHandles
             octave::opengl_renderer r;
             r.set_viewport (pos(2), pos(3));
             r.draw (go);
-            retval = r.get_pixels (pos(2), pos(3));            
+            retval = r.get_pixels (pos(2), pos(3));
           }
 
         end_rendering ();
@@ -118,7 +118,7 @@ namespace QtHandles
 
     return retval;
   }
-  
+
   void
   GLCanvas::do_print (const QString& file_cmd, const QString& term,
                       const graphics_handle& handle)
@@ -134,7 +134,7 @@ namespace QtHandles
             // Make sure we have a valid current context
             if (! begin_rendering ())
               error ("print: no valid OpenGL offscreen context");
-            
+
             octave::gl2ps_print (figObj, file_cmd.toStdString (),
                                  term.toStdString ());
           }
@@ -280,7 +280,7 @@ namespace QtHandles
   GLCanvas::begin_rendering (void)
   {
     bool retval = true;
-    
+
     if (! isValid ())
       {
 #  if defined (HAVE_QT_OFFSCREEN)
@@ -295,21 +295,21 @@ namespace QtHandles
                 return false;
               }
           }
-       
+
         retval = m_os_context.makeCurrent (&m_os_surface);
-#  else   
+#  else
         retval = false;
 #  endif
       }
     else
       makeCurrent ();
-    
+
     return retval;
   }
-  
+
   void
   GLCanvas::end_rendering (void)
-  {        
+  {
     doneCurrent ();
   }
 }

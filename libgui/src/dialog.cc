@@ -261,7 +261,7 @@ namespace octave
 #if RICH_TEXT
               prompt_string.append ("<br>");
 #else
-            prompt_string.append ("\n");
+              prompt_string.append ("\n");
 #endif
             prompt_string.append (prompt.at (j));
           }

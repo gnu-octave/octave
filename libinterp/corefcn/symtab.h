@@ -59,9 +59,9 @@ namespace octave
       : m_fcn_table (), m_class_precedence_table (),
         m_parent_map (), m_global_scope ("global scope"),
         m_top_scope ("top scope"), m_current_scope (m_top_scope)
-      {
-        install_builtins ();
-      }
+    {
+      install_builtins ();
+    }
 
     // No copying!
 
@@ -141,10 +141,10 @@ namespace octave
 
     // Find a value corresponding to the given name in the table.
     octave_value
-      find (const std::string& name,
-            const octave_value_list& args = octave_value_list (),
-            bool skip_variables = false,
-            bool local_funcs = true);
+    find (const std::string& name,
+          const octave_value_list& args = octave_value_list (),
+          bool skip_variables = false,
+          bool local_funcs = true);
 
     void assign (const std::string& name, const octave_value& value, bool force_add)
     {
@@ -177,8 +177,8 @@ namespace octave
     }
 
     void
-      top_level_assign (const std::string& name,
-                        const octave_value& value = octave_value ())
+    top_level_assign (const std::string& name,
+                      const octave_value& value = octave_value ())
     {
       m_top_scope.assign (name, value);
     }
@@ -189,7 +189,7 @@ namespace octave
     }
 
     bool
-      is_built_in_function_name (const std::string& name)
+    is_built_in_function_name (const std::string& name)
     {
       octave_value val = find_built_in_function (name);
 
@@ -197,7 +197,7 @@ namespace octave
     }
 
     octave_value
-      find_method (const std::string& name, const std::string& dispatch_type)
+    find_method (const std::string& name, const std::string& dispatch_type)
     {
       fcn_table_const_iterator p = m_fcn_table.find (name);
 
@@ -227,10 +227,10 @@ namespace octave
     }
 
     octave_value
-      find_submethod (const std::string& name, const std::string& dispatch_type);
+    find_submethod (const std::string& name, const std::string& dispatch_type);
 
     octave_value
-      find_built_in_function (const std::string& name)
+    find_built_in_function (const std::string& name)
     {
       fcn_table_const_iterator p = m_fcn_table.find (name);
 
@@ -239,7 +239,7 @@ namespace octave
     }
 
     octave_value
-      find_autoload (const std::string& name)
+    find_autoload (const std::string& name)
     {
       fcn_table_iterator p = m_fcn_table.find (name);
 
@@ -255,9 +255,9 @@ namespace octave
                     bool local_funcs = true);
 
     octave_value
-      find_function (const std::string& name,
-                     const octave_value_list& args = octave_value_list (),
-                     bool local_funcs = true);
+    find_function (const std::string& name,
+                   const octave_value_list& args = octave_value_list (),
+                   bool local_funcs = true);
 
     octave_value find_user_function (const std::string& name)
     {
@@ -636,7 +636,7 @@ namespace octave
     }
 
     std::list<std::string>
-      parent_classes (const std::string& dispatch_type)
+    parent_classes (const std::string& dispatch_type)
     {
       std::list<std::string> retval;
 

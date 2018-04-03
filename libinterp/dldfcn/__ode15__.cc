@@ -566,7 +566,7 @@ namespace octave
 
         //main loop
         while (((posdirection == 1 && tsol < tend)
-               || (posdirection == 0 && tsol > tend))
+                || (posdirection == 0 && tsol > tend))
                && status == 0)
           {
             if (IDASolve (mem, tend, &tsol, yy, yyp, IDA_ONE_STEP) != 0)
@@ -691,7 +691,7 @@ namespace octave
             // Linear interpolation
             ie(0) = index(0);
             te(0) = tsol - val (index(0)) * (tsol - told)
-              / (val (index(0)) - oldval (index(0)));
+                    / (val (index(0)) - oldval (index(0)));
 
             ColumnVector ytemp
               = y - ((tsol - te(0)) * (y - yold) / (tsol - told));
@@ -716,7 +716,7 @@ namespace octave
                 // Linear interpolation
                 ie(temp+i) = index(i);
                 te(temp+i) = tsol - val(index(i)) * (tsol - told)
-                  / (val(index(i)) - oldval(index(i)));
+                             / (val(index(i)) - oldval(index(i)));
 
                 ColumnVector ytemp
                   = y - (tsol - te (temp + i)) * (y - yold) / (tsol - told);
@@ -846,7 +846,8 @@ namespace octave
         status = val(0).bool_value ();
       }
     else
-      {  // Cleanup plotter
+      {
+        // Cleanup plotter
         output(0) = tend;
         feval (output_fcn, output, 0);
       }

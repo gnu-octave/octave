@@ -162,5 +162,6 @@ install_s_sm_ops (octave::type_info& ti)
 
   INSTALL_ASSIGNCONV_TI (ti, octave_scalar, octave_sparse_matrix, octave_matrix);
 
-  INSTALL_WIDENOP_TI (ti, octave_scalar, octave_sparse_matrix, sparse_matrix_conv);
+  INSTALL_WIDENOP_TI (ti, octave_scalar, octave_sparse_matrix,
+                      sparse_matrix_conv);
 }

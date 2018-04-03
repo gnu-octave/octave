@@ -61,7 +61,8 @@ namespace octave
 
     url_handle lookup (double val)
     {
-      iterator p = (math::isnan (val) ? handle_map.end () : handle_map.find (val));
+      iterator p = (math::isnan (val) ? handle_map.end ()
+                                      : handle_map.find (val));
 
       return (p != handle_map.end ()) ? p->first : url_handle ();
     }
@@ -69,7 +70,7 @@ namespace octave
     url_handle lookup (const octave_value& val)
     {
       return val.is_real_scalar () ? lookup (val.double_value ())
-        : url_handle ();
+                                   : url_handle ();
     }
 
     url_transfer get_object (double val)

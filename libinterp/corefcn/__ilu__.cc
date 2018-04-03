@@ -171,7 +171,7 @@ Undocumented internal function.
       ilu_0 <SparseComplexMatrix, Complex> (sm, milu);
 
       retval(0) = speye +
-        Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ();
+                  Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ();
       retval(1) = Ftriu (ovl (sm))(0).sparse_complex_matrix_value ();
     }
 

@@ -43,14 +43,14 @@ namespace octave
   public:
 
     enum comment_type
-      {
-        unknown,
-        block,
-        full_line,
-        end_of_line,
-        doc_string,
-        copyright
-      };
+    {
+      unknown,
+      block,
+      full_line,
+      end_of_line,
+      doc_string,
+      copyright
+    };
 
     comment_elt (const std::string& s = "", comment_type t = unknown)
       : m_text (s), m_type (t) { }

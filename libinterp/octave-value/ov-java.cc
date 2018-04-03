@@ -545,7 +545,7 @@ initialize_jvm (void)
                                    (lib.search ("JNI_GetCreatedJavaVMs"));
 
   if (! create_vm || ! get_vm)
-   {
+    {
 #if defined (OCTAVE_USE_WINDOWS_API)
       // In windows, find the location of the JRE from the registry
       // and load the symbol from the dll.

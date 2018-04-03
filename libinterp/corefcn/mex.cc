@@ -1133,8 +1133,8 @@ public:
     : mxArray_matlab (mxCHAR_CLASS,
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
-    pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-    pi (nullptr)
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
+      pi (nullptr)
   {
     mxChar *cpr = static_cast<mxChar *> (pr);
     mwSize nel = get_number_of_elements ();

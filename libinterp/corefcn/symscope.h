@@ -589,7 +589,7 @@ namespace octave
     bool m_is_nested;
 
     //! If true then no variables can be added.
-    
+
     bool m_is_static;
 
     symbol_record::context_id m_context;

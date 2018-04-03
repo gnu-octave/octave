@@ -514,7 +514,7 @@ namespace octave
 
     // Handle buffering of input for lexer.
 
-   class input_buffer
+    class input_buffer
     {
     public:
 

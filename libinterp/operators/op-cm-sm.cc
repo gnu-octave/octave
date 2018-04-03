@@ -148,7 +148,8 @@ install_cm_sm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_mul, octave_complex_matrix, octave_sparse_matrix, mul);
   INSTALL_BINOP_TI (ti, op_div, octave_complex_matrix, octave_sparse_matrix, div);
   INSTALL_BINOP_TI (ti, op_pow, octave_complex_matrix, octave_sparse_matrix, pow);
-  INSTALL_BINOP_TI (ti, op_ldiv, octave_complex_matrix, octave_sparse_matrix, ldiv);
+  INSTALL_BINOP_TI (ti, op_ldiv, octave_complex_matrix, octave_sparse_matrix,
+                    ldiv);
   INSTALL_BINOP_TI (ti, op_lt, octave_complex_matrix, octave_sparse_matrix, lt);
   INSTALL_BINOP_TI (ti, op_le, octave_complex_matrix, octave_sparse_matrix, le);
   INSTALL_BINOP_TI (ti, op_eq, octave_complex_matrix, octave_sparse_matrix, eq);
@@ -156,23 +157,23 @@ install_cm_sm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_gt, octave_complex_matrix, octave_sparse_matrix, gt);
   INSTALL_BINOP_TI (ti, op_ne, octave_complex_matrix, octave_sparse_matrix, ne);
   INSTALL_BINOP_TI (ti, op_el_mul, octave_complex_matrix, octave_sparse_matrix,
-                 el_mul);
+                    el_mul);
   INSTALL_BINOP_TI (ti, op_el_div, octave_complex_matrix, octave_sparse_matrix,
-                 el_div);
+                    el_div);
   INSTALL_BINOP_TI (ti, op_el_pow, octave_complex_matrix, octave_sparse_matrix,
-                 el_pow);
+                    el_pow);
   INSTALL_BINOP_TI (ti, op_el_ldiv, octave_complex_matrix, octave_sparse_matrix,
-                 el_ldiv);
+                    el_ldiv);
   INSTALL_BINOP_TI (ti, op_el_and, octave_complex_matrix, octave_sparse_matrix,
-                 el_and);
+                    el_and);
   INSTALL_BINOP_TI (ti, op_el_or, octave_complex_matrix, octave_sparse_matrix,
-                 el_or);
+                    el_or);
 
   INSTALL_CATOP_TI (ti, octave_complex_matrix, octave_sparse_matrix, cm_sm);
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_complex_matrix, octave_sparse_matrix,
-                    assign);
+                       assign);
   INSTALL_ASSIGNCONV_TI (ti, octave_complex_matrix, octave_sparse_matrix,
-                      octave_complex_matrix)
+                         octave_complex_matrix)
 
 }

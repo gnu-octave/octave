@@ -1462,7 +1462,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
       else
         {
           F77_XFCN (zgetrf, ZGETRF, (nr, nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt,
-                                   tmp_info));
+                                     tmp_info));
 
           info = tmp_info;
         }
@@ -2515,9 +2515,9 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
         nlvl = 0;
 
       F77_INT lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
-                               + 3*smlsiz*nrhs
-                               + std::max ((smlsiz+1)*(smlsiz+1),
-                                           n*(1+nrhs) + 2*nrhs);
+                       + 3*smlsiz*nrhs
+                       + std::max ((smlsiz+1)*(smlsiz+1),
+                                   n*(1+nrhs) + 2*nrhs);
       if (lrwork < 1)
         lrwork = 1;
       Array<double> rwork (dim_vector (lrwork, 1));
@@ -2735,7 +2735,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
         nlvl = 0;
 
       F77_INT lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
-                               + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
+                       + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
       if (lrwork < 1)
         lrwork = 1;
       Array<double> rwork (dim_vector (lrwork, 1));

@@ -644,7 +644,7 @@ namespace octave
         if (! osc_settings)
           {
             qWarning () << tr ("Failed to open %1 as octave shortcut file")
-              .arg (file);
+                        .arg (file);
             return false;
           }
         else

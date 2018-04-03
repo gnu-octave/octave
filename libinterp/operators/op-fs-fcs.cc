@@ -151,20 +151,25 @@ install_fs_fcs_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_ge, octave_float_scalar, octave_float_complex, ge);
   INSTALL_BINOP_TI (ti, op_gt, octave_float_scalar, octave_float_complex, gt);
   INSTALL_BINOP_TI (ti, op_ne, octave_float_scalar, octave_float_complex, ne);
-  INSTALL_BINOP_TI (ti, op_el_mul, octave_float_scalar, octave_float_complex, el_mul);
-  INSTALL_BINOP_TI (ti, op_el_div, octave_float_scalar, octave_float_complex, el_div);
-  INSTALL_BINOP_TI (ti, op_el_pow, octave_float_scalar, octave_float_complex, el_pow);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_float_scalar, octave_float_complex,
+                    el_mul);
+  INSTALL_BINOP_TI (ti, op_el_div, octave_float_scalar, octave_float_complex,
+                    el_div);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_float_scalar, octave_float_complex,
+                    el_pow);
   INSTALL_BINOP_TI (ti, op_el_ldiv, octave_float_scalar, octave_float_complex,
-                 el_ldiv);
-  INSTALL_BINOP_TI (ti, op_el_and, octave_float_scalar, octave_float_complex, el_and);
-  INSTALL_BINOP_TI (ti, op_el_or, octave_float_scalar, octave_float_complex, el_or);
+                    el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_float_scalar, octave_float_complex,
+                    el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_float_scalar, octave_float_complex,
+                    el_or);
 
   INSTALL_CATOP_TI (ti, octave_float_scalar, octave_float_complex, fs_fcs);
   INSTALL_CATOP_TI (ti, octave_scalar, octave_float_complex, s_fcs);
   INSTALL_CATOP_TI (ti, octave_float_scalar, octave_complex, fs_cs);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_float_scalar, octave_float_complex,
-                      octave_float_complex_matrix);
+                         octave_float_complex_matrix);
   INSTALL_ASSIGNCONV_TI (ti, octave_scalar, octave_float_complex,
-                      octave_complex_matrix);
+                         octave_complex_matrix);
 }

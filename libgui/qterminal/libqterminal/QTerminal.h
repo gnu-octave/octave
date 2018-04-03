@@ -62,7 +62,7 @@ public:
   virtual void has_extra_interrupt (bool extra) = 0;
 
   virtual QList<QAction*> get_hotspot_actions (const QPoint&)
-      { return QList<QAction*> (); }
+  { return QList<QAction*> (); }
 
   enum CursorType
   {
@@ -135,16 +135,16 @@ protected:
                      tr ("Copy"), this, SLOT (copyClipboard ()));
 
     _paste_action = _contextMenu->addAction (
-                     resource_manager::icon ("edit-paste"),
+                      resource_manager::icon ("edit-paste"),
                       tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
 
     _selectall_action = _contextMenu->addAction (
-                      tr ("Select All"), this, SLOT (selectAll ()));
+                          tr ("Select All"), this, SLOT (selectAll ()));
 
     _edit_action = _contextMenu->addAction (
-                      tr (""), this, SLOT (edit_file ()));
+                     tr (""), this, SLOT (edit_file ()));
 
     _contextMenu->addSeparator ();
 
@@ -180,17 +180,17 @@ protected:
     addAction (_interrupt_action);
 
     _interrupt_action->setShortcut (
-            QKeySequence (Qt::ControlModifier + Qt::Key_C));
+      QKeySequence (Qt::ControlModifier + Qt::Key_C));
 
     connect (_interrupt_action, SIGNAL (triggered ()),
-            this, SLOT (terminal_interrupt ()));
+             this, SLOT (terminal_interrupt ()));
 
     // dummy (nop) action catching Ctrl-D in terminal, no connection
     _nop_action = new QAction (this);
     addAction (_nop_action);
 
     _nop_action->setShortcut (
-            QKeySequence (Qt::ControlModifier + Qt::Key_D));
+      QKeySequence (Qt::ControlModifier + Qt::Key_D));
   }
 
 private:

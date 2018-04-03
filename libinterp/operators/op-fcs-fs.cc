@@ -149,23 +149,28 @@ install_fcs_fs_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_ge, octave_float_complex, octave_float_scalar, ge);
   INSTALL_BINOP_TI (ti, op_gt, octave_float_complex, octave_float_scalar, gt);
   INSTALL_BINOP_TI (ti, op_ne, octave_float_complex, octave_float_scalar, ne);
-  INSTALL_BINOP_TI (ti, op_el_mul, octave_float_complex, octave_float_scalar, el_mul);
-  INSTALL_BINOP_TI (ti, op_el_div, octave_float_complex, octave_float_scalar, el_div);
-  INSTALL_BINOP_TI (ti, op_el_pow, octave_float_complex, octave_float_scalar, el_pow);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_float_complex, octave_float_scalar,
+                    el_mul);
+  INSTALL_BINOP_TI (ti, op_el_div, octave_float_complex, octave_float_scalar,
+                    el_div);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_float_complex, octave_float_scalar,
+                    el_pow);
   INSTALL_BINOP_TI (ti, op_el_ldiv, octave_float_complex, octave_float_scalar,
-                 el_ldiv);
-  INSTALL_BINOP_TI (ti, op_el_and, octave_float_complex, octave_float_scalar, el_and);
-  INSTALL_BINOP_TI (ti, op_el_or, octave_float_complex, octave_float_scalar, el_or);
+                    el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_float_complex, octave_float_scalar,
+                    el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_float_complex, octave_float_scalar,
+                    el_or);
 
   INSTALL_CATOP_TI (ti, octave_float_complex, octave_float_scalar, fcs_fs);
   INSTALL_CATOP_TI (ti, octave_complex, octave_float_scalar, cs_fs);
   INSTALL_CATOP_TI (ti, octave_float_complex, octave_scalar, fcs_s);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_float_complex, octave_float_scalar,
-                      octave_float_complex_matrix);
+                         octave_float_complex_matrix);
   INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_float_scalar,
-                      octave_complex_matrix);
+                         octave_complex_matrix);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_float_complex, octave_scalar,
-                      octave_float_complex_matrix);
+                         octave_float_complex_matrix);
 }

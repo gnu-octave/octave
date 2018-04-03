@@ -145,9 +145,10 @@ install_m_s_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_matrix, octave_scalar, m_s);
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_scalar, assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_scalar, sgl_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_scalar,
+                       sgl_assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_complex_matrix, octave_scalar,
-                    clx_sgl_assign);
+                       clx_sgl_assign);
 
   INSTALL_ASSIGNOP_TI (ti, op_add_eq, octave_matrix, octave_scalar, assign_add);
   INSTALL_ASSIGNOP_TI (ti, op_sub_eq, octave_matrix, octave_scalar, assign_sub);

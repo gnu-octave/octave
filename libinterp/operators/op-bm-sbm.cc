@@ -90,19 +90,20 @@ install_bm_sbm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_ne, octave_bool_matrix, octave_sparse_bool_matrix, ne);
 
   INSTALL_BINOP_TI (ti, op_el_and, octave_bool_matrix, octave_sparse_bool_matrix,
-                 el_and);
+                    el_and);
   INSTALL_BINOP_TI (ti, op_el_or, octave_bool_matrix, octave_sparse_bool_matrix,
-                 el_or);
+                    el_or);
 
   INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix, bm_sbm);
   INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_sparse_matrix, bm_sm);
   INSTALL_CATOP_TI (ti, octave_matrix, octave_sparse_bool_matrix, m_sbm);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_sparse_bool_matrix,
-                    assign)
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix,
+                       octave_sparse_bool_matrix,
+                       assign)
   INSTALL_ASSIGNCONV_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix,
-                      octave_bool_matrix);
+                         octave_bool_matrix);
 
   INSTALL_WIDENOP_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix,
-                   sparse_bool_matrix_conv);
+                      sparse_bool_matrix_conv);
 }

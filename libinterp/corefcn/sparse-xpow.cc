@@ -670,7 +670,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
 
           if (xisint (btmp))
             result.xelem (a.ridx (i), j) = std::pow (a.data (i),
-                                              static_cast<int> (btmp));
+                                                     static_cast<int> (btmp));
           else
             result.xelem (a.ridx (i), j) = std::pow (a.data (i), btmp);
         }

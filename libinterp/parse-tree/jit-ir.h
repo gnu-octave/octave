@@ -1186,7 +1186,7 @@ namespace octave
     jit_call (const jit_operation& aoperation,
               jit_value * arg1, Args... other_args)
       : jit_instruction (arg1, other_args...), m_operation (aoperation)
-  { }
+    { }
 
     template <typename ...Args>
     jit_call (const jit_operation& (*aoperation) (void),
@@ -1249,10 +1249,10 @@ namespace octave
 
     // Which variable is the error check for?
     enum variable
-      {
-        var_error_state,
-        var_interrupt
-      };
+    {
+      var_error_state,
+      var_interrupt
+    };
 
     static std::string variable_to_string (variable v);
 

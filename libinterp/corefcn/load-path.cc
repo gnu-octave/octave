@@ -708,7 +708,7 @@ namespace octave
               {
                 if (all_files[i] == rel_flist[j])
                   retlist.push_back (sys::file_ops::concat (di.dir_name,
-                                                                    rel_flist[j]));
+                                                            rel_flist[j]));
               }
           }
       }
@@ -1858,7 +1858,8 @@ namespace octave
   }
 
   void
-  load_path::package_info::move_method_map (const std::string& dir_name, bool at_end)
+  load_path::package_info::move_method_map (const std::string& dir_name,
+                                            bool at_end)
   {
     for (auto& cls_fnmap : method_map)
       {
@@ -2266,7 +2267,7 @@ Restore Octave's path to its initial state at startup.
 // ~/.octaverc file
 
 DEFMETHOD (__pathorig__, interp, , ,
-          doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn {} {@var{val} =} __pathorig__ ()
 Undocumented internal function.
 @end deftypefn */)

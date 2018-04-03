@@ -138,16 +138,18 @@ install_cm_s_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_el_mul, octave_complex_matrix, octave_scalar, el_mul);
   INSTALL_BINOP_TI (ti, op_el_div, octave_complex_matrix, octave_scalar, el_div);
   INSTALL_BINOP_TI (ti, op_el_pow, octave_complex_matrix, octave_scalar, el_pow);
-  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_complex_matrix, octave_scalar, el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_complex_matrix, octave_scalar,
+                    el_ldiv);
   INSTALL_BINOP_TI (ti, op_el_and, octave_complex_matrix, octave_scalar, el_and);
   INSTALL_BINOP_TI (ti, op_el_or, octave_complex_matrix, octave_scalar, el_or);
 
   INSTALL_CATOP_TI (ti, octave_complex_matrix, octave_scalar, cm_s);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_complex_matrix, octave_scalar, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_complex_matrix, octave_scalar,
+                       assign);
 
   INSTALL_ASSIGNOP_TI (ti, op_mul_eq, octave_complex_matrix, octave_scalar,
-                    assign_mul);
+                       assign_mul);
   INSTALL_ASSIGNOP_TI (ti, op_div_eq, octave_complex_matrix, octave_scalar,
-                    assign_div);
+                       assign_div);
 }

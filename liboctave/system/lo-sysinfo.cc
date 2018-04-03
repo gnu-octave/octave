@@ -53,7 +53,7 @@ namespace octave
       // FlexiBLAS
       typedef void (*flexi_f_type) (int*, int*, int*);
       flexi_f_type flexi_f_ptr = reinterpret_cast<flexi_f_type>
-        (dyn_libs.search ("flexiblas_get_version"));
+                                 (dyn_libs.search ("flexiblas_get_version"));
 
       if (flexi_f_ptr)
         {
@@ -75,7 +75,7 @@ namespace octave
       // OpenBLAS
       typedef char * (*open_fcn_type) (void);
       open_fcn_type open_f_ptr = reinterpret_cast<open_fcn_type>
-        (dyn_libs.search ("openblas_get_config"));
+                                 (dyn_libs.search ("openblas_get_config"));
 
       if (open_f_ptr)
         {
@@ -108,7 +108,7 @@ namespace octave
       // ACML
       typedef void (*acml_f_type) (int*, int*, int*);
       acml_f_type acml_f_ptr = reinterpret_cast<acml_f_type>
-        (dyn_libs.search ("acmlversion"));
+                               (dyn_libs.search ("acmlversion"));
 
       if (acml_f_ptr)
         {
@@ -130,7 +130,7 @@ namespace octave
       // Intel MKL
       typedef void (*mkl_f_type) (char*, int);
       mkl_f_type mkl_f_ptr = reinterpret_cast<mkl_f_type>
-        (dyn_libs.search ("mkl_get_version_string"));
+                             (dyn_libs.search ("mkl_get_version_string"));
 
       if (mkl_f_ptr)
         {

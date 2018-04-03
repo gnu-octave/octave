@@ -1333,7 +1333,8 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 {
   write_header (os, fmt);
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("dump_octave_core");
+  octave::symbol_table& symtab =
+    octave::__get_symbol_table__ ("dump_octave_core");
 
   octave::symbol_scope top_scope = symtab.top_scope ();
 

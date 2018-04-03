@@ -3409,7 +3409,7 @@ Octave is now configured for $canonical_host_type
   Default pager:                 $DEFAULT_PAGER
   gnuplot:                       $GNUPLOT
 
-  Build Octave Qt GUI:                  $build_qt_gui
+  Build Octave Qt GUI:                  $BUILD_QT_SUMMARY_MSG
   JIT compiler for loops:               $ENABLE_JIT
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS

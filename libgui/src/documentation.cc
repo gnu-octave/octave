@@ -64,9 +64,10 @@ namespace octave
     // of the original collection and load the help data
     m_help_engine = new QHelpEngine (collection, this);
 
-    std::string tmpdir (octave::sys::env::getenv ("TMPDIR"));
+    QString tmpdir = QDir::tempPath();
     m_collection
-      = QString::fromStdString (octave::sys::tempnam (tmpdir, "oct-qhelp-"));
+      = QString::fromStdString (octave::sys::tempnam (tmpdir.toStdString (),
+                                                      "oct-qhelp-"));
 
     if (m_help_engine->copyCollectionFile (m_collection))
       m_help_engine->setCollectionFile (m_collection);
